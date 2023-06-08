@@ -3,9 +3,9 @@ import { User } from './User';
 import {
   UserReturn,
   fetchUsersReducer,
-  initialState,
+  initialFetchUserState,
   fetchUserAction,
-} from './UserReducer';
+} from './userReducer';
 import axios from 'axios';
 
 type UsersListProps = {
@@ -15,7 +15,7 @@ type UsersListProps = {
 function UsersList({ children }: UsersListProps): JSX.Element {
   const [fetchUsersState, fetchUsersDispatch] = useReducer(
     fetchUsersReducer,
-    initialState
+    initialFetchUserState
   );
 
   useEffect(() => {

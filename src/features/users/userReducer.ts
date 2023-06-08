@@ -30,7 +30,7 @@ const fetchUserAction: FetchUserAction = {
   FETCH_USERS_FAILURE: 'FETCH_USERS_FAILURE',
 };
 
-const initialState: UserState = {
+const initialFetchUserState: UserState = {
   users: [],
   isLoading: false,
   error: '',
@@ -63,5 +63,5 @@ function fetchUsersReducer(
   }
 }
 
-export { fetchUsersReducer, initialState, fetchUserAction };
+export { fetchUsersReducer, initialFetchUserState, fetchUserAction };
 export type { UserReturn, UserState, UserDispatch, FetchUserAction };

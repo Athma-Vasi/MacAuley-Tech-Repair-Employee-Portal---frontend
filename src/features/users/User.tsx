@@ -8,7 +8,7 @@ import {
   UserDispatch,
   UserReturn,
   UserState,
-} from './UserReducer';
+} from './userReducer';
 
 type UserProps = {
   children?: ReactNode;
