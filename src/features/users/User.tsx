@@ -1,18 +1,12 @@
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ReactNode, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  FetchUserAction,
-  UserDispatch,
-  UserReturn,
-  UserState,
-} from './userReducer';
+import { FetchUserReturn } from './usersState/fetchUser';
 
 type UserProps = {
   children?: ReactNode;
-  user: UserReturn;
+  user: FetchUserReturn;
 };
 
 function User({ children, user }: UserProps): JSX.Element | null {

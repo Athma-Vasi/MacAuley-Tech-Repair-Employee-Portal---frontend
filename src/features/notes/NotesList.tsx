@@ -4,7 +4,8 @@ import {
   fetchNoteAction,
   fetchNotesReducer,
   initialFetchNotesState,
-} from './noteReducer';
+  sortNotesImmutable,
+} from './noteUtils';
 import axios from 'axios';
 import { Note } from './Note';
 
@@ -78,7 +79,10 @@ function NotesList({ children }: NotesListProps): JSX.Element | null {
   }
 
   if (isSuccess) {
-    const tableContent = notes.map((note) =>
+    // sort notes by completion status
+    const sortedNotes = sortNotesImmutable(notes);
+
+    const tableContent = sortedNotes.map((note) =>
       notes.length > 0 ? (
         <Note key={note._id} note={note} />
       ) : (

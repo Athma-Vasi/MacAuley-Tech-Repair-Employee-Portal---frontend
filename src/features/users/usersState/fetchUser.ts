@@ -1,4 +1,4 @@
-type UserReturn = {
+type FetchUserReturn = {
   _id: string;
   username: string;
   roles: ('Admin' | 'Employee' | 'Manager')[];
@@ -8,8 +8,8 @@ type UserReturn = {
   __v: number;
 };
 
-type UserState = {
-  users: UserReturn[];
+type FetchUserState = {
+  users: FetchUserReturn[];
   isLoading: boolean;
   error: string;
   isSuccess?: boolean;
@@ -17,7 +17,7 @@ type UserState = {
 
 type UserDispatch = {
   type: FetchUserAction[keyof FetchUserAction];
-  payload: UserState;
+  payload: FetchUserState;
 };
 
 type FetchUserAction = {
@@ -30,17 +30,17 @@ const fetchUserAction: FetchUserAction = {
   FETCH_USERS_FAILURE: 'FETCH_USERS_FAILURE',
 };
 
-const initialFetchUserState: UserState = {
+const initialFetchUserState: FetchUserState = {
   users: [],
-  isLoading: false,
+  isLoading: true,
   error: '',
   isSuccess: false,
 };
 
 function fetchUsersReducer(
-  state: UserState,
+  state: FetchUserState,
   dispatch: UserDispatch
-): UserState {
+): FetchUserState {
   switch (dispatch.type) {
     case fetchUserAction.FETCH_USERS_SUCCESS:
       return {
@@ -64,4 +64,4 @@ function fetchUsersReducer(
 }
 
 export { fetchUsersReducer, initialFetchUserState, fetchUserAction };
-export type { UserReturn, UserState, UserDispatch, FetchUserAction };
+export type { FetchUserReturn, FetchUserState, UserDispatch, FetchUserAction };

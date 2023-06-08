@@ -2,7 +2,7 @@ import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NoteReturn } from './noteReducer';
+import { NoteReturn } from './noteUtils';
 
 type NoteProps = {
   children?: ReactNode;
@@ -10,8 +10,6 @@ type NoteProps = {
 };
 
 function Note({ children, note }: NoteProps): JSX.Element | null {
-  //   const note = useSelector((state) => selectNoteById(state, noteId));
-
   const navigate = useNavigate();
 
   if (note) {

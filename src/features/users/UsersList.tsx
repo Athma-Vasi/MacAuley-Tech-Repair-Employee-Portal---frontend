@@ -1,18 +1,18 @@
 import { ReactNode, useEffect, useReducer } from 'react';
 import { User } from './User';
 import {
-  UserReturn,
+  FetchUserReturn,
   fetchUsersReducer,
   initialFetchUserState,
   fetchUserAction,
-} from './userReducer';
+} from './usersState/fetchUser';
 import axios from 'axios';
 
 type UsersListProps = {
   children?: ReactNode;
 };
 
-function UsersList({ children }: UsersListProps): JSX.Element {
+function UsersList({ children }: UsersListProps): JSX.Element | null {
   const [fetchUsersState, fetchUsersDispatch] = useReducer(
     fetchUsersReducer,
     initialFetchUserState
@@ -26,7 +26,7 @@ function UsersList({ children }: UsersListProps): JSX.Element {
       const url = 'http://localhost:3500/users';
 
       try {
-        const { data } = await axios.get<UserReturn[]>(url, { signal });
+        const { data } = await axios.get<FetchUserReturn[]>(url, { signal });
 
         fetchUsersDispatch({
           type: fetchUserAction.FETCH_USERS_SUCCESS,
@@ -81,7 +81,7 @@ function UsersList({ children }: UsersListProps): JSX.Element {
 
   if (isSuccess) {
     const tableContent = users?.length ? (
-      users.map((user: UserReturn) => <User key={user._id} user={user} />)
+      users.map((user: FetchUserReturn) => <User key={user._id} user={user} />)
     ) : (
       <tr>
         <td colSpan={3}>No users found</td>
@@ -108,11 +108,7 @@ function UsersList({ children }: UsersListProps): JSX.Element {
     );
   }
 
-  return (
-    content ?? (
-      <div>You are seeing this because content was somehow undefined</div>
-    )
-  );
+  return content ?? null;
 }
 
 export { UsersList };

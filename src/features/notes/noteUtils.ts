@@ -34,7 +34,7 @@ const fetchNoteAction: FetchNoteAction = {
 
 const initialFetchNotesState: NoteState = {
   notes: [],
-  isLoading: false,
+  isLoading: true,
   error: '',
   isSuccess: false,
 };
@@ -65,5 +65,24 @@ function fetchNotesReducer(
   }
 }
 
-export { fetchNotesReducer, initialFetchNotesState, fetchNoteAction };
+function sortNotesImmutable(notes: NoteReturn[]): NoteReturn[] {
+  const clone = structuredClone(notes);
+
+  return clone.sort((a: NoteReturn, b: NoteReturn) => {
+    if (a.completed === b.completed) {
+      return 0;
+    } else if (a.completed) {
+      return 1;
+    } else {
+      return -1;
+    }
+  });
+}
+
+export {
+  fetchNotesReducer,
+  initialFetchNotesState,
+  fetchNoteAction,
+  sortNotesImmutable,
+};
 export type { NoteState, NoteDispatch, NoteReturn, FetchNoteAction };
