@@ -1,14 +1,14 @@
 import { Route, Routes } from 'react-router-dom';
-import { Button } from '@mantine/core';
-import { Register } from './components/register';
-import { Login } from './components/login';
+import { useContext } from 'react';
+
+import { AuthContext } from './context/authProvider';
+import { PublicLayout } from './components/publicLayout';
 
 function App() {
   return (
-    <div>
-      {/* <Register /> */}
-      <Login />
-    </div>
+    <Routes>
+      <Route path="/" element={<PublicLayout />} />
+    </Routes>
   );
 }
 

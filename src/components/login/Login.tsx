@@ -8,7 +8,7 @@ import {
   Flex,
 } from '@mantine/core';
 import { Link } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { axiosInstance } from '../../api/axios';
 import { useRef, useEffect, useReducer, useContext } from 'react';
 
@@ -69,7 +69,7 @@ function Login() {
 
       const {
         status,
-        data: { message, accessToken = '' },
+        data: { accessToken = '' },
       } = response;
 
       if (status === 200) {
@@ -94,6 +94,7 @@ function Login() {
         });
       }
     } catch (error: any) {
+      // if there is no response object, it means the server is down
       if (!error?.response) {
         loginDispatch({
           type: loginAction.setErrorMessage,
@@ -104,35 +105,48 @@ function Login() {
           type: authAction.setErrorMessage,
           payload: 'Network Error',
         });
-      } else {
+      }
+      // if there is a response object, it means the server is up
+      else if (error.response) {
         const {
           response: {
-            status,
             data: { message },
           },
         } = error;
 
-        if (status === 400) {
-          loginDispatch({
-            type: loginAction.setErrorMessage,
-            payload: message,
-          });
+        loginDispatch({
+          type: loginAction.setErrorMessage,
+          payload: message,
+        });
 
-          authDispatch({
-            type: authAction.setErrorMessage,
-            payload: message,
-          });
-        } else {
-          loginDispatch({
-            type: loginAction.setErrorMessage,
-            payload: message,
-          });
+        authDispatch({
+          type: authAction.setErrorMessage,
+          payload: message,
+        });
+      }
+      // if the error is an instance of InvalidTokenError, it means the access token is invalid
+      else if (error instanceof InvalidTokenError) {
+        loginDispatch({
+          type: loginAction.setErrorMessage,
+          payload: 'Invalid Access Token',
+        });
 
-          authDispatch({
-            type: authAction.setErrorMessage,
-            payload: message,
-          });
-        }
+        authDispatch({
+          type: authAction.setErrorMessage,
+          payload: 'Invalid Access Token',
+        });
+      }
+      // catch all other errors
+      else {
+        loginDispatch({
+          type: loginAction.setErrorMessage,
+          payload: 'An unknown error occurred. Please try again.',
+        });
+
+        authDispatch({
+          type: authAction.setErrorMessage,
+          payload: 'An unknown error occurred. Please try again.',
+        });
       }
     } finally {
       loginDispatch({

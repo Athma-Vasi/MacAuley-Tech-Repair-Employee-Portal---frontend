@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useReducer } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -57,6 +57,8 @@ function Register() {
 
   const emailRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
+
+  const navigate = useNavigate();
 
   // sets focus on email input on first render
   useEffect(() => {
