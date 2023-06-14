@@ -5,6 +5,7 @@ const initialLoginState: LoginState = {
   password: '',
   errorMessage: '',
   isSuccessful: false,
+  isLoading: false,
 };
 
 const loginAction: LoginAction = {
@@ -12,6 +13,7 @@ const loginAction: LoginAction = {
   setPassword: 'setPassword',
   setErrorMessage: 'setErrorMessage',
   setIsSuccessful: 'setIsSuccessful',
+  setIsLoading: 'setIsLoading',
 };
 
 function loginReducer(state: LoginState, action: LoginDispatch): LoginState {
@@ -24,6 +26,8 @@ function loginReducer(state: LoginState, action: LoginDispatch): LoginState {
       return { ...state, errorMessage: action.payload as string };
     case loginAction.setIsSuccessful:
       return { ...state, isSuccessful: action.payload as boolean };
+    case loginAction.setIsLoading:
+      return { ...state, isLoading: action.payload as boolean };
     default:
       return state;
   }

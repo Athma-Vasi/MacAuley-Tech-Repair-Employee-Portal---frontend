@@ -4,6 +4,7 @@ type LoginState = {
 
   errorMessage: string;
   isSuccessful: boolean;
+  isLoading: boolean;
 };
 
 type LoginAction = {
@@ -12,6 +13,7 @@ type LoginAction = {
 
   setErrorMessage: 'setErrorMessage';
   setIsSuccessful: 'setIsSuccessful';
+  setIsLoading: 'setIsLoading';
 };
 
 type LoginPayload = string | boolean;
@@ -23,10 +25,24 @@ type LoginDispatch = {
 
 type LoginReducer = (state: LoginState, action: LoginDispatch) => LoginState;
 
+type LoginResponse = {
+  message: string;
+  accessToken?: string | undefined;
+};
+
+type DecodedToken = {
+  userInfo: {
+    username: string;
+    roles: ('Admin' | 'Employee' | 'Manager')[];
+  };
+};
+
 export type {
+  DecodedToken,
   LoginState,
   LoginAction,
   LoginPayload,
   LoginDispatch,
   LoginReducer,
+  LoginResponse,
 };

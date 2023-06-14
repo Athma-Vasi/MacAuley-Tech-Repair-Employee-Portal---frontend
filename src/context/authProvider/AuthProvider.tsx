@@ -1,8 +1,14 @@
 import { createContext, useReducer, useMemo } from 'react';
 import { authReducer, initialAuthState } from './state';
-import { AuthProviderProps } from './types';
+import { AuthDispatch, AuthProviderProps, AuthState } from './types';
 
-const AuthContext = createContext({});
+const AuthContext = createContext<{
+  authState: AuthState;
+  authDispatch: React.Dispatch<AuthDispatch>;
+}>({
+  authState: initialAuthState,
+  authDispatch: () => null,
+});
 
 function AuthProvider({ children }: AuthProviderProps) {
   const [authState, authDispatch] = useReducer(authReducer, initialAuthState);
