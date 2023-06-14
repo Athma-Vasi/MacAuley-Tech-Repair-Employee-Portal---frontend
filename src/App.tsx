@@ -1,11 +1,13 @@
 import { Route, Routes } from 'react-router-dom';
 import { Button } from '@mantine/core';
 import { Register } from './components/register';
+import { Login } from './components/login';
 
 function App() {
   return (
     <div>
-      <Register />
+      {/* <Register /> */}
+      <Login />
     </div>
   );
 }

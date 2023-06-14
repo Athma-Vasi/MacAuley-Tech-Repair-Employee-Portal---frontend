@@ -111,7 +111,7 @@ function Register() {
   const displayError = (
     <Alert
       title="Warning!"
-      color="red"
+      color="yellow"
       className={errorMessage ? '' : 'offscreen'}
     >
       <Text ref={errorRef} aria-live="assertive">
