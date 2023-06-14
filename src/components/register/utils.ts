@@ -13,7 +13,7 @@ function returnEmailRegexValidationText(email: string) {
   const emailValidationTextMap = new Map<number, string>([
     [0, 'Must contain a valid username part.'],
     [1, 'Must contain a valid domain part.'],
-    [2, 'Must contain a valid subdomain part.'],
+    [2, 'Must contain a valid (optional) subdomain part.'],
   ]);
 
   const emailRegexValidationText = Object.values(emailRegexObj)

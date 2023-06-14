@@ -36,4 +36,6 @@ const USERNAME_REGEX =
 const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/;
 
-export { EMAIL_REGEX, USERNAME_REGEX, PASSWORD_REGEX };
+const REGISTER_URL = '/users';
+
+export { EMAIL_REGEX, USERNAME_REGEX, PASSWORD_REGEX, REGISTER_URL };

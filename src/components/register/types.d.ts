@@ -49,9 +49,14 @@ type RegisterDispatch = {
   payload: RegisterPayload;
 };
 
+type RegisterResponse = {
+  message: string;
+};
+
 export type {
   RegisterState,
   RegisterAction,
   RegisterPayload,
   RegisterDispatch,
+  RegisterResponse,
 };
