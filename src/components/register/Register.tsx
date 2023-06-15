@@ -58,8 +58,6 @@ function Register() {
   const emailRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
 
-  const navigate = useNavigate();
-
   // sets focus on email input on first render
   useEffect(() => {
     emailRef.current?.focus();

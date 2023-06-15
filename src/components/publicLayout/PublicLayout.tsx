@@ -1,12 +1,11 @@
-import { Outlet } from 'react-router-dom';
 import { Text } from '@mantine/core';
-import { Register } from '../register';
+import { Outlet } from 'react-router-dom';
 
 function PublicLayout() {
   return (
     <div>
       <Text>PublicLayout</Text>
-      <Register />
+      <Outlet />
     </div>
   );
 }

@@ -3,7 +3,6 @@ type LoginState = {
   password: string;
 
   errorMessage: string;
-  isSuccessful: boolean;
   isLoading: boolean;
 };
 
@@ -12,7 +11,6 @@ type LoginAction = {
   setPassword: 'setPassword';
 
   setErrorMessage: 'setErrorMessage';
-  setIsSuccessful: 'setIsSuccessful';
   setIsLoading: 'setIsLoading';
 };
 

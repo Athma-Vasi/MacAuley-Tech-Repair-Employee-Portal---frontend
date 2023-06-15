@@ -7,22 +7,28 @@ import {
   Button,
   Flex,
 } from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { axiosInstance } from '../../api/axios';
-import { useRef, useEffect, useReducer, useContext } from 'react';
+import { useRef, useEffect, useReducer } from 'react';
 
 import { initialLoginState, loginAction, loginReducer } from './state';
-import { AuthContext } from '../../context/authProvider';
 import { LOGIN_URL } from './constants';
 import { DecodedToken, LoginResponse } from './types';
 import { authAction } from '../../context/authProvider/state';
+import { useAuth } from '../../hooks/useAuth';
 
 function Login() {
-  const { authState, authDispatch } = useContext(AuthContext);
+  const [{ username, password, errorMessage }, loginDispatch] = useReducer(
+    loginReducer,
+    initialLoginState
+  );
 
-  const [{ username, password, errorMessage, isSuccessful }, loginDispatch] =
-    useReducer(loginReducer, initialLoginState);
+  const { authState, authDispatch } = useAuth();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  // if there is no state object, it means the user is trying to access the login page directly
+  const from = state?.from?.pathname || '/';
 
   const usernameRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -73,11 +79,6 @@ function Login() {
       } = response;
 
       if (status === 200) {
-        loginDispatch({
-          type: loginAction.setIsSuccessful,
-          payload: true,
-        });
-
         // decode user info from the access token
         const { userInfo } = jwtDecode<DecodedToken>(accessToken);
 
@@ -93,6 +94,8 @@ function Login() {
           },
         });
       }
+      // navigate to portal
+      navigate('/portal');
     } catch (error: any) {
       // if there is no response object, it means the server is down
       if (!error?.response) {
@@ -173,18 +176,6 @@ function Login() {
     </Alert>
   );
 
-  const displaySuccess = (
-    <Alert
-      title="Success!"
-      color="green"
-      className={isSuccessful ? '' : 'offscreen'}
-    >
-      <Text ref={errorRef} aria-live="assertive">
-        Congrats! You have successfully logged in!
-      </Text>
-    </Alert>
-  );
-
   const displayLoginForm = (
     <Flex direction="column" align="center" justify="center">
       <Title order={2}>Sign In</Title>
@@ -232,15 +223,7 @@ function Login() {
     </Flex>
   );
 
-  return (
-    <main>
-      {errorMessage
-        ? displayError
-        : isSuccessful
-        ? displaySuccess
-        : displayLoginForm}
-    </main>
-  );
+  return <main>{errorMessage ? displayError : displayLoginForm}</main>;
 }
 
 export { Login };
