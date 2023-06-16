@@ -12,6 +12,7 @@ type User = {
 type UsersListState = {
   errorMessage: string;
   isLoading: boolean;
+  userToEdit: User;
   users: User[];
 };
 
@@ -23,12 +24,13 @@ type UsersListAction = {
   setUsername: 'setUsername';
   setRoles: 'setRoles';
   setActive: 'setActive';
+  setUserToEdit: 'setUserToEdit';
   setAllUsers: 'setAllUsers';
 };
 
 type UsersListPayload = {
   _id?: string;
-  data: string | boolean | ('Admin' | 'Employee' | 'Manager')[] | User[];
+  data: string | boolean | ('Admin' | 'Employee' | 'Manager')[] | User | User[];
 };
 
 type UsersListDispatch = {

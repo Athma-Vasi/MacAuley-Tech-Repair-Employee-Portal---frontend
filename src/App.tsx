@@ -39,7 +39,7 @@ function App() {
           {/* only admins and managers are allowed to add/edit users*/}
           <Route path="users">
             <Route index element={<UsersList />} />
-            <Route path=":id" element={<EditUser />} />
+            {/* <Route path=":id" element={<EditUser />} /> */}
             {/* <Route path="new" element={<AddNewUser />} /> */}
           </Route>
 

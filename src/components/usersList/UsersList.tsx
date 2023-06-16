@@ -1,15 +1,21 @@
-import { Table, Title } from '@mantine/core';
-import { Fragment, useEffect, useReducer } from 'react';
+import { Flex, Modal, Table, Title } from '@mantine/core';
+import { useEffect, useReducer } from 'react';
+import { axiosInstance } from '../../api/axios';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
+
 import {
   initialUsersListState,
   usersListAction,
   usersListReducer,
 } from './state';
 import { useAuth } from '../../hooks/useAuth';
-import { axiosInstance } from '../../api/axios';
 import { GET_ALL_USERS } from './constants';
 import { GetAllUsersResponse } from './types';
 import { authAction } from '../../context/authProvider';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDisclosure } from '@mantine/hooks';
+import { Register } from '../register';
+import { EditUser } from '../editUser';
 
 function UsersList() {
   const { authState, authDispatch } = useAuth();
@@ -20,7 +26,9 @@ function UsersList() {
     initialUsersListState
   );
 
-  const { errorMessage, isLoading, users } = usersList;
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const { errorMessage, isLoading, users, userToEdit } = usersList;
 
   // grab users from database and dispatch to reducer to update state
   useEffect(() => {
@@ -83,7 +91,6 @@ function UsersList() {
             payload: message,
           });
         }
-
         // catch all other errors
         else {
           usersListDispatch({
@@ -100,8 +107,6 @@ function UsersList() {
     }
 
     getAllUsers();
-    // grab users from database
-    // dispatch to reducer to update state
   }, [accessToken, authDispatch]);
 
   const displayUsers =
@@ -136,29 +141,62 @@ function UsersList() {
               <td>{active ? 'Yes' : 'No'}</td>
               <td>{createdDate}</td>
               <td>{updatedDate}</td>
+              <td
+                style={{ cursor: 'pointer' }}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter') {
+                    open();
+                  }
+                }}
+                onKeyUp={(event) => {
+                  if (event.key === 'Enter') {
+                    open();
+                  }
+                }}
+                onClick={() => {
+                  usersListDispatch({
+                    type: usersListAction.setUserToEdit,
+                    payload: { data: user },
+                  });
+                }}
+              >
+                <FontAwesomeIcon icon={faEdit} onClick={open} />
+              </td>
             </tr>
           );
 
           return rows;
         });
 
+  const displayTable = (
+    <Table striped highlightOnHover>
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Roles</th>
+          <th>Active</th>
+          <th>Created</th>
+          <th>Updated</th>
+          <th>Edit</th>
+        </tr>
+      </thead>
+      <tbody>{displayUsers}</tbody>
+    </Table>
+  );
+
+  const displayModal = (
+    <Modal opened={opened} onClose={close}>
+      <EditUser user={userToEdit} />
+    </Modal>
+  );
+
   return (
-    <Fragment>
+    <Flex direction="column" align="center" justify="center">
       <Title>UsersList</Title>
-      <Table striped={true} highlightOnHover={true}>
-        <thead>
-          <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Roles</th>
-            <th>Active</th>
-            <th>Created</th>
-            <th>Updated</th>
-          </tr>
-        </thead>
-        <tbody>{displayUsers}</tbody>
-      </Table>
-    </Fragment>
+      {displayModal}
+      {displayTable}
+    </Flex>
   );
 }
 

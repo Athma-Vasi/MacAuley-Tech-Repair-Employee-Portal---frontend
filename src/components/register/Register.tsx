@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef, useReducer } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useReducer } from 'react';
+import { Link } from 'react-router-dom';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -13,19 +13,15 @@ import {
   Title,
 } from '@mantine/core';
 
-import {
-  EMAIL_REGEX,
-  USERNAME_REGEX,
-  PASSWORD_REGEX,
-  REGISTER_URL,
-} from './constants';
+import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from '../../constants';
+import { REGISTER_URL } from './constants';
 import { initialRegisterState, registerAction, registerReducer } from './state';
 import '../../index.css';
 import {
   returnEmailRegexValidationText,
-  returnPasswordRegexValidationText,
   returnUsernameRegexValidationText,
-} from './utils';
+} from '../../utils';
+import { returnPasswordRegexValidationText } from './utils';
 import { axiosInstance } from '../../api/axios';
 import { RegisterResponse } from './types';
 
@@ -147,7 +143,7 @@ function Register() {
 
   const emailValidationText = (
     <Text
-      id="emailnote"
+      id="emailNote"
       className={isEmailFocused && email && !isValidEmail ? '' : 'offscreen'}
       color="red"
     >
@@ -158,7 +154,7 @@ function Register() {
 
   const usernameInputValidationText = (
     <Text
-      id="uidnote"
+      id="usernameNote"
       className={
         isUsernameFocused && username && !isValidUsername ? '' : 'offscreen'
       }
@@ -187,7 +183,7 @@ function Register() {
 
   const passwordInputValidationText = (
     <Text
-      id="pwdnote"
+      id="pwdNote"
       className={
         isPasswordFocused && password && !isValidPassword ? '' : 'offscreen'
       }
@@ -202,7 +198,7 @@ function Register() {
 
   const confirmPasswordInputValidationText = (
     <Text
-      id="confirmpwdnote"
+      id="confirmPwdNote"
       className={
         isConfirmPasswordFocused && confirmPassword && !isValidConfirmPassword
           ? ''
@@ -323,8 +319,8 @@ function Register() {
                     label="Email"
                     placeholder="Enter email address"
                     autoComplete="off"
-                    aria-describedby="emailnote"
-                    aria-invalid={isValidUsername ? false : true}
+                    aria-describedby="emailNote"
+                    aria-invalid={isValidEmail ? false : true}
                     icon={
                       isValidEmail ? (
                         <FontAwesomeIcon icon={faCheck} color="green" />
@@ -358,7 +354,7 @@ function Register() {
                     label="Username"
                     placeholder="Enter username"
                     autoComplete="off"
-                    aria-describedby="uidnote"
+                    aria-describedby="usernameNote"
                     aria-invalid={isValidUsername ? false : true}
                     value={username}
                     icon={
@@ -392,7 +388,7 @@ function Register() {
                   <PasswordInput
                     label="Password"
                     placeholder="Enter password"
-                    aria-describedby="pwdnote"
+                    aria-describedby="pwdNote"
                     aria-invalid={isValidPassword ? false : true}
                     value={password}
                     icon={
@@ -426,7 +422,7 @@ function Register() {
                   <PasswordInput
                     label="Confirm Password"
                     placeholder="Confirm password"
-                    aria-describedby="confirmpwdnote"
+                    aria-describedby="confirmPwdNote"
                     aria-invalid={isValidConfirmPassword ? false : true}
                     value={confirmPassword}
                     icon={

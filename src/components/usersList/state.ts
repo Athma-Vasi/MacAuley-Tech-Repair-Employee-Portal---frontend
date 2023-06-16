@@ -8,6 +8,16 @@ import {
 const initialUsersListState: UsersListState = {
   errorMessage: '',
   isLoading: false,
+  userToEdit: {
+    _id: '',
+    email: '',
+    username: '',
+    roles: [],
+    active: false,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    __v: 0,
+  },
   users: [],
 };
 
@@ -19,6 +29,7 @@ const usersListAction: UsersListAction = {
   setUsername: 'setUsername',
   setRoles: 'setRoles',
   setActive: 'setActive',
+  setUserToEdit: 'setUserToEdit',
   setAllUsers: 'setAllUsers',
 };
 
@@ -85,6 +96,12 @@ function usersListReducer(
           }
           return user;
         }),
+      };
+
+    case usersListAction.setUserToEdit:
+      return {
+        ...state,
+        userToEdit: action.payload.data as User,
       };
 
     case usersListAction.setAllUsers:
