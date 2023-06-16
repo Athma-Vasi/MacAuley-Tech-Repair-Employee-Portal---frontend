@@ -1,6 +1,8 @@
 import { Flex, Modal, Table, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useReducer } from 'react';
 import { axiosInstance } from '../../api/axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -12,9 +14,6 @@ import { useAuth } from '../../hooks/useAuth';
 import { GET_ALL_USERS } from './constants';
 import { GetAllUsersResponse } from './types';
 import { authAction } from '../../context/authProvider';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDisclosure } from '@mantine/hooks';
-import { Register } from '../register';
 import { EditUser } from '../editUser';
 
 function UsersList() {
@@ -185,7 +184,7 @@ function UsersList() {
     </Table>
   );
 
-  const displayModal = (
+  const displayEditUserModal = (
     <Modal opened={opened} onClose={close}>
       <EditUser user={userToEdit} />
     </Modal>
@@ -194,7 +193,7 @@ function UsersList() {
   return (
     <Flex direction="column" align="center" justify="center">
       <Title>UsersList</Title>
-      {displayModal}
+      {displayEditUserModal}
       {displayTable}
     </Flex>
   );

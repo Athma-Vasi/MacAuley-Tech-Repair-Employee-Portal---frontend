@@ -106,43 +106,6 @@ function EditUser({ user }: EditUserProps) {
     });
   }, [email]);
 
-  // allows error message to be read by screen reader instead of removing it from the DOM
-  const displayError = (
-    <Alert
-      title="Warning!"
-      color="yellow"
-      className={errorMessage ? '' : 'offscreen'}
-    >
-      <Text ref={errorRef} aria-live="assertive">
-        {errorMessage}
-      </Text>
-    </Alert>
-  );
-
-  const displayEmailValidationText = (
-    <Text
-      id="emailNote"
-      className={isEmailFocused && email && !isValidEmail ? '' : 'offscreen'}
-      color="red"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnEmailRegexValidationText(email)}
-    </Text>
-  );
-
-  const displayUsernameValidationText = (
-    <Text
-      id="usernameNote"
-      className={
-        isUsernameFocused && username && !isValidUsername ? '' : 'offscreen'
-      }
-      color="red"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnUsernameRegexValidationText(username)}
-    </Text>
-  );
-
   async function handleEditUserFormSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
@@ -246,6 +209,43 @@ function EditUser({ user }: EditUserProps) {
       });
     }
   }
+
+  // allows error message to be read by screen reader instead of removing it from the DOM
+  const displayError = (
+    <Alert
+      title="Warning!"
+      color="yellow"
+      className={errorMessage ? '' : 'offscreen'}
+    >
+      <Text ref={errorRef} aria-live="assertive">
+        {errorMessage}
+      </Text>
+    </Alert>
+  );
+
+  const displayEmailValidationText = (
+    <Text
+      id="emailNote"
+      className={isEmailFocused && email && !isValidEmail ? '' : 'offscreen'}
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnEmailRegexValidationText(email)}
+    </Text>
+  );
+
+  const displayUsernameValidationText = (
+    <Text
+      id="usernameNote"
+      className={
+        isUsernameFocused && username && !isValidUsername ? '' : 'offscreen'
+      }
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnUsernameRegexValidationText(username)}
+    </Text>
+  );
 
   const displaySubmitting = (
     <Alert
@@ -389,6 +389,7 @@ function EditUser({ user }: EditUserProps) {
 
       {isSubmitting ? displaySubmitting : null}
       {isSuccessful ? displaySuccess : null}
+      {errorMessage ? displayError : null}
     </Flex>
   );
 }

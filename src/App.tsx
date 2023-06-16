@@ -7,10 +7,7 @@ import { Register } from './components/register';
 import { PortalLayout } from './components/portalLayout';
 import { Dashboard } from './components/dashboard';
 import { UsersList } from './components/usersList';
-import { EditUser } from './components/editUser';
 import { NotesList } from './components/notesList';
-import { EditNotes } from './components/editNotes';
-import { AddNewNote } from './components/addNewNote';
 import { NotFound } from './components/notFound';
 import { Unauthorized } from './components/unauthorized';
 
@@ -47,8 +44,8 @@ function App() {
 
           <Route path="notes">
             <Route index element={<NotesList />} />
-            <Route path=":id" element={<EditNotes />} />
-            <Route path="new" element={<AddNewNote />} />
+            {/* <Route path=":id" element={<EditNotes />} /> */}
+            {/* <Route path="new" element={<AddNewNote />} /> */}
           </Route>
         </Route>
       </Route>
