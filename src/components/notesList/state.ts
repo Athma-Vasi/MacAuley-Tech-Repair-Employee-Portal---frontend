@@ -18,6 +18,7 @@ const initialNotesListState: NotesListState = {
     updatedAt: new Date(),
     __v: 0,
   },
+  usernameForEdit: '',
   isLoading: false,
   errorMessage: '',
 };
@@ -28,6 +29,7 @@ const notesListAction: NotesListAction = {
   setText: 'setText',
   setCompleted: 'setCompleted',
   setNoteToEdit: 'setNoteToEdit',
+  setUsernameForEdit: 'setUsernameForEdit',
   setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
   setAllNotes: 'setAllNotes',
@@ -74,6 +76,11 @@ function notesListReducer(
       return {
         ...state,
         noteToEdit: action.payload as Note,
+      };
+    case notesListAction.setUsernameForEdit:
+      return {
+        ...state,
+        usernameForEdit: action.payload as string,
       };
     case notesListAction.setErrorMessage:
       return {

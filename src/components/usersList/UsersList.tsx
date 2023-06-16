@@ -15,6 +15,7 @@ import { GET_ALL_USERS } from './constants';
 import { GetAllUsersResponse } from './types';
 import { authAction } from '../../context/authProvider';
 import { EditUser } from '../editUser';
+import { formatDate } from '../../utils';
 
 function UsersList() {
   const { authState, authDispatch } = useAuth();
@@ -122,15 +123,39 @@ function UsersList() {
             updatedAt,
           } = user;
 
-          const createdDate = new Intl.DateTimeFormat('en-US', {
-            dateStyle: 'short',
-            timeStyle: 'short',
-          }).format(new Date(createdAt));
+          const createdDate = formatDate({
+            date: createdAt,
+            locale: 'en-US',
+          });
 
-          const updatedDate = new Intl.DateTimeFormat('en-US', {
-            dateStyle: 'short',
-            timeStyle: 'short',
-          }).format(new Date(updatedAt));
+          const updatedDate = formatDate({
+            date: updatedAt,
+            locale: 'en-US',
+          });
+
+          const displayEditIcon = (
+            <td
+              style={{ cursor: 'pointer' }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  open();
+                }
+              }}
+              onKeyUp={(event) => {
+                if (event.key === 'Enter') {
+                  open();
+                }
+              }}
+              onClick={() => {
+                usersListDispatch({
+                  type: usersListAction.setUserToEdit,
+                  payload: { data: user },
+                });
+              }}
+            >
+              <FontAwesomeIcon icon={faEdit} onClick={open} />
+            </td>
+          );
 
           const rows = (
             <tr key={id}>
@@ -140,27 +165,7 @@ function UsersList() {
               <td>{active ? 'Yes' : 'No'}</td>
               <td>{createdDate}</td>
               <td>{updatedDate}</td>
-              <td
-                style={{ cursor: 'pointer' }}
-                onKeyDown={(event) => {
-                  if (event.key === 'Enter') {
-                    open();
-                  }
-                }}
-                onKeyUp={(event) => {
-                  if (event.key === 'Enter') {
-                    open();
-                  }
-                }}
-                onClick={() => {
-                  usersListDispatch({
-                    type: usersListAction.setUserToEdit,
-                    payload: { data: user },
-                  });
-                }}
-              >
-                <FontAwesomeIcon icon={faEdit} onClick={open} />
-              </td>
+              {displayEditIcon}
             </tr>
           );
 

@@ -16,13 +16,15 @@ import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useDisclosure } from '@mantine/hooks';
 import { EditNote } from '../editNote';
 import { AddNewNote } from '../addNewNote';
+import { formatDate } from '../../utils';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
     notesListReducer,
     initialNotesListState
   );
-  const { notes, noteToEdit, isLoading, errorMessage } = notesListState;
+  const { notes, noteToEdit, usernameForEdit, isLoading, errorMessage } =
+    notesListState;
 
   const {
     authState: { accessToken },
@@ -144,7 +146,13 @@ function NotesList() {
                   <FontAwesomeIcon
                     icon={faPlus}
                     style={{ cursor: 'pointer' }}
-                    onClick={openAddNewNote}
+                    onClick={() => {
+                      openAddNewNote();
+                      notesListDispatch({
+                        type: notesListAction.setUsernameForEdit,
+                        payload: username,
+                      });
+                    }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
                         openEditNote();
@@ -183,15 +191,42 @@ function NotesList() {
                         username,
                       } = note;
 
-                      const createdDate = new Intl.DateTimeFormat('en-US', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                      }).format(new Date(createdAt));
+                      const createdDate = formatDate({
+                        date: createdAt,
+                        locale: 'en-US',
+                      });
 
-                      const updatedDate = new Intl.DateTimeFormat('en-US', {
-                        dateStyle: 'short',
-                        timeStyle: 'short',
-                      }).format(new Date(updatedAt));
+                      const updatedDate = formatDate({
+                        date: updatedAt,
+                        locale: 'en-US',
+                      });
+
+                      const displayEditIcon = (
+                        <td
+                          style={{ cursor: 'pointer' }}
+                          onKeyDown={(event) => {
+                            if (event.key === 'Enter') {
+                              openEditNote();
+                            }
+                          }}
+                          onKeyUp={(event) => {
+                            if (event.key === 'Enter') {
+                              openEditNote();
+                            }
+                          }}
+                          onClick={() => {
+                            notesListDispatch({
+                              type: notesListAction.setNoteToEdit,
+                              payload: note,
+                            });
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faEdit}
+                            onClick={openEditNote}
+                          />
+                        </td>
+                      );
 
                       return (
                         <tr key={_id}>
@@ -200,30 +235,7 @@ function NotesList() {
                           <td>{createdDate}</td>
                           <td>{updatedDate}</td>
                           <td>{completed ? 'Yes' : 'No'}</td>
-                          <td
-                            style={{ cursor: 'pointer' }}
-                            onKeyDown={(event) => {
-                              if (event.key === 'Enter') {
-                                openEditNote();
-                              }
-                            }}
-                            onKeyUp={(event) => {
-                              if (event.key === 'Enter') {
-                                openEditNote();
-                              }
-                            }}
-                            onClick={() => {
-                              notesListDispatch({
-                                type: notesListAction.setNoteToEdit,
-                                payload: note,
-                              });
-                            }}
-                          >
-                            <FontAwesomeIcon
-                              icon={faEdit}
-                              onClick={openEditNote}
-                            />
-                          </td>
+                          {displayEditIcon}
                         </tr>
                       );
                     })}
@@ -242,7 +254,7 @@ function NotesList() {
 
   const displayAddNewNoteModal = (
     <Modal opened={openedAddNewNote} onClose={closeAddNewNote}>
-      <AddNewNote />
+      <AddNewNote username={usernameForEdit} />
     </Modal>
   );
 

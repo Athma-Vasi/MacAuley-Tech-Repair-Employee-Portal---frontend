@@ -1,14 +1,4 @@
-type Note = {
-  _id: string; // note id
-  user: string; // user id
-  username: string;
-  title: string;
-  text: string;
-  completed: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
-};
+import type { Note } from '../../types';
 
 type GetAllNotesResponse = {
   message: string;
@@ -18,6 +8,7 @@ type GetAllNotesResponse = {
 type NotesListState = {
   notes: Note[];
   noteToEdit: Note;
+  usernameForEdit: string;
   isLoading: boolean;
   errorMessage: string;
 };
@@ -28,6 +19,7 @@ type NotesListAction = {
   setText: 'setText';
   setCompleted: 'setCompleted';
   setNoteToEdit: 'setNoteToEdit';
+  setUsernameForEdit: 'setUsernameForEdit';
   setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
   setAllNotes: 'setAllNotes';

@@ -58,4 +58,78 @@ function returnUsernameRegexValidationText(username: string) {
   return usernameRegexValidationText;
 }
 
-export { returnEmailRegexValidationText, returnUsernameRegexValidationText };
+function returnNoteTitleValidationText(title: string) {
+  const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
+  const alphanumericOrSpecialCharacterRegex =
+    /^[A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$/;
+  const titleLengthRegex = /^(?=.{1,100}$)/;
+
+  const titleRegexObj: Record<string, [number, boolean]> = {
+    atleastOneAlphanumeric: [0, atleastOneAlphanumericRegex.test(title)],
+    alphanumericOrSpecialCharacter: [
+      1,
+      alphanumericOrSpecialCharacterRegex.test(title),
+    ],
+    titleLength: [2, titleLengthRegex.test(title)],
+  };
+
+  const titleRegexValidationMap = new Map<number, string>([
+    [0, 'Must contain at least one alphanumeric character.'],
+    [
+      1,
+      'Can only contain alphanumeric characters or special characters from the set: ! " # $ % & \' ( ) * + , - . / : ; < = > ? @ [  ] ^ _ ` { | } ~',
+    ],
+    [2, 'Must be between 1 and 100 characters.'],
+  ]);
+
+  const titleRegexValidationText: string = Object.values(titleRegexObj)
+    .filter((tuple: [number, boolean]) => !tuple[1])
+    .map((tuple: [number, boolean]) => titleRegexValidationMap.get(tuple[0]))
+    .join(' ');
+
+  return titleRegexValidationText;
+}
+
+function returnNoteContentValidationText(content: string) {
+  const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
+  const alphanumericOrWhitespaceRegex = /^[A-Za-z0-9\s]+$/;
+  const contentLengthRegex = /^(?=.{1,1000}$)/;
+
+  const contentRegexObj: Record<string, [number, boolean]> = {
+    atleastOneAlphanumeric: [0, atleastOneAlphanumericRegex.test(content)],
+    alphanumericOrWhitespace: [1, alphanumericOrWhitespaceRegex.test(content)],
+    contentLength: [2, contentLengthRegex.test(content)],
+  };
+
+  const contentRegexValidationMap = new Map<number, string>([
+    [0, 'Must contain at least one alphanumeric character.'],
+    [1, 'Can only contain alphanumeric characters or whitespace characters.'],
+    [2, 'Must be between 1 and 1000 characters.'],
+  ]);
+
+  const contentRegexValidationText: string = Object.values(contentRegexObj)
+    .filter((tuple: [number, boolean]) => !tuple[1])
+    .map((tuple: [number, boolean]) => contentRegexValidationMap.get(tuple[0]))
+    .join(' ');
+
+  return contentRegexValidationText;
+}
+
+type FormatDateProps = {
+  date: Date;
+  locale: string;
+};
+function formatDate({ date, locale }: FormatDateProps): string {
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  }).format(new Date(date));
+}
+
+export {
+  returnEmailRegexValidationText,
+  returnUsernameRegexValidationText,
+  returnNoteTitleValidationText,
+  returnNoteContentValidationText,
+  formatDate,
+};

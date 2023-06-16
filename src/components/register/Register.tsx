@@ -143,7 +143,7 @@ function Register() {
 
   const emailValidationText = (
     <Text
-      id="emailNote"
+      id="email-note"
       className={isEmailFocused && email && !isValidEmail ? '' : 'offscreen'}
       color="red"
     >
@@ -154,7 +154,7 @@ function Register() {
 
   const usernameInputValidationText = (
     <Text
-      id="usernameNote"
+      id="username-note"
       className={
         isUsernameFocused && username && !isValidUsername ? '' : 'offscreen'
       }
@@ -183,7 +183,7 @@ function Register() {
 
   const passwordInputValidationText = (
     <Text
-      id="pwdNote"
+      id="password-note"
       className={
         isPasswordFocused && password && !isValidPassword ? '' : 'offscreen'
       }
@@ -198,7 +198,7 @@ function Register() {
 
   const confirmPasswordInputValidationText = (
     <Text
-      id="confirmPwdNote"
+      id="confirm-password-note"
       className={
         isConfirmPasswordFocused && confirmPassword && !isValidConfirmPassword
           ? ''
@@ -319,7 +319,7 @@ function Register() {
                     label="Email"
                     placeholder="Enter email address"
                     autoComplete="off"
-                    aria-describedby="emailNote"
+                    aria-describedby="email-note"
                     aria-invalid={isValidEmail ? false : true}
                     icon={
                       isValidEmail ? (
@@ -354,7 +354,7 @@ function Register() {
                     label="Username"
                     placeholder="Enter username"
                     autoComplete="off"
-                    aria-describedby="usernameNote"
+                    aria-describedby="username-note"
                     aria-invalid={isValidUsername ? false : true}
                     value={username}
                     icon={
@@ -388,7 +388,7 @@ function Register() {
                   <PasswordInput
                     label="Password"
                     placeholder="Enter password"
-                    aria-describedby="pwdNote"
+                    aria-describedby="password-note"
                     aria-invalid={isValidPassword ? false : true}
                     value={password}
                     icon={
@@ -422,7 +422,7 @@ function Register() {
                   <PasswordInput
                     label="Confirm Password"
                     placeholder="Confirm password"
-                    aria-describedby="confirmPwdNote"
+                    aria-describedby="confirm-password-note"
                     aria-invalid={isValidConfirmPassword ? false : true}
                     value={confirmPassword}
                     icon={

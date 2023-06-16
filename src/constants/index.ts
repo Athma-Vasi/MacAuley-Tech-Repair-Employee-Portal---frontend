@@ -21,6 +21,7 @@ const EMAIL_REGEX =
  * - (?!.*[-_.]{2}) ensures that the username does not contain two hyphens, underscores, or periods in a row.
  * - [a-zA-Z0-9-_.]+ matches any alphanumeric character, hyphen, underscore, or period.
  * - (?<![-_.]) ensures that the username does not end with a hyphen, underscore, or period.
+ * - ^ and $ ensure that the entire string matches the regex.
  */
 const USERNAME_REGEX =
   /^(?=.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/;
@@ -32,8 +33,32 @@ const USERNAME_REGEX =
  * - (?=.*[!@#$%^&*]) ensures that there is at least one special character.
  * - (?!.*\s) ensures that there are no spaces.
  * - .{8,32} ensures that the password is between 8 and 32 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
  */
 const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/;
 
-export { EMAIL_REGEX, USERNAME_REGEX, PASSWORD_REGEX };
+/**
+ * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+ * - [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] matches any alphanumeric character or special character in the range of special characters commonly used in components, part numbers, and ID numbers.
+ * - {1,100} ensures that the text is between 1 and 100 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const NOTE_TITLE_REGEX =
+  /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
+
+/**
+ * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+ * - [A-Za-z0-9\s] matches any alphanumeric character or whitespace character.
+ * - {1,1000} ensures that the text is between 1 and 1000 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[A-Za-z0-9\s]{1,1000}$/;
+
+export {
+  EMAIL_REGEX,
+  USERNAME_REGEX,
+  PASSWORD_REGEX,
+  NOTE_TITLE_REGEX,
+  NOTE_TEXT_REGEX,
+};

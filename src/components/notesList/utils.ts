@@ -1,30 +1,18 @@
-import { Note } from './types';
+import { Note } from '../../types';
 
+/**
+ * @description Groups notes by username and returns an array of tuples with the username and the corresponding notes.
+ */
 function groupNotesByUsername(notes: Note[]): [string, Note[]][] {
-  const groupedNotes: Record<string, Note[]> = {};
+  return Array.from(
+    notes.reduce((map, note) => {
+      map.has(note.username)
+        ? map.get(note.username)?.push(note)
+        : map.set(note.username, [note]);
 
-  //   notes.forEach((note) => {
-  //     if (groupedNotes[note.username]) {
-  //       groupedNotes[note.username].push(note);
-  //     } else {
-  //       groupedNotes[note.username] = [note];
-  //     }
-  //   });
-
-  notes.forEach((note) => {
-    if (Object.hasOwn(groupedNotes, note.username)) {
-      groupedNotes[note.username].push(note);
-    } else {
-      Object.defineProperty(groupedNotes, note.username, {
-        value: [note],
-        writable: true,
-        enumerable: true,
-        configurable: true,
-      });
-    }
-  });
-
-  return Object.entries(groupedNotes);
+      return map;
+    }, new Map<string, Note[]>())
+  );
 }
 
 export { groupNotesByUsername };

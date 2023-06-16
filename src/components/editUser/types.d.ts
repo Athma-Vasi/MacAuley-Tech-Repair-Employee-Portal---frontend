@@ -1,4 +1,4 @@
-import type { User } from '../usersList/types';
+import type { User } from '../../types';
 
 type EditUserState = {
   email: string;
