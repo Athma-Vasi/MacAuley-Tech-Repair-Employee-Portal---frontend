@@ -2,6 +2,7 @@ import { Note } from '../../types';
 
 type EditNoteProps = {
   note: Note;
+  onSubmitModalCB: () => void;
 };
 
 type EditNoteState = {
@@ -17,6 +18,7 @@ type EditNoteState = {
   completed: boolean;
   errorMessage: string;
   isSubmitting: boolean;
+  isSuccessful: boolean;
 };
 
 type EditNoteAction = {
@@ -32,6 +34,7 @@ type EditNoteAction = {
   setCompleted: 'setCompleted';
   setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
+  setIsSuccessful: 'setIsSuccessful';
 };
 
 type EditNotePayload = {

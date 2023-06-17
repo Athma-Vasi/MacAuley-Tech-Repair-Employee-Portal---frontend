@@ -18,6 +18,8 @@ import {
 } from './state';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+
+import '../../index.css';
 import {
   returnNoteContentValidationText,
   returnNoteTitleValidationText,
@@ -31,7 +33,7 @@ import { authAction } from '../../context/authProvider';
 import {
   screenReaderTextSpecialCharacters,
   screenReaderTitleSpecialCharacters,
-} from './domElements';
+} from '../../domElements';
 import { Loading } from '../loading';
 
 function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
@@ -164,11 +166,6 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
           type: addNewNoteAction.setErrorMessage,
           payload: '',
         });
-
-        // if successful, close modal
-        onSubmitModalCB();
-
-        return;
       }
     } catch (error: any) {
       // if there is no response object, it means the server is down
@@ -230,6 +227,19 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
 
   const displayLoading = <Loading />;
 
+  const displaySuccess = (
+    <Alert
+      title="Success!"
+      color="green"
+      className={isSuccessful ? '' : 'offscreen'}
+    >
+      <Text>Successfully edited note.</Text>
+      <Button color="green" onClick={onSubmitModalCB}>
+        Close
+      </Button>
+    </Alert>
+  );
+
   // allows error message to be read by screen reader instead of removing it from the DOM
   const displayError = (
     <Alert
@@ -240,6 +250,9 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
       <Text ref={errorRef} aria-live="assertive">
         {errorMessage}
       </Text>
+      <Button color="yellow" onClick={onSubmitModalCB}>
+        Try Again
+      </Button>
     </Alert>
   );
 
@@ -362,6 +375,9 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
             <Button type="submit" disabled={!isValidTitle || !isValidText}>
               Submit
             </Button>
+            <Button type="button" onClick={onSubmitModalCB}>
+              Cancel
+            </Button>
           </Flex>
         </Flex>
       </form>
@@ -374,6 +390,8 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
         ? displayError
         : isSubmitting
         ? displayLoading
+        : isSuccessful
+        ? displaySuccess
         : displayAddNewNoteForm}
     </Flex>
   );

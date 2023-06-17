@@ -24,6 +24,7 @@ const initialEditNoteState: EditNoteState = {
   completed: false,
   errorMessage: '',
   isSubmitting: false,
+  isSuccessful: false,
 };
 
 const editNoteAction: EditNoteAction = {
@@ -39,6 +40,7 @@ const editNoteAction: EditNoteAction = {
   setNoteToEdit: 'setNoteToEdit',
   setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
+  setIsSuccessful: 'setIsSuccessful',
 };
 
 function editNoteReducer(
@@ -69,6 +71,8 @@ function editNoteReducer(
       return { ...state, errorMessage: action.payload.data as string };
     case editNoteAction.setIsSubmitting:
       return { ...state, isSubmitting: action.payload.data as boolean };
+    case editNoteAction.setIsSuccessful:
+      return { ...state, isSuccessful: action.payload.data as boolean };
     default:
       return state;
   }

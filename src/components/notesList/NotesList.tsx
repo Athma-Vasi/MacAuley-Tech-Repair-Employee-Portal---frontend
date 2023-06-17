@@ -286,7 +286,7 @@ function NotesList() {
 
   const displayEditNoteModal = (
     <Modal opened={openedEditNote} onClose={closeEditNote}>
-      <EditNote note={noteToEdit} />
+      <EditNote note={noteToEdit} onSubmitModalCB={closeEditNote} />
     </Modal>
   );
 
