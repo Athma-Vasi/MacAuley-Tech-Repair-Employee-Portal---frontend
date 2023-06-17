@@ -1,5 +1,6 @@
 type AuthState = {
   isLoggedIn: boolean;
+  userId: string;
   username: string;
   password: string;
   roles: ('Admin' | 'Employee' | 'Manager')[];
@@ -15,6 +16,7 @@ type AuthAction = {
   setIsLoggedIn: 'setIsLoggedIn';
   setUsername: 'setUsername';
   setPassword: 'setPassword';
+  setUserId: 'setUserId';
   setRoles: 'setRoles';
   setErrorMessage: 'setErrorMessage';
   setAccessToken: 'setAccessToken';
@@ -28,6 +30,7 @@ type AuthPayload =
   | {
       username: string;
       password: string;
+      userId: string;
       isLoggedIn: boolean;
       roles: ('Admin' | 'Employee' | 'Manager')[];
       errorMessage: string;

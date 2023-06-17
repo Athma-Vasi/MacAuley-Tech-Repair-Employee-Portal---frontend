@@ -75,10 +75,7 @@ function returnNoteTitleValidationText(title: string) {
 
   const titleRegexValidationMap = new Map<number, string>([
     [0, 'Must contain at least one alphanumeric character.'],
-    [
-      1,
-      'Can only contain alphanumeric characters or special characters from the set: ! " # $ % & \' ( ) * + , - . / : ; < = > ? @ [  ] ^ _ ` { | } ~',
-    ],
+    [1, 'Can only contain alphanumeric characters or special characters.'],
     [2, 'Must be between 1 and 100 characters.'],
   ]);
 
@@ -92,18 +89,24 @@ function returnNoteTitleValidationText(title: string) {
 
 function returnNoteContentValidationText(content: string) {
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
-  const alphanumericOrWhitespaceRegex = /^[A-Za-z0-9\s]+$/;
+  const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
   const contentLengthRegex = /^(?=.{1,1000}$)/;
 
   const contentRegexObj: Record<string, [number, boolean]> = {
     atleastOneAlphanumeric: [0, atleastOneAlphanumericRegex.test(content)],
-    alphanumericOrWhitespace: [1, alphanumericOrWhitespaceRegex.test(content)],
+    wordCharacterWhitespacePunctuation: [
+      1,
+      wordCharacterWhitespacePunctuationRegex.test(content),
+    ],
     contentLength: [2, contentLengthRegex.test(content)],
   };
 
   const contentRegexValidationMap = new Map<number, string>([
     [0, 'Must contain at least one alphanumeric character.'],
-    [1, 'Can only contain alphanumeric characters or whitespace characters.'],
+    [
+      1,
+      'Can only contain alphanumeric characters, whitespace, or punctuation.',
+    ],
     [2, 'Must be between 1 and 1000 characters.'],
   ]);
 

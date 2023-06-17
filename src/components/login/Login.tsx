@@ -27,8 +27,6 @@ function Login() {
   const { authState, authDispatch } = useAuth();
   const navigate = useNavigate();
   const { state } = useLocation();
-  // if there is no state object, it means the user is trying to access the login page directly
-  const from = state?.from?.pathname || '/';
 
   const usernameRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -86,6 +84,7 @@ function Login() {
           type: authAction.setAllAuthState,
           payload: {
             username: userInfo.username,
+            userId: userInfo.userId,
             password,
             roles: userInfo.roles,
             accessToken,

@@ -8,6 +8,7 @@ type GetAllNotesResponse = {
 type NotesListState = {
   notes: Note[];
   noteToEdit: Note;
+  userIdForEdit: string;
   usernameForEdit: string;
   isLoading: boolean;
   errorMessage: string;
@@ -19,6 +20,7 @@ type NotesListAction = {
   setText: 'setText';
   setCompleted: 'setCompleted';
   setNoteToEdit: 'setNoteToEdit';
+  setUserIdForEdit: 'setUserIdForEdit';
   setUsernameForEdit: 'setUsernameForEdit';
   setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';

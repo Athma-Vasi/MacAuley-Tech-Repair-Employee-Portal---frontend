@@ -1,10 +1,14 @@
 import type { Note } from '../../types';
 
 type AddNewNoteProps = {
+  userId: string;
   username: string;
+  onSubmitModalCB: () => void;
 };
 
 type AddNewNoteState = {
+  userId: string;
+  username: string;
   title: string;
   isValidTitle: boolean;
   isTitleFocused: boolean;
@@ -13,13 +17,14 @@ type AddNewNoteState = {
   isValidText: boolean;
   isTextFocused: boolean;
 
-  completed: boolean;
   errorMessage: string;
   isSubmitting: boolean;
   isSuccessful: boolean;
 };
 
 type AddNewNoteAction = {
+  setUserId: 'setUserId';
+  setUsername: 'setUsername';
   setTitle: 'setTitle';
   setIsValidTitle: 'setIsValidTitle';
   setIsTitleFocused: 'setIsTitleFocused';
@@ -28,7 +33,6 @@ type AddNewNoteAction = {
   setIsValidText: 'setIsValidText';
   setIsTextFocused: 'setIsTextFocused';
 
-  setCompleted: 'setCompleted';
   setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setIsSuccessful: 'setIsSuccessful';

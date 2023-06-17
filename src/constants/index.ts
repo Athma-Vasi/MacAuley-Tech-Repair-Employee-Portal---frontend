@@ -49,11 +49,12 @@ const NOTE_TITLE_REGEX =
 
 /**
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
- * - [A-Za-z0-9\s] matches any alphanumeric character or whitespace character.
+ * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
  * - {1,1000} ensures that the text is between 1 and 1000 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
  */
-const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[A-Za-z0-9\s]{1,1000}$/;
+const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
 
 export {
   EMAIL_REGEX,

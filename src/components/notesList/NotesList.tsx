@@ -23,11 +23,17 @@ function NotesList() {
     notesListReducer,
     initialNotesListState
   );
-  const { notes, noteToEdit, usernameForEdit, isLoading, errorMessage } =
-    notesListState;
+  const {
+    notes,
+    noteToEdit,
+    userIdForEdit,
+    usernameForEdit,
+    isLoading,
+    errorMessage,
+  } = notesListState;
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, roles, userId },
     authDispatch,
   } = useAuth();
 
@@ -47,14 +53,32 @@ function NotesList() {
         payload: true,
       });
 
-      const axiosConfig = {
-        method: 'get',
-        url: GET_ALL_NOTES,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-        withCredentials: true,
-      };
+      console.log({ roles, userIdForEdit });
+
+      // if user is admin or manager, get all notes and allow them to edit any note
+
+      let axiosConfig = {};
+      if (roles.includes('Admin') || roles.includes('Manager')) {
+        axiosConfig = {
+          method: 'get',
+          url: GET_ALL_NOTES,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        };
+      }
+      // if user is not admin or manager, get only their notes and allow them to edit only their notes
+      else {
+        axiosConfig = {
+          method: 'get',
+          url: `${GET_ALL_NOTES}/${userId}`,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          withCredentials: true,
+        };
+      }
 
       try {
         const response = await axiosInstance<GetAllNotesResponse>(axiosConfig);
@@ -138,7 +162,7 @@ function NotesList() {
     notes.length === 0
       ? null
       : groupNotesByUsername(notes).map(
-          ([username, notes]: [string, Note[]]) => {
+          ([username, [userId, notesArr]]: [string, [string, Note[]]]) => {
             return (
               <Flex key={username} direction="column">
                 <Flex justify="space-between">
@@ -148,6 +172,10 @@ function NotesList() {
                     style={{ cursor: 'pointer' }}
                     onClick={() => {
                       openAddNewNote();
+                      notesListDispatch({
+                        type: notesListAction.setUserIdForEdit,
+                        payload: userId,
+                      });
                       notesListDispatch({
                         type: notesListAction.setUsernameForEdit,
                         payload: username,
@@ -178,7 +206,7 @@ function NotesList() {
                     </tr>
                   </thead>
                   <tbody>
-                    {notes.map((note: Note) => {
+                    {notesArr.map((note: Note) => {
                       const {
                         _id,
                         title,
@@ -254,7 +282,11 @@ function NotesList() {
 
   const displayAddNewNoteModal = (
     <Modal opened={openedAddNewNote} onClose={closeAddNewNote}>
-      <AddNewNote username={usernameForEdit} />
+      <AddNewNote
+        userId={userIdForEdit}
+        username={usernameForEdit}
+        onSubmitModalCB={closeAddNewNote}
+      />
     </Modal>
   );
 

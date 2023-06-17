@@ -256,10 +256,7 @@ function Register() {
         }
       );
 
-      const {
-        status,
-        data: { message },
-      } = response;
+      const { status } = response;
 
       if (status === 201) {
         registerDispatch({
@@ -273,7 +270,6 @@ function Register() {
         return;
       }
     } catch (error: any) {
-      console.error(error);
       if (!error.response) {
         registerDispatch({
           type: registerAction.setErrorMessage,

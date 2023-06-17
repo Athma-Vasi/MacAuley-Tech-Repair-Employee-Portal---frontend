@@ -1,6 +1,9 @@
 import { AddNewNoteAction, AddNewNoteDispatch, AddNewNoteState } from './types';
 
 const initialAddNewNoteState: AddNewNoteState = {
+  userId: '',
+  username: '',
+
   title: '',
   isValidTitle: false,
   isTitleFocused: false,
@@ -9,13 +12,15 @@ const initialAddNewNoteState: AddNewNoteState = {
   isValidText: false,
   isTextFocused: false,
 
-  completed: false,
   errorMessage: '',
   isSubmitting: false,
   isSuccessful: false,
 };
 
 const addNewNoteAction: AddNewNoteAction = {
+  setUserId: 'setUserId',
+  setUsername: 'setUsername',
+
   setTitle: 'setTitle',
   setIsValidTitle: 'setIsValidTitle',
   setIsTitleFocused: 'setIsTitleFocused',
@@ -24,7 +29,6 @@ const addNewNoteAction: AddNewNoteAction = {
   setIsValidText: 'setIsValidText',
   setIsTextFocused: 'setIsTextFocused',
 
-  setCompleted: 'setCompleted',
   setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setIsSuccessful: 'setIsSuccessful',
@@ -36,6 +40,11 @@ function addNewNoteReducer(
   action: AddNewNoteDispatch
 ): AddNewNoteState {
   switch (action.type) {
+    case addNewNoteAction.setUserId:
+      return { ...state, userId: action.payload as string };
+    case addNewNoteAction.setUsername:
+      return { ...state, username: action.payload as string };
+
     case addNewNoteAction.setTitle:
       return { ...state, title: action.payload as string };
     case addNewNoteAction.setIsValidTitle:
@@ -50,8 +59,6 @@ function addNewNoteReducer(
     case addNewNoteAction.setIsTextFocused:
       return { ...state, isTextFocused: action.payload as boolean };
 
-    case addNewNoteAction.setCompleted:
-      return { ...state, completed: action.payload as boolean };
     case addNewNoteAction.setErrorMessage:
       return { ...state, errorMessage: action.payload as string };
     case addNewNoteAction.setIsSubmitting:

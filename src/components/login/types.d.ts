@@ -30,6 +30,7 @@ type LoginResponse = {
 
 type DecodedToken = {
   userInfo: {
+    userId: string;
     username: string;
     roles: ('Admin' | 'Employee' | 'Manager')[];
   };
