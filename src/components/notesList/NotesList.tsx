@@ -17,6 +17,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { EditNote } from '../editNote';
 import { AddNewNote } from '../addNewNote';
 import { formatDate } from '../../utils';
+import { Loading } from '../loading';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
@@ -45,6 +46,14 @@ function NotesList() {
   const [openedAddNewNote, { open: openAddNewNote, close: closeAddNewNote }] =
     useDisclosure(false);
 
+  // set loading to true upon initial render
+  useEffect(() => {
+    notesListDispatch({
+      type: notesListAction.setIsLoading,
+      payload: true,
+    });
+  }, []);
+
   // grab notes from database and dispatch to reducer to update state
   useEffect(() => {
     async function getAllNotes() {
@@ -56,7 +65,6 @@ function NotesList() {
       console.log({ roles, userIdForEdit });
 
       // if user is admin or manager, get all notes and allow them to edit any note
-
       let axiosConfig = {};
       if (roles.includes('Admin') || roles.includes('Manager')) {
         axiosConfig = {
@@ -157,6 +165,8 @@ function NotesList() {
 
     console.log({ groupedNotes });
   }, [notesListState]);
+
+  const displayLoading = <Loading />;
 
   const displayNotes =
     notes.length === 0
@@ -295,7 +305,7 @@ function NotesList() {
       <Title>NotesList</Title>
       {displayAddNewNoteModal}
       {displayEditNoteModal}
-      {displayNotes}
+      {isLoading ? displayLoading : displayNotes}
     </Flex>
   );
 }

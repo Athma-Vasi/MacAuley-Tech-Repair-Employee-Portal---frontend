@@ -1,4 +1,4 @@
-import { Flex, Modal, Table, Title } from '@mantine/core';
+import { Alert, Flex, Loader, Modal, Table, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useReducer } from 'react';
 import { axiosInstance } from '../../api/axios';
@@ -16,10 +16,11 @@ import { GetAllUsersResponse } from './types';
 import { authAction } from '../../context/authProvider';
 import { EditUser } from '../editUser';
 import { formatDate } from '../../utils';
+import { Loading } from '../loading';
 
 function UsersList() {
   const { authState, authDispatch } = useAuth();
-  const { accessToken } = authState;
+  const { accessToken, roles, userId } = authState;
 
   const [usersList, usersListDispatch] = useReducer(
     usersListReducer,
@@ -30,7 +31,16 @@ function UsersList() {
 
   const { errorMessage, isLoading, users, userToEdit } = usersList;
 
+  // set loading to true upon initial render
+  useEffect(() => {
+    usersListDispatch({
+      type: usersListAction.setIsLoading,
+      payload: { data: true },
+    });
+  }, []);
+
   // grab users from database and dispatch to reducer to update state
+  // don't need to check for roles here because only manager or admin can access this page
   useEffect(() => {
     async function getAllUsers() {
       const axiosRequestConfig = {
@@ -58,6 +68,12 @@ function UsersList() {
           usersListDispatch({
             type: usersListAction.setAllUsers,
             payload: { data: users },
+          });
+
+          // set loading to false
+          usersListDispatch({
+            type: usersListAction.setIsLoading,
+            payload: { data: false },
           });
         }
       } catch (error: any) {
@@ -103,11 +119,19 @@ function UsersList() {
             payload: 'An unknown error occurred. Please try again.',
           });
         }
+      } finally {
+        // set loading to false
+        usersListDispatch({
+          type: usersListAction.setIsLoading,
+          payload: { data: false },
+        });
       }
     }
 
     getAllUsers();
   }, [accessToken, authDispatch]);
+
+  const displayLoading = <Loading />;
 
   const displayUsers =
     usersList.users.length === 0
@@ -199,7 +223,7 @@ function UsersList() {
     <Flex direction="column" align="center" justify="center">
       <Title>UsersList</Title>
       {displayEditUserModal}
-      {displayTable}
+      {isLoading ? displayLoading : displayTable}
     </Flex>
   );
 }

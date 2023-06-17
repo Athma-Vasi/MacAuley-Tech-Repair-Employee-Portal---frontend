@@ -32,6 +32,7 @@ import {
   screenReaderTextSpecialCharacters,
   screenReaderTitleSpecialCharacters,
 } from './domElements';
+import { Loading } from '../loading';
 
 function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
   const [addNewNoteState, addNewNoteDispatch] = useReducer(
@@ -227,15 +228,7 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
     }
   }
 
-  const displayLoading = (
-    <Alert
-      title="Loading..."
-      color="blue"
-      className={isSubmitting ? '' : 'offscreen'}
-    >
-      <Loader />
-    </Alert>
-  );
+  const displayLoading = <Loading />;
 
   // allows error message to be read by screen reader instead of removing it from the DOM
   const displayError = (
@@ -377,7 +370,11 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
 
   return (
     <Flex direction="column">
-      {errorMessage ? displayError : displayAddNewNoteForm}
+      {errorMessage
+        ? displayError
+        : isSubmitting
+        ? displayLoading
+        : displayAddNewNoteForm}
     </Flex>
   );
 }
