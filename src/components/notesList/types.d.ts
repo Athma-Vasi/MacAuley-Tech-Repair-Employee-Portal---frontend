@@ -5,11 +5,27 @@ type GetAllNotesResponse = {
   notes: Note[];
 };
 
+type NotesListSort = 'asc' | 'desc' | '';
+type NotesListSortKey =
+  | ''
+  | 'title'
+  | 'text'
+  | 'completed'
+  | 'createdAt'
+  | 'updatedAt';
+
+type NotesListTransformed = [string, [string, Note[]]];
+
 type NotesListState = {
   notes: Note[];
   noteToEdit: Note;
   userIdForEdit: string;
   usernameForEdit: string;
+
+  sortKey: NotesListSortKey;
+  sortDirection: NotesListSort;
+  transformedNotes: NotesListTransformed[];
+
   isLoading: boolean;
   errorMessage: string;
 };
@@ -19,6 +35,11 @@ type NotesListAction = {
   setTitle: 'setTitle';
   setText: 'setText';
   setCompleted: 'setCompleted';
+
+  setSortKey: 'setSortKey';
+  setSortDirection: 'setSortDirection';
+  setTransformedNotes: 'setTransformedNotes';
+
   setNoteToEdit: 'setNoteToEdit';
   setUserIdForEdit: 'setUserIdForEdit';
   setUsernameForEdit: 'setUsernameForEdit';
@@ -27,7 +48,14 @@ type NotesListAction = {
   setAllNotes: 'setAllNotes';
 };
 
-type NotesListPayload = string | boolean | Note | Note[];
+type NotesListPayload =
+  | string
+  | boolean
+  | Note
+  | Note[]
+  | NotesListSort
+  | NotesListSortKey
+  | NotesListTransformed[];
 
 type NotesListDispatch = {
   type: NotesListAction[keyof NotesListAction];
@@ -47,4 +75,7 @@ export type {
   NotesListPayload,
   NotesListDispatch,
   NotesListReducer,
+  NotesListSort,
+  NotesListSortKey,
+  NotesListTransformed,
 };

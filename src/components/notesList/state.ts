@@ -2,7 +2,10 @@ import {
   Note,
   NotesListAction,
   NotesListDispatch,
+  NotesListSort,
   NotesListState,
+  NotesListSortKey,
+  NotesListTransformed,
 } from './types';
 
 const initialNotesListState: NotesListState = {
@@ -18,6 +21,11 @@ const initialNotesListState: NotesListState = {
     updatedAt: new Date(),
     __v: 0,
   },
+
+  sortKey: '',
+  sortDirection: '',
+  transformedNotes: [],
+
   userIdForEdit: '',
   usernameForEdit: '',
   isLoading: false,
@@ -32,6 +40,11 @@ const notesListAction: NotesListAction = {
   setNoteToEdit: 'setNoteToEdit',
   setUserIdForEdit: 'setUserIdForEdit',
   setUsernameForEdit: 'setUsernameForEdit',
+
+  setSortKey: 'setSortKey',
+  setSortDirection: 'setSortDirection',
+  setTransformedNotes: 'setTransformedNotes',
+
   setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
   setAllNotes: 'setAllNotes',
@@ -89,6 +102,23 @@ function notesListReducer(
         ...state,
         usernameForEdit: action.payload as string,
       };
+
+    case notesListAction.setSortKey:
+      return {
+        ...state,
+        sortKey: action.payload as NotesListSortKey,
+      };
+    case notesListAction.setSortDirection:
+      return {
+        ...state,
+        sortDirection: action.payload as NotesListSort,
+      };
+    case notesListAction.setTransformedNotes:
+      return {
+        ...state,
+        transformedNotes: action.payload as NotesListTransformed[],
+      };
+
     case notesListAction.setErrorMessage:
       return {
         ...state,

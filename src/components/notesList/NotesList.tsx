@@ -1,4 +1,4 @@
-import { Flex, Modal, Table, Text, Title } from '@mantine/core';
+import { Flex, Modal, Space, Table, Text, Title } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 import {
   initialNotesListState,
@@ -8,16 +8,23 @@ import {
 import { GET_ALL_NOTES } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
-import { GetAllNotesResponse, Note } from './types';
+import { GetAllNotesResponse, Note, NotesListTransformed } from './types';
 import { authAction } from '../../context/authProvider';
 import { groupNotesByUsername } from './utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faPlus,
+  faSort,
+  faSortAsc,
+  faSortDesc,
+} from '@fortawesome/free-solid-svg-icons';
 import { useDisclosure } from '@mantine/hooks';
 import { EditNote } from '../editNote';
 import { AddNewNote } from '../addNewNote';
 import { formatDate } from '../../utils';
 import { Loading } from '../loading';
+import { NotesListTitle } from './notesListTitle';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
@@ -31,6 +38,10 @@ function NotesList() {
     usernameForEdit,
     isLoading,
     errorMessage,
+
+    sortKey,
+    sortDirection,
+    transformedNotes,
   } = notesListState;
 
   const {
@@ -158,13 +169,6 @@ function NotesList() {
     getAllNotes();
   }, []);
 
-  // for debugging
-  useEffect(() => {
-    const groupedNotes = groupNotesByUsername(notes);
-
-    console.log({ groupedNotes });
-  }, [notesListState]);
-
   const displayLoading = <Loading />;
 
   const displayNotesAbsense = (
@@ -179,15 +183,146 @@ function NotesList() {
     </Flex>
   );
 
+  // function handleTitleHeadingSortClick(
+  //   event: React.MouseEvent<SVGSVGElement, MouseEvent>
+  // ) {
+  //   notesListDispatch({
+  //     type: notesListAction.setSortKey,
+  //     payload: 'title',
+  //   });
+
+  //   notesListDispatch({
+  //     type: notesListAction.setSortDirection,
+  //     payload:
+  //       sortDirection === '' ? 'asc' : sortDirection === 'asc' ? 'desc' : '',
+  //   });
+  // }
+
+  function sortGroupedNotesForUsernameByKey({
+    usernameForEdit,
+    notesTuple,
+    sortKey,
+    sortDirection,
+  }: {
+    usernameForEdit: string;
+    notesTuple: NotesListTransformed[];
+    sortKey: string;
+    sortDirection: string;
+  }) {
+    console.log({
+      usernameForEdit,
+      // notesTuple,
+      sortKey,
+      sortDirection,
+    });
+
+    return notesTuple;
+  }
+
+  function transformNotesForDisplay({
+    notes,
+    usernameForEdit,
+    sortKey,
+    sortDirection,
+  }: {
+    notes: Note[];
+    usernameForEdit: string;
+    sortKey: string;
+    sortDirection: string;
+  }) {
+    const groupedNotesByUsername = groupNotesByUsername(notes);
+    const sortedNotesForUsernameByKey = sortGroupedNotesForUsernameByKey({
+      usernameForEdit,
+      notesTuple: groupedNotesByUsername,
+      sortKey,
+      sortDirection,
+    });
+
+    return sortedNotesForUsernameByKey;
+  }
+
+  useEffect(() => {
+    const transformedNotes = transformNotesForDisplay({
+      notes,
+      usernameForEdit,
+      sortKey,
+      sortDirection,
+    });
+
+    notesListDispatch({
+      type: notesListAction.setTransformedNotes,
+      payload: transformedNotes,
+    });
+  }, [notes, usernameForEdit, sortKey, sortDirection]);
+
+  useEffect(() => {
+    console.log({ transformedNotes });
+  }, [transformedNotes]);
+
+  // function renderTitleHeading({
+  //   currentUsername,
+  //   usernameForEdit,
+  //   sortDirection,
+  // }: {
+  //   currentUsername: string;
+  //   usernameForEdit: string;
+  //   sortDirection: string;
+  // }) {
+  //   if (currentUsername === usernameForEdit) {
+  //     return (
+  //       <th>
+  //         <span>
+  //           <FontAwesomeIcon
+  //             icon={
+  //               sortDirection === ''
+  //                 ? faSort
+  //                 : sortDirection === 'asc'
+  //                 ? faSortAsc
+  //                 : faSortDesc
+  //             }
+  //             style={{
+  //               cursor: 'pointer',
+  //               color: `${
+  //                 sortDirection === ''
+  //                   ? 'darkgrey'
+  //                   : sortDirection === 'asc'
+  //                   ? 'green'
+  //                   : 'red'
+  //               }`,
+  //             }}
+  //             onClick={handleTitleHeadingSortClick}
+  //           />
+  //           <Text>Title</Text>
+  //         </span>
+  //       </th>
+  //     );
+  //   }
+  //   return (
+  //     <th>
+  //       <span>
+  //         <FontAwesomeIcon
+  //           icon={faSort}
+  //           style={{
+  //             cursor: 'pointer',
+  //             color: 'darkgray',
+  //           }}
+  //           onClick={handleTitleHeadingSortClick}
+  //         />
+  //         <Text>Title</Text>
+  //       </span>
+  //     </th>
+  //   );
+  // }
+
   const displayNotes =
     notes.length === 0
       ? displayNotesAbsense
-      : groupNotesByUsername(notes).map(
-          ([username, [userId, notesArr]]: [string, [string, Note[]]]) => {
+      : transformedNotes.map(
+          ([userName, [userID, notesArr]]: [string, [string, Note[]]]) => {
             return (
-              <Flex key={username} direction="column">
+              <Flex key={userName} direction="column">
                 <Flex justify="space-between">
-                  <Title order={3}>{username}</Title>
+                  <Title order={3}>{userName}</Title>
                   <FontAwesomeIcon
                     icon={faPlus}
                     style={{ cursor: 'pointer' }}
@@ -195,11 +330,11 @@ function NotesList() {
                       openAddNewNote();
                       notesListDispatch({
                         type: notesListAction.setUserIdForEdit,
-                        payload: userId,
+                        payload: userID,
                       });
                       notesListDispatch({
                         type: notesListAction.setUsernameForEdit,
-                        payload: username,
+                        payload: userName,
                       });
                     }}
                     onKeyDown={(event) => {
@@ -216,12 +351,45 @@ function NotesList() {
                 </Flex>
 
                 <Table striped highlightOnHover>
-                  <thead>
-                    <tr key={username}>
-                      <th>Title</th>
+                  <thead
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter') {
+                        notesListDispatch({
+                          type: notesListAction.setUsernameForEdit,
+                          payload: userName,
+                        });
+                      }
+                    }}
+                    onKeyUp={(event) => {
+                      if (event.key === 'Enter') {
+                        notesListDispatch({
+                          type: notesListAction.setUsernameForEdit,
+                          payload: userName,
+                        });
+                      }
+                    }}
+                    onClick={() => {
+                      notesListDispatch({
+                        type: notesListAction.setUsernameForEdit,
+                        payload: userName,
+                      });
+                    }}
+                  >
+                    <tr key={userName}>
+                      {/* {renderTitleHeading({
+                        currentUsername: userName,
+                        usernameForEdit,
+                        sortDirection,
+                      })} */}
+                      <NotesListTitle
+                        currentUsername={userName}
+                        notesListState={notesListState}
+                        notesListDispatch={notesListDispatch}
+                        notesListAction={notesListAction}
+                      />
                       <th>Text</th>
-                      <th>Created At</th>
-                      <th>Updated At</th>
+                      <th>Created</th>
+                      <th>Updated</th>
                       <th>Completed</th>
                       <th>Edit</th>
                     </tr>

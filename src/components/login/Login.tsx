@@ -159,11 +159,6 @@ function Login() {
     }
   }
 
-  useEffect(() => {
-    console.log({ authState });
-    // console.log({ username, password, errorMessage, isSuccessful });
-  }, [authState]);
-
   const displayError = (
     <Alert
       title="Warning!"
