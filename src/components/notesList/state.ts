@@ -22,8 +22,8 @@ const initialNotesListState: NotesListState = {
     __v: 0,
   },
 
-  sortKey: '',
-  sortDirection: '',
+  sortKey: 'title',
+  sortDirection: 'asc',
   transformedNotes: [],
 
   userIdForEdit: '',

@@ -7,7 +7,6 @@ type GetAllNotesResponse = {
 
 type NotesListSort = 'asc' | 'desc' | '';
 type NotesListSortKey =
-  | ''
   | 'title'
   | 'text'
   | 'completed'

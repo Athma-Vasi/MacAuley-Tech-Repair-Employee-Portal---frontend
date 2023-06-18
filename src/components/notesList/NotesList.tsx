@@ -8,7 +8,13 @@ import {
 import { GET_ALL_NOTES } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
-import { GetAllNotesResponse, Note, NotesListTransformed } from './types';
+import {
+  GetAllNotesResponse,
+  Note,
+  NotesListSort,
+  NotesListSortKey,
+  NotesListTransformed,
+} from './types';
 import { authAction } from '../../context/authProvider';
 import { groupNotesByUsername } from './utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -183,21 +189,6 @@ function NotesList() {
     </Flex>
   );
 
-  // function handleTitleHeadingSortClick(
-  //   event: React.MouseEvent<SVGSVGElement, MouseEvent>
-  // ) {
-  //   notesListDispatch({
-  //     type: notesListAction.setSortKey,
-  //     payload: 'title',
-  //   });
-
-  //   notesListDispatch({
-  //     type: notesListAction.setSortDirection,
-  //     payload:
-  //       sortDirection === '' ? 'asc' : sortDirection === 'asc' ? 'desc' : '',
-  //   });
-  // }
-
   function sortGroupedNotesForUsernameByKey({
     usernameForEdit,
     notesTuple,
@@ -206,17 +197,52 @@ function NotesList() {
   }: {
     usernameForEdit: string;
     notesTuple: NotesListTransformed[];
-    sortKey: string;
-    sortDirection: string;
+    sortKey: NotesListSortKey;
+    sortDirection: NotesListSort;
   }) {
-    console.log({
-      usernameForEdit,
-      // notesTuple,
-      sortKey,
-      sortDirection,
-    });
+    return notesTuple.map(
+      ([username, [userId, notes]]: [string, [string, Note[]]]) => {
+        if (username === usernameForEdit) {
+          return [username, [userId, notes.sort(sortNotesComparator)]];
+        } else {
+          return [username, [userId, notes]];
+        }
+      }
+    ) as NotesListTransformed[];
 
-    return notesTuple;
+    function sortNotesComparator(a: Note, b: Note) {
+      if (sortKey === 'createdAt') {
+        return sortDirection === 'asc'
+          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      } else if (sortKey === 'updatedAt') {
+        return sortDirection === 'asc'
+          ? new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
+          : new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+      } else if (sortKey === 'completed') {
+        return sortDirection === 'asc'
+          ? a.completed === b.completed
+            ? 0
+            : a.completed
+            ? 1
+            : -1
+          : a.completed === b.completed
+          ? 0
+          : a.completed
+          ? -1
+          : 1;
+      } else if (sortKey === 'title') {
+        return sortDirection === 'asc'
+          ? a.title.localeCompare(b.title)
+          : b.title.localeCompare(a.title);
+      } else if (sortKey === 'text') {
+        return sortDirection === 'asc'
+          ? a.text.localeCompare(b.text)
+          : b.text.localeCompare(a.text);
+      } else {
+        return 0;
+      }
+    }
   }
 
   function transformNotesForDisplay({
@@ -227,8 +253,8 @@ function NotesList() {
   }: {
     notes: Note[];
     usernameForEdit: string;
-    sortKey: string;
-    sortDirection: string;
+    sortKey: NotesListSortKey;
+    sortDirection: NotesListSort;
   }) {
     const groupedNotesByUsername = groupNotesByUsername(notes);
     const sortedNotesForUsernameByKey = sortGroupedNotesForUsernameByKey({
@@ -258,61 +284,6 @@ function NotesList() {
   useEffect(() => {
     console.log({ transformedNotes });
   }, [transformedNotes]);
-
-  // function renderTitleHeading({
-  //   currentUsername,
-  //   usernameForEdit,
-  //   sortDirection,
-  // }: {
-  //   currentUsername: string;
-  //   usernameForEdit: string;
-  //   sortDirection: string;
-  // }) {
-  //   if (currentUsername === usernameForEdit) {
-  //     return (
-  //       <th>
-  //         <span>
-  //           <FontAwesomeIcon
-  //             icon={
-  //               sortDirection === ''
-  //                 ? faSort
-  //                 : sortDirection === 'asc'
-  //                 ? faSortAsc
-  //                 : faSortDesc
-  //             }
-  //             style={{
-  //               cursor: 'pointer',
-  //               color: `${
-  //                 sortDirection === ''
-  //                   ? 'darkgrey'
-  //                   : sortDirection === 'asc'
-  //                   ? 'green'
-  //                   : 'red'
-  //               }`,
-  //             }}
-  //             onClick={handleTitleHeadingSortClick}
-  //           />
-  //           <Text>Title</Text>
-  //         </span>
-  //       </th>
-  //     );
-  //   }
-  //   return (
-  //     <th>
-  //       <span>
-  //         <FontAwesomeIcon
-  //           icon={faSort}
-  //           style={{
-  //             cursor: 'pointer',
-  //             color: 'darkgray',
-  //           }}
-  //           onClick={handleTitleHeadingSortClick}
-  //         />
-  //         <Text>Title</Text>
-  //       </span>
-  //     </th>
-  //   );
-  // }
 
   const displayNotes =
     notes.length === 0
@@ -376,11 +347,6 @@ function NotesList() {
                     }}
                   >
                     <tr key={userName}>
-                      {/* {renderTitleHeading({
-                        currentUsername: userName,
-                        usernameForEdit,
-                        sortDirection,
-                      })} */}
                       <NotesListTitle
                         currentUsername={userName}
                         notesListState={notesListState}

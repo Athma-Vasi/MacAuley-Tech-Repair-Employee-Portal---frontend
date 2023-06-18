@@ -14,7 +14,7 @@ function NotesListTitle({
   notesListAction,
   notesListDispatch,
 }: NotesListTitleProps) {
-  const { usernameForEdit, sortDirection } = notesListState;
+  const { usernameForEdit, sortDirection, sortKey } = notesListState;
 
   function handleTitleHeadingSortClick(
     event: React.MouseEvent<SVGSVGElement, MouseEvent>
@@ -40,7 +40,7 @@ function NotesListTitle({
     usernameForEdit: string;
     sortDirection: string;
   }) {
-    if (currentUsername === usernameForEdit) {
+    if (currentUsername === usernameForEdit && sortKey === 'title') {
       return (
         <th>
           <span>
