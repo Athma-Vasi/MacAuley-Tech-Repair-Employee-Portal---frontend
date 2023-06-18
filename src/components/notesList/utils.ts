@@ -45,11 +45,11 @@ function sortGroupedNotesForUsernameByKey({
   ) as NotesListTransformed[];
 
   function sortNotesComparator(a: Note, b: Note) {
-    if (sortKey === 'createdAt') {
+    if (sortKey === 'created') {
       return sortDirection === 'asc'
         ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
         : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-    } else if (sortKey === 'updatedAt') {
+    } else if (sortKey === 'updated') {
       return sortDirection === 'asc'
         ? new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
         : new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();

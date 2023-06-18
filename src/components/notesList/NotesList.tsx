@@ -1,41 +1,25 @@
-import { Flex, Modal, Space, Table, Text, Title } from '@mantine/core';
+import { Flex, Modal, Table, Text, Title } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { useDisclosure } from '@mantine/hooks';
+
 import {
   initialNotesListState,
   notesListAction,
   notesListReducer,
 } from './state';
-import { GET_ALL_NOTES } from './constants';
+import { GET_ALL_NOTES, HEADINGS } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
-import {
-  GetAllNotesResponse,
-  Note,
-  NotesListSort,
-  NotesListSortKey,
-  NotesListTransformed,
-} from './types';
+import { GetAllNotesResponse, Note } from './types';
 import { authAction } from '../../context/authProvider';
-import {
-  groupNotesByUsername,
-  sortGroupedNotesForUsernameByKey,
-  transformNotesForDisplay,
-} from './utils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faEdit,
-  faPlus,
-  faSort,
-  faSortAsc,
-  faSortDesc,
-} from '@fortawesome/free-solid-svg-icons';
-import { useDisclosure } from '@mantine/hooks';
+import { transformNotesForDisplay } from './utils';
 import { EditNote } from '../editNote';
 import { AddNewNote } from '../addNewNote';
 import { formatDate } from '../../utils';
 import { Loading } from '../loading';
-import { NotesListTitle } from './notesListTitle';
-import { NotesListText } from './notesListText';
+import { NotesListHeader } from './notesListHeader';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
@@ -274,22 +258,18 @@ function NotesList() {
                     }}
                   >
                     <tr key={userName}>
-                      <NotesListTitle
-                        currentUsername={userName}
-                        notesListState={notesListState}
-                        notesListDispatch={notesListDispatch}
-                        notesListAction={notesListAction}
-                      />
-                      <NotesListText
-                        currentUsername={userName}
-                        notesListState={notesListState}
-                        notesListDispatch={notesListDispatch}
-                        notesListAction={notesListAction}
-                      />
-                      <th>Created</th>
-                      <th>Updated</th>
-                      <th>Completed</th>
-                      <th>Edit</th>
+                      {HEADINGS.map((heading) => {
+                        return (
+                          <NotesListHeader
+                            key={heading}
+                            currentUsername={userName}
+                            notesListState={notesListState}
+                            notesListDispatch={notesListDispatch}
+                            notesListAction={notesListAction}
+                            heading={heading}
+                          />
+                        );
+                      })}
                     </tr>
                   </thead>
                   <tbody>

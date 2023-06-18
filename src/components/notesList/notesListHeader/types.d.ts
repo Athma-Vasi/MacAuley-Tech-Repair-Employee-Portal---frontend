@@ -1,10 +1,13 @@
-import { NotesListState, NotesListDispatch, NotesListAction } from '../types';
+import type {
+  NotesListState,
+  NotesListDispatch,
+  NotesListAction,
+} from '../types';
 
-type NotesListTitleProps = {
+type NotesListHeaderProps = {
+  heading: string;
   currentUsername: string;
   notesListState: NotesListState;
   notesListDispatch: React.Dispatch<NotesListDispatch>;
   notesListAction: NotesListAction;
 };
-
-export type { NotesListTitleProps };

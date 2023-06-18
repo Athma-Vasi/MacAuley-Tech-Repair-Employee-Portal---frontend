@@ -6,12 +6,7 @@ type GetAllNotesResponse = {
 };
 
 type NotesListSort = 'asc' | 'desc' | '';
-type NotesListSortKey =
-  | 'title'
-  | 'text'
-  | 'completed'
-  | 'createdAt'
-  | 'updatedAt';
+type NotesListSortKey = 'title' | 'text' | 'completed' | 'created' | 'updated';
 
 type NotesListTransformed = [string, [string, Note[]]];
 
