@@ -11,25 +11,40 @@ import {
   usersListReducer,
 } from './state';
 import { useAuth } from '../../hooks/useAuth';
-import { GET_ALL_USERS } from './constants';
-import { GetAllUsersResponse } from './types';
+import { GET_ALL_USERS, USERS_HEADINGS } from './constants';
+import {
+  GetAllUsersResponse,
+  User,
+  UsersListSort,
+  UsersListSortKey,
+} from './types';
 import { authAction } from '../../context/authProvider';
 import { EditUser } from '../editUser';
 import { formatDate } from '../../utils';
 import { Loading } from '../loading';
+import { sortUsersByKey } from './utils';
+import { UsersListHeader } from './usersListHeader';
 
 function UsersList() {
   const { authState, authDispatch } = useAuth();
   const { accessToken, roles, userId } = authState;
 
-  const [usersList, usersListDispatch] = useReducer(
+  const [usersListState, usersListDispatch] = useReducer(
     usersListReducer,
     initialUsersListState
   );
 
   const [opened, { open, close }] = useDisclosure(false);
 
-  const { errorMessage, isLoading, users, userToEdit } = usersList;
+  const {
+    errorMessage,
+    isLoading,
+    users,
+    userToEdit,
+    sortDirection,
+    sortKey,
+    transformedUsers,
+  } = usersListState;
 
   // set loading to true upon initial render
   useEffect(() => {
@@ -61,8 +76,6 @@ function UsersList() {
           status,
           data: { users },
         } = response;
-
-        console.log({ status, users });
 
         if (status === 200) {
           usersListDispatch({
@@ -129,14 +142,27 @@ function UsersList() {
     }
 
     getAllUsers();
-  }, [accessToken, authDispatch]);
+  }, []);
+
+  useEffect(() => {
+    const sortedUsers = sortUsersByKey({
+      users,
+      sortKey,
+      sortDirection,
+    });
+
+    usersListDispatch({
+      type: usersListAction.setTransformedUsers,
+      payload: { data: sortedUsers },
+    });
+  }, [users, sortKey, sortDirection]);
 
   const displayLoading = <Loading />;
 
   const displayUsers =
-    usersList.users.length === 0
+    users.length === 0
       ? null
-      : usersList.users.map((user) => {
+      : transformedUsers.map((user) => {
           const {
             _id: id,
             username,
@@ -200,13 +226,17 @@ function UsersList() {
     <Table striped highlightOnHover>
       <thead>
         <tr>
-          <th>Username</th>
-          <th>Email</th>
-          <th>Roles</th>
-          <th>Active</th>
-          <th>Created</th>
-          <th>Updated</th>
-          <th>Edit</th>
+          {USERS_HEADINGS.map((heading) => {
+            return (
+              <UsersListHeader
+                key={heading}
+                heading={heading}
+                usersListState={usersListState}
+                usersListAction={usersListAction}
+                usersListDispatch={usersListDispatch}
+              />
+            );
+          })}
         </tr>
       </thead>
       <tbody>{displayUsers}</tbody>

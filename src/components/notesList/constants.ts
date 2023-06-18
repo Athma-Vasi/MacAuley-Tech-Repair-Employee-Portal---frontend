@@ -1,5 +1,12 @@
 const GET_ALL_NOTES = '/notes';
 
-const HEADINGS = ['title', 'text', 'created', 'updated', 'completed', 'edit'];
+const NOTE_HEADINGS = [
+  'title',
+  'text',
+  'created',
+  'updated',
+  'completed',
+  'edit',
+];
 
-export { GET_ALL_NOTES, HEADINGS };
+export { GET_ALL_NOTES, NOTE_HEADINGS };

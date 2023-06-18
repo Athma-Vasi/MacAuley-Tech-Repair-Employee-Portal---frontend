@@ -1,10 +1,24 @@
 import type { User } from '../../types';
 
+type UsersListSort = 'asc' | 'desc' | '';
+
+type UsersListSortKey =
+  | 'email'
+  | 'username'
+  | 'roles'
+  | 'active'
+  | 'created'
+  | 'updated';
+
 type UsersListState = {
   errorMessage: string;
   isLoading: boolean;
   userToEdit: User;
   users: User[];
+
+  sortKey: UsersListSortKey;
+  sortDirection: UsersListSort;
+  transformedUsers: User[];
 };
 
 type UsersListAction = {
@@ -17,11 +31,22 @@ type UsersListAction = {
   setActive: 'setActive';
   setUserToEdit: 'setUserToEdit';
   setAllUsers: 'setAllUsers';
+
+  setSortKey: 'setSortKey';
+  setSortDirection: 'setSortDirection';
+  setTransformedUsers: 'setTransformedUsers';
 };
 
 type UsersListPayload = {
   _id?: string;
-  data: string | boolean | ('Admin' | 'Employee' | 'Manager')[] | User | User[];
+  data:
+    | string
+    | boolean
+    | ('Admin' | 'Employee' | 'Manager')[]
+    | User
+    | User[]
+    | UsersListSort
+    | UsersListSortKey;
 };
 
 type UsersListDispatch = {
@@ -47,4 +72,6 @@ export type {
   UsersListDispatch,
   UsersListReducer,
   GetAllUsersResponse,
+  UsersListSort,
+  UsersListSortKey,
 };

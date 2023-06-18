@@ -2,6 +2,8 @@ import {
   User,
   UsersListAction,
   UsersListDispatch,
+  UsersListSort,
+  UsersListSortKey,
   UsersListState,
 } from './types';
 
@@ -19,6 +21,10 @@ const initialUsersListState: UsersListState = {
     __v: 0,
   },
   users: [],
+
+  sortKey: 'username',
+  sortDirection: 'asc',
+  transformedUsers: [],
 };
 
 const usersListAction: UsersListAction = {
@@ -31,6 +37,10 @@ const usersListAction: UsersListAction = {
   setActive: 'setActive',
   setUserToEdit: 'setUserToEdit',
   setAllUsers: 'setAllUsers',
+
+  setSortKey: 'setSortKey',
+  setSortDirection: 'setSortDirection',
+  setTransformedUsers: 'setTransformedUsers',
 };
 
 function usersListReducer(
@@ -108,6 +118,24 @@ function usersListReducer(
       return {
         ...state,
         users: action.payload.data as User[],
+      };
+
+    case usersListAction.setSortKey:
+      return {
+        ...state,
+        sortKey: action.payload.data as UsersListSortKey,
+      };
+
+    case usersListAction.setSortDirection:
+      return {
+        ...state,
+        sortDirection: action.payload.data as UsersListSort,
+      };
+
+    case usersListAction.setTransformedUsers:
+      return {
+        ...state,
+        transformedUsers: action.payload.data as User[],
       };
 
     default:

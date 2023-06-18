@@ -9,7 +9,7 @@ import {
   notesListAction,
   notesListReducer,
 } from './state';
-import { GET_ALL_NOTES, HEADINGS } from './constants';
+import { GET_ALL_NOTES, NOTE_HEADINGS } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { GetAllNotesResponse, Note } from './types';
@@ -258,7 +258,7 @@ function NotesList() {
                     }}
                   >
                     <tr key={userName}>
-                      {HEADINGS.map((heading) => {
+                      {NOTE_HEADINGS.map((heading) => {
                         return (
                           <NotesListHeader
                             key={heading}
@@ -323,13 +323,19 @@ function NotesList() {
                         </td>
                       );
 
+                      const displayCompleted = completed ? (
+                        <Text color="green">Yes</Text>
+                      ) : (
+                        <Text color="red">No</Text>
+                      );
+
                       return (
                         <tr key={_id}>
                           <td>{title}</td>
                           <td>{text}</td>
                           <td>{createdDate}</td>
                           <td>{updatedDate}</td>
-                          <td>{completed ? 'Yes' : 'No'}</td>
+                          <td>{displayCompleted}</td>
                           {displayEditIcon}
                         </tr>
                       );
