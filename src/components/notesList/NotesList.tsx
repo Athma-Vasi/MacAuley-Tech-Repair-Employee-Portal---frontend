@@ -1,4 +1,4 @@
-import { Flex, Modal, Table, Title } from '@mantine/core';
+import { Flex, Modal, Table, Text, Title } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 import {
   initialNotesListState,
@@ -34,7 +34,7 @@ function NotesList() {
   } = notesListState;
 
   const {
-    authState: { accessToken, roles, userId },
+    authState: { accessToken, roles, userId, username: loggedInUsername },
     authDispatch,
   } = useAuth();
 
@@ -61,8 +61,6 @@ function NotesList() {
         type: notesListAction.setIsLoading,
         payload: true,
       });
-
-      console.log({ roles, userIdForEdit });
 
       // if user is admin or manager, get all notes and allow them to edit any note
       let axiosConfig = {};
@@ -160,6 +158,7 @@ function NotesList() {
     getAllNotes();
   }, []);
 
+  // for debugging
   useEffect(() => {
     const groupedNotes = groupNotesByUsername(notes);
 
@@ -168,9 +167,21 @@ function NotesList() {
 
   const displayLoading = <Loading />;
 
+  const displayNotesAbsense = (
+    <Flex justify="center">
+      {roles.includes('Admin') || roles.includes('Manager') ? (
+        <Text>
+          No notes are active for any employee! All notes have been completed!
+        </Text>
+      ) : (
+        <Text>You do not have any notes to complete!</Text>
+      )}
+    </Flex>
+  );
+
   const displayNotes =
     notes.length === 0
-      ? null
+      ? displayNotesAbsense
       : groupNotesByUsername(notes).map(
           ([username, [userId, notesArr]]: [string, [string, Note[]]]) => {
             return (

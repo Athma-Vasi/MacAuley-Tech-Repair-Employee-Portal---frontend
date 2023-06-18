@@ -8,8 +8,12 @@ import {
   Textarea,
   Checkbox,
 } from '@mantine/core';
-import { EditNoteProps, EditNoteResponse } from './types';
+import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useReducer, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import '../../index.css';
+import { EditNoteProps, EditNoteResponse } from './types';
 import { editNoteAction, editNoteReducer, initialEditNoteState } from './state';
 import { NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../constants';
 import { Loading } from '../loading';
@@ -17,10 +21,6 @@ import {
   returnNoteContentValidationText,
   returnNoteTitleValidationText,
 } from '../../utils';
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import '../../index.css';
 import {
   screenReaderTitleSpecialCharacters,
   screenReaderTextSpecialCharacters,
@@ -86,7 +86,7 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
       type: editNoteAction.setCompleted,
       payload: { data: note.completed },
     });
-  }, [note]);
+  }, []);
 
   // clears error message on title, text or completed change
   useEffect(() => {
@@ -152,22 +152,27 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
       completed,
     };
 
-    try {
-      const axiosConfig = {
-        method: 'patch',
-        url: EDIT_NOTE_URL,
-        data: editedNote,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        withCredentials: true,
-      };
+    const axiosConfig = {
+      method: 'patch',
+      url: EDIT_NOTE_URL,
+      data: editedNote,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    };
 
+    try {
       const response = await axiosInstance<EditNoteResponse>(axiosConfig);
       const { status } = response;
 
       if (status === 201) {
+        editNoteDispatch({
+          type: editNoteAction.setErrorMessage,
+          payload: { data: '' },
+        });
+
         editNoteDispatch({
           type: editNoteAction.setIsSubmitting,
           payload: { data: false },
@@ -176,11 +181,6 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
         editNoteDispatch({
           type: editNoteAction.setIsSuccessful,
           payload: { data: true },
-        });
-
-        editNoteDispatch({
-          type: editNoteAction.setErrorMessage,
-          payload: { data: '' },
         });
       }
     } catch (error: any) {

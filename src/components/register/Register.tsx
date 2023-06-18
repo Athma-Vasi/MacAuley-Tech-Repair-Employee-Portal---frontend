@@ -24,6 +24,8 @@ import {
 import { returnPasswordRegexValidationText } from './utils';
 import { axiosInstance } from '../../api/axios';
 import { RegisterResponse } from './types';
+import { screenReaderPasswordSpecialCharacters } from '../../domElements';
+import { Loading } from '../loading';
 
 function Register() {
   const [
@@ -131,15 +133,7 @@ function Register() {
     </Alert>
   );
 
-  const displayLoading = (
-    <Alert
-      title="Loading..."
-      color="gray"
-      className={isSuccessful ? '' : 'offscreen'}
-    >
-      <Loader />
-    </Alert>
-  );
+  const displayLoading = <Loading />;
 
   const emailValidationText = (
     <Text
@@ -167,19 +161,6 @@ function Register() {
 
   const passwordRegexValidationText =
     returnPasswordRegexValidationText(password);
-  const screenReaderSpecialCharacters = (
-    <span>
-      <span> Allowed special characters: </span>
-      <span aria-label="exclamation mark">!</span>
-      <span aria-label="at symbol">@</span>
-      <span aria-label="number symbol">#</span>
-      <span aria-label="dollar symbol">$</span>
-      <span aria-label="percent symbol">%</span>
-      <span aria-label="caret symbol">^</span>
-      <span aria-label="ampersand symbol">&</span>
-      <span aria-label="asterisk symbol">*</span>
-    </span>
-  );
 
   const passwordInputValidationText = (
     <Text
@@ -191,7 +172,7 @@ function Register() {
     >
       <FontAwesomeIcon icon={faInfoCircle} /> {passwordRegexValidationText}
       {passwordRegexValidationText.includes('special')
-        ? screenReaderSpecialCharacters
+        ? screenReaderPasswordSpecialCharacters
         : ''}
     </Text>
   );
@@ -291,190 +272,191 @@ function Register() {
     }
   }
 
-  return (
+  const displayRegisterForm = (
     <>
-      <section>
-        <Flex
-          direction="column"
-          align="center"
-          justify="space-between"
-          style={{ outline: '1px solid red' }}
-        >
-          {displayError}
-          {isSubmitting ? (
-            displayLoading
-          ) : isSuccessful ? (
-            displaySuccess
-          ) : (
-            <>
-              <Title order={3}>Register</Title>
+      <Title order={3}>Register</Title>
 
-              <form onSubmit={handleRegisterFormSubmit}>
-                <Flex direction="column" justify="space-between">
-                  <TextInput
-                    label="Email"
-                    placeholder="Enter email address"
-                    autoComplete="off"
-                    aria-describedby="email-note"
-                    aria-invalid={isValidEmail ? false : true}
-                    icon={
-                      isValidEmail ? (
-                        <FontAwesomeIcon icon={faCheck} color="green" />
-                      ) : null
-                    }
-                    value={email}
-                    error={!isValidEmail && email !== ''}
-                    description={emailValidationText}
-                    onChange={(event) => {
-                      registerDispatch({
-                        type: registerAction.setEmail,
-                        payload: event.currentTarget.value,
-                      });
-                    }}
-                    onFocus={() => {
-                      registerDispatch({
-                        type: registerAction.setIsEmailFocused,
-                        payload: true,
-                      });
-                    }}
-                    onBlur={() => {
-                      registerDispatch({
-                        type: registerAction.setIsEmailFocused,
-                        payload: false,
-                      });
-                    }}
-                    withAsterisk
-                    required
-                  />
-                  <TextInput
-                    label="Username"
-                    placeholder="Enter username"
-                    autoComplete="off"
-                    aria-describedby="username-note"
-                    aria-invalid={isValidUsername ? false : true}
-                    value={username}
-                    icon={
-                      isValidUsername ? (
-                        <FontAwesomeIcon icon={faCheck} color="green" />
-                      ) : null
-                    }
-                    error={!isValidUsername && username !== ''}
-                    description={usernameInputValidationText}
-                    onChange={(event) => {
-                      registerDispatch({
-                        type: registerAction.setUsername,
-                        payload: event.currentTarget.value,
-                      });
-                    }}
-                    onFocus={() => {
-                      registerDispatch({
-                        type: registerAction.setIsUsernameFocused,
-                        payload: true,
-                      });
-                    }}
-                    onBlur={() => {
-                      registerDispatch({
-                        type: registerAction.setIsUsernameFocused,
-                        payload: false,
-                      });
-                    }}
-                    withAsterisk
-                    required
-                  />
-                  <PasswordInput
-                    label="Password"
-                    placeholder="Enter password"
-                    aria-describedby="password-note"
-                    aria-invalid={isValidPassword ? false : true}
-                    value={password}
-                    icon={
-                      isValidPassword ? (
-                        <FontAwesomeIcon icon={faCheck} color="green" />
-                      ) : null
-                    }
-                    error={!isValidPassword && password !== ''}
-                    description={passwordInputValidationText}
-                    onChange={(event) => {
-                      registerDispatch({
-                        type: registerAction.setPassword,
-                        payload: event.currentTarget.value,
-                      });
-                    }}
-                    onFocus={() => {
-                      registerDispatch({
-                        type: registerAction.setIsPasswordFocused,
-                        payload: true,
-                      });
-                    }}
-                    onBlur={() => {
-                      registerDispatch({
-                        type: registerAction.setIsPasswordFocused,
-                        payload: false,
-                      });
-                    }}
-                    withAsterisk
-                    required
-                  />
-                  <PasswordInput
-                    label="Confirm Password"
-                    placeholder="Confirm password"
-                    aria-describedby="confirm-password-note"
-                    aria-invalid={isValidConfirmPassword ? false : true}
-                    value={confirmPassword}
-                    icon={
-                      isValidPassword && isValidConfirmPassword ? (
-                        <FontAwesomeIcon icon={faCheck} color="green" />
-                      ) : null
-                    }
-                    error={!isValidConfirmPassword && confirmPassword !== ''}
-                    description={confirmPasswordInputValidationText}
-                    onChange={(event) => {
-                      registerDispatch({
-                        type: registerAction.setConfirmPassword,
-                        payload: event.currentTarget.value,
-                      });
-                    }}
-                    onFocus={() => {
-                      registerDispatch({
-                        type: registerAction.setIsConfirmPasswordFocused,
-                        payload: true,
-                      });
-                    }}
-                    onBlur={() => {
-                      registerDispatch({
-                        type: registerAction.setIsConfirmPasswordFocused,
-                        payload: false,
-                      });
-                    }}
-                    withAsterisk
-                    required
-                  />
-                  <Button
-                    type="submit"
-                    disabled={
-                      !isValidEmail ||
-                      !isValidUsername ||
-                      !isValidPassword ||
-                      !isValidConfirmPassword
-                        ? true
-                        : false
-                    }
-                  >
-                    Register
-                  </Button>
-                </Flex>
-              </form>
-              <Flex direction="column" align="center" justify="center">
-                <Text>Already have an account?</Text>
-                <Text color="blue">
-                  <Link to="/login">Login</Link>
-                </Text>
-              </Flex>
-            </>
-          )}
+      <form onSubmit={handleRegisterFormSubmit}>
+        <Flex direction="column" justify="space-between">
+          <TextInput
+            label="Email"
+            placeholder="Enter email address"
+            autoComplete="off"
+            aria-describedby="email-note"
+            aria-invalid={isValidEmail ? false : true}
+            icon={
+              isValidEmail ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            value={email}
+            error={!isValidEmail && email !== ''}
+            description={emailValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setEmail,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsEmailFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsEmailFocused,
+                payload: false,
+              });
+            }}
+            withAsterisk
+            required
+          />
+          <TextInput
+            label="Username"
+            placeholder="Enter username"
+            autoComplete="off"
+            aria-describedby="username-note"
+            aria-invalid={isValidUsername ? false : true}
+            value={username}
+            icon={
+              isValidUsername ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidUsername && username !== ''}
+            description={usernameInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setUsername,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsUsernameFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsUsernameFocused,
+                payload: false,
+              });
+            }}
+            withAsterisk
+            required
+          />
+          <PasswordInput
+            label="Password"
+            placeholder="Enter password"
+            aria-describedby="password-note"
+            aria-invalid={isValidPassword ? false : true}
+            value={password}
+            icon={
+              isValidPassword ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidPassword && password !== ''}
+            description={passwordInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setPassword,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsPasswordFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsPasswordFocused,
+                payload: false,
+              });
+            }}
+            withAsterisk
+            required
+          />
+          <PasswordInput
+            label="Confirm Password"
+            placeholder="Confirm password"
+            aria-describedby="confirm-password-note"
+            aria-invalid={isValidConfirmPassword ? false : true}
+            value={confirmPassword}
+            icon={
+              isValidPassword && isValidConfirmPassword ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidConfirmPassword && confirmPassword !== ''}
+            description={confirmPasswordInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setConfirmPassword,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsConfirmPasswordFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsConfirmPasswordFocused,
+                payload: false,
+              });
+            }}
+            withAsterisk
+            required
+          />
+          <Button
+            type="submit"
+            disabled={
+              !isValidEmail ||
+              !isValidUsername ||
+              !isValidPassword ||
+              !isValidConfirmPassword
+                ? true
+                : false
+            }
+          >
+            Register
+          </Button>
         </Flex>
-      </section>
+      </form>
+      <Flex direction="column" align="center" justify="center">
+        <Text>Already have an account?</Text>
+        <Text color="blue">
+          <Link to="/login">Login</Link>
+        </Text>
+      </Flex>
     </>
+  );
+
+  return (
+    <section>
+      <Flex
+        direction="column"
+        align="center"
+        justify="space-between"
+        style={{ outline: '1px solid red' }}
+      >
+        {errorMessage
+          ? displayError
+          : isSubmitting
+          ? displayLoading
+          : isSuccessful
+          ? displaySuccess
+          : displayRegisterForm}
+      </Flex>
+    </section>
   );
 }
 

@@ -1,3 +1,17 @@
+const screenReaderPasswordSpecialCharacters = (
+  <span>
+    <span> Allowed special characters: </span>
+    <span aria-label="exclamation mark">!</span>
+    <span aria-label="at symbol">@</span>
+    <span aria-label="number symbol">#</span>
+    <span aria-label="dollar symbol">$</span>
+    <span aria-label="percent symbol">%</span>
+    <span aria-label="caret symbol">^</span>
+    <span aria-label="ampersand symbol">&</span>
+    <span aria-label="asterisk symbol">*</span>
+  </span>
+);
+
 const screenReaderTitleSpecialCharacters = (
   <span>
     <span>Allowed special characters: </span>
@@ -52,6 +66,7 @@ const screenReaderTextSpecialCharacters = (
 );
 
 export {
+  screenReaderPasswordSpecialCharacters,
   screenReaderTitleSpecialCharacters,
   screenReaderTextSpecialCharacters,
 };

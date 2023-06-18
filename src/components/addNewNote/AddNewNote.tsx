@@ -66,21 +66,18 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
     titleRef.current?.focus();
   }, []);
 
-  // set username prop to state on mount
+  // set username & userId prop to state on mount
   useEffect(() => {
     addNewNoteDispatch({
       type: addNewNoteAction.setUsername,
       payload: username,
     });
-  }, [username]);
 
-  // set userId prop to state on mount
-  useEffect(() => {
     addNewNoteDispatch({
       type: addNewNoteAction.setUserId,
       payload: userId,
     });
-  }, [userId]);
+  }, []);
 
   // validate title on user input change
   useEffect(() => {

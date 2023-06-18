@@ -80,6 +80,7 @@ function Login() {
         // decode user info from the access token
         const { userInfo } = jwtDecode<DecodedToken>(accessToken);
 
+        // sets all auth state upon login
         authDispatch({
           type: authAction.setAllAuthState,
           payload: {
