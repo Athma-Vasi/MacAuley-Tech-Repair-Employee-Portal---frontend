@@ -22,13 +22,17 @@ function sortUsersByKey({
         : 0;
     } else if (sortKey === 'roles') {
       return sortDirection === 'desc'
-        ? a.roles.includes('Manager') || a.roles.includes('Admin')
+        ? a.roles.includes('Manager')
+          ? -1
+          : a.roles.includes('Admin')
           ? -1
           : 1
         : sortDirection === 'asc'
-        ? b.roles.includes('Manager') || b.roles.includes('Admin')
-          ? -1
-          : 1
+        ? b.roles.includes('Employee')
+          ? 1
+          : b.roles.includes('Admin')
+          ? 1
+          : -1
         : 0;
     } else if (sortKey === 'active') {
       return sortDirection === 'asc'
