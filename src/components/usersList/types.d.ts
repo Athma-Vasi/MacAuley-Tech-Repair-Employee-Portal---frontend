@@ -10,6 +10,12 @@ type UsersListSortKey =
   | 'created'
   | 'updated';
 
+type SortUsersByKeyProps = {
+  users: User[];
+  sortKey: UsersListSortKey;
+  sortDirection: UsersListSort;
+};
+
 type UsersListState = {
   errorMessage: string;
   isLoading: boolean;
@@ -74,4 +80,5 @@ export type {
   GetAllUsersResponse,
   UsersListSort,
   UsersListSortKey,
+  SortUsersByKeyProps,
 };

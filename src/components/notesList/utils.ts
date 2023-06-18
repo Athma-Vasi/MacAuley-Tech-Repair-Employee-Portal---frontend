@@ -2,7 +2,7 @@ import { Note } from '../../types';
 import { NotesListSort, NotesListSortKey, NotesListTransformed } from './types';
 
 /**
- * @description groups notes by username and returns an array of tuples with shape [username, [userId, notes[]]]. This allows us to render a table with a header for each username.
+ * @description groups notes by username and returns an array of tuples with shape [username, [userId, notes[]]]. This allows for rendering a table with a header for each username.
  */
 function groupNotesByUsername(notes: Note[]): [string, [string, Note[]]][] {
   return Array.from(
@@ -48,11 +48,15 @@ function sortGroupedNotesForUsernameByKey({
     if (sortKey === 'created') {
       return sortDirection === 'asc'
         ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-        : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        : sortDirection === 'desc'
+        ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        : 0;
     } else if (sortKey === 'updated') {
       return sortDirection === 'asc'
         ? new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
-        : new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+        : sortDirection === 'desc'
+        ? new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        : 0;
     } else if (sortKey === 'completed') {
       return sortDirection === 'asc'
         ? a.completed === b.completed
@@ -60,19 +64,25 @@ function sortGroupedNotesForUsernameByKey({
           : a.completed
           ? 1
           : -1
-        : a.completed === b.completed
-        ? 0
-        : a.completed
-        ? -1
-        : 1;
+        : sortDirection === 'desc'
+        ? a.completed === b.completed
+          ? 0
+          : a.completed
+          ? -1
+          : 1
+        : 0;
     } else if (sortKey === 'title') {
       return sortDirection === 'asc'
         ? a.title.localeCompare(b.title)
-        : b.title.localeCompare(a.title);
+        : sortDirection === 'desc'
+        ? b.title.localeCompare(a.title)
+        : 0;
     } else if (sortKey === 'text') {
       return sortDirection === 'asc'
         ? a.text.localeCompare(b.text)
-        : b.text.localeCompare(a.text);
+        : sortDirection === 'desc'
+        ? b.text.localeCompare(a.text)
+        : 0;
     } else {
       return 0;
     }
