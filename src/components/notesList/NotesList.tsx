@@ -16,7 +16,11 @@ import {
   NotesListTransformed,
 } from './types';
 import { authAction } from '../../context/authProvider';
-import { groupNotesByUsername } from './utils';
+import {
+  groupNotesByUsername,
+  sortGroupedNotesForUsernameByKey,
+  transformNotesForDisplay,
+} from './utils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEdit,
@@ -31,6 +35,7 @@ import { AddNewNote } from '../addNewNote';
 import { formatDate } from '../../utils';
 import { Loading } from '../loading';
 import { NotesListTitle } from './notesListTitle';
+import { NotesListText } from './notesListText';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
@@ -189,84 +194,6 @@ function NotesList() {
     </Flex>
   );
 
-  function sortGroupedNotesForUsernameByKey({
-    usernameForEdit,
-    notesTuple,
-    sortKey,
-    sortDirection,
-  }: {
-    usernameForEdit: string;
-    notesTuple: NotesListTransformed[];
-    sortKey: NotesListSortKey;
-    sortDirection: NotesListSort;
-  }) {
-    return notesTuple.map(
-      ([username, [userId, notes]]: [string, [string, Note[]]]) => {
-        if (username === usernameForEdit) {
-          return [username, [userId, notes.sort(sortNotesComparator)]];
-        } else {
-          return [username, [userId, notes]];
-        }
-      }
-    ) as NotesListTransformed[];
-
-    function sortNotesComparator(a: Note, b: Note) {
-      if (sortKey === 'createdAt') {
-        return sortDirection === 'asc'
-          ? new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          : new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      } else if (sortKey === 'updatedAt') {
-        return sortDirection === 'asc'
-          ? new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime()
-          : new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-      } else if (sortKey === 'completed') {
-        return sortDirection === 'asc'
-          ? a.completed === b.completed
-            ? 0
-            : a.completed
-            ? 1
-            : -1
-          : a.completed === b.completed
-          ? 0
-          : a.completed
-          ? -1
-          : 1;
-      } else if (sortKey === 'title') {
-        return sortDirection === 'asc'
-          ? a.title.localeCompare(b.title)
-          : b.title.localeCompare(a.title);
-      } else if (sortKey === 'text') {
-        return sortDirection === 'asc'
-          ? a.text.localeCompare(b.text)
-          : b.text.localeCompare(a.text);
-      } else {
-        return 0;
-      }
-    }
-  }
-
-  function transformNotesForDisplay({
-    notes,
-    usernameForEdit,
-    sortKey,
-    sortDirection,
-  }: {
-    notes: Note[];
-    usernameForEdit: string;
-    sortKey: NotesListSortKey;
-    sortDirection: NotesListSort;
-  }) {
-    const groupedNotesByUsername = groupNotesByUsername(notes);
-    const sortedNotesForUsernameByKey = sortGroupedNotesForUsernameByKey({
-      usernameForEdit,
-      notesTuple: groupedNotesByUsername,
-      sortKey,
-      sortDirection,
-    });
-
-    return sortedNotesForUsernameByKey;
-  }
-
   useEffect(() => {
     const transformedNotes = transformNotesForDisplay({
       notes,
@@ -353,7 +280,12 @@ function NotesList() {
                         notesListDispatch={notesListDispatch}
                         notesListAction={notesListAction}
                       />
-                      <th>Text</th>
+                      <NotesListText
+                        currentUsername={userName}
+                        notesListState={notesListState}
+                        notesListDispatch={notesListDispatch}
+                        notesListAction={notesListAction}
+                      />
                       <th>Created</th>
                       <th>Updated</th>
                       <th>Completed</th>

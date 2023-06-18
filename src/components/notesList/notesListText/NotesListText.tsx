@@ -6,22 +6,22 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Text } from '@mantine/core';
 
-import { NotesListTitleProps } from './types';
+import { NotesListTextProps } from './types';
 
-function NotesListTitle({
+function NotesListText({
   currentUsername,
   notesListState,
   notesListAction,
   notesListDispatch,
-}: NotesListTitleProps) {
+}: NotesListTextProps) {
   const { usernameForEdit, sortDirection, sortKey } = notesListState;
 
-  function handleTitleHeadingSortClick(
+  function handleTextHeadingSortClick(
     event: React.MouseEvent<SVGSVGElement, MouseEvent>
   ) {
     notesListDispatch({
       type: notesListAction.setSortKey,
-      payload: 'title',
+      payload: 'text',
     });
 
     notesListDispatch({
@@ -31,7 +31,7 @@ function NotesListTitle({
     });
   }
 
-  function renderTitleHeading({
+  function renderTextHeading({
     currentUsername,
     usernameForEdit,
     sortDirection,
@@ -40,7 +40,7 @@ function NotesListTitle({
     usernameForEdit: string;
     sortDirection: string;
   }) {
-    if (currentUsername === usernameForEdit && sortKey === 'title') {
+    if (currentUsername === usernameForEdit && sortKey === 'text') {
       return (
         <th>
           <Flex justify="start" gap="xs">
@@ -62,9 +62,9 @@ function NotesListTitle({
                     : 'red'
                 }`,
               }}
-              onClick={handleTitleHeadingSortClick}
+              onClick={handleTextHeadingSortClick}
             />
-            <Text>Title</Text>
+            <Text>Text</Text>
           </Flex>
         </th>
       );
@@ -78,19 +78,19 @@ function NotesListTitle({
               cursor: 'pointer',
               color: 'darkgray',
             }}
-            onClick={handleTitleHeadingSortClick}
+            onClick={handleTextHeadingSortClick}
           />
-          <Text>Title</Text>
+          <Text>Text</Text>
         </Flex>
       </th>
     );
   }
 
-  return renderTitleHeading({
+  return renderTextHeading({
     currentUsername,
     usernameForEdit,
     sortDirection,
   });
 }
 
-export { NotesListTitle };
+export { NotesListText };
