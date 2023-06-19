@@ -1,8 +1,9 @@
 import { NavLink, Navbar, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { PortalNavbarProps } from './types';
 
-function CustomNavbar() {
+function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const navigate = useNavigate();
   const {
     authState: { roles },
@@ -21,8 +22,13 @@ function CustomNavbar() {
     ) : null;
 
   return (
-    <Navbar width={{ base: 300 }} height={500} p="xs">
-      <Title order={3}>CustomNavbar</Title>
+    <Navbar
+      p="md"
+      hiddenBreakpoint="sm"
+      hidden={!openedNavbar}
+      width={{ sm: 200, lg: 300 }}
+    >
+      <Title order={3}>PortalNavbar</Title>
 
       {displayUsersNavLink}
 
@@ -38,4 +44,4 @@ function CustomNavbar() {
   );
 }
 
-export { CustomNavbar };
+export { PortalNavbar };

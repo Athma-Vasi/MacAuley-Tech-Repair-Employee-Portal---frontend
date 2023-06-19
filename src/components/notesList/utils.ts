@@ -1,5 +1,10 @@
 import { Note } from '../../types';
-import { NotesListSort, NotesListSortKey, NotesListTransformed } from './types';
+import {
+  NotesListSort,
+  NotesListSortKey,
+  NotesListTransformed,
+  TransformNotesForDisplayProps,
+} from './types';
 
 /**
  * @description groups notes by username and returns an array of tuples with shape [username, [userId, notes[]]]. This allows for rendering a table with a header for each username.
@@ -94,12 +99,7 @@ function transformNotesForDisplay({
   usernameForEdit,
   sortKey,
   sortDirection,
-}: {
-  notes: Note[];
-  usernameForEdit: string;
-  sortKey: NotesListSortKey;
-  sortDirection: NotesListSort;
-}) {
+}: TransformNotesForDisplayProps) {
   const groupedNotesByUsername = groupNotesByUsername(notes);
   const sortedNotesForUsernameByKey = sortGroupedNotesForUsernameByKey({
     usernameForEdit,

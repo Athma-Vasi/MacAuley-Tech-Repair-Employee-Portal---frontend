@@ -34,7 +34,8 @@ function UsersList() {
     initialUsersListState
   );
 
-  const [opened, { open, close }] = useDisclosure(false);
+  const [openedUserEdit, { open: openUserEdit, close: closeUserEdit }] =
+    useDisclosure(false);
 
   const {
     errorMessage,
@@ -188,12 +189,12 @@ function UsersList() {
               style={{ cursor: 'pointer' }}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
-                  open();
+                  openUserEdit();
                 }
               }}
               onKeyUp={(event) => {
                 if (event.key === 'Enter') {
-                  open();
+                  openUserEdit();
                 }
               }}
               onClick={() => {
@@ -203,7 +204,7 @@ function UsersList() {
                 });
               }}
             >
-              <FontAwesomeIcon icon={faEdit} onClick={open} />
+              <FontAwesomeIcon icon={faEdit} onClick={openUserEdit} />
             </td>
           );
 
@@ -244,7 +245,7 @@ function UsersList() {
   );
 
   const displayEditUserModal = (
-    <Modal opened={opened} onClose={close}>
+    <Modal opened={openedUserEdit} onClose={closeUserEdit}>
       <EditUser user={userToEdit} />
     </Modal>
   );

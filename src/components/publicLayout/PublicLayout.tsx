@@ -1,12 +1,16 @@
-import { Text } from '@mantine/core';
+import { BackgroundImage, Box, Center, Text } from '@mantine/core';
 import { Outlet } from 'react-router-dom';
 
 function PublicLayout() {
   return (
-    <div>
-      <Text>PublicLayout</Text>
+    <Center
+      style={{
+        backgroundImage: 'radial-gradient(circle, #f9f9f9 50%, #ececec 100%)',
+        height: '100vh',
+      }}
+    >
       <Outlet />
-    </div>
+    </Center>
   );
 }
 

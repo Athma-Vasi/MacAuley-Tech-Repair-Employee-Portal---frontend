@@ -56,7 +56,9 @@ function NotesListHeader({
             }}
             onClick={handleHeadingSortClick}
           />
-          <Text>{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
+          <Text color="dark">{`${heading[0].toUpperCase()}${heading.slice(
+            1
+          )}`}</Text>
         </Flex>
       </th>
     );
@@ -64,7 +66,7 @@ function NotesListHeader({
     return (
       <th>
         <Flex justify="start" gap="xs">
-          <Text>Edit</Text>
+          <Text color="dark">Edit</Text>
         </Flex>
       </th>
     );
@@ -81,7 +83,9 @@ function NotesListHeader({
           }}
           onClick={handleHeadingSortClick}
         />
-        <Text>{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
+        <Text color="dark">{`${heading[0].toUpperCase()}${heading.slice(
+          1
+        )}`}</Text>
       </Flex>
     </th>
   );

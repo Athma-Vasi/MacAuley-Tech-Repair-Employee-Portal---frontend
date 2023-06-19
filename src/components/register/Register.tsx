@@ -1,10 +1,15 @@
 import { useEffect, useRef, useReducer } from 'react';
 import { Link } from 'react-router-dom';
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faInfoCircle,
+  faWrench,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Alert,
   Button,
+  Center,
   Flex,
   Loader,
   PasswordInput,
@@ -111,10 +116,16 @@ function Register() {
       title="Warning!"
       color="yellow"
       className={errorMessage ? '' : 'offscreen'}
+      w="100%"
     >
-      <Text ref={errorRef} aria-live="assertive">
-        {errorMessage}
-      </Text>
+      <Flex direction="column" rowGap="lg">
+        <Text ref={errorRef} aria-live="assertive" color="dark">
+          {`${errorMessage}!`}
+        </Text>
+        <Text color="blue">
+          <Link to="/login">Click here to go back to login.</Link>
+        </Text>
+      </Flex>
     </Alert>
   );
 
@@ -123,13 +134,16 @@ function Register() {
       title="Success!"
       color="green"
       className={isSuccessful ? '' : 'offscreen'}
+      w="100%"
     >
-      <Text ref={errorRef} aria-live="assertive">
-        You have successfully registered!
-      </Text>
-      <Text color="blue">
-        <Link to="/login">Click here to login</Link>
-      </Text>
+      <Flex direction="column" rowGap="lg">
+        <Text ref={errorRef} aria-live="assertive" color="dark">
+          You have successfully registered!
+        </Text>
+        <Text color="blue">
+          <Link to="/login">Click here to login</Link>
+        </Text>
+      </Flex>
     </Alert>
   );
 
@@ -139,6 +153,7 @@ function Register() {
     <Text
       id="email-note"
       className={isEmailFocused && email && !isValidEmail ? '' : 'offscreen'}
+      w="100%"
       color="red"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
@@ -152,6 +167,7 @@ function Register() {
       className={
         isUsernameFocused && username && !isValidUsername ? '' : 'offscreen'
       }
+      w="100%"
       color="red"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
@@ -168,6 +184,7 @@ function Register() {
       className={
         isPasswordFocused && password && !isValidPassword ? '' : 'offscreen'
       }
+      w="100%"
       color="red"
     >
       <FontAwesomeIcon icon={faInfoCircle} /> {passwordRegexValidationText}
@@ -185,6 +202,7 @@ function Register() {
           ? ''
           : 'offscreen'
       }
+      w="100%"
       color="red"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
@@ -273,12 +291,39 @@ function Register() {
   }
 
   const displayRegisterForm = (
-    <>
-      <Title order={3}>Register</Title>
+    <Flex
+      direction="column"
+      align="center"
+      justify="space-between"
+      w="100%"
+      h="100%"
+      p="lg"
+    >
+      <Flex columnGap="md" align="center" justify="space-between">
+        <Flex direction="column" align="center" justify="center">
+          <FontAwesomeIcon icon={faWrench} color="gray" size="2x" />
+        </Flex>
+        <Title order={2} color="dimmed">
+          MacAuley Tech Repair Employee Portal
+        </Title>
+      </Flex>
 
       <form onSubmit={handleRegisterFormSubmit}>
-        <Flex direction="column" justify="space-between">
+        <Flex
+          direction="column"
+          align="start"
+          justify="center"
+          rowGap="lg"
+          p="lg"
+          w={400}
+          h="100%"
+        >
+          <Title order={3} color="dark">
+            Register
+          </Title>
           <TextInput
+            w="100%"
+            color="dark"
             label="Email"
             placeholder="Enter email address"
             autoComplete="off"
@@ -314,6 +359,8 @@ function Register() {
             required
           />
           <TextInput
+            w="100%"
+            color="dark"
             label="Username"
             placeholder="Enter username"
             autoComplete="off"
@@ -345,10 +392,14 @@ function Register() {
                 payload: false,
               });
             }}
+            minLength={3}
+            maxLength={20}
             withAsterisk
             required
           />
           <PasswordInput
+            w="100%"
+            color="dark"
             label="Password"
             placeholder="Enter password"
             aria-describedby="password-note"
@@ -379,10 +430,14 @@ function Register() {
                 payload: false,
               });
             }}
+            minLength={8}
+            maxLength={32}
             withAsterisk
             required
           />
           <PasswordInput
+            w="100%"
+            color="dark"
             label="Confirm Password"
             placeholder="Confirm password"
             aria-describedby="confirm-password-note"
@@ -413,50 +468,55 @@ function Register() {
                 payload: false,
               });
             }}
+            minLength={8}
+            maxLength={32}
             withAsterisk
             required
           />
-          <Button
-            type="submit"
-            disabled={
-              !isValidEmail ||
-              !isValidUsername ||
-              !isValidPassword ||
-              !isValidConfirmPassword
-                ? true
-                : false
-            }
-          >
-            Register
-          </Button>
+          <Flex w="100%" justify="flex-end">
+            <Button
+              type="submit"
+              disabled={
+                !isValidEmail ||
+                !isValidUsername ||
+                !isValidPassword ||
+                !isValidConfirmPassword
+                  ? true
+                  : false
+              }
+            >
+              Register
+            </Button>
+          </Flex>
         </Flex>
       </form>
-      <Flex direction="column" align="center" justify="center">
-        <Text>Already have an account?</Text>
+      <Flex align="center" justify="center" columnGap="sm" w="100%">
+        <Text color="dark">Already have an account?</Text>
         <Text color="blue">
           <Link to="/login">Login</Link>
         </Text>
       </Flex>
-    </>
+    </Flex>
   );
 
   return (
-    <section>
-      <Flex
-        direction="column"
-        align="center"
-        justify="space-between"
-        style={{ outline: '1px solid red' }}
-      >
-        {errorMessage
-          ? displayError
-          : isSubmitting
-          ? displayLoading
-          : isSuccessful
-          ? displaySuccess
-          : displayRegisterForm}
-      </Flex>
-    </section>
+    <Center
+      style={{
+        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
+        borderRadius: '3px',
+      }}
+      w={500}
+      h="auto"
+      p="lg"
+    >
+      {errorMessage
+        ? displayError
+        : isSubmitting
+        ? displayLoading
+        : isSuccessful
+        ? displaySuccess
+        : displayRegisterForm}
+    </Center>
   );
 }
 

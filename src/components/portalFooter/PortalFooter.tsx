@@ -1,7 +1,7 @@
 import { Flex, Footer, Text } from '@mantine/core';
 import { useAuth } from '../../hooks/useAuth';
 
-function CustomFooter() {
+function PortalFooter() {
   const {
     authState: { roles, username: loggedInUsername, errorMessage, isLoggedIn },
   } = useAuth();
@@ -34,4 +34,4 @@ function CustomFooter() {
   );
 }
 
-export { CustomFooter };
+export { PortalFooter };

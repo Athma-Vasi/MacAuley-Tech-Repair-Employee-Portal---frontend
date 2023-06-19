@@ -1,4 +1,13 @@
-import { Flex, Modal, Table, Text, Title } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Modal,
+  Table,
+  Text,
+  Title,
+} from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -164,19 +173,51 @@ function NotesList() {
     getAllNotes();
   }, []);
 
+  const addNoteButton = (
+    <Button
+      type="button"
+      onClick={() => {
+        openAddNewNote();
+        notesListDispatch({
+          type: notesListAction.setUserIdForEdit,
+          payload: userId,
+        });
+        notesListDispatch({
+          type: notesListAction.setUsernameForEdit,
+          payload: loggedInUsername,
+        });
+      }}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter') {
+          openAddNewNote();
+        }
+      }}
+      onKeyUp={(event) => {
+        if (event.key === 'Enter') {
+          openAddNewNote();
+        }
+      }}
+    >
+      Add Note
+    </Button>
+  );
+
   const displayLoading = <Loading />;
 
-  const displayNotesAbsense = (
-    <Flex justify="center">
-      {roles.includes('Admin') || roles.includes('Manager') ? (
-        <Text>
+  const displayNotesAbsense =
+    roles.includes('Admin') || roles.includes('Manager') ? (
+      <Flex direction="column" rowGap="lg" align="center" justify="center">
+        <Text color="dark">
           No notes are active for any employee! All notes have been completed!
         </Text>
-      ) : (
-        <Text>You do not have any notes to complete!</Text>
-      )}
-    </Flex>
-  );
+        {addNoteButton}
+      </Flex>
+    ) : (
+      <Flex direction="column" rowGap="lg" align="center" justify="center">
+        <Text color="dark">You do not have any notes to complete!</Text>
+        {addNoteButton}
+      </Flex>
+    );
 
   useEffect(() => {
     const transformedNotes = transformNotesForDisplay({
@@ -202,12 +243,30 @@ function NotesList() {
       : transformedNotes.map(
           ([userName, [userID, notesArr]]: [string, [string, Note[]]]) => {
             return (
-              <Flex key={userName} direction="column">
-                <Flex justify="space-between">
-                  <Title order={3}>{userName}</Title>
+              <Flex
+                key={userName}
+                direction="column"
+                align="center"
+                justify="center"
+                rowGap="lg"
+              >
+                <Flex
+                  justify="flex-start"
+                  align="flex-start"
+                  w="100%"
+                  columnGap="lg"
+                >
+                  <Title order={3} color="dark">
+                    {userName}
+                  </Title>
                   <FontAwesomeIcon
                     icon={faPlus}
-                    style={{ cursor: 'pointer' }}
+                    style={{
+                      cursor: 'pointer',
+                      color: 'dimgray',
+                      paddingTop: '4px',
+                    }}
+                    size="lg"
                     onClick={() => {
                       openAddNewNote();
                       notesListDispatch({
@@ -221,18 +280,23 @@ function NotesList() {
                     }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
-                        openEditNote();
+                        openAddNewNote();
                       }
                     }}
                     onKeyUp={(event) => {
                       if (event.key === 'Enter') {
-                        openEditNote();
+                        openAddNewNote();
                       }
                     }}
                   />
                 </Flex>
 
-                <Table striped highlightOnHover>
+                <Table
+                  striped
+                  highlightOnHover
+                  horizontalSpacing="xs"
+                  verticalSpacing="md"
+                >
                   <thead
                     onKeyDown={(event) => {
                       if (event.key === 'Enter') {
@@ -298,7 +362,11 @@ function NotesList() {
 
                       const displayEditIcon = (
                         <td
-                          style={{ cursor: 'pointer' }}
+                          style={{
+                            cursor: 'pointer',
+                            color: 'dimgray',
+                            outline: '1px solid red',
+                          }}
                           onKeyDown={(event) => {
                             if (event.key === 'Enter') {
                               openEditNote();
@@ -319,6 +387,9 @@ function NotesList() {
                           <FontAwesomeIcon
                             icon={faEdit}
                             onClick={openEditNote}
+                            style={{
+                              outline: '1px solid blue',
+                            }}
                           />
                         </td>
                       );
@@ -331,11 +402,52 @@ function NotesList() {
 
                       return (
                         <tr key={_id}>
-                          <td>{title}</td>
-                          <td>{text}</td>
-                          <td>{createdDate}</td>
-                          <td>{updatedDate}</td>
-                          <td>{displayCompleted}</td>
+                          <td
+                            style={{
+                              outline: '1px solid red',
+                            }}
+                          >
+                            <Text
+                              color="dark"
+                              style={{ outline: '1px solid blue' }}
+                            >
+                              {title}
+                            </Text>
+                          </td>
+                          <td
+                            style={{
+                              outline: '1px solid red',
+                              whiteSpace: 'nowrap',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                            }}
+                          >
+                            <Text color="dark">{text}</Text>
+                          </td>
+                          <td
+                            style={{
+                              outline: '1px solid red',
+                            }}
+                          >
+                            <Text color="dark">{createdDate}</Text>
+                          </td>
+                          <td
+                            style={{
+                              outline: '1px solid red',
+                            }}
+                          >
+                            <Text color="dark">{updatedDate}</Text>
+                          </td>
+                          <td
+                            style={{
+                              outline: '1px solid black',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                          >
+                            {displayCompleted}
+                          </td>
                           {displayEditIcon}
                         </tr>
                       );
@@ -349,23 +461,29 @@ function NotesList() {
 
   const displayEditNoteModal = (
     <Modal opened={openedEditNote} onClose={closeEditNote}>
-      <EditNote note={noteToEdit} onSubmitModalCB={closeEditNote} />
+      <Flex direction="column" align="start" justify="space-between">
+        <EditNote note={noteToEdit} onSubmitModalCB={closeEditNote} />
+      </Flex>
     </Modal>
   );
 
   const displayAddNewNoteModal = (
     <Modal opened={openedAddNewNote} onClose={closeAddNewNote}>
-      <AddNewNote
-        userId={userIdForEdit}
-        username={usernameForEdit}
-        onSubmitModalCB={closeAddNewNote}
-      />
+      <Flex direction="column" align="start" justify="space-between">
+        <AddNewNote
+          userId={userIdForEdit}
+          username={usernameForEdit}
+          onSubmitModalCB={closeAddNewNote}
+        />
+      </Flex>
     </Modal>
   );
 
   return (
-    <Flex direction="column">
-      <Title>NotesList</Title>
+    <Flex direction="column" rowGap="xl">
+      <Title order={2} color="dark">
+        Notes List
+      </Title>
       {displayAddNewNoteModal}
       {displayEditNoteModal}
       {isLoading ? displayLoading : displayNotes}

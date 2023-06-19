@@ -6,6 +6,7 @@ import {
   Alert,
   Button,
   Flex,
+  Center,
 } from '@mantine/core';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import jwtDecode, { InvalidTokenError } from 'jwt-decode';
@@ -17,6 +18,13 @@ import { LOGIN_URL } from './constants';
 import { DecodedToken, LoginResponse } from './types';
 import { authAction } from '../../context/authProvider/state';
 import { useAuth } from '../../hooks/useAuth';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCogs,
+  faGear,
+  faGears,
+  faWrench,
+} from '@fortawesome/free-solid-svg-icons';
 
 function Login() {
   const [{ username, password, errorMessage }, loginDispatch] = useReducer(
@@ -172,53 +180,104 @@ function Login() {
   );
 
   const displayLoginForm = (
-    <Flex direction="column" align="center" justify="center">
-      <Title order={2}>Sign In</Title>
-
+    <Flex
+      direction="column"
+      align="center"
+      justify="space-between"
+      w="100%"
+      h="100%"
+      p="lg"
+    >
+      <Flex columnGap="md">
+        <Flex direction="column" align="center" justify="center">
+          <FontAwesomeIcon icon={faWrench} color="gray" size="2x" />
+        </Flex>
+        <Title order={2} color="dimmed">
+          MacAuley Tech Repair Employee Portal
+        </Title>
+      </Flex>
       <form onSubmit={handleLoginFormSubmit}>
-        <TextInput
-          label="Username"
-          placeholder="Enter username"
-          autoComplete="off"
-          value={username}
-          ref={usernameRef}
-          onChange={(event) =>
-            loginDispatch({
-              type: loginAction.setUsername,
-              payload: event.currentTarget.value,
-            })
-          }
-          withAsterisk
-          required
-        />
-
-        <PasswordInput
-          label="Password"
-          placeholder="Enter password"
-          value={password}
-          onChange={(event) =>
-            loginDispatch({
-              type: loginAction.setPassword,
-              payload: event.currentTarget.value,
-            })
-          }
-          withAsterisk
-          required
-        />
-
-        <Button type="submit">Sign In</Button>
+        <Flex
+          direction="column"
+          align="flex-start"
+          justify="center"
+          rowGap="lg"
+          p="lg"
+          w="100%"
+          h="100%"
+        >
+          <Title order={3} color="dark">
+            Sign In
+          </Title>
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Username"
+            placeholder="Enter username"
+            autoComplete="off"
+            value={username}
+            ref={usernameRef}
+            onChange={(event) =>
+              loginDispatch({
+                type: loginAction.setUsername,
+                payload: event.currentTarget.value,
+              })
+            }
+            minLength={3}
+            maxLength={20}
+            withAsterisk
+            required
+          />
+          <PasswordInput
+            w="100%"
+            color="dark"
+            label="Password"
+            placeholder="Enter password"
+            value={password}
+            onChange={(event) =>
+              loginDispatch({
+                type: loginAction.setPassword,
+                payload: event.currentTarget.value,
+              })
+            }
+            minLength={8}
+            maxLength={32}
+            withAsterisk
+            required
+          />
+          <Flex w="100%" justify="flex-end">
+            <Button type="submit">Sign In</Button>
+          </Flex>
+        </Flex>
       </form>
 
-      <Flex direction="column" align="center" justify="center">
-        <Text>Need an Account?</Text>
+      <Flex
+        direction="row"
+        align="center"
+        justify="space-between"
+        columnGap="sm"
+      >
+        <Text color="dark">No account?</Text>
         <Text color="blue">
-          <Link to="/register">Register</Link>
+          <Link to="/register">Create one!</Link>
         </Text>
       </Flex>
     </Flex>
   );
 
-  return <main>{errorMessage ? displayError : displayLoginForm}</main>;
+  return (
+    <Center
+      style={{
+        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
+        borderRadius: '3px',
+      }}
+      w={400}
+      h={552}
+      p="lg"
+    >
+      {errorMessage ? displayError : displayLoginForm}
+    </Center>
+  );
 }
 
 export { Login };

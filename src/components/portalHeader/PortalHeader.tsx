@@ -1,11 +1,13 @@
-import { Button, Flex, Header } from '@mantine/core';
+import { Burger, Button, Flex, Header, MediaQuery, Title } from '@mantine/core';
 import { LOGOUT_URL } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
-import { LogoutResponse } from './types';
+import { LogoutResponse, PortalHeaderProps } from './types';
 import { useNavigate } from 'react-router-dom';
+import { faWrench } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-function CustomHeader() {
+function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const {
     authState: { accessToken },
   } = useAuth();
@@ -45,9 +47,24 @@ function CustomHeader() {
   }
 
   return (
-    <Header height={60} p="xs">
-      <Flex justify="space-between" align="center">
-        <p>CustomHeader</p>
+    <Header height={{ base: 50, md: 70 }} p="md">
+      <Flex justify="space-between" align="center" h="100%">
+        <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+          <Burger
+            opened={openedHeader}
+            onClick={() => setOpenedHeader((open) => !open)}
+            size="sm"
+            mr="xl"
+          />
+        </MediaQuery>
+        <Flex columnGap="md">
+          <Flex direction="column" align="center" justify="center">
+            <FontAwesomeIcon icon={faWrench} color="gray" />
+          </Flex>
+          <Title order={4} color="dimmed">
+            MacAuley Tech Repair Employee Portal
+          </Title>
+        </Flex>
         <form onSubmit={handleLogoutFormSubmit}>
           <Button variant="outline" type="submit">
             Sign Out
@@ -58,4 +75,4 @@ function CustomHeader() {
   );
 }
 
-export { CustomHeader };
+export { PortalHeader };

@@ -10,6 +10,13 @@ type NotesListSortKey = 'title' | 'text' | 'completed' | 'created' | 'updated';
 
 type NotesListTransformed = [string, [string, Note[]]];
 
+type TransformNotesForDisplayProps = {
+  notes: Note[];
+  usernameForEdit: string;
+  sortKey: NotesListSortKey;
+  sortDirection: NotesListSort;
+};
+
 type NotesListState = {
   notes: Note[];
   noteToEdit: Note;
@@ -72,4 +79,5 @@ export type {
   NotesListSort,
   NotesListSortKey,
   NotesListTransformed,
+  TransformNotesForDisplayProps,
 };

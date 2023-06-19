@@ -7,6 +7,7 @@ import {
   Textarea,
   Button,
   Loader,
+  Center,
 } from '@mantine/core';
 import { useReducer, useRef, useEffect } from 'react';
 
@@ -284,12 +285,28 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
   );
 
   const displayAddNewNoteForm = (
-    <>
-      <Title>AddNewNote</Title>
-
+    <Flex
+      direction="column"
+      align="center"
+      justify="flex-start"
+      w="100%"
+      h="100%"
+      p="lg"
+    >
+      <Title color="dark">Add new note</Title>
       <form onSubmit={handleAddNewNoteFormSubmit}>
-        <Flex direction="column">
+        <Flex
+          direction="column"
+          align="center"
+          justify="space-between"
+          rowGap="lg"
+          p="lg"
+          w={400}
+          h="100%"
+        >
           <TextInput
+            w="100%"
+            color="dark"
             ref={titleRef}
             autoComplete="off"
             label="Title"
@@ -330,6 +347,10 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
 
           {/* note content */}
           <Textarea
+            w="100%"
+            autosize
+            maxRows={10}
+            color="dark"
             autoComplete="off"
             label="Text"
             placeholder="Enter text of the note"
@@ -368,21 +389,29 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
           />
 
           {/* submit button */}
-          <Flex justify="center">
+          <Flex justify="flex-end" align="center" columnGap="lg" w="100%">
             <Button type="submit" disabled={!isValidTitle || !isValidText}>
               Submit
             </Button>
-            <Button type="button" onClick={onSubmitModalCB}>
+            <Button type="button" onClick={onSubmitModalCB} color="red">
               Cancel
             </Button>
           </Flex>
         </Flex>
       </form>
-    </>
+    </Flex>
   );
 
   return (
-    <Flex direction="column">
+    <Center
+      style={{
+        backgroundColor: 'snow',
+        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
+        borderRadius: '3px',
+      }}
+      w={400}
+      h={648}
+    >
       {errorMessage
         ? displayError
         : isSubmitting
@@ -390,7 +419,7 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
         : isSuccessful
         ? displaySuccess
         : displayAddNewNoteForm}
-    </Flex>
+    </Center>
   );
 }
 

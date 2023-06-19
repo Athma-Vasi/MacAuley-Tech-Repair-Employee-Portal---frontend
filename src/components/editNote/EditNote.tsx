@@ -7,6 +7,7 @@ import {
   TextInput,
   Textarea,
   Checkbox,
+  Center,
 } from '@mantine/core';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useReducer, useRef } from 'react';
@@ -248,10 +249,12 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
       color="green"
       className={isSuccessful ? '' : 'offscreen'}
     >
-      <Text>Successfully edited note.</Text>
-      <Button color="green" onClick={onSubmitModalCB}>
-        Close
-      </Button>
+      <Flex direction="column" rowGap="lg">
+        <Text>Successfully edited note.</Text>
+        <Button color="green" onClick={onSubmitModalCB}>
+          Close
+        </Button>
+      </Flex>
     </Alert>
   );
 
@@ -302,12 +305,28 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
   );
 
   const displayEditNoteForm = (
-    <>
-      <Title>EditNote</Title>
-
+    <Flex
+      direction="column"
+      align="center"
+      justify="flex-start"
+      w="100%"
+      h="100%"
+      p="lg"
+    >
+      <Title color="dark">Edit note</Title>
       <form onSubmit={handleEditNoteFormSubmit}>
-        <Flex direction="column">
+        <Flex
+          direction="column"
+          align="center"
+          justify="space-between"
+          rowGap="lg"
+          p="lg"
+          w={400}
+          h="100%"
+        >
           <TextInput
+            w="100%"
+            color="dark"
             ref={titleRef}
             autoComplete="off"
             label="Title"
@@ -348,6 +367,10 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
 
           {/* note content */}
           <Textarea
+            w="100%"
+            color="dark"
+            autosize
+            maxRows={10}
             autoComplete="off"
             label="Text"
             placeholder="Enter text of the note"
@@ -386,34 +409,44 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
           />
 
           {/* note completed */}
-          <Checkbox
-            label="Completed"
-            description="Check if note is completed"
-            checked={completed}
-            onChange={(event) => {
-              editNoteDispatch({
-                type: editNoteAction.setCompleted,
-                payload: { data: event.currentTarget.checked },
-              });
-            }}
-          />
+          <Flex w="100%" align="center" justify="start">
+            <Checkbox
+              label="Completed"
+              description="Check box if note is completed"
+              checked={completed}
+              onChange={(event) => {
+                editNoteDispatch({
+                  type: editNoteAction.setCompleted,
+                  payload: { data: event.currentTarget.checked },
+                });
+              }}
+            />
+          </Flex>
 
           {/* submit button */}
-          <Flex justify="center">
+          <Flex justify="flex-end" align="center" columnGap="lg" w="100%">
             <Button type="submit" disabled={!isTitleValid || !isTextValid}>
               Submit
             </Button>
-            <Button type="button" onClick={onSubmitModalCB}>
+            <Button type="button" color="red" onClick={onSubmitModalCB}>
               Cancel
             </Button>
           </Flex>
         </Flex>
       </form>
-    </>
+    </Flex>
   );
 
   return (
-    <Flex direction="column">
+    <Center
+      style={{
+        backgroundColor: 'snow',
+        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
+        borderRadius: '3px',
+      }}
+      w={400}
+      h={648}
+    >
       {isSubmitting
         ? displayLoading
         : isSuccessful
@@ -421,7 +454,7 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
         : errorMessage
         ? displayError
         : displayEditNoteForm}
-    </Flex>
+    </Center>
   );
 }
 
