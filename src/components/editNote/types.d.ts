@@ -2,7 +2,7 @@ import { Note } from '../../types';
 
 type EditNoteProps = {
   note: Note;
-  onSubmitModalCB: () => void;
+  closeModalCallback: () => void;
 };
 
 type EditNoteState = {

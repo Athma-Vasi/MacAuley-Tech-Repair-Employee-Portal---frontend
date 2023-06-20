@@ -37,7 +37,7 @@ import {
 } from '../../domElements';
 import { Loading } from '../loading';
 
-function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
+function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
   const [addNewNoteState, addNewNoteDispatch] = useReducer(
     addNewNoteReducer,
     initialAddNewNoteState
@@ -232,7 +232,7 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
       className={isSuccessful ? '' : 'offscreen'}
     >
       <Text>Successfully edited note.</Text>
-      <Button color="green" onClick={onSubmitModalCB}>
+      <Button color="green" onClick={closeModalCallback}>
         Close
       </Button>
     </Alert>
@@ -248,7 +248,7 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
       <Text ref={errorRef} aria-live="assertive">
         {errorMessage}
       </Text>
-      <Button color="yellow" onClick={onSubmitModalCB}>
+      <Button color="yellow" onClick={closeModalCallback}>
         Try Again
       </Button>
     </Alert>
@@ -291,9 +291,10 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
       justify="flex-start"
       w="100%"
       h="100%"
-      p="lg"
     >
-      <Title color="dark">Add new note</Title>
+      <Title order={2} color="dark">
+        Add new note
+      </Title>
       <form onSubmit={handleAddNewNoteFormSubmit}>
         <Flex
           direction="column"
@@ -393,7 +394,12 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
             <Button type="submit" disabled={!isValidTitle || !isValidText}>
               Submit
             </Button>
-            <Button type="button" onClick={onSubmitModalCB} color="red">
+            <Button
+              type="button"
+              onClick={closeModalCallback}
+              color="red"
+              variant="subtle"
+            >
               Cancel
             </Button>
           </Flex>
@@ -403,15 +409,7 @@ function AddNewNote({ userId, username, onSubmitModalCB }: AddNewNoteProps) {
   );
 
   return (
-    <Center
-      style={{
-        backgroundColor: 'snow',
-        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
-        borderRadius: '3px',
-      }}
-      w={400}
-      h={648}
-    >
+    <Center w={400}>
       {errorMessage
         ? displayError
         : isSubmitting

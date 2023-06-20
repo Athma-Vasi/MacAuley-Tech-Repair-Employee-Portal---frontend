@@ -463,13 +463,6 @@ function NotesList() {
 
                     const displayCompleted = (
                       <Grid.Col span={1}>
-                        {/* <Flex align="center">
-                          {completed ? (
-                            <Text color="green">Yes</Text>
-                          ) : (
-                            <Text color="red">No</Text>
-                          )}
-                        </Flex> */}
                         <Flex align="center">
                           <HoverCard
                             width={200}
@@ -569,7 +562,7 @@ function NotesList() {
   const displayEditNoteModal = (
     <Modal opened={openedEditNote} onClose={closeEditNote}>
       <Flex direction="column" align="start" justify="space-between">
-        <EditNote note={noteToEdit} onSubmitModalCB={closeEditNote} />
+        <EditNote note={noteToEdit} closeModalCallback={closeEditNote} />
       </Flex>
     </Modal>
   );
@@ -580,7 +573,7 @@ function NotesList() {
         <AddNewNote
           userId={userIdForEdit}
           username={usernameForEdit}
-          onSubmitModalCB={closeAddNewNote}
+          closeModalCallback={closeAddNewNote}
         />
       </Flex>
     </Modal>

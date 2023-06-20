@@ -3,7 +3,7 @@ import type { Note } from '../../types';
 type AddNewNoteProps = {
   userId: string;
   username: string;
-  onSubmitModalCB: () => void;
+  closeModalCallback: () => void;
 };
 
 type AddNewNoteState = {

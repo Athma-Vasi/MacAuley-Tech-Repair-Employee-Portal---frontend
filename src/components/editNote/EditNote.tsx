@@ -32,7 +32,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { authAction } from '../../context/authProvider';
 
-function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
+function EditNote({ note, closeModalCallback }: EditNoteProps) {
   const [editNoteState, editNoteDispatch] = useReducer(
     editNoteReducer,
     initialEditNoteState
@@ -251,7 +251,7 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
     >
       <Flex direction="column" rowGap="lg">
         <Text>Successfully edited note.</Text>
-        <Button color="green" onClick={onSubmitModalCB}>
+        <Button color="green" onClick={closeModalCallback}>
           Close
         </Button>
       </Flex>
@@ -268,7 +268,7 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
       <Text ref={errorRef} aria-live="assertive">
         {errorMessage}
       </Text>
-      <Button color="yellow" onClick={onSubmitModalCB}>
+      <Button color="yellow" onClick={closeModalCallback}>
         Try Again
       </Button>
     </Alert>
@@ -311,9 +311,10 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
       justify="flex-start"
       w="100%"
       h="100%"
-      p="lg"
     >
-      <Title color="dark">Edit note</Title>
+      <Title order={2} color="dark">
+        Edit note
+      </Title>
       <form onSubmit={handleEditNoteFormSubmit}>
         <Flex
           direction="column"
@@ -428,7 +429,12 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
             <Button type="submit" disabled={!isTitleValid || !isTextValid}>
               Submit
             </Button>
-            <Button type="button" color="red" onClick={onSubmitModalCB}>
+            <Button
+              type="button"
+              variant="subtle"
+              color="red"
+              onClick={closeModalCallback}
+            >
               Cancel
             </Button>
           </Flex>
@@ -438,15 +444,7 @@ function EditNote({ note, onSubmitModalCB }: EditNoteProps) {
   );
 
   return (
-    <Center
-      style={{
-        backgroundColor: 'snow',
-        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
-        borderRadius: '3px',
-      }}
-      w={400}
-      h={648}
-    >
+    <Center w={400}>
       {isSubmitting
         ? displayLoading
         : isSuccessful
