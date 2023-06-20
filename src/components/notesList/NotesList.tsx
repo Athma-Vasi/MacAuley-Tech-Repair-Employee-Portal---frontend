@@ -463,12 +463,43 @@ function NotesList() {
 
                     const displayCompleted = (
                       <Grid.Col span={1}>
-                        <Flex align="center">
+                        {/* <Flex align="center">
                           {completed ? (
                             <Text color="green">Yes</Text>
                           ) : (
                             <Text color="red">No</Text>
                           )}
+                        </Flex> */}
+                        <Flex align="center">
+                          <HoverCard
+                            width={200}
+                            shadow="md"
+                            openDelay={382}
+                            closeDelay={236}
+                          >
+                            <HoverCard.Target>
+                              <Text color="dark" style={textWrap}>
+                                {completed ? (
+                                  <Text color="green">Yes</Text>
+                                ) : (
+                                  <Text color="red">No</Text>
+                                )}
+                              </Text>
+                            </HoverCard.Target>
+                            <HoverCard.Dropdown>
+                              <Text color="dark">
+                                {completed ? (
+                                  <Text color="dark">
+                                    Yes, note has been marked completed.
+                                  </Text>
+                                ) : (
+                                  <Text color="dark">
+                                    No, note is still active.
+                                  </Text>
+                                )}
+                              </Text>
+                            </HoverCard.Dropdown>
+                          </HoverCard>
                         </Flex>
                       </Grid.Col>
                     );

@@ -291,7 +291,7 @@ function UsersList() {
             <Grid.Col span={1}>
               <Flex align="center">
                 <HoverCard
-                  width={100}
+                  width={200}
                   shadow="md"
                   openDelay={382}
                   closeDelay={236}
@@ -308,9 +308,9 @@ function UsersList() {
                   <HoverCard.Dropdown>
                     <Text color="dark">
                       {active ? (
-                        <Text color="green">Yes</Text>
+                        <Text color="dark">{`Yes, ${username} is still active.`}</Text>
                       ) : (
-                        <Text color="red">No</Text>
+                        <Text color="dark">{`No, ${username} is inactive.`}</Text>
                       )}
                     </Text>
                   </HoverCard.Dropdown>
