@@ -185,14 +185,40 @@ function UsersList() {
             updatedAt,
           } = user;
 
-          const createdDate = formatDate({
+          const createdDateShort = formatDate({
             date: createdAt,
             locale: 'en-US',
+            formatOptions: {
+              dateStyle: 'short',
+              timeStyle: 'short',
+            },
           });
 
-          const updatedDate = formatDate({
+          const createdDateFull = formatDate({
+            date: createdAt,
+            locale: 'en-US',
+            formatOptions: {
+              dateStyle: 'full',
+              timeStyle: 'full',
+            },
+          });
+
+          const updatedDateShort = formatDate({
             date: updatedAt,
             locale: 'en-US',
+            formatOptions: {
+              dateStyle: 'short',
+              timeStyle: 'short',
+            },
+          });
+
+          const updatedDateFull = formatDate({
+            date: updatedAt,
+            locale: 'en-US',
+            formatOptions: {
+              dateStyle: 'full',
+              timeStyle: 'full',
+            },
           });
 
           const displayUsername = (
@@ -297,18 +323,18 @@ function UsersList() {
             <Grid.Col span={2}>
               <Flex align="center">
                 <HoverCard
-                  width={250}
+                  width={300}
                   shadow="md"
                   openDelay={382}
                   closeDelay={236}
                 >
                   <HoverCard.Target>
                     <Text color="dark" style={textWrap}>
-                      {createdDate}
+                      {createdDateShort}
                     </Text>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
-                    <Text color="dark">{createdDate}</Text>
+                    <Text color="dark">{createdDateFull}</Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
               </Flex>
@@ -319,18 +345,18 @@ function UsersList() {
             <Grid.Col span={2}>
               <Flex align="center">
                 <HoverCard
-                  width={250}
+                  width={300}
                   shadow="md"
                   openDelay={382}
                   closeDelay={236}
                 >
                   <HoverCard.Target>
                     <Text color="dark" style={textWrap}>
-                      {updatedDate}
+                      {updatedDateShort}
                     </Text>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
-                    <Text color="dark">{updatedDate}</Text>
+                    <Text color="dark">{updatedDateFull}</Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
               </Flex>

@@ -121,12 +121,10 @@ function returnNoteContentValidationText(content: string) {
 type FormatDateProps = {
   date: Date;
   locale: string;
+  formatOptions: Intl.DateTimeFormatOptions;
 };
-function formatDate({ date, locale }: FormatDateProps): string {
-  return new Intl.DateTimeFormat(locale, {
-    dateStyle: 'short',
-    timeStyle: 'short',
-  }).format(new Date(date));
+function formatDate({ date, locale, formatOptions }: FormatDateProps): string {
+  return new Intl.DateTimeFormat(locale, formatOptions).format(new Date(date));
 }
 
 export {
