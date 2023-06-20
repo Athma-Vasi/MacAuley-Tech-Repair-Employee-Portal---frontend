@@ -22,7 +22,7 @@ const initialUsersListState: UsersListState = {
   },
   users: [],
 
-  sortKey: 'username',
+  sortKey: 'active',
   sortDirection: 'asc',
   transformedUsers: [],
 };

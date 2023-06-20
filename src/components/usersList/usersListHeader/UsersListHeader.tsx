@@ -4,8 +4,9 @@ import {
   faSortDesc,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Text } from '@mantine/core';
+import { Flex, Grid, Text } from '@mantine/core';
 import { UsersListHeaderProps } from './types';
+import { textWrap } from '../constants';
 
 function UsersListHeader({
   heading,
@@ -34,7 +35,7 @@ function UsersListHeader({
 
   if (sortKey === heading) {
     return (
-      <th>
+      <Grid.Col span={heading === 'active' ? 1 : 2}>
         <Flex justify="start" gap="xs">
           <FontAwesomeIcon
             icon={
@@ -48,7 +49,7 @@ function UsersListHeader({
               cursor: 'pointer',
               color: `${
                 sortDirection === ''
-                  ? 'darkgrey'
+                  ? '#989C9F'
                   : sortDirection === 'asc'
                   ? 'green'
                   : 'red'
@@ -56,34 +57,42 @@ function UsersListHeader({
             }}
             onClick={handleHeadingSortClick}
           />
-          <Text>{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
+          <Text
+            style={textWrap}
+            color="dark"
+          >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
         </Flex>
-      </th>
+      </Grid.Col>
     );
   } else if (heading === 'edit') {
     return (
-      <th>
+      <Grid.Col span={1}>
         <Flex justify="start" gap="xs">
-          <Text>Edit</Text>
+          <Text style={textWrap} color="dark">
+            Edit
+          </Text>
         </Flex>
-      </th>
+      </Grid.Col>
     );
   }
 
   return (
-    <th>
+    <Grid.Col span={heading === 'active' ? 1 : 2}>
       <Flex justify="start" gap="xs">
         <FontAwesomeIcon
           icon={faSort}
           style={{
             cursor: 'pointer',
-            color: 'darkgray',
+            color: '#989C9F',
           }}
           onClick={handleHeadingSortClick}
         />
-        <Text>{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
+        <Text
+          style={textWrap}
+          color="dark"
+        >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
       </Flex>
-    </th>
+    </Grid.Col>
   );
 }
 

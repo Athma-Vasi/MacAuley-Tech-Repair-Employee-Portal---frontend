@@ -73,7 +73,7 @@ function NotesListHeader({
               cursor: 'pointer',
               color: `${
                 sortDirection === ''
-                  ? 'darkgrey'
+                  ? '#989C9F'
                   : sortDirection === 'asc'
                   ? 'green'
                   : 'red'
@@ -123,9 +123,6 @@ function NotesListHeader({
         }}
       >
         <Flex justify="start" gap="xs">
-          {/* <Text color="dark" style={textWrap}>
-            Edit
-          </Text> */}
           <HoverCard width={100} shadow="md" openDelay={382} closeDelay={236}>
             <HoverCard.Target>
               <Text color="dark" style={textWrap}>
@@ -141,7 +138,7 @@ function NotesListHeader({
     );
   }
 
-  // default heading return that sets icon to ↕️ with darkgray color
+  // default heading return that sets icon to ↕️ with gray color
   return (
     <Grid.Col
       span={heading === 'completed' ? 1 : 2}
@@ -173,7 +170,7 @@ function NotesListHeader({
           icon={faSort}
           style={{
             cursor: 'pointer',
-            color: 'darkgray',
+            color: 'grey',
           }}
           onClick={handleHeadingSortClick}
         />

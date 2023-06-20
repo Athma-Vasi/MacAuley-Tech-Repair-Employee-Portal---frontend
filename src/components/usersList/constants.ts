@@ -10,4 +10,10 @@ const USERS_HEADINGS = [
   'edit',
 ];
 
-export { GET_ALL_USERS, USERS_HEADINGS };
+const textWrap: React.CSSProperties = {
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+};
+
+export { GET_ALL_USERS, USERS_HEADINGS, textWrap };

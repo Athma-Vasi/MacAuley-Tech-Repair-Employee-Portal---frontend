@@ -258,12 +258,9 @@ function NotesList() {
                 p="md"
               >
                 <Flex justify="space-between" align="center" w="100%">
-                  <Flex align="center" justify="flex-start" columnGap="lg">
-                    <Title order={4} color="dark">
-                      Username:
-                    </Title>
-                    <Text color="dark">{userName}</Text>
-                  </Flex>
+                  <Text color="dark" size="lg">
+                    {userName}
+                  </Text>
                   <Tooltip label={`Add new note for ${userName}`}>
                     <Button variant="outline">
                       <FontAwesomeIcon
@@ -302,9 +299,9 @@ function NotesList() {
                 <Grid
                   columns={10}
                   style={{
-                    backgroundColor: 'lightskyblue',
-                    borderRadius: '4px',
+                    backgroundColor: '#86B7DF',
                     opacity: '0.8',
+                    borderRadius: '4px',
                   }}
                   w="100%"
                 >
@@ -326,11 +323,11 @@ function NotesList() {
                   direction="column"
                   w="100%"
                   rowGap="lg"
-                  p="sm"
+                  p="xs"
                   justify="center"
                   align="space-between"
                 >
-                  {notesArr.map((note: Note) => {
+                  {notesArr.map((note: Note, index: number) => {
                     const {
                       _id,
                       title,
@@ -485,7 +482,18 @@ function NotesList() {
 
                     // returns a row of Grid.Col of note data
                     return (
-                      <Grid key={_id} columns={10}>
+                      <Grid
+                        key={_id}
+                        columns={10}
+                        style={
+                          index % 2 === 0
+                            ? { backgroundColor: 'white' }
+                            : {
+                                backgroundColor: '#F5F5F6',
+                                borderRadius: '4px',
+                              }
+                        }
+                      >
                         {displayTitle}
                         {displayText}
                         {displayCreatedDate}

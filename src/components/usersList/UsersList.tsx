@@ -1,4 +1,15 @@
-import { Alert, Flex, Loader, Modal, Table, Title } from '@mantine/core';
+import {
+  Alert,
+  Flex,
+  Grid,
+  Loader,
+  Modal,
+  Table,
+  Title,
+  Text,
+  HoverCard,
+  Tooltip,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useReducer } from 'react';
 import { axiosInstance } from '../../api/axios';
@@ -11,7 +22,7 @@ import {
   usersListReducer,
 } from './state';
 import { useAuth } from '../../hooks/useAuth';
-import { GET_ALL_USERS, USERS_HEADINGS } from './constants';
+import { GET_ALL_USERS, USERS_HEADINGS, textWrap } from './constants';
 import {
   GetAllUsersResponse,
   User,
@@ -163,7 +174,7 @@ function UsersList() {
   const displayUsers =
     users.length === 0
       ? null
-      : transformedUsers.map((user) => {
+      : transformedUsers.map((user: User, index: number) => {
           const {
             _id: id,
             username,
@@ -184,8 +195,151 @@ function UsersList() {
             locale: 'en-US',
           });
 
+          const displayUsername = (
+            <Grid.Col span={2}>
+              <Flex align="center">
+                <HoverCard
+                  width={250}
+                  shadow="md"
+                  openDelay={382}
+                  closeDelay={236}
+                >
+                  <HoverCard.Target>
+                    <Text color="dark" style={textWrap}>
+                      {username}
+                    </Text>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown>
+                    <Text color="dark">{username}</Text>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              </Flex>
+            </Grid.Col>
+          );
+
+          const displayEmail = (
+            <Grid.Col span={2}>
+              <Flex align="center">
+                <HoverCard
+                  width={300}
+                  shadow="md"
+                  openDelay={382}
+                  closeDelay={236}
+                >
+                  <HoverCard.Target>
+                    <Text color="dark" style={textWrap}>
+                      {email}
+                    </Text>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown>
+                    <Text color="dark">{email}</Text>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              </Flex>
+            </Grid.Col>
+          );
+
+          const displayRoles = (
+            <Grid.Col span={2}>
+              <Flex align="center">
+                <HoverCard
+                  width={250}
+                  shadow="md"
+                  openDelay={382}
+                  closeDelay={236}
+                >
+                  <HoverCard.Target>
+                    <Text color="dark" style={textWrap}>
+                      {roles}
+                    </Text>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown>
+                    <Text color="dark">{roles.join(', ')}</Text>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              </Flex>
+            </Grid.Col>
+          );
+
+          const displayActive = (
+            <Grid.Col span={1}>
+              <Flex align="center">
+                <HoverCard
+                  width={100}
+                  shadow="md"
+                  openDelay={382}
+                  closeDelay={236}
+                >
+                  <HoverCard.Target>
+                    <Text color="dark" style={textWrap}>
+                      {active ? (
+                        <Text color="green">Yes</Text>
+                      ) : (
+                        <Text color="red">No</Text>
+                      )}
+                    </Text>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown>
+                    <Text color="dark">
+                      {active ? (
+                        <Text color="green">Yes</Text>
+                      ) : (
+                        <Text color="red">No</Text>
+                      )}
+                    </Text>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              </Flex>
+            </Grid.Col>
+          );
+
+          const displayCreatedDate = (
+            <Grid.Col span={2}>
+              <Flex align="center">
+                <HoverCard
+                  width={250}
+                  shadow="md"
+                  openDelay={382}
+                  closeDelay={236}
+                >
+                  <HoverCard.Target>
+                    <Text color="dark" style={textWrap}>
+                      {createdDate}
+                    </Text>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown>
+                    <Text color="dark">{createdDate}</Text>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              </Flex>
+            </Grid.Col>
+          );
+
+          const displayUpdatedDate = (
+            <Grid.Col span={2}>
+              <Flex align="center">
+                <HoverCard
+                  width={250}
+                  shadow="md"
+                  openDelay={382}
+                  closeDelay={236}
+                >
+                  <HoverCard.Target>
+                    <Text color="dark" style={textWrap}>
+                      {updatedDate}
+                    </Text>
+                  </HoverCard.Target>
+                  <HoverCard.Dropdown>
+                    <Text color="dark">{updatedDate}</Text>
+                  </HoverCard.Dropdown>
+                </HoverCard>
+              </Flex>
+            </Grid.Col>
+          );
+
           const displayEditIcon = (
-            <td
+            <Grid.Col
+              span={1}
               style={{ cursor: 'pointer' }}
               onKeyDown={(event) => {
                 if (event.key === 'Enter') {
@@ -204,44 +358,78 @@ function UsersList() {
                 });
               }}
             >
-              <FontAwesomeIcon icon={faEdit} onClick={openUserEdit} />
-            </td>
+              <Tooltip label={`Edit ${username}`}>
+                <FontAwesomeIcon
+                  style={{
+                    cursor: 'pointer',
+                    color: 'dimgray',
+                  }}
+                  icon={faEdit}
+                  onClick={openUserEdit}
+                />
+              </Tooltip>
+            </Grid.Col>
           );
 
           const rows = (
-            <tr key={id}>
-              <td>{username}</td>
-              <td>{email}</td>
-              <td>{roles}</td>
-              <td>{active ? 'Yes' : 'No'}</td>
-              <td>{createdDate}</td>
-              <td>{updatedDate}</td>
+            <Grid
+              columns={12}
+              key={id}
+              w="100%"
+              p="xs"
+              style={
+                index % 2 === 0
+                  ? { backgroundColor: 'white' }
+                  : {
+                      backgroundColor: '#F5F5F6',
+                      borderRadius: '4px',
+                    }
+              }
+            >
+              {displayUsername}
+              {displayEmail}
+              {displayRoles}
+              {displayActive}
+              {displayCreatedDate}
+              {displayUpdatedDate}
               {displayEditIcon}
-            </tr>
+            </Grid>
           );
 
           return rows;
         });
 
   const displayTable = (
-    <Table striped highlightOnHover>
-      <thead>
-        <tr>
-          {USERS_HEADINGS.map((heading) => {
-            return (
-              <UsersListHeader
-                key={heading}
-                heading={heading}
-                usersListState={usersListState}
-                usersListAction={usersListAction}
-                usersListDispatch={usersListDispatch}
-              />
-            );
-          })}
-        </tr>
-      </thead>
-      <tbody>{displayUsers}</tbody>
-    </Table>
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      w="100%"
+      rowGap="md"
+    >
+      <Grid
+        columns={12}
+        w="100%"
+        style={{
+          backgroundColor: '#86B7DF',
+          opacity: '0.8',
+          borderRadius: '4px',
+        }}
+      >
+        {USERS_HEADINGS.map((heading) => {
+          return (
+            <UsersListHeader
+              key={heading}
+              heading={heading}
+              usersListState={usersListState}
+              usersListAction={usersListAction}
+              usersListDispatch={usersListDispatch}
+            />
+          );
+        })}
+      </Grid>
+      {displayUsers}
+    </Flex>
   );
 
   const displayEditUserModal = (
@@ -251,8 +439,10 @@ function UsersList() {
   );
 
   return (
-    <Flex direction="column" align="center" justify="center">
-      <Title>UsersList</Title>
+    <Flex direction="column" align="flex-start" justify="center" rowGap="xl">
+      <Title color="dark" order={2}>
+        UsersList
+      </Title>
       {displayEditUserModal}
       {isLoading ? displayLoading : displayTable}
     </Flex>
