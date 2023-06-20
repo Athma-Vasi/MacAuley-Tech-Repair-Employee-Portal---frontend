@@ -9,4 +9,10 @@ const NOTE_HEADINGS = [
   'edit',
 ];
 
-export { GET_ALL_NOTES, NOTE_HEADINGS };
+const textWrap: React.CSSProperties = {
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+};
+
+export { GET_ALL_NOTES, NOTE_HEADINGS, textWrap };

@@ -2,11 +2,16 @@ import {
   Box,
   Button,
   Center,
+  Container,
   Flex,
+  Grid,
+  Group,
+  HoverCard,
   Modal,
   Table,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,7 +23,7 @@ import {
   notesListAction,
   notesListReducer,
 } from './state';
-import { GET_ALL_NOTES, NOTE_HEADINGS } from './constants';
+import { GET_ALL_NOTES, NOTE_HEADINGS, textWrap } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { GetAllNotesResponse, Note } from './types';
@@ -249,211 +254,248 @@ function NotesList() {
                 align="center"
                 justify="center"
                 rowGap="lg"
+                w="100%"
+                p="md"
               >
-                <Flex
-                  justify="flex-start"
-                  align="flex-start"
-                  w="100%"
-                  columnGap="lg"
-                >
-                  <Title order={3} color="dark">
-                    {userName}
-                  </Title>
-                  <FontAwesomeIcon
-                    icon={faPlus}
-                    style={{
-                      cursor: 'pointer',
-                      color: 'dimgray',
-                      paddingTop: '4px',
-                    }}
-                    size="lg"
-                    onClick={() => {
-                      openAddNewNote();
-                      notesListDispatch({
-                        type: notesListAction.setUserIdForEdit,
-                        payload: userID,
-                      });
-                      notesListDispatch({
-                        type: notesListAction.setUsernameForEdit,
-                        payload: userName,
-                      });
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
-                        openAddNewNote();
-                      }
-                    }}
-                    onKeyUp={(event) => {
-                      if (event.key === 'Enter') {
-                        openAddNewNote();
-                      }
-                    }}
-                  />
+                <Flex justify="space-between" align="center" w="100%">
+                  <Flex align="center" justify="flex-start" columnGap="lg">
+                    <Title order={4} color="dark">
+                      Username:
+                    </Title>
+                    <Text color="dark">{userName}</Text>
+                  </Flex>
+                  <Tooltip label={`Add new note for ${userName}`}>
+                    <Button variant="outline">
+                      <FontAwesomeIcon
+                        icon={faPlus}
+                        style={{
+                          cursor: 'pointer',
+                          // color: 'dimgray',
+                        }}
+                        size="lg"
+                        onClick={() => {
+                          openAddNewNote();
+                          notesListDispatch({
+                            type: notesListAction.setUserIdForEdit,
+                            payload: userID,
+                          });
+                          notesListDispatch({
+                            type: notesListAction.setUsernameForEdit,
+                            payload: userName,
+                          });
+                        }}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            openAddNewNote();
+                          }
+                        }}
+                        onKeyUp={(event) => {
+                          if (event.key === 'Enter') {
+                            openAddNewNote();
+                          }
+                        }}
+                      />
+                    </Button>
+                  </Tooltip>
                 </Flex>
-
-                <Table
-                  striped
-                  highlightOnHover
-                  horizontalSpacing="xs"
-                  verticalSpacing="md"
+                {/* headings */}
+                <Grid
+                  columns={10}
+                  style={{
+                    backgroundColor: 'lightskyblue',
+                    borderRadius: '4px',
+                    opacity: '0.8',
+                  }}
+                  w="100%"
                 >
-                  <thead
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
-                        notesListDispatch({
-                          type: notesListAction.setUsernameForEdit,
-                          payload: userName,
-                        });
-                      }
-                    }}
-                    onKeyUp={(event) => {
-                      if (event.key === 'Enter') {
-                        notesListDispatch({
-                          type: notesListAction.setUsernameForEdit,
-                          payload: userName,
-                        });
-                      }
-                    }}
-                    onClick={() => {
-                      notesListDispatch({
-                        type: notesListAction.setUsernameForEdit,
-                        payload: userName,
-                      });
-                    }}
-                  >
-                    <tr key={userName}>
-                      {NOTE_HEADINGS.map((heading) => {
-                        return (
-                          <NotesListHeader
-                            key={heading}
-                            currentUsername={userName}
-                            notesListState={notesListState}
-                            notesListDispatch={notesListDispatch}
-                            notesListAction={notesListAction}
-                            heading={heading}
-                          />
-                        );
-                      })}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {notesArr.map((note: Note) => {
-                      const {
-                        _id,
-                        title,
-                        text,
-                        createdAt,
-                        updatedAt,
-                        user,
-                        completed,
-                        __v,
-                        username,
-                      } = note;
+                  {NOTE_HEADINGS.map((heading) => {
+                    return (
+                      <NotesListHeader
+                        key={heading}
+                        currentUsername={userName}
+                        notesListState={notesListState}
+                        notesListDispatch={notesListDispatch}
+                        notesListAction={notesListAction}
+                        heading={heading}
+                      />
+                    );
+                  })}
+                </Grid>
+                {/* notes */}
+                <Flex
+                  direction="column"
+                  w="100%"
+                  rowGap="lg"
+                  p="sm"
+                  justify="center"
+                  align="space-between"
+                >
+                  {notesArr.map((note: Note) => {
+                    const {
+                      _id,
+                      title,
+                      text,
+                      createdAt,
+                      updatedAt,
+                      completed,
+                    } = note;
 
-                      const createdDate = formatDate({
-                        date: createdAt,
-                        locale: 'en-US',
-                      });
+                    const createdDate = formatDate({
+                      date: createdAt,
+                      locale: 'en-US',
+                    });
 
-                      const updatedDate = formatDate({
-                        date: updatedAt,
-                        locale: 'en-US',
-                      });
+                    const updatedDate = formatDate({
+                      date: updatedAt,
+                      locale: 'en-US',
+                    });
 
-                      const displayEditIcon = (
-                        <td
-                          style={{
-                            cursor: 'pointer',
-                            color: 'dimgray',
-                            outline: '1px solid red',
-                          }}
-                          onKeyDown={(event) => {
-                            if (event.key === 'Enter') {
-                              openEditNote();
-                            }
-                          }}
-                          onKeyUp={(event) => {
-                            if (event.key === 'Enter') {
-                              openEditNote();
-                            }
-                          }}
-                          onClick={() => {
-                            notesListDispatch({
-                              type: notesListAction.setNoteToEdit,
-                              payload: note,
-                            });
-                          }}
-                        >
+                    const displayTitle = (
+                      <Grid.Col span={2}>
+                        <Flex align="center">
+                          <HoverCard
+                            width={350}
+                            shadow="md"
+                            openDelay={382}
+                            closeDelay={236}
+                          >
+                            <HoverCard.Target>
+                              <Text color="dark" style={textWrap}>
+                                {title}
+                              </Text>
+                            </HoverCard.Target>
+                            <HoverCard.Dropdown>
+                              <Text color="dark">{title}</Text>
+                            </HoverCard.Dropdown>
+                          </HoverCard>
+                        </Flex>
+                      </Grid.Col>
+                    );
+
+                    const displayText = (
+                      <Grid.Col span={2}>
+                        <Flex align="center">
+                          <HoverCard
+                            width={350}
+                            shadow="md"
+                            openDelay={382}
+                            closeDelay={236}
+                          >
+                            <HoverCard.Target>
+                              <Text color="dark" style={textWrap}>
+                                {text}
+                              </Text>
+                            </HoverCard.Target>
+                            <HoverCard.Dropdown>
+                              <Text color="dark">{text}</Text>
+                            </HoverCard.Dropdown>
+                          </HoverCard>
+                        </Flex>
+                      </Grid.Col>
+                    );
+
+                    const displayCreatedDate = (
+                      <Grid.Col span={2}>
+                        <Flex align="center">
+                          <HoverCard
+                            width={350}
+                            shadow="md"
+                            openDelay={382}
+                            closeDelay={236}
+                          >
+                            <HoverCard.Target>
+                              <Text color="dark" style={textWrap}>
+                                {createdDate}
+                              </Text>
+                            </HoverCard.Target>
+                            <HoverCard.Dropdown>
+                              <Text color="dark">{createdDate}</Text>
+                            </HoverCard.Dropdown>
+                          </HoverCard>
+                        </Flex>
+                      </Grid.Col>
+                    );
+
+                    const displayUpdatedDate = (
+                      <Grid.Col span={2}>
+                        <Flex align="center">
+                          <HoverCard
+                            width={350}
+                            shadow="md"
+                            openDelay={382}
+                            closeDelay={236}
+                          >
+                            <HoverCard.Target>
+                              <Text color="dark" style={textWrap}>
+                                {updatedDate}
+                              </Text>
+                            </HoverCard.Target>
+                            <HoverCard.Dropdown>
+                              <Text color="dark">{updatedDate}</Text>
+                            </HoverCard.Dropdown>
+                          </HoverCard>
+                        </Flex>
+                      </Grid.Col>
+                    );
+
+                    const displayCompleted = (
+                      <Grid.Col span={1}>
+                        <Flex align="center">
+                          {completed ? (
+                            <Text color="green">Yes</Text>
+                          ) : (
+                            <Text color="red">No</Text>
+                          )}
+                        </Flex>
+                      </Grid.Col>
+                    );
+
+                    const displayEditIcon = (
+                      <Grid.Col
+                        span={1}
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            openEditNote();
+                          }
+                        }}
+                        onKeyUp={(event) => {
+                          if (event.key === 'Enter') {
+                            openEditNote();
+                          }
+                        }}
+                        onClick={() => {
+                          notesListDispatch({
+                            type: notesListAction.setNoteToEdit,
+                            payload: note,
+                          });
+                        }}
+                      >
+                        <Flex align="center">
                           <FontAwesomeIcon
                             icon={faEdit}
                             onClick={openEditNote}
                             style={{
-                              outline: '1px solid blue',
+                              cursor: 'pointer',
+                              color: 'dimgray',
                             }}
                           />
-                        </td>
-                      );
+                        </Flex>
+                      </Grid.Col>
+                    );
 
-                      const displayCompleted = completed ? (
-                        <Text color="green">Yes</Text>
-                      ) : (
-                        <Text color="red">No</Text>
-                      );
-
-                      return (
-                        <tr key={_id}>
-                          <td
-                            style={{
-                              outline: '1px solid red',
-                            }}
-                          >
-                            <Text
-                              color="dark"
-                              style={{ outline: '1px solid blue' }}
-                            >
-                              {title}
-                            </Text>
-                          </td>
-                          <td
-                            style={{
-                              outline: '1px solid red',
-                              whiteSpace: 'nowrap',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                            }}
-                          >
-                            <Text color="dark">{text}</Text>
-                          </td>
-                          <td
-                            style={{
-                              outline: '1px solid red',
-                            }}
-                          >
-                            <Text color="dark">{createdDate}</Text>
-                          </td>
-                          <td
-                            style={{
-                              outline: '1px solid red',
-                            }}
-                          >
-                            <Text color="dark">{updatedDate}</Text>
-                          </td>
-                          <td
-                            style={{
-                              outline: '1px solid black',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                          >
-                            {displayCompleted}
-                          </td>
-                          {displayEditIcon}
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
+                    // returns a row of Grid.Col of note data
+                    return (
+                      <Grid key={_id} columns={10}>
+                        {displayTitle}
+                        {displayText}
+                        {displayCreatedDate}
+                        {displayUpdatedDate}
+                        {displayCompleted}
+                        {displayEditIcon}
+                      </Grid>
+                    );
+                  })}
+                </Flex>
               </Flex>
             );
           }
