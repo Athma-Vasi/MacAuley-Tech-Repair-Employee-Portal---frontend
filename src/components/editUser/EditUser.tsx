@@ -9,6 +9,7 @@ import {
   Radio,
   Button,
   Loader,
+  Center,
 } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,7 +28,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { authAction } from '../../context/authProvider';
 
-function EditUser({ user }: EditUserProps) {
+function EditUser({ user, closeModalCallback }: EditUserProps) {
   const [editUserState, editUserDispatch] = useReducer(
     editUserReducer,
     initialEditUserState
@@ -271,126 +272,174 @@ function EditUser({ user }: EditUserProps) {
     console.log({ editUserState });
   }, [editUserState]);
 
-  return (
-    <Flex direction="column" align="center" justify="center">
-      <Title>Edit User</Title>
+  const displayEditUserForm = (
+    <Flex
+      direction="column"
+      align="center"
+      justify="flex-start"
+      w="100%"
+      h="100%"
+    >
+      <Title order={2} color="dark">
+        Edit User
+      </Title>
 
       <form onSubmit={handleEditUserFormSubmit}>
-        <TextInput
-          label="Username"
-          placeholder={`${username}`}
-          autoComplete="off"
-          aria-describedby="usernameNote"
-          aria-invalid={isValidUsername ? 'false' : 'true'}
-          icon={
-            isValidEmail ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : null
-          }
-          value={username}
-          description={displayUsernameValidationText}
-          onChange={(event) =>
-            editUserDispatch({
-              type: editUserAction.setUsername,
-              payload: event.currentTarget.value,
-            })
-          }
-          onFocus={() =>
-            editUserDispatch({
-              type: editUserAction.setIsUsernameFocused,
-              payload: true,
-            })
-          }
-          onBlur={() =>
-            editUserDispatch({
-              type: editUserAction.setIsUsernameFocused,
-              payload: false,
-            })
-          }
-          ref={usernameRef}
-          withAsterisk
-          required
-        />
-
-        <TextInput
-          label="Email"
-          placeholder={`${email}`}
-          autoComplete="off"
-          aria-describedby="emailNote"
-          aria-invalid={isValidEmail ? 'false' : 'true'}
-          icon={
-            isValidEmail ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : null
-          }
-          value={email}
-          description={displayEmailValidationText}
-          onChange={(event) =>
-            editUserDispatch({
-              type: editUserAction.setEmail,
-              payload: event.currentTarget.value,
-            })
-          }
-          onFocus={() =>
-            editUserDispatch({
-              type: editUserAction.setIsEmailFocused,
-              payload: true,
-            })
-          }
-          onBlur={() =>
-            editUserDispatch({
-              type: editUserAction.setIsEmailFocused,
-              payload: false,
-            })
-          }
-          withAsterisk
-          required
-        />
-
-        <Checkbox.Group
-          defaultValue={['Employee']}
-          value={roles}
-          onChange={(event) => {
-            editUserDispatch({
-              type: editUserAction.setRoles,
-              payload: event as ('Employee' | 'Admin' | 'Manager')[],
-            });
-          }}
-          label="Select roles for the User"
-          description="Determines access to user actions in the application."
-          withAsterisk
+        <Flex
+          direction="column"
+          align="center"
+          justify="space-between"
+          rowGap="lg"
+          p="lg"
+          w={400}
+          h="100%"
         >
-          <Group mt="xs">
-            <Checkbox value="Employee" label="Employee" />
-            <Checkbox value="Admin" label="Admin" />
-            <Checkbox value="Manager" label="Manager" />
-          </Group>
-        </Checkbox.Group>
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Username"
+            placeholder={`${username}`}
+            autoComplete="off"
+            aria-describedby="usernameNote"
+            aria-invalid={isValidUsername ? 'false' : 'true'}
+            icon={
+              isValidUsername ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            value={username}
+            error={!isValidUsername}
+            description={displayUsernameValidationText}
+            onChange={(event) =>
+              editUserDispatch({
+                type: editUserAction.setUsername,
+                payload: event.currentTarget.value,
+              })
+            }
+            onFocus={() =>
+              editUserDispatch({
+                type: editUserAction.setIsUsernameFocused,
+                payload: true,
+              })
+            }
+            onBlur={() =>
+              editUserDispatch({
+                type: editUserAction.setIsUsernameFocused,
+                payload: false,
+              })
+            }
+            ref={usernameRef}
+            withAsterisk
+            required
+          />
 
-        <Radio.Group
-          label="Select user's status"
-          description="Determines whether user can log in the application"
-          value={active ? 'active' : 'inactive'}
-          onChange={(event) => {
-            editUserDispatch({
-              type: editUserAction.setActive,
-              payload: event === 'active' ? true : false,
-            });
-          }}
-        >
-          <Group mt="xs">
-            <Radio value={'active'} label="Active" />
-            <Radio value={'inactive'} label="Inactive" />
-          </Group>
-        </Radio.Group>
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Email"
+            placeholder={`${email}`}
+            autoComplete="off"
+            aria-describedby="emailNote"
+            aria-invalid={isValidEmail ? 'false' : 'true'}
+            icon={
+              isValidEmail ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            value={email}
+            description={displayEmailValidationText}
+            error={!isValidEmail}
+            onChange={(event) =>
+              editUserDispatch({
+                type: editUserAction.setEmail,
+                payload: event.currentTarget.value,
+              })
+            }
+            onFocus={() =>
+              editUserDispatch({
+                type: editUserAction.setIsEmailFocused,
+                payload: true,
+              })
+            }
+            onBlur={() =>
+              editUserDispatch({
+                type: editUserAction.setIsEmailFocused,
+                payload: false,
+              })
+            }
+            withAsterisk
+            required
+          />
 
-        <Button type="submit">Update</Button>
+          <Checkbox.Group
+            w="100%"
+            color="dark"
+            defaultValue={['Employee']}
+            value={roles}
+            onChange={(event) => {
+              editUserDispatch({
+                type: editUserAction.setRoles,
+                payload: event as ('Employee' | 'Admin' | 'Manager')[],
+              });
+            }}
+            label="Select roles for the User"
+            description="Determines access to user actions in the application"
+            withAsterisk
+          >
+            <Group mt="xs">
+              <Checkbox value="Employee" label="Employee" />
+              <Checkbox value="Admin" label="Admin" />
+              <Checkbox value="Manager" label="Manager" />
+            </Group>
+          </Checkbox.Group>
+
+          <Radio.Group
+            w="100%"
+            color="dark"
+            label="Select user's status"
+            description="Determines whether user can log in to the application"
+            value={active ? 'active' : 'inactive'}
+            onChange={(event) => {
+              editUserDispatch({
+                type: editUserAction.setActive,
+                payload: event === 'active' ? true : false,
+              });
+            }}
+            withAsterisk
+            required
+          >
+            <Group mt="xs" w="100%" color="dark">
+              <Radio value={'active'} label="Active" />
+              <Radio value={'inactive'} label="Inactive" />
+            </Group>
+          </Radio.Group>
+
+          <Flex w="100%" align="center" justify="flex-end" columnGap="lg">
+            <Button type="submit">Update</Button>
+            <Button
+              type="button"
+              variant="subtle"
+              color="red"
+              onClick={closeModalCallback}
+            >
+              Cancel
+            </Button>
+          </Flex>
+        </Flex>
       </form>
-
-      {isSubmitting ? displaySubmitting : null}
-      {isSuccessful ? displaySuccess : null}
-      {errorMessage ? displayError : null}
     </Flex>
+  );
+
+  return (
+    <Center w="100%">
+      {isSubmitting
+        ? displaySubmitting
+        : errorMessage
+        ? displayError
+        : isSuccessful
+        ? displaySuccess
+        : displayEditUserForm}
+    </Center>
   );
 }
 

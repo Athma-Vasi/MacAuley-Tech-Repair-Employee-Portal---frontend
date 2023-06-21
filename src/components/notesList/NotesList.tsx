@@ -580,7 +580,7 @@ function NotesList() {
   );
 
   return (
-    <Flex direction="column" rowGap="xl">
+    <Flex direction="column" align="flex-start" justify="center" rowGap="xl">
       <Title order={2} color="dark">
         Notes List
       </Title>

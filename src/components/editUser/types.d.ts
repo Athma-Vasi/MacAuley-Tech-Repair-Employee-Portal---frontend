@@ -1,5 +1,10 @@
 import type { User } from '../../types';
 
+type EditUserProps = {
+  user: User;
+  closeModalCallback: () => void;
+};
+
 type EditUserState = {
   email: string;
   isValidEmail: boolean;
@@ -49,10 +54,6 @@ type EditUserReducer = (
   state: EditUserState,
   action: EditUserDispatch
 ) => EditUserState;
-
-type EditUserProps = {
-  user: User;
-};
 
 type EditUserResponse = {
   message: string;

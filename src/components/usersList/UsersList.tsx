@@ -460,14 +460,14 @@ function UsersList() {
 
   const displayEditUserModal = (
     <Modal opened={openedUserEdit} onClose={closeUserEdit}>
-      <EditUser user={userToEdit} />
+      <EditUser user={userToEdit} closeModalCallback={closeUserEdit} />
     </Modal>
   );
 
   return (
     <Flex direction="column" align="flex-start" justify="center" rowGap="xl">
       <Title color="dark" order={2}>
-        UsersList
+        Users list
       </Title>
       {displayEditUserModal}
       {isLoading ? displayLoading : displayTable}
