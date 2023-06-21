@@ -33,6 +33,7 @@ import { axiosInstance } from '../../api/axios';
 import { authAction } from '../../context/authProvider';
 import { Success } from '../success';
 import { CustomError } from '../customError';
+import { AxiosRequestConfig } from 'axios';
 
 function EditNote({ note, closeModalCallback }: EditNoteProps) {
   const [editNoteState, editNoteDispatch] = useReducer(
@@ -158,7 +159,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
     const controller = new AbortController();
     const { signal } = controller;
 
-    const axiosConfig = {
+    const axiosConfig: AxiosRequestConfig = {
       method: 'patch',
       signal,
       url: EDIT_NOTE_URL,

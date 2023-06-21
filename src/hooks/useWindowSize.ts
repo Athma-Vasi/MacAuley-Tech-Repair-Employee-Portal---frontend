@@ -1,36 +1,46 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { BreakPoints } from '../types';
 
 type WindowSize = {
-  width: number;
-  height: number;
+  windowSize: BreakPoints;
 };
 
-function useWindowSize(): {
-  windowWidth: number;
-  windowHeight: number;
-} {
+function useWindowSize(): WindowSize {
   const [windowSize, setWindowSize] = useState<WindowSize>({
-    width: 0,
-    height: 0,
+    windowSize:
+      window.innerWidth < 768
+        ? 'xs'
+        : window.innerWidth < 1024
+        ? 'sm'
+        : window.innerWidth < 1184
+        ? 'md'
+        : window.innerWidth < 1440
+        ? 'lg'
+        : 'xl',
   });
 
-  useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-
-    window.addEventListener('resize', handleResize);
-    handleResize();
-
-    return () => window.removeEventListener('resize', handleResize);
+  const setSize = useCallback(() => {
+    setWindowSize({
+      windowSize:
+        window.innerWidth < 768
+          ? 'xs'
+          : window.innerWidth < 1024
+          ? 'sm'
+          : window.innerWidth < 1184
+          ? 'md'
+          : window.innerWidth < 1440
+          ? 'lg'
+          : 'xl',
+    });
   }, []);
 
+  useEffect(() => {
+    window.addEventListener('resize', setSize);
+    return () => window.removeEventListener('resize', setSize);
+  }, [setSize]);
+
   return {
-    windowWidth: windowSize.width ?? 0,
-    windowHeight: windowSize.height ?? 0,
+    windowSize: windowSize.windowSize ?? 'xs',
   };
 }
 

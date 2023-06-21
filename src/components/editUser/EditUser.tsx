@@ -28,6 +28,7 @@ import { authAction } from '../../context/authProvider';
 import { Success } from '../success';
 import { Loading } from '../loading';
 import { CustomError } from '../customError';
+import { AxiosRequestConfig } from 'axios';
 
 function EditUser({ user, closeModalCallback }: EditUserProps) {
   const [editUserState, editUserDispatch] = useReducer(
@@ -50,6 +51,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
   } = editUserState;
 
   const { authState, authDispatch } = useAuth();
+  const { accessToken } = authState;
 
   const usernameRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -119,42 +121,39 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
       payload: true,
     });
 
-    try {
-      const { accessToken } = authState;
-      const axiosConfig = {
-        method: 'patch',
-        url: PATCH_URL,
-        data: {
-          id,
-          username,
-          email,
-          active,
-          roles,
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        withCredentials: true,
-      };
+    const controller = new AbortController();
+    const { signal } = controller;
 
-      const response = await axiosInstance<EditUserResponse>(axiosConfig);
+    const editUserObj = {
+      id,
+      username,
+      email,
+      active,
+      roles,
+    };
+
+    const axiosRequestConfig: AxiosRequestConfig = {
+      method: 'patch',
+      signal,
+      url: PATCH_URL,
+      data: editUserObj,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    };
+
+    try {
+      const response = await axiosInstance<EditUserResponse>(
+        axiosRequestConfig
+      );
       const { status } = response;
 
       if (status === 200) {
         editUserDispatch({
           type: editUserAction.setIsSuccessful,
           payload: true,
-        });
-
-        authDispatch({
-          type: authAction.setAllAuthState,
-          payload: {
-            ...authState,
-            username,
-            roles,
-            errorMessage: '',
-          },
         });
       }
     } catch (error: any) {
@@ -210,6 +209,8 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
         type: editUserAction.setIsSubmitting,
         payload: false,
       });
+
+      controller.abort();
     }
   }
 

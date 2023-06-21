@@ -30,6 +30,7 @@ const initialNotesListState: NotesListState = {
   usernameForEdit: '',
   isLoading: false,
   errorMessage: '',
+  triggerGetAllNotes: false,
 };
 
 const notesListAction: NotesListAction = {
@@ -48,6 +49,7 @@ const notesListAction: NotesListAction = {
   setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
   setAllNotes: 'setAllNotes',
+  setTriggerGetAllNotes: 'setTriggerGetAllNotes',
 };
 
 function notesListReducer(
@@ -133,6 +135,11 @@ function notesListReducer(
       return {
         ...state,
         notes: action.payload as Note[],
+      };
+    case notesListAction.setTriggerGetAllNotes:
+      return {
+        ...state,
+        triggerGetAllNotes: action.payload as boolean,
       };
     default:
       return state;

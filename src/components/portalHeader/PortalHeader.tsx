@@ -6,6 +6,7 @@ import { LogoutResponse, PortalHeaderProps } from './types';
 import { useNavigate } from 'react-router-dom';
 import { faWrench } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ThemeSwitch } from '../themeSwitch';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const {
@@ -57,6 +58,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
             mr="xl"
           />
         </MediaQuery>
+        {/* title */}
         <Flex columnGap="md">
           <Flex direction="column" align="center" justify="center">
             <FontAwesomeIcon icon={faWrench} color="gray" />
@@ -65,6 +67,10 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
             MacAuley Tech Repair Employee Portal
           </Title>
         </Flex>
+        {/* theme switch */}
+        <ThemeSwitch />
+
+        {/* logout button */}
         <form onSubmit={handleLogoutFormSubmit}>
           <Button variant="outline" type="submit">
             Sign Out

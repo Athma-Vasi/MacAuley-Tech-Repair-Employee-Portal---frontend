@@ -6,6 +6,7 @@ import { MantineProvider } from '@mantine/core';
 import './index.css';
 import App from './App';
 import { AuthProvider } from './context/authProvider';
+import { GlobalProvider } from './context/globalProvider';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -13,13 +14,13 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <MantineProvider>
+      <GlobalProvider>
         <BrowserRouter>
           <Routes>
             <Route path="/*" element={<App />} />
           </Routes>
         </BrowserRouter>
-      </MantineProvider>
+      </GlobalProvider>
     </AuthProvider>
   </React.StrictMode>
 );

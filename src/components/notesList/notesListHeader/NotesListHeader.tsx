@@ -8,6 +8,8 @@ import { Flex, Grid, HoverCard, Text } from '@mantine/core';
 
 import { NotesListHeaderProps } from './types';
 import { textWrap } from '../constants';
+import { useGlobalState } from '../../../hooks/useGlobalState';
+import { colors } from '../../../constants';
 
 function NotesListHeader({
   heading,
@@ -17,6 +19,9 @@ function NotesListHeader({
   notesListDispatch,
 }: NotesListHeaderProps) {
   const { usernameForEdit, sortDirection, sortKey } = notesListState;
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
 
   function handleHeadingSortClick(
     _event: React.MouseEvent<SVGSVGElement, MouseEvent>
@@ -32,6 +37,11 @@ function NotesListHeader({
         sortDirection === '' ? 'asc' : sortDirection === 'asc' ? 'desc' : '',
     });
   }
+
+  const { darkTextColor, lightTextColor, lightIconColor, darkIconColor } =
+    colors;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+  const iconColor = colorScheme === 'dark' ? lightIconColor : darkIconColor;
 
   if (currentUsername === usernameForEdit && sortKey === heading) {
     return (
@@ -73,7 +83,7 @@ function NotesListHeader({
               cursor: 'pointer',
               color: `${
                 sortDirection === ''
-                  ? '#989C9F'
+                  ? iconColor
                   : sortDirection === 'asc'
                   ? 'green'
                   : 'red'
@@ -84,12 +94,12 @@ function NotesListHeader({
           <HoverCard width={150} shadow="md" openDelay={382} closeDelay={236}>
             <HoverCard.Target>
               <Text
-                color="dark"
+                color={textColor}
                 style={textWrap}
               >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              <Text color="dark">{`Note ${heading}`}</Text>
+              <Text color={textColor}>{`Note ${heading}`}</Text>
             </HoverCard.Dropdown>
           </HoverCard>
         </Flex>
@@ -125,12 +135,12 @@ function NotesListHeader({
         <Flex justify="start" gap="xs">
           <HoverCard width={100} shadow="md" openDelay={382} closeDelay={236}>
             <HoverCard.Target>
-              <Text color="dark" style={textWrap}>
+              <Text color={textColor} style={textWrap}>
                 Edit
               </Text>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              <Text color="dark">Edit note details</Text>
+              <Text color={textColor}>Edit note details</Text>
             </HoverCard.Dropdown>
           </HoverCard>
         </Flex>
@@ -170,7 +180,7 @@ function NotesListHeader({
           icon={faSort}
           style={{
             cursor: 'pointer',
-            color: 'grey',
+            color: iconColor,
           }}
           onClick={handleHeadingSortClick}
         />
@@ -178,12 +188,12 @@ function NotesListHeader({
         <HoverCard width={150} shadow="md" openDelay={382} closeDelay={236}>
           <HoverCard.Target>
             <Text
-              color="dark"
+              color={textColor}
               style={textWrap}
             >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
           </HoverCard.Target>
           <HoverCard.Dropdown>
-            <Text color="dark">{`Note ${heading}`}</Text>
+            <Text color={textColor}>{`Note ${heading}`}</Text>
           </HoverCard.Dropdown>
         </HoverCard>
       </Flex>

@@ -19,6 +19,7 @@ type SortUsersByKeyProps = {
 type UsersListState = {
   errorMessage: string;
   isLoading: boolean;
+  triggerGetAllUsers: boolean;
   userToEdit: User;
   users: User[];
 
@@ -30,6 +31,7 @@ type UsersListState = {
 type UsersListAction = {
   setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
+  setTriggerGetAllUsers: 'setTriggerGetAllUsers';
 
   setEmail: 'setEmail';
   setUsername: 'setUsername';

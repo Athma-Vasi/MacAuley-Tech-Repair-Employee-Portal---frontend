@@ -21,4 +21,6 @@ type User = {
   __v: number;
 };
 
-export type { Note, User };
+type BreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
+export type { Note, User, BreakPoints };

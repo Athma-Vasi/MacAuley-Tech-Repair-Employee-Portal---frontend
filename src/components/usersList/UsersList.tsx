@@ -6,6 +6,8 @@ import {
   Text,
   HoverCard,
   Tooltip,
+  Button,
+  Space,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useReducer } from 'react';
@@ -28,10 +30,16 @@ import { Loading } from '../loading';
 import { sortUsersByKey } from './utils';
 import { UsersListHeader } from './usersListHeader';
 import { CustomError } from '../customError';
+import { AxiosRequestConfig } from 'axios';
+import { useGlobalState } from '../../hooks/useGlobalState';
 
 function UsersList() {
   const { authState, authDispatch } = useAuth();
   const { accessToken, roles, userId } = authState;
+
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
 
   const [usersListState, usersListDispatch] = useReducer(
     usersListReducer,
@@ -49,6 +57,7 @@ function UsersList() {
     sortDirection,
     sortKey,
     transformedUsers,
+    triggerGetAllUsers,
   } = usersListState;
 
   // set loading to true upon initial render
@@ -59,16 +68,15 @@ function UsersList() {
     });
   }, []);
 
-  // grab users from database and dispatch to reducer to update state
+  // grab users from database and dispatch to reducer to update state and trigger on refresh button click
   // don't need to check for roles here because only manager or admin can access this page
   useEffect(() => {
     // get all users from database upon initial render
     async function getAllUsers() {
-      // create an AbortController instance to cancel the request if the component unmounts
       const controller = new AbortController();
       const { signal } = controller;
 
-      const axiosRequestConfig = {
+      const axiosRequestConfig: AxiosRequestConfig = {
         method: 'get',
         signal,
         url: GET_ALL_USERS,
@@ -150,6 +158,7 @@ function UsersList() {
           payload: { data: false },
         });
 
+        // cleanup function to cancel axios request
         controller.abort();
       }
     }
@@ -157,7 +166,10 @@ function UsersList() {
     getAllUsers();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [triggerGetAllUsers]);
+
+  const textColor = colorScheme === 'dark' ? '#E8EAEC' : 'dark';
+  const tableBackgroundColor = colorScheme === 'dark' ? '#989C9F' : '#86B7DF';
 
   useEffect(() => {
     const sortedUsers = sortUsersByKey({
@@ -476,10 +488,31 @@ function UsersList() {
   );
 
   return (
-    <Flex direction="column" align="flex-start" justify="center" rowGap="xl">
-      <Title color="dark" order={2}>
-        Users list
-      </Title>
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      rowGap="xl"
+      w="100%"
+    >
+      <Flex w="100%" align="center" justify="space-between">
+        <Title color="dark" order={2}>
+          Users list
+        </Title>
+
+        <Button
+          type="button"
+          onClick={() =>
+            usersListDispatch({
+              type: usersListAction.setTriggerGetAllUsers,
+              payload: { data: !triggerGetAllUsers },
+            })
+          }
+        >
+          Refresh
+        </Button>
+      </Flex>
+      <Space h="lg" />
       {displayEditUserModal}
       {errorMessage ? displayError : isLoading ? displayLoading : displayTable}
     </Flex>

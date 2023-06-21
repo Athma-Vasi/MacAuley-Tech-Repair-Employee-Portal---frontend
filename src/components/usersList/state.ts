@@ -10,6 +10,7 @@ import {
 const initialUsersListState: UsersListState = {
   errorMessage: '',
   isLoading: false,
+  triggerGetAllUsers: false,
   userToEdit: {
     _id: '',
     email: '',
@@ -30,6 +31,7 @@ const initialUsersListState: UsersListState = {
 const usersListAction: UsersListAction = {
   setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
+  setTriggerGetAllUsers: 'setTriggerGetAllUsers',
 
   setEmail: 'setEmail',
   setUsername: 'setUsername',
@@ -58,6 +60,12 @@ function usersListReducer(
       return {
         ...state,
         isLoading: action.payload.data as boolean,
+      };
+
+    case usersListAction.setTriggerGetAllUsers:
+      return {
+        ...state,
+        triggerGetAllUsers: action.payload.data as boolean,
       };
 
     case usersListAction.setEmail:

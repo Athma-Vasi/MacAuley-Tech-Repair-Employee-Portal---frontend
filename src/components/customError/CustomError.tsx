@@ -15,7 +15,7 @@ function CustomError({
       title="Warning!"
       // allows error message to be read by screen reader instead of removing it from the DOM
       className={isError ? '' : 'offscreen'}
-      w="100%"
+      w={400}
     >
       <Flex direction="column" align="flex-start" justify="center" rowGap="xl">
         <Text color="dark" ref={ref} aria-live="assertive">
@@ -36,16 +36,7 @@ function CustomError({
             >
               Close
             </Button>
-          ) : (
-            <Button
-              color="red"
-              variant="filled"
-              type="button"
-              onClick={() => window.location.reload()}
-            >
-              Close
-            </Button>
-          )}
+          ) : null}
         </Flex>
       </Flex>
     </Alert>

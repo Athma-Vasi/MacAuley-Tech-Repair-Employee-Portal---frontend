@@ -1,3 +1,0 @@
-function ThemeProvider() {}
-
-export { ThemeProvider };

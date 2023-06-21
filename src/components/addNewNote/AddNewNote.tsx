@@ -35,6 +35,7 @@ import {
 } from '../../domElements';
 import { Loading } from '../loading';
 import { Success } from '../success';
+import { AxiosRequestConfig } from 'axios';
 
 function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
   const [addNewNoteState, addNewNoteDispatch] = useReducer(
@@ -139,16 +140,18 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
     const controller = new AbortController();
     const { signal } = controller;
 
+    const addNewNoteObj = {
+      user: userId,
+      title,
+      text,
+    };
+
     try {
-      const axiosConfig = {
+      const axiosConfig:AxiosRequestConfig = {
         method: 'post',
         signal,
         url: POST_NEW_NOTE,
-        data: {
-          user: userId,
-          title,
-          text,
-        },
+        data: addNewNoteObj,
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,

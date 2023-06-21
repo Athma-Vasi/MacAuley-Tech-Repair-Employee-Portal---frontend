@@ -12,7 +12,9 @@ function RequireAuth({ allowedRoles }: RequireAuthProps) {
   // if the user is authenticated and has the allowed role, render the protected route
   // else if user is logged in but does not have the allowed role, redirect to login page
   // else if user is not logged in, redirect to login page
-  return authState.roles.find((role) => allowedRoles.includes(role)) ? (
+  return authState.roles.find((role: 'Admin' | 'Manager' | 'Employee') =>
+    allowedRoles.includes(role)
+  ) ? (
     <Outlet />
   ) : authState.isLoggedIn ? (
     <Navigate to="unauthorized" replace state={{ from: location }} />

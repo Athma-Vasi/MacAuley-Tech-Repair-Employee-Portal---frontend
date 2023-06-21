@@ -4,6 +4,7 @@ import {
   Grid,
   HoverCard,
   Modal,
+  Space,
   Text,
   Title,
   Tooltip,
@@ -30,6 +31,9 @@ import { formatDate } from '../../utils';
 import { Loading } from '../loading';
 import { NotesListHeader } from './notesListHeader';
 import { CustomError } from '../customError';
+import { AxiosRequestConfig } from 'axios';
+import { useGlobalState } from '../../hooks/useGlobalState';
+import { colors } from '../../constants';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
@@ -43,10 +47,10 @@ function NotesList() {
     usernameForEdit,
     isLoading,
     errorMessage,
-
     sortKey,
     sortDirection,
     transformedNotes,
+    triggerGetAllNotes,
   } = notesListState;
 
   const {
@@ -54,10 +58,13 @@ function NotesList() {
     authDispatch,
   } = useAuth();
 
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
+
   // for opening and closing the edit modal
   const [openedEditNote, { open: openEditNote, close: closeEditNote }] =
     useDisclosure(false);
-
   // for opening and closing the add new note modal
   const [openedAddNewNote, { open: openAddNewNote, close: closeAddNewNote }] =
     useDisclosure(false);
@@ -70,7 +77,7 @@ function NotesList() {
     });
   }, []);
 
-  // grab notes from database and dispatch to reducer to update state
+  // grab notes from database and dispatch to reducer to update state and trigger on refresh button click
   useEffect(() => {
     async function getAllNotes() {
       notesListDispatch({
@@ -82,30 +89,19 @@ function NotesList() {
       const { signal } = controller;
 
       // if user is admin or manager, get all notes and allow them to edit any note
-      let axiosConfig = {};
-      if (roles.includes('Admin') || roles.includes('Manager')) {
-        axiosConfig = {
-          method: 'get',
-          signal,
-          url: GET_ALL_NOTES,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          withCredentials: true,
-        };
-      }
-      // if user is not admin or manager, get only their notes and allow them to edit only their notes
-      else {
-        axiosConfig = {
-          method: 'get',
-          signal,
-          url: `${GET_ALL_NOTES}/${userId}`,
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          withCredentials: true,
-        };
-      }
+      // else if user is employee, get only their notes and allow them to edit only their notes
+      const axiosConfig: AxiosRequestConfig = {
+        method: 'get',
+        signal,
+        url:
+          roles.includes('Admin') || roles.includes('Manager')
+            ? GET_ALL_NOTES
+            : `${GET_ALL_NOTES}/${userId}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        withCredentials: true,
+      };
 
       try {
         const response = await axiosInstance<GetAllNotesResponse>(axiosConfig);
@@ -179,9 +175,7 @@ function NotesList() {
     }
 
     getAllNotes();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [triggerGetAllNotes]);
 
   const addNoteButton = (
     <Button
@@ -210,14 +204,6 @@ function NotesList() {
     >
       Add Note
     </Button>
-  );
-
-  const displayError = (
-    <CustomError
-      message={errorMessage}
-      isError={errorMessage ? true : false}
-      link={{ address: '/', text: 'Back to home' }}
-    />
   );
 
   const displayLoading = <Loading dataDirection="load" />;
@@ -255,8 +241,25 @@ function NotesList() {
     console.log({ transformedNotes });
   }, [transformedNotes]);
 
+  const {
+    lightTextColor,
+    darkTextColor,
+    darkHeaderBGColor,
+    darkIconColor,
+    darkRowBGColor,
+    lightHeaderBGColor,
+    lightIconColor,
+    lightRowBGColor,
+  } = colors;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+  const notesHeadersBGColor =
+    colorScheme === 'dark' ? lightHeaderBGColor : darkHeaderBGColor;
+  const notesRowsBGColorDark =
+    colorScheme === 'dark' ? lightRowBGColor : darkRowBGColor;
+  const iconColor = colorScheme === 'dark' ? lightIconColor : darkIconColor;
+
   const displayNotes =
-    notes.length === 0
+    transformedNotes.length === 0
       ? displayNotesAbsense
       : transformedNotes.map(
           ([userName, [userID, notesArr]]: [string, [string, Note[]]]) => {
@@ -273,7 +276,7 @@ function NotesList() {
                 p="md"
               >
                 <Flex justify="space-between" align="center" w="100%">
-                  <Text color="dark" size="lg">
+                  <Text color={textColor} size="lg">
                     {userName}
                   </Text>
                   <Tooltip label={`Add new note for ${userName}`}>
@@ -282,7 +285,6 @@ function NotesList() {
                         icon={faPlus}
                         style={{
                           cursor: 'pointer',
-                          // color: 'dimgray',
                         }}
                         size="lg"
                         onClick={() => {
@@ -314,8 +316,8 @@ function NotesList() {
                 <Grid
                   columns={10}
                   style={{
-                    backgroundColor: '#86B7DF',
-                    opacity: '0.8',
+                    backgroundColor: notesHeadersBGColor,
+                    opacity: colorScheme === 'light' ? '0.8' : '1',
                     borderRadius: '4px',
                   }}
                   w="100%"
@@ -398,12 +400,12 @@ function NotesList() {
                             closeDelay={236}
                           >
                             <HoverCard.Target>
-                              <Text color="dark" style={textWrap}>
+                              <Text color={textColor} style={textWrap}>
                                 {title}
                               </Text>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>
-                              <Text color="dark">{title}</Text>
+                              <Text color={textColor}>{title}</Text>
                             </HoverCard.Dropdown>
                           </HoverCard>
                         </Flex>
@@ -420,12 +422,12 @@ function NotesList() {
                             closeDelay={236}
                           >
                             <HoverCard.Target>
-                              <Text color="dark" style={textWrap}>
+                              <Text color={textColor} style={textWrap}>
                                 {text}
                               </Text>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>
-                              <Text color="dark">{text}</Text>
+                              <Text color={textColor}>{text}</Text>
                             </HoverCard.Dropdown>
                           </HoverCard>
                         </Flex>
@@ -442,12 +444,12 @@ function NotesList() {
                             closeDelay={236}
                           >
                             <HoverCard.Target>
-                              <Text color="dark" style={textWrap}>
+                              <Text color={textColor} style={textWrap}>
                                 {createdDateShort}
                               </Text>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>
-                              <Text color="dark">{createdDateFull}</Text>
+                              <Text color={textColor}>{createdDateFull}</Text>
                             </HoverCard.Dropdown>
                           </HoverCard>
                         </Flex>
@@ -464,12 +466,12 @@ function NotesList() {
                             closeDelay={236}
                           >
                             <HoverCard.Target>
-                              <Text color="dark" style={textWrap}>
+                              <Text color={textColor} style={textWrap}>
                                 {updatedDateShort}
                               </Text>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>
-                              <Text color="dark">{updatedDateFull}</Text>
+                              <Text color={textColor}>{updatedDateFull}</Text>
                             </HoverCard.Dropdown>
                           </HoverCard>
                         </Flex>
@@ -486,7 +488,7 @@ function NotesList() {
                             closeDelay={236}
                           >
                             <HoverCard.Target>
-                              <Text color="dark" style={textWrap}>
+                              <Text color={textColor} style={textWrap}>
                                 {completed ? (
                                   <Text color="green">Yes</Text>
                                 ) : (
@@ -495,13 +497,13 @@ function NotesList() {
                               </Text>
                             </HoverCard.Target>
                             <HoverCard.Dropdown>
-                              <Text color="dark">
+                              <Text color={textColor}>
                                 {completed ? (
-                                  <Text color="dark">
+                                  <Text color={textColor}>
                                     Yes, note has been marked completed.
                                   </Text>
                                 ) : (
-                                  <Text color="dark">
+                                  <Text color={textColor}>
                                     No, note is still active.
                                   </Text>
                                 )}
@@ -538,7 +540,7 @@ function NotesList() {
                             onClick={openEditNote}
                             style={{
                               cursor: 'pointer',
-                              color: 'dimgray',
+                              color: iconColor,
                             }}
                           />
                         </Flex>
@@ -552,9 +554,12 @@ function NotesList() {
                         columns={10}
                         style={
                           index % 2 === 0
-                            ? { backgroundColor: 'white' }
+                            ? {
+                                borderRadius: '4px',
+                              }
                             : {
-                                backgroundColor: '#F5F5F6',
+                                backgroundColor: notesRowsBGColorDark,
+
                                 borderRadius: '4px',
                               }
                         }
@@ -573,6 +578,10 @@ function NotesList() {
             );
           }
         );
+
+  const displayError = (
+    <CustomError message={errorMessage} isError={errorMessage ? true : false} />
+  );
 
   const displayEditNoteModal = (
     <Modal opened={openedEditNote} onClose={closeEditNote}>
@@ -595,13 +604,33 @@ function NotesList() {
   );
 
   return (
-    <Flex direction="column" align="flex-start" justify="center" rowGap="xl">
-      <Title order={2} color="dark">
-        Notes List
-      </Title>
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      rowGap="xl"
+      w="100%"
+    >
+      <Flex align="center" justify="space-between" w="100%">
+        <Title order={2} color="dark">
+          Notes List
+        </Title>
+        <Button
+          onClick={() =>
+            notesListDispatch({
+              type: notesListAction.setTriggerGetAllNotes,
+              payload: !triggerGetAllNotes,
+            })
+          }
+        >
+          Refresh
+        </Button>
+      </Flex>
+      <Space h="lg" />
       {displayAddNewNoteModal}
       {displayEditNoteModal}
-      {errorMessage ? displayError : isLoading ? displayLoading : displayNotes}
+      {errorMessage ? displayError : null}
+      {isLoading ? displayLoading : displayNotes}
     </Flex>
   );
 }

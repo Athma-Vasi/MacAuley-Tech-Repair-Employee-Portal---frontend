@@ -29,6 +29,7 @@ type NotesListState = {
 
   isLoading: boolean;
   errorMessage: string;
+  triggerGetAllNotes: boolean;
 };
 
 type NotesListAction = {
@@ -47,6 +48,7 @@ type NotesListAction = {
   setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
   setAllNotes: 'setAllNotes';
+  setTriggerGetAllNotes: 'setTriggerGetAllNotes';
 };
 
 type NotesListPayload =
