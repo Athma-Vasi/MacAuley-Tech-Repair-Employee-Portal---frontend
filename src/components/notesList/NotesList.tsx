@@ -1,14 +1,9 @@
 import {
-  Box,
   Button,
-  Center,
-  Container,
   Flex,
   Grid,
-  Group,
   HoverCard,
   Modal,
-  Table,
   Text,
   Title,
   Tooltip,
@@ -34,6 +29,7 @@ import { AddNewNote } from '../addNewNote';
 import { formatDate } from '../../utils';
 import { Loading } from '../loading';
 import { NotesListHeader } from './notesListHeader';
+import { CustomError } from '../customError';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
@@ -82,11 +78,15 @@ function NotesList() {
         payload: true,
       });
 
+      const controller = new AbortController();
+      const { signal } = controller;
+
       // if user is admin or manager, get all notes and allow them to edit any note
       let axiosConfig = {};
       if (roles.includes('Admin') || roles.includes('Manager')) {
         axiosConfig = {
           method: 'get',
+          signal,
           url: GET_ALL_NOTES,
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -98,6 +98,7 @@ function NotesList() {
       else {
         axiosConfig = {
           method: 'get',
+          signal,
           url: `${GET_ALL_NOTES}/${userId}`,
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -167,15 +168,19 @@ function NotesList() {
             payload: 'An unknown error occurred. Please try again.',
           });
         }
-
+      } finally {
         notesListDispatch({
           type: notesListAction.setIsLoading,
           payload: false,
         });
+
+        controller.abort();
       }
     }
 
     getAllNotes();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addNoteButton = (
@@ -207,7 +212,15 @@ function NotesList() {
     </Button>
   );
 
-  const displayLoading = <Loading />;
+  const displayError = (
+    <CustomError
+      message={errorMessage}
+      isError={errorMessage ? true : false}
+      link={{ address: '/', text: 'Back to home' }}
+    />
+  );
+
+  const displayLoading = <Loading dataDirection="load" />;
 
   const displayNotesAbsense =
     roles.includes('Admin') || roles.includes('Manager') ? (
@@ -247,7 +260,9 @@ function NotesList() {
       ? displayNotesAbsense
       : transformedNotes.map(
           ([userName, [userID, notesArr]]: [string, [string, Note[]]]) => {
-            return (
+            return notesArr.length === 0 ? (
+              <Text color="dark">{`${userName} does not have any notes to display`}</Text>
+            ) : (
               <Flex
                 key={userName}
                 direction="column"
@@ -586,7 +601,7 @@ function NotesList() {
       </Title>
       {displayAddNewNoteModal}
       {displayEditNoteModal}
-      {isLoading ? displayLoading : displayNotes}
+      {errorMessage ? displayError : isLoading ? displayLoading : displayNotes}
     </Flex>
   );
 }

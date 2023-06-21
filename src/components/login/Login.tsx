@@ -25,6 +25,7 @@ import {
   faGears,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons';
+import { CustomError } from '../customError';
 
 function Login() {
   const [{ username, password, errorMessage }, loginDispatch] = useReducer(
@@ -62,11 +63,25 @@ function Login() {
       password,
     };
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     try {
       loginDispatch({
         type: loginAction.setIsLoading,
         payload: true,
       });
+
+      const axiosConfig = {
+        method: 'post',
+        signal,
+        url: LOGIN_URL,
+        data: loginObj,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      };
 
       const response = await axiosInstance.post<LoginResponse>(
         LOGIN_URL,
@@ -164,19 +179,17 @@ function Login() {
         type: loginAction.setIsLoading,
         payload: false,
       });
+
+      controller.abort();
     }
   }
 
   const displayError = (
-    <Alert
-      title="Warning!"
-      color="yellow"
-      className={errorMessage ? '' : 'offscreen'}
-    >
-      <Text ref={errorRef} aria-live="assertive">
-        {errorMessage}
-      </Text>
-    </Alert>
+    <CustomError
+      ref={errorRef}
+      isError={errorMessage ? true : false}
+      message={errorMessage}
+    />
   );
 
   const displayLoginForm = (
@@ -188,10 +201,10 @@ function Login() {
       h="100%"
       p="lg"
     >
-      <Flex columnGap="md">
-        <Flex direction="column" align="center" justify="center">
+      <Flex columnGap="md" w="100%" justify="space-between">
+        <Center>
           <FontAwesomeIcon icon={faWrench} color="gray" size="2x" />
-        </Flex>
+        </Center>
         <Title order={2} color="dimmed">
           MacAuley Tech Repair Employee Portal
         </Title>
@@ -269,7 +282,8 @@ function Login() {
     <Center
       style={{
         boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
-        borderRadius: '3px',
+        borderRadius: '4px',
+        backgroundColor: 'white',
       }}
       w={400}
       h={552}

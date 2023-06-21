@@ -1,10 +1,7 @@
 import {
-  Alert,
   Flex,
   Grid,
-  Loader,
   Modal,
-  Table,
   Title,
   Text,
   HoverCard,
@@ -23,18 +20,14 @@ import {
 } from './state';
 import { useAuth } from '../../hooks/useAuth';
 import { GET_ALL_USERS, USERS_HEADINGS, textWrap } from './constants';
-import {
-  GetAllUsersResponse,
-  User,
-  UsersListSort,
-  UsersListSortKey,
-} from './types';
+import { GetAllUsersResponse, User } from './types';
 import { authAction } from '../../context/authProvider';
 import { EditUser } from '../editUser';
 import { formatDate } from '../../utils';
 import { Loading } from '../loading';
 import { sortUsersByKey } from './utils';
 import { UsersListHeader } from './usersListHeader';
+import { CustomError } from '../customError';
 
 function UsersList() {
   const { authState, authDispatch } = useAuth();
@@ -69,9 +62,15 @@ function UsersList() {
   // grab users from database and dispatch to reducer to update state
   // don't need to check for roles here because only manager or admin can access this page
   useEffect(() => {
+    // get all users from database upon initial render
     async function getAllUsers() {
+      // create an AbortController instance to cancel the request if the component unmounts
+      const controller = new AbortController();
+      const { signal } = controller;
+
       const axiosRequestConfig = {
         method: 'get',
+        signal,
         url: GET_ALL_USERS,
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -150,10 +149,14 @@ function UsersList() {
           type: usersListAction.setIsLoading,
           payload: { data: false },
         });
+
+        controller.abort();
       }
     }
 
     getAllUsers();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -169,7 +172,15 @@ function UsersList() {
     });
   }, [users, sortKey, sortDirection]);
 
-  const displayLoading = <Loading />;
+  const displayLoading = <Loading dataDirection="load" />;
+
+  const displayError = (
+    <CustomError
+      isError={errorMessage ? true : false}
+      message={errorMessage}
+      link={{ text: 'Go to Home', address: '/' }}
+    />
+  );
 
   const displayUsers =
     users.length === 0
@@ -470,7 +481,7 @@ function UsersList() {
         Users list
       </Title>
       {displayEditUserModal}
-      {isLoading ? displayLoading : displayTable}
+      {errorMessage ? displayError : isLoading ? displayLoading : displayTable}
     </Flex>
   );
 }

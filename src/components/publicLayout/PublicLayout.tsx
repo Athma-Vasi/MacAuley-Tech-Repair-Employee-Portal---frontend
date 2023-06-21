@@ -1,4 +1,4 @@
-import { BackgroundImage, Box, Center, Text } from '@mantine/core';
+import { Center } from '@mantine/core';
 import { Outlet } from 'react-router-dom';
 
 function PublicLayout() {

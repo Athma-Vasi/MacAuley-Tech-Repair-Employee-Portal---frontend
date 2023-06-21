@@ -31,6 +31,8 @@ import { axiosInstance } from '../../api/axios';
 import { RegisterResponse } from './types';
 import { screenReaderPasswordSpecialCharacters } from '../../domElements';
 import { Loading } from '../loading';
+import { CustomError } from '../customError';
+import { Success } from '../success';
 
 function Register() {
   const [
@@ -110,44 +112,27 @@ function Register() {
     });
   }, [email, username, password, confirmPassword]);
 
-  // allows error message to be read by screen reader instead of removing it from the DOM
   const displayError = (
-    <Alert
-      title="Warning!"
-      color="yellow"
-      className={errorMessage ? '' : 'offscreen'}
-      w="100%"
-    >
-      <Flex direction="column" rowGap="lg">
-        <Text ref={errorRef} aria-live="assertive" color="dark">
-          {`${errorMessage}!`}
-        </Text>
-        <Text color="blue">
-          <Link to="/login">Click here to go back to login.</Link>
-        </Text>
-      </Flex>
-    </Alert>
+    <CustomError
+      ref={errorRef}
+      message={errorMessage}
+      link={{
+        address: '/login',
+        text: 'Back to login',
+      }}
+      isError={errorMessage ? true : false}
+    />
   );
 
   const displaySuccess = (
-    <Alert
-      title="Success!"
-      color="green"
-      className={isSuccessful ? '' : 'offscreen'}
-      w="100%"
-    >
-      <Flex direction="column" rowGap="lg">
-        <Text ref={errorRef} aria-live="assertive" color="dark">
-          You have successfully registered!
-        </Text>
-        <Text color="blue">
-          <Link to="/login">Click here to login</Link>
-        </Text>
-      </Flex>
-    </Alert>
+    <Success
+      message="You have successfully registered!"
+      link={{ address: '/login', text: 'Click here to login' }}
+      isSuccessful={isSuccessful}
+    />
   );
 
-  const displayLoading = <Loading />;
+  const displayLoading = <Loading dataDirection="load" />;
 
   const emailValidationText = (
     <Text
@@ -238,22 +223,27 @@ function Register() {
       password,
     };
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     try {
       registerDispatch({
         type: registerAction.setIsSubmitting,
         payload: true,
       });
 
-      const response = await axiosInstance.post<RegisterResponse>(
-        REGISTER_URL,
-        JSON.stringify(newUserObj),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
-        }
-      );
+      const axiosConfig = {
+        method: 'post',
+        signal,
+        url: REGISTER_URL,
+        data: newUserObj,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true,
+      };
+
+      const response = await axiosInstance<RegisterResponse>(axiosConfig);
 
       const { status } = response;
 
@@ -287,6 +277,8 @@ function Register() {
         type: registerAction.setIsSubmitting,
         payload: false,
       });
+
+      controller.abort();
     }
   }
 

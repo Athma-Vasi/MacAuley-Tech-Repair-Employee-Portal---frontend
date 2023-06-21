@@ -4,7 +4,7 @@ import {
   faSortDesc,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Grid, Text } from '@mantine/core';
+import { Flex, Grid, HoverCard, Text } from '@mantine/core';
 import { UsersListHeaderProps } from './types';
 import { textWrap } from '../constants';
 
@@ -57,10 +57,24 @@ function UsersListHeader({
             }}
             onClick={handleHeadingSortClick}
           />
-          <Text
-            style={textWrap}
-            color="dark"
-          >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
+
+          <HoverCard width={150} shadow="md" openDelay={382} closeDelay={236}>
+            <HoverCard.Target>
+              <Text
+                color="dark"
+                style={textWrap}
+              >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
+            </HoverCard.Target>
+            <HoverCard.Dropdown>
+              <Text color="dark">
+                {heading === 'active'
+                  ? "User's active state"
+                  : heading === 'created' || heading === 'updated'
+                  ? `User ${heading} date`
+                  : `User's ${heading}`}
+              </Text>
+            </HoverCard.Dropdown>
+          </HoverCard>
         </Flex>
       </Grid.Col>
     );
@@ -68,9 +82,16 @@ function UsersListHeader({
     return (
       <Grid.Col span={1}>
         <Flex justify="start" gap="xs">
-          <Text style={textWrap} color="dark">
-            Edit
-          </Text>
+          <HoverCard width={150} shadow="md" openDelay={382} closeDelay={236}>
+            <HoverCard.Target>
+              <Text color="dark" style={textWrap}>
+                Edit
+              </Text>
+            </HoverCard.Target>
+            <HoverCard.Dropdown>
+              <Text color="dark">Edit user details</Text>
+            </HoverCard.Dropdown>
+          </HoverCard>
         </Flex>
       </Grid.Col>
     );
@@ -87,10 +108,24 @@ function UsersListHeader({
           }}
           onClick={handleHeadingSortClick}
         />
-        <Text
-          style={textWrap}
-          color="dark"
-        >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
+
+        <HoverCard width={150} shadow="md" openDelay={382} closeDelay={236}>
+          <HoverCard.Target>
+            <Text
+              color="dark"
+              style={textWrap}
+            >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
+          </HoverCard.Target>
+          <HoverCard.Dropdown>
+            <Text color="dark">
+              {heading === 'active'
+                ? "User's active state"
+                : heading === 'created' || heading === 'updated'
+                ? `User ${heading} date`
+                : `User's ${heading}`}
+            </Text>
+          </HoverCard.Dropdown>
+        </HoverCard>
       </Flex>
     </Grid.Col>
   );

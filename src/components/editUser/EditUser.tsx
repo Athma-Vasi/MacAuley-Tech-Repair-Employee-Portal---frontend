@@ -1,5 +1,4 @@
 import {
-  Alert,
   Flex,
   TextInput,
   Title,
@@ -8,7 +7,6 @@ import {
   Group,
   Radio,
   Button,
-  Loader,
   Center,
 } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
@@ -27,6 +25,9 @@ import { PATCH_URL } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { authAction } from '../../context/authProvider';
+import { Success } from '../success';
+import { Loading } from '../loading';
+import { CustomError } from '../customError';
 
 function EditUser({ user, closeModalCallback }: EditUserProps) {
   const [editUserState, editUserDispatch] = useReducer(
@@ -53,7 +54,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
   const usernameRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
 
-  // set initial values
+  // set initial values for edit user form on first render
   useEffect(() => {
     editUserDispatch({
       type: editUserAction.setAll,
@@ -74,6 +75,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
         isSuccessful: false,
       },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // set focus on username input on first render
@@ -211,17 +213,13 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
     }
   }
 
-  // allows error message to be read by screen reader instead of removing it from the DOM
   const displayError = (
-    <Alert
-      title="Warning!"
-      color="yellow"
-      className={errorMessage ? '' : 'offscreen'}
-    >
-      <Text ref={errorRef} aria-live="assertive">
-        {errorMessage}
-      </Text>
-    </Alert>
+    <CustomError
+      message={errorMessage}
+      isError={errorMessage ? true : false}
+      ref={errorRef}
+      closeErrorCallback={closeModalCallback}
+    />
   );
 
   const displayEmailValidationText = (
@@ -248,24 +246,14 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
     </Text>
   );
 
-  const displaySubmitting = (
-    <Alert
-      title="Loading..."
-      color="violet"
-      className={isSubmitting ? '' : 'offscreen'}
-    >
-      <Loader color="violet" />
-    </Alert>
-  );
+  const displaySubmitting = <Loading dataDirection="submit" />;
 
   const displaySuccess = (
-    <Alert
-      title="Success!"
-      color="green"
-      className={isSuccessful ? '' : 'offscreen'}
-    >
-      <Text aria-live="assertive">User successfully updated.</Text>
-    </Alert>
+    <Success
+      closeSuccessCallback={closeModalCallback}
+      message="User successfully updated."
+      isSuccessful
+    />
   );
 
   useEffect(() => {

@@ -130,7 +130,7 @@ function NotesListHeader({
               </Text>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              <Text color="dark">Edit note</Text>
+              <Text color="dark">Edit note details</Text>
             </HoverCard.Dropdown>
           </HoverCard>
         </Flex>

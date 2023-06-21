@@ -6,10 +6,11 @@ import {
   Text,
   Textarea,
   Button,
-  Loader,
   Center,
 } from '@mantine/core';
 import { useReducer, useRef, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 import '../../index.css';
 import {
@@ -17,9 +18,6 @@ import {
   addNewNoteReducer,
   initialAddNewNoteState,
 } from './state';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-
 import '../../index.css';
 import {
   returnNoteContentValidationText,
@@ -36,6 +34,7 @@ import {
   screenReaderTitleSpecialCharacters,
 } from '../../domElements';
 import { Loading } from '../loading';
+import { Success } from '../success';
 
 function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
   const [addNewNoteState, addNewNoteDispatch] = useReducer(
@@ -78,6 +77,8 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
       type: addNewNoteAction.setUserId,
       payload: userId,
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // validate title on user input change
@@ -135,9 +136,13 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
       payload: true,
     });
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     try {
       const axiosConfig = {
         method: 'post',
+        signal,
         url: POST_NEW_NOTE,
         data: {
           user: userId,
@@ -220,22 +225,19 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
         type: addNewNoteAction.setIsSubmitting,
         payload: false,
       });
+
+      controller.abort();
     }
   }
 
-  const displayLoading = <Loading />;
+  const displaySubmitting = <Loading dataDirection="submit" />;
 
   const displaySuccess = (
-    <Alert
-      title="Success!"
-      color="green"
-      className={isSuccessful ? '' : 'offscreen'}
-    >
-      <Text>Successfully edited note.</Text>
-      <Button color="green" onClick={closeModalCallback}>
-        Close
-      </Button>
-    </Alert>
+    <Success
+      closeSuccessCallback={closeModalCallback}
+      isSuccessful
+      message="Successfully edited note."
+    />
   );
 
   // allows error message to be read by screen reader instead of removing it from the DOM
@@ -413,7 +415,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
       {errorMessage
         ? displayError
         : isSubmitting
-        ? displayLoading
+        ? displaySubmitting
         : isSuccessful
         ? displaySuccess
         : displayAddNewNoteForm}

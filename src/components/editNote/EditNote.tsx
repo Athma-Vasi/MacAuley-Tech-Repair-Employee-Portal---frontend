@@ -31,6 +31,8 @@ import { EDIT_NOTE_URL } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { authAction } from '../../context/authProvider';
+import { Success } from '../success';
+import { CustomError } from '../customError';
 
 function EditNote({ note, closeModalCallback }: EditNoteProps) {
   const [editNoteState, editNoteDispatch] = useReducer(
@@ -153,8 +155,12 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
       completed,
     };
 
+    const controller = new AbortController();
+    const { signal } = controller;
+
     const axiosConfig = {
       method: 'patch',
+      signal,
       url: EDIT_NOTE_URL,
       data: editedNote,
       headers: {
@@ -238,40 +244,28 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
         type: editNoteAction.setIsSubmitting,
         payload: { data: false },
       });
+
+      controller.abort();
     }
   }
 
-  const displayLoading = <Loading />;
+  const displaySubmitting = <Loading dataDirection="submit" />;
 
   const displaySuccess = (
-    <Alert
-      title="Success!"
-      color="green"
-      className={isSuccessful ? '' : 'offscreen'}
-    >
-      <Flex direction="column" rowGap="lg">
-        <Text>Successfully edited note.</Text>
-        <Button color="green" onClick={closeModalCallback}>
-          Close
-        </Button>
-      </Flex>
-    </Alert>
+    <Success
+      closeSuccessCallback={closeModalCallback}
+      isSuccessful
+      message="Successfully edited note."
+    />
   );
 
-  // allows error message to be read by screen reader instead of removing it from the DOM
   const displayError = (
-    <Alert
-      title="Warning!"
-      color="yellow"
-      className={errorMessage ? '' : 'offscreen'}
-    >
-      <Text ref={errorRef} aria-live="assertive">
-        {errorMessage}
-      </Text>
-      <Button color="yellow" onClick={closeModalCallback}>
-        Try Again
-      </Button>
-    </Alert>
+    <CustomError
+      message={errorMessage}
+      closeErrorCallback={closeModalCallback}
+      isError={errorMessage ? true : false}
+      ref={errorRef}
+    />
   );
 
   const noteTitleRegexValidationText = returnNoteTitleValidationText(title);
@@ -446,7 +440,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
   return (
     <Center w={400}>
       {isSubmitting
-        ? displayLoading
+        ? displaySubmitting
         : isSuccessful
         ? displaySuccess
         : errorMessage

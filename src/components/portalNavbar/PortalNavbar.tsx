@@ -28,8 +28,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       hidden={!openedNavbar}
       width={{ sm: 200, lg: 300 }}
     >
-      <Title order={3}>PortalNavbar</Title>
-
       {displayUsersNavLink}
 
       <NavLink
