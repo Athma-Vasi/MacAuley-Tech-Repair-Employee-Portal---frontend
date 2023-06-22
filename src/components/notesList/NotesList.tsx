@@ -33,7 +33,7 @@ import { NotesListHeader } from './notesListHeader';
 import { CustomError } from '../customError';
 import { AxiosRequestConfig } from 'axios';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { colors } from '../../constants';
+import { COLORS } from '../../constants';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
@@ -250,13 +250,18 @@ function NotesList() {
     lightHeaderBGColor,
     lightIconColor,
     lightRowBGColor,
-  } = colors;
+    buttonOutlineColor,
+    buttonTextColor,
+  } = COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
   const notesHeadersBGColor =
     colorScheme === 'dark' ? lightHeaderBGColor : darkHeaderBGColor;
   const notesRowsBGColorDark =
     colorScheme === 'dark' ? lightRowBGColor : darkRowBGColor;
   const iconColor = colorScheme === 'dark' ? lightIconColor : darkIconColor;
+  const buttonOutline = colorScheme === 'dark' ? buttonOutlineColor : '';
+  const buttonText = colorScheme === 'dark' ? buttonTextColor : '';
+  const buttonBackground = colorScheme === 'dark' ? 'transparent' : '';
 
   const displayNotes =
     transformedNotes.length === 0
@@ -280,7 +285,13 @@ function NotesList() {
                     {userName}
                   </Text>
                   <Tooltip label={`Add new note for ${userName}`}>
-                    <Button variant="outline">
+                    <Button
+                      style={{
+                        backgroundColor: buttonBackground,
+                        color: buttonText,
+                        border: buttonOutline,
+                      }}
+                    >
                       <FontAwesomeIcon
                         icon={faPlus}
                         style={{
@@ -612,10 +623,15 @@ function NotesList() {
       w="100%"
     >
       <Flex align="center" justify="space-between" w="100%">
-        <Title order={2} color="dark">
+        <Title order={2} color={textColor}>
           Notes List
         </Title>
         <Button
+          style={{
+            backgroundColor: buttonBackground,
+            color: buttonText,
+            border: buttonOutline,
+          }}
           onClick={() =>
             notesListDispatch({
               type: notesListAction.setTriggerGetAllNotes,

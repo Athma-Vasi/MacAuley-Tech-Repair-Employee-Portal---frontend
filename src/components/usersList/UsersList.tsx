@@ -32,6 +32,7 @@ import { UsersListHeader } from './usersListHeader';
 import { CustomError } from '../customError';
 import { AxiosRequestConfig } from 'axios';
 import { useGlobalState } from '../../hooks/useGlobalState';
+import { COLORS } from '../../constants';
 
 function UsersList() {
   const { authState, authDispatch } = useAuth();
@@ -168,8 +169,27 @@ function UsersList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerGetAllUsers]);
 
-  const textColor = colorScheme === 'dark' ? '#E8EAEC' : 'dark';
-  const tableBackgroundColor = colorScheme === 'dark' ? '#989C9F' : '#86B7DF';
+  const {
+    lightTextColor,
+    darkTextColor,
+    darkHeaderBGColor,
+    darkIconColor,
+    darkRowBGColor,
+    lightHeaderBGColor,
+    lightIconColor,
+    lightRowBGColor,
+    buttonOutlineColor,
+    buttonTextColor,
+  } = COLORS;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+  const usersHeadersBGColor =
+    colorScheme === 'dark' ? lightHeaderBGColor : darkHeaderBGColor;
+  const usersRowsBGColorDark =
+    colorScheme === 'dark' ? lightRowBGColor : darkRowBGColor;
+  const iconColor = colorScheme === 'dark' ? lightIconColor : darkIconColor;
+  const buttonOutline = colorScheme === 'dark' ? buttonOutlineColor : '';
+  const buttonText = colorScheme === 'dark' ? buttonTextColor : '';
+  const buttonBackground = colorScheme === 'dark' ? 'transparent' : '';
 
   useEffect(() => {
     const sortedUsers = sortUsersByKey({
@@ -254,12 +274,12 @@ function UsersList() {
                   closeDelay={236}
                 >
                   <HoverCard.Target>
-                    <Text color="dark" style={textWrap}>
+                    <Text color={textColor} style={textWrap}>
                       {username}
                     </Text>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
-                    <Text color="dark">{username}</Text>
+                    <Text color={textColor}>{username}</Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
               </Flex>
@@ -276,12 +296,12 @@ function UsersList() {
                   closeDelay={236}
                 >
                   <HoverCard.Target>
-                    <Text color="dark" style={textWrap}>
+                    <Text color={textColor} style={textWrap}>
                       {email}
                     </Text>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
-                    <Text color="dark">{email}</Text>
+                    <Text color={textColor}>{email}</Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
               </Flex>
@@ -298,12 +318,12 @@ function UsersList() {
                   closeDelay={236}
                 >
                   <HoverCard.Target>
-                    <Text color="dark" style={textWrap}>
+                    <Text color={textColor} style={textWrap}>
                       {roles}
                     </Text>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
-                    <Text color="dark">{roles.join(', ')}</Text>
+                    <Text color={textColor}>{roles.join(', ')}</Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
               </Flex>
@@ -320,7 +340,7 @@ function UsersList() {
                   closeDelay={236}
                 >
                   <HoverCard.Target>
-                    <Text color="dark" style={textWrap}>
+                    <Text color={textColor} style={textWrap}>
                       {active ? (
                         <Text color="green">Yes</Text>
                       ) : (
@@ -329,11 +349,15 @@ function UsersList() {
                     </Text>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
-                    <Text color="dark">
+                    <Text color={textColor}>
                       {active ? (
-                        <Text color="dark">{`Yes, ${username} is still active.`}</Text>
+                        <Text
+                          color={textColor}
+                        >{`Yes, ${username} is still active.`}</Text>
                       ) : (
-                        <Text color="dark">{`No, ${username} is inactive.`}</Text>
+                        <Text
+                          color={textColor}
+                        >{`No, ${username} is inactive.`}</Text>
                       )}
                     </Text>
                   </HoverCard.Dropdown>
@@ -352,12 +376,12 @@ function UsersList() {
                   closeDelay={236}
                 >
                   <HoverCard.Target>
-                    <Text color="dark" style={textWrap}>
+                    <Text color={textColor} style={textWrap}>
                       {createdDateShort}
                     </Text>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
-                    <Text color="dark">{createdDateFull}</Text>
+                    <Text color={textColor}>{createdDateFull}</Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
               </Flex>
@@ -374,12 +398,12 @@ function UsersList() {
                   closeDelay={236}
                 >
                   <HoverCard.Target>
-                    <Text color="dark" style={textWrap}>
+                    <Text color={textColor} style={textWrap}>
                       {updatedDateShort}
                     </Text>
                   </HoverCard.Target>
                   <HoverCard.Dropdown>
-                    <Text color="dark">{updatedDateFull}</Text>
+                    <Text color={textColor}>{updatedDateFull}</Text>
                   </HoverCard.Dropdown>
                 </HoverCard>
               </Flex>
@@ -411,7 +435,7 @@ function UsersList() {
                 <FontAwesomeIcon
                   style={{
                     cursor: 'pointer',
-                    color: 'dimgray',
+                    color: iconColor,
                   }}
                   icon={faEdit}
                   onClick={openUserEdit}
@@ -425,12 +449,15 @@ function UsersList() {
               columns={12}
               key={id}
               w="100%"
-              p="xs"
+              // p="xs"
               style={
                 index % 2 === 0
-                  ? { backgroundColor: 'white' }
+                  ? {
+                      borderRadius: '4px',
+                    }
                   : {
-                      backgroundColor: '#F5F5F6',
+                      backgroundColor: usersRowsBGColorDark,
+
                       borderRadius: '4px',
                     }
               }
@@ -451,7 +478,7 @@ function UsersList() {
   const displayTable = (
     <Flex
       direction="column"
-      align="flex-start"
+      align="center"
       justify="center"
       w="100%"
       rowGap="md"
@@ -459,9 +486,9 @@ function UsersList() {
       <Grid
         columns={12}
         w="100%"
+        h="50px"
         style={{
-          backgroundColor: '#86B7DF',
-          opacity: '0.8',
+          backgroundColor: usersHeadersBGColor,
           borderRadius: '4px',
         }}
       >
@@ -496,7 +523,7 @@ function UsersList() {
       w="100%"
     >
       <Flex w="100%" align="center" justify="space-between">
-        <Title color="dark" order={2}>
+        <Title color={textColor} order={2}>
           Users list
         </Title>
 
@@ -508,6 +535,11 @@ function UsersList() {
               payload: { data: !triggerGetAllUsers },
             })
           }
+          style={{
+            backgroundColor: buttonBackground,
+            color: buttonText,
+            border: buttonOutline,
+          }}
         >
           Refresh
         </Button>

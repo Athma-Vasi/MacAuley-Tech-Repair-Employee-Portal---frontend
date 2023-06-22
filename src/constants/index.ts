@@ -56,15 +56,17 @@ const NOTE_TITLE_REGEX =
  */
 const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
 
-const colors = {
+const COLORS = {
   darkTextColor: 'dark',
   lightTextColor: '#A7A7A7',
-  lightHeaderBGColor: '#595959',
+  lightHeaderBGColor: '#333333',
   darkHeaderBGColor: '#86B7DF',
-  lightRowBGColor: '#484848',
+  lightRowBGColor: '#252525',
   darkRowBGColor: '#F5F5F6',
   darkIconColor: 'dimgrey',
   lightIconColor: '#888888',
+  buttonOutlineColor: '1px solid #339af0',
+  buttonTextColor: '#339af0',
 };
 
 export {
@@ -73,5 +75,5 @@ export {
   PASSWORD_REGEX,
   NOTE_TITLE_REGEX,
   NOTE_TEXT_REGEX,
-  colors,
+  COLORS,
 };

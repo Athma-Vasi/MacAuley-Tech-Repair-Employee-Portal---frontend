@@ -16,7 +16,7 @@ import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import '../../index.css';
 import { editUserAction, editUserReducer, initialEditUserState } from './state';
 import { EditUserProps, EditUserResponse } from './types';
-import { EMAIL_REGEX, USERNAME_REGEX } from '../../constants';
+import { COLORS, EMAIL_REGEX, USERNAME_REGEX } from '../../constants';
 import {
   returnEmailRegexValidationText,
   returnUsernameRegexValidationText,
@@ -29,6 +29,7 @@ import { Success } from '../success';
 import { Loading } from '../loading';
 import { CustomError } from '../customError';
 import { AxiosRequestConfig } from 'axios';
+import { useGlobalState } from '../../hooks/useGlobalState';
 
 function EditUser({ user, closeModalCallback }: EditUserProps) {
   const [editUserState, editUserDispatch] = useReducer(
@@ -52,6 +53,9 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
 
   const { authState, authDispatch } = useAuth();
   const { accessToken } = authState;
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
 
   const usernameRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -261,6 +265,13 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
     console.log({ editUserState });
   }, [editUserState]);
 
+  const { darkTextColor, lightTextColor, buttonTextColor, buttonOutlineColor } =
+    COLORS;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+  const buttonOutline = colorScheme === 'dark' ? buttonOutlineColor : '';
+  const buttonText = colorScheme === 'dark' ? buttonTextColor : '';
+  const buttonBackground = colorScheme === 'dark' ? 'transparent' : '';
+
   const displayEditUserForm = (
     <Flex
       direction="column"
@@ -269,7 +280,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
       w="100%"
       h="100%"
     >
-      <Title order={2} color="dark">
+      <Title order={2} color={textColor}>
         Edit User
       </Title>
 
@@ -285,7 +296,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
         >
           <TextInput
             w="100%"
-            color="dark"
+            color={textColor}
             label="Username"
             placeholder={`${username}`}
             autoComplete="off"
@@ -324,7 +335,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
 
           <TextInput
             w="100%"
-            color="dark"
+            color={textColor}
             label="Email"
             placeholder={`${email}`}
             autoComplete="off"
@@ -362,7 +373,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
 
           <Checkbox.Group
             w="100%"
-            color="dark"
+            color={textColor}
             defaultValue={['Employee']}
             value={roles}
             onChange={(event) => {
@@ -384,7 +395,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
 
           <Radio.Group
             w="100%"
-            color="dark"
+            color={textColor}
             label="Select user's status"
             description="Determines whether user can log in to the application"
             value={active ? 'active' : 'inactive'}
@@ -397,17 +408,30 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
             withAsterisk
             required
           >
-            <Group mt="xs" w="100%" color="dark">
+            <Group mt="xs" w="100%" color={textColor}>
               <Radio value={'active'} label="Active" />
               <Radio value={'inactive'} label="Inactive" />
             </Group>
           </Radio.Group>
 
           <Flex w="100%" align="center" justify="flex-end" columnGap="lg">
-            <Button type="submit">Update</Button>
+            <Button
+              type="submit"
+              disabled={!isValidUsername || !isValidEmail}
+              style={{
+                backgroundColor: buttonBackground,
+                color: isValidUsername && isValidEmail ? buttonText : textColor,
+                border:
+                  isValidUsername && isValidEmail
+                    ? buttonOutline
+                    : `1px solid ${textColor}`,
+              }}
+            >
+              Update
+            </Button>
             <Button
               type="button"
-              variant="subtle"
+              variant="outline"
               color="red"
               onClick={closeModalCallback}
             >

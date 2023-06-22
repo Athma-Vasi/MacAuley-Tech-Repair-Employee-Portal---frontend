@@ -16,7 +16,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../../index.css';
 import { EditNoteProps, EditNoteResponse } from './types';
 import { editNoteAction, editNoteReducer, initialEditNoteState } from './state';
-import { NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../constants';
+import { COLORS, NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../constants';
 import { Loading } from '../loading';
 import {
   returnNoteContentValidationText,
@@ -34,6 +34,7 @@ import { authAction } from '../../context/authProvider';
 import { Success } from '../success';
 import { CustomError } from '../customError';
 import { AxiosRequestConfig } from 'axios';
+import { useGlobalState } from '../../hooks/useGlobalState';
 
 function EditNote({ note, closeModalCallback }: EditNoteProps) {
   const [editNoteState, editNoteDispatch] = useReducer(
@@ -60,6 +61,9 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
     authState: { accessToken },
     authDispatch,
   } = useAuth();
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
 
   const titleRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
@@ -250,6 +254,13 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
     }
   }
 
+  const { darkTextColor, lightTextColor, buttonTextColor, buttonOutlineColor } =
+    COLORS;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+  const buttonOutline = colorScheme === 'dark' ? buttonOutlineColor : '';
+  const buttonText = colorScheme === 'dark' ? buttonTextColor : '';
+  const buttonBackground = colorScheme === 'dark' ? 'transparent' : '';
+
   const displaySubmitting = <Loading dataDirection="submit" />;
 
   const displaySuccess = (
@@ -307,7 +318,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
       w="100%"
       h="100%"
     >
-      <Title order={2} color="dark">
+      <Title order={2} color={textColor}>
         Edit note
       </Title>
       <form onSubmit={handleEditNoteFormSubmit}>
@@ -322,7 +333,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
         >
           <TextInput
             w="100%"
-            color="dark"
+            color={textColor}
             ref={titleRef}
             autoComplete="off"
             label="Title"
@@ -364,7 +375,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
           {/* note content */}
           <Textarea
             w="100%"
-            color="dark"
+            color={textColor}
             autosize
             maxRows={10}
             autoComplete="off"
@@ -421,12 +432,23 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
 
           {/* submit button */}
           <Flex justify="flex-end" align="center" columnGap="lg" w="100%">
-            <Button type="submit" disabled={!isTitleValid || !isTextValid}>
+            <Button
+              type="submit"
+              disabled={!isTitleValid || !isTextValid}
+              style={{
+                backgroundColor: buttonBackground,
+                color: isTitleValid && isTextValid ? buttonText : textColor,
+                border:
+                  isTitleValid && isTextValid
+                    ? buttonOutline
+                    : `1px solid ${textColor}`,
+              }}
+            >
               Submit
             </Button>
             <Button
               type="button"
-              variant="subtle"
+              variant="outline"
               color="red"
               onClick={closeModalCallback}
             >

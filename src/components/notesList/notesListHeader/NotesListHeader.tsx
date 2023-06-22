@@ -9,7 +9,7 @@ import { Flex, Grid, HoverCard, Text } from '@mantine/core';
 import { NotesListHeaderProps } from './types';
 import { textWrap } from '../constants';
 import { useGlobalState } from '../../../hooks/useGlobalState';
-import { colors } from '../../../constants';
+import { COLORS } from '../../../constants';
 
 function NotesListHeader({
   heading,
@@ -39,7 +39,7 @@ function NotesListHeader({
   }
 
   const { darkTextColor, lightTextColor, lightIconColor, darkIconColor } =
-    colors;
+    COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
   const iconColor = colorScheme === 'dark' ? lightIconColor : darkIconColor;
 

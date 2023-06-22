@@ -7,19 +7,26 @@ import { useNavigate } from 'react-router-dom';
 import { faWrench } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ThemeSwitch } from '../themeSwitch';
+import { AxiosRequestConfig } from 'axios';
+import { useGlobalState } from '../../hooks/useGlobalState';
+import { COLORS } from '../../constants';
+import { text } from 'stream/consumers';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const {
     authState: { accessToken },
   } = useAuth();
   const navigate = useNavigate();
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
 
   async function handleLogoutFormSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
 
-    const axiosConfig = {
+    const axiosConfig: AxiosRequestConfig = {
       url: LOGOUT_URL,
       method: 'post',
       headers: {
@@ -47,6 +54,9 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     }
   }
 
+  const { darkTextColor, lightTextColor } = COLORS;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+
   return (
     <Header height={{ base: 50, md: 70 }} p="md">
       <Flex justify="space-between" align="center" h="100%">
@@ -56,6 +66,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
             onClick={() => setOpenedHeader((open) => !open)}
             size="sm"
             mr="xl"
+            color="gray"
           />
         </MediaQuery>
         {/* title */}
@@ -63,7 +74,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
           <Flex direction="column" align="center" justify="center">
             <FontAwesomeIcon icon={faWrench} color="gray" />
           </Flex>
-          <Title order={4} color="dimmed">
+          <Title order={4} color={textColor}>
             MacAuley Tech Repair Employee Portal
           </Title>
         </Flex>

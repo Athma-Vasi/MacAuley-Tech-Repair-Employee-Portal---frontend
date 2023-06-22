@@ -7,6 +7,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Grid, HoverCard, Text } from '@mantine/core';
 import { UsersListHeaderProps } from './types';
 import { textWrap } from '../constants';
+import { useGlobalState } from '../../../hooks/useGlobalState';
+import { COLORS } from '../../../constants';
 
 function UsersListHeader({
   heading,
@@ -15,6 +17,9 @@ function UsersListHeader({
   usersListDispatch,
 }: UsersListHeaderProps) {
   const { sortKey, sortDirection } = usersListState;
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
 
   function handleHeadingSortClick(
     event: React.MouseEvent<SVGSVGElement, MouseEvent>
@@ -33,6 +38,11 @@ function UsersListHeader({
     });
   }
 
+  const { lightIconColor, darkIconColor, darkTextColor, lightTextColor } =
+    COLORS;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+  const iconColor = colorScheme === 'dark' ? lightIconColor : darkIconColor;
+
   if (sortKey === heading) {
     return (
       <Grid.Col span={heading === 'active' ? 1 : 2}>
@@ -49,7 +59,7 @@ function UsersListHeader({
               cursor: 'pointer',
               color: `${
                 sortDirection === ''
-                  ? '#989C9F'
+                  ? lightIconColor
                   : sortDirection === 'asc'
                   ? 'green'
                   : 'red'
@@ -61,12 +71,12 @@ function UsersListHeader({
           <HoverCard width={150} shadow="md" openDelay={382} closeDelay={236}>
             <HoverCard.Target>
               <Text
-                color="dark"
+                color={textColor}
                 style={textWrap}
               >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              <Text color="dark">
+              <Text color={textColor}>
                 {heading === 'active'
                   ? "User's active state"
                   : heading === 'created' || heading === 'updated'
@@ -84,12 +94,12 @@ function UsersListHeader({
         <Flex justify="start" gap="xs">
           <HoverCard width={150} shadow="md" openDelay={382} closeDelay={236}>
             <HoverCard.Target>
-              <Text color="dark" style={textWrap}>
+              <Text color={textColor} style={textWrap}>
                 Edit
               </Text>
             </HoverCard.Target>
             <HoverCard.Dropdown>
-              <Text color="dark">Edit user details</Text>
+              <Text color={textColor}>Edit user details</Text>
             </HoverCard.Dropdown>
           </HoverCard>
         </Flex>
@@ -104,7 +114,7 @@ function UsersListHeader({
           icon={faSort}
           style={{
             cursor: 'pointer',
-            color: '#989C9F',
+            color: lightIconColor,
           }}
           onClick={handleHeadingSortClick}
         />
@@ -112,12 +122,12 @@ function UsersListHeader({
         <HoverCard width={150} shadow="md" openDelay={382} closeDelay={236}>
           <HoverCard.Target>
             <Text
-              color="dark"
+              color={textColor}
               style={textWrap}
             >{`${heading[0].toUpperCase()}${heading.slice(1)}`}</Text>
           </HoverCard.Target>
           <HoverCard.Dropdown>
-            <Text color="dark">
+            <Text color={textColor}>
               {heading === 'active'
                 ? "User's active state"
                 : heading === 'created' || heading === 'updated'

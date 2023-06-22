@@ -23,7 +23,7 @@ import {
   returnNoteContentValidationText,
   returnNoteTitleValidationText,
 } from '../../utils';
-import { NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../constants';
+import { COLORS, NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../constants';
 import { AddNewNoteProps, AddNewNoteResponse } from './types';
 import { POST_NEW_NOTE } from './constants';
 import { useAuth } from '../../hooks/useAuth';
@@ -36,6 +36,7 @@ import {
 import { Loading } from '../loading';
 import { Success } from '../success';
 import { AxiosRequestConfig } from 'axios';
+import { useGlobalState } from '../../hooks/useGlobalState';
 
 function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
   const [addNewNoteState, addNewNoteDispatch] = useReducer(
@@ -58,6 +59,9 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
     authState: { accessToken },
     authDispatch,
   } = useAuth();
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
 
   const titleRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
@@ -147,7 +151,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
     };
 
     try {
-      const axiosConfig:AxiosRequestConfig = {
+      const axiosConfig: AxiosRequestConfig = {
         method: 'post',
         signal,
         url: POST_NEW_NOTE,
@@ -233,6 +237,13 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
     }
   }
 
+  const { darkTextColor, lightTextColor, buttonTextColor, buttonOutlineColor } =
+    COLORS;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+  const buttonOutline = colorScheme === 'dark' ? buttonOutlineColor : '';
+  const buttonText = colorScheme === 'dark' ? buttonTextColor : '';
+  const buttonBackground = colorScheme === 'dark' ? 'transparent' : '';
+
   const displaySubmitting = <Loading dataDirection="submit" />;
 
   const displaySuccess = (
@@ -297,7 +308,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
       w="100%"
       h="100%"
     >
-      <Title order={2} color="dark">
+      <Title order={2} color={textColor}>
         Add new note
       </Title>
       <form onSubmit={handleAddNewNoteFormSubmit}>
@@ -312,7 +323,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
         >
           <TextInput
             w="100%"
-            color="dark"
+            color={textColor}
             ref={titleRef}
             autoComplete="off"
             label="Title"
@@ -356,7 +367,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
             w="100%"
             autosize
             maxRows={10}
-            color="dark"
+            color={textColor}
             autoComplete="off"
             label="Text"
             placeholder="Enter text of the note"
@@ -396,14 +407,25 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
 
           {/* submit button */}
           <Flex justify="flex-end" align="center" columnGap="lg" w="100%">
-            <Button type="submit" disabled={!isValidTitle || !isValidText}>
+            <Button
+              type="submit"
+              disabled={!isValidTitle || !isValidText}
+              style={{
+                backgroundColor: buttonBackground,
+                color: isValidTitle && isValidText ? buttonText : textColor,
+                border:
+                  isValidTitle && isValidText
+                    ? buttonOutline
+                    : `1px solid ${textColor}`,
+              }}
+            >
               Submit
             </Button>
             <Button
               type="button"
               onClick={closeModalCallback}
               color="red"
-              variant="subtle"
+              variant="outline"
             >
               Cancel
             </Button>
