@@ -4,8 +4,8 @@ import { Flex, Button, Text, Select } from '@mantine/core';
 import { formatDate } from '../../../utils';
 import { textWrap } from '../constants';
 import {
-  DirectionSelectDataProps,
-  HeadingSelectDataProps,
+  UserDirectionSelectData,
+  UserHeadingSelectData,
   UsersListMobileProps,
 } from './types';
 import { COLORS } from '../../../constants';
@@ -36,7 +36,7 @@ function UsersListMobile({
   const usersRowsBGColorDark =
     colorScheme === 'dark' ? lightRowBGColor : darkRowBGColor;
 
-  const headingSelectData: HeadingSelectDataProps[] = [
+  const headingSelectData: UserHeadingSelectData[] = [
     { value: 'username', label: 'Username' },
     { value: 'email', label: 'Email' },
     { value: 'roles', label: 'Roles' },
@@ -62,7 +62,7 @@ function UsersListMobile({
     />
   );
 
-  const directionSelectData: DirectionSelectDataProps[] = [
+  const directionSelectData: UserDirectionSelectData[] = [
     { value: 'asc', label: 'Ascending' },
     { value: 'desc', label: 'Descending' },
   ];

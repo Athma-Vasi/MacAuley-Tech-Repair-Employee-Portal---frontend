@@ -14,18 +14,18 @@ type UsersListMobileProps = {
   usersListDispatch: React.Dispatch<UsersListDispatch>;
 };
 
-type HeadingSelectDataProps = {
+type UserHeadingSelectData = {
   value: UsersListSortKey;
   label: Capitalize<UsersListSortKey>;
 };
 
-type DirectionSelectDataProps = {
+type UserDirectionSelectData = {
   value: 'asc' | 'desc';
   label: 'Ascending' | 'Descending';
 };
 
 export type {
   UsersListMobileProps,
-  HeadingSelectDataProps,
-  DirectionSelectDataProps,
+  UserHeadingSelectData,
+  UserDirectionSelectData,
 };

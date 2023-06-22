@@ -34,6 +34,7 @@ import { CustomError } from '../customError';
 import { AxiosRequestConfig } from 'axios';
 import { useGlobalState } from '../../hooks/useGlobalState';
 import { COLORS } from '../../constants';
+import { NotesListMobile } from './notesListMobile';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(
@@ -238,8 +239,8 @@ function NotesList() {
   }, [notes, usernameForEdit, sortKey, sortDirection]);
 
   useEffect(() => {
-    console.log({ transformedNotes });
-  }, [transformedNotes]);
+    console.log({ transformedNotes, sortKey, sortDirection });
+  }, [transformedNotes, sortKey, sortDirection]);
 
   const {
     lightTextColor,
@@ -654,6 +655,16 @@ function NotesList() {
           Refresh
         </Button>
       </Flex>
+
+      <NotesListMobile
+        notesListAction={notesListAction}
+        notesListDispatch={notesListDispatch}
+        notesListState={notesListState}
+        openAddNewNote={openAddNewNote}
+        openEditNote={openEditNote}
+        transformedNotes={transformedNotes}
+      />
+
       <Space h="lg" />
       {displayAddNewNoteModal}
       {displayEditNoteModal}
