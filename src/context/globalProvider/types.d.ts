@@ -1,18 +1,24 @@
-import { BreakPoints } from '../../types';
-
 type ColorScheme = 'light' | 'dark';
 
 type GlobalState = {
+  width: number;
+  height: number;
   colorScheme: ColorScheme;
-  windowSize: BreakPoints;
 };
 
 type GlobalAction = {
+  setWidth: 'setWidth';
+  setHeight: 'setHeight';
   setColorScheme: 'setColorScheme';
   setWindowSize: 'setWindowSize';
 };
 
-type GlobalPayload = ColorScheme | BreakPoints;
+type WindowDimensions = {
+  width: number;
+  height: number;
+};
+
+type GlobalPayload = ColorScheme | number | WindowDimensions;
 
 type GlobalDispatch = {
   type: GlobalAction[keyof GlobalAction];
@@ -36,4 +42,5 @@ export type {
   GlobalReducer,
   GlobalProviderProps,
   ColorScheme,
+  WindowDimensions,
 };

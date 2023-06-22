@@ -24,7 +24,10 @@ function ThemeSwitch() {
           });
         }}
       />
-      <FontAwesomeIcon icon={colorScheme === 'light' ? faSun : faMoon} />
+      <FontAwesomeIcon
+        icon={colorScheme === 'light' ? faSun : faMoon}
+        color="dimgray"
+      />
     </Flex>
   );
 }

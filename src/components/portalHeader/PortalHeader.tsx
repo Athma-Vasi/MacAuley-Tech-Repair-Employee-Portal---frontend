@@ -1,4 +1,12 @@
-import { Burger, Button, Flex, Header, MediaQuery, Title } from '@mantine/core';
+import {
+  Burger,
+  Button,
+  Flex,
+  Header,
+  MediaQuery,
+  Space,
+  Title,
+} from '@mantine/core';
 import { LOGOUT_URL } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
@@ -18,7 +26,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   } = useAuth();
   const navigate = useNavigate();
   const {
-    globalState: { colorScheme },
+    globalState: { colorScheme, width },
   } = useGlobalState();
 
   async function handleLogoutFormSubmit(
@@ -70,23 +78,31 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
           />
         </MediaQuery>
         {/* title */}
-        <Flex columnGap="md">
-          <Flex direction="column" align="center" justify="center">
-            <FontAwesomeIcon icon={faWrench} color="gray" />
+        {width < 768 ? null : (
+          <Flex columnGap="md">
+            <Flex direction="column" align="center" justify="center">
+              <FontAwesomeIcon icon={faWrench} color="gray" />
+            </Flex>
+            <Title order={4} color={textColor}>
+              MacAuley Tech Repair Employee Portal
+            </Title>
           </Flex>
-          <Title order={4} color={textColor}>
-            MacAuley Tech Repair Employee Portal
-          </Title>
-        </Flex>
-        {/* theme switch */}
-        <ThemeSwitch />
+        )}
 
-        {/* logout button */}
-        <form onSubmit={handleLogoutFormSubmit}>
-          <Button variant="outline" type="submit">
-            Sign Out
-          </Button>
-        </form>
+        <Flex align="center" justify="flex-end">
+          {/* theme switch */}
+          <ThemeSwitch />
+          <Space w="xl" />
+          {/* logout button */}
+          <form onSubmit={handleLogoutFormSubmit}>
+            <Button
+              variant={colorScheme === 'dark' ? 'outline' : 'filled'}
+              type="submit"
+            >
+              Sign Out
+            </Button>
+          </form>
+        </Flex>
       </Flex>
     </Header>
   );

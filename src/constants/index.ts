@@ -60,7 +60,7 @@ const COLORS = {
   darkTextColor: 'dark',
   lightTextColor: '#A7A7A7',
   lightHeaderBGColor: '#333333',
-  darkHeaderBGColor: '#86B7DF',
+  darkHeaderBGColor: '#8cc3f2',
   lightRowBGColor: '#252525',
   darkRowBGColor: '#F5F5F6',
   darkIconColor: 'dimgrey',

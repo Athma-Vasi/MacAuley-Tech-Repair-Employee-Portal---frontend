@@ -178,8 +178,6 @@ function UsersList() {
     lightHeaderBGColor,
     lightIconColor,
     lightRowBGColor,
-    buttonOutlineColor,
-    buttonTextColor,
   } = COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
   const usersHeadersBGColor =
@@ -187,9 +185,7 @@ function UsersList() {
   const usersRowsBGColorDark =
     colorScheme === 'dark' ? lightRowBGColor : darkRowBGColor;
   const iconColor = colorScheme === 'dark' ? lightIconColor : darkIconColor;
-  const buttonOutline = colorScheme === 'dark' ? buttonOutlineColor : '';
-  const buttonText = colorScheme === 'dark' ? buttonTextColor : '';
-  const buttonBackground = colorScheme === 'dark' ? 'transparent' : '';
+  const buttonVariant = colorScheme === 'dark' ? 'outline' : 'filled';
 
   useEffect(() => {
     const sortedUsers = sortUsersByKey({
@@ -535,11 +531,7 @@ function UsersList() {
               payload: { data: !triggerGetAllUsers },
             })
           }
-          style={{
-            backgroundColor: buttonBackground,
-            color: buttonText,
-            border: buttonOutline,
-          }}
+          variant={buttonVariant}
         >
           Refresh
         </Button>

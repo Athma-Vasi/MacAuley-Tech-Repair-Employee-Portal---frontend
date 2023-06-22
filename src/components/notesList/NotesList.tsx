@@ -285,13 +285,7 @@ function NotesList() {
                     {userName}
                   </Text>
                   <Tooltip label={`Add new note for ${userName}`}>
-                    <Button
-                      style={{
-                        backgroundColor: buttonBackground,
-                        color: buttonText,
-                        border: buttonOutline,
-                      }}
-                    >
+                    <Button variant="outline">
                       <FontAwesomeIcon
                         icon={faPlus}
                         style={{
