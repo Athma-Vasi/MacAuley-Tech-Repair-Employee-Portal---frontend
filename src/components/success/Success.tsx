@@ -3,6 +3,8 @@ import { Flex, Alert, Text, Button } from '@mantine/core';
 import '../../index.css';
 import { SuccessProps } from './types';
 import { Link } from 'react-router-dom';
+import { useGlobalState } from '../../hooks/useGlobalState';
+import { COLORS } from '../../constants';
 
 function Success({
   isSuccessful,
@@ -11,6 +13,12 @@ function Success({
   message,
   closeSuccessCallback,
 }: SuccessProps) {
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
+
+  const { darkTextColor, lightTextColor } = COLORS;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
   return (
     <Alert
       color="green"
@@ -20,17 +28,26 @@ function Success({
       w="100%"
     >
       <Flex direction="column" align="flex-start" justify="center" rowGap="xl">
-        <Text color="dark" ref={ref} aria-live="assertive">
+        <Text color={textColor} ref={ref} aria-live="assertive">
           {message}
         </Text>
 
         <Flex w="100%" justify="flex-end">
           {link ? (
-            <Button type="button" color="green">
+            <Button
+              type="button"
+              color="green"
+              variant={colorScheme === 'dark' ? 'outline' : 'filled'}
+            >
               <Link to={link.address}>{link.text}</Link>
             </Button>
           ) : closeSuccessCallback ? (
-            <Button color="green" type="button" onClick={closeSuccessCallback}>
+            <Button
+              color="green"
+              type="button"
+              variant={colorScheme === 'dark' ? 'outline' : 'filled'}
+              onClick={closeSuccessCallback}
+            >
               Close
             </Button>
           ) : (

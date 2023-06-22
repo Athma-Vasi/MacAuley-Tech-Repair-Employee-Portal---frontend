@@ -427,7 +427,15 @@ function UsersList() {
                 });
               }}
             >
-              <Tooltip label={`Edit ${username}`}>
+              <Tooltip
+                label={`Edit ${username}`}
+                style={{
+                  backgroundColor:
+                    colorScheme === 'dark' ? lightRowBGColor : 'white',
+                  color: colorScheme === 'dark' ? textColor : 'darkslategray',
+                  boxShadow: '0 1px 2px rgba(0, 0, 0, 0.25)',
+                }}
+              >
                 <FontAwesomeIcon
                   style={{
                     cursor: 'pointer',
@@ -482,7 +490,8 @@ function UsersList() {
       <Grid
         columns={12}
         w="100%"
-        h="50px"
+        h="45px"
+        align="center"
         style={{
           backgroundColor: usersHeadersBGColor,
           borderRadius: '4px',

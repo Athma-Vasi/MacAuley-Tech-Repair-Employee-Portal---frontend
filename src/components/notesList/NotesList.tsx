@@ -264,7 +264,7 @@ function NotesList() {
   const buttonBackground = colorScheme === 'dark' ? 'transparent' : '';
 
   const displayNotes =
-    transformedNotes.length === 0
+    notes.length === 0
       ? displayNotesAbsense
       : transformedNotes.map(
           ([userName, [userID, notesArr]]: [string, [string, Note[]]]) => {
@@ -320,6 +320,8 @@ function NotesList() {
                 {/* headings */}
                 <Grid
                   columns={10}
+                  h="45px"
+                  align="center"
                   style={{
                     backgroundColor: notesHeadersBGColor,
                     opacity: colorScheme === 'light' ? '0.8' : '1',
@@ -540,14 +542,30 @@ function NotesList() {
                         }}
                       >
                         <Flex align="center">
-                          <FontAwesomeIcon
-                            icon={faEdit}
-                            onClick={openEditNote}
+                          <Tooltip
+                            label={`Edit ${title}`}
                             style={{
-                              cursor: 'pointer',
-                              color: iconColor,
+                              ...textWrap,
+                              backgroundColor:
+                                colorScheme === 'dark'
+                                  ? lightRowBGColor
+                                  : 'white',
+                              color:
+                                colorScheme === 'dark'
+                                  ? textColor
+                                  : 'darkslategray',
+                              boxShadow: '0 1px 2px rgba(0, 0, 0, 0.25)',
                             }}
-                          />
+                          >
+                            <FontAwesomeIcon
+                              icon={faEdit}
+                              onClick={openEditNote}
+                              style={{
+                                cursor: 'pointer',
+                                color: iconColor,
+                              }}
+                            />
+                          </Tooltip>
                         </Flex>
                       </Grid.Col>
                     );

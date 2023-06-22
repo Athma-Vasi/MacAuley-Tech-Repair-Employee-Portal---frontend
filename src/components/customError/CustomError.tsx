@@ -2,6 +2,8 @@ import { Alert, Flex, Button, Text } from '@mantine/core';
 import type { CustomErrorProps } from './types';
 import '../../index.css';
 import { Link } from 'react-router-dom';
+import { useGlobalState } from '../../hooks/useGlobalState';
+import { COLORS } from '../../constants';
 function CustomError({
   isError,
   ref,
@@ -9,6 +11,13 @@ function CustomError({
   closeErrorCallback,
   message,
 }: CustomErrorProps) {
+  const {
+    globalState: { colorScheme },
+  } = useGlobalState();
+
+  const { darkTextColor, lightTextColor } = COLORS;
+  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
+
   return (
     <Alert
       color="red"
@@ -18,19 +27,23 @@ function CustomError({
       w={400}
     >
       <Flex direction="column" align="flex-start" justify="center" rowGap="xl">
-        <Text color="dark" ref={ref} aria-live="assertive">
+        <Text color={textColor} ref={ref} aria-live="assertive">
           {message}
         </Text>
 
         <Flex w="100%" justify="flex-end">
           {link ? (
-            <Button type="button" color="red" variant="filled">
+            <Button
+              type="button"
+              color="red"
+              variant={colorScheme === 'dark' ? 'outline' : 'filled'}
+            >
               <Link to={link.address}>{link.text}</Link>
             </Button>
           ) : closeErrorCallback ? (
             <Button
               color="red"
-              variant="filled"
+              variant={colorScheme === 'dark' ? 'outline' : 'filled'}
               type="button"
               onClick={closeErrorCallback}
             >
