@@ -59,7 +59,6 @@ function UsersList() {
   }, []);
 
   // grab users from database and dispatch to reducer to update state and trigger on refresh button click
-
   useEffect(() => {
     // get all users from database upon initial render
     async function getAllUsers() {
@@ -164,7 +163,6 @@ function UsersList() {
 
   const { lightTextColor, darkTextColor } = COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
-
   const buttonVariant = colorScheme === 'dark' ? 'outline' : 'filled';
 
   useEffect(() => {
@@ -221,6 +219,27 @@ function UsersList() {
       ? displayTransformedUsersMobile
       : displayTransformedUsersDesktop;
 
+  const displayHeading = (
+    <Flex w="100%" align="center" justify="space-between">
+      <Title color={textColor} order={2}>
+        Users list
+      </Title>
+
+      <Button
+        type="button"
+        onClick={() =>
+          usersListDispatch({
+            type: usersListAction.setTriggerGetAllUsers,
+            payload: { data: !triggerGetAllUsers },
+          })
+        }
+        variant={buttonVariant}
+      >
+        Refresh
+      </Button>
+    </Flex>
+  );
+
   return (
     <Flex
       direction="column"
@@ -229,25 +248,7 @@ function UsersList() {
       rowGap="xl"
       w="100%"
     >
-      <Flex w="100%" align="center" justify="space-between">
-        <Title color={textColor} order={2}>
-          Users list
-        </Title>
-
-        <Button
-          type="button"
-          onClick={() =>
-            usersListDispatch({
-              type: usersListAction.setTriggerGetAllUsers,
-              payload: { data: !triggerGetAllUsers },
-            })
-          }
-          variant={buttonVariant}
-        >
-          Refresh
-        </Button>
-      </Flex>
-
+      {displayHeading}
       {displayEditUserModal}
       {errorMessage
         ? displayError

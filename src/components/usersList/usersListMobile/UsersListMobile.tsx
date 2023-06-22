@@ -19,7 +19,7 @@ function UsersListMobile({
   usersListState,
 }: UsersListMobileProps) {
   const {
-    globalState: { colorScheme },
+    globalState: { colorScheme, width },
   } = useGlobalState();
 
   const { sortKey, sortDirection } = usersListState;
@@ -30,6 +30,7 @@ function UsersListMobile({
     darkTextColor,
     lightRowBGColor,
     darkRowBGColor,
+    lightHeaderBGColor,
   } = COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
   const usersRowsBGColorDark =
@@ -57,6 +58,7 @@ function UsersListMobile({
       }}
       data={headingSelectData}
       size="md"
+      w="62%"
     />
   );
 
@@ -78,8 +80,34 @@ function UsersListMobile({
       }}
       data={directionSelectData}
       size="md"
+      w="62%"
     />
   );
+
+  const displaySelectInputs =
+    width < 768 ? (
+      <Flex
+        direction="column"
+        align="flex-start"
+        justify="center"
+        rowGap="md"
+        w="100%"
+      >
+        {displayHeadingSelect}
+        {displayDirectionSelect}
+      </Flex>
+    ) : (
+      <Flex
+        direction="row"
+        align="center"
+        justify="space-between"
+        columnGap="lg"
+        w="100%"
+      >
+        {displayHeadingSelect}
+        {displayDirectionSelect}
+      </Flex>
+    );
 
   const displayUsersList = transformedUsers.map((user) => {
     const { _id, username, email, roles, active, createdAt, updatedAt } = user;
@@ -111,7 +139,10 @@ function UsersListMobile({
         w="100%"
         rowGap="md"
         p="sm"
-        style={{ border: '1px solid #ccc', borderRadius: '4px' }}
+        style={{
+          border: `1px solid ${lightHeaderBGColor}`,
+          borderRadius: '4px',
+        }}
       >
         {/* username */}
         <Flex
@@ -275,8 +306,7 @@ function UsersListMobile({
       w="100%"
       rowGap="xl"
     >
-      {displayHeadingSelect}
-      {displayDirectionSelect}
+      {displaySelectInputs}
       {displayUsersList}
     </Flex>
   );
