@@ -8,6 +8,7 @@ import {
   Tooltip,
   Button,
   Space,
+  Select,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useReducer } from 'react';
@@ -22,7 +23,12 @@ import {
 } from './state';
 import { useAuth } from '../../hooks/useAuth';
 import { GET_ALL_USERS, USERS_HEADINGS, textWrap } from './constants';
-import { GetAllUsersResponse, User } from './types';
+import {
+  GetAllUsersResponse,
+  SelectDirectionDataProps,
+  SelectHeadingDataProps,
+  User,
+} from './types';
 import { authAction } from '../../context/authProvider';
 import { EditUser } from '../editUser';
 import { formatDate } from '../../utils';
@@ -519,6 +525,224 @@ function UsersList() {
     </Modal>
   );
 
+  const selectHeadingData: SelectHeadingDataProps[] = [
+    { value: 'username', label: 'Username' },
+    { value: 'email', label: 'Email' },
+    { value: 'roles', label: 'Roles' },
+    { value: 'active', label: 'Active' },
+    { value: 'created', label: 'Created' },
+    { value: 'updated', label: 'Updated' },
+  ];
+
+  const displayHeadingSelect = (
+    <Select
+      value={sortKey}
+      label="Display category"
+      placeholder="Select a category"
+      onChange={(event) => {
+        usersListDispatch({
+          type: usersListAction.setSortKey,
+          payload: { data: event ?? '' },
+        });
+      }}
+      data={selectHeadingData}
+    />
+  );
+
+  const selectDirectionData: SelectDirectionDataProps[] = [
+    { value: 'asc', label: 'Ascending' },
+    { value: 'desc', label: 'Descending' },
+  ];
+
+  const displayDirectionSelect = (
+    <Select
+      value={sortDirection}
+      label="Sort by"
+      placeholder="Select a direction"
+      onChange={(event) => {
+        usersListDispatch({
+          type: usersListAction.setSortDirection,
+          payload: { data: event ?? '' },
+        });
+      }}
+      data={selectDirectionData}
+    />
+  );
+
+  useEffect(() => {
+    console.log({ sortDirection, sortKey });
+  }, [sortDirection, sortKey]);
+
+  const displayTransformedUsersMobile = transformedUsers.map((user: User) => {
+    const { _id, username, email, roles, active, createdAt, updatedAt, __v } =
+      user;
+
+    const createdDate = formatDate({
+      date: createdAt,
+      locale: 'en-US',
+      formatOptions: {
+        dateStyle: 'long',
+        timeStyle: 'long',
+      },
+    });
+
+    const updatedDate = formatDate({
+      date: updatedAt,
+      locale: 'en-US',
+      formatOptions: {
+        dateStyle: 'long',
+        timeStyle: 'long',
+      },
+    });
+
+    return (
+      <Flex
+        key={_id}
+        direction="column"
+        align="center"
+        justify="center"
+        w="100%"
+        rowGap="md"
+        style={{ outline: '1px solid teal' }}
+      >
+        {/* username */}
+        <Flex
+          w="100%"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Username
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end">
+          <Text color={textColor} style={textWrap}>
+            {username}
+          </Text>
+        </Flex>
+
+        {/* email */}
+        <Flex
+          w="100%"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Email
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end">
+          <Text color={textColor} style={textWrap}>
+            {email}
+          </Text>
+        </Flex>
+
+        {/* roles */}
+        <Flex
+          w="100%"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Roles
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end">
+          <Text color={textColor} style={textWrap}>
+            {roles.join(', ')}
+          </Text>
+        </Flex>
+
+        {/* active */}
+        <Flex
+          w="100%"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Active
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end">
+          <Text color={active ? 'green' : 'red'} style={textWrap}>
+            {active ? 'Yes' : 'No'}
+          </Text>
+        </Flex>
+
+        {/* created */}
+        <Flex
+          w="100%"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Created
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end">
+          <Text color={textColor} style={textWrap}>
+            {createdDate}
+          </Text>
+        </Flex>
+
+        {/* updated */}
+        <Flex
+          w="100%"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Updated
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end">
+          <Text color={textColor} style={textWrap}>
+            {updatedDate}
+          </Text>
+        </Flex>
+
+        {/* edit */}
+        <Flex
+          w="100%"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark }}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter') {
+              openUserEdit();
+            }
+          }}
+          onKeyUp={(event) => {
+            if (event.key === 'Enter') {
+              openUserEdit();
+            }
+          }}
+          onClick={() => {
+            usersListDispatch({
+              type: usersListAction.setUserToEdit,
+              payload: { data: user },
+            });
+          }}
+        >
+          <FontAwesomeIcon
+            style={{
+              cursor: 'pointer',
+              color: iconColor,
+            }}
+            icon={faEdit}
+            onClick={openUserEdit}
+          />
+        </Flex>
+      </Flex>
+    );
+  });
+
   return (
     <Flex
       direction="column"
@@ -546,6 +770,10 @@ function UsersList() {
         </Button>
       </Flex>
       <Space h="lg" />
+      {displayHeadingSelect}
+      {displayDirectionSelect}
+      <Space h="lg" />
+      {displayTransformedUsersMobile}
       {displayEditUserModal}
       {errorMessage ? displayError : isLoading ? displayLoading : displayTable}
     </Flex>

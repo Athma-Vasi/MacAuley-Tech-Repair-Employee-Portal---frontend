@@ -72,6 +72,16 @@ type GetAllUsersResponse = {
   users: User[];
 };
 
+type SelectHeadingDataProps = {
+  value: UsersListSortKey;
+  label: Capitalize<UsersListSortKey>;
+};
+
+type SelectDirectionDataProps = {
+  value: 'asc' | 'desc';
+  label: 'Ascending' | 'Descending';
+};
+
 export type {
   User,
   UsersListState,
@@ -83,4 +93,6 @@ export type {
   UsersListSort,
   UsersListSortKey,
   SortUsersByKeyProps,
+  SelectHeadingDataProps,
+  SelectDirectionDataProps,
 };
