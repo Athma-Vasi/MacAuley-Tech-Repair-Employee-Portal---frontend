@@ -6,9 +6,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Grid, HoverCard, Text } from '@mantine/core';
 import { UsersListHeaderProps } from './types';
-import { textWrap } from '../constants';
-import { useGlobalState } from '../../../hooks/useGlobalState';
-import { COLORS } from '../../../constants';
+import { textWrap } from '../../constants';
+import { useGlobalState } from '../../../../hooks/useGlobalState';
+import { COLORS } from '../../../../constants';
 
 function UsersListHeader({
   heading,
@@ -38,10 +38,8 @@ function UsersListHeader({
     });
   }
 
-  const { lightIconColor, darkIconColor, darkTextColor, lightTextColor } =
-    COLORS;
+  const { lightIconColor, darkTextColor, lightTextColor } = COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
-  const iconColor = colorScheme === 'dark' ? lightIconColor : darkIconColor;
 
   if (sortKey === heading) {
     return (
