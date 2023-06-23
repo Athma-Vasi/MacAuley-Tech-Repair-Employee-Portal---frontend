@@ -1,4 +1,6 @@
 import { Button, Flex, Select, Text } from '@mantine/core';
+import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import type {
   NoteDirectionSelectData,
@@ -6,16 +8,12 @@ import type {
   NotesListMobileProps,
 } from './types';
 import type { Note } from '../types';
-import { NotesListTransformed } from '../types';
 
 import { COLORS } from '../../../constants';
 import { useGlobalState } from '../../../hooks/useGlobalState';
-import { UserHeadingSelectData } from '../../usersList/usersListMobile/types';
-import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { formatDate } from '../../../utils';
-import { usersListAction } from '../../usersList/state';
 import { textWrap } from '../constants';
+import { useEffect } from 'react';
 
 function NotesListMobile({
   transformedNotes,
@@ -31,17 +29,34 @@ function NotesListMobile({
 
   const { sortKey, sortDirection } = notesListState;
 
+  // useEffect(() => {
+  //   const transformedNotes = transformNotesForDisplay({
+  //     notes,
+  //     usernameForEdit,
+  //     sortKey,
+  //     sortDirection,
+  //   });
+
+  //   notesListDispatch({
+  //     type: notesListAction.setTransformedNotes,
+  //     payload: transformedNotes,
+  //   });
+  // }, [notes, usernameForEdit, sortKey, sortDirection]);
+
   const {
     lightTextColor,
     buttonTextColor,
     darkTextColor,
     lightRowBGColor,
     darkRowBGColor,
-    lightHeaderBGColor,
   } = COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
   const usersRowsBGColorDark =
     colorScheme === 'dark' ? lightRowBGColor : darkRowBGColor;
+  const notesBorder =
+    colorScheme === 'dark'
+      ? `2px solid ${lightRowBGColor}`
+      : `1px solid ${lightTextColor}`;
 
   const headingSelectData: NoteHeadingSelectData[] = [
     { value: 'title', label: 'Title' },
@@ -71,6 +86,7 @@ function NotesListMobile({
   const directionSelectData: NoteDirectionSelectData[] = [
     { value: 'asc', label: 'Ascending' },
     { value: 'desc', label: 'Descending' },
+    { value: '', label: 'Default' },
   ];
 
   const displayDirectionSelect = (
@@ -127,8 +143,9 @@ function NotesListMobile({
           w="100%"
           p="md"
           style={{
-            border: `1px solid ${lightHeaderBGColor}`,
+            border: notesBorder,
             borderRadius: '4px',
+            boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.2)',
           }}
         >
           {/* heading: username and add new note icon */}
@@ -206,7 +223,7 @@ function NotesListMobile({
                   rowGap="md"
                   p="sm"
                   style={{
-                    border: `1px solid ${lightHeaderBGColor}`,
+                    border: notesBorder,
                     borderRadius: '4px',
                   }}
                 >

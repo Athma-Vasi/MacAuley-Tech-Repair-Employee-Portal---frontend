@@ -627,6 +627,17 @@ function NotesList() {
     </Modal>
   );
 
+  const transformedMobileNotes = (
+    <NotesListMobile
+      transformedNotes={transformedNotes}
+      notesListAction={notesListAction}
+      notesListDispatch={notesListDispatch}
+      notesListState={notesListState}
+      openAddNewNote={openAddNewNote}
+      openEditNote={openEditNote}
+    />
+  );
+
   return (
     <Flex
       direction="column"
@@ -655,16 +666,7 @@ function NotesList() {
           Refresh
         </Button>
       </Flex>
-
-      <NotesListMobile
-        notesListAction={notesListAction}
-        notesListDispatch={notesListDispatch}
-        notesListState={notesListState}
-        openAddNewNote={openAddNewNote}
-        openEditNote={openEditNote}
-        transformedNotes={transformedNotes}
-      />
-
+      {transformedMobileNotes}
       <Space h="lg" />
       {displayAddNewNoteModal}
       {displayEditNoteModal}

@@ -21,8 +21,8 @@ type NoteHeadingSelectData = {
 };
 
 type NoteDirectionSelectData = {
-  value: 'asc' | 'desc';
-  label: 'Ascending' | 'Descending';
+  value: 'asc' | 'desc' | '';
+  label: 'Ascending' | 'Descending' | 'Default';
 };
 
 export type {

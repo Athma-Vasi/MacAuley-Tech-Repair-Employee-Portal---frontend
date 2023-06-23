@@ -35,6 +35,10 @@ function UsersListMobile({
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
   const usersRowsBGColorDark =
     colorScheme === 'dark' ? lightRowBGColor : darkRowBGColor;
+  const usersBorder =
+    colorScheme === 'dark'
+      ? `2px solid ${lightRowBGColor}`
+      : `1px solid ${lightTextColor}`;
 
   const headingSelectData: UserHeadingSelectData[] = [
     { value: 'username', label: 'Username' },
@@ -140,7 +144,7 @@ function UsersListMobile({
         rowGap="md"
         p="sm"
         style={{
-          border: `1px solid ${lightHeaderBGColor}`,
+          border: usersBorder,
           borderRadius: '4px',
         }}
       >
