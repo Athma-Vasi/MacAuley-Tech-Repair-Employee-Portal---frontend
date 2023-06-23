@@ -285,19 +285,27 @@ function Register() {
   const displayRegisterForm = (
     <Flex
       direction="column"
-      align="center"
+      align="flex-start"
       justify="space-between"
       w="100%"
       h="100%"
       p="lg"
     >
-      <Flex columnGap="md" align="center" justify="space-between">
-        <Flex direction="column" align="center" justify="center">
-          <FontAwesomeIcon icon={faWrench} color="gray" size="2x" />
+      <Flex direction="column" align="flex-start" justify="center" rowGap="lg">
+        <Flex align="center" justify="center">
+          <Title order={3} color="dark">
+            MACAULEY
+          </Title>
+          <Title order={3} color="red">
+            TECH
+          </Title>
+          <Title order={3} color="green">
+            REPAIR
+          </Title>
         </Flex>
-        <Title order={2} color="dimmed">
-          MacAuley Tech Repair Employee Portal
-        </Title>
+        <Text size="lg" color="dark">
+          Employee Portal
+        </Text>
       </Flex>
 
       <form onSubmit={handleRegisterFormSubmit}>
@@ -496,6 +504,7 @@ function Register() {
       style={{
         boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
         borderRadius: '3px',
+        backgroundColor: 'white',
       }}
       w={500}
       h="auto"

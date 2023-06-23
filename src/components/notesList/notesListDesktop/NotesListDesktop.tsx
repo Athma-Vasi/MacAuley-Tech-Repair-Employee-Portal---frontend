@@ -9,6 +9,7 @@ import { NotesListDesktopProps } from './types';
 import { COLORS } from '../../../constants';
 import { useGlobalState } from '../../../hooks/useGlobalState';
 import { useAuth } from '../../../hooks/useAuth';
+import { useEffect } from 'react';
 
 function NotesListDesktop({
   transformedNotes,
@@ -25,6 +26,10 @@ function NotesListDesktop({
   const {
     authState: { roles, userId, username: loggedInUsername },
   } = useAuth();
+
+  useEffect(() => {
+    console.log('notesListDesktop');
+  }, [notesListState]);
 
   const {
     lightTextColor,

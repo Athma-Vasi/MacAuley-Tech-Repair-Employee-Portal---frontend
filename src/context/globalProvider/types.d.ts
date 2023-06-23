@@ -4,6 +4,8 @@ type GlobalState = {
   width: number;
   height: number;
   colorScheme: ColorScheme;
+  scrollXDirection: ScrollXDirection;
+  scrollYDirection: ScrollYDirection;
 };
 
 type GlobalAction = {
@@ -11,6 +13,7 @@ type GlobalAction = {
   setHeight: 'setHeight';
   setColorScheme: 'setColorScheme';
   setWindowSize: 'setWindowSize';
+  setScrollAxesDirection: 'setScrollAxesDirection';
 };
 
 type WindowDimensions = {
@@ -18,7 +21,16 @@ type WindowDimensions = {
   height: number;
 };
 
-type GlobalPayload = ColorScheme | number | WindowDimensions;
+type ScrollAxesDirection = {
+  scrollXDirection: 'left' | 'right' | '';
+  scrollYDirection: 'up' | 'down' | '';
+};
+
+type GlobalPayload =
+  | ColorScheme
+  | number
+  | WindowDimensions
+  | ScrollAxesDirection;
 
 type GlobalDispatch = {
   type: GlobalAction[keyof GlobalAction];
@@ -43,4 +55,5 @@ export type {
   GlobalProviderProps,
   ColorScheme,
   WindowDimensions,
+  ScrollAxesDirection,
 };

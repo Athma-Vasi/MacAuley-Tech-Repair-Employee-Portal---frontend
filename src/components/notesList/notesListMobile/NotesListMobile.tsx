@@ -18,7 +18,7 @@ import { COLORS } from '../../../constants';
 import { useGlobalState } from '../../../hooks/useGlobalState';
 import { formatDate } from '../../../utils';
 import { textWrap } from '../constants';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef, useState } from 'react';
 import {
   initialNotesListMobileState,
   notesListMobileAction,
@@ -34,13 +34,17 @@ function NotesListMobile({
   notesListDispatch,
 }: NotesListMobileProps) {
   const {
-    globalState: { colorScheme, width },
+    globalState: { colorScheme, width, scrollYDirection },
   } = useGlobalState();
 
   const [notesListMobileState, notesListMobileDispatch] = useReducer(
     notesListMobileReducer,
     initialNotesListMobileState
   );
+
+  useEffect(() => {
+    console.log({ scrollYDirection });
+  }, [scrollYDirection]);
 
   const { sortKey, sortDirection } = notesListState;
 
@@ -54,8 +58,8 @@ function NotesListMobile({
           payload: {
             id: userId,
             data: notesListMobileState[userId]
-              ? !notesListMobileState[userId]
-              : true,
+              ? true
+              : !notesListMobileState[userId],
           },
         });
 
@@ -65,8 +69,8 @@ function NotesListMobile({
             payload: {
               id: note._id,
               data: notesListMobileState[userId]
-                ? !notesListMobileState[userId]
-                : true,
+                ? true
+                : !notesListMobileState[userId],
             },
           });
         });
@@ -75,10 +79,6 @@ function NotesListMobile({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transformedNotes]);
-
-  useEffect(() => {
-    console.log({ notesListMobileState });
-  }, [notesListMobileState]);
 
   const {
     lightTextColor,
@@ -143,6 +143,19 @@ function NotesListMobile({
     />
   );
 
+  const selectInputsPosition: React.CSSProperties =
+    scrollYDirection === 'down'
+      ? {
+          position: 'sticky',
+          top: '50px',
+          zIndex: 1,
+          backgroundColor:
+            colorScheme === 'dark'
+              ? 'hsla(0, 0%, 0%, 0.5)'
+              : 'hsla(0, 0%, 100%, 0.9)',
+        }
+      : { position: 'relative' };
+
   const displaySelectInputs =
     width < 768 ? (
       <Flex
@@ -150,7 +163,9 @@ function NotesListMobile({
         align="flex-start"
         justify="center"
         rowGap="md"
+        p="sm"
         w="100%"
+        style={selectInputsPosition}
       >
         {displayHeadingSelect}
         {displayDirectionSelect}
@@ -161,7 +176,10 @@ function NotesListMobile({
         align="center"
         justify="space-between"
         columnGap="lg"
+        p="sm"
         w="100%"
+        h="100px"
+        style={selectInputsPosition}
       >
         {displayHeadingSelect}
         {displayDirectionSelect}
@@ -187,7 +205,7 @@ function NotesListMobile({
         >
           {/* heading: username and add new note icon */}
           <Flex justify="space-between" align="center" w="100%">
-            <Flex align="center" justify="center" columnGap="sm">
+            <Flex align="center" justify="center" columnGap="lg">
               <Button
                 type="button"
                 w="50px"
@@ -286,6 +304,7 @@ function NotesListMobile({
                 const displayEdit = (
                   <>
                     <Flex
+                      key={`${userName}${noteID}`}
                       w="100%"
                       h="50px"
                       p="sm"
@@ -364,6 +383,7 @@ function NotesListMobile({
                 const displayTitle = (
                   <>
                     <Flex
+                      key={`${noteID}${title}`}
                       w="100%"
                       h="45px"
                       align="center"
@@ -390,6 +410,7 @@ function NotesListMobile({
                 const displayText = (
                   <>
                     <Flex
+                      key={`${noteID}${text}`}
                       w="100%"
                       h="45px"
                       p="sm"
@@ -413,6 +434,7 @@ function NotesListMobile({
                 const displayCompleted = (
                   <>
                     <Flex
+                      key={`${noteID}${completed}`}
                       w="100%"
                       h="45px"
                       p="sm"
@@ -441,6 +463,7 @@ function NotesListMobile({
                 const displayCreated = (
                   <>
                     <Flex
+                      key={`${noteID}${createdAt}`}
                       w="100%"
                       h="45px"
                       p="sm"
@@ -466,6 +489,7 @@ function NotesListMobile({
                 const displayUpdated = (
                   <>
                     <Flex
+                      key={`${noteID}${updatedAt}`}
                       w="100%"
                       h="45px"
                       p="sm"

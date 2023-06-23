@@ -3,6 +3,7 @@ import {
   GlobalAction,
   GlobalDispatch,
   GlobalState,
+  ScrollAxesDirection,
   WindowDimensions,
 } from './types';
 
@@ -10,6 +11,8 @@ const initialGlobalState: GlobalState = {
   width: 0,
   height: 0,
   colorScheme: 'light',
+  scrollXDirection: '',
+  scrollYDirection: '',
 };
 
 const globalAction: GlobalAction = {
@@ -17,6 +20,7 @@ const globalAction: GlobalAction = {
   setHeight: 'setHeight',
   setColorScheme: 'setColorScheme',
   setWindowSize: 'setWindowSize',
+  setScrollAxesDirection: 'setScrollAxesDirection',
 };
 
 function globalReducer(
@@ -33,6 +37,11 @@ function globalReducer(
     case globalAction.setWindowSize: {
       const { width, height } = action.payload as WindowDimensions;
       return { ...state, width, height };
+    }
+    case globalAction.setScrollAxesDirection: {
+      const { scrollXDirection, scrollYDirection } =
+        action.payload as ScrollAxesDirection;
+      return { ...state, scrollXDirection, scrollYDirection };
     }
 
     default:

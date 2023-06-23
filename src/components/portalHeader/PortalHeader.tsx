@@ -6,13 +6,14 @@ import {
   MediaQuery,
   Space,
   Title,
+  Text,
 } from '@mantine/core';
 import { LOGOUT_URL } from './constants';
 import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { LogoutResponse, PortalHeaderProps } from './types';
 import { useNavigate } from 'react-router-dom';
-import { faWrench } from '@fortawesome/free-solid-svg-icons';
+import { faMicrochip, faWrench } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ThemeSwitch } from '../themeSwitch';
 import { AxiosRequestConfig } from 'axios';
@@ -79,13 +80,20 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
         </MediaQuery>
         {/* title */}
         {width < 768 ? null : (
-          <Flex columnGap="md">
-            <Flex direction="column" align="center" justify="center">
-              <FontAwesomeIcon icon={faWrench} color="gray" />
+          <Flex columnGap="xl" align="center">
+            <Flex align="center" justify="center">
+              <Title order={4} color={textColor}>
+                MACAULEY
+              </Title>
+              <Title order={4} color="red">
+                TECH
+              </Title>
+              <Title order={4} color="green">
+                REPAIR
+              </Title>
             </Flex>
-            <Title order={4} color={textColor}>
-              MacAuley Tech Repair Employee Portal
-            </Title>
+
+            <Text color={textColor}>Employee Portal</Text>
           </Flex>
         )}
 

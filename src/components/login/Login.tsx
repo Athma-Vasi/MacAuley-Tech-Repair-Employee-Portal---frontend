@@ -201,13 +201,21 @@ function Login() {
       h="100%"
       p="lg"
     >
-      <Flex columnGap="md" w="100%" justify="space-between">
-        <Center>
-          <FontAwesomeIcon icon={faWrench} color="gray" size="2x" />
-        </Center>
-        <Title order={2} color="dimmed">
-          MacAuley Tech Repair Employee Portal
-        </Title>
+      <Flex direction="column" align="flex-start" justify="center" rowGap="lg">
+        <Flex align="center" justify="center">
+          <Title order={3} color="dark">
+            MACAULEY
+          </Title>
+          <Title order={3} color="red">
+            TECH
+          </Title>
+          <Title order={3} color="green">
+            REPAIR
+          </Title>
+        </Flex>
+        <Text size="lg" color="dark">
+          Employee Portal
+        </Text>
       </Flex>
       <form onSubmit={handleLoginFormSubmit}>
         <Flex

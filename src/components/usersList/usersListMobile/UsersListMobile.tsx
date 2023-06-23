@@ -47,15 +47,13 @@ function UsersListMobile({
         type: usersListMobileAction.setCollapseToggle,
         payload: {
           id: user._id,
-          data: true,
+          data: usersListMobileState[user._id]
+            ? true
+            : !usersListMobileState[user._id],
         },
       });
     });
   }, [transformedUsers]);
-
-  useEffect(() => {
-    console.log({ usersListMobileState });
-  }, [usersListMobileState]);
 
   const { sortKey, sortDirection } = usersListState;
 
@@ -226,7 +224,9 @@ function UsersListMobile({
                 }
               />
             </Button>
-            <Text color={textColor} style={textWrap}>{`Edit ${username}`}</Text>
+            <Text color={textColor} style={textWrap}>
+              {username}
+            </Text>
           </Flex>
           <Button type="button" onClick={openUserEdit} variant="outline">
             <FontAwesomeIcon
@@ -244,6 +244,7 @@ function UsersListMobile({
     const displayUsername = (
       <>
         <Flex
+          key={`${userID}${username}`}
           w="100%"
           h="45px"
           align="center"
@@ -266,6 +267,7 @@ function UsersListMobile({
     const displayEmail = (
       <>
         <Flex
+          key={`${userID}${email}`}
           w="100%"
           h="45px"
           p="sm"
@@ -288,6 +290,7 @@ function UsersListMobile({
     const displayRoles = (
       <>
         <Flex
+          key={`${userID}${roles.join(',')}`}
           w="100%"
           h="45px"
           p="sm"
@@ -310,6 +313,7 @@ function UsersListMobile({
     const displayActive = (
       <>
         <Flex
+          key={`${userID}${active}`}
           w="100%"
           h="45px"
           p="sm"
@@ -332,6 +336,7 @@ function UsersListMobile({
     const displayCreated = (
       <>
         <Flex
+          key={`${userID}${createdAt}`}
           w="100%"
           h="45px"
           p="sm"
@@ -354,6 +359,7 @@ function UsersListMobile({
     const displayUpdated = (
       <>
         <Flex
+          key={`${userID}${updatedAt}`}
           w="100%"
           h="45px"
           p="sm"

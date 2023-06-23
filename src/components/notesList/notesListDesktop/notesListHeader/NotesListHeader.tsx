@@ -10,6 +10,7 @@ import { NotesListHeaderProps } from './types';
 import { textWrap } from '../../constants';
 import { useGlobalState } from '../../../../hooks/useGlobalState';
 import { COLORS } from '../../../../constants';
+import { useEffect } from 'react';
 
 function NotesListHeader({
   heading,
@@ -22,6 +23,10 @@ function NotesListHeader({
   const {
     globalState: { colorScheme },
   } = useGlobalState();
+
+  useEffect(() => {
+    console.log('notesListHeader');
+  }, [notesListState]);
 
   function handleHeadingSortClick(
     _event: React.MouseEvent<SVGSVGElement, MouseEvent>

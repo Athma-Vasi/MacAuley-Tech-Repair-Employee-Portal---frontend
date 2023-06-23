@@ -183,8 +183,8 @@ function NotesList() {
   }, [notes, usernameForEdit, sortKey, sortDirection]);
 
   useEffect(() => {
-    console.log({ transformedNotes, sortKey, sortDirection });
-  }, [transformedNotes, sortKey, sortDirection]);
+    console.log('notesList');
+  }, [notesListState]);
 
   const { lightTextColor, darkTextColor, buttonOutlineColor, buttonTextColor } =
     COLORS;
@@ -217,30 +217,26 @@ function NotesList() {
     </Modal>
   );
 
-  const transformedMobileNotes = (
-    <NotesListMobile
-      transformedNotes={transformedNotes}
-      notesListAction={notesListAction}
-      notesListDispatch={notesListDispatch}
-      notesListState={notesListState}
-      openAddNewNote={openAddNewNote}
-      openEditNote={openEditNote}
-    />
-  );
-
-  const transformedDesktopNotes = (
-    <NotesListDesktop
-      transformedNotes={transformedNotes}
-      notesListAction={notesListAction}
-      notesListDispatch={notesListDispatch}
-      notesListState={notesListState}
-      openAddNewNote={openAddNewNote}
-      openEditNote={openEditNote}
-    />
-  );
-
   const displayNotes =
-    width <= 1024 ? transformedMobileNotes : transformedDesktopNotes;
+    width <= 1024 ? (
+      <NotesListMobile
+        transformedNotes={transformedNotes}
+        notesListAction={notesListAction}
+        notesListDispatch={notesListDispatch}
+        notesListState={notesListState}
+        openAddNewNote={openAddNewNote}
+        openEditNote={openEditNote}
+      />
+    ) : (
+      <NotesListDesktop
+        transformedNotes={transformedNotes}
+        notesListAction={notesListAction}
+        notesListDispatch={notesListDispatch}
+        notesListState={notesListState}
+        openAddNewNote={openAddNewNote}
+        openEditNote={openEditNote}
+      />
+    );
 
   return (
     <Flex
