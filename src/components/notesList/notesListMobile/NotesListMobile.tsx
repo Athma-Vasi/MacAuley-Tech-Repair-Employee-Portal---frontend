@@ -18,7 +18,7 @@ import { COLORS } from '../../../constants';
 import { useGlobalState } from '../../../hooks/useGlobalState';
 import { formatDate } from '../../../utils';
 import { textWrap } from '../constants';
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { Fragment, useEffect, useReducer, useRef, useState } from 'react';
 import {
   initialNotesListMobileState,
   notesListMobileAction,
@@ -144,15 +144,12 @@ function NotesListMobile({
   );
 
   const selectInputsPosition: React.CSSProperties =
-    scrollYDirection === 'down'
+    scrollYDirection === 'up'
       ? {
           position: 'sticky',
           top: '50px',
           zIndex: 1,
-          backgroundColor:
-            colorScheme === 'dark'
-              ? 'hsla(0, 0%, 0%, 0.5)'
-              : 'hsla(0, 0%, 100%, 0.9)',
+          backgroundColor: colorScheme === 'dark' ? '#1a1b1e' : '#ffffff',
         }
       : { position: 'relative' };
 
@@ -302,9 +299,8 @@ function NotesListMobile({
                 });
 
                 const displayEdit = (
-                  <>
+                  <Fragment key={`${userName}${noteID}`}>
                     <Flex
-                      key={`${userName}${noteID}`}
                       w="100%"
                       h="50px"
                       p="sm"
@@ -377,13 +373,12 @@ function NotesListMobile({
                         />
                       </Button>
                     </Flex>
-                  </>
+                  </Fragment>
                 );
 
                 const displayTitle = (
-                  <>
+                  <Fragment key={`${noteID}${title}`}>
                     <Flex
-                      key={`${noteID}${title}`}
                       w="100%"
                       h="45px"
                       align="center"
@@ -404,13 +399,12 @@ function NotesListMobile({
                         {title}
                       </Text>
                     </Flex>
-                  </>
+                  </Fragment>
                 );
 
                 const displayText = (
-                  <>
+                  <Fragment key={`${noteID}${text}`}>
                     <Flex
-                      key={`${noteID}${text}`}
                       w="100%"
                       h="45px"
                       p="sm"
@@ -428,13 +422,12 @@ function NotesListMobile({
                     <Flex w="100%" align="center" justify="flex-end" px="sm">
                       <Text color={textColor}>{text}</Text>
                     </Flex>
-                  </>
+                  </Fragment>
                 );
 
                 const displayCompleted = (
-                  <>
+                  <Fragment key={`${noteID}${completed}`}>
                     <Flex
-                      key={`${noteID}${completed}`}
                       w="100%"
                       h="45px"
                       p="sm"
@@ -457,13 +450,12 @@ function NotesListMobile({
                         {completed ? 'Yes' : 'No'}
                       </Text>
                     </Flex>
-                  </>
+                  </Fragment>
                 );
 
                 const displayCreated = (
-                  <>
+                  <Fragment key={`${noteID}${createdAt}`}>
                     <Flex
-                      key={`${noteID}${createdAt}`}
                       w="100%"
                       h="45px"
                       p="sm"
@@ -483,13 +475,12 @@ function NotesListMobile({
                         {createdDate}
                       </Text>
                     </Flex>
-                  </>
+                  </Fragment>
                 );
 
                 const displayUpdated = (
-                  <>
+                  <Fragment key={`${noteID}${updatedAt}${noteID}`}>
                     <Flex
-                      key={`${noteID}${updatedAt}`}
                       w="100%"
                       h="45px"
                       p="sm"
@@ -509,7 +500,7 @@ function NotesListMobile({
                         {updatedDate}
                       </Text>
                     </Flex>
-                  </>
+                  </Fragment>
                 );
 
                 return (

@@ -4,9 +4,13 @@ import { PortalNavbar } from '../portalNavbar';
 import { PortalHeader } from '../portalHeader';
 import { PortalFooter } from '../portalFooter';
 import { useState } from 'react';
+import { useGlobalState } from '../../hooks/useGlobalState';
 
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);
+  const {
+    globalState: { scrollYDirection },
+  } = useGlobalState();
 
   return (
     <div>
@@ -17,7 +21,7 @@ function PortalLayout() {
         header={
           <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
         }
-        footer={<PortalFooter />}
+        footer={scrollYDirection === 'up' ? <PortalFooter /> : <></>}
       >
         <Outlet />
       </AppShell>

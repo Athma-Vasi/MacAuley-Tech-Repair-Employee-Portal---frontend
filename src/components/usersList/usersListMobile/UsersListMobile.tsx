@@ -17,7 +17,7 @@ import type {
 import { textWrap } from '../constants';
 import { COLORS } from '../../../constants';
 import { useGlobalState } from '../../../hooks/useGlobalState';
-import { useEffect, useReducer } from 'react';
+import { Fragment, useEffect, useReducer, useState } from 'react';
 import {
   initialUsersListMobileState,
   usersListMobileAction,
@@ -32,7 +32,7 @@ function UsersListMobile({
   usersListState,
 }: UsersListMobileProps) {
   const {
-    globalState: { colorScheme, width },
+    globalState: { colorScheme, width, scrollYDirection },
   } = useGlobalState();
 
   const [usersListMobileState, usersListMobileDispatch] = useReducer(
@@ -121,6 +121,18 @@ function UsersListMobile({
     />
   );
 
+  const selectInputsPosition: React.CSSProperties =
+    scrollYDirection === 'up' && window.scrollY > 50
+      ? {
+          position: 'sticky',
+          top: '50px',
+          zIndex: 1,
+          backgroundColor: colorScheme === 'dark' ? '#1a1b1e' : '#ffffff',
+        }
+      : {
+          position: 'relative',
+        };
+
   const displaySelectInputs =
     width < 768 ? (
       <Flex
@@ -129,6 +141,8 @@ function UsersListMobile({
         justify="center"
         rowGap="md"
         w="100%"
+        p="sm"
+        style={selectInputsPosition}
       >
         {displayHeadingSelect}
         {displayDirectionSelect}
@@ -139,7 +153,10 @@ function UsersListMobile({
         align="center"
         justify="space-between"
         columnGap="lg"
+        p="sm"
         w="100%"
+        h="100px"
+        style={selectInputsPosition}
       >
         {displayHeadingSelect}
         {displayDirectionSelect}
@@ -176,7 +193,7 @@ function UsersListMobile({
     });
 
     const displayEdit = (
-      <>
+      <Fragment key={JSON.stringify(user)}>
         <Flex
           w="100%"
           h="50px"
@@ -238,13 +255,12 @@ function UsersListMobile({
             />
           </Button>
         </Flex>
-      </>
+      </Fragment>
     );
 
     const displayUsername = (
-      <>
+      <Fragment key={`${userID}${username}`}>
         <Flex
-          key={`${userID}${username}`}
           w="100%"
           h="45px"
           align="center"
@@ -261,13 +277,12 @@ function UsersListMobile({
             {username}
           </Text>
         </Flex>
-      </>
+      </Fragment>
     );
 
     const displayEmail = (
-      <>
+      <Fragment key={`${userID}${email}`}>
         <Flex
-          key={`${userID}${email}`}
           w="100%"
           h="45px"
           p="sm"
@@ -284,13 +299,12 @@ function UsersListMobile({
             {email}
           </Text>
         </Flex>
-      </>
+      </Fragment>
     );
 
     const displayRoles = (
-      <>
+      <Fragment key={`${userID}${roles.join(',')}`}>
         <Flex
-          key={`${userID}${roles.join(',')}`}
           w="100%"
           h="45px"
           p="sm"
@@ -307,13 +321,12 @@ function UsersListMobile({
             {roles.join(', ')}
           </Text>
         </Flex>
-      </>
+      </Fragment>
     );
 
     const displayActive = (
-      <>
+      <Fragment key={`${userID}${active}`}>
         <Flex
-          key={`${userID}${active}`}
           w="100%"
           h="45px"
           p="sm"
@@ -330,13 +343,12 @@ function UsersListMobile({
             {active ? 'Yes' : 'No'}
           </Text>
         </Flex>
-      </>
+      </Fragment>
     );
 
     const displayCreated = (
-      <>
+      <Fragment key={`${userID}${createdAt}`}>
         <Flex
-          key={`${userID}${createdAt}`}
           w="100%"
           h="45px"
           p="sm"
@@ -353,13 +365,12 @@ function UsersListMobile({
             {createdDate}
           </Text>
         </Flex>
-      </>
+      </Fragment>
     );
 
     const displayUpdated = (
-      <>
+      <Fragment key={`${userID}${updatedAt}${userID}`}>
         <Flex
-          key={`${userID}${updatedAt}`}
           w="100%"
           h="45px"
           p="sm"
@@ -376,7 +387,7 @@ function UsersListMobile({
             {updatedDate}
           </Text>
         </Flex>
-      </>
+      </Fragment>
     );
 
     return (
