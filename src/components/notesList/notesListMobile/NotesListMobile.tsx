@@ -55,7 +55,7 @@ function NotesListMobile({
             id: userId,
             data: notesListMobileState[userId]
               ? !notesListMobileState[userId]
-              : false,
+              : true,
           },
         });
 
@@ -66,7 +66,7 @@ function NotesListMobile({
               id: note._id,
               data: notesListMobileState[userId]
                 ? !notesListMobileState[userId]
-                : false,
+                : true,
             },
           });
         });
@@ -204,7 +204,7 @@ function NotesListMobile({
               >
                 <FontAwesomeIcon
                   icon={
-                    notesListMobileState[userID] === false
+                    notesListMobileState[userID] === true
                       ? faChevronRight
                       : faChevronDown
                   }
@@ -254,8 +254,7 @@ function NotesListMobile({
             align="center"
             rowGap="lg"
           >
-            {/* safe to do short-circuiting as left expression evaluates to a boolean */}
-            {notesListMobileState[userID] &&
+            {notesListMobileState[userID] === false &&
               notesArr.map((note: Note) => {
                 const {
                   _id: noteID,
@@ -319,7 +318,7 @@ function NotesListMobile({
                         >
                           <FontAwesomeIcon
                             icon={
-                              notesListMobileState[noteID] === false
+                              notesListMobileState[noteID] === true
                                 ? faChevronRight
                                 : faChevronDown
                             }
@@ -505,16 +504,14 @@ function NotesListMobile({
                   >
                     {displayEdit}
 
-                    {/* if noteId for corresponding user in notesListMobileState is true, display note*/}
-                    {notesListMobileState[noteID]
-                      ? [
-                          displayTitle,
-                          displayText,
-                          displayCompleted,
-                          displayCreated,
-                          displayUpdated,
-                        ]
-                      : null}
+                    {/* if noteId for corresponding note in notesListMobileState's collapse state is false, display note */}
+                    {notesListMobileState[noteID] === false && [
+                      displayTitle,
+                      displayText,
+                      displayCompleted,
+                      displayCreated,
+                      displayUpdated,
+                    ]}
                   </Flex>
                 );
               })}

@@ -14,6 +14,27 @@ type UsersListMobileProps = {
   usersListDispatch: React.Dispatch<UsersListDispatch>;
 };
 
+type UsersListMobileState = Record<string, boolean>;
+
+type UsersListMobileAction = {
+  setCollapseToggle: 'setCollapseToggle';
+};
+
+type UsersListMobilePayload = {
+  id: string;
+  data: boolean;
+};
+
+type UsersListMobileDispatch = {
+  type: UsersListMobileAction[keyof UsersListMobileAction];
+  payload: UsersListMobilePayload;
+};
+
+type UsersListMobileReducer = (
+  state: UsersListMobileState,
+  action: UsersListMobileDispatch
+) => UsersListMobileState;
+
 type UserHeadingSelectData = {
   value: UsersListSortKey;
   label: Capitalize<UsersListSortKey>;
@@ -28,4 +49,9 @@ export type {
   UsersListMobileProps,
   UserHeadingSelectData,
   UserDirectionSelectData,
+  UsersListMobileState,
+  UsersListMobileAction,
+  UsersListMobilePayload,
+  UsersListMobileDispatch,
+  UsersListMobileReducer,
 };

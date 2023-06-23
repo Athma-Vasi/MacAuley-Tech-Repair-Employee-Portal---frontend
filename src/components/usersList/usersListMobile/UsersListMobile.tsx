@@ -1,15 +1,28 @@
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronDown,
+  faChevronRight,
+  faEdit,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Button, Text, Select } from '@mantine/core';
 import { formatDate } from '../../../utils';
-import { textWrap } from '../constants';
-import {
+
+import type { User } from '../../../types';
+import type {
   UserDirectionSelectData,
   UserHeadingSelectData,
   UsersListMobileProps,
 } from './types';
+
+import { textWrap } from '../constants';
 import { COLORS } from '../../../constants';
 import { useGlobalState } from '../../../hooks/useGlobalState';
+import { useEffect, useReducer } from 'react';
+import {
+  initialUsersListMobileState,
+  usersListMobileAction,
+  usersListMobileReducer,
+} from './state';
 
 function UsersListMobile({
   transformedUsers,
@@ -21,6 +34,28 @@ function UsersListMobile({
   const {
     globalState: { colorScheme, width },
   } = useGlobalState();
+
+  const [usersListMobileState, usersListMobileDispatch] = useReducer(
+    usersListMobileReducer,
+    initialUsersListMobileState
+  );
+
+  // dynamically create collapse toggle state for each user
+  useEffect(() => {
+    transformedUsers.forEach((user: User) => {
+      usersListMobileDispatch({
+        type: usersListMobileAction.setCollapseToggle,
+        payload: {
+          id: user._id,
+          data: true,
+        },
+      });
+    });
+  }, [transformedUsers]);
+
+  useEffect(() => {
+    console.log({ usersListMobileState });
+  }, [usersListMobileState]);
 
   const { sortKey, sortDirection } = usersListState;
 
@@ -114,7 +149,15 @@ function UsersListMobile({
     );
 
   const displayUsersList = transformedUsers.map((user) => {
-    const { _id, username, email, roles, active, createdAt, updatedAt } = user;
+    const {
+      _id: userID,
+      username,
+      email,
+      roles,
+      active,
+      createdAt,
+      updatedAt,
+    } = user;
 
     const createdDate = formatDate({
       date: createdAt,
@@ -134,142 +177,15 @@ function UsersListMobile({
       },
     });
 
-    return (
-      <Flex
-        key={_id}
-        direction="column"
-        align="center"
-        justify="center"
-        w="100%"
-        rowGap="md"
-        p="sm"
-        style={{
-          border: usersBorder,
-          borderRadius: '4px',
-        }}
-      >
-        {/* username */}
-        <Flex
-          w="100%"
-          h="45px"
-          align="center"
-          justify="flex-start"
-          p="sm"
-          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
-        >
-          <Text color={textColor} style={textWrap}>
-            Username
-          </Text>
-        </Flex>
-        <Flex w="100%" align="center" justify="flex-end" px="sm">
-          <Text color={textColor} style={textWrap}>
-            {username}
-          </Text>
-        </Flex>
-
-        {/* email */}
-        <Flex
-          w="100%"
-          h="45px"
-          p="sm"
-          align="center"
-          justify="flex-start"
-          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
-        >
-          <Text color={textColor} style={textWrap}>
-            Email
-          </Text>
-        </Flex>
-        <Flex w="100%" align="center" justify="flex-end" px="sm">
-          <Text color={textColor} style={textWrap}>
-            {email}
-          </Text>
-        </Flex>
-
-        {/* roles */}
-        <Flex
-          w="100%"
-          h="45px"
-          p="sm"
-          align="center"
-          justify="flex-start"
-          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
-        >
-          <Text color={textColor} style={textWrap}>
-            Roles
-          </Text>
-        </Flex>
-        <Flex w="100%" align="center" justify="flex-end" px="sm">
-          <Text color={textColor} style={textWrap}>
-            {roles.join(', ')}
-          </Text>
-        </Flex>
-
-        {/* active */}
-        <Flex
-          w="100%"
-          h="45px"
-          p="sm"
-          align="center"
-          justify="flex-start"
-          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
-        >
-          <Text color={textColor} style={textWrap}>
-            Active
-          </Text>
-        </Flex>
-        <Flex w="100%" align="center" justify="flex-end" px="sm">
-          <Text color={active ? 'green' : 'red'} style={textWrap}>
-            {active ? 'Yes' : 'No'}
-          </Text>
-        </Flex>
-
-        {/* created */}
-        <Flex
-          w="100%"
-          h="45px"
-          p="sm"
-          align="center"
-          justify="flex-start"
-          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
-        >
-          <Text color={textColor} style={textWrap}>
-            Created
-          </Text>
-        </Flex>
-        <Flex w="100%" align="center" justify="flex-end" px="sm">
-          <Text color={textColor} style={textWrap}>
-            {createdDate}
-          </Text>
-        </Flex>
-
-        {/* updated */}
-        <Flex
-          w="100%"
-          h="45px"
-          p="sm"
-          align="center"
-          justify="flex-start"
-          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
-        >
-          <Text color={textColor} style={textWrap}>
-            Updated
-          </Text>
-        </Flex>
-        <Flex w="100%" align="center" justify="flex-end" px="sm">
-          <Text color={textColor} style={textWrap}>
-            {updatedDate}
-          </Text>
-        </Flex>
-
-        {/* edit */}
+    const displayEdit = (
+      <>
         <Flex
           w="100%"
           h="50px"
           p="sm"
           align="center"
           justify="space-between"
-          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
+          style={{ borderRadius: '4px' }}
           onKeyDown={(event) => {
             if (event.key === 'Enter') {
               openUserEdit();
@@ -287,7 +203,31 @@ function UsersListMobile({
             });
           }}
         >
-          <Text color={textColor} style={textWrap}>{`Edit ${username}`}</Text>
+          <Flex align="center" justify="flex-start" columnGap="lg" w="62%">
+            <Button
+              type="button"
+              w="50px"
+              variant="outline"
+              onClick={() => {
+                usersListMobileDispatch({
+                  type: usersListMobileAction.setCollapseToggle,
+                  payload: {
+                    id: userID,
+                    data: !usersListMobileState[userID],
+                  },
+                });
+              }}
+            >
+              <FontAwesomeIcon
+                icon={
+                  usersListMobileState[userID] === true
+                    ? faChevronRight
+                    : faChevronDown
+                }
+              />
+            </Button>
+            <Text color={textColor} style={textWrap}>{`Edit ${username}`}</Text>
+          </Flex>
           <Button type="button" onClick={openUserEdit} variant="outline">
             <FontAwesomeIcon
               style={{
@@ -298,6 +238,165 @@ function UsersListMobile({
             />
           </Button>
         </Flex>
+      </>
+    );
+
+    const displayUsername = (
+      <>
+        <Flex
+          w="100%"
+          h="45px"
+          align="center"
+          justify="flex-start"
+          p="sm"
+          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Username
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end" px="sm">
+          <Text color={textColor} style={textWrap}>
+            {username}
+          </Text>
+        </Flex>
+      </>
+    );
+
+    const displayEmail = (
+      <>
+        <Flex
+          w="100%"
+          h="45px"
+          p="sm"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Email
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end" px="sm">
+          <Text color={textColor} style={textWrap}>
+            {email}
+          </Text>
+        </Flex>
+      </>
+    );
+
+    const displayRoles = (
+      <>
+        <Flex
+          w="100%"
+          h="45px"
+          p="sm"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Roles
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end" px="sm">
+          <Text color={textColor} style={textWrap}>
+            {roles.join(', ')}
+          </Text>
+        </Flex>
+      </>
+    );
+
+    const displayActive = (
+      <>
+        <Flex
+          w="100%"
+          h="45px"
+          p="sm"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Active
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end" px="sm">
+          <Text color={active ? 'green' : 'red'} style={textWrap}>
+            {active ? 'Yes' : 'No'}
+          </Text>
+        </Flex>
+      </>
+    );
+
+    const displayCreated = (
+      <>
+        <Flex
+          w="100%"
+          h="45px"
+          p="sm"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Created
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end" px="sm">
+          <Text color={textColor} style={textWrap}>
+            {createdDate}
+          </Text>
+        </Flex>
+      </>
+    );
+
+    const displayUpdated = (
+      <>
+        <Flex
+          w="100%"
+          h="45px"
+          p="sm"
+          align="center"
+          justify="flex-start"
+          style={{ backgroundColor: usersRowsBGColorDark, borderRadius: '4px' }}
+        >
+          <Text color={textColor} style={textWrap}>
+            Updated
+          </Text>
+        </Flex>
+        <Flex w="100%" align="center" justify="flex-end" px="sm">
+          <Text color={textColor} style={textWrap}>
+            {updatedDate}
+          </Text>
+        </Flex>
+      </>
+    );
+
+    return (
+      <Flex
+        key={userID}
+        direction="column"
+        align="center"
+        justify="center"
+        w="100%"
+        rowGap="md"
+        p="sm"
+        style={{
+          border: usersBorder,
+          borderRadius: '4px',
+        }}
+      >
+        {displayEdit}
+        {/* if userId for corresponding user in usersListMobileState's collapse state is false, display user */}
+        {usersListMobileState[userID] === false && [
+          displayUsername,
+          displayEmail,
+          displayRoles,
+          displayActive,
+          displayCreated,
+          displayUpdated,
+        ]}
       </Flex>
     );
   });
