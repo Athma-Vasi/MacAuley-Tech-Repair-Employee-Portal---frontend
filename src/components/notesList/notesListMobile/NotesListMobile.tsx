@@ -1,5 +1,13 @@
 import { Button, Flex, Select, Text } from '@mantine/core';
-import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronDown,
+  faChevronRight,
+  faChevronUp,
+  faEdit,
+  faPlus,
+  faToggleOff,
+  faToggleOn,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import type {
@@ -7,13 +15,18 @@ import type {
   NoteHeadingSelectData,
   NotesListMobileProps,
 } from './types';
-import type { Note } from '../types';
+import type { Note } from '../../../types';
 
 import { COLORS } from '../../../constants';
 import { useGlobalState } from '../../../hooks/useGlobalState';
 import { formatDate } from '../../../utils';
 import { textWrap } from '../constants';
-import { useEffect } from 'react';
+import { useEffect, useReducer } from 'react';
+import {
+  initialNotesListMobileState,
+  notesListMobileAction,
+  notesListMobileReducer,
+} from './state';
 
 function NotesListMobile({
   transformedNotes,
@@ -27,21 +40,48 @@ function NotesListMobile({
     globalState: { colorScheme, width },
   } = useGlobalState();
 
+  const [notesListMobileState, notesListMobileDispatch] = useReducer(
+    notesListMobileReducer,
+    initialNotesListMobileState
+  );
+
   const { sortKey, sortDirection } = notesListState;
 
-  // useEffect(() => {
-  //   const transformedNotes = transformNotesForDisplay({
-  //     notes,
-  //     usernameForEdit,
-  //     sortKey,
-  //     sortDirection,
-  //   });
+  // dynamically create collapse toggle state for each user and their respective notes
+  useEffect(() => {
+    transformedNotes.forEach(
+      ([_username, [userId, notes]]: [string, [string, Note[]]]) => {
+        // set collapse toggle state for each user and note id, if it exists set to opposite and if not set to false
+        notesListMobileDispatch({
+          type: notesListMobileAction.setCollapseToggle,
+          payload: {
+            id: userId,
+            data: notesListMobileState[userId]
+              ? !notesListMobileState[userId]
+              : false,
+          },
+        });
 
-  //   notesListDispatch({
-  //     type: notesListAction.setTransformedNotes,
-  //     payload: transformedNotes,
-  //   });
-  // }, [notes, usernameForEdit, sortKey, sortDirection]);
+        notes.forEach((note: Note) => {
+          notesListMobileDispatch({
+            type: notesListMobileAction.setCollapseToggle,
+            payload: {
+              id: note._id,
+              data: notesListMobileState[userId]
+                ? !notesListMobileState[userId]
+                : false,
+            },
+          });
+        });
+      }
+    );
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [transformedNotes]);
+
+  useEffect(() => {
+    console.log({ notesListMobileState });
+  }, [notesListMobileState]);
 
   const {
     lightTextColor,
@@ -139,20 +179,44 @@ function NotesListMobile({
           direction="column"
           align="center"
           justify="center"
-          rowGap="lg"
+          rowGap="sm"
           w="100%"
           p="md"
           style={{
             border: notesBorder,
             borderRadius: '4px',
-            boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.2)',
+            // boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.2)',
           }}
         >
           {/* heading: username and add new note icon */}
           <Flex justify="space-between" align="center" w="100%">
-            <Text color={textColor} size="lg">
-              {userName}
-            </Text>
+            <Flex align="center" justify="center" columnGap="sm">
+              <Button
+                type="button"
+                w="50px"
+                variant="outline"
+                onClick={() => {
+                  notesListMobileDispatch({
+                    type: notesListMobileAction.setCollapseToggle,
+                    payload: {
+                      id: userID,
+                      data: !notesListMobileState[userID],
+                    },
+                  });
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={
+                    notesListMobileState[userID] === false
+                      ? faChevronRight
+                      : faChevronDown
+                  }
+                />
+              </Button>
+              <Text color={textColor} size="lg">
+                {userName}
+              </Text>
+            </Flex>
             <Button variant="outline">
               <FontAwesomeIcon
                 icon={faPlus}
@@ -191,201 +255,267 @@ function NotesListMobile({
             align="center"
             rowGap="lg"
           >
-            {notesArr.map((note: Note) => {
-              const { _id, title, text, completed, createdAt, updatedAt } =
-                note;
+            {/* safe to do short-circuiting as left expression evaluates to a boolean */}
+            {notesListMobileState[userID] &&
+              notesArr.map((note: Note) => {
+                const {
+                  _id: noteID,
+                  title,
+                  text,
+                  completed,
+                  createdAt,
+                  updatedAt,
+                } = note;
 
-              const createdDate = formatDate({
-                date: createdAt,
-                locale: 'en-US',
-                formatOptions: {
-                  dateStyle: 'long',
-                  timeStyle: 'long',
-                },
-              });
+                const createdDate = formatDate({
+                  date: createdAt,
+                  locale: 'en-US',
+                  formatOptions: {
+                    dateStyle: 'long',
+                    timeStyle: 'long',
+                  },
+                });
 
-              const updatedDate = formatDate({
-                date: updatedAt,
-                locale: 'en-US',
-                formatOptions: {
-                  dateStyle: 'long',
-                  timeStyle: 'long',
-                },
-              });
+                const updatedDate = formatDate({
+                  date: updatedAt,
+                  locale: 'en-US',
+                  formatOptions: {
+                    dateStyle: 'long',
+                    timeStyle: 'long',
+                  },
+                });
 
-              return (
-                <Flex
-                  key={_id}
-                  direction="column"
-                  align="center"
-                  justify="center"
-                  w="100%"
-                  rowGap="md"
-                  p="sm"
-                  style={{
-                    border: notesBorder,
-                    borderRadius: '4px',
-                  }}
-                >
-                  {/* title */}
-                  <Flex
-                    w="100%"
-                    h="45px"
-                    align="center"
-                    justify="flex-start"
-                    p="sm"
-                    style={{
-                      backgroundColor: usersRowsBGColorDark,
-                      borderRadius: '4px',
-                    }}
-                  >
-                    <Text color={textColor} style={textWrap}>
-                      Title
-                    </Text>
-                  </Flex>
-                  <Flex w="100%" align="center" justify="flex-end" px="sm">
-                    <Text color={textColor} style={textWrap}>
-                      {title}
-                    </Text>
-                  </Flex>
-
-                  {/* text */}
-                  <Flex
-                    w="100%"
-                    h="45px"
-                    p="sm"
-                    align="center"
-                    justify="flex-start"
-                    style={{
-                      backgroundColor: usersRowsBGColorDark,
-                      borderRadius: '4px',
-                    }}
-                  >
-                    <Text color={textColor} style={textWrap}>
-                      Text
-                    </Text>
-                  </Flex>
-                  <Flex w="100%" align="center" justify="flex-end" px="sm">
-                    <Text color={textColor} style={textWrap}>
-                      {text}
-                    </Text>
-                  </Flex>
-
-                  {/* completed */}
-                  <Flex
-                    w="100%"
-                    h="45px"
-                    p="sm"
-                    align="center"
-                    justify="flex-start"
-                    style={{
-                      backgroundColor: usersRowsBGColorDark,
-                      borderRadius: '4px',
-                    }}
-                  >
-                    <Text color={textColor} style={textWrap}>
-                      Completed
-                    </Text>
-                  </Flex>
-                  <Flex w="100%" align="center" justify="flex-end" px="sm">
-                    <Text color={completed ? 'green' : 'red'} style={textWrap}>
-                      {completed ? 'Yes' : 'No'}
-                    </Text>
-                  </Flex>
-
-                  {/* created */}
-                  <Flex
-                    w="100%"
-                    h="45px"
-                    p="sm"
-                    align="center"
-                    justify="flex-start"
-                    style={{
-                      backgroundColor: usersRowsBGColorDark,
-                      borderRadius: '4px',
-                    }}
-                  >
-                    <Text color={textColor} style={textWrap}>
-                      Created
-                    </Text>
-                  </Flex>
-                  <Flex w="100%" align="center" justify="flex-end" px="sm">
-                    <Text color={textColor} style={textWrap}>
-                      {createdDate}
-                    </Text>
-                  </Flex>
-
-                  {/* updated */}
-                  <Flex
-                    w="100%"
-                    h="45px"
-                    p="sm"
-                    align="center"
-                    justify="flex-start"
-                    style={{
-                      backgroundColor: usersRowsBGColorDark,
-                      borderRadius: '4px',
-                    }}
-                  >
-                    <Text color={textColor} style={textWrap}>
-                      Updated
-                    </Text>
-                  </Flex>
-                  <Flex w="100%" align="center" justify="flex-end" px="sm">
-                    <Text color={textColor} style={textWrap}>
-                      {updatedDate}
-                    </Text>
-                  </Flex>
-
-                  {/* edit */}
-                  <Flex
-                    w="100%"
-                    h="50px"
-                    p="sm"
-                    align="center"
-                    justify="space-between"
-                    style={{
-                      backgroundColor: usersRowsBGColorDark,
-                      borderRadius: '4px',
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key === 'Enter') {
-                        openEditNote();
-                      }
-                    }}
-                    onKeyUp={(event) => {
-                      if (event.key === 'Enter') {
-                        openEditNote();
-                      }
-                    }}
-                    onClick={() => {
-                      notesListDispatch({
-                        type: notesListAction.setNoteToEdit,
-                        payload: note,
-                      });
-                    }}
-                  >
-                    <Text
-                      color={textColor}
-                      style={textWrap}
-                    >{`Edit ${title}`}</Text>
-                    <Button
-                      type="button"
-                      onClick={openEditNote}
-                      variant="outline"
+                const displayEdit = (
+                  <>
+                    <Flex
+                      w="100%"
+                      h="50px"
+                      p="sm"
+                      align="center"
+                      justify="space-between"
+                      style={{
+                        backgroundColor: usersRowsBGColorDark,
+                        borderRadius: '4px',
+                      }}
                     >
-                      <FontAwesomeIcon
-                        style={{
-                          cursor: 'pointer',
-                          color: buttonTextColor,
+                      <Flex align="center" justify="flex-start" columnGap="lg">
+                        <Button
+                          type="button"
+                          w="50px"
+                          variant="outline"
+                          onClick={() => {
+                            notesListMobileDispatch({
+                              type: notesListMobileAction.setCollapseToggle,
+                              payload: {
+                                id: noteID,
+                                data: !notesListMobileState[noteID],
+                              },
+                            });
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={
+                              notesListMobileState[noteID] === false
+                                ? faChevronRight
+                                : faChevronDown
+                            }
+                          />
+                        </Button>
+                        <Text color={textColor} style={textWrap}>
+                          {title}
+                        </Text>
+                      </Flex>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onKeyDown={(event) => {
+                          if (event.key === 'Enter') {
+                            openEditNote();
+                          }
                         }}
-                        icon={faEdit}
-                      />
-                    </Button>
+                        onKeyUp={(event) => {
+                          if (event.key === 'Enter') {
+                            openEditNote();
+                          }
+                        }}
+                        onClick={() => {
+                          openEditNote();
+                          notesListDispatch({
+                            type: notesListAction.setNoteToEdit,
+                            payload: note,
+                          });
+                        }}
+                      >
+                        <FontAwesomeIcon
+                          style={{
+                            cursor: 'pointer',
+                            color: buttonTextColor,
+                          }}
+                          icon={faEdit}
+                        />
+                      </Button>
+                    </Flex>
+                  </>
+                );
+
+                const displayTitle = (
+                  <>
+                    <Flex
+                      w="100%"
+                      h="45px"
+                      align="center"
+                      justify="space-between"
+                      p="sm"
+                      columnGap="lg"
+                      style={{
+                        backgroundColor: usersRowsBGColorDark,
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <Text color={textColor} style={textWrap}>
+                        Title
+                      </Text>
+                    </Flex>
+                    <Flex w="100%" align="center" justify="flex-end" px="sm">
+                      <Text color={textColor} style={textWrap}>
+                        {title}
+                      </Text>
+                    </Flex>
+                  </>
+                );
+
+                const displayText = (
+                  <>
+                    <Flex
+                      w="100%"
+                      h="45px"
+                      p="sm"
+                      align="center"
+                      justify="flex-start"
+                      style={{
+                        backgroundColor: usersRowsBGColorDark,
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <Text color={textColor} style={textWrap}>
+                        Text
+                      </Text>
+                    </Flex>
+                    <Flex w="100%" align="center" justify="flex-end" px="sm">
+                      <Text color={textColor} style={textWrap}>
+                        {text}
+                      </Text>
+                    </Flex>
+                  </>
+                );
+
+                const displayCompleted = (
+                  <>
+                    <Flex
+                      w="100%"
+                      h="45px"
+                      p="sm"
+                      align="center"
+                      justify="flex-start"
+                      style={{
+                        backgroundColor: usersRowsBGColorDark,
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <Text color={textColor} style={textWrap}>
+                        Completed
+                      </Text>
+                    </Flex>
+                    <Flex w="100%" align="center" justify="flex-end" px="sm">
+                      <Text
+                        color={completed ? 'green' : 'red'}
+                        style={textWrap}
+                      >
+                        {completed ? 'Yes' : 'No'}
+                      </Text>
+                    </Flex>
+                  </>
+                );
+
+                const displayCreated = (
+                  <>
+                    <Flex
+                      w="100%"
+                      h="45px"
+                      p="sm"
+                      align="center"
+                      justify="flex-start"
+                      style={{
+                        backgroundColor: usersRowsBGColorDark,
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <Text color={textColor} style={textWrap}>
+                        Created
+                      </Text>
+                    </Flex>
+                    <Flex w="100%" align="center" justify="flex-end" px="sm">
+                      <Text color={textColor} style={textWrap}>
+                        {createdDate}
+                      </Text>
+                    </Flex>
+                  </>
+                );
+
+                const displayUpdated = (
+                  <>
+                    <Flex
+                      w="100%"
+                      h="45px"
+                      p="sm"
+                      align="center"
+                      justify="flex-start"
+                      style={{
+                        backgroundColor: usersRowsBGColorDark,
+                        borderRadius: '4px',
+                      }}
+                    >
+                      <Text color={textColor} style={textWrap}>
+                        Updated
+                      </Text>
+                    </Flex>
+                    <Flex w="100%" align="center" justify="flex-end" px="sm">
+                      <Text color={textColor} style={textWrap}>
+                        {updatedDate}
+                      </Text>
+                    </Flex>
+                  </>
+                );
+
+                return (
+                  <Flex
+                    key={noteID}
+                    direction="column"
+                    align="center"
+                    justify="center"
+                    w="100%"
+                    rowGap="md"
+                    p="sm"
+                    style={{
+                      border: notesBorder,
+                      borderRadius: '4px',
+                    }}
+                  >
+                    {displayEdit}
+
+                    {/* if noteId for corresponding user is true, display note*/}
+                    {notesListMobileState[noteID]
+                      ? [
+                          displayTitle,
+                          displayText,
+                          displayCompleted,
+                          displayCreated,
+                          displayUpdated,
+                        ]
+                      : null}
                   </Flex>
-                </Flex>
-              );
-            })}
+                );
+              })}
           </Flex>
         </Flex>
       );
