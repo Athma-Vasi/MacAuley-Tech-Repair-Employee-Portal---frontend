@@ -7,9 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Grid, HoverCard, Text } from '@mantine/core';
 
 import { NotesListHeaderProps } from './types';
-import { textWrap } from '../constants';
-import { useGlobalState } from '../../../hooks/useGlobalState';
-import { COLORS } from '../../../constants';
+import { textWrap } from '../../constants';
+import { useGlobalState } from '../../../../hooks/useGlobalState';
+import { COLORS } from '../../../../constants';
 
 function NotesListHeader({
   heading,

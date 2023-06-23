@@ -2,11 +2,8 @@ import { Button, Flex, Select, Text } from '@mantine/core';
 import {
   faChevronDown,
   faChevronRight,
-  faChevronUp,
   faEdit,
   faPlus,
-  faToggleOff,
-  faToggleOn,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -248,6 +245,8 @@ function NotesListMobile({
               />
             </Button>
           </Flex>
+
+          {/* below are all the notes for each user */}
           <Flex
             direction="column"
             w="100%"
@@ -294,11 +293,16 @@ function NotesListMobile({
                       align="center"
                       justify="space-between"
                       style={{
-                        backgroundColor: usersRowsBGColorDark,
+                        // backgroundColor: usersRowsBGColorDark,
                         borderRadius: '4px',
                       }}
                     >
-                      <Flex align="center" justify="flex-start" columnGap="lg">
+                      <Flex
+                        align="center"
+                        justify="flex-start"
+                        columnGap="lg"
+                        w="62%"
+                      >
                         <Button
                           type="button"
                           w="50px"
@@ -402,9 +406,7 @@ function NotesListMobile({
                       </Text>
                     </Flex>
                     <Flex w="100%" align="center" justify="flex-end" px="sm">
-                      <Text color={textColor} style={textWrap}>
-                        {text}
-                      </Text>
+                      <Text color={textColor}>{text}</Text>
                     </Flex>
                   </>
                 );
@@ -503,7 +505,7 @@ function NotesListMobile({
                   >
                     {displayEdit}
 
-                    {/* if noteId for corresponding user is true, display note*/}
+                    {/* if noteId for corresponding user in notesListMobileState is true, display note*/}
                     {notesListMobileState[noteID]
                       ? [
                           displayTitle,
