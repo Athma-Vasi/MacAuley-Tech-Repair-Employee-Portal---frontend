@@ -1,7 +1,8 @@
-import { NavLink, Navbar, Title } from '@mantine/core';
+import { NavLink, Navbar, Text, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { PortalNavbarProps } from './types';
+import { COLORS } from '../../constants';
 
 function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const navigate = useNavigate();
@@ -9,10 +10,16 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     authState: { roles },
   } = useAuth();
 
+  const { buttonTextColor } = COLORS;
+
   const displayUsersNavLink =
     roles.includes('Admin') || roles.includes('Manager') ? (
       <NavLink
-        label="User"
+        label={
+          <Text size="lg" color={buttonTextColor}>
+            Users
+          </Text>
+        }
         description="Display list of all users"
         icon={null}
         onClick={() => {
@@ -31,7 +38,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       {displayUsersNavLink}
 
       <NavLink
-        label="Note"
+        label={
+          <Text size="lg" color={buttonTextColor}>
+            Notes
+          </Text>
+        }
         description="Display list of all notes"
         icon={null}
         onClick={() => {

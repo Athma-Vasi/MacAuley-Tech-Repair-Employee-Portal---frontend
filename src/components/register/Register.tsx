@@ -18,7 +18,12 @@ import {
   Title,
 } from '@mantine/core';
 
-import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from '../../constants';
+import {
+  COLORS,
+  EMAIL_REGEX,
+  PASSWORD_REGEX,
+  USERNAME_REGEX,
+} from '../../constants';
 import { REGISTER_URL } from './constants';
 import { initialRegisterState, registerAction, registerReducer } from './state';
 import '../../index.css';
@@ -282,18 +287,20 @@ function Register() {
     }
   }
 
+  const { buttonTextColor } = COLORS;
+
   const displayRegisterForm = (
     <Flex
       direction="column"
       align="flex-start"
       justify="space-between"
+      rowGap="lg"
       w="100%"
       h="100%"
-      p="lg"
     >
-      <Flex direction="column" align="flex-start" justify="center" rowGap="lg">
-        <Flex align="center" justify="center">
-          <Title order={3} color="dark">
+      <Flex direction="column" align="center" justify="center" w="100%">
+        <Flex align="center" justify="center" w="100%">
+          <Title order={3} color="dark" style={{ letterSpacing: '0.25rem' }}>
             MACAULEY
           </Title>
           <Title order={3} color="red">
@@ -303,22 +310,24 @@ function Register() {
             REPAIR
           </Title>
         </Flex>
-        <Text size="lg" color="dark">
-          Employee Portal
+        <Text size="lg" color="dark" style={{ letterSpacing: '0.10rem' }}>
+          EMPLOYEE PORTAL
         </Text>
       </Flex>
 
-      <form onSubmit={handleRegisterFormSubmit}>
+      <form onSubmit={handleRegisterFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
-          align="start"
+          align="flex-start"
           justify="center"
           rowGap="lg"
-          p="lg"
-          w={400}
-          h="100%"
+          w="100%"
         >
-          <Title order={3} color="dark">
+          <Title
+            order={3}
+            color={buttonTextColor}
+            style={{ letterSpacing: '0.10rem' }}
+          >
             Register
           </Title>
           <TextInput
@@ -500,16 +509,7 @@ function Register() {
   );
 
   return (
-    <Center
-      style={{
-        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
-        borderRadius: '3px',
-        backgroundColor: 'white',
-      }}
-      w={500}
-      h="auto"
-      p="lg"
-    >
+    <Flex w={375} p="sm">
       {errorMessage
         ? displayError
         : isSubmitting
@@ -517,7 +517,7 @@ function Register() {
         : isSuccessful
         ? displaySuccess
         : displayRegisterForm}
-    </Center>
+    </Flex>
   );
 }
 

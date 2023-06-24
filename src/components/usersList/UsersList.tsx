@@ -161,7 +161,7 @@ function UsersList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerGetAllUsers]);
 
-  const { lightTextColor, darkTextColor } = COLORS;
+  const { lightTextColor, darkTextColor, buttonTextColor } = COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
   const buttonVariant = colorScheme === 'dark' ? 'outline' : 'filled';
 
@@ -189,7 +189,7 @@ function UsersList() {
   );
 
   const displayEditUserModal = (
-    <Modal opened={openedUserEdit} onClose={closeUserEdit}>
+    <Modal opened={openedUserEdit} onClose={closeUserEdit} w={375}>
       <EditUser user={userToEdit} closeModalCallback={closeUserEdit} />
     </Modal>
   );
@@ -221,7 +221,7 @@ function UsersList() {
 
   const displayHeading = (
     <Flex w="100%" align="center" justify="space-between">
-      <Title color={textColor} order={2}>
+      <Title color={buttonTextColor} order={2}>
         Users list
       </Title>
 

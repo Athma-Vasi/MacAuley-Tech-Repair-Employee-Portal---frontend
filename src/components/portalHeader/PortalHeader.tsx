@@ -63,7 +63,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     }
   }
 
-  const { darkTextColor, lightTextColor } = COLORS;
+  const { darkTextColor, lightTextColor, buttonTextColor } = COLORS;
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
 
   return (
@@ -82,18 +82,28 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
         {width < 768 ? null : (
           <Flex columnGap="xl" align="center">
             <Flex align="center" justify="center">
-              <Title order={4} color={textColor}>
+              <Title
+                order={3}
+                color={textColor}
+                style={{ letterSpacing: '0.25rem' }}
+              >
                 MACAULEY
               </Title>
-              <Title order={4} color="red">
+              <Title order={3} color="red">
                 TECH
               </Title>
-              <Title order={4} color="green">
+              <Title order={3} color="green">
                 REPAIR
               </Title>
             </Flex>
 
-            <Text color={textColor}>Employee Portal</Text>
+            <Text
+              size="lg"
+              color={textColor}
+              style={{ letterSpacing: '0.10rem' }}
+            >
+              Employee Portal
+            </Text>
           </Flex>
         )}
 

@@ -3,12 +3,10 @@ import {
   TextInput,
   PasswordInput,
   Title,
-  Alert,
   Button,
   Flex,
-  Center,
 } from '@mantine/core';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { axiosInstance } from '../../api/axios';
 import { useRef, useEffect, useReducer } from 'react';
@@ -18,14 +16,9 @@ import { LOGIN_URL } from './constants';
 import { DecodedToken, LoginResponse } from './types';
 import { authAction } from '../../context/authProvider/state';
 import { useAuth } from '../../hooks/useAuth';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCogs,
-  faGear,
-  faGears,
-  faWrench,
-} from '@fortawesome/free-solid-svg-icons';
 import { CustomError } from '../customError';
+import { AxiosRequestConfig } from 'axios';
+import { COLORS } from '../../constants';
 
 function Login() {
   const [{ username, password, errorMessage }, loginDispatch] = useReducer(
@@ -33,9 +26,8 @@ function Login() {
     initialLoginState
   );
 
-  const { authState, authDispatch } = useAuth();
+  const { authDispatch } = useAuth();
   const navigate = useNavigate();
-  const { state } = useLocation();
 
   const usernameRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -72,7 +64,7 @@ function Login() {
         payload: true,
       });
 
-      const axiosConfig = {
+      const axiosConfig: AxiosRequestConfig = {
         method: 'post',
         signal,
         url: LOGIN_URL,
@@ -83,16 +75,7 @@ function Login() {
         withCredentials: true,
       };
 
-      const response = await axiosInstance.post<LoginResponse>(
-        LOGIN_URL,
-        JSON.stringify(loginObj),
-        {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
-        }
-      );
+      const response = await axiosInstance<LoginResponse>(axiosConfig);
 
       const {
         status,
@@ -192,18 +175,19 @@ function Login() {
     />
   );
 
+  const { buttonTextColor } = COLORS;
+
   const displayLoginForm = (
     <Flex
       direction="column"
-      align="center"
+      align="flex-start"
       justify="space-between"
+      rowGap="lg"
       w="100%"
-      h="100%"
-      p="lg"
     >
-      <Flex direction="column" align="flex-start" justify="center" rowGap="lg">
-        <Flex align="center" justify="center">
-          <Title order={3} color="dark">
+      <Flex direction="column" align="center" justify="center" w="100%">
+        <Flex align="center" justify="center" w="100%">
+          <Title order={3} color="dark" style={{ letterSpacing: '0.25rem' }}>
             MACAULEY
           </Title>
           <Title order={3} color="red">
@@ -213,21 +197,23 @@ function Login() {
             REPAIR
           </Title>
         </Flex>
-        <Text size="lg" color="dark">
-          Employee Portal
+        <Text size="lg" color="dark" style={{ letterSpacing: '0.10rem' }}>
+          EMPLOYEE PORTAL
         </Text>
       </Flex>
-      <form onSubmit={handleLoginFormSubmit}>
+      <form onSubmit={handleLoginFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
           align="flex-start"
           justify="center"
           rowGap="lg"
-          p="lg"
           w="100%"
-          h="100%"
         >
-          <Title order={3} color="dark">
+          <Title
+            order={3}
+            color={buttonTextColor}
+            style={{ letterSpacing: '0.10rem' }}
+          >
             Sign In
           </Title>
           <TextInput
@@ -272,12 +258,7 @@ function Login() {
         </Flex>
       </form>
 
-      <Flex
-        direction="row"
-        align="center"
-        justify="space-between"
-        columnGap="sm"
-      >
+      <Flex align="center" justify="center" columnGap="sm" w="100%">
         <Text color="dark">No account?</Text>
         <Text color="blue">
           <Link to="/register">Create one!</Link>
@@ -287,18 +268,9 @@ function Login() {
   );
 
   return (
-    <Center
-      style={{
-        boxShadow: '0 0 10px 0 rgba(0, 0, 0, 0.2)',
-        borderRadius: '4px',
-        backgroundColor: 'white',
-      }}
-      w={400}
-      h={552}
-      p="lg"
-    >
+    <Flex w={375} p="sm">
       {errorMessage ? displayError : displayLoginForm}
-    </Center>
+    </Flex>
   );
 }
 

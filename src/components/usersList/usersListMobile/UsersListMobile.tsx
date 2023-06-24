@@ -400,7 +400,9 @@ function UsersListMobile({
         rowGap="md"
         p="sm"
         style={{
-          border: usersBorder,
+          border: usersListMobileState[userID] === true ? '' : usersBorder,
+          backgroundColor:
+            usersListMobileState[userID] === true ? usersRowsBGColorDark : '',
           borderRadius: '4px',
         }}
       >

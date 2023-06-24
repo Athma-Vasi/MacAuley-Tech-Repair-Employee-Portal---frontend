@@ -8,6 +8,7 @@ function PublicLayout() {
         backgroundImage: 'radial-gradient(circle, #f9f9f9 50%, #ececec 100%)',
         height: '100vh',
       }}
+      p="sm"
     >
       <Outlet />
     </Center>

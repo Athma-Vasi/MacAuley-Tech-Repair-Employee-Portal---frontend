@@ -1,4 +1,4 @@
-import { Button, Flex, Select, Text } from '@mantine/core';
+import { Button, Divider, Flex, Select, Text } from '@mantine/core';
 import {
   faChevronDown,
   faChevronRight,
@@ -195,9 +195,10 @@ function NotesListMobile({
           w="100%"
           p="md"
           style={{
-            border: notesBorder,
+            border: notesListMobileState[userID] === true ? '' : notesBorder,
             borderRadius: '4px',
-            // boxShadow: '0 0 2px 0 rgba(0, 0, 0, 0.2)',
+            backgroundColor:
+              notesListMobileState[userID] === true ? usersRowsBGColorDark : '',
           }}
         >
           {/* heading: username and add new note icon */}
@@ -307,7 +308,10 @@ function NotesListMobile({
                       align="center"
                       justify="space-between"
                       style={{
-                        // backgroundColor: usersRowsBGColorDark,
+                        backgroundColor:
+                          notesListMobileState[noteID] === true
+                            ? usersRowsBGColorDark
+                            : '',
                         borderRadius: '4px',
                       }}
                     >
@@ -513,7 +517,10 @@ function NotesListMobile({
                     rowGap="md"
                     p="sm"
                     style={{
-                      border: notesBorder,
+                      border:
+                        notesListMobileState[noteID] === true
+                          ? ''
+                          : notesBorder,
                       borderRadius: '4px',
                     }}
                   >

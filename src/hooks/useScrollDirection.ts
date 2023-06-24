@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
 type ScrollAxesAmount = {
-  prevScrollXPosition: number;
+  previousScrollXPosition: number;
   currentScrollXPosition: number;
-  prevScrollYPosition: number;
+  previousScrollYPosition: number;
   currentScrollYPosition: number;
 };
 
@@ -14,17 +14,17 @@ type ScrollAxesDirection = {
 
 function useScrollDirection(): ScrollAxesDirection {
   const [scrollAxes, setScrollAxes] = useState<ScrollAxesAmount>({
-    prevScrollXPosition: 0,
+    previousScrollXPosition: 0,
     currentScrollXPosition: 0,
-    prevScrollYPosition: 0,
+    previousScrollYPosition: 0,
     currentScrollYPosition: 0,
   });
 
   const setScrollAxesCB = useCallback(() => {
-    setScrollAxes((prev) => ({
-      prevScrollXPosition: prev.currentScrollXPosition,
+    setScrollAxes((previous) => ({
+      previousScrollXPosition: previous.currentScrollXPosition,
       currentScrollXPosition: window.scrollX,
-      prevScrollYPosition: prev.currentScrollYPosition,
+      previousScrollYPosition: previous.currentScrollYPosition,
       currentScrollYPosition: window.scrollY,
     }));
   }, []);
@@ -36,15 +36,15 @@ function useScrollDirection(): ScrollAxesDirection {
 
   return {
     scrollXDirection:
-      scrollAxes.currentScrollXPosition > scrollAxes.prevScrollXPosition
+      scrollAxes.currentScrollXPosition > scrollAxes.previousScrollXPosition
         ? 'right'
-        : scrollAxes.currentScrollXPosition < scrollAxes.prevScrollXPosition
+        : scrollAxes.currentScrollXPosition < scrollAxes.previousScrollXPosition
         ? 'left'
         : '',
     scrollYDirection:
-      scrollAxes.currentScrollYPosition > scrollAxes.prevScrollYPosition
+      scrollAxes.currentScrollYPosition > scrollAxes.previousScrollYPosition
         ? 'down'
-        : scrollAxes.currentScrollYPosition < scrollAxes.prevScrollYPosition
+        : scrollAxes.currentScrollYPosition < scrollAxes.previousScrollYPosition
         ? 'up'
         : '',
   };

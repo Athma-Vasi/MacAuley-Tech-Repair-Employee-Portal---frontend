@@ -303,23 +303,26 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
   const displayAddNewNoteForm = (
     <Flex
       direction="column"
-      align="center"
+      align="flex-start"
       justify="flex-start"
       w="100%"
-      h="100%"
+      rowGap="lg"
+      p="xs"
     >
-      <Title order={2} color={textColor}>
+      <Title
+        order={3}
+        color={buttonTextColor}
+        style={{ letterSpacing: '0.10rem' }}
+      >
         Add new note
       </Title>
-      <form onSubmit={handleAddNewNoteFormSubmit}>
+      <form onSubmit={handleAddNewNoteFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
           align="center"
           justify="space-between"
           rowGap="lg"
-          p="lg"
-          w={400}
-          h="100%"
+          w="100%"
         >
           <TextInput
             w="100%"
@@ -436,7 +439,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
   );
 
   return (
-    <Center w={400}>
+    <Flex w="100%">
       {errorMessage
         ? displayError
         : isSubmitting
@@ -444,7 +447,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
         : isSuccessful
         ? displaySuccess
         : displayAddNewNoteForm}
-    </Center>
+    </Flex>
   );
 }
 

@@ -275,24 +275,27 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
   const displayEditUserForm = (
     <Flex
       direction="column"
-      align="center"
+      align="flex-start"
       justify="flex-start"
       w="100%"
-      h="100%"
+      rowGap="lg"
+      p="xs"
     >
-      <Title order={2} color={textColor}>
-        Edit User
+      <Title
+        order={3}
+        color={buttonTextColor}
+        style={{ letterSpacing: '0.10rem' }}
+      >
+        Edit user
       </Title>
 
-      <form onSubmit={handleEditUserFormSubmit}>
+      <form onSubmit={handleEditUserFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
           align="center"
           justify="space-between"
           rowGap="lg"
-          p="lg"
-          w={400}
-          h="100%"
+          w="100%"
         >
           <TextInput
             w="100%"
@@ -444,7 +447,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
   );
 
   return (
-    <Center w="100%">
+    <Flex w="100%">
       {isSubmitting
         ? displaySubmitting
         : errorMessage
@@ -452,7 +455,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
         : isSuccessful
         ? displaySuccess
         : displayEditUserForm}
-    </Center>
+    </Flex>
   );
 }
 

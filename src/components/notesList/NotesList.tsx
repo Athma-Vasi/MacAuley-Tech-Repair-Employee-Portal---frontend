@@ -198,23 +198,42 @@ function NotesList() {
   );
 
   const displayEditNoteModal = (
-    <Modal opened={openedEditNote} onClose={closeEditNote}>
-      <Flex direction="column" align="start" justify="space-between">
-        <EditNote note={noteToEdit} closeModalCallback={closeEditNote} />
-      </Flex>
+    <Modal opened={openedEditNote} onClose={closeEditNote} w={375}>
+      <EditNote note={noteToEdit} closeModalCallback={closeEditNote} />
     </Modal>
   );
 
   const displayAddNewNoteModal = (
-    <Modal opened={openedAddNewNote} onClose={closeAddNewNote}>
-      <Flex direction="column" align="start" justify="space-between">
-        <AddNewNote
-          userId={userIdForEdit}
-          username={usernameForEdit}
-          closeModalCallback={closeAddNewNote}
-        />
-      </Flex>
+    <Modal opened={openedAddNewNote} onClose={closeAddNewNote} w={375}>
+      <AddNewNote
+        userId={userIdForEdit}
+        username={usernameForEdit}
+        closeModalCallback={closeAddNewNote}
+      />
     </Modal>
+  );
+
+  const displayHeading = (
+    <Flex w="100%" align="center" justify="space-between">
+      <Title order={2} color={buttonTextColor}>
+        Notes List
+      </Title>
+      <Button
+        style={{
+          backgroundColor: buttonBackground,
+          color: buttonText,
+          border: buttonOutline,
+        }}
+        onClick={() =>
+          notesListDispatch({
+            type: notesListAction.setTriggerGetAllNotes,
+            payload: !triggerGetAllNotes,
+          })
+        }
+      >
+        Refresh
+      </Button>
+    </Flex>
   );
 
   const displayNotes =
@@ -246,27 +265,7 @@ function NotesList() {
       rowGap="xl"
       w="100%"
     >
-      <Flex align="center" justify="space-between" w="100%">
-        <Title order={2} color={textColor}>
-          Notes List
-        </Title>
-        <Button
-          style={{
-            backgroundColor: buttonBackground,
-            color: buttonText,
-            border: buttonOutline,
-          }}
-          onClick={() =>
-            notesListDispatch({
-              type: notesListAction.setTriggerGetAllNotes,
-              payload: !triggerGetAllNotes,
-            })
-          }
-        >
-          Refresh
-        </Button>
-      </Flex>
-      <Space h="lg" />
+      {displayHeading}
       {displayAddNewNoteModal}
       {displayEditNoteModal}
       {errorMessage ? displayError : null}

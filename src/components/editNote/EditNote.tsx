@@ -313,23 +313,26 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
   const displayEditNoteForm = (
     <Flex
       direction="column"
-      align="center"
+      align="flex-start"
       justify="flex-start"
       w="100%"
-      h="100%"
+      rowGap="lg"
+      p="xs"
     >
-      <Title order={2} color={textColor}>
+      <Title
+        order={3}
+        color={buttonTextColor}
+        style={{ letterSpacing: '0.10rem' }}
+      >
         Edit note
       </Title>
-      <form onSubmit={handleEditNoteFormSubmit}>
+      <form onSubmit={handleEditNoteFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
           align="center"
           justify="space-between"
           rowGap="lg"
-          p="lg"
-          w={400}
-          h="100%"
+          w="100%"
         >
           <TextInput
             w="100%"
@@ -416,19 +419,19 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
           />
 
           {/* note completed */}
-          <Flex w="100%" align="center" justify="start">
-            <Checkbox
-              label="Completed"
-              description="Check box if note is completed"
-              checked={completed}
-              onChange={(event) => {
-                editNoteDispatch({
-                  type: editNoteAction.setCompleted,
-                  payload: { data: event.currentTarget.checked },
-                });
-              }}
-            />
-          </Flex>
+
+          <Checkbox
+            w="100%"
+            label="Completed"
+            description="Check box if note is completed"
+            checked={completed}
+            onChange={(event) => {
+              editNoteDispatch({
+                type: editNoteAction.setCompleted,
+                payload: { data: event.currentTarget.checked },
+              });
+            }}
+          />
 
           {/* submit button */}
           <Flex justify="flex-end" align="center" columnGap="lg" w="100%">
@@ -461,7 +464,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
   );
 
   return (
-    <Center w={400}>
+    <Flex w="100%">
       {isSubmitting
         ? displaySubmitting
         : isSuccessful
@@ -469,7 +472,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
         : errorMessage
         ? displayError
         : displayEditNoteForm}
-    </Center>
+    </Flex>
   );
 }
 
