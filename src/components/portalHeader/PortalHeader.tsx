@@ -13,13 +13,10 @@ import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { LogoutResponse, PortalHeaderProps } from './types';
 import { useNavigate } from 'react-router-dom';
-import { faMicrochip, faWrench } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ThemeSwitch } from '../themeSwitch';
 import { AxiosRequestConfig } from 'axios';
 import { useGlobalState } from '../../hooks/useGlobalState';
 import { COLORS } from '../../constants';
-import { text } from 'stream/consumers';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const {
@@ -75,7 +72,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
             onClick={() => setOpenedHeader((open) => !open)}
             size="sm"
             mr="xl"
-            color="gray"
+            color={buttonTextColor}
           />
         </MediaQuery>
         {/* title */}
@@ -85,7 +82,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
               <Title
                 order={3}
                 color={textColor}
-                style={{ letterSpacing: '0.25rem' }}
+                style={{ letterSpacing: '0.30rem' }}
               >
                 MACAULEY
               </Title>

@@ -13,23 +13,23 @@ import { useEffect, useReducer, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
-import '../../index.css';
+import '../../../index.css';
 import { editUserAction, editUserReducer, initialEditUserState } from './state';
 import { EditUserProps, EditUserResponse } from './types';
-import { COLORS, EMAIL_REGEX, USERNAME_REGEX } from '../../constants';
+import { COLORS, EMAIL_REGEX, USERNAME_REGEX } from '../../../constants';
 import {
   returnEmailRegexValidationText,
   returnUsernameRegexValidationText,
-} from '../../utils';
-import { PATCH_URL } from './constants';
-import { useAuth } from '../../hooks/useAuth';
-import { axiosInstance } from '../../api/axios';
-import { authAction } from '../../context/authProvider';
-import { Success } from '../success';
-import { Loading } from '../loading';
-import { CustomError } from '../customError';
+} from '../../../utils';
+import { PUT_URL } from './constants';
+import { useAuth } from '../../../hooks/useAuth';
+import { axiosInstance } from '../../../api/axios';
+import { authAction } from '../../../context/authProvider';
+import { Success } from '../../success';
+import { Loading } from '../../loading';
+import { CustomError } from '../../customError';
 import { AxiosRequestConfig } from 'axios';
-import { useGlobalState } from '../../hooks/useGlobalState';
+import { useGlobalState } from '../../../hooks/useGlobalState';
 
 function EditUser({ user, closeModalCallback }: EditUserProps) {
   const [editUserState, editUserDispatch] = useReducer(
@@ -137,9 +137,9 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
     };
 
     const axiosRequestConfig: AxiosRequestConfig = {
-      method: 'patch',
+      method: 'put',
       signal,
-      url: PATCH_URL,
+      url: PUT_URL,
       data: editUserObj,
       headers: {
         'Content-Type': 'application/json',

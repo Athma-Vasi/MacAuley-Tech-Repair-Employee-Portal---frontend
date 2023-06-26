@@ -1,4 +1,4 @@
-import { Note } from '../../types';
+import { Note } from '../../../types';
 import { EditNoteAction, EditNoteDispatch, EditNoteState } from './types';
 
 const initialEditNoteState: EditNoteState = {

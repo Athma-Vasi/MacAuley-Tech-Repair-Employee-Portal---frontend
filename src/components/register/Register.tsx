@@ -298,23 +298,6 @@ function Register() {
       w="100%"
       h="100%"
     >
-      <Flex direction="column" align="center" justify="center" w="100%">
-        <Flex align="center" justify="center" w="100%">
-          <Title order={3} color="dark" style={{ letterSpacing: '0.25rem' }}>
-            MACAULEY
-          </Title>
-          <Title order={3} color="red">
-            TECH
-          </Title>
-          <Title order={3} color="green">
-            REPAIR
-          </Title>
-        </Flex>
-        <Text size="lg" color="dark" style={{ letterSpacing: '0.10rem' }}>
-          EMPLOYEE PORTAL
-        </Text>
-      </Flex>
-
       <form onSubmit={handleRegisterFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
@@ -484,6 +467,17 @@ function Register() {
           />
           <Flex w="100%" justify="flex-end">
             <Button
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.currentTarget.click();
+                }
+              }}
+              onKeyUp={(event) => {
+                if (event.key === 'Enter') {
+                  event.currentTarget.blur();
+                }
+              }}
+              tabIndex={0}
               type="submit"
               disabled={
                 !isValidEmail ||

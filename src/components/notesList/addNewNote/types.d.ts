@@ -1,4 +1,4 @@
-import type { Note } from '../../types';
+import type { Note } from '../../../types';
 
 type AddNewNoteProps = {
   userId: string;

@@ -13,19 +13,20 @@ function PortalLayout() {
   } = useGlobalState();
 
   return (
-    <div>
-      <AppShell
-        padding="md"
-        navbarOffsetBreakpoint="sm"
-        navbar={<PortalNavbar openedNavbar={opened} />}
-        header={
-          <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
-        }
-        footer={scrollYDirection === 'up' ? <PortalFooter /> : <></>}
-      >
-        <Outlet />
-      </AppShell>
-    </div>
+    <AppShell
+      padding="md"
+      navbarOffsetBreakpoint="sm"
+      navbar={<PortalNavbar openedNavbar={opened} />}
+      header={
+        <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
+      }
+      footer={scrollYDirection === 'up' ? <PortalFooter /> : <></>}
+      style={{
+        backgroundImage: 'radial-gradient(circle, #f9f9f9 50%, #ececec 100%)',
+      }}
+    >
+      <Outlet />
+    </AppShell>
   );
 }
 

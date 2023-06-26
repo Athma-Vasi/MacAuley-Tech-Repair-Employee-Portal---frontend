@@ -13,28 +13,29 @@ import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useReducer, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import '../../index.css';
+import type { AxiosRequestConfig } from 'axios';
 import { EditNoteProps, EditNoteResponse } from './types';
+
+import '../../../index.css';
 import { editNoteAction, editNoteReducer, initialEditNoteState } from './state';
-import { COLORS, NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../constants';
-import { Loading } from '../loading';
+import { COLORS, NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../../constants';
+import { Loading } from '../../loading';
 import {
   returnNoteContentValidationText,
   returnNoteTitleValidationText,
-} from '../../utils';
+} from '../../../utils';
 import {
   screenReaderTitleSpecialCharacters,
   screenReaderTextSpecialCharacters,
-} from '../../domElements';
+} from '../../../domElements';
 import { addNewNoteAction } from '../addNewNote/state';
 import { EDIT_NOTE_URL } from './constants';
-import { useAuth } from '../../hooks/useAuth';
-import { axiosInstance } from '../../api/axios';
-import { authAction } from '../../context/authProvider';
-import { Success } from '../success';
-import { CustomError } from '../customError';
-import { AxiosRequestConfig } from 'axios';
-import { useGlobalState } from '../../hooks/useGlobalState';
+import { useAuth } from '../../../hooks/useAuth';
+import { axiosInstance } from '../../../api/axios';
+import { authAction } from '../../../context/authProvider';
+import { Success } from '../../success';
+import { CustomError } from '../../customError';
+import { useGlobalState } from '../../../hooks/useGlobalState';
 
 function EditNote({ note, closeModalCallback }: EditNoteProps) {
   const [editNoteState, editNoteDispatch] = useReducer(
@@ -164,7 +165,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
     const { signal } = controller;
 
     const axiosConfig: AxiosRequestConfig = {
-      method: 'patch',
+      method: 'put',
       signal,
       url: EDIT_NOTE_URL,
       data: editedNote,

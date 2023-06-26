@@ -12,6 +12,21 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const { buttonTextColor } = COLORS;
 
+  const displayDashboardNavLink = (
+    <NavLink
+      label={
+        <Text size="lg" color={buttonTextColor}>
+          Dashboard
+        </Text>
+      }
+      description="Display welcome page"
+      icon={null}
+      onClick={() => {
+        navigate('/portal');
+      }}
+    />
+  );
+
   const displayUsersNavLink =
     roles.includes('Admin') || roles.includes('Manager') ? (
       <NavLink
@@ -28,6 +43,21 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       />
     ) : null;
 
+  const displayNotesNavLink = (
+    <NavLink
+      label={
+        <Text size="lg" color={buttonTextColor}>
+          Notes
+        </Text>
+      }
+      description="Display list of all notes"
+      icon={null}
+      onClick={() => {
+        navigate('/portal/notes');
+      }}
+    />
+  );
+
   return (
     <Navbar
       p="md"
@@ -35,20 +65,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       hidden={!openedNavbar}
       width={{ sm: 200, lg: 300 }}
     >
+      {displayDashboardNavLink}
+
       {displayUsersNavLink}
 
-      <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Notes
-          </Text>
-        }
-        description="Display list of all notes"
-        icon={null}
-        onClick={() => {
-          navigate('/portal/notes');
-        }}
-      />
+      {displayNotesNavLink}
     </Navbar>
   );
 }

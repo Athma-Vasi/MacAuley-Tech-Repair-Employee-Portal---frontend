@@ -191,7 +191,7 @@ function NotesListMobile({
           direction="column"
           align="center"
           justify="center"
-          rowGap="sm"
+          // rowGap="sm"
           w="100%"
           p="md"
           style={{

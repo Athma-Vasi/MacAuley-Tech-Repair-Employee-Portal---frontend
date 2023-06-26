@@ -12,31 +12,30 @@ import { useReducer, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
-import '../../index.css';
+import '../../../index.css';
 import {
   addNewNoteAction,
   addNewNoteReducer,
   initialAddNewNoteState,
 } from './state';
-import '../../index.css';
 import {
   returnNoteContentValidationText,
   returnNoteTitleValidationText,
-} from '../../utils';
-import { COLORS, NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../constants';
+} from '../../../utils';
+import { COLORS, NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../../constants';
 import { AddNewNoteProps, AddNewNoteResponse } from './types';
 import { POST_NEW_NOTE } from './constants';
-import { useAuth } from '../../hooks/useAuth';
-import { axiosInstance } from '../../api/axios';
-import { authAction } from '../../context/authProvider';
+import { useAuth } from '../../../hooks/useAuth';
+import { axiosInstance } from '../../../api/axios';
+import { authAction } from '../../../context/authProvider';
 import {
   screenReaderTextSpecialCharacters,
   screenReaderTitleSpecialCharacters,
-} from '../../domElements';
-import { Loading } from '../loading';
-import { Success } from '../success';
+} from '../../../domElements';
+import { Loading } from '../../loading';
+import { Success } from '../../success';
 import { AxiosRequestConfig } from 'axios';
-import { useGlobalState } from '../../hooks/useGlobalState';
+import { useGlobalState } from '../../../hooks/useGlobalState';
 
 function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
   const [addNewNoteState, addNewNoteDispatch] = useReducer(
@@ -145,7 +144,6 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
     const { signal } = controller;
 
     const addNewNoteObj = {
-      user: userId,
       title,
       text,
     };

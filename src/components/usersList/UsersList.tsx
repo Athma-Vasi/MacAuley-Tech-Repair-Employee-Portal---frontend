@@ -14,7 +14,7 @@ import { axiosInstance } from '../../api/axios';
 import { useAuth } from '../../hooks/useAuth';
 import { GET_ALL_USERS } from './constants';
 import { authAction } from '../../context/authProvider';
-import { EditUser } from '../editUser';
+import { EditUser } from './editUser';
 import { Loading } from '../loading';
 import { sortUsersByKey } from './utils';
 import { CustomError } from '../customError';
@@ -221,7 +221,7 @@ function UsersList() {
 
   const displayHeading = (
     <Flex w="100%" align="center" justify="space-between">
-      <Title color={buttonTextColor} order={2}>
+      <Title color={buttonTextColor} order={3}>
         Users list
       </Title>
 

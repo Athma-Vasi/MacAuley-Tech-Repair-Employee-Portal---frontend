@@ -15,8 +15,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { axiosInstance } from '../../api/axios';
 import { authAction } from '../../context/authProvider';
 import { transformNotesForDisplay } from './utils';
-import { EditNote } from '../editNote';
-import { AddNewNote } from '../addNewNote';
+import { EditNote } from './editNote';
+import { AddNewNote } from './addNewNote';
 import { Loading } from '../loading';
 import { CustomError } from '../customError';
 import { useGlobalState } from '../../hooks/useGlobalState';
@@ -215,7 +215,7 @@ function NotesList() {
 
   const displayHeading = (
     <Flex w="100%" align="center" justify="space-between">
-      <Title order={2} color={buttonTextColor}>
+      <Title order={3} color={buttonTextColor}>
         Notes List
       </Title>
       <Button

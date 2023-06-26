@@ -185,22 +185,6 @@ function Login() {
       rowGap="lg"
       w="100%"
     >
-      <Flex direction="column" align="center" justify="center" w="100%">
-        <Flex align="center" justify="center" w="100%">
-          <Title order={3} color="dark" style={{ letterSpacing: '0.25rem' }}>
-            MACAULEY
-          </Title>
-          <Title order={3} color="red">
-            TECH
-          </Title>
-          <Title order={3} color="green">
-            REPAIR
-          </Title>
-        </Flex>
-        <Text size="lg" color="dark" style={{ letterSpacing: '0.10rem' }}>
-          EMPLOYEE PORTAL
-        </Text>
-      </Flex>
       <form onSubmit={handleLoginFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
@@ -253,7 +237,22 @@ function Login() {
             required
           />
           <Flex w="100%" justify="flex-end">
-            <Button type="submit">Sign In</Button>
+            <Button
+              type="submit"
+              tabIndex={0}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.currentTarget.click();
+                }
+              }}
+              onKeyUp={(event) => {
+                if (event.key === 'Enter') {
+                  event.currentTarget.blur();
+                }
+              }}
+            >
+              Sign In
+            </Button>
           </Flex>
         </Flex>
       </form>
