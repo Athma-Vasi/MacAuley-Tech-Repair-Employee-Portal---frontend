@@ -1,6 +1,6 @@
 type Note = {
   _id: string; // note id
-  user: string; // user id
+  userId: string; // user id
   username: string;
   title: string;
   text: string;

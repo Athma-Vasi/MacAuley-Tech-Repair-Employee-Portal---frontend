@@ -17,7 +17,7 @@ function groupNotesByUsername(notes: Note[]): [string, [string, Note[]]][] {
         notes.push(note);
         map.set(note.username, [userId, notes]);
       } else {
-        map.set(note.username, [note.user, [note]]);
+        map.set(note.username, [note.userId, [note]]);
       }
 
       return map;

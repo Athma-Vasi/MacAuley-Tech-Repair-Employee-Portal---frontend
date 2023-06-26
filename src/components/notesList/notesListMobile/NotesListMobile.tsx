@@ -42,10 +42,6 @@ function NotesListMobile({
     initialNotesListMobileState
   );
 
-  useEffect(() => {
-    console.log({ scrollYDirection });
-  }, [scrollYDirection]);
-
   const { sortKey, sortDirection } = notesListState;
 
   // dynamically create collapse toggle state for each user and their respective notes

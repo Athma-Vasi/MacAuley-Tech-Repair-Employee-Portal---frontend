@@ -12,7 +12,7 @@ const initialNotesListState: NotesListState = {
   notes: [],
   noteToEdit: {
     _id: '',
-    user: '',
+    userId: '',
     username: '',
     title: '',
     text: '',
