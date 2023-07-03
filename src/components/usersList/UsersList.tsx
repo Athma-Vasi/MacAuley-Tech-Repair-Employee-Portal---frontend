@@ -192,30 +192,24 @@ function UsersList() {
     </Modal>
   );
 
-  const displayTransformedUsersMobile = (
-    <UsersListMobile
-      transformedUsers={transformedUsers}
-      openUserEdit={openUserEdit}
-      usersListDispatch={usersListDispatch}
-      usersListAction={usersListAction}
-      usersListState={usersListState}
-    />
-  );
-
-  const displayTransformedUsersDesktop = (
-    <UsersListDesktop
-      transformedUsers={transformedUsers}
-      openUserEdit={openUserEdit}
-      usersListDispatch={usersListDispatch}
-      usersListAction={usersListAction}
-      usersListState={usersListState}
-    />
-  );
-
   const displayUsersList =
-    width <= 1024
-      ? displayTransformedUsersMobile
-      : displayTransformedUsersDesktop;
+    width <= 1024 ? (
+      <UsersListMobile
+        transformedUsers={transformedUsers}
+        openUserEdit={openUserEdit}
+        usersListDispatch={usersListDispatch}
+        usersListAction={usersListAction}
+        usersListState={usersListState}
+      />
+    ) : (
+      <UsersListDesktop
+        transformedUsers={transformedUsers}
+        openUserEdit={openUserEdit}
+        usersListDispatch={usersListDispatch}
+        usersListAction={usersListAction}
+        usersListState={usersListState}
+      />
+    );
 
   const displayHeading = (
     <Flex w="100%" align="center" justify="space-between">
