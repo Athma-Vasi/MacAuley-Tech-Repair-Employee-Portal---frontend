@@ -1,12 +1,20 @@
 import { Button, Flex, Image, Spoiler, Text, Title } from '@mantine/core';
+import { compress, compressAccurately } from 'image-conversion';
+
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { COLORS } from '../../constants';
+import { axiosInstance } from '../../api/axios';
+import { AxiosRequestConfig } from 'axios';
+import { useAuth } from '../../hooks/useAuth';
 
 function Dashboard() {
   const {
     globalState: { colorScheme, width },
   } = useGlobalState();
+  const {
+    authState: { accessToken },
+  } = useAuth();
 
   const {
     lightTextColor,
@@ -331,10 +339,122 @@ function Dashboard() {
     </Flex>
   );
 
+  async function handleFileSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData();
+    const file = document.getElementById('file') as HTMLInputElement;
+
+    if (file?.files) {
+      const image = file.files[0];
+      const { name, type, size } = image;
+      if (
+        type === 'image/jpeg' ||
+        type === 'image/jpg' ||
+        type === 'image/png'
+      ) {
+        // const compressionFactor = size > 1000000 ? 0.2 : 0.5;
+        const compressionFactor =
+          size < 500000
+            ? 0.5
+            : size < 750000
+            ? 0.4
+            : size < 1000000
+            ? 0.3
+            : size < 1500000
+            ? 0.2
+            : 0.1;
+        // compresses image to 50% of original size
+        await compress(image, compressionFactor).then((compressedImage) => {
+          console.log('image', compressedImage);
+          formData.append('file', compressedImage, name);
+        });
+      } else {
+        formData.append('file', image, name);
+      }
+    }
+
+    console.log('formData', formData);
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const axiosConfig: AxiosRequestConfig = {
+      method: 'post',
+      url: '/file-uploads',
+      data: formData,
+      signal,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    };
+
+    try {
+      const response = await axiosInstance(axiosConfig);
+      console.log('axiosresponse', response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      controller.abort();
+    }
+  }
+
+  const [file, setFile] = useState<any>(null);
+
+  async function fetchImage(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const axiosConfig: AxiosRequestConfig = {
+      method: 'get',
+      url: '/file-uploads/64a0b175543aa5594dcc9c01',
+      signal,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    };
+
+    try {
+      const response = await axiosInstance(axiosConfig);
+      console.log('axiosresponse', response);
+      setFile(response.data.fileUploads[0]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      controller.abort();
+    }
+  }
+
   return (
     <Flex direction="column" rowGap="xl">
-      {welcomeSection}
+      <form
+        encType="multipart/form-data"
+        method="post"
+        onSubmit={handleFileSubmit}
+        id="form"
+      >
+        <input type="file" name="file" id="file" />
+        <button type="submit">submit</button>
+      </form>
+      <button onClick={fetchImage} type="button">
+        Fetch
+      </button>
+      {file && (
+        <Image
+          src={`data:${file.fileMimetype};base64,${file.uploadedFile}`}
+          alt="image"
+          withPlaceholder
+          h="100%"
+          w="100%"
+          fit="contain"
+        />
+      )}
 
+      {welcomeSection}
       {announcementSection_Expansion}
       {announcementSection_UpdatedRepairPolicy}
       {announcementSection_EmployeeAppreciation}
@@ -342,7 +462,6 @@ function Dashboard() {
       {announcementSection_employeeSurvey}
       {announcementSection_customerSatisfactionAward}
       {announcementSection_updatedTrainingModules}
-
       {employeeRecognitionSection}
     </Flex>
   );

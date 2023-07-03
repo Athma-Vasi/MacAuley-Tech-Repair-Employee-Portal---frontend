@@ -7,7 +7,6 @@ import {
   Group,
   Radio,
   Button,
-  Center,
 } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -22,14 +21,13 @@ import {
   returnUsernameRegexValidationText,
 } from '../../../utils';
 import { PUT_URL } from './constants';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth, useGlobalState } from '../../../hooks';
 import { axiosInstance } from '../../../api/axios';
 import { authAction } from '../../../context/authProvider';
 import { Success } from '../../success';
 import { Loading } from '../../loading';
 import { CustomError } from '../../customError';
 import { AxiosRequestConfig } from 'axios';
-import { useGlobalState } from '../../../hooks/useGlobalState';
 
 function EditUser({ user, closeModalCallback }: EditUserProps) {
   const [editUserState, editUserDispatch] = useReducer(

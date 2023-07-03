@@ -152,8 +152,6 @@ function UsersList() {
       }
     }
 
-    // only managers/admins can view this page anyway
-    // but...because I'm a little stitious
     if (roles.includes('Admin') || roles.includes('Manager')) {
       getAllUsers();
     }

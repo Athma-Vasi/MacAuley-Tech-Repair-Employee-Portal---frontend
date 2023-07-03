@@ -1,6 +1,6 @@
 type Note = {
   _id: string; // note id
-  userId: string; // user id
+  userId: string;
   username: string;
   title: string;
   text: string;
@@ -11,7 +11,7 @@ type Note = {
 };
 
 type User = {
-  _id: string;
+  _id: string; // user id
   email: string;
   username: string;
   roles: ('Admin' | 'Employee' | 'Manager')[];
