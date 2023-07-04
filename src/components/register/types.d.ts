@@ -55,6 +55,8 @@ type RegisterState = {
     province: Province;
     state: StatesUS;
     postalCode: PostalCode;
+    isValidPostalCode: boolean;
+    isPostalCodeFocused: boolean;
     country: Country;
   };
 
@@ -122,6 +124,8 @@ type RegisterAction = {
   setProvince: 'setProvince';
   setState: 'setState';
   setPostalCode: 'setPostalCode';
+  setIsValidPostalCode: 'setIsValidPostalCode';
+  setIsPostalCodeFocused: 'setIsPostalCodeFocused';
   setCountry: 'setCountry';
 
   setJobPosition: 'setJobPosition';

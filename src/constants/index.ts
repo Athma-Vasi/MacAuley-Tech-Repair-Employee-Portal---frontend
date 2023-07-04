@@ -38,6 +38,12 @@ const USERNAME_REGEX =
 const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/;
 
+/**
+ * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+ * - [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] matches any alphanumeric character or special character in the range of special characters commonly used in components, part numbers, and ID numbers.
+ * - {1,100} ensures that the text is between 1 and 100 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
 const NOTE_TITLE_REGEX =
   /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
 

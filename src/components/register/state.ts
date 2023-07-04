@@ -55,7 +55,9 @@ const initialRegisterState: RegisterState = {
     isCityFocused: false,
     province: 'Alberta',
     state: 'Alabama',
-    postalCode: 'A1A 1A1',
+    postalCode: '',
+    isValidPostalCode: false,
+    isPostalCodeFocused: false,
     country: 'Canada',
   },
 
@@ -123,6 +125,8 @@ const registerAction: RegisterAction = {
   setProvince: 'setProvince',
   setState: 'setState',
   setPostalCode: 'setPostalCode',
+  setIsValidPostalCode: 'setIsValidPostalCode',
+  setIsPostalCodeFocused: 'setIsPostalCodeFocused',
   setCountry: 'setCountry',
 
   setJobPosition: 'setJobPosition',
@@ -263,6 +267,22 @@ function registerReducer(
       return {
         ...state,
         address: { ...state.address, postalCode: action.payload as PostalCode },
+      };
+    case registerAction.setIsValidPostalCode:
+      return {
+        ...state,
+        address: {
+          ...state.address,
+          isValidPostalCode: action.payload as boolean,
+        },
+      };
+    case registerAction.setIsPostalCodeFocused:
+      return {
+        ...state,
+        address: {
+          ...state.address,
+          isPostalCodeFocused: action.payload as boolean,
+        },
       };
     case registerAction.setCountry:
       return {

@@ -122,6 +122,7 @@ function Register() {
     state,
     country,
     postalCode,
+    isValidPostalCode    , isPostalCodeFocused,
   } = address;
   const {
     contactNumber: emergencyContactNumber,
@@ -231,6 +232,10 @@ function Register() {
       payload: isValidPlace,
     });
   }, [city]);
+
+  // used to validate postal code on every change
+  
+
 
   // removes error message after every change in email, username, password, confirm password, (first, middle, last)Name, preferredName, addressLine, city
   useEffect(() => {
