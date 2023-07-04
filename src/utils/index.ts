@@ -17,8 +17,10 @@ function returnEmailRegexValidationText(email: string) {
   ]);
 
   const emailRegexValidationText = emailRegexTuple
-    .filter((tuple: [number, boolean]) => !tuple[1])
-    .map((tuple: [number, boolean]) => emailValidationTextMap.get(tuple[0]))
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      emailValidationTextMap.get(position)
+    )
     .join(' ');
 
   return emailRegexValidationText;
@@ -51,8 +53,10 @@ function returnUsernameRegexValidationText(username: string) {
   ]);
 
   const usernameRegexValidationText: string = usernameRegexTuple
-    .filter((tuple: [number, boolean]) => !tuple[1])
-    .map((tuple: [number, boolean]) => usernameValidationTextMap.get(tuple[0]))
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      usernameValidationTextMap.get(position)
+    )
     .join(' ');
 
   return usernameRegexValidationText;
@@ -77,8 +81,10 @@ function returnNoteTitleValidationText(title: string) {
   ]);
 
   const titleRegexValidationText: string = titleRegexTuple
-    .filter((tuple: [number, boolean]) => !tuple[1])
-    .map((tuple: [number, boolean]) => titleRegexValidationMap.get(tuple[0]))
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      titleRegexValidationMap.get(position)
+    )
     .join(' ');
 
   return titleRegexValidationText;
@@ -105,8 +111,10 @@ function returnNoteContentValidationText(content: string) {
   ]);
 
   const contentRegexValidationText: string = contentRegexTuple
-    .filter((tuple: [number, boolean]) => !tuple[1])
-    .map((tuple: [number, boolean]) => contentRegexValidationMap.get(tuple[0]))
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      contentRegexValidationMap.get(position)
+    )
     .join(' ');
 
   return contentRegexValidationText;
@@ -127,11 +135,40 @@ function returnNameValidationText(name: string) {
   ]);
 
   const nameRegexValidationText: string = nameRegexTuple
-    .filter((tuple: [number, boolean]) => !tuple[1])
-    .map((tuple: [number, boolean]) => nameValidationTextMap.get(tuple[0]))
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      nameValidationTextMap.get(position)
+    )
     .join(' ');
 
   return nameRegexValidationText;
+}
+
+function returnAddressLineValidationText(addressLine: string) {
+  const addressLineLengthRegex = /^(?=.{2,75}$)/;
+  const addressLineCharacterRegex = /^[A-Za-z0-9\s.,#-]+$/;
+
+  const addressLineRegexTuple: [number, boolean][] = [
+    [0, addressLineLengthRegex.test(addressLine)],
+    [1, addressLineCharacterRegex.test(addressLine)],
+  ];
+
+  const addressLineValidationTextMap = new Map<number, string>([
+    [0, 'Must be between 2 and 75 characters.'],
+    [
+      1,
+      'Can only contain alphanumeric characters, spaces, periods, commas, hyphens, or pound signs.',
+    ],
+  ]);
+
+  const addressLineRegexValidationText: string = addressLineRegexTuple
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      addressLineValidationTextMap.get(position)
+    )
+    .join(' ');
+
+  return addressLineRegexValidationText;
 }
 
 function returnCityValidationText(city: string) {
@@ -152,8 +189,10 @@ function returnCityValidationText(city: string) {
   ]);
 
   const cityRegexValidationText: string = cityRegexTuple
-    .filter((tuple: [number, boolean]) => !tuple[1])
-    .map((tuple: [number, boolean]) => cityValidationTextMap.get(tuple[0]))
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      cityValidationTextMap.get(position)
+    )
     .join(' ');
 
   return cityRegexValidationText;

@@ -13,6 +13,7 @@ import {
   Flex,
   Group,
   Loader,
+  NativeSelect,
   PasswordInput,
   Stepper,
   Text,
@@ -77,6 +78,12 @@ function Register() {
       isValidLastName,
       isLastNameFocused,
 
+      preferredName,
+      isValidPreferredName,
+      isPreferredNameFocused,
+
+      preferredPronouns,
+
       address,
       contactNumber,
       jobPosition,
@@ -97,7 +104,9 @@ function Register() {
     registerDispatch,
   ] = useReducer(registerReducer, initialRegisterState);
   const {
-    addressLine1,
+    addressLine,
+    isValidAddressLine,
+    isAddressLineFocused,
     city,
     isValidCity,
     isCityFocused,
@@ -184,6 +193,16 @@ function Register() {
       payload: isValidLast,
     });
   }, [lastName]);
+
+  // used to validate preferred name on every change
+  useEffect(() => {
+    const isValidPreferred = NAME_REGEX.test(preferredName);
+
+    registerDispatch({
+      type: registerAction.setIsValidPreferredName,
+      payload: isValidPreferred,
+    });
+  }, [preferredName]);
 
   // used to validate city on every change
   useEffect(() => {
@@ -337,6 +356,22 @@ function Register() {
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnNameValidationText(lastName)}
+    </Text>
+  );
+
+  const preferredNameInputValidationText = (
+    <Text
+      id="preferred-name-note"
+      className={
+        isPreferredNameFocused && preferredName && !isValidPreferredName
+          ? ''
+          : 'offscreen'
+      }
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnNameValidationText(preferredName)}
     </Text>
   );
 
@@ -742,6 +777,91 @@ function Register() {
               registerDispatch({
                 type: registerAction.setIsLastNameFocused,
                 payload: false,
+              });
+            }}
+            minLength={2}
+            maxLength={30}
+            withAsterisk
+            required
+          />
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Preferred name"
+            placeholder="Enter preferred name"
+            autoComplete="off"
+            aria-describedby="preferred-name-note"
+            aria-invalid={isValidPreferredName ? false : true}
+            value={preferredName}
+            icon={
+              isValidPreferredName ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidPreferredName && preferredName !== ''}
+            description={preferredNameInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setPreferredName,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsPreferredNameFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsPreferredNameFocused,
+                payload: false,
+              });
+            }}
+            minLength={2}
+            maxLength={30}
+          />
+
+          <NativeSelect
+            data={[
+              'Prefer not to say',
+              'He/Him',
+              'She/Her',
+              'They/Them',
+              'Other',
+            ]}
+            description="This is optional."
+            label="Preferred pronouns"
+            value={preferredPronouns}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setPreferredPronouns,
+                payload: event.currentTarget.value,
+              });
+            }}
+          />
+
+          {/* third step : address*/}
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Address line 1"
+            placeholder="Enter address line 1"
+            autoComplete="off"
+            // aria-describedby="address-line-1-note"
+            // aria-invalid={isValidAddressLine1 ? false : true}
+            value={addressLine1}
+            // icon={
+            //   isValidAddressLine1 ? (
+            //     <FontAwesomeIcon icon={faCheck} color="green" />
+            //   ) : null
+            // }
+            // error={!isValidAddressLine1 && addressLine1 !== ''}
+            // description={addressLine1InputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setAddressLine1,
+                payload: event.currentTarget.value,
               });
             }}
             minLength={2}

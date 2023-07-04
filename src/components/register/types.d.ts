@@ -46,7 +46,9 @@ type RegisterState = {
 
   contactNumber: PhoneNumber;
   address: {
-    addressLine1: string;
+    addressLine: string;
+    isValidAddressLine: boolean;
+    isAddressLineFocused: boolean;
     city: string;
     isValidCity: boolean;
     isCityFocused: boolean;
@@ -111,7 +113,9 @@ type RegisterAction = {
   setPreferredPronouns: 'setPreferredPronouns';
 
   setContactNumber: 'setContactNumber';
-  setAddressLine1: 'setAddressLine1';
+  setAddressLine: 'setAddressLine';
+  setIsAddressLineFocused: 'setIsAddressLineFocused';
+  setIsValidAddressLine: 'setIsValidAddressLine';
   setCity: 'setCity';
   setIsValidCity: 'setIsValidCity';
   setIsCityFocused: 'setIsCityFocused';

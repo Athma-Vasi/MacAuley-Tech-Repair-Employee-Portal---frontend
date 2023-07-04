@@ -7,6 +7,7 @@ import {
   Province,
   StatesUS,
 } from '../../types';
+import { PreferredPronouns } from '../../types/user.types';
 import { RegisterAction, RegisterDispatch, RegisterState } from './types';
 
 const initialRegisterState: RegisterState = {
@@ -42,11 +43,13 @@ const initialRegisterState: RegisterState = {
   isValidPreferredName: false,
   isPreferredNameFocused: false,
 
-  preferredPronouns: '',
+  preferredPronouns: 'Prefer not to say',
 
   contactNumber: '+(1)(234) 567-8901',
   address: {
-    addressLine1: '',
+    addressLine: '',
+    isValidAddressLine: false,
+    isAddressLineFocused: false,
     city: '',
     isValidCity: false,
     isCityFocused: false,
@@ -111,7 +114,9 @@ const registerAction: RegisterAction = {
   setPreferredPronouns: 'setPreferredPronouns',
 
   setContactNumber: 'setContactNumber',
-  setAddressLine1: 'setAddressLine1',
+  setAddressLine: 'setAddressLine',
+  setIsValidAddressLine: 'setIsValidAddressLine',
+  setIsAddressLineFocused: 'setIsAddressLineFocused',
   setCity: 'setCity',
   setIsValidCity: 'setIsValidCity',
   setIsCityFocused: 'setIsCityFocused',
@@ -138,7 +143,10 @@ const registerAction: RegisterAction = {
   setLoadingMessage: 'setLoadingMessage',
 };
 
-function registerReducer(state: RegisterState, action: RegisterDispatch) {
+function registerReducer(
+  state: RegisterState,
+  action: RegisterDispatch
+): RegisterState {
   switch (action.type) {
     case registerAction.setEmail:
       return { ...state, email: action.payload as string };
@@ -197,15 +205,34 @@ function registerReducer(state: RegisterState, action: RegisterDispatch) {
       return { ...state, isPreferredNameFocused: action.payload as boolean };
 
     case registerAction.setPreferredPronouns:
-      return { ...state, preferredPronouns: action.payload as string };
+      return {
+        ...state,
+        preferredPronouns: action.payload as PreferredPronouns,
+      };
 
     case registerAction.setContactNumber:
       return { ...state, contactNumber: action.payload as PhoneNumber };
 
-    case registerAction.setAddressLine1:
+    case registerAction.setAddressLine:
       return {
         ...state,
-        address: { ...state.address, addressLine1: action.payload as string },
+        address: { ...state.address, addressLine: action.payload as string },
+      };
+    case registerAction.setIsValidAddressLine:
+      return {
+        ...state,
+        address: {
+          ...state.address,
+          isValidAddressLine: action.payload as boolean,
+        },
+      };
+    case registerAction.setIsAddressLineFocused:
+      return {
+        ...state,
+        address: {
+          ...state.address,
+          isAddressLineFocused: action.payload as boolean,
+        },
       };
     case registerAction.setCity:
       return {

@@ -39,20 +39,19 @@ const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/;
 
 /**
- * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
- * - [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] matches any alphanumeric character or special character in the range of special characters commonly used in components, part numbers, and ID numbers.
- * - {1,100} ensures that the text is between 1 and 100 characters long.
- * - ^ and $ ensure that the entire string matches the regex.
- */
-const NOTE_TITLE_REGEX =
-  /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
-
-/**
  * - [A-Za-z]{2,30} matches any letter, ensuring that the text is between 2 and 30 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
  * - i makes the regex case-insensitive.
  */
 const NAME_REGEX = /^[A-Za-z]{2,30}$/i;
+
+/**
+ * - [A-Za-z0-9\s.,#-] matches any letter, number, whitespace, period, comma, hash, or hyphen.
+ * - {2,75} ensures that the text is between 2 and 75 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const ADDRESS_LINE_REGEX = /^[A-Za-z0-9\s.,#-]{2,75}$/i;
 
 /**
  * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
@@ -61,6 +60,15 @@ const NAME_REGEX = /^[A-Za-z]{2,30}$/i;
  * - i makes the regex case-insensitive.
  */
 const CITY_REGEX = /^[A-Za-z\s.\-']{2,75}$/i;
+
+/**
+ * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+ * - [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] matches any alphanumeric character or special character in the range of special characters commonly used in components, part numbers, and ID numbers.
+ * - {1,100} ensures that the text is between 1 and 100 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const NOTE_TITLE_REGEX =
+  /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
 
 /**
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
@@ -89,6 +97,7 @@ export {
   USERNAME_REGEX,
   PASSWORD_REGEX,
   NAME_REGEX,
+  ADDRESS_LINE_REGEX,
   CITY_REGEX,
   NOTE_TITLE_REGEX,
   NOTE_TEXT_REGEX,

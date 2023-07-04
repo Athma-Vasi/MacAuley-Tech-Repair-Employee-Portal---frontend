@@ -8,7 +8,7 @@ type User = {
   lastName: string;
   contactNumber: PhoneNumber;
   address: {
-    addressLine1: string;
+    addressLine: string;
     city: string;
     province: string;
     state: string;
@@ -38,7 +38,7 @@ type UserSchema = {
   lastName: string;
   contactNumber: PhoneNumber;
   address: {
-    addressLine1: string;
+    addressLine: string;
     city: string;
     province: Province;
     state: StatesUS;
@@ -65,7 +65,12 @@ type UserDocument = UserSchema & {
 
 type UserRoles = ('Admin' | 'Employee' | 'Manager')[];
 
-type PreferredPronouns = 'He/Him' | 'She/Her' | 'They/Them' | 'Other' | '';
+type PreferredPronouns =
+  | 'He/Him'
+  | 'She/Her'
+  | 'They/Them'
+  | 'Other'
+  | 'Prefer not to say';
 
 type Province =
   | 'Alberta'
