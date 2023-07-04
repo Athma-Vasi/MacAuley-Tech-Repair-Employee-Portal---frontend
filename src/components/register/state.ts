@@ -1,3 +1,12 @@
+import {
+  Country,
+  Department,
+  JobPosition,
+  PhoneNumber,
+  PostalCode,
+  Province,
+  StatesUS,
+} from '../../types';
 import { RegisterAction, RegisterDispatch, RegisterState } from './types';
 
 const initialRegisterState: RegisterState = {
@@ -34,6 +43,8 @@ const initialRegisterState: RegisterState = {
   address: {
     addressLine1: '',
     city: '',
+    isValidCity: false,
+    isCityFocused: false,
     province: 'Alberta',
     state: 'Alabama',
     postalCode: 'A1A 1A1',
@@ -117,102 +128,108 @@ const registerAction: RegisterAction = {
 function registerReducer(state: RegisterState, action: RegisterDispatch) {
   switch (action.type) {
     case registerAction.setEmail:
-      return { ...state, email: action.payload };
+      return { ...state, email: action.payload as string };
     case registerAction.setIsValidEmail:
-      return { ...state, isValidEmail: action.payload };
+      return { ...state, isValidEmail: action.payload as boolean };
     case registerAction.setIsEmailFocused:
-      return { ...state, isEmailFocused: action.payload };
+      return { ...state, isEmailFocused: action.payload as boolean };
 
     case registerAction.setUsername:
-      return { ...state, username: action.payload };
+      return { ...state, username: action.payload as string };
     case registerAction.setIsValidUsername:
-      return { ...state, isValidUsername: action.payload };
+      return { ...state, isValidUsername: action.payload as boolean };
     case registerAction.setIsUsernameFocused:
-      return { ...state, isUsernameFocused: action.payload };
+      return { ...state, isUsernameFocused: action.payload as boolean };
 
     case registerAction.setPassword:
-      return { ...state, password: action.payload };
+      return { ...state, password: action.payload as string };
     case registerAction.setIsValidPassword:
-      return { ...state, isValidPassword: action.payload };
+      return { ...state, isValidPassword: action.payload as boolean };
     case registerAction.setIsPasswordFocused:
-      return { ...state, isPasswordFocused: action.payload };
+      return { ...state, isPasswordFocused: action.payload as boolean };
 
     case registerAction.setConfirmPassword:
-      return { ...state, confirmPassword: action.payload };
+      return { ...state, confirmPassword: action.payload as string };
     case registerAction.setIsValidConfirmPassword:
-      return { ...state, isValidConfirmPassword: action.payload };
+      return { ...state, isValidConfirmPassword: action.payload as boolean };
     case registerAction.setIsConfirmPasswordFocused:
-      return { ...state, isConfirmPasswordFocused: action.payload };
+      return { ...state, isConfirmPasswordFocused: action.payload as boolean };
 
     case registerAction.setFirstName:
-      return { ...state, firstName: action.payload };
+      return { ...state, firstName: action.payload as string };
     case registerAction.setIsValidFirstName:
-      return { ...state, isValidFirstName: action.payload };
+      return { ...state, isValidFirstName: action.payload as boolean };
     case registerAction.setIsFirstNameFocused:
-      return { ...state, isFirstNameFocused: action.payload };
+      return { ...state, isFirstNameFocused: action.payload as boolean };
 
     case registerAction.setMiddleName:
-      return { ...state, middleName: action.payload };
+      return { ...state, middleName: action.payload as string };
     case registerAction.setIsValidMiddleName:
-      return { ...state, isValidMiddleName: action.payload };
+      return { ...state, isValidMiddleName: action.payload as boolean };
     case registerAction.setIsMiddleNameFocused:
-      return { ...state, isMiddleNameFocused: action.payload };
+      return { ...state, isMiddleNameFocused: action.payload as boolean };
 
     case registerAction.setLastName:
-      return { ...state, lastName: action.payload };
+      return { ...state, lastName: action.payload as string };
     case registerAction.setIsValidLastName:
-      return { ...state, isValidLastName: action.payload };
+      return { ...state, isValidLastName: action.payload as boolean };
     case registerAction.setIsLastNameFocused:
-      return { ...state, isLastNameFocused: action.payload };
+      return { ...state, isLastNameFocused: action.payload as boolean };
 
     case registerAction.setContactNumber:
-      return { ...state, contactNumber: action.payload };
+      return { ...state, contactNumber: action.payload as PhoneNumber };
 
     case registerAction.setAddressLine1:
       return {
         ...state,
-        address: { ...state.address, addressLine1: action.payload },
+        address: { ...state.address, addressLine1: action.payload as string },
       };
     case registerAction.setCity:
-      return { ...state, address: { ...state.address, city: action.payload } };
+      return {
+        ...state,
+        address: { ...state.address, city: action.payload as string },
+      };
     case registerAction.setIsValidCity:
       return {
         ...state,
-        address: { ...state.address, isValidCity: action.payload },
+        address: { ...state.address, isValidCity: action.payload as boolean },
       };
     case registerAction.setIsCityFocused:
       return {
         ...state,
-        address: { ...state.address, isCityFocused: action.payload },
+        address: { ...state.address, isCityFocused: action.payload as boolean },
       };
     case registerAction.setProvince:
       return {
         ...state,
-        address: { ...state.address, province: action.payload },
+        address: { ...state.address, province: action.payload as Province },
       };
     case registerAction.setState:
-      return { ...state, address: { ...state.address, state: action.payload } };
+      return {
+        ...state,
+        address: { ...state.address, state: action.payload as StatesUS },
+      };
     case registerAction.setPostalCode:
       return {
         ...state,
-        address: { ...state.address, postalCode: action.payload },
+        address: { ...state.address, postalCode: action.payload as PostalCode },
       };
     case registerAction.setCountry:
       return {
         ...state,
-        address: { ...state.address, country: action.payload },
+        address: { ...state.address, country: action.payload as Country },
       };
 
     case registerAction.setJobPosition:
-      return { ...state, jobPosition: action.payload };
+      return { ...state, jobPosition: action.payload as JobPosition };
     case registerAction.setDepartment:
-      return { ...state, department: action.payload };
+      return { ...state, department: action.payload as Department };
     case registerAction.setEmergencyContactFullName:
       return {
         ...state,
         emergencyContact: {
           ...state.emergencyContact,
-          fullName: action.payload,
+          fullName: action.payload as string,
         },
       };
     case registerAction.setEmergencyContactNumber:
@@ -220,28 +237,28 @@ function registerReducer(state: RegisterState, action: RegisterDispatch) {
         ...state,
         emergencyContact: {
           ...state.emergencyContact,
-          contactNumber: action.payload,
+          contactNumber: action.payload as PhoneNumber,
         },
       };
     case registerAction.setStartDate:
-      return { ...state, startDate: action.payload };
+      return { ...state, startDate: action.payload as Date };
 
     case registerAction.setIsError:
-      return { ...state, isError: action.payload };
+      return { ...state, isError: action.payload as boolean };
     case registerAction.setErrorMessage:
-      return { ...state, errorMessage: action.payload };
+      return { ...state, errorMessage: action.payload as string };
     case registerAction.setIsSubmitting:
-      return { ...state, isSubmitting: action.payload };
+      return { ...state, isSubmitting: action.payload as boolean };
     case registerAction.setSubmitMessage:
-      return { ...state, submitMessage: action.payload };
+      return { ...state, submitMessage: action.payload as string };
     case registerAction.setIsSuccessful:
-      return { ...state, isSuccessful: action.payload };
+      return { ...state, isSuccessful: action.payload as boolean };
     case registerAction.setSuccessMessage:
-      return { ...state, successMessage: action.payload };
+      return { ...state, successMessage: action.payload as string };
     case registerAction.setIsLoading:
-      return { ...state, isLoading: action.payload };
+      return { ...state, isLoading: action.payload as boolean };
     case registerAction.setLoadingMessage:
-      return { ...state, loadingMessage: action.payload };
+      return { ...state, loadingMessage: action.payload as string };
 
     default:
       return state;

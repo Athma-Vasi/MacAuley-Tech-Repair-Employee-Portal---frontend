@@ -42,6 +42,8 @@ type RegisterState = {
   address: {
     addressLine1: string;
     city: string;
+    isValidCity: boolean;
+    isCityFocused: boolean;
     province: Province;
     state: StatesUS;
     postalCode: PostalCode;
@@ -122,7 +124,17 @@ type RegisterAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-type RegisterPayload = string | boolean;
+type RegisterPayload =
+  | string
+  | boolean
+  | PhoneNumber
+  | Province
+  | StatesUS
+  | Country
+  | Department
+  | JobPosition
+  | PostalCode
+  | Date;
 
 type RegisterDispatch = {
   type: RegisterAction[keyof RegisterAction];

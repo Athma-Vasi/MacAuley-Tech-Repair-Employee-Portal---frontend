@@ -19,8 +19,10 @@ import {
 } from '@mantine/core';
 
 import {
+  CITY_REGEX,
   COLORS,
   EMAIL_REGEX,
+  NAME_REGEX,
   PASSWORD_REGEX,
   USERNAME_REGEX,
 } from '../../constants';
@@ -28,7 +30,9 @@ import { REGISTER_URL } from './constants';
 import { initialRegisterState, registerAction, registerReducer } from './state';
 import '../../index.css';
 import {
+  returnCityValidationText,
   returnEmailRegexValidationText,
+  returnNameValidationText,
   returnUsernameRegexValidationText,
 } from '../../utils';
 import { returnPasswordRegexValidationText } from './utils';
@@ -58,12 +62,50 @@ function Register() {
       isValidConfirmPassword,
       isConfirmPasswordFocused,
 
+      firstName,
+      isValidFirstName,
+      isFirstNameFocused,
+
+      middleName,
+      isValidMiddleName,
+      isMiddleNameFocused,
+
+      lastName,
+      isValidLastName,
+      isLastNameFocused,
+
+      address,
+      contactNumber,
+      jobPosition,
+      department,
+      emergencyContact,
+      startDate,
+
+      isError,
       errorMessage,
-      isSubmitting,
       isSuccessful,
+      successMessage,
+      isLoading,
+      loadingMessage,
+      isSubmitting,
+      submitMessage,
     },
     registerDispatch,
   ] = useReducer(registerReducer, initialRegisterState);
+  const {
+    addressLine1,
+    city,
+    isValidCity,
+    isCityFocused,
+    province,
+    state,
+    country,
+    postalCode,
+  } = address;
+  const {
+    contactNumber: emergencyContactNumber,
+    fullName: emergencyContactFullName,
+  } = emergencyContact;
 
   const emailRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
@@ -75,31 +117,31 @@ function Register() {
 
   // used to validate email on every change
   useEffect(() => {
-    const isValid = EMAIL_REGEX.test(email);
+    const isValidMail = EMAIL_REGEX.test(email);
 
     registerDispatch({
       type: registerAction.setIsValidEmail,
-      payload: isValid,
+      payload: isValidMail,
     });
   }, [email]);
 
   // used to validate username on every change
   useEffect(() => {
-    const isValid = USERNAME_REGEX.test(username);
+    const isValidUsr = USERNAME_REGEX.test(username);
 
     registerDispatch({
       type: registerAction.setIsValidUsername,
-      payload: isValid,
+      payload: isValidUsr,
     });
   }, [username]);
 
   // used to validate password on every change and confirm password on every change
   useEffect(() => {
-    const isValid = PASSWORD_REGEX.test(password);
+    const isValidPwd = PASSWORD_REGEX.test(password);
 
     registerDispatch({
       type: registerAction.setIsValidPassword,
-      payload: isValid,
+      payload: isValidPwd,
     });
 
     const matchPassword = password === confirmPassword;
@@ -109,13 +151,61 @@ function Register() {
     });
   }, [password, confirmPassword]);
 
-  // removes error message after every change in email, username, password, or confirm password
+  // used to validate first name on every change
+  useEffect(() => {
+    const isValidFirst = NAME_REGEX.test(firstName);
+
+    registerDispatch({
+      type: registerAction.setIsValidFirstName,
+      payload: isValidFirst,
+    });
+  }, [firstName]);
+
+  // used to validate middle name on every change
+  useEffect(() => {
+    const isValidMiddle = NAME_REGEX.test(middleName);
+
+    registerDispatch({
+      type: registerAction.setIsValidMiddleName,
+      payload: isValidMiddle,
+    });
+  }, [middleName]);
+
+  // used to validate last name on every change
+  useEffect(() => {
+    const isValidLast = NAME_REGEX.test(lastName);
+
+    registerDispatch({
+      type: registerAction.setIsValidLastName,
+      payload: isValidLast,
+    });
+  }, [lastName]);
+
+  // used to validate city on every change
+  useEffect(() => {
+    const isValidPlace = CITY_REGEX.test(city);
+
+    registerDispatch({
+      type: registerAction.setIsValidCity,
+      payload: isValidPlace,
+    });
+  }, [city]);
+
+  // removes error message after every change in email, username, password, confirm password or (first, middle, last)Name
   useEffect(() => {
     registerDispatch({
       type: registerAction.setErrorMessage,
       payload: '',
     });
-  }, [email, username, password, confirmPassword]);
+  }, [
+    email,
+    username,
+    password,
+    confirmPassword,
+    firstName,
+    middleName,
+    lastName,
+  ]);
 
   const displayError = (
     <CustomError
@@ -202,11 +292,67 @@ function Register() {
     </Text>
   );
 
+  const firstNameInputValidationText = (
+    <Text
+      id="first-name-note"
+      className={
+        isFirstNameFocused && firstName && !isValidFirstName ? '' : 'offscreen'
+      }
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnNameValidationText(firstName)}
+    </Text>
+  );
+
+  const middleNameInputValidationText = (
+    <Text
+      id="middle-name-note"
+      className={
+        isMiddleNameFocused && middleName && !isValidMiddleName
+          ? ''
+          : 'offscreen'
+      }
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnNameValidationText(middleName)}
+    </Text>
+  );
+
+  const lastNameInputValidationText = (
+    <Text
+      id="last-name-note"
+      className={
+        isLastNameFocused && lastName && !isValidLastName ? '' : 'offscreen'
+      }
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnNameValidationText(lastName)}
+    </Text>
+  );
+
+  const cityInputValidationText = (
+    <Text
+      id="city-note"
+      className={isCityFocused && city && !isValidCity ? '' : 'offscreen'}
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} /> {returnCityValidationText(city)}
+    </Text>
+  );
+
   async function handleRegisterFormSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
 
+    // ~sanity~ safety check
     const testEmail = EMAIL_REGEX.test(email);
     const testUsername = USERNAME_REGEX.test(username);
     const testPassword = PASSWORD_REGEX.test(password);

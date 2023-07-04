@@ -44,11 +44,19 @@ const PASSWORD_REGEX =
  * - {1,100} ensures that the text is between 1 and 100 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
  */
-
-const NAME_REGEX = /^[A-Za-z]{1,30}$/;
-
 const NOTE_TITLE_REGEX =
   /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
+
+/**
+ * - [A-Za-z]{1,30} matches any letter, ensuring that the text is between 1 and 30 characters long.
+ */
+const NAME_REGEX = /^[A-Za-z]{1,30}$/;
+
+/**
+ * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
+ * - {1,75} ensures that the text is between 1 and 75 characters long.
+ */
+const CITY_REGEX = /^[A-Za-z\s.\-']{1,75}$/;
 
 /**
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
@@ -77,6 +85,7 @@ export {
   USERNAME_REGEX,
   PASSWORD_REGEX,
   NAME_REGEX,
+  CITY_REGEX,
   NOTE_TITLE_REGEX,
   NOTE_TEXT_REGEX,
   COLORS,

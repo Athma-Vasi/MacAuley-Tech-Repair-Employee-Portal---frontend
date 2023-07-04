@@ -1,6 +1,18 @@
+import { UserInfo } from 'os';
 import type { User } from '../../types';
 
 type UsersListSort = 'asc' | 'desc' | '';
+
+type UserInfoDisplay = {
+  _id: string;
+  email: string;
+  username: string;
+  roles: ('Admin' | 'Employee' | 'Manager')[];
+  active: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+};
 
 type UsersListSortKey =
   | 'email'
@@ -20,7 +32,7 @@ type UsersListState = {
   errorMessage: string;
   isLoading: boolean;
   triggerGetAllUsers: boolean;
-  userToEdit: User;
+  userToEdit: UserInfoDisplay;
   users: User[];
 
   sortKey: UsersListSortKey;
@@ -83,4 +95,5 @@ export type {
   UsersListSort,
   UsersListSortKey,
   SortUsersByKeyProps,
+  UserInfoDisplay,
 };
