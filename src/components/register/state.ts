@@ -38,8 +38,13 @@ const initialRegisterState: RegisterState = {
   isValidLastName: false,
   isLastNameFocused: false,
 
-  contactNumber: '+(1)(234) 567-8901',
+  preferredName: '',
+  isValidPreferredName: false,
+  isPreferredNameFocused: false,
 
+  preferredPronouns: '',
+
+  contactNumber: '+(1)(234) 567-8901',
   address: {
     addressLine1: '',
     city: '',
@@ -59,6 +64,7 @@ const initialRegisterState: RegisterState = {
   },
   startDate: new Date(),
 
+  currentStepperPosition: 1,
   isError: false,
   errorMessage: '',
   isSubmitting: false,
@@ -98,8 +104,13 @@ const registerAction: RegisterAction = {
   setIsValidLastName: 'setIsValidLastName',
   setIsLastNameFocused: 'setIsLastNameFocused',
 
-  setContactNumber: 'setContactNumber',
+  setPreferredName: 'setPreferredName',
+  setIsValidPreferredName: 'setIsValidPreferredName',
+  setIsPreferredNameFocused: 'setIsPreferredNameFocused',
 
+  setPreferredPronouns: 'setPreferredPronouns',
+
+  setContactNumber: 'setContactNumber',
   setAddressLine1: 'setAddressLine1',
   setCity: 'setCity',
   setIsValidCity: 'setIsValidCity',
@@ -114,6 +125,8 @@ const registerAction: RegisterAction = {
   setEmergencyContactFullName: 'setEmergencyContactFullName',
   setEmergencyContactNumber: 'setEmergencyContactNumber',
   setStartDate: 'setStartDate',
+
+  setCurrentStepperPosition: 'setCurrentStepperPosition',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -175,6 +188,16 @@ function registerReducer(state: RegisterState, action: RegisterDispatch) {
       return { ...state, isValidLastName: action.payload as boolean };
     case registerAction.setIsLastNameFocused:
       return { ...state, isLastNameFocused: action.payload as boolean };
+
+    case registerAction.setPreferredName:
+      return { ...state, preferredName: action.payload as string };
+    case registerAction.setIsValidPreferredName:
+      return { ...state, isValidPreferredName: action.payload as boolean };
+    case registerAction.setIsPreferredNameFocused:
+      return { ...state, isPreferredNameFocused: action.payload as boolean };
+
+    case registerAction.setPreferredPronouns:
+      return { ...state, preferredPronouns: action.payload as string };
 
     case registerAction.setContactNumber:
       return { ...state, contactNumber: action.payload as PhoneNumber };
@@ -242,6 +265,9 @@ function registerReducer(state: RegisterState, action: RegisterDispatch) {
       };
     case registerAction.setStartDate:
       return { ...state, startDate: action.payload as Date };
+
+    case registerAction.setCurrentStepperPosition:
+      return { ...state, currentStepperPosition: action.payload as number };
 
     case registerAction.setIsError:
       return { ...state, isError: action.payload as boolean };

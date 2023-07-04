@@ -65,6 +65,8 @@ type UserDocument = UserSchema & {
 
 type UserRoles = ('Admin' | 'Employee' | 'Manager')[];
 
+type PreferredPronouns = 'He/Him' | 'She/Her' | 'They/Them' | 'Other' | '';
+
 type Province =
   | 'Alberta'
   | 'British Columbia'
@@ -165,4 +167,5 @@ export type {
   Department,
   JobPosition,
   UserRoles,
+  PreferredPronouns,
 };

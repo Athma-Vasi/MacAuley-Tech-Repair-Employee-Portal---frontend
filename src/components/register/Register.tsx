@@ -11,8 +11,10 @@ import {
   Button,
   Center,
   Flex,
+  Group,
   Loader,
   PasswordInput,
+  Stepper,
   Text,
   TextInput,
   Title,
@@ -42,6 +44,7 @@ import { screenReaderPasswordSpecialCharacters } from '../../domElements';
 import { Loading } from '../loading';
 import { CustomError } from '../customError';
 import { Success } from '../success';
+import { StepperWrapper } from './stepperWrapper/StepperWrapper';
 
 function Register() {
   const [
@@ -81,6 +84,7 @@ function Register() {
       emergencyContact,
       startDate,
 
+      currentStepperPosition,
       isError,
       errorMessage,
       isSuccessful,
@@ -357,9 +361,22 @@ function Register() {
     const testUsername = USERNAME_REGEX.test(username);
     const testPassword = PASSWORD_REGEX.test(password);
     const testConfirmPassword = password === confirmPassword;
+    const testFirstName = NAME_REGEX.test(firstName);
+    const testMiddleName = NAME_REGEX.test(middleName);
+    const testLastName = NAME_REGEX.test(lastName);
+    const testCity = CITY_REGEX.test(city);
 
     // if any field is invalid, display error message and return
-    if (!testEmail || !testUsername || !testPassword || !testConfirmPassword) {
+    if (
+      !testEmail ||
+      !testUsername ||
+      !testPassword ||
+      !testConfirmPassword ||
+      !testFirstName ||
+      !testMiddleName ||
+      !testLastName ||
+      !testCity
+    ) {
       registerDispatch({
         type: registerAction.setErrorMessage,
         payload: 'Please fill out all fields correctly',
@@ -443,6 +460,11 @@ function Register() {
       w="100%"
       h="100%"
     >
+      <StepperWrapper
+        currentStepperPosition={currentStepperPosition}
+        registerAction={registerAction}
+        registerDispatch={registerDispatch}
+      />
       <form onSubmit={handleRegisterFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
@@ -610,6 +632,154 @@ function Register() {
             withAsterisk
             required
           />
+
+          {/* second step */}
+          <TextInput
+            w="100%"
+            color="dark"
+            label="First name"
+            placeholder="Enter first name"
+            autoComplete="off"
+            aria-describedby="first-name-note"
+            aria-invalid={isValidFirstName ? false : true}
+            value={firstName}
+            icon={
+              isValidFirstName ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidFirstName && firstName !== ''}
+            description={firstNameInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setFirstName,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsFirstNameFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsFirstNameFocused,
+                payload: false,
+              });
+            }}
+            minLength={2}
+            maxLength={30}
+            withAsterisk
+            required
+          />
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Middle name"
+            placeholder="Enter middle name"
+            autoComplete="off"
+            aria-describedby="middle-name-note"
+            aria-invalid={isValidMiddleName ? false : true}
+            value={middleName}
+            icon={
+              isValidMiddleName ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidMiddleName && middleName !== ''}
+            description={middleNameInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setMiddleName,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsMiddleNameFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsMiddleNameFocused,
+                payload: false,
+              });
+            }}
+            minLength={2}
+            maxLength={30}
+          />
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Last name"
+            placeholder="Enter last name"
+            autoComplete="off"
+            aria-describedby="last-name-note"
+            aria-invalid={isValidLastName ? false : true}
+            value={lastName}
+            icon={
+              isValidLastName ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidLastName && lastName !== ''}
+            description={lastNameInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setLastName,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsLastNameFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsLastNameFocused,
+                payload: false,
+              });
+            }}
+            minLength={2}
+            maxLength={30}
+            withAsterisk
+            required
+          />
+
+          {/* stepper nav buttons */}
+          <Group position="center" mt="xl">
+            <Button
+              variant="default"
+              disabled={currentStepperPosition === 1}
+              onClick={() => {
+                const currentStep = currentStepperPosition;
+                registerDispatch({
+                  type: registerAction.setCurrentStepperPosition,
+                  payload: currentStep > 0 ? currentStep - 1 : currentStep + 1,
+                });
+              }}
+            >
+              Back
+            </Button>
+            <Button
+              disabled={currentStepperPosition === 4}
+              onClick={() => {
+                const currentStep = currentStepperPosition;
+                registerDispatch({
+                  type: registerAction.setCurrentStepperPosition,
+                  payload: currentStep < 4 ? currentStep + 1 : currentStep - 1,
+                });
+              }}
+            >
+              Next step
+            </Button>
+          </Group>
+
+          {/* register button */}
           <Flex w="100%" justify="flex-end">
             <Button
               onKeyDown={(event) => {
@@ -638,6 +808,8 @@ function Register() {
           </Flex>
         </Flex>
       </form>
+
+      {/*  */}
       <Flex align="center" justify="center" columnGap="sm" w="100%">
         <Text color="dark">Already have an account?</Text>
         <Text color="blue">

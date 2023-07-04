@@ -113,7 +113,7 @@ function returnNoteContentValidationText(content: string) {
 }
 
 function returnNameValidationText(name: string) {
-  const nameLengthRegex = /^(?=.{1,30}$)/;
+  const nameLengthRegex = /^(?=.{2,30}$)/;
   const nameCharacterRegex = /^[a-zA-Z]+$/;
 
   const nameRegexTuple: [number, boolean][] = [
@@ -122,7 +122,7 @@ function returnNameValidationText(name: string) {
   ];
 
   const nameValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 1 and 30 characters.'],
+    [0, 'Must be between 2 and 30 characters.'],
     [1, 'Can only contain alphabetical characters.'],
   ]);
 
@@ -135,7 +135,7 @@ function returnNameValidationText(name: string) {
 }
 
 function returnCityValidationText(city: string) {
-  const cityLengthRegex = /^(?=.{1,75}$)/;
+  const cityLengthRegex = /^(?=.{2,75}$)/;
   const cityCharacterRegex = /^[A-Za-z\s.\-']+$/;
 
   const cityRegexTuple: [number, boolean][] = [
@@ -144,7 +144,7 @@ function returnCityValidationText(city: string) {
   ];
 
   const cityValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 1 and 75 characters.'],
+    [0, 'Must be between 2 and 75 characters.'],
     [
       1,
       'Can only contain alphabetical characters, spaces, periods, or hyphens.',

@@ -7,6 +7,7 @@ import {
   PhoneNumber,
   PostalCode,
 } from '../../types';
+import { PreferredPronouns } from '../../types/user.types';
 
 type RegisterState = {
   email: string;
@@ -37,8 +38,13 @@ type RegisterState = {
   isValidLastName: boolean;
   isLastNameFocused: boolean;
 
-  contactNumber: PhoneNumber;
+  preferredName: string;
+  isValidPreferredName: boolean;
+  isPreferredNameFocused: boolean;
 
+  preferredPronouns: PreferredPronouns;
+
+  contactNumber: PhoneNumber;
   address: {
     addressLine1: string;
     city: string;
@@ -58,6 +64,7 @@ type RegisterState = {
   };
   startDate: Date;
 
+  currentStepperPosition: number;
   isError: boolean;
   errorMessage: string;
   isSubmitting: boolean;
@@ -97,8 +104,13 @@ type RegisterAction = {
   setIsValidLastName: 'setIsValidLastName';
   setIsLastNameFocused: 'setIsLastNameFocused';
 
-  setContactNumber: 'setContactNumber';
+  setPreferredName: 'setPreferredName';
+  setIsValidPreferredName: 'setIsValidPreferredName';
+  setIsPreferredNameFocused: 'setIsPreferredNameFocused';
 
+  setPreferredPronouns: 'setPreferredPronouns';
+
+  setContactNumber: 'setContactNumber';
   setAddressLine1: 'setAddressLine1';
   setCity: 'setCity';
   setIsValidCity: 'setIsValidCity';
@@ -114,6 +126,7 @@ type RegisterAction = {
   setEmergencyContactNumber: 'setEmergencyContactNumber';
   setStartDate: 'setStartDate';
 
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
@@ -126,6 +139,7 @@ type RegisterAction = {
 
 type RegisterPayload =
   | string
+  | number
   | boolean
   | PhoneNumber
   | Province

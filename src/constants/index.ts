@@ -48,15 +48,19 @@ const NOTE_TITLE_REGEX =
   /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
 
 /**
- * - [A-Za-z]{1,30} matches any letter, ensuring that the text is between 1 and 30 characters long.
+ * - [A-Za-z]{2,30} matches any letter, ensuring that the text is between 2 and 30 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
  */
-const NAME_REGEX = /^[A-Za-z]{1,30}$/;
+const NAME_REGEX = /^[A-Za-z]{2,30}$/i;
 
 /**
  * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
- * - {1,75} ensures that the text is between 1 and 75 characters long.
+ * - {2,75} ensures that the text is between 2 and 75 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
  */
-const CITY_REGEX = /^[A-Za-z\s.\-']{1,75}$/;
+const CITY_REGEX = /^[A-Za-z\s.\-']{2,75}$/i;
 
 /**
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
