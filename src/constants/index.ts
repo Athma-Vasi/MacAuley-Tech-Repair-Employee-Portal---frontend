@@ -44,6 +44,9 @@ const PASSWORD_REGEX =
  * - {1,100} ensures that the text is between 1 and 100 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
  */
+
+const NAME_REGEX = /^[A-Za-z]{1,30}$/;
+
 const NOTE_TITLE_REGEX =
   /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
 
@@ -73,6 +76,7 @@ export {
   EMAIL_REGEX,
   USERNAME_REGEX,
   PASSWORD_REGEX,
+  NAME_REGEX,
   NOTE_TITLE_REGEX,
   NOTE_TEXT_REGEX,
   COLORS,

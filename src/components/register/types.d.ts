@@ -1,13 +1,11 @@
 import {
   Province,
-  User,
   StatesUS,
   Country,
   Department,
   JobPosition,
   PhoneNumber,
   PostalCode,
-  UserRoles,
 } from '../../types';
 
 type RegisterState = {
@@ -40,8 +38,6 @@ type RegisterState = {
   isLastNameFocused: boolean;
 
   contactNumber: PhoneNumber;
-  isValidContactNumber: boolean;
-  isContactNumberFocused: boolean;
 
   address: {
     addressLine1: string;
