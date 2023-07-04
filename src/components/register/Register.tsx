@@ -207,7 +207,6 @@ function Register() {
   ) {
     event.preventDefault();
 
-    // because I'm just a little stitious
     const testEmail = EMAIL_REGEX.test(email);
     const testUsername = USERNAME_REGEX.test(username);
     const testPassword = PASSWORD_REGEX.test(password);

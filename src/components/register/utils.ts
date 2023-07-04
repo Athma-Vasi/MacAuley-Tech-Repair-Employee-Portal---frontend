@@ -6,14 +6,14 @@ function returnPasswordRegexValidationText(password: string) {
   const passwordSpecialCharacterRegex = /^(?=.*[!@#$%^&*])/;
   const passwordSpaceRegex = /^(?!.*\s)/;
 
-  const passwordRegexObj: Record<string, [number, boolean]> = {
-    passwordLength: [0, passwordLengthRegex.test(password)],
-    passwordUppercase: [1, passwordUppercaseRegex.test(password)],
-    passwordLowercase: [2, passwordLowercaseRegex.test(password)],
-    passwordNumber: [3, passwordNumberRegex.test(password)],
-    passwordSpecialCharacter: [4, passwordSpecialCharacterRegex.test(password)],
-    passwordSpace: [5, passwordSpaceRegex.test(password)],
-  };
+  const passwordRegexTuple: [number, boolean][] = [
+    [0, passwordLengthRegex.test(password)],
+    [1, passwordUppercaseRegex.test(password)],
+    [2, passwordLowercaseRegex.test(password)],
+    [3, passwordNumberRegex.test(password)],
+    [4, passwordSpecialCharacterRegex.test(password)],
+    [5, passwordSpaceRegex.test(password)],
+  ];
 
   const passwordValidationTextMap = new Map<number, string>([
     [0, 'Must be between 8 and 32 characters.'],
@@ -24,9 +24,11 @@ function returnPasswordRegexValidationText(password: string) {
     [5, 'Cannot contain spaces.'],
   ]);
 
-  const passwordRegexValidationText: string = Object.values(passwordRegexObj)
-    .filter((tuple: [number, boolean]) => !tuple[1])
-    .map((tuple: [number, boolean]) => passwordValidationTextMap.get(tuple[0]))
+  const passwordRegexValidationText: string = passwordRegexTuple
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      passwordValidationTextMap.get(position)
+    )
     .join(' ');
 
   return passwordRegexValidationText;

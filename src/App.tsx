@@ -31,6 +31,7 @@ function App() {
 
         {/* these are protected routes */}
         {/* all roles are allowed to view the protected home page */}
+        {/* 
         <Route
           element={
             <RequireAuth allowedRoles={['Employee', 'Admin', 'Manager']} />
@@ -40,22 +41,15 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
 
-            {/* only admins and managers are allowed to add/edit users*/}
             <Route path="users">
               <Route index element={<UsersList />} />
-              {/* <Route path=":id" element={<EditUser />} /> */}
-              {/* <Route path="new" element={<AddNewUser />} /> */}
             </Route>
-
-            {/* all roles are allowed to add notes */}
 
             <Route path="notes">
               <Route index element={<NotesList />} />
-              {/* <Route path=":id" element={<EditNotes />} /> */}
-              {/* <Route path="new" element={<AddNewNote />} /> */}
             </Route>
           </Route>
-        </Route>
+        </Route> */}
 
         {/* catch all */}
         <Route path="*" element={<NotFound />} />
