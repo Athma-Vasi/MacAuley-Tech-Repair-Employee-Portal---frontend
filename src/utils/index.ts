@@ -120,84 +120,6 @@ function returnNoteContentValidationText(content: string) {
   return contentRegexValidationText;
 }
 
-function returnNameValidationText(name: string) {
-  const nameLengthRegex = /^(?=.{2,30}$)/;
-  const nameCharacterRegex = /^[a-zA-Z]+$/;
-
-  const nameRegexTuple: [number, boolean][] = [
-    [0, nameLengthRegex.test(name)],
-    [1, nameCharacterRegex.test(name)],
-  ];
-
-  const nameValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 2 and 30 characters.'],
-    [1, 'Can only contain alphabetical characters.'],
-  ]);
-
-  const nameRegexValidationText: string = nameRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      nameValidationTextMap.get(position)
-    )
-    .join(' ');
-
-  return nameRegexValidationText;
-}
-
-function returnAddressLineValidationText(addressLine: string) {
-  const addressLineLengthRegex = /^(?=.{2,75}$)/;
-  const addressLineCharacterRegex = /^[A-Za-z0-9\s.,#-]+$/;
-
-  const addressLineRegexTuple: [number, boolean][] = [
-    [0, addressLineLengthRegex.test(addressLine)],
-    [1, addressLineCharacterRegex.test(addressLine)],
-  ];
-
-  const addressLineValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 2 and 75 characters.'],
-    [
-      1,
-      'Can only contain alphanumeric characters, spaces, periods, commas, hyphens, or pound signs.',
-    ],
-  ]);
-
-  const addressLineRegexValidationText: string = addressLineRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      addressLineValidationTextMap.get(position)
-    )
-    .join(' ');
-
-  return addressLineRegexValidationText;
-}
-
-function returnCityValidationText(city: string) {
-  const cityLengthRegex = /^(?=.{2,75}$)/;
-  const cityCharacterRegex = /^[A-Za-z\s.\-']+$/;
-
-  const cityRegexTuple: [number, boolean][] = [
-    [0, cityLengthRegex.test(city)],
-    [1, cityCharacterRegex.test(city)],
-  ];
-
-  const cityValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 2 and 75 characters.'],
-    [
-      1,
-      'Can only contain alphabetical characters, spaces, periods, or hyphens.',
-    ],
-  ]);
-
-  const cityRegexValidationText: string = cityRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      cityValidationTextMap.get(position)
-    )
-    .join(' ');
-
-  return cityRegexValidationText;
-}
-
 type FormatDateProps = {
   date: Date;
   locale: string;
@@ -212,7 +134,5 @@ export {
   returnUsernameRegexValidationText,
   returnNoteTitleValidationText,
   returnNoteContentValidationText,
-  returnNameValidationText,
-  returnCityValidationText,
   formatDate,
 };

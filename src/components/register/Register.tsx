@@ -22,23 +22,31 @@ import {
 } from '@mantine/core';
 
 import {
-  CITY_REGEX,
   COLORS,
   EMAIL_REGEX,
-  NAME_REGEX,
   PASSWORD_REGEX,
   USERNAME_REGEX,
 } from '../../constants';
-import { REGISTER_URL } from './constants';
+import {
+  ADDRESS_LINE_REGEX,
+  CITY_REGEX,
+  NAME_REGEX,
+  PROVINCES,
+  REGISTER_URL,
+  STATES_US,
+} from './constants';
 import { initialRegisterState, registerAction, registerReducer } from './state';
 import '../../index.css';
 import {
-  returnCityValidationText,
   returnEmailRegexValidationText,
-  returnNameValidationText,
   returnUsernameRegexValidationText,
 } from '../../utils';
-import { returnPasswordRegexValidationText } from './utils';
+import {
+  returnAddressLineValidationText,
+  returnCityValidationText,
+  returnNameValidationText,
+  returnPasswordRegexValidationText,
+} from './utils';
 import { axiosInstance } from '../../api/axios';
 import { RegisterResponse } from './types';
 import { screenReaderPasswordSpecialCharacters } from '../../domElements';
@@ -204,6 +212,16 @@ function Register() {
     });
   }, [preferredName]);
 
+  // used to validate address line on every change
+  useEffect(() => {
+    const isValidAddress = ADDRESS_LINE_REGEX.test(addressLine);
+
+    registerDispatch({
+      type: registerAction.setIsValidAddressLine,
+      payload: isValidAddress,
+    });
+  }, [addressLine]);
+
   // used to validate city on every change
   useEffect(() => {
     const isValidPlace = CITY_REGEX.test(city);
@@ -214,7 +232,7 @@ function Register() {
     });
   }, [city]);
 
-  // removes error message after every change in email, username, password, confirm password or (first, middle, last)Name
+  // removes error message after every change in email, username, password, confirm password, (first, middle, last)Name, preferredName, addressLine, city
   useEffect(() => {
     registerDispatch({
       type: registerAction.setErrorMessage,
@@ -228,6 +246,9 @@ function Register() {
     firstName,
     middleName,
     lastName,
+    preferredName,
+    addressLine,
+    city,
   ]);
 
   const displayError = (
@@ -375,6 +396,22 @@ function Register() {
     </Text>
   );
 
+  const addressLineInputValidationText = (
+    <Text
+      id="address-line-note"
+      className={
+        isAddressLineFocused && addressLine && !isValidAddressLine
+          ? ''
+          : 'offscreen'
+      }
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnAddressLineValidationText(addressLine)}
+    </Text>
+  );
+
   const cityInputValidationText = (
     <Text
       id="city-note"
@@ -483,6 +520,38 @@ function Register() {
       controller.abort();
     }
   }
+
+  const selectProvinceInput = (
+    <NativeSelect
+      data={PROVINCES}
+      label="Select your province"
+      // description="Select your province"
+      value={province}
+      onChange={(event) => {
+        registerDispatch({
+          type: registerAction.setProvince,
+          payload: event.currentTarget.value,
+        });
+      }}
+    />
+  );
+
+  const selectStateInput = (
+    <NativeSelect
+      data={STATES_US}
+      // description="Select your state"
+      label="Select your state"
+      value={state}
+      onChange={(event) => {
+        registerDispatch({
+          type: registerAction.setState,
+          payload: event.currentTarget.value,
+        });
+      }}
+    />
+  );
+
+  const selectCanadianPostalCodeInput = ()
 
   const { buttonTextColor } = COLORS;
 
@@ -842,33 +911,97 @@ function Register() {
           />
 
           {/* third step : address*/}
-          <TextInput
-            w="100%"
-            color="dark"
-            label="Address line 1"
-            placeholder="Enter address line 1"
-            autoComplete="off"
-            // aria-describedby="address-line-1-note"
-            // aria-invalid={isValidAddressLine1 ? false : true}
-            value={addressLine1}
-            // icon={
-            //   isValidAddressLine1 ? (
-            //     <FontAwesomeIcon icon={faCheck} color="green" />
-            //   ) : null
-            // }
-            // error={!isValidAddressLine1 && addressLine1 !== ''}
-            // description={addressLine1InputValidationText}
+          {/* country */}
+          <NativeSelect
+            data={['Canada', 'United States']}
+            label="Country"
+            value={country}
             onChange={(event) => {
               registerDispatch({
-                type: registerAction.setAddressLine1,
+                type: registerAction.setCountry,
                 payload: event.currentTarget.value,
               });
             }}
-            minLength={2}
-            maxLength={30}
             withAsterisk
             required
           />
+
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Address line"
+            placeholder="Enter address line"
+            autoComplete="off"
+            aria-describedby="address-line-note"
+            aria-invalid={isValidAddressLine ? false : true}
+            value={addressLine}
+            icon={
+              isValidAddressLine ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidAddressLine && addressLine !== ''}
+            description={addressLineInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setAddressLine,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsAddressLineFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsAddressLineFocused,
+                payload: false,
+              });
+            }}
+            minLength={2}
+            maxLength={75}
+          />
+          <TextInput
+            w="100%"
+            color="dark"
+            label="City"
+            placeholder="Enter city"
+            autoComplete="off"
+            aria-describedby="city-note"
+            aria-invalid={isValidCity ? false : true}
+            value={city}
+            icon={
+              isValidCity ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidCity && city !== ''}
+            description={cityInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setCity,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsCityFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsCityFocused,
+                payload: false,
+              });
+            }}
+            minLength={2}
+            maxLength={75}
+          />
+          {/* province / state */}
+          {country === 'Canada' ? selectProvinceInput : selectStateInput}
 
           {/* stepper nav buttons */}
           <Group position="center" mt="xl">
