@@ -31,6 +31,8 @@ import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   NAME_REGEX,
+  POSTAL_CODE_REGEX_CANADA,
+  POSTAL_CODE_REGEX_US,
   PROVINCES,
   REGISTER_URL,
   STATES_US,
@@ -46,6 +48,7 @@ import {
   returnCityValidationText,
   returnNameValidationText,
   returnPasswordRegexValidationText,
+  returnPostalCodeValidationText,
 } from './utils';
 import { axiosInstance } from '../../api/axios';
 import { RegisterResponse } from './types';
@@ -122,7 +125,8 @@ function Register() {
     state,
     country,
     postalCode,
-    isValidPostalCode    , isPostalCodeFocused,
+    isValidPostalCode,
+    isPostalCodeFocused,
   } = address;
   const {
     contactNumber: emergencyContactNumber,
@@ -234,8 +238,32 @@ function Register() {
   }, [city]);
 
   // used to validate postal code on every change
-  
+  useEffect(() => {
+    const isValidPostal =
+      country === 'Canada'
+        ? POSTAL_CODE_REGEX_CANADA.test(postalCode)
+        : POSTAL_CODE_REGEX_US.test(postalCode);
 
+    if (country === 'Canada') {
+      const postalCodeLength = postalCode.length;
+      if (postalCodeLength === 3) {
+        registerDispatch({
+          type: registerAction.setPostalCode,
+          payload: `${postalCode} `,
+        });
+      } else if (postalCodeLength === 7) {
+        registerDispatch({
+          type: registerAction.setPostalCode,
+          payload: postalCode.trim(),
+        });
+      }
+    }
+
+    registerDispatch({
+      type: registerAction.setIsValidPostalCode,
+      payload: isValidPostal,
+    });
+  }, [postalCode, country]);
 
   // removes error message after every change in email, username, password, confirm password, (first, middle, last)Name, preferredName, addressLine, city
   useEffect(() => {
@@ -428,6 +456,25 @@ function Register() {
     </Text>
   );
 
+  const postalCodeInputValidationText = (
+    <Text
+      id="postal-code-note"
+      className={
+        isPostalCodeFocused && postalCode && !isValidPostalCode
+          ? ''
+          : 'offscreen'
+      }
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnPostalCodeValidationText({
+        postalCode,
+        country,
+      })}
+    </Text>
+  );
+
   async function handleRegisterFormSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
@@ -556,7 +603,45 @@ function Register() {
     />
   );
 
-  const selectCanadianPostalCodeInput = ()
+  const selectCanadianPostalCodeInput = (
+    <TextInput
+      w="100%"
+      color="dark"
+      label="Postal code"
+      placeholder="Enter Canadian postal code"
+      autoComplete="off"
+      aria-describedby="postal-code-note"
+      aria-invalid={isValidPostalCode ? false : true}
+      icon={
+        isValidPostalCode ? (
+          <FontAwesomeIcon icon={faCheck} color="green" />
+        ) : null
+      }
+      value={postalCode}
+      error={!isValidPostalCode && postalCode !== ''}
+      description={postalCodeInputValidationText}
+      onChange={(event) => {
+        registerDispatch({
+          type: registerAction.setPostalCode,
+          payload: event.currentTarget.value.toUpperCase(),
+        });
+      }}
+      onFocus={() => {
+        registerDispatch({
+          type: registerAction.setIsPostalCodeFocused,
+          payload: true,
+        });
+      }}
+      onBlur={() => {
+        registerDispatch({
+          type: registerAction.setIsPostalCodeFocused,
+          payload: false,
+        });
+      }}
+      withAsterisk
+      required
+    />
+  );
 
   const { buttonTextColor } = COLORS;
 
@@ -1007,6 +1092,9 @@ function Register() {
           />
           {/* province / state */}
           {country === 'Canada' ? selectProvinceInput : selectStateInput}
+
+          {/* postal code */}
+          {selectCanadianPostalCodeInput}
 
           {/* stepper nav buttons */}
           <Group position="center" mt="xl">

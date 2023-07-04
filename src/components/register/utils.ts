@@ -1,3 +1,5 @@
+import { Country, PostalCode } from '../../types';
+
 function returnPasswordRegexValidationText(password: string) {
   const passwordLengthRegex = /^(?=.{8,32}$)/;
   const passwordUppercaseRegex = /^(?=.*[A-Z])/;
@@ -112,9 +114,37 @@ function returnCityValidationText(city: string) {
   return cityRegexValidationText;
 }
 
+type ReturnPostalCodeValidationTextInput = {
+  postalCode: PostalCode;
+  country: Country;
+};
+
+function returnPostalCodeValidationText({
+  postalCode,
+  country,
+}: ReturnPostalCodeValidationTextInput) {
+  if (country === 'United States') {
+    const postalCodeRegex = /^\d{5}(?:[-\s]\d{4})?$/;
+    const isValidRegex = postalCodeRegex.test(postalCode);
+    if (!isValidRegex) {
+      return 'Must be a valid US postal code.';
+    }
+  }
+
+  // canada
+  const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/i;
+  const isValidRegex = postalCodeRegex.test(postalCode);
+  if (!isValidRegex) {
+    return 'Must be a valid Canadian postal code.';
+  }
+
+  return '';
+}
+
 export {
   returnPasswordRegexValidationText,
   returnNameValidationText,
   returnAddressLineValidationText,
   returnCityValidationText,
+  returnPostalCodeValidationText,
 };
