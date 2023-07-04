@@ -4,6 +4,7 @@ import {
   faCheck,
   faInfoCircle,
   faWrench,
+  faX,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -236,6 +237,22 @@ function Register() {
       payload: isValidPlace,
     });
   }, [city]);
+
+  // resets address if country is changed
+  useEffect(() => {
+    registerDispatch({
+      type: registerAction.setAddressLine,
+      payload: '',
+    });
+    registerDispatch({
+      type: registerAction.setCity,
+      payload: '',
+    });
+    registerDispatch({
+      type: registerAction.setPostalCode,
+      payload: '',
+    });
+  }, [country]);
 
   // used to validate postal code on every change
   useEffect(() => {
@@ -624,6 +641,46 @@ function Register() {
         registerDispatch({
           type: registerAction.setPostalCode,
           payload: event.currentTarget.value.toUpperCase(),
+        });
+      }}
+      onFocus={() => {
+        registerDispatch({
+          type: registerAction.setIsPostalCodeFocused,
+          payload: true,
+        });
+      }}
+      onBlur={() => {
+        registerDispatch({
+          type: registerAction.setIsPostalCodeFocused,
+          payload: false,
+        });
+      }}
+      withAsterisk
+      required
+    />
+  );
+
+  const selectUSPostalCodeInput = (
+    <TextInput
+      w="100%"
+      color="dark"
+      label="Postal code"
+      placeholder="Enter US postal code"
+      autoComplete="off"
+      aria-describedby="postal-code-note"
+      aria-invalid={isValidPostalCode ? false : true}
+      icon={
+        isValidPostalCode ? (
+          <FontAwesomeIcon icon={faCheck} color="green" />
+        ) : null
+      }
+      value={postalCode}
+      error={!isValidPostalCode && postalCode !== ''}
+      description={postalCodeInputValidationText}
+      onChange={(event) => {
+        registerDispatch({
+          type: registerAction.setPostalCode,
+          payload: event.currentTarget.value,
         });
       }}
       onFocus={() => {
@@ -1094,7 +1151,9 @@ function Register() {
           {country === 'Canada' ? selectProvinceInput : selectStateInput}
 
           {/* postal code */}
-          {selectCanadianPostalCodeInput}
+          {country === 'Canada'
+            ? selectCanadianPostalCodeInput
+            : selectUSPostalCodeInput}
 
           {/* stepper nav buttons */}
           <Group position="center" mt="xl">
