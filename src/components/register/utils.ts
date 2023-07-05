@@ -38,7 +38,7 @@ function returnPasswordRegexValidationText(password: string) {
 
 function returnNameValidationText(name: string) {
   const nameLengthRegex = /^(?=.{2,30}$)/;
-  const nameCharacterRegex = /^[a-zA-Z]+$/;
+  const nameCharacterRegex = /^[a-zA-Z\s.\-']+$/;
 
   const nameRegexTuple: [number, boolean][] = [
     [0, nameLengthRegex.test(name)],
@@ -47,7 +47,10 @@ function returnNameValidationText(name: string) {
 
   const nameValidationTextMap = new Map<number, string>([
     [0, 'Must be between 2 and 30 characters.'],
-    [1, 'Can only contain alphabetical characters.'],
+    [
+      1,
+      'Can only contain alphabetical characters, spaces, periods, hyphens, or apostrophes.',
+    ],
   ]);
 
   const nameRegexValidationText: string = nameRegexTuple
@@ -58,6 +61,33 @@ function returnNameValidationText(name: string) {
     .join(' ');
 
   return nameRegexValidationText;
+}
+
+function returnFullNameValidationText(fullName: string) {
+  const fullNameLengthRegex = /^(?=.{2,100}$)/;
+  const fullNameCharacterRegex = /^[A-Za-z\s.\-']+$/;
+
+  const fullNameRegexTuple: [number, boolean][] = [
+    [0, fullNameLengthRegex.test(fullName)],
+    [1, fullNameCharacterRegex.test(fullName)],
+  ];
+
+  const fullNameValidationTextMap = new Map<number, string>([
+    [0, 'Must be between 2 and 100 characters.'],
+    [
+      1,
+      'Can only contain alphabetical characters, spaces, periods, hyphens, or apostrophes.',
+    ],
+  ]);
+
+  const fullNameRegexValidationText: string = fullNameRegexTuple
+    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
+    .map(([position, _]: [number, boolean]) =>
+      fullNameValidationTextMap.get(position)
+    )
+    .join(' ');
+
+  return fullNameRegexValidationText;
 }
 
 function returnAddressLineValidationText(addressLine: string) {
@@ -157,4 +187,5 @@ export {
   returnCityValidationText,
   returnPostalCodeValidationText,
   returnPhoneNumberInputValidationText,
+  returnFullNameValidationText,
 };

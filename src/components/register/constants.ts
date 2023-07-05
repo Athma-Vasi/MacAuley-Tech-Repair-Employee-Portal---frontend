@@ -1,11 +1,20 @@
 const REGISTER_URL = '/users';
 
 /**
- * - [A-Za-z]{2,30} matches any letter, ensuring that the text is between 2 and 30 characters long.
+ * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
+ * - {2,30} ensures that the text is between 2 and 30 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
  * - i makes the regex case-insensitive.
  */
-const NAME_REGEX = /^[A-Za-z]{2,30}$/i;
+const NAME_REGEX = /^[A-Za-z\s.\-']{2,30}$/i;
+
+/**
+ * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
+ * - {2,30} ensures that the text is between 2 and 30 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const FULL_NAME_REGEX = /^[A-Za-z\s.\-']{2,100}$/i;
 
 /**
  * - \+\(1\) matches "+(1)".
@@ -130,6 +139,7 @@ const DEPARTMENTS = [
 export {
   REGISTER_URL,
   NAME_REGEX,
+  FULL_NAME_REGEX,
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   PHONE_NUMBER_REGEX,
