@@ -52,7 +52,11 @@ function RegisterStepAdditional({
       type: registerAction.setIsValidEmergencyContactFullName,
       payload: isValidEmergencyName,
     });
-  }, [fullName]);
+  }, [
+    fullName,
+    registerAction.setIsValidEmergencyContactFullName,
+    registerDispatch,
+  ]);
 
   // used to validate emergency contact phone number on every change
   useEffect(() => {
@@ -234,12 +238,7 @@ function RegisterStepAdditional({
         value={phoneNumber}
         onKeyDown={(event) => {
           if (event.key === 'Backspace') {
-            if (phoneNumber.length === 14) {
-              registerDispatch({
-                type: registerAction.setEmergencyContactPhoneNumber,
-                payload: phoneNumber.slice(0, -1),
-              });
-            } else if (phoneNumber.length === 9) {
+            if (phoneNumber.length === 9 || phoneNumber.length === 14) {
               registerDispatch({
                 type: registerAction.setEmergencyContactPhoneNumber,
                 payload: phoneNumber.slice(0, -1),

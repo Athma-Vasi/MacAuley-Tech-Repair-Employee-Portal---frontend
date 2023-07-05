@@ -4,26 +4,19 @@ function returnEmailRegexValidationText(email: string) {
   const subdomainPartRegex =
     /^\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
 
-  const emailRegexTuple: [number, boolean][] = [
-    [0, usernamePartRegex.test(email)],
-    [1, domainPartRegex.test(email)],
-    [2, subdomainPartRegex.test(email)],
+  const emailRegexTupleArr: [boolean, string][] = [
+    [usernamePartRegex.test(email), 'Must contain a valid username part.'],
+    [domainPartRegex.test(email), 'Must contain a valid domain part.'],
+    [
+      subdomainPartRegex.test(email),
+      'Must contain a valid (optional) subdomain part.',
+    ],
   ];
 
-  const emailValidationTextMap = new Map<number, string>([
-    [0, 'Must contain a valid username part.'],
-    [1, 'Must contain a valid domain part.'],
-    [2, 'Must contain a valid (optional) subdomain part.'],
-  ]);
-
-  const emailRegexValidationText = emailRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      emailValidationTextMap.get(position)
-    )
+  return emailRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return emailRegexValidationText;
 }
 
 function returnUsernameRegexValidationText(username: string) {
@@ -33,33 +26,33 @@ function returnUsernameRegexValidationText(username: string) {
   const usernameCharacterRegex = /^[a-zA-Z0-9-_.]+$/;
   const usernameEndRegex = /(?<![-_.])$/;
 
-  const usernameRegexTuple: [number, boolean][] = [
-    [0, usernameLengthRegex.test(username)],
-    [1, usernameStartRegex.test(username)],
-    [2, usernameConsecutiveRegex.test(username)],
-    [3, usernameCharacterRegex.test(username)],
-    [4, usernameEndRegex.test(username)],
-  ];
-
-  const usernameValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 3 and 20 characters.'],
-    [1, 'Cannot start with a hyphen, underscore, or period.'],
-    [2, 'Cannot contain two hyphens, underscores, or periods in a row.'],
+  const usernameRegexTupleArr: [boolean, string][] = [
     [
-      3,
+      usernameLengthRegex.test(username),
+      'Must be between 3 and 20 characters.',
+    ],
+    [
+      usernameStartRegex.test(username),
+      'Cannot start with a hyphen, underscore, or period.',
+    ],
+    [
+      usernameConsecutiveRegex.test(username),
+      'Cannot contain two hyphens, underscores, or periods in a row.',
+    ],
+    [
+      usernameCharacterRegex.test(username),
       'Can only contain alphanumeric characters, hyphens, underscores, or periods.',
     ],
-    [4, 'Cannot end with a hyphen, underscore, or period.'],
-  ]);
+    [
+      usernameEndRegex.test(username),
+      'Cannot end with a hyphen, underscore, or period.',
+    ],
+  ];
 
-  const usernameRegexValidationText: string = usernameRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      usernameValidationTextMap.get(position)
-    )
+  return usernameRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return usernameRegexValidationText;
 }
 
 function returnNoteTitleValidationText(title: string) {
@@ -68,26 +61,22 @@ function returnNoteTitleValidationText(title: string) {
     /^[A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$/;
   const titleLengthRegex = /^(?=.{1,100}$)/;
 
-  const titleRegexTuple: [number, boolean][] = [
-    [0, atleastOneAlphanumericRegex.test(title)],
-    [1, alphanumericOrSpecialCharacterRegex.test(title)],
-    [2, titleLengthRegex.test(title)],
+  const titleRegexTupleArr: [boolean, string][] = [
+    [
+      atleastOneAlphanumericRegex.test(title),
+      'Must contain at least one alphanumeric character.',
+    ],
+    [
+      alphanumericOrSpecialCharacterRegex.test(title),
+      'Can only contain alphanumeric characters or special characters.',
+    ],
+    [titleLengthRegex.test(title), 'Must be between 1 and 100 characters.'],
   ];
 
-  const titleRegexValidationMap = new Map<number, string>([
-    [0, 'Must contain at least one alphanumeric character.'],
-    [1, 'Can only contain alphanumeric characters or special characters.'],
-    [2, 'Must be between 1 and 100 characters.'],
-  ]);
-
-  const titleRegexValidationText: string = titleRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      titleRegexValidationMap.get(position)
-    )
+  return titleRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return titleRegexValidationText;
 }
 
 function returnNoteContentValidationText(content: string) {
@@ -95,29 +84,25 @@ function returnNoteContentValidationText(content: string) {
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
   const contentLengthRegex = /^(?=.{1,1000}$)/;
 
-  const contentRegexTuple: [number, boolean][] = [
-    [0, atleastOneAlphanumericRegex.test(content)],
-    [1, wordCharacterWhitespacePunctuationRegex.test(content)],
-    [2, contentLengthRegex.test(content)],
-  ];
-
-  const contentRegexValidationMap = new Map<number, string>([
-    [0, 'Must contain at least one alphanumeric character.'],
+  const contentRegexTupleArr: [boolean, string][] = [
     [
-      1,
+      atleastOneAlphanumericRegex.test(content),
+      'Must contain at least one alphanumeric character.',
+    ],
+    [
+      wordCharacterWhitespacePunctuationRegex.test(content),
       'Can only contain alphanumeric characters, whitespace, or punctuation.',
     ],
-    [2, 'Must be between 1 and 1000 characters.'],
-  ]);
+    [
+      contentLengthRegex.test(content),
+      'Must be between 1 and 1000 characters.',
+    ],
+  ];
 
-  const contentRegexValidationText: string = contentRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      contentRegexValidationMap.get(position)
-    )
+  return contentRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return contentRegexValidationText;
 }
 
 type FormatDateProps = {

@@ -209,39 +209,38 @@ function RegisterStepAddress({
     </Text>
   );
 
-  const selectProvinceInput = (
-    <NativeSelect
-      data={PROVINCES}
-      label="Select your province"
-      // description="Select your province"
-      value={province}
-      onChange={(event) => {
-        registerDispatch({
-          type: registerAction.setProvince,
-          payload: event.currentTarget.value,
-        });
-      }}
-      required
-      withAsterisk
-    />
-  );
-
-  const selectStateInput = (
-    <NativeSelect
-      data={STATES_US}
-      // description="Select your state"
-      label="Select your state"
-      value={state}
-      onChange={(event) => {
-        registerDispatch({
-          type: registerAction.setState,
-          payload: event.currentTarget.value,
-        });
-      }}
-      required
-      withAsterisk
-    />
-  );
+  const displayProvinceOrStateInput =
+    country === 'Canada' ? (
+      <NativeSelect
+        data={PROVINCES}
+        label="Select your province"
+        // description="Select your province"
+        value={province}
+        onChange={(event) => {
+          registerDispatch({
+            type: registerAction.setProvince,
+            payload: event.currentTarget.value,
+          });
+        }}
+        required
+        withAsterisk
+      />
+    ) : (
+      <NativeSelect
+        data={STATES_US}
+        // description="Select your state"
+        label="Select your state"
+        value={state}
+        onChange={(event) => {
+          registerDispatch({
+            type: registerAction.setState,
+            payload: event.currentTarget.value,
+          });
+        }}
+        required
+        withAsterisk
+      />
+    );
 
   const selectCanadianPostalCodeInput = (
     <TextInput
@@ -511,7 +510,7 @@ function RegisterStepAddress({
         maxLength={75}
       />
       {/* province / state */}
-      {country === 'Canada' ? selectProvinceInput : selectStateInput}
+      {displayProvinceOrStateInput}
 
       {/* postal code */}
       {country === 'Canada'

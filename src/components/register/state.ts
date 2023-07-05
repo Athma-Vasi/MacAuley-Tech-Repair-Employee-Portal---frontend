@@ -80,7 +80,7 @@ const initialRegisterState: RegisterState = {
   isValidStartDate: false,
   isStartDateFocused: false,
 
-  currentStepperPosition: 1,
+  currentStepperPosition: 0,
   isError: false,
   errorMessage: '',
   isSubmitting: false,

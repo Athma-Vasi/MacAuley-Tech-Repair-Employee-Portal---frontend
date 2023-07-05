@@ -1,4 +1,4 @@
-import { Country, PhoneNumber, PostalCode } from '../../types';
+import { Country, PostalCode } from '../../types';
 
 function returnPasswordRegexValidationText(password: string) {
   const passwordLengthRegex = /^(?=.{8,32}$)/;
@@ -8,140 +8,109 @@ function returnPasswordRegexValidationText(password: string) {
   const passwordSpecialCharacterRegex = /^(?=.*[!@#$%^&*])/;
   const passwordSpaceRegex = /^(?!.*\s)/;
 
-  const passwordRegexTuple: [number, boolean][] = [
-    [0, passwordLengthRegex.test(password)],
-    [1, passwordUppercaseRegex.test(password)],
-    [2, passwordLowercaseRegex.test(password)],
-    [3, passwordNumberRegex.test(password)],
-    [4, passwordSpecialCharacterRegex.test(password)],
-    [5, passwordSpaceRegex.test(password)],
+  const passwordRegexTupleArr: [boolean, string][] = [
+    [
+      passwordLengthRegex.test(password),
+      'Must be between 8 and 32 characters.',
+    ],
+    [
+      passwordUppercaseRegex.test(password),
+      'Must contain at least one uppercase letter.',
+    ],
+    [
+      passwordLowercaseRegex.test(password),
+      'Must contain at least one lowercase letter.',
+    ],
+    [passwordNumberRegex.test(password), 'Must contain at least one number.'],
+    [
+      passwordSpecialCharacterRegex.test(password),
+      'Must contain at least one special character.',
+    ],
+    [passwordSpaceRegex.test(password), 'Cannot contain spaces.'],
   ];
 
-  const passwordValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 8 and 32 characters.'],
-    [1, 'Must contain at least one uppercase letter.'],
-    [2, 'Must contain at least one lowercase letter.'],
-    [3, 'Must contain at least one number.'],
-    [4, 'Must contain at least one special character.'],
-    [5, 'Cannot contain spaces.'],
-  ]);
-
-  const passwordRegexValidationText: string = passwordRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      passwordValidationTextMap.get(position)
-    )
+  return passwordRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return passwordRegexValidationText;
 }
 
 function returnNameValidationText(name: string) {
   const nameLengthRegex = /^(?=.{2,30}$)/;
   const nameCharacterRegex = /^[a-zA-Z\s.\-']+$/;
 
-  const nameRegexTuple: [number, boolean][] = [
-    [0, nameLengthRegex.test(name)],
-    [1, nameCharacterRegex.test(name)],
-  ];
-
-  const nameValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 2 and 30 characters.'],
+  const nameRegexTupleArr: [boolean, string][] = [
+    [nameLengthRegex.test(name), 'Must be between 2 and 30 characters.'],
     [
-      1,
+      nameCharacterRegex.test(name),
       'Can only contain alphabetical characters, spaces, periods, hyphens, or apostrophes.',
     ],
-  ]);
+  ];
 
-  const nameRegexValidationText: string = nameRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      nameValidationTextMap.get(position)
-    )
+  return nameRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return nameRegexValidationText;
 }
 
 function returnFullNameValidationText(fullName: string) {
   const fullNameLengthRegex = /^(?=.{2,100}$)/;
   const fullNameCharacterRegex = /^[A-Za-z\s.\-']+$/;
 
-  const fullNameRegexTuple: [number, boolean][] = [
-    [0, fullNameLengthRegex.test(fullName)],
-    [1, fullNameCharacterRegex.test(fullName)],
-  ];
-
-  const fullNameValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 2 and 100 characters.'],
+  const fullNameRegexTupleArr: [boolean, string][] = [
     [
-      1,
+      fullNameLengthRegex.test(fullName),
+      'Must be between 2 and 100 characters.',
+    ],
+    [
+      fullNameCharacterRegex.test(fullName),
       'Can only contain alphabetical characters, spaces, periods, hyphens, or apostrophes.',
     ],
-  ]);
+  ];
 
-  const fullNameRegexValidationText: string = fullNameRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      fullNameValidationTextMap.get(position)
-    )
+  return fullNameRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return fullNameRegexValidationText;
 }
 
 function returnAddressLineValidationText(addressLine: string) {
   const addressLineLengthRegex = /^(?=.{2,75}$)/;
   const addressLineCharacterRegex = /^[A-Za-z0-9\s.,#-]+$/;
 
-  const addressLineRegexTuple: [number, boolean][] = [
-    [0, addressLineLengthRegex.test(addressLine)],
-    [1, addressLineCharacterRegex.test(addressLine)],
-  ];
-
-  const addressLineValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 2 and 75 characters.'],
+  const addressLineRegexTupleArr: [boolean, string][] = [
     [
-      1,
+      addressLineLengthRegex.test(addressLine),
+      'Must be between 2 and 75 characters.',
+    ],
+    [
+      addressLineCharacterRegex.test(addressLine),
       'Can only contain alphanumeric characters, spaces, periods, commas, hyphens, or pound signs.',
     ],
-  ]);
+  ];
 
-  const addressLineRegexValidationText: string = addressLineRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      addressLineValidationTextMap.get(position)
-    )
+  return addressLineRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return addressLineRegexValidationText;
 }
 
 function returnCityValidationText(city: string) {
   const cityLengthRegex = /^(?=.{2,75}$)/;
   const cityCharacterRegex = /^[A-Za-z\s.\-']+$/;
 
-  const cityRegexTuple: [number, boolean][] = [
-    [0, cityLengthRegex.test(city)],
-    [1, cityCharacterRegex.test(city)],
-  ];
-
-  const cityValidationTextMap = new Map<number, string>([
-    [0, 'Must be between 2 and 75 characters.'],
+  const cityRegexTupleArr: [boolean, string][] = [
+    [cityLengthRegex.test(city), 'Must be between 2 and 75 characters.'],
     [
-      1,
+      cityCharacterRegex.test(city),
       'Can only contain alphabetical characters, spaces, periods, or hyphens.',
     ],
-  ]);
+  ];
 
-  const cityRegexValidationText: string = cityRegexTuple
-    .filter(([_, isValidRegex]: [number, boolean]) => !isValidRegex)
-    .map(([position, _]: [number, boolean]) =>
-      cityValidationTextMap.get(position)
-    )
+  return cityRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return cityRegexValidationText;
 }
 
 function returnPhoneNumberInputValidationText(phoneNumber: string) {
@@ -166,18 +135,32 @@ function returnPostalCodeValidationText({
     const postalCodeRegex = /^\d{5}(?:[-]\d{4})?$/;
     const isValidRegex = postalCodeRegex.test(postalCode);
     if (!isValidRegex) {
-      return 'Must be a valid US postal code. Only numbers and hyphens are allowed.';
+      return 'Must be a valid US postal code of either five digits or the ZIP+4 format with five digits, a hyphen, and four additional digits. Only numbers and hyphens are allowed.';
     }
   }
 
   // canada
-  const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
-  const isValidRegex = postalCodeRegex.test(postalCode);
-  if (!isValidRegex) {
-    return 'Must be a valid Canadian postal code. Only letters, numbers, and spaces are allowed.';
-  }
+  const firstPartRegex = /^[A-Za-z]\d[A-Za-z]$/i;
+  const secondPartRegex = /^[ ]?\d[A-Za-z]\d$/i;
 
-  return '';
+  const firstPart = postalCode.split(' ')[0];
+  const secondPart = postalCode.split(' ')[1];
+
+  const canadianPostalCodeTupleArr: [boolean, string][] = [
+    [
+      firstPartRegex.test(firstPart),
+      'Forward Sortation Area must consist of a letter, digit, letter.',
+    ],
+    [
+      secondPartRegex.test(secondPart),
+      'Local Delivery Unit must consist of a digit, letter, digit.',
+    ],
+  ];
+
+  return canadianPostalCodeTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
 }
 
 function returnDateValidationText(date: string) {
@@ -201,12 +184,10 @@ function returnDateValidationText(date: string) {
     ],
   ];
 
-  const dateRegexValidationText: string = dateValidationTupleArr
+  return dateValidationTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
-
-  return dateRegexValidationText;
 }
 
 export {

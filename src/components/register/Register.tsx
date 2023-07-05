@@ -1,29 +1,6 @@
 import { useEffect, useRef, useReducer } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  faCheck,
-  faInfoCircle,
-  faRefresh,
-  faWrench,
-  faX,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Alert,
-  Button,
-  Center,
-  Flex,
-  Group,
-  Input,
-  Loader,
-  NativeSelect,
-  PasswordInput,
-  Stepper,
-  Text,
-  TextInput,
-  Title,
-  Tooltip,
-} from '@mantine/core';
+import { Button, Flex, Group, Text, Title } from '@mantine/core';
 
 import {
   COLORS,
@@ -31,40 +8,11 @@ import {
   PASSWORD_REGEX,
   USERNAME_REGEX,
 } from '../../constants';
-import {
-  ADDRESS_LINE_REGEX,
-  CITY_REGEX,
-  DATE_REGEX,
-  DEPARTMENTS,
-  FULL_NAME_REGEX,
-  JOB_POSITIONS,
-  NAME_REGEX,
-  PHONE_NUMBER_REGEX,
-  POSTAL_CODE_REGEX_CANADA,
-  POSTAL_CODE_REGEX_US,
-  PROVINCES,
-  REGISTER_URL,
-  STATES_US,
-} from './constants';
+import { CITY_REGEX, NAME_REGEX, REGISTER_URL } from './constants';
 import { initialRegisterState, registerAction, registerReducer } from './state';
 import '../../index.css';
-import {
-  returnEmailRegexValidationText,
-  returnUsernameRegexValidationText,
-} from '../../utils';
-import {
-  returnAddressLineValidationText,
-  returnCityValidationText,
-  returnDateValidationText,
-  returnFullNameValidationText,
-  returnNameValidationText,
-  returnPasswordRegexValidationText,
-  returnPhoneNumberInputValidationText,
-  returnPostalCodeValidationText,
-} from './utils';
 import { axiosInstance } from '../../api/axios';
 import { RegisterResponse } from './types';
-import { screenReaderPasswordSpecialCharacters } from '../../domElements';
 import { Loading } from '../loading';
 import { CustomError } from '../customError';
 import { Success } from '../success';
@@ -159,7 +107,6 @@ function Register() {
     isPhoneNumberFocused,
   } = emergencyContact;
 
-  const emailRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLDivElement>(null);
 
   // removes error message after every change in values of input fields in dependency array
@@ -177,10 +124,10 @@ function Register() {
     middleName,
     lastName,
     preferredName,
+    contactNumber,
     addressLine,
     city,
     postalCode,
-    contactNumber,
     fullName,
     phoneNumber,
     startDate,
@@ -307,7 +254,7 @@ function Register() {
   }
 
   const displayAuthenticationStep =
-    currentStepperPosition === 1 ? (
+    currentStepperPosition === 0 ? (
       <RegisterStepAuthentication
         email={email}
         isValidEmail={isValidEmail}
@@ -327,7 +274,7 @@ function Register() {
     ) : null;
 
   const displayPersonalStep =
-    currentStepperPosition === 2 ? (
+    currentStepperPosition === 1 ? (
       <RegisterStepPersonal
         firstName={firstName}
         isValidFirstName={isValidFirstName}
@@ -348,7 +295,7 @@ function Register() {
     ) : null;
 
   const displayAddressStep =
-    currentStepperPosition === 3 ? (
+    currentStepperPosition === 2 ? (
       <RegisterStepAddress
         contactNumber={contactNumber}
         isValidContactNumber={isValidContactNumber}
@@ -371,7 +318,7 @@ function Register() {
     ) : null;
 
   const displayAdditionalStep =
-    currentStepperPosition === 4 ? (
+    currentStepperPosition === 3 ? (
       <RegisterStepAdditional
         jobPosition={jobPosition}
         department={department}
@@ -420,7 +367,7 @@ function Register() {
           >
             Register
           </Title>
-          {/* first step authentication */}
+          {/* first step */}
           {displayAuthenticationStep}
 
           {/* second step */}
@@ -436,7 +383,7 @@ function Register() {
           <Group position="center" mt="xl">
             <Button
               variant="default"
-              disabled={currentStepperPosition === 1}
+              disabled={currentStepperPosition === 0}
               onClick={() => {
                 const currentStep = currentStepperPosition;
                 registerDispatch({
@@ -448,12 +395,12 @@ function Register() {
               Back
             </Button>
             <Button
-              disabled={currentStepperPosition === 5}
+              disabled={currentStepperPosition === 4}
               onClick={() => {
                 const currentStep = currentStepperPosition;
                 registerDispatch({
                   type: registerAction.setCurrentStepperPosition,
-                  payload: currentStep < 5 ? currentStep + 1 : currentStep - 1,
+                  payload: currentStep < 4 ? currentStep + 1 : currentStep - 1,
                 });
               }}
             >
