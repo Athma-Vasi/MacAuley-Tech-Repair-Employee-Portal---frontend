@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   faCheck,
   faInfoCircle,
+  faRefresh,
   faWrench,
   faX,
 } from '@fortawesome/free-solid-svg-icons';
@@ -20,6 +21,7 @@ import {
   Text,
   TextInput,
   Title,
+  Tooltip,
 } from '@mantine/core';
 
 import {
@@ -728,6 +730,21 @@ function Register() {
           <FontAwesomeIcon icon={faCheck} color="green" />
         ) : null
       }
+      rightSection={
+        <Tooltip label="Reset value to empty">
+          <FontAwesomeIcon
+            icon={faRefresh}
+            cursor="pointer"
+            color="gray"
+            onClick={() => {
+              registerDispatch({
+                type: registerAction.setPostalCode,
+                payload: '',
+              });
+            }}
+          />
+        </Tooltip>
+      }
       value={postalCode}
       error={!isValidPostalCode && postalCode !== ''}
       description={postalCodeInputValidationText}
@@ -751,6 +768,7 @@ function Register() {
       }}
       withAsterisk
       required
+      maxLength={7}
     />
   );
 
@@ -767,6 +785,21 @@ function Register() {
         isValidPostalCode ? (
           <FontAwesomeIcon icon={faCheck} color="green" />
         ) : null
+      }
+      rightSection={
+        <Tooltip label="Reset value to empty">
+          <FontAwesomeIcon
+            icon={faRefresh}
+            cursor="pointer"
+            color="gray"
+            onClick={() => {
+              registerDispatch({
+                type: registerAction.setPostalCode,
+                payload: '',
+              });
+            }}
+          />
+        </Tooltip>
       }
       value={postalCode}
       error={!isValidPostalCode && postalCode !== ''}
@@ -791,6 +824,8 @@ function Register() {
       }}
       withAsterisk
       required
+      minLength={5}
+      maxLength={10}
     />
   );
 
@@ -1162,6 +1197,21 @@ function Register() {
             aria-describedby="contact-number-note"
             aria-invalid={isValidContactNumber ? false : true}
             value={contactNumber}
+            rightSection={
+              <Tooltip label="Reset value to +(1)">
+                <FontAwesomeIcon
+                  icon={faRefresh}
+                  cursor="pointer"
+                  color="gray"
+                  onClick={() => {
+                    registerDispatch({
+                      type: registerAction.setContactNumber,
+                      payload: '+(1)',
+                    });
+                  }}
+                />
+              </Tooltip>
+            }
             icon={
               isValidContactNumber ? (
                 <FontAwesomeIcon icon={faCheck} color="green" />

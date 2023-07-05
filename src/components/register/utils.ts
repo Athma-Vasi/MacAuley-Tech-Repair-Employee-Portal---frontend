@@ -118,7 +118,7 @@ function returnPhoneNumberInputValidationText(phoneNumber: string) {
   const phoneNumberRegex = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
   const isValidRegex = phoneNumberRegex.test(phoneNumber);
   if (!isValidRegex) {
-    return 'Must be a valid North American phone number.';
+    return "Must be a valid North American phone number. Only numbers, parentheses, spaces, '+' and hyphens are allowed.";
   }
   return '';
 }
@@ -133,18 +133,18 @@ function returnPostalCodeValidationText({
   country,
 }: ReturnPostalCodeValidationTextInput) {
   if (country === 'United States') {
-    const postalCodeRegex = /^\d{5}(?:[-\s]\d{4})?$/;
+    const postalCodeRegex = /^\d{5}(?:[-]\d{4})?$/;
     const isValidRegex = postalCodeRegex.test(postalCode);
     if (!isValidRegex) {
-      return 'Must be a valid US postal code.';
+      return 'Must be a valid US postal code. Only numbers and hyphens are allowed.';
     }
   }
 
   // canada
-  const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/i;
+  const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
   const isValidRegex = postalCodeRegex.test(postalCode);
   if (!isValidRegex) {
-    return 'Must be a valid Canadian postal code.';
+    return 'Must be a valid Canadian postal code. Only letters, numbers, and spaces are allowed.';
   }
 
   return '';
