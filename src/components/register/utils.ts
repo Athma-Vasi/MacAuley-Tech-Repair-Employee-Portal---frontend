@@ -157,8 +157,9 @@ function returnPhoneNumberInputValidationText(phoneNumber: string): string {
   const phoneNumberRegex = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
   const isValidRegex = phoneNumberRegex.test(phoneNumber);
   if (!isValidRegex) {
-    return "Must be a valid North American phone number of format +(1)(234) 567-8901. Only numbers, parentheses, spaces, '+' and hyphens are allowed.";
+    return "Invalid phone number. Must be a valid North American phone number of format +(1)(234) 567-8901. Only numbers, parentheses, spaces, '+' and hyphens are allowed.";
   }
+
   return '';
 }
 
@@ -175,8 +176,9 @@ function returnPostalCodeValidationText({
     const postalCodeRegex = /^\d{5}(?:[-]\d{4})?$/;
     const isValidRegex = postalCodeRegex.test(postalCode);
     if (!isValidRegex) {
-      return 'Must be a valid US postal code of either five digits or the ZIP+4 format with five digits, a hyphen, and four additional digits. Only numbers and hyphens are allowed.';
+      return 'Invalid zip code. Must be a valid US zip code of either five digits or the ZIP+4 format with five digits, a hyphen, and four additional digits. Only numbers and hyphens are allowed.';
     }
+    return '';
   }
 
   // canada

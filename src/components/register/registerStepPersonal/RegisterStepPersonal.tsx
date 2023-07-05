@@ -261,6 +261,7 @@ function RegisterStepPersonal({
       w="100%"
     >
       <TextInput
+        size="md"
         w="100%"
         color="dark"
         label="First name"
@@ -305,6 +306,7 @@ function RegisterStepPersonal({
         required
       />
       <TextInput
+        size="md"
         w="100%"
         color="dark"
         label="Middle name"
@@ -350,6 +352,7 @@ function RegisterStepPersonal({
         maxLength={30}
       />
       <TextInput
+        size="md"
         w="100%"
         color="dark"
         label="Last name"
@@ -394,6 +397,7 @@ function RegisterStepPersonal({
         required
       />
       <TextInput
+        size="md"
         w="100%"
         color="dark"
         label="Preferred name"
@@ -441,6 +445,7 @@ function RegisterStepPersonal({
 
       {/* profile pic */}
       <TextInput
+        size="md"
         w="100%"
         color="dark"
         label="Profile picture url"
@@ -485,6 +490,7 @@ function RegisterStepPersonal({
       />
 
       <NativeSelect
+        size="md"
         data={['Prefer not to say', 'He/Him', 'She/Her', 'They/Them', 'Other']}
         description="This is entirely optional."
         aria-describedby="Choose your preferred pronouns"

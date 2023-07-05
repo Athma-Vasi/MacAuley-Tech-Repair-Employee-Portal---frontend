@@ -1,5 +1,12 @@
 import { useRef, useEffect } from 'react';
-import { Flex, NativeSelect, Text, TextInput, Tooltip } from '@mantine/core';
+import {
+  Button,
+  Flex,
+  NativeSelect,
+  Text,
+  TextInput,
+  Tooltip,
+} from '@mantine/core';
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -42,8 +49,6 @@ function RegisterStepAddress({
   registerAction,
   registerDispatch,
 }: RegisterStepAddressProps) {
-  const errorRef = useRef<HTMLDivElement>(null);
-
   // used to validate address line on every change
   useEffect(() => {
     const isValidAddress = ADDRESS_LINE_REGEX.test(addressLine);
@@ -137,6 +142,14 @@ function RegisterStepAddress({
           payload: postalCode.trim(),
         });
       }
+    } else {
+      const postalCodeLength = postalCode.length;
+      if (postalCodeLength === 6) {
+        registerDispatch({
+          type: registerAction.setPostalCode,
+          payload: `${postalCode.slice(0, 5)}-${postalCode.slice(5)}`,
+        });
+      }
     }
 
     registerDispatch({
@@ -145,61 +158,116 @@ function RegisterStepAddress({
     });
   }, [postalCode, country]);
 
-  const contactNumberInputValidationText = (
+  const contactNumberInputErrorText = (
     <Text
-      id="contact-number-note"
-      className={
-        isContactNumberFocused &&
-        contactNumber !== '+(1)' &&
-        !isValidContactNumber
-          ? ''
-          : 'offscreen'
-      }
+      id="contact-number-note-error"
+      style={{
+        display:
+          isContactNumberFocused && contactNumber && !isValidContactNumber
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnPhoneNumberInputValidationText(contactNumber)}
     </Text>
   );
 
-  const addressLineInputValidationText = (
+  const contactNumberInputValidText = (
     <Text
-      id="address-line-note"
-      className={
-        isAddressLineFocused && addressLine && !isValidAddressLine
-          ? ''
-          : 'offscreen'
-      }
+      id="contact-number-note-valid"
+      style={{
+        display:
+          isContactNumberFocused && contactNumber && isValidContactNumber
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Phone number is valid
+    </Text>
+  );
+
+  const addressLineInputErrorText = (
+    <Text
+      id="address-line-note-error"
+      style={{
+        display:
+          isAddressLineFocused && addressLine && !isValidAddressLine
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnAddressLineValidationText(addressLine)}
     </Text>
   );
 
-  const cityInputValidationText = (
+  const addressLineInputValidText = (
     <Text
-      id="city-note"
-      className={isCityFocused && city && !isValidCity ? '' : 'offscreen'}
+      id="address-line-note-valid"
+      style={{
+        display:
+          isAddressLineFocused && addressLine && isValidAddressLine
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Address line is valid
+    </Text>
+  );
+
+  const cityInputErrorText = (
+    <Text
+      id="city-note-error"
+      style={{
+        display: isCityFocused && city && !isValidCity ? 'block' : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} /> {returnCityValidationText(city)}
     </Text>
   );
 
-  const postalCodeInputValidationText = (
+  const cityInputValidText = (
     <Text
-      id="postal-code-note"
-      className={
-        isPostalCodeFocused && postalCode && !isValidPostalCode
-          ? ''
-          : 'offscreen'
-      }
+      id="city-note-valid"
+      style={{
+        display: isCityFocused && city && isValidCity ? 'block' : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> City is valid
+    </Text>
+  );
+
+  const postalCodeInputErrorText = (
+    <Text
+      id="postal-code-note-error"
+      style={{
+        display:
+          isPostalCodeFocused && postalCode && !isValidPostalCode
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnPostalCodeValidationText({
@@ -209,9 +277,27 @@ function RegisterStepAddress({
     </Text>
   );
 
+  const postalCodeInputValidText = (
+    <Text
+      id="postal-code-note-valid"
+      style={{
+        display:
+          isPostalCodeFocused && postalCode && isValidPostalCode
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Postal code is valid
+    </Text>
+  );
+
   const displayProvinceOrStateInput =
     country === 'Canada' ? (
       <NativeSelect
+        size="md"
         data={PROVINCES}
         label="Select your province"
         // description="Select your province"
@@ -227,6 +313,7 @@ function RegisterStepAddress({
       />
     ) : (
       <NativeSelect
+        size="md"
         data={STATES_US}
         // description="Select your state"
         label="Select your state"
@@ -244,12 +331,16 @@ function RegisterStepAddress({
 
   const selectCanadianPostalCodeInput = (
     <TextInput
+      size="md"
       w="100%"
       color="dark"
       label="Postal code"
       placeholder="Enter Canadian postal code"
       autoComplete="off"
-      aria-describedby="postal-code-note"
+      aria-required
+      aria-describedby={
+        isValidPostalCode ? 'postal-code-note-valid' : 'postal-code-note-error'
+      }
       aria-invalid={isValidPostalCode ? false : true}
       icon={
         isValidPostalCode ? (
@@ -266,7 +357,9 @@ function RegisterStepAddress({
       }}
       value={postalCode}
       error={!isValidPostalCode && postalCode !== ''}
-      description={postalCodeInputValidationText}
+      description={
+        isValidPostalCode ? postalCodeInputValidText : postalCodeInputErrorText
+      }
       onChange={(event) => {
         registerDispatch({
           type: registerAction.setPostalCode,
@@ -293,36 +386,27 @@ function RegisterStepAddress({
 
   const selectUSPostalCodeInput = (
     <TextInput
+      size="md"
       w="100%"
       color="dark"
       label="Postal code"
       placeholder="Enter US postal code"
       autoComplete="off"
-      aria-describedby="postal-code-note"
+      aria-required
+      aria-describedby={
+        isValidPostalCode ? 'postal-code-note-valid' : 'postal-code-note-error'
+      }
       aria-invalid={isValidPostalCode ? false : true}
       icon={
         isValidPostalCode ? (
           <FontAwesomeIcon icon={faCheck} color="green" />
         ) : null
       }
-      rightSection={
-        <Tooltip label="Reset value to empty">
-          <FontAwesomeIcon
-            icon={faRefresh}
-            cursor="pointer"
-            color="gray"
-            onClick={() => {
-              registerDispatch({
-                type: registerAction.setPostalCode,
-                payload: '',
-              });
-            }}
-          />
-        </Tooltip>
-      }
       value={postalCode}
       error={!isValidPostalCode && postalCode !== ''}
-      description={postalCodeInputValidationText}
+      description={
+        isValidPostalCode ? postalCodeInputValidText : postalCodeInputErrorText
+      }
       onChange={(event) => {
         registerDispatch({
           type: registerAction.setPostalCode,
@@ -341,6 +425,14 @@ function RegisterStepAddress({
           payload: false,
         });
       }}
+      onKeyDown={(event) => {
+        if (event.key === 'Backspace' && postalCode.length === 7) {
+          registerDispatch({
+            type: registerAction.setPostalCode,
+            payload: postalCode.slice(0, 6),
+          });
+        }
+      }}
       withAsterisk
       required
       minLength={5}
@@ -357,13 +449,23 @@ function RegisterStepAddress({
       w="100%"
     >
       <TextInput
+        size="md"
         w="100%"
         color="dark"
         label="Personal contact number"
-        description={contactNumberInputValidationText}
+        aria-required
+        aria-describedby={
+          isValidContactNumber
+            ? 'contact-number-note-valid'
+            : 'contact-number-note-error'
+        }
+        description={
+          isValidContactNumber
+            ? contactNumberInputValidText
+            : contactNumberInputErrorText
+        }
         placeholder="Enter contact number"
         autoComplete="off"
-        aria-describedby="contact-number-note"
         aria-invalid={isValidContactNumber ? false : true}
         value={contactNumber}
         onKeyDown={(event) => {
@@ -383,17 +485,25 @@ function RegisterStepAddress({
         }}
         rightSection={
           <Tooltip label="Reset value to +(1)">
-            <FontAwesomeIcon
-              icon={faRefresh}
-              cursor="pointer"
-              color="gray"
-              onClick={() => {
-                registerDispatch({
-                  type: registerAction.setContactNumber,
-                  payload: '+(1)',
-                });
-              }}
-            />
+            <Button
+              type="button"
+              size="xs"
+              variant="white"
+              aria-label="Reset personal contact number value to +(1)"
+              mr="md"
+            >
+              <FontAwesomeIcon
+                icon={faRefresh}
+                cursor="pointer"
+                color="gray"
+                onClick={() => {
+                  registerDispatch({
+                    type: registerAction.setContactNumber,
+                    payload: '+(1)',
+                  });
+                }}
+              />
+            </Button>
           </Tooltip>
         }
         icon={
@@ -424,6 +534,7 @@ function RegisterStepAddress({
       />
       {/* country */}
       <NativeSelect
+        size="md"
         data={['Canada', 'United States']}
         label="Country"
         value={country}
@@ -438,12 +549,18 @@ function RegisterStepAddress({
       />
 
       <TextInput
+        size="md"
         w="100%"
         color="dark"
         label="Address line"
         placeholder="Enter address line"
         autoComplete="off"
-        aria-describedby="address-line-note"
+        aria-required
+        aria-describedby={
+          isValidAddressLine
+            ? 'address-line-note-valid'
+            : 'address-line-note-error'
+        }
         aria-invalid={isValidAddressLine ? false : true}
         value={addressLine}
         icon={
@@ -452,7 +569,11 @@ function RegisterStepAddress({
           ) : null
         }
         error={!isValidAddressLine && addressLine !== ''}
-        description={addressLineInputValidationText}
+        description={
+          isValidAddressLine
+            ? addressLineInputValidText
+            : addressLineInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setAddressLine,
@@ -471,23 +592,27 @@ function RegisterStepAddress({
             payload: false,
           });
         }}
+        withAsterisk
+        required
         minLength={2}
         maxLength={75}
       />
       <TextInput
+        size="md"
         w="100%"
         color="dark"
         label="City"
         placeholder="Enter city"
         autoComplete="off"
-        aria-describedby="city-note"
+        aria-required
+        aria-describedby={isValidCity ? 'city-note-valid' : 'city-note-error'}
         aria-invalid={isValidCity ? false : true}
         value={city}
         icon={
           isValidCity ? <FontAwesomeIcon icon={faCheck} color="green" /> : null
         }
         error={!isValidCity && city !== ''}
-        description={cityInputValidationText}
+        description={isValidCity ? cityInputValidText : cityInputErrorText}
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setCity,
@@ -508,6 +633,8 @@ function RegisterStepAddress({
         }}
         minLength={2}
         maxLength={75}
+        withAsterisk
+        required
       />
       {/* province / state */}
       {displayProvinceOrStateInput}

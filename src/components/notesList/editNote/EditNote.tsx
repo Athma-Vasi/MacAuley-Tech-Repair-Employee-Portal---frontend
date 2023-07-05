@@ -336,6 +336,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
           w="100%"
         >
           <TextInput
+            size="md"
             w="100%"
             color={textColor}
             ref={titleRef}
