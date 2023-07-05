@@ -216,15 +216,19 @@ function returnDateValidationText(date: string): string {
   const month = date.split('-')[1];
   const year = date.split('-')[0];
 
+  console.log({ date });
   const dateValidationTupleArr: [boolean, string][] = [
-    [dayRegex.test(day), 'Must be a valid day. Cannot be greater than 31.'],
     [
-      monthRegex.test(month),
+      day ? dayRegex.test(day) : true,
+      'Must be a valid day. Cannot be greater than 31.',
+    ],
+    [
+      month ? monthRegex.test(month) : true,
       'Must be a valid month. Cannot be greater than 12.',
     ],
     [
-      yearRegex.test(year),
-      'Must be a valid year. Must be between 1900 and 2024.',
+      year ? yearRegex.test(year) : true,
+      'Must be a valid year between 1900 and 2024.',
     ],
   ];
 

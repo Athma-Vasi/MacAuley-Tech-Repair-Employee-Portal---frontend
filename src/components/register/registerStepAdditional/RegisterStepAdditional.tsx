@@ -26,6 +26,7 @@ import {
   returnPhoneNumberInputValidationText,
   returnDateValidationText,
 } from '../utils';
+import { kMaxLength } from 'buffer';
 
 function RegisterStepAdditional({
   jobPosition,
@@ -42,8 +43,6 @@ function RegisterStepAdditional({
   registerAction,
   registerDispatch,
 }: RegisterStepAdditionalProps) {
-  const emailRef = useRef<HTMLInputElement>(null);
-
   // used to validate emergency contact full name on every change
   useEffect(() => {
     const isValidEmergencyName = FULL_NAME_REGEX.test(fullName);
@@ -107,48 +106,106 @@ function RegisterStepAdditional({
     console.log({ startDate });
   }, [startDate]);
 
-  const emergencyContactFullNameInputValidationText = (
+  const emergencyContactFullNameInputErrorText = (
     <Text
-      id="emergency-contact-full-name-note"
-      className={
-        isFullNameFocused && fullName && !isValidFullName ? '' : 'offscreen'
-      }
+      id="emergency-contact-full-name-note-error"
+      style={{
+        display:
+          isFullNameFocused && fullName && !isValidFullName ? 'block' : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnFullNameValidationText(fullName)}
     </Text>
   );
 
-  const emergencyPhoneNumberInputValidationText = (
+  const emergencyContactFullNameInputValidText = (
     <Text
-      id="emergency-phone-number-note"
-      className={
-        isPhoneNumberFocused && phoneNumber !== '+(1)' && !isValidPhoneNumber
-          ? ''
-          : 'offscreen'
-      }
+      id="emergency-contact-full-name-note-valid"
+      style={{
+        display:
+          isFullNameFocused && fullName && isValidFullName ? 'block' : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Full name is valid
+    </Text>
+  );
+
+  const emergencyPhoneNumberInputErrorText = (
+    <Text
+      id="emergency-phone-number-note-error"
+      style={{
+        display:
+          isPhoneNumberFocused && phoneNumber && !isValidPhoneNumber
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnPhoneNumberInputValidationText(phoneNumber)}
     </Text>
   );
 
-  const startDateInputValidationText = (
+  const emergencyPhoneNumberInputValidText = (
     <Text
-      id="start-date-note"
-      className={
-        isStartDateFocused && startDate && !isValidStartDate ? '' : 'offscreen'
-      }
+      id="emergency-phone-number-note-valid"
+      style={{
+        display:
+          isPhoneNumberFocused && phoneNumber && isValidPhoneNumber
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Emergency contact number is valid
+    </Text>
+  );
+
+  const startDateInputErrorText = (
+    <Text
+      id="start-date-note-error"
+      style={{
+        display:
+          isStartDateFocused && startDate && !isValidStartDate
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
-      size="xs"
+      size="sm"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnDateValidationText(startDate)}
+    </Text>
+  );
+
+  const startDateInputValidText = (
+    <Text
+      id="start-date-note-valid"
+      style={{
+        display:
+          isStartDateFocused && startDate && isValidStartDate
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      size="sm"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Start date is valid
     </Text>
   );
 
@@ -197,7 +254,12 @@ function RegisterStepAdditional({
         label="Emergency contact name"
         placeholder="Enter full name"
         autoComplete="off"
-        aria-describedby="emergency-contact-full-name-note"
+        aria-required
+        aria-describedby={
+          isValidFullName
+            ? 'emergency-contact-full-name-note-valid'
+            : 'emergency-contact-full-name-note-error'
+        }
         aria-invalid={isValidFullName ? false : true}
         value={fullName}
         icon={
@@ -206,7 +268,11 @@ function RegisterStepAdditional({
           ) : null
         }
         error={!isValidFullName && fullName !== ''}
-        description={emergencyContactFullNameInputValidationText}
+        description={
+          isValidFullName
+            ? emergencyContactFullNameInputValidText
+            : emergencyContactFullNameInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setEmergencyContactFullName,
@@ -234,10 +300,19 @@ function RegisterStepAdditional({
         w="100%"
         color="dark"
         label="Emergency contact number"
-        description={emergencyPhoneNumberInputValidationText}
         placeholder="Enter phone number"
         autoComplete="off"
-        aria-describedby="emergency-phone-number-note"
+        aria-required
+        aria-describedby={
+          isValidPhoneNumber
+            ? 'emergency-phone-number-note-valid'
+            : 'emergency-phone-number-note-error'
+        }
+        description={
+          isValidPhoneNumber
+            ? emergencyPhoneNumberInputValidText
+            : emergencyPhoneNumberInputErrorText
+        }
         aria-invalid={isValidPhoneNumber ? false : true}
         value={phoneNumber}
         onKeyDown={(event) => {
@@ -292,19 +367,32 @@ function RegisterStepAdditional({
         maxLength={18}
       />
       {/* start date */}
-      <label htmlFor="start-date">
-        <Text color="dark">Start date</Text>
-      </label>
-      {startDateInputValidationText}
-      <Input
+      <TextInput
+        type="date"
+        size="md"
         w="100%"
         color="dark"
-        type="date"
-        id="start-date"
+        label="Start date"
+        placeholder="DD-MM-YYYY"
+        autoComplete="off"
+        aria-required
+        aria-label='Please enter start date in format "date-date-month-month-year-year-year-year" from 1900 to 2024'
+        aria-describedby={
+          isValidStartDate ? 'start-date-note-valid' : 'start-date-note-error'
+        }
+        aria-invalid={isValidStartDate ? false : true}
+        value={startDate}
+        icon={
+          isValidStartDate ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidStartDate && startDate !== ''}
+        description={
+          isValidStartDate ? startDateInputValidText : startDateInputErrorText
+        }
         min={new Date(1900, 0, 1).toISOString().split('T')[0]}
         max={new Date(2024, 11, 31).toISOString().split('T')[0]}
-        aria-describedby="start-date-note"
-        error={!isValidStartDate && startDate !== ''}
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setStartDate,
@@ -323,6 +411,9 @@ function RegisterStepAdditional({
             payload: false,
           });
         }}
+        maxLength={10}
+        withAsterisk
+        required
       />
     </Flex>
   );
