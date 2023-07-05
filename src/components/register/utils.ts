@@ -115,7 +115,7 @@ function returnCityValidationText(city: string) {
 }
 
 function returnPhoneNumberInputValidationText(phoneNumber: string) {
-  const phoneNumberRegex = /^\+1\(\d{3}\)\(\d{3}\) \d{3}-\d{4}$/;
+  const phoneNumberRegex = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
   const isValidRegex = phoneNumberRegex.test(phoneNumber);
   if (!isValidRegex) {
     return 'Must be a valid North American phone number.';

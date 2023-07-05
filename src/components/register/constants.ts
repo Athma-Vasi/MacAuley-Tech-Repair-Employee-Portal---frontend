@@ -8,14 +8,13 @@ const REGISTER_URL = '/users';
 const NAME_REGEX = /^[A-Za-z]{2,30}$/i;
 
 /**
- * \+1 matches the literal "+1" characters. This represents the international dialing code for the United States and Canada.
- * \(\d{3}\) matches a literal "(" character, followed by any three digits, followed by a literal ")" character.
- * \d{3} matches any three digits.
- * - matches a literal "-" character.
- * \d{4} matches any four digits.
- * ^ and $ ensure that the entire string matches the regex.
+ * - \+\(1\) matches "+(1)".
+ * - \(\d{3}\) matches exactly 3 digits surrounded by parentheses.
+ * - [ ] matches a space.
+ * - \d{3}-\d{4} matches exactly 3 digits, followed by a hyphen, followed by exactly 4 digits.
+ * - ^ and $ ensure that the entire string matches the regex.
  */
-const PHONE_NUMBER_REGEX = /^\+1\(\d{3}\)\(\d{3}\) \d{3}-\d{4}$/;
+const PHONE_NUMBER_REGEX = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
 
 /**
  * - [A-Za-z0-9\s.,#-] matches any letter, number, whitespace, period, comma, hash, or hyphen.

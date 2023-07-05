@@ -270,30 +270,25 @@ function Register() {
     const contactLength = contactNumber.length;
     if (isContactNumberFocused) {
       switch (contactLength) {
-        case 2:
+        case 4:
           registerDispatch({
             type: registerAction.setContactNumber,
             payload: `${contactNumber}(`,
           });
           break;
-        case 6:
-          registerDispatch({
-            type: registerAction.setContactNumber,
-            payload: `${contactNumber})(`,
-          });
-          break;
-        case 11:
+        case 8:
           registerDispatch({
             type: registerAction.setContactNumber,
             payload: `${contactNumber}) `,
           });
           break;
-        case 16:
+        case 13:
           registerDispatch({
             type: registerAction.setContactNumber,
             payload: `${contactNumber}-`,
           });
           break;
+
         default:
           break;
       }
@@ -532,7 +527,7 @@ function Register() {
       id="contact-number-note"
       className={
         isContactNumberFocused &&
-        contactNumber !== '+1' &&
+        contactNumber !== '+(1)' &&
         !isValidContactNumber
           ? ''
           : 'offscreen'
@@ -1172,7 +1167,7 @@ function Register() {
                 <FontAwesomeIcon icon={faCheck} color="green" />
               ) : null
             }
-            error={!isValidContactNumber && contactNumber !== '+1'}
+            error={!isValidContactNumber && contactNumber !== '+(1)'}
             description={contactNumberInputValidationText}
             onChange={(event) => {
               registerDispatch({
@@ -1192,7 +1187,7 @@ function Register() {
                 payload: false,
               });
             }}
-            maxLength={21}
+            maxLength={18}
           />
           {/* country */}
           <NativeSelect

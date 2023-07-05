@@ -45,7 +45,7 @@ const initialRegisterState: RegisterState = {
 
   preferredPronouns: 'Prefer not to say',
 
-  contactNumber: '+1',
+  contactNumber: '+(1)',
   isValidContactNumber: false,
   isContactNumberFocused: false,
 
@@ -71,7 +71,7 @@ const initialRegisterState: RegisterState = {
     isValidFullName: false,
     isFullNameFocused: false,
 
-    phoneNumber: '+1',
+    phoneNumber: '+(1)',
     isValidPhoneNumber: false,
     isPhoneNumberFocused: false,
   },
