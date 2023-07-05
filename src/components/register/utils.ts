@@ -1,6 +1,6 @@
 import { Country, PostalCode } from '../../types';
 
-function returnPasswordRegexValidationText(password: string) {
+function returnPasswordRegexValidationText(password: string): string {
   const passwordLengthRegex = /^(?=.{8,32}$)/;
   const passwordUppercaseRegex = /^(?=.*[A-Z])/;
   const passwordLowercaseRegex = /^(?=.*[a-z])/;
@@ -35,7 +35,7 @@ function returnPasswordRegexValidationText(password: string) {
     .join(' ');
 }
 
-function returnNameValidationText(name: string) {
+function returnNameValidationText(name: string): string {
   const nameLengthRegex = /^(?=.{2,30}$)/;
   const nameCharacterRegex = /^[a-zA-Z\s.\-']+$/;
 
@@ -53,7 +53,7 @@ function returnNameValidationText(name: string) {
     .join(' ');
 }
 
-function returnFullNameValidationText(fullName: string) {
+function returnFullNameValidationText(fullName: string): string {
   const fullNameLengthRegex = /^(?=.{2,100}$)/;
   const fullNameCharacterRegex = /^[A-Za-z\s.\-']+$/;
 
@@ -74,7 +74,7 @@ function returnFullNameValidationText(fullName: string) {
     .join(' ');
 }
 
-function returnAddressLineValidationText(addressLine: string) {
+function returnAddressLineValidationText(addressLine: string): string {
   const addressLineLengthRegex = /^(?=.{2,75}$)/;
   const addressLineCharacterRegex = /^[A-Za-z0-9\s.,#-]+$/;
 
@@ -95,7 +95,7 @@ function returnAddressLineValidationText(addressLine: string) {
     .join(' ');
 }
 
-function returnCityValidationText(city: string) {
+function returnCityValidationText(city: string): string {
   const cityLengthRegex = /^(?=.{2,75}$)/;
   const cityCharacterRegex = /^[A-Za-z\s.\-']+$/;
 
@@ -113,7 +113,7 @@ function returnCityValidationText(city: string) {
     .join(' ');
 }
 
-function returnPhoneNumberInputValidationText(phoneNumber: string) {
+function returnPhoneNumberInputValidationText(phoneNumber: string): string {
   const phoneNumberRegex = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
   const isValidRegex = phoneNumberRegex.test(phoneNumber);
   if (!isValidRegex) {
@@ -130,7 +130,7 @@ type ReturnPostalCodeValidationTextInput = {
 function returnPostalCodeValidationText({
   postalCode,
   country,
-}: ReturnPostalCodeValidationTextInput) {
+}: ReturnPostalCodeValidationTextInput): string {
   if (country === 'United States') {
     const postalCodeRegex = /^\d{5}(?:[-]\d{4})?$/;
     const isValidRegex = postalCodeRegex.test(postalCode);
@@ -141,7 +141,7 @@ function returnPostalCodeValidationText({
 
   // canada
   const firstPartRegex = /^[A-Za-z]\d[A-Za-z]$/i;
-  const secondPartRegex = /^[ ]?\d[A-Za-z]\d$/i;
+  const secondPartRegex = /^\d[A-Za-z]\d$/i;
 
   const firstPart = postalCode.split(' ')[0];
   const secondPart = postalCode.split(' ')[1];
@@ -163,7 +163,7 @@ function returnPostalCodeValidationText({
     .join(' ');
 }
 
-function returnDateValidationText(date: string) {
+function returnDateValidationText(date: string): string {
   const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
   const monthRegex = /^(0[1-9]|1[0-2])$/;
   const yearRegex = /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])$/;

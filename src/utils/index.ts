@@ -1,4 +1,4 @@
-function returnEmailRegexValidationText(email: string) {
+function returnEmailRegexValidationText(email: string): string {
   const usernamePartRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
   const domainPartRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
   const subdomainPartRegex =
@@ -19,7 +19,7 @@ function returnEmailRegexValidationText(email: string) {
     .join(' ');
 }
 
-function returnUsernameRegexValidationText(username: string) {
+function returnUsernameRegexValidationText(username: string): string {
   const usernameLengthRegex = /^(?=.{3,20}$)/;
   const usernameStartRegex = /^(?![-_.])/;
   const usernameConsecutiveRegex = /^(?!.*[-_.]{2})/;
@@ -55,7 +55,7 @@ function returnUsernameRegexValidationText(username: string) {
     .join(' ');
 }
 
-function returnNoteTitleValidationText(title: string) {
+function returnNoteTitleValidationText(title: string): string {
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const alphanumericOrSpecialCharacterRegex =
     /^[A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$/;
@@ -79,7 +79,7 @@ function returnNoteTitleValidationText(title: string) {
     .join(' ');
 }
 
-function returnNoteContentValidationText(content: string) {
+function returnNoteContentValidationText(content: string): string {
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
   const contentLengthRegex = /^(?=.{1,1000}$)/;
