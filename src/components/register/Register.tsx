@@ -33,6 +33,8 @@ import {
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
+  DEPARTMENTS,
+  JOB_POSITIONS,
   NAME_REGEX,
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
@@ -698,6 +700,8 @@ function Register() {
           payload: event.currentTarget.value,
         });
       }}
+      required
+      withAsterisk
     />
   );
 
@@ -713,6 +717,8 @@ function Register() {
           payload: event.currentTarget.value,
         });
       }}
+      required
+      withAsterisk
     />
   );
 
@@ -730,21 +736,14 @@ function Register() {
           <FontAwesomeIcon icon={faCheck} color="green" />
         ) : null
       }
-      rightSection={
-        <Tooltip label="Reset value to empty">
-          <FontAwesomeIcon
-            icon={faRefresh}
-            cursor="pointer"
-            color="gray"
-            onClick={() => {
-              registerDispatch({
-                type: registerAction.setPostalCode,
-                payload: '',
-              });
-            }}
-          />
-        </Tooltip>
-      }
+      onKeyDown={(event) => {
+        if (event.key === 'Backspace' && postalCode.length === 4) {
+          registerDispatch({
+            type: registerAction.setPostalCode,
+            payload: postalCode.slice(0, 3),
+          });
+        }
+      }}
       value={postalCode}
       error={!isValidPostalCode && postalCode !== ''}
       description={postalCodeInputValidationText}
@@ -1192,11 +1191,27 @@ function Register() {
             w="100%"
             color="dark"
             label="Personal contact number"
+            description={contactNumberInputValidationText}
             placeholder="Enter contact number"
             autoComplete="off"
             aria-describedby="contact-number-note"
             aria-invalid={isValidContactNumber ? false : true}
             value={contactNumber}
+            onKeyDown={(event) => {
+              if (event.key === 'Backspace') {
+                if (contactNumber.length === 14) {
+                  registerDispatch({
+                    type: registerAction.setContactNumber,
+                    payload: contactNumber.slice(0, -1),
+                  });
+                } else if (contactNumber.length === 9) {
+                  registerDispatch({
+                    type: registerAction.setContactNumber,
+                    payload: contactNumber.slice(0, -1),
+                  });
+                }
+              }
+            }}
             rightSection={
               <Tooltip label="Reset value to +(1)">
                 <FontAwesomeIcon
@@ -1218,7 +1233,6 @@ function Register() {
               ) : null
             }
             error={!isValidContactNumber && contactNumber !== '+(1)'}
-            description={contactNumberInputValidationText}
             onChange={(event) => {
               registerDispatch({
                 type: registerAction.setContactNumber,
@@ -1335,6 +1349,36 @@ function Register() {
           {country === 'Canada'
             ? selectCanadianPostalCodeInput
             : selectUSPostalCodeInput}
+
+          {/* step three */}
+          {/* job position */}
+          <NativeSelect
+            data={JOB_POSITIONS}
+            label="Job position"
+            value={jobPosition}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setJobPosition,
+                payload: event.currentTarget.value,
+              });
+            }}
+            withAsterisk
+            required
+          />
+          {/* department */}
+          <NativeSelect
+            data={DEPARTMENTS}
+            label="Department"
+            value={department}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setDepartment,
+                payload: event.currentTarget.value,
+              });
+            }}
+            withAsterisk
+            required
+          />
 
           {/* stepper nav buttons */}
           <Group position="center" mt="xl">

@@ -45,6 +45,8 @@ const POSTAL_CODE_REGEX_CANADA = /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i;
  */
 const POSTAL_CODE_REGEX_US = /^\d{5}(?:[-]\d{4})?$/;
 
+const JOB_POSITIONS = ['Employee', 'Supervisor', 'Manager'];
+
 const PROVINCES = [
   'Alberta',
   'British Columbia',
@@ -114,6 +116,17 @@ const STATES_US = [
   'Wyoming',
 ];
 
+const DEPARTMENTS = [
+  'Administration',
+  'Customer Service',
+  'Human Resources',
+  'Repair',
+  'Technical Support',
+  'Sales',
+  'Logistics',
+  'Inventory Management',
+];
+
 export {
   REGISTER_URL,
   NAME_REGEX,
@@ -124,4 +137,6 @@ export {
   STATES_US,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
+  JOB_POSITIONS,
+  DEPARTMENTS,
 };
