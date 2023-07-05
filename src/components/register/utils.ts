@@ -180,6 +180,35 @@ function returnPostalCodeValidationText({
   return '';
 }
 
+function returnDateValidationText(date: string) {
+  const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
+  const monthRegex = /^(0[1-9]|1[0-2])$/;
+  const yearRegex = /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])$/;
+
+  const day = date.split('-')[2];
+  const month = date.split('-')[1];
+  const year = date.split('-')[0];
+
+  const dateValidationTupleArr: [boolean, string][] = [
+    [dayRegex.test(day), 'Must be a valid day. Cannot be greater than 31.'],
+    [
+      monthRegex.test(month),
+      'Must be a valid month. Cannot be greater than 12.',
+    ],
+    [
+      yearRegex.test(year),
+      'Must be a valid year. Must be between 1900 and 2023.',
+    ],
+  ];
+
+  const dateRegexValidationText: string = dateValidationTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return dateRegexValidationText;
+}
+
 export {
   returnPasswordRegexValidationText,
   returnNameValidationText,
@@ -188,4 +217,5 @@ export {
   returnPostalCodeValidationText,
   returnPhoneNumberInputValidationText,
   returnFullNameValidationText,
+  returnDateValidationText,
 };

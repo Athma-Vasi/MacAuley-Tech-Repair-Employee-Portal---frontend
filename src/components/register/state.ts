@@ -75,7 +75,10 @@ const initialRegisterState: RegisterState = {
     isValidPhoneNumber: false,
     isPhoneNumberFocused: false,
   },
-  startDate: new Date(),
+
+  startDate: '',
+  isValidStartDate: false,
+  isStartDateFocused: false,
 
   currentStepperPosition: 1,
   isError: false,
@@ -154,6 +157,8 @@ const registerAction: RegisterAction = {
     'setIsEmergencyContactPhoneNumberFocused',
 
   setStartDate: 'setStartDate',
+  setIsValidStartDate: 'setIsValidStartDate',
+  setIsStartDateFocused: 'setIsStartDateFocused',
 
   setCurrentStepperPosition: 'setCurrentStepperPosition',
 
@@ -370,7 +375,11 @@ function registerReducer(
       };
 
     case registerAction.setStartDate:
-      return { ...state, startDate: action.payload as Date };
+      return { ...state, startDate: action.payload as string };
+    case registerAction.setIsValidStartDate:
+      return { ...state, isValidStartDate: action.payload as boolean };
+    case registerAction.setIsStartDateFocused:
+      return { ...state, isStartDateFocused: action.payload as boolean };
 
     case registerAction.setCurrentStepperPosition:
       return { ...state, currentStepperPosition: action.payload as number };

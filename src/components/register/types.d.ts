@@ -74,7 +74,10 @@ type RegisterState = {
     isValidPhoneNumber: boolean;
     isPhoneNumberFocused: boolean;
   };
-  startDate: Date;
+
+  startDate: string;
+  isValidStartDate: boolean;
+  isStartDateFocused: boolean;
 
   currentStepperPosition: number;
   isError: boolean;
@@ -151,6 +154,8 @@ type RegisterAction = {
   setIsEmergencyContactPhoneNumberFocused: 'setIsEmergencyContactPhoneNumberFocused';
 
   setStartDate: 'setStartDate';
+  setIsValidStartDate: 'setIsValidStartDate';
+  setIsStartDateFocused: 'setIsStartDateFocused';
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setIsError: 'setIsError';

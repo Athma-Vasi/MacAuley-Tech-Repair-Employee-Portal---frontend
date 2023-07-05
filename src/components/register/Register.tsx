@@ -14,6 +14,7 @@ import {
   Center,
   Flex,
   Group,
+  Input,
   Loader,
   NativeSelect,
   PasswordInput,
@@ -33,6 +34,7 @@ import {
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
+  DATE_REGEX,
   DEPARTMENTS,
   FULL_NAME_REGEX,
   JOB_POSITIONS,
@@ -53,6 +55,7 @@ import {
 import {
   returnAddressLineValidationText,
   returnCityValidationText,
+  returnDateValidationText,
   returnFullNameValidationText,
   returnNameValidationText,
   returnPasswordRegexValidationText,
@@ -112,7 +115,10 @@ function Register() {
       jobPosition,
       department,
       emergencyContact,
+
       startDate,
+      isValidStartDate,
+      isStartDateFocused,
 
       currentStepperPosition,
       isError,
@@ -300,12 +306,6 @@ function Register() {
       }
     }
 
-    console.log({
-      contactNumber,
-      isValidContact,
-      isContactNumberFocused,
-    });
-
     registerDispatch({
       type: registerAction.setIsValidContactNumber,
       payload: isValidContact,
@@ -388,7 +388,19 @@ function Register() {
     });
   }, [postalCode, country]);
 
-  // removes error message after every change in email, username, password, confirm password, (first, middle, last)Name, preferredName, addressLine, city
+  // used to validate start date on every change
+  useEffect(() => {
+    const isValidDate = DATE_REGEX.test(startDate);
+
+    registerDispatch({
+      type: registerAction.setIsValidStartDate,
+      payload: isValidDate,
+    });
+
+    console.log({ startDate, isValidDate, isStartDateFocused });
+  }, [startDate]);
+
+  // removes error message after every change in values of input fields in dependency array
   useEffect(() => {
     registerDispatch({
       type: registerAction.setErrorMessage,
@@ -405,6 +417,11 @@ function Register() {
     preferredName,
     addressLine,
     city,
+    postalCode,
+    contactNumber,
+    fullName,
+    phoneNumber,
+    startDate,
   ]);
 
   const displayError = (
@@ -643,6 +660,21 @@ function Register() {
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnPhoneNumberInputValidationText(phoneNumber)}
+    </Text>
+  );
+
+  const startDateInputValidationText = (
+    <Text
+      id="start-date-note"
+      className={
+        isStartDateFocused && startDate && !isValidStartDate ? '' : 'offscreen'
+      }
+      w="100%"
+      color="red"
+      size="xs"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnDateValidationText(startDate)}
     </Text>
   );
 
@@ -1539,6 +1571,37 @@ function Register() {
               });
             }}
             maxLength={18}
+          />
+          {/* start date */}
+          <label htmlFor="start-date">
+            <Text color="dark">Start date</Text>
+          </label>
+          {startDateInputValidationText}
+          <Input
+            w="100%"
+            color="dark"
+            type="date"
+            id="start-date"
+            aria-describedby="start-date-note"
+            error={!isValidStartDate && startDate !== ''}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setStartDate,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsStartDateFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsStartDateFocused,
+                payload: false,
+              });
+            }}
           />
 
           {/* stepper nav buttons */}
