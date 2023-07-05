@@ -31,72 +31,75 @@ import { RegisterStepAuthentication } from './registerStepAuthentication/Registe
 import { RegisterStepPersonal } from './registerStepPersonal/RegisterStepPersonal';
 import { RegisterStepAddress } from './registerStepAddress/RegisterStepAddress';
 import { RegisterStepAdditional } from './registerStepAdditional/RegisterStepAdditional';
+import { UserSchema } from '../../types';
+import { RegisterStepReview } from './registerStepReview/RegisterStepReview';
 
 function Register() {
-  const [
-    {
-      email,
-      isValidEmail,
-      isEmailFocused,
+  const [registerState, registerDispatch] = useReducer(
+    registerReducer,
+    initialRegisterState
+  );
+  const {
+    email,
+    isValidEmail,
+    isEmailFocused,
 
-      username,
-      isValidUsername,
-      isUsernameFocused,
+    username,
+    isValidUsername,
+    isUsernameFocused,
 
-      password,
-      isValidPassword,
-      isPasswordFocused,
+    password,
+    isValidPassword,
+    isPasswordFocused,
 
-      confirmPassword,
-      isValidConfirmPassword,
-      isConfirmPasswordFocused,
+    confirmPassword,
+    isValidConfirmPassword,
+    isConfirmPasswordFocused,
 
-      firstName,
-      isValidFirstName,
-      isFirstNameFocused,
+    firstName,
+    isValidFirstName,
+    isFirstNameFocused,
 
-      middleName,
-      isValidMiddleName,
-      isMiddleNameFocused,
+    middleName,
+    isValidMiddleName,
+    isMiddleNameFocused,
 
-      lastName,
-      isValidLastName,
-      isLastNameFocused,
+    lastName,
+    isValidLastName,
+    isLastNameFocused,
 
-      preferredName,
-      isValidPreferredName,
-      isPreferredNameFocused,
+    preferredName,
+    isValidPreferredName,
+    isPreferredNameFocused,
 
-      preferredPronouns,
-      profilePictureUrl,
-      isValidProfilePictureUrl,
-      isProfilePictureUrlFocused,
+    preferredPronouns,
+    profilePictureUrl,
+    isValidProfilePictureUrl,
+    isProfilePictureUrlFocused,
 
-      address,
-      contactNumber,
-      isValidContactNumber,
-      isContactNumberFocused,
+    address,
+    contactNumber,
+    isValidContactNumber,
+    isContactNumberFocused,
 
-      jobPosition,
-      department,
-      emergencyContact,
+    jobPosition,
+    department,
+    emergencyContact,
 
-      startDate,
-      isValidStartDate,
-      isStartDateFocused,
+    startDate,
+    isValidStartDate,
+    isStartDateFocused,
 
-      currentStepperPosition,
-      isError,
-      errorMessage,
-      isSuccessful,
-      successMessage,
-      isLoading,
-      loadingMessage,
-      isSubmitting,
-      submitMessage,
-    },
-    registerDispatch,
-  ] = useReducer(registerReducer, initialRegisterState);
+    currentStepperPosition,
+    isError,
+    errorMessage,
+    isSuccessful,
+    successMessage,
+    isLoading,
+    loadingMessage,
+    isSubmitting,
+    submitMessage,
+  } = registerState;
   const {
     addressLine,
     isValidAddressLine,
@@ -203,10 +206,24 @@ function Register() {
       return;
     }
 
-    const newUserObj = {
+    const newUserObj: UserSchema = {
       email,
       username,
       password,
+      firstName,
+      middleName,
+      lastName,
+      preferredName,
+      preferredPronouns,
+      profilePictureUrl,
+      contactNumber,
+      address: { addressLine, city, province, state, postalCode, country },
+      jobPosition,
+      department,
+      emergencyContact: { fullName, phoneNumber },
+      startDate,
+      roles: ['Employee'],
+      active: true,
     };
 
     const controller = new AbortController();
@@ -354,6 +371,32 @@ function Register() {
       />
     ) : null;
 
+  const displayReviewStep =
+    currentStepperPosition === 4 ? (
+      <RegisterStepReview
+        email={email}
+        username={username}
+        firstName={firstName}
+        middleName={middleName}
+        lastName={lastName}
+        preferredName={preferredName}
+        preferredPronouns={preferredPronouns}
+        profilePictureUrl={profilePictureUrl}
+        contactNumber={contactNumber}
+        addressLine={addressLine}
+        city={city}
+        state={state}
+        province={province}
+        country={country}
+        postalCode={postalCode}
+        jobPosition={jobPosition}
+        department={department}
+        fullName={fullName}
+        phoneNumber={phoneNumber}
+        startDate={startDate}
+      />
+    ) : null;
+
   const { buttonTextColor } = COLORS;
 
   const displayRegisterForm = (
@@ -396,6 +439,9 @@ function Register() {
 
           {/* fourth step */}
           {displayAdditionalStep}
+
+          {/* fifth step */}
+          {displayReviewStep}
 
           {/* stepper nav buttons */}
           <Group position="center" mt="xl">

@@ -6,9 +6,10 @@ type User = {
   firstName: string;
   middleName: string;
   lastName: string;
+  preferredName: string;
   preferredPronouns: PreferredPronouns;
   profilePictureUrl: string;
-  contactNumber: PhoneNumber;
+  contactNumber: PhoneNumber | '+(1)';
   address: {
     addressLine: string;
     city: string;
@@ -21,7 +22,7 @@ type User = {
   department: Department;
   emergencyContact: {
     fullName: string;
-    phoneNumber: PhoneNumber;
+    phoneNumber: PhoneNumber | '+(1)';
   };
   startDate: NativeDate;
   roles: UserRoles;
@@ -38,9 +39,10 @@ type UserSchema = {
   firstName: string;
   middleName: string;
   lastName: string;
+  preferredName: string;
   preferredPronouns: PreferredPronouns;
   profilePictureUrl: string;
-  contactNumber: PhoneNumber;
+  contactNumber: PhoneNumber | '+(1)';
   address: {
     addressLine: string;
     city: string;
@@ -53,7 +55,7 @@ type UserSchema = {
   department: Department;
   emergencyContact: {
     fullName: string;
-    phoneNumber: PhoneNumber;
+    phoneNumber: PhoneNumber | '+(1)';
   };
   startDate: NativeDate;
   roles: UserRoles;
