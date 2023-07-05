@@ -32,6 +32,7 @@ import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   NAME_REGEX,
+  PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
   PROVINCES,
@@ -49,6 +50,7 @@ import {
   returnCityValidationText,
   returnNameValidationText,
   returnPasswordRegexValidationText,
+  returnPhoneNumberInputValidationText,
   returnPostalCodeValidationText,
 } from './utils';
 import { axiosInstance } from '../../api/axios';
@@ -98,6 +100,9 @@ function Register() {
 
       address,
       contactNumber,
+      isValidContactNumber,
+      isContactNumberFocused,
+
       jobPosition,
       department,
       emergencyContact,
@@ -130,8 +135,12 @@ function Register() {
     isPostalCodeFocused,
   } = address;
   const {
-    contactNumber: emergencyContactNumber,
-    fullName: emergencyContactFullName,
+    fullName,
+    isValidFullName,
+    isFullNameFocused,
+    phoneNumber,
+    isValidPhoneNumber,
+    isPhoneNumberFocused,
   } = emergencyContact;
 
   const emailRef = useRef<HTMLInputElement>(null);
@@ -253,6 +262,78 @@ function Register() {
       payload: '',
     });
   }, [country]);
+
+  // used to validate contact number on every change
+  useEffect(() => {
+    const isValidContact = PHONE_NUMBER_REGEX.test(contactNumber);
+
+    const contactLength = contactNumber.length;
+    if (isContactNumberFocused) {
+      switch (contactLength) {
+        case 2:
+          registerDispatch({
+            type: registerAction.setContactNumber,
+            payload: `${contactNumber}(`,
+          });
+          break;
+        case 6:
+          registerDispatch({
+            type: registerAction.setContactNumber,
+            payload: `${contactNumber})(`,
+          });
+          break;
+        case 11:
+          registerDispatch({
+            type: registerAction.setContactNumber,
+            payload: `${contactNumber}) `,
+          });
+          break;
+        case 16:
+          registerDispatch({
+            type: registerAction.setContactNumber,
+            payload: `${contactNumber}-`,
+          });
+          break;
+        default:
+          break;
+      }
+    }
+
+    console.log({
+      contactNumber,
+      isValidContact,
+      isContactNumberFocused,
+    });
+
+    registerDispatch({
+      type: registerAction.setIsValidContactNumber,
+      payload: isValidContact,
+    });
+  }, [contactNumber, isContactNumberFocused]);
+
+  // used to validate emergency contact full name on every change
+  useEffect(() => {
+    const isValidEmergencyName =
+      fullName
+        .split(' ')
+        .map((name) => NAME_REGEX.test(name))
+        .filter((name) => name === false).length === 0;
+
+    registerDispatch({
+      type: registerAction.setIsValidEmergencyContactFullName,
+      payload: isValidEmergencyName,
+    });
+  }, [fullName]);
+
+  // used to validate emergency contact phone number on every change
+  useEffect(() => {
+    const isValidEmergencyNumber = PHONE_NUMBER_REGEX.test(phoneNumber);
+
+    registerDispatch({
+      type: registerAction.setIsValidEmergencyContactPhoneNumber,
+      payload: isValidEmergencyNumber,
+    });
+  }, [phoneNumber]);
 
   // used to validate postal code on every change
   useEffect(() => {
@@ -443,6 +524,24 @@ function Register() {
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnNameValidationText(preferredName)}
+    </Text>
+  );
+
+  const contactNumberInputValidationText = (
+    <Text
+      id="contact-number-note"
+      className={
+        isContactNumberFocused &&
+        contactNumber !== '+1' &&
+        !isValidContactNumber
+          ? ''
+          : 'offscreen'
+      }
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnPhoneNumberInputValidationText(contactNumber)}
     </Text>
   );
 
@@ -1058,6 +1157,43 @@ function Register() {
           />
 
           {/* third step : address*/}
+          {/* contact number */}
+          <TextInput
+            w="100%"
+            color="dark"
+            label="Personal contact number"
+            placeholder="Enter contact number"
+            autoComplete="off"
+            aria-describedby="contact-number-note"
+            aria-invalid={isValidContactNumber ? false : true}
+            value={contactNumber}
+            icon={
+              isValidContactNumber ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidContactNumber && contactNumber !== '+1'}
+            description={contactNumberInputValidationText}
+            onChange={(event) => {
+              registerDispatch({
+                type: registerAction.setContactNumber,
+                payload: event.currentTarget.value,
+              });
+            }}
+            onFocus={() => {
+              registerDispatch({
+                type: registerAction.setIsContactNumberFocused,
+                payload: true,
+              });
+            }}
+            onBlur={() => {
+              registerDispatch({
+                type: registerAction.setIsContactNumberFocused,
+                payload: false,
+              });
+            }}
+            maxLength={21}
+          />
           {/* country */}
           <NativeSelect
             data={['Canada', 'United States']}

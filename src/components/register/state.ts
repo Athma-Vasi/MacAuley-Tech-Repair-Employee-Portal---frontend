@@ -45,7 +45,7 @@ const initialRegisterState: RegisterState = {
 
   preferredPronouns: 'Prefer not to say',
 
-  contactNumber: '+(111)(234) 567-8901',
+  contactNumber: '+1',
   isValidContactNumber: false,
   isContactNumberFocused: false,
 
@@ -71,7 +71,7 @@ const initialRegisterState: RegisterState = {
     isValidFullName: false,
     isFullNameFocused: false,
 
-    phoneNumber: '+(111)(234) 567-8901',
+    phoneNumber: '+1',
     isValidPhoneNumber: false,
     isPhoneNumberFocused: false,
   },

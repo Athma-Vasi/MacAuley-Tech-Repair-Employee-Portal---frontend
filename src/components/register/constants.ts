@@ -8,6 +8,16 @@ const REGISTER_URL = '/users';
 const NAME_REGEX = /^[A-Za-z]{2,30}$/i;
 
 /**
+ * \+1 matches the literal "+1" characters. This represents the international dialing code for the United States and Canada.
+ * \(\d{3}\) matches a literal "(" character, followed by any three digits, followed by a literal ")" character.
+ * \d{3} matches any three digits.
+ * - matches a literal "-" character.
+ * \d{4} matches any four digits.
+ * ^ and $ ensure that the entire string matches the regex.
+ */
+const PHONE_NUMBER_REGEX = /^\+1\(\d{3}\)\(\d{3}\) \d{3}-\d{4}$/;
+
+/**
  * - [A-Za-z0-9\s.,#-] matches any letter, number, whitespace, period, comma, hash, or hyphen.
  * - {2,75} ensures that the text is between 2 and 75 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
@@ -110,6 +120,7 @@ export {
   NAME_REGEX,
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
+  PHONE_NUMBER_REGEX,
   PROVINCES,
   STATES_US,
   POSTAL_CODE_REGEX_CANADA,

@@ -1,4 +1,4 @@
-import { Country, PostalCode } from '../../types';
+import { Country, PhoneNumber, PostalCode } from '../../types';
 
 function returnPasswordRegexValidationText(password: string) {
   const passwordLengthRegex = /^(?=.{8,32}$)/;
@@ -114,6 +114,15 @@ function returnCityValidationText(city: string) {
   return cityRegexValidationText;
 }
 
+function returnPhoneNumberInputValidationText(phoneNumber: string) {
+  const phoneNumberRegex = /^\+1\(\d{3}\)\(\d{3}\) \d{3}-\d{4}$/;
+  const isValidRegex = phoneNumberRegex.test(phoneNumber);
+  if (!isValidRegex) {
+    return 'Must be a valid North American phone number.';
+  }
+  return '';
+}
+
 type ReturnPostalCodeValidationTextInput = {
   postalCode: PostalCode;
   country: Country;
@@ -147,4 +156,5 @@ export {
   returnAddressLineValidationText,
   returnCityValidationText,
   returnPostalCodeValidationText,
+  returnPhoneNumberInputValidationText,
 };

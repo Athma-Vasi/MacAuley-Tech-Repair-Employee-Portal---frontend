@@ -44,7 +44,7 @@ type RegisterState = {
 
   preferredPronouns: PreferredPronouns;
 
-  contactNumber: PhoneNumber;
+  contactNumber: PhoneNumber | '+1';
   isValidContactNumber: boolean;
   isContactNumberFocused: boolean;
 
@@ -70,7 +70,7 @@ type RegisterState = {
     isValidFullName: boolean;
     isFullNameFocused: boolean;
 
-    phoneNumber: string;
+    phoneNumber: PhoneNumber | '+1';
     isValidPhoneNumber: boolean;
     isPhoneNumberFocused: boolean;
   };

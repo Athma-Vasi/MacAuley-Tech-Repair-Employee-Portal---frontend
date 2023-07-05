@@ -145,7 +145,7 @@ type USPostalCode = `${string}${string}${string}${string}${string}`;
 type PostalCode = CanadianPostalCode | USPostalCode;
 
 type PhoneNumber =
-  `+(${string}${string}${string})(${string}${string}${string}) ${string}${string}${string}-${string}${string}${string}${string}`;
+  `+(${string})(${string}${string}${string}) ${string}${string}${string}-${string}${string}${string}${string}`;
 type Country = 'Canada' | 'United States';
 
 type JobPosition = 'Employee' | 'Supervisor' | 'Manager';
