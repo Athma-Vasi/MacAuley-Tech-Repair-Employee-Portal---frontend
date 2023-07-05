@@ -31,13 +31,6 @@ function RegisterStepAuthentication({
   registerDispatch,
   registerAction,
 }: RegisterStepAuthenticationProps) {
-  const emailRef = useRef<HTMLInputElement>(null);
-
-  // sets focus on email input on first render
-  useEffect(() => {
-    emailRef.current?.focus();
-  }, []);
-
   // used to validate email on every change
   useEffect(() => {
     const isValidMail = EMAIL_REGEX.test(email);
@@ -78,7 +71,7 @@ function RegisterStepAuthentication({
     <Text
       id="email-note-error"
       style={{
-        display: isEmailFocused && email && !isValidEmail ? '' : 'none',
+        display: isEmailFocused && email && !isValidEmail ? 'block' : 'none',
       }}
       w="100%"
       color="red"
@@ -93,7 +86,7 @@ function RegisterStepAuthentication({
     <Text
       id="email-note-valid"
       style={{
-        display: isEmailFocused && email && isValidEmail ? '' : 'none',
+        display: isEmailFocused && email && isValidEmail ? 'block' : 'none',
       }}
       w="100%"
       color="green"
@@ -108,7 +101,7 @@ function RegisterStepAuthentication({
       id="username-note-error"
       style={{
         display:
-          isUsernameFocused && username && !isValidUsername ? '' : 'none',
+          isUsernameFocused && username && !isValidUsername ? 'block' : 'none',
       }}
       w="100%"
       color="red"
@@ -123,7 +116,8 @@ function RegisterStepAuthentication({
     <Text
       id="username-note-valid"
       style={{
-        display: isUsernameFocused && username && isValidUsername ? '' : 'none',
+        display:
+          isUsernameFocused && username && isValidUsername ? 'block' : 'none',
       }}
       w="100%"
       color="green"
@@ -141,7 +135,7 @@ function RegisterStepAuthentication({
       id="password-note-error"
       style={{
         display:
-          isPasswordFocused && password && !isValidPassword ? '' : 'none',
+          isPasswordFocused && password && !isValidPassword ? 'block' : 'none',
       }}
       w="100%"
       color="red"
@@ -158,7 +152,8 @@ function RegisterStepAuthentication({
     <Text
       id="password-note-valid"
       style={{
-        display: isPasswordFocused && password && isValidPassword ? '' : 'none',
+        display:
+          isPasswordFocused && password && isValidPassword ? 'block' : 'none',
       }}
       w="100%"
       color="green"
@@ -174,7 +169,7 @@ function RegisterStepAuthentication({
       style={{
         display:
           isConfirmPasswordFocused && confirmPassword && !isValidConfirmPassword
-            ? ''
+            ? 'block'
             : 'none',
       }}
       w="100%"
@@ -194,7 +189,7 @@ function RegisterStepAuthentication({
       style={{
         display:
           isConfirmPasswordFocused && confirmPassword && isValidConfirmPassword
-            ? ''
+            ? 'block'
             : 'none',
       }}
       w="100%"
@@ -219,7 +214,6 @@ function RegisterStepAuthentication({
         color="dark"
         label="Email"
         placeholder="Enter email address"
-        tabIndex={0}
         autoComplete="off"
         aria-describedby={
           isValidEmail ? 'email-note-valid' : 'email-note-error'

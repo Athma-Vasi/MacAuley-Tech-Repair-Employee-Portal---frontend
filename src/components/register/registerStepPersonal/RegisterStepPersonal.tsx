@@ -27,13 +27,6 @@ function RegisterStepPersonal({
   registerDispatch,
   registerAction,
 }: RegisterStepPersonalProps) {
-  const firstNameRef = useRef<HTMLInputElement>(null);
-
-  // sets focus to first name input on first render
-  useEffect(() => {
-    firstNameRef.current?.focus();
-  }, []);
-
   // used to validate first name on every change
   useEffect(() => {
     const isValidFirst = NAME_REGEX.test(firstName);
@@ -84,81 +77,178 @@ function RegisterStepPersonal({
     });
   }, [preferredName]);
 
-  const firstNameInputValidationText = (
+  const firstNameInputErrorText = (
     <Text
-      id="first-name-note"
-      className={
-        isFirstNameFocused && firstName && !isValidFirstName ? '' : 'offscreen'
-      }
+      id="first-name-note-error"
+      style={{
+        display:
+          isFirstNameFocused && firstName && !isValidFirstName
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnNameValidationText({ name: firstName, kind: 'firstName' })}
     </Text>
   );
 
-  const middleNameInputValidationText = (
+  const firstNameInputValidText = (
     <Text
-      id="middle-name-note"
-      className={
-        isMiddleNameFocused && middleName && !isValidMiddleName
-          ? ''
-          : 'offscreen'
-      }
+      id="first-name-note-valid"
+      style={{
+        display:
+          isFirstNameFocused && firstName && isValidFirstName
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> First name is valid
+    </Text>
+  );
+
+  const middleNameInputErrorText = (
+    <Text
+      id="middle-name-note-error"
+      style={{
+        display:
+          isMiddleNameFocused && middleName && !isValidMiddleName
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnNameValidationText({ name: middleName, kind: 'middleName' })}
     </Text>
   );
 
-  const lastNameInputValidationText = (
+  const middleNameInputValidText = (
     <Text
-      id="last-name-note"
-      className={
-        isLastNameFocused && lastName && !isValidLastName ? '' : 'offscreen'
-      }
+      id="middle-name-note-valid"
+      style={{
+        display:
+          isMiddleNameFocused && middleName && isValidMiddleName
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Middle name is valid
+    </Text>
+  );
+
+  const lastNameInputErrorText = (
+    <Text
+      id="last-name-note-error"
+      style={{
+        display:
+          isLastNameFocused && lastName && !isValidLastName ? 'block' : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnNameValidationText({ name: lastName, kind: 'lastName' })}
     </Text>
   );
 
-  const preferredNameInputValidationText = (
+  const lastNameInputValidText = (
     <Text
-      id="preferred-name-note"
-      className={
-        isPreferredNameFocused && preferredName && !isValidPreferredName
-          ? ''
-          : 'offscreen'
-      }
+      id="last-name-note-valid"
+      style={{
+        display:
+          isLastNameFocused && lastName && isValidLastName ? 'block' : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Last name is valid
+    </Text>
+  );
+
+  const preferredNameInputErrorText = (
+    <Text
+      id="preferred-name-note-error"
+      style={{
+        display:
+          isPreferredNameFocused && preferredName && !isValidPreferredName
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnNameValidationText({ name: preferredName, kind: 'preferredName' })}
     </Text>
   );
 
-  const profilePictureUrlInputValidationText = (
+  const preferredNameInputValidText = (
     <Text
-      id="profile-picture-url-note"
-      className={
-        isProfilePictureUrlFocused &&
-        profilePictureUrl &&
-        !isValidProfilePictureUrl
-          ? ''
-          : 'offscreen'
-      }
+      id="preferred-name-note-valid"
+      style={{
+        display:
+          isPreferredNameFocused && preferredName && isValidPreferredName
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Preferred name is valid
+    </Text>
+  );
+
+  const profilePictureUrlInputErrorText = (
+    <Text
+      id="profile-picture-url-note-error"
+      style={{
+        display:
+          isProfilePictureUrlFocused &&
+          profilePictureUrl &&
+          !isValidProfilePictureUrl
+            ? 'block'
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnUrlValidationText(profilePictureUrl)}
+    </Text>
+  );
+
+  const profilePictureUrlInputValidText = (
+    <Text
+      id="profile-picture-url-note-valid"
+      style={{
+        display:
+          isProfilePictureUrlFocused &&
+          profilePictureUrl &&
+          isValidProfilePictureUrl
+            ? 'block'
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Profile picture URL is valid
     </Text>
   );
 
@@ -176,9 +266,10 @@ function RegisterStepPersonal({
         label="First name"
         placeholder="Enter first name"
         autoComplete="off"
-        tabIndex={0}
-        ref={firstNameRef}
-        aria-describedby="first-name-note"
+        aria-required
+        aria-describedby={
+          isValidFirstName ? 'first-name-note-valid' : 'first-name-note-error'
+        }
         aria-invalid={isValidFirstName ? false : true}
         value={firstName}
         icon={
@@ -187,7 +278,9 @@ function RegisterStepPersonal({
           ) : null
         }
         error={!isValidFirstName && firstName !== ''}
-        description={firstNameInputValidationText}
+        description={
+          isValidFirstName ? firstNameInputValidText : firstNameInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setFirstName,
@@ -217,7 +310,11 @@ function RegisterStepPersonal({
         label="Middle name"
         placeholder="Enter middle name"
         autoComplete="off"
-        aria-describedby="middle-name-note"
+        aria-describedby={
+          isValidMiddleName
+            ? 'middle-name-note-valid'
+            : 'middle-name-note-error'
+        }
         aria-invalid={isValidMiddleName ? false : true}
         value={middleName}
         icon={
@@ -226,7 +323,11 @@ function RegisterStepPersonal({
           ) : null
         }
         error={!isValidMiddleName && middleName !== ''}
-        description={middleNameInputValidationText}
+        description={
+          isValidMiddleName
+            ? middleNameInputValidText
+            : middleNameInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setMiddleName,
@@ -254,7 +355,10 @@ function RegisterStepPersonal({
         label="Last name"
         placeholder="Enter last name"
         autoComplete="off"
-        aria-describedby="last-name-note"
+        aria-required
+        aria-describedby={
+          isValidLastName ? 'last-name-note-valid' : 'last-name-note-error'
+        }
         aria-invalid={isValidLastName ? false : true}
         value={lastName}
         icon={
@@ -263,7 +367,9 @@ function RegisterStepPersonal({
           ) : null
         }
         error={!isValidLastName && lastName !== ''}
-        description={lastNameInputValidationText}
+        description={
+          isValidLastName ? lastNameInputValidText : lastNameInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setLastName,
@@ -293,7 +399,11 @@ function RegisterStepPersonal({
         label="Preferred name"
         placeholder="Enter preferred name"
         autoComplete="off"
-        aria-describedby="preferred-name-note"
+        aria-describedby={
+          isValidPreferredName
+            ? 'preferred-name-note-valid'
+            : 'preferred-name-note-error'
+        }
         aria-invalid={isValidPreferredName ? false : true}
         value={preferredName}
         icon={
@@ -302,7 +412,11 @@ function RegisterStepPersonal({
           ) : null
         }
         error={!isValidPreferredName && preferredName !== ''}
-        description={preferredNameInputValidationText}
+        description={
+          isValidPreferredName
+            ? preferredNameInputValidText
+            : preferredNameInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setPreferredName,
@@ -332,7 +446,11 @@ function RegisterStepPersonal({
         label="Profile picture url"
         placeholder="Enter profile picture url"
         autoComplete="off"
-        aria-describedby="profile-picture-url-note"
+        aria-describedby={
+          isValidProfilePictureUrl
+            ? 'profile-picture-url-note-valid'
+            : 'profile-picture-url-note-error'
+        }
         aria-invalid={isValidProfilePictureUrl ? false : true}
         value={profilePictureUrl}
         icon={
@@ -341,7 +459,11 @@ function RegisterStepPersonal({
           ) : null
         }
         error={!isValidProfilePictureUrl && profilePictureUrl !== ''}
-        description={profilePictureUrlInputValidationText}
+        description={
+          isValidProfilePictureUrl
+            ? profilePictureUrlInputValidText
+            : profilePictureUrlInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setProfilePictureUrl,
@@ -365,6 +487,7 @@ function RegisterStepPersonal({
       <NativeSelect
         data={['Prefer not to say', 'He/Him', 'She/Her', 'They/Them', 'Other']}
         description="This is entirely optional."
+        aria-describedby="Choose your preferred pronouns"
         label="Preferred pronouns"
         value={preferredPronouns}
         onChange={(event) => {

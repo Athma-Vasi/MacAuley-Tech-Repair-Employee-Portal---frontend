@@ -157,7 +157,7 @@ function returnPhoneNumberInputValidationText(phoneNumber: string): string {
   const phoneNumberRegex = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
   const isValidRegex = phoneNumberRegex.test(phoneNumber);
   if (!isValidRegex) {
-    return "Must be a valid North American phone number. Only numbers, parentheses, spaces, '+' and hyphens are allowed.";
+    return "Must be a valid North American phone number of format +(1)(234) 567-8901. Only numbers, parentheses, spaces, '+' and hyphens are allowed.";
   }
   return '';
 }
