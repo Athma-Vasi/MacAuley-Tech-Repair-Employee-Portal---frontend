@@ -8,7 +8,17 @@ import {
   PASSWORD_REGEX,
   USERNAME_REGEX,
 } from '../../constants';
-import { CITY_REGEX, NAME_REGEX, REGISTER_URL } from './constants';
+import {
+  ADDRESS_LINE_REGEX,
+  CITY_REGEX,
+  DATE_REGEX,
+  FULL_NAME_REGEX,
+  NAME_REGEX,
+  PHONE_NUMBER_REGEX,
+  POSTAL_CODE_REGEX_CANADA,
+  POSTAL_CODE_REGEX_US,
+  REGISTER_URL,
+} from './constants';
 import { initialRegisterState, registerAction, registerReducer } from './state';
 import '../../index.css';
 import { axiosInstance } from '../../api/axios';
@@ -58,6 +68,9 @@ function Register() {
       isPreferredNameFocused,
 
       preferredPronouns,
+      profilePictureUrl,
+      isValidProfilePictureUrl,
+      isProfilePictureUrlFocused,
 
       address,
       contactNumber,
@@ -161,26 +174,28 @@ function Register() {
     event.preventDefault();
 
     // ~sanity~ safety check
-    const testEmail = EMAIL_REGEX.test(email);
-    const testUsername = USERNAME_REGEX.test(username);
-    const testPassword = PASSWORD_REGEX.test(password);
-    const testConfirmPassword = password === confirmPassword;
-    const testFirstName = NAME_REGEX.test(firstName);
-    const testMiddleName = NAME_REGEX.test(middleName);
-    const testLastName = NAME_REGEX.test(lastName);
-    const testCity = CITY_REGEX.test(city);
+    const finalRegexTest = [
+      EMAIL_REGEX.test(email),
+      USERNAME_REGEX.test(username),
+      PASSWORD_REGEX.test(password),
+      password === confirmPassword,
+      NAME_REGEX.test(firstName),
+      NAME_REGEX.test(middleName),
+      NAME_REGEX.test(lastName),
+      NAME_REGEX.test(preferredName),
+      PHONE_NUMBER_REGEX.test(contactNumber),
+      ADDRESS_LINE_REGEX.test(addressLine),
+      CITY_REGEX.test(city),
+      country === 'Canada'
+        ? POSTAL_CODE_REGEX_CANADA.test(postalCode)
+        : POSTAL_CODE_REGEX_US.test(postalCode),
+      FULL_NAME_REGEX.test(fullName),
+      PHONE_NUMBER_REGEX.test(phoneNumber),
+      DATE_REGEX.test(startDate),
+    ];
 
     // if any field is invalid, display error message and return
-    if (
-      !testEmail ||
-      !testUsername ||
-      !testPassword ||
-      !testConfirmPassword ||
-      !testFirstName ||
-      !testMiddleName ||
-      !testLastName ||
-      !testCity
-    ) {
+    if (finalRegexTest.includes(false)) {
       registerDispatch({
         type: registerAction.setErrorMessage,
         payload: 'Please fill out all fields correctly',
@@ -289,6 +304,9 @@ function Register() {
         isValidPreferredName={isValidPreferredName}
         isPreferredNameFocused={isPreferredNameFocused}
         preferredPronouns={preferredPronouns}
+        profilePictureUrl={profilePictureUrl}
+        isValidProfilePictureUrl={isValidProfilePictureUrl}
+        isProfilePictureUrlFocused={isProfilePictureUrlFocused}
         registerAction={registerAction}
         registerDispatch={registerDispatch}
       />

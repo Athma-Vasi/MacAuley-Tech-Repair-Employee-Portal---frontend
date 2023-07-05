@@ -43,6 +43,9 @@ type RegisterState = {
   isPreferredNameFocused: boolean;
 
   preferredPronouns: PreferredPronouns;
+  profilePictureUrl: string;
+  isValidProfilePictureUrl: boolean;
+  isProfilePictureUrlFocused: boolean;
 
   contactNumber: PhoneNumber | '+(1)';
   isValidContactNumber: boolean;
@@ -124,6 +127,9 @@ type RegisterAction = {
   setIsPreferredNameFocused: 'setIsPreferredNameFocused';
 
   setPreferredPronouns: 'setPreferredPronouns';
+  setProfilePictureUrl: 'setProfilePictureUrl';
+  setIsValidProfilePictureUrl: 'setIsValidProfilePictureUrl';
+  setIsProfilePictureUrlFocused: 'setIsProfilePictureUrlFocused';
 
   setContactNumber: 'setContactNumber';
   setIsValidContactNumber: 'setIsValidContactNumber';

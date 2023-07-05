@@ -44,6 +44,9 @@ const initialRegisterState: RegisterState = {
   isPreferredNameFocused: false,
 
   preferredPronouns: 'Prefer not to say',
+  profilePictureUrl: '',
+  isValidProfilePictureUrl: false,
+  isProfilePictureUrlFocused: false,
 
   contactNumber: '+(1)',
   isValidContactNumber: false,
@@ -125,6 +128,9 @@ const registerAction: RegisterAction = {
   setIsPreferredNameFocused: 'setIsPreferredNameFocused',
 
   setPreferredPronouns: 'setPreferredPronouns',
+  setProfilePictureUrl: 'setProfilePictureUrl',
+  setIsValidProfilePictureUrl: 'setIsValidProfilePictureUrl',
+  setIsProfilePictureUrlFocused: 'setIsProfilePictureUrlFocused',
 
   setContactNumber: 'setContactNumber',
   setIsValidContactNumber: 'setIsValidContactNumber',
@@ -237,6 +243,18 @@ function registerReducer(
       return {
         ...state,
         preferredPronouns: action.payload as PreferredPronouns,
+      };
+    case registerAction.setProfilePictureUrl:
+      return { ...state, profilePictureUrl: action.payload as string };
+    case registerAction.setIsValidProfilePictureUrl:
+      return {
+        ...state,
+        isValidProfilePictureUrl: action.payload as boolean,
+      };
+    case registerAction.setIsProfilePictureUrlFocused:
+      return {
+        ...state,
+        isProfilePictureUrlFocused: action.payload as boolean,
       };
 
     case registerAction.setContactNumber:

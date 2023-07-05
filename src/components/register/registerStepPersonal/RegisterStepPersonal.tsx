@@ -1,9 +1,9 @@
 import { useRef, useEffect } from 'react';
 import { Flex, NativeSelect, Text, TextInput } from '@mantine/core';
-import { NAME_REGEX } from '../constants';
+import { NAME_REGEX, URL_REGEX } from '../constants';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { returnNameValidationText } from '../utils';
+import { returnNameValidationText, returnUrlValidationText } from '../utils';
 
 import type { RegisterStepPersonalProps } from './types';
 
@@ -21,6 +21,9 @@ function RegisterStepPersonal({
   isValidPreferredName,
   isPreferredNameFocused,
   preferredPronouns,
+  profilePictureUrl,
+  isValidProfilePictureUrl,
+  isProfilePictureUrlFocused,
   registerDispatch,
   registerAction,
 }: RegisterStepPersonalProps) {
@@ -55,6 +58,16 @@ function RegisterStepPersonal({
       payload: isValidLast,
     });
   }, [lastName]);
+
+  // used to validate profile picture url on every change
+  useEffect(() => {
+    const isValidPfp = URL_REGEX.test(profilePictureUrl);
+
+    registerDispatch({
+      type: registerAction.setIsValidProfilePictureUrl,
+      payload: isValidPfp,
+    });
+  }, [profilePictureUrl]);
 
   // used to validate preferred name on every change
   useEffect(() => {
@@ -123,6 +136,24 @@ function RegisterStepPersonal({
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnNameValidationText(preferredName)}
+    </Text>
+  );
+
+  const profilePictureUrlInputValidationText = (
+    <Text
+      id="profile-picture-url-note"
+      className={
+        isProfilePictureUrlFocused &&
+        profilePictureUrl &&
+        !isValidProfilePictureUrl
+          ? ''
+          : 'offscreen'
+      }
+      w="100%"
+      color="red"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnUrlValidationText(profilePictureUrl)}
     </Text>
   );
 
@@ -285,6 +316,43 @@ function RegisterStepPersonal({
         }}
         minLength={2}
         maxLength={30}
+      />
+
+      {/* profile pic */}
+      <TextInput
+        w="100%"
+        color="dark"
+        label="Profile picture url"
+        placeholder="Enter profile picture url"
+        autoComplete="off"
+        aria-describedby="profile-picture-url-note"
+        aria-invalid={isValidProfilePictureUrl ? false : true}
+        value={profilePictureUrl}
+        icon={
+          isValidProfilePictureUrl ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidProfilePictureUrl && profilePictureUrl !== ''}
+        description={profilePictureUrlInputValidationText}
+        onChange={(event) => {
+          registerDispatch({
+            type: registerAction.setProfilePictureUrl,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          registerDispatch({
+            type: registerAction.setIsProfilePictureUrlFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          registerDispatch({
+            type: registerAction.setIsProfilePictureUrlFocused,
+            payload: false,
+          });
+        }}
       />
 
       <NativeSelect

@@ -19,6 +19,9 @@ type RegisterStepPersonalProps = {
   isPreferredNameFocused: boolean;
 
   preferredPronouns: PreferredPronouns;
+  profilePictureUrl: string;
+  isValidProfilePictureUrl: boolean;
+  isProfilePictureUrlFocused: boolean;
 
   registerAction: RegisterAction;
   registerDispatch: React.Dispatch<RegisterDispatch>;

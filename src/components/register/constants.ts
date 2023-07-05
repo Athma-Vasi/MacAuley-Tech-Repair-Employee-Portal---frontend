@@ -17,6 +17,19 @@ const NAME_REGEX = /^[A-Za-z\s.\-']{2,30}$/i;
 const FULL_NAME_REGEX = /^[A-Za-z\s.\-']{2,100}$/i;
 
 /**
+ * - https? matches "http" or "https". The "?" makes the "s" character optional, allowing for both "http" and "https" protocols.
+ * - :\/\/ matches "://".
+ * - (www\.)? matches "www." or nothing.
+ * - [-a-zA-Z0-9@:%._+~#=]{1,256} matches any letter, number, or symbol in the brackets, between 1 and 256 times.
+ * - \. matches ".".
+ * - [a-zA-Z0-9()]{1,6} matches any letter, number, or symbol in the brackets, between 1 and 6 times.
+ * - \b ensures that the URL ends at a word boundary.
+ * - ([-a-zA-Z0-9()@:%_+.~#?&//=]*) matches any letter, number, or symbol in the brackets, between 0 and infinity times.
+ */
+const URL_REGEX =
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+
+/**
  * - \+\(1\) matches "+(1)".
  * - \(\d{3}\) matches exactly 3 digits surrounded by parentheses.
  * - [ ] matches a space.
@@ -153,6 +166,7 @@ export {
   REGISTER_URL,
   NAME_REGEX,
   FULL_NAME_REGEX,
+  URL_REGEX,
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   PHONE_NUMBER_REGEX,

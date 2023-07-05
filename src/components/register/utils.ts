@@ -74,6 +74,26 @@ function returnFullNameValidationText(fullName: string): string {
     .join(' ');
 }
 
+function returnUrlValidationText(url: string): string {
+  // /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
+  const protocolRegex = /^(https?:\/\/)/;
+  const optionalSubdomainRegex = /^(www\.)?/;
+  const domainRegex = /^[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}/;
+  const topLevelDomainRegex = /\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
+
+  const urlRegexTupleArr: [boolean, string][] = [
+    [protocolRegex.test(url), 'Must begin with http:// or https://'],
+    [optionalSubdomainRegex.test(url), 'Must begin with www. or no subdomain.'],
+    [domainRegex.test(url), 'Must contain a valid domain name.'],
+    [topLevelDomainRegex.test(url), 'Must contain a valid top-level domain.'],
+  ];
+
+  return urlRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+}
+
 function returnAddressLineValidationText(addressLine: string): string {
   const addressLineLengthRegex = /^(?=.{2,75}$)/;
   const addressLineCharacterRegex = /^[A-Za-z0-9\s.,#-]+$/;
@@ -194,6 +214,7 @@ export {
   returnPasswordRegexValidationText,
   returnNameValidationText,
   returnAddressLineValidationText,
+  returnUrlValidationText,
   returnCityValidationText,
   returnPostalCodeValidationText,
   returnPhoneNumberInputValidationText,

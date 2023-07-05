@@ -6,6 +6,8 @@ type User = {
   firstName: string;
   middleName: string;
   lastName: string;
+  preferredPronouns: PreferredPronouns;
+  profilePictureUrl: string;
   contactNumber: PhoneNumber;
   address: {
     addressLine: string;
@@ -36,6 +38,8 @@ type UserSchema = {
   firstName: string;
   middleName: string;
   lastName: string;
+  preferredPronouns: PreferredPronouns;
+  profilePictureUrl: string;
   contactNumber: PhoneNumber;
   address: {
     addressLine: string;
