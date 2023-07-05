@@ -183,7 +183,7 @@ function returnPostalCodeValidationText({
 function returnDateValidationText(date: string) {
   const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
   const monthRegex = /^(0[1-9]|1[0-2])$/;
-  const yearRegex = /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])$/;
+  const yearRegex = /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])$/;
 
   const day = date.split('-')[2];
   const month = date.split('-')[1];
@@ -197,7 +197,7 @@ function returnDateValidationText(date: string) {
     ],
     [
       yearRegex.test(year),
-      'Must be a valid year. Must be between 1900 and 2023.',
+      'Must be a valid year. Must be between 1900 and 2024.',
     ],
   ];
 

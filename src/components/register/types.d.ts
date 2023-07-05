@@ -179,7 +179,7 @@ type RegisterPayload =
   | Department
   | JobPosition
   | PostalCode
-  | Date;
+  | PreferredPronouns;
 
 type RegisterDispatch = {
   type: RegisterAction[keyof RegisterAction];

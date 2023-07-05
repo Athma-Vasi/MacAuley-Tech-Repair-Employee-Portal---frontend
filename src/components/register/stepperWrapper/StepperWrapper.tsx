@@ -37,9 +37,9 @@ function StepperWrapper({
         {/* step two */}
         <Stepper.Step
           label="Second step"
-          description="Enter personal information"
+          description="Enter contact information"
         >
-          <Text>Enter personal information</Text>
+          <Text>Enter contact information</Text>
         </Stepper.Step>
         {/* step three */}
         <Stepper.Step

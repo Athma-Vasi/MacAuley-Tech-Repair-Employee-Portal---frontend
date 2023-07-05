@@ -57,7 +57,7 @@ const POSTAL_CODE_REGEX_US = /^\d{5}(?:[-]\d{4})?$/;
 /**
  * - 19[0-9][0-9] matches the years from 1900 to 1999.
  * - 20[0-1][0-9] matches the years from 2000 to 2019.
- * - 202[0-3] matches the years from 2020 to 2023.
+ * - 202[0-4] matches the years from 2020 to 2024.
  * - - matches a hyphen.
  * - (0[1-9]|1[0-2]) matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
  * - - matches a hyphen.
@@ -65,7 +65,7 @@ const POSTAL_CODE_REGEX_US = /^\d{5}(?:[-]\d{4})?$/;
  * - ^ and $ ensure that the entire string matches the regex.
  */
 const DATE_REGEX =
-  /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+  /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 const JOB_POSITIONS = ['Employee', 'Supervisor', 'Manager'];
 
