@@ -1046,7 +1046,7 @@ function Register() {
               'They/Them',
               'Other',
             ]}
-            description="This is optional."
+            description="This is entirely optional."
             label="Preferred pronouns"
             value={preferredPronouns}
             onChange={(event) => {

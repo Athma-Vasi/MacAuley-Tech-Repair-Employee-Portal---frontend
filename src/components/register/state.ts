@@ -45,7 +45,10 @@ const initialRegisterState: RegisterState = {
 
   preferredPronouns: 'Prefer not to say',
 
-  contactNumber: '+(1)(234) 567-8901',
+  contactNumber: '+(111)(234) 567-8901',
+  isValidContactNumber: false,
+  isContactNumberFocused: false,
+
   address: {
     addressLine: '',
     isValidAddressLine: false,
@@ -65,7 +68,12 @@ const initialRegisterState: RegisterState = {
   department: 'Administration',
   emergencyContact: {
     fullName: '',
-    contactNumber: '+(1)(234) 567-8901',
+    isValidFullName: false,
+    isFullNameFocused: false,
+
+    phoneNumber: '+(111)(234) 567-8901',
+    isValidPhoneNumber: false,
+    isPhoneNumberFocused: false,
   },
   startDate: new Date(),
 
@@ -116,6 +124,9 @@ const registerAction: RegisterAction = {
   setPreferredPronouns: 'setPreferredPronouns',
 
   setContactNumber: 'setContactNumber',
+  setIsValidContactNumber: 'setIsValidContactNumber',
+  setIsContactNumberFocused: 'setIsContactNumberFocused',
+
   setAddressLine: 'setAddressLine',
   setIsValidAddressLine: 'setIsValidAddressLine',
   setIsAddressLineFocused: 'setIsAddressLineFocused',
@@ -131,8 +142,17 @@ const registerAction: RegisterAction = {
 
   setJobPosition: 'setJobPosition',
   setDepartment: 'setDepartment',
+
   setEmergencyContactFullName: 'setEmergencyContactFullName',
-  setEmergencyContactNumber: 'setEmergencyContactNumber',
+  setIsValidEmergencyContactFullName: 'setIsValidEmergencyContactFullName',
+  setIsEmergencyContactFullNameFocused: 'setIsEmergencyContactFullNameFocused',
+
+  setEmergencyContactPhoneNumber: 'setEmergencyContactPhoneNumber',
+  setIsValidEmergencyContactPhoneNumber:
+    'setIsValidEmergencyContactPhoneNumber',
+  setIsEmergencyContactPhoneNumberFocused:
+    'setIsEmergencyContactPhoneNumberFocused',
+
   setStartDate: 'setStartDate',
 
   setCurrentStepperPosition: 'setCurrentStepperPosition',
@@ -216,6 +236,10 @@ function registerReducer(
 
     case registerAction.setContactNumber:
       return { ...state, contactNumber: action.payload as PhoneNumber };
+    case registerAction.setIsValidContactNumber:
+      return { ...state, isValidContactNumber: action.payload as boolean };
+    case registerAction.setIsContactNumberFocused:
+      return { ...state, isContactNumberFocused: action.payload as boolean };
 
     case registerAction.setAddressLine:
       return {
@@ -294,6 +318,7 @@ function registerReducer(
       return { ...state, jobPosition: action.payload as JobPosition };
     case registerAction.setDepartment:
       return { ...state, department: action.payload as Department };
+
     case registerAction.setEmergencyContactFullName:
       return {
         ...state,
@@ -302,14 +327,48 @@ function registerReducer(
           fullName: action.payload as string,
         },
       };
-    case registerAction.setEmergencyContactNumber:
+    case registerAction.setIsValidEmergencyContactFullName:
       return {
         ...state,
         emergencyContact: {
           ...state.emergencyContact,
-          contactNumber: action.payload as PhoneNumber,
+          isValidFullName: action.payload as boolean,
         },
       };
+    case registerAction.setIsEmergencyContactFullNameFocused:
+      return {
+        ...state,
+        emergencyContact: {
+          ...state.emergencyContact,
+          isFullNameFocused: action.payload as boolean,
+        },
+      };
+
+    case registerAction.setEmergencyContactPhoneNumber:
+      return {
+        ...state,
+        emergencyContact: {
+          ...state.emergencyContact,
+          phoneNumber: action.payload as PhoneNumber,
+        },
+      };
+    case registerAction.setIsValidEmergencyContactPhoneNumber:
+      return {
+        ...state,
+        emergencyContact: {
+          ...state.emergencyContact,
+          isValidPhoneNumber: action.payload as boolean,
+        },
+      };
+    case registerAction.setIsEmergencyContactPhoneNumberFocused:
+      return {
+        ...state,
+        emergencyContact: {
+          ...state.emergencyContact,
+          isPhoneNumberFocused: action.payload as boolean,
+        },
+      };
+
     case registerAction.setStartDate:
       return { ...state, startDate: action.payload as Date };
 

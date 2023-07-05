@@ -45,6 +45,9 @@ type RegisterState = {
   preferredPronouns: PreferredPronouns;
 
   contactNumber: PhoneNumber;
+  isValidContactNumber: boolean;
+  isContactNumberFocused: boolean;
+
   address: {
     addressLine: string;
     isValidAddressLine: boolean;
@@ -64,7 +67,12 @@ type RegisterState = {
   department: Department;
   emergencyContact: {
     fullName: string;
-    contactNumber: string;
+    isValidFullName: boolean;
+    isFullNameFocused: boolean;
+
+    phoneNumber: string;
+    isValidPhoneNumber: boolean;
+    isPhoneNumberFocused: boolean;
   };
   startDate: Date;
 
@@ -115,6 +123,9 @@ type RegisterAction = {
   setPreferredPronouns: 'setPreferredPronouns';
 
   setContactNumber: 'setContactNumber';
+  setIsValidContactNumber: 'setIsValidContactNumber';
+  setIsContactNumberFocused: 'setIsContactNumberFocused';
+
   setAddressLine: 'setAddressLine';
   setIsAddressLineFocused: 'setIsAddressLineFocused';
   setIsValidAddressLine: 'setIsValidAddressLine';
@@ -130,8 +141,15 @@ type RegisterAction = {
 
   setJobPosition: 'setJobPosition';
   setDepartment: 'setDepartment';
+
   setEmergencyContactFullName: 'setEmergencyContactFullName';
-  setEmergencyContactNumber: 'setEmergencyContactNumber';
+  setIsValidEmergencyContactFullName: 'setIsValidEmergencyContactFullName';
+  setIsEmergencyContactFullNameFocused: 'setIsEmergencyContactFullNameFocused';
+
+  setEmergencyContactPhoneNumber: 'setEmergencyContactPhoneNumber';
+  setIsValidEmergencyContactPhoneNumber: 'setIsValidEmergencyContactPhoneNumber';
+  setIsEmergencyContactPhoneNumberFocused: 'setIsEmergencyContactPhoneNumberFocused';
+
   setStartDate: 'setStartDate';
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';

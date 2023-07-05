@@ -19,7 +19,7 @@ type User = {
   department: Department;
   emergencyContact: {
     fullName: string;
-    contactNumber: PhoneNumber;
+    phoneNumber: PhoneNumber;
   };
   startDate: NativeDate;
   roles: UserRoles;
@@ -49,7 +49,7 @@ type UserSchema = {
   department: Department;
   emergencyContact: {
     fullName: string;
-    contactNumber: PhoneNumber;
+    phoneNumber: PhoneNumber;
   };
   startDate: NativeDate;
   roles: UserRoles;
@@ -143,8 +143,9 @@ type CanadianPostalCode =
   `${string}${string}${string} ${string}${string}${string}`;
 type USPostalCode = `${string}${string}${string}${string}${string}`;
 type PostalCode = CanadianPostalCode | USPostalCode;
+
 type PhoneNumber =
-  `+(${string})(${string}${string}${string}) ${string}${string}${string}-${string}${string}${string}${string}`;
+  `+(${string}${string}${string})(${string}${string}${string}) ${string}${string}${string}-${string}${string}${string}${string}`;
 type Country = 'Canada' | 'United States';
 
 type JobPosition = 'Employee' | 'Supervisor' | 'Manager';
