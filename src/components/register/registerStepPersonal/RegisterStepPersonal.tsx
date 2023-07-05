@@ -27,7 +27,12 @@ function RegisterStepPersonal({
   registerDispatch,
   registerAction,
 }: RegisterStepPersonalProps) {
-  const errorRef = useRef<HTMLParagraphElement>(null);
+  const firstNameRef = useRef<HTMLInputElement>(null);
+
+  // sets focus to first name input on first render
+  useEffect(() => {
+    firstNameRef.current?.focus();
+  }, []);
 
   // used to validate first name on every change
   useEffect(() => {
@@ -89,7 +94,7 @@ function RegisterStepPersonal({
       color="red"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText(firstName)}
+      {returnNameValidationText({ name: firstName, kind: 'firstName' })}
     </Text>
   );
 
@@ -105,7 +110,7 @@ function RegisterStepPersonal({
       color="red"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText(middleName)}
+      {returnNameValidationText({ name: middleName, kind: 'middleName' })}
     </Text>
   );
 
@@ -119,7 +124,7 @@ function RegisterStepPersonal({
       color="red"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText(lastName)}
+      {returnNameValidationText({ name: lastName, kind: 'lastName' })}
     </Text>
   );
 
@@ -135,7 +140,7 @@ function RegisterStepPersonal({
       color="red"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText(preferredName)}
+      {returnNameValidationText({ name: preferredName, kind: 'preferredName' })}
     </Text>
   );
 
@@ -171,6 +176,8 @@ function RegisterStepPersonal({
         label="First name"
         placeholder="Enter first name"
         autoComplete="off"
+        tabIndex={0}
+        ref={firstNameRef}
         aria-describedby="first-name-note"
         aria-invalid={isValidFirstName ? false : true}
         value={firstName}

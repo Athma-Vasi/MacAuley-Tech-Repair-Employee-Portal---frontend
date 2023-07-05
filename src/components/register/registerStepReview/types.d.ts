@@ -1,4 +1,4 @@
-import {
+import type {
   Country,
   Department,
   JobPosition,
@@ -8,7 +8,6 @@ import {
   Province,
   StatesUS,
 } from '../../../types';
-import { RegisterState } from '../types';
 
 type RegisterStepReviewProps = {
   email: string;

@@ -29,13 +29,23 @@ function returnPasswordRegexValidationText(password: string): string {
     [passwordSpaceRegex.test(password), 'Cannot contain spaces.'],
   ];
 
-  return passwordRegexTupleArr
+  const validationText = passwordRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid password. ${validationText}` : '';
 }
 
-function returnNameValidationText(name: string): string {
+type ReturnNameValidationTextProps = {
+  name: string;
+  kind: 'firstName' | 'middleName' | 'lastName' | 'preferredName';
+};
+
+function returnNameValidationText({
+  name,
+  kind,
+}: ReturnNameValidationTextProps): string {
   const nameLengthRegex = /^(?=.{2,30}$)/;
   const nameCharacterRegex = /^[a-zA-Z\s.\-']+$/;
 
@@ -47,10 +57,12 @@ function returnNameValidationText(name: string): string {
     ],
   ];
 
-  return nameRegexTupleArr
+  const validationText = nameRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid ${kind}. ${validationText}` : '';
 }
 
 function returnFullNameValidationText(fullName: string): string {
@@ -68,10 +80,12 @@ function returnFullNameValidationText(fullName: string): string {
     ],
   ];
 
-  return fullNameRegexTupleArr
+  const validationText = fullNameRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid full name. ${validationText}` : '';
 }
 
 function returnUrlValidationText(url: string): string {
@@ -88,10 +102,12 @@ function returnUrlValidationText(url: string): string {
     [topLevelDomainRegex.test(url), 'Must contain a valid top-level domain.'],
   ];
 
-  return urlRegexTupleArr
+  const validationText = urlRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid URL. ${validationText}` : '';
 }
 
 function returnAddressLineValidationText(addressLine: string): string {
@@ -109,10 +125,12 @@ function returnAddressLineValidationText(addressLine: string): string {
     ],
   ];
 
-  return addressLineRegexTupleArr
+  const validationText = addressLineRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid address line. ${validationText}` : '';
 }
 
 function returnCityValidationText(city: string): string {
@@ -127,10 +145,12 @@ function returnCityValidationText(city: string): string {
     ],
   ];
 
-  return cityRegexTupleArr
+  const validationText = cityRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid city. ${validationText}` : '';
 }
 
 function returnPhoneNumberInputValidationText(phoneNumber: string): string {
@@ -177,10 +197,12 @@ function returnPostalCodeValidationText({
     ],
   ];
 
-  return canadianPostalCodeTupleArr
+  const validationText = canadianPostalCodeTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid postal code. ${validationText}` : '';
 }
 
 function returnDateValidationText(date: string): string {
@@ -204,10 +226,12 @@ function returnDateValidationText(date: string): string {
     ],
   ];
 
-  return dateValidationTupleArr
+  const validationText = dateValidationTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid date. ${validationText}` : '';
 }
 
 export {

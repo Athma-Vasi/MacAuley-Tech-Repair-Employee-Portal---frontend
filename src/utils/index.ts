@@ -13,10 +13,12 @@ function returnEmailRegexValidationText(email: string): string {
     ],
   ];
 
-  return emailRegexTupleArr
+  const validationText = emailRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid email. ${validationText}` : '';
 }
 
 function returnUsernameRegexValidationText(username: string): string {
@@ -49,10 +51,12 @@ function returnUsernameRegexValidationText(username: string): string {
     ],
   ];
 
-  return usernameRegexTupleArr
+  const validationText = usernameRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid username. ${validationText}` : '';
 }
 
 function returnNoteTitleValidationText(title: string): string {
@@ -73,10 +77,12 @@ function returnNoteTitleValidationText(title: string): string {
     [titleLengthRegex.test(title), 'Must be between 1 and 100 characters.'],
   ];
 
-  return titleRegexTupleArr
+  const validationText = titleRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid title. ${validationText}` : '';
 }
 
 function returnNoteContentValidationText(content: string): string {
@@ -99,10 +105,12 @@ function returnNoteContentValidationText(content: string): string {
     ],
   ];
 
-  return contentRegexTupleArr
+  const validationText = contentRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
+
+  return validationText ? `Invalid content. ${validationText}` : '';
 }
 
 type FormatDateProps = {

@@ -447,6 +447,7 @@ function Register() {
           <Group position="center" mt="xl">
             <Button
               variant="default"
+              aria-label="Press enter to go back to the previous step in the form"
               disabled={currentStepperPosition === 0}
               onClick={() => {
                 const currentStep = currentStepperPosition;
@@ -459,6 +460,7 @@ function Register() {
               Back
             </Button>
             <Button
+              aria-label="Press enter to go to the next step in the form"
               disabled={currentStepperPosition === 4}
               onClick={() => {
                 const currentStep = currentStepperPosition;
@@ -485,7 +487,6 @@ function Register() {
                   event.currentTarget.blur();
                 }
               }}
-              tabIndex={0}
               type="submit"
               disabled={
                 !isValidEmail ||

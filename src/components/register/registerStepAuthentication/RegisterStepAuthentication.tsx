@@ -32,7 +32,6 @@ function RegisterStepAuthentication({
   registerAction,
 }: RegisterStepAuthenticationProps) {
   const emailRef = useRef<HTMLInputElement>(null);
-  const errorRef = useRef<HTMLParagraphElement>(null);
 
   // sets focus on email input on first render
   useEffect(() => {
@@ -75,43 +74,78 @@ function RegisterStepAuthentication({
     });
   }, [password, confirmPassword]);
 
-  const emailValidationText = (
+  const emailInputErrorText = (
     <Text
-      id="email-note"
-      className={isEmailFocused && email && !isValidEmail ? '' : 'offscreen'}
+      id="email-note-error"
+      style={{
+        display: isEmailFocused && email && !isValidEmail ? '' : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnEmailRegexValidationText(email)}
     </Text>
   );
 
-  const usernameInputValidationText = (
+  const emailInputValidText = (
     <Text
-      id="username-note"
-      className={
-        isUsernameFocused && username && !isValidUsername ? '' : 'offscreen'
-      }
+      id="email-note-valid"
+      style={{
+        display: isEmailFocused && email && isValidEmail ? '' : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Email is valid
+    </Text>
+  );
+
+  const usernameInputErrorText = (
+    <Text
+      id="username-note-error"
+      style={{
+        display:
+          isUsernameFocused && username && !isValidUsername ? '' : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnUsernameRegexValidationText(username)}
     </Text>
   );
 
+  const usernameInputValidText = (
+    <Text
+      id="username-note-valid"
+      style={{
+        display: isUsernameFocused && username && isValidUsername ? '' : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Username is valid
+    </Text>
+  );
+
   const passwordRegexValidationText =
     returnPasswordRegexValidationText(password);
 
-  const passwordInputValidationText = (
+  const passwordInputErrorText = (
     <Text
-      id="password-note"
-      className={
-        isPasswordFocused && password && !isValidPassword ? '' : 'offscreen'
-      }
+      id="password-note-error"
+      style={{
+        display:
+          isPasswordFocused && password && !isValidPassword ? '' : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} /> {passwordRegexValidationText}
       {passwordRegexValidationText.includes('special')
@@ -120,21 +154,55 @@ function RegisterStepAuthentication({
     </Text>
   );
 
-  const confirmPasswordInputValidationText = (
+  const passwordInputValidText = (
     <Text
-      id="confirm-password-note"
-      className={
-        isConfirmPasswordFocused && confirmPassword && !isValidConfirmPassword
-          ? ''
-          : 'offscreen'
-      }
+      id="password-note-valid"
+      style={{
+        display: isPasswordFocused && password && isValidPassword ? '' : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Password is valid
+    </Text>
+  );
+
+  const confirmPasswordInputErrorText = (
+    <Text
+      id="confirm-password-note-error"
+      style={{
+        display:
+          isConfirmPasswordFocused && confirmPassword && !isValidConfirmPassword
+            ? ''
+            : 'none',
+      }}
       w="100%"
       color="red"
+      aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {isValidPassword && !isValidConfirmPassword
         ? 'Passwords do not match'
         : ''}
+    </Text>
+  );
+
+  const confirmPasswordInputValidText = (
+    <Text
+      id="confirm-password-note-valid"
+      style={{
+        display:
+          isConfirmPasswordFocused && confirmPassword && isValidConfirmPassword
+            ? ''
+            : 'none',
+      }}
+      w="100%"
+      color="green"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Confirm password is valid. Both
+      passwords match
     </Text>
   );
 
@@ -151,15 +219,19 @@ function RegisterStepAuthentication({
         color="dark"
         label="Email"
         placeholder="Enter email address"
+        tabIndex={0}
         autoComplete="off"
-        aria-describedby="email-note"
+        aria-describedby={
+          isValidEmail ? 'email-note-valid' : 'email-note-error'
+        }
+        aria-required
         aria-invalid={isValidEmail ? false : true}
         icon={
           isValidEmail ? <FontAwesomeIcon icon={faCheck} color="green" /> : null
         }
         value={email}
+        description={isValidEmail ? emailInputValidText : emailInputErrorText}
         error={!isValidEmail && email !== ''}
-        description={emailValidationText}
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setEmail,
@@ -187,7 +259,10 @@ function RegisterStepAuthentication({
         label="Username"
         placeholder="Enter username"
         autoComplete="off"
-        aria-describedby="username-note"
+        aria-describedby={
+          isValidUsername ? 'username-note-valid' : 'username-note-error'
+        }
+        aria-required
         aria-invalid={isValidUsername ? false : true}
         value={username}
         icon={
@@ -196,7 +271,9 @@ function RegisterStepAuthentication({
           ) : null
         }
         error={!isValidUsername && username !== ''}
-        description={usernameInputValidationText}
+        description={
+          isValidUsername ? usernameInputValidText : usernameInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setUsername,
@@ -225,7 +302,10 @@ function RegisterStepAuthentication({
         color="dark"
         label="Password"
         placeholder="Enter password"
-        aria-describedby="password-note"
+        aria-describedby={
+          isValidPassword ? 'password-note-valid' : 'password-note-error'
+        }
+        aria-required
         aria-invalid={isValidPassword ? false : true}
         value={password}
         icon={
@@ -234,7 +314,9 @@ function RegisterStepAuthentication({
           ) : null
         }
         error={!isValidPassword && password !== ''}
-        description={passwordInputValidationText}
+        description={
+          isValidPassword ? passwordInputValidText : passwordInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setPassword,
@@ -263,7 +345,12 @@ function RegisterStepAuthentication({
         color="dark"
         label="Confirm Password"
         placeholder="Confirm password"
-        aria-describedby="confirm-password-note"
+        aria-required
+        aria-describedby={
+          isValidPassword && isValidConfirmPassword
+            ? 'confirm-password-note-valid'
+            : 'confirm-password-note-error'
+        }
         aria-invalid={isValidConfirmPassword ? false : true}
         value={confirmPassword}
         icon={
@@ -272,7 +359,11 @@ function RegisterStepAuthentication({
           ) : null
         }
         error={!isValidConfirmPassword && confirmPassword !== ''}
-        description={confirmPasswordInputValidationText}
+        description={
+          isValidPassword && isValidConfirmPassword
+            ? confirmPasswordInputValidText
+            : confirmPasswordInputErrorText
+        }
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setConfirmPassword,

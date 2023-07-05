@@ -191,8 +191,8 @@ function RegisterStepAdditional({
       <TextInput
         w="100%"
         color="dark"
-        label="Full name"
-        placeholder="Enter contact name"
+        label="Emergency contact name"
+        placeholder="Enter full name"
         autoComplete="off"
         aria-describedby="emergency-contact-full-name-note"
         aria-invalid={isValidFullName ? false : true}
@@ -229,7 +229,7 @@ function RegisterStepAdditional({
       <TextInput
         w="100%"
         color="dark"
-        label="Emergency phone number"
+        label="Emergency contact number"
         description={emergencyPhoneNumberInputValidationText}
         placeholder="Enter phone number"
         autoComplete="off"
