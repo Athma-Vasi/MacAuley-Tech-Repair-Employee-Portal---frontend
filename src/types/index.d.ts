@@ -19,6 +19,7 @@ import type {
   USPostalCode,
   UserDocument,
   UserSchema,
+  PreferredPronouns,
 } from './user.types';
 import type { Note } from './notes.types';
 
@@ -38,6 +39,7 @@ export type {
   USPostalCode,
   UserDocument,
   UserSchema,
+  PreferredPronouns,
 };
 
 export type { Note, BreakPoints };
