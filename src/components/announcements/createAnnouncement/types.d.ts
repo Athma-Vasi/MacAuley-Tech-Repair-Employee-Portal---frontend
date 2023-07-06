@@ -70,6 +70,13 @@ type CreateAnnouncementAction = {
   setTimeToRead: 'setTimeToRead';
 };
 
+type ReturnArticleContentInputProps = {
+  article: string[];
+  isValidArticleParagraph: boolean[];
+  isArticleParagraphFocused: boolean[];
+  returnRegexValidationText?: (paragraph: string) => string;
+};
+
 type ArticlePayload = {
   index: number;
   value: string;
@@ -106,7 +113,10 @@ type CreateAnnouncementResponse = {
 export type {
   AnnouncementSchema,
   AnnouncementDocument,
+  Comment,
+  RatingFeel,
   ArticlePayload,
+  ReturnArticleContentInputProps,
   ArticleParagraphFocusedPayload,
   CreateAnnouncementState,
   CreateAnnouncementAction,

@@ -15,6 +15,10 @@ import {
 } from '../../../utils';
 import { URL_REGEX } from '../../register/constants';
 import { returnUrlValidationText } from '../../register/utils';
+import {
+  returnArticleContentInputErrorElements,
+  returnArticleContentInputValidElements,
+} from './utils';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
@@ -181,86 +185,6 @@ function CreateAnnouncement() {
     </Text>
   );
 
-  function returnArticleContentInputErrorElements({
-    article,
-    isValidArticleParagraph,
-    isArticleParagraphFocused,
-    returnRegexValidationText,
-  }: {
-    article: string[];
-    isValidArticleParagraph: boolean[];
-    isArticleParagraphFocused: boolean[];
-    returnRegexValidationText: (paragraph: string) => string;
-  }) {
-    return article.map((paragraph, index) => (
-      <Text
-        key={`${index}`}
-        id={`article-paragraph-input-note-error-${index}`}
-        style={{
-          display:
-            isArticleParagraphFocused[index] &&
-            paragraph &&
-            !isValidArticleParagraph[index]
-              ? 'block'
-              : 'none',
-        }}
-        color="red"
-        w="100%"
-        aria-live="polite"
-      >
-        <FontAwesomeIcon icon={faInfoCircle} />{' '}
-        {returnRegexValidationText(paragraph)}
-      </Text>
-    ));
-  }
-
-  const articleParagraphInputErrorText = returnArticleContentInputErrorElements(
-    {
-      article,
-      isValidArticleParagraph,
-      isArticleParagraphFocused,
-      returnRegexValidationText: returnArticleContentValidationText,
-    }
-  );
-
-  function returnArticleContentInputValidElements({
-    article,
-    isValidArticleParagraph,
-    isArticleParagraphFocused,
-  }: {
-    article: string[];
-    isValidArticleParagraph: boolean[];
-    isArticleParagraphFocused: boolean[];
-  }) {
-    return article.map((paragraph, index) => (
-      <Text
-        key={`${index}`}
-        id={`article-paragraph-input-note-valid-${index}`}
-        style={{
-          display:
-            isArticleParagraphFocused[index] &&
-            paragraph &&
-            isValidArticleParagraph[index]
-              ? 'block'
-              : 'none',
-        }}
-        color="green"
-        w="100%"
-        aria-live="polite"
-      >
-        <FontAwesomeIcon icon={faCheck} /> Paragraph {index + 1} is valid
-      </Text>
-    ));
-  }
-
-  const articleParagraphInputValidText = returnArticleContentInputValidElements(
-    {
-      article,
-      isValidArticleParagraph,
-      isArticleParagraphFocused,
-    }
-  );
-
   const bannerImgAltInputValidText = (
     <Text
       id="banner-img-alt-input-note-valid"
@@ -276,6 +200,23 @@ function CreateAnnouncement() {
     >
       <FontAwesomeIcon icon={faCheck} /> Banner image alt is valid
     </Text>
+  );
+
+  const articleParagraphInputErrorText = returnArticleContentInputErrorElements(
+    {
+      article,
+      isValidArticleParagraph,
+      isArticleParagraphFocused,
+      returnRegexValidationText: returnArticleContentValidationText,
+    }
+  );
+
+  const articleParagraphInputValidText = returnArticleContentInputValidElements(
+    {
+      article,
+      isValidArticleParagraph,
+      isArticleParagraphFocused,
+    }
   );
 
   return (
