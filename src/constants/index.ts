@@ -56,6 +56,15 @@ const NOTE_TITLE_REGEX =
  */
 const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
 
+/**
+ * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+ * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
+ * - {3,150} ensures that the text is between 3 and 150 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const GENERIC_TITLE_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{3,150}$/i;
+
 const COLORS = {
   darkTextColor: 'dark',
   lightTextColor: '#A7A7A7',
@@ -75,5 +84,6 @@ export {
   PASSWORD_REGEX,
   NOTE_TITLE_REGEX,
   NOTE_TEXT_REGEX,
+  GENERIC_TITLE_REGEX,
   COLORS,
 };

@@ -113,6 +113,32 @@ function returnNoteContentValidationText(content: string): string {
   return validationText ? `Invalid content. ${validationText}` : '';
 }
 
+function returnGenericTitleValidationText(title: string): string {
+  // /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{3,150}$/i
+  const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
+  const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
+  const titleLengthRegex = /^(?=.{3,150}$)/;
+
+  const titleRegexTupleArr: [boolean, string][] = [
+    [
+      atleastOneAlphanumericRegex.test(title),
+      'Must contain at least one alphanumeric character.',
+    ],
+    [
+      wordCharacterWhitespacePunctuationRegex.test(title),
+      'Can only contain alphanumeric characters, whitespace, or punctuation.',
+    ],
+    [titleLengthRegex.test(title), 'Must be between 3 and 150 characters.'],
+  ];
+
+  const validationText = titleRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText ? `Invalid title. ${validationText}` : '';
+}
+
 type FormatDateProps = {
   date: Date;
   locale: string;
@@ -127,5 +153,6 @@ export {
   returnUsernameRegexValidationText,
   returnNoteTitleValidationText,
   returnNoteContentValidationText,
+  returnGenericTitleValidationText,
   formatDate,
 };

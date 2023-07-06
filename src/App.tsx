@@ -12,6 +12,7 @@ import { NotFound } from './components/notFound';
 import { Unauthorized } from './components/unauthorized';
 import { MantineProvider } from '@mantine/core';
 import { useGlobalState } from './hooks/useGlobalState';
+import { CreateAnnouncement } from './components/announcements/createAnnouncement';
 
 function App() {
   const {
@@ -26,6 +27,7 @@ function App() {
           <Route index element={<Login />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="create-announcement" element={<CreateAnnouncement />} />
           <Route path="unauthorized" element={<Unauthorized />} />
         </Route>
 
