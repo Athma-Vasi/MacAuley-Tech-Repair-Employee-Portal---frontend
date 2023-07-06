@@ -5,18 +5,10 @@ import {
   initialCreateAnnouncementState,
 } from './state';
 import { Button, Flex, Text, TextInput, Textarea } from '@mantine/core';
-import {
-  ARTICLE_CONTENT_REGEX,
-  ARTICLE_TITLE_REGEX,
-  USERNAME_REGEX,
-} from '../../../constants';
+import { USERNAME_REGEX } from '../../../constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import {
-  returnArticleTitleValidationText,
-  returnArticleParagraphValidationText,
-  returnImageAltValidationText,
-} from '../../../utils';
+
 import { FULL_NAME_REGEX, URL_REGEX } from '../../register/constants';
 import {
   returnFullNameValidationText,
@@ -27,6 +19,12 @@ import {
   returnArticleParagraphInputValidElements,
 } from './utils';
 import { MAX_ARTICLE_LENGTH } from './constants';
+import { ARTICLE_TITLE_REGEX, ARTICLE_CONTENT_REGEX } from '../constants';
+import {
+  returnArticleTitleValidationText,
+  returnImageAltValidationText,
+  returnArticleParagraphValidationText,
+} from '../utils';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
