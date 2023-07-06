@@ -113,6 +113,47 @@ function returnNoteContentValidationText(content: string): string {
   return validationText ? `Invalid content. ${validationText}` : '';
 }
 
+type ReturnGenericContentValidationTextInput = {
+  content: string;
+  contentKind: string;
+  length: number;
+};
+
+/**
+ * Performs basic grammar validation [.,!?():;"'-] on a string of variable length, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
+ */
+function returnGenericContentValidationText({
+  content,
+  contentKind,
+  length,
+}: ReturnGenericContentValidationTextInput): string {
+  const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
+  const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
+  const contentLengthRegex = new RegExp(`^(?=.{1,${length}}$)`);
+
+  const contentRegexTupleArr: [boolean, string][] = [
+    [
+      atleastOneAlphanumericRegex.test(content),
+      'Must contain at least one alphanumeric character.',
+    ],
+    [
+      wordCharacterWhitespacePunctuationRegex.test(content),
+      'Can only contain alphanumeric characters, whitespace, or punctuation.',
+    ],
+    [
+      contentLengthRegex.test(content),
+      `Must be between 1 and ${length} characters.`,
+    ],
+  ];
+
+  const validationText = contentRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
+}
+
 type FormatDateProps = {
   date: Date;
   locale: string;

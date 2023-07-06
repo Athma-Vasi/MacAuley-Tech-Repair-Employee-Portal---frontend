@@ -48,11 +48,11 @@ type CreateBenefitState = {
   isPlanActive: boolean;
   currency: Currency;
 
-  employerContribution: number;
+  employerContribution: string;
   isValidEmployerContribution: boolean;
   isEmployerContributionFocused: boolean;
 
-  employeeContribution: number;
+  employeeContribution: string;
   isValidEmployeeContribution: boolean;
   isEmployeeContributionFocused: boolean;
 };

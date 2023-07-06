@@ -24,11 +24,11 @@ const initialCreateBenefitState: CreateBenefitState = {
   isPlanActive: false,
   currency: 'CAD',
 
-  employerContribution: 0,
+  employerContribution: '0',
   isValidEmployerContribution: false,
   isEmployerContributionFocused: false,
 
-  employeeContribution: 0,
+  employeeContribution: '0',
   isValidEmployeeContribution: false,
   isEmployeeContributionFocused: false,
 };
@@ -132,7 +132,7 @@ function createBenefitReducer(
     case createBenefitAction.setEmployerContribution:
       return {
         ...state,
-        employerContribution: action.payload as number,
+        employerContribution: action.payload as string,
       };
     case createBenefitAction.setIsValidEmployerContribution:
       return {
@@ -148,7 +148,7 @@ function createBenefitReducer(
     case createBenefitAction.setEmployeeContribution:
       return {
         ...state,
-        employeeContribution: action.payload as number,
+        employeeContribution: action.payload as string,
       };
     case createBenefitAction.setIsValidEmployeeContribution:
       return {
