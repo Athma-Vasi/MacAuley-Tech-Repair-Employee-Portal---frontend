@@ -113,7 +113,7 @@ function returnNoteContentValidationText(content: string): string {
   return validationText ? `Invalid content. ${validationText}` : '';
 }
 
-function returnGenericTitleValidationText(title: string): string {
+function returnArticleTitleValidationText(title: string): string {
   // /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{3,150}$/i
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
@@ -139,6 +139,37 @@ function returnGenericTitleValidationText(title: string): string {
   return validationText ? `Invalid title. ${validationText}` : '';
 }
 
+const returnImageAltValidationText = returnArticleTitleValidationText;
+
+function returnArticleContentValidationText(content: string): string {
+  //  /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,10000}$/i
+  const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
+  const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
+  const contentLengthRegex = /^(?=.{1,10000}$)/;
+
+  const contentRegexTupleArr: [boolean, string][] = [
+    [
+      atleastOneAlphanumericRegex.test(content),
+      'Must contain at least one alphanumeric character.',
+    ],
+    [
+      wordCharacterWhitespacePunctuationRegex.test(content),
+      'Can only contain alphanumeric characters, whitespace, or punctuation.',
+    ],
+    [
+      contentLengthRegex.test(content),
+      'Must be between 1 and 10000 characters.',
+    ],
+  ];
+
+  const validationText = contentRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText ? `Invalid content. ${validationText}` : '';
+}
+
 type FormatDateProps = {
   date: Date;
   locale: string;
@@ -153,6 +184,8 @@ export {
   returnUsernameRegexValidationText,
   returnNoteTitleValidationText,
   returnNoteContentValidationText,
-  returnGenericTitleValidationText,
+  returnArticleTitleValidationText,
+  returnArticleContentValidationText,
+  returnImageAltValidationText,
   formatDate,
 };

@@ -44,6 +44,9 @@ type CreateAnnouncementState = {
   isBannerImageAltFocused: boolean;
 
   article: string[];
+  isValidArticleParagraph: boolean[];
+  isArticleParagraphFocused: boolean[];
+
   timeToRead: number;
 };
 
@@ -61,10 +64,30 @@ type CreateAnnouncementAction = {
   setIsBannerImageAltFocused: 'setIsBannerImageAltFocused';
 
   setArticle: 'setArticle';
+  setIsValidArticleParagraph: 'setIsValidArticleParagraph';
+  setIsArticleParagraphFocused: 'setIsArticleParagraphFocused';
+
   setTimeToRead: 'setTimeToRead';
 };
 
-type CreateAnnouncementPayload = string | number | boolean | string[];
+type ArticlePayload = {
+  index: number;
+  value: string;
+};
+
+type ArticleParagraphFocusedPayload = {
+  index: number;
+  value: boolean;
+};
+
+type CreateAnnouncementPayload =
+  | string
+  | number
+  | boolean
+  | string[]
+  | boolean[]
+  | ArticlePayload
+  | ArticleParagraphFocusedPayload;
 
 type CreateAnnouncementDispatch = {
   type: CreateAnnouncementAction[keyof CreateAnnouncementAction];
@@ -83,6 +106,8 @@ type CreateAnnouncementResponse = {
 export type {
   AnnouncementSchema,
   AnnouncementDocument,
+  ArticlePayload,
+  ArticleParagraphFocusedPayload,
   CreateAnnouncementState,
   CreateAnnouncementAction,
   CreateAnnouncementPayload,

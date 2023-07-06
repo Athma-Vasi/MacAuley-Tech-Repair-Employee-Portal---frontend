@@ -55,7 +55,7 @@ const NOTE_TITLE_REGEX =
  * - i makes the regex case-insensitive.
  */
 const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
-
+const ARTICLE_CONTENT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,10000}$/i;
 /**
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
  * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
@@ -63,7 +63,7 @@ const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
  * - ^ and $ ensure that the entire string matches the regex.
  * - i makes the regex case-insensitive.
  */
-const GENERIC_TITLE_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{3,150}$/i;
+const ARTICLE_TITLE_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{3,150}$/i;
 
 const COLORS = {
   darkTextColor: 'dark',
@@ -84,6 +84,7 @@ export {
   PASSWORD_REGEX,
   NOTE_TITLE_REGEX,
   NOTE_TEXT_REGEX,
-  GENERIC_TITLE_REGEX,
+  ARTICLE_TITLE_REGEX,
+  ARTICLE_CONTENT_REGEX,
   COLORS,
 };

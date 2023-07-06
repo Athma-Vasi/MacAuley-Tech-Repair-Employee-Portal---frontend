@@ -1,14 +1,18 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { Fragment, useEffect, useReducer, useRef } from 'react';
 import {
   createAnnouncementAction,
   createAnnouncementReducer,
   initialCreateAnnouncementState,
 } from './state';
-import { Flex, Text, TextInput } from '@mantine/core';
-import { GENERIC_TITLE_REGEX } from '../../../constants';
+import { Button, Flex, Text, TextInput, Textarea } from '@mantine/core';
+import { ARTICLE_CONTENT_REGEX, ARTICLE_TITLE_REGEX } from '../../../constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { returnGenericTitleValidationText } from '../../../utils';
+import {
+  returnArticleTitleValidationText,
+  returnArticleContentValidationText,
+  returnImageAltValidationText,
+} from '../../../utils';
 import { URL_REGEX } from '../../register/constants';
 import { returnUrlValidationText } from '../../register/utils';
 
@@ -28,6 +32,8 @@ function CreateAnnouncement() {
     isValidBannerImageAlt,
     isBannerImageAltFocused,
     article,
+    isValidArticleParagraph,
+    isArticleParagraphFocused,
     timeToRead,
   } = createAnnouncementState;
 
@@ -39,7 +45,7 @@ function CreateAnnouncement() {
 
   // validate title on every change
   useEffect(() => {
-    const isValidTtl = GENERIC_TITLE_REGEX.test(title);
+    const isValidTtl = ARTICLE_TITLE_REGEX.test(title);
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setIsValidTitle,
@@ -59,13 +65,25 @@ function CreateAnnouncement() {
 
   // validate banner image alt on every change
   useEffect(() => {
-    const isValidBannerAlt = GENERIC_TITLE_REGEX.test(bannerImageAlt);
+    const isValidBannerAlt = ARTICLE_TITLE_REGEX.test(bannerImageAlt);
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setIsValidBannerImageAlt,
       payload: isValidBannerAlt,
     });
   }, [bannerImageAlt]);
+
+  // validate article arr on every change
+  useEffect(() => {
+    const isValidArticleBoolArr = article.map((paragraph) =>
+      ARTICLE_CONTENT_REGEX.test(paragraph)
+    );
+
+    createAnnouncementDispatch({
+      type: createAnnouncementAction.setIsValidArticleParagraph,
+      payload: isValidArticleBoolArr,
+    });
+  }, [article]);
 
   // calculate time to read on every article change
   useEffect(() => {
@@ -92,7 +110,7 @@ function CreateAnnouncement() {
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnGenericTitleValidationText(title)}
+      {returnArticleTitleValidationText(title)}
     </Text>
   );
 
@@ -159,8 +177,88 @@ function CreateAnnouncement() {
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnGenericTitleValidationText(bannerImageAlt)}
+      {returnImageAltValidationText(bannerImageAlt)}
     </Text>
+  );
+
+  function returnArticleContentInputErrorElements({
+    article,
+    isValidArticleParagraph,
+    isArticleParagraphFocused,
+    returnRegexValidationText,
+  }: {
+    article: string[];
+    isValidArticleParagraph: boolean[];
+    isArticleParagraphFocused: boolean[];
+    returnRegexValidationText: (paragraph: string) => string;
+  }) {
+    return article.map((paragraph, index) => (
+      <Text
+        key={`${index}`}
+        id={`article-paragraph-input-note-error-${index}`}
+        style={{
+          display:
+            isArticleParagraphFocused[index] &&
+            paragraph &&
+            !isValidArticleParagraph[index]
+              ? 'block'
+              : 'none',
+        }}
+        color="red"
+        w="100%"
+        aria-live="polite"
+      >
+        <FontAwesomeIcon icon={faInfoCircle} />{' '}
+        {returnRegexValidationText(paragraph)}
+      </Text>
+    ));
+  }
+
+  const articleParagraphInputErrorText = returnArticleContentInputErrorElements(
+    {
+      article,
+      isValidArticleParagraph,
+      isArticleParagraphFocused,
+      returnRegexValidationText: returnArticleContentValidationText,
+    }
+  );
+
+  function returnArticleContentInputValidElements({
+    article,
+    isValidArticleParagraph,
+    isArticleParagraphFocused,
+  }: {
+    article: string[];
+    isValidArticleParagraph: boolean[];
+    isArticleParagraphFocused: boolean[];
+  }) {
+    return article.map((paragraph, index) => (
+      <Text
+        key={`${index}`}
+        id={`article-paragraph-input-note-valid-${index}`}
+        style={{
+          display:
+            isArticleParagraphFocused[index] &&
+            paragraph &&
+            isValidArticleParagraph[index]
+              ? 'block'
+              : 'none',
+        }}
+        color="green"
+        w="100%"
+        aria-live="polite"
+      >
+        <FontAwesomeIcon icon={faCheck} /> Paragraph {index + 1} is valid
+      </Text>
+    ));
+  }
+
+  const articleParagraphInputValidText = returnArticleContentInputValidElements(
+    {
+      article,
+      isValidArticleParagraph,
+      isArticleParagraphFocused,
+    }
   );
 
   const bannerImgAltInputValidText = (
@@ -325,6 +423,87 @@ function CreateAnnouncement() {
         minLength={3}
         maxLength={150}
       />
+      {/* article content text area */}
+      {article.map((paragraph, index) => {
+        return (
+          <Fragment key={`${index}${title}`}>
+            <Textarea
+              size="md"
+              w="100%"
+              color="dark"
+              label={`Paragraph ${index + 1}`}
+              placeholder={`Enter paragraph ${index + 1}`}
+              value={paragraph}
+              aria-required
+              aria-describedby={
+                isValidArticleParagraph[index]
+                  ? `article-paragraph-input-note-valid-${index}`
+                  : `article-paragraph-input-note-error-${index}`
+              }
+              description={
+                isValidArticleParagraph[index]
+                  ? articleParagraphInputValidText[index]
+                  : articleParagraphInputErrorText[index]
+              }
+              aria-invalid={isValidArticleParagraph[index] ? 'false' : 'true'}
+              icon={
+                isValidArticleParagraph[index] ? (
+                  <FontAwesomeIcon icon={faCheck} color="green" />
+                ) : null
+              }
+              error={!isValidArticleParagraph[index] && paragraph !== ''}
+              onChange={(event) => {
+                createAnnouncementDispatch({
+                  type: createAnnouncementAction.setArticle,
+                  payload: {
+                    index: index,
+                    value: event.currentTarget.value,
+                  },
+                });
+              }}
+              onFocus={() => {
+                createAnnouncementDispatch({
+                  type: createAnnouncementAction.setIsArticleParagraphFocused,
+                  payload: {
+                    index,
+                    value: true,
+                  },
+                });
+              }}
+              onBlur={() => {
+                createAnnouncementDispatch({
+                  type: createAnnouncementAction.setIsArticleParagraphFocused,
+                  payload: {
+                    index,
+                    value: false,
+                  },
+                });
+              }}
+              required
+              withAsterisk
+              minLength={3}
+              maxLength={150}
+            />
+          </Fragment>
+        );
+      })}
+
+      {/* button to create new text area paragraph */}
+      <Button
+        variant="default"
+        size="md"
+        onClick={() => {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setArticle,
+            payload: {
+              index: article.length,
+              value: '',
+            },
+          });
+        }}
+      >
+        Add paragraph
+      </Button>
     </Flex>
   );
 }

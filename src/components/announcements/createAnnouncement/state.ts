@@ -1,4 +1,6 @@
 import {
+  ArticleParagraphFocusedPayload,
+  ArticlePayload,
   CreateAnnouncementAction,
   CreateAnnouncementDispatch,
   CreateAnnouncementState,
@@ -17,7 +19,10 @@ const initialCreateAnnouncementState: CreateAnnouncementState = {
   isValidBannerImageAlt: false,
   isBannerImageAltFocused: false,
 
-  article: [],
+  article: [''],
+  isValidArticleParagraph: [false],
+  isArticleParagraphFocused: [false],
+
   timeToRead: 0,
 };
 
@@ -35,6 +40,9 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setIsBannerImageAltFocused: 'setIsBannerImageAltFocused',
 
   setArticle: 'setArticle',
+  setIsValidArticleParagraph: 'setIsValidArticleParagraph',
+  setIsArticleParagraphFocused: 'setIsArticleParagraphFocused',
+
   setTimeToRead: 'setTimeToRead',
 };
 
@@ -88,11 +96,41 @@ function createAnnouncementReducer(
         ...state,
         isBannerImageAltFocused: action.payload as boolean,
       };
-    case createAnnouncementAction.setArticle:
+    case createAnnouncementAction.setArticle: {
+      const { index, value } = action.payload as ArticlePayload;
+      const article = [...state.article];
+      if (index >= article.length) {
+        article.push(value);
+      } else {
+        article[index] = value;
+      }
+
       return {
         ...state,
-        article: action.payload as string[],
+        article,
       };
+    }
+    case createAnnouncementAction.setIsValidArticleParagraph: {
+      return {
+        ...state,
+        isValidArticleParagraph: action.payload as boolean[],
+      };
+    }
+    case createAnnouncementAction.setIsArticleParagraphFocused: {
+      const { index, value } = action.payload as ArticleParagraphFocusedPayload;
+      const isArticleParagraphFocused = [...state.isArticleParagraphFocused];
+      if (index >= isArticleParagraphFocused.length) {
+        isArticleParagraphFocused.push(value);
+      } else {
+        isArticleParagraphFocused[index] = value;
+      }
+
+      return {
+        ...state,
+        isArticleParagraphFocused,
+      };
+    }
+
     case createAnnouncementAction.setTimeToRead:
       return {
         ...state,
