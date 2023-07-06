@@ -216,7 +216,6 @@ function returnDateValidationText(date: string): string {
   const month = date.split('-')[1];
   const year = date.split('-')[0];
 
-  console.log({ date });
   const dateValidationTupleArr: [boolean, string][] = [
     [
       day ? dayRegex.test(day) : true,

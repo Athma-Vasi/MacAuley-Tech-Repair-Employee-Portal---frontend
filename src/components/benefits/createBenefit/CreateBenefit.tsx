@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
 import {
   createBenefitAction,
   createBenefitReducer,
@@ -6,6 +6,7 @@ import {
 } from './state';
 import {
   BENEFIT_PLAN_DATA,
+  CURRENCY_DATA,
   PLAN_DESCRIPTION_REGEX,
   PLAN_NAME_REGEX,
 } from '../constants';
@@ -20,12 +21,23 @@ import {
   Checkbox,
   Flex,
   NativeSelect,
+  NumberInput,
   Radio,
+  Space,
   Switch,
   TextInput,
   Textarea,
+  Text,
+  Button,
 } from '@mantine/core';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faDollarSign,
+  faEuro,
+  faJpy,
+  faPoundSign,
+  faYen,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { title } from 'process';
 import { createAnnouncementAction } from '../../announcements/createAnnouncement/state';
@@ -114,6 +126,51 @@ function CreateBenefit() {
     });
   }, [employerContribution]);
 
+  // insert comma if currency is EUR
+  useEffect(() => {
+    // if currency is EUR, replace decimal with comma and remove leading zeros
+    if (currency === 'EUR') {
+      const employeeContributionWithCommaAndNoLeadingZero = employeeContribution
+        .replace('.', ',')
+        .replace(/^0+/, '');
+      const employerContributionWithCommaAndNoLeadingZero = employerContribution
+        .replace('.', ',')
+        .replace(/^0+/, '');
+
+      createBenefitDispatch({
+        type: createBenefitAction.setEmployeeContribution,
+        payload: employeeContributionWithCommaAndNoLeadingZero,
+      });
+
+      createBenefitDispatch({
+        type: createBenefitAction.setEmployerContribution,
+        payload: employerContributionWithCommaAndNoLeadingZero,
+      });
+    }
+    // if currency is not EUR, replace comma with decimal and remove leading zeros
+    else {
+      const employeeContributionWithDecimalAndNoLeadingZero =
+        employeeContribution.replace(',', '.').replace(/^0+/, '');
+      const employerContributionWithDecimalAndNoLeadingZero =
+        employerContribution.replace(',', '.').replace(/^0+/, '');
+
+      createBenefitDispatch({
+        type: createBenefitAction.setEmployeeContribution,
+        payload: employeeContributionWithDecimalAndNoLeadingZero,
+      });
+
+      createBenefitDispatch({
+        type: createBenefitAction.setEmployerContribution,
+        payload: employerContributionWithDecimalAndNoLeadingZero,
+      });
+    }
+
+    console.log({
+      employeeContribution,
+      employerContribution,
+    });
+  }, [currency, employeeContribution, employerContribution]);
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const planNameInputValidText = returnAccessibleTextElem({
     inputElementKind: 'plan name',
@@ -191,7 +248,6 @@ function CreateBenefit() {
     isValidInputText: isValidEmployeeContribution,
     isInputTextFocused: isEmployeeContributionFocused,
     regexValidationText: returnMoneyValidationText({
-      currency,
       money: employeeContribution,
       kind: 'employee contribution',
     }),
@@ -212,11 +268,67 @@ function CreateBenefit() {
     isValidInputText: isValidEmployerContribution,
     isInputTextFocused: isEmployerContributionFocused,
     regexValidationText: returnMoneyValidationText({
-      currency,
       money: employerContribution,
       kind: 'employer contribution',
     }),
   });
+
+  const currencyIcon =
+    currency === 'CNY' ? (
+      <FontAwesomeIcon icon={faYen} color="gray" />
+    ) : currency === 'GBP' ? (
+      <FontAwesomeIcon icon={faPoundSign} color="gray" />
+    ) : currency === 'EUR' ? (
+      <FontAwesomeIcon icon={faEuro} color="gray" />
+    ) : currency === 'JPY' ? (
+      <FontAwesomeIcon icon={faJpy} color="gray" />
+    ) : (
+      <FontAwesomeIcon icon={faDollarSign} color="gray" />
+    );
+
+  const totalContribution = useMemo(() => {
+    if (currency === 'EUR') {
+      // replace comma with decimal
+      const employeeContributionWithDecimal = employeeContribution.replace(
+        ',',
+        '.'
+      );
+      const employerContributionWithDecimal = employerContribution.replace(
+        ',',
+        '.'
+      );
+
+      // check for letters
+      if (
+        isNaN(Number(employeeContributionWithDecimal)) ||
+        isNaN(Number(employerContributionWithDecimal))
+      ) {
+        return '0.00';
+      }
+
+      const totalContribution =
+        Number(employeeContributionWithDecimal) +
+        Number(employerContributionWithDecimal);
+      const totalContributionFixed = totalContribution.toFixed(2);
+      const totalContributionWithComma = totalContributionFixed.replace(
+        '.',
+        ','
+      );
+      return totalContributionWithComma;
+    } else {
+      // check for letters
+      if (
+        isNaN(Number(employeeContribution)) ||
+        isNaN(Number(employerContribution))
+      ) {
+        return '0.00';
+      }
+
+      const totalContribution =
+        Number(employeeContribution) + Number(employerContribution);
+      return totalContribution.toFixed(2);
+    }
+  }, [currency, employeeContribution, employerContribution]);
 
   return (
     <Flex
@@ -411,6 +523,148 @@ function CreateBenefit() {
         withAsterisk
         required
       />
+
+      {/* currency select input */}
+      <NativeSelect
+        size="md"
+        data={CURRENCY_DATA}
+        label="Currency"
+        description="Select currency of plan."
+        value={currency}
+        onChange={(event) => {
+          createBenefitDispatch({
+            type: createBenefitAction.setCurrency,
+            payload: event.currentTarget.value,
+          });
+        }}
+        withAsterisk
+        required
+      />
+
+      {/* employee contribution text input */}
+      <TextInput
+        size="md"
+        w="100%"
+        color="dark"
+        label="Employee contribution"
+        placeholder="Enter employee contribution"
+        value={employeeContribution}
+        aria-required
+        aria-describedby={
+          isValidEmployeeContribution
+            ? 'employee-contribution-input-note-valid'
+            : 'employee-contribution-input-note-error'
+        }
+        description={
+          isValidEmployeeContribution
+            ? employeeContributionInputValidText
+            : employeeContributionInputErrorText
+        }
+        aria-invalid={isValidEmployeeContribution ? 'false' : 'true'}
+        icon={
+          isValidEmployeeContribution ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        rightSection={currencyIcon}
+        error={!isValidEmployeeContribution && employeeContribution !== ''}
+        onChange={(event) => {
+          createBenefitDispatch({
+            type: createBenefitAction.setEmployeeContribution,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createBenefitDispatch({
+            type: createBenefitAction.setIsEmployeeContributionFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createBenefitDispatch({
+            type: createBenefitAction.setIsEmployeeContributionFocused,
+            payload: false,
+          });
+        }}
+        required
+        withAsterisk
+      />
+
+      {/* employer contribution text input */}
+      <TextInput
+        size="md"
+        w="100%"
+        color="dark"
+        label="Employer contribution"
+        placeholder="Enter employer contribution"
+        value={employerContribution}
+        aria-required
+        aria-describedby={
+          isValidEmployerContribution
+            ? 'employer-contribution-input-note-valid'
+            : 'employer-contribution-input-note-error'
+        }
+        description={
+          isValidEmployerContribution
+            ? employerContributionInputValidText
+            : employerContributionInputErrorText
+        }
+        aria-invalid={isValidEmployerContribution ? 'false' : 'true'}
+        icon={
+          isValidEmployerContribution ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        rightSection={currencyIcon}
+        error={!isValidEmployerContribution && employerContribution !== ''}
+        onChange={(event) => {
+          createBenefitDispatch({
+            type: createBenefitAction.setEmployerContribution,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createBenefitDispatch({
+            type: createBenefitAction.setIsEmployerContributionFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createBenefitDispatch({
+            type: createBenefitAction.setIsEmployerContributionFocused,
+            payload: false,
+          });
+        }}
+        required
+        withAsterisk
+      />
+      {/* computed total contribution */}
+      <Flex w="100%" justify="space-between" align="center">
+        <Text size="md" color="dark">
+          Total contribution
+        </Text>
+        <Flex justify="space-between" align="center" columnGap="sm">
+          {currencyIcon}
+          <Text size="md" color="dark">
+            {totalContribution}
+          </Text>
+        </Flex>
+      </Flex>
+
+      {/* submit button */}
+      <Button
+        size="md"
+        variant="filled"
+        disabled={
+          !isValidPlanName ||
+          !isValidPlanStartDate ||
+          !isValidEmployeeContribution ||
+          !isValidEmployerContribution
+        }
+        type="button"
+      >
+        Submit
+      </Button>
     </Flex>
   );
 }

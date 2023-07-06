@@ -9,6 +9,8 @@ const BENEFIT_PLAN_DATA = [
   'Other',
 ];
 
+const CURRENCY_DATA = ['USD', 'EUR', 'GBP', 'CAD', 'AUD', 'JPY', 'CNY'];
+
 /**
  * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
  * - [\w\s.,!?():;"'-]{1,50} matches any word character, whitespace, or punctuation character between 1 and 50 times. This ensures that the string contains between 1 and 50 word characters, whitespace, or punctuation characters.
@@ -26,4 +28,9 @@ const PLAN_NAME_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i;
  */
 const PLAN_DESCRIPTION_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i;
 
-export { BENEFIT_PLAN_DATA, PLAN_NAME_REGEX, PLAN_DESCRIPTION_REGEX };
+export {
+  BENEFIT_PLAN_DATA,
+  CURRENCY_DATA,
+  PLAN_NAME_REGEX,
+  PLAN_DESCRIPTION_REGEX,
+};

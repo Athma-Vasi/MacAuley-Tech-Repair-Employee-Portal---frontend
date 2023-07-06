@@ -170,21 +170,31 @@ function returnGenericGrammarValidationText({
 function returnMoneyValidationText({
   money,
   kind,
-  currency,
 }: {
   money: string;
   kind: string;
-  currency: Currency;
 }): string {
+  // /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/
   const numberPresentRegex = /^(?=.*[0-9])/;
-  const numberLengthRegex =
-    currency === 'EUR' ? /^\d{0,6}(?:,\d{0,2})?$/ : /^\d{0,6}(?:\.\d{0,2})?$/;
+  const beforeSeperatorRegex = /^\d{0,6}/;
+  const afterSeperatorRegex = /(?:[,.]\d{0,2})?$/;
+  const numberLengthRegex = new RegExp(
+    `^${beforeSeperatorRegex.source}${afterSeperatorRegex.source}$`
+  );
 
   const moneyRegexTupleArr: [boolean, string][] = [
     [numberPresentRegex.test(money), 'Must contain at least one number.'],
     [
+      beforeSeperatorRegex.test(money),
+      'Must be between 1 and 6 digits before the separator.',
+    ],
+    [
+      afterSeperatorRegex.test(money),
+      'Must be between 0 and 2 digits after the separator.',
+    ],
+    [
       numberLengthRegex.test(money),
-      `Must be between 0 and 999999${currency === 'EUR' ? ',' : '.'}99.`,
+      'Must be between 1 and 6 digits before the separator, and 0 to 2 digits after the separator.',
     ],
   ];
 
@@ -193,7 +203,9 @@ function returnMoneyValidationText({
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid ${kind} amount. ${validationText}` : '';
+  return validationText
+    ? `Invalid ${kind[0].toUpperCase()}${kind.slice(1)}. ${validationText}`
+    : '';
 }
 
 type FormatDateProps = {
