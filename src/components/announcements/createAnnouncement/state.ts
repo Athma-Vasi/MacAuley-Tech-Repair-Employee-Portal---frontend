@@ -26,6 +26,7 @@ const initialCreateAnnouncementState: CreateAnnouncementState = {
   article: [''],
   isValidArticleParagraph: [false],
   isArticleParagraphFocused: [false],
+  isArticleLengthExceeded: false,
 
   timeToRead: 0,
 };
@@ -50,6 +51,7 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setArticle: 'setArticle',
   setIsValidArticleParagraph: 'setIsValidArticleParagraph',
   setIsArticleParagraphFocused: 'setIsArticleParagraphFocused',
+  setIsArticleLengthExceeded: 'setIsArticleLengthExceeded',
 
   setTimeToRead: 'setTimeToRead',
 };
@@ -155,6 +157,12 @@ function createAnnouncementReducer(
       return {
         ...state,
         isArticleParagraphFocused,
+      };
+    }
+    case createAnnouncementAction.setIsArticleLengthExceeded: {
+      return {
+        ...state,
+        isArticleLengthExceeded: action.payload as boolean,
       };
     }
 

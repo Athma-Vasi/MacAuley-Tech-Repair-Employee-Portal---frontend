@@ -26,6 +26,7 @@ import {
   returnArticleParagraphInputErrorElements,
   returnArticleParagraphInputValidElements,
 } from './utils';
+import { MAX_ARTICLE_LENGTH } from './constants';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
@@ -48,6 +49,7 @@ function CreateAnnouncement() {
     article,
     isValidArticleParagraph,
     isArticleParagraphFocused,
+    isArticleLengthExceeded,
     timeToRead,
   } = createAnnouncementState;
 
@@ -112,6 +114,16 @@ function CreateAnnouncement() {
     createAnnouncementDispatch({
       type: createAnnouncementAction.setIsValidArticleParagraph,
       payload: isValidArticleBoolArr,
+    });
+  }, [article]);
+
+  // validate article length on every change
+  useEffect(() => {
+    const isValidArticleLength = article.join(' ').length >= MAX_ARTICLE_LENGTH;
+
+    createAnnouncementDispatch({
+      type: createAnnouncementAction.setIsArticleLengthExceeded,
+      payload: isValidArticleLength,
     });
   }, [article]);
 
@@ -527,7 +539,7 @@ function CreateAnnouncement() {
               required
               withAsterisk
               minLength={3}
-              maxLength={150}
+              maxLength={2000}
               ref={
                 index === article.length - 1 ? lastArticleParagraphRef : null
               }
@@ -537,21 +549,32 @@ function CreateAnnouncement() {
       })}
 
       {/* button to create new text area paragraph */}
-      <Button
-        variant="default"
-        size="md"
-        onClick={() => {
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setArticle,
-            payload: {
-              index: article.length,
-              value: '',
-            },
-          });
-        }}
-      >
-        Add paragraph
-      </Button>
+      <Flex align="center" justify="space-between" w="100%">
+        <Text color="dark">{`${timeToRead} min read`}</Text>
+
+        <Button
+          variant="default"
+          size="md"
+          disabled={isArticleLengthExceeded}
+          onClick={() => {
+            createAnnouncementDispatch({
+              type: createAnnouncementAction.setArticle,
+              payload: {
+                index: article.length,
+                value: '',
+              },
+            });
+          }}
+        >
+          Add paragraph
+        </Button>
+      </Flex>
+      {/* max length exceeded notice */}
+      {isArticleLengthExceeded ? (
+        <Text color="red" size="sm">
+          Maximum character length of 14000 reached
+        </Text>
+      ) : null}
     </Flex>
   );
 }

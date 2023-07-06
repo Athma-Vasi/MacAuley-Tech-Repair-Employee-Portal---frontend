@@ -50,7 +50,7 @@ type CreateAnnouncementState = {
   article: string[];
   isValidArticleParagraph: boolean[];
   isArticleParagraphFocused: boolean[];
-
+  isArticleLengthExceeded: boolean;
   timeToRead: number;
 };
 
@@ -74,6 +74,7 @@ type CreateAnnouncementAction = {
   setArticle: 'setArticle';
   setIsValidArticleParagraph: 'setIsValidArticleParagraph';
   setIsArticleParagraphFocused: 'setIsArticleParagraphFocused';
+  setIsArticleLengthExceeded: 'setIsArticleLengthExceeded';
 
   setTimeToRead: 'setTimeToRead';
 };

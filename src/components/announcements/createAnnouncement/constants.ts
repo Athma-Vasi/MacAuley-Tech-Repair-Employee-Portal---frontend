@@ -1,0 +1,3 @@
+const MAX_ARTICLE_LENGTH = 14000;
+
+export { MAX_ARTICLE_LENGTH };

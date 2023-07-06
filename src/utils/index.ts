@@ -148,10 +148,10 @@ function returnArticleTitleValidationText({
 const returnImageAltValidationText = returnArticleTitleValidationText;
 
 function returnArticleParagraphValidationText(content: string): string {
-  //  /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,10000}$/i
+  //  /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,2000}$/i
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
-  const contentLengthRegex = /^(?=.{1,10000}$)/;
+  const contentLengthRegex = /^(?=.{1,2000}$)/;
 
   const contentRegexTupleArr: [boolean, string][] = [
     [
@@ -164,7 +164,7 @@ function returnArticleParagraphValidationText(content: string): string {
     ],
     [
       contentLengthRegex.test(content),
-      'Must be between 1 and 10000 characters.',
+      'Must be between 1 and 20000 characters.',
     ],
   ];
 
