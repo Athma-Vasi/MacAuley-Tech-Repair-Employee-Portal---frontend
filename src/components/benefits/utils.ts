@@ -1,3 +1,0 @@
-const utils = {};
-
-export { utils };

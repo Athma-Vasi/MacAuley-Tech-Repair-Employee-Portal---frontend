@@ -8,22 +8,27 @@ type ReturnAccessibleTextElemProps = {
   kind: 'error' | 'valid';
   isValidInputText: boolean;
   isInputTextFocused: boolean;
-  regexValidationTextFn: (inputText: string) => string;
+  regexValidationText?: string | undefined;
 };
 
+/**
+ * - Returns an accessible text element for an input element. This is used for screen readers to read out the state of the input element.
+ * - For example, if the input element is focused and the input text is valid, then the screen reader will read out '${inputElementKind} is valid'.
+ * - If the input element is focused and the input text is invalid, then the screen reader will read out the regex validation text.
+ */
 function returnAccessibleTextElem({
   inputElementKind,
   inputText,
   kind,
   isValidInputText,
   isInputTextFocused,
-  regexValidationTextFn,
+  regexValidationText,
 }: ReturnAccessibleTextElemProps): JSX.Element | null {
   switch (kind) {
     case 'error': {
       return (
         <Text
-          id={`${inputElementKind}-note-error`}
+          id={`${inputElementKind.split(' ').join('-')}-input-note-error`}
           style={{
             display:
               isInputTextFocused && inputText && !isValidInputText
@@ -34,15 +39,14 @@ function returnAccessibleTextElem({
           w="100%"
           aria-live="polite"
         >
-          <FontAwesomeIcon icon={faInfoCircle} />{' '}
-          {regexValidationTextFn(inputText)}
+          <FontAwesomeIcon icon={faInfoCircle} /> {regexValidationText}
         </Text>
       );
     }
     case 'valid': {
       return (
         <Text
-          id={`${inputElementKind}-note-valid`}
+          id={`${inputElementKind.split(' ').join('-')}-input-note-valid`}
           style={{
             display:
               isInputTextFocused && inputText && isValidInputText
@@ -53,7 +57,10 @@ function returnAccessibleTextElem({
           w="100%"
           aria-live="polite"
         >
-          <FontAwesomeIcon icon={faCheck} /> {`${inputElementKind} is valid`}
+          <FontAwesomeIcon icon={faCheck} />{' '}
+          {`${inputElementKind[0].toUpperCase()}${inputElementKind.slice(
+            1
+          )} is valid`}
         </Text>
       );
     }

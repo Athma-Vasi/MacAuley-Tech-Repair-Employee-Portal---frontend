@@ -1,10 +1,21 @@
+const BENEFIT_PLAN_DATA = [
+  'Health',
+  'Dental',
+  'Vision',
+  'Life',
+  'Disability',
+  'Retirement',
+  'Education',
+  'Other',
+];
+
 /**
  * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
- * - [\w\s.,!?():;"'-]{1,100} matches any word character, whitespace, or punctuation character between 1 and 100 times. This ensures that the string contains between 1 and 100 word characters, whitespace, or punctuation characters.
+ * - [\w\s.,!?():;"'-]{1,50} matches any word character, whitespace, or punctuation character between 1 and 50 times. This ensures that the string contains between 1 and 50 word characters, whitespace, or punctuation characters.
  * - The ^ and $ anchors ensure that the entire string is matched.
  * - The i flag makes the regex case insensitive.
  */
-const PLAN_NAME_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,100}$/i;
+const PLAN_NAME_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i;
 
 /**
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
@@ -15,12 +26,4 @@ const PLAN_NAME_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,100}$/i;
  */
 const PLAN_DESCRIPTION_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i;
 
-/**
- * - ^ asserts that the string starts with a digit.
- * - \d+ matches one or more digits.
- * - (\.\d{1,2})? matches a decimal point followed by one or two digits. The ? makes this group optional, allowing the string to contain only a whole number.
- * - $ asserts that the string ends with a digit.
- */
-const MONEY_REGEX = /^\d+(\.\d{1,2})?$/;
-
-export { PLAN_NAME_REGEX, PLAN_DESCRIPTION_REGEX, MONEY_REGEX };
+export { BENEFIT_PLAN_DATA, PLAN_NAME_REGEX, PLAN_DESCRIPTION_REGEX };

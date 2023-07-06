@@ -1,3 +1,5 @@
+import { Currency } from '../components/benefits/createBenefit/types';
+
 function returnEmailRegexValidationText(email: string): string {
   const usernamePartRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
   const domainPartRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
@@ -113,23 +115,26 @@ function returnNoteContentValidationText(content: string): string {
   return validationText ? `Invalid content. ${validationText}` : '';
 }
 
-type ReturnGenericContentValidationTextInput = {
+type RegexValidationProps = {
   content: string;
   contentKind: string;
-  length: number;
+  minLength: number;
+  maxLength: number;
 };
 
 /**
  * Performs basic grammar validation [.,!?():;"'-] on a string of variable length, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
+ * contentKind is used to specify the type of content being validated, and is used in the returned validation error string.
  */
-function returnGenericContentValidationText({
+function returnGenericGrammarValidationText({
   content,
   contentKind,
-  length,
-}: ReturnGenericContentValidationTextInput): string {
+  minLength,
+  maxLength,
+}: RegexValidationProps): string {
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
-  const contentLengthRegex = new RegExp(`^(?=.{1,${length}}$)`);
+  const contentLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
 
   const contentRegexTupleArr: [boolean, string][] = [
     [
@@ -142,7 +147,7 @@ function returnGenericContentValidationText({
     ],
     [
       contentLengthRegex.test(content),
-      `Must be between 1 and ${length} characters.`,
+      `Must be between ${minLength} and ${maxLength} characters.`,
     ],
   ];
 
@@ -151,7 +156,44 @@ function returnGenericContentValidationText({
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
+  return validationText
+    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+/**
+ * Performs money validation on a number based on currency type, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
+ * kind - semantic html input name
+ */
+function returnMoneyValidationText({
+  money,
+  kind,
+  currency,
+}: {
+  money: string;
+  kind: string;
+  currency: Currency;
+}): string {
+  const numberPresentRegex = /^(?=.*[0-9])/;
+  const numberLengthRegex =
+    currency === 'EUR' ? /^\d{0,6}(?:,\d{0,2})?$/ : /^\d{0,6}(?:\.\d{0,2})?$/;
+
+  const moneyRegexTupleArr: [boolean, string][] = [
+    [numberPresentRegex.test(money), 'Must contain at least one number.'],
+    [
+      numberLengthRegex.test(money),
+      `Must be between 0 and 999999${currency === 'EUR' ? ',' : '.'}99.`,
+    ],
+  ];
+
+  const validationText = moneyRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText ? `Invalid ${kind} amount. ${validationText}` : '';
 }
 
 type FormatDateProps = {
@@ -168,5 +210,7 @@ export {
   returnUsernameRegexValidationText,
   returnNoteTitleValidationText,
   returnNoteContentValidationText,
+  returnGenericGrammarValidationText,
+  returnMoneyValidationText,
   formatDate,
 };

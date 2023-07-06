@@ -536,6 +536,9 @@ function CreateAnnouncement() {
               }}
               required
               withAsterisk
+              autosize
+              minRows={3}
+              maxRows={10}
               minLength={3}
               maxLength={2000}
               ref={

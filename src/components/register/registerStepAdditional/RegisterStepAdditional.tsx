@@ -376,7 +376,7 @@ function RegisterStepAdditional({
         placeholder="DD-MM-YYYY"
         autoComplete="off"
         aria-required
-        aria-label='Please enter start date in format "date-date-month-month-year-year-year-year" from 1900 to 2024'
+        aria-label='Please enter start date in format "date-date-month-month-year-year-year-year" from start year 1900 to end year 2024'
         aria-describedby={
           isValidStartDate ? 'start-date-note-valid' : 'start-date-note-error'
         }

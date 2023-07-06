@@ -56,6 +56,15 @@ const NOTE_TITLE_REGEX =
  */
 const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
 
+/**
+ * - ^ asserts that the string starts with a digit.
+ * - (?=.*[0-9]) is a positive lookahead assertion that requires the presence of at least one digit. This ensures that the string contains at least one digit.
+ * - \d{0,6} matches between 0 and 6 digits. This represents the whole number part of a number, allowing for a range of digit lengths from 0 to 6.
+ * - (?:\.\d{0,2})? is an optional non-capturing group that matches a decimal point followed by between 0 and 2 digits. This allows for the decimal part of the number, if present.
+ * - $ asserts that the string ends with a digit.
+ */
+const MONEY_REGEX = /^(?=.*[0-9])\d{0,6}(?:\.\d{0,2})?$/;
+
 const COLORS = {
   darkTextColor: 'dark',
   lightTextColor: '#A7A7A7',
@@ -76,4 +85,5 @@ export {
   NOTE_TITLE_REGEX,
   NOTE_TEXT_REGEX,
   COLORS,
+  MONEY_REGEX,
 };
