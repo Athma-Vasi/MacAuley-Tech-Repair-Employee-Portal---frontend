@@ -1,6 +1,8 @@
 import { Button, Group, Stepper, Text } from '@mantine/core';
-import type { StepperWrapperProps } from './types';
 import { useEffect, useRef } from 'react';
+
+import type { StepperWrapperProps } from './types';
+import './style.css';
 
 function StepperWrapper({
   children,
@@ -34,6 +36,7 @@ function StepperWrapper({
           description="Enter authentication information"
           aria-current={currentStepperPosition === 0 ? 'step' : undefined}
           ref={currentStepperPosition === 0 ? stepperRef : undefined}
+          className="hide-outline"
         >
           <Text>Enter authentication information</Text>
         </Stepper.Step>
@@ -42,6 +45,7 @@ function StepperWrapper({
           description="Enter personal information"
           aria-current={currentStepperPosition === 1 ? 'step' : undefined}
           ref={currentStepperPosition === 1 ? stepperRef : undefined}
+          className="hide-outline"
         >
           <Text>Enter personal information</Text>
         </Stepper.Step>
@@ -51,6 +55,7 @@ function StepperWrapper({
           description="Enter contact information"
           aria-current={currentStepperPosition === 2 ? 'step' : undefined}
           ref={currentStepperPosition === 2 ? stepperRef : undefined}
+          className="hide-outline"
         >
           <Text>Enter contact information</Text>
         </Stepper.Step>
@@ -60,6 +65,7 @@ function StepperWrapper({
           description="Enter additional information"
           aria-current={currentStepperPosition === 3 ? 'step' : undefined}
           ref={currentStepperPosition === 3 ? stepperRef : undefined}
+          className="hide-outline"
         >
           <Text>Enter additional information</Text>
         </Stepper.Step>
@@ -69,6 +75,7 @@ function StepperWrapper({
           description="Review information"
           aria-current={currentStepperPosition === 4 ? 'step' : undefined}
           ref={currentStepperPosition === 4 ? stepperRef : undefined}
+          className="hide-outline"
         >
           <Text>Review information</Text>
         </Stepper.Step>

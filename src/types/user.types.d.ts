@@ -1,5 +1,5 @@
 type User = {
-  _id: Types.ObjectId;
+  _id: string;
   username: string;
   password: string;
   email: string;
@@ -24,11 +24,11 @@ type User = {
     fullName: string;
     phoneNumber: PhoneNumber | '+(1)';
   };
-  startDate: NativeDate;
+  startDate: string;
   roles: UserRoles;
   active: boolean;
-  createdAt: NativeDate;
-  updatedAt: NativeDate;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -57,15 +57,15 @@ type UserSchema = {
     fullName: string;
     phoneNumber: PhoneNumber | '+(1)';
   };
-  startDate: NativeDate;
+  startDate: string;
   roles: UserRoles;
   active: boolean;
 };
 
 type UserDocument = UserSchema & {
-  _id: Types.ObjectId;
-  createdAt: NativeDate;
-  updatedAt: NativeDate;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
