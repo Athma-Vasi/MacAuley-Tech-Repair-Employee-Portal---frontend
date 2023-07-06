@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Text } from '@mantine/core';
 import { ReturnArticleContentInputProps } from './types';
 
-function returnArticleContentInputValidElements({
+function returnArticleParagraphInputValidElements({
   article,
   isValidArticleParagraph,
   isArticleParagraphFocused,
@@ -24,12 +24,12 @@ function returnArticleContentInputValidElements({
       w="100%"
       aria-live="polite"
     >
-      <FontAwesomeIcon icon={faCheck} /> Paragraph {index + 1} is valid
+      <FontAwesomeIcon icon={faCheck} /> {`Paragraph ${index + 1} is valid`}
     </Text>
   ));
 }
 
-function returnArticleContentInputErrorElements({
+function returnArticleParagraphInputErrorElements({
   article,
   isValidArticleParagraph,
   isArticleParagraphFocused,
@@ -52,12 +52,14 @@ function returnArticleContentInputErrorElements({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnRegexValidationText ? returnRegexValidationText(paragraph) : ''}
+      {returnRegexValidationText
+        ? `Paragraph ${index + 1} ${returnRegexValidationText(paragraph)}`
+        : ''}
     </Text>
   ));
 }
 
 export {
-  returnArticleContentInputValidElements,
-  returnArticleContentInputErrorElements,
+  returnArticleParagraphInputValidElements,
+  returnArticleParagraphInputErrorElements,
 };

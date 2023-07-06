@@ -35,6 +35,10 @@ type CreateAnnouncementState = {
   isValidTitle: boolean;
   isTitleFocused: boolean;
 
+  author: string;
+  isValidAuthor: boolean;
+  isAuthorFocused: boolean;
+
   bannerImageSrc: string;
   isValidBannerImageSrc: boolean;
   isBannerImageSrcFocused: boolean;
@@ -54,6 +58,10 @@ type CreateAnnouncementAction = {
   setTitle: 'setTitle';
   setIsValidTitle: 'setIsValidTitle';
   setIsTitleFocused: 'setIsTitleFocused';
+
+  setAuthor: 'setAuthor';
+  setIsValidAuthor: 'setIsValidAuthor';
+  setIsAuthorFocused: 'setIsAuthorFocused';
 
   setBannerImageSrc: 'setBannerImageSrc';
   setIsValidBannerImageSrc: 'setIsValidBannerImageSrc';

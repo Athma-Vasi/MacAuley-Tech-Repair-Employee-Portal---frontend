@@ -5,19 +5,26 @@ import {
   initialCreateAnnouncementState,
 } from './state';
 import { Button, Flex, Text, TextInput, Textarea } from '@mantine/core';
-import { ARTICLE_CONTENT_REGEX, ARTICLE_TITLE_REGEX } from '../../../constants';
+import {
+  ARTICLE_CONTENT_REGEX,
+  ARTICLE_TITLE_REGEX,
+  USERNAME_REGEX,
+} from '../../../constants';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import {
   returnArticleTitleValidationText,
-  returnArticleContentValidationText,
+  returnArticleParagraphValidationText,
   returnImageAltValidationText,
 } from '../../../utils';
-import { URL_REGEX } from '../../register/constants';
-import { returnUrlValidationText } from '../../register/utils';
+import { FULL_NAME_REGEX, URL_REGEX } from '../../register/constants';
 import {
-  returnArticleContentInputErrorElements,
-  returnArticleContentInputValidElements,
+  returnFullNameValidationText,
+  returnUrlValidationText,
+} from '../../register/utils';
+import {
+  returnArticleParagraphInputErrorElements,
+  returnArticleParagraphInputValidElements,
 } from './utils';
 
 function CreateAnnouncement() {
@@ -29,6 +36,9 @@ function CreateAnnouncement() {
     title,
     isValidTitle,
     isTitleFocused,
+    author,
+    isValidAuthor,
+    isAuthorFocused,
     bannerImageSrc,
     isValidBannerImageSrc,
     isBannerImageSrcFocused,
@@ -47,6 +57,12 @@ function CreateAnnouncement() {
     titleRef.current?.focus();
   }, []);
 
+  const lastArticleParagraphRef = useRef<HTMLTextAreaElement>(null);
+  // sets focus on paragraph input on render, and on every new paragraph textarea creation
+  useEffect(() => {
+    lastArticleParagraphRef.current?.focus();
+  }, [article.length]);
+
   // validate title on every change
   useEffect(() => {
     const isValidTtl = ARTICLE_TITLE_REGEX.test(title);
@@ -56,6 +72,16 @@ function CreateAnnouncement() {
       payload: isValidTtl,
     });
   }, [title]);
+
+  // validate author on every change
+  useEffect(() => {
+    const isValidAuth = FULL_NAME_REGEX.test(author);
+
+    createAnnouncementDispatch({
+      type: createAnnouncementAction.setIsValidAuthor,
+      payload: isValidAuth,
+    });
+  }, [author]);
 
   // validate banner image src on every change
   useEffect(() => {
@@ -114,7 +140,10 @@ function CreateAnnouncement() {
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnArticleTitleValidationText(title)}
+      {returnArticleTitleValidationText({
+        str: title,
+        kind: 'title',
+      })}
     </Text>
   );
 
@@ -129,6 +158,35 @@ function CreateAnnouncement() {
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faCheck} /> Title is valid
+    </Text>
+  );
+
+  const authorInputErrorText = (
+    <Text
+      id="author-input-note-error"
+      style={{
+        display: isAuthorFocused && author && !isValidAuthor ? 'block' : 'none',
+      }}
+      color="red"
+      w="100%"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnFullNameValidationText(author)}
+    </Text>
+  );
+
+  const authorInputValidText = (
+    <Text
+      id="author-input-note-valid"
+      style={{
+        display: isAuthorFocused && author && isValidAuthor ? 'block' : 'none',
+      }}
+      color="green"
+      w="100%"
+      aria-live="polite"
+    >
+      <FontAwesomeIcon icon={faCheck} /> Author is valid
     </Text>
   );
 
@@ -163,7 +221,7 @@ function CreateAnnouncement() {
       w="100%"
       aria-live="polite"
     >
-      <FontAwesomeIcon icon={faCheck} /> Banner image src is valid
+      <FontAwesomeIcon icon={faCheck} /> Banner image url is valid
     </Text>
   );
 
@@ -181,7 +239,10 @@ function CreateAnnouncement() {
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnImageAltValidationText(bannerImageAlt)}
+      {returnImageAltValidationText({
+        str: bannerImageAlt,
+        kind: 'banner image alt text',
+      })}
     </Text>
   );
 
@@ -198,26 +259,24 @@ function CreateAnnouncement() {
       w="100%"
       aria-live="polite"
     >
-      <FontAwesomeIcon icon={faCheck} /> Banner image alt is valid
+      <FontAwesomeIcon icon={faCheck} /> Banner image alt text is valid
     </Text>
   );
 
-  const articleParagraphInputErrorText = returnArticleContentInputErrorElements(
-    {
+  const articleParagraphInputErrorTexts =
+    returnArticleParagraphInputErrorElements({
       article,
       isValidArticleParagraph,
       isArticleParagraphFocused,
-      returnRegexValidationText: returnArticleContentValidationText,
-    }
-  );
+      returnRegexValidationText: returnArticleParagraphValidationText,
+    });
 
-  const articleParagraphInputValidText = returnArticleContentInputValidElements(
-    {
+  const articleParagraphInputValidTexts =
+    returnArticleParagraphInputValidElements({
       article,
       isValidArticleParagraph,
       isArticleParagraphFocused,
-    }
-  );
+    });
 
   return (
     <Flex
@@ -265,6 +324,51 @@ function CreateAnnouncement() {
         ref={titleRef}
         minLength={3}
         maxLength={150}
+        required
+        withAsterisk
+      />
+      {/* author name input */}
+      <TextInput
+        size="md"
+        w="100%"
+        color="dark"
+        label="Author name"
+        placeholder="Enter author name"
+        value={author}
+        aria-required
+        aria-describedby={
+          isValidAuthor ? 'author-input-note-valid' : 'author-input-note-error'
+        }
+        description={
+          isValidAuthor ? authorInputValidText : authorInputErrorText
+        }
+        aria-invalid={isValidAuthor ? 'false' : 'true'}
+        icon={
+          isValidAuthor ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidAuthor && author !== ''}
+        onChange={(event) => {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setAuthor,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setIsAuthorFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setIsAuthorFocused,
+            payload: false,
+          });
+        }}
+        minLength={2}
+        maxLength={100}
         required
         withAsterisk
       />
@@ -383,8 +487,8 @@ function CreateAnnouncement() {
               }
               description={
                 isValidArticleParagraph[index]
-                  ? articleParagraphInputValidText[index]
-                  : articleParagraphInputErrorText[index]
+                  ? articleParagraphInputValidTexts[index]
+                  : articleParagraphInputErrorTexts[index]
               }
               aria-invalid={isValidArticleParagraph[index] ? 'false' : 'true'}
               icon={
@@ -424,6 +528,9 @@ function CreateAnnouncement() {
               withAsterisk
               minLength={3}
               maxLength={150}
+              ref={
+                index === article.length - 1 ? lastArticleParagraphRef : null
+              }
             />
           </Fragment>
         );

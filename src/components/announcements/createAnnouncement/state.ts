@@ -11,6 +11,10 @@ const initialCreateAnnouncementState: CreateAnnouncementState = {
   isValidTitle: false,
   isTitleFocused: false,
 
+  author: '',
+  isValidAuthor: false,
+  isAuthorFocused: false,
+
   bannerImageSrc: '',
   isValidBannerImageSrc: false,
   isBannerImageSrcFocused: false,
@@ -30,6 +34,10 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setTitle: 'setTitle',
   setIsValidTitle: 'setIsValidTitle',
   setIsTitleFocused: 'setIsTitleFocused',
+
+  setAuthor: 'setAuthor',
+  setIsValidAuthor: 'setIsValidAuthor',
+  setIsAuthorFocused: 'setIsAuthorFocused',
 
   setBannerImageSrc: 'setBannerImageSrc',
   setIsValidBannerImageSrc: 'setIsValidBannerImageSrc',
@@ -66,6 +74,23 @@ function createAnnouncementReducer(
         ...state,
         isTitleFocused: action.payload as boolean,
       };
+
+    case createAnnouncementAction.setAuthor:
+      return {
+        ...state,
+        author: action.payload as string,
+      };
+    case createAnnouncementAction.setIsValidAuthor:
+      return {
+        ...state,
+        isValidAuthor: action.payload as boolean,
+      };
+    case createAnnouncementAction.setIsAuthorFocused:
+      return {
+        ...state,
+        isAuthorFocused: action.payload as boolean,
+      };
+
     case createAnnouncementAction.setBannerImageSrc:
       return {
         ...state,
@@ -81,6 +106,7 @@ function createAnnouncementReducer(
         ...state,
         isBannerImageSrcFocused: action.payload as boolean,
       };
+
     case createAnnouncementAction.setBannerImageAlt:
       return {
         ...state,
@@ -96,6 +122,7 @@ function createAnnouncementReducer(
         ...state,
         isBannerImageAltFocused: action.payload as boolean,
       };
+
     case createAnnouncementAction.setArticle: {
       const { index, value } = action.payload as ArticlePayload;
       const article = [...state.article];

@@ -85,7 +85,7 @@ function returnFullNameValidationText(fullName: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid full name. ${validationText}` : '';
+  return validationText ? `Invalid name. ${validationText}` : '';
 }
 
 function returnUrlValidationText(url: string): string {

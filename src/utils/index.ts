@@ -113,35 +113,41 @@ function returnNoteContentValidationText(content: string): string {
   return validationText ? `Invalid content. ${validationText}` : '';
 }
 
-function returnArticleTitleValidationText(title: string): string {
+function returnArticleTitleValidationText({
+  str,
+  kind,
+}: {
+  str: string;
+  kind: string;
+}): string {
   // /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{3,150}$/i
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
-  const titleLengthRegex = /^(?=.{3,150}$)/;
+  const strLengthRegex = /^(?=.{3,150}$)/;
 
-  const titleRegexTupleArr: [boolean, string][] = [
+  const strRegexTupleArr: [boolean, string][] = [
     [
-      atleastOneAlphanumericRegex.test(title),
+      atleastOneAlphanumericRegex.test(str),
       'Must contain at least one alphanumeric character.',
     ],
     [
-      wordCharacterWhitespacePunctuationRegex.test(title),
+      wordCharacterWhitespacePunctuationRegex.test(str),
       'Can only contain alphanumeric characters, whitespace, or punctuation.',
     ],
-    [titleLengthRegex.test(title), 'Must be between 3 and 150 characters.'],
+    [strLengthRegex.test(str), 'Must be between 3 and 150 characters.'],
   ];
 
-  const validationText = titleRegexTupleArr
+  const validationText = strRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid title. ${validationText}` : '';
+  return validationText ? `Invalid ${kind}. ${validationText}` : '';
 }
 
 const returnImageAltValidationText = returnArticleTitleValidationText;
 
-function returnArticleContentValidationText(content: string): string {
+function returnArticleParagraphValidationText(content: string): string {
   //  /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,10000}$/i
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
@@ -185,7 +191,7 @@ export {
   returnNoteTitleValidationText,
   returnNoteContentValidationText,
   returnArticleTitleValidationText,
-  returnArticleContentValidationText,
+  returnArticleParagraphValidationText,
   returnImageAltValidationText,
   formatDate,
 };
