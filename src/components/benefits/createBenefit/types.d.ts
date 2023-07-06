@@ -31,7 +31,7 @@ type BenefitsDocument = BenefitsSchema & {
   __v: number;
 };
 
-type CreateBenefitsState = {
+type CreateBenefitState = {
   planName: string;
   isValidPlanName: boolean;
   isPlanNameFocused: boolean;
@@ -40,12 +40,11 @@ type CreateBenefitsState = {
   isValidPlanDescription: boolean;
   isPlanDescriptionFocused: boolean;
 
-  planKind: BenefitsPlanKind;
-
   planStartDate: string;
   isValidPlanStartDate: boolean;
   isPlanStartDateFocused: boolean;
 
+  planKind: BenefitsPlanKind | '';
   isPlanActive: boolean;
   currency: Currency;
 
@@ -58,7 +57,7 @@ type CreateBenefitsState = {
   isEmployeeContributionFocused: boolean;
 };
 
-type CreateBenefitsAction = {
+type CreateBenefitAction = {
   setPlanName: 'setPlanName';
   setIsValidPlanName: 'setIsValidPlanName';
   setIsPlanNameFocused: 'setIsPlanNameFocused';
@@ -67,14 +66,11 @@ type CreateBenefitsAction = {
   setIsValidPlanDescription: 'setIsValidPlanDescription';
   setIsPlanDescriptionFocused: 'setIsPlanDescriptionFocused';
 
-  setPlanKind: 'setPlanKind';
-  setIsValidPlanKind: 'setIsValidPlanKind';
-  setIsPlanKindFocused: 'setIsPlanKindFocused';
-
   setPlanStartDate: 'setPlanStartDate';
   setIsValidPlanStartDate: 'setIsValidPlanStartDate';
   setIsPlanStartDateFocused: 'setIsPlanStartDateFocused';
 
+  setPlanKind: 'setPlanKind';
   setIsPlanActive: 'setIsPlanActive';
   setCurrency: 'setCurrency';
 
@@ -87,26 +83,26 @@ type CreateBenefitsAction = {
   setIsEmployeeContributionFocused: 'setIsEmployeeContributionFocused';
 };
 
-type CreateBenefitsPayload = CreateBenefitsState[keyof CreateBenefitsState];
+type CreateBenefitPayload = CreateBenefitState[keyof CreateBenefitState];
 
-type CreateBenefitsDispatch = {
-  type: CreateBenefitsAction[keyof CreateBenefitsAction];
-  payload: CreateBenefitsPayload;
+type CreateBenefitDispatch = {
+  type: CreateBenefitAction[keyof CreateBenefitAction];
+  payload: CreateBenefitPayload;
 };
 
-type CreateBenefitsReducer = (
-  state: CreateBenefitsState,
-  action: CreateBenefitsDispatch
-) => CreateBenefitsState;
+type CreateBenefitReducer = (
+  state: CreateBenefitState,
+  action: CreateBenefitDispatch
+) => CreateBenefitState;
 
 export type {
   BenefitsPlanKind,
   Currency,
   BenefitsSchema,
   BenefitsDocument,
-  CreateBenefitsState,
-  CreateBenefitsAction,
-  CreateBenefitsPayload,
-  CreateBenefitsDispatch,
-  CreateBenefitsReducer,
+  CreateBenefitState,
+  CreateBenefitAction,
+  CreateBenefitPayload,
+  CreateBenefitDispatch,
+  CreateBenefitReducer,
 };
