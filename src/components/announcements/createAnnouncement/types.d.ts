@@ -79,7 +79,7 @@ type CreateAnnouncementAction = {
   setTimeToRead: 'setTimeToRead';
 };
 
-type ReturnArticleContentInputProps = {
+type ReturnArticleParagraphInputProps = {
   article: string[];
   isValidArticleParagraph: boolean[];
   isArticleParagraphFocused: boolean[];
@@ -125,7 +125,7 @@ export type {
   Comment,
   RatingFeel,
   ArticlePayload,
-  ReturnArticleContentInputProps,
+  ReturnArticleParagraphInputProps,
   ArticleParagraphFocusedPayload,
   CreateAnnouncementState,
   CreateAnnouncementAction,

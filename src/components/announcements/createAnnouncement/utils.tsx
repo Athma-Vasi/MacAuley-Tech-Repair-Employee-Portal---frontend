@@ -1,13 +1,13 @@
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Text } from '@mantine/core';
-import { ReturnArticleContentInputProps } from './types';
+import { ReturnArticleParagraphInputProps } from './types';
 
 function returnArticleParagraphInputValidElements({
   article,
   isValidArticleParagraph,
   isArticleParagraphFocused,
-}: ReturnArticleContentInputProps) {
+}: ReturnArticleParagraphInputProps): JSX.Element[] {
   return article.map((paragraph, index) => (
     <Text
       key={`${index}`}
@@ -34,7 +34,7 @@ function returnArticleParagraphInputErrorElements({
   isValidArticleParagraph,
   isArticleParagraphFocused,
   returnRegexValidationText,
-}: ReturnArticleContentInputProps) {
+}: ReturnArticleParagraphInputProps): JSX.Element[] {
   return article.map((paragraph, index) => (
     <Text
       key={`${index}`}
