@@ -164,11 +164,6 @@ function CreateBenefit() {
         payload: employerContributionWithDecimalAndNoLeadingZero,
       });
     }
-
-    console.log({
-      employeeContribution,
-      employerContribution,
-    });
   }, [currency, employeeContribution, employerContribution]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -298,7 +293,7 @@ function CreateBenefit() {
         '.'
       );
 
-      // check for letters
+      // safety check
       if (
         isNaN(Number(employeeContributionWithDecimal)) ||
         isNaN(Number(employerContributionWithDecimal))
@@ -316,7 +311,7 @@ function CreateBenefit() {
       );
       return totalContributionWithComma;
     } else {
-      // check for letters
+      // safety check
       if (
         isNaN(Number(employeeContribution)) ||
         isNaN(Number(employerContribution))
@@ -459,7 +454,7 @@ function CreateBenefit() {
         size="md"
         color="dark"
         label="Status"
-        aria-label='Select plan status "active" or "inactive"'
+        aria-label={isPlanActive ? 'Plan is active' : 'Plan is inactive'}
         description={isPlanActive ? 'Plan is active' : 'Plan is inactive'}
         checked={isPlanActive}
         onChange={(event) => {
