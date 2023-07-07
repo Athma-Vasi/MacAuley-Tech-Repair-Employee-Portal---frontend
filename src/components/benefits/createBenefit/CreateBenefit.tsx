@@ -281,6 +281,7 @@ function CreateBenefit() {
       <FontAwesomeIcon icon={faDollarSign} color="gray" />
     );
 
+  // memoized total contribution calculation based on currency
   const totalContribution = useMemo(() => {
     if (currency === 'EUR') {
       // replace comma with decimal

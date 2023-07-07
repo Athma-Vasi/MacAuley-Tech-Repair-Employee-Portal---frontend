@@ -14,6 +14,7 @@ import { MantineProvider } from '@mantine/core';
 import { useGlobalState } from './hooks/useGlobalState';
 import { CreateAnnouncement } from './components/announcements/createAnnouncement';
 import { CreateBenefit } from './components/benefits/createBenefit';
+import { AddressChange } from './components/addressChange';
 
 function App() {
   const {
@@ -28,10 +29,11 @@ function App() {
           <Route index element={<Login />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          {/* DEV PATHS */}
+          <Route path="unauthorized" element={<Unauthorized />} />
+          {/* DEV PATHS - DELETE LATER*/}
           <Route path="create-announcement" element={<CreateAnnouncement />} />
           <Route path="create-benefit" element={<CreateBenefit />} />
-          <Route path="unauthorized" element={<Unauthorized />} />
+          <Route path="address-change" element={<AddressChange />} />
         </Route>
 
         {/* these are protected routes */}

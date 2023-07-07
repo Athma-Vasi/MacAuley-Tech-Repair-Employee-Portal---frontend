@@ -124,7 +124,7 @@ type RegexValidationProps = {
 
 /**
  * Performs basic grammar validation [.,!?():;"'-] on a string of variable length, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
- * contentKind is used to specify the type of content being validated, and is used in the returned validation error string.
+ * contentKind is used to specify the semantic html input label, and is used in the returned validation error string for improved accessibility.
  */
 function returnGenericGrammarValidationText({
   content,
