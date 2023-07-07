@@ -1,8 +1,8 @@
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Grid, Flex, HoverCard, Tooltip, Text } from '@mantine/core';
+import { Flex, Grid, HoverCard, Text, Tooltip } from '@mantine/core';
 
-import { COLORS } from '../../../constants';
+import { COLORS } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks/useGlobalState';
 import { formatDate } from '../../../utils';
 import { textWrap, USERS_HEADINGS } from '../constants';

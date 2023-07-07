@@ -1,9 +1,11 @@
-import { Alert, Flex, Button, Text } from '@mantine/core';
-import type { CustomErrorProps } from './types';
 import '../../index.css';
+
+import { Alert, Button, Flex, Text } from '@mantine/core';
 import { Link } from 'react-router-dom';
+
+import { COLORS } from '../../constants/data';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { COLORS } from '../../constants';
+import type { CustomErrorProps } from './types';
 function CustomError({
   isError,
   ref,

@@ -1,10 +1,11 @@
-import { Flex, Alert, Text, Button } from '@mantine/core';
-
 import '../../index.css';
-import { SuccessProps } from './types';
+
+import { Alert, Button, Flex, Text } from '@mantine/core';
 import { Link } from 'react-router-dom';
+
+import { COLORS } from '../../constants/data';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { COLORS } from '../../constants';
+import { SuccessProps } from './types';
 
 function Success({
   isSuccessful,

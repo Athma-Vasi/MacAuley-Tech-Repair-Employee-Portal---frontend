@@ -1,41 +1,42 @@
+import '../../../index.css';
+
+import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Alert,
-  Flex,
-  Title,
-  Text,
   Button,
-  TextInput,
-  Textarea,
-  Checkbox,
   Center,
+  Checkbox,
+  Flex,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
 } from '@mantine/core';
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { useEffect, useReducer, useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import type { AxiosRequestConfig } from 'axios';
-import { EditNoteProps, EditNoteResponse } from './types';
+import { useEffect, useReducer, useRef } from 'react';
 
-import '../../../index.css';
-import { editNoteAction, editNoteReducer, initialEditNoteState } from './state';
-import { COLORS, NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../../constants';
-import { Loading } from '../../loading';
+import { axiosInstance } from '../../../api/axios';
+import { COLORS } from '../../../constants/data';
+import { NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../../constants/regex';
+import { authAction } from '../../../context/authProvider';
+import {
+  screenReaderTextSpecialCharacters,
+  screenReaderTitleSpecialCharacters,
+} from '../../../domElements';
+import { useAuth } from '../../../hooks/useAuth';
+import { useGlobalState } from '../../../hooks/useGlobalState';
 import {
   returnNoteContentValidationText,
   returnNoteTitleValidationText,
 } from '../../../utils';
-import {
-  screenReaderTitleSpecialCharacters,
-  screenReaderTextSpecialCharacters,
-} from '../../../domElements';
+import { CustomError } from '../../customError';
+import { Loading } from '../../loading';
+import { Success } from '../../success';
 import { addNewNoteAction } from '../addNewNote/state';
 import { EDIT_NOTE_URL } from './constants';
-import { useAuth } from '../../../hooks/useAuth';
-import { axiosInstance } from '../../../api/axios';
-import { authAction } from '../../../context/authProvider';
-import { Success } from '../../success';
-import { CustomError } from '../../customError';
-import { useGlobalState } from '../../../hooks/useGlobalState';
+import { editNoteAction, editNoteReducer, initialEditNoteState } from './state';
+import { EditNoteProps, EditNoteResponse } from './types';
 
 function EditNote({ note, closeModalCallback }: EditNoteProps) {
   const [editNoteState, editNoteDispatch] = useReducer(

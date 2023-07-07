@@ -5,10 +5,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Grid, HoverCard, Text } from '@mantine/core';
-import { UsersListHeaderProps } from './types';
-import { textWrap } from '../../constants';
+
+import { COLORS } from '../../../../constants/data';
 import { useGlobalState } from '../../../../hooks/useGlobalState';
-import { COLORS } from '../../../../constants';
+import { textWrap } from '../../constants';
+import { UsersListHeaderProps } from './types';
 
 function UsersListHeader({
   heading,

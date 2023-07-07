@@ -1,8 +1,9 @@
-import { NavLink, Navbar, Text, Title } from '@mantine/core';
+import { Navbar, NavLink, Text, Title } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
+
+import { COLORS } from '../../constants/data';
 import { useAuth } from '../../hooks/useAuth';
 import { PortalNavbarProps } from './types';
-import { COLORS } from '../../constants';
 
 function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const navigate = useNavigate();

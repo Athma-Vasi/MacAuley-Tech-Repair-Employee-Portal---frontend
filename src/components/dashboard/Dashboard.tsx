@@ -1,12 +1,12 @@
 import { Button, Flex, Image, Spoiler, Text, Title } from '@mantine/core';
-import { compress, compressAccurately } from 'image-conversion';
-
-import { useGlobalState } from '../../hooks/useGlobalState';
-import { useEffect, useState } from 'react';
-import { COLORS } from '../../constants';
-import { axiosInstance } from '../../api/axios';
 import { AxiosRequestConfig } from 'axios';
+import { compress, compressAccurately } from 'image-conversion';
+import { useEffect, useState } from 'react';
+
+import { axiosInstance } from '../../api/axios';
+import { COLORS } from '../../constants/data';
 import { useAuth } from '../../hooks/useAuth';
+import { useGlobalState } from '../../hooks/useGlobalState';
 
 function Dashboard() {
   const {

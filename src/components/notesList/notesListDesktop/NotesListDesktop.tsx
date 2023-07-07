@@ -1,15 +1,16 @@
-import { faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Tooltip, Button, Grid, HoverCard, Text } from '@mantine/core';
+import { Button, Flex, Grid, HoverCard, Text, Tooltip } from '@mantine/core';
+import { useEffect } from 'react';
+
+import { COLORS } from '../../../constants/data';
+import { useAuth } from '../../../hooks/useAuth';
+import { useGlobalState } from '../../../hooks/useGlobalState';
 import { formatDate } from '../../../utils';
 import { NOTE_HEADINGS, textWrap } from '../constants';
-import { NotesListHeader } from './notesListHeader';
 import { Note } from '../types';
+import { NotesListHeader } from './notesListHeader';
 import { NotesListDesktopProps } from './types';
-import { COLORS } from '../../../constants';
-import { useGlobalState } from '../../../hooks/useGlobalState';
-import { useAuth } from '../../../hooks/useAuth';
-import { useEffect } from 'react';
 
 function NotesListDesktop({
   transformedNotes,

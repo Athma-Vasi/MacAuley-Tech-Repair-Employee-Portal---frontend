@@ -174,6 +174,7 @@ function returnAddressValidationText({
   minLength,
   maxLength,
 }: RegexValidationProps): string {
+  // /^[A-Za-z0-9\s.,#-]{2,75}$/i
   const addressLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const addressCharacterRegex = /^[A-Za-z0-9\s.,#-]+$/;
 
@@ -209,6 +210,7 @@ function returnCityValidationText({
   maxLength,
   minLength,
 }: RegexValidationProps): string {
+  // /^[A-Za-z\s.\-']{2,75}$/i
   const cityLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const cityCharacterRegex = /^[A-Za-z\s.\-']+$/;
 

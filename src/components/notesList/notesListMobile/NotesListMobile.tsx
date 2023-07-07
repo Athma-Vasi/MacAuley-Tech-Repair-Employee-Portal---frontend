@@ -1,4 +1,3 @@
-import { Button, Divider, Flex, Select, Text } from '@mantine/core';
 import {
   faChevronDown,
   faChevronRight,
@@ -6,24 +5,24 @@ import {
   faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, Divider, Flex, Select, Text } from '@mantine/core';
+import { Fragment, useEffect, useReducer, useRef, useState } from 'react';
 
-import type {
-  NoteDirectionSelectData,
-  NoteHeadingSelectData,
-  NotesListMobileProps,
-} from './types';
-import type { Note } from '../../../types';
-
-import { COLORS } from '../../../constants';
+import { COLORS } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks/useGlobalState';
+import type { Note } from '../../../types';
 import { formatDate } from '../../../utils';
 import { textWrap } from '../constants';
-import { Fragment, useEffect, useReducer, useRef, useState } from 'react';
 import {
   initialNotesListMobileState,
   notesListMobileAction,
   notesListMobileReducer,
 } from './state';
+import type {
+  NoteDirectionSelectData,
+  NoteHeadingSelectData,
+  NotesListMobileProps,
+} from './types';
 
 function NotesListMobile({
   transformedNotes,

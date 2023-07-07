@@ -1,28 +1,27 @@
 import { Button, Flex, Modal, Space, Title } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
 import { useDisclosure } from '@mantine/hooks';
-
 import type { AxiosRequestConfig } from 'axios';
-import type { GetAllNotesResponse } from './types';
+import { useEffect, useReducer } from 'react';
 
+import { axiosInstance } from '../../api/axios';
+import { COLORS } from '../../constants/data';
+import { authAction } from '../../context/authProvider';
+import { useAuth } from '../../hooks/useAuth';
+import { useGlobalState } from '../../hooks/useGlobalState';
+import { CustomError } from '../customError';
+import { Loading } from '../loading';
+import { AddNewNote } from './addNewNote';
+import { GET_ALL_NOTES } from './constants';
+import { EditNote } from './editNote';
+import { NotesListDesktop } from './notesListDesktop';
+import { NotesListMobile } from './notesListMobile';
 import {
   initialNotesListState,
   notesListAction,
   notesListReducer,
 } from './state';
-import { GET_ALL_NOTES } from './constants';
-import { useAuth } from '../../hooks/useAuth';
-import { axiosInstance } from '../../api/axios';
-import { authAction } from '../../context/authProvider';
+import type { GetAllNotesResponse } from './types';
 import { transformNotesForDisplay } from './utils';
-import { EditNote } from './editNote';
-import { AddNewNote } from './addNewNote';
-import { Loading } from '../loading';
-import { CustomError } from '../customError';
-import { useGlobalState } from '../../hooks/useGlobalState';
-import { COLORS } from '../../constants';
-import { NotesListMobile } from './notesListMobile';
-import { NotesListDesktop } from './notesListDesktop';
 
 function NotesList() {
   const [notesListState, notesListDispatch] = useReducer(

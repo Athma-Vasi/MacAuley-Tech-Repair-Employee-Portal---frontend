@@ -1,41 +1,43 @@
+import '../../../index.css';
+
+import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Alert,
-  Flex,
-  TextInput,
-  Title,
-  Text,
-  Textarea,
   Button,
   Center,
+  Flex,
+  Text,
+  Textarea,
+  TextInput,
+  Title,
 } from '@mantine/core';
-import { useReducer, useRef, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { AxiosRequestConfig } from 'axios';
+import { useEffect, useReducer, useRef } from 'react';
 
-import '../../../index.css';
-import {
-  addNewNoteAction,
-  addNewNoteReducer,
-  initialAddNewNoteState,
-} from './state';
-import {
-  returnNoteContentValidationText,
-  returnNoteTitleValidationText,
-} from '../../../utils';
-import { COLORS, NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../../constants';
-import { AddNewNoteProps, AddNewNoteResponse } from './types';
-import { POST_NEW_NOTE } from './constants';
-import { useAuth } from '../../../hooks/useAuth';
 import { axiosInstance } from '../../../api/axios';
+import { COLORS } from '../../../constants/data';
+import { NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../../constants/regex';
 import { authAction } from '../../../context/authProvider';
 import {
   screenReaderTextSpecialCharacters,
   screenReaderTitleSpecialCharacters,
 } from '../../../domElements';
+import { useAuth } from '../../../hooks/useAuth';
+import { useGlobalState } from '../../../hooks/useGlobalState';
+import {
+  returnNoteContentValidationText,
+  returnNoteTitleValidationText,
+} from '../../../utils';
 import { Loading } from '../../loading';
 import { Success } from '../../success';
-import { AxiosRequestConfig } from 'axios';
-import { useGlobalState } from '../../../hooks/useGlobalState';
+import { POST_NEW_NOTE } from './constants';
+import {
+  addNewNoteAction,
+  addNewNoteReducer,
+  initialAddNewNoteState,
+} from './state';
+import { AddNewNoteProps, AddNewNoteResponse } from './types';
 
 function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
   const [addNewNoteState, addNewNoteDispatch] = useReducer(

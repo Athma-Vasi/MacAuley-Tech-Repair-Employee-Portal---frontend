@@ -1,27 +1,26 @@
-import { Flex, Modal, Title, Button } from '@mantine/core';
+import { Button, Flex, Modal, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import type { AxiosRequestConfig } from 'axios';
 import { useEffect, useReducer } from 'react';
 
-import type { AxiosRequestConfig } from 'axios';
-import type { GetAllUsersResponse } from './types';
-
+import { axiosInstance } from '../../api/axios';
+import { COLORS } from '../../constants/data';
+import { authAction } from '../../context/authProvider';
+import { useAuth } from '../../hooks/useAuth';
+import { useGlobalState } from '../../hooks/useGlobalState';
+import { CustomError } from '../customError';
+import { Loading } from '../loading';
+import { GET_ALL_USERS } from './constants';
+import { EditUser } from './editUser';
 import {
   initialUsersListState,
   usersListAction,
   usersListReducer,
 } from './state';
-import { axiosInstance } from '../../api/axios';
-import { useAuth } from '../../hooks/useAuth';
-import { GET_ALL_USERS } from './constants';
-import { authAction } from '../../context/authProvider';
-import { EditUser } from './editUser';
-import { Loading } from '../loading';
-import { sortUsersByKey } from './utils';
-import { CustomError } from '../customError';
-import { useGlobalState } from '../../hooks/useGlobalState';
-import { COLORS } from '../../constants';
-import { UsersListMobile } from './usersListMobile';
+import type { GetAllUsersResponse } from './types';
 import { UsersListDesktop } from './usersListDesktop';
+import { UsersListMobile } from './usersListMobile';
+import { sortUsersByKey } from './utils';
 
 function UsersList() {
   const { authState, authDispatch } = useAuth();

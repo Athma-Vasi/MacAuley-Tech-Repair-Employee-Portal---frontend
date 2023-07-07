@@ -4,25 +4,24 @@ import {
   faEdit,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Button, Text, Select } from '@mantine/core';
-import { formatDate } from '../../../utils';
-
-import type { User } from '../../../types';
-import type {
-  UserDirectionSelectData,
-  UserHeadingSelectData,
-  UsersListMobileProps,
-} from './types';
-
-import { textWrap } from '../constants';
-import { COLORS } from '../../../constants';
-import { useGlobalState } from '../../../hooks/useGlobalState';
+import { Button, Flex, Select, Text } from '@mantine/core';
 import { Fragment, useEffect, useReducer, useState } from 'react';
+
+import { COLORS } from '../../../constants/data';
+import { useGlobalState } from '../../../hooks/useGlobalState';
+import type { User } from '../../../types';
+import { formatDate } from '../../../utils';
+import { textWrap } from '../constants';
 import {
   initialUsersListMobileState,
   usersListMobileAction,
   usersListMobileReducer,
 } from './state';
+import type {
+  UserDirectionSelectData,
+  UserHeadingSelectData,
+  UsersListMobileProps,
+} from './types';
 
 function UsersListMobile({
   transformedUsers,

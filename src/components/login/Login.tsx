@@ -1,24 +1,24 @@
 import {
-  Text,
-  TextInput,
-  PasswordInput,
-  Title,
   Button,
   Flex,
+  PasswordInput,
+  Text,
+  TextInput,
+  Title,
 } from '@mantine/core';
-import { Link, useNavigate } from 'react-router-dom';
+import { AxiosRequestConfig } from 'axios';
 import jwtDecode, { InvalidTokenError } from 'jwt-decode';
-import { axiosInstance } from '../../api/axios';
-import { useRef, useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-import { initialLoginState, loginAction, loginReducer } from './state';
-import { LOGIN_URL } from './constants';
-import { DecodedToken, LoginResponse } from './types';
+import { axiosInstance } from '../../api/axios';
+import { COLORS } from '../../constants/data';
 import { authAction } from '../../context/authProvider/state';
 import { useAuth } from '../../hooks/useAuth';
 import { CustomError } from '../customError';
-import { AxiosRequestConfig } from 'axios';
-import { COLORS } from '../../constants';
+import { LOGIN_URL } from './constants';
+import { initialLoginState, loginAction, loginReducer } from './state';
+import { DecodedToken, LoginResponse } from './types';
 
 function Login() {
   const [{ username, password, errorMessage }, loginDispatch] = useReducer(

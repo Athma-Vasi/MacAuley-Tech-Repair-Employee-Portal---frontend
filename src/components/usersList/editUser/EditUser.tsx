@@ -1,33 +1,35 @@
+import '../../../index.css';
+
+import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Flex,
-  TextInput,
-  Title,
-  Text,
+  Button,
   Checkbox,
+  Flex,
   Group,
   Radio,
-  Button,
+  Text,
+  TextInput,
+  Title,
 } from '@mantine/core';
+import { AxiosRequestConfig } from 'axios';
 import { useEffect, useReducer, useRef } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
-import '../../../index.css';
-import { editUserAction, editUserReducer, initialEditUserState } from './state';
-import { EditUserProps, EditUserResponse } from './types';
-import { COLORS, EMAIL_REGEX, USERNAME_REGEX } from '../../../constants';
+import { axiosInstance } from '../../../api/axios';
+import { COLORS } from '../../../constants/data';
+import { EMAIL_REGEX, USERNAME_REGEX } from '../../../constants/regex';
+import { authAction } from '../../../context/authProvider';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnEmailRegexValidationText,
   returnUsernameRegexValidationText,
 } from '../../../utils';
-import { PUT_URL } from './constants';
-import { useAuth, useGlobalState } from '../../../hooks';
-import { axiosInstance } from '../../../api/axios';
-import { authAction } from '../../../context/authProvider';
-import { Success } from '../../success';
-import { Loading } from '../../loading';
 import { CustomError } from '../../customError';
-import { AxiosRequestConfig } from 'axios';
+import { Loading } from '../../loading';
+import { Success } from '../../success';
+import { PUT_URL } from './constants';
+import { editUserAction, editUserReducer, initialEditUserState } from './state';
+import { EditUserProps, EditUserResponse } from './types';
 
 function EditUser({ user, closeModalCallback }: EditUserProps) {
   const [editUserState, editUserDispatch] = useReducer(

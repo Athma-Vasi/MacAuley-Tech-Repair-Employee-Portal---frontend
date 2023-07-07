@@ -1,38 +1,37 @@
-import { useEffect, useRef, useReducer } from 'react';
-import { Link } from 'react-router-dom';
-import { Button, Flex, Group, Text, Title } from '@mantine/core';
+import '../../index.css';
 
-import {
-  COLORS,
-  EMAIL_REGEX,
-  PASSWORD_REGEX,
-  USERNAME_REGEX,
-} from '../../constants';
+import { Button, Flex, Group, Text, Title } from '@mantine/core';
+import { useEffect, useReducer, useRef } from 'react';
+import { Link } from 'react-router-dom';
+
+import { axiosInstance } from '../../api/axios';
+import { COLORS } from '../../constants/data';
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   DATE_REGEX,
+  EMAIL_REGEX,
   FULL_NAME_REGEX,
   NAME_REGEX,
+  PASSWORD_REGEX,
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
-  REGISTER_URL,
-} from './constants';
-import { initialRegisterState, registerAction, registerReducer } from './state';
-import '../../index.css';
-import { axiosInstance } from '../../api/axios';
-import { RegisterResponse } from './types';
-import { Loading } from '../loading';
+  USERNAME_REGEX,
+} from '../../constants/regex';
+import { UserSchema } from '../../types';
 import { CustomError } from '../customError';
+import { Loading } from '../loading';
 import { Success } from '../success';
-import { StepperWrapper } from './stepperWrapper/StepperWrapper';
+import { REGISTER_URL } from './constants';
+import { RegisterStepAdditional } from './registerStepAdditional/RegisterStepAdditional';
+import { RegisterStepAddress } from './registerStepAddress/RegisterStepAddress';
 import { RegisterStepAuthentication } from './registerStepAuthentication/RegisterStepAuthentication';
 import { RegisterStepPersonal } from './registerStepPersonal/RegisterStepPersonal';
-import { RegisterStepAddress } from './registerStepAddress/RegisterStepAddress';
-import { RegisterStepAdditional } from './registerStepAdditional/RegisterStepAdditional';
-import { UserSchema } from '../../types';
 import { RegisterStepReview } from './registerStepReview/RegisterStepReview';
+import { initialRegisterState, registerAction, registerReducer } from './state';
+import { StepperWrapper } from './stepperWrapper/StepperWrapper';
+import { RegisterResponse } from './types';
 
 function Register() {
   const [registerState, registerDispatch] = useReducer(

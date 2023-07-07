@@ -5,18 +5,19 @@ import {
   Header,
   MediaQuery,
   Space,
-  Title,
   Text,
+  Title,
 } from '@mantine/core';
-import { LOGOUT_URL } from './constants';
-import { useAuth } from '../../hooks/useAuth';
-import { axiosInstance } from '../../api/axios';
-import { LogoutResponse, PortalHeaderProps } from './types';
-import { useNavigate } from 'react-router-dom';
-import { ThemeSwitch } from '../themeSwitch';
 import { AxiosRequestConfig } from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+import { axiosInstance } from '../../api/axios';
+import { COLORS } from '../../constants/data';
+import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { COLORS } from '../../constants';
+import { ThemeSwitch } from '../themeSwitch';
+import { LOGOUT_URL } from './constants';
+import { LogoutResponse, PortalHeaderProps } from './types';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const {
