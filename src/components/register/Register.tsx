@@ -23,7 +23,7 @@ import { UserSchema } from '../../types';
 import { CustomError } from '../customError';
 import { Loading } from '../loading';
 import { Success } from '../success';
-import { REGISTER_URL } from './constants';
+import { REGISTER_DESCRIPTION_MAP, REGISTER_URL } from './constants';
 import { RegisterStepAdditional } from './registerStepAdditional/RegisterStepAdditional';
 import { RegisterStepAddress } from './registerStepAddress/RegisterStepAddress';
 import { RegisterStepAuthentication } from './registerStepAuthentication/RegisterStepAuthentication';
@@ -400,9 +400,11 @@ function Register() {
 
   const displayRegisterForm = (
     <StepperWrapper
+      stepInError={2}
+      descriptionMap={REGISTER_DESCRIPTION_MAP}
       currentStepperPosition={currentStepperPosition}
-      parentComponentAction={registerAction}
-      registerDispatch={registerDispatch}
+      setCurrentStepperPosition={registerAction.setCurrentStepperPosition}
+      parentComponentDispatch={registerDispatch}
     >
       <form onSubmit={handleRegisterFormSubmit} style={{ width: '100%' }}>
         <Flex
@@ -437,16 +439,6 @@ function Register() {
           {/* register button */}
           <Flex w="100%" justify="flex-end">
             <Button
-              onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.currentTarget.click();
-                }
-              }}
-              onKeyUp={(event) => {
-                if (event.key === 'Enter') {
-                  event.currentTarget.blur();
-                }
-              }}
               type="submit"
               disabled={
                 !isValidEmail ||

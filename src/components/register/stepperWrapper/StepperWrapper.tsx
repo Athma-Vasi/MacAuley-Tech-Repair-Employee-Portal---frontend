@@ -8,8 +8,8 @@ import type { StepperWrapperProps } from './types';
 function StepperWrapper({
   children,
   currentStepperPosition,
-  parentComponentAction,
-  registerDispatch,
+  setCurrentStepperPosition,
+  parentComponentDispatch,
 }: StepperWrapperProps) {
   const stepperRef = useRef<HTMLButtonElement>(null);
 
@@ -23,8 +23,8 @@ function StepperWrapper({
       <Stepper
         active={currentStepperPosition}
         onStepClick={(step) => {
-          registerDispatch({
-            type: parentComponentAction.setCurrentStepperPosition,
+          parentComponentDispatch({
+            type: setCurrentStepperPosition,
             payload: step,
           });
         }}
@@ -97,8 +97,8 @@ function StepperWrapper({
           disabled={currentStepperPosition === 0}
           onClick={() => {
             const currentStep = currentStepperPosition;
-            registerDispatch({
-              type: parentComponentAction.setCurrentStepperPosition,
+            parentComponentDispatch({
+              type: setCurrentStepperPosition,
               payload: currentStep > 0 ? currentStep - 1 : currentStep + 1,
             });
           }}
@@ -110,8 +110,8 @@ function StepperWrapper({
           disabled={currentStepperPosition === 4}
           onClick={() => {
             const currentStep = currentStepperPosition;
-            registerDispatch({
-              type: parentComponentAction.setCurrentStepperPosition,
+            parentComponentDispatch({
+              type: setCurrentStepperPosition,
               payload: currentStep < 4 ? currentStep + 1 : currentStep - 1,
             });
           }}
