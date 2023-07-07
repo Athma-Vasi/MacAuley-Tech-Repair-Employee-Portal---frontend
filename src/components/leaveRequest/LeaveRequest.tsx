@@ -2,9 +2,15 @@ import { useEffect, useReducer, useRef } from 'react';
 
 import {
   DATE_REGEX,
+  FULL_NAME_REGEX,
   GRAMMAR_TEXTAREA_REGEX,
   NAME_REGEX,
 } from '../../constants/regex';
+import { returnAccessibleTextElements } from '../../jsxCreators';
+import {
+  returnDateValidationText,
+  returnGrammarValidationText,
+} from '../../utils';
 import {
   initialLeaveRequestState,
   leaveRequestAction,
@@ -64,7 +70,7 @@ function LeaveRequest() {
 
   // validate delegated to employee on every change
   useEffect(() => {
-    const isValid = NAME_REGEX.test(delegatedToEmployee);
+    const isValid = FULL_NAME_REGEX.test(delegatedToEmployee);
 
     leaveRequestDispatch({
       type: leaveRequestAction.setIsValidDelegatedToEmployee,
@@ -91,6 +97,68 @@ function LeaveRequest() {
       payload: isValid,
     });
   }, [additionalComments]);
+
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [startDateInputError, startDateInputValid] =
+    returnAccessibleTextElements({
+      inputElementKind: 'start date',
+      inputText: startDate,
+      isInputTextFocused: isStartDateFocused,
+      isValidInputText: isValidStartDate,
+      regexValidationText: returnDateValidationText(startDate),
+    });
+
+  const [endDateInputError, endDateInputValid] = returnAccessibleTextElements({
+    inputElementKind: 'end date',
+    inputText: endDate,
+    isInputTextFocused: isEndDateFocused,
+    isValidInputText: isValidEndDate,
+    regexValidationText: returnDateValidationText(endDate),
+  });
+
+  const [delegatedToEmployeeInputError, delegatedToEmployeeInputValid] =
+    returnAccessibleTextElements({
+      inputElementKind: 'delegated to employee',
+      inputText: delegatedToEmployee,
+      isInputTextFocused: isDelegatedToEmployeeFocused,
+      isValidInputText: isValidDelegatedToEmployee,
+      regexValidationText: returnGrammarValidationText({
+        content: delegatedToEmployee,
+        contentKind: 'delegated to employee',
+        minLength: 2,
+        maxLength: 100,
+      }),
+    });
+
+  const [
+    delegatedResponsibilitiesInputError,
+    delegatedResponsibilitiesInputValid,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'delegated responsibilities',
+    inputText: delegatedResponsibilities,
+    isInputTextFocused: isDelegatedResponsibilitiesFocused,
+    isValidInputText: isValidDelegatedResponsibilities,
+    regexValidationText: returnGrammarValidationText({
+      content: delegatedResponsibilities,
+      contentKind: 'delegated responsibilities',
+      minLength: 2,
+      maxLength: 2000,
+    }),
+  });
+
+  const [additionalCommentsInputError, additionalCommentsInputValid] =
+    returnAccessibleTextElements({
+      inputElementKind: 'additional comments',
+      inputText: additionalComments,
+      isInputTextFocused: isAdditionalCommentsFocused,
+      isValidInputText: isValidAdditionalComments,
+      regexValidationText: returnGrammarValidationText({
+        content: additionalComments,
+        contentKind: 'additional comments',
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
 
   return <></>;
 }

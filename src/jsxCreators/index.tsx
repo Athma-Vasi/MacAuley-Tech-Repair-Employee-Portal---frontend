@@ -16,7 +16,7 @@ type ReturnAccessibleTextElemProps = {
  * - For example, if the input element is focused and the input text is valid, then the screen reader will read out '${inputElementKind} is valid'.
  * - If the input element is focused and the input text is invalid, then the screen reader will read out the regex validation text.
  */
-function returnAccessibleTextElem({
+function returnAccessibleTextElements({
   inputElementKind,
   inputText,
   isValidInputText,
@@ -60,4 +60,4 @@ function returnAccessibleTextElem({
   ];
 }
 
-export { returnAccessibleTextElem };
+export { returnAccessibleTextElements };

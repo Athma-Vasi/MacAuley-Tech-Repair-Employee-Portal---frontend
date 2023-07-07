@@ -19,7 +19,7 @@ import {
 import { useEffect, useMemo, useReducer, useRef } from 'react';
 
 import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
-import { returnAccessibleTextElem } from '../../../jsxCreators';
+import { returnAccessibleTextElements } from '../../../jsxCreators';
 import {
   returnDateValidationText,
   returnGrammarValidationText,
@@ -161,7 +161,7 @@ function CreateBenefit() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [planNameInputErrorText, planNameInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'plan name',
       inputText: planName,
       isValidInputText: isValidPlanName,
@@ -175,7 +175,7 @@ function CreateBenefit() {
     });
 
   const [planDescriptionInputErrorText, planDescriptionInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'plan description',
       inputText: planDescription,
       isValidInputText: isValidPlanDescription,
@@ -189,7 +189,7 @@ function CreateBenefit() {
     });
 
   const [planStartDateInputErrorText, planStartDateInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'plan start date',
       inputText: planStartDate,
       isValidInputText: isValidPlanStartDate,
@@ -200,7 +200,7 @@ function CreateBenefit() {
   const [
     employeeContributionInputErrorText,
     employeeContributionInputValidText,
-  ] = returnAccessibleTextElem({
+  ] = returnAccessibleTextElements({
     inputElementKind: 'employee contribution',
     inputText: employeeContribution,
     isValidInputText: isValidEmployeeContribution,
@@ -214,7 +214,7 @@ function CreateBenefit() {
   const [
     employerContributionInputErrorText,
     employerContributionInputValidText,
-  ] = returnAccessibleTextElem({
+  ] = returnAccessibleTextElements({
     inputElementKind: 'employer contribution',
     inputText: employerContribution,
     isValidInputText: isValidEmployerContribution,

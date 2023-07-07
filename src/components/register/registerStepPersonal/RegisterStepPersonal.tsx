@@ -4,7 +4,7 @@ import { Flex, NativeSelect, Text, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 
 import { NAME_REGEX, URL_REGEX } from '../../../constants/regex';
-import { returnAccessibleTextElem } from '../../../jsxCreators';
+import { returnAccessibleTextElements } from '../../../jsxCreators';
 import {
   returnNameValidationText,
   returnUrlValidationText,
@@ -83,7 +83,7 @@ function RegisterStepPersonal({
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [firstNameInputErrorText, firstNameInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'first name',
       inputText: firstName,
       isValidInputText: isValidFirstName,
@@ -97,7 +97,7 @@ function RegisterStepPersonal({
     });
 
   const [middleNameInputErrorText, middleNameInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'middle name',
       inputText: middleName,
       isValidInputText: isValidMiddleName,
@@ -111,7 +111,7 @@ function RegisterStepPersonal({
     });
 
   const [lastNameInputErrorText, lastNameInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'last name',
       inputText: lastName,
       isValidInputText: isValidLastName,
@@ -125,7 +125,7 @@ function RegisterStepPersonal({
     });
 
   const [preferredNameInputErrorText, preferredNameInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'preferred name',
       inputText: preferredName,
       isValidInputText: isValidPreferredName,
@@ -139,7 +139,7 @@ function RegisterStepPersonal({
     });
 
   const [profilePictureUrlInputErrorText, profilePictureUrlInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'profile picture url',
       inputText: profilePictureUrl,
       isValidInputText: isValidProfilePictureUrl,

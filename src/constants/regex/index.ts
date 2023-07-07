@@ -16,6 +16,7 @@ const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
 /**
+ * - /^(?=.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/
  * - (?=.{3,20}$) enforces a minimum of 3 characters and a maximum of 20 characters.
  * - (?![-_.]) ensures that the username does not start with a hyphen, underscore, or period.
  * - (?!.*[-_.]{2}) ensures that the username does not contain two hyphens, underscores, or periods in a row.
@@ -27,6 +28,7 @@ const USERNAME_REGEX =
   /^(?=.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/;
 
 /**
+ * - /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/
  * - (?=.*[A-Z]) ensures that there is at least one uppercase letter.
  * - (?=.*[a-z]) ensures that there is at least one lowercase letter.
  * - (?=.*[0-9]) ensures that there is at least one number.
@@ -39,6 +41,7 @@ const PASSWORD_REGEX =
   /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/;
 
 /**
+ * - /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
  * - [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] matches any alphanumeric character or special character in the range of special characters commonly used in components, part numbers, and ID numbers.
  * - {1,100} ensures that the text is between 1 and 100 characters long.
@@ -48,6 +51,7 @@ const NOTE_TITLE_REGEX =
   /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
 
 /**
+ * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
  * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
  * - {1,1000} ensures that the text is between 1 and 1000 characters long.
@@ -57,6 +61,7 @@ const NOTE_TITLE_REGEX =
 const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
 
 /**
+ * - /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/
  * - ^ asserts that the string starts with a digit.
  * - (?=.*[0-9]) is a positive lookahead assertion that requires the presence of at least one digit. This ensures that the string contains at least one digit.
  * - \d{0,6} matches between 0 and 6 digits. This represents the whole number part of a number, allowing for a range of digit lengths from 0 to 6.
@@ -66,6 +71,7 @@ const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
 const MONEY_REGEX = /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/;
 
 /**
+ * - /^[A-Za-z\s.\-']{2,30}$/i
  * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
  * - {2,30} ensures that the text is between 2 and 30 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
@@ -74,8 +80,9 @@ const MONEY_REGEX = /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/;
 const NAME_REGEX = /^[A-Za-z\s.\-']{2,30}$/i;
 
 /**
+ * - /^[A-Za-z\s.\-']{2,100}$/i
  * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
- * - {2,30} ensures that the text is between 2 and 30 characters long.
+ * - {2,100} ensures that the text is between 2 and 100 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
  * - i makes the regex case-insensitive.
  */
@@ -105,6 +112,7 @@ const URL_REGEX =
 const PHONE_NUMBER_REGEX = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
 
 /**
+ * - /^[A-Za-z0-9\s.,#-]{2,75}$/i
  * - [A-Za-z0-9\s.,#-] matches any letter, number, whitespace, period, comma, hash, or hyphen.
  * - {2,75} ensures that the text is between 2 and 75 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
@@ -113,6 +121,7 @@ const PHONE_NUMBER_REGEX = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
 const ADDRESS_LINE_REGEX = /^[A-Za-z0-9\s.,#-]{2,75}$/i;
 
 /**
+ * - /^[A-Za-z\s.\-']{2,75}$/i
  * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
  * - {2,75} ensures that the text is between 2 and 75 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
@@ -147,6 +156,7 @@ const DATE_REGEX =
   /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 /**
+ * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i
  * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
  * - [\w\s.,!?():;"'-] matches one or more word characters (letters, digits, or underscores), whitespace characters, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.
  * - {2,2000} ensures that the text is between 2 and 2000 characters long.

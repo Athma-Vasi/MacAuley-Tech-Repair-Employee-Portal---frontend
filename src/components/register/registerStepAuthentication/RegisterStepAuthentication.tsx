@@ -9,7 +9,7 @@ import {
   USERNAME_REGEX,
 } from '../../../constants/regex';
 import { screenReaderPasswordSpecialCharacters } from '../../../domElements';
-import { returnAccessibleTextElem } from '../../../jsxCreators';
+import { returnAccessibleTextElements } from '../../../jsxCreators';
 import {
   returnEmailRegexValidationText,
   returnUsernameRegexValidationText,
@@ -70,16 +70,17 @@ function RegisterStepAuthentication({
   }, [password, confirmPassword]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
-  const [emailInputErrorText, emailInputValidText] = returnAccessibleTextElem({
-    inputElementKind: 'email',
-    inputText: email,
-    isValidInputText: isValidEmail,
-    isInputTextFocused: isEmailFocused,
-    regexValidationText: returnEmailRegexValidationText(email),
-  });
+  const [emailInputErrorText, emailInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'email',
+      inputText: email,
+      isValidInputText: isValidEmail,
+      isInputTextFocused: isEmailFocused,
+      regexValidationText: returnEmailRegexValidationText(email),
+    });
 
   const [usernameInputErrorText, usernameInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'username',
       inputText: username,
       isValidInputText: isValidUsername,
@@ -91,7 +92,7 @@ function RegisterStepAuthentication({
     returnPasswordRegexValidationText(password);
 
   const [passwordInputErrorText, passwordInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'password',
       inputText: password,
       isValidInputText: isValidPassword,
@@ -104,7 +105,7 @@ function RegisterStepAuthentication({
     });
 
   const [confirmPasswordInputErrorText, confirmPasswordInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'confirm password',
       inputText: confirmPassword,
       isValidInputText: isValidConfirmPassword,

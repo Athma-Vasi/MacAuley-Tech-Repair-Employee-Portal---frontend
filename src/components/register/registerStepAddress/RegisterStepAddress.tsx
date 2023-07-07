@@ -11,7 +11,7 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../../../constants/regex';
-import { returnAccessibleTextElem } from '../../../jsxCreators';
+import { returnAccessibleTextElements } from '../../../jsxCreators';
 import {
   returnAddressValidationText,
   returnCityValidationText,
@@ -153,7 +153,7 @@ function RegisterStepAddress({
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'address line',
       inputText: addressLine,
       isValidInputText: isValidAddressLine,
@@ -166,21 +166,23 @@ function RegisterStepAddress({
       }),
     });
 
-  const [cityInputErrorText, cityInputValidText] = returnAccessibleTextElem({
-    inputElementKind: 'city',
-    inputText: city,
-    isValidInputText: isValidCity,
-    isInputTextFocused: isCityFocused,
-    regexValidationText: returnCityValidationText({
-      content: city,
-      contentKind: 'city',
-      minLength: 2,
-      maxLength: 75,
-    }),
-  });
+  const [cityInputErrorText, cityInputValidText] = returnAccessibleTextElements(
+    {
+      inputElementKind: 'city',
+      inputText: city,
+      isValidInputText: isValidCity,
+      isInputTextFocused: isCityFocused,
+      regexValidationText: returnCityValidationText({
+        content: city,
+        contentKind: 'city',
+        minLength: 2,
+        maxLength: 75,
+      }),
+    }
+  );
 
   const [postalCodeInputErrorText, postalCodeInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'postal code',
       inputText: postalCode,
       isValidInputText: isValidPostalCode,
@@ -192,7 +194,7 @@ function RegisterStepAddress({
     });
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'contact number',
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,

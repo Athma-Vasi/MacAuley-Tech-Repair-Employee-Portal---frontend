@@ -4,7 +4,7 @@ import { Button, Flex, Text, Textarea, TextInput } from '@mantine/core';
 import { Fragment, useEffect, useReducer, useRef } from 'react';
 
 import { FULL_NAME_REGEX, URL_REGEX } from '../../../constants/regex';
-import { returnAccessibleTextElem } from '../../../jsxCreators';
+import { returnAccessibleTextElements } from '../../../jsxCreators';
 import {
   returnNameValidationText,
   returnUrlValidationText,
@@ -139,21 +139,22 @@ function CreateAnnouncement() {
     });
   }, [article]);
 
-  const [titleInputErrorText, titleInputValidText] = returnAccessibleTextElem({
-    inputElementKind: 'title',
-    inputText: title,
-    isInputTextFocused: isTitleFocused,
-    isValidInputText: isValidTitle,
-    regexValidationText: returnArticleTitleValidationText({
-      content: title,
-      contentKind: 'title',
-      minLength: 3,
-      maxLength: 150,
-    }),
-  });
+  const [titleInputErrorText, titleInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'title',
+      inputText: title,
+      isInputTextFocused: isTitleFocused,
+      isValidInputText: isValidTitle,
+      regexValidationText: returnArticleTitleValidationText({
+        content: title,
+        contentKind: 'title',
+        minLength: 3,
+        maxLength: 150,
+      }),
+    });
 
-  const [authorInputErrorText, authorInputValidText] = returnAccessibleTextElem(
-    {
+  const [authorInputErrorText, authorInputValidText] =
+    returnAccessibleTextElements({
       inputElementKind: 'author',
       inputText: author,
       isInputTextFocused: isAuthorFocused,
@@ -164,11 +165,10 @@ function CreateAnnouncement() {
         minLength: 2,
         maxLength: 100,
       }),
-    }
-  );
+    });
 
   const [bannerImgSrcInputErrorText, bannerImgSrcInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'banner image src',
       inputText: bannerImageSrc,
       isInputTextFocused: isBannerImageSrcFocused,
@@ -177,7 +177,7 @@ function CreateAnnouncement() {
     });
 
   const [bannerImgAltInputErrorText, bannerImgAltInputValidText] =
-    returnAccessibleTextElem({
+    returnAccessibleTextElements({
       inputElementKind: 'banner image alt',
       inputText: bannerImageAlt,
       isInputTextFocused: isBannerImageAltFocused,
