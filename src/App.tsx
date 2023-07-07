@@ -15,6 +15,7 @@ import { RequireAuth } from './components/requireAuth';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
+import { LeaveRequest } from './components/leaveRequest';
 
 function App() {
   const {
@@ -34,6 +35,7 @@ function App() {
           <Route path="create-announcement" element={<CreateAnnouncement />} />
           <Route path="create-benefit" element={<CreateBenefit />} />
           <Route path="address-change" element={<AddressChange />} />
+          <Route path="leave-request" element={<LeaveRequest />} />
         </Route>
 
         {/* these are protected routes */}
