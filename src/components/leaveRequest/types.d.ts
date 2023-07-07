@@ -10,7 +10,7 @@ type ReasonForLeave =
   | 'Other';
 
 type LeaveRequestSchema = {
-  userId: Types.ObjectId;
+  userId: string;
   username: string;
   startDate: string;
   endDate: string;
@@ -22,7 +22,7 @@ type LeaveRequestSchema = {
 };
 
 type LeaveRequestDocument = LeaveRequestSchema & {
-  _id: Types.ObjectId;
+  _id: string;
   createdAt: Date;
   updatedAt: Date;
   __v: number;

@@ -16,6 +16,7 @@ import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
 import { LeaveRequest } from './components/leaveRequest';
+import { RequestResource } from './components/requestResource';
 
 function App() {
   const {
@@ -36,6 +37,7 @@ function App() {
           <Route path="create-benefit" element={<CreateBenefit />} />
           <Route path="address-change" element={<AddressChange />} />
           <Route path="leave-request" element={<LeaveRequest />} />
+          <Route path="request-resource" element={<RequestResource />} />
         </Route>
 
         {/* these are protected routes */}
