@@ -293,6 +293,56 @@ function LeaveRequest() {
         withAsterisk
         required
       />
+
+      {/* delegated to employee input */}
+      <TextInput
+        size="md"
+        w="100%"
+        color="dark"
+        label="Delegated to employee"
+        placeholder="Enter name of employee"
+        value={delegatedToEmployee}
+        aria-required
+        aria-describedby={
+          isValidDelegatedToEmployee
+            ? 'delegated-to-employee-input-note-valid'
+            : 'delegated-to-employee-input-note-error'
+        }
+        description={
+          isValidDelegatedToEmployee
+            ? delegatedToEmployeeInputValidText
+            : delegatedToEmployeeInputErrorText
+        }
+        aria-invalid={isValidDelegatedToEmployee ? 'false' : 'true'}
+        icon={
+          isValidDelegatedToEmployee ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidDelegatedToEmployee && delegatedToEmployee !== ''}
+        onChange={(event) => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setDelegatedToEmployee,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsDelegatedToEmployeeFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsDelegatedToEmployeeFocused,
+            payload: false,
+          });
+        }}
+        minLength={2}
+        maxLength={100}
+        required
+        withAsterisk
+      />
     </Flex>
   );
 }
