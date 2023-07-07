@@ -37,34 +37,6 @@ function returnPasswordRegexValidationText(password: string): string {
   return validationText ? `Invalid password. ${validationText}` : '';
 }
 
-type ReturnNameValidationTextProps = {
-  name: string;
-  kind: 'firstName' | 'middleName' | 'lastName' | 'preferredName';
-};
-
-function returnNameValidationText({
-  name,
-  kind,
-}: ReturnNameValidationTextProps): string {
-  const nameLengthRegex = /^(?=.{2,30}$)/;
-  const nameCharacterRegex = /^[a-zA-Z\s.\-']+$/;
-
-  const nameRegexTupleArr: [boolean, string][] = [
-    [nameLengthRegex.test(name), 'Must be between 2 and 30 characters.'],
-    [
-      nameCharacterRegex.test(name),
-      'Can only contain alphabetical characters, spaces, periods, hyphens, or apostrophes.',
-    ],
-  ];
-
-  const validationText = nameRegexTupleArr
-    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
-    .map(([_, validationText]: [boolean, string]) => validationText)
-    .join(' ');
-
-  return validationText ? `Invalid ${kind}. ${validationText}` : '';
-}
-
 function returnFullNameValidationText(fullName: string): string {
   const fullNameLengthRegex = /^(?=.{2,100}$)/;
   const fullNameCharacterRegex = /^[A-Za-z\s.\-']+$/;
@@ -240,13 +212,12 @@ function returnDateValidationText(date: string): string {
 }
 
 export {
-  returnPasswordRegexValidationText,
-  returnNameValidationText,
   returnAddressLineValidationText,
-  returnUrlValidationText,
   returnCityValidationText,
-  returnPostalCodeValidationText,
-  returnPhoneNumberInputValidationText,
-  returnFullNameValidationText,
   returnDateValidationText,
+  returnFullNameValidationText,
+  returnPasswordRegexValidationText,
+  returnPhoneNumberInputValidationText,
+  returnPostalCodeValidationText,
+  returnUrlValidationText,
 };

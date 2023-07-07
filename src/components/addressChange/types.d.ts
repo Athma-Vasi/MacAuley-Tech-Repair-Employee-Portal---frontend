@@ -1,4 +1,4 @@
-import type { Country, PostalCode, StatesUS, Province } from '../../types';
+import type { Country, PostalCode, Province, StatesUS } from '../../types';
 
 type AddressChangeState = {
   contactNumber: PhoneNumber | '+(1)';
@@ -64,9 +64,9 @@ type AddressChangeReducer = (
 ) => AddressChangeState;
 
 export type {
-  AddressChangeState,
   AddressChangeAction,
-  AddressChangePayload,
   AddressChangeDispatch,
+  AddressChangePayload,
   AddressChangeReducer,
+  AddressChangeState,
 };

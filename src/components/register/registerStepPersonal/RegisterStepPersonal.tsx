@@ -1,10 +1,11 @@
-import { useRef, useEffect } from 'react';
-import { Flex, NativeSelect, Text, TextInput } from '@mantine/core';
-import { NAME_REGEX, URL_REGEX } from '../constants';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { returnNameValidationText, returnUrlValidationText } from '../utils';
+import { Flex, NativeSelect, Text, TextInput } from '@mantine/core';
+import { useEffect } from 'react';
 
+import { returnNameValidationText } from '../../../utils';
+import { NAME_REGEX, URL_REGEX } from '../constants';
+import { returnUrlValidationText } from '../utils';
 import type { RegisterStepPersonalProps } from './types';
 
 function RegisterStepPersonal({
@@ -91,7 +92,12 @@ function RegisterStepPersonal({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({ name: firstName, kind: 'firstName' })}
+      {returnNameValidationText({
+        content: firstName,
+        contentKind: 'first name',
+        minLength: 2,
+        maxLength: 30,
+      })}
     </Text>
   );
 
@@ -126,7 +132,12 @@ function RegisterStepPersonal({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({ name: middleName, kind: 'middleName' })}
+      {returnNameValidationText({
+        content: middleName,
+        contentKind: 'middle name',
+        minLength: 2,
+        maxLength: 30,
+      })}
     </Text>
   );
 
@@ -159,7 +170,12 @@ function RegisterStepPersonal({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({ name: lastName, kind: 'lastName' })}
+      {returnNameValidationText({
+        content: lastName,
+        contentKind: 'last name',
+        minLength: 2,
+        maxLength: 30,
+      })}
     </Text>
   );
 
@@ -192,7 +208,12 @@ function RegisterStepPersonal({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({ name: preferredName, kind: 'preferredName' })}
+      {returnNameValidationText({
+        content: preferredName,
+        contentKind: 'preferred name',
+        minLength: 2,
+        maxLength: 30,
+      })}
     </Text>
   );
 

@@ -1,11 +1,11 @@
-import {
+import type {
   Country,
   PhoneNumber,
   PostalCode,
   Province,
   StatesUS,
 } from '../../types';
-import {
+import type {
   AddressChangeAction,
   AddressChangeDispatch,
   AddressChangeState,

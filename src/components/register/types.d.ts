@@ -1,11 +1,11 @@
 import {
-  Province,
-  StatesUS,
   Country,
   Department,
   JobPosition,
   PhoneNumber,
   PostalCode,
+  Province,
+  StatesUS,
 } from '../../types';
 import { PreferredPronouns } from '../../types/user.types';
 
@@ -197,9 +197,9 @@ type RegisterResponse = {
 };
 
 export type {
-  RegisterState,
   RegisterAction,
-  RegisterPayload,
   RegisterDispatch,
+  RegisterPayload,
   RegisterResponse,
+  RegisterState,
 };

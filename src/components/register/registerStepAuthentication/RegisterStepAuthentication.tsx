@@ -1,19 +1,20 @@
-import { useEffect, useRef } from 'react';
-import { Flex, PasswordInput, Text, TextInput } from '@mantine/core';
-import {
-  EMAIL_REGEX,
-  USERNAME_REGEX,
-  PASSWORD_REGEX,
-} from '../../../constants';
-import type { RegisterStepAuthenticationProps } from './types';
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Flex, PasswordInput, Text, TextInput } from '@mantine/core';
+import { useEffect, useRef } from 'react';
+
+import {
+  EMAIL_REGEX,
+  PASSWORD_REGEX,
+  USERNAME_REGEX,
+} from '../../../constants';
 import { screenReaderPasswordSpecialCharacters } from '../../../domElements';
 import {
   returnEmailRegexValidationText,
   returnUsernameRegexValidationText,
 } from '../../../utils';
 import { returnPasswordRegexValidationText } from '../utils';
+import type { RegisterStepAuthenticationProps } from './types';
 
 function RegisterStepAuthentication({
   email,

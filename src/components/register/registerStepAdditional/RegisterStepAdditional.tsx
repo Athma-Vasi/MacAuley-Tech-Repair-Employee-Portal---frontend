@@ -1,32 +1,25 @@
-import { useRef, useEffect } from 'react';
-import {
-  Flex,
-  Input,
-  NativeSelect,
-  Text,
-  TextInput,
-  Tooltip,
-} from '@mantine/core';
-import {
-  FULL_NAME_REGEX,
-  PHONE_NUMBER_REGEX,
-  DATE_REGEX,
-  DEPARTMENTS,
-  JOB_POSITIONS,
-} from '../constants';
-import { RegisterStepAdditionalProps } from './types';
 import {
   faCheck,
   faInfoCircle,
   faRefresh,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Flex, NativeSelect, Text, TextInput, Tooltip } from '@mantine/core';
+import { useEffect } from 'react';
+
 import {
+  DATE_REGEX,
+  DEPARTMENTS,
+  FULL_NAME_REGEX,
+  JOB_POSITIONS,
+  PHONE_NUMBER_REGEX,
+} from '../constants';
+import {
+  returnDateValidationText,
   returnFullNameValidationText,
   returnPhoneNumberInputValidationText,
-  returnDateValidationText,
 } from '../utils';
-import { kMaxLength } from 'buffer';
+import type { RegisterStepAdditionalProps } from './types';
 
 function RegisterStepAdditional({
   jobPosition,

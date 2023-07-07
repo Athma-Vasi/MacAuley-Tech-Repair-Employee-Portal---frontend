@@ -1,20 +1,20 @@
+import { MantineProvider } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
 
-import { RequireAuth } from './components/requireAuth';
-import { PublicLayout } from './components/publicLayout';
-import { Login } from './components/login';
-import { Register } from './components/register';
-import { PortalLayout } from './components/portalLayout';
-import { Dashboard } from './components/dashboard';
-import { UsersList } from './components/usersList';
-import { NotesList } from './components/notesList';
-import { NotFound } from './components/notFound';
-import { Unauthorized } from './components/unauthorized';
-import { MantineProvider } from '@mantine/core';
-import { useGlobalState } from './hooks/useGlobalState';
+import { AddressChange } from './components/addressChange';
 import { CreateAnnouncement } from './components/announcements/createAnnouncement';
 import { CreateBenefit } from './components/benefits/createBenefit';
-import { AddressChange } from './components/addressChange';
+import { Dashboard } from './components/dashboard';
+import { Login } from './components/login';
+import { NotesList } from './components/notesList';
+import { NotFound } from './components/notFound';
+import { PortalLayout } from './components/portalLayout';
+import { PublicLayout } from './components/publicLayout';
+import { Register } from './components/register';
+import { RequireAuth } from './components/requireAuth';
+import { Unauthorized } from './components/unauthorized';
+import { UsersList } from './components/usersList';
+import { useGlobalState } from './hooks/useGlobalState';
 
 function App() {
   const {

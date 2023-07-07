@@ -1,35 +1,3 @@
-import { useEffect, useMemo, useReducer, useRef } from 'react';
-import {
-  createBenefitAction,
-  createBenefitReducer,
-  initialCreateBenefitState,
-} from './state';
-import {
-  BENEFIT_PLAN_DATA,
-  CURRENCY_DATA,
-  PLAN_DESCRIPTION_REGEX,
-  PLAN_NAME_REGEX,
-} from '../constants';
-import { DATE_REGEX } from '../../register/constants';
-import { returnAccessibleTextElem } from '../../../jsxCreators';
-import {
-  returnGenericGrammarValidationText,
-  returnMoneyValidationText,
-} from '../../../utils';
-import { returnDateValidationText } from '../../register/utils';
-import {
-  Checkbox,
-  Flex,
-  NativeSelect,
-  NumberInput,
-  Radio,
-  Space,
-  Switch,
-  TextInput,
-  Textarea,
-  Text,
-  Button,
-} from '@mantine/core';
 import {
   faCheck,
   faDollarSign,
@@ -39,10 +7,36 @@ import {
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { title } from 'process';
-import { createAnnouncementAction } from '../../announcements/createAnnouncement/state';
+import {
+  Button,
+  Checkbox,
+  Flex,
+  NativeSelect,
+  Text,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
+import { useEffect, useMemo, useReducer, useRef } from 'react';
+
 import { MONEY_REGEX } from '../../../constants';
-import { RadioGroup } from '@mantine/core/lib/Radio/RadioGroup/RadioGroup';
+import { returnAccessibleTextElem } from '../../../jsxCreators';
+import {
+  returnGrammarValidationText,
+  returnMoneyValidationText,
+} from '../../../utils';
+import { DATE_REGEX } from '../../register/constants';
+import { returnDateValidationText } from '../../register/utils';
+import {
+  BENEFIT_PLAN_DATA,
+  CURRENCY_DATA,
+  PLAN_DESCRIPTION_REGEX,
+  PLAN_NAME_REGEX,
+} from '../constants';
+import {
+  createBenefitAction,
+  createBenefitReducer,
+  initialCreateBenefitState,
+} from './state';
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
@@ -173,7 +167,7 @@ function CreateBenefit() {
       inputText: planName,
       isValidInputText: isValidPlanName,
       isInputTextFocused: isPlanNameFocused,
-      regexValidationText: returnGenericGrammarValidationText({
+      regexValidationText: returnGrammarValidationText({
         content: planName,
         contentKind: 'plan name input',
         minLength: 1,
@@ -187,7 +181,7 @@ function CreateBenefit() {
       inputText: planDescription,
       isValidInputText: isValidPlanDescription,
       isInputTextFocused: isPlanDescriptionFocused,
-      regexValidationText: returnGenericGrammarValidationText({
+      regexValidationText: returnGrammarValidationText({
         content: planDescription,
         contentKind: 'plan description input',
         minLength: 1,

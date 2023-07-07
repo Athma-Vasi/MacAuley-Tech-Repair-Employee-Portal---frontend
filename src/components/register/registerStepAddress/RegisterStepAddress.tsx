@@ -1,4 +1,9 @@
-import { useRef, useEffect } from 'react';
+import {
+  faCheck,
+  faInfoCircle,
+  faRefresh,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   Flex,
@@ -7,6 +12,8 @@ import {
   TextInput,
   Tooltip,
 } from '@mantine/core';
+import { useEffect, useRef } from 'react';
+
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -16,19 +23,13 @@ import {
   PROVINCES,
   STATES_US,
 } from '../constants';
-import { RegisterStepAddressProps } from './types';
 import {
-  faCheck,
-  faInfoCircle,
-  faRefresh,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  returnPhoneNumberInputValidationText,
   returnAddressLineValidationText,
   returnCityValidationText,
+  returnPhoneNumberInputValidationText,
   returnPostalCodeValidationText,
 } from '../utils';
+import { RegisterStepAddressProps } from './types';
 
 function RegisterStepAddress({
   contactNumber,

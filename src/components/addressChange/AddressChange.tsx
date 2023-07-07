@@ -1,11 +1,7 @@
-import { useEffect, useReducer, useRef } from 'react';
-import {
-  addressChangeAction,
-  addressChangeReducer,
-  initialAddressChangeState,
-} from './state';
 import { Flex, Text } from '@mantine/core';
+import { useEffect, useReducer, useRef } from 'react';
 
+import { returnAccessibleTextElem } from '../../jsxCreators';
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -13,7 +9,11 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../register/constants';
-import { returnAccessibleTextElem } from '../../jsxCreators';
+import {
+  addressChangeAction,
+  addressChangeReducer,
+  initialAddressChangeState,
+} from './state';
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
