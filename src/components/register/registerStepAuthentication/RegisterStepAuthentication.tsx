@@ -9,6 +9,7 @@ import {
   USERNAME_REGEX,
 } from '../../../constants/regex';
 import { screenReaderPasswordSpecialCharacters } from '../../../domElements';
+import { returnAccessibleTextElem } from '../../../jsxCreators';
 import {
   returnEmailRegexValidationText,
   returnUsernameRegexValidationText,
@@ -68,139 +69,52 @@ function RegisterStepAuthentication({
     });
   }, [password, confirmPassword]);
 
-  const emailInputErrorText = (
-    <Text
-      id="email-note-error"
-      style={{
-        display: isEmailFocused && email && !isValidEmail ? 'block' : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnEmailRegexValidationText(email)}
-    </Text>
-  );
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [emailInputErrorText, emailInputValidText] = returnAccessibleTextElem({
+    inputElementKind: 'email',
+    inputText: email,
+    isValidInputText: isValidEmail,
+    isInputTextFocused: isEmailFocused,
+    regexValidationText: returnEmailRegexValidationText(email),
+  });
 
-  const emailInputValidText = (
-    <Text
-      id="email-note-valid"
-      style={{
-        display: isEmailFocused && email && isValidEmail ? 'block' : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Email is valid
-    </Text>
-  );
-
-  const usernameInputErrorText = (
-    <Text
-      id="username-note-error"
-      style={{
-        display:
-          isUsernameFocused && username && !isValidUsername ? 'block' : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnUsernameRegexValidationText(username)}
-    </Text>
-  );
-
-  const usernameInputValidText = (
-    <Text
-      id="username-note-valid"
-      style={{
-        display:
-          isUsernameFocused && username && isValidUsername ? 'block' : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Username is valid
-    </Text>
-  );
+  const [usernameInputErrorText, usernameInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'username',
+      inputText: username,
+      isValidInputText: isValidUsername,
+      isInputTextFocused: isUsernameFocused,
+      regexValidationText: returnUsernameRegexValidationText(username),
+    });
 
   const passwordRegexValidationText =
     returnPasswordRegexValidationText(password);
 
-  const passwordInputErrorText = (
-    <Text
-      id="password-note-error"
-      style={{
-        display:
-          isPasswordFocused && password && !isValidPassword ? 'block' : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} /> {passwordRegexValidationText}
-      {passwordRegexValidationText.includes('special')
-        ? screenReaderPasswordSpecialCharacters
-        : ''}
-    </Text>
-  );
+  const [passwordInputErrorText, passwordInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'password',
+      inputText: password,
+      isValidInputText: isValidPassword,
+      isInputTextFocused: isPasswordFocused,
+      regexValidationText: `${passwordRegexValidationText}${
+        passwordRegexValidationText.includes('special')
+          ? screenReaderPasswordSpecialCharacters
+          : ''
+      }`,
+    });
 
-  const passwordInputValidText = (
-    <Text
-      id="password-note-valid"
-      style={{
-        display:
-          isPasswordFocused && password && isValidPassword ? 'block' : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Password is valid
-    </Text>
-  );
-
-  const confirmPasswordInputErrorText = (
-    <Text
-      id="confirm-password-note-error"
-      style={{
-        display:
-          isConfirmPasswordFocused && confirmPassword && !isValidConfirmPassword
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {isValidPassword && !isValidConfirmPassword
-        ? 'Passwords do not match'
-        : ''}
-    </Text>
-  );
-
-  const confirmPasswordInputValidText = (
-    <Text
-      id="confirm-password-note-valid"
-      style={{
-        display:
-          isConfirmPasswordFocused && confirmPassword && isValidConfirmPassword
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Confirm password is valid. Both
-      passwords match
-    </Text>
-  );
+  const [confirmPasswordInputErrorText, confirmPasswordInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'confirm password',
+      inputText: confirmPassword,
+      isValidInputText: isValidConfirmPassword,
+      isInputTextFocused: isConfirmPasswordFocused,
+      regexValidationText: `${
+        isValidPassword && !isValidConfirmPassword
+          ? 'Passwords do not match'
+          : ''
+      }`,
+    });
 
   return (
     <Flex
@@ -218,7 +132,7 @@ function RegisterStepAuthentication({
         placeholder="Enter email address"
         autoComplete="off"
         aria-describedby={
-          isValidEmail ? 'email-note-valid' : 'email-note-error'
+          isValidEmail ? 'email-input-note-valid' : 'email-input-note-error'
         }
         aria-required
         aria-invalid={isValidEmail ? false : true}
@@ -257,7 +171,9 @@ function RegisterStepAuthentication({
         placeholder="Enter username"
         autoComplete="off"
         aria-describedby={
-          isValidUsername ? 'username-note-valid' : 'username-note-error'
+          isValidUsername
+            ? 'username-input-note-valid'
+            : 'username-input-note-error'
         }
         aria-required
         aria-invalid={isValidUsername ? false : true}
@@ -301,7 +217,9 @@ function RegisterStepAuthentication({
         label="Password"
         placeholder="Enter password"
         aria-describedby={
-          isValidPassword ? 'password-note-valid' : 'password-note-error'
+          isValidPassword
+            ? 'password-input-note-valid'
+            : 'password-input-note-error'
         }
         aria-required
         aria-invalid={isValidPassword ? false : true}
@@ -347,8 +265,8 @@ function RegisterStepAuthentication({
         aria-required
         aria-describedby={
           isValidPassword && isValidConfirmPassword
-            ? 'confirm-password-note-valid'
-            : 'confirm-password-note-error'
+            ? 'confirm-password-input-note-valid'
+            : 'confirm-password-input-note-error'
         }
         aria-invalid={isValidConfirmPassword ? false : true}
         value={confirmPassword}
