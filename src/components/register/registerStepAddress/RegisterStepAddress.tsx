@@ -151,6 +151,30 @@ function RegisterStepAddress({
     });
   }, [postalCode, country]);
 
+  // update the corresponding stepsInError state if any of the inputs are in error
+  useEffect(() => {
+    const isStepInError =
+      !isValidAddressLine ||
+      !isValidCity ||
+      !isValidPostalCode ||
+      !isValidContactNumber;
+
+    registerDispatch({
+      type: registerAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 3,
+      },
+    });
+  }, [
+    isValidAddressLine,
+    isValidCity,
+    isValidPostalCode,
+    isValidContactNumber,
+    registerDispatch,
+    registerAction.setStepsInError,
+  ]);
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
     returnAccessibleTextElements({

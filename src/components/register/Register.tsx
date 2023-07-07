@@ -90,6 +90,8 @@ function Register() {
     isStartDateFocused,
 
     currentStepperPosition,
+    stepsInError,
+
     isError,
     errorMessage,
     isSuccessful,
@@ -398,9 +400,14 @@ function Register() {
 
   const { buttonTextColor } = COLORS;
 
+  // DEV DELETE
+  useEffect(() => {
+    console.log({ stepsInError });
+  }, [stepsInError]);
+
   const displayRegisterForm = (
     <StepperWrapper
-      stepInError={2}
+      stepsInError={stepsInError}
       descriptionMap={REGISTER_DESCRIPTION_MAP}
       maxStepperPosition={5}
       currentStepperPosition={currentStepperPosition}
@@ -442,10 +449,7 @@ function Register() {
             <Button
               type="submit"
               disabled={
-                !isValidEmail ||
-                !isValidUsername ||
-                !isValidPassword ||
-                !isValidConfirmPassword
+                stepsInError.size > 0 && currentStepperPosition < 5
                   ? true
                   : false
               }

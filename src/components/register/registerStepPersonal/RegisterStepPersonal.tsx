@@ -81,6 +81,32 @@ function RegisterStepPersonal({
     });
   }, [preferredName]);
 
+  // update the corresponding stepsInError state if any of the inputs are in error
+  useEffect(() => {
+    const isStepInError =
+      !isValidFirstName ||
+      !isValidMiddleName ||
+      !isValidLastName ||
+      !isValidPreferredName ||
+      !isValidProfilePictureUrl;
+
+    registerDispatch({
+      type: registerAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 2,
+      },
+    });
+  }, [
+    isValidFirstName,
+    isValidMiddleName,
+    isValidLastName,
+    isValidPreferredName,
+    isValidProfilePictureUrl,
+    registerDispatch,
+    registerAction.setStepsInError,
+  ]);
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [firstNameInputErrorText, firstNameInputValidText] =
     returnAccessibleTextElements({

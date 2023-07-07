@@ -83,6 +83,8 @@ type RegisterState = {
   isStartDateFocused: boolean;
 
   currentStepperPosition: number;
+  stepsInError: Set<number>;
+
   isError: boolean;
   errorMessage: string;
   isSubmitting: boolean;
@@ -164,6 +166,8 @@ type RegisterAction = {
   setIsStartDateFocused: 'setIsStartDateFocused';
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
@@ -174,9 +178,15 @@ type RegisterAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
+type StepsInErrorPayload = {
+  kind: 'add' | 'delete';
+  step: number;
+};
+
 type RegisterPayload =
   | string
   | number
+  | StepsInErrorPayload
   | boolean
   | PhoneNumber
   | Province
@@ -202,4 +212,5 @@ export type {
   RegisterPayload,
   RegisterResponse,
   RegisterState,
+  StepsInErrorPayload,
 };

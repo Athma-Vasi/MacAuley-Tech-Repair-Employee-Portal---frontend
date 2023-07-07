@@ -98,6 +98,26 @@ function RegisterStepAdditional({
     console.log({ startDate });
   }, [startDate]);
 
+  // update the corresponding stepsInError state if any of the inputs are in error
+  useEffect(() => {
+    const isStepInError =
+      !isValidFullName || !isValidPhoneNumber || !isValidStartDate;
+
+    registerDispatch({
+      type: registerAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 4,
+      },
+    });
+  }, [
+    isValidFullName,
+    isValidPhoneNumber,
+    isValidStartDate,
+    registerAction.setStepsInError,
+    registerDispatch,
+  ]);
+
   const [
     emergencyContactFullNameInputErrorText,
     emergencyContactFullNameInputValidText,

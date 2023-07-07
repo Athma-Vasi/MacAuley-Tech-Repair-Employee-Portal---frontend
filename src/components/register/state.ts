@@ -8,7 +8,12 @@ import {
   StatesUS,
 } from '../../types';
 import { PreferredPronouns } from '../../types/user.types';
-import { RegisterAction, RegisterDispatch, RegisterState } from './types';
+import {
+  RegisterAction,
+  RegisterDispatch,
+  RegisterState,
+  StepsInErrorPayload,
+} from './types';
 
 const initialRegisterState: RegisterState = {
   email: '',
@@ -84,6 +89,8 @@ const initialRegisterState: RegisterState = {
   isStartDateFocused: false,
 
   currentStepperPosition: 0,
+  stepsInError: new Set<number>(),
+
   isError: false,
   errorMessage: '',
   isSubmitting: false,
@@ -167,6 +174,7 @@ const registerAction: RegisterAction = {
   setIsStartDateFocused: 'setIsStartDateFocused',
 
   setCurrentStepperPosition: 'setCurrentStepperPosition',
+  setStepsInError: 'setStepsInError',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -401,6 +409,16 @@ function registerReducer(
 
     case registerAction.setCurrentStepperPosition:
       return { ...state, currentStepperPosition: action.payload as number };
+    case registerAction.setStepsInError: {
+      const { kind, step } = action.payload as StepsInErrorPayload;
+      const stepsInError = structuredClone(state.stepsInError);
+      if (kind === 'add') {
+        stepsInError.add(step);
+      } else {
+        stepsInError.delete(step);
+      }
+      return { ...state, stepsInError };
+    }
 
     case registerAction.setIsError:
       return { ...state, isError: action.payload as boolean };

@@ -1,5 +1,7 @@
 import './style.css';
 
+import { faCheck, faExclamation, faX } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Group, Stepper, Text } from '@mantine/core';
 import { useEffect, useRef } from 'react';
 
@@ -9,7 +11,7 @@ import type { StepperWrapperProps } from './types';
 function StepperWrapper({
   children,
   descriptionMap,
-  stepInError,
+  stepsInError,
   maxStepperPosition,
   currentStepperPosition,
   setCurrentStepperPosition,
@@ -21,6 +23,11 @@ function StepperWrapper({
   useEffect(() => {
     stepperRef.current?.focus();
   }, [currentStepperPosition]);
+
+  useEffect(() => {
+    console.log('stepsInError', stepsInError);
+    console.log('currentStepperPosition', currentStepperPosition);
+  }, [stepsInError, currentStepperPosition]);
 
   return (
     <>
@@ -35,41 +42,50 @@ function StepperWrapper({
         breakpoint="sm"
         allowNextStepsSelect={false}
       >
-        {Array.from(descriptionMap).map(
-          ([step, { description, ariaLabel }]) => {
-            console.log({
-              step,
-              description,
-              ariaLabel,
-            });
+        {Array.from(descriptionMap).map((value, index) => {
+          const [step, { description, ariaLabel }] = value;
 
-            const capsLabel = `Step ${numberSpellingMap
-              .get(step)?.[0]
-              .toUpperCase()}${numberSpellingMap.get(step)?.slice(1)}`;
+          const capsLabel = `Step ${numberSpellingMap
+            .get(step)?.[0]
+            .toUpperCase()}${numberSpellingMap.get(step)?.slice(1)}`;
 
-            return (
-              <Stepper.Step
-                key={step}
-                label={capsLabel}
-                description={description}
-                aria-label={ariaLabel}
-                aria-current={
-                  currentStepperPosition === step ? 'step' : undefined
-                }
-                ref={currentStepperPosition === step ? stepperRef : undefined}
-                className="hide-outline"
-                color={stepInError === step ? 'red' : undefined}
-              >
-                <Text>{description}</Text>
-              </Stepper.Step>
-            );
-          }
-        )}
+          return (
+            <Stepper.Step
+              key={step}
+              label={capsLabel}
+              description={description}
+              aria-label={ariaLabel}
+              aria-current={
+                currentStepperPosition === step ? 'step' : undefined
+              }
+              ref={currentStepperPosition === step ? stepperRef : undefined}
+              className="hide-outline"
+              color={stepsInError.has(step) ? 'red' : undefined}
+              completedIcon={
+                stepsInError.has(step) ? (
+                  <FontAwesomeIcon icon={faX} />
+                ) : (
+                  <FontAwesomeIcon icon={faCheck} />
+                )
+              }
+            >
+              <Text>{description}</Text>
+            </Stepper.Step>
+          );
+        })}
 
         {/* final page */}
         <Stepper.Completed>
           <Text color="dark">
-            Looks great! Click back button to modify any information.
+            {stepsInError.size === 0
+              ? '˖ ࣪‧₊˚⋆✩٩(ˊᗜˋ*)و ✩ Looks great! You are ready become a member of the MacAuley family!'
+              : `(｡•́︿•̀｡) Oh no! Looks like there is an error on step${
+                  stepsInError.size > 1 ? 's' : ''
+                }: ${
+                  Array.from(stepsInError)
+                    .sort((a, z) => (a < z ? -1 : a > z ? 1 : 0))
+                    .join(', ') || ''
+                }. Please fix the error to proceed!`}
           </Text>
         </Stepper.Completed>
       </Stepper>

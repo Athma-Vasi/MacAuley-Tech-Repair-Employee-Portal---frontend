@@ -69,6 +69,30 @@ function RegisterStepAuthentication({
     });
   }, [password, confirmPassword]);
 
+  // update the corresponding stepsInError state if any of the inputs are in error
+  useEffect(() => {
+    const isStepInError =
+      !isValidEmail ||
+      !isValidUsername ||
+      !isValidPassword ||
+      !isValidConfirmPassword;
+
+    registerDispatch({
+      type: registerAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [
+    isValidEmail,
+    isValidUsername,
+    isValidPassword,
+    isValidConfirmPassword,
+    registerDispatch,
+    registerAction.setStepsInError,
+  ]);
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [emailInputErrorText, emailInputValidText] =
     returnAccessibleTextElements({
