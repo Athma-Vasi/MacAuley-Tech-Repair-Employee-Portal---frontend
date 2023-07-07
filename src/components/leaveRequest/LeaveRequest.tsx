@@ -1,6 +1,6 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, NativeSelect, TextInput } from '@mantine/core';
+import { Flex, NativeSelect, TextInput, Textarea } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 
 import {
@@ -340,6 +340,60 @@ function LeaveRequest() {
         }}
         minLength={2}
         maxLength={100}
+        required
+        withAsterisk
+      />
+      {/* delegated responsibilities text area input */}
+      <Textarea
+        size="md"
+        w="100%"
+        color="dark"
+        label="Delegated responsibilities"
+        placeholder="Enter delegated responsibilities"
+        value={delegatedResponsibilities}
+        aria-required
+        aria-describedby={
+          isValidDelegatedResponsibilities
+            ? 'delegated-responsibilities-input-note-valid'
+            : 'delegated-responsibilities-input-note-error'
+        }
+        description={
+          isValidDelegatedResponsibilities
+            ? delegatedResponsibilitiesInputValidText
+            : delegatedResponsibilitiesInputErrorText
+        }
+        aria-invalid={isValidDelegatedResponsibilities ? 'false' : 'true'}
+        icon={
+          isValidDelegatedResponsibilities ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={
+          !isValidDelegatedResponsibilities && delegatedResponsibilities !== ''
+        }
+        onChange={(event) => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setDelegatedResponsibilities,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsDelegatedResponsibilitiesFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsDelegatedResponsibilitiesFocused,
+            payload: false,
+          });
+        }}
+        minLength={2}
+        maxLength={2000}
+        autosize
+        minRows={3}
+        maxRows={10}
         required
         withAsterisk
       />
