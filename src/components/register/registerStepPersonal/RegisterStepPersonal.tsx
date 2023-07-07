@@ -4,6 +4,7 @@ import { Flex, NativeSelect, Text, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 
 import { NAME_REGEX, URL_REGEX } from '../../../constants/regex';
+import { returnAccessibleTextElem } from '../../../jsxCreators';
 import {
   returnNameValidationText,
   returnUrlValidationText,
@@ -80,200 +81,71 @@ function RegisterStepPersonal({
     });
   }, [preferredName]);
 
-  const firstNameInputErrorText = (
-    <Text
-      id="first-name-note-error"
-      style={{
-        display:
-          isFirstNameFocused && firstName && !isValidFirstName
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [firstNameInputErrorText, firstNameInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'first name',
+      inputText: firstName,
+      isValidInputText: isValidFirstName,
+      isInputTextFocused: isFirstNameFocused,
+      regexValidationText: returnNameValidationText({
         content: firstName,
         contentKind: 'first name',
         minLength: 2,
         maxLength: 30,
-      })}
-    </Text>
-  );
+      }),
+    });
 
-  const firstNameInputValidText = (
-    <Text
-      id="first-name-note-valid"
-      style={{
-        display:
-          isFirstNameFocused && firstName && isValidFirstName
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> First name is valid
-    </Text>
-  );
-
-  const middleNameInputErrorText = (
-    <Text
-      id="middle-name-note-error"
-      style={{
-        display:
-          isMiddleNameFocused && middleName && !isValidMiddleName
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({
+  const [middleNameInputErrorText, middleNameInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'middle name',
+      inputText: middleName,
+      isValidInputText: isValidMiddleName,
+      isInputTextFocused: isMiddleNameFocused,
+      regexValidationText: returnNameValidationText({
         content: middleName,
         contentKind: 'middle name',
         minLength: 2,
         maxLength: 30,
-      })}
-    </Text>
-  );
+      }),
+    });
 
-  const middleNameInputValidText = (
-    <Text
-      id="middle-name-note-valid"
-      style={{
-        display:
-          isMiddleNameFocused && middleName && isValidMiddleName
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Middle name is valid
-    </Text>
-  );
-
-  const lastNameInputErrorText = (
-    <Text
-      id="last-name-note-error"
-      style={{
-        display:
-          isLastNameFocused && lastName && !isValidLastName ? 'block' : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({
+  const [lastNameInputErrorText, lastNameInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'last name',
+      inputText: lastName,
+      isValidInputText: isValidLastName,
+      isInputTextFocused: isLastNameFocused,
+      regexValidationText: returnNameValidationText({
         content: lastName,
         contentKind: 'last name',
         minLength: 2,
         maxLength: 30,
-      })}
-    </Text>
-  );
+      }),
+    });
 
-  const lastNameInputValidText = (
-    <Text
-      id="last-name-note-valid"
-      style={{
-        display:
-          isLastNameFocused && lastName && isValidLastName ? 'block' : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Last name is valid
-    </Text>
-  );
-
-  const preferredNameInputErrorText = (
-    <Text
-      id="preferred-name-note-error"
-      style={{
-        display:
-          isPreferredNameFocused && preferredName && !isValidPreferredName
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({
+  const [preferredNameInputErrorText, preferredNameInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'preferred name',
+      inputText: preferredName,
+      isValidInputText: isValidPreferredName,
+      isInputTextFocused: isPreferredNameFocused,
+      regexValidationText: returnNameValidationText({
         content: preferredName,
         contentKind: 'preferred name',
         minLength: 2,
         maxLength: 30,
-      })}
-    </Text>
-  );
+      }),
+    });
 
-  const preferredNameInputValidText = (
-    <Text
-      id="preferred-name-note-valid"
-      style={{
-        display:
-          isPreferredNameFocused && preferredName && isValidPreferredName
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Preferred name is valid
-    </Text>
-  );
-
-  const profilePictureUrlInputErrorText = (
-    <Text
-      id="profile-picture-url-note-error"
-      style={{
-        display:
-          isProfilePictureUrlFocused &&
-          profilePictureUrl &&
-          !isValidProfilePictureUrl
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnUrlValidationText(profilePictureUrl)}
-    </Text>
-  );
-
-  const profilePictureUrlInputValidText = (
-    <Text
-      id="profile-picture-url-note-valid"
-      style={{
-        display:
-          isProfilePictureUrlFocused &&
-          profilePictureUrl &&
-          isValidProfilePictureUrl
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Profile picture URL is valid
-    </Text>
-  );
+  const [profilePictureUrlInputErrorText, profilePictureUrlInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'profile picture url',
+      inputText: profilePictureUrl,
+      isValidInputText: isValidProfilePictureUrl,
+      isInputTextFocused: isProfilePictureUrlFocused,
+      regexValidationText: returnUrlValidationText(profilePictureUrl),
+    });
 
   return (
     <Flex
@@ -292,7 +164,9 @@ function RegisterStepPersonal({
         autoComplete="off"
         aria-required
         aria-describedby={
-          isValidFirstName ? 'first-name-note-valid' : 'first-name-note-error'
+          isValidFirstName
+            ? 'first-name-input-note-valid'
+            : 'first-name-input-note-error'
         }
         aria-invalid={isValidFirstName ? false : true}
         value={firstName}
@@ -337,8 +211,8 @@ function RegisterStepPersonal({
         autoComplete="off"
         aria-describedby={
           isValidMiddleName
-            ? 'middle-name-note-valid'
-            : 'middle-name-note-error'
+            ? 'middle-name-input-note-valid'
+            : 'middle-name-input-note-error'
         }
         aria-invalid={isValidMiddleName ? false : true}
         value={middleName}
@@ -383,7 +257,9 @@ function RegisterStepPersonal({
         autoComplete="off"
         aria-required
         aria-describedby={
-          isValidLastName ? 'last-name-note-valid' : 'last-name-note-error'
+          isValidLastName
+            ? 'last-name-input-note-valid'
+            : 'last-name-input-note-error'
         }
         aria-invalid={isValidLastName ? false : true}
         value={lastName}
@@ -428,8 +304,8 @@ function RegisterStepPersonal({
         autoComplete="off"
         aria-describedby={
           isValidPreferredName
-            ? 'preferred-name-note-valid'
-            : 'preferred-name-note-error'
+            ? 'preferred-name-input-note-valid'
+            : 'preferred-name-input-note-error'
         }
         aria-invalid={isValidPreferredName ? false : true}
         value={preferredName}
@@ -476,8 +352,8 @@ function RegisterStepPersonal({
         autoComplete="off"
         aria-describedby={
           isValidProfilePictureUrl
-            ? 'profile-picture-url-note-valid'
-            : 'profile-picture-url-note-error'
+            ? 'profile-picture-url-input-note-valid'
+            : 'profile-picture-url-input-note-error'
         }
         aria-invalid={isValidProfilePictureUrl ? false : true}
         value={profilePictureUrl}
