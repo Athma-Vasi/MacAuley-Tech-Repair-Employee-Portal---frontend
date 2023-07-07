@@ -7,18 +7,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, NativeSelect, Text, TextInput, Tooltip } from '@mantine/core';
 import { useEffect } from 'react';
 
+import { DEPARTMENTS, JOB_POSITIONS } from '../../../constants/data';
+import {
+  DATE_REGEX,
+  FULL_NAME_REGEX,
+  PHONE_NUMBER_REGEX,
+} from '../../../constants/regex';
 import {
   returnDateValidationText,
   returnNameValidationText,
   returnPhoneNumberValidationText,
 } from '../../../utils';
-import {
-  DATE_REGEX,
-  DEPARTMENTS,
-  FULL_NAME_REGEX,
-  JOB_POSITIONS,
-  PHONE_NUMBER_REGEX,
-} from '../constants';
 import type { RegisterStepAdditionalProps } from './types';
 
 function RegisterStepAdditional({

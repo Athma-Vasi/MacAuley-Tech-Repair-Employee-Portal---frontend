@@ -3,11 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Flex, Text, Textarea, TextInput } from '@mantine/core';
 import { Fragment, useEffect, useReducer, useRef } from 'react';
 
+import { FULL_NAME_REGEX, URL_REGEX } from '../../../constants/regex';
 import {
   returnNameValidationText,
   returnUrlValidationText,
 } from '../../../utils';
-import { FULL_NAME_REGEX, URL_REGEX } from '../../register/constants';
 import { ARTICLE_CONTENT_REGEX, ARTICLE_TITLE_REGEX } from '../constants';
 import {
   returnArticleParagraphValidationText,

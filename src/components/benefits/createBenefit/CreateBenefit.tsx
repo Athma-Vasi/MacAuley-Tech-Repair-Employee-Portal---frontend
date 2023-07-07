@@ -18,14 +18,13 @@ import {
 } from '@mantine/core';
 import { useEffect, useMemo, useReducer, useRef } from 'react';
 
-import { MONEY_REGEX } from '../../../constants';
+import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
 import { returnAccessibleTextElem } from '../../../jsxCreators';
 import {
   returnDateValidationText,
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../../utils';
-import { DATE_REGEX } from '../../register/constants';
 import {
   BENEFIT_PLAN_DATA,
   CURRENCY_DATA,

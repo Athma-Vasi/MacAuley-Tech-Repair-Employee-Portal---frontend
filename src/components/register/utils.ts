@@ -1,5 +1,3 @@
-import { Country, PostalCode } from '../../types';
-
 function returnPasswordRegexValidationText(password: string): string {
   const passwordLengthRegex = /^(?=.{8,32}$)/;
   const passwordUppercaseRegex = /^(?=.*[A-Z])/;

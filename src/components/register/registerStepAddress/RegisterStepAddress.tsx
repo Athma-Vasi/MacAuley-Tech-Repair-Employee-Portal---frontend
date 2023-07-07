@@ -14,21 +14,20 @@ import {
 } from '@mantine/core';
 import { useEffect } from 'react';
 
-import {
-  returnAddressValidationText,
-  returnCityValidationText,
-  returnPhoneNumberValidationText,
-  returnPostalCodeValidationText,
-} from '../../../utils';
+import { PROVINCES, STATES_US } from '../../../constants/data';
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
-  PROVINCES,
-  STATES_US,
-} from '../constants';
+} from '../../../constants/regex';
+import {
+  returnAddressValidationText,
+  returnCityValidationText,
+  returnPhoneNumberValidationText,
+  returnPostalCodeValidationText,
+} from '../../../utils';
 import { RegisterStepAddressProps } from './types';
 
 function RegisterStepAddress({

@@ -1,14 +1,14 @@
 import { Flex, Text } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 
-import { returnAccessibleTextElem } from '../../jsxCreators';
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
-} from '../register/constants';
+} from '../../constants/regex';
+import { returnAccessibleTextElem } from '../../jsxCreators';
 import {
   addressChangeAction,
   addressChangeReducer,
