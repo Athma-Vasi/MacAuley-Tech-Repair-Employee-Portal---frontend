@@ -1,10 +1,6 @@
-import {
-  faCheck,
-  faInfoCircle,
-  faRefresh,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, NativeSelect, Text, TextInput, Tooltip } from '@mantine/core';
+import { Flex, NativeSelect, TextInput, Tooltip } from '@mantine/core';
 import { useEffect } from 'react';
 
 import { DEPARTMENTS, JOB_POSITIONS } from '../../../constants/data';
@@ -13,6 +9,7 @@ import {
   FULL_NAME_REGEX,
   PHONE_NUMBER_REGEX,
 } from '../../../constants/regex';
+import { returnAccessibleTextElem } from '../../../jsxCreators';
 import {
   returnDateValidationText,
   returnNameValidationText,
@@ -56,24 +53,27 @@ function RegisterStepAdditional({
     const phoneNumberLength = phoneNumber.length;
     if (isPhoneNumberFocused) {
       switch (phoneNumberLength) {
-        case 4:
+        case 4: {
           registerDispatch({
             type: registerAction.setEmergencyContactPhoneNumber,
             payload: `${phoneNumber}(`,
           });
           break;
-        case 8:
+        }
+        case 8: {
           registerDispatch({
             type: registerAction.setEmergencyContactPhoneNumber,
             payload: `${phoneNumber}) `,
           });
           break;
-        case 13:
+        }
+        case 13: {
           registerDispatch({
             type: registerAction.setEmergencyContactPhoneNumber,
             payload: `${phoneNumber}-`,
           });
           break;
+        }
 
         default:
           break;
@@ -98,113 +98,41 @@ function RegisterStepAdditional({
     console.log({ startDate });
   }, [startDate]);
 
-  const emergencyContactFullNameInputErrorText = (
-    <Text
-      id="emergency-contact-full-name-note-error"
-      style={{
-        display:
-          isFullNameFocused && fullName && !isValidFullName ? 'block' : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({
-        content: fullName,
-        contentKind: 'full name',
-        minLength: 2,
-        maxLength: 100,
-      })}
-    </Text>
-  );
+  const [
+    emergencyContactFullNameInputErrorText,
+    emergencyContactFullNameInputValidText,
+  ] = returnAccessibleTextElem({
+    inputElementKind: 'full name',
+    inputText: fullName,
+    isInputTextFocused: isFullNameFocused,
+    isValidInputText: isValidFullName,
+    regexValidationText: returnNameValidationText({
+      content: fullName,
+      contentKind: 'full name',
+      minLength: 2,
+      maxLength: 100,
+    }),
+  });
 
-  const emergencyContactFullNameInputValidText = (
-    <Text
-      id="emergency-contact-full-name-note-valid"
-      style={{
-        display:
-          isFullNameFocused && fullName && isValidFullName ? 'block' : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Full name is valid
-    </Text>
-  );
+  const [
+    emergencyPhoneNumberInputErrorText,
+    emergencyPhoneNumberInputValidText,
+  ] = returnAccessibleTextElem({
+    inputElementKind: 'phone number',
+    inputText: phoneNumber,
+    isInputTextFocused: isPhoneNumberFocused,
+    isValidInputText: isValidPhoneNumber,
+    regexValidationText: returnPhoneNumberValidationText(phoneNumber),
+  });
 
-  const emergencyPhoneNumberInputErrorText = (
-    <Text
-      id="emergency-phone-number-note-error"
-      style={{
-        display:
-          isPhoneNumberFocused && phoneNumber && !isValidPhoneNumber
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnPhoneNumberValidationText(phoneNumber)}
-    </Text>
-  );
-
-  const emergencyPhoneNumberInputValidText = (
-    <Text
-      id="emergency-phone-number-note-valid"
-      style={{
-        display:
-          isPhoneNumberFocused && phoneNumber && isValidPhoneNumber
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Emergency contact number is valid
-    </Text>
-  );
-
-  const startDateInputErrorText = (
-    <Text
-      id="start-date-note-error"
-      style={{
-        display:
-          isStartDateFocused && startDate && !isValidStartDate
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      size="sm"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnDateValidationText(startDate)}
-    </Text>
-  );
-
-  const startDateInputValidText = (
-    <Text
-      id="start-date-note-valid"
-      style={{
-        display:
-          isStartDateFocused && startDate && isValidStartDate
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      size="sm"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Start date is valid
-    </Text>
-  );
+  const [startDateInputErrorText, startDateInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'start date',
+      inputText: startDate,
+      isInputTextFocused: isStartDateFocused,
+      isValidInputText: isValidStartDate,
+      regexValidationText: returnDateValidationText(startDate),
+    });
 
   return (
     <Flex
@@ -254,8 +182,8 @@ function RegisterStepAdditional({
         aria-required
         aria-describedby={
           isValidFullName
-            ? 'emergency-contact-full-name-note-valid'
-            : 'emergency-contact-full-name-note-error'
+            ? 'full-name-input-note-valid'
+            : 'full-name-input-note-error'
         }
         aria-invalid={isValidFullName ? false : true}
         value={fullName}
@@ -302,8 +230,8 @@ function RegisterStepAdditional({
         aria-required
         aria-describedby={
           isValidPhoneNumber
-            ? 'emergency-phone-number-note-valid'
-            : 'emergency-phone-number-note-error'
+            ? 'phone-number-input-note-valid'
+            : 'phone-number-input-note-error'
         }
         description={
           isValidPhoneNumber
@@ -375,7 +303,9 @@ function RegisterStepAdditional({
         aria-required
         aria-label='Please enter start date in format "date-date-month-month-year-year-year-year" from start year 1900 to end year 2024'
         aria-describedby={
-          isValidStartDate ? 'start-date-note-valid' : 'start-date-note-error'
+          isValidStartDate
+            ? 'start-date-input-note-valid'
+            : 'start-date-input-note-error'
         }
         aria-invalid={isValidStartDate ? false : true}
         value={startDate}
