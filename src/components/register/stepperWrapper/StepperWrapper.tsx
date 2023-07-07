@@ -8,7 +8,7 @@ import type { StepperWrapperProps } from './types';
 function StepperWrapper({
   children,
   currentStepperPosition,
-  registerAction,
+  parentComponentAction,
   registerDispatch,
 }: StepperWrapperProps) {
   const stepperRef = useRef<HTMLButtonElement>(null);
@@ -24,7 +24,7 @@ function StepperWrapper({
         active={currentStepperPosition}
         onStepClick={(step) => {
           registerDispatch({
-            type: registerAction.setCurrentStepperPosition,
+            type: parentComponentAction.setCurrentStepperPosition,
             payload: step,
           });
         }}
@@ -88,6 +88,37 @@ function StepperWrapper({
         </Stepper.Completed>
       </Stepper>
       {children}
+
+      {/* stepper nav buttons */}
+      <Group position="center" mt="xl">
+        <Button
+          variant="default"
+          aria-label="Press enter to go back to the previous step in the form"
+          disabled={currentStepperPosition === 0}
+          onClick={() => {
+            const currentStep = currentStepperPosition;
+            registerDispatch({
+              type: parentComponentAction.setCurrentStepperPosition,
+              payload: currentStep > 0 ? currentStep - 1 : currentStep + 1,
+            });
+          }}
+        >
+          Back
+        </Button>
+        <Button
+          aria-label="Press enter to go to the next step in the form"
+          disabled={currentStepperPosition === 4}
+          onClick={() => {
+            const currentStep = currentStepperPosition;
+            registerDispatch({
+              type: parentComponentAction.setCurrentStepperPosition,
+              payload: currentStep < 4 ? currentStep + 1 : currentStep - 1,
+            });
+          }}
+        >
+          Next step
+        </Button>
+      </Group>
     </>
   );
 }

@@ -399,19 +399,11 @@ function Register() {
   const { buttonTextColor } = COLORS;
 
   const displayRegisterForm = (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="space-between"
-      rowGap="lg"
-      w="100%"
-      h="100%"
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      parentComponentAction={registerAction}
+      registerDispatch={registerDispatch}
     >
-      <StepperWrapper
-        currentStepperPosition={currentStepperPosition}
-        registerAction={registerAction}
-        registerDispatch={registerDispatch}
-      />
       <form onSubmit={handleRegisterFormSubmit} style={{ width: '100%' }}>
         <Flex
           direction="column"
@@ -442,37 +434,6 @@ function Register() {
           {/* fifth step */}
           {displayReviewStep}
 
-          {/* stepper nav buttons */}
-          <Group position="center" mt="xl">
-            <Button
-              variant="default"
-              aria-label="Press enter to go back to the previous step in the form"
-              disabled={currentStepperPosition === 0}
-              onClick={() => {
-                const currentStep = currentStepperPosition;
-                registerDispatch({
-                  type: registerAction.setCurrentStepperPosition,
-                  payload: currentStep > 0 ? currentStep - 1 : currentStep + 1,
-                });
-              }}
-            >
-              Back
-            </Button>
-            <Button
-              aria-label="Press enter to go to the next step in the form"
-              disabled={currentStepperPosition === 4}
-              onClick={() => {
-                const currentStep = currentStepperPosition;
-                registerDispatch({
-                  type: registerAction.setCurrentStepperPosition,
-                  payload: currentStep < 4 ? currentStep + 1 : currentStep - 1,
-                });
-              }}
-            >
-              Next step
-            </Button>
-          </Group>
-
           {/* register button */}
           <Flex w="100%" justify="flex-end">
             <Button
@@ -501,8 +462,22 @@ function Register() {
           </Flex>
         </Flex>
       </form>
+    </StepperWrapper>
+  );
 
-      {/*  */}
+  const displayRegisterComponent = (
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="space-between"
+      rowGap="lg"
+      w="100%"
+      h="100%"
+    >
+      {/* display form */}
+      {displayRegisterForm}
+
+      {/* display login link */}
       <Flex align="center" justify="center" columnGap="sm" w="100%">
         <Text color="dark">Already have an account?</Text>
         <Text color="blue">
@@ -520,7 +495,7 @@ function Register() {
         ? displayLoading
         : isSuccessful
         ? displaySuccess
-        : displayRegisterForm}
+        : displayRegisterComponent}
     </Flex>
   );
 }

@@ -3,7 +3,7 @@ import { RegisterAction, RegisterDispatch } from '../types';
 type StepperWrapperProps = {
   children?: React.ReactNode;
   currentStepperPosition: number;
-  registerAction: RegisterAction;
+  parentComponentAction: Record<string, any>;
   registerDispatch: React.Dispatch<RegisterDispatch>;
 };
 
