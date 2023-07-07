@@ -24,6 +24,7 @@ import {
   returnArticleParagraphInputErrorElements,
   returnArticleParagraphInputValidElements,
 } from './utils';
+import { returnAccessibleTextElem } from '../../../jsxCreators';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
@@ -138,144 +139,56 @@ function CreateAnnouncement() {
     });
   }, [article]);
 
-  const titleInputErrorText = (
-    <Text
-      id="title-input-note-error"
-      style={{
-        display: isTitleFocused && title && !isValidTitle ? 'block' : 'none',
-      }}
-      color="red"
-      w="100%"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnArticleTitleValidationText({
-        str: title,
-        kind: 'title',
-      })}
-    </Text>
-  );
+  const [titleInputErrorText, titleInputValidText] = returnAccessibleTextElem({
+    inputElementKind: 'title',
+    inputText: title,
+    isInputTextFocused: isTitleFocused,
+    isValidInputText: isValidTitle,
+    regexValidationText: returnArticleTitleValidationText({
+      content: title,
+      contentKind: 'title',
+      minLength: 3,
+      maxLength: 150,
+    }),
+  });
 
-  const titleInputValidText = (
-    <Text
-      id="title-input-note-valid"
-      style={{
-        display: isTitleFocused && title && isValidTitle ? 'block' : 'none',
-      }}
-      color="green"
-      w="100%"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Title is valid
-    </Text>
-  );
-
-  const authorInputErrorText = (
-    <Text
-      id="author-input-note-error"
-      style={{
-        display: isAuthorFocused && author && !isValidAuthor ? 'block' : 'none',
-      }}
-      color="red"
-      w="100%"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnNameValidationText({
+  const [authorInputErrorText, authorInputValidText] = returnAccessibleTextElem(
+    {
+      inputElementKind: 'author',
+      inputText: author,
+      isInputTextFocused: isAuthorFocused,
+      isValidInputText: isValidAuthor,
+      regexValidationText: returnNameValidationText({
         content: author,
         contentKind: 'author',
         minLength: 2,
         maxLength: 100,
-      })}
-    </Text>
+      }),
+    }
   );
 
-  const authorInputValidText = (
-    <Text
-      id="author-input-note-valid"
-      style={{
-        display: isAuthorFocused && author && isValidAuthor ? 'block' : 'none',
-      }}
-      color="green"
-      w="100%"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Author is valid
-    </Text>
-  );
+  const [bannerImgSrcInputErrorText, bannerImgSrcInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'banner image src',
+      inputText: bannerImageSrc,
+      isInputTextFocused: isBannerImageSrcFocused,
+      isValidInputText: isValidBannerImageSrc,
+      regexValidationText: returnUrlValidationText(bannerImageSrc),
+    });
 
-  const bannerImgSrcInputErrorText = (
-    <Text
-      id="banner-img-src-input-note-error"
-      style={{
-        display:
-          isBannerImageSrcFocused && bannerImageSrc && !isValidBannerImageSrc
-            ? 'block'
-            : 'none',
-      }}
-      color="red"
-      w="100%"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnUrlValidationText(bannerImageSrc)}
-    </Text>
-  );
-
-  const bannerImgSrcInputValidText = (
-    <Text
-      id="banner-img-src-input-note-valid"
-      style={{
-        display:
-          isBannerImageSrcFocused && bannerImageSrc && isValidBannerImageSrc
-            ? 'block'
-            : 'none',
-      }}
-      color="green"
-      w="100%"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Banner image url is valid
-    </Text>
-  );
-
-  const bannerImgAltInputErrorText = (
-    <Text
-      id="banner-img-alt-input-note-error"
-      style={{
-        display:
-          isBannerImageAltFocused && bannerImageAlt && !isValidBannerImageAlt
-            ? 'block'
-            : 'none',
-      }}
-      color="red"
-      w="100%"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnImageAltValidationText({
-        str: bannerImageAlt,
-        kind: 'banner image alt text',
-      })}
-    </Text>
-  );
-
-  const bannerImgAltInputValidText = (
-    <Text
-      id="banner-img-alt-input-note-valid"
-      style={{
-        display:
-          isBannerImageAltFocused && bannerImageAlt && isValidBannerImageAlt
-            ? 'block'
-            : 'none',
-      }}
-      color="green"
-      w="100%"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Banner image alt text is valid
-    </Text>
-  );
+  const [bannerImgAltInputErrorText, bannerImgAltInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'banner image alt',
+      inputText: bannerImageAlt,
+      isInputTextFocused: isBannerImageAltFocused,
+      isValidInputText: isValidBannerImageAlt,
+      regexValidationText: returnImageAltValidationText({
+        content: bannerImageAlt,
+        contentKind: 'banner image alt text',
+        minLength: 3,
+        maxLength: 150,
+      }),
+    });
 
   const articleParagraphInputErrorTexts =
     returnArticleParagraphInputErrorElements({

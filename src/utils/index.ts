@@ -451,3 +451,5 @@ export {
   returnUrlValidationText,
   returnUsernameRegexValidationText,
 };
+
+export type { RegexValidationProps };
