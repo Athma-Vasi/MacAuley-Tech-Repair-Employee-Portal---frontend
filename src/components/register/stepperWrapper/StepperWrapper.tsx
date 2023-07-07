@@ -78,7 +78,7 @@ function StepperWrapper({
         <Stepper.Completed>
           <Text color="dark">
             {stepsInError.size === 0
-              ? '˖ ࣪‧₊˚⋆✩٩(ˊᗜˋ*)و ✩ Looks great! You are ready become a member of the MacAuley family!'
+              ? '˖ ࣪‧₊˚⋆✩٩(ˊᗜˋ*)و ✩ Looks great! You are good to go!'
               : `(｡•́︿•̀｡) Oh no! Looks like there is an error on step${
                   stepsInError.size > 1 ? 's' : ''
                 }: ${

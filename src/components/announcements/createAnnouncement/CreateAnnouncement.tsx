@@ -214,7 +214,7 @@ function CreateAnnouncement() {
       w="400px"
     >
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Article title"
@@ -256,7 +256,7 @@ function CreateAnnouncement() {
       />
       {/* author name input */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Author name"
@@ -301,7 +301,7 @@ function CreateAnnouncement() {
       />
       {/* banner img src input */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Banner image src"
@@ -348,7 +348,7 @@ function CreateAnnouncement() {
       />
       {/* banner image alt text */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Banner image alt"
@@ -400,7 +400,7 @@ function CreateAnnouncement() {
         return (
           <Fragment key={`${index}${title}`}>
             <Textarea
-              size="md"
+              size="sm"
               w="100%"
               color="dark"
               label={`Paragraph ${index + 1}`}
@@ -472,7 +472,7 @@ function CreateAnnouncement() {
 
         <Button
           variant="default"
-          size="md"
+          size="sm"
           disabled={isArticleLengthExceeded}
           onClick={() => {
             createAnnouncementDispatch({

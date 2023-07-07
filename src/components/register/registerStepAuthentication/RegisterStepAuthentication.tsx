@@ -150,7 +150,7 @@ function RegisterStepAuthentication({
       w="100%"
     >
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Email"
@@ -189,7 +189,7 @@ function RegisterStepAuthentication({
         required
       />
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Username"
@@ -236,7 +236,7 @@ function RegisterStepAuthentication({
         required
       />
       <PasswordInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Password"
@@ -282,7 +282,7 @@ function RegisterStepAuthentication({
         required
       />
       <PasswordInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Confirm Password"

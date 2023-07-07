@@ -183,7 +183,7 @@ function LeaveRequest() {
       {/* start date input */}
       <TextInput
         type="date"
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Leave start date"
@@ -235,7 +235,7 @@ function LeaveRequest() {
       {/* end date input */}
       <TextInput
         type="date"
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Leave end date"
@@ -286,7 +286,7 @@ function LeaveRequest() {
 
       {/* reason for leave select */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={REASON_FOR_LEAVE_DATA}
         label="Reason for leave"
         description="Select reason for leave"
@@ -303,7 +303,7 @@ function LeaveRequest() {
 
       {/* delegated to employee input */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Delegated to employee"
@@ -352,7 +352,7 @@ function LeaveRequest() {
       />
       {/* delegated responsibilities text area input */}
       <Textarea
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Delegated responsibilities"
@@ -407,7 +407,7 @@ function LeaveRequest() {
 
       {/* additional comments text area input */}
       <Textarea
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Additional comments"
@@ -458,7 +458,7 @@ function LeaveRequest() {
 
       {/* acknowledgement checkbox */}
       <Checkbox
-        size="md"
+        size="sm"
         color="dark"
         label="I acknowledge that the information provided is accurate."
         aria-label={

@@ -110,7 +110,7 @@ function NotesListMobile({
         });
       }}
       data={headingSelectData}
-      size="md"
+      size="sm"
       w="62%"
     />
   );
@@ -133,7 +133,7 @@ function NotesListMobile({
         });
       }}
       data={directionSelectData}
-      size="md"
+      size="sm"
       w="62%"
     />
   );

@@ -449,7 +449,7 @@ function Register() {
             <Button
               type="submit"
               disabled={
-                stepsInError.size > 0 && currentStepperPosition < 5
+                stepsInError.size > 0 || currentStepperPosition < 5
                   ? true
                   : false
               }

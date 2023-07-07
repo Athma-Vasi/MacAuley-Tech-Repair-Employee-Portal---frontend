@@ -195,7 +195,7 @@ function RequestResource() {
     >
       {/* department select */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={DEPARTMENTS}
         label="Department"
         description="
@@ -212,7 +212,7 @@ function RequestResource() {
       />
       {/* resource kind */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={REQUEST_RESOURCE_KIND_DATA}
         label="Resource"
         description="
@@ -229,7 +229,7 @@ function RequestResource() {
       />
       {/* resource quantity */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Resource quantity"
@@ -278,7 +278,7 @@ function RequestResource() {
       />
       {/* resource description */}
       <Textarea
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Resource description"
@@ -331,7 +331,7 @@ function RequestResource() {
 
       {/* reason for request text input */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Reason for request"
@@ -381,7 +381,7 @@ function RequestResource() {
 
       {/* urgency */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={URGENCY_DATA}
         label="Urgency"
         description="
@@ -399,7 +399,7 @@ function RequestResource() {
 
       {/* additional information text area input */}
       <Textarea
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Additional information"
@@ -453,7 +453,7 @@ function RequestResource() {
       {/* date needed by */}
       <TextInput
         type="date"
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Date needed by"

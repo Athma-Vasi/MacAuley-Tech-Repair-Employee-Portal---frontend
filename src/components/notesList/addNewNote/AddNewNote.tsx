@@ -325,7 +325,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
           w="100%"
         >
           <TextInput
-            size="md"
+            size="sm"
             w="100%"
             color={textColor}
             ref={titleRef}

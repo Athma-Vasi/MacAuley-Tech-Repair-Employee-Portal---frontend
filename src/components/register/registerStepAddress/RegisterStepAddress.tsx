@@ -229,7 +229,7 @@ function RegisterStepAddress({
   const displayProvinceOrStateInput =
     country === 'Canada' ? (
       <NativeSelect
-        size="md"
+        size="sm"
         data={PROVINCES}
         label="Select your province"
         // description="Select your province"
@@ -245,7 +245,7 @@ function RegisterStepAddress({
       />
     ) : (
       <NativeSelect
-        size="md"
+        size="sm"
         data={STATES_US}
         // description="Select your state"
         label="Select your state"
@@ -263,7 +263,7 @@ function RegisterStepAddress({
 
   const selectCanadianPostalCodeInput = (
     <TextInput
-      size="md"
+      size="sm"
       w="100%"
       color="dark"
       label="Postal code"
@@ -320,7 +320,7 @@ function RegisterStepAddress({
 
   const selectUSPostalCodeInput = (
     <TextInput
-      size="md"
+      size="sm"
       w="100%"
       color="dark"
       label="Postal code"
@@ -385,7 +385,7 @@ function RegisterStepAddress({
       w="100%"
     >
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Personal contact number"
@@ -470,7 +470,7 @@ function RegisterStepAddress({
       />
       {/* country */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={['Canada', 'United States']}
         label="Country"
         value={country}
@@ -485,7 +485,7 @@ function RegisterStepAddress({
       />
 
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Address line"
@@ -534,7 +534,7 @@ function RegisterStepAddress({
         maxLength={75}
       />
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="City"

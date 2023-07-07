@@ -163,7 +163,7 @@ function RegisterStepAdditional({
       w="100%"
     >
       <NativeSelect
-        size="md"
+        size="sm"
         data={JOB_POSITIONS}
         label="Job position"
         value={jobPosition}
@@ -178,7 +178,7 @@ function RegisterStepAdditional({
       />
       {/* department */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={DEPARTMENTS}
         label="Department"
         value={department}
@@ -193,7 +193,7 @@ function RegisterStepAdditional({
       />
       {/* emergency contact */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Emergency contact name"
@@ -241,7 +241,7 @@ function RegisterStepAdditional({
       />
       {/* emergency contact number */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Emergency contact number"
@@ -314,7 +314,7 @@ function RegisterStepAdditional({
       {/* start date */}
       <TextInput
         type="date"
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Start date"

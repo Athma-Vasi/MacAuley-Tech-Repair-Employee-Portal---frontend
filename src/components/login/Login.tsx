@@ -201,7 +201,7 @@ function Login() {
             Sign In
           </Title>
           <TextInput
-            size="md"
+            size="sm"
             w="100%"
             color="dark"
             label="Username"
@@ -221,7 +221,7 @@ function Login() {
             required
           />
           <PasswordInput
-            size="md"
+            size="sm"
             w="100%"
             color="dark"
             label="Password"

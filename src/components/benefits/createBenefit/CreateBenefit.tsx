@@ -293,7 +293,7 @@ function CreateBenefit() {
     >
       {/* plan name text input */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Plan name"
@@ -342,7 +342,7 @@ function CreateBenefit() {
 
       {/* plan description text input */}
       <Textarea
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Plan description"
@@ -394,7 +394,7 @@ function CreateBenefit() {
       />
       {/* plan kind select input */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={BENEFIT_PLAN_DATA}
         label="Benefit plan kind"
         value={planKind}
@@ -409,7 +409,7 @@ function CreateBenefit() {
       />
       {/* plan active checkbox input */}
       <Checkbox
-        size="md"
+        size="sm"
         color="dark"
         label="Status"
         aria-label={isPlanActive ? 'Plan is active' : 'Plan is inactive'}
@@ -426,7 +426,7 @@ function CreateBenefit() {
       {/* plan start date input */}
       <TextInput
         type="date"
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Plan start date"
@@ -479,7 +479,7 @@ function CreateBenefit() {
 
       {/* currency select input */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={CURRENCY_DATA}
         label="Currency"
         description="Select currency of plan."
@@ -496,7 +496,7 @@ function CreateBenefit() {
 
       {/* employee contribution text input */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Employee contribution"
@@ -545,7 +545,7 @@ function CreateBenefit() {
 
       {/* employer contribution text input */}
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Employer contribution"
@@ -593,12 +593,12 @@ function CreateBenefit() {
       />
       {/* computed total contribution */}
       <Flex w="100%" justify="space-between" align="center">
-        <Text size="md" color="dark">
+        <Text size="sm" color="dark">
           Total contribution
         </Text>
         <Flex justify="space-between" align="center" columnGap="sm">
           {currencyIcon}
-          <Text size="md" color="dark">
+          <Text size="sm" color="dark">
             {totalContribution}
           </Text>
         </Flex>
@@ -606,7 +606,7 @@ function CreateBenefit() {
 
       {/* submit button */}
       <Button
-        size="md"
+        size="sm"
         variant="filled"
         disabled={
           !isValidPlanName ||

@@ -93,7 +93,7 @@ function UsersListMobile({
         });
       }}
       data={headingSelectData}
-      size="md"
+      size="sm"
       w="62%"
     />
   );
@@ -115,7 +115,7 @@ function UsersListMobile({
         });
       }}
       data={directionSelectData}
-      size="md"
+      size="sm"
       w="62%"
     />
   );

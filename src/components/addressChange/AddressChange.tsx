@@ -228,7 +228,7 @@ function AddressChange() {
   const displayProvinceOrStateInput =
     country === 'Canada' ? (
       <NativeSelect
-        size="md"
+        size="sm"
         data={PROVINCES}
         label="Select your province"
         // description="Select your province"
@@ -244,7 +244,7 @@ function AddressChange() {
       />
     ) : (
       <NativeSelect
-        size="md"
+        size="sm"
         data={STATES_US}
         // description="Select your state"
         label="Select your state"
@@ -262,7 +262,7 @@ function AddressChange() {
 
   const selectCanadianPostalCodeInput = (
     <TextInput
-      size="md"
+      size="sm"
       w="100%"
       color="dark"
       label="Postal code"
@@ -319,7 +319,7 @@ function AddressChange() {
 
   const selectUSPostalCodeInput = (
     <TextInput
-      size="md"
+      size="sm"
       w="100%"
       color="dark"
       label="Postal code"
@@ -384,7 +384,7 @@ function AddressChange() {
       w={400}
     >
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Personal contact number"
@@ -469,7 +469,7 @@ function AddressChange() {
       />
       {/* country */}
       <NativeSelect
-        size="md"
+        size="sm"
         data={['Canada', 'United States']}
         label="Country"
         value={country}
@@ -484,7 +484,7 @@ function AddressChange() {
       />
 
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="Address line"
@@ -533,7 +533,7 @@ function AddressChange() {
         maxLength={75}
       />
       <TextInput
-        size="md"
+        size="sm"
         w="100%"
         color="dark"
         label="City"
@@ -583,7 +583,7 @@ function AddressChange() {
 
       {/* acknowledgement checkbox */}
       <Checkbox
-        size="md"
+        size="sm"
         color="dark"
         label="I acknowledge that the information provided is accurate."
         aria-label={

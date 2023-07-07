@@ -298,7 +298,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
           w="100%"
         >
           <TextInput
-            size="md"
+            size="sm"
             w="100%"
             color={textColor}
             label="Username"
@@ -338,7 +338,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
           />
 
           <TextInput
-            size="md"
+            size="sm"
             w="100%"
             color={textColor}
             label="Email"
