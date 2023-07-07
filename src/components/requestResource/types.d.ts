@@ -27,7 +27,7 @@ type RequestResourceState = {
   department: Department;
   resourceType: RequestResourceKind;
 
-  resourceQuantity: number;
+  resourceQuantity: string;
   isValidResourceQuantity: boolean;
   isResourceQuantityFocused: boolean;
 
