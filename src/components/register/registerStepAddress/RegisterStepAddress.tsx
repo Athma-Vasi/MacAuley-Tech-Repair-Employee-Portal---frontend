@@ -1,17 +1,6 @@
-import {
-  faCheck,
-  faInfoCircle,
-  faRefresh,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Flex,
-  NativeSelect,
-  Text,
-  TextInput,
-  Tooltip,
-} from '@mantine/core';
+import { Button, Flex, NativeSelect, TextInput, Tooltip } from '@mantine/core';
 import { useEffect } from 'react';
 
 import { PROVINCES, STATES_US } from '../../../constants/data';
@@ -22,6 +11,7 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../../../constants/regex';
+import { returnAccessibleTextElem } from '../../../jsxCreators';
 import {
   returnAddressValidationText,
   returnCityValidationText,
@@ -92,24 +82,27 @@ function RegisterStepAddress({
     const contactLength = contactNumber.length;
     if (isContactNumberFocused) {
       switch (contactLength) {
-        case 4:
+        case 4: {
           registerDispatch({
             type: registerAction.setContactNumber,
             payload: `${contactNumber}(`,
           });
           break;
-        case 8:
+        }
+        case 8: {
           registerDispatch({
             type: registerAction.setContactNumber,
             payload: `${contactNumber}) `,
           });
           break;
-        case 13:
+        }
+        case 13: {
           registerDispatch({
             type: registerAction.setContactNumber,
             payload: `${contactNumber}-`,
           });
           break;
+        }
 
         default:
           break;
@@ -158,152 +151,54 @@ function RegisterStepAddress({
     });
   }, [postalCode, country]);
 
-  const contactNumberInputErrorText = (
-    <Text
-      id="contact-number-note-error"
-      style={{
-        display:
-          isContactNumberFocused && contactNumber && !isValidContactNumber
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnPhoneNumberValidationText(contactNumber)}
-    </Text>
-  );
-
-  const contactNumberInputValidText = (
-    <Text
-      id="contact-number-note-valid"
-      style={{
-        display:
-          isContactNumberFocused && contactNumber && isValidContactNumber
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Phone number is valid
-    </Text>
-  );
-
-  const addressLineInputErrorText = (
-    <Text
-      id="address-line-note-error"
-      style={{
-        display:
-          isAddressLineFocused && addressLine && !isValidAddressLine
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnAddressValidationText({
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [addressLineInputErrorText, addressLineInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'address line',
+      inputText: addressLine,
+      isValidInputText: isValidAddressLine,
+      isInputTextFocused: isAddressLineFocused,
+      regexValidationText: returnAddressValidationText({
         content: addressLine,
         contentKind: 'address line',
         minLength: 2,
         maxLength: 75,
-      })}
-    </Text>
-  );
+      }),
+    });
 
-  const addressLineInputValidText = (
-    <Text
-      id="address-line-note-valid"
-      style={{
-        display:
-          isAddressLineFocused && addressLine && isValidAddressLine
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Address line is valid
-    </Text>
-  );
+  const [cityInputErrorText, cityInputValidText] = returnAccessibleTextElem({
+    inputElementKind: 'city',
+    inputText: city,
+    isValidInputText: isValidCity,
+    isInputTextFocused: isCityFocused,
+    regexValidationText: returnCityValidationText({
+      content: city,
+      contentKind: 'city',
+      minLength: 2,
+      maxLength: 75,
+    }),
+  });
 
-  const cityInputErrorText = (
-    <Text
-      id="city-note-error"
-      style={{
-        display: isCityFocused && city && !isValidCity ? 'block' : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnCityValidationText({
-        content: city,
-        contentKind: 'city',
-        minLength: 2,
-        maxLength: 75,
-      })}
-    </Text>
-  );
-
-  const cityInputValidText = (
-    <Text
-      id="city-note-valid"
-      style={{
-        display: isCityFocused && city && isValidCity ? 'block' : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> City is valid
-    </Text>
-  );
-
-  const postalCodeInputErrorText = (
-    <Text
-      id="postal-code-note-error"
-      style={{
-        display:
-          isPostalCodeFocused && postalCode && !isValidPostalCode
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="red"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnPostalCodeValidationText({
+  const [postalCodeInputErrorText, postalCodeInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'postal code',
+      inputText: postalCode,
+      isValidInputText: isValidPostalCode,
+      isInputTextFocused: isPostalCodeFocused,
+      regexValidationText: returnPostalCodeValidationText({
         postalCode,
         country,
-      })}
-    </Text>
-  );
+      }),
+    });
 
-  const postalCodeInputValidText = (
-    <Text
-      id="postal-code-note-valid"
-      style={{
-        display:
-          isPostalCodeFocused && postalCode && isValidPostalCode
-            ? 'block'
-            : 'none',
-      }}
-      w="100%"
-      color="green"
-      aria-live="polite"
-    >
-      <FontAwesomeIcon icon={faCheck} /> Postal code is valid
-    </Text>
-  );
+  const [contactNumberInputErrorText, contactNumberInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'contact number',
+      inputText: contactNumber,
+      isValidInputText: isValidContactNumber,
+      isInputTextFocused: isContactNumberFocused,
+      regexValidationText: returnPhoneNumberValidationText(contactNumber),
+    });
 
   const displayProvinceOrStateInput =
     country === 'Canada' ? (
@@ -350,7 +245,9 @@ function RegisterStepAddress({
       autoComplete="off"
       aria-required
       aria-describedby={
-        isValidPostalCode ? 'postal-code-note-valid' : 'postal-code-note-error'
+        isValidPostalCode
+          ? 'postal-code-input-note-valid'
+          : 'postal-code-input-note-error'
       }
       aria-invalid={isValidPostalCode ? false : true}
       icon={
@@ -405,7 +302,9 @@ function RegisterStepAddress({
       autoComplete="off"
       aria-required
       aria-describedby={
-        isValidPostalCode ? 'postal-code-note-valid' : 'postal-code-note-error'
+        isValidPostalCode
+          ? 'postal-code-input-note-valid'
+          : 'postal-code-input-note-error'
       }
       aria-invalid={isValidPostalCode ? false : true}
       icon={
@@ -467,8 +366,8 @@ function RegisterStepAddress({
         aria-required
         aria-describedby={
           isValidContactNumber
-            ? 'contact-number-note-valid'
-            : 'contact-number-note-error'
+            ? 'contact-number-input-note-valid'
+            : 'contact-number-input-note-error'
         }
         description={
           isValidContactNumber
@@ -569,8 +468,8 @@ function RegisterStepAddress({
         aria-required
         aria-describedby={
           isValidAddressLine
-            ? 'address-line-note-valid'
-            : 'address-line-note-error'
+            ? 'address-line-input-note-valid'
+            : 'address-line-input-note-error'
         }
         aria-invalid={isValidAddressLine ? false : true}
         value={addressLine}
@@ -616,7 +515,9 @@ function RegisterStepAddress({
         placeholder="Enter city"
         autoComplete="off"
         aria-required
-        aria-describedby={isValidCity ? 'city-note-valid' : 'city-note-error'}
+        aria-describedby={
+          isValidCity ? 'city-input-note-valid' : 'city-input-note-error'
+        }
         aria-invalid={isValidCity ? false : true}
         value={city}
         icon={

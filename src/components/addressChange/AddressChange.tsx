@@ -103,24 +103,27 @@ function AddressChange() {
     const contactLength = contactNumber.length;
     if (isContactNumberFocused) {
       switch (contactLength) {
-        case 4:
+        case 4: {
           addressChangeDispatch({
             type: addressChangeAction.setContactNumber,
             payload: `${contactNumber}(`,
           });
           break;
-        case 8:
+        }
+        case 8: {
           addressChangeDispatch({
             type: addressChangeAction.setContactNumber,
             payload: `${contactNumber}) `,
           });
           break;
-        case 13:
+        }
+        case 13: {
           addressChangeDispatch({
             type: addressChangeAction.setContactNumber,
             payload: `${contactNumber}-`,
           });
           break;
+        }
 
         default:
           break;
