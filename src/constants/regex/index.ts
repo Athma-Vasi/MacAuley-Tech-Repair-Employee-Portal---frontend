@@ -185,13 +185,15 @@ const GRAMMAR_TEXTAREA_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
  * - i makes the regex case-insensitive.
  */
 const GRAMMAR_TEXT_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
+
 /**
- * - (?!0\d) is a negative lookahead assertion that ensures the number does not start with a zero followed by another digit. This prevents leading zeros.
- * - \d{1,6} matches any digit, between 1 and 6 times.
- * - (?:\.\d{1,2})? matches a period, followed by any digit, between 1 and 2 times. The question mark makes this part optional.
- * - ^ and $ ensure that the entire string matches the regex. *
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - (?=.{1,9}$) is a positive lookahead assertion that requires the presence of at least one character and no more than 9 characters.
+ * - (?!0\d) is a negative lookahead assertion that ensures that the string does not start with a 0.
+ * - (?=.*[0-9]) is a positive lookahead assertion that requires the presence of at least one digit.
+ * - (?:\.\d{1,2})? matches a period followed by one or two digits. The question mark makes this group optional.
  */
-const QUANTITY_REGEX = /^(?!0\d)\d{1,6}(?:\.\d{1,2})?$/;
+const QUANTITY_REGEX = /^(?=.{1,9}$)(?!0\d)(?=.*[0-9])(?:\.\d{1,2})?$/;
 
 export {
   ADDRESS_LINE_REGEX,
