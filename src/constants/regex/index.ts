@@ -156,6 +156,17 @@ const DATE_REGEX =
   /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 /**
+ * - 202[3-5] matches the years from 2023 to 2026.
+ * - - matches a hyphen.
+ * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
+ * - - matches a hyphen.
+ * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const DATE_NEAR_FUTURE_REGEX =
+  /^(?:202[3-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+
+/**
  * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i
  * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
  * - [\w\s.,!?():;"'-] matches one or more word characters (letters, digits, or underscores), whitespace characters, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.
@@ -165,12 +176,31 @@ const DATE_REGEX =
  */
 const GRAMMAR_TEXTAREA_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
 
+/**
+ * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i
+ * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
+ * - [\w\s.,!?():;"'-] matches one or more word characters (letters, digits, or underscores), whitespace characters, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.
+ * - {2,75} ensures that the text is between 2 and 75 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const GRAMMAR_TEXT_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
+/**
+ * - (?!0\d) is a negative lookahead assertion that ensures the number does not start with a zero followed by another digit. This prevents leading zeros.
+ * - \d{1,6} matches any digit, between 1 and 6 times.
+ * - (?:\.\d{1,2})? matches a period, followed by any digit, between 1 and 2 times. The question mark makes this part optional.
+ * - ^ and $ ensure that the entire string matches the regex. *
+ */
+const QUANTITY_REGEX = /^(?!0\d)\d{1,6}(?:\.\d{1,2})?$/;
+
 export {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
+  DATE_NEAR_FUTURE_REGEX,
   DATE_REGEX,
   EMAIL_REGEX,
   FULL_NAME_REGEX,
+  GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_REGEX,
   MONEY_REGEX,
   NAME_REGEX,
@@ -180,6 +210,7 @@ export {
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
+  QUANTITY_REGEX,
   URL_REGEX,
   USERNAME_REGEX,
 };
