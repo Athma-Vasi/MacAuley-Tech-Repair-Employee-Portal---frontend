@@ -397,6 +397,57 @@ function LeaveRequest() {
         required
         withAsterisk
       />
+
+      {/* additional comments text area input */}
+      <Textarea
+        size="md"
+        w="100%"
+        color="dark"
+        label="Additional comments"
+        placeholder="Enter additional comments"
+        value={additionalComments}
+        aria-required
+        aria-describedby={
+          isValidAdditionalComments
+            ? 'additional-comments-input-note-valid'
+            : 'additional-comments-input-note-error'
+        }
+        description={
+          isValidAdditionalComments
+            ? additionalCommentsInputValidText
+            : additionalCommentsInputErrorText
+        }
+        aria-invalid={isValidAdditionalComments ? 'false' : 'true'}
+        icon={
+          isValidAdditionalComments ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidAdditionalComments && additionalComments !== ''}
+        onChange={(event) => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setAdditionalComments,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsAdditionalCommentsFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsAdditionalCommentsFocused,
+            payload: false,
+          });
+        }}
+        minLength={2}
+        maxLength={2000}
+        autosize
+        minRows={3}
+        maxRows={10}
+      />
     </Flex>
   );
 }
