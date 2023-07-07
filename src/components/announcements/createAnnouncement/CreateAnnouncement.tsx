@@ -4,6 +4,7 @@ import { Button, Flex, Text, Textarea, TextInput } from '@mantine/core';
 import { Fragment, useEffect, useReducer, useRef } from 'react';
 
 import { FULL_NAME_REGEX, URL_REGEX } from '../../../constants/regex';
+import { returnAccessibleTextElem } from '../../../jsxCreators';
 import {
   returnNameValidationText,
   returnUrlValidationText,
@@ -24,7 +25,6 @@ import {
   returnArticleParagraphInputErrorElements,
   returnArticleParagraphInputValidElements,
 } from './utils';
-import { returnAccessibleTextElem } from '../../../jsxCreators';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(

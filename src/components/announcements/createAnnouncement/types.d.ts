@@ -120,17 +120,17 @@ type CreateAnnouncementResponse = {
 };
 
 export type {
-  AnnouncementSchema,
   AnnouncementDocument,
-  Comment,
-  RatingFeel,
-  ArticlePayload,
-  ReturnArticleParagraphInputProps,
+  AnnouncementSchema,
   ArticleParagraphFocusedPayload,
-  CreateAnnouncementState,
+  ArticlePayload,
+  Comment,
   CreateAnnouncementAction,
-  CreateAnnouncementPayload,
   CreateAnnouncementDispatch,
+  CreateAnnouncementPayload,
   CreateAnnouncementReducer,
   CreateAnnouncementResponse,
+  CreateAnnouncementState,
+  RatingFeel,
+  ReturnArticleParagraphInputProps,
 };

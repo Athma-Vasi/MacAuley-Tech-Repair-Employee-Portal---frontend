@@ -20,6 +20,7 @@ type AddressChangeState = {
   postalCode: PostalCode;
   isValidPostalCode: boolean;
   isPostalCodeFocused: boolean;
+  isAcknowledged: boolean;
 };
 
 type AddressChangeAction = {
@@ -42,6 +43,7 @@ type AddressChangeAction = {
   setPostalCode: 'setPostalCode';
   setIsValidPostalCode: 'setIsValidPostalCode';
   setIsPostalCodeFocused: 'setIsPostalCodeFocused';
+  setIsAcknowledged: 'setIsAcknowledged';
 };
 
 type AddressChangePayload =

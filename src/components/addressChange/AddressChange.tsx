@@ -2,6 +2,7 @@ import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
+  Checkbox,
   Flex,
   NativeSelect,
   Text,
@@ -52,6 +53,7 @@ function AddressChange() {
     postalCode,
     province,
     state,
+    isAcknowledged,
   } = addressChangeState;
 
   // sets focus on address line input on page load
@@ -577,7 +579,36 @@ function AddressChange() {
         ? selectCanadianPostalCodeInput
         : selectUSPostalCodeInput}
 
-      <Button type="button" variant="filled">
+      {/* acknowledgement checkbox */}
+      <Checkbox
+        size="md"
+        color="dark"
+        label="I acknowledge that the information provided is accurate."
+        aria-label={
+          isAcknowledged
+            ? 'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.'
+            : 'Acknowledgement checkbox is unchecked. I do not acknowledge.'
+        }
+        checked={isAcknowledged}
+        onChange={(event) => {
+          addressChangeDispatch({
+            type: addressChangeAction.setIsAcknowledged,
+            payload: event.currentTarget.checked,
+          });
+        }}
+      />
+
+      <Button
+        type="button"
+        variant="filled"
+        disabled={
+          !isValidContactNumber ||
+          !isValidAddressLine ||
+          !isValidCity ||
+          !isValidPostalCode ||
+          !isAcknowledged
+        }
+      >
         Submit
       </Button>
     </Flex>

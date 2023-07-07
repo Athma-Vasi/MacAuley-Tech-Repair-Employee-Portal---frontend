@@ -31,6 +31,7 @@ const initialAddressChangeState: AddressChangeState = {
   postalCode: '',
   isValidPostalCode: false,
   isPostalCodeFocused: false,
+  isAcknowledged: false,
 };
 
 const addressChangeAction: AddressChangeAction = {
@@ -53,6 +54,7 @@ const addressChangeAction: AddressChangeAction = {
   setPostalCode: 'setPostalCode',
   setIsValidPostalCode: 'setIsValidPostalCode',
   setIsPostalCodeFocused: 'setIsPostalCodeFocused',
+  setIsAcknowledged: 'setIsAcknowledged',
 };
 
 function addressChangeReducer(
@@ -138,6 +140,11 @@ function addressChangeReducer(
       return {
         ...state,
         isPostalCodeFocused: action.payload as boolean,
+      };
+    case addressChangeAction.setIsAcknowledged:
+      return {
+        ...state,
+        isAcknowledged: action.payload as boolean,
       };
 
     default:
