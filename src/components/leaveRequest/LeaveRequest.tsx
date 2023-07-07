@@ -1,6 +1,13 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, NativeSelect, TextInput, Textarea } from '@mantine/core';
+import {
+  Button,
+  Checkbox,
+  Flex,
+  NativeSelect,
+  TextInput,
+  Textarea,
+} from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 
 import {
@@ -448,6 +455,41 @@ function LeaveRequest() {
         minRows={3}
         maxRows={10}
       />
+
+      {/* acknowledgement checkbox */}
+      <Checkbox
+        size="md"
+        color="dark"
+        label="I acknowledge that the information provided is accurate."
+        aria-label={
+          isAcknowledged
+            ? 'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.'
+            : 'Acknowledgement checkbox is unchecked. I do not acknowledge.'
+        }
+        checked={isAcknowledged}
+        onChange={(event) => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsAcknowledged,
+            payload: event.currentTarget.checked,
+          });
+        }}
+      />
+
+      {/* submit button */}
+      <Button
+        type="button"
+        variant="filled"
+        disabled={
+          !isValidStartDate ||
+          !isValidEndDate ||
+          !isValidDelegatedToEmployee ||
+          !isValidDelegatedResponsibilities ||
+          (!isValidAdditionalComments && additionalComments !== '') ||
+          !isAcknowledged
+        }
+      >
+        Submit
+      </Button>
     </Flex>
   );
 }
