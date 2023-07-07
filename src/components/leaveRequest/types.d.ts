@@ -38,8 +38,6 @@ type LeaveRequestState = {
   isEndDateFocused: boolean;
 
   reasonForLeave: ReasonForLeave;
-  isValidReasonForLeave: boolean;
-  isReasonForLeaveFocused: boolean;
 
   delegatedToEmployee: string;
   isValidDelegatedToEmployee: boolean;
@@ -66,8 +64,6 @@ type LeaveRequestAction = {
   setIsEndDateFocused: 'setIsEndDateFocused';
 
   setReasonForLeave: 'setReasonForLeave';
-  setIsValidReasonForLeave: 'setIsValidReasonForLeave';
-  setIsReasonForLeaveFocused: 'setIsReasonForLeaveFocused';
 
   setDelegatedToEmployee: 'setDelegatedToEmployee';
   setIsValidDelegatedToEmployee: 'setIsValidDelegatedToEmployee';

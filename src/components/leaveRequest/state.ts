@@ -15,8 +15,6 @@ const initialLeaveRequestState: LeaveRequestState = {
   isEndDateFocused: false,
 
   reasonForLeave: 'Vacation',
-  isValidReasonForLeave: false,
-  isReasonForLeaveFocused: false,
 
   delegatedToEmployee: '',
   isValidDelegatedToEmployee: false,
@@ -43,8 +41,6 @@ const leaveRequestAction: LeaveRequestAction = {
   setIsEndDateFocused: 'setIsEndDateFocused',
 
   setReasonForLeave: 'setReasonForLeave',
-  setIsValidReasonForLeave: 'setIsValidReasonForLeave',
-  setIsReasonForLeaveFocused: 'setIsReasonForLeaveFocused',
 
   setDelegatedToEmployee: 'setDelegatedToEmployee',
   setIsValidDelegatedToEmployee: 'setIsValidDelegatedToEmployee',
@@ -103,16 +99,6 @@ function leaveRequestReducer(
       return {
         ...state,
         reasonForLeave: action.payload as ReasonForLeave,
-      };
-    case leaveRequestAction.setIsValidReasonForLeave:
-      return {
-        ...state,
-        isValidReasonForLeave: action.payload as boolean,
-      };
-    case leaveRequestAction.setIsReasonForLeaveFocused:
-      return {
-        ...state,
-        isReasonForLeaveFocused: action.payload as boolean,
       };
 
     case leaveRequestAction.setDelegatedToEmployee:
