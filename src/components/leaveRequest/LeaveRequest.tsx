@@ -1,3 +1,6 @@
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Flex, TextInput } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 
 import {
@@ -99,7 +102,7 @@ function LeaveRequest() {
   }, [additionalComments]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
-  const [startDateInputError, startDateInputValid] =
+  const [startDateInputErrorText, startDateInputValidText] =
     returnAccessibleTextElements({
       inputElementKind: 'start date',
       inputText: startDate,
@@ -108,15 +111,16 @@ function LeaveRequest() {
       regexValidationText: returnDateValidationText(startDate),
     });
 
-  const [endDateInputError, endDateInputValid] = returnAccessibleTextElements({
-    inputElementKind: 'end date',
-    inputText: endDate,
-    isInputTextFocused: isEndDateFocused,
-    isValidInputText: isValidEndDate,
-    regexValidationText: returnDateValidationText(endDate),
-  });
+  const [endDateInputErrorText, endDateInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'end date',
+      inputText: endDate,
+      isInputTextFocused: isEndDateFocused,
+      isValidInputText: isValidEndDate,
+      regexValidationText: returnDateValidationText(endDate),
+    });
 
-  const [delegatedToEmployeeInputError, delegatedToEmployeeInputValid] =
+  const [delegatedToEmployeeInputErrorText, delegatedToEmployeeInputValidText] =
     returnAccessibleTextElements({
       inputElementKind: 'delegated to employee',
       inputText: delegatedToEmployee,
@@ -131,8 +135,8 @@ function LeaveRequest() {
     });
 
   const [
-    delegatedResponsibilitiesInputError,
-    delegatedResponsibilitiesInputValid,
+    delegatedResponsibilitiesInputErrorText,
+    delegatedResponsibilitiesInputValidText,
   ] = returnAccessibleTextElements({
     inputElementKind: 'delegated responsibilities',
     inputText: delegatedResponsibilities,
@@ -146,7 +150,7 @@ function LeaveRequest() {
     }),
   });
 
-  const [additionalCommentsInputError, additionalCommentsInputValid] =
+  const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
     returnAccessibleTextElements({
       inputElementKind: 'additional comments',
       inputText: additionalComments,
@@ -160,7 +164,119 @@ function LeaveRequest() {
       }),
     });
 
-  return <></>;
+  return (
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      rowGap="lg"
+      w={400}
+    >
+      {/* start date input */}
+      <TextInput
+        type="date"
+        size="md"
+        w="100%"
+        color="dark"
+        label="Leave start date"
+        placeholder="DD-MM-YYYY"
+        autoComplete="off"
+        aria-required
+        aria-label='Please enter start date of leave in format "date-date-month-month-year-year-year-year" from start year 1900 to end year 2024'
+        aria-describedby={
+          isValidStartDate
+            ? 'start-date-input-note-valid'
+            : 'start-date-input-note-error'
+        }
+        aria-invalid={isValidStartDate ? false : true}
+        value={startDate}
+        icon={
+          isValidStartDate ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidStartDate && startDate !== ''}
+        description={
+          isValidStartDate ? startDateInputValidText : startDateInputErrorText
+        }
+        min={new Date(1900, 0, 1).toISOString().split('T')[0]}
+        max={new Date(2024, 11, 31).toISOString().split('T')[0]}
+        onChange={(event) => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setStartDate,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsStartDateFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsStartDateFocused,
+            payload: false,
+          });
+        }}
+        maxLength={10}
+        withAsterisk
+        required
+      />
+
+      {/* end date input */}
+      <TextInput
+        type="date"
+        size="md"
+        w="100%"
+        color="dark"
+        label="Leave end date"
+        placeholder="DD-MM-YYYY"
+        autoComplete="off"
+        aria-required
+        aria-label='Please enter end date of leave in format "date-date-month-month-year-year-year-year" from start year 1900 to end year 2024'
+        aria-describedby={
+          isValidEndDate
+            ? 'end-date-input-note-valid'
+            : 'end-date-input-note-error'
+        }
+        aria-invalid={isValidEndDate ? false : true}
+        value={endDate}
+        icon={
+          isValidEndDate ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidEndDate && endDate !== ''}
+        description={
+          isValidEndDate ? endDateInputValidText : endDateInputErrorText
+        }
+        min={new Date(1900, 0, 1).toISOString().split('T')[0]}
+        max={new Date(2024, 11, 31).toISOString().split('T')[0]}
+        onChange={(event) => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setEndDate,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsEndDateFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsEndDateFocused,
+            payload: false,
+          });
+        }}
+        maxLength={10}
+        withAsterisk
+        required
+      />
+    </Flex>
+  );
 }
 
 export { LeaveRequest };
