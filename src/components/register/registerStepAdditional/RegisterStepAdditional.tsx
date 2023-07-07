@@ -8,17 +8,17 @@ import { Flex, NativeSelect, Text, TextInput, Tooltip } from '@mantine/core';
 import { useEffect } from 'react';
 
 import {
+  returnDateValidationText,
+  returnNameValidationText,
+  returnPhoneNumberValidationText,
+} from '../../../utils';
+import {
   DATE_REGEX,
   DEPARTMENTS,
   FULL_NAME_REGEX,
   JOB_POSITIONS,
   PHONE_NUMBER_REGEX,
 } from '../constants';
-import {
-  returnDateValidationText,
-  returnFullNameValidationText,
-  returnPhoneNumberInputValidationText,
-} from '../utils';
 import type { RegisterStepAdditionalProps } from './types';
 
 function RegisterStepAdditional({
@@ -111,7 +111,12 @@ function RegisterStepAdditional({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnFullNameValidationText(fullName)}
+      {returnNameValidationText({
+        content: fullName,
+        contentKind: 'full name',
+        minLength: 2,
+        maxLength: 100,
+      })}
     </Text>
   );
 
@@ -144,7 +149,7 @@ function RegisterStepAdditional({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnPhoneNumberInputValidationText(phoneNumber)}
+      {returnPhoneNumberValidationText(phoneNumber)}
     </Text>
   );
 

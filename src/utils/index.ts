@@ -436,6 +436,7 @@ function returnNameValidationText({
 export {
   formatDate,
   returnAddressValidationText,
+  returnCityValidationText,
   returnDateValidationText,
   returnEmailRegexValidationText,
   returnGrammarValidationText,

@@ -21,11 +21,11 @@ import { useEffect, useMemo, useReducer, useRef } from 'react';
 import { MONEY_REGEX } from '../../../constants';
 import { returnAccessibleTextElem } from '../../../jsxCreators';
 import {
+  returnDateValidationText,
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../../utils';
 import { DATE_REGEX } from '../../register/constants';
-import { returnDateValidationText } from '../../register/utils';
 import {
   BENEFIT_PLAN_DATA,
   CURRENCY_DATA,

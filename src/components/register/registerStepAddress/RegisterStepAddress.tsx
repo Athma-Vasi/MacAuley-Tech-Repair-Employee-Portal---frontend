@@ -12,8 +12,14 @@ import {
   TextInput,
   Tooltip,
 } from '@mantine/core';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
+import {
+  returnAddressValidationText,
+  returnCityValidationText,
+  returnPhoneNumberValidationText,
+  returnPostalCodeValidationText,
+} from '../../../utils';
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -23,12 +29,6 @@ import {
   PROVINCES,
   STATES_US,
 } from '../constants';
-import {
-  returnAddressLineValidationText,
-  returnCityValidationText,
-  returnPhoneNumberInputValidationText,
-  returnPostalCodeValidationText,
-} from '../utils';
 import { RegisterStepAddressProps } from './types';
 
 function RegisterStepAddress({
@@ -173,7 +173,7 @@ function RegisterStepAddress({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnPhoneNumberInputValidationText(contactNumber)}
+      {returnPhoneNumberValidationText(contactNumber)}
     </Text>
   );
 
@@ -208,7 +208,12 @@ function RegisterStepAddress({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnAddressLineValidationText(addressLine)}
+      {returnAddressValidationText({
+        content: addressLine,
+        contentKind: 'address line',
+        minLength: 2,
+        maxLength: 75,
+      })}
     </Text>
   );
 
@@ -239,7 +244,13 @@ function RegisterStepAddress({
       color="red"
       aria-live="polite"
     >
-      <FontAwesomeIcon icon={faInfoCircle} /> {returnCityValidationText(city)}
+      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {returnCityValidationText({
+        content: city,
+        contentKind: 'city',
+        minLength: 2,
+        maxLength: 75,
+      })}
     </Text>
   );
 

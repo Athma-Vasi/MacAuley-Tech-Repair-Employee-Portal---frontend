@@ -3,9 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, NativeSelect, Text, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 
-import { returnNameValidationText } from '../../../utils';
+import {
+  returnNameValidationText,
+  returnUrlValidationText,
+} from '../../../utils';
 import { NAME_REGEX, URL_REGEX } from '../constants';
-import { returnUrlValidationText } from '../utils';
 import type { RegisterStepPersonalProps } from './types';
 
 function RegisterStepPersonal({

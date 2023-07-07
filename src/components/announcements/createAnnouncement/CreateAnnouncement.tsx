@@ -1,30 +1,29 @@
+import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, Flex, Text, Textarea, TextInput } from '@mantine/core';
 import { Fragment, useEffect, useReducer, useRef } from 'react';
+
+import {
+  returnNameValidationText,
+  returnUrlValidationText,
+} from '../../../utils';
+import { FULL_NAME_REGEX, URL_REGEX } from '../../register/constants';
+import { ARTICLE_CONTENT_REGEX, ARTICLE_TITLE_REGEX } from '../constants';
+import {
+  returnArticleParagraphValidationText,
+  returnArticleTitleValidationText,
+  returnImageAltValidationText,
+} from '../utils';
+import { MAX_ARTICLE_LENGTH } from './constants';
 import {
   createAnnouncementAction,
   createAnnouncementReducer,
   initialCreateAnnouncementState,
 } from './state';
-import { Button, Flex, Text, TextInput, Textarea } from '@mantine/core';
-import { USERNAME_REGEX } from '../../../constants';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-
-import { FULL_NAME_REGEX, URL_REGEX } from '../../register/constants';
-import {
-  returnFullNameValidationText,
-  returnUrlValidationText,
-} from '../../register/utils';
 import {
   returnArticleParagraphInputErrorElements,
   returnArticleParagraphInputValidElements,
 } from './utils';
-import { MAX_ARTICLE_LENGTH } from './constants';
-import { ARTICLE_TITLE_REGEX, ARTICLE_CONTENT_REGEX } from '../constants';
-import {
-  returnArticleTitleValidationText,
-  returnImageAltValidationText,
-  returnArticleParagraphValidationText,
-} from '../utils';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
@@ -182,7 +181,12 @@ function CreateAnnouncement() {
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnFullNameValidationText(author)}
+      {returnNameValidationText({
+        content: author,
+        contentKind: 'author',
+        minLength: 2,
+        maxLength: 100,
+      })}
     </Text>
   );
 
