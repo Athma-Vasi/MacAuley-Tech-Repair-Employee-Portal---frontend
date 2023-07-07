@@ -1,4 +1,10 @@
-import { Country, PostalCode, Province, StatesUS } from '../../types';
+import {
+  Country,
+  PhoneNumber,
+  PostalCode,
+  Province,
+  StatesUS,
+} from '../../types';
 import {
   AddressChangeAction,
   AddressChangeDispatch,
@@ -6,33 +12,47 @@ import {
 } from './types';
 
 const initialAddressChangeState: AddressChangeState = {
+  contactNumber: '+(1)',
+  isValidContactNumber: false,
+  isContactNumberFocused: false,
+
   addressLine: '',
   isValidAddressLine: false,
   isAddressLineFocused: false,
+
   city: '',
   isValidCity: false,
   isCityFocused: false,
+
   province: 'Alberta',
   state: 'Alabama',
+  country: 'Canada',
+
   postalCode: '',
   isValidPostalCode: false,
   isPostalCodeFocused: false,
-  country: 'Canada',
 };
 
 const addressChangeAction: AddressChangeAction = {
+  setContactNumber: 'setContactNumber',
+  setIsValidContactNumber: 'setIsValidContactNumber',
+  setIsContactNumberFocused: 'setIsContactNumberFocused',
+
   setAddressLine: 'setAddressLine',
   setIsAddressLineFocused: 'setIsAddressLineFocused',
   setIsValidAddressLine: 'setIsValidAddressLine',
+
   setCity: 'setCity',
   setIsValidCity: 'setIsValidCity',
   setIsCityFocused: 'setIsCityFocused',
+
   setProvince: 'setProvince',
   setState: 'setState',
+  setCountry: 'setCountry',
+
   setPostalCode: 'setPostalCode',
   setIsValidPostalCode: 'setIsValidPostalCode',
   setIsPostalCodeFocused: 'setIsPostalCodeFocused',
-  setCountry: 'setCountry',
 };
 
 function addressChangeReducer(
@@ -40,6 +60,22 @@ function addressChangeReducer(
   action: AddressChangeDispatch
 ): AddressChangeState {
   switch (action.type) {
+    case addressChangeAction.setContactNumber:
+      return {
+        ...state,
+        contactNumber: action.payload as PhoneNumber,
+      };
+    case addressChangeAction.setIsValidContactNumber:
+      return {
+        ...state,
+        isValidContactNumber: action.payload as boolean,
+      };
+    case addressChangeAction.setIsContactNumberFocused:
+      return {
+        ...state,
+        isContactNumberFocused: action.payload as boolean,
+      };
+
     case addressChangeAction.setAddressLine:
       return {
         ...state,
@@ -55,6 +91,7 @@ function addressChangeReducer(
         ...state,
         isValidAddressLine: action.payload as boolean,
       };
+
     case addressChangeAction.setCity:
       return {
         ...state,
@@ -70,6 +107,7 @@ function addressChangeReducer(
         ...state,
         isCityFocused: action.payload as boolean,
       };
+
     case addressChangeAction.setProvince:
       return {
         ...state,
@@ -80,6 +118,12 @@ function addressChangeReducer(
         ...state,
         state: action.payload as StatesUS,
       };
+    case addressChangeAction.setCountry:
+      return {
+        ...state,
+        country: action.payload as Country,
+      };
+
     case addressChangeAction.setPostalCode:
       return {
         ...state,
@@ -95,12 +139,10 @@ function addressChangeReducer(
         ...state,
         isPostalCodeFocused: action.payload as boolean,
       };
-    case addressChangeAction.setCountry:
-      return {
-        ...state,
-        country: action.payload as Country,
-      };
+
     default:
       return state;
   }
 }
+
+export { addressChangeAction, addressChangeReducer, initialAddressChangeState };

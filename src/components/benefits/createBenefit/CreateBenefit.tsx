@@ -167,79 +167,49 @@ function CreateBenefit() {
   }, [currency, employeeContribution, employerContribution]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
-  const planNameInputValidText = returnAccessibleTextElem({
-    inputElementKind: 'plan name',
-    inputText: planName,
-    kind: 'valid',
-    isValidInputText: isValidPlanName,
-    isInputTextFocused: isPlanNameFocused,
-  });
+  const [planNameInputErrorText, planNameInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'plan name',
+      inputText: planName,
+      isValidInputText: isValidPlanName,
+      isInputTextFocused: isPlanNameFocused,
+      regexValidationText: returnGenericGrammarValidationText({
+        content: planName,
+        contentKind: 'plan name input',
+        minLength: 1,
+        maxLength: 50,
+      }),
+    });
 
-  const planNameInputErrorText = returnAccessibleTextElem({
-    inputElementKind: 'plan name',
-    inputText: planName,
-    kind: 'error',
-    isValidInputText: isValidPlanName,
-    isInputTextFocused: isPlanNameFocused,
-    regexValidationText: returnGenericGrammarValidationText({
-      content: planName,
-      contentKind: 'plan name input',
-      minLength: 1,
-      maxLength: 50,
-    }),
-  });
+  const [planDescriptionInputErrorText, planDescriptionInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'plan description',
+      inputText: planDescription,
+      isValidInputText: isValidPlanDescription,
+      isInputTextFocused: isPlanDescriptionFocused,
+      regexValidationText: returnGenericGrammarValidationText({
+        content: planDescription,
+        contentKind: 'plan description input',
+        minLength: 1,
+        maxLength: 300,
+      }),
+    });
 
-  const planDescriptionInputValidText = returnAccessibleTextElem({
-    inputElementKind: 'plan description',
-    inputText: planDescription,
-    kind: 'valid',
-    isValidInputText: isValidPlanDescription,
-    isInputTextFocused: isPlanDescriptionFocused,
-  });
+  const [planStartDateInputErrorText, planStartDateInputValidText] =
+    returnAccessibleTextElem({
+      inputElementKind: 'plan start date',
+      inputText: planStartDate,
+      isValidInputText: isValidPlanStartDate,
+      isInputTextFocused: isPlanStartDateFocused,
+      regexValidationText: returnDateValidationText(planStartDate),
+    });
 
-  const planDescriptionInputErrorText = returnAccessibleTextElem({
-    inputElementKind: 'plan description',
-    inputText: planDescription,
-    kind: 'error',
-    isValidInputText: isValidPlanDescription,
-    isInputTextFocused: isPlanDescriptionFocused,
-    regexValidationText: returnGenericGrammarValidationText({
-      content: planDescription,
-      contentKind: 'plan description input',
-      minLength: 1,
-      maxLength: 300,
-    }),
-  });
-
-  const planStartDateInputValidText = returnAccessibleTextElem({
-    inputElementKind: 'plan start date',
-    inputText: planStartDate,
-    kind: 'valid',
-    isValidInputText: isValidPlanStartDate,
-    isInputTextFocused: isPlanStartDateFocused,
-  });
-
-  const planStartDateInputErrorText = returnAccessibleTextElem({
-    inputElementKind: 'plan start date',
-    inputText: planStartDate,
-    kind: 'error',
-    isValidInputText: isValidPlanStartDate,
-    isInputTextFocused: isPlanStartDateFocused,
-    regexValidationText: returnDateValidationText(planStartDate),
-  });
-
-  const employeeContributionInputValidText = returnAccessibleTextElem({
+  const [
+    employeeContributionInputErrorText,
+    employeeContributionInputValidText,
+  ] = returnAccessibleTextElem({
     inputElementKind: 'employee contribution',
     inputText: employeeContribution,
-    kind: 'valid',
-    isValidInputText: isValidEmployeeContribution,
-    isInputTextFocused: isEmployeeContributionFocused,
-  });
-
-  const employeeContributionInputErrorText = returnAccessibleTextElem({
-    inputElementKind: 'employee contribution',
-    inputText: employeeContribution,
-    kind: 'error',
     isValidInputText: isValidEmployeeContribution,
     isInputTextFocused: isEmployeeContributionFocused,
     regexValidationText: returnMoneyValidationText({
@@ -248,18 +218,12 @@ function CreateBenefit() {
     }),
   });
 
-  const employerContributionInputValidText = returnAccessibleTextElem({
+  const [
+    employerContributionInputErrorText,
+    employerContributionInputValidText,
+  ] = returnAccessibleTextElem({
     inputElementKind: 'employer contribution',
     inputText: employerContribution,
-    kind: 'valid',
-    isValidInputText: isValidEmployerContribution,
-    isInputTextFocused: isEmployerContributionFocused,
-  });
-
-  const employerContributionInputErrorText = returnAccessibleTextElem({
-    inputElementKind: 'employer contribution',
-    inputText: employerContribution,
-    kind: 'error',
     isValidInputText: isValidEmployerContribution,
     isInputTextFocused: isEmployerContributionFocused,
     regexValidationText: returnMoneyValidationText({

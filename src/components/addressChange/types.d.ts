@@ -1,33 +1,47 @@
 import type { Country, PostalCode, StatesUS, Province } from '../../types';
 
 type AddressChangeState = {
+  contactNumber: PhoneNumber | '+(1)';
+  isValidContactNumber: boolean;
+  isContactNumberFocused: boolean;
+
   addressLine: string;
   isValidAddressLine: boolean;
   isAddressLineFocused: boolean;
+
   city: string;
   isValidCity: boolean;
   isCityFocused: boolean;
+
   province: Province;
   state: StatesUS;
+  country: Country;
+
   postalCode: PostalCode;
   isValidPostalCode: boolean;
   isPostalCodeFocused: boolean;
-  country: Country;
 };
 
 type AddressChangeAction = {
+  setContactNumber: 'setContactNumber';
+  setIsValidContactNumber: 'setIsValidContactNumber';
+  setIsContactNumberFocused: 'setIsContactNumberFocused';
+
   setAddressLine: 'setAddressLine';
   setIsAddressLineFocused: 'setIsAddressLineFocused';
   setIsValidAddressLine: 'setIsValidAddressLine';
+
   setCity: 'setCity';
   setIsValidCity: 'setIsValidCity';
   setIsCityFocused: 'setIsCityFocused';
+
   setProvince: 'setProvince';
   setState: 'setState';
+  setCountry: 'setCountry';
+
   setPostalCode: 'setPostalCode';
   setIsValidPostalCode: 'setIsValidPostalCode';
   setIsPostalCodeFocused: 'setIsPostalCodeFocused';
-  setCountry: 'setCountry';
 };
 
 type AddressChangePayload =
@@ -36,7 +50,8 @@ type AddressChangePayload =
   | Province
   | StatesUS
   | Country
-  | PostalCode;
+  | PostalCode
+  | PhoneNumber;
 
 type AddressChangeDispatch = {
   type: AddressChangeAction[keyof AddressChangeAction];
