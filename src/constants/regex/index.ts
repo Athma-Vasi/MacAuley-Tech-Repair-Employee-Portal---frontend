@@ -186,15 +186,6 @@ const GRAMMAR_TEXTAREA_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
  */
 const GRAMMAR_TEXT_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
 
-/**
- * - ^ and $ ensure that the entire string matches the regex.
- * - (?=.{1,9}$) is a positive lookahead assertion that requires the presence of at least one character and no more than 9 characters.
- * - (?!0\d) is a negative lookahead assertion that ensures that the string does not start with a 0.
- * - (?=.*[0-9]) is a positive lookahead assertion that requires the presence of at least one digit.
- * - (?:\.\d{1,2})? matches a period followed by one or two digits. The question mark makes this group optional.
- */
-const QUANTITY_REGEX = /^(?=.{1,9}$)(?!0\d)(?=.*[0-9])(?:\.\d{1,2})?$/;
-
 export {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -212,7 +203,6 @@ export {
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
-  QUANTITY_REGEX,
   URL_REGEX,
   USERNAME_REGEX,
 };

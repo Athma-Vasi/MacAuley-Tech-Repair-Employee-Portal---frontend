@@ -1,10 +1,11 @@
 import { AppShell } from '@mantine/core';
-import { Outlet } from 'react-router-dom';
-import { PortalNavbar } from '../portalNavbar';
-import { PortalHeader } from '../portalHeader';
-import { PortalFooter } from '../portalFooter';
 import { useState } from 'react';
+import { Outlet } from 'react-router-dom';
+
 import { useGlobalState } from '../../hooks/useGlobalState';
+import { PortalFooter } from '../portalFooter';
+import { PortalHeader } from '../portalHeader';
+import { PortalNavbar } from '../portalNavbar';
 
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);

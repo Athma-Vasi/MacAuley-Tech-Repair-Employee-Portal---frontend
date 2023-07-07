@@ -73,4 +73,4 @@ function addNewNoteReducer(
   }
 }
 
-export { initialAddNewNoteState, addNewNoteAction, addNewNoteReducer };
+export { addNewNoteAction, addNewNoteReducer,initialAddNewNoteState };

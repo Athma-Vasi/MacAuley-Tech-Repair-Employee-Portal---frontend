@@ -5,41 +5,41 @@
 /**
  * Imports
  */
+import type { Note } from './notes.types';
 import type {
-  User,
+  CanadianPostalCode,
   Country,
   Department,
   JobPosition,
   PhoneNumber,
   PostalCode,
+  PreferredPronouns,
   Province,
   StatesUS,
-  UserRoles,
-  CanadianPostalCode,
-  USPostalCode,
+  User,
   UserDocument,
+  UserRoles,
   UserSchema,
-  PreferredPronouns,
+  USPostalCode,
 } from './user.types';
-import type { Note } from './notes.types';
 
 type BreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type {
-  User,
+  CanadianPostalCode,
   Country,
   Department,
   JobPosition,
   PhoneNumber,
   PostalCode,
-  Province,
-  UserRoles,
-  StatesUS,
-  CanadianPostalCode,
-  USPostalCode,
-  UserDocument,
-  UserSchema,
   PreferredPronouns,
+  Province,
+  StatesUS,
+  User,
+  UserDocument,
+  UserRoles,
+  UserSchema,
+  USPostalCode,
 };
 
-export type { Note, BreakPoints };
+export type { BreakPoints,Note };

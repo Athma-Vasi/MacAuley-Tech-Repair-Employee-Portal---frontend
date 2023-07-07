@@ -1,5 +1,6 @@
-import { Center, Flex, Title, Text } from '@mantine/core';
+import { Center, Flex, Text,Title } from '@mantine/core';
 import { Outlet } from 'react-router-dom';
+
 import { useGlobalState } from '../../hooks/useGlobalState';
 
 function PublicLayout() {

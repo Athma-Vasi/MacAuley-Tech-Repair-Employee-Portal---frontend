@@ -1,4 +1,5 @@
 import { Flex, Footer, Text } from '@mantine/core';
+
 import { useAuth } from '../../hooks/useAuth';
 
 function PortalFooter() {

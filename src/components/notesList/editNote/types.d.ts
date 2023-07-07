@@ -57,11 +57,11 @@ type EditNoteResponse = {
 };
 
 export type {
-  EditNoteProps,
-  EditNoteState,
   EditNoteAction,
-  EditNotePayload,
   EditNoteDispatch,
+  EditNotePayload,
+  EditNoteProps,
   EditNoteReducer,
   EditNoteResponse,
+  EditNoteState,
 };

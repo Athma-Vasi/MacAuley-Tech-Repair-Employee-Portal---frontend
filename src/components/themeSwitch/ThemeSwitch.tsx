@@ -1,9 +1,10 @@
-import { Flex, Switch } from '@mantine/core';
-import { useGlobalState } from '../../hooks/useGlobalState';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoon, faSun } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Flex, Switch } from '@mantine/core';
 import { useState } from 'react';
+
 import { globalAction } from '../../context/globalProvider/state';
+import { useGlobalState } from '../../hooks/useGlobalState';
 
 function ThemeSwitch() {
   const {

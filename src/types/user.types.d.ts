@@ -166,18 +166,18 @@ type Department =
   | 'Inventory Management';
 
 export type {
-  User,
-  UserDocument,
-  UserSchema,
   CanadianPostalCode,
-  USPostalCode,
-  StatesUS,
-  Province,
   Country,
-  PostalCode,
-  PhoneNumber,
   Department,
   JobPosition,
-  UserRoles,
+  PhoneNumber,
+  PostalCode,
   PreferredPronouns,
+  Province,
+  StatesUS,
+  User,
+  UserDocument,
+  UserRoles,
+  UserSchema,
+  USPostalCode,
 };

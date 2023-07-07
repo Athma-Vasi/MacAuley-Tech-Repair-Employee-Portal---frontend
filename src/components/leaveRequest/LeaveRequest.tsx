@@ -5,8 +5,8 @@ import {
   Checkbox,
   Flex,
   NativeSelect,
-  TextInput,
   Textarea,
+  TextInput,
 } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 

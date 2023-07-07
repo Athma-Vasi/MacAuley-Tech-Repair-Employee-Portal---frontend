@@ -96,13 +96,13 @@ type CreateBenefitReducer = (
 ) => CreateBenefitState;
 
 export type {
-  BenefitsPlanKind,
-  Currency,
-  BenefitsSchema,
   BenefitsDocument,
-  CreateBenefitState,
+  BenefitsPlanKind,
+  BenefitsSchema,
   CreateBenefitAction,
-  CreateBenefitPayload,
   CreateBenefitDispatch,
+  CreateBenefitPayload,
   CreateBenefitReducer,
+  CreateBenefitState,
+  Currency,
 };

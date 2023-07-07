@@ -1,7 +1,7 @@
 import type {
-  NotesListState,
-  NotesListDispatch,
   NotesListAction,
+  NotesListDispatch,
+  NotesListState,
 } from '../../types';
 
 type NotesListHeaderProps = {

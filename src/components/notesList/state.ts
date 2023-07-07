@@ -3,8 +3,8 @@ import {
   NotesListAction,
   NotesListDispatch,
   NotesListSort,
-  NotesListState,
   NotesListSortKey,
+  NotesListState,
   NotesListTransformed,
 } from './types';
 

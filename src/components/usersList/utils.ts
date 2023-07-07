@@ -1,4 +1,4 @@
-import { User, SortUsersByKeyProps } from './types';
+import { SortUsersByKeyProps,User } from './types';
 
 function sortUsersByKey({
   users,

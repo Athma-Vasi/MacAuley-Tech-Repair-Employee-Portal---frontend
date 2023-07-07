@@ -60,11 +60,11 @@ type EditUserResponse = {
 };
 
 export type {
-  EditUserState,
   EditUserAction,
-  EditUserPayload,
   EditUserDispatch,
-  EditUserReducer,
+  EditUserPayload,
   EditUserProps,
+  EditUserReducer,
   EditUserResponse,
+  EditUserState,
 };

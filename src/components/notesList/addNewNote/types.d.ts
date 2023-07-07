@@ -56,11 +56,11 @@ type AddNewNoteResponse = {
 };
 
 export type {
-  AddNewNoteProps,
-  AddNewNoteState,
   AddNewNoteAction,
-  AddNewNotePayload,
   AddNewNoteDispatch,
+  AddNewNotePayload,
+  AddNewNoteProps,
   AddNewNoteReducer,
   AddNewNoteResponse,
+  AddNewNoteState,
 };

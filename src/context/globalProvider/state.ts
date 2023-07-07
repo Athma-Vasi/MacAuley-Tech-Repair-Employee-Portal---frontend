@@ -49,4 +49,4 @@ function globalReducer(
   }
 }
 
-export { initialGlobalState, globalAction, globalReducer };
+export { globalAction, globalReducer,initialGlobalState };

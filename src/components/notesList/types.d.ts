@@ -71,15 +71,15 @@ type NotesListReducer = (
 ) => NotesListState;
 
 export type {
-  Note,
   GetAllNotesResponse,
-  NotesListState,
+  Note,
   NotesListAction,
-  NotesListPayload,
   NotesListDispatch,
+  NotesListPayload,
   NotesListReducer,
   NotesListSort,
   NotesListSortKey,
+  NotesListState,
   NotesListTransformed,
   TransformNotesForDisplayProps,
 };

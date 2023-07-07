@@ -45,10 +45,10 @@ type AuthDispatch = {
 type AuthReducer = (state: AuthState, action: AuthDispatch) => AuthState;
 
 export type {
-  AuthState,
   AuthAction,
-  AuthPayload,
   AuthDispatch,
-  AuthReducer,
+  AuthPayload,
   AuthProviderProps,
+  AuthReducer,
+  AuthState,
 };

@@ -177,7 +177,7 @@ function createAnnouncementReducer(
 }
 
 export {
-  initialCreateAnnouncementState,
   createAnnouncementAction,
   createAnnouncementReducer,
+  initialCreateAnnouncementState,
 };

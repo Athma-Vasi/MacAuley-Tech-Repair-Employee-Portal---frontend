@@ -47,13 +47,13 @@ type GlobalProviderProps = {
 };
 
 export type {
-  GlobalState,
-  GlobalAction,
-  GlobalPayload,
-  GlobalDispatch,
-  GlobalReducer,
-  GlobalProviderProps,
   ColorScheme,
-  WindowDimensions,
+  GlobalAction,
+  GlobalDispatch,
+  GlobalPayload,
+  GlobalProviderProps,
+  GlobalReducer,
+  GlobalState,
   ScrollAxesDirection,
+  WindowDimensions,
 };

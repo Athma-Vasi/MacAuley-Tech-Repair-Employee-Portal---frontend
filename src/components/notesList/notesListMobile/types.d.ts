@@ -1,9 +1,9 @@
 import type {
-  NotesListState,
-  NotesListTransformed,
   NotesListAction,
   NotesListDispatch,
   NotesListSortKey,
+  NotesListState,
+  NotesListTransformed,
 } from '../types';
 
 type NotesListMobileProps = {
@@ -47,12 +47,12 @@ type NoteDirectionSelectData = {
 };
 
 export type {
-  NotesListMobileProps,
-  NoteHeadingSelectData,
   NoteDirectionSelectData,
-  NotesListMobileState,
+  NoteHeadingSelectData,
   NotesListMobileAction,
-  NotesListMobilePayload,
   NotesListMobileDispatch,
+  NotesListMobilePayload,
+  NotesListMobileProps,
   NotesListMobileReducer,
+  NotesListMobileState,
 };

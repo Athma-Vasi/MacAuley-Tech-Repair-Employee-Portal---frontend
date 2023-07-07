@@ -329,6 +329,26 @@ function returnDateNearFutureValidationText(date: string): string {
   const month = date.split('-')[1];
   const year = date.split('-')[0];
 
+  const isDayInPast = day ? parseInt(day) < new Date().getDate() : false;
+  const isMonthInPast = month
+    ? parseInt(month) < new Date().getMonth() + 1
+    : false;
+  const isYearInPast = year ? parseInt(year) < new Date().getFullYear() : false;
+
+  const isEnteredYearMonthDayInPast = isYearInPast
+    ? isMonthInPast
+      ? isDayInPast
+        ? true
+        : false
+      : false
+    : false;
+  const isEnteredYearMonthInPast = isYearInPast
+    ? isMonthInPast
+      ? true
+      : false
+    : false;
+  const isEnteredDayInPast = day ? parseInt(day) < new Date().getDate() : false;
+
   const dateValidationTupleArr: [boolean, string][] = [
     [
       day ? dayRegex.test(day) : true,
@@ -341,6 +361,18 @@ function returnDateNearFutureValidationText(date: string): string {
     [
       year ? yearRegex.test(year) : true,
       'Must be a valid year between 2023 and 2026.',
+    ],
+    [
+      isEnteredYearMonthInPast && !isEnteredDayInPast ? false : true,
+      `Month of ${month} must be in the future.`,
+    ],
+    [
+      isEnteredDayInPast && !isEnteredYearMonthInPast ? false : true,
+      `Day of ${day} must be in the future.`,
+    ],
+    [
+      isEnteredYearMonthDayInPast ? false : true,
+      `Date of ${date} must be in the future.`,
     ],
   ];
 
@@ -467,47 +499,6 @@ function returnNameValidationText({
     : '';
 }
 
-function returnQuantityValidationText({
-  content,
-  contentKind,
-  minLength,
-  maxLength,
-}: RegexValidationProps): string {
-  // /^(?=.{1,9}$)(?!0\d)(?=.*[0-9])(?:\.\d{1,2})?$/
-
-  const quantityLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
-  // string cannot start with 0
-  const quantityStartRegex = /^(?!0\d)/;
-  // string must contain at least one number
-  const quantityNumberRegex = /^(?=.*[0-9])/;
-  // string must contain at most 2 digits after the decimal
-  const quantityDecimalRegex = /(?:\.\d{1,2})?$/;
-
-  const quantityRegexTupleArr: [boolean, string][] = [
-    [
-      quantityLengthRegex.test(content),
-      `Must be between ${minLength} and ${maxLength} characters.`,
-    ],
-    [quantityStartRegex.test(content), 'Must not start with a 0 (zero).'],
-    [quantityNumberRegex.test(content), 'Must contain at least one number.'],
-    [
-      quantityDecimalRegex.test(content),
-      'Must contain at most 2 digits after the decimal.',
-    ],
-  ];
-
-  const validationText = quantityRegexTupleArr
-    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
-    .map(([_, validationText]: [boolean, string]) => validationText)
-    .join(' ');
-
-  return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
-    : '';
-}
-
 export {
   formatDate,
   returnAddressValidationText,
@@ -522,7 +513,6 @@ export {
   returnNoteTitleValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
-  returnQuantityValidationText,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
 };

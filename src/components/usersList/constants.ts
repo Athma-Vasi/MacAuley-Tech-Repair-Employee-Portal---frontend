@@ -16,4 +16,4 @@ const textWrap: React.CSSProperties = {
   textOverflow: 'ellipsis',
 };
 
-export { GET_ALL_USERS, USERS_HEADINGS, textWrap };
+export { GET_ALL_USERS, textWrap,USERS_HEADINGS };

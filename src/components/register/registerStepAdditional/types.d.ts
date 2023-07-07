@@ -1,4 +1,4 @@
-import type { JobPosition, Department, PhoneNumber } from '../../../types';
+import type { Department, JobPosition, PhoneNumber } from '../../../types';
 import { RegisterAction, RegisterDispatch } from '../types';
 
 type RegisterStepAdditionalProps = {

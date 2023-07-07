@@ -1,7 +1,7 @@
 import {
-  UsersListMobileState,
   UsersListMobileAction,
   UsersListMobileDispatch,
+  UsersListMobileState,
 } from './types';
 
 const initialUsersListMobileState: UsersListMobileState = {};

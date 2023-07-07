@@ -1,8 +1,9 @@
+import './style.css';
+
 import { Button, Group, Stepper, Text } from '@mantine/core';
 import { useEffect, useRef } from 'react';
 
 import type { StepperWrapperProps } from './types';
-import './style.css';
 
 function StepperWrapper({
   children,

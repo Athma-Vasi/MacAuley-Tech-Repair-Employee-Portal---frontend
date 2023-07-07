@@ -1,8 +1,9 @@
 import { createContext, useEffect, useMemo, useReducer } from 'react';
-import { GlobalDispatch, GlobalProviderProps, GlobalState } from './types';
-import { globalAction, globalReducer, initialGlobalState } from './state';
-import { useWindowSize } from '../../hooks/useWindowSize';
+
 import { useScrollDirection } from '../../hooks/useScrollDirection';
+import { useWindowSize } from '../../hooks/useWindowSize';
+import { globalAction, globalReducer, initialGlobalState } from './state';
+import { GlobalDispatch, GlobalProviderProps, GlobalState } from './types';
 
 const GlobalContext = createContext<{
   globalState: GlobalState;

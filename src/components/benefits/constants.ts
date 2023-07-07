@@ -31,6 +31,6 @@ const PLAN_DESCRIPTION_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i;
 export {
   BENEFIT_PLAN_DATA,
   CURRENCY_DATA,
-  PLAN_NAME_REGEX,
   PLAN_DESCRIPTION_REGEX,
+  PLAN_NAME_REGEX,
 };

@@ -1,6 +1,7 @@
+import '../../index.css';
+
 import { Alert, Flex, Loader, Text } from '@mantine/core';
 
-import '../../index.css';
 import { LoadingProps } from './types';
 
 function Loading({ dataDirection }: LoadingProps) {

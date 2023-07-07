@@ -1,10 +1,10 @@
+import type { User } from '../../../types';
 import {
   UsersListAction,
   UsersListDispatch,
-  UsersListState,
   UsersListSortKey,
+  UsersListState,
 } from '../types';
-import type { User } from '../../../types';
 
 type UsersListMobileProps = {
   transformedUsers: User[];
@@ -46,12 +46,12 @@ type UserDirectionSelectData = {
 };
 
 export type {
-  UsersListMobileProps,
-  UserHeadingSelectData,
   UserDirectionSelectData,
-  UsersListMobileState,
+  UserHeadingSelectData,
   UsersListMobileAction,
-  UsersListMobilePayload,
   UsersListMobileDispatch,
+  UsersListMobilePayload,
+  UsersListMobileProps,
   UsersListMobileReducer,
+  UsersListMobileState,
 };

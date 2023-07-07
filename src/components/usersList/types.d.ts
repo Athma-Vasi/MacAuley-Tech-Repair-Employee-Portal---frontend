@@ -1,4 +1,5 @@
 import { UserInfo } from 'os';
+
 import type { User } from '../../types';
 
 type UsersListSort = 'asc' | 'desc' | '';
@@ -85,15 +86,15 @@ type GetAllUsersResponse = {
 };
 
 export type {
-  User,
-  UsersListState,
-  UsersListAction,
-  UsersListPayload,
-  UsersListDispatch,
-  UsersListReducer,
   GetAllUsersResponse,
+  SortUsersByKeyProps,
+  User,
+  UserInfoDisplay,
+  UsersListAction,
+  UsersListDispatch,
+  UsersListPayload,
+  UsersListReducer,
   UsersListSort,
   UsersListSortKey,
-  SortUsersByKeyProps,
-  UserInfoDisplay,
+  UsersListState,
 };

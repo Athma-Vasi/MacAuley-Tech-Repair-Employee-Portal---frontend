@@ -5,18 +5,18 @@ import { AddressChange } from './components/addressChange';
 import { CreateAnnouncement } from './components/announcements/createAnnouncement';
 import { CreateBenefit } from './components/benefits/createBenefit';
 import { Dashboard } from './components/dashboard';
+import { LeaveRequest } from './components/leaveRequest';
 import { Login } from './components/login';
 import { NotesList } from './components/notesList';
 import { NotFound } from './components/notFound';
 import { PortalLayout } from './components/portalLayout';
 import { PublicLayout } from './components/publicLayout';
 import { Register } from './components/register';
+import { RequestResource } from './components/requestResource';
 import { RequireAuth } from './components/requireAuth';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
-import { LeaveRequest } from './components/leaveRequest';
-import { RequestResource } from './components/requestResource';
 
 function App() {
   const {

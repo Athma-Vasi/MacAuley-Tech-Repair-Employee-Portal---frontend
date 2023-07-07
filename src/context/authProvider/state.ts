@@ -47,4 +47,4 @@ function authReducer(state: AuthState, action: AuthDispatch): AuthState {
   }
 }
 
-export { initialAuthState, authAction, authReducer };
+export { authAction, authReducer,initialAuthState };

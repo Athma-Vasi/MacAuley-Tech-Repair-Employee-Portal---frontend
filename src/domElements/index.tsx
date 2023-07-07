@@ -67,6 +67,6 @@ const screenReaderTextSpecialCharacters = (
 
 export {
   screenReaderPasswordSpecialCharacters,
-  screenReaderTitleSpecialCharacters,
   screenReaderTextSpecialCharacters,
+  screenReaderTitleSpecialCharacters,
 };

@@ -1,9 +1,9 @@
 import type {
+  Country,
   PhoneNumber,
+  PostalCode,
   Province,
   StatesUS,
-  PostalCode,
-  Country,
 } from '../../../types';
 import { RegisterAction, RegisterDispatch } from '../types';
 

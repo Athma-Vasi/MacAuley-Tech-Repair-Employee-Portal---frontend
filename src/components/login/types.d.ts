@@ -38,10 +38,10 @@ type DecodedToken = {
 
 export type {
   DecodedToken,
-  LoginState,
   LoginAction,
-  LoginPayload,
   LoginDispatch,
+  LoginPayload,
   LoginReducer,
   LoginResponse,
+  LoginState,
 };

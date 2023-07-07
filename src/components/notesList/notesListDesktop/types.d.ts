@@ -1,8 +1,8 @@
 import type {
-  NotesListTransformed,
-  NotesListState,
-  NotesListDispatch,
   NotesListAction,
+  NotesListDispatch,
+  NotesListState,
+  NotesListTransformed,
 } from '../types';
 
 type NotesListDesktopProps = {
