@@ -23,7 +23,11 @@ import { UserSchema } from '../../types';
 import { CustomError } from '../customError';
 import { Loading } from '../loading';
 import { Success } from '../success';
-import { REGISTER_DESCRIPTION_MAP, REGISTER_URL } from './constants';
+import {
+  MAX_STEPPER_POSITION,
+  REGISTER_DESCRIPTION_MAP,
+  REGISTER_URL,
+} from './constants';
 import { RegisterStepAdditional } from './registerStepAdditional/RegisterStepAdditional';
 import { RegisterStepAddress } from './registerStepAddress/RegisterStepAddress';
 import { RegisterStepAuthentication } from './registerStepAuthentication/RegisterStepAuthentication';
@@ -400,16 +404,11 @@ function Register() {
 
   const { buttonTextColor } = COLORS;
 
-  // DEV DELETE
-  useEffect(() => {
-    console.log({ stepsInError });
-  }, [stepsInError]);
-
   const displayRegisterForm = (
     <StepperWrapper
       stepsInError={stepsInError}
       descriptionMap={REGISTER_DESCRIPTION_MAP}
-      maxStepperPosition={5}
+      maxStepperPosition={MAX_STEPPER_POSITION}
       currentStepperPosition={currentStepperPosition}
       setCurrentStepperPosition={registerAction.setCurrentStepperPosition}
       parentComponentDispatch={registerDispatch}
@@ -449,7 +448,8 @@ function Register() {
             <Button
               type="submit"
               disabled={
-                stepsInError.size > 0 || currentStepperPosition < 5
+                stepsInError.size > 0 ||
+                currentStepperPosition < MAX_STEPPER_POSITION
                   ? true
                   : false
               }

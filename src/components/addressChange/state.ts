@@ -9,6 +9,7 @@ import type {
   AddressChangeAction,
   AddressChangeDispatch,
   AddressChangeState,
+  StepsInErrorPayload,
 } from './types';
 
 const initialAddressChangeState: AddressChangeState = {
@@ -32,6 +33,18 @@ const initialAddressChangeState: AddressChangeState = {
   isValidPostalCode: false,
   isPostalCodeFocused: false,
   isAcknowledged: false,
+
+  currentStepperPosition: 0,
+  stepsInError: new Set<number>(),
+
+  isError: false,
+  errorMessage: '',
+  isSubmitting: false,
+  submitMessage: '',
+  isSuccessful: false,
+  successMessage: '',
+  isLoading: false,
+  loadingMessage: '',
 };
 
 const addressChangeAction: AddressChangeAction = {
@@ -55,6 +68,18 @@ const addressChangeAction: AddressChangeAction = {
   setIsValidPostalCode: 'setIsValidPostalCode',
   setIsPostalCodeFocused: 'setIsPostalCodeFocused',
   setIsAcknowledged: 'setIsAcknowledged',
+
+  setCurrentStepperPosition: 'setCurrentStepperPosition',
+  setStepsInError: 'setStepsInError',
+
+  setIsError: 'setIsError',
+  setErrorMessage: 'setErrorMessage',
+  setIsSubmitting: 'setIsSubmitting',
+  setSubmitMessage: 'setSubmitMessage',
+  setIsSuccessful: 'setIsSuccessful',
+  setSuccessMessage: 'setSuccessMessage',
+  setIsLoading: 'setIsLoading',
+  setLoadingMessage: 'setLoadingMessage',
 };
 
 function addressChangeReducer(
@@ -145,6 +170,66 @@ function addressChangeReducer(
       return {
         ...state,
         isAcknowledged: action.payload as boolean,
+      };
+
+    case addressChangeAction.setCurrentStepperPosition:
+      return {
+        ...state,
+        currentStepperPosition: action.payload as number,
+      };
+    case addressChangeAction.setStepsInError: {
+      const { kind, step } = action.payload as StepsInErrorPayload;
+      const stepsInError = new Set(state.stepsInError);
+      if (kind === 'add') {
+        stepsInError.add(step);
+      } else {
+        stepsInError.delete(step);
+      }
+      return {
+        ...state,
+        stepsInError,
+      };
+    }
+
+    case addressChangeAction.setIsError:
+      return {
+        ...state,
+        isError: action.payload as boolean,
+      };
+    case addressChangeAction.setErrorMessage:
+      return {
+        ...state,
+        errorMessage: action.payload as string,
+      };
+    case addressChangeAction.setIsSubmitting:
+      return {
+        ...state,
+        isSubmitting: action.payload as boolean,
+      };
+    case addressChangeAction.setSubmitMessage:
+      return {
+        ...state,
+        submitMessage: action.payload as string,
+      };
+    case addressChangeAction.setIsSuccessful:
+      return {
+        ...state,
+        isSuccessful: action.payload as boolean,
+      };
+    case addressChangeAction.setSuccessMessage:
+      return {
+        ...state,
+        successMessage: action.payload as string,
+      };
+    case addressChangeAction.setIsLoading:
+      return {
+        ...state,
+        isLoading: action.payload as boolean,
+      };
+    case addressChangeAction.setLoadingMessage:
+      return {
+        ...state,
+        loadingMessage: action.payload as string,
       };
 
     default:

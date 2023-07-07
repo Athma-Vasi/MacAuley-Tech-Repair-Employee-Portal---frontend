@@ -26,6 +26,12 @@ import {
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
 } from '../../utils';
+import { MAX_STEPPER_POSITION } from '../register/constants';
+import { StepperWrapper } from '../register/stepperWrapper';
+import {
+  ADDRESS_CHANGE_DESCRIPTION_MAP,
+  ADDRESS_CHANGE_MAX_STEPPER_POSITION,
+} from './constants';
 import {
   addressChangeAction,
   addressChangeReducer,
@@ -38,22 +44,38 @@ function AddressChange() {
     initialAddressChangeState
   );
   const {
-    addressLine,
-    city,
     contactNumber,
-    isContactNumberFocused,
     isValidContactNumber,
-    country,
-    isAddressLineFocused,
-    isCityFocused,
-    isPostalCodeFocused,
+    isContactNumberFocused,
+
+    addressLine,
     isValidAddressLine,
+    isAddressLineFocused,
+
+    city,
     isValidCity,
-    isValidPostalCode,
-    postalCode,
+    isCityFocused,
+
     province,
     state,
+    country,
+
+    postalCode,
+    isValidPostalCode,
+    isPostalCodeFocused,
     isAcknowledged,
+
+    currentStepperPosition,
+    stepsInError,
+
+    isError,
+    errorMessage,
+    isSubmitting,
+    submitMessage,
+    isSuccessful,
+    successMessage,
+    isLoading,
+    loadingMessage,
   } = addressChangeState;
 
   // sets focus on address line input on page load
@@ -82,7 +104,7 @@ function AddressChange() {
     });
   }, [city]);
 
-  // resets address if country is changed
+  // resets addressline, city & postalcode if country is changed
   useEffect(() => {
     addressChangeDispatch({
       type: addressChangeAction.setAddressLine,
@@ -173,6 +195,30 @@ function AddressChange() {
       payload: isValidPostal,
     });
   }, [postalCode, country]);
+
+  // update the corresponding stepsInError state if any of the inputs are in error
+  useEffect(() => {
+    const isStepInError =
+      !isValidContactNumber ||
+      !isValidAddressLine ||
+      !isValidCity ||
+      !isValidPostalCode ||
+      !isAcknowledged;
+
+    addressChangeDispatch({
+      type: addressChangeAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [
+    isValidContactNumber,
+    isValidAddressLine,
+    isValidCity,
+    isValidPostalCode,
+    isAcknowledged,
+  ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
@@ -375,6 +421,272 @@ function AddressChange() {
     />
   );
 
+  function handleAddressChangeFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  const displayAddressChangeForm =
+    currentStepperPosition === 0 ? (
+      <Flex
+        direction="column"
+        align="flex-start"
+        justify="center"
+        rowGap="lg"
+        w="100%"
+      >
+        <TextInput
+          size="sm"
+          w="100%"
+          color="dark"
+          label="Personal contact number"
+          aria-required
+          aria-describedby={
+            isValidContactNumber
+              ? 'contact-number-input-note-valid'
+              : 'contact-number-input-note-error'
+          }
+          description={
+            isValidContactNumber
+              ? contactNumberInputValidText
+              : contactNumberInputErrorText
+          }
+          placeholder="Enter contact number"
+          autoComplete="off"
+          aria-invalid={isValidContactNumber ? false : true}
+          value={contactNumber}
+          onKeyDown={(event) => {
+            if (event.key === 'Backspace') {
+              if (contactNumber.length === 14) {
+                addressChangeDispatch({
+                  type: addressChangeAction.setContactNumber,
+                  payload: contactNumber.slice(0, -1),
+                });
+              } else if (contactNumber.length === 9) {
+                addressChangeDispatch({
+                  type: addressChangeAction.setContactNumber,
+                  payload: contactNumber.slice(0, -1),
+                });
+              }
+            }
+          }}
+          rightSection={
+            <Tooltip label="Reset value to +(1)">
+              <Button
+                type="button"
+                size="xs"
+                variant="white"
+                aria-label="Reset personal contact number value to +(1)"
+                mr="md"
+              >
+                <FontAwesomeIcon
+                  icon={faRefresh}
+                  cursor="pointer"
+                  color="gray"
+                  onClick={() => {
+                    addressChangeDispatch({
+                      type: addressChangeAction.setContactNumber,
+                      payload: '+(1)',
+                    });
+                  }}
+                />
+              </Button>
+            </Tooltip>
+          }
+          icon={
+            isValidContactNumber ? (
+              <FontAwesomeIcon icon={faCheck} color="green" />
+            ) : null
+          }
+          error={!isValidContactNumber && contactNumber !== '+(1)'}
+          onChange={(event) => {
+            addressChangeDispatch({
+              type: addressChangeAction.setContactNumber,
+              payload: event.currentTarget.value,
+            });
+          }}
+          onFocus={() => {
+            addressChangeDispatch({
+              type: addressChangeAction.setIsContactNumberFocused,
+              payload: true,
+            });
+          }}
+          onBlur={() => {
+            addressChangeDispatch({
+              type: addressChangeAction.setIsContactNumberFocused,
+              payload: false,
+            });
+          }}
+          maxLength={18}
+        />
+        {/* country */}
+        <NativeSelect
+          size="sm"
+          data={['Canada', 'United States']}
+          label="Country"
+          value={country}
+          onChange={(event) => {
+            addressChangeDispatch({
+              type: addressChangeAction.setCountry,
+              payload: event.currentTarget.value,
+            });
+          }}
+          withAsterisk
+          required
+        />
+
+        <TextInput
+          size="sm"
+          w="100%"
+          color="dark"
+          label="Address line"
+          placeholder="Enter address line"
+          autoComplete="off"
+          aria-required
+          aria-describedby={
+            isValidAddressLine
+              ? 'address-line-input-note-valid'
+              : 'address-line-input-note-error'
+          }
+          aria-invalid={isValidAddressLine ? false : true}
+          value={addressLine}
+          icon={
+            isValidAddressLine ? (
+              <FontAwesomeIcon icon={faCheck} color="green" />
+            ) : null
+          }
+          error={!isValidAddressLine && addressLine !== ''}
+          description={
+            isValidAddressLine
+              ? addressLineInputValidText
+              : addressLineInputErrorText
+          }
+          onChange={(event) => {
+            addressChangeDispatch({
+              type: addressChangeAction.setAddressLine,
+              payload: event.currentTarget.value,
+            });
+          }}
+          onFocus={() => {
+            addressChangeDispatch({
+              type: addressChangeAction.setIsAddressLineFocused,
+              payload: true,
+            });
+          }}
+          onBlur={() => {
+            addressChangeDispatch({
+              type: addressChangeAction.setIsAddressLineFocused,
+              payload: false,
+            });
+          }}
+          withAsterisk
+          required
+          minLength={2}
+          maxLength={75}
+        />
+        <TextInput
+          size="sm"
+          w="100%"
+          color="dark"
+          label="City"
+          placeholder="Enter city"
+          autoComplete="off"
+          aria-required
+          aria-describedby={
+            isValidCity ? 'city-input-note-valid' : 'city-input-note-error'
+          }
+          aria-invalid={isValidCity ? false : true}
+          value={city}
+          icon={
+            isValidCity ? (
+              <FontAwesomeIcon icon={faCheck} color="green" />
+            ) : null
+          }
+          error={!isValidCity && city !== ''}
+          description={isValidCity ? cityInputValidText : cityInputErrorText}
+          onChange={(event) => {
+            addressChangeDispatch({
+              type: addressChangeAction.setCity,
+              payload: event.currentTarget.value,
+            });
+          }}
+          onFocus={() => {
+            addressChangeDispatch({
+              type: addressChangeAction.setIsCityFocused,
+              payload: true,
+            });
+          }}
+          onBlur={() => {
+            addressChangeDispatch({
+              type: addressChangeAction.setIsCityFocused,
+              payload: false,
+            });
+          }}
+          minLength={2}
+          maxLength={75}
+          withAsterisk
+          required
+        />
+        {/* province / state */}
+        {displayProvinceOrStateInput}
+
+        {/* postal code */}
+        {country === 'Canada'
+          ? selectCanadianPostalCodeInput
+          : selectUSPostalCodeInput}
+
+        {/* acknowledgement checkbox */}
+        <Checkbox
+          size="sm"
+          color="dark"
+          label="I acknowledge that the information provided is accurate."
+          aria-label={
+            isAcknowledged
+              ? 'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.'
+              : 'Acknowledgement checkbox is unchecked. I do not acknowledge.'
+          }
+          checked={isAcknowledged}
+          onChange={(event) => {
+            addressChangeDispatch({
+              type: addressChangeAction.setIsAcknowledged,
+              payload: event.currentTarget.checked,
+            });
+          }}
+        />
+      </Flex>
+    ) : null;
+
+  const displayReview = currentStepperPosition === 1 ? <h2>Review</h2> : null;
+
+  const displayAddressChangeComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
+      descriptionMap={ADDRESS_CHANGE_DESCRIPTION_MAP}
+      maxStepperPosition={ADDRESS_CHANGE_MAX_STEPPER_POSITION}
+      parentComponentDispatch={addressChangeDispatch}
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleAddressChangeFormSubmit}>
+        {displayAddressChangeForm}
+        {displayReview}
+
+        {/* submit button */}
+        <Button
+          type="button"
+          variant="filled"
+          disabled={
+            stepsInError.size > 0 ||
+            currentStepperPosition < ADDRESS_CHANGE_MAX_STEPPER_POSITION
+          }
+        >
+          Submit
+        </Button>
+      </form>
+    </StepperWrapper>
+  );
+
   return (
     <Flex
       direction="column"
@@ -383,236 +695,7 @@ function AddressChange() {
       rowGap="lg"
       w={400}
     >
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Personal contact number"
-        aria-required
-        aria-describedby={
-          isValidContactNumber
-            ? 'contact-number-input-note-valid'
-            : 'contact-number-input-note-error'
-        }
-        description={
-          isValidContactNumber
-            ? contactNumberInputValidText
-            : contactNumberInputErrorText
-        }
-        placeholder="Enter contact number"
-        autoComplete="off"
-        aria-invalid={isValidContactNumber ? false : true}
-        value={contactNumber}
-        onKeyDown={(event) => {
-          if (event.key === 'Backspace') {
-            if (contactNumber.length === 14) {
-              addressChangeDispatch({
-                type: addressChangeAction.setContactNumber,
-                payload: contactNumber.slice(0, -1),
-              });
-            } else if (contactNumber.length === 9) {
-              addressChangeDispatch({
-                type: addressChangeAction.setContactNumber,
-                payload: contactNumber.slice(0, -1),
-              });
-            }
-          }
-        }}
-        rightSection={
-          <Tooltip label="Reset value to +(1)">
-            <Button
-              type="button"
-              size="xs"
-              variant="white"
-              aria-label="Reset personal contact number value to +(1)"
-              mr="md"
-            >
-              <FontAwesomeIcon
-                icon={faRefresh}
-                cursor="pointer"
-                color="gray"
-                onClick={() => {
-                  addressChangeDispatch({
-                    type: addressChangeAction.setContactNumber,
-                    payload: '+(1)',
-                  });
-                }}
-              />
-            </Button>
-          </Tooltip>
-        }
-        icon={
-          isValidContactNumber ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidContactNumber && contactNumber !== '+(1)'}
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setContactNumber,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          addressChangeDispatch({
-            type: addressChangeAction.setIsContactNumberFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          addressChangeDispatch({
-            type: addressChangeAction.setIsContactNumberFocused,
-            payload: false,
-          });
-        }}
-        maxLength={18}
-      />
-      {/* country */}
-      <NativeSelect
-        size="sm"
-        data={['Canada', 'United States']}
-        label="Country"
-        value={country}
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setCountry,
-            payload: event.currentTarget.value,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Address line"
-        placeholder="Enter address line"
-        autoComplete="off"
-        aria-required
-        aria-describedby={
-          isValidAddressLine
-            ? 'address-line-input-note-valid'
-            : 'address-line-input-note-error'
-        }
-        aria-invalid={isValidAddressLine ? false : true}
-        value={addressLine}
-        icon={
-          isValidAddressLine ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidAddressLine && addressLine !== ''}
-        description={
-          isValidAddressLine
-            ? addressLineInputValidText
-            : addressLineInputErrorText
-        }
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setAddressLine,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          addressChangeDispatch({
-            type: addressChangeAction.setIsAddressLineFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          addressChangeDispatch({
-            type: addressChangeAction.setIsAddressLineFocused,
-            payload: false,
-          });
-        }}
-        withAsterisk
-        required
-        minLength={2}
-        maxLength={75}
-      />
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="City"
-        placeholder="Enter city"
-        autoComplete="off"
-        aria-required
-        aria-describedby={
-          isValidCity ? 'city-input-note-valid' : 'city-input-note-error'
-        }
-        aria-invalid={isValidCity ? false : true}
-        value={city}
-        icon={
-          isValidCity ? <FontAwesomeIcon icon={faCheck} color="green" /> : null
-        }
-        error={!isValidCity && city !== ''}
-        description={isValidCity ? cityInputValidText : cityInputErrorText}
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setCity,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          addressChangeDispatch({
-            type: addressChangeAction.setIsCityFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          addressChangeDispatch({
-            type: addressChangeAction.setIsCityFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={75}
-        withAsterisk
-        required
-      />
-      {/* province / state */}
-      {displayProvinceOrStateInput}
-
-      {/* postal code */}
-      {country === 'Canada'
-        ? selectCanadianPostalCodeInput
-        : selectUSPostalCodeInput}
-
-      {/* acknowledgement checkbox */}
-      <Checkbox
-        size="sm"
-        color="dark"
-        label="I acknowledge that the information provided is accurate."
-        aria-label={
-          isAcknowledged
-            ? 'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.'
-            : 'Acknowledgement checkbox is unchecked. I do not acknowledge.'
-        }
-        checked={isAcknowledged}
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setIsAcknowledged,
-            payload: event.currentTarget.checked,
-          });
-        }}
-      />
-
-      <Button
-        type="button"
-        variant="filled"
-        disabled={
-          !isValidContactNumber ||
-          !isValidAddressLine ||
-          !isValidCity ||
-          !isValidPostalCode ||
-          !isAcknowledged
-        }
-      >
-        Submit
-      </Button>
+      {displayAddressChangeComponent}
     </Flex>
   );
 }

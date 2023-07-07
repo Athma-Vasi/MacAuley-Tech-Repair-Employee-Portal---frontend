@@ -21,6 +21,18 @@ type AddressChangeState = {
   isValidPostalCode: boolean;
   isPostalCodeFocused: boolean;
   isAcknowledged: boolean;
+
+  currentStepperPosition: number;
+  stepsInError: Set<number>;
+
+  isError: boolean;
+  errorMessage: string;
+  isSubmitting: boolean;
+  submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
+  isLoading: boolean;
+  loadingMessage: string;
 };
 
 type AddressChangeAction = {
@@ -44,11 +56,30 @@ type AddressChangeAction = {
   setIsValidPostalCode: 'setIsValidPostalCode';
   setIsPostalCodeFocused: 'setIsPostalCodeFocused';
   setIsAcknowledged: 'setIsAcknowledged';
+
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
+  setIsError: 'setIsError';
+  setErrorMessage: 'setErrorMessage';
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
+  setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
+};
+
+type StepsInErrorPayload = {
+  kind: 'add' | 'delete';
+  step: number;
 };
 
 type AddressChangePayload =
   | string
   | boolean
+  | number
+  | StepsInErrorPayload
   | Province
   | StatesUS
   | Country
@@ -71,4 +102,5 @@ export type {
   AddressChangePayload,
   AddressChangeReducer,
   AddressChangeState,
+  StepsInErrorPayload,
 };
