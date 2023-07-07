@@ -3,10 +3,14 @@ import './style.css';
 import { Button, Group, Stepper, Text } from '@mantine/core';
 import { useEffect, useRef } from 'react';
 
+import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
 
 function StepperWrapper({
   children,
+  descriptionMap,
+  stepInError,
+  maxStepperPosition,
   currentStepperPosition,
   setCurrentStepperPosition,
   parentComponentDispatch,
@@ -31,8 +35,87 @@ function StepperWrapper({
         breakpoint="sm"
         allowNextStepsSelect={false}
       >
-        {/* step one */}
-        <Stepper.Step
+        {Array.from(descriptionMap).map(
+          ([step, { description, ariaLabel }]) => {
+            console.log({
+              step,
+              description,
+              ariaLabel,
+            });
+
+            const capsLabel = `Step ${numberSpellingMap
+              .get(step)?.[0]
+              .toUpperCase()}${numberSpellingMap.get(step)?.slice(1)}`;
+
+            return (
+              <Stepper.Step
+                key={step}
+                label={capsLabel}
+                description={description}
+                aria-label={ariaLabel}
+                aria-current={
+                  currentStepperPosition === step ? 'step' : undefined
+                }
+                ref={currentStepperPosition === step ? stepperRef : undefined}
+                className="hide-outline"
+                color={stepInError === step ? 'red' : undefined}
+              >
+                <Text>{description}</Text>
+              </Stepper.Step>
+            );
+          }
+        )}
+
+        {/* final page */}
+        <Stepper.Completed>
+          <Text color="dark">
+            Looks great! Click back button to modify any information.
+          </Text>
+        </Stepper.Completed>
+      </Stepper>
+      {children}
+
+      {/* stepper nav buttons */}
+      <Group position="center" mt="xl">
+        <Button
+          variant="default"
+          aria-label="Press enter to go back to the previous step in the form"
+          disabled={currentStepperPosition === 0}
+          onClick={() => {
+            const currentStep = currentStepperPosition;
+            parentComponentDispatch({
+              type: setCurrentStepperPosition,
+              payload: currentStep > 0 ? currentStep - 1 : currentStep + 1,
+            });
+          }}
+        >
+          Back
+        </Button>
+        <Button
+          aria-label="Press enter to go to the next step in the form"
+          disabled={currentStepperPosition === maxStepperPosition}
+          onClick={() => {
+            const currentStep = currentStepperPosition;
+            parentComponentDispatch({
+              type: setCurrentStepperPosition,
+              payload:
+                currentStep < maxStepperPosition
+                  ? currentStep + 1
+                  : currentStep - 1,
+            });
+          }}
+        >
+          Next step
+        </Button>
+      </Group>
+    </>
+  );
+}
+
+export { StepperWrapper };
+
+/**
+ * <Stepper.Step
           label="First step"
           description="Enter authentication information"
           aria-current={currentStepperPosition === 0 ? 'step' : undefined}
@@ -86,41 +169,4 @@ function StepperWrapper({
             Looks great! Click back button to modify any information.
           </Text>
         </Stepper.Completed>
-      </Stepper>
-      {children}
-
-      {/* stepper nav buttons */}
-      <Group position="center" mt="xl">
-        <Button
-          variant="default"
-          aria-label="Press enter to go back to the previous step in the form"
-          disabled={currentStepperPosition === 0}
-          onClick={() => {
-            const currentStep = currentStepperPosition;
-            parentComponentDispatch({
-              type: setCurrentStepperPosition,
-              payload: currentStep > 0 ? currentStep - 1 : currentStep + 1,
-            });
-          }}
-        >
-          Back
-        </Button>
-        <Button
-          aria-label="Press enter to go to the next step in the form"
-          disabled={currentStepperPosition === 4}
-          onClick={() => {
-            const currentStep = currentStepperPosition;
-            parentComponentDispatch({
-              type: setCurrentStepperPosition,
-              payload: currentStep < 4 ? currentStep + 1 : currentStep - 1,
-            });
-          }}
-        >
-          Next step
-        </Button>
-      </Group>
-    </>
-  );
-}
-
-export { StepperWrapper };
+ */

@@ -16,8 +16,9 @@ type DescriptionMap = Map<
 
 type StepperWrapperProps = {
   children?: React.ReactNode;
-  stepInError: number;
   descriptionMap: DescriptionMap;
+  stepInError: number;
+  maxStepperPosition: number;
   currentStepperPosition: number;
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   parentComponentDispatch: React.Dispatch<{

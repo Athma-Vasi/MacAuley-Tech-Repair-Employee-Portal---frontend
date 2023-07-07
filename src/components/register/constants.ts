@@ -13,7 +13,7 @@ const REGISTER_DESCRIPTION_MAP: DescriptionMap = new Map([
   [
     2,
     {
-      description: 'Personal',
+      description: 'Personal Information',
       ariaLabel:
         'Enter first name, middle name, last name, preferred name, profile picture url, and (optionally) preferred pronouns',
     },
@@ -21,7 +21,7 @@ const REGISTER_DESCRIPTION_MAP: DescriptionMap = new Map([
   [
     3,
     {
-      description: 'Contact',
+      description: 'Contact Details',
       ariaLabel:
         'Enter country, address line, city, province or state, postal or zip code, and contact number',
     },
@@ -29,7 +29,7 @@ const REGISTER_DESCRIPTION_MAP: DescriptionMap = new Map([
   [
     4,
     {
-      description: 'Additional',
+      description: 'Additional Information',
       ariaLabel:
         'Enter job position, department, emergency contact name, emergency contact number, and start date',
     },
@@ -37,7 +37,7 @@ const REGISTER_DESCRIPTION_MAP: DescriptionMap = new Map([
   [
     5,
     {
-      description: 'Review',
+      description: 'Review and Proceed',
       ariaLabel: 'Review all the information you have entered',
     },
   ],

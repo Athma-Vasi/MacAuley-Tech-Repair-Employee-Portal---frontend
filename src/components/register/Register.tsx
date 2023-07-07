@@ -402,6 +402,7 @@ function Register() {
     <StepperWrapper
       stepInError={2}
       descriptionMap={REGISTER_DESCRIPTION_MAP}
+      maxStepperPosition={5}
       currentStepperPosition={currentStepperPosition}
       setCurrentStepperPosition={registerAction.setCurrentStepperPosition}
       parentComponentDispatch={registerDispatch}
