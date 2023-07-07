@@ -1,6 +1,6 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, TextInput } from '@mantine/core';
+import { Flex, NativeSelect, TextInput } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 
 import {
@@ -14,6 +14,7 @@ import {
   returnDateValidationText,
   returnGrammarValidationText,
 } from '../../utils';
+import { REASON_FOR_LEAVE_DATA } from './constants';
 import {
   initialLeaveRequestState,
   leaveRequestAction,
@@ -272,6 +273,23 @@ function LeaveRequest() {
           });
         }}
         maxLength={10}
+        withAsterisk
+        required
+      />
+
+      {/* reason for leave select */}
+      <NativeSelect
+        size="md"
+        data={REASON_FOR_LEAVE_DATA}
+        label="Reason for leave"
+        description="Select reason for leave"
+        value={reasonForLeave}
+        onChange={(event) => {
+          leaveRequestDispatch({
+            type: leaveRequestAction.setReasonForLeave,
+            payload: event.currentTarget.value,
+          });
+        }}
         withAsterisk
         required
       />
