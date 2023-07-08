@@ -185,7 +185,7 @@ type CreateRefermentDispatch =
   | { type: 'setPositionReferredFor'; payload: JobPosition }
   | { type: 'setPrivacyConsent'; payload: boolean }
   | { type: 'setCurrentStepperPosition'; payload: number }
-  | { type: 'setStepsInError'; payload: Set<number> }
+  | { type: 'setStepsInError'; payload: SetStepsInErrorPayload }
   | {
       type:
         | 'setIsError'
