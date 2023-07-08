@@ -22,6 +22,7 @@ import {
 import { UserSchema } from '../../types';
 import { CustomError } from '../customError';
 import { Loading } from '../loading';
+import { StepperWrapper } from '../stepperWrapper';
 import { Success } from '../success';
 import {
   MAX_STEPPER_POSITION,
@@ -34,7 +35,6 @@ import { RegisterStepAuthentication } from './registerStepAuthentication/Registe
 import { RegisterStepPersonal } from './registerStepPersonal/RegisterStepPersonal';
 import { RegisterStepReview } from './registerStepReview/RegisterStepReview';
 import { initialRegisterState, registerAction, registerReducer } from './state';
-import { StepperWrapper } from './stepperWrapper/StepperWrapper';
 import { RegisterResponse } from './types';
 
 function Register() {

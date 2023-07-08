@@ -27,7 +27,7 @@ import {
   returnPostalCodeValidationText,
 } from '../../utils';
 import { MAX_STEPPER_POSITION } from '../register/constants';
-import { StepperWrapper } from '../register/stepperWrapper';
+import { StepperWrapper } from '../stepperWrapper';
 import {
   ADDRESS_CHANGE_DESCRIPTION_MAP,
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,
@@ -421,7 +421,7 @@ function AddressChange() {
     />
   );
 
-  function handleAddressChangeFormSubmit(
+  async function handleAddressChangeFormSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();

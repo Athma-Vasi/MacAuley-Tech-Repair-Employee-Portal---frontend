@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../register/stepperWrapper';
+import { DescriptionMap } from '../stepperWrapper';
 
 const ADDRESS_CHANGE_DESCRIPTION_MAP: DescriptionMap = new Map([
   [

@@ -1,6 +1,6 @@
 import { Action, ActionsGeneral } from '../../../types';
 
-type EmployeeAttributes =
+type EmployeeAttributes = (
   | 'teamwork and collaboration'
   | 'leadership and mentorship'
   | 'technical expertise'
@@ -9,7 +9,13 @@ type EmployeeAttributes =
   | 'customer service'
   | 'initiative and proactivity'
   | 'communication'
-  | 'reliability and dependability';
+  | 'reliability and dependability'
+)[];
+
+type EmployeeAttributesData = {
+  value: string;
+  label: string;
+}[];
 
 type EndorsementSchema = {
   userId: string;
@@ -42,7 +48,7 @@ type CreateEndorsementState = {
   isValidSummaryOfEndorsement: boolean;
   isSummaryOfEndorsementFocused: boolean;
 
-  attributeEndorsed: EmployeeAttributes;
+  attributeEndorsed: EmployeeAttributes | undefined;
 
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -97,7 +103,7 @@ type CreateEndorsementDispatch =
     }
   | {
       type: 'setAttributeEndorsed';
-      payload: EmployeeAttributes;
+      payload: EmployeeAttributes | undefined;
     }
   | {
       type:
@@ -143,6 +149,7 @@ export type {
   CreateEndorsementDispatch,
   CreateEndorsementState,
   EmployeeAttributes,
+  EmployeeAttributesData,
   EndorsementDocument,
   EndorsementSchema,
   StepsInErrorPayload,

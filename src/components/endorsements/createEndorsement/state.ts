@@ -17,7 +17,7 @@ const initialCreateEndorsementState: CreateEndorsementState = {
   isValidSummaryOfEndorsement: false,
   isSummaryOfEndorsementFocused: false,
 
-  attributeEndorsed: 'adaptibility and flexibility',
+  attributeEndorsed: ['adaptibility and flexibility'],
 
   currentStepperPosition: 0,
   stepsInError: new Set(),
@@ -113,11 +113,12 @@ function createEndorsementReducer(
         isSummaryOfEndorsementFocused: action.payload,
       };
 
-    case createEndorsementAction.setAttributeEndorsed:
+    case createEndorsementAction.setAttributeEndorsed: {
       return {
         ...state,
         attributeEndorsed: action.payload,
       };
+    }
 
     case createEndorsementAction.setCurrentStepperPosition:
       return {
