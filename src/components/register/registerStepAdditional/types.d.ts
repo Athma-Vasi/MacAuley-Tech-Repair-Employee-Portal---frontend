@@ -9,7 +9,7 @@ type RegisterStepAdditionalProps = {
   isValidFullName: boolean;
   isFullNameFocused: boolean;
 
-  phoneNumber: PhoneNumber | '+(1)';
+  phoneNumber: PhoneNumber | string;
   isValidPhoneNumber: boolean;
   isPhoneNumberFocused: boolean;
 

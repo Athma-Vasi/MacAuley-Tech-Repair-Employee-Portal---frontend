@@ -18,7 +18,7 @@ type RegisterStepReviewProps = {
   preferredName: string;
   preferredPronouns: PreferredPronouns;
   profilePictureUrl: string;
-  contactNumber: PhoneNumber | '+(1)';
+  contactNumber: PhoneNumber | string;
   addressLine: string;
   city: string;
   province: Province;
@@ -28,7 +28,7 @@ type RegisterStepReviewProps = {
   jobPosition: JobPosition;
   department: Department;
   fullName: string;
-  phoneNumber: PhoneNumber | '+(1)';
+  phoneNumber: PhoneNumber | string;
   startDate: string;
 };
 

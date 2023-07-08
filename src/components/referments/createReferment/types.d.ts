@@ -6,7 +6,7 @@ type RefermentSchema = {
 
   candidateFullName: string;
   candidateEmail: string;
-  candidateContactNumber: PhoneNumber | '+(1)';
+  candidateContactNumber: PhoneNumber | string;
   candidateCurrentJobTitle: string;
   candidateCurrentCompany: string;
   candidateProfileUrl: string;
@@ -34,7 +34,7 @@ type CreateRefermentState = {
   isValidCandidateEmail: boolean;
   isCandidateEmailFocused: boolean;
 
-  candidateContactNumber: PhoneNumber | '+(1)';
+  candidateContactNumber: PhoneNumber | string;
   isValidCandidateContactNumber: boolean;
   isCandidateContactNumberFocused: boolean;
 
@@ -181,7 +181,7 @@ type CreateRefermentDispatch =
         | 'setIsAdditionalInformationFocused';
       payload: boolean;
     }
-  | { type: 'setCandidateContactNumber'; payload: PhoneNumber | '+(1)' }
+  | { type: 'setCandidateContactNumber'; payload: PhoneNumber | string }
   | { type: 'setPositionReferredFor'; payload: JobPosition }
   | { type: 'setPrivacyConsent'; payload: boolean }
   | { type: 'setCurrentStepperPosition'; payload: number }

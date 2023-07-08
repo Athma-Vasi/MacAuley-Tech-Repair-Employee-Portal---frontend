@@ -8,7 +8,7 @@ import type {
 import { RegisterAction, RegisterDispatch } from '../types';
 
 type RegisterStepAddressProps = {
-  contactNumber: PhoneNumber | '+(1)';
+  contactNumber: PhoneNumber | string;
   isValidContactNumber: boolean;
   isContactNumberFocused: boolean;
 

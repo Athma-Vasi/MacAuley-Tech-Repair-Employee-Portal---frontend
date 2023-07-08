@@ -1,7 +1,7 @@
 import type { Country, PostalCode, Province, StatesUS } from '../../types';
 
 type AddressChangeState = {
-  contactNumber: PhoneNumber | '+(1)';
+  contactNumber: PhoneNumber | string;
   isValidContactNumber: boolean;
   isContactNumberFocused: boolean;
 

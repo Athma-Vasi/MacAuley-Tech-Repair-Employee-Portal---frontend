@@ -35,7 +35,7 @@ type CreatePrinterIssueState = {
   isValidTitle: boolean;
   isTitleFocused: boolean;
 
-  contactNumber: PhoneNumber | '+(1)';
+  contactNumber: PhoneNumber | string;
   isValidContactNumber: boolean;
   isContactNumberFocused: boolean;
 
@@ -213,7 +213,7 @@ type CreatePrinterIssueDispatch =
     }
   | {
       type: 'setContactNumber';
-      payload: PhoneNumber | '+(1)';
+      payload: PhoneNumber | string;
     };
 
 type CreatePrinterIssueReducer = (

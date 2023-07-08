@@ -47,7 +47,7 @@ type RegisterState = {
   isValidProfilePictureUrl: boolean;
   isProfilePictureUrlFocused: boolean;
 
-  contactNumber: PhoneNumber | '+(1)';
+  contactNumber: PhoneNumber | string;
   isValidContactNumber: boolean;
   isContactNumberFocused: boolean;
 
@@ -73,7 +73,7 @@ type RegisterState = {
     isValidFullName: boolean;
     isFullNameFocused: boolean;
 
-    phoneNumber: PhoneNumber | '+(1)';
+    phoneNumber: PhoneNumber | string;
     isValidPhoneNumber: boolean;
     isPhoneNumberFocused: boolean;
   };

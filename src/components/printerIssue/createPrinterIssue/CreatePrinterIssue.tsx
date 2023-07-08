@@ -132,21 +132,21 @@ function CreatePrinterIssue() {
         case 4: {
           createPrinterIssueDispatch({
             type: createPrinterIssueAction.setContactNumber,
-            payload: `${contactNumber}(` as PhoneNumber | '+(1)',
+            payload: `${contactNumber}(` as PhoneNumber | string,
           });
           break;
         }
         case 8: {
           createPrinterIssueDispatch({
             type: createPrinterIssueAction.setContactNumber,
-            payload: `${contactNumber}) ` as PhoneNumber | '+(1)',
+            payload: `${contactNumber}) ` as PhoneNumber | string,
           });
           break;
         }
         case 13: {
           createPrinterIssueDispatch({
             type: createPrinterIssueAction.setContactNumber,
-            payload: `${contactNumber}-` as PhoneNumber | '+(1)',
+            payload: `${contactNumber}-` as PhoneNumber | string,
           });
           break;
         }
@@ -508,12 +508,12 @@ function CreatePrinterIssue() {
             if (contactNumber.length === 14) {
               createPrinterIssueDispatch({
                 type: createPrinterIssueAction.setContactNumber,
-                payload: contactNumber.slice(0, -1) as PhoneNumber | '+(1)',
+                payload: contactNumber.slice(0, -1) as PhoneNumber | string,
               });
             } else if (contactNumber.length === 9) {
               createPrinterIssueDispatch({
                 type: createPrinterIssueAction.setContactNumber,
-                payload: contactNumber.slice(0, -1) as PhoneNumber | '+(1)',
+                payload: contactNumber.slice(0, -1) as PhoneNumber | string,
               });
             }
           }
@@ -550,7 +550,7 @@ function CreatePrinterIssue() {
         onChange={(event) => {
           createPrinterIssueDispatch({
             type: createPrinterIssueAction.setContactNumber,
-            payload: event.currentTarget.value as PhoneNumber | '+(1)',
+            payload: event.currentTarget.value as PhoneNumber | string,
           });
         }}
         onFocus={() => {
