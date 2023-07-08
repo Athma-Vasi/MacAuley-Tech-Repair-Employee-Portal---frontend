@@ -1,6 +1,13 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Checkbox, Flex, Textarea, TextInput } from '@mantine/core';
+import {
+  Button,
+  Checkbox,
+  Flex,
+  Text,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 
 import {
@@ -92,7 +99,10 @@ function CreateEndorsement() {
   // update stepsInError for stepper wrapper
   useEffect(() => {
     const isStepInError =
-      !isValidTitle || !isValidUserToBeEndorsed || !isValidSummaryOfEndorsement;
+      !isValidTitle ||
+      !isValidUserToBeEndorsed ||
+      !isValidSummaryOfEndorsement ||
+      attributeEndorsed?.length === 0;
 
     createEndorsementDispatch({
       type: createEndorsementAction.setStepsInError,
@@ -101,7 +111,12 @@ function CreateEndorsement() {
         step: 1,
       },
     });
-  }, [isValidTitle, isValidUserToBeEndorsed, isValidSummaryOfEndorsement]);
+  }, [
+    isValidTitle,
+    isValidUserToBeEndorsed,
+    isValidSummaryOfEndorsement,
+    attributeEndorsed,
+  ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
@@ -147,11 +162,6 @@ function CreateEndorsement() {
       maxLength: 2000,
     }),
   });
-
-  // DELETE LATER
-  useEffect(() => {
-    console.log({ attributeEndorsed });
-  }, [attributeEndorsed]);
 
   const displayCreateEndorsementForm =
     currentStepperPosition === 0 ? (
@@ -213,7 +223,7 @@ function CreateEndorsement() {
           w="100%"
           color="dark"
           label="Employee to be endorsed"
-          placeholder="Enter full or preferred name"
+          placeholder="Enter first, preferred or full name"
           autoComplete="off"
           aria-required
           aria-describedby={
@@ -314,6 +324,8 @@ function CreateEndorsement() {
 
         {/* employee attributes checkbox input */}
         <Checkbox.Group
+          label="Employee attributes"
+          description="Select all attributes that apply"
           value={attributeEndorsed}
           onChange={(event) => {
             createEndorsementDispatch({
@@ -323,10 +335,11 @@ function CreateEndorsement() {
           }}
         >
           <Flex
+            pt="lg"
             direction="column"
             align="flex-start"
             justify="center"
-            rowGap="lg"
+            rowGap="md"
             w="100%"
           >
             {EMPLOYEE_ATTRIBUTES_DATA.map(({ value, label }) => (
@@ -334,7 +347,7 @@ function CreateEndorsement() {
                 key={label}
                 value={value}
                 label={label}
-                color="dark"
+                // color="dark"
                 size="sm"
               />
             ))}
