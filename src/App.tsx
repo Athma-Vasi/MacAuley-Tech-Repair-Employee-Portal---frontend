@@ -5,6 +5,7 @@ import { AddressChange } from './components/addressChange';
 import { CreateAnnouncement } from './components/announcements/createAnnouncement';
 import { CreateBenefit } from './components/benefits/createBenefit';
 import { Dashboard } from './components/dashboard';
+import { CreateEndorsement } from './components/endorsements/createEndorsement';
 import { LeaveRequest } from './components/leaveRequest';
 import { Login } from './components/login';
 import { NotesList } from './components/notesList';
@@ -38,6 +39,7 @@ function App() {
           <Route path="address-change" element={<AddressChange />} />
           <Route path="leave-request" element={<LeaveRequest />} />
           <Route path="request-resource" element={<RequestResource />} />
+          <Route path="create-endorsement" element={<CreateEndorsement />} />
         </Route>
 
         {/* these are protected routes */}

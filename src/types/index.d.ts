@@ -5,6 +5,12 @@
 /**
  * Imports
  */
+import type {
+  Action,
+  ActionsCompany,
+  ActionsGeneral,
+  ActionsOutreach,
+} from './actions.types';
 import type { Note } from './notes.types';
 import type {
   CanadianPostalCode,
@@ -26,6 +32,10 @@ import type {
 type BreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 export type {
+  Action,
+  ActionsCompany,
+  ActionsGeneral,
+  ActionsOutreach,
   CanadianPostalCode,
   Country,
   Department,
@@ -42,4 +52,4 @@ export type {
   USPostalCode,
 };
 
-export type { BreakPoints,Note };
+export type { BreakPoints, Note };
