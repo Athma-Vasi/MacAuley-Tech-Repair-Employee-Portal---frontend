@@ -106,12 +106,6 @@ function CreatePrinterIssue() {
     loadingMessage,
   } = createPrinterIssueState;
 
-  const titleInputRef = useRef<HTMLInputElement>(null);
-  // sets focus on title input on load
-  useEffect(() => {
-    titleInputRef.current?.focus();
-  }, []);
-
   // validate title input on every change
   useEffect(() => {
     const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(title);
@@ -774,6 +768,8 @@ function CreatePrinterIssue() {
             payload: false,
           });
         }}
+        minLength={1}
+        maxLength={50}
         withAsterisk
         required
       />
@@ -823,6 +819,8 @@ function CreatePrinterIssue() {
             payload: false,
           });
         }}
+        minLength={1}
+        maxLength={50}
         withAsterisk
         required
       />
@@ -872,6 +870,8 @@ function CreatePrinterIssue() {
             payload: false,
           });
         }}
+        minLength={1}
+        maxLength={50}
         withAsterisk
         required
       />
