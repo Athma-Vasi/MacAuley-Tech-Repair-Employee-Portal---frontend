@@ -1,7 +1,6 @@
-import type { Department } from '../../types';
+import type { Department, Urgency } from '../../types';
 
 type RequestResourceKind = 'Hardware' | 'Software' | 'Access' | 'Other';
-type Urgency = 'low' | 'medium' | 'high';
 
 type RequestResourceSchema = {
   userId: string;

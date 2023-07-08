@@ -30,6 +30,7 @@ import type {
 } from './user.types';
 
 type BreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+type Urgency = 'low' | 'medium' | 'high';
 
 export type {
   Action,
@@ -45,6 +46,7 @@ export type {
   PreferredPronouns,
   Province,
   StatesUS,
+  Urgency,
   User,
   UserDocument,
   UserRoles,

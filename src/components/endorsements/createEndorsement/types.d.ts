@@ -98,7 +98,14 @@ type StepsInErrorPayload = {
 
 type CreateEndorsementDispatch =
   | {
-      type: 'setTitle' | 'setUserToBeEndorsed' | 'setSummaryOfEndorsement';
+      type:
+        | 'setTitle'
+        | 'setUserToBeEndorsed'
+        | 'setSummaryOfEndorsement'
+        | 'setErrorMessage'
+        | 'setSubmitMessage'
+        | 'setSuccessMessage'
+        | 'setLoadingMessage';
       payload: string;
     }
   | {
@@ -109,14 +116,14 @@ type CreateEndorsementDispatch =
       type:
         | 'setIsValidTitle'
         | 'setIsValidUserToBeEndorsed'
-        | 'setIsValidSummaryOfEndorsement';
-      payload: boolean;
-    }
-  | {
-      type:
+        | 'setIsValidSummaryOfEndorsement'
         | 'setIsTitleFocused'
         | 'setIsUserToBeEndorsedFocused'
-        | 'setIsSummaryOfEndorsementFocused';
+        | 'setIsSummaryOfEndorsementFocused'
+        | 'setIsError'
+        | 'setIsSubmitting'
+        | 'setIsSuccessful'
+        | 'setIsLoading';
       payload: boolean;
     }
   | {
@@ -126,22 +133,6 @@ type CreateEndorsementDispatch =
   | {
       type: 'setStepsInError';
       payload: StepsInErrorPayload;
-    }
-  | {
-      type:
-        | 'setIsError'
-        | 'setIsSubmitting'
-        | 'setIsSuccessful'
-        | 'setIsLoading';
-      payload: boolean;
-    }
-  | {
-      type:
-        | 'setErrorMessage'
-        | 'setSubmitMessage'
-        | 'setSuccessMessage'
-        | 'setLoadingMessage';
-      payload: string;
     };
 
 export type {

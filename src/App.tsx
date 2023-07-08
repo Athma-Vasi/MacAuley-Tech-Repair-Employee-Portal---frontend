@@ -11,6 +11,7 @@ import { Login } from './components/login';
 import { NotesList } from './components/notesList';
 import { NotFound } from './components/notFound';
 import { PortalLayout } from './components/portalLayout';
+import { CreatePrinterIssue } from './components/printerIssue/createPrinterIssue';
 import { PublicLayout } from './components/publicLayout';
 import { Register } from './components/register';
 import { RequestResource } from './components/requestResource';
@@ -36,10 +37,11 @@ function App() {
           {/* DEV PATHS - DELETE LATER*/}
           <Route path="create-announcement" element={<CreateAnnouncement />} />
           <Route path="create-benefit" element={<CreateBenefit />} />
-          <Route path="address-change" element={<AddressChange />} />
-          <Route path="leave-request" element={<LeaveRequest />} />
-          <Route path="request-resource" element={<RequestResource />} />
+          <Route path="create-address-change" element={<AddressChange />} />
+          <Route path="create-leave-request" element={<LeaveRequest />} />
+          <Route path="create-request-resource" element={<RequestResource />} />
           <Route path="create-endorsement" element={<CreateEndorsement />} />
+          <Route path="create-printer-issue" element={<CreatePrinterIssue />} />
         </Route>
 
         {/* these are protected routes */}
