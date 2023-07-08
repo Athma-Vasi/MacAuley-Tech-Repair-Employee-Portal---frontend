@@ -10,6 +10,16 @@ import {
   PRINTER_SERIAL_NUMBER_REGEX,
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
+import { returnAccessibleTextElements } from '../../../jsxCreators';
+import {
+  returnDateValidationText,
+  returnEmailRegexValidationText,
+  returnGrammarValidationText,
+  returnPhoneNumberValidationText,
+  returnPrinterMakeModelValidationText,
+  returnPrinterSerialNumberValidationText,
+  returnTimeRailwayValidationText,
+} from '../../../utils';
 import {
   createPrinterIssueAction,
   createPrinterIssueReducer,
@@ -275,6 +285,136 @@ function CreatePrinterIssue() {
     isValidPrinterModel,
     isValidPrinterSerialNumber,
   ]);
+
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [titleInputErrorText, titleInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'title',
+      inputText: title,
+      isInputTextFocused: isTitleFocused,
+      isValidInputText: isValidTitle,
+      regexValidationText: returnGrammarValidationText({
+        content: title,
+        contentKind: 'title',
+        minLength: 2,
+        maxLength: 75,
+      }),
+    });
+
+  const [contactNumberInputErrorText, contactNumberInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'contact number',
+      inputText: contactNumber,
+      isInputTextFocused: isContactNumberFocused,
+      isValidInputText: isValidContactNumber,
+      regexValidationText: returnPhoneNumberValidationText(contactNumber),
+    });
+
+  const [contactEmailInputErrorText, contactEmailInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'contact email',
+      inputText: contactEmail,
+      isInputTextFocused: isContactEmailFocused,
+      isValidInputText: isValidContactEmail,
+      regexValidationText: returnEmailRegexValidationText(contactEmail),
+    });
+
+  const [dateOfOccurrenceInputErrorText, dateOfOccurrenceInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'date of occurrence',
+      inputText: dateOfOccurrence,
+      isInputTextFocused: isDateOfOccurrenceFocused,
+      isValidInputText: isValidDateOfOccurrence,
+      regexValidationText: returnDateValidationText(dateOfOccurrence),
+    });
+
+  const [timeOfOccurrenceInputErrorText, timeOfOccurrenceInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'time of occurrence',
+      inputText: timeOfOccurrence,
+      isInputTextFocused: isTimeOfOccurrenceFocused,
+      isValidInputText: isValidTimeOfOccurrence,
+      regexValidationText: returnTimeRailwayValidationText({
+        content: timeOfOccurrence,
+        contentKind: 'time of occurrence',
+        minLength: 4,
+        maxLength: 5,
+      }),
+    });
+
+  const [printerMakeInputErrorText, printerMakeInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'printer make',
+      inputText: printerMake,
+      isInputTextFocused: isPrinterMakeFocused,
+      isValidInputText: isValidPrinterMake,
+      regexValidationText: returnPrinterMakeModelValidationText({
+        content: printerMake,
+        contentKind: 'printer make',
+        minLength: 1,
+        maxLength: 50,
+      }),
+    });
+
+  const [printerModelInputErrorText, printerModelInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'printer model',
+      inputText: printerModel,
+      isInputTextFocused: isPrinterModelFocused,
+      isValidInputText: isValidPrinterModel,
+      regexValidationText: returnPrinterMakeModelValidationText({
+        content: printerModel,
+        contentKind: 'printer model',
+        minLength: 1,
+        maxLength: 50,
+      }),
+    });
+
+  const [printerSerialNumberInputErrorText, printerSerialNumberInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'printer serial number',
+      inputText: printerSerialNumber,
+      isInputTextFocused: isPrinterSerialNumberFocused,
+      isValidInputText: isValidPrinterSerialNumber,
+      regexValidationText: returnPrinterSerialNumberValidationText({
+        content: printerSerialNumber,
+        contentKind: 'printer serial number',
+        minLength: 1,
+        maxLength: 50,
+      }),
+    });
+
+  const [
+    printerIssueDescriptionInputErrorText,
+    printerIssueDescriptionInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'printer issue description',
+    inputText: printerIssueDescription,
+    isInputTextFocused: isPrinterIssueDescriptionFocused,
+    isValidInputText: isValidPrinterIssueDescription,
+    regexValidationText: returnGrammarValidationText({
+      content: printerIssueDescription,
+      contentKind: 'printer issue description',
+      minLength: 2,
+      maxLength: 2000,
+    }),
+  });
+
+  const [
+    additionalInformationInputErrorText,
+    additionalInformationInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'additional information',
+    inputText: additionalInformation,
+    isInputTextFocused: isAdditionalInformationFocused,
+    isValidInputText: isValidAdditionalInformation,
+    regexValidationText: returnGrammarValidationText({
+      content: additionalInformation,
+      contentKind: 'additional information',
+      minLength: 2,
+      maxLength: 2000,
+    }),
+  });
 
   return (
     <>

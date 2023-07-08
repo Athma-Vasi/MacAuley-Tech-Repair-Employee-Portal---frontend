@@ -11,10 +11,13 @@ type ReturnAccessibleTextElemProps = {
 };
 
 /**
- *
- * - Returns a tuple [error, valid] of accessible text elements for screen readers to read out based on the state of the input
- * - For example, if the input element is focused and the input text is valid, then the screen reader will read out '${inputElementKind} is valid'.
- * - If the input element is focused and the input text is invalid, then the screen reader will read out the regex validation text.
+ * @returns a tuple [error, valid] of accessible text elements for screen readers to read out based on the state of the controlled input
+ * - For example, if the input element is focused and the input text is valid/invalid, then the screen reader will read out '${inputElementKind} is valid'  or '${regexValidationText}'
+ * @param inputElementKind - the semantic label of input element (e.g. 'username', 'password', 'email')
+ * @param inputText - the text in the input element
+ * @param isValidInputText - whether the input text is valid
+ * @param isInputTextFocused - whether the input element is focused - only show the accessible text elements if the input element is focused
+ * @param regexValidationText - the text to show if the input text is invalid
  */
 function returnAccessibleTextElements({
   inputElementKind,
