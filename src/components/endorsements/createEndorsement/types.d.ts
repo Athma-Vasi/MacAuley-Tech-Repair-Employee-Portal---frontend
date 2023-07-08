@@ -92,12 +92,12 @@ type StepsInErrorPayload = {
 
 type CreateEndorsementDispatch =
   | {
-      type:
-        | 'setTitle'
-        | 'setUserToBeEndorsed'
-        | 'setSummaryOfEndorsement'
-        | 'setAttributeEndorsed';
+      type: 'setTitle' | 'setUserToBeEndorsed' | 'setSummaryOfEndorsement';
       payload: string;
+    }
+  | {
+      type: 'setAttributeEndorsed';
+      payload: EmployeeAttributes;
     }
   | {
       type:
