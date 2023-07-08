@@ -21,7 +21,7 @@ import { EMAIL_REGEX, USERNAME_REGEX } from '../../../constants/regex';
 import { authAction } from '../../../context/authProvider';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
-  returnEmailRegexValidationText,
+  returnEmailValidationText,
   returnUsernameRegexValidationText,
 } from '../../../utils';
 import { CustomError } from '../../customError';
@@ -233,8 +233,7 @@ function EditUser({ user, closeModalCallback }: EditUserProps) {
       className={isEmailFocused && email && !isValidEmail ? '' : 'offscreen'}
       color="red"
     >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
-      {returnEmailRegexValidationText(email)}
+      <FontAwesomeIcon icon={faInfoCircle} /> {returnEmailValidationText(email)}
     </Text>
   );
 

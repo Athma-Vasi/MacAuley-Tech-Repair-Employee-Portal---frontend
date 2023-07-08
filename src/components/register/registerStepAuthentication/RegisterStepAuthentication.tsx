@@ -11,7 +11,7 @@ import {
 import { screenReaderPasswordSpecialCharacters } from '../../../domElements';
 import { returnAccessibleTextElements } from '../../../jsxCreators';
 import {
-  returnEmailRegexValidationText,
+  returnEmailValidationText,
   returnUsernameRegexValidationText,
 } from '../../../utils';
 import { returnPasswordRegexValidationText } from '../utils';
@@ -100,7 +100,7 @@ function RegisterStepAuthentication({
       inputText: email,
       isValidInputText: isValidEmail,
       isInputTextFocused: isEmailFocused,
-      regexValidationText: returnEmailRegexValidationText(email),
+      regexValidationText: returnEmailValidationText(email),
     });
 
   const [usernameInputErrorText, usernameInputValidText] =

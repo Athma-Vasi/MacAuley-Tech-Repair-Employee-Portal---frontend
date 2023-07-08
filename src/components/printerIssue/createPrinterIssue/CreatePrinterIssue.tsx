@@ -27,7 +27,7 @@ import { PhoneNumber, Urgency } from '../../../types';
 import {
   returnDateNearPastValidationText,
   returnDateValidationText,
-  returnEmailRegexValidationText,
+  returnEmailValidationText,
   returnGrammarValidationText,
   returnPhoneNumberValidationText,
   returnPrinterMakeModelValidationText,
@@ -332,7 +332,7 @@ function CreatePrinterIssue() {
       inputText: contactEmail,
       isInputTextFocused: isContactEmailFocused,
       isValidInputText: isValidContactEmail,
-      regexValidationText: returnEmailRegexValidationText(contactEmail),
+      regexValidationText: returnEmailValidationText(contactEmail),
     });
 
   const [dateOfOccurrenceInputErrorText, dateOfOccurrenceInputValidText] =

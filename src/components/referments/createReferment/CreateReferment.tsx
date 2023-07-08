@@ -8,6 +8,13 @@ import {
   PHONE_NUMBER_REGEX,
   URL_REGEX,
 } from '../../../constants/regex';
+import { returnAccessibleTextElements } from '../../../jsxCreators';
+import {
+  returnEmailValidationText,
+  returnGrammarValidationText,
+  returnPhoneNumberValidationText,
+  returnUrlValidationText,
+} from '../../../utils';
 import {
   createRefermentAction,
   createRefermentReducer,
@@ -210,6 +217,130 @@ function CreateReferment() {
     isValidReferralReason,
     isValidAdditionalInformation,
   ]);
+
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [candidateFullNameInputErrorText, candidateFullNameInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'candidate full name',
+      inputText: candidateFullName,
+      isInputTextFocused: isCandidateFullNameFocused,
+      isValidInputText: isValidCandidateFullName,
+      regexValidationText: returnGrammarValidationText({
+        content: candidateFullName,
+        contentKind: 'candidate full name',
+        minLength: 2,
+        maxLength: 100,
+      }),
+    });
+
+  const [candidateEmailInputErrorText, candidateEmailInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'candidate email',
+      inputText: candidateEmail,
+      isInputTextFocused: isCandidateEmailFocused,
+      isValidInputText: isValidCandidateEmail,
+      regexValidationText: returnEmailValidationText(candidateEmail),
+    });
+
+  const [
+    candidateContactNumberInputErrorText,
+    candidateContactNumberInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'candidate contact number',
+    inputText: candidateContactNumber,
+    isInputTextFocused: isCandidateContactNumberFocused,
+    isValidInputText: isValidCandidateContactNumber,
+    regexValidationText: returnPhoneNumberValidationText(
+      candidateContactNumber
+    ),
+  });
+
+  const [
+    candidateCurrentJobTitleInputErrorText,
+    candidateCurrentJobTitleInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'candidate current job title',
+    inputText: candidateCurrentJobTitle,
+    isInputTextFocused: isCandidateCurrentJobTitleFocused,
+    isValidInputText: isValidCandidateCurrentJobTitle,
+    regexValidationText: returnGrammarValidationText({
+      content: candidateCurrentJobTitle,
+      contentKind: 'candidate current job title',
+      minLength: 2,
+      maxLength: 75,
+    }),
+  });
+
+  const [
+    candidateCurrentCompanyInputErrorText,
+    candidateCurrentCompanyInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'candidate current company',
+    inputText: candidateCurrentCompany,
+    isInputTextFocused: isCandidateCurrentCompanyFocused,
+    isValidInputText: isValidCandidateCurrentCompany,
+    regexValidationText: returnGrammarValidationText({
+      content: candidateCurrentCompany,
+      contentKind: 'candidate current company',
+      minLength: 2,
+      maxLength: 75,
+    }),
+  });
+
+  const [candidateProfileUrlInputErrorText, candidateProfileUrlInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'candidate profile url',
+      inputText: candidateProfileUrl,
+      isInputTextFocused: isCandidateProfileUrlFocused,
+      isValidInputText: isValidCandidateProfileUrl,
+      regexValidationText: returnUrlValidationText(candidateProfileUrl),
+    });
+
+  const [
+    positionJobDescriptionInputErrorText,
+    positionJobDescriptionInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'position job description',
+    inputText: positionJobDescription,
+    isInputTextFocused: isPositionJobDescriptionFocused,
+    isValidInputText: isValidPositionJobDescription,
+    regexValidationText: returnGrammarValidationText({
+      content: positionJobDescription,
+      contentKind: 'position job description',
+      minLength: 2,
+      maxLength: 2000,
+    }),
+  });
+
+  const [referralReasonInputErrorText, referralReasonInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'referral reason',
+      inputText: referralReason,
+      isInputTextFocused: isReferralReasonFocused,
+      isValidInputText: isValidReferralReason,
+      regexValidationText: returnGrammarValidationText({
+        content: referralReason,
+        contentKind: 'referral reason',
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
+
+  const [
+    additionalInformationInputErrorText,
+    additionalInformationInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'additional information',
+    inputText: additionalInformation,
+    isInputTextFocused: isAdditionalInformationFocused,
+    isValidInputText: isValidAdditionalInformation,
+    regexValidationText: returnGrammarValidationText({
+      content: additionalInformation,
+      contentKind: 'additional information',
+      minLength: 2,
+      maxLength: 2000,
+    }),
+  });
 
   //
   //

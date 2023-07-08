@@ -1,6 +1,6 @@
 import type { Country, PostalCode } from '../types';
 
-function returnEmailRegexValidationText(email: string): string {
+function returnEmailValidationText(email: string): string {
   const usernamePartRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
   const domainPartRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
   const subdomainPartRegex =
@@ -680,7 +680,7 @@ export {
   returnDateNearFutureValidationText,
   returnDateNearPastValidationText,
   returnDateValidationText,
-  returnEmailRegexValidationText,
+  returnEmailValidationText,
   returnGrammarValidationText,
   returnMoneyValidationText,
   returnNameValidationText,
