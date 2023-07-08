@@ -499,6 +499,111 @@ function returnNameValidationText({
     : '';
 }
 
+function returnPrinterMakeModelValidationText({
+  content,
+  contentKind,
+  maxLength,
+  minLength,
+}: RegexValidationProps): string {
+  // /^[a-zA-Z0-9\s.,'()-]{1,50}$/i
+  const printerMakeModelLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const printerMakeModelCharacterRegex = /^[a-zA-Z0-9\s.,'()-]+$/;
+
+  const printerMakeModelRegexTupleArr: [boolean, string][] = [
+    [
+      printerMakeModelLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      printerMakeModelCharacterRegex.test(content),
+      'Must only contain letters, numbers, spaces, periods, commas, apostrophes, hyphens, and parentheses.',
+    ],
+  ];
+
+  const validationText = printerMakeModelRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnPrinterSerialNumberValidationText({
+  content,
+  contentKind,
+  maxLength,
+  minLength,
+}: RegexValidationProps): string {
+  // /^[a-zA-Z0-9]{1,50}$/i
+  const printerSerialNumberLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const printerSerialNumberCharacterRegex = /^[a-zA-Z0-9]+$/;
+
+  const printerSerialNumberRegexTupleArr: [boolean, string][] = [
+    [
+      printerSerialNumberLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      printerSerialNumberCharacterRegex.test(content),
+      'Must only contain letters and numbers.',
+    ],
+  ];
+
+  const validationText = printerSerialNumberRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnTimeRailwayValidationText({
+  content,
+  contentKind,
+  maxLength,
+  minLength,
+}: RegexValidationProps): string {
+  // /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+  const timeRailwayLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const timeRailwayCharacterRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
+  const timeRailwayRegexTupleArr: [boolean, string][] = [
+    [
+      timeRailwayLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      timeRailwayCharacterRegex.test(content),
+      'Must be a valid time in 24-hour format.',
+    ],
+  ];
+
+  const validationText = timeRailwayRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
 export {
   formatDate,
   returnAddressValidationText,
@@ -513,6 +618,9 @@ export {
   returnNoteTitleValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
+  returnPrinterMakeModelValidationText,
+  returnPrinterSerialNumberValidationText,
+  returnTimeRailwayValidationText,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
 };

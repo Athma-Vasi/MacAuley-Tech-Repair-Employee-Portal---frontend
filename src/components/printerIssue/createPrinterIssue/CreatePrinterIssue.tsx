@@ -234,9 +234,8 @@ function CreatePrinterIssue() {
       !isValidTitle ||
       !isValidContactNumber ||
       !isValidContactEmail ||
-      !isValidPrinterMake ||
-      !isValidPrinterModel ||
-      !isValidPrinterSerialNumber;
+      !isValidDateOfOccurrence ||
+      !isValidTimeOfOccurrence;
 
     createPrinterIssueDispatch({
       type: createPrinterIssueAction.setStepsInError,
@@ -249,15 +248,18 @@ function CreatePrinterIssue() {
     isValidTitle,
     isValidContactNumber,
     isValidContactEmail,
-    isValidPrinterMake,
-    isValidPrinterModel,
-    isValidPrinterSerialNumber,
+    isValidDateOfOccurrence,
+    isValidTimeOfOccurrence,
   ]);
 
   // update for stepper wrapper state
   useEffect(() => {
     const isStepInError =
-      !isValidPrinterIssueDescription || !isValidAdditionalInformation;
+      !isValidPrinterMake ||
+      !isValidPrinterModel ||
+      !isValidPrinterSerialNumber ||
+      !isValidPrinterIssueDescription ||
+      !isValidAdditionalInformation;
 
     createPrinterIssueDispatch({
       type: createPrinterIssueAction.setStepsInError,
@@ -266,7 +268,13 @@ function CreatePrinterIssue() {
         step: 2,
       },
     });
-  }, [isValidPrinterIssueDescription, isValidAdditionalInformation]);
+  }, [
+    isValidPrinterIssueDescription,
+    isValidAdditionalInformation,
+    isValidPrinterMake,
+    isValidPrinterModel,
+    isValidPrinterSerialNumber,
+  ]);
 
   return (
     <>
