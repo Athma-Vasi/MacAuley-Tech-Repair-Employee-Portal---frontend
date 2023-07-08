@@ -211,6 +211,7 @@ function CreateEndorsement() {
               payload: false,
             });
           }}
+          ref={titleInputRef}
           withAsterisk
           required
           minLength={2}

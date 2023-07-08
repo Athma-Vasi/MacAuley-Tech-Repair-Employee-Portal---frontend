@@ -227,6 +227,7 @@ function LeaveRequest() {
             payload: false,
           });
         }}
+        ref={startDateInputRef}
         maxLength={10}
         withAsterisk
         required

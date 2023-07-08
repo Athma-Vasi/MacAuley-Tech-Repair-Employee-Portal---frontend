@@ -78,10 +78,10 @@ function AddressChange() {
     loadingMessage,
   } = addressChangeState;
 
-  // sets focus on address line input on page load
-  const addressLineRef = useRef<HTMLInputElement>(null);
+  // sets focus on contact number input on page load
+  const contactNumberRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
-    addressLineRef.current?.focus();
+    contactNumberRef.current?.focus();
   }, []);
 
   // used to validate address line on every change
@@ -196,7 +196,7 @@ function AddressChange() {
     });
   }, [postalCode, country]);
 
-  // update the corresponding stepsInError state if any of the inputs are in error
+  // update for stepper wrapper state
   useEffect(() => {
     const isStepInError =
       !isValidContactNumber ||
@@ -518,6 +518,9 @@ function AddressChange() {
               payload: false,
             });
           }}
+          ref={contactNumberRef}
+          withAsterisk
+          required
           maxLength={18}
         />
         {/* country */}

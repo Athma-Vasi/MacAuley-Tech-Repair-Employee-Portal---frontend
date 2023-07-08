@@ -186,6 +186,33 @@ const GRAMMAR_TEXTAREA_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
  */
 const GRAMMAR_TEXT_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
 
+/**
+ * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
+ * - [A-Za-z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
+ * - {1,50} ensures that the text is between 1 and 50 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const PRINTER_MAKE_MODEL_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
+
+/**
+ * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
+ * - [A-Za-z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
+ * - {1,50} ensures that the text is between 1 and 50 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const PRINTER_SERIAL_NUMBER_REGEX = /^[a-zA-Z0-9]{1,50}$/i;
+
+/**
+ * - /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+ * ([0-1]?[0-9]|2[0-3]) matches either 0 followed by a digit between 0 and 9, or 1 followed by a digit between 0 and 9, or 2 followed by a digit between 0 and 3.
+ * : matches a colon.
+ * [0-5][0-9] matches a digit between 0 and 5 followed by a digit between 0 and 9.
+ * ^ and $ ensure that the entire string matches the regex.
+ */
+const TIME_RAILWAY_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+
 export {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -203,6 +230,9 @@ export {
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
+  PRINTER_MAKE_MODEL_REGEX,
+  PRINTER_SERIAL_NUMBER_REGEX,
+  TIME_RAILWAY_REGEX,
   URL_REGEX,
   USERNAME_REGEX,
 };

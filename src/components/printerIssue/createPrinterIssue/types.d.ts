@@ -8,6 +8,8 @@ type PrinterIssueSchema = {
   title: string;
   contactNumber: string;
   contactEmail: string;
+  dateOfOccurrence: string;
+  timeOfOccurrence: string;
   printerMake: string;
   printerModel: string;
   printerSerialNumber: string;
@@ -35,6 +37,14 @@ type CreatePrinterIssueState = {
   contactEmail: string;
   isValidContactEmail: boolean;
   isContactEmailFocused: boolean;
+
+  dateOfOccurrence: string;
+  isValidDateOfOccurrence: boolean;
+  isDateOfOccurrenceFocused: boolean;
+
+  timeOfOccurrence: string;
+  isValidTimeOfOccurrence: boolean;
+  isTimeOfOccurrenceFocused: boolean;
 
   printerMake: string;
   isValidPrinterMake: boolean;
@@ -83,6 +93,14 @@ type CreatePrinterIssueAction = {
   setContactEmail: 'setContactEmail';
   setIsValidContactEmail: 'setIsValidContactEmail';
   setIsContactEmailFocused: 'setIsContactEmailFocused';
+
+  setDateOfOccurrence: 'setDateOfOccurrence';
+  setIsValidDateOfOccurrence: 'setIsValidDateOfOccurrence';
+  setIsDateOfOccurrenceFocused: 'setIsDateOfOccurrenceFocused';
+
+  setTimeOfOccurrence: 'setTimeOfOccurrence';
+  setIsValidTimeOfOccurrence: 'setIsValidTimeOfOccurrence';
+  setIsTimeOfOccurrenceFocused: 'setIsTimeOfOccurrenceFocused';
 
   setPrinterMake: 'setPrinterMake';
   setIsValidPrinterMake: 'setIsValidPrinterMake';
@@ -138,7 +156,10 @@ type CreatePrinterIssueDispatch =
         | 'setErrorMessage'
         | 'setSubmitMessage'
         | 'setSuccessMessage'
-        | 'setLoadingMessage';
+        | 'setLoadingMessage'
+        | 'setDateOfOccurrence'
+        | 'setTimeOfOccurrence';
+
       payload: string;
     }
   | {
@@ -154,7 +175,10 @@ type CreatePrinterIssueDispatch =
         | 'setIsError'
         | 'setIsSubmitting'
         | 'setIsSuccessful'
-        | 'setIsLoading';
+        | 'setIsLoading'
+        | 'setIsValidDateOfOccurrence'
+        | 'setIsValidTimeOfOccurrence';
+
       payload: boolean;
     }
   | {
@@ -166,7 +190,9 @@ type CreatePrinterIssueDispatch =
         | 'setIsPrinterModelFocused'
         | 'setIsPrinterSerialNumberFocused'
         | 'setIsPrinterIssueDescriptionFocused'
-        | 'setIsAdditionalInformationFocused';
+        | 'setIsAdditionalInformationFocused'
+        | 'setIsTimeOfOccurrenceFocused'
+        | 'setIsDateOfOccurrenceFocused';
       payload: boolean;
     }
   | {

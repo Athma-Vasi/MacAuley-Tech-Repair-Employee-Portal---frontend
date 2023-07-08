@@ -17,6 +17,14 @@ const initialCreatePrinterIssueState: CreatePrinterIssueState = {
   isValidContactEmail: false,
   isContactEmailFocused: false,
 
+  dateOfOccurrence: '',
+  isValidDateOfOccurrence: false,
+  isDateOfOccurrenceFocused: false,
+
+  timeOfOccurrence: '',
+  isValidTimeOfOccurrence: false,
+  isTimeOfOccurrenceFocused: false,
+
   printerMake: '',
   isValidPrinterMake: false,
   isPrinterMakeFocused: false,
@@ -64,6 +72,14 @@ const createPrinterIssueAction: CreatePrinterIssueAction = {
   setContactEmail: 'setContactEmail',
   setIsValidContactEmail: 'setIsValidContactEmail',
   setIsContactEmailFocused: 'setIsContactEmailFocused',
+
+  setDateOfOccurrence: 'setDateOfOccurrence',
+  setIsValidDateOfOccurrence: 'setIsValidDateOfOccurrence',
+  setIsDateOfOccurrenceFocused: 'setIsDateOfOccurrenceFocused',
+
+  setTimeOfOccurrence: 'setTimeOfOccurrence',
+  setIsValidTimeOfOccurrence: 'setIsValidTimeOfOccurrence',
+  setIsTimeOfOccurrenceFocused: 'setIsTimeOfOccurrenceFocused',
 
   setPrinterMake: 'setPrinterMake',
   setIsValidPrinterMake: 'setIsValidPrinterMake',
@@ -149,6 +165,36 @@ function createPrinterIssueReducer(
       return {
         ...state,
         isContactEmailFocused: action.payload,
+      };
+    case createPrinterIssueAction.setDateOfOccurrence:
+      return {
+        ...state,
+        dateOfOccurrence: action.payload,
+      };
+    case createPrinterIssueAction.setIsValidDateOfOccurrence:
+      return {
+        ...state,
+        isValidDateOfOccurrence: action.payload,
+      };
+    case createPrinterIssueAction.setIsDateOfOccurrenceFocused:
+      return {
+        ...state,
+        isDateOfOccurrenceFocused: action.payload,
+      };
+    case createPrinterIssueAction.setTimeOfOccurrence:
+      return {
+        ...state,
+        timeOfOccurrence: action.payload,
+      };
+    case createPrinterIssueAction.setIsValidTimeOfOccurrence:
+      return {
+        ...state,
+        isValidTimeOfOccurrence: action.payload,
+      };
+    case createPrinterIssueAction.setIsTimeOfOccurrenceFocused:
+      return {
+        ...state,
+        isTimeOfOccurrenceFocused: action.payload,
       };
     case createPrinterIssueAction.setPrinterMake:
       return {
