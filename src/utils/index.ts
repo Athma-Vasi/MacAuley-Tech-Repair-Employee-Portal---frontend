@@ -384,6 +384,75 @@ function returnDateNearFutureValidationText(date: string): string {
   return validationText ? `Invalid date. ${validationText}` : '';
 }
 
+function returnDateNearPastValidationText(date: string): string {
+  // /^(?:202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
+  const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
+  const monthRegex = /^(0[1-9]|1[0-2])$/;
+  const yearRegex = /^(?:202[0-3])$/;
+
+  const day = date.split('-')[2];
+  const month = date.split('-')[1];
+  const year = date.split('-')[0];
+
+  const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
+  const isMonthInFuture = month
+    ? parseInt(month) > new Date().getMonth() + 1
+    : false;
+  const isYearInFuture = year
+    ? parseInt(year) > new Date().getFullYear()
+    : false;
+
+  const isEnteredYearMonthDayInFuture = isYearInFuture
+    ? isMonthInFuture
+      ? isDayInFuture
+        ? true
+        : false
+      : false
+    : false;
+  const isEnteredYearMonthInFuture = isYearInFuture
+    ? isMonthInFuture
+      ? true
+      : false
+    : false;
+  const isEnteredDayInFuture = day
+    ? parseInt(day) > new Date().getDate()
+    : false;
+
+  const dateValidationTupleArr: [boolean, string][] = [
+    [
+      day ? dayRegex.test(day) : true,
+      'Must be a valid day. Cannot be greater than 31.',
+    ],
+    [
+      month ? monthRegex.test(month) : true,
+      'Must be a valid month. Cannot be greater than 12.',
+    ],
+    [
+      year ? yearRegex.test(year) : true,
+      'Must be a valid year between 2020 and 2023.',
+    ],
+    [
+      isEnteredYearMonthInFuture && !isEnteredDayInFuture ? false : true,
+      `Month of ${month} must be in the past.`,
+    ],
+    [
+      isEnteredDayInFuture && !isEnteredYearMonthInFuture ? false : true,
+      `Day of ${day} must be in the past.`,
+    ],
+    [
+      isEnteredYearMonthDayInFuture ? false : true,
+      `Date of ${date} must be in the past.`,
+    ],
+  ];
+
+  const validationText = dateValidationTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText ? `Invalid date. ${validationText}` : '';
+}
+
 /**
  * Performs money validation on a number and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
  * kind - semantic html input name
@@ -609,6 +678,7 @@ export {
   returnAddressValidationText,
   returnCityValidationText,
   returnDateNearFutureValidationText,
+  returnDateNearPastValidationText,
   returnDateValidationText,
   returnEmailRegexValidationText,
   returnGrammarValidationText,

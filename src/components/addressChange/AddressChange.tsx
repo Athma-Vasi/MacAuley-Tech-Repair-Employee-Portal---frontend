@@ -660,7 +660,8 @@ function AddressChange() {
       </Flex>
     ) : null;
 
-  const displayReview = currentStepperPosition === 1 ? <h2>Review</h2> : null;
+  const displayAddressChangeReview =
+    currentStepperPosition === 1 ? <h2>Review</h2> : null;
 
   const displayAddressChangeComponent = (
     <StepperWrapper
@@ -673,7 +674,7 @@ function AddressChange() {
     >
       <form onSubmit={handleAddressChangeFormSubmit}>
         {displayAddressChangeForm}
-        {displayReview}
+        {displayAddressChangeReview}
 
         {/* submit button */}
         <Button

@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Flex, NativeSelect, Textarea, TextInput } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 
-import { DEPARTMENTS } from '../../constants/data';
+import { DEPARTMENTS, URGENCY_DATA } from '../../constants/data';
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
@@ -16,7 +16,7 @@ import {
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../utils';
-import { REQUEST_RESOURCE_KIND_DATA, URGENCY_DATA } from './constants';
+import { REQUEST_RESOURCE_KIND_DATA } from './constants';
 import {
   initialRequestResourceState,
   requestResourceAction,

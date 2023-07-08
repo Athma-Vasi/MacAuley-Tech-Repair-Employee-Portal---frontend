@@ -1,6 +1,18 @@
+import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  Button,
+  Flex,
+  NativeSelect,
+  Textarea,
+  TextInput,
+  Tooltip,
+} from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
 
+import { URGENCY_DATA } from '../../../constants/data';
 import {
+  DATE_NEAR_PAST_REGEX,
   DATE_REGEX,
   EMAIL_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
@@ -11,7 +23,9 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import { returnAccessibleTextElements } from '../../../jsxCreators';
+import { PhoneNumber, Urgency } from '../../../types';
 import {
+  returnDateNearPastValidationText,
   returnDateValidationText,
   returnEmailRegexValidationText,
   returnGrammarValidationText,
@@ -20,6 +34,11 @@ import {
   returnPrinterSerialNumberValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
+import { StepperWrapper } from '../../stepperWrapper';
+import {
+  CREATE_PRINTER_ISSUE_DESCRIPTION_MAP,
+  CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION,
+} from './constants';
 import {
   createPrinterIssueAction,
   createPrinterIssueReducer,
@@ -113,21 +132,21 @@ function CreatePrinterIssue() {
         case 4: {
           createPrinterIssueDispatch({
             type: createPrinterIssueAction.setContactNumber,
-            payload: `${contactNumber}(`,
+            payload: `${contactNumber}(` as PhoneNumber | '+(1)',
           });
           break;
         }
         case 8: {
           createPrinterIssueDispatch({
             type: createPrinterIssueAction.setContactNumber,
-            payload: `${contactNumber}) `,
+            payload: `${contactNumber}) ` as PhoneNumber | '+(1)',
           });
           break;
         }
         case 13: {
           createPrinterIssueDispatch({
             type: createPrinterIssueAction.setContactNumber,
-            payload: `${contactNumber}-`,
+            payload: `${contactNumber}-` as PhoneNumber | '+(1)',
           });
           break;
         }
@@ -155,7 +174,9 @@ function CreatePrinterIssue() {
 
   // validate date of occurrence input on every change
   useEffect(() => {
-    const isValid = DATE_REGEX.test(dateOfOccurrence);
+    const isValid =
+      DATE_NEAR_PAST_REGEX.test(dateOfOccurrence) &&
+      new Date(dateOfOccurrence) <= new Date();
 
     createPrinterIssueDispatch({
       type: createPrinterIssueAction.setIsValidDateOfOccurrence,
@@ -167,20 +188,20 @@ function CreatePrinterIssue() {
   useEffect(() => {
     const isValid = TIME_RAILWAY_REGEX.test(timeOfOccurrence);
 
-    const timeLength = timeOfOccurrence.length;
-    if (isTimeOfOccurrenceFocused) {
-      switch (timeLength) {
-        case 2: {
-          createPrinterIssueDispatch({
-            type: createPrinterIssueAction.setTimeOfOccurrence,
-            payload: `${timeOfOccurrence}:`,
-          });
-          break;
-        }
-        default:
-          break;
-      }
-    }
+    // const timeLength = timeOfOccurrence.length;
+    // if (isTimeOfOccurrenceFocused) {
+    //   switch (timeLength) {
+    //     case 2: {
+    //       createPrinterIssueDispatch({
+    //         type: createPrinterIssueAction.setTimeOfOccurrence,
+    //         payload: `${timeOfOccurrence}:`,
+    //       });
+    //       break;
+    //     }
+    //     default:
+    //       break;
+    //   }
+    // }
 
     createPrinterIssueDispatch({
       type: createPrinterIssueAction.setIsValidTimeOfOccurrence,
@@ -238,7 +259,7 @@ function CreatePrinterIssue() {
     });
   }, [additionalInformation]);
 
-  // update for stepper wrapper state
+  // used to indicate stepper wrapper state
   useEffect(() => {
     const isStepInError =
       !isValidTitle ||
@@ -247,6 +268,7 @@ function CreatePrinterIssue() {
       !isValidDateOfOccurrence ||
       !isValidTimeOfOccurrence;
 
+    // if current step is in error, add it to stepsInError Set else remove it
     createPrinterIssueDispatch({
       type: createPrinterIssueAction.setStepsInError,
       payload: {
@@ -325,7 +347,7 @@ function CreatePrinterIssue() {
       inputText: dateOfOccurrence,
       isInputTextFocused: isDateOfOccurrenceFocused,
       isValidInputText: isValidDateOfOccurrence,
-      regexValidationText: returnDateValidationText(dateOfOccurrence),
+      regexValidationText: returnDateNearPastValidationText(dateOfOccurrence),
     });
 
   const [timeOfOccurrenceInputErrorText, timeOfOccurrenceInputValidText] =
@@ -416,10 +438,627 @@ function CreatePrinterIssue() {
     }),
   });
 
-  return (
+  const displayPersonalDetailsFormPage = (
+    // text input for title
     <>
-      <h3>create-printer-issue</h3>
+      <TextInput
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Title"
+        placeholder="Enter a form title"
+        autoComplete="off"
+        aria-required
+        aria-describedby={
+          isValidTitle ? 'title-input-note-valid' : 'title-input-note-error'
+        }
+        aria-invalid={isValidTitle ? false : true}
+        value={title}
+        icon={
+          isValidTitle ? <FontAwesomeIcon icon={faCheck} color="green" /> : null
+        }
+        error={!isValidTitle && title !== ''}
+        description={isValidTitle ? titleInputValidText : titleInputErrorText}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setTitle,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsTitleFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsTitleFocused,
+            payload: false,
+          });
+        }}
+        minLength={2}
+        maxLength={75}
+        withAsterisk
+        required
+      />
+      {/* contact number text input */}
+      <TextInput
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Personal contact number"
+        aria-required
+        aria-describedby={
+          isValidContactNumber
+            ? 'contact-number-input-note-valid'
+            : 'contact-number-input-note-error'
+        }
+        description={
+          isValidContactNumber
+            ? contactNumberInputValidText
+            : contactNumberInputErrorText
+        }
+        placeholder="Enter contact number"
+        autoComplete="off"
+        aria-invalid={isValidContactNumber ? false : true}
+        value={contactNumber}
+        onKeyDown={(event) => {
+          if (event.key === 'Backspace') {
+            if (contactNumber.length === 14) {
+              createPrinterIssueDispatch({
+                type: createPrinterIssueAction.setContactNumber,
+                payload: contactNumber.slice(0, -1) as PhoneNumber | '+(1)',
+              });
+            } else if (contactNumber.length === 9) {
+              createPrinterIssueDispatch({
+                type: createPrinterIssueAction.setContactNumber,
+                payload: contactNumber.slice(0, -1) as PhoneNumber | '+(1)',
+              });
+            }
+          }
+        }}
+        rightSection={
+          <Tooltip label="Reset value to +(1)">
+            <Button
+              type="button"
+              size="xs"
+              variant="white"
+              aria-label="Reset personal contact number value to +(1)"
+              mr="md"
+            >
+              <FontAwesomeIcon
+                icon={faRefresh}
+                cursor="pointer"
+                color="gray"
+                onClick={() => {
+                  createPrinterIssueDispatch({
+                    type: createPrinterIssueAction.setContactNumber,
+                    payload: contactNumber,
+                  });
+                }}
+              />
+            </Button>
+          </Tooltip>
+        }
+        icon={
+          isValidContactNumber ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidContactNumber && contactNumber !== '+(1)'}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setContactNumber,
+            payload: event.currentTarget.value as PhoneNumber | '+(1)',
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsContactNumberFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsContactNumberFocused,
+            payload: false,
+          });
+        }}
+        withAsterisk
+        required
+        maxLength={18}
+      />
+
+      {/* contact email text input */}
+      <TextInput
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Personal contact email"
+        aria-required
+        aria-describedby={
+          isValidContactEmail
+            ? 'contact-email-input-note-valid'
+            : 'contact-email-input-note-error'
+        }
+        description={
+          isValidContactEmail
+            ? contactEmailInputValidText
+            : contactEmailInputErrorText
+        }
+        placeholder="Enter contact email"
+        autoComplete="off"
+        aria-invalid={isValidContactEmail ? false : true}
+        value={contactEmail}
+        icon={
+          isValidContactEmail ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidContactEmail && contactEmail !== ''}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setContactEmail,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsContactEmailFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsContactEmailFocused,
+            payload: false,
+          });
+        }}
+        withAsterisk
+        required
+      />
+
+      {/* date of occurrence date input */}
+      <TextInput
+        type="date"
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Date of occurrence"
+        placeholder="DD-MM-YYYY"
+        autoComplete="off"
+        aria-required
+        aria-label='Please enter date of occurrence in format "date-date-month-month-year-year-year-year" from start year 2020 to current year'
+        aria-describedby={
+          isValidDateOfOccurrence
+            ? 'date-of-occurrence-input-note-valid'
+            : 'date-of-occurrence-input-note-error'
+        }
+        aria-invalid={isValidDateOfOccurrence ? false : true}
+        value={dateOfOccurrence}
+        icon={
+          isValidDateOfOccurrence ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidDateOfOccurrence && dateOfOccurrence !== ''}
+        description={
+          isValidDateOfOccurrence
+            ? dateOfOccurrenceInputValidText
+            : dateOfOccurrenceInputErrorText
+        }
+        min={new Date(2020, 0, 1).toISOString().split('T')[0]}
+        max={new Date().toISOString().split('T')[0]}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setDateOfOccurrence,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsDateOfOccurrenceFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsDateOfOccurrenceFocused,
+            payload: false,
+          });
+        }}
+        maxLength={10}
+        withAsterisk
+        required
+      />
+
+      {/* time of occurrence text input */}
+      <TextInput
+        type="time"
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Time of occurrence"
+        placeholder="HH:MM"
+        autoComplete="off"
+        aria-required
+        aria-label='Please enter time of occurrence in format "hour-hour-minute-minute" from start hour 00 to end hour 23'
+        aria-describedby={
+          isValidTimeOfOccurrence
+            ? 'time-of-occurrence-input-note-valid'
+            : 'time-of-occurrence-input-note-error'
+        }
+        aria-invalid={isValidTimeOfOccurrence ? false : true}
+        value={timeOfOccurrence}
+        icon={
+          isValidTimeOfOccurrence ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidTimeOfOccurrence && timeOfOccurrence !== ''}
+        description={
+          isValidTimeOfOccurrence
+            ? timeOfOccurrenceInputValidText
+            : timeOfOccurrenceInputErrorText
+        }
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setTimeOfOccurrence,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsTimeOfOccurrenceFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsTimeOfOccurrenceFocused,
+            payload: false,
+          });
+        }}
+        maxLength={5}
+        withAsterisk
+        required
+      />
     </>
+  );
+
+  const displayPrinterDetailsFormPage = (
+    <>
+      {/* printer serial number text input */}
+      <TextInput
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Printer serial number"
+        aria-required
+        aria-describedby={
+          isValidPrinterSerialNumber
+            ? 'printer-serial-number-input-note-valid'
+            : 'printer-serial-number-input-note-error'
+        }
+        description={
+          isValidPrinterSerialNumber
+            ? printerSerialNumberInputValidText
+            : printerSerialNumberInputErrorText
+        }
+        placeholder="Enter printer serial number"
+        autoComplete="off"
+        aria-invalid={isValidPrinterSerialNumber ? false : true}
+        value={printerSerialNumber}
+        icon={
+          isValidPrinterSerialNumber ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidPrinterSerialNumber && printerSerialNumber !== ''}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setPrinterSerialNumber,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsPrinterSerialNumberFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsPrinterSerialNumberFocused,
+            payload: false,
+          });
+        }}
+        withAsterisk
+        required
+      />
+
+      {/* printer model text input */}
+      <TextInput
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Printer model"
+        aria-required
+        aria-describedby={
+          isValidPrinterModel
+            ? 'printer-model-input-note-valid'
+            : 'printer-model-input-note-error'
+        }
+        description={
+          isValidPrinterModel
+            ? printerModelInputValidText
+            : printerModelInputErrorText
+        }
+        placeholder="Enter printer model"
+        autoComplete="off"
+        aria-invalid={isValidPrinterModel ? false : true}
+        value={printerModel}
+        icon={
+          isValidPrinterModel ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidPrinterModel && printerModel !== ''}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setPrinterModel,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsPrinterModelFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsPrinterModelFocused,
+            payload: false,
+          });
+        }}
+        withAsterisk
+        required
+      />
+
+      {/* printer make text input */}
+      <TextInput
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Printer make"
+        aria-required
+        aria-describedby={
+          isValidPrinterMake
+            ? 'printer-make-input-note-valid'
+            : 'printer-make-input-note-error'
+        }
+        description={
+          isValidPrinterMake
+            ? printerMakeInputValidText
+            : printerMakeInputErrorText
+        }
+        placeholder="Enter printer make"
+        autoComplete="off"
+        aria-invalid={isValidPrinterMake ? false : true}
+        value={printerMake}
+        icon={
+          isValidPrinterMake ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidPrinterMake && printerMake !== ''}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setPrinterMake,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsPrinterMakeFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsPrinterMakeFocused,
+            payload: false,
+          });
+        }}
+        withAsterisk
+        required
+      />
+
+      {/* printer issue description textarea input */}
+      <Textarea
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Printer issue description"
+        aria-required
+        aria-describedby={
+          isValidPrinterIssueDescription
+            ? 'printer-issue-description-input-note-valid'
+            : 'printer-issue-description-input-note-error'
+        }
+        description={
+          isValidPrinterIssueDescription
+            ? printerIssueDescriptionInputValidText
+            : printerIssueDescriptionInputErrorText
+        }
+        placeholder="Enter printer issue description"
+        autoComplete="off"
+        aria-invalid={isValidPrinterIssueDescription ? false : true}
+        value={printerIssueDescription}
+        icon={
+          isValidPrinterIssueDescription ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={
+          !isValidPrinterIssueDescription && printerIssueDescription !== ''
+        }
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setPrinterIssueDescription,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsPrinterIssueDescriptionFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsPrinterIssueDescriptionFocused,
+            payload: false,
+          });
+        }}
+        withAsterisk
+        required
+        autosize
+        minRows={3}
+        maxRows={5}
+        minLength={2}
+        maxLength={2000}
+      />
+
+      {/* urgency select data */}
+      <NativeSelect
+        size="sm"
+        data={URGENCY_DATA}
+        label="Urgency"
+        description="Select urgency of printer issue"
+        value={urgency}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setUrgency,
+            payload: event.currentTarget.value as Urgency,
+          });
+        }}
+        withAsterisk
+        required
+      />
+
+      {/* additional information textarea input */}
+      <Textarea
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Additional information"
+        aria-describedby={
+          isValidAdditionalInformation
+            ? 'additional-information-input-note-valid'
+            : 'additional-information-input-note-error'
+        }
+        description={
+          isValidAdditionalInformation
+            ? additionalInformationInputValidText
+            : additionalInformationInputErrorText
+        }
+        placeholder="Enter additional information"
+        autoComplete="off"
+        aria-invalid={isValidAdditionalInformation ? false : true}
+        value={additionalInformation}
+        icon={
+          isValidAdditionalInformation ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidAdditionalInformation && additionalInformation !== ''}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setAdditionalInformation,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsAdditionalInformationFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsAdditionalInformationFocused,
+            payload: false,
+          });
+        }}
+        withAsterisk
+        required
+        autosize
+        minRows={3}
+        maxRows={5}
+        minLength={2}
+        maxLength={2000}
+      />
+    </>
+  );
+
+  const displayCreatePrinterIssueReviewPage = (
+    <h5>printer issue review page</h5>
+  );
+
+  const displayCreatePrinterIssueForm =
+    currentStepperPosition === 0
+      ? displayPersonalDetailsFormPage
+      : currentStepperPosition === 1
+      ? displayPrinterDetailsFormPage
+      : currentStepperPosition === 2
+      ? displayCreatePrinterIssueReviewPage
+      : null;
+
+  const displaySubmitButton =
+    currentStepperPosition === CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION ? (
+      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
+        Submit
+      </Button>
+    ) : null;
+
+  async function handleCreatePrinterIssueFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  const displayCreatePrinterIssueComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionMap={CREATE_PRINTER_ISSUE_DESCRIPTION_MAP}
+      maxStepperPosition={CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION}
+      parentComponentDispatch={createPrinterIssueDispatch}
+      setCurrentStepperPosition={
+        createPrinterIssueAction.setCurrentStepperPosition
+      }
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleCreatePrinterIssueFormSubmit}>
+        {displayCreatePrinterIssueForm}
+        {displaySubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  return (
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      rowGap="lg"
+      w="400px"
+    >
+      <h3>create-printer-issue</h3>
+      {displayCreatePrinterIssueComponent}
+    </Flex>
   );
 }
 

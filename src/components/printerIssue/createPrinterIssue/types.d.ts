@@ -1,4 +1,9 @@
-import type { Action, ActionsGeneral, Urgency } from '../../../types';
+import type {
+  Action,
+  ActionsGeneral,
+  PhoneNumber,
+  Urgency,
+} from '../../../types';
 
 type PrinterIssueSchema = {
   userId: string;
@@ -6,7 +11,7 @@ type PrinterIssueSchema = {
   action: Action;
   category: ActionsGeneral;
   title: string;
-  contactNumber: string;
+  contactNumber: PhoneNumber;
   contactEmail: string;
   dateOfOccurrence: string;
   timeOfOccurrence: string;
@@ -30,7 +35,7 @@ type CreatePrinterIssueState = {
   isValidTitle: boolean;
   isTitleFocused: boolean;
 
-  contactNumber: string;
+  contactNumber: PhoneNumber | '+(1)';
   isValidContactNumber: boolean;
   isContactNumberFocused: boolean;
 
@@ -146,7 +151,6 @@ type CreatePrinterIssueDispatch =
   | {
       type:
         | 'setTitle'
-        | 'setContactNumber'
         | 'setContactEmail'
         | 'setPrinterMake'
         | 'setPrinterModel'
@@ -206,6 +210,10 @@ type CreatePrinterIssueDispatch =
   | {
       type: 'setStepsInError';
       payload: SetStepsInErrorPayload;
+    }
+  | {
+      type: 'setContactNumber';
+      payload: PhoneNumber | '+(1)';
     };
 
 type CreatePrinterIssueReducer = (

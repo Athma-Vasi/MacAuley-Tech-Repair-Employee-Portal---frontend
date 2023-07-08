@@ -80,6 +80,8 @@ const DEPARTMENTS = [
   'Inventory Management',
 ];
 
+const URGENCY_DATA = ['low', 'medium', 'high'];
+
 const COLORS = {
   darkTextColor: 'dark',
   lightTextColor: '#A7A7A7',
@@ -93,4 +95,11 @@ const COLORS = {
   buttonTextColor: '#339af0',
 };
 
-export { COLORS, DEPARTMENTS, JOB_POSITIONS, PROVINCES, STATES_US };
+export {
+  COLORS,
+  DEPARTMENTS,
+  JOB_POSITIONS,
+  PROVINCES,
+  STATES_US,
+  URGENCY_DATA,
+};

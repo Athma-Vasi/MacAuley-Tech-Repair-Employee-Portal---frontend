@@ -167,6 +167,17 @@ const DATE_NEAR_FUTURE_REGEX =
   /^(?:202[3-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 /**
+ * - 202[0-3] matches the years from 2020 to 2023.
+ * - - matches a hyphen.
+ * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
+ * - - matches a hyphen.
+ * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const DATE_NEAR_PAST_REGEX =
+  /^(?:202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+
+/**
  * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i
  * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
  * - [\w\s.,!?():;"'-] matches one or more word characters (letters, digits, or underscores), whitespace characters, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.
@@ -217,6 +228,7 @@ export {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   DATE_NEAR_FUTURE_REGEX,
+  DATE_NEAR_PAST_REGEX,
   DATE_REGEX,
   EMAIL_REGEX,
   FULL_NAME_REGEX,

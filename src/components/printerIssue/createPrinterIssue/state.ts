@@ -9,7 +9,7 @@ const initialCreatePrinterIssueState: CreatePrinterIssueState = {
   isValidTitle: false,
   isTitleFocused: false,
 
-  contactNumber: '',
+  contactNumber: '+(1)',
   isValidContactNumber: false,
   isContactNumberFocused: false,
 
