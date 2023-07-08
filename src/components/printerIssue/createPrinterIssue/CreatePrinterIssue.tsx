@@ -487,7 +487,7 @@ function CreatePrinterIssue() {
         size="sm"
         w="100%"
         color="dark"
-        label="Personal contact number"
+        label="Contact number"
         aria-required
         aria-describedby={
           isValidContactNumber
@@ -575,7 +575,7 @@ function CreatePrinterIssue() {
         size="sm"
         w="100%"
         color="dark"
-        label="Personal contact email"
+        label="Contact email"
         aria-required
         aria-describedby={
           isValidContactEmail
