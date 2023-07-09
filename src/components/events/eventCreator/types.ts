@@ -162,10 +162,6 @@ type EventCreatorDispatch =
       payload: string;
     }
   | {
-      type: EventCreatorAction['setEventKind'];
-      payload: EventKind;
-    }
-  | {
       type:
         | EventCreatorAction['setIsValidTitle']
         | EventCreatorAction['setIsValidEventDate']
@@ -191,10 +187,8 @@ type EventCreatorDispatch =
         | EventCreatorAction['setIsRsvpDeadlineFocused'];
       payload: boolean;
     }
-  | {
-      type: EventCreatorAction['setCurrentStepperPosition'];
-      payload: number;
-    }
+  | { type: EventCreatorAction['setEventKind']; payload: EventKind }
+  | { type: EventCreatorAction['setCurrentStepperPosition']; payload: number }
   | {
       type: EventCreatorAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
@@ -216,17 +210,10 @@ type EventCreatorDispatch =
       payload: string;
     };
 
-type EventCreatorReducer = (
-  state: EventCreatorState,
-  action: EventCreatorDispatch
-) => EventCreatorState;
-
 export type {
   EventCreatorAction,
   EventCreatorDispatch,
   EventCreatorDocument,
-  EventCreatorReducer,
   EventCreatorSchema,
   EventCreatorState,
-  EventKind,
 };
