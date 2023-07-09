@@ -53,7 +53,8 @@ function StepperWrapper({
               aria-current={
                 currentStepperPosition === step ? 'step' : undefined
               }
-              ref={currentStepperPosition === step ? stepperRef : undefined}
+              // because the mantine stepper uses 0-based indexing and our steps are 1-based
+              ref={currentStepperPosition + 1 === step ? stepperRef : undefined}
               className="hide-outline"
               color={stepsInError.has(step) ? 'red' : undefined}
               completedIcon={
