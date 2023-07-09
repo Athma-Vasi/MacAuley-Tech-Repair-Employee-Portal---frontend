@@ -7,12 +7,12 @@ import {
 } from '../../types';
 
 type AnonymousRequestKind =
-  | 'workplace safety'
-  | 'employee conflict'
-  | 'workplace harassment'
-  | 'company security'
-  | 'diversity and inclusion'
-  | 'lgbtqia+';
+  | 'Workplace safety'
+  | 'Employee conflict'
+  | 'Workplace harassment'
+  | 'Company security'
+  | 'Diversity and inclusion'
+  | 'LGBTQIA+';
 
 type AnonymousRequestSchema = {
   // action and category are added in the create handler

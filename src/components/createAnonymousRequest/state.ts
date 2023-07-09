@@ -17,7 +17,7 @@ const initialCreateAnonymousRequestState: CreateAnonymousRequestState = {
   isValidSecureContactEmail: false,
   isSecureContactEmailFocused: false,
 
-  requestKind: 'workplace safety',
+  requestKind: 'Workplace safety',
 
   requestDescription: '',
   isValidRequestDescription: false,
