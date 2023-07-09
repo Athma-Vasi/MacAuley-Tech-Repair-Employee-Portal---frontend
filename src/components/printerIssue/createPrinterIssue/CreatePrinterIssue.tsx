@@ -1004,9 +1004,7 @@ function CreatePrinterIssue() {
     </>
   );
 
-  const displayCreatePrinterIssueReviewPage = (
-    <h5>printer issue review page</h5>
-  );
+  const displayReviewFormPage = <h5>printer issue review page</h5>;
 
   const displayCreatePrinterIssueForm =
     currentStepperPosition === 0
@@ -1014,7 +1012,7 @@ function CreatePrinterIssue() {
       : currentStepperPosition === 1
       ? displayPrinterDetailsFormPage
       : currentStepperPosition === 2
-      ? displayCreatePrinterIssueReviewPage
+      ? displayReviewFormPage
       : null;
 
   const displaySubmitButton =

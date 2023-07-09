@@ -513,7 +513,7 @@ function returnUrlValidationText(url: string): string {
   const topLevelDomainRegex = /\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
   const urlRegexTupleArr: [boolean, string][] = [
-    [protocolRegex.test(url), 'Must begin with http:// or https://'],
+    [protocolRegex.test(url), "Must begin with 'http://' or 'https://'."],
     [optionalSubdomainRegex.test(url), 'Must begin with www. or no subdomain.'],
     [domainRegex.test(url), 'Must contain a valid domain name.'],
     [topLevelDomainRegex.test(url), 'Must contain a valid top-level domain.'],
