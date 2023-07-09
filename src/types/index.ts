@@ -31,6 +31,10 @@ import type {
 
 type BreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 type Urgency = 'low' | 'medium' | 'high';
+type SetStepsInErrorPayload = {
+  kind: 'add' | 'delete';
+  step: number;
+};
 
 export type {
   Action,
@@ -54,4 +58,4 @@ export type {
   USPostalCode,
 };
 
-export type { BreakPoints, Note };
+export type { BreakPoints, Note, SetStepsInErrorPayload };

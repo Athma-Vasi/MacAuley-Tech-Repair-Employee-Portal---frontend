@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { AddressChange } from './components/addressChange';
 import { CreateAnnouncement } from './components/announcements/createAnnouncement';
 import { CreateBenefit } from './components/benefits/createBenefit';
+import { CreateAnonymousRequest } from './components/createAnonymousRequest';
 import { Dashboard } from './components/dashboard';
 import { CreateEndorsement } from './components/endorsements/createEndorsement';
 import { LeaveRequest } from './components/leaveRequest';
@@ -42,8 +43,12 @@ function App() {
           <Route path="create-leave-request" element={<LeaveRequest />} />
           <Route path="create-request-resource" element={<RequestResource />} />
           <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
-          <Route path="create-printer-issue" element={<CreatePrinterIssue />} />
+          {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
           <Route path="create-referment" element={<CreateReferment />} />
+          <Route
+            path="create-anonymous-request"
+            element={<CreateAnonymousRequest />}
+          />
         </Route>
 
         {/* these are protected routes */}

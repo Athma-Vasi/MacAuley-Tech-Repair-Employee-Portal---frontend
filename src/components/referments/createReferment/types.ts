@@ -3,6 +3,7 @@ import {
   ActionsGeneral,
   JobPosition,
   PhoneNumber,
+  SetStepsInErrorPayload,
 } from '../../../types';
 
 type RefermentSchema = {
@@ -140,11 +141,6 @@ type CreateRefermentAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-type SetStepsInErrorPayload = {
-  kind: 'add' | 'delete';
-  step: number;
-};
-
 type CreateRefermentDispatch =
   | {
       type:
@@ -214,5 +210,4 @@ export type {
   CreateRefermentState,
   RefermentDocument,
   RefermentSchema,
-  SetStepsInErrorPayload,
 };
