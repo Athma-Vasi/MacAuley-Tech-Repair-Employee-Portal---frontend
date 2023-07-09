@@ -1,6 +1,7 @@
 import {
   Action,
   ActionsGeneral,
+  PhoneNumber,
   SetStepsInErrorPayload,
   Urgency,
 } from '../../types';
@@ -39,7 +40,7 @@ type CreateAnonymousRequestState = {
   isValidTitle: boolean;
   isTitleFocused: boolean;
 
-  secureContactNumber: string;
+  secureContactNumber: PhoneNumber | string;
   isValidSecureContactNumber: boolean;
   isSecureContactNumberFocused: boolean;
 
