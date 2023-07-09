@@ -1,4 +1,10 @@
-import type { Country, PostalCode, Province, StatesUS } from '../../types';
+import type {
+  Country,
+  PhoneNumber,
+  PostalCode,
+  Province,
+  StatesUS,
+} from '../../types';
 
 type AddressChangeState = {
   contactNumber: PhoneNumber | string;

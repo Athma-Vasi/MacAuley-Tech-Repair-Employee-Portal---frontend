@@ -11,3 +11,5 @@ type NotesListHeaderProps = {
   notesListDispatch: React.Dispatch<NotesListDispatch>;
   notesListAction: NotesListAction;
 };
+
+export type { NotesListHeaderProps };

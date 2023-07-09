@@ -1,5 +1,3 @@
-import { RegisterAction, RegisterDispatch } from '../types';
-
 /**
  * @key {number} - The step number. Starts with 1.
  * @property {description} - The description of the step. Will be displayed in the stepper.

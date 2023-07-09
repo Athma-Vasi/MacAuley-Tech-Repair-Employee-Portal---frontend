@@ -25,8 +25,8 @@ type PrinterIssueSchema = {
 
 type PrinterIssueDocument = PrinterIssueSchema & {
   _id: string;
-  createdAt: NativeDate;
-  updatedAt: NativeDate;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

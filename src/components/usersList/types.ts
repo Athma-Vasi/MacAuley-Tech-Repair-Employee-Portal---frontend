@@ -10,8 +10,8 @@ type UserInfoDisplay = {
   username: string;
   roles: ('Admin' | 'Employee' | 'Manager')[];
   active: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

@@ -1,4 +1,8 @@
-import { UsersListAction, UsersListDispatch, UsersListState } from '../types';
+import type {
+  UsersListAction,
+  UsersListDispatch,
+  UsersListState,
+} from '../../types';
 
 type UsersListHeaderProps = {
   heading: string;
@@ -7,4 +11,4 @@ type UsersListHeaderProps = {
   usersListAction: UsersListAction;
 };
 
-export { UsersListHeaderProps };
+export type { UsersListHeaderProps };

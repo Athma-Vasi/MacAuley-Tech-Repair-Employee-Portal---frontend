@@ -14,6 +14,7 @@ import {
   Title,
 } from '@mantine/core';
 import type { AxiosRequestConfig } from 'axios';
+import { userInfo } from 'os';
 import { useEffect, useReducer, useRef } from 'react';
 
 import { axiosInstance } from '../../../api/axios';
@@ -156,7 +157,7 @@ function EditNote({ note, closeModalCallback }: EditNoteProps) {
 
     const editedNote = {
       id: noteToEdit._id,
-      user: noteToEdit.user,
+      user: noteToEdit.username,
       title,
       text,
       completed,

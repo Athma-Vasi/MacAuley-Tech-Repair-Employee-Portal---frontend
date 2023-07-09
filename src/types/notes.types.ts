@@ -5,8 +5,8 @@ type Note = {
   title: string;
   text: string;
   completed: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

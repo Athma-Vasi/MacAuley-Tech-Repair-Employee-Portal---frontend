@@ -528,7 +528,7 @@ function returnUrlValidationText(url: string): string {
 }
 
 type FormatDateProps = {
-  date: Date;
+  date: string;
   locale: string;
   formatOptions: Intl.DateTimeFormatOptions;
 };

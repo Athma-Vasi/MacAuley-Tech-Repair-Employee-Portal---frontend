@@ -17,8 +17,8 @@ const initialNotesListState: NotesListState = {
     title: '',
     text: '',
     completed: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: '',
+    updatedAt: '',
     __v: 0,
   },
 

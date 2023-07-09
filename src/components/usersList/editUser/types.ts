@@ -1,7 +1,8 @@
-import type { User } from '../../types';
+import type { User } from '../../../types';
+import { UserInfoDisplay } from '../types';
 
 type EditUserProps = {
-  user: User;
+  user: UserInfoDisplay;
   closeModalCallback: () => void;
 };
 

@@ -1,5 +1,6 @@
 import {
   User,
+  UserInfoDisplay,
   UsersListAction,
   UsersListDispatch,
   UsersListSort,
@@ -17,8 +18,8 @@ const initialUsersListState: UsersListState = {
     username: '',
     roles: [],
     active: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: '',
+    updatedAt: '',
     __v: 0,
   },
   users: [],
@@ -119,7 +120,7 @@ function usersListReducer(
     case usersListAction.setUserToEdit:
       return {
         ...state,
-        userToEdit: action.payload.data as User,
+        userToEdit: action.payload.data as unknown as UserInfoDisplay,
       };
 
     case usersListAction.setAllUsers:

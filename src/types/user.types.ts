@@ -24,11 +24,11 @@ type User = {
     fullName: string;
     phoneNumber: PhoneNumber | string;
   };
-  startDate: NativeDate;
+  startDate: string;
   roles: UserRoles;
   active: boolean;
-  createdAt: NativeDate;
-  updatedAt: NativeDate;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -57,15 +57,15 @@ type UserSchema = {
     fullName: string;
     phoneNumber: PhoneNumber | string;
   };
-  startDate: NativeDate;
+  startDate: string;
   roles: UserRoles;
   active: boolean;
 };
 
 type UserDocument = UserSchema & {
   _id: string;
-  createdAt: NativeDate;
-  updatedAt: NativeDate;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

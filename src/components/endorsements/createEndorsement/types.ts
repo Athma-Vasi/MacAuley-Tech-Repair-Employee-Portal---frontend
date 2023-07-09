@@ -30,8 +30,8 @@ type EndorsementSchema = {
 
 type EndorsementDocument = EndorsementSchema & {
   _id: string;
-  createdAt: NativeDate;
-  updatedAt: NativeDate;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

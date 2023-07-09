@@ -4,12 +4,12 @@ import { EditNoteAction, EditNoteDispatch, EditNoteState } from './types';
 const initialEditNoteState: EditNoteState = {
   noteToEdit: {
     _id: '', // this is the note id
-    user: '', // this is the user id
+    userId: '', // this is the user id
     title: '',
     text: '',
     completed: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: '',
+    updatedAt: '',
     username: '',
     __v: 0,
   },
@@ -78,4 +78,4 @@ function editNoteReducer(
   }
 }
 
-export { editNoteAction, editNoteReducer,initialEditNoteState };
+export { editNoteAction, editNoteReducer, initialEditNoteState };
