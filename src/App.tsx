@@ -21,6 +21,7 @@ import { RequireAuth } from './components/requireAuth';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
+import { EventCreator } from './components/events/eventCreator';
 
 function App() {
   const {
@@ -32,7 +33,7 @@ function App() {
       <Routes>
         {/* these are public routes */}
         <Route path="/" element={<PublicLayout />}>
-          <Route index element={<Login />} />
+          {/* <Route index element={<Login />} /> */}
           {/* <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           <Route path="unauthorized" element={<Unauthorized />} /> */}
@@ -44,11 +45,12 @@ function App() {
           <Route path="create-request-resource" element={<RequestResource />} />
           <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
-          <Route path="create-referment" element={<CreateReferment />} />
+          {/* <Route path="create-referment" element={<CreateReferment />} /> */}
           <Route
             path="create-anonymous-request"
             element={<CreateAnonymousRequest />}
           />
+          <Route path="event-creator" element={<EventCreator />} />
         </Route>
 
         {/* these are protected routes */}

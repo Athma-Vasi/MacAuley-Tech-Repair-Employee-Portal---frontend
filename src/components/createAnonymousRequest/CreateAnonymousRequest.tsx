@@ -249,7 +249,6 @@ function CreateAnonymousRequest() {
     }),
   });
 
-  // title text input
   const titleTextInput = (
     <TextInput
       size="sm"
@@ -294,7 +293,6 @@ function CreateAnonymousRequest() {
     />
   );
 
-  // secure contact number text input
   const secureContactNumberTextInput = (
     <TextInput
       size="sm"
@@ -384,7 +382,6 @@ function CreateAnonymousRequest() {
     />
   );
 
-  // secure contact email text input
   const secureContactEmailTextInput = (
     <TextInput
       size="sm"
@@ -435,7 +432,6 @@ function CreateAnonymousRequest() {
     />
   );
 
-  // request kind select input
   const requestKindSelectInput = (
     <NativeSelect
       size="sm"
@@ -454,7 +450,6 @@ function CreateAnonymousRequest() {
     />
   );
 
-  // request description textarea input
   const requestDescriptionTextareaInput = (
     <Textarea
       size="sm"
@@ -510,7 +505,6 @@ function CreateAnonymousRequest() {
     />
   );
 
-  // request additional information textarea input
   const additionalInformationTextareaInput = (
     <Textarea
       size="sm"
@@ -566,7 +560,6 @@ function CreateAnonymousRequest() {
     />
   );
 
-  // request urgency select input
   const requestUrgencySelectInput = (
     <NativeSelect
       size="sm"

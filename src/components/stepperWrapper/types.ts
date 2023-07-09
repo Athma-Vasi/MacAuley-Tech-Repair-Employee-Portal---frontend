@@ -1,7 +1,8 @@
 /**
  * @key {number} - The step number. Starts with 1.
- * @property {description} - The description of the step. Will be displayed in the stepper.
- * @property {ariaLabel} - The aria-label of the step. Will be read aloud by screen readers.
+ * @value {object} - The object containing the description and aria-label of the step.
+ * @property {object.description} - The description of the step. Will be displayed in the stepper.
+ * @property {object.ariaLabel} - The aria-label of the step. Will be read aloud by screen readers.
  */
 type DescriptionMap = Map<
   number,

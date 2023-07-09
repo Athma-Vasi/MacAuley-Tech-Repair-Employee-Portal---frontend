@@ -13,7 +13,8 @@ const ADDRESS_CHANGE_DESCRIPTION_MAP: DescriptionMap = new Map([
     2,
     {
       description: 'Review and proceed',
-      ariaLabel: 'Review all the information you have entered',
+      ariaLabel:
+        'Review all the information you have entered and ensure they are correct before proceeding',
     },
   ],
 ]);
