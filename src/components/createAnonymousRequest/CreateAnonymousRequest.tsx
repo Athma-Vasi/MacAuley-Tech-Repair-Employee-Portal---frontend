@@ -1,16 +1,23 @@
 import { useEffect, useReducer } from 'react';
+
+import {
+  EMAIL_REGEX,
+  GRAMMAR_TEXT_INPUT_REGEX,
+  GRAMMAR_TEXTAREA_REGEX,
+  PHONE_NUMBER_REGEX,
+} from '../../constants/regex';
+import { returnAccessibleTextElements } from '../../jsxCreators';
+import { PhoneNumber } from '../../types';
+import {
+  returnEmailValidationText,
+  returnGrammarValidationText,
+  returnPhoneNumberValidationText,
+} from '../../utils';
 import {
   createAnonymousRequestAction,
   createAnonymousRequestReducer,
   initialCreateAnonymousRequestState,
 } from './state';
-import {
-  EMAIL_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  PHONE_NUMBER_REGEX,
-} from '../../constants/regex';
-import { PhoneNumber } from '../../types';
 
 function CreateAnonymousRequest() {
   const [createAnonymousRequestState, createAnonymousRequestDispatch] =
@@ -160,6 +167,69 @@ function CreateAnonymousRequest() {
     isValidRequestDescription,
     isValidAdditionalInformation,
   ]);
+
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [titleInputErrorText, titleInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'title',
+      inputText: title,
+      isInputTextFocused: isTitleFocused,
+      isValidInputText: isValidTitle,
+      regexValidationText: returnGrammarValidationText({
+        contentKind: 'title',
+        content: title,
+        minLength: 2,
+        maxLength: 75,
+      }),
+    });
+
+  const [secureContactNumberInputErrorText, secureContactNumberInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'secure contact number',
+      inputText: secureContactNumber,
+      isInputTextFocused: isSecureContactNumberFocused,
+      isValidInputText: isValidSecureContactNumber,
+      regexValidationText: returnPhoneNumberValidationText(secureContactNumber),
+    });
+
+  const [secureContactEmailInputErrorText, secureContactEmailInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'secure contact email',
+      inputText: secureContactEmail,
+      isInputTextFocused: isSecureContactEmailFocused,
+      isValidInputText: isValidSecureContactEmail,
+      regexValidationText: returnEmailValidationText(secureContactEmail),
+    });
+
+  const [requestDescriptionInputErrorText, requestDescriptionInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'request description',
+      inputText: requestDescription,
+      isInputTextFocused: isRequestDescriptionFocused,
+      isValidInputText: isValidRequestDescription,
+      regexValidationText: returnGrammarValidationText({
+        contentKind: 'request description',
+        content: requestDescription,
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
+
+  const [
+    additionalInformationInputErrorText,
+    additionalInformationInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'additional information',
+    inputText: additionalInformation,
+    isInputTextFocused: isAdditionalInformationFocused,
+    isValidInputText: isValidAdditionalInformation,
+    regexValidationText: returnGrammarValidationText({
+      contentKind: 'additional information',
+      content: additionalInformation,
+      minLength: 2,
+      maxLength: 2000,
+    }),
+  });
 
   //
   //
