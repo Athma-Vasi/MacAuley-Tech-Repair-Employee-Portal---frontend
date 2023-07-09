@@ -216,4 +216,5 @@ export type {
   EventCreatorDocument,
   EventCreatorSchema,
   EventCreatorState,
+  EventKind,
 };

@@ -7,16 +7,25 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import {
-  eventCreatorAction,
-  eventCreatorReducer,
-  initialEventCreatorState,
-} from './state';
-import { returnAccessibleTextElements } from '../../../jsxCreators';
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
+import {
+  eventCreatorAction,
+  eventCreatorReducer,
+  initialEventCreatorState,
+} from './state';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { EVENT_KIND_DATA } from './constants';
+import { EventKind } from './types';
 
 function EventCreator() {
   const [eventCreatorState, eventCreatorDispatch] = useReducer(
@@ -288,9 +297,76 @@ function EventCreator() {
       regexValidationText: returnDateNearFutureValidationText(rsvpDeadline),
     });
 
+  const titleInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: eventTitleErrorText,
+      valid: eventTitleValidText,
+    },
+    icon: faCheck,
+    inputText: eventTitle,
+    isValidInputText: isValidEventTitle,
+    label: 'Event title',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsTitleFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setTitle,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsTitleFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter title of event',
+    semanticName: 'event title',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const [createdTitleTextInput] = returnAccessibleTextInputElements([
+    titleInputCreatorInfo,
+  ]);
+
+  const eventKindInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: EVENT_KIND_DATA,
+    description: 'Select the kind of event',
+    label: 'Event kind',
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setEventKind,
+        payload: event.target.value as EventKind,
+      });
+    },
+    value: eventKind,
+    required: true,
+    withAsterisk: true,
+  };
+
+  const [createdEventKindSelectInput] = returnAccessibleSelectInputElements([
+    eventKindInputCreatorInfo,
+  ]);
+
+  useEffect(() => {
+    console.log('eventTitle: ', eventTitle);
+  }, [eventTitle]);
+
+  useEffect(() => {
+    console.log('eventKind: ', eventKind);
+  }, [eventKind]);
+
   return (
     <div>
       <h1>Event Creator</h1>
+      {createdTitleTextInput}
+      {createdEventKindSelectInput}
     </div>
   );
 }

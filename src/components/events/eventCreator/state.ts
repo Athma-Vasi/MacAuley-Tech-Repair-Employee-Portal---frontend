@@ -268,11 +268,16 @@ function eventCreatorReducer(
         ...state,
         currentStepperPosition: action.payload,
       };
-    case eventCreatorAction.setStepsInError:
+    case eventCreatorAction.setStepsInError: {
+      const { kind, step } = action.payload;
+      const stepsInError = new Set(state.stepsInError);
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+
       return {
         ...state,
-        stepsInError: action.payload,
+        stepsInError,
       };
+    }
 
     case eventCreatorAction.setIsError:
       return {
