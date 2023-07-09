@@ -4,7 +4,13 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { NativeSelect, SelectItem, Text, TextInput } from '@mantine/core';
+import {
+  NativeSelect,
+  SelectItem,
+  Text,
+  Textarea,
+  TextInput,
+} from '@mantine/core';
 
 type ReturnAccessibleTextElemProps = {
   inputElementKind: string;
@@ -118,6 +124,7 @@ type AccessibleTextInputCreatorInfo = {
   isValidInputText: boolean;
   label: string;
   ariaRequired: boolean;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
   description: {
     error: JSX.Element;
     valid: JSX.Element;
@@ -146,6 +153,7 @@ function returnAccessibleTextInputElements(
       isValidInputText,
       label,
       ariaRequired,
+      ariaAutoComplete = 'none',
       description,
       placeholder,
       initialInputValue = '',
@@ -172,9 +180,9 @@ function returnAccessibleTextInputElements(
             ? `${semanticName.split(' ').join('-')}-input-note-valid`
             : `${semanticName.split(' ').join('-')}-input-note-error`
         }
+        aria-autocomplete={ariaAutoComplete}
         description={isValidInputText ? description.valid : description.error}
         placeholder={placeholder}
-        autoComplete={autoComplete}
         aria-invalid={isValidInputText ? false : true}
         value={inputText}
         icon={
@@ -192,6 +200,7 @@ function returnAccessibleTextInputElements(
         onBlur={onBlur}
         minLength={minLength}
         maxLength={maxLength}
+        autoComplete={autoComplete}
         withAsterisk={withAsterisk}
         required={required}
       />
@@ -248,6 +257,8 @@ function returnAccessibleSelectInputElements(
         size="sm"
         data={data}
         label={label}
+        aria-label={`Currently selected ${value}`}
+        aria-required={required}
         description={description}
         value={value}
         onChange={onChange}
@@ -260,14 +271,173 @@ function returnAccessibleSelectInputElements(
   });
 }
 
+/**
+ * <Textarea
+      size="sm"
+      w="100%"
+      color="dark"
+      label="Description"
+      aria-required
+      aria-describedby={
+        isValidRequestDescription
+          ? 'request-description-input-note-valid'
+          : 'request-description-input-note-error'
+      }
+      description={
+        isValidRequestDescription
+          ? requestDescriptionInputValidText
+          : requestDescriptionInputErrorText
+      }
+      placeholder="Enter description of request"
+      autoComplete="off"
+      aria-invalid={isValidRequestDescription ? false : true}
+      value={requestDescription}
+      icon={
+        isValidRequestDescription ? (
+          <FontAwesomeIcon icon={faCheck} color="green" />
+        ) : null
+      }
+      error={!isValidRequestDescription && requestDescription !== ''}
+      onChange={(event) => {
+        createAnonymousRequestDispatch({
+          type: createAnonymousRequestAction.setRequestDescription,
+          payload: event.currentTarget.value,
+        });
+      }}
+      onFocus={() => {
+        createAnonymousRequestDispatch({
+          type: createAnonymousRequestAction.setIsRequestDescriptionFocused,
+          payload: true,
+        });
+      }}
+      onBlur={() => {
+        createAnonymousRequestDispatch({
+          type: createAnonymousRequestAction.setIsRequestDescriptionFocused,
+          payload: false,
+        });
+      }}
+      minLength={2}
+      maxLength={2000}
+      autosize
+      minRows={3}
+      maxRows={5}
+      withAsterisk
+      required
+    />
+ */
+
+type AccessibleTextAreaInputCreatorInfo = {
+  semanticName: string;
+  inputText: string;
+  isValidInputText: boolean;
+  label: string;
+  ariaRequired: boolean;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
+  description: {
+    error: JSX.Element;
+    valid: JSX.Element;
+  };
+  placeholder: string;
+  initialInputValue?: string | undefined;
+  icon: IconDefinition | null;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+
+  minLength?: number | undefined;
+  maxLength?: number | undefined;
+  withAsterisk?: boolean | undefined;
+  required?: boolean | undefined;
+  autoComplete?: 'on' | 'off' | undefined;
+
+  autosize?: boolean | undefined;
+  minRows?: number | undefined;
+  maxRows?: number | undefined;
+};
+
+function returnAccessibleTextAreaInputElements(
+  infoArray: AccessibleTextAreaInputCreatorInfo[]
+) {
+  return infoArray.map((info) => {
+    const {
+      semanticName,
+      inputText,
+      isValidInputText,
+      label,
+      ariaRequired,
+      ariaAutoComplete = 'none',
+      description,
+      placeholder,
+      initialInputValue = '',
+      icon,
+      onChange,
+      onFocus,
+      onBlur,
+      minLength = 2,
+      maxLength = 2000,
+      withAsterisk = false,
+      required = false,
+      autoComplete = 'off',
+      autosize = false,
+      minRows = 3,
+      maxRows = 5,
+    } = info;
+
+    const createdTextAreaInput = (
+      <Textarea
+        size="sm"
+        w="100%"
+        color="dark"
+        label={label}
+        aria-required={ariaRequired}
+        aria-describedby={
+          isValidInputText
+            ? `${semanticName.split(' ').join('-')}-input-note-valid`
+            : `${semanticName.split(' ').join('-')}-input-note-error`
+        }
+        aria-autocomplete={ariaAutoComplete}
+        description={isValidInputText ? description.valid : description.error}
+        placeholder={placeholder}
+        aria-invalid={isValidInputText ? false : true}
+        value={inputText}
+        icon={
+          isValidInputText ? (
+            icon ? (
+              <FontAwesomeIcon icon={icon} color="green" />
+            ) : (
+              <FontAwesomeIcon icon={faCheck} color="green" />
+            )
+          ) : null
+        }
+        error={!isValidInputText && inputText !== initialInputValue}
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        minLength={minLength}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
+        withAsterisk={withAsterisk}
+        required={required}
+        autosize={autosize}
+        minRows={minRows}
+        maxRows={maxRows}
+      />
+    );
+
+    return createdTextAreaInput;
+  });
+}
+
 export {
   returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
   returnAccessibleTextInputElements,
 };
 
 export type {
   AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   ReturnAccessibleTextElemProps,
 };
