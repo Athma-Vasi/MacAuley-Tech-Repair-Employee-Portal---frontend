@@ -930,7 +930,7 @@ function CreateReferment() {
         description={
           privacyConsent
             ? 'I acknowledge that the candidate has given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.'
-            : 'I acknowledge that the candidate has not given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.'
+            : 'The candidate has not given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.'
         }
         aria-required
         aria-label={

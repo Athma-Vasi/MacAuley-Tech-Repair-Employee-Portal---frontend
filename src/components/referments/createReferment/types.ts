@@ -1,12 +1,19 @@
-import { JobPosition, PhoneNumber } from '../../../types';
+import {
+  Action,
+  ActionsGeneral,
+  JobPosition,
+  PhoneNumber,
+} from '../../../types';
 
 type RefermentSchema = {
   referrerUserId: string;
   referrerUsername: string;
+  action: Action;
+  category: ActionsGeneral;
 
   candidateFullName: string;
   candidateEmail: string;
-  candidateContactNumber: PhoneNumber | string;
+  candidateContactNumber: PhoneNumber;
   candidateCurrentJobTitle: string;
   candidateCurrentCompany: string;
   candidateProfileUrl: string;
