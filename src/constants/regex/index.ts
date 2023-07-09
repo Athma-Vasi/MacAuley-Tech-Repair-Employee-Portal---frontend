@@ -185,7 +185,8 @@ const DATE_NEAR_PAST_REGEX =
  * - ^ and $ ensure that the entire string matches the regex.
  * - i makes the regex case-insensitive.
  */
-const GRAMMAR_TEXTAREA_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
+const GRAMMAR_TEXTAREA_INPUT_REGEX =
+  /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
 
 /**
  * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i
@@ -233,7 +234,7 @@ export {
   EMAIL_REGEX,
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
   NAME_REGEX,
   NOTE_TEXT_REGEX,

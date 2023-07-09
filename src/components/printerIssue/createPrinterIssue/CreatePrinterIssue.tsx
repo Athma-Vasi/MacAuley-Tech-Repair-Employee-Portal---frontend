@@ -16,7 +16,7 @@ import {
   DATE_REGEX,
   EMAIL_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
   PHONE_NUMBER_REGEX,
   PRINTER_MAKE_MODEL_REGEX,
   PRINTER_SERIAL_NUMBER_REGEX,
@@ -235,7 +235,7 @@ function CreatePrinterIssue() {
 
   // validate printer issue description input on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(printerIssueDescription);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(printerIssueDescription);
 
     createPrinterIssueDispatch({
       type: createPrinterIssueAction.setIsValidPrinterIssueDescription,
@@ -245,7 +245,7 @@ function CreatePrinterIssue() {
 
   // validate additional information input on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(additionalInformation);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalInformation);
 
     createPrinterIssueDispatch({
       type: createPrinterIssueAction.setIsValidAdditionalInformation,

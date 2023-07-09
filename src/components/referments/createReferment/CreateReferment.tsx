@@ -17,7 +17,7 @@ import {
   EMAIL_REGEX,
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
   PHONE_NUMBER_REGEX,
   URL_REGEX,
 } from '../../../constants/regex';
@@ -191,7 +191,7 @@ function CreateReferment() {
 
   // validate positionJobDescription on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(positionJobDescription);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(positionJobDescription);
 
     createRefermentDispatch({
       type: createRefermentAction.setIsValidPositionJobDescription,
@@ -201,7 +201,7 @@ function CreateReferment() {
 
   // validate referralReason on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(referralReason);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(referralReason);
 
     createRefermentDispatch({
       type: createRefermentAction.setIsValidReferralReason,
@@ -211,7 +211,7 @@ function CreateReferment() {
 
   // validate additionalInformation on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(additionalInformation);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalInformation);
 
     createRefermentDispatch({
       type: createRefermentAction.setIsValidAdditionalInformation,

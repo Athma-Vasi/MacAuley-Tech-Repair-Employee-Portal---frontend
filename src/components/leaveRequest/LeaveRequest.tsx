@@ -13,7 +13,7 @@ import { useEffect, useReducer, useRef } from 'react';
 import {
   DATE_REGEX,
   FULL_NAME_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
   NAME_REGEX,
 } from '../../constants/regex';
 import { returnAccessibleTextElements } from '../../jsxCreators';
@@ -91,7 +91,9 @@ function LeaveRequest() {
 
   // validate delegated responsibilities on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(delegatedResponsibilities);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(
+      delegatedResponsibilities
+    );
 
     leaveRequestDispatch({
       type: leaveRequestAction.setIsValidDelegatedResponsibilities,
@@ -101,7 +103,7 @@ function LeaveRequest() {
 
   // validate additional comments on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(additionalComments);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalComments);
 
     leaveRequestDispatch({
       type: leaveRequestAction.setIsValidAdditionalComments,

@@ -13,7 +13,7 @@ import { useEffect, useReducer, useRef } from 'react';
 import {
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
 import { returnAccessibleTextElements } from '../../../jsxCreators';
 import {
@@ -88,7 +88,7 @@ function CreateEndorsement() {
 
   // validate summaryOfEndorsement input on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(summaryOfEndorsement);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(summaryOfEndorsement);
 
     createEndorsementDispatch({
       type: createEndorsementAction.setIsValidSummaryOfEndorsement,

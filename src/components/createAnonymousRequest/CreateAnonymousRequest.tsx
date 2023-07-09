@@ -14,7 +14,7 @@ import { URGENCY_DATA } from '../../constants/data';
 import {
   EMAIL_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
   PHONE_NUMBER_REGEX,
 } from '../../constants/regex';
 import { returnAccessibleTextElements } from '../../jsxCreators';
@@ -143,7 +143,7 @@ function CreateAnonymousRequest() {
 
   // validate request description on every input change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(requestDescription);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(requestDescription);
 
     createAnonymousRequestDispatch({
       type: createAnonymousRequestAction.setIsValidRequestDescription,
@@ -153,7 +153,7 @@ function CreateAnonymousRequest() {
 
   // validate additional information on every input change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(additionalInformation);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalInformation);
 
     createAnonymousRequestDispatch({
       type: createAnonymousRequestAction.setIsValidAdditionalInformation,

@@ -3,7 +3,7 @@ import { useEffect, useReducer } from 'react';
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import {
@@ -11,6 +11,12 @@ import {
   eventCreatorReducer,
   initialEventCreatorState,
 } from './state';
+import { returnAccessibleTextElements } from '../../../jsxCreators';
+import {
+  returnDateNearFutureValidationText,
+  returnGrammarValidationText,
+  returnTimeRailwayValidationText,
+} from '../../../utils';
 
 function EventCreator() {
   const [eventCreatorState, eventCreatorDispatch] = useReducer(
@@ -123,7 +129,7 @@ function EventCreator() {
 
   // validate description on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(eventDescription);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(eventDescription);
 
     eventCreatorDispatch({
       type: eventCreatorAction.setIsValidEventDescription,
@@ -133,7 +139,7 @@ function EventCreator() {
 
   // validate attendees on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(eventAttendees);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(eventAttendees);
 
     eventCreatorDispatch({
       type: eventCreatorAction.setIsValidEventAttendees,
@@ -143,7 +149,7 @@ function EventCreator() {
 
   // validate required items on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(requiredItems);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(requiredItems);
 
     eventCreatorDispatch({
       type: eventCreatorAction.setIsValidRequiredItems,
@@ -162,7 +168,125 @@ function EventCreator() {
       type: eventCreatorAction.setIsValidRsvpDeadline,
       payload: isValid,
     });
-  }, [rsvpDeadline]);
+  }, [rsvpDeadline, eventDate]);
+
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [eventTitleErrorText, eventTitleValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'event title',
+      inputText: eventTitle,
+      isInputTextFocused: isEventTitleFocused,
+      isValidInputText: isValidEventTitle,
+      regexValidationText: returnGrammarValidationText({
+        contentKind: 'event title',
+        content: eventTitle,
+        minLength: 2,
+        maxLength: 75,
+      }),
+    });
+
+  const [eventDateErrorText, eventDateValidText] = returnAccessibleTextElements(
+    {
+      inputElementKind: 'event date',
+      inputText: eventDate,
+      isInputTextFocused: isEventDateFocused,
+      isValidInputText: isValidEventDate,
+      regexValidationText: returnDateNearFutureValidationText(eventDate),
+    }
+  );
+
+  const [eventStartTimeErrorText, eventStartTimeValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'event start time',
+      inputText: eventStartTime,
+      isInputTextFocused: isEventStartTimeFocused,
+      isValidInputText: isValidEventStartTime,
+      regexValidationText: returnTimeRailwayValidationText({
+        contentKind: 'event start time',
+        content: eventStartTime,
+        minLength: 4,
+        maxLength: 5,
+      }),
+    });
+
+  const [eventEndTimeErrorText, eventEndTimeValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'event end time',
+      inputText: eventEndTime,
+      isInputTextFocused: isEventEndTimeFocused,
+      isValidInputText: isValidEventEndTime,
+      regexValidationText: returnTimeRailwayValidationText({
+        contentKind: 'event end time',
+        content: eventEndTime,
+        minLength: 4,
+        maxLength: 5,
+      }),
+    });
+
+  const [eventLocationErrorText, eventLocationValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'event location',
+      inputText: eventLocation,
+      isInputTextFocused: isEventLocationFocused,
+      isValidInputText: isValidEventLocation,
+      regexValidationText: returnGrammarValidationText({
+        contentKind: 'event location',
+        content: eventLocation,
+        minLength: 2,
+        maxLength: 75,
+      }),
+    });
+
+  const [eventDescriptionErrorText, eventDescriptionValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'event description',
+      inputText: eventDescription,
+      isInputTextFocused: isEventDescriptionFocused,
+      isValidInputText: isValidEventDescription,
+      regexValidationText: returnGrammarValidationText({
+        contentKind: 'event description',
+        content: eventDescription,
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
+
+  const [eventAttendeesErrorText, eventAttendeesValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'event attendees',
+      inputText: eventAttendees,
+      isInputTextFocused: isEventAttendeesFocused,
+      isValidInputText: isValidEventAttendees,
+      regexValidationText: returnGrammarValidationText({
+        contentKind: 'event attendees',
+        content: eventAttendees,
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
+
+  const [requiredItemsErrorText, requiredItemsValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'required items',
+      inputText: requiredItems,
+      isInputTextFocused: isRequiredItemsFocused,
+      isValidInputText: isValidRequiredItems,
+      regexValidationText: returnGrammarValidationText({
+        contentKind: 'required items',
+        content: requiredItems,
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
+
+  const [rsvpDeadlineErrorText, rsvpDeadlineValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'RSVP deadline',
+      inputText: rsvpDeadline,
+      isInputTextFocused: isRsvpDeadlineFocused,
+      isValidInputText: isValidRsvpDeadline,
+      regexValidationText: returnDateNearFutureValidationText(rsvpDeadline),
+    });
 
   return (
     <div>

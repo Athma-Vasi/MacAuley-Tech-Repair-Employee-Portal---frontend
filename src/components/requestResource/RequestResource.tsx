@@ -7,7 +7,7 @@ import { DEPARTMENTS, URGENCY_DATA } from '../../constants/data';
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../constants/regex';
 import { returnAccessibleTextElements } from '../../jsxCreators';
@@ -77,7 +77,7 @@ function RequestResource() {
 
   // validate resource description input on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(resourceDescription);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(resourceDescription);
 
     requestResourceDispatch({
       type: requestResourceAction.setIsValidResourceDescription,
@@ -111,7 +111,7 @@ function RequestResource() {
 
   // validate additional information input on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_REGEX.test(additionalInformation);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalInformation);
 
     requestResourceDispatch({
       type: requestResourceAction.setIsValidAdditionalInformation,
