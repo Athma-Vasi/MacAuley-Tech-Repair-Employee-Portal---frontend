@@ -3,6 +3,8 @@ import {
   faCheck,
   faClock,
 } from '@fortawesome/free-solid-svg-icons';
+import { Button, Flex } from '@mantine/core';
+import { createEvent } from '@testing-library/react';
 import { useEffect, useReducer } from 'react';
 
 import {
@@ -27,6 +29,7 @@ import {
   returnGrammarValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
+import { StepperWrapper } from '../../stepperWrapper';
 import {
   EVENT_CREATOR_DESCRIPTION_MAP,
   EVENT_CREATOR_MAX_STEPPER_POSITION,
@@ -38,9 +41,6 @@ import {
   initialEventCreatorState,
 } from './state';
 import { EventKind } from './types';
-import { createEvent } from '@testing-library/react';
-import { Button, Flex } from '@mantine/core';
-import { StepperWrapper } from '../../stepperWrapper';
 
 function EventCreator() {
   const [eventCreatorState, eventCreatorDispatch] = useReducer(
@@ -184,10 +184,11 @@ function EventCreator() {
     const endTimeHour = parseInt(eventEndTime.split(':')[0]);
     const endTimeMinute = parseInt(eventEndTime.split(':')[1]);
 
-    const isValid =
-      areValidEventDates &&
-      startTimeHour < endTimeHour &&
-      startTimeMinute < endTimeMinute;
+    const isValid = areValidEventDates
+      ? startTimeHour === endTimeHour
+        ? startTimeMinute < endTimeMinute
+        : startTimeHour < endTimeHour
+      : false;
 
     eventCreatorDispatch({
       type: eventCreatorAction.setAreValidEventTimes,
@@ -324,7 +325,7 @@ function EventCreator() {
 
   const eventDatesInvalidText = areValidEventDates
     ? ''
-    : 'The event start date must be before the event end date and both must be in the future.';
+    : 'The event start date must be before the event end date and both must be in the future. ';
   const [eventStartDateErrorText, eventStartDateValidText] =
     returnAccessibleTextElements({
       inputElementKind: 'event start date',
@@ -521,12 +522,6 @@ function EventCreator() {
     withAsterisk: true,
   };
 
-  const [createdTitleTextInput, createdLocationTextInput] =
-    returnAccessibleTextInputElements([
-      titleInputCreatorInfo,
-      locationInputCreatorInfo,
-    ]);
-
   const eventKindInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: EVENT_KIND_DATA,
     description: 'Select the kind of event',
@@ -541,10 +536,6 @@ function EventCreator() {
     required: true,
     withAsterisk: true,
   };
-
-  const [createdEventKindSelectInput] = returnAccessibleSelectInputElements([
-    eventKindInputCreatorInfo,
-  ]);
 
   const eventDescriptionInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
     ariaRequired: true,
@@ -648,16 +639,6 @@ function EventCreator() {
     withAsterisk: true,
   };
 
-  const [
-    createdEventDescriptionTextAreaInput,
-    createdEventAttendeesTextAreaInput,
-    createdRequiredItemsTextAreaInput,
-  ] = returnAccessibleTextAreaInputElements([
-    eventDescriptionInputCreatorInfo,
-    eventAttendeesInputCreatorInfo,
-    requiredItemsInputCreatorInfo,
-  ]);
-
   const eventStartDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
     ariaRequired: true,
     description: {
@@ -690,6 +671,8 @@ function EventCreator() {
     },
     placeholder: 'DD-MM-YYYY',
     semanticName: 'event start date',
+    required: true,
+    withAsterisk: true,
   };
 
   const eventEndDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
@@ -724,6 +707,8 @@ function EventCreator() {
     },
     placeholder: 'DD-MM-YYYY',
     semanticName: 'event end date',
+    required: true,
+    withAsterisk: true,
   };
 
   const eventStartTimeInputCreatorInfo: AccessibleDateInputCreatorInfo = {
@@ -757,6 +742,8 @@ function EventCreator() {
     },
     placeholder: 'HH:MM',
     semanticName: 'event start time',
+    required: true,
+    withAsterisk: true,
   };
 
   const eventEndTimeInputCreatorInfo: AccessibleDateInputCreatorInfo = {
@@ -790,6 +777,8 @@ function EventCreator() {
     },
     placeholder: 'HH:MM',
     semanticName: 'event end time',
+    required: true,
+    withAsterisk: true,
   };
 
   const rsvpDeadlineInputCreatorInfo: AccessibleDateInputCreatorInfo = {
@@ -824,7 +813,29 @@ function EventCreator() {
     },
     placeholder: 'DD-MM-YYYY',
     semanticName: 'rsvp deadline',
+    required: true,
+    withAsterisk: true,
   };
+
+  const [createdTitleTextInput, createdLocationTextInput] =
+    returnAccessibleTextInputElements([
+      titleInputCreatorInfo,
+      locationInputCreatorInfo,
+    ]);
+
+  const [createdEventKindSelectInput] = returnAccessibleSelectInputElements([
+    eventKindInputCreatorInfo,
+  ]);
+
+  const [
+    createdEventDescriptionTextAreaInput,
+    createdEventAttendeesTextAreaInput,
+    createdRequiredItemsTextAreaInput,
+  ] = returnAccessibleTextAreaInputElements([
+    eventDescriptionInputCreatorInfo,
+    eventAttendeesInputCreatorInfo,
+    requiredItemsInputCreatorInfo,
+  ]);
 
   const [
     createdEventStartDateInput,
@@ -900,6 +911,13 @@ function EventCreator() {
       </form>
     </StepperWrapper>
   );
+
+  useEffect(() => {
+    console.log('eventStartDate', eventStartDate);
+    console.log('eventEndDate', eventEndDate);
+    console.log('eventStartTime', eventStartTime);
+    console.log('eventEndTime', eventEndTime);
+  }, [eventStartDate, eventEndDate, eventStartTime, eventEndTime]);
 
   return (
     <Flex

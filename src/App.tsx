@@ -34,9 +34,9 @@ function App() {
         {/* these are public routes */}
         <Route path="/" element={<PublicLayout />}>
           {/* <Route index element={<Login />} /> */}
-          {/* <Route path="login" element={<Login />} />
+          <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
-          <Route path="unauthorized" element={<Unauthorized />} /> */}
+          <Route path="unauthorized" element={<Unauthorized />} />
           {/* DEV PATHS - DELETE LATER*/}
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} />
           <Route path="create-benefit" element={<CreateBenefit />} />
