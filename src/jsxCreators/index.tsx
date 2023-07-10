@@ -1,17 +1,23 @@
 import {
   faCheck,
   faInfoCircle,
+  faPhoneAlt,
+  faRefresh,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Button,
   NativeSelect,
   PasswordInput,
   SelectItem,
   Text,
   Textarea,
   TextInput,
+  Tooltip,
 } from '@mantine/core';
+
+import { registerAction } from '../components/register/state';
 
 type ReturnAccessibleTextElemProps = {
   inputElementKind: string;
@@ -114,7 +120,7 @@ function returnAccessibleTextInputElements(
       description,
       placeholder,
       initialInputValue = '',
-      icon,
+      icon = null,
       onChange,
       onFocus,
       onBlur,
@@ -246,7 +252,7 @@ function returnAccessiblePasswordInputElements(
       description,
       placeholder,
       initialInputValue = '',
-      icon,
+      icon = null,
       onChange,
       onFocus,
       onBlur,
@@ -296,6 +302,211 @@ function returnAccessiblePasswordInputElements(
   });
 }
 
+/**
+ * <TextInput
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Personal contact number"
+        aria-required
+        aria-describedby={
+          isValidContactNumber
+            ? 'contact-number-input-note-valid'
+            : 'contact-number-input-note-error'
+        }
+        description={
+          isValidContactNumber
+            ? contactNumberInputValidText
+            : contactNumberInputErrorText
+        }
+        placeholder="Enter contact number"
+        autoComplete="off"
+        aria-invalid={isValidContactNumber ? false : true}
+        value={contactNumber}
+        onKeyDown={(event) => {
+          if (event.key === 'Backspace') {
+            if (contactNumber.length === 14) {
+              registerDispatch({
+                type: registerAction.setContactNumber,
+                payload: contactNumber.slice(0, -1),
+              });
+            } else if (contactNumber.length === 9) {
+              registerDispatch({
+                type: registerAction.setContactNumber,
+                payload: contactNumber.slice(0, -1),
+              });
+            }
+          }
+        }}
+        rightSection={
+          <Tooltip label="Reset value to +(1)">
+            <Button
+              type="button"
+              size="xs"
+              variant="white"
+              aria-label="Reset personal contact number value to +(1)"
+              mr="md"
+            >
+              <FontAwesomeIcon
+                icon={faRefresh}
+                cursor="pointer"
+                color="gray"
+                onClick={() => {
+                  registerDispatch({
+                    type: registerAction.setContactNumber,
+                    payload: '+(1)',
+                  });
+                }}
+              />
+            </Button>
+          </Tooltip>
+        }
+        icon={
+          isValidContactNumber ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidContactNumber && contactNumber !== '+(1)'}
+        onChange={(event) => {
+          registerDispatch({
+            type: registerAction.setContactNumber,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          registerDispatch({
+            type: registerAction.setIsContactNumberFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          registerDispatch({
+            type: registerAction.setIsContactNumberFocused,
+            payload: false,
+          });
+        }}
+        maxLength={18}
+      />
+ */
+
+type AccessiblePhoneNumberTextInputCreatorInfo = {
+  semanticName: string;
+  inputText: string;
+  isValidInputText: boolean;
+  label: string;
+  ariaRequired: boolean;
+  description: {
+    error: JSX.Element;
+    valid: JSX.Element;
+  };
+  placeholder: string;
+  initialInputValue?: string | undefined;
+  icon: IconDefinition | null;
+  onBlur: () => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  rightSection?: boolean | undefined;
+  rightSectionIcon?: IconDefinition | null | undefined;
+  rightSectionOnClick?: () => void | undefined;
+
+  minLength?: number | undefined;
+  maxLength?: number | undefined;
+  withAsterisk?: boolean | undefined;
+  required?: boolean | undefined;
+  autoComplete?: 'on' | 'off' | undefined;
+};
+
+function returnAccessiblePhoneNumberTextInputElements(
+  infoArray: AccessiblePhoneNumberTextInputCreatorInfo[]
+): JSX.Element[] {
+  return infoArray.map((info) => {
+    const {
+      semanticName,
+      inputText,
+      isValidInputText,
+      label,
+      ariaRequired,
+      description,
+      placeholder,
+      initialInputValue = '+(1)',
+      icon = null,
+      onBlur,
+      onChange,
+      onFocus,
+      onKeyDown,
+      rightSection = false,
+      rightSectionIcon = null,
+      rightSectionOnClick = () => {},
+      minLength = 18,
+      maxLength = 18,
+      withAsterisk = false,
+      required = false,
+      autoComplete = 'off',
+    } = info;
+
+    const createdPhoneNumberTextInput = (
+      <TextInput
+        size="sm"
+        w="100%"
+        color="dark"
+        label={label}
+        aria-required={ariaRequired}
+        aria-describedby={
+          isValidInputText
+            ? `${semanticName.split(' ').join('-')}-input-note-valid`
+            : `${semanticName.split(' ').join('-')}-input-note-error`
+        }
+        description={isValidInputText ? description.valid : description.error}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        aria-invalid={isValidInputText ? false : true}
+        value={inputText}
+        icon={
+          isValidInputText ? (
+            icon ? (
+              <FontAwesomeIcon icon={icon} color="green" />
+            ) : (
+              <FontAwesomeIcon icon={faCheck} color="green" />
+            )
+          ) : null
+        }
+        error={!isValidInputText && inputText !== initialInputValue}
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        onKeyDown={onKeyDown}
+        rightSection={
+          rightSection ? (
+            <Tooltip label={`Reset value to ${initialInputValue}`}>
+              <Button
+                type="button"
+                size="xs"
+                variant="white"
+                aria-label={`Reset personal contact number value to ${initialInputValue}`}
+                mr="md"
+              >
+                <FontAwesomeIcon
+                  icon={rightSectionIcon ? rightSectionIcon : faPhoneAlt}
+                  cursor="pointer"
+                  color="gray"
+                  onClick={rightSectionOnClick}
+                />
+              </Button>
+            </Tooltip>
+          ) : null
+        }
+        minLength={minLength}
+        maxLength={maxLength}
+        withAsterisk={withAsterisk}
+        required={required}
+      />
+    );
+
+    return createdPhoneNumberTextInput;
+  });
+}
+
 type AccessibleTextAreaInputCreatorInfo = {
   semanticName: string;
   inputText: string;
@@ -339,7 +550,7 @@ function returnAccessibleTextAreaInputElements(
       description,
       placeholder,
       initialInputValue = '',
-      icon,
+      icon = null,
       onChange,
       onFocus,
       onBlur,
@@ -535,6 +746,7 @@ function returnAccessibleDateTimeElements(
 export {
   returnAccessibleDateTimeElements,
   returnAccessiblePasswordInputElements,
+  returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
@@ -544,6 +756,7 @@ export {
 export type {
   AccessibleDateInputCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
+  AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
