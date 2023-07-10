@@ -8,6 +8,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
+  Checkbox,
   NativeSelect,
   PasswordInput,
   Radio,
@@ -95,10 +96,13 @@ type AccessibleTextInputCreatorInfo = {
   };
   placeholder: string;
   initialInputValue?: string | undefined;
-  icon: IconDefinition | null;
+  icon?: IconDefinition | undefined;
+  onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
-  onBlur: () => void;
+  onKeyDown?: (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => void | undefined;
 
   minLength?: number | undefined;
   maxLength?: number | undefined;
@@ -123,9 +127,10 @@ function returnAccessibleTextInputElements(
       placeholder,
       initialInputValue = '',
       icon = null,
+      onBlur,
       onChange,
       onFocus,
-      onBlur,
+      onKeyDown = () => {},
       minLength = 2,
       maxLength = 75,
       withAsterisk = false,
@@ -161,9 +166,10 @@ function returnAccessibleTextInputElements(
           ) : null
         }
         error={!isValidInputText && inputText !== initialInputValue}
+        onBlur={onBlur}
         onChange={onChange}
         onFocus={onFocus}
-        onBlur={onBlur}
+        onKeyDown={onKeyDown}
         minLength={minLength}
         maxLength={maxLength}
         autoComplete={autoComplete}
@@ -411,7 +417,7 @@ type AccessiblePhoneNumberTextInputCreatorInfo = {
   };
   placeholder: string;
   initialInputValue?: string | undefined;
-  icon: IconDefinition | null;
+  icon?: IconDefinition | undefined;
   onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
@@ -499,7 +505,7 @@ function returnAccessiblePhoneNumberTextInputElements(
                 mr="md"
               >
                 <FontAwesomeIcon
-                  icon={rightSectionIcon ? rightSectionIcon : faPhoneAlt}
+                  icon={rightSectionIcon ? rightSectionIcon : faRefresh}
                   cursor="pointer"
                   color="gray"
                   onClick={rightSectionOnClick}
@@ -795,8 +801,8 @@ type AccessibleRadioInputCreatorInfo = {
   semanticName: string;
   label: string;
   description: {
-    consent: string;
-    dissent: string;
+    selected: string;
+    deselected: string;
   };
   ariaRequired?: boolean | undefined;
   // ariaLabel: string;
@@ -847,7 +853,9 @@ function returnAccessibleRadioInputElements(
           <Radio
             size="sm"
             label={label}
-            description={checked ? description.consent : description.dissent}
+            description={
+              checked ? description.selected : description.deselected
+            }
             aria-required={ariaRequired}
             aria-label={checked ? semanticName : semanticName}
             checked={checked}
@@ -864,7 +872,9 @@ function returnAccessibleRadioInputElements(
           <Radio.Group
             size="sm"
             label={label}
-            description={checked ? description.consent : description.dissent}
+            description={
+              checked ? description.selected : description.deselected
+            }
             aria-required={ariaRequired}
             value={value}
             onChange={onChange}
@@ -873,14 +883,8 @@ function returnAccessibleRadioInputElements(
             ref={ref}
             withAsterisk={withAsterisk}
           >
-            {dataObjArray?.map((dataObj) => {
-              return (
-                <Radio
-                  key={dataObj.value}
-                  value={dataObj.value}
-                  label={dataObj.label}
-                />
-              );
+            {dataObjArray?.map(({ value, label }) => {
+              return <Radio key={value} value={value} label={label} />;
             })}
           </Radio.Group>
         );
@@ -891,7 +895,131 @@ function returnAccessibleRadioInputElements(
   });
 }
 
+/**
+ * <Checkbox
+          size="sm"
+          color="dark"
+          label="I acknowledge that the information provided is accurate."
+          aria-label={
+            isAcknowledged
+              ? 'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.'
+              : 'Acknowledgement checkbox is unchecked. I do not acknowledge.'
+          }
+          checked={isAcknowledged}
+          onChange={(event) => {
+            addressChangeDispatch({
+              type: addressChangeAction.setIsAcknowledged,
+              payload: event.currentTarget.checked,
+            });
+          }}
+        />
+ */
+
+type AccessibleCheckboxInputCreatorInfo = {
+  semanticName: string;
+  semanticDescription: {
+    selected: string;
+    deselected: string;
+  };
+  ariarequired?: boolean | undefined;
+  checkboxKind: 'single' | 'multiple';
+  dataObjArray?:
+    | Array<{
+        value: string;
+        label: Capitalize<string>;
+      }>
+    | undefined;
+  defaultValue?: [string] | undefined;
+  description: {
+    selected: string;
+    deselected: string;
+  };
+  label: string;
+  checked: boolean;
+  disabled?: boolean | undefined;
+  onChangeMultiple?: (value: string[]) => void | undefined;
+  onChangeSingle?: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void | undefined;
+  onClick: () => void;
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
+  required?: boolean | undefined;
+};
+
+function returnAccessibleCheckboxInputElements(
+  infoArr: AccessibleCheckboxInputCreatorInfo[]
+) {
+  return infoArr.map((info) => {
+    const {
+      semanticName,
+      semanticDescription,
+      ariarequired = false,
+      checkboxKind,
+      dataObjArray = null,
+      defaultValue = [''],
+      description,
+      label,
+      checked,
+      disabled = false,
+      onChangeSingle = () => {},
+      onChangeMultiple = () => {},
+      onClick,
+      withAsterisk = false,
+      ref = null,
+      required = false,
+    } = info;
+
+    switch (checkboxKind) {
+      case 'single': {
+        return (
+          <Checkbox
+            size="sm"
+            label={label}
+            aria-label={
+              checked
+                ? semanticDescription.selected
+                : semanticDescription.deselected
+            }
+            aria-required={ariarequired}
+            checked={checked}
+            description={
+              checked ? description.selected : description.deselected
+            }
+            disabled={disabled}
+            onChange={onChangeSingle}
+            onClick={onClick}
+            required={required}
+            ref={ref}
+          />
+        );
+      }
+      case 'multiple': {
+        return (
+          <Checkbox.Group
+            size="sm"
+            label={label}
+            aria-required={ariarequired}
+            defaultValue={defaultValue}
+            onChange={onChangeMultiple}
+            required={required}
+            ref={ref}
+            withAsterisk={withAsterisk}
+          >
+            {dataObjArray?.map(({ value, label }) => {
+              return <Checkbox key={value} value={value} label={label} />;
+            })}
+          </Checkbox.Group>
+        );
+      }
+      default:
+        return null;
+    }
+  });
+}
+
 export {
+  returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
@@ -903,6 +1031,7 @@ export {
 };
 
 export type {
+  AccessibleCheckboxInputCreatorInfo,
   AccessibleDateInputCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,

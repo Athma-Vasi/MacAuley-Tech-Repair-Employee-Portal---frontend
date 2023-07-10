@@ -19,7 +19,17 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../../constants/regex';
-import { returnAccessibleTextElements } from '../../jsxCreators';
+import {
+  AccessibleCheckboxInputCreatorInfo,
+  AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  returnAccessibleCheckboxInputElements,
+  returnAccessiblePhoneNumberTextInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextElements,
+  returnAccessibleTextInputElements,
+} from '../../jsxCreators';
 import {
   returnAddressValidationText,
   returnCityValidationText,
@@ -31,6 +41,7 @@ import { StepperWrapper } from '../stepperWrapper';
 import {
   ADDRESS_CHANGE_DESCRIPTION_MAP,
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,
+  COUNTRIES_DATA,
 } from './constants';
 import {
   addressChangeAction,
@@ -271,42 +282,363 @@ function AddressChange() {
       regexValidationText: returnPhoneNumberValidationText(contactNumber),
     });
 
-  const displayProvinceOrStateInput =
-    country === 'Canada' ? (
-      <NativeSelect
-        size="sm"
-        data={PROVINCES}
-        label="Select your province"
-        // description="Select your province"
-        value={province}
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setProvince,
-            payload: event.currentTarget.value,
-          });
-        }}
-        required
-        withAsterisk
-      />
-    ) : (
-      <NativeSelect
-        size="sm"
-        data={STATES_US}
-        // description="Select your state"
-        label="Select your state"
-        value={state}
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setState,
-            payload: event.currentTarget.value,
-          });
-        }}
-        required
-        withAsterisk
-      />
-    );
+  const countrySelectInputInfo: AccessibleSelectInputCreatorInfo = {
+    data: COUNTRIES_DATA,
+    description: 'Select your country',
+    label: 'Country',
+    value: country,
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setCountry,
+        payload: event.currentTarget.value,
+      });
+    },
+    required: true,
+    withAsterisk: true,
+  };
 
-  const selectCanadianPostalCodeInput = (
+  const provinceOrStateSelectInputInfo: AccessibleSelectInputCreatorInfo = {
+    data: country === 'Canada' ? PROVINCES : STATES_US,
+    description:
+      country === 'Canada' ? 'Select your province' : 'Select your state',
+    label: country === 'Canada' ? 'Province' : 'State',
+    value: country === 'Canada' ? province : state,
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      addressChangeDispatch({
+        type:
+          country === 'Canada'
+            ? addressChangeAction.setProvince
+            : addressChangeAction.setState,
+        payload: event.currentTarget.value,
+      });
+    },
+  };
+
+  const addressLineTextInputInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: addressLineInputErrorText,
+      valid: addressLineInputValidText,
+    },
+    inputText: addressLine,
+    isValidInputText: isValidAddressLine,
+    label: 'Address line',
+    onBlur: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsAddressLineFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setAddressLine,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsAddressLineFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter your address',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'address line',
+    ariaRequired: true,
+    minLength: 2,
+    maxLength: 75,
+  };
+
+  const cityTextInputInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: cityInputErrorText,
+      valid: cityInputValidText,
+    },
+    inputText: city,
+    isValidInputText: isValidCity,
+    label: 'City',
+    onBlur: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsCityFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setCity,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsCityFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter your city',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'city',
+    ariaRequired: true,
+    minLength: 2,
+    maxLength: 75,
+  };
+
+  const zipOrPostalCodeTextInputInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: postalCodeInputErrorText,
+      valid: postalCodeInputValidText,
+    },
+    inputText: postalCode,
+    isValidInputText: isValidPostalCode,
+    label: country === 'Canada' ? 'Postal code' : 'Zip code',
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setPostalCode,
+        payload:
+          country === 'Canada'
+            ? event.currentTarget.value.toUpperCase()
+            : event.currentTarget.value,
+      });
+    },
+    onBlur: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsPostalCodeFocused,
+        payload: false,
+      });
+    },
+    onFocus: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsPostalCodeFocused,
+        payload: true,
+      });
+    },
+    onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+      switch (country) {
+        case 'Canada': {
+          if (event.key === 'Backspace' && postalCode.length === 4) {
+            addressChangeDispatch({
+              type: addressChangeAction.setPostalCode,
+              payload: postalCode.slice(0, 3),
+            });
+          }
+          break;
+        }
+        case 'United States': {
+          if (event.key === 'Backspace' && postalCode.length === 7) {
+            addressChangeDispatch({
+              type: addressChangeAction.setPostalCode,
+              payload: postalCode.slice(0, 6),
+            });
+          }
+          break;
+        }
+        default:
+          break;
+      }
+    },
+    placeholder:
+      country === 'Canada'
+        ? 'Enter Canadian postal code'
+        : 'Enter US postal code',
+    semanticName: 'postal code',
+
+    minLength: country === 'Canada' ? 6 : 5,
+    maxLength: country === 'Canada' ? 7 : 10,
+    ariaRequired: true,
+    required: true,
+    withAsterisk: true,
+  };
+
+  const contactNumberTextInputInfo: AccessiblePhoneNumberTextInputCreatorInfo =
+    {
+      description: {
+        error: contactNumberInputErrorText,
+        valid: contactNumberInputValidText,
+      },
+      inputText: contactNumber,
+      isValidInputText: isValidContactNumber,
+      label: 'Personal contact number',
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        addressChangeDispatch({
+          type: addressChangeAction.setContactNumber,
+          payload: event.currentTarget.value,
+        });
+      },
+      onBlur: () => {
+        addressChangeDispatch({
+          type: addressChangeAction.setIsContactNumberFocused,
+          payload: false,
+        });
+      },
+      onFocus: () => {
+        addressChangeDispatch({
+          type: addressChangeAction.setIsContactNumberFocused,
+          payload: true,
+        });
+      },
+      onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Backspace') {
+          if (contactNumber.length === 14) {
+            addressChangeDispatch({
+              type: addressChangeAction.setContactNumber,
+              payload: contactNumber.slice(0, -1),
+            });
+          } else if (contactNumber.length === 9) {
+            addressChangeDispatch({
+              type: addressChangeAction.setContactNumber,
+              payload: contactNumber.slice(0, -1),
+            });
+          }
+        }
+      },
+      placeholder: 'Enter personal contact number',
+      rightSection: true,
+      rightSectionOnClick: () => {
+        addressChangeDispatch({
+          type: addressChangeAction.setContactNumber,
+          payload: '+(1)',
+        });
+      },
+      semanticName: 'contact number',
+      minLength: 18,
+      maxLength: 18,
+      ariaRequired: true,
+      required: true,
+      withAsterisk: true,
+      initialInputValue: '+(1)',
+    };
+
+  const acknowledgementCheckboxInfo: AccessibleCheckboxInputCreatorInfo = {
+    description: {
+      selected: 'I acknowledge that the information provided is accurate.',
+      deselected: 'I do not acknowledge.',
+    },
+    checkboxKind: 'single',
+    checked: isAcknowledged,
+    label: 'Acknowledgement',
+    onClick: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsAcknowledged,
+        payload: !isAcknowledged,
+      });
+    },
+    semanticName: 'acknowledgement',
+    semanticDescription: {
+      deselected:
+        'Acknowledgement checkbox is unchecked. I do not acknowledge.',
+      selected:
+        'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.',
+    },
+    ariarequired: true,
+    onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsAcknowledged,
+        payload: event.currentTarget.checked,
+      });
+    },
+    required: true,
+    withAsterisk: true,
+  };
+
+  const [
+    createdAddressLineTextInput,
+    createdCityTextInput,
+    createdZipOrPostalCodeTextInput,
+  ] = returnAccessibleTextInputElements([
+    addressLineTextInputInfo,
+    cityTextInputInfo,
+    zipOrPostalCodeTextInputInfo,
+  ]);
+
+  const createdContactNumberTextInput =
+    returnAccessiblePhoneNumberTextInputElements([contactNumberTextInputInfo]);
+
+  const [createdCountrySelectInput, createdProvinceOrStateSelectInput] =
+    returnAccessibleSelectInputElements([
+      countrySelectInputInfo,
+      provinceOrStateSelectInputInfo,
+    ]);
+
+  const createdAcknowledgementCheckbox = returnAccessibleCheckboxInputElements([
+    acknowledgementCheckboxInfo,
+  ]);
+
+  const displayAddressChangeFormPage = (
+    <>
+      {createdContactNumberTextInput}
+      {createdCountrySelectInput}
+      {createdAddressLineTextInput}
+      {createdProvinceOrStateSelectInput}
+      {createdCityTextInput}
+      {createdZipOrPostalCodeTextInput}
+      {createdAcknowledgementCheckbox}
+    </>
+  );
+  const displayAddressChangeReviewPage = <h2>Review</h2>;
+
+  const displayAddressChangeForm =
+    currentStepperPosition === 0
+      ? displayAddressChangeFormPage
+      : currentStepperPosition === 1
+      ? displayAddressChangeReviewPage
+      : null;
+
+  const displaySubmitButton =
+    currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION ? (
+      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
+        Submit
+      </Button>
+    ) : null;
+
+  async function handleAddressChangeFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  const displayAddressChangeComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
+      descriptionMap={ADDRESS_CHANGE_DESCRIPTION_MAP}
+      maxStepperPosition={ADDRESS_CHANGE_MAX_STEPPER_POSITION}
+      parentComponentDispatch={addressChangeDispatch}
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleAddressChangeFormSubmit}>
+        {displayAddressChangeForm}
+        {displaySubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  useEffect(() => {
+    console.group('addressChangeState');
+    Object.entries(addressChangeState).forEach(([key, value]) => {
+      console.log(`${key}: ${JSON.stringify(value)}`);
+    });
+    console.groupEnd();
+  }, [addressChangeState]);
+
+  return (
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      rowGap="lg"
+      w={400}
+    >
+      {displayAddressChangeComponent}
+    </Flex>
+  );
+}
+
+export { AddressChange };
+
+/**
+ * JUST IN CASE
+ * const selectCanadianPostalCodeInput = (
     <TextInput
       size="sm"
       w="100%"
@@ -420,23 +752,11 @@ function AddressChange() {
       maxLength={10}
     />
   );
+ */
 
-  async function handleAddressChangeFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
-
-  const displayAddressChangeForm =
-    currentStepperPosition === 0 ? (
-      <Flex
-        direction="column"
-        align="flex-start"
-        justify="center"
-        rowGap="lg"
-        w="100%"
-      >
-        <TextInput
+/**
+  * contact number
+  * <TextInput
           size="sm"
           w="100%"
           color="dark"
@@ -523,23 +843,11 @@ function AddressChange() {
           required
           maxLength={18}
         />
-        {/* country */}
-        <NativeSelect
-          size="sm"
-          data={['Canada', 'United States']}
-          label="Country"
-          value={country}
-          onChange={(event) => {
-            addressChangeDispatch({
-              type: addressChangeAction.setCountry,
-              payload: event.currentTarget.value,
-            });
-          }}
-          withAsterisk
-          required
-        />
+*/
 
-        <TextInput
+/**
+ * address line and city
+ * <TextInput
           size="sm"
           w="100%"
           color="dark"
@@ -631,16 +939,11 @@ function AddressChange() {
           withAsterisk
           required
         />
-        {/* province / state */}
-        {displayProvinceOrStateInput}
+*/
 
-        {/* postal code */}
-        {country === 'Canada'
-          ? selectCanadianPostalCodeInput
-          : selectUSPostalCodeInput}
-
-        {/* acknowledgement checkbox */}
-        <Checkbox
+/**
+ * acknowledgement
+ * <Checkbox
           size="sm"
           color="dark"
           label="I acknowledge that the information provided is accurate."
@@ -657,51 +960,41 @@ function AddressChange() {
             });
           }}
         />
-      </Flex>
-    ) : null;
+ */
 
-  const displayAddressChangeReview =
-    currentStepperPosition === 1 ? <h2>Review</h2> : null;
-
-  const displayAddressChangeComponent = (
-    <StepperWrapper
-      currentStepperPosition={currentStepperPosition}
-      setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
-      descriptionMap={ADDRESS_CHANGE_DESCRIPTION_MAP}
-      maxStepperPosition={ADDRESS_CHANGE_MAX_STEPPER_POSITION}
-      parentComponentDispatch={addressChangeDispatch}
-      stepsInError={stepsInError}
-    >
-      <form onSubmit={handleAddressChangeFormSubmit}>
-        {displayAddressChangeForm}
-        {displayAddressChangeReview}
-
-        {/* submit button */}
-        <Button
-          type="button"
-          variant="filled"
-          disabled={
-            stepsInError.size > 0 ||
-            currentStepperPosition < ADDRESS_CHANGE_MAX_STEPPER_POSITION
-          }
-        >
-          Submit
-        </Button>
-      </form>
-    </StepperWrapper>
-  );
-
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w={400}
-    >
-      {displayAddressChangeComponent}
-    </Flex>
-  );
-}
-
-export { AddressChange };
+/**
+ *  const displayProvinceOrStateInput =
+    country === 'Canada' ? (
+      <NativeSelect
+        size="sm"
+        data={PROVINCES}
+        label="Select your province"
+        // description="Select your province"
+        value={province}
+        onChange={(event) => {
+          addressChangeDispatch({
+            type: addressChangeAction.setProvince,
+            payload: event.currentTarget.value,
+          });
+        }}
+        required
+        withAsterisk
+      />
+    ) : (
+      <NativeSelect
+        size="sm"
+        data={STATES_US}
+        // description="Select your state"
+        label="Select your state"
+        value={state}
+        onChange={(event) => {
+          addressChangeDispatch({
+            type: addressChangeAction.setState,
+            payload: event.currentTarget.value,
+          });
+        }}
+        required
+        withAsterisk
+      />
+    );
+ */

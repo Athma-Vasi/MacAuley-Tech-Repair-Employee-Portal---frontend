@@ -34,22 +34,22 @@ function App() {
         {/* these are public routes */}
         <Route path="/" element={<PublicLayout />}>
           {/* <Route index element={<Login />} /> */}
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="unauthorized" element={<Unauthorized />} />
+          {/* <Route path="login" element={<Login />} /> */}
+          {/* <Route path="register" element={<Register />} /> */}
+          {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
           {/* DEV PATHS - DELETE LATER*/}
-          {/* <Route path="create-announcement" element={<CreateAnnouncement />} />
-          <Route path="create-benefit" element={<CreateBenefit />} />
+          {/* <Route path="create-announcement" element={<CreateAnnouncement />} />*/}
+          {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
           <Route path="create-address-change" element={<AddressChange />} />
-          <Route path="create-leave-request" element={<LeaveRequest />} />
-          <Route path="create-request-resource" element={<RequestResource />} />
-          <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
+          {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
+          {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
+          {/* <Route path="create-endorsement" element={<CreateEndorsement />} />  */}
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
           {/* <Route path="create-referment" element={<CreateReferment />} /> */}
-          <Route
+          {/* <Route
             path="create-anonymous-request"
             element={<CreateAnonymousRequest />}
-          />
+          /> */}
           <Route path="event-creator" element={<EventCreator />} />
         </Route>
 
