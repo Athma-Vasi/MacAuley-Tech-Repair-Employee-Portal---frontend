@@ -1,6 +1,4 @@
 import {
-  ArticleParagraphFocusedPayload,
-  ArticlePayload,
   CreateAnnouncementAction,
   CreateAnnouncementDispatch,
   CreateAnnouncementState,
@@ -29,6 +27,17 @@ const initialCreateAnnouncementState: CreateAnnouncementState = {
   isArticleLengthExceeded: false,
 
   timeToRead: 0,
+  currentStepperPosition: 0,
+  stepsInError: new Set(),
+
+  isError: false,
+  errorMessage: '',
+  isSubmitting: false,
+  submitMessage: '',
+  isSuccessful: false,
+  successMessage: '',
+  isLoading: false,
+  loadingMessage: '',
 };
 
 const createAnnouncementAction: CreateAnnouncementAction = {
@@ -54,6 +63,17 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setIsArticleLengthExceeded: 'setIsArticleLengthExceeded',
 
   setTimeToRead: 'setTimeToRead',
+  setCurrentStepperPosition: 'setCurrentStepperPosition',
+  setStepsInError: 'setStepsInError',
+
+  setIsError: 'setIsError',
+  setErrorMessage: 'setErrorMessage',
+  setIsSubmitting: 'setIsSubmitting',
+  setSubmitMessage: 'setSubmitMessage',
+  setIsSuccessful: 'setIsSuccessful',
+  setSuccessMessage: 'setSuccessMessage',
+  setIsLoading: 'setIsLoading',
+  setLoadingMessage: 'setLoadingMessage',
 };
 
 function createAnnouncementReducer(
@@ -64,68 +84,180 @@ function createAnnouncementReducer(
     case createAnnouncementAction.setTitle:
       return {
         ...state,
-        title: action.payload as string,
+        title: action.payload,
       };
     case createAnnouncementAction.setIsValidTitle:
       return {
         ...state,
-        isValidTitle: action.payload as boolean,
+        isValidTitle: action.payload,
       };
     case createAnnouncementAction.setIsTitleFocused:
       return {
         ...state,
-        isTitleFocused: action.payload as boolean,
+        isTitleFocused: action.payload,
       };
 
     case createAnnouncementAction.setAuthor:
       return {
         ...state,
-        author: action.payload as string,
+        author: action.payload,
       };
     case createAnnouncementAction.setIsValidAuthor:
       return {
         ...state,
-        isValidAuthor: action.payload as boolean,
+        isValidAuthor: action.payload,
       };
     case createAnnouncementAction.setIsAuthorFocused:
       return {
         ...state,
-        isAuthorFocused: action.payload as boolean,
+        isAuthorFocused: action.payload,
       };
 
     case createAnnouncementAction.setBannerImageSrc:
       return {
         ...state,
-        bannerImageSrc: action.payload as string,
+        bannerImageSrc: action.payload,
       };
     case createAnnouncementAction.setIsValidBannerImageSrc:
       return {
         ...state,
-        isValidBannerImageSrc: action.payload as boolean,
+        isValidBannerImageSrc: action.payload,
       };
     case createAnnouncementAction.setIsBannerImageSrcFocused:
       return {
         ...state,
-        isBannerImageSrcFocused: action.payload as boolean,
+        isBannerImageSrcFocused: action.payload,
       };
 
     case createAnnouncementAction.setBannerImageAlt:
       return {
         ...state,
-        bannerImageAlt: action.payload as string,
+        bannerImageAlt: action.payload,
       };
     case createAnnouncementAction.setIsValidBannerImageAlt:
       return {
         ...state,
-        isValidBannerImageAlt: action.payload as boolean,
+        isValidBannerImageAlt: action.payload,
       };
     case createAnnouncementAction.setIsBannerImageAltFocused:
       return {
         ...state,
-        isBannerImageAltFocused: action.payload as boolean,
+        isBannerImageAltFocused: action.payload,
       };
 
     case createAnnouncementAction.setArticle: {
+      const { index, value } = action.payload;
+      const article = [...state.article];
+      if (index >= article.length) {
+        article.push(value);
+      } else {
+        article[index] = value;
+      }
+
+      return {
+        ...state,
+        article,
+      };
+    }
+    case createAnnouncementAction.setIsValidArticleParagraph:
+      return {
+        ...state,
+        isValidArticleParagraph: action.payload,
+      };
+    case createAnnouncementAction.setIsArticleParagraphFocused: {
+      const { index, value } = action.payload;
+      const isArticleParagraphFocused = [...state.isArticleParagraphFocused];
+      if (index >= isArticleParagraphFocused.length) {
+        isArticleParagraphFocused.push(value);
+      }
+      isArticleParagraphFocused[index] = value;
+
+      return {
+        ...state,
+        isArticleParagraphFocused,
+      };
+    }
+    case createAnnouncementAction.setIsArticleLengthExceeded:
+      return {
+        ...state,
+        isArticleLengthExceeded: action.payload,
+      };
+
+    case createAnnouncementAction.setTimeToRead:
+      return {
+        ...state,
+        timeToRead: action.payload,
+      };
+    case createAnnouncementAction.setCurrentStepperPosition:
+      return {
+        ...state,
+        currentStepperPosition: action.payload,
+      };
+    case createAnnouncementAction.setStepsInError: {
+      const { kind, step } = action.payload;
+      const stepsInError = new Set(state.stepsInError);
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+
+      return {
+        ...state,
+        stepsInError,
+      };
+    }
+
+    case createAnnouncementAction.setIsError:
+      return {
+        ...state,
+        isError: action.payload,
+      };
+    case createAnnouncementAction.setErrorMessage:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case createAnnouncementAction.setIsSubmitting:
+      return {
+        ...state,
+        isSubmitting: action.payload,
+      };
+    case createAnnouncementAction.setSubmitMessage:
+      return {
+        ...state,
+        submitMessage: action.payload,
+      };
+    case createAnnouncementAction.setIsSuccessful:
+      return {
+        ...state,
+        isSuccessful: action.payload,
+      };
+    case createAnnouncementAction.setSuccessMessage:
+      return {
+        ...state,
+        successMessage: action.payload,
+      };
+    case createAnnouncementAction.setIsLoading:
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    case createAnnouncementAction.setLoadingMessage:
+      return {
+        ...state,
+        loadingMessage: action.payload,
+      };
+
+    default:
+      return state;
+  }
+}
+
+export {
+  createAnnouncementAction,
+  createAnnouncementReducer,
+  initialCreateAnnouncementState,
+};
+
+/**
+ * case createAnnouncementAction.setArticle: {
       const { index, value } = action.payload as ArticlePayload;
       const article = [...state.article];
       if (index >= article.length) {
@@ -139,13 +271,10 @@ function createAnnouncementReducer(
         article,
       };
     }
-    case createAnnouncementAction.setIsValidArticleParagraph: {
-      return {
-        ...state,
-        isValidArticleParagraph: action.payload as boolean[],
-      };
-    }
-    case createAnnouncementAction.setIsArticleParagraphFocused: {
+ */
+
+/**
+     * case createAnnouncementAction.setIsArticleParagraphFocused: {
       const { index, value } = action.payload as ArticleParagraphFocusedPayload;
       const isArticleParagraphFocused = [...state.isArticleParagraphFocused];
       if (index >= isArticleParagraphFocused.length) {
@@ -159,25 +288,4 @@ function createAnnouncementReducer(
         isArticleParagraphFocused,
       };
     }
-    case createAnnouncementAction.setIsArticleLengthExceeded: {
-      return {
-        ...state,
-        isArticleLengthExceeded: action.payload as boolean,
-      };
-    }
-
-    case createAnnouncementAction.setTimeToRead:
-      return {
-        ...state,
-        timeToRead: action.payload as number,
-      };
-    default:
-      return state;
-  }
-}
-
-export {
-  createAnnouncementAction,
-  createAnnouncementReducer,
-  initialCreateAnnouncementState,
-};
+     */

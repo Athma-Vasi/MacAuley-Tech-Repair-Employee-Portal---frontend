@@ -1,3 +1,5 @@
+import { SetStepsInErrorPayload } from '../../../types';
+
 type RatingFeel = 'estatic' | 'happy' | 'neutral' | 'sad' | 'devastated' | '';
 
 type Comment = {
@@ -52,6 +54,18 @@ type CreateAnnouncementState = {
   isArticleParagraphFocused: boolean[];
   isArticleLengthExceeded: boolean;
   timeToRead: number;
+
+  currentStepperPosition: number;
+  stepsInError: Set<number>;
+
+  isError: boolean;
+  errorMessage: string;
+  isSubmitting: boolean;
+  submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
+  isLoading: boolean;
+  loadingMessage: string;
 };
 
 type CreateAnnouncementAction = {
@@ -77,6 +91,17 @@ type CreateAnnouncementAction = {
   setIsArticleLengthExceeded: 'setIsArticleLengthExceeded';
 
   setTimeToRead: 'setTimeToRead';
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
+  setIsError: 'setIsError';
+  setErrorMessage: 'setErrorMessage';
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
+  setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
 };
 
 type ReturnArticleParagraphInputProps = {
@@ -96,19 +121,73 @@ type ArticleParagraphFocusedPayload = {
   value: boolean;
 };
 
-type CreateAnnouncementPayload =
-  | string
-  | number
-  | boolean
-  | string[]
-  | boolean[]
-  | ArticlePayload
-  | ArticleParagraphFocusedPayload;
-
-type CreateAnnouncementDispatch = {
-  type: CreateAnnouncementAction[keyof CreateAnnouncementAction];
-  payload: CreateAnnouncementPayload;
-};
+type CreateAnnouncementDispatch =
+  | {
+      type:
+        | CreateAnnouncementAction['setTitle']
+        | CreateAnnouncementAction['setAuthor']
+        | CreateAnnouncementAction['setBannerImageSrc']
+        | CreateAnnouncementAction['setBannerImageAlt'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAnnouncementAction['setIsValidTitle']
+        | CreateAnnouncementAction['setIsValidAuthor']
+        | CreateAnnouncementAction['setIsValidBannerImageSrc']
+        | CreateAnnouncementAction['setIsValidBannerImageAlt'];
+      payload: boolean;
+    }
+  | {
+      type:
+        | CreateAnnouncementAction['setIsTitleFocused']
+        | CreateAnnouncementAction['setIsAuthorFocused']
+        | CreateAnnouncementAction['setIsBannerImageSrcFocused']
+        | CreateAnnouncementAction['setIsBannerImageAltFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAnnouncementAction['setArticle'];
+      payload: ArticlePayload;
+    }
+  | {
+      type: CreateAnnouncementAction['setIsValidArticleParagraph'];
+      payload: boolean[];
+    }
+  | {
+      type: CreateAnnouncementAction['setIsArticleParagraphFocused'];
+      payload: ArticleParagraphFocusedPayload;
+    }
+  | {
+      type: CreateAnnouncementAction['setIsArticleLengthExceeded'];
+      payload: boolean;
+    }
+  | {
+      type:
+        | CreateAnnouncementAction['setTimeToRead']
+        | CreateAnnouncementAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: CreateAnnouncementAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
+    }
+  | {
+      type:
+        | CreateAnnouncementAction['setIsError']
+        | CreateAnnouncementAction['setIsSubmitting']
+        | CreateAnnouncementAction['setIsSuccessful']
+        | CreateAnnouncementAction['setIsLoading'];
+      payload: boolean;
+    }
+  | {
+      type:
+        | CreateAnnouncementAction['setErrorMessage']
+        | CreateAnnouncementAction['setSubmitMessage']
+        | CreateAnnouncementAction['setSuccessMessage']
+        | CreateAnnouncementAction['setLoadingMessage'];
+      payload: string;
+    };
 
 type CreateAnnouncementReducer = (
   state: CreateAnnouncementState,
@@ -122,12 +201,9 @@ type CreateAnnouncementResponse = {
 export type {
   AnnouncementDocument,
   AnnouncementSchema,
-  ArticleParagraphFocusedPayload,
-  ArticlePayload,
   Comment,
   CreateAnnouncementAction,
   CreateAnnouncementDispatch,
-  CreateAnnouncementPayload,
   CreateAnnouncementReducer,
   CreateAnnouncementResponse,
   CreateAnnouncementState,

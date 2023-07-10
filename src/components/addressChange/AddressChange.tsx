@@ -345,9 +345,6 @@ function AddressChange() {
     required: true,
     withAsterisk: true,
     semanticName: 'address line',
-    ariaRequired: true,
-    minLength: 2,
-    maxLength: 75,
   };
 
   const cityTextInputInfo: AccessibleTextInputCreatorInfo = {
@@ -380,7 +377,7 @@ function AddressChange() {
     required: true,
     withAsterisk: true,
     semanticName: 'city',
-    ariaRequired: true,
+
     minLength: 2,
     maxLength: 75,
   };
@@ -446,7 +443,7 @@ function AddressChange() {
 
     minLength: country === 'Canada' ? 6 : 5,
     maxLength: country === 'Canada' ? 7 : 10,
-    ariaRequired: true,
+
     required: true,
     withAsterisk: true,
   };
@@ -504,7 +501,7 @@ function AddressChange() {
       semanticName: 'contact number',
       minLength: 18,
       maxLength: 18,
-      ariaRequired: true,
+
       required: true,
       withAsterisk: true,
       initialInputValue: '+(1)',
@@ -531,7 +528,7 @@ function AddressChange() {
       selected:
         'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.',
     },
-    ariarequired: true,
+
     onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setIsAcknowledged,
@@ -615,13 +612,13 @@ function AddressChange() {
     event.preventDefault();
   }
 
-  useEffect(() => {
-    console.group('addressChangeState');
-    Object.entries(addressChangeState).forEach(([key, value]) => {
-      console.log(`${key}: ${JSON.stringify(value)}`);
-    });
-    console.groupEnd();
-  }, [addressChangeState]);
+  // useEffect(() => {
+  //   console.group('addressChangeState');
+  //   Object.entries(addressChangeState).forEach(([key, value]) => {
+  //     console.log(`${key}: ${JSON.stringify(value)}`);
+  //   });
+  //   console.groupEnd();
+  // }, [addressChangeState]);
 
   return (
     <Flex

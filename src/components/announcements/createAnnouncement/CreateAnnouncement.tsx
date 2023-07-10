@@ -4,7 +4,12 @@ import { Button, Flex, Text, Textarea, TextInput } from '@mantine/core';
 import { Fragment, useEffect, useReducer, useRef } from 'react';
 
 import { FULL_NAME_REGEX, URL_REGEX } from '../../../constants/regex';
-import { returnAccessibleTextElements } from '../../../jsxCreators';
+import {
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  returnAccessibleTextElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
 import {
   returnNameValidationText,
   returnUrlValidationText,
@@ -15,7 +20,11 @@ import {
   returnArticleTitleValidationText,
   returnImageAltValidationText,
 } from '../utils';
-import { MAX_ARTICLE_LENGTH } from './constants';
+import {
+  CREATE_ANNOUNCEMENT_DESCRIPTION_MAP,
+  CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION,
+  MAX_ARTICLE_LENGTH,
+} from './constants';
 import {
   createAnnouncementAction,
   createAnnouncementReducer,
@@ -25,6 +34,7 @@ import {
   returnArticleParagraphInputErrorElements,
   returnArticleParagraphInputValidElements,
 } from './utils';
+import { StepperWrapper } from '../../stepperWrapper';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
@@ -35,20 +45,36 @@ function CreateAnnouncement() {
     title,
     isValidTitle,
     isTitleFocused,
+
     author,
     isValidAuthor,
     isAuthorFocused,
+
     bannerImageSrc,
     isValidBannerImageSrc,
     isBannerImageSrcFocused,
+
     bannerImageAlt,
     isValidBannerImageAlt,
     isBannerImageAltFocused,
+
     article,
     isValidArticleParagraph,
     isArticleParagraphFocused,
     isArticleLengthExceeded,
+
     timeToRead,
+    currentStepperPosition,
+    stepsInError,
+
+    isError,
+    errorMessage,
+    isSubmitting,
+    submitMessage,
+    isSuccessful,
+    successMessage,
+    isLoading,
+    loadingMessage,
   } = createAnnouncementState;
 
   const titleRef = useRef<HTMLInputElement>(null);
@@ -139,6 +165,41 @@ function CreateAnnouncement() {
     });
   }, [article]);
 
+  // update for stepper wrapper change
+  useEffect(() => {
+    const isStepInError =
+      !isValidTitle ||
+      !isValidAuthor ||
+      !isValidBannerImageSrc ||
+      !isValidBannerImageAlt;
+
+    createAnnouncementDispatch({
+      type: createAnnouncementAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [
+    isValidTitle,
+    isValidAuthor,
+    isValidBannerImageSrc,
+    isValidBannerImageAlt,
+  ]);
+
+  // update for stepper wrapper change
+  useEffect(() => {
+    const isStepInError = isValidArticleParagraph.includes(false);
+
+    createAnnouncementDispatch({
+      type: createAnnouncementAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 2,
+      },
+    });
+  }, [isValidArticleParagraph]);
+
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleTextElements({
       inputElementKind: 'title',
@@ -205,8 +266,317 @@ function CreateAnnouncement() {
       isArticleParagraphFocused,
     });
 
+  // following are info objects for input creators
+  const titleTextInputInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: titleInputErrorText,
+      valid: titleInputValidText,
+    },
+    inputText: title,
+    isValidInputText: isValidTitle,
+    label: 'Article title',
+    onBlur: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsTitleFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setTitle,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsTitleFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter article title',
+    semanticName: 'title',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const authorTextInputInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: authorInputErrorText,
+      valid: authorInputValidText,
+    },
+    inputText: author,
+    isValidInputText: isValidAuthor,
+    label: 'Author',
+    onBlur: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsAuthorFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setAuthor,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsAuthorFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter author name',
+    semanticName: 'author',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const bannerImageSrcTextInputInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: bannerImgSrcInputErrorText,
+      valid: bannerImgSrcInputValidText,
+    },
+    inputText: bannerImageSrc,
+    isValidInputText: isValidBannerImageSrc,
+    label: 'Banner image src',
+    onBlur: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsBannerImageSrcFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setBannerImageSrc,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsBannerImageSrcFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter banner image src',
+    semanticName: 'banner image src',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const bannerImageAltTextInputInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: bannerImgAltInputErrorText,
+      valid: bannerImgAltInputValidText,
+    },
+    inputText: bannerImageAlt,
+    isValidInputText: isValidBannerImageAlt,
+    label: 'Banner image alt text',
+    onBlur: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsBannerImageAltFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setBannerImageAlt,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsBannerImageAltFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter banner image alt text',
+    semanticName: 'banner image alt',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const [
+    createdTitleTextInput,
+    createdAuthorTextInput,
+    createdBannerImageSrcTextInput,
+    createdBannerImageAltTextInput,
+  ] = returnAccessibleTextInputElements([
+    titleTextInputInfo,
+    authorTextInputInfo,
+    bannerImageSrcTextInputInfo,
+    bannerImageAltTextInputInfo,
+  ]);
+
+  const createdArticleParagraphsTextAreaInputs = article.map(
+    (paragraph, index) => {
+      return (
+        <Fragment key={`${index}${title}`}>
+          <Textarea
+            size="sm"
+            w="100%"
+            color="dark"
+            label={`Paragraph ${index + 1}`}
+            placeholder={`Enter paragraph ${index + 1}`}
+            value={paragraph}
+            aria-required
+            aria-describedby={
+              isValidArticleParagraph[index]
+                ? `article-paragraph-input-note-valid-${index}`
+                : `article-paragraph-input-note-error-${index}`
+            }
+            description={
+              isValidArticleParagraph[index]
+                ? articleParagraphInputValidTexts[index]
+                : articleParagraphInputErrorTexts[index]
+            }
+            aria-invalid={isValidArticleParagraph[index] ? 'false' : 'true'}
+            icon={
+              isValidArticleParagraph[index] ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!isValidArticleParagraph[index] && paragraph !== ''}
+            onChange={(event) => {
+              createAnnouncementDispatch({
+                type: createAnnouncementAction.setArticle,
+                payload: {
+                  index: index,
+                  value: event.currentTarget.value,
+                },
+              });
+            }}
+            onFocus={() => {
+              createAnnouncementDispatch({
+                type: createAnnouncementAction.setIsArticleParagraphFocused,
+                payload: {
+                  index,
+                  value: true,
+                },
+              });
+            }}
+            onBlur={() => {
+              createAnnouncementDispatch({
+                type: createAnnouncementAction.setIsArticleParagraphFocused,
+                payload: {
+                  index,
+                  value: false,
+                },
+              });
+            }}
+            required
+            withAsterisk
+            autosize
+            minRows={3}
+            maxRows={10}
+            minLength={3}
+            maxLength={2000}
+            ref={index === article.length - 1 ? lastArticleParagraphRef : null}
+          />
+        </Fragment>
+      );
+    }
+  );
+
+  const displayAddArticleParagraphButton = (
+    <Button
+      variant="default"
+      size="sm"
+      disabled={isArticleLengthExceeded}
+      onClick={() => {
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setArticle,
+          payload: {
+            index: article.length,
+            value: '',
+          },
+        });
+      }}
+    >
+      Add paragraph
+    </Button>
+  );
+
+  // TODO add remove article paragraph button
+  // const removeArticleParagraphButton = ()
+
+  const displaySubmitButton =
+    currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION ? (
+      <Button variant="filled" size="sm" disabled={stepsInError.size > 0}>
+        Submit
+      </Button>
+    ) : null;
+
+  const displayAnnouncementDetailsFormPage = (
+    <>
+      {createdTitleTextInput}
+      {createdAuthorTextInput}
+      {createdBannerImageSrcTextInput}
+      {createdBannerImageAltTextInput}
+    </>
+  );
+
+  const displayArticleParagraphsFormPage = (
+    <>
+      {createdArticleParagraphsTextAreaInputs}
+      <Flex align="center" justify="space-between" w="100%">
+        <Text color="dark">{`${timeToRead} min read`}</Text>
+
+        {displayAddArticleParagraphButton}
+      </Flex>
+    </>
+  );
+
+  const displayCreateAnnouncementReviewPage = <h3>announcement review page</h3>;
+
+  const displayCreateAnnouncementForm =
+    currentStepperPosition === 0
+      ? displayAnnouncementDetailsFormPage
+      : currentStepperPosition === 1
+      ? displayArticleParagraphsFormPage
+      : currentStepperPosition === 2
+      ? displayCreateAnnouncementReviewPage
+      : null;
+
+  const displayCreateAnnouncementComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      setCurrentStepperPosition={
+        createAnnouncementAction.setCurrentStepperPosition
+      }
+      descriptionMap={CREATE_ANNOUNCEMENT_DESCRIPTION_MAP}
+      maxStepperPosition={CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION}
+      parentComponentDispatch={createAnnouncementDispatch}
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleCreateAnnouncementFormSubmit}>
+        {displayCreateAnnouncementForm}
+        {displaySubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  async function handleCreateAnnouncementFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
   return (
     <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      rowGap="lg"
+      w={400}
+    >
+      {displayCreateAnnouncementComponent}
+    </Flex>
+  );
+}
+
+export { CreateAnnouncement };
+
+/**
+ * <Flex
       direction="column"
       align="flex-start"
       justify="center"
@@ -254,7 +624,6 @@ function CreateAnnouncement() {
         required
         withAsterisk
       />
-      {/* author name input */}
       <TextInput
         size="sm"
         w="100%"
@@ -299,7 +668,6 @@ function CreateAnnouncement() {
         required
         withAsterisk
       />
-      {/* banner img src input */}
       <TextInput
         size="sm"
         w="100%"
@@ -346,7 +714,6 @@ function CreateAnnouncement() {
         required
         withAsterisk
       />
-      {/* banner image alt text */}
       <TextInput
         size="sm"
         w="100%"
@@ -395,7 +762,6 @@ function CreateAnnouncement() {
         minLength={3}
         maxLength={150}
       />
-      {/* article content text area */}
       {article.map((paragraph, index) => {
         return (
           <Fragment key={`${index}${title}`}>
@@ -466,7 +832,6 @@ function CreateAnnouncement() {
         );
       })}
 
-      {/* button to create new text area paragraph */}
       <Flex align="center" justify="space-between" w="100%">
         <Text color="dark">{`${timeToRead} min read`}</Text>
 
@@ -487,14 +852,10 @@ function CreateAnnouncement() {
           Add paragraph
         </Button>
       </Flex>
-      {/* max length exceeded notice */}
       {isArticleLengthExceeded ? (
         <Text color="red" size="sm">
           Maximum character length of 14000 reached
         </Text>
       ) : null}
     </Flex>
-  );
-}
-
-export { CreateAnnouncement };
+ */

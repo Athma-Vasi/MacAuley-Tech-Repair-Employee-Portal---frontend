@@ -54,7 +54,7 @@ function returnArticleParagraphInputErrorElements({
     >
       <FontAwesomeIcon icon={faInfoCircle} />{' '}
       {returnRegexValidationText
-        ? `Paragraph ${index + 1} ${returnRegexValidationText(paragraph)}`
+        ? `Paragraph ${index + 1} - ${returnRegexValidationText(paragraph)}`
         : ''}
     </Text>
   ));

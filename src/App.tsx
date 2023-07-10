@@ -7,6 +7,7 @@ import { CreateBenefit } from './components/benefits/createBenefit';
 import { CreateAnonymousRequest } from './components/createAnonymousRequest';
 import { Dashboard } from './components/dashboard';
 import { CreateEndorsement } from './components/endorsements/createEndorsement';
+import { EventCreator } from './components/events/eventCreator';
 import { LeaveRequest } from './components/leaveRequest';
 import { Login } from './components/login';
 import { NotesList } from './components/notesList';
@@ -21,7 +22,6 @@ import { RequireAuth } from './components/requireAuth';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
-import { EventCreator } from './components/events/eventCreator';
 
 function App() {
   const {
@@ -38,9 +38,9 @@ function App() {
           {/* <Route path="register" element={<Register />} /> */}
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
           {/* DEV PATHS - DELETE LATER*/}
-          {/* <Route path="create-announcement" element={<CreateAnnouncement />} />*/}
+          <Route path="create-announcement" element={<CreateAnnouncement />} />
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
-          <Route path="create-address-change" element={<AddressChange />} />
+          {/* <Route path="create-address-change" element={<AddressChange />} /> */}
           {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
           {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
           {/* <Route path="create-endorsement" element={<CreateEndorsement />} />  */}

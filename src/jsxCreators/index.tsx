@@ -88,7 +88,7 @@ type AccessibleTextInputCreatorInfo = {
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired?: boolean | undefined;
+  // ariaRequired?: boolean | undefined;
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
   description: {
     error: JSX.Element;
@@ -121,7 +121,7 @@ function returnAccessibleTextInputElements(
       inputText,
       isValidInputText,
       label,
-      ariaRequired = false,
+      // ariaRequired = false,
       ariaAutoComplete = 'none',
       description,
       placeholder,
@@ -145,7 +145,7 @@ function returnAccessibleTextInputElements(
         w="100%"
         color="dark"
         label={label}
-        aria-required={ariaRequired}
+        aria-required={required}
         aria-describedby={
           isValidInputText
             ? `${semanticName.split(' ').join('-')}-input-note-valid`

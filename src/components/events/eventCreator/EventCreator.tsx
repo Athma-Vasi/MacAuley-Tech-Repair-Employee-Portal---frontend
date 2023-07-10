@@ -455,7 +455,6 @@ function EventCreator() {
     });
 
   const titleInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    ariaRequired: true,
     description: {
       error: eventTitleErrorText,
       valid: eventTitleValidText,
@@ -489,7 +488,6 @@ function EventCreator() {
   };
 
   const locationInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    ariaRequired: true,
     description: {
       error: eventLocationErrorText,
       valid: eventLocationValidText,
