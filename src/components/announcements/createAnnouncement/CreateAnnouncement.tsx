@@ -1,6 +1,17 @@
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faInfoCircle,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Flex, Text, Textarea, TextInput } from '@mantine/core';
+import {
+  Button,
+  Flex,
+  Text,
+  Textarea,
+  TextInput,
+  Tooltip,
+} from '@mantine/core';
 import { Fragment, useEffect, useReducer, useRef } from 'react';
 
 import { FULL_NAME_REGEX, URL_REGEX } from '../../../constants/regex';
@@ -415,7 +426,26 @@ function CreateAnnouncement() {
             size="sm"
             w="100%"
             color="dark"
-            label={`Paragraph ${index + 1}`}
+            // label={`Paragraph ${index + 1}`}
+            label={
+              <Flex align="center" justify="space-between" columnGap="xl">
+                <Text>Paragraph {index + 1}</Text>
+                <Tooltip label={`Delete paragraph ${index + 1}`}>
+                  <Button
+                    size="xs"
+                    variant="subtle"
+                    onClick={() => {
+                      createAnnouncementDispatch({
+                        type: createAnnouncementAction.setDeleteArticleParagraph,
+                        payload: index,
+                      });
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} color="gray" />
+                  </Button>
+                </Tooltip>
+              </Flex>
+            }
             placeholder={`Enter paragraph ${index + 1}`}
             value={paragraph}
             aria-required
@@ -464,7 +494,7 @@ function CreateAnnouncement() {
               });
             }}
             required
-            withAsterisk
+            withAsterisk={false}
             autosize
             minRows={3}
             maxRows={10}
@@ -495,9 +525,6 @@ function CreateAnnouncement() {
       Add paragraph
     </Button>
   );
-
-  // TODO add remove article paragraph button
-  // const removeArticleParagraphButton = ()
 
   const displaySubmitButton =
     currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION ? (
@@ -560,6 +587,15 @@ function CreateAnnouncement() {
   ) {
     event.preventDefault();
   }
+
+  useEffect(() => {
+    console.group('CreateAnnouncement');
+    Object.entries(createAnnouncementState).forEach(([key, value]) => {
+      console.log(`${key}:`, JSON.stringify(value, null, 2));
+    });
+    console.groupEnd();
+  }, [createAnnouncementState]);
+
   return (
     <Flex
       direction="column"

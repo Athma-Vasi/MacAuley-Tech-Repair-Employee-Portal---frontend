@@ -90,7 +90,9 @@ type CreateAnnouncementAction = {
   setIsArticleParagraphFocused: 'setIsArticleParagraphFocused';
   setIsArticleLengthExceeded: 'setIsArticleLengthExceeded';
 
+  setDeleteArticleParagraph: 'setDeleteArticleParagraph';
   setTimeToRead: 'setTimeToRead';
+
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -165,7 +167,8 @@ type CreateAnnouncementDispatch =
   | {
       type:
         | CreateAnnouncementAction['setTimeToRead']
-        | CreateAnnouncementAction['setCurrentStepperPosition'];
+        | CreateAnnouncementAction['setCurrentStepperPosition']
+        | CreateAnnouncementAction['setDeleteArticleParagraph'];
       payload: number;
     }
   | {

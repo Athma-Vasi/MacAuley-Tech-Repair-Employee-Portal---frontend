@@ -62,7 +62,9 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setIsArticleParagraphFocused: 'setIsArticleParagraphFocused',
   setIsArticleLengthExceeded: 'setIsArticleLengthExceeded',
 
+  setDeleteArticleParagraph: 'setDeleteArticleParagraph',
   setTimeToRead: 'setTimeToRead',
+
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -183,11 +185,30 @@ function createAnnouncementReducer(
         isArticleLengthExceeded: action.payload,
       };
 
+    case createAnnouncementAction.setDeleteArticleParagraph: {
+      const index = action.payload;
+      const article = [...state.article];
+      article.splice(index, 1);
+
+      const isValidArticleParagraph = [...state.isValidArticleParagraph];
+      isValidArticleParagraph.splice(index, 1);
+
+      const isArticleParagraphFocused = [...state.isArticleParagraphFocused];
+      isArticleParagraphFocused.splice(index, 1);
+
+      return {
+        ...state,
+        article,
+        isValidArticleParagraph,
+        isArticleParagraphFocused,
+      };
+    }
     case createAnnouncementAction.setTimeToRead:
       return {
         ...state,
         timeToRead: action.payload,
       };
+
     case createAnnouncementAction.setCurrentStepperPosition:
       return {
         ...state,
