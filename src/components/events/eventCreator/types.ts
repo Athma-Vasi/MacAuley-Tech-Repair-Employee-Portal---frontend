@@ -59,6 +59,8 @@ type EventCreatorState = {
   isValidEventEndDate: boolean;
   isEventEndDateFocused: boolean;
 
+  areValidEventDates: boolean;
+
   eventStartTime: string;
   isValidEventStartTime: boolean;
   isEventStartTimeFocused: boolean;
@@ -66,6 +68,8 @@ type EventCreatorState = {
   eventEndTime: string;
   isValidEventEndTime: boolean;
   isEventEndTimeFocused: boolean;
+
+  areValidEventTimes: boolean;
 
   eventLocation: string;
   isValidEventLocation: boolean;
@@ -115,6 +119,8 @@ type EventCreatorAction = {
   setIsValidEventEndDate: 'setIsValidEventEndDate';
   setIsEventEndDateFocused: 'setIsEventEndDateFocused';
 
+  setAreValidEventDates: 'setAreValidEventDates';
+
   setEventStartTime: 'setEventStartTime';
   setIsValidEventStartTime: 'setIsValidEventStartTime';
   setIsEventStartTimeFocused: 'setIsEventStartTimeFocused';
@@ -122,6 +128,8 @@ type EventCreatorAction = {
   setEventEndTime: 'setEventEndTime';
   setIsValidEventEndTime: 'setIsValidEventEndTime';
   setIsEventEndTimeFocused: 'setIsEventEndTimeFocused';
+
+  setAreValidEventTimes: 'setAreValidEventTimes';
 
   setEventLocation: 'setEventLocation';
   setIsValidEventLocation: 'setIsValidEventLocation';
@@ -176,8 +184,10 @@ type EventCreatorDispatch =
         | EventCreatorAction['setIsValidTitle']
         | EventCreatorAction['setIsValidEventStartDate']
         | EventCreatorAction['setIsValidEventEndDate']
+        | EventCreatorAction['setAreValidEventDates']
         | EventCreatorAction['setIsValidEventStartTime']
         | EventCreatorAction['setIsValidEventEndTime']
+        | EventCreatorAction['setAreValidEventTimes']
         | EventCreatorAction['setIsValidEventLocation']
         | EventCreatorAction['setIsValidEventDescription']
         | EventCreatorAction['setIsValidEventAttendees']

@@ -1,3 +1,8 @@
+import {
+  faCalendarAlt,
+  faCheck,
+  faClock,
+} from '@fortawesome/free-solid-svg-icons';
 import { useEffect, useReducer } from 'react';
 
 import {
@@ -20,17 +25,12 @@ import {
   returnGrammarValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
+import { EVENT_KIND_DATA } from './constants';
 import {
   eventCreatorAction,
   eventCreatorReducer,
   initialEventCreatorState,
 } from './state';
-import {
-  faCalendarAlt,
-  faCheck,
-  faClock,
-} from '@fortawesome/free-solid-svg-icons';
-import { EVENT_KIND_DATA } from './constants';
 import { EventKind } from './types';
 
 function EventCreator() {
@@ -53,6 +53,8 @@ function EventCreator() {
     isValidEventEndDate,
     isEventEndDateFocused,
 
+    areValidEventDates,
+
     eventStartTime,
     isValidEventStartTime,
     isEventStartTimeFocused,
@@ -60,6 +62,8 @@ function EventCreator() {
     eventEndTime,
     isValidEventEndTime,
     isEventEndTimeFocused,
+
+    areValidEventTimes,
 
     eventLocation,
     isValidEventLocation,
@@ -106,9 +110,7 @@ function EventCreator() {
 
   // validate start date on every change
   useEffect(() => {
-    const isValid =
-      DATE_NEAR_FUTURE_REGEX.test(eventStartDate) &&
-      new Date(eventStartDate) > new Date();
+    const isValid = DATE_NEAR_FUTURE_REGEX.test(eventStartDate);
 
     eventCreatorDispatch({
       type: eventCreatorAction.setIsValidEventStartDate,
@@ -118,15 +120,32 @@ function EventCreator() {
 
   // validate end date on every change
   useEffect(() => {
-    const isValid =
-      DATE_NEAR_FUTURE_REGEX.test(eventEndDate) &&
-      new Date(eventEndDate) > new Date(eventStartDate);
+    const isValid = DATE_NEAR_FUTURE_REGEX.test(eventEndDate);
 
     eventCreatorDispatch({
       type: eventCreatorAction.setIsValidEventEndDate,
       payload: isValid,
     });
-  }, [eventEndDate, eventStartDate]);
+  }, [eventEndDate]);
+
+  // validate event dates on every change
+  useEffect(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    const currDate = new Date(currentMonth);
+    const isValid =
+      new Date(eventStartDate) <= new Date(eventEndDate) &&
+      new Date(eventEndDate) > currDate;
+
+    eventCreatorDispatch({
+      type: eventCreatorAction.setAreValidEventDates,
+      payload: isValid,
+    });
+  }, [
+    eventStartDate,
+    eventEndDate,
+    isValidEventStartDate,
+    isValidEventEndDate,
+  ]);
 
   // validate start time on every change
   useEffect(() => {
@@ -147,6 +166,31 @@ function EventCreator() {
       payload: isValid,
     });
   }, [eventEndTime]);
+
+  // validate event times on every change
+  useEffect(() => {
+    const startTimeHour = parseInt(eventStartTime.split(':')[0]);
+    const startTimeMinute = parseInt(eventStartTime.split(':')[1]);
+
+    const endTimeHour = parseInt(eventEndTime.split(':')[0]);
+    const endTimeMinute = parseInt(eventEndTime.split(':')[1]);
+
+    const isValid =
+      areValidEventDates &&
+      startTimeHour < endTimeHour &&
+      startTimeMinute < endTimeMinute;
+
+    eventCreatorDispatch({
+      type: eventCreatorAction.setAreValidEventTimes,
+      payload: isValid,
+    });
+  }, [
+    eventStartTime,
+    eventEndTime,
+    isValidEventStartTime,
+    isValidEventEndTime,
+    areValidEventDates,
+  ]);
 
   // validate location on every change
   useEffect(() => {
@@ -190,10 +234,17 @@ function EventCreator() {
 
   // validate RSVP deadline on every change
   useEffect(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    const rsvpMonth = new Date(rsvpDeadline).getMonth() + 1;
+
+    const currDate = new Date().getDate();
+    const rsvpDate = parseInt(rsvpDeadline.split('-')[2]);
+
     const isValid =
       DATE_NEAR_FUTURE_REGEX.test(rsvpDeadline) &&
-      new Date(rsvpDeadline) > new Date() &&
-      new Date(rsvpDeadline) < new Date(eventStartDate);
+      new Date(rsvpDeadline) < new Date(eventStartDate) &&
+      rsvpMonth === currentMonth &&
+      rsvpDate >= currDate;
 
     eventCreatorDispatch({
       type: eventCreatorAction.setIsValidRsvpDeadline,
@@ -216,15 +267,34 @@ function EventCreator() {
       }),
     });
 
-  const [eventDateErrorText, eventDateValidText] = returnAccessibleTextElements(
-    {
-      inputElementKind: 'event date',
+  const eventDatesInvalidText = areValidEventDates
+    ? ''
+    : 'The event start date must be before the event end date and both must be in the future.';
+  const [eventStartDateErrorText, eventStartDateValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'event start date',
       inputText: eventStartDate,
       isInputTextFocused: isEventStartDateFocused,
-      isValidInputText: isValidEventStartDate,
-      regexValidationText: returnDateNearFutureValidationText(eventStartDate),
-    }
-  );
+      isValidInputText: isValidEventStartDate && areValidEventDates,
+      regexValidationText: `${eventDatesInvalidText}${returnDateNearFutureValidationText(
+        eventStartDate
+      )}`,
+    });
+
+  const [eventEndDateErrorText, eventEndDateValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'event end date',
+      inputText: eventEndDate,
+      isInputTextFocused: isEventEndDateFocused,
+      isValidInputText: isValidEventEndDate && areValidEventDates,
+      regexValidationText: `${eventDatesInvalidText}${returnDateNearFutureValidationText(
+        eventEndDate
+      )}`,
+    });
+
+  const eventTimesInvalidText = areValidEventTimes
+    ? ''
+    : 'The event start time must be before the event end time and both must be in the future.';
 
   const [eventStartTimeErrorText, eventStartTimeValidText] =
     returnAccessibleTextElements({
@@ -232,12 +302,14 @@ function EventCreator() {
       inputText: eventStartTime,
       isInputTextFocused: isEventStartTimeFocused,
       isValidInputText: isValidEventStartTime,
-      regexValidationText: returnTimeRailwayValidationText({
-        contentKind: 'event start time',
-        content: eventStartTime,
-        minLength: 4,
-        maxLength: 5,
-      }),
+      regexValidationText: `${eventTimesInvalidText}${returnTimeRailwayValidationText(
+        {
+          contentKind: 'event start time',
+          content: eventStartTime,
+          minLength: 4,
+          maxLength: 5,
+        }
+      )}`,
     });
 
   const [eventEndTimeErrorText, eventEndTimeValidText] =
@@ -246,12 +318,14 @@ function EventCreator() {
       inputText: eventEndTime,
       isInputTextFocused: isEventEndTimeFocused,
       isValidInputText: isValidEventEndTime,
-      regexValidationText: returnTimeRailwayValidationText({
-        contentKind: 'event end time',
-        content: eventEndTime,
-        minLength: 4,
-        maxLength: 5,
-      }),
+      regexValidationText: `${eventTimesInvalidText}${returnTimeRailwayValidationText(
+        {
+          contentKind: 'event end time',
+          content: eventEndTime,
+          minLength: 4,
+          maxLength: 5,
+        }
+      )}`,
     });
 
   const [eventLocationErrorText, eventLocationValidText] =
@@ -310,13 +384,18 @@ function EventCreator() {
       }),
     });
 
+  const rsvpDeadlineInvalidText = isValidRsvpDeadline
+    ? ''
+    : 'The RSVP deadline must be before the event start date and after today.';
   const [rsvpDeadlineErrorText, rsvpDeadlineValidText] =
     returnAccessibleTextElements({
-      inputElementKind: 'RSVP deadline',
+      inputElementKind: 'rsvp deadline',
       inputText: rsvpDeadline,
       isInputTextFocused: isRsvpDeadlineFocused,
       isValidInputText: isValidRsvpDeadline,
-      regexValidationText: returnDateNearFutureValidationText(rsvpDeadline),
+      regexValidationText: `${rsvpDeadlineInvalidText}${returnDateNearFutureValidationText(
+        rsvpDeadline
+      )}`,
     });
 
   const titleInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -376,18 +455,18 @@ function EventCreator() {
     eventKindInputCreatorInfo,
   ]);
 
-  const eventDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
+  const eventStartDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
     ariaRequired: true,
     description: {
-      error: eventDateErrorText,
-      valid: eventDateValidText,
+      error: eventStartDateErrorText,
+      valid: eventStartDateValidText,
     },
     dateKind: 'date near future',
-    icon: faCalendarAlt,
+    icon: faCheck,
     inputText: eventStartDate,
     inputKind: 'date',
-    isValidInputText: isValidEventStartDate,
-    label: 'Event date',
+    isValidInputText: isValidEventStartDate && areValidEventDates,
+    label: 'Event start date',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsEventStartDateFocused,
@@ -407,7 +486,41 @@ function EventCreator() {
       });
     },
     placeholder: 'DD-MM-YYYY',
-    semanticName: 'event date',
+    semanticName: 'event start date',
+  };
+
+  const eventEndDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: eventEndDateErrorText,
+      valid: eventEndDateValidText,
+    },
+    dateKind: 'date near future',
+    icon: faCheck,
+    inputText: eventEndDate,
+    inputKind: 'date',
+    isValidInputText: isValidEventEndDate && areValidEventDates,
+    label: 'Event end date',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventEndDateFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setEventEndDate,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventEndDateFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'DD-MM-YYYY',
+    semanticName: 'event end date',
   };
 
   const eventStartTimeInputCreatorInfo: AccessibleDateInputCreatorInfo = {
@@ -416,10 +529,10 @@ function EventCreator() {
       error: eventStartTimeErrorText,
       valid: eventStartTimeValidText,
     },
-    icon: faClock,
+    icon: faCheck,
     inputText: eventStartTime,
     inputKind: 'time',
-    isValidInputText: isValidEventStartTime,
+    isValidInputText: isValidEventStartTime && areValidEventTimes,
     label: 'Event start time',
     onBlur: () => {
       eventCreatorDispatch({
@@ -449,10 +562,10 @@ function EventCreator() {
       error: eventEndTimeErrorText,
       valid: eventEndTimeValidText,
     },
-    icon: faClock,
+    icon: faCheck,
     inputText: eventEndTime,
     inputKind: 'time',
-    isValidInputText: isValidEventEndTime,
+    isValidInputText: isValidEventEndTime && areValidEventTimes,
     label: 'Event end time',
     onBlur: () => {
       eventCreatorDispatch({
@@ -476,47 +589,64 @@ function EventCreator() {
     semanticName: 'event end time',
   };
 
+  const rsvpDeadlineInputCreatorInfo: AccessibleDateInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: rsvpDeadlineErrorText,
+      valid: rsvpDeadlineValidText,
+    },
+    dateKind: 'date near future',
+    icon: faCheck,
+    inputText: rsvpDeadline,
+    inputKind: 'date',
+    isValidInputText: isValidRsvpDeadline && areValidEventDates,
+    label: 'RSVP deadline',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsRsvpDeadlineFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setRsvpDeadline,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsRsvpDeadlineFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'DD-MM-YYYY',
+    semanticName: 'rsvp deadline',
+  };
+
   const [
-    createdEventDateInput,
+    createdEventStartDateInput,
+    createdEventEndDateInput,
     createdEventStartTimeInput,
     createdEventEndTimeInput,
+    createdRsvpDeadlineInput,
   ] = returnAccessibleDateTimeElements([
-    eventDateInputCreatorInfo,
+    eventStartDateInputCreatorInfo,
+    eventEndDateInputCreatorInfo,
     eventStartTimeInputCreatorInfo,
     eventEndTimeInputCreatorInfo,
+    rsvpDeadlineInputCreatorInfo,
   ]);
-
-  useEffect(() => {
-    console.log('eventTitle: ', eventTitle);
-  }, [eventTitle]);
-
-  useEffect(() => {
-    console.log('eventKind: ', eventKind);
-  }, [eventKind]);
-
-  useEffect(() => {
-    console.log('new Date(eventStartDate): ', new Date(eventStartDate));
-    console.log('new Date(): ', new Date());
-    console.log('eventStartDate: ', eventStartDate);
-    console.log('isValidEventStartDate: ', isValidEventStartDate);
-  }, [eventStartDate, isValidEventStartDate]);
-
-  useEffect(() => {
-    console.log('eventStartTime: ', eventStartTime);
-  }, [eventStartTime]);
-
-  useEffect(() => {
-    console.log('eventEndTime: ', eventEndTime);
-  }, [eventEndTime]);
 
   return (
     <div>
       <h1>Event Creator</h1>
       {createdTitleTextInput}
       {createdEventKindSelectInput}
-      {createdEventDateInput}
+      {createdEventStartDateInput}
+      {createdEventEndDateInput}
       {createdEventStartTimeInput}
       {createdEventEndTimeInput}
+      {createdRsvpDeadlineInput}
     </div>
   );
 }

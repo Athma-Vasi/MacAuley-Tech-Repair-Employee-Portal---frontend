@@ -19,6 +19,8 @@ const initialEventCreatorState: EventCreatorState = {
   isValidEventEndDate: false,
   isEventEndDateFocused: false,
 
+  areValidEventDates: false,
+
   eventStartTime: '',
   isValidEventStartTime: false,
   isEventStartTimeFocused: false,
@@ -26,6 +28,8 @@ const initialEventCreatorState: EventCreatorState = {
   eventEndTime: '',
   isValidEventEndTime: false,
   isEventEndTimeFocused: false,
+
+  areValidEventTimes: false,
 
   eventLocation: '',
   isValidEventLocation: false,
@@ -75,6 +79,8 @@ const eventCreatorAction: EventCreatorAction = {
   setIsValidEventEndDate: 'setIsValidEventEndDate',
   setIsEventEndDateFocused: 'setIsEventEndDateFocused',
 
+  setAreValidEventDates: 'setAreValidEventDates',
+
   setEventStartTime: 'setEventStartTime',
   setIsValidEventStartTime: 'setIsValidEventStartTime',
   setIsEventStartTimeFocused: 'setIsEventStartTimeFocused',
@@ -82,6 +88,8 @@ const eventCreatorAction: EventCreatorAction = {
   setEventEndTime: 'setEventEndTime',
   setIsValidEventEndTime: 'setIsValidEventEndTime',
   setIsEventEndTimeFocused: 'setIsEventEndTimeFocused',
+
+  setAreValidEventTimes: 'setAreValidEventTimes',
 
   setEventLocation: 'setEventLocation',
   setIsValidEventLocation: 'setIsValidEventLocation',
@@ -175,6 +183,12 @@ function eventCreatorReducer(
         isEventEndDateFocused: action.payload,
       };
 
+    case eventCreatorAction.setAreValidEventDates:
+      return {
+        ...state,
+        areValidEventDates: action.payload,
+      };
+
     case eventCreatorAction.setEventStartTime:
       return {
         ...state,
@@ -205,6 +219,12 @@ function eventCreatorReducer(
       return {
         ...state,
         isEventEndTimeFocused: action.payload,
+      };
+
+    case eventCreatorAction.setAreValidEventTimes:
+      return {
+        ...state,
+        areValidEventTimes: action.payload,
       };
 
     case eventCreatorAction.setEventLocation:
