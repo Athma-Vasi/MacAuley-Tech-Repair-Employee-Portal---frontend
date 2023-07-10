@@ -917,7 +917,7 @@ function returnAccessibleRadioInputElements(
 
 type AccessibleCheckboxInputCreatorInfo = {
   semanticName: string;
-  semanticDescription: {
+  accessibleDescription: {
     selected: string;
     deselected: string;
   };
@@ -953,7 +953,7 @@ function returnAccessibleCheckboxInputElements(
   return infoArr.map((info) => {
     const {
       semanticName,
-      semanticDescription,
+      accessibleDescription,
       ariarequired = false,
       checkboxKind,
       dataObjArray = null,
@@ -978,8 +978,8 @@ function returnAccessibleCheckboxInputElements(
             label={label}
             aria-label={
               checked
-                ? semanticDescription.selected
-                : semanticDescription.deselected
+                ? accessibleDescription.selected
+                : accessibleDescription.deselected
             }
             aria-required={ariarequired}
             checked={checked}

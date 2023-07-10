@@ -282,6 +282,7 @@ function AddressChange() {
       regexValidationText: returnPhoneNumberValidationText(contactNumber),
     });
 
+  // following are info objects for input creators
   const countrySelectInputInfo: AccessibleSelectInputCreatorInfo = {
     data: COUNTRIES_DATA,
     description: 'Select your country',
@@ -524,7 +525,7 @@ function AddressChange() {
       });
     },
     semanticName: 'acknowledgement',
-    semanticDescription: {
+    accessibleDescription: {
       deselected:
         'Acknowledgement checkbox is unchecked. I do not acknowledge.',
       selected:
@@ -541,6 +542,7 @@ function AddressChange() {
     withAsterisk: true,
   };
 
+  // following are the created accessible input elements
   const [
     createdAddressLineTextInput,
     createdCityTextInput,
@@ -591,12 +593,6 @@ function AddressChange() {
       </Button>
     ) : null;
 
-  async function handleAddressChangeFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
-
   const displayAddressChangeComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
@@ -612,6 +608,12 @@ function AddressChange() {
       </form>
     </StepperWrapper>
   );
+
+  async function handleAddressChangeFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
 
   useEffect(() => {
     console.group('addressChangeState');
