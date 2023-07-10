@@ -14,9 +14,11 @@ import {
 import {
   AccessibleDateInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
@@ -25,13 +27,20 @@ import {
   returnGrammarValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
-import { EVENT_KIND_DATA } from './constants';
+import {
+  EVENT_CREATOR_DESCRIPTION_MAP,
+  EVENT_CREATOR_MAX_STEPPER_POSITION,
+  EVENT_KIND_DATA,
+} from './constants';
 import {
   eventCreatorAction,
   eventCreatorReducer,
   initialEventCreatorState,
 } from './state';
 import { EventKind } from './types';
+import { createEvent } from '@testing-library/react';
+import { Button, Flex } from '@mantine/core';
+import { StepperWrapper } from '../../stepperWrapper';
 
 function EventCreator() {
   const [eventCreatorState, eventCreatorDispatch] = useReducer(
@@ -252,6 +261,52 @@ function EventCreator() {
     });
   }, [rsvpDeadline, eventStartDate]);
 
+  // update for stepper wrapper state
+  useEffect(() => {
+    const isStepInError =
+      !isValidEventTitle ||
+      !areValidEventDates ||
+      !areValidEventTimes ||
+      !isValidRsvpDeadline;
+
+    // if current step is in error, add it to stepsInError Set else remove it
+    eventCreatorDispatch({
+      type: eventCreatorAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [
+    isValidEventTitle,
+    areValidEventDates,
+    areValidEventTimes,
+    isValidRsvpDeadline,
+  ]);
+
+  // update for stepper wrapper state
+  useEffect(() => {
+    const isStepInError =
+      !isValidEventLocation ||
+      !isValidEventDescription ||
+      !isValidEventAttendees ||
+      !isValidRequiredItems;
+
+    // if current step is in error, add it to stepsInError Set else remove it
+    eventCreatorDispatch({
+      type: eventCreatorAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 2,
+      },
+    });
+  }, [
+    isValidEventLocation,
+    isValidEventDescription,
+    isValidEventAttendees,
+    isValidRequiredItems,
+  ]);
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [eventTitleErrorText, eventTitleValidText] =
     returnAccessibleTextElements({
@@ -432,9 +487,45 @@ function EventCreator() {
     withAsterisk: true,
   };
 
-  const [createdTitleTextInput] = returnAccessibleTextInputElements([
-    titleInputCreatorInfo,
-  ]);
+  const locationInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: eventLocationErrorText,
+      valid: eventLocationValidText,
+    },
+    icon: faCheck,
+    inputText: eventLocation,
+    isValidInputText: isValidEventLocation,
+    label: 'Event location',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventLocationFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setEventLocation,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventLocationFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter location of event',
+    semanticName: 'event location',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const [createdTitleTextInput, createdLocationTextInput] =
+    returnAccessibleTextInputElements([
+      titleInputCreatorInfo,
+      locationInputCreatorInfo,
+    ]);
 
   const eventKindInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: EVENT_KIND_DATA,
@@ -453,6 +544,118 @@ function EventCreator() {
 
   const [createdEventKindSelectInput] = returnAccessibleSelectInputElements([
     eventKindInputCreatorInfo,
+  ]);
+
+  const eventDescriptionInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: eventDescriptionErrorText,
+      valid: eventDescriptionValidText,
+    },
+    icon: faCheck,
+    inputText: eventDescription,
+    isValidInputText: isValidEventDescription,
+    label: 'Event description',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventDescriptionFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setEventDescription,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventDescriptionFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter description of event',
+    semanticName: 'event description',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const eventAttendeesInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: eventAttendeesErrorText,
+      valid: eventAttendeesValidText,
+    },
+    icon: faCheck,
+    inputText: eventAttendees,
+    isValidInputText: isValidEventAttendees,
+    label: 'Event attendees',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventAttendeesFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setEventAttendees,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventAttendeesFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter attendees of event',
+    semanticName: 'event attendees',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const requiredItemsInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: requiredItemsErrorText,
+      valid: requiredItemsValidText,
+    },
+    icon: faCheck,
+    inputText: requiredItems,
+    isValidInputText: isValidRequiredItems,
+    label: 'Required items',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsRequiredItemsFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setRequiredItems,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsRequiredItemsFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter required items for event',
+    semanticName: 'required items',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const [
+    createdEventDescriptionTextAreaInput,
+    createdEventAttendeesTextAreaInput,
+    createdRequiredItemsTextAreaInput,
+  ] = returnAccessibleTextAreaInputElements([
+    eventDescriptionInputCreatorInfo,
+    eventAttendeesInputCreatorInfo,
+    requiredItemsInputCreatorInfo,
   ]);
 
   const eventStartDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
@@ -628,7 +831,7 @@ function EventCreator() {
     createdEventEndDateInput,
     createdEventStartTimeInput,
     createdEventEndTimeInput,
-    createdRsvpDeadlineInput,
+    createdRsvpDeadlineDateInput,
   ] = returnAccessibleDateTimeElements([
     eventStartDateInputCreatorInfo,
     eventEndDateInputCreatorInfo,
@@ -637,17 +840,78 @@ function EventCreator() {
     rsvpDeadlineInputCreatorInfo,
   ]);
 
-  return (
-    <div>
-      <h1>Event Creator</h1>
+  const displayEventDatesFormPage = (
+    <>
       {createdTitleTextInput}
-      {createdEventKindSelectInput}
       {createdEventStartDateInput}
       {createdEventEndDateInput}
       {createdEventStartTimeInput}
       {createdEventEndTimeInput}
-      {createdRsvpDeadlineInput}
-    </div>
+      {createdRsvpDeadlineDateInput}
+    </>
+  );
+
+  const displayEventDetailsFormPage = (
+    <>
+      {createdEventKindSelectInput}
+      {createdLocationTextInput}
+      {createdEventDescriptionTextAreaInput}
+      {createdEventAttendeesTextAreaInput}
+      {createdRequiredItemsTextAreaInput}
+    </>
+  );
+
+  const displayReviewFormPage = <h3>review form page</h3>;
+
+  const displayEventCreatorForm =
+    currentStepperPosition === 0
+      ? displayEventDatesFormPage
+      : currentStepperPosition === 1
+      ? displayEventDetailsFormPage
+      : currentStepperPosition === 2
+      ? displayReviewFormPage
+      : null;
+
+  const displaySubmitButton =
+    currentStepperPosition === EVENT_CREATOR_MAX_STEPPER_POSITION ? (
+      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
+        Submit
+      </Button>
+    ) : null;
+
+  async function handleEventCreatorFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  const displayEventCreatorComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionMap={EVENT_CREATOR_DESCRIPTION_MAP}
+      maxStepperPosition={EVENT_CREATOR_MAX_STEPPER_POSITION}
+      parentComponentDispatch={eventCreatorDispatch}
+      setCurrentStepperPosition={eventCreatorAction.setCurrentStepperPosition}
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleEventCreatorFormSubmit}>
+        {displayEventCreatorForm}
+        {displaySubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  return (
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      rowGap="lg"
+      w="400px"
+    >
+      <h1>Event Creator</h1>
+      {displayEventCreatorComponent}
+    </Flex>
   );
 }
 

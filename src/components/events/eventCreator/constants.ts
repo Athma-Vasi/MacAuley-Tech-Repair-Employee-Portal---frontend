@@ -17,7 +17,7 @@ const EVENT_CREATOR_DESCRIPTION_MAP: DescriptionMap = new Map([
   [
     1,
     {
-      description: 'Event details',
+      description: 'Event date and time',
       ariaLabel:
         'Enter event title, description, kind, date, start time, end time',
     },
