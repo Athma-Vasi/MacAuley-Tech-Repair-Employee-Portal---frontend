@@ -25,6 +25,7 @@ import {
   returnNameValidationText,
   returnUrlValidationText,
 } from '../../../utils';
+import { StepperWrapper } from '../../stepperWrapper';
 import { ARTICLE_CONTENT_REGEX, ARTICLE_TITLE_REGEX } from '../constants';
 import {
   returnArticleParagraphValidationText,
@@ -45,7 +46,6 @@ import {
   returnArticleParagraphInputErrorElements,
   returnArticleParagraphInputValidElements,
 } from './utils';
-import { StepperWrapper } from '../../stepperWrapper';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
@@ -70,8 +70,8 @@ function CreateAnnouncement() {
     isBannerImageAltFocused,
 
     article,
-    isValidArticleParagraph,
-    isArticleParagraphFocused,
+    areValidArticleParagraphs,
+    areArticleParagraphsFocused,
     isArticleLengthExceeded,
 
     timeToRead,
@@ -89,10 +89,6 @@ function CreateAnnouncement() {
   } = createAnnouncementState;
 
   const titleRef = useRef<HTMLInputElement>(null);
-  // sets focus on title input on render
-  useEffect(() => {
-    titleRef.current?.focus();
-  }, []);
 
   const lastArticleParagraphRef = useRef<HTMLTextAreaElement>(null);
   // sets focus on paragraph input on render, and on every new paragraph textarea creation
@@ -147,7 +143,7 @@ function CreateAnnouncement() {
     );
 
     createAnnouncementDispatch({
-      type: createAnnouncementAction.setIsValidArticleParagraph,
+      type: createAnnouncementAction.setAreValidArticleParagraphs,
       payload: isValidArticleBoolArr,
     });
   }, [article]);
@@ -200,7 +196,7 @@ function CreateAnnouncement() {
 
   // update for stepper wrapper change
   useEffect(() => {
-    const isStepInError = isValidArticleParagraph.includes(false);
+    const isStepInError = areValidArticleParagraphs.includes(false);
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setStepsInError,
@@ -209,7 +205,7 @@ function CreateAnnouncement() {
         step: 2,
       },
     });
-  }, [isValidArticleParagraph]);
+  }, [areValidArticleParagraphs]);
 
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleTextElements({
@@ -265,16 +261,16 @@ function CreateAnnouncement() {
   const articleParagraphInputErrorTexts =
     returnArticleParagraphInputErrorElements({
       article,
-      isValidArticleParagraph,
-      isArticleParagraphFocused,
+      areValidArticleParagraphs,
+      areArticleParagraphsFocused,
       returnRegexValidationText: returnArticleParagraphValidationText,
     });
 
   const articleParagraphInputValidTexts =
     returnArticleParagraphInputValidElements({
       article,
-      isValidArticleParagraph,
-      isArticleParagraphFocused,
+      areValidArticleParagraphs,
+      areArticleParagraphsFocused,
     });
 
   // following are info objects for input creators
@@ -450,22 +446,22 @@ function CreateAnnouncement() {
             value={paragraph}
             aria-required
             aria-describedby={
-              isValidArticleParagraph[index]
+              areValidArticleParagraphs[index]
                 ? `article-paragraph-input-note-valid-${index}`
                 : `article-paragraph-input-note-error-${index}`
             }
             description={
-              isValidArticleParagraph[index]
+              areValidArticleParagraphs[index]
                 ? articleParagraphInputValidTexts[index]
                 : articleParagraphInputErrorTexts[index]
             }
-            aria-invalid={isValidArticleParagraph[index] ? 'false' : 'true'}
+            aria-invalid={areValidArticleParagraphs[index] ? 'false' : 'true'}
             icon={
-              isValidArticleParagraph[index] ? (
+              areValidArticleParagraphs[index] ? (
                 <FontAwesomeIcon icon={faCheck} color="green" />
               ) : null
             }
-            error={!isValidArticleParagraph[index] && paragraph !== ''}
+            error={!areValidArticleParagraphs[index] && paragraph !== ''}
             onChange={(event) => {
               createAnnouncementDispatch({
                 type: createAnnouncementAction.setArticle,
@@ -477,7 +473,7 @@ function CreateAnnouncement() {
             }}
             onFocus={() => {
               createAnnouncementDispatch({
-                type: createAnnouncementAction.setIsArticleParagraphFocused,
+                type: createAnnouncementAction.setAreArticleParagraphsFocused,
                 payload: {
                   index,
                   value: true,
@@ -486,7 +482,7 @@ function CreateAnnouncement() {
             }}
             onBlur={() => {
               createAnnouncementDispatch({
-                type: createAnnouncementAction.setIsArticleParagraphFocused,
+                type: createAnnouncementAction.setAreArticleParagraphsFocused,
                 payload: {
                   index,
                   value: false,
@@ -588,13 +584,13 @@ function CreateAnnouncement() {
     event.preventDefault();
   }
 
-  useEffect(() => {
-    console.group('CreateAnnouncement');
-    Object.entries(createAnnouncementState).forEach(([key, value]) => {
-      console.log(`${key}:`, JSON.stringify(value, null, 2));
-    });
-    console.groupEnd();
-  }, [createAnnouncementState]);
+  // useEffect(() => {
+  //   console.group('CreateAnnouncement');
+  //   Object.entries(createAnnouncementState).forEach(([key, value]) => {
+  //     console.log(`${key}:`, JSON.stringify(value, null, 2));
+  //   });
+  //   console.groupEnd();
+  // }, [createAnnouncementState]);
 
   return (
     <Flex
@@ -810,22 +806,22 @@ export { CreateAnnouncement };
               value={paragraph}
               aria-required
               aria-describedby={
-                isValidArticleParagraph[index]
+                areValidArticleParagraphs[index]
                   ? `article-paragraph-input-note-valid-${index}`
                   : `article-paragraph-input-note-error-${index}`
               }
               description={
-                isValidArticleParagraph[index]
+                areValidArticleParagraphs[index]
                   ? articleParagraphInputValidTexts[index]
                   : articleParagraphInputErrorTexts[index]
               }
-              aria-invalid={isValidArticleParagraph[index] ? 'false' : 'true'}
+              aria-invalid={areValidArticleParagraphs[index] ? 'false' : 'true'}
               icon={
-                isValidArticleParagraph[index] ? (
+                areValidArticleParagraphs[index] ? (
                   <FontAwesomeIcon icon={faCheck} color="green" />
                 ) : null
               }
-              error={!isValidArticleParagraph[index] && paragraph !== ''}
+              error={!areValidArticleParagraphs[index] && paragraph !== ''}
               onChange={(event) => {
                 createAnnouncementDispatch({
                   type: createAnnouncementAction.setArticle,
@@ -837,7 +833,7 @@ export { CreateAnnouncement };
               }}
               onFocus={() => {
                 createAnnouncementDispatch({
-                  type: createAnnouncementAction.setIsArticleParagraphFocused,
+                  type: createAnnouncementAction.setAreArticleParagraphsFocused,
                   payload: {
                     index,
                     value: true,
@@ -846,7 +842,7 @@ export { CreateAnnouncement };
               }}
               onBlur={() => {
                 createAnnouncementDispatch({
-                  type: createAnnouncementAction.setIsArticleParagraphFocused,
+                  type: createAnnouncementAction.setAreArticleParagraphsFocused,
                   payload: {
                     index,
                     value: false,

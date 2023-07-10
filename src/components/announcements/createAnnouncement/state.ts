@@ -22,8 +22,8 @@ const initialCreateAnnouncementState: CreateAnnouncementState = {
   isBannerImageAltFocused: false,
 
   article: [''],
-  isValidArticleParagraph: [false],
-  isArticleParagraphFocused: [false],
+  areValidArticleParagraphs: [false],
+  areArticleParagraphsFocused: [false],
   isArticleLengthExceeded: false,
 
   timeToRead: 0,
@@ -58,8 +58,8 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setIsBannerImageAltFocused: 'setIsBannerImageAltFocused',
 
   setArticle: 'setArticle',
-  setIsValidArticleParagraph: 'setIsValidArticleParagraph',
-  setIsArticleParagraphFocused: 'setIsArticleParagraphFocused',
+  setAreValidArticleParagraphs: 'setAreValidArticleParagraphs',
+  setAreArticleParagraphsFocused: 'setAreArticleParagraphsFocused',
   setIsArticleLengthExceeded: 'setIsArticleLengthExceeded',
 
   setDeleteArticleParagraph: 'setDeleteArticleParagraph',
@@ -161,22 +161,24 @@ function createAnnouncementReducer(
         article,
       };
     }
-    case createAnnouncementAction.setIsValidArticleParagraph:
+    case createAnnouncementAction.setAreValidArticleParagraphs:
       return {
         ...state,
-        isValidArticleParagraph: action.payload,
+        areValidArticleParagraphs: action.payload,
       };
-    case createAnnouncementAction.setIsArticleParagraphFocused: {
+    case createAnnouncementAction.setAreArticleParagraphsFocused: {
       const { index, value } = action.payload;
-      const isArticleParagraphFocused = [...state.isArticleParagraphFocused];
-      if (index >= isArticleParagraphFocused.length) {
-        isArticleParagraphFocused.push(value);
+      const areArticleParagraphsFocused = [
+        ...state.areArticleParagraphsFocused,
+      ];
+      if (index >= areArticleParagraphsFocused.length) {
+        areArticleParagraphsFocused.push(value);
       }
-      isArticleParagraphFocused[index] = value;
+      areArticleParagraphsFocused[index] = value;
 
       return {
         ...state,
-        isArticleParagraphFocused,
+        areArticleParagraphsFocused,
       };
     }
     case createAnnouncementAction.setIsArticleLengthExceeded:
@@ -190,17 +192,19 @@ function createAnnouncementReducer(
       const article = [...state.article];
       article.splice(index, 1);
 
-      const isValidArticleParagraph = [...state.isValidArticleParagraph];
-      isValidArticleParagraph.splice(index, 1);
+      const areValidArticleParagraphs = [...state.areValidArticleParagraphs];
+      areValidArticleParagraphs.splice(index, 1);
 
-      const isArticleParagraphFocused = [...state.isArticleParagraphFocused];
-      isArticleParagraphFocused.splice(index, 1);
+      const areArticleParagraphsFocused = [
+        ...state.areArticleParagraphsFocused,
+      ];
+      areArticleParagraphsFocused.splice(index, 1);
 
       return {
         ...state,
         article,
-        isValidArticleParagraph,
-        isArticleParagraphFocused,
+        areValidArticleParagraphs,
+        areArticleParagraphsFocused,
       };
     }
     case createAnnouncementAction.setTimeToRead:
@@ -295,18 +299,18 @@ export {
  */
 
 /**
-     * case createAnnouncementAction.setIsArticleParagraphFocused: {
+     * case createAnnouncementAction.setAreArticleParagraphsFocused: {
       const { index, value } = action.payload as ArticleParagraphFocusedPayload;
-      const isArticleParagraphFocused = [...state.isArticleParagraphFocused];
-      if (index >= isArticleParagraphFocused.length) {
-        isArticleParagraphFocused.push(value);
+      const areArticleParagraphsFocused = [...state.areArticleParagraphsFocused];
+      if (index >= areArticleParagraphsFocused.length) {
+        areArticleParagraphsFocused.push(value);
       } else {
-        isArticleParagraphFocused[index] = value;
+        areArticleParagraphsFocused[index] = value;
       }
 
       return {
         ...state,
-        isArticleParagraphFocused,
+        areArticleParagraphsFocused,
       };
     }
      */

@@ -6,8 +6,8 @@ import { ReturnArticleParagraphInputProps } from './types';
 
 function returnArticleParagraphInputValidElements({
   article,
-  isValidArticleParagraph,
-  isArticleParagraphFocused,
+  areValidArticleParagraphs,
+  areArticleParagraphsFocused,
 }: ReturnArticleParagraphInputProps): JSX.Element[] {
   return article.map((paragraph, index) => (
     <Text
@@ -15,9 +15,9 @@ function returnArticleParagraphInputValidElements({
       id={`article-paragraph-input-note-valid-${index}`}
       style={{
         display:
-          isArticleParagraphFocused[index] &&
+          areArticleParagraphsFocused[index] &&
           paragraph &&
-          isValidArticleParagraph[index]
+          areValidArticleParagraphs[index]
             ? 'block'
             : 'none',
       }}
@@ -32,8 +32,8 @@ function returnArticleParagraphInputValidElements({
 
 function returnArticleParagraphInputErrorElements({
   article,
-  isValidArticleParagraph,
-  isArticleParagraphFocused,
+  areValidArticleParagraphs,
+  areArticleParagraphsFocused,
   returnRegexValidationText,
 }: ReturnArticleParagraphInputProps): JSX.Element[] {
   return article.map((paragraph, index) => (
@@ -42,9 +42,9 @@ function returnArticleParagraphInputErrorElements({
       id={`article-paragraph-input-note-error-${index}`}
       style={{
         display:
-          isArticleParagraphFocused[index] &&
+          areArticleParagraphsFocused[index] &&
           paragraph &&
-          !isValidArticleParagraph[index]
+          !areValidArticleParagraphs[index]
             ? 'block'
             : 'none',
       }}

@@ -50,8 +50,8 @@ type CreateAnnouncementState = {
   isBannerImageAltFocused: boolean;
 
   article: string[];
-  isValidArticleParagraph: boolean[];
-  isArticleParagraphFocused: boolean[];
+  areValidArticleParagraphs: boolean[];
+  areArticleParagraphsFocused: boolean[];
   isArticleLengthExceeded: boolean;
   timeToRead: number;
 
@@ -86,8 +86,8 @@ type CreateAnnouncementAction = {
   setIsBannerImageAltFocused: 'setIsBannerImageAltFocused';
 
   setArticle: 'setArticle';
-  setIsValidArticleParagraph: 'setIsValidArticleParagraph';
-  setIsArticleParagraphFocused: 'setIsArticleParagraphFocused';
+  setAreValidArticleParagraphs: 'setAreValidArticleParagraphs';
+  setAreArticleParagraphsFocused: 'setAreArticleParagraphsFocused';
   setIsArticleLengthExceeded: 'setIsArticleLengthExceeded';
 
   setDeleteArticleParagraph: 'setDeleteArticleParagraph';
@@ -108,8 +108,8 @@ type CreateAnnouncementAction = {
 
 type ReturnArticleParagraphInputProps = {
   article: string[];
-  isValidArticleParagraph: boolean[];
-  isArticleParagraphFocused: boolean[];
+  areValidArticleParagraphs: boolean[];
+  areArticleParagraphsFocused: boolean[];
   returnRegexValidationText?: (paragraph: string) => string;
 };
 
@@ -153,11 +153,11 @@ type CreateAnnouncementDispatch =
       payload: ArticlePayload;
     }
   | {
-      type: CreateAnnouncementAction['setIsValidArticleParagraph'];
+      type: CreateAnnouncementAction['setAreValidArticleParagraphs'];
       payload: boolean[];
     }
   | {
-      type: CreateAnnouncementAction['setIsArticleParagraphFocused'];
+      type: CreateAnnouncementAction['setAreArticleParagraphsFocused'];
       payload: ArticleParagraphFocusedPayload;
     }
   | {
