@@ -10,6 +10,7 @@ import {
   Button,
   NativeSelect,
   PasswordInput,
+  Radio,
   SelectItem,
   Text,
   Textarea,
@@ -86,7 +87,7 @@ type AccessibleTextInputCreatorInfo = {
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired: boolean;
+  ariaRequired?: boolean | undefined;
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
   description: {
     error: JSX.Element;
@@ -102,6 +103,7 @@ type AccessibleTextInputCreatorInfo = {
   minLength?: number | undefined;
   maxLength?: number | undefined;
   withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
   required?: boolean | undefined;
   autoComplete?: 'on' | 'off' | undefined;
 };
@@ -115,7 +117,7 @@ function returnAccessibleTextInputElements(
       inputText,
       isValidInputText,
       label,
-      ariaRequired,
+      ariaRequired = false,
       ariaAutoComplete = 'none',
       description,
       placeholder,
@@ -127,6 +129,7 @@ function returnAccessibleTextInputElements(
       minLength = 2,
       maxLength = 75,
       withAsterisk = false,
+      ref = null,
       required = false,
       autoComplete = 'off',
     } = info;
@@ -164,6 +167,7 @@ function returnAccessibleTextInputElements(
         minLength={minLength}
         maxLength={maxLength}
         autoComplete={autoComplete}
+        ref={ref}
         withAsterisk={withAsterisk}
         required={required}
       />
@@ -180,6 +184,7 @@ type AccessibleSelectInputCreatorInfo = {
   value: string;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLSelectElement> | undefined;
   required?: boolean | undefined;
 };
 
@@ -194,6 +199,7 @@ function returnAccessibleSelectInputElements(
       value,
       onChange,
       withAsterisk = false,
+      ref = null,
       required = false,
     } = info;
 
@@ -207,6 +213,7 @@ function returnAccessibleSelectInputElements(
         description={description}
         value={value}
         onChange={onChange}
+        ref={ref}
         withAsterisk={withAsterisk}
         required={required}
       />
@@ -221,7 +228,7 @@ type AccessiblePasswordInputCreatorInfo = {
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired: boolean;
+  ariaRequired?: boolean | undefined;
   description: {
     error: JSX.Element;
     valid: JSX.Element;
@@ -236,6 +243,7 @@ type AccessiblePasswordInputCreatorInfo = {
   minLength?: number | undefined;
   maxLength?: number | undefined;
   withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
   required?: boolean | undefined;
 };
 
@@ -248,7 +256,7 @@ function returnAccessiblePasswordInputElements(
       inputText,
       isValidInputText,
       label,
-      ariaRequired,
+      ariaRequired = false,
       description,
       placeholder,
       initialInputValue = '',
@@ -259,6 +267,7 @@ function returnAccessiblePasswordInputElements(
       minLength = 8,
       maxLength = 32,
       withAsterisk = false,
+      ref = null,
       required = false,
     } = info;
 
@@ -293,6 +302,7 @@ function returnAccessiblePasswordInputElements(
         onBlur={onBlur}
         minLength={minLength}
         maxLength={maxLength}
+        ref={ref}
         withAsterisk={withAsterisk}
         required={required}
       />
@@ -394,7 +404,7 @@ type AccessiblePhoneNumberTextInputCreatorInfo = {
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired: boolean;
+  ariaRequired?: boolean | undefined;
   description: {
     error: JSX.Element;
     valid: JSX.Element;
@@ -413,6 +423,7 @@ type AccessiblePhoneNumberTextInputCreatorInfo = {
   minLength?: number | undefined;
   maxLength?: number | undefined;
   withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
   required?: boolean | undefined;
   autoComplete?: 'on' | 'off' | undefined;
 };
@@ -426,7 +437,7 @@ function returnAccessiblePhoneNumberTextInputElements(
       inputText,
       isValidInputText,
       label,
-      ariaRequired,
+      ariaRequired = false,
       description,
       placeholder,
       initialInputValue = '+(1)',
@@ -441,6 +452,7 @@ function returnAccessiblePhoneNumberTextInputElements(
       minLength = 18,
       maxLength = 18,
       withAsterisk = false,
+      ref = null,
       required = false,
       autoComplete = 'off',
     } = info;
@@ -498,6 +510,7 @@ function returnAccessiblePhoneNumberTextInputElements(
         }
         minLength={minLength}
         maxLength={maxLength}
+        ref={ref}
         withAsterisk={withAsterisk}
         required={required}
       />
@@ -512,7 +525,7 @@ type AccessibleTextAreaInputCreatorInfo = {
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired: boolean;
+  ariaRequired?: boolean | undefined;
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
   description: {
     error: JSX.Element;
@@ -528,6 +541,7 @@ type AccessibleTextAreaInputCreatorInfo = {
   minLength?: number | undefined;
   maxLength?: number | undefined;
   withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLTextAreaElement> | undefined;
   required?: boolean | undefined;
   autoComplete?: 'on' | 'off' | undefined;
 
@@ -545,7 +559,7 @@ function returnAccessibleTextAreaInputElements(
       inputText,
       isValidInputText,
       label,
-      ariaRequired,
+      ariaRequired = false,
       ariaAutoComplete = 'none',
       description,
       placeholder,
@@ -557,6 +571,7 @@ function returnAccessibleTextAreaInputElements(
       minLength = 2,
       maxLength = 2000,
       withAsterisk = false,
+      ref = null,
       required = false,
       autoComplete = 'off',
       autosize = false,
@@ -597,6 +612,7 @@ function returnAccessibleTextAreaInputElements(
         minLength={minLength}
         maxLength={maxLength}
         autoComplete={autoComplete}
+        ref={ref}
         withAsterisk={withAsterisk}
         required={required}
         autosize={autosize}
@@ -616,7 +632,7 @@ type AccessibleDateInputCreatorInfo = {
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired: boolean;
+  ariaRequired?: boolean | undefined;
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
   description: {
     error: JSX.Element;
@@ -634,6 +650,7 @@ type AccessibleDateInputCreatorInfo = {
   minLength?: number | undefined;
   maxLength?: number | undefined;
   withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
   required?: boolean | undefined;
   autoComplete?: 'on' | 'off' | undefined;
 };
@@ -649,7 +666,7 @@ function returnAccessibleDateTimeElements(
       inputText,
       isValidInputText,
       label,
-      ariaRequired,
+      ariaRequired = false,
       ariaAutoComplete = 'none',
       description,
       placeholder,
@@ -663,6 +680,7 @@ function returnAccessibleDateTimeElements(
       minLength = 5,
       maxLength = 10,
       withAsterisk = false,
+      ref = null,
       required = false,
       autoComplete = 'off',
     } = info;
@@ -734,6 +752,7 @@ function returnAccessibleDateTimeElements(
         maxLength={
           inputKind === 'date' ? 10 : inputKind === 'time' ? 5 : maxLength
         }
+        ref={ref}
         withAsterisk={withAsterisk}
         required={required}
       />
@@ -743,10 +762,140 @@ function returnAccessibleDateTimeElements(
   });
 }
 
+/**
+ * <Radio
+        size="sm"
+        label="Privacy consent"
+        description={
+          privacyConsent
+            ? 'I acknowledge that the candidate has given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.'
+            : 'The candidate has not given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.'
+        }
+        aria-required
+        aria-label={
+          privacyConsent ? 'Privacy consent given' : 'Privacy consent not given'
+        }
+        checked={privacyConsent}
+        onChange={(event) => {
+          createRefermentDispatch({
+            type: createRefermentAction.setPrivacyConsent,
+            payload: event.currentTarget.checked,
+          });
+        }}
+        onClick={() => {
+          createRefermentDispatch({
+            type: createRefermentAction.setPrivacyConsent,
+            payload: !privacyConsent,
+          });
+        }}
+      />
+ */
+
+type AccessibleRadioInputCreatorInfo = {
+  semanticName: string;
+  label: string;
+  description: {
+    consent: string;
+    dissent: string;
+  };
+  ariaRequired?: boolean | undefined;
+  // ariaLabel: string;
+  checked: boolean;
+  dataObjArray?:
+    | Array<{
+        value: string;
+        label: Capitalize<string>;
+      }>
+    | undefined;
+  disabled?: boolean | undefined;
+
+  onChange: (event: React.ChangeEvent<HTMLInputElement> | string) => void;
+  onClick: () => void;
+  radioKind: 'single' | 'multiple';
+  value?: string | undefined;
+
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
+  required?: boolean | undefined;
+};
+
+function returnAccessibleRadioInputElements(
+  infoArr: AccessibleRadioInputCreatorInfo[]
+) {
+  return infoArr.map((info) => {
+    const {
+      semanticName,
+      label,
+      description,
+      ariaRequired = false,
+      // ariaLabel,
+      checked,
+      dataObjArray = null,
+      disabled = false,
+      onChange,
+      onClick,
+      radioKind,
+      value = '',
+      withAsterisk = false,
+      ref = null,
+      required = false,
+    } = info;
+
+    switch (radioKind) {
+      case 'single': {
+        return (
+          <Radio
+            size="sm"
+            label={label}
+            description={checked ? description.consent : description.dissent}
+            aria-required={ariaRequired}
+            aria-label={checked ? semanticName : semanticName}
+            checked={checked}
+            disabled={disabled}
+            onChange={onChange}
+            onClick={onClick}
+            required={required}
+            ref={ref}
+          />
+        );
+      }
+      case 'multiple': {
+        return (
+          <Radio.Group
+            size="sm"
+            label={label}
+            description={checked ? description.consent : description.dissent}
+            aria-required={ariaRequired}
+            value={value}
+            onChange={onChange}
+            name={semanticName}
+            required={required}
+            ref={ref}
+            withAsterisk={withAsterisk}
+          >
+            {dataObjArray?.map((dataObj) => {
+              return (
+                <Radio
+                  key={dataObj.value}
+                  value={dataObj.value}
+                  label={dataObj.label}
+                />
+              );
+            })}
+          </Radio.Group>
+        );
+      }
+      default:
+        return null;
+    }
+  });
+}
+
 export {
   returnAccessibleDateTimeElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
+  returnAccessibleRadioInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
@@ -757,6 +906,7 @@ export type {
   AccessibleDateInputCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleRadioInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,

@@ -912,13 +912,6 @@ function EventCreator() {
     </StepperWrapper>
   );
 
-  useEffect(() => {
-    console.log('eventStartDate', eventStartDate);
-    console.log('eventEndDate', eventEndDate);
-    console.log('eventStartTime', eventStartTime);
-    console.log('eventEndTime', eventEndTime);
-  }, [eventStartDate, eventEndDate, eventStartTime, eventEndTime]);
-
   return (
     <Flex
       direction="column"
