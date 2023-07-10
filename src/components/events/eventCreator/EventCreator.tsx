@@ -7,8 +7,10 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import {
+  AccessibleDateInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextElements,
   returnAccessibleTextInputElements,
@@ -23,7 +25,11 @@ import {
   eventCreatorReducer,
   initialEventCreatorState,
 } from './state';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCalendarAlt,
+  faCheck,
+  faClock,
+} from '@fortawesome/free-solid-svg-icons';
 import { EVENT_KIND_DATA } from './constants';
 import { EventKind } from './types';
 
@@ -39,9 +45,13 @@ function EventCreator() {
 
     eventKind,
 
-    eventDate,
-    isValidEventDate,
-    isEventDateFocused,
+    eventStartDate,
+    isValidEventStartDate,
+    isEventStartDateFocused,
+
+    eventEndDate,
+    isValidEventEndDate,
+    isEventEndDateFocused,
 
     eventStartTime,
     isValidEventStartTime,
@@ -94,17 +104,29 @@ function EventCreator() {
     });
   }, [eventTitle]);
 
-  // validate date on every change
+  // validate start date on every change
   useEffect(() => {
     const isValid =
-      DATE_NEAR_FUTURE_REGEX.test(eventDate) &&
-      new Date(eventDate) > new Date();
+      DATE_NEAR_FUTURE_REGEX.test(eventStartDate) &&
+      new Date(eventStartDate) > new Date();
 
     eventCreatorDispatch({
-      type: eventCreatorAction.setIsValidEventDate,
+      type: eventCreatorAction.setIsValidEventStartDate,
       payload: isValid,
     });
-  }, [eventDate]);
+  }, [eventStartDate]);
+
+  // validate end date on every change
+  useEffect(() => {
+    const isValid =
+      DATE_NEAR_FUTURE_REGEX.test(eventEndDate) &&
+      new Date(eventEndDate) > new Date(eventStartDate);
+
+    eventCreatorDispatch({
+      type: eventCreatorAction.setIsValidEventEndDate,
+      payload: isValid,
+    });
+  }, [eventEndDate, eventStartDate]);
 
   // validate start time on every change
   useEffect(() => {
@@ -171,13 +193,13 @@ function EventCreator() {
     const isValid =
       DATE_NEAR_FUTURE_REGEX.test(rsvpDeadline) &&
       new Date(rsvpDeadline) > new Date() &&
-      new Date(rsvpDeadline) < new Date(eventDate);
+      new Date(rsvpDeadline) < new Date(eventStartDate);
 
     eventCreatorDispatch({
       type: eventCreatorAction.setIsValidRsvpDeadline,
       payload: isValid,
     });
-  }, [rsvpDeadline, eventDate]);
+  }, [rsvpDeadline, eventStartDate]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [eventTitleErrorText, eventTitleValidText] =
@@ -197,10 +219,10 @@ function EventCreator() {
   const [eventDateErrorText, eventDateValidText] = returnAccessibleTextElements(
     {
       inputElementKind: 'event date',
-      inputText: eventDate,
-      isInputTextFocused: isEventDateFocused,
-      isValidInputText: isValidEventDate,
-      regexValidationText: returnDateNearFutureValidationText(eventDate),
+      inputText: eventStartDate,
+      isInputTextFocused: isEventStartDateFocused,
+      isValidInputText: isValidEventStartDate,
+      regexValidationText: returnDateNearFutureValidationText(eventStartDate),
     }
   );
 
@@ -354,6 +376,116 @@ function EventCreator() {
     eventKindInputCreatorInfo,
   ]);
 
+  const eventDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: eventDateErrorText,
+      valid: eventDateValidText,
+    },
+    dateKind: 'date near future',
+    icon: faCalendarAlt,
+    inputText: eventStartDate,
+    inputKind: 'date',
+    isValidInputText: isValidEventStartDate,
+    label: 'Event date',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventStartDateFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setEventStartDate,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventStartDateFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'DD-MM-YYYY',
+    semanticName: 'event date',
+  };
+
+  const eventStartTimeInputCreatorInfo: AccessibleDateInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: eventStartTimeErrorText,
+      valid: eventStartTimeValidText,
+    },
+    icon: faClock,
+    inputText: eventStartTime,
+    inputKind: 'time',
+    isValidInputText: isValidEventStartTime,
+    label: 'Event start time',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventStartTimeFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setEventStartTime,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventStartTimeFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'HH:MM',
+    semanticName: 'event start time',
+  };
+
+  const eventEndTimeInputCreatorInfo: AccessibleDateInputCreatorInfo = {
+    ariaRequired: true,
+    description: {
+      error: eventEndTimeErrorText,
+      valid: eventEndTimeValidText,
+    },
+    icon: faClock,
+    inputText: eventEndTime,
+    inputKind: 'time',
+    isValidInputText: isValidEventEndTime,
+    label: 'Event end time',
+    onBlur: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventEndTimeFocused,
+        payload: false,
+      });
+    },
+    onChange: (event) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setEventEndTime,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsEventEndTimeFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'HH:MM',
+    semanticName: 'event end time',
+  };
+
+  const [
+    createdEventDateInput,
+    createdEventStartTimeInput,
+    createdEventEndTimeInput,
+  ] = returnAccessibleDateTimeElements([
+    eventDateInputCreatorInfo,
+    eventStartTimeInputCreatorInfo,
+    eventEndTimeInputCreatorInfo,
+  ]);
+
   useEffect(() => {
     console.log('eventTitle: ', eventTitle);
   }, [eventTitle]);
@@ -362,11 +494,29 @@ function EventCreator() {
     console.log('eventKind: ', eventKind);
   }, [eventKind]);
 
+  useEffect(() => {
+    console.log('new Date(eventStartDate): ', new Date(eventStartDate));
+    console.log('new Date(): ', new Date());
+    console.log('eventStartDate: ', eventStartDate);
+    console.log('isValidEventStartDate: ', isValidEventStartDate);
+  }, [eventStartDate, isValidEventStartDate]);
+
+  useEffect(() => {
+    console.log('eventStartTime: ', eventStartTime);
+  }, [eventStartTime]);
+
+  useEffect(() => {
+    console.log('eventEndTime: ', eventEndTime);
+  }, [eventEndTime]);
+
   return (
     <div>
       <h1>Event Creator</h1>
       {createdTitleTextInput}
       {createdEventKindSelectInput}
+      {createdEventDateInput}
+      {createdEventStartTimeInput}
+      {createdEventEndTimeInput}
     </div>
   );
 }

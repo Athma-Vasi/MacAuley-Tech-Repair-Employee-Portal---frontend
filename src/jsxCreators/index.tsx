@@ -145,7 +145,7 @@ type AccessibleTextInputCreatorInfo = {
 
 function returnAccessibleTextInputElements(
   infoArray: AccessibleTextInputCreatorInfo[]
-) {
+): JSX.Element[] {
   return infoArray.map((info) => {
     const {
       semanticName,
@@ -240,7 +240,7 @@ type AccessibleSelectInputCreatorInfo = {
 
 function returnAccessibleSelectInputElements(
   infoArray: AccessibleSelectInputCreatorInfo[]
-) {
+): JSX.Element[] {
   return infoArray.map((info) => {
     const {
       data,
@@ -357,7 +357,7 @@ type AccessibleTextAreaInputCreatorInfo = {
 
 function returnAccessibleTextAreaInputElements(
   infoArray: AccessibleTextAreaInputCreatorInfo[]
-) {
+): JSX.Element[] {
   return infoArray.map((info) => {
     const {
       semanticName,
@@ -428,7 +428,248 @@ function returnAccessibleTextAreaInputElements(
   });
 }
 
+/**
+ * <TextInput
+        type="date"
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Date of occurrence"
+        placeholder="DD-MM-YYYY"
+        autoComplete="off"
+        aria-required
+        aria-label='Please enter date of occurrence in format "date-date-month-month-year-year-year-year" from start year 2020 to current year'
+        aria-describedby={
+          isValidDateOfOccurrence
+            ? 'date-of-occurrence-input-note-valid'
+            : 'date-of-occurrence-input-note-error'
+        }
+        aria-invalid={isValidDateOfOccurrence ? false : true}
+        value={dateOfOccurrence}
+        icon={
+          isValidDateOfOccurrence ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidDateOfOccurrence && dateOfOccurrence !== ''}
+        description={
+          isValidDateOfOccurrence
+            ? dateOfOccurrenceInputValidText
+            : dateOfOccurrenceInputErrorText
+        }
+        min={new Date(2020, 0, 1).toISOString().split('T')[0]}
+        max={new Date().toISOString().split('T')[0]}
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setDateOfOccurrence,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsDateOfOccurrenceFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsDateOfOccurrenceFocused,
+            payload: false,
+          });
+        }}
+        maxLength={10}
+        withAsterisk
+        required
+      />
+
+      <TextInput
+        type="time"
+        size="sm"
+        w="100%"
+        color="dark"
+        label="Time of occurrence"
+        placeholder="HH:MM"
+        autoComplete="off"
+        aria-required
+        aria-label='Please enter time of occurrence in format "hour-hour-minute-minute" from start hour 00 to end hour 23'
+        aria-describedby={
+          isValidTimeOfOccurrence
+            ? 'time-of-occurrence-input-note-valid'
+            : 'time-of-occurrence-input-note-error'
+        }
+        aria-invalid={isValidTimeOfOccurrence ? false : true}
+        value={timeOfOccurrence}
+        icon={
+          isValidTimeOfOccurrence ? (
+            <FontAwesomeIcon icon={faCheck} color="green" />
+          ) : null
+        }
+        error={!isValidTimeOfOccurrence && timeOfOccurrence !== ''}
+        description={
+          isValidTimeOfOccurrence
+            ? timeOfOccurrenceInputValidText
+            : timeOfOccurrenceInputErrorText
+        }
+        onChange={(event) => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setTimeOfOccurrence,
+            payload: event.currentTarget.value,
+          });
+        }}
+        onFocus={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsTimeOfOccurrenceFocused,
+            payload: true,
+          });
+        }}
+        onBlur={() => {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsTimeOfOccurrenceFocused,
+            payload: false,
+          });
+        }}
+        maxLength={5}
+        withAsterisk
+        required
+      />
+ */
+
+type AccessibleDateInputCreatorInfo = {
+  inputKind: 'date' | 'time';
+  dateKind?: 'date near future' | 'date near past' | 'full date' | undefined;
+  semanticName: string;
+  inputText: string;
+  isValidInputText: boolean;
+  label: string;
+  ariaRequired: boolean;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
+  description: {
+    error: JSX.Element;
+    valid: JSX.Element;
+  };
+  placeholder: string;
+  initialInputValue?: string | undefined;
+  icon: IconDefinition | null;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+
+  min?: string | undefined;
+  max?: string | undefined;
+  minLength?: number | undefined;
+  maxLength?: number | undefined;
+  withAsterisk?: boolean | undefined;
+  required?: boolean | undefined;
+  autoComplete?: 'on' | 'off' | undefined;
+};
+
+function returnAccessibleDateTimeElements(
+  infoArr: AccessibleDateInputCreatorInfo[]
+) {
+  return infoArr.map((info) => {
+    const {
+      inputKind,
+      dateKind = 'full date',
+      semanticName,
+      inputText,
+      isValidInputText,
+      label,
+      ariaRequired,
+      ariaAutoComplete = 'none',
+      description,
+      placeholder,
+      initialInputValue = '',
+      icon = null,
+      onChange,
+      onFocus,
+      onBlur,
+      min = new Date().toISOString().split('T')[0], // current date
+      max = new Date(2024, 11, 31).toISOString().split('T')[0], // 31.12.2024
+      minLength = 5,
+      maxLength = 10,
+      withAsterisk = false,
+      required = false,
+      autoComplete = 'off',
+    } = info;
+
+    const createdDateTimeInput = (
+      <TextInput
+        type={inputKind}
+        size="sm"
+        w="100%"
+        color="dark"
+        label={label}
+        placeholder={placeholder}
+        aria-autocomplete={ariaAutoComplete}
+        autoComplete={autoComplete}
+        aria-required={ariaRequired}
+        aria-label={`Please enter ${semanticName} in format "${
+          inputKind === 'date'
+            ? 'date-date-month-month-year-year-year-year'
+            : 'hour-hour-minute-minute'
+        }${
+          dateKind === 'date near future'
+            ? ' from today to 2026'
+            : dateKind === 'date near past'
+            ? ' from 2020 to today'
+            : ' from 1900 to 2024'
+        }`}
+        aria-describedby={
+          isValidInputText
+            ? `${semanticName.split(' ').join('-')}-input-note-valid`
+            : `${semanticName.split(' ').join('-')}-input-note-error`
+        }
+        aria-invalid={isValidInputText ? false : true}
+        value={inputText}
+        icon={
+          isValidInputText ? (
+            icon ? (
+              <FontAwesomeIcon icon={icon} color="green" />
+            ) : (
+              <FontAwesomeIcon icon={faCheck} color="green" />
+            )
+          ) : null
+        }
+        error={!isValidInputText && inputText !== initialInputValue}
+        description={isValidInputText ? description.valid : description.error}
+        min={
+          dateKind === 'full date'
+            ? new Date(1900, 0, 1).toISOString().split('T')[0]
+            : dateKind === 'date near past'
+            ? new Date(2020, 0, 1).toISOString().split('T')[0]
+            : dateKind === 'date near future'
+            ? new Date().toISOString().split('T')[0]
+            : min
+        }
+        max={
+          dateKind === 'full date'
+            ? new Date(2024, 11, 31).toISOString().split('T')[0]
+            : dateKind === 'date near past'
+            ? new Date().toISOString().split('T')[0]
+            : dateKind === 'date near future'
+            ? new Date(2026, 11, 31).toISOString().split('T')[0]
+            : max
+        }
+        onChange={onChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        minLength={
+          inputKind === 'date' ? 10 : inputKind === 'time' ? 5 : minLength
+        }
+        maxLength={
+          inputKind === 'date' ? 10 : inputKind === 'time' ? 5 : maxLength
+        }
+        withAsterisk={withAsterisk}
+        required={required}
+      />
+    );
+
+    return createdDateTimeInput;
+  });
+}
+
 export {
+  returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
@@ -436,6 +677,7 @@ export {
 };
 
 export type {
+  AccessibleDateInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,

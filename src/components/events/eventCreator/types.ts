@@ -27,7 +27,8 @@ type EventCreatorSchema = {
   eventTitle: string;
   eventDescription: string;
   eventKind: EventKind;
-  eventDate: string;
+  eventStartDate: string;
+  eventEndDate: string;
   eventStartTime: string;
   eventEndTime: string;
   eventLocation: string;
@@ -50,9 +51,13 @@ type EventCreatorState = {
 
   eventKind: EventKind;
 
-  eventDate: string;
-  isValidEventDate: boolean;
-  isEventDateFocused: boolean;
+  eventStartDate: string;
+  isValidEventStartDate: boolean;
+  isEventStartDateFocused: boolean;
+
+  eventEndDate: string;
+  isValidEventEndDate: boolean;
+  isEventEndDateFocused: boolean;
 
   eventStartTime: string;
   isValidEventStartTime: boolean;
@@ -102,9 +107,13 @@ type EventCreatorAction = {
 
   setEventKind: 'setEventKind';
 
-  setEventDate: 'setEventDate';
-  setIsValidEventDate: 'setIsValidEventDate';
-  setIsEventDateFocused: 'setIsEventDateFocused';
+  setEventStartDate: 'setEventStartDate';
+  setIsValidEventStartDate: 'setIsValidEventStartDate';
+  setIsEventStartDateFocused: 'setIsEventStartDateFocused';
+
+  setEventEndDate: 'setEventEndDate';
+  setIsValidEventEndDate: 'setIsValidEventEndDate';
+  setIsEventEndDateFocused: 'setIsEventEndDateFocused';
 
   setEventStartTime: 'setEventStartTime';
   setIsValidEventStartTime: 'setIsValidEventStartTime';
@@ -151,7 +160,8 @@ type EventCreatorDispatch =
   | {
       type:
         | EventCreatorAction['setTitle']
-        | EventCreatorAction['setEventDate']
+        | EventCreatorAction['setEventStartDate']
+        | EventCreatorAction['setEventEndDate']
         | EventCreatorAction['setEventStartTime']
         | EventCreatorAction['setEventEndTime']
         | EventCreatorAction['setEventLocation']
@@ -164,7 +174,8 @@ type EventCreatorDispatch =
   | {
       type:
         | EventCreatorAction['setIsValidTitle']
-        | EventCreatorAction['setIsValidEventDate']
+        | EventCreatorAction['setIsValidEventStartDate']
+        | EventCreatorAction['setIsValidEventEndDate']
         | EventCreatorAction['setIsValidEventStartTime']
         | EventCreatorAction['setIsValidEventEndTime']
         | EventCreatorAction['setIsValidEventLocation']
@@ -177,7 +188,8 @@ type EventCreatorDispatch =
   | {
       type:
         | EventCreatorAction['setIsTitleFocused']
-        | EventCreatorAction['setIsEventDateFocused']
+        | EventCreatorAction['setIsEventStartDateFocused']
+        | EventCreatorAction['setIsEventEndDateFocused']
         | EventCreatorAction['setIsEventStartTimeFocused']
         | EventCreatorAction['setIsEventEndTimeFocused']
         | EventCreatorAction['setIsEventLocationFocused']

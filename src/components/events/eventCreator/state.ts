@@ -11,9 +11,13 @@ const initialEventCreatorState: EventCreatorState = {
 
   eventKind: 'Webinar',
 
-  eventDate: '',
-  isValidEventDate: false,
-  isEventDateFocused: false,
+  eventStartDate: '',
+  isValidEventStartDate: false,
+  isEventStartDateFocused: false,
+
+  eventEndDate: '',
+  isValidEventEndDate: false,
+  isEventEndDateFocused: false,
 
   eventStartTime: '',
   isValidEventStartTime: false,
@@ -63,9 +67,13 @@ const eventCreatorAction: EventCreatorAction = {
 
   setEventKind: 'setEventKind',
 
-  setEventDate: 'setEventDate',
-  setIsValidEventDate: 'setIsValidEventDate',
-  setIsEventDateFocused: 'setIsEventDateFocused',
+  setEventStartDate: 'setEventStartDate',
+  setIsValidEventStartDate: 'setIsValidEventStartDate',
+  setIsEventStartDateFocused: 'setIsEventStartDateFocused',
+
+  setEventEndDate: 'setEventEndDate',
+  setIsValidEventEndDate: 'setIsValidEventEndDate',
+  setIsEventEndDateFocused: 'setIsEventEndDateFocused',
 
   setEventStartTime: 'setEventStartTime',
   setIsValidEventStartTime: 'setIsValidEventStartTime',
@@ -135,20 +143,36 @@ function eventCreatorReducer(
         eventKind: action.payload,
       };
 
-    case eventCreatorAction.setEventDate:
+    case eventCreatorAction.setEventStartDate:
       return {
         ...state,
-        eventDate: action.payload,
+        eventStartDate: action.payload,
       };
-    case eventCreatorAction.setIsValidEventDate:
+    case eventCreatorAction.setIsValidEventStartDate:
       return {
         ...state,
-        isValidEventDate: action.payload,
+        isValidEventStartDate: action.payload,
       };
-    case eventCreatorAction.setIsEventDateFocused:
+    case eventCreatorAction.setIsEventStartDateFocused:
       return {
         ...state,
-        isEventDateFocused: action.payload,
+        isEventStartDateFocused: action.payload,
+      };
+
+    case eventCreatorAction.setEventEndDate:
+      return {
+        ...state,
+        eventEndDate: action.payload,
+      };
+    case eventCreatorAction.setIsValidEventEndDate:
+      return {
+        ...state,
+        isValidEventEndDate: action.payload,
+      };
+    case eventCreatorAction.setIsEventEndDateFocused:
+      return {
+        ...state,
+        isEventEndDateFocused: action.payload,
       };
 
     case eventCreatorAction.setEventStartTime:

@@ -156,7 +156,7 @@ const DATE_REGEX =
   /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 /**
- * - 202[3-5] matches the years from 2023 to 2026.
+ * - 202[3-6] matches the years from 2023 to 2026.
  * - - matches a hyphen.
  * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
  * - - matches a hyphen.
