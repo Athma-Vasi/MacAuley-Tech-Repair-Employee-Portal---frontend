@@ -282,7 +282,6 @@ function CreateEndorsement() {
       semanticName: 'employee attributes',
       value: attributeEndorsed,
       required: true,
-      withAsterisk: true,
       dataObjArray: EMPLOYEE_ATTRIBUTES_DATA,
       onChangeMultiple: (event: string[]) => {
         createEndorsementDispatch({

@@ -538,7 +538,6 @@ function AddressChange() {
         });
       },
       required: true,
-      withAsterisk: true,
     };
 
   // following are the created accessible input elements
