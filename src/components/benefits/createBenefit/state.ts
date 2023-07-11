@@ -31,6 +31,18 @@ const initialCreateBenefitState: CreateBenefitState = {
   employeeContribution: '0',
   isValidEmployeeContribution: false,
   isEmployeeContributionFocused: false,
+
+  currentStepperPosition: 0,
+  stepsInError: new Set(),
+
+  isError: false,
+  errorMessage: '',
+  isSubmitting: false,
+  submitMessage: '',
+  isSuccessful: false,
+  successMessage: '',
+  isLoading: false,
+  loadingMessage: '',
 };
 
 const createBenefitAction: CreateBenefitAction = {
@@ -57,6 +69,18 @@ const createBenefitAction: CreateBenefitAction = {
   setEmployeeContribution: 'setEmployeeContribution',
   setIsValidEmployeeContribution: 'setIsValidEmployeeContribution',
   setIsEmployeeContributionFocused: 'setIsEmployeeContributionFocused',
+
+  setCurrentStepperPosition: 'setCurrentStepperPosition',
+  setStepsInError: 'setStepsInError',
+
+  setIsError: 'setIsError',
+  setErrorMessage: 'setErrorMessage',
+  setIsSubmitting: 'setIsSubmitting',
+  setSubmitMessage: 'setSubmitMessage',
+  setIsSuccessful: 'setIsSuccessful',
+  setSuccessMessage: 'setSuccessMessage',
+  setIsLoading: 'setIsLoading',
+  setLoadingMessage: 'setLoadingMessage',
 };
 
 function createBenefitReducer(
@@ -67,103 +91,151 @@ function createBenefitReducer(
     case createBenefitAction.setPlanName:
       return {
         ...state,
-        planName: action.payload as string,
+        planName: action.payload,
       };
     case createBenefitAction.setIsValidPlanName:
       return {
         ...state,
-        isValidPlanName: action.payload as boolean,
+        isValidPlanName: action.payload,
       };
     case createBenefitAction.setIsPlanNameFocused:
       return {
         ...state,
-        isPlanNameFocused: action.payload as boolean,
+        isPlanNameFocused: action.payload,
       };
-
     case createBenefitAction.setPlanDescription:
       return {
         ...state,
-        planDescription: action.payload as string,
+        planDescription: action.payload,
       };
     case createBenefitAction.setIsValidPlanDescription:
       return {
         ...state,
-        isValidPlanDescription: action.payload as boolean,
+        isValidPlanDescription: action.payload,
       };
     case createBenefitAction.setIsPlanDescriptionFocused:
       return {
         ...state,
-        isPlanDescriptionFocused: action.payload as boolean,
+        isPlanDescriptionFocused: action.payload,
       };
-
     case createBenefitAction.setPlanStartDate:
       return {
         ...state,
-        planStartDate: action.payload as string,
+        planStartDate: action.payload,
       };
     case createBenefitAction.setIsValidPlanStartDate:
       return {
         ...state,
-
-        isValidPlanStartDate: action.payload as boolean,
+        isValidPlanStartDate: action.payload,
       };
     case createBenefitAction.setIsPlanStartDateFocused:
       return {
         ...state,
-        isPlanStartDateFocused: action.payload as boolean,
+        isPlanStartDateFocused: action.payload,
       };
-
     case createBenefitAction.setPlanKind:
       return {
         ...state,
-        planKind: action.payload as BenefitsPlanKind,
+        planKind: action.payload,
       };
     case createBenefitAction.setIsPlanActive:
       return {
         ...state,
-        isPlanActive: action.payload as boolean,
+        isPlanActive: action.payload,
       };
     case createBenefitAction.setCurrency:
       return {
         ...state,
-        currency: action.payload as Currency,
+        currency: action.payload,
       };
-
     case createBenefitAction.setEmployerContribution:
       return {
         ...state,
-        employerContribution: action.payload as string,
+        employerContribution: action.payload,
       };
     case createBenefitAction.setIsValidEmployerContribution:
       return {
         ...state,
-        isValidEmployerContribution: action.payload as boolean,
+        isValidEmployerContribution: action.payload,
       };
     case createBenefitAction.setIsEmployerContributionFocused:
       return {
         ...state,
-        isEmployerContributionFocused: action.payload as boolean,
+        isEmployerContributionFocused: action.payload,
       };
-
     case createBenefitAction.setEmployeeContribution:
       return {
         ...state,
-        employeeContribution: action.payload as string,
+        employeeContribution: action.payload,
       };
     case createBenefitAction.setIsValidEmployeeContribution:
       return {
         ...state,
-        isValidEmployeeContribution: action.payload as boolean,
+        isValidEmployeeContribution: action.payload,
       };
     case createBenefitAction.setIsEmployeeContributionFocused:
       return {
         ...state,
-        isEmployeeContributionFocused: action.payload as boolean,
+        isEmployeeContributionFocused: action.payload,
       };
+    case createBenefitAction.setCurrentStepperPosition:
+      return {
+        ...state,
+        currentStepperPosition: action.payload,
+      };
+    case createBenefitAction.setStepsInError: {
+      const { kind, step } = action.payload;
+      const stepsInError = new Set(state.stepsInError);
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
 
+      return {
+        ...state,
+        stepsInError,
+      };
+    }
+    case createBenefitAction.setIsError:
+      return {
+        ...state,
+        isError: action.payload,
+      };
+    case createBenefitAction.setErrorMessage:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case createBenefitAction.setIsSubmitting:
+      return {
+        ...state,
+        isSubmitting: action.payload,
+      };
+    case createBenefitAction.setSubmitMessage:
+      return {
+        ...state,
+        submitMessage: action.payload,
+      };
+    case createBenefitAction.setIsSuccessful:
+      return {
+        ...state,
+        isSuccessful: action.payload,
+      };
+    case createBenefitAction.setSuccessMessage:
+      return {
+        ...state,
+        successMessage: action.payload,
+      };
+    case createBenefitAction.setIsLoading:
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    case createBenefitAction.setLoadingMessage:
+      return {
+        ...state,
+        loadingMessage: action.payload,
+      };
     default:
       return state;
   }
 }
 
-export { createBenefitAction, createBenefitReducer,initialCreateBenefitState };
+export { createBenefitAction, createBenefitReducer, initialCreateBenefitState };

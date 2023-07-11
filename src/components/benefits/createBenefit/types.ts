@@ -109,13 +109,6 @@ type CreateBenefitAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-// type CreateBenefitPayload = CreateBenefitState[keyof CreateBenefitState];
-
-// type CreateBenefitDispatch = {
-//   type: CreateBenefitAction[keyof CreateBenefitAction];
-//   payload: CreateBenefitPayload;
-// };
-
 type CreateBenefitDispatch =
   | {
       type:
