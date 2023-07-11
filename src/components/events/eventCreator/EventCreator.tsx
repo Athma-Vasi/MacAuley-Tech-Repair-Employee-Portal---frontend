@@ -289,8 +289,8 @@ function EventCreator() {
   useEffect(() => {
     const isStepInError =
       !isValidEventLocation ||
-      !isValidEventDescription ||
-      !isValidEventAttendees ||
+      (!isValidEventDescription && eventDescription !== '') ||
+      (!isValidEventAttendees && eventAttendees !== '') ||
       !isValidRequiredItems;
 
     // if current step is in error, add it to stepsInError Set else remove it
@@ -306,6 +306,8 @@ function EventCreator() {
     isValidEventDescription,
     isValidEventAttendees,
     isValidRequiredItems,
+    eventDescription,
+    eventAttendees,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -570,7 +572,7 @@ function EventCreator() {
   };
 
   const eventAttendeesInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
-    ariaRequired: true,
+    ariaRequired: false,
     description: {
       error: eventAttendeesErrorText,
       valid: eventAttendeesValidText,
@@ -599,12 +601,9 @@ function EventCreator() {
     },
     placeholder: 'Enter attendees of event',
     semanticName: 'event attendees',
-    required: true,
-    withAsterisk: true,
   };
 
   const requiredItemsInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
-    ariaRequired: true,
     description: {
       error: requiredItemsErrorText,
       valid: requiredItemsValidText,
@@ -633,8 +632,6 @@ function EventCreator() {
     },
     placeholder: 'Enter required items for event',
     semanticName: 'required items',
-    required: true,
-    withAsterisk: true,
   };
 
   const eventStartDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
@@ -888,12 +885,6 @@ function EventCreator() {
       </Button>
     ) : null;
 
-  async function handleEventCreatorFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
-
   const displayEventCreatorComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
@@ -909,6 +900,12 @@ function EventCreator() {
       </form>
     </StepperWrapper>
   );
+
+  async function handleEventCreatorFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
 
   return (
     <Flex

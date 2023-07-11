@@ -177,8 +177,8 @@ function CreateAnnouncement() {
     const isStepInError =
       !isValidTitle ||
       !isValidAuthor ||
-      !isValidBannerImageSrc ||
-      !isValidBannerImageAlt;
+      (!isValidBannerImageSrc && bannerImageSrc !== '') ||
+      (!isValidBannerImageAlt && bannerImageAlt !== '');
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setStepsInError,
@@ -192,6 +192,8 @@ function CreateAnnouncement() {
     isValidAuthor,
     isValidBannerImageSrc,
     isValidBannerImageAlt,
+    bannerImageSrc,
+    bannerImageAlt,
   ]);
 
   // update for stepper wrapper change
@@ -274,7 +276,7 @@ function CreateAnnouncement() {
     });
 
   // following are info objects for input creators
-  const titleTextInputInfo: AccessibleTextInputCreatorInfo = {
+  const titleTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: titleInputErrorText,
       valid: titleInputValidText,
@@ -306,7 +308,7 @@ function CreateAnnouncement() {
     withAsterisk: true,
   };
 
-  const authorTextInputInfo: AccessibleTextInputCreatorInfo = {
+  const authorTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: authorInputErrorText,
       valid: authorInputValidText,
@@ -338,7 +340,7 @@ function CreateAnnouncement() {
     withAsterisk: true,
   };
 
-  const bannerImageSrcTextInputInfo: AccessibleTextInputCreatorInfo = {
+  const bannerImageSrcTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: bannerImgSrcInputErrorText,
       valid: bannerImgSrcInputValidText,
@@ -366,11 +368,9 @@ function CreateAnnouncement() {
     },
     placeholder: 'Enter banner image src',
     semanticName: 'banner image src',
-    required: true,
-    withAsterisk: true,
   };
 
-  const bannerImageAltTextInputInfo: AccessibleTextInputCreatorInfo = {
+  const bannerImageAltTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: bannerImgAltInputErrorText,
       valid: bannerImgAltInputValidText,
@@ -398,8 +398,6 @@ function CreateAnnouncement() {
     },
     placeholder: 'Enter banner image alt text',
     semanticName: 'banner image alt',
-    required: true,
-    withAsterisk: true,
   };
 
   const [
@@ -408,10 +406,10 @@ function CreateAnnouncement() {
     createdBannerImageSrcTextInput,
     createdBannerImageAltTextInput,
   ] = returnAccessibleTextInputElements([
-    titleTextInputInfo,
-    authorTextInputInfo,
-    bannerImageSrcTextInputInfo,
-    bannerImageAltTextInputInfo,
+    titleTextInputCreatorInfo,
+    authorTextInputCreatorInfo,
+    bannerImageSrcTextInputCreatorInfo,
+    bannerImageAltTextInputCreatorInfo,
   ]);
 
   const createdArticleParagraphsTextAreaInputs = article.map(

@@ -1,32 +1,37 @@
 import {
-  faCheck,
   faDollarSign,
   faEuro,
   faJpy,
   faPoundSign,
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Checkbox,
-  Flex,
-  NativeSelect,
-  Text,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
-import { useEffect, useMemo, useReducer, useRef } from 'react';
+import { Button, Flex, Text } from '@mantine/core';
+import { useEffect, useMemo, useReducer } from 'react';
 
 import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
-import { returnAccessibleTextElements } from '../../../jsxCreators';
+import {
+  AccessibleCheckboxInputCreatorInfo,
+  AccessibleDateInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  returnAccessibleCheckboxInputElements,
+  returnAccessibleDateTimeElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
+  returnAccessibleTextElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
 import {
   returnDateValidationText,
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../../utils';
+import { StepperWrapper } from '../../stepperWrapper';
 import {
   BENEFIT_PLAN_DATA,
+  CREATE_BENEFIT_DESCRIPTION_MAP,
+  CREATE_BENEFIT_MAX_STEPPER_POSITION,
   CURRENCY_DATA,
   PLAN_DESCRIPTION_REGEX,
   PLAN_NAME_REGEX,
@@ -36,6 +41,7 @@ import {
   createBenefitReducer,
   initialCreateBenefitState,
 } from './state';
+import { BenefitsPlanKind, Currency } from './types';
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
@@ -46,28 +52,39 @@ function CreateBenefit() {
     planName,
     isValidPlanName,
     isPlanNameFocused,
+
     planDescription,
     isValidPlanDescription,
     isPlanDescriptionFocused,
-    planKind,
-    isPlanActive,
-    currency,
+
     planStartDate,
     isValidPlanStartDate,
     isPlanStartDateFocused,
-    employeeContribution,
-    employerContribution,
-    isEmployeeContributionFocused,
-    isEmployerContributionFocused,
-    isValidEmployeeContribution,
-    isValidEmployerContribution,
-  } = createBenefitState;
 
-  const planNameRef = useRef<HTMLInputElement>(null);
-  // sets focus on plan name input on page load
-  useEffect(() => {
-    planNameRef.current?.focus();
-  }, []);
+    planKind,
+    isPlanActive,
+    currency,
+
+    employerContribution,
+    isValidEmployerContribution,
+    isEmployerContributionFocused,
+
+    employeeContribution,
+    isValidEmployeeContribution,
+    isEmployeeContributionFocused,
+
+    currentStepperPosition,
+    stepsInError,
+
+    isError,
+    errorMessage,
+    isSubmitting,
+    submitMessage,
+    isSuccessful,
+    successMessage,
+    isLoading,
+    loadingMessage,
+  } = createBenefitState;
 
   // validate planName input on every change
   useEffect(() => {
@@ -159,6 +176,87 @@ function CreateBenefit() {
     }
   }, [currency, employeeContribution, employerContribution]);
 
+  // memoized total contribution calculation based on currency
+  const totalContribution = useMemo(() => {
+    if (currency === 'EUR') {
+      // replace comma with decimal
+      const employeeContributionWithDecimal = employeeContribution.replace(
+        ',',
+        '.'
+      );
+      const employerContributionWithDecimal = employerContribution.replace(
+        ',',
+        '.'
+      );
+      // safety check
+      if (
+        isNaN(Number(employeeContributionWithDecimal)) ||
+        isNaN(Number(employerContributionWithDecimal))
+      ) {
+        return '0.00';
+      }
+
+      const totalContribution =
+        Number(employeeContributionWithDecimal) +
+        Number(employerContributionWithDecimal);
+      const totalContributionFixed = totalContribution.toFixed(2);
+      const totalContributionWithComma = totalContributionFixed.replace(
+        '.',
+        ','
+      );
+      return totalContributionWithComma;
+    } else {
+      // safety check
+      if (
+        isNaN(Number(employeeContribution)) ||
+        isNaN(Number(employerContribution))
+      ) {
+        return '0.00';
+      }
+
+      const totalContribution =
+        Number(employeeContribution) + Number(employerContribution);
+      return totalContribution.toFixed(2);
+    }
+  }, [currency, employeeContribution, employerContribution]);
+
+  // update stepper state if any input in the current step is invalid
+  useEffect(() => {
+    const isStepInError =
+      !isValidPlanName ||
+      (!isValidPlanDescription && planDescription !== '') ||
+      !isValidPlanStartDate;
+
+    createBenefitDispatch({
+      type: createBenefitAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [
+    isValidPlanName,
+    isValidPlanDescription,
+    isValidPlanStartDate,
+    planDescription,
+  ]);
+
+  // update stepper state if any input in the current step is invalid
+  useEffect(() => {
+    const isStepInError =
+      !isValidEmployeeContribution ||
+      !isValidEmployerContribution ||
+      !isPlanActive;
+
+    createBenefitDispatch({
+      type: createBenefitAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 2,
+      },
+    });
+  }, [isValidEmployeeContribution, isValidEmployerContribution, isPlanActive]);
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [planNameInputErrorText, planNameInputValidText] =
     returnAccessibleTextElements({
@@ -225,63 +323,366 @@ function CreateBenefit() {
     }),
   });
 
+  // following are info objects for input creators
+  const planNameInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: planNameInputErrorText,
+      valid: planNameInputValidText,
+    },
+    inputText: planName,
+    isValidInputText: isValidPlanName,
+    label: 'Plan name',
+    onBlur: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsPlanNameFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setPlanName,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsPlanNameFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter plan name',
+    semanticName: 'plan name',
+    minLength: 1,
+    maxLength: 50,
+    required: true,
+    withAsterisk: true,
+  };
+
+  const planDescriptionInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    description: {
+      error: planDescriptionInputErrorText,
+      valid: planDescriptionInputValidText,
+    },
+    inputText: planDescription,
+    isValidInputText: isValidPlanDescription,
+    label: 'Plan description',
+    onBlur: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsPlanDescriptionFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setPlanDescription,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsPlanDescriptionFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter plan description',
+    semanticName: 'plan description',
+    minLength: 1,
+    maxLength: 300,
+  };
+
+  const planStartDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
+    description: {
+      error: planStartDateInputErrorText,
+      valid: planStartDateInputValidText,
+    },
+    inputText: planStartDate,
+    isValidInputText: isValidPlanStartDate,
+    label: 'Plan start date',
+    onBlur: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsPlanStartDateFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setPlanStartDate,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsPlanStartDateFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter plan start date',
+    semanticName: 'plan start date',
+    required: true,
+    withAsterisk: true,
+    inputKind: 'date',
+    dateKind: 'full date',
+  };
+
+  const planKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    description: 'Select plan kind',
+    data: BENEFIT_PLAN_DATA,
+    label: 'Plan kind',
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setPlanKind,
+        payload: event.target.value as BenefitsPlanKind,
+      });
+    },
+    value: planKind,
+    required: true,
+    withAsterisk: true,
+  };
+
+  const currencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    description: 'Select currency',
+    data: CURRENCY_DATA,
+    label: 'Currency',
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setCurrency,
+        payload: event.target.value as Currency,
+      });
+    },
+    value: currency,
+    required: true,
+    withAsterisk: true,
+  };
+
   const currencyIcon =
-    currency === 'CNY' ? (
-      <FontAwesomeIcon icon={faYen} color="gray" />
-    ) : currency === 'GBP' ? (
-      <FontAwesomeIcon icon={faPoundSign} color="gray" />
-    ) : currency === 'EUR' ? (
-      <FontAwesomeIcon icon={faEuro} color="gray" />
-    ) : currency === 'JPY' ? (
-      <FontAwesomeIcon icon={faJpy} color="gray" />
-    ) : (
-      <FontAwesomeIcon icon={faDollarSign} color="gray" />
-    );
+    currency === 'CNY'
+      ? faYen
+      : currency === 'GBP'
+      ? faPoundSign
+      : currency === 'EUR'
+      ? faEuro
+      : currency === 'JPY'
+      ? faJpy
+      : faDollarSign;
 
-  // memoized total contribution calculation based on currency
-  const totalContribution = useMemo(() => {
-    if (currency === 'EUR') {
-      // replace comma with decimal
-      const employeeContributionWithDecimal = employeeContribution.replace(
-        ',',
-        '.'
-      );
-      const employerContributionWithDecimal = employerContribution.replace(
-        ',',
-        '.'
-      );
+  const employeeContributionInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: employeeContributionInputErrorText,
+      valid: employeeContributionInputValidText,
+    },
+    inputText: employeeContribution,
+    isValidInputText: isValidEmployeeContribution,
+    label: 'Employee contribution',
+    onBlur: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsEmployeeContributionFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setEmployeeContribution,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsEmployeeContributionFocused,
+        payload: true,
+      });
+    },
+    rightSection: true,
+    rightSectionIcon: currencyIcon,
+    placeholder: 'Enter employee contribution',
+    semanticName: 'employee contribution',
+    minLength: 4,
+    maxLength: 9,
+    required: true,
+    withAsterisk: true,
+  };
 
-      // safety check
-      if (
-        isNaN(Number(employeeContributionWithDecimal)) ||
-        isNaN(Number(employerContributionWithDecimal))
-      ) {
-        return '0.00';
-      }
+  const employerContributionInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: employerContributionInputErrorText,
+      valid: employerContributionInputValidText,
+    },
+    inputText: employerContribution,
+    isValidInputText: isValidEmployerContribution,
+    label: 'Employer contribution',
+    onBlur: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsEmployerContributionFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setEmployerContribution,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsEmployerContributionFocused,
+        payload: true,
+      });
+    },
+    rightSection: true,
+    rightSectionIcon: currencyIcon,
+    placeholder: 'Enter employer contribution',
+    semanticName: 'employer contribution',
+    minLength: 4,
+    maxLength: 9,
+    required: true,
+    withAsterisk: true,
+  };
 
-      const totalContribution =
-        Number(employeeContributionWithDecimal) +
-        Number(employerContributionWithDecimal);
-      const totalContributionFixed = totalContribution.toFixed(2);
-      const totalContributionWithComma = totalContributionFixed.replace(
-        '.',
-        ','
-      );
-      return totalContributionWithComma;
-    } else {
-      // safety check
-      if (
-        isNaN(Number(employeeContribution)) ||
-        isNaN(Number(employerContribution))
-      ) {
-        return '0.00';
-      }
+  const planStatusCheckboxInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+    {
+      description: {
+        selected: 'Plan is currently active',
+        deselected: 'Plan is currently inactive',
+      },
+      label: 'Plan status',
+      accessibleDescription: {
+        selected: 'Checkbox is selected to indicate plan is currently active',
+        deselected:
+          'Checkbox is deselected to indicate plan is currently inactive',
+      },
+      checkboxKind: 'single',
+      checked: isPlanActive,
+      onClick: () => {
+        createBenefitDispatch({
+          type: createBenefitAction.setIsPlanActive,
+          payload: !isPlanActive,
+        });
+      },
+      onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+        createBenefitDispatch({
+          type: createBenefitAction.setIsPlanActive,
+          payload: event.target.checked,
+        });
+      },
+      semanticName: 'plan status',
+    };
 
-      const totalContribution =
-        Number(employeeContribution) + Number(employerContribution);
-      return totalContribution.toFixed(2);
-    }
-  }, [currency, employeeContribution, employerContribution]);
+  const [
+    createdPlanNameTextInput,
+    createdEmployeeContributionTextInput,
+    createdEmployerContributionText,
+  ] = returnAccessibleTextInputElements([
+    planNameInputCreatorInfo,
+    employeeContributionInputCreatorInfo,
+    employerContributionInputCreatorInfo,
+  ]);
+
+  const [createdPlanStartDateInput] = returnAccessibleDateTimeElements([
+    planStartDateInputCreatorInfo,
+  ]);
+
+  const [createdPlanDescriptionTextAreaInput] =
+    returnAccessibleTextAreaInputElements([planDescriptionInputCreatorInfo]);
+
+  const [createdPlanKindSelectInput, createdCurrencySelectInput] =
+    returnAccessibleSelectInputElements([
+      planKindSelectInputCreatorInfo,
+      currencySelectInputCreatorInfo,
+    ]);
+
+  const [createdPlanStatusCheckboxInput] =
+    returnAccessibleCheckboxInputElements([planStatusCheckboxInputCreatorInfo]);
+
+  const displayPlanDetailsFormPage = (
+    <>
+      {createdPlanNameTextInput}
+      {createdPlanDescriptionTextAreaInput}
+      {createdPlanStartDateInput}
+      {createdPlanKindSelectInput}
+    </>
+  );
+
+  const currencySymbol =
+    currency === 'CNY'
+      ? '¥'
+      : currency === 'GBP'
+      ? '£'
+      : currency === 'EUR'
+      ? '€'
+      : currency === 'JPY'
+      ? '¥'
+      : '$';
+
+  const displayTotalContributions = (
+    <Flex w="100%" justify="space-between" align="center">
+      <Text size="sm" color="dark">
+        Total contribution
+      </Text>
+      <Flex justify="space-between" align="center" columnGap="xs">
+        <Text size="sm">{currencySymbol}</Text>
+        <Text size="sm" color="dark">
+          {totalContribution}
+        </Text>
+      </Flex>
+    </Flex>
+  );
+
+  const displayPlanContributionsFormPage = (
+    <>
+      {createdCurrencySelectInput}
+      {createdEmployeeContributionTextInput}
+      {createdEmployerContributionText}
+      {createdPlanStatusCheckboxInput}
+      {displayTotalContributions}
+    </>
+  );
+
+  const displaySubmitFormButton =
+    currentStepperPosition === CREATE_BENEFIT_MAX_STEPPER_POSITION ? (
+      <Button type="button" disabled={stepsInError.size > 0}>
+        Submit
+      </Button>
+    ) : null;
+
+  const displayReviewPage = <h4>review page</h4>;
+
+  const displayCreateBenefitForm =
+    currentStepperPosition === 0
+      ? displayPlanDetailsFormPage
+      : currentStepperPosition === 1
+      ? displayPlanContributionsFormPage
+      : currentStepperPosition === 2
+      ? displayReviewPage
+      : null;
+
+  const displayCreateBenefitComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionMap={CREATE_BENEFIT_DESCRIPTION_MAP}
+      maxStepperPosition={CREATE_BENEFIT_MAX_STEPPER_POSITION}
+      parentComponentDispatch={createBenefitDispatch}
+      setCurrentStepperPosition={createBenefitAction.setCurrentStepperPosition}
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleCreateBenefitFormSubmit}>
+        {displayCreateBenefitForm}
+        {displaySubmitFormButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  async function handleCreateBenefitFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  useEffect(() => {
+    console.group('createBenefit');
+    Object.entries(createBenefitState).forEach(([key, value]) => {
+      console.log(`${key}:`, JSON.stringify(value, null, 2));
+    });
+    console.groupEnd();
+  }, [createBenefitState]);
 
   return (
     <Flex
@@ -291,8 +692,15 @@ function CreateBenefit() {
       rowGap="lg"
       w="400px"
     >
-      {/* plan name text input */}
-      <TextInput
+      {displayCreateBenefitComponent}
+    </Flex>
+  );
+}
+
+export { CreateBenefit };
+
+/**
+ * <TextInput
         size="sm"
         w="100%"
         color="dark"
@@ -333,14 +741,12 @@ function CreateBenefit() {
             payload: false,
           });
         }}
-        ref={planNameRef}
         minLength={1}
         maxLength={50}
         required
         withAsterisk
       />
 
-      {/* plan description text input */}
       <Textarea
         size="sm"
         w="100%"
@@ -392,7 +798,7 @@ function CreateBenefit() {
         required
         withAsterisk
       />
-      {/* plan kind select input */}
+
       <NativeSelect
         size="sm"
         data={BENEFIT_PLAN_DATA}
@@ -401,13 +807,13 @@ function CreateBenefit() {
         onChange={(event) => {
           createBenefitDispatch({
             type: createBenefitAction.setPlanKind,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as BenefitsPlanKind,
           });
         }}
         withAsterisk
         required
       />
-      {/* plan active checkbox input */}
+
       <Checkbox
         size="sm"
         color="dark"
@@ -423,7 +829,6 @@ function CreateBenefit() {
         }}
       />
 
-      {/* plan start date input */}
       <TextInput
         type="date"
         size="sm"
@@ -477,7 +882,6 @@ function CreateBenefit() {
         required
       />
 
-      {/* currency select input */}
       <NativeSelect
         size="sm"
         data={CURRENCY_DATA}
@@ -487,14 +891,13 @@ function CreateBenefit() {
         onChange={(event) => {
           createBenefitDispatch({
             type: createBenefitAction.setCurrency,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as Currency,
           });
         }}
         withAsterisk
         required
       />
 
-      {/* employee contribution text input */}
       <TextInput
         size="sm"
         w="100%"
@@ -543,7 +946,6 @@ function CreateBenefit() {
         withAsterisk
       />
 
-      {/* employer contribution text input */}
       <TextInput
         size="sm"
         w="100%"
@@ -591,7 +993,7 @@ function CreateBenefit() {
         required
         withAsterisk
       />
-      {/* computed total contribution */}
+
       <Flex w="100%" justify="space-between" align="center">
         <Text size="sm" color="dark">
           Total contribution
@@ -604,7 +1006,6 @@ function CreateBenefit() {
         </Flex>
       </Flex>
 
-      {/* submit button */}
       <Button
         size="sm"
         variant="filled"
@@ -618,8 +1019,4 @@ function CreateBenefit() {
       >
         Submit
       </Button>
-    </Flex>
-  );
-}
-
-export { CreateBenefit };
+ */

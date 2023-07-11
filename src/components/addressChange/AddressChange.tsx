@@ -283,7 +283,7 @@ function AddressChange() {
     });
 
   // following are info objects for input creators
-  const countrySelectInputInfo: AccessibleSelectInputCreatorInfo = {
+  const countrySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: COUNTRIES_DATA,
     description: 'Select your country',
     label: 'Country',
@@ -298,24 +298,25 @@ function AddressChange() {
     withAsterisk: true,
   };
 
-  const provinceOrStateSelectInputInfo: AccessibleSelectInputCreatorInfo = {
-    data: country === 'Canada' ? PROVINCES : STATES_US,
-    description:
-      country === 'Canada' ? 'Select your province' : 'Select your state',
-    label: country === 'Canada' ? 'Province' : 'State',
-    value: country === 'Canada' ? province : state,
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-      addressChangeDispatch({
-        type:
-          country === 'Canada'
-            ? addressChangeAction.setProvince
-            : addressChangeAction.setState,
-        payload: event.currentTarget.value,
-      });
-    },
-  };
+  const provinceOrStateSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: country === 'Canada' ? PROVINCES : STATES_US,
+      description:
+        country === 'Canada' ? 'Select your province' : 'Select your state',
+      label: country === 'Canada' ? 'Province' : 'State',
+      value: country === 'Canada' ? province : state,
+      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+        addressChangeDispatch({
+          type:
+            country === 'Canada'
+              ? addressChangeAction.setProvince
+              : addressChangeAction.setState,
+          payload: event.currentTarget.value,
+        });
+      },
+    };
 
-  const addressLineTextInputInfo: AccessibleTextInputCreatorInfo = {
+  const addressLineTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: addressLineInputErrorText,
       valid: addressLineInputValidText,
@@ -347,7 +348,7 @@ function AddressChange() {
     semanticName: 'address line',
   };
 
-  const cityTextInputInfo: AccessibleTextInputCreatorInfo = {
+  const cityTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: cityInputErrorText,
       valid: cityInputValidText,
@@ -382,7 +383,7 @@ function AddressChange() {
     maxLength: 75,
   };
 
-  const zipOrPostalCodeTextInputInfo: AccessibleTextInputCreatorInfo = {
+  const zipOrPostalCodeTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: postalCodeInputErrorText,
       valid: postalCodeInputValidText,
@@ -448,7 +449,7 @@ function AddressChange() {
     withAsterisk: true,
   };
 
-  const contactNumberTextInputInfo: AccessiblePhoneNumberTextInputCreatorInfo =
+  const contactNumberTextInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =
     {
       description: {
         error: contactNumberInputErrorText,
@@ -507,37 +508,38 @@ function AddressChange() {
       initialInputValue: '+(1)',
     };
 
-  const acknowledgementCheckboxInfo: AccessibleCheckboxInputCreatorInfo = {
-    description: {
-      selected: 'I acknowledge that the information provided is accurate.',
-      deselected: 'I do not acknowledge.',
-    },
-    checkboxKind: 'single',
-    checked: isAcknowledged,
-    label: 'Acknowledgement',
-    onClick: () => {
-      addressChangeDispatch({
-        type: addressChangeAction.setIsAcknowledged,
-        payload: !isAcknowledged,
-      });
-    },
-    semanticName: 'acknowledgement',
-    accessibleDescription: {
-      deselected:
-        'Acknowledgement checkbox is unchecked. I do not acknowledge.',
-      selected:
-        'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.',
-    },
+  const acknowledgementCheckboxCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+    {
+      description: {
+        selected: 'I acknowledge that the information provided is accurate.',
+        deselected: 'I do not acknowledge.',
+      },
+      checkboxKind: 'single',
+      checked: isAcknowledged,
+      label: 'Acknowledgement',
+      onClick: () => {
+        addressChangeDispatch({
+          type: addressChangeAction.setIsAcknowledged,
+          payload: !isAcknowledged,
+        });
+      },
+      semanticName: 'acknowledgement',
+      accessibleDescription: {
+        deselected:
+          'Acknowledgement checkbox is unchecked. I do not acknowledge.',
+        selected:
+          'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.',
+      },
 
-    onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
-      addressChangeDispatch({
-        type: addressChangeAction.setIsAcknowledged,
-        payload: event.currentTarget.checked,
-      });
-    },
-    required: true,
-    withAsterisk: true,
-  };
+      onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+        addressChangeDispatch({
+          type: addressChangeAction.setIsAcknowledged,
+          payload: event.currentTarget.checked,
+        });
+      },
+      required: true,
+      withAsterisk: true,
+    };
 
   // following are the created accessible input elements
   const [
@@ -545,23 +547,24 @@ function AddressChange() {
     createdCityTextInput,
     createdZipOrPostalCodeTextInput,
   ] = returnAccessibleTextInputElements([
-    addressLineTextInputInfo,
-    cityTextInputInfo,
-    zipOrPostalCodeTextInputInfo,
+    addressLineTextInputCreatorInfo,
+    cityTextInputCreatorInfo,
+    zipOrPostalCodeTextInputCreatorInfo,
   ]);
 
-  const createdContactNumberTextInput =
-    returnAccessiblePhoneNumberTextInputElements([contactNumberTextInputInfo]);
+  const [createdContactNumberTextInput] =
+    returnAccessiblePhoneNumberTextInputElements([
+      contactNumberTextInputCreatorInfo,
+    ]);
 
   const [createdCountrySelectInput, createdProvinceOrStateSelectInput] =
     returnAccessibleSelectInputElements([
-      countrySelectInputInfo,
-      provinceOrStateSelectInputInfo,
+      countrySelectInputCreatorInfo,
+      provinceOrStateSelectInputCreatorInfo,
     ]);
 
-  const createdAcknowledgementCheckbox = returnAccessibleCheckboxInputElements([
-    acknowledgementCheckboxInfo,
-  ]);
+  const [createdAcknowledgementCheckbox] =
+    returnAccessibleCheckboxInputElements([acknowledgementCheckboxCreatorInfo]);
 
   const displayAddressChangeFormPage = (
     <>

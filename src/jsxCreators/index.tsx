@@ -104,6 +104,10 @@ type AccessibleTextInputCreatorInfo = {
     event: React.KeyboardEvent<HTMLInputElement>
   ) => void | undefined;
 
+  rightSection?: boolean | undefined;
+  rightSectionIcon?: IconDefinition | null | undefined;
+  rightSectionOnClick?: () => void | undefined;
+
   minLength?: number | undefined;
   maxLength?: number | undefined;
   withAsterisk?: boolean | undefined;
@@ -131,6 +135,9 @@ function returnAccessibleTextInputElements(
       onChange,
       onFocus,
       onKeyDown = () => {},
+      rightSection = false,
+      rightSectionIcon = null,
+      rightSectionOnClick = () => {},
       minLength = 2,
       maxLength = 75,
       withAsterisk = false,
@@ -170,6 +177,16 @@ function returnAccessibleTextInputElements(
         onChange={onChange}
         onFocus={onFocus}
         onKeyDown={onKeyDown}
+        rightSection={
+          rightSection ? (
+            <FontAwesomeIcon
+              icon={rightSectionIcon ? rightSectionIcon : faRefresh}
+              cursor="pointer"
+              color="gray"
+              onClick={rightSectionOnClick}
+            />
+          ) : null
+        }
         minLength={minLength}
         maxLength={maxLength}
         autoComplete={autoComplete}
@@ -539,7 +556,7 @@ type AccessibleTextAreaInputCreatorInfo = {
   };
   placeholder: string;
   initialInputValue?: string | undefined;
-  icon: IconDefinition | null;
+  icon?: IconDefinition | undefined;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus: () => void;
   onBlur: () => void;
@@ -646,7 +663,7 @@ type AccessibleDateInputCreatorInfo = {
   };
   placeholder: string;
   initialInputValue?: string | undefined;
-  icon: IconDefinition | null;
+  icon?: IconDefinition | undefined;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onBlur: () => void;
