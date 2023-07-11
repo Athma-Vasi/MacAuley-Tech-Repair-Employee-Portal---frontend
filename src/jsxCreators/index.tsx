@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Text } from '@mantine/core';
 
 import {
+  ButtonWrapper,
   CheckboxInputWrapper,
   DateTimeInputWrapper,
   NativeSelectWrapper,
@@ -77,6 +78,46 @@ function returnAccessibleTextElements({
       )} is valid`}
     </Text>,
   ];
+}
+
+type AccessibleButtonCreatorInfo = {
+  buttonLabel: string;
+  buttonOnClick: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
+  buttonDisabled?: boolean | undefined;
+  buttonRef?: React.RefObject<HTMLButtonElement> | undefined;
+  buttonType?: 'button' | 'submit' | 'reset' | undefined;
+  buttonVariant?:
+    | 'outline'
+    | 'white'
+    | 'light'
+    | 'default'
+    | 'filled'
+    | 'gradient'
+    | 'subtle'
+    | undefined;
+  compact?: boolean | undefined;
+  leftIcon?: React.ReactNode | undefined;
+  rightIcon?: React.ReactNode | undefined;
+  semanticName: string;
+  semanticDescription: string;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | undefined;
+};
+
+function returnAccessibleButtonElements(
+  creatorInfoObjectArray: AccessibleButtonCreatorInfo[]
+): JSX.Element[] {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => {
+    const createdButton = (
+      <ButtonWrapper
+        key={`${index}${creatorInfoObject.buttonLabel}`}
+        creatorInfoObject={creatorInfoObject}
+      />
+    );
+
+    return createdButton;
+  });
 }
 
 type AccessibleTextInputCreatorInfo = {
@@ -408,6 +449,7 @@ function returnAccessibleCheckboxInputElements(
 }
 
 export {
+  returnAccessibleButtonElements,
   returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
   returnAccessiblePasswordInputElements,
@@ -420,6 +462,7 @@ export {
 };
 
 export type {
+  AccessibleButtonCreatorInfo,
   AccessibleCheckboxInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
