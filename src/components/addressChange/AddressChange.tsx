@@ -1,15 +1,5 @@
-import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Checkbox,
-  Flex,
-  NativeSelect,
-  Text,
-  TextInput,
-  Tooltip,
-} from '@mantine/core';
-import { useEffect, useReducer, useRef } from 'react';
+import { Button, Flex } from '@mantine/core';
+import { useEffect, useReducer } from 'react';
 
 import { PROVINCES, STATES_US } from '../../constants/data';
 import {
@@ -30,13 +20,13 @@ import {
   returnAccessibleTextElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
+import { Country, Province, StatesUS } from '../../types';
 import {
   returnAddressValidationText,
   returnCityValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
 } from '../../utils';
-import { MAX_STEPPER_POSITION } from '../register/constants';
 import { StepperWrapper } from '../stepperWrapper';
 import {
   ADDRESS_CHANGE_DESCRIPTION_MAP,
@@ -88,12 +78,6 @@ function AddressChange() {
     isLoading,
     loadingMessage,
   } = addressChangeState;
-
-  // sets focus on contact number input on page load
-  const contactNumberRef = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    contactNumberRef.current?.focus();
-  }, []);
 
   // used to validate address line on every change
   useEffect(() => {
@@ -291,7 +275,7 @@ function AddressChange() {
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setCountry,
-        payload: event.currentTarget.value,
+        payload: event.currentTarget.value as Country,
       });
     },
     required: true,
@@ -306,13 +290,15 @@ function AddressChange() {
       label: country === 'Canada' ? 'Province' : 'State',
       value: country === 'Canada' ? province : state,
       onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-        addressChangeDispatch({
-          type:
-            country === 'Canada'
-              ? addressChangeAction.setProvince
-              : addressChangeAction.setState,
-          payload: event.currentTarget.value,
-        });
+        country === 'Canada'
+          ? addressChangeDispatch({
+              type: addressChangeAction.setProvince,
+              payload: event.currentTarget.value as Province,
+            })
+          : addressChangeDispatch({
+              type: addressChangeAction.setState,
+              payload: event.currentTarget.value as StatesUS,
+            });
       },
     };
 
@@ -613,14 +599,6 @@ function AddressChange() {
   ) {
     event.preventDefault();
   }
-
-  // useEffect(() => {
-  //   console.group('addressChangeState');
-  //   Object.entries(addressChangeState).forEach(([key, value]) => {
-  //     console.log(`${key}: ${JSON.stringify(value)}`);
-  //   });
-  //   console.groupEnd();
-  // }, [addressChangeState]);
 
   return (
     <Flex

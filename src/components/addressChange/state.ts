@@ -1,15 +1,7 @@
 import type {
-  Country,
-  PhoneNumber,
-  PostalCode,
-  Province,
-  StatesUS,
-} from '../../types';
-import type {
   AddressChangeAction,
   AddressChangeDispatch,
   AddressChangeState,
-  StepsInErrorPayload,
 } from './types';
 
 const initialAddressChangeState: AddressChangeState = {
@@ -90,101 +82,98 @@ function addressChangeReducer(
     case addressChangeAction.setContactNumber:
       return {
         ...state,
-        contactNumber: action.payload as PhoneNumber,
+        contactNumber: action.payload,
       };
     case addressChangeAction.setIsValidContactNumber:
       return {
         ...state,
-        isValidContactNumber: action.payload as boolean,
+        isValidContactNumber: action.payload,
       };
     case addressChangeAction.setIsContactNumberFocused:
       return {
         ...state,
-        isContactNumberFocused: action.payload as boolean,
+        isContactNumberFocused: action.payload,
       };
 
     case addressChangeAction.setAddressLine:
       return {
         ...state,
-        addressLine: action.payload as string,
-      };
-    case addressChangeAction.setIsAddressLineFocused:
-      return {
-        ...state,
-        isAddressLineFocused: action.payload as boolean,
+        addressLine: action.payload,
       };
     case addressChangeAction.setIsValidAddressLine:
       return {
         ...state,
-        isValidAddressLine: action.payload as boolean,
+        isValidAddressLine: action.payload,
+      };
+    case addressChangeAction.setIsAddressLineFocused:
+      return {
+        ...state,
+        isAddressLineFocused: action.payload,
       };
 
     case addressChangeAction.setCity:
       return {
         ...state,
-        city: action.payload as string,
+        city: action.payload,
       };
     case addressChangeAction.setIsValidCity:
       return {
         ...state,
-        isValidCity: action.payload as boolean,
+        isValidCity: action.payload,
       };
     case addressChangeAction.setIsCityFocused:
       return {
         ...state,
-        isCityFocused: action.payload as boolean,
+        isCityFocused: action.payload,
       };
 
     case addressChangeAction.setProvince:
       return {
         ...state,
-        province: action.payload as Province,
+        province: action.payload,
       };
     case addressChangeAction.setState:
       return {
         ...state,
-        state: action.payload as StatesUS,
+        state: action.payload,
       };
     case addressChangeAction.setCountry:
       return {
         ...state,
-        country: action.payload as Country,
+        country: action.payload,
       };
 
     case addressChangeAction.setPostalCode:
       return {
         ...state,
-        postalCode: action.payload as PostalCode,
+        postalCode: action.payload,
       };
     case addressChangeAction.setIsValidPostalCode:
       return {
         ...state,
-        isValidPostalCode: action.payload as boolean,
+        isValidPostalCode: action.payload,
       };
     case addressChangeAction.setIsPostalCodeFocused:
       return {
         ...state,
-        isPostalCodeFocused: action.payload as boolean,
+        isPostalCodeFocused: action.payload,
       };
     case addressChangeAction.setIsAcknowledged:
       return {
         ...state,
-        isAcknowledged: action.payload as boolean,
+        isAcknowledged: action.payload,
       };
 
     case addressChangeAction.setCurrentStepperPosition:
       return {
         ...state,
-        currentStepperPosition: action.payload as number,
+        currentStepperPosition: action.payload,
       };
     case addressChangeAction.setStepsInError: {
-      const { kind, step } = action.payload as StepsInErrorPayload;
+      const { kind, step } = action.payload;
       const stepsInError = new Set(state.stepsInError);
-      if (kind === 'add') {
-        stepsInError.add(step);
-      } else {
-        stepsInError.delete(step);
-      }
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+
       return {
         ...state,
         stepsInError,
@@ -194,44 +183,43 @@ function addressChangeReducer(
     case addressChangeAction.setIsError:
       return {
         ...state,
-        isError: action.payload as boolean,
+        isError: action.payload,
       };
     case addressChangeAction.setErrorMessage:
       return {
         ...state,
-        errorMessage: action.payload as string,
+        errorMessage: action.payload,
       };
     case addressChangeAction.setIsSubmitting:
       return {
         ...state,
-        isSubmitting: action.payload as boolean,
+        isSubmitting: action.payload,
       };
     case addressChangeAction.setSubmitMessage:
       return {
         ...state,
-        submitMessage: action.payload as string,
+        submitMessage: action.payload,
       };
     case addressChangeAction.setIsSuccessful:
       return {
         ...state,
-        isSuccessful: action.payload as boolean,
+        isSuccessful: action.payload,
       };
     case addressChangeAction.setSuccessMessage:
       return {
         ...state,
-        successMessage: action.payload as string,
+        successMessage: action.payload,
       };
     case addressChangeAction.setIsLoading:
       return {
         ...state,
-        isLoading: action.payload as boolean,
+        isLoading: action.payload,
       };
     case addressChangeAction.setLoadingMessage:
       return {
         ...state,
-        loadingMessage: action.payload as string,
+        loadingMessage: action.payload,
       };
-
     default:
       return state;
   }

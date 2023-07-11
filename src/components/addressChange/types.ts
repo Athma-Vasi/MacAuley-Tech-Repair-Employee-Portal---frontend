@@ -3,6 +3,7 @@ import type {
   PhoneNumber,
   PostalCode,
   Province,
+  SetStepsInErrorPayload,
   StatesUS,
 } from '../../types';
 
@@ -76,26 +77,83 @@ type AddressChangeAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-type StepsInErrorPayload = {
-  kind: 'add' | 'delete';
-  step: number;
-};
+// type StepsInErrorPayload = {
+//   kind: 'add' | 'delete';
+//   step: number;
+// };
 
-type AddressChangePayload =
-  | string
-  | boolean
-  | number
-  | StepsInErrorPayload
-  | Province
-  | StatesUS
-  | Country
-  | PostalCode
-  | PhoneNumber;
+// type AddressChangePayload =
+//   | string
+//   | boolean
+//   | number
+//   | StepsInErrorPayload
+//   | Province
+//   | StatesUS
+//   | Country
+//   | PostalCode
+//   | PhoneNumber;
 
-type AddressChangeDispatch = {
-  type: AddressChangeAction[keyof AddressChangeAction];
-  payload: AddressChangePayload;
-};
+// type AddressChangeDispatch = {
+//   type: AddressChangeAction[keyof AddressChangeAction];
+//   payload: AddressChangePayload;
+// };
+
+type AddressChangeDispatch =
+  | {
+      type:
+        | AddressChangeAction['setAddressLine']
+        | AddressChangeAction['setCity']
+        | AddressChangeAction['setErrorMessage']
+        | AddressChangeAction['setLoadingMessage']
+        | AddressChangeAction['setSubmitMessage']
+        | AddressChangeAction['setSuccessMessage'];
+      payload: string;
+    }
+  | {
+      type:
+        | AddressChangeAction['setIsAddressLineFocused']
+        | AddressChangeAction['setIsValidAddressLine']
+        | AddressChangeAction['setIsCityFocused']
+        | AddressChangeAction['setIsValidCity']
+        | AddressChangeAction['setIsContactNumberFocused']
+        | AddressChangeAction['setIsValidContactNumber']
+        | AddressChangeAction['setIsPostalCodeFocused']
+        | AddressChangeAction['setIsValidPostalCode']
+        | AddressChangeAction['setIsAcknowledged']
+        | AddressChangeAction['setIsSuccessful']
+        | AddressChangeAction['setIsSubmitting']
+        | AddressChangeAction['setIsError']
+        | AddressChangeAction['setIsLoading'];
+      payload: boolean;
+    }
+  | {
+      type: AddressChangeAction['setContactNumber'];
+      payload: PhoneNumber | string;
+    }
+  | {
+      type: AddressChangeAction['setProvince'];
+      payload: Province;
+    }
+  | {
+      type: AddressChangeAction['setState'];
+      payload: StatesUS;
+    }
+  | {
+      type: AddressChangeAction['setCountry'];
+      payload: Country;
+    }
+  | {
+      type: AddressChangeAction['setPostalCode'];
+      payload: PostalCode;
+    }
+  | {
+      type: AddressChangeAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: AddressChangeAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
+    };
 
 type AddressChangeReducer = (
   state: AddressChangeState,
@@ -105,8 +163,6 @@ type AddressChangeReducer = (
 export type {
   AddressChangeAction,
   AddressChangeDispatch,
-  AddressChangePayload,
   AddressChangeReducer,
   AddressChangeState,
-  StepsInErrorPayload,
 };
