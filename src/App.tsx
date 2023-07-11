@@ -38,8 +38,8 @@ function App() {
           {/* <Route path="register" element={<Register />} /> */}
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
           {/* DEV PATHS - DELETE LATER*/}
-          <Route path="create-announcement" element={<CreateAnnouncement />} />
-          {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
+          {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
+          <Route path="create-benefit" element={<CreateBenefit />} />
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
           {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
           {/* <Route path="create-request-resource" element={<RequestResource />} /> */}

@@ -1,3 +1,5 @@
+import { SetStepsInErrorPayload } from '../../../types';
+
 type BenefitsPlanKind =
   | 'Health'
   | 'Dental'
@@ -55,6 +57,18 @@ type CreateBenefitState = {
   employeeContribution: string;
   isValidEmployeeContribution: boolean;
   isEmployeeContributionFocused: boolean;
+
+  currentStepperPosition: number;
+  stepsInError: Set<number>;
+
+  isError: boolean;
+  errorMessage: string;
+  isSubmitting: boolean;
+  submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
+  isLoading: boolean;
+  loadingMessage: string;
 };
 
 type CreateBenefitAction = {
@@ -81,14 +95,91 @@ type CreateBenefitAction = {
   setEmployeeContribution: 'setEmployeeContribution';
   setIsValidEmployeeContribution: 'setIsValidEmployeeContribution';
   setIsEmployeeContributionFocused: 'setIsEmployeeContributionFocused';
+
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
+  setIsError: 'setIsError';
+  setErrorMessage: 'setErrorMessage';
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
+  setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
 };
 
-type CreateBenefitPayload = CreateBenefitState[keyof CreateBenefitState];
+// type CreateBenefitPayload = CreateBenefitState[keyof CreateBenefitState];
 
-type CreateBenefitDispatch = {
-  type: CreateBenefitAction[keyof CreateBenefitAction];
-  payload: CreateBenefitPayload;
-};
+// type CreateBenefitDispatch = {
+//   type: CreateBenefitAction[keyof CreateBenefitAction];
+//   payload: CreateBenefitPayload;
+// };
+
+type CreateBenefitDispatch =
+  | {
+      type:
+        | CreateBenefitAction['setPlanName']
+        | CreateBenefitAction['setPlanDescription']
+        | CreateBenefitAction['setPlanStartDate']
+        | CreateBenefitAction['setEmployeeContribution']
+        | CreateBenefitAction['setEmployerContribution'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateBenefitAction['setIsValidPlanName']
+        | CreateBenefitAction['setIsValidPlanDescription']
+        | CreateBenefitAction['setIsValidPlanStartDate']
+        | CreateBenefitAction['setIsValidEmployeeContribution']
+        | CreateBenefitAction['setIsValidEmployerContribution'];
+      payload: boolean;
+    }
+  | {
+      type:
+        | CreateBenefitAction['setIsPlanNameFocused']
+        | CreateBenefitAction['setIsPlanDescriptionFocused']
+        | CreateBenefitAction['setIsPlanStartDateFocused']
+        | CreateBenefitAction['setIsEmployeeContributionFocused']
+        | CreateBenefitAction['setIsEmployerContributionFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateBenefitAction['setPlanKind'];
+      payload: BenefitsPlanKind | '';
+    }
+  | {
+      type: CreateBenefitAction['setIsPlanActive'];
+      payload: boolean;
+    }
+  | {
+      type: CreateBenefitAction['setCurrency'];
+      payload: Currency;
+    }
+  | {
+      type: CreateBenefitAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: CreateBenefitAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
+    }
+  | {
+      type:
+        | CreateBenefitAction['setIsError']
+        | CreateBenefitAction['setIsSubmitting']
+        | CreateBenefitAction['setIsSuccessful']
+        | CreateBenefitAction['setIsLoading'];
+      payload: boolean;
+    }
+  | {
+      type:
+        | CreateBenefitAction['setErrorMessage']
+        | CreateBenefitAction['setSubmitMessage']
+        | CreateBenefitAction['setSuccessMessage']
+        | CreateBenefitAction['setLoadingMessage'];
+      payload: string;
+    };
 
 type CreateBenefitReducer = (
   state: CreateBenefitState,
@@ -101,7 +192,6 @@ export type {
   BenefitsSchema,
   CreateBenefitAction,
   CreateBenefitDispatch,
-  CreateBenefitPayload,
   CreateBenefitReducer,
   CreateBenefitState,
   Currency,

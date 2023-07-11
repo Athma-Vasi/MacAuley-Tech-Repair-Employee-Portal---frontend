@@ -540,11 +540,19 @@ function CreateAnnouncement() {
 
   const displayArticleParagraphsFormPage = (
     <>
+      <Text color="dark" size="sm">
+        Max character length: {MAX_ARTICLE_LENGTH} words
+      </Text>
       {createdArticleParagraphsTextAreaInputs}
       <Flex align="center" justify="space-between" w="100%">
         <Text color="dark">{`${timeToRead} min read`}</Text>
 
         {displayAddArticleParagraphButton}
+        {isArticleLengthExceeded ? (
+          <Text color="red" size="sm">
+            Maximum character length of 14000 reached
+          </Text>
+        ) : null}
       </Flex>
     </>
   );
