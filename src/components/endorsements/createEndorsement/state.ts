@@ -2,6 +2,7 @@ import {
   CreateEndorsementAction,
   CreateEndorsementDispatch,
   CreateEndorsementState,
+  EmployeeAttributes,
 } from './types';
 
 const initialCreateEndorsementState: CreateEndorsementState = {
@@ -9,9 +10,9 @@ const initialCreateEndorsementState: CreateEndorsementState = {
   isValidTitle: false,
   isTitleFocused: false,
 
-  userToBeEndorsed: '',
-  isValidUserToBeEndorsed: false,
-  isUserToBeEndorsedFocused: false,
+  employeeToBeEndorsed: '',
+  isValidEmployeeToBeEndorsed: false,
+  isEmployeeToBeEndorsedFocused: false,
 
   summaryOfEndorsement: '',
   isValidSummaryOfEndorsement: false,
@@ -37,9 +38,9 @@ const createEndorsementAction: CreateEndorsementAction = {
   setIsValidTitle: 'setIsValidTitle',
   setIsTitleFocused: 'setIsTitleFocused',
 
-  setUserToBeEndorsed: 'setUserToBeEndorsed',
-  setIsValidUserToBeEndorsed: 'setIsValidUserToBeEndorsed',
-  setIsUserToBeEndorsedFocused: 'setIsUserToBeEndorsedFocused',
+  setEmployeeToBeEndorsed: 'setEmployeeToBeEndorsed',
+  setIsValidEmployeeToBeEndorsed: 'setIsValidEmployeeToBeEndorsed',
+  setIsEmployeeToBeEndorsedFocused: 'setIsEmployeeToBeEndorsedFocused',
 
   setSummaryOfEndorsement: 'setSummaryOfEndorsement',
   setIsValidSummaryOfEndorsement: 'setIsValidSummaryOfEndorsement',
@@ -81,20 +82,20 @@ function createEndorsementReducer(
         isTitleFocused: action.payload,
       };
 
-    case createEndorsementAction.setUserToBeEndorsed:
+    case createEndorsementAction.setEmployeeToBeEndorsed:
       return {
         ...state,
-        userToBeEndorsed: action.payload,
+        employeeToBeEndorsed: action.payload,
       };
-    case createEndorsementAction.setIsValidUserToBeEndorsed:
+    case createEndorsementAction.setIsValidEmployeeToBeEndorsed:
       return {
         ...state,
-        isValidUserToBeEndorsed: action.payload,
+        isValidEmployeeToBeEndorsed: action.payload,
       };
-    case createEndorsementAction.setIsUserToBeEndorsedFocused:
+    case createEndorsementAction.setIsEmployeeToBeEndorsedFocused:
       return {
         ...state,
-        isUserToBeEndorsedFocused: action.payload,
+        isEmployeeToBeEndorsedFocused: action.payload,
       };
 
     case createEndorsementAction.setSummaryOfEndorsement:
@@ -128,12 +129,8 @@ function createEndorsementReducer(
     case createEndorsementAction.setStepsInError: {
       const { kind, step } = action.payload;
       const stepsInError = new Set(state.stepsInError);
-      if (kind === 'add') {
-        stepsInError.add(step);
-      }
-      if (kind === 'delete') {
-        stepsInError.delete(step);
-      }
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+
       return {
         ...state,
         stepsInError,

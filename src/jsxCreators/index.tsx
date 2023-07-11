@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   Button,
   Checkbox,
+  Flex,
   NativeSelect,
   PasswordInput,
   Radio,
@@ -599,7 +600,7 @@ function returnAccessibleTextAreaInputElements(
       autoComplete = 'off',
       autosize = false,
       minRows = 3,
-      maxRows = 5,
+      maxRows = 7,
     } = info;
 
     const createdTextAreaInput = (
@@ -827,7 +828,7 @@ type AccessibleRadioInputCreatorInfo = {
   dataObjArray?:
     | Array<{
         value: string;
-        label: Capitalize<string>;
+        label: string;
       }>
     | undefined;
   disabled?: boolean | undefined;
@@ -932,18 +933,53 @@ function returnAccessibleRadioInputElements(
         />
  */
 
+/**
+ * <Checkbox.Group
+          label="Employee attributes"
+          description="Select all attributes that apply"
+          value={attributeEndorsed}
+          onChange={(event) => {
+            createEndorsementDispatch({
+              type: createEndorsementAction.setAttributeEndorsed,
+              payload: event as EmployeeAttributes,
+            });
+          }}
+        >
+          <Flex
+            pt="lg"
+            direction="column"
+            align="flex-start"
+            justify="center"
+            rowGap="md"
+            w="100%"
+          >
+            {EMPLOYEE_ATTRIBUTES_DATA.map(({ value, label }) => (
+              <Checkbox
+                key={label}
+                value={value}
+                label={label}
+                // color="dark"
+                size="sm"
+              />
+            ))}
+          </Flex>
+        </Checkbox.Group>
+ */
+
 type AccessibleCheckboxInputCreatorInfo = {
   semanticName: string;
-  accessibleDescription: {
-    selected: string;
-    deselected: string;
-  };
+  accessibleDescription?:
+    | {
+        selected: string;
+        deselected: string;
+      }
+    | undefined;
   ariarequired?: boolean | undefined;
   checkboxKind: 'single' | 'multiple';
   dataObjArray?:
     | Array<{
         value: string;
-        label: Capitalize<string>;
+        label: string;
       }>
     | undefined;
   defaultValue?: [string] | undefined;
@@ -952,16 +988,17 @@ type AccessibleCheckboxInputCreatorInfo = {
     deselected: string;
   };
   label: string;
-  checked: boolean;
+  checked?: boolean | undefined;
   disabled?: boolean | undefined;
   onChangeMultiple?: (value: string[]) => void | undefined;
   onChangeSingle?: (
     event: React.ChangeEvent<HTMLInputElement>
   ) => void | undefined;
-  onClick: () => void;
+  onClick?: () => void | undefined;
   withAsterisk?: boolean | undefined;
   ref?: React.RefObject<HTMLInputElement> | undefined;
   required?: boolean | undefined;
+  value?: string[] | undefined;
 };
 
 function returnAccessibleCheckboxInputElements(
@@ -970,21 +1007,25 @@ function returnAccessibleCheckboxInputElements(
   return infoArr.map((info) => {
     const {
       semanticName,
-      accessibleDescription,
+      accessibleDescription = {
+        selected: '',
+        deselected: '',
+      },
       ariarequired = false,
       checkboxKind,
       dataObjArray = null,
       defaultValue = [''],
       description,
       label,
-      checked,
+      checked = false,
       disabled = false,
+      onClick = () => {},
       onChangeSingle = () => {},
       onChangeMultiple = () => {},
-      onClick,
       withAsterisk = false,
       ref = null,
       required = false,
+      value = [''],
     } = info;
 
     switch (checkboxKind) {
@@ -1004,8 +1045,8 @@ function returnAccessibleCheckboxInputElements(
               checked ? description.selected : description.deselected
             }
             disabled={disabled}
-            onChange={onChangeSingle}
             onClick={onClick}
+            onChange={onChangeSingle}
             required={required}
             ref={ref}
           />
@@ -1013,19 +1054,48 @@ function returnAccessibleCheckboxInputElements(
       }
       case 'multiple': {
         return (
+          // <Checkbox.Group
+          //   size="sm"
+          //   label={label}
+          //   aria-required={ariarequired}
+          //   value={value}
+          //   onChange={onChangeMultiple}
+          //   required={required}
+          //   ref={ref}
+          //   withAsterisk={withAsterisk}
+          // >
+          //   {dataObjArray?.map(({ value, label }) => {
+          //     return <Checkbox key={value} value={value} label={label} />;
+          //   })}
+          // </Checkbox.Group>
           <Checkbox.Group
-            size="sm"
             label={label}
-            aria-required={ariarequired}
             defaultValue={defaultValue}
+            description={
+              value.length > 0 ? description.selected : description.deselected
+            }
+            value={value}
             onChange={onChangeMultiple}
-            required={required}
-            ref={ref}
-            withAsterisk={withAsterisk}
           >
-            {dataObjArray?.map(({ value, label }) => {
-              return <Checkbox key={value} value={value} label={label} />;
-            })}
+            {/* <Flex
+              pt="lg"
+              direction="column"
+              align="flex-start"
+              justify="center"
+              rowGap="md"
+              w="100%"
+            > */}
+            {dataObjArray?.map(({ value: value_, label }, index) => (
+              <Checkbox
+                key={label}
+                value={value_}
+                label={label}
+                // color="dark"
+                size="sm"
+                checked={value.includes(value_)}
+              />
+            ))}
+            {/* </Flex> */}
           </Checkbox.Group>
         );
       }

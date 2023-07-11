@@ -43,13 +43,13 @@ function App() {
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
           {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
           {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
-          {/* <Route path="create-endorsement" element={<CreateEndorsement />} />  */}
+          <Route path="create-endorsement" element={<CreateEndorsement />} />
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
           {/* <Route path="create-referment" element={<CreateReferment />} /> */}
-          <Route
+          {/* <Route
             path="create-anonymous-request"
             element={<CreateAnonymousRequest />}
-          />
+          /> */}
           {/* <Route path="event-creator" element={<EventCreator />} /> */}
         </Route>
 

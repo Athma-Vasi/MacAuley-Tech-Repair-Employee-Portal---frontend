@@ -1,19 +1,25 @@
 import { DescriptionMap } from '../../stepperWrapper';
 import { EmployeeAttributesData } from './types';
 
-const CREATE_ENDORSEMENT_MAX_STEPPER_POSITION = 2;
+const CREATE_ENDORSEMENT_MAX_STEPPER_POSITION = 3;
 
 const CREATE_ENDORSEMENT_DESCRIPTION_MAP: DescriptionMap = new Map([
   [
     1,
     {
       description: 'Employee endorsement',
-      ariaLabel:
-        'Enter title, user to be endorsed, summary of endorsement, and attribute endorsed',
+      ariaLabel: 'Enter title, user to be endorsed and summary of endorsement',
     },
   ],
   [
     2,
+    {
+      description: 'Attribute(s) endorsed',
+      ariaLabel: 'Select attributes to be endorsed',
+    },
+  ],
+  [
+    3,
     {
       description: 'Review endorsement',
       ariaLabel:

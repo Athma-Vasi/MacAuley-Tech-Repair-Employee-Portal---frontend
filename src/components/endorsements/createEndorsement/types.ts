@@ -23,7 +23,7 @@ type EndorsementSchema = {
   action: Action;
   category: ActionsGeneral;
   title: string;
-  userToBeEndorsed: string;
+  employeeToBeEndorsed: string;
   summaryOfEndorsement: string;
   attributeEndorsed: EmployeeAttributes;
 };
@@ -40,15 +40,15 @@ type CreateEndorsementState = {
   isValidTitle: boolean;
   isTitleFocused: boolean;
 
-  userToBeEndorsed: string;
-  isValidUserToBeEndorsed: boolean;
-  isUserToBeEndorsedFocused: boolean;
+  employeeToBeEndorsed: string;
+  isValidEmployeeToBeEndorsed: boolean;
+  isEmployeeToBeEndorsedFocused: boolean;
 
   summaryOfEndorsement: string;
   isValidSummaryOfEndorsement: boolean;
   isSummaryOfEndorsementFocused: boolean;
 
-  attributeEndorsed: EmployeeAttributes | undefined;
+  attributeEndorsed: EmployeeAttributes;
 
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -68,9 +68,9 @@ type CreateEndorsementAction = {
   setIsValidTitle: 'setIsValidTitle';
   setIsTitleFocused: 'setIsTitleFocused';
 
-  setUserToBeEndorsed: 'setUserToBeEndorsed';
-  setIsValidUserToBeEndorsed: 'setIsValidUserToBeEndorsed';
-  setIsUserToBeEndorsedFocused: 'setIsUserToBeEndorsedFocused';
+  setEmployeeToBeEndorsed: 'setEmployeeToBeEndorsed';
+  setIsValidEmployeeToBeEndorsed: 'setIsValidEmployeeToBeEndorsed';
+  setIsEmployeeToBeEndorsedFocused: 'setIsEmployeeToBeEndorsedFocused';
 
   setSummaryOfEndorsement: 'setSummaryOfEndorsement';
   setIsValidSummaryOfEndorsement: 'setIsValidSummaryOfEndorsement';
@@ -100,7 +100,7 @@ type CreateEndorsementDispatch =
   | {
       type:
         | 'setTitle'
-        | 'setUserToBeEndorsed'
+        | 'setEmployeeToBeEndorsed'
         | 'setSummaryOfEndorsement'
         | 'setErrorMessage'
         | 'setSubmitMessage'
@@ -110,15 +110,15 @@ type CreateEndorsementDispatch =
     }
   | {
       type: 'setAttributeEndorsed';
-      payload: EmployeeAttributes | undefined;
+      payload: EmployeeAttributes;
     }
   | {
       type:
         | 'setIsValidTitle'
-        | 'setIsValidUserToBeEndorsed'
+        | 'setIsValidEmployeeToBeEndorsed'
         | 'setIsValidSummaryOfEndorsement'
         | 'setIsTitleFocused'
-        | 'setIsUserToBeEndorsedFocused'
+        | 'setIsEmployeeToBeEndorsedFocused'
         | 'setIsSummaryOfEndorsementFocused'
         | 'setIsError'
         | 'setIsSubmitting'
