@@ -276,12 +276,10 @@ function CreateEndorsement() {
   const employeeAttributesInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
     {
       accessibleDescription: {
-        selected: `${
-          attributeEndorsed ? attributeEndorsed.join(' ') : 'None'
-        } selected`,
-        deselected: `${
-          attributeEndorsed ? attributeEndorsed.join(' ') : 'None'
-        } selected`,
+        selected: `You have selected ${attributeEndorsed.join(', ')} attribute${
+          attributeEndorsed.length > 1 ? 's' : ''
+        }`,
+        deselected: 'Please select at least one employee attribute',
       },
       checkboxKind: 'multiple',
       defaultValue: ['adaptibility and flexibility'],
