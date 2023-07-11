@@ -35,6 +35,10 @@ type SetStepsInErrorPayload = {
   kind: 'add' | 'delete';
   step: number;
 };
+type CheckBoxMultipleData = {
+  value: string;
+  label: string;
+}[];
 
 export type {
   Action,
@@ -58,4 +62,4 @@ export type {
   USPostalCode,
 };
 
-export type { BreakPoints, Note, SetStepsInErrorPayload };
+export type { BreakPoints, CheckBoxMultipleData, Note, SetStepsInErrorPayload };

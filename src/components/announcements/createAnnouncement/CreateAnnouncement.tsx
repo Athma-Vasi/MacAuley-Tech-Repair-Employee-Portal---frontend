@@ -174,11 +174,12 @@ function CreateAnnouncement() {
 
   // update for stepper wrapper change
   useEffect(() => {
-    const isStepInError =
-      !isValidTitle ||
-      !isValidAuthor ||
+    const isRequiredInputInError = !isValidTitle || !isValidAuthor;
+    const areOptionalInputsInError =
       (!isValidBannerImageSrc && bannerImageSrc !== '') ||
       (!isValidBannerImageAlt && bannerImageAlt !== '');
+
+    const isStepInError = isRequiredInputInError || areOptionalInputsInError;
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setStepsInError,
@@ -589,14 +590,6 @@ function CreateAnnouncement() {
   ) {
     event.preventDefault();
   }
-
-  // useEffect(() => {
-  //   console.group('CreateAnnouncement');
-  //   Object.entries(createAnnouncementState).forEach(([key, value]) => {
-  //     console.log(`${key}:`, JSON.stringify(value, null, 2));
-  //   });
-  //   console.groupEnd();
-  // }, [createAnnouncementState]);
 
   return (
     <Flex

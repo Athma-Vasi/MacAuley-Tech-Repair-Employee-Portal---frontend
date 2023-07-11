@@ -1,14 +1,5 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Checkbox,
-  Flex,
-  Text,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
-import { useEffect, useReducer, useRef } from 'react';
+import { Button, Flex } from '@mantine/core';
+import { useEffect, useReducer } from 'react';
 
 import {
   FULL_NAME_REGEX,
@@ -366,14 +357,6 @@ function CreateEndorsement() {
   ) {
     event.preventDefault();
   }
-
-  useEffect(() => {
-    console.group('createEndorsement');
-    Object.entries(createEndorsementState).forEach(([key, value]) => {
-      console.log(`${key}:`, JSON.stringify(value, null, 2));
-    });
-    console.groupEnd();
-  }, [createEndorsementState]);
 
   return (
     <Flex

@@ -1,32 +1,40 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Checkbox,
-  Flex,
-  NativeSelect,
-  Textarea,
-  TextInput,
-} from '@mantine/core';
-import { useEffect, useReducer, useRef } from 'react';
+import { Button, Flex } from '@mantine/core';
+import { useEffect, useReducer } from 'react';
 
 import {
-  DATE_REGEX,
+  DATE_NEAR_FUTURE_REGEX,
   FULL_NAME_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
-  NAME_REGEX,
 } from '../../constants/regex';
-import { returnAccessibleTextElements } from '../../jsxCreators';
 import {
-  returnDateValidationText,
+  AccessibleCheckboxInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  returnAccessibleCheckboxInputElements,
+  returnAccessibleDateTimeElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
+  returnAccessibleTextElements,
+  returnAccessibleTextInputElements,
+} from '../../jsxCreators';
+import {
+  returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../utils';
-import { REASON_FOR_LEAVE_DATA } from './constants';
+import { StepperWrapper } from '../stepperWrapper';
+import {
+  LEAVE_REQUEST_DESCRIPTION_MAP,
+  LEAVE_REQUEST_MAX_STEPPER_POSITION,
+  REASON_FOR_LEAVE_DATA,
+} from './constants';
 import {
   initialLeaveRequestState,
   leaveRequestAction,
   leaveRequestReducer,
 } from './state';
+import { ReasonForLeave } from './types';
 
 function LeaveRequest() {
   const [leaveRequestState, leaveRequestDispatch] = useReducer(
@@ -34,34 +42,46 @@ function LeaveRequest() {
     initialLeaveRequestState
   );
   const {
-    additionalComments,
-    delegatedResponsibilities,
-    delegatedToEmployee,
-    endDate,
-    isAcknowledged,
-    isAdditionalCommentsFocused,
-    isDelegatedResponsibilitiesFocused,
-    isDelegatedToEmployeeFocused,
-    isEndDateFocused,
-    isStartDateFocused,
-    reasonForLeave,
     startDate,
-    isValidAdditionalComments,
-    isValidDelegatedResponsibilities,
-    isValidDelegatedToEmployee,
-    isValidEndDate,
     isValidStartDate,
-  } = leaveRequestState;
+    isStartDateFocused,
 
-  const startDateInputRef = useRef<HTMLInputElement>(null);
-  // sets focus on start date input on page load
-  useEffect(() => {
-    startDateInputRef.current?.focus();
-  }, []);
+    endDate,
+    isValidEndDate,
+    isEndDateFocused,
+
+    areValidLeaveDates,
+    reasonForLeave,
+
+    delegatedToEmployee,
+    isValidDelegatedToEmployee,
+    isDelegatedToEmployeeFocused,
+
+    delegatedResponsibilities,
+    isValidDelegatedResponsibilities,
+    isDelegatedResponsibilitiesFocused,
+
+    additionalComments,
+    isValidAdditionalComments,
+    isAdditionalCommentsFocused,
+
+    isAcknowledged,
+    currentStepperPosition,
+    stepsInError,
+
+    isError,
+    errorMessage,
+    isSubmitting,
+    submitMessage,
+    isSuccessful,
+    successMessage,
+    isLoading,
+    loadingMessage,
+  } = leaveRequestState;
 
   // validate start date on every change
   useEffect(() => {
-    const isValid = DATE_REGEX.test(startDate);
+    const isValid = DATE_NEAR_FUTURE_REGEX.test(startDate);
 
     leaveRequestDispatch({
       type: leaveRequestAction.setIsValidStartDate,
@@ -71,13 +91,26 @@ function LeaveRequest() {
 
   // validate end date on every change
   useEffect(() => {
-    const isValid = DATE_REGEX.test(endDate);
+    const isValid = DATE_NEAR_FUTURE_REGEX.test(endDate);
 
     leaveRequestDispatch({
       type: leaveRequestAction.setIsValidEndDate,
       payload: isValid,
     });
   }, [endDate]);
+
+  // validate leave dates on every change
+  useEffect(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    const currDate = new Date(currentMonth);
+    const isValid =
+      new Date(startDate) < new Date(endDate) && new Date(endDate) > currDate;
+
+    leaveRequestDispatch({
+      type: leaveRequestAction.setAreValidLeaveDates,
+      payload: isValid,
+    });
+  }, [startDate, endDate, isValidStartDate, isValidEndDate]);
 
   // validate delegated to employee on every change
   useEffect(() => {
@@ -111,14 +144,49 @@ function LeaveRequest() {
     });
   }, [additionalComments]);
 
+  // update stepper wrapper state on every change
+  useEffect(() => {
+    const areRequiredInputsInError = !areValidLeaveDates || !isAcknowledged;
+
+    const areOptionalInputsInError =
+      (delegatedToEmployee !== '' && !isValidDelegatedToEmployee) ||
+      (delegatedResponsibilities !== '' && !isValidDelegatedResponsibilities) ||
+      (additionalComments !== '' && !isValidAdditionalComments);
+
+    const isStepInError = areRequiredInputsInError || areOptionalInputsInError;
+
+    leaveRequestDispatch({
+      type: leaveRequestAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [
+    areValidLeaveDates,
+    isAcknowledged,
+    delegatedToEmployee,
+    isValidDelegatedToEmployee,
+    delegatedResponsibilities,
+    isValidDelegatedResponsibilities,
+    additionalComments,
+    isValidAdditionalComments,
+  ]);
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
+
+  const leaveDatesInvalidText = areValidLeaveDates
+    ? ''
+    : 'The leave start date must be before the leave end date and both must be in the future. ';
   const [startDateInputErrorText, startDateInputValidText] =
     returnAccessibleTextElements({
       inputElementKind: 'start date',
       inputText: startDate,
       isInputTextFocused: isStartDateFocused,
-      isValidInputText: isValidStartDate,
-      regexValidationText: returnDateValidationText(startDate),
+      isValidInputText: isValidStartDate && areValidLeaveDates,
+      regexValidationText: `${leaveDatesInvalidText}${returnDateNearFutureValidationText(
+        startDate
+      )}`,
     });
 
   const [endDateInputErrorText, endDateInputValidText] =
@@ -126,8 +194,10 @@ function LeaveRequest() {
       inputElementKind: 'end date',
       inputText: endDate,
       isInputTextFocused: isEndDateFocused,
-      isValidInputText: isValidEndDate,
-      regexValidationText: returnDateValidationText(endDate),
+      isValidInputText: isValidEndDate && areValidLeaveDates,
+      regexValidationText: `${leaveDatesInvalidText}${returnDateNearFutureValidationText(
+        endDate
+      )}`,
     });
 
   const [delegatedToEmployeeInputErrorText, delegatedToEmployeeInputValidText] =
@@ -174,6 +244,284 @@ function LeaveRequest() {
       }),
     });
 
+  const startDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
+    dateKind: 'date near future',
+    description: {
+      error: startDateInputErrorText,
+      valid: startDateInputValidText,
+    },
+    inputKind: 'date',
+    inputText: startDate,
+    isValidInputText: isValidStartDate && areValidLeaveDates,
+    label: 'Leave start date',
+    onBlur: () => {
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsStartDateFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      leaveRequestDispatch({
+        type: leaveRequestAction.setStartDate,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsStartDateFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'DD-MM-YYYY',
+    semanticName: 'start date',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const endDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
+    dateKind: 'date near future',
+    description: {
+      error: endDateInputErrorText,
+      valid: endDateInputValidText,
+    },
+    inputKind: 'date',
+    inputText: endDate,
+    isValidInputText: isValidEndDate && areValidLeaveDates,
+    label: 'Leave end date',
+    onBlur: () => {
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsEndDateFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      leaveRequestDispatch({
+        type: leaveRequestAction.setEndDate,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsEndDateFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'DD-MM-YYYY',
+    semanticName: 'end date',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const reasonForLeaveSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: REASON_FOR_LEAVE_DATA,
+      description: 'Select reason for leave',
+      label: 'Reason for leave',
+      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setReasonForLeave,
+          payload: event.currentTarget.value as ReasonForLeave,
+        });
+      },
+      value: reasonForLeave,
+      required: true,
+      withAsterisk: true,
+    };
+
+  const delegatedToEmployeeTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: delegatedToEmployeeInputErrorText,
+        valid: delegatedToEmployeeInputValidText,
+      },
+      inputText: delegatedToEmployee,
+      isValidInputText: isValidDelegatedToEmployee,
+      label: 'Delegated to employee',
+      onBlur: () => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsDelegatedToEmployeeFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setDelegatedToEmployee,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsDelegatedToEmployeeFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter name of employee',
+      semanticName: 'delegated to employee',
+      minLength: 2,
+      maxLength: 100,
+    };
+
+  const delegatedResponsibilitiesTextareaCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: delegatedResponsibilitiesInputErrorText,
+        valid: delegatedResponsibilitiesInputValidText,
+      },
+      inputText: delegatedResponsibilities,
+      isValidInputText: isValidDelegatedResponsibilities,
+      label: 'Delegated responsibilities',
+      onBlur: () => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsDelegatedResponsibilitiesFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setDelegatedResponsibilities,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsDelegatedResponsibilitiesFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter delegated responsibilities',
+      semanticName: 'delegated responsibilities',
+    };
+
+  const additionalCommentsTextareaCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: additionalCommentsInputErrorText,
+        valid: additionalCommentsInputValidText,
+      },
+      inputText: additionalComments,
+      isValidInputText: isValidAdditionalComments,
+      label: 'Additional comments',
+      onBlur: () => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsAdditionalCommentsFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setAdditionalComments,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsAdditionalCommentsFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter additional comments',
+      semanticName: 'additional comments',
+    };
+
+  const acknowledgementCheckboxCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+    {
+      checkboxKind: 'single',
+      checked: isAcknowledged,
+      description: {
+        selected: 'I acknowledge that the information provided is correct.',
+        deselected: 'I do not acknowledge.',
+      },
+      label: 'Acknowledgement',
+      semanticName: 'acknowledgement',
+      accessibleDescription: {
+        selected:
+          'The checkbox is currently selected. I acknowledge that the information provided is correct.',
+        deselected:
+          'The checkbox is currently deselected. I do not acknowledge.',
+      },
+      onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsAcknowledged,
+          payload: event.currentTarget.checked,
+        });
+      },
+    };
+
+  const [createdDelegatedToEmployeeTextInput] =
+    returnAccessibleTextInputElements([
+      delegatedToEmployeeTextInputCreatorInfo,
+    ]);
+
+  const [
+    createdDelegatedResponsibilitiesTextareaInput,
+    createdAdditionalInformationTextareaInput,
+  ] = returnAccessibleTextAreaInputElements([
+    delegatedResponsibilitiesTextareaCreatorInfo,
+    additionalCommentsTextareaCreatorInfo,
+  ]);
+
+  const [createdStartDateInput, createdEndDateInput] =
+    returnAccessibleDateTimeElements([
+      startDateInputCreatorInfo,
+      endDateInputCreatorInfo,
+    ]);
+
+  const [createdReasonForLeaveSelectInput] =
+    returnAccessibleSelectInputElements([reasonForLeaveSelectInputCreatorInfo]);
+
+  const [createdAcknowledgementCheckbox] =
+    returnAccessibleCheckboxInputElements([acknowledgementCheckboxCreatorInfo]);
+
+  const displayLeaveRequestFirstPage = (
+    <>
+      {createdStartDateInput}
+      {createdEndDateInput}
+      {createdReasonForLeaveSelectInput}
+      {createdDelegatedToEmployeeTextInput}
+      {createdDelegatedResponsibilitiesTextareaInput}
+      {createdAdditionalInformationTextareaInput}
+      {createdAcknowledgementCheckbox}
+    </>
+  );
+
+  const displayFormSubmitButton =
+    currentStepperPosition === LEAVE_REQUEST_MAX_STEPPER_POSITION ? (
+      <Button type="button" disabled={stepsInError.size > 0}>
+        Submit
+      </Button>
+    ) : null;
+
+  const displayReviewPage = <h3>review page</h3>;
+
+  const displayLeaveRequestForm =
+    currentStepperPosition === 0
+      ? displayLeaveRequestFirstPage
+      : currentStepperPosition === 1
+      ? displayReviewPage
+      : null;
+
+  const displayLeaveRequestComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionMap={LEAVE_REQUEST_DESCRIPTION_MAP}
+      maxStepperPosition={LEAVE_REQUEST_MAX_STEPPER_POSITION}
+      parentComponentDispatch={leaveRequestDispatch}
+      setCurrentStepperPosition={leaveRequestAction.setCurrentStepperPosition}
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleLeaveRequestFormSubmit}>
+        {displayLeaveRequestForm}
+        {displayFormSubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  async function handleLeaveRequestFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
   return (
     <Flex
       direction="column"
@@ -182,8 +530,15 @@ function LeaveRequest() {
       rowGap="lg"
       w={400}
     >
-      {/* start date input */}
-      <TextInput
+      {displayLeaveRequestComponent}
+    </Flex>
+  );
+}
+
+export { LeaveRequest };
+
+/**
+ * <TextInput
         type="date"
         size="sm"
         w="100%"
@@ -229,13 +584,11 @@ function LeaveRequest() {
             payload: false,
           });
         }}
-        ref={startDateInputRef}
         maxLength={10}
         withAsterisk
         required
       />
 
-      {/* end date input */}
       <TextInput
         type="date"
         size="sm"
@@ -287,7 +640,6 @@ function LeaveRequest() {
         required
       />
 
-      {/* reason for leave select */}
       <NativeSelect
         size="sm"
         data={REASON_FOR_LEAVE_DATA}
@@ -297,14 +649,13 @@ function LeaveRequest() {
         onChange={(event) => {
           leaveRequestDispatch({
             type: leaveRequestAction.setReasonForLeave,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as ReasonForLeave,
           });
         }}
         withAsterisk
         required
       />
 
-      {/* delegated to employee input */}
       <TextInput
         size="sm"
         w="100%"
@@ -353,7 +704,7 @@ function LeaveRequest() {
         required
         withAsterisk
       />
-      {/* delegated responsibilities text area input */}
+
       <Textarea
         size="sm"
         w="100%"
@@ -408,7 +759,6 @@ function LeaveRequest() {
         withAsterisk
       />
 
-      {/* additional comments text area input */}
       <Textarea
         size="sm"
         w="100%"
@@ -459,7 +809,6 @@ function LeaveRequest() {
         maxRows={10}
       />
 
-      {/* acknowledgement checkbox */}
       <Checkbox
         size="sm"
         color="dark"
@@ -478,7 +827,6 @@ function LeaveRequest() {
         }}
       />
 
-      {/* submit button */}
       <Button
         type="button"
         variant="filled"
@@ -493,8 +841,4 @@ function LeaveRequest() {
       >
         Submit
       </Button>
-    </Flex>
-  );
-}
-
-export { LeaveRequest };
+ */

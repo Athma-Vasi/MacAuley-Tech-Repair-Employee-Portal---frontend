@@ -128,23 +128,19 @@ type CreateAnonymousRequestDispatch =
   | {
       type:
         | 'setIsValidTitle'
+        | 'setIsTitleFocused'
         | 'setIsValidSecureContactNumber'
+        | 'setIsSecureContactNumberFocused'
         | 'setIsValidSecureContactEmail'
+        | 'setIsSecureContactEmailFocused'
         | 'setIsValidRequestDescription'
+        | 'setIsRequestDescriptionFocused'
         | 'setIsValidAdditionalInformation'
+        | 'setIsAdditionalInformationFocused'
         | 'setIsError'
         | 'setIsSubmitting'
         | 'setIsSuccessful'
         | 'setIsLoading';
-      payload: boolean;
-    }
-  | {
-      type:
-        | 'setIsTitleFocused'
-        | 'setIsSecureContactNumberFocused'
-        | 'setIsSecureContactEmailFocused'
-        | 'setIsRequestDescriptionFocused'
-        | 'setIsAdditionalInformationFocused';
       payload: boolean;
     }
   | {

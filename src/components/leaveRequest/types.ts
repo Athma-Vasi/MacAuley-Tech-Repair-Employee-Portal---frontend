@@ -1,3 +1,5 @@
+import { SetStepsInErrorPayload } from '../../types';
+
 type ReasonForLeave =
   | 'Vacation'
   | 'Medical'
@@ -37,6 +39,7 @@ type LeaveRequestState = {
   isValidEndDate: boolean;
   isEndDateFocused: boolean;
 
+  areValidLeaveDates: boolean;
   reasonForLeave: ReasonForLeave;
 
   delegatedToEmployee: string;
@@ -52,6 +55,17 @@ type LeaveRequestState = {
   isAdditionalCommentsFocused: boolean;
 
   isAcknowledged: boolean;
+  currentStepperPosition: number;
+  stepsInError: Set<number>;
+
+  isError: boolean;
+  errorMessage: string;
+  isSubmitting: boolean;
+  submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
+  isLoading: boolean;
+  loadingMessage: string;
 };
 
 type LeaveRequestAction = {
@@ -63,6 +77,7 @@ type LeaveRequestAction = {
   setIsValidEndDate: 'setIsValidEndDate';
   setIsEndDateFocused: 'setIsEndDateFocused';
 
+  setAreValidLeaveDates: 'setAreValidLeaveDates';
   setReasonForLeave: 'setReasonForLeave';
 
   setDelegatedToEmployee: 'setDelegatedToEmployee';
@@ -78,14 +93,65 @@ type LeaveRequestAction = {
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused';
 
   setIsAcknowledged: 'setIsAcknowledged';
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
+  setIsError: 'setIsError';
+  setErrorMessage: 'setErrorMessage';
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
+  setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
 };
 
-type LeaveRequestPayload = string | boolean | ReasonForLeave;
-
-type LeaveRequestDispatch = {
-  type: LeaveRequestAction[keyof LeaveRequestAction];
-  payload: LeaveRequestPayload;
-};
+type LeaveRequestDispatch =
+  | {
+      type:
+        | LeaveRequestAction['setStartDate']
+        | LeaveRequestAction['setEndDate']
+        | LeaveRequestAction['setDelegatedToEmployee']
+        | LeaveRequestAction['setDelegatedResponsibilities']
+        | LeaveRequestAction['setAdditionalComments']
+        | LeaveRequestAction['setErrorMessage']
+        | LeaveRequestAction['setSubmitMessage']
+        | LeaveRequestAction['setSuccessMessage']
+        | LeaveRequestAction['setLoadingMessage'];
+      payload: string;
+    }
+  | {
+      type:
+        | LeaveRequestAction['setIsStartDateFocused']
+        | LeaveRequestAction['setIsValidStartDate']
+        | LeaveRequestAction['setIsValidEndDate']
+        | LeaveRequestAction['setIsEndDateFocused']
+        | LeaveRequestAction['setAreValidLeaveDates']
+        | LeaveRequestAction['setIsValidDelegatedToEmployee']
+        | LeaveRequestAction['setIsDelegatedToEmployeeFocused']
+        | LeaveRequestAction['setIsValidDelegatedResponsibilities']
+        | LeaveRequestAction['setIsDelegatedResponsibilitiesFocused']
+        | LeaveRequestAction['setIsValidAdditionalComments']
+        | LeaveRequestAction['setIsAdditionalCommentsFocused']
+        | LeaveRequestAction['setIsAcknowledged']
+        | LeaveRequestAction['setIsError']
+        | LeaveRequestAction['setIsSubmitting']
+        | LeaveRequestAction['setIsSuccessful']
+        | LeaveRequestAction['setIsLoading'];
+      payload: boolean;
+    }
+  | {
+      type: LeaveRequestAction['setReasonForLeave'];
+      payload: ReasonForLeave;
+    }
+  | {
+      type: LeaveRequestAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: LeaveRequestAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
+    };
 
 type LeaveRequestReducer = (
   state: LeaveRequestState,
@@ -96,7 +162,6 @@ export type {
   LeaveRequestAction,
   LeaveRequestDispatch,
   LeaveRequestDocument,
-  LeaveRequestPayload,
   LeaveRequestReducer,
   LeaveRequestSchema,
   LeaveRequestState,

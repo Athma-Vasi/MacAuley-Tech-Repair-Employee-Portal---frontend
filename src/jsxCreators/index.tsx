@@ -649,14 +649,13 @@ function returnAccessibleTextAreaInputElements(
   });
 }
 
-type AccessibleDateInputCreatorInfo = {
+type AccessibleDateTimeInputCreatorInfo = {
   inputKind: 'date' | 'time';
   dateKind?: 'date near future' | 'date near past' | 'full date' | undefined;
   semanticName: string;
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired?: boolean | undefined;
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
   description: {
     error: JSX.Element;
@@ -680,7 +679,7 @@ type AccessibleDateInputCreatorInfo = {
 };
 
 function returnAccessibleDateTimeElements(
-  infoArr: AccessibleDateInputCreatorInfo[]
+  infoArr: AccessibleDateTimeInputCreatorInfo[]
 ) {
   return infoArr.map((info) => {
     const {
@@ -690,7 +689,6 @@ function returnAccessibleDateTimeElements(
       inputText,
       isValidInputText,
       label,
-      ariaRequired = false,
       ariaAutoComplete = 'none',
       description,
       placeholder,
@@ -701,8 +699,8 @@ function returnAccessibleDateTimeElements(
       onBlur,
       min = new Date().toISOString().split('T')[0], // current date
       max = new Date(2024, 11, 31).toISOString().split('T')[0], // 31.12.2024
-      minLength = 5,
-      maxLength = 10,
+      minLength = inputKind === 'date' ? 10 : 5,
+      maxLength = inputKind === 'date' ? 10 : 5,
       withAsterisk = false,
       ref = null,
       required = false,
@@ -719,7 +717,7 @@ function returnAccessibleDateTimeElements(
         placeholder={placeholder}
         aria-autocomplete={ariaAutoComplete}
         autoComplete={autoComplete}
-        aria-required={ariaRequired}
+        aria-required={required}
         aria-label={`Please enter ${semanticName} in format "${
           inputKind === 'date'
             ? 'on Chromium browsers: date-date-month-month-year-year-year-year, or in other browsers year-year-year-year-month-month-date-date'
@@ -1119,7 +1117,7 @@ export {
 
 export type {
   AccessibleCheckboxInputCreatorInfo,
-  AccessibleDateInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleRadioInputCreatorInfo,

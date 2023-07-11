@@ -564,14 +564,6 @@ function CreateAnonymousRequest() {
     </StepperWrapper>
   );
 
-  // useEffect(() => {
-  //   console.group('createAnonymousRequest');
-  //   Object.entries(createAnonymousRequestState).forEach(([key, value]) => {
-  //     console.log(`${key}:`, JSON.stringify(value, null, 2));
-  //   });
-  //   console.groupEnd();
-  // }, [createAnonymousRequestState]);
-
   return (
     <Flex direction="column" align="center" justify="center" w="400px">
       {displayCreateAnonymousRequestComponent}

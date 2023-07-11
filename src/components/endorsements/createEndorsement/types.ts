@@ -12,11 +12,6 @@ type EmployeeAttributes = (
   | 'reliability and dependability'
 )[];
 
-type EmployeeAttributesData = {
-  value: string;
-  label: string;
-}[];
-
 type EndorsementSchema = {
   userId: string;
   username: string;
@@ -115,10 +110,10 @@ type CreateEndorsementDispatch =
   | {
       type:
         | 'setIsValidTitle'
-        | 'setIsValidEmployeeToBeEndorsed'
-        | 'setIsValidSummaryOfEndorsement'
         | 'setIsTitleFocused'
+        | 'setIsValidEmployeeToBeEndorsed'
         | 'setIsEmployeeToBeEndorsedFocused'
+        | 'setIsValidSummaryOfEndorsement'
         | 'setIsSummaryOfEndorsementFocused'
         | 'setIsError'
         | 'setIsSubmitting'
@@ -140,7 +135,6 @@ export type {
   CreateEndorsementDispatch,
   CreateEndorsementState,
   EmployeeAttributes,
-  EmployeeAttributesData,
   EndorsementDocument,
   EndorsementSchema,
   StepsInErrorPayload,

@@ -176,37 +176,41 @@ type EventCreatorDispatch =
         | EventCreatorAction['setEventDescription']
         | EventCreatorAction['setEventAttendees']
         | EventCreatorAction['setRequiredItems']
-        | EventCreatorAction['setRsvpDeadline'];
+        | EventCreatorAction['setRsvpDeadline']
+        | EventCreatorAction['setErrorMessage']
+        | EventCreatorAction['setSubmitMessage']
+        | EventCreatorAction['setSuccessMessage']
+        | EventCreatorAction['setLoadingMessage'];
       payload: string;
     }
   | {
       type:
         | EventCreatorAction['setIsValidTitle']
+        | EventCreatorAction['setIsTitleFocused']
         | EventCreatorAction['setIsValidEventStartDate']
+        | EventCreatorAction['setIsEventStartDateFocused']
         | EventCreatorAction['setIsValidEventEndDate']
+        | EventCreatorAction['setIsEventEndDateFocused']
         | EventCreatorAction['setAreValidEventDates']
         | EventCreatorAction['setIsValidEventStartTime']
+        | EventCreatorAction['setIsEventStartTimeFocused']
         | EventCreatorAction['setIsValidEventEndTime']
+        | EventCreatorAction['setIsEventEndTimeFocused']
         | EventCreatorAction['setAreValidEventTimes']
         | EventCreatorAction['setIsValidEventLocation']
-        | EventCreatorAction['setIsValidEventDescription']
-        | EventCreatorAction['setIsValidEventAttendees']
-        | EventCreatorAction['setIsValidRequiredItems']
-        | EventCreatorAction['setIsValidRsvpDeadline'];
-      payload: boolean;
-    }
-  | {
-      type:
-        | EventCreatorAction['setIsTitleFocused']
-        | EventCreatorAction['setIsEventStartDateFocused']
-        | EventCreatorAction['setIsEventEndDateFocused']
-        | EventCreatorAction['setIsEventStartTimeFocused']
-        | EventCreatorAction['setIsEventEndTimeFocused']
         | EventCreatorAction['setIsEventLocationFocused']
+        | EventCreatorAction['setIsValidEventDescription']
         | EventCreatorAction['setIsEventDescriptionFocused']
+        | EventCreatorAction['setIsValidEventAttendees']
         | EventCreatorAction['setIsEventAttendeesFocused']
+        | EventCreatorAction['setIsValidRequiredItems']
         | EventCreatorAction['setIsRequiredItemsFocused']
-        | EventCreatorAction['setIsRsvpDeadlineFocused'];
+        | EventCreatorAction['setIsValidRsvpDeadline']
+        | EventCreatorAction['setIsRsvpDeadlineFocused']
+        | EventCreatorAction['setIsError']
+        | EventCreatorAction['setIsSubmitting']
+        | EventCreatorAction['setIsSuccessful']
+        | EventCreatorAction['setIsLoading'];
       payload: boolean;
     }
   | { type: EventCreatorAction['setEventKind']; payload: EventKind }
@@ -214,22 +218,6 @@ type EventCreatorDispatch =
   | {
       type: EventCreatorAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
-    }
-  | {
-      type:
-        | EventCreatorAction['setIsError']
-        | EventCreatorAction['setIsSubmitting']
-        | EventCreatorAction['setIsSuccessful']
-        | EventCreatorAction['setIsLoading'];
-      payload: boolean;
-    }
-  | {
-      type:
-        | EventCreatorAction['setErrorMessage']
-        | EventCreatorAction['setSubmitMessage']
-        | EventCreatorAction['setSuccessMessage']
-        | EventCreatorAction['setLoadingMessage'];
-      payload: string;
     };
 
 export type {

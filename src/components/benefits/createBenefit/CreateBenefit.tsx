@@ -11,7 +11,7 @@ import { useEffect, useMemo, useReducer } from 'react';
 import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
 import {
   AccessibleCheckboxInputCreatorInfo,
-  AccessibleDateInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
@@ -222,10 +222,11 @@ function CreateBenefit() {
 
   // update stepper state if any input in the current step is invalid
   useEffect(() => {
-    const isStepInError =
-      !isValidPlanName ||
-      (!isValidPlanDescription && planDescription !== '') ||
-      !isValidPlanStartDate;
+    const areRequiredInputsInError = !isValidPlanName || !isValidPlanStartDate;
+    const isOptionalInputInError =
+      !isValidPlanDescription && planDescription !== '';
+
+    const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
     createBenefitDispatch({
       type: createBenefitAction.setStepsInError,
@@ -390,7 +391,7 @@ function CreateBenefit() {
     maxLength: 300,
   };
 
-  const planStartDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
+  const planStartDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: planStartDateInputErrorText,
       valid: planStartDateInputValidText,
@@ -675,14 +676,6 @@ function CreateBenefit() {
   ) {
     event.preventDefault();
   }
-
-  useEffect(() => {
-    console.group('createBenefit');
-    Object.entries(createBenefitState).forEach(([key, value]) => {
-      console.log(`${key}:`, JSON.stringify(value, null, 2));
-    });
-    console.groupEnd();
-  }, [createBenefitState]);
 
   return (
     <Flex

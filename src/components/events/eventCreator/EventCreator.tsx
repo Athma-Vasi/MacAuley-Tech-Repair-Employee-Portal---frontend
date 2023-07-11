@@ -14,7 +14,7 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import {
-  AccessibleDateInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
@@ -287,11 +287,14 @@ function EventCreator() {
 
   // update for stepper wrapper state
   useEffect(() => {
-    const isStepInError =
-      !isValidEventLocation ||
+    const isRequiredInputInError =
+      !isValidEventLocation || !isValidRequiredItems;
+
+    const areOptionalInputsInError =
       (!isValidEventDescription && eventDescription !== '') ||
-      (!isValidEventAttendees && eventAttendees !== '') ||
-      !isValidRequiredItems;
+      (!isValidEventAttendees && eventAttendees !== '');
+
+    const isStepInError = isRequiredInputInError || areOptionalInputsInError;
 
     // if current step is in error, add it to stepsInError Set else remove it
     eventCreatorDispatch({
@@ -634,8 +637,7 @@ function EventCreator() {
     semanticName: 'required items',
   };
 
-  const eventStartDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
-    ariaRequired: true,
+  const eventStartDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: eventStartDateErrorText,
       valid: eventStartDateValidText,
@@ -670,8 +672,7 @@ function EventCreator() {
     withAsterisk: true,
   };
 
-  const eventEndDateInputCreatorInfo: AccessibleDateInputCreatorInfo = {
-    ariaRequired: true,
+  const eventEndDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: eventEndDateErrorText,
       valid: eventEndDateValidText,
@@ -706,8 +707,7 @@ function EventCreator() {
     withAsterisk: true,
   };
 
-  const eventStartTimeInputCreatorInfo: AccessibleDateInputCreatorInfo = {
-    ariaRequired: true,
+  const eventStartTimeInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: eventStartTimeErrorText,
       valid: eventStartTimeValidText,
@@ -741,8 +741,7 @@ function EventCreator() {
     withAsterisk: true,
   };
 
-  const eventEndTimeInputCreatorInfo: AccessibleDateInputCreatorInfo = {
-    ariaRequired: true,
+  const eventEndTimeInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: eventEndTimeErrorText,
       valid: eventEndTimeValidText,
@@ -776,8 +775,7 @@ function EventCreator() {
     withAsterisk: true,
   };
 
-  const rsvpDeadlineInputCreatorInfo: AccessibleDateInputCreatorInfo = {
-    ariaRequired: true,
+  const rsvpDeadlineInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: rsvpDeadlineErrorText,
       valid: rsvpDeadlineValidText,

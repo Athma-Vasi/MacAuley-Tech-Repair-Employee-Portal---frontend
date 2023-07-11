@@ -129,23 +129,28 @@ type CreateAnnouncementDispatch =
         | CreateAnnouncementAction['setTitle']
         | CreateAnnouncementAction['setAuthor']
         | CreateAnnouncementAction['setBannerImageSrc']
-        | CreateAnnouncementAction['setBannerImageAlt'];
+        | CreateAnnouncementAction['setBannerImageAlt']
+        | CreateAnnouncementAction['setErrorMessage']
+        | CreateAnnouncementAction['setSubmitMessage']
+        | CreateAnnouncementAction['setSuccessMessage']
+        | CreateAnnouncementAction['setLoadingMessage'];
       payload: string;
     }
   | {
       type:
         | CreateAnnouncementAction['setIsValidTitle']
-        | CreateAnnouncementAction['setIsValidAuthor']
-        | CreateAnnouncementAction['setIsValidBannerImageSrc']
-        | CreateAnnouncementAction['setIsValidBannerImageAlt'];
-      payload: boolean;
-    }
-  | {
-      type:
         | CreateAnnouncementAction['setIsTitleFocused']
+        | CreateAnnouncementAction['setIsValidAuthor']
         | CreateAnnouncementAction['setIsAuthorFocused']
+        | CreateAnnouncementAction['setIsValidBannerImageSrc']
         | CreateAnnouncementAction['setIsBannerImageSrcFocused']
-        | CreateAnnouncementAction['setIsBannerImageAltFocused'];
+        | CreateAnnouncementAction['setIsValidBannerImageAlt']
+        | CreateAnnouncementAction['setIsBannerImageAltFocused']
+        | CreateAnnouncementAction['setIsArticleLengthExceeded']
+        | CreateAnnouncementAction['setIsError']
+        | CreateAnnouncementAction['setIsSubmitting']
+        | CreateAnnouncementAction['setIsSuccessful']
+        | CreateAnnouncementAction['setIsLoading'];
       payload: boolean;
     }
   | {
@@ -161,10 +166,6 @@ type CreateAnnouncementDispatch =
       payload: ArticleParagraphFocusedPayload;
     }
   | {
-      type: CreateAnnouncementAction['setIsArticleLengthExceeded'];
-      payload: boolean;
-    }
-  | {
       type:
         | CreateAnnouncementAction['setTimeToRead']
         | CreateAnnouncementAction['setCurrentStepperPosition']
@@ -174,22 +175,6 @@ type CreateAnnouncementDispatch =
   | {
       type: CreateAnnouncementAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
-    }
-  | {
-      type:
-        | CreateAnnouncementAction['setIsError']
-        | CreateAnnouncementAction['setIsSubmitting']
-        | CreateAnnouncementAction['setIsSuccessful']
-        | CreateAnnouncementAction['setIsLoading'];
-      payload: boolean;
-    }
-  | {
-      type:
-        | CreateAnnouncementAction['setErrorMessage']
-        | CreateAnnouncementAction['setSubmitMessage']
-        | CreateAnnouncementAction['setSuccessMessage']
-        | CreateAnnouncementAction['setLoadingMessage'];
-      payload: string;
     };
 
 type CreateAnnouncementReducer = (

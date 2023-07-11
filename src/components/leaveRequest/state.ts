@@ -1,3 +1,4 @@
+import type { SetStepsInErrorPayload } from '../../types';
 import type {
   LeaveRequestAction,
   LeaveRequestDispatch,
@@ -14,6 +15,7 @@ const initialLeaveRequestState: LeaveRequestState = {
   isValidEndDate: false,
   isEndDateFocused: false,
 
+  areValidLeaveDates: false,
   reasonForLeave: 'Vacation',
 
   delegatedToEmployee: '',
@@ -29,6 +31,17 @@ const initialLeaveRequestState: LeaveRequestState = {
   isAdditionalCommentsFocused: false,
 
   isAcknowledged: false,
+  currentStepperPosition: 0,
+  stepsInError: new Set(),
+
+  isError: false,
+  errorMessage: '',
+  isSubmitting: false,
+  submitMessage: '',
+  isSuccessful: false,
+  successMessage: '',
+  isLoading: false,
+  loadingMessage: '',
 };
 
 const leaveRequestAction: LeaveRequestAction = {
@@ -40,6 +53,7 @@ const leaveRequestAction: LeaveRequestAction = {
   setIsValidEndDate: 'setIsValidEndDate',
   setIsEndDateFocused: 'setIsEndDateFocused',
 
+  setAreValidLeaveDates: 'setAreValidLeaveDates',
   setReasonForLeave: 'setReasonForLeave',
 
   setDelegatedToEmployee: 'setDelegatedToEmployee',
@@ -56,6 +70,17 @@ const leaveRequestAction: LeaveRequestAction = {
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused',
 
   setIsAcknowledged: 'setIsAcknowledged',
+  setCurrentStepperPosition: 'setCurrentStepperPosition',
+  setStepsInError: 'setStepsInError',
+
+  setIsError: 'setIsError',
+  setErrorMessage: 'setErrorMessage',
+  setIsSubmitting: 'setIsSubmitting',
+  setSubmitMessage: 'setSubmitMessage',
+  setIsSuccessful: 'setIsSuccessful',
+  setSuccessMessage: 'setSuccessMessage',
+  setIsLoading: 'setIsLoading',
+  setLoadingMessage: 'setLoadingMessage',
 };
 
 function leaveRequestReducer(
@@ -66,95 +91,155 @@ function leaveRequestReducer(
     case leaveRequestAction.setStartDate:
       return {
         ...state,
-        startDate: action.payload as string,
+        startDate: action.payload,
       };
     case leaveRequestAction.setIsValidStartDate:
       return {
         ...state,
-        isValidStartDate: action.payload as boolean,
+        isValidStartDate: action.payload,
       };
     case leaveRequestAction.setIsStartDateFocused:
       return {
         ...state,
-        isStartDateFocused: action.payload as boolean,
+        isStartDateFocused: action.payload,
       };
 
     case leaveRequestAction.setEndDate:
       return {
         ...state,
-        endDate: action.payload as string,
+        endDate: action.payload,
       };
     case leaveRequestAction.setIsValidEndDate:
       return {
         ...state,
-        isValidEndDate: action.payload as boolean,
+        isValidEndDate: action.payload,
       };
     case leaveRequestAction.setIsEndDateFocused:
       return {
         ...state,
-        isEndDateFocused: action.payload as boolean,
+        isEndDateFocused: action.payload,
       };
 
+    case leaveRequestAction.setAreValidLeaveDates:
+      return {
+        ...state,
+        areValidLeaveDates: action.payload,
+      };
     case leaveRequestAction.setReasonForLeave:
       return {
         ...state,
-        reasonForLeave: action.payload as ReasonForLeave,
+        reasonForLeave: action.payload,
       };
 
     case leaveRequestAction.setDelegatedToEmployee:
       return {
         ...state,
-        delegatedToEmployee: action.payload as string,
+        delegatedToEmployee: action.payload,
       };
     case leaveRequestAction.setIsValidDelegatedToEmployee:
       return {
         ...state,
-        isValidDelegatedToEmployee: action.payload as boolean,
+        isValidDelegatedToEmployee: action.payload,
       };
     case leaveRequestAction.setIsDelegatedToEmployeeFocused:
       return {
         ...state,
-        isDelegatedToEmployeeFocused: action.payload as boolean,
+        isDelegatedToEmployeeFocused: action.payload,
       };
 
     case leaveRequestAction.setDelegatedResponsibilities:
       return {
         ...state,
-        delegatedResponsibilities: action.payload as string,
+        delegatedResponsibilities: action.payload,
       };
     case leaveRequestAction.setIsValidDelegatedResponsibilities:
       return {
         ...state,
-        isValidDelegatedResponsibilities: action.payload as boolean,
+        isValidDelegatedResponsibilities: action.payload,
       };
     case leaveRequestAction.setIsDelegatedResponsibilitiesFocused:
       return {
         ...state,
-        isDelegatedResponsibilitiesFocused: action.payload as boolean,
+        isDelegatedResponsibilitiesFocused: action.payload,
       };
 
     case leaveRequestAction.setAdditionalComments:
       return {
         ...state,
-        additionalComments: action.payload as string,
+        additionalComments: action.payload,
       };
     case leaveRequestAction.setIsValidAdditionalComments:
       return {
         ...state,
-        isValidAdditionalComments: action.payload as boolean,
+        isValidAdditionalComments: action.payload,
       };
     case leaveRequestAction.setIsAdditionalCommentsFocused:
       return {
         ...state,
-        isAdditionalCommentsFocused: action.payload as boolean,
+        isAdditionalCommentsFocused: action.payload,
       };
 
     case leaveRequestAction.setIsAcknowledged:
       return {
         ...state,
-        isAcknowledged: action.payload as boolean,
+        isAcknowledged: action.payload,
       };
+    case leaveRequestAction.setCurrentStepperPosition:
+      return {
+        ...state,
+        currentStepperPosition: action.payload,
+      };
+    case leaveRequestAction.setStepsInError: {
+      const { kind, step } = action.payload;
+      const stepsInError = new Set(state.stepsInError);
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
 
+      return {
+        ...state,
+        stepsInError,
+      };
+    }
+
+    case leaveRequestAction.setIsError:
+      return {
+        ...state,
+        isError: action.payload,
+      };
+    case leaveRequestAction.setErrorMessage:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case leaveRequestAction.setIsSubmitting:
+      return {
+        ...state,
+        isSubmitting: action.payload,
+      };
+    case leaveRequestAction.setSubmitMessage:
+      return {
+        ...state,
+        submitMessage: action.payload,
+      };
+    case leaveRequestAction.setIsSuccessful:
+      return {
+        ...state,
+        isSuccessful: action.payload,
+      };
+    case leaveRequestAction.setSuccessMessage:
+      return {
+        ...state,
+        successMessage: action.payload,
+      };
+    case leaveRequestAction.setIsLoading:
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    case leaveRequestAction.setLoadingMessage:
+      return {
+        ...state,
+        loadingMessage: action.payload,
+      };
     default:
       return state;
   }

@@ -1,5 +1,5 @@
+import { CheckBoxMultipleData } from '../../../types';
 import { DescriptionMap } from '../../stepperWrapper';
-import { EmployeeAttributesData } from './types';
 
 const CREATE_ENDORSEMENT_MAX_STEPPER_POSITION = 3;
 
@@ -21,14 +21,13 @@ const CREATE_ENDORSEMENT_DESCRIPTION_MAP: DescriptionMap = new Map([
   [
     3,
     {
-      description: 'Review endorsement',
-      ariaLabel:
-        'Review title, user to be endorsed, summary of endorsement, and attribute endorsed',
+      description: 'Review and proceed',
+      ariaLabel: 'Review accuracy of entered information before proceeding',
     },
   ],
 ]);
 
-const EMPLOYEE_ATTRIBUTES_DATA: EmployeeAttributesData = [
+const EMPLOYEE_ATTRIBUTES_DATA: CheckBoxMultipleData = [
   { value: 'teamwork and collaboration', label: 'Teamwork and collaboration' },
   { value: 'leadership and mentorship', label: 'Leadership and mentorship' },
   { value: 'technical expertise', label: 'Technical expertise' },
