@@ -144,58 +144,62 @@ type CreateRefermentAction = {
 type CreateRefermentDispatch =
   | {
       type:
-        | 'setCandidateFullName'
-        | 'setCandidateEmail'
-        | 'setCandidateCurrentJobTitle'
-        | 'setCandidateCurrentCompany'
-        | 'setCandidateProfileUrl'
-        | 'setPositionJobDescription'
-        | 'setReferralReason'
-        | 'setAdditionalInformation'
-        | 'setErrorMessage'
-        | 'setSubmitMessage'
-        | 'setSuccessMessage'
-        | 'setLoadingMessage';
+        | CreateRefermentAction['setCandidateFullName']
+        | CreateRefermentAction['setCandidateEmail']
+        | CreateRefermentAction['setCandidateCurrentJobTitle']
+        | CreateRefermentAction['setCandidateCurrentCompany']
+        | CreateRefermentAction['setCandidateProfileUrl']
+        | CreateRefermentAction['setPositionJobDescription']
+        | CreateRefermentAction['setReferralReason']
+        | CreateRefermentAction['setAdditionalInformation']
+        | CreateRefermentAction['setErrorMessage']
+        | CreateRefermentAction['setSubmitMessage']
+        | CreateRefermentAction['setSuccessMessage']
+        | CreateRefermentAction['setLoadingMessage'];
       payload: string;
     }
   | {
       type:
-        | 'setIsValidCandidateFullName'
-        | 'setIsValidCandidateEmail'
-        | 'setIsValidCandidateContactNumber'
-        | 'setIsValidCandidateCurrentJobTitle'
-        | 'setIsValidCandidateCurrentCompany'
-        | 'setIsValidCandidateProfileUrl'
-        | 'setIsValidPositionJobDescription'
-        | 'setIsValidReferralReason'
-        | 'setIsValidAdditionalInformation';
+        | CreateRefermentAction['setIsValidCandidateFullName']
+        | CreateRefermentAction['setIsCandidateFullNameFocused']
+        | CreateRefermentAction['setIsValidCandidateEmail']
+        | CreateRefermentAction['setIsCandidateEmailFocused']
+        | CreateRefermentAction['setIsValidCandidateContactNumber']
+        | CreateRefermentAction['setIsCandidateContactNumberFocused']
+        | CreateRefermentAction['setIsValidCandidateCurrentJobTitle']
+        | CreateRefermentAction['setIsCandidateCurrentJobTitleFocused']
+        | CreateRefermentAction['setIsValidCandidateCurrentCompany']
+        | CreateRefermentAction['setIsCandidateCurrentCompanyFocused']
+        | CreateRefermentAction['setIsValidCandidateProfileUrl']
+        | CreateRefermentAction['setIsCandidateProfileUrlFocused']
+        | CreateRefermentAction['setIsValidPositionJobDescription']
+        | CreateRefermentAction['setIsPositionJobDescriptionFocused']
+        | CreateRefermentAction['setIsValidReferralReason']
+        | CreateRefermentAction['setIsReferralReasonFocused']
+        | CreateRefermentAction['setIsValidAdditionalInformation']
+        | CreateRefermentAction['setIsAdditionalInformationFocused']
+        | CreateRefermentAction['setPrivacyConsent']
+        | CreateRefermentAction['setIsError']
+        | CreateRefermentAction['setIsSubmitting']
+        | CreateRefermentAction['setIsSuccessful']
+        | CreateRefermentAction['setIsLoading'];
       payload: boolean;
     }
   | {
-      type:
-        | 'setIsCandidateFullNameFocused'
-        | 'setIsCandidateEmailFocused'
-        | 'setIsCandidateContactNumberFocused'
-        | 'setIsCandidateCurrentJobTitleFocused'
-        | 'setIsCandidateCurrentCompanyFocused'
-        | 'setIsCandidateProfileUrlFocused'
-        | 'setIsPositionJobDescriptionFocused'
-        | 'setIsReferralReasonFocused'
-        | 'setIsAdditionalInformationFocused';
-      payload: boolean;
+      type: CreateRefermentAction['setCandidateContactNumber'];
+      payload: PhoneNumber | string;
     }
-  | { type: 'setCandidateContactNumber'; payload: PhoneNumber | string }
-  | { type: 'setPositionReferredFor'; payload: JobPosition }
-  | { type: 'setPrivacyConsent'; payload: boolean }
-  | { type: 'setCurrentStepperPosition'; payload: number }
-  | { type: 'setStepsInError'; payload: SetStepsInErrorPayload }
   | {
-      type:
-        | 'setIsError'
-        | 'setIsSubmitting'
-        | 'setIsSuccessful'
-        | 'setIsLoading';
-      payload: boolean;
+      type: CreateRefermentAction['setPositionReferredFor'];
+      payload: JobPosition;
+    }
+  | {
+      type: CreateRefermentAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: CreateRefermentAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
     };
 
 type CreateRefermentReducer = (

@@ -150,65 +150,65 @@ type SetStepsInErrorPayload = {
 type CreatePrinterIssueDispatch =
   | {
       type:
-        | 'setTitle'
-        | 'setContactEmail'
-        | 'setPrinterMake'
-        | 'setPrinterModel'
-        | 'setPrinterSerialNumber'
-        | 'setPrinterIssueDescription'
-        | 'setAdditionalInformation'
-        | 'setErrorMessage'
-        | 'setSubmitMessage'
-        | 'setSuccessMessage'
-        | 'setLoadingMessage'
-        | 'setDateOfOccurrence'
-        | 'setTimeOfOccurrence';
+        | CreatePrinterIssueAction['setTitle']
+        | CreatePrinterIssueAction['setContactEmail']
+        | CreatePrinterIssueAction['setPrinterMake']
+        | CreatePrinterIssueAction['setPrinterModel']
+        | CreatePrinterIssueAction['setPrinterSerialNumber']
+        | CreatePrinterIssueAction['setPrinterIssueDescription']
+        | CreatePrinterIssueAction['setAdditionalInformation']
+        | CreatePrinterIssueAction['setErrorMessage']
+        | CreatePrinterIssueAction['setSubmitMessage']
+        | CreatePrinterIssueAction['setSuccessMessage']
+        | CreatePrinterIssueAction['setLoadingMessage']
+        | CreatePrinterIssueAction['setDateOfOccurrence']
+        | CreatePrinterIssueAction['setTimeOfOccurrence'];
 
       payload: string;
     }
   | {
       type:
-        | 'setIsValidTitle'
-        | 'setIsTitleFocused'
-        | 'setIsValidContactNumber'
-        | 'setIsContactNumberFocused'
-        | 'setIsValidContactEmail'
-        | 'setIsContactEmailFocused'
-        | 'setIsValidPrinterMake'
-        | 'setIsPrinterMakeFocused'
-        | 'setIsValidPrinterModel'
-        | 'setIsPrinterModelFocused'
-        | 'setIsValidPrinterSerialNumber'
-        | 'setIsPrinterSerialNumberFocused'
-        | 'setIsValidPrinterIssueDescription'
-        | 'setIsPrinterIssueDescriptionFocused'
-        | 'setIsValidAdditionalInformation'
-        | 'setIsAdditionalInformationFocused'
-        | 'setIsValidDateOfOccurrence'
-        | 'setIsDateOfOccurrenceFocused'
-        | 'setIsTimeOfOccurrenceFocused'
-        | 'setIsValidTimeOfOccurrence'
-        | 'setIsError'
-        | 'setIsSubmitting'
-        | 'setIsSuccessful'
-        | 'setIsLoading';
+        | CreatePrinterIssueAction['setIsValidTitle']
+        | CreatePrinterIssueAction['setIsTitleFocused']
+        | CreatePrinterIssueAction['setIsValidContactNumber']
+        | CreatePrinterIssueAction['setIsContactNumberFocused']
+        | CreatePrinterIssueAction['setIsValidContactEmail']
+        | CreatePrinterIssueAction['setIsContactEmailFocused']
+        | CreatePrinterIssueAction['setIsValidPrinterMake']
+        | CreatePrinterIssueAction['setIsPrinterMakeFocused']
+        | CreatePrinterIssueAction['setIsValidPrinterModel']
+        | CreatePrinterIssueAction['setIsPrinterModelFocused']
+        | CreatePrinterIssueAction['setIsValidPrinterSerialNumber']
+        | CreatePrinterIssueAction['setIsPrinterSerialNumberFocused']
+        | CreatePrinterIssueAction['setIsValidPrinterIssueDescription']
+        | CreatePrinterIssueAction['setIsPrinterIssueDescriptionFocused']
+        | CreatePrinterIssueAction['setIsValidAdditionalInformation']
+        | CreatePrinterIssueAction['setIsAdditionalInformationFocused']
+        | CreatePrinterIssueAction['setIsValidDateOfOccurrence']
+        | CreatePrinterIssueAction['setIsDateOfOccurrenceFocused']
+        | CreatePrinterIssueAction['setIsTimeOfOccurrenceFocused']
+        | CreatePrinterIssueAction['setIsValidTimeOfOccurrence']
+        | CreatePrinterIssueAction['setIsError']
+        | CreatePrinterIssueAction['setIsSubmitting']
+        | CreatePrinterIssueAction['setIsSuccessful']
+        | CreatePrinterIssueAction['setIsLoading'];
 
       payload: boolean;
     }
   | {
-      type: 'setUrgency';
+      type: CreatePrinterIssueAction['setUrgency'];
       payload: Urgency;
     }
   | {
-      type: 'setCurrentStepperPosition';
+      type: CreatePrinterIssueAction['setCurrentStepperPosition'];
       payload: number;
     }
   | {
-      type: 'setStepsInError';
+      type: CreatePrinterIssueAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
     }
   | {
-      type: 'setContactNumber';
+      type: CreatePrinterIssueAction['setContactNumber'];
       payload: PhoneNumber | string;
     };
 
