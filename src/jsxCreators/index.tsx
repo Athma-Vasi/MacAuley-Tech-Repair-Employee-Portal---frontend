@@ -89,7 +89,6 @@ type AccessibleTextInputCreatorInfo = {
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  // ariaRequired?: boolean | undefined;
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
   description: {
     error: JSX.Element;
@@ -126,7 +125,6 @@ function returnAccessibleTextInputElements(
       inputText,
       isValidInputText,
       label,
-      // ariaRequired = false,
       ariaAutoComplete = 'none',
       description,
       placeholder,

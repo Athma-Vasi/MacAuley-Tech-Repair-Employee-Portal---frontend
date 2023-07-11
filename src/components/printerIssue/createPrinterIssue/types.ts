@@ -169,34 +169,30 @@ type CreatePrinterIssueDispatch =
   | {
       type:
         | 'setIsValidTitle'
+        | 'setIsTitleFocused'
         | 'setIsValidContactNumber'
+        | 'setIsContactNumberFocused'
         | 'setIsValidContactEmail'
+        | 'setIsContactEmailFocused'
         | 'setIsValidPrinterMake'
+        | 'setIsPrinterMakeFocused'
         | 'setIsValidPrinterModel'
+        | 'setIsPrinterModelFocused'
         | 'setIsValidPrinterSerialNumber'
+        | 'setIsPrinterSerialNumberFocused'
         | 'setIsValidPrinterIssueDescription'
+        | 'setIsPrinterIssueDescriptionFocused'
         | 'setIsValidAdditionalInformation'
+        | 'setIsAdditionalInformationFocused'
+        | 'setIsValidDateOfOccurrence'
+        | 'setIsDateOfOccurrenceFocused'
+        | 'setIsTimeOfOccurrenceFocused'
+        | 'setIsValidTimeOfOccurrence'
         | 'setIsError'
         | 'setIsSubmitting'
         | 'setIsSuccessful'
-        | 'setIsLoading'
-        | 'setIsValidDateOfOccurrence'
-        | 'setIsValidTimeOfOccurrence';
+        | 'setIsLoading';
 
-      payload: boolean;
-    }
-  | {
-      type:
-        | 'setIsTitleFocused'
-        | 'setIsContactNumberFocused'
-        | 'setIsContactEmailFocused'
-        | 'setIsPrinterMakeFocused'
-        | 'setIsPrinterModelFocused'
-        | 'setIsPrinterSerialNumberFocused'
-        | 'setIsPrinterIssueDescriptionFocused'
-        | 'setIsAdditionalInformationFocused'
-        | 'setIsTimeOfOccurrenceFocused'
-        | 'setIsDateOfOccurrenceFocused';
       payload: boolean;
     }
   | {
