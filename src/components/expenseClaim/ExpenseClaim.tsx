@@ -9,6 +9,23 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../constants/regex';
+import {
+  AccessibleButtonCreatorInfo,
+  AccessibleCheckboxInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  returnAccessibleTextElements,
+} from '../../jsxCreators';
+import {
+  returnDateNearPastValidationText,
+  returnGrammarValidationText,
+  returnMoneyValidationText,
+} from '../../utils';
+import { EXPENSE_CLAIM_KIND_DATA } from './constants';
+import { ExpenseClaimKind } from './types';
+import { CURRENCY_DATA } from '../benefits/constants';
 
 function ExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(
@@ -138,6 +155,282 @@ function ExpenseClaim() {
     isValidAdditionalComments,
     acknowledgement,
   ]);
+
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [expenseClaimAmountInputErrorText, expenseClaimAmountInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'expense claim amount',
+      inputText: expenseClaimAmount,
+      isInputTextFocused: isExpenseClaimAmountFocused,
+      isValidInputText: isValidExpenseClaimAmount,
+      regexValidationText: returnMoneyValidationText({
+        kind: 'expense claim amount',
+        money: expenseClaimAmount,
+      }),
+    });
+
+  const [expenseClaimDateInputErrorText, expenseClaimDateInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'expense claim date',
+      inputText: expenseClaimDate,
+      isInputTextFocused: isExpenseClaimDateFocused,
+      isValidInputText: isValidExpenseClaimDate,
+      regexValidationText: returnDateNearPastValidationText(expenseClaimDate),
+    });
+
+  const [
+    expenseClaimDescriptionInputErrorText,
+    expenseClaimDescriptionInputValidText,
+  ] = returnAccessibleTextElements({
+    inputElementKind: 'expense claim description',
+    inputText: expenseClaimDescription,
+    isInputTextFocused: isExpenseClaimDescriptionFocused,
+    isValidInputText: isValidExpenseClaimDescription,
+    regexValidationText: returnGrammarValidationText({
+      content: expenseClaimDescription,
+      contentKind: 'expense claim description',
+      minLength: 2,
+      maxLength: 2000,
+    }),
+  });
+
+  const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'additional comments',
+      inputText: additionalComments,
+      isInputTextFocused: isAdditionalCommentsFocused,
+      isValidInputText: isValidAdditionalComments,
+      regexValidationText: returnGrammarValidationText({
+        content: additionalComments,
+        contentKind: 'additional comments',
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
+
+  /**
+     * const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DEPARTMENTS,
+    description:
+      'Select the department for which you are requesting a resource.',
+    label: 'Department',
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setDepartment,
+        payload: event.currentTarget.value as Department,
+      });
+    },
+    value: department,
+    withAsterisk: true,
+    required: true,
+  };
+     */
+
+  const expenseClaimAmountTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: expenseClaimAmountInputErrorText,
+        valid: expenseClaimAmountInputValidText,
+      },
+      inputText: expenseClaimAmount,
+      isValidInputText: isValidExpenseClaimAmount,
+      label: 'Expense claim amount',
+      onBlur: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsExpenseClaimAmountFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setExpenseClaimAmount,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsExpenseClaimAmountFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter expense claim amount',
+      semanticName: 'expense claim amount',
+      minLength: 3,
+      maxLength: 9,
+      required: true,
+      withAsterisk: true,
+    };
+
+  const expenseClaimKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: EXPENSE_CLAIM_KIND_DATA,
+      description: 'Select a category for your expense claim.',
+      label: 'Expense claim kind',
+      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setExpenseClaimKind,
+          payload: event.currentTarget.value as ExpenseClaimKind,
+        });
+      },
+      value: expenseClaimKind,
+      required: true,
+      withAsterisk: true,
+    };
+
+  const expenseClaimCurrencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: CURRENCY_DATA,
+      description: 'Select the currency for your expense claim.',
+      label: 'Expense claim currency',
+      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setExpenseClaimCurrency,
+          payload: event.currentTarget.value as Currency,
+        });
+      },
+      value: expenseClaimCurrency,
+      required: true,
+      withAsterisk: true,
+    };
+
+  const expenseClaimDateTextInputCreatorInfo: AccessibleDateTimeInputCreatorInfo =
+    {
+      description: {
+        error: expenseClaimDateInputErrorText,
+        valid: expenseClaimDateInputValidText,
+      },
+      inputText: expenseClaimDate,
+      isValidInputText: isValidExpenseClaimDate,
+      label: 'Expense claim date',
+      onBlur: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsExpenseClaimDateFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setExpenseClaimDate,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsExpenseClaimDateFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter expense claim date',
+      semanticName: 'expense claim date',
+      inputKind: 'date',
+      dateKind: 'date near past',
+      required: true,
+      withAsterisk: true,
+    };
+
+  const expenseClaimDescriptionTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: expenseClaimDescriptionInputErrorText,
+        valid: expenseClaimDescriptionInputValidText,
+      },
+      inputText: expenseClaimDescription,
+      isValidInputText: isValidExpenseClaimDescription,
+      label: 'Expense claim description',
+      onBlur: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsExpenseClaimDescriptionFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setExpenseClaimDescription,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsExpenseClaimDescriptionFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter expense claim description',
+      semanticName: 'expense claim description',
+      required: true,
+      withAsterisk: true,
+    };
+
+  const additionalCommentsTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: additionalCommentsInputErrorText,
+        valid: additionalCommentsInputValidText,
+      },
+      inputText: additionalComments,
+      isValidInputText: isValidAdditionalComments,
+      label: 'Additional comments',
+      onBlur: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsAdditionalCommentsFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setAdditionalComments,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsAdditionalCommentsFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter additional comments',
+      semanticName: 'additional comments',
+    };
+
+  const acknowledgementCheckboxInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+    {
+      description: {
+        selected:
+          'I acknowledge that the information I have provided is accurate.',
+        deselected: 'I do not acknowledge.',
+      },
+      checkboxKind: 'single',
+      label: 'Acknowledgement',
+      semanticName: 'acknowledgement',
+      accessibleDescription: {
+        selected:
+          'Checkbox is selected. I acknowledge that the information I have provided is accurate.',
+        deselected: 'Checkbox is deselected. I do not acknowledge.',
+      },
+      onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setAcknowledgement,
+          payload: event.currentTarget.checked,
+        });
+      },
+      checked: acknowledgement,
+      onClick: () => {
+        expenseClaimDispatch({
+          type: expenseClaimAction.setAcknowledgement,
+          payload: !acknowledgement,
+        });
+      },
+      required: true,
+    };
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    buttonOnClick: () => {},
+    buttonType: 'submit',
+    buttonDisabled: stepsInError.size > 0,
+    semanticName: 'submit button',
+    semanticDescription: 'expense claim form submit button',
+  };
 
   return <h3>expense claim</h3>;
 }
