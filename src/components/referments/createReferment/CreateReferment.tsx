@@ -21,7 +21,19 @@ import {
   PHONE_NUMBER_REGEX,
   URL_REGEX,
 } from '../../../constants/regex';
-import { returnAccessibleTextElements } from '../../../jsxCreators';
+import {
+  AccessibleCheckboxInputCreatorInfo,
+  AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  returnAccessibleCheckboxInputElements,
+  returnAccessiblePhoneNumberTextInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
+  returnAccessibleTextElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
 import { JobPosition, PhoneNumber } from '../../../types';
 import {
   returnEmailValidationText,
@@ -221,13 +233,17 @@ function CreateReferment() {
 
   // used to indicate stepper wrapper state
   useEffect(() => {
-    const isStepInError =
+    const areRequiredStepsInError =
       !isValidCandidateFullName ||
       !isValidCandidateEmail ||
       !isValidCandidateContactNumber ||
       !isValidCandidateCurrentJobTitle ||
-      !isValidCandidateCurrentCompany ||
-      !isValidCandidateProfileUrl;
+      !isValidCandidateCurrentCompany;
+
+    const isOptionalStepInError =
+      candidateProfileUrl !== '' && !isValidCandidateProfileUrl;
+
+    const isStepInError = areRequiredStepsInError || isOptionalStepInError;
 
     // if any of the steps are in error, add step 1 to the stepsInError set
     createRefermentDispatch({
@@ -244,14 +260,17 @@ function CreateReferment() {
     isValidCandidateCurrentJobTitle,
     isValidCandidateCurrentCompany,
     isValidCandidateProfileUrl,
+    candidateProfileUrl,
   ]);
 
   // used to indicate stepper wrapper state
   useEffect(() => {
-    const isStepInError =
-      !isValidPositionJobDescription ||
-      !isValidReferralReason ||
-      !isValidAdditionalInformation;
+    const isRequiredStepInError = !isValidReferralReason;
+    const areOptionalStepsInError =
+      (positionJobDescription !== '' && !isValidPositionJobDescription) ||
+      (additionalInformation !== '' && !isValidAdditionalInformation);
+
+    const isStepInError = isRequiredStepInError || areOptionalStepsInError;
 
     // if any of the steps are in error, add step 2 to the stepsInError set
     createRefermentDispatch({
@@ -265,6 +284,8 @@ function CreateReferment() {
     isValidPositionJobDescription,
     isValidReferralReason,
     isValidAdditionalInformation,
+    positionJobDescription,
+    additionalInformation,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -391,9 +412,483 @@ function CreateReferment() {
     }),
   });
 
+  const candidateNameTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: candidateFullNameInputErrorText,
+      valid: candidateFullNameInputValidText,
+    },
+    inputText: candidateFullName,
+    isValidInputText: isValidCandidateFullName,
+    label: 'Candidate name',
+    onBlur: () => {
+      createRefermentDispatch({
+        type: createRefermentAction.setIsCandidateFullNameFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      createRefermentDispatch({
+        type: createRefermentAction.setCandidateFullName,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      createRefermentDispatch({
+        type: createRefermentAction.setIsCandidateFullNameFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter full name',
+    semanticName: 'candidate full name',
+    minLength: 2,
+    maxLength: 100,
+    required: true,
+    withAsterisk: true,
+  };
+
+  const candidateEmailTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: candidateEmailInputErrorText,
+      valid: candidateEmailInputValidText,
+    },
+    inputText: candidateEmail,
+    isValidInputText: isValidCandidateEmail,
+    label: 'Candidate email',
+    onBlur: () => {
+      createRefermentDispatch({
+        type: createRefermentAction.setIsCandidateEmailFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      createRefermentDispatch({
+        type: createRefermentAction.setCandidateEmail,
+        payload: event.target.value,
+      });
+    },
+    onFocus: () => {
+      createRefermentDispatch({
+        type: createRefermentAction.setIsCandidateEmailFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter email',
+    semanticName: 'candidate email',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const candidateContactNumberPhoneInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =
+    {
+      description: {
+        error: candidateContactNumberInputErrorText,
+        valid: candidateContactNumberInputValidText,
+      },
+      inputText: candidateContactNumber,
+      isValidInputText: isValidCandidateContactNumber,
+      label: 'Candidate contact number',
+      onBlur: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsCandidateContactNumberFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setCandidateContactNumber,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsCandidateContactNumberFocused,
+          payload: true,
+        });
+      },
+      onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Backspace') {
+          if (
+            candidateContactNumber.length === 14 ||
+            candidateContactNumber.length === 9
+          ) {
+            createRefermentDispatch({
+              type: createRefermentAction.setCandidateContactNumber,
+              payload: candidateContactNumber.slice(0, -1) as
+                | PhoneNumber
+                | string,
+            });
+          }
+        }
+      },
+      placeholder: 'Enter contact number',
+      semanticName: 'candidate contact number',
+      required: true,
+      withAsterisk: true,
+    };
+
+  const candidateProfileUrlTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: candidateProfileUrlInputErrorText,
+        valid: candidateProfileUrlInputValidText,
+      },
+      inputText: candidateProfileUrl,
+      isValidInputText: isValidCandidateProfileUrl,
+      label: 'Candidate profile URL',
+      onBlur: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsCandidateProfileUrlFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setCandidateProfileUrl,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsCandidateProfileUrlFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter profile URL',
+      semanticName: 'candidate profile URL',
+    };
+
+  const candidateCurrentJobTitleTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: candidateCurrentJobTitleInputErrorText,
+        valid: candidateCurrentJobTitleInputValidText,
+      },
+      inputText: candidateCurrentJobTitle,
+      isValidInputText: isValidCandidateCurrentJobTitle,
+      label: 'Candidate current job title',
+      onBlur: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsCandidateCurrentJobTitleFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setCandidateCurrentJobTitle,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsCandidateCurrentJobTitleFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter current job title',
+      semanticName: 'candidate current job title',
+      required: true,
+      withAsterisk: true,
+    };
+
+  const candidateCurrentCompanyTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: candidateCurrentCompanyInputErrorText,
+        valid: candidateCurrentCompanyInputValidText,
+      },
+      inputText: candidateCurrentCompany,
+      isValidInputText: isValidCandidateCurrentCompany,
+      label: 'Candidate current company',
+      onBlur: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsCandidateCurrentCompanyFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setCandidateCurrentCompany,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsCandidateCurrentCompanyFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter current company',
+      semanticName: 'candidate current company',
+      required: true,
+      withAsterisk: true,
+    };
+
+  const positionReferredForNativeSelectCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      description: 'Position referred for',
+      label: 'Job position',
+      data: JOB_POSITIONS,
+      value: positionReferredFor,
+      onChange: (event) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setPositionReferredFor,
+          payload: event.currentTarget.value as JobPosition,
+        });
+      },
+      required: true,
+      withAsterisk: true,
+    };
+
+  const positionJobDescriptionTextareaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: positionJobDescriptionInputErrorText,
+        valid: positionJobDescriptionInputValidText,
+      },
+      inputText: positionJobDescription,
+      isValidInputText: isValidPositionJobDescription,
+      label: 'Job description',
+      onBlur: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsPositionJobDescriptionFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setPositionJobDescription,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsPositionJobDescriptionFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter job description',
+      semanticName: 'job description',
+    };
+
+  const referralReasonTextareaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: referralReasonInputErrorText,
+        valid: referralReasonInputValidText,
+      },
+      inputText: referralReason,
+      isValidInputText: isValidReferralReason,
+      label: 'Referral reason',
+      onBlur: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsReferralReasonFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setReferralReason,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsReferralReasonFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter referral reason',
+      semanticName: 'referral reason',
+      required: true,
+      withAsterisk: true,
+    };
+
+  const additionalInformationTextareaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: additionalInformationInputErrorText,
+        valid: additionalInformationInputValidText,
+      },
+      inputText: additionalInformation,
+      isValidInputText: isValidAdditionalInformation,
+      label: 'Additional information',
+      onBlur: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsAdditionalInformationFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setAdditionalInformation,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setIsAdditionalInformationFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter additional information',
+      semanticName: 'additional information',
+    };
+
+  const privacyConsentCheckboxInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+    {
+      description: {
+        selected:
+          'I acknowledge that the candidate has given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
+        deselected:
+          'I have not received consent from the candidate to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
+      },
+      checkboxKind: 'single',
+      label: 'Privacy consent',
+      semanticName: 'privacy consent',
+      accessibleDescription: {
+        selected:
+          'Privacy consent selected. I acknowledge that the candidate has given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
+        deselected:
+          'Privacy consent deselected. I have not received consent from the candidate to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
+      },
+      onChangeSingle: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setPrivacyConsent,
+          payload: !privacyConsent,
+        });
+      },
+      onClick: () => {
+        createRefermentDispatch({
+          type: createRefermentAction.setPrivacyConsent,
+          payload: true,
+        });
+      },
+      checked: privacyConsent,
+      required: true,
+    };
+
+  const [
+    createdCandidateNameTextInput,
+    createdCandidateEmailTextInput,
+    createdCandidateProfileUrlTextInput,
+    createdCandidateCurrentJobTitleTextInput,
+    createdCandidateCurrentCompanyTextInput,
+  ] = returnAccessibleTextInputElements([
+    candidateNameTextInputCreatorInfo,
+    candidateEmailTextInputCreatorInfo,
+    candidateProfileUrlTextInputCreatorInfo,
+    candidateCurrentJobTitleTextInputCreatorInfo,
+    candidateCurrentCompanyTextInputCreatorInfo,
+  ]);
+
+  const [createdCandidateContactNumberPhoneInput] =
+    returnAccessiblePhoneNumberTextInputElements([
+      candidateContactNumberPhoneInputCreatorInfo,
+    ]);
+
+  const [
+    createdPositionJobDescriptionTextareaInput,
+    createdReferralReasonTextareaInput,
+    createdAdditionalInformationTextareaInput,
+  ] = returnAccessibleTextAreaInputElements([
+    positionJobDescriptionTextareaInputCreatorInfo,
+    referralReasonTextareaInputCreatorInfo,
+    additionalInformationTextareaInputCreatorInfo,
+  ]);
+
+  const [createdPrivacyConsentCheckboxInput] =
+    returnAccessibleCheckboxInputElements([
+      privacyConsentCheckboxInputCreatorInfo,
+    ]);
+
+  const [createdPositionReferredForNativeSelectInput] =
+    returnAccessibleSelectInputElements([
+      positionReferredForNativeSelectCreatorInfo,
+    ]);
+
   const displayCandidateDetailsFormPage = (
+    <>
+      {createdCandidateNameTextInput}
+      {createdCandidateEmailTextInput}
+      {createdCandidateContactNumberPhoneInput}
+      {createdCandidateProfileUrlTextInput}
+      {createdCandidateCurrentJobTitleTextInput}
+      {createdCandidateCurrentCompanyTextInput}
+    </>
+  );
+
+  const displayPositionDetailsFormPage = (
+    <>
+      {createdPositionReferredForNativeSelectInput}
+      {createdPositionJobDescriptionTextareaInput}
+      {createdReferralReasonTextareaInput}
+      {createdAdditionalInformationTextareaInput}
+      {createdPrivacyConsentCheckboxInput}
+    </>
+  );
+
+  const displayReviewFormPage = <h4>review</h4>;
+
+  const displayCreateRefermentForm =
+    currentStepperPosition === 0
+      ? displayCandidateDetailsFormPage
+      : currentStepperPosition === 1
+      ? displayPositionDetailsFormPage
+      : currentStepperPosition === 2
+      ? displayReviewFormPage
+      : null;
+
+  const displayFormSubmitButton =
+    currentStepperPosition === CREATE_REFERMENT_MAX_STEPPER_POSITION ? (
+      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
+        Submit
+      </Button>
+    ) : null;
+
+  const displayCreateRefermentComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionMap={CREATE_REFERMENT_DESCRIPTION_MAP}
+      maxStepperPosition={CREATE_REFERMENT_MAX_STEPPER_POSITION}
+      parentComponentDispatch={createRefermentDispatch}
+      setCurrentStepperPosition={
+        createRefermentAction.setCurrentStepperPosition
+      }
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleCreateRefermentFormSubmit}>
+        {displayCreateRefermentForm}
+        {displayFormSubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  async function handleCreateRefermentFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  useEffect(() => {
+    console.group('CreateReferment');
+    Object.entries(createRefermentState).forEach(([key, value]) => {
+      console.log(key, JSON.stringify(value, null, 2));
+    });
+    console.groupEnd();
+  }, [createRefermentState]);
+
+  return (
+    <Flex direction="column" align="center" justify="center" w="400px">
+      {displayCreateRefermentComponent}
+    </Flex>
+  );
+}
+
+export { CreateReferment };
+
+/**
+ * const displayCandidateDetailsFormPage = (
     <Flex direction="column" align="center" justify="center" w={400}>
-      {/* candidate full name text input */}
       <TextInput
         size="sm"
         w="100%"
@@ -438,13 +933,12 @@ function CreateReferment() {
             payload: false,
           });
         }}
-        minLength={1}
-        maxLength={50}
+        minLength={2}
+        maxLength={100}
         withAsterisk
         required
       />
 
-      {/* candidate email text input */}
       <TextInput
         size="sm"
         w="100%"
@@ -493,7 +987,6 @@ function CreateReferment() {
         required
       />
 
-      {/* candidate contact number text input */}
       <TextInput
         size="sm"
         w="100%"
@@ -587,7 +1080,6 @@ function CreateReferment() {
         required
       />
 
-      {/* candidate current job title */}
       <TextInput
         size="sm"
         w="100%"
@@ -640,7 +1132,6 @@ function CreateReferment() {
         required
       />
 
-      {/* candidate current company */}
       <TextInput
         size="sm"
         w="100%"
@@ -693,7 +1184,6 @@ function CreateReferment() {
         required
       />
 
-      {/* candidate profile url text input */}
       <TextInput
         size="sm"
         w="100%"
@@ -746,7 +1236,6 @@ function CreateReferment() {
 
   const displayPositionDetailsFormPage = (
     <Flex direction="column" align="center" justify="center" w={400}>
-      {/* candidate job position select */}
       <NativeSelect
         size="sm"
         data={JOB_POSITIONS}
@@ -763,7 +1252,6 @@ function CreateReferment() {
         required
       />
 
-      {/* position job description textarea input */}
       <Textarea
         size="sm"
         w="100%"
@@ -817,7 +1305,6 @@ function CreateReferment() {
         required
       />
 
-      {/* referral reason textarea input */}
       <Textarea
         size="sm"
         w="100%"
@@ -871,7 +1358,6 @@ function CreateReferment() {
         required
       />
 
-      {/* additional information textarea input */}
       <Textarea
         size="sm"
         w="100%"
@@ -923,7 +1409,6 @@ function CreateReferment() {
         maxRows={5}
       />
 
-      {/* privacy consent radio input */}
       <Radio
         size="sm"
         label="Privacy consent"
@@ -952,57 +1437,4 @@ function CreateReferment() {
       />
     </Flex>
   );
-
-  const displayReviewFormPage = <h4>review</h4>;
-
-  const displayCreateRefermentForm =
-    currentStepperPosition === 0
-      ? displayCandidateDetailsFormPage
-      : currentStepperPosition === 1
-      ? displayPositionDetailsFormPage
-      : currentStepperPosition === 2
-      ? displayReviewFormPage
-      : null;
-
-  const displayFormSubmitButton =
-    currentStepperPosition === CREATE_REFERMENT_MAX_STEPPER_POSITION ? (
-      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
-
-  async function handleCreateRefermentFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
-
-  const displayCreateRefermentComponent = (
-    <StepperWrapper
-      currentStepperPosition={currentStepperPosition}
-      descriptionMap={CREATE_REFERMENT_DESCRIPTION_MAP}
-      maxStepperPosition={CREATE_REFERMENT_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createRefermentDispatch}
-      setCurrentStepperPosition={
-        createRefermentAction.setCurrentStepperPosition
-      }
-      stepsInError={stepsInError}
-    >
-      <form onSubmit={handleCreateRefermentFormSubmit}>
-        {displayCreateRefermentForm}
-        {displayFormSubmitButton}
-      </form>
-    </StepperWrapper>
-  );
-
-  //
-  //
-  //
-  return (
-    <Flex direction="column" align="center" justify="center" w="400px">
-      {displayCreateRefermentComponent}
-    </Flex>
-  );
-}
-
-export { CreateReferment };
+ */
