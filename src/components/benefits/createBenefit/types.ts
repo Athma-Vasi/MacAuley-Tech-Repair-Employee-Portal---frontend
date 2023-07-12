@@ -1,4 +1,4 @@
-import { SetStepsInErrorPayload } from '../../../types';
+import { Currency, SetStepsInErrorPayload } from '../../../types';
 
 type BenefitsPlanKind =
   | 'Health'
@@ -9,8 +9,6 @@ type BenefitsPlanKind =
   | 'Retirement'
   | 'Education'
   | 'Other';
-
-type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'JPY' | 'CNY';
 
 type BenefitsSchema = {
   userId: string;

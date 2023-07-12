@@ -22,6 +22,7 @@ import { RequireAuth } from './components/requireAuth';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
+import { ExpenseClaim } from './components/expenseClaim';
 
 function App() {
   const {
@@ -42,7 +43,7 @@ function App() {
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
           {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
-          <Route path="create-request-resource" element={<RequestResource />} />
+          {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
           {/* <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
           {/* <Route path="create-referment" element={<CreateReferment />} /> */}
@@ -51,6 +52,7 @@ function App() {
             element={<CreateAnonymousRequest />}
           /> */}
           {/* <Route path="event-creator" element={<EventCreator />} /> */}
+          <Route path="create-expense-claim" element={<ExpenseClaim />} />
         </Route>
 
         {/* these are protected routes */}

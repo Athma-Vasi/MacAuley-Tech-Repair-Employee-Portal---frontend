@@ -39,6 +39,7 @@ type CheckBoxMultipleData = {
   value: string;
   label: string;
 }[];
+type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'JPY' | 'CNY';
 
 export type {
   Action,
@@ -62,4 +63,10 @@ export type {
   USPostalCode,
 };
 
-export type { BreakPoints, CheckBoxMultipleData, Note, SetStepsInErrorPayload };
+export type {
+  BreakPoints,
+  CheckBoxMultipleData,
+  Note,
+  SetStepsInErrorPayload,
+  Currency,
+};
