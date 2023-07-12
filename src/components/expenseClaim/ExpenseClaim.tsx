@@ -1,9 +1,13 @@
-import { useEffect, useReducer } from 'react';
 import {
-  expenseClaimAction,
-  expenseClaimReducer,
-  initialExpenseClaimState,
-} from './state';
+  faDollarSign,
+  faEuro,
+  faJpy,
+  faPoundSign,
+  faYen,
+} from '@fortawesome/free-solid-svg-icons';
+import { Flex } from '@mantine/core';
+import { useEffect, useReducer } from 'react';
+
 import {
   DATE_NEAR_PAST_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
@@ -24,21 +28,25 @@ import {
   returnAccessibleTextElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
+import { Currency } from '../../types';
 import {
   returnDateNearPastValidationText,
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../utils';
+import { CURRENCY_DATA } from '../benefits/constants';
+import { StepperWrapper } from '../wrappers';
 import {
   EXPENSE_CLAIM_DESCRIPTION_MAP,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_STEPPER_POSITION,
 } from './constants';
+import {
+  expenseClaimAction,
+  expenseClaimReducer,
+  initialExpenseClaimState,
+} from './state';
 import { ExpenseClaimKind } from './types';
-import { CURRENCY_DATA } from '../benefits/constants';
-import { StepperWrapper } from '../wrappers';
-import { Currency } from '../../types';
-import { Flex } from '@mantine/core';
 
 function ExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(
@@ -226,6 +234,17 @@ function ExpenseClaim() {
       }),
     });
 
+  const currencyIcon =
+    expenseClaimCurrency === 'CNY'
+      ? faYen
+      : expenseClaimCurrency === 'GBP'
+      ? faPoundSign
+      : expenseClaimCurrency === 'EUR'
+      ? faEuro
+      : expenseClaimCurrency === 'JPY'
+      ? faJpy
+      : faDollarSign;
+
   const expenseClaimAmountTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
     {
       description: {
@@ -253,6 +272,8 @@ function ExpenseClaim() {
           payload: true,
         });
       },
+      rightSection: true,
+      rightSectionIcon: currencyIcon,
       placeholder: 'Enter expense claim amount',
       semanticName: 'expense claim amount',
       minLength: 3,
@@ -515,7 +536,7 @@ function ExpenseClaim() {
   useEffect(() => {
     console.group('expenseClaim useEffect');
     Object.entries(expenseClaimState).forEach(([key, value]) => {
-      console.log(key, JSON.stringify(value, null, 2));
+      console.log(key, value);
     });
     console.groupEnd();
   }, [expenseClaimState]);
