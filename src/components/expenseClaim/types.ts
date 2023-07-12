@@ -36,12 +36,11 @@ type ExpenseClaimDocument = ExpenseClaimSchema & {
 };
 
 type ExpenseClaimState = {
-  expenseClaimKind: ExpenseClaimKind;
-
   expenseClaimAmount: string;
   isValidExpenseClaimAmount: boolean;
   isExpenseClaimAmountFocused: boolean;
 
+  expenseClaimKind: ExpenseClaimKind;
   expenseClaimCurrency: Currency;
 
   expenseClaimDate: string;
@@ -71,12 +70,11 @@ type ExpenseClaimState = {
 };
 
 type ExpenseClaimAction = {
-  setExpenseClaimKind: 'setExpenseClaimKind';
-
   setExpenseClaimAmount: 'setExpenseClaimAmount';
   setIsValidExpenseClaimAmount: 'setIsValidExpenseClaimAmount';
   setIsExpenseClaimAmountFocused: 'setIsExpenseClaimAmountFocused';
 
+  setExpenseClaimKind: 'setExpenseClaimKind';
   setExpenseClaimCurrency: 'setExpenseClaimCurrency';
 
   setExpenseClaimDate: 'setExpenseClaimDate';
