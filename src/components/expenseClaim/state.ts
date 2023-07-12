@@ -35,6 +35,7 @@ const initialExpenseClaimState: ExpenseClaimState = {
   isSuccessful: false,
   successMessage: '',
   isLoading: false,
+  loadingMessage: '',
 };
 
 const expenseClaimAction: ExpenseClaimAction = {
@@ -161,11 +162,16 @@ function expenseClaimReducer(
         ...state,
         currentStepperPosition: action.payload,
       };
-    case expenseClaimAction.setStepsInError:
+    case expenseClaimAction.setStepsInError: {
+      const { kind, step } = action.payload;
+      const stepsInError = new Set(state.stepsInError);
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+
       return {
         ...state,
-        stepsInError: action.payload,
+        stepsInError,
       };
+    }
 
     case expenseClaimAction.setIsError:
       return {
