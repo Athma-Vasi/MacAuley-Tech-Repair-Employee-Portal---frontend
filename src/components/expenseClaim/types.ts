@@ -10,6 +10,11 @@ type ExpenseClaimKind =
   | 'Equipment and Supplies'
   | 'Communication and Utilities'
   | 'Training and Certifications'
+  | 'Software and Licenses'
+  | 'Marketing and Advertising'
+  | 'Insurance'
+  | 'Rent and Leasing'
+  | 'Legal and Professional Fees'
   | 'Miscellaneous';
 
 type ExpenseClaimSchema = {
