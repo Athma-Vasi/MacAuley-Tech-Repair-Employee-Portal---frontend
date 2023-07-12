@@ -534,7 +534,7 @@ function RequestResource() {
       ? displayRequestResourceFormPageOne
       : currentStepperPosition === 1
       ? displayRequestResourceFormPageTwo
-      : currentStepperPosition === 3
+      : currentStepperPosition === 2
       ? displayReviewFormPage
       : null;
 
@@ -566,14 +566,6 @@ function RequestResource() {
   ) {
     event.preventDefault();
   }
-
-  useEffect(() => {
-    console.group('RequestResource useEffect');
-    Object.entries(requestResourceState).forEach(([key, value]) => {
-      console.log(key, JSON.stringify(value, null, 2));
-    });
-    console.groupEnd();
-  }, [requestResourceState]);
 
   return (
     <Flex direction="column" align="center" justify="center" w="400px">

@@ -16,16 +16,29 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  returnAccessibleButtonElements,
+  returnAccessibleCheckboxInputElements,
+  returnAccessibleDateTimeElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
+  returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import {
   returnDateNearPastValidationText,
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../utils';
-import { EXPENSE_CLAIM_KIND_DATA } from './constants';
+import {
+  EXPENSE_CLAIM_DESCRIPTION_MAP,
+  EXPENSE_CLAIM_KIND_DATA,
+  EXPENSE_CLAIM_MAX_STEPPER_POSITION,
+} from './constants';
 import { ExpenseClaimKind } from './types';
 import { CURRENCY_DATA } from '../benefits/constants';
+import { StepperWrapper } from '../wrappers';
+import { Currency } from '../../types';
+import { Flex } from '@mantine/core';
 
 function ExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(
@@ -134,12 +147,16 @@ function ExpenseClaim() {
 
   // update stepper wrapper state on every change
   useEffect(() => {
-    const isStepInError =
+    const areRequiredInputsInError =
       !isValidExpenseClaimAmount ||
       !isValidExpenseClaimDate ||
       !isValidExpenseClaimDescription ||
-      !isValidAdditionalComments ||
       !acknowledgement;
+
+    const isOptionalInputInError =
+      additionalComments !== '' && !isValidAdditionalComments;
+
+    const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
     expenseClaimDispatch({
       type: expenseClaimAction.setStepsInError,
@@ -154,6 +171,7 @@ function ExpenseClaim() {
     isValidExpenseClaimDescription,
     isValidAdditionalComments,
     acknowledgement,
+    additionalComments,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -207,24 +225,6 @@ function ExpenseClaim() {
         maxLength: 2000,
       }),
     });
-
-  /**
-     * const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: DEPARTMENTS,
-    description:
-      'Select the department for which you are requesting a resource.',
-    label: 'Department',
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-      requestResourceDispatch({
-        type: requestResourceAction.setDepartment,
-        payload: event.currentTarget.value as Department,
-      });
-    },
-    value: department,
-    withAsterisk: true,
-    required: true,
-  };
-     */
 
   const expenseClaimAmountTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
     {
@@ -432,7 +432,99 @@ function ExpenseClaim() {
     semanticDescription: 'expense claim form submit button',
   };
 
-  return <h3>expense claim</h3>;
+  const [createdExpenseClaimAmountTextInput] =
+    returnAccessibleTextInputElements([expenseClaimAmountTextInputCreatorInfo]);
+
+  const [
+    createdExpenseClaimKindSelectInput,
+    createdExpenseClaimCurrencySelectInput,
+  ] = returnAccessibleSelectInputElements([
+    expenseClaimKindSelectInputCreatorInfo,
+    expenseClaimCurrencySelectInputCreatorInfo,
+  ]);
+
+  const [createdExpenseClaimDateTextInput] = returnAccessibleDateTimeElements([
+    expenseClaimDateTextInputCreatorInfo,
+  ]);
+
+  const [
+    createdExpenseClaimDescriptionTextInput,
+    createdAdditionalCommentsTextInput,
+  ] = returnAccessibleTextAreaInputElements([
+    expenseClaimDescriptionTextInputCreatorInfo,
+    additionalCommentsTextInputCreatorInfo,
+  ]);
+
+  const [createdAcknowledgementCheckboxInput] =
+    returnAccessibleCheckboxInputElements([
+      acknowledgementCheckboxInputCreatorInfo,
+    ]);
+
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+
+  const displayExpenseClaimDetailsFirstPage = (
+    <>
+      {createdExpenseClaimKindSelectInput}
+      {createdExpenseClaimCurrencySelectInput}
+      {createdExpenseClaimAmountTextInput}
+      {createdExpenseClaimDateTextInput}
+      {createdExpenseClaimDescriptionTextInput}
+      {createdAdditionalCommentsTextInput}
+      {createdAcknowledgementCheckboxInput}
+    </>
+  );
+
+  const displayExpenseClaimReviewPage = <h3>expense claim review</h3>;
+
+  const displayExpenseClaimForm =
+    currentStepperPosition === 0
+      ? displayExpenseClaimDetailsFirstPage
+      : currentStepperPosition === 1
+      ? displayExpenseClaimReviewPage
+      : null;
+
+  const displayFormSubmitButton =
+    currentStepperPosition === EXPENSE_CLAIM_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
+  const displayExpenseClaimComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionMap={EXPENSE_CLAIM_DESCRIPTION_MAP}
+      maxStepperPosition={EXPENSE_CLAIM_MAX_STEPPER_POSITION}
+      parentComponentDispatch={expenseClaimDispatch}
+      setCurrentStepperPosition={expenseClaimAction.setCurrentStepperPosition}
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleExpenseClaimFormSubmit}>
+        {displayExpenseClaimForm}
+        {displayFormSubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  async function handleExpenseClaimFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  useEffect(() => {
+    console.group('expenseClaim useEffect');
+    Object.entries(expenseClaimState).forEach(([key, value]) => {
+      console.log(key, JSON.stringify(value, null, 2));
+    });
+    console.groupEnd();
+  }, [expenseClaimState]);
+
+  return (
+    <Flex direction="column" align="center" justify="center" w="400px">
+      {displayExpenseClaimComponent}
+    </Flex>
+  );
 }
 
 export { ExpenseClaim };
