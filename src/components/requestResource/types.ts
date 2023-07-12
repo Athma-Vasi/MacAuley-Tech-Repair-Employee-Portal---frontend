@@ -1,4 +1,4 @@
-import type { Department, Urgency } from '../../types';
+import type { Department, SetStepsInErrorPayload, Urgency } from '../../types';
 
 type RequestResourceKind = 'Hardware' | 'Software' | 'Access' | 'Other';
 
@@ -47,6 +47,18 @@ type RequestResourceState = {
   additionalInformation: string;
   isValidAdditionalInformation: boolean;
   isAdditionalInformationFocused: boolean;
+
+  currentStepperPosition: number;
+  stepsInError: Set<number>;
+
+  isError: boolean;
+  errorMessage: string;
+  isSubmitting: boolean;
+  submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
+  isLoading: boolean;
+  loadingMessage: string;
 };
 
 type RequestResourceAction = {
@@ -74,20 +86,85 @@ type RequestResourceAction = {
   setAdditionalInformation: 'setAdditionalInformation';
   setIsValidAdditionalInformation: 'setIsValidAdditionalInformation';
   setIsAdditionalInformationFocused: 'setIsAdditionalInformationFocused';
+
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
+  setIsError: 'setIsError';
+  setErrorMessage: 'setErrorMessage';
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
+  setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
 };
 
-type RequestResourcePayload =
-  | string
-  | number
-  | boolean
-  | Department
-  | RequestResourceKind
-  | Urgency;
+// type RequestResourcePayload =
+//   | string
+//   | number
+//   | boolean
+//   | Department
+//   | RequestResourceKind
+//   | Urgency;
 
-type RequestResourceDispatch = {
-  type: RequestResourceAction[keyof RequestResourceAction];
-  payload: RequestResourcePayload;
-};
+// type RequestResourceDispatch = {
+//   type: RequestResourceAction[keyof RequestResourceAction];
+//   payload: RequestResourcePayload;
+// };
+
+type RequestResourceDispatch =
+  | {
+      type:
+        | RequestResourceAction['setResourceDescription']
+        | RequestResourceAction['setResourceQuantity']
+        | RequestResourceAction['setReasonForRequest']
+        | RequestResourceAction['setAdditionalInformation']
+        | RequestResourceAction['setDateNeededBy']
+        | RequestResourceAction['setErrorMessage']
+        | RequestResourceAction['setSubmitMessage']
+        | RequestResourceAction['setSuccessMessage']
+        | RequestResourceAction['setLoadingMessage'];
+      payload: string;
+    }
+  | {
+      type: RequestResourceAction['setDepartment'];
+      payload: Department;
+    }
+  | {
+      type: RequestResourceAction['setResourceType'];
+      payload: RequestResourceKind;
+    }
+  | {
+      type:
+        | RequestResourceAction['setIsValidResourceQuantity']
+        | RequestResourceAction['setIsResourceQuantityFocused']
+        | RequestResourceAction['setIsValidResourceDescription']
+        | RequestResourceAction['setIsResourceDescriptionFocused']
+        | RequestResourceAction['setIsValidReasonForRequest']
+        | RequestResourceAction['setIsReasonForRequestFocused']
+        | RequestResourceAction['setIsValidDateNeededBy']
+        | RequestResourceAction['setIsDateNeededByFocused']
+        | RequestResourceAction['setIsValidAdditionalInformation']
+        | RequestResourceAction['setIsAdditionalInformationFocused']
+        | RequestResourceAction['setIsError']
+        | RequestResourceAction['setIsSubmitting']
+        | RequestResourceAction['setIsSuccessful']
+        | RequestResourceAction['setIsLoading'];
+      payload: boolean;
+    }
+  | {
+      type: RequestResourceAction['setUrgency'];
+      payload: Urgency;
+    }
+  | {
+      type: RequestResourceAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: RequestResourceAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
+    };
 
 type RequestResourceReducer = (
   state: RequestResourceState,
@@ -99,7 +176,6 @@ export type {
   RequestResourceDispatch,
   RequestResourceDocument,
   RequestResourceKind,
-  RequestResourcePayload,
   RequestResourceReducer,
   RequestResourceSchema,
   RequestResourceState,

@@ -32,6 +32,18 @@ const initialRequestResourceState: RequestResourceState = {
   additionalInformation: '',
   isValidAdditionalInformation: false,
   isAdditionalInformationFocused: false,
+
+  currentStepperPosition: 0,
+  stepsInError: new Set(),
+
+  isError: false,
+  errorMessage: '',
+  isSubmitting: false,
+  submitMessage: '',
+  isSuccessful: false,
+  successMessage: '',
+  isLoading: false,
+  loadingMessage: '',
 };
 
 const requestResourceAction: RequestResourceAction = {
@@ -59,6 +71,18 @@ const requestResourceAction: RequestResourceAction = {
   setAdditionalInformation: 'setAdditionalInformation',
   setIsValidAdditionalInformation: 'setIsValidAdditionalInformation',
   setIsAdditionalInformationFocused: 'setIsAdditionalInformationFocused',
+
+  setCurrentStepperPosition: 'setCurrentStepperPosition',
+  setStepsInError: 'setStepsInError',
+
+  setIsError: 'setIsError',
+  setErrorMessage: 'setErrorMessage',
+  setIsSubmitting: 'setIsSubmitting',
+  setSubmitMessage: 'setSubmitMessage',
+  setIsSuccessful: 'setIsSuccessful',
+  setSuccessMessage: 'setSuccessMessage',
+  setIsLoading: 'setIsLoading',
+  setLoadingMessage: 'setLoadingMessage',
 };
 
 function requestResourceReducer(
@@ -69,100 +93,148 @@ function requestResourceReducer(
     case requestResourceAction.setDepartment:
       return {
         ...state,
-        department: action.payload as Department,
+        department: action.payload,
       };
     case requestResourceAction.setResourceType:
       return {
         ...state,
-        resourceType: action.payload as RequestResourceKind,
+        resourceType: action.payload,
       };
-
     case requestResourceAction.setResourceQuantity:
       return {
         ...state,
-        resourceQuantity: action.payload as string,
+        resourceQuantity: action.payload,
       };
     case requestResourceAction.setIsValidResourceQuantity:
       return {
         ...state,
-        isValidResourceQuantity: action.payload as boolean,
+        isValidResourceQuantity: action.payload,
       };
     case requestResourceAction.setIsResourceQuantityFocused:
       return {
         ...state,
-        isResourceQuantityFocused: action.payload as boolean,
+        isResourceQuantityFocused: action.payload,
       };
-
     case requestResourceAction.setResourceDescription:
       return {
         ...state,
-        resourceDescription: action.payload as string,
+        resourceDescription: action.payload,
       };
     case requestResourceAction.setIsValidResourceDescription:
       return {
         ...state,
-        isValidResourceDescription: action.payload as boolean,
+        isValidResourceDescription: action.payload,
       };
     case requestResourceAction.setIsResourceDescriptionFocused:
       return {
         ...state,
-        isResourceDescriptionFocused: action.payload as boolean,
+        isResourceDescriptionFocused: action.payload,
       };
-
     case requestResourceAction.setReasonForRequest:
       return {
         ...state,
-        reasonForRequest: action.payload as string,
+        reasonForRequest: action.payload,
       };
     case requestResourceAction.setIsValidReasonForRequest:
       return {
         ...state,
-        isValidReasonForRequest: action.payload as boolean,
+        isValidReasonForRequest: action.payload,
       };
     case requestResourceAction.setIsReasonForRequestFocused:
       return {
         ...state,
-        isReasonForRequestFocused: action.payload as boolean,
+        isReasonForRequestFocused: action.payload,
       };
-
     case requestResourceAction.setUrgency:
       return {
         ...state,
-        urgency: action.payload as Urgency,
+        urgency: action.payload,
       };
-
     case requestResourceAction.setDateNeededBy:
       return {
         ...state,
-        dateNeededBy: action.payload as string,
+        dateNeededBy: action.payload,
       };
     case requestResourceAction.setIsValidDateNeededBy:
       return {
         ...state,
-        isValidDateNeededBy: action.payload as boolean,
+        isValidDateNeededBy: action.payload,
       };
     case requestResourceAction.setIsDateNeededByFocused:
       return {
         ...state,
-        isDateNeededByFocused: action.payload as boolean,
+        isDateNeededByFocused: action.payload,
       };
-
     case requestResourceAction.setAdditionalInformation:
       return {
         ...state,
-        additionalInformation: action.payload as string,
+        additionalInformation: action.payload,
       };
     case requestResourceAction.setIsValidAdditionalInformation:
       return {
         ...state,
-        isValidAdditionalInformation: action.payload as boolean,
+        isValidAdditionalInformation: action.payload,
       };
     case requestResourceAction.setIsAdditionalInformationFocused:
       return {
         ...state,
-        isAdditionalInformationFocused: action.payload as boolean,
+        isAdditionalInformationFocused: action.payload,
       };
+    case requestResourceAction.setCurrentStepperPosition:
+      return {
+        ...state,
+        currentStepperPosition: action.payload,
+      };
+    case requestResourceAction.setStepsInError: {
+      const { kind, step } = action.payload;
+      const stepsInError = new Set(state.stepsInError);
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
 
+      return {
+        ...state,
+        stepsInError,
+      };
+    }
+    case requestResourceAction.setIsError:
+      return {
+        ...state,
+        isError: action.payload,
+      };
+    case requestResourceAction.setErrorMessage:
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
+    case requestResourceAction.setIsSubmitting:
+      return {
+        ...state,
+        isSubmitting: action.payload,
+      };
+    case requestResourceAction.setSubmitMessage:
+      return {
+        ...state,
+        submitMessage: action.payload,
+      };
+    case requestResourceAction.setIsSuccessful:
+      return {
+        ...state,
+        isSuccessful: action.payload,
+      };
+    case requestResourceAction.setSuccessMessage:
+      return {
+        ...state,
+        successMessage: action.payload,
+      };
+    case requestResourceAction.setIsLoading:
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    case requestResourceAction.setLoadingMessage:
+      return {
+        ...state,
+        loadingMessage: action.payload,
+      };
     default:
       return state;
   }

@@ -27,7 +27,7 @@ import {
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../stepperWrapper';
+import { StepperWrapper } from '../../wrappers';
 import {
   BENEFIT_PLAN_DATA,
   CREATE_BENEFIT_DESCRIPTION_MAP,

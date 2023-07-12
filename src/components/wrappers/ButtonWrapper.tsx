@@ -15,11 +15,11 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     buttonDisabled = false,
     buttonRef = null,
     buttonType = 'button',
-    buttonVariant = 'primary',
+    buttonVariant = 'filled',
     compact = false,
     leftIcon = null,
     rightIcon = null,
-    size = 'md',
+    size = 'sm',
   } = creatorInfoObject;
 
   return (

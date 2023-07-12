@@ -27,7 +27,7 @@ import {
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
 } from '../../utils';
-import { StepperWrapper } from '../stepperWrapper';
+import { StepperWrapper } from '../wrappers';
 import {
   ADDRESS_CHANGE_DESCRIPTION_MAP,
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,

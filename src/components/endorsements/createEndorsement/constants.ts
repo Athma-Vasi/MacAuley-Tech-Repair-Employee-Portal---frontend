@@ -1,5 +1,5 @@
 import { CheckBoxMultipleData } from '../../../types';
-import { DescriptionMap } from '../../stepperWrapper';
+import { DescriptionMap } from '../../wrappers';
 
 const CREATE_ENDORSEMENT_MAX_STEPPER_POSITION = 3;
 

@@ -41,7 +41,7 @@ import {
   returnPhoneNumberValidationText,
   returnUrlValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../stepperWrapper';
+import { StepperWrapper } from '../../wrappers';
 import {
   CREATE_REFERMENT_DESCRIPTION_MAP,
   CREATE_REFERMENT_MAX_STEPPER_POSITION,
@@ -265,12 +265,13 @@ function CreateReferment() {
 
   // used to indicate stepper wrapper state
   useEffect(() => {
-    const isRequiredStepInError = !isValidReferralReason;
+    const areRequiredStepsInError = !isValidReferralReason || !privacyConsent;
+
     const areOptionalStepsInError =
       (positionJobDescription !== '' && !isValidPositionJobDescription) ||
       (additionalInformation !== '' && !isValidAdditionalInformation);
 
-    const isStepInError = isRequiredStepInError || areOptionalStepsInError;
+    const isStepInError = areRequiredStepsInError || areOptionalStepsInError;
 
     // if any of the steps are in error, add step 2 to the stepsInError set
     createRefermentDispatch({
@@ -286,6 +287,7 @@ function CreateReferment() {
     isValidAdditionalInformation,
     positionJobDescription,
     additionalInformation,
+    privacyConsent,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -868,14 +870,6 @@ function CreateReferment() {
   ) {
     event.preventDefault();
   }
-
-  useEffect(() => {
-    console.group('CreateReferment');
-    Object.entries(createRefermentState).forEach(([key, value]) => {
-      console.log(key, JSON.stringify(value, null, 2));
-    });
-    console.groupEnd();
-  }, [createRefermentState]);
 
   return (
     <Flex direction="column" align="center" justify="center" w="400px">

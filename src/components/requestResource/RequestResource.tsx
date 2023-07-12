@@ -10,18 +10,39 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../constants/regex';
-import { returnAccessibleTextElements } from '../../jsxCreators';
+import {
+  AccessibleButtonCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  returnAccessibleButtonElements,
+  returnAccessibleDateTimeElements,
+  returnAccessiblePhoneNumberTextInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
+  returnAccessibleTextElements,
+  returnAccessibleTextInputElements,
+} from '../../jsxCreators';
+import { Department, Urgency } from '../../types';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../utils';
-import { REQUEST_RESOURCE_KIND_DATA } from './constants';
+import {
+  REQUEST_RESOURCE_DESCRIPTION_MAP,
+  REQUEST_RESOURCE_KIND_DATA,
+  REQUEST_RESOURCE_MAX_STEPPER_POSITION,
+} from './constants';
 import {
   initialRequestResourceState,
   requestResourceAction,
   requestResourceReducer,
 } from './state';
+import { RequestResourceKind } from './types';
+import { ButtonWrapper } from '../wrappers';
+import { StepperWrapper } from '../wrappers';
 
 function RequestResource() {
   const [requestResourceState, requestResourceDispatch] = useReducer(
@@ -29,24 +50,42 @@ function RequestResource() {
     initialRequestResourceState
   );
   const {
-    additionalInformation,
-    dateNeededBy,
     department,
-    isAdditionalInformationFocused,
-    isDateNeededByFocused,
-    isReasonForRequestFocused,
-    isResourceDescriptionFocused,
-    isResourceQuantityFocused,
-    isValidAdditionalInformation,
-    isValidDateNeededBy,
-    isValidReasonForRequest,
-    isValidResourceDescription,
-    isValidResourceQuantity,
-    reasonForRequest,
-    resourceDescription,
-    resourceQuantity,
     resourceType,
+
+    resourceQuantity,
+    isValidResourceQuantity,
+    isResourceQuantityFocused,
+
+    resourceDescription,
+    isValidResourceDescription,
+    isResourceDescriptionFocused,
+
+    reasonForRequest,
+    isValidReasonForRequest,
+    isReasonForRequestFocused,
+
     urgency,
+
+    dateNeededBy,
+    isValidDateNeededBy,
+    isDateNeededByFocused,
+
+    additionalInformation,
+    isValidAdditionalInformation,
+    isAdditionalInformationFocused,
+
+    currentStepperPosition,
+    stepsInError,
+
+    isError,
+    errorMessage,
+    isSubmitting,
+    submitMessage,
+    isSuccessful,
+    successMessage,
+    isLoading,
+    loadingMessage,
   } = requestResourceState;
 
   const departmentInputRef = useRef<HTMLSelectElement>(null);
@@ -119,6 +158,43 @@ function RequestResource() {
     });
   }, [additionalInformation]);
 
+  // update stepper state on every change
+  useEffect(() => {
+    const isStepInError =
+      !isValidResourceQuantity || !isValidResourceDescription;
+
+    requestResourceDispatch({
+      type: requestResourceAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [isValidResourceQuantity, isValidResourceDescription]);
+
+  // update stepper state on every change
+  useEffect(() => {
+    const areOptionalStepsInError =
+      (reasonForRequest.length > 0 && !isValidReasonForRequest) ||
+      (additionalInformation.length > 0 && !isValidAdditionalInformation);
+    const isRequiredStepInError = !isValidDateNeededBy;
+    const isStepInError = isRequiredStepInError || areOptionalStepsInError;
+
+    requestResourceDispatch({
+      type: requestResourceAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 2,
+      },
+    });
+  }, [
+    isValidDateNeededBy,
+    isValidReasonForRequest,
+    isValidAdditionalInformation,
+    reasonForRequest,
+    additionalInformation,
+  ]);
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [resourceQuantityInputErrorText, resourceQuantityInputValidText] =
     returnAccessibleTextElements({
@@ -185,15 +261,337 @@ function RequestResource() {
     }),
   });
 
+  const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DEPARTMENTS,
+    description:
+      'Select the department for which you are requesting a resource.',
+    label: 'Department',
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setDepartment,
+        payload: event.currentTarget.value as Department,
+      });
+    },
+    value: department,
+    withAsterisk: true,
+    required: true,
+  };
+
+  const resourceKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: REQUEST_RESOURCE_KIND_DATA,
+    description: 'Select the kind of resource you are requesting.',
+    label: 'Resource',
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setResourceType,
+        payload: event.currentTarget.value as RequestResourceKind,
+      });
+    },
+    value: resourceType,
+    withAsterisk: true,
+    required: true,
+  };
+
+  const resourceQuantityInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: resourceQuantityInputErrorText,
+      valid: resourceQuantityInputValidText,
+    },
+    inputText: resourceQuantity,
+    isValidInputText: isValidResourceQuantity,
+    label: 'Quantity',
+    onBlur: () => {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsResourceQuantityFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setResourceQuantity,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsResourceQuantityFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter resource amount',
+    semanticName: 'resource quantity',
+    minLength: 3,
+    maxLength: 9,
+    required: true,
+    withAsterisk: true,
+  };
+
+  const resourceDescriptionTextAreaCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: resourceDescriptionInputErrorText,
+        valid: resourceDescriptionInputValidText,
+      },
+      inputText: resourceDescription,
+      isValidInputText: isValidResourceDescription,
+      label: 'Description',
+      onBlur: () => {
+        requestResourceDispatch({
+          type: requestResourceAction.setIsResourceDescriptionFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        requestResourceDispatch({
+          type: requestResourceAction.setResourceDescription,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        requestResourceDispatch({
+          type: requestResourceAction.setIsResourceDescriptionFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter resource description',
+      semanticName: 'resource description',
+      required: true,
+      withAsterisk: true,
+    };
+
+  const reasonForRequestTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: reasonForRequestInputErrorText,
+      valid: reasonForRequestInputValidText,
+    },
+    inputText: reasonForRequest,
+    isValidInputText: isValidReasonForRequest,
+    label: 'Reason for request',
+    onBlur: () => {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsReasonForRequestFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setReasonForRequest,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsReasonForRequestFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter reason for request',
+    semanticName: 'reason for request',
+  };
+
+  const urgencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: URGENCY_DATA,
+    description: 'Select the urgency of your request.',
+    label: 'Urgency',
+    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setUrgency,
+        payload: event.currentTarget.value as Urgency,
+      });
+    },
+    value: urgency,
+    withAsterisk: true,
+    required: true,
+  };
+
+  const additionalInformationTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: additionalInformationInputErrorText,
+        valid: additionalInformationInputValidText,
+      },
+      inputText: additionalInformation,
+      isValidInputText: isValidAdditionalInformation,
+      label: 'Additional information',
+      onBlur: () => {
+        requestResourceDispatch({
+          type: requestResourceAction.setIsAdditionalInformationFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        requestResourceDispatch({
+          type: requestResourceAction.setAdditionalInformation,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        requestResourceDispatch({
+          type: requestResourceAction.setIsAdditionalInformationFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter additional information',
+      semanticName: 'additional information',
+    };
+
+  const dateNeededByDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
+    description: {
+      error: dateNeededByInputErrorText,
+      valid: dateNeededByInputValidText,
+    },
+    inputText: dateNeededBy,
+    isValidInputText: isValidDateNeededBy,
+    label: 'Date needed by',
+    onBlur: () => {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsDateNeededByFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setDateNeededBy,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsDateNeededByFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter date needed by',
+    semanticName: 'date needed by',
+    inputKind: 'date',
+    dateKind: 'date near future',
+    required: true,
+    withAsterisk: true,
+  };
+
+  const formSubmitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    buttonOnClick: () => {},
+    semanticDescription: 'submit resource request form',
+    semanticName: 'submit request',
+    buttonDisabled: stepsInError.size > 0,
+  };
+
+  const [
+    createdDepartmentSelectInput,
+    createdResourceKindSelectInput,
+    createdUrgencySelectInput,
+  ] = returnAccessibleSelectInputElements([
+    departmentSelectInputCreatorInfo,
+    resourceKindSelectInputCreatorInfo,
+    urgencySelectInputCreatorInfo,
+  ]);
+
+  const [createdResourceQuantityTextInput, createdReasonForRequestTextInput] =
+    returnAccessibleTextInputElements([
+      resourceQuantityInputCreatorInfo,
+      reasonForRequestTextInputCreatorInfo,
+    ]);
+
+  const [
+    createdResourceDescriptionTextAreaInput,
+    createdAdditionalInformationTextAreaInput,
+  ] = returnAccessibleTextAreaInputElements([
+    resourceDescriptionTextAreaCreatorInfo,
+    additionalInformationTextAreaInputCreatorInfo,
+  ]);
+
+  const [createdDateNeededByDateInput] = returnAccessibleDateTimeElements([
+    dateNeededByDateInputCreatorInfo,
+  ]);
+
+  const [createdFormSubmitButton] = returnAccessibleButtonElements([
+    formSubmitButtonCreatorInfo,
+  ]);
+
+  const displayRequestResourceFormPageOne = (
+    <>
+      {createdDepartmentSelectInput}
+      {createdResourceKindSelectInput}
+      {createdResourceQuantityTextInput}
+      {createdResourceDescriptionTextAreaInput}
+    </>
+  );
+
+  const displayRequestResourceFormPageTwo = (
+    <>
+      {createdReasonForRequestTextInput}
+      {createdUrgencySelectInput}
+      {createdAdditionalInformationTextAreaInput}
+      {createdDateNeededByDateInput}
+    </>
+  );
+
+  const displayReviewFormPage = <h3>request resource review</h3>;
+
+  const displayRequestResourceForm =
+    currentStepperPosition === 0
+      ? displayRequestResourceFormPageOne
+      : currentStepperPosition === 1
+      ? displayRequestResourceFormPageTwo
+      : currentStepperPosition === 3
+      ? displayReviewFormPage
+      : null;
+
+  const displayFormSubmitButton =
+    currentStepperPosition === REQUEST_RESOURCE_MAX_STEPPER_POSITION
+      ? createdFormSubmitButton
+      : null;
+
+  const displayRequestResourceComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionMap={REQUEST_RESOURCE_DESCRIPTION_MAP}
+      maxStepperPosition={REQUEST_RESOURCE_MAX_STEPPER_POSITION}
+      parentComponentDispatch={requestResourceDispatch}
+      setCurrentStepperPosition={
+        requestResourceAction.setCurrentStepperPosition
+      }
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleRequestResourceFormSubmit}>
+        {displayRequestResourceForm}
+        {displayFormSubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  async function handleRequestResourceFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  useEffect(() => {
+    console.group('RequestResource useEffect');
+    Object.entries(requestResourceState).forEach(([key, value]) => {
+      console.log(key, JSON.stringify(value, null, 2));
+    });
+    console.groupEnd();
+  }, [requestResourceState]);
+
   return (
-    <Flex
+    <Flex direction="column" align="center" justify="center" w="400px">
+      {displayRequestResourceComponent}
+    </Flex>
+  );
+}
+
+export { RequestResource };
+
+/**
+ * <Flex
       direction="column"
       align="flex-start"
       justify="center"
       rowGap="lg"
       w={400}
     >
-      {/* department select */}
       <NativeSelect
         size="sm"
         data={DEPARTMENTS}
@@ -204,13 +602,13 @@ function RequestResource() {
         onChange={(event) => {
           requestResourceDispatch({
             type: requestResourceAction.setDepartment,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as Department,
           });
         }}
         withAsterisk
         required
       />
-      {/* resource kind */}
+
       <NativeSelect
         size="sm"
         data={REQUEST_RESOURCE_KIND_DATA}
@@ -221,13 +619,13 @@ function RequestResource() {
         onChange={(event) => {
           requestResourceDispatch({
             type: requestResourceAction.setResourceType,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as RequestResourceKind,
           });
         }}
         withAsterisk
         required
       />
-      {/* resource quantity */}
+
       <TextInput
         size="sm"
         w="100%"
@@ -276,7 +674,7 @@ function RequestResource() {
         required
         withAsterisk
       />
-      {/* resource description */}
+
       <Textarea
         size="sm"
         w="100%"
@@ -329,7 +727,6 @@ function RequestResource() {
         withAsterisk
       />
 
-      {/* reason for request text input */}
       <TextInput
         size="sm"
         w="100%"
@@ -379,7 +776,6 @@ function RequestResource() {
         withAsterisk
       />
 
-      {/* urgency */}
       <NativeSelect
         size="sm"
         data={URGENCY_DATA}
@@ -390,14 +786,13 @@ function RequestResource() {
         onChange={(event) => {
           requestResourceDispatch({
             type: requestResourceAction.setUrgency,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as Urgency,
           });
         }}
         withAsterisk
         required
       />
 
-      {/* additional information text area input */}
       <Textarea
         size="sm"
         w="100%"
@@ -450,7 +845,6 @@ function RequestResource() {
         withAsterisk
       />
 
-      {/* date needed by */}
       <TextInput
         type="date"
         size="sm"
@@ -505,7 +899,6 @@ function RequestResource() {
         required
       />
 
-      {/* submit button */}
       <Button
         type="button"
         variant="filled"
@@ -518,7 +911,5 @@ function RequestResource() {
         Submit
       </Button>
     </Flex>
-  );
-}
-
-export { RequestResource };
+  
+ */

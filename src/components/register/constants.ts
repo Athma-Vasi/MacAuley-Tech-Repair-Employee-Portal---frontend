@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../stepperWrapper';
+import { DescriptionMap } from '../wrappers';
 
 const REGISTER_URL = '/users';
 

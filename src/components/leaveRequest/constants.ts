@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../stepperWrapper';
+import { DescriptionMap } from '../wrappers';
 
 const REASON_FOR_LEAVE_DATA = [
   'Vacation',

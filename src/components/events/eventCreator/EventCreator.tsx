@@ -1,10 +1,5 @@
-import {
-  faCalendarAlt,
-  faCheck,
-  faClock,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Button, Flex } from '@mantine/core';
-import { createEvent } from '@testing-library/react';
 import { useEffect, useReducer } from 'react';
 
 import {
@@ -29,7 +24,7 @@ import {
   returnGrammarValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../stepperWrapper';
+import { StepperWrapper } from '../../wrappers';
 import {
   EVENT_CREATOR_DESCRIPTION_MAP,
   EVENT_CREATOR_MAX_STEPPER_POSITION,

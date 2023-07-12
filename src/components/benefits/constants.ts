@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../stepperWrapper';
+import { DescriptionMap } from '../wrappers';
 
 const BENEFIT_PLAN_DATA = [
   'Health',

@@ -46,7 +46,7 @@ import {
   returnPrinterSerialNumberValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../stepperWrapper';
+import { StepperWrapper } from '../../wrappers';
 import {
   CREATE_PRINTER_ISSUE_DESCRIPTION_MAP,
   CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION,

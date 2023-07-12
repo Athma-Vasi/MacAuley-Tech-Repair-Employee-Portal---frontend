@@ -23,7 +23,7 @@ import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../utils';
-import { StepperWrapper } from '../stepperWrapper';
+import { StepperWrapper } from '../wrappers';
 import {
   LEAVE_REQUEST_DESCRIPTION_MAP,
   LEAVE_REQUEST_MAX_STEPPER_POSITION,

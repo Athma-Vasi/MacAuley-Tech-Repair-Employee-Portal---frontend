@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../stepperWrapper';
+import { DescriptionMap } from '../wrappers';
 
 const CREATE_ANON_REQUEST_DESCRIPTION_MAP: DescriptionMap = new Map([
   [

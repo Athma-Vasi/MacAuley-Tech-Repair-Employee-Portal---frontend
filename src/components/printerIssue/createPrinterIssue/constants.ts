@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../../stepperWrapper';
+import { DescriptionMap } from '../../wrappers';
 
 const CREATE_PRINTER_ISSUE_DESCRIPTION_MAP: DescriptionMap = new Map([
   [

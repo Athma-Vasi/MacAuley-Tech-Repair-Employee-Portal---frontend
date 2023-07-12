@@ -34,7 +34,7 @@ import {
   returnGrammarValidationText,
   returnPhoneNumberValidationText,
 } from '../../utils';
-import { StepperWrapper } from '../stepperWrapper';
+import { StepperWrapper } from '../wrappers';
 import {
   ANONYMOUS_REQUEST_KINDS,
   CREATE_ANON_REQUEST_DESCRIPTION_MAP,

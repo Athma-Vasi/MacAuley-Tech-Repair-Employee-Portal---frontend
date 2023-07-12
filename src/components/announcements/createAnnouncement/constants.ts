@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../../stepperWrapper';
+import { DescriptionMap } from '../../wrappers';
 
 const MAX_ARTICLE_LENGTH = 12000;
 

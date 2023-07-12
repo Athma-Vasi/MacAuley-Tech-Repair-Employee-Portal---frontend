@@ -13,6 +13,8 @@ import { NativeSelectWrapper } from './NativeSelectWrapper';
 import { PasswordInputWrapper } from './PasswordInputWrapper';
 import { PhoneTextInputWrapper } from './PhoneTextInputWrapper';
 import { RadioInputWrapper } from './RadioInputWrapper';
+import { StepperWrapper } from './stepperWrapper';
+import type { DescriptionMap } from './stepperWrapper/types';
 import { TextAreaInputWrapper } from './TextAreaInputWrapper';
 import { TextInputWrapper } from './TextInputWrapper';
 
@@ -24,6 +26,9 @@ export {
   PasswordInputWrapper,
   PhoneTextInputWrapper,
   RadioInputWrapper,
+  StepperWrapper,
   TextAreaInputWrapper,
   TextInputWrapper,
 };
+
+export type { DescriptionMap };

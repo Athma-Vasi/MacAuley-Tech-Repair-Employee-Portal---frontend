@@ -25,7 +25,7 @@ import {
   returnNameValidationText,
   returnUrlValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../stepperWrapper';
+import { StepperWrapper } from '../../wrappers';
 import { ARTICLE_CONTENT_REGEX, ARTICLE_TITLE_REGEX } from '../constants';
 import {
   returnArticleParagraphValidationText,

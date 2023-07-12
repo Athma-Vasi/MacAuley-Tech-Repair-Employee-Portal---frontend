@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../../stepperWrapper';
+import { DescriptionMap } from '../../wrappers';
 
 const CREATE_REFERMENT_DESCRIPTION_MAP: DescriptionMap = new Map([
   [

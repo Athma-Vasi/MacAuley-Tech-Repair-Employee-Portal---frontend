@@ -22,7 +22,7 @@ import {
 import { UserSchema } from '../../types';
 import { CustomError } from '../customError';
 import { Loading } from '../loading';
-import { StepperWrapper } from '../stepperWrapper';
+import { StepperWrapper } from '../wrappers';
 import { Success } from '../success';
 import {
   MAX_STEPPER_POSITION,

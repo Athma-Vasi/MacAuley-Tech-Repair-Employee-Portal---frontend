@@ -19,7 +19,7 @@ import {
   returnGrammarValidationText,
   returnNameValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../stepperWrapper';
+import { StepperWrapper } from '../../wrappers';
 import {
   CREATE_ENDORSEMENT_DESCRIPTION_MAP,
   CREATE_ENDORSEMENT_MAX_STEPPER_POSITION,
