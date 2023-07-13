@@ -66,7 +66,7 @@ type SurveyBuilderState = {
   sendTo: SurveyRecipient;
   isAnonymous: boolean;
 
-  questions: Array<SurveyQuestion>;
+  questions: Array<SurveyQuestion> | null;
   areValidQuestions: Array<boolean>;
   areQuestionsFocused: Array<boolean>;
   isQuestionLengthExceeded: boolean;
@@ -100,6 +100,7 @@ type SurveyBuilderAction = {
   setAreValidQuestions: 'setAreValidQuestions';
   setAreQuestionsFocused: 'setAreQuestionsFocused';
   setIsQuestionLengthExceeded: 'setIsQuestionLengthExceeded';
+  setDeleteQuestion: 'setDeleteQuestion';
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
@@ -147,17 +148,24 @@ type SurveyBuilderDispatch =
     }
   | {
       type: SurveyBuilderAction['setQuestions'];
-      payload: Array<SurveyQuestion>;
+      payload: {
+        index: number;
+        value: SurveyQuestion;
+      };
     }
   | {
       type:
         | SurveyBuilderAction['setAreValidQuestions']
         | SurveyBuilderAction['setAreQuestionsFocused'];
-      payload: Array<boolean>;
+      payload: {
+        index: number;
+        value: boolean;
+      };
     }
   | {
-      type: SurveyBuilderAction['setCurrentStepperPosition'];
-
+      type:
+        | SurveyBuilderAction['setCurrentStepperPosition']
+        | SurveyBuilderAction['setDeleteQuestion'];
       payload: number;
     }
   | {
