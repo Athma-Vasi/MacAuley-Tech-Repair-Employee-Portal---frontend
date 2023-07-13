@@ -20,7 +20,7 @@ function CheckboxInputWrapper({
     dataObjArray = null,
     defaultValue = [''],
     description,
-    label,
+    label = '',
     checked = false,
     disabled = false,
     onClick = () => {},

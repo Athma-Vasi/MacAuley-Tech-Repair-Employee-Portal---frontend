@@ -23,6 +23,7 @@ import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
 import { ExpenseClaim } from './components/expenseClaim';
+import { SurveyBuilder } from './components/surveyBuilder';
 
 function App() {
   const {
@@ -52,7 +53,8 @@ function App() {
             element={<CreateAnonymousRequest />}
           /> */}
           {/* <Route path="event-creator" element={<EventCreator />} /> */}
-          <Route path="create-expense-claim" element={<ExpenseClaim />} />
+          {/* <Route path="create-expense-claim" element={<ExpenseClaim />} /> */}
+          <Route path="survey-builder" element={<SurveyBuilder />} />
         </Route>
 
         {/* these are protected routes */}

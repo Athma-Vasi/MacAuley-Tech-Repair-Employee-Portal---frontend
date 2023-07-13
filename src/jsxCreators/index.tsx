@@ -424,7 +424,7 @@ type AccessibleCheckboxInputCreatorInfo = {
     selected: string;
     deselected: string;
   };
-  label: string;
+  label?: string | undefined;
   checked?: boolean | undefined;
   disabled?: boolean | undefined;
   onChangeMultiple?: (value: string[]) => void | undefined;

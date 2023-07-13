@@ -13,13 +13,15 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../constants/regex';
-import {
+import type {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+} from '../../jsxCreators';
+import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
@@ -28,7 +30,7 @@ import {
   returnAccessibleTextElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
-import { Currency } from '../../types';
+import type { Currency } from '../../types';
 import {
   returnDateNearPastValidationText,
   returnGrammarValidationText,
@@ -46,7 +48,7 @@ import {
   expenseClaimReducer,
   initialExpenseClaimState,
 } from './state';
-import { ExpenseClaimKind } from './types';
+import type { ExpenseClaimKind } from './types';
 
 function ExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(
@@ -421,7 +423,6 @@ function ExpenseClaim() {
         deselected: 'I do not acknowledge.',
       },
       checkboxKind: 'single',
-      label: 'Acknowledgement',
       semanticName: 'acknowledgement',
       accessibleDescription: {
         selected:
