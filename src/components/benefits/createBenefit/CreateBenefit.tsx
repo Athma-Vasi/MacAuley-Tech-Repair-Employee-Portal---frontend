@@ -10,11 +10,6 @@ import { useEffect, useMemo, useReducer } from 'react';
 
 import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
 import {
-  AccessibleCheckboxInputCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
@@ -27,7 +22,14 @@ import {
   returnGrammarValidationText,
   returnMoneyValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../wrappers';
+import {
+  AccessibleCheckboxInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  StepperWrapper,
+} from '../../wrappers';
 import {
   BENEFIT_PLAN_DATA,
   CREATE_BENEFIT_DESCRIPTION_MAP,

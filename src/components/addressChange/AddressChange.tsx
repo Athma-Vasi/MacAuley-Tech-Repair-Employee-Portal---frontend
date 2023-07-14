@@ -10,10 +10,6 @@ import {
   POSTAL_CODE_REGEX_US,
 } from '../../constants/regex';
 import {
-  AccessibleCheckboxInputCreatorInfo,
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessibleCheckboxInputElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
@@ -27,7 +23,13 @@ import {
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
 } from '../../utils';
-import { StepperWrapper } from '../wrappers';
+import {
+  AccessibleCheckboxInputCreatorInfo,
+  AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  StepperWrapper,
+} from '../wrappers';
 import {
   ADDRESS_CHANGE_DESCRIPTION_MAP,
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,

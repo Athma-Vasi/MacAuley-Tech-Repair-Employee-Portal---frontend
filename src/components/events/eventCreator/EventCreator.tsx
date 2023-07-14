@@ -9,10 +9,6 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import {
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -24,7 +20,13 @@ import {
   returnGrammarValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../wrappers';
+import {
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  StepperWrapper,
+} from '../../wrappers';
 import {
   EVENT_CREATOR_DESCRIPTION_MAP,
   EVENT_CREATOR_MAX_STEPPER_POSITION,

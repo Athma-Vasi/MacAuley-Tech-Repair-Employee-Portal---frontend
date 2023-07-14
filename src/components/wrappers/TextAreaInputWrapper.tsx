@@ -113,7 +113,7 @@ function TextAreaInputWrapper({
                     semanticName: `${
                       dynamicInputProps.semanticAction
                     } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
-                    leftIcon: <FontAwesomeIcon icon={faTrash} />,
+                    leftIcon: <BsTrash />,
                   }}
                 />
               </Group>

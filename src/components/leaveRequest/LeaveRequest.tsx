@@ -7,11 +7,6 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../constants/regex';
 import {
-  AccessibleCheckboxInputCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
@@ -23,7 +18,14 @@ import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../utils';
-import { StepperWrapper } from '../wrappers';
+import {
+  AccessibleCheckboxInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  StepperWrapper,
+} from '../wrappers';
 import {
   LEAVE_REQUEST_DESCRIPTION_MAP,
   LEAVE_REQUEST_MAX_STEPPER_POSITION,

@@ -8,7 +8,8 @@ import type {
   AccessibleDateTimeInputCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleRadioInputCreatorInfo,
+  AccessibleRadioGroupInputCreatorInfo,
+  AccessibleRadioSingleInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
@@ -20,7 +21,8 @@ import {
   NativeSelectWrapper,
   PasswordInputWrapper,
   PhoneTextInputWrapper,
-  RadioInputWrapper,
+  RadioGroupInputsWrapper,
+  RadioSingleInputWrapper,
   TextAreaInputWrapper,
   TextInputWrapper,
 } from '../components/wrappers';
@@ -282,11 +284,22 @@ function returnAccessibleDateTimeElements(
   });
 }
 
-function returnAccessibleRadioInputElements(
-  creatorInfoObjectArray: AccessibleRadioInputCreatorInfo[]
+function returnAccessibleRadioSingleInputElements(
+  creatorInfoObjectArray: AccessibleRadioSingleInputCreatorInfo[]
 ) {
   return creatorInfoObjectArray.map((creatorInfoObject, index) => (
-    <RadioInputWrapper
+    <RadioSingleInputWrapper
+      key={`${index}${creatorInfoObject.label}`}
+      creatorInfoObject={creatorInfoObject}
+    />
+  ));
+}
+
+function returnAccessibleRadioGroupInputsElements(
+  creatorInfoObjectArray: AccessibleRadioGroupInputCreatorInfo[]
+) {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
+    <RadioGroupInputsWrapper
       key={`${index}${creatorInfoObject.label}`}
       creatorInfoObject={creatorInfoObject}
     />
@@ -304,11 +317,16 @@ function returnAccessibleCheckboxInputElements(
   ));
 }
 
-// function returnAccessibleDynamicTextInputElements(
-//   creatorInfoObjectArray: AccessibleDynamicTextInputsCreatorInfo[]
-// ) {
-//   <DynamicTextInputsWrapper creatorInfoObjects={creatorInfoObjectArray} />;
-// }
+function returnAccessibleDynamicTextInputElements(
+  creatorInfoObjectArray: AccessibleTextInputCreatorInfo[]
+) {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
+    <TextInputWrapper
+      key={`${index}${creatorInfoObject.label}`}
+      creatorInfoObject={creatorInfoObject}
+    />
+  ));
+}
 
 function returnAccessibleDynamicTextAreaInputElements(
   creatorInfoObjectArray: AccessibleTextAreaInputCreatorInfo[]
@@ -326,26 +344,14 @@ export {
   returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleDynamicTextAreaInputElements,
-  // returnAccessibleDynamicTextInputElements,
+  returnAccessibleDynamicTextInputElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleRadioInputElements,
+  returnAccessibleRadioGroupInputsElements,
+  returnAccessibleRadioSingleInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
   returnAccessibleTextElementsForDynamicInputs,
   returnAccessibleTextInputElements,
-};
-
-export type {
-  AccessibleButtonCreatorInfo,
-  AccessibleCheckboxInputCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessiblePasswordInputCreatorInfo,
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleRadioInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  ReturnAccessibleTextElemProps,
 };

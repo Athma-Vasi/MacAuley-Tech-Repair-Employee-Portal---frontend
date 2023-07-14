@@ -16,20 +16,14 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   sendTo: 'all',
   isAnonymous: false,
 
-  questions: [
-    {
-      question: 'This is a sample question',
-      responseKind: {
-        kind: 'rating',
-        inputHtml: 'emotion',
-        dataOptions: [''],
-      },
-      required: false,
-    },
-  ],
+  questions: [''],
   areValidQuestions: [false],
   areQuestionsFocused: [false],
-  isQuestionLengthExceeded: false,
+  isQuestionLengthExceeded: [false],
+
+  responseKinds: [''],
+  responseInputHtml: [''],
+  responseDataOptions: [[]],
 
   currentStepperPosition: 0,
   stepsInError: new Set(),
@@ -61,6 +55,10 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setAreQuestionsFocused: 'setAreQuestionsFocused',
   setIsQuestionLengthExceeded: 'setIsQuestionLengthExceeded',
   setDeleteQuestion: 'setDeleteQuestion',
+
+  setResponseKinds: 'setResponseKinds',
+  setResponseInputHtml: 'setResponseInputHtml',
+  setResponseDataOptions: 'setResponseDataOptions',
 
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
@@ -171,13 +169,23 @@ function surveyBuilderReducer(
         areQuestionsFocused,
       };
     }
-    case surveyBuilderAction.setIsQuestionLengthExceeded:
+    case surveyBuilderAction.setIsQuestionLengthExceeded: {
+      const { index, value } = action.payload;
+      const isQuestionLengthExceeded = [...state.isQuestionLengthExceeded];
+      if (index >= isQuestionLengthExceeded.length) {
+        isQuestionLengthExceeded.push(value);
+      } else {
+        isQuestionLengthExceeded[index] = value;
+      }
+
       return {
         ...state,
-        isQuestionLengthExceeded: action.payload,
+        isQuestionLengthExceeded,
       };
+    }
     case surveyBuilderAction.setDeleteQuestion: {
       const index = action.payload;
+      // delete the question
       const questions = [...state.questions];
       questions.splice(index, 1);
       const areValidQuestions = [...state.areValidQuestions];
@@ -185,11 +193,22 @@ function surveyBuilderReducer(
       const areQuestionsFocused = [...state.areQuestionsFocused];
       areQuestionsFocused.splice(index, 1);
 
+      // delete the response kind, input html, and data options
+      const responseKinds = [...state.responseKinds];
+      responseKinds.splice(index, 1);
+      const responseInputHtml = [...state.responseInputHtml];
+      responseInputHtml.splice(index, 1);
+      const responseDataOptions = [...state.responseDataOptions];
+      responseDataOptions.splice(index, 1);
+
       return {
         ...state,
         questions,
         areValidQuestions,
         areQuestionsFocused,
+        responseKinds,
+        responseInputHtml,
+        responseDataOptions,
       };
     }
 

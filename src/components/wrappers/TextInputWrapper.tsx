@@ -1,10 +1,11 @@
 import {
   faCheck,
   faRefresh,
+  faTrash,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Text, TextInput, Tooltip } from '@mantine/core';
+import { Flex, Group, Text, TextInput, Tooltip } from '@mantine/core';
 import { ReactNode } from 'react';
 import { BsTrash } from 'react-icons/bs';
 
@@ -16,12 +17,14 @@ type AccessibleTextInputCreatorInfo = {
   /**
    * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
    */
-  dynamicInputProps?: {
-    semanticAction: string;
-    dynamicIndex: number;
-    dynamicIcon?: ReactNode | undefined;
-    dynamicInputOnClick?: () => void | undefined;
-  };
+  dynamicInputProps?:
+    | {
+        semanticAction: string;
+        dynamicIndex: number;
+        dynamicIcon?: ReactNode | undefined;
+        dynamicInputOnClick: () => void;
+      }
+    | undefined;
   isValidInputText: boolean;
   label?: ReactNode | string | undefined;
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
@@ -46,7 +49,7 @@ type AccessibleTextInputCreatorInfo = {
   minLength?: number | undefined;
   maxLength?: number | undefined;
   withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined | null;
   required?: boolean | undefined;
   autoComplete?: 'on' | 'off' | undefined;
 };
@@ -63,12 +66,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     label = semanticName,
     ariaAutoComplete = 'none',
     description,
-    dynamicInputProps = {
-      semanticAction: '',
-      dynamicIndex: 0,
-      dynamicIcon: null,
-      dynamicInputOnClick: () => {},
-    },
+    dynamicInputProps = null,
     placeholder,
     initialInputValue = '',
     icon = null,
@@ -87,15 +85,12 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     autoComplete = 'off',
   } = creatorInfoObject;
 
-  const {
-    semanticAction = 'delete', // default action is delete
-    dynamicIndex = 0,
-    dynamicIcon = BsTrash, // default is a trash icon
-    dynamicInputOnClick = () => {},
-  } = dynamicInputProps;
-
   const semanticNameCapitalized =
     semanticName.charAt(0).toUpperCase() + semanticName.slice(1);
+  const semanticActionCapitalized = dynamicInputProps
+    ? dynamicInputProps?.semanticAction.charAt(0).toUpperCase() +
+      dynamicInputProps?.semanticAction.slice(1)
+    : '';
 
   return (
     <TextInput
@@ -103,29 +98,30 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       w="100%"
       color="dark"
       label={
-        typeof label === 'string' ? (
-          label
-        ) : (
+        dynamicInputProps ? (
           <Flex align="center" justify="space-between" columnGap="xl">
-            <Text>{`${semanticNameCapitalized} ${dynamicIndex}`}</Text>
-            <Tooltip
-              label={`${semanticAction} ${semanticName} ${dynamicIndex + 1}`}
-            >
-              <ButtonWrapper
-                creatorInfoObject={{
-                  buttonLabel: '',
-                  buttonOnClick: dynamicInputOnClick,
-                  semanticDescription: `${semanticAction} ${semanticName} ${
-                    dynamicIndex + 1
-                  }`,
-                  semanticName: `${semanticAction} ${semanticName} ${
-                    dynamicIndex + 1
-                  }`,
-                  leftIcon: <>{dynamicIcon}</>,
-                }}
-              />
+            <Text>{`${semanticNameCapitalized}`}</Text>
+            <Tooltip label={`${semanticActionCapitalized} ${semanticName}`}>
+              <Group>
+                <ButtonWrapper
+                  creatorInfoObject={{
+                    buttonVariant: 'outline',
+                    buttonLabel: 'Delete',
+                    buttonOnClick: dynamicInputProps.dynamicInputOnClick,
+                    semanticDescription: `${
+                      dynamicInputProps.semanticAction
+                    } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
+                    semanticName: `${
+                      dynamicInputProps.semanticAction
+                    } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
+                    leftIcon: <FontAwesomeIcon icon={faTrash} />,
+                  }}
+                />
+              </Group>
             </Tooltip>
           </Flex>
+        ) : (
+          label
         )
       }
       aria-required={required}

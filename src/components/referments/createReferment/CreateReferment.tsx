@@ -22,11 +22,6 @@ import {
   URL_REGEX,
 } from '../../../constants/regex';
 import {
-  AccessibleCheckboxInputCreatorInfo,
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessibleCheckboxInputElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
@@ -41,7 +36,14 @@ import {
   returnPhoneNumberValidationText,
   returnUrlValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../wrappers';
+import {
+  AccessibleCheckboxInputCreatorInfo,
+  AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  StepperWrapper,
+} from '../../wrappers';
 import {
   CREATE_REFERMENT_DESCRIPTION_MAP,
   CREATE_REFERMENT_MAX_STEPPER_POSITION,

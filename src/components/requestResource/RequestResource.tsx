@@ -11,11 +11,6 @@ import {
   MONEY_REGEX,
 } from '../../constants/regex';
 import {
-  AccessibleButtonCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
   returnAccessiblePhoneNumberTextInputElements,
@@ -31,6 +26,15 @@ import {
   returnMoneyValidationText,
 } from '../../utils';
 import {
+  AccessibleButtonCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  ButtonWrapper,
+} from '../wrappers';
+import { StepperWrapper } from '../wrappers';
+import {
   REQUEST_RESOURCE_DESCRIPTION_MAP,
   REQUEST_RESOURCE_KIND_DATA,
   REQUEST_RESOURCE_MAX_STEPPER_POSITION,
@@ -41,8 +45,6 @@ import {
   requestResourceReducer,
 } from './state';
 import { RequestResourceKind } from './types';
-import { ButtonWrapper } from '../wrappers';
-import { StepperWrapper } from '../wrappers';
 
 function RequestResource() {
   const [requestResourceState, requestResourceDispatch] = useReducer(

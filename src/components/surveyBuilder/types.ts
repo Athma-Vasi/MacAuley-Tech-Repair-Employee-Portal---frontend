@@ -66,10 +66,14 @@ type SurveyBuilderState = {
   sendTo: SurveyRecipient;
   isAnonymous: boolean;
 
-  questions: Array<SurveyQuestion>;
+  questions: Array<string>;
   areValidQuestions: Array<boolean>;
   areQuestionsFocused: Array<boolean>;
-  isQuestionLengthExceeded: boolean;
+  isQuestionLengthExceeded: Array<boolean>;
+
+  responseKinds: Array<string>;
+  responseInputHtml: Array<string>;
+  responseDataOptions: Array<Array<string>>;
 
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -101,6 +105,10 @@ type SurveyBuilderAction = {
   setAreQuestionsFocused: 'setAreQuestionsFocused';
   setIsQuestionLengthExceeded: 'setIsQuestionLengthExceeded';
   setDeleteQuestion: 'setDeleteQuestion';
+
+  setResponseKinds: 'setResponseKinds';
+  setResponseInputHtml: 'setResponseInputHtml';
+  setResponseDataOptions: 'setResponseDataOptions';
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
@@ -134,7 +142,6 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setIsValidExpiryDate']
         | SurveyBuilderAction['setIsExpiryDateFocused']
         | SurveyBuilderAction['setIsAnonymous']
-        | SurveyBuilderAction['setIsQuestionLengthExceeded']
         | SurveyBuilderAction['setIsError']
         | SurveyBuilderAction['setIsSubmitting']
         | SurveyBuilderAction['setIsSuccessful']
@@ -150,7 +157,7 @@ type SurveyBuilderDispatch =
       type: SurveyBuilderAction['setQuestions'];
       payload: {
         index: number;
-        value: SurveyQuestion;
+        value: string;
       };
     }
   | {
@@ -158,7 +165,9 @@ type SurveyBuilderDispatch =
       payload: boolean[];
     }
   | {
-      type: SurveyBuilderAction['setAreQuestionsFocused'];
+      type:
+        | SurveyBuilderAction['setAreQuestionsFocused']
+        | SurveyBuilderAction['setIsQuestionLengthExceeded'];
       payload: {
         index: number;
         value: boolean;

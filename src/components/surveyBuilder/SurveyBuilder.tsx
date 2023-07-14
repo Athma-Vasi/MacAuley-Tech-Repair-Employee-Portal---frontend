@@ -1,12 +1,10 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
 } from '../../constants/regex';
 import {
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessibleTextElements,
   returnAccessibleTextElementsForDynamicInputs,
 } from '../../jsxCreators';
@@ -14,6 +12,11 @@ import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../utils';
+import {
+  AccessibleCheckboxInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+} from '../wrappers';
 import {
   initialSurveyBuilderState,
   surveyBuilderAction,
@@ -42,6 +45,10 @@ function SurveyBuilder() {
     areQuestionsFocused,
     isQuestionLengthExceeded,
 
+    responseKinds,
+    responseInputHtml,
+    responseDataOptions,
+
     currentStepperPosition,
     stepsInError,
 
@@ -54,6 +61,12 @@ function SurveyBuilder() {
     isLoading,
     loadingMessage,
   } = surveyBuilderState;
+
+  const newQuestionInputRef = useRef<HTMLInputElement>(null);
+  // set focus on new question input
+  useEffect(() => {
+    newQuestionInputRef.current?.focus();
+  }, [questions.length]);
 
   // validate survey title on every change
   useEffect(() => {
@@ -78,7 +91,7 @@ function SurveyBuilder() {
   // validate questions on every change
   useEffect(() => {
     const isValid = questions.map((surveyQuestion) =>
-      GRAMMAR_TEXT_INPUT_REGEX.test(surveyQuestion.question)
+      GRAMMAR_TEXT_INPUT_REGEX.test(surveyQuestion)
     );
 
     surveyBuilderDispatch({
@@ -102,23 +115,6 @@ function SurveyBuilder() {
       },
     });
   }, [isValidSurveyTitle, isValidExpiryDate, areValidQuestions]);
-
-  // below are the accessible text elements for the screen reader to read out
-  /**
-   * const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleTextElements({
-      inputElementKind: 'title',
-      inputText: title,
-      isInputTextFocused: isTitleFocused,
-      isValidInputText: isValidTitle,
-      regexValidationText: returnArticleTitleValidationText({
-        content: title,
-        contentKind: 'title',
-        minLength: 3,
-        maxLength: 150,
-      }),
-    });
-    */
 
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleTextElements({
@@ -146,11 +142,11 @@ function SurveyBuilder() {
   const [questionInputsErrorText, questionInputsValidText] =
     returnAccessibleTextElementsForDynamicInputs({
       semanticName: 'question',
-      inputTextArray: questions.map((question) => question.question),
+      inputTextArray: questions.map((question) => question),
       areValidInputTexts: areValidQuestions,
       areInputTextsFocused: areQuestionsFocused,
       regexValidationProps: {
-        content: questions.map((question) => question.question).join(' '),
+        content: questions.map((question) => question).join(' '),
         contentKind: 'question',
         minLength: 2,
         maxLength: 150,
@@ -224,6 +220,81 @@ function SurveyBuilder() {
     required: true,
     withAsterisk: true,
   };
+
+  const isAnonymousCheckboxCreatorInfo: AccessibleCheckboxInputCreatorInfo = {
+    checkboxKind: 'single',
+    description: {
+      selected: 'Survey will be anonymous',
+      deselected: 'Survey will not be anonymous',
+    },
+    semanticName: 'anonymous survey',
+    checked: isAnonymous,
+    onChangeSingle: () => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setIsAnonymous,
+        payload: !isAnonymous,
+      });
+    },
+  };
+
+  const questionsInputCreatorInfo: AccessibleTextInputCreatorInfo[] =
+    Array.from({
+      length: questions.length,
+    }).map((_, index) => {
+      const creatorInfoObject: AccessibleTextInputCreatorInfo = {
+        description: {
+          error: questionInputsErrorText[index],
+          valid: questionInputsValidText[index],
+        },
+        inputText: questions[index],
+        isValidInputText: areValidQuestions[index],
+        label: `Question ${index + 1}`,
+        onBlur: () => {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setAreQuestionsFocused,
+            payload: {
+              index,
+              value: false,
+            },
+          });
+        },
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setQuestions,
+            payload: {
+              index,
+              value: event.currentTarget.value,
+            },
+          });
+        },
+        onFocus: () => {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setAreQuestionsFocused,
+            payload: {
+              index,
+              value: true,
+            },
+          });
+        },
+        placeholder: 'Enter question',
+        semanticName: `question ${index + 1}`,
+        required: true,
+        withAsterisk: true,
+        dynamicInputProps: {
+          dynamicIndex: index,
+          dynamicInputOnClick: () => {
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setDeleteQuestion,
+              payload: index,
+            });
+          },
+          semanticAction: 'delete',
+        },
+        ref: index === questions.length - 1 ? newQuestionInputRef : null,
+      };
+
+      return creatorInfoObject;
+    });
 
   return <h4>SurveyBuilder</h4>;
 }

@@ -18,8 +18,14 @@ import type { AccessiblePasswordInputCreatorInfo } from './PasswordInputWrapper'
 import { PasswordInputWrapper } from './PasswordInputWrapper';
 import type { AccessiblePhoneNumberTextInputCreatorInfo } from './PhoneTextInputWrapper';
 import { PhoneTextInputWrapper } from './PhoneTextInputWrapper';
-import type { AccessibleRadioInputCreatorInfo } from './RadioInputWrapper';
-import { RadioInputWrapper } from './RadioInputWrapper';
+import type {
+  AccessibleRadioGroupInputCreatorInfo,
+  AccessibleRadioSingleInputCreatorInfo,
+} from './RadioInputWrapper';
+import {
+  RadioGroupInputsWrapper,
+  RadioSingleInputWrapper,
+} from './RadioInputWrapper';
 import { StepperWrapper } from './stepperWrapper';
 import type { DescriptionMap } from './stepperWrapper/types';
 import type { AccessibleTextAreaInputCreatorInfo } from './TextAreaInputWrapper';
@@ -34,7 +40,8 @@ export {
   NativeSelectWrapper,
   PasswordInputWrapper,
   PhoneTextInputWrapper,
-  RadioInputWrapper,
+  RadioGroupInputsWrapper,
+  RadioSingleInputWrapper,
   StepperWrapper,
   TextAreaInputWrapper,
   TextInputWrapper,
@@ -46,7 +53,8 @@ export type {
   AccessibleDateTimeInputCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleRadioInputCreatorInfo,
+  AccessibleRadioGroupInputCreatorInfo,
+  AccessibleRadioSingleInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,

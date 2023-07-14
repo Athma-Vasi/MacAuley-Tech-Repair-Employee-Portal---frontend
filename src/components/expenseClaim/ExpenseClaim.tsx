@@ -13,14 +13,7 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../constants/regex';
-import type {
-  AccessibleButtonCreatorInfo,
-  AccessibleCheckboxInputCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-} from '../../jsxCreators';
+
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxInputElements,
@@ -37,7 +30,15 @@ import {
   returnMoneyValidationText,
 } from '../../utils';
 import { CURRENCY_DATA } from '../benefits/constants';
-import { StepperWrapper } from '../wrappers';
+import {
+  AccessibleButtonCreatorInfo,
+  AccessibleCheckboxInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  StepperWrapper,
+} from '../wrappers';
 import {
   EXPENSE_CLAIM_DESCRIPTION_MAP,
   EXPENSE_CLAIM_KIND_DATA,

@@ -18,10 +18,6 @@ import {
   PHONE_NUMBER_REGEX,
 } from '../../constants/regex';
 import {
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -34,7 +30,13 @@ import {
   returnGrammarValidationText,
   returnPhoneNumberValidationText,
 } from '../../utils';
-import { StepperWrapper } from '../wrappers';
+import {
+  AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  StepperWrapper,
+} from '../wrappers';
 import {
   ANONYMOUS_REQUEST_KINDS,
   CREATE_ANON_REQUEST_DESCRIPTION_MAP,

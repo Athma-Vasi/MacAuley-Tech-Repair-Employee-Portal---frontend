@@ -1,7 +1,8 @@
-import { faCheck, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Flex, Group, Text, Textarea, Tooltip } from '@mantine/core';
-import { ChangeEvent, Fragment, useEffect, useReducer, useRef } from 'react';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { Button, Flex, Group, Text, Tooltip } from '@mantine/core';
+import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
+import { GrAdd } from 'react-icons/gr';
+import { MdOutlineAdd } from 'react-icons/md';
 
 import {
   GRAMMAR_TEXT_INPUT_REGEX,
@@ -9,7 +10,7 @@ import {
   URL_REGEX,
 } from '../../../constants/regex';
 import {
-  AccessibleTextInputCreatorInfo,
+  returnAccessibleButtonElements,
   returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleTextElements,
   returnAccessibleTextElementsForDynamicInputs,
@@ -21,8 +22,9 @@ import {
   returnUrlValidationText,
 } from '../../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
-  ButtonWrapper,
+  AccessibleTextInputCreatorInfo,
   StepperWrapper,
 } from '../../wrappers';
 import { ARTICLE_TITLE_REGEX } from '../constants';
@@ -36,7 +38,6 @@ import {
   createAnnouncementReducer,
   initialCreateAnnouncementState,
 } from './state';
-import { BsTrash } from 'react-icons/bs';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
@@ -449,6 +450,29 @@ function CreateAnnouncement() {
       return creatorInfoObject;
     });
 
+  const addNewArticleParagraphButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonVariant: 'outline',
+    buttonLabel: (
+      <Tooltip label="Add new article paragraph">
+        <Group>
+          <MdOutlineAdd size={20} />
+          <Text color="gray">Add</Text>
+        </Group>
+      </Tooltip>
+    ),
+    buttonOnClick: () => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setArticle,
+        payload: {
+          index: article.length,
+          value: '',
+        },
+      });
+    },
+    semanticDescription: 'add new article paragraph text input button',
+    semanticName: 'add paragraph button',
+  };
+
   const createdArticleParagraphsTextAreaInputs =
     returnAccessibleDynamicTextAreaInputElements(
       articleParagraphTextAreaInputsCreatorInfo
@@ -555,49 +579,11 @@ function CreateAnnouncement() {
   //   }
   // );
 
-  const displayAddArticleParagraphButton = (
-    // <Button
-    //   variant="default"
-    //   size="sm"
-    //   disabled={isArticleLengthExceeded}
-    //   onClick={() => {
-    //     createAnnouncementDispatch({
-    //       type: createAnnouncementAction.setArticle,
-    //       payload: {
-    //         index: article.length,
-    //         value: '',
-    //       },
-    //     });
-    //   }}
-    // >
-    //   Add paragraph
-    // </Button>
-    <ButtonWrapper
-      creatorInfoObject={{
-        buttonVariant: 'outline',
-        buttonLabel: (
-          <Tooltip label="Click to add new article paragraph">
-            <Group>
-              <FontAwesomeIcon icon={faPlus} color="gray" />
-              <Text color="gray">Add</Text>
-            </Group>
-          </Tooltip>
-        ),
-        buttonOnClick: () => {
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setArticle,
-            payload: {
-              index: article.length,
-              value: '',
-            },
-          });
-        },
-        semanticDescription:
-          'click to add new article paragraph text input button',
-        semanticName: 'add paragraph button',
-      }}
-    />
-  );
+  const createdAddNewArticleParagraphButton = returnAccessibleButtonElements([
+    addNewArticleParagraphButtonCreatorInfo,
+  ]);
+
+  const displayAddArticleParagraphButton = createdAddNewArticleParagraphButton;
 
   const displaySubmitButton =
     currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION ? (

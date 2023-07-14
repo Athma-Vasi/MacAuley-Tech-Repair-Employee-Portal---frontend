@@ -23,11 +23,6 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import {
-  AccessibleDateTimeInputCreatorInfo,
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
   returnAccessibleDateTimeElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
@@ -46,7 +41,14 @@ import {
   returnPrinterSerialNumberValidationText,
   returnTimeRailwayValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../wrappers';
+import {
+  AccessibleDateTimeInputCreatorInfo,
+  AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  StepperWrapper,
+} from '../../wrappers';
 import {
   CREATE_PRINTER_ISSUE_DESCRIPTION_MAP,
   CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION,
