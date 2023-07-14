@@ -6,12 +6,12 @@ import {
 } from '../../types';
 
 type SurveyRecipient =
-  | 'all'
-  | 'active'
-  | 'inactive'
-  | 'employees'
-  | 'admins'
-  | 'managers';
+  | 'All'
+  | 'Active'
+  | 'Inactive'
+  | 'Employees'
+  | 'Admins'
+  | 'Managers';
 
 type SurveyResponseKind = {
   chooseOne: 'trueFalse' | 'yesNo' | 'radio';
@@ -59,11 +59,15 @@ type SurveyBuilderState = {
   isValidSurveyTitle: boolean;
   isSurveyTitleFocused: boolean;
 
+  surveyDescription: string;
+  isValidSurveyDescription: boolean;
+  isSurveyDescriptionFocused: boolean;
+
   expiryDate: string;
   isValidExpiryDate: boolean;
   isExpiryDateFocused: boolean;
 
-  sendTo: SurveyRecipient;
+  surveyRecipients: SurveyRecipient;
   isAnonymous: boolean;
 
   questions: Array<string>;
@@ -73,7 +77,6 @@ type SurveyBuilderState = {
 
   responseKinds: Array<string>;
   responseInputHtml: Array<string>;
-  responseDataOptions: Array<Array<string>>;
 
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -93,11 +96,15 @@ type SurveyBuilderAction = {
   setIsValidSurveyTitle: 'setIsValidSurveyTitle';
   setIsSurveyTitleFocused: 'setIsSurveyTitleFocused';
 
+  setSurveyDescription: 'setSurveyDescription';
+  setIsValidSurveyDescription: 'setIsValidSurveyDescription';
+  setIsSurveyDescriptionFocused: 'setIsSurveyDescriptionFocused';
+
   setExpiryDate: 'setExpiryDate';
   setIsValidExpiryDate: 'setIsValidExpiryDate';
   setIsExpiryDateFocused: 'setIsExpiryDateFocused';
 
-  setSendTo: 'setSendTo';
+  setSurveyRecipients: 'setSurveyRecipients';
   setIsAnonymous: 'setIsAnonymous';
 
   setQuestions: 'setQuestions';
@@ -110,7 +117,6 @@ type SurveyBuilderAction = {
 
   setResponseKinds: 'setResponseKinds';
   setResponseInputHtml: 'setResponseInputHtml';
-  setResponseDataOptions: 'setResponseDataOptions';
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
@@ -129,6 +135,7 @@ type SurveyBuilderDispatch =
   | {
       type:
         | SurveyBuilderAction['setSurveyTitle']
+        | SurveyBuilderAction['setSurveyDescription']
         | SurveyBuilderAction['setExpiryDate']
         | SurveyBuilderAction['setErrorMessage']
         | SurveyBuilderAction['setSubmitMessage']
@@ -141,6 +148,8 @@ type SurveyBuilderDispatch =
       type:
         | SurveyBuilderAction['setIsValidSurveyTitle']
         | SurveyBuilderAction['setIsSurveyTitleFocused']
+        | SurveyBuilderAction['setIsValidSurveyDescription']
+        | SurveyBuilderAction['setIsSurveyDescriptionFocused']
         | SurveyBuilderAction['setIsValidExpiryDate']
         | SurveyBuilderAction['setIsExpiryDateFocused']
         | SurveyBuilderAction['setIsAnonymous']
@@ -152,7 +161,7 @@ type SurveyBuilderDispatch =
       payload: boolean;
     }
   | {
-      type: SurveyBuilderAction['setSendTo'];
+      type: SurveyBuilderAction['setSurveyRecipients'];
       payload: SurveyRecipient;
     }
   | {
@@ -164,13 +173,6 @@ type SurveyBuilderDispatch =
       payload: {
         index: number;
         value: string;
-      };
-    }
-  | {
-      type: SurveyBuilderAction['setResponseDataOptions'];
-      payload: {
-        index: number;
-        value: Array<string>;
       };
     }
   | {

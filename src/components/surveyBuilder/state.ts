@@ -9,11 +9,15 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   isValidSurveyTitle: false,
   isSurveyTitleFocused: false,
 
+  surveyDescription: '',
+  isValidSurveyDescription: false,
+  isSurveyDescriptionFocused: false,
+
   expiryDate: '',
   isValidExpiryDate: false,
   isExpiryDateFocused: false,
 
-  sendTo: 'all',
+  surveyRecipients: 'All',
   isAnonymous: false,
 
   questions: [''],
@@ -23,7 +27,6 @@ const initialSurveyBuilderState: SurveyBuilderState = {
 
   responseKinds: ['chooseOne'],
   responseInputHtml: ['trueFalse'],
-  responseDataOptions: [[]],
 
   currentStepperPosition: 0,
   stepsInError: new Set(),
@@ -43,11 +46,15 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setIsValidSurveyTitle: 'setIsValidSurveyTitle',
   setIsSurveyTitleFocused: 'setIsSurveyTitleFocused',
 
+  setSurveyDescription: 'setSurveyDescription',
+  setIsValidSurveyDescription: 'setIsValidSurveyDescription',
+  setIsSurveyDescriptionFocused: 'setIsSurveyDescriptionFocused',
+
   setExpiryDate: 'setExpiryDate',
   setIsValidExpiryDate: 'setIsValidExpiryDate',
   setIsExpiryDateFocused: 'setIsExpiryDateFocused',
 
-  setSendTo: 'setSendTo',
+  setSurveyRecipients: 'setSurveyRecipients',
   setIsAnonymous: 'setIsAnonymous',
 
   setQuestions: 'setQuestions',
@@ -60,7 +67,6 @@ const surveyBuilderAction: SurveyBuilderAction = {
 
   setResponseKinds: 'setResponseKinds',
   setResponseInputHtml: 'setResponseInputHtml',
-  setResponseDataOptions: 'setResponseDataOptions',
 
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
@@ -95,6 +101,23 @@ function surveyBuilderReducer(
         ...state,
         isSurveyTitleFocused: action.payload,
       };
+
+    case surveyBuilderAction.setSurveyDescription:
+      return {
+        ...state,
+        surveyDescription: action.payload,
+      };
+    case surveyBuilderAction.setIsValidSurveyDescription:
+      return {
+        ...state,
+        isValidSurveyDescription: action.payload,
+      };
+    case surveyBuilderAction.setIsSurveyDescriptionFocused:
+      return {
+        ...state,
+        isSurveyDescriptionFocused: action.payload,
+      };
+
     case surveyBuilderAction.setExpiryDate:
       return {
         ...state,
@@ -110,10 +133,11 @@ function surveyBuilderReducer(
         ...state,
         isExpiryDateFocused: action.payload,
       };
-    case surveyBuilderAction.setSendTo:
+
+    case surveyBuilderAction.setSurveyRecipients:
       return {
         ...state,
-        sendTo: action.payload,
+        surveyRecipients: action.payload,
       };
     case surveyBuilderAction.setIsAnonymous:
       return {
@@ -200,8 +224,6 @@ function surveyBuilderReducer(
       responseKinds.splice(index, 1);
       const responseInputHtml = [...state.responseInputHtml];
       responseInputHtml.splice(index, 1);
-      const responseDataOptions = [...state.responseDataOptions];
-      responseDataOptions.splice(index, 1);
 
       return {
         ...state,
@@ -210,7 +232,6 @@ function surveyBuilderReducer(
         areQuestionsFocused,
         responseKinds,
         responseInputHtml,
-        responseDataOptions,
       };
     }
 
@@ -225,8 +246,6 @@ function surveyBuilderReducer(
       responseKinds.push('chooseOne');
       const responseInputHtml = [...state.responseInputHtml];
       responseInputHtml.push('trueFalse');
-      const responseDataOptions = [...state.responseDataOptions];
-      responseDataOptions.push([]);
 
       return {
         ...state,
@@ -235,7 +254,6 @@ function surveyBuilderReducer(
         areQuestionsFocused,
         responseKinds,
         responseInputHtml,
-        responseDataOptions,
       };
     }
 
@@ -266,21 +284,6 @@ function surveyBuilderReducer(
       return {
         ...state,
         responseInputHtml,
-      };
-    }
-
-    case surveyBuilderAction.setResponseDataOptions: {
-      const { index, value } = action.payload;
-      const responseDataOptions = [...state.responseDataOptions];
-      if (index >= responseDataOptions.length) {
-        responseDataOptions.push(value);
-      } else {
-        responseDataOptions[index] = value;
-      }
-
-      return {
-        ...state,
-        responseDataOptions,
       };
     }
 

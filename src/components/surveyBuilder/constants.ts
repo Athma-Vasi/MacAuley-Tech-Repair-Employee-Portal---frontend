@@ -1,3 +1,12 @@
+const SURVEY_BUILDER_RECIPIENT_DATA = [
+  'All',
+  'Active',
+  'Inactive',
+  'Employees',
+  'Admins',
+  'Managers',
+];
+
 const SURVEY_BUILDER_RESPONSE_KIND_DATA = [
   {
     label: 'Choose one',
@@ -76,4 +85,8 @@ const SURVEY_BUILDER_INPUT_HTML_DATA = new Map([
   ],
 ]);
 
-export { SURVEY_BUILDER_INPUT_HTML_DATA, SURVEY_BUILDER_RESPONSE_KIND_DATA };
+export {
+  SURVEY_BUILDER_INPUT_HTML_DATA,
+  SURVEY_BUILDER_RECIPIENT_DATA,
+  SURVEY_BUILDER_RESPONSE_KIND_DATA,
+};

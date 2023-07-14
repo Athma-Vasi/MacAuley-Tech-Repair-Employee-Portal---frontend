@@ -6,6 +6,7 @@ import { MdOutlineAdd } from 'react-icons/md';
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../constants/regex';
 import {
   returnAccessibleButtonElements,
@@ -13,6 +14,8 @@ import {
   returnAccessibleDateTimeElements,
   returnAccessibleDynamicRadioGroupInputsElements,
   returnAccessibleDynamicTextInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
   returnAccessibleTextElementsForDynamicInputs,
   returnAccessibleTextInputElements,
@@ -27,10 +30,13 @@ import {
   AccessibleCheckboxInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
 } from '../wrappers';
 import {
   SURVEY_BUILDER_INPUT_HTML_DATA,
+  SURVEY_BUILDER_RECIPIENT_DATA,
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
 } from './constants';
 import {
@@ -38,6 +44,7 @@ import {
   surveyBuilderAction,
   surveyBuilderReducer,
 } from './state';
+import { SurveyRecipient } from './types';
 
 function SurveyBuilder() {
   const [surveyBuilderState, surveyBuilderDispatch] = useReducer(
@@ -49,11 +56,15 @@ function SurveyBuilder() {
     isValidSurveyTitle,
     isSurveyTitleFocused,
 
+    surveyDescription,
+    isValidSurveyDescription,
+    isSurveyDescriptionFocused,
+
     expiryDate,
     isValidExpiryDate,
     isExpiryDateFocused,
 
-    sendTo,
+    surveyRecipients,
     isAnonymous,
 
     questions,
@@ -63,7 +74,6 @@ function SurveyBuilder() {
 
     responseKinds,
     responseInputHtml,
-    responseDataOptions,
 
     currentStepperPosition,
     stepsInError,
@@ -93,6 +103,16 @@ function SurveyBuilder() {
       payload: isValid,
     });
   }, [surveyTitle]);
+
+  // validate survey description on every change
+  useEffect(() => {
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(surveyDescription);
+
+    surveyBuilderDispatch({
+      type: surveyBuilderAction.setIsValidSurveyDescription,
+      payload: isValid,
+    });
+  }, [surveyDescription]);
 
   // validate expiry date on every change
   useEffect(() => {
@@ -137,15 +157,29 @@ function SurveyBuilder() {
 
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleTextElements({
-      inputElementKind: 'title',
+      inputElementKind: 'survey title',
       inputText: surveyTitle,
       isInputTextFocused: isSurveyTitleFocused,
       isValidInputText: isValidSurveyTitle,
       regexValidationText: returnGrammarValidationText({
         content: surveyTitle,
-        contentKind: 'title',
+        contentKind: 'survey title',
         minLength: 2,
         maxLength: 75,
+      }),
+    });
+
+  const [descriptionInputErrorText, descriptionInputValidText] =
+    returnAccessibleTextElements({
+      inputElementKind: 'survey description',
+      inputText: surveyDescription,
+      isInputTextFocused: isSurveyDescriptionFocused,
+      isValidInputText: isValidSurveyDescription,
+      regexValidationText: returnGrammarValidationText({
+        content: surveyDescription,
+        contentKind: 'survey description',
+        minLength: 2,
+        maxLength: 2000,
       }),
     });
 
@@ -161,14 +195,14 @@ function SurveyBuilder() {
   const [questionInputsErrorText, questionInputsValidText] =
     returnAccessibleTextElementsForDynamicInputs({
       semanticName: 'question',
-      inputTextArray: questions.map((question) => question),
+      inputTextArray: questions,
       areValidInputTexts: areValidQuestions,
       areInputTextsFocused: areQuestionsFocused,
       regexValidationProps: {
         content: questions.map((question) => question).join(' '),
         contentKind: 'question',
         minLength: 2,
-        maxLength: 150,
+        maxLength: 75,
       },
       regexValidationFunction: returnGrammarValidationText,
     });
@@ -205,6 +239,55 @@ function SurveyBuilder() {
     required: true,
     withAsterisk: true,
   };
+
+  const surveyDescriptionTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    {
+      description: {
+        error: descriptionInputErrorText,
+        valid: descriptionInputValidText,
+      },
+      inputText: surveyDescription,
+      isValidInputText: isValidSurveyDescription,
+      label: 'Survey Description',
+      onBlur: () => {
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setIsSurveyDescriptionFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setSurveyDescription,
+          payload: event.target.value,
+        });
+      },
+      onFocus: () => {
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setIsSurveyDescriptionFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter survey description',
+      semanticName: 'survey description',
+      required: true,
+      withAsterisk: true,
+    };
+
+  const surveyRecipientsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: SURVEY_BUILDER_RECIPIENT_DATA,
+      description: 'Select the target recipients',
+      label: 'Survey recipients',
+      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setSurveyRecipients,
+          payload: event.currentTarget.value as SurveyRecipient,
+        });
+      },
+      value: surveyRecipients,
+      required: true,
+      withAsterisk: true,
+    };
 
   const expiryDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
@@ -394,6 +477,16 @@ function SurveyBuilder() {
     questionsInputCreatorInfo
   );
 
+  const [createdSurveyDescriptionTextAreaInput] =
+    returnAccessibleTextAreaInputElements([
+      surveyDescriptionTextAreaInputCreatorInfo,
+    ]);
+
+  const [createdSurveyRecipientsSelectInput] =
+    returnAccessibleSelectInputElements([
+      surveyRecipientsSelectInputCreatorInfo,
+    ]);
+
   const createdResponseKindRadioGroups =
     returnAccessibleDynamicRadioGroupInputsElements(
       responseKindRadioGroupCreatorInfo
@@ -450,15 +543,14 @@ function SurveyBuilder() {
   const displaySurveyBuilderForm = (
     <>
       {createdSurveyTitleInput}
+      {createdSurveyDescriptionTextAreaInput}
+      {createdSurveyRecipientsSelectInput}
       {createdExpiryDateInput}
       {createdIsAnonymousCheckbox}
-
       {mergedSurveyQuestionsResponseKindsHtmlInputTypes}
       {createdNewQuestionButton}
     </>
   );
-
-  const createdSurveyDescriptionInput = [];
 
   useEffect(() => {
     console.group('surveyBuilderState');
