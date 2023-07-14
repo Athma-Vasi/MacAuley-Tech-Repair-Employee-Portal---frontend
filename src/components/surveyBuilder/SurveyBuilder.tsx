@@ -96,7 +96,10 @@ function SurveyBuilder() {
 
   // validate expiry date on every change
   useEffect(() => {
-    const isValid = DATE_NEAR_FUTURE_REGEX.test(expiryDate);
+    // check if expiry date is valid and is in the near future
+    const isValid =
+      DATE_NEAR_FUTURE_REGEX.test(expiryDate) &&
+      new Date() <= new Date(expiryDate);
 
     surveyBuilderDispatch({
       type: surveyBuilderAction.setIsValidExpiryDate,
@@ -148,7 +151,7 @@ function SurveyBuilder() {
 
   const [expiryDateInputErrorText, expiryDateInputValidText] =
     returnAccessibleTextElements({
-      inputElementKind: 'expiryDate',
+      inputElementKind: 'expiry date',
       inputText: expiryDate,
       isInputTextFocused: isExpiryDateFocused,
       isValidInputText: isValidExpiryDate,
@@ -300,7 +303,7 @@ function SurveyBuilder() {
           dynamicIndex: index,
           dynamicInputOnClick: () => {
             surveyBuilderDispatch({
-              type: surveyBuilderAction.setDeleteQuestion,
+              type: surveyBuilderAction.deleteQuestionGroup,
               payload: index,
             });
           },
@@ -379,11 +382,8 @@ function SurveyBuilder() {
     ),
     buttonOnClick: () => {
       surveyBuilderDispatch({
-        type: surveyBuilderAction.setQuestions,
-        payload: {
-          index: questions.length,
-          value: '',
-        },
+        type: surveyBuilderAction.addNewQuestionGroup,
+        payload: questions.length,
       });
     },
     semanticDescription: 'add new article paragraph text input button',
@@ -420,14 +420,40 @@ function SurveyBuilder() {
     surveyTitleInputCreatorInfo,
   ]);
 
+  const mergedSurveyQuestionsResponseKindsHtmlInputTypes = questions
+    .reduce(
+      (acc: [JSX.Element, JSX.Element, JSX.Element][], _: string, index) => {
+        acc.push([
+          createdQuestionsTextInputs[index],
+          createdResponseKindRadioGroups[index],
+          createdResponseInputHtmlRadioGroups[index],
+        ]);
+
+        return acc;
+      },
+      []
+    )
+    .map(
+      ([
+        createdQuestionsTextInput,
+        createdResponseKindRadioGroupInput,
+        createdResponseInputHtmlRadioGroupInput,
+      ]) => (
+        <>
+          {createdQuestionsTextInput}
+          {createdResponseKindRadioGroupInput}
+          {createdResponseInputHtmlRadioGroupInput}
+        </>
+      )
+    );
+
   const displaySurveyBuilderForm = (
     <>
       {createdSurveyTitleInput}
       {createdExpiryDateInput}
       {createdIsAnonymousCheckbox}
-      {createdQuestionsTextInputs}
-      {createdResponseKindRadioGroups}
-      {createdResponseInputHtmlRadioGroups}
+
+      {mergedSurveyQuestionsResponseKindsHtmlInputTypes}
       {createdNewQuestionButton}
     </>
   );

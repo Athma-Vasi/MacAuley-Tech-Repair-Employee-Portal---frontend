@@ -104,7 +104,9 @@ type SurveyBuilderAction = {
   setAreValidQuestions: 'setAreValidQuestions';
   setAreQuestionsFocused: 'setAreQuestionsFocused';
   setIsQuestionLengthExceeded: 'setIsQuestionLengthExceeded';
-  setDeleteQuestion: 'setDeleteQuestion';
+
+  deleteQuestionGroup: 'deleteQuestionGroup';
+  addNewQuestionGroup: 'addNewQuestionGroup';
 
   setResponseKinds: 'setResponseKinds';
   setResponseInputHtml: 'setResponseInputHtml';
@@ -187,7 +189,8 @@ type SurveyBuilderDispatch =
   | {
       type:
         | SurveyBuilderAction['setCurrentStepperPosition']
-        | SurveyBuilderAction['setDeleteQuestion'];
+        | SurveyBuilderAction['deleteQuestionGroup']
+        | SurveyBuilderAction['addNewQuestionGroup'];
       payload: number;
     }
   | {

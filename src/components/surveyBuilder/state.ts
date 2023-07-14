@@ -54,7 +54,9 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setAreValidQuestions: 'setAreValidQuestions',
   setAreQuestionsFocused: 'setAreQuestionsFocused',
   setIsQuestionLengthExceeded: 'setIsQuestionLengthExceeded',
-  setDeleteQuestion: 'setDeleteQuestion',
+
+  deleteQuestionGroup: 'deleteQuestionGroup',
+  addNewQuestionGroup: 'addNewQuestionGroup',
 
   setResponseKinds: 'setResponseKinds',
   setResponseInputHtml: 'setResponseInputHtml',
@@ -183,7 +185,7 @@ function surveyBuilderReducer(
         isQuestionLengthExceeded,
       };
     }
-    case surveyBuilderAction.setDeleteQuestion: {
+    case surveyBuilderAction.deleteQuestionGroup: {
       const index = action.payload;
       // delete the question
       const questions = [...state.questions];
@@ -200,6 +202,31 @@ function surveyBuilderReducer(
       responseInputHtml.splice(index, 1);
       const responseDataOptions = [...state.responseDataOptions];
       responseDataOptions.splice(index, 1);
+
+      return {
+        ...state,
+        questions,
+        areValidQuestions,
+        areQuestionsFocused,
+        responseKinds,
+        responseInputHtml,
+        responseDataOptions,
+      };
+    }
+
+    case surveyBuilderAction.addNewQuestionGroup: {
+      const questions = [...state.questions];
+      questions.push('');
+      const areValidQuestions = [...state.areValidQuestions];
+      areValidQuestions.push(false);
+      const areQuestionsFocused = [...state.areQuestionsFocused];
+      areQuestionsFocused.push(false);
+      const responseKinds = [...state.responseKinds];
+      responseKinds.push('chooseOne');
+      const responseInputHtml = [...state.responseInputHtml];
+      responseInputHtml.push('trueFalse');
+      const responseDataOptions = [...state.responseDataOptions];
+      responseDataOptions.push([]);
 
       return {
         ...state,
