@@ -29,7 +29,7 @@ import {
 } from '../../wrappers';
 import { ARTICLE_TITLE_REGEX } from '../constants';
 import {
-  CREATE_ANNOUNCEMENT_DESCRIPTION_MAP,
+  CREATE_ANNOUNCEMENT_DESCRIPTION_OBJECTS,
   CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION,
   MAX_ARTICLE_LENGTH,
 } from './constants';
@@ -175,7 +175,7 @@ function CreateAnnouncement() {
       type: createAnnouncementAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
@@ -195,7 +195,7 @@ function CreateAnnouncement() {
       type: createAnnouncementAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [areValidArticleParagraphs]);
@@ -637,7 +637,7 @@ function CreateAnnouncement() {
       setCurrentStepperPosition={
         createAnnouncementAction.setCurrentStepperPosition
       }
-      descriptionMap={CREATE_ANNOUNCEMENT_DESCRIPTION_MAP}
+      descriptionObjectsArray={CREATE_ANNOUNCEMENT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION}
       parentComponentDispatch={createAnnouncementDispatch}
       stepsInError={stepsInError}

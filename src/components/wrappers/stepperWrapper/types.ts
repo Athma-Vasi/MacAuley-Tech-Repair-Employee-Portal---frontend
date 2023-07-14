@@ -1,37 +1,38 @@
 /**
- * @key {number} - The step number. Starts with 1.
- * @value {object} - The object containing the description and aria-label of the step.
- * @property {object.description} - The description of the step. Will be displayed in the stepper.
- * @property {object.ariaLabel} - The aria-label of the step. Will be read aloud by screen readers.
+ * An array of objects, where each object contains a description and an aria label for a step in the stepper component.
+ * @typedef {Array} DescriptionObjectsArray
+ * @property {string} description - The description of the step.
+ * @property {string} ariaLabel - The aria label for the step.
  */
-type DescriptionMap = Map<
-  number,
-  {
-    description: string;
-    ariaLabel: string;
-  }
->;
+type DescriptionObjectsArray = Array<{
+  description: string;
+  ariaLabel: string;
+}>;
 
 /**
- * @property {children} - The component (in sections) that will be 'stepped' through.
- * @property {descriptionMap} - The map of descriptions for each step
- * @property {stepsInError} - The set of steps that have errors.
- * @property {maxStepperPosition} - The maximum step number. Always 1 greater than the number of steps(which is computed from the length of descriptionMap).
- * @property {currentStepperPosition} - The current step number.
- * @property {setCurrentStepperPosition} - a string literal that is the value of ${parentComponent}Action.setCurrentStepperPosition
- * @property {parentComponentDispatch} - The dispatch function of the parent component.
+ * Props for the StepperWrapper component.
+ * @typedef {Object} StepperWrapperProps
+ * @property {boolean} [allowNextStepsSelect] - Whether or not to allow the user to select steps that are not the next step.
+ * @property {React.ReactNode} [children] - The component (in sections) that will be 'stepped' through.
+ * @property {DescriptionObjectsArray} descriptionObjectsArray - Array of descriptions for each step.
+ * @property {Set<number>} stepsInError - The set of steps that have errors.
+ * @property {number} maxStepperPosition - The maximum step number. Always equal to the number of steps (either declared at author time, or if dynamically generated: computed from the length of descriptionObjectsArray).
+ * @property {number} currentStepperPosition - The current step number.
+ * @property {'setCurrentStepperPosition'} setCurrentStepperPosition - A string literal that is the value of ${parentComponent}Action.setCurrentStepperPosition.
+ * @property {React.Dispatch<{type: 'setCurrentStepperPosition'; payload: number;}>} parentComponentDispatch - The dispatch function of the parent component.
  */
 type StepperWrapperProps = {
+  allowNextStepsSelect?: boolean | undefined;
   children?: React.ReactNode;
-  descriptionMap: DescriptionMap;
-  stepsInError: Set<number>;
-  maxStepperPosition: number;
   currentStepperPosition: number;
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  descriptionObjectsArray: DescriptionObjectsArray;
+  maxStepperPosition: number;
   parentComponentDispatch: React.Dispatch<{
     type: 'setCurrentStepperPosition';
     payload: number;
   }>;
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  stepsInError: Set<number>;
 };
 
-export type { DescriptionMap, StepperWrapperProps };
+export type { DescriptionObjectsArray, StepperWrapperProps };

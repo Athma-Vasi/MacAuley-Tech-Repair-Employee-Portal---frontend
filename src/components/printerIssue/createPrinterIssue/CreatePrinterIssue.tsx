@@ -50,7 +50,7 @@ import {
   StepperWrapper,
 } from '../../wrappers';
 import {
-  CREATE_PRINTER_ISSUE_DESCRIPTION_MAP,
+  CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS,
   CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION,
 } from './constants';
 import {
@@ -270,7 +270,7 @@ function CreatePrinterIssue() {
       type: createPrinterIssueAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
@@ -299,7 +299,7 @@ function CreatePrinterIssue() {
       type: createPrinterIssueAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [
@@ -870,7 +870,7 @@ function CreatePrinterIssue() {
   const displayCreatePrinterIssueComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={CREATE_PRINTER_ISSUE_DESCRIPTION_MAP}
+      descriptionObjectsArray={CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION}
       parentComponentDispatch={createPrinterIssueDispatch}
       setCurrentStepperPosition={

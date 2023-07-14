@@ -23,7 +23,7 @@ import {
   StepperWrapper,
 } from '../../wrappers';
 import {
-  CREATE_ENDORSEMENT_DESCRIPTION_MAP,
+  CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS,
   CREATE_ENDORSEMENT_MAX_STEPPER_POSITION,
   EMPLOYEE_ATTRIBUTES_DATA,
 } from './constants';
@@ -102,7 +102,7 @@ function CreateEndorsement() {
       type: createEndorsementAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [isValidTitle, isValidEmployeeToBeEndorsed, isValidSummaryOfEndorsement]);
@@ -115,7 +115,7 @@ function CreateEndorsement() {
       type: createEndorsementAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [attributeEndorsed]);
@@ -340,7 +340,7 @@ function CreateEndorsement() {
   const displayEndorsementComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={CREATE_ENDORSEMENT_DESCRIPTION_MAP}
+      descriptionObjectsArray={CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_ENDORSEMENT_MAX_STEPPER_POSITION}
       parentComponentDispatch={createEndorsementDispatch}
       setCurrentStepperPosition="setCurrentStepperPosition"

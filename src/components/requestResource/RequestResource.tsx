@@ -35,7 +35,7 @@ import {
 } from '../wrappers';
 import { StepperWrapper } from '../wrappers';
 import {
-  REQUEST_RESOURCE_DESCRIPTION_MAP,
+  REQUEST_RESOURCE_DESCRIPTION_OBJECTS,
   REQUEST_RESOURCE_KIND_DATA,
   REQUEST_RESOURCE_MAX_STEPPER_POSITION,
 } from './constants';
@@ -169,7 +169,7 @@ function RequestResource() {
       type: requestResourceAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [isValidResourceQuantity, isValidResourceDescription]);
@@ -186,7 +186,7 @@ function RequestResource() {
       type: requestResourceAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [
@@ -548,7 +548,7 @@ function RequestResource() {
   const displayRequestResourceComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={REQUEST_RESOURCE_DESCRIPTION_MAP}
+      descriptionObjectsArray={REQUEST_RESOURCE_DESCRIPTION_OBJECTS}
       maxStepperPosition={REQUEST_RESOURCE_MAX_STEPPER_POSITION}
       parentComponentDispatch={requestResourceDispatch}
       setCurrentStepperPosition={

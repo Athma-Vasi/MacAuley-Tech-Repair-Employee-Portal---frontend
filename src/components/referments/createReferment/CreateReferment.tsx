@@ -45,7 +45,7 @@ import {
   StepperWrapper,
 } from '../../wrappers';
 import {
-  CREATE_REFERMENT_DESCRIPTION_MAP,
+  CREATE_REFERMENT_DESCRIPTION_OBJECTS,
   CREATE_REFERMENT_MAX_STEPPER_POSITION,
 } from './constants';
 import {
@@ -252,7 +252,7 @@ function CreateReferment() {
       type: createRefermentAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
@@ -280,7 +280,7 @@ function CreateReferment() {
       type: createRefermentAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [
@@ -852,7 +852,7 @@ function CreateReferment() {
   const displayCreateRefermentComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={CREATE_REFERMENT_DESCRIPTION_MAP}
+      descriptionObjectsArray={CREATE_REFERMENT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_REFERMENT_MAX_STEPPER_POSITION}
       parentComponentDispatch={createRefermentDispatch}
       setCurrentStepperPosition={

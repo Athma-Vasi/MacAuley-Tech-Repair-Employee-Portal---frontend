@@ -1,6 +1,6 @@
 import { Flex, Text } from '@mantine/core';
 import { Group, Tooltip } from '@mantine/core';
-import { useEffect, useReducer, useRef } from 'react';
+import { FormEvent, useEffect, useReducer, useRef } from 'react';
 import { MdOutlineAdd } from 'react-icons/md';
 
 import {
@@ -33,9 +33,13 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  StepperWrapper,
 } from '../wrappers';
 import {
+  SURVEY_BUILDER_DESCRIPTION_OBJECTS,
   SURVEY_BUILDER_INPUT_HTML_DATA,
+  SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
+  SURVEY_BUILDER_MAX_STEPPER_POSITION,
   SURVEY_BUILDER_RECIPIENT_DATA,
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
 } from './constants';
@@ -45,6 +49,10 @@ import {
   surveyBuilderReducer,
 } from './state';
 import { SurveyRecipient } from './types';
+import {
+  groupMergedQuestionsByAmount,
+  mergeSurveyQuestionsGroup,
+} from './utils';
 
 function SurveyBuilder() {
   const [surveyBuilderState, surveyBuilderDispatch] = useReducer(
@@ -139,12 +147,35 @@ function SurveyBuilder() {
     });
   }, [questions]);
 
+  // validate questions length on every change
+  useEffect(() => {
+    const isExceeded = questions.length === SURVEY_BUILDER_MAX_QUESTION_AMOUNT;
+
+    surveyBuilderDispatch({
+      type: surveyBuilderAction.setIsQuestionLengthExceeded,
+      payload: isExceeded,
+    });
+  }, [questions.length]);
+
   // validate stepper state on every change
   useEffect(() => {
     const isStepInError =
-      isValidSurveyTitle ||
-      isValidExpiryDate ||
-      areValidQuestions.includes(false);
+      !isValidSurveyTitle || !isValidExpiryDate || !isValidSurveyDescription;
+
+    surveyBuilderDispatch({
+      type: surveyBuilderAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 0,
+      },
+    });
+  }, [isValidSurveyTitle, isValidExpiryDate, isValidSurveyDescription]);
+
+  // validate stepper state on every dynamically created question input groups
+  useEffect(() => {
+    const isStepInError = areValidQuestions.some(
+      (isValidQuestion) => !isValidQuestion
+    );
 
     surveyBuilderDispatch({
       type: surveyBuilderAction.setStepsInError,
@@ -153,7 +184,7 @@ function SurveyBuilder() {
         step: 1,
       },
     });
-  }, [isValidSurveyTitle, isValidExpiryDate, areValidQuestions]);
+  }, [areValidQuestions]);
 
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleTextElements({
@@ -326,8 +357,8 @@ function SurveyBuilder() {
   const isAnonymousCheckboxCreatorInfo: AccessibleCheckboxInputCreatorInfo = {
     checkboxKind: 'single',
     description: {
-      selected: 'Survey will be anonymous',
-      deselected: 'Survey will not be anonymous',
+      selected: 'Survey response will be anonymous',
+      deselected: 'Survey response will not be anonymous',
     },
     semanticName: 'anonymous survey',
     checked: isAnonymous,
@@ -473,6 +504,15 @@ function SurveyBuilder() {
     semanticName: 'add paragraph button',
   };
 
+  const formSubmitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    buttonOnClick: () => {},
+    buttonType: 'submit',
+    buttonDisabled: stepsInError.size > 0,
+    semanticName: 'submit button',
+    semanticDescription: 'expense claim form submit button',
+  };
+
   const createdQuestionsTextInputs = returnAccessibleDynamicTextInputElements(
     questionsInputCreatorInfo
   );
@@ -497,9 +537,11 @@ function SurveyBuilder() {
       responseInputHtmlRadioGroupCreatorInfo
     );
 
-  const [createdNewQuestionButton] = returnAccessibleButtonElements([
-    addNewQuestionButtonCreatorInfo,
-  ]);
+  const [createdNewQuestionButton, createdFormSubmitButton] =
+    returnAccessibleButtonElements([
+      addNewQuestionButtonCreatorInfo,
+      formSubmitButtonCreatorInfo,
+    ]);
 
   const [createdIsAnonymousCheckbox] = returnAccessibleCheckboxInputElements([
     isAnonymousCheckboxCreatorInfo,
@@ -513,44 +555,66 @@ function SurveyBuilder() {
     surveyTitleInputCreatorInfo,
   ]);
 
-  const mergedSurveyQuestionsResponseKindsHtmlInputTypes = questions
-    .reduce(
-      (acc: [JSX.Element, JSX.Element, JSX.Element][], _: string, index) => {
-        acc.push([
-          createdQuestionsTextInputs[index],
-          createdResponseKindRadioGroups[index],
-          createdResponseInputHtmlRadioGroups[index],
-        ]);
+  const mergedSurveyQuestionsGroups = mergeSurveyQuestionsGroup({
+    createdQuestionsTextInputs,
+    createdResponseKindRadioGroups,
+    createdResponseInputHtmlRadioGroups,
+  });
 
-        return acc;
-      },
-      []
-    )
-    .map(
-      ([
-        createdQuestionsTextInput,
-        createdResponseKindRadioGroupInput,
-        createdResponseInputHtmlRadioGroupInput,
-      ]) => (
-        <>
-          {createdQuestionsTextInput}
-          {createdResponseKindRadioGroupInput}
-          {createdResponseInputHtmlRadioGroupInput}
-        </>
-      )
-    );
-
-  const displaySurveyBuilderForm = (
+  const displaySurveyDetailsFormPageOne = (
     <>
       {createdSurveyTitleInput}
       {createdSurveyDescriptionTextAreaInput}
       {createdSurveyRecipientsSelectInput}
       {createdExpiryDateInput}
       {createdIsAnonymousCheckbox}
-      {mergedSurveyQuestionsResponseKindsHtmlInputTypes}
-      {createdNewQuestionButton}
     </>
   );
+
+  const displaySurveyQuestionsFormPageTwo = (
+    <>
+      {mergedSurveyQuestionsGroups}
+      {isQuestionLengthExceeded ? null : createdNewQuestionButton}
+    </>
+  );
+
+  const displaySurveyBuilderReviewPage = <h4>survey builder review page</h4>;
+
+  const displaySurveyBuilderForm =
+    currentStepperPosition === 0
+      ? displaySurveyDetailsFormPageOne
+      : currentStepperPosition === 1
+      ? displaySurveyQuestionsFormPageTwo
+      : currentStepperPosition === 2
+      ? displaySurveyBuilderReviewPage
+      : null;
+
+  const displayFormSubmitButton =
+    currentStepperPosition === SURVEY_BUILDER_MAX_STEPPER_POSITION
+      ? createdFormSubmitButton
+      : null;
+
+  const displaySurveyBuilderComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionObjectsArray={SURVEY_BUILDER_DESCRIPTION_OBJECTS}
+      maxStepperPosition={SURVEY_BUILDER_MAX_STEPPER_POSITION}
+      parentComponentDispatch={surveyBuilderDispatch}
+      setCurrentStepperPosition={surveyBuilderAction.setCurrentStepperPosition}
+      stepsInError={stepsInError}
+    >
+      <form onSubmit={handleExpenseClaimFormSubmit}>
+        {displaySurveyBuilderForm}
+        {displayFormSubmitButton}
+      </form>
+    </StepperWrapper>
+  );
+
+  async function handleExpenseClaimFormSubmit(
+    event: FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
 
   useEffect(() => {
     console.group('surveyBuilderState');
@@ -568,7 +632,7 @@ function SurveyBuilder() {
       rowGap="lg"
       w={400}
     >
-      {displaySurveyBuilderForm}
+      {displaySurveyBuilderComponent}
     </Flex>
   );
 }

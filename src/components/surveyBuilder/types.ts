@@ -4,6 +4,7 @@ import {
   SetStepsInErrorPayload,
   UserRoles,
 } from '../../types';
+import { DescriptionObjectsArray } from '../wrappers';
 
 type SurveyRecipient =
   | 'All'
@@ -73,7 +74,7 @@ type SurveyBuilderState = {
   questions: Array<string>;
   areValidQuestions: Array<boolean>;
   areQuestionsFocused: Array<boolean>;
-  isQuestionLengthExceeded: Array<boolean>;
+  isQuestionLengthExceeded: boolean;
 
   responseKinds: Array<string>;
   responseInputHtml: Array<string>;
@@ -153,6 +154,7 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setIsValidExpiryDate']
         | SurveyBuilderAction['setIsExpiryDateFocused']
         | SurveyBuilderAction['setIsAnonymous']
+        | SurveyBuilderAction['setIsQuestionLengthExceeded']
         | SurveyBuilderAction['setIsError']
         | SurveyBuilderAction['setIsSubmitting']
         | SurveyBuilderAction['setIsSuccessful']
@@ -180,9 +182,7 @@ type SurveyBuilderDispatch =
       payload: boolean[];
     }
   | {
-      type:
-        | SurveyBuilderAction['setAreQuestionsFocused']
-        | SurveyBuilderAction['setIsQuestionLengthExceeded'];
+      type: SurveyBuilderAction['setAreQuestionsFocused'];
       payload: {
         index: number;
         value: boolean;

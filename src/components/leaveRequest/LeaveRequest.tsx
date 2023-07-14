@@ -27,7 +27,7 @@ import {
   StepperWrapper,
 } from '../wrappers';
 import {
-  LEAVE_REQUEST_DESCRIPTION_MAP,
+  LEAVE_REQUEST_DESCRIPTION_OBJECTS,
   LEAVE_REQUEST_MAX_STEPPER_POSITION,
   REASON_FOR_LEAVE_DATA,
 } from './constants';
@@ -161,7 +161,7 @@ function LeaveRequest() {
       type: leaveRequestAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
@@ -505,7 +505,7 @@ function LeaveRequest() {
   const displayLeaveRequestComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={LEAVE_REQUEST_DESCRIPTION_MAP}
+      descriptionObjectsArray={LEAVE_REQUEST_DESCRIPTION_OBJECTS}
       maxStepperPosition={LEAVE_REQUEST_MAX_STEPPER_POSITION}
       parentComponentDispatch={leaveRequestDispatch}
       setCurrentStepperPosition={leaveRequestAction.setCurrentStepperPosition}

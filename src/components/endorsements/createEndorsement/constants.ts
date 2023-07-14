@@ -1,31 +1,24 @@
 import { CheckBoxMultipleData } from '../../../types';
-import { DescriptionMap } from '../../wrappers';
+import { DescriptionObjectsArray } from '../../wrappers';
 
 const CREATE_ENDORSEMENT_MAX_STEPPER_POSITION = 3;
 
-const CREATE_ENDORSEMENT_DESCRIPTION_MAP: DescriptionMap = new Map([
-  [
-    1,
-    {
-      description: 'Employee endorsement',
-      ariaLabel: 'Enter title, user to be endorsed and summary of endorsement',
-    },
-  ],
-  [
-    2,
-    {
-      description: 'Attribute(s) endorsed',
-      ariaLabel: 'Select attributes to be endorsed',
-    },
-  ],
-  [
-    3,
-    {
-      description: 'Review and proceed',
-      ariaLabel: 'Review accuracy of entered information before proceeding',
-    },
-  ],
-]);
+const CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
+  {
+    description: 'Employee endorsement',
+    ariaLabel: 'Enter title, user to be endorsed and summary of endorsement',
+  },
+
+  {
+    description: 'Attribute(s) endorsed',
+    ariaLabel: 'Select attributes to be endorsed',
+  },
+
+  {
+    description: 'Review and proceed',
+    ariaLabel: 'Review accuracy of entered information before proceeding',
+  },
+];
 
 const EMPLOYEE_ATTRIBUTES_DATA: CheckBoxMultipleData = [
   { value: 'teamwork and collaboration', label: 'Teamwork and collaboration' },
@@ -46,7 +39,7 @@ const EMPLOYEE_ATTRIBUTES_DATA: CheckBoxMultipleData = [
 ];
 
 export {
-  CREATE_ENDORSEMENT_DESCRIPTION_MAP,
+  CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS,
   CREATE_ENDORSEMENT_MAX_STEPPER_POSITION,
   EMPLOYEE_ATTRIBUTES_DATA,
 };

@@ -1,4 +1,4 @@
-import { DescriptionMap } from '../wrappers';
+import { DescriptionObjectsArray } from '../wrappers';
 
 const BENEFIT_PLAN_DATA = [
   'Health',
@@ -30,37 +30,30 @@ const PLAN_NAME_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i;
  */
 const PLAN_DESCRIPTION_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i;
 
-const CREATE_BENEFIT_DESCRIPTION_MAP: DescriptionMap = new Map([
-  [
-    1,
-    {
-      description: 'Plan details',
-      ariaLabel: 'Enter plan name, description, start date, and plan kind',
-    },
-  ],
-  [
-    2,
-    {
-      description: 'Plan contributions',
-      ariaLabel:
-        'Enter currency, employer and employee contributions, and plan status',
-    },
-  ],
-  [
-    3,
-    {
-      description: 'Review and proceed',
-      ariaLabel:
-        'Please review plan details and ensure accuracy of information before proceeding',
-    },
-  ],
-]);
+const CREATE_BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
+  {
+    description: 'Plan details',
+    ariaLabel: 'Enter plan name, description, start date, and plan kind',
+  },
+
+  {
+    description: 'Plan contributions',
+    ariaLabel:
+      'Enter currency, employer and employee contributions, and plan status',
+  },
+
+  {
+    description: 'Review and proceed',
+    ariaLabel:
+      'Please review plan details and ensure accuracy of information before proceeding',
+  },
+];
 
 const CREATE_BENEFIT_MAX_STEPPER_POSITION = 3;
 
 export {
   BENEFIT_PLAN_DATA,
-  CREATE_BENEFIT_DESCRIPTION_MAP,
+  CREATE_BENEFIT_DESCRIPTION_OBJECTS,
   CREATE_BENEFIT_MAX_STEPPER_POSITION,
   CURRENCY_DATA,
   PLAN_DESCRIPTION_REGEX,

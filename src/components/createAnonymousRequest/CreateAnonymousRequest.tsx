@@ -39,7 +39,7 @@ import {
 } from '../wrappers';
 import {
   ANONYMOUS_REQUEST_KINDS,
-  CREATE_ANON_REQUEST_DESCRIPTION_MAP,
+  CREATE_ANON_REQUEST_DESCRIPTION_OBJECTS,
   CREATE_ANON_REQUEST_MAX_STEPPER_POSITION,
 } from './constants';
 import {
@@ -185,7 +185,7 @@ function CreateAnonymousRequest() {
       type: createAnonymousRequestAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [isValidTitle, isValidSecureContactNumber, isValidSecureContactEmail]);
@@ -200,7 +200,7 @@ function CreateAnonymousRequest() {
       type: createAnonymousRequestAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [isValidRequestDescription, isValidAdditionalInformation]);
@@ -551,7 +551,7 @@ function CreateAnonymousRequest() {
   const displayCreateAnonymousRequestComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={CREATE_ANON_REQUEST_DESCRIPTION_MAP}
+      descriptionObjectsArray={CREATE_ANON_REQUEST_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_ANON_REQUEST_MAX_STEPPER_POSITION}
       parentComponentDispatch={createAnonymousRequestDispatch}
       setCurrentStepperPosition={

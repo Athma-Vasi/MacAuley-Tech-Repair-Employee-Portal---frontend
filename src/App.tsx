@@ -8,6 +8,7 @@ import { CreateAnonymousRequest } from './components/createAnonymousRequest';
 import { Dashboard } from './components/dashboard';
 import { CreateEndorsement } from './components/endorsements/createEndorsement';
 import { EventCreator } from './components/events/eventCreator';
+import { ExpenseClaim } from './components/expenseClaim';
 import { LeaveRequest } from './components/leaveRequest';
 import { Login } from './components/login';
 import { NotesList } from './components/notesList';
@@ -19,11 +20,10 @@ import { CreateReferment } from './components/referments/createReferment';
 import { Register } from './components/register';
 import { RequestResource } from './components/requestResource';
 import { RequireAuth } from './components/requireAuth';
+import { SurveyBuilder } from './components/surveyBuilder';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
-import { ExpenseClaim } from './components/expenseClaim';
-import { SurveyBuilder } from './components/surveyBuilder';
 
 function App() {
   const {

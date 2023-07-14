@@ -28,7 +28,7 @@ import {
   StepperWrapper,
 } from '../../wrappers';
 import {
-  EVENT_CREATOR_DESCRIPTION_MAP,
+  EVENT_CREATOR_DESCRIPTION_OBJECTS,
   EVENT_CREATOR_MAX_STEPPER_POSITION,
   EVENT_KIND_DATA,
 } from './constants';
@@ -272,7 +272,7 @@ function EventCreator() {
       type: eventCreatorAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
@@ -298,7 +298,7 @@ function EventCreator() {
       type: eventCreatorAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [
@@ -883,7 +883,7 @@ function EventCreator() {
   const displayEventCreatorComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={EVENT_CREATOR_DESCRIPTION_MAP}
+      descriptionObjectsArray={EVENT_CREATOR_DESCRIPTION_OBJECTS}
       maxStepperPosition={EVENT_CREATOR_MAX_STEPPER_POSITION}
       parentComponentDispatch={eventCreatorDispatch}
       setCurrentStepperPosition={eventCreatorAction.setCurrentStepperPosition}

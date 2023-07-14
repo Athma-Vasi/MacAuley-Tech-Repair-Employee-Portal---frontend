@@ -1,5 +1,5 @@
 import { StepperWrapper } from './StepperWrapper';
-import type { DescriptionMap } from './types';
+import type { DescriptionObjectsArray } from './types';
 
 export { StepperWrapper };
-export type { DescriptionMap };
+export type { DescriptionObjectsArray };

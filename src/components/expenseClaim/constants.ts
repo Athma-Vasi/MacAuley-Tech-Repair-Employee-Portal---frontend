@@ -1,22 +1,17 @@
-import { DescriptionMap } from '../wrappers';
+import { DescriptionObjectsArray } from '../wrappers';
 
-const EXPENSE_CLAIM_DESCRIPTION_MAP: DescriptionMap = new Map([
-  [
-    1,
-    {
-      description: 'Expense details',
-      ariaLabel:
-        'Enter expense claim kind, amount, currency, date, description, additional comments, acknowledgement and receipt',
-    },
-  ],
-  [
-    2,
-    {
-      description: 'Review and proceed',
-      ariaLabel: 'Review accuracy of information and proceed',
-    },
-  ],
-]);
+const EXPENSE_CLAIM_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
+  {
+    description: 'Expense details',
+    ariaLabel:
+      'Enter expense claim kind, amount, currency, date, description, additional comments, acknowledgement and receipt',
+  },
+
+  {
+    description: 'Review and proceed',
+    ariaLabel: 'Review accuracy of information and proceed',
+  },
+];
 
 const EXPENSE_CLAIM_MAX_STEPPER_POSITION = 2;
 
@@ -34,7 +29,7 @@ const EXPENSE_CLAIM_KIND_DATA = [
 ];
 
 export {
-  EXPENSE_CLAIM_DESCRIPTION_MAP,
+  EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_STEPPER_POSITION,
 };

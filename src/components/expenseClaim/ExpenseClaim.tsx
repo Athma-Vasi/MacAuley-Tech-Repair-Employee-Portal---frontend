@@ -40,7 +40,7 @@ import {
   StepperWrapper,
 } from '../wrappers';
 import {
-  EXPENSE_CLAIM_DESCRIPTION_MAP,
+  EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_STEPPER_POSITION,
 } from './constants';
@@ -173,7 +173,7 @@ function ExpenseClaim() {
       type: expenseClaimAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
@@ -516,7 +516,7 @@ function ExpenseClaim() {
   const displayExpenseClaimComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={EXPENSE_CLAIM_DESCRIPTION_MAP}
+      descriptionObjectsArray={EXPENSE_CLAIM_DESCRIPTION_OBJECTS}
       maxStepperPosition={EXPENSE_CLAIM_MAX_STEPPER_POSITION}
       parentComponentDispatch={expenseClaimDispatch}
       setCurrentStepperPosition={expenseClaimAction.setCurrentStepperPosition}

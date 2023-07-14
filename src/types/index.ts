@@ -40,6 +40,10 @@ type CheckBoxMultipleData = {
   label: string;
 }[];
 type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'JPY' | 'CNY';
+type SelectInputData = Array<{
+  value: string;
+  label: string;
+}>;
 
 export type {
   Action,
@@ -66,7 +70,8 @@ export type {
 export type {
   BreakPoints,
   CheckBoxMultipleData,
-  Note,
-  SetStepsInErrorPayload,
   Currency,
+  Note,
+  SelectInputData,
+  SetStepsInErrorPayload,
 };

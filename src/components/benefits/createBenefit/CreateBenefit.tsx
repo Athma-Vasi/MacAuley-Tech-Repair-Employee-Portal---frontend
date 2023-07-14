@@ -32,7 +32,7 @@ import {
 } from '../../wrappers';
 import {
   BENEFIT_PLAN_DATA,
-  CREATE_BENEFIT_DESCRIPTION_MAP,
+  CREATE_BENEFIT_DESCRIPTION_OBJECTS,
   CREATE_BENEFIT_MAX_STEPPER_POSITION,
   CURRENCY_DATA,
   PLAN_DESCRIPTION_REGEX,
@@ -234,7 +234,7 @@ function CreateBenefit() {
       type: createBenefitAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
@@ -660,7 +660,7 @@ function CreateBenefit() {
   const displayCreateBenefitComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionMap={CREATE_BENEFIT_DESCRIPTION_MAP}
+      descriptionObjectsArray={CREATE_BENEFIT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_BENEFIT_MAX_STEPPER_POSITION}
       parentComponentDispatch={createBenefitDispatch}
       setCurrentStepperPosition={createBenefitAction.setCurrentStepperPosition}

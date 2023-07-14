@@ -27,7 +27,7 @@ import {
   RadioSingleInputWrapper,
 } from './RadioInputWrapper';
 import { StepperWrapper } from './stepperWrapper';
-import type { DescriptionMap } from './stepperWrapper/types';
+import type { DescriptionObjectsArray } from './stepperWrapper/types';
 import type { AccessibleTextAreaInputCreatorInfo } from './TextAreaInputWrapper';
 import { TextAreaInputWrapper } from './TextAreaInputWrapper';
 import type { AccessibleTextInputCreatorInfo } from './TextInputWrapper';
@@ -58,5 +58,5 @@ export type {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-  DescriptionMap,
+  DescriptionObjectsArray,
 };

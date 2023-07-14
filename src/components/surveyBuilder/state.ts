@@ -1,3 +1,4 @@
+import { DescriptionObjectsArray } from '../wrappers';
 import {
   SurveyBuilderAction,
   SurveyBuilderDispatch,
@@ -23,7 +24,7 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   questions: [''],
   areValidQuestions: [false],
   areQuestionsFocused: [false],
-  isQuestionLengthExceeded: [false],
+  isQuestionLengthExceeded: false,
 
   responseKinds: ['chooseOne'],
   responseInputHtml: ['trueFalse'],
@@ -86,65 +87,6 @@ function surveyBuilderReducer(
   action: SurveyBuilderDispatch
 ): SurveyBuilderState {
   switch (action.type) {
-    case surveyBuilderAction.setSurveyTitle:
-      return {
-        ...state,
-        surveyTitle: action.payload,
-      };
-    case surveyBuilderAction.setIsValidSurveyTitle:
-      return {
-        ...state,
-        isValidSurveyTitle: action.payload,
-      };
-    case surveyBuilderAction.setIsSurveyTitleFocused:
-      return {
-        ...state,
-        isSurveyTitleFocused: action.payload,
-      };
-
-    case surveyBuilderAction.setSurveyDescription:
-      return {
-        ...state,
-        surveyDescription: action.payload,
-      };
-    case surveyBuilderAction.setIsValidSurveyDescription:
-      return {
-        ...state,
-        isValidSurveyDescription: action.payload,
-      };
-    case surveyBuilderAction.setIsSurveyDescriptionFocused:
-      return {
-        ...state,
-        isSurveyDescriptionFocused: action.payload,
-      };
-
-    case surveyBuilderAction.setExpiryDate:
-      return {
-        ...state,
-        expiryDate: action.payload,
-      };
-    case surveyBuilderAction.setIsValidExpiryDate:
-      return {
-        ...state,
-        isValidExpiryDate: action.payload,
-      };
-    case surveyBuilderAction.setIsExpiryDateFocused:
-      return {
-        ...state,
-        isExpiryDateFocused: action.payload,
-      };
-
-    case surveyBuilderAction.setSurveyRecipients:
-      return {
-        ...state,
-        surveyRecipients: action.payload,
-      };
-    case surveyBuilderAction.setIsAnonymous:
-      return {
-        ...state,
-        isAnonymous: action.payload,
-      };
-
     case surveyBuilderAction.setQuestions: {
       const { index, value } = action.payload;
 
@@ -161,25 +103,11 @@ function surveyBuilderReducer(
       };
     }
 
-    case surveyBuilderAction.setAreValidQuestions: {
-      // const { index, value } = action.payload;
-      // const areValidQuestions = [...state.areValidQuestions];
-      // if (index >= areValidQuestions.length) {
-      //   areValidQuestions.push(value);
-      // } else {
-      //   areValidQuestions[index] = value;
-      // }
-
-      // return {
-      //   ...state,
-      //   areValidQuestions,
-      // };
-
+    case surveyBuilderAction.setAreValidQuestions:
       return {
         ...state,
         areValidQuestions: action.payload,
       };
-    }
 
     case surveyBuilderAction.setAreQuestionsFocused: {
       const { index, value } = action.payload;
@@ -195,20 +123,12 @@ function surveyBuilderReducer(
         areQuestionsFocused,
       };
     }
-    case surveyBuilderAction.setIsQuestionLengthExceeded: {
-      const { index, value } = action.payload;
-      const isQuestionLengthExceeded = [...state.isQuestionLengthExceeded];
-      if (index >= isQuestionLengthExceeded.length) {
-        isQuestionLengthExceeded.push(value);
-      } else {
-        isQuestionLengthExceeded[index] = value;
-      }
-
+    case surveyBuilderAction.setIsQuestionLengthExceeded:
       return {
         ...state,
-        isQuestionLengthExceeded,
+        isQuestionLengthExceeded: action.payload,
       };
-    }
+
     case surveyBuilderAction.deleteQuestionGroup: {
       const index = action.payload;
       // delete the question
@@ -302,6 +222,66 @@ function surveyBuilderReducer(
         stepsInError,
       };
     }
+
+    case surveyBuilderAction.setSurveyTitle:
+      return {
+        ...state,
+        surveyTitle: action.payload,
+      };
+    case surveyBuilderAction.setIsValidSurveyTitle:
+      return {
+        ...state,
+        isValidSurveyTitle: action.payload,
+      };
+    case surveyBuilderAction.setIsSurveyTitleFocused:
+      return {
+        ...state,
+        isSurveyTitleFocused: action.payload,
+      };
+
+    case surveyBuilderAction.setSurveyDescription:
+      return {
+        ...state,
+        surveyDescription: action.payload,
+      };
+    case surveyBuilderAction.setIsValidSurveyDescription:
+      return {
+        ...state,
+        isValidSurveyDescription: action.payload,
+      };
+    case surveyBuilderAction.setIsSurveyDescriptionFocused:
+      return {
+        ...state,
+        isSurveyDescriptionFocused: action.payload,
+      };
+
+    case surveyBuilderAction.setExpiryDate:
+      return {
+        ...state,
+        expiryDate: action.payload,
+      };
+    case surveyBuilderAction.setIsValidExpiryDate:
+      return {
+        ...state,
+        isValidExpiryDate: action.payload,
+      };
+    case surveyBuilderAction.setIsExpiryDateFocused:
+      return {
+        ...state,
+        isExpiryDateFocused: action.payload,
+      };
+
+    case surveyBuilderAction.setSurveyRecipients:
+      return {
+        ...state,
+        surveyRecipients: action.payload,
+      };
+    case surveyBuilderAction.setIsAnonymous:
+      return {
+        ...state,
+        isAnonymous: action.payload,
+      };
+
     case surveyBuilderAction.setIsError:
       return {
         ...state,

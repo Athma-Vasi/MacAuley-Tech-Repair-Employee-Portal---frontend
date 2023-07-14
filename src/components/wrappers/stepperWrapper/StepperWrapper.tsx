@@ -9,8 +9,9 @@ import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
 
 function StepperWrapper({
+  allowNextStepsSelect = false,
   children,
-  descriptionMap,
+  descriptionObjectsArray,
   stepsInError,
   maxStepperPosition,
   currentStepperPosition,
@@ -35,30 +36,30 @@ function StepperWrapper({
           });
         }}
         breakpoint="sm"
-        allowNextStepsSelect={false}
+        allowNextStepsSelect={allowNextStepsSelect}
       >
-        {Array.from(descriptionMap).map((value, index) => {
-          const [step, { description, ariaLabel }] = value;
+        {descriptionObjectsArray.map((value, index) => {
+          const { ariaLabel, description } = value;
 
           const capsLabel = `Step ${numberSpellingMap
-            .get(step)?.[0]
-            .toUpperCase()}${numberSpellingMap.get(step)?.slice(1)}`;
+            .get(index)?.[0]
+            .toUpperCase()}${numberSpellingMap.get(index)?.slice(1)}`;
 
           return (
             <Stepper.Step
-              key={step}
+              key={`step-${index}`}
               label={capsLabel}
               description={description}
               aria-label={ariaLabel}
               aria-current={
-                currentStepperPosition === step ? 'step' : undefined
+                currentStepperPosition === index ? 'step' : undefined
               }
-              // because the mantine stepper uses 0-based indexing and our steps are 1-based
-              ref={currentStepperPosition + 1 === step ? stepperRef : undefined}
+              //the mantine stepper uses 0-based indexing
+              ref={currentStepperPosition === index ? stepperRef : undefined}
               className="hide-outline"
-              color={stepsInError.has(step) ? 'red' : undefined}
+              color={stepsInError.has(index) ? 'red' : undefined}
               completedIcon={
-                stepsInError.has(step) ? (
+                stepsInError.has(index) ? (
                   <FontAwesomeIcon icon={faX} />
                 ) : (
                   <FontAwesomeIcon icon={faCheck} />

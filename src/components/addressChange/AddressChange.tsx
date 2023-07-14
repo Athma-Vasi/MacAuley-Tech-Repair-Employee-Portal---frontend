@@ -31,7 +31,7 @@ import {
   StepperWrapper,
 } from '../wrappers';
 import {
-  ADDRESS_CHANGE_DESCRIPTION_MAP,
+  ADDRESS_CHANGE_DESCRIPTION_OBJECTS,
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,
   COUNTRIES_DATA,
 } from './constants';
@@ -206,7 +206,7 @@ function AddressChange() {
       type: addressChangeAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
@@ -584,7 +584,7 @@ function AddressChange() {
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
       setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
-      descriptionMap={ADDRESS_CHANGE_DESCRIPTION_MAP}
+      descriptionObjectsArray={ADDRESS_CHANGE_DESCRIPTION_OBJECTS}
       maxStepperPosition={ADDRESS_CHANGE_MAX_STEPPER_POSITION}
       parentComponentDispatch={addressChangeDispatch}
       stepsInError={stepsInError}

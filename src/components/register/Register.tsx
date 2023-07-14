@@ -26,7 +26,7 @@ import { StepperWrapper } from '../wrappers';
 import { Success } from '../success';
 import {
   MAX_STEPPER_POSITION,
-  REGISTER_DESCRIPTION_MAP,
+  REGISTER_DESCRIPTION_OBJECTS,
   REGISTER_URL,
 } from './constants';
 import { RegisterStepAdditional } from './registerStepAdditional/RegisterStepAdditional';
@@ -407,7 +407,7 @@ function Register() {
   const displayRegisterForm = (
     <StepperWrapper
       stepsInError={stepsInError}
-      descriptionMap={REGISTER_DESCRIPTION_MAP}
+      descriptionObjectsArray={REGISTER_DESCRIPTION_OBJECTS}
       maxStepperPosition={MAX_STEPPER_POSITION}
       currentStepperPosition={currentStepperPosition}
       setCurrentStepperPosition={registerAction.setCurrentStepperPosition}
