@@ -141,14 +141,19 @@ function SurveyBuilder() {
       payload: isValid,
     });
 
-    // update the description of stepperDescriptionObjects on every change
+    // update the StepperWrapper description with entered question on every change
     questions.forEach((question, index) => {
+      const maxSliceLength = 11;
+
       surveyBuilderDispatch({
         type: surveyBuilderAction.setStepperDescriptionObjects,
         payload: {
           index: index + 1,
           value: {
-            description: `Question ${index + 1}: ${question.slice(0, 11)} ...`,
+            description: `Question ${index + 1}: ${question.slice(
+              0,
+              maxSliceLength
+            )} ${question.length > maxSliceLength ? '...' : ''}`,
             ariaLabel: `Question ${index + 1}: ${question
               .split(' ')
               .slice(0, 3)
