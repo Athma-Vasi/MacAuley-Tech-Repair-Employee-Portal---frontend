@@ -140,6 +140,23 @@ function SurveyBuilder() {
       type: surveyBuilderAction.setAreValidQuestions,
       payload: isValid,
     });
+
+    // update the description of stepperDescriptionObjects on every change
+    questions.forEach((question, index) => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setStepperDescriptionObjects,
+        payload: {
+          index: index + 1,
+          value: {
+            description: `Question ${index + 1}: ${question.slice(0, 11)} ...`,
+            ariaLabel: `Question ${index + 1}: ${question
+              .split(' ')
+              .slice(0, 3)
+              .join(' ')}`,
+          },
+        },
+      });
+    });
   }, [questions]);
 
   // validate questions length on every change
@@ -605,10 +622,6 @@ function SurveyBuilder() {
       : currentStepperPosition === 5
       ? mergedSurveyQuestionsGroups.slice(4, 5)
       : currentStepperPosition === 6
-      ? mergedSurveyQuestionsGroups.slice(5, 6)
-      : currentStepperPosition === 7
-      ? mergedSurveyQuestionsGroups.slice(6, 7)
-      : currentStepperPosition === maxStepperPosition
       ? displaySurveyBuilderReviewPage
       : null;
 

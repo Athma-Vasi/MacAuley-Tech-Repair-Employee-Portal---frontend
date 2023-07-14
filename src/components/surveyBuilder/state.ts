@@ -246,12 +246,25 @@ function surveyBuilderReducer(
     }
 
     case surveyBuilderAction.setStepperDescriptionObjects: {
-      const value = action.payload;
-      const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
+      // const value = action.payload;
+      // const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
 
-      const lastObject =
-        stepperDescriptionObjects[stepperDescriptionObjects.length - 1];
-      stepperDescriptionObjects.push(value, lastObject);
+      // const lastObject =
+      //   stepperDescriptionObjects[stepperDescriptionObjects.length - 1];
+      // stepperDescriptionObjects.push(value, lastObject);
+
+      // return {
+      //   ...state,
+      //   stepperDescriptionObjects,
+      // };
+      const { index, value } = action.payload;
+
+      const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
+      if (index >= stepperDescriptionObjects.length) {
+        stepperDescriptionObjects.push(value);
+      } else {
+        stepperDescriptionObjects[index] = value;
+      }
 
       return {
         ...state,

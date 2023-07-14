@@ -204,8 +204,11 @@ type SurveyBuilderDispatch =
   | {
       type: SurveyBuilderAction['setStepperDescriptionObjects'];
       payload: {
-        description: string;
-        ariaLabel: string;
+        index: number;
+        value: {
+          description: string;
+          ariaLabel: string;
+        };
       };
     };
 
