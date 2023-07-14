@@ -25,6 +25,23 @@ function StepperWrapper({
     stepperRef.current?.focus();
   }, [currentStepperPosition]);
 
+  const successMessage = '˖ ࣪‧₊˚⋆✩٩(ˊᗜˋ*)و ✩  Looks great! You are good to go!';
+  const errorMessage = `(｡•́︿•̀｡)  Oh dear! Looks like there ${
+    stepsInError.size > 1 ? 'are' : 'is'
+  } ${stepsInError.size > 1 ? 'some' : 'an'} error${
+    stepsInError.size > 1 ? 's' : ''
+  } on step${stepsInError.size > 1 ? 's' : ''}: ${
+    Array.from(stepsInError)
+      .sort((a, z) => (a < z ? -1 : a > z ? 1 : 0))
+      .map((step) => {
+        const numberSpelling = numberSpellingMap.get(step);
+        return `${numberSpelling
+          ?.charAt(0)
+          .toUpperCase()}${numberSpelling?.slice(1)}`;
+      })
+      .join(', ') ?? ''
+  }. Please fix the error to proceed!`;
+
   return (
     <>
       <Stepper
@@ -74,15 +91,7 @@ function StepperWrapper({
         {/* final page */}
         <Stepper.Completed>
           <Text color="dark">
-            {stepsInError.size === 0
-              ? '˖ ࣪‧₊˚⋆✩٩(ˊᗜˋ*)و ✩ Looks great! You are good to go!!'
-              : `(｡•́︿•̀｡) Oh no! Looks like there is an error on step${
-                  stepsInError.size > 1 ? 's' : ''
-                }: ${
-                  Array.from(stepsInError)
-                    .sort((a, z) => (a < z ? -1 : a > z ? 1 : 0))
-                    .join(', ') || ''
-                }. Please fix the error to proceed!`}
+            {stepsInError.size === 0 ? successMessage : errorMessage}
           </Text>
         </Stepper.Completed>
       </Stepper>
