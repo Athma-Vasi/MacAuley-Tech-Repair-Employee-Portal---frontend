@@ -2,18 +2,21 @@ type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
   createdResponseKindRadioGroups: JSX.Element[];
   createdResponseInputHtmlRadioGroups: JSX.Element[];
+  displayAddNewQuestionButton?: JSX.Element | undefined | null;
 };
 
 function mergeSurveyQuestionsGroup({
   createdQuestionsTextInputs,
   createdResponseKindRadioGroups,
   createdResponseInputHtmlRadioGroups,
+  displayAddNewQuestionButton,
 }: MergeSurveyQuestionsGroupProps) {
   return createdQuestionsTextInputs.map((createdQuestionsTextInput, index) => (
     <>
       {createdQuestionsTextInput}
       {createdResponseKindRadioGroups[index]}
       {createdResponseInputHtmlRadioGroups[index]}
+      {displayAddNewQuestionButton ?? null}
     </>
   ));
 }

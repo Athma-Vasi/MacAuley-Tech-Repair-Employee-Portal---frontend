@@ -24,7 +24,6 @@ import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../utils';
-import { createAnnouncementAction } from '../announcements/createAnnouncement/state';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxInputCreatorInfo,
@@ -36,10 +35,8 @@ import {
   StepperWrapper,
 } from '../wrappers';
 import {
-  SURVEY_BUILDER_DESCRIPTION_OBJECTS,
   SURVEY_BUILDER_INPUT_HTML_DATA,
   SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
-  SURVEY_BUILDER_MAX_STEPPER_POSITION,
   SURVEY_BUILDER_RECIPIENT_DATA,
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
 } from './constants';
@@ -49,10 +46,7 @@ import {
   surveyBuilderReducer,
 } from './state';
 import { SurveyRecipient } from './types';
-import {
-  groupMergedQuestionsByAmount,
-  mergeSurveyQuestionsGroup,
-} from './utils';
+import { mergeSurveyQuestionsGroup } from './utils';
 
 function SurveyBuilder() {
   const [surveyBuilderState, surveyBuilderDispatch] = useReducer(
@@ -78,11 +72,12 @@ function SurveyBuilder() {
     questions,
     areValidQuestions,
     areQuestionsFocused,
-    isQuestionLengthExceeded,
+    isMaxQuestionsReached,
 
     responseKinds,
     responseInputHtml,
 
+    stepperDescriptionObjects,
     currentStepperPosition,
     stepsInError,
 
@@ -152,7 +147,7 @@ function SurveyBuilder() {
     const isExceeded = questions.length === SURVEY_BUILDER_MAX_QUESTION_AMOUNT;
 
     surveyBuilderDispatch({
-      type: surveyBuilderAction.setIsQuestionLengthExceeded,
+      type: surveyBuilderAction.setIsMaxQuestionsReached,
       payload: isExceeded,
     });
   }, [questions.length]);
@@ -173,16 +168,22 @@ function SurveyBuilder() {
 
   // validate stepper state on every dynamically created question input groups
   useEffect(() => {
-    const isStepInError = areValidQuestions.some(
-      (isValidQuestion) => !isValidQuestion
-    );
-
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setStepsInError,
-      payload: {
-        kind: isStepInError ? 'add' : 'delete',
-        step: 1,
-      },
+    areValidQuestions.forEach((isValidQuestion, index) => {
+      !isValidQuestion
+        ? surveyBuilderDispatch({
+            type: surveyBuilderAction.setStepsInError,
+            payload: {
+              kind: 'add',
+              step: index + 1,
+            },
+          })
+        : surveyBuilderDispatch({
+            type: surveyBuilderAction.setStepsInError,
+            payload: {
+              kind: 'delete',
+              step: index + 1,
+            },
+          });
     });
   }, [areValidQuestions]);
 
@@ -420,6 +421,11 @@ function SurveyBuilder() {
               type: surveyBuilderAction.deleteQuestionGroup,
               payload: index,
             });
+            // decrement current stepper position
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setCurrentStepperPosition,
+              payload: currentStepperPosition - 1,
+            });
           },
           semanticAction: 'delete',
         },
@@ -499,6 +505,11 @@ function SurveyBuilder() {
         type: surveyBuilderAction.addNewQuestionGroup,
         payload: questions.length,
       });
+      // increment current stepper position
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setCurrentStepperPosition,
+        payload: currentStepperPosition + 1,
+      });
     },
     semanticDescription: 'add new article paragraph text input button',
     semanticName: 'add paragraph button',
@@ -537,7 +548,7 @@ function SurveyBuilder() {
       responseInputHtmlRadioGroupCreatorInfo
     );
 
-  const [createdNewQuestionButton, createdFormSubmitButton] =
+  const [createdAddNewQuestionButton, createdFormSubmitButton] =
     returnAccessibleButtonElements([
       addNewQuestionButtonCreatorInfo,
       formSubmitButtonCreatorInfo,
@@ -555,10 +566,15 @@ function SurveyBuilder() {
     surveyTitleInputCreatorInfo,
   ]);
 
+  const displayAddNewQuestionButton = isMaxQuestionsReached
+    ? null
+    : createdAddNewQuestionButton;
+
   const mergedSurveyQuestionsGroups = mergeSurveyQuestionsGroup({
     createdQuestionsTextInputs,
     createdResponseKindRadioGroups,
     createdResponseInputHtmlRadioGroups,
+    displayAddNewQuestionButton,
   });
 
   const displaySurveyDetailsFormPageOne = (
@@ -571,34 +587,41 @@ function SurveyBuilder() {
     </>
   );
 
-  const displaySurveyQuestionsFormPageTwo = (
-    <>
-      {mergedSurveyQuestionsGroups}
-      {isQuestionLengthExceeded ? null : createdNewQuestionButton}
-    </>
-  );
-
   const displaySurveyBuilderReviewPage = <h4>survey builder review page</h4>;
+
+  const maxStepperPosition = stepperDescriptionObjects.length;
 
   const displaySurveyBuilderForm =
     currentStepperPosition === 0
       ? displaySurveyDetailsFormPageOne
       : currentStepperPosition === 1
-      ? displaySurveyQuestionsFormPageTwo
+      ? mergedSurveyQuestionsGroups.slice(0, 1)
       : currentStepperPosition === 2
+      ? mergedSurveyQuestionsGroups.slice(1, 2)
+      : currentStepperPosition === 3
+      ? mergedSurveyQuestionsGroups.slice(2, 3)
+      : currentStepperPosition === 4
+      ? mergedSurveyQuestionsGroups.slice(3, 4)
+      : currentStepperPosition === 5
+      ? mergedSurveyQuestionsGroups.slice(4, 5)
+      : currentStepperPosition === 6
+      ? mergedSurveyQuestionsGroups.slice(5, 6)
+      : currentStepperPosition === 7
+      ? mergedSurveyQuestionsGroups.slice(6, 7)
+      : currentStepperPosition === maxStepperPosition
       ? displaySurveyBuilderReviewPage
       : null;
 
   const displayFormSubmitButton =
-    currentStepperPosition === SURVEY_BUILDER_MAX_STEPPER_POSITION
+    currentStepperPosition === maxStepperPosition
       ? createdFormSubmitButton
       : null;
 
   const displaySurveyBuilderComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
-      descriptionObjectsArray={SURVEY_BUILDER_DESCRIPTION_OBJECTS}
-      maxStepperPosition={SURVEY_BUILDER_MAX_STEPPER_POSITION}
+      descriptionObjectsArray={stepperDescriptionObjects}
+      maxStepperPosition={maxStepperPosition}
       parentComponentDispatch={surveyBuilderDispatch}
       setCurrentStepperPosition={surveyBuilderAction.setCurrentStepperPosition}
       stepsInError={stepsInError}

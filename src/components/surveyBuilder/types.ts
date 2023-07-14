@@ -74,11 +74,12 @@ type SurveyBuilderState = {
   questions: Array<string>;
   areValidQuestions: Array<boolean>;
   areQuestionsFocused: Array<boolean>;
-  isQuestionLengthExceeded: boolean;
+  isMaxQuestionsReached: boolean;
 
   responseKinds: Array<string>;
   responseInputHtml: Array<string>;
 
+  stepperDescriptionObjects: DescriptionObjectsArray;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -111,7 +112,7 @@ type SurveyBuilderAction = {
   setQuestions: 'setQuestions';
   setAreValidQuestions: 'setAreValidQuestions';
   setAreQuestionsFocused: 'setAreQuestionsFocused';
-  setIsQuestionLengthExceeded: 'setIsQuestionLengthExceeded';
+  setIsMaxQuestionsReached: 'setIsMaxQuestionsReached';
 
   deleteQuestionGroup: 'deleteQuestionGroup';
   addNewQuestionGroup: 'addNewQuestionGroup';
@@ -119,6 +120,7 @@ type SurveyBuilderAction = {
   setResponseKinds: 'setResponseKinds';
   setResponseInputHtml: 'setResponseInputHtml';
 
+  setStepperDescriptionObjects: 'setStepperDescriptionObjects';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -154,7 +156,7 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setIsValidExpiryDate']
         | SurveyBuilderAction['setIsExpiryDateFocused']
         | SurveyBuilderAction['setIsAnonymous']
-        | SurveyBuilderAction['setIsQuestionLengthExceeded']
+        | SurveyBuilderAction['setIsMaxQuestionsReached']
         | SurveyBuilderAction['setIsError']
         | SurveyBuilderAction['setIsSubmitting']
         | SurveyBuilderAction['setIsSuccessful']
@@ -198,6 +200,13 @@ type SurveyBuilderDispatch =
   | {
       type: SurveyBuilderAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
+    }
+  | {
+      type: SurveyBuilderAction['setStepperDescriptionObjects'];
+      payload: {
+        description: string;
+        ariaLabel: string;
+      };
     };
 
 type SurveyBuilderReducer = (

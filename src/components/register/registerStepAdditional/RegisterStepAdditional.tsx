@@ -107,7 +107,7 @@ function RegisterStepAdditional({
       type: registerAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 4,
+        step: 3,
       },
     });
   }, [

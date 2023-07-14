@@ -5,6 +5,25 @@ import {
   SurveyBuilderState,
 } from './types';
 
+const initialDescriptionObjects: DescriptionObjectsArray = [
+  {
+    description: 'Enter survey details',
+    ariaLabel:
+      'Enter survey title, description, expiry date, recipients and anonymity',
+  },
+
+  {
+    description: 'Enter question 1',
+    ariaLabel:
+      'Enter question 1, response kind and corresponding html input type',
+  },
+
+  {
+    description: 'Review and proceed',
+    ariaLabel: 'Review survey questions and associated input types and proceed',
+  },
+];
+
 const initialSurveyBuilderState: SurveyBuilderState = {
   surveyTitle: '',
   isValidSurveyTitle: false,
@@ -24,11 +43,12 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   questions: [''],
   areValidQuestions: [false],
   areQuestionsFocused: [false],
-  isQuestionLengthExceeded: false,
+  isMaxQuestionsReached: false,
 
   responseKinds: ['chooseOne'],
   responseInputHtml: ['trueFalse'],
 
+  stepperDescriptionObjects: initialDescriptionObjects,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -61,7 +81,7 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setQuestions: 'setQuestions',
   setAreValidQuestions: 'setAreValidQuestions',
   setAreQuestionsFocused: 'setAreQuestionsFocused',
-  setIsQuestionLengthExceeded: 'setIsQuestionLengthExceeded',
+  setIsMaxQuestionsReached: 'setIsMaxQuestionsReached',
 
   deleteQuestionGroup: 'deleteQuestionGroup',
   addNewQuestionGroup: 'addNewQuestionGroup',
@@ -69,6 +89,7 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setResponseKinds: 'setResponseKinds',
   setResponseInputHtml: 'setResponseInputHtml',
 
+  setStepperDescriptionObjects: 'setStepperDescriptionObjects',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -123,10 +144,10 @@ function surveyBuilderReducer(
         areQuestionsFocused,
       };
     }
-    case surveyBuilderAction.setIsQuestionLengthExceeded:
+    case surveyBuilderAction.setIsMaxQuestionsReached:
       return {
         ...state,
-        isQuestionLengthExceeded: action.payload,
+        isMaxQuestionsReached: action.payload,
       };
 
     case surveyBuilderAction.deleteQuestionGroup: {
@@ -145,6 +166,10 @@ function surveyBuilderReducer(
       const responseInputHtml = [...state.responseInputHtml];
       responseInputHtml.splice(index, 1);
 
+      // delete the description object
+      const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
+      stepperDescriptionObjects.splice(index + 1, 1);
+
       return {
         ...state,
         questions,
@@ -152,10 +177,22 @@ function surveyBuilderReducer(
         areQuestionsFocused,
         responseKinds,
         responseInputHtml,
+        stepperDescriptionObjects,
       };
     }
 
     case surveyBuilderAction.addNewQuestionGroup: {
+      // create new description object
+      const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
+      const lastObject = stepperDescriptionObjects.splice(-1)[0];
+      stepperDescriptionObjects.push(
+        {
+          description: `Enter question ${stepperDescriptionObjects.length}`,
+          ariaLabel: `Enter question ${stepperDescriptionObjects.length}`,
+        },
+        lastObject
+      );
+
       const questions = [...state.questions];
       questions.push('');
       const areValidQuestions = [...state.areValidQuestions];
@@ -174,6 +211,7 @@ function surveyBuilderReducer(
         areQuestionsFocused,
         responseKinds,
         responseInputHtml,
+        stepperDescriptionObjects,
       };
     }
 
@@ -204,6 +242,20 @@ function surveyBuilderReducer(
       return {
         ...state,
         responseInputHtml,
+      };
+    }
+
+    case surveyBuilderAction.setStepperDescriptionObjects: {
+      const value = action.payload;
+      const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
+
+      const lastObject =
+        stepperDescriptionObjects[stepperDescriptionObjects.length - 1];
+      stepperDescriptionObjects.push(value, lastObject);
+
+      return {
+        ...state,
+        stepperDescriptionObjects,
       };
     }
 

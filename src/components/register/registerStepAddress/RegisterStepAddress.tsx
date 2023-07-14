@@ -163,7 +163,7 @@ function RegisterStepAddress({
       type: registerAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 3,
+        step: 2,
       },
     });
   }, [

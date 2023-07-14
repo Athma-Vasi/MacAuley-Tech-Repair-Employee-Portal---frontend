@@ -22,8 +22,8 @@ import {
 import { UserSchema } from '../../types';
 import { CustomError } from '../customError';
 import { Loading } from '../loading';
-import { StepperWrapper } from '../wrappers';
 import { Success } from '../success';
+import { StepperWrapper } from '../wrappers';
 import {
   MAX_STEPPER_POSITION,
   REGISTER_DESCRIPTION_OBJECTS,

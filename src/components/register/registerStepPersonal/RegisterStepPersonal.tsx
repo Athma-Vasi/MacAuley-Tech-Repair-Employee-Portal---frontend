@@ -94,7 +94,7 @@ function RegisterStepPersonal({
       type: registerAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [

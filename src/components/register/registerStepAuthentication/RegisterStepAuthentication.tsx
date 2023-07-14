@@ -81,7 +81,7 @@ function RegisterStepAuthentication({
       type: registerAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 1,
+        step: 0,
       },
     });
   }, [
