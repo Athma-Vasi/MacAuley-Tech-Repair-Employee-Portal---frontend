@@ -154,10 +154,21 @@ type SurveyBuilderDispatch =
       payload: SurveyRecipient;
     }
   | {
-      type: SurveyBuilderAction['setQuestions'];
+      type:
+        | SurveyBuilderAction['setQuestions']
+        | SurveyBuilderAction['setResponseKinds']
+        | SurveyBuilderAction['setResponseInputHtml'];
+
       payload: {
         index: number;
         value: string;
+      };
+    }
+  | {
+      type: SurveyBuilderAction['setResponseDataOptions'];
+      payload: {
+        index: number;
+        value: Array<string>;
       };
     }
   | {

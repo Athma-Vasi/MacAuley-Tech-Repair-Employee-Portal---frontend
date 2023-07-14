@@ -295,6 +295,28 @@ function returnAccessibleRadioSingleInputElements(
   ));
 }
 
+function returnAccessibleDynamicRadioSingleInputElements(
+  creatorInfoObjectArray: AccessibleRadioSingleInputCreatorInfo[]
+) {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
+    <RadioSingleInputWrapper
+      key={`${index}${creatorInfoObject.label}`}
+      creatorInfoObject={creatorInfoObject}
+    />
+  ));
+}
+
+function returnAccessibleDynamicRadioGroupInputsElements(
+  creatorInfoObjectArray: AccessibleRadioGroupInputCreatorInfo[]
+) {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
+    <RadioGroupInputsWrapper
+      key={`${index}${creatorInfoObject.label}`}
+      creatorInfoObject={creatorInfoObject}
+    />
+  ));
+}
+
 function returnAccessibleRadioGroupInputsElements(
   creatorInfoObjectArray: AccessibleRadioGroupInputCreatorInfo[]
 ) {
@@ -343,6 +365,8 @@ export {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
+  returnAccessibleDynamicRadioGroupInputsElements,
+  returnAccessibleDynamicRadioSingleInputElements,
   returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleDynamicTextInputElements,
   returnAccessiblePasswordInputElements,

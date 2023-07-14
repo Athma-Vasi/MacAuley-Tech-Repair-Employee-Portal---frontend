@@ -1,22 +1,38 @@
+import { Flex, Text } from '@mantine/core';
+import { Group, Tooltip } from '@mantine/core';
 import { useEffect, useReducer, useRef } from 'react';
+import { MdOutlineAdd } from 'react-icons/md';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
 } from '../../constants/regex';
 import {
+  returnAccessibleButtonElements,
+  returnAccessibleCheckboxInputElements,
+  returnAccessibleDateTimeElements,
+  returnAccessibleDynamicRadioGroupInputsElements,
+  returnAccessibleDynamicTextInputElements,
   returnAccessibleTextElements,
   returnAccessibleTextElementsForDynamicInputs,
+  returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../utils';
+import { createAnnouncementAction } from '../announcements/createAnnouncement/state';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleCheckboxInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
+  AccessibleRadioGroupInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
 } from '../wrappers';
+import {
+  SURVEY_BUILDER_INPUT_HTML_DATA,
+  SURVEY_BUILDER_RESPONSE_KIND_DATA,
+} from './constants';
 import {
   initialSurveyBuilderState,
   surveyBuilderAction,
@@ -296,7 +312,147 @@ function SurveyBuilder() {
       return creatorInfoObject;
     });
 
-  return <h4>SurveyBuilder</h4>;
+  const responseKindRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
+    Array.from({ length: questions.length }).map((_, index) => {
+      const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
+        description: 'Choose a response type for your question',
+        dataObjectArray: SURVEY_BUILDER_RESPONSE_KIND_DATA,
+        label: `Response Type for Question ${index + 1}`,
+        name: `response type for question ${index + 1}`,
+        onChange: (value: string) => {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setResponseKinds,
+            payload: {
+              index,
+              value,
+            },
+          });
+        },
+        semanticName: `response type for question ${index + 1}`,
+        value: responseKinds[index],
+        required: true,
+        withAsterisk: true,
+      };
+
+      return creatorInfoObject;
+    });
+
+  const responseInputHtmlRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
+    Array.from({ length: questions.length }).map((_, index) => {
+      const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
+        description: 'Choose a html input type for your question',
+        dataObjectArray: SURVEY_BUILDER_INPUT_HTML_DATA.get(
+          responseKinds[index]
+        ) as {
+          value: string;
+          label: string;
+        }[],
+        label: `Html input Type for Question ${index + 1}`,
+        name: `html input type for question ${index + 1}`,
+        onChange: (value: string) => {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setResponseInputHtml,
+            payload: {
+              index,
+              value,
+            },
+          });
+        },
+        semanticName: `html input type for question ${index + 1}`,
+        value: responseInputHtml[index],
+        required: true,
+        withAsterisk: true,
+      };
+
+      return creatorInfoObject;
+    });
+
+  const addNewQuestionButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonVariant: 'outline',
+    buttonLabel: (
+      <Tooltip label="Add new article paragraph">
+        <Group>
+          <MdOutlineAdd size={20} />
+          <Text color="gray">Add</Text>
+        </Group>
+      </Tooltip>
+    ),
+    buttonOnClick: () => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setQuestions,
+        payload: {
+          index: questions.length,
+          value: '',
+        },
+      });
+    },
+    semanticDescription: 'add new article paragraph text input button',
+    semanticName: 'add paragraph button',
+  };
+
+  const createdQuestionsTextInputs = returnAccessibleDynamicTextInputElements(
+    questionsInputCreatorInfo
+  );
+
+  const createdResponseKindRadioGroups =
+    returnAccessibleDynamicRadioGroupInputsElements(
+      responseKindRadioGroupCreatorInfo
+    );
+
+  const createdResponseInputHtmlRadioGroups =
+    returnAccessibleDynamicRadioGroupInputsElements(
+      responseInputHtmlRadioGroupCreatorInfo
+    );
+
+  const [createdNewQuestionButton] = returnAccessibleButtonElements([
+    addNewQuestionButtonCreatorInfo,
+  ]);
+
+  const [createdIsAnonymousCheckbox] = returnAccessibleCheckboxInputElements([
+    isAnonymousCheckboxCreatorInfo,
+  ]);
+
+  const [createdExpiryDateInput] = returnAccessibleDateTimeElements([
+    expiryDateInputCreatorInfo,
+  ]);
+
+  const [createdSurveyTitleInput] = returnAccessibleTextInputElements([
+    surveyTitleInputCreatorInfo,
+  ]);
+
+  const displaySurveyBuilderForm = (
+    <>
+      {createdSurveyTitleInput}
+      {createdExpiryDateInput}
+      {createdIsAnonymousCheckbox}
+      {createdQuestionsTextInputs}
+      {createdResponseKindRadioGroups}
+      {createdResponseInputHtmlRadioGroups}
+      {createdNewQuestionButton}
+    </>
+  );
+
+  const createdSurveyDescriptionInput = [];
+
+  useEffect(() => {
+    console.group('surveyBuilderState');
+    Object.entries(surveyBuilderState).forEach(([key, value]) => {
+      console.log(`${key}: `, value);
+    });
+    console.groupEnd();
+  }, [surveyBuilderState]);
+
+  return (
+    <Flex
+      direction="column"
+      align="flex-start"
+      justify="center"
+      rowGap="lg"
+      w={400}
+    >
+      {displaySurveyBuilderForm}
+    </Flex>
+  );
 }
 
 export { SurveyBuilder };

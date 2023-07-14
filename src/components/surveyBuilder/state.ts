@@ -21,8 +21,8 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   areQuestionsFocused: [false],
   isQuestionLengthExceeded: [false],
 
-  responseKinds: [''],
-  responseInputHtml: [''],
+  responseKinds: ['chooseOne'],
+  responseInputHtml: ['trueFalse'],
   responseDataOptions: [[]],
 
   currentStepperPosition: 0,
@@ -208,6 +208,51 @@ function surveyBuilderReducer(
         areQuestionsFocused,
         responseKinds,
         responseInputHtml,
+        responseDataOptions,
+      };
+    }
+
+    case surveyBuilderAction.setResponseKinds: {
+      const { index, value } = action.payload;
+      const responseKinds = [...state.responseKinds];
+      if (index >= responseKinds.length) {
+        responseKinds.push(value);
+      } else {
+        responseKinds[index] = value;
+      }
+
+      return {
+        ...state,
+        responseKinds,
+      };
+    }
+
+    case surveyBuilderAction.setResponseInputHtml: {
+      const { index, value } = action.payload;
+      const responseInputHtml = [...state.responseInputHtml];
+      if (index >= responseInputHtml.length) {
+        responseInputHtml.push(value);
+      } else {
+        responseInputHtml[index] = value;
+      }
+
+      return {
+        ...state,
+        responseInputHtml,
+      };
+    }
+
+    case surveyBuilderAction.setResponseDataOptions: {
+      const { index, value } = action.payload;
+      const responseDataOptions = [...state.responseDataOptions];
+      if (index >= responseDataOptions.length) {
+        responseDataOptions.push(value);
+      } else {
+        responseDataOptions[index] = value;
+      }
+
+      return {
+        ...state,
         responseDataOptions,
       };
     }
