@@ -1,6 +1,15 @@
 import { NativeSelect } from '@mantine/core';
 
-import { AccessibleSelectInputCreatorInfo } from '../../jsxCreators';
+type AccessibleSelectInputCreatorInfo = {
+  data: string[];
+  label: string;
+  description: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLSelectElement> | undefined;
+  required?: boolean | undefined;
+};
 
 type NativeSelectWrapperProps = {
   creatorInfoObject: AccessibleSelectInputCreatorInfo;
@@ -36,3 +45,5 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
 }
 
 export { NativeSelectWrapper };
+
+export type { AccessibleSelectInputCreatorInfo };

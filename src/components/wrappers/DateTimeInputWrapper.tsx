@@ -1,8 +1,35 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TextInput } from '@mantine/core';
 
-import { AccessibleDateTimeInputCreatorInfo } from '../../jsxCreators';
+type AccessibleDateTimeInputCreatorInfo = {
+  inputKind: 'date' | 'time';
+  dateKind?: 'date near future' | 'date near past' | 'full date' | undefined;
+  semanticName: string;
+  inputText: string;
+  isValidInputText: boolean;
+  label: string;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
+  description: {
+    error: JSX.Element;
+    valid: JSX.Element;
+  };
+  placeholder: string;
+  initialInputValue?: string | undefined;
+  icon?: IconDefinition | undefined;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+
+  min?: string | undefined;
+  max?: string | undefined;
+  minLength?: number | undefined;
+  maxLength?: number | undefined;
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
+  required?: boolean | undefined;
+  autoComplete?: 'on' | 'off' | undefined;
+};
 
 type DateTimeInputWrapperProps = {
   creatorInfoObject: AccessibleDateTimeInputCreatorInfo;
@@ -111,3 +138,5 @@ function DateTimeInputWrapper({
 }
 
 export { DateTimeInputWrapper };
+
+export type { AccessibleDateTimeInputCreatorInfo };

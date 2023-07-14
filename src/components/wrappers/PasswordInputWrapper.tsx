@@ -1,8 +1,30 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PasswordInput } from '@mantine/core';
 
-import { AccessiblePasswordInputCreatorInfo } from '../../jsxCreators';
+type AccessiblePasswordInputCreatorInfo = {
+  semanticName: string;
+  inputText: string;
+  isValidInputText: boolean;
+  label: string;
+  ariaRequired?: boolean | undefined;
+  description: {
+    error: JSX.Element;
+    valid: JSX.Element;
+  };
+  placeholder: string;
+  initialInputValue?: string | undefined;
+  icon: IconDefinition | null;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+
+  minLength?: number | undefined;
+  maxLength?: number | undefined;
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
+  required?: boolean | undefined;
+};
 
 type PasswordInputWrapperProps = {
   creatorInfoObject: AccessiblePasswordInputCreatorInfo;
@@ -70,3 +92,5 @@ function PasswordInputWrapper({
 }
 
 export { PasswordInputWrapper };
+
+export type { AccessiblePasswordInputCreatorInfo };

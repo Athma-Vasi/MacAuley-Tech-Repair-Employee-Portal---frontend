@@ -106,13 +106,6 @@ type CreateAnnouncementAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-type ReturnArticleParagraphInputProps = {
-  article: string[];
-  areValidArticleParagraphs: boolean[];
-  areArticleParagraphsFocused: boolean[];
-  returnRegexValidationText?: (paragraph: string) => string;
-};
-
 type ArticlePayload = {
   index: number;
   value: string;
@@ -196,5 +189,4 @@ export type {
   CreateAnnouncementResponse,
   CreateAnnouncementState,
   RatingFeel,
-  ReturnArticleParagraphInputProps,
 };

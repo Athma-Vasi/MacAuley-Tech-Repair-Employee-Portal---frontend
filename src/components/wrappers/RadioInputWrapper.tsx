@@ -1,6 +1,31 @@
 import { Radio } from '@mantine/core';
 
-import { AccessibleRadioInputCreatorInfo } from '../../jsxCreators';
+type AccessibleRadioInputCreatorInfo = {
+  semanticName: string;
+  label: string;
+  description: {
+    selected: string;
+    deselected: string;
+  };
+  ariaRequired?: boolean | undefined;
+  checked: boolean;
+  dataObjArray?:
+    | Array<{
+        value: string;
+        label: string;
+      }>
+    | undefined;
+  disabled?: boolean | undefined;
+
+  onChange: (event: React.ChangeEvent<HTMLInputElement> | string) => void;
+  onClick: () => void;
+  radioKind: 'single' | 'multiple';
+  value?: string | undefined;
+
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
+  required?: boolean | undefined;
+};
 
 type RadioInputWrapperProps = {
   creatorInfoObject: AccessibleRadioInputCreatorInfo;
@@ -68,3 +93,5 @@ function RadioInputWrapper({ creatorInfoObject }: RadioInputWrapperProps) {
 }
 
 export { RadioInputWrapper };
+
+export type { AccessibleRadioInputCreatorInfo };

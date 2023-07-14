@@ -16,7 +16,17 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   sendTo: 'all',
   isAnonymous: false,
 
-  questions: null,
+  questions: [
+    {
+      question: 'This is a sample question',
+      responseKind: {
+        kind: 'rating',
+        inputHtml: 'emotion',
+        dataOptions: [''],
+      },
+      required: false,
+    },
+  ],
   areValidQuestions: [false],
   areQuestionsFocused: [false],
   isQuestionLengthExceeded: false,
@@ -113,12 +123,6 @@ function surveyBuilderReducer(
 
     case surveyBuilderAction.setQuestions: {
       const { index, value } = action.payload;
-      if (state.questions === null) {
-        return {
-          ...state,
-          questions: [value],
-        };
-      }
 
       const questions = [...state.questions];
       if (index >= questions.length) {
@@ -134,17 +138,22 @@ function surveyBuilderReducer(
     }
 
     case surveyBuilderAction.setAreValidQuestions: {
-      const { index, value } = action.payload;
-      const areValidQuestions = [...state.areValidQuestions];
-      if (index >= areValidQuestions.length) {
-        areValidQuestions.push(value);
-      } else {
-        areValidQuestions[index] = value;
-      }
+      // const { index, value } = action.payload;
+      // const areValidQuestions = [...state.areValidQuestions];
+      // if (index >= areValidQuestions.length) {
+      //   areValidQuestions.push(value);
+      // } else {
+      //   areValidQuestions[index] = value;
+      // }
+
+      // return {
+      //   ...state,
+      //   areValidQuestions,
+      // };
 
       return {
         ...state,
-        areValidQuestions,
+        areValidQuestions: action.payload,
       };
     }
 
@@ -169,17 +178,10 @@ function surveyBuilderReducer(
       };
     case surveyBuilderAction.setDeleteQuestion: {
       const index = action.payload;
-
-      if (state.questions === null) {
-        return state;
-      }
-
       const questions = [...state.questions];
       questions.splice(index, 1);
-
       const areValidQuestions = [...state.areValidQuestions];
       areValidQuestions.splice(index, 1);
-
       const areQuestionsFocused = [...state.areQuestionsFocused];
       areQuestionsFocused.splice(index, 1);
 

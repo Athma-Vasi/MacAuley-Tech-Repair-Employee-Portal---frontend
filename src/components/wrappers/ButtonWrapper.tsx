@@ -1,6 +1,30 @@
 import { Button } from '@mantine/core';
+import { ReactNode } from 'react';
 
-import { AccessibleButtonCreatorInfo } from '../../jsxCreators';
+type AccessibleButtonCreatorInfo = {
+  buttonLabel: ReactNode;
+  buttonOnClick: (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => void;
+  buttonDisabled?: boolean | undefined;
+  buttonRef?: React.RefObject<HTMLButtonElement> | undefined;
+  buttonType?: 'button' | 'submit' | 'reset' | undefined;
+  buttonVariant?:
+    | 'outline'
+    | 'white'
+    | 'light'
+    | 'default'
+    | 'filled'
+    | 'gradient'
+    | 'subtle'
+    | undefined;
+  compact?: boolean | undefined;
+  leftIcon?: React.ReactNode | undefined;
+  rightIcon?: React.ReactNode | undefined;
+  semanticName: string;
+  semanticDescription: string;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | undefined;
+};
 
 type ButtonWrapperProps = {
   creatorInfoObject: AccessibleButtonCreatorInfo;
@@ -42,3 +66,5 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
 }
 
 export { ButtonWrapper };
+
+export type { AccessibleButtonCreatorInfo };

@@ -66,7 +66,7 @@ type SurveyBuilderState = {
   sendTo: SurveyRecipient;
   isAnonymous: boolean;
 
-  questions: Array<SurveyQuestion> | null;
+  questions: Array<SurveyQuestion>;
   areValidQuestions: Array<boolean>;
   areQuestionsFocused: Array<boolean>;
   isQuestionLengthExceeded: boolean;
@@ -154,9 +154,11 @@ type SurveyBuilderDispatch =
       };
     }
   | {
-      type:
-        | SurveyBuilderAction['setAreValidQuestions']
-        | SurveyBuilderAction['setAreQuestionsFocused'];
+      type: SurveyBuilderAction['setAreValidQuestions'];
+      payload: boolean[];
+    }
+  | {
+      type: SurveyBuilderAction['setAreQuestionsFocused'];
       payload: {
         index: number;
         value: boolean;

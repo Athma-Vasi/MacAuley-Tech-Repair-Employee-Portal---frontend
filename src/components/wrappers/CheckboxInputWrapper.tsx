@@ -1,6 +1,38 @@
 import { Checkbox } from '@mantine/core';
 
-import { AccessibleCheckboxInputCreatorInfo } from '../../jsxCreators';
+type AccessibleCheckboxInputCreatorInfo = {
+  semanticName: string;
+  accessibleDescription?:
+    | {
+        selected: string;
+        deselected: string;
+      }
+    | undefined;
+  ariarequired?: boolean | undefined;
+  checkboxKind: 'single' | 'multiple';
+  dataObjArray?:
+    | Array<{
+        value: string;
+        label: string;
+      }>
+    | undefined;
+  defaultValue?: [string] | undefined;
+  description: {
+    selected: string;
+    deselected: string;
+  };
+  label?: string | undefined;
+  checked?: boolean | undefined;
+  disabled?: boolean | undefined;
+  onChangeMultiple?: (value: string[]) => void | undefined;
+  onChangeSingle?: (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => void | undefined;
+  onClick?: () => void | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
+  required?: boolean | undefined;
+  value?: string[] | undefined;
+};
 
 type CheckboxInputWrapperProps = {
   creatorInfoObject: AccessibleCheckboxInputCreatorInfo;
@@ -107,3 +139,5 @@ function CheckboxInputWrapper({
 }
 
 export { CheckboxInputWrapper };
+
+export type { AccessibleCheckboxInputCreatorInfo };

@@ -1,8 +1,55 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faTrash,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Textarea } from '@mantine/core';
+import { Flex, Group, Text, Textarea, Tooltip } from '@mantine/core';
+import { Fragment, ReactNode } from 'react';
+import { BsTrash } from 'react-icons/bs';
 
-import { AccessibleTextAreaInputCreatorInfo } from '../../jsxCreators';
+import { ButtonWrapper } from './ButtonWrapper';
+
+type AccessibleTextAreaInputCreatorInfo = {
+  semanticName: string;
+  inputText: string;
+  isValidInputText: boolean;
+  label?: string | undefined;
+  /**
+   * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
+   */
+  dynamicInputProps?:
+    | {
+        semanticAction: string;
+        dynamicIndex: number;
+        dynamicIcon?: ReactNode | IconDefinition | undefined;
+        dynamicInputOnClick: () => void;
+      }
+    | undefined;
+  ariaRequired?: boolean | undefined;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
+  description: {
+    error: JSX.Element;
+    valid: JSX.Element;
+  };
+  placeholder: string;
+  initialInputValue?: string | undefined;
+  icon?: IconDefinition | undefined;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  onFocus: () => void;
+  onBlur: () => void;
+
+  minLength?: number | undefined;
+  maxLength?: number | undefined;
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLTextAreaElement> | undefined | null;
+  required?: boolean | undefined;
+  autoComplete?: 'on' | 'off' | undefined;
+
+  autosize?: boolean | undefined;
+  minRows?: number | undefined;
+  maxRows?: number | undefined;
+};
 
 type TextAreaInputWrapperProps = {
   creatorInfoObject: AccessibleTextAreaInputCreatorInfo;
@@ -15,10 +62,11 @@ function TextAreaInputWrapper({
     semanticName,
     inputText,
     isValidInputText,
-    label,
+    label = semanticName,
     ariaRequired = false,
     ariaAutoComplete = 'none',
     description,
+    dynamicInputProps = null,
     placeholder,
     initialInputValue = '',
     icon = null,
@@ -36,12 +84,45 @@ function TextAreaInputWrapper({
     maxRows = 7,
   } = creatorInfoObject;
 
+  const semanticNameCapitalized =
+    semanticName.charAt(0).toUpperCase() + semanticName.slice(1);
+  const semanticActionCapitalized = dynamicInputProps
+    ? dynamicInputProps?.semanticAction.charAt(0).toUpperCase() +
+      dynamicInputProps?.semanticAction.slice(1)
+    : '';
+
   return (
     <Textarea
       size="sm"
       w="100%"
       color="dark"
-      label={label}
+      label={
+        dynamicInputProps ? (
+          <Flex align="center" justify="space-between" columnGap="xl">
+            <Text>{`${semanticNameCapitalized}`}</Text>
+            <Tooltip label={`${semanticActionCapitalized} ${semanticName}`}>
+              <Group>
+                <ButtonWrapper
+                  creatorInfoObject={{
+                    buttonVariant: 'outline',
+                    buttonLabel: 'Delete',
+                    buttonOnClick: dynamicInputProps.dynamicInputOnClick,
+                    semanticDescription: `${
+                      dynamicInputProps.semanticAction
+                    } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
+                    semanticName: `${
+                      dynamicInputProps.semanticAction
+                    } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
+                    leftIcon: <FontAwesomeIcon icon={faTrash} />,
+                  }}
+                />
+              </Group>
+            </Tooltip>
+          </Flex>
+        ) : (
+          label
+        )
+      }
       aria-required={ariaRequired}
       aria-describedby={
         isValidInputText
@@ -80,3 +161,5 @@ function TextAreaInputWrapper({
 }
 
 export { TextAreaInputWrapper };
+
+export type { AccessibleTextAreaInputCreatorInfo };

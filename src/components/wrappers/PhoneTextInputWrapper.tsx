@@ -1,8 +1,39 @@
-import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faRefresh,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, TextInput, Tooltip } from '@mantine/core';
 
-import { AccessiblePhoneNumberTextInputCreatorInfo } from '../../jsxCreators';
+type AccessiblePhoneNumberTextInputCreatorInfo = {
+  semanticName: string;
+  inputText: string;
+  isValidInputText: boolean;
+  label: string;
+  ariaRequired?: boolean | undefined;
+  description: {
+    error: JSX.Element;
+    valid: JSX.Element;
+  };
+  placeholder: string;
+  initialInputValue?: string | undefined;
+  icon?: IconDefinition | undefined;
+  onBlur: () => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  rightSection?: boolean | undefined;
+  rightSectionIcon?: IconDefinition | null | undefined;
+  rightSectionOnClick?: () => void | undefined;
+
+  minLength?: number | undefined;
+  maxLength?: number | undefined;
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
+  required?: boolean | undefined;
+  autoComplete?: 'on' | 'off' | undefined;
+};
 
 type PhoneTextInputWrapperProps = {
   creatorInfoObject: AccessiblePhoneNumberTextInputCreatorInfo;
@@ -97,3 +128,5 @@ function PhoneTextInputWrapper({
 }
 
 export { PhoneTextInputWrapper };
+
+export type { AccessiblePhoneNumberTextInputCreatorInfo };

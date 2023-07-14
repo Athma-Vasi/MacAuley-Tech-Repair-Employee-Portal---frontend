@@ -1,37 +1,31 @@
-import {
-  faCheck,
-  faInfoCircle,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Flex,
-  Text,
-  Textarea,
-  TextInput,
-  Tooltip,
-} from '@mantine/core';
-import { Fragment, useEffect, useReducer, useRef } from 'react';
+import { Button, Flex, Group, Text, Textarea, Tooltip } from '@mantine/core';
+import { ChangeEvent, Fragment, useEffect, useReducer, useRef } from 'react';
 
-import { FULL_NAME_REGEX, URL_REGEX } from '../../../constants/regex';
 import {
-  AccessibleTextAreaInputCreatorInfo,
+  GRAMMAR_TEXT_INPUT_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  URL_REGEX,
+} from '../../../constants/regex';
+import {
   AccessibleTextInputCreatorInfo,
+  returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleTextElements,
+  returnAccessibleTextElementsForDynamicInputs,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
+  returnGrammarValidationText,
   returnNameValidationText,
   returnUrlValidationText,
 } from '../../../utils';
-import { StepperWrapper } from '../../wrappers';
-import { ARTICLE_CONTENT_REGEX, ARTICLE_TITLE_REGEX } from '../constants';
 import {
-  returnArticleParagraphValidationText,
-  returnArticleTitleValidationText,
-  returnImageAltValidationText,
-} from '../utils';
+  AccessibleTextAreaInputCreatorInfo,
+  ButtonWrapper,
+  StepperWrapper,
+} from '../../wrappers';
+import { ARTICLE_TITLE_REGEX } from '../constants';
 import {
   CREATE_ANNOUNCEMENT_DESCRIPTION_MAP,
   CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION,
@@ -42,10 +36,7 @@ import {
   createAnnouncementReducer,
   initialCreateAnnouncementState,
 } from './state';
-import {
-  returnArticleParagraphInputErrorElements,
-  returnArticleParagraphInputValidElements,
-} from './utils';
+import { BsTrash } from 'react-icons/bs';
 
 function CreateAnnouncement() {
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
@@ -88,12 +79,10 @@ function CreateAnnouncement() {
     loadingMessage,
   } = createAnnouncementState;
 
-  const titleRef = useRef<HTMLInputElement>(null);
-
-  const lastArticleParagraphRef = useRef<HTMLTextAreaElement>(null);
+  const newArticleParagraphRef = useRef<HTMLTextAreaElement>(null);
   // sets focus on paragraph input on render, and on every new paragraph textarea creation
   useEffect(() => {
-    lastArticleParagraphRef.current?.focus();
+    newArticleParagraphRef.current?.focus();
   }, [article.length]);
 
   // validate title on every change
@@ -108,7 +97,7 @@ function CreateAnnouncement() {
 
   // validate author on every change
   useEffect(() => {
-    const isValidAuth = FULL_NAME_REGEX.test(author);
+    const isValidAuth = GRAMMAR_TEXT_INPUT_REGEX.test(author);
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setIsValidAuthor,
@@ -128,7 +117,7 @@ function CreateAnnouncement() {
 
   // validate banner image alt on every change
   useEffect(() => {
-    const isValidBannerAlt = ARTICLE_TITLE_REGEX.test(bannerImageAlt);
+    const isValidBannerAlt = GRAMMAR_TEXT_INPUT_REGEX.test(bannerImageAlt);
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setIsValidBannerImageAlt,
@@ -139,7 +128,7 @@ function CreateAnnouncement() {
   // validate article arr on every change
   useEffect(() => {
     const isValidArticleBoolArr = article.map((paragraph) =>
-      ARTICLE_CONTENT_REGEX.test(paragraph)
+      GRAMMAR_TEXTAREA_INPUT_REGEX.test(paragraph)
     );
 
     createAnnouncementDispatch({
@@ -210,17 +199,18 @@ function CreateAnnouncement() {
     });
   }, [areValidArticleParagraphs]);
 
+  // below are the accessible text elements for the screen reader to read out
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleTextElements({
       inputElementKind: 'title',
       inputText: title,
       isInputTextFocused: isTitleFocused,
       isValidInputText: isValidTitle,
-      regexValidationText: returnArticleTitleValidationText({
+      regexValidationText: returnGrammarValidationText({
         content: title,
         contentKind: 'title',
-        minLength: 3,
-        maxLength: 150,
+        minLength: 2,
+        maxLength: 75,
       }),
     });
 
@@ -253,27 +243,27 @@ function CreateAnnouncement() {
       inputText: bannerImageAlt,
       isInputTextFocused: isBannerImageAltFocused,
       isValidInputText: isValidBannerImageAlt,
-      regexValidationText: returnImageAltValidationText({
+      regexValidationText: returnGrammarValidationText({
         content: bannerImageAlt,
-        contentKind: 'banner image alt text',
-        minLength: 3,
-        maxLength: 150,
+        contentKind: 'banner image alt',
+        minLength: 2,
+        maxLength: 75,
       }),
     });
 
-  const articleParagraphInputErrorTexts =
-    returnArticleParagraphInputErrorElements({
-      article,
-      areValidArticleParagraphs,
-      areArticleParagraphsFocused,
-      returnRegexValidationText: returnArticleParagraphValidationText,
-    });
-
-  const articleParagraphInputValidTexts =
-    returnArticleParagraphInputValidElements({
-      article,
-      areValidArticleParagraphs,
-      areArticleParagraphsFocused,
+  const [articleParagraphInputErrorTexts, articleParagraphInputValidTexts] =
+    returnAccessibleTextElementsForDynamicInputs({
+      areInputTextsFocused: areArticleParagraphsFocused,
+      areValidInputTexts: areValidArticleParagraphs,
+      inputTextArray: article,
+      semanticName: 'article paragraph',
+      regexValidationProps: {
+        content: article.join(' '),
+        contentKind: 'article paragraph',
+        minLength: 2,
+        maxLength: 2000,
+      },
+      regexValidationFunction: returnGrammarValidationText,
     });
 
   // following are info objects for input creators
@@ -401,6 +391,69 @@ function CreateAnnouncement() {
     semanticName: 'banner image alt',
   };
 
+  const articleParagraphTextAreaInputsCreatorInfo: AccessibleTextAreaInputCreatorInfo[] =
+    Array.from({ length: article.length }, (_, index) => {
+      const creatorInfoObject = {
+        description: {
+          error: articleParagraphInputErrorTexts[index],
+          valid: articleParagraphInputValidTexts[index],
+        },
+        dynamicInputProps: {
+          semanticAction: 'delete',
+          dynamicIndex: index,
+          dynamicIcon: faTrash,
+          dynamicInputOnClick: () => {
+            createAnnouncementDispatch({
+              type: createAnnouncementAction.setDeleteArticleParagraph,
+              payload: index,
+            });
+          },
+        },
+        inputText: article[index],
+        isValidInputText: areValidArticleParagraphs[index],
+        // label: `Paragraph ${index + 1}`,
+        onBlur: () => {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setAreArticleParagraphsFocused,
+            payload: {
+              index,
+              value: false,
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setArticle,
+            payload: {
+              index,
+              value: event.currentTarget.value,
+            },
+          });
+        },
+        onFocus: () => {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setAreArticleParagraphsFocused,
+            payload: {
+              index,
+              value: true,
+            },
+          });
+        },
+        placeholder: `Enter paragraph ${index + 1}`,
+        semanticName: `article paragraph ${index + 1}`,
+        ref: index === article.length - 1 ? newArticleParagraphRef : null,
+        required: true,
+        withAsterisk: true,
+      };
+
+      return creatorInfoObject;
+    });
+
+  const createdArticleParagraphsTextAreaInputs =
+    returnAccessibleDynamicTextAreaInputElements(
+      articleParagraphTextAreaInputsCreatorInfo
+    );
+
   const [
     createdTitleTextInput,
     createdAuthorTextInput,
@@ -413,112 +466,137 @@ function CreateAnnouncement() {
     bannerImageAltTextInputCreatorInfo,
   ]);
 
-  const createdArticleParagraphsTextAreaInputs = article.map(
-    (paragraph, index) => {
-      return (
-        <Fragment key={`${index}${title}`}>
-          <Textarea
-            size="sm"
-            w="100%"
-            color="dark"
-            // label={`Paragraph ${index + 1}`}
-            label={
-              <Flex align="center" justify="space-between" columnGap="xl">
-                <Text>Paragraph {index + 1}</Text>
-                <Tooltip label={`Delete paragraph ${index + 1}`}>
-                  <Button
-                    size="xs"
-                    variant="subtle"
-                    onClick={() => {
-                      createAnnouncementDispatch({
-                        type: createAnnouncementAction.setDeleteArticleParagraph,
-                        payload: index,
-                      });
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faTrash} color="gray" />
-                  </Button>
-                </Tooltip>
-              </Flex>
-            }
-            placeholder={`Enter paragraph ${index + 1}`}
-            value={paragraph}
-            aria-required
-            aria-describedby={
-              areValidArticleParagraphs[index]
-                ? `article-paragraph-input-note-valid-${index}`
-                : `article-paragraph-input-note-error-${index}`
-            }
-            description={
-              areValidArticleParagraphs[index]
-                ? articleParagraphInputValidTexts[index]
-                : articleParagraphInputErrorTexts[index]
-            }
-            aria-invalid={areValidArticleParagraphs[index] ? 'false' : 'true'}
-            icon={
-              areValidArticleParagraphs[index] ? (
-                <FontAwesomeIcon icon={faCheck} color="green" />
-              ) : null
-            }
-            error={!areValidArticleParagraphs[index] && paragraph !== ''}
-            onChange={(event) => {
-              createAnnouncementDispatch({
-                type: createAnnouncementAction.setArticle,
-                payload: {
-                  index: index,
-                  value: event.currentTarget.value,
-                },
-              });
-            }}
-            onFocus={() => {
-              createAnnouncementDispatch({
-                type: createAnnouncementAction.setAreArticleParagraphsFocused,
-                payload: {
-                  index,
-                  value: true,
-                },
-              });
-            }}
-            onBlur={() => {
-              createAnnouncementDispatch({
-                type: createAnnouncementAction.setAreArticleParagraphsFocused,
-                payload: {
-                  index,
-                  value: false,
-                },
-              });
-            }}
-            required
-            withAsterisk={false}
-            autosize
-            minRows={3}
-            maxRows={10}
-            minLength={3}
-            maxLength={2000}
-            ref={index === article.length - 1 ? lastArticleParagraphRef : null}
-          />
-        </Fragment>
-      );
-    }
-  );
+  // const createdArticleParagraphsTextAreaInputs = article.map(
+  //   (paragraph, index) => {
+  //     return (
+  //       <Fragment key={`${index}${title}`}>
+  //         <Textarea
+  //           size="sm"
+  //           w="100%"
+  //           color="dark"
+  //           // label={`Paragraph ${index + 1}`}
+  //           label={
+  //             <Flex align="center" justify="space-between" columnGap="xl">
+  //               <Text>Paragraph {index + 1}</Text>
+  //               <Tooltip label={`Delete paragraph ${index + 1}`}>
+  //                 <Button
+  //                   size="xs"
+  //                   variant="subtle"
+  //                   onClick={() => {
+  //                     createAnnouncementDispatch({
+  //                       type: createAnnouncementAction.setDeleteArticleParagraph,
+  //                       payload: index,
+  //                     });
+  //                   }}
+  //                 >
+  //                   <FontAwesomeIcon icon={faTrash} color="gray" />
+  //                 </Button>
+  //               </Tooltip>
+  //             </Flex>
+  //           }
+  //           placeholder={`Enter paragraph ${index + 1}`}
+  //           value={paragraph}
+  //           aria-required
+  //           aria-describedby={
+  //             areValidArticleParagraphs[index]
+  //               ? `article-paragraph-input-note-valid-${index}`
+  //               : `article-paragraph-input-note-error-${index}`
+  //           }
+  //           description={
+  //             areValidArticleParagraphs[index]
+  //               ? articleParagraphInputValidTexts[index]
+  //               : articleParagraphInputErrorTexts[index]
+  //           }
+  //           aria-invalid={areValidArticleParagraphs[index] ? 'false' : 'true'}
+  //           icon={
+  //             areValidArticleParagraphs[index] ? (
+  //               <FontAwesomeIcon icon={faCheck} color="green" />
+  //             ) : null
+  //           }
+  //           error={!areValidArticleParagraphs[index] && paragraph !== ''}
+  //           onChange={(event) => {
+  //             createAnnouncementDispatch({
+  //               type: createAnnouncementAction.setArticle,
+  //               payload: {
+  //                 index: index,
+  //                 value: event.currentTarget.value,
+  //               },
+  //             });
+  //           }}
+  //           onFocus={() => {
+  //             createAnnouncementDispatch({
+  //               type: createAnnouncementAction.setAreArticleParagraphsFocused,
+  //               payload: {
+  //                 index,
+  //                 value: true,
+  //               },
+  //             });
+  //           }}
+  //           onBlur={() => {
+  //             createAnnouncementDispatch({
+  //               type: createAnnouncementAction.setAreArticleParagraphsFocused,
+  //               payload: {
+  //                 index,
+  //                 value: false,
+  //               },
+  //             });
+  //           }}
+  //           required
+  //           withAsterisk={false}
+  //           autosize
+  //           minRows={3}
+  //           maxRows={10}
+  //           minLength={3}
+  //           maxLength={2000}
+  //           ref={index === article.length - 1 ? newArticleParagraphRef : null}
+  //         />
+  //       </Fragment>
+  //     );
+  //   }
+  // );
 
   const displayAddArticleParagraphButton = (
-    <Button
-      variant="default"
-      size="sm"
-      disabled={isArticleLengthExceeded}
-      onClick={() => {
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setArticle,
-          payload: {
-            index: article.length,
-            value: '',
-          },
-        });
+    // <Button
+    //   variant="default"
+    //   size="sm"
+    //   disabled={isArticleLengthExceeded}
+    //   onClick={() => {
+    //     createAnnouncementDispatch({
+    //       type: createAnnouncementAction.setArticle,
+    //       payload: {
+    //         index: article.length,
+    //         value: '',
+    //       },
+    //     });
+    //   }}
+    // >
+    //   Add paragraph
+    // </Button>
+    <ButtonWrapper
+      creatorInfoObject={{
+        buttonVariant: 'outline',
+        buttonLabel: (
+          <Tooltip label="Click to add new article paragraph">
+            <Group>
+              <FontAwesomeIcon icon={faPlus} color="gray" />
+              <Text color="gray">Add</Text>
+            </Group>
+          </Tooltip>
+        ),
+        buttonOnClick: () => {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setArticle,
+            payload: {
+              index: article.length,
+              value: '',
+            },
+          });
+        },
+        semanticDescription:
+          'click to add new article paragraph text input button',
+        semanticName: 'add paragraph button',
       }}
-    >
-      Add paragraph
-    </Button>
+    />
   );
 
   const displaySubmitButton =
@@ -540,7 +618,7 @@ function CreateAnnouncement() {
   const displayArticleParagraphsFormPage = (
     <>
       <Text color="dark" size="sm">
-        Max character length: {MAX_ARTICLE_LENGTH} words
+        Max article length: {MAX_ARTICLE_LENGTH} characters
       </Text>
       {createdArticleParagraphsTextAreaInputs}
       <Flex align="center" justify="space-between" w="100%">
@@ -856,7 +934,7 @@ export { CreateAnnouncement };
               minLength={3}
               maxLength={2000}
               ref={
-                index === article.length - 1 ? lastArticleParagraphRef : null
+                index === article.length - 1 ? newArticleParagraphRef : null
               }
             />
           </Fragment>

@@ -1,11 +1,18 @@
-import {
-  faCheck,
-  faInfoCircle,
-  IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Text } from '@mantine/core';
 
+import type {
+  AccessibleButtonCreatorInfo,
+  AccessibleCheckboxInputCreatorInfo,
+  AccessibleDateTimeInputCreatorInfo,
+  AccessiblePasswordInputCreatorInfo,
+  AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleRadioInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+} from '../components/wrappers';
 import {
   ButtonWrapper,
   CheckboxInputWrapper,
@@ -17,6 +24,11 @@ import {
   TextAreaInputWrapper,
   TextInputWrapper,
 } from '../components/wrappers';
+import { RegexValidationProps } from '../utils';
+
+// The functions : returnAccessibleTextElements and returnAccessibleTextElementsForDynamicInputs return a tuple [error, valid] or tuple[error[], valid[]] of accessible text elements for screen readers to read out based on the state of the controlled input
+
+// Separating the error/valid states of the inputs allows the differently abled to easily distinguish input state as the aria-describedBy attribute of the returnAccessible${input kind}Elements creator functions is used to link the input with the error/valid text and forces the screen reader to immediately read out the text as the input state changes, providing instant feedback.
 
 type ReturnAccessibleTextElemProps = {
   inputElementKind: string;
@@ -27,10 +39,10 @@ type ReturnAccessibleTextElemProps = {
 };
 
 /**
- * @returns a tuple [error, valid] of accessible text elements for screen readers to read out based on the state of the controlled input
+ * @returns a tuple [error, valid] of accessible text elements
  * - For example, if the input element is focused and the input text is valid/invalid, then the screen reader will read out '${inputElementKind} is valid'  or '${regexValidationText}'
  * @param ReturnAccessibleTextElemProps - the object containing the input element
- * @property {object.inputElementKind} - the semantic label of input element (e.g. 'username', 'password', 'email')
+ * @property {object.inputElementKind} - the semantic label of input element (e.g. 'username', 'password', 'email'). Must be identical to the semanticName used in the creator info object passed to the creator functions
  * @property {object.inputText} - the text in the input element
  * @property {object.isValidInputText} - whether the input text is valid
  * @property {object.isInputTextFocused} - whether the input element is focused - only show the accessible text elements if the input element is focused
@@ -80,30 +92,90 @@ function returnAccessibleTextElements({
   ];
 }
 
-type AccessibleButtonCreatorInfo = {
-  buttonLabel: string;
-  buttonOnClick: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => void;
-  buttonDisabled?: boolean | undefined;
-  buttonRef?: React.RefObject<HTMLButtonElement> | undefined;
-  buttonType?: 'button' | 'submit' | 'reset' | undefined;
-  buttonVariant?:
-    | 'outline'
-    | 'white'
-    | 'light'
-    | 'default'
-    | 'filled'
-    | 'gradient'
-    | 'subtle'
-    | undefined;
-  compact?: boolean | undefined;
-  leftIcon?: React.ReactNode | undefined;
-  rightIcon?: React.ReactNode | undefined;
+type ReturnAccessibleTextElementsForDynamicInputsProps = {
   semanticName: string;
-  semanticDescription: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | undefined;
+  inputTextArray: string[];
+  areValidInputTexts: boolean[];
+  areInputTextsFocused: boolean[];
+  regexValidationProps: RegexValidationProps;
+  regexValidationFunction?:
+    | ((validationObj: RegexValidationProps) => string)
+    | undefined;
 };
+
+/**
+ * @returns a tuple[error[], valid[]] of accessible text elements
+ * @param ReturnAccessibleTextElementsForDynamicInputsProps - the object containing the input element
+ * @property {object.semanticName} - the semantic label of input element (e.g. 'username', 'password', 'email'). Must be identical to the semanticName used in the creator info object passed to the creator functions
+ * @property {object.inputTextArray} - the array of input texts
+ * @property {object.areValidInputTexts} - the array of booleans that indicate whether the input text is valid
+ * @property {object.areInputTextsFocused} - the array of booleans that indicate whether the input text is focused
+ * @property {object.regexValidationProps} - the object containing the regex validation props that is passed to the regex validation function
+ * @property {object.regexValidationFunction} - reference to the regex validation function
+ */
+function returnAccessibleTextElementsForDynamicInputs({
+  semanticName,
+  inputTextArray,
+  areValidInputTexts,
+  areInputTextsFocused,
+  regexValidationProps,
+  regexValidationFunction,
+}: ReturnAccessibleTextElementsForDynamicInputsProps): [
+  JSX.Element[],
+  JSX.Element[]
+] {
+  return [
+    // error text elems
+    inputTextArray.map((inputText, index) => (
+      <Text
+        key={`${index}`}
+        id={`${semanticName.split(' ').join('-')}
+        }-input-note-error-${index}`}
+        style={{
+          display:
+            areInputTextsFocused[index] &&
+            inputText &&
+            !areValidInputTexts[index]
+              ? 'block'
+              : 'none',
+        }}
+        color="red"
+        w="100%"
+        aria-live="polite"
+      >
+        <FontAwesomeIcon icon={faInfoCircle} />{' '}
+        {regexValidationFunction
+          ? `${semanticName[0].toUpperCase()}${semanticName.slice(1)} ${
+              index + 1
+            } - ${regexValidationFunction(regexValidationProps)}`
+          : ''}
+      </Text>
+    )),
+    // valid text elems
+    inputTextArray.map((inputText, index) => (
+      <Text
+        key={`${index}`}
+        id={`${semanticName.split(' ').join('-')}-input-note-valid-${index}`}
+        style={{
+          display:
+            areInputTextsFocused[index] &&
+            inputText &&
+            areValidInputTexts[index]
+              ? 'block'
+              : 'none',
+        }}
+        color="green"
+        w="100%"
+        aria-live="polite"
+      >
+        <FontAwesomeIcon icon={faCheck} />{' '}
+        {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} ${
+          index + 1
+        } is valid`}
+      </Text>
+    )),
+  ];
+}
 
 function returnAccessibleButtonElements(
   creatorInfoObjectArray: AccessibleButtonCreatorInfo[]
@@ -120,38 +192,6 @@ function returnAccessibleButtonElements(
   });
 }
 
-type AccessibleTextInputCreatorInfo = {
-  semanticName: string;
-  inputText: string;
-  isValidInputText: boolean;
-  label: string;
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
-  description: {
-    error: JSX.Element;
-    valid: JSX.Element;
-  };
-  placeholder: string;
-  initialInputValue?: string | undefined;
-  icon?: IconDefinition | undefined;
-  onBlur: () => void;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onFocus: () => void;
-  onKeyDown?: (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => void | undefined;
-
-  rightSection?: boolean | undefined;
-  rightSectionIcon?: IconDefinition | null | undefined;
-  rightSectionOnClick?: () => void | undefined;
-
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
-  autoComplete?: 'on' | 'off' | undefined;
-};
-
 function returnAccessibleTextInputElements(
   creatorInfoObjectArray: AccessibleTextInputCreatorInfo[]
 ): JSX.Element[] {
@@ -166,17 +206,6 @@ function returnAccessibleTextInputElements(
     return createdTextInput;
   });
 }
-
-type AccessibleSelectInputCreatorInfo = {
-  data: string[];
-  label: string;
-  description: string;
-  value: string;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLSelectElement> | undefined;
-  required?: boolean | undefined;
-};
 
 function returnAccessibleSelectInputElements(
   creatorInfoObjectArray: AccessibleSelectInputCreatorInfo[]
@@ -193,30 +222,6 @@ function returnAccessibleSelectInputElements(
   });
 }
 
-type AccessiblePasswordInputCreatorInfo = {
-  semanticName: string;
-  inputText: string;
-  isValidInputText: boolean;
-  label: string;
-  ariaRequired?: boolean | undefined;
-  description: {
-    error: JSX.Element;
-    valid: JSX.Element;
-  };
-  placeholder: string;
-  initialInputValue?: string | undefined;
-  icon: IconDefinition | null;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onFocus: () => void;
-  onBlur: () => void;
-
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
-};
-
 function returnAccessiblePasswordInputElements(
   creatorInfoObjectArray: AccessiblePasswordInputCreatorInfo[]
 ): JSX.Element[] {
@@ -231,35 +236,6 @@ function returnAccessiblePasswordInputElements(
     return createdPasswordInput;
   });
 }
-
-type AccessiblePhoneNumberTextInputCreatorInfo = {
-  semanticName: string;
-  inputText: string;
-  isValidInputText: boolean;
-  label: string;
-  ariaRequired?: boolean | undefined;
-  description: {
-    error: JSX.Element;
-    valid: JSX.Element;
-  };
-  placeholder: string;
-  initialInputValue?: string | undefined;
-  icon?: IconDefinition | undefined;
-  onBlur: () => void;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onFocus: () => void;
-  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  rightSection?: boolean | undefined;
-  rightSectionIcon?: IconDefinition | null | undefined;
-  rightSectionOnClick?: () => void | undefined;
-
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
-  autoComplete?: 'on' | 'off' | undefined;
-};
 
 function returnAccessiblePhoneNumberTextInputElements(
   creatorInfoObjectArray: AccessiblePhoneNumberTextInputCreatorInfo[]
@@ -276,36 +252,6 @@ function returnAccessiblePhoneNumberTextInputElements(
   });
 }
 
-type AccessibleTextAreaInputCreatorInfo = {
-  semanticName: string;
-  inputText: string;
-  isValidInputText: boolean;
-  label: string;
-  ariaRequired?: boolean | undefined;
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
-  description: {
-    error: JSX.Element;
-    valid: JSX.Element;
-  };
-  placeholder: string;
-  initialInputValue?: string | undefined;
-  icon?: IconDefinition | undefined;
-  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  onFocus: () => void;
-  onBlur: () => void;
-
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLTextAreaElement> | undefined;
-  required?: boolean | undefined;
-  autoComplete?: 'on' | 'off' | undefined;
-
-  autosize?: boolean | undefined;
-  minRows?: number | undefined;
-  maxRows?: number | undefined;
-};
-
 function returnAccessibleTextAreaInputElements(
   creatorInfoObjectArray: AccessibleTextAreaInputCreatorInfo[]
 ): JSX.Element[] {
@@ -320,35 +266,6 @@ function returnAccessibleTextAreaInputElements(
     return createdTextAreaInput;
   });
 }
-
-type AccessibleDateTimeInputCreatorInfo = {
-  inputKind: 'date' | 'time';
-  dateKind?: 'date near future' | 'date near past' | 'full date' | undefined;
-  semanticName: string;
-  inputText: string;
-  isValidInputText: boolean;
-  label: string;
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
-  description: {
-    error: JSX.Element;
-    valid: JSX.Element;
-  };
-  placeholder: string;
-  initialInputValue?: string | undefined;
-  icon?: IconDefinition | undefined;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onFocus: () => void;
-  onBlur: () => void;
-
-  min?: string | undefined;
-  max?: string | undefined;
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
-  autoComplete?: 'on' | 'off' | undefined;
-};
 
 function returnAccessibleDateTimeElements(
   creatorInfoObjectArray: AccessibleDateTimeInputCreatorInfo[]
@@ -365,33 +282,6 @@ function returnAccessibleDateTimeElements(
   });
 }
 
-type AccessibleRadioInputCreatorInfo = {
-  semanticName: string;
-  label: string;
-  description: {
-    selected: string;
-    deselected: string;
-  };
-  ariaRequired?: boolean | undefined;
-  checked: boolean;
-  dataObjArray?:
-    | Array<{
-        value: string;
-        label: string;
-      }>
-    | undefined;
-  disabled?: boolean | undefined;
-
-  onChange: (event: React.ChangeEvent<HTMLInputElement> | string) => void;
-  onClick: () => void;
-  radioKind: 'single' | 'multiple';
-  value?: string | undefined;
-
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
-};
-
 function returnAccessibleRadioInputElements(
   creatorInfoObjectArray: AccessibleRadioInputCreatorInfo[]
 ) {
@@ -402,40 +292,6 @@ function returnAccessibleRadioInputElements(
     />
   ));
 }
-
-type AccessibleCheckboxInputCreatorInfo = {
-  semanticName: string;
-  accessibleDescription?:
-    | {
-        selected: string;
-        deselected: string;
-      }
-    | undefined;
-  ariarequired?: boolean | undefined;
-  checkboxKind: 'single' | 'multiple';
-  dataObjArray?:
-    | Array<{
-        value: string;
-        label: string;
-      }>
-    | undefined;
-  defaultValue?: [string] | undefined;
-  description: {
-    selected: string;
-    deselected: string;
-  };
-  label?: string | undefined;
-  checked?: boolean | undefined;
-  disabled?: boolean | undefined;
-  onChangeMultiple?: (value: string[]) => void | undefined;
-  onChangeSingle?: (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => void | undefined;
-  onClick?: () => void | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
-  value?: string[] | undefined;
-};
 
 function returnAccessibleCheckboxInputElements(
   creatorInfoObjectArray: AccessibleCheckboxInputCreatorInfo[]
@@ -448,16 +304,36 @@ function returnAccessibleCheckboxInputElements(
   ));
 }
 
+// function returnAccessibleDynamicTextInputElements(
+//   creatorInfoObjectArray: AccessibleDynamicTextInputsCreatorInfo[]
+// ) {
+//   <DynamicTextInputsWrapper creatorInfoObjects={creatorInfoObjectArray} />;
+// }
+
+function returnAccessibleDynamicTextAreaInputElements(
+  creatorInfoObjectArray: AccessibleTextAreaInputCreatorInfo[]
+) {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
+    <TextAreaInputWrapper
+      key={`${index}${creatorInfoObject.label}`}
+      creatorInfoObject={creatorInfoObject}
+    />
+  ));
+}
+
 export {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
+  returnAccessibleDynamicTextAreaInputElements,
+  // returnAccessibleDynamicTextInputElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleRadioInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextElements,
+  returnAccessibleTextElementsForDynamicInputs,
   returnAccessibleTextInputElements,
 };
 

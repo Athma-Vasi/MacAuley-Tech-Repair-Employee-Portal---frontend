@@ -1,8 +1,55 @@
-import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCheck,
+  faRefresh,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { TextInput } from '@mantine/core';
+import { Flex, Text, TextInput, Tooltip } from '@mantine/core';
+import { ReactNode } from 'react';
+import { BsTrash } from 'react-icons/bs';
 
-import { AccessibleTextInputCreatorInfo } from '../../jsxCreators';
+import { ButtonWrapper } from './ButtonWrapper';
+
+type AccessibleTextInputCreatorInfo = {
+  semanticName: string;
+  inputText: string;
+  /**
+   * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
+   */
+  dynamicInputProps?: {
+    semanticAction: string;
+    dynamicIndex: number;
+    dynamicIcon?: ReactNode | undefined;
+    dynamicInputOnClick?: () => void | undefined;
+  };
+  isValidInputText: boolean;
+  label?: ReactNode | string | undefined;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
+  description: {
+    error: JSX.Element;
+    valid: JSX.Element;
+  };
+  placeholder: string;
+  initialInputValue?: string | undefined;
+  icon?: IconDefinition | undefined;
+  onBlur: () => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onKeyDown?: (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => void | undefined;
+
+  rightSection?: boolean | undefined;
+  rightSectionIcon?: IconDefinition | null | undefined;
+  rightSectionOnClick?: () => void | undefined;
+
+  minLength?: number | undefined;
+  maxLength?: number | undefined;
+  withAsterisk?: boolean | undefined;
+  ref?: React.RefObject<HTMLInputElement> | undefined;
+  required?: boolean | undefined;
+  autoComplete?: 'on' | 'off' | undefined;
+};
 
 type TextInputWrapperProps = {
   creatorInfoObject: AccessibleTextInputCreatorInfo;
@@ -13,9 +60,15 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     semanticName,
     inputText,
     isValidInputText,
-    label,
+    label = semanticName,
     ariaAutoComplete = 'none',
     description,
+    dynamicInputProps = {
+      semanticAction: '',
+      dynamicIndex: 0,
+      dynamicIcon: null,
+      dynamicInputOnClick: () => {},
+    },
     placeholder,
     initialInputValue = '',
     icon = null,
@@ -34,12 +87,47 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     autoComplete = 'off',
   } = creatorInfoObject;
 
+  const {
+    semanticAction = 'delete', // default action is delete
+    dynamicIndex = 0,
+    dynamicIcon = BsTrash, // default is a trash icon
+    dynamicInputOnClick = () => {},
+  } = dynamicInputProps;
+
+  const semanticNameCapitalized =
+    semanticName.charAt(0).toUpperCase() + semanticName.slice(1);
+
   return (
     <TextInput
       size="sm"
       w="100%"
       color="dark"
-      label={label}
+      label={
+        typeof label === 'string' ? (
+          label
+        ) : (
+          <Flex align="center" justify="space-between" columnGap="xl">
+            <Text>{`${semanticNameCapitalized} ${dynamicIndex}`}</Text>
+            <Tooltip
+              label={`${semanticAction} ${semanticName} ${dynamicIndex + 1}`}
+            >
+              <ButtonWrapper
+                creatorInfoObject={{
+                  buttonLabel: '',
+                  buttonOnClick: dynamicInputOnClick,
+                  semanticDescription: `${semanticAction} ${semanticName} ${
+                    dynamicIndex + 1
+                  }`,
+                  semanticName: `${semanticAction} ${semanticName} ${
+                    dynamicIndex + 1
+                  }`,
+                  leftIcon: <>{dynamicIcon}</>,
+                }}
+              />
+            </Tooltip>
+          </Flex>
+        )
+      }
       aria-required={required}
       aria-describedby={
         isValidInputText
@@ -86,3 +174,5 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
 }
 
 export { TextInputWrapper };
+
+export type { AccessibleTextInputCreatorInfo };
