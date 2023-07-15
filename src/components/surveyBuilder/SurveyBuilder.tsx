@@ -191,18 +191,18 @@ function SurveyBuilder() {
   // validate stepper state on every dynamically created question input groups
   useEffect(() => {
     areValidQuestions.forEach((isValidQuestion, index) => {
-      !isValidQuestion
+      isValidQuestion
         ? surveyBuilderDispatch({
             type: surveyBuilderAction.setStepsInError,
             payload: {
-              kind: 'add',
+              kind: 'delete',
               step: index + 1,
             },
           })
         : surveyBuilderDispatch({
             type: surveyBuilderAction.setStepsInError,
             payload: {
-              kind: 'delete',
+              kind: 'add',
               step: index + 1,
             },
           });
@@ -443,7 +443,7 @@ function SurveyBuilder() {
               type: surveyBuilderAction.deleteQuestionGroup,
               payload: index,
             });
-            // decrement current stepper position
+            // enables display of the previous stepper page after deletion
             surveyBuilderDispatch({
               type: surveyBuilderAction.setCurrentStepperPosition,
               payload: currentStepperPosition - 1,
@@ -527,7 +527,7 @@ function SurveyBuilder() {
         type: surveyBuilderAction.addNewQuestionGroup,
         payload: questions.length,
       });
-      // increment current stepper position
+      // enables display of the newly created survey question page
       surveyBuilderDispatch({
         type: surveyBuilderAction.setCurrentStepperPosition,
         payload: currentStepperPosition + 1,
