@@ -150,11 +150,12 @@ function SurveyBuilder() {
         payload: {
           index: index + 1,
           value: {
-            description: `Question ${index + 1}: ${question.slice(
-              0,
-              maxSliceLength
-            )} ${question.length > maxSliceLength ? '...' : ''}`,
-            ariaLabel: `Question ${index + 1}: ${question
+            description: `Question ${index + 1}${
+              question.length === 0 ? '' : ':'
+            } ${question.slice(0, maxSliceLength)} ${
+              question.length > maxSliceLength ? '...' : ''
+            }`,
+            ariaLabel: `Question ${index + 1} ${question
               .split(' ')
               .slice(0, 3)
               .join(' ')}`,

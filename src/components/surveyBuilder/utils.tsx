@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
   createdResponseKindRadioGroups: JSX.Element[];
@@ -12,12 +14,12 @@ function mergeSurveyQuestionsGroup({
   displayAddNewQuestionButton,
 }: MergeSurveyQuestionsGroupProps) {
   return createdQuestionsTextInputs.map((createdQuestionsTextInput, index) => (
-    <>
+    <Fragment key={`${index}`}>
       {createdQuestionsTextInput}
       {createdResponseKindRadioGroups[index]}
       {createdResponseInputHtmlRadioGroups[index]}
       {displayAddNewQuestionButton ?? null}
-    </>
+    </Fragment>
   ));
 }
 

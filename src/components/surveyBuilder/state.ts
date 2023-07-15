@@ -182,16 +182,16 @@ function surveyBuilderReducer(
     }
 
     case surveyBuilderAction.addNewQuestionGroup: {
-      // create new description object
-      const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
-      const lastObject = stepperDescriptionObjects.splice(-1)[0];
-      stepperDescriptionObjects.push(
-        {
-          description: `Enter question ${stepperDescriptionObjects.length}`,
-          ariaLabel: `Enter question ${stepperDescriptionObjects.length}`,
-        },
-        lastObject
-      );
+      // // create new description object
+      // const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
+      // const lastObject = stepperDescriptionObjects.splice(-1)[0];
+      // stepperDescriptionObjects.push(
+      //   {
+      //     description: `Enter question ${stepperDescriptionObjects.length}`,
+      //     ariaLabel: `Enter question ${stepperDescriptionObjects.length}`,
+      //   },
+      //   lastObject
+      // );
 
       const questions = [...state.questions];
       questions.push('');
@@ -211,7 +211,7 @@ function surveyBuilderReducer(
         areQuestionsFocused,
         responseKinds,
         responseInputHtml,
-        stepperDescriptionObjects,
+        // stepperDescriptionObjects,
       };
     }
 
@@ -246,17 +246,6 @@ function surveyBuilderReducer(
     }
 
     case surveyBuilderAction.setStepperDescriptionObjects: {
-      // const value = action.payload;
-      // const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
-
-      // const lastObject =
-      //   stepperDescriptionObjects[stepperDescriptionObjects.length - 1];
-      // stepperDescriptionObjects.push(value, lastObject);
-
-      // return {
-      //   ...state,
-      //   stepperDescriptionObjects,
-      // };
       const { index, value } = action.payload;
 
       const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
