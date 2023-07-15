@@ -24,6 +24,7 @@ import { SurveyBuilder } from './components/surveyBuilder';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
+import { CreateComment } from './components/comments';
 
 function App() {
   const {
@@ -40,7 +41,7 @@ function App() {
           {/* <Route path="register" element={<Register />} /> */}
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
           {/* DEV PATHS - DELETE LATER*/}
-          <Route path="create-announcement" element={<CreateAnnouncement />} />
+          {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
           {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
@@ -55,6 +56,7 @@ function App() {
           {/* <Route path="event-creator" element={<EventCreator />} /> */}
           {/* <Route path="create-expense-claim" element={<ExpenseClaim />} /> */}
           <Route path="survey-builder" element={<SurveyBuilder />} />
+          <Route path="create-comment" element={<CreateComment />} />
         </Route>
 
         {/* these are protected routes */}
