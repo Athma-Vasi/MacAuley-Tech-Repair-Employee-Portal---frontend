@@ -461,7 +461,7 @@ function SurveyBuilder() {
   const responseKindRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
-        description: 'Choose a response type for your question',
+        description: 'Choose a response type',
         dataObjectArray: SURVEY_BUILDER_RESPONSE_KIND_DATA,
         label: `Response Type for Question ${index + 1}`,
         name: `response type for question ${index + 1}`,
@@ -486,14 +486,14 @@ function SurveyBuilder() {
   const responseInputHtmlRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
-        description: 'Choose a html input type for your question',
+        description: 'Choose a html input',
         dataObjectArray: SURVEY_BUILDER_INPUT_HTML_DATA.get(
           responseKinds[index]
         ) as {
           value: string;
           label: string;
         }[],
-        label: `Html input Type for Question ${index + 1}`,
+        label: `Input Type for Question ${index + 1}`,
         name: `html input type for question ${index + 1}`,
         onChange: (value: string) => {
           surveyBuilderDispatch({
