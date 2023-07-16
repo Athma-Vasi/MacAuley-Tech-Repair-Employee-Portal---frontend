@@ -3,7 +3,7 @@ import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
 import { GRAMMAR_TEXTAREA_INPUT_REGEX } from '../../constants/regex';
 import {
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
+  returnAccessibleErrorValidTextElements,
 } from '../../jsxCreators';
 import { returnGrammarValidationText } from '../../utils';
 import { AccessibleTextAreaInputCreatorInfo } from '../wrappers';
@@ -54,7 +54,7 @@ function CreateComment() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   //  const [planNameInputErrorText, planNameInputValidText] =
-  //  returnAccessibleTextElements({
+  //  returnAccessibleErrorValidTextElements({
   //    inputElementKind: 'plan name',
   //    inputText: planName,
   //    isValidInputText: isValidPlanName,
@@ -68,7 +68,7 @@ function CreateComment() {
   //  });
 
   const [commentInputErrorText, commentInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'comment',
       inputText: comment,
       isValidInputText: isCommentValid,

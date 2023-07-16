@@ -10,15 +10,16 @@ import {
 } from '../../constants/regex';
 import {
   returnAccessibleButtonElements,
-  returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleDynamicRadioGroupInputsElements,
   returnAccessibleDynamicTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
-  returnAccessibleTextElementsForDynamicInputs,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleTextInputElements,
+  returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleCheckboxSingleInputElements,
 } from '../../jsxCreators';
 import {
   returnDateNearFutureValidationText,
@@ -26,7 +27,7 @@ import {
 } from '../../utils';
 import {
   AccessibleButtonCreatorInfo,
-  AccessibleCheckboxInputCreatorInfo,
+  AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -211,7 +212,7 @@ function SurveyBuilder() {
   }, [areValidQuestions]);
 
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'survey title',
       inputText: surveyTitle,
       isInputTextFocused: isSurveyTitleFocused,
@@ -225,7 +226,7 @@ function SurveyBuilder() {
     });
 
   const [descriptionInputErrorText, descriptionInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'survey description',
       inputText: surveyDescription,
       isInputTextFocused: isSurveyDescriptionFocused,
@@ -239,7 +240,7 @@ function SurveyBuilder() {
     });
 
   const [expiryDateInputErrorText, expiryDateInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'expiry date',
       inputText: expiryDate,
       isInputTextFocused: isExpiryDateFocused,
@@ -248,7 +249,7 @@ function SurveyBuilder() {
     });
 
   const [questionInputsErrorText, questionInputsValidText] =
-    returnAccessibleTextElementsForDynamicInputs({
+    returnAccessibleErrorValidTextElementsForDynamicInputs({
       semanticName: 'question',
       inputTextArray: questions,
       areValidInputTexts: areValidQuestions,
@@ -260,6 +261,14 @@ function SurveyBuilder() {
         maxLength: 75,
       },
       regexValidationFunction: returnGrammarValidationText,
+    });
+
+  const [isAnonymousInputSelectedText, isAnonymousInputDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: isAnonymous,
+      semanticName: 'anonymous survey',
+      selectedDescription: 'Survey will be anonymous',
+      deselectedDescription: 'Survey will not be anonymous',
     });
 
   // following are info objects for input creators
@@ -280,7 +289,7 @@ function SurveyBuilder() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setSurveyTitle,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -313,7 +322,7 @@ function SurveyBuilder() {
       onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         surveyBuilderDispatch({
           type: surveyBuilderAction.setSurveyDescription,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -363,7 +372,7 @@ function SurveyBuilder() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setExpiryDate,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -378,21 +387,23 @@ function SurveyBuilder() {
     withAsterisk: true,
   };
 
-  const isAnonymousCheckboxCreatorInfo: AccessibleCheckboxInputCreatorInfo = {
-    checkboxKind: 'single',
-    description: {
-      selected: 'Survey response will be anonymous',
-      deselected: 'Survey response will not be anonymous',
-    },
-    semanticName: 'anonymous survey',
-    checked: isAnonymous,
-    onChangeSingle: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsAnonymous,
-        payload: !isAnonymous,
-      });
-    },
-  };
+  const isAnonymousCheckboxCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
+    {
+      description: {
+        selected: isAnonymousInputSelectedText,
+        deselected: isAnonymousInputDeselectedText,
+      },
+      semanticName: 'anonymous survey',
+      checked: isAnonymous,
+      onChange: () => {
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setIsAnonymous,
+          payload: !isAnonymous,
+        });
+      },
+      required: true,
+      label: 'Select anonymity of survey responses',
+    };
 
   const questionsInputCreatorInfo: AccessibleTextInputCreatorInfo[] =
     Array.from({
@@ -577,9 +588,10 @@ function SurveyBuilder() {
       formSubmitButtonCreatorInfo,
     ]);
 
-  const [createdIsAnonymousCheckbox] = returnAccessibleCheckboxInputElements([
-    isAnonymousCheckboxCreatorInfo,
-  ]);
+  const [createdIsAnonymousCheckbox] =
+    returnAccessibleCheckboxSingleInputElements([
+      isAnonymousCheckboxCreatorInfo,
+    ]);
 
   const [createdExpiryDateInput] = returnAccessibleDateTimeElements([
     expiryDateInputCreatorInfo,

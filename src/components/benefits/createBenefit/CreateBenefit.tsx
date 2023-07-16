@@ -6,16 +6,17 @@ import {
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
 import { Button, Flex, Text } from '@mantine/core';
-import { useEffect, useMemo, useReducer } from 'react';
+import { ChangeEvent, useEffect, useMemo, useReducer } from 'react';
 
 import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
 import {
-  returnAccessibleCheckboxInputElements,
+  returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
+  returnAccessibleSelectedDeselectedTextElements,
 } from '../../../jsxCreators';
 import {
   returnDateValidationText,
@@ -23,7 +24,7 @@ import {
   returnMoneyValidationText,
 } from '../../../utils';
 import {
-  AccessibleCheckboxInputCreatorInfo,
+  AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
@@ -262,7 +263,7 @@ function CreateBenefit() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [planNameInputErrorText, planNameInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'plan name',
       inputText: planName,
       isValidInputText: isValidPlanName,
@@ -276,7 +277,7 @@ function CreateBenefit() {
     });
 
   const [planDescriptionInputErrorText, planDescriptionInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'plan description',
       inputText: planDescription,
       isValidInputText: isValidPlanDescription,
@@ -290,7 +291,7 @@ function CreateBenefit() {
     });
 
   const [planStartDateInputErrorText, planStartDateInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'plan start date',
       inputText: planStartDate,
       isValidInputText: isValidPlanStartDate,
@@ -301,7 +302,7 @@ function CreateBenefit() {
   const [
     employeeContributionInputErrorText,
     employeeContributionInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'employee contribution',
     inputText: employeeContribution,
     isValidInputText: isValidEmployeeContribution,
@@ -315,7 +316,7 @@ function CreateBenefit() {
   const [
     employerContributionInputErrorText,
     employerContributionInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'employer contribution',
     inputText: employerContribution,
     isValidInputText: isValidEmployerContribution,
@@ -325,6 +326,12 @@ function CreateBenefit() {
       kind: 'employer contribution',
     }),
   });
+
+  const [planActiveInputSelectedText, planActiveInputDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: isPlanActive,
+      semanticName: 'plan active',
+    });
 
   // following are info objects for input creators
   const planNameInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -344,7 +351,7 @@ function CreateBenefit() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setPlanName,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -378,7 +385,7 @@ function CreateBenefit() {
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setPlanDescription,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -410,7 +417,7 @@ function CreateBenefit() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setPlanStartDate,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -434,7 +441,7 @@ function CreateBenefit() {
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setPlanKind,
-        payload: event.target.value as BenefitsPlanKind,
+        payload: event.currentTarget.value as BenefitsPlanKind,
       });
     },
     value: planKind,
@@ -449,7 +456,7 @@ function CreateBenefit() {
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setCurrency,
-        payload: event.target.value as Currency,
+        payload: event.currentTarget.value as Currency,
       });
     },
     value: currency,
@@ -485,7 +492,7 @@ function CreateBenefit() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setEmployeeContribution,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -521,7 +528,7 @@ function CreateBenefit() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setEmployerContribution,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -540,33 +547,50 @@ function CreateBenefit() {
     withAsterisk: true,
   };
 
-  const planStatusCheckboxInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+  // const planStatusCheckboxInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+  //   {
+  //     description: {
+  //       selected: 'Plan is currently active',
+  //       deselected: 'Plan is currently inactive',
+  //     },
+  //     label: 'Plan status',
+  //     accessibleDescription: {
+  //       selected: 'Checkbox is selected to indicate plan is currently active',
+  //       deselected:
+  //         'Checkbox is deselected to indicate plan is currently inactive',
+  //     },
+  //     checkboxKind: 'single',
+  //     checked: isPlanActive,
+  //     onClick: () => {
+  //       createBenefitDispatch({
+  //         type: createBenefitAction.setIsPlanActive,
+  //         payload: !isPlanActive,
+  //       });
+  //     },
+  //     onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+  //       createBenefitDispatch({
+  //         type: createBenefitAction.setIsPlanActive,
+  //         payload: event.target.checked,
+  //       });
+  //     },
+  //     semanticName: 'plan status',
+  //   };
+  const planStatusCheckboxInputCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
     {
       description: {
-        selected: 'Plan is currently active',
-        deselected: 'Plan is currently inactive',
+        selected: planActiveInputSelectedText,
+        deselected: planActiveInputDeselectedText,
       },
       label: 'Plan status',
-      accessibleDescription: {
-        selected: 'Checkbox is selected to indicate plan is currently active',
-        deselected:
-          'Checkbox is deselected to indicate plan is currently inactive',
-      },
-      checkboxKind: 'single',
       checked: isPlanActive,
-      onClick: () => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createBenefitDispatch({
           type: createBenefitAction.setIsPlanActive,
-          payload: !isPlanActive,
-        });
-      },
-      onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
-        createBenefitDispatch({
-          type: createBenefitAction.setIsPlanActive,
-          payload: event.target.checked,
+          payload: event.currentTarget.checked,
         });
       },
       semanticName: 'plan status',
+      required: true,
     };
 
   const [
@@ -593,7 +617,9 @@ function CreateBenefit() {
     ]);
 
   const [createdPlanStatusCheckboxInput] =
-    returnAccessibleCheckboxInputElements([planStatusCheckboxInputCreatorInfo]);
+    returnAccessibleCheckboxSingleInputElements([
+      planStatusCheckboxInputCreatorInfo,
+    ]);
 
   const displayPlanDetailsFormPage = (
     <>

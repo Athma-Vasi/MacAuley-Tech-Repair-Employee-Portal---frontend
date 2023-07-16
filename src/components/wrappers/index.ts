@@ -8,10 +8,18 @@
 
 import type { AccessibleButtonCreatorInfo } from './ButtonWrapper';
 import { ButtonWrapper } from './ButtonWrapper';
-import type { AccessibleCheckboxInputCreatorInfo } from './CheckboxInputWrapper';
-import { CheckboxInputWrapper } from './CheckboxInputWrapper';
+import type {
+  AccessibleCheckboxGroupInputCreatorInfo,
+  AccessibleCheckboxSingleInputCreatorInfo,
+} from './CheckboxInputWrapper';
+import {
+  CheckboxGroupInputsWrapper,
+  CheckboxSingleInputWrapper,
+} from './CheckboxInputWrapper';
 import type { AccessibleDateTimeInputCreatorInfo } from './DateTimeInputWrapper';
 import { DateTimeInputWrapper } from './DateTimeInputWrapper';
+import type { AccessibleFormCreatorInfo } from './FormWrapper';
+import { FormWrapper } from './FormWrapper';
 import type { AccessibleSelectInputCreatorInfo } from './NativeSelectWrapper';
 import { NativeSelectWrapper } from './NativeSelectWrapper';
 import type { AccessiblePasswordInputCreatorInfo } from './PasswordInputWrapper';
@@ -35,8 +43,10 @@ import { TextInputWrapper } from './TextInputWrapper';
 
 export {
   ButtonWrapper,
-  CheckboxInputWrapper,
+  CheckboxGroupInputsWrapper,
+  CheckboxSingleInputWrapper,
   DateTimeInputWrapper,
+  FormWrapper,
   NativeSelectWrapper,
   PasswordInputWrapper,
   PhoneTextInputWrapper,
@@ -49,8 +59,10 @@ export {
 
 export type {
   AccessibleButtonCreatorInfo,
-  AccessibleCheckboxInputCreatorInfo,
+  AccessibleCheckboxGroupInputCreatorInfo,
+  AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
+  AccessibleFormCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,

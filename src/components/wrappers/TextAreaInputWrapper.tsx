@@ -9,6 +9,7 @@ import { Fragment, ReactNode } from 'react';
 import { BsTrash } from 'react-icons/bs';
 
 import { ButtonWrapper } from './ButtonWrapper';
+import { useGlobalState } from '../../hooks';
 
 type AccessibleTextAreaInputCreatorInfo = {
   semanticName: string;
@@ -59,6 +60,10 @@ function TextAreaInputWrapper({
   creatorInfoObject,
 }: TextAreaInputWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     semanticName,
     inputText,
     isValidInputText,
@@ -91,9 +96,11 @@ function TextAreaInputWrapper({
       dynamicInputProps?.semanticAction.slice(1)
     : '';
 
+  const textAreaSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   return (
     <Textarea
-      size="sm"
+      size={textAreaSize}
       w="100%"
       color="dark"
       label={

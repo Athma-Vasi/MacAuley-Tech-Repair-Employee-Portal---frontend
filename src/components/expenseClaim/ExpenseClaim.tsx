@@ -16,12 +16,13 @@ import {
 
 import {
   returnAccessibleButtonElements,
-  returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
+  returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleCheckboxSingleInputElements,
 } from '../../jsxCreators';
 import type { Currency } from '../../types';
 import {
@@ -32,7 +33,7 @@ import {
 import { CURRENCY_DATA } from '../benefits/constants';
 import {
   AccessibleButtonCreatorInfo,
-  AccessibleCheckboxInputCreatorInfo,
+  AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
@@ -187,7 +188,7 @@ function ExpenseClaim() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [expenseClaimAmountInputErrorText, expenseClaimAmountInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'expense claim amount',
       inputText: expenseClaimAmount,
       isInputTextFocused: isExpenseClaimAmountFocused,
@@ -199,7 +200,7 @@ function ExpenseClaim() {
     });
 
   const [expenseClaimDateInputErrorText, expenseClaimDateInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'expense claim date',
       inputText: expenseClaimDate,
       isInputTextFocused: isExpenseClaimDateFocused,
@@ -210,7 +211,7 @@ function ExpenseClaim() {
   const [
     expenseClaimDescriptionInputErrorText,
     expenseClaimDescriptionInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'expense claim description',
     inputText: expenseClaimDescription,
     isInputTextFocused: isExpenseClaimDescriptionFocused,
@@ -224,7 +225,7 @@ function ExpenseClaim() {
   });
 
   const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'additional comments',
       inputText: additionalComments,
       isInputTextFocused: isAdditionalCommentsFocused,
@@ -235,6 +236,14 @@ function ExpenseClaim() {
         minLength: 2,
         maxLength: 2000,
       }),
+    });
+
+  const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: acknowledgement,
+      semanticName: 'acknowledgement',
+      selectedDescription: 'I acknowledge that the information is correct',
+      deselectedDescription: 'I do not acknowledge',
     });
 
   const currencyIcon =
@@ -416,33 +425,21 @@ function ExpenseClaim() {
       semanticName: 'additional comments',
     };
 
-  const acknowledgementCheckboxInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+  const acknowledgementCheckboxInputCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
     {
       description: {
-        selected:
-          'I acknowledge that the information I have provided is accurate.',
-        deselected: 'I do not acknowledge.',
+        selected: acknowledgementInputSelectedText,
+        deselected: acknowledgementInputDeselectedText,
       },
-      checkboxKind: 'single',
-      semanticName: 'acknowledgement',
-      accessibleDescription: {
-        selected:
-          'Checkbox is selected. I acknowledge that the information I have provided is accurate.',
-        deselected: 'Checkbox is deselected. I do not acknowledge.',
-      },
-      onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+      checked: acknowledgement,
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setAcknowledgement,
           payload: event.currentTarget.checked,
         });
       },
-      checked: acknowledgement,
-      onClick: () => {
-        expenseClaimDispatch({
-          type: expenseClaimAction.setAcknowledgement,
-          payload: !acknowledgement,
-        });
-      },
+      semanticName: 'acknowledgement',
+      label: 'Acknowledgement',
       required: true,
     };
 
@@ -479,7 +476,7 @@ function ExpenseClaim() {
   ]);
 
   const [createdAcknowledgementCheckboxInput] =
-    returnAccessibleCheckboxInputElements([
+    returnAccessibleCheckboxSingleInputElements([
       acknowledgementCheckboxInputCreatorInfo,
     ]);
 
@@ -535,13 +532,13 @@ function ExpenseClaim() {
     event.preventDefault();
   }
 
-  useEffect(() => {
-    console.group('expenseClaim useEffect');
-    Object.entries(expenseClaimState).forEach(([key, value]) => {
-      console.log(key, value);
-    });
-    console.groupEnd();
-  }, [expenseClaimState]);
+  // useEffect(() => {
+  //   console.group('expenseClaim useEffect');
+  //   Object.entries(expenseClaimState).forEach(([key, value]) => {
+  //     console.log(key, value);
+  //   });
+  //   console.groupEnd();
+  // }, [expenseClaimState]);
 
   return (
     <Flex direction="column" align="center" justify="center" w="400px">
@@ -551,3 +548,120 @@ function ExpenseClaim() {
 }
 
 export { ExpenseClaim };
+
+/**
+ * async function handleFileSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData();
+    const file = document.getElementById('file') as HTMLInputElement;
+
+    if (file?.files) {
+      const image = file.files[0];
+      const { name, type, size } = image;
+      if (
+        type === 'image/jpeg' ||
+        type === 'image/jpg' ||
+        type === 'image/png'
+      ) {
+        // const compressionFactor = size > 1000000 ? 0.2 : 0.5;
+        const compressionFactor =
+          size < 500000
+            ? 0.5
+            : size < 750000
+            ? 0.4
+            : size < 1000000
+            ? 0.3
+            : size < 1500000
+            ? 0.2
+            : 0.1;
+        // compresses image to 50% of original size
+        await compress(image, compressionFactor).then((compressedImage) => {
+          console.log('image', compressedImage);
+          formData.append('file', compressedImage, name);
+        });
+      } else {
+        formData.append('file', image, name);
+      }
+    }
+
+    console.log('formData', formData);
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const axiosConfig: AxiosRequestConfig = {
+      method: 'post',
+      url: '/file-uploads',
+      data: formData,
+      signal,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    };
+
+    try {
+      const response = await axiosInstance(axiosConfig);
+      console.log('axiosresponse', response);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      controller.abort();
+    }
+  }
+
+  const [file, setFile] = useState<any>(null);
+
+  async function fetchImage(event: React.MouseEvent<HTMLButtonElement>) {
+    event.preventDefault();
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    const axiosConfig: AxiosRequestConfig = {
+      method: 'get',
+      url: '/file-uploads/64a0b175543aa5594dcc9c01',
+      signal,
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+      withCredentials: true,
+    };
+
+    try {
+      const response = await axiosInstance(axiosConfig);
+      console.log('axiosresponse', response);
+      setFile(response.data.fileUploads[0]);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      controller.abort();
+    }
+  }
+ */
+
+/**
+   * <form
+        encType="multipart/form-data"
+        method="post"
+        onSubmit={handleFileSubmit}
+        id="form"
+      >
+        <input type="file" name="file" id="file" />
+        <button type="submit">submit</button>
+      </form>
+      <button onClick={fetchImage} type="button">
+        Fetch
+      </button>
+      {file && (
+        <Image
+          src={`data:${file.fileMimetype};base64,${file.uploadedFile}`}
+          alt="image"
+          withPlaceholder
+          h="100%"
+          w="100%"
+          fit="contain"
+        />
+      )}
+   */

@@ -6,10 +6,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Group, Text, TextInput, Tooltip } from '@mantine/core';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import { BsTrash } from 'react-icons/bs';
 
 import { ButtonWrapper } from './ButtonWrapper';
+import { useGlobalState } from '../../hooks';
 
 type AccessibleTextInputCreatorInfo = {
   semanticName: string;
@@ -60,6 +61,10 @@ type TextInputWrapperProps = {
 
 function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     semanticName,
     inputText,
     isValidInputText,
@@ -92,9 +97,11 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       dynamicInputProps?.semanticAction.slice(1)
     : '';
 
+  const textInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   return (
     <TextInput
-      size="sm"
+      size={textInputSize}
       w="100%"
       color="dark"
       label={

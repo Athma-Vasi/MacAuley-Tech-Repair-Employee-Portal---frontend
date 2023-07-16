@@ -11,7 +11,7 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../../../constants/regex';
-import { returnAccessibleTextElements } from '../../../jsxCreators';
+import { returnAccessibleErrorValidTextElements } from '../../../jsxCreators';
 import {
   returnAddressValidationText,
   returnCityValidationText,
@@ -177,7 +177,7 @@ function RegisterStepAddress({
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'address line',
       inputText: addressLine,
       isValidInputText: isValidAddressLine,
@@ -190,8 +190,8 @@ function RegisterStepAddress({
       }),
     });
 
-  const [cityInputErrorText, cityInputValidText] = returnAccessibleTextElements(
-    {
+  const [cityInputErrorText, cityInputValidText] =
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'city',
       inputText: city,
       isValidInputText: isValidCity,
@@ -202,11 +202,10 @@ function RegisterStepAddress({
         minLength: 2,
         maxLength: 75,
       }),
-    }
-  );
+    });
 
   const [postalCodeInputErrorText, postalCodeInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'postal code',
       inputText: postalCode,
       isValidInputText: isValidPostalCode,
@@ -218,7 +217,7 @@ function RegisterStepAddress({
     });
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'contact number',
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,

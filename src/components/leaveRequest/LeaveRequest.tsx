@@ -7,19 +7,20 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../constants/regex';
 import {
-  returnAccessibleCheckboxInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
+  returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleCheckboxSingleInputElements,
 } from '../../jsxCreators';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../utils';
 import {
-  AccessibleCheckboxInputCreatorInfo,
+  AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
@@ -181,7 +182,7 @@ function LeaveRequest() {
     ? ''
     : 'The leave start date must be before the leave end date and both must be in the future. ';
   const [startDateInputErrorText, startDateInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'start date',
       inputText: startDate,
       isInputTextFocused: isStartDateFocused,
@@ -192,7 +193,7 @@ function LeaveRequest() {
     });
 
   const [endDateInputErrorText, endDateInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'end date',
       inputText: endDate,
       isInputTextFocused: isEndDateFocused,
@@ -203,7 +204,7 @@ function LeaveRequest() {
     });
 
   const [delegatedToEmployeeInputErrorText, delegatedToEmployeeInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'delegated to employee',
       inputText: delegatedToEmployee,
       isInputTextFocused: isDelegatedToEmployeeFocused,
@@ -219,7 +220,7 @@ function LeaveRequest() {
   const [
     delegatedResponsibilitiesInputErrorText,
     delegatedResponsibilitiesInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'delegated responsibilities',
     inputText: delegatedResponsibilities,
     isInputTextFocused: isDelegatedResponsibilitiesFocused,
@@ -233,7 +234,7 @@ function LeaveRequest() {
   });
 
   const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'additional comments',
       inputText: additionalComments,
       isInputTextFocused: isAdditionalCommentsFocused,
@@ -244,6 +245,14 @@ function LeaveRequest() {
         minLength: 2,
         maxLength: 2000,
       }),
+    });
+
+  const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: isAcknowledged,
+      semanticName: 'acknowledgement',
+      selectedDescription: 'I acknowledge that the information is correct',
+      deselectedDescription: 'I do not acknowledge',
     });
 
   const startDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
@@ -265,7 +274,7 @@ function LeaveRequest() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       leaveRequestDispatch({
         type: leaveRequestAction.setStartDate,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -299,7 +308,7 @@ function LeaveRequest() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       leaveRequestDispatch({
         type: leaveRequestAction.setEndDate,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -348,7 +357,7 @@ function LeaveRequest() {
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         leaveRequestDispatch({
           type: leaveRequestAction.setDelegatedToEmployee,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -425,28 +434,22 @@ function LeaveRequest() {
       semanticName: 'additional comments',
     };
 
-  const acknowledgementCheckboxCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+  const acknowledgementCheckboxCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
     {
-      checkboxKind: 'single',
-      checked: isAcknowledged,
       description: {
-        selected: 'I acknowledge that the information provided is correct.',
-        deselected: 'I do not acknowledge.',
+        selected: acknowledgementInputSelectedText,
+        deselected: acknowledgementInputDeselectedText,
       },
-      label: 'Acknowledgement',
-      semanticName: 'acknowledgement',
-      accessibleDescription: {
-        selected:
-          'The checkbox is currently selected. I acknowledge that the information provided is correct.',
-        deselected:
-          'The checkbox is currently deselected. I do not acknowledge.',
-      },
-      onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+      checked: isAcknowledged,
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         leaveRequestDispatch({
           type: leaveRequestAction.setIsAcknowledged,
           payload: event.currentTarget.checked,
         });
       },
+      semanticName: 'acknowledgement',
+      label: 'Acknowledgement',
+      required: true,
     };
 
   const [createdDelegatedToEmployeeTextInput] =
@@ -472,7 +475,9 @@ function LeaveRequest() {
     returnAccessibleSelectInputElements([reasonForLeaveSelectInputCreatorInfo]);
 
   const [createdAcknowledgementCheckbox] =
-    returnAccessibleCheckboxInputElements([acknowledgementCheckboxCreatorInfo]);
+    returnAccessibleCheckboxSingleInputElements([
+      acknowledgementCheckboxCreatorInfo,
+    ]);
 
   const displayLeaveRequestFirstPage = (
     <>

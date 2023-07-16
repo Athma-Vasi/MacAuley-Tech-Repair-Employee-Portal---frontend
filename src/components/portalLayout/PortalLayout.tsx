@@ -1,4 +1,4 @@
-import { AppShell } from '@mantine/core';
+import { AppShell, Flex } from '@mantine/core';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ function PortalLayout() {
 
   return (
     <AppShell
-      padding="md"
+      padding="lg"
       navbarOffsetBreakpoint="sm"
       navbar={<PortalNavbar openedNavbar={opened} />}
       header={
@@ -26,7 +26,15 @@ function PortalLayout() {
         backgroundImage: 'radial-gradient(circle, #f9f9f9 50%, #ececec 100%)',
       }}
     >
-      <Outlet />
+      <Flex
+        w="100%"
+        h="100%"
+        style={{ border: '1px solid #e0e0e0', borderRadius: 4 }}
+        align="center"
+        justify="center"
+      >
+        <Outlet />
+      </Flex>
     </AppShell>
   );
 }

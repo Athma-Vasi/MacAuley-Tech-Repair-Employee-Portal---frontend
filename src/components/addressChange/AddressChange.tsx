@@ -1,4 +1,4 @@
-import { Button, Flex } from '@mantine/core';
+import { Button, Flex, TextInput } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { PROVINCES, STATES_US } from '../../constants/data';
@@ -10,10 +10,12 @@ import {
   POSTAL_CODE_REGEX_US,
 } from '../../constants/regex';
 import {
-  returnAccessibleCheckboxInputElements,
+  returnAccessibleCheckboxSingleInputElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleFormElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
-  returnAccessibleTextElements,
+  returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import { Country, Province, StatesUS } from '../../types';
@@ -24,7 +26,8 @@ import {
   returnPostalCodeValidationText,
 } from '../../utils';
 import {
-  AccessibleCheckboxInputCreatorInfo,
+  AccessibleCheckboxSingleInputCreatorInfo,
+  AccessibleFormCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
@@ -219,7 +222,7 @@ function AddressChange() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'address line',
       inputText: addressLine,
       isValidInputText: isValidAddressLine,
@@ -232,8 +235,8 @@ function AddressChange() {
       }),
     });
 
-  const [cityInputErrorText, cityInputValidText] = returnAccessibleTextElements(
-    {
+  const [cityInputErrorText, cityInputValidText] =
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'city',
       inputText: city,
       isValidInputText: isValidCity,
@@ -244,11 +247,10 @@ function AddressChange() {
         minLength: 2,
         maxLength: 75,
       }),
-    }
-  );
+    });
 
   const [postalCodeInputErrorText, postalCodeInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'postal code',
       inputText: postalCode,
       isValidInputText: isValidPostalCode,
@@ -260,12 +262,20 @@ function AddressChange() {
     });
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'contact number',
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,
       isInputTextFocused: isContactNumberFocused,
       regexValidationText: returnPhoneNumberValidationText(contactNumber),
+    });
+
+  const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: isAcknowledged,
+      semanticName: 'acknowledgement',
+      selectedDescription: 'I acknowledge that the information is correct',
+      deselectedDescription: 'I do not acknowledge',
     });
 
   // following are info objects for input creators
@@ -496,35 +506,21 @@ function AddressChange() {
       initialInputValue: '+(1)',
     };
 
-  const acknowledgementCheckboxCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+  const acknowledgementCheckboxCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
     {
       description: {
-        selected: 'I acknowledge that the information provided is accurate.',
-        deselected: 'I do not acknowledge.',
+        selected: acknowledgementInputSelectedText,
+        deselected: acknowledgementInputDeselectedText,
       },
-      checkboxKind: 'single',
       checked: isAcknowledged,
-      label: 'Acknowledgement',
-      onClick: () => {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsAcknowledged,
-          payload: !isAcknowledged,
-        });
-      },
-      semanticName: 'acknowledgement',
-      accessibleDescription: {
-        deselected:
-          'Acknowledgement checkbox is unchecked. I do not acknowledge.',
-        selected:
-          'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.',
-      },
-
-      onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         addressChangeDispatch({
           type: addressChangeAction.setIsAcknowledged,
           payload: event.currentTarget.checked,
         });
       },
+      semanticName: 'acknowledgement',
+      label: 'Acknowledgement',
       required: true,
     };
 
@@ -551,7 +547,9 @@ function AddressChange() {
     ]);
 
   const [createdAcknowledgementCheckbox] =
-    returnAccessibleCheckboxInputElements([acknowledgementCheckboxCreatorInfo]);
+    returnAccessibleCheckboxSingleInputElements([
+      acknowledgementCheckboxCreatorInfo,
+    ]);
 
   const displayAddressChangeFormPage = (
     <>
@@ -566,13 +564,6 @@ function AddressChange() {
   );
   const displayAddressChangeReviewPage = <h2>Review</h2>;
 
-  const displayAddressChangeForm =
-    currentStepperPosition === 0
-      ? displayAddressChangeFormPage
-      : currentStepperPosition === 1
-      ? displayAddressChangeReviewPage
-      : null;
-
   const displaySubmitButton =
     currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION ? (
       <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
@@ -580,8 +571,42 @@ function AddressChange() {
       </Button>
     ) : null;
 
+  async function handleAddressChangeFormSubmit(
+    event: React.FormEvent<HTMLFormElement>
+  ) {
+    event.preventDefault();
+  }
+
+  const addressChangeFormCreatorInfo: AccessibleFormCreatorInfo = {
+    name: 'address change form',
+    onSubmit: handleAddressChangeFormSubmit,
+    semanticName: 'address change form',
+    submitButtonLabel: 'Submit',
+    children: [
+      createdContactNumberTextInput,
+      createdCountrySelectInput,
+      createdAddressLineTextInput,
+      createdProvinceOrStateSelectInput,
+      createdCityTextInput,
+      createdZipOrPostalCodeTextInput,
+      createdAcknowledgementCheckbox,
+    ],
+  };
+
+  const [createdAddressChangeForm] = returnAccessibleFormElements([
+    addressChangeFormCreatorInfo,
+  ]);
+
+  const displayAddressChangeForm =
+    currentStepperPosition === 0
+      ? createdAddressChangeForm
+      : currentStepperPosition === 1
+      ? displayAddressChangeReviewPage
+      : null;
+
   const displayAddressChangeComponent = (
     <StepperWrapper
+      childrenTitle="Address Change"
       currentStepperPosition={currentStepperPosition}
       setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
       descriptionObjectsArray={ADDRESS_CHANGE_DESCRIPTION_OBJECTS}
@@ -589,30 +614,23 @@ function AddressChange() {
       parentComponentDispatch={addressChangeDispatch}
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleAddressChangeFormSubmit}>
-        {displayAddressChangeForm}
-        {displaySubmitButton}
-      </form>
+      {/* <form onSubmit={handleAddressChangeFormSubmit}>
+        <Flex
+          direction="column"
+          align="flex-start"
+          justify="space-between"
+          rowGap="lg"
+          style={{ outline: '1px solid teal' }}
+        >
+          {displayAddressChangeForm}
+          {displaySubmitButton}
+        </Flex>
+      </form> */}
+      {displayAddressChangeForm}
     </StepperWrapper>
   );
 
-  async function handleAddressChangeFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
-
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w={400}
-    >
-      {displayAddressChangeComponent}
-    </Flex>
-  );
+  return <>{displayAddressChangeComponent}</>;
 }
 
 export { AddressChange };

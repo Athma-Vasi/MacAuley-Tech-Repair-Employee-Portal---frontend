@@ -1,6 +1,7 @@
 import {
   Button,
   Flex,
+  Image,
   PasswordInput,
   Text,
   TextInput,
@@ -16,7 +17,7 @@ import { COLORS } from '../../constants/data';
 import { authAction } from '../../context/authProvider/state';
 import { useAuth } from '../../hooks/useAuth';
 import { CustomError } from '../customError';
-import { LOGIN_URL } from './constants';
+import { LOGIN_BG_IMAGE_URL, LOGIN_URL } from './constants';
 import { initialLoginState, loginAction, loginReducer } from './state';
 import { DecodedToken, LoginResponse } from './types';
 
@@ -30,7 +31,6 @@ function Login() {
   const navigate = useNavigate();
 
   const usernameRef = useRef<HTMLInputElement>(null);
-  const errorRef = useRef<HTMLParagraphElement>(null);
 
   // sets focus on username input on first render
   useEffect(() => {
@@ -167,16 +167,6 @@ function Login() {
     }
   }
 
-  const displayError = (
-    <CustomError
-      ref={errorRef}
-      isError={errorMessage ? true : false}
-      message={errorMessage}
-    />
-  );
-
-  const { buttonTextColor } = COLORS;
-
   const displayLoginForm = (
     <Flex
       direction="column"
@@ -193,11 +183,7 @@ function Login() {
           rowGap="lg"
           w="100%"
         >
-          <Title
-            order={3}
-            color={buttonTextColor}
-            style={{ letterSpacing: '0.10rem' }}
-          >
+          <Title order={3} style={{ letterSpacing: '0.10rem' }}>
             Sign In
           </Title>
           <TextInput
@@ -269,8 +255,10 @@ function Login() {
   );
 
   return (
-    <Flex w={375} p="sm">
-      {errorMessage ? displayError : displayLoginForm}
+    <Flex w="100%" h="100%" align="center" justify="center">
+      <Flex w={350} p="sm">
+        {displayLoginForm}
+      </Flex>
     </Flex>
   );
 }

@@ -1,5 +1,6 @@
 import { Radio } from '@mantine/core';
 import React, { ReactNode } from 'react';
+import { useGlobalState } from '../../hooks';
 
 type AccessibleRadioSingleInputCreatorInfo = {
   semanticName: string;
@@ -20,6 +21,10 @@ function RadioSingleInputWrapper({
   creatorInfoObject,
 }: RadioSingleInputWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     checked,
     description,
     onChange,
@@ -31,9 +36,11 @@ function RadioSingleInputWrapper({
     ariaRequired = required,
   } = creatorInfoObject;
 
+  const radioInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   const createdRadioSingleInput = (
     <Radio
-      size="sm"
+      size={radioInputSize}
       label={label}
       description={description}
       aria-required={ariaRequired}
@@ -103,6 +110,10 @@ function RadioGroupInputsWrapper({
   creatorInfoObject,
 }: RadioGroupInputsWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     dataObjectArray,
     description,
     onChange,
@@ -116,9 +127,11 @@ function RadioGroupInputsWrapper({
     name = semanticName,
   } = creatorInfoObject;
 
+  const radioInputsSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   const createdRadioGroupInputs = (
     <Radio.Group
-      size="sm"
+      size={radioInputsSize}
       label={label}
       description={description}
       aria-required={ariaRequired}

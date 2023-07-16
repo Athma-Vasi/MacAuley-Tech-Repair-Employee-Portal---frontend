@@ -9,7 +9,7 @@ import {
   USERNAME_REGEX,
 } from '../../../constants/regex';
 import { screenReaderPasswordSpecialCharacters } from '../../../domElements';
-import { returnAccessibleTextElements } from '../../../jsxCreators';
+import { returnAccessibleErrorValidTextElements } from '../../../jsxCreators';
 import {
   returnEmailValidationText,
   returnUsernameRegexValidationText,
@@ -95,7 +95,7 @@ function RegisterStepAuthentication({
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [emailInputErrorText, emailInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'email',
       inputText: email,
       isValidInputText: isValidEmail,
@@ -104,7 +104,7 @@ function RegisterStepAuthentication({
     });
 
   const [usernameInputErrorText, usernameInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'username',
       inputText: username,
       isValidInputText: isValidUsername,
@@ -116,7 +116,7 @@ function RegisterStepAuthentication({
     returnPasswordRegexValidationText(password);
 
   const [passwordInputErrorText, passwordInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'password',
       inputText: password,
       isValidInputText: isValidPassword,
@@ -129,7 +129,7 @@ function RegisterStepAuthentication({
     });
 
   const [confirmPasswordInputErrorText, confirmPasswordInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'confirm password',
       inputText: confirmPassword,
       isValidInputText: isValidConfirmPassword,

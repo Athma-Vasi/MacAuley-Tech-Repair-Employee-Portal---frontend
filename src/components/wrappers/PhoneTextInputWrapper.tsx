@@ -5,6 +5,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, TextInput, Tooltip } from '@mantine/core';
+import { useGlobalState } from '../../hooks';
 
 type AccessiblePhoneNumberTextInputCreatorInfo = {
   semanticName: string;
@@ -43,6 +44,10 @@ function PhoneTextInputWrapper({
   creatorInfoObject,
 }: PhoneTextInputWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     semanticName,
     inputText,
     isValidInputText,
@@ -67,9 +72,11 @@ function PhoneTextInputWrapper({
     autoComplete = 'off',
   } = creatorInfoObject;
 
+  const textInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   return (
     <TextInput
-      size="sm"
+      size={textInputSize}
       w="100%"
       color="dark"
       label={label}

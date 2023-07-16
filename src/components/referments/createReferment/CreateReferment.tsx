@@ -22,12 +22,13 @@ import {
   URL_REGEX,
 } from '../../../constants/regex';
 import {
-  returnAccessibleCheckboxInputElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
+  returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleCheckboxSingleInputElements,
 } from '../../../jsxCreators';
 import { JobPosition, PhoneNumber } from '../../../types';
 import {
@@ -37,7 +38,7 @@ import {
   returnUrlValidationText,
 } from '../../../utils';
 import {
-  AccessibleCheckboxInputCreatorInfo,
+  AccessibleCheckboxSingleInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
@@ -294,7 +295,7 @@ function CreateReferment() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [candidateFullNameInputErrorText, candidateFullNameInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'candidate full name',
       inputText: candidateFullName,
       isInputTextFocused: isCandidateFullNameFocused,
@@ -308,7 +309,7 @@ function CreateReferment() {
     });
 
   const [candidateEmailInputErrorText, candidateEmailInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'candidate email',
       inputText: candidateEmail,
       isInputTextFocused: isCandidateEmailFocused,
@@ -319,7 +320,7 @@ function CreateReferment() {
   const [
     candidateContactNumberInputErrorText,
     candidateContactNumberInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'candidate contact number',
     inputText: candidateContactNumber,
     isInputTextFocused: isCandidateContactNumberFocused,
@@ -332,7 +333,7 @@ function CreateReferment() {
   const [
     candidateCurrentJobTitleInputErrorText,
     candidateCurrentJobTitleInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'candidate current job title',
     inputText: candidateCurrentJobTitle,
     isInputTextFocused: isCandidateCurrentJobTitleFocused,
@@ -348,7 +349,7 @@ function CreateReferment() {
   const [
     candidateCurrentCompanyInputErrorText,
     candidateCurrentCompanyInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'candidate current company',
     inputText: candidateCurrentCompany,
     isInputTextFocused: isCandidateCurrentCompanyFocused,
@@ -362,7 +363,7 @@ function CreateReferment() {
   });
 
   const [candidateProfileUrlInputErrorText, candidateProfileUrlInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'candidate profile url',
       inputText: candidateProfileUrl,
       isInputTextFocused: isCandidateProfileUrlFocused,
@@ -373,7 +374,7 @@ function CreateReferment() {
   const [
     positionJobDescriptionInputErrorText,
     positionJobDescriptionInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'position job description',
     inputText: positionJobDescription,
     isInputTextFocused: isPositionJobDescriptionFocused,
@@ -387,7 +388,7 @@ function CreateReferment() {
   });
 
   const [referralReasonInputErrorText, referralReasonInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'referral reason',
       inputText: referralReason,
       isInputTextFocused: isReferralReasonFocused,
@@ -403,7 +404,7 @@ function CreateReferment() {
   const [
     additionalInformationInputErrorText,
     additionalInformationInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'additional information',
     inputText: additionalInformation,
     isInputTextFocused: isAdditionalInformationFocused,
@@ -415,6 +416,16 @@ function CreateReferment() {
       maxLength: 2000,
     }),
   });
+
+  const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: privacyConsent,
+      semanticName: 'privacy consent',
+      selectedDescription:
+        'I acknowledge that the candidate has given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
+      deselectedDescription:
+        'I have not received consent from the candidate to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
+    });
 
   const candidateNameTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -433,7 +444,7 @@ function CreateReferment() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       createRefermentDispatch({
         type: createRefermentAction.setCandidateFullName,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -467,7 +478,7 @@ function CreateReferment() {
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
       createRefermentDispatch({
         type: createRefermentAction.setCandidateEmail,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -500,7 +511,7 @@ function CreateReferment() {
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setCandidateContactNumber,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -548,7 +559,7 @@ function CreateReferment() {
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setCandidateProfileUrl,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -579,7 +590,7 @@ function CreateReferment() {
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setCandidateCurrentJobTitle,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -612,7 +623,7 @@ function CreateReferment() {
       onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setCandidateCurrentCompany,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -661,7 +672,7 @@ function CreateReferment() {
       onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setPositionJobDescription,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -692,7 +703,7 @@ function CreateReferment() {
       onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setReferralReason,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -725,7 +736,7 @@ function CreateReferment() {
       onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setAdditionalInformation,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -738,36 +749,21 @@ function CreateReferment() {
       semanticName: 'additional information',
     };
 
-  const privacyConsentCheckboxInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+  const privacyConsentCheckboxInputCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
     {
       description: {
-        selected:
-          'I acknowledge that the candidate has given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
-        deselected:
-          'I have not received consent from the candidate to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
-      },
-      checkboxKind: 'single',
-      label: 'Privacy consent',
-      semanticName: 'privacy consent',
-      accessibleDescription: {
-        selected:
-          'Privacy consent selected. I acknowledge that the candidate has given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
-        deselected:
-          'Privacy consent deselected. I have not received consent from the candidate to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.',
-      },
-      onChangeSingle: () => {
-        createRefermentDispatch({
-          type: createRefermentAction.setPrivacyConsent,
-          payload: !privacyConsent,
-        });
-      },
-      onClick: () => {
-        createRefermentDispatch({
-          type: createRefermentAction.setPrivacyConsent,
-          payload: true,
-        });
+        selected: acknowledgementInputSelectedText,
+        deselected: acknowledgementInputDeselectedText,
       },
       checked: privacyConsent,
+      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setPrivacyConsent,
+          payload: event.currentTarget.checked,
+        });
+      },
+      semanticName: 'privacy consent',
+      label: 'Privacy consent',
       required: true,
     };
 
@@ -801,7 +797,7 @@ function CreateReferment() {
   ]);
 
   const [createdPrivacyConsentCheckboxInput] =
-    returnAccessibleCheckboxInputElements([
+    returnAccessibleCheckboxSingleInputElements([
       privacyConsentCheckboxInputCreatorInfo,
     ]);
 

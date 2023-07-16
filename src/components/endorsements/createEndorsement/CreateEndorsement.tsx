@@ -1,5 +1,5 @@
 import { Button, Flex } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
 
 import {
   FULL_NAME_REGEX,
@@ -7,9 +7,10 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
 import {
-  returnAccessibleCheckboxInputElements,
+  returnAccessibleCheckboxGroupInputsElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
@@ -17,7 +18,7 @@ import {
   returnNameValidationText,
 } from '../../../utils';
 import {
-  AccessibleCheckboxInputCreatorInfo,
+  AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   StepperWrapper,
@@ -122,7 +123,7 @@ function CreateEndorsement() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'title',
       inputText: title,
       isInputTextFocused: isTitleFocused,
@@ -138,7 +139,7 @@ function CreateEndorsement() {
   const [
     employeeToBeEndorsedInputErrorText,
     employeeToBeEndorsedInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'employee to be endorsed',
     inputText: employeeToBeEndorsed,
     isInputTextFocused: isEmployeeToBeEndorsedFocused,
@@ -154,7 +155,7 @@ function CreateEndorsement() {
   const [
     summaryOfEndorsementInputErrorText,
     summaryOfEndorsementInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'summary of endorsement',
     inputText: summaryOfEndorsement,
     isInputTextFocused: isSummaryOfEndorsementFocused,
@@ -165,6 +166,18 @@ function CreateEndorsement() {
       minLength: 2,
       maxLength: 2000,
     }),
+  });
+
+  const [
+    attributeEndorsedInputSelectedText,
+    attributeEndorsedInputDeselectedText,
+  ] = returnAccessibleSelectedDeselectedTextElements({
+    isSelected: attributeEndorsed.length > 0,
+    semanticName: 'attributes endorsed',
+    selectedDescription: `You have chosen: ${attributeEndorsed.join(
+      ', '
+    )} attribute${attributeEndorsed.length > 1 ? 's' : ''} to endorse`,
+    deselectedDescription: 'Please select one or more attributes to endorse',
   });
 
   const titleTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -181,10 +194,10 @@ function CreateEndorsement() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createEndorsementDispatch({
         type: createEndorsementAction.setTitle,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -213,10 +226,10 @@ function CreateEndorsement() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createEndorsementDispatch({
         type: createEndorsementAction.setEmployeeToBeEndorsed,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -248,10 +261,10 @@ function CreateEndorsement() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createEndorsementDispatch({
           type: createEndorsementAction.setSummaryOfEndorsement,
-          payload: event.target.value,
+          payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
@@ -266,26 +279,18 @@ function CreateEndorsement() {
       withAsterisk: true,
     };
 
-  const employeeAttributesInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
+  const employeeAttributesInputCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
     {
-      accessibleDescription: {
-        selected: `You have selected ${attributeEndorsed.join(', ')} attribute${
-          attributeEndorsed.length > 1 ? 's' : ''
-        }`,
-        deselected: 'Please select at least one employee attribute',
-      },
-      checkboxKind: 'multiple',
-      defaultValue: ['adaptibility and flexibility'],
+      dataObjectArray: EMPLOYEE_ATTRIBUTES_DATA,
       description: {
-        selected: 'Choose all that apply',
-        deselected: 'Please select at least one employee attribute',
+        selected: attributeEndorsedInputSelectedText,
+        deselected: attributeEndorsedInputDeselectedText,
       },
       label: 'Employee attributes',
       semanticName: 'employee attributes',
       value: attributeEndorsed,
       required: true,
-      dataObjArray: EMPLOYEE_ATTRIBUTES_DATA,
-      onChangeMultiple: (event: string[]) => {
+      onChange: (event: string[]) => {
         createEndorsementDispatch({
           type: createEndorsementAction.setAttributeEndorsed,
           payload: event as EmployeeAttributes,
@@ -305,7 +310,9 @@ function CreateEndorsement() {
     ]);
 
   const [createdEmployeeAttributesCheckboxInput] =
-    returnAccessibleCheckboxInputElements([employeeAttributesInputCreatorInfo]);
+    returnAccessibleCheckboxGroupInputsElements([
+      employeeAttributesInputCreatorInfo,
+    ]);
 
   const displayEndorsementFirstPage = (
     <>
@@ -354,7 +361,7 @@ function CreateEndorsement() {
   );
 
   async function handleCreateEndorsementFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
+    event: FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
   }

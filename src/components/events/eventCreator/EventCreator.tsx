@@ -12,7 +12,7 @@ import {
   returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
@@ -312,7 +312,7 @@ function EventCreator() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [eventTitleErrorText, eventTitleValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'event title',
       inputText: eventTitle,
       isInputTextFocused: isEventTitleFocused,
@@ -329,7 +329,7 @@ function EventCreator() {
     ? ''
     : 'The event start date must be before the event end date and both must be in the future. ';
   const [eventStartDateErrorText, eventStartDateValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'event start date',
       inputText: eventStartDate,
       isInputTextFocused: isEventStartDateFocused,
@@ -340,7 +340,7 @@ function EventCreator() {
     });
 
   const [eventEndDateErrorText, eventEndDateValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'event end date',
       inputText: eventEndDate,
       isInputTextFocused: isEventEndDateFocused,
@@ -355,7 +355,7 @@ function EventCreator() {
     : 'The event start time must be before the event end time and both must be in the future.';
 
   const [eventStartTimeErrorText, eventStartTimeValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'event start time',
       inputText: eventStartTime,
       isInputTextFocused: isEventStartTimeFocused,
@@ -371,7 +371,7 @@ function EventCreator() {
     });
 
   const [eventEndTimeErrorText, eventEndTimeValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'event end time',
       inputText: eventEndTime,
       isInputTextFocused: isEventEndTimeFocused,
@@ -387,7 +387,7 @@ function EventCreator() {
     });
 
   const [eventLocationErrorText, eventLocationValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'event location',
       inputText: eventLocation,
       isInputTextFocused: isEventLocationFocused,
@@ -401,7 +401,7 @@ function EventCreator() {
     });
 
   const [eventDescriptionErrorText, eventDescriptionValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'event description',
       inputText: eventDescription,
       isInputTextFocused: isEventDescriptionFocused,
@@ -415,7 +415,7 @@ function EventCreator() {
     });
 
   const [eventAttendeesErrorText, eventAttendeesValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'event attendees',
       inputText: eventAttendees,
       isInputTextFocused: isEventAttendeesFocused,
@@ -429,7 +429,7 @@ function EventCreator() {
     });
 
   const [requiredItemsErrorText, requiredItemsValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'required items',
       inputText: requiredItems,
       isInputTextFocused: isRequiredItemsFocused,
@@ -446,7 +446,7 @@ function EventCreator() {
     ? ''
     : 'The RSVP deadline must be before the event start date and after today.';
   const [rsvpDeadlineErrorText, rsvpDeadlineValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'rsvp deadline',
       inputText: rsvpDeadline,
       isInputTextFocused: isRsvpDeadlineFocused,
@@ -474,7 +474,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setTitle,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -507,7 +507,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventLocation,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -529,7 +529,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventKind,
-        payload: event.target.value as EventKind,
+        payload: event.currentTarget.value as EventKind,
       });
     },
     value: eventKind,
@@ -556,7 +556,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventDescription,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -590,7 +590,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventAttendees,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -621,7 +621,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setRequiredItems,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -654,7 +654,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventStartDate,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -689,7 +689,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventEndDate,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -723,7 +723,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventStartTime,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -757,7 +757,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventEndTime,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
@@ -792,7 +792,7 @@ function EventCreator() {
     onChange: (event) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setRsvpDeadline,
-        payload: event.target.value,
+        payload: event.currentTarget.value,
       });
     },
     onFocus: () => {

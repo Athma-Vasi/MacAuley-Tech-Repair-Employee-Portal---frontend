@@ -1,9 +1,12 @@
+import './index.css';
+
 import { MantineProvider } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
 
 import { AddressChange } from './components/addressChange';
 import { CreateAnnouncement } from './components/announcements/createAnnouncement';
 import { CreateBenefit } from './components/benefits/createBenefit';
+import { CreateComment } from './components/comments';
 import { CreateAnonymousRequest } from './components/createAnonymousRequest';
 import { Dashboard } from './components/dashboard';
 import { CreateEndorsement } from './components/endorsements/createEndorsement';
@@ -24,7 +27,6 @@ import { SurveyBuilder } from './components/surveyBuilder';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
-import { CreateComment } from './components/comments';
 
 function App() {
   const {
@@ -36,19 +38,20 @@ function App() {
       <Routes>
         {/* these are public routes */}
         <Route path="/" element={<PublicLayout />}>
-          {/* <Route index element={<Login />} /> */}
-          {/* <Route path="login" element={<Login />} /> */}
-          {/* <Route path="register" element={<Register />} /> */}
+          <Route index element={<Login />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
+
           {/* DEV PATHS - DELETE LATER*/}
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
           {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
           {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
-          {/* <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
+          <Route path="create-endorsement" element={<CreateEndorsement />} />
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
-          {/* <Route path="create-referment" element={<CreateReferment />} /> */}
+          <Route path="create-referment" element={<CreateReferment />} />
           {/* <Route
             path="create-anonymous-request"
             element={<CreateAnonymousRequest />}
@@ -78,8 +81,42 @@ function App() {
             <Route path="notes">
               <Route index element={<NotesList />} />
             </Route>
-          </Route>
+          </Route>          
         </Route> */}
+
+        {/* DEV TEST ROUTES */}
+        <Route path="portal" element={<PortalLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
+
+          <Route path="notes">
+            <Route index element={<NotesList />} />
+          </Route>
+
+          <Route path="company">
+            <Route path="address-change" element={<AddressChange />} />
+            <Route path="benefits" element={<CreateBenefit />} />
+            <Route path="leave-request" element={<LeaveRequest />} />
+            <Route path="request-resource" element={<RequestResource />} />
+            <Route path="expense-claim" element={<ExpenseClaim />} />
+          </Route>
+
+          <Route path="general">
+            <Route path="endorsement" element={<CreateEndorsement />} />
+            <Route path="printer-issue" element={<CreatePrinterIssue />} />
+            <Route path="referment" element={<CreateReferment />} />
+            <Route
+              path="anonymous-request"
+              element={<CreateAnonymousRequest />}
+            />
+          </Route>
+
+          <Route path="outreach">
+            <Route path="event-creator" element={<EventCreator />} />
+            <Route path="survey-builder" element={<SurveyBuilder />} />
+            <Route path="announcements" element={<CreateAnnouncement />} />
+          </Route>
+        </Route>
 
         {/* catch all */}
         <Route path="*" element={<NotFound />} />

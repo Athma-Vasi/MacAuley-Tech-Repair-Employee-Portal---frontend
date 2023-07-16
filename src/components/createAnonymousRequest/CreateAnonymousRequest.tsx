@@ -21,7 +21,7 @@ import {
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import { PhoneNumber, Urgency } from '../../types';
@@ -207,7 +207,7 @@ function CreateAnonymousRequest() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'title',
       inputText: title,
       isInputTextFocused: isTitleFocused,
@@ -221,7 +221,7 @@ function CreateAnonymousRequest() {
     });
 
   const [secureContactNumberInputErrorText, secureContactNumberInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'secure contact number',
       inputText: secureContactNumber,
       isInputTextFocused: isSecureContactNumberFocused,
@@ -230,7 +230,7 @@ function CreateAnonymousRequest() {
     });
 
   const [secureContactEmailInputErrorText, secureContactEmailInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'secure contact email',
       inputText: secureContactEmail,
       isInputTextFocused: isSecureContactEmailFocused,
@@ -239,7 +239,7 @@ function CreateAnonymousRequest() {
     });
 
   const [requestDescriptionInputErrorText, requestDescriptionInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'request description',
       inputText: requestDescription,
       isInputTextFocused: isRequestDescriptionFocused,
@@ -255,7 +255,7 @@ function CreateAnonymousRequest() {
   const [
     additionalInformationInputErrorText,
     additionalInformationInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'additional information',
     inputText: additionalInformation,
     isInputTextFocused: isAdditionalInformationFocused,

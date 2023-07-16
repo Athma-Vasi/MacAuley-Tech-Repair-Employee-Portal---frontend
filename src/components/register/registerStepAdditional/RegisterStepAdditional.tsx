@@ -9,7 +9,7 @@ import {
   FULL_NAME_REGEX,
   PHONE_NUMBER_REGEX,
 } from '../../../constants/regex';
-import { returnAccessibleTextElements } from '../../../jsxCreators';
+import { returnAccessibleErrorValidTextElements } from '../../../jsxCreators';
 import {
   returnDateValidationText,
   returnNameValidationText,
@@ -121,7 +121,7 @@ function RegisterStepAdditional({
   const [
     emergencyContactFullNameInputErrorText,
     emergencyContactFullNameInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'full name',
     inputText: fullName,
     isInputTextFocused: isFullNameFocused,
@@ -137,7 +137,7 @@ function RegisterStepAdditional({
   const [
     emergencyPhoneNumberInputErrorText,
     emergencyPhoneNumberInputValidText,
-  ] = returnAccessibleTextElements({
+  ] = returnAccessibleErrorValidTextElements({
     inputElementKind: 'phone number',
     inputText: phoneNumber,
     isInputTextFocused: isPhoneNumberFocused,
@@ -146,7 +146,7 @@ function RegisterStepAdditional({
   });
 
   const [startDateInputErrorText, startDateInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'start date',
       inputText: startDate,
       isInputTextFocused: isStartDateFocused,

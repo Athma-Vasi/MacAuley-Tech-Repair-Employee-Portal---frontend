@@ -1,11 +1,12 @@
 import { Button } from '@mantine/core';
 import { ReactNode } from 'react';
+import { useGlobalState } from '../../hooks';
 
 type AccessibleButtonCreatorInfo = {
   buttonLabel: ReactNode;
-  buttonOnClick: (
+  buttonOnClick?: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => void;
+  ) => void | undefined;
   buttonDisabled?: boolean | undefined;
   buttonRef?: React.RefObject<HTMLButtonElement> | undefined;
   buttonType?: 'button' | 'submit' | 'reset' | undefined;
@@ -32,18 +33,22 @@ type ButtonWrapperProps = {
 
 function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     buttonLabel,
-    buttonOnClick,
+    buttonType = 'button',
+    buttonOnClick = () => {},
     semanticDescription,
     semanticName,
     buttonDisabled = false,
     buttonRef = null,
-    buttonType = 'button',
     buttonVariant = 'filled',
     compact = false,
     leftIcon = null,
     rightIcon = null,
-    size = 'sm',
+    size = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg',
   } = creatorInfoObject;
 
   return (

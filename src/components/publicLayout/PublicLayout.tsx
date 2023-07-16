@@ -1,4 +1,4 @@
-import { Center, Flex, Text,Title } from '@mantine/core';
+import { Center, Flex, Text, Title } from '@mantine/core';
 import { Outlet } from 'react-router-dom';
 
 import { useGlobalState } from '../../hooks/useGlobalState';
@@ -8,7 +8,16 @@ function PublicLayout() {
     globalState: { width },
   } = useGlobalState();
   return (
-    <Flex
+    <Flex w="100%" h="100%">
+      <Outlet />
+    </Flex>
+  );
+}
+
+export { PublicLayout };
+
+/**
+ * <Flex
       direction="column"
       align="center"
       justify="center"
@@ -45,7 +54,4 @@ function PublicLayout() {
       </Flex>
       <Outlet />
     </Flex>
-  );
-}
-
-export { PublicLayout };
+ */

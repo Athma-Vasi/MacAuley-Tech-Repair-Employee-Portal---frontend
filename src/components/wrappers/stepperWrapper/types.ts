@@ -12,6 +12,7 @@ type DescriptionObjectsArray = Array<{
 /**
  * Props for the StepperWrapper component.
  * @typedef {Object} StepperWrapperProps
+ * @property {string} [childrenTitle] - The title of the children.
  * @property {boolean} [allowNextStepsSelect] - Whether or not to allow the user to select steps that are not the next step.
  * @property {React.ReactNode} [children] - The component (in sections) that will be 'stepped' through.
  * @property {DescriptionObjectsArray} descriptionObjectsArray - Array of descriptions for each step.
@@ -23,6 +24,7 @@ type DescriptionObjectsArray = Array<{
  */
 type StepperWrapperProps = {
   allowNextStepsSelect?: boolean | undefined;
+  childrenTitle?: string;
   children?: React.ReactNode;
   currentStepperPosition: number;
   descriptionObjectsArray: DescriptionObjectsArray;

@@ -1,6 +1,7 @@
 import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { PasswordInput } from '@mantine/core';
+import { useGlobalState } from '../../hooks';
 
 type AccessiblePasswordInputCreatorInfo = {
   semanticName: string;
@@ -34,6 +35,10 @@ function PasswordInputWrapper({
   creatorInfoObject,
 }: PasswordInputWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     semanticName,
     inputText,
     isValidInputText,
@@ -53,9 +58,11 @@ function PasswordInputWrapper({
     required = false,
   } = creatorInfoObject;
 
+  const passwordInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   return (
     <PasswordInput
-      size="sm"
+      size={passwordInputSize}
       w="100%"
       color="dark"
       label={label}

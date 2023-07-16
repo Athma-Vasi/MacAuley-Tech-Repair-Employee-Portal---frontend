@@ -65,7 +65,13 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
 
   return (
-    <Header height={{ base: 50, md: 70 }} p="md">
+    <Header
+      height={{ base: 50, md: 70 }}
+      p="md"
+      style={{
+        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+      }}
+    >
       <Flex justify="space-between" align="center" h="100%">
         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
           <Burger

@@ -1,4 +1,5 @@
 import { NativeSelect } from '@mantine/core';
+import { useGlobalState } from '../../hooks';
 
 type AccessibleSelectInputCreatorInfo = {
   data: string[];
@@ -17,6 +18,10 @@ type NativeSelectWrapperProps = {
 
 function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     data,
     label,
     description,
@@ -27,9 +32,11 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     required = false,
   } = creatorInfoObject;
 
+  const selectInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   return (
     <NativeSelect
-      size="sm"
+      size={selectInputSize}
       data={data}
       label={label}
       aria-label={`Currently selected ${value}`}

@@ -1,46 +1,14 @@
 import { Checkbox } from '@mantine/core';
 import { ReactNode } from 'react';
-
-/*
-type AccessibleCheckboxInputCreatorInfo = {
-  semanticName: string;
-  accessibleDescription?:
-    | {
-        selected: string;
-        deselected: string;
-      }
-    | undefined;
-  ariarequired?: boolean | undefined;
-  checkboxKind: 'single' | 'multiple';
-  dataObjArray?:
-    | Array<{
-        value: string;
-        label: string;
-      }>
-    | undefined;
-  defaultValue?: [string] | undefined;
-  description: {
-    selected: string;
-    deselected: string;
-  };
-  label?: string | undefined;
-  checked?: boolean | undefined;
-  disabled?: boolean | undefined;
-  onChangeMultiple?: (value: string[]) => void | undefined;
-  onChangeSingle?: (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => void | undefined;
-  onClick?: () => void | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
-  value?: string[] | undefined;
-};
-*/
+import { useGlobalState } from '../../hooks';
 
 type AccessibleCheckboxSingleInputCreatorInfo = {
   semanticName: string;
   label?: ReactNode | string | undefined;
-  description: string;
+  description: {
+    selected: JSX.Element;
+    deselected: JSX.Element;
+  };
   ariaRequired?: boolean | undefined;
   checked: boolean;
   disabled?: boolean | undefined;
@@ -57,6 +25,10 @@ function CheckboxSingleInputWrapper({
   creatorInfoObject,
 }: CheckboxSingleInputWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     checked,
     description,
     onChange,
@@ -68,11 +40,18 @@ function CheckboxSingleInputWrapper({
     ariaRequired = required,
   } = creatorInfoObject;
 
+  const checkboxInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   const createdCheckboxSingleInput = (
     <Checkbox
-      size="sm"
+      size={checkboxInputSize}
       label={label}
-      description={description}
+      description={checked ? description.selected : description.deselected}
+      aria-describedby={
+        checked
+          ? `${semanticName.split(' ').join('-')}-selected`
+          : `${semanticName.split(' ').join('-')}-deselected`
+      }
       aria-required={ariaRequired}
       aria-label={semanticName}
       checked={checked}
@@ -89,7 +68,10 @@ function CheckboxSingleInputWrapper({
 type AccessibleCheckboxGroupInputCreatorInfo = {
   semanticName: string;
   label?: ReactNode | string | undefined;
-  description: string;
+  description: {
+    selected: JSX.Element;
+    deselected: JSX.Element;
+  };
   ariaRequired?: boolean | undefined;
   value: string[];
   onChange: (value: string[]) => void;
@@ -111,6 +93,10 @@ function CheckboxGroupInputsWrapper({
   creatorInfoObject,
 }: CheckboxGroupInputsWrapperProps) {
   const {
+    globalState: { width },
+  } = useGlobalState();
+
+  const {
     dataObjectArray,
     description,
     onChange,
@@ -123,11 +109,15 @@ function CheckboxGroupInputsWrapper({
     withAsterisk = required,
   } = creatorInfoObject;
 
+  const checkboxInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   const createdCheckboxGroupInputs = (
     <Checkbox.Group
-      size="sm"
+      size={checkboxInputSize}
       label={label}
-      description={description}
+      description={
+        value.length > 0 ? description.selected : description.deselected
+      }
       aria-required={ariaRequired}
       value={value}
       onChange={onChange}
@@ -150,51 +140,3 @@ export type {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
 };
-
-/**
- * const {
-    semanticName,
-    accessibleDescription = {
-      selected: '',
-      deselected: '',
-    },
-    ariarequired = false,
-    checkboxKind,
-    dataObjArray = null,
-    defaultValue = [''],
-    description,
-    label = '',
-    checked = false,
-    disabled = false,
-    onClick = () => {},
-    onChangeSingle = () => {},
-    onChangeMultiple = () => {},
-    ref = null,
-    required = false,
-    value = [''],
-  } = creatorInfoObject;
- */
-
-/**
-   * <Checkbox.Group
-          label={label}
-          defaultValue={defaultValue}
-          description={
-            value.length > 0 ? description.selected : description.deselected
-          }
-          value={value}
-          withAsterisk={required}
-          onChange={onChangeMultiple}
-        >
-          
-          {dataObjArray?.map(({ value: value_, label }, index) => (
-            <Checkbox
-              key={label}
-              value={value_}
-              label={label}
-              // color="dark"
-              size="sm"
-              checked={value.includes(value_)}
-            />
-          ))}
-   */

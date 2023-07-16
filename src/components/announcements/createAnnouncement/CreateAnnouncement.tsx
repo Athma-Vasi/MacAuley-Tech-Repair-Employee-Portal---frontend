@@ -12,8 +12,8 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleDynamicTextAreaInputElements,
-  returnAccessibleTextElements,
-  returnAccessibleTextElementsForDynamicInputs,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
@@ -202,7 +202,7 @@ function CreateAnnouncement() {
 
   // below are the accessible text elements for the screen reader to read out
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'title',
       inputText: title,
       isInputTextFocused: isTitleFocused,
@@ -216,7 +216,7 @@ function CreateAnnouncement() {
     });
 
   const [authorInputErrorText, authorInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'author',
       inputText: author,
       isInputTextFocused: isAuthorFocused,
@@ -230,7 +230,7 @@ function CreateAnnouncement() {
     });
 
   const [bannerImgSrcInputErrorText, bannerImgSrcInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'banner image src',
       inputText: bannerImageSrc,
       isInputTextFocused: isBannerImageSrcFocused,
@@ -239,7 +239,7 @@ function CreateAnnouncement() {
     });
 
   const [bannerImgAltInputErrorText, bannerImgAltInputValidText] =
-    returnAccessibleTextElements({
+    returnAccessibleErrorValidTextElements({
       inputElementKind: 'banner image alt',
       inputText: bannerImageAlt,
       isInputTextFocused: isBannerImageAltFocused,
@@ -253,7 +253,7 @@ function CreateAnnouncement() {
     });
 
   const [articleParagraphInputErrorTexts, articleParagraphInputValidTexts] =
-    returnAccessibleTextElementsForDynamicInputs({
+    returnAccessibleErrorValidTextElementsForDynamicInputs({
       areInputTextsFocused: areArticleParagraphsFocused,
       areValidInputTexts: areValidArticleParagraphs,
       inputTextArray: article,
