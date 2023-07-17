@@ -1,7 +1,15 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Button, Flex, NativeSelect, Textarea, TextInput } from '@mantine/core';
-import { useEffect, useReducer, useRef } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useReducer,
+  useRef,
+  KeyboardEvent,
+  MouseEvent,
+} from 'react';
 
 import { DEPARTMENTS, URGENCY_DATA } from '../../constants/data';
 import {
@@ -13,10 +21,10 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import { Department, Urgency } from '../../types';
@@ -32,6 +40,7 @@ import {
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   ButtonWrapper,
+  FormLayoutWrapper,
 } from '../wrappers';
 import { StepperWrapper } from '../wrappers';
 import {
@@ -45,6 +54,7 @@ import {
   requestResourceReducer,
 } from './state';
 import { RequestResourceKind } from './types';
+import { TbUpload } from 'react-icons/tb';
 
 function RequestResource() {
   const [requestResourceState, requestResourceDispatch] = useReducer(
@@ -77,6 +87,7 @@ function RequestResource() {
     isValidAdditionalInformation,
     isAdditionalInformationFocused,
 
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -268,7 +279,7 @@ function RequestResource() {
     description:
       'Select the department for which you are requesting a resource.',
     label: 'Department',
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setDepartment,
         payload: event.currentTarget.value as Department,
@@ -283,7 +294,7 @@ function RequestResource() {
     data: REQUEST_RESOURCE_KIND_DATA,
     description: 'Select the kind of resource you are requesting.',
     label: 'Resource',
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setResourceType,
         payload: event.currentTarget.value as RequestResourceKind,
@@ -308,7 +319,7 @@ function RequestResource() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setResourceQuantity,
         payload: event.currentTarget.value,
@@ -343,7 +354,7 @@ function RequestResource() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         requestResourceDispatch({
           type: requestResourceAction.setResourceDescription,
           payload: event.currentTarget.value,
@@ -375,7 +386,7 @@ function RequestResource() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setReasonForRequest,
         payload: event.currentTarget.value,
@@ -395,7 +406,7 @@ function RequestResource() {
     data: URGENCY_DATA,
     description: 'Select the urgency of your request.',
     label: 'Urgency',
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setUrgency,
         payload: event.currentTarget.value as Urgency,
@@ -421,7 +432,7 @@ function RequestResource() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         requestResourceDispatch({
           type: requestResourceAction.setAdditionalInformation,
           payload: event.currentTarget.value,
@@ -451,7 +462,7 @@ function RequestResource() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setDateNeededBy,
         payload: event.currentTarget.value,
@@ -471,12 +482,19 @@ function RequestResource() {
     withAsterisk: true,
   };
 
-  const formSubmitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Submit',
-    buttonOnClick: () => {},
-    semanticDescription: 'submit resource request form',
-    semanticName: 'submit request',
-    buttonDisabled: stepsInError.size > 0,
+    semanticDescription: 'request resource form submit button',
+    semanticName: 'submit button',
+    leftIcon: <TbUpload />,
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
   const [
@@ -507,26 +525,30 @@ function RequestResource() {
     dateNeededByDateInputCreatorInfo,
   ]);
 
-  const [createdFormSubmitButton] = returnAccessibleButtonElements([
-    formSubmitButtonCreatorInfo,
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
   ]);
+  const displaySubmitButton =
+    currentStepperPosition === REQUEST_RESOURCE_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
 
   const displayRequestResourceFormPageOne = (
-    <>
+    <FormLayoutWrapper>
       {createdDepartmentSelectInput}
       {createdResourceKindSelectInput}
       {createdResourceQuantityTextInput}
       {createdResourceDescriptionTextAreaInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayRequestResourceFormPageTwo = (
-    <>
+    <FormLayoutWrapper>
       {createdReasonForRequestTextInput}
       {createdUrgencySelectInput}
       {createdAdditionalInformationTextAreaInput}
       {createdDateNeededByDateInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayReviewFormPage = <h3>request resource review</h3>;
@@ -538,15 +560,11 @@ function RequestResource() {
       ? displayRequestResourceFormPageTwo
       : currentStepperPosition === 2
       ? displayReviewFormPage
-      : null;
-
-  const displayFormSubmitButton =
-    currentStepperPosition === REQUEST_RESOURCE_MAX_STEPPER_POSITION
-      ? createdFormSubmitButton
-      : null;
+      : displaySubmitButton;
 
   const displayRequestResourceComponent = (
     <StepperWrapper
+      childrenTitle="Request resource"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={REQUEST_RESOURCE_DESCRIPTION_OBJECTS}
       maxStepperPosition={REQUEST_RESOURCE_MAX_STEPPER_POSITION}
@@ -556,24 +574,21 @@ function RequestResource() {
       }
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleRequestResourceFormSubmit}>
-        {displayRequestResourceForm}
-        {displayFormSubmitButton}
-      </form>
+      {displayRequestResourceForm}
     </StepperWrapper>
   );
 
-  async function handleRequestResourceFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function handleRequestResourceFormSubmit() {
+      console.log('handleRequestResourceFormSubmit');
+    }
 
-  return (
-    <Flex direction="column" align="center" justify="center" w="400px">
-      {displayRequestResourceComponent}
-    </Flex>
-  );
+    if (triggerFormSubmit) {
+      handleRequestResourceFormSubmit();
+    }
+  }, [triggerFormSubmit]);
+
+  return <>{displayRequestResourceComponent}</>;
 }
 
 export { RequestResource };

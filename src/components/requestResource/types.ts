@@ -48,6 +48,7 @@ type RequestResourceState = {
   isValidAdditionalInformation: boolean;
   isAdditionalInformationFocused: boolean;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -87,6 +88,7 @@ type RequestResourceAction = {
   setIsValidAdditionalInformation: 'setIsValidAdditionalInformation';
   setIsAdditionalInformationFocused: 'setIsAdditionalInformationFocused';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -147,6 +149,7 @@ type RequestResourceDispatch =
         | RequestResourceAction['setIsDateNeededByFocused']
         | RequestResourceAction['setIsValidAdditionalInformation']
         | RequestResourceAction['setIsAdditionalInformationFocused']
+        | RequestResourceAction['setTriggerFormSubmit']
         | RequestResourceAction['setIsError']
         | RequestResourceAction['setIsSubmitting']
         | RequestResourceAction['setIsSuccessful']

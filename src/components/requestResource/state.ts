@@ -33,6 +33,7 @@ const initialRequestResourceState: RequestResourceState = {
   isValidAdditionalInformation: false,
   isAdditionalInformationFocused: false,
 
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -72,6 +73,7 @@ const requestResourceAction: RequestResourceAction = {
   setIsValidAdditionalInformation: 'setIsValidAdditionalInformation',
   setIsAdditionalInformationFocused: 'setIsAdditionalInformationFocused',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -179,6 +181,12 @@ function requestResourceReducer(
       return {
         ...state,
         isAdditionalInformationFocused: action.payload,
+      };
+
+    case requestResourceAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
     case requestResourceAction.setCurrentStepperPosition:
       return {
