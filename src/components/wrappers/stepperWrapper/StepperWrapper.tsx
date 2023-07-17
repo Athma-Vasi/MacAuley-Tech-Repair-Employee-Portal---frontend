@@ -169,7 +169,7 @@ function StepperWrapper({
             bg="white"
             p={padding}
           >
-            <Text color="dark">
+            <Text color={stepsInError.size === 0 ? 'green' : 'red'}>
               {stepsInError.size === 0 ? successMessage : errorMessageWithAnd}
             </Text>
           </Flex>

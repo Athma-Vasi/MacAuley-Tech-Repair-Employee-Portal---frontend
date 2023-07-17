@@ -1,7 +1,6 @@
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Button, Flex, Group, Text, Tooltip } from '@mantine/core';
-import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
-import { GrAdd } from 'react-icons/gr';
+import { Flex, Group, Text, Tooltip } from '@mantine/core';
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { MdOutlineAdd } from 'react-icons/md';
 
 import {
@@ -479,7 +478,7 @@ function CreateAnnouncement() {
     buttonLabel: 'Submit',
     semanticDescription: 'create announcement form submit button',
     semanticName: 'submit button',
-    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createAnnouncementDispatch({
         type: createAnnouncementAction.setTriggerFormSubmit,
         payload: true,

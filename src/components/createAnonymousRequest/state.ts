@@ -29,6 +29,7 @@ const initialCreateAnonymousRequestState: CreateAnonymousRequestState = {
 
   urgency: 'low',
 
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -67,6 +68,7 @@ const createAnonymousRequestAction: CreateAnonymousRequestAction = {
 
   setUrgency: 'setUrgency',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -169,6 +171,12 @@ function createAnonymousRequestReducer(
       return {
         ...state,
         urgency: action.payload,
+      };
+
+    case createAnonymousRequestAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
     case createAnonymousRequestAction.setCurrentStepperPosition:
       return {

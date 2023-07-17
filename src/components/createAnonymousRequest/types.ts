@@ -60,6 +60,7 @@ type CreateAnonymousRequestState = {
 
   urgency: Urgency;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -98,6 +99,7 @@ type CreateAnonymousRequestAction = {
 
   setUrgency: 'setUrgency';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -114,49 +116,50 @@ type CreateAnonymousRequestAction = {
 type CreateAnonymousRequestDispatch =
   | {
       type:
-        | 'setTitle'
-        | 'setSecureContactNumber'
-        | 'setSecureContactEmail'
-        | 'setRequestDescription'
-        | 'setAdditionalInformation'
-        | 'setLoadingMessage'
-        | 'setErrorMessage'
-        | 'setSubmitMessage'
-        | 'setSuccessMessage';
+        | CreateAnonymousRequestAction['setTitle']
+        | CreateAnonymousRequestAction['setSecureContactNumber']
+        | CreateAnonymousRequestAction['setSecureContactEmail']
+        | CreateAnonymousRequestAction['setRequestDescription']
+        | CreateAnonymousRequestAction['setAdditionalInformation']
+        | CreateAnonymousRequestAction['setLoadingMessage']
+        | CreateAnonymousRequestAction['setErrorMessage']
+        | CreateAnonymousRequestAction['setSubmitMessage']
+        | CreateAnonymousRequestAction['setSuccessMessage'];
       payload: string;
     }
   | {
       type:
-        | 'setIsValidTitle'
-        | 'setIsTitleFocused'
-        | 'setIsValidSecureContactNumber'
-        | 'setIsSecureContactNumberFocused'
-        | 'setIsValidSecureContactEmail'
-        | 'setIsSecureContactEmailFocused'
-        | 'setIsValidRequestDescription'
-        | 'setIsRequestDescriptionFocused'
-        | 'setIsValidAdditionalInformation'
-        | 'setIsAdditionalInformationFocused'
-        | 'setIsError'
-        | 'setIsSubmitting'
-        | 'setIsSuccessful'
-        | 'setIsLoading';
+        | CreateAnonymousRequestAction['setIsValidTitle']
+        | CreateAnonymousRequestAction['setIsTitleFocused']
+        | CreateAnonymousRequestAction['setIsValidSecureContactNumber']
+        | CreateAnonymousRequestAction['setIsSecureContactNumberFocused']
+        | CreateAnonymousRequestAction['setIsValidSecureContactEmail']
+        | CreateAnonymousRequestAction['setIsSecureContactEmailFocused']
+        | CreateAnonymousRequestAction['setIsValidRequestDescription']
+        | CreateAnonymousRequestAction['setIsRequestDescriptionFocused']
+        | CreateAnonymousRequestAction['setIsValidAdditionalInformation']
+        | CreateAnonymousRequestAction['setIsAdditionalInformationFocused']
+        | CreateAnonymousRequestAction['setTriggerFormSubmit']
+        | CreateAnonymousRequestAction['setIsError']
+        | CreateAnonymousRequestAction['setIsSubmitting']
+        | CreateAnonymousRequestAction['setIsSuccessful']
+        | CreateAnonymousRequestAction['setIsLoading'];
       payload: boolean;
     }
   | {
-      type: 'setRequestKind';
+      type: CreateAnonymousRequestAction['setRequestKind'];
       payload: AnonymousRequestKind;
     }
   | {
-      type: 'setUrgency';
+      type: CreateAnonymousRequestAction['setUrgency'];
       payload: Urgency;
     }
   | {
-      type: 'setCurrentStepperPosition';
+      type: CreateAnonymousRequestAction['setCurrentStepperPosition'];
       payload: number;
     }
   | {
-      type: 'setStepsInError';
+      type: CreateAnonymousRequestAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
     };
 

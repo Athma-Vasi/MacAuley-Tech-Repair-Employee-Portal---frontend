@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 
 import { GRAMMAR_TEXTAREA_INPUT_REGEX } from '../../constants/regex';
 import {
@@ -108,7 +108,7 @@ function CreateComment() {
     buttonLabel: 'Submit',
     semanticDescription: 'create comment form submit button',
     semanticName: 'submit button',
-    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createCommentDispatch({
         type: createCommentAction.setTriggerFormSubmit,
         payload: true,

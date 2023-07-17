@@ -5,8 +5,8 @@ import {
   faPoundSign,
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
-import { Button, Flex, Text } from '@mantine/core';
-import { ChangeEvent, useEffect, useMemo, useReducer } from 'react';
+import { Flex, Text } from '@mantine/core';
+import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
 
 import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
 import {
@@ -573,7 +573,7 @@ function CreateBenefit() {
     buttonLabel: 'Submit',
     semanticDescription: 'create benefit form submit button',
     semanticName: 'submit button',
-    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setTriggerFormSubmit,
         payload: true,

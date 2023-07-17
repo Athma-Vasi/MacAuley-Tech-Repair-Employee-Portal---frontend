@@ -1,6 +1,10 @@
-import { Button, Flex, TextInput } from '@mantine/core';
-import { FormEvent, MouseEvent, useEffect, useReducer } from 'react';
-import { Form } from 'react-router-dom';
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  MouseEvent,
+  useEffect,
+  useReducer,
+} from 'react';
 
 import { PROVINCES, STATES_US } from '../../constants/data';
 import {
@@ -287,7 +291,7 @@ function AddressChange() {
     description: 'Select your country',
     label: 'Country',
     value: country,
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setCountry,
         payload: event.currentTarget.value as Country,
@@ -304,7 +308,7 @@ function AddressChange() {
         country === 'Canada' ? 'Select your province' : 'Select your state',
       label: country === 'Canada' ? 'Province' : 'State',
       value: country === 'Canada' ? province : state,
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         country === 'Canada'
           ? addressChangeDispatch({
               type: addressChangeAction.setProvince,
@@ -331,7 +335,7 @@ function AddressChange() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setAddressLine,
         payload: event.currentTarget.value,
@@ -363,7 +367,7 @@ function AddressChange() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setCity,
         payload: event.currentTarget.value,
@@ -392,7 +396,7 @@ function AddressChange() {
     inputText: postalCode,
     isValidInputText: isValidPostalCode,
     label: country === 'Canada' ? 'Postal code' : 'Zip code',
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setPostalCode,
         payload:
@@ -413,7 +417,7 @@ function AddressChange() {
         payload: true,
       });
     },
-    onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+    onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
       switch (country) {
         case 'Canada': {
           if (event.key === 'Backspace' && postalCode.length === 4) {
@@ -459,7 +463,7 @@ function AddressChange() {
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,
       label: 'Personal contact number',
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         addressChangeDispatch({
           type: addressChangeAction.setContactNumber,
           payload: event.currentTarget.value,
@@ -477,7 +481,7 @@ function AddressChange() {
           payload: true,
         });
       },
-      onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Backspace') {
           if (contactNumber.length === 14) {
             addressChangeDispatch({
@@ -516,7 +520,7 @@ function AddressChange() {
         deselected: acknowledgementInputDeselectedText,
       },
       checked: isAcknowledged,
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         addressChangeDispatch({
           type: addressChangeAction.setIsAcknowledged,
           payload: event.currentTarget.checked,
@@ -568,7 +572,7 @@ function AddressChange() {
     buttonLabel: 'Submit',
     semanticDescription: 'address change form submit button',
     semanticName: 'submit button',
-    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setTriggerFormSubmit,
         payload: true,

@@ -1,14 +1,10 @@
-import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Button,
-  Flex,
-  NativeSelect,
-  Textarea,
-  TextInput,
-  Tooltip,
-} from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+  ChangeEvent,
+  KeyboardEvent,
+  MouseEvent,
+  useEffect,
+  useReducer,
+} from 'react';
 
 import { URGENCY_DATA } from '../../constants/data';
 import {
@@ -18,10 +14,11 @@ import {
   PHONE_NUMBER_REGEX,
 } from '../../constants/regex';
 import {
+  returnAccessibleButtonElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import { PhoneNumber, Urgency } from '../../types';
@@ -31,10 +28,12 @@ import {
   returnPhoneNumberValidationText,
 } from '../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../wrappers';
 import {
@@ -80,6 +79,7 @@ function CreateAnonymousRequest() {
 
     urgency,
 
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -175,10 +175,12 @@ function CreateAnonymousRequest() {
 
   // used to indicate stepper wrapper state
   useEffect(() => {
-    const isStepInError =
-      !isValidTitle ||
-      !isValidSecureContactNumber ||
-      !isValidSecureContactEmail;
+    const areRequiredInputsInError =
+      !isValidTitle || !isValidSecureContactEmail;
+    const isOptionalInputInError =
+      !isValidSecureContactNumber && secureContactNumber !== '+(1)';
+
+    const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
     // if any of the steps are in error, set the stepper position 1
     createAnonymousRequestDispatch({
@@ -188,12 +190,19 @@ function CreateAnonymousRequest() {
         step: 0,
       },
     });
-  }, [isValidTitle, isValidSecureContactNumber, isValidSecureContactEmail]);
+  }, [
+    isValidTitle,
+    isValidSecureContactEmail,
+    isValidSecureContactNumber,
+    secureContactNumber,
+  ]);
 
   // used to indicate stepper wrapper state
   useEffect(() => {
-    const isStepInError =
-      !isValidRequestDescription || !isValidAdditionalInformation;
+    const isRequiredInputInError = !isValidRequestDescription;
+    const isOptionalInputInError =
+      !isValidAdditionalInformation && additionalInformation !== '';
+    const isStepInError = isRequiredInputInError || isOptionalInputInError;
 
     // if any of the steps are in error, set the stepper position 2
     createAnonymousRequestDispatch({
@@ -203,7 +212,11 @@ function CreateAnonymousRequest() {
         step: 1,
       },
     });
-  }, [isValidRequestDescription, isValidAdditionalInformation]);
+  }, [
+    isValidRequestDescription,
+    isValidAdditionalInformation,
+    additionalInformation,
+  ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
@@ -282,7 +295,7 @@ function CreateAnonymousRequest() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createAnonymousRequestDispatch({
         type: createAnonymousRequestAction.setTitle,
         payload: event.currentTarget.value,
@@ -315,7 +328,7 @@ function CreateAnonymousRequest() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setSecureContactNumber,
           payload: event.currentTarget.value,
@@ -327,7 +340,7 @@ function CreateAnonymousRequest() {
           payload: true,
         });
       },
-      onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Backspace') {
           if (
             secureContactNumber.length === 14 ||
@@ -367,7 +380,7 @@ function CreateAnonymousRequest() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setSecureContactEmail,
           payload: event.currentTarget.value,
@@ -389,7 +402,7 @@ function CreateAnonymousRequest() {
     data: ANONYMOUS_REQUEST_KINDS,
     description: 'Select the kind of request',
     label: 'Request kind',
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       createAnonymousRequestDispatch({
         type: createAnonymousRequestAction.setRequestKind,
         payload: event.currentTarget.value as AnonymousRequestKind,
@@ -415,7 +428,7 @@ function CreateAnonymousRequest() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setRequestDescription,
           payload: event.currentTarget.value,
@@ -449,7 +462,7 @@ function CreateAnonymousRequest() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setAdditionalInformation,
           payload: event.currentTarget.value,
@@ -471,7 +484,7 @@ function CreateAnonymousRequest() {
       data: URGENCY_DATA,
       description: 'Select the urgency of request',
       label: 'Request urgency',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setUrgency,
           payload: event.currentTarget.value as Urgency,
@@ -481,6 +494,20 @@ function CreateAnonymousRequest() {
       withAsterisk: true,
       required: true,
     };
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'create anonymous request form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      createAnonymousRequestDispatch({
+        type: createAnonymousRequestAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
 
   const [createdTitleTextInput, createdSecureContactEmailTextInput] =
     returnAccessibleTextInputElements([
@@ -507,21 +534,29 @@ function CreateAnonymousRequest() {
     additionalInformationTextareaInputCreatorInfo,
   ]);
 
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+  const displaySubmitButton =
+    currentStepperPosition === CREATE_ANON_REQUEST_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
   const displayAnonRequestFirstPage = (
-    <>
+    <FormLayoutWrapper>
       {createdTitleTextInput}
       {createdSecureContactNumberTextInput}
       {createdSecureContactEmailTextInput}
       {createdRequestKindSelectInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayAnonRequestSecondPage = (
-    <>
+    <FormLayoutWrapper>
       {createdRequestDescriptionTextareaInput}
       {createdAdditionalInformationTextareaInput}
       {createdRequestUrgencySelectInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayReviewFormPage = <h2>review page</h2>;
@@ -533,20 +568,17 @@ function CreateAnonymousRequest() {
       ? displayAnonRequestSecondPage
       : currentStepperPosition === 2
       ? displayReviewFormPage
-      : null;
+      : displaySubmitButton;
 
-  const displayFormSubmitButton =
-    currentStepperPosition === CREATE_ANON_REQUEST_MAX_STEPPER_POSITION ? (
-      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
+  useEffect(() => {
+    async function handleCreateAnonymousRequestFormSubmit() {
+      console.log('anonymous form submitted');
+    }
 
-  async function handleCreateAnonymousRequestFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+    if (triggerFormSubmit) {
+      handleCreateAnonymousRequestFormSubmit();
+    }
+  }, [triggerFormSubmit]);
 
   const displayCreateAnonymousRequestComponent = (
     <StepperWrapper
@@ -559,18 +591,11 @@ function CreateAnonymousRequest() {
       }
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleCreateAnonymousRequestFormSubmit}>
-        {displayCreateAnonymousRequestForm}
-        {displayFormSubmitButton}
-      </form>
+      {displayCreateAnonymousRequestForm}
     </StepperWrapper>
   );
 
-  return (
-    <Flex direction="column" align="center" justify="center" w="400px">
-      {displayCreateAnonymousRequestComponent}
-    </Flex>
-  );
+  return <>{displayCreateAnonymousRequestComponent}</>;
 }
 
 export { CreateAnonymousRequest };
