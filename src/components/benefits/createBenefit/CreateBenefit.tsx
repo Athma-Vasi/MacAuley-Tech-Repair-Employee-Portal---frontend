@@ -676,6 +676,7 @@ function CreateBenefit() {
 
   const displayCreateBenefitComponent = (
     <StepperWrapper
+      childrenTitle="Create Benefit"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_BENEFIT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_BENEFIT_MAX_STEPPER_POSITION}

@@ -17,6 +17,7 @@ import {
   createCommentReducer,
   initialCreateCommentState,
 } from './state';
+import { Title } from '@mantine/core';
 
 function CreateComment() {
   const [createCommentState, createCommentDispatch] = useReducer(
@@ -128,6 +129,7 @@ function CreateComment() {
 
   const displayCreateCommentFormPage = (
     <FormLayoutWrapper>
+      <Title order={3}>Comment</Title>
       {createdCommentTextAreaInput}
       {createdSubmitButton}
     </FormLayoutWrapper>

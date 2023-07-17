@@ -611,7 +611,7 @@ function AddressChange() {
 
   const displayAddressChangeComponent = (
     <StepperWrapper
-      childrenTitle="Address Change"
+      childrenTitle="Address change"
       currentStepperPosition={currentStepperPosition}
       setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
       descriptionObjectsArray={ADDRESS_CHANGE_DESCRIPTION_OBJECTS}

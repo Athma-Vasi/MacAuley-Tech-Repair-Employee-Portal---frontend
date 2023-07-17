@@ -560,6 +560,7 @@ function CreateAnnouncement() {
 
   const displayCreateAnnouncementComponent = (
     <StepperWrapper
+      childrenTitle="Create Announcement"
       currentStepperPosition={currentStepperPosition}
       setCurrentStepperPosition={
         createAnnouncementAction.setCurrentStepperPosition

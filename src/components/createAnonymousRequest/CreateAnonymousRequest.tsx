@@ -582,6 +582,7 @@ function CreateAnonymousRequest() {
 
   const displayCreateAnonymousRequestComponent = (
     <StepperWrapper
+      childrenTitle="Anonymous Request"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_ANON_REQUEST_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_ANON_REQUEST_MAX_STEPPER_POSITION}

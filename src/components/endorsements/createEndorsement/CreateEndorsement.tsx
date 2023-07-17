@@ -378,6 +378,7 @@ function CreateEndorsement() {
 
   const displayEndorsementComponent = (
     <StepperWrapper
+      childrenTitle="Endorsement"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_ENDORSEMENT_MAX_STEPPER_POSITION}
