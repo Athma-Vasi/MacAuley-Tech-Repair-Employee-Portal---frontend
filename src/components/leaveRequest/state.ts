@@ -31,6 +31,7 @@ const initialLeaveRequestState: LeaveRequestState = {
   isAdditionalCommentsFocused: false,
 
   isAcknowledged: false,
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -70,6 +71,7 @@ const leaveRequestAction: LeaveRequestAction = {
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused',
 
   setIsAcknowledged: 'setIsAcknowledged',
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -183,6 +185,11 @@ function leaveRequestReducer(
       return {
         ...state,
         isAcknowledged: action.payload,
+      };
+    case leaveRequestAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
     case leaveRequestAction.setCurrentStepperPosition:
       return {

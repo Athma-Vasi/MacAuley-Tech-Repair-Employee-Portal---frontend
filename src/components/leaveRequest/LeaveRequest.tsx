@@ -1,5 +1,11 @@
 import { Button, Flex } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  MouseEvent,
+  useEffect,
+  useReducer,
+} from 'react';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -7,24 +13,27 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../constants/regex';
 import {
+  returnAccessibleButtonElements,
+  returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
-  returnAccessibleSelectedDeselectedTextElements,
-  returnAccessibleCheckboxSingleInputElements,
 } from '../../jsxCreators';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../wrappers';
 import {
@@ -69,6 +78,7 @@ function LeaveRequest() {
     isAdditionalCommentsFocused,
 
     isAcknowledged,
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -271,7 +281,7 @@ function LeaveRequest() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       leaveRequestDispatch({
         type: leaveRequestAction.setStartDate,
         payload: event.currentTarget.value,
@@ -305,7 +315,7 @@ function LeaveRequest() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       leaveRequestDispatch({
         type: leaveRequestAction.setEndDate,
         payload: event.currentTarget.value,
@@ -328,7 +338,7 @@ function LeaveRequest() {
       data: REASON_FOR_LEAVE_DATA,
       description: 'Select reason for leave',
       label: 'Reason for leave',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         leaveRequestDispatch({
           type: leaveRequestAction.setReasonForLeave,
           payload: event.currentTarget.value as ReasonForLeave,
@@ -354,7 +364,7 @@ function LeaveRequest() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         leaveRequestDispatch({
           type: leaveRequestAction.setDelegatedToEmployee,
           payload: event.currentTarget.value,
@@ -387,7 +397,7 @@ function LeaveRequest() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         leaveRequestDispatch({
           type: leaveRequestAction.setDelegatedResponsibilities,
           payload: event.currentTarget.value,
@@ -418,7 +428,7 @@ function LeaveRequest() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         leaveRequestDispatch({
           type: leaveRequestAction.setAdditionalComments,
           payload: event.currentTarget.value,
@@ -441,7 +451,7 @@ function LeaveRequest() {
         deselected: acknowledgementInputDeselectedText,
       },
       checked: isAcknowledged,
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         leaveRequestDispatch({
           type: leaveRequestAction.setIsAcknowledged,
           payload: event.currentTarget.checked,
@@ -451,6 +461,20 @@ function LeaveRequest() {
       label: 'Acknowledgement',
       required: true,
     };
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'leave request form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      leaveRequestDispatch({
+        type: leaveRequestAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
 
   const [createdDelegatedToEmployeeTextInput] =
     returnAccessibleTextInputElements([
@@ -479,8 +503,16 @@ function LeaveRequest() {
       acknowledgementCheckboxCreatorInfo,
     ]);
 
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+  const displaySubmitButton =
+    currentStepperPosition === LEAVE_REQUEST_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
   const displayLeaveRequestFirstPage = (
-    <>
+    <FormLayoutWrapper>
       {createdStartDateInput}
       {createdEndDateInput}
       {createdReasonForLeaveSelectInput}
@@ -488,15 +520,8 @@ function LeaveRequest() {
       {createdDelegatedResponsibilitiesTextareaInput}
       {createdAdditionalInformationTextareaInput}
       {createdAcknowledgementCheckbox}
-    </>
+    </FormLayoutWrapper>
   );
-
-  const displayFormSubmitButton =
-    currentStepperPosition === LEAVE_REQUEST_MAX_STEPPER_POSITION ? (
-      <Button type="button" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
 
   const displayReviewPage = <h3>review page</h3>;
 
@@ -505,10 +530,11 @@ function LeaveRequest() {
       ? displayLeaveRequestFirstPage
       : currentStepperPosition === 1
       ? displayReviewPage
-      : null;
+      : displaySubmitButton;
 
   const displayLeaveRequestComponent = (
     <StepperWrapper
+      childrenTitle="Leave request"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={LEAVE_REQUEST_DESCRIPTION_OBJECTS}
       maxStepperPosition={LEAVE_REQUEST_MAX_STEPPER_POSITION}
@@ -516,30 +542,21 @@ function LeaveRequest() {
       setCurrentStepperPosition={leaveRequestAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleLeaveRequestFormSubmit}>
-        {displayLeaveRequestForm}
-        {displayFormSubmitButton}
-      </form>
+      {displayLeaveRequestForm}
     </StepperWrapper>
   );
 
-  async function handleLeaveRequestFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function handleLeaveRequestFormSubmit() {
+      console.log('leave request form submitted');
+    }
 
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w={400}
-    >
-      {displayLeaveRequestComponent}
-    </Flex>
-  );
+    if (triggerFormSubmit) {
+      handleLeaveRequestFormSubmit();
+    }
+  }, [triggerFormSubmit]);
+
+  return <>{displayLeaveRequestComponent}</>;
 }
 
 export { LeaveRequest };

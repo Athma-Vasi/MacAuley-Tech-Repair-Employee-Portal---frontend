@@ -55,6 +55,7 @@ type LeaveRequestState = {
   isAdditionalCommentsFocused: boolean;
 
   isAcknowledged: boolean;
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -93,6 +94,7 @@ type LeaveRequestAction = {
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused';
 
   setIsAcknowledged: 'setIsAcknowledged';
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -134,6 +136,7 @@ type LeaveRequestDispatch =
         | LeaveRequestAction['setIsValidAdditionalComments']
         | LeaveRequestAction['setIsAdditionalCommentsFocused']
         | LeaveRequestAction['setIsAcknowledged']
+        | LeaveRequestAction['setTriggerFormSubmit']
         | LeaveRequestAction['setIsError']
         | LeaveRequestAction['setIsSubmitting']
         | LeaveRequestAction['setIsSuccessful']
