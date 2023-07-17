@@ -79,27 +79,6 @@ type AddressChangeAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-// type StepsInErrorPayload = {
-//   kind: 'add' | 'delete';
-//   step: number;
-// };
-
-// type AddressChangePayload =
-//   | string
-//   | boolean
-//   | number
-//   | StepsInErrorPayload
-//   | Province
-//   | StatesUS
-//   | Country
-//   | PostalCode
-//   | PhoneNumber;
-
-// type AddressChangeDispatch = {
-//   type: AddressChangeAction[keyof AddressChangeAction];
-//   payload: AddressChangePayload;
-// };
-
 type AddressChangeDispatch =
   | {
       type:

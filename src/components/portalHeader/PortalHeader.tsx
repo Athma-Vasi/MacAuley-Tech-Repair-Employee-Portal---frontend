@@ -5,7 +5,6 @@ import {
   Header,
   MediaQuery,
   Space,
-  Text,
   Title,
 } from '@mantine/core';
 import { AxiosRequestConfig } from 'axios';
@@ -16,6 +15,7 @@ import { COLORS } from '../../constants/data';
 import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
 import { ThemeSwitch } from '../themeSwitch';
+import { TextWrapper } from '../wrappers';
 import { LOGOUT_URL } from './constants';
 import { LogoutResponse, PortalHeaderProps } from './types';
 
@@ -101,13 +101,9 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
               </Title>
             </Flex>
 
-            <Text
-              size="lg"
-              color={textColor}
-              style={{ letterSpacing: '0.10rem' }}
-            >
+            <TextWrapper creatorInfoObj={{ size: 'lg' }}>
               Employee Portal
-            </Text>
+            </TextWrapper>
           </Flex>
         )}
 

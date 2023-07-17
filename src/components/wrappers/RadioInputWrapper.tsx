@@ -1,5 +1,6 @@
 import { Grid, Radio } from '@mantine/core';
 import React, { ReactNode } from 'react';
+
 import { useGlobalState } from '../../hooks';
 
 type AccessibleRadioSingleInputCreatorInfo = {
@@ -36,7 +37,7 @@ function RadioSingleInputWrapper({
     ariaRequired = required,
   } = creatorInfoObject;
 
-  const radioInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const radioInputSize = width < 1024 ? 'sm' : 'md';
 
   const createdRadioSingleInput = (
     <Radio

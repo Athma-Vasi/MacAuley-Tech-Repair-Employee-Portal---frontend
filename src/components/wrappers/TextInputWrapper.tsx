@@ -6,8 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Group, Text, TextInput, Tooltip } from '@mantine/core';
-import { ReactNode, useEffect } from 'react';
-import { BsTrash } from 'react-icons/bs';
+import { ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
 import { ButtonWrapper } from './ButtonWrapper';
@@ -97,7 +96,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       dynamicInputProps?.semanticAction.slice(1)
     : '';
 
-  const textInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const textInputSize = width < 1024 ? 'sm' : 'md';
 
   return (
     <TextInput

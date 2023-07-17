@@ -18,7 +18,6 @@ import {
 } from './CheckboxInputWrapper';
 import type { AccessibleDateTimeInputCreatorInfo } from './DateTimeInputWrapper';
 import { DateTimeInputWrapper } from './DateTimeInputWrapper';
-
 import { FormLayoutWrapper } from './FormWrapper';
 import type { AccessibleSelectInputCreatorInfo } from './NativeSelectWrapper';
 import { NativeSelectWrapper } from './NativeSelectWrapper';
@@ -40,6 +39,8 @@ import type { AccessibleTextAreaInputCreatorInfo } from './TextAreaInputWrapper'
 import { TextAreaInputWrapper } from './TextAreaInputWrapper';
 import type { AccessibleTextInputCreatorInfo } from './TextInputWrapper';
 import { TextInputWrapper } from './TextInputWrapper';
+import type { TextWrapperCreatorInfoObject } from './TextWrapper';
+import { TextWrapper } from './TextWrapper';
 
 export {
   ButtonWrapper,
@@ -55,6 +56,7 @@ export {
   StepperWrapper,
   TextAreaInputWrapper,
   TextInputWrapper,
+  TextWrapper,
 };
 
 export type {
@@ -70,4 +72,5 @@ export type {
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   DescriptionObjectsArray,
+  TextWrapperCreatorInfoObject,
 };

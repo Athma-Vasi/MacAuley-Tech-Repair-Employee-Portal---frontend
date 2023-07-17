@@ -1,5 +1,5 @@
-import { Flex, Group } from '@mantine/core';
-import { Fragment, ReactNode } from 'react';
+import { Flex } from '@mantine/core';
+import { ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
 

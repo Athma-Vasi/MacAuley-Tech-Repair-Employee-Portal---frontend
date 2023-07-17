@@ -1,7 +1,9 @@
 import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TextInput } from '@mantine/core';
+
 import { useGlobalState } from '../../hooks';
+import { TbCheck } from 'react-icons/tb';
 
 type AccessibleDateTimeInputCreatorInfo = {
   inputKind: 'date' | 'time';
@@ -68,7 +70,7 @@ function DateTimeInputWrapper({
     autoComplete = 'off',
   } = creatorInfoObject;
 
-  const dateInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const dateInputSize = width < 1024 ? 'sm' : 'md';
 
   return (
     <TextInput

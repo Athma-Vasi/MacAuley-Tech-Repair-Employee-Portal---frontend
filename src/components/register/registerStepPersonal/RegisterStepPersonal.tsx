@@ -1,6 +1,6 @@
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, NativeSelect, Text, TextInput } from '@mantine/core';
+import { Flex, NativeSelect, TextInput } from '@mantine/core';
 import { useEffect } from 'react';
 
 import { NAME_REGEX, URL_REGEX } from '../../../constants/regex';
@@ -10,6 +10,7 @@ import {
   returnUrlValidationText,
 } from '../../../utils';
 import type { RegisterStepPersonalProps } from './types';
+import { PreferredPronouns } from '../../../types';
 
 function RegisterStepPersonal({
   firstName,
@@ -424,7 +425,7 @@ function RegisterStepPersonal({
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setPreferredPronouns,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as PreferredPronouns,
           });
         }}
       />

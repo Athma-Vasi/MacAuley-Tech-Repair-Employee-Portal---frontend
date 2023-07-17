@@ -3,15 +3,23 @@ import './style.css';
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Stepper, Text, Title } from '@mantine/core';
-import { Fragment, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { CgCloseO } from 'react-icons/cg';
+import {
+  TbCheck,
+  TbChecks,
+  TbCircleCheck,
+  TbFileCheck,
+  TbProgressCheck,
+} from 'react-icons/tb';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { useGlobalState } from '../../../hooks';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
 import { AccessibleButtonCreatorInfo } from '../ButtonWrapper';
+import { TextWrapper } from '../TextWrapper';
 import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
-
 function StepperWrapper({
   allowNextStepsSelect = false,
   children,
@@ -99,7 +107,15 @@ function StepperWrapper({
   const padding =
     width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
   const descObjLen = descriptionObjectsArray.length;
-
+  const componentWidth =
+    width < 640
+      ? '100%'
+      : descObjLen > 4
+      ? '85%'
+      : width < 1440
+      ? '75%'
+      : '62%';
+  const size = width < 1024 ? 'sm' : 'md';
   return (
     <Flex
       direction="column"
@@ -123,8 +139,9 @@ function StepperWrapper({
         }}
         breakpoint={descObjLen < 4 ? 640 : 1440}
         allowNextStepsSelect={allowNextStepsSelect}
-        w={width < 640 ? '100%' : descObjLen > 4 ? '85%' : '62%'}
+        w={componentWidth}
         p={padding}
+        size={size}
         style={{ borderRadius: '5px', border: '1px solid #e0e0e0' }}
       >
         {descriptionObjectsArray.map((value, index) => {
@@ -149,13 +166,16 @@ function StepperWrapper({
               color={stepsInError.has(index) ? 'red' : undefined}
               completedIcon={
                 stepsInError.has(index) ? (
-                  <FontAwesomeIcon icon={faX} />
+                  <CgCloseO size="sm" />
+                ) : stepsInError.size === 0 ? (
+                  <TbCircleCheck size="lg" />
                 ) : (
-                  <FontAwesomeIcon icon={faCheck} />
+                  <TbProgressCheck size="lg" />
                 )
               }
             >
-              <Text color="dark">{description}</Text>
+              {/* <Text color="dimmed">{description}</Text> */}
+              <TextWrapper creatorInfoObj={{}}>{description}</TextWrapper>
             </Stepper.Step>
           );
         })}
@@ -184,7 +204,7 @@ function StepperWrapper({
         direction="column"
         align="center"
         justify="space-between"
-        w={width < 640 ? '100%' : descObjLen > 4 ? '85%' : '62%'}
+        w={componentWidth}
       >
         {children ?? null}
 

@@ -1,25 +1,27 @@
-import { faHome, faNoteSticky } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Group, Navbar, NavLink, Text, Title } from '@mantine/core';
-import { BiSolidHome } from 'react-icons/bi';
+import { Navbar, NavLink } from '@mantine/core';
+import { MdSafetyDivider } from 'react-icons/md';
+import { RiSignalTowerFill } from 'react-icons/ri';
 import {
-  BsCalendar3EventFill,
-  BsCalendarRangeFill,
-  BsFillBuildingFill,
-  BsGiftFill,
-} from 'react-icons/bs';
-import { FiChevronRight } from 'react-icons/fi';
-import { GiExpense } from 'react-icons/gi';
-import { GoCrossReference } from 'react-icons/go';
-import { GrActions } from 'react-icons/gr';
-import { MdAnnouncement, MdRecommend, MdSafetyDivider } from 'react-icons/md';
-import { PiAddressBookFill } from 'react-icons/pi';
-import { RiSignalTowerFill, RiSurveyFill } from 'react-icons/ri';
-import { TbPrinterOff } from 'react-icons/tb';
+  TbAddressBook,
+  TbBuildingWarehouse,
+  TbCalendarPin,
+  TbChartBar,
+  TbChevronRight,
+  TbCircleTriangle,
+  TbGift,
+  TbHome2,
+  TbNotebook,
+  TbPrinterOff,
+  TbReceipt2,
+  TbSpeakerphone,
+  TbTimelineEventPlus,
+  TbUserCheck,
+} from 'react-icons/tb';
+import { TiThumbsUp } from 'react-icons/ti';
 import { useNavigate } from 'react-router-dom';
 
-import { COLORS } from '../../constants/data';
 import { useAuth } from '../../hooks/useAuth';
+import { TextWrapper } from '../wrappers';
 import { PortalNavbarProps } from './types';
 
 function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
@@ -28,16 +30,10 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     authState: { roles },
   } = useAuth();
 
-  const { buttonTextColor } = COLORS;
-
   const displayHomeNavLink = (
     <NavLink
-      label={
-        <Text size="lg" color={buttonTextColor}>
-          Home
-        </Text>
-      }
-      icon={<BiSolidHome />}
+      label={<TextWrapper creatorInfoObj={{}}>Home</TextWrapper>}
+      icon={<TbHome2 />}
       onClick={() => {
         navigate('/portal');
       }}
@@ -47,11 +43,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const displayUsersNavLink =
     roles.includes('Admin') || roles.includes('Manager') ? (
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Users
-          </Text>
-        }
+        label={<TextWrapper creatorInfoObj={{}}>Users</TextWrapper>}
         description="Display list of all users"
         icon={null}
         onClick={() => {
@@ -62,12 +54,8 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const displayNotesNavLink = (
     <NavLink
-      label={
-        <Text size="lg" color={buttonTextColor}>
-          Notes
-        </Text>
-      }
-      icon={<FontAwesomeIcon icon={faNoteSticky} />}
+      label={<TextWrapper creatorInfoObj={{}}>Notes</TextWrapper>}
+      icon={<TbNotebook />}
       onClick={() => {
         navigate('/portal/notes');
       }}
@@ -76,63 +64,43 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const displayCompanyNavLinks = (
     <NavLink
-      label={
-        <Text size="lg" color={buttonTextColor}>
-          Company
-        </Text>
-      }
-      icon={<BsFillBuildingFill />}
+      label={<TextWrapper creatorInfoObj={{}}>Company</TextWrapper>}
+      icon={<TbBuildingWarehouse />}
       childrenOffset="md"
-      rightSection={<FiChevronRight />}
+      rightSection={<TbChevronRight />}
     >
       {/* address change */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Address change
-          </Text>
-        }
-        icon={<PiAddressBookFill />}
-        rightSection={<FiChevronRight />}
+        label={<TextWrapper creatorInfoObj={{}}>Address change</TextWrapper>}
+        icon={<TbAddressBook />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/company/address-change');
         }}
       />
       {/* benefits */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Benefits
-          </Text>
-        }
-        icon={<BsGiftFill />}
-        rightSection={<FiChevronRight />}
+        label={<TextWrapper creatorInfoObj={{}}>Benefits</TextWrapper>}
+        icon={<TbGift />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/company/benefits');
         }}
       />
       {/* expense claim */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Expense claim
-          </Text>
-        }
-        icon={<GiExpense />}
-        rightSection={<FiChevronRight />}
+        label={<TextWrapper creatorInfoObj={{}}>Expense claim</TextWrapper>}
+        icon={<TbReceipt2 />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/company/expense-claim');
         }}
       />
       {/* leave request */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Leave request
-          </Text>
-        }
-        icon={<BsCalendarRangeFill />}
-        rightSection={<FiChevronRight />}
+        label={<TextWrapper creatorInfoObj={{}}>Leave request</TextWrapper>}
+        icon={<TbCalendarPin />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/company/leave-request');
         }}
@@ -142,63 +110,43 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const displayGeneralNavLinks = (
     <NavLink
-      label={
-        <Text size="lg" color={buttonTextColor}>
-          General
-        </Text>
-      }
-      icon={<GrActions />}
+      label={<TextWrapper creatorInfoObj={{}}>General</TextWrapper>}
+      icon={<TbCircleTriangle />}
       childrenOffset="md"
-      rightSection={<FiChevronRight />}
+      rightSection={<TbChevronRight />}
     >
       {/* endorsement */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Endorsement
-          </Text>
-        }
-        icon={<MdRecommend />}
-        rightSection={<FiChevronRight />}
+        label={<TextWrapper creatorInfoObj={{}}>Endorsement</TextWrapper>}
+        icon={<TbUserCheck />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/general/endorsement');
         }}
       />
       {/* printer issue */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Printer issue
-          </Text>
-        }
+        label={<TextWrapper creatorInfoObj={{}}>Printer issue</TextWrapper>}
         icon={<TbPrinterOff />}
-        rightSection={<FiChevronRight />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/general/printer-issue');
         }}
       />
       {/* anonymous request */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Anonymous request
-          </Text>
-        }
+        label={<TextWrapper creatorInfoObj={{}}>Anonymous request</TextWrapper>}
         icon={<MdSafetyDivider />}
-        rightSection={<FiChevronRight />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/general/anonymous-request');
         }}
       />
       {/* referment */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Referment
-          </Text>
-        }
-        icon={<GoCrossReference />}
-        rightSection={<FiChevronRight />}
+        label={<TextWrapper creatorInfoObj={{}}>Referment</TextWrapper>}
+        icon={<TiThumbsUp />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/general/referment');
         }}
@@ -208,50 +156,34 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const displayOutreachNavLinks = (
     <NavLink
-      label={
-        <Text size="lg" color={buttonTextColor}>
-          Outreach
-        </Text>
-      }
+      label={<TextWrapper creatorInfoObj={{}}>Outreach</TextWrapper>}
       icon={<RiSignalTowerFill />}
       childrenOffset="md"
-      rightSection={<FiChevronRight />}
+      rightSection={<TbChevronRight />}
     >
       {/* announcement */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Announcements
-          </Text>
-        }
-        rightSection={<FiChevronRight />}
-        icon={<MdAnnouncement />}
+        label={<TextWrapper creatorInfoObj={{}}>Announcements</TextWrapper>}
+        rightSection={<TbChevronRight />}
+        icon={<TbSpeakerphone />}
         onClick={() => {
           navigate('/portal/outreach/announcements');
         }}
       />
       {/* survey builder */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Survey builder
-          </Text>
-        }
-        icon={<RiSurveyFill />}
-        rightSection={<FiChevronRight />}
+        label={<TextWrapper creatorInfoObj={{}}>Survey builder</TextWrapper>}
+        icon={<TbChartBar />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/outreach/survey-builder');
         }}
       />
       {/* event creator */}
       <NavLink
-        label={
-          <Text size="lg" color={buttonTextColor}>
-            Event creator
-          </Text>
-        }
-        icon={<BsCalendar3EventFill />}
-        rightSection={<FiChevronRight />}
+        label={<TextWrapper creatorInfoObj={{}}>Event creator</TextWrapper>}
+        icon={<TbTimelineEventPlus />}
+        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/portal/outreach/event-creator');
         }}

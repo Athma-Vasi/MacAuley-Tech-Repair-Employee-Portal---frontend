@@ -1,5 +1,6 @@
-import { Checkbox, Flex, Grid } from '@mantine/core';
+import { Checkbox, Grid } from '@mantine/core';
 import { ReactNode } from 'react';
+
 import { useGlobalState } from '../../hooks';
 
 type AccessibleCheckboxSingleInputCreatorInfo = {
@@ -40,7 +41,7 @@ function CheckboxSingleInputWrapper({
     ariaRequired = required,
   } = creatorInfoObject;
 
-  const checkboxInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const checkboxInputSize = width < 1024 ? 'sm' : 'md';
 
   const createdCheckboxSingleInput = (
     <Checkbox

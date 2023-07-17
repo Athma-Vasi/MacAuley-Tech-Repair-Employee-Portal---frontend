@@ -49,7 +49,7 @@ function App() {
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
           {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
           {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
-          <Route path="create-endorsement" element={<CreateEndorsement />} />
+          {/* <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
           <Route path="create-referment" element={<CreateReferment />} />
           {/* <Route
@@ -86,7 +86,7 @@ function App() {
         </Route> */}
 
         {/* DEV TEST ROUTES */}
-        <Route path="portal" element={<PortalLayout />}>
+        {/* <Route path="portal" element={<PortalLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
 
@@ -117,7 +117,7 @@ function App() {
             <Route path="survey-builder" element={<SurveyBuilder />} />
             <Route path="announcements" element={<CreateAnnouncement />} />
           </Route>
-        </Route>
+        </Route> */}
 
         {/* catch all */}
         <Route path="*" element={<NotFound />} />

@@ -1,4 +1,5 @@
 import { NativeSelect } from '@mantine/core';
+
 import { useGlobalState } from '../../hooks';
 
 type AccessibleSelectInputCreatorInfo = {
@@ -32,7 +33,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     required = false,
   } = creatorInfoObject;
 
-  const selectInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const selectInputSize = width < 1024 ? 'sm' : 'md';
 
   return (
     <NativeSelect

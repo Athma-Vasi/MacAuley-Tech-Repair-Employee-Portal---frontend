@@ -16,6 +16,7 @@ import {
   returnPhoneNumberValidationText,
 } from '../../../utils';
 import type { RegisterStepAdditionalProps } from './types';
+import { Department, JobPosition } from '../../../types';
 
 function RegisterStepAdditional({
   jobPosition,
@@ -170,7 +171,7 @@ function RegisterStepAdditional({
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setJobPosition,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as JobPosition,
           });
         }}
         withAsterisk
@@ -185,7 +186,7 @@ function RegisterStepAdditional({
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setDepartment,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as Department,
           });
         }}
         withAsterisk

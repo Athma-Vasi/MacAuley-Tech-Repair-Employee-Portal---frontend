@@ -19,6 +19,7 @@ import {
   returnPostalCodeValidationText,
 } from '../../../utils';
 import { RegisterStepAddressProps } from './types';
+import { Country, Province, StatesUS } from '../../../types';
 
 function RegisterStepAddress({
   contactNumber,
@@ -236,7 +237,7 @@ function RegisterStepAddress({
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setProvince,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as Province,
           });
         }}
         required
@@ -252,7 +253,7 @@ function RegisterStepAddress({
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setState,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as StatesUS,
           });
         }}
         required
@@ -476,7 +477,7 @@ function RegisterStepAddress({
         onChange={(event) => {
           registerDispatch({
             type: registerAction.setCountry,
-            payload: event.currentTarget.value,
+            payload: event.currentTarget.value as Country,
           });
         }}
         withAsterisk

@@ -4,10 +4,11 @@ import {
   JobPosition,
   PhoneNumber,
   PostalCode,
+  PreferredPronouns,
   Province,
+  SetStepsInErrorPayload,
   StatesUS,
 } from '../../types';
-import { PreferredPronouns } from '../../types/user.types';
 
 type RegisterState = {
   email: string;
@@ -82,6 +83,7 @@ type RegisterState = {
   isValidStartDate: boolean;
   isStartDateFocused: boolean;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -165,6 +167,7 @@ type RegisterAction = {
   setIsValidStartDate: 'setIsValidStartDate';
   setIsStartDateFocused: 'setIsStartDateFocused';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -178,29 +181,113 @@ type RegisterAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-type StepsInErrorPayload = {
-  kind: 'add' | 'delete';
-  step: number;
-};
-
-type RegisterPayload =
-  | string
-  | number
-  | StepsInErrorPayload
-  | boolean
-  | PhoneNumber
-  | Province
-  | StatesUS
-  | Country
-  | Department
-  | JobPosition
-  | PostalCode
-  | PreferredPronouns;
-
-type RegisterDispatch = {
-  type: RegisterAction[keyof RegisterAction];
-  payload: RegisterPayload;
-};
+type RegisterDispatch =
+  | {
+      type:
+        | RegisterAction['setEmail']
+        | RegisterAction['setUsername']
+        | RegisterAction['setPassword']
+        | RegisterAction['setConfirmPassword']
+        | RegisterAction['setFirstName']
+        | RegisterAction['setMiddleName']
+        | RegisterAction['setLastName']
+        | RegisterAction['setPreferredName']
+        | RegisterAction['setProfilePictureUrl']
+        | RegisterAction['setAddressLine']
+        | RegisterAction['setCity']
+        | RegisterAction['setEmergencyContactFullName']
+        | RegisterAction['setStartDate']
+        | RegisterAction['setErrorMessage']
+        | RegisterAction['setLoadingMessage']
+        | RegisterAction['setSuccessMessage']
+        | RegisterAction['setSubmitMessage'];
+      payload: string;
+    }
+  | {
+      type:
+        | RegisterAction['setIsValidEmail']
+        | RegisterAction['setIsEmailFocused']
+        | RegisterAction['setIsValidUsername']
+        | RegisterAction['setIsUsernameFocused']
+        | RegisterAction['setIsValidPassword']
+        | RegisterAction['setIsPasswordFocused']
+        | RegisterAction['setIsValidConfirmPassword']
+        | RegisterAction['setIsConfirmPasswordFocused']
+        | RegisterAction['setIsValidFirstName']
+        | RegisterAction['setIsFirstNameFocused']
+        | RegisterAction['setIsValidMiddleName']
+        | RegisterAction['setIsMiddleNameFocused']
+        | RegisterAction['setIsValidLastName']
+        | RegisterAction['setIsLastNameFocused']
+        | RegisterAction['setIsValidPreferredName']
+        | RegisterAction['setIsPreferredNameFocused']
+        | RegisterAction['setIsValidContactNumber']
+        | RegisterAction['setIsContactNumberFocused']
+        | RegisterAction['setIsValidProfilePictureUrl']
+        | RegisterAction['setIsProfilePictureUrlFocused']
+        | RegisterAction['setIsValidAddressLine']
+        | RegisterAction['setIsAddressLineFocused']
+        | RegisterAction['setIsValidCity']
+        | RegisterAction['setIsCityFocused']
+        | RegisterAction['setIsValidPostalCode']
+        | RegisterAction['setIsPostalCodeFocused']
+        | RegisterAction['setIsValidEmergencyContactFullName']
+        | RegisterAction['setIsEmergencyContactFullNameFocused']
+        | RegisterAction['setIsValidEmergencyContactPhoneNumber']
+        | RegisterAction['setIsEmergencyContactPhoneNumberFocused']
+        | RegisterAction['setIsValidStartDate']
+        | RegisterAction['setIsStartDateFocused']
+        | RegisterAction['setTriggerFormSubmit']
+        | RegisterAction['setIsError']
+        | RegisterAction['setIsSubmitting']
+        | RegisterAction['setIsSuccessful']
+        | RegisterAction['setIsLoading'];
+      payload: boolean;
+    }
+  | {
+      type: RegisterAction['setProvince'];
+      payload: Province;
+    }
+  | {
+      type: RegisterAction['setState'];
+      payload: StatesUS;
+    }
+  | {
+      type: RegisterAction['setCountry'];
+      payload: Country;
+    }
+  | {
+      type: RegisterAction['setDepartment'];
+      payload: Department;
+    }
+  | {
+      type: RegisterAction['setJobPosition'];
+      payload: JobPosition;
+    }
+  | {
+      type: RegisterAction['setPostalCode'];
+      payload: PostalCode;
+    }
+  | {
+      type: RegisterAction['setPreferredPronouns'];
+      payload: PreferredPronouns;
+    }
+  | {
+      type: RegisterAction['setEmergencyContactPhoneNumber'];
+      payload: PhoneNumber | string;
+    }
+  | {
+      type: RegisterAction['setContactNumber'];
+      payload: PhoneNumber | string;
+    }
+  | {
+      type: RegisterAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
+    }
+  | {
+      type: RegisterAction['setCurrentStepperPosition'];
+      payload: number;
+    };
 
 type RegisterResponse = {
   message: string;
@@ -209,8 +296,6 @@ type RegisterResponse = {
 export type {
   RegisterAction,
   RegisterDispatch,
-  RegisterPayload,
   RegisterResponse,
   RegisterState,
-  StepsInErrorPayload,
 };

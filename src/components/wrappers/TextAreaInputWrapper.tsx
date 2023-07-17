@@ -1,15 +1,11 @@
-import {
-  faCheck,
-  faTrash,
-  IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Group, Text, Textarea, Tooltip } from '@mantine/core';
-import { Fragment, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { BsTrash } from 'react-icons/bs';
 
-import { ButtonWrapper } from './ButtonWrapper';
 import { useGlobalState } from '../../hooks';
+import { ButtonWrapper } from './ButtonWrapper';
 
 type AccessibleTextAreaInputCreatorInfo = {
   semanticName: string;
@@ -96,7 +92,7 @@ function TextAreaInputWrapper({
       dynamicInputProps?.semanticAction.slice(1)
     : '';
 
-  const textAreaSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const textAreaSize = width < 1024 ? 'sm' : 'md';
 
   return (
     <Textarea
