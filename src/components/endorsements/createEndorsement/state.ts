@@ -20,6 +20,7 @@ const initialCreateEndorsementState: CreateEndorsementState = {
 
   attributeEndorsed: ['adaptibility and flexibility'],
 
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -48,6 +49,7 @@ const createEndorsementAction: CreateEndorsementAction = {
 
   setAttributeEndorsed: 'setAttributeEndorsed',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -121,6 +123,11 @@ function createEndorsementReducer(
       };
     }
 
+    case createEndorsementAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
+      };
     case createEndorsementAction.setCurrentStepperPosition:
       return {
         ...state,

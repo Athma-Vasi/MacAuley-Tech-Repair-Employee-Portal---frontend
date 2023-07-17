@@ -45,6 +45,7 @@ type CreateEndorsementState = {
 
   attributeEndorsed: EmployeeAttributes;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -73,6 +74,7 @@ type CreateEndorsementAction = {
 
   setAttributeEndorsed: 'setAttributeEndorsed';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -94,39 +96,40 @@ type StepsInErrorPayload = {
 type CreateEndorsementDispatch =
   | {
       type:
-        | 'setTitle'
-        | 'setEmployeeToBeEndorsed'
-        | 'setSummaryOfEndorsement'
-        | 'setErrorMessage'
-        | 'setSubmitMessage'
-        | 'setSuccessMessage'
-        | 'setLoadingMessage';
+        | CreateEndorsementAction['setTitle']
+        | CreateEndorsementAction['setEmployeeToBeEndorsed']
+        | CreateEndorsementAction['setSummaryOfEndorsement']
+        | CreateEndorsementAction['setErrorMessage']
+        | CreateEndorsementAction['setSubmitMessage']
+        | CreateEndorsementAction['setSuccessMessage']
+        | CreateEndorsementAction['setLoadingMessage'];
       payload: string;
     }
   | {
-      type: 'setAttributeEndorsed';
+      type: CreateEndorsementAction['setAttributeEndorsed'];
       payload: EmployeeAttributes;
     }
   | {
       type:
-        | 'setIsValidTitle'
-        | 'setIsTitleFocused'
-        | 'setIsValidEmployeeToBeEndorsed'
-        | 'setIsEmployeeToBeEndorsedFocused'
-        | 'setIsValidSummaryOfEndorsement'
-        | 'setIsSummaryOfEndorsementFocused'
-        | 'setIsError'
-        | 'setIsSubmitting'
-        | 'setIsSuccessful'
-        | 'setIsLoading';
+        | CreateEndorsementAction['setIsValidTitle']
+        | CreateEndorsementAction['setIsTitleFocused']
+        | CreateEndorsementAction['setIsValidEmployeeToBeEndorsed']
+        | CreateEndorsementAction['setIsEmployeeToBeEndorsedFocused']
+        | CreateEndorsementAction['setIsValidSummaryOfEndorsement']
+        | CreateEndorsementAction['setIsSummaryOfEndorsementFocused']
+        | CreateEndorsementAction['setTriggerFormSubmit']
+        | CreateEndorsementAction['setIsError']
+        | CreateEndorsementAction['setIsSubmitting']
+        | CreateEndorsementAction['setIsSuccessful']
+        | CreateEndorsementAction['setIsLoading'];
       payload: boolean;
     }
   | {
-      type: 'setCurrentStepperPosition';
+      type: CreateEndorsementAction['setCurrentStepperPosition'];
       payload: number;
     }
   | {
-      type: 'setStepsInError';
+      type: CreateEndorsementAction['setStepsInError'];
       payload: StepsInErrorPayload;
     };
 

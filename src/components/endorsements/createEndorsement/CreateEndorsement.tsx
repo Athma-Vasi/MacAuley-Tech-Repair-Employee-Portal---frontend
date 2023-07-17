@@ -1,5 +1,11 @@
 import { Button, Flex } from '@mantine/core';
-import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useReducer,
+  MouseEvent,
+} from 'react';
 
 import {
   FULL_NAME_REGEX,
@@ -7,6 +13,7 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
 import {
+  returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
@@ -18,9 +25,11 @@ import {
   returnNameValidationText,
 } from '../../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
 import {
@@ -41,26 +50,32 @@ function CreateEndorsement() {
     initialCreateEndorsementState
   );
   const {
-    attributeEndorsed,
-    currentStepperPosition,
-    errorMessage,
-    isError,
-    isLoading,
-    isSubmitting,
-    isSuccessful,
-    isSummaryOfEndorsementFocused,
-    isTitleFocused,
-    isEmployeeToBeEndorsedFocused,
-    isValidSummaryOfEndorsement,
-    isValidTitle,
-    isValidEmployeeToBeEndorsed,
-    loadingMessage,
-    stepsInError,
-    submitMessage,
-    successMessage,
     title,
+    isValidTitle,
+    isTitleFocused,
+
     employeeToBeEndorsed,
+    isValidEmployeeToBeEndorsed,
+    isEmployeeToBeEndorsedFocused,
+
     summaryOfEndorsement,
+    isValidSummaryOfEndorsement,
+    isSummaryOfEndorsementFocused,
+
+    attributeEndorsed,
+
+    triggerFormSubmit,
+    currentStepperPosition,
+    stepsInError,
+
+    isError,
+    errorMessage,
+    isSubmitting,
+    submitMessage,
+    isSuccessful,
+    successMessage,
+    isLoading,
+    loadingMessage,
   } = createEndorsementState;
 
   // validate title input on every change
@@ -298,6 +313,20 @@ function CreateEndorsement() {
       },
     };
 
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'create endorsement form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      createEndorsementDispatch({
+        type: createEndorsementAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
+
   const [createdTitleTextInput, createdEmployeeToBeEndorsedTextInput] =
     returnAccessibleTextInputElements([
       titleTextInputCreatorInfo,
@@ -314,16 +343,26 @@ function CreateEndorsement() {
       employeeAttributesInputCreatorInfo,
     ]);
 
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+  const displaySubmitButton =
+    currentStepperPosition === CREATE_ENDORSEMENT_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
   const displayEndorsementFirstPage = (
-    <>
+    <FormLayoutWrapper>
       {createdTitleTextInput}
       {createdEmployeeToBeEndorsedTextInput}
       {createdSummaryOfEndorsementTextAreaInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayEndorsementSecondPage = (
-    <>{createdEmployeeAttributesCheckboxInput}</>
+    <FormLayoutWrapper>
+      {createdEmployeeAttributesCheckboxInput}
+    </FormLayoutWrapper>
   );
 
   const displayCreateEndorsementReview = <h2>Review</h2>;
@@ -335,14 +374,7 @@ function CreateEndorsement() {
       ? displayEndorsementSecondPage
       : currentStepperPosition === 2
       ? displayCreateEndorsementReview
-      : null;
-
-  const displayFormSubmitButton =
-    currentStepperPosition === CREATE_ENDORSEMENT_MAX_STEPPER_POSITION ? (
-      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
+      : displaySubmitButton;
 
   const displayEndorsementComponent = (
     <StepperWrapper
@@ -353,31 +385,21 @@ function CreateEndorsement() {
       setCurrentStepperPosition="setCurrentStepperPosition"
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleCreateEndorsementFormSubmit}>
-        {displayCreateEndorsementForm}
-        {displayFormSubmitButton}
-      </form>
+      {displayCreateEndorsementForm}
     </StepperWrapper>
   );
 
-  async function handleCreateEndorsementFormSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function handleCreateEndorsementFormSubmit() {
+      console.log('handleCreateEndorsementFormSubmit');
+    }
 
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w={400}
-      h="100%"
-    >
-      {displayEndorsementComponent}
-    </Flex>
-  );
+    if (triggerFormSubmit) {
+      handleCreateEndorsementFormSubmit();
+    }
+  }, [triggerFormSubmit]);
+
+  return <>{displayEndorsementComponent}</>;
 }
 
 export { CreateEndorsement };

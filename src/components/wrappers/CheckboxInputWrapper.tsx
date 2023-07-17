@@ -1,4 +1,4 @@
-import { Checkbox } from '@mantine/core';
+import { Checkbox, Flex, Grid } from '@mantine/core';
 import { ReactNode } from 'react';
 import { useGlobalState } from '../../hooks';
 
@@ -110,7 +110,9 @@ function CheckboxGroupInputsWrapper({
     withAsterisk = required,
   } = creatorInfoObject;
 
-  const checkboxInputSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const checkboxInputSize = width < 1024 ? 'sm' : 'md';
+  const padding =
+    width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
 
   const createdCheckboxGroupInputs = (
     <Checkbox.Group
@@ -126,11 +128,18 @@ function CheckboxGroupInputsWrapper({
       ref={ref}
       withAsterisk={withAsterisk}
     >
-      {dataObjectArray?.map(({ value, label }) => {
-        return (
-          <Checkbox key={value} name={value} value={value} label={label} />
-        );
-      })}
+      <Grid
+        columns={width < 480 ? 1 : width < 768 ? 2 : width < 1440 ? 3 : 4}
+        p={padding}
+      >
+        {dataObjectArray?.map(({ value, label }) => {
+          return (
+            <Grid.Col span={1}>
+              <Checkbox key={value} name={value} value={value} label={label} />
+            </Grid.Col>
+          );
+        })}
+      </Grid>
     </Checkbox.Group>
   );
 
