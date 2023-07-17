@@ -91,6 +91,7 @@ function PasswordInputWrapper({
       onBlur={onBlur}
       minLength={minLength}
       maxLength={maxLength}
+      name={semanticName.split(' ').join('-')}
       ref={ref}
       withAsterisk={withAsterisk}
       required={required}

@@ -56,6 +56,7 @@ function CheckboxSingleInputWrapper({
       aria-label={semanticName}
       checked={checked}
       disabled={disabled}
+      name={semanticName.split(' ').join('-')}
       onChange={onChange}
       required={required}
       ref={ref}
@@ -126,7 +127,9 @@ function CheckboxGroupInputsWrapper({
       withAsterisk={withAsterisk}
     >
       {dataObjectArray?.map(({ value, label }) => {
-        return <Checkbox key={value} value={value} label={label} />;
+        return (
+          <Checkbox key={value} name={value} value={value} label={label} />
+        );
       })}
     </Checkbox.Group>
   );

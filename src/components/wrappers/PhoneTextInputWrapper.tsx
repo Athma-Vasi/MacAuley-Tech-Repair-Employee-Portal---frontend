@@ -101,6 +101,7 @@ function PhoneTextInputWrapper({
         ) : null
       }
       error={!isValidInputText && inputText !== initialInputValue}
+      name={semanticName.split(' ').join('-')}
       onChange={onChange}
       onFocus={onFocus}
       onBlur={onBlur}

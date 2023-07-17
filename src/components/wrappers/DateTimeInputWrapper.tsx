@@ -128,6 +128,7 @@ function DateTimeInputWrapper({
           ? new Date(2026, 11, 31).toISOString().split('T')[0]
           : max
       }
+      name={semanticName.split(' ').join('-')}
       onChange={onChange}
       onFocus={onFocus}
       onBlur={onBlur}

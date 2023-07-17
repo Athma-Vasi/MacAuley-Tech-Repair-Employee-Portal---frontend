@@ -26,6 +26,7 @@ const initialAddressChangeState: AddressChangeState = {
   isPostalCodeFocused: false,
   isAcknowledged: false,
 
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set<number>(),
 
@@ -61,6 +62,7 @@ const addressChangeAction: AddressChangeAction = {
   setIsPostalCodeFocused: 'setIsPostalCodeFocused',
   setIsAcknowledged: 'setIsAcknowledged',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -164,6 +166,11 @@ function addressChangeReducer(
         isAcknowledged: action.payload,
       };
 
+    case addressChangeAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
+      };
     case addressChangeAction.setCurrentStepperPosition:
       return {
         ...state,

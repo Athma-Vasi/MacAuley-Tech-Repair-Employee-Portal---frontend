@@ -47,6 +47,7 @@ function RadioSingleInputWrapper({
       aria-label={semanticName}
       checked={checked}
       disabled={disabled}
+      name={semanticName.split(' ').join('-')}
       onChange={onChange}
       required={required}
       ref={ref}

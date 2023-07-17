@@ -13,12 +13,12 @@ function StepperWrapper({
   allowNextStepsSelect = false,
   children,
   childrenTitle = '',
-  descriptionObjectsArray,
-  stepsInError,
-  maxStepperPosition,
   currentStepperPosition,
-  setCurrentStepperPosition,
+  descriptionObjectsArray,
+  maxStepperPosition,
   parentComponentDispatch,
+  setCurrentStepperPosition,
+  stepsInError,
 }: StepperWrapperProps) {
   const stepperRef = useRef<HTMLButtonElement>(null);
   const {
@@ -55,16 +55,19 @@ function StepperWrapper({
     commaCount > 0 ? ' and' : ''
   );
 
+  const padding =
+    width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
+
   return (
     <Flex
       direction="column"
       align="center"
-      justify="space-between"
+      justify="center"
       rowGap={width < 480 ? 'sm' : 'md'}
       w="100%"
       style={{ borderRadius: '5px' }}
       bg="white"
-      p={width < 480 ? 'xs' : width < 768 ? 'sm' : 'md'}
+      p={padding}
       h="100%"
     >
       <Title order={3}>{childrenTitle}</Title>
@@ -78,14 +81,8 @@ function StepperWrapper({
         }}
         breakpoint={640}
         allowNextStepsSelect={allowNextStepsSelect}
-        w={
-          width < 480
-            ? '100%'
-            : descriptionObjectsArray.length === 2
-            ? '50%'
-            : '75%'
-        }
-        p={width < 480 ? 'xs' : 'sm'}
+        w={width < 640 ? '100%' : width < 1024 ? '75%' : '50%'}
+        p={padding}
         style={{ borderRadius: '5px', border: '1px solid #e0e0e0' }}
       >
         {descriptionObjectsArray.map((value, index) => {
@@ -131,30 +128,14 @@ function StepperWrapper({
 
       <Flex
         direction="column"
-        align="flex-start"
+        align="center"
         justify="space-between"
-        w={
-          width < 480
-            ? '100%'
-            : descriptionObjectsArray.length === 2
-            ? '50%'
-            : '75%'
-        }
+        w={width < 640 ? '100%' : width < 1024 ? '75%' : '50%'}
       >
         {children}
+
         {/* stepper nav buttons */}
-        <Flex
-          align="center"
-          justify="space-between"
-          p={
-            width < 480
-              ? 'xs'
-              : descriptionObjectsArray.length === 2
-              ? 'sm'
-              : 'md'
-          }
-          w="100%"
-        >
+        <Flex align="center" justify="space-between" p={padding} w="100%">
           <Button
             variant="default"
             aria-label="Press enter to go back to the previous step in the form"

@@ -1,12 +1,14 @@
 import { Button } from '@mantine/core';
-import { ReactNode } from 'react';
+import { MouseEvent, PointerEvent, ReactNode } from 'react';
+
 import { useGlobalState } from '../../hooks';
 
 type AccessibleButtonCreatorInfo = {
   buttonLabel: ReactNode;
   buttonOnClick?: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
   ) => void | undefined;
+  buttonStyle?: React.CSSProperties | undefined;
   buttonDisabled?: boolean | undefined;
   buttonRef?: React.RefObject<HTMLButtonElement> | undefined;
   buttonType?: 'button' | 'submit' | 'reset' | undefined;
@@ -42,6 +44,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     buttonOnClick = () => {},
     semanticDescription,
     semanticName,
+    buttonStyle = {},
     buttonDisabled = false,
     buttonRef = null,
     buttonVariant = 'filled',
@@ -53,6 +56,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
 
   return (
     <Button
+      style={buttonStyle}
       onClick={buttonOnClick}
       disabled={buttonDisabled}
       ref={buttonRef}
@@ -60,6 +64,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
       variant={buttonVariant}
       compact={compact}
       leftIcon={leftIcon}
+      name={semanticName.split(' ').join('-')}
       rightIcon={rightIcon}
       size={size}
       aria-label={semanticName}

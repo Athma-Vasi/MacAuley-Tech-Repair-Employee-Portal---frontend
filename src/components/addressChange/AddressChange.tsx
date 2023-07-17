@@ -1,5 +1,6 @@
 import { Button, Flex, TextInput } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import { FormEvent, MouseEvent, useEffect, useReducer } from 'react';
+import { Form } from 'react-router-dom';
 
 import { PROVINCES, STATES_US } from '../../constants/data';
 import {
@@ -10,12 +11,12 @@ import {
   POSTAL_CODE_REGEX_US,
 } from '../../constants/regex';
 import {
+  returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleErrorValidTextElements,
-  returnAccessibleFormElements,
   returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleSelectInputElements,
   returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import { Country, Province, StatesUS } from '../../types';
@@ -26,11 +27,12 @@ import {
   returnPostalCodeValidationText,
 } from '../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
-  AccessibleFormCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../wrappers';
 import {
@@ -71,6 +73,7 @@ function AddressChange() {
     isPostalCodeFocused,
     isAcknowledged,
 
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -551,58 +554,61 @@ function AddressChange() {
       acknowledgementCheckboxCreatorInfo,
     ]);
 
-  const displayAddressChangeFormPage = (
-    <>
+  const displayAddressChangeReviewPage = <h2>Review</h2>;
+
+  useEffect(() => {
+    async function addressChangeFormSubmit() {
+      console.log(
+        'addressChangeFormSubmit',
+        JSON.stringify(addressChangeState, null, 2)
+      );
+    }
+
+    addressChangeFormSubmit();
+    // must not trigger submit function on every state change...
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'address change form submit button',
+    semanticName: 'submit button',
+    buttonVariant: 'filled',
+    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setTriggerFormSubmit,
+        payload: !triggerFormSubmit,
+      });
+    },
+    buttonDisabled: stepsInError.size > 0,
+  };
+
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+  const displaySubmitButton =
+    currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
+  const createdAddressChangeForm = (
+    <FormLayoutWrapper>
       {createdContactNumberTextInput}
       {createdCountrySelectInput}
       {createdAddressLineTextInput}
-      {createdProvinceOrStateSelectInput}
       {createdCityTextInput}
+      {createdProvinceOrStateSelectInput}
       {createdZipOrPostalCodeTextInput}
       {createdAcknowledgementCheckbox}
-    </>
+    </FormLayoutWrapper>
   );
-  const displayAddressChangeReviewPage = <h2>Review</h2>;
-
-  const displaySubmitButton =
-    currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION ? (
-      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
-
-  async function handleAddressChangeFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
-
-  const addressChangeFormCreatorInfo: AccessibleFormCreatorInfo = {
-    name: 'address change form',
-    onSubmit: handleAddressChangeFormSubmit,
-    semanticName: 'address change form',
-    submitButtonLabel: 'Submit',
-    children: [
-      createdContactNumberTextInput,
-      createdCountrySelectInput,
-      createdAddressLineTextInput,
-      createdProvinceOrStateSelectInput,
-      createdCityTextInput,
-      createdZipOrPostalCodeTextInput,
-      createdAcknowledgementCheckbox,
-    ],
-  };
-
-  const [createdAddressChangeForm] = returnAccessibleFormElements([
-    addressChangeFormCreatorInfo,
-  ]);
 
   const displayAddressChangeForm =
     currentStepperPosition === 0
       ? createdAddressChangeForm
       : currentStepperPosition === 1
       ? displayAddressChangeReviewPage
-      : null;
+      : displaySubmitButton;
 
   const displayAddressChangeComponent = (
     <StepperWrapper
@@ -614,18 +620,6 @@ function AddressChange() {
       parentComponentDispatch={addressChangeDispatch}
       stepsInError={stepsInError}
     >
-      {/* <form onSubmit={handleAddressChangeFormSubmit}>
-        <Flex
-          direction="column"
-          align="flex-start"
-          justify="space-between"
-          rowGap="lg"
-          style={{ outline: '1px solid teal' }}
-        >
-          {displayAddressChangeForm}
-          {displaySubmitButton}
-        </Flex>
-      </form> */}
       {displayAddressChangeForm}
     </StepperWrapper>
   );

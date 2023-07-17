@@ -74,20 +74,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     />
   );
 
-  const displayAnnouncementsNavLink = (
-    <NavLink
-      label={
-        <Text size="lg" color={buttonTextColor}>
-          Announcements
-        </Text>
-      }
-      icon={<MdAnnouncement />}
-      onClick={() => {
-        navigate('/portal/announcements');
-      }}
-    />
-  );
-
   const displayCompanyNavLinks = (
     <NavLink
       label={
@@ -231,6 +217,19 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       childrenOffset="md"
       rightSection={<FiChevronRight />}
     >
+      {/* announcement */}
+      <NavLink
+        label={
+          <Text size="lg" color={buttonTextColor}>
+            Announcements
+          </Text>
+        }
+        rightSection={<FiChevronRight />}
+        icon={<MdAnnouncement />}
+        onClick={() => {
+          navigate('/portal/outreach/announcements');
+        }}
+      />
       {/* survey builder */}
       <NavLink
         label={
@@ -272,8 +271,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       {displayUsersNavLink}
 
       {displayNotesNavLink}
-
-      {displayAnnouncementsNavLink}
 
       {displayCompanyNavLinks}
 

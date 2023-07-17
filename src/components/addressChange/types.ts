@@ -29,6 +29,7 @@ type AddressChangeState = {
   isPostalCodeFocused: boolean;
   isAcknowledged: boolean;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -64,6 +65,7 @@ type AddressChangeAction = {
   setIsPostalCodeFocused: 'setIsPostalCodeFocused';
   setIsAcknowledged: 'setIsAcknowledged';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -120,6 +122,7 @@ type AddressChangeDispatch =
         | AddressChangeAction['setIsPostalCodeFocused']
         | AddressChangeAction['setIsValidPostalCode']
         | AddressChangeAction['setIsAcknowledged']
+        | AddressChangeAction['setTriggerFormSubmit']
         | AddressChangeAction['setIsSuccessful']
         | AddressChangeAction['setIsSubmitting']
         | AddressChangeAction['setIsError']

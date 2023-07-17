@@ -7,7 +7,6 @@ import type {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
-  AccessibleFormCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
@@ -21,7 +20,6 @@ import {
   CheckboxGroupInputsWrapper,
   CheckboxSingleInputWrapper,
   DateTimeInputWrapper,
-  FormWrapper,
   NativeSelectWrapper,
   PasswordInputWrapper,
   PhoneTextInputWrapper,
@@ -426,17 +424,6 @@ function returnAccessibleDynamicTextAreaInputElements(
   ));
 }
 
-function returnAccessibleFormElements(
-  creatorInfoObjectArray: AccessibleFormCreatorInfo[]
-) {
-  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
-    <FormWrapper
-      key={`${index}${creatorInfoObject.name}`}
-      creatorInfoObject={creatorInfoObject}
-    />
-  ));
-}
-
 export {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
@@ -448,7 +435,6 @@ export {
   returnAccessibleDynamicTextInputElements,
   returnAccessibleErrorValidTextElements,
   returnAccessibleErrorValidTextElementsForDynamicInputs,
-  returnAccessibleFormElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleRadioGroupInputsElements,

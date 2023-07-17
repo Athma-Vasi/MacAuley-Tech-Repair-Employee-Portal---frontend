@@ -490,95 +490,6 @@ function CreateAnnouncement() {
     bannerImageAltTextInputCreatorInfo,
   ]);
 
-  // const createdArticleParagraphsTextAreaInputs = article.map(
-  //   (paragraph, index) => {
-  //     return (
-  //       <Fragment key={`${index}${title}`}>
-  //         <Textarea
-  //           size="sm"
-  //           w="100%"
-  //           color="dark"
-  //           // label={`Paragraph ${index + 1}`}
-  //           label={
-  //             <Flex align="center" justify="space-between" columnGap="xl">
-  //               <Text>Paragraph {index + 1}</Text>
-  //               <Tooltip label={`Delete paragraph ${index + 1}`}>
-  //                 <Button
-  //                   size="xs"
-  //                   variant="subtle"
-  //                   onClick={() => {
-  //                     createAnnouncementDispatch({
-  //                       type: createAnnouncementAction.setDeleteArticleParagraph,
-  //                       payload: index,
-  //                     });
-  //                   }}
-  //                 >
-  //                   <FontAwesomeIcon icon={faTrash} color="gray" />
-  //                 </Button>
-  //               </Tooltip>
-  //             </Flex>
-  //           }
-  //           placeholder={`Enter paragraph ${index + 1}`}
-  //           value={paragraph}
-  //           aria-required
-  //           aria-describedby={
-  //             areValidArticleParagraphs[index]
-  //               ? `article-paragraph-input-note-valid-${index}`
-  //               : `article-paragraph-input-note-error-${index}`
-  //           }
-  //           description={
-  //             areValidArticleParagraphs[index]
-  //               ? articleParagraphInputValidTexts[index]
-  //               : articleParagraphInputErrorTexts[index]
-  //           }
-  //           aria-invalid={areValidArticleParagraphs[index] ? 'false' : 'true'}
-  //           icon={
-  //             areValidArticleParagraphs[index] ? (
-  //               <FontAwesomeIcon icon={faCheck} color="green" />
-  //             ) : null
-  //           }
-  //           error={!areValidArticleParagraphs[index] && paragraph !== ''}
-  //           onChange={(event) => {
-  //             createAnnouncementDispatch({
-  //               type: createAnnouncementAction.setArticle,
-  //               payload: {
-  //                 index: index,
-  //                 value: event.currentTarget.value,
-  //               },
-  //             });
-  //           }}
-  //           onFocus={() => {
-  //             createAnnouncementDispatch({
-  //               type: createAnnouncementAction.setAreArticleParagraphsFocused,
-  //               payload: {
-  //                 index,
-  //                 value: true,
-  //               },
-  //             });
-  //           }}
-  //           onBlur={() => {
-  //             createAnnouncementDispatch({
-  //               type: createAnnouncementAction.setAreArticleParagraphsFocused,
-  //               payload: {
-  //                 index,
-  //                 value: false,
-  //               },
-  //             });
-  //           }}
-  //           required
-  //           withAsterisk={false}
-  //           autosize
-  //           minRows={3}
-  //           maxRows={10}
-  //           minLength={3}
-  //           maxLength={2000}
-  //           ref={index === article.length - 1 ? newArticleParagraphRef : null}
-  //         />
-  //       </Fragment>
-  //     );
-  //   }
-  // );
-
   const createdAddNewArticleParagraphButton = returnAccessibleButtonElements([
     addNewArticleParagraphButtonCreatorInfo,
   ]);
@@ -954,3 +865,94 @@ export { CreateAnnouncement };
       ) : null}
     </Flex>
  */
+
+/**
+     *  const createdArticleParagraphsTextAreaInputs = article.map(
+    (paragraph, index) => {
+      return (
+        <Fragment key={`${index}${title}`}>
+          <Textarea
+            size="sm"
+            w="100%"
+            color="dark"
+            // label={`Paragraph ${index + 1}`}
+            label={
+              <Flex align="center" justify="space-between" columnGap="xl">
+                <Text>Paragraph {index + 1}</Text>
+                <Tooltip label={`Delete paragraph ${index + 1}`}>
+                  <Button
+                    size="xs"
+                    variant="subtle"
+                    onClick={() => {
+                      createAnnouncementDispatch({
+                        type: createAnnouncementAction.setDeleteArticleParagraph,
+                        payload: index,
+                      });
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faTrash} color="gray" />
+                  </Button>
+                </Tooltip>
+              </Flex>
+            }
+            placeholder={`Enter paragraph ${index + 1}`}
+            value={paragraph}
+            aria-required
+            aria-describedby={
+              areValidArticleParagraphs[index]
+                ? `article-paragraph-input-note-valid-${index}`
+                : `article-paragraph-input-note-error-${index}`
+            }
+            description={
+              areValidArticleParagraphs[index]
+                ? articleParagraphInputValidTexts[index]
+                : articleParagraphInputErrorTexts[index]
+            }
+            aria-invalid={areValidArticleParagraphs[index] ? 'false' : 'true'}
+            icon={
+              areValidArticleParagraphs[index] ? (
+                <FontAwesomeIcon icon={faCheck} color="green" />
+              ) : null
+            }
+            error={!areValidArticleParagraphs[index] && paragraph !== ''}
+            onChange={(event) => {
+              createAnnouncementDispatch({
+                type: createAnnouncementAction.setArticle,
+                payload: {
+                  index: index,
+                  value: event.currentTarget.value,
+                },
+              });
+            }}
+            onFocus={() => {
+              createAnnouncementDispatch({
+                type: createAnnouncementAction.setAreArticleParagraphsFocused,
+                payload: {
+                  index,
+                  value: true,
+                },
+              });
+            }}
+            onBlur={() => {
+              createAnnouncementDispatch({
+                type: createAnnouncementAction.setAreArticleParagraphsFocused,
+                payload: {
+                  index,
+                  value: false,
+                },
+              });
+            }}
+            required
+            withAsterisk={false}
+            autosize
+            minRows={3}
+            maxRows={10}
+            minLength={3}
+            maxLength={2000}
+            ref={index === article.length - 1 ? newArticleParagraphRef : null}
+          />
+        </Fragment>
+      );
+    }
+  );
+     */

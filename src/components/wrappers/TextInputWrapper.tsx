@@ -9,8 +9,8 @@ import { Flex, Group, Text, TextInput, Tooltip } from '@mantine/core';
 import { ReactNode, useEffect } from 'react';
 import { BsTrash } from 'react-icons/bs';
 
-import { ButtonWrapper } from './ButtonWrapper';
 import { useGlobalState } from '../../hooks';
+import { ButtonWrapper } from './ButtonWrapper';
 
 type AccessibleTextInputCreatorInfo = {
   semanticName: string;
@@ -152,6 +152,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
         ) : null
       }
       error={!isValidInputText && inputText !== initialInputValue}
+      name={semanticName.split(' ').join('-')}
       onBlur={onBlur}
       onChange={onChange}
       onFocus={onFocus}

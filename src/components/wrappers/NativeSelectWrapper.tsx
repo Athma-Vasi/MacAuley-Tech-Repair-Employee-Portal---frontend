@@ -45,6 +45,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
       value={value}
       onChange={onChange}
       ref={ref}
+      name={label.split(' ').join('-').toLowerCase()}
       withAsterisk={withAsterisk}
       required={required}
     />
