@@ -1,19 +1,15 @@
-import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Button,
-  Flex,
-  NativeSelect,
-  Textarea,
-  TextInput,
-  Tooltip,
-} from '@mantine/core';
-import { useEffect, useReducer, useRef } from 'react';
+  ChangeEvent,
+  FormEvent,
+  KeyboardEvent,
+  MouseEvent,
+  useEffect,
+  useReducer,
+} from 'react';
 
 import { URGENCY_DATA } from '../../../constants/data';
 import {
   DATE_NEAR_PAST_REGEX,
-  DATE_REGEX,
   EMAIL_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
@@ -23,17 +19,17 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import {
+  returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import { PhoneNumber, Urgency } from '../../../types';
 import {
   returnDateNearPastValidationText,
-  returnDateValidationText,
   returnEmailValidationText,
   returnGrammarValidationText,
   returnPhoneNumberValidationText,
@@ -42,11 +38,13 @@ import {
   returnTimeRailwayValidationText,
 } from '../../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
 import {
@@ -107,6 +105,7 @@ function CreatePrinterIssue() {
     isValidAdditionalInformation,
     isAdditionalInformationFocused,
 
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -261,7 +260,7 @@ function CreatePrinterIssue() {
       !isValidTimeOfOccurrence;
 
     const isOptionalInputInError =
-      contactNumber !== '' && !isValidContactNumber;
+      contactNumber !== '+(1)' && !isValidContactNumber;
 
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
@@ -455,7 +454,7 @@ function CreatePrinterIssue() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createPrinterIssueDispatch({
         type: createPrinterIssueAction.setTitle,
         payload: event.currentTarget.value,
@@ -488,7 +487,7 @@ function CreatePrinterIssue() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createPrinterIssueDispatch({
           type: createPrinterIssueAction.setContactNumber,
           payload: event.currentTarget.value,
@@ -500,7 +499,7 @@ function CreatePrinterIssue() {
           payload: true,
         });
       },
-      onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Backspace') {
           if (contactNumber.length === 14 || contactNumber.length === 9) {
             createPrinterIssueDispatch({
@@ -528,7 +527,7 @@ function CreatePrinterIssue() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createPrinterIssueDispatch({
         type: createPrinterIssueAction.setContactEmail,
         payload: event.currentTarget.value,
@@ -563,7 +562,7 @@ function CreatePrinterIssue() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createPrinterIssueDispatch({
           type: createPrinterIssueAction.setDateOfOccurrence,
           payload: event.currentTarget.value,
@@ -597,7 +596,7 @@ function CreatePrinterIssue() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createPrinterIssueDispatch({
           type: createPrinterIssueAction.setTimeOfOccurrence,
           payload: event.currentTarget.value,
@@ -630,7 +629,7 @@ function CreatePrinterIssue() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createPrinterIssueDispatch({
           type: createPrinterIssueAction.setPrinterSerialNumber,
           payload: event.currentTarget.value,
@@ -662,7 +661,7 @@ function CreatePrinterIssue() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createPrinterIssueDispatch({
         type: createPrinterIssueAction.setPrinterModel,
         payload: event.currentTarget.value,
@@ -694,7 +693,7 @@ function CreatePrinterIssue() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createPrinterIssueDispatch({
         type: createPrinterIssueAction.setPrinterMake,
         payload: event.currentTarget.value,
@@ -727,7 +726,7 @@ function CreatePrinterIssue() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createPrinterIssueDispatch({
           type: createPrinterIssueAction.setPrinterIssueDescription,
           payload: event.currentTarget.value,
@@ -760,7 +759,7 @@ function CreatePrinterIssue() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createPrinterIssueDispatch({
           type: createPrinterIssueAction.setAdditionalInformation,
           payload: event.currentTarget.value,
@@ -779,7 +778,7 @@ function CreatePrinterIssue() {
   const urgencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     description: 'Select an urgency',
     label: 'Urgency',
-    onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       createPrinterIssueDispatch({
         type: createPrinterIssueAction.setUrgency,
         payload: event.currentTarget.value as Urgency,
@@ -789,6 +788,20 @@ function CreatePrinterIssue() {
     value: urgency,
     required: true,
     withAsterisk: true,
+  };
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'printer issue form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      createPrinterIssueDispatch({
+        type: createPrinterIssueAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
   const [
@@ -828,25 +841,33 @@ function CreatePrinterIssue() {
     urgencySelectInputCreatorInfo,
   ]);
 
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+  const displaySubmitButton =
+    currentStepperPosition === CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
   const displayPrinterIssueFormFirstPage = (
-    <>
+    <FormLayoutWrapper>
       {createdTitleTextInput}
       {createdContactEmailTextInput}
       {createdContactNumberPhoneInput}
       {createdDateOfOccurrenceDateInput}
       {createdTimeOfOccurrenceTimeInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayPrinterIssueFormSecondPage = (
-    <>
+    <FormLayoutWrapper>
       {createdPrinterSerialNumberTextInput}
       {createdPrinterModelTextInput}
       {createdPrinterMakeTextInput}
       {createdPrinterIssueDescriptionTextArea}
       {createdAdditionalInformationTextArea}
       {createdUrgencySelectInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayReviewFormPage = <h5>printer issue review page</h5>;
@@ -858,17 +879,11 @@ function CreatePrinterIssue() {
       ? displayPrinterIssueFormSecondPage
       : currentStepperPosition === 2
       ? displayReviewFormPage
-      : null;
-
-  const displaySubmitButton =
-    currentStepperPosition === CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION ? (
-      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
+      : displaySubmitButton;
 
   const displayCreatePrinterIssueComponent = (
     <StepperWrapper
+      childrenTitle="Printer issue"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION}
@@ -878,31 +893,21 @@ function CreatePrinterIssue() {
       }
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleCreatePrinterIssueFormSubmit}>
-        {displayCreatePrinterIssueForm}
-        {displaySubmitButton}
-      </form>
+      {displayCreatePrinterIssueForm}
     </StepperWrapper>
   );
 
-  async function handleCreatePrinterIssueFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function handleCreatePrinterIssueFormSubmit() {
+      console.log('submitting form');
+    }
 
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w="400px"
-    >
-      <h3>create-printer-issue</h3>
-      {displayCreatePrinterIssueComponent}
-    </Flex>
-  );
+    if (triggerFormSubmit) {
+      handleCreatePrinterIssueFormSubmit();
+    }
+  }, [triggerFormSubmit]);
+
+  return <>{displayCreatePrinterIssueComponent}</>;
 }
 
 export { CreatePrinterIssue };

@@ -73,6 +73,7 @@ type CreatePrinterIssueState = {
   isValidAdditionalInformation: boolean;
   isAdditionalInformationFocused: boolean;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -129,6 +130,7 @@ type CreatePrinterIssueAction = {
   setIsValidAdditionalInformation: 'setIsValidAdditionalInformation';
   setIsAdditionalInformationFocused: 'setIsAdditionalInformationFocused';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -188,6 +190,7 @@ type CreatePrinterIssueDispatch =
         | CreatePrinterIssueAction['setIsDateOfOccurrenceFocused']
         | CreatePrinterIssueAction['setIsTimeOfOccurrenceFocused']
         | CreatePrinterIssueAction['setIsValidTimeOfOccurrence']
+        | CreatePrinterIssueAction['setTriggerFormSubmit']
         | CreatePrinterIssueAction['setIsError']
         | CreatePrinterIssueAction['setIsSubmitting']
         | CreatePrinterIssueAction['setIsSuccessful']

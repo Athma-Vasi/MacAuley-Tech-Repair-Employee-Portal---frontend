@@ -47,6 +47,7 @@ const initialCreatePrinterIssueState: CreatePrinterIssueState = {
   isValidAdditionalInformation: false,
   isAdditionalInformationFocused: false,
 
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -103,6 +104,7 @@ const createPrinterIssueAction: CreatePrinterIssueAction = {
   setIsValidAdditionalInformation: 'setIsValidAdditionalInformation',
   setIsAdditionalInformationFocused: 'setIsAdditionalInformationFocused',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -275,6 +277,12 @@ function createPrinterIssueReducer(
       return {
         ...state,
         isAdditionalInformationFocused: action.payload,
+      };
+
+    case createPrinterIssueAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
     case createPrinterIssueAction.setCurrentStepperPosition:
       return {
