@@ -3,7 +3,7 @@ import './style.css';
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Stepper, Text, Title } from '@mantine/core';
-import { useEffect, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { useGlobalState } from '../../../hooks';
@@ -98,6 +98,7 @@ function StepperWrapper({
 
   const padding =
     width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
+  const descObjLen = descriptionObjectsArray.length;
 
   return (
     <Flex
@@ -120,9 +121,9 @@ function StepperWrapper({
             payload: step,
           });
         }}
-        breakpoint={640}
+        breakpoint={descObjLen < 4 ? 640 : 1440}
         allowNextStepsSelect={allowNextStepsSelect}
-        w={width < 640 ? '100%' : width < 1024 ? '85%' : '62%'}
+        w={width < 640 ? '100%' : descObjLen > 4 ? '85%' : '62%'}
         p={padding}
         style={{ borderRadius: '5px', border: '1px solid #e0e0e0' }}
       >
@@ -183,9 +184,9 @@ function StepperWrapper({
         direction="column"
         align="center"
         justify="space-between"
-        w={width < 640 ? '100%' : width < 1024 ? '85%' : '62%'}
+        w={width < 640 ? '100%' : descObjLen > 4 ? '85%' : '62%'}
       >
-        {children}
+        {children ?? null}
 
         {/* stepper nav buttons */}
         <Flex align="center" justify="space-between" p={padding} w="100%">

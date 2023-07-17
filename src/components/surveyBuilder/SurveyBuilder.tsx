@@ -9,6 +9,7 @@ import {
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../constants/regex';
+import { useGlobalState } from '../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
@@ -52,6 +53,9 @@ import { SurveyRecipient } from './types';
 import { mergeSurveyQuestionsGroup } from './utils';
 
 function SurveyBuilder() {
+  const {
+    globalState: { width },
+  } = useGlobalState();
   const [surveyBuilderState, surveyBuilderDispatch] = useReducer(
     surveyBuilderReducer,
     initialSurveyBuilderState
@@ -147,7 +151,8 @@ function SurveyBuilder() {
 
     // update the StepperWrapper description with entered question on every change
     questions.forEach((question, index) => {
-      const maxSliceLength = 11;
+      const maxSliceLength =
+        width < 1440 && stepperDescriptionObjects.length > 4 ? 23 : 11;
 
       surveyBuilderDispatch({
         type: surveyBuilderAction.updateStepperDescriptionObjects,
@@ -167,7 +172,7 @@ function SurveyBuilder() {
         },
       });
     });
-  }, [questions]);
+  }, [questions, width]);
 
   // validate questions length on every change
   useEffect(() => {
@@ -648,9 +653,10 @@ function SurveyBuilder() {
   const displaySurveyBuilderReviewPage = <h4>survey builder review page</h4>;
 
   const displaySurveyBuilderForm =
-    currentStepperPosition === maxStepperPosition - 1 ? (
+    currentStepperPosition === maxStepperPosition - 2 ? (
       displaySurveyBuilderReviewPage
-    ) : currentStepperPosition === 0 ? (
+    ) : currentStepperPosition ===
+      maxStepperPosition - 1 ? null : currentStepperPosition === 0 ? (
       displaySurveyDetailsFormPageOne
     ) : currentStepperPosition === 1 ? (
       <FormLayoutWrapper>
