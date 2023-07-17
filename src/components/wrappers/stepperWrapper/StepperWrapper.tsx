@@ -154,7 +154,7 @@ function StepperWrapper({
                 )
               }
             >
-              <Text>{description}</Text>
+              <Text color="dark">{description}</Text>
             </Stepper.Step>
           );
         })}

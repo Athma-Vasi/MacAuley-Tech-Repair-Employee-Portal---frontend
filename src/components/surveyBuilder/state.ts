@@ -91,7 +91,8 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setResponseInputHtml: 'setResponseInputHtml',
 
   setTriggerFormSubmit: 'setTriggerFormSubmit',
-  setStepperDescriptionObjects: 'setStepperDescriptionObjects',
+  updateStepperDescriptionObjects: 'updateStepperDescriptionObjects',
+  createStepperDescriptionObjects: 'createStepperDescriptionObjects',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -253,21 +254,31 @@ function surveyBuilderReducer(
         triggerFormSubmit: action.payload,
       };
 
-    case surveyBuilderAction.setStepperDescriptionObjects: {
+    case surveyBuilderAction.createStepperDescriptionObjects: {
       const { index, value } = action.payload;
 
+      // only update the middle objects
       const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
-      if (index >= stepperDescriptionObjects.length) {
-        stepperDescriptionObjects.push(value);
-      } else {
-        stepperDescriptionObjects[index] = value;
-      }
+      const lastStep = stepperDescriptionObjects.splice(-1)[0];
+      stepperDescriptionObjects.push(value, lastStep);
 
       return {
         ...state,
         stepperDescriptionObjects,
       };
     }
+    case surveyBuilderAction.updateStepperDescriptionObjects: {
+      const { index, value } = action.payload;
+
+      const stepperDescriptionObjects = [...state.stepperDescriptionObjects];
+      stepperDescriptionObjects[index] = value;
+
+      return {
+        ...state,
+        stepperDescriptionObjects,
+      };
+    }
+
     case surveyBuilderAction.setCurrentStepperPosition:
       return {
         ...state,

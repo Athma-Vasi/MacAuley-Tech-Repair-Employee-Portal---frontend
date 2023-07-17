@@ -150,7 +150,7 @@ function SurveyBuilder() {
       const maxSliceLength = 11;
 
       surveyBuilderDispatch({
-        type: surveyBuilderAction.setStepperDescriptionObjects,
+        type: surveyBuilderAction.updateStepperDescriptionObjects,
         payload: {
           index: index + 1,
           value: {
@@ -542,6 +542,17 @@ function SurveyBuilder() {
         type: surveyBuilderAction.addNewQuestionGroup,
         payload: questions.length,
       });
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.createStepperDescriptionObjects,
+        payload: {
+          index: currentStepperPosition,
+          value: {
+            description: `Enter question ${questions.length + 1}`,
+            ariaLabel: `Enter question ${questions.length + 1}`,
+          },
+        },
+      });
+
       // enables display of the newly created survey question page
       surveyBuilderDispatch({
         type: surveyBuilderAction.setCurrentStepperPosition,
@@ -591,15 +602,6 @@ function SurveyBuilder() {
       responseInputHtmlRadioGroupCreatorInfo
     );
 
-  const [createdAddNewQuestionButton, createdSubmitButton] =
-    returnAccessibleButtonElements([
-      addNewQuestionButtonCreatorInfo,
-      submitButtonCreatorInfo,
-    ]);
-  const maxStepperPosition = stepperDescriptionObjects.length;
-  const displaySubmitButton =
-    currentStepperPosition === maxStepperPosition ? createdSubmitButton : null;
-
   const [createdIsAnonymousCheckbox] =
     returnAccessibleCheckboxSingleInputElements([
       isAnonymousCheckboxCreatorInfo,
@@ -612,6 +614,15 @@ function SurveyBuilder() {
   const [createdSurveyTitleInput] = returnAccessibleTextInputElements([
     surveyTitleInputCreatorInfo,
   ]);
+
+  const [createdAddNewQuestionButton, createdSubmitButton] =
+    returnAccessibleButtonElements([
+      addNewQuestionButtonCreatorInfo,
+      submitButtonCreatorInfo,
+    ]);
+  const maxStepperPosition = stepperDescriptionObjects.length + 1;
+  const displaySubmitButton =
+    currentStepperPosition === maxStepperPosition ? createdSubmitButton : null;
 
   const displayAddNewQuestionButton = isMaxQuestionsReached
     ? null
@@ -637,21 +648,42 @@ function SurveyBuilder() {
   const displaySurveyBuilderReviewPage = <h4>survey builder review page</h4>;
 
   const displaySurveyBuilderForm =
-    currentStepperPosition === 0
-      ? displaySurveyDetailsFormPageOne
-      : currentStepperPosition === 1
-      ? mergedSurveyQuestionsGroups.slice(0, 1)
-      : currentStepperPosition === 2
-      ? mergedSurveyQuestionsGroups.slice(1, 2)
-      : currentStepperPosition === 3
-      ? mergedSurveyQuestionsGroups.slice(2, 3)
-      : currentStepperPosition === 4
-      ? mergedSurveyQuestionsGroups.slice(3, 4)
-      : currentStepperPosition === 5
-      ? mergedSurveyQuestionsGroups.slice(4, 5)
-      : currentStepperPosition === 6
-      ? displaySurveyBuilderReviewPage
-      : displaySubmitButton;
+    currentStepperPosition === maxStepperPosition - 1 ? (
+      displaySurveyBuilderReviewPage
+    ) : currentStepperPosition === 0 ? (
+      displaySurveyDetailsFormPageOne
+    ) : currentStepperPosition === 1 ? (
+      <FormLayoutWrapper>
+        {mergedSurveyQuestionsGroups.slice(0, 1)}
+      </FormLayoutWrapper>
+    ) : currentStepperPosition === 2 ? (
+      <FormLayoutWrapper>
+        {mergedSurveyQuestionsGroups.slice(1, 2)}
+      </FormLayoutWrapper>
+    ) : currentStepperPosition === 3 ? (
+      <FormLayoutWrapper>
+        {mergedSurveyQuestionsGroups.slice(2, 3)}
+      </FormLayoutWrapper>
+    ) : currentStepperPosition === 4 ? (
+      <FormLayoutWrapper>
+        {mergedSurveyQuestionsGroups.slice(3, 4)}
+      </FormLayoutWrapper>
+    ) : currentStepperPosition === 5 ? (
+      <FormLayoutWrapper>
+        {mergedSurveyQuestionsGroups.slice(4, 5)}
+      </FormLayoutWrapper>
+    ) : (
+      displaySubmitButton
+    );
+
+  useEffect(() => {
+    console.group('SurveyBuilder');
+    Object.entries(surveyBuilderState).forEach(([key, value]) => {
+      console.log(`${key}:  `, JSON.stringify(value, null, 2));
+    });
+    console.log('maxStepperPosition', maxStepperPosition);
+    console.groupEnd();
+  }, [surveyBuilderState, maxStepperPosition]);
 
   const displaySurveyBuilderComponent = (
     <StepperWrapper

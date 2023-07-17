@@ -122,7 +122,8 @@ type SurveyBuilderAction = {
   setResponseInputHtml: 'setResponseInputHtml';
 
   setTriggerFormSubmit: 'setTriggerFormSubmit';
-  setStepperDescriptionObjects: 'setStepperDescriptionObjects';
+  updateStepperDescriptionObjects: 'updateStepperDescriptionObjects';
+  createStepperDescriptionObjects: 'createStepperDescriptionObjects';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -205,7 +206,9 @@ type SurveyBuilderDispatch =
       payload: SetStepsInErrorPayload;
     }
   | {
-      type: SurveyBuilderAction['setStepperDescriptionObjects'];
+      type:
+        | SurveyBuilderAction['createStepperDescriptionObjects']
+        | SurveyBuilderAction['updateStepperDescriptionObjects'];
       payload: {
         index: number;
         value: {
