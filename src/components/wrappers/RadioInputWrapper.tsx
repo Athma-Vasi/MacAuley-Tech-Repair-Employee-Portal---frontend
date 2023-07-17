@@ -1,4 +1,4 @@
-import { Radio } from '@mantine/core';
+import { Grid, Radio } from '@mantine/core';
 import React, { ReactNode } from 'react';
 import { useGlobalState } from '../../hooks';
 
@@ -51,6 +51,7 @@ function RadioSingleInputWrapper({
       onChange={onChange}
       required={required}
       ref={ref}
+      w="100%"
     />
   );
 
@@ -129,6 +130,8 @@ function RadioGroupInputsWrapper({
   } = creatorInfoObject;
 
   const radioInputsSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const padding =
+    width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
 
   const createdRadioGroupInputs = (
     <Radio.Group
@@ -142,10 +145,20 @@ function RadioGroupInputsWrapper({
       required={required}
       ref={ref}
       withAsterisk={withAsterisk}
+      w="100%"
     >
-      {dataObjectArray?.map(({ value, label }) => {
-        return <Radio key={value} value={value} label={label} />;
-      })}
+      <Grid
+        columns={width < 480 ? 1 : width < 768 ? 2 : width < 1440 ? 3 : 4}
+        p={padding}
+      >
+        {dataObjectArray?.map(({ value, label }) => {
+          return (
+            <Grid.Col span={1}>
+              <Radio key={value} value={value} label={label} />
+            </Grid.Col>
+          );
+        })}
+      </Grid>
     </Radio.Group>
   );
 

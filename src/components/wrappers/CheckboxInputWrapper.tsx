@@ -60,6 +60,7 @@ function CheckboxSingleInputWrapper({
       onChange={onChange}
       required={required}
       ref={ref}
+      w="100%"
     />
   );
 
