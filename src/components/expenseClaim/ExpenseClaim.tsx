@@ -6,23 +6,28 @@ import {
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
 import { Flex } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  MouseEvent,
+  useEffect,
+  useReducer,
+} from 'react';
 
 import {
   DATE_NEAR_PAST_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../constants/regex';
-
 import {
   returnAccessibleButtonElements,
+  returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
-  returnAccessibleSelectedDeselectedTextElements,
-  returnAccessibleCheckboxSingleInputElements,
 } from '../../jsxCreators';
 import type { Currency } from '../../types';
 import {
@@ -38,6 +43,7 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../wrappers';
 import {
@@ -78,6 +84,7 @@ function ExpenseClaim() {
     isAdditionalCommentsFocused,
 
     acknowledgement,
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -129,7 +136,9 @@ function ExpenseClaim() {
 
   // validate expenseClaimDate on every change
   useEffect(() => {
-    const isValid = DATE_NEAR_PAST_REGEX.test(expenseClaimDate);
+    const isValid =
+      DATE_NEAR_PAST_REGEX.test(expenseClaimDate) &&
+      new Date(expenseClaimDate) <= new Date();
 
     expenseClaimDispatch({
       type: expenseClaimAction.setIsValidExpenseClaimDate,
@@ -199,13 +208,19 @@ function ExpenseClaim() {
       }),
     });
 
+  const expenseClaimInvalidText =
+    new Date(expenseClaimDate) > new Date()
+      ? 'Expense claim date cannot be in the future.'
+      : '';
   const [expenseClaimDateInputErrorText, expenseClaimDateInputValidText] =
     returnAccessibleErrorValidTextElements({
       inputElementKind: 'expense claim date',
       inputText: expenseClaimDate,
       isInputTextFocused: isExpenseClaimDateFocused,
       isValidInputText: isValidExpenseClaimDate,
-      regexValidationText: returnDateNearPastValidationText(expenseClaimDate),
+      regexValidationText: `${expenseClaimInvalidText}${returnDateNearPastValidationText(
+        expenseClaimDate
+      )}`,
     });
 
   const [
@@ -272,7 +287,7 @@ function ExpenseClaim() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setExpenseClaimAmount,
           payload: event.currentTarget.value,
@@ -299,7 +314,7 @@ function ExpenseClaim() {
       data: EXPENSE_CLAIM_KIND_DATA,
       description: 'Select a category for your expense claim.',
       label: 'Expense claim kind',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setExpenseClaimKind,
           payload: event.currentTarget.value as ExpenseClaimKind,
@@ -315,7 +330,7 @@ function ExpenseClaim() {
       data: CURRENCY_DATA,
       description: 'Select the currency for your expense claim.',
       label: 'Expense claim currency',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setExpenseClaimCurrency,
           payload: event.currentTarget.value as Currency,
@@ -341,7 +356,7 @@ function ExpenseClaim() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setExpenseClaimDate,
           payload: event.currentTarget.value,
@@ -376,7 +391,7 @@ function ExpenseClaim() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setExpenseClaimDescription,
           payload: event.currentTarget.value,
@@ -409,7 +424,7 @@ function ExpenseClaim() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setAdditionalComments,
           payload: event.currentTarget.value,
@@ -432,7 +447,7 @@ function ExpenseClaim() {
         deselected: acknowledgementInputDeselectedText,
       },
       checked: acknowledgement,
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         expenseClaimDispatch({
           type: expenseClaimAction.setAcknowledgement,
           payload: event.currentTarget.checked,
@@ -445,11 +460,16 @@ function ExpenseClaim() {
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Submit',
-    buttonOnClick: () => {},
-    buttonType: 'submit',
-    buttonDisabled: stepsInError.size > 0,
-    semanticName: 'submit button',
     semanticDescription: 'expense claim form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      expenseClaimDispatch({
+        type: expenseClaimAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
   const [createdExpenseClaimAmountTextInput] =
@@ -483,9 +503,13 @@ function ExpenseClaim() {
   const [createdSubmitButton] = returnAccessibleButtonElements([
     submitButtonCreatorInfo,
   ]);
+  const displaySubmitButton =
+    currentStepperPosition === EXPENSE_CLAIM_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
 
   const displayExpenseClaimDetailsFirstPage = (
-    <>
+    <FormLayoutWrapper>
       {createdExpenseClaimKindSelectInput}
       {createdExpenseClaimCurrencySelectInput}
       {createdExpenseClaimAmountTextInput}
@@ -493,7 +517,7 @@ function ExpenseClaim() {
       {createdExpenseClaimDescriptionTextInput}
       {createdAdditionalCommentsTextInput}
       {createdAcknowledgementCheckboxInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayExpenseClaimReviewPage = <h3>expense claim review</h3>;
@@ -503,15 +527,11 @@ function ExpenseClaim() {
       ? displayExpenseClaimDetailsFirstPage
       : currentStepperPosition === 1
       ? displayExpenseClaimReviewPage
-      : null;
-
-  const displayFormSubmitButton =
-    currentStepperPosition === EXPENSE_CLAIM_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+      : displaySubmitButton;
 
   const displayExpenseClaimComponent = (
     <StepperWrapper
+      childrenTitle="Expense claim"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={EXPENSE_CLAIM_DESCRIPTION_OBJECTS}
       maxStepperPosition={EXPENSE_CLAIM_MAX_STEPPER_POSITION}
@@ -519,38 +539,27 @@ function ExpenseClaim() {
       setCurrentStepperPosition={expenseClaimAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleExpenseClaimFormSubmit}>
-        {displayExpenseClaimForm}
-        {displayFormSubmitButton}
-      </form>
+      {displayExpenseClaimForm}
     </StepperWrapper>
   );
 
-  async function handleExpenseClaimFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function handleExpenseClaimFormSubmit() {
+      console.log('expense claim form submitted');
+    }
 
-  // useEffect(() => {
-  //   console.group('expenseClaim useEffect');
-  //   Object.entries(expenseClaimState).forEach(([key, value]) => {
-  //     console.log(key, value);
-  //   });
-  //   console.groupEnd();
-  // }, [expenseClaimState]);
+    if (triggerFormSubmit) {
+      handleExpenseClaimFormSubmit();
+    }
+  }, [triggerFormSubmit]);
 
-  return (
-    <Flex direction="column" align="center" justify="center" w="400px">
-      {displayExpenseClaimComponent}
-    </Flex>
-  );
+  return <>{displayExpenseClaimComponent}</>;
 }
 
 export { ExpenseClaim };
 
 /**
- * async function handleFileSubmit(event: React.FormEvent<HTMLFormElement>) {
+ * async function handleFileSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const formData = new FormData();
     const file = document.getElementById('file') as HTMLInputElement;
@@ -613,7 +622,7 @@ export { ExpenseClaim };
 
   const [file, setFile] = useState<any>(null);
 
-  async function fetchImage(event: React.MouseEvent<HTMLButtonElement>) {
+  async function fetchImage(event: MouseEvent<HTMLButtonElement>) {
     event.preventDefault();
 
     const controller = new AbortController();

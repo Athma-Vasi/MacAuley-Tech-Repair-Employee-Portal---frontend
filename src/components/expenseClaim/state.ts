@@ -25,6 +25,7 @@ const initialExpenseClaimState: ExpenseClaimState = {
   isAdditionalCommentsFocused: false,
 
   acknowledgement: false,
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -59,6 +60,7 @@ const expenseClaimAction: ExpenseClaimAction = {
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused',
 
   setAcknowledgement: 'setAcknowledgement',
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -156,6 +158,11 @@ function expenseClaimReducer(
       return {
         ...state,
         acknowledgement: action.payload,
+      };
+    case expenseClaimAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
     case expenseClaimAction.setCurrentStepperPosition:
       return {

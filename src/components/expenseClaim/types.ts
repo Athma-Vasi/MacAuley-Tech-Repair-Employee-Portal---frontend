@@ -61,6 +61,7 @@ type ExpenseClaimState = {
   isAdditionalCommentsFocused: boolean;
 
   acknowledgement: boolean;
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -95,6 +96,7 @@ type ExpenseClaimAction = {
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused';
 
   setAcknowledgement: 'setAcknowledgement';
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -136,6 +138,7 @@ type ExpenseClaimDispatch =
         | ExpenseClaimAction['setIsValidAdditionalComments']
         | ExpenseClaimAction['setIsAdditionalCommentsFocused']
         | ExpenseClaimAction['setAcknowledgement']
+        | ExpenseClaimAction['setTriggerFormSubmit']
         | ExpenseClaimAction['setIsError']
         | ExpenseClaimAction['setIsSubmitting']
         | ExpenseClaimAction['setIsSuccessful']
