@@ -74,6 +74,7 @@ type CreateRefermentState = {
 
   privacyConsent: boolean;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -128,6 +129,7 @@ type CreateRefermentAction = {
 
   setPrivacyConsent: 'setPrivacyConsent';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -179,6 +181,7 @@ type CreateRefermentDispatch =
         | CreateRefermentAction['setIsValidAdditionalInformation']
         | CreateRefermentAction['setIsAdditionalInformationFocused']
         | CreateRefermentAction['setPrivacyConsent']
+        | CreateRefermentAction['setTriggerFormSubmit']
         | CreateRefermentAction['setIsError']
         | CreateRefermentAction['setIsSubmitting']
         | CreateRefermentAction['setIsSuccessful']

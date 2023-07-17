@@ -1,11 +1,5 @@
-import { Button, Flex } from '@mantine/core';
-import {
-  ChangeEvent,
-  FormEvent,
-  MouseEvent,
-  useEffect,
-  useReducer,
-} from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -466,6 +460,7 @@ function LeaveRequest() {
     buttonLabel: 'Submit',
     semanticDescription: 'leave request form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       leaveRequestDispatch({
         type: leaveRequestAction.setTriggerFormSubmit,

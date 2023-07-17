@@ -5,6 +5,7 @@ import {
   useEffect,
   useReducer,
 } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import { URGENCY_DATA } from '../../constants/data';
 import {
@@ -499,6 +500,7 @@ function CreateAnonymousRequest() {
     buttonLabel: 'Submit',
     semanticDescription: 'create anonymous request form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createAnonymousRequestDispatch({
         type: createAnonymousRequestAction.setTriggerFormSubmit,

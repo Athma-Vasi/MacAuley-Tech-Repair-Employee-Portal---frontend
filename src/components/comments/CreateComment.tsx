@@ -1,4 +1,6 @@
+import { Title } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import { GRAMMAR_TEXTAREA_INPUT_REGEX } from '../../constants/regex';
 import {
@@ -17,7 +19,6 @@ import {
   createCommentReducer,
   initialCreateCommentState,
 } from './state';
-import { Title } from '@mantine/core';
 
 function CreateComment() {
   const [createCommentState, createCommentDispatch] = useReducer(
@@ -109,6 +110,7 @@ function CreateComment() {
     buttonLabel: 'Submit',
     semanticDescription: 'create comment form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createCommentDispatch({
         type: createCommentAction.setTriggerFormSubmit,

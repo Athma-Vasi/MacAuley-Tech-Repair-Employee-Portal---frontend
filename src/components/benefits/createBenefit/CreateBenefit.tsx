@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Flex, Text } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
 import {
@@ -573,6 +574,7 @@ function CreateBenefit() {
     buttonLabel: 'Submit',
     semanticDescription: 'create benefit form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setTriggerFormSubmit,

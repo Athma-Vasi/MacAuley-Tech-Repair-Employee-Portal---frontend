@@ -2,6 +2,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Flex, Group, Text, Tooltip } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { MdOutlineAdd } from 'react-icons/md';
+import { TbUpload } from 'react-icons/tb';
 
 import {
   GRAMMAR_TEXT_INPUT_REGEX,
@@ -478,6 +479,7 @@ function CreateAnnouncement() {
     buttonLabel: 'Submit',
     semanticDescription: 'create announcement form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createAnnouncementDispatch({
         type: createAnnouncementAction.setTriggerFormSubmit,

@@ -1,11 +1,5 @@
-import { Button, Flex } from '@mantine/core';
-import {
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-  useReducer,
-  MouseEvent,
-} from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import {
   FULL_NAME_REGEX,
@@ -317,6 +311,7 @@ function CreateEndorsement() {
     buttonLabel: 'Submit',
     semanticDescription: 'create endorsement form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createEndorsementDispatch({
         type: createEndorsementAction.setTriggerFormSubmit,

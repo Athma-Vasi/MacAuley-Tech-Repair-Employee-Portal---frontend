@@ -1,11 +1,11 @@
 import {
   ChangeEvent,
-  FormEvent,
   KeyboardEvent,
   MouseEvent,
   useEffect,
   useReducer,
 } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import { URGENCY_DATA } from '../../../constants/data';
 import {
@@ -794,6 +794,7 @@ function CreatePrinterIssue() {
     buttonLabel: 'Submit',
     semanticDescription: 'printer issue form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createPrinterIssueDispatch({
         type: createPrinterIssueAction.setTriggerFormSubmit,

@@ -555,6 +555,7 @@ function SurveyBuilder() {
     buttonType: 'submit',
     buttonDisabled: stepsInError.size > 0,
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     semanticDescription: 'expense claim form submit button',
   };
 

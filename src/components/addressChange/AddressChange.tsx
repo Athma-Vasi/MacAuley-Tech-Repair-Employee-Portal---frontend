@@ -5,6 +5,7 @@ import {
   useEffect,
   useReducer,
 } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import { PROVINCES, STATES_US } from '../../constants/data';
 import {
@@ -572,6 +573,7 @@ function AddressChange() {
     buttonLabel: 'Submit',
     semanticDescription: 'address change form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setTriggerFormSubmit,

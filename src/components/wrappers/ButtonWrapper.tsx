@@ -1,5 +1,6 @@
 import { Button } from '@mantine/core';
 import { MouseEvent, PointerEvent, ReactNode } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 
@@ -49,7 +50,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     buttonRef = null,
     buttonVariant = 'outline',
     compact = false,
-    leftIcon = null,
+    leftIcon = buttonType === 'submit' ? <TbUpload /> : null,
     rightIcon = null,
     size = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg',
   } = creatorInfoObject;

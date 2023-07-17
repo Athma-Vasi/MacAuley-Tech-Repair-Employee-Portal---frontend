@@ -1,16 +1,13 @@
-import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Button, Flex } from '@mantine/core';
 import {
-  Button,
-  Flex,
-  NativeSelect,
-  Radio,
-  Textarea,
-  TextInput,
-  Tooltip,
-} from '@mantine/core';
-import { RadioGroup } from '@mantine/core/lib/Radio/RadioGroup/RadioGroup';
-import { useEffect, useReducer } from 'react';
+  ChangeEvent,
+  FormEvent,
+  KeyboardEvent,
+  MouseEvent,
+  useEffect,
+  useReducer,
+} from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import { JOB_POSITIONS } from '../../../constants/data';
 import {
@@ -22,13 +19,14 @@ import {
   URL_REGEX,
 } from '../../../constants/regex';
 import {
+  returnAccessibleButtonElements,
+  returnAccessibleCheckboxSingleInputElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
+  returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
-  returnAccessibleSelectedDeselectedTextElements,
-  returnAccessibleCheckboxSingleInputElements,
 } from '../../../jsxCreators';
 import { JobPosition, PhoneNumber } from '../../../types';
 import {
@@ -37,12 +35,15 @@ import {
   returnPhoneNumberValidationText,
   returnUrlValidationText,
 } from '../../../utils';
+import { createPrinterIssueAction } from '../../printerIssue/createPrinterIssue/state';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
 import {
@@ -101,6 +102,7 @@ function CreateReferment() {
 
     privacyConsent,
 
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -441,7 +443,7 @@ function CreateReferment() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createRefermentDispatch({
         type: createRefermentAction.setCandidateFullName,
         payload: event.currentTarget.value,
@@ -475,7 +477,7 @@ function CreateReferment() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createRefermentDispatch({
         type: createRefermentAction.setCandidateEmail,
         payload: event.currentTarget.value,
@@ -508,7 +510,7 @@ function CreateReferment() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setCandidateContactNumber,
           payload: event.currentTarget.value,
@@ -520,7 +522,7 @@ function CreateReferment() {
           payload: true,
         });
       },
-      onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => {
+      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Backspace') {
           if (
             candidateContactNumber.length === 14 ||
@@ -556,7 +558,7 @@ function CreateReferment() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setCandidateProfileUrl,
           payload: event.currentTarget.value,
@@ -587,7 +589,7 @@ function CreateReferment() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setCandidateCurrentJobTitle,
           payload: event.currentTarget.value,
@@ -620,7 +622,7 @@ function CreateReferment() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setCandidateCurrentCompany,
           payload: event.currentTarget.value,
@@ -669,7 +671,7 @@ function CreateReferment() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setPositionJobDescription,
           payload: event.currentTarget.value,
@@ -700,7 +702,7 @@ function CreateReferment() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setReferralReason,
           payload: event.currentTarget.value,
@@ -733,7 +735,7 @@ function CreateReferment() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setAdditionalInformation,
           payload: event.currentTarget.value,
@@ -756,7 +758,7 @@ function CreateReferment() {
         deselected: acknowledgementInputDeselectedText,
       },
       checked: privacyConsent,
-      onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setPrivacyConsent,
           payload: event.currentTarget.checked,
@@ -766,6 +768,21 @@ function CreateReferment() {
       label: 'Privacy consent',
       required: true,
     };
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'create referment form submit button',
+    semanticName: 'submit button',
+    leftIcon: <TbUpload />,
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      createRefermentDispatch({
+        type: createRefermentAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
 
   const [
     createdCandidateNameTextInput,
@@ -806,25 +823,33 @@ function CreateReferment() {
       positionReferredForNativeSelectCreatorInfo,
     ]);
 
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+  const displaySubmitButton =
+    currentStepperPosition === CREATE_REFERMENT_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
   const displayCandidateDetailsFormPage = (
-    <>
+    <FormLayoutWrapper>
       {createdCandidateNameTextInput}
       {createdCandidateEmailTextInput}
       {createdCandidateContactNumberPhoneInput}
       {createdCandidateProfileUrlTextInput}
       {createdCandidateCurrentJobTitleTextInput}
       {createdCandidateCurrentCompanyTextInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayPositionDetailsFormPage = (
-    <>
+    <FormLayoutWrapper>
       {createdPositionReferredForNativeSelectInput}
       {createdPositionJobDescriptionTextareaInput}
       {createdReferralReasonTextareaInput}
       {createdAdditionalInformationTextareaInput}
       {createdPrivacyConsentCheckboxInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayReviewFormPage = <h4>review</h4>;
@@ -836,17 +861,11 @@ function CreateReferment() {
       ? displayPositionDetailsFormPage
       : currentStepperPosition === 2
       ? displayReviewFormPage
-      : null;
-
-  const displayFormSubmitButton =
-    currentStepperPosition === CREATE_REFERMENT_MAX_STEPPER_POSITION ? (
-      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
+      : displaySubmitButton;
 
   const displayCreateRefermentComponent = (
     <StepperWrapper
+      childrenTitle="Referment"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_REFERMENT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_REFERMENT_MAX_STEPPER_POSITION}
@@ -856,24 +875,21 @@ function CreateReferment() {
       }
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleCreateRefermentFormSubmit}>
-        {displayCreateRefermentForm}
-        {displayFormSubmitButton}
-      </form>
+      {displayCreateRefermentForm}
     </StepperWrapper>
   );
 
-  async function handleCreateRefermentFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function handleCreateRefermentFormSubmit() {
+      console.log('handleCreateRefermentFormSubmit');
+    }
 
-  return (
-    <Flex direction="column" align="center" justify="center" w="400px">
-      {displayCreateRefermentComponent}
-    </Flex>
-  );
+    if (triggerFormSubmit) {
+      handleCreateRefermentFormSubmit();
+    }
+  }, [triggerFormSubmit]);
+
+  return <>{displayCreateRefermentComponent}</>;
 }
 
 export { CreateReferment };

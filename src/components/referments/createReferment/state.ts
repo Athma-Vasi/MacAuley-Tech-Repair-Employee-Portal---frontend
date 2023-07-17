@@ -45,6 +45,7 @@ const initialCreateRefermentState: CreateRefermentState = {
 
   privacyConsent: false,
 
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -99,6 +100,7 @@ const createRefermentAction: CreateRefermentAction = {
 
   setPrivacyConsent: 'setPrivacyConsent',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -261,6 +263,12 @@ function createRefermentReducer(
       return {
         ...state,
         privacyConsent: action.payload,
+      };
+
+    case createRefermentAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
     case createRefermentAction.setCurrentStepperPosition:
       return {

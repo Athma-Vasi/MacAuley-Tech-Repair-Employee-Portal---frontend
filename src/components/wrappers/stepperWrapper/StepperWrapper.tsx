@@ -1,9 +1,10 @@
 import './style.css';
 
-import { faCheck, faExclamation, faX } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Flex, Group, Stepper, Text, Title } from '@mantine/core';
+import { Flex, Stepper, Text, Title } from '@mantine/core';
 import { useEffect, useRef } from 'react';
+import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { useGlobalState } from '../../../hooks';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
@@ -45,6 +46,7 @@ function StepperWrapper({
             : currentStepperPosition + 1,
       });
     },
+    leftIcon: <TiArrowLeftThick />,
     buttonDisabled: currentStepperPosition === 0,
   };
 
@@ -61,6 +63,7 @@ function StepperWrapper({
             : currentStepperPosition - 1,
       });
     },
+    rightIcon: <TiArrowRightThick />,
     buttonDisabled: currentStepperPosition === maxStepperPosition,
   };
 

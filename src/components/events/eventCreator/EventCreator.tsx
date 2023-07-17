@@ -1,6 +1,6 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { Button, Flex } from '@mantine/core';
-import { ChangeEvent, useEffect, useReducer, MouseEvent } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -814,6 +814,7 @@ function EventCreator() {
     buttonLabel: 'Submit',
     semanticDescription: 'event creator form submit button',
     semanticName: 'submit button',
+    leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setTriggerFormSubmit,
