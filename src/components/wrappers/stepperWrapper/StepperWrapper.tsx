@@ -6,6 +6,8 @@ import { Button, Flex, Group, Stepper, Text, Title } from '@mantine/core';
 import { useEffect, useRef } from 'react';
 
 import { useGlobalState } from '../../../hooks';
+import { returnAccessibleButtonElements } from '../../../jsxCreators';
+import { AccessibleButtonCreatorInfo } from '../ButtonWrapper';
 import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
 
@@ -30,6 +32,42 @@ function StepperWrapper({
     stepperRef.current?.focus();
   }, [currentStepperPosition]);
 
+  const prevButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Back',
+    semanticDescription: 'Back button to navigate to previous step',
+    semanticName: 'back button',
+    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+      parentComponentDispatch({
+        type: setCurrentStepperPosition,
+        payload:
+          currentStepperPosition > 0
+            ? currentStepperPosition - 1
+            : currentStepperPosition + 1,
+      });
+    },
+    buttonDisabled: currentStepperPosition === 0,
+  };
+
+  const nextButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Next',
+    semanticDescription: 'Next button to navigate to next step',
+    semanticName: 'next button',
+    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+      parentComponentDispatch({
+        type: setCurrentStepperPosition,
+        payload:
+          currentStepperPosition < maxStepperPosition
+            ? currentStepperPosition + 1
+            : currentStepperPosition - 1,
+      });
+    },
+    buttonDisabled: currentStepperPosition === maxStepperPosition,
+  };
+
+  const [createdPrevButton, createdNextButton] = returnAccessibleButtonElements(
+    [prevButtonCreatorInfo, nextButtonCreatorInfo]
+  );
+
   const successMessage = '˖ ࣪‧₊˚⋆✩٩(ˊᗜˋ*)و ✩  Looks great! You are good to go!';
   const errorMessage = `(｡•́︿•̀｡)  Oh dear! Looks like there ${
     stepsInError.size > 1 ? 'are' : 'is'
@@ -45,7 +83,7 @@ function StepperWrapper({
           .toUpperCase()}${numberSpelling?.slice(1)}`;
       })
       .join(', ') ?? ''
-  }. Please fix the error to proceed!`;
+  }. Please fix the error${stepsInError.size > 1 ? 's' : ''} to proceed!`;
 
   // returns an array of matches of all occurrences of a comma in the error message
   const commaCount = errorMessage.match(/,/g)?.length ?? 0;
@@ -119,10 +157,22 @@ function StepperWrapper({
         })}
 
         {/* final page */}
+
         <Stepper.Completed>
-          <Text color="dark">
-            {stepsInError.size === 0 ? successMessage : errorMessageWithAnd}
-          </Text>
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            rowGap={width < 480 ? 'sm' : 'md'}
+            w="100%"
+            style={{ borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            bg="white"
+            p={padding}
+          >
+            <Text color="dark">
+              {stepsInError.size === 0 ? successMessage : errorMessageWithAnd}
+            </Text>
+          </Flex>
         </Stepper.Completed>
       </Stepper>
 
@@ -136,36 +186,8 @@ function StepperWrapper({
 
         {/* stepper nav buttons */}
         <Flex align="center" justify="space-between" p={padding} w="100%">
-          <Button
-            variant="default"
-            aria-label="Press enter to go back to the previous step in the form"
-            disabled={currentStepperPosition === 0}
-            onClick={() => {
-              const currentStep = currentStepperPosition;
-              parentComponentDispatch({
-                type: setCurrentStepperPosition,
-                payload: currentStep > 0 ? currentStep - 1 : currentStep + 1,
-              });
-            }}
-          >
-            Back
-          </Button>
-          <Button
-            aria-label="Press enter to go to the next step in the form"
-            disabled={currentStepperPosition === maxStepperPosition}
-            onClick={() => {
-              const currentStep = currentStepperPosition;
-              parentComponentDispatch({
-                type: setCurrentStepperPosition,
-                payload:
-                  currentStep < maxStepperPosition
-                    ? currentStep + 1
-                    : currentStep - 1,
-              });
-            }}
-          >
-            Next step
-          </Button>
+          {createdPrevButton}
+          {createdNextButton}
         </Flex>
       </Flex>
     </Flex>
@@ -230,3 +252,36 @@ export { StepperWrapper };
           </Text>
         </Stepper.Completed>
  */
+
+/**
+         *           <Button
+            variant="default"
+            aria-label="Press enter to go back to the previous step in the form"
+            disabled={currentStepperPosition === 0}
+            onClick={() => {
+              const currentStep = currentStepperPosition;
+              parentComponentDispatch({
+                type: setCurrentStepperPosition,
+                payload: currentStep > 0 ? currentStep - 1 : currentStep + 1,
+              });
+            }}
+          >
+            Back
+          </Button>
+          <Button
+            aria-label="Press enter to go to the next step in the form"
+            disabled={currentStepperPosition === maxStepperPosition}
+            onClick={() => {
+              const currentStep = currentStepperPosition;
+              parentComponentDispatch({
+                type: setCurrentStepperPosition,
+                payload:
+                  currentStep < maxStepperPosition
+                    ? currentStep + 1
+                    : currentStep - 1,
+              });
+            }}
+          >
+            Next step
+          </Button>
+         */

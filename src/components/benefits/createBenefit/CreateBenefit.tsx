@@ -10,13 +10,14 @@ import { ChangeEvent, useEffect, useMemo, useReducer } from 'react';
 
 import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
 import {
+  returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
-  returnAccessibleSelectedDeselectedTextElements,
 } from '../../../jsxCreators';
 import {
   returnDateValidationText,
@@ -24,11 +25,13 @@ import {
   returnMoneyValidationText,
 } from '../../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
 import {
@@ -76,6 +79,7 @@ function CreateBenefit() {
     isValidEmployeeContribution,
     isEmployeeContributionFocused,
 
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -248,9 +252,7 @@ function CreateBenefit() {
   // update stepper state if any input in the current step is invalid
   useEffect(() => {
     const isStepInError =
-      !isValidEmployeeContribution ||
-      !isValidEmployerContribution ||
-      !isPlanActive;
+      !isValidEmployeeContribution || !isValidEmployerContribution;
 
     createBenefitDispatch({
       type: createBenefitAction.setStepsInError,
@@ -259,7 +261,7 @@ function CreateBenefit() {
         step: 2,
       },
     });
-  }, [isValidEmployeeContribution, isValidEmployerContribution, isPlanActive]);
+  }, [isValidEmployeeContribution, isValidEmployerContribution]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [planNameInputErrorText, planNameInputValidText] =
@@ -330,7 +332,9 @@ function CreateBenefit() {
   const [planActiveInputSelectedText, planActiveInputDeselectedText] =
     returnAccessibleSelectedDeselectedTextElements({
       isSelected: isPlanActive,
-      semanticName: 'plan active',
+      semanticName: 'active status',
+      selectedDescription: 'plan is active',
+      deselectedDescription: 'plan is inactive',
     });
 
   // following are info objects for input creators
@@ -547,34 +551,6 @@ function CreateBenefit() {
     withAsterisk: true,
   };
 
-  // const planStatusCheckboxInputCreatorInfo: AccessibleCheckboxInputCreatorInfo =
-  //   {
-  //     description: {
-  //       selected: 'Plan is currently active',
-  //       deselected: 'Plan is currently inactive',
-  //     },
-  //     label: 'Plan status',
-  //     accessibleDescription: {
-  //       selected: 'Checkbox is selected to indicate plan is currently active',
-  //       deselected:
-  //         'Checkbox is deselected to indicate plan is currently inactive',
-  //     },
-  //     checkboxKind: 'single',
-  //     checked: isPlanActive,
-  //     onClick: () => {
-  //       createBenefitDispatch({
-  //         type: createBenefitAction.setIsPlanActive,
-  //         payload: !isPlanActive,
-  //       });
-  //     },
-  //     onChangeSingle: (event: React.ChangeEvent<HTMLInputElement>) => {
-  //       createBenefitDispatch({
-  //         type: createBenefitAction.setIsPlanActive,
-  //         payload: event.target.checked,
-  //       });
-  //     },
-  //     semanticName: 'plan status',
-  //   };
   const planStatusCheckboxInputCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
     {
       description: {
@@ -589,9 +565,23 @@ function CreateBenefit() {
           payload: event.currentTarget.checked,
         });
       },
-      semanticName: 'plan status',
+      semanticName: 'active status',
       required: true,
     };
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'create benefit form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
 
   const [
     createdPlanNameTextInput,
@@ -621,13 +611,21 @@ function CreateBenefit() {
       planStatusCheckboxInputCreatorInfo,
     ]);
 
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+  const displaySubmitButton =
+    currentStepperPosition === CREATE_BENEFIT_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
   const displayPlanDetailsFormPage = (
-    <>
+    <FormLayoutWrapper>
       {createdPlanNameTextInput}
       {createdPlanDescriptionTextAreaInput}
       {createdPlanStartDateInput}
       {createdPlanKindSelectInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const currencySymbol =
@@ -656,21 +654,14 @@ function CreateBenefit() {
   );
 
   const displayPlanContributionsFormPage = (
-    <>
+    <FormLayoutWrapper>
       {createdCurrencySelectInput}
       {createdEmployeeContributionTextInput}
       {createdEmployerContributionText}
       {createdPlanStatusCheckboxInput}
       {displayTotalContributions}
-    </>
+    </FormLayoutWrapper>
   );
-
-  const displaySubmitFormButton =
-    currentStepperPosition === CREATE_BENEFIT_MAX_STEPPER_POSITION ? (
-      <Button type="button" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
 
   const displayReviewPage = <h4>review page</h4>;
 
@@ -681,7 +672,7 @@ function CreateBenefit() {
       ? displayPlanContributionsFormPage
       : currentStepperPosition === 2
       ? displayReviewPage
-      : null;
+      : displaySubmitButton;
 
   const displayCreateBenefitComponent = (
     <StepperWrapper
@@ -692,18 +683,19 @@ function CreateBenefit() {
       setCurrentStepperPosition={createBenefitAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleCreateBenefitFormSubmit}>
-        {displayCreateBenefitForm}
-        {displaySubmitFormButton}
-      </form>
+      {displayCreateBenefitForm}
     </StepperWrapper>
   );
 
-  async function handleCreateBenefitFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function createBenefitFormSubmit() {
+      console.log('create benefit form submit');
+    }
+
+    if (triggerFormSubmit) {
+      createBenefitFormSubmit();
+    }
+  }, [triggerFormSubmit]);
 
   return (
     <Flex

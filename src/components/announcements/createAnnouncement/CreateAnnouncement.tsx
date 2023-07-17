@@ -25,6 +25,7 @@ import {
   AccessibleButtonCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
 import { ARTICLE_TITLE_REGEX } from '../constants';
@@ -67,6 +68,7 @@ function CreateAnnouncement() {
     isArticleLengthExceeded,
 
     timeToRead,
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -473,6 +475,20 @@ function CreateAnnouncement() {
     semanticName: 'add paragraph button',
   };
 
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'create announcement form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
+
   const createdArticleParagraphsTextAreaInputs =
     returnAccessibleDynamicTextAreaInputElements(
       articleParagraphTextAreaInputsCreatorInfo
@@ -496,24 +512,25 @@ function CreateAnnouncement() {
 
   const displayAddArticleParagraphButton = createdAddNewArticleParagraphButton;
 
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
   const displaySubmitButton =
-    currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION ? (
-      <Button variant="filled" size="sm" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
+    currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
 
   const displayAnnouncementDetailsFormPage = (
-    <>
+    <FormLayoutWrapper>
       {createdTitleTextInput}
       {createdAuthorTextInput}
       {createdBannerImageSrcTextInput}
       {createdBannerImageAltTextInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayArticleParagraphsFormPage = (
-    <>
+    <FormLayoutWrapper>
       <Text color="dark" size="sm">
         Max article length: {MAX_ARTICLE_LENGTH} characters
       </Text>
@@ -528,7 +545,7 @@ function CreateAnnouncement() {
           </Text>
         ) : null}
       </Flex>
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayCreateAnnouncementReviewPage = <h3>announcement review page</h3>;
@@ -540,7 +557,7 @@ function CreateAnnouncement() {
       ? displayArticleParagraphsFormPage
       : currentStepperPosition === 2
       ? displayCreateAnnouncementReviewPage
-      : null;
+      : displaySubmitButton;
 
   const displayCreateAnnouncementComponent = (
     <StepperWrapper
@@ -553,18 +570,19 @@ function CreateAnnouncement() {
       parentComponentDispatch={createAnnouncementDispatch}
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleCreateAnnouncementFormSubmit}>
-        {displayCreateAnnouncementForm}
-        {displaySubmitButton}
-      </form>
+      {displayCreateAnnouncementForm}
     </StepperWrapper>
   );
 
-  async function handleCreateAnnouncementFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function createAnnouncementFormSubmit() {
+      console.log('create announcement form submit');
+    }
+
+    if (triggerFormSubmit) {
+      createAnnouncementFormSubmit();
+    }
+  }, [triggerFormSubmit]);
 
   return (
     <Flex

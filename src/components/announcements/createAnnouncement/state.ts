@@ -26,6 +26,7 @@ const initialCreateAnnouncementState: CreateAnnouncementState = {
   areArticleParagraphsFocused: [false],
   isArticleLengthExceeded: false,
 
+  triggerFormSubmit: false,
   timeToRead: 0,
   currentStepperPosition: 0,
   stepsInError: new Set(),
@@ -65,6 +66,7 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setDeleteArticleParagraph: 'setDeleteArticleParagraph',
   setTimeToRead: 'setTimeToRead',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -211,6 +213,12 @@ function createAnnouncementReducer(
       return {
         ...state,
         timeToRead: action.payload,
+      };
+
+    case createAnnouncementAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
 
     case createAnnouncementAction.setCurrentStepperPosition:

@@ -557,30 +557,25 @@ function AddressChange() {
   const displayAddressChangeReviewPage = <h2>Review</h2>;
 
   useEffect(() => {
-    async function addressChangeFormSubmit() {
-      console.log(
-        'addressChangeFormSubmit',
-        JSON.stringify(addressChangeState, null, 2)
-      );
-    }
+    async function addressChangeFormSubmit() {}
 
-    addressChangeFormSubmit();
-    // must not trigger submit function on every state change...
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (triggerFormSubmit) {
+      addressChangeFormSubmit();
+    }
   }, [triggerFormSubmit]);
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Submit',
     semanticDescription: 'address change form submit button',
     semanticName: 'submit button',
-    buttonVariant: 'filled',
     buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setTriggerFormSubmit,
-        payload: !triggerFormSubmit,
+        payload: true,
       });
     },
-    buttonDisabled: stepsInError.size > 0,
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
   const [createdSubmitButton] = returnAccessibleButtonElements([

@@ -55,6 +55,7 @@ type CreateAnnouncementState = {
   isArticleLengthExceeded: boolean;
   timeToRead: number;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -93,6 +94,7 @@ type CreateAnnouncementAction = {
   setDeleteArticleParagraph: 'setDeleteArticleParagraph';
   setTimeToRead: 'setTimeToRead';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -140,6 +142,7 @@ type CreateAnnouncementDispatch =
         | CreateAnnouncementAction['setIsValidBannerImageAlt']
         | CreateAnnouncementAction['setIsBannerImageAltFocused']
         | CreateAnnouncementAction['setIsArticleLengthExceeded']
+        | CreateAnnouncementAction['setTriggerFormSubmit']
         | CreateAnnouncementAction['setIsError']
         | CreateAnnouncementAction['setIsSubmitting']
         | CreateAnnouncementAction['setIsSuccessful']

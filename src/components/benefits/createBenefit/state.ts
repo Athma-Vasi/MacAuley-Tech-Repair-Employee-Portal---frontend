@@ -32,6 +32,7 @@ const initialCreateBenefitState: CreateBenefitState = {
   isValidEmployeeContribution: false,
   isEmployeeContributionFocused: false,
 
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -70,6 +71,7 @@ const createBenefitAction: CreateBenefitAction = {
   setIsValidEmployeeContribution: 'setIsValidEmployeeContribution',
   setIsEmployeeContributionFocused: 'setIsEmployeeContributionFocused',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -177,6 +179,12 @@ function createBenefitReducer(
       return {
         ...state,
         isEmployeeContributionFocused: action.payload,
+      };
+
+    case createBenefitAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
     case createBenefitAction.setCurrentStepperPosition:
       return {

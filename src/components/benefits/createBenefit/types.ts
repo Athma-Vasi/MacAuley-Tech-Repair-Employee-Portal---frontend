@@ -56,6 +56,7 @@ type CreateBenefitState = {
   isValidEmployeeContribution: boolean;
   isEmployeeContributionFocused: boolean;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -94,6 +95,7 @@ type CreateBenefitAction = {
   setIsValidEmployeeContribution: 'setIsValidEmployeeContribution';
   setIsEmployeeContributionFocused: 'setIsEmployeeContributionFocused';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -134,6 +136,7 @@ type CreateBenefitDispatch =
         | CreateBenefitAction['setIsValidEmployerContribution']
         | CreateBenefitAction['setIsEmployerContributionFocused']
         | CreateBenefitAction['setIsPlanActive']
+        | CreateBenefitAction['setTriggerFormSubmit']
         | CreateBenefitAction['setIsError']
         | CreateBenefitAction['setIsSubmitting']
         | CreateBenefitAction['setIsSuccessful']

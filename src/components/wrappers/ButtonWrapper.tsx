@@ -47,7 +47,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     buttonStyle = {},
     buttonDisabled = false,
     buttonRef = null,
-    buttonVariant = 'filled',
+    buttonVariant = 'outline',
     compact = false,
     leftIcon = null,
     rightIcon = null,
