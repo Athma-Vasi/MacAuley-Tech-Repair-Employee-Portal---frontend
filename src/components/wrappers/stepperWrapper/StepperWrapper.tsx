@@ -22,10 +22,10 @@ function StepperWrapper({
   setCurrentStepperPosition,
   stepsInError,
 }: StepperWrapperProps) {
-  const stepperRef = useRef<HTMLButtonElement>(null);
   const {
     globalState: { width },
   } = useGlobalState();
+  const stepperRef = useRef<HTMLButtonElement>(null);
 
   // sets focus on current step on each form page, for screen reader accessibility
   useEffect(() => {
@@ -119,7 +119,7 @@ function StepperWrapper({
         }}
         breakpoint={640}
         allowNextStepsSelect={allowNextStepsSelect}
-        w={width < 640 ? '100%' : width < 1024 ? '75%' : '50%'}
+        w={width < 640 ? '100%' : width < 1024 ? '85%' : '62%'}
         p={padding}
         style={{ borderRadius: '5px', border: '1px solid #e0e0e0' }}
       >
@@ -180,7 +180,7 @@ function StepperWrapper({
         direction="column"
         align="center"
         justify="space-between"
-        w={width < 640 ? '100%' : width < 1024 ? '75%' : '50%'}
+        w={width < 640 ? '100%' : width < 1024 ? '85%' : '62%'}
       >
         {children}
 

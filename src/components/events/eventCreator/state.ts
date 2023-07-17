@@ -51,6 +51,7 @@ const initialEventCreatorState: EventCreatorState = {
   isValidRsvpDeadline: false,
   isRsvpDeadlineFocused: false,
 
+  triggerFormSubmit: false,
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -111,6 +112,7 @@ const eventCreatorAction: EventCreatorAction = {
   setIsValidRsvpDeadline: 'setIsValidRsvpDeadline',
   setIsRsvpDeadlineFocused: 'setIsRsvpDeadlineFocused',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -305,6 +307,12 @@ function eventCreatorReducer(
       return {
         ...state,
         isRsvpDeadlineFocused: action.payload,
+      };
+
+    case eventCreatorAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
       };
 
     case eventCreatorAction.setCurrentStepperPosition:

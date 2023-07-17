@@ -138,17 +138,19 @@ function returnGrammarValidationText({
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
   const contentLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
 
+  const joinedContent = content.split('\n').join('');
+
   const contentRegexTupleArr: [boolean, string][] = [
     [
-      atleastOneAlphanumericRegex.test(content),
+      atleastOneAlphanumericRegex.test(joinedContent),
       'Must contain at least one alphanumeric character.',
     ],
     [
-      wordCharacterWhitespacePunctuationRegex.test(content),
+      wordCharacterWhitespacePunctuationRegex.test(joinedContent),
       'Can only contain alphanumeric characters, whitespace, or punctuation.',
     ],
     [
-      contentLengthRegex.test(content),
+      contentLengthRegex.test(joinedContent),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
   ];

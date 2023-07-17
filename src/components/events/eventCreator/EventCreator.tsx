@@ -1,6 +1,6 @@
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Button, Flex } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import { ChangeEvent, useEffect, useReducer, MouseEvent } from 'react';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -9,10 +9,11 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import {
+  returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
@@ -21,10 +22,12 @@ import {
   returnTimeRailwayValidationText,
 } from '../../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
 import {
@@ -91,6 +94,7 @@ function EventCreator() {
     isValidRsvpDeadline,
     isRsvpDeadlineFocused,
 
+    triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
 
@@ -285,12 +289,10 @@ function EventCreator() {
   // update for stepper wrapper state
   useEffect(() => {
     const isRequiredInputInError =
-      !isValidEventLocation || !isValidRequiredItems;
-
+      !isValidEventLocation || !isValidEventDescription;
     const areOptionalInputsInError =
-      (!isValidEventDescription && eventDescription !== '') ||
-      (!isValidEventAttendees && eventAttendees !== '');
-
+      (!isValidEventAttendees && eventAttendees !== '') ||
+      (!isValidRequiredItems && requiredItems !== '');
     const isStepInError = isRequiredInputInError || areOptionalInputsInError;
 
     // if current step is in error, add it to stepsInError Set else remove it
@@ -308,6 +310,7 @@ function EventCreator() {
     isValidRequiredItems,
     eventDescription,
     eventAttendees,
+    requiredItems,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -471,7 +474,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setTitle,
         payload: event.currentTarget.value,
@@ -504,7 +507,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventLocation,
         payload: event.currentTarget.value,
@@ -526,7 +529,7 @@ function EventCreator() {
     data: EVENT_KIND_DATA,
     description: 'Select the kind of event',
     label: 'Event kind',
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventKind,
         payload: event.currentTarget.value as EventKind,
@@ -553,7 +556,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventDescription,
         payload: event.currentTarget.value,
@@ -587,7 +590,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventAttendees,
         payload: event.currentTarget.value,
@@ -618,7 +621,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setRequiredItems,
         payload: event.currentTarget.value,
@@ -651,7 +654,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventStartDate,
         payload: event.currentTarget.value,
@@ -686,7 +689,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventEndDate,
         payload: event.currentTarget.value,
@@ -720,7 +723,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventStartTime,
         payload: event.currentTarget.value,
@@ -754,7 +757,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventEndTime,
         payload: event.currentTarget.value,
@@ -789,7 +792,7 @@ function EventCreator() {
         payload: false,
       });
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setRsvpDeadline,
         payload: event.currentTarget.value,
@@ -805,6 +808,20 @@ function EventCreator() {
     semanticName: 'rsvp deadline',
     required: true,
     withAsterisk: true,
+  };
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'event creator form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
   const [createdTitleTextInput, createdLocationTextInput] =
@@ -841,25 +858,33 @@ function EventCreator() {
     rsvpDeadlineInputCreatorInfo,
   ]);
 
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+  const displaySubmitButton =
+    currentStepperPosition === EVENT_CREATOR_MAX_STEPPER_POSITION
+      ? createdSubmitButton
+      : null;
+
   const displayEventDatesFormPage = (
-    <>
+    <FormLayoutWrapper>
       {createdTitleTextInput}
       {createdEventStartDateInput}
       {createdEventEndDateInput}
       {createdEventStartTimeInput}
       {createdEventEndTimeInput}
       {createdRsvpDeadlineDateInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayEventDetailsFormPage = (
-    <>
+    <FormLayoutWrapper>
       {createdEventKindSelectInput}
       {createdLocationTextInput}
       {createdEventDescriptionTextAreaInput}
       {createdEventAttendeesTextAreaInput}
       {createdRequiredItemsTextAreaInput}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displayReviewFormPage = <h3>review form page</h3>;
@@ -871,17 +896,11 @@ function EventCreator() {
       ? displayEventDetailsFormPage
       : currentStepperPosition === 2
       ? displayReviewFormPage
-      : null;
-
-  const displaySubmitButton =
-    currentStepperPosition === EVENT_CREATOR_MAX_STEPPER_POSITION ? (
-      <Button type="button" variant="filled" disabled={stepsInError.size > 0}>
-        Submit
-      </Button>
-    ) : null;
+      : displaySubmitButton;
 
   const displayEventCreatorComponent = (
     <StepperWrapper
+      childrenTitle="Event Creator"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={EVENT_CREATOR_DESCRIPTION_OBJECTS}
       maxStepperPosition={EVENT_CREATOR_MAX_STEPPER_POSITION}
@@ -889,31 +908,21 @@ function EventCreator() {
       setCurrentStepperPosition={eventCreatorAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleEventCreatorFormSubmit}>
-        {displayEventCreatorForm}
-        {displaySubmitButton}
-      </form>
+      {displayEventCreatorForm}
     </StepperWrapper>
   );
 
-  async function handleEventCreatorFormSubmit(
-    event: React.FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
+  useEffect(() => {
+    async function handleEventCreatorFormSubmit() {
+      console.log('event creator form submitted');
+    }
 
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w="400px"
-    >
-      <h1>Event Creator</h1>
-      {displayEventCreatorComponent}
-    </Flex>
-  );
+    if (triggerFormSubmit) {
+      handleEventCreatorFormSubmit();
+    }
+  }, [triggerFormSubmit]);
+
+  return <>{displayEventCreatorComponent}</>;
 }
 
 export { EventCreator };

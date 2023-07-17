@@ -91,6 +91,7 @@ type EventCreatorState = {
   isValidRsvpDeadline: boolean;
   isRsvpDeadlineFocused: boolean;
 
+  triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -151,6 +152,7 @@ type EventCreatorAction = {
   setIsValidRsvpDeadline: 'setIsValidRsvpDeadline';
   setIsRsvpDeadlineFocused: 'setIsRsvpDeadlineFocused';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -207,6 +209,7 @@ type EventCreatorDispatch =
         | EventCreatorAction['setIsRequiredItemsFocused']
         | EventCreatorAction['setIsValidRsvpDeadline']
         | EventCreatorAction['setIsRsvpDeadlineFocused']
+        | EventCreatorAction['setTriggerFormSubmit']
         | EventCreatorAction['setIsError']
         | EventCreatorAction['setIsSubmitting']
         | EventCreatorAction['setIsSuccessful']

@@ -84,9 +84,9 @@ function TextAreaInputWrapper({
     ref = null,
     required = false,
     autoComplete = 'off',
-    autosize = false,
+    autosize = true,
     minRows = 3,
-    maxRows = 7,
+    maxRows = 5,
   } = creatorInfoObject;
 
   const semanticNameCapitalized =
