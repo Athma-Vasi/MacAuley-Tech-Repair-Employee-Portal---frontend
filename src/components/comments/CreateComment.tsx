@@ -2,11 +2,16 @@ import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
 
 import { GRAMMAR_TEXTAREA_INPUT_REGEX } from '../../constants/regex';
 import {
-  returnAccessibleTextAreaInputElements,
+  returnAccessibleButtonElements,
   returnAccessibleErrorValidTextElements,
+  returnAccessibleTextAreaInputElements,
 } from '../../jsxCreators';
 import { returnGrammarValidationText } from '../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../wrappers';
+import {
+  AccessibleButtonCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  FormLayoutWrapper,
+} from '../wrappers';
 import {
   createCommentAction,
   createCommentReducer,
@@ -25,6 +30,7 @@ function CreateComment() {
 
     isAnonymous,
     isDeleted,
+    triggerFormSubmit,
 
     isError,
     errorMessage,
@@ -51,21 +57,6 @@ function CreateComment() {
       payload: isValid,
     });
   }, [comment]);
-
-  // following are the accessible text elements for screen readers to read out based on the state of the input
-  //  const [planNameInputErrorText, planNameInputValidText] =
-  //  returnAccessibleErrorValidTextElements({
-  //    inputElementKind: 'plan name',
-  //    inputText: planName,
-  //    isValidInputText: isValidPlanName,
-  //    isInputTextFocused: isPlanNameFocused,
-  //    regexValidationText: returnGrammarValidationText({
-  //      content: planName,
-  //      contentKind: 'plan name input',
-  //      minLength: 1,
-  //      maxLength: 50,
-  //    }),
-  //  });
 
   const [commentInputErrorText, commentInputValidText] =
     returnAccessibleErrorValidTextElements({
@@ -106,13 +97,53 @@ function CreateComment() {
         payload: true,
       });
     },
+    label: 'Comment',
     placeholder: 'Enter your comment here',
     semanticName: 'comment',
     required: true,
     withAsterisk: true,
   };
 
-  return <h6>CreateComment</h6>;
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'create comment form submit button',
+    semanticName: 'submit button',
+    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+      createCommentDispatch({
+        type: createCommentAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: triggerFormSubmit,
+  };
+
+  const [createdCommentTextAreaInput] = returnAccessibleTextAreaInputElements([
+    commentInputCreatorInfo,
+  ]);
+
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    submitButtonCreatorInfo,
+  ]);
+
+  const displayCreateCommentFormPage = (
+    <FormLayoutWrapper>
+      {createdCommentTextAreaInput}
+      {createdSubmitButton}
+    </FormLayoutWrapper>
+  );
+
+  useEffect(() => {
+    async function handleCommentFormSubmit() {
+      console.log('comment form submitted');
+    }
+
+    if (triggerFormSubmit) {
+      handleCommentFormSubmit();
+    }
+  }, [triggerFormSubmit]);
+
+  return <>{displayCreateCommentFormPage}</>;
 }
 
 export { CreateComment };

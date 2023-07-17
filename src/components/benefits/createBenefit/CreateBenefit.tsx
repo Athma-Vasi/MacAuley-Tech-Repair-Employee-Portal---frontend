@@ -697,17 +697,7 @@ function CreateBenefit() {
     }
   }, [triggerFormSubmit]);
 
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w="400px"
-    >
-      {displayCreateBenefitComponent}
-    </Flex>
-  );
+  return <>{displayCreateBenefitComponent}</>;
 }
 
 export { CreateBenefit };

@@ -60,6 +60,7 @@ function App() {
           {/* <Route path="create-expense-claim" element={<ExpenseClaim />} /> */}
           <Route path="survey-builder" element={<SurveyBuilder />} />
           <Route path="create-comment" element={<CreateComment />} />
+          <Route path="create-comment" element={<CreateComment />} />
         </Route>
 
         {/* these are protected routes */}

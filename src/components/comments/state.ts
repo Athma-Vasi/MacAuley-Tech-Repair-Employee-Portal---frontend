@@ -11,6 +11,7 @@ const initialCreateCommentState: CreateCommentState = {
 
   isAnonymous: false,
   isDeleted: false,
+  triggerFormSubmit: false,
 
   isError: false,
   errorMessage: '',
@@ -29,6 +30,7 @@ const createCommentAction: CreateCommentAction = {
 
   setIsAnonymous: 'setIsAnonymous',
   setIsDeleted: 'setIsDeleted',
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -70,6 +72,12 @@ function createCommentReducer(
         ...state,
         isDeleted: action.payload,
       };
+    case createCommentAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
+      };
+
     case createCommentAction.setIsError:
       return {
         ...state,

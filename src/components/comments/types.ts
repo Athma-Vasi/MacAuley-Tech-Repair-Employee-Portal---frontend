@@ -26,6 +26,7 @@ type CreateCommentState = {
 
   isAnonymous: boolean;
   isDeleted: boolean;
+  triggerFormSubmit: boolean;
 
   isError: boolean;
   errorMessage: string;
@@ -44,6 +45,7 @@ type CreateCommentAction = {
 
   setIsAnonymous: 'setIsAnonymous';
   setIsDeleted: 'setIsDeleted';
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -70,6 +72,7 @@ type CreateCommentDispatch =
         | CreateCommentAction['setIsCommentValid']
         | CreateCommentAction['setIsCommentFocused']
         | CreateCommentAction['setIsAnonymous']
+        | CreateCommentAction['setTriggerFormSubmit']
         | CreateCommentAction['setIsDeleted']
         | CreateCommentAction['setIsError']
         | CreateCommentAction['setIsSubmitting']

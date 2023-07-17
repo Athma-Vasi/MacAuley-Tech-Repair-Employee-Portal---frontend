@@ -584,17 +584,7 @@ function CreateAnnouncement() {
     }
   }, [triggerFormSubmit]);
 
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w={400}
-    >
-      {displayCreateAnnouncementComponent}
-    </Flex>
-  );
+  return <>{displayCreateAnnouncementComponent}</>;
 }
 
 export { CreateAnnouncement };
