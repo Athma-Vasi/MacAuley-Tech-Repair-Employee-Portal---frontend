@@ -1,7 +1,8 @@
-import { Flex, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import { Group, Tooltip } from '@mantine/core';
-import { FormEvent, useEffect, useReducer, useRef } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { MdOutlineAdd } from 'react-icons/md';
+import { TbUpload } from 'react-icons/tb';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -10,16 +11,16 @@ import {
 } from '../../constants/regex';
 import {
   returnAccessibleButtonElements,
+  returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleDynamicRadioGroupInputsElements,
   returnAccessibleDynamicTextInputElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
   returnAccessibleErrorValidTextElements,
   returnAccessibleErrorValidTextElementsForDynamicInputs,
-  returnAccessibleTextInputElements,
   returnAccessibleSelectedDeselectedTextElements,
-  returnAccessibleCheckboxSingleInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
+  returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import {
   returnDateNearFutureValidationText,
@@ -33,6 +34,7 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
   StepperWrapper,
 } from '../wrappers';
 import {
@@ -78,6 +80,7 @@ function SurveyBuilder() {
     responseKinds,
     responseInputHtml,
 
+    triggerFormSubmit,
     stepperDescriptionObjects,
     currentStepperPosition,
     stepsInError,
@@ -286,7 +289,7 @@ function SurveyBuilder() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setSurveyTitle,
         payload: event.currentTarget.value,
@@ -319,7 +322,7 @@ function SurveyBuilder() {
           payload: false,
         });
       },
-      onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         surveyBuilderDispatch({
           type: surveyBuilderAction.setSurveyDescription,
           payload: event.currentTarget.value,
@@ -342,7 +345,7 @@ function SurveyBuilder() {
       data: SURVEY_BUILDER_RECIPIENT_DATA,
       description: 'Select the target recipients',
       label: 'Survey recipients',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         surveyBuilderDispatch({
           type: surveyBuilderAction.setSurveyRecipients,
           payload: event.currentTarget.value as SurveyRecipient,
@@ -369,7 +372,7 @@ function SurveyBuilder() {
         payload: false,
       });
     },
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setExpiryDate,
         payload: event.currentTarget.value,
@@ -426,7 +429,7 @@ function SurveyBuilder() {
             },
           });
         },
-        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
           surveyBuilderDispatch({
             type: surveyBuilderAction.setQuestions,
             payload: {
@@ -549,14 +552,19 @@ function SurveyBuilder() {
     semanticName: 'add paragraph button',
   };
 
-  const formSubmitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Submit',
-    buttonOnClick: () => {},
-    buttonType: 'submit',
-    buttonDisabled: stepsInError.size > 0,
+    semanticDescription: 'survey builder form submit button',
     semanticName: 'submit button',
     leftIcon: <TbUpload />,
-    semanticDescription: 'expense claim form submit button',
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
   const createdQuestionsTextInputs = returnAccessibleDynamicTextInputElements(
@@ -583,11 +591,14 @@ function SurveyBuilder() {
       responseInputHtmlRadioGroupCreatorInfo
     );
 
-  const [createdAddNewQuestionButton, createdFormSubmitButton] =
+  const [createdAddNewQuestionButton, createdSubmitButton] =
     returnAccessibleButtonElements([
       addNewQuestionButtonCreatorInfo,
-      formSubmitButtonCreatorInfo,
+      submitButtonCreatorInfo,
     ]);
+  const maxStepperPosition = stepperDescriptionObjects.length;
+  const displaySubmitButton =
+    currentStepperPosition === maxStepperPosition ? createdSubmitButton : null;
 
   const [createdIsAnonymousCheckbox] =
     returnAccessibleCheckboxSingleInputElements([
@@ -614,18 +625,16 @@ function SurveyBuilder() {
   });
 
   const displaySurveyDetailsFormPageOne = (
-    <>
+    <FormLayoutWrapper>
       {createdSurveyTitleInput}
       {createdSurveyDescriptionTextAreaInput}
       {createdSurveyRecipientsSelectInput}
       {createdExpiryDateInput}
       {createdIsAnonymousCheckbox}
-    </>
+    </FormLayoutWrapper>
   );
 
   const displaySurveyBuilderReviewPage = <h4>survey builder review page</h4>;
-
-  const maxStepperPosition = stepperDescriptionObjects.length;
 
   const displaySurveyBuilderForm =
     currentStepperPosition === 0
@@ -642,15 +651,11 @@ function SurveyBuilder() {
       ? mergedSurveyQuestionsGroups.slice(4, 5)
       : currentStepperPosition === 6
       ? displaySurveyBuilderReviewPage
-      : null;
-
-  const displayFormSubmitButton =
-    currentStepperPosition === maxStepperPosition
-      ? createdFormSubmitButton
-      : null;
+      : displaySubmitButton;
 
   const displaySurveyBuilderComponent = (
     <StepperWrapper
+      childrenTitle="Survey Builder"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={stepperDescriptionObjects}
       maxStepperPosition={maxStepperPosition}
@@ -658,38 +663,21 @@ function SurveyBuilder() {
       setCurrentStepperPosition={surveyBuilderAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
-      <form onSubmit={handleExpenseClaimFormSubmit}>
-        {displaySurveyBuilderForm}
-        {displayFormSubmitButton}
-      </form>
+      {displaySurveyBuilderForm}
     </StepperWrapper>
   );
 
-  async function handleExpenseClaimFormSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
-    event.preventDefault();
-  }
-
   useEffect(() => {
-    console.group('surveyBuilderState');
-    Object.entries(surveyBuilderState).forEach(([key, value]) => {
-      console.log(`${key}: `, value);
-    });
-    console.groupEnd();
-  }, [surveyBuilderState]);
+    async function handleExpenseClaimFormSubmit() {
+      console.log('handleExpenseClaimFormSubmit');
+    }
 
-  return (
-    <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w={400}
-    >
-      {displaySurveyBuilderComponent}
-    </Flex>
-  );
+    if (triggerFormSubmit) {
+      handleExpenseClaimFormSubmit();
+    }
+  }, [triggerFormSubmit]);
+
+  return <>{displaySurveyBuilderComponent}</>;
 }
 
 export { SurveyBuilder };

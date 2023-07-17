@@ -79,6 +79,7 @@ type SurveyBuilderState = {
   responseKinds: Array<string>;
   responseInputHtml: Array<string>;
 
+  triggerFormSubmit: boolean;
   stepperDescriptionObjects: DescriptionObjectsArray;
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -120,6 +121,7 @@ type SurveyBuilderAction = {
   setResponseKinds: 'setResponseKinds';
   setResponseInputHtml: 'setResponseInputHtml';
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setStepperDescriptionObjects: 'setStepperDescriptionObjects';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
@@ -157,6 +159,7 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setIsExpiryDateFocused']
         | SurveyBuilderAction['setIsAnonymous']
         | SurveyBuilderAction['setIsMaxQuestionsReached']
+        | SurveyBuilderAction['setTriggerFormSubmit']
         | SurveyBuilderAction['setIsError']
         | SurveyBuilderAction['setIsSubmitting']
         | SurveyBuilderAction['setIsSuccessful']

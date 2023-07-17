@@ -1,15 +1,5 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, Flex, NativeSelect, Textarea, TextInput } from '@mantine/core';
-import {
-  ChangeEvent,
-  FormEvent,
-  useEffect,
-  useReducer,
-  useRef,
-  KeyboardEvent,
-  MouseEvent,
-} from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
+import { TbUpload } from 'react-icons/tb';
 
 import { DEPARTMENTS, URGENCY_DATA } from '../../constants/data';
 import {
@@ -22,7 +12,6 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
   returnAccessibleErrorValidTextElements,
-  returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -39,7 +28,6 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-  ButtonWrapper,
   FormLayoutWrapper,
 } from '../wrappers';
 import { StepperWrapper } from '../wrappers';
@@ -54,7 +42,6 @@ import {
   requestResourceReducer,
 } from './state';
 import { RequestResourceKind } from './types';
-import { TbUpload } from 'react-icons/tb';
 
 function RequestResource() {
   const [requestResourceState, requestResourceDispatch] = useReducer(

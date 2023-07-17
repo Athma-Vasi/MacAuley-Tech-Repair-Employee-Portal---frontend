@@ -48,6 +48,7 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   responseKinds: ['chooseOne'],
   responseInputHtml: ['trueFalse'],
 
+  triggerFormSubmit: false,
   stepperDescriptionObjects: initialDescriptionObjects,
   currentStepperPosition: 0,
   stepsInError: new Set(),
@@ -89,6 +90,7 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setResponseKinds: 'setResponseKinds',
   setResponseInputHtml: 'setResponseInputHtml',
 
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
   setStepperDescriptionObjects: 'setStepperDescriptionObjects',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
@@ -245,6 +247,12 @@ function surveyBuilderReducer(
       };
     }
 
+    case surveyBuilderAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
+      };
+
     case surveyBuilderAction.setStepperDescriptionObjects: {
       const { index, value } = action.payload;
 
@@ -260,7 +268,6 @@ function surveyBuilderReducer(
         stepperDescriptionObjects,
       };
     }
-
     case surveyBuilderAction.setCurrentStepperPosition:
       return {
         ...state,
