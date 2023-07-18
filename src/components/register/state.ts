@@ -48,6 +48,10 @@ const initialRegisterState: RegisterState = {
   isValidProfilePictureUrl: false,
   isProfilePictureUrlFocused: false,
 
+  dateOfBirth: '',
+  isValidDateOfBirth: false,
+  isDateOfBirthFocused: false,
+
   contactNumber: '+(1)',
   isValidContactNumber: false,
   isContactNumberFocused: false,
@@ -134,6 +138,10 @@ const registerAction: RegisterAction = {
   setProfilePictureUrl: 'setProfilePictureUrl',
   setIsValidProfilePictureUrl: 'setIsValidProfilePictureUrl',
   setIsProfilePictureUrlFocused: 'setIsProfilePictureUrlFocused',
+
+  setDateOfBirth: 'setDateOfBirth',
+  setIsValidDateOfBirth: 'setIsValidDateOfBirth',
+  setIsDateOfBirthFocused: 'setIsDateOfBirthFocused',
 
   setContactNumber: 'setContactNumber',
   setIsValidContactNumber: 'setIsValidContactNumber',
@@ -261,6 +269,13 @@ function registerReducer(
         ...state,
         isProfilePictureUrlFocused: action.payload,
       };
+
+    case registerAction.setDateOfBirth:
+      return { ...state, dateOfBirth: action.payload };
+    case registerAction.setIsValidDateOfBirth:
+      return { ...state, isValidDateOfBirth: action.payload };
+    case registerAction.setIsDateOfBirthFocused:
+      return { ...state, isDateOfBirthFocused: action.payload };
 
     case registerAction.setContactNumber:
       return { ...state, contactNumber: action.payload };

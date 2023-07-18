@@ -1,47 +1,18 @@
-type User = {
-  _id: string;
-  username: string;
-  password: string;
-  email: string;
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  preferredName: string;
-  preferredPronouns: PreferredPronouns;
-  profilePictureUrl: string;
-  contactNumber: PhoneNumber | string;
-  address: {
-    addressLine: string;
-    city: string;
-    province: string;
-    state: string;
-    postalCode: PostalCode;
-    country: Country;
-  };
-  jobPosition: JobPosition;
-  department: Department;
-  emergencyContact: {
-    fullName: string;
-    phoneNumber: PhoneNumber | string;
-  };
-  startDate: string;
-  roles: UserRoles;
-  active: boolean;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
+type User = UserDocument;
 
 type UserSchema = {
   username: string;
   password: string;
   email: string;
+
   firstName: string;
   middleName: string;
   lastName: string;
   preferredName: string;
   preferredPronouns: PreferredPronouns;
   profilePictureUrl: string;
+  dateOfBirth: string;
+
   contactNumber: PhoneNumber | string;
   address: {
     addressLine: string;
@@ -55,7 +26,7 @@ type UserSchema = {
   department: Department;
   emergencyContact: {
     fullName: string;
-    phoneNumber: PhoneNumber | string;
+    contactNumber: PhoneNumber | string;
   };
   startDate: string;
   roles: UserRoles;

@@ -1,7 +1,7 @@
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, PasswordInput, Text, TextInput } from '@mantine/core';
-import { useEffect } from 'react';
+import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect } from 'react';
 
 import {
   EMAIL_REGEX,
@@ -9,11 +9,20 @@ import {
   USERNAME_REGEX,
 } from '../../../constants/regex';
 import { screenReaderPasswordSpecialCharacters } from '../../../domElements';
-import { returnAccessibleErrorValidTextElements } from '../../../jsxCreators';
+import {
+  returnAccessibleErrorValidTextElements,
+  returnAccessiblePasswordInputElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
 import {
   returnEmailValidationText,
   returnUsernameRegexValidationText,
 } from '../../../utils';
+import {
+  AccessiblePasswordInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
+} from '../../wrappers';
 import { returnPasswordRegexValidationText } from '../utils';
 import type { RegisterStepAuthenticationProps } from './types';
 
@@ -141,8 +150,166 @@ function RegisterStepAuthentication({
       }`,
     });
 
-  return (
-    <Flex
+  const emailTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: emailInputErrorText,
+      valid: emailInputValidText,
+    },
+    inputText: email,
+    isValidInputText: isValidEmail,
+    label: 'Email',
+    onBlur: () => {
+      registerDispatch({
+        type: registerAction.setIsEmailFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      registerDispatch({
+        type: registerAction.setEmail,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      registerDispatch({
+        type: registerAction.setIsEmailFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter email address',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'email',
+  };
+
+  const usernameTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: usernameInputErrorText,
+      valid: usernameInputValidText,
+    },
+    inputText: username,
+    isValidInputText: isValidUsername,
+    label: 'Username',
+    onBlur: () => {
+      registerDispatch({
+        type: registerAction.setIsUsernameFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      registerDispatch({
+        type: registerAction.setUsername,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      registerDispatch({
+        type: registerAction.setIsUsernameFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter username',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'username',
+  };
+
+  const passwordTextInputCreatorInfo: AccessiblePasswordInputCreatorInfo = {
+    description: {
+      error: passwordInputErrorText,
+      valid: passwordInputValidText,
+    },
+    inputText: password,
+    isValidInputText: isValidPassword,
+    label: 'Password',
+    onBlur: () => {
+      registerDispatch({
+        type: registerAction.setIsPasswordFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      registerDispatch({
+        type: registerAction.setPassword,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      registerDispatch({
+        type: registerAction.setIsPasswordFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter password',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'password',
+  };
+
+  const confirmPasswordTextInputCreatorInfo: AccessiblePasswordInputCreatorInfo =
+    {
+      description: {
+        error: confirmPasswordInputErrorText,
+        valid: confirmPasswordInputValidText,
+      },
+      inputText: confirmPassword,
+      isValidInputText: isValidConfirmPassword,
+      label: 'Confirm password',
+      onBlur: () => {
+        registerDispatch({
+          type: registerAction.setIsConfirmPasswordFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        registerDispatch({
+          type: registerAction.setConfirmPassword,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        registerDispatch({
+          type: registerAction.setIsConfirmPasswordFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Confirm password',
+      required: true,
+      withAsterisk: true,
+      semanticName: 'confirm password',
+    };
+
+  // following are the created accessible input elements
+  const [createdEmailTextInputElement, createdUsernameTextInputElement] =
+    returnAccessibleTextInputElements([
+      emailTextInputCreatorInfo,
+      usernameTextInputCreatorInfo,
+    ]);
+
+  const [
+    createdPasswordTextInputElement,
+    createdConfirmPasswordTextInputElement,
+  ] = returnAccessiblePasswordInputElements([
+    passwordTextInputCreatorInfo,
+    confirmPasswordTextInputCreatorInfo,
+  ]);
+
+  const createdAuthenticationPageForm = (
+    <FormLayoutWrapper>
+      {createdEmailTextInputElement}
+      {createdUsernameTextInputElement}
+      {createdPasswordTextInputElement}
+      {createdConfirmPasswordTextInputElement}
+    </FormLayoutWrapper>
+  );
+
+  return <>{createdAuthenticationPageForm}</>;
+}
+
+export { RegisterStepAuthentication };
+
+/**
+ * <Flex
       direction="column"
       align="flex-start"
       justify="center"
@@ -330,7 +497,4 @@ function RegisterStepAuthentication({
         required
       />
     </Flex>
-  );
-}
-
-export { RegisterStepAuthentication };
+ */

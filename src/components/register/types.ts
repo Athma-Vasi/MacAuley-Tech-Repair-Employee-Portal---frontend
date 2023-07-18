@@ -48,6 +48,10 @@ type RegisterState = {
   isValidProfilePictureUrl: boolean;
   isProfilePictureUrlFocused: boolean;
 
+  dateOfBirth: string;
+  isValidDateOfBirth: boolean;
+  isDateOfBirthFocused: boolean;
+
   contactNumber: PhoneNumber | string;
   isValidContactNumber: boolean;
   isContactNumberFocused: boolean;
@@ -135,6 +139,10 @@ type RegisterAction = {
   setIsValidProfilePictureUrl: 'setIsValidProfilePictureUrl';
   setIsProfilePictureUrlFocused: 'setIsProfilePictureUrlFocused';
 
+  setDateOfBirth: 'setDateOfBirth';
+  setIsValidDateOfBirth: 'setIsValidDateOfBirth';
+  setIsDateOfBirthFocused: 'setIsDateOfBirthFocused';
+
   setContactNumber: 'setContactNumber';
   setIsValidContactNumber: 'setIsValidContactNumber';
   setIsContactNumberFocused: 'setIsContactNumberFocused';
@@ -193,6 +201,7 @@ type RegisterDispatch =
         | RegisterAction['setLastName']
         | RegisterAction['setPreferredName']
         | RegisterAction['setProfilePictureUrl']
+        | RegisterAction['setDateOfBirth']
         | RegisterAction['setAddressLine']
         | RegisterAction['setCity']
         | RegisterAction['setEmergencyContactFullName']
@@ -225,6 +234,8 @@ type RegisterDispatch =
         | RegisterAction['setIsContactNumberFocused']
         | RegisterAction['setIsValidProfilePictureUrl']
         | RegisterAction['setIsProfilePictureUrlFocused']
+        | RegisterAction['setIsValidDateOfBirth']
+        | RegisterAction['setIsDateOfBirthFocused']
         | RegisterAction['setIsValidAddressLine']
         | RegisterAction['setIsAddressLineFocused']
         | RegisterAction['setIsValidCity']
@@ -273,11 +284,9 @@ type RegisterDispatch =
       payload: PreferredPronouns;
     }
   | {
-      type: RegisterAction['setEmergencyContactPhoneNumber'];
-      payload: PhoneNumber | string;
-    }
-  | {
-      type: RegisterAction['setContactNumber'];
+      type:
+        | RegisterAction['setEmergencyContactPhoneNumber']
+        | RegisterAction['setContactNumber'];
       payload: PhoneNumber | string;
     }
   | {

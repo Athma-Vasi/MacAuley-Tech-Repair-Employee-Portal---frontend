@@ -23,6 +23,10 @@ type RegisterStepPersonalProps = {
   isValidProfilePictureUrl: boolean;
   isProfilePictureUrlFocused: boolean;
 
+  dateOfBirth: string;
+  isValidDateOfBirth: boolean;
+  isDateOfBirthFocused: boolean;
+
   registerAction: RegisterAction;
   registerDispatch: React.Dispatch<RegisterDispatch>;
 };

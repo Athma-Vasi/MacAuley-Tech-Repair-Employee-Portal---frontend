@@ -1,8 +1,8 @@
 import './style.css';
 
-import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faCheckCircle, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Stepper, Text, Title } from '@mantine/core';
+import { Box, Flex, Group, Stepper, Text, Title } from '@mantine/core';
 import { useEffect, useRef } from 'react';
 import { CgCloseO } from 'react-icons/cg';
 import {
@@ -116,6 +116,9 @@ function StepperWrapper({
       ? '75%'
       : '62%';
   const size = width < 1024 ? 'sm' : 'md';
+  const rowGap =
+    width < 480 ? 'md' : width < 768 ? 'sm' : width < 1440 ? 'md' : 'lg';
+
   return (
     <Flex
       direction="column"
@@ -166,11 +169,9 @@ function StepperWrapper({
               color={stepsInError.has(index) ? 'red' : undefined}
               completedIcon={
                 stepsInError.has(index) ? (
-                  <CgCloseO size="sm" />
-                ) : stepsInError.size === 0 ? (
-                  <TbCircleCheck size="lg" />
+                  <FontAwesomeIcon icon={faX} size="lg" />
                 ) : (
-                  <TbProgressCheck size="lg" />
+                  <FontAwesomeIcon icon={faCheck} size="xl" />
                 )
               }
             >
@@ -202,14 +203,24 @@ function StepperWrapper({
 
       <Flex
         direction="column"
-        align="center"
+        align="flex-start"
         justify="space-between"
         w={componentWidth}
+        rowGap={rowGap}
       >
         {children ?? null}
 
         {/* stepper nav buttons */}
-        <Flex align="center" justify="space-between" p={padding} w="100%">
+        <Flex
+          align="center"
+          justify="space-between"
+          p={padding}
+          w="100%"
+          style={{
+            borderRadius: '5px',
+            border: '1px solid #e0e0e0',
+          }}
+        >
           {createdPrevButton}
           {createdNextButton}
         </Flex>

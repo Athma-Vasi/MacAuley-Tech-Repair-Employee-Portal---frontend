@@ -17,7 +17,7 @@ type AccessiblePasswordInputCreatorInfo = {
   };
   placeholder: string;
   initialInputValue?: string | undefined;
-  icon: IconDefinition | null;
+  icon?: IconDefinition | null | undefined;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onBlur: () => void;

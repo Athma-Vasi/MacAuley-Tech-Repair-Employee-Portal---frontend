@@ -1,7 +1,4 @@
-import { faCheck, faRefresh } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, NativeSelect, TextInput, Tooltip } from '@mantine/core';
-import { useEffect } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect } from 'react';
 
 import { DEPARTMENTS, JOB_POSITIONS } from '../../../constants/data';
 import {
@@ -9,14 +6,27 @@ import {
   FULL_NAME_REGEX,
   PHONE_NUMBER_REGEX,
 } from '../../../constants/regex';
-import { returnAccessibleErrorValidTextElements } from '../../../jsxCreators';
+import {
+  returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessiblePhoneNumberTextInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
+import { Department, JobPosition } from '../../../types';
 import {
   returnDateValidationText,
   returnNameValidationText,
   returnPhoneNumberValidationText,
 } from '../../../utils';
+import {
+  AccessibleDateTimeInputCreatorInfo,
+  AccessiblePhoneNumberTextInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
+} from '../../wrappers';
 import type { RegisterStepAdditionalProps } from './types';
-import { Department, JobPosition } from '../../../types';
 
 function RegisterStepAdditional({
   jobPosition,
@@ -85,7 +95,13 @@ function RegisterStepAdditional({
       type: registerAction.setIsValidEmergencyContactPhoneNumber,
       payload: isValidEmergencyNumber,
     });
-  }, [phoneNumber, isPhoneNumberFocused]);
+  }, [
+    phoneNumber,
+    isPhoneNumberFocused,
+    registerDispatch,
+    registerAction.setIsValidEmergencyContactPhoneNumber,
+    registerAction.setEmergencyContactPhoneNumber,
+  ]);
 
   // used to validate start date on every change
   useEffect(() => {
@@ -95,9 +111,7 @@ function RegisterStepAdditional({
       type: registerAction.setIsValidStartDate,
       payload: isValidDate,
     });
-
-    console.log({ startDate });
-  }, [startDate]);
+  }, [registerAction.setIsValidStartDate, registerDispatch, startDate]);
 
   // update the corresponding stepsInError state if any of the inputs are in error
   useEffect(() => {
@@ -155,8 +169,183 @@ function RegisterStepAdditional({
       regexValidationText: returnDateValidationText(startDate),
     });
 
-  return (
-    <Flex
+  const jobPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: JOB_POSITIONS,
+    description: 'Select your job position',
+    label: 'Job position',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      registerDispatch({
+        type: registerAction.setJobPosition,
+        payload: event.currentTarget.value as JobPosition,
+      });
+    },
+    required: true,
+    value: jobPosition,
+    withAsterisk: true,
+  };
+
+  const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DEPARTMENTS,
+    description: 'Select your department',
+    label: 'Department',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      registerDispatch({
+        type: registerAction.setDepartment,
+        payload: event.currentTarget.value as Department,
+      });
+    },
+    required: true,
+    value: department,
+    withAsterisk: true,
+  };
+
+  const emergencyContactFullNameInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: emergencyContactFullNameInputErrorText,
+        valid: emergencyContactFullNameInputValidText,
+      },
+      inputText: fullName,
+      isValidInputText: isValidFullName,
+      label: 'Full name',
+      onBlur: () => {
+        registerDispatch({
+          type: registerAction.setIsEmergencyContactFullNameFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        registerDispatch({
+          type: registerAction.setEmergencyContactFullName,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        registerDispatch({
+          type: registerAction.setIsEmergencyContactFullNameFocused,
+          payload: true,
+        });
+      },
+      placeholder: "Enter contact's full name",
+      required: true,
+      withAsterisk: true,
+      semanticName: 'full name',
+    };
+
+  const emergencyPhoneNumberInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =
+    {
+      description: {
+        error: emergencyPhoneNumberInputErrorText,
+        valid: emergencyPhoneNumberInputValidText,
+      },
+      inputText: phoneNumber,
+      isValidInputText: isValidPhoneNumber,
+      label: 'Emergency contact number',
+      onBlur: () => {
+        registerDispatch({
+          type: registerAction.setIsEmergencyContactPhoneNumberFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        registerDispatch({
+          type: registerAction.setEmergencyContactPhoneNumber,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        registerDispatch({
+          type: registerAction.setIsEmergencyContactPhoneNumberFocused,
+          payload: true,
+        });
+      },
+      placeholder: "Enter your contact's number",
+      required: true,
+      withAsterisk: true,
+      semanticName: 'phone number',
+      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Backspace') {
+          if (phoneNumber.length === 14 || phoneNumber.length === 9) {
+            registerDispatch({
+              type: registerAction.setContactNumber,
+              payload: phoneNumber.slice(0, -1),
+            });
+          }
+        }
+      },
+    };
+
+  const startDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
+    description: {
+      error: startDateInputErrorText,
+      valid: startDateInputValidText,
+    },
+    inputText: startDate,
+    isValidInputText: isValidStartDate,
+    label: 'Start date',
+    onBlur: () => {
+      registerDispatch({
+        type: registerAction.setIsStartDateFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      registerDispatch({
+        type: registerAction.setStartDate,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      registerDispatch({
+        type: registerAction.setIsStartDateFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter your start date',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'start date',
+    inputKind: 'date',
+    dateKind: 'full date',
+  };
+
+  const [createdJobPositionSelectInput, createdDepartmentSelectInput] =
+    returnAccessibleSelectInputElements([
+      jobPositionSelectInputCreatorInfo,
+      departmentSelectInputCreatorInfo,
+    ]);
+
+  const [createdEmergencyContactFullNameInput] =
+    returnAccessibleTextInputElements([
+      emergencyContactFullNameInputCreatorInfo,
+    ]);
+
+  const [createdEmergencyPhoneNumberInput] =
+    returnAccessiblePhoneNumberTextInputElements([
+      emergencyPhoneNumberInputCreatorInfo,
+    ]);
+
+  const [createdStartDateInput] = returnAccessibleDateTimeElements([
+    startDateInputCreatorInfo,
+  ]);
+
+  const displayRegisterStepAdditional = (
+    <FormLayoutWrapper>
+      {createdJobPositionSelectInput}
+      {createdDepartmentSelectInput}
+      {createdEmergencyContactFullNameInput}
+      {createdEmergencyPhoneNumberInput}
+      {createdStartDateInput}
+    </FormLayoutWrapper>
+  );
+
+  return <>{displayRegisterStepAdditional}</>;
+}
+
+export { RegisterStepAdditional };
+
+/**
+ * <Flex
       direction="column"
       align="flex-start"
       justify="center"
@@ -177,7 +366,7 @@ function RegisterStepAdditional({
         withAsterisk
         required
       />
-      {/* department */}
+      
       <NativeSelect
         size="sm"
         data={DEPARTMENTS}
@@ -192,7 +381,7 @@ function RegisterStepAdditional({
         withAsterisk
         required
       />
-      {/* emergency contact */}
+      
       <TextInput
         size="sm"
         w="100%"
@@ -240,7 +429,7 @@ function RegisterStepAdditional({
         minLength={2}
         maxLength={100}
       />
-      {/* emergency contact number */}
+      
       <TextInput
         size="sm"
         w="100%"
@@ -312,7 +501,7 @@ function RegisterStepAdditional({
         }}
         maxLength={18}
       />
-      {/* start date */}
+      
       <TextInput
         type="date"
         size="sm"
@@ -364,7 +553,4 @@ function RegisterStepAdditional({
         required
       />
     </Flex>
-  );
-}
-
-export { RegisterStepAdditional };
+ */
