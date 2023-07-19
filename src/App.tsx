@@ -12,7 +12,10 @@ import { Dashboard } from './components/dashboard';
 import { CreateEndorsement } from './components/endorsements/createEndorsement';
 import { EventCreator } from './components/events/eventCreator';
 import { ExpenseClaim } from './components/expenseClaim';
-import { CreateLeaveRequest } from './components/leaveRequest';
+import {
+  CreateLeaveRequest,
+  DisplayLeaveRequests,
+} from './components/leaveRequest';
 import { Login } from './components/login';
 import { NotesList } from './components/notesList';
 import { NotFound } from './components/notFound';
@@ -38,9 +41,9 @@ function App() {
       <Routes>
         {/* these are public routes */}
         <Route path="/" element={<PublicLayout />}>
-          <Route index element={<Login />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
+          {/* <Route index element={<Login />} /> */}
+          {/* <Route path="login" element={<Login />} /> */}
+          {/* <Route path="register" element={<Register />} /> */}
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
 
           {/* DEV PATHS - DELETE LATER*/}
@@ -48,6 +51,10 @@ function App() {
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
           <Route path="create-leave-request" element={<CreateLeaveRequest />} />
+          <Route
+            path="display-leave-requests"
+            element={<DisplayLeaveRequests />}
+          />
           {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
           {/* <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
@@ -58,8 +65,8 @@ function App() {
           /> */}
           {/* <Route path="event-creator" element={<EventCreator />} /> */}
           {/* <Route path="create-expense-claim" element={<ExpenseClaim />} /> */}
-          <Route path="survey-builder" element={<SurveyBuilder />} />
-          <Route path="create-comment" element={<CreateComment />} />
+          {/* <Route path="survey-builder" element={<SurveyBuilder />} /> */}
+          {/* <Route path="create-comment" element={<CreateComment />} /> */}
         </Route>
 
         {/* these are protected routes */}
