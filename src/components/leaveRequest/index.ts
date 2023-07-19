@@ -1,3 +1,3 @@
-import { LeaveRequest } from './LeaveRequest';
+import { CreateLeaveRequest } from './createLeaveRequest/CreateLeaveRequest';
 
-export { LeaveRequest };
+export { CreateLeaveRequest };

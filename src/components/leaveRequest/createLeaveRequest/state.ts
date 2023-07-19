@@ -1,12 +1,10 @@
-import type { SetStepsInErrorPayload } from '../../types';
 import type {
-  LeaveRequestAction,
-  LeaveRequestDispatch,
-  LeaveRequestState,
-  ReasonForLeave,
+  CreateLeaveRequestAction,
+  CreateLeaveRequestDispatch,
+  CreateLeaveRequestState,
 } from './types';
 
-const initialLeaveRequestState: LeaveRequestState = {
+const initialCreateLeaveRequestState: CreateLeaveRequestState = {
   startDate: '',
   isValidStartDate: false,
   isStartDateFocused: false,
@@ -45,7 +43,7 @@ const initialLeaveRequestState: LeaveRequestState = {
   loadingMessage: '',
 };
 
-const leaveRequestAction: LeaveRequestAction = {
+const createLeaveRequestAction: CreateLeaveRequestAction = {
   setStartDate: 'setStartDate',
   setIsValidStartDate: 'setIsValidStartDate',
   setIsStartDateFocused: 'setIsStartDateFocused',
@@ -85,118 +83,118 @@ const leaveRequestAction: LeaveRequestAction = {
   setLoadingMessage: 'setLoadingMessage',
 };
 
-function leaveRequestReducer(
-  state: LeaveRequestState,
-  action: LeaveRequestDispatch
-): LeaveRequestState {
+function createLeaveRequestReducer(
+  state: CreateLeaveRequestState,
+  action: CreateLeaveRequestDispatch
+): CreateLeaveRequestState {
   switch (action.type) {
-    case leaveRequestAction.setStartDate:
+    case createLeaveRequestAction.setStartDate:
       return {
         ...state,
         startDate: action.payload,
       };
-    case leaveRequestAction.setIsValidStartDate:
+    case createLeaveRequestAction.setIsValidStartDate:
       return {
         ...state,
         isValidStartDate: action.payload,
       };
-    case leaveRequestAction.setIsStartDateFocused:
+    case createLeaveRequestAction.setIsStartDateFocused:
       return {
         ...state,
         isStartDateFocused: action.payload,
       };
 
-    case leaveRequestAction.setEndDate:
+    case createLeaveRequestAction.setEndDate:
       return {
         ...state,
         endDate: action.payload,
       };
-    case leaveRequestAction.setIsValidEndDate:
+    case createLeaveRequestAction.setIsValidEndDate:
       return {
         ...state,
         isValidEndDate: action.payload,
       };
-    case leaveRequestAction.setIsEndDateFocused:
+    case createLeaveRequestAction.setIsEndDateFocused:
       return {
         ...state,
         isEndDateFocused: action.payload,
       };
 
-    case leaveRequestAction.setAreValidLeaveDates:
+    case createLeaveRequestAction.setAreValidLeaveDates:
       return {
         ...state,
         areValidLeaveDates: action.payload,
       };
-    case leaveRequestAction.setReasonForLeave:
+    case createLeaveRequestAction.setReasonForLeave:
       return {
         ...state,
         reasonForLeave: action.payload,
       };
 
-    case leaveRequestAction.setDelegatedToEmployee:
+    case createLeaveRequestAction.setDelegatedToEmployee:
       return {
         ...state,
         delegatedToEmployee: action.payload,
       };
-    case leaveRequestAction.setIsValidDelegatedToEmployee:
+    case createLeaveRequestAction.setIsValidDelegatedToEmployee:
       return {
         ...state,
         isValidDelegatedToEmployee: action.payload,
       };
-    case leaveRequestAction.setIsDelegatedToEmployeeFocused:
+    case createLeaveRequestAction.setIsDelegatedToEmployeeFocused:
       return {
         ...state,
         isDelegatedToEmployeeFocused: action.payload,
       };
 
-    case leaveRequestAction.setDelegatedResponsibilities:
+    case createLeaveRequestAction.setDelegatedResponsibilities:
       return {
         ...state,
         delegatedResponsibilities: action.payload,
       };
-    case leaveRequestAction.setIsValidDelegatedResponsibilities:
+    case createLeaveRequestAction.setIsValidDelegatedResponsibilities:
       return {
         ...state,
         isValidDelegatedResponsibilities: action.payload,
       };
-    case leaveRequestAction.setIsDelegatedResponsibilitiesFocused:
+    case createLeaveRequestAction.setIsDelegatedResponsibilitiesFocused:
       return {
         ...state,
         isDelegatedResponsibilitiesFocused: action.payload,
       };
 
-    case leaveRequestAction.setAdditionalComments:
+    case createLeaveRequestAction.setAdditionalComments:
       return {
         ...state,
         additionalComments: action.payload,
       };
-    case leaveRequestAction.setIsValidAdditionalComments:
+    case createLeaveRequestAction.setIsValidAdditionalComments:
       return {
         ...state,
         isValidAdditionalComments: action.payload,
       };
-    case leaveRequestAction.setIsAdditionalCommentsFocused:
+    case createLeaveRequestAction.setIsAdditionalCommentsFocused:
       return {
         ...state,
         isAdditionalCommentsFocused: action.payload,
       };
 
-    case leaveRequestAction.setIsAcknowledged:
+    case createLeaveRequestAction.setIsAcknowledged:
       return {
         ...state,
         isAcknowledged: action.payload,
       };
-    case leaveRequestAction.setTriggerFormSubmit:
+    case createLeaveRequestAction.setTriggerFormSubmit:
       return {
         ...state,
         triggerFormSubmit: action.payload,
       };
-    case leaveRequestAction.setCurrentStepperPosition:
+    case createLeaveRequestAction.setCurrentStepperPosition:
       return {
         ...state,
         currentStepperPosition: action.payload,
       };
-    case leaveRequestAction.setStepsInError: {
+    case createLeaveRequestAction.setStepsInError: {
       const { kind, step } = action.payload;
       const stepsInError = new Set(state.stepsInError);
       kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
@@ -207,42 +205,42 @@ function leaveRequestReducer(
       };
     }
 
-    case leaveRequestAction.setIsError:
+    case createLeaveRequestAction.setIsError:
       return {
         ...state,
         isError: action.payload,
       };
-    case leaveRequestAction.setErrorMessage:
+    case createLeaveRequestAction.setErrorMessage:
       return {
         ...state,
         errorMessage: action.payload,
       };
-    case leaveRequestAction.setIsSubmitting:
+    case createLeaveRequestAction.setIsSubmitting:
       return {
         ...state,
         isSubmitting: action.payload,
       };
-    case leaveRequestAction.setSubmitMessage:
+    case createLeaveRequestAction.setSubmitMessage:
       return {
         ...state,
         submitMessage: action.payload,
       };
-    case leaveRequestAction.setIsSuccessful:
+    case createLeaveRequestAction.setIsSuccessful:
       return {
         ...state,
         isSuccessful: action.payload,
       };
-    case leaveRequestAction.setSuccessMessage:
+    case createLeaveRequestAction.setSuccessMessage:
       return {
         ...state,
         successMessage: action.payload,
       };
-    case leaveRequestAction.setIsLoading:
+    case createLeaveRequestAction.setIsLoading:
       return {
         ...state,
         isLoading: action.payload,
       };
-    case leaveRequestAction.setLoadingMessage:
+    case createLeaveRequestAction.setLoadingMessage:
       return {
         ...state,
         loadingMessage: action.payload,
@@ -252,4 +250,8 @@ function leaveRequestReducer(
   }
 }
 
-export { initialLeaveRequestState, leaveRequestAction, leaveRequestReducer };
+export {
+  createLeaveRequestAction,
+  createLeaveRequestReducer,
+  initialCreateLeaveRequestState,
+};

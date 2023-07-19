@@ -12,7 +12,7 @@ import { Dashboard } from './components/dashboard';
 import { CreateEndorsement } from './components/endorsements/createEndorsement';
 import { EventCreator } from './components/events/eventCreator';
 import { ExpenseClaim } from './components/expenseClaim';
-import { LeaveRequest } from './components/leaveRequest';
+import { CreateLeaveRequest } from './components/leaveRequest';
 import { Login } from './components/login';
 import { NotesList } from './components/notesList';
 import { NotFound } from './components/notFound';
@@ -47,11 +47,11 @@ function App() {
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
-          {/* <Route path="create-leave-request" element={<LeaveRequest />} /> */}
+          <Route path="create-leave-request" element={<CreateLeaveRequest />} />
           {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
           {/* <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
-          <Route path="create-referment" element={<CreateReferment />} />
+          {/* <Route path="create-referment" element={<CreateReferment />} /> */}
           {/* <Route
             path="create-anonymous-request"
             element={<CreateAnonymousRequest />}
@@ -59,7 +59,6 @@ function App() {
           {/* <Route path="event-creator" element={<EventCreator />} /> */}
           {/* <Route path="create-expense-claim" element={<ExpenseClaim />} /> */}
           <Route path="survey-builder" element={<SurveyBuilder />} />
-          <Route path="create-comment" element={<CreateComment />} />
           <Route path="create-comment" element={<CreateComment />} />
         </Route>
 

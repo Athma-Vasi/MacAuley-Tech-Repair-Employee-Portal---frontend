@@ -1,4 +1,4 @@
-import { DescriptionObjectsArray } from '../wrappers';
+import { DescriptionObjectsArray } from '../../wrappers';
 
 const REASON_FOR_LEAVE_DATA = [
   'Vacation',
