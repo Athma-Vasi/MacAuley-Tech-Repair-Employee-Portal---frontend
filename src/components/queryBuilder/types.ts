@@ -5,6 +5,7 @@ type QueryBuilderState = {
 };
 
 type QueryBuilderAction = {
+  setNewFilter: 'setNewFilter';
   setFilterField: 'setFilterField';
   setFilterOperator: 'setFilterOperator';
   setFilterValue: 'setFilterValue';
@@ -18,7 +19,6 @@ type QueryBuilderDispatch =
       type:
         | QueryBuilderAction['setFilterField']
         | QueryBuilderAction['setFilterOperator']
-        | QueryBuilderAction['setProjections']
         | QueryBuilderAction['setSortField']
         | QueryBuilderAction['setSortDirection'];
       payload: {
@@ -32,6 +32,14 @@ type QueryBuilderDispatch =
         index: number;
         value: boolean | number | string;
       };
+    }
+  | {
+      type: QueryBuilderAction['setProjections'];
+      payload: string[];
+    }
+  | {
+      type: QueryBuilderAction['setNewFilter'];
+      payload: [];
     };
 
 type QueryBuilderReducer = (
