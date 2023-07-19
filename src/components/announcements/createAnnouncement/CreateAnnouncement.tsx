@@ -507,19 +507,16 @@ function CreateAnnouncement() {
     bannerImageAltTextInputCreatorInfo,
   ]);
 
-  const createdAddNewArticleParagraphButton = returnAccessibleButtonElements([
-    addNewArticleParagraphButtonCreatorInfo,
-  ]);
-
-  const displayAddArticleParagraphButton = createdAddNewArticleParagraphButton;
-
-  const [createdSubmitButton] = returnAccessibleButtonElements([
-    submitButtonCreatorInfo,
-  ]);
+  const [createdAddNewArticleParagraphButton, createdSubmitButton] =
+    returnAccessibleButtonElements([
+      addNewArticleParagraphButtonCreatorInfo,
+      submitButtonCreatorInfo,
+    ]);
   const displaySubmitButton =
     currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION
       ? createdSubmitButton
       : null;
+  const displayAddArticleParagraphButton = createdAddNewArticleParagraphButton;
 
   const displayAnnouncementDetailsFormPage = (
     <FormLayoutWrapper>

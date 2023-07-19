@@ -1,17 +1,9 @@
 import './style.css';
 
-import { faCheck, faCheckCircle, faX } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Box, Flex, Group, Stepper, Text, Title } from '@mantine/core';
+import { Flex, Stepper, Text, Title } from '@mantine/core';
 import { useEffect, useRef } from 'react';
-import { CgCloseO } from 'react-icons/cg';
-import {
-  TbCheck,
-  TbChecks,
-  TbCircleCheck,
-  TbFileCheck,
-  TbProgressCheck,
-} from 'react-icons/tb';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { useGlobalState } from '../../../hooks';
