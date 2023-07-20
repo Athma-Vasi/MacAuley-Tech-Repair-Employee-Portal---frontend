@@ -1,45 +1,98 @@
+import { SelectInputData } from '../../types';
+
 type QueryBuilderState = {
-  filters: [string, string, boolean | number | string][]; // [field, operator, value][]
-  projections: string[];
-  sorts: [string, string][]; // [field, direction][]
+  currentFilterTerm: string;
+  currentFilterOperator: string;
+  currentFilterValue: string;
+
+  currentSortTerm: string;
+  currentSortDirection: string;
+
+  filterSelectData: SelectInputData;
+  sortSelectData: SelectInputData;
+
+  filterStatementsQueue: string[];
+  sortStatementsQueue: string[];
+
+  projectionArray: string[];
+  selectedFieldsSet: Set<string>;
+
+  isError: boolean;
+  errorMessage: string;
+  isLoading: boolean;
+  loadingMessage: string;
+  isSubmitting: boolean;
+  submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
 };
 
 type QueryBuilderAction = {
-  setNewFilter: 'setNewFilter';
-  setFilterField: 'setFilterField';
-  setFilterOperator: 'setFilterOperator';
-  setFilterValue: 'setFilterValue';
-  setProjections: 'setProjections';
-  setSortField: 'setSortField';
-  setSortDirection: 'setSortDirection';
+  setCurrentFilterTerm: 'setCurrentFilterTerm';
+  setCurrentFilterOperator: 'setCurrentFilterOperator';
+  setCurrentFilterValue: 'setCurrentFilterValue';
+
+  setCurrentSortTerm: 'setCurrentSortTerm';
+  setCurrentSortDirection: 'setCurrentSortDirection';
+
+  setFilterSelectData: 'setFilterSelectData';
+  setSortSelectData: 'setSortSelectData';
+
+  setFilterStatementsQueue: 'setFilterStatementsQueue';
+  setSortStatementsQueue: 'setSortStatementsQueue';
+
+  setProjectionArray: 'setProjectionArray';
+  setSelectedFieldsSet: 'setSelectedFieldsSet';
+
+  setIsError: 'setIsError';
+  setErrorMessage: 'setErrorMessage';
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
+  setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
 };
 
 type QueryBuilderDispatch =
   | {
       type:
-        | QueryBuilderAction['setFilterField']
-        | QueryBuilderAction['setFilterOperator']
-        | QueryBuilderAction['setSortField']
-        | QueryBuilderAction['setSortDirection'];
+        | QueryBuilderAction['setCurrentFilterTerm']
+        | QueryBuilderAction['setCurrentFilterOperator']
+        | QueryBuilderAction['setCurrentFilterValue']
+        | QueryBuilderAction['setCurrentSortTerm']
+        | QueryBuilderAction['setCurrentSortDirection']
+        | QueryBuilderAction['setErrorMessage']
+        | QueryBuilderAction['setSuccessMessage']
+        | QueryBuilderAction['setLoadingMessage']
+        | QueryBuilderAction['setSubmitMessage'];
+      payload: string;
+    }
+  | {
+      type:
+        | QueryBuilderAction['setFilterSelectData']
+        | QueryBuilderAction['setSortSelectData'];
+      payload: SelectInputData;
+    }
+  | {
+      type:
+        | QueryBuilderAction['setFilterStatementsQueue']
+        | QueryBuilderAction['setSortStatementsQueue'];
       payload: {
         index: number;
+        value: string[];
+      };
+    }
+  | {
+      type: QueryBuilderAction['setProjectionArray'];
+      payload: string;
+    }
+  | {
+      type: QueryBuilderAction['setSelectedFieldsSet'];
+      payload: {
+        kind: 'add' | 'delete';
         value: string;
       };
-    }
-  | {
-      type: QueryBuilderAction['setFilterValue'];
-      payload: {
-        index: number;
-        value: boolean | number | string;
-      };
-    }
-  | {
-      type: QueryBuilderAction['setProjections'];
-      payload: string[];
-    }
-  | {
-      type: QueryBuilderAction['setNewFilter'];
-      payload: [];
     };
 
 type QueryBuilderReducer = (
