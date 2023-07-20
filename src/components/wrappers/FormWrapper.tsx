@@ -5,9 +5,13 @@ import { useGlobalState } from '../../hooks';
 
 type FormLayoutWrapperProps = {
   children?: ReactNode;
+  direction?: 'row' | 'column';
 };
 
-function FormLayoutWrapper({ children }: FormLayoutWrapperProps): JSX.Element {
+function FormLayoutWrapper({
+  children,
+  direction,
+}: FormLayoutWrapperProps): JSX.Element {
   const {
     globalState: { width },
   } = useGlobalState();
@@ -17,9 +21,15 @@ function FormLayoutWrapper({ children }: FormLayoutWrapperProps): JSX.Element {
 
   return (
     <Flex
-      direction="column"
-      align="flex-start"
-      justify="space-between"
+      direction={
+        direction === 'row' || direction === 'column' ? direction : 'column'
+      }
+      align={
+        direction === 'row' || direction === 'column' ? 'center' : 'flex-start'
+      }
+      justify={
+        direction === 'row' || direction === 'column' ? 'center' : 'flex-start'
+      }
       w="100%"
       p={width < 480 ? 'xs' : width < 768 ? 'sm' : 'md'}
       rowGap={rowGap}

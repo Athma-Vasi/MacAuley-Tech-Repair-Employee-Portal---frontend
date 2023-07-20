@@ -14,6 +14,7 @@ const initialQueryBuilderState: QueryBuilderState = {
 
   filterSelectData: [],
   sortSelectData: [],
+  labelValueTypesMap: new Map(),
 
   filterStatementsQueue: [],
   sortStatementsQueue: [],
@@ -41,6 +42,7 @@ const queryBuilderAction: QueryBuilderAction = {
 
   setFilterSelectData: 'setFilterSelectData',
   setSortSelectData: 'setSortSelectData',
+  setLabelValueTypesMap: 'setLabelValueTypesMap',
 
   setFilterStatementsQueue: 'setFilterStatementsQueue',
   setSortStatementsQueue: 'setSortStatementsQueue',
@@ -99,6 +101,11 @@ function queryBuilderReducer(
       return {
         ...state,
         sortSelectData: action.payload,
+      };
+    case queryBuilderAction.setLabelValueTypesMap:
+      return {
+        ...state,
+        labelValueTypesMap: action.payload,
       };
 
     case queryBuilderAction.setFilterStatementsQueue: {

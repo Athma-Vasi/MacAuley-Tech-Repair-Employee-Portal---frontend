@@ -1,4 +1,20 @@
-import { SelectInputData } from '../../types';
+type ComponentQueryData = {
+  label: string;
+  value: string;
+  type: string;
+};
+
+type QueryValueTypes = {
+  value: string;
+  type: string;
+};
+
+type QueryLabelValueTypesMap = Map<string, QueryValueTypes>;
+
+type QueryBuilderProps = {
+  collectionName: string;
+  componentQueryData: ComponentQueryData[];
+};
 
 type QueryBuilderState = {
   currentFilterTerm: string;
@@ -8,8 +24,9 @@ type QueryBuilderState = {
   currentSortTerm: string;
   currentSortDirection: string;
 
-  filterSelectData: SelectInputData;
-  sortSelectData: SelectInputData;
+  filterSelectData: string[];
+  sortSelectData: string[];
+  labelValueTypesMap: QueryLabelValueTypesMap;
 
   filterStatementsQueue: [string, string, string][];
   sortStatementsQueue: [string, string][];
@@ -37,6 +54,7 @@ type QueryBuilderAction = {
 
   setFilterSelectData: 'setFilterSelectData';
   setSortSelectData: 'setSortSelectData';
+  setLabelValueTypesMap: 'setLabelValueTypesMap';
 
   setFilterStatementsQueue: 'setFilterStatementsQueue';
   setSortStatementsQueue: 'setSortStatementsQueue';
@@ -80,7 +98,11 @@ type QueryBuilderDispatch =
       type:
         | QueryBuilderAction['setFilterSelectData']
         | QueryBuilderAction['setSortSelectData'];
-      payload: SelectInputData;
+      payload: string[];
+    }
+  | {
+      type: QueryBuilderAction['setLabelValueTypesMap'];
+      payload: QueryLabelValueTypesMap;
     }
   | {
       type: QueryBuilderAction['setFilterStatementsQueue'];
@@ -114,8 +136,12 @@ type QueryBuilderReducer = (
 ) => QueryBuilderState;
 
 export type {
+  ComponentQueryData,
   QueryBuilderAction,
   QueryBuilderDispatch,
+  QueryBuilderProps,
   QueryBuilderReducer,
   QueryBuilderState,
+  QueryLabelValueTypesMap,
+  QueryValueTypes,
 };

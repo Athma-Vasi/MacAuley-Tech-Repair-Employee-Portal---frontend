@@ -6,11 +6,12 @@ type AccessibleSelectInputCreatorInfo = {
   data: string[];
   label: string;
   description: string;
+  describedBy?: string;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLSelectElement> | undefined;
-  required?: boolean | undefined;
+  withAsterisk?: boolean;
+  ref?: React.RefObject<HTMLSelectElement>;
+  required?: boolean;
 };
 
 type NativeSelectWrapperProps = {
@@ -26,6 +27,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     data,
     label,
     description,
+    describedBy = '',
     value,
     onChange,
     withAsterisk = false,
@@ -43,6 +45,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
       aria-label={`Currently selected ${value}`}
       aria-required={required}
       description={description}
+      aria-describedby={describedBy}
       value={value}
       onChange={onChange}
       ref={ref}
