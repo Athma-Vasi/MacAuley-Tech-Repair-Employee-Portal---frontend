@@ -1,3 +1,5 @@
+import { CheckboxInputData } from '../../types';
+
 type QueryInputKind = 'dateInput' | 'numberInput' | 'selectInput';
 
 type ComponentQueryData = {
@@ -38,6 +40,7 @@ type QueryBuilderState = {
   sortStatementsQueue: [string, string][];
 
   projectionArray: string[];
+  projectionCheckboxData: CheckboxInputData;
   selectedFieldsSet: Set<string>;
 
   isError: boolean;
@@ -68,6 +71,7 @@ type QueryBuilderAction = {
   setSortStatementsQueue: 'setSortStatementsQueue';
 
   setProjectionArray: 'setProjectionArray';
+  setProjectionCheckboxData: 'setProjectionCheckboxData';
   setSelectedFieldsSet: 'setSelectedFieldsSet';
 
   setIsError: 'setIsError';
@@ -130,7 +134,7 @@ type QueryBuilderDispatch =
     }
   | {
       type: QueryBuilderAction['setProjectionArray'];
-      payload: string;
+      payload: string[];
     }
   | {
       type: QueryBuilderAction['setSelectedFieldsSet'];
@@ -138,6 +142,10 @@ type QueryBuilderDispatch =
         kind: 'add' | 'delete';
         value: string;
       };
+    }
+  | {
+      type: QueryBuilderAction['setProjectionCheckboxData'];
+      payload: CheckboxInputData;
     };
 
 type QueryBuilderReducer = (

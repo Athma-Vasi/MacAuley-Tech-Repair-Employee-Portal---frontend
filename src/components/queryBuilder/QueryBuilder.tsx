@@ -2,9 +2,11 @@ import { Flex } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import {
+  returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleDateTimeElements,
   returnAccessibleErrorValidTextElements,
   returnAccessibleSelectInputElements,
+  returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import {
@@ -14,6 +16,7 @@ import {
   returnNumberAmountValidationText,
 } from '../../utils';
 import {
+  AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
@@ -35,6 +38,7 @@ import {
   DATE_REGEX,
   MONEY_REGEX,
 } from '../../constants/regex';
+import { CheckboxInputData } from '../../types';
 
 function QueryBuilder({
   componentQueryData,
@@ -62,6 +66,7 @@ function QueryBuilder({
     sortStatementsQueue,
 
     projectionArray,
+    projectionCheckboxData,
     selectedFieldsSet,
 
     isError,
@@ -76,28 +81,38 @@ function QueryBuilder({
 
   useEffect(() => {
     // loop through componentQueryData and assign to both filter select data or sort select data, and valueTypesObj
-    const [filterSelectData, sortSelectData, valueTypeObjects] =
-      componentQueryData.reduce(
-        (
-          acc: [string[], string[], QueryLabelValueTypesMap],
-          { label, value, inputKind, selectData }
-        ) => {
-          // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
-          if (inputKind === 'selectInput') {
-            acc[0].push(label);
-          } else {
-            acc[0].push(label);
-            acc[1].push(label);
-          }
+    const [
+      filterSelectData,
+      sortSelectData,
+      projectionCheckboxData,
+      valueTypeObjects,
+    ] = componentQueryData.reduce(
+      (
+        acc: [string[], string[], CheckboxInputData, QueryLabelValueTypesMap],
+        { label, value, inputKind, selectData }
+      ) => {
+        // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
+        if (inputKind === 'selectInput') {
+          acc[0].push(label);
+        } else {
+          acc[0].push(label);
+          acc[1].push(label);
+        }
 
-          selectData
-            ? acc[2].set(label, { value, inputKind, selectData })
-            : acc[2].set(label, { value, inputKind });
+        const checkboxDataObj = {
+          label,
+          value,
+        };
+        acc[2].push(checkboxDataObj);
 
-          return acc;
-        },
-        [[], [], new Map()]
-      );
+        selectData
+          ? acc[3].set(label, { value, inputKind, selectData })
+          : acc[3].set(label, { value, inputKind });
+
+        return acc;
+      },
+      [[], [], [], new Map()]
+    );
 
     queryBuilderDispatch({
       type: queryBuilderAction.setFilterSelectData,
@@ -106,6 +121,10 @@ function QueryBuilder({
     queryBuilderDispatch({
       type: queryBuilderAction.setSortSelectData,
       payload: sortSelectData,
+    });
+    queryBuilderDispatch({
+      type: queryBuilderAction.setProjectionCheckboxData,
+      payload: projectionCheckboxData,
     });
     queryBuilderDispatch({
       type: queryBuilderAction.setLabelValueTypesMap,
@@ -139,8 +158,7 @@ function QueryBuilder({
           kind: currentFilterTerm,
         })
       : '';
-  const currentSelectData =
-    labelValueTypesMap.get(currentFilterTerm)?.selectData;
+
   const [filterValueErrorText, filterValueValidText] =
     returnAccessibleErrorValidTextElements({
       inputElementKind: currentFilterTerm,
@@ -149,6 +167,18 @@ function QueryBuilder({
       isValidInputText: isCurrentFilterValueValid,
       regexValidationText,
     });
+
+  const [
+    projectionCheckboxInputSelectedText,
+    projectionCheckboxInputDeselectedText,
+  ] = returnAccessibleSelectedDeselectedTextElements({
+    isSelected: projectionArray.length > 0,
+    semanticName: 'projection fields',
+    deselectedDescription: 'All fields will be returned',
+    selectedDescription: `Only the following fields will be returned: ${projectionArray.join(
+      ', '
+    )}`,
+  });
 
   // ----------------- filter operation section -----------------  //
 
@@ -264,6 +294,27 @@ function QueryBuilder({
     },
   };
 
+  // ----------------- projection operation section -----------------  //
+
+  const projectionCheckboxGroupInputCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
+    {
+      dataObjectArray: projectionCheckboxData,
+      description: {
+        selected: projectionCheckboxInputSelectedText,
+        deselected: projectionCheckboxInputDeselectedText,
+      },
+      onChange: (value) => {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setProjectionArray,
+          payload: value,
+        });
+      },
+      semanticName: 'projection fields',
+      label: 'Fields',
+      value: projectionArray,
+      required: true,
+    };
+
   // ----------------- sort operation section -----------------  //
   const sortSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: sortSelectData,
@@ -307,6 +358,11 @@ function QueryBuilder({
     sortDirectionSelectInputCreatorInfo,
   ]);
 
+  const createdProjectionCheckboxGroupInput =
+    returnAccessibleCheckboxGroupInputsElements([
+      projectionCheckboxGroupInputCreatorInfo,
+    ]);
+
   const createdFilterValueInput =
     currentInputKind === 'dateInput'
       ? returnAccessibleDateTimeElements([filterValueDateInputCreatorInfo])
@@ -327,6 +383,13 @@ function QueryBuilder({
     </FormLayoutWrapper>
   );
 
+  const displayProjectionSection = (
+    <FormLayoutWrapper>
+      <TextWrapper creatorInfoObj={{}}>Projection</TextWrapper>
+      {createdProjectionCheckboxGroupInput}
+    </FormLayoutWrapper>
+  );
+
   const displaySortSection = (
     <FormLayoutWrapper>
       <TextWrapper creatorInfoObj={{}}>Sort</TextWrapper>
@@ -341,7 +404,7 @@ function QueryBuilder({
   //
   //
   useEffect(() => {
-    logState('queryBuilderState')(queryBuilderState)(false);
+    logState({ state: queryBuilderState });
   }, [queryBuilderState]);
 
   //
@@ -349,6 +412,7 @@ function QueryBuilder({
     <Flex direction="column" align="center" justify="center">
       <TextWrapper creatorInfoObj={{}}>Query Builder</TextWrapper>
       {displayFilterSection}
+      {displayProjectionSection}
       {displaySortSection}
     </Flex>
   );

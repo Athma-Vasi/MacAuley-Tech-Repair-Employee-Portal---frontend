@@ -40,7 +40,13 @@ type CheckBoxMultipleData = {
   label: string;
 }[];
 type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'JPY' | 'CNY';
+
 type SelectInputData = Array<{
+  value: string;
+  label: string;
+}>;
+
+type CheckboxInputData = Array<{
   value: string;
   label: string;
 }>;
@@ -51,6 +57,7 @@ export type {
   ActionsGeneral,
   ActionsOutreach,
   CanadianPostalCode,
+  CheckboxInputData,
   Country,
   Department,
   JobPosition,

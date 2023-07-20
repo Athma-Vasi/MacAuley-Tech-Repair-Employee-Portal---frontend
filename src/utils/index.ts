@@ -811,18 +811,23 @@ function returnTimeRailwayValidationText({
     : '';
 }
 
-const logState =
-  (groupLabel: string) =>
-  (state: Record<string, any>) =>
-  (isStringified: boolean) => {
-    console.group(groupLabel);
-    Object.entries(state).forEach(([key, value]) => {
-      isStringified
-        ? console.log(`${key}: `, JSON.stringify(value, null, 2))
-        : console.log(`${key}: `, value);
-    });
-    console.groupEnd();
-  };
+function logState({
+  state,
+  groupLabel = 'state',
+  isStringified = true,
+}: {
+  state: Record<string, any>;
+  groupLabel?: string;
+  isStringified?: boolean;
+}) {
+  console.group(groupLabel);
+  Object.entries(state).forEach(([key, value]) => {
+    isStringified
+      ? console.log(`${key}: `, JSON.stringify(value, null, 2))
+      : console.log(`${key}: `, value);
+  });
+  console.groupEnd();
+}
 
 export {
   formatDate,

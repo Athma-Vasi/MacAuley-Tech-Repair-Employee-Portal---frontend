@@ -22,6 +22,7 @@ const initialQueryBuilderState: QueryBuilderState = {
   sortStatementsQueue: [],
 
   projectionArray: [],
+  projectionCheckboxData: [],
   selectedFieldsSet: new Set(),
 
   isError: false,
@@ -52,6 +53,7 @@ const queryBuilderAction: QueryBuilderAction = {
   setSortStatementsQueue: 'setSortStatementsQueue',
 
   setProjectionArray: 'setProjectionArray',
+  setProjectionCheckboxData: 'setProjectionCheckboxData',
   setSelectedFieldsSet: 'setSelectedFieldsSet',
 
   setIsError: 'setIsError',
@@ -154,18 +156,21 @@ function queryBuilderReducer(
       };
     }
 
-    case queryBuilderAction.setProjectionArray: {
-      const projectionArray = [...state.projectionArray];
-      projectionArray.push(action.payload);
+    case queryBuilderAction.setProjectionArray:
       return {
         ...state,
-        projectionArray,
+        projectionArray: action.payload,
       };
-    }
+
+    case queryBuilderAction.setProjectionCheckboxData:
+      return {
+        ...state,
+        projectionCheckboxData: action.payload,
+      };
 
     case queryBuilderAction.setSelectedFieldsSet: {
-      const selectedFieldsSet = new Set(state.selectedFieldsSet);
       const { kind, value } = action.payload;
+      const selectedFieldsSet = new Set(state.selectedFieldsSet);
       kind === 'add'
         ? selectedFieldsSet.add(value)
         : selectedFieldsSet.delete(value);
