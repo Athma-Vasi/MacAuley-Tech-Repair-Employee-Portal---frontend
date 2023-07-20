@@ -42,6 +42,7 @@ type QueryBuilderState = {
   projectionArray: string[];
   projectionCheckboxData: CheckboxInputData;
   selectedFieldsSet: Set<string>;
+  projectedFieldsSet: Set<string>;
 
   isError: boolean;
   errorMessage: string;
@@ -73,6 +74,7 @@ type QueryBuilderAction = {
   setProjectionArray: 'setProjectionArray';
   setProjectionCheckboxData: 'setProjectionCheckboxData';
   setSelectedFieldsSet: 'setSelectedFieldsSet';
+  setProjectedFieldsSet: 'setProjectedFieldsSet';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -139,9 +141,12 @@ type QueryBuilderDispatch =
   | {
       type: QueryBuilderAction['setSelectedFieldsSet'];
       payload: {
-        kind: 'add' | 'delete';
-        value: string;
+        calledFrom: 'filter' | 'sort';
       };
+    }
+  | {
+      type: QueryBuilderAction['setProjectedFieldsSet'];
+      payload: string[];
     }
   | {
       type: QueryBuilderAction['setProjectionCheckboxData'];

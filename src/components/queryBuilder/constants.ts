@@ -1,5 +1,5 @@
 const QUERY_BUILDER_FILTER_OPERATORS = [
-  'equals',
+  'equal to',
   'less than',
   'greater than',
   'less than or equal to',
@@ -7,7 +7,7 @@ const QUERY_BUILDER_FILTER_OPERATORS = [
 ];
 
 const QUERY_BUILDER_FILTER_OPERATORS_MAP = new Map([
-  ['equals', 'eq'],
+  ['equal to', 'eq'],
   ['less than', 'lt'],
   ['greater than', 'gt'],
   ['less than or equal to', 'lte'],
@@ -21,4 +21,9 @@ const QUERY_BUILDER_SORT_OPERATORS_MAP = new Map([
   ['descending', -1],
 ]);
 
-export { QUERY_BUILDER_FILTER_OPERATORS, QUERY_BUILDER_SORT_OPERATORS };
+export {
+  QUERY_BUILDER_FILTER_OPERATORS,
+  QUERY_BUILDER_FILTER_OPERATORS_MAP,
+  QUERY_BUILDER_SORT_OPERATORS,
+  QUERY_BUILDER_SORT_OPERATORS_MAP,
+};

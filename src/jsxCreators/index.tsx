@@ -184,8 +184,9 @@ function returnAccessibleErrorValidTextElementsForDynamicInputs({
 type ReturnAccessibleSelectedDeselectedTextElementsProps = {
   semanticName: string;
   isSelected: boolean;
-  selectedDescription?: string | undefined;
-  deselectedDescription?: string | undefined;
+  selectedDescription?: string;
+  deselectedDescription?: string;
+  theme?: 'muted' | 'default';
 };
 
 function returnAccessibleSelectedDeselectedTextElements({
@@ -193,6 +194,7 @@ function returnAccessibleSelectedDeselectedTextElements({
   isSelected,
   selectedDescription = '',
   deselectedDescription = '',
+  theme = 'default',
 }: ReturnAccessibleSelectedDeselectedTextElementsProps): [
   JSX.Element,
   JSX.Element
@@ -204,11 +206,11 @@ function returnAccessibleSelectedDeselectedTextElements({
       style={{
         display: isSelected ? 'block' : 'none',
       }}
-      color="green"
+      color={theme === 'default' ? 'green' : 'gray'}
       w="100%"
       aria-live="polite"
     >
-      <FontAwesomeIcon icon={faCheck} />{' '}
+      {theme === 'default' ? <FontAwesomeIcon icon={faCheck} /> : null}{' '}
       {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} selected${
         selectedDescription.length > 0 ? ` - ${selectedDescription}` : ''
       }`}
@@ -219,11 +221,17 @@ function returnAccessibleSelectedDeselectedTextElements({
       style={{
         display: !isSelected ? 'block' : 'none',
       }}
-      color="red"
+      color={
+        theme === 'default'
+          ? deselectedDescription.length > 0
+            ? 'red'
+            : 'gray'
+          : 'gray'
+      }
       w="100%"
       aria-live="polite"
     >
-      <FontAwesomeIcon icon={faInfoCircle} />{' '}
+      {theme === 'default' ? <FontAwesomeIcon icon={faInfoCircle} /> : null}{' '}
       {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} deselected${
         deselectedDescription.length > 0 ? ` - ${deselectedDescription}` : ''
       }`}

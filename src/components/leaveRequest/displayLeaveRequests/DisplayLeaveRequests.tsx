@@ -57,12 +57,12 @@ function DisplayLeaveRequests() {
       ],
     },
     {
-      label: 'Created',
+      label: 'Created date',
       value: 'createdAt',
       inputKind: 'dateInput',
     },
     {
-      label: 'Updated',
+      label: 'Updated date',
       value: 'updatedAt',
       inputKind: 'dateInput',
     },

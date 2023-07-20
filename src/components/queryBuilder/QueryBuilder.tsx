@@ -2,6 +2,7 @@ import { Flex } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import {
+  returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleDateTimeElements,
   returnAccessibleErrorValidTextElements,
@@ -16,6 +17,7 @@ import {
   returnNumberAmountValidationText,
 } from '../../utils';
 import {
+  AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -68,6 +70,7 @@ function QueryBuilder({
     projectionArray,
     projectionCheckboxData,
     selectedFieldsSet,
+    projectedFieldsSet,
 
     isError,
     errorMessage,
@@ -80,7 +83,7 @@ function QueryBuilder({
   } = queryBuilderState;
 
   useEffect(() => {
-    // loop through componentQueryData and assign to both filter select data or sort select data, and valueTypesObj
+    // loop through componentQueryData and assign to both filter select data or sort select data, checkbox data, and labelValueTypesMap
     const [
       filterSelectData,
       sortSelectData,
@@ -169,23 +172,52 @@ function QueryBuilder({
     });
 
   const [
+    filterStatementsQueueSelectedText,
+    filterStatementsQueueDeselectedText,
+  ] = returnAccessibleSelectedDeselectedTextElements({
+    isSelected: filterStatementsQueue.length > 0,
+    semanticName: 'filter statements',
+    deselectedDescription: 'No filter statements have been added',
+    selectedDescription: `The following filter statements have been added: ${filterStatementsQueue.reduce(
+      (acc, [term, operator, value]) => {
+        // rome-ignore lint:
+        acc += `Select ${term}s that are ${operator} ${value}. `;
+        return acc;
+      },
+      ''
+    )}`,
+    theme: 'muted',
+  });
+
+  const [
     projectionCheckboxInputSelectedText,
     projectionCheckboxInputDeselectedText,
   ] = returnAccessibleSelectedDeselectedTextElements({
     isSelected: projectionArray.length > 0,
     semanticName: 'projection fields',
     deselectedDescription: 'All fields will be returned',
-    selectedDescription: `Only the following fields will be returned: ${projectionArray.join(
-      ', '
-    )}`,
+    selectedDescription:
+      projectionArray.length === labelValueTypesMap.size
+        ? 'All fields have been selected for exclusion. Nothing to query!'
+        : `The following fields will not be returned: ${projectionArray.join(
+            ', '
+          )}`,
+    theme: 'muted',
   });
 
   // ----------------- filter operation section -----------------  //
 
+  const filteredFilterSelectData = filterSelectData.filter(
+    (term) => !projectedFieldsSet.has(term)
+  );
   const filterSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: filterSelectData,
+    data: filteredFilterSelectData,
     label: 'Field',
     description: `Select a field to filter ${collectionName} by`,
+    describedBy:
+      filterStatementsQueue.length > 0
+        ? 'filter-statements-deselected'
+        : 'filter-statements-selected',
     value: currentFilterTerm,
     onChange: (event) => {
       queryBuilderDispatch({
@@ -197,7 +229,7 @@ function QueryBuilder({
 
   const filterOperatorData =
     currentInputKind === 'selectInput'
-      ? ['equals']
+      ? ['equal to']
       : QUERY_BUILDER_FILTER_OPERATORS;
   const filterOperatorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
@@ -207,7 +239,7 @@ function QueryBuilder({
         currentFilterTerm === ''
           ? 'Please select a field'
           : currentInputKind === 'selectInput'
-          ? 'Only "equals" is available for select inputs'
+          ? 'Only "equal to" is available for select inputs'
           : `Select an operator for ${currentFilterTerm}`
       }`,
       value: currentFilterOperator,
@@ -294,6 +326,46 @@ function QueryBuilder({
     },
   };
 
+  /**
+   * const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'leave request form submit button',
+    semanticName: 'submit button',
+    leftIcon: <TbUpload />,
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      leaveRequestDispatch({
+        type: createLeaveRequestAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
+   */
+
+  const addNewFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Add',
+    semanticDescription:
+      'Add new filter statement that can be chained with previous statements',
+    semanticName: 'add new filter',
+    buttonOnClick: (event) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setFilterStatementsQueue,
+        payload: {
+          index: filterStatementsQueue.length,
+          value: [currentFilterTerm, currentFilterOperator, currentFilterValue],
+        },
+      });
+      // add field to selected fields set
+      queryBuilderDispatch({
+        type: queryBuilderAction.setSelectedFieldsSet,
+        payload: {
+          calledFrom: 'filter',
+        },
+      });
+    },
+  };
+
   // ----------------- projection operation section -----------------  //
 
   const projectionCheckboxGroupInputCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
@@ -303,9 +375,15 @@ function QueryBuilder({
         selected: projectionCheckboxInputSelectedText,
         deselected: projectionCheckboxInputDeselectedText,
       },
+      disabledValuesSet: selectedFieldsSet,
       onChange: (value) => {
         queryBuilderDispatch({
           type: queryBuilderAction.setProjectionArray,
+          payload: value,
+        });
+        // add field to selected fields set
+        queryBuilderDispatch({
+          type: queryBuilderAction.setProjectedFieldsSet,
           payload: value,
         });
       },
@@ -316,8 +394,11 @@ function QueryBuilder({
     };
 
   // ----------------- sort operation section -----------------  //
+  const filteredSortSelectData = sortSelectData.filter(
+    (term) => !projectedFieldsSet.has(term)
+  );
   const sortSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: sortSelectData,
+    data: filteredSortSelectData,
     label: 'Sort',
     description: `Select a field to sort ${collectionName} by`,
     value: currentSortTerm,
@@ -325,6 +406,13 @@ function QueryBuilder({
       queryBuilderDispatch({
         type: queryBuilderAction.setCurrentSortTerm,
         payload: event.currentTarget.value,
+      });
+      // add field to selected fields set
+      queryBuilderDispatch({
+        type: queryBuilderAction.setSelectedFieldsSet,
+        payload: {
+          calledFrom: 'sort',
+        },
       });
     },
   };
@@ -358,6 +446,10 @@ function QueryBuilder({
     sortDirectionSelectInputCreatorInfo,
   ]);
 
+  const [createdAddNewFilterButton] = returnAccessibleButtonElements([
+    addNewFilterButtonCreatorInfo,
+  ]);
+
   const createdProjectionCheckboxGroupInput =
     returnAccessibleCheckboxGroupInputsElements([
       projectionCheckboxGroupInputCreatorInfo,
@@ -372,14 +464,27 @@ function QueryBuilder({
           filterValueSelectInputCreatorInfo,
         ]);
 
+  const displayFilterStatementsQueue =
+    filterStatementsQueue.length > 0
+      ? filterStatementsQueueSelectedText
+      : filterStatementsQueueDeselectedText;
+
   const displayFilterSection = (
     <FormLayoutWrapper>
-      <TextWrapper creatorInfoObj={{}}>Filter</TextWrapper>
-      <FormLayoutWrapper direction="row">
-        {createdFilterSelectInput}
-        {createdFilterOperatorsSelectInput}
-        {createdFilterValueInput}
-      </FormLayoutWrapper>
+      {filteredFilterSelectData.length === 0 ? (
+        <TextWrapper creatorInfoObj={{}}>No fields to filter!</TextWrapper>
+      ) : (
+        <>
+          <TextWrapper creatorInfoObj={{}}>Filter</TextWrapper>
+          {displayFilterStatementsQueue}
+          <FormLayoutWrapper direction="row">
+            {createdFilterSelectInput}
+            {createdFilterOperatorsSelectInput}
+            {createdFilterValueInput}
+            {createdAddNewFilterButton}
+          </FormLayoutWrapper>
+        </>
+      )}
     </FormLayoutWrapper>
   );
 
@@ -392,11 +497,17 @@ function QueryBuilder({
 
   const displaySortSection = (
     <FormLayoutWrapper>
-      <TextWrapper creatorInfoObj={{}}>Sort</TextWrapper>
-      <FormLayoutWrapper direction="row">
-        {createdSortSelectInput}
-        {createdSortDirectionSelectInput}
-      </FormLayoutWrapper>
+      {filteredSortSelectData.length === 0 ? (
+        <TextWrapper creatorInfoObj={{}}>No fields to sort!</TextWrapper>
+      ) : (
+        <>
+          <TextWrapper creatorInfoObj={{}}>Sort</TextWrapper>
+          <FormLayoutWrapper direction="row">
+            {createdSortSelectInput}
+            {createdSortDirectionSelectInput}
+          </FormLayoutWrapper>
+        </>
+      )}
     </FormLayoutWrapper>
   );
 

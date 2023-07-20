@@ -814,7 +814,7 @@ function returnTimeRailwayValidationText({
 function logState({
   state,
   groupLabel = 'state',
-  isStringified = true,
+  isStringified = false,
 }: {
   state: Record<string, any>;
   groupLabel?: string;

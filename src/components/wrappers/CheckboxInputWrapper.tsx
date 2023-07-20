@@ -5,17 +5,17 @@ import { useGlobalState } from '../../hooks';
 
 type AccessibleCheckboxSingleInputCreatorInfo = {
   semanticName: string;
-  label?: ReactNode | string | undefined;
+  label?: ReactNode | string;
   description: {
     selected: JSX.Element;
     deselected: JSX.Element;
   };
-  ariaRequired?: boolean | undefined;
+  ariaRequired?: boolean;
   checked: boolean;
-  disabled?: boolean | undefined;
+  disabled?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined | null;
+  required?: boolean;
+  ref?: React.RefObject<HTMLInputElement> | null;
 };
 
 type CheckboxSingleInputWrapperProps = {
@@ -70,18 +70,19 @@ function CheckboxSingleInputWrapper({
 
 type AccessibleCheckboxGroupInputCreatorInfo = {
   semanticName: string;
-  label?: ReactNode | string | undefined;
+  label?: ReactNode | string;
   description: {
     selected: JSX.Element;
     deselected: JSX.Element;
   };
-  ariaRequired?: boolean | undefined;
+  disabledValuesSet?: Set<string>;
+  ariaRequired?: boolean;
   value: string[];
   onChange: (value: string[]) => void;
-  name?: string | undefined;
-  required?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined | null;
-  withAsterisk?: boolean | undefined;
+  name?: string;
+  required?: boolean;
+  ref?: React.RefObject<HTMLInputElement> | null;
+  withAsterisk?: boolean;
   dataObjectArray: Array<{
     value: string;
     label: string;
@@ -102,6 +103,7 @@ function CheckboxGroupInputsWrapper({
   const {
     dataObjectArray,
     description,
+    disabledValuesSet = new Set(),
     onChange,
     semanticName,
     label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
@@ -134,10 +136,17 @@ function CheckboxGroupInputsWrapper({
         columns={width < 480 ? 1 : width < 768 ? 2 : width < 1440 ? 3 : 4}
         p={padding}
       >
-        {dataObjectArray?.map(({ value, label }) => {
+        {dataObjectArray?.map(({ value, label }, index) => {
           return (
-            <Grid.Col span={1}>
-              <Checkbox key={value} name={value} value={value} label={label} />
+            <Grid.Col span={1} key={`${value}-${index}-${label}`}>
+              <Checkbox
+                name={value}
+                value={value}
+                label={label}
+                disabled={
+                  disabledValuesSet.has(value) || disabledValuesSet.has(label)
+                }
+              />
             </Grid.Col>
           );
         })}

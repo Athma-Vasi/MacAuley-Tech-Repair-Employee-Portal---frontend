@@ -6,7 +6,7 @@ import {
 
 const initialQueryBuilderState: QueryBuilderState = {
   currentFilterTerm: 'Created',
-  currentFilterOperator: 'equals',
+  currentFilterOperator: 'equal to',
   currentFilterValue: '1970-01-01',
   isCurrentFilterValueValid: false,
   isCurrentFilterValueFocused: false,
@@ -24,6 +24,7 @@ const initialQueryBuilderState: QueryBuilderState = {
   projectionArray: [],
   projectionCheckboxData: [],
   selectedFieldsSet: new Set(),
+  projectedFieldsSet: new Set(),
 
   isError: false,
   errorMessage: '',
@@ -55,6 +56,7 @@ const queryBuilderAction: QueryBuilderAction = {
   setProjectionArray: 'setProjectionArray',
   setProjectionCheckboxData: 'setProjectionCheckboxData',
   setSelectedFieldsSet: 'setSelectedFieldsSet',
+  setProjectedFieldsSet: 'setProjectedFieldsSet',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -128,6 +130,16 @@ function queryBuilderReducer(
       const { index, value } = action.payload;
       const filterStatementsQueue = [...state.filterStatementsQueue];
 
+      // if filter statement already present return state
+      if (
+        filterStatementsQueue.filter(
+          (item) =>
+            item[0] === value[0] && item[1] === value[1] && item[2] === value[2]
+        ).length > 0
+      ) {
+        return state;
+      }
+
       if (index >= filterStatementsQueue.length) {
         filterStatementsQueue.push(value);
       } else {
@@ -169,15 +181,53 @@ function queryBuilderReducer(
       };
 
     case queryBuilderAction.setSelectedFieldsSet: {
-      const { kind, value } = action.payload;
-      const selectedFieldsSet = new Set(state.selectedFieldsSet);
-      kind === 'add'
-        ? selectedFieldsSet.add(value)
-        : selectedFieldsSet.delete(value);
+      const { calledFrom } = action.payload;
+
+      const selectedFieldsSet = new Set<string>();
+      if (calledFrom === 'filter') {
+        const filterStatementsQueue = [...state.filterStatementsQueue];
+        filterStatementsQueue.forEach((item) => {
+          selectedFieldsSet.add(item[0]);
+        });
+      } else if (calledFrom === 'sort') {
+        const sortStatementsQueue = [...state.sortStatementsQueue];
+        sortStatementsQueue.forEach((item) => {
+          selectedFieldsSet.add(item[0]);
+        });
+      }
 
       return {
         ...state,
         selectedFieldsSet,
+      };
+    }
+
+    case queryBuilderAction.setProjectedFieldsSet: {
+      const projectedFieldsSet = new Set<string>();
+      const projectionArray = [...state.projectionArray];
+
+      // this is required because projection checkbox value is the camel cased value that is not the client facing label(e.g. createdAt as opposed to Created date). The backend consumes the camel cased value.
+      // the corresponding label from the map is found as the projectedFieldsSet is consumed by sort and field select inputs, whose values are the client facing labels.
+      projectionArray.forEach((item) => {
+        const findCorrespondingLabel = Array.from(
+          state.labelValueTypesMap
+        ).reduce((acc, curr) => {
+          const [label, obj] = curr;
+          const { value } = obj;
+          if (value === item) {
+            // rome-ignore lint:
+            acc = label;
+          }
+
+          return acc;
+        }, '');
+
+        projectedFieldsSet.add(findCorrespondingLabel);
+      });
+
+      return {
+        ...state,
+        projectedFieldsSet,
       };
     }
 
