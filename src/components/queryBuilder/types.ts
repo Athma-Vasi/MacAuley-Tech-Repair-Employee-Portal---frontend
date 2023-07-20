@@ -11,8 +11,8 @@ type QueryBuilderState = {
   filterSelectData: SelectInputData;
   sortSelectData: SelectInputData;
 
-  filterStatementsQueue: string[];
-  sortStatementsQueue: string[];
+  filterStatementsQueue: [string, string, string][];
+  sortStatementsQueue: [string, string][];
 
   projectionArray: string[];
   selectedFieldsSet: Set<string>;
@@ -70,17 +70,30 @@ type QueryBuilderDispatch =
     }
   | {
       type:
+        | QueryBuilderAction['setIsError']
+        | QueryBuilderAction['setIsSubmitting']
+        | QueryBuilderAction['setIsSuccessful']
+        | QueryBuilderAction['setIsLoading'];
+      payload: boolean;
+    }
+  | {
+      type:
         | QueryBuilderAction['setFilterSelectData']
         | QueryBuilderAction['setSortSelectData'];
       payload: SelectInputData;
     }
   | {
-      type:
-        | QueryBuilderAction['setFilterStatementsQueue']
-        | QueryBuilderAction['setSortStatementsQueue'];
+      type: QueryBuilderAction['setFilterStatementsQueue'];
       payload: {
         index: number;
-        value: string[];
+        value: [string, string, string];
+      };
+    }
+  | {
+      type: QueryBuilderAction['setSortStatementsQueue'];
+      payload: {
+        index: number;
+        value: [string, string];
       };
     }
   | {
