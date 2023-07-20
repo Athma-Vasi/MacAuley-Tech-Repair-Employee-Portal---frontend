@@ -1,28 +1,40 @@
+import { Flex } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
-import { SelectInputData } from '../../types';
-import { logState } from '../../utils';
 import {
-  QueryBuilderProps,
-  QueryLabelValueTypesMap,
-  QueryValueTypes,
-} from './types';
+  returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextInputElements,
+} from '../../jsxCreators';
+import {
+  logState,
+  returnDateFullRangeValidationText,
+  returnDateValidationText,
+  returnNumberAmountValidationText,
+} from '../../utils';
+import {
+  AccessibleDateTimeInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
+  TextWrapper,
+} from '../wrappers';
+import {
+  QUERY_BUILDER_FILTER_OPERATORS,
+  QUERY_BUILDER_SORT_OPERATORS,
+} from './constants';
 import {
   initialQueryBuilderState,
   queryBuilderAction,
   queryBuilderReducer,
 } from './state';
+import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
 import {
-  AccessibleSelectInputCreatorInfo,
-  FormLayoutWrapper,
-  TextWrapper,
-} from '../wrappers';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
-import {
-  QUERY_BUILDER_FILTER_OPERATORS,
-  QUERY_BUILDER_SORT_OPERATORS,
-} from './constants';
-import { Flex } from '@mantine/core';
+  DATE_FULL_RANGE_REGEX,
+  DATE_REGEX,
+  MONEY_REGEX,
+} from '../../constants/regex';
 
 function QueryBuilder({
   componentQueryData,
@@ -36,6 +48,8 @@ function QueryBuilder({
     currentFilterTerm,
     currentFilterOperator,
     currentFilterValue,
+    isCurrentFilterValueValid,
+    isCurrentFilterValueFocused,
 
     currentSortTerm,
     currentSortDirection,
@@ -66,17 +80,19 @@ function QueryBuilder({
       componentQueryData.reduce(
         (
           acc: [string[], string[], QueryLabelValueTypesMap],
-          { label, value, type }
+          { label, value, inputKind, selectData }
         ) => {
           // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
-          if (type === 'selectData') {
+          if (inputKind === 'selectInput') {
             acc[0].push(label);
           } else {
             acc[0].push(label);
             acc[1].push(label);
           }
 
-          acc[2].set(label, { value, type });
+          selectData
+            ? acc[2].set(label, { value, inputKind, selectData })
+            : acc[2].set(label, { value, inputKind });
 
           return acc;
         },
@@ -97,9 +113,48 @@ function QueryBuilder({
     });
   }, [componentQueryData]);
 
+  // validate filter value on every change
+  useEffect(() => {
+    const currentInputKind =
+      labelValueTypesMap.get(currentFilterTerm)?.inputKind;
+    const isValid =
+      currentInputKind === 'dateInput'
+        ? DATE_FULL_RANGE_REGEX.test(currentFilterValue)
+        : MONEY_REGEX.test(currentFilterValue);
+
+    queryBuilderDispatch({
+      type: queryBuilderAction.setIsCurrentFilterValueValid,
+      payload: isValid,
+    });
+  }, [currentFilterTerm, currentFilterValue, labelValueTypesMap]);
+
+  // ----------------- accessibility text elements ----------------- //
+  const currentInputKind = labelValueTypesMap.get(currentFilterTerm)?.inputKind;
+  const regexValidationText =
+    currentInputKind === 'dateInput'
+      ? returnDateFullRangeValidationText(currentFilterValue)
+      : currentInputKind === 'numberInput'
+      ? returnNumberAmountValidationText({
+          amount: currentFilterValue,
+          kind: currentFilterTerm,
+        })
+      : '';
+  const currentSelectData =
+    labelValueTypesMap.get(currentFilterTerm)?.selectData;
+  const [filterValueErrorText, filterValueValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: currentFilterTerm,
+      inputText: currentFilterValue,
+      isInputTextFocused: isCurrentFilterValueFocused,
+      isValidInputText: isCurrentFilterValueValid,
+      regexValidationText,
+    });
+
+  // ----------------- filter operation section -----------------  //
+
   const filterSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: filterSelectData,
-    label: 'Filter',
+    label: 'Field',
     description: `Select a field to filter ${collectionName} by`,
     value: currentFilterTerm,
     onChange: (event) => {
@@ -110,14 +165,20 @@ function QueryBuilder({
     },
   };
 
+  const filterOperatorData =
+    currentInputKind === 'selectInput'
+      ? ['equals']
+      : QUERY_BUILDER_FILTER_OPERATORS;
   const filterOperatorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
-      data: QUERY_BUILDER_FILTER_OPERATORS,
-      label: 'Filter operator',
+      data: filterOperatorData,
+      label: 'Operator',
       description: `${
         currentFilterTerm === ''
-          ? 'Please select a filter field'
-          : `Select a filter operator for ${currentFilterTerm}`
+          ? 'Please select a field'
+          : currentInputKind === 'selectInput'
+          ? 'Only "equals" is available for select inputs'
+          : `Select an operator for ${currentFilterTerm}`
       }`,
       value: currentFilterOperator,
       onChange: (event) => {
@@ -128,6 +189,82 @@ function QueryBuilder({
       },
     };
 
+  const filterValueDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
+    label: 'Value',
+    description: {
+      error: filterValueErrorText,
+      valid: filterValueValidText,
+    },
+    onChange: (event) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setCurrentFilterValue,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsCurrentFilterValueFocused,
+        payload: true,
+      });
+    },
+    onBlur: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsCurrentFilterValueFocused,
+        payload: false,
+      });
+    },
+    inputKind: 'date',
+    dateKind: 'full date',
+    inputText: currentFilterValue,
+    isValidInputText: isCurrentFilterValueValid,
+    placeholder: 'Enter a value',
+    semanticName: currentFilterTerm,
+  };
+
+  const filterValueNumberInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    label: 'Value',
+    description: {
+      error: filterValueErrorText,
+      valid: filterValueValidText,
+    },
+    onChange: (event) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setCurrentFilterValue,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsCurrentFilterValueFocused,
+        payload: true,
+      });
+    },
+    onBlur: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsCurrentFilterValueFocused,
+        payload: false,
+      });
+    },
+    inputText: currentFilterValue,
+    isValidInputText: isCurrentFilterValueValid,
+    placeholder: `Enter a value for ${currentFilterTerm}`,
+    semanticName: currentFilterTerm,
+  };
+
+  const filterValueSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: labelValueTypesMap.get(currentFilterTerm)?.selectData || [],
+    label: 'Value',
+    description: `Select a value for ${currentFilterTerm}`,
+    value: currentFilterValue,
+    onChange: (event) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setCurrentFilterValue,
+        payload: event.currentTarget.value,
+      });
+    },
+  };
+
+  // ----------------- sort operation section -----------------  //
   const sortSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: sortSelectData,
     label: 'Sort',
@@ -144,8 +281,11 @@ function QueryBuilder({
   const sortDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       data: QUERY_BUILDER_SORT_OPERATORS,
-      label: 'Sort direction',
-      description: `Select a sort direction for ${currentSortTerm}`,
+      label: 'Direction',
+      description:
+        currentSortTerm === ''
+          ? 'Please select a sort field'
+          : `Select a sort direction for ${currentSortTerm}`,
       value: currentSortDirection,
       onChange: (event) => {
         queryBuilderDispatch({
@@ -167,18 +307,33 @@ function QueryBuilder({
     sortDirectionSelectInputCreatorInfo,
   ]);
 
+  const createdFilterValueInput =
+    currentInputKind === 'dateInput'
+      ? returnAccessibleDateTimeElements([filterValueDateInputCreatorInfo])
+      : currentInputKind === 'numberInput'
+      ? returnAccessibleTextInputElements([filterValueNumberInputCreatorInfo])
+      : returnAccessibleSelectInputElements([
+          filterValueSelectInputCreatorInfo,
+        ]);
+
   const displayFilterSection = (
-    <FormLayoutWrapper direction="row">
-      {createdFilterSelectInput}
-      {createdFilterOperatorsSelectInput}
-      {/* {createdFilterValueInput} */}
+    <FormLayoutWrapper>
+      <TextWrapper creatorInfoObj={{}}>Filter</TextWrapper>
+      <FormLayoutWrapper direction="row">
+        {createdFilterSelectInput}
+        {createdFilterOperatorsSelectInput}
+        {createdFilterValueInput}
+      </FormLayoutWrapper>
     </FormLayoutWrapper>
   );
 
   const displaySortSection = (
-    <FormLayoutWrapper direction="row">
-      {createdSortSelectInput}
-      {createdSortDirectionSelectInput}
+    <FormLayoutWrapper>
+      <TextWrapper creatorInfoObj={{}}>Sort</TextWrapper>
+      <FormLayoutWrapper direction="row">
+        {createdSortSelectInput}
+        {createdSortDirectionSelectInput}
+      </FormLayoutWrapper>
     </FormLayoutWrapper>
   );
 

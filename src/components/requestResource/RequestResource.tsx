@@ -20,7 +20,7 @@ import { Department, Urgency } from '../../types';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
-  returnMoneyValidationText,
+  returnNumberAmountValidationText,
 } from '../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -202,9 +202,9 @@ function RequestResource() {
       inputText: resourceQuantity,
       isInputTextFocused: isResourceQuantityFocused,
       isValidInputText: isValidResourceQuantity,
-      regexValidationText: returnMoneyValidationText({
+      regexValidationText: returnNumberAmountValidationText({
         kind: 'resource quantity',
-        money: resourceQuantity,
+        amount: resourceQuantity,
       }),
     });
 

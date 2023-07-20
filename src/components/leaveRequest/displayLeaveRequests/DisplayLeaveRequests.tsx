@@ -33,32 +33,44 @@ function DisplayLeaveRequests() {
     {
       label: 'Start date',
       value: 'startDate',
-      type: 'date',
+      inputKind: 'dateInput',
     },
     {
       label: 'End date',
       value: 'endDate',
-      type: 'date',
+      inputKind: 'dateInput',
     },
     {
       label: 'Reason for leave',
       value: 'reasonForLeave',
-      type: 'selectData',
+      inputKind: 'selectInput',
+      selectData: [
+        'Vacation',
+        'Medical',
+        'Parental',
+        'Bereavement',
+        'Jury Duty',
+        'Military',
+        'Education',
+        'Religious',
+        'Other',
+      ],
     },
     {
       label: 'Created',
       value: 'createdAt',
-      type: 'date',
+      inputKind: 'dateInput',
     },
     {
       label: 'Updated',
       value: 'updatedAt',
-      type: 'date',
+      inputKind: 'dateInput',
     },
     {
       label: 'Request status',
       value: 'requestStatus',
-      type: 'selectData',
+      inputKind: 'selectInput',
+      selectData: ['pending', 'approved', 'rejected'],
     },
   ];
   return (

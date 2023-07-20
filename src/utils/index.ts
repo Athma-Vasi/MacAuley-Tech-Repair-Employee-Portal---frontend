@@ -455,6 +455,74 @@ function returnDateNearPastValidationText(date: string): string {
   return validationText ? `Invalid date. ${validationText}` : '';
 }
 
+function returnDateFullRangeValidationText(date: string): string {
+  const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
+  const monthRegex = /^(0[1-9]|1[0-2])$/;
+  const yearRegex = /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-6])$/;
+
+  const day = date.split('-')[2];
+  const month = date.split('-')[1];
+  const year = date.split('-')[0];
+
+  const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
+  const isMonthInFuture = month
+    ? parseInt(month) > new Date().getMonth() + 1
+    : false;
+  const isYearInFuture = year
+    ? parseInt(year) > new Date().getFullYear()
+    : false;
+
+  const isEnteredYearMonthDayInFuture = isYearInFuture
+    ? isMonthInFuture
+      ? isDayInFuture
+        ? true
+        : false
+      : false
+    : false;
+  const isEnteredYearMonthInFuture = isYearInFuture
+    ? isMonthInFuture
+      ? true
+      : false
+    : false;
+  const isEnteredDayInFuture = day
+    ? parseInt(day) > new Date().getDate()
+    : false;
+
+  const dateValidationTupleArr: [boolean, string][] = [
+    [
+      day ? dayRegex.test(day) : true,
+      'Must be a valid day. Cannot be greater than 31.',
+    ],
+    [
+      month ? monthRegex.test(month) : true,
+      'Must be a valid month. Cannot be greater than 12.',
+    ],
+    [
+      year ? yearRegex.test(year) : true,
+      'Must be a valid year between 1900 and 2026.',
+    ],
+    [
+      isEnteredYearMonthInFuture && !isEnteredDayInFuture ? false : true,
+      `Month of ${month} must be in the past.`,
+    ],
+    [
+      isEnteredDayInFuture && !isEnteredYearMonthInFuture ? false : true,
+      `Day of ${day} must be in the past.`,
+    ],
+    [
+      isEnteredYearMonthDayInFuture ? false : true,
+      `Date of ${date} must be in the past.`,
+    ],
+  ];
+
+  const validationText = dateValidationTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText ? `Invalid date. ${validationText}` : '';
+}
+
 function returnDateOfBirthValidationText(date: string): string {
   const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
   const monthRegex = /^(0[1-9]|1[0-2])$/;
@@ -527,11 +595,11 @@ function returnDateOfBirthValidationText(date: string): string {
  * Performs money validation on a number and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
  * kind - semantic html input name
  */
-function returnMoneyValidationText({
-  money,
+function returnNumberAmountValidationText({
+  amount,
   kind,
 }: {
-  money: string;
+  amount: string;
   kind: string;
 }): string {
   // /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/
@@ -542,15 +610,15 @@ function returnMoneyValidationText({
     `^${beforeSeperatorRegex.source}${afterSeperatorRegex.source}$`
   );
 
-  const beforeSeparatorAmount = money.includes('.')
-    ? money.split('.')[0]
-    : money.split(',')[0];
-  const afterSeparatorAmount = money.includes('.')
-    ? money.split('.')[1]
-    : money.split(',')[1];
+  const beforeSeparatorAmount = amount.includes('.')
+    ? amount.split('.')[0]
+    : amount.split(',')[0];
+  const afterSeparatorAmount = amount.includes('.')
+    ? amount.split('.')[1]
+    : amount.split(',')[1];
 
-  const moneyRegexTupleArr: [boolean, string][] = [
-    [numberPresentRegex.test(money), 'Must contain at least one number.'],
+  const amountRegexTupleArr: [boolean, string][] = [
+    [numberPresentRegex.test(amount), 'Must contain at least one number.'],
     [
       beforeSeperatorRegex.test(beforeSeparatorAmount),
       'Must be between 1 and 6 digits before the separator.',
@@ -560,12 +628,12 @@ function returnMoneyValidationText({
       'Must be between 0 and 2 digits after the separator.',
     ],
     [
-      numberLengthRegex.test(money),
+      numberLengthRegex.test(amount),
       'Must be between 1 and 6 digits before the separator, and 0 to 2 digits after the separator.',
     ],
   ];
 
-  const validationText = moneyRegexTupleArr
+  const validationText = amountRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
@@ -761,16 +829,17 @@ export {
   logState,
   returnAddressValidationText,
   returnCityValidationText,
+  returnDateFullRangeValidationText,
   returnDateNearFutureValidationText,
   returnDateNearPastValidationText,
   returnDateOfBirthValidationText,
   returnDateValidationText,
   returnEmailValidationText,
   returnGrammarValidationText,
-  returnMoneyValidationText,
   returnNameValidationText,
   returnNoteContentValidationText,
   returnNoteTitleValidationText,
+  returnNumberAmountValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
   returnPrinterMakeModelValidationText,

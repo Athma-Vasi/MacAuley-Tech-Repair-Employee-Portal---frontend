@@ -23,7 +23,7 @@ import {
 import {
   returnDateValidationText,
   returnGrammarValidationText,
-  returnMoneyValidationText,
+  returnNumberAmountValidationText,
 } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -310,8 +310,8 @@ function CreateBenefit() {
     inputText: employeeContribution,
     isValidInputText: isValidEmployeeContribution,
     isInputTextFocused: isEmployeeContributionFocused,
-    regexValidationText: returnMoneyValidationText({
-      money: employeeContribution,
+    regexValidationText: returnNumberAmountValidationText({
+      amount: employeeContribution,
       kind: 'employee contribution',
     }),
   });
@@ -324,8 +324,8 @@ function CreateBenefit() {
     inputText: employerContribution,
     isValidInputText: isValidEmployerContribution,
     isInputTextFocused: isEmployerContributionFocused,
-    regexValidationText: returnMoneyValidationText({
-      money: employerContribution,
+    regexValidationText: returnNumberAmountValidationText({
+      amount: employerContribution,
       kind: 'employer contribution',
     }),
   });

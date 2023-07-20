@@ -1,12 +1,16 @@
+type QueryInputKind = 'dateInput' | 'numberInput' | 'selectInput';
+
 type ComponentQueryData = {
   label: string;
   value: string;
-  type: string;
+  inputKind: QueryInputKind;
+  selectData?: string[];
 };
 
 type QueryValueTypes = {
   value: string;
-  type: string;
+  inputKind: string;
+  selectData?: string[];
 };
 
 type QueryLabelValueTypesMap = Map<string, QueryValueTypes>;
@@ -20,6 +24,8 @@ type QueryBuilderState = {
   currentFilterTerm: string;
   currentFilterOperator: string;
   currentFilterValue: string;
+  isCurrentFilterValueValid: boolean;
+  isCurrentFilterValueFocused: boolean;
 
   currentSortTerm: string;
   currentSortDirection: string;
@@ -48,6 +54,8 @@ type QueryBuilderAction = {
   setCurrentFilterTerm: 'setCurrentFilterTerm';
   setCurrentFilterOperator: 'setCurrentFilterOperator';
   setCurrentFilterValue: 'setCurrentFilterValue';
+  setIsCurrentFilterValueValid: 'setIsCurrentFilterValueValid';
+  setIsCurrentFilterValueFocused: 'setIsCurrentFilterValueFocused';
 
   setCurrentSortTerm: 'setCurrentSortTerm';
   setCurrentSortDirection: 'setCurrentSortDirection';
@@ -88,6 +96,8 @@ type QueryBuilderDispatch =
     }
   | {
       type:
+        | QueryBuilderAction['setIsCurrentFilterValueValid']
+        | QueryBuilderAction['setIsCurrentFilterValueFocused']
         | QueryBuilderAction['setIsError']
         | QueryBuilderAction['setIsSubmitting']
         | QueryBuilderAction['setIsSuccessful']
@@ -142,6 +152,7 @@ export type {
   QueryBuilderProps,
   QueryBuilderReducer,
   QueryBuilderState,
+  QueryInputKind,
   QueryLabelValueTypesMap,
   QueryValueTypes,
 };

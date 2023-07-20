@@ -5,9 +5,11 @@ import {
 } from './types';
 
 const initialQueryBuilderState: QueryBuilderState = {
-  currentFilterTerm: '',
-  currentFilterOperator: '',
-  currentFilterValue: '',
+  currentFilterTerm: 'Created',
+  currentFilterOperator: 'equals',
+  currentFilterValue: '1970-01-01',
+  isCurrentFilterValueValid: false,
+  isCurrentFilterValueFocused: false,
 
   currentSortTerm: '',
   currentSortDirection: '',
@@ -36,6 +38,8 @@ const queryBuilderAction: QueryBuilderAction = {
   setCurrentFilterTerm: 'setCurrentFilterTerm',
   setCurrentFilterOperator: 'setCurrentFilterOperator',
   setCurrentFilterValue: 'setCurrentFilterValue',
+  setIsCurrentFilterValueValid: 'setIsCurrentFilterValueValid',
+  setIsCurrentFilterValueFocused: 'setIsCurrentFilterValueFocused',
 
   setCurrentSortTerm: 'setCurrentSortTerm',
   setCurrentSortDirection: 'setCurrentSortDirection',
@@ -79,6 +83,16 @@ function queryBuilderReducer(
       return {
         ...state,
         currentFilterValue: action.payload,
+      };
+    case queryBuilderAction.setIsCurrentFilterValueValid:
+      return {
+        ...state,
+        isCurrentFilterValueValid: action.payload,
+      };
+    case queryBuilderAction.setIsCurrentFilterValueFocused:
+      return {
+        ...state,
+        isCurrentFilterValueFocused: action.payload,
       };
 
     case queryBuilderAction.setCurrentSortTerm:

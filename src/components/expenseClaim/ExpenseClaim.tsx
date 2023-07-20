@@ -27,7 +27,7 @@ import type { Currency } from '../../types';
 import {
   returnDateNearPastValidationText,
   returnGrammarValidationText,
-  returnMoneyValidationText,
+  returnNumberAmountValidationText,
 } from '../../utils';
 import { CURRENCY_DATA } from '../benefits/constants';
 import {
@@ -196,9 +196,9 @@ function ExpenseClaim() {
       inputText: expenseClaimAmount,
       isInputTextFocused: isExpenseClaimAmountFocused,
       isValidInputText: isValidExpenseClaimAmount,
-      regexValidationText: returnMoneyValidationText({
+      regexValidationText: returnNumberAmountValidationText({
         kind: 'expense claim amount',
-        money: expenseClaimAmount,
+        amount: expenseClaimAmount,
       }),
     });
 
