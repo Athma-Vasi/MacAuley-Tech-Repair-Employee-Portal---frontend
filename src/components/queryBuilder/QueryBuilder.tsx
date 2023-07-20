@@ -133,7 +133,7 @@ function QueryBuilder({
       type: queryBuilderAction.setLabelValueTypesMap,
       payload: valueTypeObjects,
     });
-  }, [componentQueryData]);
+  }, [componentQueryData, selectedFieldsSet, projectedFieldsSet]);
 
   // validate filter value on every change
   useEffect(() => {
@@ -189,19 +189,50 @@ function QueryBuilder({
     theme: 'muted',
   });
 
+  const [sortStatementsQueueSelectedText, sortStatementsQueueDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: sortStatementsQueue.length > 0,
+      semanticName: 'sort statements',
+      deselectedDescription: 'No sort statements have been added',
+      selectedDescription: `The following sort statements have been added: ${sortStatementsQueue.reduce(
+        (acc, [term, direction]) => {
+          // rome-ignore lint:
+          acc += `Sort ${term}s in ${direction} order. `;
+          return acc;
+        },
+        ''
+      )}`,
+      theme: 'muted',
+    });
+
   const [
     projectionCheckboxInputSelectedText,
     projectionCheckboxInputDeselectedText,
   ] = returnAccessibleSelectedDeselectedTextElements({
     isSelected: projectionArray.length > 0,
-    semanticName: 'projection fields',
+    semanticName: 'projection exclusion fields',
     deselectedDescription: 'All fields will be returned',
     selectedDescription:
       projectionArray.length === labelValueTypesMap.size
         ? 'All fields have been selected for exclusion. Nothing to query!'
-        : `The following fields will not be returned: ${projectionArray.join(
-            ', '
-          )}`,
+        : `The following fields will not be returned: ${projectionArray
+            .map((item) => {
+              const findCorrespondingLabel = Array.from(
+                labelValueTypesMap
+              ).reduce((acc, curr) => {
+                const [label, obj] = curr;
+                const { value } = obj;
+                if (value === item) {
+                  // rome-ignore lint:
+                  acc = label;
+                }
+
+                return acc;
+              }, '');
+
+              return findCorrespondingLabel;
+            })
+            .join(', ')}`,
     theme: 'muted',
   });
 
@@ -387,7 +418,7 @@ function QueryBuilder({
           payload: value,
         });
       },
-      semanticName: 'projection fields',
+      semanticName: 'projection exclusion fields',
       label: 'Fields',
       value: projectionArray,
       required: true,
@@ -434,6 +465,29 @@ function QueryBuilder({
       },
     };
 
+  const addNewSortButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Add',
+    semanticDescription:
+      'Add new sort statement that can be chained with previous statements',
+    semanticName: 'add new sort',
+    buttonOnClick: (event) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setSortStatementsQueue,
+        payload: {
+          index: sortStatementsQueue.length,
+          value: [currentSortTerm, currentSortDirection],
+        },
+      });
+      // add field to selected fields set
+      queryBuilderDispatch({
+        type: queryBuilderAction.setSelectedFieldsSet,
+        payload: {
+          calledFrom: 'sort',
+        },
+      });
+    },
+  };
+
   const [
     createdFilterSelectInput,
     createdFilterOperatorsSelectInput,
@@ -446,9 +500,11 @@ function QueryBuilder({
     sortDirectionSelectInputCreatorInfo,
   ]);
 
-  const [createdAddNewFilterButton] = returnAccessibleButtonElements([
-    addNewFilterButtonCreatorInfo,
-  ]);
+  const [createdAddNewFilterButton, createdAddNewSortButton] =
+    returnAccessibleButtonElements([
+      addNewFilterButtonCreatorInfo,
+      addNewSortButtonCreatorInfo,
+    ]);
 
   const createdProjectionCheckboxGroupInput =
     returnAccessibleCheckboxGroupInputsElements([
@@ -495,6 +551,11 @@ function QueryBuilder({
     </FormLayoutWrapper>
   );
 
+  const displaySortStatementsQueue =
+    sortStatementsQueue.length > 0
+      ? sortStatementsQueueSelectedText
+      : sortStatementsQueueDeselectedText;
+
   const displaySortSection = (
     <FormLayoutWrapper>
       {filteredSortSelectData.length === 0 ? (
@@ -502,9 +563,11 @@ function QueryBuilder({
       ) : (
         <>
           <TextWrapper creatorInfoObj={{}}>Sort</TextWrapper>
+          {displaySortStatementsQueue}
           <FormLayoutWrapper direction="row">
             {createdSortSelectInput}
             {createdSortDirectionSelectInput}
+            {createdAddNewSortButton}
           </FormLayoutWrapper>
         </>
       )}

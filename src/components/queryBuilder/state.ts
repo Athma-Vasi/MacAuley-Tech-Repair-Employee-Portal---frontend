@@ -11,8 +11,8 @@ const initialQueryBuilderState: QueryBuilderState = {
   isCurrentFilterValueValid: false,
   isCurrentFilterValueFocused: false,
 
-  currentSortTerm: '',
-  currentSortDirection: '',
+  currentSortTerm: 'Created',
+  currentSortDirection: 'ascending',
 
   filterSelectData: [],
   sortSelectData: [],
@@ -155,6 +155,15 @@ function queryBuilderReducer(
     case queryBuilderAction.setSortStatementsQueue: {
       const { index, value } = action.payload;
       const sortStatementsQueue = [...state.sortStatementsQueue];
+
+      // if sort statement already present return state
+      if (
+        sortStatementsQueue.filter(
+          (item) => item[0] === value[0] && item[1] === value[1]
+        ).length > 0
+      ) {
+        return state;
+      }
 
       if (index >= sortStatementsQueue.length) {
         sortStatementsQueue.push(value);

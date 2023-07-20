@@ -31,6 +31,16 @@ function DisplayLeaveRequests() {
 
   const componentQueryData: ComponentQueryData[] = [
     {
+      label: 'Created date',
+      value: 'createdAt',
+      inputKind: 'dateInput',
+    },
+    {
+      label: 'Updated date',
+      value: 'updatedAt',
+      inputKind: 'dateInput',
+    },
+    {
       label: 'Start date',
       value: 'startDate',
       inputKind: 'dateInput',
@@ -55,16 +65,6 @@ function DisplayLeaveRequests() {
         'Religious',
         'Other',
       ],
-    },
-    {
-      label: 'Created date',
-      value: 'createdAt',
-      inputKind: 'dateInput',
-    },
-    {
-      label: 'Updated date',
-      value: 'updatedAt',
-      inputKind: 'dateInput',
     },
     {
       label: 'Request status',
