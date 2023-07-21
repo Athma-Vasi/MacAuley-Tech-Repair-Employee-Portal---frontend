@@ -52,7 +52,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     compact = false,
     leftIcon = buttonType === 'submit' ? <TbUpload /> : null,
     rightIcon = null,
-    size = width < 1024 ? 'sm' : 'md',
+    size = width < 1024 ? 'xs' : 'sm',
   } = creatorInfoObject;
 
   return (

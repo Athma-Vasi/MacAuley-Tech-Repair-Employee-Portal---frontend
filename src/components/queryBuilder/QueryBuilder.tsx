@@ -1,7 +1,26 @@
-import { Center, Flex, Group, Tooltip } from '@mantine/core';
+import {
+  Center,
+  Flex,
+  Grid,
+  Group,
+  NavLink,
+  Stack,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 import { useEffect, useReducer } from 'react';
+import {
+  TbArrowsSort,
+  TbChevronRight,
+  TbFilterCog,
+  TbLayersLinked,
+  TbPlus,
+  TbTrash,
+} from 'react-icons/tb';
+import { VscExclude } from 'react-icons/vsc';
 
 import { DATE_FULL_RANGE_REGEX, MONEY_REGEX } from '../../constants/regex';
+import { useGlobalState } from '../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
@@ -17,6 +36,7 @@ import {
   returnDateFullRangeValidationText,
   returnNumberAmountValidationText,
 } from '../../utils';
+import { TimelineBuilder } from '../timelineBuilder';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
@@ -78,6 +98,9 @@ function QueryBuilder({
     isSuccessful,
     successMessage,
   } = queryBuilderState;
+  const {
+    globalState: { width, rowGap, padding },
+  } = useGlobalState();
 
   useEffect(() => {
     // loop through componentQueryData and assign to both filter select data or sort select data, checkbox data, and labelValueTypesMap
@@ -224,23 +247,17 @@ function QueryBuilder({
 
   const createdFilterStatementsWithDeleteButton = filterStatementsQueue.map(
     ([term, operator, value], index) => {
-      const [
-        filterStatementsQueueSelectedText,
-        filterStatementsQueueDeselectedText,
-      ] = returnAccessibleSelectedDeselectedTextElements({
-        isSelected: filterStatementsQueue.length > 0,
-        semanticName: 'filter statements',
-        deselectedDescription: 'No filter statements have been added',
-        selectedDescription: `Select ${term}${
-          term[term.length - 1] === 's' ? 'es' : 's'
-        } that are ${operator} ${value}. `,
-        theme: 'muted',
-      });
+      const statement = `Select ${term}${
+        term[term.length - 1] === 's' ? 'es' : 's'
+      } that are ${operator} ${value}. `;
+
+      const displayStatement = <Text size="xs">{statement}</Text>;
 
       const deleteFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: 'Delete',
         semanticDescription: `Delete filter statement: ${term} ${operator} ${value}`,
         semanticName: 'delete filter',
+        leftIcon: <TbTrash />,
         buttonOnClick: (event) => {
           queryBuilderDispatch({
             type: queryBuilderAction.setFilterStatementsQueue,
@@ -272,11 +289,18 @@ function QueryBuilder({
       );
 
       return (
-        <FormLayoutWrapper direction="row" key={`filter-statement-${index}`}>
-          {filterStatementsQueueSelectedText}
-          {filterStatementsQueueDeselectedText}
-          {displayDeleteFilterButton}
-        </FormLayoutWrapper>
+        <Grid
+          key={`filter-statement-${index}`}
+          w="100%"
+          style={{ border: '1px solid #e0e0e0', borderRadius: 4 }}
+        >
+          <Grid.Col md={6} lg={3}>
+            {displayStatement}
+          </Grid.Col>
+          <Grid.Col md={6} lg={3}>
+            <Flex justify="flex-end">{displayDeleteFilterButton}</Flex>
+          </Grid.Col>
+        </Grid>
       );
     }
   );
@@ -467,7 +491,7 @@ function QueryBuilder({
   );
   const sortSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: filteredSortSelectData,
-    label: 'Sort',
+    label: 'Field',
     description: `Select a field to sort ${collectionName} by`,
     value: currentSortTerm,
     onChange: (event) => {
@@ -527,21 +551,16 @@ function QueryBuilder({
 
   const createdSortStatementsWithDeleteButton = sortStatementsQueue.map(
     ([term, direction], index) => {
-      const [
-        sortStatementsQueueSelectedText,
-        sortStatementsQueueDeselectedText,
-      ] = returnAccessibleSelectedDeselectedTextElements({
-        isSelected: sortStatementsQueue.length > 0,
-        semanticName: 'sort statements',
-        deselectedDescription: 'No sort statements have been added',
-        selectedDescription: `Sort ${term}s in ${direction} order. `,
-        theme: 'muted',
-      });
+      const statement = `Sort ${term}${
+        term[term.length - 1] === 's' ? 'es' : 's'
+      } in ${direction} order. `;
+      const displayStatement = <Text size="xs">{statement}</Text>;
 
       const deleteSortButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: 'Delete',
         semanticDescription: `Delete sort statement: ${term} ${direction}`,
         semanticName: 'delete sort',
+        leftIcon: <TbTrash />,
         buttonOnClick: (event) => {
           queryBuilderDispatch({
             type: queryBuilderAction.setSortStatementsQueue,
@@ -571,11 +590,18 @@ function QueryBuilder({
       );
 
       return (
-        <FormLayoutWrapper direction="row" key={`sort-statement-${index}`}>
-          {sortStatementsQueueSelectedText}
-          {sortStatementsQueueDeselectedText}
-          {displayDeleteSortButton}
-        </FormLayoutWrapper>
+        <Grid
+          key={`sort-statement-${index}`}
+          w="100%"
+          style={{ border: '1px solid #e0e0e0', borderRadius: 4 }}
+        >
+          <Grid.Col md={6} lg={3}>
+            {displayStatement}
+          </Grid.Col>
+          <Grid.Col md={6} lg={3}>
+            <Flex justify="flex-end">{displayDeleteSortButton}</Flex>
+          </Grid.Col>
+        </Grid>
       );
     }
   );
@@ -615,48 +641,131 @@ function QueryBuilder({
           filterValueSelectInputCreatorInfo,
         ]);
 
+  const displayFilterChains = (
+    <Stack w="100%">
+      <TimelineBuilder
+        timelines={{
+          'filter chain': createdFilterStatementsWithDeleteButton,
+        }}
+      />
+    </Stack>
+  );
+  const displaySortChains = (
+    <Stack w="100%">
+      <TimelineBuilder
+        timelines={{
+          'sort chain': createdSortStatementsWithDeleteButton,
+        }}
+      />
+    </Stack>
+  );
+
   const displayFilterSection = (
-    <FormLayoutWrapper>
+    <Flex w="100%" direction="column">
       {filteredFilterSelectData.length === 0 ? (
         <TextWrapper creatorInfoObj={{}}>No fields to filter!</TextWrapper>
       ) : (
-        <>
-          <TextWrapper creatorInfoObj={{}}>Filter</TextWrapper>
-          {createdFilterStatementsWithDeleteButton}
-          <FormLayoutWrapper direction="row">
-            {createdFilterSelectInput}
-            {createdFilterOperatorsSelectInput}
-            {createdFilterValueInput}
-            {createdAddNewFilterButton}
-          </FormLayoutWrapper>
-        </>
+        <FormLayoutWrapper>
+          <Stack w="100%">
+            <NavLink
+              label="Filter"
+              icon={<TbFilterCog />}
+              rightSection={<TbChevronRight />}
+              childrenOffset="xs"
+              disabled={filteredFilterSelectData.length === 0}
+              w="62%"
+            >
+              <Flex direction="column" w="100%" rowGap={rowGap}>
+                {displayFilterChains}
+
+                <Grid
+                  w="100%"
+                  align="flex-end"
+                  justify="flex-start"
+                  gutter={rowGap}
+                >
+                  <Grid.Col md={6} lg={3}>
+                    {createdFilterSelectInput}
+                  </Grid.Col>
+                  <Grid.Col md={6} lg={3}>
+                    {createdFilterOperatorsSelectInput}
+                  </Grid.Col>
+                  <Grid.Col md={6} lg={3}>
+                    {createdFilterValueInput}
+                  </Grid.Col>
+                  <Grid.Col md={6} lg={3}>
+                    <Flex align="center" justify="flex-end">
+                      {createdAddNewFilterButton}
+                    </Flex>
+                  </Grid.Col>
+                </Grid>
+              </Flex>
+            </NavLink>
+          </Stack>
+        </FormLayoutWrapper>
       )}
-    </FormLayoutWrapper>
+    </Flex>
   );
 
   const displayProjectionSection = (
     <FormLayoutWrapper>
-      <TextWrapper creatorInfoObj={{}}>Projection</TextWrapper>
-      {createdProjectionCheckboxGroupInput}
+      <NavLink
+        label="Projection"
+        icon={<VscExclude />}
+        rightSection={<TbChevronRight />}
+        childrenOffset="xs"
+        // disabled={filteredFilterSelectData.length === 0}
+        w="62%"
+      >
+        {createdProjectionCheckboxGroupInput}
+      </NavLink>
     </FormLayoutWrapper>
   );
 
   const displaySortSection = (
-    <FormLayoutWrapper>
+    <Flex w="100%" direction="column">
       {filteredSortSelectData.length === 0 ? (
         <TextWrapper creatorInfoObj={{}}>No fields to sort!</TextWrapper>
       ) : (
-        <Group>
-          <TextWrapper creatorInfoObj={{}}>Sort</TextWrapper>
-          {createdSortStatementsWithDeleteButton}
-          <FormLayoutWrapper direction="row">
-            {createdSortSelectInput}
-            {createdSortDirectionSelectInput}
-            {createdAddNewSortButton}
-          </FormLayoutWrapper>
-        </Group>
+        <FormLayoutWrapper>
+          <Stack w="100%">
+            <NavLink
+              label="Sort"
+              icon={<TbArrowsSort />}
+              rightSection={<TbChevronRight />}
+              childrenOffset="xs"
+              disabled={filteredSortSelectData.length === 0}
+              w="62%"
+            >
+              <Flex direction="column" w="100%" rowGap={rowGap}>
+                {displaySortChains}
+                <Grid
+                  w="100%"
+                  align="flex-end"
+                  justify="flex-start"
+                  gutter={rowGap}
+                >
+                  <Grid.Col md={6} lg={3}>
+                    {createdSortSelectInput}
+                  </Grid.Col>
+                  <Grid.Col md={6} lg={3}>
+                    {createdSortDirectionSelectInput}
+                  </Grid.Col>
+                  <Grid.Col md={6} lg={3}>
+                    {}
+                  </Grid.Col>
+                  <Grid.Col md={6} lg={3}>
+                    <Flex align="center" justify="flex-end">
+                      {createdAddNewSortButton}
+                    </Flex>
+                  </Grid.Col>
+                </Grid>
+              </Flex>
+            </NavLink>
+          </Stack>
+        </FormLayoutWrapper>
       )}
-    </FormLayoutWrapper>
+    </Flex>
   );
   // ----------------- //
 
@@ -665,11 +774,12 @@ function QueryBuilder({
   }, [queryBuilderState]);
 
   return (
-    <Flex direction="column" align="center" justify="center">
+    <Flex w="100%" direction="column" rowGap={rowGap}>
       <TextWrapper creatorInfoObj={{}}>Query Builder</TextWrapper>
+
       {displayFilterSection}
-      {displayProjectionSection}
       {displaySortSection}
+      {displayProjectionSection}
     </Flex>
   );
 }

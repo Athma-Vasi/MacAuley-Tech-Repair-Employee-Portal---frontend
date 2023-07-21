@@ -27,6 +27,7 @@ import {
   RadioSingleInputWrapper,
   TextAreaInputWrapper,
   TextInputWrapper,
+  TextWrapper,
 } from '../components/wrappers';
 import { RegexValidationProps } from '../utils';
 
@@ -230,6 +231,7 @@ function returnAccessibleSelectedDeselectedTextElements({
       }
       w="100%"
       aria-live="polite"
+      size="xs"
     >
       {theme === 'default' ? <FontAwesomeIcon icon={faInfoCircle} /> : null}{' '}
       {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} deselected${

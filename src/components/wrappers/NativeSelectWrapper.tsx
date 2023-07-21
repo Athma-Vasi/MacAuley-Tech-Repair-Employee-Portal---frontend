@@ -52,6 +52,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
       name={label.split(' ').join('-').toLowerCase()}
       withAsterisk={withAsterisk}
       required={required}
+      w="100%"
     />
   );
 }

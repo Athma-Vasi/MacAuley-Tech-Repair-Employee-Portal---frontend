@@ -7,6 +7,8 @@ import {
 import { Center, Container, Flex } from '@mantine/core';
 import { QueryBuilder } from '../../queryBuilder';
 import { ComponentQueryData } from '../../queryBuilder/types';
+import { FormLayoutWrapper } from '../../wrappers';
+import { useGlobalState } from '../../../hooks';
 
 function DisplayLeaveRequests() {
   const [displayLeaveRequestsState, displayLeaveRequestsDispatch] = useReducer(
@@ -28,6 +30,10 @@ function DisplayLeaveRequests() {
     isLoading,
     loadingMessage,
   } = displayLeaveRequestsState;
+
+  const {
+    globalState: { padding },
+  } = useGlobalState();
 
   const componentQueryData: ComponentQueryData[] = [
     {
@@ -89,7 +95,18 @@ function DisplayLeaveRequests() {
     },
   ];
   return (
-    <Flex direction="column" align="center" justify="center">
+    <Flex
+      direction="column"
+      align="center"
+      justify="center"
+      w="100%"
+      h="100%"
+      style={{
+        backgroundColor: '#fff',
+        borderRadius: 4,
+      }}
+      p={padding}
+    >
       <h6>Display leave requests</h6>
       <QueryBuilder
         componentQueryData={componentQueryData}

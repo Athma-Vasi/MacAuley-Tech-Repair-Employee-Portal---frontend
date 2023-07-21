@@ -92,23 +92,27 @@ function App() {
         </Route> */}
 
         {/* DEV TEST ROUTES */}
-        {/* <Route path="portal" element={<PortalLayout />}>
+        <Route path="portal" element={<PortalLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
 
-          <Route path="notes">
+          {/* <Route path="notes">
             <Route index element={<NotesList />} />
-          </Route>
+          </Route> */}
 
           <Route path="company">
-            <Route path="address-change" element={<AddressChange />} />
-            <Route path="benefits" element={<CreateBenefit />} />
-            <Route path="leave-request" element={<LeaveRequest />} />
-            <Route path="request-resource" element={<RequestResource />} />
-            <Route path="expense-claim" element={<ExpenseClaim />} />
+            {/* <Route path="address-change" element={<AddressChange />} /> */}
+            {/* <Route path="benefits" element={<CreateBenefit />} /> */}
+            <Route path="leave-request">
+              <Route index element={<DisplayLeaveRequests />} />
+              <Route path="display" element={<DisplayLeaveRequests />} />
+              <Route path="create" element={<CreateLeaveRequest />} />
+            </Route>
+            {/* <Route path="request-resource" element={<RequestResource />} /> */}
+            {/* <Route path="expense-claim" element={<ExpenseClaim />} /> */}
           </Route>
 
-          <Route path="general">
+          {/* <Route path="general">
             <Route path="endorsement" element={<CreateEndorsement />} />
             <Route path="printer-issue" element={<CreatePrinterIssue />} />
             <Route path="referment" element={<CreateReferment />} />
@@ -116,14 +120,14 @@ function App() {
               path="anonymous-request"
               element={<CreateAnonymousRequest />}
             />
-          </Route>
+          </Route> */}
 
-          <Route path="outreach">
+          {/* <Route path="outreach">
             <Route path="event-creator" element={<EventCreator />} />
             <Route path="survey-builder" element={<SurveyBuilder />} />
             <Route path="announcements" element={<CreateAnnouncement />} />
-          </Route>
-        </Route> */}
+          </Route> */}
+        </Route>
 
         {/* catch all */}
         <Route path="*" element={<NotFound />} />

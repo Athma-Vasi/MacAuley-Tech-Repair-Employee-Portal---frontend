@@ -10,6 +10,8 @@ import {
 const initialGlobalState: GlobalState = {
   width: 0,
   height: 0,
+  rowGap: 'xs',
+  padding: 'xs',
   colorScheme: 'light',
   scrollXDirection: '',
   scrollYDirection: '',
@@ -18,6 +20,8 @@ const initialGlobalState: GlobalState = {
 const globalAction: GlobalAction = {
   setWidth: 'setWidth',
   setHeight: 'setHeight',
+  setRowGap: 'setRowGap',
+  setPadding: 'setPadding',
   setColorScheme: 'setColorScheme',
   setWindowSize: 'setWindowSize',
   setScrollAxesDirection: 'setScrollAxesDirection',
@@ -29,18 +33,21 @@ function globalReducer(
 ): GlobalState {
   switch (action.type) {
     case globalAction.setWidth:
-      return { ...state, width: action.payload as number };
+      return { ...state, width: action.payload };
     case globalAction.setHeight:
-      return { ...state, height: action.payload as number };
+      return { ...state, height: action.payload };
+    case globalAction.setRowGap:
+      return { ...state, rowGap: action.payload };
+    case globalAction.setPadding:
+      return { ...state, padding: action.payload };
     case globalAction.setColorScheme:
-      return { ...state, colorScheme: action.payload as ColorScheme };
+      return { ...state, colorScheme: action.payload };
     case globalAction.setWindowSize: {
-      const { width, height } = action.payload as WindowDimensions;
+      const { width, height } = action.payload;
       return { ...state, width, height };
     }
     case globalAction.setScrollAxesDirection: {
-      const { scrollXDirection, scrollYDirection } =
-        action.payload as ScrollAxesDirection;
+      const { scrollXDirection, scrollYDirection } = action.payload;
       return { ...state, scrollXDirection, scrollYDirection };
     }
 
@@ -49,4 +56,4 @@ function globalReducer(
   }
 }
 
-export { globalAction, globalReducer,initialGlobalState };
+export { globalAction, globalReducer, initialGlobalState };

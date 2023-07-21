@@ -31,6 +31,22 @@ function GlobalProvider({ children }: GlobalProviderProps) {
     });
   }, [width, height]);
 
+  // set rowGap
+  useEffect(() => {
+    const rowGap =
+      width < 480 ? 'md' : width < 768 ? 'sm' : width < 1440 ? 'md' : 'lg';
+    globalDispatch({
+      type: globalAction.setRowGap,
+      payload: rowGap,
+    });
+
+    const padding = width < 480 ? 'xs' : width < 768 ? 'sm' : 'md';
+    globalDispatch({
+      type: globalAction.setPadding,
+      payload: padding,
+    });
+  }, [width]);
+
   const { scrollXDirection, scrollYDirection } = useScrollDirection();
   // on scroll position change, update global state
   useEffect(() => {

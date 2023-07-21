@@ -1,8 +1,17 @@
+import { ReactNode } from 'react';
+
+import {
+  ScrollXDirection,
+  ScrollYDirection,
+} from '../../hooks/useScrollDirection';
+
 type ColorScheme = 'light' | 'dark';
 
 type GlobalState = {
   width: number;
   height: number;
+  rowGap: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  padding: 'xs' | 'sm' | 'md';
   colorScheme: ColorScheme;
   scrollXDirection: ScrollXDirection;
   scrollYDirection: ScrollYDirection;
@@ -11,6 +20,8 @@ type GlobalState = {
 type GlobalAction = {
   setWidth: 'setWidth';
   setHeight: 'setHeight';
+  setRowGap: 'setRowGap';
+  setPadding: 'setPadding';
   setColorScheme: 'setColorScheme';
   setWindowSize: 'setWindowSize';
   setScrollAxesDirection: 'setScrollAxesDirection';
@@ -26,16 +37,31 @@ type ScrollAxesDirection = {
   scrollYDirection: 'up' | 'down' | '';
 };
 
-type GlobalPayload =
-  | ColorScheme
-  | number
-  | WindowDimensions
-  | ScrollAxesDirection;
-
-type GlobalDispatch = {
-  type: GlobalAction[keyof GlobalAction];
-  payload: GlobalPayload;
-};
+type GlobalDispatch =
+  | {
+      type: GlobalAction['setWindowSize'];
+      payload: WindowDimensions;
+    }
+  | {
+      type: GlobalAction['setScrollAxesDirection'];
+      payload: ScrollAxesDirection;
+    }
+  | {
+      type: GlobalAction['setWidth'] | GlobalAction['setHeight'];
+      payload: number;
+    }
+  | {
+      type: GlobalAction['setRowGap'];
+      payload: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+    }
+  | {
+      type: GlobalAction['setPadding'];
+      payload: 'xs' | 'sm' | 'md';
+    }
+  | {
+      type: GlobalAction['setColorScheme'];
+      payload: ColorScheme;
+    };
 
 type GlobalReducer = (
   state: GlobalState,
@@ -50,7 +76,6 @@ export type {
   ColorScheme,
   GlobalAction,
   GlobalDispatch,
-  GlobalPayload,
   GlobalProviderProps,
   GlobalReducer,
   GlobalState,

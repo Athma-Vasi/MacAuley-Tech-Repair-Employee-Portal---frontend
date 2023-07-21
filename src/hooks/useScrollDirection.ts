@@ -7,9 +7,12 @@ type ScrollAxesAmount = {
   currentScrollYPosition: number;
 };
 
+type ScrollXDirection = 'left' | 'right' | '';
+type ScrollYDirection = 'up' | 'down' | '';
+
 type ScrollAxesDirection = {
-  scrollXDirection: 'left' | 'right' | '';
-  scrollYDirection: 'up' | 'down' | '';
+  scrollXDirection: ScrollXDirection;
+  scrollYDirection: ScrollYDirection;
 };
 
 function useScrollDirection(): ScrollAxesDirection {
@@ -51,3 +54,10 @@ function useScrollDirection(): ScrollAxesDirection {
 }
 
 export { useScrollDirection };
+
+export type {
+  ScrollAxesAmount,
+  ScrollAxesDirection,
+  ScrollXDirection,
+  ScrollYDirection,
+};

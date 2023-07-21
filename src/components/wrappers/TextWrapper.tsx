@@ -6,7 +6,7 @@ import {
   Text,
   Variants,
 } from '@mantine/core';
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
 
@@ -55,6 +55,9 @@ interface TextWrapperCreatorInfoObject extends DefaultProps {
 
   /** Shorthand for component="span" */
   span?: boolean;
+
+  /** Style object */
+  style?: CSSProperties;
 }
 
 type TextWrapperProps = {
@@ -89,15 +92,10 @@ function TextWrapper({
       deg: 45,
     },
     span = false,
+    style = {},
   } = creatorInfoObj;
 
-  const textSize = size
-    ? size
-    : width < 480
-    ? 'xs'
-    : width < 1024
-    ? 'sm'
-    : 'md';
+  const textSize = size ? size : width < 480 ? 'xs' : 'sm';
 
   return (
     <Text
@@ -115,6 +113,7 @@ function TextWrapper({
       inherit={inherit}
       gradient={gradient}
       span={span}
+      style={style}
     >
       {children}
     </Text>
