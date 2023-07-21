@@ -72,6 +72,21 @@ function DisplayLeaveRequests() {
       inputKind: 'selectInput',
       selectData: ['pending', 'approved', 'rejected'],
     },
+    {
+      label: 'Delegated to employee',
+      value: 'delegatedToEmployee',
+      inputKind: 'textInput',
+    },
+    {
+      label: 'Delegated responsibilities',
+      value: 'delegatedResponsibilities',
+      inputKind: 'textInput',
+    },
+    {
+      label: 'Additional comments',
+      value: 'additionalComments',
+      inputKind: 'textInput',
+    },
   ];
   return (
     <Flex direction="column" align="center" justify="center">

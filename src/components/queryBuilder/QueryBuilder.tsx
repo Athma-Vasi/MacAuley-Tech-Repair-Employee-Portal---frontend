@@ -94,7 +94,7 @@ function QueryBuilder({
         // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
         if (inputKind === 'selectInput') {
           acc[0].push(label);
-        } else {
+        } else if (inputKind === 'dateInput' || inputKind === 'numberInput') {
           acc[0].push(label);
           acc[1].push(label);
         }

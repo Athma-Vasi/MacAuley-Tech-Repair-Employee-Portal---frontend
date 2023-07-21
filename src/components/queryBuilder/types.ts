@@ -1,7 +1,7 @@
 import { CheckboxInputData } from '../../types';
 import { GenerateQueryStringInput } from './utils';
 
-type QueryInputKind = 'dateInput' | 'numberInput' | 'selectInput';
+type QueryInputKind = 'dateInput' | 'numberInput' | 'selectInput' | 'textInput';
 
 type ComponentQueryData = {
   label: string;
