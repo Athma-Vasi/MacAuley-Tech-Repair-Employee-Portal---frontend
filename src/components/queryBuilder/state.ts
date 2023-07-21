@@ -145,13 +145,22 @@ function queryBuilderReducer(
         return state;
       }
 
+      // if there are duplicate filter fields, remove the previous one
+      const duplicateFilterFieldIndex = filterStatementsQueue.findIndex(
+        (item) => item[0] === value[0]
+      );
+      if (duplicateFilterFieldIndex !== -1) {
+        filterStatementsQueue.splice(duplicateFilterFieldIndex, 1);
+      }
+
       if (index >= filterStatementsQueue.length) {
         filterStatementsQueue.push(value);
       } else {
         filterStatementsQueue[index] = value;
       }
 
-      // filter out empty values
+      // filter out empty values and return state
+      // done last because initial state is ['','','']
       const filteredFilterStatementsQueue = filterStatementsQueue.filter(
         (item) => item[0] !== '' && item[1] !== '' && item[2] !== ''
       );
@@ -175,13 +184,22 @@ function queryBuilderReducer(
         return state;
       }
 
+      // if there are duplicate sort fields, remove the previous one
+      const duplicateSortFieldIndex = sortStatementsQueue.findIndex(
+        (item) => item[0] === value[0]
+      );
+      if (duplicateSortFieldIndex !== -1) {
+        sortStatementsQueue.splice(duplicateSortFieldIndex, 1);
+      }
+
       if (index >= sortStatementsQueue.length) {
         sortStatementsQueue.push(value);
       } else {
         sortStatementsQueue[index] = value;
       }
 
-      // filter out empty values
+      // filter out empty values and return state
+      // done last because initial state is ['','','']
       const filteredSortStatementsQueue = sortStatementsQueue.filter(
         (item) => item[0] !== '' && item[1] !== ''
       );
@@ -230,8 +248,8 @@ function queryBuilderReducer(
       const projectedFieldsSet = new Set<string>();
       const projectionArray = [...state.projectionArray];
 
-      // this is required because projection checkbox value is the camel cased value that is not the client facing label(e.g. createdAt as opposed to Created date). The backend consumes the camel cased value.
-      // the corresponding label from the map is found as the projectedFieldsSet is consumed by sort and field select inputs, whose values are the client facing labels.
+      // this is required because projection checkbox value is the camel cased value that is not the client facing label (e.g. createdAt as opposed to Created date). The backend consumes the camel cased value.
+      // the corresponding label from the map is found as the projectedFieldsSet is consumed by sort and field select inputs, whose values are the client facing (non-camelcased) labels.
       projectionArray.forEach((item) => {
         const findCorrespondingLabel = Array.from(
           state.labelValueTypesMap

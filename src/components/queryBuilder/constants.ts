@@ -1,5 +1,4 @@
 const QUERY_BUILDER_FILTER_OPERATORS = [
-  'in',
   'equal to',
   'less than',
   'greater than',

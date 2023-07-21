@@ -5,11 +5,6 @@
 
 import { QueryLabelValueTypesMap } from './types';
 
-// type GenerateQueryStringInput =
-//   | { kind: 'filter'; statementsArray: FilterStatementsArray[] }
-//   | { kind: 'sort'; statementsArray: SortStatementsArray[] }
-//   | { kind: 'projection'; statementsArray: ProjectionStatementsArray[] };
-
 type GenerateQueryStringInput = {
   labelValueTypesMap: QueryLabelValueTypesMap;
   filterStatementsQueue: [string, string, string][];
@@ -69,47 +64,3 @@ function generateQueryString({
 export { generateQueryString };
 
 export type { GenerateQueryStringInput };
-
-/**
- * const queryString = statementsArray.reduce((acc:string, curr) => {
-    const [field, operator, value] = curr;
-    if (kind === 'filter') {
-      return `${acc}&filter[${field}][${operator}]=${value}`;
-    } else if (kind === 'sort') {
-      return `${acc}&sort[${field}]=${value}`;
-    } else if (kind === 'projection') {
-      return `${acc}&projection=-${value}`;
-    }
-    return acc;
-  }, '');
-  return queryString;
- */
-
-/**
-   * switch (input) {
-    case 'filter': {
-      statementsArray.reduce((acc, curr) => {
-        const [field, operator, value] = curr;
-        return `${acc}&filter[${field}][${operator}]=${value}`;
-      }, '');
-      break;
-    }
-    case 'sort': {
-      statementsArray.reduce((acc, curr) => {
-        const [field, value] = curr;
-        return `${acc}&sort[${field}]=${value}`;
-      }, '');
-      break;
-    }
-    case 'projection': {
-      statementsArray.reduce((acc, curr) => {
-        return `${acc}&projection=-${curr}`;
-      }, '');
-      break;
-    }
-    default: {
-      queryString = '';
-      break;
-    }
-  }
-   */
