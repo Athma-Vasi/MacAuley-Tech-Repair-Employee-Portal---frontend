@@ -3,6 +3,7 @@ import {
   QueryBuilderDispatch,
   QueryBuilderState,
 } from './types';
+import { generateQueryString } from './utils';
 
 const initialQueryBuilderState: QueryBuilderState = {
   currentFilterTerm: 'Created date',
@@ -25,6 +26,8 @@ const initialQueryBuilderState: QueryBuilderState = {
   projectionCheckboxData: [],
   selectedFieldsSet: new Set(),
   projectedFieldsSet: new Set(),
+
+  queryString: '?',
 
   isError: false,
   errorMessage: '',
@@ -57,6 +60,8 @@ const queryBuilderAction: QueryBuilderAction = {
   setProjectionCheckboxData: 'setProjectionCheckboxData',
   setSelectedFieldsSet: 'setSelectedFieldsSet',
   setProjectedFieldsSet: 'setProjectedFieldsSet',
+
+  buildQueryString: 'buildQueryString',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -146,9 +151,14 @@ function queryBuilderReducer(
         filterStatementsQueue[index] = value;
       }
 
+      // filter out empty values
+      const filteredFilterStatementsQueue = filterStatementsQueue.filter(
+        (item) => item[0] !== '' && item[1] !== '' && item[2] !== ''
+      );
+
       return {
         ...state,
-        filterStatementsQueue,
+        filterStatementsQueue: filteredFilterStatementsQueue,
       };
     }
 
@@ -171,9 +181,14 @@ function queryBuilderReducer(
         sortStatementsQueue[index] = value;
       }
 
+      // filter out empty values
+      const filteredSortStatementsQueue = sortStatementsQueue.filter(
+        (item) => item[0] !== '' && item[1] !== ''
+      );
+
       return {
         ...state,
-        sortStatementsQueue,
+        sortStatementsQueue: filteredSortStatementsQueue,
       };
     }
 
@@ -237,6 +252,16 @@ function queryBuilderReducer(
       return {
         ...state,
         projectedFieldsSet,
+      };
+    }
+
+    case queryBuilderAction.buildQueryString: {
+      const generateQueryStringInput = action.payload;
+      const newQueryString = generateQueryString(generateQueryStringInput);
+
+      return {
+        ...state,
+        queryString: newQueryString,
       };
     }
 

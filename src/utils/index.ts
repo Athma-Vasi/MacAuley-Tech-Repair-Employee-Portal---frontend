@@ -822,9 +822,18 @@ function logState({
 }) {
   console.group(groupLabel);
   Object.entries(state).forEach(([key, value]) => {
+    let identifyKey = `${key}: `;
+    if (value instanceof Map) {
+      identifyKey = `🗺️ Map : ${key}: `;
+      value = Array.from(value.entries());
+    } else if (value instanceof Set) {
+      identifyKey = `⚝ Set : ${key}: `;
+      value = Array.from(value);
+    }
+
     isStringified
-      ? console.log(`${key}: `, JSON.stringify(value, null, 2))
-      : console.log(`${key}: `, value);
+      ? console.log(identifyKey, JSON.stringify(value, null, 2))
+      : console.log(identifyKey, value);
   });
   console.groupEnd();
 }

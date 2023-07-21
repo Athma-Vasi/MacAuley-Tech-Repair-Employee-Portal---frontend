@@ -1,19 +1,20 @@
-import { Flex } from '@mantine/core';
+import { Center, Flex, Group, Tooltip } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
+import { DATE_FULL_RANGE_REGEX, MONEY_REGEX } from '../../constants/regex';
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleDateTimeElements,
   returnAccessibleErrorValidTextElements,
-  returnAccessibleSelectInputElements,
   returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
+import { CheckboxInputData } from '../../types';
 import {
   logState,
   returnDateFullRangeValidationText,
-  returnDateValidationText,
   returnNumberAmountValidationText,
 } from '../../utils';
 import {
@@ -35,12 +36,6 @@ import {
   queryBuilderReducer,
 } from './state';
 import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
-import {
-  DATE_FULL_RANGE_REGEX,
-  DATE_REGEX,
-  MONEY_REGEX,
-} from '../../constants/regex';
-import { CheckboxInputData } from '../../types';
 
 function QueryBuilder({
   componentQueryData,
@@ -71,6 +66,8 @@ function QueryBuilder({
     projectionCheckboxData,
     selectedFieldsSet,
     projectedFieldsSet,
+
+    queryString,
 
     isError,
     errorMessage,
@@ -150,6 +147,25 @@ function QueryBuilder({
     });
   }, [currentFilterTerm, currentFilterValue, labelValueTypesMap]);
 
+  // build query string on every filter, sort, or projection arrays change
+  useEffect(() => {
+    // build the query
+    queryBuilderDispatch({
+      type: queryBuilderAction.buildQueryString,
+      payload: {
+        labelValueTypesMap,
+        filterStatementsQueue,
+        projectionArray,
+        sortStatementsQueue,
+      },
+    });
+  }, [
+    filterStatementsQueue,
+    projectionArray,
+    sortStatementsQueue,
+    labelValueTypesMap,
+  ]);
+
   // ----------------- accessibility text elements ----------------- //
   const currentInputKind = labelValueTypesMap.get(currentFilterTerm)?.inputKind;
   const regexValidationText =
@@ -171,42 +187,126 @@ function QueryBuilder({
       regexValidationText,
     });
 
-  const [
-    filterStatementsQueueSelectedText,
-    filterStatementsQueueDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
-    isSelected: filterStatementsQueue.length > 0,
-    semanticName: 'filter statements',
-    deselectedDescription: 'No filter statements have been added',
-    selectedDescription: `The following filter statements have been added: ${filterStatementsQueue
-      .map(([term, operator, value]) => {
-        const statement = `Select ${term}s that are ${operator} ${value}. `;
-        return statement;
-      })
-      .join('And then, ')}`,
-    theme: 'muted',
-  });
+  const createdFilterStatementsWithDeleteButton = filterStatementsQueue.map(
+    ([term, operator, value], index) => {
+      const [
+        filterStatementsQueueSelectedText,
+        filterStatementsQueueDeselectedText,
+      ] = returnAccessibleSelectedDeselectedTextElements({
+        isSelected: filterStatementsQueue.length > 0,
+        semanticName: 'filter statements',
+        deselectedDescription: 'No filter statements have been added',
+        selectedDescription: `Select ${term}${
+          term[term.length - 1] === 's' ? 'es' : 's'
+        } that are ${operator} ${value}. `,
+        theme: 'muted',
+      });
 
-  const [sortStatementsQueueSelectedText, sortStatementsQueueDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
-      isSelected: sortStatementsQueue.length > 0,
-      semanticName: 'sort statements',
-      deselectedDescription: 'No sort statements have been added',
-      selectedDescription: `The following sort statements have been added: ${sortStatementsQueue
-        .map(([term, direction]) => {
-          const statement = `Sort ${term}s in ${direction} order. `;
-          return statement;
-        })
-        .join('And then, ')}`,
-      theme: 'muted',
-    });
+      const deleteFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+        buttonLabel: 'Delete',
+        semanticDescription: `Delete filter statement: ${term} ${operator} ${value}`,
+        semanticName: 'delete filter',
+        buttonOnClick: (event) => {
+          queryBuilderDispatch({
+            type: queryBuilderAction.setFilterStatementsQueue,
+            payload: {
+              index,
+              value: ['', '', ''],
+            },
+          });
+          // remove field from selected fields set
+          queryBuilderDispatch({
+            type: queryBuilderAction.setSelectedFieldsSet,
+            payload: {
+              calledFrom: 'filter',
+            },
+          });
+        },
+      };
+
+      const [createdDeleteFilterButton] = returnAccessibleButtonElements([
+        deleteFilterButtonCreatorInfo,
+      ]);
+
+      const displayDeleteFilterButton = (
+        <Tooltip
+          label={`Delete filter statement: ${term} ${operator} ${value}`}
+        >
+          <Center>{createdDeleteFilterButton}</Center>
+        </Tooltip>
+      );
+
+      return (
+        <FormLayoutWrapper direction="row" key={`filter-statement-${index}`}>
+          {filterStatementsQueueSelectedText}
+          {filterStatementsQueueDeselectedText}
+          {displayDeleteFilterButton}
+        </FormLayoutWrapper>
+      );
+    }
+  );
+
+  const createdSortStatementsWithDeleteButton = sortStatementsQueue.map(
+    ([term, direction], index) => {
+      const [
+        sortStatementsQueueSelectedText,
+        sortStatementsQueueDeselectedText,
+      ] = returnAccessibleSelectedDeselectedTextElements({
+        isSelected: sortStatementsQueue.length > 0,
+        semanticName: 'sort statements',
+        deselectedDescription: 'No sort statements have been added',
+        selectedDescription: `Sort ${term}s in ${direction} order. `,
+        theme: 'muted',
+      });
+
+      const deleteSortButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+        buttonLabel: 'Delete',
+        semanticDescription: `Delete sort statement: ${term} ${direction}`,
+        semanticName: 'delete sort',
+        buttonOnClick: (event) => {
+          queryBuilderDispatch({
+            type: queryBuilderAction.setSortStatementsQueue,
+            payload: {
+              index,
+              value: ['', ''],
+            },
+          });
+          // remove field from selected fields set
+          queryBuilderDispatch({
+            type: queryBuilderAction.setSelectedFieldsSet,
+            payload: {
+              calledFrom: 'sort',
+            },
+          });
+        },
+      };
+
+      const [createdDeleteSortButton] = returnAccessibleButtonElements([
+        deleteSortButtonCreatorInfo,
+      ]);
+
+      const displayDeleteSortButton = (
+        <Tooltip label={`Delete sort statement: ${term} ${direction}`}>
+          <Center>{createdDeleteSortButton}</Center>
+        </Tooltip>
+      );
+
+      return (
+        <FormLayoutWrapper direction="row" key={`sort-statement-${index}`}>
+          {sortStatementsQueueSelectedText}
+          {sortStatementsQueueDeselectedText}
+          {displayDeleteSortButton}
+        </FormLayoutWrapper>
+      );
+    }
+  );
 
   const [
     projectionCheckboxInputSelectedText,
     projectionCheckboxInputDeselectedText,
   ] = returnAccessibleSelectedDeselectedTextElements({
     isSelected: projectionArray.length > 0,
-    semanticName: 'projection exclusion fields',
+    semanticName: 'exclusion fields',
     deselectedDescription: 'All fields will be returned',
     selectedDescription:
       projectionArray.length === labelValueTypesMap.size
@@ -251,6 +351,15 @@ function QueryBuilder({
         type: queryBuilderAction.setCurrentFilterTerm,
         payload: event.currentTarget.value,
       });
+
+      // set the filter value to first select data value, as the stale value is present by default
+      const firstSelectDataValue =
+        labelValueTypesMap.get(event.currentTarget.value)?.selectData?.[0] ||
+        '';
+      queryBuilderDispatch({
+        type: queryBuilderAction.setCurrentFilterValue,
+        payload: firstSelectDataValue,
+      });
     },
   };
 
@@ -266,7 +375,7 @@ function QueryBuilder({
         currentFilterTerm === ''
           ? 'Please select a field'
           : currentInputKind === 'selectInput'
-          ? 'Only "equal to" is available for select inputs'
+          ? 'Only "equal to" is available for hardcoded data'
           : `Select an operator for ${currentFilterTerm}`
       }`,
       value: currentFilterOperator,
@@ -353,23 +462,6 @@ function QueryBuilder({
     },
   };
 
-  /**
-   * const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'leave request form submit button',
-    semanticName: 'submit button',
-    leftIcon: <TbUpload />,
-    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      leaveRequestDispatch({
-        type: createLeaveRequestAction.setTriggerFormSubmit,
-        payload: true,
-      });
-    },
-    // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
-  };
-   */
-
   const addNewFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Add',
     semanticDescription:
@@ -414,10 +506,9 @@ function QueryBuilder({
           payload: value,
         });
       },
-      semanticName: 'projection exclusion fields',
+      semanticName: 'exclusion fields',
       label: 'Fields',
       value: projectionArray,
-      required: true,
     };
 
   // ----------------- sort operation section -----------------  //
@@ -516,11 +607,6 @@ function QueryBuilder({
           filterValueSelectInputCreatorInfo,
         ]);
 
-  const displayFilterStatementsQueue =
-    filterStatementsQueue.length > 0
-      ? filterStatementsQueueSelectedText
-      : filterStatementsQueueDeselectedText;
-
   const displayFilterSection = (
     <FormLayoutWrapper>
       {filteredFilterSelectData.length === 0 ? (
@@ -528,7 +614,7 @@ function QueryBuilder({
       ) : (
         <>
           <TextWrapper creatorInfoObj={{}}>Filter</TextWrapper>
-          {displayFilterStatementsQueue}
+          {createdFilterStatementsWithDeleteButton}
           <FormLayoutWrapper direction="row">
             {createdFilterSelectInput}
             {createdFilterOperatorsSelectInput}
@@ -547,25 +633,20 @@ function QueryBuilder({
     </FormLayoutWrapper>
   );
 
-  const displaySortStatementsQueue =
-    sortStatementsQueue.length > 0
-      ? sortStatementsQueueSelectedText
-      : sortStatementsQueueDeselectedText;
-
   const displaySortSection = (
     <FormLayoutWrapper>
       {filteredSortSelectData.length === 0 ? (
         <TextWrapper creatorInfoObj={{}}>No fields to sort!</TextWrapper>
       ) : (
-        <>
+        <Group>
           <TextWrapper creatorInfoObj={{}}>Sort</TextWrapper>
-          {displaySortStatementsQueue}
+          {createdSortStatementsWithDeleteButton}
           <FormLayoutWrapper direction="row">
             {createdSortSelectInput}
             {createdSortDirectionSelectInput}
             {createdAddNewSortButton}
           </FormLayoutWrapper>
-        </>
+        </Group>
       )}
     </FormLayoutWrapper>
   );

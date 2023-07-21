@@ -1,4 +1,5 @@
 import { CheckboxInputData } from '../../types';
+import { GenerateQueryStringInput } from './utils';
 
 type QueryInputKind = 'dateInput' | 'numberInput' | 'selectInput';
 
@@ -44,6 +45,8 @@ type QueryBuilderState = {
   selectedFieldsSet: Set<string>;
   projectedFieldsSet: Set<string>;
 
+  queryString: string;
+
   isError: boolean;
   errorMessage: string;
   isLoading: boolean;
@@ -75,6 +78,8 @@ type QueryBuilderAction = {
   setProjectionCheckboxData: 'setProjectionCheckboxData';
   setSelectedFieldsSet: 'setSelectedFieldsSet';
   setProjectedFieldsSet: 'setProjectedFieldsSet';
+
+  buildQueryString: 'buildQueryString';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -151,6 +156,10 @@ type QueryBuilderDispatch =
   | {
       type: QueryBuilderAction['setProjectionCheckboxData'];
       payload: CheckboxInputData;
+    }
+  | {
+      type: QueryBuilderAction['buildQueryString'];
+      payload: GenerateQueryStringInput;
     };
 
 type QueryBuilderReducer = (
