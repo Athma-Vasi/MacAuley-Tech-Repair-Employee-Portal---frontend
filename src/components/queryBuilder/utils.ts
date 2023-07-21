@@ -24,6 +24,7 @@ function generateQueryString({
   projectionArray,
 }: GenerateQueryStringInput) {
   const filterOperatorsMap = new Map([
+    ['in', 'in'],
     ['equal to', 'eq'],
     ['less than', 'lt'],
     ['greater than', 'gt'],

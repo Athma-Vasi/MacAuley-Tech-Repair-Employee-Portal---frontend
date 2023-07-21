@@ -365,7 +365,7 @@ function QueryBuilder({
 
   const filterOperatorData =
     currentInputKind === 'selectInput'
-      ? ['equal to']
+      ? ['in']
       : QUERY_BUILDER_FILTER_OPERATORS;
   const filterOperatorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
@@ -375,7 +375,7 @@ function QueryBuilder({
         currentFilterTerm === ''
           ? 'Please select a field'
           : currentInputKind === 'selectInput'
-          ? 'Only "equal to" is available for hardcoded data'
+          ? 'Only "in" is available for hardcoded data'
           : `Select an operator for ${currentFilterTerm}`
       }`,
       value: currentFilterOperator,

@@ -7,7 +7,7 @@ import { generateQueryString } from './utils';
 
 const initialQueryBuilderState: QueryBuilderState = {
   currentFilterTerm: 'Created date',
-  currentFilterOperator: 'equal to',
+  currentFilterOperator: 'in',
   currentFilterValue: '1970-01-01',
   isCurrentFilterValueValid: false,
   isCurrentFilterValueFocused: false,
