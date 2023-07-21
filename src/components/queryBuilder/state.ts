@@ -5,13 +5,13 @@ import {
 } from './types';
 
 const initialQueryBuilderState: QueryBuilderState = {
-  currentFilterTerm: 'Created',
+  currentFilterTerm: 'Created date',
   currentFilterOperator: 'equal to',
   currentFilterValue: '1970-01-01',
   isCurrentFilterValueValid: false,
   isCurrentFilterValueFocused: false,
 
-  currentSortTerm: 'Created',
+  currentSortTerm: 'Created date',
   currentSortDirection: 'ascending',
 
   filterSelectData: [],

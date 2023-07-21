@@ -178,14 +178,12 @@ function QueryBuilder({
     isSelected: filterStatementsQueue.length > 0,
     semanticName: 'filter statements',
     deselectedDescription: 'No filter statements have been added',
-    selectedDescription: `The following filter statements have been added: ${filterStatementsQueue.reduce(
-      (acc, [term, operator, value]) => {
-        // rome-ignore lint:
-        acc += `Select ${term}s that are ${operator} ${value}. `;
-        return acc;
-      },
-      ''
-    )}`,
+    selectedDescription: `The following filter statements have been added: ${filterStatementsQueue
+      .map(([term, operator, value]) => {
+        const statement = `Select ${term}s that are ${operator} ${value}. `;
+        return statement;
+      })
+      .join('And then, ')}`,
     theme: 'muted',
   });
 
@@ -194,14 +192,12 @@ function QueryBuilder({
       isSelected: sortStatementsQueue.length > 0,
       semanticName: 'sort statements',
       deselectedDescription: 'No sort statements have been added',
-      selectedDescription: `The following sort statements have been added: ${sortStatementsQueue.reduce(
-        (acc, [term, direction]) => {
-          // rome-ignore lint:
-          acc += `Sort ${term}s in ${direction} order. `;
-          return acc;
-        },
-        ''
-      )}`,
+      selectedDescription: `The following sort statements have been added: ${sortStatementsQueue
+        .map(([term, direction]) => {
+          const statement = `Sort ${term}s in ${direction} order. `;
+          return statement;
+        })
+        .join('And then, ')}`,
       theme: 'muted',
     });
 
