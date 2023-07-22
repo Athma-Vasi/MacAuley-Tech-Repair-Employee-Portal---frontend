@@ -814,11 +814,11 @@ function returnTimeRailwayValidationText({
 function logState({
   state,
   groupLabel = 'state',
-  isStringified = false,
+  isStringify = false,
 }: {
   state: Record<string, any>;
   groupLabel?: string;
-  isStringified?: boolean;
+  isStringify?: boolean;
 }) {
   console.group(groupLabel);
   Object.entries(state).forEach(([key, value]) => {
@@ -831,12 +831,22 @@ function logState({
       value = Array.from(value);
     }
 
-    isStringified
+    isStringify
       ? console.log(identifyKey, JSON.stringify(value, null, 2))
       : console.log(identifyKey, value);
   });
   console.groupEnd();
 }
+
+type UrlBuilderInput = {
+  protocol: string;
+  host: string;
+  port: string;
+  path: string;
+  query: string;
+  hash: string;
+};
+function urlBuilder() {}
 
 export {
   formatDate,

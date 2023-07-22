@@ -21,9 +21,9 @@ type QueryLabelValueTypesMap = Map<string, QueryValueTypes>;
 type QueryBuilderProps = {
   collectionName: string;
   componentQueryData: ComponentQueryData[];
-  parentComponentAction: 'setQueryString';
+  setQueryBuilderString: 'setQueryBuilderString';
   parentComponentDispatch: React.Dispatch<{
-    type: 'setQueryString';
+    type: 'setQueryBuilderString';
     payload: string;
   }>;
 };

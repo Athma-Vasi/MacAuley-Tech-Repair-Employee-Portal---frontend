@@ -1,9 +1,8 @@
-import { Accordion, Flex, NavLink, Timeline } from '@mantine/core';
+import { Flex, NavLink, Timeline } from '@mantine/core';
 import { TbChevronRight, TbLayersLinked, TbLink } from 'react-icons/tb';
 
-import { TimelineBuilderProps } from './types';
-import { FormLayoutWrapper, TextWrapper } from '../wrappers';
 import { useGlobalState } from '../../hooks';
+import { TimelineBuilderProps } from './types';
 
 function TimelineBuilder({ timelines }: TimelineBuilderProps): JSX.Element {
   const {
@@ -13,10 +12,9 @@ function TimelineBuilder({ timelines }: TimelineBuilderProps): JSX.Element {
   const createTimelines = Object.entries(timelines).map(
     ([key, value], index) => {
       return (
-        <Flex direction="column" w="100%">
+        <Flex direction="column" w="100%" key={`timeline-${index}`}>
           <NavLink
             label={`${key.charAt(0).toUpperCase()}${key.slice(1)}`}
-            key={`timeline-${index}`}
             icon={<TbLayersLinked />}
             rightSection={<TbChevronRight />}
             childrenOffset="xs"

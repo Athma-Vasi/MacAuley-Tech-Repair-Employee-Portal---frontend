@@ -1,15 +1,17 @@
+import { Flex, Group, Text } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
+import { useAuth, useGlobalState } from '../../../hooks';
+import { logState } from '../../../utils';
+import { PageBuilder } from '../../pageBuilder';
+import { QueryBuilder } from '../../queryBuilder';
+import { FormLayoutWrapper } from '../../wrappers';
+import { LEAVE_REQUESTS_QUERY_DATA } from './constants';
 import {
+  displayLeaveRequestsAction,
   displayLeaveRequestsReducer,
   initialDisplayLeaveRequestsState,
 } from './state';
-import { Center, Container, Flex } from '@mantine/core';
-import { QueryBuilder } from '../../queryBuilder';
-import { ComponentQueryData } from '../../queryBuilder/types';
-import { FormLayoutWrapper } from '../../wrappers';
-import { useGlobalState } from '../../../hooks';
-import { logState } from '../../../utils';
 
 function DisplayLeaveRequests() {
   const [displayLeaveRequestsState, displayLeaveRequestsDispatch] = useReducer(
@@ -21,6 +23,8 @@ function DisplayLeaveRequests() {
     pages,
     totalDocuments,
     newQueryFlag,
+    queryBuilderString,
+    pageQueryString,
 
     isError,
     errorMessage,
@@ -35,66 +39,62 @@ function DisplayLeaveRequests() {
   const {
     globalState: { padding },
   } = useGlobalState();
+  const {
+    authState: { accessToken },
+  } = useAuth();
 
-  const componentQueryData: ComponentQueryData[] = [
-    {
-      label: 'Created date',
-      value: 'createdAt',
-      inputKind: 'dateInput',
-    },
-    {
-      label: 'Updated date',
-      value: 'updatedAt',
-      inputKind: 'dateInput',
-    },
-    {
-      label: 'Start date',
-      value: 'startDate',
-      inputKind: 'dateInput',
-    },
-    {
-      label: 'End date',
-      value: 'endDate',
-      inputKind: 'dateInput',
-    },
-    {
-      label: 'Reason for leave',
-      value: 'reasonForLeave',
-      inputKind: 'selectInput',
-      selectData: [
-        'Vacation',
-        'Medical',
-        'Parental',
-        'Bereavement',
-        'Jury Duty',
-        'Military',
-        'Education',
-        'Religious',
-        'Other',
-      ],
-    },
-    {
-      label: 'Request status',
-      value: 'requestStatus',
-      inputKind: 'selectInput',
-      selectData: ['pending', 'approved', 'rejected'],
-    },
-    {
-      label: 'Delegated to employee',
-      value: 'delegatedToEmployee',
-      inputKind: 'textInput',
-    },
-    {
-      label: 'Delegated responsibilities',
-      value: 'delegatedResponsibilities',
-      inputKind: 'textInput',
-    },
-    {
-      label: 'Additional comments',
-      value: 'additionalComments',
-      inputKind: 'textInput',
-    },
-  ];
+  useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    async function fetchLeaveRequests() {
+      const urlString = `http://localhost:3500/actions/company/leave-request${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`;
+      console.log('urlString:', urlString);
+
+      try {
+        const newRequest: Request = new Request(urlString, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          signal,
+        });
+
+        const response = await fetch(newRequest);
+        const data = await response.json();
+        displayLeaveRequestsDispatch({
+          type: displayLeaveRequestsAction.setLeaveRequests,
+          payload: data.leaveRequestsData,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log('finally');
+      }
+    }
+
+    fetchLeaveRequests();
+
+    return () => {
+      controller.abort();
+    };
+  }, [newQueryFlag]);
+
+  // backend is set to trigger countDocuments scan on a new query only, not on page changes
+  useEffect(() => {
+    displayLeaveRequestsDispatch({
+      type: displayLeaveRequestsAction.setNewQueryFlag,
+      payload: true,
+    });
+  }, [queryBuilderString]);
+  // set new query flag to false on page changes
+  useEffect(() => {
+    displayLeaveRequestsDispatch({
+      type: displayLeaveRequestsAction.setNewQueryFlag,
+      payload: false,
+    });
+  }, [pageQueryString]);
 
   useEffect(() => {
     logState({
@@ -117,11 +117,32 @@ function DisplayLeaveRequests() {
       p={padding}
     >
       <h6>Display leave requests</h6>
+      {leaveRequests.length > 0
+        ? leaveRequests.map((leaveRequest, index) => (
+            <Group
+              key={`leave-request-${index}`}
+              style={{
+                border: '1px solid #e0e0e0',
+                borderRadius: 4,
+              }}
+              p={padding}
+            >
+              <FormLayoutWrapper>
+                <Text size="xs">{JSON.stringify(leaveRequest, null, 2)}</Text>
+              </FormLayoutWrapper>
+            </Group>
+          ))
+        : null}
       <QueryBuilder
-        parentComponentAction="setQueryString"
+        setQueryBuilderString={displayLeaveRequestsAction.setQueryBuilderString}
         parentComponentDispatch={displayLeaveRequestsDispatch}
-        componentQueryData={componentQueryData}
+        componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
         collectionName="leave requests"
+      />
+      <PageBuilder
+        total={10}
+        setPageQueryString={displayLeaveRequestsAction.setPageQueryString}
+        parentComponentDispatch={displayLeaveRequestsDispatch}
       />
     </Flex>
   );

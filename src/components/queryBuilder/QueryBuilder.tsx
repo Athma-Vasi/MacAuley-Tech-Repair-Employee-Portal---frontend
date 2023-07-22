@@ -61,7 +61,7 @@ import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
 function QueryBuilder({
   componentQueryData,
   collectionName,
-  parentComponentAction,
+  setQueryBuilderString,
   parentComponentDispatch,
 }: QueryBuilderProps) {
   const [queryBuilderState, queryBuilderDispatch] = useReducer(
@@ -628,11 +628,11 @@ function QueryBuilder({
       semanticName: 'submit query',
       buttonOnClick: (event) => {
         parentComponentDispatch({
-          type: parentComponentAction,
+          type: setQueryBuilderString,
           payload: queryString,
         });
       },
-      buttonDisabled: queryString === '?',
+      // buttonDisabled: queryString === '?',
       leftIcon: <TbUpload />,
     };
   // ----------------- //
@@ -803,10 +803,6 @@ function QueryBuilder({
   );
 
   // ----------------- //
-
-  useEffect(() => {
-    logState({ state: queryBuilderState });
-  }, [queryBuilderState]);
 
   const displayQueryBuilderComponent = (
     <Flex

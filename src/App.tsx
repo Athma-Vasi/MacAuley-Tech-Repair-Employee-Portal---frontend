@@ -41,8 +41,8 @@ function App() {
       <Routes>
         {/* these are public routes */}
         <Route path="/" element={<PublicLayout />}>
-          {/* <Route index element={<Login />} /> */}
-          {/* <Route path="login" element={<Login />} /> */}
+          <Route index element={<Login />} />
+          <Route path="login" element={<Login />} />
           {/* <Route path="register" element={<Register />} /> */}
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
 

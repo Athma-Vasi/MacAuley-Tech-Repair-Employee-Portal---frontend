@@ -6,7 +6,8 @@ type DisplayLeaveRequestsState = {
   totalDocuments: number;
 
   newQueryFlag: boolean;
-  queryString: string;
+  queryBuilderString: string;
+  pageQueryString: string;
 
   isError: boolean;
   errorMessage: string;
@@ -22,8 +23,10 @@ type DisplayLeaveRequestsAction = {
   setLeaveRequests: 'setLeaveRequests';
   setPages: 'setPages';
   setTotalDocuments: 'setTotalDocuments';
+
   setNewQueryFlag: 'setNewQueryFlag';
-  setQueryString: 'setQueryString';
+  setQueryBuilderString: 'setQueryBuilderString';
+  setPageQueryString: 'setPageQueryString';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -57,7 +60,8 @@ type DisplayLeaveRequestsDispatch =
     }
   | {
       type:
-        | DisplayLeaveRequestsAction['setQueryString']
+        | DisplayLeaveRequestsAction['setQueryBuilderString']
+        | DisplayLeaveRequestsAction['setPageQueryString']
         | DisplayLeaveRequestsAction['setErrorMessage']
         | DisplayLeaveRequestsAction['setSubmitMessage']
         | DisplayLeaveRequestsAction['setSuccessMessage']

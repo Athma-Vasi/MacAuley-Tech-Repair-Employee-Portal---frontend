@@ -102,7 +102,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbCalendarPin />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/company/leave-request');
+          navigate('/portal/company/leave-request/display');
         }}
       />
     </NavLink>
