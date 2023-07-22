@@ -90,9 +90,11 @@ function returnAccessibleErrorValidTextElements({
       aria-live="polite"
     >
       <FontAwesomeIcon icon={faCheck} />{' '}
-      {`${inputElementKind[0].toUpperCase()}${inputElementKind.slice(
-        1
-      )} is valid`}
+      {inputElementKind.length > 0
+        ? `${inputElementKind[0].toUpperCase()}${inputElementKind.slice(
+            1
+          )} is valid`
+        : ''}
     </Text>,
   ];
 }

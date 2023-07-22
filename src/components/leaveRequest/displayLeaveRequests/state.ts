@@ -8,7 +8,9 @@ const initialDisplayLeaveRequestsState: DisplayLeaveRequestsState = {
   leaveRequests: [],
   pages: 0,
   totalDocuments: 0,
+
   newQueryFlag: true,
+  queryString: '',
 
   isError: false,
   errorMessage: '',
@@ -24,7 +26,9 @@ const displayLeaveRequestsAction: DisplayLeaveRequestsAction = {
   setLeaveRequests: 'setLeaveRequests',
   setPages: 'setPages',
   setTotalDocuments: 'setTotalDocuments',
+
   setNewQueryFlag: 'setNewQueryFlag',
+  setQueryString: 'setQueryString',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -56,11 +60,18 @@ function displayLeaveRequestsReducer(
         ...state,
         totalDocuments: action.payload,
       };
+
     case displayLeaveRequestsAction.setNewQueryFlag:
       return {
         ...state,
         newQueryFlag: action.payload,
       };
+    case displayLeaveRequestsAction.setQueryString:
+      return {
+        ...state,
+        queryString: action.payload,
+      };
+
     case displayLeaveRequestsAction.setIsError:
       return {
         ...state,

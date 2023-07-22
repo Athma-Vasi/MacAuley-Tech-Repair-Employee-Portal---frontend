@@ -7,7 +7,7 @@ import { generateQueryString } from './utils';
 
 const initialQueryBuilderState: QueryBuilderState = {
   currentFilterTerm: 'Created date',
-  currentFilterOperator: 'in',
+  currentFilterOperator: 'equal to',
   currentFilterValue: '1970-01-01',
   isCurrentFilterValueValid: false,
   isCurrentFilterValueFocused: false,
@@ -145,13 +145,13 @@ function queryBuilderReducer(
         return state;
       }
 
-      // if there are duplicate filter fields, remove the previous one
-      const duplicateFilterFieldIndex = filterStatementsQueue.findIndex(
-        (item) => item[0] === value[0]
-      );
-      if (duplicateFilterFieldIndex !== -1) {
-        filterStatementsQueue.splice(duplicateFilterFieldIndex, 1);
-      }
+      // // if there are duplicate filter values, remove the previous one
+      // const duplicateFilterValuesIndex = filterStatementsQueue.findIndex(
+      //   (item) => item[0] === value[0]
+      // );
+      // if (duplicateFilterValuesIndex !== -1) {
+      //   filterStatementsQueue.splice(duplicateFilterValuesIndex, 1);
+      // }
 
       if (index >= filterStatementsQueue.length) {
         filterStatementsQueue.push(value);

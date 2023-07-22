@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 
 import {
   displayLeaveRequestsReducer,
@@ -9,6 +9,7 @@ import { QueryBuilder } from '../../queryBuilder';
 import { ComponentQueryData } from '../../queryBuilder/types';
 import { FormLayoutWrapper } from '../../wrappers';
 import { useGlobalState } from '../../../hooks';
+import { logState } from '../../../utils';
 
 function DisplayLeaveRequests() {
   const [displayLeaveRequestsState, displayLeaveRequestsDispatch] = useReducer(
@@ -94,10 +95,18 @@ function DisplayLeaveRequests() {
       inputKind: 'textInput',
     },
   ];
+
+  useEffect(() => {
+    logState({
+      state: displayLeaveRequestsState,
+      groupLabel: 'DisplayLeaveRequests',
+    });
+  }, [displayLeaveRequestsState]);
+
   return (
     <Flex
       direction="column"
-      align="center"
+      align="flex-start"
       justify="center"
       w="100%"
       h="100%"
@@ -109,6 +118,8 @@ function DisplayLeaveRequests() {
     >
       <h6>Display leave requests</h6>
       <QueryBuilder
+        parentComponentAction="setQueryString"
+        parentComponentDispatch={displayLeaveRequestsDispatch}
         componentQueryData={componentQueryData}
         collectionName="leave requests"
       />
@@ -117,15 +128,3 @@ function DisplayLeaveRequests() {
 }
 
 export { DisplayLeaveRequests };
-
-/**
- * {
-    startDate: ['Start date', 'date'],
-    endDate: ['End date', 'date'],
-    reasonForLeave: ['Reason for leave', 'selectData'],
-    createdAt: ['Created', 'date'],
-    updatedAt: ['Updated', 'date'],
-    requestStatus: ['Request status', 'selectData'],
-  };
-
- */

@@ -4,7 +4,9 @@ type DisplayLeaveRequestsState = {
   leaveRequests: Array<Partial<LeaveRequestDocument>>;
   pages: number;
   totalDocuments: number;
+
   newQueryFlag: boolean;
+  queryString: string;
 
   isError: boolean;
   errorMessage: string;
@@ -21,6 +23,7 @@ type DisplayLeaveRequestsAction = {
   setPages: 'setPages';
   setTotalDocuments: 'setTotalDocuments';
   setNewQueryFlag: 'setNewQueryFlag';
+  setQueryString: 'setQueryString';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -54,6 +57,7 @@ type DisplayLeaveRequestsDispatch =
     }
   | {
       type:
+        | DisplayLeaveRequestsAction['setQueryString']
         | DisplayLeaveRequestsAction['setErrorMessage']
         | DisplayLeaveRequestsAction['setSubmitMessage']
         | DisplayLeaveRequestsAction['setSuccessMessage']

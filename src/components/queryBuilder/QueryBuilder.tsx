@@ -16,6 +16,7 @@ import {
   TbLayersLinked,
   TbPlus,
   TbTrash,
+  TbUpload,
 } from 'react-icons/tb';
 import { VscExclude } from 'react-icons/vsc';
 
@@ -60,6 +61,8 @@ import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
 function QueryBuilder({
   componentQueryData,
   collectionName,
+  parentComponentAction,
+  parentComponentDispatch,
 }: QueryBuilderProps) {
   const [queryBuilderState, queryBuilderDispatch] = useReducer(
     queryBuilderReducer,
@@ -289,18 +292,22 @@ function QueryBuilder({
       );
 
       return (
-        <Grid
+        <Flex
           key={`filter-statement-${index}`}
+          align="center"
+          justify="space-between"
           w="100%"
+          p={padding}
+          columnGap={rowGap}
           style={{ border: '1px solid #e0e0e0', borderRadius: 4 }}
         >
-          <Grid.Col md={6} lg={3}>
+          <Flex align="center" justify="flex-start" w="100%">
             {displayStatement}
-          </Grid.Col>
-          <Grid.Col md={6} lg={3}>
-            <Flex justify="flex-end">{displayDeleteFilterButton}</Flex>
-          </Grid.Col>
-        </Grid>
+          </Flex>
+          <Flex align="center" justify="flex-end">
+            {displayDeleteFilterButton}
+          </Flex>
+        </Flex>
       );
     }
   );
@@ -336,7 +343,7 @@ function QueryBuilder({
 
   const filterOperatorData =
     currentInputKind === 'selectInput'
-      ? ['in']
+      ? ['', 'in']
       : QUERY_BUILDER_FILTER_OPERATORS;
   const filterOperatorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
@@ -438,6 +445,7 @@ function QueryBuilder({
     semanticDescription:
       'Add new filter statement that can be chained with previous statements',
     semanticName: 'add new filter',
+    leftIcon: <TbPlus />,
     buttonOnClick: (event) => {
       queryBuilderDispatch({
         type: queryBuilderAction.setFilterStatementsQueue,
@@ -531,6 +539,7 @@ function QueryBuilder({
     semanticDescription:
       'Add new sort statement that can be chained with previous statements',
     semanticName: 'add new sort',
+    leftIcon: <TbPlus />,
     buttonOnClick: (event) => {
       queryBuilderDispatch({
         type: queryBuilderAction.setSortStatementsQueue,
@@ -590,21 +599,42 @@ function QueryBuilder({
       );
 
       return (
-        <Grid
+        <Flex
           key={`sort-statement-${index}`}
+          align="center"
+          justify="space-between"
           w="100%"
+          p={padding}
+          columnGap={rowGap}
           style={{ border: '1px solid #e0e0e0', borderRadius: 4 }}
         >
-          <Grid.Col md={6} lg={3}>
+          <Flex align="center" justify="flex-start" w="100%">
             {displayStatement}
-          </Grid.Col>
-          <Grid.Col md={6} lg={3}>
-            <Flex justify="flex-end">{displayDeleteSortButton}</Flex>
-          </Grid.Col>
-        </Grid>
+          </Flex>
+          <Flex align="center" justify="flex-end">
+            {displayDeleteSortButton}
+          </Flex>
+        </Flex>
       );
     }
   );
+  // ----------------- //
+
+  // ----------------- submit button -----------------  //
+  const submitQueryToParentComponentButtonCreatorInfo: AccessibleButtonCreatorInfo =
+    {
+      buttonLabel: 'Submit',
+      semanticDescription: `Submit query to ${collectionName}`,
+      semanticName: 'submit query',
+      buttonOnClick: (event) => {
+        parentComponentDispatch({
+          type: parentComponentAction,
+          payload: queryString,
+        });
+      },
+      buttonDisabled: queryString === '?',
+      leftIcon: <TbUpload />,
+    };
   // ----------------- //
 
   // ----------------- create and display elements -----------------  //
@@ -621,11 +651,15 @@ function QueryBuilder({
     sortDirectionSelectInputCreatorInfo,
   ]);
 
-  const [createdAddNewFilterButton, createdAddNewSortButton] =
-    returnAccessibleButtonElements([
-      addNewFilterButtonCreatorInfo,
-      addNewSortButtonCreatorInfo,
-    ]);
+  const [
+    createdAddNewFilterButton,
+    createdAddNewSortButton,
+    createdSubmitButton,
+  ] = returnAccessibleButtonElements([
+    addNewFilterButtonCreatorInfo,
+    addNewSortButtonCreatorInfo,
+    submitQueryToParentComponentButtonCreatorInfo,
+  ]);
 
   const createdProjectionCheckboxGroupInput =
     returnAccessibleCheckboxGroupInputsElements([
@@ -767,21 +801,45 @@ function QueryBuilder({
       )}
     </Flex>
   );
+
   // ----------------- //
 
   useEffect(() => {
     logState({ state: queryBuilderState });
   }, [queryBuilderState]);
 
-  return (
-    <Flex w="100%" direction="column" rowGap={rowGap}>
-      <TextWrapper creatorInfoObj={{}}>Query Builder</TextWrapper>
-
-      {displayFilterSection}
-      {displaySortSection}
-      {displayProjectionSection}
+  const displayQueryBuilderComponent = (
+    <Flex
+      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+      p={padding}
+      direction="column"
+      rowGap={rowGap}
+      style={{
+        border: '1px solid #e0e0e0',
+        borderRadius: 4,
+      }}
+    >
+      <NavLink
+        label="Query Builder"
+        icon={<TbArrowsSort />}
+        rightSection={<TbChevronRight />}
+        childrenOffset="xs"
+        disabled={filteredSortSelectData.length === 0}
+        w="62%"
+      >
+        <Flex w="100%" direction="column" rowGap={rowGap}>
+          {displayFilterSection}
+          {displaySortSection}
+          {displayProjectionSection}
+          <Flex align="center" justify="flex-end">
+            {createdSubmitButton}
+          </Flex>
+        </Flex>
+      </NavLink>
     </Flex>
   );
+
+  return <>{displayQueryBuilderComponent}</>;
 }
 
 export { QueryBuilder };
