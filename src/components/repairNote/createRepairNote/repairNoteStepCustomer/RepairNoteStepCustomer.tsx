@@ -1,6 +1,6 @@
 import { Text, Title } from '@mantine/core';
-import type { RepairNoteStepCustomerProps } from './types';
-import { useEffect } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect } from 'react';
+
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -10,6 +10,7 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../../../../constants/regex';
+import { returnAccessibleErrorValidTextElements } from '../../../../jsxCreators';
 import {
   filterFieldsFromObject,
   logState,
@@ -20,7 +21,13 @@ import {
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
 } from '../../../../utils';
-import { returnAccessibleErrorValidTextElements } from '../../../../jsxCreators';
+import {
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+} from '../../../wrappers';
+import type { RepairNoteStepCustomerProps } from './types';
+import { PROVINCES, STATES_US } from '../../../../constants/data';
+import { Province, StatesUS } from '../../../../types';
 
 function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
   const {
@@ -331,6 +338,318 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
       }),
     });
 
+  // ------------- end accessible error and valid texts ------------- //
+
+  /**
+   * const contactNumberPhoneInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =
+    {
+      description: {
+        error: contactNumberInputErrorText,
+        valid: contactNumberInputValidText,
+      },
+      inputText: contactNumber,
+      isValidInputText: isValidContactNumber,
+      label: 'Contact number',
+      onBlur: () => {
+        registerDispatch({
+          type: registerAction.setIsContactNumberFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        registerDispatch({
+          type: registerAction.setContactNumber,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        registerDispatch({
+          type: registerAction.setIsContactNumberFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter your contact number',
+      required: true,
+      withAsterisk: true,
+      semanticName: 'contact number',
+      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Backspace') {
+          if (contactNumber.length === 14 || contactNumber.length === 9) {
+            registerDispatch({
+              type: registerAction.setContactNumber,
+              payload: contactNumber.slice(0, -1),
+            });
+          }
+        }
+      },
+    };
+
+   */
+
+  // ------------- input creator info objects ------------- //
+
+  const customerNameInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: customerNameInputErrorText,
+      valid: customerNameInputValidText,
+    },
+    inputText: customerName,
+    isValidInputText: isValidCustomerName,
+    label: 'Customer name',
+    onBlur: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerNameFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setCustomerName,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerNameFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter customer name',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'customer name',
+  };
+
+  const customerPhoneInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: customerPhoneInputErrorText,
+      valid: customerPhoneInputValidText,
+    },
+    inputText: customerPhone,
+    isValidInputText: isValidCustomerPhone,
+    label: 'Customer phone',
+    onBlur: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerPhoneFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setCustomerPhone,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerPhoneFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter customer phone',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'customer phone',
+    onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Backspace') {
+        if (customerPhone.length === 14 || customerPhone.length === 9) {
+          createRepairNoteDispatch({
+            type: createRepairNoteAction.setCustomerPhone,
+            payload: customerPhone.slice(0, -1),
+          });
+        }
+      }
+    },
+  };
+
+  const customerEmailInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: customerEmailInputErrorText,
+      valid: customerEmailInputValidText,
+    },
+    inputText: customerEmail,
+    isValidInputText: isValidCustomerEmail,
+    label: 'Customer email',
+    onBlur: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerEmailFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setCustomerEmail,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerEmailFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter customer email',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'customer email',
+  };
+
+  const customerAddressLineInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: customerAddressLineInputErrorText,
+      valid: customerAddressLineInputValidText,
+    },
+    inputText: customerAddressLine,
+    isValidInputText: isValidCustomerAddressLine,
+    label: 'Customer address line',
+    onBlur: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerAddressLineFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setCustomerAddressLine,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerAddressLineFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter customer address line',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'customer address line',
+  };
+
+  const customerCityInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: customerCityInputErrorText,
+      valid: customerCityInputValidText,
+    },
+    inputText: customerCity,
+    isValidInputText: isValidCustomerCity,
+    label: 'Customer city',
+    onBlur: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerCityFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setCustomerCity,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerCityFocused,
+
+        payload: true,
+      });
+    },
+    placeholder: 'Enter customer city',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'customer city',
+  };
+
+  const provinceOrStateSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: customerCountry === 'Canada' ? PROVINCES : STATES_US,
+      description:
+        customerCountry === 'Canada'
+          ? 'Select your province'
+          : 'Select your state',
+      label: customerCountry === 'Canada' ? 'Province' : 'State',
+      value: customerCountry === 'Canada' ? customerProvince : customerState,
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        customerCountry === 'Canada'
+          ? createRepairNoteDispatch({
+              type: createRepairNoteAction.setCustomerProvince,
+              payload: event.currentTarget.value as Province,
+            })
+          : createRepairNoteDispatch({
+              type: createRepairNoteAction.setCustomerState,
+              payload: event.currentTarget.value as StatesUS,
+            });
+      },
+    };
+
+  const zipOrPostalCodeTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: customerPostalCodeInputErrorText,
+      valid: customerPostalCodeInputValidText,
+    },
+    inputText: customerPostalCode,
+    isValidInputText: isValidCustomerPostalCode,
+    label: customerCountry === 'Canada' ? 'Postal code' : 'Zip code',
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setCustomerPostalCode,
+        payload:
+          customerCountry === 'Canada'
+            ? event.currentTarget.value.toUpperCase()
+            : event.currentTarget.value,
+      });
+    },
+    onBlur: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerPostalCodeFocused,
+        payload: false,
+      });
+    },
+    onFocus: () => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setIsCustomerPostalCodeFocused,
+        payload: true,
+      });
+    },
+    onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+      switch (customerCountry) {
+        case 'Canada': {
+          if (event.key === 'Backspace' && customerPostalCode.length === 4) {
+            createRepairNoteDispatch({
+              type: createRepairNoteAction.setCustomerPostalCode,
+              payload: customerPostalCode.slice(0, 3),
+            });
+          }
+          break;
+        }
+        case 'United States': {
+          if (event.key === 'Backspace' && customerPostalCode.length === 7) {
+            createRepairNoteDispatch({
+              type: createRepairNoteAction.setCustomerPostalCode,
+              payload: customerPostalCode.slice(0, 6),
+            });
+          }
+          break;
+        }
+        default:
+          break;
+      }
+    },
+    placeholder:
+      customerCountry === 'Canada'
+        ? 'Enter Canadian postal code'
+        : 'Enter US postal code',
+    semanticName: 'postal code',
+
+    minLength: customerCountry === 'Canada' ? 6 : 5,
+    maxLength: customerCountry === 'Canada' ? 7 : 10,
+
+    required: true,
+    withAsterisk: true,
+  };
+
+  //
+  //
+  //
   useEffect(() => {
     const fieldsOmittedState = filterFieldsFromObject({
       object: parentState,
