@@ -33,7 +33,7 @@ type CreateRepairNoteState = {
 
   customerState: StatesUS;
   customerProvince: Province;
-  customerCountry: string;
+  customerCountry: Country;
 
   customerPostalCode: PostalCode;
   isValidCustomerPostalCode: boolean;

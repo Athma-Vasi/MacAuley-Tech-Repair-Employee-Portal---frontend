@@ -10,7 +10,17 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../../../../constants/regex';
-import { filterFieldsFromObject, logState } from '../../../../utils';
+import {
+  filterFieldsFromObject,
+  logState,
+  returnAddressValidationText,
+  returnCityValidationText,
+  returnEmailValidationText,
+  returnNameValidationText,
+  returnPhoneNumberValidationText,
+  returnPostalCodeValidationText,
+} from '../../../../utils';
+import { returnAccessibleErrorValidTextElements } from '../../../../jsxCreators';
 
 function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
   const {
@@ -45,6 +55,8 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     createRepairNoteAction,
     createRepairNoteDispatch,
   } = parentState;
+
+  // ------------- input validation ------------- //
 
   // validate customer name on every input change
   useEffect(() => {
@@ -242,6 +254,82 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     isValidCustomerCity,
     isValidCustomerPostalCode,
   ]);
+  // ------------- end input validation ------------- //
+
+  // ------------- accessible error and valid texts ------------- //
+
+  // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [customerNameInputErrorText, customerNameInputValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: 'customer name',
+      inputText: customerName,
+      isValidInputText: isValidCustomerName,
+      isInputTextFocused: isCustomerNameFocused,
+      regexValidationText: returnNameValidationText({
+        content: customerName,
+        contentKind: 'customer name',
+        minLength: 2,
+        maxLength: 100,
+      }),
+    });
+
+  const [customerPhoneInputErrorText, customerPhoneInputValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: 'customer phone',
+      inputText: customerPhone,
+      isValidInputText: isValidCustomerPhone,
+      isInputTextFocused: isCustomerPhoneFocused,
+      regexValidationText: returnPhoneNumberValidationText(customerPhone),
+    });
+
+  const [customerEmailInputErrorText, customerEmailInputValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: 'customer email',
+      inputText: customerEmail,
+      isValidInputText: isValidCustomerEmail,
+      isInputTextFocused: isCustomerEmailFocused,
+      regexValidationText: returnEmailValidationText(customerEmail),
+    });
+
+  const [customerAddressLineInputErrorText, customerAddressLineInputValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: 'customer address line',
+      inputText: customerAddressLine,
+      isValidInputText: isValidCustomerAddressLine,
+      isInputTextFocused: isCustomerAddressLineFocused,
+      regexValidationText: returnAddressValidationText({
+        content: customerAddressLine,
+        contentKind: 'customer address line',
+        maxLength: 75,
+        minLength: 2,
+      }),
+    });
+
+  const [customerCityInputErrorText, customerCityInputValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: 'customer city',
+      inputText: customerCity,
+      isValidInputText: isValidCustomerCity,
+      isInputTextFocused: isCustomerCityFocused,
+      regexValidationText: returnCityValidationText({
+        content: customerCity,
+        contentKind: 'customer city',
+        maxLength: 75,
+        minLength: 2,
+      }),
+    });
+
+  const [customerPostalCodeInputErrorText, customerPostalCodeInputValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: 'customer postal code',
+      inputText: customerPostalCode,
+      isValidInputText: isValidCustomerPostalCode,
+      isInputTextFocused: isCustomerPostalCodeFocused,
+      regexValidationText: returnPostalCodeValidationText({
+        country: customerCountry,
+        postalCode: customerPostalCode,
+      }),
+    });
 
   useEffect(() => {
     const fieldsOmittedState = filterFieldsFromObject({

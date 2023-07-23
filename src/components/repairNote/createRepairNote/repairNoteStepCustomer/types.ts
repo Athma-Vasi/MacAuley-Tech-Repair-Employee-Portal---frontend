@@ -1,4 +1,10 @@
-import { PhoneNumber, PostalCode, Province, StatesUS } from '../../../../types';
+import {
+  Country,
+  PhoneNumber,
+  PostalCode,
+  Province,
+  StatesUS,
+} from '../../../../types';
 import { CreateRepairNoteAction, CreateRepairNoteDispatch } from '../types';
 
 type RepairNoteStepCustomerProps = {
@@ -24,7 +30,7 @@ type RepairNoteStepCustomerProps = {
 
   customerState: StatesUS;
   customerProvince: Province;
-  customerCountry: string;
+  customerCountry: Country;
 
   customerPostalCode: PostalCode;
   isValidCustomerPostalCode: boolean;
