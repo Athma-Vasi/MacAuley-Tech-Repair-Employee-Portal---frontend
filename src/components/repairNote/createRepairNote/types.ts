@@ -1,4 +1,5 @@
 import {
+  Country,
   PhoneNumber,
   PostalCode,
   Province,
@@ -187,6 +188,7 @@ type CreateRepairNoteDispatch =
         | CreateRepairNoteAction['setCustomerCity']
         | CreateRepairNoteAction['setPartName']
         | CreateRepairNoteAction['setPartSerialId']
+        | CreateRepairNoteAction['setDateReceived']
         | CreateRepairNoteAction['setDescriptionOfIssue']
         | CreateRepairNoteAction['setInitialInspectionNotes']
         | CreateRepairNoteAction['setPartsNeededModels']
@@ -205,14 +207,20 @@ type CreateRepairNoteDispatch =
         | CreateRepairNoteAction['setIsCustomerNameFocused']
         | CreateRepairNoteAction['setIsValidCustomerEmail']
         | CreateRepairNoteAction['setIsCustomerEmailFocused']
+        | CreateRepairNoteAction['setIsValidCustomerPhone']
+        | CreateRepairNoteAction['setIsCustomerPhoneFocused']
         | CreateRepairNoteAction['setIsValidCustomerAddressLine']
         | CreateRepairNoteAction['setIsCustomerAddressLineFocused']
         | CreateRepairNoteAction['setIsValidCustomerCity']
         | CreateRepairNoteAction['setIsCustomerCityFocused']
+        | CreateRepairNoteAction['setIsValidCustomerPostalCode']
+        | CreateRepairNoteAction['setIsCustomerPostalCodeFocused']
         | CreateRepairNoteAction['setIsValidPartName']
         | CreateRepairNoteAction['setIsPartNameFocused']
         | CreateRepairNoteAction['setIsValidPartSerialId']
         | CreateRepairNoteAction['setIsPartSerialIdFocused']
+        | CreateRepairNoteAction['setIsValidDateReceived']
+        | CreateRepairNoteAction['setIsDateReceivedFocused']
         | CreateRepairNoteAction['setIsValidDescriptionOfIssue']
         | CreateRepairNoteAction['setIsDescriptionOfIssueFocused']
         | CreateRepairNoteAction['setIsValidInitialInspectionNotes']
@@ -224,6 +232,7 @@ type CreateRepairNoteDispatch =
         | CreateRepairNoteAction['setIsEstimatedRepairCostFocused']
         | CreateRepairNoteAction['setIsValidEstimatedCompletionDate']
         | CreateRepairNoteAction['setIsEstimatedCompletionDateFocused']
+        | CreateRepairNoteAction['setTriggerFormSubmit']
         | CreateRepairNoteAction['setIsError']
         | CreateRepairNoteAction['setIsSubmitting']
         | CreateRepairNoteAction['setIsSuccessful']
@@ -250,6 +259,11 @@ type CreateRepairNoteDispatch =
       // all StatesUS payloads
       type: CreateRepairNoteAction['setCustomerState'];
       payload: StatesUS;
+    }
+  | {
+      // all Country payloads
+      type: CreateRepairNoteAction['setCustomerCountry'];
+      payload: Country;
     }
   | {
       // all Urgency payloads
