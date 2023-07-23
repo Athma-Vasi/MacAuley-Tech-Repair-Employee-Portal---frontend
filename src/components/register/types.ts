@@ -298,13 +298,4 @@ type RegisterDispatch =
       payload: number;
     };
 
-type RegisterResponse = {
-  message: string;
-};
-
-export type {
-  RegisterAction,
-  RegisterDispatch,
-  RegisterResponse,
-  RegisterState,
-};
+export type { RegisterAction, RegisterDispatch, RegisterState };

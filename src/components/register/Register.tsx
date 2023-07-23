@@ -38,7 +38,6 @@ import { RegisterStepAuthentication } from './registerStepAuthentication/Registe
 import { RegisterStepPersonal } from './registerStepPersonal/RegisterStepPersonal';
 import { RegisterStepReview } from './registerStepReview/RegisterStepReview';
 import { initialRegisterState, registerAction, registerReducer } from './state';
-import { RegisterResponse } from './types';
 import { returnAccessibleButtonElements } from '../../jsxCreators';
 
 function Register() {
@@ -238,7 +237,7 @@ function Register() {
           withCredentials: true,
         };
 
-        const response = await axiosInstance<RegisterResponse>(axiosConfig);
+        const response = await axiosInstance(axiosConfig);
 
         const { status } = response;
 

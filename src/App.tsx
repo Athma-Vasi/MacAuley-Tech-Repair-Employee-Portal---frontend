@@ -30,6 +30,7 @@ import { SurveyBuilder } from './components/surveyBuilder';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
+import { CreateRepairNote } from './components/repairNote';
 
 function App() {
   const {
@@ -43,18 +44,18 @@ function App() {
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<Login />} />
           <Route path="login" element={<Login />} />
-          {/* <Route path="register" element={<Register />} /> */}
+          <Route path="register" element={<Register />} />
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
 
           {/* DEV PATHS - DELETE LATER*/}
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
-          <Route path="create-leave-request" element={<CreateLeaveRequest />} />
-          <Route
+          {/* <Route path="create-leave-request" element={<CreateLeaveRequest />} /> */}
+          {/* <Route
             path="display-leave-requests"
             element={<DisplayLeaveRequests />}
-          />
+          /> */}
           {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
           {/* <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
           {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
@@ -96,18 +97,20 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
 
-          {/* <Route path="notes">
-            <Route index element={<NotesList />} />
-          </Route> */}
+          <Route path="repair-notes">
+            {/* <Route index element={<DisplayRepairNotes />} /> */}
+            {/* <Route path="display" element={<DisplayRepairNotes />} /> */}
+            <Route path="create" element={<CreateRepairNote />} />
+          </Route>
 
           <Route path="company">
             {/* <Route path="address-change" element={<AddressChange />} /> */}
             {/* <Route path="benefits" element={<CreateBenefit />} /> */}
-            <Route path="leave-request">
+            {/* <Route path="leave-request">
               <Route index element={<DisplayLeaveRequests />} />
               <Route path="display" element={<DisplayLeaveRequests />} />
               <Route path="create" element={<CreateLeaveRequest />} />
-            </Route>
+            </Route> */}
             {/* <Route path="request-resource" element={<RequestResource />} /> */}
             {/* <Route path="expense-claim" element={<ExpenseClaim />} /> */}
           </Route>
