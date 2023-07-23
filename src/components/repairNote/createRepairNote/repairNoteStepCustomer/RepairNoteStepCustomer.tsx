@@ -10,7 +10,12 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../../../../constants/regex';
-import { returnAccessibleErrorValidTextElements } from '../../../../jsxCreators';
+import {
+  returnAccessibleErrorValidTextElements,
+  returnAccessiblePhoneNumberTextInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextInputElements,
+} from '../../../../jsxCreators';
 import {
   filterFieldsFromObject,
   logState,
@@ -22,12 +27,15 @@ import {
   returnPostalCodeValidationText,
 } from '../../../../utils';
 import {
+  AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
 } from '../../../wrappers';
 import type { RepairNoteStepCustomerProps } from './types';
 import { PROVINCES, STATES_US } from '../../../../constants/data';
-import { Province, StatesUS } from '../../../../types';
+import { Country, Province, StatesUS } from '../../../../types';
+import { COUNTRIES_DATA } from '../../../addressChange/constants';
 
 function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
   const {
@@ -340,52 +348,6 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
 
   // ------------- end accessible error and valid texts ------------- //
 
-  /**
-   * const contactNumberPhoneInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =
-    {
-      description: {
-        error: contactNumberInputErrorText,
-        valid: contactNumberInputValidText,
-      },
-      inputText: contactNumber,
-      isValidInputText: isValidContactNumber,
-      label: 'Contact number',
-      onBlur: () => {
-        registerDispatch({
-          type: registerAction.setIsContactNumberFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        registerDispatch({
-          type: registerAction.setContactNumber,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        registerDispatch({
-          type: registerAction.setIsContactNumberFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter your contact number',
-      required: true,
-      withAsterisk: true,
-      semanticName: 'contact number',
-      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Backspace') {
-          if (contactNumber.length === 14 || contactNumber.length === 9) {
-            registerDispatch({
-              type: registerAction.setContactNumber,
-              payload: contactNumber.slice(0, -1),
-            });
-          }
-        }
-      },
-    };
-
-   */
-
   // ------------- input creator info objects ------------- //
 
   const customerNameInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -420,47 +382,48 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     semanticName: 'customer name',
   };
 
-  const customerPhoneInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: customerPhoneInputErrorText,
-      valid: customerPhoneInputValidText,
-    },
-    inputText: customerPhone,
-    isValidInputText: isValidCustomerPhone,
-    label: 'Customer phone',
-    onBlur: () => {
-      createRepairNoteDispatch({
-        type: createRepairNoteAction.setIsCustomerPhoneFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createRepairNoteDispatch({
-        type: createRepairNoteAction.setCustomerPhone,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      createRepairNoteDispatch({
-        type: createRepairNoteAction.setIsCustomerPhoneFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter customer phone',
-    required: true,
-    withAsterisk: true,
-    semanticName: 'customer phone',
-    onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === 'Backspace') {
-        if (customerPhone.length === 14 || customerPhone.length === 9) {
-          createRepairNoteDispatch({
-            type: createRepairNoteAction.setCustomerPhone,
-            payload: customerPhone.slice(0, -1),
-          });
+  const customerPhoneInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =
+    {
+      description: {
+        error: customerPhoneInputErrorText,
+        valid: customerPhoneInputValidText,
+      },
+      inputText: customerPhone,
+      isValidInputText: isValidCustomerPhone,
+      label: 'Customer phone',
+      onBlur: () => {
+        createRepairNoteDispatch({
+          type: createRepairNoteAction.setIsCustomerPhoneFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createRepairNoteDispatch({
+          type: createRepairNoteAction.setCustomerPhone,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createRepairNoteDispatch({
+          type: createRepairNoteAction.setIsCustomerPhoneFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter customer phone',
+      required: true,
+      withAsterisk: true,
+      semanticName: 'customer phone',
+      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Backspace') {
+          if (customerPhone.length === 14 || customerPhone.length === 9) {
+            createRepairNoteDispatch({
+              type: createRepairNoteAction.setCustomerPhone,
+              payload: customerPhone.slice(0, -1),
+            });
+          }
         }
-      }
-    },
-  };
+      },
+    };
 
   const customerEmailInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -492,6 +455,21 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     required: true,
     withAsterisk: true,
     semanticName: 'customer email',
+  };
+
+  const countrySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    description: 'Select your country',
+    label: 'Country',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setCustomerCountry,
+        payload: event.currentTarget.value as Country,
+      });
+    },
+    data: COUNTRIES_DATA,
+    value: customerCountry,
+    required: true,
+    withAsterisk: true,
   };
 
   const customerAddressLineInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -647,6 +625,53 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     withAsterisk: true,
   };
 
+  // ------------- end input creator info objects ------------- //
+
+  // ------------- created inputs ------------- //
+
+  const [
+    createdCustomerNameInput,
+    createdCustomerEmailInput,
+    createdCustomerAddressLineInput,
+    createdCustomerCityInput,
+    createdCustomerPostalCodeInput,
+  ] = returnAccessibleTextInputElements([
+    customerNameInputCreatorInfo,
+    customerEmailInputCreatorInfo,
+    customerAddressLineInputCreatorInfo,
+    customerCityInputCreatorInfo,
+    zipOrPostalCodeTextInputCreatorInfo,
+  ]);
+
+  const [createdCustomerPhoneInput] =
+    returnAccessiblePhoneNumberTextInputElements([
+      customerPhoneInputCreatorInfo,
+    ]);
+
+  const [createdProvinceOrStateSelectInput, createdCountrySelectInput] =
+    returnAccessibleSelectInputElements([
+      provinceOrStateSelectInputCreatorInfo,
+      countrySelectInputCreatorInfo,
+    ]);
+
+  // ------------- end created inputs ------------- //
+
+  // ------------- display created inputs ------------- //
+
+  const displayRepairNoteStepCustomer = (
+    <FormLayoutWrapper>
+      {createdCustomerNameInput}
+      {createdCustomerPhoneInput}
+      {createdCustomerEmailInput}
+      {createdCountrySelectInput}
+      {createdCustomerAddressLineInput}
+      {createdCustomerCityInput}
+      {createdProvinceOrStateSelectInput}
+      {createdCustomerPostalCodeInput}
+    </FormLayoutWrapper>
+  );
+
+  // ------------- end display created inputs ------------- //
   //
   //
   //
@@ -662,11 +687,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     });
   }, [parentState]);
 
-  return (
-    <>
-      <Title>Repair note step customer</Title>
-    </>
-  );
+  return <>{displayRepairNoteStepCustomer}</>;
 }
 
 export { RepairNoteStepCustomer };
