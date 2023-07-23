@@ -415,7 +415,7 @@ function Register() {
     />
   );
 
-  const displayRegisterComponents =
+  const displayRegisterComponentPage =
     currentStepperPosition === 0
       ? displayAuthenticationStep
       : currentStepperPosition === 1
@@ -438,7 +438,7 @@ function Register() {
       setCurrentStepperPosition={registerAction.setCurrentStepperPosition}
       parentComponentDispatch={registerDispatch}
     >
-      {displayRegisterComponents}
+      {displayRegisterComponentPage}
     </StepperWrapper>
   );
 

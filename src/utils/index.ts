@@ -838,6 +838,20 @@ function logState({
   console.groupEnd();
 }
 
+function filterFieldsFromObject({
+  object,
+  fieldsToFilter,
+}: {
+  object: Record<string, any>;
+  fieldsToFilter: string[];
+}): Record<string, any> {
+  const filteredObject = Object.fromEntries(
+    Object.entries(object).filter(([key]) => !fieldsToFilter.includes(key))
+  );
+
+  return filteredObject;
+}
+
 type UrlBuilderInput = {
   protocol: string;
   host: string;
@@ -849,6 +863,7 @@ type UrlBuilderInput = {
 function urlBuilder() {}
 
 export {
+  filterFieldsFromObject,
   formatDate,
   logState,
   returnAddressValidationText,
