@@ -47,18 +47,18 @@ const PASSWORD_REGEX =
  * - {1,100} ensures that the text is between 1 and 100 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
  */
-const NOTE_TITLE_REGEX =
+const SERIAL_ID_REGEX =
   /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
 
 /**
- * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i
+ * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
  * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
- * - {1,1000} ensures that the text is between 1 and 1000 characters long.
+ * - {2,75} ensures that the text is between 2 and 75 characters long.
  * - ^ and $ ensure that the entire string matches the regex.
  * - i makes the regex case-insensitive.
  */
-const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,1000}$/i;
+const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
 
 /**
  * - /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/
@@ -266,13 +266,13 @@ export {
   MONEY_REGEX,
   NAME_REGEX,
   NOTE_TEXT_REGEX,
-  NOTE_TITLE_REGEX,
   PASSWORD_REGEX,
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
   PRINTER_MAKE_MODEL_REGEX,
   PRINTER_SERIAL_NUMBER_REGEX,
+  SERIAL_ID_REGEX,
   TIME_RAILWAY_REGEX,
   URL_REGEX,
   USERNAME_REGEX,

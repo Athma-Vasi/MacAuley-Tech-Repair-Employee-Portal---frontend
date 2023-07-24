@@ -1,6 +1,7 @@
 import { Text, Title } from '@mantine/core';
 import { ChangeEvent, KeyboardEvent, useEffect } from 'react';
 
+import { PROVINCES, STATES_US } from '../../../../constants/data';
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -16,6 +17,7 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../../../jsxCreators';
+import { Country, Province, StatesUS } from '../../../../types';
 import {
   filterFieldsFromObject,
   logState,
@@ -26,6 +28,7 @@ import {
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
 } from '../../../../utils';
+import { COUNTRIES_DATA } from '../../../addressChange/constants';
 import {
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -33,9 +36,6 @@ import {
   FormLayoutWrapper,
 } from '../../../wrappers';
 import type { RepairNoteStepCustomerProps } from './types';
-import { PROVINCES, STATES_US } from '../../../../constants/data';
-import { Country, Province, StatesUS } from '../../../../types';
-import { COUNTRIES_DATA } from '../../../addressChange/constants';
 
 function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
   const {

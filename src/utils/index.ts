@@ -61,36 +61,67 @@ function returnUsernameRegexValidationText(username: string): string {
   return validationText ? `Invalid username. ${validationText}` : '';
 }
 
-function returnNoteTitleValidationText(title: string): string {
+/**
+ * contentKind is used to specify the semantic html input label, and is used in the returned validation error string for improved accessibility.
+ */
+type RegexValidationProps = {
+  content: string;
+  contentKind: string;
+  minLength: number;
+  maxLength: number;
+};
+
+/**
+ * Performs basic serial id validation [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] on a string of variable length, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
+ */
+function returnSerialIdValidationText({
+  content,
+  contentKind,
+  minLength,
+  maxLength,
+}: RegexValidationProps): string {
+  const serialIdLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const alphanumericOrSpecialCharacterRegex =
     /^[A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$/;
-  const titleLengthRegex = /^(?=.{1,100}$)/;
 
-  const titleRegexTupleArr: [boolean, string][] = [
+  const serialIdRegexTupleArr: [boolean, string][] = [
     [
-      atleastOneAlphanumericRegex.test(title),
+      serialIdLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+
+    [
+      atleastOneAlphanumericRegex.test(content),
       'Must contain at least one alphanumeric character.',
     ],
+
     [
-      alphanumericOrSpecialCharacterRegex.test(title),
+      alphanumericOrSpecialCharacterRegex.test(content),
       'Can only contain alphanumeric characters or special characters.',
     ],
-    [titleLengthRegex.test(title), 'Must be between 1 and 100 characters.'],
   ];
 
-  const validationText = titleRegexTupleArr
+  const validationText = serialIdRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid title. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
 
-function returnNoteContentValidationText(content: string): string {
+/**
+ * Performs note text validation [A-Za-z0-9\s.,!?():;"'-] on a string of variable length, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
+ */
+function returnNoteTextValidationText({
+  content,
+  contentKind,
+  minLength,
+  maxLength,
+}: RegexValidationProps): string {
+  const contentLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
-  const contentLengthRegex = /^(?=.{1,1000}$)/;
 
   const contentRegexTupleArr: [boolean, string][] = [
     [
@@ -103,7 +134,7 @@ function returnNoteContentValidationText(content: string): string {
     ],
     [
       contentLengthRegex.test(content),
-      'Must be between 1 and 1000 characters.',
+      `Must be between ${minLength} and ${maxLength} characters.`,
     ],
   ];
 
@@ -112,18 +143,12 @@ function returnNoteContentValidationText(content: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid content. ${validationText}` : '';
+  return validationText
+    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
 }
-
-/**
- * contentKind is used to specify the semantic html input label, and is used in the returned validation error string for improved accessibility.
- */
-type RegexValidationProps = {
-  content: string;
-  contentKind: string;
-  minLength: number;
-  maxLength: number;
-};
 
 /**
  * Performs basic grammar validation [.,!?():;"'-] on a string of variable length, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
@@ -876,8 +901,8 @@ export {
   returnEmailValidationText,
   returnGrammarValidationText,
   returnNameValidationText,
-  returnNoteContentValidationText,
-  returnNoteTitleValidationText,
+  returnNoteTextValidationText,
+  returnSerialIdValidationText,
   returnNumberAmountValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,

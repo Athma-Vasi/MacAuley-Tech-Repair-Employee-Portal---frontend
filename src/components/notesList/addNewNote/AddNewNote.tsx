@@ -17,7 +17,7 @@ import { useEffect, useReducer, useRef } from 'react';
 
 import { axiosInstance } from '../../../api/axios';
 import { COLORS } from '../../../constants/data';
-import { NOTE_TEXT_REGEX, NOTE_TITLE_REGEX } from '../../../constants/regex';
+import { NOTE_TEXT_REGEX, SERIAL_ID_REGEX } from '../../../constants/regex';
 import { authAction } from '../../../context/authProvider';
 import {
   screenReaderTextSpecialCharacters,
@@ -26,8 +26,8 @@ import {
 import { useAuth } from '../../../hooks/useAuth';
 import { useGlobalState } from '../../../hooks/useGlobalState';
 import {
-  returnNoteContentValidationText,
-  returnNoteTitleValidationText,
+  returnNoteTextValidationText,
+  returnSerialIdValidationText,
 } from '../../../utils';
 import { Loading } from '../../loading';
 import { Success } from '../../success';
@@ -89,7 +89,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
 
   // validate title on user input change
   useEffect(() => {
-    const isValid = NOTE_TITLE_REGEX.test(title);
+    const isValid = SERIAL_ID_REGEX.test(title);
 
     addNewNoteDispatch({
       type: addNewNoteAction.setIsValidTitle,
@@ -126,7 +126,7 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
     event.preventDefault();
 
     // because I'm a little stitious
-    const testTitle = NOTE_TITLE_REGEX.test(title);
+    const testTitle = SERIAL_ID_REGEX.test(title);
     const testText = NOTE_TEXT_REGEX.test(text);
 
     if (!testTitle || !testText) {
@@ -270,7 +270,8 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
     </Alert>
   );
 
-  const noteTitleRegexValidationText = returnNoteTitleValidationText(title);
+  const noteTitleRegexValidationText = '';
+  // const noteTitleRegexValidationText = returnSerialIdValidationText(title);
 
   const titleValidationText = (
     <Text
@@ -285,7 +286,8 @@ function AddNewNote({ userId, username, closeModalCallback }: AddNewNoteProps) {
     </Text>
   );
 
-  const noteTextRegexValidationText = returnNoteContentValidationText(text);
+  // const noteTextRegexValidationText = returnNoteTextValidationText(text);
+  const noteTextRegexValidationText = '';
 
   const contentValidationText = (
     <Text
