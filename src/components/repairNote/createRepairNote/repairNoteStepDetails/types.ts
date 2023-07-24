@@ -1,4 +1,4 @@
-import type { Urgency } from '../../../../types';
+import type { Currency, Urgency } from '../../../../types';
 import type { PartsNeeded, RequiredRepairs } from '../../types';
 import type {
   CreateRepairNoteAction,
@@ -13,10 +13,11 @@ type RepairNoteStepDetailsProps = {
   isPartsNeededModelsFocused: boolean;
 
   partUnderWarranty: boolean;
-  estimatedRepairCost: number;
+  estimatedRepairCost: string;
   isValidEstimatedRepairCost: boolean;
   isEstimatedRepairCostFocused: boolean;
 
+  estimatedRepairCostCurrency: Currency;
   estimatedCompletionDate: string;
   isValidEstimatedCompletionDate: boolean;
   isEstimatedCompletionDateFocused: boolean;

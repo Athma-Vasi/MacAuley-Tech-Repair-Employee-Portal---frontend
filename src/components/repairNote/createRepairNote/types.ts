@@ -1,5 +1,6 @@
 import {
   Country,
+  Currency,
   PhoneNumber,
   PostalCode,
   Province,
@@ -68,7 +69,8 @@ type CreateRepairNoteState = {
   isPartsNeededModelsFocused: boolean;
 
   partUnderWarranty: boolean;
-  estimatedRepairCost: number;
+  estimatedRepairCost: string;
+  estimatedRepairCostCurrency: Currency;
   isValidEstimatedRepairCost: boolean;
   isEstimatedRepairCostFocused: boolean;
 
@@ -158,6 +160,7 @@ type CreateRepairNoteAction = {
   setIsValidEstimatedRepairCost: 'setIsValidEstimatedRepairCost';
   setIsEstimatedRepairCostFocused: 'setIsEstimatedRepairCostFocused';
 
+  setEstimatedRepairCostCurrency: 'setEstimatedRepairCostCurrency';
   setEstimatedCompletionDate: 'setEstimatedCompletionDate';
   setIsValidEstimatedCompletionDate: 'setIsValidEstimatedCompletionDate';
   setIsEstimatedCompletionDateFocused: 'setIsEstimatedCompletionDateFocused';
@@ -192,6 +195,7 @@ type CreateRepairNoteDispatch =
         | CreateRepairNoteAction['setDescriptionOfIssue']
         | CreateRepairNoteAction['setInitialInspectionNotes']
         | CreateRepairNoteAction['setPartsNeededModels']
+        | CreateRepairNoteAction['setEstimatedRepairCost']
         | CreateRepairNoteAction['setEstimatedCompletionDate']
         | CreateRepairNoteAction['setErrorMessage']
         | CreateRepairNoteAction['setSubmitMessage']
@@ -282,15 +286,18 @@ type CreateRepairNoteDispatch =
     }
   | {
       // all number payloads
-      type:
-        | CreateRepairNoteAction['setEstimatedRepairCost']
-        | CreateRepairNoteAction['setCurrentStepperPosition'];
+      type: CreateRepairNoteAction['setCurrentStepperPosition'];
       payload: number;
     }
   | {
       // all Set<number> payloads
       type: CreateRepairNoteAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
+    }
+  | {
+      // all Currency payloads
+      type: CreateRepairNoteAction['setEstimatedRepairCostCurrency'];
+      payload: Currency;
     };
 
 type CreateRepairNoteReducer = (

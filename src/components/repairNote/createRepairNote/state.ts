@@ -62,8 +62,9 @@ const initialCreateRepairNoteState: CreateRepairNoteState = {
   isPartsNeededModelsFocused: false,
 
   partUnderWarranty: false,
-  estimatedRepairCost: 0,
+  estimatedRepairCost: '',
   isValidEstimatedRepairCost: false,
+  estimatedRepairCostCurrency: 'CAD',
   isEstimatedRepairCostFocused: false,
 
   estimatedCompletionDate: '',
@@ -151,6 +152,7 @@ const createRepairNoteAction: CreateRepairNoteAction = {
   setIsValidEstimatedRepairCost: 'setIsValidEstimatedRepairCost',
   setIsEstimatedRepairCostFocused: 'setIsEstimatedRepairCostFocused',
 
+  setEstimatedRepairCostCurrency: 'setEstimatedRepairCostCurrency',
   setEstimatedCompletionDate: 'setEstimatedCompletionDate',
   setIsValidEstimatedCompletionDate: 'setIsValidEstimatedCompletionDate',
   setIsEstimatedCompletionDateFocused: 'setIsEstimatedCompletionDateFocused',
@@ -418,6 +420,11 @@ function createRepairNoteReducer(
         isEstimatedRepairCostFocused: action.payload,
       };
 
+    case createRepairNoteAction.setEstimatedRepairCostCurrency:
+      return {
+        ...state,
+        estimatedRepairCostCurrency: action.payload,
+      };
     case createRepairNoteAction.setEstimatedCompletionDate:
       return {
         ...state,
