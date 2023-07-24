@@ -17,41 +17,37 @@ type AccessibleTextInputCreatorInfo = {
   /**
    * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
    */
-  dynamicInputProps?:
-    | {
-        semanticAction: string;
-        dynamicIndex: number;
-        dynamicIcon?: ReactNode | undefined;
-        dynamicInputOnClick: () => void;
-      }
-    | undefined;
+  dynamicInputProps?: {
+    semanticAction: string;
+    dynamicIndex: number;
+    dynamicIcon?: ReactNode;
+    dynamicInputOnClick: () => void;
+  };
   isValidInputText: boolean;
-  label?: ReactNode | string | undefined;
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
+  label?: ReactNode | string;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
   description: {
     error: JSX.Element;
     valid: JSX.Element;
   };
   placeholder: string;
-  initialInputValue?: string | undefined;
-  icon?: IconDefinition | undefined;
+  initialInputValue?: string;
+  icon?: IconDefinition;
   onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
-  onKeyDown?: (
-    event: React.KeyboardEvent<HTMLInputElement>
-  ) => void | undefined;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 
-  rightSection?: boolean | undefined;
-  rightSectionIcon?: IconDefinition | null | undefined;
-  rightSectionOnClick?: () => void | undefined;
+  rightSection?: boolean;
+  rightSectionIcon?: IconDefinition | null;
+  rightSectionOnClick?: () => void;
 
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined | null;
-  required?: boolean | undefined;
-  autoComplete?: 'on' | 'off' | undefined;
+  minLength?: number;
+  maxLength?: number;
+  withAsterisk?: boolean;
+  ref?: React.RefObject<HTMLInputElement> | null;
+  required?: boolean;
+  autoComplete?: 'on' | 'off';
 };
 
 type TextInputWrapperProps = {

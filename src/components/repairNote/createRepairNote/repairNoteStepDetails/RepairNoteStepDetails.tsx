@@ -12,7 +12,6 @@ import {
   DATE_NEAR_FUTURE_REGEX,
   MONEY_REGEX,
   NOTE_TEXT_AREA_REGEX,
-  NOTE_TEXT_REGEX,
 } from '../../../../constants/regex';
 import {
   returnAccessibleCheckboxGroupInputsElements,

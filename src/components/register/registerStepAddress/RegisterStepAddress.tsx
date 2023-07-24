@@ -282,6 +282,13 @@ function RegisterStepAddress({
       },
       placeholder: 'Enter your contact number',
       required: true,
+      rightSection: true,
+      rightSectionOnClick: () => {
+        registerDispatch({
+          type: registerAction.setContactNumber,
+          payload: '+(1)',
+        });
+      },
       withAsterisk: true,
       semanticName: 'contact number',
       onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {

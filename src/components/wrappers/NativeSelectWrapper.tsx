@@ -41,7 +41,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     <NativeSelect
       size={selectInputSize}
       data={data}
-      label={label}
+      label={`${label.charAt(0).toUpperCase() + label.slice(1)}:`}
       aria-label={`Currently selected ${value}`}
       aria-required={required}
       description={description}

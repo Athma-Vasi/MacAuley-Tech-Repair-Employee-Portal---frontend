@@ -34,6 +34,7 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
+  TextWrapper,
 } from '../../../wrappers';
 import type { RepairNoteStepCustomerProps } from './types';
 
@@ -87,7 +88,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     customerName,
   ]);
 
-  // validate customer phone on every input change
+  // validate phone on every input change
   useEffect(() => {
     const isValid = PHONE_NUMBER_REGEX.test(customerPhone);
 
@@ -133,7 +134,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     isCustomerPhoneFocused,
   ]);
 
-  // validate customer email on every input change
+  // validate email on every input change
   useEffect(() => {
     const isValid = EMAIL_REGEX.test(customerEmail);
 
@@ -147,7 +148,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     customerEmail,
   ]);
 
-  // validate customer address line on every input change
+  // validate address line on every input change
   useEffect(() => {
     const isValid = ADDRESS_LINE_REGEX.test(customerAddressLine);
 
@@ -161,7 +162,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     customerAddressLine,
   ]);
 
-  // validate customer city on every input change
+  // validate city on every input change
   useEffect(() => {
     const isValid = CITY_REGEX.test(customerCity);
 
@@ -356,7 +357,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     },
     inputText: customerName,
     isValidInputText: isValidCustomerName,
-    label: 'Customer name',
+    label: 'Name',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsCustomerNameFocused,
@@ -389,7 +390,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
       },
       inputText: customerPhone,
       isValidInputText: isValidCustomerPhone,
-      label: 'Customer phone',
+      label: 'Phone Number',
       onBlur: () => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setIsCustomerPhoneFocused,
@@ -408,7 +409,14 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
           payload: true,
         });
       },
-      placeholder: 'Enter customer phone',
+      placeholder: 'Enter phone number',
+      rightSection: true,
+      rightSectionOnClick: () => {
+        createRepairNoteDispatch({
+          type: createRepairNoteAction.setCustomerPhone,
+          payload: '+(1)',
+        });
+      },
       required: true,
       withAsterisk: true,
       semanticName: 'customer phone',
@@ -431,7 +439,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     },
     inputText: customerEmail,
     isValidInputText: isValidCustomerEmail,
-    label: 'Customer email',
+    label: 'Email',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsCustomerEmailFocused,
@@ -458,7 +466,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
 
   const countrySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     description: 'Select country',
-    label: 'Customer country',
+    label: 'Country',
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setCustomerCountry,
@@ -478,7 +486,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     },
     inputText: customerAddressLine,
     isValidInputText: isValidCustomerAddressLine,
-    label: 'Customer address line',
+    label: 'Address line',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsCustomerAddressLineFocused,
@@ -510,7 +518,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     },
     inputText: customerCity,
     isValidInputText: isValidCustomerCity,
-    label: 'Customer city',
+    label: 'City',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsCustomerCityFocused,
@@ -541,8 +549,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
       data: customerCountry === 'Canada' ? PROVINCES : STATES_US,
       description:
         customerCountry === 'Canada' ? 'Select province' : 'Select state',
-      label:
-        customerCountry === 'Canada' ? 'Customer province' : 'Customer state',
+      label: customerCountry === 'Canada' ? 'province' : 'state',
       value: customerCountry === 'Canada' ? customerProvince : customerState,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         customerCountry === 'Canada'
@@ -564,10 +571,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     },
     inputText: customerPostalCode,
     isValidInputText: isValidCustomerPostalCode,
-    label:
-      customerCountry === 'Canada'
-        ? 'Customer postal code'
-        : 'Customer zip code',
+    label: customerCountry === 'Canada' ? 'Postal code' : 'Zip code',
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setCustomerPostalCode,
@@ -617,11 +621,9 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
       customerCountry === 'Canada'
         ? 'Enter Canadian postal code'
         : 'Enter US postal code',
-    semanticName: 'postal code',
-
+    semanticName: 'customer postal code',
     minLength: customerCountry === 'Canada' ? 6 : 5,
     maxLength: customerCountry === 'Canada' ? 7 : 10,
-
     required: true,
     withAsterisk: true,
   };
@@ -659,6 +661,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
 
   const displayRepairNoteStepCustomer = (
     <FormLayoutWrapper>
+      <TextWrapper creatorInfoObj={{}}>Customer information</TextWrapper>
       {createdCustomerNameInput}
       {createdCustomerPhoneInput}
       {createdCustomerEmailInput}
