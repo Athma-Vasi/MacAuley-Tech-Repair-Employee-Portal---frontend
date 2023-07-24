@@ -61,6 +61,16 @@ const SERIAL_ID_REGEX =
 const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
 
 /**
+ * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i
+ * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+ * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
+ * - {2,2000} ensures that the text is between 2 and 2000 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const NOTE_TEXT_AREA_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
+
+/**
  * - /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/
  * - ^ asserts that the string starts with a digit.
  * - (?=.*[0-9]) is a positive lookahead assertion that requires the presence of at least one digit. This ensures that the string contains at least one digit.
@@ -265,6 +275,7 @@ export {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
   NAME_REGEX,
+  NOTE_TEXT_AREA_REGEX,
   NOTE_TEXT_REGEX,
   PASSWORD_REGEX,
   PHONE_NUMBER_REGEX,

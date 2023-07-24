@@ -11,6 +11,7 @@ import { URGENCY_DATA } from '../../../../constants/data';
 import {
   DATE_NEAR_FUTURE_REGEX,
   MONEY_REGEX,
+  NOTE_TEXT_AREA_REGEX,
   NOTE_TEXT_REGEX,
 } from '../../../../constants/regex';
 import {
@@ -20,6 +21,7 @@ import {
   returnAccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../../jsxCreators';
 import { Currency, Urgency } from '../../../../types';
@@ -36,6 +38,7 @@ import {
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
 } from '../../../wrappers';
@@ -74,7 +77,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
 
   // validate partsNeededModels on every change
   useEffect(() => {
-    const isValid = NOTE_TEXT_REGEX.test(partsNeededModels);
+    const isValid = NOTE_TEXT_AREA_REGEX.test(partsNeededModels);
 
     createRepairNoteDispatch({
       type: createRepairNoteAction.setIsValidPartsNeededModels,
@@ -195,7 +198,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
         content: partsNeededModels,
         contentKind: 'parts needed models',
         minLength: 2,
-        maxLength: 75,
+        maxLength: 2000,
       }),
     });
 
@@ -205,6 +208,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       semanticName: 'part under warranty',
       deselectedDescription: 'Part is not under warranty',
       selectedDescription: 'Part is under warranty',
+      theme: 'muted',
     });
 
   const [estimatedRepairCostInputErrorText, estimatedRepairCostInputValidText] =
@@ -275,7 +279,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       withAsterisk: true,
     };
 
-  const partsNeededModelsTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+  const partsNeededModelsTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
     {
       description: {
         error: partsNeededModelsInputErrorText,
@@ -290,7 +294,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
           payload: false,
         });
       },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setPartsNeededModels,
           payload: event.currentTarget.value,
@@ -452,13 +456,15 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     partsNeededCheckboxCreatorInfo,
   ]);
 
-  const [
-    createdEstimatedRepairCostTextInput,
-    createdPartsNeededModelsTextInput,
-  ] = returnAccessibleTextInputElements([
-    estimatedRepairCostTextInputCreatorInfo,
-    partsNeededModelsTextInputCreatorInfo,
-  ]);
+  const [createdEstimatedRepairCostTextInput] =
+    returnAccessibleTextInputElements([
+      estimatedRepairCostTextInputCreatorInfo,
+    ]);
+
+  const [createdPartsNeededModelsTextAreaInput] =
+    returnAccessibleTextAreaInputElements([
+      partsNeededModelsTextAreaInputCreatorInfo,
+    ]);
 
   const [createdPartUnderWarrantyCheckboxInput] =
     returnAccessibleCheckboxSingleInputElements([
@@ -484,7 +490,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     <FormLayoutWrapper>
       {createdRequiredRepairsCheckboxGroupInput}
       {createdPartsNeededCheckboxGroupInput}
-      {createdPartsNeededModelsTextInput}
+      {createdPartsNeededModelsTextAreaInput}
       {createdPartUnderWarrantyCheckboxInput}
       {createdEstimatedRepairCostCurrencySelectInput}
       {createdEstimatedRepairCostTextInput}
