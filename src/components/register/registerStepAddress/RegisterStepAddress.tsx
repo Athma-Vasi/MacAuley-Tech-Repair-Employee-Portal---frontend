@@ -69,27 +69,27 @@ function RegisterStepAddress({
     });
   }, [city, registerAction.setIsValidCity, registerDispatch]);
 
-  // resets address if country is changed
-  useEffect(() => {
-    registerDispatch({
-      type: registerAction.setAddressLine,
-      payload: '',
-    });
-    registerDispatch({
-      type: registerAction.setCity,
-      payload: '',
-    });
-    registerDispatch({
-      type: registerAction.setPostalCode,
-      payload: '',
-    });
-  }, [
-    country,
-    registerAction.setAddressLine,
-    registerAction.setCity,
-    registerAction.setPostalCode,
-    registerDispatch,
-  ]);
+  // // resets address if country is changed
+  // useEffect(() => {
+  //   registerDispatch({
+  //     type: registerAction.setAddressLine,
+  //     payload: '',
+  //   });
+  //   registerDispatch({
+  //     type: registerAction.setCity,
+  //     payload: '',
+  //   });
+  //   registerDispatch({
+  //     type: registerAction.setPostalCode,
+  //     payload: '',
+  //   });
+  // }, [
+  //   country,
+  //   registerAction.setAddressLine,
+  //   registerAction.setCity,
+  //   registerAction.setPostalCode,
+  //   registerDispatch,
+  // ]);
 
   // used to validate contact number on every change
   useEffect(() => {

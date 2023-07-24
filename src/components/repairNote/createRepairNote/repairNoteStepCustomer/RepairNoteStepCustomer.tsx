@@ -220,27 +220,27 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     customerPostalCode,
   ]);
 
-  // reset address line, city, and postal code when country changes
-  useEffect(() => {
-    createRepairNoteDispatch({
-      type: createRepairNoteAction.setCustomerAddressLine,
-      payload: '',
-    });
-    createRepairNoteDispatch({
-      type: createRepairNoteAction.setCustomerCity,
-      payload: '',
-    });
-    createRepairNoteDispatch({
-      type: createRepairNoteAction.setCustomerPostalCode,
-      payload: '',
-    });
-  }, [
-    createRepairNoteAction.setCustomerAddressLine,
-    createRepairNoteAction.setCustomerCity,
-    createRepairNoteAction.setCustomerPostalCode,
-    createRepairNoteDispatch,
-    customerCountry,
-  ]);
+  //   // reset address line, city, and postal code when country changes
+  //   useEffect(() => {
+  //     createRepairNoteDispatch({
+  //       type: createRepairNoteAction.setCustomerAddressLine,
+  //       payload: '',
+  //     });
+  //     createRepairNoteDispatch({
+  //       type: createRepairNoteAction.setCustomerCity,
+  //       payload: '',
+  //     });
+  //     createRepairNoteDispatch({
+  //       type: createRepairNoteAction.setCustomerPostalCode,
+  //       payload: '',
+  //     });
+  //   }, [
+  //     createRepairNoteAction.setCustomerAddressLine,
+  //     createRepairNoteAction.setCustomerCity,
+  //     createRepairNoteAction.setCustomerPostalCode,
+  //     createRepairNoteDispatch,
+  //     customerCountry,
+  //   ]);
 
   // update corresponding stepsInError state when customer info changes
   useEffect(() => {

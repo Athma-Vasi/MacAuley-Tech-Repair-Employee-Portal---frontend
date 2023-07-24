@@ -12,6 +12,7 @@ import {
 } from './constants';
 import { RepairNoteStepCustomer } from './repairNoteStepCustomer/RepairNoteStepCustomer';
 import { logState } from '../../../utils';
+import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
 
 function CreateRepairNote() {
   const [createRepairNoteState, createRepairNoteDispatch] = useReducer(
@@ -128,11 +129,33 @@ function CreateRepairNote() {
     />
   );
 
+  const displayRepairNoteStepPart = (
+    <RepairNoteStepPart
+      partName={partName}
+      partSerialId={partSerialId}
+      dateReceived={dateReceived}
+      descriptionOfIssue={descriptionOfIssue}
+      initialInspectionNotes={initialInspectionNotes}
+      isPartNameFocused={isPartNameFocused}
+      isPartSerialIdFocused={isPartSerialIdFocused}
+      isDateReceivedFocused={isDateReceivedFocused}
+      isDescriptionOfIssueFocused={isDescriptionOfIssueFocused}
+      isInitialInspectionNotesFocused={isInitialInspectionNotesFocused}
+      isValidPartName={isValidPartName}
+      isValidPartSerialId={isValidPartSerialId}
+      isValidDateReceived={isValidDateReceived}
+      isValidDescriptionOfIssue={isValidDescriptionOfIssue}
+      isValidInitialInspectionNotes={isValidInitialInspectionNotes}
+      createRepairNoteAction={createRepairNoteAction}
+      createRepairNoteDispatch={createRepairNoteDispatch}
+    />
+  );
+
   const displayRepairNoteComponentPage =
     currentStepperPosition === 0 ? (
       displayRepairNoteStepCustomer
     ) : currentStepperPosition === 1 ? (
-      <Text>Device information</Text>
+      displayRepairNoteStepPart
     ) : currentStepperPosition === 2 ? (
       <Text>Repair information</Text>
     ) : currentStepperPosition === 3 ? (

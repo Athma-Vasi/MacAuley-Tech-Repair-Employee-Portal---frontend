@@ -8,16 +8,24 @@ import {
   SERIAL_ID_REGEX,
 } from '../../../../constants/regex';
 import {
+  filterFieldsFromObject,
+  logState,
   returnDateNearPastValidationText,
   returnGrammarValidationText,
   returnNoteTextValidationText,
   returnSerialIdValidationText,
 } from '../../../../utils';
-import { returnAccessibleErrorValidTextElements } from '../../../../jsxCreators';
+import {
+  returnAccessibleDateTimeElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleTextAreaInputElements,
+  returnAccessibleTextInputElements,
+} from '../../../../jsxCreators';
 import {
   AccessibleDateTimeInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
 } from '../../../wrappers';
 
 function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
@@ -137,22 +145,6 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
 
-  /**
-   * const [customerNameInputErrorText, customerNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
-      inputElementKind: 'customer name',
-      inputText: customerName,
-      isValidInputText: isValidCustomerName,
-      isInputTextFocused: isCustomerNameFocused,
-      regexValidationText: returnNameValidationText({
-        content: customerName,
-        contentKind: 'customer name',
-        minLength: 2,
-        maxLength: 100,
-      }),
-    });
-   */
-
   const [partNameInputErrorText, partNameInputValidText] =
     returnAccessibleErrorValidTextElements({
       inputElementKind: 'part name',
@@ -175,7 +167,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
       isInputTextFocused: isPartSerialIdFocused,
       regexValidationText: returnSerialIdValidationText({
         content: partSerialId,
-        contentKind: 'part serial id',
+        contentKind: 'part serial Id',
         minLength: 1,
         maxLength: 100,
       }),
@@ -223,39 +215,6 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
 
   /** ------------- input creator info objects ------------- */
 
-  /**
-   * const customerNameInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: customerNameInputErrorText,
-      valid: customerNameInputValidText,
-    },
-    inputText: customerName,
-    isValidInputText: isValidCustomerName,
-    label: 'Customer name',
-    onBlur: () => {
-      createRepairNoteDispatch({
-        type: createRepairNoteAction.setIsCustomerNameFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createRepairNoteDispatch({
-        type: createRepairNoteAction.setCustomerName,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      createRepairNoteDispatch({
-        type: createRepairNoteAction.setIsCustomerNameFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter customer name',
-    required: true,
-    withAsterisk: true,
-    semanticName: 'customer name',
-  };
-   */
   const partNameTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: partNameInputErrorText,
@@ -295,7 +254,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     },
     inputText: partSerialId,
     isValidInputText: isValidPartSerialId,
-    label: 'Part serial id',
+    label: 'Part serial Id',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsPartSerialIdFocused,
@@ -317,7 +276,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     placeholder: 'Enter part serial id',
     required: true,
     withAsterisk: true,
-    semanticName: 'part serial id',
+    semanticName: 'part serial Id',
   };
 
   const dateReceivedInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
@@ -420,7 +379,54 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     };
   /** ------------- end input creator info objects ------------- */
 
-  return <></>;
+  /** ------------- created inputs ------------- */
+
+  const [
+    createdPartNameTextInput,
+    createdPartSerialIdTextInput,
+    createdDescriptionOfIssueInput,
+  ] = returnAccessibleTextInputElements([
+    partNameTextInputCreatorInfo,
+    partSerialIdTextInputCreatorInfo,
+    descriptionOfIssueInputCreatorInfo,
+  ]);
+
+  const [createdDateReceivedInput] = returnAccessibleDateTimeElements([
+    dateReceivedInputCreatorInfo,
+  ]);
+
+  const [createdInitialInspectionNotesInput] =
+    returnAccessibleTextAreaInputElements([
+      initialInspectionNotesInputCreatorInfo,
+    ]);
+  /** ------------- end created inputs ------------- */
+
+  /** ------------- display created inputs ------------- */
+
+  const displayRepairNoteStepPart = (
+    <FormLayoutWrapper>
+      {createdPartNameTextInput}
+      {createdPartSerialIdTextInput}
+      {createdDateReceivedInput}
+      {createdDescriptionOfIssueInput}
+      {createdInitialInspectionNotesInput}
+    </FormLayoutWrapper>
+  );
+  /** ------------- end display created inputs ------------- */
+
+  useEffect(() => {
+    const fieldsOmittedState = filterFieldsFromObject({
+      object: parentState,
+      fieldsToFilter: ['createRepairNoteAction', 'createRepairNoteDispatch'],
+    });
+
+    logState({
+      state: fieldsOmittedState,
+      groupLabel: 'RepairNoteStepPart',
+    });
+  }, [parentState]);
+
+  return <>{displayRepairNoteStepPart}</>;
 }
 
 export { RepairNoteStepPart };
