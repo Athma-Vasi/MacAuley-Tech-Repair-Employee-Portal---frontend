@@ -71,7 +71,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     createRepairNoteDispatch,
   } = parentState;
 
-  // ------------- input validation ------------- //
+  /** ------------- input validation ------------- */
 
   // validate customer name on every input change
   useEffect(() => {
@@ -269,9 +269,9 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     isValidCustomerCity,
     isValidCustomerPostalCode,
   ]);
-  // ------------- end input validation ------------- //
+  /** ------------- end input validation ------------- */
 
-  // ------------- accessible error and valid texts ------------- //
+  /** ------------- accessible error and valid texts ------------- */
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [customerNameInputErrorText, customerNameInputValidText] =
@@ -345,10 +345,9 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
         postalCode: customerPostalCode,
       }),
     });
+  /** ------------- end accessible error and valid texts ------------- */
 
-  // ------------- end accessible error and valid texts ------------- //
-
-  // ------------- input creator info objects ------------- //
+  /** ------------- input creator info objects ------------- */
 
   const customerNameInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -624,10 +623,9 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     required: true,
     withAsterisk: true,
   };
+  /** ------------- end input creator info objects ------------- */
 
-  // ------------- end input creator info objects ------------- //
-
-  // ------------- created inputs ------------- //
+  /** ------------- created inputs ------------- */
 
   const [
     createdCustomerNameInput,
@@ -653,10 +651,9 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
       provinceOrStateSelectInputCreatorInfo,
       countrySelectInputCreatorInfo,
     ]);
+  /** ------------- end created inputs ------------- */
 
-  // ------------- end created inputs ------------- //
-
-  // ------------- display created inputs ------------- //
+  /** ------------- display created inputs ------------- */
 
   const displayRepairNoteStepCustomer = (
     <FormLayoutWrapper>
@@ -670,8 +667,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
       {createdCustomerPostalCodeInput}
     </FormLayoutWrapper>
   );
-
-  // ------------- end display created inputs ------------- //
+  /** ------------- end display created inputs ------------- */
   //
   //
   //
