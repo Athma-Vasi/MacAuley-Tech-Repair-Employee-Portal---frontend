@@ -1,11 +1,14 @@
-import {
+import type {
   Country,
   PhoneNumber,
   PostalCode,
   Province,
   StatesUS,
 } from '../../../../types';
-import { CreateRepairNoteAction, CreateRepairNoteDispatch } from '../types';
+import type {
+  CreateRepairNoteAction,
+  CreateRepairNoteDispatch,
+} from '../types';
 
 type RepairNoteStepCustomerProps = {
   customerName: string;

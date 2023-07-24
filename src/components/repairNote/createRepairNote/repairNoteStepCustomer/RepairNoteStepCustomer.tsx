@@ -457,8 +457,8 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
   };
 
   const countrySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    description: 'Select your country',
-    label: 'Country',
+    description: 'Select country',
+    label: 'Customer country',
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setCustomerCountry,
@@ -540,10 +540,9 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     {
       data: customerCountry === 'Canada' ? PROVINCES : STATES_US,
       description:
-        customerCountry === 'Canada'
-          ? 'Select your province'
-          : 'Select your state',
-      label: customerCountry === 'Canada' ? 'Province' : 'State',
+        customerCountry === 'Canada' ? 'Select province' : 'Select state',
+      label:
+        customerCountry === 'Canada' ? 'Customer province' : 'Customer state',
       value: customerCountry === 'Canada' ? customerProvince : customerState,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         customerCountry === 'Canada'
@@ -565,7 +564,10 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     },
     inputText: customerPostalCode,
     isValidInputText: isValidCustomerPostalCode,
-    label: customerCountry === 'Canada' ? 'Postal code' : 'Zip code',
+    label:
+      customerCountry === 'Canada'
+        ? 'Customer postal code'
+        : 'Customer zip code',
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setCustomerPostalCode,
