@@ -305,128 +305,220 @@ function Register() {
       </Flex>
     ) : null;
 
-  const displayAuthenticationStep = (
-    <RegisterStepAuthentication
-      email={email}
-      isValidEmail={isValidEmail}
-      isEmailFocused={isEmailFocused}
-      username={username}
-      isValidUsername={isValidUsername}
-      isUsernameFocused={isUsernameFocused}
-      password={password}
-      isValidPassword={isValidPassword}
-      isPasswordFocused={isPasswordFocused}
-      confirmPassword={confirmPassword}
-      isValidConfirmPassword={isValidConfirmPassword}
-      isConfirmPasswordFocused={isConfirmPasswordFocused}
-      registerAction={registerAction}
-      registerDispatch={registerDispatch}
-    />
-  );
+  // const displayAuthenticationStep = (
+  //   <RegisterStepAuthentication
+  //     email={email}
+  //     isValidEmail={isValidEmail}
+  //     isEmailFocused={isEmailFocused}
+  //     username={username}
+  //     isValidUsername={isValidUsername}
+  //     isUsernameFocused={isUsernameFocused}
+  //     password={password}
+  //     isValidPassword={isValidPassword}
+  //     isPasswordFocused={isPasswordFocused}
+  //     confirmPassword={confirmPassword}
+  //     isValidConfirmPassword={isValidConfirmPassword}
+  //     isConfirmPasswordFocused={isConfirmPasswordFocused}
+  //     registerAction={registerAction}
+  //     registerDispatch={registerDispatch}
+  //   />
+  // );
 
-  const displayPersonalStep = (
-    <RegisterStepPersonal
-      firstName={firstName}
-      isValidFirstName={isValidFirstName}
-      isFirstNameFocused={isFirstNameFocused}
-      middleName={middleName}
-      isValidMiddleName={isValidMiddleName}
-      isMiddleNameFocused={isMiddleNameFocused}
-      lastName={lastName}
-      isValidLastName={isValidLastName}
-      isLastNameFocused={isLastNameFocused}
-      preferredName={preferredName}
-      isValidPreferredName={isValidPreferredName}
-      isPreferredNameFocused={isPreferredNameFocused}
-      preferredPronouns={preferredPronouns}
-      profilePictureUrl={profilePictureUrl}
-      isValidProfilePictureUrl={isValidProfilePictureUrl}
-      isProfilePictureUrlFocused={isProfilePictureUrlFocused}
-      dateOfBirth={dateOfBirth}
-      isValidDateOfBirth={isValidDateOfBirth}
-      isDateOfBirthFocused={isDateOfBirthFocused}
-      registerAction={registerAction}
-      registerDispatch={registerDispatch}
-    />
-  );
+  // const displayPersonalStep = (
+  //   <RegisterStepPersonal
+  //     firstName={firstName}
+  //     isValidFirstName={isValidFirstName}
+  //     isFirstNameFocused={isFirstNameFocused}
+  //     middleName={middleName}
+  //     isValidMiddleName={isValidMiddleName}
+  //     isMiddleNameFocused={isMiddleNameFocused}
+  //     lastName={lastName}
+  //     isValidLastName={isValidLastName}
+  //     isLastNameFocused={isLastNameFocused}
+  //     preferredName={preferredName}
+  //     isValidPreferredName={isValidPreferredName}
+  //     isPreferredNameFocused={isPreferredNameFocused}
+  //     preferredPronouns={preferredPronouns}
+  //     profilePictureUrl={profilePictureUrl}
+  //     isValidProfilePictureUrl={isValidProfilePictureUrl}
+  //     isProfilePictureUrlFocused={isProfilePictureUrlFocused}
+  //     dateOfBirth={dateOfBirth}
+  //     isValidDateOfBirth={isValidDateOfBirth}
+  //     isDateOfBirthFocused={isDateOfBirthFocused}
+  //     registerAction={registerAction}
+  //     registerDispatch={registerDispatch}
+  //   />
+  // );
 
-  const displayAddressStep = (
-    <RegisterStepAddress
-      contactNumber={contactNumber}
-      isValidContactNumber={isValidContactNumber}
-      isContactNumberFocused={isContactNumberFocused}
-      addressLine={addressLine}
-      isValidAddressLine={isValidAddressLine}
-      isAddressLineFocused={isAddressLineFocused}
-      city={city}
-      isValidCity={isValidCity}
-      isCityFocused={isCityFocused}
-      state={state}
-      province={province}
-      country={country}
-      postalCode={postalCode}
-      isValidPostalCode={isValidPostalCode}
-      isPostalCodeFocused={isPostalCodeFocused}
-      registerAction={registerAction}
-      registerDispatch={registerDispatch}
-    />
-  );
+  // const displayAddressStep = (
+  //   <RegisterStepAddress
+  //     contactNumber={contactNumber}
+  //     isValidContactNumber={isValidContactNumber}
+  //     isContactNumberFocused={isContactNumberFocused}
+  //     addressLine={addressLine}
+  //     isValidAddressLine={isValidAddressLine}
+  //     isAddressLineFocused={isAddressLineFocused}
+  //     city={city}
+  //     isValidCity={isValidCity}
+  //     isCityFocused={isCityFocused}
+  //     state={state}
+  //     province={province}
+  //     country={country}
+  //     postalCode={postalCode}
+  //     isValidPostalCode={isValidPostalCode}
+  //     isPostalCodeFocused={isPostalCodeFocused}
+  //     registerAction={registerAction}
+  //     registerDispatch={registerDispatch}
+  //   />
+  // );
 
-  const displayAdditionalStep = (
-    <RegisterStepAdditional
-      jobPosition={jobPosition}
-      department={department}
-      fullName={fullName}
-      isValidFullName={isValidFullName}
-      isFullNameFocused={isFullNameFocused}
-      phoneNumber={phoneNumber}
-      isValidPhoneNumber={isValidPhoneNumber}
-      isPhoneNumberFocused={isPhoneNumberFocused}
-      startDate={startDate}
-      isValidStartDate={isValidStartDate}
-      isStartDateFocused={isStartDateFocused}
-      registerAction={registerAction}
-      registerDispatch={registerDispatch}
-    />
-  );
+  // const displayAdditionalStep = (
+  //   <RegisterStepAdditional
+  //     jobPosition={jobPosition}
+  //     department={department}
+  //     fullName={fullName}
+  //     isValidFullName={isValidFullName}
+  //     isFullNameFocused={isFullNameFocused}
+  //     phoneNumber={phoneNumber}
+  //     isValidPhoneNumber={isValidPhoneNumber}
+  //     isPhoneNumberFocused={isPhoneNumberFocused}
+  //     startDate={startDate}
+  //     isValidStartDate={isValidStartDate}
+  //     isStartDateFocused={isStartDateFocused}
+  //     registerAction={registerAction}
+  //     registerDispatch={registerDispatch}
+  //   />
+  // );
 
-  const displayReviewStep = (
-    <RegisterStepReview
-      email={email}
-      username={username}
-      firstName={firstName}
-      middleName={middleName}
-      lastName={lastName}
-      preferredName={preferredName}
-      preferredPronouns={preferredPronouns}
-      profilePictureUrl={profilePictureUrl}
-      contactNumber={contactNumber}
-      addressLine={addressLine}
-      city={city}
-      state={state}
-      province={province}
-      country={country}
-      postalCode={postalCode}
-      jobPosition={jobPosition}
-      department={department}
-      fullName={fullName}
-      phoneNumber={phoneNumber}
-      startDate={startDate}
-    />
-  );
+  // const displayReviewStep = (
+  //   <RegisterStepReview
+  //     email={email}
+  //     username={username}
+  //     firstName={firstName}
+  //     middleName={middleName}
+  //     lastName={lastName}
+  //     preferredName={preferredName}
+  //     preferredPronouns={preferredPronouns}
+  //     profilePictureUrl={profilePictureUrl}
+  //     contactNumber={contactNumber}
+  //     addressLine={addressLine}
+  //     city={city}
+  //     state={state}
+  //     province={province}
+  //     country={country}
+  //     postalCode={postalCode}
+  //     jobPosition={jobPosition}
+  //     department={department}
+  //     fullName={fullName}
+  //     phoneNumber={phoneNumber}
+  //     startDate={startDate}
+  //   />
+  // );
 
   const displayRegisterComponentPage =
-    currentStepperPosition === 0
-      ? displayAuthenticationStep
-      : currentStepperPosition === 1
-      ? displayPersonalStep
-      : currentStepperPosition === 2
-      ? displayAddressStep
-      : currentStepperPosition === 3
-      ? displayAdditionalStep
-      : currentStepperPosition === 4
-      ? displayReviewStep
-      : displaySubmitButton;
+    currentStepperPosition === 0 ? (
+      <RegisterStepAuthentication
+        email={email}
+        isValidEmail={isValidEmail}
+        isEmailFocused={isEmailFocused}
+        username={username}
+        isValidUsername={isValidUsername}
+        isUsernameFocused={isUsernameFocused}
+        password={password}
+        isValidPassword={isValidPassword}
+        isPasswordFocused={isPasswordFocused}
+        confirmPassword={confirmPassword}
+        isValidConfirmPassword={isValidConfirmPassword}
+        isConfirmPasswordFocused={isConfirmPasswordFocused}
+        registerAction={registerAction}
+        registerDispatch={registerDispatch}
+      />
+    ) : currentStepperPosition === 1 ? (
+      <RegisterStepPersonal
+        firstName={firstName}
+        isValidFirstName={isValidFirstName}
+        isFirstNameFocused={isFirstNameFocused}
+        middleName={middleName}
+        isValidMiddleName={isValidMiddleName}
+        isMiddleNameFocused={isMiddleNameFocused}
+        lastName={lastName}
+        isValidLastName={isValidLastName}
+        isLastNameFocused={isLastNameFocused}
+        preferredName={preferredName}
+        isValidPreferredName={isValidPreferredName}
+        isPreferredNameFocused={isPreferredNameFocused}
+        preferredPronouns={preferredPronouns}
+        profilePictureUrl={profilePictureUrl}
+        isValidProfilePictureUrl={isValidProfilePictureUrl}
+        isProfilePictureUrlFocused={isProfilePictureUrlFocused}
+        dateOfBirth={dateOfBirth}
+        isValidDateOfBirth={isValidDateOfBirth}
+        isDateOfBirthFocused={isDateOfBirthFocused}
+        registerAction={registerAction}
+        registerDispatch={registerDispatch}
+      />
+    ) : currentStepperPosition === 2 ? (
+      <RegisterStepAddress
+        contactNumber={contactNumber}
+        isValidContactNumber={isValidContactNumber}
+        isContactNumberFocused={isContactNumberFocused}
+        addressLine={addressLine}
+        isValidAddressLine={isValidAddressLine}
+        isAddressLineFocused={isAddressLineFocused}
+        city={city}
+        isValidCity={isValidCity}
+        isCityFocused={isCityFocused}
+        state={state}
+        province={province}
+        country={country}
+        postalCode={postalCode}
+        isValidPostalCode={isValidPostalCode}
+        isPostalCodeFocused={isPostalCodeFocused}
+        registerAction={registerAction}
+        registerDispatch={registerDispatch}
+      />
+    ) : currentStepperPosition === 3 ? (
+      <RegisterStepAdditional
+        jobPosition={jobPosition}
+        department={department}
+        fullName={fullName}
+        isValidFullName={isValidFullName}
+        isFullNameFocused={isFullNameFocused}
+        phoneNumber={phoneNumber}
+        isValidPhoneNumber={isValidPhoneNumber}
+        isPhoneNumberFocused={isPhoneNumberFocused}
+        startDate={startDate}
+        isValidStartDate={isValidStartDate}
+        isStartDateFocused={isStartDateFocused}
+        registerAction={registerAction}
+        registerDispatch={registerDispatch}
+      />
+    ) : currentStepperPosition === 4 ? (
+      <RegisterStepReview
+        email={email}
+        username={username}
+        firstName={firstName}
+        middleName={middleName}
+        lastName={lastName}
+        preferredName={preferredName}
+        preferredPronouns={preferredPronouns}
+        profilePictureUrl={profilePictureUrl}
+        contactNumber={contactNumber}
+        addressLine={addressLine}
+        city={city}
+        state={state}
+        province={province}
+        country={country}
+        postalCode={postalCode}
+        jobPosition={jobPosition}
+        department={department}
+        fullName={fullName}
+        phoneNumber={phoneNumber}
+        startDate={startDate}
+      />
+    ) : (
+      displaySubmitButton
+    );
 
   const displayRegisterForm = (
     <StepperWrapper

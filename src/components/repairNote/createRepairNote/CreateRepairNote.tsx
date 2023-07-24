@@ -103,84 +103,143 @@ function CreateRepairNote() {
     loadingMessage,
   } = createRepairNoteState;
 
-  const displayRepairNoteStepCustomer = (
-    <RepairNoteStepCustomer
-      customerAddressLine={customerAddressLine}
-      customerCity={customerCity}
-      customerCountry={customerCountry}
-      customerEmail={customerEmail}
-      customerName={customerName}
-      customerPhone={customerPhone}
-      customerPostalCode={customerPostalCode}
-      customerProvince={customerProvince}
-      customerState={customerState}
-      isCustomerAddressLineFocused={isCustomerAddressLineFocused}
-      isCustomerCityFocused={isCustomerCityFocused}
-      isCustomerEmailFocused={isCustomerEmailFocused}
-      isCustomerNameFocused={isCustomerNameFocused}
-      isCustomerPhoneFocused={isCustomerPhoneFocused}
-      isCustomerPostalCodeFocused={isCustomerPostalCodeFocused}
-      isValidCustomerAddressLine={isValidCustomerAddressLine}
-      isValidCustomerCity={isValidCustomerCity}
-      isValidCustomerEmail={isValidCustomerEmail}
-      isValidCustomerName={isValidCustomerName}
-      isValidCustomerPhone={isValidCustomerPhone}
-      isValidCustomerPostalCode={isValidCustomerPostalCode}
-      createRepairNoteAction={createRepairNoteAction}
-      createRepairNoteDispatch={createRepairNoteDispatch}
-    />
-  );
+  // const displayRepairNoteStepCustomer = (
+  //   <RepairNoteStepCustomer
+  //     customerAddressLine={customerAddressLine}
+  //     customerCity={customerCity}
+  //     customerCountry={customerCountry}
+  //     customerEmail={customerEmail}
+  //     customerName={customerName}
+  //     customerPhone={customerPhone}
+  //     customerPostalCode={customerPostalCode}
+  //     customerProvince={customerProvince}
+  //     customerState={customerState}
+  //     isCustomerAddressLineFocused={isCustomerAddressLineFocused}
+  //     isCustomerCityFocused={isCustomerCityFocused}
+  //     isCustomerEmailFocused={isCustomerEmailFocused}
+  //     isCustomerNameFocused={isCustomerNameFocused}
+  //     isCustomerPhoneFocused={isCustomerPhoneFocused}
+  //     isCustomerPostalCodeFocused={isCustomerPostalCodeFocused}
+  //     isValidCustomerAddressLine={isValidCustomerAddressLine}
+  //     isValidCustomerCity={isValidCustomerCity}
+  //     isValidCustomerEmail={isValidCustomerEmail}
+  //     isValidCustomerName={isValidCustomerName}
+  //     isValidCustomerPhone={isValidCustomerPhone}
+  //     isValidCustomerPostalCode={isValidCustomerPostalCode}
+  //     createRepairNoteAction={createRepairNoteAction}
+  //     createRepairNoteDispatch={createRepairNoteDispatch}
+  //   />
+  // );
 
-  const displayRepairNoteStepPart = (
-    <RepairNoteStepPart
-      partName={partName}
-      partSerialId={partSerialId}
-      dateReceived={dateReceived}
-      descriptionOfIssue={descriptionOfIssue}
-      initialInspectionNotes={initialInspectionNotes}
-      isPartNameFocused={isPartNameFocused}
-      isPartSerialIdFocused={isPartSerialIdFocused}
-      isDateReceivedFocused={isDateReceivedFocused}
-      isDescriptionOfIssueFocused={isDescriptionOfIssueFocused}
-      isInitialInspectionNotesFocused={isInitialInspectionNotesFocused}
-      isValidPartName={isValidPartName}
-      isValidPartSerialId={isValidPartSerialId}
-      isValidDateReceived={isValidDateReceived}
-      isValidDescriptionOfIssue={isValidDescriptionOfIssue}
-      isValidInitialInspectionNotes={isValidInitialInspectionNotes}
-      createRepairNoteAction={createRepairNoteAction}
-      createRepairNoteDispatch={createRepairNoteDispatch}
-    />
-  );
+  // const displayRepairNoteStepPart = (
+  //   <RepairNoteStepPart
+  //     partName={partName}
+  //     partSerialId={partSerialId}
+  //     dateReceived={dateReceived}
+  //     descriptionOfIssue={descriptionOfIssue}
+  //     initialInspectionNotes={initialInspectionNotes}
+  //     isPartNameFocused={isPartNameFocused}
+  //     isPartSerialIdFocused={isPartSerialIdFocused}
+  //     isDateReceivedFocused={isDateReceivedFocused}
+  //     isDescriptionOfIssueFocused={isDescriptionOfIssueFocused}
+  //     isInitialInspectionNotesFocused={isInitialInspectionNotesFocused}
+  //     isValidPartName={isValidPartName}
+  //     isValidPartSerialId={isValidPartSerialId}
+  //     isValidDateReceived={isValidDateReceived}
+  //     isValidDescriptionOfIssue={isValidDescriptionOfIssue}
+  //     isValidInitialInspectionNotes={isValidInitialInspectionNotes}
+  //     createRepairNoteAction={createRepairNoteAction}
+  //     createRepairNoteDispatch={createRepairNoteDispatch}
+  //   />
+  // );
 
-  const displayRepairNoteStepDetails = (
-    <RepairNoteStepDetail
-      requiredRepairs={requiredRepairs}
-      partsNeeded={partsNeeded}
-      partsNeededModels={partsNeededModels}
-      partUnderWarranty={partUnderWarranty}
-      estimatedRepairCost={estimatedRepairCost}
-      estimatedCompletionDate={estimatedCompletionDate}
-      repairPriority={repairPriority}
-      isPartsNeededModelsFocused={isPartsNeededModelsFocused}
-      isEstimatedRepairCostFocused={isEstimatedRepairCostFocused}
-      isEstimatedCompletionDateFocused={isEstimatedCompletionDateFocused}
-      isValidPartsNeededModels={isValidPartsNeededModels}
-      estimatedRepairCostCurrency={estimatedRepairCostCurrency}
-      isValidEstimatedRepairCost={isValidEstimatedRepairCost}
-      isValidEstimatedCompletionDate={isValidEstimatedCompletionDate}
-      createRepairNoteAction={createRepairNoteAction}
-      createRepairNoteDispatch={createRepairNoteDispatch}
-    />
-  );
+  // const displayRepairNoteStepDetails = (
+  //   <RepairNoteStepDetail
+  //     requiredRepairs={requiredRepairs}
+  //     partsNeeded={partsNeeded}
+  //     partsNeededModels={partsNeededModels}
+  //     partUnderWarranty={partUnderWarranty}
+  //     estimatedRepairCost={estimatedRepairCost}
+  //     estimatedCompletionDate={estimatedCompletionDate}
+  //     repairPriority={repairPriority}
+  //     isPartsNeededModelsFocused={isPartsNeededModelsFocused}
+  //     isEstimatedRepairCostFocused={isEstimatedRepairCostFocused}
+  //     isEstimatedCompletionDateFocused={isEstimatedCompletionDateFocused}
+  //     isValidPartsNeededModels={isValidPartsNeededModels}
+  //     estimatedRepairCostCurrency={estimatedRepairCostCurrency}
+  //     isValidEstimatedRepairCost={isValidEstimatedRepairCost}
+  //     isValidEstimatedCompletionDate={isValidEstimatedCompletionDate}
+  //     createRepairNoteAction={createRepairNoteAction}
+  //     createRepairNoteDispatch={createRepairNoteDispatch}
+  //   />
+  // );
 
   const displayRepairNoteComponentPage =
     currentStepperPosition === 0 ? (
-      displayRepairNoteStepCustomer
+      <RepairNoteStepCustomer
+        customerAddressLine={customerAddressLine}
+        customerCity={customerCity}
+        customerCountry={customerCountry}
+        customerEmail={customerEmail}
+        customerName={customerName}
+        customerPhone={customerPhone}
+        customerPostalCode={customerPostalCode}
+        customerProvince={customerProvince}
+        customerState={customerState}
+        isCustomerAddressLineFocused={isCustomerAddressLineFocused}
+        isCustomerCityFocused={isCustomerCityFocused}
+        isCustomerEmailFocused={isCustomerEmailFocused}
+        isCustomerNameFocused={isCustomerNameFocused}
+        isCustomerPhoneFocused={isCustomerPhoneFocused}
+        isCustomerPostalCodeFocused={isCustomerPostalCodeFocused}
+        isValidCustomerAddressLine={isValidCustomerAddressLine}
+        isValidCustomerCity={isValidCustomerCity}
+        isValidCustomerEmail={isValidCustomerEmail}
+        isValidCustomerName={isValidCustomerName}
+        isValidCustomerPhone={isValidCustomerPhone}
+        isValidCustomerPostalCode={isValidCustomerPostalCode}
+        createRepairNoteAction={createRepairNoteAction}
+        createRepairNoteDispatch={createRepairNoteDispatch}
+      />
     ) : currentStepperPosition === 1 ? (
-      displayRepairNoteStepPart
+      <RepairNoteStepPart
+        partName={partName}
+        partSerialId={partSerialId}
+        dateReceived={dateReceived}
+        descriptionOfIssue={descriptionOfIssue}
+        initialInspectionNotes={initialInspectionNotes}
+        isPartNameFocused={isPartNameFocused}
+        isPartSerialIdFocused={isPartSerialIdFocused}
+        isDateReceivedFocused={isDateReceivedFocused}
+        isDescriptionOfIssueFocused={isDescriptionOfIssueFocused}
+        isInitialInspectionNotesFocused={isInitialInspectionNotesFocused}
+        isValidPartName={isValidPartName}
+        isValidPartSerialId={isValidPartSerialId}
+        isValidDateReceived={isValidDateReceived}
+        isValidDescriptionOfIssue={isValidDescriptionOfIssue}
+        isValidInitialInspectionNotes={isValidInitialInspectionNotes}
+        createRepairNoteAction={createRepairNoteAction}
+        createRepairNoteDispatch={createRepairNoteDispatch}
+      />
     ) : currentStepperPosition === 2 ? (
-      displayRepairNoteStepDetails
+      <RepairNoteStepDetail
+        requiredRepairs={requiredRepairs}
+        partsNeeded={partsNeeded}
+        partsNeededModels={partsNeededModels}
+        partUnderWarranty={partUnderWarranty}
+        estimatedRepairCost={estimatedRepairCost}
+        estimatedCompletionDate={estimatedCompletionDate}
+        repairPriority={repairPriority}
+        isPartsNeededModelsFocused={isPartsNeededModelsFocused}
+        isEstimatedRepairCostFocused={isEstimatedRepairCostFocused}
+        isEstimatedCompletionDateFocused={isEstimatedCompletionDateFocused}
+        isValidPartsNeededModels={isValidPartsNeededModels}
+        estimatedRepairCostCurrency={estimatedRepairCostCurrency}
+        isValidEstimatedRepairCost={isValidEstimatedRepairCost}
+        isValidEstimatedCompletionDate={isValidEstimatedCompletionDate}
+        createRepairNoteAction={createRepairNoteAction}
+        createRepairNoteDispatch={createRepairNoteDispatch}
+      />
     ) : currentStepperPosition === 3 ? (
       <Text>Review</Text>
     ) : (

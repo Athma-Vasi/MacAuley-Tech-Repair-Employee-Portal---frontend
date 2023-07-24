@@ -106,11 +106,11 @@ function App() {
           <Route path="company">
             {/* <Route path="address-change" element={<AddressChange />} /> */}
             {/* <Route path="benefits" element={<CreateBenefit />} /> */}
-            {/* <Route path="leave-request">
+            <Route path="leave-request">
               <Route index element={<DisplayLeaveRequests />} />
               <Route path="display" element={<DisplayLeaveRequests />} />
               <Route path="create" element={<CreateLeaveRequest />} />
-            </Route> */}
+            </Route>
             {/* <Route path="request-resource" element={<RequestResource />} /> */}
             {/* <Route path="expense-claim" element={<ExpenseClaim />} /> */}
           </Route>

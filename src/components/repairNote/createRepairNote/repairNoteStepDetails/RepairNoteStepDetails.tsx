@@ -173,18 +173,18 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     returnAccessibleSelectedDeselectedTextElements({
       isSelected: requiredRepairs.length > 0,
       semanticName: 'required repairs',
-      deselectedDescription: 'No required repairs selected. Nothing to repair!',
-      selectedDescription: `Required repairs selected: ${requiredRepairs.join(
-        ', '
-      )}`,
+      deselectedDescription: 'Nothing to repair!',
+      selectedDescription: `${requiredRepairs.join(', ')}`,
+      theme: 'muted',
     });
 
   const [partsNeededSelectedText, partsNeededDeselectedText] =
     returnAccessibleSelectedDeselectedTextElements({
       isSelected: partsNeeded.length > 0,
       semanticName: 'parts needed',
-      deselectedDescription: 'No parts selected. Nothing to do!',
-      selectedDescription: `Parts needed selected: ${partsNeeded.join(', ')}`,
+      deselectedDescription: 'No parts required!',
+      selectedDescription: `${partsNeeded.join(', ')}`,
+      theme: 'muted',
     });
 
   const [partsNeededModelsInputErrorText, partsNeededModelsInputValidText] =
