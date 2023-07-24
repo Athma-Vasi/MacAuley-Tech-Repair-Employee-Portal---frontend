@@ -1,42 +1,50 @@
+import {
+  faDollarSign,
+  faEuro,
+  faJpy,
+  faPoundSign,
+  faYen,
+} from '@fortawesome/free-solid-svg-icons';
 import { ChangeEvent, useEffect } from 'react';
 
+import { URGENCY_DATA } from '../../../../constants/data';
 import {
   DATE_NEAR_FUTURE_REGEX,
   MONEY_REGEX,
   NOTE_TEXT_REGEX,
 } from '../../../../constants/regex';
 import {
+  returnAccessibleCheckboxGroupInputsElements,
+  returnAccessibleCheckboxSingleInputElements,
+  returnAccessibleDateTimeElements,
   returnAccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextInputElements,
 } from '../../../../jsxCreators';
+import { Currency, Urgency } from '../../../../types';
 import {
+  filterFieldsFromObject,
+  logState,
   returnDateNearFutureValidationText,
   returnNoteTextValidationText,
   returnNumberAmountValidationText,
 } from '../../../../utils';
-import { RepairNoteStepDetailsProps } from './types';
+import { CURRENCY_DATA } from '../../../benefits/constants';
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
 } from '../../../wrappers';
 import {
   PARTS_NEEDED_CHECKBOX_DATA,
   REQUIRED_REPAIRS_CHECKBOX_DATA,
 } from '../../constants';
 import { PartsNeeded, RequiredRepairs } from '../../types';
-import {
-  faYen,
-  faPoundSign,
-  faEuro,
-  faJpy,
-  faDollarSign,
-} from '@fortawesome/free-solid-svg-icons';
-import { CURRENCY_DATA } from '../../../benefits/constants';
-import { Currency, Urgency } from '../../../../types';
-import { URGENCY_DATA } from '../../../../constants/data';
+import { RepairNoteStepDetailsProps } from './types';
 
 function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
   const {
@@ -63,6 +71,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
   } = parentState;
 
   /** ------------- input validation ------------- */
+
   // validate partsNeededModels on every change
   useEffect(() => {
     const isValid = NOTE_TEXT_REGEX.test(partsNeededModels);
@@ -107,7 +116,12 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
         payload: estimatedRepairCostWithDecimalAndNoLeadingZero,
       });
     }
-  });
+  }, [
+    estimatedRepairCost,
+    estimatedRepairCostCurrency,
+    createRepairNoteDispatch,
+    createRepairNoteAction,
+  ]);
 
   // validate estimatedCompletionDate on every change
   useEffect(() => {
@@ -153,20 +167,6 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
 
-  // const [partNameInputErrorText, partNameInputValidText] =
-  //   returnAccessibleErrorValidTextElements({
-  //     inputElementKind: 'part name',
-  //     inputText: partName,
-  //     isValidInputText: isValidPartName,
-  //     isInputTextFocused: isPartNameFocused,
-  //     regexValidationText: returnNoteTextValidationText({
-  //       content: partName,
-  //       contentKind: 'part name',
-  //       minLength: 2,
-  //       maxLength: 75,
-  //     }),
-  //   });
-
   const [requiredRepairsSelectedText, requiredRepairsDeselectedText] =
     returnAccessibleSelectedDeselectedTextElements({
       isSelected: requiredRepairs.length > 0,
@@ -181,7 +181,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     returnAccessibleSelectedDeselectedTextElements({
       isSelected: partsNeeded.length > 0,
       semanticName: 'parts needed',
-      deselectedDescription: 'No parts needed selected. Nothing to do!',
+      deselectedDescription: 'No parts selected. Nothing to do!',
       selectedDescription: `Parts needed selected: ${partsNeeded.join(', ')}`,
     });
 
@@ -283,6 +283,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       },
       inputText: partsNeededModels,
       isValidInputText: isValidPartsNeededModels,
+      label: 'Parts needed models',
       onBlur: () => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setIsPartsNeededModelsFocused,
@@ -321,6 +322,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
         });
       },
       semanticName: 'part under warranty',
+      label: 'Part under warranty',
       required: true,
     };
 
@@ -440,7 +442,71 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     };
   /** ------------- end input creator info objects ------------- */
 
-  return <></>;
+  /** ------------- created inputs ------------- */
+
+  const [
+    createdRequiredRepairsCheckboxGroupInput,
+    createdPartsNeededCheckboxGroupInput,
+  ] = returnAccessibleCheckboxGroupInputsElements([
+    requiredRepairsCheckboxCreatorInfo,
+    partsNeededCheckboxCreatorInfo,
+  ]);
+
+  const [
+    createdEstimatedRepairCostTextInput,
+    createdPartsNeededModelsTextInput,
+  ] = returnAccessibleTextInputElements([
+    estimatedRepairCostTextInputCreatorInfo,
+    partsNeededModelsTextInputCreatorInfo,
+  ]);
+
+  const [createdPartUnderWarrantyCheckboxInput] =
+    returnAccessibleCheckboxSingleInputElements([
+      partUnderWarrantyCheckboxInputCreatorInfo,
+    ]);
+
+  const [
+    createdEstimatedRepairCostCurrencySelectInput,
+    createdRepairPrioritySelectInput,
+  ] = returnAccessibleSelectInputElements([
+    estimatedRepairCostCurrencySelectInputCreatorInfo,
+    repairPrioritySelectInputCreatorInfo,
+  ]);
+
+  const [createdEstimatedCompletionDateTextInput] =
+    returnAccessibleDateTimeElements([
+      estimatedCompletionDateTextInputCreatorInfo,
+    ]);
+  /** ------------- end created inputs ------------- */
+
+  /** ------------- display created inputs ------------- */
+  const displayRepairNoteStepDetails = (
+    <FormLayoutWrapper>
+      {createdRequiredRepairsCheckboxGroupInput}
+      {createdPartsNeededCheckboxGroupInput}
+      {createdPartsNeededModelsTextInput}
+      {createdPartUnderWarrantyCheckboxInput}
+      {createdEstimatedRepairCostCurrencySelectInput}
+      {createdEstimatedRepairCostTextInput}
+      {createdEstimatedCompletionDateTextInput}
+      {createdRepairPrioritySelectInput}
+    </FormLayoutWrapper>
+  );
+  /** ------------- end display created inputs ------------- */
+
+  useEffect(() => {
+    const fieldsOmittedState = filterFieldsFromObject({
+      object: parentState,
+      fieldsToFilter: ['createRepairNoteAction', 'createRepairNoteDispatch'],
+    });
+
+    logState({
+      state: fieldsOmittedState,
+      groupLabel: 'RepairNoteStepDetails',
+    });
+  }, [parentState]);
+
+  return <>{displayRepairNoteStepDetails}</>;
 }
 
 export { RepairNoteStepDetail };

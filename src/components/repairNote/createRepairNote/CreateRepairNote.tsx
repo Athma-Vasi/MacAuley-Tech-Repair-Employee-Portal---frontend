@@ -13,6 +13,7 @@ import {
 import { RepairNoteStepCustomer } from './repairNoteStepCustomer/RepairNoteStepCustomer';
 import { logState } from '../../../utils';
 import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
+import { RepairNoteStepDetail } from './repairNoteStepDetails/RepairNoteStepDetails';
 
 function CreateRepairNote() {
   const [createRepairNoteState, createRepairNoteDispatch] = useReducer(
@@ -81,6 +82,7 @@ function CreateRepairNote() {
     isValidEstimatedRepairCost,
     isEstimatedRepairCostFocused,
 
+    estimatedRepairCostCurrency,
     estimatedCompletionDate,
     isValidEstimatedCompletionDate,
     isEstimatedCompletionDateFocused,
@@ -151,13 +153,34 @@ function CreateRepairNote() {
     />
   );
 
+  const displayRepairNoteStepDetails = (
+    <RepairNoteStepDetail
+      requiredRepairs={requiredRepairs}
+      partsNeeded={partsNeeded}
+      partsNeededModels={partsNeededModels}
+      partUnderWarranty={partUnderWarranty}
+      estimatedRepairCost={estimatedRepairCost}
+      estimatedCompletionDate={estimatedCompletionDate}
+      repairPriority={repairPriority}
+      isPartsNeededModelsFocused={isPartsNeededModelsFocused}
+      isEstimatedRepairCostFocused={isEstimatedRepairCostFocused}
+      isEstimatedCompletionDateFocused={isEstimatedCompletionDateFocused}
+      isValidPartsNeededModels={isValidPartsNeededModels}
+      estimatedRepairCostCurrency={estimatedRepairCostCurrency}
+      isValidEstimatedRepairCost={isValidEstimatedRepairCost}
+      isValidEstimatedCompletionDate={isValidEstimatedCompletionDate}
+      createRepairNoteAction={createRepairNoteAction}
+      createRepairNoteDispatch={createRepairNoteDispatch}
+    />
+  );
+
   const displayRepairNoteComponentPage =
     currentStepperPosition === 0 ? (
       displayRepairNoteStepCustomer
     ) : currentStepperPosition === 1 ? (
       displayRepairNoteStepPart
     ) : currentStepperPosition === 2 ? (
-      <Text>Repair information</Text>
+      displayRepairNoteStepDetails
     ) : currentStepperPosition === 3 ? (
       <Text>Review</Text>
     ) : (
