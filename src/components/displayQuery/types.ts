@@ -1,6 +1,10 @@
 import { CSSProperties } from 'react';
 
-import { QueryResponseData, SelectInputData } from '../../types';
+import {
+  QueryResponseData,
+  RadioGroupInputData,
+  SelectInputData,
+} from '../../types';
 import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayQueryProps<Doc> = {
@@ -10,21 +14,21 @@ type DisplayQueryProps<Doc> = {
 };
 
 type DisplayQueryState = {
-  groupBySelectData: string[];
+  groupByRadioData: RadioGroupInputData;
   groupBySelection: string;
   groupBySelectValueMap: Map<string, string>;
 };
 
 type DisplayQueryAction = {
-  setGroupBySelectData: 'setGroupBySelectData';
+  setGroupByRadioData: 'setGroupByRadioData';
   setGroupBySelection: 'setGroupBySelection';
   setGroupBySelectValueMap: 'setGroupBySelectValueMap';
 };
 
 type DisplayQueryDispatch =
   | {
-      type: DisplayQueryAction['setGroupBySelectData'];
-      payload: string[];
+      type: DisplayQueryAction['setGroupByRadioData'];
+      payload: RadioGroupInputData;
     }
   | {
       type: DisplayQueryAction['setGroupBySelection'];

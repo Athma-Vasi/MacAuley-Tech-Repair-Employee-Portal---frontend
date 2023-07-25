@@ -5,13 +5,13 @@ import {
 } from './types';
 
 const initialDisplayQueryState: DisplayQueryState = {
-  groupBySelectData: [],
+  groupByRadioData: [],
   groupBySelection: 'username',
   groupBySelectValueMap: new Map(),
 };
 
 const displayQueryAction: DisplayQueryAction = {
-  setGroupBySelectData: 'setGroupBySelectData',
+  setGroupByRadioData: 'setGroupByRadioData',
   setGroupBySelection: 'setGroupBySelection',
   setGroupBySelectValueMap: 'setGroupBySelectValueMap',
 };
@@ -21,10 +21,10 @@ function displayQueryReducer(
   action: DisplayQueryDispatch
 ): DisplayQueryState {
   switch (action.type) {
-    case displayQueryAction.setGroupBySelectData:
+    case displayQueryAction.setGroupByRadioData:
       return {
         ...state,
-        groupBySelectData: action.payload,
+        groupByRadioData: action.payload,
       };
 
     case displayQueryAction.setGroupBySelection:

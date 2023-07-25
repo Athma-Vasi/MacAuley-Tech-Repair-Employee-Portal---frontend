@@ -7,8 +7,14 @@ import {
   displayQueryAction,
 } from './state';
 import { groupQueryResponse, logState } from '../../utils';
-import { AccessibleSelectInputCreatorInfo } from '../wrappers';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
+import {
+  AccessibleRadioGroupInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+} from '../wrappers';
+import {
+  returnAccessibleRadioGroupInputsElements,
+  returnAccessibleSelectInputElements,
+} from '../../jsxCreators';
 
 function DisplayQuery<Doc>({
   style = {},
@@ -19,64 +25,68 @@ function DisplayQuery<Doc>({
     displayQueryReducer,
     initialDisplayQueryState
   );
-  const { groupBySelectData, groupBySelectValueMap, groupBySelection } =
+  const { groupByRadioData, groupBySelectValueMap, groupBySelection } =
     displayQueryState;
 
-  // create initial groupBySelectData state
+  // create initial groupByRadioData state
   useEffect(() => {
-    const initialGroupBySelectData = ['Username'];
-
-    componentQueryData.forEach(({ label, inputKind, value, selectData }) => {
-      if (inputKind === 'selectInput') {
-        // only push if it is also present in query response data
-        const isFieldExcluded = queryResponseData.filter((queryResponseObj) => {
-          return Object.entries(queryResponseObj).find(([key, _]) => {
-            if (key === value) {
-              return true;
+    const initialGroupByRadioData = componentQueryData.reduce(
+      (acc, { inputKind, label, value, selectData }) => {
+        if (inputKind === 'selectInput') {
+          // only push if it is also present in query response data
+          const isFieldExcluded = queryResponseData.filter(
+            (queryResponseObj) => {
+              return Object.entries(queryResponseObj).find(
+                ([key, _]) => key === value
+              );
             }
-            return false;
-          });
-        });
+          );
 
-        if (isFieldExcluded.length > 0) {
-          initialGroupBySelectData.push(label);
+          if (isFieldExcluded.length > 0) {
+            acc.push({ label, value });
+          }
         }
-      }
-    });
+
+        return acc;
+      },
+      [
+        {
+          label: 'Username',
+          value: 'username',
+        },
+      ]
+    );
 
     displayQueryDispatch({
-      type: displayQueryAction.setGroupBySelectData,
-      payload: initialGroupBySelectData,
+      type: displayQueryAction.setGroupByRadioData,
+      payload: initialGroupByRadioData,
     });
   }, [queryResponseData, componentQueryData]);
 
   /** ------------- input creator info objects ------------- */
 
-  const groupBySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: groupBySelectData,
+  const groupByRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo = {
+    dataObjectArray: groupByRadioData,
     description: 'Group by fields with constrained values',
-    label: 'Group by',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+    onChange: (value: string) => {
       displayQueryDispatch({
         type: displayQueryAction.setGroupBySelection,
-        // find the corresponding label for the value
-        payload:
-          componentQueryData.find(({ label, value }) =>
-            label === event.currentTarget.value ? value : ''
-          )?.value || 'username',
+        payload: value,
       });
     },
-    // assign the label and not the value
-    value:
-      componentQueryData.find(({ label, value }) =>
-        value === groupBySelection ? label : ''
-      )?.label || 'Username',
+    semanticName: 'group by',
+    value: groupBySelection,
+    label: 'Group by',
   };
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- created inputs------------- */
-  const [createdGroupBySelectInput] = returnAccessibleSelectInputElements([
-    groupBySelectInputCreatorInfo,
+  //   const [createdGroupBySelectInput] = returnAccessibleSelectInputElements([
+  //     groupBySelectInputCreatorInfo,
+  //   ]);
+
+  const [createdGroupByRadioGroup] = returnAccessibleRadioGroupInputsElements([
+    groupByRadioGroupCreatorInfo,
   ]);
 
   //
@@ -98,7 +108,53 @@ function DisplayQuery<Doc>({
       groupBySelection,
     })
   );
-  return <>{createdGroupBySelectInput}</>;
+  return <>{createdGroupByRadioGroup}</>;
 }
 
 export { DisplayQuery };
+
+/**
+ *   const groupBySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+      data: groupBySelectData,
+      description: 'Group by fields with constrained values',
+      label: 'Group by',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        displayQueryDispatch({
+          type: displayQueryAction.setGroupBySelection,
+          // find the corresponding label for the value
+          payload:
+            componentQueryData.find(({ label, value }) =>
+              label === event.currentTarget.value ? value : ''
+            )?.value || 'username',
+        });
+      },
+      // assign the label and not the value
+      value:
+        componentQueryData.find(({ label, value }) =>
+          value === groupBySelection ? label : ''
+        )?.label || 'Username',
+    };
+ */
+
+/**
+     * componentQueryData.forEach(({ label, inputKind, value, selectData }) => {
+      if (inputKind === 'selectInput') {
+        // only push if it is also present in query response data
+        const isFieldExcluded = queryResponseData.filter((queryResponseObj) => {
+          return Object.entries(queryResponseObj).find(([key, _]) => {
+            if (key === value) {
+              return true;
+            }
+            return false;
+          });
+        });
+
+        if (isFieldExcluded.length > 0) {
+          initialGroupByRadioData.push({
+            label,
+            value,
+          });
+        }
+      }
+    });
+     */

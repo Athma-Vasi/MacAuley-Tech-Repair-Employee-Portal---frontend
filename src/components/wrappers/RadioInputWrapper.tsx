@@ -113,7 +113,7 @@ function RadioGroupInputsWrapper({
   creatorInfoObject,
 }: RadioGroupInputsWrapperProps) {
   const {
-    globalState: { width },
+    globalState: { width, padding },
   } = useGlobalState();
 
   const {
@@ -130,9 +130,7 @@ function RadioGroupInputsWrapper({
     name = semanticName,
   } = creatorInfoObject;
 
-  const radioInputsSize = width < 1024 ? 'sm' : width < 1440 ? 'md' : 'lg';
-  const padding =
-    width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
+  const radioInputsSize = width < 1024 ? 'xs' : 'sm';
 
   const createdRadioGroupInputs = (
     <Radio.Group
@@ -149,7 +147,7 @@ function RadioGroupInputsWrapper({
       w="100%"
     >
       <Grid
-        columns={width < 480 ? 1 : width < 768 ? 2 : width < 1440 ? 3 : 4}
+        columns={width < 480 ? 1 : width < 1024 ? 2 : width < 1440 ? 3 : 4}
         p={padding}
       >
         {dataObjectArray?.map(({ value, label }) => {

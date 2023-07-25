@@ -46,6 +46,11 @@ type SelectInputData = Array<{
   label: string;
 }>;
 
+type RadioGroupInputData = Array<{
+  value: string;
+  label: string;
+}>;
+
 type CheckboxInputData = Array<{
   value: string;
   label: string;
@@ -116,6 +121,7 @@ export type {
   GetQueriedResourceRequestServerResponse,
   Note,
   QueryResponseData,
+  RadioGroupInputData,
   ResourceRequestServerResponse,
   SelectInputData,
   SetStepsInErrorPayload,
