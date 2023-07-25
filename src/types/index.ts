@@ -69,6 +69,23 @@ type GetQueriedResourceRequestServerResponse<Document> = {
   resourceData: Array<Partial<Document>>;
 };
 
+/**
+ * - Represents the structure of data returned from a query, or the initial display state.
+ * - The type includes mandatory fields that are always returned, while the other declared fields are optional and usually returned.
+ * - The 'Partial' type with the generic 'Doc' indicates the optional fields present in resource documents.
+ * - In summary, the type represents the structure of data returned from a query with optional fields present in resource documents.
+ */
+type QueryResponseData<Doc> = {
+  _id: string;
+  userId: string;
+  username: string;
+  action?: Action;
+  category?: ActionsCompany | ActionsGeneral | ActionsOutreach;
+  createdAt: string;
+  updatedAt: string;
+  __v?: number;
+} & Partial<Doc>;
+
 export type {
   Action,
   ActionsCompany,
@@ -98,6 +115,7 @@ export type {
   Currency,
   GetQueriedResourceRequestServerResponse,
   Note,
+  QueryResponseData,
   ResourceRequestServerResponse,
   SelectInputData,
   SetStepsInErrorPayload,

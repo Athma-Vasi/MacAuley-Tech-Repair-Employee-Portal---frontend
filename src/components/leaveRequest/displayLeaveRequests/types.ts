@@ -1,9 +1,12 @@
-import { ResourceRequestServerResponse } from '../../../types';
-import { QueryData } from '../../displayQuery';
+import {
+  QueryResponseData,
+  ResourceRequestServerResponse,
+} from '../../../types';
+
 import type { LeaveRequestDocument } from '../types';
 
 type DisplayLeaveRequestsState = {
-  leaveRequests: QueryData<LeaveRequestDocument>[];
+  leaveRequests: QueryResponseData<LeaveRequestDocument>[];
   pages: number;
   totalDocuments: number;
 
@@ -43,7 +46,7 @@ type DisplayLeaveRequestsAction = {
 type DisplayLeaveRequestsDispatch =
   | {
       type: DisplayLeaveRequestsAction['setLeaveRequests'];
-      payload: QueryData<LeaveRequestDocument>[];
+      payload: QueryResponseData<LeaveRequestDocument>[];
     }
   | {
       type:

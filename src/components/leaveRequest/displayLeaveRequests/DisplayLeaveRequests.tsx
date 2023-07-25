@@ -1,13 +1,11 @@
-import { Flex, Group, Text } from '@mantine/core';
+import { Flex, Text } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useAuth, useGlobalState } from '../../../hooks';
 import { logState, urlBuilder } from '../../../utils';
 import { DisplayQueryMobile } from '../../displayQuery';
-import { QueryData } from '../../displayQuery/DisplayQueryMobile';
 import { PageBuilder } from '../../pageBuilder';
 import { QueryBuilder } from '../../queryBuilder';
-import { FormLayoutWrapper } from '../../wrappers';
 import { LEAVE_REQUESTS_QUERY_DATA } from './constants';
 import {
   displayLeaveRequestsAction,
@@ -122,7 +120,10 @@ function DisplayLeaveRequests() {
       p={padding}
     >
       <h6>Display leave requests</h6>
-      <DisplayQueryMobile queryData={leaveRequests} />
+      <DisplayQueryMobile
+        queryResponseData={leaveRequests}
+        componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
+      />
       <QueryBuilder
         setQueryBuilderString={displayLeaveRequestsAction.setQueryBuilderString}
         parentComponentDispatch={displayLeaveRequestsDispatch}
