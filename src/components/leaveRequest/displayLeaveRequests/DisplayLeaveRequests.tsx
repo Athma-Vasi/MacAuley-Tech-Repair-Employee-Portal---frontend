@@ -3,7 +3,7 @@ import { useEffect, useReducer } from 'react';
 
 import { useAuth, useGlobalState } from '../../../hooks';
 import { logState, urlBuilder } from '../../../utils';
-import { DisplayQueryMobile } from '../../displayQuery';
+import { DisplayQuery } from '../../displayQuery';
 import { PageBuilder } from '../../pageBuilder';
 import { QueryBuilder } from '../../queryBuilder';
 import { LEAVE_REQUESTS_QUERY_DATA } from './constants';
@@ -53,17 +53,17 @@ function DisplayLeaveRequests() {
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
       });
 
-      try {
-        const newRequest: Request = new Request(urlString, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          signal,
-        });
+      const request: Request = new Request(urlString, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        signal,
+      });
 
-        const response = await fetch(newRequest);
+      try {
+        const response = await fetch(request);
         const data = await response.json();
         console.log('response json data', data);
         displayLeaveRequestsDispatch({
@@ -120,9 +120,9 @@ function DisplayLeaveRequests() {
       p={padding}
     >
       <h6>Display leave requests</h6>
-      <DisplayQueryMobile
-        queryResponseData={leaveRequests}
+      <DisplayQuery
         componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
+        queryResponseData={leaveRequests}
       />
       <QueryBuilder
         setQueryBuilderString={displayLeaveRequestsAction.setQueryBuilderString}

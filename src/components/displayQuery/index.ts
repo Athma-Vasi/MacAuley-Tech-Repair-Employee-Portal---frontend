@@ -1,5 +1,3 @@
-import type { QueryResponseData } from './displayQueryMobile/DisplayQueryMobile';
-import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
+import { DisplayQuery } from './DisplayQuery';
 
-export { DisplayQueryMobile };
-export type { QueryResponseData };
+export { DisplayQuery };

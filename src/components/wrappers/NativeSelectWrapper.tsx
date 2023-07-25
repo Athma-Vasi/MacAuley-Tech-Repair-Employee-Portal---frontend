@@ -1,4 +1,5 @@
 import { NativeSelect } from '@mantine/core';
+import { ChangeEvent, RefObject } from 'react';
 
 import { useGlobalState } from '../../hooks';
 
@@ -8,9 +9,9 @@ type AccessibleSelectInputCreatorInfo = {
   description: string;
   describedBy?: string;
   value: string;
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   withAsterisk?: boolean;
-  ref?: React.RefObject<HTMLSelectElement>;
+  ref?: RefObject<HTMLSelectElement>;
   required?: boolean;
 };
 

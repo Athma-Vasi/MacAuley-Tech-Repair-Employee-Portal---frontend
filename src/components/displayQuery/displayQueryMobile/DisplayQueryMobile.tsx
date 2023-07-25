@@ -1,56 +1,12 @@
 import { useEffect, useReducer } from 'react';
 
 import { QueryResponseData, SelectInputData } from '../../../types';
-import {
-  displayQueryMobileAction,
-  displayQueryMobileReducer,
-  initialDisplayQueryMobileState,
-} from './state';
-import { DisplayQueryMobileProps } from './types';
 import { logState } from '../../../utils';
+import { DisplayQueryMobileProps } from './types';
 
 function DisplayQueryMobile<Doc>({
   style = {},
-  queryResponseData,
-  componentQueryData,
 }: DisplayQueryMobileProps<Doc>): JSX.Element {
-  const [displayQueryMobileState, displayQueryMobileDispatch] = useReducer(
-    displayQueryMobileReducer,
-    initialDisplayQueryMobileState
-  );
-  const { groupBySelectData } = displayQueryMobileState;
-
-  // create initial groupBySelectData state
-  useEffect(() => {
-    const initialGroupBySelectData: SelectInputData = [
-      {
-        label: 'Group By',
-        value: '',
-      },
-      { label: 'Username', value: 'username' },
-    ];
-
-    componentQueryData.forEach(({ label, inputKind, value, selectData }) => {
-      if (inputKind === 'selectInput') {
-        initialGroupBySelectData.push({
-          label,
-          value,
-        });
-      }
-    });
-
-    displayQueryMobileDispatch({
-      type: displayQueryMobileAction.setGroupBySelectData,
-      payload: initialGroupBySelectData,
-    });
-  }, [queryResponseData, componentQueryData]);
-
-  useEffect(() => {
-    logState({
-      state: displayQueryMobileState,
-      groupLabel: 'DisplayQueryMobile',
-    });
-  }, [displayQueryMobileState]);
   return <></>;
 }
 

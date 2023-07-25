@@ -1,4 +1,4 @@
-import type { Country, PostalCode } from '../types';
+import type { Country, PostalCode, QueryResponseData } from '../types';
 
 function returnEmailValidationText(email: string): string {
   const usernamePartRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
@@ -898,9 +898,79 @@ function urlBuilder({
   return url;
 }
 
+function groupQueryResponse<Doc>({
+  queryResponseData,
+  groupBySelection,
+}: {
+  queryResponseData: QueryResponseData<Doc>[];
+  groupBySelection: string;
+}) {
+  const [groupedBy, rest] = queryResponseData.reduce(
+    (
+      acc: [
+        Map<string | number, Array<QueryResponseData<Doc>>>,
+        QueryResponseData<Doc>[]
+      ],
+      queryResponseObj: QueryResponseData<Doc>
+    ) => {
+      // if the groupBySelection field exists in the queryResponseObj
+      if (Object.hasOwn(queryResponseObj, groupBySelection)) {
+        // find the value of the groupBySelection field
+        const groupBySelectionValue = Object.entries(queryResponseObj).filter(
+          ([key, value]) => (key === groupBySelection ? value : null)
+        )[0][1];
+
+        // if groupedBy map does not have the groupBySelectionValue as a key
+        if (!acc[0].has(groupBySelectionValue)) {
+          // create it with an array as value and push the object to the array
+          acc[0].set(groupBySelectionValue, [queryResponseObj]);
+        } else {
+          // if it has key already, push the object to the array
+          acc[0].get(groupBySelectionValue)?.push(queryResponseObj);
+        }
+      } else {
+        // push it into the rest array
+        acc[1].push(queryResponseObj);
+      }
+
+      return acc;
+    },
+    [new Map(), []]
+  );
+
+  return {
+    groupedBy,
+    rest,
+  };
+}
+
+/**
+ * const groupBySelectionValue = queryResponseObj[groupBySelection];
+        const [groupedBy, rest] = acc;
+
+        if (groupBySelectionValue) {
+          groupedBy.set(
+            groupBySelectionValue,
+            Object.assign({}, groupedBy.get(groupBySelectionValue), {
+              [groupBySelection]: groupBySelectionValue,
+            })
+          );
+        } else {
+          rest.set(
+            groupBySelectionValue,
+            Object.assign({}, rest.get(groupBySelectionValue), {
+              [groupBySelection]: groupBySelectionValue,
+            })
+          );
+        }
+
+        return [groupedBy, rest];
+ */
+
 export {
   filterFieldsFromObject,
   formatDate,
+  groupQueryResponse,
   logState,
   returnAddressValidationText,
   returnCityValidationText,
