@@ -13,6 +13,7 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
+import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
 
 function DisplayQuery<Doc>({
   style = {},
@@ -128,48 +129,15 @@ function DisplayQuery<Doc>({
     groupByRadioGroupCreatorInfo,
   ]);
 
-  //
-  //
-  // log state
-  useEffect(() => {
-    logState({
-      state: displayQueryState,
-      groupLabel: 'DisplayQuery',
-    });
-
-    console.log('componentQueryData', componentQueryData);
-  }, [displayQueryState, componentQueryData]);
-
-  const displayGroupedByQueryResponseData = Array.from(
-    groupedByQueryResponseData
-  ).map(([label, queryObjArr]) => {
-    const displayLabel = <Title>{label}</Title>;
-    const displayQueryObjArr = queryObjArr.map((queryObj) => {
-      const displayQueryObj = Object.entries(queryObj).map(([key, value]) => {
-        return (
-          <Group>
-            <Text>{key}</Text>
-            <Text>{value}</Text>
-          </Group>
-        );
-      });
-
-      return <FormLayoutWrapper>{displayQueryObj}</FormLayoutWrapper>;
-    });
-
-    return (
-      <FormLayoutWrapper>
-        {displayLabel}
-        {displayQueryObjArr}
-      </FormLayoutWrapper>
-    );
-  });
-
   return (
     <>
       {createdGroupByRadioGroup}
-      <Flex direction="column" rowGap="xl">
-        {displayGroupedByQueryResponseData}
+      <Flex direction="column" rowGap="xl" w="100%">
+        <DisplayQueryMobile
+          groupedByQueryResponseData={groupedByQueryResponseData}
+          restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
+          componentQueryData={componentQueryData}
+        />
       </Flex>
       {JSON.stringify(restOfGroupedQueryResponseData, null, 2)}
     </>

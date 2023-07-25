@@ -1,3 +1,4 @@
+import { ComponentQueryData } from '../components/queryBuilder';
 import type { Country, PostalCode, QueryResponseData } from '../types';
 
 function returnEmailValidationText(email: string): string {
@@ -989,6 +990,11 @@ function groupQueryResponse<Doc>({
         return [groupedBy, rest];
  */
 
+function splitCamelCase(word: string) {
+  const splitStr = word.replace(/([a-z])([A-Z])/g, '$1 $2');
+  return splitStr.charAt(0).toUpperCase() + splitStr.slice(1);
+}
+
 export {
   filterFieldsFromObject,
   formatDate,
@@ -1014,6 +1020,7 @@ export {
   returnTimeRailwayValidationText,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
+  splitCamelCase,
   urlBuilder,
 };
 

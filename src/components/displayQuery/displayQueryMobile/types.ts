@@ -1,13 +1,11 @@
 import { CSSProperties } from 'react';
-
-import { SelectInputData } from '../../../types';
 import { ComponentQueryData } from '../../queryBuilder';
-import { QueryResponseData } from './DisplayQueryMobile';
 
-type DisplayQueryMobileProps<Doc> = {
+type DisplayQueryMobileProps = {
   style?: CSSProperties;
-  // queryResponseData: QueryResponseData<Doc>[];
-  // componentQueryData: ComponentQueryData[];
+  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  restOfGroupedQueryResponseData: Record<string, any>[];
+  componentQueryData: ComponentQueryData[];
 };
 
 export type { DisplayQueryMobileProps };

@@ -1,3 +1,5 @@
+import { CSSProperties } from 'react';
+
 const JOB_POSITIONS = ['Employee', 'Supervisor', 'Manager'];
 
 const PROVINCES = [
@@ -95,11 +97,18 @@ const COLORS = {
   buttonTextColor: '#339af0',
 };
 
+const TEXT_OVERFLOW: CSSProperties = {
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+};
+
 export {
   COLORS,
   DEPARTMENTS,
   JOB_POSITIONS,
   PROVINCES,
   STATES_US,
+  TEXT_OVERFLOW,
   URGENCY_DATA,
 };
