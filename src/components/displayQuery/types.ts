@@ -16,13 +16,18 @@ type DisplayQueryProps<Doc> = {
 type DisplayQueryState = {
   groupByRadioData: RadioGroupInputData;
   groupBySelection: string;
-  groupBySelectValueMap: Map<string, string>;
+  currentSelectionData: string[];
+  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  restOfGroupedQueryResponseData: Record<string, any>[];
 };
 
 type DisplayQueryAction = {
   setGroupByRadioData: 'setGroupByRadioData';
   setGroupBySelection: 'setGroupBySelection';
-  setGroupBySelectValueMap: 'setGroupBySelectValueMap';
+  setCurrentSelectionData: 'setCurrentSelectionData';
+
+  setGroupedByQueryResponseData: 'setGroupedByQueryResponseData';
+  setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData';
 };
 
 type DisplayQueryDispatch =
@@ -35,8 +40,16 @@ type DisplayQueryDispatch =
       payload: string;
     }
   | {
-      type: DisplayQueryAction['setGroupBySelectValueMap'];
-      payload: Map<string, string>;
+      type: DisplayQueryAction['setCurrentSelectionData'];
+      payload: string[];
+    }
+  | {
+      type: DisplayQueryAction['setGroupedByQueryResponseData'];
+      payload: Map<string | number, Record<string, any>[]>;
+    }
+  | {
+      type: DisplayQueryAction['setRestOfGroupedQueryResponseData'];
+      payload: Record<string, any>[];
     };
 
 export type {

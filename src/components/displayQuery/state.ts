@@ -7,13 +7,18 @@ import {
 const initialDisplayQueryState: DisplayQueryState = {
   groupByRadioData: [],
   groupBySelection: 'username',
-  groupBySelectValueMap: new Map(),
+  currentSelectionData: [],
+  groupedByQueryResponseData: new Map(),
+  restOfGroupedQueryResponseData: [],
 };
 
 const displayQueryAction: DisplayQueryAction = {
   setGroupByRadioData: 'setGroupByRadioData',
   setGroupBySelection: 'setGroupBySelection',
-  setGroupBySelectValueMap: 'setGroupBySelectValueMap',
+  setCurrentSelectionData: 'setCurrentSelectionData',
+
+  setGroupedByQueryResponseData: 'setGroupedByQueryResponseData',
+  setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData',
 };
 
 function displayQueryReducer(
@@ -33,10 +38,22 @@ function displayQueryReducer(
         groupBySelection: action.payload,
       };
 
-    case displayQueryAction.setGroupBySelectValueMap:
+    case displayQueryAction.setCurrentSelectionData:
       return {
         ...state,
-        groupBySelectValueMap: action.payload,
+        currentSelectionData: action.payload,
+      };
+
+    case displayQueryAction.setGroupedByQueryResponseData:
+      return {
+        ...state,
+        groupedByQueryResponseData: action.payload,
+      };
+
+    case displayQueryAction.setRestOfGroupedQueryResponseData:
+      return {
+        ...state,
+        restOfGroupedQueryResponseData: action.payload,
       };
 
     default:

@@ -82,7 +82,7 @@ function DisplayLeaveRequests() {
     return () => {
       controller.abort();
     };
-  }, [newQueryFlag]);
+  }, [newQueryFlag, queryBuilderString, pageQueryString]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {

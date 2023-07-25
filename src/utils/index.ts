@@ -898,44 +898,66 @@ function urlBuilder({
   return url;
 }
 
+type GroupQueryResponseInput<Doc> = {
+  queryResponseData: QueryResponseData<Doc>[];
+  groupBySelection: string;
+  currentSelectionData: string[];
+};
 function groupQueryResponse<Doc>({
   queryResponseData,
   groupBySelection,
-}: {
-  queryResponseData: QueryResponseData<Doc>[];
-  groupBySelection: string;
-}) {
-  const [groupedBy, rest] = queryResponseData.reduce(
+  currentSelectionData,
+}: GroupQueryResponseInput<Doc>): {
+  groupedBy: Map<string | number, QueryResponseData<Doc>[]>;
+  rest: Record<string, number>[];
+} {
+  const groupedBy = queryResponseData.reduce(
     (
-      acc: [
-        Map<string | number, Array<QueryResponseData<Doc>>>,
-        QueryResponseData<Doc>[]
-      ],
+      acc: Map<string | number, Array<QueryResponseData<Doc>>>,
+
       queryResponseObj: QueryResponseData<Doc>
     ) => {
+      // find the value of the groupBySelection field
+      const groupBySelectionValue = Object.entries(queryResponseObj).filter(
+        ([key, value]) => (key === groupBySelection ? value : null)
+      )[0][1];
+
       // if the groupBySelection field exists in the queryResponseObj
       if (Object.hasOwn(queryResponseObj, groupBySelection)) {
-        // find the value of the groupBySelection field
-        const groupBySelectionValue = Object.entries(queryResponseObj).filter(
-          ([key, value]) => (key === groupBySelection ? value : null)
-        )[0][1];
-
         // if groupedBy map does not have the groupBySelectionValue as a key
-        if (!acc[0].has(groupBySelectionValue)) {
+        if (!acc.has(groupBySelectionValue)) {
           // create it with an array as value and push the object to the array
-          acc[0].set(groupBySelectionValue, [queryResponseObj]);
+          acc.set(groupBySelectionValue, [queryResponseObj]);
         } else {
           // if it has key already, push the object to the array
-          acc[0].get(groupBySelectionValue)?.push(queryResponseObj);
+          acc.get(groupBySelectionValue)?.push(queryResponseObj);
         }
-      } else {
-        // push it into the rest array
-        acc[1].push(queryResponseObj);
+      }
+      // assign the remaining selection data values to the rest array
+
+      return acc;
+    },
+    new Map()
+  );
+
+  // this allows user to see the rest of the values for groupedBy selection
+  const groupedByKeysSet = new Set(Object.keys(Object.fromEntries(groupedBy)));
+  const rest = currentSelectionData.reduce(
+    (acc: Record<string, number>[], key) => {
+      if (!groupedByKeysSet.has(key)) {
+        const newObj = Object.create(null);
+        Object.defineProperty(newObj, key, {
+          value: 0,
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        });
+        acc.push(newObj);
       }
 
       return acc;
     },
-    [new Map(), []]
+    []
   );
 
   return {

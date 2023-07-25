@@ -1,20 +1,18 @@
-import { ChangeEvent, useEffect, useReducer } from 'react';
-import { DisplayQueryProps } from './types';
-import { SelectInputData } from '../../types';
-import {
-  displayQueryReducer,
-  initialDisplayQueryState,
-  displayQueryAction,
-} from './state';
+import { Flex, Group, Text, Title } from '@mantine/core';
+import { useEffect, useReducer } from 'react';
+
+import { returnAccessibleRadioGroupInputsElements } from '../../jsxCreators';
 import { groupQueryResponse, logState } from '../../utils';
 import {
   AccessibleRadioGroupInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
+  FormLayoutWrapper,
 } from '../wrappers';
 import {
-  returnAccessibleRadioGroupInputsElements,
-  returnAccessibleSelectInputElements,
-} from '../../jsxCreators';
+  displayQueryAction,
+  displayQueryReducer,
+  initialDisplayQueryState,
+} from './state';
+import { DisplayQueryProps } from './types';
 
 function DisplayQuery<Doc>({
   style = {},
@@ -25,8 +23,13 @@ function DisplayQuery<Doc>({
     displayQueryReducer,
     initialDisplayQueryState
   );
-  const { groupByRadioData, groupBySelectValueMap, groupBySelection } =
-    displayQueryState;
+  const {
+    groupByRadioData,
+    currentSelectionData,
+    groupBySelection,
+    groupedByQueryResponseData,
+    restOfGroupedQueryResponseData,
+  } = displayQueryState;
 
   // create initial groupByRadioData state
   useEffect(() => {
@@ -49,12 +52,7 @@ function DisplayQuery<Doc>({
 
         return acc;
       },
-      [
-        {
-          label: 'Username',
-          value: 'username',
-        },
-      ]
+      [{ label: 'Username', value: 'username' }]
     );
 
     displayQueryDispatch({
@@ -62,6 +60,50 @@ function DisplayQuery<Doc>({
       payload: initialGroupByRadioData,
     });
   }, [queryResponseData, componentQueryData]);
+
+  // assign current groupBy selection's corresponding options data
+  useEffect(() => {
+    const currentSelectData =
+      groupBySelection === 'username'
+        ? ['']
+        : componentQueryData.reduce(
+            (acc, componentQueryObj) => {
+              if (groupBySelection === componentQueryObj.value) {
+                if (componentQueryObj.selectData) {
+                  // rome-ignore lint:
+                  acc = componentQueryObj.selectData;
+                }
+              }
+
+              return acc;
+            },
+            ['']
+          );
+
+    displayQueryDispatch({
+      type: displayQueryAction.setCurrentSelectionData,
+      payload: currentSelectData,
+    });
+  }, [groupBySelection, componentQueryData]);
+
+  // group the queries on every selection or query change
+  useEffect(() => {
+    const { groupedBy, rest } = groupQueryResponse({
+      queryResponseData,
+      groupBySelection,
+      currentSelectionData,
+    });
+
+    displayQueryDispatch({
+      type: displayQueryAction.setGroupedByQueryResponseData,
+      payload: groupedBy,
+    });
+
+    displayQueryDispatch({
+      type: displayQueryAction.setRestOfGroupedQueryResponseData,
+      payload: rest,
+    });
+  }, [queryResponseData, groupBySelection, currentSelectionData]);
 
   /** ------------- input creator info objects ------------- */
 
@@ -81,9 +123,6 @@ function DisplayQuery<Doc>({
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- created inputs------------- */
-  //   const [createdGroupBySelectInput] = returnAccessibleSelectInputElements([
-  //     groupBySelectInputCreatorInfo,
-  //   ]);
 
   const [createdGroupByRadioGroup] = returnAccessibleRadioGroupInputsElements([
     groupByRadioGroupCreatorInfo,
@@ -101,14 +140,40 @@ function DisplayQuery<Doc>({
     console.log('componentQueryData', componentQueryData);
   }, [displayQueryState, componentQueryData]);
 
-  console.log(
-    'groupedByData',
-    groupQueryResponse({
-      queryResponseData,
-      groupBySelection,
-    })
+  const displayGroupedByQueryResponseData = Array.from(
+    groupedByQueryResponseData
+  ).map(([label, queryObjArr]) => {
+    const displayLabel = <Title>{label}</Title>;
+    const displayQueryObjArr = queryObjArr.map((queryObj) => {
+      const displayQueryObj = Object.entries(queryObj).map(([key, value]) => {
+        return (
+          <Group>
+            <Text>{key}</Text>
+            <Text>{value}</Text>
+          </Group>
+        );
+      });
+
+      return <FormLayoutWrapper>{displayQueryObj}</FormLayoutWrapper>;
+    });
+
+    return (
+      <FormLayoutWrapper>
+        {displayLabel}
+        {displayQueryObjArr}
+      </FormLayoutWrapper>
+    );
+  });
+
+  return (
+    <>
+      {createdGroupByRadioGroup}
+      <Flex direction="column" rowGap="xl">
+        {displayGroupedByQueryResponseData}
+      </Flex>
+      {JSON.stringify(restOfGroupedQueryResponseData, null, 2)}
+    </>
   );
-  return <>{createdGroupByRadioGroup}</>;
 }
 
 export { DisplayQuery };
