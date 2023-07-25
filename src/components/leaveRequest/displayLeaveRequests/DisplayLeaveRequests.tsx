@@ -2,7 +2,9 @@ import { Flex, Group, Text } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useAuth, useGlobalState } from '../../../hooks';
-import { logState } from '../../../utils';
+import { logState, urlBuilder } from '../../../utils';
+import { DisplayQueryMobile } from '../../displayQuery';
+import { QueryData } from '../../displayQuery/DisplayQueryMobile';
 import { PageBuilder } from '../../pageBuilder';
 import { QueryBuilder } from '../../queryBuilder';
 import { FormLayoutWrapper } from '../../wrappers';
@@ -48,8 +50,10 @@ function DisplayLeaveRequests() {
     const { signal } = controller;
 
     async function fetchLeaveRequests() {
-      const urlString = `http://localhost:3500/actions/company/leave-request${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`;
-      console.log('urlString:', urlString);
+      const urlString: URL = urlBuilder({
+        path: '/api/v1/actions/company/leave-request/',
+        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
+      });
 
       try {
         const newRequest: Request = new Request(urlString, {
@@ -63,9 +67,10 @@ function DisplayLeaveRequests() {
 
         const response = await fetch(newRequest);
         const data = await response.json();
+        console.log('response json data', data);
         displayLeaveRequestsDispatch({
           type: displayLeaveRequestsAction.setLeaveRequests,
-          payload: data.leaveRequestsData,
+          payload: data.resourceData,
         });
       } catch (error) {
         console.log(error);
@@ -117,22 +122,7 @@ function DisplayLeaveRequests() {
       p={padding}
     >
       <h6>Display leave requests</h6>
-      {leaveRequests.length > 0
-        ? leaveRequests.map((leaveRequest, index) => (
-            <Group
-              key={`leave-request-${index}`}
-              style={{
-                border: '1px solid #e0e0e0',
-                borderRadius: 4,
-              }}
-              p={padding}
-            >
-              <FormLayoutWrapper>
-                <Text size="xs">{JSON.stringify(leaveRequest, null, 2)}</Text>
-              </FormLayoutWrapper>
-            </Group>
-          ))
-        : null}
+      <DisplayQueryMobile queryData={leaveRequests} />
       <QueryBuilder
         setQueryBuilderString={displayLeaveRequestsAction.setQueryBuilderString}
         parentComponentDispatch={displayLeaveRequestsDispatch}
@@ -149,3 +139,22 @@ function DisplayLeaveRequests() {
 }
 
 export { DisplayLeaveRequests };
+
+/**
+ * {leaveRequests.length > 0
+        ? leaveRequests.map((leaveRequest, index) => (
+            <Group
+              key={`leave-request-${index}`}
+              style={{
+                border: '1px solid #e0e0e0',
+                borderRadius: 4,
+              }}
+              p={padding}
+            >
+              <FormLayoutWrapper>
+                <Text size="xs">{JSON.stringify(leaveRequest, null, 2)}</Text>
+              </FormLayoutWrapper>
+            </Group>
+          ))
+        : null}
+ */

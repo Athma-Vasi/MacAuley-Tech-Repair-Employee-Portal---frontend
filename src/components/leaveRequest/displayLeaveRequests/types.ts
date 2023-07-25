@@ -1,7 +1,9 @@
+import { ResourceRequestServerResponse } from '../../../types';
+import { QueryData } from '../../displayQuery';
 import type { LeaveRequestDocument } from '../types';
 
 type DisplayLeaveRequestsState = {
-  leaveRequests: Array<Partial<LeaveRequestDocument>>;
+  leaveRequests: QueryData<LeaveRequestDocument>[];
   pages: number;
   totalDocuments: number;
 
@@ -41,7 +43,7 @@ type DisplayLeaveRequestsAction = {
 type DisplayLeaveRequestsDispatch =
   | {
       type: DisplayLeaveRequestsAction['setLeaveRequests'];
-      payload: Array<Partial<LeaveRequestDocument>>;
+      payload: QueryData<LeaveRequestDocument>[];
     }
   | {
       type:

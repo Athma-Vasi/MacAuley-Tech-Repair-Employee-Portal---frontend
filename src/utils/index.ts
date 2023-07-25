@@ -878,14 +878,25 @@ function filterFieldsFromObject({
 }
 
 type UrlBuilderInput = {
-  protocol: string;
-  host: string;
-  port: string;
-  path: string;
-  query: string;
-  hash: string;
+  protocol?: string;
+  host?: string;
+  port?: string;
+  path?: string;
+  query?: string;
+  hash?: string;
 };
-function urlBuilder() {}
+function urlBuilder({
+  hash = '',
+  host = 'localhost',
+  path = '',
+  port = '3500',
+  protocol = 'http',
+  query = '?',
+}: UrlBuilderInput) {
+  const url = new URL(`${protocol}://${host}:${port}${path}${query}${hash}`);
+
+  return url;
+}
 
 export {
   filterFieldsFromObject,
@@ -902,15 +913,16 @@ export {
   returnGrammarValidationText,
   returnNameValidationText,
   returnNoteTextValidationText,
-  returnSerialIdValidationText,
   returnNumberAmountValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
+  returnSerialIdValidationText,
   returnTimeRailwayValidationText,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
+  urlBuilder,
 };
 
 export type { RegexValidationProps };

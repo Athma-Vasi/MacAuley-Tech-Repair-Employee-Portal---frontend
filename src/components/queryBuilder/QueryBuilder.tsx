@@ -257,10 +257,10 @@ function QueryBuilder({
       const displayStatement = <Text size="xs">{statement}</Text>;
 
       const deleteFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-        buttonLabel: 'Delete',
+        buttonLabel: <TbTrash />,
         semanticDescription: `Delete filter statement: ${term} ${operator} ${value}`,
         semanticName: 'delete filter',
-        leftIcon: <TbTrash />,
+        // leftIcon: <TbTrash />,
         buttonOnClick: (event) => {
           queryBuilderDispatch({
             type: queryBuilderAction.setFilterStatementsQueue,
@@ -566,10 +566,10 @@ function QueryBuilder({
       const displayStatement = <Text size="xs">{statement}</Text>;
 
       const deleteSortButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-        buttonLabel: 'Delete',
+        buttonLabel: <TbTrash />,
         semanticDescription: `Delete sort statement: ${term} ${direction}`,
         semanticName: 'delete sort',
-        leftIcon: <TbTrash />,
+        // leftIcon: <TbTrash />,
         buttonOnClick: (event) => {
           queryBuilderDispatch({
             type: queryBuilderAction.setSortStatementsQueue,
@@ -729,7 +729,9 @@ function QueryBuilder({
                   </Grid.Col>
                   <Grid.Col md={6} lg={3}>
                     <Flex align="center" justify="flex-end">
-                      {createdAddNewFilterButton}
+                      <Tooltip label="Add a new filter chain">
+                        <Center>{createdAddNewFilterButton}</Center>
+                      </Tooltip>
                     </Flex>
                   </Grid.Col>
                 </Grid>
@@ -790,7 +792,9 @@ function QueryBuilder({
                   </Grid.Col>
                   <Grid.Col md={6} lg={3}>
                     <Flex align="center" justify="flex-end">
-                      {createdAddNewSortButton}
+                      <Tooltip label="Add a new sort chain">
+                        <Center>{createdAddNewSortButton}</Center>
+                      </Tooltip>
                     </Flex>
                   </Grid.Col>
                 </Grid>
@@ -828,7 +832,9 @@ function QueryBuilder({
           {displaySortSection}
           {displayProjectionSection}
           <Flex align="center" justify="flex-end">
-            {createdSubmitButton}
+            <Tooltip label={`Submit ${collectionName} query`}>
+              <Center>{createdSubmitButton}</Center>
+            </Tooltip>
           </Flex>
         </Flex>
       </NavLink>

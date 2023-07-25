@@ -51,6 +51,24 @@ type CheckboxInputData = Array<{
   label: string;
 }>;
 
+/**
+ * Default server response type for all (except GET) REST API requests
+ */
+type ResourceRequestServerResponse<Document> = {
+  message: string;
+  resourceData: Array<Omit<Document, '__v'>>;
+};
+
+/**
+ * Default server response type for GET REST API requests with query parameters
+ */
+type GetQueriedResourceRequestServerResponse<Document> = {
+  message: string;
+  pages: number;
+  totalDocuments: number;
+  resourceData: Array<Partial<Document>>;
+};
+
 export type {
   Action,
   ActionsCompany,
@@ -78,7 +96,9 @@ export type {
   BreakPoints,
   CheckBoxMultipleData,
   Currency,
+  GetQueriedResourceRequestServerResponse,
   Note,
+  ResourceRequestServerResponse,
   SelectInputData,
   SetStepsInErrorPayload,
 };

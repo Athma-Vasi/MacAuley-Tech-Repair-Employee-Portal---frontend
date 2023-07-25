@@ -23,27 +23,9 @@ type LeaveRequestSchema = {
 
 type LeaveRequestDocument = LeaveRequestSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
-type LeaveRequestServerResponse = {
-  message: string;
-  leaveRequestData: Array<Omit<LeaveRequestDocument, '__v'>>;
-};
-
-type QueriedLeaveRequestsServerResponse = {
-  message: string;
-  pages: number;
-  totalDocuments: number;
-  leaveRequestsData: Array<Partial<LeaveRequestDocument>>;
-};
-
-export type {
-  LeaveRequestDocument,
-  LeaveRequestSchema,
-  LeaveRequestServerResponse,
-  QueriedLeaveRequestsServerResponse,
-  ReasonForLeave,
-};
+export type { LeaveRequestDocument, LeaveRequestSchema, ReasonForLeave };
