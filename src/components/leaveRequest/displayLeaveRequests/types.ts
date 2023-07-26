@@ -13,7 +13,11 @@ type DisplayLeaveRequestsState = {
   newQueryFlag: boolean;
   queryBuilderString: string;
   pageQueryString: string;
-  requestStatus: RequestStatus;
+
+  requestStatus: {
+    id: string;
+    status: RequestStatus;
+  };
 
   isError: boolean;
   errorMessage: string;
@@ -33,6 +37,7 @@ type DisplayLeaveRequestsAction = {
   setNewQueryFlag: 'setNewQueryFlag';
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
+
   setRequestStatus: 'setRequestStatus';
 
   setIsError: 'setIsError';
@@ -77,7 +82,10 @@ type DisplayLeaveRequestsDispatch =
     }
   | {
       type: DisplayLeaveRequestsAction['setRequestStatus'];
-      payload: RequestStatus;
+      payload: {
+        id: string;
+        status: RequestStatus;
+      };
     };
 
 type DisplayLeaveRequestsReducer = (

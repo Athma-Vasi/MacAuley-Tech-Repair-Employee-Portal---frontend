@@ -16,6 +16,7 @@ function DisplayQuery<Doc>({
   style = {},
   queryResponseData,
   componentQueryData,
+  parentComponentDispatch,
 }: DisplayQueryProps<Doc>) {
   const [displayQueryState, displayQueryDispatch] = useReducer(
     displayQueryReducer,
@@ -134,6 +135,7 @@ function DisplayQuery<Doc>({
           groupedByQueryResponseData={groupedByQueryResponseData}
           restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
           componentQueryData={componentQueryData}
+          parentComponentDispatch={parentComponentDispatch}
         />
       </Flex>
       {JSON.stringify(restOfGroupedQueryResponseData, null, 2)}

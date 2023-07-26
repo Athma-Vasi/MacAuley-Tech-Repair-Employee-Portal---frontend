@@ -12,7 +12,11 @@ const initialDisplayLeaveRequestsState: DisplayLeaveRequestsState = {
   newQueryFlag: true,
   queryBuilderString: '?',
   pageQueryString: '',
-  requestStatus: 'pending',
+
+  requestStatus: {
+    id: '',
+    status: 'pending',
+  },
 
   isError: false,
   errorMessage: '',
@@ -32,6 +36,7 @@ const displayLeaveRequestsAction: DisplayLeaveRequestsAction = {
   setNewQueryFlag: 'setNewQueryFlag',
   setQueryBuilderString: 'setQueryBuilderString',
   setPageQueryString: 'setPageQueryString',
+
   setRequestStatus: 'setRequestStatus',
 
   setIsError: 'setIsError',
@@ -80,6 +85,7 @@ function displayLeaveRequestsReducer(
         ...state,
         pageQueryString: action.payload,
       };
+
     case displayLeaveRequestsAction.setRequestStatus:
       return {
         ...state,

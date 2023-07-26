@@ -26,6 +26,8 @@ function DisplayLeaveRequests() {
     queryBuilderString,
     pageQueryString,
 
+    requestStatus,
+
     isError,
     errorMessage,
     isSubmitting,
@@ -99,6 +101,50 @@ function DisplayLeaveRequests() {
     });
   }, [pageQueryString]);
 
+  // submit request status form on change
+  useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    async function updateRequestStatus() {
+      const urlString: URL = urlBuilder({
+        path: `/api/v1/actions/company/leave-request/${requestStatus.id}`,
+      });
+
+      const request: Request = new Request(urlString, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        signal,
+        body: JSON.stringify({
+          leaveRequest: {
+            requestStatus: requestStatus.status,
+          },
+        }),
+      });
+
+      try {
+        const response = await fetch(request);
+        const data = await response.json();
+        console.log('request status update response', data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log('finally');
+      }
+    }
+
+    if (requestStatus.id !== '') {
+      updateRequestStatus();
+    }
+
+    return () => {
+      controller.abort();
+    };
+  }, [requestStatus]);
+
   useEffect(() => {
     logState({
       state: displayLeaveRequestsState,
@@ -121,6 +167,7 @@ function DisplayLeaveRequests() {
     >
       <h6>Display leave requests</h6>
       <DisplayQuery
+        parentComponentDispatch={displayLeaveRequestsDispatch}
         componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
         queryResponseData={leaveRequests}
       />

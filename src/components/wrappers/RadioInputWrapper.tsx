@@ -93,7 +93,7 @@ type AccessibleRadioGroupInputCreatorInfo = {
   label?: ReactNode | string | undefined;
   description: string;
   ariaRequired?: boolean | undefined;
-  value: string;
+  value?: string;
   onChange: (value: string) => void;
   name?: string | undefined;
   required?: boolean | undefined;
@@ -145,6 +145,7 @@ function RadioGroupInputsWrapper({
       ref={ref}
       withAsterisk={withAsterisk}
       w="100%"
+      id={name}
     >
       <Grid
         columns={width < 480 ? 1 : width < 768 ? 2 : width < 1440 ? 3 : 4}

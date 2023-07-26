@@ -4,6 +4,7 @@ import {
   Group,
   NavLink,
   Popover,
+  Radio,
   Spoiler,
   Text,
   Tooltip,
@@ -31,6 +32,7 @@ function DisplayQueryMobile({
   groupedByQueryResponseData,
   restOfGroupedQueryResponseData,
   componentQueryData,
+  parentComponentDispatch,
 }: DisplayQueryMobileProps): JSX.Element {
   const {
     globalState: { width, padding, rowGap },
@@ -96,7 +98,6 @@ function DisplayQueryMobile({
                 description: 'Update request status',
                 onChange: () => {},
                 name: 'requestStatus',
-                value: 'pending',
                 semanticName: 'Update request status',
               },
             ]);
@@ -146,8 +147,17 @@ function DisplayQueryMobile({
                 <form
                   onSubmit={(event: FormEvent<HTMLFormElement>) => {
                     event.preventDefault();
-                    console.log('submitting');
-                    console.log(queryObj._id);
+
+                    const formData = new FormData(event.currentTarget);
+                    const requestStatus = formData.get('requestStatus');
+
+                    parentComponentDispatch({
+                      type: 'setRequestStatus',
+                      payload: {
+                        id: queryObj._id,
+                        status: requestStatus as RequestStatus,
+                      },
+                    });
                   }}
                 >
                   <Flex
@@ -157,6 +167,7 @@ function DisplayQueryMobile({
                     rowGap={rowGap}
                   >
                     {createdUpdateRequestStatusRadioGroup}
+
                     {createdSubmitRequestStatusButton}
                   </Flex>
                 </form>
@@ -203,7 +214,9 @@ function DisplayQueryMobile({
                       ? 'Yes'
                       : formattedValue === false
                       ? 'No'
-                      : formattedValue}
+                      : `${formattedValue
+                          .charAt(0)
+                          .toUpperCase()}${formattedValue.slice(1)}`}
                   </Text>
                 </Spoiler>
               </Flex>
