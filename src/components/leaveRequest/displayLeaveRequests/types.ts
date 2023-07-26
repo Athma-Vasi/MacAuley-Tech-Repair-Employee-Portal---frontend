@@ -1,8 +1,8 @@
 import {
   QueryResponseData,
+  RequestStatus,
   ResourceRequestServerResponse,
 } from '../../../types';
-
 import type { LeaveRequestDocument } from '../types';
 
 type DisplayLeaveRequestsState = {
@@ -13,6 +13,7 @@ type DisplayLeaveRequestsState = {
   newQueryFlag: boolean;
   queryBuilderString: string;
   pageQueryString: string;
+  requestStatus: RequestStatus;
 
   isError: boolean;
   errorMessage: string;
@@ -32,6 +33,7 @@ type DisplayLeaveRequestsAction = {
   setNewQueryFlag: 'setNewQueryFlag';
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
+  setRequestStatus: 'setRequestStatus';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -72,6 +74,10 @@ type DisplayLeaveRequestsDispatch =
         | DisplayLeaveRequestsAction['setSuccessMessage']
         | DisplayLeaveRequestsAction['setLoadingMessage'];
       payload: string;
+    }
+  | {
+      type: DisplayLeaveRequestsAction['setRequestStatus'];
+      payload: RequestStatus;
     };
 
 type DisplayLeaveRequestsReducer = (

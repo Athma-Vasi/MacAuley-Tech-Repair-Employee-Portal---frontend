@@ -1,9 +1,28 @@
-import { Flex, NavLink, Spoiler, Text } from '@mantine/core';
-import { useEffect } from 'react';
-import { TbArrowDown, TbArrowUp, TbChevronRight } from 'react-icons/tb';
+import {
+  Button,
+  Flex,
+  Group,
+  NavLink,
+  Popover,
+  Spoiler,
+  Text,
+  Tooltip,
+} from '@mantine/core';
+import { FormEvent, useEffect } from 'react';
+import {
+  TbArrowDown,
+  TbArrowUp,
+  TbChevronRight,
+  TbStatusChange,
+  TbUpload,
+} from 'react-icons/tb';
 
 import { useGlobalState } from '../../../hooks';
-import { returnAccessibleButtonElements } from '../../../jsxCreators';
+import {
+  returnAccessibleButtonElements,
+  returnAccessibleRadioGroupInputsElements,
+} from '../../../jsxCreators';
+import { RequestStatus } from '../../../types';
 import { formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryMobileProps } from './types';
 
@@ -27,10 +46,10 @@ function DisplayQueryMobile({
 
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
-  ).map(([label, queryObjArr]) => {
+  ).map(([label, queryObjArr], responseDataIdx) => {
     const displayLabel = <Text>{label}</Text>;
 
-    const displayQueryObjArr = queryObjArr.map((queryObj) => {
+    const displayQueryObjArr = queryObjArr.map((queryObj, arrIdx) => {
       const displayKeyValues = Object.entries(queryObj)
         // .filter(
         //   ([filterKey, _]) =>
@@ -38,7 +57,7 @@ function DisplayQueryMobile({
         //     filterKey !== 'action' &&
         //     filterKey !== 'category'
         // )
-        .map(([key, value]) => {
+        .map(([key, value], index) => {
           // grabs the label instead of the camelCased value and if it doesn't exist, it will split the camelCase
           const labelKey =
             componentQueryData.find(
@@ -57,26 +76,100 @@ function DisplayQueryMobile({
               })
             : value;
 
-          const [createdShowMoreButton, createdHideButton] =
-            returnAccessibleButtonElements([
+          const createdUpdateRequestStatusRadioGroup =
+            returnAccessibleRadioGroupInputsElements([
               {
-                buttonLabel: 'Show more',
-                leftIcon: <TbArrowDown />,
-                buttonType: 'button',
-                semanticDescription: 'Reveal more information',
-                semanticName: 'Show more',
-              },
-              {
-                buttonLabel: 'Hide',
-                leftIcon: <TbArrowUp />,
-                buttonType: 'button',
-                semanticDescription: 'Hide revealed information',
-                semanticName: 'Hide',
+                dataObjectArray: [
+                  {
+                    label: 'Approved',
+                    value: 'approved',
+                  },
+                  {
+                    label: 'Pending',
+                    value: 'pending',
+                  },
+                  {
+                    label: 'Rejected',
+                    value: 'rejected',
+                  },
+                ],
+                description: 'Update request status',
+                onChange: () => {},
+                name: 'requestStatus',
+                value: 'pending',
+                semanticName: 'Update request status',
               },
             ]);
 
+          const [
+            createdShowMoreButton,
+            createdHideButton,
+            createdSubmitRequestStatusButton,
+          ] = returnAccessibleButtonElements([
+            {
+              buttonLabel: 'Show',
+              leftIcon: <TbArrowDown />,
+              buttonType: 'button',
+              semanticDescription: 'Reveal more information',
+              semanticName: 'Show more',
+            },
+            {
+              buttonLabel: 'Hide',
+              leftIcon: <TbArrowUp />,
+              buttonType: 'button',
+              semanticDescription: 'Hide revealed information',
+              semanticName: 'Hide',
+            },
+
+            {
+              buttonLabel: 'Submit',
+              leftIcon: <TbUpload />,
+              buttonType: 'submit',
+              semanticDescription: 'Submit request status changes',
+              semanticName: 'Submit',
+            },
+          ]);
+
+          const updateRequestStatusPopover = (
+            <Popover
+              width={200}
+              position={width < 480 ? 'bottom' : 'bottom-end'}
+              withArrow
+              shadow="lg"
+            >
+              <Popover.Target>
+                <Button variant="outline" size="xs">
+                  <TbStatusChange />
+                </Button>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <form
+                  onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                    event.preventDefault();
+                    console.log('submitting');
+                    console.log(queryObj._id);
+                  }}
+                >
+                  <Flex
+                    direction="column"
+                    align="flex-end"
+                    justify="center"
+                    rowGap={rowGap}
+                  >
+                    {createdUpdateRequestStatusRadioGroup}
+                    {createdSubmitRequestStatusButton}
+                  </Flex>
+                </form>
+              </Popover.Dropdown>
+            </Popover>
+          );
+
+          const displayUpdateRequestStatusButton =
+            key === 'requestStatus' ? updateRequestStatusPopover : null;
+
           return (
             <Flex
+              key={`${key}-${index}`}
               align="flex-end"
               justify="space-between"
               direction="column"
@@ -96,8 +189,10 @@ function DisplayQueryMobile({
                 align="center"
                 justify="flex-end"
                 w="85%"
+                columnGap={rowGap}
                 // style={{ outline: '1px solid violet' }}
               >
+                {displayUpdateRequestStatusButton}
                 <Spoiler
                   maxHeight={25}
                   showLabel={createdShowMoreButton}
@@ -118,6 +213,7 @@ function DisplayQueryMobile({
 
       return (
         <Flex
+          key={`${label}-${arrIdx}}`}
           direction="column"
           align="flex-start"
           justify="center"
@@ -150,6 +246,7 @@ function DisplayQueryMobile({
       //   </Flex>
       // </Flex>
       <Flex
+        key={`${label}-${responseDataIdx}}`}
         direction="column"
         p={padding}
         align="flex-start"
@@ -158,7 +255,7 @@ function DisplayQueryMobile({
         w="100%"
       >
         <NavLink
-          label={label}
+          label={displayLabel}
           rightSection={<TbChevronRight />}
           childrenOffset={0}
           w="100%"

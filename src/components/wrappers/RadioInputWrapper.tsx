@@ -1,4 +1,4 @@
-import { Grid, Radio } from '@mantine/core';
+import { Flex, Grid, Radio } from '@mantine/core';
 import React, { ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
@@ -150,9 +150,9 @@ function RadioGroupInputsWrapper({
         columns={width < 480 ? 1 : width < 768 ? 2 : width < 1440 ? 3 : 4}
         p={padding}
       >
-        {dataObjectArray?.map(({ value, label }) => {
+        {dataObjectArray?.map(({ value, label }, idx) => {
           return (
-            <Grid.Col span={1}>
+            <Grid.Col span={1} key={`${label}-${value}-${idx}`}>
               <Radio key={value} value={value} label={label} />
             </Grid.Col>
           );

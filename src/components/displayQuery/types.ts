@@ -3,7 +3,7 @@ import { CSSProperties } from 'react';
 import {
   QueryResponseData,
   RadioGroupInputData,
-  SelectInputData,
+  RequestStatus,
 } from '../../types';
 import { ComponentQueryData } from '../queryBuilder';
 

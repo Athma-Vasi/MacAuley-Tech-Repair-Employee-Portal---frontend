@@ -56,6 +56,8 @@ type CheckboxInputData = Array<{
   label: string;
 }>;
 
+type RequestStatus = 'pending' | 'approved' | 'rejected';
+
 /**
  * Default server response type for all (except GET) REST API requests
  */
@@ -84,8 +86,6 @@ type QueryResponseData<Doc> = {
   _id: string;
   userId: string;
   username: string;
-  action?: Action;
-  category?: ActionsCompany | ActionsGeneral | ActionsOutreach;
   createdAt: string;
   updatedAt: string;
   __v?: number;
@@ -122,6 +122,7 @@ export type {
   Note,
   QueryResponseData,
   RadioGroupInputData,
+  RequestStatus,
   ResourceRequestServerResponse,
   SelectInputData,
   SetStepsInErrorPayload,

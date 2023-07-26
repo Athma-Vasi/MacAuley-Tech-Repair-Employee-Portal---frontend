@@ -3,17 +3,14 @@ import { useEffect, useReducer } from 'react';
 
 import { returnAccessibleRadioGroupInputsElements } from '../../jsxCreators';
 import { groupQueryResponse, logState } from '../../utils';
-import {
-  AccessibleRadioGroupInputCreatorInfo,
-  FormLayoutWrapper,
-} from '../wrappers';
+import { AccessibleRadioGroupInputCreatorInfo } from '../wrappers';
+import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
 import {
   displayQueryAction,
   displayQueryReducer,
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
-import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
 
 function DisplayQuery<Doc>({
   style = {},

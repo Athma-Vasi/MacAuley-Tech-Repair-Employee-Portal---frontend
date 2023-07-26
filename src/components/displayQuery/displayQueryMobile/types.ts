@@ -1,4 +1,6 @@
 import { CSSProperties } from 'react';
+
+import { RequestStatus } from '../../../types';
 import { ComponentQueryData } from '../../queryBuilder';
 
 type DisplayQueryMobileProps = {
