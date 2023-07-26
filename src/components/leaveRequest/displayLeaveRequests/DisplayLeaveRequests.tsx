@@ -42,7 +42,7 @@ function DisplayLeaveRequests() {
     globalState: { padding },
   } = useGlobalState();
   const {
-    authState: { accessToken },
+    authState: { accessToken, roles },
   } = useAuth();
 
   useEffect(() => {
@@ -50,8 +50,14 @@ function DisplayLeaveRequests() {
     const { signal } = controller;
 
     async function fetchLeaveRequests() {
+      // employees can view their own leave requests only
+      const path =
+        roles.includes('Admin') || roles.includes('Manager')
+          ? '/api/v1/actions/company/leave-request/'
+          : '/api/v1/actions/company/leave-request/user/';
+
       const urlString: URL = urlBuilder({
-        path: '/api/v1/actions/company/leave-request/',
+        path,
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
       });
 
@@ -136,8 +142,11 @@ function DisplayLeaveRequests() {
       }
     }
 
-    if (requestStatus.id !== '') {
-      updateRequestStatus();
+    // only allow Admin and Manager to update request status
+    if (roles.includes('Admin') || roles.includes('Manager')) {
+      if (requestStatus.id !== '') {
+        updateRequestStatus();
+      }
     }
 
     return () => {

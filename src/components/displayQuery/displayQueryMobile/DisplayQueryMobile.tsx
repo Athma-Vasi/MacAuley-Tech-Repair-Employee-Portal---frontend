@@ -18,7 +18,7 @@ import {
   TbUpload,
 } from 'react-icons/tb';
 
-import { useGlobalState } from '../../../hooks';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleRadioGroupInputsElements,
@@ -37,6 +37,9 @@ function DisplayQueryMobile({
   const {
     globalState: { width, padding, rowGap },
   } = useGlobalState();
+  const {
+    authState: { roles },
+  } = useAuth();
   useEffect(() => {
     console.log('groupedByQueryResponseData', groupedByQueryResponseData);
 
@@ -175,8 +178,13 @@ function DisplayQueryMobile({
             </Popover>
           );
 
+          // only managers/admins can update request status
           const displayUpdateRequestStatusButton =
-            key === 'requestStatus' ? updateRequestStatusPopover : null;
+            roles.includes('Admin') || roles.includes('Manager')
+              ? key === 'requestStatus'
+                ? updateRequestStatusPopover
+                : null
+              : null;
 
           return (
             <Flex
