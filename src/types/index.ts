@@ -59,28 +59,9 @@ type CheckboxInputData = Array<{
 type RequestStatus = 'pending' | 'approved' | 'rejected';
 
 /**
- * Default server response type for all (except GET) REST API requests
- */
-type ResourceRequestServerResponse<Document> = {
-  message: string;
-  resourceData: Array<Omit<Document, '__v'>>;
-};
-
-/**
- * Default server response type for GET REST API requests with query parameters
- */
-type GetQueriedResourceRequestServerResponse<Document> = {
-  message: string;
-  pages: number;
-  totalDocuments: number;
-  resourceData: Array<Partial<Document>>;
-};
-
-/**
  * - Represents the structure of data returned from a query, or the initial display state.
- * - The type includes mandatory fields that are always returned, while the other declared fields are optional and usually returned.
+ * - The type includes mandatory fields that are always returned in resource documents.
  * - The 'Partial' type with the generic 'Doc' indicates the optional fields present in resource documents.
- * - In summary, the type represents the structure of data returned from a query with optional fields present in resource documents.
  */
 type QueryResponseData<Doc> = {
   _id: string;
@@ -88,8 +69,25 @@ type QueryResponseData<Doc> = {
   username: string;
   createdAt: string;
   updatedAt: string;
-  __v?: number;
 } & Partial<Doc>;
+
+/**
+ * Default server response type for all (except GET) REST API requests
+ */
+type ResourceRequestServerResponse<Doc> = {
+  message: string;
+  resourceData: QueryResponseData<Doc>[];
+};
+
+/**
+ * Default server response type for GET REST API requests with query parameters
+ */
+type GetQueriedResourceRequestServerResponse<Doc> = {
+  message: string;
+  pages: number;
+  totalDocuments: number;
+  resourceData: QueryResponseData<Doc>[];
+};
 
 export type {
   Action,

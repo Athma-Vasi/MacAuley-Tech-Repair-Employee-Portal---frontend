@@ -2,10 +2,15 @@ import { Flex, Text } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useAuth, useGlobalState } from '../../../hooks';
+import {
+  GetQueriedResourceRequestServerResponse,
+  ResourceRequestServerResponse,
+} from '../../../types';
 import { logState, urlBuilder } from '../../../utils';
 import { DisplayQuery } from '../../displayQuery';
 import { PageBuilder } from '../../pageBuilder';
 import { QueryBuilder } from '../../queryBuilder';
+import { LeaveRequestDocument } from '../types';
 import { LEAVE_REQUESTS_QUERY_DATA } from './constants';
 import {
   displayLeaveRequestsAction,
@@ -27,6 +32,7 @@ function DisplayLeaveRequests() {
     pageQueryString,
 
     requestStatus,
+    triggerRefresh,
 
     isError,
     errorMessage,
@@ -72,7 +78,8 @@ function DisplayLeaveRequests() {
 
       try {
         const response = await fetch(request);
-        const data = await response.json();
+        const data: GetQueriedResourceRequestServerResponse<LeaveRequestDocument> =
+          await response.json();
         console.log('response json data', data);
         displayLeaveRequestsDispatch({
           type: displayLeaveRequestsAction.setLeaveRequests,
@@ -90,7 +97,7 @@ function DisplayLeaveRequests() {
     return () => {
       controller.abort();
     };
-  }, [newQueryFlag, queryBuilderString, pageQueryString]);
+  }, [newQueryFlag, queryBuilderString, pageQueryString, triggerRefresh]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {
@@ -117,6 +124,12 @@ function DisplayLeaveRequests() {
         path: `/api/v1/actions/company/leave-request/${requestStatus.id}`,
       });
 
+      const body = JSON.stringify({
+        leaveRequest: {
+          requestStatus: requestStatus.status,
+        },
+      });
+
       const request: Request = new Request(urlString, {
         method: 'PATCH',
         headers: {
@@ -124,17 +137,19 @@ function DisplayLeaveRequests() {
           Authorization: `Bearer ${accessToken}`,
         },
         signal,
-        body: JSON.stringify({
-          leaveRequest: {
-            requestStatus: requestStatus.status,
-          },
-        }),
+        body,
       });
 
       try {
         const response = await fetch(request);
-        const data = await response.json();
+        const data: ResourceRequestServerResponse<LeaveRequestDocument> =
+          await response.json();
         console.log('request status update response', data);
+        // trigger component refresh
+        displayLeaveRequestsDispatch({
+          type: displayLeaveRequestsAction.setTriggerRefresh,
+          payload: !triggerRefresh,
+        });
       } catch (error) {
         console.log(error);
       } finally {
@@ -143,7 +158,7 @@ function DisplayLeaveRequests() {
     }
 
     // only allow Admin and Manager to update request status
-    if (roles.includes('Admin') || roles.includes('Manager')) {
+    if (roles.includes('Manager')) {
       if (requestStatus.id !== '') {
         updateRequestStatus();
       }

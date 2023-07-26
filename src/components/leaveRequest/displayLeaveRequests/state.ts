@@ -17,6 +17,7 @@ const initialDisplayLeaveRequestsState: DisplayLeaveRequestsState = {
     id: '',
     status: 'pending',
   },
+  triggerRefresh: false,
 
   isError: false,
   errorMessage: '',
@@ -38,6 +39,7 @@ const displayLeaveRequestsAction: DisplayLeaveRequestsAction = {
   setPageQueryString: 'setPageQueryString',
 
   setRequestStatus: 'setRequestStatus',
+  setTriggerRefresh: 'setTriggerRefresh',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -90,6 +92,11 @@ function displayLeaveRequestsReducer(
       return {
         ...state,
         requestStatus: action.payload,
+      };
+    case displayLeaveRequestsAction.setTriggerRefresh:
+      return {
+        ...state,
+        triggerRefresh: action.payload,
       };
 
     case displayLeaveRequestsAction.setIsError:

@@ -40,6 +40,11 @@ function DisplayQueryMobile({
   const {
     authState: { roles },
   } = useAuth();
+
+  useEffect(() => {
+    console.log('roles', roles);
+  }, []);
+
   useEffect(() => {
     console.log('groupedByQueryResponseData', groupedByQueryResponseData);
 
@@ -63,7 +68,7 @@ function DisplayQueryMobile({
         //     filterKey !== 'category'
         // )
         .map(([key, value], index) => {
-          // grabs the label instead of the camelCased value and if it doesn't exist, it will split the camelCase
+          // grab the label instead of the camelCased value and if it doesn't exist, split the camelCase
           const labelKey =
             componentQueryData.find(
               (queryDataObj) => queryDataObj.value === key
@@ -134,7 +139,7 @@ function DisplayQueryMobile({
             },
           ]);
 
-          const updateRequestStatusPopover = (
+          const createdRequestStatusPopover = (
             <Popover
               width={200}
               position={width < 480 ? 'bottom' : 'bottom-end'}
@@ -148,7 +153,7 @@ function DisplayQueryMobile({
               </Popover.Target>
               <Popover.Dropdown>
                 <form
-                  onSubmit={(event: FormEvent<HTMLFormElement>) => {
+                  onSubmit={async (event: FormEvent<HTMLFormElement>) => {
                     event.preventDefault();
 
                     const formData = new FormData(event.currentTarget);
@@ -178,13 +183,12 @@ function DisplayQueryMobile({
             </Popover>
           );
 
-          // only managers/admins can update request status
-          const displayUpdateRequestStatusButton =
-            roles.includes('Admin') || roles.includes('Manager')
-              ? key === 'requestStatus'
-                ? updateRequestStatusPopover
-                : null
-              : null;
+          // only managers can update request status
+          const displayUpdateRequestStatusButton = roles.includes('Manager')
+            ? key === 'requestStatus'
+              ? createdRequestStatusPopover
+              : null
+            : null;
 
           return (
             <Flex

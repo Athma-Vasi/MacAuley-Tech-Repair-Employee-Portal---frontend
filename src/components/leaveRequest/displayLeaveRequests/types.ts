@@ -18,6 +18,7 @@ type DisplayLeaveRequestsState = {
     id: string;
     status: RequestStatus;
   };
+  triggerRefresh: boolean;
 
   isError: boolean;
   errorMessage: string;
@@ -39,6 +40,7 @@ type DisplayLeaveRequestsAction = {
   setPageQueryString: 'setPageQueryString';
 
   setRequestStatus: 'setRequestStatus';
+  setTriggerRefresh: 'setTriggerRefresh';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -64,6 +66,7 @@ type DisplayLeaveRequestsDispatch =
   | {
       type:
         | DisplayLeaveRequestsAction['setNewQueryFlag']
+        | DisplayLeaveRequestsAction['setTriggerRefresh']
         | DisplayLeaveRequestsAction['setIsError']
         | DisplayLeaveRequestsAction['setIsSubmitting']
         | DisplayLeaveRequestsAction['setIsSuccessful']
