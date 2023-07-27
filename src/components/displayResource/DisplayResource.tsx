@@ -16,6 +16,7 @@ import { DisplayResourceProps, DisplayResourceState } from './types';
 function DisplayResource<Doc>({
   style = {},
   componentQueryData,
+  requestBodyHeading,
   paths,
 }: DisplayResourceProps<Doc>) {
   const initialDisplayResourceState: DisplayResourceState<Doc> = {
@@ -149,11 +150,16 @@ function DisplayResource<Doc>({
         path: `${paths.manager}/${requestStatus.id}`,
       });
 
-      const body = JSON.stringify({
-        leaveRequest: {
+      const resourceBody = Object.create(null);
+      Object.defineProperty(resourceBody, requestBodyHeading, {
+        value: {
           requestStatus: requestStatus.status,
         },
+        writable: true,
+        enumerable: true,
+        configurable: true,
       });
+      const body = JSON.stringify(resourceBody);
 
       const request: Request = new Request(urlString, {
         method: 'PATCH',

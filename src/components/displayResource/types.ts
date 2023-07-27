@@ -11,6 +11,7 @@ type DisplayResourceProps<Doc> = {
     manager: string;
     admin: string;
   };
+  requestBodyHeading: string;
 };
 
 type DisplayResourceState<Doc> = {

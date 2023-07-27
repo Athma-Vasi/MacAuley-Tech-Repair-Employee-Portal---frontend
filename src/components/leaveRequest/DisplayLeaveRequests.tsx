@@ -1,28 +1,12 @@
-import { Flex, Text } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
-
-import { useAuth, useGlobalState } from '../../../hooks';
-import {
-  GetQueriedResourceRequestServerResponse,
-  ResourceRequestServerResponse,
-} from '../../../types';
-import { logState, urlBuilder } from '../../../utils';
-import { DisplayQuery } from '../../displayQuery';
-import { DisplayResource } from '../../displayResource';
-import { PageBuilder } from '../../pageBuilder';
-import { QueryBuilder } from '../../queryBuilder';
-import { LeaveRequestDocument } from '../types';
+import { DisplayResource } from '../displayResource';
+import { LeaveRequestDocument } from './types';
 import { LEAVE_REQUESTS_QUERY_DATA } from './constants';
-import {
-  displayLeaveRequestsAction,
-  displayLeaveRequestsReducer,
-  initialDisplayLeaveRequestsState,
-} from './state';
 
 function DisplayLeaveRequests() {
   return (
     <DisplayResource<LeaveRequestDocument>
       componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
+      requestBodyHeading="leaveRequest"
       paths={{
         manager: '/api/v1/actions/company/leave-request/',
         admin: '/api/v1/actions/company/leave-request/',

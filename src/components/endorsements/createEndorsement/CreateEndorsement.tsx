@@ -30,7 +30,7 @@ import {
   CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS,
   CREATE_ENDORSEMENT_MAX_STEPPER_POSITION,
   EMPLOYEE_ATTRIBUTES_DATA,
-} from './constants';
+} from '../constants';
 import {
   createEndorsementAction,
   createEndorsementReducer,

@@ -1,4 +1,4 @@
-import { ComponentQueryData } from '../../queryBuilder';
+import { ComponentQueryData } from '../queryBuilder';
 
 const LEAVE_REQUESTS_QUERY_DATA: ComponentQueryData[] = [
   {
@@ -57,6 +57,12 @@ const LEAVE_REQUESTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Additional comments',
     value: 'additionalComments',
     inputKind: 'textInput',
+  },
+  {
+    label: 'Acknowledgement',
+    value: 'acknowledgement',
+    inputKind: 'selectInput',
+    selectData: ['true', 'false'],
   },
 ];
 

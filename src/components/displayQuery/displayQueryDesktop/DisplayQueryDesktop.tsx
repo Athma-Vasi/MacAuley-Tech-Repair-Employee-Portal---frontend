@@ -163,13 +163,7 @@ function DisplayQueryDesktop<Doc>({
                           outline: '1px solid violet',
                         }}
                       >
-                        <Text
-                          style={{
-                            textTransform: 'capitalize',
-                          }}
-                        >
-                          {splitCamelCase(key)}
-                        </Text>
+                        <Text>{splitCamelCase(key)}</Text>
                       </th>
                     );
 
@@ -182,13 +176,7 @@ function DisplayQueryDesktop<Doc>({
                             outline: '1px solid violet',
                           }}
                         >
-                          <Text
-                            style={{
-                              textTransform: 'capitalize',
-                            }}
-                          >
-                            {splitCamelCase(key)}
-                          </Text>
+                          <Text>{splitCamelCase(key)}</Text>
                         </th>
                       ) : null;
 
@@ -220,6 +208,21 @@ function DisplayQueryDesktop<Doc>({
                               ? 'Yes'
                               : value === false
                               ? 'No'
+                              : Array.isArray(value)
+                              ? value.map((val, valIdx) => {
+                                  return (
+                                    <Text key={`${valIdx}`}>
+                                      {`${val
+                                        .toString()
+                                        .charAt(0)
+                                        .toUpperCase()}${val
+                                        .toString()
+                                        .slice(1)}${
+                                        valIdx === value.length - 1 ? '' : ', '
+                                      }`}
+                                    </Text>
+                                  );
+                                })
                               : `${value
                                   .toString()
                                   .charAt(0)

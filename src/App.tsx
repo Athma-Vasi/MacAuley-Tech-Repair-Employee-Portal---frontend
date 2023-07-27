@@ -9,7 +9,10 @@ import { CreateBenefit } from './components/benefits/createBenefit';
 import { CreateComment } from './components/comments';
 import { CreateAnonymousRequest } from './components/createAnonymousRequest';
 import { Dashboard } from './components/dashboard';
-import { CreateEndorsement } from './components/endorsements/createEndorsement';
+import {
+  CreateEndorsement,
+  DisplayEndorsements,
+} from './components/endorsements/';
 import { EventCreator } from './components/events/eventCreator';
 import { ExpenseClaim } from './components/expenseClaim';
 import {
@@ -24,13 +27,13 @@ import { CreatePrinterIssue } from './components/printerIssue/createPrinterIssue
 import { PublicLayout } from './components/publicLayout';
 import { CreateReferment } from './components/referments/createReferment';
 import { Register } from './components/register';
+import { CreateRepairNote } from './components/repairNote';
 import { RequestResource } from './components/requestResource';
 import { RequireAuth } from './components/requireAuth';
 import { SurveyBuilder } from './components/surveyBuilder';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
-import { CreateRepairNote } from './components/repairNote';
 
 function App() {
   const {
@@ -115,15 +118,19 @@ function App() {
             {/* <Route path="expense-claim" element={<ExpenseClaim />} /> */}
           </Route>
 
-          {/* <Route path="general">
-            <Route path="endorsement" element={<CreateEndorsement />} />
-            <Route path="printer-issue" element={<CreatePrinterIssue />} />
-            <Route path="referment" element={<CreateReferment />} />
-            <Route
+          <Route path="general">
+            <Route path="endorsement">
+              <Route index element={<DisplayEndorsements />} />
+              <Route path="create" element={<CreateEndorsement />} />
+              <Route path="display" element={<DisplayEndorsements />} />
+            </Route>
+            {/* <Route path="printer-issue" element={<CreatePrinterIssue />} /> */}
+            {/* <Route path="referment" element={<CreateReferment />} /> */}
+            {/* <Route
               path="anonymous-request"
               element={<CreateAnonymousRequest />}
-            />
-          </Route> */}
+            /> */}
+          </Route>
 
           {/* <Route path="outreach">
             <Route path="event-creator" element={<EventCreator />} />

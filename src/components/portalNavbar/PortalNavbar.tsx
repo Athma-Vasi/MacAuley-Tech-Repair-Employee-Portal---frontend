@@ -121,7 +121,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbUserCheck />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/general/endorsement');
+          navigate('/portal/general/endorsement/display');
         }}
       />
       {/* printer issue */}

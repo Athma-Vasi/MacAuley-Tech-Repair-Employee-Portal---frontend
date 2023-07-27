@@ -145,7 +145,21 @@ function DisplayQueryMobile({
                   },
                   locale: 'en-US',
                 })
-              : value;
+              : Array.isArray(value)
+              ? value.map((val, valIdx) => {
+                  return (
+                    <Text key={`${valIdx}`}>
+                      {`${val.toString().charAt(0).toUpperCase()}${val
+                        .toString()
+                        .slice(1)}${valIdx === value.length - 1 ? '' : ', '}`}
+                    </Text>
+                  );
+                })
+              : value === true
+              ? 'Yes'
+              : value === false
+              ? 'No'
+              : `${value.toString().charAt(0).toUpperCase()}${value.slice(1)}`;
 
           async function handleRequestStatusChangeFormSubmit(
             event: FormEvent<HTMLFormElement>
@@ -246,15 +260,7 @@ function DisplayQueryMobile({
                   showLabel={createdShowMoreButton}
                   hideLabel={createdHideButton}
                 >
-                  <Text>
-                    {formattedValue === true
-                      ? 'Yes'
-                      : formattedValue === false
-                      ? 'No'
-                      : `${formattedValue
-                          .charAt(0)
-                          .toUpperCase()}${formattedValue.slice(1)}`}
-                  </Text>
+                  <Text>{formattedValue}</Text>
                 </Spoiler>
               </Flex>
             </>
@@ -269,15 +275,7 @@ function DisplayQueryMobile({
               pl={padding}
               style={{ outline: '1px solid violet' }}
             >
-              <Text>
-                {formattedValue === true
-                  ? 'Yes'
-                  : formattedValue === false
-                  ? 'No'
-                  : `${formattedValue
-                      .charAt(0)
-                      .toUpperCase()}${formattedValue.slice(1)}`}
-              </Text>
+              <Text>{formattedValue}</Text>
             </Flex>
           );
 

@@ -1,4 +1,4 @@
 import { CreateLeaveRequest } from './createLeaveRequest/CreateLeaveRequest';
-import { DisplayLeaveRequests } from './displayLeaveRequests/DisplayLeaveRequests';
+import { DisplayLeaveRequests } from './DisplayLeaveRequests';
 
 export { CreateLeaveRequest, DisplayLeaveRequests };
