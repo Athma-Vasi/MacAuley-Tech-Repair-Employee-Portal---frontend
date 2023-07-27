@@ -92,7 +92,7 @@ function TextAreaInputWrapper({
       dynamicInputProps?.semanticAction.slice(1)
     : '';
 
-  const textAreaSize = width < 1024 ? 'sm' : 'md';
+  const textAreaSize = 'sm';
 
   return (
     <Textarea

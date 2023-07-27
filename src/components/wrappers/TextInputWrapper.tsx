@@ -92,7 +92,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       dynamicInputProps?.semanticAction.slice(1)
     : '';
 
-  const textInputSize = width < 1024 ? 'sm' : 'md';
+  const textInputSize = 'sm';
 
   return (
     <TextInput

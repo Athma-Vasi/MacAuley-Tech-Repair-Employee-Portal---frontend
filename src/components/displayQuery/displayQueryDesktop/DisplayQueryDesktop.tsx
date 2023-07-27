@@ -1,20 +1,34 @@
-import { useEffect } from 'react';
-
-import { useAuth, useGlobalState } from '../../../hooks';
-import { DisplayQueryDesktopProps } from './types';
 import {
+  Button,
   Center,
   Flex,
   Group,
   NavLink,
+  Popover,
   Spoiler,
   Stack,
   Table,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
+import { FormEvent, useEffect } from 'react';
+import {
+  TbArrowDown,
+  TbArrowUp,
+  TbChevronRight,
+  TbStatusChange,
+  TbUpload,
+} from 'react-icons/tb';
+
+import { useAuth, useGlobalState } from '../../../hooks';
 import { formatDate, splitCamelCase } from '../../../utils';
-import { TbArrowDown, TbArrowUp, TbChevronRight } from 'react-icons/tb';
+import { DisplayQueryDesktopProps } from './types';
+import {
+  returnAccessibleButtonElements,
+  returnAccessibleRadioGroupInputsElements,
+} from '../../../jsxCreators';
+import { RequestStatus } from '../../../types';
 
 function DisplayQueryDesktop<Doc>({
   style = {},
@@ -48,6 +62,42 @@ function DisplayQueryDesktop<Doc>({
     restOfGroupedQueryResponseData,
     componentQueryData,
     tableViewSelection,
+  ]);
+
+  const createdUpdateRequestStatusRadioGroup =
+    returnAccessibleRadioGroupInputsElements([
+      {
+        columns: 1,
+        dataObjectArray: [
+          {
+            label: 'Approved',
+            value: 'approved',
+          },
+          {
+            label: 'Pending',
+            value: 'pending',
+          },
+          {
+            label: 'Rejected',
+            value: 'rejected',
+          },
+        ],
+        description: 'Update request status',
+        onChange: () => {},
+        name: 'requestStatus',
+        semanticName: 'Update request status',
+      },
+    ]);
+
+  const [createdSubmitRequestStatusButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Submit',
+      leftIcon: <TbUpload />,
+      buttonType: 'submit',
+      semanticDescription: 'Submit request status changes',
+      semanticName: 'Submit',
+      size: 'xs',
+    },
   ]);
 
   const expandedTableSet = new Set(['_id', 'userId', 'action', 'category']);
@@ -114,8 +164,68 @@ function DisplayQueryDesktop<Doc>({
                 {queryResponseObjArrays.map((queryResponseObj, objIdx) => {
                   return (
                     <tr key={`${objIdx}`}>
-                      {Object.values(queryResponseObj).map(
-                        (value, valueIdx) => {
+                      {Object.entries(queryResponseObj).map(
+                        ([key, value], valueIdx) => {
+                          const createdRequestStatusPopover = (
+                            <Popover
+                              width={200}
+                              position={width < 480 ? 'bottom' : 'bottom-end'}
+                              withArrow
+                              shadow="lg"
+                            >
+                              <Popover.Target>
+                                <Tooltip
+                                  label={`Modify request status of ${queryResponseObj._id}`}
+                                >
+                                  <Button variant="outline" size="xs">
+                                    <TbStatusChange />
+                                  </Button>
+                                </Tooltip>
+                              </Popover.Target>
+                              <Popover.Dropdown>
+                                <form
+                                  onSubmit={async (
+                                    event: FormEvent<HTMLFormElement>
+                                  ) => {
+                                    event.preventDefault();
+
+                                    const formData = new FormData(
+                                      event.currentTarget
+                                    );
+                                    const requestStatus =
+                                      formData.get('requestStatus');
+
+                                    parentComponentDispatch({
+                                      type: 'setRequestStatus',
+                                      payload: {
+                                        id: queryResponseObj._id,
+                                        status: requestStatus as RequestStatus,
+                                      },
+                                    });
+                                  }}
+                                >
+                                  <Flex
+                                    direction="column"
+                                    align="flex-end"
+                                    justify="center"
+                                    rowGap={rowGap}
+                                  >
+                                    {createdUpdateRequestStatusRadioGroup}
+                                    {createdSubmitRequestStatusButton}
+                                  </Flex>
+                                </form>
+                              </Popover.Dropdown>
+                            </Popover>
+                          );
+
+                          // only managers can update request status
+                          const displayUpdateRequestStatusButton =
+                            roles.includes('Manager')
+                              ? key === 'requestStatus'
+                                ? createdRequestStatusPopover
+                                : null
+                              : null;
+
                           const formattedValue = componentQueryData
                             .find(({ label, value }) =>
                               label === Object.keys(queryResponseObj)[valueIdx]
@@ -136,6 +246,7 @@ function DisplayQueryDesktop<Doc>({
                           return (
                             (tableViewSelection === 'expanded' && (
                               <td key={`${valueIdx}`}>
+                                {displayUpdateRequestStatusButton}
                                 <Spoiler
                                   maxHeight={25}
                                   showLabel={
@@ -160,6 +271,7 @@ function DisplayQueryDesktop<Doc>({
                                 Object.keys(queryResponseObj)[valueIdx]
                               ) && (
                                 <td key={`${valueIdx}`}>
+                                  {displayUpdateRequestStatusButton}
                                   <Spoiler
                                     maxHeight={25}
                                     showLabel={

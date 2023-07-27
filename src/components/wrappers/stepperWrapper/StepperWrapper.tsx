@@ -107,7 +107,7 @@ function StepperWrapper({
       : width < 1440
       ? '75%'
       : '62%';
-  const size = width < 1024 ? 'sm' : 'md';
+  const size = 'sm';
   const rowGap =
     width < 480 ? 'md' : width < 768 ? 'sm' : width < 1440 ? 'md' : 'lg';
 

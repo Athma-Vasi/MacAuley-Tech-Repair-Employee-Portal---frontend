@@ -175,7 +175,6 @@ function DisplayQueryMobile({
                     rowGap={rowGap}
                   >
                     {createdUpdateRequestStatusRadioGroup}
-
                     {createdSubmitRequestStatusButton}
                   </Flex>
                 </form>

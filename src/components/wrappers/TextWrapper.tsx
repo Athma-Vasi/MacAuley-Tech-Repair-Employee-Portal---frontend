@@ -95,7 +95,7 @@ function TextWrapper({
     style = {},
   } = creatorInfoObj;
 
-  const textSize = size ? size : width < 480 ? 'xs' : 'sm';
+  const textSize = size ? size : 'sm';
 
   return (
     <Text

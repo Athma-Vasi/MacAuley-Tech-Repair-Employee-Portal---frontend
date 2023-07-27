@@ -103,6 +103,7 @@ type AccessibleRadioGroupInputCreatorInfo = {
     value: string;
     label: string;
   }>;
+  columns?: number;
 };
 
 type RadioGroupInputsWrapperProps = {
@@ -117,6 +118,7 @@ function RadioGroupInputsWrapper({
   } = useGlobalState();
 
   const {
+    columns,
     dataObjectArray,
     description,
     onChange,
@@ -148,7 +150,17 @@ function RadioGroupInputsWrapper({
       id={name}
     >
       <Grid
-        columns={width < 480 ? 1 : width < 768 ? 2 : width < 1440 ? 3 : 4}
+        columns={
+          columns
+            ? columns
+            : width < 480
+            ? 1
+            : width < 768
+            ? 2
+            : width < 1440
+            ? 3
+            : 4
+        }
         p={padding}
       >
         {dataObjectArray?.map(({ value, label }, idx) => {

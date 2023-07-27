@@ -70,7 +70,7 @@ function DateTimeInputWrapper({
     autoComplete = 'off',
   } = creatorInfoObject;
 
-  const dateInputSize = width < 1024 ? 'sm' : 'md';
+  const dateInputSize = 'sm';
 
   return (
     <TextInput

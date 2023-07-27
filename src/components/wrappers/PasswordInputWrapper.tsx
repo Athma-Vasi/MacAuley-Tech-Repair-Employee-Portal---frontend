@@ -60,7 +60,7 @@ function PasswordInputWrapper({
     required = false,
   } = creatorInfoObject;
 
-  const passwordInputSize = width < 1024 ? 'sm' : 'md';
+  const passwordInputSize = 'sm';
 
   return (
     <PasswordInput

@@ -73,7 +73,7 @@ function PhoneTextInputWrapper({
     autoComplete = 'off',
   } = creatorInfoObject;
 
-  const textInputSize = width < 1024 ? 'sm' : 'md';
+  const textInputSize = 'sm';
 
   return (
     <TextInput
