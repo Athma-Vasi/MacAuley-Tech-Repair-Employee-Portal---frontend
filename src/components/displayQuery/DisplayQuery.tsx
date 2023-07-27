@@ -204,8 +204,10 @@ function DisplayQuery<Doc>({
         tableViewSelection={currentSegmentedSelection}
         componentQueryData={componentQueryData}
         groupedByQueryResponseData={groupedByQueryResponseData}
-        parentComponentDispatch={parentComponentDispatch}
+        requestStatusDispatch={parentComponentDispatch}
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
+        popoversOpenCloseState={popoversOpenCloseState}
+        popoversStateDispatch={displayQueryDispatch}
       />
     );
 

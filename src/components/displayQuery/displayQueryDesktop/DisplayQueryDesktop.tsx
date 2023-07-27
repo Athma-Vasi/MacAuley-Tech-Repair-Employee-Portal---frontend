@@ -30,16 +30,16 @@ import {
   returnAccessibleRadioGroupInputsElements,
 } from '../../../jsxCreators';
 import { RequestStatus } from '../../../types';
-import { format } from 'path';
-import { table } from 'console';
 
 function DisplayQueryDesktop<Doc>({
   style = {},
   groupedByQueryResponseData,
   restOfGroupedQueryResponseData,
   componentQueryData,
-  parentComponentDispatch,
   tableViewSelection,
+  requestStatusDispatch,
+  popoversOpenCloseState,
+  popoversStateDispatch,
 }: DisplayQueryDesktopProps<Doc>) {
   const {
     globalState: { width, padding, rowGap },
@@ -285,11 +285,22 @@ function DisplayQueryDesktop<Doc>({
                             const formData = new FormData(event.currentTarget);
                             const requestStatus = formData.get('requestStatus');
 
-                            parentComponentDispatch({
+                            requestStatusDispatch({
                               type: 'setRequestStatus',
                               payload: {
                                 id: queryResponseObj._id,
                                 status: requestStatus as RequestStatus,
+                              },
+                            });
+
+                            popoversStateDispatch({
+                              type: 'setPopoversOpenCloseState',
+                              payload: {
+                                key: section.toString(),
+                                popoverState: {
+                                  index: objIdx,
+                                  value: false,
+                                },
                               },
                             });
                           }
@@ -300,6 +311,11 @@ function DisplayQueryDesktop<Doc>({
                               position={width < 480 ? 'bottom' : 'bottom-end'}
                               withArrow
                               shadow="lg"
+                              opened={
+                                popoversOpenCloseState?.get(
+                                  section.toString()
+                                )?.[objIdx]
+                              }
                             >
                               <Popover.Target>
                                 <Tooltip

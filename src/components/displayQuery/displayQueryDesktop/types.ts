@@ -10,11 +10,23 @@ type DisplayQueryDesktopProps<Doc> = {
   componentQueryData: ComponentQueryData[];
   tableViewSelection: 'expanded' | 'condensed';
 
-  parentComponentDispatch: React.Dispatch<{
+  requestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';
     payload: {
       id: string;
       status: RequestStatus;
+    };
+  }>;
+
+  popoversOpenCloseState: Map<string, boolean[]>;
+  popoversStateDispatch: React.Dispatch<{
+    type: 'setPopoversOpenCloseState';
+    payload: {
+      key: string;
+      popoverState: {
+        index: number;
+        value: boolean;
+      };
     };
   }>;
 };
