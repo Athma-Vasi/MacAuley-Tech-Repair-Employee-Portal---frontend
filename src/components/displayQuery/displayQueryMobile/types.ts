@@ -9,12 +9,24 @@ type DisplayQueryMobileProps = {
   restOfGroupedQueryResponseData: Record<string, any>[];
   componentQueryData: ComponentQueryData[];
   tableViewSelection: 'expanded' | 'condensed';
+  popoversOpenCloseState: Map<string, boolean[]>;
 
-  parentComponentDispatch: React.Dispatch<{
+  requestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';
     payload: {
       id: string;
       status: RequestStatus;
+    };
+  }>;
+
+  popoversStateDispatch: React.Dispatch<{
+    type: 'setPopoversOpenCloseState';
+    payload: {
+      key: string;
+      popoverState: {
+        index: number;
+        value: boolean;
+      };
     };
   }>;
 };

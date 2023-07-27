@@ -35,6 +35,7 @@ function DisplayQuery<Doc>({
     groupedByQueryResponseData,
     restOfGroupedQueryResponseData,
     currentSegmentedSelection,
+    popoversOpenCloseState,
   } = displayQueryState;
 
   // create initial groupByRadioData state
@@ -111,6 +112,8 @@ function DisplayQuery<Doc>({
     });
   }, [queryResponseData, groupBySelection, currentSelectionData]);
 
+  // set the popovers initial state to closed on query response data change
+
   /** ------------- input creator info objects ------------- */
 
   const groupByRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo = {
@@ -185,14 +188,16 @@ function DisplayQuery<Doc>({
     </Flex>
   );
 
-  const displayQuery =
+  const displayQueryComponent =
     width <= 1024 ? (
       <DisplayQueryMobile
         tableViewSelection={currentSegmentedSelection}
         groupedByQueryResponseData={groupedByQueryResponseData}
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
         componentQueryData={componentQueryData}
-        parentComponentDispatch={parentComponentDispatch}
+        requestStatusDispatch={parentComponentDispatch}
+        popoversOpenCloseState={popoversOpenCloseState}
+        popoversStateDispatch={displayQueryDispatch}
       />
     ) : (
       <DisplayQueryDesktop
@@ -203,6 +208,13 @@ function DisplayQuery<Doc>({
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
       />
     );
+
+  useEffect(() => {
+    logState({
+      state: displayQueryState,
+      groupLabel: 'displayQueryState',
+    });
+  }, [displayQueryState]);
 
   return (
     <Flex
@@ -222,7 +234,7 @@ function DisplayQuery<Doc>({
       {displayGroupByRadioGroup}
       {displayTableViewSegmentControl}
       <Text>{parentComponentName}</Text>
-      {displayQuery}
+      {displayQueryComponent}
     </Flex>
   );
 }

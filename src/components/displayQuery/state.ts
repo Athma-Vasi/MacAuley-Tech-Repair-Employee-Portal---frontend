@@ -11,6 +11,7 @@ const initialDisplayQueryState: DisplayQueryState = {
   groupedByQueryResponseData: new Map(),
   restOfGroupedQueryResponseData: [],
   currentSegmentedSelection: 'condensed',
+  popoversOpenCloseState: new Map(),
 };
 
 const displayQueryAction: DisplayQueryAction = {
@@ -22,6 +23,7 @@ const displayQueryAction: DisplayQueryAction = {
   setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData',
 
   setCurrentSegmentedSelection: 'setCurrentSegmentedSelection',
+  setPopoversOpenCloseState: 'setPopoversOpenCloseState',
 };
 
 function displayQueryReducer(
@@ -64,6 +66,23 @@ function displayQueryReducer(
         ...state,
         currentSegmentedSelection: action.payload,
       };
+
+    case displayQueryAction.setPopoversOpenCloseState: {
+      const { key, popoverState } = action.payload;
+      const newMap = new Map(state.popoversOpenCloseState);
+
+      const currentPopoverState = newMap.get(key);
+      if (currentPopoverState) {
+        currentPopoverState[popoverState.index] = popoverState.value;
+      } else {
+        newMap.set(key, [popoverState.value]);
+      }
+
+      return {
+        ...state,
+        popoversOpenCloseState: newMap,
+      };
+    }
 
     default:
       return state;

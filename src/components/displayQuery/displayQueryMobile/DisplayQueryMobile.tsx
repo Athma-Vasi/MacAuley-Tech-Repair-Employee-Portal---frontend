@@ -33,8 +33,10 @@ function DisplayQueryMobile({
   groupedByQueryResponseData,
   restOfGroupedQueryResponseData,
   componentQueryData,
-  parentComponentDispatch,
   tableViewSelection,
+  requestStatusDispatch,
+  popoversStateDispatch,
+  popoversOpenCloseState,
 }: DisplayQueryMobileProps): JSX.Element {
   const {
     globalState: { width, padding, rowGap },
@@ -55,6 +57,7 @@ function DisplayQueryMobile({
   const createdUpdateRequestStatusRadioGroup =
     returnAccessibleRadioGroupInputsElements([
       {
+        columns: 1,
         dataObjectArray: [
           {
             label: 'Approved',
@@ -142,11 +145,22 @@ function DisplayQueryMobile({
             const formData = new FormData(event.currentTarget);
             const requestStatus = formData.get('requestStatus');
 
-            parentComponentDispatch({
+            requestStatusDispatch({
               type: 'setRequestStatus',
               payload: {
                 id: queryObj._id,
                 status: requestStatus as RequestStatus,
+              },
+            });
+
+            popoversStateDispatch({
+              type: 'setPopoversOpenCloseState',
+              payload: {
+                key: label.toString(),
+                popoverState: {
+                  index: arrIdx,
+                  value: false,
+                },
               },
             });
           }
@@ -157,6 +171,7 @@ function DisplayQueryMobile({
               position={width < 480 ? 'bottom' : 'bottom-end'}
               withArrow
               shadow="lg"
+              opened={popoversOpenCloseState?.get(label.toString())?.[arrIdx]}
             >
               <Popover.Target>
                 <Button variant="outline" size="xs">
@@ -240,19 +255,6 @@ function DisplayQueryMobile({
             </Flex>
           );
 
-          // const displayCondensedView = tableKeyExclusionSet.has(key) ? (
-          //   <NavLink
-          //     label={<Text>{labelKey}</Text>}
-          //     rightSection={<TbChevronRight />}
-          //     childrenOffset={0}
-          //     w="62%"
-          //   >
-          //     {displayValueOnlyRow}
-          //   </NavLink>
-          // ) : (
-          //   displayFullLabelValueRow
-          // );
-
           const displayCondensedView = tableKeyExclusionSet.has(key) ? (
             <Accordion w="100%">
               <Accordion.Item value={labelKey}>
@@ -309,19 +311,6 @@ function DisplayQueryMobile({
     });
 
     return (
-      // <Flex direction="column" p={padding} align="flex-start" justify="center">
-      //   {displayLabel}
-      //   <Flex
-      //     direction="column"
-      //     align="flex-start"
-      //     justify="center"
-      //     w="100%"
-      //     rowGap={rowGap}
-      //     // style={{ backgroundColor: '#f0f0f0', borderRadius: 4 }}
-      //   >
-      //     {displayQueryObjArr}
-      //   </Flex>
-      // </Flex>
       <Flex
         key={`${label}-${responseDataIdx}}`}
         direction="column"
@@ -493,3 +482,34 @@ export { DisplayQueryMobile };
     );
   });
    */
+
+/**
+  <Flex direction="column" p={padding} align="flex-start" justify="center">
+        {displayLabel}
+        <Flex
+          direction="column"
+          align="flex-start"
+          justify="center"
+          w="100%"
+          rowGap={rowGap}
+          // style={{ backgroundColor: '#f0f0f0', borderRadius: 4 }}
+        >
+          {displayQueryObjArr}
+        </Flex>
+      </Flex>
+ */
+
+/**
+       * const displayCondensedView = tableKeyExclusionSet.has(key) ? (
+            <NavLink
+              label={<Text>{labelKey}</Text>}
+              rightSection={<TbChevronRight />}
+              childrenOffset={0}
+              w="62%"
+            >
+              {displayValueOnlyRow}
+            </NavLink>
+          ) : (
+            displayFullLabelValueRow
+          );
+       */

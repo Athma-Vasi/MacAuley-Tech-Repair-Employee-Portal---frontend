@@ -29,6 +29,7 @@ type DisplayQueryState = {
   restOfGroupedQueryResponseData: Record<string, any>[];
 
   currentSegmentedSelection: 'expanded' | 'condensed';
+  popoversOpenCloseState: Map<string, boolean[]>;
 };
 
 type DisplayQueryAction = {
@@ -40,6 +41,7 @@ type DisplayQueryAction = {
   setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData';
 
   setCurrentSegmentedSelection: 'setCurrentSegmentedSelection';
+  setPopoversOpenCloseState: 'setPopoversOpenCloseState';
 };
 
 type DisplayQueryDispatch =
@@ -66,6 +68,16 @@ type DisplayQueryDispatch =
   | {
       type: DisplayQueryAction['setRestOfGroupedQueryResponseData'];
       payload: Record<string, any>[];
+    }
+  | {
+      type: DisplayQueryAction['setPopoversOpenCloseState'];
+      payload: {
+        key: string;
+        popoverState: {
+          index: number;
+          value: boolean;
+        };
+      };
     };
 
 export type {
