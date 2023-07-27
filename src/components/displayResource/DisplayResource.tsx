@@ -1,26 +1,48 @@
+import { Flex } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
-import {
-  displayResourceAction,
-  displayResourceReducer,
-  initialDisplayResourceState,
-} from './state';
-import { DisplayResourceProps, DisplayResourceState } from './types';
-import { useGlobalState, useAuth } from '../../hooks';
-import { urlBuilder } from '../../utils';
+
+import { useAuth, useGlobalState } from '../../hooks';
 import {
   GetQueriedResourceRequestServerResponse,
   ResourceRequestServerResponse,
 } from '../../types';
-import { QueryBuilder } from '../queryBuilder';
-import { Flex } from '@mantine/core';
+import { logState, urlBuilder } from '../../utils';
 import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
+import { QueryBuilder } from '../queryBuilder';
+import { displayResourceAction, displayResourceReducer } from './state';
+import { DisplayResourceProps, DisplayResourceState } from './types';
 
 function DisplayResource<Doc>({
   style = {},
   componentQueryData,
   paths,
 }: DisplayResourceProps<Doc>) {
+  const initialDisplayResourceState: DisplayResourceState<Doc> = {
+    resourceData: [],
+    pages: 0,
+    totalDocuments: 0,
+
+    newQueryFlag: true,
+    queryBuilderString: '?',
+    pageQueryString: '',
+
+    requestStatus: {
+      id: '',
+      status: 'pending',
+    },
+    triggerRefresh: false,
+
+    isError: false,
+    errorMessage: '',
+    isSubmitting: false,
+    submitMessage: '',
+    isSuccessful: false,
+    successMessage: '',
+    isLoading: false,
+    loadingMessage: '',
+  };
+
   const [displayResourceState, displayResourceDispatch] = useReducer(
     displayResourceReducer,
     initialDisplayResourceState as DisplayResourceState<Doc>
@@ -171,6 +193,13 @@ function DisplayResource<Doc>({
     };
   }, [requestStatus]);
 
+  useEffect(() => {
+    logState({
+      state: displayResourceState,
+      groupLabel: 'displayResourceState',
+    });
+  }, [displayResourceState]);
+
   return (
     <Flex
       direction="column"
@@ -179,6 +208,7 @@ function DisplayResource<Doc>({
       w="100%"
       h="100%"
       style={{
+        ...style,
         backgroundColor: '#fff',
         borderRadius: 4,
       }}

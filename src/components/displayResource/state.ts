@@ -4,31 +4,6 @@ import {
   DisplayResourceState,
 } from './types';
 
-const initialDisplayResourceState = {
-  resourceData: [],
-  pages: 0,
-  totalDocuments: 0,
-
-  newQueryFlag: true,
-  queryBuilderString: '?',
-  pageQueryString: '',
-
-  requestStatus: {
-    id: '',
-    status: 'pending',
-  },
-  triggerRefresh: false,
-
-  isError: false,
-  errorMessage: '',
-  isSubmitting: false,
-  submitMessage: '',
-  isSuccessful: false,
-  successMessage: '',
-  isLoading: false,
-  loadingMessage: '',
-};
-
 const displayResourceAction: DisplayResourceAction = {
   setResourceData: 'setResourceData',
   setPages: 'setPages',
@@ -144,8 +119,4 @@ function displayResourceReducer<Doc>(
   }
 }
 
-export {
-  displayResourceAction,
-  displayResourceReducer,
-  initialDisplayResourceState,
-};
+export { displayResourceAction, displayResourceReducer };

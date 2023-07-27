@@ -893,10 +893,8 @@ function urlBuilder({
   port = '3500',
   protocol = 'http',
   query = '?',
-}: UrlBuilderInput) {
-  const url = new URL(`${protocol}://${host}:${port}${path}${query}${hash}`);
-
-  return url;
+}: UrlBuilderInput): URL {
+  return new URL(`${protocol}://${host}:${port}${path}${query}${hash}`);
 }
 
 type GroupQueryResponseInput<Doc> = {
