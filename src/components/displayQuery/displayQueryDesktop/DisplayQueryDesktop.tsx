@@ -206,8 +206,7 @@ function DisplayQueryDesktop<Doc>({
                         ([key, value], keyValIdx) => {
                           const formattedValue =
                             dateKeysSet.has(key) ||
-                            key.includes('Date') ||
-                            key.includes('date')
+                            key.toLowerCase().includes('date')
                               ? formatDate({
                                   date: value,
                                   formatOptions: {
@@ -251,10 +250,10 @@ function DisplayQueryDesktop<Doc>({
                               key.includes('Date') ||
                               key.includes('date') ? (
                               <HoverCard
-                                width={300}
+                                width={382}
                                 shadow="lg"
                                 openDelay={250}
-                                closeDelay={150}
+                                closeDelay={100}
                               >
                                 <HoverCard.Target>
                                   <Text>{formattedValue}</Text>

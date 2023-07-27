@@ -110,6 +110,12 @@ function DisplayQueryMobile({
   ]);
 
   const tableKeyExclusionSet = new Set(['_id', 'userId', 'action', 'category']);
+  const dateKeysSet = new Set([
+    'createdAt',
+    'updatedAt',
+    'startDate',
+    'endDate',
+  ]);
 
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
@@ -129,15 +135,17 @@ function DisplayQueryMobile({
               (queryDataObj) => queryDataObj.value === key
             )?.label ?? splitCamelCase(key);
 
-          const formattedValue = sectionKey.includes('date')
-            ? formatDate({
-                date: value,
-                formatOptions: {
-                  dateStyle: 'full',
-                },
-                locale: 'en-US',
-              })
-            : value;
+          const formattedValue =
+            dateKeysSet.has(sectionKey) ||
+            sectionKey.toLowerCase().includes('date')
+              ? formatDate({
+                  date: value,
+                  formatOptions: {
+                    dateStyle: 'full',
+                  },
+                  locale: 'en-US',
+                })
+              : value;
 
           async function handleRequestStatusChangeFormSubmit(
             event: FormEvent<HTMLFormElement>
