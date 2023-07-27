@@ -1,4 +1,5 @@
 import {
+  Accordion,
   Button,
   Flex,
   Group,
@@ -33,6 +34,7 @@ function DisplayQueryMobile({
   restOfGroupedQueryResponseData,
   componentQueryData,
   parentComponentDispatch,
+  tableViewSelection,
 }: DisplayQueryMobileProps): JSX.Element {
   const {
     globalState: { width, padding, rowGap },
@@ -103,6 +105,8 @@ function DisplayQueryMobile({
     },
   ]);
 
+  const tableKeyExclusionSet = new Set(['_id', 'userId', 'action', 'category']);
+
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
   ).map(([label, queryObjArr], responseDataIdx) => {
@@ -113,14 +117,8 @@ function DisplayQueryMobile({
     );
 
     const displayQueryObjArr = queryObjArr.map((queryObj, arrIdx) => {
-      const displayKeyValues = Object.entries(queryObj)
-        // .filter(
-        //   ([filterKey, _]) =>
-        //     filterKey !== '_id' &&
-        //     filterKey !== 'action' &&
-        //     filterKey !== 'category'
-        // )
-        .map(([key, value], index) => {
+      const displayKeyValues = Object.entries(queryObj).map(
+        ([key, value], index) => {
           // grab the label instead of the camelCased value and if it doesn't exist, split the camelCase
           const labelKey =
             componentQueryData.find(
@@ -131,13 +129,27 @@ function DisplayQueryMobile({
             ? formatDate({
                 date: value,
                 formatOptions: {
-                  month: 'short',
-                  day: 'numeric',
-                  year: 'numeric',
+                  dateStyle: 'full',
                 },
                 locale: 'en-US',
               })
             : value;
+
+          async function handleRequestStatusChangeFormSubmit(
+            event: FormEvent<HTMLFormElement>
+          ) {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const requestStatus = formData.get('requestStatus');
+
+            parentComponentDispatch({
+              type: 'setRequestStatus',
+              payload: {
+                id: queryObj._id,
+                status: requestStatus as RequestStatus,
+              },
+            });
+          }
 
           const createdRequestStatusPopover = (
             <Popover
@@ -152,22 +164,7 @@ function DisplayQueryMobile({
                 </Button>
               </Popover.Target>
               <Popover.Dropdown>
-                <form
-                  onSubmit={async (event: FormEvent<HTMLFormElement>) => {
-                    event.preventDefault();
-
-                    const formData = new FormData(event.currentTarget);
-                    const requestStatus = formData.get('requestStatus');
-
-                    parentComponentDispatch({
-                      type: 'setRequestStatus',
-                      payload: {
-                        id: queryObj._id,
-                        status: requestStatus as RequestStatus,
-                      },
-                    });
-                  }}
-                >
+                <form onSubmit={handleRequestStatusChangeFormSubmit}>
                   <Flex
                     direction="column"
                     align="flex-end"
@@ -189,28 +186,17 @@ function DisplayQueryMobile({
               : null
             : null;
 
-          return (
-            <Flex
-              key={`${key}-${index}`}
-              direction={width < 768 ? 'column' : 'row'}
-              align={width < 768 ? 'flex-start' : 'center'}
-              justify={width < 768 ? 'flex-start' : 'space-between'}
-              style={{
-                borderRadius: 4,
-                backgroundColor: '#fff',
-              }}
-              rowGap={rowGap}
-              w="100%"
-              p={padding}
-            >
+          const displayFullLabelValueRow = (
+            <>
               <Flex w="100%">
                 <Text>{labelKey}</Text>
               </Flex>
               <Flex
                 align="center"
                 justify="flex-end"
-                w="85%"
+                w="100%"
                 columnGap={rowGap}
+                pl={padding}
                 // style={{ outline: '1px solid violet' }}
               >
                 {displayUpdateRequestStatusButton}
@@ -230,9 +216,78 @@ function DisplayQueryMobile({
                   </Text>
                 </Spoiler>
               </Flex>
+            </>
+          );
+
+          const displayValueOnlyRow = (
+            <Flex
+              align="center"
+              justify="flex-end"
+              w="100%"
+              columnGap={rowGap}
+              pl={padding}
+              style={{ outline: '1px solid violet' }}
+            >
+              <Text>
+                {formattedValue === true
+                  ? 'Yes'
+                  : formattedValue === false
+                  ? 'No'
+                  : `${formattedValue
+                      .charAt(0)
+                      .toUpperCase()}${formattedValue.slice(1)}`}
+              </Text>
             </Flex>
           );
-        });
+
+          // const displayCondensedView = tableKeyExclusionSet.has(key) ? (
+          //   <NavLink
+          //     label={<Text>{labelKey}</Text>}
+          //     rightSection={<TbChevronRight />}
+          //     childrenOffset={0}
+          //     w="62%"
+          //   >
+          //     {displayValueOnlyRow}
+          //   </NavLink>
+          // ) : (
+          //   displayFullLabelValueRow
+          // );
+
+          const displayCondensedView = tableKeyExclusionSet.has(key) ? (
+            <Accordion w="100%">
+              <Accordion.Item value={labelKey}>
+                <Accordion.Control>{labelKey}</Accordion.Control>
+                <Accordion.Panel>{displayValueOnlyRow}</Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+          ) : (
+            displayFullLabelValueRow
+          );
+
+          const displayExpandedView = displayFullLabelValueRow;
+
+          return (
+            <Flex
+              key={`${key}-${index}`}
+              direction={width < 768 ? 'column' : 'row'}
+              align={width < 768 ? 'flex-start' : 'center'}
+              justify={width < 768 ? 'flex-start' : 'space-between'}
+              style={{
+                borderRadius: 4,
+                backgroundColor: '#fff',
+                outline: '1px solid teal',
+              }}
+              rowGap={rowGap}
+              w="100%"
+              p={padding}
+            >
+              {tableViewSelection === 'condensed'
+                ? displayCondensedView
+                : displayExpandedView}
+            </Flex>
+          );
+        }
+      );
 
       return (
         <Flex
@@ -398,7 +453,7 @@ function DisplayQueryMobile({
   return (
     <Flex
       direction="column"
-      p={padding}
+      // p={padding}
       align="flex-start"
       justify="center"
       w="100%"

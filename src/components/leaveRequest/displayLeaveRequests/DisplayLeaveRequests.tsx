@@ -190,7 +190,6 @@ function DisplayLeaveRequests() {
       p={padding}
       rowGap={rowGap}
     >
-      <h6>Display leave requests</h6>
       <QueryBuilder
         setQueryBuilderString={displayLeaveRequestsAction.setQueryBuilderString}
         parentComponentDispatch={displayLeaveRequestsDispatch}
@@ -198,6 +197,7 @@ function DisplayLeaveRequests() {
         collectionName="leave requests"
       />
       <DisplayQuery
+        parentComponentName="Leave Requests"
         parentComponentDispatch={displayLeaveRequestsDispatch}
         componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
         queryResponseData={leaveRequests}

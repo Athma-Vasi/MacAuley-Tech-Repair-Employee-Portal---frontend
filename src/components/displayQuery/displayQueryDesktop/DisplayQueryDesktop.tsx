@@ -120,9 +120,6 @@ function DisplayQueryDesktop<Doc>({
           : Object.keys(queryResponseObjArrays[0]).filter(
               (key) => !expandedTableSet.has(key)
             ).length;
-
-      console.log('numOfFields', numOfFields);
-
       const widthPerField = `${100 / numOfFields}%`;
 
       return (
@@ -206,7 +203,7 @@ function DisplayQueryDesktop<Doc>({
                   return (
                     <tr key={`${objIdx}`}>
                       {Object.entries(queryResponseObj).map(
-                        ([key, value], valueIdx) => {
+                        ([key, value], keyValIdx) => {
                           const formattedValue =
                             dateKeysSet.has(key) ||
                             key.includes('Date') ||
@@ -281,6 +278,22 @@ function DisplayQueryDesktop<Doc>({
                               formattedValue
                             );
 
+                          async function handleRequestStatusChangeFormSubmit(
+                            event: FormEvent<HTMLFormElement>
+                          ) {
+                            event.preventDefault();
+                            const formData = new FormData(event.currentTarget);
+                            const requestStatus = formData.get('requestStatus');
+
+                            parentComponentDispatch({
+                              type: 'setRequestStatus',
+                              payload: {
+                                id: queryResponseObj._id,
+                                status: requestStatus as RequestStatus,
+                              },
+                            });
+                          }
+
                           const createdRequestStatusPopover = (
                             <Popover
                               width={200}
@@ -299,25 +312,7 @@ function DisplayQueryDesktop<Doc>({
                               </Popover.Target>
                               <Popover.Dropdown>
                                 <form
-                                  onSubmit={async (
-                                    event: FormEvent<HTMLFormElement>
-                                  ) => {
-                                    event.preventDefault();
-
-                                    const formData = new FormData(
-                                      event.currentTarget
-                                    );
-                                    const requestStatus =
-                                      formData.get('requestStatus');
-
-                                    parentComponentDispatch({
-                                      type: 'setRequestStatus',
-                                      payload: {
-                                        id: queryResponseObj._id,
-                                        status: requestStatus as RequestStatus,
-                                      },
-                                    });
-                                  }}
+                                  onSubmit={handleRequestStatusChangeFormSubmit}
                                 >
                                   <Flex
                                     direction="column"
@@ -343,7 +338,7 @@ function DisplayQueryDesktop<Doc>({
 
                           const displayExpandedBodyRows = (
                             <td
-                              key={`${valueIdx}`}
+                              key={`${keyValIdx}`}
                               style={{ width: widthPerField }}
                             >
                               {key === 'requestStatus' ? (
@@ -352,8 +347,8 @@ function DisplayQueryDesktop<Doc>({
                                   justify="space-between"
                                   columnGap="xs"
                                 >
-                                  {displayUpdateRequestStatusButton}
                                   <Text>{truncatedValuesWithHoverCards}</Text>
+                                  {displayUpdateRequestStatusButton}
                                 </Flex>
                               ) : (
                                 <Spoiler
@@ -379,10 +374,10 @@ function DisplayQueryDesktop<Doc>({
 
                           const displayCondensedBodyRows =
                             !expandedTableSet.has(
-                              Object.keys(queryResponseObj)[valueIdx]
+                              Object.keys(queryResponseObj)[keyValIdx]
                             ) ? (
                               <td
-                                key={`${valueIdx}`}
+                                key={`${keyValIdx}`}
                                 style={{ width: widthPerField }}
                               >
                                 {key === 'requestStatus' ? (
@@ -391,8 +386,8 @@ function DisplayQueryDesktop<Doc>({
                                     justify="space-between"
                                     columnGap="xs"
                                   >
-                                    {displayUpdateRequestStatusButton}
                                     <Text>{truncatedValuesWithHoverCards}</Text>
+                                    {displayUpdateRequestStatusButton}
                                   </Flex>
                                 ) : (
                                   <Spoiler

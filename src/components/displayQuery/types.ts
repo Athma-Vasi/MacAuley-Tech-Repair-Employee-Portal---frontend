@@ -11,7 +11,7 @@ type DisplayQueryProps<Doc> = {
   style?: CSSProperties;
   queryResponseData: QueryResponseData<Doc>[];
   componentQueryData: ComponentQueryData[];
-
+  parentComponentName: string;
   parentComponentDispatch: React.Dispatch<{
     type: 'setRequestStatus';
     payload: {

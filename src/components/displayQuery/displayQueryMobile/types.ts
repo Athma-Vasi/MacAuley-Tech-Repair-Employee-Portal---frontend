@@ -8,6 +8,7 @@ type DisplayQueryMobileProps = {
   groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
   restOfGroupedQueryResponseData: Record<string, any>[];
   componentQueryData: ComponentQueryData[];
+  tableViewSelection: 'expanded' | 'condensed';
 
   parentComponentDispatch: React.Dispatch<{
     type: 'setRequestStatus';

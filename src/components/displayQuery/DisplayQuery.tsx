@@ -19,6 +19,7 @@ function DisplayQuery<Doc>({
   queryResponseData,
   componentQueryData,
   parentComponentDispatch,
+  parentComponentName,
 }: DisplayQueryProps<Doc>) {
   const {
     globalState: { padding, width, rowGap },
@@ -143,22 +144,6 @@ function DisplayQuery<Doc>({
     />
   );
 
-  const displayTableViewSegmentControl = (
-    <Flex
-      align="center"
-      justify="flex-start"
-      w="38%"
-      style={{
-        border: '1px solid #e0e0e0',
-        borderRadius: 4,
-      }}
-      columnGap={rowGap}
-      p={padding}
-    >
-      <Text>Table view</Text>
-      {segmentedControl}
-    </Flex>
-  );
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- created inputs------------- */
@@ -171,7 +156,7 @@ function DisplayQuery<Doc>({
     <Flex
       align="center"
       justify="flex-start"
-      w="38%"
+      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
       style={{
         border: '1px solid #e0e0e0',
         borderRadius: 4,
@@ -183,9 +168,27 @@ function DisplayQuery<Doc>({
     </Flex>
   );
 
+  const displayTableViewSegmentControl = (
+    <Flex
+      align="center"
+      justify="flex-start"
+      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+      style={{
+        border: '1px solid #e0e0e0',
+        borderRadius: 4,
+      }}
+      columnGap={rowGap}
+      p={padding}
+    >
+      <Text>Table view</Text>
+      {segmentedControl}
+    </Flex>
+  );
+
   const displayQuery =
-    width <= 692 ? (
+    width <= 1024 ? (
       <DisplayQueryMobile
+        tableViewSelection={currentSegmentedSelection}
         groupedByQueryResponseData={groupedByQueryResponseData}
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
         componentQueryData={componentQueryData}
@@ -218,6 +221,7 @@ function DisplayQuery<Doc>({
     >
       {displayGroupByRadioGroup}
       {displayTableViewSegmentControl}
+      <Text>{parentComponentName}</Text>
       {displayQuery}
     </Flex>
   );
