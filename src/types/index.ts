@@ -61,7 +61,7 @@ type RequestStatus = 'pending' | 'approved' | 'rejected';
 /**
  * - Represents the structure of data returned from a query, or the initial display state.
  * - The type includes mandatory fields that are always returned in resource documents.
- * - The 'Partial' type with the generic 'Doc' indicates the optional fields present in resource documents.
+ * - The 'Partial' type with the generic 'Doc' indicates that the returned fields may vary depending on the query.
  */
 type QueryResponseData<Doc> = {
   _id: string;
