@@ -50,6 +50,59 @@ function DisplayQueryMobile({
     );
   }, [groupedByQueryResponseData, restOfGroupedQueryResponseData]);
 
+  const createdUpdateRequestStatusRadioGroup =
+    returnAccessibleRadioGroupInputsElements([
+      {
+        dataObjectArray: [
+          {
+            label: 'Approved',
+            value: 'approved',
+          },
+          {
+            label: 'Pending',
+            value: 'pending',
+          },
+          {
+            label: 'Rejected',
+            value: 'rejected',
+          },
+        ],
+        description: 'Update request status',
+        onChange: () => {},
+        name: 'requestStatus',
+        semanticName: 'Update request status',
+      },
+    ]);
+
+  const [
+    createdShowMoreButton,
+    createdHideButton,
+    createdSubmitRequestStatusButton,
+  ] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Show',
+      leftIcon: <TbArrowDown />,
+      buttonType: 'button',
+      semanticDescription: 'Reveal more information',
+      semanticName: 'Show more',
+    },
+    {
+      buttonLabel: 'Hide',
+      leftIcon: <TbArrowUp />,
+      buttonType: 'button',
+      semanticDescription: 'Hide revealed information',
+      semanticName: 'Hide',
+    },
+
+    {
+      buttonLabel: 'Submit',
+      leftIcon: <TbUpload />,
+      buttonType: 'submit',
+      semanticDescription: 'Submit request status changes',
+      semanticName: 'Submit',
+    },
+  ]);
+
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
   ).map(([label, queryObjArr], responseDataIdx) => {
@@ -85,59 +138,6 @@ function DisplayQueryMobile({
                 locale: 'en-US',
               })
             : value;
-
-          const createdUpdateRequestStatusRadioGroup =
-            returnAccessibleRadioGroupInputsElements([
-              {
-                dataObjectArray: [
-                  {
-                    label: 'Approved',
-                    value: 'approved',
-                  },
-                  {
-                    label: 'Pending',
-                    value: 'pending',
-                  },
-                  {
-                    label: 'Rejected',
-                    value: 'rejected',
-                  },
-                ],
-                description: 'Update request status',
-                onChange: () => {},
-                name: 'requestStatus',
-                semanticName: 'Update request status',
-              },
-            ]);
-
-          const [
-            createdShowMoreButton,
-            createdHideButton,
-            createdSubmitRequestStatusButton,
-          ] = returnAccessibleButtonElements([
-            {
-              buttonLabel: 'Show',
-              leftIcon: <TbArrowDown />,
-              buttonType: 'button',
-              semanticDescription: 'Reveal more information',
-              semanticName: 'Show more',
-            },
-            {
-              buttonLabel: 'Hide',
-              leftIcon: <TbArrowUp />,
-              buttonType: 'button',
-              semanticDescription: 'Hide revealed information',
-              semanticName: 'Hide',
-            },
-
-            {
-              buttonLabel: 'Submit',
-              leftIcon: <TbUpload />,
-              buttonType: 'submit',
-              semanticDescription: 'Submit request status changes',
-              semanticName: 'Submit',
-            },
-          ]);
 
           const createdRequestStatusPopover = (
             <Popover

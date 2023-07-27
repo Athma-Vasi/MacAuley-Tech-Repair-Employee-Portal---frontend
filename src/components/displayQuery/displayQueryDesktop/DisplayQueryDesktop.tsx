@@ -29,6 +29,8 @@ import {
   returnAccessibleRadioGroupInputsElements,
 } from '../../../jsxCreators';
 import { RequestStatus } from '../../../types';
+import { format } from 'path';
+import { table } from 'console';
 
 function DisplayQueryDesktop<Doc>({
   style = {},
@@ -56,6 +58,7 @@ function DisplayQueryDesktop<Doc>({
     console.log('tableViewSelection', tableViewSelection);
 
     console.log('componentQueryData', componentQueryData);
+
     console.groupEnd();
   }, [
     groupedByQueryResponseData,
@@ -101,9 +104,26 @@ function DisplayQueryDesktop<Doc>({
   ]);
 
   const expandedTableSet = new Set(['_id', 'userId', 'action', 'category']);
+  const dateKeysSet = new Set([
+    'createdAt',
+    'updatedAt',
+    'startDate',
+    'endDate',
+  ]);
 
   const displayTable = Array.from(groupedByQueryResponseData).map(
     ([section, queryResponseObjArrays], sectionIdx) => {
+      const numOfFields =
+        tableViewSelection === 'expanded'
+          ? Object.keys(queryResponseObjArrays[0]).length
+          : Object.keys(queryResponseObjArrays[0]).filter(
+              (key) => !expandedTableSet.has(key)
+            ).length;
+
+      console.log('numOfFields', numOfFields);
+
+      const widthPerField = `${100 / numOfFields}%`;
+
       return (
         <Flex
           key={`${sectionIdx}`}
@@ -136,8 +156,14 @@ function DisplayQueryDesktop<Doc>({
               >
                 <tr>
                   {Object.keys(queryResponseObjArrays[0]).map((key, keyIdx) => {
-                    return tableViewSelection === 'expanded' ? (
-                      <th key={`${keyIdx}`}>
+                    const displayExpandedHeaderRows = (
+                      <th
+                        key={`${keyIdx}`}
+                        style={{
+                          width: widthPerField,
+                          outline: '1px solid violet',
+                        }}
+                      >
                         <Text
                           style={{
                             textTransform: 'capitalize',
@@ -146,8 +172,18 @@ function DisplayQueryDesktop<Doc>({
                           {splitCamelCase(key)}
                         </Text>
                       </th>
-                    ) : !expandedTableSet.has(key) ? (
-                      <th key={`${keyIdx}`}>
+                    );
+
+                    const displayCondensedHeaderRows = !expandedTableSet.has(
+                      key
+                    ) ? (
+                      <th
+                        key={`${keyIdx}`}
+                        style={{
+                          width: widthPerField,
+                          outline: '1px solid violet',
+                        }}
+                      >
                         <Text
                           style={{
                             textTransform: 'capitalize',
@@ -157,6 +193,10 @@ function DisplayQueryDesktop<Doc>({
                         </Text>
                       </th>
                     ) : null;
+
+                    return tableViewSelection === 'expanded'
+                      ? displayExpandedHeaderRows
+                      : displayCondensedHeaderRows;
                   })}
                 </tr>
               </thead>
@@ -166,6 +206,28 @@ function DisplayQueryDesktop<Doc>({
                     <tr key={`${objIdx}`}>
                       {Object.entries(queryResponseObj).map(
                         ([key, value], valueIdx) => {
+                          const formattedValue =
+                            dateKeysSet.has(key) ||
+                            key.includes('Date') ||
+                            key.includes('date')
+                              ? formatDate({
+                                  date: value,
+                                  formatOptions: {
+                                    year: 'numeric',
+                                    month: 'numeric',
+                                    day: 'numeric',
+                                  },
+                                  locale: 'en-US',
+                                })
+                              : value === true
+                              ? 'Yes'
+                              : value === false
+                              ? 'No'
+                              : `${value
+                                  .toString()
+                                  .charAt(0)
+                                  .toUpperCase()}${value.toString().slice(1)}`;
+
                           const createdRequestStatusPopover = (
                             <Popover
                               width={200}
@@ -226,27 +288,21 @@ function DisplayQueryDesktop<Doc>({
                                 : null
                               : null;
 
-                          const formattedValue = componentQueryData
-                            .find(({ label, value }) =>
-                              label === Object.keys(queryResponseObj)[valueIdx]
-                                ? value
-                                : ''
-                            )
-                            ?.label?.includes('date')
-                            ? new Date(value).toLocaleString()
-                            : value === true
-                            ? 'Yes'
-                            : value === false
-                            ? 'No'
-                            : `${value
-                                .toString()
-                                .charAt(0)
-                                .toUpperCase()}${value.toString().slice(1)}`;
-
-                          return (
-                            (tableViewSelection === 'expanded' && (
-                              <td key={`${valueIdx}`}>
-                                {displayUpdateRequestStatusButton}
+                          const displayExpandedBodyRows = (
+                            <td
+                              key={`${valueIdx}`}
+                              style={{ width: widthPerField }}
+                            >
+                              {key === 'requestStatus' ? (
+                                <Flex
+                                  align="center"
+                                  justify="space-between"
+                                  columnGap="xs"
+                                >
+                                  {displayUpdateRequestStatusButton}
+                                  <Text>{formattedValue}</Text>
+                                </Flex>
+                              ) : (
                                 <Spoiler
                                   maxHeight={25}
                                   showLabel={
@@ -264,14 +320,28 @@ function DisplayQueryDesktop<Doc>({
                                 >
                                   <Text>{formattedValue}</Text>
                                 </Spoiler>
-                              </td>
-                            )) ||
-                            (tableViewSelection === 'condensed' &&
-                              !expandedTableSet.has(
-                                Object.keys(queryResponseObj)[valueIdx]
-                              ) && (
-                                <td key={`${valueIdx}`}>
-                                  {displayUpdateRequestStatusButton}
+                              )}
+                            </td>
+                          );
+
+                          const displayCondensedBodyRows =
+                            !expandedTableSet.has(
+                              Object.keys(queryResponseObj)[valueIdx]
+                            ) ? (
+                              <td
+                                key={`${valueIdx}`}
+                                style={{ width: widthPerField }}
+                              >
+                                {key === 'requestStatus' ? (
+                                  <Flex
+                                    align="center"
+                                    justify="space-between"
+                                    columnGap="xs"
+                                  >
+                                    {displayUpdateRequestStatusButton}
+                                    <Text>{formattedValue}</Text>
+                                  </Flex>
+                                ) : (
                                   <Spoiler
                                     maxHeight={25}
                                     showLabel={
@@ -289,9 +359,13 @@ function DisplayQueryDesktop<Doc>({
                                   >
                                     <Text>{formattedValue}</Text>
                                   </Spoiler>
-                                </td>
-                              ))
-                          );
+                                )}
+                              </td>
+                            ) : null;
+
+                          return tableViewSelection === 'expanded'
+                            ? displayExpandedBodyRows
+                            : displayCondensedBodyRows;
                         }
                       )}
                     </tr>
@@ -309,88 +383,3 @@ function DisplayQueryDesktop<Doc>({
 }
 
 export { DisplayQueryDesktop };
-
-/**
- *{label.split(' ').map((word, idx) => {
-                        return (
-                          <Text
-                            key={`${idx}`}
-                            style={{
-                              textTransform: 'capitalize',
-                            }}
-                          >
-                            {word}
-                          </Text>
-                        );
-                      })} 
- */
-
-/**
-                       * {componentQueryData.map(({ label, value }, idx) => {
-                  //   return <th key={`${idx}`}>{label}</th>;
-
-                  return Object.keys(
-                    Array.from(groupedByQueryResponseData)[1][0]
-                  ).includes(label) ? (
-                    <th key={`${idx}`}>{label}</th>
-                  ) : null;
-                })}
-                       */
-
-/**
-                 * {queryResponseObjArrays.map((queryResponseObj, idx) => {
-                return (
-                  <tr key={`${idx}`}>
-                    {componentQueryData.map(({ label, value }, idx) => {
-                      //   const formattedValue = label.includes('date')
-                      //     ? formatDate({
-                      //         date: queryResponseObj[value],
-                      //         formatOptions: {
-                      //           year: 'numeric',
-                      //           month: 'numeric',
-                      //           day: 'numeric',
-                      //         },
-                      //         locale: 'en-US',
-                      //       })
-                      //     : `${queryResponseObj[value]
-                      //         .toString()
-                      //         .charAt(0)
-                      //         .toUpperCase()}${queryResponseObj[value]
-                      //         .toString()
-                      //         .slice(1)}`;
-
-                      const formattedValue = label.includes('date')
-                        ? new Date(queryResponseObj[value]).toLocaleString()
-                        : `${queryResponseObj[value]
-                            .toString()
-                            .charAt(0)
-                            .toUpperCase()}${queryResponseObj[value]
-                            .toString()
-                            .slice(1)}`;
-
-                      return (
-                        <td key={`${idx}`}>
-                          <Spoiler
-                            maxHeight={25}
-                            showLabel={
-                              <Center>
-                                <TbArrowDown />
-                                <Text>Show</Text>
-                              </Center>
-                            }
-                            hideLabel={
-                              <Center>
-                                <TbArrowUp />
-                                <Text>Hide</Text>
-                              </Center>
-                            }
-                          >
-                            <Text>{formattedValue}</Text>
-                          </Spoiler>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-                 */
