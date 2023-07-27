@@ -42,10 +42,6 @@ function DisplayQueryMobile({
   } = useAuth();
 
   useEffect(() => {
-    console.log('roles', roles);
-  }, []);
-
-  useEffect(() => {
     console.log('groupedByQueryResponseData', groupedByQueryResponseData);
 
     console.log(
@@ -57,7 +53,11 @@ function DisplayQueryMobile({
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
   ).map(([label, queryObjArr], responseDataIdx) => {
-    const displayLabel = <Text>{label}</Text>;
+    const displayLabel = (
+      <Text>{`${label.toString().charAt(0).toUpperCase()}${label
+        .toString()
+        .slice(1)}`}</Text>
+    );
 
     const displayQueryObjArr = queryObjArr.map((queryObj, arrIdx) => {
       const displayKeyValues = Object.entries(queryObj)
@@ -193,15 +193,14 @@ function DisplayQueryMobile({
           return (
             <Flex
               key={`${key}-${index}`}
-              align="flex-end"
-              justify="space-between"
-              direction="column"
+              direction={width < 768 ? 'column' : 'row'}
+              align={width < 768 ? 'flex-start' : 'center'}
+              justify={width < 768 ? 'flex-start' : 'space-between'}
               style={{
-                // border: '1px solid #e0e0e0',
                 borderRadius: 4,
                 backgroundColor: '#fff',
               }}
-              rowGap="xs"
+              rowGap={rowGap}
               w="100%"
               p={padding}
             >
@@ -247,7 +246,6 @@ function DisplayQueryMobile({
           style={{
             backgroundColor: '#f0f0f0',
             borderRadius: 4,
-            // outline: '1px solid teal',
           }}
           p={padding}
         >
@@ -276,14 +274,19 @@ function DisplayQueryMobile({
         p={padding}
         align="flex-start"
         justify="center"
-        style={{ border: '1px solid #e0e0e0', borderRadius: 4 }}
+        style={{
+          border: '1px solid #e0e0e0',
+          borderRadius: 4,
+          outline: '1px solid violet',
+        }}
         w="100%"
+        rowGap={rowGap}
       >
         <NavLink
           label={displayLabel}
           rightSection={<TbChevronRight />}
           childrenOffset={0}
-          w="100%"
+          w="62%"
         >
           <Flex
             direction="column"
@@ -300,7 +303,112 @@ function DisplayQueryMobile({
     );
   });
 
-  return <>{displayGroupedByQueryResponseData}</>;
+  const displayRestOfGroupedQueryResponseData =
+    restOfGroupedQueryResponseData.map((queryObj, arrIdx) => {
+      const displayKeyValues = Object.entries(queryObj).map(
+        ([key, value], objIdx) => {
+          return (
+            <Flex
+              key={`${arrIdx}-${objIdx}`}
+              align="flex-start"
+              justify="center"
+              direction="column"
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 4,
+              }}
+              rowGap={rowGap}
+              w="100%"
+              p={padding}
+            >
+              {key === '' ? (
+                <Flex w="100%">
+                  <Text size="xs">All constrained values displayed</Text>
+                </Flex>
+              ) : (
+                <Flex
+                  w="100%"
+                  align="center"
+                  justify="space-between"
+                  columnGap={rowGap}
+                >
+                  <Group>
+                    <Text>{`${key.charAt(0).toUpperCase()}${key.slice(
+                      1
+                    )}`}</Text>
+                  </Group>
+                  <Group>
+                    <Text>{value}</Text>
+                  </Group>
+                </Flex>
+              )}
+            </Flex>
+          );
+        }
+      );
+
+      return (
+        <Flex
+          direction="column"
+          p={padding}
+          align="flex-start"
+          justify="center"
+          style={{
+            borderRadius: 4,
+            backgroundColor: '#f0f0f0',
+          }}
+          w="100%"
+        >
+          {displayKeyValues}
+        </Flex>
+      );
+    });
+
+  const displayRestData = (
+    <Flex
+      direction="column"
+      p={padding}
+      align="flex-start"
+      justify="center"
+      style={{
+        border: '1px solid #e0e0e0',
+        borderRadius: 4,
+      }}
+      w="100%"
+    >
+      <NavLink
+        label="Rest of constrained values"
+        rightSection={<TbChevronRight />}
+        childrenOffset={0}
+        w="62%"
+      >
+        <Flex
+          direction="column"
+          align="flex-start"
+          justify="center"
+          rowGap={rowGap}
+          pt={padding}
+          w="100%"
+        >
+          {displayRestOfGroupedQueryResponseData}
+        </Flex>
+      </NavLink>
+    </Flex>
+  );
+
+  return (
+    <Flex
+      direction="column"
+      p={padding}
+      align="flex-start"
+      justify="center"
+      w="100%"
+      rowGap={rowGap}
+    >
+      {displayGroupedByQueryResponseData}
+      {displayRestData}
+    </Flex>
+  );
 }
 
 export { DisplayQueryMobile };

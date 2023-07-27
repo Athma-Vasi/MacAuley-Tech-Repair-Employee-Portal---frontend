@@ -700,44 +700,42 @@ function QueryBuilder({
         <TextWrapper creatorInfoObj={{}}>No fields to filter!</TextWrapper>
       ) : (
         <FormLayoutWrapper>
-          <Stack w="100%">
-            <NavLink
-              label="Filter"
-              icon={<TbFilterCog />}
-              rightSection={<TbChevronRight />}
-              childrenOffset="xs"
-              disabled={filteredFilterSelectData.length === 0}
-              w="62%"
-            >
-              <Flex direction="column" w="100%" rowGap={rowGap}>
-                {displayFilterChains}
+          <NavLink
+            label="Filter"
+            icon={<TbFilterCog />}
+            rightSection={<TbChevronRight />}
+            childrenOffset="xs"
+            disabled={filteredFilterSelectData.length === 0}
+            w="62%"
+          >
+            <Flex direction="column" w="100%" rowGap={rowGap}>
+              {displayFilterChains}
 
-                <Grid
-                  w="100%"
-                  align="flex-end"
-                  justify="flex-start"
-                  gutter={rowGap}
-                >
-                  <Grid.Col md={6} lg={3}>
-                    {createdFilterSelectInput}
-                  </Grid.Col>
-                  <Grid.Col md={6} lg={3}>
-                    {createdFilterOperatorsSelectInput}
-                  </Grid.Col>
-                  <Grid.Col md={6} lg={3}>
-                    {createdFilterValueInput}
-                  </Grid.Col>
-                  <Grid.Col md={6} lg={3}>
-                    <Flex align="center" justify="flex-end">
-                      <Tooltip label="Add a new filter chain">
-                        <Center>{createdAddNewFilterButton}</Center>
-                      </Tooltip>
-                    </Flex>
-                  </Grid.Col>
-                </Grid>
-              </Flex>
-            </NavLink>
-          </Stack>
+              <Grid
+                w="100%"
+                align="flex-end"
+                justify="flex-start"
+                gutter={rowGap}
+              >
+                <Grid.Col md={6} lg={3}>
+                  {createdFilterSelectInput}
+                </Grid.Col>
+                <Grid.Col md={6} lg={3}>
+                  {createdFilterOperatorsSelectInput}
+                </Grid.Col>
+                <Grid.Col md={6} lg={3}>
+                  {createdFilterValueInput}
+                </Grid.Col>
+                <Grid.Col md={6} lg={3}>
+                  <Flex align="center" justify="flex-end">
+                    <Tooltip label="Add a new filter chain">
+                      <Center>{createdAddNewFilterButton}</Center>
+                    </Tooltip>
+                  </Flex>
+                </Grid.Col>
+              </Grid>
+            </Flex>
+          </NavLink>
         </FormLayoutWrapper>
       )}
     </Flex>
@@ -764,43 +762,41 @@ function QueryBuilder({
         <TextWrapper creatorInfoObj={{}}>No fields to sort!</TextWrapper>
       ) : (
         <FormLayoutWrapper>
-          <Stack w="100%">
-            <NavLink
-              label="Sort"
-              icon={<TbArrowsSort />}
-              rightSection={<TbChevronRight />}
-              childrenOffset="xs"
-              disabled={filteredSortSelectData.length === 0}
-              w="62%"
-            >
-              <Flex direction="column" w="100%" rowGap={rowGap}>
-                {displaySortChains}
-                <Grid
-                  w="100%"
-                  align="flex-end"
-                  justify="flex-start"
-                  gutter={rowGap}
-                >
-                  <Grid.Col md={6} lg={3}>
-                    {createdSortSelectInput}
-                  </Grid.Col>
-                  <Grid.Col md={6} lg={3}>
-                    {createdSortDirectionSelectInput}
-                  </Grid.Col>
-                  <Grid.Col md={6} lg={3}>
-                    {}
-                  </Grid.Col>
-                  <Grid.Col md={6} lg={3}>
-                    <Flex align="center" justify="flex-end">
-                      <Tooltip label="Add a new sort chain">
-                        <Center>{createdAddNewSortButton}</Center>
-                      </Tooltip>
-                    </Flex>
-                  </Grid.Col>
-                </Grid>
-              </Flex>
-            </NavLink>
-          </Stack>
+          <NavLink
+            label="Sort"
+            icon={<TbArrowsSort />}
+            rightSection={<TbChevronRight />}
+            childrenOffset="xs"
+            disabled={filteredSortSelectData.length === 0}
+            w="62%"
+          >
+            <Flex direction="column" w="100%" rowGap={rowGap}>
+              {displaySortChains}
+              <Grid
+                w="100%"
+                align="flex-end"
+                justify="flex-start"
+                gutter={rowGap}
+              >
+                <Grid.Col md={6} lg={3}>
+                  {createdSortSelectInput}
+                </Grid.Col>
+                <Grid.Col md={6} lg={3}>
+                  {createdSortDirectionSelectInput}
+                </Grid.Col>
+                <Grid.Col md={6} lg={3}>
+                  {}
+                </Grid.Col>
+                <Grid.Col md={6} lg={3}>
+                  <Flex align="center" justify="flex-end">
+                    <Tooltip label="Add a new sort chain">
+                      <Center>{createdAddNewSortButton}</Center>
+                    </Tooltip>
+                  </Flex>
+                </Grid.Col>
+              </Grid>
+            </Flex>
+          </NavLink>
         </FormLayoutWrapper>
       )}
     </Flex>
@@ -823,11 +819,11 @@ function QueryBuilder({
         label="Query Builder"
         icon={<TbArrowsSort />}
         rightSection={<TbChevronRight />}
-        childrenOffset="xs"
+        childrenOffset={0}
         disabled={filteredSortSelectData.length === 0}
         w="62%"
       >
-        <Flex w="100%" direction="column" rowGap={rowGap}>
+        <Flex w="100%" direction="column" rowGap={rowGap} p={padding}>
           {displayFilterSection}
           {displaySortSection}
           {displayProjectionSection}

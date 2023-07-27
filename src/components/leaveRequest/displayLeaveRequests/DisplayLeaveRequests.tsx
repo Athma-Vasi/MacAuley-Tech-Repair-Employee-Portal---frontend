@@ -45,7 +45,7 @@ function DisplayLeaveRequests() {
   } = displayLeaveRequestsState;
 
   const {
-    globalState: { padding },
+    globalState: { padding, rowGap },
   } = useGlobalState();
   const {
     authState: { accessToken, roles },
@@ -188,18 +188,19 @@ function DisplayLeaveRequests() {
         borderRadius: 4,
       }}
       p={padding}
+      rowGap={rowGap}
     >
       <h6>Display leave requests</h6>
-      <DisplayQuery
-        parentComponentDispatch={displayLeaveRequestsDispatch}
-        componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
-        queryResponseData={leaveRequests}
-      />
       <QueryBuilder
         setQueryBuilderString={displayLeaveRequestsAction.setQueryBuilderString}
         parentComponentDispatch={displayLeaveRequestsDispatch}
         componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
         collectionName="leave requests"
+      />
+      <DisplayQuery
+        parentComponentDispatch={displayLeaveRequestsDispatch}
+        componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
+        queryResponseData={leaveRequests}
       />
       <PageBuilder
         total={10}

@@ -11,6 +11,8 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
+import { useGlobalState } from '../../hooks';
+import { DisplayQueryDesktop } from './displayQueryDesktop/DisplayQueryDesktop';
 
 function DisplayQuery<Doc>({
   style = {},
@@ -18,6 +20,9 @@ function DisplayQuery<Doc>({
   componentQueryData,
   parentComponentDispatch,
 }: DisplayQueryProps<Doc>) {
+  const {
+    globalState: { padding, width, rowGap },
+  } = useGlobalState();
   const [displayQueryState, displayQueryDispatch] = useReducer(
     displayQueryReducer,
     initialDisplayQueryState
@@ -127,19 +132,41 @@ function DisplayQuery<Doc>({
     groupByRadioGroupCreatorInfo,
   ]);
 
+  const displayQuery =
+    width <= 692 ? (
+      <DisplayQueryMobile
+        groupedByQueryResponseData={groupedByQueryResponseData}
+        restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
+        componentQueryData={componentQueryData}
+        parentComponentDispatch={parentComponentDispatch}
+      />
+    ) : (
+      <DisplayQueryDesktop
+        componentQueryData={componentQueryData}
+        groupedByQueryResponseData={groupedByQueryResponseData}
+        parentComponentDispatch={parentComponentDispatch}
+        restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
+      />
+    );
+
   return (
-    <>
+    <Flex
+      direction="column"
+      rowGap={rowGap}
+      // w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+      w="100%"
+      p={padding}
+      align="center"
+      justify="center"
+      style={{
+        ...style,
+        // border: '1px solid #e0e0e0',
+        // borderRadius: 4,
+      }}
+    >
       {createdGroupByRadioGroup}
-      <Flex direction="column" rowGap="xl" w="100%">
-        <DisplayQueryMobile
-          groupedByQueryResponseData={groupedByQueryResponseData}
-          restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
-          componentQueryData={componentQueryData}
-          parentComponentDispatch={parentComponentDispatch}
-        />
-      </Flex>
-      {JSON.stringify(restOfGroupedQueryResponseData, null, 2)}
-    </>
+      {displayQuery}
+    </Flex>
   );
 }
 

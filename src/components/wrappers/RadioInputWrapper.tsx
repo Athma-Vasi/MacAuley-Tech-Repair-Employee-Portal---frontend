@@ -130,7 +130,7 @@ function RadioGroupInputsWrapper({
     name = semanticName,
   } = creatorInfoObject;
 
-  const radioInputsSize = width < 1024 ? 'sm' : 'md';
+  const radioInputsSize = 'sm';
 
   const createdRadioGroupInputs = (
     <Radio.Group
