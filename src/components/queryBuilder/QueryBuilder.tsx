@@ -820,7 +820,11 @@ function QueryBuilder({
         icon={<TbArrowsSort />}
         rightSection={<TbChevronRight />}
         childrenOffset={0}
-        disabled={filteredSortSelectData.length === 0}
+        disabled={
+          filteredSortSelectData.length === 0 &&
+          filteredFilterSelectData.length === 0 &&
+          projectionArray.length === 0
+        }
         w="62%"
       >
         <Flex w="100%" direction="column" rowGap={rowGap} p={padding}>

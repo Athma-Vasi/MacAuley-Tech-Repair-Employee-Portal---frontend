@@ -1,4 +1,4 @@
-import { Flex, Group, Text, Title } from '@mantine/core';
+import { Flex, Group, SegmentedControl, Text, Title } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { returnAccessibleRadioGroupInputsElements } from '../../jsxCreators';
@@ -33,6 +33,7 @@ function DisplayQuery<Doc>({
     groupBySelection,
     groupedByQueryResponseData,
     restOfGroupedQueryResponseData,
+    currentSegmentedSelection,
   } = displayQueryState;
 
   // create initial groupByRadioData state
@@ -124,6 +125,40 @@ function DisplayQuery<Doc>({
     value: groupBySelection,
     label: 'Group by',
   };
+
+  const segmentedControl = (
+    <SegmentedControl
+      data={[
+        { label: 'Condensed', value: 'condensed' },
+        { label: 'Expanded', value: 'expanded' },
+      ]}
+      value={currentSegmentedSelection}
+      onChange={(value: string) => {
+        displayQueryDispatch({
+          type: displayQueryAction.setCurrentSegmentedSelection,
+          payload: value as 'condensed' | 'expanded',
+        });
+      }}
+      radius="lg"
+    />
+  );
+
+  const displayTableViewSegmentControl = (
+    <Flex
+      align="center"
+      justify="flex-start"
+      w="38%"
+      style={{
+        border: '1px solid #e0e0e0',
+        borderRadius: 4,
+      }}
+      columnGap={rowGap}
+      p={padding}
+    >
+      <Text>Table view</Text>
+      {segmentedControl}
+    </Flex>
+  );
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- created inputs------------- */
@@ -131,6 +166,22 @@ function DisplayQuery<Doc>({
   const [createdGroupByRadioGroup] = returnAccessibleRadioGroupInputsElements([
     groupByRadioGroupCreatorInfo,
   ]);
+
+  const displayGroupByRadioGroup = (
+    <Flex
+      align="center"
+      justify="flex-start"
+      w="38%"
+      style={{
+        border: '1px solid #e0e0e0',
+        borderRadius: 4,
+      }}
+      columnGap={rowGap}
+      p={padding}
+    >
+      {createdGroupByRadioGroup}
+    </Flex>
+  );
 
   const displayQuery =
     width <= 692 ? (
@@ -142,6 +193,7 @@ function DisplayQuery<Doc>({
       />
     ) : (
       <DisplayQueryDesktop
+        tableViewSelection={currentSegmentedSelection}
         componentQueryData={componentQueryData}
         groupedByQueryResponseData={groupedByQueryResponseData}
         parentComponentDispatch={parentComponentDispatch}
@@ -155,8 +207,8 @@ function DisplayQuery<Doc>({
       rowGap={rowGap}
       // w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
       w="100%"
-      p={padding}
-      align="center"
+      // p={padding}
+      align="flex-start"
       justify="center"
       style={{
         ...style,
@@ -164,7 +216,8 @@ function DisplayQuery<Doc>({
         // borderRadius: 4,
       }}
     >
-      {createdGroupByRadioGroup}
+      {displayGroupByRadioGroup}
+      {displayTableViewSegmentControl}
       {displayQuery}
     </Flex>
   );

@@ -36,7 +36,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     required = false,
   } = creatorInfoObject;
 
-  const selectInputSize = width < 1024 ? 'sm' : 'md';
+  const selectInputSize = 'sm';
 
   return (
     <NativeSelect

@@ -114,7 +114,7 @@ function CheckboxGroupInputsWrapper({
     withAsterisk = required,
   } = creatorInfoObject;
 
-  const checkboxInputSize = width < 1024 ? 'sm' : 'md';
+  const checkboxInputSize = 'sm';
   const padding =
     width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
 

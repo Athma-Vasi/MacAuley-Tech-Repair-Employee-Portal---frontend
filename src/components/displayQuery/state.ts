@@ -10,6 +10,7 @@ const initialDisplayQueryState: DisplayQueryState = {
   currentSelectionData: [],
   groupedByQueryResponseData: new Map(),
   restOfGroupedQueryResponseData: [],
+  currentSegmentedSelection: 'condensed',
 };
 
 const displayQueryAction: DisplayQueryAction = {
@@ -19,6 +20,8 @@ const displayQueryAction: DisplayQueryAction = {
 
   setGroupedByQueryResponseData: 'setGroupedByQueryResponseData',
   setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData',
+
+  setCurrentSegmentedSelection: 'setCurrentSegmentedSelection',
 };
 
 function displayQueryReducer(
@@ -54,6 +57,12 @@ function displayQueryReducer(
       return {
         ...state,
         restOfGroupedQueryResponseData: action.payload,
+      };
+
+    case displayQueryAction.setCurrentSegmentedSelection:
+      return {
+        ...state,
+        currentSegmentedSelection: action.payload,
       };
 
     default:

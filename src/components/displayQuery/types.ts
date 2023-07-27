@@ -27,6 +27,8 @@ type DisplayQueryState = {
   currentSelectionData: string[];
   groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
   restOfGroupedQueryResponseData: Record<string, any>[];
+
+  currentSegmentedSelection: 'expanded' | 'condensed';
 };
 
 type DisplayQueryAction = {
@@ -36,6 +38,8 @@ type DisplayQueryAction = {
 
   setGroupedByQueryResponseData: 'setGroupedByQueryResponseData';
   setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData';
+
+  setCurrentSegmentedSelection: 'setCurrentSegmentedSelection';
 };
 
 type DisplayQueryDispatch =
@@ -46,6 +50,10 @@ type DisplayQueryDispatch =
   | {
       type: DisplayQueryAction['setGroupBySelection'];
       payload: string;
+    }
+  | {
+      type: DisplayQueryAction['setCurrentSegmentedSelection'];
+      payload: 'expanded' | 'condensed';
     }
   | {
       type: DisplayQueryAction['setCurrentSelectionData'];
