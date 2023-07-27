@@ -3,6 +3,7 @@ import {
   Center,
   Flex,
   Group,
+  HoverCard,
   NavLink,
   Popover,
   Spoiler,
@@ -228,6 +229,58 @@ function DisplayQueryDesktop<Doc>({
                                   .charAt(0)
                                   .toUpperCase()}${value.toString().slice(1)}`;
 
+                          const truncatedValuesWithHoverCards =
+                            key === '_id' || key === 'userId' ? (
+                              <HoverCard
+                                width={300}
+                                shadow="lg"
+                                openDelay={250}
+                                closeDelay={150}
+                              >
+                                <HoverCard.Target>
+                                  <Text>
+                                    {`${formattedValue
+                                      .toString()
+                                      .slice(0, 5)}...`}
+                                  </Text>
+                                </HoverCard.Target>
+                                <HoverCard.Dropdown>
+                                  <Text>
+                                    {key}: {formattedValue}
+                                  </Text>
+                                </HoverCard.Dropdown>
+                              </HoverCard>
+                            ) : dateKeysSet.has(key) ||
+                              key.includes('Date') ||
+                              key.includes('date') ? (
+                              <HoverCard
+                                width={300}
+                                shadow="lg"
+                                openDelay={250}
+                                closeDelay={150}
+                              >
+                                <HoverCard.Target>
+                                  <Text>{formattedValue}</Text>
+                                </HoverCard.Target>
+                                <HoverCard.Dropdown>
+                                  <Text>
+                                    {formatDate({
+                                      date: value,
+                                      formatOptions: {
+                                        dateStyle: 'full',
+                                        localeMatcher: 'best fit',
+                                        formatMatcher: 'best fit',
+                                        timeStyle: 'long',
+                                      },
+                                      locale: 'en-US',
+                                    })}
+                                  </Text>
+                                </HoverCard.Dropdown>
+                              </HoverCard>
+                            ) : (
+                              formattedValue
+                            );
+
                           const createdRequestStatusPopover = (
                             <Popover
                               width={200}
@@ -300,7 +353,7 @@ function DisplayQueryDesktop<Doc>({
                                   columnGap="xs"
                                 >
                                   {displayUpdateRequestStatusButton}
-                                  <Text>{formattedValue}</Text>
+                                  <Text>{truncatedValuesWithHoverCards}</Text>
                                 </Flex>
                               ) : (
                                 <Spoiler
@@ -318,7 +371,7 @@ function DisplayQueryDesktop<Doc>({
                                     </Center>
                                   }
                                 >
-                                  <Text>{formattedValue}</Text>
+                                  <Text>{truncatedValuesWithHoverCards}</Text>
                                 </Spoiler>
                               )}
                             </td>
@@ -339,7 +392,7 @@ function DisplayQueryDesktop<Doc>({
                                     columnGap="xs"
                                   >
                                     {displayUpdateRequestStatusButton}
-                                    <Text>{formattedValue}</Text>
+                                    <Text>{truncatedValuesWithHoverCards}</Text>
                                   </Flex>
                                 ) : (
                                   <Spoiler
@@ -357,7 +410,7 @@ function DisplayQueryDesktop<Doc>({
                                       </Center>
                                     }
                                   >
-                                    <Text>{formattedValue}</Text>
+                                    <Text>{truncatedValuesWithHoverCards}</Text>
                                   </Spoiler>
                                 )}
                               </td>
