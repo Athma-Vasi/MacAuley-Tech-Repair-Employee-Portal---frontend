@@ -73,6 +73,7 @@ function DisplayQueryMobile({
           },
         ],
         description: 'Update request status',
+        label: 'Update',
         onChange: () => {},
         name: 'requestStatus',
         semanticName: 'Update request status',
@@ -174,11 +175,28 @@ function DisplayQueryMobile({
               opened={popoversOpenCloseState?.get(label.toString())?.[arrIdx]}
             >
               <Popover.Target>
-                <Button variant="outline" size="xs">
+                <Button
+                  variant="outline"
+                  size="xs"
+                  onClick={() => {
+                    popoversStateDispatch({
+                      type: 'setPopoversOpenCloseState',
+                      payload: {
+                        key: label.toString(),
+                        popoverState: {
+                          index: arrIdx,
+                          value: !popoversOpenCloseState?.get(
+                            label.toString()
+                          )?.[arrIdx],
+                        },
+                      },
+                    });
+                  }}
+                >
                   <TbStatusChange />
                 </Button>
               </Popover.Target>
-              <Popover.Dropdown>
+              <Popover.Dropdown p={padding}>
                 <form onSubmit={handleRequestStatusChangeFormSubmit}>
                   <Flex
                     direction="column"

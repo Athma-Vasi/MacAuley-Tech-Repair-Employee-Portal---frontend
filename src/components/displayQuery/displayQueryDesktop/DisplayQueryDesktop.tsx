@@ -86,9 +86,10 @@ function DisplayQueryDesktop<Doc>({
             value: 'rejected',
           },
         ],
-        description: 'Update request status',
+        description: 'Update request status of this form',
         onChange: () => {},
         name: 'requestStatus',
+        label: 'Update',
         semanticName: 'Update request status',
       },
     ]);
@@ -104,7 +105,7 @@ function DisplayQueryDesktop<Doc>({
     },
   ]);
 
-  const expandedTableSet = new Set(['_id', 'userId', 'action', 'category']);
+  const tableKeyExclusionSet = new Set(['_id', 'userId', 'action', 'category']);
   const dateKeysSet = new Set([
     'createdAt',
     'updatedAt',
@@ -118,7 +119,7 @@ function DisplayQueryDesktop<Doc>({
         tableViewSelection === 'expanded'
           ? Object.keys(queryResponseObjArrays[0]).length
           : Object.keys(queryResponseObjArrays[0]).filter(
-              (key) => !expandedTableSet.has(key)
+              (key) => !tableKeyExclusionSet.has(key)
             ).length;
       const widthPerField = `${100 / numOfFields}%`;
 
@@ -172,25 +173,24 @@ function DisplayQueryDesktop<Doc>({
                       </th>
                     );
 
-                    const displayCondensedHeaderRows = !expandedTableSet.has(
-                      key
-                    ) ? (
-                      <th
-                        key={`${keyIdx}`}
-                        style={{
-                          width: widthPerField,
-                          outline: '1px solid violet',
-                        }}
-                      >
-                        <Text
+                    const displayCondensedHeaderRows =
+                      !tableKeyExclusionSet.has(key) ? (
+                        <th
+                          key={`${keyIdx}`}
                           style={{
-                            textTransform: 'capitalize',
+                            width: widthPerField,
+                            outline: '1px solid violet',
                           }}
                         >
-                          {splitCamelCase(key)}
-                        </Text>
-                      </th>
-                    ) : null;
+                          <Text
+                            style={{
+                              textTransform: 'capitalize',
+                            }}
+                          >
+                            {splitCamelCase(key)}
+                          </Text>
+                        </th>
+                      ) : null;
 
                     return tableViewSelection === 'expanded'
                       ? displayExpandedHeaderRows
@@ -321,12 +321,29 @@ function DisplayQueryDesktop<Doc>({
                                 <Tooltip
                                   label={`Modify request status of ${queryResponseObj._id}`}
                                 >
-                                  <Button variant="outline" size="xs">
+                                  <Button
+                                    variant="outline"
+                                    size="xs"
+                                    onClick={() => {
+                                      popoversStateDispatch({
+                                        type: 'setPopoversOpenCloseState',
+                                        payload: {
+                                          key: section.toString(),
+                                          popoverState: {
+                                            index: objIdx,
+                                            value: !popoversOpenCloseState?.get(
+                                              section.toString()
+                                            )?.[objIdx],
+                                          },
+                                        },
+                                      });
+                                    }}
+                                  >
                                     <TbStatusChange />
                                   </Button>
                                 </Tooltip>
                               </Popover.Target>
-                              <Popover.Dropdown>
+                              <Popover.Dropdown p={padding}>
                                 <form
                                   onSubmit={handleRequestStatusChangeFormSubmit}
                                 >
@@ -389,7 +406,7 @@ function DisplayQueryDesktop<Doc>({
                           );
 
                           const displayCondensedBodyRows =
-                            !expandedTableSet.has(
+                            !tableKeyExclusionSet.has(
                               Object.keys(queryResponseObj)[keyValIdx]
                             ) ? (
                               <td
