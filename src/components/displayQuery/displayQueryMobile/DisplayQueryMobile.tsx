@@ -113,9 +113,9 @@ function DisplayQueryMobile({
 
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
-  ).map(([label, queryObjArr], responseDataIdx) => {
+  ).map(([section, queryObjArr], responseDataIdx) => {
     const displayLabel = (
-      <Text>{`${label.toString().charAt(0).toUpperCase()}${label
+      <Text>{`${section.toString().charAt(0).toUpperCase()}${section
         .toString()
         .slice(1)}`}</Text>
     );
@@ -123,13 +123,13 @@ function DisplayQueryMobile({
     const displayQueryObjArr = queryObjArr.map((queryObj, arrIdx) => {
       const displayKeyValues = Object.entries(queryObj).map(
         ([key, value], index) => {
-          // grab the label instead of the camelCased value and if it doesn't exist, split the camelCase
-          const labelKey =
+          // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
+          const sectionKey =
             componentQueryData.find(
               (queryDataObj) => queryDataObj.value === key
             )?.label ?? splitCamelCase(key);
 
-          const formattedValue = labelKey.includes('date')
+          const formattedValue = sectionKey.includes('date')
             ? formatDate({
                 date: value,
                 formatOptions: {
@@ -157,7 +157,7 @@ function DisplayQueryMobile({
             popoversStateDispatch({
               type: 'setPopoversOpenCloseState',
               payload: {
-                key: label.toString(),
+                key: section.toString(),
                 popoverState: {
                   index: arrIdx,
                   value: false,
@@ -172,7 +172,7 @@ function DisplayQueryMobile({
               position={width < 480 ? 'bottom' : 'bottom-end'}
               withArrow
               shadow="lg"
-              opened={popoversOpenCloseState?.get(label.toString())?.[arrIdx]}
+              opened={popoversOpenCloseState?.get(section.toString())?.[arrIdx]}
             >
               <Popover.Target>
                 <Button
@@ -182,11 +182,11 @@ function DisplayQueryMobile({
                     popoversStateDispatch({
                       type: 'setPopoversOpenCloseState',
                       payload: {
-                        key: label.toString(),
+                        key: section.toString(),
                         popoverState: {
                           index: arrIdx,
                           value: !popoversOpenCloseState?.get(
-                            label.toString()
+                            section.toString()
                           )?.[arrIdx],
                         },
                       },
@@ -222,7 +222,7 @@ function DisplayQueryMobile({
           const displayFullLabelValueRow = (
             <>
               <Flex w="100%">
-                <Text>{labelKey}</Text>
+                <Text>{sectionKey}</Text>
               </Flex>
               <Flex
                 align="center"
@@ -275,8 +275,8 @@ function DisplayQueryMobile({
 
           const displayCondensedView = tableKeyExclusionSet.has(key) ? (
             <Accordion w="100%">
-              <Accordion.Item value={labelKey}>
-                <Accordion.Control>{labelKey}</Accordion.Control>
+              <Accordion.Item value={sectionKey}>
+                <Accordion.Control>{sectionKey}</Accordion.Control>
                 <Accordion.Panel>{displayValueOnlyRow}</Accordion.Panel>
               </Accordion.Item>
             </Accordion>
@@ -311,7 +311,7 @@ function DisplayQueryMobile({
 
       return (
         <Flex
-          key={`${label}-${arrIdx}}`}
+          key={`${section}-${arrIdx}}`}
           direction="column"
           align="flex-start"
           justify="center"
@@ -330,7 +330,7 @@ function DisplayQueryMobile({
 
     return (
       <Flex
-        key={`${label}-${responseDataIdx}}`}
+        key={`${section}-${responseDataIdx}}`}
         direction="column"
         p={padding}
         align="flex-start"
