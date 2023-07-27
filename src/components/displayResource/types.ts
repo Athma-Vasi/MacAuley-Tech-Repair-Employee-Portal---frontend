@@ -1,4 +1,17 @@
+import { CSSProperties } from 'react';
+
 import { QueryResponseData, RequestStatus } from '../../types';
+import { ComponentQueryData } from '../queryBuilder';
+
+type DisplayResourceProps<Doc> = {
+  style?: CSSProperties;
+  componentQueryData: ComponentQueryData[];
+  paths: {
+    employee: string;
+    manager: string;
+    admin: string;
+  };
+};
 
 type DisplayResourceState<Doc> = {
   resourceData: QueryResponseData<Doc>[];
@@ -27,7 +40,7 @@ type DisplayResourceState<Doc> = {
 };
 
 type DisplayResourceAction = {
-  setLeaveRequests: 'setLeaveRequests';
+  setResourceData: 'setResourceData';
   setPages: 'setPages';
   setTotalDocuments: 'setTotalDocuments';
 
@@ -50,7 +63,7 @@ type DisplayResourceAction = {
 
 type DisplayResourceDispatch<Doc> =
   | {
-      type: DisplayResourceAction['setLeaveRequests'];
+      type: DisplayResourceAction['setResourceData'];
       payload: QueryResponseData<Doc>[];
     }
   | {
@@ -95,6 +108,7 @@ type DisplayResourceReducer = <Doc>(
 export type {
   DisplayResourceAction,
   DisplayResourceDispatch,
+  DisplayResourceProps,
   DisplayResourceReducer,
   DisplayResourceState,
 };
