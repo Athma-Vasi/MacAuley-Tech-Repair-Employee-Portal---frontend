@@ -4,6 +4,7 @@ import {
   Modal,
   SegmentedControl,
   Text,
+  TextInput,
   Title,
 } from '@mantine/core';
 import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
@@ -367,6 +368,8 @@ function DisplayQuery<Doc>({
         requestStatusDispatch={parentRequestStatusDispatch}
         popoversOpenCloseState={popoversOpenCloseState}
         popoversStateDispatch={displayQueryDispatch}
+        openDeleteAcknowledge={openDeleteAcknowledge}
+        deleteFormIdDispatch={displayQueryDispatch}
       />
     ) : (
       <DisplayQueryDesktop

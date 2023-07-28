@@ -239,7 +239,7 @@ function DisplayQueryDesktop<Doc>({
                                 <Text>
                                   {`${formattedValue
                                     .toString()
-                                    .slice(0, 5)}...`}
+                                    .slice(0, 11)}...`}
                                 </Text>
                               </HoverCard.Target>
                               <HoverCard.Dropdown>
@@ -325,7 +325,6 @@ function DisplayQueryDesktop<Doc>({
                                 <Button
                                   variant="subtle"
                                   size="sm"
-                                  p={0}
                                   onClick={() => {
                                     popoversStateDispatch({
                                       type: 'setPopoversOpenCloseState',
@@ -457,7 +456,6 @@ function DisplayQueryDesktop<Doc>({
                               semanticName: 'Delete',
                               buttonVariant: 'subtle',
                               size: 'sm',
-                              p: 0,
                               buttonOnClick: () => {
                                 openDeleteAcknowledge();
                                 deleteFormIdDispatch({

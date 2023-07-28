@@ -29,6 +29,12 @@ type DisplayQueryMobileProps = {
       };
     };
   }>;
+
+  openDeleteAcknowledge: () => void;
+  deleteFormIdDispatch: React.Dispatch<{
+    type: 'setDeleteFormId';
+    payload: string;
+  }>;
 };
 
 export type { DisplayQueryMobileProps };

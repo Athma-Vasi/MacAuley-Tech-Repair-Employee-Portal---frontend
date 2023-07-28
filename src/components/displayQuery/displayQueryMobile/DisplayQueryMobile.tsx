@@ -16,6 +16,7 @@ import {
   TbArrowUp,
   TbChevronRight,
   TbStatusChange,
+  TbTrash,
   TbUpload,
 } from 'react-icons/tb';
 
@@ -37,6 +38,8 @@ function DisplayQueryMobile({
   requestStatusDispatch,
   popoversStateDispatch,
   popoversOpenCloseState,
+  deleteFormIdDispatch,
+  openDeleteAcknowledge,
 }: DisplayQueryMobileProps): JSX.Element {
   const {
     globalState: { width, padding, rowGap },
@@ -117,198 +120,222 @@ function DisplayQueryMobile({
         .slice(1)}`}</Text>
     );
 
-    const displayQueryObjArr = queryObjArr.map((queryObj, arrIdx) => {
-      const displayKeyValues = Object.entries(queryObj).map(
-        ([key, value], index) => {
-          // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
-          const sectionKey =
-            componentQueryData.find(
-              (queryDataObj) => queryDataObj.value === key
-            )?.label ?? splitCamelCase(key);
+    const displayQueryObjArr = queryObjArr.map((queryObj, queryObjIdx) => {
+      const displayKeyValues = [
+        ...Object.entries(queryObj),
+        ['Delete', ''],
+      ].map(([key, value], keyValIdx) => {
+        // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
+        const sectionKey =
+          componentQueryData.find((queryDataObj) => queryDataObj.value === key)
+            ?.label ?? splitCamelCase(key);
 
-          const formattedValue =
-            dateKeysSet.has(sectionKey) ||
-            sectionKey.toLowerCase().includes('date')
-              ? formatDate({
-                  date: value,
-                  formatOptions: {
-                    dateStyle: 'full',
-                  },
-                  locale: 'en-US',
-                })
-              : Array.isArray(value)
-              ? value.map((val, valIdx) => {
-                  return (
-                    <Text key={`${valIdx}`}>
-                      {`${val.toString().charAt(0).toUpperCase()}${val
-                        .toString()
-                        .slice(1)}${valIdx === value.length - 1 ? '' : ', '}`}
-                    </Text>
-                  );
-                })
-              : value === true
-              ? 'Yes'
-              : value === false
-              ? 'No'
-              : `${value.toString().charAt(0).toUpperCase()}${value.slice(1)}`;
-
-          async function handleRequestStatusChangeFormSubmit(
-            event: FormEvent<HTMLFormElement>
-          ) {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            const requestStatus = formData.get('requestStatus');
-
-            requestStatusDispatch({
-              type: 'setRequestStatus',
-              payload: {
-                id: queryObj._id,
-                status: requestStatus as RequestStatus,
-              },
-            });
-
-            popoversStateDispatch({
-              type: 'setPopoversOpenCloseState',
-              payload: {
-                key: section.toString(),
-                popoverState: {
-                  index: arrIdx,
-                  value: false,
+        const formattedValue =
+          dateKeysSet.has(sectionKey) ||
+          sectionKey.toLowerCase().includes('date')
+            ? formatDate({
+                date: value,
+                formatOptions: {
+                  dateStyle: 'full',
                 },
+                locale: 'en-US',
+              })
+            : Array.isArray(value)
+            ? value.map((val, valIdx) => {
+                return (
+                  <Text key={`${valIdx}`}>
+                    {`${val.toString().charAt(0).toUpperCase()}${val
+                      .toString()
+                      .slice(1)}${valIdx === value.length - 1 ? '' : ', '}`}
+                  </Text>
+                );
+              })
+            : value === true
+            ? 'Yes'
+            : value === false
+            ? 'No'
+            : `${value.toString().charAt(0).toUpperCase()}${value.slice(1)}`;
+
+        async function handleRequestStatusChangeFormSubmit(
+          event: FormEvent<HTMLFormElement>
+        ) {
+          event.preventDefault();
+          const formData = new FormData(event.currentTarget);
+          const requestStatus = formData.get('requestStatus');
+
+          requestStatusDispatch({
+            type: 'setRequestStatus',
+            payload: {
+              id: queryObj._id,
+              status: requestStatus as RequestStatus,
+            },
+          });
+
+          popoversStateDispatch({
+            type: 'setPopoversOpenCloseState',
+            payload: {
+              key: section.toString(),
+              popoverState: {
+                index: queryObjIdx,
+                value: false,
               },
-            });
-          }
+            },
+          });
+        }
 
-          const createdRequestStatusPopover = (
-            <Popover
-              width={200}
-              position={width < 480 ? 'bottom' : 'bottom-end'}
-              withArrow
-              shadow="lg"
-              opened={popoversOpenCloseState?.get(section.toString())?.[arrIdx]}
-            >
-              <Popover.Target>
-                <Button
-                  variant="outline"
-                  size="xs"
-                  onClick={() => {
-                    popoversStateDispatch({
-                      type: 'setPopoversOpenCloseState',
-                      payload: {
-                        key: section.toString(),
-                        popoverState: {
-                          index: arrIdx,
-                          value: !popoversOpenCloseState?.get(
-                            section.toString()
-                          )?.[arrIdx],
-                        },
+        const createdRequestStatusPopover = (
+          <Popover
+            width={200}
+            position={width < 480 ? 'bottom' : 'bottom-end'}
+            withArrow
+            shadow="lg"
+            opened={
+              popoversOpenCloseState?.get(section.toString())?.[queryObjIdx]
+            }
+          >
+            <Popover.Target>
+              <Button
+                variant="outline"
+                size="xs"
+                onClick={() => {
+                  popoversStateDispatch({
+                    type: 'setPopoversOpenCloseState',
+                    payload: {
+                      key: section.toString(),
+                      popoverState: {
+                        index: queryObjIdx,
+                        value: !popoversOpenCloseState?.get(
+                          section.toString()
+                        )?.[queryObjIdx],
                       },
-                    });
-                  }}
-                >
-                  <TbStatusChange />
-                </Button>
-              </Popover.Target>
-              <Popover.Dropdown p={padding}>
-                <form onSubmit={handleRequestStatusChangeFormSubmit}>
-                  <Flex
-                    direction="column"
-                    align="flex-end"
-                    justify="center"
-                    rowGap={rowGap}
-                  >
-                    {createdUpdateRequestStatusRadioGroup}
-                    {createdSubmitRequestStatusButton}
-                  </Flex>
-                </form>
-              </Popover.Dropdown>
-            </Popover>
-          );
-
-          // only managers can update request status
-          const displayUpdateRequestStatusButton = roles.includes('Manager')
-            ? key === 'requestStatus'
-              ? createdRequestStatusPopover
-              : null
-            : null;
-
-          const displayFullLabelValueRow = (
-            <>
-              <Flex w="100%">
-                <Text>{sectionKey}</Text>
-              </Flex>
-              <Flex
-                align="center"
-                justify="flex-end"
-                w="100%"
-                columnGap={rowGap}
-                pl={padding}
-                // style={{ outline: '1px solid violet' }}
+                    },
+                  });
+                }}
               >
-                {displayUpdateRequestStatusButton}
-                <Spoiler
-                  maxHeight={25}
-                  showLabel={createdShowMoreButton}
-                  hideLabel={createdHideButton}
+                <TbStatusChange />
+              </Button>
+            </Popover.Target>
+            <Popover.Dropdown p={padding}>
+              <form onSubmit={handleRequestStatusChangeFormSubmit}>
+                <Flex
+                  direction="column"
+                  align="flex-end"
+                  justify="center"
+                  rowGap={rowGap}
                 >
-                  <Text>{formattedValue}</Text>
-                </Spoiler>
-              </Flex>
-            </>
-          );
+                  {createdUpdateRequestStatusRadioGroup}
+                  {createdSubmitRequestStatusButton}
+                </Flex>
+              </form>
+            </Popover.Dropdown>
+          </Popover>
+        );
 
-          const displayValueOnlyRow = (
+        // only managers can update request status
+        const displayUpdateRequestStatusButton = roles.includes('Manager')
+          ? key === 'requestStatus'
+            ? createdRequestStatusPopover
+            : null
+          : null;
+
+        const createdDeleteButton = returnAccessibleButtonElements([
+          {
+            buttonLabel: 'Delete',
+            semanticDescription: 'Delete this form',
+            semanticName: 'Delete',
+            buttonVariant: 'outline',
+            leftIcon: <TbTrash />,
+            rightIcon: <TbUpload />,
+            buttonOnClick: () => {
+              openDeleteAcknowledge();
+              deleteFormIdDispatch({
+                type: 'setDeleteFormId',
+                payload: queryObj._id,
+              });
+            },
+          },
+        ]);
+        const displayCreatedDeleteButton =
+          key === 'Delete' ? createdDeleteButton : null;
+
+        const displayFullLabelValueRow = (
+          <>
+            <Flex w="100%">
+              <Text>{sectionKey}</Text>
+            </Flex>
             <Flex
               align="center"
               justify="flex-end"
               w="100%"
               columnGap={rowGap}
               pl={padding}
-              style={{ outline: '1px solid violet' }}
+              // style={{ outline: '1px solid violet' }}
             >
-              <Text>{formattedValue}</Text>
+              {displayUpdateRequestStatusButton}
+              {displayCreatedDeleteButton}
+              <Spoiler
+                maxHeight={25}
+                showLabel={createdShowMoreButton}
+                hideLabel={createdHideButton}
+              >
+                <Text>{formattedValue}</Text>
+              </Spoiler>
             </Flex>
-          );
+          </>
+        );
 
-          const displayCondensedView = tableKeyExclusionSet.has(key) ? (
-            <Accordion w="100%">
-              <Accordion.Item value={sectionKey}>
-                <Accordion.Control>{sectionKey}</Accordion.Control>
-                <Accordion.Panel>{displayValueOnlyRow}</Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
-          ) : (
-            displayFullLabelValueRow
-          );
+        const displayValueOnlyRow = (
+          <Flex
+            align="center"
+            justify="flex-end"
+            w="100%"
+            columnGap={rowGap}
+            pl={padding}
+            style={{ outline: '1px solid violet' }}
+          >
+            {displayCreatedDeleteButton}
+            <Text>{formattedValue}</Text>
+          </Flex>
+        );
 
-          const displayExpandedView = displayFullLabelValueRow;
+        const displayCondensedView = tableKeyExclusionSet.has(key) ? (
+          <Accordion w="100%">
+            <Accordion.Item value={sectionKey}>
+              <Accordion.Control>{sectionKey}</Accordion.Control>
+              <Accordion.Panel>{displayValueOnlyRow}</Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+        ) : (
+          displayFullLabelValueRow
+        );
 
-          return (
-            <Flex
-              key={`${key}-${index}`}
-              direction={width < 768 ? 'column' : 'row'}
-              align={width < 768 ? 'flex-start' : 'center'}
-              justify={width < 768 ? 'flex-start' : 'space-between'}
-              style={{
-                borderRadius: 4,
-                backgroundColor: '#fff',
-                outline: '1px solid teal',
-              }}
-              rowGap={rowGap}
-              w="100%"
-              p={padding}
-            >
-              {tableViewSelection === 'condensed'
-                ? displayCondensedView
-                : displayExpandedView}
-            </Flex>
-          );
-        }
-      );
+        const displayExpandedView = displayFullLabelValueRow;
+
+        return (
+          <Flex
+            key={`${key}-${keyValIdx}`}
+            direction={width < 768 ? 'column' : 'row'}
+            align={width < 768 ? 'flex-start' : 'center'}
+            justify={width < 768 ? 'flex-start' : 'space-between'}
+            style={{
+              borderRadius: 4,
+              backgroundColor: '#fff',
+              outline: '1px solid teal',
+            }}
+            rowGap={rowGap}
+            w="100%"
+            p={padding}
+          >
+            {tableViewSelection === 'condensed'
+              ? displayCondensedView
+              : displayExpandedView}
+          </Flex>
+        );
+      });
 
       return (
         <Flex
-          key={`${section}-${arrIdx}}`}
+          key={`${section}-${queryObjIdx}}`}
           direction="column"
           align="flex-start"
           justify="center"
@@ -362,12 +389,12 @@ function DisplayQueryMobile({
   });
 
   const displayRestOfGroupedQueryResponseData =
-    restOfGroupedQueryResponseData.map((queryObj, arrIdx) => {
+    restOfGroupedQueryResponseData.map((queryObj, queryObjIdx) => {
       const displayKeyValues = Object.entries(queryObj).map(
         ([key, value], objIdx) => {
           return (
             <Flex
-              key={`${arrIdx}-${objIdx}`}
+              key={`${queryObjIdx}-${objIdx}`}
               align="flex-start"
               justify="center"
               direction="column"

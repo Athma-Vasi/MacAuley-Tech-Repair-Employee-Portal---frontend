@@ -27,7 +27,6 @@ type AccessibleButtonCreatorInfo = {
   semanticName: string;
   semanticDescription: string;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  p?: string | number;
 };
 
 type ButtonWrapperProps = {
@@ -49,7 +48,6 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     buttonDisabled = false,
     buttonRef = null,
     buttonVariant = 'outline',
-    p = 'xs',
     compact = false,
     leftIcon = buttonType === 'submit' ? <TbUpload /> : null,
     rightIcon = null,
@@ -67,7 +65,6 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
       compact={compact}
       leftIcon={leftIcon}
       name={semanticName.split(' ').join('-')}
-      p={p}
       rightIcon={rightIcon}
       size={size}
       aria-label={semanticName}
