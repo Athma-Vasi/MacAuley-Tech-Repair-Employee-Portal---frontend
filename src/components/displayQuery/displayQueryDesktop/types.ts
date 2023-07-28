@@ -31,12 +31,9 @@ type DisplayQueryDesktopProps<Doc> = {
   }>;
 
   openDeleteAcknowledge: () => void;
-  parentDeleteFormDispatch: React.Dispatch<{
-    type: 'setDeleteForm';
-    payload: {
-      id: string;
-      value: boolean;
-    };
+  deleteFormIdDispatch: React.Dispatch<{
+    type: 'setDeleteFormId';
+    payload: string;
   }>;
 };
 

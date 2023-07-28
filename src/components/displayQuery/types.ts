@@ -41,6 +41,7 @@ type DisplayQueryState = {
   acknowledgementText: string;
   isValidAcknowledgementText: boolean;
   isAcknowledgementTextFocused: boolean;
+  deleteFormId: string;
 };
 
 type DisplayQueryAction = {
@@ -57,6 +58,7 @@ type DisplayQueryAction = {
   setAcknowledgementText: 'setAcknowledgementText';
   setIsValidAcknowledgementText: 'setIsValidAcknowledgementText';
   setIsAcknowledgementTextFocused: 'setIsAcknowledgementTextFocused';
+  setDeleteFormId: 'setDeleteFormId';
 };
 
 type DisplayQueryDispatch =
@@ -67,7 +69,8 @@ type DisplayQueryDispatch =
   | {
       type:
         | DisplayQueryAction['setGroupBySelection']
-        | DisplayQueryAction['setAcknowledgementText'];
+        | DisplayQueryAction['setAcknowledgementText']
+        | DisplayQueryAction['setDeleteFormId'];
       payload: string;
     }
   | {

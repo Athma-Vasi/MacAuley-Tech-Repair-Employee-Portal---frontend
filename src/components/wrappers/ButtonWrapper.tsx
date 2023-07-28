@@ -8,11 +8,11 @@ type AccessibleButtonCreatorInfo = {
   buttonLabel: ReactNode;
   buttonOnClick?: (
     event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
-  ) => void | undefined;
-  buttonStyle?: React.CSSProperties | undefined;
-  buttonDisabled?: boolean | undefined;
-  buttonRef?: React.RefObject<HTMLButtonElement> | undefined;
-  buttonType?: 'button' | 'submit' | 'reset' | undefined;
+  ) => void;
+  buttonStyle?: React.CSSProperties;
+  buttonDisabled?: boolean;
+  buttonRef?: React.RefObject<HTMLButtonElement>;
+  buttonType?: 'button' | 'submit' | 'reset';
   buttonVariant?:
     | 'outline'
     | 'white'
@@ -20,14 +20,14 @@ type AccessibleButtonCreatorInfo = {
     | 'default'
     | 'filled'
     | 'gradient'
-    | 'subtle'
-    | undefined;
-  compact?: boolean | undefined;
-  leftIcon?: React.ReactNode | undefined;
-  rightIcon?: React.ReactNode | undefined;
+    | 'subtle';
+  compact?: boolean;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
   semanticName: string;
   semanticDescription: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | undefined;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  p?: string | number;
 };
 
 type ButtonWrapperProps = {
@@ -49,6 +49,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     buttonDisabled = false,
     buttonRef = null,
     buttonVariant = 'outline',
+    p = 'xs',
     compact = false,
     leftIcon = buttonType === 'submit' ? <TbUpload /> : null,
     rightIcon = null,
@@ -66,6 +67,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
       compact={compact}
       leftIcon={leftIcon}
       name={semanticName.split(' ').join('-')}
+      p={p}
       rightIcon={rightIcon}
       size={size}
       aria-label={semanticName}

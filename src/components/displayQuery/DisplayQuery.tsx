@@ -73,7 +73,23 @@ function DisplayQuery<Doc>({
     acknowledgementText,
     isAcknowledgementTextFocused,
     isValidAcknowledgementText,
+    deleteFormId,
   } = displayQueryState;
+
+  async function handleDeleteFormSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    console.log('delete form submitted');
+
+    if (!isValidAcknowledgementText) return;
+
+    parentDeleteFormDispatch({
+      type: 'setDeleteForm',
+      payload: {
+        id: deleteFormId,
+        value: true,
+      },
+    });
+  }
 
   // validate acknowledgement text on every change
   useEffect(() => {
@@ -239,24 +255,6 @@ function DisplayQuery<Doc>({
     semanticName: 'acknowledgement',
   };
 
-  /**
-   * const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'address change form submit button',
-    semanticName: 'submit button',
-    leftIcon: <TbUpload />,
-    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      addressChangeDispatch({
-        type: addressChangeAction.setTriggerFormSubmit,
-        payload: true,
-      });
-    },
-    // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
-  };
-
-   */
-
   const deleteButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Delete',
     semanticDescription: 'confirm delete form submit button',
@@ -328,12 +326,7 @@ function DisplayQuery<Doc>({
       centered
       size={375}
     >
-      <form
-        onSubmit={async (event: FormEvent<HTMLFormElement>) => {
-          event.preventDefault();
-          console.log('delete form submitted');
-        }}
-      >
+      <form onSubmit={handleDeleteFormSubmit}>
         <Flex
           w="100%"
           style={{
@@ -385,7 +378,7 @@ function DisplayQuery<Doc>({
         popoversOpenCloseState={popoversOpenCloseState}
         popoversStateDispatch={displayQueryDispatch}
         openDeleteAcknowledge={openDeleteAcknowledge}
-        parentDeleteFormDispatch={parentDeleteFormDispatch}
+        deleteFormIdDispatch={displayQueryDispatch}
       />
     );
 

@@ -49,7 +49,7 @@ function DisplayQueryDesktop<Doc>({
   popoversStateDispatch,
 
   openDeleteAcknowledge,
-  parentDeleteFormDispatch,
+  deleteFormIdDispatch,
 }: DisplayQueryDesktopProps<Doc>) {
   const {
     globalState: { width, padding, rowGap },
@@ -84,26 +84,16 @@ function DisplayQueryDesktop<Doc>({
       },
     ]);
 
-  const [createdSubmitRequestStatusButton, createdDeleteButton] =
-    returnAccessibleButtonElements([
-      {
-        buttonLabel: 'Submit',
-        leftIcon: <TbUpload />,
-        buttonType: 'submit',
-        semanticDescription: 'Submit request status changes',
-        semanticName: 'Submit',
-        size: 'xs',
-      },
-      {
-        buttonLabel: <TbTrash />,
-        semanticDescription: 'Delete this form',
-        semanticName: 'Delete',
-        size: 'xs',
-        buttonOnClick: () => {
-          openDeleteAcknowledge();
-        },
-      },
-    ]);
+  const [createdSubmitRequestStatusButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Submit',
+      leftIcon: <TbUpload />,
+      buttonType: 'submit',
+      semanticDescription: 'Submit request status changes',
+      semanticName: 'Submit',
+      size: 'xs',
+    },
+  ]);
 
   const tableKeyExclusionSet = new Set(['_id', 'userId', 'action', 'category']);
   const dateKeysSet = new Set([
@@ -121,7 +111,8 @@ function DisplayQueryDesktop<Doc>({
           : Object.keys(queryResponseObjArrays[0]).filter(
               (key) => !tableKeyExclusionSet.has(key)
             ).length;
-      const widthPerField = `${(100 / numOfFields).toFixed(2)}%`;
+      // to account for the delete field added on
+      const widthPerField = `${(100 / (numOfFields + 1)).toFixed(2)}%`;
 
       return (
         <Flex
@@ -164,7 +155,9 @@ function DisplayQueryDesktop<Doc>({
                             outline: '1px solid violet',
                           }}
                         >
-                          <Text>{splitCamelCase(key)}</Text>
+                          <Center w="100%">
+                            <Text>{splitCamelCase(key)}</Text>
+                          </Center>
                         </th>
                       );
 
@@ -237,7 +230,7 @@ function DisplayQueryDesktop<Doc>({
                           key === 'userId' ||
                           formattedValue.length > 23 ? (
                             <HoverCard
-                              width={382}
+                              width={500}
                               shadow="lg"
                               openDelay={250}
                               closeDelay={100}
@@ -330,8 +323,9 @@ function DisplayQueryDesktop<Doc>({
                                 label={`Modify request status of id: ${queryResponseObj._id}`}
                               >
                                 <Button
-                                  variant="outline"
-                                  size="xs"
+                                  variant="subtle"
+                                  size="sm"
+                                  p={0}
                                   onClick={() => {
                                     popoversStateDispatch({
                                       type: 'setPopoversOpenCloseState',
@@ -388,6 +382,7 @@ function DisplayQueryDesktop<Doc>({
                                 align="center"
                                 justify="space-between"
                                 columnGap="xs"
+                                w="100%"
                               >
                                 <Text>{truncatedValuesWithHoverCards}</Text>
                                 {displayUpdateRequestStatusButton}
@@ -427,6 +422,7 @@ function DisplayQueryDesktop<Doc>({
                                   align="center"
                                   justify="space-between"
                                   columnGap="xs"
+                                  w="100%"
                                 >
                                   <Text>{truncatedValuesWithHoverCards}</Text>
                                   {displayUpdateRequestStatusButton}
@@ -452,6 +448,25 @@ function DisplayQueryDesktop<Doc>({
                               )}
                             </td>
                           ) : null;
+
+                        const createdDeleteButton =
+                          returnAccessibleButtonElements([
+                            {
+                              buttonLabel: <TbTrash />,
+                              semanticDescription: 'Delete this form',
+                              semanticName: 'Delete',
+                              buttonVariant: 'subtle',
+                              size: 'sm',
+                              p: 0,
+                              buttonOnClick: () => {
+                                openDeleteAcknowledge();
+                                deleteFormIdDispatch({
+                                  type: 'setDeleteFormId',
+                                  payload: queryResponseObj._id,
+                                });
+                              },
+                            },
+                          ]);
 
                         const objLen = Object.keys(queryResponseObj).length;
                         const displayDeleteButton = (
@@ -486,7 +501,65 @@ function DisplayQueryDesktop<Doc>({
     }
   );
 
-  return <Stack w="100%">{displayTable}</Stack>;
+  const displayRestOfGroupedByData = (
+    <NavLink
+      label="Rest of constrained values"
+      childrenOffset={padding}
+      w="38%"
+      rightSection={<TbChevronRight />}
+    >
+      <Flex
+        align="center"
+        justify="flex-start"
+        wrap="wrap"
+        w="fit-content"
+        columnGap={rowGap}
+        p={padding}
+        style={{
+          overflowX: 'auto',
+          overflowY: 'hidden',
+          border: '1px solid #e0e0e0',
+          borderRadius: 4,
+        }}
+      >
+        {restOfGroupedQueryResponseData.map((queryResponseObj, objIdx) => {
+          const keyValPairs = Object.entries(queryResponseObj).map(
+            ([key, value], keyValIdx) => (
+              <Flex
+                align="center"
+                justify="flex-start"
+                columnGap={rowGap}
+                key={`${objIdx}-${keyValIdx}`}
+                p={padding}
+                style={{
+                  backgroundColor: objIdx % 2 === 0 ? '#f5f5f5' : '#ffffff',
+                  borderRadius: 4,
+                }}
+              >
+                {key === '' ? (
+                  <Text>All constrained values displayed</Text>
+                ) : (
+                  <>
+                    <Text>{splitCamelCase(key)}:</Text>
+                    <Text>{value}</Text>
+                  </>
+                )}
+              </Flex>
+            )
+          );
+
+          return keyValPairs;
+        })}
+      </Flex>
+    </NavLink>
+  );
+
+  return (
+    <Stack w="100%">
+      {displayTable}
+      {displayRestOfGroupedByData}
+    </Stack>
+  );
 }
 
 export { DisplayQueryDesktop };

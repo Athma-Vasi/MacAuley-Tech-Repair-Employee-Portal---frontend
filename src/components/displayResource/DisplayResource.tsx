@@ -205,8 +205,6 @@ function DisplayResource<Doc>({
     };
   }, [requestStatus]);
 
-  // whenever deleteForm value changes, trigger modal
-
   // delete form on deleteForm status change
   useEffect(() => {
     const controller = new AbortController();

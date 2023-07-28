@@ -16,6 +16,7 @@ const initialDisplayQueryState: DisplayQueryState = {
   acknowledgementText: '',
   isValidAcknowledgementText: false,
   isAcknowledgementTextFocused: false,
+  deleteFormId: '',
 };
 
 const displayQueryAction: DisplayQueryAction = {
@@ -32,6 +33,7 @@ const displayQueryAction: DisplayQueryAction = {
   setAcknowledgementText: 'setAcknowledgementText',
   setIsValidAcknowledgementText: 'setIsValidAcknowledgementText',
   setIsAcknowledgementTextFocused: 'setIsAcknowledgementTextFocused',
+  setDeleteFormId: 'setDeleteFormId',
 };
 
 function displayQueryReducer(
@@ -106,6 +108,11 @@ function displayQueryReducer(
       return {
         ...state,
         isAcknowledgementTextFocused: action.payload,
+      };
+    case displayQueryAction.setDeleteFormId:
+      return {
+        ...state,
+        deleteFormId: action.payload,
       };
 
     default:
