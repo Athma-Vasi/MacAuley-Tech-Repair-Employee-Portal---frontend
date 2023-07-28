@@ -1,7 +1,7 @@
 import { CSSProperties } from 'react';
 
-import { RequestStatus } from '../../../types';
-import { ComponentQueryData } from '../../queryBuilder';
+import type { RequestStatus } from '../../../types';
+import type { ComponentQueryData } from '../../queryBuilder';
 
 type DisplayQueryDesktopProps<Doc> = {
   style?: CSSProperties;

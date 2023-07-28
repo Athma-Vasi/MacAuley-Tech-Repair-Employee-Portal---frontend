@@ -1,14 +1,10 @@
-import {
-  Flex,
-  Group,
-  Modal,
-  SegmentedControl,
-  Text,
-  TextInput,
-  Title,
-} from '@mantine/core';
+import { Flex, Modal, SegmentedControl, Text, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
+import { TbTrash, TbUpload } from 'react-icons/tb';
 
+import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
+import { useGlobalState } from '../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleErrorValidTextElements,
@@ -19,13 +15,13 @@ import {
   groupQueryResponse,
   logState,
   returnAcknowledgementValidationText,
-  returnGrammarValidationText,
 } from '../../utils';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
 } from '../wrappers';
+import { DisplayQueryDesktop } from './displayQueryDesktop/DisplayQueryDesktop';
 import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
 import {
   displayQueryAction,
@@ -33,14 +29,6 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
-import { useGlobalState } from '../../hooks';
-import { DisplayQueryDesktop } from './displayQueryDesktop/DisplayQueryDesktop';
-import { useDisclosure } from '@mantine/hooks';
-import {
-  ACKNOWLEDGEMENT_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-} from '../../constants/regex';
-import { TbTrash, TbUpload } from 'react-icons/tb';
 
 function DisplayQuery<Doc>({
   style = {},

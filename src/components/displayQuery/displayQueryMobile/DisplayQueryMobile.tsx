@@ -5,12 +5,10 @@ import {
   Group,
   NavLink,
   Popover,
-  Radio,
   Spoiler,
   Text,
-  Tooltip,
 } from '@mantine/core';
-import { FormEvent, useEffect } from 'react';
+import { FormEvent } from 'react';
 import {
   TbArrowDown,
   TbArrowUp,
@@ -114,12 +112,6 @@ function DisplayQueryMobile({
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
   ).map(([section, queryObjArr], responseDataIdx) => {
-    const displayLabel = (
-      <Text>{`${section.toString().charAt(0).toUpperCase()}${section
-        .toString()
-        .slice(1)}`}</Text>
-    );
-
     const displayQueryObjArr = queryObjArr.map((queryObj, queryObjIdx) => {
       const displayKeyValues = [
         ...Object.entries(queryObj),
@@ -351,6 +343,10 @@ function DisplayQueryMobile({
         </Flex>
       );
     });
+    const displaySection = `${section
+      .toString()
+      .charAt(0)
+      .toUpperCase()}${section.toString().slice(1)}`;
 
     return (
       <Flex
@@ -367,23 +363,36 @@ function DisplayQueryMobile({
         w="100%"
         rowGap={rowGap}
       >
-        <NavLink
-          label={displayLabel}
+        {/* <Accordion w="100%">
+            <Accordion.Item value={sectionKey}>
+              <Accordion.Control>{sectionKey}</Accordion.Control>
+              <Accordion.Panel>{displayValueOnlyRow}</Accordion.Panel>
+            </Accordion.Item>
+          </Accordion> */}
+        {/* <NavLink
+          label={displaySection}
           rightSection={<TbChevronRight />}
           childrenOffset={0}
           w="62%"
-        >
-          <Flex
-            direction="column"
-            align="flex-start"
-            justify="center"
-            w="100%"
-            rowGap={rowGap}
-            // style={{ backgroundColor: '#f0f0f0', borderRadius: 4 }}
-          >
-            {displayQueryObjArr}
-          </Flex>
-        </NavLink>
+        > */}
+        <Accordion w="100%">
+          <Accordion.Item value={displaySection}>
+            <Accordion.Control>{displaySection}</Accordion.Control>
+            <Accordion.Panel>
+              <Flex
+                direction="column"
+                align="flex-start"
+                justify="center"
+                w="100%"
+                rowGap={rowGap}
+                // style={{ backgroundColor: '#f0f0f0', borderRadius: 4 }}
+              >
+                {displayQueryObjArr}
+              </Flex>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+        {/* </NavLink> */}
       </Flex>
     );
   });
@@ -403,7 +412,7 @@ function DisplayQueryMobile({
                 borderRadius: 4,
               }}
               rowGap={rowGap}
-              w="100%"
+              // w="100%"
               p={padding}
             >
               {key === '' ? (
@@ -442,7 +451,7 @@ function DisplayQueryMobile({
             borderRadius: 4,
             backgroundColor: '#f0f0f0',
           }}
-          w="100%"
+          // w="100%"
         >
           {displayKeyValues}
         </Flex>
@@ -461,30 +470,32 @@ function DisplayQueryMobile({
       }}
       w="100%"
     >
-      <NavLink
-        label="Rest of constrained values"
-        rightSection={<TbChevronRight />}
-        childrenOffset={0}
-        w="62%"
-      >
-        <Flex
-          direction="column"
-          align="flex-start"
-          justify="center"
-          rowGap={rowGap}
-          pt={padding}
-          w="100%"
-        >
-          {displayRestOfGroupedQueryResponseData}
-        </Flex>
-      </NavLink>
+      <Accordion w="100%">
+        <Accordion.Item value="Rest of constrained values">
+          <Accordion.Control>Rest of constrained values</Accordion.Control>
+          <Accordion.Panel>
+            <Flex
+              align="center"
+              justify="flex-start"
+              rowGap={rowGap}
+              columnGap={rowGap}
+              pt={padding}
+              w="100%"
+              wrap="wrap"
+              style={{ outline: '1px solid teal' }}
+            >
+              {displayRestOfGroupedQueryResponseData}
+            </Flex>
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
     </Flex>
   );
 
   return (
     <Flex
       direction="column"
-      // p={padding}
+      style={{ ...style }}
       align="flex-start"
       justify="center"
       w="100%"
@@ -502,7 +513,7 @@ export { DisplayQueryMobile };
  const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
   ).map(([label, queryObjArr]) => {
-    const displayLabel = <Title>{label}</Title>;
+    const displaySection = <Title>{label}</Title>;
     const displayQueryObjArr = queryObjArr.map((queryObj) => {
       const displayQueryObj = Object.entries(queryObj).map(([key, value]) => {
         return (
@@ -518,7 +529,7 @@ export { DisplayQueryMobile };
 
     return (
       <FormLayoutWrapper>
-        {displayLabel}
+        {displaySection}
         {displayQueryObjArr}
       </FormLayoutWrapper>
     );
@@ -527,7 +538,7 @@ export { DisplayQueryMobile };
 
 /**
   <Flex direction="column" p={padding} align="flex-start" justify="center">
-        {displayLabel}
+        {displaySection}
         <Flex
           direction="column"
           align="flex-start"
