@@ -61,6 +61,7 @@ const queryBuilderAction: QueryBuilderAction = {
   setSelectedFieldsSet: 'setSelectedFieldsSet',
   setProjectedFieldsSet: 'setProjectedFieldsSet',
 
+  setClearAllQueryData: 'setClearAllQueryData',
   buildQueryString: 'buildQueryString',
 
   setIsError: 'setIsError',
@@ -273,6 +274,16 @@ function queryBuilderReducer(
       };
     }
 
+    case queryBuilderAction.setClearAllQueryData: {
+      return {
+        ...state,
+        filterStatementsQueue: [],
+        sortStatementsQueue: [],
+        projectionArray: [],
+        selectedFieldsSet: new Set<string>(),
+        projectedFieldsSet: new Set<string>(),
+      };
+    }
     case queryBuilderAction.buildQueryString: {
       const generateQueryStringInput = action.payload;
       const newQueryString = generateQueryString(generateQueryStringInput);

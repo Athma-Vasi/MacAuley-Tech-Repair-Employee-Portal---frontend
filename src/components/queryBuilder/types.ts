@@ -84,6 +84,7 @@ type QueryBuilderAction = {
   setSelectedFieldsSet: 'setSelectedFieldsSet';
   setProjectedFieldsSet: 'setProjectedFieldsSet';
 
+  setClearAllQueryData: 'setClearAllQueryData';
   buildQueryString: 'buildQueryString';
 
   setIsError: 'setIsError';
@@ -104,6 +105,7 @@ type QueryBuilderDispatch =
         | QueryBuilderAction['setCurrentFilterValue']
         | QueryBuilderAction['setCurrentSortTerm']
         | QueryBuilderAction['setCurrentSortDirection']
+        | QueryBuilderAction['setClearAllQueryData']
         | QueryBuilderAction['setErrorMessage']
         | QueryBuilderAction['setSuccessMessage']
         | QueryBuilderAction['setLoadingMessage']

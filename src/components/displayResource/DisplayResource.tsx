@@ -1,4 +1,4 @@
-import { Flex } from '@mantine/core';
+import { Flex, Modal } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useAuth, useGlobalState } from '../../hooks';
@@ -12,6 +12,7 @@ import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
 import { displayResourceAction, displayResourceReducer } from './state';
 import { DisplayResourceProps, DisplayResourceState } from './types';
+import { useDisclosure } from '@mantine/hooks';
 
 function DisplayResource<Doc>({
   style = {},
@@ -31,6 +32,10 @@ function DisplayResource<Doc>({
     requestStatus: {
       id: '',
       status: 'pending',
+    },
+    deleteForm: {
+      id: '',
+      value: false,
     },
     triggerRefresh: false,
 
@@ -57,6 +62,7 @@ function DisplayResource<Doc>({
     pageQueryString,
 
     requestStatus,
+    deleteForm,
     triggerRefresh,
 
     isError,
@@ -199,6 +205,55 @@ function DisplayResource<Doc>({
     };
   }, [requestStatus]);
 
+  // whenever deleteForm value changes, trigger modal
+
+  // delete form on deleteForm status change
+  useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    async function deleteResource() {
+      const urlString: URL = urlBuilder({
+        path: `${paths.manager}/${deleteForm.id}`,
+      });
+
+      const request: Request = new Request(urlString, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        signal,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: ResourceRequestServerResponse<Doc> = await response.json();
+        console.log('delete response', data);
+        // trigger component refresh
+        displayResourceDispatch({
+          type: displayResourceAction.setTriggerRefresh,
+          payload: !triggerRefresh,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log('finally');
+      }
+    }
+
+    // only allow Managers to delete forms
+    if (roles.includes('Manager')) {
+      if (deleteForm.id !== '' && deleteForm.value === true) {
+        deleteResource();
+      }
+    }
+
+    return () => {
+      controller.abort();
+    };
+  }, [deleteForm]);
+
   useEffect(() => {
     logState({
       state: displayResourceState,
@@ -227,9 +282,11 @@ function DisplayResource<Doc>({
         componentQueryData={componentQueryData}
         collectionName="leave requests"
       />
+
       <DisplayQuery
         parentComponentName="Leave Requests"
-        parentComponentDispatch={displayResourceDispatch}
+        parentRequestStatusDispatch={displayResourceDispatch}
+        parentDeleteFormDispatch={displayResourceDispatch}
         componentQueryData={componentQueryData}
         queryResponseData={resourceData}
       />

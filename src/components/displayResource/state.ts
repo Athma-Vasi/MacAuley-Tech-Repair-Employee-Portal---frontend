@@ -14,6 +14,7 @@ const displayResourceAction: DisplayResourceAction = {
   setPageQueryString: 'setPageQueryString',
 
   setRequestStatus: 'setRequestStatus',
+  setDeleteForm: 'setDeleteForm',
   setTriggerRefresh: 'setTriggerRefresh',
 
   setIsError: 'setIsError',
@@ -68,6 +69,12 @@ function displayResourceReducer<Doc>(
         ...state,
         requestStatus: action.payload,
       };
+    case displayResourceAction.setDeleteForm:
+      return {
+        ...state,
+        deleteForm: action.payload,
+      };
+
     case displayResourceAction.setTriggerRefresh:
       return {
         ...state,

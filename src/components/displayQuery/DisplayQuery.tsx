@@ -1,9 +1,30 @@
-import { Flex, Group, SegmentedControl, Text, Title } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import {
+  Flex,
+  Group,
+  Modal,
+  SegmentedControl,
+  Text,
+  Title,
+} from '@mantine/core';
+import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
 
-import { returnAccessibleRadioGroupInputsElements } from '../../jsxCreators';
-import { groupQueryResponse, logState } from '../../utils';
-import { AccessibleRadioGroupInputCreatorInfo } from '../wrappers';
+import {
+  returnAccessibleButtonElements,
+  returnAccessibleErrorValidTextElements,
+  returnAccessibleRadioGroupInputsElements,
+  returnAccessibleTextInputElements,
+} from '../../jsxCreators';
+import {
+  groupQueryResponse,
+  logState,
+  returnAcknowledgementValidationText,
+  returnGrammarValidationText,
+} from '../../utils';
+import {
+  AccessibleButtonCreatorInfo,
+  AccessibleRadioGroupInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+} from '../wrappers';
 import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
 import {
   displayQueryAction,
@@ -13,17 +34,30 @@ import {
 import { DisplayQueryProps } from './types';
 import { useGlobalState } from '../../hooks';
 import { DisplayQueryDesktop } from './displayQueryDesktop/DisplayQueryDesktop';
+import { useDisclosure } from '@mantine/hooks';
+import {
+  ACKNOWLEDGEMENT_TEXT_INPUT_REGEX,
+  GRAMMAR_TEXT_INPUT_REGEX,
+} from '../../constants/regex';
+import { TbTrash, TbUpload } from 'react-icons/tb';
 
 function DisplayQuery<Doc>({
   style = {},
+  parentComponentName,
   queryResponseData,
   componentQueryData,
-  parentComponentDispatch,
-  parentComponentName,
+  parentRequestStatusDispatch,
+  parentDeleteFormDispatch,
 }: DisplayQueryProps<Doc>) {
   const {
     globalState: { padding, width, rowGap },
   } = useGlobalState();
+
+  const [
+    openedDeleteAcknowledge,
+    { open: openDeleteAcknowledge, close: closeDeleteAcknowledge },
+  ] = useDisclosure(false);
+
   const [displayQueryState, displayQueryDispatch] = useReducer(
     displayQueryReducer,
     initialDisplayQueryState
@@ -36,7 +70,20 @@ function DisplayQuery<Doc>({
     restOfGroupedQueryResponseData,
     currentSegmentedSelection,
     popoversOpenCloseState,
+    acknowledgementText,
+    isAcknowledgementTextFocused,
+    isValidAcknowledgementText,
   } = displayQueryState;
+
+  // validate acknowledgement text on every change
+  useEffect(() => {
+    const isValid = ACKNOWLEDGEMENT_TEXT_INPUT_REGEX.test(acknowledgementText);
+
+    displayQueryDispatch({
+      type: displayQueryAction.setIsValidAcknowledgementText,
+      payload: isValid,
+    });
+  }, [acknowledgementText]);
 
   // create initial groupByRadioData state
   useEffect(() => {
@@ -112,7 +159,19 @@ function DisplayQuery<Doc>({
     });
   }, [queryResponseData, groupBySelection, currentSelectionData]);
 
-  // set the popovers initial state to closed on query response data change
+  /** ------------- accessible error/valid text elems ------------- */
+
+  const [acknowledgementInputErrorText, acknowledgementInputValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: 'acknowledgement',
+      inputText: acknowledgementText,
+      isValidInputText: isValidAcknowledgementText,
+      isInputTextFocused: isAcknowledgementTextFocused,
+      regexValidationText:
+        returnAcknowledgementValidationText(acknowledgementText),
+    });
+
+  /** ------------- end accessible error/valid text elems ------------- */
 
   /** ------------- input creator info objects ------------- */
 
@@ -147,6 +206,70 @@ function DisplayQuery<Doc>({
     />
   );
 
+  const acknowledgementTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: acknowledgementInputErrorText,
+      valid: acknowledgementInputValidText,
+    },
+    inputText: acknowledgementText,
+    isValidInputText: isValidAcknowledgementText,
+    label: 'Acknowledgement',
+    name: 'acknowledgement',
+    onBlur: () => {
+      displayQueryDispatch({
+        type: displayQueryAction.setIsAcknowledgementTextFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      displayQueryDispatch({
+        type: displayQueryAction.setAcknowledgementText,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      displayQueryDispatch({
+        type: displayQueryAction.setIsAcknowledgementTextFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter your acknowledgement',
+    required: true,
+    withAsterisk: true,
+    semanticName: 'acknowledgement',
+  };
+
+  /**
+   * const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'address change form submit button',
+    semanticName: 'submit button',
+    leftIcon: <TbUpload />,
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
+
+   */
+
+  const deleteButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Delete',
+    semanticDescription: 'confirm delete form submit button',
+    semanticName: 'confirm delete button',
+    buttonType: 'submit',
+    leftIcon: <TbTrash />,
+    rightIcon: <TbUpload />,
+    buttonOnClick: () => {
+      closeDeleteAcknowledge();
+    },
+    buttonDisabled: !isValidAcknowledgementText,
+  };
+
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- created inputs------------- */
@@ -154,6 +277,16 @@ function DisplayQuery<Doc>({
   const [createdGroupByRadioGroup] = returnAccessibleRadioGroupInputsElements([
     groupByRadioGroupCreatorInfo,
   ]);
+
+  const [createdAcknowledgementTextInput] = returnAccessibleTextInputElements([
+    acknowledgementTextInputCreatorInfo,
+  ]);
+
+  const [createdDeleteButton] = returnAccessibleButtonElements([
+    deleteButtonCreatorInfo,
+  ]);
+
+  /** ------------- end created inputs------------- */
 
   const displayGroupByRadioGroup = (
     <Flex
@@ -188,6 +321,49 @@ function DisplayQuery<Doc>({
     </Flex>
   );
 
+  const displayAcknowledgementModal = (
+    <Modal
+      opened={openedDeleteAcknowledge}
+      onClose={closeDeleteAcknowledge}
+      centered
+      size={375}
+    >
+      <form
+        onSubmit={async (event: FormEvent<HTMLFormElement>) => {
+          event.preventDefault();
+          console.log('delete form submitted');
+        }}
+      >
+        <Flex
+          w="100%"
+          style={{
+            border: '1px solid #e0e0e0',
+            borderRadius: 4,
+          }}
+          rowGap={rowGap}
+          p={padding}
+          direction="column"
+        >
+          <Title>Delete form</Title>
+          <Text size="sm">
+            To delete this form, please enter: 'I solemnly swear that I am up to
+            no good.'
+          </Text>
+          {createdAcknowledgementTextInput}
+          <Flex
+            w="100%"
+            justify="flex-end"
+            align="center"
+            columnGap={rowGap}
+            p={padding}
+          >
+            {createdDeleteButton}
+          </Flex>
+        </Flex>
+      </form>
+    </Modal>
+  );
+
   const displayQueryComponent =
     width <= 1024 ? (
       <DisplayQueryMobile
@@ -195,7 +371,7 @@ function DisplayQuery<Doc>({
         groupedByQueryResponseData={groupedByQueryResponseData}
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
         componentQueryData={componentQueryData}
-        requestStatusDispatch={parentComponentDispatch}
+        requestStatusDispatch={parentRequestStatusDispatch}
         popoversOpenCloseState={popoversOpenCloseState}
         popoversStateDispatch={displayQueryDispatch}
       />
@@ -204,10 +380,12 @@ function DisplayQuery<Doc>({
         tableViewSelection={currentSegmentedSelection}
         componentQueryData={componentQueryData}
         groupedByQueryResponseData={groupedByQueryResponseData}
-        requestStatusDispatch={parentComponentDispatch}
+        requestStatusDispatch={parentRequestStatusDispatch}
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
         popoversOpenCloseState={popoversOpenCloseState}
         popoversStateDispatch={displayQueryDispatch}
+        openDeleteAcknowledge={openDeleteAcknowledge}
+        parentDeleteFormDispatch={parentDeleteFormDispatch}
       />
     );
 
@@ -235,6 +413,7 @@ function DisplayQuery<Doc>({
     >
       {displayGroupByRadioGroup}
       {displayTableViewSegmentControl}
+      {displayAcknowledgementModal}
       <Text>{parentComponentName}</Text>
       {displayQueryComponent}
     </Flex>

@@ -45,15 +45,6 @@ function DisplayQueryMobile({
     authState: { roles },
   } = useAuth();
 
-  useEffect(() => {
-    console.log('groupedByQueryResponseData', groupedByQueryResponseData);
-
-    console.log(
-      'restOfGroupedQueryResponseData',
-      restOfGroupedQueryResponseData
-    );
-  }, [groupedByQueryResponseData, restOfGroupedQueryResponseData]);
-
   const createdUpdateRequestStatusRadioGroup =
     returnAccessibleRadioGroupInputsElements([
       {

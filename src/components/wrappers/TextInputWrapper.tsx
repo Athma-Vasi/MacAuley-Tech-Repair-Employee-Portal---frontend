@@ -30,6 +30,7 @@ type AccessibleTextInputCreatorInfo = {
     error: JSX.Element;
     valid: JSX.Element;
   };
+  name?: string;
   placeholder: string;
   initialInputValue?: string;
   icon?: IconDefinition;
@@ -70,6 +71,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     placeholder,
     initialInputValue = '',
     icon = null,
+    name = semanticName,
     onBlur,
     onChange,
     onFocus,
@@ -135,6 +137,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       aria-autocomplete={ariaAutoComplete}
       description={isValidInputText ? description.valid : description.error}
       placeholder={placeholder}
+      name={name}
       aria-invalid={isValidInputText ? false : true}
       value={inputText}
       icon={
@@ -147,7 +150,6 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
         ) : null
       }
       error={!isValidInputText && inputText !== initialInputValue}
-      name={semanticName.split(' ').join('-')}
       onBlur={onBlur}
       onChange={onChange}
       onFocus={onFocus}

@@ -29,6 +29,15 @@ type DisplayQueryDesktopProps<Doc> = {
       };
     };
   }>;
+
+  openDeleteAcknowledge: () => void;
+  parentDeleteFormDispatch: React.Dispatch<{
+    type: 'setDeleteForm';
+    payload: {
+      id: string;
+      value: boolean;
+    };
+  }>;
 };
 
 export type { DisplayQueryDesktopProps };

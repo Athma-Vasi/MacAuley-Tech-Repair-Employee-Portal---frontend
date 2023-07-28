@@ -193,6 +193,22 @@ function returnGrammarValidationText({
     : '';
 }
 
+function returnAcknowledgementValidationText(content: string) {
+  /**
+   * const ACKNOWLEDGEMENT_TEXT_INPUT_REGEX =
+  /^I solemnly swear that I am up to no good\.$/i;
+   */
+
+  const acknowledgementTextRegex =
+    /^I solemnly swear that I am up to no good\.$/i;
+
+  const validationText = acknowledgementTextRegex.test(content)
+    ? ''
+    : 'Invalid acknowledgement text.';
+
+  return validationText;
+}
+
 /**
  * Performs basic address validation [A-Za-z0-9\s.,#-] on a string of variable length, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
  */
@@ -925,8 +941,16 @@ function groupQueryResponse<Doc>({
       if (Object.hasOwn(queryResponseObj, groupBySelection)) {
         // if groupedBy map does not have the groupBySelectionValue as a key
         if (!acc.has(groupBySelectionValue)) {
-          // create it with an array as value and push the object to the array
-          acc.set(groupBySelectionValue, [queryResponseObj]);
+          // if groupBySelectionValue is a string[] (checkbox data)
+          if (Array.isArray(groupBySelectionValue)) {
+            groupBySelectionValue.forEach((value) => {
+              // create it with an array as value and push the object to the array
+              acc.set(value, [queryResponseObj]);
+            });
+          } else {
+            // create it with an array as value and push the object to the array
+            acc.set(groupBySelectionValue, [queryResponseObj]);
+          }
         } else {
           // if it has key already, push the object to the array
           acc.get(groupBySelectionValue)?.push(queryResponseObj);
@@ -998,6 +1022,7 @@ export {
   formatDate,
   groupQueryResponse,
   logState,
+  returnAcknowledgementValidationText,
   returnAddressValidationText,
   returnCityValidationText,
   returnDateFullRangeValidationText,

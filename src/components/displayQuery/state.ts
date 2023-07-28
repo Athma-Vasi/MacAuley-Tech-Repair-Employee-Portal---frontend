@@ -12,6 +12,10 @@ const initialDisplayQueryState: DisplayQueryState = {
   restOfGroupedQueryResponseData: [],
   currentSegmentedSelection: 'condensed',
   popoversOpenCloseState: new Map(),
+
+  acknowledgementText: '',
+  isValidAcknowledgementText: false,
+  isAcknowledgementTextFocused: false,
 };
 
 const displayQueryAction: DisplayQueryAction = {
@@ -24,6 +28,10 @@ const displayQueryAction: DisplayQueryAction = {
 
   setCurrentSegmentedSelection: 'setCurrentSegmentedSelection',
   setPopoversOpenCloseState: 'setPopoversOpenCloseState',
+
+  setAcknowledgementText: 'setAcknowledgementText',
+  setIsValidAcknowledgementText: 'setIsValidAcknowledgementText',
+  setIsAcknowledgementTextFocused: 'setIsAcknowledgementTextFocused',
 };
 
 function displayQueryReducer(
@@ -83,6 +91,22 @@ function displayQueryReducer(
         popoversOpenCloseState: newMap,
       };
     }
+
+    case displayQueryAction.setAcknowledgementText:
+      return {
+        ...state,
+        acknowledgementText: action.payload,
+      };
+    case displayQueryAction.setIsValidAcknowledgementText:
+      return {
+        ...state,
+        isValidAcknowledgementText: action.payload,
+      };
+    case displayQueryAction.setIsAcknowledgementTextFocused:
+      return {
+        ...state,
+        isAcknowledgementTextFocused: action.payload,
+      };
 
     default:
       return state;

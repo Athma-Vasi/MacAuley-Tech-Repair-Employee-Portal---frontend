@@ -112,22 +112,22 @@ const ENDORSEMENTS_QUERY_DATA: ComponentQueryData[] = [
     value: 'updatedAt',
     inputKind: 'dateInput',
   },
-  // {
-  //   label: 'Attribute endorsed',
-  //   value: 'attributeEndorsed',
-  //   inputKind: 'selectInput',
-  //   selectData: [
-  //     'teamwork and collaboration',
-  //     'leadership and mentorship',
-  //     'technical expertise',
-  //     'adaptibility and flexibility',
-  //     'problem solving',
-  //     'customer service',
-  //     'initiative and proactivity',
-  //     'communication',
-  //     'reliability and dependability',
-  //   ],
-  // },
+  {
+    label: 'Attribute endorsed',
+    value: 'attributeEndorsed',
+    inputKind: 'selectInput',
+    selectData: [
+      'teamwork and collaboration',
+      'leadership and mentorship',
+      'technical expertise',
+      'adaptibility and flexibility',
+      'problem solving',
+      'customer service',
+      'initiative and proactivity',
+      'communication',
+      'reliability and dependability',
+    ],
+  },
   {
     label: 'Request status',
     value: 'requestStatus',
@@ -146,9 +146,16 @@ const ENDORSEMENTS_QUERY_DATA: ComponentQueryData[] = [
   },
 ];
 
+const ENDORSEMENTS_PATHS = {
+  manager: '/api/v1/actions/general/endorsement',
+  admin: '/api/v1/actions/general/endorsement',
+  employee: '/api/v1/actions/general/endorsement/user',
+};
+
 export {
   CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS,
   CREATE_ENDORSEMENT_MAX_STEPPER_POSITION,
   EMPLOYEE_ATTRIBUTES_DATA,
+  ENDORSEMENTS_PATHS,
   ENDORSEMENTS_QUERY_DATA,
 };

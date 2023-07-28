@@ -12,11 +12,18 @@ type DisplayQueryProps<Doc> = {
   queryResponseData: QueryResponseData<Doc>[];
   componentQueryData: ComponentQueryData[];
   parentComponentName: string;
-  parentComponentDispatch: React.Dispatch<{
+  parentRequestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';
     payload: {
       id: string;
       status: RequestStatus;
+    };
+  }>;
+  parentDeleteFormDispatch: React.Dispatch<{
+    type: 'setDeleteForm';
+    payload: {
+      id: string;
+      value: boolean;
     };
   }>;
 };
@@ -30,6 +37,10 @@ type DisplayQueryState = {
 
   currentSegmentedSelection: 'expanded' | 'condensed';
   popoversOpenCloseState: Map<string, boolean[]>;
+
+  acknowledgementText: string;
+  isValidAcknowledgementText: boolean;
+  isAcknowledgementTextFocused: boolean;
 };
 
 type DisplayQueryAction = {
@@ -42,6 +53,10 @@ type DisplayQueryAction = {
 
   setCurrentSegmentedSelection: 'setCurrentSegmentedSelection';
   setPopoversOpenCloseState: 'setPopoversOpenCloseState';
+
+  setAcknowledgementText: 'setAcknowledgementText';
+  setIsValidAcknowledgementText: 'setIsValidAcknowledgementText';
+  setIsAcknowledgementTextFocused: 'setIsAcknowledgementTextFocused';
 };
 
 type DisplayQueryDispatch =
@@ -50,8 +65,16 @@ type DisplayQueryDispatch =
       payload: RadioGroupInputData;
     }
   | {
-      type: DisplayQueryAction['setGroupBySelection'];
+      type:
+        | DisplayQueryAction['setGroupBySelection']
+        | DisplayQueryAction['setAcknowledgementText'];
       payload: string;
+    }
+  | {
+      type:
+        | DisplayQueryAction['setIsValidAcknowledgementText']
+        | DisplayQueryAction['setIsAcknowledgementTextFocused'];
+      payload: boolean;
     }
   | {
       type: DisplayQueryAction['setCurrentSegmentedSelection'];

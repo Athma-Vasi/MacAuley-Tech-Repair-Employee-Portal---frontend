@@ -12,6 +12,7 @@ import { useEffect, useReducer } from 'react';
 import {
   TbArrowsSort,
   TbChevronRight,
+  TbClearAll,
   TbFilterCog,
   TbLayersLinked,
   TbPlus,
@@ -620,7 +621,7 @@ function QueryBuilder({
   );
   // ----------------- //
 
-  // ----------------- submit button -----------------  //
+  // ----------------- submit and clear button -----------------  //
   const submitQueryToParentComponentButtonCreatorInfo: AccessibleButtonCreatorInfo =
     {
       buttonLabel: 'Submit',
@@ -635,6 +636,23 @@ function QueryBuilder({
       // buttonDisabled: queryString === '?',
       leftIcon: <TbUpload />,
     };
+
+  const clearQueryButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Clear',
+    semanticDescription: `Clear query to ${collectionName}`,
+    semanticName: 'clear query',
+    buttonOnClick: (event) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setClearAllQueryData,
+        payload: '',
+      });
+      parentComponentDispatch({
+        type: setQueryBuilderString,
+        payload: queryString,
+      });
+    },
+    leftIcon: <TbClearAll />,
+  };
   // ----------------- //
 
   // ----------------- create and display elements -----------------  //
@@ -655,10 +673,12 @@ function QueryBuilder({
     createdAddNewFilterButton,
     createdAddNewSortButton,
     createdSubmitButton,
+    createdClearButton,
   ] = returnAccessibleButtonElements([
     addNewFilterButtonCreatorInfo,
     addNewSortButtonCreatorInfo,
     submitQueryToParentComponentButtonCreatorInfo,
+    clearQueryButtonCreatorInfo,
   ]);
 
   const createdProjectionCheckboxGroupInput =
@@ -833,13 +853,23 @@ function QueryBuilder({
           {displayProjectionSection}
           <Flex align="center" justify="flex-end">
             <Tooltip label={`Submit ${collectionName} query`}>
-              <Center>{createdSubmitButton}</Center>
+              <Group position="apart">
+                {createdClearButton}
+                {createdSubmitButton}
+              </Group>
             </Tooltip>
           </Flex>
         </Flex>
       </NavLink>
     </Flex>
   );
+
+  // useEffect(() => {
+  //   logState({
+  //     state: queryBuilderState,
+  //     groupLabel: 'queryBuilderState',
+  //   });
+  // }, [queryBuilderState]);
 
   return <>{displayQueryBuilderComponent}</>;
 }

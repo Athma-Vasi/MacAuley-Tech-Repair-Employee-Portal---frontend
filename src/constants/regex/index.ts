@@ -235,6 +235,12 @@ const GRAMMAR_TEXTAREA_INPUT_REGEX =
 const GRAMMAR_TEXT_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
 
 /**
+ * matches the exact Marauder's Map phrase
+ */
+const ACKNOWLEDGEMENT_TEXT_INPUT_REGEX =
+  /^I solemnly swear that I am up to no good\.$/i;
+
+/**
  * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
  * - [A-Za-z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
  * - {1,50} ensures that the text is between 1 and 50 characters long.
@@ -262,6 +268,7 @@ const PRINTER_SERIAL_NUMBER_REGEX = /^[a-zA-Z0-9]{1,50}$/i;
 const TIME_RAILWAY_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
 export {
+  ACKNOWLEDGEMENT_TEXT_INPUT_REGEX,
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   DATE_FULL_RANGE_REGEX,

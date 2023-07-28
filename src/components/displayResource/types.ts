@@ -28,6 +28,11 @@ type DisplayResourceState<Doc> = {
     status: RequestStatus;
   };
 
+  deleteForm: {
+    id: string;
+    value: boolean;
+  };
+
   triggerRefresh: boolean;
 
   isError: boolean;
@@ -50,6 +55,7 @@ type DisplayResourceAction = {
   setPageQueryString: 'setPageQueryString';
 
   setRequestStatus: 'setRequestStatus';
+  setDeleteForm: 'setDeleteForm';
   setTriggerRefresh: 'setTriggerRefresh';
 
   setIsError: 'setIsError';
@@ -98,6 +104,13 @@ type DisplayResourceDispatch<Doc> =
       payload: {
         id: string;
         status: RequestStatus;
+      };
+    }
+  | {
+      type: DisplayResourceAction['setDeleteForm'];
+      payload: {
+        id: string;
+        value: boolean;
       };
     };
 

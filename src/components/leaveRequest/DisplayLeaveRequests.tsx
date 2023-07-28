@@ -1,17 +1,13 @@
 import { DisplayResource } from '../displayResource';
+import { LEAVE_REQUESTS_PATHS, LEAVE_REQUESTS_QUERY_DATA } from './constants';
 import { LeaveRequestDocument } from './types';
-import { LEAVE_REQUESTS_QUERY_DATA } from './constants';
 
 function DisplayLeaveRequests() {
   return (
     <DisplayResource<LeaveRequestDocument>
       componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
       requestBodyHeading="leaveRequest"
-      paths={{
-        manager: '/api/v1/actions/company/leave-request/',
-        admin: '/api/v1/actions/company/leave-request/',
-        employee: '/api/v1/actions/company/leave-request/user/',
-      }}
+      paths={LEAVE_REQUESTS_PATHS}
     />
   );
 }
