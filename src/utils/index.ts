@@ -145,7 +145,7 @@ function returnNoteTextValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
@@ -187,7 +187,7 @@ function returnGrammarValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
@@ -239,7 +239,7 @@ function returnAddressValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
@@ -272,7 +272,7 @@ function returnCityValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
@@ -742,7 +742,7 @@ function returnNameValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
@@ -777,7 +777,7 @@ function returnPrinterMakeModelValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
@@ -812,7 +812,7 @@ function returnPrinterSerialNumberValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
@@ -847,7 +847,7 @@ function returnTimeRailwayValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${contentKind[0].toUpperCase()}${contentKind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
@@ -963,6 +963,19 @@ function groupQueryResponse<Doc>({
     new Map()
   );
 
+  const sortedGroupedBy = new Map(
+    [...groupedBy.entries()].sort((a, b) => {
+      const aKey = a[0];
+      const bKey = b[0];
+
+      return typeof aKey === 'string' && typeof bKey === 'string'
+        ? aKey.localeCompare(bKey)
+        : typeof aKey === 'number' && typeof bKey === 'number'
+        ? aKey - bKey
+        : 0;
+    })
+  );
+
   console.group('groupQueryResponse');
   console.log('groupBySelection', groupBySelection);
   console.log('currentSelectionData', currentSelectionData);
@@ -991,33 +1004,10 @@ function groupQueryResponse<Doc>({
   );
 
   return {
-    groupedBy,
+    groupedBy: sortedGroupedBy,
     rest,
   };
 }
-
-/**
- * const groupBySelectionValue = queryResponseObj[groupBySelection];
-        const [groupedBy, rest] = acc;
-
-        if (groupBySelectionValue) {
-          groupedBy.set(
-            groupBySelectionValue,
-            Object.assign({}, groupedBy.get(groupBySelectionValue), {
-              [groupBySelection]: groupBySelectionValue,
-            })
-          );
-        } else {
-          rest.set(
-            groupBySelectionValue,
-            Object.assign({}, rest.get(groupBySelectionValue), {
-              [groupBySelection]: groupBySelectionValue,
-            })
-          );
-        }
-
-        return [groupedBy, rest];
- */
 
 function splitCamelCase(word: string) {
   const splitStr = word.replace(/([a-z])([A-Z])/g, '$1 $2');
