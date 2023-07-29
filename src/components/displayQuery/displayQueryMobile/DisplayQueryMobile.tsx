@@ -146,7 +146,9 @@ function DisplayQueryMobile({
             ? 'Yes'
             : value === false
             ? 'No'
-            : `${value.toString().charAt(0).toUpperCase()}${value.slice(1)}`;
+            : `${value.toString().charAt(0).toUpperCase()}${value
+                .toString()
+                .slice(1)}`;
 
         async function handleRequestStatusChangeFormSubmit(
           event: FormEvent<HTMLFormElement>
@@ -363,18 +365,6 @@ function DisplayQueryMobile({
         w="100%"
         rowGap={rowGap}
       >
-        {/* <Accordion w="100%">
-            <Accordion.Item value={sectionKey}>
-              <Accordion.Control>{sectionKey}</Accordion.Control>
-              <Accordion.Panel>{displayValueOnlyRow}</Accordion.Panel>
-            </Accordion.Item>
-          </Accordion> */}
-        {/* <NavLink
-          label={displaySection}
-          rightSection={<TbChevronRight />}
-          childrenOffset={0}
-          w="62%"
-        > */}
         <Accordion w="100%">
           <Accordion.Item value={displaySection}>
             <Accordion.Control>{displaySection}</Accordion.Control>
@@ -385,78 +375,72 @@ function DisplayQueryMobile({
                 justify="center"
                 w="100%"
                 rowGap={rowGap}
-                // style={{ backgroundColor: '#f0f0f0', borderRadius: 4 }}
               >
                 {displayQueryObjArr}
               </Flex>
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
-        {/* </NavLink> */}
       </Flex>
     );
   });
 
   const displayRestOfGroupedQueryResponseData =
-    restOfGroupedQueryResponseData.map((queryObj, queryObjIdx) => {
-      const displayKeyValues = Object.entries(queryObj).map(
-        ([key, value], objIdx) => {
+    restOfGroupedQueryResponseData.length > 0
+      ? restOfGroupedQueryResponseData.map((queryObj, queryObjIdx) => {
+          const displayKeyValues = Object.entries(queryObj).map(
+            ([key, value], objIdx) => {
+              return (
+                <Flex
+                  key={`${queryObjIdx}-${objIdx}`}
+                  align="flex-start"
+                  justify="center"
+                  direction="column"
+                  style={{
+                    backgroundColor: '#fff',
+                    borderRadius: 4,
+                  }}
+                  rowGap={rowGap}
+                  // w="100%"
+                  p={padding}
+                >
+                  <Flex
+                    w="100%"
+                    align="center"
+                    justify="space-between"
+                    columnGap={rowGap}
+                  >
+                    <Group>
+                      <Text>{`${key.charAt(0).toUpperCase()}${key.slice(
+                        1
+                      )}`}</Text>
+                    </Group>
+                    <Group>
+                      <Text>{value}</Text>
+                    </Group>
+                  </Flex>
+                </Flex>
+              );
+            }
+          );
+
           return (
             <Flex
-              key={`${queryObjIdx}-${objIdx}`}
+              direction="column"
+              p={padding}
               align="flex-start"
               justify="center"
-              direction="column"
               style={{
-                backgroundColor: '#fff',
                 borderRadius: 4,
+                backgroundColor: '#f0f0f0',
               }}
-              rowGap={rowGap}
               // w="100%"
-              p={padding}
             >
-              {key === '' ? (
-                <Flex w="100%">
-                  <Text size="xs">All constrained values displayed</Text>
-                </Flex>
-              ) : (
-                <Flex
-                  w="100%"
-                  align="center"
-                  justify="space-between"
-                  columnGap={rowGap}
-                >
-                  <Group>
-                    <Text>{`${key.charAt(0).toUpperCase()}${key.slice(
-                      1
-                    )}`}</Text>
-                  </Group>
-                  <Group>
-                    <Text>{value}</Text>
-                  </Group>
-                </Flex>
-              )}
+              {displayKeyValues}
             </Flex>
           );
-        }
-      );
-
-      return (
-        <Flex
-          direction="column"
-          p={padding}
-          align="flex-start"
-          justify="center"
-          style={{
-            borderRadius: 4,
-            backgroundColor: '#f0f0f0',
-          }}
-          // w="100%"
-        >
-          {displayKeyValues}
-        </Flex>
-      );
-    });
+        })
+      : null;
 
   const displayRestData = (
     <Flex
@@ -471,8 +455,22 @@ function DisplayQueryMobile({
       w="100%"
     >
       <Accordion w="100%">
-        <Accordion.Item value="Rest of constrained values">
-          <Accordion.Control>Rest of constrained values</Accordion.Control>
+        <Accordion.Item
+          value={`${
+            restOfGroupedQueryResponseData.length === 0
+              ? 'All constrained values displayed'
+              : 'Rest of constrained values'
+          }`}
+        >
+          <Accordion.Control
+            disabled={restOfGroupedQueryResponseData.length === 0}
+          >
+            <Text>{`${
+              restOfGroupedQueryResponseData.length === 0
+                ? 'All constrained values displayed'
+                : 'Rest of constrained values'
+            }`}</Text>
+          </Accordion.Control>
           <Accordion.Panel>
             <Flex
               align="center"
@@ -508,61 +506,3 @@ function DisplayQueryMobile({
 }
 
 export { DisplayQueryMobile };
-
-/**
- const displayGroupedByQueryResponseData = Array.from(
-    groupedByQueryResponseData
-  ).map(([label, queryObjArr]) => {
-    const displaySection = <Title>{label}</Title>;
-    const displayQueryObjArr = queryObjArr.map((queryObj) => {
-      const displayQueryObj = Object.entries(queryObj).map(([key, value]) => {
-        return (
-          <Group>
-            <Text>{key}</Text>
-            <Text>{value}</Text>
-          </Group>
-        );
-      });
-
-      return <FormLayoutWrapper>{displayQueryObj}</FormLayoutWrapper>;
-    });
-
-    return (
-      <FormLayoutWrapper>
-        {displaySection}
-        {displayQueryObjArr}
-      </FormLayoutWrapper>
-    );
-  });
-   */
-
-/**
-  <Flex direction="column" p={padding} align="flex-start" justify="center">
-        {displaySection}
-        <Flex
-          direction="column"
-          align="flex-start"
-          justify="center"
-          w="100%"
-          rowGap={rowGap}
-          // style={{ backgroundColor: '#f0f0f0', borderRadius: 4 }}
-        >
-          {displayQueryObjArr}
-        </Flex>
-      </Flex>
- */
-
-/**
-       * const displayCondensedView = tableKeyExclusionSet.has(key) ? (
-            <NavLink
-              label={<Text>{labelKey}</Text>}
-              rightSection={<TbChevronRight />}
-              childrenOffset={0}
-              w="62%"
-            >
-              {displayValueOnlyRow}
-            </NavLink>
-          ) : (
-            displayFullLabelValueRow
-          );
-       */
