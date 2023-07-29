@@ -1,4 +1,10 @@
-import { Currency, SetStepsInErrorPayload } from '../../../types';
+import {
+  Action,
+  ActionsCompany,
+  Currency,
+  RequestStatus,
+  SetStepsInErrorPayload,
+} from '../../../types';
 
 type BenefitsPlanKind =
   | 'Health'
@@ -11,8 +17,11 @@ type BenefitsPlanKind =
   | 'Other';
 
 type BenefitsSchema = {
-  userId: string;
-  username: string;
+  action: Action;
+  category: ActionsCompany;
+
+  benefitUserId: string;
+  benefitUsername: string;
   planName: string;
   planDescription: string;
   planKind: BenefitsPlanKind;
@@ -22,6 +31,7 @@ type BenefitsSchema = {
   monthlyPremium: number;
   employerContribution: number;
   employeeContribution: number;
+  requestStatus: RequestStatus;
 };
 
 type BenefitsDocument = BenefitsSchema & {
@@ -32,6 +42,10 @@ type BenefitsDocument = BenefitsSchema & {
 };
 
 type CreateBenefitState = {
+  benefitUsername: string;
+  isValidBenefitUsername: boolean;
+  isBenefitUsernameFocused: boolean;
+
   planName: string;
   isValidPlanName: boolean;
   isPlanNameFocused: boolean;
@@ -71,6 +85,10 @@ type CreateBenefitState = {
 };
 
 type CreateBenefitAction = {
+  setBenefitUsername: 'setBenefitUsername';
+  setIsValidBenefitUsername: 'setIsValidBenefitUsername';
+  setIsBenefitUsernameFocused: 'setIsBenefitUsernameFocused';
+
   setPlanName: 'setPlanName';
   setIsValidPlanName: 'setIsValidPlanName';
   setIsPlanNameFocused: 'setIsPlanNameFocused';
@@ -112,6 +130,7 @@ type CreateBenefitAction = {
 type CreateBenefitDispatch =
   | {
       type:
+        | CreateBenefitAction['setBenefitUsername']
         | CreateBenefitAction['setPlanName']
         | CreateBenefitAction['setPlanDescription']
         | CreateBenefitAction['setPlanStartDate']
@@ -125,6 +144,8 @@ type CreateBenefitDispatch =
     }
   | {
       type:
+        | CreateBenefitAction['setIsValidBenefitUsername']
+        | CreateBenefitAction['setIsBenefitUsernameFocused']
         | CreateBenefitAction['setIsValidPlanName']
         | CreateBenefitAction['setIsPlanNameFocused']
         | CreateBenefitAction['setIsValidPlanDescription']

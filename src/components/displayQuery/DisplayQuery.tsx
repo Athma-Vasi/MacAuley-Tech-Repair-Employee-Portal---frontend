@@ -32,6 +32,7 @@ import { DisplayQueryProps } from './types';
 
 function DisplayQuery<Doc>({
   style = {},
+  totalDocuments,
   parentComponentName,
   queryResponseData,
   componentQueryData,
@@ -94,7 +95,7 @@ function DisplayQuery<Doc>({
   useEffect(() => {
     const initialGroupByRadioData = componentQueryData.reduce(
       (acc, { inputKind, label, value, selectData }) => {
-        if (inputKind === 'selectInput') {
+        if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
           // only push if it is also present in query response data
           const isFieldExcluded = queryResponseData.filter(
             (queryResponseObj) => {
@@ -138,6 +139,7 @@ function DisplayQuery<Doc>({
             },
             ['']
           );
+    console.log('currentSelectData: ', currentSelectData);
 
     displayQueryDispatch({
       type: displayQueryAction.setCurrentSelectionData,
@@ -398,7 +400,10 @@ function DisplayQuery<Doc>({
       {displayGroupByRadioGroup}
       {displayTableViewSegmentControl}
       {displayAcknowledgementModal}
-      <Text>{parentComponentName}</Text>
+      <Flex align="center" justify="space-between" w="100%">
+        <Text>{parentComponentName}</Text>
+        <Text>Total documents: {totalDocuments}</Text>
+      </Flex>
       {displayQueryComponent}
     </Flex>
   );

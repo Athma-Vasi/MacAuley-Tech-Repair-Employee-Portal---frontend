@@ -127,12 +127,6 @@ function DisplayQueryDesktop<Doc>({
             outline: '1px solid teal',
           }}
         >
-          {/* <NavLink
-            label={displaySection}
-            rightSection={<TbChevronRight />}
-            childrenOffset={padding}
-            w="38%"
-          > */}
           <Accordion w="100%">
             <Accordion.Item value={displaySection}>
               <Accordion.Control>{displaySection}</Accordion.Control>
@@ -231,6 +225,8 @@ function DisplayQueryDesktop<Doc>({
                                       </Text>
                                     );
                                   })
+                                : key.toLowerCase().includes('id')
+                                ? value
                                 : `${value
                                     .toString()
                                     .charAt(0)
@@ -242,9 +238,8 @@ function DisplayQueryDesktop<Doc>({
                               tableViewSelection === 'expanded' ? 7 : 13;
 
                             const truncatedValuesWithHoverCards =
-                              key === '_id' ||
-                              key === 'userId' ||
-                              formattedValue.length > 23 ? (
+                              key.toLowerCase().includes('id') ||
+                              formattedValue.length > 19 ? (
                                 <HoverCard
                                   width={500}
                                   shadow="lg"
@@ -455,25 +450,7 @@ function DisplayQueryDesktop<Doc>({
                                       {displayUpdateRequestStatusButton}
                                     </Flex>
                                   ) : (
-                                    <Spoiler
-                                      maxHeight={25}
-                                      showLabel={
-                                        <Center>
-                                          <TbArrowDown />
-                                          <Text>Show</Text>
-                                        </Center>
-                                      }
-                                      hideLabel={
-                                        <Center>
-                                          <TbArrowUp />
-                                          <Text>Hide</Text>
-                                        </Center>
-                                      }
-                                    >
-                                      <Text>
-                                        {truncatedValuesWithHoverCards}
-                                      </Text>
-                                    </Spoiler>
+                                    truncatedValuesWithHoverCards
                                   )}
                                 </td>
                               ) : null;
@@ -526,19 +503,12 @@ function DisplayQueryDesktop<Doc>({
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-          {/* </NavLink> */}
         </Flex>
       );
     }
   );
 
   const displayRestOfGroupedByData = (
-    // <NavLink
-    //   label="Rest of constrained values"
-    //   childrenOffset={padding}
-    //   w="38%"
-    //   rightSection={<TbChevronRight />}
-    // >
     <Accordion w="100%">
       <Accordion.Item value="Rest of constrained values">
         <Accordion.Control>
@@ -573,13 +543,14 @@ function DisplayQueryDesktop<Doc>({
                       borderRadius: 4,
                     }}
                   >
-                    {key === '' ? (
+                    {restOfGroupedQueryResponseData.length === 0 ||
+                    key === '' ? (
                       <Text>All constrained values displayed</Text>
                     ) : (
-                      <>
+                      <Group>
                         <Text>{splitCamelCase(key)}:</Text>
                         <Text>{value}</Text>
-                      </>
+                      </Group>
                     )}
                   </Flex>
                 )

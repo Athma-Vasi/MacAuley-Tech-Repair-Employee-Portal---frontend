@@ -6,7 +6,7 @@ import {
   GetQueriedResourceRequestServerResponse,
   ResourceRequestServerResponse,
 } from '../../types';
-import { logState, urlBuilder } from '../../utils';
+import { logState, splitCamelCase, urlBuilder } from '../../utils';
 import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
@@ -112,9 +112,18 @@ function DisplayResource<Doc>({
         const data: GetQueriedResourceRequestServerResponse<Doc> =
           await response.json();
         console.log('response json data', data);
+
         displayResourceDispatch({
           type: displayResourceAction.setResourceData,
           payload: data.resourceData,
+        });
+        displayResourceDispatch({
+          type: displayResourceAction.setPages,
+          payload: data.pages,
+        });
+        displayResourceDispatch({
+          type: displayResourceAction.setTotalDocuments,
+          payload: data.totalDocuments,
         });
       } catch (error) {
         console.log(error);
@@ -282,14 +291,15 @@ function DisplayResource<Doc>({
       />
 
       <DisplayQuery
-        parentComponentName="Leave Requests"
+        totalDocuments={totalDocuments}
+        parentComponentName={splitCamelCase(requestBodyHeading)}
         parentRequestStatusDispatch={displayResourceDispatch}
         parentDeleteFormDispatch={displayResourceDispatch}
         componentQueryData={componentQueryData}
         queryResponseData={resourceData}
       />
       <PageBuilder
-        total={10}
+        total={pages}
         setPageQueryString={displayResourceAction.setPageQueryString}
         parentComponentDispatch={displayResourceDispatch}
       />

@@ -929,13 +929,16 @@ function groupQueryResponse<Doc>({
   const groupedBy = queryResponseData.reduce(
     (
       acc: Map<string | number, Array<QueryResponseData<Doc>>>,
-
       queryResponseObj: QueryResponseData<Doc>
     ) => {
       // find the value of the groupBySelection field
-      const groupBySelectionValue = Object.entries(queryResponseObj).filter(
-        ([key, value]) => (key === groupBySelection ? value : null)
-      )[0][1];
+      // const groupBySelectionValue = Object.entries(queryResponseObj).filter(
+      //   ([key, value]) => (key === groupBySelection ? value : null)
+      // )[0][1];
+      const groupBySelectionValue =
+        Object.entries(queryResponseObj).find(
+          ([key, _]) => key === groupBySelection
+        )?.[1] ?? '';
 
       // if the groupBySelection field exists in the queryResponseObj
       if (Object.hasOwn(queryResponseObj, groupBySelection)) {
@@ -962,6 +965,13 @@ function groupQueryResponse<Doc>({
     },
     new Map()
   );
+
+  console.group('groupQueryResponse');
+  console.log('groupBySelection', groupBySelection);
+  console.log('currentSelectionData', currentSelectionData);
+  console.log('queryResponseData', queryResponseData);
+  console.log('groupedBy', groupedBy);
+  console.groupEnd();
 
   // this allows user to see the rest of the values for groupedBy selection
   const groupedByKeysSet = new Set(Object.keys(Object.fromEntries(groupedBy)));

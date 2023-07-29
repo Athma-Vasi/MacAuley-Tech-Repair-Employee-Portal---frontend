@@ -10,6 +10,7 @@ type PageBuilderProps = {
     type: 'setPageQueryString';
     payload: string;
   }>;
+  // total = pages from server response
   total: number;
 };
 

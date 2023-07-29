@@ -78,13 +78,13 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           navigate('/portal/company/address-change');
         }}
       />
-      {/* benefits */}
+      {/* benefit */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Benefits</TextWrapper>}
         icon={<TbGift />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/company/benefits');
+          navigate('/portal/company/benefit');
         }}
       />
       {/* expense claim */}

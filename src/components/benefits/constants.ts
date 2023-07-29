@@ -1,3 +1,6 @@
+import { REQUEST_STATUS } from '../../constants/data';
+import { ResourceRoutePaths } from '../../types';
+import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 
 const BENEFIT_PLAN_DATA = [
@@ -51,8 +54,73 @@ const CREATE_BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 
 const CREATE_BENEFIT_MAX_STEPPER_POSITION = 3;
 
+const BENEFIT_QUERY_DATA: ComponentQueryData[] = [
+  {
+    label: 'Plan name',
+    value: 'planName',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Plan description',
+    value: 'planDescription',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Plan kind',
+    value: 'planKind',
+    inputKind: 'selectInput',
+    selectData: BENEFIT_PLAN_DATA,
+  },
+  {
+    label: 'Plan start date',
+    value: 'planStartDate',
+    inputKind: 'dateInput',
+  },
+  {
+    label: 'Is plan active',
+    value: 'isPlanActive',
+    inputKind: 'booleanInput',
+    booleanData: [true, false],
+  },
+  {
+    label: 'Currency',
+    value: 'currency',
+    inputKind: 'selectInput',
+    selectData: CURRENCY_DATA,
+  },
+  {
+    label: 'Employer contribution',
+    value: 'employerContribution',
+    inputKind: 'numberInput',
+  },
+  {
+    label: 'Employee contribution',
+    value: 'employeeContribution',
+    inputKind: 'numberInput',
+  },
+  {
+    label: 'Monthly premium',
+    value: 'monthlyPremium',
+    inputKind: 'numberInput',
+  },
+  {
+    label: 'Request status',
+    value: 'requestStatus',
+    inputKind: 'selectInput',
+    selectData: REQUEST_STATUS,
+  },
+];
+
+const BENEFIT_RESOURCE_PATHS: ResourceRoutePaths = {
+  manager: '/api/v1/actions/company/benefit',
+  admin: '/api/v1/actions/company/benefit',
+  employee: '/api/v1/actions/company/benefit/user',
+};
+
 export {
   BENEFIT_PLAN_DATA,
+  BENEFIT_QUERY_DATA,
+  BENEFIT_RESOURCE_PATHS,
   CREATE_BENEFIT_DESCRIPTION_OBJECTS,
   CREATE_BENEFIT_MAX_STEPPER_POSITION,
   CURRENCY_DATA,

@@ -9,6 +9,7 @@ import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayQueryProps<Doc> = {
   style?: CSSProperties;
+  totalDocuments: number;
   queryResponseData: QueryResponseData<Doc>[];
   componentQueryData: ComponentQueryData[];
   parentComponentName: string;

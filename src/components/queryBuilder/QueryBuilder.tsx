@@ -116,10 +116,10 @@ function QueryBuilder({
     ] = componentQueryData.reduce(
       (
         acc: [string[], string[], CheckboxInputData, QueryLabelValueTypesMap],
-        { label, value, inputKind, selectData }
+        { label, value, inputKind, selectData, booleanData }
       ) => {
         // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
-        if (inputKind === 'selectInput') {
+        if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
           acc[0].push(label);
         } else if (inputKind === 'dateInput' || inputKind === 'numberInput') {
           acc[0].push(label);
@@ -134,6 +134,8 @@ function QueryBuilder({
 
         selectData
           ? acc[3].set(label, { value, inputKind, selectData })
+          : booleanData
+          ? acc[3].set(label, { value, inputKind, booleanData })
           : acc[3].set(label, { value, inputKind });
 
         return acc;
@@ -343,7 +345,7 @@ function QueryBuilder({
   };
 
   const filterOperatorData =
-    currentInputKind === 'selectInput'
+    currentInputKind === 'selectInput' || currentInputKind === 'booleanInput'
       ? ['', 'in']
       : QUERY_BUILDER_FILTER_OPERATORS;
   const filterOperatorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
@@ -353,7 +355,8 @@ function QueryBuilder({
       description: `${
         currentFilterTerm === ''
           ? 'Please select a field'
-          : currentInputKind === 'selectInput'
+          : currentInputKind === 'selectInput' ||
+            currentInputKind === 'booleanInput'
           ? 'Only "in" is available for hardcoded data'
           : `Select an operator for ${currentFilterTerm}`
       }`,
@@ -429,7 +432,13 @@ function QueryBuilder({
   };
 
   const filterValueSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: labelValueTypesMap.get(currentFilterTerm)?.selectData || [],
+    data:
+      labelValueTypesMap.get(currentFilterTerm)?.selectData ||
+      // select input data type is (string|SelectItem)[], does not accept boolean[]
+      labelValueTypesMap
+        .get(currentFilterTerm)
+        ?.booleanData?.map((bool) => `${bool}`) ||
+      [],
     label: 'Value',
     description: `Select a value for ${currentFilterTerm}`,
     value: currentFilterValue,
@@ -852,24 +861,26 @@ function QueryBuilder({
           {displaySortSection}
           {displayProjectionSection}
           <Flex align="center" justify="flex-end">
-            <Tooltip label={`Submit ${collectionName} query`}>
-              <Group position="apart">
-                {createdClearButton}
-                {createdSubmitButton}
-              </Group>
-            </Tooltip>
+            <Group position="apart">
+              <Tooltip label={`Clear ${collectionName} query`}>
+                <Group>{createdClearButton}</Group>
+              </Tooltip>
+              <Tooltip label={`Submit ${collectionName} query`}>
+                <Group>{createdSubmitButton}</Group>
+              </Tooltip>
+            </Group>
           </Flex>
         </Flex>
       </NavLink>
     </Flex>
   );
 
-  // useEffect(() => {
-  //   logState({
-  //     state: queryBuilderState,
-  //     groupLabel: 'queryBuilderState',
-  //   });
-  // }, [queryBuilderState]);
+  useEffect(() => {
+    logState({
+      state: queryBuilderState,
+      groupLabel: 'queryBuilderState',
+    });
+  }, [queryBuilderState]);
 
   return <>{displayQueryBuilderComponent}</>;
 }

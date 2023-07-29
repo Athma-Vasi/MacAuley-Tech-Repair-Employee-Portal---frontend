@@ -7,6 +7,10 @@ import type {
 } from './types';
 
 const initialCreateBenefitState: CreateBenefitState = {
+  benefitUsername: '',
+  isValidBenefitUsername: false,
+  isBenefitUsernameFocused: false,
+
   planName: '',
   isValidPlanName: false,
   isPlanNameFocused: false,
@@ -47,6 +51,10 @@ const initialCreateBenefitState: CreateBenefitState = {
 };
 
 const createBenefitAction: CreateBenefitAction = {
+  setBenefitUsername: 'setBenefitUsername',
+  setIsValidBenefitUsername: 'setIsValidBenefitUsername',
+  setIsBenefitUsernameFocused: 'setIsBenefitUsernameFocused',
+
   setPlanName: 'setPlanName',
   setIsValidPlanName: 'setIsValidPlanName',
   setIsPlanNameFocused: 'setIsPlanNameFocused',
@@ -90,6 +98,22 @@ function createBenefitReducer(
   action: CreateBenefitDispatch
 ): CreateBenefitState {
   switch (action.type) {
+    case createBenefitAction.setBenefitUsername:
+      return {
+        ...state,
+        benefitUsername: action.payload,
+      };
+    case createBenefitAction.setIsValidBenefitUsername:
+      return {
+        ...state,
+        isValidBenefitUsername: action.payload,
+      };
+    case createBenefitAction.setIsBenefitUsernameFocused:
+      return {
+        ...state,
+        isBenefitUsernameFocused: action.payload,
+      };
+
     case createBenefitAction.setPlanName:
       return {
         ...state,
@@ -105,6 +129,7 @@ function createBenefitReducer(
         ...state,
         isPlanNameFocused: action.payload,
       };
+
     case createBenefitAction.setPlanDescription:
       return {
         ...state,
@@ -120,6 +145,7 @@ function createBenefitReducer(
         ...state,
         isPlanDescriptionFocused: action.payload,
       };
+
     case createBenefitAction.setPlanStartDate:
       return {
         ...state,
@@ -135,6 +161,7 @@ function createBenefitReducer(
         ...state,
         isPlanStartDateFocused: action.payload,
       };
+
     case createBenefitAction.setPlanKind:
       return {
         ...state,
@@ -150,6 +177,7 @@ function createBenefitReducer(
         ...state,
         currency: action.payload,
       };
+
     case createBenefitAction.setEmployerContribution:
       return {
         ...state,
@@ -165,6 +193,7 @@ function createBenefitReducer(
         ...state,
         isEmployerContributionFocused: action.payload,
       };
+
     case createBenefitAction.setEmployeeContribution:
       return {
         ...state,
@@ -201,6 +230,7 @@ function createBenefitReducer(
         stepsInError,
       };
     }
+
     case createBenefitAction.setIsError:
       return {
         ...state,

@@ -9,7 +9,11 @@ import { Flex, Text } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
 import { TbUpload } from 'react-icons/tb';
 
-import { DATE_REGEX, MONEY_REGEX } from '../../../constants/regex';
+import {
+  DATE_REGEX,
+  MONEY_REGEX,
+  USERNAME_REGEX,
+} from '../../../constants/regex';
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
@@ -24,6 +28,7 @@ import {
   returnDateValidationText,
   returnGrammarValidationText,
   returnNumberAmountValidationText,
+  returnUsernameRegexValidationText,
 } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -56,6 +61,10 @@ function CreateBenefit() {
     initialCreateBenefitState
   );
   const {
+    benefitUsername,
+    isValidBenefitUsername,
+    isBenefitUsernameFocused,
+
     planName,
     isValidPlanName,
     isPlanNameFocused,
@@ -93,6 +102,15 @@ function CreateBenefit() {
     isLoading,
     loadingMessage,
   } = createBenefitState;
+  // validate benefitUsername input on every change
+  useEffect(() => {
+    const isValid = USERNAME_REGEX.test(benefitUsername);
+
+    createBenefitDispatch({
+      type: createBenefitAction.setIsValidBenefitUsername,
+      payload: isValid,
+    });
+  }, [benefitUsername]);
 
   // validate planName input on every change
   useEffect(() => {
@@ -230,7 +248,8 @@ function CreateBenefit() {
 
   // update stepper state if any input in the current step is invalid
   useEffect(() => {
-    const areRequiredInputsInError = !isValidPlanName || !isValidPlanStartDate;
+    const areRequiredInputsInError =
+      !isValidBenefitUsername || !isValidPlanName || !isValidPlanStartDate;
     const isOptionalInputInError =
       !isValidPlanDescription && planDescription !== '';
 
@@ -244,6 +263,7 @@ function CreateBenefit() {
       },
     });
   }, [
+    isValidBenefitUsername,
     isValidPlanName,
     isValidPlanDescription,
     isValidPlanStartDate,
@@ -265,6 +285,15 @@ function CreateBenefit() {
   }, [isValidEmployeeContribution, isValidEmployerContribution]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
+  const [benefitUsernameInputErrorText, benefitUsernameInputValidText] =
+    returnAccessibleErrorValidTextElements({
+      inputElementKind: 'benefit username',
+      inputText: benefitUsername,
+      isValidInputText: isValidBenefitUsername,
+      isInputTextFocused: isBenefitUsernameFocused,
+      regexValidationText: returnUsernameRegexValidationText(benefitUsername),
+    });
+
   const [planNameInputErrorText, planNameInputValidText] =
     returnAccessibleErrorValidTextElements({
       inputElementKind: 'plan name',
@@ -339,6 +368,40 @@ function CreateBenefit() {
     });
 
   // following are info objects for input creators
+  const benefitUsernameInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: benefitUsernameInputErrorText,
+      valid: benefitUsernameInputValidText,
+    },
+    inputText: benefitUsername,
+    isValidInputText: isValidBenefitUsername,
+    label: 'Benefit username',
+    onBlur: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsBenefitUsernameFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+      createBenefitDispatch({
+        type: createBenefitAction.setBenefitUsername,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsBenefitUsernameFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter username',
+    semanticName: 'benefit username',
+    minLength: 3,
+    maxLength: 20,
+    required: true,
+    withAsterisk: true,
+  };
+
   const planNameInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: planNameInputErrorText,
@@ -586,10 +649,12 @@ function CreateBenefit() {
   };
 
   const [
+    createdBenefitUsernameTextInput,
     createdPlanNameTextInput,
     createdEmployeeContributionTextInput,
     createdEmployerContributionText,
   ] = returnAccessibleTextInputElements([
+    benefitUsernameInputCreatorInfo,
     planNameInputCreatorInfo,
     employeeContributionInputCreatorInfo,
     employerContributionInputCreatorInfo,
@@ -623,6 +688,7 @@ function CreateBenefit() {
 
   const displayPlanDetailsFormPage = (
     <FormLayoutWrapper>
+      {createdBenefitUsernameTextInput}
       {createdPlanNameTextInput}
       {createdPlanDescriptionTextAreaInput}
       {createdPlanStartDateInput}

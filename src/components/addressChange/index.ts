@@ -1,3 +1,4 @@
 import { AddressChange } from './AddressChange';
+import { DisplayAddressChanges } from './DisplayAddressChanges';
 
-export { AddressChange };
+export { AddressChange, DisplayAddressChanges };

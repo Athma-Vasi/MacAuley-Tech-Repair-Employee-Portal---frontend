@@ -1,19 +1,26 @@
 import { CheckboxInputData } from '../../types';
 import { GenerateQueryStringInput } from './utils';
 
-type QueryInputKind = 'dateInput' | 'numberInput' | 'selectInput' | 'textInput';
+type QueryInputKind =
+  | 'dateInput'
+  | 'numberInput'
+  | 'selectInput'
+  | 'textInput'
+  | 'booleanInput';
 
 type ComponentQueryData = {
   label: string;
   value: string;
   inputKind: QueryInputKind;
   selectData?: string[];
+  booleanData?: boolean[];
 };
 
 type QueryValueTypes = {
   value: string;
   inputKind: string;
   selectData?: string[];
+  booleanData?: boolean[];
 };
 
 type QueryLabelValueTypesMap = Map<string, QueryValueTypes>;

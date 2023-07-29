@@ -89,6 +89,12 @@ type GetQueriedResourceRequestServerResponse<Doc> = {
   resourceData: QueryResponseData<Doc>[];
 };
 
+type ResourceRoutePaths = {
+  manager: string;
+  admin: string;
+  employee: string;
+};
+
 export type {
   Action,
   ActionsCompany,
@@ -103,6 +109,7 @@ export type {
   PostalCode,
   PreferredPronouns,
   Province,
+  ResourceRoutePaths,
   StatesUS,
   Urgency,
   User,

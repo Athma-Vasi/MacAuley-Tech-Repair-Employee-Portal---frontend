@@ -3,9 +3,12 @@ import './index.css';
 import { MantineProvider } from '@mantine/core';
 import { Route, Routes } from 'react-router-dom';
 
-import { AddressChange } from './components/addressChange';
+import {
+  AddressChange,
+  DisplayAddressChanges,
+} from './components/addressChange';
 import { CreateAnnouncement } from './components/announcements/createAnnouncement';
-import { CreateBenefit } from './components/benefits/createBenefit';
+import { CreateBenefit, DisplayBenefits } from './components/benefits';
 import { CreateComment } from './components/comments';
 import { CreateAnonymousRequest } from './components/createAnonymousRequest';
 import { Dashboard } from './components/dashboard';
@@ -107,8 +110,21 @@ function App() {
           </Route>
 
           <Route path="company">
-            {/* <Route path="address-change" element={<AddressChange />} /> */}
-            {/* <Route path="benefits" element={<CreateBenefit />} /> */}
+            {/* address change */}
+            <Route path="address-change">
+              <Route index element={<DisplayAddressChanges />} />
+              <Route path="create" element={<AddressChange />} />
+              <Route path="display" element={<DisplayAddressChanges />} />
+            </Route>
+
+            {/* benefit */}
+            <Route path="benefit">
+              <Route index element={<DisplayBenefits />} />
+              <Route path="create" element={<CreateBenefit />} />
+              <Route path="display" element={<DisplayBenefits />} />
+            </Route>
+
+            {/* leave-request */}
             <Route path="leave-request">
               <Route index element={<DisplayLeaveRequests />} />
               <Route path="display" element={<DisplayLeaveRequests />} />

@@ -103,11 +103,14 @@ const TEXT_OVERFLOW: CSSProperties = {
   whiteSpace: 'nowrap',
 };
 
+const REQUEST_STATUS = ['pending', 'approved', 'rejected'];
+
 export {
   COLORS,
   DEPARTMENTS,
   JOB_POSITIONS,
   PROVINCES,
+  REQUEST_STATUS,
   STATES_US,
   TEXT_OVERFLOW,
   URGENCY_DATA,
