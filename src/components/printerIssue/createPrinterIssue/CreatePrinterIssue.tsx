@@ -50,7 +50,7 @@ import {
 import {
   CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS,
   CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION,
-} from './constants';
+} from '../constants';
 import {
   createPrinterIssueAction,
   createPrinterIssueReducer,

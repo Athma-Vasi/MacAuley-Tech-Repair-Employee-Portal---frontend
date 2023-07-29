@@ -11,7 +11,7 @@ type PrinterIssueSchema = {
   action: Action;
   category: ActionsGeneral;
   title: string;
-  contactNumber: PhoneNumber;
+  contactNumber: PhoneNumber | string;
   contactEmail: string;
   dateOfOccurrence: string;
   timeOfOccurrence: string;

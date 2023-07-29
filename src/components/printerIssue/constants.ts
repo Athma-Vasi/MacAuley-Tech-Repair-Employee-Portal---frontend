@@ -1,4 +1,4 @@
-import { DescriptionObjectsArray } from '../../wrappers';
+import { DescriptionObjectsArray } from '../wrappers';
 
 const CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {

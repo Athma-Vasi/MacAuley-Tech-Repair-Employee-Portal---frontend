@@ -681,7 +681,9 @@ function returnNumberAmountValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${kind[0].toUpperCase()}${kind.slice(1)}. ${validationText}`
+    ? `Invalid ${kind.charAt(0).toUpperCase()}${kind.slice(
+        1
+      )}. ${validationText}`
     : '';
 }
 

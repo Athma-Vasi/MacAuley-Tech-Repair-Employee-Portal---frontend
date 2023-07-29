@@ -26,7 +26,7 @@ import { Login } from './components/login';
 import { NotesList } from './components/notesList';
 import { NotFound } from './components/notFound';
 import { PortalLayout } from './components/portalLayout';
-import { CreatePrinterIssue } from './components/printerIssue/createPrinterIssue';
+import { CreatePrinterIssue } from './components/printerIssue';
 import { PublicLayout } from './components/publicLayout';
 import { CreateReferment } from './components/referments/createReferment';
 import { Register } from './components/register';
