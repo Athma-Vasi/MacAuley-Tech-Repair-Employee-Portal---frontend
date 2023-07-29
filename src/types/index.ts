@@ -95,6 +95,8 @@ type ResourceRoutePaths = {
   employee: string;
 };
 
+type TimeRailway = `${number}${number}:${number}${number}`;
+
 export type {
   Action,
   ActionsCompany,
@@ -131,4 +133,5 @@ export type {
   ResourceRequestServerResponse,
   SelectInputData,
   SetStepsInErrorPayload,
+  TimeRailway,
 };

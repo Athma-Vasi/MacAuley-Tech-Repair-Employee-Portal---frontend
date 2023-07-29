@@ -91,12 +91,7 @@ function DisplayQueryDesktop<Doc>({
   ]);
 
   const tableKeyExclusionSet = new Set(['_id', 'userId', 'action', 'category']);
-  const dateKeysSet = new Set([
-    'createdAt',
-    'updatedAt',
-    'startDate',
-    'endDate',
-  ]);
+  const dateKeysSet = new Set(['createdAt', 'updatedAt']);
 
   const displayTable = Array.from(groupedByQueryResponseData).map(
     ([section, queryResponseObjArrays], sectionIdx) => {
@@ -193,18 +188,7 @@ function DisplayQueryDesktop<Doc>({
                             ['Delete', ''],
                           ].map(([key, value], keyValIdx) => {
                             const formattedValue =
-                              dateKeysSet.has(key) ||
-                              key.toLowerCase().includes('date')
-                                ? formatDate({
-                                    date: value,
-                                    formatOptions: {
-                                      year: 'numeric',
-                                      month: 'numeric',
-                                      day: 'numeric',
-                                    },
-                                    locale: 'en-US',
-                                  })
-                                : value === true
+                              value === true
                                 ? 'Yes'
                                 : value === false
                                 ? 'No'
@@ -227,6 +211,29 @@ function DisplayQueryDesktop<Doc>({
                                   })
                                 : key.toLowerCase().includes('id')
                                 ? value
+                                : key === 'createdAt' || key === 'updatedAt'
+                                ? formatDate({
+                                    date: value,
+                                    formatOptions: {
+                                      year: 'numeric',
+                                      month: 'numeric',
+                                      day: 'numeric',
+                                      hour: 'numeric',
+                                      minute: 'numeric',
+                                      second: 'numeric',
+                                      hour12: false,
+                                      timeZoneName: 'short',
+                                    },
+                                    locale: 'en-US',
+                                  })
+                                : splitCamelCase(key).includes('Date')
+                                ? formatDate({
+                                    date: value,
+                                    formatOptions: {
+                                      dateStyle: 'short',
+                                    },
+                                    locale: 'en-US',
+                                  })
                                 : `${value
                                     .toString()
                                     .charAt(0)
@@ -238,30 +245,7 @@ function DisplayQueryDesktop<Doc>({
                               tableViewSelection === 'expanded' ? 7 : 13;
 
                             const truncatedValuesWithHoverCards =
-                              key.toLowerCase().includes('id') ||
-                              formattedValue.length > 19 ? (
-                                <HoverCard
-                                  width={500}
-                                  shadow="lg"
-                                  openDelay={250}
-                                  closeDelay={100}
-                                >
-                                  <HoverCard.Target>
-                                    <Text>
-                                      {`${formattedValue
-                                        .toString()
-                                        .slice(0, sliceLength)}...`}
-                                    </Text>
-                                  </HoverCard.Target>
-                                  <HoverCard.Dropdown>
-                                    <Text>
-                                      {splitCamelCase(key)}: {formattedValue}
-                                    </Text>
-                                  </HoverCard.Dropdown>
-                                </HoverCard>
-                              ) : dateKeysSet.has(key) ||
-                                key.includes('Date') ||
-                                key.includes('date') ? (
+                              splitCamelCase(key).includes('Date') ? (
                                 <HoverCard
                                   width={382}
                                   shadow="lg"
@@ -279,10 +263,54 @@ function DisplayQueryDesktop<Doc>({
                                           dateStyle: 'full',
                                           localeMatcher: 'best fit',
                                           formatMatcher: 'best fit',
-                                          timeStyle: 'long',
                                         },
                                         locale: 'en-US',
                                       })}
+                                    </Text>
+                                  </HoverCard.Dropdown>
+                                </HoverCard>
+                              ) : key === 'createdAt' || key === 'updatedAt' ? (
+                                <HoverCard
+                                  width={382}
+                                  shadow="lg"
+                                  openDelay={250}
+                                  closeDelay={100}
+                                >
+                                  <HoverCard.Target>
+                                    <Text>{formattedValue}</Text>
+                                  </HoverCard.Target>
+                                  <HoverCard.Dropdown>
+                                    <Text>
+                                      {formatDate({
+                                        date: value,
+                                        formatOptions: {
+                                          dateStyle: 'full',
+                                          timeStyle: 'long',
+                                          hour12: false,
+                                        },
+                                        locale: 'en-US',
+                                      })}
+                                    </Text>
+                                  </HoverCard.Dropdown>
+                                </HoverCard>
+                              ) : key.toLowerCase().includes('id') ||
+                                formattedValue.length > 19 ? (
+                                <HoverCard
+                                  width={500}
+                                  shadow="lg"
+                                  openDelay={250}
+                                  closeDelay={100}
+                                >
+                                  <HoverCard.Target>
+                                    <Text>
+                                      {`${formattedValue
+                                        .toString()
+                                        .slice(0, sliceLength)}...`}
+                                    </Text>
+                                  </HoverCard.Target>
+                                  <HoverCard.Dropdown>
+                                    <Text>
+                                      {splitCamelCase(key)}: {formattedValue}
                                     </Text>
                                   </HoverCard.Dropdown>
                                 </HoverCard>

@@ -67,7 +67,7 @@ const PRINTER_ISSUE_QUERY_DATA: ComponentQueryData[] = [
   {
     label: 'Time of occurrence',
     value: 'timeOfOccurrence',
-    inputKind: 'textInput',
+    inputKind: 'timeInput',
   },
   {
     label: 'Printer make',

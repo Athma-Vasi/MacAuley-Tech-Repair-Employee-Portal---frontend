@@ -122,16 +122,38 @@ function DisplayQueryMobile({
           componentQueryData.find((queryDataObj) => queryDataObj.value === key)
             ?.label ?? splitCamelCase(key);
 
+        // const formattedValue =
+        //   dateKeysSet.has(sectionKey) ||
+        //   sectionKey.toLowerCase().includes('date')
+        //     ? formatDate({
+        //         date: value,
+        //         formatOptions: {
+        //           dateStyle: 'full',
+        //         },
+        //         locale: 'en-US',
+        //       })
+        //     : Array.isArray(value)
+        //     ? value.map((val, valIdx) => {
+        //         return (
+        //           <Text key={`${valIdx}`}>
+        //             {`${val.toString().charAt(0).toUpperCase()}${val
+        //               .toString()
+        //               .slice(1)}${valIdx === value.length - 1 ? '' : ', '}`}
+        //           </Text>
+        //         );
+        //       })
+        //     : value === true
+        //     ? 'Yes'
+        //     : value === false
+        //     ? 'No'
+        //     : `${value.toString().charAt(0).toUpperCase()}${value
+        //         .toString()
+        //         .slice(1)}`;
         const formattedValue =
-          dateKeysSet.has(sectionKey) ||
-          sectionKey.toLowerCase().includes('date')
-            ? formatDate({
-                date: value,
-                formatOptions: {
-                  dateStyle: 'full',
-                },
-                locale: 'en-US',
-              })
+          value === true
+            ? 'Yes'
+            : value === false
+            ? 'No'
             : Array.isArray(value)
             ? value.map((val, valIdx) => {
                 return (
@@ -142,10 +164,31 @@ function DisplayQueryMobile({
                   </Text>
                 );
               })
-            : value === true
-            ? 'Yes'
-            : value === false
-            ? 'No'
+            : key.toLowerCase().includes('id')
+            ? value
+            : key === 'createdAt' || key === 'updatedAt'
+            ? formatDate({
+                date: value,
+                formatOptions: {
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  second: 'numeric',
+                  hour12: false,
+                  timeZoneName: 'long',
+                },
+                locale: 'en-US',
+              })
+            : splitCamelCase(key).includes('Date')
+            ? formatDate({
+                date: value,
+                formatOptions: {
+                  dateStyle: 'short',
+                },
+                locale: 'en-US',
+              })
             : `${value.toString().charAt(0).toUpperCase()}${value
                 .toString()
                 .slice(1)}`;

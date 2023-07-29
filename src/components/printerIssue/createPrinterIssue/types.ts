@@ -2,6 +2,7 @@ import type {
   Action,
   ActionsGeneral,
   PhoneNumber,
+  TimeRailway,
   Urgency,
 } from '../../../types';
 
@@ -32,7 +33,7 @@ type PrinterIssueSchema = {
   contactNumber: PhoneNumber | string;
   contactEmail: string;
   dateOfOccurrence: string;
-  timeOfOccurrence: string;
+  timeOfOccurrence: TimeRailway;
   printerMake: PrinterMake;
   printerModel: string;
   printerSerialNumber: string;
@@ -65,7 +66,7 @@ type CreatePrinterIssueState = {
   isValidDateOfOccurrence: boolean;
   isDateOfOccurrenceFocused: boolean;
 
-  timeOfOccurrence: string;
+  timeOfOccurrence: TimeRailway | string;
   isValidTimeOfOccurrence: boolean;
   isTimeOfOccurrenceFocused: boolean;
 
@@ -174,8 +175,7 @@ type CreatePrinterIssueDispatch =
         | CreatePrinterIssueAction['setSubmitMessage']
         | CreatePrinterIssueAction['setSuccessMessage']
         | CreatePrinterIssueAction['setLoadingMessage']
-        | CreatePrinterIssueAction['setDateOfOccurrence']
-        | CreatePrinterIssueAction['setTimeOfOccurrence'];
+        | CreatePrinterIssueAction['setDateOfOccurrence'];
 
       payload: string;
     }
@@ -206,6 +206,10 @@ type CreatePrinterIssueDispatch =
         | CreatePrinterIssueAction['setIsLoading'];
 
       payload: boolean;
+    }
+  | {
+      type: CreatePrinterIssueAction['setTimeOfOccurrence'];
+      payload: TimeRailway | string;
     }
   | {
       type: CreatePrinterIssueAction['setPrinterMake'];
