@@ -1,5 +1,12 @@
 import { Button } from '@mantine/core';
-import { MouseEvent, PointerEvent, ReactNode } from 'react';
+import {
+  CSSProperties,
+  KeyboardEvent,
+  MouseEvent,
+  PointerEvent,
+  ReactNode,
+  RefObject,
+} from 'react';
 import { TbUpload } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
@@ -9,9 +16,10 @@ type AccessibleButtonCreatorInfo = {
   buttonOnClick?: (
     event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
   ) => void;
-  buttonStyle?: React.CSSProperties;
+  buttonOnKeyDown?: (event: KeyboardEvent<HTMLButtonElement>) => void;
+  buttonStyle?: CSSProperties;
   buttonDisabled?: boolean;
-  buttonRef?: React.RefObject<HTMLButtonElement>;
+  buttonRef?: RefObject<HTMLButtonElement>;
   buttonType?: 'button' | 'submit' | 'reset';
   buttonVariant?:
     | 'outline'
@@ -22,8 +30,8 @@ type AccessibleButtonCreatorInfo = {
     | 'gradient'
     | 'subtle';
   compact?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
   semanticName: string;
   semanticDescription: string;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -42,6 +50,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     buttonLabel,
     buttonType = 'button',
     buttonOnClick = () => {},
+    buttonOnKeyDown = () => {},
     semanticDescription,
     semanticName,
     buttonStyle = {},
@@ -58,6 +67,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     <Button
       style={buttonStyle}
       onClick={buttonOnClick}
+      onKeyDown={buttonOnKeyDown}
       disabled={buttonDisabled}
       ref={buttonRef}
       type={buttonType}

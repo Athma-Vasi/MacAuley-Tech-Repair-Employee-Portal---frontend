@@ -932,9 +932,6 @@ function groupQueryResponse<Doc>({
       queryResponseObj: QueryResponseData<Doc>
     ) => {
       // find the value of the groupBySelection field
-      // const groupBySelectionValue = Object.entries(queryResponseObj).filter(
-      //   ([key, value]) => (key === groupBySelection ? value : null)
-      // )[0][1];
       const groupBySelectionValue =
         Object.entries(queryResponseObj).find(
           ([key, _]) => key === groupBySelection
@@ -977,7 +974,7 @@ function groupQueryResponse<Doc>({
   const groupedByKeysSet = new Set(Object.keys(Object.fromEntries(groupedBy)));
   const rest = currentSelectionData.reduce(
     (acc: Record<string, number>[], key) => {
-      if (!groupedByKeysSet.has(key)) {
+      if (!groupedByKeysSet.has(key) && key.length > 0) {
         const newObj = Object.create(null);
         Object.defineProperty(newObj, key, {
           value: 0,

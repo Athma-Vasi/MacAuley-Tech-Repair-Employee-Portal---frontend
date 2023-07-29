@@ -1,6 +1,12 @@
 import { Flex, Modal, SegmentedControl, Text, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useReducer,
+  KeyboardEvent,
+} from 'react';
 import { TbTrash, TbUpload } from 'react-icons/tb';
 
 import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
@@ -256,6 +262,12 @@ function DisplayQuery<Doc>({
     buttonOnClick: () => {
       closeDeleteAcknowledge();
     },
+    // buttonOnKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => {
+    //   if (event.key === 'U+000A' || event.key === 'Enter') {
+    //     event.preventDefault();
+    //     return;
+    //   }
+    // },
     buttonDisabled: !isValidAcknowledgementText,
   };
 

@@ -510,9 +510,21 @@ function DisplayQueryDesktop<Doc>({
 
   const displayRestOfGroupedByData = (
     <Accordion w="100%">
-      <Accordion.Item value="Rest of constrained values">
-        <Accordion.Control>
-          <Text>Rest of constrained values</Text>
+      <Accordion.Item
+        value={`${
+          restOfGroupedQueryResponseData.length === 0
+            ? 'All constrained values displayed'
+            : 'Rest of constrained values'
+        }`}
+      >
+        <Accordion.Control
+          disabled={restOfGroupedQueryResponseData.length === 0}
+        >
+          <Text>{`${
+            restOfGroupedQueryResponseData.length === 0
+              ? 'All constrained values displayed'
+              : 'Rest of constrained values'
+          }`}</Text>
         </Accordion.Control>
         <Accordion.Panel>
           <Flex
@@ -543,15 +555,10 @@ function DisplayQueryDesktop<Doc>({
                       borderRadius: 4,
                     }}
                   >
-                    {restOfGroupedQueryResponseData.length === 0 ||
-                    key === '' ? (
-                      <Text>All constrained values displayed</Text>
-                    ) : (
-                      <Group>
-                        <Text>{splitCamelCase(key)}:</Text>
-                        <Text>{value}</Text>
-                      </Group>
-                    )}
+                    <Group>
+                      <Text>{splitCamelCase(key)}:</Text>
+                      <Text>{value}</Text>
+                    </Group>
                   </Flex>
                 )
               );
