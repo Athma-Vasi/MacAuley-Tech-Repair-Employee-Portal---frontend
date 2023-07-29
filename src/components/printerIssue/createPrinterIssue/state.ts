@@ -25,10 +25,7 @@ const initialCreatePrinterIssueState: CreatePrinterIssueState = {
   isValidTimeOfOccurrence: false,
   isTimeOfOccurrenceFocused: false,
 
-  printerMake: '',
-  isValidPrinterMake: false,
-  isPrinterMakeFocused: false,
-
+  printerMake: 'Brother',
   printerModel: '',
   isValidPrinterModel: false,
   isPrinterModelFocused: false,
@@ -83,9 +80,6 @@ const createPrinterIssueAction: CreatePrinterIssueAction = {
   setIsTimeOfOccurrenceFocused: 'setIsTimeOfOccurrenceFocused',
 
   setPrinterMake: 'setPrinterMake',
-  setIsValidPrinterMake: 'setIsValidPrinterMake',
-  setIsPrinterMakeFocused: 'setIsPrinterMakeFocused',
-
   setPrinterModel: 'setPrinterModel',
   setIsValidPrinterModel: 'setIsValidPrinterModel',
   setIsPrinterModelFocused: 'setIsPrinterModelFocused',
@@ -138,6 +132,7 @@ function createPrinterIssueReducer(
         ...state,
         isTitleFocused: action.payload,
       };
+
     case createPrinterIssueAction.setContactNumber:
       return {
         ...state,
@@ -153,6 +148,7 @@ function createPrinterIssueReducer(
         ...state,
         isContactNumberFocused: action.payload,
       };
+
     case createPrinterIssueAction.setContactEmail:
       return {
         ...state,
@@ -168,6 +164,7 @@ function createPrinterIssueReducer(
         ...state,
         isContactEmailFocused: action.payload,
       };
+
     case createPrinterIssueAction.setDateOfOccurrence:
       return {
         ...state,
@@ -183,6 +180,7 @@ function createPrinterIssueReducer(
         ...state,
         isDateOfOccurrenceFocused: action.payload,
       };
+
     case createPrinterIssueAction.setTimeOfOccurrence:
       return {
         ...state,
@@ -198,20 +196,11 @@ function createPrinterIssueReducer(
         ...state,
         isTimeOfOccurrenceFocused: action.payload,
       };
+
     case createPrinterIssueAction.setPrinterMake:
       return {
         ...state,
         printerMake: action.payload,
-      };
-    case createPrinterIssueAction.setIsValidPrinterMake:
-      return {
-        ...state,
-        isValidPrinterMake: action.payload,
-      };
-    case createPrinterIssueAction.setIsPrinterMakeFocused:
-      return {
-        ...state,
-        isPrinterMakeFocused: action.payload,
       };
     case createPrinterIssueAction.setPrinterModel:
       return {
@@ -228,6 +217,7 @@ function createPrinterIssueReducer(
         ...state,
         isPrinterModelFocused: action.payload,
       };
+
     case createPrinterIssueAction.setPrinterSerialNumber:
       return {
         ...state,
@@ -243,6 +233,7 @@ function createPrinterIssueReducer(
         ...state,
         isPrinterSerialNumberFocused: action.payload,
       };
+
     case createPrinterIssueAction.setPrinterIssueDescription:
       return {
         ...state,
@@ -258,6 +249,7 @@ function createPrinterIssueReducer(
         ...state,
         isPrinterIssueDescriptionFocused: action.payload,
       };
+
     case createPrinterIssueAction.setUrgency:
       return {
         ...state,
@@ -299,6 +291,7 @@ function createPrinterIssueReducer(
         stepsInError,
       };
     }
+
     case createPrinterIssueAction.setIsError:
       return {
         ...state,

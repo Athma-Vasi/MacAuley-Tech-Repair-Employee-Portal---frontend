@@ -3,6 +3,7 @@ import { GenerateQueryStringInput } from './utils';
 
 type QueryInputKind =
   | 'dateInput'
+  | 'timeInput'
   | 'numberInput'
   | 'selectInput'
   | 'textInput'
@@ -18,7 +19,7 @@ type ComponentQueryData = {
 
 type QueryValueTypes = {
   value: string;
-  inputKind: string;
+  inputKind: QueryInputKind;
   selectData?: string[];
   booleanData?: boolean[];
 };

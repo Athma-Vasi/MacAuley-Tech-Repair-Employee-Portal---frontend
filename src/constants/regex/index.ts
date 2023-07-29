@@ -240,14 +240,14 @@ const GRAMMAR_TEXT_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
 const ACKNOWLEDGEMENT_TEXT_INPUT_REGEX =
   /^I solemnly swear that I am up to no good\.$/i;
 
-/**
- * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
- * - [A-Za-z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
- * - {1,50} ensures that the text is between 1 and 50 characters long.
- * - ^ and $ ensure that the entire string matches the regex.
- * - i makes the regex case-insensitive.
- */
-const PRINTER_MAKE_MODEL_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
+// /**
+//  * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
+//  * - [A-Za-z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
+//  * - {1,50} ensures that the text is between 1 and 50 characters long.
+//  * - ^ and $ ensure that the entire string matches the regex.
+//  * - i makes the regex case-insensitive.
+//  */
+// const PRINTER_MAKE_MODEL_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
 
 /**
  * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
@@ -288,7 +288,6 @@ export {
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
-  PRINTER_MAKE_MODEL_REGEX,
   PRINTER_SERIAL_NUMBER_REGEX,
   SERIAL_ID_REGEX,
   TIME_RAILWAY_REGEX,

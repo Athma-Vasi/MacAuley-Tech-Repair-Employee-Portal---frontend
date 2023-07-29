@@ -14,7 +14,6 @@ import {
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   PHONE_NUMBER_REGEX,
-  PRINTER_MAKE_MODEL_REGEX,
   PRINTER_SERIAL_NUMBER_REGEX,
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
@@ -50,12 +49,14 @@ import {
 import {
   CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS,
   CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION,
+  PRINTER_MAKE_SELECT_OPTIONS,
 } from '../constants';
 import {
   createPrinterIssueAction,
   createPrinterIssueReducer,
   initialCreatePrinterIssueState,
 } from './state';
+import { PrinterMake } from './types';
 
 function CreatePrinterIssue() {
   const [createPrinterIssueState, createPrinterIssueDispatch] = useReducer(
@@ -84,9 +85,6 @@ function CreatePrinterIssue() {
     isTimeOfOccurrenceFocused,
 
     printerMake,
-    isValidPrinterMake,
-    isPrinterMakeFocused,
-
     printerModel,
     isValidPrinterModel,
     isPrinterModelFocused,
@@ -201,26 +199,6 @@ function CreatePrinterIssue() {
     });
   }, [timeOfOccurrence, isTimeOfOccurrenceFocused]);
 
-  // validate printer make input on every change
-  useEffect(() => {
-    const isValid = PRINTER_MAKE_MODEL_REGEX.test(printerMake);
-
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidPrinterMake,
-      payload: isValid,
-    });
-  }, [printerMake]);
-
-  // validate printer model input on every change
-  useEffect(() => {
-    const isValid = PRINTER_MAKE_MODEL_REGEX.test(printerModel);
-
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidPrinterModel,
-      payload: isValid,
-    });
-  }, [printerModel]);
-
   // validate printer serial number input on every change
   useEffect(() => {
     const isValid = PRINTER_SERIAL_NUMBER_REGEX.test(printerSerialNumber);
@@ -284,7 +262,6 @@ function CreatePrinterIssue() {
   // update for stepper wrapper state
   useEffect(() => {
     const areRequiredInputsInError =
-      !isValidPrinterMake ||
       !isValidPrinterModel ||
       !isValidPrinterSerialNumber ||
       !isValidPrinterIssueDescription;
@@ -302,7 +279,6 @@ function CreatePrinterIssue() {
       },
     });
   }, [
-    isValidPrinterMake,
     isValidPrinterModel,
     isValidPrinterSerialNumber,
     isValidPrinterIssueDescription,
@@ -363,20 +339,6 @@ function CreatePrinterIssue() {
         contentKind: 'time of occurrence',
         minLength: 4,
         maxLength: 5,
-      }),
-    });
-
-  const [printerMakeInputErrorText, printerMakeInputValidText] =
-    returnAccessibleErrorValidTextElements({
-      inputElementKind: 'printer make',
-      inputText: printerMake,
-      isInputTextFocused: isPrinterMakeFocused,
-      isValidInputText: isValidPrinterMake,
-      regexValidationText: returnPrinterMakeModelValidationText({
-        content: printerMake,
-        contentKind: 'printer make',
-        minLength: 1,
-        maxLength: 50,
       }),
     });
 
@@ -679,34 +641,17 @@ function CreatePrinterIssue() {
     withAsterisk: true,
   };
 
-  const printerMakeTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: printerMakeInputErrorText,
-      valid: printerMakeInputValidText,
-    },
-    inputText: printerMake,
-    isValidInputText: isValidPrinterMake,
+  const printerMakeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    description: 'Select a printer make',
+    data: PRINTER_MAKE_SELECT_OPTIONS,
     label: 'Printer Make',
-    onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsPrinterMakeFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       createPrinterIssueDispatch({
         type: createPrinterIssueAction.setPrinterMake,
-        payload: event.currentTarget.value,
+        payload: event.currentTarget.value as PrinterMake,
       });
     },
-    onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsPrinterMakeFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter a printer make',
-    semanticName: 'printer make',
+    value: printerMake,
     required: true,
     withAsterisk: true,
   };
@@ -810,13 +755,11 @@ function CreatePrinterIssue() {
     createdContactEmailTextInput,
     createdPrinterSerialNumberTextInput,
     createdPrinterModelTextInput,
-    createdPrinterMakeTextInput,
   ] = returnAccessibleTextInputElements([
     titleTextInputCreatorInfo,
     contactEmailTextInputCreatorInfo,
     printerSerialNumberTextInputCreatorInfo,
     printerModelTextInputCreatorInfo,
-    printerMakeTextInputCreatorInfo,
   ]);
 
   const [createdDateOfOccurrenceDateInput, createdTimeOfOccurrenceTimeInput] =
@@ -838,9 +781,11 @@ function CreatePrinterIssue() {
     additionalInformationTextAreaCreatorInfo,
   ]);
 
-  const [createdUrgencySelectInput] = returnAccessibleSelectInputElements([
-    urgencySelectInputCreatorInfo,
-  ]);
+  const [createdUrgencySelectInput, createdPrinterMakeSelectInput] =
+    returnAccessibleSelectInputElements([
+      urgencySelectInputCreatorInfo,
+      printerMakeSelectInputCreatorInfo,
+    ]);
 
   const [createdSubmitButton] = returnAccessibleButtonElements([
     submitButtonCreatorInfo,
@@ -864,7 +809,7 @@ function CreatePrinterIssue() {
     <FormLayoutWrapper>
       {createdPrinterSerialNumberTextInput}
       {createdPrinterModelTextInput}
-      {createdPrinterMakeTextInput}
+      {createdPrinterMakeSelectInput}
       {createdPrinterIssueDescriptionTextArea}
       {createdAdditionalInformationTextArea}
       {createdUrgencySelectInput}

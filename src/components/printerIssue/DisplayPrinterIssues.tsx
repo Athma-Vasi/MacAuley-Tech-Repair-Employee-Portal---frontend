@@ -1,5 +1,18 @@
+import { DisplayResource } from '../displayResource';
+import {
+  PRINTER_ISSUE_QUERY_DATA,
+  PRINTER_ISSUE_ROUTE_PATHS,
+} from './constants';
+import { PrinterIssueDocument } from './createPrinterIssue/types';
+
 function DisplayPrinterIssues() {
-  return <></>;
+  return (
+    <DisplayResource<PrinterIssueDocument>
+      componentQueryData={PRINTER_ISSUE_QUERY_DATA}
+      paths={PRINTER_ISSUE_ROUTE_PATHS}
+      requestBodyHeading="printerIssue"
+    />
+  );
 }
 
 export { DisplayPrinterIssues };

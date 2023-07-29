@@ -1,3 +1,6 @@
+import { REQUEST_STATUS, URGENCY_DATA } from '../../constants/data';
+import { ResourceRoutePaths } from '../../types';
+import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 
 const CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
@@ -21,7 +24,101 @@ const CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 
 const CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION = 3;
 
+const PRINTER_MAKE_SELECT_OPTIONS = [
+  'HP',
+  'Canon',
+  'Epson',
+  'Brother',
+  'Xerox',
+  'Ricoh',
+  'Lexmark',
+  'Dell',
+  'Kyocera',
+  'Sharp',
+  'Konica Minolta',
+  'Toshiba TEC',
+  'OKI',
+  'Panasonic',
+  'Fujitsu',
+  'Zebra Technologies',
+];
+
+const PRINTER_ISSUE_QUERY_DATA: ComponentQueryData[] = [
+  {
+    label: 'Title',
+    value: 'title',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Contact number',
+    value: 'contactNumber',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Contact email',
+    value: 'contactEmail',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Date of occurrence',
+    value: 'dateOfOccurrence',
+    inputKind: 'dateInput',
+  },
+  {
+    label: 'Time of occurrence',
+    value: 'timeOfOccurrence',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Printer make',
+    value: 'printerMake',
+    inputKind: 'selectInput',
+    selectData: PRINTER_MAKE_SELECT_OPTIONS,
+  },
+  {
+    label: 'Printer model',
+    value: 'printerModel',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Printer serial number',
+    value: 'printerSerialNumber',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Printer issue description',
+    value: 'printerIssueDescription',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Urgency',
+    value: 'urgency',
+    inputKind: 'selectInput',
+    selectData: URGENCY_DATA,
+  },
+  {
+    label: 'Additional information',
+    value: 'additionalInformation',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Request status',
+    value: 'requestStatus',
+    inputKind: 'selectInput',
+    selectData: REQUEST_STATUS,
+  },
+];
+
+const PRINTER_ISSUE_ROUTE_PATHS: ResourceRoutePaths = {
+  manager: '/api/v1/actions/general/printer-issue',
+  admin: '/api/v1/actions/general/printer-issue',
+  employee: '/api/v1/actions/general/printer-issue/user',
+};
+
 export {
   CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS,
   CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION,
+  PRINTER_ISSUE_QUERY_DATA,
+  PRINTER_ISSUE_ROUTE_PATHS,
+  PRINTER_MAKE_SELECT_OPTIONS,
 };

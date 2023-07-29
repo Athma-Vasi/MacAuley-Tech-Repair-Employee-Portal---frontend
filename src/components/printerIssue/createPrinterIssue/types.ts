@@ -5,6 +5,24 @@ import type {
   Urgency,
 } from '../../../types';
 
+type PrinterMake =
+  | 'HP'
+  | 'Canon'
+  | 'Epson'
+  | 'Brother'
+  | 'Xerox'
+  | 'Ricoh'
+  | 'Lexmark'
+  | 'Dell'
+  | 'Kyocera'
+  | 'Sharp'
+  | 'Konica Minolta'
+  | 'Toshiba TEC'
+  | 'OKI'
+  | 'Panasonic'
+  | 'Fujitsu'
+  | 'Zebra Technologies';
+
 type PrinterIssueSchema = {
   userId: string;
   username: string;
@@ -15,7 +33,7 @@ type PrinterIssueSchema = {
   contactEmail: string;
   dateOfOccurrence: string;
   timeOfOccurrence: string;
-  printerMake: string;
+  printerMake: PrinterMake;
   printerModel: string;
   printerSerialNumber: string;
   printerIssueDescription: string;
@@ -51,10 +69,7 @@ type CreatePrinterIssueState = {
   isValidTimeOfOccurrence: boolean;
   isTimeOfOccurrenceFocused: boolean;
 
-  printerMake: string;
-  isValidPrinterMake: boolean;
-  isPrinterMakeFocused: boolean;
-
+  printerMake: PrinterMake;
   printerModel: string;
   isValidPrinterModel: boolean;
   isPrinterModelFocused: boolean;
@@ -109,9 +124,6 @@ type CreatePrinterIssueAction = {
   setIsTimeOfOccurrenceFocused: 'setIsTimeOfOccurrenceFocused';
 
   setPrinterMake: 'setPrinterMake';
-  setIsValidPrinterMake: 'setIsValidPrinterMake';
-  setIsPrinterMakeFocused: 'setIsPrinterMakeFocused';
-
   setPrinterModel: 'setPrinterModel';
   setIsValidPrinterModel: 'setIsValidPrinterModel';
   setIsPrinterModelFocused: 'setIsPrinterModelFocused';
@@ -154,7 +166,6 @@ type CreatePrinterIssueDispatch =
       type:
         | CreatePrinterIssueAction['setTitle']
         | CreatePrinterIssueAction['setContactEmail']
-        | CreatePrinterIssueAction['setPrinterMake']
         | CreatePrinterIssueAction['setPrinterModel']
         | CreatePrinterIssueAction['setPrinterSerialNumber']
         | CreatePrinterIssueAction['setPrinterIssueDescription']
@@ -176,8 +187,6 @@ type CreatePrinterIssueDispatch =
         | CreatePrinterIssueAction['setIsContactNumberFocused']
         | CreatePrinterIssueAction['setIsValidContactEmail']
         | CreatePrinterIssueAction['setIsContactEmailFocused']
-        | CreatePrinterIssueAction['setIsValidPrinterMake']
-        | CreatePrinterIssueAction['setIsPrinterMakeFocused']
         | CreatePrinterIssueAction['setIsValidPrinterModel']
         | CreatePrinterIssueAction['setIsPrinterModelFocused']
         | CreatePrinterIssueAction['setIsValidPrinterSerialNumber']
@@ -197,6 +206,10 @@ type CreatePrinterIssueDispatch =
         | CreatePrinterIssueAction['setIsLoading'];
 
       payload: boolean;
+    }
+  | {
+      type: CreatePrinterIssueAction['setPrinterMake'];
+      payload: PrinterMake;
     }
   | {
       type: CreatePrinterIssueAction['setUrgency'];
@@ -227,5 +240,6 @@ export type {
   CreatePrinterIssueState,
   PrinterIssueDocument,
   PrinterIssueSchema,
+  PrinterMake,
   SetStepsInErrorPayload,
 };

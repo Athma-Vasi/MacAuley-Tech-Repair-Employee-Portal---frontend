@@ -8,7 +8,7 @@ import {
   Text,
   Tooltip,
 } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import { ChangeEvent, useEffect, useReducer } from 'react';
 import {
   TbArrowsSort,
   TbChevronRight,
@@ -21,7 +21,11 @@ import {
 } from 'react-icons/tb';
 import { VscExclude } from 'react-icons/vsc';
 
-import { DATE_FULL_RANGE_REGEX, MONEY_REGEX } from '../../constants/regex';
+import {
+  DATE_FULL_RANGE_REGEX,
+  MONEY_REGEX,
+  TIME_RAILWAY_REGEX,
+} from '../../constants/regex';
 import { useGlobalState } from '../../hooks';
 import {
   returnAccessibleButtonElements,
@@ -37,6 +41,7 @@ import {
   logState,
   returnDateFullRangeValidationText,
   returnNumberAmountValidationText,
+  returnTimeRailwayValidationText,
 } from '../../utils';
 import { TimelineBuilder } from '../timelineBuilder';
 import {
@@ -121,7 +126,11 @@ function QueryBuilder({
         // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
         if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
           acc[0].push(label);
-        } else if (inputKind === 'dateInput' || inputKind === 'numberInput') {
+        } else if (
+          inputKind === 'dateInput' ||
+          inputKind === 'timeInput' ||
+          inputKind === 'numberInput'
+        ) {
           acc[0].push(label);
           acc[1].push(label);
         }
@@ -168,6 +177,8 @@ function QueryBuilder({
     const isValid =
       currentInputKind === 'dateInput'
         ? DATE_FULL_RANGE_REGEX.test(currentFilterValue)
+        : currentInputKind === 'timeInput'
+        ? TIME_RAILWAY_REGEX.test(currentFilterValue)
         : MONEY_REGEX.test(currentFilterValue);
 
     queryBuilderDispatch({
@@ -201,6 +212,13 @@ function QueryBuilder({
   const regexValidationText =
     currentInputKind === 'dateInput'
       ? returnDateFullRangeValidationText(currentFilterValue)
+      : currentInputKind === 'timeInput'
+      ? returnTimeRailwayValidationText({
+          content: currentFilterValue,
+          contentKind: currentFilterTerm,
+          minLength: 5,
+          maxLength: 5,
+        })
       : currentInputKind === 'numberInput'
       ? returnNumberAmountValidationText({
           amount: currentFilterValue,
@@ -264,7 +282,7 @@ function QueryBuilder({
         semanticDescription: `Delete filter statement: ${term} ${operator} ${value}`,
         semanticName: 'delete filter',
         // leftIcon: <TbTrash />,
-        buttonOnClick: (event) => {
+        buttonOnClick: () => {
           queryBuilderDispatch({
             type: queryBuilderAction.setFilterStatementsQueue,
             payload: {
@@ -327,7 +345,7 @@ function QueryBuilder({
         ? 'filter-statements-deselected'
         : 'filter-statements-selected',
     value: currentFilterTerm,
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       queryBuilderDispatch({
         type: queryBuilderAction.setCurrentFilterTerm,
         payload: event.currentTarget.value,
@@ -361,7 +379,7 @@ function QueryBuilder({
           : `Select an operator for ${currentFilterTerm}`
       }`,
       value: currentFilterOperator,
-      onChange: (event) => {
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentFilterOperator,
           payload: event.currentTarget.value,
@@ -375,7 +393,7 @@ function QueryBuilder({
       error: filterValueErrorText,
       valid: filterValueValidText,
     },
-    onChange: (event) => {
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
       queryBuilderDispatch({
         type: queryBuilderAction.setCurrentFilterValue,
         payload: event.currentTarget.value,
@@ -398,6 +416,37 @@ function QueryBuilder({
     inputText: currentFilterValue,
     isValidInputText: isCurrentFilterValueValid,
     placeholder: 'Enter a value',
+    semanticName: currentFilterTerm,
+  };
+
+  const filterValueTimeInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
+    label: 'Value',
+    description: {
+      error: filterValueErrorText,
+      valid: filterValueValidText,
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setCurrentFilterValue,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsCurrentFilterValueFocused,
+        payload: true,
+      });
+    },
+    onBlur: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsCurrentFilterValueFocused,
+        payload: false,
+      });
+    },
+    inputKind: 'time',
+    inputText: currentFilterValue,
+    isValidInputText: isCurrentFilterValueValid,
+    placeholder: 'Enter time in 24-hour format',
     semanticName: currentFilterTerm,
   };
 
@@ -698,6 +747,8 @@ function QueryBuilder({
   const createdFilterValueInput =
     currentInputKind === 'dateInput'
       ? returnAccessibleDateTimeElements([filterValueDateInputCreatorInfo])
+      : currentInputKind === 'textInput'
+      ? returnAccessibleDateTimeElements([filterValueTimeInputCreatorInfo])
       : currentInputKind === 'numberInput'
       ? returnAccessibleTextInputElements([filterValueNumberInputCreatorInfo])
       : returnAccessibleSelectInputElements([

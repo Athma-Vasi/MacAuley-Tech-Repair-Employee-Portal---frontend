@@ -392,7 +392,7 @@ function DisplayQueryMobile({
             ([key, value], objIdx) => {
               return (
                 <Flex
-                  key={`${queryObjIdx}-${objIdx}`}
+                  key={`${objIdx}`}
                   align="flex-start"
                   justify="center"
                   direction="column"
@@ -426,6 +426,7 @@ function DisplayQueryMobile({
 
           return (
             <Flex
+              key={`${queryObjIdx}`}
               direction="column"
               p={padding}
               align="flex-start"

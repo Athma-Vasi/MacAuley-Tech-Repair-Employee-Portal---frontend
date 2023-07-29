@@ -26,7 +26,10 @@ import { Login } from './components/login';
 import { NotesList } from './components/notesList';
 import { NotFound } from './components/notFound';
 import { PortalLayout } from './components/portalLayout';
-import { CreatePrinterIssue } from './components/printerIssue';
+import {
+  CreatePrinterIssue,
+  DisplayPrinterIssues,
+} from './components/printerIssue';
 import { PublicLayout } from './components/publicLayout';
 import { CreateReferment } from './components/referments/createReferment';
 import { Register } from './components/register';
@@ -135,12 +138,18 @@ function App() {
           </Route>
 
           <Route path="general">
+            {/* endorsement */}
             <Route path="endorsement">
               <Route index element={<DisplayEndorsements />} />
               <Route path="create" element={<CreateEndorsement />} />
               <Route path="display" element={<DisplayEndorsements />} />
             </Route>
-            {/* <Route path="printer-issue" element={<CreatePrinterIssue />} /> */}
+            {/* printer-issue */}
+            <Route path="printer-issue">
+              <Route index element={<DisplayPrinterIssues />} />
+              <Route path="create" element={<CreatePrinterIssue />} />
+              <Route path="display" element={<DisplayPrinterIssues />} />
+            </Route>
             {/* <Route path="referment" element={<CreateReferment />} /> */}
             {/* <Route
               path="anonymous-request"
