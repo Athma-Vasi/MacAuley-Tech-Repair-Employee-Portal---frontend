@@ -209,6 +209,7 @@ function QueryBuilder({
   // ----------------- accessibility texts -----------------  //
 
   const currentInputKind = labelValueTypesMap.get(currentFilterTerm)?.inputKind;
+
   const regexValidationText =
     currentInputKind === 'dateInput'
       ? returnDateFullRangeValidationText(currentFilterValue)
@@ -747,7 +748,7 @@ function QueryBuilder({
   const createdFilterValueInput =
     currentInputKind === 'dateInput'
       ? returnAccessibleDateTimeElements([filterValueDateInputCreatorInfo])
-      : currentInputKind === 'textInput'
+      : currentInputKind === 'timeInput'
       ? returnAccessibleDateTimeElements([filterValueTimeInputCreatorInfo])
       : currentInputKind === 'numberInput'
       ? returnAccessibleTextInputElements([filterValueNumberInputCreatorInfo])

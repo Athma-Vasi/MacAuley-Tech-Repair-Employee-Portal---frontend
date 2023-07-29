@@ -1,3 +1,4 @@
+import { REQUEST_STATUS } from '../../constants/data';
 import { CheckBoxMultipleData } from '../../types';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
@@ -39,100 +40,30 @@ const EMPLOYEE_ATTRIBUTES_DATA: CheckBoxMultipleData = [
   },
 ];
 
-/**
- * const LEAVE_REQUESTS_QUERY_DATA: ComponentQueryData[] = [
-  {
-    label: 'Created date',
-    value: 'createdAt',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Updated date',
-    value: 'updatedAt',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Start date',
-    value: 'startDate',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'End date',
-    value: 'endDate',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Reason for leave',
-    value: 'reasonForLeave',
-    inputKind: 'selectInput',
-    selectData: [
-      'Vacation',
-      'Medical',
-      'Parental',
-      'Bereavement',
-      'Jury Duty',
-      'Military',
-      'Education',
-      'Religious',
-      'Other',
-    ],
-  },
-  {
-    label: 'Request status',
-    value: 'requestStatus',
-    inputKind: 'selectInput',
-    selectData: ['pending', 'approved', 'rejected'],
-  },
-  {
-    label: 'Delegated to employee',
-    value: 'delegatedToEmployee',
-    inputKind: 'textInput',
-  },
-  {
-    label: 'Delegated responsibilities',
-    value: 'delegatedResponsibilities',
-    inputKind: 'textInput',
-  },
-  {
-    label: 'Additional comments',
-    value: 'additionalComments',
-    inputKind: 'textInput',
-  },
+const ATTRIBUTE_ENDORSED_SELECT_OPTIONS = [
+  'teamwork and collaboration',
+  'leadership and mentorship',
+  'technical expertise',
+  'adaptibility and flexibility',
+  'problem solving',
+  'customer service',
+  'initiative and proactivity',
+  'communication',
+  'reliability and dependability',
 ];
- */
 
 const ENDORSEMENTS_QUERY_DATA: ComponentQueryData[] = [
-  {
-    label: 'Created date',
-    value: 'createdAt',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Updated date',
-    value: 'updatedAt',
-    inputKind: 'dateInput',
-  },
   {
     label: 'Attribute endorsed',
     value: 'attributeEndorsed',
     inputKind: 'selectInput',
-    selectData: [
-      'teamwork and collaboration',
-      'leadership and mentorship',
-      'technical expertise',
-      'adaptibility and flexibility',
-      'problem solving',
-      'customer service',
-      'initiative and proactivity',
-      'communication',
-      'reliability and dependability',
-    ],
+    selectData: ATTRIBUTE_ENDORSED_SELECT_OPTIONS,
   },
   {
     label: 'Request status',
     value: 'requestStatus',
     inputKind: 'selectInput',
-    selectData: ['pending', 'approved', 'rejected'],
+    selectData: REQUEST_STATUS,
   },
   {
     label: 'User to be endorsed',
@@ -143,6 +74,16 @@ const ENDORSEMENTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Summary of endorsement',
     value: 'summaryOfEndorsement',
     inputKind: 'textInput',
+  },
+  {
+    label: 'Created date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+  },
+  {
+    label: 'Updated date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
   },
 ];
 

@@ -287,7 +287,7 @@ function DisplayResource<Doc>({
         setQueryBuilderString={displayResourceAction.setQueryBuilderString}
         parentComponentDispatch={displayResourceDispatch}
         componentQueryData={componentQueryData}
-        collectionName="leave requests"
+        collectionName={splitCamelCase(requestBodyHeading)}
       />
 
       <DisplayQuery

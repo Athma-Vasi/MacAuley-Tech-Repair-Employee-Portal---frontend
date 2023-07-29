@@ -109,6 +109,16 @@ const BENEFIT_QUERY_DATA: ComponentQueryData[] = [
     inputKind: 'selectInput',
     selectData: REQUEST_STATUS,
   },
+  {
+    label: 'Created date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+  },
+  {
+    label: 'Updated date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+  },
 ];
 
 const BENEFIT_RESOURCE_PATHS: ResourceRoutePaths = {
