@@ -1,6 +1,7 @@
 import {
   Action,
   ActionsGeneral,
+  Department,
   JobPosition,
   PhoneNumber,
   SetStepsInErrorPayload,
@@ -58,6 +59,7 @@ type CreateRefermentState = {
   isValidCandidateProfileUrl: boolean;
   isCandidateProfileUrlFocused: boolean;
 
+  departmentReferredFor: Department;
   positionReferredFor: JobPosition;
 
   positionJobDescription: string;
@@ -113,6 +115,7 @@ type CreateRefermentAction = {
   setIsValidCandidateProfileUrl: 'setIsValidCandidateProfileUrl';
   setIsCandidateProfileUrlFocused: 'setIsCandidateProfileUrlFocused';
 
+  setDepartmentReferredFor: 'setDepartmentReferredFor';
   setPositionReferredFor: 'setPositionReferredFor';
 
   setPositionJobDescription: 'setPositionJobDescription';
@@ -191,6 +194,10 @@ type CreateRefermentDispatch =
   | {
       type: CreateRefermentAction['setCandidateContactNumber'];
       payload: PhoneNumber | string;
+    }
+  | {
+      type: CreateRefermentAction['setDepartmentReferredFor'];
+      payload: Department;
     }
   | {
       type: CreateRefermentAction['setPositionReferredFor'];

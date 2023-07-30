@@ -1,6 +1,6 @@
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Text } from '@mantine/core';
+import { Space, Text } from '@mantine/core';
 
 import type {
   AccessibleButtonCreatorInfo,

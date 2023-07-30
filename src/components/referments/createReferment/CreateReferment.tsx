@@ -10,6 +10,11 @@ import {
 import { TbUpload } from 'react-icons/tb';
 
 import {
+  DEPARTMENT_DATA,
+  DEPARTMENT_JOB_POSITION_MAP,
+  JOB_POSITION_DATA,
+} from '../../../constants/data';
+import {
   EMAIL_REGEX,
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
@@ -27,14 +32,13 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { JobPosition, PhoneNumber } from '../../../types';
+import { Department, JobPosition, PhoneNumber } from '../../../types';
 import {
   returnEmailValidationText,
   returnGrammarValidationText,
   returnPhoneNumberValidationText,
   returnUrlValidationText,
 } from '../../../utils';
-import { createPrinterIssueAction } from '../../printerIssue/createPrinterIssue/state';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -48,13 +52,12 @@ import {
 import {
   CREATE_REFERMENT_DESCRIPTION_OBJECTS,
   CREATE_REFERMENT_MAX_STEPPER_POSITION,
-} from './constants';
+} from '../constants';
 import {
   createRefermentAction,
   createRefermentReducer,
   initialCreateRefermentState,
 } from './state';
-import { JOB_POSITION_DATA } from '../../../constants/data';
 
 function CreateReferment() {
   const [createRefermentState, createRefermentDispatch] = useReducer(
@@ -86,6 +89,7 @@ function CreateReferment() {
     isValidCandidateProfileUrl,
     isCandidateProfileUrlFocused,
 
+    departmentReferredFor,
     positionReferredFor,
 
     positionJobDescription,
@@ -640,13 +644,29 @@ function CreateReferment() {
       withAsterisk: true,
     };
 
-  const positionReferredForNativeSelectCreatorInfo: AccessibleSelectInputCreatorInfo =
+  const departmentReferredForSelectCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      description: 'Department referred for',
+      label: 'Department',
+      data: DEPARTMENT_DATA,
+      value: departmentReferredFor,
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createRefermentDispatch({
+          type: createRefermentAction.setDepartmentReferredFor,
+          payload: event.currentTarget.value as Department,
+        });
+      },
+      required: true,
+      withAsterisk: true,
+    };
+
+  const positionReferredForSelectCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       description: 'Position referred for',
       label: 'Job position',
-      data: JOB_POSITION_DATA,
+      data: DEPARTMENT_JOB_POSITION_MAP.get(departmentReferredFor) ?? [],
       value: positionReferredFor,
-      onChange: (event) => {
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createRefermentDispatch({
           type: createRefermentAction.setPositionReferredFor,
           payload: event.currentTarget.value as JobPosition,
@@ -818,10 +838,13 @@ function CreateReferment() {
       privacyConsentCheckboxInputCreatorInfo,
     ]);
 
-  const [createdPositionReferredForNativeSelectInput] =
-    returnAccessibleSelectInputElements([
-      positionReferredForNativeSelectCreatorInfo,
-    ]);
+  const [
+    createdDepartmentReferredForSelectInput,
+    createdPositionReferredForSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    departmentReferredForSelectCreatorInfo,
+    positionReferredForSelectCreatorInfo,
+  ]);
 
   const [createdSubmitButton] = returnAccessibleButtonElements([
     submitButtonCreatorInfo,
@@ -844,7 +867,8 @@ function CreateReferment() {
 
   const displayPositionDetailsFormPage = (
     <FormLayoutWrapper>
-      {createdPositionReferredForNativeSelectInput}
+      {createdDepartmentReferredForSelectInput}
+      {createdPositionReferredForSelectInput}
       {createdPositionJobDescriptionTextareaInput}
       {createdReferralReasonTextareaInput}
       {createdAdditionalInformationTextareaInput}

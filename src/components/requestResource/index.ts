@@ -1,3 +1,4 @@
-import { RequestResource } from './RequestResource';
+import { RequestResource } from './createRequestResource/RequestResource';
+import { DisplayRequestResources } from './DisplayRequestResources';
 
-export { RequestResource };
+export { RequestResource, DisplayRequestResources };

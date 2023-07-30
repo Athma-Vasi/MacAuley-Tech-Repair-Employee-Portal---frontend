@@ -29,6 +29,7 @@ const initialCreateRefermentState: CreateRefermentState = {
   isValidCandidateProfileUrl: false,
   isCandidateProfileUrlFocused: false,
 
+  departmentReferredFor: 'Administrative',
   positionReferredFor: 'Accountant',
 
   positionJobDescription: '',
@@ -84,6 +85,7 @@ const createRefermentAction: CreateRefermentAction = {
   setIsValidCandidateProfileUrl: 'setIsValidCandidateProfileUrl',
   setIsCandidateProfileUrlFocused: 'setIsCandidateProfileUrlFocused',
 
+  setDepartmentReferredFor: 'setDepartmentReferredFor',
   setPositionReferredFor: 'setPositionReferredFor',
 
   setPositionJobDescription: 'setPositionJobDescription',
@@ -134,6 +136,7 @@ function createRefermentReducer(
         ...state,
         isCandidateFullNameFocused: action.payload,
       };
+
     case createRefermentAction.setCandidateEmail:
       return {
         ...state,
@@ -149,6 +152,7 @@ function createRefermentReducer(
         ...state,
         isCandidateEmailFocused: action.payload,
       };
+
     case createRefermentAction.setCandidateContactNumber:
       return {
         ...state,
@@ -164,6 +168,7 @@ function createRefermentReducer(
         ...state,
         isCandidateContactNumberFocused: action.payload,
       };
+
     case createRefermentAction.setCandidateCurrentJobTitle:
       return {
         ...state,
@@ -179,6 +184,7 @@ function createRefermentReducer(
         ...state,
         isCandidateCurrentJobTitleFocused: action.payload,
       };
+
     case createRefermentAction.setCandidateCurrentCompany:
       return {
         ...state,
@@ -194,6 +200,7 @@ function createRefermentReducer(
         ...state,
         isCandidateCurrentCompanyFocused: action.payload,
       };
+
     case createRefermentAction.setCandidateProfileUrl:
       return {
         ...state,
@@ -209,11 +216,18 @@ function createRefermentReducer(
         ...state,
         isCandidateProfileUrlFocused: action.payload,
       };
+
+    case createRefermentAction.setDepartmentReferredFor:
+      return {
+        ...state,
+        departmentReferredFor: action.payload,
+      };
     case createRefermentAction.setPositionReferredFor:
       return {
         ...state,
         positionReferredFor: action.payload,
       };
+
     case createRefermentAction.setPositionJobDescription:
       return {
         ...state,
@@ -229,6 +243,7 @@ function createRefermentReducer(
         ...state,
         isPositionJobDescriptionFocused: action.payload,
       };
+
     case createRefermentAction.setReferralReason:
       return {
         ...state,
@@ -244,6 +259,7 @@ function createRefermentReducer(
         ...state,
         isReferralReasonFocused: action.payload,
       };
+
     case createRefermentAction.setAdditionalInformation:
       return {
         ...state,
@@ -259,6 +275,7 @@ function createRefermentReducer(
         ...state,
         isAdditionalInformationFocused: action.payload,
       };
+
     case createRefermentAction.setPrivacyConsent:
       return {
         ...state,
@@ -285,6 +302,7 @@ function createRefermentReducer(
         stepsInError,
       };
     }
+
     case createRefermentAction.setIsError:
       return {
         ...state,

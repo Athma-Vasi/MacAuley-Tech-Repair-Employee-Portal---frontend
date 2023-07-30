@@ -31,10 +31,13 @@ import {
   DisplayPrinterIssues,
 } from './components/printerIssue';
 import { PublicLayout } from './components/publicLayout';
-import { CreateReferment } from './components/referments/createReferment';
+import { CreateReferment, DisplayReferments } from './components/referments';
 import { Register } from './components/register';
 import { CreateRepairNote } from './components/repairNote';
-import { RequestResource } from './components/requestResource';
+import {
+  DisplayRequestResources,
+  RequestResource,
+} from './components/requestResource';
 import { RequireAuth } from './components/requireAuth';
 import { SurveyBuilder } from './components/surveyBuilder';
 import { Unauthorized } from './components/unauthorized';
@@ -137,7 +140,13 @@ function App() {
               <Route path="display" element={<DisplayLeaveRequests />} />
               <Route path="create" element={<CreateLeaveRequest />} />
             </Route>
-            {/* <Route path="request-resource" element={<RequestResource />} /> */}
+            {/* request-resource  */}
+            <Route path="request-resource">
+              <Route index element={<DisplayRequestResources />} />
+              <Route path="create" element={<RequestResource />} />
+              <Route path="display" element={<DisplayRequestResources />} />
+            </Route>
+
             {/* <Route path="expense-claim" element={<ExpenseClaim />} /> */}
           </Route>
 
@@ -148,19 +157,27 @@ function App() {
               <Route path="create" element={<CreateAnonymousRequest />} />
               <Route path="display" element={<DisplayAnonymousRequests />} />
             </Route>
+
             {/* endorsement */}
             <Route path="endorsement">
               <Route index element={<DisplayEndorsements />} />
               <Route path="create" element={<CreateEndorsement />} />
               <Route path="display" element={<DisplayEndorsements />} />
             </Route>
+
             {/* printer-issue */}
             <Route path="printer-issue">
               <Route index element={<DisplayPrinterIssues />} />
               <Route path="create" element={<CreatePrinterIssue />} />
               <Route path="display" element={<DisplayPrinterIssues />} />
             </Route>
-            {/* <Route path="referment" element={<CreateReferment />} /> */}
+
+            {/* referment */}
+            <Route path="referment">
+              <Route index element={<DisplayReferments />} />
+              <Route path="create" element={<CreateReferment />} />
+              <Route path="display" element={<DisplayReferments />} />
+            </Route>
           </Route>
 
           {/* <Route path="outreach">

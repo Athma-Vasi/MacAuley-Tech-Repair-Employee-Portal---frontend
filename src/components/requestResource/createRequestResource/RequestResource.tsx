@@ -1,13 +1,13 @@
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { TbUpload } from 'react-icons/tb';
 
-import { DEPARTMENT_DATA, URGENCY_DATA } from '../../constants/data';
+import { DEPARTMENT_DATA, URGENCY_DATA } from '../../../constants/data';
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
-} from '../../constants/regex';
+} from '../../../constants/regex';
 import {
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
@@ -15,13 +15,13 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../jsxCreators';
-import { Department, Urgency } from '../../types';
+} from '../../../jsxCreators';
+import { Department, Urgency } from '../../../types';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
   returnNumberAmountValidationText,
-} from '../../utils';
+} from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -29,13 +29,13 @@ import {
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
-} from '../wrappers';
-import { StepperWrapper } from '../wrappers';
+} from '../../wrappers';
+import { StepperWrapper } from '../../wrappers';
 import {
   REQUEST_RESOURCE_DESCRIPTION_OBJECTS,
   REQUEST_RESOURCE_KIND_DATA,
   REQUEST_RESOURCE_MAX_STEPPER_POSITION,
-} from './constants';
+} from '../constants';
 import {
   initialRequestResourceState,
   requestResourceAction,

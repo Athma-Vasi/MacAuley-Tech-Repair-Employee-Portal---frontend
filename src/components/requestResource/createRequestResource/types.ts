@@ -1,4 +1,9 @@
-import type { Department, SetStepsInErrorPayload, Urgency } from '../../types';
+import type {
+  Department,
+  SetStepsInErrorPayload,
+  Urgency,
+} from '../../../types';
+import { RequestStatus } from '../../../types';
 
 type RequestResourceKind = 'Hardware' | 'Software' | 'Access' | 'Other';
 
@@ -13,6 +18,7 @@ type RequestResourceSchema = {
   urgency: Urgency;
   dateNeededBy: string;
   additionalInformation: string;
+  requestStatus: RequestStatus;
 };
 
 type RequestResourceDocument = RequestResourceSchema & {

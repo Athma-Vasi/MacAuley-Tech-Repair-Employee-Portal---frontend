@@ -5,6 +5,7 @@ import {
   TbAddressBook,
   TbBuildingWarehouse,
   TbCalendarPin,
+  TbCashBanknote,
   TbChartBar,
   TbChevronRight,
   TbCircleTriangle,
@@ -87,7 +88,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           navigate('/portal/company/benefit');
         }}
       />
-      {/* expense claim */}
+      {/* expense-claim */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Expense claim</TextWrapper>}
         icon={<TbReceipt2 />}
@@ -96,13 +97,22 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           navigate('/portal/company/expense-claim');
         }}
       />
-      {/* leave request */}
+      {/* leave-request */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Leave request</TextWrapper>}
         icon={<TbCalendarPin />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/company/leave-request/display');
+          navigate('/portal/company/leave-request');
+        }}
+      />
+      {/* request-resource */}
+      <NavLink
+        label={<TextWrapper creatorInfoObj={{}}>Request resource</TextWrapper>}
+        icon={<TbCashBanknote />}
+        rightSection={<TbChevronRight />}
+        onClick={() => {
+          navigate('/portal/company/request-resource');
         }}
       />
     </NavLink>
@@ -124,7 +134,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           navigate('/portal/general/endorsement/display');
         }}
       />
-      {/* printer issue */}
+      {/* printer-issue */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Printer issue</TextWrapper>}
         icon={<TbPrinterOff />}
@@ -133,7 +143,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           navigate('/portal/general/printer-issue');
         }}
       />
-      {/* anonymous request */}
+      {/* anonymous-request */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Anonymous request</TextWrapper>}
         icon={<MdSafetyDivider />}
