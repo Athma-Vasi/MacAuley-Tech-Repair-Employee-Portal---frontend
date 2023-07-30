@@ -12,7 +12,7 @@ import {
   DATE_NEAR_PAST_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
-} from '../../constants/regex';
+} from '../../../constants/regex';
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
@@ -22,14 +22,14 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../jsxCreators';
-import type { Currency } from '../../types';
+} from '../../../jsxCreators';
+import type { Currency } from '../../../types';
 import {
   returnDateNearPastValidationText,
   returnGrammarValidationText,
   returnNumberAmountValidationText,
-} from '../../utils';
-import { CURRENCY_DATA } from '../benefits/constants';
+} from '../../../utils';
+import { CURRENCY_DATA } from '../../benefits/constants';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -39,23 +39,23 @@ import {
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../wrappers';
+} from '../../wrappers';
 import {
   EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_STEPPER_POSITION,
-} from './constants';
+} from '../constants';
 import {
-  expenseClaimAction,
-  expenseClaimReducer,
-  initialExpenseClaimState,
+  createExpenseClaimAction,
+  createExpenseClaimReducer,
+  initialCreateExpenseClaimState,
 } from './state';
 import type { ExpenseClaimKind } from './types';
 
-function ExpenseClaim() {
+function CreateExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(
-    expenseClaimReducer,
-    initialExpenseClaimState
+    createExpenseClaimReducer,
+    initialCreateExpenseClaimState
   );
   const {
     expenseClaimAmount,
@@ -97,7 +97,7 @@ function ExpenseClaim() {
     const isValid = MONEY_REGEX.test(expenseClaimAmount);
 
     expenseClaimDispatch({
-      type: expenseClaimAction.setIsValidExpenseClaimAmount,
+      type: createExpenseClaimAction.setIsValidExpenseClaimAmount,
       payload: isValid,
     });
   }, [expenseClaimAmount]);
@@ -111,7 +111,7 @@ function ExpenseClaim() {
         .replace(/^0+/, '');
 
       expenseClaimDispatch({
-        type: expenseClaimAction.setExpenseClaimAmount,
+        type: createExpenseClaimAction.setExpenseClaimAmount,
         payload: expenseClaimAmountWithCommaAndNoLeadingZero,
       });
     }
@@ -122,7 +122,7 @@ function ExpenseClaim() {
         .replace(/^0+/, '');
 
       expenseClaimDispatch({
-        type: expenseClaimAction.setExpenseClaimAmount,
+        type: createExpenseClaimAction.setExpenseClaimAmount,
         payload: expenseClaimAmountWithDecimalAndNoLeadingZero,
       });
     }
@@ -135,7 +135,7 @@ function ExpenseClaim() {
       new Date(expenseClaimDate) <= new Date();
 
     expenseClaimDispatch({
-      type: expenseClaimAction.setIsValidExpenseClaimDate,
+      type: createExpenseClaimAction.setIsValidExpenseClaimDate,
       payload: isValid,
     });
   }, [expenseClaimDate]);
@@ -145,7 +145,7 @@ function ExpenseClaim() {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(expenseClaimDescription);
 
     expenseClaimDispatch({
-      type: expenseClaimAction.setIsValidExpenseClaimDescription,
+      type: createExpenseClaimAction.setIsValidExpenseClaimDescription,
       payload: isValid,
     });
   }, [expenseClaimDescription]);
@@ -155,7 +155,7 @@ function ExpenseClaim() {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalComments);
 
     expenseClaimDispatch({
-      type: expenseClaimAction.setIsValidAdditionalComments,
+      type: createExpenseClaimAction.setIsValidAdditionalComments,
       payload: isValid,
     });
   }, [additionalComments]);
@@ -174,7 +174,7 @@ function ExpenseClaim() {
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
     expenseClaimDispatch({
-      type: expenseClaimAction.setStepsInError,
+      type: createExpenseClaimAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
         step: 0,
@@ -277,19 +277,19 @@ function ExpenseClaim() {
       label: 'Expense claim amount',
       onBlur: () => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setIsExpenseClaimAmountFocused,
+          type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setExpenseClaimAmount,
+          type: createExpenseClaimAction.setExpenseClaimAmount,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setIsExpenseClaimAmountFocused,
+          type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
           payload: true,
         });
       },
@@ -310,7 +310,7 @@ function ExpenseClaim() {
       label: 'Expense claim kind',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setExpenseClaimKind,
+          type: createExpenseClaimAction.setExpenseClaimKind,
           payload: event.currentTarget.value as ExpenseClaimKind,
         });
       },
@@ -326,7 +326,7 @@ function ExpenseClaim() {
       label: 'Expense claim currency',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setExpenseClaimCurrency,
+          type: createExpenseClaimAction.setExpenseClaimCurrency,
           payload: event.currentTarget.value as Currency,
         });
       },
@@ -346,19 +346,19 @@ function ExpenseClaim() {
       label: 'Expense claim date',
       onBlur: () => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setIsExpenseClaimDateFocused,
+          type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setExpenseClaimDate,
+          type: createExpenseClaimAction.setExpenseClaimDate,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setIsExpenseClaimDateFocused,
+          type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
           payload: true,
         });
       },
@@ -381,19 +381,19 @@ function ExpenseClaim() {
       label: 'Expense claim description',
       onBlur: () => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setIsExpenseClaimDescriptionFocused,
+          type: createExpenseClaimAction.setIsExpenseClaimDescriptionFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setExpenseClaimDescription,
+          type: createExpenseClaimAction.setExpenseClaimDescription,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setIsExpenseClaimDescriptionFocused,
+          type: createExpenseClaimAction.setIsExpenseClaimDescriptionFocused,
           payload: true,
         });
       },
@@ -414,19 +414,19 @@ function ExpenseClaim() {
       label: 'Additional comments',
       onBlur: () => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setIsAdditionalCommentsFocused,
+          type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setAdditionalComments,
+          type: createExpenseClaimAction.setAdditionalComments,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setIsAdditionalCommentsFocused,
+          type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
           payload: true,
         });
       },
@@ -443,7 +443,7 @@ function ExpenseClaim() {
       checked: acknowledgement,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         expenseClaimDispatch({
-          type: expenseClaimAction.setAcknowledgement,
+          type: createExpenseClaimAction.setAcknowledgement,
           payload: event.currentTarget.checked,
         });
       },
@@ -459,7 +459,7 @@ function ExpenseClaim() {
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       expenseClaimDispatch({
-        type: expenseClaimAction.setTriggerFormSubmit,
+        type: createExpenseClaimAction.setTriggerFormSubmit,
         payload: true,
       });
     },
@@ -531,7 +531,9 @@ function ExpenseClaim() {
       descriptionObjectsArray={EXPENSE_CLAIM_DESCRIPTION_OBJECTS}
       maxStepperPosition={EXPENSE_CLAIM_MAX_STEPPER_POSITION}
       parentComponentDispatch={expenseClaimDispatch}
-      setCurrentStepperPosition={expenseClaimAction.setCurrentStepperPosition}
+      setCurrentStepperPosition={
+        createExpenseClaimAction.setCurrentStepperPosition
+      }
       stepsInError={stepsInError}
     >
       {displayExpenseClaimForm}
@@ -551,7 +553,7 @@ function ExpenseClaim() {
   return <>{displayExpenseClaimComponent}</>;
 }
 
-export { ExpenseClaim };
+export { CreateExpenseClaim };
 
 /**
  * async function handleFileSubmit(event: FormEvent<HTMLFormElement>) {

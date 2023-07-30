@@ -3,7 +3,7 @@ import {
   ActionsCompany,
   Currency,
   SetStepsInErrorPayload,
-} from '../../types';
+} from '../../../types';
 
 type ExpenseClaimKind =
   | 'Travel and Accomodation'
@@ -40,7 +40,7 @@ type ExpenseClaimDocument = ExpenseClaimSchema & {
   __v: number;
 };
 
-type ExpenseClaimState = {
+type CreateExpenseClaimState = {
   expenseClaimAmount: string;
   isValidExpenseClaimAmount: boolean;
   isExpenseClaimAmountFocused: boolean;
@@ -75,7 +75,7 @@ type ExpenseClaimState = {
   loadingMessage: string;
 };
 
-type ExpenseClaimAction = {
+type CreateExpenseClaimAction = {
   setExpenseClaimAmount: 'setExpenseClaimAmount';
   setIsValidExpenseClaimAmount: 'setIsValidExpenseClaimAmount';
   setIsExpenseClaimAmountFocused: 'setIsExpenseClaimAmountFocused';
@@ -110,267 +110,267 @@ type ExpenseClaimAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-type ExpenseClaimDispatch =
+type CreateExpenseClaimDispatch =
   | {
-      type: ExpenseClaimAction['setExpenseClaimKind'];
+      type: CreateExpenseClaimAction['setExpenseClaimKind'];
       payload: ExpenseClaimKind;
     }
   | {
       type:
-        | ExpenseClaimAction['setExpenseClaimAmount']
-        | ExpenseClaimAction['setExpenseClaimDate']
-        | ExpenseClaimAction['setExpenseClaimDescription']
-        | ExpenseClaimAction['setAdditionalComments']
-        | ExpenseClaimAction['setErrorMessage']
-        | ExpenseClaimAction['setSubmitMessage']
-        | ExpenseClaimAction['setSuccessMessage']
-        | ExpenseClaimAction['setLoadingMessage'];
+        | CreateExpenseClaimAction['setExpenseClaimAmount']
+        | CreateExpenseClaimAction['setExpenseClaimDate']
+        | CreateExpenseClaimAction['setExpenseClaimDescription']
+        | CreateExpenseClaimAction['setAdditionalComments']
+        | CreateExpenseClaimAction['setErrorMessage']
+        | CreateExpenseClaimAction['setSubmitMessage']
+        | CreateExpenseClaimAction['setSuccessMessage']
+        | CreateExpenseClaimAction['setLoadingMessage'];
       payload: string;
     }
   | {
       type:
-        | ExpenseClaimAction['setIsValidExpenseClaimAmount']
-        | ExpenseClaimAction['setIsExpenseClaimAmountFocused']
-        | ExpenseClaimAction['setIsValidExpenseClaimDate']
-        | ExpenseClaimAction['setIsExpenseClaimDateFocused']
-        | ExpenseClaimAction['setIsValidExpenseClaimDescription']
-        | ExpenseClaimAction['setIsExpenseClaimDescriptionFocused']
-        | ExpenseClaimAction['setIsValidAdditionalComments']
-        | ExpenseClaimAction['setIsAdditionalCommentsFocused']
-        | ExpenseClaimAction['setAcknowledgement']
-        | ExpenseClaimAction['setTriggerFormSubmit']
-        | ExpenseClaimAction['setIsError']
-        | ExpenseClaimAction['setIsSubmitting']
-        | ExpenseClaimAction['setIsSuccessful']
-        | ExpenseClaimAction['setIsLoading'];
+        | CreateExpenseClaimAction['setIsValidExpenseClaimAmount']
+        | CreateExpenseClaimAction['setIsExpenseClaimAmountFocused']
+        | CreateExpenseClaimAction['setIsValidExpenseClaimDate']
+        | CreateExpenseClaimAction['setIsExpenseClaimDateFocused']
+        | CreateExpenseClaimAction['setIsValidExpenseClaimDescription']
+        | CreateExpenseClaimAction['setIsExpenseClaimDescriptionFocused']
+        | CreateExpenseClaimAction['setIsValidAdditionalComments']
+        | CreateExpenseClaimAction['setIsAdditionalCommentsFocused']
+        | CreateExpenseClaimAction['setAcknowledgement']
+        | CreateExpenseClaimAction['setTriggerFormSubmit']
+        | CreateExpenseClaimAction['setIsError']
+        | CreateExpenseClaimAction['setIsSubmitting']
+        | CreateExpenseClaimAction['setIsSuccessful']
+        | CreateExpenseClaimAction['setIsLoading'];
       payload: boolean;
     }
   | {
-      type: ExpenseClaimAction['setCurrentStepperPosition'];
+      type: CreateExpenseClaimAction['setCurrentStepperPosition'];
       payload: number;
     }
   | {
-      type: ExpenseClaimAction['setStepsInError'];
+      type: CreateExpenseClaimAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
     }
   | {
-      type: ExpenseClaimAction['setExpenseClaimCurrency'];
+      type: CreateExpenseClaimAction['setExpenseClaimCurrency'];
       payload: Currency;
     };
 
-type ExpenseClaimReducer = (
-  state: ExpenseClaimState,
-  action: ExpenseClaimDispatch
-) => ExpenseClaimState;
+type CreateExpenseClaimReducer = (
+  state: CreateExpenseClaimState,
+  action: CreateExpenseClaimDispatch
+) => CreateExpenseClaimState;
 
 export type {
-  ExpenseClaimAction,
-  ExpenseClaimDispatch,
+  CreateExpenseClaimAction,
+  CreateExpenseClaimDispatch,
   ExpenseClaimDocument,
   ExpenseClaimKind,
-  ExpenseClaimReducer,
+  CreateExpenseClaimReducer,
   ExpenseClaimSchema,
-  ExpenseClaimState,
+  CreateExpenseClaimState,
 };
 
 /**
  * 
  * type setExpenseClaimKindProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setExpenseClaimKind'];
+    type: CreateExpenseClaimAction['setExpenseClaimKind'];
     payload: ExpenseClaimKind;
   };
 };
 
 type setExpenseClaimCurrencyProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setExpenseClaimCurrency'];
+    type: CreateExpenseClaimAction['setExpenseClaimCurrency'];
     payload: Currency;
   };
 };
 
 type setExpenseClaimDateProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setExpenseClaimDate'];
+    type: CreateExpenseClaimAction['setExpenseClaimDate'];
     payload: string;
   };
 };
 
 type setIsValidExpenseClaimDateProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsValidExpenseClaimDate'];
+    type: CreateExpenseClaimAction['setIsValidExpenseClaimDate'];
     payload: boolean;
   };
 };
 
 type setIsExpenseClaimDateFocusedProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsExpenseClaimDateFocused'];
+    type: CreateExpenseClaimAction['setIsExpenseClaimDateFocused'];
     payload: boolean;
   };
 };
 
 type setExpenseClaimDescriptionProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setExpenseClaimDescription'];
+    type: CreateExpenseClaimAction['setExpenseClaimDescription'];
     payload: string;
   };
 };
 
 type setIsValidExpenseClaimDescriptionProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsValidExpenseClaimDescription'];
+    type: CreateExpenseClaimAction['setIsValidExpenseClaimDescription'];
     payload: boolean;
   };
 };
 
 type setIsExpenseClaimDescriptionFocusedProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsExpenseClaimDescriptionFocused'];
+    type: CreateExpenseClaimAction['setIsExpenseClaimDescriptionFocused'];
     payload: boolean;
   };
 };
 
 type setAdditionalCommentsProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setAdditionalComments'];
+    type: CreateExpenseClaimAction['setAdditionalComments'];
     payload: string;
   };
 };
 
 type setIsValidAdditionalCommentsProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsValidAdditionalComments'];
+    type: CreateExpenseClaimAction['setIsValidAdditionalComments'];
     payload: boolean;
   };
 };
 
 type setIsAdditionalCommentsFocusedProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsAdditionalCommentsFocused'];
+    type: CreateExpenseClaimAction['setIsAdditionalCommentsFocused'];
     payload: boolean;
   };
 };
 
 type setAcknowledgementProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setAcknowledgement'];
+    type: CreateExpenseClaimAction['setAcknowledgement'];
     payload: boolean;
   };
 };
 
 type setCurrentStepperPositionProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setCurrentStepperPosition'];
+    type: CreateExpenseClaimAction['setCurrentStepperPosition'];
     payload: number;
   };
 };
 
 type setStepsInErrorProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setStepsInError'];
+    type: CreateExpenseClaimAction['setStepsInError'];
     payload: SetStepsInErrorPayload;
   };
 };
 
 type setIsErrorProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsError'];
+    type: CreateExpenseClaimAction['setIsError'];
     payload: boolean;
   };
 };
 
 type setErrorMessageProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setErrorMessage'];
+    type: CreateExpenseClaimAction['setErrorMessage'];
     payload: string;
   };
 };
 
 type setIsSubmittingProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsSubmitting'];
+    type: CreateExpenseClaimAction['setIsSubmitting'];
     payload: boolean;
   };
 };
 
 type setSubmitMessageProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setSubmitMessage'];
+    type: CreateExpenseClaimAction['setSubmitMessage'];
     payload: string;
   };
 };
 
 type setIsSuccessfulProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsSuccessful'];
+    type: CreateExpenseClaimAction['setIsSuccessful'];
     payload: boolean;
   };
 };
 
 type setSuccessMessageProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setSuccessMessage'];
+    type: CreateExpenseClaimAction['setSuccessMessage'];
     payload: string;
   };
 };
 
 type setIsLoadingProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsLoading'];
+    type: CreateExpenseClaimAction['setIsLoading'];
     payload: boolean;
   };
 };
 
 type setLoadingMessageProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setLoadingMessage'];
+    type: CreateExpenseClaimAction['setLoadingMessage'];
     payload: string;
   };
 };
 
 type setExpenseClaimAmountProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setExpenseClaimAmount'];
+    type: CreateExpenseClaimAction['setExpenseClaimAmount'];
     payload: string;
   };
 };
 
 type setIsValidExpenseClaimAmountProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsValidExpenseClaimAmount'];
+    type: CreateExpenseClaimAction['setIsValidExpenseClaimAmount'];
     payload: boolean;
   };
 };
 
 type setIsExpenseClaimAmountFocusedProps = {
-  state: ExpenseClaimState;
+  state: CreateExpenseClaimState;
   action: {
-    type: ExpenseClaimAction['setIsExpenseClaimAmountFocused'];
+    type: CreateExpenseClaimAction['setIsExpenseClaimAmountFocused'];
     payload: boolean;
   };
 };

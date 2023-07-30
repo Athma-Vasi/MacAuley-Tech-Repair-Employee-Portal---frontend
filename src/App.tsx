@@ -17,7 +17,10 @@ import {
   DisplayEndorsements,
 } from './components/endorsements/';
 import { EventCreator } from './components/events/eventCreator';
-import { ExpenseClaim } from './components/expenseClaim';
+import {
+  DisplayExpenseClaims,
+  CreateExpenseClaim,
+} from './components/expenseClaim';
 import {
   CreateLeaveRequest,
   DisplayLeaveRequests,
@@ -147,7 +150,12 @@ function App() {
               <Route path="display" element={<DisplayRequestResources />} />
             </Route>
 
-            {/* <Route path="expense-claim" element={<ExpenseClaim />} /> */}
+            {/* expense-claim */}
+            <Route path="expense-claim">
+              <Route index element={<DisplayExpenseClaims />} />
+              <Route path="create" element={<CreateExpenseClaim />} />
+              <Route path="display" element={<DisplayExpenseClaims />} />
+            </Route>
           </Route>
 
           <Route path="general">

@@ -1,10 +1,10 @@
 import type {
-  ExpenseClaimAction,
-  ExpenseClaimDispatch,
-  ExpenseClaimState,
+  CreateExpenseClaimAction,
+  CreateExpenseClaimDispatch,
+  CreateExpenseClaimState,
 } from './types';
 
-const initialExpenseClaimState: ExpenseClaimState = {
+const initialCreateExpenseClaimState: CreateExpenseClaimState = {
   expenseClaimAmount: '',
   isValidExpenseClaimAmount: false,
   isExpenseClaimAmountFocused: false,
@@ -39,7 +39,7 @@ const initialExpenseClaimState: ExpenseClaimState = {
   loadingMessage: '',
 };
 
-const expenseClaimAction: ExpenseClaimAction = {
+const createExpenseClaimAction: CreateExpenseClaimAction = {
   setExpenseClaimAmount: 'setExpenseClaimAmount',
   setIsValidExpenseClaimAmount: 'setIsValidExpenseClaimAmount',
   setIsExpenseClaimAmountFocused: 'setIsExpenseClaimAmountFocused',
@@ -74,102 +74,102 @@ const expenseClaimAction: ExpenseClaimAction = {
   setLoadingMessage: 'setLoadingMessage',
 };
 
-function expenseClaimReducer(
-  state: ExpenseClaimState,
-  action: ExpenseClaimDispatch
-): ExpenseClaimState {
+function createExpenseClaimReducer(
+  state: CreateExpenseClaimState,
+  action: CreateExpenseClaimDispatch
+): CreateExpenseClaimState {
   switch (action.type) {
-    case expenseClaimAction.setExpenseClaimAmount:
+    case createExpenseClaimAction.setExpenseClaimAmount:
       return {
         ...state,
         expenseClaimAmount: action.payload,
       };
-    case expenseClaimAction.setIsValidExpenseClaimAmount:
+    case createExpenseClaimAction.setIsValidExpenseClaimAmount:
       return {
         ...state,
         isValidExpenseClaimAmount: action.payload,
       };
-    case expenseClaimAction.setIsExpenseClaimAmountFocused:
+    case createExpenseClaimAction.setIsExpenseClaimAmountFocused:
       return {
         ...state,
         isExpenseClaimAmountFocused: action.payload,
       };
 
-    case expenseClaimAction.setExpenseClaimKind:
+    case createExpenseClaimAction.setExpenseClaimKind:
       return {
         ...state,
         expenseClaimKind: action.payload,
       };
-    case expenseClaimAction.setExpenseClaimCurrency:
+    case createExpenseClaimAction.setExpenseClaimCurrency:
       return {
         ...state,
         expenseClaimCurrency: action.payload,
       };
 
-    case expenseClaimAction.setExpenseClaimDate:
+    case createExpenseClaimAction.setExpenseClaimDate:
       return {
         ...state,
         expenseClaimDate: action.payload,
       };
-    case expenseClaimAction.setIsValidExpenseClaimDate:
+    case createExpenseClaimAction.setIsValidExpenseClaimDate:
       return {
         ...state,
         isValidExpenseClaimDate: action.payload,
       };
-    case expenseClaimAction.setIsExpenseClaimDateFocused:
+    case createExpenseClaimAction.setIsExpenseClaimDateFocused:
       return {
         ...state,
         isExpenseClaimDateFocused: action.payload,
       };
 
-    case expenseClaimAction.setExpenseClaimDescription:
+    case createExpenseClaimAction.setExpenseClaimDescription:
       return {
         ...state,
         expenseClaimDescription: action.payload,
       };
-    case expenseClaimAction.setIsValidExpenseClaimDescription:
+    case createExpenseClaimAction.setIsValidExpenseClaimDescription:
       return {
         ...state,
         isValidExpenseClaimDescription: action.payload,
       };
-    case expenseClaimAction.setIsExpenseClaimDescriptionFocused:
+    case createExpenseClaimAction.setIsExpenseClaimDescriptionFocused:
       return {
         ...state,
         isExpenseClaimDescriptionFocused: action.payload,
       };
 
-    case expenseClaimAction.setAdditionalComments:
+    case createExpenseClaimAction.setAdditionalComments:
       return {
         ...state,
         additionalComments: action.payload,
       };
-    case expenseClaimAction.setIsValidAdditionalComments:
+    case createExpenseClaimAction.setIsValidAdditionalComments:
       return {
         ...state,
         isValidAdditionalComments: action.payload,
       };
-    case expenseClaimAction.setIsAdditionalCommentsFocused:
+    case createExpenseClaimAction.setIsAdditionalCommentsFocused:
       return {
         ...state,
         isAdditionalCommentsFocused: action.payload,
       };
 
-    case expenseClaimAction.setAcknowledgement:
+    case createExpenseClaimAction.setAcknowledgement:
       return {
         ...state,
         acknowledgement: action.payload,
       };
-    case expenseClaimAction.setTriggerFormSubmit:
+    case createExpenseClaimAction.setTriggerFormSubmit:
       return {
         ...state,
         triggerFormSubmit: action.payload,
       };
-    case expenseClaimAction.setCurrentStepperPosition:
+    case createExpenseClaimAction.setCurrentStepperPosition:
       return {
         ...state,
         currentStepperPosition: action.payload,
       };
-    case expenseClaimAction.setStepsInError: {
+    case createExpenseClaimAction.setStepsInError: {
       const { kind, step } = action.payload;
       const stepsInError = new Set(state.stepsInError);
       kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
@@ -180,42 +180,42 @@ function expenseClaimReducer(
       };
     }
 
-    case expenseClaimAction.setIsError:
+    case createExpenseClaimAction.setIsError:
       return {
         ...state,
         isError: action.payload,
       };
-    case expenseClaimAction.setErrorMessage:
+    case createExpenseClaimAction.setErrorMessage:
       return {
         ...state,
         errorMessage: action.payload,
       };
-    case expenseClaimAction.setIsSubmitting:
+    case createExpenseClaimAction.setIsSubmitting:
       return {
         ...state,
         isSubmitting: action.payload,
       };
-    case expenseClaimAction.setSubmitMessage:
+    case createExpenseClaimAction.setSubmitMessage:
       return {
         ...state,
         submitMessage: action.payload,
       };
-    case expenseClaimAction.setIsSuccessful:
+    case createExpenseClaimAction.setIsSuccessful:
       return {
         ...state,
         isSuccessful: action.payload,
       };
-    case expenseClaimAction.setSuccessMessage:
+    case createExpenseClaimAction.setSuccessMessage:
       return {
         ...state,
         successMessage: action.payload,
       };
-    case expenseClaimAction.setIsLoading:
+    case createExpenseClaimAction.setIsLoading:
       return {
         ...state,
         isLoading: action.payload,
       };
-    case expenseClaimAction.setLoadingMessage:
+    case createExpenseClaimAction.setLoadingMessage:
       return {
         ...state,
         loadingMessage: action.payload,
@@ -226,7 +226,11 @@ function expenseClaimReducer(
   }
 }
 
-export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
+export {
+  createExpenseClaimAction,
+  createExpenseClaimReducer,
+  initialCreateExpenseClaimState,
+};
 
 /**
  * NEITHER OF BELOW IMPLEMENTATIONS WORK WITH TYPESCRIPT
@@ -235,7 +239,7 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
 /*
  *  const lookupMap = new Map([
  *  [
-      expenseClaimAction.setExpenseClaimAmount,
+      createExpenseClaimAction.setExpenseClaimAmount,
       function () {
         return {
           ...state,
@@ -244,14 +248,14 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
       },
     ],
     [
-      expenseClaimAction.setIsValidExpenseClaimAmount,
+      createExpenseClaimAction.setIsValidExpenseClaimAmount,
       () => ({
         ...state,
         isValidExpenseClaimAmount: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsExpenseClaimAmountFocused,
+      createExpenseClaimAction.setIsExpenseClaimAmountFocused,
       () => ({
         ...state,
         isExpenseClaimAmountFocused: action.payload,
@@ -259,14 +263,14 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setExpenseClaimKind,
+      createExpenseClaimAction.setExpenseClaimKind,
       () => ({
         ...state,
         expenseClaimKind: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setExpenseClaimCurrency,
+      createExpenseClaimAction.setExpenseClaimCurrency,
       () => ({
         ...state,
         expenseClaimCurrency: action.payload,
@@ -274,21 +278,21 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setExpenseClaimDate,
+      createExpenseClaimAction.setExpenseClaimDate,
       () => ({
         ...state,
         expenseClaimDate: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsValidExpenseClaimDate,
+      createExpenseClaimAction.setIsValidExpenseClaimDate,
       () => ({
         ...state,
         isValidExpenseClaimDate: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsExpenseClaimDateFocused,
+      createExpenseClaimAction.setIsExpenseClaimDateFocused,
       () => ({
         ...state,
         isExpenseClaimDateFocused: action.payload,
@@ -296,21 +300,21 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setExpenseClaimDescription,
+      createExpenseClaimAction.setExpenseClaimDescription,
       () => ({
         ...state,
         expenseClaimDescription: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsValidExpenseClaimDescription,
+      createExpenseClaimAction.setIsValidExpenseClaimDescription,
       () => ({
         ...state,
         isValidExpenseClaimDescription: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsExpenseClaimDescriptionFocused,
+      createExpenseClaimAction.setIsExpenseClaimDescriptionFocused,
       () => ({
         ...state,
         isExpenseClaimDescriptionFocused: action.payload,
@@ -318,21 +322,21 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setAdditionalComments,
+      createExpenseClaimAction.setAdditionalComments,
       () => ({
         ...state,
         additionalComments: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsValidAdditionalComments,
+      createExpenseClaimAction.setIsValidAdditionalComments,
       () => ({
         ...state,
         isValidAdditionalComments: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsAdditionalCommentsFocused,
+      createExpenseClaimAction.setIsAdditionalCommentsFocused,
       () => ({
         ...state,
         isAdditionalCommentsFocused: action.payload,
@@ -340,21 +344,21 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setAcknowledgement,
+      createExpenseClaimAction.setAcknowledgement,
       () => ({
         ...state,
         acknowledgement: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setCurrentStepperPosition,
+      createExpenseClaimAction.setCurrentStepperPosition,
       () => ({
         ...state,
         currentStepperPosition: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setStepsInError,
+      createExpenseClaimAction.setStepsInError,
       () => {
         const { kind, step } = action.payload;
         const stepsInError = new Set(state.stepsInError);
@@ -369,56 +373,56 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setIsError,
+      createExpenseClaimAction.setIsError,
       () => ({
         ...state,
         isError: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setErrorMessage,
+      createExpenseClaimAction.setErrorMessage,
       () => ({
         ...state,
         errorMessage: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsSubmitting,
+      createExpenseClaimAction.setIsSubmitting,
       () => ({
         ...state,
         isSubmitting: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setSubmitMessage,
+      createExpenseClaimAction.setSubmitMessage,
       () => ({
         ...state,
         submitMessage: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsSuccessful,
+      createExpenseClaimAction.setIsSuccessful,
       () => ({
         ...state,
         isSuccessful: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setSuccessMessage,
+      createExpenseClaimAction.setSuccessMessage,
       () => ({
         ...state,
         successMessage: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsLoading,
+      createExpenseClaimAction.setIsLoading,
       () => ({
         ...state,
         isLoading: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setLoadingMessage,
+      createExpenseClaimAction.setLoadingMessage,
       () => ({
         ...state,
         loadingMessage: action.payload,
@@ -429,26 +433,26 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
 
 /**
    * function expenseClaimReducer1(
-  state: ExpenseClaimState,
-  action: ExpenseClaimDispatch
-): ExpenseClaimState {
+  state: CreateExpenseClaimState,
+  action: CreateExpenseClaimDispatch
+): CreateExpenseClaimState {
   const lookupMap = new Map([
     [
-      expenseClaimAction.setExpenseClaimAmount,
+      createExpenseClaimAction.setExpenseClaimAmount,
       ({ state, action }: setExpenseClaimAmountProps) => ({
         ...state,
         expenseClaimAmount: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsValidExpenseClaimAmount,
+      createExpenseClaimAction.setIsValidExpenseClaimAmount,
       ({ state, action }: setIsValidExpenseClaimAmountProps) => ({
         ...state,
         isValidExpenseClaimAmount: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsExpenseClaimAmountFocused,
+      createExpenseClaimAction.setIsExpenseClaimAmountFocused,
       ({ state, action }: setIsExpenseClaimAmountFocusedProps) => ({
         ...state,
         isExpenseClaimAmountFocused: action.payload,
@@ -456,14 +460,14 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setExpenseClaimKind,
+      createExpenseClaimAction.setExpenseClaimKind,
       ({ state, action }: setExpenseClaimKindProps) => ({
         ...state,
         expenseClaimKind: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setExpenseClaimCurrency,
+      createExpenseClaimAction.setExpenseClaimCurrency,
       ({ state, action }: setExpenseClaimCurrencyProps) => ({
         ...state,
         expenseClaimCurrency: action.payload,
@@ -471,21 +475,21 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setExpenseClaimDate,
+      createExpenseClaimAction.setExpenseClaimDate,
       ({ state, action }: setExpenseClaimDateProps) => ({
         ...state,
         expenseClaimDate: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsValidExpenseClaimDate,
+      createExpenseClaimAction.setIsValidExpenseClaimDate,
       ({ state, action }: setIsValidExpenseClaimDateProps) => ({
         ...state,
         isValidExpenseClaimDate: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsExpenseClaimDateFocused,
+      createExpenseClaimAction.setIsExpenseClaimDateFocused,
       ({ state, action }: setIsExpenseClaimAmountFocusedProps) => ({
         ...state,
         isExpenseClaimDateFocused: action.payload,
@@ -493,21 +497,21 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setExpenseClaimDescription,
+      createExpenseClaimAction.setExpenseClaimDescription,
       ({ state, action }: setExpenseClaimDescriptionProps) => ({
         ...state,
         expenseClaimDescription: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsValidExpenseClaimDescription,
+      createExpenseClaimAction.setIsValidExpenseClaimDescription,
       ({ state, action }: setIsValidExpenseClaimDescriptionProps) => ({
         ...state,
         isValidExpenseClaimDescription: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsExpenseClaimDescriptionFocused,
+      createExpenseClaimAction.setIsExpenseClaimDescriptionFocused,
       ({ state, action }: setIsExpenseClaimDateFocusedProps) => ({
         ...state,
         isExpenseClaimDescriptionFocused: action.payload,
@@ -515,21 +519,21 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setAdditionalComments,
+      createExpenseClaimAction.setAdditionalComments,
       ({ state, action }: setAdditionalCommentsProps) => ({
         ...state,
         additionalComments: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsValidAdditionalComments,
+      createExpenseClaimAction.setIsValidAdditionalComments,
       ({ state, action }: setIsValidAdditionalCommentsProps) => ({
         ...state,
         isValidAdditionalComments: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsAdditionalCommentsFocused,
+      createExpenseClaimAction.setIsAdditionalCommentsFocused,
       ({ state, action }: setIsAdditionalCommentsFocusedProps) => ({
         ...state,
         isAdditionalCommentsFocused: action.payload,
@@ -537,21 +541,21 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setAcknowledgement,
+      createExpenseClaimAction.setAcknowledgement,
       ({ state, action }: setAcknowledgementProps) => ({
         ...state,
         acknowledgement: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setCurrentStepperPosition,
+      createExpenseClaimAction.setCurrentStepperPosition,
       ({ state, action }: setCurrentStepperPositionProps) => ({
         ...state,
         currentStepperPosition: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setStepsInError,
+      createExpenseClaimAction.setStepsInError,
       ({ state, action }: setStepsInErrorProps) => {
         const { kind, step } = action.payload;
         const stepsInError = new Set(state.stepsInError);
@@ -565,56 +569,56 @@ export { expenseClaimAction, expenseClaimReducer, initialExpenseClaimState };
     ],
 
     [
-      expenseClaimAction.setIsError,
+      createExpenseClaimAction.setIsError,
       ({ state, action }: setIsErrorProps) => ({
         ...state,
         isError: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setErrorMessage,
+      createExpenseClaimAction.setErrorMessage,
       ({ state, action }: setErrorMessageProps) => ({
         ...state,
         errorMessage: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsSubmitting,
+      createExpenseClaimAction.setIsSubmitting,
       ({ state, action }: setIsSubmittingProps) => ({
         ...state,
         isSubmitting: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setSubmitMessage,
+      createExpenseClaimAction.setSubmitMessage,
       ({ state, action }: setSubmitMessageProps) => ({
         ...state,
         submitMessage: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsSuccessful,
+      createExpenseClaimAction.setIsSuccessful,
       ({ state, action }: setIsSuccessfulProps) => ({
         ...state,
         isSuccessful: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setSuccessMessage,
+      createExpenseClaimAction.setSuccessMessage,
       ({ state, action }: setSuccessMessageProps) => ({
         ...state,
         successMessage: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setIsLoading,
+      createExpenseClaimAction.setIsLoading,
       ({ state, action }: setIsLoadingProps) => ({
         ...state,
         isLoading: action.payload,
       }),
     ],
     [
-      expenseClaimAction.setLoadingMessage,
+      createExpenseClaimAction.setLoadingMessage,
       ({ state, action }: setLoadingMessageProps) => ({
         ...state,
         loadingMessage: action.payload,

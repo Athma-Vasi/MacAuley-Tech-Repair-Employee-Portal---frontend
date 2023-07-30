@@ -1,3 +1,4 @@
-import { ExpenseClaim } from './ExpenseClaim';
+import { CreateExpenseClaim } from './createExpenseClaim/CreateExpenseClaim';
+import { DisplayExpenseClaims } from './DisplayExpenseClaims';
 
-export { ExpenseClaim };
+export { CreateExpenseClaim, DisplayExpenseClaims };
