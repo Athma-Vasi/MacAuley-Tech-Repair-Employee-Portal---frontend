@@ -501,7 +501,9 @@ function DisplayQueryMobile({
       <Accordion w="100%">
         <Accordion.Item
           value={`${
-            restOfGroupedQueryResponseData.length === 0
+            groupedByQueryResponseData.size === 0
+              ? 'No documents to display'
+              : restOfGroupedQueryResponseData.length === 0
               ? 'All constrained values displayed'
               : 'Rest of constrained values'
           }`}
@@ -510,7 +512,9 @@ function DisplayQueryMobile({
             disabled={restOfGroupedQueryResponseData.length === 0}
           >
             <Text>{`${
-              restOfGroupedQueryResponseData.length === 0
+              groupedByQueryResponseData.size === 0
+                ? 'No documents to display'
+                : restOfGroupedQueryResponseData.length === 0
                 ? 'All constrained values displayed'
                 : 'Rest of constrained values'
             }`}</Text>

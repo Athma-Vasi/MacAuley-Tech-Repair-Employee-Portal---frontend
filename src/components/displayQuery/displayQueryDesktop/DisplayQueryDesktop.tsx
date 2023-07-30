@@ -91,7 +91,6 @@ function DisplayQueryDesktop<Doc>({
   ]);
 
   const tableKeyExclusionSet = new Set(['_id', 'userId', 'action', 'category']);
-  const dateKeysSet = new Set(['createdAt', 'updatedAt']);
 
   const displayTable = Array.from(groupedByQueryResponseData).map(
     ([section, queryResponseObjArrays], sectionIdx) => {
@@ -540,7 +539,9 @@ function DisplayQueryDesktop<Doc>({
     <Accordion w="100%">
       <Accordion.Item
         value={`${
-          restOfGroupedQueryResponseData.length === 0
+          groupedByQueryResponseData.size === 0
+            ? 'No documents to display'
+            : restOfGroupedQueryResponseData.length === 0
             ? 'All constrained values displayed'
             : 'Rest of constrained values'
         }`}
@@ -549,7 +550,9 @@ function DisplayQueryDesktop<Doc>({
           disabled={restOfGroupedQueryResponseData.length === 0}
         >
           <Text>{`${
-            restOfGroupedQueryResponseData.length === 0
+            groupedByQueryResponseData.size === 0
+              ? 'No documents to display'
+              : restOfGroupedQueryResponseData.length === 0
               ? 'All constrained values displayed'
               : 'Rest of constrained values'
           }`}</Text>
