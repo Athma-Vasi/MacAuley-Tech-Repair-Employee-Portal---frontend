@@ -27,6 +27,7 @@ import type {
   UserRoles,
   UserSchema,
   USPostalCode,
+  StoreLocation,
 } from './user.types';
 
 type BreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -119,6 +120,7 @@ export type {
   UserRoles,
   UserSchema,
   USPostalCode,
+  StoreLocation,
 };
 
 export type {

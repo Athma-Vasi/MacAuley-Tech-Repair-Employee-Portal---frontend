@@ -9,7 +9,6 @@ import {
 } from 'react';
 import { TbUpload } from 'react-icons/tb';
 
-import { JOB_POSITIONS } from '../../../constants/data';
 import {
   EMAIL_REGEX,
   FULL_NAME_REGEX,
@@ -55,6 +54,7 @@ import {
   createRefermentReducer,
   initialCreateRefermentState,
 } from './state';
+import { JOB_POSITION_DATA } from '../../../constants/data';
 
 function CreateReferment() {
   const [createRefermentState, createRefermentDispatch] = useReducer(
@@ -644,7 +644,7 @@ function CreateReferment() {
     {
       description: 'Position referred for',
       label: 'Job position',
-      data: JOB_POSITIONS,
+      data: JOB_POSITION_DATA,
       value: positionReferredFor,
       onChange: (event) => {
         createRefermentDispatch({

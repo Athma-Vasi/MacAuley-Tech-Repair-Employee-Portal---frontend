@@ -71,8 +71,10 @@ const initialRegisterState: RegisterState = {
     country: 'Canada',
   },
 
-  jobPosition: 'Employee',
-  department: 'Administration',
+  department: 'Administrative',
+  jobPosition: 'Accountant',
+  storeLocation: 'Edmonton',
+
   emergencyContact: {
     fullName: '',
     isValidFullName: false,
@@ -162,6 +164,7 @@ const registerAction: RegisterAction = {
 
   setJobPosition: 'setJobPosition',
   setDepartment: 'setDepartment',
+  setStoreLocation: 'setStoreLocation',
 
   setEmergencyContactFullName: 'setEmergencyContactFullName',
   setIsValidEmergencyContactFullName: 'setIsValidEmergencyContactFullName',
@@ -361,6 +364,8 @@ function registerReducer(
       return { ...state, jobPosition: action.payload };
     case registerAction.setDepartment:
       return { ...state, department: action.payload };
+    case registerAction.setStoreLocation:
+      return { ...state, storeLocation: action.payload };
 
     case registerAction.setEmergencyContactFullName:
       return {

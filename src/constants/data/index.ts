@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-const JOB_POSITIONS = ['Employee', 'Supervisor', 'Manager'];
+import { Department, JobPosition } from '../../types';
 
 const PROVINCES = [
   'Alberta',
@@ -71,17 +71,6 @@ const STATES_US = [
   'Wyoming',
 ];
 
-const DEPARTMENTS = [
-  'Administration',
-  'Customer Service',
-  'Human Resources',
-  'Repair',
-  'Technical Support',
-  'Sales',
-  'Logistics',
-  'Inventory Management',
-];
-
 const URGENCY_DATA = ['low', 'medium', 'high'];
 
 const COLORS = {
@@ -105,10 +94,134 @@ const TEXT_OVERFLOW: CSSProperties = {
 
 const REQUEST_STATUS = ['pending', 'approved', 'rejected'];
 
+const DEPARTMENT_DATA: Department[] = [
+  'Executive Management',
+  'Administrative',
+  'Sales and Marketing',
+  'Information Technology',
+  'Repair Technicians',
+  'Field Service Technicians',
+  'Logistics and Inventory',
+  'Customer Service',
+  'Quality Control',
+  'Training and Development',
+  'Janitorial and Maintenance',
+  'Security',
+];
+
+const JOB_POSITION_DATA: JobPosition[] = [
+  'Chief Executive Officer',
+  'Chief Operations Officer',
+  'Chief Financial Officer',
+  'Chief Technology Officer',
+  'Chief Marketing Officer',
+  'Office Manager',
+  'Administrative Assistant',
+  'Human Resources Manager',
+  'Accountant',
+  'Sales Manager',
+  'Marketing Manager',
+  'Sales Representative',
+  'Digital Marketing Specialist',
+  'IT Manager',
+  'Network Administrator',
+  'Systems Administrator',
+  'IT Support Specialist',
+  'Database Administrator',
+  'Electronics Repair Technician',
+  'Computer Repair Technician',
+  'Smartphone Repair Technician',
+  'Tablet Repair Technician',
+  'Audio/Video Equipment Repair Technician',
+  'On-Site Repair Technician',
+  'Mobile Device Technician',
+  'Warehouse Manager',
+  'Inventory Clerk',
+  'Delivery Driver',
+  'Customer Service Representative',
+  'Technical Support Specialist',
+  'Quality Assurance Inspector',
+  'Testing and Diagnostics Specialist',
+  'Technical Trainer',
+  'Janitor/Cleaner',
+  'Security Guard',
+];
+
+const DEPARTMENT_JOB_POSITION_MAP = new Map([
+  [
+    'Executive Management',
+    [
+      'Chief Executive Officer',
+      'Chief Operations Officer',
+      'Chief Financial Officer',
+      'Chief Technology Officer',
+      'Chief Marketing Officer',
+    ],
+  ],
+  [
+    'Administrative',
+    [
+      'Office Manager',
+      'Administrative Assistant',
+      'Human Resources Manager',
+      'Accountant',
+    ],
+  ],
+  [
+    'Sales and Marketing',
+    [
+      'Sales Manager',
+      'Marketing Manager',
+      'Sales Representative',
+      'Digital Marketing Specialist',
+    ],
+  ],
+  [
+    'Information Technology',
+    [
+      'IT Manager',
+      'Network Administrator',
+      'Systems Administrator',
+      'IT Support Specialist',
+      'Database Administrator',
+    ],
+  ],
+  [
+    'Repair Technicians',
+    [
+      'Electronics Repair Technician',
+      'Computer Repair Technician',
+      'Smartphone Repair Technician',
+      'Tablet Repair Technician',
+      'Audio/Video Equipment Repair Technician',
+    ],
+  ],
+  [
+    'Field Service Technicians',
+    ['On-Site Repair Technician', 'Mobile Device Technician'],
+  ],
+  [
+    'Logistics and Inventory',
+    ['Warehouse Manager', 'Inventory Clerk', 'Delivery Driver'],
+  ],
+  [
+    'Customer Service',
+    ['Customer Service Representative', 'Technical Support Specialist'],
+  ],
+  [
+    'Quality Control',
+    ['Quality Assurance Inspector', 'Testing and Diagnostics Specialist'],
+  ],
+  ['Training and Development', ['Technical Trainer']],
+  ['Janitorial and Maintenance', ['Janitor/Cleaner']],
+  ['Security', ['Security Guard']],
+]);
+
 export {
   COLORS,
-  DEPARTMENTS,
-  JOB_POSITIONS,
+  DEPARTMENT_DATA,
+  DEPARTMENT_JOB_POSITION_MAP,
+  JOB_POSITION_DATA,
   PROVINCES,
   REQUEST_STATUS,
   STATES_US,

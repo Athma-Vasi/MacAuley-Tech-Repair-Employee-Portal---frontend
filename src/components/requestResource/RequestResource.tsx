@@ -1,7 +1,7 @@
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { TbUpload } from 'react-icons/tb';
 
-import { DEPARTMENTS, URGENCY_DATA } from '../../constants/data';
+import { DEPARTMENT_DATA, URGENCY_DATA } from '../../constants/data';
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
@@ -262,7 +262,7 @@ function RequestResource() {
   });
 
   const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: DEPARTMENTS,
+    data: DEPARTMENT_DATA,
     description:
       'Select the department for which you are requesting a resource.',
     label: 'Department',

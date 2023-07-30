@@ -1,3 +1,9 @@
+import {
+  Department,
+  JobPosition,
+  PreferredPronouns,
+  StoreLocation,
+} from '../../types';
 import { DescriptionObjectsArray } from '../wrappers';
 
 const REGISTER_URL = '/users';
@@ -23,7 +29,7 @@ const REGISTER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
     description: 'Additional information',
     ariaLabel:
-      'Enter job position, department, emergency contact name, emergency contact number, and start date',
+      'Enter job position, department, store location, emergency contact name, emergency contact number, and start date',
   },
 
   {
@@ -32,7 +38,9 @@ const REGISTER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   },
 ];
 
-const PREFERRED_PRONOUNS_DATA = [
+const REGISTER_MAX_STEPPER_POSITION = 5;
+
+const PREFERRED_PRONOUNS_DATA: PreferredPronouns[] = [
   'Prefer not to say',
   'He/Him',
   'She/Her',
@@ -40,11 +48,16 @@ const PREFERRED_PRONOUNS_DATA = [
   'Other',
 ];
 
-const REGISTER_MAX_STEPPER_POSITION = 5;
+const STORE_LOCATION_DATA: StoreLocation[] = [
+  'Calgary',
+  'Edmonton',
+  'Vancouver',
+];
 
 export {
   PREFERRED_PRONOUNS_DATA,
   REGISTER_DESCRIPTION_OBJECTS,
   REGISTER_MAX_STEPPER_POSITION,
   REGISTER_URL,
+  STORE_LOCATION_DATA,
 };

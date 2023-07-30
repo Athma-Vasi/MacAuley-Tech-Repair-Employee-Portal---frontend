@@ -1,6 +1,10 @@
 import { ChangeEvent, KeyboardEvent, useEffect } from 'react';
 
-import { DEPARTMENTS, JOB_POSITIONS } from '../../../constants/data';
+import {
+  DEPARTMENT_DATA,
+  DEPARTMENT_JOB_POSITION_MAP,
+  JOB_POSITION_DATA,
+} from '../../../constants/data';
 import {
   DATE_REGEX,
   FULL_NAME_REGEX,
@@ -13,7 +17,7 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { Department, JobPosition } from '../../../types';
+import { Department, JobPosition, StoreLocation } from '../../../types';
 import {
   returnDateValidationText,
   returnNameValidationText,
@@ -27,10 +31,12 @@ import {
   FormLayoutWrapper,
 } from '../../wrappers';
 import type { RegisterStepAdditionalProps } from './types';
+import { STORE_LOCATION_DATA } from '../constants';
 
 function RegisterStepAdditional({
   jobPosition,
   department,
+  storeLocation,
   fullName,
   isValidFullName,
   isFullNameFocused,
@@ -169,8 +175,23 @@ function RegisterStepAdditional({
       regexValidationText: returnDateValidationText(startDate),
     });
 
+  const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DEPARTMENT_DATA,
+    description: 'Select your department',
+    label: 'Department',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      registerDispatch({
+        type: registerAction.setDepartment,
+        payload: event.currentTarget.value as Department,
+      });
+    },
+    required: true,
+    value: department,
+    withAsterisk: true,
+  };
+
   const jobPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: JOB_POSITIONS,
+    data: DEPARTMENT_JOB_POSITION_MAP.get(department) ?? [],
     description: 'Select your job position',
     label: 'Job position',
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -184,20 +205,21 @@ function RegisterStepAdditional({
     withAsterisk: true,
   };
 
-  const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: DEPARTMENTS,
-    description: 'Select your department',
-    label: 'Department',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      registerDispatch({
-        type: registerAction.setDepartment,
-        payload: event.currentTarget.value as Department,
-      });
-    },
-    required: true,
-    value: department,
-    withAsterisk: true,
-  };
+  const storeLocationSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: STORE_LOCATION_DATA,
+      description: 'Select your store location',
+      label: 'Store location',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        registerDispatch({
+          type: registerAction.setStoreLocation,
+          payload: event.currentTarget.value as StoreLocation,
+        });
+      },
+      required: true,
+      value: storeLocation,
+      withAsterisk: true,
+    };
 
   const emergencyContactFullNameInputCreatorInfo: AccessibleTextInputCreatorInfo =
     {
@@ -260,6 +282,13 @@ function RegisterStepAdditional({
         });
       },
       placeholder: "Enter your contact's number",
+      rightSection: true,
+      rightSectionOnClick: () => {
+        registerDispatch({
+          type: registerAction.setEmergencyContactPhoneNumber,
+          payload: '+(1)',
+        });
+      },
       required: true,
       withAsterisk: true,
       semanticName: 'phone number',
@@ -267,7 +296,7 @@ function RegisterStepAdditional({
         if (event.key === 'Backspace') {
           if (phoneNumber.length === 14 || phoneNumber.length === 9) {
             registerDispatch({
-              type: registerAction.setContactNumber,
+              type: registerAction.setEmergencyContactPhoneNumber,
               payload: phoneNumber.slice(0, -1),
             });
           }
@@ -309,11 +338,15 @@ function RegisterStepAdditional({
     dateKind: 'full date',
   };
 
-  const [createdJobPositionSelectInput, createdDepartmentSelectInput] =
-    returnAccessibleSelectInputElements([
-      jobPositionSelectInputCreatorInfo,
-      departmentSelectInputCreatorInfo,
-    ]);
+  const [
+    createdJobPositionSelectInput,
+    createdDepartmentSelectInput,
+    createdStoreLocationSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    jobPositionSelectInputCreatorInfo,
+    departmentSelectInputCreatorInfo,
+    storeLocationSelectInputCreatorInfo,
+  ]);
 
   const [createdEmergencyContactFullNameInput] =
     returnAccessibleTextInputElements([
@@ -331,8 +364,9 @@ function RegisterStepAdditional({
 
   const displayRegisterStepAdditional = (
     <FormLayoutWrapper>
-      {createdJobPositionSelectInput}
       {createdDepartmentSelectInput}
+      {createdJobPositionSelectInput}
+      {createdStoreLocationSelectInput}
       {createdEmergencyContactFullNameInput}
       {createdEmergencyPhoneNumberInput}
       {createdStartDateInput}

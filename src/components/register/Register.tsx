@@ -94,6 +94,7 @@ function Register() {
 
     jobPosition,
     department,
+    storeLocation,
     emergencyContact,
 
     startDate,
@@ -211,6 +212,7 @@ function Register() {
         address: { addressLine, city, province, state, postalCode, country },
         jobPosition,
         department,
+        storeLocation,
         emergencyContact: { fullName, contactNumber },
         startDate,
         roles: ['Employee'],
@@ -305,116 +307,6 @@ function Register() {
       </Flex>
     ) : null;
 
-  // const displayAuthenticationStep = (
-  //   <RegisterStepAuthentication
-  //     email={email}
-  //     isValidEmail={isValidEmail}
-  //     isEmailFocused={isEmailFocused}
-  //     username={username}
-  //     isValidUsername={isValidUsername}
-  //     isUsernameFocused={isUsernameFocused}
-  //     password={password}
-  //     isValidPassword={isValidPassword}
-  //     isPasswordFocused={isPasswordFocused}
-  //     confirmPassword={confirmPassword}
-  //     isValidConfirmPassword={isValidConfirmPassword}
-  //     isConfirmPasswordFocused={isConfirmPasswordFocused}
-  //     registerAction={registerAction}
-  //     registerDispatch={registerDispatch}
-  //   />
-  // );
-
-  // const displayPersonalStep = (
-  //   <RegisterStepPersonal
-  //     firstName={firstName}
-  //     isValidFirstName={isValidFirstName}
-  //     isFirstNameFocused={isFirstNameFocused}
-  //     middleName={middleName}
-  //     isValidMiddleName={isValidMiddleName}
-  //     isMiddleNameFocused={isMiddleNameFocused}
-  //     lastName={lastName}
-  //     isValidLastName={isValidLastName}
-  //     isLastNameFocused={isLastNameFocused}
-  //     preferredName={preferredName}
-  //     isValidPreferredName={isValidPreferredName}
-  //     isPreferredNameFocused={isPreferredNameFocused}
-  //     preferredPronouns={preferredPronouns}
-  //     profilePictureUrl={profilePictureUrl}
-  //     isValidProfilePictureUrl={isValidProfilePictureUrl}
-  //     isProfilePictureUrlFocused={isProfilePictureUrlFocused}
-  //     dateOfBirth={dateOfBirth}
-  //     isValidDateOfBirth={isValidDateOfBirth}
-  //     isDateOfBirthFocused={isDateOfBirthFocused}
-  //     registerAction={registerAction}
-  //     registerDispatch={registerDispatch}
-  //   />
-  // );
-
-  // const displayAddressStep = (
-  //   <RegisterStepAddress
-  //     contactNumber={contactNumber}
-  //     isValidContactNumber={isValidContactNumber}
-  //     isContactNumberFocused={isContactNumberFocused}
-  //     addressLine={addressLine}
-  //     isValidAddressLine={isValidAddressLine}
-  //     isAddressLineFocused={isAddressLineFocused}
-  //     city={city}
-  //     isValidCity={isValidCity}
-  //     isCityFocused={isCityFocused}
-  //     state={state}
-  //     province={province}
-  //     country={country}
-  //     postalCode={postalCode}
-  //     isValidPostalCode={isValidPostalCode}
-  //     isPostalCodeFocused={isPostalCodeFocused}
-  //     registerAction={registerAction}
-  //     registerDispatch={registerDispatch}
-  //   />
-  // );
-
-  // const displayAdditionalStep = (
-  //   <RegisterStepAdditional
-  //     jobPosition={jobPosition}
-  //     department={department}
-  //     fullName={fullName}
-  //     isValidFullName={isValidFullName}
-  //     isFullNameFocused={isFullNameFocused}
-  //     phoneNumber={phoneNumber}
-  //     isValidPhoneNumber={isValidPhoneNumber}
-  //     isPhoneNumberFocused={isPhoneNumberFocused}
-  //     startDate={startDate}
-  //     isValidStartDate={isValidStartDate}
-  //     isStartDateFocused={isStartDateFocused}
-  //     registerAction={registerAction}
-  //     registerDispatch={registerDispatch}
-  //   />
-  // );
-
-  // const displayReviewStep = (
-  //   <RegisterStepReview
-  //     email={email}
-  //     username={username}
-  //     firstName={firstName}
-  //     middleName={middleName}
-  //     lastName={lastName}
-  //     preferredName={preferredName}
-  //     preferredPronouns={preferredPronouns}
-  //     profilePictureUrl={profilePictureUrl}
-  //     contactNumber={contactNumber}
-  //     addressLine={addressLine}
-  //     city={city}
-  //     state={state}
-  //     province={province}
-  //     country={country}
-  //     postalCode={postalCode}
-  //     jobPosition={jobPosition}
-  //     department={department}
-  //     fullName={fullName}
-  //     phoneNumber={phoneNumber}
-  //     startDate={startDate}
-  //   />
-  // );
-
   const displayRegisterComponentPage =
     currentStepperPosition === 0 ? (
       <RegisterStepAuthentication
@@ -481,6 +373,7 @@ function Register() {
       <RegisterStepAdditional
         jobPosition={jobPosition}
         department={department}
+        storeLocation={storeLocation}
         fullName={fullName}
         isValidFullName={isValidFullName}
         isFullNameFocused={isFullNameFocused}

@@ -1,14 +1,11 @@
-import { Department } from '../../types';
 import type {
   RequestResourceAction,
   RequestResourceDispatch,
-  RequestResourceKind,
   RequestResourceState,
-  Urgency,
 } from './types';
 
 const initialRequestResourceState: RequestResourceState = {
-  department: 'Administration',
+  department: 'Administrative',
   resourceType: 'Access',
 
   resourceQuantity: '0',

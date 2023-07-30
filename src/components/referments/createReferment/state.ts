@@ -29,7 +29,7 @@ const initialCreateRefermentState: CreateRefermentState = {
   isValidCandidateProfileUrl: false,
   isCandidateProfileUrlFocused: false,
 
-  positionReferredFor: 'Employee',
+  positionReferredFor: 'Accountant',
 
   positionJobDescription: '',
   isValidPositionJobDescription: false,

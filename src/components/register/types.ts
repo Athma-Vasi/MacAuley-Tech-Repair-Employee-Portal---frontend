@@ -8,6 +8,7 @@ import {
   Province,
   SetStepsInErrorPayload,
   StatesUS,
+  StoreLocation,
 } from '../../types';
 
 type RegisterState = {
@@ -71,8 +72,10 @@ type RegisterState = {
     country: Country;
   };
 
-  jobPosition: JobPosition;
   department: Department;
+  jobPosition: JobPosition;
+  storeLocation: StoreLocation;
+
   emergencyContact: {
     fullName: string;
     isValidFullName: boolean;
@@ -160,8 +163,9 @@ type RegisterAction = {
   setIsPostalCodeFocused: 'setIsPostalCodeFocused';
   setCountry: 'setCountry';
 
-  setJobPosition: 'setJobPosition';
   setDepartment: 'setDepartment';
+  setJobPosition: 'setJobPosition';
+  setStoreLocation: 'setStoreLocation';
 
   setEmergencyContactFullName: 'setEmergencyContactFullName';
   setIsValidEmergencyContactFullName: 'setIsValidEmergencyContactFullName';
@@ -274,6 +278,10 @@ type RegisterDispatch =
   | {
       type: RegisterAction['setJobPosition'];
       payload: JobPosition;
+    }
+  | {
+      type: RegisterAction['setStoreLocation'];
+      payload: StoreLocation;
     }
   | {
       type: RegisterAction['setPostalCode'];
