@@ -3,9 +3,10 @@ import { useDisclosure } from '@mantine/hooks';
 import {
   ChangeEvent,
   FormEvent,
-  useEffect,
-  useReducer,
   KeyboardEvent,
+  useEffect,
+  useMemo,
+  useReducer,
 } from 'react';
 import { TbTrash, TbUpload } from 'react-icons/tb';
 
@@ -58,6 +59,7 @@ function DisplayQuery<Doc>({
     displayQueryReducer,
     initialDisplayQueryState
   );
+
   const {
     groupByRadioData,
     currentSelectionData,
@@ -99,30 +101,37 @@ function DisplayQuery<Doc>({
 
   // create initial groupByRadioData state
   useEffect(() => {
-    const initialGroupByRadioData = componentQueryData.reduce(
-      (
-        acc: Array<{ value: string; label: string }>,
-        { inputKind, label, value }
-      ) => {
-        if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
-          // only push if it is also present in query response data
-          const isFieldExcluded = queryResponseData.filter(
-            (queryResponseObj) => {
-              return Object.entries(queryResponseObj).find(
-                ([key, _]) => key === value
-              );
+    const initialGroupByRadioData = componentQueryData
+      .reduce(
+        (
+          acc: Array<{ value: string; label: string }>,
+          { inputKind, label, value }
+        ) => {
+          if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
+            // only push if it is also present in query response data
+            const isFieldExcluded = queryResponseData.filter(
+              (queryResponseObj) => {
+                return Object.entries(queryResponseObj).find(
+                  ([key, _]) => key === value
+                );
+              }
+            );
+
+            if (isFieldExcluded.length > 0) {
+              acc.push({ label, value });
             }
-          );
-
-          if (isFieldExcluded.length > 0) {
-            acc.push({ label, value });
           }
-        }
 
-        return acc;
-      },
-      [{ label: 'Username', value: 'username' }]
-    );
+          return acc;
+        },
+        [{ label: 'Username', value: 'username' }]
+      )
+      // username is not displayed when resource is anonymousRequest
+      .filter(({ value }) => {
+        return parentComponentName === 'Anonymous Request'
+          ? value !== 'username'
+          : true;
+      });
 
     displayQueryDispatch({
       type: displayQueryAction.setGroupByRadioData,
