@@ -7,13 +7,13 @@ import {
 } from 'react';
 import { TbUpload } from 'react-icons/tb';
 
-import { URGENCY_DATA } from '../../constants/data';
+import { URGENCY_DATA } from '../../../constants/data';
 import {
   EMAIL_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   PHONE_NUMBER_REGEX,
-} from '../../constants/regex';
+} from '../../../constants/regex';
 import {
   returnAccessibleButtonElements,
   returnAccessibleErrorValidTextElements,
@@ -21,13 +21,13 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../jsxCreators';
-import { PhoneNumber, Urgency } from '../../types';
+} from '../../../jsxCreators';
+import { PhoneNumber, Urgency } from '../../../types';
 import {
   returnEmailValidationText,
   returnGrammarValidationText,
   returnPhoneNumberValidationText,
-} from '../../utils';
+} from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
@@ -36,12 +36,12 @@ import {
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../wrappers';
+} from '../../wrappers';
 import {
   ANONYMOUS_REQUEST_KINDS,
   CREATE_ANON_REQUEST_DESCRIPTION_OBJECTS,
   CREATE_ANON_REQUEST_MAX_STEPPER_POSITION,
-} from './constants';
+} from '../constants';
 import {
   createAnonymousRequestAction,
   createAnonymousRequestReducer,

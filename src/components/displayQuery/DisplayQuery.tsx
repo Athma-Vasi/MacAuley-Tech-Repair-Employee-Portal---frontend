@@ -100,7 +100,10 @@ function DisplayQuery<Doc>({
   // create initial groupByRadioData state
   useEffect(() => {
     const initialGroupByRadioData = componentQueryData.reduce(
-      (acc, { inputKind, label, value, selectData }) => {
+      (
+        acc: Array<{ value: string; label: string }>,
+        { inputKind, label, value }
+      ) => {
         if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
           // only push if it is also present in query response data
           const isFieldExcluded = queryResponseData.filter(

@@ -4,7 +4,7 @@ import {
   PhoneNumber,
   SetStepsInErrorPayload,
   Urgency,
-} from '../../types';
+} from '../../../types';
 
 type AnonymousRequestKind =
   | 'Workplace safety'

@@ -119,7 +119,7 @@ function DisplayResource<Doc>({
         });
         displayResourceDispatch({
           type: displayResourceAction.setPages,
-          payload: data.pages,
+          payload: data.pages ?? pages,
         });
         displayResourceDispatch({
           type: displayResourceAction.setTotalDocuments,
@@ -268,6 +268,12 @@ function DisplayResource<Doc>({
     });
   }, [displayResourceState]);
 
+  // prevent display of option to groupBy/projection exclusion of username field if the resource is anonymousRequest
+  const filteredComponentQueryData =
+    requestBodyHeading === 'anonymousRequest'
+      ? componentQueryData.filter((obj) => obj.value !== 'username')
+      : componentQueryData;
+
   return (
     <Flex
       direction="column"
@@ -286,7 +292,7 @@ function DisplayResource<Doc>({
       <QueryBuilder
         setQueryBuilderString={displayResourceAction.setQueryBuilderString}
         parentComponentDispatch={displayResourceDispatch}
-        componentQueryData={componentQueryData}
+        componentQueryData={filteredComponentQueryData}
         collectionName={splitCamelCase(requestBodyHeading)}
       />
 
@@ -295,7 +301,7 @@ function DisplayResource<Doc>({
         parentComponentName={splitCamelCase(requestBodyHeading)}
         parentRequestStatusDispatch={displayResourceDispatch}
         parentDeleteFormDispatch={displayResourceDispatch}
-        componentQueryData={componentQueryData}
+        componentQueryData={filteredComponentQueryData}
         queryResponseData={resourceData}
       />
       <PageBuilder

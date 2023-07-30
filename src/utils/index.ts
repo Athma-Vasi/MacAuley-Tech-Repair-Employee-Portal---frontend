@@ -958,7 +958,15 @@ function groupQueryResponse<Doc>({
           acc.get(groupBySelectionValue)?.push(queryResponseObj);
         }
       }
-      // assign the remaining selection data values to the rest array
+
+      // if it does not exist, push the object to the array with key 'rest'
+      else {
+        if (!acc.has('results')) {
+          acc.set('results', [queryResponseObj]);
+        } else {
+          acc.get('results')?.push(queryResponseObj);
+        }
+      }
 
       return acc;
     },
@@ -983,6 +991,7 @@ function groupQueryResponse<Doc>({
   console.log('currentSelectionData', currentSelectionData);
   console.log('queryResponseData', queryResponseData);
   console.log('groupedBy', groupedBy);
+  console.log('sortedGroupedBy', sortedGroupedBy);
   console.groupEnd();
 
   // this allows user to see the rest of the values for groupedBy selection

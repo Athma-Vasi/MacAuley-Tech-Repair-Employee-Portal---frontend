@@ -10,7 +10,7 @@ import {
 import { CreateAnnouncement } from './components/announcements/createAnnouncement';
 import { CreateBenefit, DisplayBenefits } from './components/benefits';
 import { CreateComment } from './components/comments';
-import { CreateAnonymousRequest } from './components/createAnonymousRequest';
+
 import { Dashboard } from './components/dashboard';
 import {
   CreateEndorsement,
@@ -40,6 +40,10 @@ import { SurveyBuilder } from './components/surveyBuilder';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
+import {
+  CreateAnonymousRequest,
+  DisplayAnonymousRequests,
+} from './components/anonymousRequest';
 
 function App() {
   const {
@@ -138,6 +142,12 @@ function App() {
           </Route>
 
           <Route path="general">
+            {/* anonymous-request */}
+            <Route path="anonymous-request">
+              <Route index element={<DisplayAnonymousRequests />} />
+              <Route path="create" element={<CreateAnonymousRequest />} />
+              <Route path="display" element={<DisplayAnonymousRequests />} />
+            </Route>
             {/* endorsement */}
             <Route path="endorsement">
               <Route index element={<DisplayEndorsements />} />
@@ -151,10 +161,6 @@ function App() {
               <Route path="display" element={<DisplayPrinterIssues />} />
             </Route>
             {/* <Route path="referment" element={<CreateReferment />} /> */}
-            {/* <Route
-              path="anonymous-request"
-              element={<CreateAnonymousRequest />}
-            /> */}
           </Route>
 
           {/* <Route path="outreach">

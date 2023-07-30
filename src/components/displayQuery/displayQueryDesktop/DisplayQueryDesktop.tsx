@@ -218,11 +218,11 @@ function DisplayQueryDesktop<Doc>({
                                       year: 'numeric',
                                       month: 'numeric',
                                       day: 'numeric',
-                                      hour: 'numeric',
-                                      minute: 'numeric',
-                                      second: 'numeric',
-                                      hour12: false,
-                                      timeZoneName: 'short',
+                                      // hour: 'numeric',
+                                      // minute: 'numeric',
+                                      // second: 'numeric',
+                                      // hour12: false,
+                                      // timeZoneName: 'short',
                                     },
                                     locale: 'en-US',
                                   })
@@ -561,6 +561,7 @@ function DisplayQueryDesktop<Doc>({
             wrap="wrap"
             w="fit-content"
             columnGap={rowGap}
+            rowGap={rowGap}
             p={padding}
             style={{
               overflowX: 'auto',
@@ -584,8 +585,8 @@ function DisplayQueryDesktop<Doc>({
                     }}
                   >
                     <Group>
-                      <Text>{splitCamelCase(key)}:</Text>
-                      <Text>{value}</Text>
+                      <Text size="xs">{splitCamelCase(key)}:</Text>
+                      <Text size="xs">{value}</Text>
                     </Group>
                   </Flex>
                 )
