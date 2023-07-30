@@ -410,15 +410,11 @@ function DisplayQuery<Doc>({
     <Flex
       direction="column"
       rowGap={rowGap}
-      // w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
       w="100%"
-      // p={padding}
       align="flex-start"
       justify="center"
       style={{
         ...style,
-        // border: '1px solid #e0e0e0',
-        // borderRadius: 4,
       }}
     >
       {displayGroupByRadioGroup}

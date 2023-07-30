@@ -5,7 +5,6 @@ import {
   Flex,
   Group,
   HoverCard,
-  NavLink,
   Popover,
   Spoiler,
   Stack,
@@ -17,7 +16,6 @@ import { FormEvent } from 'react';
 import {
   TbArrowDown,
   TbArrowUp,
-  TbChevronRight,
   TbStatusChange,
   TbTrash,
   TbUpload,
@@ -547,7 +545,10 @@ function DisplayQueryDesktop<Doc>({
         }`}
       >
         <Accordion.Control
-          disabled={restOfGroupedQueryResponseData.length === 0}
+          disabled={
+            groupedByQueryResponseData.size === 0 ||
+            restOfGroupedQueryResponseData.length === 0
+          }
         >
           <Text>{`${
             groupedByQueryResponseData.size === 0
@@ -604,7 +605,7 @@ function DisplayQueryDesktop<Doc>({
   );
 
   return (
-    <Stack w="100%">
+    <Stack w="100%" style={{ ...style }}>
       {displayTable}
       {displayRestOfGroupedByData}
     </Stack>

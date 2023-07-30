@@ -1,6 +1,10 @@
 import { CSSProperties } from 'react';
 
-import { QueryResponseData, RequestStatus } from '../../types';
+import {
+  QueryResponseData,
+  RequestStatus,
+  ResourceRoutePaths,
+} from '../../types';
 import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayResourceProps<Doc> = {
@@ -43,6 +47,17 @@ type DisplayResourceState<Doc> = {
   successMessage: string;
   isLoading: boolean;
   loadingMessage: string;
+};
+
+type UpdateRequestStatusInput = {
+  accessToken: string;
+  paths: ResourceRoutePaths;
+  requestStatus: {
+    id: string;
+    status: RequestStatus;
+  };
+  requestBodyHeading: string;
+  signal: AbortSignal;
 };
 
 type DisplayResourceAction = {
@@ -125,4 +140,5 @@ export type {
   DisplayResourceProps,
   DisplayResourceReducer,
   DisplayResourceState,
+  UpdateRequestStatusInput,
 };

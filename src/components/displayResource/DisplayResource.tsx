@@ -4,14 +4,20 @@ import { useEffect, useReducer } from 'react';
 import { useAuth, useGlobalState } from '../../hooks';
 import {
   GetQueriedResourceRequestServerResponse,
+  RequestStatus,
   ResourceRequestServerResponse,
+  ResourceRoutePaths,
 } from '../../types';
 import { logState, splitCamelCase, urlBuilder } from '../../utils';
 import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
 import { displayResourceAction, displayResourceReducer } from './state';
-import { DisplayResourceProps, DisplayResourceState } from './types';
+import {
+  DisplayResourceProps,
+  DisplayResourceState,
+  UpdateRequestStatusInput,
+} from './types';
 import { useDisclosure } from '@mantine/hooks';
 
 function DisplayResource<Doc>({
@@ -159,16 +165,21 @@ function DisplayResource<Doc>({
     const controller = new AbortController();
     const { signal } = controller;
 
-    async function updateRequestStatus() {
+    async function updateRequestStatus({
+      accessToken,
+      paths,
+      requestStatus: { id, status },
+      requestBodyHeading,
+      signal,
+    }: UpdateRequestStatusInput) {
       const urlString: URL = urlBuilder({
-        // path: `/api/v1/actions/company/leave-request/${requestStatus.id}`,
-        path: `${paths.manager}/${requestStatus.id}`,
+        path: `${paths.manager}/${id}`,
       });
 
       const resourceBody = Object.create(null);
       Object.defineProperty(resourceBody, requestBodyHeading, {
         value: {
-          requestStatus: requestStatus.status,
+          requestStatus: status,
         },
         writable: true,
         enumerable: true,
@@ -205,7 +216,13 @@ function DisplayResource<Doc>({
     // only allow Admin and Manager to update request status
     if (roles.includes('Manager')) {
       if (requestStatus.id !== '') {
-        updateRequestStatus();
+        updateRequestStatus({
+          accessToken,
+          requestStatus,
+          paths,
+          requestBodyHeading,
+          signal,
+        });
       }
     }
 

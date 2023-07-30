@@ -3,7 +3,6 @@ import {
   Button,
   Flex,
   Group,
-  NavLink,
   Popover,
   Spoiler,
   Text,
@@ -12,7 +11,6 @@ import { FormEvent } from 'react';
 import {
   TbArrowDown,
   TbArrowUp,
-  TbChevronRight,
   TbStatusChange,
   TbTrash,
   TbUpload,
@@ -102,12 +100,6 @@ function DisplayQueryMobile({
   ]);
 
   const tableKeyExclusionSet = new Set(['_id', 'userId', 'action', 'category']);
-  const dateKeysSet = new Set([
-    'createdAt',
-    'updatedAt',
-    'startDate',
-    'endDate',
-  ]);
 
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
@@ -509,7 +501,10 @@ function DisplayQueryMobile({
           }`}
         >
           <Accordion.Control
-            disabled={restOfGroupedQueryResponseData.length === 0}
+            disabled={
+              groupedByQueryResponseData.size === 0 ||
+              restOfGroupedQueryResponseData.length === 0
+            }
           >
             <Text>{`${
               groupedByQueryResponseData.size === 0
