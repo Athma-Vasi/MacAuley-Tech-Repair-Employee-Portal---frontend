@@ -1,4 +1,6 @@
-import {
+import { compress } from 'image-conversion';
+
+import type {
   ImageUploadAction,
   ImageUploadDispatch,
   ImageUploadState,
@@ -61,8 +63,13 @@ function imageUploadReducer(
     case imageUploadAction.setImages: {
       const { index, image } = action.payload;
 
+      // safely add image to images array
       const images = [...state.images];
-      images[index] = image;
+      if (image) {
+        images[index] = image;
+      } else {
+        images.splice(index, 1);
+      }
 
       return {
         ...state,
@@ -119,8 +126,15 @@ function imageUploadReducer(
     case imageUploadAction.setImagePreviews: {
       const { index, imagePreview } = action.payload;
 
+      // const imagePreviews = [...state.imagePreviews];
+      // imagePreviews[index] = imagePreview;
+
       const imagePreviews = [...state.imagePreviews];
-      imagePreviews[index] = imagePreview;
+      if (imagePreview) {
+        imagePreviews[index] = imagePreview;
+      } else {
+        imagePreviews.splice(index, 1);
+      }
 
       return {
         ...state,

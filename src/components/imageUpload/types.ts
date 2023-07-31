@@ -9,7 +9,7 @@ type ImageUploadProps = {
 type ImageUploadState = {
   images: File[];
   imageCount: number;
-  imagePreviews: string[];
+  imagePreviews: (File | Blob)[];
 
   areValidImageSizes: boolean[];
   areValidImageKinds: boolean[];
@@ -58,21 +58,22 @@ type ImageUploadAction = {
 type ImageUploadDispatch =
   | {
       type: ImageUploadAction['setImages'];
+
       payload: {
         index: number;
-        image: File;
+        image: File | null;
       };
-    }
-  | {
-      type: ImageUploadAction['removeImage'];
-      payload: number;
     }
   | {
       type: ImageUploadAction['setImagePreviews'];
       payload: {
         index: number;
-        imagePreview: string;
+        imagePreview: File | Blob | null;
       };
+    }
+  | {
+      type: ImageUploadAction['removeImage'];
+      payload: number;
     }
   | {
       type: ImageUploadAction['setImageCount'];

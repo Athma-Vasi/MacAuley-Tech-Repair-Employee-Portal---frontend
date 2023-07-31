@@ -187,10 +187,11 @@ function returnAccessibleErrorValidTextElementsForDynamicInputs({
 type ReturnAccessibleErrorValidTextElementsForDynamicImageUploadsProps = {
   semanticName: string;
   images: File[];
+  imagePreviews: (File | Blob)[];
   areValidImageSizes: boolean[];
   areValidImageKinds: boolean[];
   areValidImageTypes: boolean[];
-  validationFunction?: ((image: File) => string) | undefined;
+  validationFunction?: ((image: File | Blob) => string) | undefined;
 };
 
 /**
@@ -206,6 +207,7 @@ type ReturnAccessibleErrorValidTextElementsForDynamicImageUploadsProps = {
 function returnAccessibleErrorValidTextElementsForDynamicImageUploads({
   semanticName,
   images,
+  imagePreviews,
   areValidImageSizes,
   areValidImageKinds,
   areValidImageTypes,
@@ -238,7 +240,9 @@ function returnAccessibleErrorValidTextElementsForDynamicImageUploads({
               image.name.length > 17
                 ? `${image.name.slice(0, 17)}...`
                 : image.name
-            } is not a valid image - ${validationFunction(image)}`
+            } is not a valid image - ${validationFunction(
+              imagePreviews[index]
+            )}`
           : ''}
       </Text>
     )),

@@ -5,11 +5,12 @@ import {
   Flex,
   Group,
   Image,
+  Slider,
   Stack,
   Text,
   Tooltip,
 } from '@mantine/core';
-import { compress } from 'image-conversion';
+
 import { useEffect, useReducer } from 'react';
 
 import { useGlobalState } from '../../hooks';
@@ -32,6 +33,8 @@ import {
 import { ImageUploadProps } from './types';
 import { MdOutlineRemove, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import { TbTrash } from 'react-icons/tb';
+import { compress } from 'image-conversion';
+import { IMG_QUALITY_SLIDER_DATA } from './constants';
 
 function ImageUpload({
   style = {},
@@ -71,7 +74,7 @@ function ImageUpload({
 
   // validate image sizes on every image upload
   useEffect(() => {
-    images.forEach((image, index) => {
+    imagePreviews.forEach((image, index) => {
       const imageIsValidSize = image.size <= maxImageSize;
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageSizes,
@@ -81,11 +84,11 @@ function ImageUpload({
         },
       });
     });
-  }, [images, maxImageSize]);
+  }, [imagePreviews, maxImageSize]);
 
   // validate image kinds on every image upload
   useEffect(() => {
-    images.forEach((image, index) => {
+    imagePreviews.forEach((image, index) => {
       const imageIsValidKind = image.type.split('/')[0] === 'image';
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageKinds,
@@ -95,13 +98,13 @@ function ImageUpload({
         },
       });
     });
-  }, [images]);
+  }, [imagePreviews]);
 
   // validate image types on every image upload
   useEffect(() => {
     const validImageTypes = new Set(['jpeg', 'png', 'gif']);
 
-    images.forEach((image, index) => {
+    imagePreviews.forEach((image, index) => {
       const imageIsValidType = validImageTypes.has(image.type.split('/')[1]);
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageTypes,
@@ -111,7 +114,31 @@ function ImageUpload({
         },
       });
     });
-  }, [images]);
+  }, [imagePreviews]);
+
+  // compress image on every slider change
+  useEffect(() => {
+    async function compressImage() {
+      await Promise.all(
+        images.map(async (image, index) => {
+          const compressedImage = await compress(
+            image,
+            (qualities[index] ?? 10) / 10
+          );
+
+          imageUploadDispatch({
+            type: imageUploadAction.setImagePreviews,
+            payload: {
+              index,
+              imagePreview: compressedImage,
+            },
+          });
+        })
+      );
+    }
+
+    compressImage();
+  }, [qualities]);
 
   const [imageFileUploadErrorTexts, imageFileUploadValidTexts] =
     returnAccessibleErrorValidTextElementsForDynamicImageUploads({
@@ -119,6 +146,7 @@ function ImageUpload({
       areValidImageSizes,
       areValidImageTypes,
       images,
+      imagePreviews,
       semanticName: 'image',
       validationFunction: returnImageValidationText,
     });
@@ -129,6 +157,10 @@ function ImageUpload({
         disabled={imageCount >= maxImages}
         label="Upload image"
         onChange={(file) => {
+          if (!file) {
+            return;
+          }
+
           imageUploadDispatch({
             type: imageUploadAction.setImageCount,
             payload: imageCount + 1,
@@ -137,14 +169,14 @@ function ImageUpload({
             type: imageUploadAction.setImages,
             payload: {
               index: imageCount,
-              image: file as File,
+              image: file,
             },
           });
           imageUploadDispatch({
             type: imageUploadAction.setImagePreviews,
             payload: {
               index: imageCount,
-              imagePreview: URL.createObjectURL(file as File),
+              imagePreview: file,
             },
           });
         }}
@@ -157,17 +189,32 @@ function ImageUpload({
 
   const createdImagePreview = Array.from({ length: imageCount }).map(
     (_, index) => {
-      // `data:${file.fileMimetype};base64,${file.uploadedFile}`
       const imagePreview = (
         <Image
           maw={382}
           mx="auto"
           radius="sm"
-          withPlaceholder
           //   src={`data:${images[index]?.arrayBuffer};base64,${images[index]}`}
           // src={`${URL.createObjectURL(images[index])}`}
-          src={imagePreviews[index]}
+          src={
+            areValidImageKinds[index]
+              ? URL.createObjectURL(imagePreviews[index])
+              : undefined
+          }
           alt={areValidImageKinds[index] ? images[index].name : 'Invalid kind'}
+          withPlaceholder
+          placeholder={
+            <Flex
+              align="center"
+              justify="center"
+              style={{
+                height: '100%',
+                width: '100%',
+              }}
+            >
+              <Text size="sm">Invalid image</Text>
+            </Flex>
+          }
         />
       );
 
@@ -192,7 +239,7 @@ function ImageUpload({
             {imageFileUploadErrorTexts[index]}
             {imageFileUploadValidTexts[index]}
           </Flex>
-
+          {/* image name */}
           <Flex
             align="center"
             justify="space-between"
@@ -214,6 +261,7 @@ function ImageUpload({
               </Tooltip>
             </TextWrapper>
           </Flex>
+          {/* image size */}
           <Flex
             align="center"
             justify="space-between"
@@ -227,9 +275,10 @@ function ImageUpload({
           >
             <TextWrapper creatorInfoObj={{}}>Size: </TextWrapper>
             <TextWrapper creatorInfoObj={{}}>
-              {(images[index].size / 1_000).toFixed(2)} KB
+              {(imagePreviews[index].size / 1_000).toFixed(2)} KB
             </TextWrapper>
           </Flex>
+          {/* image kind */}
           <Flex
             align="center"
             justify="space-between"
@@ -246,7 +295,7 @@ function ImageUpload({
               {images[index].type.split('/')[0]}
             </TextWrapper>
           </Flex>
-
+          {/* image type */}
           <Flex
             align="center"
             justify="space-between"
@@ -263,6 +312,7 @@ function ImageUpload({
               {images[index].type.split('/')[1]}
             </TextWrapper>
           </Flex>
+          {/* remove button */}
           <Flex w="100%" align="center" justify="center">
             <Button
               size="xs"
@@ -279,6 +329,27 @@ function ImageUpload({
               Remove
             </Button>
           </Flex>
+
+          {/* slider */}
+          <Stack w="100%" p={padding}>
+            <TextWrapper creatorInfoObj={{}}>Quality: </TextWrapper>
+            <Slider
+              min={1}
+              max={10}
+              step={1}
+              marks={IMG_QUALITY_SLIDER_DATA}
+              value={qualities[index] ?? 10}
+              onChange={(value) => {
+                imageUploadDispatch({
+                  type: imageUploadAction.setQualities,
+                  payload: {
+                    index,
+                    value,
+                  },
+                });
+              }}
+            />
+          </Stack>
         </Stack>
       );
     }
@@ -367,3 +438,13 @@ export { ImageUpload };
         })
       );
    */
+
+/**
+       * const compressedImage = await imageCompression(image, {
+        maxSizeMB: qualities[index],
+        maxWidthOrHeight: scales[index],
+        useWebWorker: true,
+        initialQuality: 1,
+        minQuality: 0.1,
+      });
+       */

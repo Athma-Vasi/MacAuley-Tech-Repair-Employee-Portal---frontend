@@ -193,7 +193,7 @@ function returnGrammarValidationText({
     : '';
 }
 
-function returnImageValidationText(image: File) {
+function returnImageValidationText(image: File | Blob) {
   const imageKind = image.type.split('/')[0];
   const imageType = image.type.split('/')[1];
   const imageSize = image.size;
