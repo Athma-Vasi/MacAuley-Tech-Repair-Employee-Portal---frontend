@@ -24,6 +24,8 @@ const initialCreateExpenseClaimState: CreateExpenseClaimState = {
   isValidAdditionalComments: false,
   isAdditionalCommentsFocused: false,
 
+  fileToUpload: null,
+
   acknowledgement: false,
   triggerFormSubmit: false,
   currentStepperPosition: 0,
@@ -58,6 +60,8 @@ const createExpenseClaimAction: CreateExpenseClaimAction = {
   setAdditionalComments: 'setAdditionalComments',
   setIsValidAdditionalComments: 'setIsValidAdditionalComments',
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused',
+
+  setFileToUpload: 'setFileToUpload',
 
   setAcknowledgement: 'setAcknowledgement',
   setTriggerFormSubmit: 'setTriggerFormSubmit',
@@ -152,6 +156,12 @@ function createExpenseClaimReducer(
       return {
         ...state,
         isAdditionalCommentsFocused: action.payload,
+      };
+
+    case createExpenseClaimAction.setFileToUpload:
+      return {
+        ...state,
+        fileToUpload: action.payload,
       };
 
     case createExpenseClaimAction.setAcknowledgement:

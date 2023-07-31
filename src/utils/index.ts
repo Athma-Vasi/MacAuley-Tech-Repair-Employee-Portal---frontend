@@ -910,7 +910,7 @@ function urlBuilder({
   path = '',
   port = '3500',
   protocol = 'http',
-  query = '?',
+  query = '',
 }: UrlBuilderInput): URL {
   return new URL(`${protocol}://${host}:${port}${path}${query}${hash}`);
 }

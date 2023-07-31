@@ -60,6 +60,8 @@ type CreateExpenseClaimState = {
   isValidAdditionalComments: boolean;
   isAdditionalCommentsFocused: boolean;
 
+  fileToUpload: File | null;
+
   acknowledgement: boolean;
   triggerFormSubmit: boolean;
   currentStepperPosition: number;
@@ -94,6 +96,8 @@ type CreateExpenseClaimAction = {
   setAdditionalComments: 'setAdditionalComments';
   setIsValidAdditionalComments: 'setIsValidAdditionalComments';
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused';
+
+  setFileToUpload: 'setFileToUpload';
 
   setAcknowledgement: 'setAcknowledgement';
   setTriggerFormSubmit: 'setTriggerFormSubmit';
@@ -146,6 +150,10 @@ type CreateExpenseClaimDispatch =
       payload: boolean;
     }
   | {
+      type: CreateExpenseClaimAction['setFileToUpload'];
+      payload: File | null;
+    }
+  | {
       type: CreateExpenseClaimAction['setCurrentStepperPosition'];
       payload: number;
     }
@@ -166,242 +174,9 @@ type CreateExpenseClaimReducer = (
 export type {
   CreateExpenseClaimAction,
   CreateExpenseClaimDispatch,
+  CreateExpenseClaimReducer,
+  CreateExpenseClaimState,
   ExpenseClaimDocument,
   ExpenseClaimKind,
-  CreateExpenseClaimReducer,
   ExpenseClaimSchema,
-  CreateExpenseClaimState,
 };
-
-/**
- * 
- * type setExpenseClaimKindProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setExpenseClaimKind'];
-    payload: ExpenseClaimKind;
-  };
-};
-
-type setExpenseClaimCurrencyProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setExpenseClaimCurrency'];
-    payload: Currency;
-  };
-};
-
-type setExpenseClaimDateProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setExpenseClaimDate'];
-    payload: string;
-  };
-};
-
-type setIsValidExpenseClaimDateProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsValidExpenseClaimDate'];
-    payload: boolean;
-  };
-};
-
-type setIsExpenseClaimDateFocusedProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsExpenseClaimDateFocused'];
-    payload: boolean;
-  };
-};
-
-type setExpenseClaimDescriptionProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setExpenseClaimDescription'];
-    payload: string;
-  };
-};
-
-type setIsValidExpenseClaimDescriptionProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsValidExpenseClaimDescription'];
-    payload: boolean;
-  };
-};
-
-type setIsExpenseClaimDescriptionFocusedProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsExpenseClaimDescriptionFocused'];
-    payload: boolean;
-  };
-};
-
-type setAdditionalCommentsProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setAdditionalComments'];
-    payload: string;
-  };
-};
-
-type setIsValidAdditionalCommentsProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsValidAdditionalComments'];
-    payload: boolean;
-  };
-};
-
-type setIsAdditionalCommentsFocusedProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsAdditionalCommentsFocused'];
-    payload: boolean;
-  };
-};
-
-type setAcknowledgementProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setAcknowledgement'];
-    payload: boolean;
-  };
-};
-
-type setCurrentStepperPositionProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setCurrentStepperPosition'];
-    payload: number;
-  };
-};
-
-type setStepsInErrorProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setStepsInError'];
-    payload: SetStepsInErrorPayload;
-  };
-};
-
-type setIsErrorProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsError'];
-    payload: boolean;
-  };
-};
-
-type setErrorMessageProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setErrorMessage'];
-    payload: string;
-  };
-};
-
-type setIsSubmittingProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsSubmitting'];
-    payload: boolean;
-  };
-};
-
-type setSubmitMessageProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setSubmitMessage'];
-    payload: string;
-  };
-};
-
-type setIsSuccessfulProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsSuccessful'];
-    payload: boolean;
-  };
-};
-
-type setSuccessMessageProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setSuccessMessage'];
-    payload: string;
-  };
-};
-
-type setIsLoadingProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsLoading'];
-    payload: boolean;
-  };
-};
-
-type setLoadingMessageProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setLoadingMessage'];
-    payload: string;
-  };
-};
-
-type setExpenseClaimAmountProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setExpenseClaimAmount'];
-    payload: string;
-  };
-};
-
-type setIsValidExpenseClaimAmountProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsValidExpenseClaimAmount'];
-    payload: boolean;
-  };
-};
-
-type setIsExpenseClaimAmountFocusedProps = {
-  state: CreateExpenseClaimState;
-  action: {
-    type: CreateExpenseClaimAction['setIsExpenseClaimAmountFocused'];
-    payload: boolean;
-  };
-};
-
-
-export type {
-  setAcknowledgementProps,
-  setAdditionalCommentsProps,
-  setCurrentStepperPositionProps,
-  setErrorMessageProps,
-  setExpenseClaimAmountProps,
-  setExpenseClaimCurrencyProps,
-  setExpenseClaimDateProps,
-  setExpenseClaimDescriptionProps,
-  setExpenseClaimKindProps,
-  setIsAdditionalCommentsFocusedProps,
-  setIsErrorProps,
-  setIsExpenseClaimAmountFocusedProps,
-  setIsExpenseClaimDateFocusedProps,
-  setIsExpenseClaimDescriptionFocusedProps,
-  setIsLoadingProps,
-  setIsSubmittingProps,
-  setIsSuccessfulProps,
-  setIsValidAdditionalCommentsProps,
-  setIsValidExpenseClaimAmountProps,
-  setIsValidExpenseClaimDateProps,
-  setIsValidExpenseClaimDescriptionProps,
-  setLoadingMessageProps,
-  setStepsInErrorProps,
-  setSubmitMessageProps,
-  setSuccessMessageProps,
-};
-
-*/
