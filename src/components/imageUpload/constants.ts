@@ -1,5 +1,3 @@
-import { SelectInputData } from '../../types';
-
 const IMG_QUALITY_SLIDER_DATA = [
   { value: 1, label: '10%' },
   //   { value: 2, label: '20%' },
@@ -19,12 +17,12 @@ const IMG_ORIENTATION_SLIDER_DATA = [
   { value: 3, label: '3' },
   { value: 4, label: '4' },
   { value: 5, label: '5' },
-  { value: 6, label: '6°' },
+  { value: 6, label: '6' },
   { value: 7, label: '7' },
   { value: 8, label: '8' },
 ];
 
-function displayOrientation(value: number): string {
+function displayOrientationLabel(value: number): string {
   switch (value) {
     case 1:
       return '0°';
@@ -48,7 +46,7 @@ function displayOrientation(value: number): string {
 }
 
 export {
-  IMG_QUALITY_SLIDER_DATA,
+  displayOrientationLabel,
   IMG_ORIENTATION_SLIDER_DATA,
-  displayOrientation,
+  IMG_QUALITY_SLIDER_DATA,
 };

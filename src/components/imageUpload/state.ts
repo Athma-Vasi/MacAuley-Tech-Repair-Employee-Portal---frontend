@@ -18,7 +18,6 @@ const initialImageUploadState: ImageUploadState = {
 
   qualities: [],
   orientations: [],
-  scales: [],
 
   isError: false,
   errorMessage: '',
@@ -43,7 +42,6 @@ const imageUploadAction: ImageUploadAction = {
 
   setQualities: 'setQualities',
   setOrientations: 'setOrientations',
-  setScales: 'setScales',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -105,9 +103,6 @@ function imageUploadReducer(
       const orientations = [...state.orientations];
       orientations.splice(index, 1);
 
-      const scales = [...state.scales];
-      scales.splice(index, 1);
-
       return {
         ...state,
         images,
@@ -119,7 +114,6 @@ function imageUploadReducer(
         areImagesFocused,
         qualities,
         orientations,
-        scales,
       };
     }
 
@@ -213,17 +207,6 @@ function imageUploadReducer(
       return {
         ...state,
         orientations,
-      };
-    }
-    case imageUploadAction.setScales: {
-      const { index, value } = action.payload;
-
-      const scales = [...state.scales];
-      scales[index] = value;
-
-      return {
-        ...state,
-        scales,
       };
     }
 

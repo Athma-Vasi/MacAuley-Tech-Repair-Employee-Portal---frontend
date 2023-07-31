@@ -1,6 +1,4 @@
 import {
-  Button,
-  Divider,
   FileInput,
   Flex,
   Group,
@@ -12,26 +10,21 @@ import {
 } from '@mantine/core';
 import { compress } from 'image-conversion';
 import { useEffect, useReducer } from 'react';
+import { BiReset } from 'react-icons/bi';
 import { LuRotate3D } from 'react-icons/lu';
-import { MdOutlineRemove, MdOutlineRemoveCircleOutline } from 'react-icons/md';
 import { TbTrash } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleErrorValidTextElementsForDynamicImageUploads,
-  returnAccessibleErrorValidTextElementsForDynamicInputs,
 } from '../../jsxCreators';
-import {
-  logState,
-  returnImageValidationText,
-  splitCamelCase,
-} from '../../utils';
+import { logState, returnImageValidationText } from '../../utils';
 import { TextWrapper } from '../wrappers';
 import {
+  displayOrientationLabel,
   IMG_ORIENTATION_SLIDER_DATA,
   IMG_QUALITY_SLIDER_DATA,
-  displayOrientation,
 } from './constants';
 import {
   imageUploadAction,
@@ -61,7 +54,6 @@ function ImageUpload({
 
     qualities,
     orientations,
-    scales,
 
     isError,
     errorMessage,
@@ -127,7 +119,7 @@ function ImageUpload({
         images.map(async (image, index) => {
           const modifiedImage = await compress(image, {
             quality: (qualities[index] ?? 10) / 10,
-            orientation: orientations[index],
+            orientation: orientations[index] ?? 1,
           });
 
           imageUploadDispatch({
@@ -143,54 +135,6 @@ function ImageUpload({
 
     modifyImage();
   }, [qualities, orientations]);
-
-  // // compress image on every slider change
-  // useEffect(() => {
-  //   async function compressImage() {
-  //     await Promise.all(
-  //       images.map(async (image, index) => {
-  //         const compressedImage = await compress(image, {
-  //           quality: (qualities[index] ?? 10) / 10,
-  //           // orientation: orientations[index],
-  //         });
-
-  //         imageUploadDispatch({
-  //           type: imageUploadAction.setImagePreviews,
-  //           payload: {
-  //             index,
-  //             imagePreview: compressedImage,
-  //           },
-  //         });
-  //       })
-  //     );
-  //   }
-
-  //   compressImage();
-  // }, [qualities]);
-
-  // // orient image on every slider change
-  // useEffect(() => {
-  //   async function orientImage() {
-  //     await Promise.all(
-  //       images.map(async (image, index) => {
-  //         const orientedImage = await compress(image, {
-  //           quality: (qualities[index] ?? 10) / 10,
-  //           orientation: orientations[index],
-  //         });
-
-  //         imageUploadDispatch({
-  //           type: imageUploadAction.setImagePreviews,
-  //           payload: {
-  //             index,
-  //             imagePreview: orientedImage,
-  //           },
-  //         });
-  //       })
-  //     );
-  //   }
-
-  //   orientImage();
-  // }, [orientations]);
 
   const [imageFileUploadErrorTexts, imageFileUploadValidTexts] =
     returnAccessibleErrorValidTextElementsForDynamicImageUploads({
@@ -269,6 +213,44 @@ function ImageUpload({
           }
         />
       );
+
+      const [createdResetButton, createdRemoveButton] =
+        returnAccessibleButtonElements([
+          {
+            buttonLabel: 'Reset',
+            semanticDescription: 'Reset image to default values',
+            semanticName: 'reset image button',
+            leftIcon: <BiReset />,
+            buttonOnClick: () => {
+              imageUploadDispatch({
+                type: imageUploadAction.setQualities,
+                payload: {
+                  index,
+                  value: 10,
+                },
+              });
+              imageUploadDispatch({
+                type: imageUploadAction.setOrientations,
+                payload: {
+                  index,
+                  value: 1,
+                },
+              });
+            },
+          },
+          {
+            buttonLabel: 'Remove',
+            semanticDescription: 'Remove image from selection',
+            semanticName: 'remove image button',
+            leftIcon: <TbTrash />,
+            buttonOnClick: () => {
+              imageUploadDispatch({
+                type: imageUploadAction.removeImage,
+                payload: index,
+              });
+            },
+          },
+        ]);
 
       return (
         <Stack
@@ -364,23 +346,10 @@ function ImageUpload({
               {images[index].type.split('/')[1]}
             </TextWrapper>
           </Flex>
-          {/* remove button */}
-          <Flex w="100%" align="center" justify="center">
-            <Button
-              size="xs"
-              aria-label="Click to remove image from selection"
-              variant="outline"
-              onClick={() => {
-                imageUploadDispatch({
-                  type: imageUploadAction.removeImage,
-                  payload: index,
-                });
-              }}
-              leftIcon={<TbTrash />}
-            >
-              Remove
-            </Button>
-          </Flex>
+          <Group w="100%" position="apart">
+            {createdResetButton}
+            {createdRemoveButton}
+          </Group>
 
           {/* quality slider */}
           <Stack w="100%" p={padding}>
@@ -417,7 +386,7 @@ function ImageUpload({
               max={8}
               step={1}
               marks={IMG_ORIENTATION_SLIDER_DATA}
-              label={(value) => displayOrientation(value)}
+              label={(value) => displayOrientationLabel(value)}
               value={orientations[index] ?? 1}
               onChange={(value) => {
                 imageUploadDispatch({
@@ -461,6 +430,7 @@ function ImageUpload({
     <Stack
       w="100%"
       style={{
+        ...style,
         backgroundColor: '#fff',
         borderRadius: '4px',
       }}

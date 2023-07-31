@@ -18,7 +18,6 @@ type ImageUploadState = {
 
   qualities: number[];
   orientations: number[];
-  scales: number[];
 
   isError: boolean;
   errorMessage: string;
@@ -43,7 +42,6 @@ type ImageUploadAction = {
 
   setQualities: 'setQualities';
   setOrientations: 'setOrientations';
-  setScales: 'setScales';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -93,8 +91,7 @@ type ImageUploadDispatch =
   | {
       type:
         | ImageUploadAction['setQualities']
-        | ImageUploadAction['setOrientations']
-        | ImageUploadAction['setScales'];
+        | ImageUploadAction['setOrientations'];
       payload: {
         index: number;
         value: number;
