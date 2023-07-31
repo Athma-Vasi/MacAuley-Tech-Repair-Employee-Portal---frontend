@@ -1,9 +1,11 @@
 import {
+  Accordion,
   FileInput,
   Flex,
   Group,
   Image,
   Slider,
+  Space,
   Stack,
   Text,
   Tooltip,
@@ -352,54 +354,87 @@ function ImageUpload({
           </Group>
 
           {/* quality slider */}
-          <Stack w="100%" p={padding}>
-            <TextWrapper creatorInfoObj={{}}>Quality: </TextWrapper>
-            <Slider
-              min={1}
-              max={10}
-              step={1}
-              marks={IMG_QUALITY_SLIDER_DATA}
-              value={qualities[index] ?? 10}
-              onChange={(value) => {
-                imageUploadDispatch({
-                  type: imageUploadAction.setQualities,
-                  payload: {
-                    index,
-                    value,
-                  },
-                });
-              }}
-            />
-          </Stack>
+          <Accordion w="100%" pb={padding}>
+            <Accordion.Item
+              value={
+                areValidImageKinds[index] || areValidImageTypes[index]
+                  ? 'Adjust compression and orientation'
+                  : 'Can only modify images'
+              }
+            >
+              <Accordion.Control
+                disabled={
+                  !areValidImageKinds[index] || !areValidImageTypes[index]
+                }
+                w="100%"
+              >
+                <Text size="sm" color="dark">
+                  {areValidImageKinds[index] || areValidImageTypes[index]
+                    ? 'Adjust compression and orientation'
+                    : 'Can only modify images'}
+                </Text>
+              </Accordion.Control>
+              <Accordion.Panel w="100%" pb={padding}>
+                <Flex
+                  direction="column"
+                  align="center"
+                  justify="center"
+                  w="100%"
+                  rowGap={rowGap}
+                >
+                  <Stack w="100%">
+                    <TextWrapper creatorInfoObj={{}}>Quality: </TextWrapper>
+                    <Slider
+                      min={1}
+                      max={10}
+                      step={1}
+                      marks={IMG_QUALITY_SLIDER_DATA}
+                      value={qualities[index] ?? 10}
+                      onChange={(value) => {
+                        imageUploadDispatch({
+                          type: imageUploadAction.setQualities,
+                          payload: {
+                            index,
+                            value,
+                          },
+                        });
+                      }}
+                    />
+                  </Stack>
+                  <Space h="xl" />
 
-          {/* orientation slider */}
-          <Stack w="100%" p={padding}>
-            <Text size="sm" color="dark">
-              {!qualities[index] || qualities[index] >= 8
-                ? 'To enable orientation slider, set quality to less than 80%'
-                : 'Orientation:'}
-            </Text>
-            <Slider
-              showLabelOnHover
-              disabled={!qualities[index] || qualities[index] >= 8}
-              min={1}
-              max={8}
-              step={1}
-              marks={IMG_ORIENTATION_SLIDER_DATA}
-              label={(value) => displayOrientationLabel(value)}
-              value={orientations[index] ?? 1}
-              onChange={(value) => {
-                imageUploadDispatch({
-                  type: imageUploadAction.setOrientations,
-                  payload: {
-                    index,
-                    value,
-                  },
-                });
-              }}
-              thumbChildren={<LuRotate3D />}
-            />
-          </Stack>
+                  {/* orientation slider */}
+                  <Stack w="100%">
+                    <Text size="sm" color="dark">
+                      {!qualities[index] || qualities[index] >= 8
+                        ? 'To enable orientation slider, set quality to less than 80%'
+                        : 'Orientation:'}
+                    </Text>
+                    <Slider
+                      showLabelOnHover
+                      disabled={!qualities[index] || qualities[index] >= 8}
+                      min={1}
+                      max={8}
+                      step={1}
+                      marks={IMG_ORIENTATION_SLIDER_DATA}
+                      label={(value) => displayOrientationLabel(value)}
+                      value={orientations[index] ?? 1}
+                      onChange={(value) => {
+                        imageUploadDispatch({
+                          type: imageUploadAction.setOrientations,
+                          payload: {
+                            index,
+                            value,
+                          },
+                        });
+                      }}
+                      thumbChildren={<LuRotate3D />}
+                    />
+                  </Stack>
+                </Flex>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
         </Stack>
       );
     }
