@@ -50,6 +50,7 @@ import {
   CreateAnonymousRequest,
   DisplayAnonymousRequests,
 } from './components/anonymousRequest';
+import { ImageUpload } from './components/imageUpload';
 
 function App() {
   const {
@@ -67,6 +68,7 @@ function App() {
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
 
           {/* DEV PATHS - DELETE LATER*/}
+          <Route path="expense-claim" element={<DisplayExpenseClaims />} />
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
           {/* <Route path="create-address-change" element={<AddressChange />} /> */}
@@ -152,7 +154,7 @@ function App() {
 
             {/* expense-claim */}
             <Route path="expense-claim">
-              <Route index element={<CreateExpenseClaim />} />
+              <Route index element={<DisplayExpenseClaims />} />
               <Route path="create" element={<CreateExpenseClaim />} />
               <Route path="display" element={<DisplayExpenseClaims />} />
             </Route>

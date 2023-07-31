@@ -6,7 +6,12 @@ import {
 
 const initialImageUploadState: ImageUploadState = {
   images: [],
+  imageCount: 0,
+  imagePreviews: [],
+
   areValidImageSizes: [],
+  areValidImageKinds: [],
+  areValidImageTypes: [],
   areImagesFocused: [],
 
   qualities: [],
@@ -25,7 +30,13 @@ const initialImageUploadState: ImageUploadState = {
 
 const imageUploadAction: ImageUploadAction = {
   setImages: 'setImages',
+  removeImage: 'removeImage',
+  setImageCount: 'setImageCount',
+  setImagePreviews: 'setImagePreviews',
+
   setAreValidImageSizes: 'setAreValidImageSizes',
+  setAreValidImageKinds: 'setAreValidImageKinds',
+  setAreValidImageTypes: 'setAreValidImageTypes',
   setAreImagesFocused: 'setAreImagesFocused',
 
   setQualities: 'setQualities',
@@ -58,6 +69,71 @@ function imageUploadReducer(
         images,
       };
     }
+    case imageUploadAction.removeImage: {
+      const index = action.payload;
+
+      const images = [...state.images];
+      images.splice(index, 1);
+
+      const imageCount = state.imageCount - 1;
+
+      const imagePreviews = [...state.imagePreviews];
+      imagePreviews.splice(index, 1);
+
+      const areValidImageSizes = [...state.areValidImageSizes];
+      areValidImageSizes.splice(index, 1);
+
+      const areValidImageKinds = [...state.areValidImageKinds];
+      areValidImageKinds.splice(index, 1);
+
+      const areValidImageTypes = [...state.areValidImageTypes];
+      areValidImageTypes.splice(index, 1);
+
+      const areImagesFocused = [...state.areImagesFocused];
+      areImagesFocused.splice(index, 1);
+
+      const qualities = [...state.qualities];
+      qualities.splice(index, 1);
+
+      const orientations = [...state.orientations];
+      orientations.splice(index, 1);
+
+      const scales = [...state.scales];
+      scales.splice(index, 1);
+
+      return {
+        ...state,
+        images,
+        imageCount,
+        imagePreviews,
+        areValidImageSizes,
+        areValidImageKinds,
+        areValidImageTypes,
+        areImagesFocused,
+        qualities,
+        orientations,
+        scales,
+      };
+    }
+
+    case imageUploadAction.setImagePreviews: {
+      const { index, imagePreview } = action.payload;
+
+      const imagePreviews = [...state.imagePreviews];
+      imagePreviews[index] = imagePreview;
+
+      return {
+        ...state,
+        imagePreviews,
+      };
+    }
+
+    case imageUploadAction.setImageCount:
+      return {
+        ...state,
+        imageCount: action.payload,
+      };
+
     case imageUploadAction.setAreValidImageSizes: {
       const { index, value } = action.payload;
 
@@ -67,6 +143,28 @@ function imageUploadReducer(
       return {
         ...state,
         areValidImageSizes,
+      };
+    }
+    case imageUploadAction.setAreValidImageKinds: {
+      const { index, value } = action.payload;
+
+      const areValidImageKinds = [...state.areValidImageKinds];
+      areValidImageKinds[index] = value;
+
+      return {
+        ...state,
+        areValidImageKinds,
+      };
+    }
+    case imageUploadAction.setAreValidImageTypes: {
+      const { index, value } = action.payload;
+
+      const areValidImageTypes = [...state.areValidImageTypes];
+      areValidImageTypes[index] = value;
+
+      return {
+        ...state,
+        areValidImageTypes,
       };
     }
     case imageUploadAction.setAreImagesFocused: {
@@ -80,6 +178,7 @@ function imageUploadReducer(
         areImagesFocused,
       };
     }
+
     case imageUploadAction.setQualities: {
       const { index, value } = action.payload;
 
@@ -158,3 +257,5 @@ function imageUploadReducer(
       return state;
   }
 }
+
+export { imageUploadAction, imageUploadReducer, initialImageUploadState };

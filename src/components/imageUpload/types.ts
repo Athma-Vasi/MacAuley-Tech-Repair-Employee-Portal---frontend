@@ -1,6 +1,19 @@
+import { CSSProperties } from 'react';
+
+type ImageUploadProps = {
+  style?: CSSProperties;
+  maxImages: number;
+  maxImageSize: number; // in kb
+};
+
 type ImageUploadState = {
   images: File[];
+  imageCount: number;
+  imagePreviews: string[];
+
   areValidImageSizes: boolean[];
+  areValidImageKinds: boolean[];
+  areValidImageTypes: boolean[];
   areImagesFocused: boolean[];
 
   qualities: number[];
@@ -19,7 +32,13 @@ type ImageUploadState = {
 
 type ImageUploadAction = {
   setImages: 'setImages';
+  removeImage: 'removeImage';
+  setImageCount: 'setImageCount';
+  setImagePreviews: 'setImagePreviews';
+
   setAreValidImageSizes: 'setAreValidImageSizes';
+  setAreValidImageKinds: 'setAreValidImageKinds';
+  setAreValidImageTypes: 'setAreValidImageTypes';
   setAreImagesFocused: 'setAreImagesFocused';
 
   setQualities: 'setQualities';
@@ -45,8 +64,25 @@ type ImageUploadDispatch =
       };
     }
   | {
+      type: ImageUploadAction['removeImage'];
+      payload: number;
+    }
+  | {
+      type: ImageUploadAction['setImagePreviews'];
+      payload: {
+        index: number;
+        imagePreview: string;
+      };
+    }
+  | {
+      type: ImageUploadAction['setImageCount'];
+      payload: number;
+    }
+  | {
       type:
         | ImageUploadAction['setAreValidImageSizes']
+        | ImageUploadAction['setAreValidImageKinds']
+        | ImageUploadAction['setAreValidImageTypes']
         | ImageUploadAction['setAreImagesFocused'];
       payload: {
         index: number;
@@ -88,6 +124,7 @@ type ImageUploadReducer = (
 export type {
   ImageUploadAction,
   ImageUploadDispatch,
+  ImageUploadProps,
   ImageUploadReducer,
   ImageUploadState,
 };

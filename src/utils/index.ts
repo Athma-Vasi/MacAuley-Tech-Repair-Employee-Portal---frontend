@@ -193,6 +193,32 @@ function returnGrammarValidationText({
     : '';
 }
 
+function returnImageValidationText(image: File) {
+  const imageKind = image.type.split('/')[0];
+  const imageType = image.type.split('/')[1];
+  const imageSize = image.size;
+
+  const imageKindValidationRegex = /^image$/;
+  const imageTypeValidationRegex = /^jpeg|png|gif$/;
+  // const imageSizeValidationRegex = /^.{0,1000000}$/;
+
+  const imageRegexTupleArr: [boolean, string][] = [
+    [imageKindValidationRegex.test(imageKind), 'Must be an image kind.'],
+    [
+      imageTypeValidationRegex.test(imageType),
+      'Must be a jpeg, png, or gif type.',
+    ],
+    [imageSize < 1000000, 'Must be less than 1 MB.'],
+  ];
+
+  const validationText = imageRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText ? `${validationText}` : '';
+}
+
 function returnAcknowledgementValidationText(content: string) {
   /**
    * const ACKNOWLEDGEMENT_TEXT_INPUT_REGEX =
@@ -1040,6 +1066,7 @@ export {
   returnDateValidationText,
   returnEmailValidationText,
   returnGrammarValidationText,
+  returnImageValidationText,
   returnNameValidationText,
   returnNoteTextValidationText,
   returnNumberAmountValidationText,

@@ -184,6 +184,92 @@ function returnAccessibleErrorValidTextElementsForDynamicInputs({
   ];
 }
 
+type ReturnAccessibleErrorValidTextElementsForDynamicImageUploadsProps = {
+  semanticName: string;
+  images: File[];
+  areValidImageSizes: boolean[];
+  areValidImageKinds: boolean[];
+  areValidImageTypes: boolean[];
+  validationFunction?: ((image: File) => string) | undefined;
+};
+
+/**
+ * @returns a tuple[error[], valid[]] of accessible text elements
+ * @param ReturnAccessibleErrorValidTextElementsForDynamicImageUploadsProps - the object containing the input element
+ * @property {object.semanticName} - the semantic label of input element (e.g. 'username', 'password', 'email'). Must be identical to the semanticName used in the creator info object passed to the creator functions
+ * @property {object.images} - the array of images
+ * @property {object.areValidImageSizes} - the array of booleans that indicate whether the image size is valid
+ * @property {object.areValidImageKinds} - the array of booleans that indicate whether the image kind is valid
+ * @property {object.areValidImageTypes} - the array of booleans that indicate whether the image type is valid
+ * @property {object.validationFunction} - reference to the validation function
+ */
+function returnAccessibleErrorValidTextElementsForDynamicImageUploads({
+  semanticName,
+  images,
+  areValidImageSizes,
+  areValidImageKinds,
+  areValidImageTypes,
+  validationFunction,
+}: ReturnAccessibleErrorValidTextElementsForDynamicImageUploadsProps) {
+  return [
+    // error text elems
+    images.map((image, index) => (
+      <Text
+        key={`error-${index}-${image.name}`}
+        id={`${semanticName.split(' ').join('-')}
+        }-input-note-error-${index}`}
+        style={{
+          display:
+            image &&
+            (!areValidImageSizes[index] ||
+              !areValidImageKinds[index] ||
+              !areValidImageTypes[index])
+              ? 'block'
+              : 'none',
+        }}
+        size="sm"
+        color="red"
+        w="100%"
+        aria-live="polite"
+      >
+        <FontAwesomeIcon icon={faInfoCircle} />{' '}
+        {validationFunction
+          ? `${
+              image.name.length > 17
+                ? `${image.name.slice(0, 17)}...`
+                : image.name
+            } is not a valid image - ${validationFunction(image)}`
+          : ''}
+      </Text>
+    )),
+    // valid text elems
+    images.map((image, index) => (
+      <Text
+        key={`valid-${index}-${image.name}`}
+        id={`${semanticName.split(' ').join('-')}-input-note-valid-${index}`}
+        style={{
+          display:
+            image &&
+            areValidImageSizes[index] &&
+            areValidImageKinds[index] &&
+            areValidImageTypes[index]
+              ? 'block'
+              : 'none',
+        }}
+        size="sm"
+        color="green"
+        w="100%"
+        aria-live="polite"
+      >
+        <FontAwesomeIcon icon={faCheck} />{' '}
+        {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} ${
+          index + 1
+        } is valid`}
+      </Text>
+    )),
+  ];
+}
+
 type ReturnAccessibleSelectedDeselectedTextElementsProps = {
   semanticName: string;
   isSelected: boolean;
@@ -446,6 +532,7 @@ export {
   returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleDynamicTextInputElements,
   returnAccessibleErrorValidTextElements,
+  returnAccessibleErrorValidTextElementsForDynamicImageUploads,
   returnAccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
