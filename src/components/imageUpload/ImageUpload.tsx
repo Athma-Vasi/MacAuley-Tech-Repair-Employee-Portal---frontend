@@ -10,8 +10,11 @@ import {
   Text,
   Tooltip,
 } from '@mantine/core';
-
+import { compress } from 'image-conversion';
 import { useEffect, useReducer } from 'react';
+import { LuRotate3D } from 'react-icons/lu';
+import { MdOutlineRemove, MdOutlineRemoveCircleOutline } from 'react-icons/md';
+import { TbTrash } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 import {
@@ -26,15 +29,16 @@ import {
 } from '../../utils';
 import { TextWrapper } from '../wrappers';
 import {
+  IMG_ORIENTATION_SLIDER_DATA,
+  IMG_QUALITY_SLIDER_DATA,
+  displayOrientation,
+} from './constants';
+import {
   imageUploadAction,
   imageUploadReducer,
   initialImageUploadState,
 } from './state';
 import { ImageUploadProps } from './types';
-import { MdOutlineRemove, MdOutlineRemoveCircleOutline } from 'react-icons/md';
-import { TbTrash } from 'react-icons/tb';
-import { compress } from 'image-conversion';
-import { IMG_QUALITY_SLIDER_DATA } from './constants';
 
 function ImageUpload({
   style = {},
@@ -116,29 +120,77 @@ function ImageUpload({
     });
   }, [imagePreviews]);
 
-  // compress image on every slider change
+  // compress, orient image on every slider change
   useEffect(() => {
-    async function compressImage() {
+    async function modifyImage() {
       await Promise.all(
         images.map(async (image, index) => {
-          const compressedImage = await compress(
-            image,
-            (qualities[index] ?? 10) / 10
-          );
+          const modifiedImage = await compress(image, {
+            quality: (qualities[index] ?? 10) / 10,
+            orientation: orientations[index],
+          });
 
           imageUploadDispatch({
             type: imageUploadAction.setImagePreviews,
             payload: {
               index,
-              imagePreview: compressedImage,
+              imagePreview: modifiedImage,
             },
           });
         })
       );
     }
 
-    compressImage();
-  }, [qualities]);
+    modifyImage();
+  }, [qualities, orientations]);
+
+  // // compress image on every slider change
+  // useEffect(() => {
+  //   async function compressImage() {
+  //     await Promise.all(
+  //       images.map(async (image, index) => {
+  //         const compressedImage = await compress(image, {
+  //           quality: (qualities[index] ?? 10) / 10,
+  //           // orientation: orientations[index],
+  //         });
+
+  //         imageUploadDispatch({
+  //           type: imageUploadAction.setImagePreviews,
+  //           payload: {
+  //             index,
+  //             imagePreview: compressedImage,
+  //           },
+  //         });
+  //       })
+  //     );
+  //   }
+
+  //   compressImage();
+  // }, [qualities]);
+
+  // // orient image on every slider change
+  // useEffect(() => {
+  //   async function orientImage() {
+  //     await Promise.all(
+  //       images.map(async (image, index) => {
+  //         const orientedImage = await compress(image, {
+  //           quality: (qualities[index] ?? 10) / 10,
+  //           orientation: orientations[index],
+  //         });
+
+  //         imageUploadDispatch({
+  //           type: imageUploadAction.setImagePreviews,
+  //           payload: {
+  //             index,
+  //             imagePreview: orientedImage,
+  //           },
+  //         });
+  //       })
+  //     );
+  //   }
+
+  //   orientImage();
+  // }, [orientations]);
 
   const [imageFileUploadErrorTexts, imageFileUploadValidTexts] =
     returnAccessibleErrorValidTextElementsForDynamicImageUploads({
@@ -330,7 +382,7 @@ function ImageUpload({
             </Button>
           </Flex>
 
-          {/* slider */}
+          {/* quality slider */}
           <Stack w="100%" p={padding}>
             <TextWrapper creatorInfoObj={{}}>Quality: </TextWrapper>
             <Slider
@@ -348,6 +400,35 @@ function ImageUpload({
                   },
                 });
               }}
+            />
+          </Stack>
+
+          {/* orientation slider */}
+          <Stack w="100%" p={padding}>
+            <Text size="sm" color="dark">
+              {!qualities[index] || qualities[index] >= 8
+                ? 'To enable orientation slider, set quality to less than 80%'
+                : 'Orientation:'}
+            </Text>
+            <Slider
+              showLabelOnHover
+              disabled={!qualities[index] || qualities[index] >= 8}
+              min={1}
+              max={8}
+              step={1}
+              marks={IMG_ORIENTATION_SLIDER_DATA}
+              label={(value) => displayOrientation(value)}
+              value={orientations[index] ?? 1}
+              onChange={(value) => {
+                imageUploadDispatch({
+                  type: imageUploadAction.setOrientations,
+                  payload: {
+                    index,
+                    value,
+                  },
+                });
+              }}
+              thumbChildren={<LuRotate3D />}
             />
           </Stack>
         </Stack>
