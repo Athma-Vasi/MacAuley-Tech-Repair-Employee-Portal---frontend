@@ -14,7 +14,6 @@ type ImageUploadState = {
   areValidImageSizes: boolean[];
   areValidImageKinds: boolean[];
   areValidImageTypes: boolean[];
-  areImagesFocused: boolean[];
 
   qualities: number[];
   orientations: number[];
@@ -38,7 +37,6 @@ type ImageUploadAction = {
   setAreValidImageSizes: 'setAreValidImageSizes';
   setAreValidImageKinds: 'setAreValidImageKinds';
   setAreValidImageTypes: 'setAreValidImageTypes';
-  setAreImagesFocused: 'setAreImagesFocused';
 
   setQualities: 'setQualities';
   setOrientations: 'setOrientations';
@@ -81,8 +79,7 @@ type ImageUploadDispatch =
       type:
         | ImageUploadAction['setAreValidImageSizes']
         | ImageUploadAction['setAreValidImageKinds']
-        | ImageUploadAction['setAreValidImageTypes']
-        | ImageUploadAction['setAreImagesFocused'];
+        | ImageUploadAction['setAreValidImageTypes'];
       payload: {
         index: number;
         value: boolean;

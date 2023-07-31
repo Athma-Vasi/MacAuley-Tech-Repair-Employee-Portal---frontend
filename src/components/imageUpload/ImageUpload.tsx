@@ -52,7 +52,6 @@ function ImageUpload({
     areValidImageSizes,
     areValidImageKinds,
     areValidImageTypes,
-    areImagesFocused,
 
     qualities,
     orientations,

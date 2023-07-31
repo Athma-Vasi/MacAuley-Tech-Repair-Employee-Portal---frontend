@@ -14,7 +14,6 @@ const initialImageUploadState: ImageUploadState = {
   areValidImageSizes: [],
   areValidImageKinds: [],
   areValidImageTypes: [],
-  areImagesFocused: [],
 
   qualities: [],
   orientations: [],
@@ -38,7 +37,6 @@ const imageUploadAction: ImageUploadAction = {
   setAreValidImageSizes: 'setAreValidImageSizes',
   setAreValidImageKinds: 'setAreValidImageKinds',
   setAreValidImageTypes: 'setAreValidImageTypes',
-  setAreImagesFocused: 'setAreImagesFocused',
 
   setQualities: 'setQualities',
   setOrientations: 'setOrientations',
@@ -94,9 +92,6 @@ function imageUploadReducer(
       const areValidImageTypes = [...state.areValidImageTypes];
       areValidImageTypes.splice(index, 1);
 
-      const areImagesFocused = [...state.areImagesFocused];
-      areImagesFocused.splice(index, 1);
-
       const qualities = [...state.qualities];
       qualities.splice(index, 1);
 
@@ -111,7 +106,6 @@ function imageUploadReducer(
         areValidImageSizes,
         areValidImageKinds,
         areValidImageTypes,
-        areImagesFocused,
         qualities,
         orientations,
       };
@@ -173,17 +167,6 @@ function imageUploadReducer(
       return {
         ...state,
         areValidImageTypes,
-      };
-    }
-    case imageUploadAction.setAreImagesFocused: {
-      const { index, value } = action.payload;
-
-      const areImagesFocused = [...state.areImagesFocused];
-      areImagesFocused[index] = value;
-
-      return {
-        ...state,
-        areImagesFocused,
       };
     }
 
