@@ -266,9 +266,10 @@ function returnAccessibleErrorValidTextElementsForDynamicImageUploads({
         aria-live="polite"
       >
         <FontAwesomeIcon icon={faCheck} />{' '}
-        {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} ${
-          index + 1
-        } is valid`}
+        {/* {`${
+          image.name.length > 17 ? `${image.name.slice(0, 17)}...` : image.name
+        } is valid`} */}
+        {`${image.name} is valid`}
       </Text>
     )),
   ];

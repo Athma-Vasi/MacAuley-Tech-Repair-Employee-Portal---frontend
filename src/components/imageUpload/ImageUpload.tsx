@@ -153,9 +153,23 @@ function ImageUpload({
     <Flex p={padding} w="100%" align="center" justify="center">
       <FileInput
         disabled={imageCount >= maxImages}
-        label="Upload image"
+        label={
+          imageCount >= maxImages ? (
+            <Text size="sm" color="dark">
+              Max image count reached
+            </Text>
+          ) : (
+            <Text size="sm" color="dark">
+              Upload image
+            </Text>
+          )
+        }
         onChange={(file) => {
           if (!file) {
+            return;
+          }
+
+          if (file.size > 15_000_000) {
             return;
           }
 
