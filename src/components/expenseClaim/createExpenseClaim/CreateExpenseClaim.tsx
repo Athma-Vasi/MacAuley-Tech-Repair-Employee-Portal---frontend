@@ -6,12 +6,10 @@ import {
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
 import { FileInput } from '@mantine/core';
-import { AxiosRequestConfig } from 'axios';
 import { compress } from 'image-conversion';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { TbUpload } from 'react-icons/tb';
 
-import { axiosInstance } from '../../../api/axios';
 import {
   DATE_NEAR_PAST_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
