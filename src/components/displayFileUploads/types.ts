@@ -86,7 +86,12 @@ type DisplayFileUploadsDispatch =
   | {
       type:
         | DisplayFileUploadsAction['setQueryBuilderString']
-        | DisplayFileUploadsAction['setPageQueryString'];
+        | DisplayFileUploadsAction['setPageQueryString']
+        | DisplayFileUploadsAction['setErrorMessage']
+        | DisplayFileUploadsAction['setSubmitMessage']
+        | DisplayFileUploadsAction['setSuccessMessage']
+        | DisplayFileUploadsAction['setLoadingMessage'];
+
       payload: string;
     }
   | {
