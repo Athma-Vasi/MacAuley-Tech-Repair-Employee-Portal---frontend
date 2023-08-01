@@ -120,6 +120,17 @@ function ImageUpload({
     async function modifyImage() {
       await Promise.all(
         images.map(async (image, index) => {
+          if (!qualities[index] && !orientations[index]) {
+            return;
+          }
+          if (
+            !areValidImageKinds[index] ||
+            !areValidImageSizes[index] ||
+            !areValidImageTypes[index]
+          ) {
+            return;
+          }
+
           const modifiedImage = await compress(image, {
             quality: (qualities[index] ?? 10) / 10,
             orientation: orientations[index] ?? 1,
@@ -187,7 +198,7 @@ function ImageUpload({
             </Text>
           ) : (
             <Text size="sm" color="dark">
-              Upload image
+              Upload an image
             </Text>
           )
         }
@@ -219,7 +230,7 @@ function ImageUpload({
             },
           });
         }}
-        placeholder="Click to upload image"
+        placeholder="Click to select image"
         value={images[imageCount]}
         w="62%"
       />
@@ -261,6 +272,8 @@ function ImageUpload({
         returnAccessibleButtonElements([
           {
             buttonLabel: 'Reset',
+            buttonDisabled:
+              !areValidImageKinds[index] || !areValidImageTypes[index],
             semanticDescription: 'Reset image to default values',
             semanticName: 'reset image button',
             leftIcon: <BiReset />,
@@ -390,7 +403,13 @@ function ImageUpload({
             </TextWrapper>
           </Flex>
           <Group w="100%" position="apart">
-            <Tooltip label={`Reset values of ${images[index].name} to default`}>
+            <Tooltip
+              label={
+                !areValidImageKinds[index] || !areValidImageTypes[index]
+                  ? 'Please select a valid image'
+                  : `Reset values of ${images[index].name} to default`
+              }
+            >
               <Group>{createdResetButton}</Group>
             </Tooltip>
             <Tooltip label={`Remove ${images[index].name} from selection`}>
