@@ -39,6 +39,8 @@ function ImageUpload({
   style = {},
   maxImageSize,
   maxImages,
+  setImgFormDataArray,
+  setImgFormDataArrayDispatch,
 }: ImageUploadProps) {
   const [imageUploadState, imageUploadDispatch] = useReducer(
     imageUploadReducer,
@@ -136,6 +138,32 @@ function ImageUpload({
 
     modifyImage();
   }, [qualities, orientations]);
+
+  // on every change to image previews or images, set and dispatch formdata
+  useEffect(() => {
+    const formDataArray = imagePreviews.reduce(
+      (formDataArray: FormData[], image, idx) => {
+        const formData = new FormData();
+        // because the Blob type returned by compress() does not have a name property
+        formData.append('file', image, images[idx].name);
+
+        formDataArray.push(formData);
+        return formDataArray;
+      },
+      []
+    );
+
+    formDataArray.forEach((formData, idx) => {
+      formData.forEach((value, key) => {
+        console.log(`formDataArray[${idx}][${key}] = ${value}`);
+      });
+    });
+
+    setImgFormDataArrayDispatch({
+      type: 'setImgFormDataArray',
+      payload: formDataArray,
+    });
+  }, [images, imagePreviews]);
 
   const [imageFileUploadErrorTexts, imageFileUploadValidTexts] =
     returnAccessibleErrorValidTextElementsForDynamicImageUploads({
@@ -362,8 +390,12 @@ function ImageUpload({
             </TextWrapper>
           </Flex>
           <Group w="100%" position="apart">
-            {createdResetButton}
-            {createdRemoveButton}
+            <Tooltip label={`Reset values of ${images[index].name} to default`}>
+              <Group>{createdResetButton}</Group>
+            </Tooltip>
+            <Tooltip label={`Remove ${images[index].name} from selection`}>
+              <Group>{createdRemoveButton}</Group>
+            </Tooltip>
           </Group>
 
           {/* quality slider */}
@@ -490,60 +522,3 @@ function ImageUpload({
 }
 
 export { ImageUpload };
-
-/**
- *  const createdImageUploadFileInput = Array.from({
-    length: imageCount + 1,
-  }).map((_, index) => {
-    const fileInput = (
-      <FileInput
-        label="Upload image"
-        placeholder="Click to upload image"
-        value={images[index]}
-        onChange={(file) => {
-          imageUploadDispatch({
-            type: imageUploadAction.setImages,
-            payload: {
-              index,
-              image: file as File,
-            },
-          });
-
-          imageUploadDispatch({
-            type: imageUploadAction.setImagePreviews,
-            payload: {
-              index,
-              imagePreview: URL.createObjectURL(file as File),
-            },
-          });
-        }}
-      />
-    );
-
-    return fileInput;
-  });
- */
-
-/**
-   * const imageSizes = await Promise.all(
-        images.map(async (image) => {
-          const compressedImage = await compress(image, {
-            quality: qualities[imageCount],
-            orientation: orientations[imageCount],
-            scale: scales[imageCount],
-          });
-
-          return compressedImage.size;
-        })
-      );
-   */
-
-/**
-       * const compressedImage = await imageCompression(image, {
-        maxSizeMB: qualities[index],
-        maxWidthOrHeight: scales[index],
-        useWebWorker: true,
-        initialQuality: 1,
-        minQuality: 0.1,
-      });
-       */

@@ -1,9 +1,14 @@
-import { CSSProperties } from 'react';
+import React, { CSSProperties } from 'react';
 
 type ImageUploadProps = {
   style?: CSSProperties;
   maxImages: number;
   maxImageSize: number; // in kb
+  setImgFormDataArray: 'setImgFormDataArray';
+  setImgFormDataArrayDispatch: React.Dispatch<{
+    type: 'setImgFormDataArray';
+    payload: FormData[];
+  }>;
 };
 
 type ImageUploadState = {

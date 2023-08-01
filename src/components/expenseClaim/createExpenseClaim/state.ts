@@ -23,11 +23,14 @@ const initialCreateExpenseClaimState: CreateExpenseClaimState = {
   additionalComments: '',
   isValidAdditionalComments: false,
   isAdditionalCommentsFocused: false,
-
-  fileToUpload: null,
-
   acknowledgement: false,
-  triggerFormSubmit: false,
+
+  imgFormDataArray: [],
+  uploadedFilesIds: [],
+
+  triggerImagesUploadSubmit: false,
+  triggerExpenseClaimSubmit: false,
+
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
@@ -60,11 +63,14 @@ const createExpenseClaimAction: CreateExpenseClaimAction = {
   setAdditionalComments: 'setAdditionalComments',
   setIsValidAdditionalComments: 'setIsValidAdditionalComments',
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused',
-
-  setFileToUpload: 'setFileToUpload',
-
   setAcknowledgement: 'setAcknowledgement',
-  setTriggerFormSubmit: 'setTriggerFormSubmit',
+
+  setImgFormDataArray: 'setImgFormDataArray',
+  setUploadedFilesIds: 'setUploadedFilesIds',
+
+  setTriggerImagesUploadSubmit: 'setTriggerImagesUploadSubmit',
+  setTriggerExpenseClaimSubmit: 'setTriggerExpenseClaimSubmit',
+
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
@@ -158,22 +164,38 @@ function createExpenseClaimReducer(
         isAdditionalCommentsFocused: action.payload,
       };
 
-    case createExpenseClaimAction.setFileToUpload:
+    case createExpenseClaimAction.setImgFormDataArray:
       return {
         ...state,
-        fileToUpload: action.payload,
+        imgFormDataArray: action.payload,
       };
+    case createExpenseClaimAction.setUploadedFilesIds: {
+      const uploadedFilesIds = [...state.uploadedFilesIds];
+      uploadedFilesIds.push(action.payload);
+
+      return {
+        ...state,
+        uploadedFilesIds,
+      };
+    }
 
     case createExpenseClaimAction.setAcknowledgement:
       return {
         ...state,
         acknowledgement: action.payload,
       };
-    case createExpenseClaimAction.setTriggerFormSubmit:
+
+    case createExpenseClaimAction.setTriggerImagesUploadSubmit:
       return {
         ...state,
-        triggerFormSubmit: action.payload,
+        triggerImagesUploadSubmit: action.payload,
       };
+    case createExpenseClaimAction.setTriggerExpenseClaimSubmit:
+      return {
+        ...state,
+        triggerExpenseClaimSubmit: action.payload,
+      };
+
     case createExpenseClaimAction.setCurrentStepperPosition:
       return {
         ...state,

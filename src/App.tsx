@@ -154,7 +154,7 @@ function App() {
 
             {/* expense-claim */}
             <Route path="expense-claim">
-              <Route index element={<DisplayExpenseClaims />} />
+              <Route index element={<CreateExpenseClaim />} />
               <Route path="create" element={<CreateExpenseClaim />} />
               <Route path="display" element={<DisplayExpenseClaims />} />
             </Route>

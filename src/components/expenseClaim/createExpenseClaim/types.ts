@@ -23,7 +23,7 @@ type ExpenseClaimSchema = {
   action: Action;
   category: ActionsCompany;
 
-  uploadedFileId: string;
+  uploadedFilesIds: string[];
   expenseClaimKind: ExpenseClaimKind;
   expenseClaimAmount: number;
   expenseClaimCurrency: Currency;
@@ -59,11 +59,14 @@ type CreateExpenseClaimState = {
   additionalComments: string;
   isValidAdditionalComments: boolean;
   isAdditionalCommentsFocused: boolean;
-
-  fileToUpload: File | null;
-
   acknowledgement: boolean;
-  triggerFormSubmit: boolean;
+
+  imgFormDataArray: FormData[];
+  uploadedFilesIds: string[];
+
+  triggerImagesUploadSubmit: boolean;
+  triggerExpenseClaimSubmit: boolean;
+
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
@@ -96,11 +99,14 @@ type CreateExpenseClaimAction = {
   setAdditionalComments: 'setAdditionalComments';
   setIsValidAdditionalComments: 'setIsValidAdditionalComments';
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused';
-
-  setFileToUpload: 'setFileToUpload';
-
   setAcknowledgement: 'setAcknowledgement';
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
+
+  setImgFormDataArray: 'setImgFormDataArray';
+  setUploadedFilesIds: 'setUploadedFilesIds';
+
+  setTriggerImagesUploadSubmit: 'setTriggerImagesUploadSubmit';
+  setTriggerExpenseClaimSubmit: 'setTriggerExpenseClaimSubmit';
+
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
@@ -125,6 +131,7 @@ type CreateExpenseClaimDispatch =
         | CreateExpenseClaimAction['setExpenseClaimDate']
         | CreateExpenseClaimAction['setExpenseClaimDescription']
         | CreateExpenseClaimAction['setAdditionalComments']
+        | CreateExpenseClaimAction['setUploadedFilesIds']
         | CreateExpenseClaimAction['setErrorMessage']
         | CreateExpenseClaimAction['setSubmitMessage']
         | CreateExpenseClaimAction['setSuccessMessage']
@@ -142,7 +149,8 @@ type CreateExpenseClaimDispatch =
         | CreateExpenseClaimAction['setIsValidAdditionalComments']
         | CreateExpenseClaimAction['setIsAdditionalCommentsFocused']
         | CreateExpenseClaimAction['setAcknowledgement']
-        | CreateExpenseClaimAction['setTriggerFormSubmit']
+        | CreateExpenseClaimAction['setTriggerImagesUploadSubmit']
+        | CreateExpenseClaimAction['setTriggerExpenseClaimSubmit']
         | CreateExpenseClaimAction['setIsError']
         | CreateExpenseClaimAction['setIsSubmitting']
         | CreateExpenseClaimAction['setIsSuccessful']
@@ -150,8 +158,8 @@ type CreateExpenseClaimDispatch =
       payload: boolean;
     }
   | {
-      type: CreateExpenseClaimAction['setFileToUpload'];
-      payload: File | null;
+      type: CreateExpenseClaimAction['setImgFormDataArray'];
+      payload: FormData[];
     }
   | {
       type: CreateExpenseClaimAction['setCurrentStepperPosition'];

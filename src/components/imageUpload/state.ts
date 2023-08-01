@@ -114,9 +114,7 @@ function imageUploadReducer(
     case imageUploadAction.setImagePreviews: {
       const { index, imagePreview } = action.payload;
 
-      // const imagePreviews = [...state.imagePreviews];
-      // imagePreviews[index] = imagePreview;
-
+      // safely add imagePreview to imagePreviews array
       const imagePreviews = [...state.imagePreviews];
       if (imagePreview) {
         imagePreviews[index] = imagePreview;
