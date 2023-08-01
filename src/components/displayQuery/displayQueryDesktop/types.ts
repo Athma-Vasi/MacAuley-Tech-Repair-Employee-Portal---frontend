@@ -1,10 +1,11 @@
 import { CSSProperties } from 'react';
 
-import type { RequestStatus } from '../../../types';
+import type { FileUploadDocument, RequestStatus } from '../../../types';
 import type { ComponentQueryData } from '../../queryBuilder';
 
 type DisplayQueryDesktopProps<Doc> = {
   componentQueryData: ComponentQueryData[];
+  fileUploadsData?: FileUploadDocument[];
   groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
 
   openDeleteAcknowledge: () => void;

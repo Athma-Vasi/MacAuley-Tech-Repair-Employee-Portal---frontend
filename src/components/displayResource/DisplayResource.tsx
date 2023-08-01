@@ -18,12 +18,14 @@ import {
   DisplayResourceState,
   UpdateRequestStatusInput,
 } from './types';
+import { DisplayFileUploads } from '../displayFileUploads';
 
 function DisplayResource<Doc>({
   style = {},
   componentQueryData,
-  fileUploadFieldName,
-  isFileUploadsWithResource,
+  isDisplayFilesOnly = false,
+  fileUploadFieldName = 'fileUploads',
+  isFileUploadsWithResource = false,
   requestBodyHeading,
   paths,
 }: DisplayResourceProps<Doc>) {
@@ -71,6 +73,7 @@ function DisplayResource<Doc>({
     pageQueryString,
 
     requestStatus,
+    fileUploads,
     deleteForm,
     triggerRefresh,
 
@@ -96,7 +99,7 @@ function DisplayResource<Doc>({
     const { signal } = controller;
 
     async function fetchResource() {
-      // employees can view their own leave requests only
+      // employees can view their own resources only
       const path =
         roles.includes('Admin') || roles.includes('Manager')
           ? paths.manager
@@ -350,6 +353,26 @@ function DisplayResource<Doc>({
       ? componentQueryData.filter((obj) => obj.value !== 'username')
       : componentQueryData;
 
+  const displayResource = isDisplayFilesOnly ? (
+    <DisplayFileUploads
+      fileUploadsData={fileUploads}
+      componentQueryData={filteredComponentQueryData}
+      parentComponentName={splitCamelCase(requestBodyHeading)}
+      parentDeleteFormDispatch={displayResourceDispatch}
+      totalDocuments={totalDocuments}
+    />
+  ) : (
+    <DisplayQuery
+      componentQueryData={filteredComponentQueryData}
+      fileUploadsData={fileUploads}
+      parentComponentName={splitCamelCase(requestBodyHeading)}
+      parentRequestStatusDispatch={displayResourceDispatch}
+      parentDeleteFormDispatch={displayResourceDispatch}
+      queryResponseData={resourceData}
+      totalDocuments={totalDocuments}
+    />
+  );
+
   return (
     <Flex
       direction="column"
@@ -372,14 +395,7 @@ function DisplayResource<Doc>({
         collectionName={splitCamelCase(requestBodyHeading)}
       />
 
-      <DisplayQuery
-        totalDocuments={totalDocuments}
-        parentComponentName={splitCamelCase(requestBodyHeading)}
-        parentRequestStatusDispatch={displayResourceDispatch}
-        parentDeleteFormDispatch={displayResourceDispatch}
-        componentQueryData={filteredComponentQueryData}
-        queryResponseData={resourceData}
-      />
+      {displayResource}
       <PageBuilder
         total={pages}
         setPageQueryString={displayResourceAction.setPageQueryString}

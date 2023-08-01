@@ -922,6 +922,25 @@ function filterFieldsFromObject({
   return filteredObject;
 }
 
+function addFieldsToObject({
+  object,
+  fieldValuesTuples,
+}: {
+  object: Record<string, any>;
+  fieldValuesTuples: [string, any][];
+}): Record<string, any> {
+  fieldValuesTuples.forEach(([key, value]) => {
+    Object.defineProperty(object, key, {
+      value,
+      writable: true,
+      enumerable: true,
+      configurable: true,
+    });
+  });
+
+  return object;
+}
+
 type UrlBuilderInput = {
   protocol?: string;
   host?: string;
@@ -1052,6 +1071,7 @@ function splitCamelCase(word: string) {
 }
 
 export {
+  addFieldsToObject,
   filterFieldsFromObject,
   formatDate,
   groupQueryResponse,

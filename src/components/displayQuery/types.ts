@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 
 import {
+  FileUploadDocument,
   QueryResponseData,
   RadioGroupInputData,
   RequestStatus,
@@ -9,6 +10,7 @@ import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayQueryProps<Doc> = {
   componentQueryData: ComponentQueryData[];
+  fileUploadsData?: FileUploadDocument[];
   parentComponentName: string;
   parentRequestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';

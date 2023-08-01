@@ -39,6 +39,7 @@ import { DisplayQueryProps } from './types';
 
 function DisplayQuery<Doc>({
   componentQueryData,
+  fileUploadsData = [],
   parentComponentName,
   parentRequestStatusDispatch,
   parentDeleteFormDispatch,
@@ -389,6 +390,7 @@ function DisplayQuery<Doc>({
       <DisplayQueryDesktop
         componentQueryData={componentQueryData}
         deleteFormIdDispatch={displayQueryDispatch}
+        fileUploadsData={fileUploadsData}
         groupedByQueryResponseData={groupedByQueryResponseData}
         openDeleteAcknowledge={openDeleteAcknowledge}
         popoversOpenCloseState={popoversOpenCloseState}

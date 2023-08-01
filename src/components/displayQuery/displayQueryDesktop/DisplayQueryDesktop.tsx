@@ -27,12 +27,13 @@ import {
   returnAccessibleRadioGroupInputsElements,
 } from '../../../jsxCreators';
 import { RequestStatus } from '../../../types';
-import { formatDate, splitCamelCase } from '../../../utils';
+import { addFieldsToObject, formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryDesktopProps } from './types';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
   deleteFormIdDispatch,
+  fileUploadsData = [],
   groupedByQueryResponseData,
 
   openDeleteAcknowledge,
@@ -106,6 +107,24 @@ function DisplayQueryDesktop<Doc>({
         .charAt(0)
         .toUpperCase()}${section.toString().slice(1)}`;
 
+      const tableHeaderRow =
+        fileUploadsData.length > 0
+          ? Object.keys(
+              addFieldsToObject({
+                object: queryResponseObjArrays[0],
+                fieldValuesTuples: [
+                  ['fileUploads', ''],
+                  ['delete', ''],
+                ],
+              })
+            )
+          : Object.keys(
+              addFieldsToObject({
+                object: queryResponseObjArrays[0],
+                fieldValuesTuples: [['delete', '']],
+              })
+            );
+
       return (
         <Flex
           key={`${sectionIdx}`}
@@ -131,33 +150,13 @@ function DisplayQueryDesktop<Doc>({
                     }}
                   >
                     <tr>
-                      {[
-                        ...Object.keys(queryResponseObjArrays[0]),
-                        'Delete',
-                      ].map((key, keyIdx) => {
-                        const displayExpandedHeaderRows = (
-                          <th
-                            key={`${keyIdx}`}
-                            style={{
-                              width: widthPerField,
-                              outline: '1px solid violet',
-                              padding: '4px 4px 4px 8px',
-                            }}
-                          >
-                            <Text
-                            // style={{
-                            //   whiteSpace: 'nowrap',
-                            //   overflow: 'hidden',
-                            //   textOverflow: 'ellipsis',
-                            // }}
-                            >
-                              {splitCamelCase(key)}
-                            </Text>
-                          </th>
-                        );
-
-                        const displayCondensedHeaderRows =
-                          !tableKeyExclusionSet.has(key) ? (
+                      {
+                        // [
+                        //   ...Object.keys(queryResponseObjArrays[0]),
+                        //   'Delete',
+                        // ]
+                        tableHeaderRow.map((key, keyIdx) => {
+                          const displayExpandedHeaderRows = (
                             <th
                               key={`${keyIdx}`}
                               style={{
@@ -166,292 +165,306 @@ function DisplayQueryDesktop<Doc>({
                                 padding: '4px 4px 4px 8px',
                               }}
                             >
-                              <Text truncate>{splitCamelCase(key)}</Text>
+                              <Text
+                              // style={{
+                              //   whiteSpace: 'nowrap',
+                              //   overflow: 'hidden',
+                              //   textOverflow: 'ellipsis',
+                              // }}
+                              >
+                                {splitCamelCase(key)}
+                              </Text>
                             </th>
-                          ) : null;
+                          );
 
-                        return tableViewSelection === 'expanded'
-                          ? displayExpandedHeaderRows
-                          : displayCondensedHeaderRows;
-                      })}
+                          const displayCondensedHeaderRows =
+                            !tableKeyExclusionSet.has(key) ? (
+                              <th
+                                key={`${keyIdx}`}
+                                style={{
+                                  width: widthPerField,
+                                  outline: '1px solid violet',
+                                  padding: '4px 4px 4px 8px',
+                                }}
+                              >
+                                <Text truncate>{splitCamelCase(key)}</Text>
+                              </th>
+                            ) : null;
+
+                          return tableViewSelection === 'expanded'
+                            ? displayExpandedHeaderRows
+                            : displayCondensedHeaderRows;
+                        })
+                      }
                     </tr>
                   </thead>
                   <tbody>
                     {queryResponseObjArrays.map((queryResponseObj, objIdx) => {
-                      return (
+                      const queryResponseObjWithAddedFields =
+                        fileUploadsData.length > 0
+                          ? addFieldsToObject({
+                              object: queryResponseObj,
+                              fieldValuesTuples: [
+                                ['fileUploads', ''],
+                                ['delete', ''],
+                              ],
+                            })
+                          : addFieldsToObject({
+                              object: queryResponseObj,
+                              fieldValuesTuples: [['delete', '']],
+                            });
+
+                      console.log({ queryResponseObjWithAddedFields });
+
+                      const rowWithStringifiedValues = (
                         <tr key={`${objIdx}`}>
-                          {[
-                            ...Object.entries(queryResponseObj),
-                            ['Delete', ''],
-                          ].map(([key, value], keyValIdx) => {
-                            const formattedValue =
-                              value === true
-                                ? 'Yes'
-                                : value === false
-                                ? 'No'
-                                : Array.isArray(value)
-                                ? // ? value.map((val, valIdx) => {
-                                  //     console.log('ARRAY VALUE', val);
-                                  //     return (
-                                  //       <Text key={`${valIdx}`}>
-                                  //         {`${val
-                                  //           .toString()
-                                  //           .charAt(0)
-                                  //           .toUpperCase()}${val
-                                  //           .toString()
-                                  //           .slice(1)}${
-                                  //           valIdx === value.length - 1
-                                  //             ? ''
-                                  //             : ', '
-                                  //         }`}
-                                  //       </Text>
-                                  //     );
-                                  //   })
-                                  value.join(', ')
-                                : key.toLowerCase().includes('id')
-                                ? value
-                                : key === 'createdAt' || key === 'updatedAt'
-                                ? formatDate({
-                                    date: value,
-                                    formatOptions: {
-                                      year: 'numeric',
-                                      month: 'numeric',
-                                      day: 'numeric',
-                                    },
-                                    locale: 'en-US',
-                                  })
-                                : splitCamelCase(key).includes('Date')
-                                ? formatDate({
-                                    date: value,
-                                    formatOptions: {
-                                      dateStyle: 'short',
-                                    },
-                                    locale: 'en-US',
-                                  })
-                                : `${value
-                                    .toString()
-                                    .charAt(0)
-                                    .toUpperCase()}${value
-                                    .toString()
-                                    .slice(1)}`;
+                          {Object.entries(queryResponseObjWithAddedFields).map(
+                            ([key, value], keyValIdx) => {
+                              const formattedValue =
+                                value === true
+                                  ? 'Yes'
+                                  : value === false
+                                  ? 'No'
+                                  : Array.isArray(value)
+                                  ? // ? value.map((val, valIdx) => {
+                                    //     console.log('ARRAY VALUE', val);
+                                    //     return (
+                                    //       <Text key={`${valIdx}`}>
+                                    //         {`${val
+                                    //           .toString()
+                                    //           .charAt(0)
+                                    //           .toUpperCase()}${val
+                                    //           .toString()
+                                    //           .slice(1)}${
+                                    //           valIdx === value.length - 1
+                                    //             ? ''
+                                    //             : ', '
+                                    //         }`}
+                                    //       </Text>
+                                    //     );
+                                    //   })
+                                    value.join(', ')
+                                  : key.toLowerCase().includes('id')
+                                  ? value
+                                  : key === 'createdAt' || key === 'updatedAt'
+                                  ? formatDate({
+                                      date: value,
+                                      formatOptions: {
+                                        year: 'numeric',
+                                        month: 'numeric',
+                                        day: 'numeric',
+                                      },
+                                      locale: 'en-US',
+                                    })
+                                  : splitCamelCase(key).includes('Date')
+                                  ? formatDate({
+                                      date: value,
+                                      formatOptions: {
+                                        dateStyle: 'short',
+                                      },
+                                      locale: 'en-US',
+                                    })
+                                  : `${value
+                                      .toString()
+                                      .charAt(0)
+                                      .toUpperCase()}${value
+                                      .toString()
+                                      .slice(1)}`;
 
-                            const sliceLength =
-                              tableViewSelection === 'expanded' ? 7 : 13;
+                              const sliceLength =
+                                tableViewSelection === 'expanded' ? 7 : 13;
 
-                            const truncatedValuesWithHoverCards =
-                              splitCamelCase(key).includes('Date') ? (
-                                <HoverCard
-                                  width={382}
-                                  shadow="lg"
-                                  openDelay={250}
-                                  closeDelay={100}
-                                >
-                                  <HoverCard.Target>
-                                    <Text>{formattedValue}</Text>
-                                  </HoverCard.Target>
-                                  <HoverCard.Dropdown>
-                                    <Text>
-                                      {formatDate({
-                                        date: value,
-                                        formatOptions: {
-                                          dateStyle: 'full',
-                                          localeMatcher: 'best fit',
-                                          formatMatcher: 'best fit',
-                                        },
-                                        locale: 'en-US',
-                                      })}
-                                    </Text>
-                                  </HoverCard.Dropdown>
-                                </HoverCard>
-                              ) : key === 'createdAt' || key === 'updatedAt' ? (
-                                <HoverCard
-                                  width={382}
-                                  shadow="lg"
-                                  openDelay={250}
-                                  closeDelay={100}
-                                >
-                                  <HoverCard.Target>
-                                    <Text>{formattedValue}</Text>
-                                  </HoverCard.Target>
-                                  <HoverCard.Dropdown>
-                                    <Text>
-                                      {formatDate({
-                                        date: value,
-                                        formatOptions: {
-                                          dateStyle: 'full',
-                                          timeStyle: 'long',
-                                          hour12: false,
-                                        },
-                                        locale: 'en-US',
-                                      })}
-                                    </Text>
-                                  </HoverCard.Dropdown>
-                                </HoverCard>
-                              ) : key.toLowerCase().includes('id') ||
-                                formattedValue.length > 19 ? (
-                                <HoverCard
-                                  width={500}
-                                  shadow="lg"
-                                  openDelay={250}
-                                  closeDelay={100}
-                                >
-                                  <HoverCard.Target>
-                                    <Text>
-                                      {`${formattedValue
-                                        .toString()
-                                        .slice(0, sliceLength)}...`}
-                                    </Text>
-                                  </HoverCard.Target>
-                                  <HoverCard.Dropdown>
-                                    <Text>
-                                      {splitCamelCase(key)}: {formattedValue}
-                                    </Text>
-                                  </HoverCard.Dropdown>
-                                </HoverCard>
-                              ) : (
-                                <Spoiler
-                                  maxHeight={25}
-                                  showLabel={
-                                    <Center>
-                                      <TbArrowDown />
-                                      <Text>Show</Text>
-                                    </Center>
-                                  }
-                                  hideLabel={
-                                    <Center>
-                                      <TbArrowUp />
-                                      <Text>Hide</Text>
-                                    </Center>
-                                  }
-                                >
-                                  <Text>{formattedValue}</Text>
-                                </Spoiler>
-                              );
-
-                            async function handleRequestStatusChangeFormSubmit(
-                              event: FormEvent<HTMLFormElement>
-                            ) {
-                              event.preventDefault();
-                              const formData = new FormData(
-                                event.currentTarget
-                              );
-                              const requestStatus =
-                                formData.get('requestStatus');
-
-                              requestStatusDispatch({
-                                type: 'setRequestStatus',
-                                payload: {
-                                  id: queryResponseObj._id,
-                                  status: requestStatus as RequestStatus,
-                                },
-                              });
-
-                              popoversStateDispatch({
-                                type: 'setPopoversOpenCloseState',
-                                payload: {
-                                  key: section.toString(),
-                                  popoverState: {
-                                    index: objIdx,
-                                    value: false,
-                                  },
-                                },
-                              });
-                            }
-
-                            const createdRequestStatusPopover = (
-                              <Popover
-                                width={200}
-                                position={width < 480 ? 'bottom' : 'bottom-end'}
-                                withArrow
-                                shadow="lg"
-                                opened={
-                                  popoversOpenCloseState?.get(
-                                    section.toString()
-                                  )?.[objIdx]
-                                }
-                              >
-                                <Popover.Target>
-                                  <Tooltip
-                                    label={`Modify request status of id: ${queryResponseObj._id}`}
+                              const truncatedValuesWithHoverCards =
+                                splitCamelCase(key).includes('Date') ? (
+                                  <HoverCard
+                                    width={382}
+                                    shadow="lg"
+                                    openDelay={250}
+                                    closeDelay={100}
                                   >
-                                    <Button
-                                      variant="subtle"
-                                      size="xs"
-                                      onClick={() => {
-                                        popoversStateDispatch({
-                                          type: 'setPopoversOpenCloseState',
-                                          payload: {
-                                            key: section.toString(),
-                                            popoverState: {
-                                              index: objIdx,
-                                              value:
-                                                !popoversOpenCloseState?.get(
-                                                  section.toString()
-                                                )?.[objIdx],
-                                            },
+                                    <HoverCard.Target>
+                                      <Text>{formattedValue}</Text>
+                                    </HoverCard.Target>
+                                    <HoverCard.Dropdown>
+                                      <Text>
+                                        {formatDate({
+                                          date: value,
+                                          formatOptions: {
+                                            dateStyle: 'full',
+                                            localeMatcher: 'best fit',
+                                            formatMatcher: 'best fit',
                                           },
-                                        });
-                                      }}
-                                    >
-                                      <TbStatusChange />
-                                    </Button>
-                                  </Tooltip>
-                                </Popover.Target>
-                                <Popover.Dropdown p={padding}>
-                                  <form
-                                    onSubmit={
-                                      handleRequestStatusChangeFormSubmit
+                                          locale: 'en-US',
+                                        })}
+                                      </Text>
+                                    </HoverCard.Dropdown>
+                                  </HoverCard>
+                                ) : key === 'createdAt' ||
+                                  key === 'updatedAt' ? (
+                                  <HoverCard
+                                    width={382}
+                                    shadow="lg"
+                                    openDelay={250}
+                                    closeDelay={100}
+                                  >
+                                    <HoverCard.Target>
+                                      <Text>{formattedValue}</Text>
+                                    </HoverCard.Target>
+                                    <HoverCard.Dropdown>
+                                      <Text>
+                                        {formatDate({
+                                          date: value,
+                                          formatOptions: {
+                                            dateStyle: 'full',
+                                            timeStyle: 'long',
+                                            hour12: false,
+                                          },
+                                          locale: 'en-US',
+                                        })}
+                                      </Text>
+                                    </HoverCard.Dropdown>
+                                  </HoverCard>
+                                ) : key.toLowerCase().includes('id') ||
+                                  formattedValue.length > 19 ? (
+                                  <HoverCard
+                                    width={500}
+                                    shadow="lg"
+                                    openDelay={250}
+                                    closeDelay={100}
+                                  >
+                                    <HoverCard.Target>
+                                      <Text>
+                                        {`${formattedValue
+                                          .toString()
+                                          .slice(0, sliceLength)}...`}
+                                      </Text>
+                                    </HoverCard.Target>
+                                    <HoverCard.Dropdown>
+                                      <Text>
+                                        {splitCamelCase(key)}: {formattedValue}
+                                      </Text>
+                                    </HoverCard.Dropdown>
+                                  </HoverCard>
+                                ) : (
+                                  <Spoiler
+                                    maxHeight={25}
+                                    showLabel={
+                                      <Center>
+                                        <TbArrowDown />
+                                        <Text>Show</Text>
+                                      </Center>
+                                    }
+                                    hideLabel={
+                                      <Center>
+                                        <TbArrowUp />
+                                        <Text>Hide</Text>
+                                      </Center>
                                     }
                                   >
-                                    <Flex
-                                      direction="column"
-                                      align="flex-end"
-                                      justify="center"
-                                      rowGap={rowGap}
+                                    <Text>{formattedValue}</Text>
+                                  </Spoiler>
+                                );
+
+                              async function handleRequestStatusChangeFormSubmit(
+                                event: FormEvent<HTMLFormElement>
+                              ) {
+                                event.preventDefault();
+                                const formData = new FormData(
+                                  event.currentTarget
+                                );
+                                const requestStatus =
+                                  formData.get('requestStatus');
+
+                                requestStatusDispatch({
+                                  type: 'setRequestStatus',
+                                  payload: {
+                                    id: queryResponseObjWithAddedFields._id,
+                                    status: requestStatus as RequestStatus,
+                                  },
+                                });
+
+                                popoversStateDispatch({
+                                  type: 'setPopoversOpenCloseState',
+                                  payload: {
+                                    key: section.toString(),
+                                    popoverState: {
+                                      index: objIdx,
+                                      value: false,
+                                    },
+                                  },
+                                });
+                              }
+
+                              const createdRequestStatusPopover = (
+                                <Popover
+                                  width={200}
+                                  position={
+                                    width < 480 ? 'bottom' : 'bottom-end'
+                                  }
+                                  withArrow
+                                  shadow="lg"
+                                  opened={
+                                    popoversOpenCloseState?.get(
+                                      section.toString()
+                                    )?.[objIdx]
+                                  }
+                                >
+                                  <Popover.Target>
+                                    <Tooltip
+                                      label={`Modify request status of id: ${queryResponseObjWithAddedFields._id}`}
                                     >
-                                      {createdUpdateRequestStatusRadioGroup}
-                                      {createdSubmitRequestStatusButton}
-                                    </Flex>
-                                  </form>
-                                </Popover.Dropdown>
-                              </Popover>
-                            );
+                                      <Button
+                                        variant="subtle"
+                                        size="xs"
+                                        onClick={() => {
+                                          popoversStateDispatch({
+                                            type: 'setPopoversOpenCloseState',
+                                            payload: {
+                                              key: section.toString(),
+                                              popoverState: {
+                                                index: objIdx,
+                                                value:
+                                                  !popoversOpenCloseState?.get(
+                                                    section.toString()
+                                                  )?.[objIdx],
+                                              },
+                                            },
+                                          });
+                                        }}
+                                      >
+                                        <TbStatusChange />
+                                      </Button>
+                                    </Tooltip>
+                                  </Popover.Target>
+                                  <Popover.Dropdown p={padding}>
+                                    <form
+                                      onSubmit={
+                                        handleRequestStatusChangeFormSubmit
+                                      }
+                                    >
+                                      <Flex
+                                        direction="column"
+                                        align="flex-end"
+                                        justify="center"
+                                        rowGap={rowGap}
+                                      >
+                                        {createdUpdateRequestStatusRadioGroup}
+                                        {createdSubmitRequestStatusButton}
+                                      </Flex>
+                                    </form>
+                                  </Popover.Dropdown>
+                                </Popover>
+                              );
 
-                            // only managers can update request status
-                            const displayUpdateRequestStatusButton =
-                              roles.includes('Manager')
-                                ? key === 'requestStatus'
-                                  ? createdRequestStatusPopover
-                                  : null
-                                : null;
+                              // only managers can update request status
+                              const displayUpdateRequestStatusButton =
+                                roles.includes('Manager')
+                                  ? key === 'requestStatus'
+                                    ? createdRequestStatusPopover
+                                    : null
+                                  : null;
 
-                            const displayExpandedBodyRows = (
-                              <td
-                                key={`${keyValIdx}`}
-                                style={{ width: widthPerField }}
-                              >
-                                {key === 'requestStatus' ? (
-                                  <Flex
-                                    // direction="column"
-                                    wrap="wrap"
-                                    align="center"
-                                    justify="space-between"
-                                    // columnGap="xs"
-                                    w="100%"
-                                  >
-                                    <Text>{truncatedValuesWithHoverCards}</Text>
-                                    {displayUpdateRequestStatusButton}
-                                  </Flex>
-                                ) : (
-                                  truncatedValuesWithHoverCards
-                                )}
-                              </td>
-                            );
-
-                            const displayCondensedBodyRows =
-                              !tableKeyExclusionSet.has(
-                                Object.keys(queryResponseObj)[keyValIdx]
-                              ) ? (
+                              const displayExpandedBodyRows = (
                                 <td
                                   key={`${keyValIdx}`}
                                   style={{ width: widthPerField }}
@@ -459,7 +472,6 @@ function DisplayQueryDesktop<Doc>({
                                   {key === 'requestStatus' ? (
                                     <Flex
                                       // direction="column"
-
                                       wrap="wrap"
                                       align="center"
                                       justify="space-between"
@@ -475,50 +487,99 @@ function DisplayQueryDesktop<Doc>({
                                     truncatedValuesWithHoverCards
                                   )}
                                 </td>
-                              ) : null;
+                              );
 
-                            const createdDeleteButton =
-                              returnAccessibleButtonElements([
-                                {
-                                  buttonLabel: <TbTrash />,
-                                  semanticDescription: 'Delete this form',
-                                  semanticName: 'Delete',
-                                  buttonVariant: 'subtle',
-                                  size: 'sm',
-                                  buttonOnClick: () => {
-                                    openDeleteAcknowledge();
-                                    deleteFormIdDispatch({
-                                      type: 'setDeleteFormId',
-                                      payload: queryResponseObj._id,
-                                    });
-                                  },
-                                },
-                              ]);
-
-                            const objLen = Object.keys(queryResponseObj).length;
-                            const displayDeleteButton = (
-                              <td
-                                key={`${sectionIdx}-${objIdx}-${keyValIdx}`}
-                                style={{ width: widthPerField }}
-                              >
-                                <Center>
-                                  <Tooltip
-                                    label={`Delete form with id: ${queryResponseObj._id}`}
+                              const displayCondensedBodyRows =
+                                !tableKeyExclusionSet.has(
+                                  Object.keys(queryResponseObjWithAddedFields)[
+                                    keyValIdx
+                                  ]
+                                ) ? (
+                                  <td
+                                    key={`${keyValIdx}`}
+                                    style={{ width: widthPerField }}
                                   >
-                                    <Group>{createdDeleteButton}</Group>
-                                  </Tooltip>
-                                </Center>
-                              </td>
-                            );
+                                    {key === 'requestStatus' ? (
+                                      <Flex
+                                        // direction="column"
 
-                            return objLen === keyValIdx
-                              ? displayDeleteButton
-                              : tableViewSelection === 'expanded'
-                              ? displayExpandedBodyRows
-                              : displayCondensedBodyRows;
-                          })}
+                                        wrap="wrap"
+                                        align="center"
+                                        justify="space-between"
+                                        // columnGap="xs"
+                                        w="100%"
+                                      >
+                                        <Text>
+                                          {truncatedValuesWithHoverCards}
+                                        </Text>
+                                        {displayUpdateRequestStatusButton}
+                                      </Flex>
+                                    ) : (
+                                      truncatedValuesWithHoverCards
+                                    )}
+                                  </td>
+                                ) : null;
+
+                              const createdDeleteButton =
+                                returnAccessibleButtonElements([
+                                  {
+                                    buttonLabel: <TbTrash />,
+                                    semanticDescription: 'Delete this form',
+                                    semanticName: 'Delete',
+                                    buttonVariant: 'subtle',
+                                    size: 'sm',
+                                    buttonOnClick: () => {
+                                      openDeleteAcknowledge();
+                                      deleteFormIdDispatch({
+                                        type: 'setDeleteFormId',
+                                        payload:
+                                          queryResponseObjWithAddedFields._id,
+                                      });
+                                    },
+                                  },
+                                ]);
+
+                              const displayDeleteButton =
+                                key === 'delete' ? (
+                                  <td
+                                    key={`${sectionIdx}-${objIdx}-${keyValIdx}`}
+                                    style={{ width: widthPerField }}
+                                  >
+                                    <Center>
+                                      <Tooltip
+                                        label={`Delete form with id: ${queryResponseObjWithAddedFields._id}`}
+                                      >
+                                        <Group>{createdDeleteButton}</Group>
+                                      </Tooltip>
+                                    </Center>
+                                  </td>
+                                ) : null;
+
+                              return key === 'delete'
+                                ? displayDeleteButton
+                                : tableViewSelection === 'expanded'
+                                ? displayExpandedBodyRows
+                                : displayCondensedBodyRows;
+                            }
+                          )}
                         </tr>
                       );
+
+                      // const rowsWithFileUploads =
+                      //   fileUploadsData.length > 0 ? (
+                      //     <tr>
+                      //       <Text>file uploads present</Text>
+                      //     </tr>
+                      //   ) : null;
+
+                      // const displayTableRow = (
+                      //   <Stack w="100%">
+                      //     {rowWithStringifiedValues}
+                      //     {rowsWithFileUploads}
+                      //   </Stack>
+                      // );
+
+                      return rowWithStringifiedValues;
                     })}
                   </tbody>
                 </Table>

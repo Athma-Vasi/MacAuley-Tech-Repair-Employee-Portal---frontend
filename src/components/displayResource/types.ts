@@ -11,6 +11,7 @@ import { ComponentQueryData } from '../queryBuilder';
 type DisplayResourceProps<Doc> = {
   style?: CSSProperties;
   componentQueryData: ComponentQueryData[];
+  isDisplayFilesOnly?: boolean;
   isFileUploadsWithResource?: boolean;
   fileUploadFieldName?: string;
   paths: {
