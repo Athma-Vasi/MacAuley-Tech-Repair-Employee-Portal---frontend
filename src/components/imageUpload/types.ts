@@ -60,6 +60,7 @@ type ImageUploadAction = {
 
   setQualities: 'setQualities';
   setOrientations: 'setOrientations';
+  resetImageToDefault: 'resetImageToDefault';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -92,7 +93,9 @@ type ImageUploadDispatch =
       payload: number;
     }
   | {
-      type: ImageUploadAction['setImageCount'];
+      type:
+        | ImageUploadAction['setImageCount']
+        | ImageUploadAction['resetImageToDefault'];
       payload: number;
     }
   | {

@@ -40,6 +40,7 @@ const imageUploadAction: ImageUploadAction = {
 
   setQualities: 'setQualities',
   setOrientations: 'setOrientations',
+  resetImageToDefault: 'resetImageToDefault',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -187,6 +188,23 @@ function imageUploadReducer(
 
       return {
         ...state,
+        orientations,
+      };
+    }
+    case imageUploadAction.resetImageToDefault: {
+      const index = action.payload;
+
+      // remove quality at index
+      const qualities = [...state.qualities];
+      qualities.splice(index, 1);
+
+      // remove orientation at index
+      const orientations = [...state.orientations];
+      orientations.splice(index, 1);
+
+      return {
+        ...state,
+        qualities,
         orientations,
       };
     }

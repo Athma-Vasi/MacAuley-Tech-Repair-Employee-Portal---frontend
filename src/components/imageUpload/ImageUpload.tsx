@@ -142,7 +142,7 @@ function ImageUpload({
     getImageUploadState();
   }, []);
 
-  // stored in localforage to persist across component unmounts
+  // stored in localforage to persist across component mounts
   useEffect(() => {
     localforage.setItem(`${parentComponentName}-imageUploadState`, {
       imageCount,
@@ -167,9 +167,12 @@ function ImageUpload({
     }
   }, [isParentComponentFormSubmitted, parentComponentName]);
 
-  // validate image sizes on every image upload
+  // validate image kinds, types, sizes on every image upload
   useEffect(() => {
+    const validImageTypes = new Set(['jpeg', 'png', 'gif']);
+
     imagePreviews.forEach((image, index) => {
+      // validate image sizes
       const imageIsValidSize = image.size <= maxImageSize;
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageSizes,
@@ -178,12 +181,8 @@ function ImageUpload({
           value: imageIsValidSize,
         },
       });
-    });
-  }, [imagePreviews, maxImageSize]);
 
-  // validate image kinds on every image upload
-  useEffect(() => {
-    imagePreviews.forEach((image, index) => {
+      // validate image kinds
       const imageIsValidKind = image.type.split('/')[0] === 'image';
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageKinds,
@@ -192,14 +191,8 @@ function ImageUpload({
           value: imageIsValidKind,
         },
       });
-    });
-  }, [imagePreviews]);
 
-  // validate image types on every image upload
-  useEffect(() => {
-    const validImageTypes = new Set(['jpeg', 'png', 'gif']);
-
-    imagePreviews.forEach((image, index) => {
+      // validate image types
       const imageIsValidType = validImageTypes.has(image.type.split('/')[1]);
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageTypes,
@@ -209,7 +202,36 @@ function ImageUpload({
         },
       });
     });
-  }, [imagePreviews]);
+  }, [imagePreviews, maxImageSize]);
+
+  // useEffect(() => {
+  //   imagePreviews.forEach((image, index) => {
+  //     const imageIsValidKind = image.type.split('/')[0] === 'image';
+  //     imageUploadDispatch({
+  //       type: imageUploadAction.setAreValidImageKinds,
+  //       payload: {
+  //         index,
+  //         value: imageIsValidKind,
+  //       },
+  //     });
+  //   });
+  // }, [imagePreviews]);
+
+  // // validate image types on every image upload
+  // useEffect(() => {
+  //   const validImageTypes = new Set(['jpeg', 'png', 'gif']);
+
+  //   imagePreviews.forEach((image, index) => {
+  //     const imageIsValidType = validImageTypes.has(image.type.split('/')[1]);
+  //     imageUploadDispatch({
+  //       type: imageUploadAction.setAreValidImageTypes,
+  //       payload: {
+  //         index,
+  //         value: imageIsValidType,
+  //       },
+  //     });
+  //   });
+  // }, [imagePreviews]);
 
   // dispatch image validation state to parent component on every change
   useEffect(() => {
@@ -243,7 +265,7 @@ function ImageUpload({
           }
 
           const modifiedImage = await compress(image, {
-            quality: (qualities[index] ?? 8) / 10,
+            quality: (qualities[index] ?? 10) / 10,
             orientation: orientations[index] ?? 1,
           });
 
@@ -395,17 +417,15 @@ function ImageUpload({
             leftIcon: <BiReset />,
             buttonOnClick: () => {
               imageUploadDispatch({
-                type: imageUploadAction.setQualities,
-                payload: {
-                  index,
-                  value: 10,
-                },
+                type: imageUploadAction.resetImageToDefault,
+                payload: index,
               });
+              // set the image preview to the original image
               imageUploadDispatch({
-                type: imageUploadAction.setOrientations,
+                type: imageUploadAction.setImagePreviews,
                 payload: {
                   index,
-                  value: 1,
+                  imagePreview: images[index],
                 },
               });
             },
@@ -518,6 +538,7 @@ function ImageUpload({
               {images[index].type.split('/')[1]}
             </TextWrapper>
           </Flex>
+          {/* reset, remove buttons */}
           <Group w="100%" position="apart">
             <Tooltip
               label={
