@@ -4,18 +4,13 @@ import type { RequestStatus } from '../../../types';
 import type { ComponentQueryData } from '../../queryBuilder';
 
 type DisplayQueryDesktopProps<Doc> = {
-  style?: CSSProperties;
-  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
-  restOfGroupedQueryResponseData: Record<string, any>[];
   componentQueryData: ComponentQueryData[];
-  tableViewSelection: 'expanded' | 'condensed';
+  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
 
-  requestStatusDispatch: React.Dispatch<{
-    type: 'setRequestStatus';
-    payload: {
-      id: string;
-      status: RequestStatus;
-    };
+  openDeleteAcknowledge: () => void;
+  deleteFormIdDispatch: React.Dispatch<{
+    type: 'setDeleteFormId';
+    payload: string;
   }>;
 
   popoversOpenCloseState: Map<string, boolean[]>;
@@ -30,11 +25,16 @@ type DisplayQueryDesktopProps<Doc> = {
     };
   }>;
 
-  openDeleteAcknowledge: () => void;
-  deleteFormIdDispatch: React.Dispatch<{
-    type: 'setDeleteFormId';
-    payload: string;
+  requestStatusDispatch: React.Dispatch<{
+    type: 'setRequestStatus';
+    payload: {
+      id: string;
+      status: RequestStatus;
+    };
   }>;
+  restOfGroupedQueryResponseData: Record<string, any>[];
+  style?: CSSProperties;
+  tableViewSelection: 'expanded' | 'condensed';
 };
 
 export type { DisplayQueryDesktopProps };

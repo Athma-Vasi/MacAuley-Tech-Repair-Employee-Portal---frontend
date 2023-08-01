@@ -26,16 +26,16 @@ import { formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryMobileProps } from './types';
 
 function DisplayQueryMobile({
-  style = {},
-  groupedByQueryResponseData,
-  restOfGroupedQueryResponseData,
   componentQueryData,
-  tableViewSelection,
-  requestStatusDispatch,
+  deleteFormIdDispatch,
+  groupedByQueryResponseData,
+  openDeleteAcknowledge,
   popoversStateDispatch,
   popoversOpenCloseState,
-  deleteFormIdDispatch,
-  openDeleteAcknowledge,
+  restOfGroupedQueryResponseData,
+  requestStatusDispatch,
+  style = {},
+  tableViewSelection,
 }: DisplayQueryMobileProps): JSX.Element {
   const {
     globalState: { width, padding, rowGap },

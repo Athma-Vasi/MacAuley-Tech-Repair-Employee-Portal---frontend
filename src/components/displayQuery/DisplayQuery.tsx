@@ -38,13 +38,13 @@ import {
 import { DisplayQueryProps } from './types';
 
 function DisplayQuery<Doc>({
-  style = {},
-  totalDocuments,
-  parentComponentName,
-  queryResponseData,
   componentQueryData,
+  parentComponentName,
   parentRequestStatusDispatch,
   parentDeleteFormDispatch,
+  queryResponseData,
+  style = {},
+  totalDocuments,
 }: DisplayQueryProps<Doc>) {
   const {
     globalState: { padding, width, rowGap },
@@ -375,27 +375,27 @@ function DisplayQuery<Doc>({
   const displayQueryComponent =
     width <= 1024 ? (
       <DisplayQueryMobile
-        tableViewSelection={currentSegmentedSelection}
-        groupedByQueryResponseData={groupedByQueryResponseData}
-        restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
         componentQueryData={componentQueryData}
-        requestStatusDispatch={parentRequestStatusDispatch}
+        deleteFormIdDispatch={displayQueryDispatch}
+        groupedByQueryResponseData={groupedByQueryResponseData}
+        openDeleteAcknowledge={openDeleteAcknowledge}
         popoversOpenCloseState={popoversOpenCloseState}
         popoversStateDispatch={displayQueryDispatch}
-        openDeleteAcknowledge={openDeleteAcknowledge}
-        deleteFormIdDispatch={displayQueryDispatch}
+        requestStatusDispatch={parentRequestStatusDispatch}
+        restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
+        tableViewSelection={currentSegmentedSelection}
       />
     ) : (
       <DisplayQueryDesktop
-        tableViewSelection={currentSegmentedSelection}
         componentQueryData={componentQueryData}
+        deleteFormIdDispatch={displayQueryDispatch}
         groupedByQueryResponseData={groupedByQueryResponseData}
-        requestStatusDispatch={parentRequestStatusDispatch}
-        restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
+        openDeleteAcknowledge={openDeleteAcknowledge}
         popoversOpenCloseState={popoversOpenCloseState}
         popoversStateDispatch={displayQueryDispatch}
-        openDeleteAcknowledge={openDeleteAcknowledge}
-        deleteFormIdDispatch={displayQueryDispatch}
+        requestStatusDispatch={parentRequestStatusDispatch}
+        restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
+        tableViewSelection={currentSegmentedSelection}
       />
     );
 

@@ -1,12 +1,12 @@
-import { Flex, Modal } from '@mantine/core';
+import { Flex } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useAuth, useGlobalState } from '../../hooks';
 import {
+  FileUploadDocument,
   GetQueriedResourceRequestServerResponse,
-  RequestStatus,
+  QueryResponseData,
   ResourceRequestServerResponse,
-  ResourceRoutePaths,
 } from '../../types';
 import { logState, splitCamelCase, urlBuilder } from '../../utils';
 import { DisplayQuery } from '../displayQuery';
@@ -18,11 +18,12 @@ import {
   DisplayResourceState,
   UpdateRequestStatusInput,
 } from './types';
-import { useDisclosure } from '@mantine/hooks';
 
 function DisplayResource<Doc>({
   style = {},
   componentQueryData,
+  fileUploadFieldName,
+  isFileUploadsWithResource,
   requestBodyHeading,
   paths,
 }: DisplayResourceProps<Doc>) {
@@ -34,6 +35,8 @@ function DisplayResource<Doc>({
     newQueryFlag: true,
     queryBuilderString: '?',
     pageQueryString: '',
+
+    fileUploads: [],
 
     requestStatus: {
       id: '',
@@ -118,18 +121,71 @@ function DisplayResource<Doc>({
         const data: GetQueriedResourceRequestServerResponse<Doc> =
           await response.json();
         console.log('response json data', data);
+        const { message, pages, resourceData, totalDocuments } = data;
+
+        // if there are file uploads, split the data into two arrays
+        // one for the resource data and the other for the file uploads
+        if (isFileUploadsWithResource && fileUploadFieldName) {
+          const [resourceDataWithoutFileUploadsArr, fileUploadsArr] =
+            resourceData.reduce(
+              (
+                acc: [QueryResponseData<Doc>[], FileUploadDocument[]],
+                currObj: QueryResponseData<Doc>
+              ) => {
+                // reduce over the object entries of the current resource data
+                // to separate the file uploads from the rest of the data
+                const [fileUploadsObj, resourceDataWithoutFileUploadsObj] =
+                  Object.entries(currObj).reduce(
+                    (objTuples, [key, value]) => {
+                      if (key === fileUploadFieldName) {
+                        Object.defineProperty(objTuples[0], key, {
+                          value: structuredClone(value),
+                          enumerable: true,
+                        });
+                      } else {
+                        Object.defineProperty(objTuples[1], key, {
+                          value: structuredClone(value),
+                          enumerable: true,
+                        });
+                      }
+
+                      return objTuples;
+                    },
+                    [Object.create(null), Object.create(null)]
+                  );
+
+                acc[0].push(resourceDataWithoutFileUploadsObj);
+                acc[1].push(fileUploadsObj);
+
+                return acc;
+              },
+              [[], []]
+            );
+
+          displayResourceDispatch({
+            type: displayResourceAction.setResourceData,
+            payload: resourceDataWithoutFileUploadsArr,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setFileUploads,
+            payload: fileUploadsArr,
+          });
+        }
+        // if there are no file uploads, set the resource data as is
+        else {
+          displayResourceDispatch({
+            type: displayResourceAction.setResourceData,
+            payload: resourceData,
+          });
+        }
 
         displayResourceDispatch({
-          type: displayResourceAction.setResourceData,
-          payload: data.resourceData,
-        });
-        displayResourceDispatch({
           type: displayResourceAction.setPages,
-          payload: data.pages ?? pages,
+          payload: pages ?? pages,
         });
         displayResourceDispatch({
           type: displayResourceAction.setTotalDocuments,
-          payload: data.totalDocuments,
+          payload: totalDocuments,
         });
       } catch (error) {
         console.log(error);

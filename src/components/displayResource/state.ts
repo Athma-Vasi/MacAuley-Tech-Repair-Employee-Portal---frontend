@@ -13,6 +13,8 @@ const displayResourceAction: DisplayResourceAction = {
   setQueryBuilderString: 'setQueryBuilderString',
   setPageQueryString: 'setPageQueryString',
 
+  setFileUploads: 'setFileUploads',
+
   setRequestStatus: 'setRequestStatus',
   setDeleteForm: 'setDeleteForm',
   setTriggerRefresh: 'setTriggerRefresh',
@@ -62,6 +64,12 @@ function displayResourceReducer<Doc>(
       return {
         ...state,
         pageQueryString: action.payload,
+      };
+
+    case displayResourceAction.setFileUploads:
+      return {
+        ...state,
+        fileUploads: action.payload,
       };
 
     case displayResourceAction.setRequestStatus:

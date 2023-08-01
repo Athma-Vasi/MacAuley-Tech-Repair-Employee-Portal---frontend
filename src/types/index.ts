@@ -22,12 +22,12 @@ import type {
   PreferredPronouns,
   Province,
   StatesUS,
+  StoreLocation,
   User,
   UserDocument,
   UserRoles,
   UserSchema,
   USPostalCode,
-  StoreLocation,
 } from './user.types';
 
 type BreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -56,6 +56,37 @@ type CheckboxInputData = Array<{
   value: string;
   label: string;
 }>;
+
+type FileExtension = 'jpeg' | 'png' | 'gif' | 'pdf';
+
+type FileUploadSchema = {
+  userId: string;
+  uploadedFile: Buffer;
+  username: string;
+  fileExtension: FileExtension;
+  fileName: string;
+  fileSize: number;
+  fileMimeType: string;
+  fileEncoding: string;
+};
+
+type AssociatedResourceKind =
+  | ActionsCompany
+  | ActionsGeneral
+  | ActionsOutreach
+  | 'user'
+  | 'repairNote';
+
+type FileUploadDocument = FileUploadSchema & {
+  _id: string;
+  // some fileUploads may not be associated with any resource
+  associatedResource?: AssociatedResourceKind | undefined;
+  // some fileUploads may not be associated with any document
+  associatedDocumentId?: string | undefined;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+};
 
 type RequestStatus = 'pending' | 'approved' | 'rejected';
 
@@ -114,19 +145,23 @@ export type {
   Province,
   ResourceRoutePaths,
   StatesUS,
+  StoreLocation,
   Urgency,
   User,
   UserDocument,
   UserRoles,
   UserSchema,
   USPostalCode,
-  StoreLocation,
 };
 
 export type {
+  AssociatedResourceKind,
   BreakPoints,
   CheckBoxMultipleData,
   Currency,
+  FileExtension,
+  FileUploadDocument,
+  FileUploadSchema,
   GetQueriedResourceRequestServerResponse,
   Note,
   QueryResponseData,

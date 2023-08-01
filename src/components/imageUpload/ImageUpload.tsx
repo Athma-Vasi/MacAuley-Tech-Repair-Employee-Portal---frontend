@@ -160,9 +160,16 @@ function ImageUpload({
     parentComponentName,
   ]);
 
+  // flush local forage when page refreshes
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => {
+      localforage.removeItem(`${parentComponentName}-imageUploadState`);
+    });
+  }, [parentComponentName]);
   // flush local forage when parent component submits form
   useEffect(() => {
     if (isParentComponentFormSubmitted) {
+      console.log('flushing localforage');
       localforage.removeItem(`${parentComponentName}-imageUploadState`);
     }
   }, [isParentComponentFormSubmitted, parentComponentName]);
@@ -203,35 +210,6 @@ function ImageUpload({
       });
     });
   }, [imagePreviews, maxImageSize]);
-
-  // useEffect(() => {
-  //   imagePreviews.forEach((image, index) => {
-  //     const imageIsValidKind = image.type.split('/')[0] === 'image';
-  //     imageUploadDispatch({
-  //       type: imageUploadAction.setAreValidImageKinds,
-  //       payload: {
-  //         index,
-  //         value: imageIsValidKind,
-  //       },
-  //     });
-  //   });
-  // }, [imagePreviews]);
-
-  // // validate image types on every image upload
-  // useEffect(() => {
-  //   const validImageTypes = new Set(['jpeg', 'png', 'gif']);
-
-  //   imagePreviews.forEach((image, index) => {
-  //     const imageIsValidType = validImageTypes.has(image.type.split('/')[1]);
-  //     imageUploadDispatch({
-  //       type: imageUploadAction.setAreValidImageTypes,
-  //       payload: {
-  //         index,
-  //         value: imageIsValidType,
-  //       },
-  //     });
-  //   });
-  // }, [imagePreviews]);
 
   // dispatch image validation state to parent component on every change
   useEffect(() => {

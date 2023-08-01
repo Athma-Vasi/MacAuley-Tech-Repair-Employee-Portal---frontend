@@ -31,18 +31,18 @@ import { formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryDesktopProps } from './types';
 
 function DisplayQueryDesktop<Doc>({
-  style = {},
-  groupedByQueryResponseData,
-  restOfGroupedQueryResponseData,
   componentQueryData,
-  tableViewSelection,
+  deleteFormIdDispatch,
+  groupedByQueryResponseData,
 
-  requestStatusDispatch,
+  openDeleteAcknowledge,
   popoversOpenCloseState,
   popoversStateDispatch,
 
-  openDeleteAcknowledge,
-  deleteFormIdDispatch,
+  restOfGroupedQueryResponseData,
+  requestStatusDispatch,
+  style = {},
+  tableViewSelection,
 }: DisplayQueryDesktopProps<Doc>) {
   const {
     globalState: { width, padding, rowGap },
@@ -190,22 +190,24 @@ function DisplayQueryDesktop<Doc>({
                                 : value === false
                                 ? 'No'
                                 : Array.isArray(value)
-                                ? value.map((val, valIdx) => {
-                                    return (
-                                      <Text key={`${valIdx}`}>
-                                        {`${val
-                                          .toString()
-                                          .charAt(0)
-                                          .toUpperCase()}${val
-                                          .toString()
-                                          .slice(1)}${
-                                          valIdx === value.length - 1
-                                            ? ''
-                                            : ', '
-                                        }`}
-                                      </Text>
-                                    );
-                                  })
+                                ? // ? value.map((val, valIdx) => {
+                                  //     console.log('ARRAY VALUE', val);
+                                  //     return (
+                                  //       <Text key={`${valIdx}`}>
+                                  //         {`${val
+                                  //           .toString()
+                                  //           .charAt(0)
+                                  //           .toUpperCase()}${val
+                                  //           .toString()
+                                  //           .slice(1)}${
+                                  //           valIdx === value.length - 1
+                                  //             ? ''
+                                  //             : ', '
+                                  //         }`}
+                                  //       </Text>
+                                  //     );
+                                  //   })
+                                  value.join(', ')
                                 : key.toLowerCase().includes('id')
                                 ? value
                                 : key === 'createdAt' || key === 'updatedAt'
@@ -215,11 +217,6 @@ function DisplayQueryDesktop<Doc>({
                                       year: 'numeric',
                                       month: 'numeric',
                                       day: 'numeric',
-                                      // hour: 'numeric',
-                                      // minute: 'numeric',
-                                      // second: 'numeric',
-                                      // hour12: false,
-                                      // timeZoneName: 'short',
                                     },
                                     locale: 'en-US',
                                   })

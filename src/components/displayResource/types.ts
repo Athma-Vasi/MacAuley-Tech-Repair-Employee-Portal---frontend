@@ -1,6 +1,7 @@
 import { CSSProperties } from 'react';
 
 import {
+  FileUploadDocument,
   QueryResponseData,
   RequestStatus,
   ResourceRoutePaths,
@@ -10,6 +11,8 @@ import { ComponentQueryData } from '../queryBuilder';
 type DisplayResourceProps<Doc> = {
   style?: CSSProperties;
   componentQueryData: ComponentQueryData[];
+  isFileUploadsWithResource?: boolean;
+  fileUploadFieldName?: string;
   paths: {
     employee: string;
     manager: string;
@@ -27,11 +30,12 @@ type DisplayResourceState<Doc> = {
   queryBuilderString: string;
   pageQueryString: string;
 
+  fileUploads: Array<FileUploadDocument>;
+
   requestStatus: {
     id: string;
     status: RequestStatus;
   };
-
   deleteForm: {
     id: string;
     value: boolean;
@@ -68,6 +72,8 @@ type DisplayResourceAction = {
   setNewQueryFlag: 'setNewQueryFlag';
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
+
+  setFileUploads: 'setFileUploads';
 
   setRequestStatus: 'setRequestStatus';
   setDeleteForm: 'setDeleteForm';
@@ -127,6 +133,10 @@ type DisplayResourceDispatch<Doc> =
         id: string;
         value: boolean;
       };
+    }
+  | {
+      type: DisplayResourceAction['setFileUploads'];
+      payload: Array<FileUploadDocument>;
     };
 
 type DisplayResourceReducer = <Doc>(

@@ -8,9 +8,6 @@ import {
 import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayQueryProps<Doc> = {
-  style?: CSSProperties;
-  totalDocuments: number;
-  queryResponseData: QueryResponseData<Doc>[];
   componentQueryData: ComponentQueryData[];
   parentComponentName: string;
   parentRequestStatusDispatch: React.Dispatch<{
@@ -27,6 +24,9 @@ type DisplayQueryProps<Doc> = {
       value: boolean;
     };
   }>;
+  queryResponseData: QueryResponseData<Doc>[];
+  style?: CSSProperties;
+  totalDocuments: number;
 };
 
 type DisplayQueryState = {
