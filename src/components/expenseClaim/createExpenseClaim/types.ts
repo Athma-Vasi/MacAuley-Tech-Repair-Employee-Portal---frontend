@@ -64,7 +64,7 @@ type CreateExpenseClaimState = {
   imgFormDataArray: FormData[];
   areImagesValid: boolean;
 
-  triggerImagesUploadSubmit: boolean;
+  triggerFormSubmit: boolean;
 
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -103,7 +103,7 @@ type CreateExpenseClaimAction = {
   setImgFormDataArray: 'setImgFormDataArray';
   setAreImagesValid: 'setAreImagesValid';
 
-  setTriggerImagesUploadSubmit: 'setTriggerImagesUploadSubmit';
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
@@ -147,7 +147,7 @@ type CreateExpenseClaimDispatch =
         | CreateExpenseClaimAction['setIsAdditionalCommentsFocused']
         | CreateExpenseClaimAction['setAcknowledgement']
         | CreateExpenseClaimAction['setAreImagesValid']
-        | CreateExpenseClaimAction['setTriggerImagesUploadSubmit']
+        | CreateExpenseClaimAction['setTriggerFormSubmit']
         | CreateExpenseClaimAction['setIsError']
         | CreateExpenseClaimAction['setIsSubmitting']
         | CreateExpenseClaimAction['setIsSuccessful']

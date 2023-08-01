@@ -86,7 +86,7 @@ function CreateExpenseClaim() {
 
     imgFormDataArray,
     areImagesValid,
-    triggerImagesUploadSubmit,
+    triggerFormSubmit,
 
     currentStepperPosition,
     stepsInError,
@@ -485,12 +485,12 @@ function CreateExpenseClaim() {
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setTriggerImagesUploadSubmit,
+        type: createExpenseClaimAction.setTriggerFormSubmit,
         payload: true,
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerImagesUploadSubmit,
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
   const [createdExpenseClaimAmountTextInput] =
@@ -529,39 +529,35 @@ function CreateExpenseClaim() {
       ? createdSubmitButton
       : null;
 
-  const displayImageUpload = (
-    <ImageUpload
-      maxImageSize={EXPENSE_CLAIM_MAX_IMG_SIZE}
-      maxImages={EXPENSE_CLAIM_MAX_IMG_AMOUNT}
-      setImgFormDataArray={createExpenseClaimAction.setImgFormDataArray}
-      setImgFormDataArrayDispatch={createExpenseClaimDispatch}
-      setAreImagesValid={createExpenseClaimAction.setAreImagesValid}
-      setAreImagesValidDispatch={createExpenseClaimDispatch}
-    />
-  );
-
-  const displayExpenseClaimDetailsFirstPage = (
-    <FormLayoutWrapper>
-      {createdExpenseClaimKindSelectInput}
-      {createdExpenseClaimCurrencySelectInput}
-      {createdExpenseClaimAmountTextInput}
-      {createdExpenseClaimDateTextInput}
-      {createdExpenseClaimDescriptionTextInput}
-      {createdAdditionalCommentsTextInput}
-      {createdAcknowledgementCheckboxInput}
-    </FormLayoutWrapper>
-  );
-
   const displayExpenseClaimReviewPage = <h3>expense claim review</h3>;
 
   const displayExpenseClaimForm =
-    currentStepperPosition === 0
-      ? displayExpenseClaimDetailsFirstPage
-      : currentStepperPosition === 1
-      ? displayImageUpload
-      : currentStepperPosition === 2
-      ? displayExpenseClaimReviewPage
-      : displaySubmitButton;
+    currentStepperPosition === 0 ? (
+      <FormLayoutWrapper>
+        {createdExpenseClaimKindSelectInput}
+        {createdExpenseClaimCurrencySelectInput}
+        {createdExpenseClaimAmountTextInput}
+        {createdExpenseClaimDateTextInput}
+        {createdExpenseClaimDescriptionTextInput}
+        {createdAdditionalCommentsTextInput}
+        {createdAcknowledgementCheckboxInput}
+      </FormLayoutWrapper>
+    ) : currentStepperPosition === 1 ? (
+      <ImageUpload
+        isParentComponentFormSubmitted={triggerFormSubmit}
+        parentComponentName="create expense claim form"
+        maxImageSize={EXPENSE_CLAIM_MAX_IMG_SIZE}
+        maxImages={EXPENSE_CLAIM_MAX_IMG_AMOUNT}
+        setImgFormDataArray={createExpenseClaimAction.setImgFormDataArray}
+        setImgFormDataArrayDispatch={createExpenseClaimDispatch}
+        setAreImagesValid={createExpenseClaimAction.setAreImagesValid}
+        setAreImagesValidDispatch={createExpenseClaimDispatch}
+      />
+    ) : currentStepperPosition === 2 ? (
+      displayExpenseClaimReviewPage
+    ) : (
+      displaySubmitButton
+    );
 
   const displayExpenseClaimComponent = (
     <StepperWrapper
@@ -669,7 +665,7 @@ function CreateExpenseClaim() {
       });
     }
 
-    if (triggerImagesUploadSubmit && imgFormDataArray.length > 0) {
+    if (triggerFormSubmit && imgFormDataArray.length > 0) {
       imagesUploadRequest();
     }
 
@@ -681,7 +677,7 @@ function CreateExpenseClaim() {
         payload: [],
       });
     };
-  }, [triggerImagesUploadSubmit]);
+  }, [triggerFormSubmit]);
 
   useEffect(() => {
     logState({

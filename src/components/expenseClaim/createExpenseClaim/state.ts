@@ -28,7 +28,7 @@ const initialCreateExpenseClaimState: CreateExpenseClaimState = {
   imgFormDataArray: [],
   areImagesValid: false,
 
-  triggerImagesUploadSubmit: false,
+  triggerFormSubmit: false,
 
   currentStepperPosition: 0,
   stepsInError: new Set(),
@@ -67,7 +67,7 @@ const createExpenseClaimAction: CreateExpenseClaimAction = {
   setImgFormDataArray: 'setImgFormDataArray',
   setAreImagesValid: 'setAreImagesValid',
 
-  setTriggerImagesUploadSubmit: 'setTriggerImagesUploadSubmit',
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
 
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
@@ -179,10 +179,10 @@ function createExpenseClaimReducer(
         acknowledgement: action.payload,
       };
 
-    case createExpenseClaimAction.setTriggerImagesUploadSubmit:
+    case createExpenseClaimAction.setTriggerFormSubmit:
       return {
         ...state,
-        triggerImagesUploadSubmit: action.payload,
+        triggerFormSubmit: action.payload,
       };
 
     case createExpenseClaimAction.setCurrentStepperPosition:

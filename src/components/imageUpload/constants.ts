@@ -6,9 +6,9 @@ const IMG_QUALITY_SLIDER_DATA = [
   { value: 5, label: '50%' },
   //   { value: 6, label: '60%' },
   { value: 7, label: '70%' },
-  //   { value: 8, label: '80%' },
+  { value: 8, label: '80%' },
   //   { value: 9, label: '90%' },
-  { value: 10, label: '100%' },
+  // { value: 10, label: '100%' },
 ];
 
 const IMG_ORIENTATION_SLIDER_DATA = [

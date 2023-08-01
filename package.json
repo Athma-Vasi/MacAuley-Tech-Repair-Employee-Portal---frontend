@@ -19,6 +19,7 @@
     "axios": "^1.4.0",
     "image-conversion": "^2.1.1",
     "jwt-decode": "^3.1.2",
+    "localforage": "^1.10.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.10.1",
@@ -61,6 +62,7 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/jwt-decode": "^3.1.0",
+    "@types/localforage": "^0.0.34",
     "@types/react-icons": "^3.0.0",
     "@types/react-router-dom": "^5.3.3",
     "@types/tailwindcss": "^3.1.0",

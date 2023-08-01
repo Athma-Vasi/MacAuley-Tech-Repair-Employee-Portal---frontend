@@ -11,6 +11,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { compress } from 'image-conversion';
+import localforage from 'localforage';
 import { useEffect, useReducer } from 'react';
 import { BiReset } from 'react-icons/bi';
 import { LuRotate3D } from 'react-icons/lu';
@@ -33,16 +34,22 @@ import {
   imageUploadReducer,
   initialImageUploadState,
 } from './state';
-import { ImageUploadProps } from './types';
+import { ImageUploadLocalForage, ImageUploadProps } from './types';
+
+/**
+ *  TODO: when user logs out, flush localforage
+ */
 
 function ImageUpload({
-  style = {},
+  isParentComponentFormSubmitted,
   maxImageSize,
   maxImages,
+  parentComponentName,
   setImgFormDataArray,
   setImgFormDataArrayDispatch,
   setAreImagesValid,
   setAreImagesValidDispatch,
+  style = {},
 }: ImageUploadProps) {
   const [imageUploadState, imageUploadDispatch] = useReducer(
     imageUploadReducer,
@@ -70,8 +77,95 @@ function ImageUpload({
     submitMessage,
   } = imageUploadState;
   const {
-    globalState: { padding, rowGap, width },
+    globalState: { padding, rowGap },
   } = useGlobalState();
+
+  // set localforage imageupload state to initial state on every mount
+  useEffect(() => {
+    async function getImageUploadState() {
+      const imageUploadState =
+        await localforage.getItem<ImageUploadLocalForage>(
+          `${parentComponentName}-imageUploadState`
+        );
+
+      if (imageUploadState) {
+        const { imageCount, images, imagePreviews, orientations, qualities } =
+          imageUploadState;
+
+        imageUploadDispatch({
+          type: imageUploadAction.setImageCount,
+          payload: imageCount,
+        });
+
+        images.forEach((image, index) => {
+          imageUploadDispatch({
+            type: imageUploadAction.setImages,
+            payload: {
+              index,
+              image,
+            },
+          });
+        });
+
+        imagePreviews.forEach((imagePreview, index) => {
+          imageUploadDispatch({
+            type: imageUploadAction.setImagePreviews,
+            payload: {
+              index,
+              imagePreview,
+            },
+          });
+        });
+
+        orientations.forEach((orientation, index) => {
+          imageUploadDispatch({
+            type: imageUploadAction.setOrientations,
+            payload: {
+              index,
+              value: orientation,
+            },
+          });
+        });
+
+        qualities.forEach((quality, index) => {
+          imageUploadDispatch({
+            type: imageUploadAction.setQualities,
+            payload: {
+              index,
+              value: quality,
+            },
+          });
+        });
+      }
+    }
+
+    getImageUploadState();
+  }, []);
+
+  // stored in localforage to persist across component unmounts
+  useEffect(() => {
+    localforage.setItem(`${parentComponentName}-imageUploadState`, {
+      imageCount,
+      images,
+      imagePreviews,
+      qualities,
+      orientations,
+    });
+  }, [
+    imageCount,
+    images,
+    imagePreviews,
+    qualities,
+    orientations,
+    parentComponentName,
+  ]);
+
+  // flush local forage when parent component submits form
+  useEffect(() => {
+    if (isParentComponentFormSubmitted) {
+      localforage.removeItem(`${parentComponentName}-imageUploadState`);
+    }
+  }, [isParentComponentFormSubmitted, parentComponentName]);
 
   // validate image sizes on every image upload
   useEffect(() => {
@@ -149,7 +243,7 @@ function ImageUpload({
           }
 
           const modifiedImage = await compress(image, {
-            quality: (qualities[index] ?? 10) / 10,
+            quality: (qualities[index] ?? 8) / 10,
             orientation: orientations[index] ?? 1,
           });
 
@@ -259,7 +353,7 @@ function ImageUpload({
     </Flex>
   );
 
-  const createdImagePreview = Array.from({ length: imageCount }).map(
+  const createdImagePreview = Array.from({ length: imagePreviews.length }).map(
     (_, index) => {
       const imagePreview = (
         <Image
@@ -472,10 +566,10 @@ function ImageUpload({
                     <TextWrapper creatorInfoObj={{}}>Quality: </TextWrapper>
                     <Slider
                       min={1}
-                      max={10}
+                      max={8}
                       step={1}
                       marks={IMG_QUALITY_SLIDER_DATA}
-                      value={qualities[index] ?? 10}
+                      value={qualities[index] ?? 8}
                       onChange={(value) => {
                         imageUploadDispatch({
                           type: imageUploadAction.setQualities,

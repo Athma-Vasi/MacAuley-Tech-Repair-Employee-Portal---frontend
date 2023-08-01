@@ -4,6 +4,7 @@ type ImageUploadProps = {
   style?: CSSProperties;
   maxImages: number;
   maxImageSize: number; // in kb
+  parentComponentName: string;
   setImgFormDataArray: 'setImgFormDataArray';
   setImgFormDataArrayDispatch: React.Dispatch<{
     type: 'setImgFormDataArray';
@@ -14,6 +15,7 @@ type ImageUploadProps = {
     type: 'setAreImagesValid';
     payload: boolean;
   }>;
+  isParentComponentFormSubmitted: boolean;
 };
 
 type ImageUploadState = {
@@ -36,6 +38,14 @@ type ImageUploadState = {
   successMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
+};
+
+type ImageUploadLocalForage = {
+  imageCount: number;
+  images: File[];
+  imagePreviews: (File | Blob)[];
+  qualities: number[];
+  orientations: number[];
 };
 
 type ImageUploadAction = {
@@ -129,6 +139,7 @@ type ImageUploadReducer = (
 export type {
   ImageUploadAction,
   ImageUploadDispatch,
+  ImageUploadLocalForage,
   ImageUploadProps,
   ImageUploadReducer,
   ImageUploadState,
