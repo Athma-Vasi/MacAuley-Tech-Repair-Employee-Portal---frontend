@@ -334,17 +334,12 @@ function ImageUpload({
       <FileInput
         disabled={imageCount >= maxImages}
         label={
-          imageCount >= maxImages ? (
-            <Text size="sm" color="dark">
-              Max image count reached
-            </Text>
-          ) : (
-            <Text size="sm" color="dark">
-              {`Upload an image. Space available: ${maxImages - imageCount}`}
-            </Text>
-          )
+          <Text size="sm" color="dark">
+            {`Upload an image. Available: ${maxImages - imageCount}`}
+          </Text>
         }
-        onChange={(file) => {
+        onChange={(file: File | null) => {
+          // since max image size is 1 MB, and highest compression is 0.9
           if (!file || file.size > 10_000_000) {
             return;
           }
@@ -368,7 +363,12 @@ function ImageUpload({
             },
           });
         }}
-        placeholder="Click to select image"
+        // placeholder="Click to select image"
+        placeholder={`${
+          imageCount >= maxImages
+            ? 'Max image count reached'
+            : 'Click to select an image'
+        }`}
         value={images[imageCount]}
         w="62%"
       />
