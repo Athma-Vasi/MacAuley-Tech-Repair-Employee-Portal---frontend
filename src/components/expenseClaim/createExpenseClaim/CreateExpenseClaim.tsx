@@ -181,8 +181,7 @@ function CreateExpenseClaim() {
       !acknowledgement;
 
     const isOptionalInputInError =
-      (additionalComments !== '' && !isValidAdditionalComments) ||
-      !areImagesValid;
+      additionalComments !== '' && !isValidAdditionalComments;
 
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
@@ -202,6 +201,19 @@ function CreateExpenseClaim() {
     additionalComments,
     areImagesValid,
   ]);
+
+  // update stepper wrapper state on every change
+  useEffect(() => {
+    const isStepInError = !areImagesValid;
+
+    createExpenseClaimDispatch({
+      type: createExpenseClaimAction.setStepsInError,
+      payload: {
+        kind: isStepInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [areImagesValid]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [expenseClaimAmountInputErrorText, expenseClaimAmountInputValidText] =
@@ -537,7 +549,6 @@ function CreateExpenseClaim() {
       {createdExpenseClaimDescriptionTextInput}
       {createdAdditionalCommentsTextInput}
       {createdAcknowledgementCheckboxInput}
-      {displayImageUpload}
     </FormLayoutWrapper>
   );
 
@@ -547,6 +558,8 @@ function CreateExpenseClaim() {
     currentStepperPosition === 0
       ? displayExpenseClaimDetailsFirstPage
       : currentStepperPosition === 1
+      ? displayImageUpload
+      : currentStepperPosition === 2
       ? displayExpenseClaimReviewPage
       : displaySubmitButton;
 

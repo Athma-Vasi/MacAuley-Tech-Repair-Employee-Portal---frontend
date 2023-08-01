@@ -6,14 +6,17 @@ const EXPENSE_CLAIM_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
     ariaLabel:
       'Enter expense claim kind, amount, currency, date, description, additional comments, acknowledgement and receipt',
   },
-
+  {
+    description: 'Upload receipts',
+    ariaLabel: 'Select up to 3 images of receipts to upload',
+  },
   {
     description: 'Review and proceed',
     ariaLabel: 'Review accuracy of information and proceed',
   },
 ];
 
-const EXPENSE_CLAIM_MAX_STEPPER_POSITION = 2;
+const EXPENSE_CLAIM_MAX_STEPPER_POSITION = 3;
 
 const EXPENSE_CLAIM_KIND_DATA = [
   'Travel and Accomodation',

@@ -224,16 +224,12 @@ function ImageUpload({
             </Text>
           ) : (
             <Text size="sm" color="dark">
-              Upload an image
+              {`Upload an image. Space available: ${maxImages - imageCount}`}
             </Text>
           )
         }
         onChange={(file) => {
-          if (!file) {
-            return;
-          }
-
-          if (file.size > 15_000_000) {
+          if (!file || file.size > 10_000_000) {
             return;
           }
 
@@ -560,8 +556,8 @@ function ImageUpload({
         borderRadius: '4px',
       }}
     >
-      {displayImagePreviews}
       {createdImageUploadFileInput}
+      {displayImagePreviews}
     </Stack>
   );
 }
