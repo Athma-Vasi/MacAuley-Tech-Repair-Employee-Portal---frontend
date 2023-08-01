@@ -136,7 +136,10 @@ function DisplayResource<Doc>({
                 // to separate the file uploads from the rest of the data
                 const [fileUploadsObj, resourceDataWithoutFileUploadsObj] =
                   Object.entries(currObj).reduce(
-                    (objTuples, [key, value]) => {
+                    (
+                      objTuples: [FileUploadDocument, QueryResponseData<Doc>],
+                      [key, value]
+                    ) => {
                       if (key === fileUploadFieldName) {
                         Object.defineProperty(objTuples[0], key, {
                           value: structuredClone(value),
