@@ -62,10 +62,8 @@ type CreateExpenseClaimState = {
   acknowledgement: boolean;
 
   imgFormDataArray: FormData[];
-  uploadedFilesIds: string[];
 
   triggerImagesUploadSubmit: boolean;
-  triggerExpenseClaimSubmit: boolean;
 
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -102,10 +100,8 @@ type CreateExpenseClaimAction = {
   setAcknowledgement: 'setAcknowledgement';
 
   setImgFormDataArray: 'setImgFormDataArray';
-  setUploadedFilesIds: 'setUploadedFilesIds';
 
   setTriggerImagesUploadSubmit: 'setTriggerImagesUploadSubmit';
-  setTriggerExpenseClaimSubmit: 'setTriggerExpenseClaimSubmit';
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
@@ -131,7 +127,6 @@ type CreateExpenseClaimDispatch =
         | CreateExpenseClaimAction['setExpenseClaimDate']
         | CreateExpenseClaimAction['setExpenseClaimDescription']
         | CreateExpenseClaimAction['setAdditionalComments']
-        | CreateExpenseClaimAction['setUploadedFilesIds']
         | CreateExpenseClaimAction['setErrorMessage']
         | CreateExpenseClaimAction['setSubmitMessage']
         | CreateExpenseClaimAction['setSuccessMessage']
@@ -150,7 +145,6 @@ type CreateExpenseClaimDispatch =
         | CreateExpenseClaimAction['setIsAdditionalCommentsFocused']
         | CreateExpenseClaimAction['setAcknowledgement']
         | CreateExpenseClaimAction['setTriggerImagesUploadSubmit']
-        | CreateExpenseClaimAction['setTriggerExpenseClaimSubmit']
         | CreateExpenseClaimAction['setIsError']
         | CreateExpenseClaimAction['setIsSubmitting']
         | CreateExpenseClaimAction['setIsSuccessful']

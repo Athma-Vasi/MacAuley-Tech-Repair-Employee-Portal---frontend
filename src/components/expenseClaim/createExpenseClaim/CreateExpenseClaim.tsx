@@ -5,8 +5,6 @@ import {
   faPoundSign,
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
-import { FileInput } from '@mantine/core';
-import { compress } from 'image-conversion';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { TbUpload } from 'react-icons/tb';
 
@@ -26,7 +24,7 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import type { Currency } from '../../../types';
+import type { Currency, ResourceRequestServerResponse } from '../../../types';
 import {
   logState,
   returnDateNearPastValidationText,
@@ -35,6 +33,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
+import { ImageUpload } from '../../imageUpload';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -57,9 +56,7 @@ import {
   createExpenseClaimReducer,
   initialCreateExpenseClaimState,
 } from './state';
-import type { ExpenseClaimKind } from './types';
-import { ImageUpload } from '../../imageUpload';
-import { upload } from '@testing-library/user-event/dist/upload';
+import type { ExpenseClaimDocument, ExpenseClaimKind } from './types';
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -88,10 +85,7 @@ function CreateExpenseClaim() {
     acknowledgement,
 
     imgFormDataArray,
-    uploadedFilesIds,
-
     triggerImagesUploadSubmit,
-    triggerExpenseClaimSubmit,
 
     currentStepperPosition,
     stepsInError,
@@ -571,7 +565,7 @@ function CreateExpenseClaim() {
     const controller = new AbortController();
     const { signal } = controller;
 
-    async function handleExpenseClaimFileUpload() {
+    async function imagesUploadRequest() {
       const urlString: URL = urlBuilder({
         path: '/api/v1/file-upload',
       });
@@ -582,8 +576,8 @@ function CreateExpenseClaim() {
       }
 
       await Promise.all(
-        imgFormDataArray.map(async (formData, idx) => {
-          const request: Request = new Request(urlString, {
+        imgFormDataArray.map(async (formData) => {
+          const imgUploadrequest: Request = new Request(urlString, {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -593,31 +587,72 @@ function CreateExpenseClaim() {
           });
 
           try {
-            const response = await fetch(request);
+            const imgUploadResponse = await fetch(imgUploadrequest);
             const data: { message: string; documentId: string } =
-              await response.json();
+              await imgUploadResponse.json();
             console.log('data', data);
 
-            if (response.ok) {
-              createExpenseClaimDispatch({
-                type: createExpenseClaimAction.setUploadedFilesIds,
-                payload: data.documentId,
-              });
+            if (imgUploadResponse.ok) {
+              return data;
             }
           } catch (error: any) {
             console.log('imgFormDataArray async map', error);
           }
         })
-      ).then(() => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setTriggerExpenseClaimSubmit,
-          payload: true,
-        });
+      ).then((data) => {
+        async function expenseClaimFormRequest() {
+          const expenseUrlString = urlBuilder({
+            path: '/api/v1/actions/company/expense-claim',
+          });
+
+          const expenseClaimRequest: Request = new Request(expenseUrlString, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
+            signal,
+            body: JSON.stringify({
+              expenseClaim: {
+                uploadedFilesIds: data
+                  .filter((item) => item !== undefined)
+                  .map((item) => item?.documentId),
+                expenseClaimKind,
+                expenseClaimCurrency,
+                expenseClaimAmount,
+                expenseClaimDate,
+                expenseClaimDescription,
+                additionalComments,
+                acknowledgement,
+              },
+            }),
+          });
+
+          try {
+            const expenseClaimResponse = await fetch(expenseClaimRequest);
+            const expenseClaimData: ResourceRequestServerResponse<ExpenseClaimDocument> =
+              await expenseClaimResponse.json();
+
+            if (expenseClaimResponse.ok) {
+              console.log('expense claim response', expenseClaimData);
+            } else {
+              console.error(expenseClaimData);
+            }
+          } catch (error: any) {
+            console.error('expense claim error', error);
+          }
+        }
+
+        if (data.every((item) => item !== undefined)) {
+          expenseClaimFormRequest();
+        }
+
+        console.log('data from then', data);
       });
     }
 
     if (triggerImagesUploadSubmit && imgFormDataArray.length > 0) {
-      handleExpenseClaimFileUpload();
+      imagesUploadRequest();
     }
 
     return () => {
@@ -629,64 +664,6 @@ function CreateExpenseClaim() {
       });
     };
   }, [triggerImagesUploadSubmit]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    async function uploadExpenseClaims() {
-      const expenseUrlString = urlBuilder({
-        path: '/api/v1/actions/company/expense-claim',
-      });
-
-      const expenseClaimRequest: Request = new Request(expenseUrlString, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        signal,
-        body: JSON.stringify({
-          expenseClaim: {
-            uploadedFilesIds: uploadedFilesIds,
-            expenseClaimKind,
-            expenseClaimCurrency,
-            expenseClaimAmount,
-            expenseClaimDate,
-            expenseClaimDescription,
-            additionalComments,
-            acknowledgement,
-          },
-        }),
-      });
-
-      try {
-        const expenseClaimResponse = await fetch(expenseClaimRequest);
-        const expenseClaimData = await expenseClaimResponse.json();
-
-        if (expenseClaimResponse.ok) {
-          console.log('expense claim response', expenseClaimData);
-        } else {
-          console.error(expenseClaimData);
-        }
-      } catch (error: any) {
-        console.error('expense claim error', error);
-      }
-    }
-
-    if (triggerExpenseClaimSubmit && uploadedFilesIds.length > 0) {
-      uploadExpenseClaims();
-    }
-
-    return () => {
-      controller.abort();
-
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setTriggerExpenseClaimSubmit,
-        payload: false,
-      });
-    };
-  }, [triggerExpenseClaimSubmit]);
 
   useEffect(() => {
     logState({
@@ -816,3 +793,63 @@ export { CreateExpenseClaim };
         />
       )}
    */
+
+/**
+       *  useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    async function uploadExpenseClaims() {
+      const expenseUrlString = urlBuilder({
+        path: '/api/v1/actions/company/expense-claim',
+      });
+
+      const expenseClaimRequest: Request = new Request(expenseUrlString, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        signal,
+        body: JSON.stringify({
+          expenseClaim: {
+            uploadedFilesIds: uploadedFilesIds,
+            expenseClaimKind,
+            expenseClaimCurrency,
+            expenseClaimAmount,
+            expenseClaimDate,
+            expenseClaimDescription,
+            additionalComments,
+            acknowledgement,
+          },
+        }),
+      });
+
+      try {
+        const expenseClaimResponse = await fetch(expenseClaimRequest);
+        const expenseClaimData = await expenseClaimResponse.json();
+
+        if (expenseClaimResponse.ok) {
+          console.log('expense claim response', expenseClaimData);
+        } else {
+          console.error(expenseClaimData);
+        }
+      } catch (error: any) {
+        console.error('expense claim error', error);
+      }
+    }
+
+    if (triggerExpenseClaimSubmit && uploadedFilesIds.length > 0) {
+      uploadExpenseClaims();
+    }
+
+    return () => {
+      controller.abort();
+
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setTriggerExpenseClaimSubmit,
+        payload: false,
+      });
+    };
+  }, [triggerExpenseClaimSubmit]);
+       */
