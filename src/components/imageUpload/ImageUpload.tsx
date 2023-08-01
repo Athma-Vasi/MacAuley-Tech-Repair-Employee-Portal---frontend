@@ -41,6 +41,8 @@ function ImageUpload({
   maxImages,
   setImgFormDataArray,
   setImgFormDataArrayDispatch,
+  setAreImagesValid,
+  setAreImagesValidDispatch,
 }: ImageUploadProps) {
   const [imageUploadState, imageUploadDispatch] = useReducer(
     imageUploadReducer,
@@ -115,6 +117,25 @@ function ImageUpload({
     });
   }, [imagePreviews]);
 
+  // dispatch image validation state to parent component on every change
+  useEffect(() => {
+    const areImagesValid =
+      areValidImageSizes.every((isValid) => isValid) &&
+      areValidImageKinds.every((isValid) => isValid) &&
+      areValidImageTypes.every((isValid) => isValid);
+
+    setAreImagesValidDispatch({
+      type: setAreImagesValid,
+      payload: areImagesValid,
+    });
+  }, [
+    areValidImageSizes,
+    areValidImageKinds,
+    areValidImageTypes,
+    setAreImagesValidDispatch,
+    setAreImagesValid,
+  ]);
+
   // compress, orient image on every slider change
   useEffect(() => {
     async function modifyImage() {
@@ -123,11 +144,7 @@ function ImageUpload({
           if (!qualities[index] && !orientations[index]) {
             return;
           }
-          if (
-            !areValidImageKinds[index] ||
-            !areValidImageSizes[index] ||
-            !areValidImageTypes[index]
-          ) {
+          if (!areValidImageKinds[index] || !areValidImageTypes[index]) {
             return;
           }
 
@@ -152,6 +169,15 @@ function ImageUpload({
 
   // on every change to image previews or images, set and dispatch formdata
   useEffect(() => {
+    // if images are not valid, do not set formdata
+    if (
+      !areValidImageSizes.every((isValid) => isValid) ||
+      !areValidImageKinds.every((isValid) => isValid) ||
+      !areValidImageTypes.every((isValid) => isValid)
+    ) {
+      return;
+    }
+
     const formDataArray = imagePreviews.reduce(
       (formDataArray: FormData[], image, idx) => {
         const formData = new FormData();
@@ -171,7 +197,7 @@ function ImageUpload({
     });
 
     setImgFormDataArrayDispatch({
-      type: 'setImgFormDataArray',
+      type: setImgFormDataArray,
       payload: formDataArray,
     });
   }, [images, imagePreviews]);

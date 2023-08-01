@@ -85,6 +85,7 @@ function CreateExpenseClaim() {
     acknowledgement,
 
     imgFormDataArray,
+    areImagesValid,
     triggerImagesUploadSubmit,
 
     currentStepperPosition,
@@ -180,7 +181,8 @@ function CreateExpenseClaim() {
       !acknowledgement;
 
     const isOptionalInputInError =
-      additionalComments !== '' && !isValidAdditionalComments;
+      (additionalComments !== '' && !isValidAdditionalComments) ||
+      !areImagesValid;
 
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
@@ -198,6 +200,7 @@ function CreateExpenseClaim() {
     isValidAdditionalComments,
     acknowledgement,
     additionalComments,
+    areImagesValid,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -520,6 +523,8 @@ function CreateExpenseClaim() {
       maxImages={EXPENSE_CLAIM_MAX_IMG_AMOUNT}
       setImgFormDataArray={createExpenseClaimAction.setImgFormDataArray}
       setImgFormDataArrayDispatch={createExpenseClaimDispatch}
+      setAreImagesValid={createExpenseClaimAction.setAreImagesValid}
+      setAreImagesValidDispatch={createExpenseClaimDispatch}
     />
   );
 

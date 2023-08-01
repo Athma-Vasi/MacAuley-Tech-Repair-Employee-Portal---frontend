@@ -26,6 +26,7 @@ const initialCreateExpenseClaimState: CreateExpenseClaimState = {
   acknowledgement: false,
 
   imgFormDataArray: [],
+  areImagesValid: false,
 
   triggerImagesUploadSubmit: false,
 
@@ -64,6 +65,7 @@ const createExpenseClaimAction: CreateExpenseClaimAction = {
   setAcknowledgement: 'setAcknowledgement',
 
   setImgFormDataArray: 'setImgFormDataArray',
+  setAreImagesValid: 'setAreImagesValid',
 
   setTriggerImagesUploadSubmit: 'setTriggerImagesUploadSubmit',
 
@@ -164,6 +166,11 @@ function createExpenseClaimReducer(
       return {
         ...state,
         imgFormDataArray: action.payload,
+      };
+    case createExpenseClaimAction.setAreImagesValid:
+      return {
+        ...state,
+        areImagesValid: action.payload,
       };
 
     case createExpenseClaimAction.setAcknowledgement:

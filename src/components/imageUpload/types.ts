@@ -9,6 +9,11 @@ type ImageUploadProps = {
     type: 'setImgFormDataArray';
     payload: FormData[];
   }>;
+  setAreImagesValid: 'setAreImagesValid';
+  setAreImagesValidDispatch: React.Dispatch<{
+    type: 'setAreImagesValid';
+    payload: boolean;
+  }>;
 };
 
 type ImageUploadState = {

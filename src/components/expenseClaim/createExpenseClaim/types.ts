@@ -62,6 +62,7 @@ type CreateExpenseClaimState = {
   acknowledgement: boolean;
 
   imgFormDataArray: FormData[];
+  areImagesValid: boolean;
 
   triggerImagesUploadSubmit: boolean;
 
@@ -100,6 +101,7 @@ type CreateExpenseClaimAction = {
   setAcknowledgement: 'setAcknowledgement';
 
   setImgFormDataArray: 'setImgFormDataArray';
+  setAreImagesValid: 'setAreImagesValid';
 
   setTriggerImagesUploadSubmit: 'setTriggerImagesUploadSubmit';
 
@@ -144,6 +146,7 @@ type CreateExpenseClaimDispatch =
         | CreateExpenseClaimAction['setIsValidAdditionalComments']
         | CreateExpenseClaimAction['setIsAdditionalCommentsFocused']
         | CreateExpenseClaimAction['setAcknowledgement']
+        | CreateExpenseClaimAction['setAreImagesValid']
         | CreateExpenseClaimAction['setTriggerImagesUploadSubmit']
         | CreateExpenseClaimAction['setIsError']
         | CreateExpenseClaimAction['setIsSubmitting']
