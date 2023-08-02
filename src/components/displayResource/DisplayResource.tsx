@@ -9,6 +9,7 @@ import {
   ResourceRequestServerResponse,
 } from '../../types';
 import {
+  addFieldsToObject,
   filterFieldsFromObject,
   logState,
   splitCamelCase,
@@ -132,13 +133,12 @@ function DisplayResource<Doc>({
         const data: GetQueriedResourceRequestServerResponse<Doc> =
           await response.json();
         console.log('response json data', data);
-        const { message, resourceData } = data;
 
         // if there are file uploads, split the data into two arrays
         // one for the resource data and the other for the file uploads
         if (isFileUploadsWithResource && fileUploadFieldName) {
           const [resourceDataWithoutFileUploadsArr, fileUploadsArr] =
-            resourceData.reduce(
+            data.resourceData.reduce(
               (
                 acc: [
                   QueryResponseData<Doc>[],
@@ -158,13 +158,21 @@ function DisplayResource<Doc>({
                       [key, value]
                     ) => {
                       key === fileUploadFieldName
-                        ? Object.defineProperty(objTuples[0], key, {
-                            value: structuredClone(value),
-                            enumerable: true,
+                        ? // ? Object.defineProperty(objTuples[0], key, {
+                          //     value: structuredClone(value),
+                          //     enumerable: true,
+                          //   })
+                          addFieldsToObject({
+                            object: objTuples[0],
+                            fieldValuesTuples: [[key, structuredClone(value)]],
                           })
-                        : Object.defineProperty(objTuples[1], key, {
-                            value: structuredClone(value),
-                            enumerable: true,
+                        : // : Object.defineProperty(objTuples[1], key, {
+                          //     value: structuredClone(value),
+                          //     enumerable: true,
+                          //   });
+                          addFieldsToObject({
+                            object: objTuples[1],
+                            fieldValuesTuples: [[key, structuredClone(value)]],
                           });
 
                       return objTuples;
@@ -193,7 +201,7 @@ function DisplayResource<Doc>({
         else {
           displayResourceDispatch({
             type: displayResourceAction.setResourceData,
-            payload: resourceData,
+            payload: data.resourceData,
           });
         }
 
@@ -251,13 +259,17 @@ function DisplayResource<Doc>({
       });
 
       const resourceBody = Object.create(null);
-      Object.defineProperty(resourceBody, requestBodyHeading, {
-        value: {
-          requestStatus: status,
-        },
-        writable: true,
-        enumerable: true,
-        configurable: true,
+      // Object.defineProperty(resourceBody, requestBodyHeading, {
+      //   value: {
+      //     requestStatus: status,
+      //   },
+      //   writable: true,
+      //   enumerable: true,
+      //   configurable: true,
+      // });
+      addFieldsToObject({
+        object: resourceBody,
+        fieldValuesTuples: [[requestBodyHeading, { requestStatus: status }]],
       });
       const body = JSON.stringify(resourceBody);
 
@@ -378,11 +390,9 @@ function DisplayResource<Doc>({
                   );
                   // add the filtered array to the resource obj
                   const clone = structuredClone(obj);
-                  Object.defineProperty(clone, key, {
-                    value: filteredValue,
-                    writable: true,
-                    enumerable: true,
-                    configurable: true,
+                  addFieldsToObject({
+                    object: clone,
+                    fieldValuesTuples: [[key, filteredValue]],
                   });
                   acc = clone;
                 }
@@ -391,11 +401,9 @@ function DisplayResource<Doc>({
               else {
                 if (value === deleteResource.fileUploadId) {
                   const clone = structuredClone(obj);
-                  Object.defineProperty(clone, key, {
-                    value: '',
-                    writable: true,
-                    enumerable: true,
-                    configurable: true,
+                  addFieldsToObject({
+                    object: clone,
+                    fieldValuesTuples: [[key, '']],
                   });
                   acc = clone;
                 }
@@ -426,11 +434,10 @@ function DisplayResource<Doc>({
       });
 
       const resourceBody = Object.create(null);
-      Object.defineProperty(resourceBody, requestBodyHeading, {
-        value: filteredAssociatedResource,
-        writable: true,
-        enumerable: true,
-        configurable: true,
+
+      addFieldsToObject({
+        object: resourceBody,
+        fieldValuesTuples: [[requestBodyHeading, filteredAssociatedResource]],
       });
       const body = JSON.stringify(resourceBody);
 

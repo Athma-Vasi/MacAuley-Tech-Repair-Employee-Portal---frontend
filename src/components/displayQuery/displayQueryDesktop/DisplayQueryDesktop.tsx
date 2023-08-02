@@ -515,7 +515,8 @@ function DisplayQueryDesktop<Doc>({
                                   buttonLabel: <IoMdOpen />,
                                   buttonVariant: 'subtle',
                                   buttonDisabled:
-                                    !fileUploadsData[objIdx].fileUploads.length,
+                                    !fileUploadsData[objIdx]?.fileUploads
+                                      .length,
                                   semanticDescription:
                                     'Open modal to display file uploads associated with this document',
                                   semanticName: 'Open file uploads modal',
@@ -523,7 +524,7 @@ function DisplayQueryDesktop<Doc>({
                                     setFileUploadsForAFormDispatch({
                                       type: 'setFileUploadsForAForm',
                                       payload:
-                                        fileUploadsData[objIdx].fileUploads,
+                                        fileUploadsData[objIdx]?.fileUploads,
                                     });
                                     deleteFormIdDispatch({
                                       type: 'setDeleteFormId',
@@ -536,7 +537,7 @@ function DisplayQueryDesktop<Doc>({
                               ]);
 
                               const viewFileUploadsButtonToolTipLabel =
-                                !fileUploadsData[objIdx].fileUploads.length
+                                !fileUploadsData[objIdx]?.fileUploads.length
                                   ? `No file uploads associated with id: ${queryResponseObjWithAddedFields._id}`
                                   : `View file uploads belonging to id: ${queryResponseObjWithAddedFields._id}`;
 

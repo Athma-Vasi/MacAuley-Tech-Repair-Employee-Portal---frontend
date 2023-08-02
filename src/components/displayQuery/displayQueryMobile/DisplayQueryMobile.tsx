@@ -8,6 +8,7 @@ import {
   Text,
 } from '@mantine/core';
 import { FormEvent } from 'react';
+import { IoMdOpen } from 'react-icons/io';
 import {
   TbArrowDown,
   TbArrowUp,
@@ -24,7 +25,6 @@ import {
 import { RequestStatus } from '../../../types';
 import { addFieldsToObject, formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryMobileProps } from './types';
-import { IoMdOpen } from 'react-icons/io';
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -284,7 +284,7 @@ function DisplayQueryMobile({
               buttonLabel: 'Open',
               buttonVariant: 'outline',
               buttonDisabled:
-                fileUploadsData[queryObjIdx].fileUploads.length < 1,
+                fileUploadsData[queryObjIdx]?.fileUploads.length < 1,
               leftIcon: <IoMdOpen />,
               semanticDescription:
                 'Open modal to display file uploads associated with this document',
@@ -292,7 +292,7 @@ function DisplayQueryMobile({
               buttonOnClick: () => {
                 setFileUploadsForAFormDispatch({
                   type: 'setFileUploadsForAForm',
-                  payload: fileUploadsData[queryObjIdx].fileUploads,
+                  payload: fileUploadsData[queryObjIdx]?.fileUploads,
                 });
                 deleteFormIdDispatch({
                   type: 'setDeleteFormId',

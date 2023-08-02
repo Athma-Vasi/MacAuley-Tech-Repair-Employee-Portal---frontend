@@ -925,21 +925,36 @@ function filterFieldsFromObject({
 function addFieldsToObject({
   object,
   fieldValuesTuples,
+  options = {
+    writable: true,
+    enumerable: true,
+    configurable: true,
+  },
 }: {
   object: Record<string, any>;
   fieldValuesTuples: [string, any][];
+  options?: {
+    writable?: boolean;
+    enumerable?: boolean;
+    configurable?: boolean;
+  };
 }): Record<string, any> {
-  
-  return fieldValuesTuples.reduce((obj, [key, value]) => {
-    Object.defineProperty(obj, key, {
-      value,
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    });
+  // return fieldValuesTuples.reduce((obj, [key, value]) => {
+  //   Object.defineProperty(obj, key, {
+  //     value,
+  //     ...options,
+  //   });
 
-    return obj;
-  }, object);
+  //   return obj;
+  // }, object);
+
+  fieldValuesTuples.forEach(([key, value]) => {
+    Object.defineProperty(object, key, {
+      value,
+      ...options,
+    });
+  });
+  return object;
 }
 
 type UrlBuilderInput = {
