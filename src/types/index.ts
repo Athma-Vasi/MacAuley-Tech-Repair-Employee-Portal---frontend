@@ -57,7 +57,7 @@ type CheckboxInputData = Array<{
   label: string;
 }>;
 
-type FileExtension = 'jpeg' | 'png' | 'gif' | 'pdf';
+type FileExtension = '.jpg' | 'jpeg' | 'png' | 'gif' | 'pdf';
 
 type FileUploadSchema = {
   userId: string;

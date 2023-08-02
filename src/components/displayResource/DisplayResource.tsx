@@ -429,12 +429,13 @@ function DisplayResource<Doc>({
         fieldsToFilter: ['delete', 'fileUploads'],
       });
 
+      console.log({ associatedResource, filteredAssociatedResource });
+
       const urlString: URL = urlBuilder({
         path: `${paths.manager}/${_id}`,
       });
 
       const resourceBody = Object.create(null);
-
       addFieldsToObject({
         object: resourceBody,
         fieldValuesTuples: [[requestBodyHeading, filteredAssociatedResource]],
@@ -442,7 +443,7 @@ function DisplayResource<Doc>({
       const body = JSON.stringify(resourceBody);
 
       const request: Request = new Request(urlString, {
-        method: 'PATCH',
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
