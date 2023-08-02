@@ -10,7 +10,7 @@ import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayQueryProps<Doc> = {
   componentQueryData: ComponentQueryData[];
-  fileUploadsData?: Array<{ fileUploads: FileUploadDocument[] }>;
+  fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   parentComponentName: string;
   parentRequestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';

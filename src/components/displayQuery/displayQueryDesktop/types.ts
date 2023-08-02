@@ -5,7 +5,7 @@ import type { ComponentQueryData } from '../../queryBuilder';
 
 type DisplayQueryDesktopProps<Doc> = {
   componentQueryData: ComponentQueryData[];
-  fileUploadsData?: Array<{ fileUploads: FileUploadDocument[] }>;
+  fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
 
   openDeleteAcknowledge: () => void;

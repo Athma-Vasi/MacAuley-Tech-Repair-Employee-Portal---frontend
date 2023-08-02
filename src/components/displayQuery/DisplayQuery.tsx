@@ -180,7 +180,6 @@ function DisplayQuery<Doc>({
             },
             ['']
           );
-    console.log('currentSelectData: ', currentSelectData);
 
     displayQueryDispatch({
       type: displayQueryAction.setCurrentSelectionData,

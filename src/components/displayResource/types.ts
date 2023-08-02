@@ -14,6 +14,7 @@ type DisplayResourceProps<Doc> = {
   isDisplayFilesOnly?: boolean;
   isFileUploadsWithResource?: boolean;
   fileUploadFieldName?: string;
+  fileUploadIdFieldName?: string;
   paths: {
     employee: string;
     manager: string;
@@ -31,7 +32,7 @@ type DisplayResourceState<Doc> = {
   queryBuilderString: string;
   pageQueryString: string;
 
-  fileUploads: Array<{ fileUploads: FileUploadDocument[] }>;
+  fileUploads: Array<{ [key: string]: FileUploadDocument[] }>;
 
   requestStatus: {
     id: string;
@@ -141,7 +142,7 @@ type DisplayResourceDispatch<Doc> =
     }
   | {
       type: DisplayResourceAction['setFileUploads'];
-      payload: Array<{ fileUploads: FileUploadDocument[] }>;
+      payload: Array<{ [key: string]: FileUploadDocument[] }>;
     };
 
 type DisplayResourceReducer = <Doc>(

@@ -5,7 +5,7 @@ import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayFileUploadsProps = {
   componentQueryData: ComponentQueryData[];
-  fileUploadsData: Array<{ fileUploads: FileUploadDocument[] }>;
+  fileUploadsData: Array<{ [key: string]: FileUploadDocument[] }>;
 
   parentComponentName: string;
   parentDeleteResourceDispatch: React.Dispatch<{

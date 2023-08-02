@@ -513,11 +513,12 @@ function DisplayQueryDesktop<Doc>({
                                 },
                                 {
                                   buttonLabel: <IoMdOpen />,
+                                  buttonVariant: 'subtle',
+                                  buttonDisabled:
+                                    !fileUploadsData[objIdx].fileUploads.length,
                                   semanticDescription:
                                     'Open modal to display file uploads associated with this document',
                                   semanticName: 'Open file uploads modal',
-                                  buttonVariant: 'subtle',
-                                  size: 'sm',
                                   buttonOnClick: () => {
                                     setFileUploadsForAFormDispatch({
                                       type: 'setFileUploadsForAForm',
@@ -534,6 +535,11 @@ function DisplayQueryDesktop<Doc>({
                                 },
                               ]);
 
+                              const viewFileUploadsButtonToolTipLabel =
+                                !fileUploadsData[objIdx].fileUploads.length
+                                  ? `No file uploads associated with id: ${queryResponseObjWithAddedFields._id}`
+                                  : `View file uploads belonging to id: ${queryResponseObjWithAddedFields._id}`;
+
                               const displayOpenFileUploadsModalButton =
                                 key === 'fileUploads' ? (
                                   <td
@@ -542,7 +548,9 @@ function DisplayQueryDesktop<Doc>({
                                   >
                                     <Center>
                                       <Tooltip
-                                        label={`View file uploads belonging to id: ${queryResponseObjWithAddedFields._id}`}
+                                        label={
+                                          viewFileUploadsButtonToolTipLabel
+                                        }
                                       >
                                         <Group>
                                           {createdOpenFileUploadsModalButton}

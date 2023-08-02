@@ -8,7 +8,13 @@ import {
   QueryResponseData,
   ResourceRequestServerResponse,
 } from '../../types';
-import { logState, splitCamelCase, urlBuilder } from '../../utils';
+import {
+  filterFieldsFromObject,
+  logState,
+  splitCamelCase,
+  urlBuilder,
+} from '../../utils';
+import { DisplayFileUploads } from '../displayFileUploads';
 import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
@@ -18,13 +24,13 @@ import {
   DisplayResourceState,
   UpdateRequestStatusInput,
 } from './types';
-import { DisplayFileUploads } from '../displayFileUploads';
 
 function DisplayResource<Doc>({
   style = {},
   componentQueryData,
   isDisplayFilesOnly = false,
   fileUploadFieldName = 'fileUploads',
+  fileUploadIdFieldName = 'uploadedFilesIds',
   isFileUploadsWithResource = false,
   requestBodyHeading,
   paths,
@@ -46,7 +52,7 @@ function DisplayResource<Doc>({
 
     deleteResource: {
       formId: '',
-      fileUploadId: '',
+      fileUploadId: undefined,
       kind: '',
       value: false,
     },
@@ -126,7 +132,7 @@ function DisplayResource<Doc>({
         const data: GetQueriedResourceRequestServerResponse<Doc> =
           await response.json();
         console.log('response json data', data);
-        const { message, pages, resourceData, totalDocuments } = data;
+        const { message, resourceData } = data;
 
         // if there are file uploads, split the data into two arrays
         // one for the resource data and the other for the file uploads
@@ -136,7 +142,7 @@ function DisplayResource<Doc>({
               (
                 acc: [
                   QueryResponseData<Doc>[],
-                  Array<{ fileUploads: FileUploadDocument[] }>
+                  Array<{ [key: string]: FileUploadDocument[] }>
                 ],
                 currObj: QueryResponseData<Doc>
               ) => {
@@ -151,17 +157,15 @@ function DisplayResource<Doc>({
                       ],
                       [key, value]
                     ) => {
-                      if (key === fileUploadFieldName) {
-                        Object.defineProperty(objTuples[0], key, {
-                          value: structuredClone(value),
-                          enumerable: true,
-                        });
-                      } else {
-                        Object.defineProperty(objTuples[1], key, {
-                          value: structuredClone(value),
-                          enumerable: true,
-                        });
-                      }
+                      key === fileUploadFieldName
+                        ? Object.defineProperty(objTuples[0], key, {
+                            value: structuredClone(value),
+                            enumerable: true,
+                          })
+                        : Object.defineProperty(objTuples[1], key, {
+                            value: structuredClone(value),
+                            enumerable: true,
+                          });
 
                       return objTuples;
                     },
@@ -195,11 +199,11 @@ function DisplayResource<Doc>({
 
         displayResourceDispatch({
           type: displayResourceAction.setPages,
-          payload: pages ?? pages,
+          payload: data.pages ?? pages,
         });
         displayResourceDispatch({
           type: displayResourceAction.setTotalDocuments,
-          payload: totalDocuments,
+          payload: data.totalDocuments ?? totalDocuments,
         });
       } catch (error) {
         console.log(error);
@@ -353,6 +357,118 @@ function DisplayResource<Doc>({
     };
   }, [deleteResource]);
 
+  // when an uploaded file is deleted, patch request is made to update the asociated resource
+  useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    async function updateAssociatedResource() {
+      // find the associated resource with the fileUploadId
+      const associatedResource = resourceData.reduce(
+        (acc: QueryResponseData<Doc> | null, obj) => {
+          Object.entries(obj).forEach(([key, value]) => {
+            // if the resource obj has the file upload ids field
+            if (key === fileUploadIdFieldName) {
+              // if the value is an array, check if the array includes the fileUploadId
+              if (Array.isArray(value)) {
+                if (value.includes(deleteResource.fileUploadId)) {
+                  // remove the fileUploadId from the array
+                  const filteredValue = value.filter(
+                    (id) => id !== deleteResource.fileUploadId
+                  );
+                  // add the filtered array to the resource obj
+                  const clone = structuredClone(obj);
+                  Object.defineProperty(clone, key, {
+                    value: filteredValue,
+                    writable: true,
+                    enumerable: true,
+                    configurable: true,
+                  });
+                  acc = clone;
+                }
+              }
+              // if the value is a string, check if the value is the fileUploadId
+              else {
+                if (value === deleteResource.fileUploadId) {
+                  const clone = structuredClone(obj);
+                  Object.defineProperty(clone, key, {
+                    value: '',
+                    writable: true,
+                    enumerable: true,
+                    configurable: true,
+                  });
+                  acc = clone;
+                }
+              }
+            }
+          });
+
+          return acc;
+        },
+        null
+      );
+
+      // if the associated resource is not found, do not make request
+      if (!associatedResource) {
+        return;
+      }
+
+      const { _id } = associatedResource;
+      const filteredAssociatedResource = filterFieldsFromObject({
+        object: associatedResource,
+        // delete was added at front end
+        // fileUploads does not belong in the resource schema, and is added to response by server
+        fieldsToFilter: ['delete', 'fileUploads'],
+      });
+
+      const urlString: URL = urlBuilder({
+        path: `${paths.manager}/${_id}`,
+      });
+
+      const resourceBody = Object.create(null);
+      Object.defineProperty(resourceBody, requestBodyHeading, {
+        value: filteredAssociatedResource,
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      });
+      const body = JSON.stringify(resourceBody);
+
+      const request: Request = new Request(urlString, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        signal,
+        body,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: ResourceRequestServerResponse<Doc> = await response.json();
+        console.log('update associated resource response', data);
+        // trigger component refresh
+        displayResourceDispatch({
+          type: displayResourceAction.setTriggerRefresh,
+          payload: !triggerRefresh,
+        });
+      } catch (error) {
+        console.log(error);
+      } finally {
+        console.log('finally');
+      }
+    }
+
+    if (deleteResource.fileUploadId) {
+      updateAssociatedResource();
+    }
+
+    return () => {
+      controller.abort();
+    };
+  }, [deleteResource.fileUploadId]);
+
   useEffect(() => {
     logState({
       state: displayResourceState,
@@ -409,6 +525,7 @@ function DisplayResource<Doc>({
       />
 
       {displayResource}
+
       <PageBuilder
         total={pages}
         setPageQueryString={displayResourceAction.setPageQueryString}

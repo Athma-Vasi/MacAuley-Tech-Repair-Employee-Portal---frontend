@@ -929,16 +929,17 @@ function addFieldsToObject({
   object: Record<string, any>;
   fieldValuesTuples: [string, any][];
 }): Record<string, any> {
-  fieldValuesTuples.forEach(([key, value]) => {
-    Object.defineProperty(object, key, {
+  
+  return fieldValuesTuples.reduce((obj, [key, value]) => {
+    Object.defineProperty(obj, key, {
       value,
       writable: true,
       enumerable: true,
       configurable: true,
     });
-  });
 
-  return object;
+    return obj;
+  }, object);
 }
 
 type UrlBuilderInput = {

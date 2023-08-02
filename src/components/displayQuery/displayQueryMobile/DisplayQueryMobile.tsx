@@ -282,11 +282,13 @@ function DisplayQueryMobile({
             },
             {
               buttonLabel: 'Open',
+              buttonVariant: 'outline',
+              buttonDisabled:
+                fileUploadsData[queryObjIdx].fileUploads.length < 1,
               leftIcon: <IoMdOpen />,
               semanticDescription:
                 'Open modal to display file uploads associated with this document',
               semanticName: 'Open file uploads modal',
-              buttonVariant: 'outline',
               buttonOnClick: () => {
                 setFileUploadsForAFormDispatch({
                   type: 'setFileUploadsForAForm',

@@ -14,6 +14,7 @@ function DisplayExpenseClaims() {
       componentQueryData={EXPENSE_CLAIM_QUERY_DATA}
       isFileUploadsWithResource={true}
       fileUploadFieldName="fileUploads"
+      fileUploadIdFieldName="uploadedFilesIds"
       paths={EXPENSE_CLAIM__ROUTE_PATHS}
       requestBodyHeading="expenseClaim"
     />
