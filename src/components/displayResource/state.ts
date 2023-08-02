@@ -14,9 +14,9 @@ const displayResourceAction: DisplayResourceAction = {
   setPageQueryString: 'setPageQueryString',
 
   setFileUploads: 'setFileUploads',
-
   setRequestStatus: 'setRequestStatus',
-  setDeleteForm: 'setDeleteForm',
+
+  setDeleteResource: 'setDeleteResource',
   setTriggerRefresh: 'setTriggerRefresh',
 
   setIsError: 'setIsError',
@@ -77,10 +77,10 @@ function displayResourceReducer<Doc>(
         ...state,
         requestStatus: action.payload,
       };
-    case displayResourceAction.setDeleteForm:
+    case displayResourceAction.setDeleteResource:
       return {
         ...state,
-        deleteForm: action.payload,
+        deleteResource: action.payload,
       };
 
     case displayResourceAction.setTriggerRefresh:

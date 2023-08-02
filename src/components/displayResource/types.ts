@@ -31,14 +31,17 @@ type DisplayResourceState<Doc> = {
   queryBuilderString: string;
   pageQueryString: string;
 
-  fileUploads: Array<FileUploadDocument>;
+  fileUploads: Array<{ fileUploads: FileUploadDocument[] }>;
 
   requestStatus: {
     id: string;
     status: RequestStatus;
   };
-  deleteForm: {
-    id: string;
+
+  deleteResource: {
+    formId: string;
+    fileUploadId?: string;
+    kind: 'form' | 'fileUpload' | '';
     value: boolean;
   };
 
@@ -74,10 +77,9 @@ type DisplayResourceAction = {
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
 
+  setDeleteResource: 'setDeleteResource';
   setFileUploads: 'setFileUploads';
-
   setRequestStatus: 'setRequestStatus';
-  setDeleteForm: 'setDeleteForm';
   setTriggerRefresh: 'setTriggerRefresh';
 
   setIsError: 'setIsError';
@@ -129,15 +131,17 @@ type DisplayResourceDispatch<Doc> =
       };
     }
   | {
-      type: DisplayResourceAction['setDeleteForm'];
+      type: DisplayResourceAction['setDeleteResource'];
       payload: {
-        id: string;
+        formId: string;
+        fileUploadId?: string;
+        kind: 'form' | 'fileUpload' | '';
         value: boolean;
       };
     }
   | {
       type: DisplayResourceAction['setFileUploads'];
-      payload: Array<FileUploadDocument>;
+      payload: Array<{ fileUploads: FileUploadDocument[] }>;
     };
 
 type DisplayResourceReducer = <Doc>(

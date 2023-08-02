@@ -12,6 +12,14 @@ type DisplayQueryMobileProps = {
     type: 'setDeleteFormId';
     payload: string;
   }>;
+  deleteFileUploadIdDispatch: React.Dispatch<{
+    type: 'setDeleteFileUploadId';
+    payload: string;
+  }>;
+  deleteResourceKindDispatch: React.Dispatch<{
+    type: 'setDeleteResourceKind';
+    payload: 'form' | 'fileUpload' | '';
+  }>;
 
   popoversOpenCloseState: Map<string, boolean[]>;
   popoversStateDispatch: React.Dispatch<{

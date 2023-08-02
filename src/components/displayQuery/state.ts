@@ -8,15 +8,21 @@ const initialDisplayQueryState: DisplayQueryState = {
   groupByRadioData: [],
   groupBySelection: 'username',
   currentSelectionData: [],
+
   groupedByQueryResponseData: new Map(),
   restOfGroupedQueryResponseData: [],
+  fileUploadsForAForm: [],
+
   currentSegmentedSelection: 'condensed',
   popoversOpenCloseState: new Map(),
 
   acknowledgementText: '',
   isValidAcknowledgementText: false,
   isAcknowledgementTextFocused: false,
+
   deleteFormId: '',
+  deleteFileUploadId: '',
+  deleteResourceKind: '',
 };
 
 const displayQueryAction: DisplayQueryAction = {
@@ -27,13 +33,18 @@ const displayQueryAction: DisplayQueryAction = {
   setGroupedByQueryResponseData: 'setGroupedByQueryResponseData',
   setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData',
 
+  setFileUploadsForAForm: 'setFileUploadsForAForm',
+
   setCurrentSegmentedSelection: 'setCurrentSegmentedSelection',
   setPopoversOpenCloseState: 'setPopoversOpenCloseState',
 
   setAcknowledgementText: 'setAcknowledgementText',
   setIsValidAcknowledgementText: 'setIsValidAcknowledgementText',
   setIsAcknowledgementTextFocused: 'setIsAcknowledgementTextFocused',
+
   setDeleteFormId: 'setDeleteFormId',
+  setDeleteFileUploadId: 'setDeleteFileUploadId',
+  setDeleteResourceKind: 'setDeleteResourceKind',
 };
 
 function displayQueryReducer(
@@ -69,6 +80,12 @@ function displayQueryReducer(
       return {
         ...state,
         restOfGroupedQueryResponseData: action.payload,
+      };
+
+    case displayQueryAction.setFileUploadsForAForm:
+      return {
+        ...state,
+        fileUploadsForAForm: action.payload,
       };
 
     case displayQueryAction.setCurrentSegmentedSelection:
@@ -109,10 +126,21 @@ function displayQueryReducer(
         ...state,
         isAcknowledgementTextFocused: action.payload,
       };
+
     case displayQueryAction.setDeleteFormId:
       return {
         ...state,
         deleteFormId: action.payload,
+      };
+    case displayQueryAction.setDeleteFileUploadId:
+      return {
+        ...state,
+        deleteFileUploadId: action.payload,
+      };
+    case displayQueryAction.setDeleteResourceKind:
+      return {
+        ...state,
+        deleteResourceKind: action.payload,
       };
 
     default:

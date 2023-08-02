@@ -13,6 +13,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { FormEvent } from 'react';
+import { IoMdOpen } from 'react-icons/io';
 import {
   TbArrowDown,
   TbArrowUp,
@@ -32,11 +33,16 @@ import { DisplayQueryDesktopProps } from './types';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
+  deleteFileUploadIdDispatch,
   deleteFormIdDispatch,
+  deleteResourceKindDispatch,
   fileUploadsData = [],
   groupedByQueryResponseData,
 
   openDeleteAcknowledge,
+  openFileUploads,
+  setFileUploadsForAFormDispatch,
+
   popoversOpenCloseState,
   popoversStateDispatch,
 
@@ -150,13 +156,22 @@ function DisplayQueryDesktop<Doc>({
                     }}
                   >
                     <tr>
-                      {
-                        // [
-                        //   ...Object.keys(queryResponseObjArrays[0]),
-                        //   'Delete',
-                        // ]
-                        tableHeaderRow.map((key, keyIdx) => {
-                          const displayExpandedHeaderRows = (
+                      {tableHeaderRow.map((key, keyIdx) => {
+                        const displayExpandedHeaderRows = (
+                          <th
+                            key={`${keyIdx}`}
+                            style={{
+                              width: widthPerField,
+                              outline: '1px solid violet',
+                              padding: '4px 4px 4px 8px',
+                            }}
+                          >
+                            <Text>{splitCamelCase(key)}</Text>
+                          </th>
+                        );
+
+                        const displayCondensedHeaderRows =
+                          !tableKeyExclusionSet.has(key) ? (
                             <th
                               key={`${keyIdx}`}
                               style={{
@@ -165,37 +180,14 @@ function DisplayQueryDesktop<Doc>({
                                 padding: '4px 4px 4px 8px',
                               }}
                             >
-                              <Text
-                              // style={{
-                              //   whiteSpace: 'nowrap',
-                              //   overflow: 'hidden',
-                              //   textOverflow: 'ellipsis',
-                              // }}
-                              >
-                                {splitCamelCase(key)}
-                              </Text>
+                              <Text truncate>{splitCamelCase(key)}</Text>
                             </th>
-                          );
+                          ) : null;
 
-                          const displayCondensedHeaderRows =
-                            !tableKeyExclusionSet.has(key) ? (
-                              <th
-                                key={`${keyIdx}`}
-                                style={{
-                                  width: widthPerField,
-                                  outline: '1px solid violet',
-                                  padding: '4px 4px 4px 8px',
-                                }}
-                              >
-                                <Text truncate>{splitCamelCase(key)}</Text>
-                              </th>
-                            ) : null;
-
-                          return tableViewSelection === 'expanded'
-                            ? displayExpandedHeaderRows
-                            : displayCondensedHeaderRows;
-                        })
-                      }
+                        return tableViewSelection === 'expanded'
+                          ? displayExpandedHeaderRows
+                          : displayCondensedHeaderRows;
+                      })}
                     </tr>
                   </thead>
                   <tbody>
@@ -226,24 +218,7 @@ function DisplayQueryDesktop<Doc>({
                                   : value === false
                                   ? 'No'
                                   : Array.isArray(value)
-                                  ? // ? value.map((val, valIdx) => {
-                                    //     console.log('ARRAY VALUE', val);
-                                    //     return (
-                                    //       <Text key={`${valIdx}`}>
-                                    //         {`${val
-                                    //           .toString()
-                                    //           .charAt(0)
-                                    //           .toUpperCase()}${val
-                                    //           .toString()
-                                    //           .slice(1)}${
-                                    //           valIdx === value.length - 1
-                                    //             ? ''
-                                    //             : ', '
-                                    //         }`}
-                                    //       </Text>
-                                    //     );
-                                    //   })
-                                    value.join(', ')
+                                  ? value.join(', ')
                                   : key.toLowerCase().includes('id')
                                   ? value
                                   : key === 'createdAt' || key === 'updatedAt'
@@ -471,11 +446,9 @@ function DisplayQueryDesktop<Doc>({
                                 >
                                   {key === 'requestStatus' ? (
                                     <Flex
-                                      // direction="column"
                                       wrap="wrap"
                                       align="center"
                                       justify="space-between"
-                                      // columnGap="xs"
                                       w="100%"
                                     >
                                       <Text>
@@ -501,12 +474,9 @@ function DisplayQueryDesktop<Doc>({
                                   >
                                     {key === 'requestStatus' ? (
                                       <Flex
-                                        // direction="column"
-
                                         wrap="wrap"
                                         align="center"
                                         justify="space-between"
-                                        // columnGap="xs"
                                         w="100%"
                                       >
                                         <Text>
@@ -520,24 +490,69 @@ function DisplayQueryDesktop<Doc>({
                                   </td>
                                 ) : null;
 
-                              const createdDeleteButton =
-                                returnAccessibleButtonElements([
-                                  {
-                                    buttonLabel: <TbTrash />,
-                                    semanticDescription: 'Delete this form',
-                                    semanticName: 'Delete',
-                                    buttonVariant: 'subtle',
-                                    size: 'sm',
-                                    buttonOnClick: () => {
-                                      openDeleteAcknowledge();
-                                      deleteFormIdDispatch({
-                                        type: 'setDeleteFormId',
-                                        payload:
-                                          queryResponseObjWithAddedFields._id,
-                                      });
-                                    },
+                              const [
+                                createdDeleteFormButton,
+                                createdOpenFileUploadsModalButton,
+                              ] = returnAccessibleButtonElements([
+                                {
+                                  buttonLabel: <TbTrash />,
+                                  semanticDescription: 'Delete this form',
+                                  semanticName: 'Delete',
+                                  buttonVariant: 'subtle',
+                                  size: 'sm',
+                                  buttonOnClick: () => {
+                                    deleteFormIdDispatch({
+                                      type: 'setDeleteFormId',
+                                      payload:
+                                        queryResponseObjWithAddedFields._id,
+                                    });
+                                    deleteResourceKindDispatch({
+                                      type: 'setDeleteResourceKind',
+                                      payload: 'form',
+                                    });
+                                    openDeleteAcknowledge();
                                   },
-                                ]);
+                                },
+                                {
+                                  buttonLabel: <IoMdOpen />,
+                                  semanticDescription:
+                                    'Open modal to display file uploads associated with this document',
+                                  semanticName: 'Open file uploads modal',
+                                  buttonVariant: 'subtle',
+                                  size: 'sm',
+                                  buttonOnClick: () => {
+                                    setFileUploadsForAFormDispatch({
+                                      type: 'setFileUploadsForAForm',
+                                      payload:
+                                        fileUploadsData[objIdx].fileUploads,
+                                    });
+                                    deleteFormIdDispatch({
+                                      type: 'setDeleteFormId',
+                                      payload:
+                                        queryResponseObjWithAddedFields._id,
+                                    });
+                                    openFileUploads();
+                                  },
+                                },
+                              ]);
+
+                              const displayOpenFileUploadsModalButton =
+                                key === 'fileUploads' ? (
+                                  <td
+                                    key={`${sectionIdx}-${objIdx}-${keyValIdx}`}
+                                    style={{ width: widthPerField }}
+                                  >
+                                    <Center>
+                                      <Tooltip
+                                        label={`View file uploads belonging to id: ${queryResponseObjWithAddedFields._id}`}
+                                      >
+                                        <Group>
+                                          {createdOpenFileUploadsModalButton}
+                                        </Group>
+                                      </Tooltip>
+                                    </Center>
+                                  </td>
+                                ) : null;
 
                               const displayDeleteButton =
                                 key === 'delete' ? (
@@ -549,7 +564,7 @@ function DisplayQueryDesktop<Doc>({
                                       <Tooltip
                                         label={`Delete form with id: ${queryResponseObjWithAddedFields._id}`}
                                       >
-                                        <Group>{createdDeleteButton}</Group>
+                                        <Group>{createdDeleteFormButton}</Group>
                                       </Tooltip>
                                     </Center>
                                   </td>
@@ -557,6 +572,8 @@ function DisplayQueryDesktop<Doc>({
 
                               return key === 'delete'
                                 ? displayDeleteButton
+                                : key === 'fileUploads'
+                                ? displayOpenFileUploadsModalButton
                                 : tableViewSelection === 'expanded'
                                 ? displayExpandedBodyRows
                                 : displayCondensedBodyRows;
@@ -564,20 +581,6 @@ function DisplayQueryDesktop<Doc>({
                           )}
                         </tr>
                       );
-
-                      // const rowsWithFileUploads =
-                      //   fileUploadsData.length > 0 ? (
-                      //     <tr>
-                      //       <Text>file uploads present</Text>
-                      //     </tr>
-                      //   ) : null;
-
-                      // const displayTableRow = (
-                      //   <Stack w="100%">
-                      //     {rowWithStringifiedValues}
-                      //     {rowsWithFileUploads}
-                      //   </Stack>
-                      // );
 
                       return rowWithStringifiedValues;
                     })}

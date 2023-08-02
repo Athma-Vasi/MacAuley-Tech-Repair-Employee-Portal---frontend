@@ -1,13 +1,19 @@
-import { Flex, Modal, SegmentedControl, Text, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import {
-  ChangeEvent,
-  FormEvent,
-  KeyboardEvent,
-  useEffect,
-  useMemo,
-  useReducer,
-} from 'react';
+  Accordion,
+  Card,
+  Flex,
+  Group,
+  HoverCard,
+  Image,
+  Modal,
+  SegmentedControl,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
 import { TbTrash, TbUpload } from 'react-icons/tb';
 
 import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
@@ -19,6 +25,7 @@ import {
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import {
+  formatDate,
   groupQueryResponse,
   logState,
   returnAcknowledgementValidationText,
@@ -27,6 +34,7 @@ import {
   AccessibleButtonCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  TextWrapper,
 } from '../wrappers';
 import { DisplayQueryDesktop } from './displayQueryDesktop/DisplayQueryDesktop';
 import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
@@ -42,7 +50,7 @@ function DisplayQuery<Doc>({
   fileUploadsData = [],
   parentComponentName,
   parentRequestStatusDispatch,
-  parentDeleteFormDispatch,
+  parentDeleteResourceDispatch,
   queryResponseData,
   style = {},
   totalDocuments,
@@ -54,6 +62,10 @@ function DisplayQuery<Doc>({
   const [
     openedDeleteAcknowledge,
     { open: openDeleteAcknowledge, close: closeDeleteAcknowledge },
+  ] = useDisclosure(false);
+  const [
+    openedDisplayFileUploads,
+    { open: openFileUploads, close: closeFileUploads },
   ] = useDisclosure(false);
 
   const [displayQueryState, displayQueryDispatch] = useReducer(
@@ -67,24 +79,33 @@ function DisplayQuery<Doc>({
     groupBySelection,
     groupedByQueryResponseData,
     restOfGroupedQueryResponseData,
+    fileUploadsForAForm,
     currentSegmentedSelection,
     popoversOpenCloseState,
     acknowledgementText,
     isAcknowledgementTextFocused,
     isValidAcknowledgementText,
+    deleteFileUploadId,
     deleteFormId,
+
+    deleteResourceKind,
   } = displayQueryState;
 
   async function handleDeleteFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     console.log('delete form submitted');
 
-    if (!isValidAcknowledgementText) return;
+    if (!isValidAcknowledgementText) {
+      return;
+    }
 
-    parentDeleteFormDispatch({
-      type: 'setDeleteForm',
+    parentDeleteResourceDispatch({
+      type: 'setDeleteResource',
       payload: {
-        id: deleteFormId,
+        formId: deleteFormId,
+        kind: deleteResourceKind,
+        fileUploadId:
+          deleteResourceKind === 'fileUpload' ? deleteFileUploadId : undefined,
         value: true,
       },
     });
@@ -340,7 +361,7 @@ function DisplayQuery<Doc>({
       opened={openedDeleteAcknowledge}
       onClose={closeDeleteAcknowledge}
       centered
-      size={375}
+      size={350}
     >
       <form onSubmit={handleDeleteFormSubmit}>
         <Flex
@@ -353,9 +374,9 @@ function DisplayQuery<Doc>({
           p={padding}
           direction="column"
         >
-          <Title>Delete form</Title>
+          <Title>Delete file</Title>
           <Text size="sm">
-            To delete this form, please enter: 'I solemnly swear that I am up to
+            To delete this file, please enter: 'I solemnly swear that I am up to
             no good.'
           </Text>
           {createdAcknowledgementTextInput}
@@ -373,11 +394,407 @@ function DisplayQuery<Doc>({
     </Modal>
   );
 
+  const displayFileUploadsModal = (
+    <Modal
+      opened={openedDisplayFileUploads}
+      onClose={closeFileUploads}
+      centered
+      size={width * 0.85}
+    >
+      <Flex
+        w="100%"
+        style={{
+          border: '1px solid #e0e0e0',
+          borderRadius: 4,
+        }}
+        rowGap={rowGap}
+        columnGap={rowGap}
+        p={padding}
+        align="baseline"
+        justify="flex-start"
+        wrap="wrap"
+      >
+        {fileUploadsForAForm.map((fileUpload, fileIdx) => {
+          const {
+            fileName,
+            fileEncoding,
+            fileSize,
+            createdAt,
+            fileExtension,
+            fileMimeType,
+            updatedAt,
+            uploadedFile,
+            username,
+            userId,
+            _id,
+          } = fileUpload;
+
+          // src={`data:${file.fileMimetype};base64,${file.uploadedFile}`}
+          const displayImage = (
+            <Image
+              src={`data:${fileMimeType};base64,${uploadedFile}`}
+              width={350}
+              fit="contain"
+              withPlaceholder
+            />
+          );
+
+          const displayFileName = (
+            <HoverCard
+              width="calc(100% - 2rem)"
+              shadow="lg"
+              openDelay={250}
+              closeDelay={100}
+            >
+              <HoverCard.Target>
+                <Flex
+                  align="center"
+                  justify="space-between"
+                  wrap="wrap"
+                  w="100%"
+                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                >
+                  <TextWrapper creatorInfoObj={{}}>File name: </TextWrapper>
+                  <Text size="sm" color="dark">
+                    {fileName.length > 11
+                      ? `${fileName.slice(0, 11)}...`
+                      : fileName}
+                  </Text>
+                </Flex>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
+                  <Text size="sm" color="dark">
+                    {fileName}
+                  </Text>
+                </Flex>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          );
+
+          const displayFileExtension = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>File extension: </TextWrapper>
+              <TextWrapper creatorInfoObj={{}}>{fileExtension}</TextWrapper>
+            </Flex>
+          );
+
+          const displayFileMimeType = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>File mime type: </TextWrapper>
+              <TextWrapper creatorInfoObj={{}}>{fileMimeType}</TextWrapper>
+            </Flex>
+          );
+
+          const displayFileEncoding = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>File encoding: </TextWrapper>
+              <TextWrapper creatorInfoObj={{}}>{fileEncoding}</TextWrapper>
+            </Flex>
+          );
+
+          const displayFileSize = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>File size: </TextWrapper>
+              <TextWrapper creatorInfoObj={{}}>
+                {(fileSize / 1_000).toFixed(2)} KB
+              </TextWrapper>
+            </Flex>
+          );
+
+          const formattedCreatedDate = formatDate({
+            date: createdAt,
+            formatOptions: {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+            },
+            locale: 'en-US',
+          });
+          const dropDownFullCreatedDate = formatDate({
+            date: createdAt,
+            formatOptions: {
+              dateStyle: 'full',
+              timeStyle: 'long',
+              hour12: false,
+            },
+            locale: 'en-US',
+          });
+
+          const displayCreatedAt = (
+            <HoverCard
+              width="calc(100% - 2rem)"
+              shadow="lg"
+              openDelay={250}
+              closeDelay={100}
+            >
+              <HoverCard.Target>
+                <Flex
+                  align="center"
+                  justify="space-between"
+                  wrap="wrap"
+                  w="100%"
+                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                >
+                  <TextWrapper creatorInfoObj={{}}>Created date: </TextWrapper>
+                  <TextWrapper creatorInfoObj={{}}>
+                    {formattedCreatedDate}
+                  </TextWrapper>
+                </Flex>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
+                  <TextWrapper creatorInfoObj={{}}>
+                    {dropDownFullCreatedDate}
+                  </TextWrapper>
+                </Flex>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          );
+
+          const formattedUpdatedDate = formatDate({
+            date: updatedAt,
+            formatOptions: {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+            },
+            locale: 'en-US',
+          });
+
+          const dropdownFullUpdatedDate = formatDate({
+            date: updatedAt,
+            formatOptions: {
+              dateStyle: 'full',
+              timeStyle: 'long',
+              hour12: false,
+            },
+            locale: 'en-US',
+          });
+          const displayUpdatedAt = (
+            <HoverCard
+              width="calc(100% - 2rem)"
+              shadow="lg"
+              openDelay={250}
+              closeDelay={100}
+            >
+              <HoverCard.Target>
+                <Flex
+                  align="center"
+                  justify="space-between"
+                  wrap="wrap"
+                  w="100%"
+                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                >
+                  <TextWrapper creatorInfoObj={{}}>Updated date: </TextWrapper>
+                  <TextWrapper creatorInfoObj={{}}>
+                    {formattedUpdatedDate}
+                  </TextWrapper>
+                </Flex>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
+                  <TextWrapper creatorInfoObj={{}}>
+                    {dropdownFullUpdatedDate}
+                  </TextWrapper>
+                </Flex>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          );
+
+          const displayCreatorInfo = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>Creator: </TextWrapper>
+              <TextWrapper creatorInfoObj={{}}>{username}</TextWrapper>
+            </Flex>
+          );
+
+          const displayFileId = (
+            <HoverCard
+              width="calc(100% - 2rem)"
+              shadow="lg"
+              openDelay={250}
+              closeDelay={100}
+            >
+              <HoverCard.Target>
+                <Flex
+                  align="center"
+                  justify="space-between"
+                  wrap="wrap"
+                  w="100%"
+                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                >
+                  <TextWrapper creatorInfoObj={{}}>File ID: </TextWrapper>
+                  <Text size="sm" color="dark">
+                    {_id.slice(0, 11)}...
+                  </Text>
+                </Flex>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
+                  <Text size="sm" color="dark">
+                    {_id}
+                  </Text>
+                </Flex>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          );
+
+          const displayUserId = (
+            <HoverCard
+              width="calc(100% - 2rem)"
+              shadow="lg"
+              openDelay={250}
+              closeDelay={100}
+            >
+              <HoverCard.Target>
+                <Flex
+                  align="center"
+                  justify="space-between"
+                  wrap="wrap"
+                  w="100%"
+                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                >
+                  <TextWrapper creatorInfoObj={{}}>User ID: </TextWrapper>
+                  <Text size="sm" color="dark">
+                    {userId.slice(0, 11)}...
+                  </Text>
+                </Flex>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
+                  <Text size="sm" color="dark">
+                    {userId}
+                  </Text>
+                </Flex>
+              </HoverCard.Dropdown>
+            </HoverCard>
+          );
+
+          const displayFileUploadInfo = (
+            <Stack w="100%" py={padding}>
+              {displayFileName}
+              {displayFileExtension}
+              {displayFileMimeType}
+              {displayFileEncoding}
+              {displayFileSize}
+              {displayCreatorInfo}
+              {displayCreatedAt}
+              {displayUpdatedAt}
+              {displayFileId}
+              {displayUserId}
+            </Stack>
+          );
+
+          const displayFileUploadInfoAccordion = (
+            <Accordion py={padding}>
+              <Accordion.Item
+                value={`${
+                  fileName.length > 23
+                    ? `${fileName.slice(0, 23)}...`
+                    : fileName
+                } info`}
+              >
+                <Accordion.Control>
+                  <TextWrapper creatorInfoObj={{}}>
+                    {fileName.length > 23
+                      ? `${fileName.slice(0, 23)}...`
+                      : fileName}
+                  </TextWrapper>
+                </Accordion.Control>
+                <Accordion.Panel>{displayFileUploadInfo}</Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+          );
+
+          const createdDeleteFileButton = returnAccessibleButtonElements([
+            {
+              buttonLabel: 'Delete',
+              leftIcon: <TbTrash />,
+              semanticDescription: `Click button to delete ${fileName}`,
+              semanticName: `delete ${fileName}`,
+              buttonOnClick: () => {
+                displayQueryDispatch({
+                  type: displayQueryAction.setDeleteResourceKind,
+                  payload: 'fileUpload',
+                });
+                displayQueryDispatch({
+                  type: displayQueryAction.setDeleteFileUploadId,
+                  payload: _id,
+                });
+                closeFileUploads();
+                openDeleteAcknowledge();
+              },
+            },
+          ]);
+
+          const displayFileCard = (
+            <Card
+              key={`${fileIdx}-${fileName}`}
+              shadow="md"
+              padding={padding}
+              radius="md"
+              withBorder
+            >
+              <Card.Section>{displayImage}</Card.Section>
+              {displayFileUploadInfoAccordion}
+              <Group w="100%" position="center" pt={padding}>
+                <Tooltip
+                  label={`Delete file ${
+                    fileName.length > 23
+                      ? `${fileName.slice(0, 23)}...`
+                      : fileName
+                  }`}
+                >
+                  <Group>{createdDeleteFileButton}</Group>
+                </Tooltip>
+              </Group>
+            </Card>
+          );
+
+          return displayFileCard;
+        })}
+      </Flex>
+    </Modal>
+  );
+
   const displayQueryComponent =
     width <= 1024 ? (
       <DisplayQueryMobile
         componentQueryData={componentQueryData}
         deleteFormIdDispatch={displayQueryDispatch}
+        deleteFileUploadIdDispatch={displayQueryDispatch}
+        deleteResourceKindDispatch={displayQueryDispatch}
         groupedByQueryResponseData={groupedByQueryResponseData}
         openDeleteAcknowledge={openDeleteAcknowledge}
         popoversOpenCloseState={popoversOpenCloseState}
@@ -390,9 +807,13 @@ function DisplayQuery<Doc>({
       <DisplayQueryDesktop
         componentQueryData={componentQueryData}
         deleteFormIdDispatch={displayQueryDispatch}
+        deleteFileUploadIdDispatch={displayQueryDispatch}
+        deleteResourceKindDispatch={displayQueryDispatch}
         fileUploadsData={fileUploadsData}
         groupedByQueryResponseData={groupedByQueryResponseData}
         openDeleteAcknowledge={openDeleteAcknowledge}
+        openFileUploads={openFileUploads}
+        setFileUploadsForAFormDispatch={displayQueryDispatch}
         popoversOpenCloseState={popoversOpenCloseState}
         popoversStateDispatch={displayQueryDispatch}
         requestStatusDispatch={parentRequestStatusDispatch}
@@ -422,6 +843,7 @@ function DisplayQuery<Doc>({
       {displayGroupByRadioGroup}
       {displayTableViewSegmentControl}
       {displayAcknowledgementModal}
+      {displayFileUploadsModal}
       <Flex align="center" justify="space-between" w="100%">
         <Text>{parentComponentName}</Text>
         <Text>Total documents: {totalDocuments}</Text>

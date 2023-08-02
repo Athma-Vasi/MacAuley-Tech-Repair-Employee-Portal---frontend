@@ -39,13 +39,15 @@ function DisplayResource<Doc>({
     pageQueryString: '',
 
     fileUploads: [],
-
     requestStatus: {
       id: '',
       status: 'pending',
     },
-    deleteForm: {
-      id: '',
+
+    deleteResource: {
+      formId: '',
+      fileUploadId: '',
+      kind: '',
       value: false,
     },
     triggerRefresh: false,
@@ -72,9 +74,9 @@ function DisplayResource<Doc>({
     queryBuilderString,
     pageQueryString,
 
-    requestStatus,
     fileUploads,
-    deleteForm,
+    requestStatus,
+    deleteResource,
     triggerRefresh,
 
     isError,
@@ -132,7 +134,10 @@ function DisplayResource<Doc>({
           const [resourceDataWithoutFileUploadsArr, fileUploadsArr] =
             resourceData.reduce(
               (
-                acc: [QueryResponseData<Doc>[], FileUploadDocument[]],
+                acc: [
+                  QueryResponseData<Doc>[],
+                  Array<{ fileUploads: FileUploadDocument[] }>
+                ],
                 currObj: QueryResponseData<Doc>
               ) => {
                 // reduce over the object entries of the current resource data
@@ -140,7 +145,10 @@ function DisplayResource<Doc>({
                 const [fileUploadsObj, resourceDataWithoutFileUploadsObj] =
                   Object.entries(currObj).reduce(
                     (
-                      objTuples: [FileUploadDocument, QueryResponseData<Doc>],
+                      objTuples: [
+                        { fileUploads: FileUploadDocument[] },
+                        QueryResponseData<Doc>
+                      ],
                       [key, value]
                     ) => {
                       if (key === fileUploadFieldName) {
@@ -293,15 +301,19 @@ function DisplayResource<Doc>({
     };
   }, [requestStatus]);
 
-  // delete form on deleteForm status change
+  // delete resource on deleteResource status change
+  // ALSO MAKE A PUT REQUEST WITH MODIFIED FORM DATA
   useEffect(() => {
     const controller = new AbortController();
     const { signal } = controller;
+    const { formId, fileUploadId, kind, value } = deleteResource;
 
-    async function deleteResource() {
-      const urlString: URL = urlBuilder({
-        path: `${paths.manager}/${deleteForm.id}`,
-      });
+    async function deleteResourceRequest() {
+      const path =
+        kind === 'form'
+          ? `${paths.manager}/${formId}`
+          : `/api/v1/file-upload/${fileUploadId}`;
+      const urlString: URL = urlBuilder({ path });
 
       const request: Request = new Request(urlString, {
         method: 'DELETE',
@@ -314,7 +326,8 @@ function DisplayResource<Doc>({
 
       try {
         const response = await fetch(request);
-        const data: ResourceRequestServerResponse<Doc> = await response.json();
+        const data: { message: string; resourceData?: [] } =
+          await response.json();
         console.log('delete response', data);
         // trigger component refresh
         displayResourceDispatch({
@@ -330,15 +343,15 @@ function DisplayResource<Doc>({
 
     // only allow Managers to delete forms
     if (roles.includes('Manager')) {
-      if (deleteForm.id !== '' && deleteForm.value === true) {
-        deleteResource();
+      if (formId.length > 0 && kind.length > 0 && value === true) {
+        deleteResourceRequest();
       }
     }
 
     return () => {
       controller.abort();
     };
-  }, [deleteForm]);
+  }, [deleteResource]);
 
   useEffect(() => {
     logState({
@@ -358,7 +371,7 @@ function DisplayResource<Doc>({
       fileUploadsData={fileUploads}
       componentQueryData={filteredComponentQueryData}
       parentComponentName={splitCamelCase(requestBodyHeading)}
-      parentDeleteFormDispatch={displayResourceDispatch}
+      parentDeleteResourceDispatch={displayResourceDispatch}
       totalDocuments={totalDocuments}
     />
   ) : (
@@ -367,7 +380,7 @@ function DisplayResource<Doc>({
       fileUploadsData={fileUploads}
       parentComponentName={splitCamelCase(requestBodyHeading)}
       parentRequestStatusDispatch={displayResourceDispatch}
-      parentDeleteFormDispatch={displayResourceDispatch}
+      parentDeleteResourceDispatch={displayResourceDispatch}
       queryResponseData={resourceData}
       totalDocuments={totalDocuments}
     />

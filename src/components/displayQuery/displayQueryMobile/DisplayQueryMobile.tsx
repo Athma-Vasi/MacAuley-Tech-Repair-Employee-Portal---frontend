@@ -27,7 +27,9 @@ import { DisplayQueryMobileProps } from './types';
 
 function DisplayQueryMobile({
   componentQueryData,
+  deleteFileUploadIdDispatch,
   deleteFormIdDispatch,
+  deleteResourceKindDispatch,
   groupedByQueryResponseData,
   openDeleteAcknowledge,
   popoversStateDispatch,
@@ -276,11 +278,15 @@ function DisplayQueryMobile({
             leftIcon: <TbTrash />,
             rightIcon: <TbUpload />,
             buttonOnClick: () => {
-              openDeleteAcknowledge();
               deleteFormIdDispatch({
                 type: 'setDeleteFormId',
                 payload: queryObj._id,
               });
+              deleteResourceKindDispatch({
+                type: 'setDeleteResourceKind',
+                payload: 'form',
+              });
+              openDeleteAcknowledge();
             },
           },
         ]);

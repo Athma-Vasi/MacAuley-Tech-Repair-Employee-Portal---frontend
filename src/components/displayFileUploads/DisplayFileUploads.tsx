@@ -4,7 +4,7 @@ function DisplayFileUploads({
   componentQueryData,
   fileUploadsData,
   parentComponentName,
-  parentDeleteFormDispatch,
+  parentDeleteResourceDispatch,
   style = {},
   totalDocuments,
 }: DisplayFileUploadsProps) {

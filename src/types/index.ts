@@ -83,8 +83,8 @@ type FileUploadDocument = FileUploadSchema & {
   associatedResource?: AssociatedResourceKind | undefined;
   // some fileUploads may not be associated with any document
   associatedDocumentId?: string | undefined;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

@@ -5,13 +5,15 @@ import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayFileUploadsProps = {
   componentQueryData: ComponentQueryData[];
-  fileUploadsData: FileUploadDocument[];
+  fileUploadsData: Array<{ fileUploads: FileUploadDocument[] }>;
 
   parentComponentName: string;
-  parentDeleteFormDispatch: React.Dispatch<{
-    type: 'setDeleteForm';
+  parentDeleteResourceDispatch: React.Dispatch<{
+    type: 'setDeleteResource';
     payload: {
-      id: string;
+      formId: string;
+      fileUploadId?: string;
+      kind: 'form' | 'fileUpload' | '';
       value: boolean;
     };
   }>;
