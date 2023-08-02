@@ -30,6 +30,7 @@ import {
 import { RequestStatus } from '../../../types';
 import { addFieldsToObject, formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryDesktopProps } from './types';
+import { FIELDNAMES_WITH_DATE_VALUES } from '../../../constants/data';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
@@ -229,7 +230,7 @@ function DisplayQueryDesktop<Doc>({
                                       },
                                       locale: 'en-US',
                                     })
-                                  : splitCamelCase(key).includes('Date')
+                                  : FIELDNAMES_WITH_DATE_VALUES.has(key)
                                   ? formatDate({
                                       date: value,
                                       formatOptions: {
@@ -248,7 +249,7 @@ function DisplayQueryDesktop<Doc>({
                                 tableViewSelection === 'expanded' ? 7 : 13;
 
                               const truncatedValuesWithHoverCards =
-                                splitCamelCase(key).includes('Date') ? (
+                                FIELDNAMES_WITH_DATE_VALUES.has(key) ? (
                                   <HoverCard
                                     width={382}
                                     shadow="lg"

@@ -217,10 +217,32 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
   ['Security', ['Security Guard']],
 ]);
 
+/**
+ * these are the field names that have date values that are not time stamps.
+ * the timestamps are formatted differently from the other date values.
+ */
+const FIELDNAMES_WITH_DATE_VALUES = new Set([
+  // company
+  'planStartDate',
+  'expenseClaimDate',
+  'startDate',
+  'endDate',
+  'dateNeededBy',
+  // general
+  'dateOfOccurrence',
+  // outreach
+  'rsvpDeadline',
+  'eventStartDate',
+  'eventEndDate',
+  // register - user
+  'dateofBirth',
+]);
+
 export {
   COLORS,
   DEPARTMENT_DATA,
   DEPARTMENT_JOB_POSITION_MAP,
+  FIELDNAMES_WITH_DATE_VALUES,
   JOB_POSITION_DATA,
   PROVINCES,
   REQUEST_STATUS,

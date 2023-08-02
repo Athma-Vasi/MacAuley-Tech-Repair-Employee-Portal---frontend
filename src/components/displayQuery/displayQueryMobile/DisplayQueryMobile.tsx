@@ -25,6 +25,7 @@ import {
 import { RequestStatus } from '../../../types';
 import { addFieldsToObject, formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryMobileProps } from './types';
+import { FIELDNAMES_WITH_DATE_VALUES } from '../../../constants/data';
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -165,7 +166,7 @@ function DisplayQueryMobile({
                 },
                 locale: 'en-US',
               })
-            : splitCamelCase(key).includes('Date')
+            : FIELDNAMES_WITH_DATE_VALUES.has(key)
             ? formatDate({
                 date: value,
                 formatOptions: {

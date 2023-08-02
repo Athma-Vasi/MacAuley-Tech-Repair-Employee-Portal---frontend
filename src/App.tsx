@@ -16,7 +16,7 @@ import {
   CreateEndorsement,
   DisplayEndorsements,
 } from './components/endorsements/';
-import { EventCreator } from './components/events/eventCreator';
+import { DisplayEvents, EventCreator } from './components/events';
 import {
   DisplayExpenseClaims,
   CreateExpenseClaim,
@@ -190,11 +190,17 @@ function App() {
             </Route>
           </Route>
 
-          {/* <Route path="outreach">
-            <Route path="event-creator" element={<EventCreator />} />
-            <Route path="survey-builder" element={<SurveyBuilder />} />
-            <Route path="announcements" element={<CreateAnnouncement />} />
-          </Route> */}
+          <Route path="outreach">
+            {/* event-creator */}
+            <Route path="event-creator">
+              <Route index element={<DisplayEvents />} />
+              <Route path="create" element={<EventCreator />} />
+              <Route path="display" element={<DisplayEvents />} />
+            </Route>
+
+            {/* <Route path="survey-builder" element={<SurveyBuilder />} /> */}
+            {/* <Route path="announcements" element={<CreateAnnouncement />} /> */}
+          </Route>
         </Route>
 
         {/* catch all */}

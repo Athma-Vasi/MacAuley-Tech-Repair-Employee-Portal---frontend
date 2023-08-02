@@ -34,7 +34,7 @@ import {
   EVENT_CREATOR_DESCRIPTION_OBJECTS,
   EVENT_CREATOR_MAX_STEPPER_POSITION,
   EVENT_KIND_DATA,
-} from './constants';
+} from '../constants';
 import {
   eventCreatorAction,
   eventCreatorReducer,
