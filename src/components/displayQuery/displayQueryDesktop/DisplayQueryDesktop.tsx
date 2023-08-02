@@ -206,8 +206,6 @@ function DisplayQueryDesktop<Doc>({
                               fieldValuesTuples: [['delete', '']],
                             });
 
-                      console.log({ queryResponseObjWithAddedFields });
-
                       const rowWithStringifiedValues = (
                         <tr key={`${objIdx}`}>
                           {Object.entries(queryResponseObjWithAddedFields).map(

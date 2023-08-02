@@ -15,7 +15,7 @@ function PortalLayout() {
 
   return (
     <AppShell
-      padding="lg"
+      // padding="lg"
       navbarOffsetBreakpoint="sm"
       navbar={<PortalNavbar openedNavbar={opened} />}
       header={

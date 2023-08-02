@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   SegmentedControl,
+  Spoiler,
   Stack,
   Text,
   Title,
@@ -14,7 +15,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
-import { TbTrash, TbUpload } from 'react-icons/tb';
+import { TbArrowDown, TbArrowUp, TbTrash, TbUpload } from 'react-icons/tb';
 
 import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
 import { useGlobalState } from '../../hooks';
@@ -305,6 +306,22 @@ function DisplayQuery<Doc>({
     buttonDisabled: !isValidAcknowledgementText,
   };
 
+  const showMoreSpoilerButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Show',
+    leftIcon: <TbArrowDown />,
+    buttonType: 'button',
+    semanticDescription: 'Reveal more information',
+    semanticName: 'Show more',
+  };
+
+  const hideSpoilerButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Hide',
+    leftIcon: <TbArrowUp />,
+    buttonType: 'button',
+    semanticDescription: 'Hide revealed information',
+    semanticName: 'Hide',
+  };
+
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- created inputs------------- */
@@ -317,8 +334,14 @@ function DisplayQuery<Doc>({
     acknowledgementTextInputCreatorInfo,
   ]);
 
-  const [createdDeleteButton] = returnAccessibleButtonElements([
+  const [
+    createdDeleteButton,
+    createdShowMoreSpoilerButton,
+    createdHideSpoilerButton,
+  ] = returnAccessibleButtonElements([
     deleteButtonCreatorInfo,
+    showMoreSpoilerButtonCreatorInfo,
+    hideSpoilerButtonCreatorInfo,
   ]);
 
   /** ------------- end created inputs------------- */
@@ -439,7 +462,7 @@ function DisplayQuery<Doc>({
             />
           );
 
-          const displayFileName = (
+          const displayFileNameDesktop = (
             <HoverCard
               width="calc(100% - 2rem)"
               shadow="lg"
@@ -470,6 +493,35 @@ function DisplayQuery<Doc>({
                 </Flex>
               </HoverCard.Dropdown>
             </HoverCard>
+          );
+
+          /**
+           * <Spoiler
+                maxHeight={25}
+                showLabel={createdShowMoreButton}
+                hideLabel={createdHideButton}
+              >
+                <Text size="sm" color="dark">
+                    {fileName.length > 11
+                      ? `${fileName.slice(0, 11)}...`
+                      : fileName}
+                  </Text>
+              </Spoiler>
+           */
+
+          const displayFileNameMobile = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>File name: </TextWrapper>
+              <Text size="sm" color="dark" pl={padding}>
+                {fileName}
+              </Text>
+            </Flex>
           );
 
           const displayFileExtension = (
@@ -545,7 +597,7 @@ function DisplayQuery<Doc>({
             locale: 'en-US',
           });
 
-          const displayCreatedAt = (
+          const displayCreatedAtDesktop = (
             <HoverCard
               width="calc(100% - 2rem)"
               shadow="lg"
@@ -576,6 +628,21 @@ function DisplayQuery<Doc>({
             </HoverCard>
           );
 
+          const displayCreatedAtMobile = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>Created date: </TextWrapper>
+              <Text size="sm" color="dark" pl={padding}>
+                {dropDownFullCreatedDate}
+              </Text>
+            </Flex>
+          );
+
           const formattedUpdatedDate = formatDate({
             date: updatedAt,
             formatOptions: {
@@ -595,7 +662,7 @@ function DisplayQuery<Doc>({
             },
             locale: 'en-US',
           });
-          const displayUpdatedAt = (
+          const displayUpdatedAtDesktop = (
             <HoverCard
               width="calc(100% - 2rem)"
               shadow="lg"
@@ -626,6 +693,21 @@ function DisplayQuery<Doc>({
             </HoverCard>
           );
 
+          const displayUpdatedAtMobile = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>Updated date: </TextWrapper>
+              <Text size="sm" color="dark" pl={padding}>
+                {dropdownFullUpdatedDate}
+              </Text>
+            </Flex>
+          );
+
           const displayCreatorInfo = (
             <Flex
               align="center"
@@ -639,7 +721,7 @@ function DisplayQuery<Doc>({
             </Flex>
           );
 
-          const displayFileId = (
+          const displayFileIdDesktop = (
             <HoverCard
               width="calc(100% - 2rem)"
               shadow="lg"
@@ -670,7 +752,22 @@ function DisplayQuery<Doc>({
             </HoverCard>
           );
 
-          const displayUserId = (
+          const displayFileIdMobile = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>File ID: </TextWrapper>
+              <Text size="sm" color="dark" pl={padding}>
+                {_id}
+              </Text>
+            </Flex>
+          );
+
+          const displayUserIdDesktop = (
             <HoverCard
               width="calc(100% - 2rem)"
               shadow="lg"
@@ -701,18 +798,33 @@ function DisplayQuery<Doc>({
             </HoverCard>
           );
 
+          const displayUserIdMobile = (
+            <Flex
+              align="center"
+              justify="space-between"
+              wrap="wrap"
+              w="100%"
+              style={{ borderBottom: '1px solid #e0e0e0' }}
+            >
+              <TextWrapper creatorInfoObj={{}}>User ID: </TextWrapper>
+              <Text size="sm" color="dark" pl={padding}>
+                {userId}
+              </Text>
+            </Flex>
+          );
+
           const displayFileUploadInfo = (
             <Stack w="100%" py={padding}>
-              {displayFileName}
+              {width <= 1024 ? displayFileNameMobile : displayFileNameDesktop}
               {displayFileExtension}
               {displayFileMimeType}
               {displayFileEncoding}
               {displayFileSize}
               {displayCreatorInfo}
-              {displayCreatedAt}
-              {displayUpdatedAt}
-              {displayFileId}
-              {displayUserId}
+              {width <= 1024 ? displayCreatedAtMobile : displayCreatedAtDesktop}
+              {width <= 1024 ? displayUpdatedAtMobile : displayUpdatedAtDesktop}
+              {width <= 1024 ? displayFileIdMobile : displayFileIdDesktop}
+              {width <= 1024 ? displayUserIdMobile : displayUserIdDesktop}
             </Stack>
           );
 
@@ -793,10 +905,13 @@ function DisplayQuery<Doc>({
       <DisplayQueryMobile
         componentQueryData={componentQueryData}
         deleteFormIdDispatch={displayQueryDispatch}
+        fileUploadsData={fileUploadsData}
         deleteFileUploadIdDispatch={displayQueryDispatch}
         deleteResourceKindDispatch={displayQueryDispatch}
         groupedByQueryResponseData={groupedByQueryResponseData}
         openDeleteAcknowledge={openDeleteAcknowledge}
+        openFileUploads={openFileUploads}
+        setFileUploadsForAFormDispatch={displayQueryDispatch}
         popoversOpenCloseState={popoversOpenCloseState}
         popoversStateDispatch={displayQueryDispatch}
         requestStatusDispatch={parentRequestStatusDispatch}

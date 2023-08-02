@@ -22,16 +22,20 @@ import {
   returnAccessibleRadioGroupInputsElements,
 } from '../../../jsxCreators';
 import { RequestStatus } from '../../../types';
-import { formatDate, splitCamelCase } from '../../../utils';
+import { addFieldsToObject, formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryMobileProps } from './types';
+import { IoMdOpen } from 'react-icons/io';
 
 function DisplayQueryMobile({
   componentQueryData,
   deleteFileUploadIdDispatch,
   deleteFormIdDispatch,
   deleteResourceKindDispatch,
+  fileUploadsData = [],
   groupedByQueryResponseData,
   openDeleteAcknowledge,
+  openFileUploads,
+  setFileUploadsForAFormDispatch,
   popoversStateDispatch,
   popoversOpenCloseState,
   restOfGroupedQueryResponseData,
@@ -107,42 +111,28 @@ function DisplayQueryMobile({
     groupedByQueryResponseData
   ).map(([section, queryObjArr], responseDataIdx) => {
     const displayQueryObjArr = queryObjArr.map((queryObj, queryObjIdx) => {
-      const displayKeyValues = [
-        ...Object.entries(queryObj),
-        ['Delete', ''],
-      ].map(([key, value], keyValIdx) => {
+      const queryResponseObjWithAddedFields =
+        fileUploadsData.length > 0
+          ? addFieldsToObject({
+              object: queryObj,
+              fieldValuesTuples: [
+                ['fileUploads', ''],
+                ['delete', ''],
+              ],
+            })
+          : addFieldsToObject({
+              object: queryObj,
+              fieldValuesTuples: [['delete', '']],
+            });
+
+      const displayKeyValues = Object.entries(
+        queryResponseObjWithAddedFields
+      ).map(([key, value], keyValIdx) => {
         // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
         const sectionKey =
           componentQueryData.find((queryDataObj) => queryDataObj.value === key)
             ?.label ?? splitCamelCase(key);
 
-        // const formattedValue =
-        //   dateKeysSet.has(sectionKey) ||
-        //   sectionKey.toLowerCase().includes('date')
-        //     ? formatDate({
-        //         date: value,
-        //         formatOptions: {
-        //           dateStyle: 'full',
-        //         },
-        //         locale: 'en-US',
-        //       })
-        //     : Array.isArray(value)
-        //     ? value.map((val, valIdx) => {
-        //         return (
-        //           <Text key={`${valIdx}`}>
-        //             {`${val.toString().charAt(0).toUpperCase()}${val
-        //               .toString()
-        //               .slice(1)}${valIdx === value.length - 1 ? '' : ', '}`}
-        //           </Text>
-        //         );
-        //       })
-        //     : value === true
-        //     ? 'Yes'
-        //     : value === false
-        //     ? 'No'
-        //     : `${value.toString().charAt(0).toUpperCase()}${value
-        //         .toString()
-        //         .slice(1)}`;
         const formattedValue =
           value === true
             ? 'Yes'
@@ -269,29 +259,51 @@ function DisplayQueryMobile({
             : null
           : null;
 
-        const createdDeleteButton = returnAccessibleButtonElements([
-          {
-            buttonLabel: 'Delete',
-            semanticDescription: 'Delete this form',
-            semanticName: 'Delete',
-            buttonVariant: 'outline',
-            leftIcon: <TbTrash />,
-            rightIcon: <TbUpload />,
-            buttonOnClick: () => {
-              deleteFormIdDispatch({
-                type: 'setDeleteFormId',
-                payload: queryObj._id,
-              });
-              deleteResourceKindDispatch({
-                type: 'setDeleteResourceKind',
-                payload: 'form',
-              });
-              openDeleteAcknowledge();
+        const [createdDeleteButton, createdOpenFileUploadsModalButton] =
+          returnAccessibleButtonElements([
+            {
+              buttonLabel: 'Delete',
+              semanticDescription: 'Delete this form',
+              semanticName: 'Delete',
+              buttonVariant: 'outline',
+              leftIcon: <TbTrash />,
+              rightIcon: <TbUpload />,
+              buttonOnClick: () => {
+                deleteFormIdDispatch({
+                  type: 'setDeleteFormId',
+                  payload: queryObj._id,
+                });
+                deleteResourceKindDispatch({
+                  type: 'setDeleteResourceKind',
+                  payload: 'form',
+                });
+                openDeleteAcknowledge();
+              },
             },
-          },
-        ]);
+            {
+              buttonLabel: 'Open',
+              leftIcon: <IoMdOpen />,
+              semanticDescription:
+                'Open modal to display file uploads associated with this document',
+              semanticName: 'Open file uploads modal',
+              buttonVariant: 'outline',
+              buttonOnClick: () => {
+                setFileUploadsForAFormDispatch({
+                  type: 'setFileUploadsForAForm',
+                  payload: fileUploadsData[queryObjIdx].fileUploads,
+                });
+                deleteFormIdDispatch({
+                  type: 'setDeleteFormId',
+                  payload: queryResponseObjWithAddedFields._id,
+                });
+                openFileUploads();
+              },
+            },
+          ]);
         const displayCreatedDeleteButton =
-          key === 'Delete' ? createdDeleteButton : null;
+          key === 'delete' ? createdDeleteButton : null;
+        const displayCreatedOpenFileUploadsModalButton =
+          key === 'fileUploads' ? createdOpenFileUploadsModalButton : null;
 
         const displayFullLabelValueRow = (
           <>
@@ -304,9 +316,9 @@ function DisplayQueryMobile({
               w="100%"
               columnGap={rowGap}
               pl={padding}
-              // style={{ outline: '1px solid violet' }}
             >
               {displayUpdateRequestStatusButton}
+              {displayCreatedOpenFileUploadsModalButton}
               {displayCreatedDeleteButton}
               <Spoiler
                 maxHeight={25}
@@ -325,9 +337,10 @@ function DisplayQueryMobile({
             justify="flex-end"
             w="100%"
             columnGap={rowGap}
-            pl={padding}
+            py={padding}
             style={{ outline: '1px solid violet' }}
           >
+            {displayUpdateRequestStatusButton}
             {displayCreatedDeleteButton}
             <Text>{formattedValue}</Text>
           </Flex>
@@ -377,10 +390,11 @@ function DisplayQueryMobile({
           w="100%"
           rowGap={rowGap}
           style={{
-            backgroundColor: '#f0f0f0',
-            borderRadius: 4,
+            // backgroundColor: '#f0f0f0',
+            // borderRadius: 4,
+            borderBottom: '2px solid #e0e0e0',
           }}
-          p={padding}
+          py={padding}
         >
           {displayKeyValues}
         </Flex>
@@ -395,7 +409,7 @@ function DisplayQueryMobile({
       <Flex
         key={`${section}-${responseDataIdx}}`}
         direction="column"
-        p={padding}
+        py={padding}
         align="flex-start"
         justify="center"
         style={{
@@ -487,7 +501,7 @@ function DisplayQueryMobile({
   const displayRestData = (
     <Flex
       direction="column"
-      p={padding}
+      py={padding}
       align="flex-start"
       justify="center"
       style={{
