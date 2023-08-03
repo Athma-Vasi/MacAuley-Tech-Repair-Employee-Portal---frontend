@@ -3,21 +3,28 @@ import {
   ActionsOutreach,
   SetStepsInErrorPayload,
   UserRoles,
-} from '../../types';
-import { DescriptionObjectsArray } from '../wrappers';
+} from '../../../types';
+import { DescriptionObjectsArray } from '../../wrappers';
 
 type SurveyRecipient =
   | 'All'
-  | 'Active'
-  | 'Inactive'
-  | 'Employees'
-  | 'Admins'
-  | 'Managers';
+  | 'Executive Management'
+  | 'Administrative'
+  | 'Sales and Marketing'
+  | 'Information Technology'
+  | 'Repair Technicians'
+  | 'Field Service Technicians'
+  | 'Logistics and Inventory'
+  | 'Customer Service'
+  | 'Quality Control'
+  | 'Training and Development'
+  | 'Janitorial and Maintenance'
+  | 'Security';
 
 type SurveyResponseKind = {
   chooseOne: 'trueFalse' | 'yesNo' | 'radio';
   chooseAny: 'checkbox' | 'dropdown';
-  shortAnswer: 'shortAnswer';
+  answerKind: 'shortAnswer' | 'longAnswer';
   rating: 'scale' | 'emotion' | 'stars';
 };
 

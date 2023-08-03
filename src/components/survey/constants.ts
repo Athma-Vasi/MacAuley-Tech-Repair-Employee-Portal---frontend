@@ -2,11 +2,18 @@ import { SelectInputData } from '../../types';
 
 const SURVEY_BUILDER_RECIPIENT_DATA = [
   'All',
-  'Active',
-  'Inactive',
-  'Employees',
-  'Admins',
-  'Managers',
+  'Executive Management',
+  'Administrative',
+  'Sales and Marketing',
+  'Information Technology',
+  'Repair Technicians',
+  'Field Service Technicians',
+  'Logistics and Inventory',
+  'Customer Service',
+  'Quality Control',
+  'Training and Development',
+  'Janitorial and Maintenance',
+  'Security',
 ];
 
 const SURVEY_BUILDER_RESPONSE_KIND_DATA: SelectInputData = [
@@ -19,8 +26,8 @@ const SURVEY_BUILDER_RESPONSE_KIND_DATA: SelectInputData = [
     value: 'chooseAny',
   },
   {
-    label: 'Short answer',
-    value: 'shortAnswer',
+    label: 'Answer kind',
+    value: 'answerKind',
   },
   {
     label: 'Rating',
@@ -60,11 +67,15 @@ const SURVEY_BUILDER_INPUT_HTML_DATA = new Map([
     ],
   ],
   [
-    'shortAnswer',
+    'answerKind',
     [
       {
         label: 'Short answer',
         value: 'shortAnswer',
+      },
+      {
+        label: 'Long answer',
+        value: 'longAnswer',
       },
     ],
   ],

@@ -8,8 +8,8 @@ import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
-} from '../../constants/regex';
-import { useGlobalState } from '../../hooks';
+} from '../../../constants/regex';
+import { useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
@@ -22,11 +22,11 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../jsxCreators';
+} from '../../../jsxCreators';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
-} from '../../utils';
+} from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -37,20 +37,20 @@ import {
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../wrappers';
+} from '../../wrappers';
 import {
   SURVEY_BUILDER_INPUT_HTML_DATA,
   SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
   SURVEY_BUILDER_RECIPIENT_DATA,
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
-} from './constants';
+} from '../constants';
+import { mergeSurveyQuestionsGroup } from '../utils';
 import {
   initialSurveyBuilderState,
   surveyBuilderAction,
   surveyBuilderReducer,
 } from './state';
 import { SurveyRecipient } from './types';
-import { mergeSurveyQuestionsGroup } from './utils';
 
 function SurveyBuilder() {
   const {
@@ -505,15 +505,15 @@ function SurveyBuilder() {
   const responseInputHtmlRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
-        description: 'Choose a html input',
+        description: 'Choose an input kind',
         dataObjectArray: SURVEY_BUILDER_INPUT_HTML_DATA.get(
           responseKinds[index]
         ) as {
           value: string;
           label: string;
         }[],
-        label: `Input Type for Question ${index + 1}`,
-        name: `html input type for question ${index + 1}`,
+        label: `Input kind for Question ${index + 1}`,
+        name: `html input kind for question ${index + 1}`,
         onChange: (value: string) => {
           surveyBuilderDispatch({
             type: surveyBuilderAction.setResponseInputHtml,
@@ -523,7 +523,7 @@ function SurveyBuilder() {
             },
           });
         },
-        semanticName: `html input type for question ${index + 1}`,
+        semanticName: `html input kind for question ${index + 1}`,
         value: responseInputHtml[index],
         required: true,
         withAsterisk: true,

@@ -42,7 +42,7 @@ import {
   RequestResource,
 } from './components/requestResource';
 import { RequireAuth } from './components/requireAuth';
-import { SurveyBuilder } from './components/surveyBuilder';
+import { DisplaySurveys, SurveyBuilder } from './components/survey';
 import { Unauthorized } from './components/unauthorized';
 import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
@@ -198,7 +198,12 @@ function App() {
               <Route path="display" element={<DisplayEvents />} />
             </Route>
 
-            {/* <Route path="survey-builder" element={<SurveyBuilder />} /> */}
+            {/* survey-builder */}
+            <Route path="survey-builder">
+              <Route index element={<DisplaySurveys />} />
+              <Route path="create" element={<SurveyBuilder />} />
+              <Route path="display" element={<DisplaySurveys />} />
+            </Route>
             {/* <Route path="announcements" element={<CreateAnnouncement />} /> */}
           </Route>
         </Route>

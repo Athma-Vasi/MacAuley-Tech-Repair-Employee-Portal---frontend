@@ -1,4 +1,4 @@
-import { DescriptionObjectsArray } from '../wrappers';
+import { DescriptionObjectsArray } from '../../wrappers';
 import {
   SurveyBuilderAction,
   SurveyBuilderDispatch,
