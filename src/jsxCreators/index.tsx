@@ -104,7 +104,7 @@ type ReturnAccessibleErrorValidTextElementsForDynamicInputsProps = {
   inputTextArray: string[];
   areValidInputTexts: boolean[];
   areInputTextsFocused: boolean[];
-  regexValidationProps: RegexValidationProps;
+  regexValidationProps: RegexValidationProps[];
   regexValidationFunction?:
     | ((validationObj: RegexValidationProps) => string)
     | undefined;
@@ -117,7 +117,7 @@ type ReturnAccessibleErrorValidTextElementsForDynamicInputsProps = {
  * @property {object.inputTextArray} - the array of input texts
  * @property {object.areValidInputTexts} - the array of booleans that indicate whether the input text is valid
  * @property {object.areInputTextsFocused} - the array of booleans that indicate whether the input text is focused
- * @property {object.regexValidationProps} - the object containing the regex validation props that is passed to the regex validation function
+ * @property {object.regexValidationProps} - the object[] containing the regex validation props that is passed to the regex validation function
  * @property {object.regexValidationFunction} - reference to the regex validation function
  */
 function returnAccessibleErrorValidTextElementsForDynamicInputs({
@@ -136,8 +136,9 @@ function returnAccessibleErrorValidTextElementsForDynamicInputs({
     inputTextArray.map((inputText, index) => (
       <Text
         key={`${index}`}
-        id={`${semanticName.split(' ').join('-')}
-        }-input-note-error-${index}`}
+        id={`${semanticName.split(' ').join('-')}-${
+          index + 1
+        }-input-note-error`}
         style={{
           display:
             areInputTextsFocused[index] &&
@@ -154,7 +155,7 @@ function returnAccessibleErrorValidTextElementsForDynamicInputs({
         {regexValidationFunction
           ? `${semanticName[0].toUpperCase()}${semanticName.slice(1)} ${
               index + 1
-            } - ${regexValidationFunction(regexValidationProps)}`
+            } - ${regexValidationFunction(regexValidationProps[index])}`
           : ''}
       </Text>
     )),
@@ -162,7 +163,9 @@ function returnAccessibleErrorValidTextElementsForDynamicInputs({
     inputTextArray.map((inputText, index) => (
       <Text
         key={`${index}`}
-        id={`${semanticName.split(' ').join('-')}-input-note-valid-${index}`}
+        id={`${semanticName.split(' ').join('-')}-${
+          index + 1
+        }-input-note-valid`}
         style={{
           display:
             areInputTextsFocused[index] &&

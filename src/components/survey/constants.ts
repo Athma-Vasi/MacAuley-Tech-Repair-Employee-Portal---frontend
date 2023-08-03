@@ -26,10 +26,6 @@ const SURVEY_BUILDER_RESPONSE_KIND_DATA: SelectInputData = [
     value: 'chooseAny',
   },
   {
-    label: 'Answer kind',
-    value: 'answerKind',
-  },
-  {
     label: 'Rating',
     value: 'rating',
   },
@@ -40,12 +36,8 @@ const SURVEY_BUILDER_INPUT_HTML_DATA = new Map([
     'chooseOne',
     [
       {
-        label: 'True/False',
-        value: 'trueFalse',
-      },
-      {
-        label: 'Yes/No',
-        value: 'yesNo',
+        label: 'Agree/Disagree',
+        value: 'agreeDisagree',
       },
       {
         label: 'Radio',
@@ -53,6 +45,7 @@ const SURVEY_BUILDER_INPUT_HTML_DATA = new Map([
       },
     ],
   ],
+
   [
     'chooseAny',
     [
@@ -60,32 +53,12 @@ const SURVEY_BUILDER_INPUT_HTML_DATA = new Map([
         label: 'Checkbox',
         value: 'checkbox',
       },
-      {
-        label: 'Dropdown',
-        value: 'dropdown',
-      },
     ],
   ],
-  [
-    'answerKind',
-    [
-      {
-        label: 'Short answer',
-        value: 'shortAnswer',
-      },
-      {
-        label: 'Long answer',
-        value: 'longAnswer',
-      },
-    ],
-  ],
+
   [
     'rating',
     [
-      {
-        label: 'Scale',
-        value: 'scale',
-      },
       {
         label: 'Emotion',
         value: 'emotion',
@@ -99,6 +72,8 @@ const SURVEY_BUILDER_INPUT_HTML_DATA = new Map([
 ]);
 
 const SURVEY_BUILDER_MAX_QUESTION_AMOUNT = 3;
+
+const SURVEY_MAX_RESPONSE_DATA_OPTIONS = 7;
 
 export {
   SURVEY_BUILDER_INPUT_HTML_DATA,

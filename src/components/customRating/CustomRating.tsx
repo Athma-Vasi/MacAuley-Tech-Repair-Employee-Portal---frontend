@@ -122,16 +122,15 @@ function CustomRating({ ratingKind }: CustomRatingProps) {
 
   return (
     <Flex
-      w={350}
+      //   w={350}
       p="xl"
       align="center"
-      justify="space-between"
+      justify="center"
       style={{
         border: '1px solid #e0e0e0',
         borderRadius: '4px',
       }}
     >
-      <TextWrapper creatorInfoObj={{}}>How do you feel? </TextWrapper>
       <Rating
         value={value}
         onChange={(value) => setValue(value)}

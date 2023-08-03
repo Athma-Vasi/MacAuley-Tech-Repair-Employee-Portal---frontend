@@ -260,12 +260,18 @@ function CreateAnnouncement() {
       areValidInputTexts: areValidArticleParagraphs,
       inputTextArray: article,
       semanticName: 'article paragraph',
-      regexValidationProps: {
-        content: article.join(' '),
+      // regexValidationProps: {
+      //   content: article.join(' '),
+      //   contentKind: 'article paragraph',
+      //   minLength: 2,
+      //   maxLength: 2000,
+      // },
+      regexValidationProps: article.map((paragraph) => ({
+        content: paragraph,
         contentKind: 'article paragraph',
         minLength: 2,
         maxLength: 2000,
-      },
+      })),
       regexValidationFunction: returnGrammarValidationText,
     });
 

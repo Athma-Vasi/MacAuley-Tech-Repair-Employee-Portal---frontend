@@ -84,6 +84,11 @@ function SurveyBuilder() {
     responseKinds,
     responseInputHtml,
 
+    responseDataOptionsArray,
+    areResponseDataOptionsValid,
+    areResponseDataOptionsFocused,
+    isMaxResponseDataOptionsReached,
+
     triggerFormSubmit,
     stepperDescriptionObjects,
     currentStepperPosition,
@@ -184,6 +189,21 @@ function SurveyBuilder() {
     });
   }, [questions.length]);
 
+  // validate response data options on every change
+  useEffect(() => {
+    const isValid = responseDataOptionsArray.map(
+      (responseDataOptions: string[]) =>
+        responseDataOptions.map((responseDataOption) =>
+          GRAMMAR_TEXT_INPUT_REGEX.test(responseDataOption)
+        )
+    );
+
+    surveyBuilderDispatch({
+      type: surveyBuilderAction.setAreResponseDataOptionsValid,
+      payload: isValid,
+    });
+  }, []);
+
   // validate stepper state on every change
   useEffect(() => {
     const isStepInError =
@@ -262,22 +282,94 @@ function SurveyBuilder() {
       inputTextArray: questions,
       areValidInputTexts: areValidQuestions,
       areInputTextsFocused: areQuestionsFocused,
-      regexValidationProps: {
-        content: questions.map((question) => question).join(' '),
+      // regexValidationProps: {
+      //   content: questions.map((question) => question).join(' '),
+      //   contentKind: 'question',
+      //   minLength: 2,
+      //   maxLength: 75,
+      // },
+      regexValidationProps: questions.map((question) => ({
+        content: question,
         contentKind: 'question',
         minLength: 2,
         maxLength: 75,
-      },
+      })),
       regexValidationFunction: returnGrammarValidationText,
     });
 
-  const [isAnonymousInputSelectedText, isAnonymousInputDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
-      isSelected: isAnonymous,
-      semanticName: 'anonymous survey',
-      selectedDescription: 'Survey will be anonymous',
-      deselectedDescription: 'Survey will not be anonymous',
-    });
+  // const [responseDataOptionsErrorTextArray, responseDataOptionsValidTextArray] =
+  //   responseDataOptionsArray.reduce(
+  //     (acc, responseDataOptions, index) => {
+  //       const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
+  //         returnAccessibleErrorValidTextElementsForDynamicInputs({
+  //           semanticName: 'response data option',
+  //           inputTextArray: responseDataOptions,
+  //           areValidInputTexts: areResponseDataOptionsValid[index],
+  //           areInputTextsFocused: areResponseDataOptionsFocused[index],
+  //           regexValidationProps: {
+  //             content: responseDataOptions
+  //               .map((responseDataOption) => responseDataOption)
+  //               .join(' '),
+  //             contentKind: 'response data option',
+  //             minLength: 2,
+  //             maxLength: 75,
+  //           },
+  //           regexValidationFunction: returnGrammarValidationText,
+  //         });
+
+  //       // acc[0].push(responseDataOptionsErrorTexts);
+  //       // acc[1].push(responseDataOptionsValidTexts);
+  //       acc.push([
+  //         responseDataOptionsErrorTexts,
+  //         responseDataOptionsValidTexts,
+  //       ]);
+
+  //       return acc;
+  //     },
+  //     // Array.from({ length: responseDataOptionsArray.length }).map(
+  //     //   (_, idx) =>
+  //     //     Array.from({ length: responseDataOptionsArray[idx].length }) as [
+  //     //       JSX.Element[],
+  //     //       JSX.Element[]
+  //     //     ]
+  //     // )
+  //     [] as [JSX.Element[], JSX.Element[]][]
+  //   );
+
+  const [
+    responseDataOptionsErrorTextArrays,
+    responseDataOptionsValidTextArrays,
+  ]: [JSX.Element[], JSX.Element[]][] = responseDataOptionsArray.map(
+    (responseDataOptions, questionIdx) => {
+      const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
+        returnAccessibleErrorValidTextElementsForDynamicInputs({
+          semanticName: `option ${questionIdx + 1}`,
+          inputTextArray: responseDataOptions,
+          areValidInputTexts: areResponseDataOptionsValid[questionIdx],
+          areInputTextsFocused: areResponseDataOptionsFocused[questionIdx],
+          regexValidationProps: responseDataOptions.map(
+            (responseDataOption, optionIdx) => ({
+              content: responseDataOption,
+              contentKind: `${questions[questionIdx]}: ${responseDataOption}`,
+              minLength: 2,
+              maxLength: 75,
+            })
+          ),
+          regexValidationFunction: returnGrammarValidationText,
+        });
+
+      return [responseDataOptionsErrorTexts, responseDataOptionsValidTexts];
+    }
+  );
+
+  console.log(
+    'responseDataOptionsErrorTextArrays: ',
+    responseDataOptionsErrorTextArrays
+  );
+  console.log(
+    'responseDataOptionsValidTextArrays: ',
+    responseDataOptionsValidTextArrays
+  );
 
   // following are info objects for input creators
   const surveyTitleInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -394,24 +486,6 @@ function SurveyBuilder() {
     required: true,
     withAsterisk: true,
   };
-
-  const isAnonymousCheckboxCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
-    {
-      description: {
-        selected: isAnonymousInputSelectedText,
-        deselected: isAnonymousInputDeselectedText,
-      },
-      semanticName: 'anonymous survey',
-      checked: isAnonymous,
-      onChange: () => {
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setIsAnonymous,
-          payload: !isAnonymous,
-        });
-      },
-      required: true,
-      label: 'Select anonymity of survey responses',
-    };
 
   const questionsInputCreatorInfo: AccessibleTextInputCreatorInfo[] =
     Array.from({
@@ -532,10 +606,91 @@ function SurveyBuilder() {
       return creatorInfoObject;
     });
 
+  const responseDataOptionsTextInputCreatorInfoArray: AccessibleTextInputCreatorInfo[][] =
+    Array.from({
+      length: responseDataOptionsArray.length,
+    }).map((_, questionIdx) => {
+      const responseDataOptionsTextInputCreatorInfo: AccessibleTextInputCreatorInfo[] =
+        Array.from({
+          length: responseDataOptionsArray?.[questionIdx]?.length,
+        }).map((_, optionIdx) => {
+          const creatorInfoObject: AccessibleTextInputCreatorInfo = {
+            description: {
+              error:
+                responseDataOptionsErrorTextArrays?.[questionIdx]?.[optionIdx],
+              valid:
+                responseDataOptionsValidTextArrays?.[questionIdx]?.[optionIdx],
+            },
+            inputText: responseDataOptionsArray?.[questionIdx]?.[optionIdx],
+            isValidInputText:
+              areResponseDataOptionsValid?.[questionIdx]?.[optionIdx],
+            label: `Response Data Option ${optionIdx + 1} for Question ${
+              questionIdx + 1
+            }`,
+            onBlur: () => {
+              surveyBuilderDispatch({
+                type: surveyBuilderAction.setAreResponseDataOptionsFocused,
+                payload: {
+                  questionIdx,
+                  optionIdx,
+                  value: false,
+                },
+              });
+            },
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              surveyBuilderDispatch({
+                type: surveyBuilderAction.setResponseDataOptions,
+                payload: {
+                  questionIdx,
+                  optionIdx,
+                  value: event.currentTarget.value,
+                },
+              });
+            },
+            onFocus: () => {
+              surveyBuilderDispatch({
+                type: surveyBuilderAction.setAreResponseDataOptionsFocused,
+                payload: {
+                  questionIdx,
+                  optionIdx,
+                  value: true,
+                },
+              });
+            },
+            placeholder: 'Enter response data option',
+            semanticName: `option ${questionIdx + 1} ${optionIdx + 1}`,
+            required: true,
+            withAsterisk: true,
+            dynamicInputProps: {
+              dynamicIndex: optionIdx,
+              dynamicInputOnClick: () => {
+                surveyBuilderDispatch({
+                  type: surveyBuilderAction.deleteResponseDataOption,
+                  payload: {
+                    questionIdx,
+                    optionIdx,
+                  },
+                });
+              },
+              semanticAction: 'delete',
+            },
+          };
+
+          return creatorInfoObject;
+        });
+
+      return responseDataOptionsTextInputCreatorInfo;
+    });
+
+  console.log(
+    'responseDataOptionsTextInputCreatorInfoArray',
+    responseDataOptionsTextInputCreatorInfoArray
+  );
+
   const addNewQuestionButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonVariant: 'outline',
     buttonLabel: (
-      <Tooltip label="Add new article paragraph">
+      <Tooltip label="Add new question">
         <Group>
           <MdOutlineAdd size={20} />
           <Text color="gray">Add</Text>
@@ -564,9 +719,43 @@ function SurveyBuilder() {
         payload: currentStepperPosition + 1,
       });
     },
-    semanticDescription: 'add new article paragraph text input button',
-    semanticName: 'add paragraph button',
+    semanticDescription: 'add new question text input button',
+    semanticName: 'add question button',
   };
+
+  const addNewResponseDataOptionButtonCreatorInfo: AccessibleButtonCreatorInfo[] =
+    Array.from({ length: questions.length }).map((_, index) => {
+      const creatorInfoObject: AccessibleButtonCreatorInfo = {
+        buttonVariant: 'outline',
+        buttonLabel: (
+          <Tooltip label="Add new response data option">
+            <Group>
+              <MdOutlineAdd size={20} />
+              <Text color="gray">Add new data</Text>
+            </Group>
+          </Tooltip>
+        ),
+        buttonOnClick: () => {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.addNewResponseDataOption,
+            payload: {
+              questionIdx: index,
+            },
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setResponseDataOptionsCounts,
+            payload: {
+              questionIdx: index,
+              kind: 'increment',
+            },
+          });
+        },
+        semanticDescription: 'add new response data option text input button',
+        semanticName: 'add response data option button',
+      };
+
+      return creatorInfoObject;
+    });
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Submit',
@@ -586,6 +775,14 @@ function SurveyBuilder() {
   const createdQuestionsTextInputs = returnAccessibleDynamicTextInputElements(
     questionsInputCreatorInfo
   );
+
+  const createdResponseDataOptionsTextInputs =
+    responseDataOptionsTextInputCreatorInfoArray.map(
+      (responseDataOptionsTextInputCreatorInfo) =>
+        returnAccessibleDynamicTextInputElements(
+          responseDataOptionsTextInputCreatorInfo
+        )
+    );
 
   const [createdSurveyDescriptionTextAreaInput] =
     returnAccessibleTextAreaInputElements([
@@ -607,11 +804,6 @@ function SurveyBuilder() {
       responseInputHtmlRadioGroupCreatorInfo
     );
 
-  const [createdIsAnonymousCheckbox] =
-    returnAccessibleCheckboxSingleInputElements([
-      isAnonymousCheckboxCreatorInfo,
-    ]);
-
   const [createdExpiryDateInput] = returnAccessibleDateTimeElements([
     expiryDateInputCreatorInfo,
   ]);
@@ -625,6 +817,15 @@ function SurveyBuilder() {
       addNewQuestionButtonCreatorInfo,
       submitButtonCreatorInfo,
     ]);
+
+  const createdAddNewResponseDataOptionButtons =
+    addNewResponseDataOptionButtonCreatorInfo.map(
+      (addNewResponseDataOptionButtonCreatorInfo) =>
+        returnAccessibleButtonElements([
+          addNewResponseDataOptionButtonCreatorInfo,
+        ])
+    );
+
   const maxStepperPosition = stepperDescriptionObjects.length + 1;
   const displaySubmitButton =
     currentStepperPosition === maxStepperPosition ? createdSubmitButton : null;
@@ -637,6 +838,8 @@ function SurveyBuilder() {
     createdQuestionsTextInputs,
     createdResponseKindRadioGroups,
     createdResponseInputHtmlRadioGroups,
+    createdResponseDataOptionsTextInputs,
+    createdAddNewResponseDataOptionButtons,
     displayAddNewQuestionButton,
   });
 
@@ -646,7 +849,6 @@ function SurveyBuilder() {
       {createdSurveyDescriptionTextAreaInput}
       {createdSurveyRecipientsSelectInput}
       {createdExpiryDateInput}
-      {createdIsAnonymousCheckbox}
     </FormLayoutWrapper>
   );
 
