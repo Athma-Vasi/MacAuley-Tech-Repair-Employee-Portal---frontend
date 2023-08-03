@@ -202,7 +202,7 @@ function SurveyBuilder() {
       type: surveyBuilderAction.setAreResponseDataOptionsValid,
       payload: isValid,
     });
-  }, []);
+  }, [responseDataOptionsArray]);
 
   // validate stepper state on every change
   useEffect(() => {
@@ -336,39 +336,36 @@ function SurveyBuilder() {
   //     [] as [JSX.Element[], JSX.Element[]][]
   //   );
 
-  const [
-    responseDataOptionsErrorTextArrays,
-    responseDataOptionsValidTextArrays,
-  ]: [JSX.Element[], JSX.Element[]][] = responseDataOptionsArray.map(
-    (responseDataOptions, questionIdx) => {
-      const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
-        returnAccessibleErrorValidTextElementsForDynamicInputs({
-          semanticName: `option ${questionIdx + 1}`,
-          inputTextArray: responseDataOptions,
-          areValidInputTexts: areResponseDataOptionsValid[questionIdx],
-          areInputTextsFocused: areResponseDataOptionsFocused[questionIdx],
-          regexValidationProps: responseDataOptions.map(
-            (responseDataOption, optionIdx) => ({
-              content: responseDataOption,
-              contentKind: `${questions[questionIdx]}: ${responseDataOption}`,
-              minLength: 2,
-              maxLength: 75,
-            })
-          ),
-          regexValidationFunction: returnGrammarValidationText,
-        });
+  const responseDataOptionsErrorValidTextArrays: [
+    JSX.Element[],
+    JSX.Element[]
+  ][] = responseDataOptionsArray.map((responseDataOptions, questionIdx) => {
+    const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
+      returnAccessibleErrorValidTextElementsForDynamicInputs({
+        semanticName: `Question ${questionIdx + 1}: option`,
+        inputTextArray: responseDataOptions,
+        areValidInputTexts: areResponseDataOptionsValid[questionIdx],
+        areInputTextsFocused: areResponseDataOptionsFocused[questionIdx],
+        regexValidationProps: responseDataOptions.map(
+          (responseDataOption, optionIdx) => ({
+            content: responseDataOption,
+            // contentKind: `Question ${questionIdx + 1}: option: ${
+            //   optionIdx + 1
+            // }`,
+            contentKind: 'text',
+            minLength: 2,
+            maxLength: 75,
+          })
+        ),
+        regexValidationFunction: returnGrammarValidationText,
+      });
 
-      return [responseDataOptionsErrorTexts, responseDataOptionsValidTexts];
-    }
-  );
+    return [responseDataOptionsErrorTexts, responseDataOptionsValidTexts];
+  });
 
   console.log(
-    'responseDataOptionsErrorTextArrays: ',
-    responseDataOptionsErrorTextArrays
-  );
-  console.log(
-    'responseDataOptionsValidTextArrays: ',
-    responseDataOptionsValidTextArrays
+    'responseDataOptionsErrorValidTextArrays',
+    responseDataOptionsErrorValidTextArrays
   );
 
   // following are info objects for input creators
@@ -617,9 +614,13 @@ function SurveyBuilder() {
           const creatorInfoObject: AccessibleTextInputCreatorInfo = {
             description: {
               error:
-                responseDataOptionsErrorTextArrays?.[questionIdx]?.[optionIdx],
+                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[0][
+                  optionIdx
+                ],
               valid:
-                responseDataOptionsValidTextArrays?.[questionIdx]?.[optionIdx],
+                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[1][
+                  optionIdx
+                ],
             },
             inputText: responseDataOptionsArray?.[questionIdx]?.[optionIdx],
             isValidInputText:
@@ -658,7 +659,10 @@ function SurveyBuilder() {
               });
             },
             placeholder: 'Enter response data option',
-            semanticName: `option ${questionIdx + 1} ${optionIdx + 1}`,
+            // semanticName: `option ${questionIdx + 1} ${optionIdx + 1}`,
+            semanticName: `Question ${questionIdx + 1}: option-${
+              optionIdx + 1
+            }`,
             required: true,
             withAsterisk: true,
             dynamicInputProps: {
