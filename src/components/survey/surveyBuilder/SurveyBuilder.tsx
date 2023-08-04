@@ -851,6 +851,16 @@ function SurveyBuilder() {
       return creatorInfoObject;
     });
 
+  const isSubmitButtonDisabled =
+    stepsInError.size > 0 ||
+    triggerFormSubmit ||
+    questions.some((question) => question.length === 0) ||
+    responseDataOptionsArray.some((responseDataOptions) =>
+      responseDataOptions.some(
+        (responseDataOption) => responseDataOption.length === 0
+      )
+    );
+
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Submit',
     semanticDescription: 'survey builder form submit button',
@@ -999,7 +1009,7 @@ function SurveyBuilder() {
           : null
     );
 
-  const maxStepperPosition = stepperDescriptionObjects.length + 1;
+  const maxStepperPosition = stepperDescriptionObjects.length;
   const displaySubmitButton =
     currentStepperPosition === maxStepperPosition ? createdSubmitButton : null;
 
@@ -1028,35 +1038,47 @@ function SurveyBuilder() {
 
   const displaySurveyBuilderReviewPage = <h4>survey builder review page</h4>;
 
+  const questionsLength = questions.length;
+
   const displaySurveyBuilderForm =
-    currentStepperPosition === maxStepperPosition - 2 ? (
-      displaySurveyBuilderReviewPage
-    ) : currentStepperPosition ===
-      maxStepperPosition - 1 ? null : currentStepperPosition === 0 ? (
+    currentStepperPosition === 0 ? (
       displaySurveyDetailsFormPageOne
     ) : currentStepperPosition === 1 ? (
       <FormLayoutWrapper>
         {mergedSurveyQuestionsGroups.slice(0, 1)}
       </FormLayoutWrapper>
-    ) : currentStepperPosition === 2 ? (
+    ) : currentStepperPosition === maxStepperPosition - 1 ? (
+      displaySurveyBuilderReviewPage
+    ) : currentStepperPosition === maxStepperPosition - questionsLength ? (
       <FormLayoutWrapper>
-        {mergedSurveyQuestionsGroups.slice(1, 2)}
+        {mergedSurveyQuestionsGroups.slice(
+          maxStepperPosition - questionsLength - 1,
+          maxStepperPosition - questionsLength
+        )}
       </FormLayoutWrapper>
-    ) : currentStepperPosition === 3 ? (
+    ) : currentStepperPosition === maxStepperPosition - questionsLength + 1 ? (
       <FormLayoutWrapper>
-        {mergedSurveyQuestionsGroups.slice(2, 3)}
+        {mergedSurveyQuestionsGroups.slice(
+          maxStepperPosition - questionsLength,
+          maxStepperPosition - questionsLength + 1
+        )}
       </FormLayoutWrapper>
-    ) : currentStepperPosition === 4 ? (
-      <FormLayoutWrapper>
-        {mergedSurveyQuestionsGroups.slice(3, 4)}
-      </FormLayoutWrapper>
-    ) : currentStepperPosition === 5 ? (
-      <FormLayoutWrapper>
-        {mergedSurveyQuestionsGroups.slice(4, 5)}
-      </FormLayoutWrapper>
-    ) : (
+    ) : currentStepperPosition === maxStepperPosition ? (
       displaySubmitButton
-    );
+    ) : null;
+
+  // const displaySurveyBuilderForm =
+  //   currentStepperPosition === 0 ? (
+  //     displaySurveyDetailsFormPageOne
+  //   ) : currentStepperPosition === 1 ? (
+  //     <FormLayoutWrapper>
+  //       {mergedSurveyQuestionsGroups.slice(0, 1)}
+  //     </FormLayoutWrapper>
+  //   ) : currentStepperPosition === maxStepperPosition - 1 ? (
+  //     displaySurveyBuilderReviewPage
+  //   ) : currentStepperPosition === maxStepperPosition ? (
+  //     displaySubmitButton
+  //   ) : null;
 
   useEffect(() => {
     logState({

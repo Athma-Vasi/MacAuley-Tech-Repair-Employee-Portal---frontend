@@ -1,15 +1,6 @@
-import { QueryResponseData, ResourceRoutePaths, UserRoles } from '../../types';
-
-type UseFetchMethods = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
-type UseFetchRoleFlags = 'Employee' | 'Manager' | 'Admin';
-
 type UseFetchProps = {
-  body?: string;
-  method: UseFetchMethods;
+  request: Request;
   initialUrl: URL;
-  //   fileUploadFieldName: string;
-  //   fileUploadIdFieldName: string;
-  //   isFileUploadsWithResource: boolean;
 };
 
 type UseFetchState = {
@@ -26,11 +17,10 @@ type UseFetchState = {
 };
 
 type FetchDataInput = {
-  body?: string | null;
+  request: Request;
   signal: AbortSignal;
   isMounted: boolean;
   url: URL;
-  method: UseFetchMethods;
 };
 
 type UseFetchAction = {
@@ -83,9 +73,7 @@ export type {
   FetchDataInput,
   UseFetchAction,
   UseFetchDispatch,
-  UseFetchMethods,
   UseFetchProps,
   UseFetchReducer,
-  UseFetchRoleFlags,
   UseFetchState,
 };

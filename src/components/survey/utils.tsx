@@ -1,5 +1,4 @@
 import { Group, Stack } from '@mantine/core';
-import { Fragment } from 'react';
 
 type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
@@ -48,12 +47,12 @@ function groupMergedQuestionsByAmount({
 }: GroupMergedQuestionsByAmountProps): JSX.Element[] {
   let counter = 0;
 
-  return questionsGroup.reduce((acc: JSX.Element[], curr, index) => {
+  return questionsGroup.reduce((acc: JSX.Element[], curr) => {
     let tempArr: JSX.Element[] = [];
 
     if (counter < amount) {
       tempArr.push(curr);
-      counter++;
+      counter += 1;
     } else {
       tempArr = [];
       tempArr.push(curr);

@@ -1,17 +1,9 @@
-import { useEffect, useMemo, useReducer } from 'react';
-import {
-  FetchDataInput,
-  UseFetchMethods,
-  UseFetchProps,
-  UseFetchRoleFlags,
-  UseFetchState,
-} from './types';
+import { useEffect, useReducer } from 'react';
+import { FetchDataInput, UseFetchProps } from './types';
 import { initialUseFetchState, useFetchReducer } from './state';
 import { useAuth } from '../useAuth';
-import { ResourceRoutePaths } from '../../types';
-import { url } from 'inspector';
 
-function useFetch({ body, method, initialUrl }: UseFetchProps) {
+function useFetch({ initialUrl, request }: UseFetchProps) {
   const [useFetchState, fetchDispatch] = useReducer(
     useFetchReducer,
     initialUseFetchState
@@ -46,9 +38,8 @@ function useFetch({ body, method, initialUrl }: UseFetchProps) {
     const { signal } = controller;
 
     async function fetchData({
-      body = null,
       isMounted,
-      method,
+      request,
       signal,
       url,
     }: FetchDataInput) {
@@ -57,18 +48,23 @@ function useFetch({ body, method, initialUrl }: UseFetchProps) {
         payload: true,
       });
 
-      const request: Request = new Request(url.toString(), {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body,
+      // const requestwithSignal: Request = new Request(url.toString(), {
+      //   method,
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: `Bearer ${accessToken}`,
+      //   },
+      //   body,
+      //   signal,
+      // });
+
+      const requestWithSignal = new Request(url.toString(), {
+        ...request,
         signal,
       });
 
       try {
-        const response = await fetch(request);
+        const response = await fetch(requestWithSignal);
         const data: {
           message: string;
           pages?: number;
@@ -76,7 +72,14 @@ function useFetch({ body, method, initialUrl }: UseFetchProps) {
           resourceData: Record<string, any>[];
         } = await response.json();
 
-        if (!response.ok) {
+        if (isMounted) {
+          if (response.ok) {
+            fetchDispatch({
+              type: 'setData',
+              payload: data.resourceData,
+            });
+          }
+        } else {
           fetchDispatch({
             type: 'setIsError',
             payload: true,
@@ -84,13 +87,6 @@ function useFetch({ body, method, initialUrl }: UseFetchProps) {
           fetchDispatch({
             type: 'setErrorMessage',
             payload: data.message,
-          });
-        }
-
-        if (isMounted) {
-          fetchDispatch({
-            type: 'setData',
-            payload: data.resourceData,
           });
         }
       } catch (error: any) {
