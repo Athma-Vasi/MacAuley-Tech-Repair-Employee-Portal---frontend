@@ -52,6 +52,7 @@ import {
   surveyBuilderReducer,
 } from './state';
 import { SurveyRecipient } from './types';
+import localforage from 'localforage';
 
 function SurveyBuilder() {
   const {
@@ -110,6 +111,47 @@ function SurveyBuilder() {
   useEffect(() => {
     newQuestionInputRef.current?.focus();
   }, [questions.length]);
+  const newResponseDataOptionInputRef = useRef<HTMLInputElement>(null);
+  // set focus on new response data option input
+  useEffect(() => {
+    newResponseDataOptionInputRef.current?.focus();
+  }, [responseDataOptionsArray.length]);
+
+  // // set response data options from localforage to state on mount
+  // useEffect(() => {
+  //   localforage
+  //     .getItem<Array<string[]>>('responseDataOptionsArray')
+  //     .then((responseDataOptionsArray) => {
+  //       if (responseDataOptionsArray) {
+  //         responseDataOptionsArray.forEach(
+  //           (responseDataOptions, questionIdx) => {
+  //             if (
+  //               responseInputHtml[questionIdx] === 'radio' ||
+  //               responseInputHtml[questionIdx] === 'checkbox'
+  //             ) {
+  //               responseDataOptions.forEach((responseDataOption, optionIdx) => {
+  //                 surveyBuilderDispatch({
+  //                   type: surveyBuilderAction.setResponseDataOptions,
+  //                   payload: {
+  //                     questionIdx,
+  //                     optionIdx,
+  //                     value: responseDataOption,
+  //                   },
+  //                 });
+  //               });
+  //             } else {
+  //               surveyBuilderDispatch({
+  //                 type: surveyBuilderAction.deleteAllResponseDataOptionsForQuestion,
+  //                 payload: {
+  //                   questionIdx,
+  //                 },
+  //               });
+  //             }
+  //           }
+  //         );
+  //       }
+  //     });
+  // }, [responseInputHtml]);
 
   // validate survey title on every change
   useEffect(() => {
@@ -217,7 +259,54 @@ function SurveyBuilder() {
         },
       });
     });
+
+    // // if an option is selected that causes options to be removed, local forage can be used until form is submitted
+    // localforage.setItem(
+    //   'surveyBuilder-responseDataOptionsArray',
+    //   responseDataOptionsArray
+    // );
   }, [responseDataOptionsArray]);
+
+  // on every response type change, set the corresponding input kind as default
+  // as logic for display of 'Add option' button depends on a state change and component rerender
+  useEffect(() => {
+    responseKinds.forEach((responseKind, index) => {
+      switch (responseKind) {
+        case 'chooseOne': {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setResponseInputHtml,
+            payload: {
+              index,
+              value: 'radio',
+            },
+          });
+          break;
+        }
+        case 'chooseAny': {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setResponseInputHtml,
+            payload: {
+              index,
+              value: 'checkbox',
+            },
+          });
+          break;
+        }
+        case 'rating': {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setResponseInputHtml,
+            payload: {
+              index,
+              value: 'emotion',
+            },
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    });
+  }, [responseKinds]);
 
   // validate stepper state on every change
   useEffect(() => {
@@ -598,7 +687,7 @@ function SurveyBuilder() {
 
   const responseDataOptionsTextInputCreatorInfoArray: AccessibleTextInputCreatorInfo[][] =
     Array.from({
-      length: questions.length,
+      length: responseDataOptionsArray?.length,
     }).map((_, questionIdx) => {
       const responseDataOptionsTextInputCreatorInfo: AccessibleTextInputCreatorInfo[] =
         Array.from({
@@ -653,6 +742,11 @@ function SurveyBuilder() {
             },
             placeholder: 'Enter response data option',
             // semanticName: `option ${questionIdx + 1} ${optionIdx + 1}`,
+            // ref: index === questions.length - 1 ? newQuestionInputRef : null,
+            ref:
+              optionIdx === responseDataOptionsArray?.[questionIdx]?.length - 1
+                ? newResponseDataOptionInputRef
+                : null,
             semanticName: `Question ${questionIdx + 1}: option-${
               optionIdx + 1
             }`,
@@ -678,11 +772,6 @@ function SurveyBuilder() {
 
       return responseDataOptionsTextInputCreatorInfo;
     });
-
-  console.log(
-    'responseDataOptionsTextInputCreatorInfoArray',
-    responseDataOptionsTextInputCreatorInfoArray
-  );
 
   const addNewQuestionButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonVariant: 'outline',
@@ -710,13 +799,6 @@ function SurveyBuilder() {
           },
         },
       });
-
-      // surveyBuilderDispatch({
-      //   type: surveyBuilderAction.addNewResponseDataOption,
-      //   payload: {
-      //     questionIdx: questions.length,
-      //   },
-      // });
 
       surveyBuilderDispatch({
         type: surveyBuilderAction.setResponseDataOptionsCounts,
@@ -816,10 +898,13 @@ function SurveyBuilder() {
 
   const createdResponseDataOptionsTextInputs =
     responseDataOptionsTextInputCreatorInfoArray.map(
-      (responseDataOptionsTextInputCreatorInfo) =>
-        returnAccessibleDynamicTextInputElements(
-          responseDataOptionsTextInputCreatorInfo
-        )
+      (responseDataOptionsTextInputCreatorInfo, index) =>
+        responseInputHtml[index] === 'checkbox' ||
+        responseInputHtml[index] === 'radio'
+          ? returnAccessibleDynamicTextInputElements(
+              responseDataOptionsTextInputCreatorInfo
+            )
+          : null
     );
 
   const createdResponseKindRadioGroups =
@@ -848,6 +933,10 @@ function SurveyBuilder() {
             ])
           : null
     );
+  console.log(
+    'createdAddNewResponseDataOptionButtons',
+    createdAddNewResponseDataOptionButtons
+  );
 
   const maxStepperPosition = stepperDescriptionObjects.length + 1;
   const displaySubmitButton =

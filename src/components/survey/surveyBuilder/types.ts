@@ -179,6 +179,7 @@ type SurveyBuilderAction = {
 
   deleteResponseDataOption: 'deleteResponseDataOption';
   addNewResponseDataOption: 'addNewResponseDataOption';
+  deleteAllResponseDataOptionsForQuestion: 'deleteAllResponseDataOptionsForQuestion';
 
   setTriggerFormSubmit: 'setTriggerFormSubmit';
   updateStepperDescriptionObjects: 'updateStepperDescriptionObjects';
@@ -291,7 +292,9 @@ type SurveyBuilderDispatch =
       };
     }
   | {
-      type: SurveyBuilderAction['addNewResponseDataOption'];
+      type:
+        | SurveyBuilderAction['addNewResponseDataOption']
+        | SurveyBuilderAction['deleteAllResponseDataOptionsForQuestion'];
       payload: {
         questionIdx: number;
       };

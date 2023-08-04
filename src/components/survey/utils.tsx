@@ -5,7 +5,7 @@ type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
   createdResponseKindRadioGroups: JSX.Element[];
   createdResponseInputHtmlRadioGroups: JSX.Element[];
-  createdResponseDataOptionsTextInputs: JSX.Element[][];
+  createdResponseDataOptionsTextInputs: (JSX.Element[] | null)[];
   createdAddNewResponseDataOptionButtons: (JSX.Element[] | null)[];
   displayAddNewQuestionButton?: JSX.Element | undefined | null;
 };
@@ -26,7 +26,7 @@ function mergeSurveyQuestionsGroup({
       {createdQuestionsTextInput}
       {createdResponseKindRadioGroups[index]}
       {createdResponseInputHtmlRadioGroups[index]}
-      {createdResponseDataOptionsTextInputs[index]}
+      {createdResponseDataOptionsTextInputs?.[index]}
       <Group w="100%" position="center">
         {createdAddNewResponseDataOptionButtons?.[index]}
       </Group>

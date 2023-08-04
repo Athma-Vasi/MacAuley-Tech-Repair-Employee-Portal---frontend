@@ -49,9 +49,9 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   responseInputHtml: ['checkbox'],
 
   responseDataOptionsArray: [],
-  areResponseDataOptionsValid: [[false]],
-  areResponseDataOptionsFocused: [[false]],
-  responseDataOptionsCounts: [1],
+  areResponseDataOptionsValid: [],
+  areResponseDataOptionsFocused: [],
+  responseDataOptionsCounts: [0],
   isMaxResponseDataOptionsReached: [false],
 
   triggerFormSubmit: false,
@@ -101,8 +101,11 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setAreResponseDataOptionsValid: 'setAreResponseDataOptionsValid',
   setAreResponseDataOptionsFocused: 'setAreResponseDataOptionsFocused',
   setIsMaxResponseDataOptionsReached: 'setIsMaxResponseDataOptionsReached',
+
   deleteResponseDataOption: 'deleteResponseDataOption',
   addNewResponseDataOption: 'addNewResponseDataOption',
+  deleteAllResponseDataOptionsForQuestion:
+    'deleteAllResponseDataOptionsForQuestion',
 
   setTriggerFormSubmit: 'setTriggerFormSubmit',
   updateStepperDescriptionObjects: 'updateStepperDescriptionObjects',
@@ -466,6 +469,53 @@ function surveyBuilderReducer(
         responseDataOptionsArray,
         areResponseDataOptionsValid,
         areResponseDataOptionsFocused,
+        isMaxResponseDataOptionsReached,
+      };
+    }
+
+    case surveyBuilderAction.deleteAllResponseDataOptionsForQuestion: {
+      const { questionIdx } = action.payload;
+      const responseDataOptionsArray = structuredClone(
+        state.responseDataOptionsArray
+      );
+
+      // delete the options belonging to the question
+      const questionOptions = responseDataOptionsArray[questionIdx];
+      questionOptions.splice(questionIdx, 1);
+      responseDataOptionsArray[questionIdx] = questionOptions;
+
+      // delete the options' validity
+      const areResponseDataOptionsValid = structuredClone(
+        state.areResponseDataOptionsValid
+      );
+      const questionValidity = areResponseDataOptionsValid[questionIdx];
+      questionValidity.splice(questionIdx);
+      areResponseDataOptionsValid[questionIdx] = questionValidity;
+
+      // delete the options' focus
+      const areResponseDataOptionsFocused = structuredClone(
+        state.areResponseDataOptionsFocused
+      );
+      const questionFocus = areResponseDataOptionsFocused[questionIdx];
+      questionFocus.splice(questionIdx);
+      areResponseDataOptionsFocused[questionIdx] = questionFocus;
+
+      // decrement the responseDataOptionsCount
+      const responseDataOptionsCounts = [...state.responseDataOptionsCounts];
+      responseDataOptionsCounts[questionIdx] = 0;
+
+      // remove the max response data options reached
+      const isMaxResponseDataOptionsReached = [
+        ...state.isMaxResponseDataOptionsReached,
+      ];
+      isMaxResponseDataOptionsReached[questionIdx] = false;
+
+      return {
+        ...state,
+        responseDataOptionsArray,
+        areResponseDataOptionsValid,
+        areResponseDataOptionsFocused,
+        responseDataOptionsCounts,
         isMaxResponseDataOptionsReached,
       };
     }
