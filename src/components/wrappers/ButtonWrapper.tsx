@@ -43,10 +43,6 @@ type ButtonWrapperProps = {
 
 function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
   const {
-    globalState: { width },
-  } = useGlobalState();
-
-  const {
     buttonLabel,
     buttonType = 'button',
     buttonOnClick = () => {},
@@ -60,7 +56,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     compact = false,
     leftIcon = buttonType === 'submit' ? <TbUpload /> : null,
     rightIcon = null,
-    size = width < 1024 ? 'xs' : 'sm',
+    size = 'xs',
   } = creatorInfoObject;
 
   return (

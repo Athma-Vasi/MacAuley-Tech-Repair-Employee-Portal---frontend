@@ -1,3 +1,4 @@
+import { Group, Stack } from '@mantine/core';
 import { Fragment } from 'react';
 
 type MergeSurveyQuestionsGroupProps = {
@@ -5,7 +6,7 @@ type MergeSurveyQuestionsGroupProps = {
   createdResponseKindRadioGroups: JSX.Element[];
   createdResponseInputHtmlRadioGroups: JSX.Element[];
   createdResponseDataOptionsTextInputs: JSX.Element[][];
-  createdAddNewResponseDataOptionButtons: JSX.Element[][];
+  createdAddNewResponseDataOptionButtons: (JSX.Element[] | null)[];
   displayAddNewQuestionButton?: JSX.Element | undefined | null;
 };
 
@@ -18,14 +19,18 @@ function mergeSurveyQuestionsGroup({
   displayAddNewQuestionButton,
 }: MergeSurveyQuestionsGroupProps) {
   return createdQuestionsTextInputs.map((createdQuestionsTextInput, index) => (
-    <Fragment key={`${index}`}>
+    <Stack key={`${index}`} w="100%">
+      <Group w="100%" position="center">
+        {displayAddNewQuestionButton ?? null}
+      </Group>
       {createdQuestionsTextInput}
       {createdResponseKindRadioGroups[index]}
       {createdResponseInputHtmlRadioGroups[index]}
       {createdResponseDataOptionsTextInputs[index]}
-      {createdAddNewResponseDataOptionButtons[index]}
-      {displayAddNewQuestionButton ?? null}
-    </Fragment>
+      <Group w="100%" position="center">
+        {createdAddNewResponseDataOptionButtons?.[index]}
+      </Group>
+    </Stack>
   ));
 }
 

@@ -2,7 +2,7 @@ import { Text } from '@mantine/core';
 import { Group, Tooltip } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { MdOutlineAdd } from 'react-icons/md';
-import { TbUpload } from 'react-icons/tb';
+import { TbPlus, TbUpload } from 'react-icons/tb';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -43,6 +43,7 @@ import {
   SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
   SURVEY_BUILDER_RECIPIENT_DATA,
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
+  SURVEY_MAX_RESPONSE_DATA_OPTIONS,
 } from '../constants';
 import { mergeSurveyQuestionsGroup } from '../utils';
 import {
@@ -204,6 +205,20 @@ function SurveyBuilder() {
     });
   }, [responseDataOptionsArray]);
 
+  // validate max response data options on every change
+  useEffect(() => {
+    responseDataOptionsArray.forEach((responseDataOptions, index) => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setIsMaxResponseDataOptionsReached,
+        payload: {
+          index,
+          value:
+            responseDataOptions.length === SURVEY_MAX_RESPONSE_DATA_OPTIONS,
+        },
+      });
+    });
+  }, [responseDataOptionsArray]);
+
   // validate stepper state on every change
   useEffect(() => {
     const isStepInError =
@@ -238,6 +253,34 @@ function SurveyBuilder() {
           });
     });
   }, [areValidQuestions]);
+
+  // validate stepper state on every dynamically created response data options input groups
+  useEffect(() => {
+    areResponseDataOptionsValid.forEach(
+      (areValidResponseDataOptions, index) => {
+        const isAnyResponseDataForQuestionInError =
+          areValidResponseDataOptions.some(
+            (isValidResponseDataOption) => !isValidResponseDataOption
+          );
+
+        isAnyResponseDataForQuestionInError
+          ? surveyBuilderDispatch({
+              type: surveyBuilderAction.setStepsInError,
+              payload: {
+                kind: 'add',
+                step: index + 1,
+              },
+            })
+          : surveyBuilderDispatch({
+              type: surveyBuilderAction.setStepsInError,
+              payload: {
+                kind: 'delete',
+                step: index + 1,
+              },
+            });
+      }
+    );
+  }, [areResponseDataOptionsValid]);
 
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleErrorValidTextElements({
@@ -282,12 +325,6 @@ function SurveyBuilder() {
       inputTextArray: questions,
       areValidInputTexts: areValidQuestions,
       areInputTextsFocused: areQuestionsFocused,
-      // regexValidationProps: {
-      //   content: questions.map((question) => question).join(' '),
-      //   contentKind: 'question',
-      //   minLength: 2,
-      //   maxLength: 75,
-      // },
       regexValidationProps: questions.map((question) => ({
         content: question,
         contentKind: 'question',
@@ -297,45 +334,6 @@ function SurveyBuilder() {
       regexValidationFunction: returnGrammarValidationText,
     });
 
-  // const [responseDataOptionsErrorTextArray, responseDataOptionsValidTextArray] =
-  //   responseDataOptionsArray.reduce(
-  //     (acc, responseDataOptions, index) => {
-  //       const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
-  //         returnAccessibleErrorValidTextElementsForDynamicInputs({
-  //           semanticName: 'response data option',
-  //           inputTextArray: responseDataOptions,
-  //           areValidInputTexts: areResponseDataOptionsValid[index],
-  //           areInputTextsFocused: areResponseDataOptionsFocused[index],
-  //           regexValidationProps: {
-  //             content: responseDataOptions
-  //               .map((responseDataOption) => responseDataOption)
-  //               .join(' '),
-  //             contentKind: 'response data option',
-  //             minLength: 2,
-  //             maxLength: 75,
-  //           },
-  //           regexValidationFunction: returnGrammarValidationText,
-  //         });
-
-  //       // acc[0].push(responseDataOptionsErrorTexts);
-  //       // acc[1].push(responseDataOptionsValidTexts);
-  //       acc.push([
-  //         responseDataOptionsErrorTexts,
-  //         responseDataOptionsValidTexts,
-  //       ]);
-
-  //       return acc;
-  //     },
-  //     // Array.from({ length: responseDataOptionsArray.length }).map(
-  //     //   (_, idx) =>
-  //     //     Array.from({ length: responseDataOptionsArray[idx].length }) as [
-  //     //       JSX.Element[],
-  //     //       JSX.Element[]
-  //     //     ]
-  //     // )
-  //     [] as [JSX.Element[], JSX.Element[]][]
-  //   );
-
   const responseDataOptionsErrorValidTextArrays: [
     JSX.Element[],
     JSX.Element[]
@@ -344,19 +342,14 @@ function SurveyBuilder() {
       returnAccessibleErrorValidTextElementsForDynamicInputs({
         semanticName: `Question ${questionIdx + 1}: option`,
         inputTextArray: responseDataOptions,
-        areValidInputTexts: areResponseDataOptionsValid[questionIdx],
-        areInputTextsFocused: areResponseDataOptionsFocused[questionIdx],
-        regexValidationProps: responseDataOptions.map(
-          (responseDataOption, optionIdx) => ({
-            content: responseDataOption,
-            // contentKind: `Question ${questionIdx + 1}: option: ${
-            //   optionIdx + 1
-            // }`,
-            contentKind: 'text',
-            minLength: 2,
-            maxLength: 75,
-          })
-        ),
+        areValidInputTexts: areResponseDataOptionsValid?.[questionIdx],
+        areInputTextsFocused: areResponseDataOptionsFocused?.[questionIdx],
+        regexValidationProps: responseDataOptions.map((responseDataOption) => ({
+          content: responseDataOption,
+          contentKind: 'text',
+          minLength: 2,
+          maxLength: 75,
+        })),
         regexValidationFunction: returnGrammarValidationText,
       });
 
@@ -490,11 +483,11 @@ function SurveyBuilder() {
     }).map((_, index) => {
       const creatorInfoObject: AccessibleTextInputCreatorInfo = {
         description: {
-          error: questionInputsErrorText[index],
-          valid: questionInputsValidText[index],
+          error: questionInputsErrorText?.[index],
+          valid: questionInputsValidText?.[index],
         },
-        inputText: questions[index],
-        isValidInputText: areValidQuestions[index],
+        inputText: questions?.[index],
+        isValidInputText: areValidQuestions?.[index],
         label: `Question ${index + 1}`,
         onBlur: () => {
           surveyBuilderDispatch({
@@ -565,7 +558,7 @@ function SurveyBuilder() {
           });
         },
         semanticName: `response type for question ${index + 1}`,
-        value: responseKinds[index],
+        value: responseKinds?.[index],
         required: true,
         withAsterisk: true,
       };
@@ -578,7 +571,7 @@ function SurveyBuilder() {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
         description: 'Choose an input kind',
         dataObjectArray: SURVEY_BUILDER_INPUT_HTML_DATA.get(
-          responseKinds[index]
+          responseKinds?.[index]
         ) as {
           value: string;
           label: string;
@@ -595,7 +588,7 @@ function SurveyBuilder() {
           });
         },
         semanticName: `html input kind for question ${index + 1}`,
-        value: responseInputHtml[index],
+        value: responseInputHtml?.[index],
         required: true,
         withAsterisk: true,
       };
@@ -605,7 +598,7 @@ function SurveyBuilder() {
 
   const responseDataOptionsTextInputCreatorInfoArray: AccessibleTextInputCreatorInfo[][] =
     Array.from({
-      length: responseDataOptionsArray.length,
+      length: questions.length,
     }).map((_, questionIdx) => {
       const responseDataOptionsTextInputCreatorInfo: AccessibleTextInputCreatorInfo[] =
         Array.from({
@@ -693,14 +686,15 @@ function SurveyBuilder() {
 
   const addNewQuestionButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonVariant: 'outline',
+
     buttonLabel: (
       <Tooltip label="Add new question">
         <Group>
-          <MdOutlineAdd size={20} />
-          <Text color="gray">Add</Text>
+          <Text>Add question</Text>
         </Group>
       </Tooltip>
     ),
+    leftIcon: <TbPlus />,
     buttonOnClick: () => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.addNewQuestionGroup,
@@ -714,6 +708,21 @@ function SurveyBuilder() {
             description: `Enter question ${questions.length + 1}`,
             ariaLabel: `Enter question ${questions.length + 1}`,
           },
+        },
+      });
+
+      // surveyBuilderDispatch({
+      //   type: surveyBuilderAction.addNewResponseDataOption,
+      //   payload: {
+      //     questionIdx: questions.length,
+      //   },
+      // });
+
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setResponseDataOptionsCounts,
+        payload: {
+          questionIdx: questions.length,
+          kind: 'increment',
         },
       });
 
@@ -734,11 +743,11 @@ function SurveyBuilder() {
         buttonLabel: (
           <Tooltip label="Add new response data option">
             <Group>
-              <MdOutlineAdd size={20} />
-              <Text color="gray">Add new data</Text>
+              <Text>Add option</Text>
             </Group>
           </Tooltip>
         ),
+        leftIcon: <TbPlus />,
         buttonOnClick: () => {
           surveyBuilderDispatch({
             type: surveyBuilderAction.addNewResponseDataOption,
@@ -751,6 +760,13 @@ function SurveyBuilder() {
             payload: {
               questionIdx: index,
               kind: 'increment',
+            },
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsMaxResponseDataOptionsReached,
+            payload: {
+              index: index,
+              value: false,
             },
           });
         },
@@ -776,6 +792,24 @@ function SurveyBuilder() {
     buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
+  const [createdSurveyDescriptionTextAreaInput] =
+    returnAccessibleTextAreaInputElements([
+      surveyDescriptionTextAreaInputCreatorInfo,
+    ]);
+
+  const [createdSurveyRecipientsSelectInput] =
+    returnAccessibleSelectInputElements([
+      surveyRecipientsSelectInputCreatorInfo,
+    ]);
+
+  const [createdExpiryDateInput] = returnAccessibleDateTimeElements([
+    expiryDateInputCreatorInfo,
+  ]);
+
+  const [createdSurveyTitleInput] = returnAccessibleTextInputElements([
+    surveyTitleInputCreatorInfo,
+  ]);
+
   const createdQuestionsTextInputs = returnAccessibleDynamicTextInputElements(
     questionsInputCreatorInfo
   );
@@ -788,16 +822,6 @@ function SurveyBuilder() {
         )
     );
 
-  const [createdSurveyDescriptionTextAreaInput] =
-    returnAccessibleTextAreaInputElements([
-      surveyDescriptionTextAreaInputCreatorInfo,
-    ]);
-
-  const [createdSurveyRecipientsSelectInput] =
-    returnAccessibleSelectInputElements([
-      surveyRecipientsSelectInputCreatorInfo,
-    ]);
-
   const createdResponseKindRadioGroups =
     returnAccessibleDynamicRadioGroupInputsElements(
       responseKindRadioGroupCreatorInfo
@@ -808,14 +832,6 @@ function SurveyBuilder() {
       responseInputHtmlRadioGroupCreatorInfo
     );
 
-  const [createdExpiryDateInput] = returnAccessibleDateTimeElements([
-    expiryDateInputCreatorInfo,
-  ]);
-
-  const [createdSurveyTitleInput] = returnAccessibleTextInputElements([
-    surveyTitleInputCreatorInfo,
-  ]);
-
   const [createdAddNewQuestionButton, createdSubmitButton] =
     returnAccessibleButtonElements([
       addNewQuestionButtonCreatorInfo,
@@ -824,10 +840,13 @@ function SurveyBuilder() {
 
   const createdAddNewResponseDataOptionButtons =
     addNewResponseDataOptionButtonCreatorInfo.map(
-      (addNewResponseDataOptionButtonCreatorInfo) =>
-        returnAccessibleButtonElements([
-          addNewResponseDataOptionButtonCreatorInfo,
-        ])
+      (addNewResponseDataOptionButtonCreatorInfo, index) =>
+        responseInputHtml[index] === 'checkbox' ||
+        responseInputHtml[index] === 'radio'
+          ? returnAccessibleButtonElements([
+              addNewResponseDataOptionButtonCreatorInfo,
+            ])
+          : null
     );
 
   const maxStepperPosition = stepperDescriptionObjects.length + 1;

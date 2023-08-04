@@ -10,6 +10,7 @@ import { ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
 import { ButtonWrapper } from './ButtonWrapper';
+import { TbTrash } from 'react-icons/tb';
 
 type AccessibleTextInputCreatorInfo = {
   semanticName: string;
@@ -118,7 +119,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
                     semanticName: `${
                       dynamicInputProps.semanticAction
                     } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
-                    leftIcon: <FontAwesomeIcon icon={faTrash} />,
+                    leftIcon: <TbTrash />,
                   }}
                 />
               </Group>
