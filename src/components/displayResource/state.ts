@@ -1,3 +1,4 @@
+import { UseFetchState } from '../../hooks/useFetch/types';
 import {
   DisplayResourceAction,
   DisplayResourceDispatch,

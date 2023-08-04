@@ -24,6 +24,7 @@ import {
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
+  logState,
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../../utils';
@@ -444,11 +445,6 @@ function SurveyBuilder() {
 
     return [responseDataOptionsErrorTexts, responseDataOptionsValidTexts];
   });
-
-  console.log(
-    'responseDataOptionsErrorValidTextArrays',
-    responseDataOptionsErrorValidTextArrays
-  );
 
   // following are info objects for input creators
   const surveyTitleInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -933,10 +929,6 @@ function SurveyBuilder() {
             ])
           : null
     );
-  console.log(
-    'createdAddNewResponseDataOptionButtons',
-    createdAddNewResponseDataOptionButtons
-  );
 
   const maxStepperPosition = stepperDescriptionObjects.length + 1;
   const displaySubmitButton =
@@ -997,12 +989,10 @@ function SurveyBuilder() {
     );
 
   useEffect(() => {
-    console.group('SurveyBuilder');
-    Object.entries(surveyBuilderState).forEach(([key, value]) => {
-      console.log(`${key}:  `, JSON.stringify(value, null, 2));
+    logState({
+      state: surveyBuilderState,
+      groupLabel: 'survey builder state',
     });
-    console.log('maxStepperPosition', maxStepperPosition);
-    console.groupEnd();
   }, [surveyBuilderState, maxStepperPosition]);
 
   const displaySurveyBuilderComponent = (
