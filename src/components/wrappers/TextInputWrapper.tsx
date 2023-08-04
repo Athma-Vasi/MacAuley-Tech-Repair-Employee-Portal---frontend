@@ -20,6 +20,7 @@ type AccessibleTextInputCreatorInfo = {
    */
   dynamicInputProps?: {
     semanticAction: string;
+    dynamicLabel?: string;
     dynamicIndex: number;
     dynamicIcon?: ReactNode;
     dynamicInputOnClick: () => void;
@@ -106,19 +107,25 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
         dynamicInputProps ? (
           <Flex align="center" justify="space-between" columnGap="xl">
             <Text>{`${semanticNameCapitalized}`}</Text>
-            <Tooltip label={`${semanticActionCapitalized} ${semanticName}`}>
+            <Tooltip
+              label={
+                dynamicInputProps?.dynamicLabel
+                  ? dynamicInputProps?.dynamicLabel
+                  : `${semanticActionCapitalized} ${semanticName}`
+              }
+            >
               <Group>
                 <ButtonWrapper
                   creatorInfoObject={{
                     buttonVariant: 'outline',
                     buttonLabel: 'Delete',
-                    buttonOnClick: dynamicInputProps.dynamicInputOnClick,
+                    buttonOnClick: dynamicInputProps?.dynamicInputOnClick,
                     semanticDescription: `${
-                      dynamicInputProps.semanticAction
-                    } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
+                      dynamicInputProps?.semanticAction
+                    } ${semanticName} ${dynamicInputProps?.dynamicIndex + 1}`,
                     semanticName: `${
-                      dynamicInputProps.semanticAction
-                    } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
+                      dynamicInputProps?.semanticAction
+                    } ${semanticName} ${dynamicInputProps?.dynamicIndex + 1}`,
                     leftIcon: <TbTrash />,
                   }}
                 />

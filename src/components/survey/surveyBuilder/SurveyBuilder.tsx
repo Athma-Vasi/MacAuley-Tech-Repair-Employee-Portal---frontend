@@ -750,6 +750,20 @@ function SurveyBuilder() {
             withAsterisk: true,
             dynamicInputProps: {
               dynamicIndex: optionIdx,
+              dynamicLabel: `Delete ${
+                questions[questionIdx].length > 11
+                  ? // rome-ignore lint/style/useTemplate: <explanation>
+                    questions[questionIdx].slice(0, 11) + '...'
+                  : questions[questionIdx]
+              }: ${
+                responseDataOptionsArray?.[questionIdx]?.[optionIdx].length > 11
+                  ? // rome-ignore lint/style/useTemplate: <explanation>
+                    responseDataOptionsArray?.[questionIdx]?.[optionIdx].slice(
+                      0,
+                      11
+                    ) + '...'
+                  : responseDataOptionsArray?.[questionIdx]?.[optionIdx]
+              }`,
               dynamicInputOnClick: () => {
                 surveyBuilderDispatch({
                   type: surveyBuilderAction.deleteResponseDataOption,
@@ -819,12 +833,19 @@ function SurveyBuilder() {
       const creatorInfoObject: AccessibleButtonCreatorInfo = {
         buttonVariant: 'outline',
         buttonLabel: (
-          <Tooltip label="Add new response data option">
+          <Tooltip
+            label={
+              isMaxResponseDataOptionsReached?.[index]
+                ? 'Max response data options reached'
+                : 'Add new response data option'
+            }
+          >
             <Group>
               <Text>Add option</Text>
             </Group>
           </Tooltip>
         ),
+        buttonDisabled: isMaxResponseDataOptionsReached?.[index],
         leftIcon: <TbPlus />,
         buttonOnClick: () => {
           surveyBuilderDispatch({
