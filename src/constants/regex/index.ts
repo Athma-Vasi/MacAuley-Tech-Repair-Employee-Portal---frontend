@@ -234,6 +234,14 @@ const GRAMMAR_TEXTAREA_INPUT_REGEX =
  */
 const GRAMMAR_TEXT_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
 
+// const grammar = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
+// const unicode = /[\p{L}-]+/gu;
+
+// const GRAMMAR_TEXT_INPUT_REGEX = new RegExp(
+//   `(${grammar.source})|(${unicode.source})`,
+//   'gu'
+// );
+
 /**
  * matches the exact Marauder's Map phrase
  */

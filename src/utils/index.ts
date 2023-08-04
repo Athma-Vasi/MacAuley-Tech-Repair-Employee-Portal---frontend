@@ -162,6 +162,13 @@ function returnGrammarValidationText({
 }: RegexValidationProps): string {
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
+  // const grammar = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
+  // const unicode = /[\p{L}-]+/gu;
+  // const wordCharacterWhitespacePunctuationRegex = new RegExp(
+  //   `(${grammar.source})|(${unicode.source})`,
+  //   'gu'
+  // );
+
   const contentLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
 
   const joinedContent = content.split('\n').join('');

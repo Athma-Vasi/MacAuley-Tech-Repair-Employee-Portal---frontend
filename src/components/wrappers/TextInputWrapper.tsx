@@ -7,10 +7,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Flex, Group, Text, TextInput, Tooltip } from '@mantine/core';
 import { ReactNode } from 'react';
+import { TbTrash } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 import { ButtonWrapper } from './ButtonWrapper';
-import { TbTrash } from 'react-icons/tb';
 
 type AccessibleTextInputCreatorInfo = {
   semanticName: string;
@@ -23,6 +23,7 @@ type AccessibleTextInputCreatorInfo = {
     dynamicLabel?: string;
     dynamicIndex: number;
     dynamicIcon?: ReactNode;
+    buttonDisabled?: boolean;
     dynamicInputOnClick: () => void;
   };
   isValidInputText: boolean;
@@ -119,6 +120,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
                   creatorInfoObject={{
                     buttonVariant: 'outline',
                     buttonLabel: 'Delete',
+                    buttonDisabled: dynamicInputProps?.buttonDisabled,
                     buttonOnClick: dynamicInputProps?.dynamicInputOnClick,
                     semanticDescription: `${
                       dynamicInputProps?.semanticAction

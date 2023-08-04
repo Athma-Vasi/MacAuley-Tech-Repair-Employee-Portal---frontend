@@ -7,6 +7,7 @@ type MergeSurveyQuestionsGroupProps = {
   createdResponseInputHtmlRadioGroups: JSX.Element[];
   createdResponseDataOptionsTextInputs: (JSX.Element[] | null)[];
   createdAddNewResponseDataOptionButtons: (JSX.Element[] | null)[];
+  createdHelpButton: JSX.Element;
   displayAddNewQuestionButton?: JSX.Element | undefined | null;
 };
 
@@ -16,18 +17,20 @@ function mergeSurveyQuestionsGroup({
   createdResponseInputHtmlRadioGroups,
   createdResponseDataOptionsTextInputs,
   createdAddNewResponseDataOptionButtons,
+  createdHelpButton,
   displayAddNewQuestionButton,
 }: MergeSurveyQuestionsGroupProps) {
   return createdQuestionsTextInputs.map((createdQuestionsTextInput, index) => (
     <Stack key={`${index}`} w="100%">
-      <Group w="100%" position="center">
+      <Group w="100%" position="apart">
+        {createdHelpButton}
         {displayAddNewQuestionButton ?? null}
       </Group>
       {createdQuestionsTextInput}
       {createdResponseKindRadioGroups[index]}
       {createdResponseInputHtmlRadioGroups[index]}
       {createdResponseDataOptionsTextInputs?.[index]}
-      <Group w="100%" position="center">
+      <Group w="100%" position="right">
         {createdAddNewResponseDataOptionButtons?.[index]}
       </Group>
     </Stack>

@@ -88,7 +88,6 @@ type SurveyBuilderSchema = {
   surveyTitle: string;
   sendTo: SurveyRecipient;
   expiryDate: string;
-  isAnonymous: boolean;
   questions: Array<SurveyQuestion>;
 };
 
@@ -113,7 +112,6 @@ type SurveyBuilderState = {
   isExpiryDateFocused: boolean;
 
   surveyRecipients: SurveyRecipient;
-  isAnonymous: boolean;
 
   questions: Array<string>;
   areValidQuestions: Array<boolean>;
@@ -158,7 +156,6 @@ type SurveyBuilderAction = {
   setIsExpiryDateFocused: 'setIsExpiryDateFocused';
 
   setSurveyRecipients: 'setSurveyRecipients';
-  setIsAnonymous: 'setIsAnonymous';
 
   setQuestions: 'setQuestions';
   setAreValidQuestions: 'setAreValidQuestions';
@@ -218,7 +215,6 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setIsSurveyDescriptionFocused']
         | SurveyBuilderAction['setIsValidExpiryDate']
         | SurveyBuilderAction['setIsExpiryDateFocused']
-        | SurveyBuilderAction['setIsAnonymous']
         | SurveyBuilderAction['setIsMaxQuestionsReached']
         | SurveyBuilderAction['setTriggerFormSubmit']
         | SurveyBuilderAction['setIsError']

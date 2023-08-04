@@ -1,8 +1,15 @@
-import { Text } from '@mantine/core';
+import {
+  Accordion,
+  Button,
+  Flex,
+  HoverCard,
+  Modal,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { Group, Tooltip } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
-import { MdOutlineAdd } from 'react-icons/md';
-import { TbPlus, TbUpload } from 'react-icons/tb';
+import { TbHelp, TbPlus, TbUpload } from 'react-icons/tb';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -12,7 +19,6 @@ import {
 import { useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
-  returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
   returnAccessibleDynamicRadioGroupInputsElements,
   returnAccessibleDynamicTextInputElements,
@@ -30,7 +36,6 @@ import {
 } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
-  AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -53,7 +58,7 @@ import {
   surveyBuilderReducer,
 } from './state';
 import { SurveyRecipient } from './types';
-import localforage from 'localforage';
+import { useDisclosure } from '@mantine/hooks';
 
 function SurveyBuilder() {
   const {
@@ -77,7 +82,6 @@ function SurveyBuilder() {
     isExpiryDateFocused,
 
     surveyRecipients,
-    isAnonymous,
 
     questions,
     areValidQuestions,
@@ -107,6 +111,9 @@ function SurveyBuilder() {
     loadingMessage,
   } = surveyBuilderState;
 
+  const [openedHelpModal, { open: openHelpModal, close: closeHelpModal }] =
+    useDisclosure(false);
+
   const newQuestionInputRef = useRef<HTMLInputElement>(null);
   // set focus on new question input
   useEffect(() => {
@@ -117,42 +124,6 @@ function SurveyBuilder() {
   useEffect(() => {
     newResponseDataOptionInputRef.current?.focus();
   }, [responseDataOptionsArray.length]);
-
-  // // set response data options from localforage to state on mount
-  // useEffect(() => {
-  //   localforage
-  //     .getItem<Array<string[]>>('responseDataOptionsArray')
-  //     .then((responseDataOptionsArray) => {
-  //       if (responseDataOptionsArray) {
-  //         responseDataOptionsArray.forEach(
-  //           (responseDataOptions, questionIdx) => {
-  //             if (
-  //               responseInputHtml[questionIdx] === 'radio' ||
-  //               responseInputHtml[questionIdx] === 'checkbox'
-  //             ) {
-  //               responseDataOptions.forEach((responseDataOption, optionIdx) => {
-  //                 surveyBuilderDispatch({
-  //                   type: surveyBuilderAction.setResponseDataOptions,
-  //                   payload: {
-  //                     questionIdx,
-  //                     optionIdx,
-  //                     value: responseDataOption,
-  //                   },
-  //                 });
-  //               });
-  //             } else {
-  //               surveyBuilderDispatch({
-  //                 type: surveyBuilderAction.deleteAllResponseDataOptionsForQuestion,
-  //                 payload: {
-  //                   questionIdx,
-  //                 },
-  //               });
-  //             }
-  //           }
-  //         );
-  //       }
-  //     });
-  // }, [responseInputHtml]);
 
   // validate survey title on every change
   useEffect(() => {
@@ -260,12 +231,6 @@ function SurveyBuilder() {
         },
       });
     });
-
-    // // if an option is selected that causes options to be removed, local forage can be used until form is submitted
-    // localforage.setItem(
-    //   'surveyBuilder-responseDataOptionsArray',
-    //   responseDataOptionsArray
-    // );
   }, [responseDataOptionsArray]);
 
   // on every response type change, set the corresponding input kind as default
@@ -566,6 +531,16 @@ function SurveyBuilder() {
     Array.from({
       length: questions.length,
     }).map((_, index) => {
+      const dynamicInputLabel =
+        questions.length === 1
+          ? 'Survey must have atleast one question'
+          : `Delete ${
+              questions[index].length > 11
+                ? // rome-ignore lint/style/useTemplate: <explanation>
+                  questions[index].slice(0, 11) + '...'
+                : questions[index]
+            } ?`;
+
       const creatorInfoObject: AccessibleTextInputCreatorInfo = {
         description: {
           error: questionInputsErrorText?.[index],
@@ -573,7 +548,7 @@ function SurveyBuilder() {
         },
         inputText: questions?.[index],
         isValidInputText: areValidQuestions?.[index],
-        label: `Question ${index + 1}`,
+        label: `Question: ${index + 1}`,
         onBlur: () => {
           surveyBuilderDispatch({
             type: surveyBuilderAction.setAreQuestionsFocused,
@@ -604,9 +579,10 @@ function SurveyBuilder() {
         placeholder: 'Enter question',
         semanticName: `question ${index + 1}`,
         required: true,
-        withAsterisk: true,
         dynamicInputProps: {
           dynamicIndex: index,
+          buttonDisabled: questions.length === 1,
+          dynamicLabel: dynamicInputLabel,
           dynamicInputOnClick: () => {
             surveyBuilderDispatch({
               type: surveyBuilderAction.deleteQuestionGroup,
@@ -689,6 +665,21 @@ function SurveyBuilder() {
         Array.from({
           length: responseDataOptionsArray?.[questionIdx]?.length,
         }).map((_, optionIdx) => {
+          const dynamicInputLabel = `Delete ${
+            questions[questionIdx].length > 11
+              ? // rome-ignore lint/style/useTemplate: <explanation>
+                questions[questionIdx].slice(0, 11) + '...'
+              : questions[questionIdx]
+          } ${questions[questionIdx].length > 0 ? ':' : ''} ${
+            responseDataOptionsArray?.[questionIdx]?.[optionIdx].length > 11
+              ? // rome-ignore lint/style/useTemplate: <explanation>
+                responseDataOptionsArray?.[questionIdx]?.[optionIdx].slice(
+                  0,
+                  11
+                ) + '...'
+              : responseDataOptionsArray?.[questionIdx]?.[optionIdx]
+          } ?`;
+
           const creatorInfoObject: AccessibleTextInputCreatorInfo = {
             description: {
               error:
@@ -736,9 +727,7 @@ function SurveyBuilder() {
                 },
               });
             },
-            placeholder: 'Enter response data option',
-            // semanticName: `option ${questionIdx + 1} ${optionIdx + 1}`,
-            // ref: index === questions.length - 1 ? newQuestionInputRef : null,
+            placeholder: 'Enter a response option answer',
             ref:
               optionIdx === responseDataOptionsArray?.[questionIdx]?.length - 1
                 ? newResponseDataOptionInputRef
@@ -747,23 +736,9 @@ function SurveyBuilder() {
               optionIdx + 1
             }`,
             required: true,
-            withAsterisk: true,
             dynamicInputProps: {
               dynamicIndex: optionIdx,
-              dynamicLabel: `Delete ${
-                questions[questionIdx].length > 11
-                  ? // rome-ignore lint/style/useTemplate: <explanation>
-                    questions[questionIdx].slice(0, 11) + '...'
-                  : questions[questionIdx]
-              }: ${
-                responseDataOptionsArray?.[questionIdx]?.[optionIdx].length > 11
-                  ? // rome-ignore lint/style/useTemplate: <explanation>
-                    responseDataOptionsArray?.[questionIdx]?.[optionIdx].slice(
-                      0,
-                      11
-                    ) + '...'
-                  : responseDataOptionsArray?.[questionIdx]?.[optionIdx]
-              }`,
+              dynamicLabel: dynamicInputLabel,
               dynamicInputOnClick: () => {
                 surveyBuilderDispatch({
                   type: surveyBuilderAction.deleteResponseDataOption,
@@ -891,6 +866,16 @@ function SurveyBuilder() {
     buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
+  const helpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Help',
+    semanticDescription: 'survey builder help button',
+    semanticName: 'help button',
+    leftIcon: <TbHelp />,
+    buttonOnClick: () => {
+      openHelpModal();
+    },
+  };
+
   const [createdSurveyDescriptionTextAreaInput] =
     returnAccessibleTextAreaInputElements([
       surveyDescriptionTextAreaInputCreatorInfo,
@@ -934,11 +919,74 @@ function SurveyBuilder() {
       responseInputHtmlRadioGroupCreatorInfo
     );
 
-  const [createdAddNewQuestionButton, createdSubmitButton] =
+  const [createdAddNewQuestionButton, createdHelpButton, createdSubmitButton] =
     returnAccessibleButtonElements([
       addNewQuestionButtonCreatorInfo,
+      helpButtonCreatorInfo,
       submitButtonCreatorInfo,
     ]);
+
+  const displayHelpTextModal = (
+    <Modal
+      opened={openedHelpModal}
+      onClose={closeHelpModal}
+      centered
+      title={
+        <Text size="xl" color="dark">
+          Help
+        </Text>
+      }
+    >
+      <Flex direction="column" align="center" justify="flex-start" rowGap="xs">
+        <Text size="sm" color="dark">
+          <strong>Question: </strong>Enter a question for your survey. Your
+          survey can have multiple questions (currently a maximum of 3).
+        </Text>
+        <Group w="100%" position="left" pl="sm">
+          <Text size="sm" color="dark">
+            Example: How do you typically commute to work?
+          </Text>
+        </Group>
+
+        <Text size="sm" color="dark">
+          <strong>Response kind:</strong> Select the type of response you want
+          to collect for your question from the entered options. Choose 'Choose
+          one' for a single response, or 'Choose any' for multiple responses, or
+          'Rating' for a rating.
+        </Text>
+        <Group w="100%" position="left" pl="sm">
+          <Text size="sm" color="dark">
+            Example: 'Choose one' or 'Choose any' for answer relating to
+            commute.
+          </Text>
+        </Group>
+
+        <Text size="sm" color="dark">
+          <strong>Input kind</strong>: Select the type of HTML input you want to
+          use for your response. Currently, there are 'Agree/Disagree', 'Radio',
+          'Checkbox', and 'Emotion', 'Stars'.
+        </Text>
+        <Group w="100%" position="left" pl="sm">
+          <Text size="sm" color="dark">
+            Example: 'Radio' to constrain response to single choice. 'Checkbox'
+            to allow multiple choices.
+          </Text>
+        </Group>
+
+        <Text size="sm" color="dark">
+          <strong>Response data options:</strong> Enter the response data
+          options for your question (currently a maximum of 7 options per
+          question).
+        </Text>
+        <Group w="100%" position="left" pl="sm">
+          <Text size="sm" color="dark">
+            Example: 'Personal vehicle', 'Public transport', 'Ride share ', etc.
+            Each response data option input corresponds to a choice.
+          </Text>
+        </Group>
+      </Flex>
+    </Modal>
+  );
 
   const createdAddNewResponseDataOptionButtons =
     addNewResponseDataOptionButtonCreatorInfo.map(
@@ -965,6 +1013,7 @@ function SurveyBuilder() {
     createdResponseInputHtmlRadioGroups,
     createdResponseDataOptionsTextInputs,
     createdAddNewResponseDataOptionButtons,
+    createdHelpButton,
     displayAddNewQuestionButton,
   });
 
@@ -1027,6 +1076,7 @@ function SurveyBuilder() {
       stepsInError={stepsInError}
     >
       {displaySurveyBuilderForm}
+      {displayHelpTextModal}
     </StepperWrapper>
   );
 

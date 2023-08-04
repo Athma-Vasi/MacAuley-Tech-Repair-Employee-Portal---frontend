@@ -38,7 +38,6 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   isExpiryDateFocused: false,
 
   surveyRecipients: 'All',
-  isAnonymous: false,
 
   questions: [''],
   areValidQuestions: [false],
@@ -83,7 +82,6 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setIsExpiryDateFocused: 'setIsExpiryDateFocused',
 
   setSurveyRecipients: 'setSurveyRecipients',
-  setIsAnonymous: 'setIsAnonymous',
 
   setQuestions: 'setQuestions',
   setAreValidQuestions: 'setAreValidQuestions',
@@ -619,11 +617,6 @@ function surveyBuilderReducer(
       return {
         ...state,
         surveyRecipients: action.payload,
-      };
-    case surveyBuilderAction.setIsAnonymous:
-      return {
-        ...state,
-        isAnonymous: action.payload,
       };
 
     case surveyBuilderAction.setIsError:
