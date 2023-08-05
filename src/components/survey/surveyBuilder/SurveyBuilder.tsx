@@ -1027,7 +1027,7 @@ function SurveyBuilder() {
         </Text>
         <Group w="100%" position="left" pl="sm">
           <Text size="sm" color="dark">
-            Example: 'Personal vehicle', 'Public transport', 'Ride share ', etc.
+            Example: 'Personal vehicle', 'Public transport', 'Ride share', etc.
             Each response data option input corresponds to a choice.
           </Text>
         </Group>
@@ -1139,7 +1139,6 @@ function SurveyBuilder() {
     console.log({ surveyQuestions });
 
     const controller = new AbortController();
-    const { signal } = controller;
 
     async function handleSurveySubmit() {
       surveyBuilderDispatch({
@@ -1147,7 +1146,7 @@ function SurveyBuilder() {
         payload: true,
       });
 
-      const url = urlBuilder({
+      const url: URL = urlBuilder({
         path: '/api/v1/actions/outreach/survey-builder',
       });
       const body = JSON.stringify({
@@ -1166,7 +1165,7 @@ function SurveyBuilder() {
           Authorization: `Bearer ${accessToken}`,
         },
         body,
-        signal,
+        signal: controller.signal,
       });
 
       try {
@@ -1177,10 +1176,7 @@ function SurveyBuilder() {
         if (isMounted) {
           if (response.ok) {
             console.log({ data });
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.setTriggerFormSubmit,
-              payload: false,
-            });
+
             surveyBuilderDispatch({
               type: surveyBuilderAction.setIsSuccessful,
               payload: true,
@@ -1188,6 +1184,10 @@ function SurveyBuilder() {
             surveyBuilderDispatch({
               type: surveyBuilderAction.setSuccessMessage,
               payload: data.message,
+            });
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setTriggerFormSubmit,
+              payload: false,
             });
           } else {
             console.log({ data });
