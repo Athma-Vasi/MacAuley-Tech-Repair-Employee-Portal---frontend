@@ -7,7 +7,7 @@ import { useGlobalState } from '../../hooks';
 type CustomNotificationProps = {
   isError: boolean;
   errorMessage?: string;
-  isSuccess: boolean;
+  isSuccessful: boolean;
   successMessage?: string;
   isSubmitting: boolean;
   submitMessage?: string;
@@ -15,12 +15,13 @@ type CustomNotificationProps = {
   //   submittedMessage?: string;
   isLoading: boolean;
   loadingMessage?: string;
+  onClose: () => void;
 };
 
 function CustomNotification({
   isError,
   errorMessage = 'Unknown error occured. Please try again.',
-  isSuccess,
+  isSuccessful,
   successMessage = 'Success!',
   isSubmitting,
   submitMessage = 'Please wait. Submitting...',
@@ -28,6 +29,7 @@ function CustomNotification({
   //   submittedMessage = 'Successfully submitted!',
   isLoading,
   loadingMessage = 'Please wait. Loading...',
+  onClose,
 }: CustomNotificationProps) {
   const {
     globalState: { padding, width },
@@ -39,8 +41,9 @@ function CustomNotification({
     notificationComponent = (
       <Notification
         closeButtonProps={{ color: 'red', 'aria-label': 'Hide notification' }}
-        icon={<MdOutlineErrorOutline size={22} />}
         color="red"
+        icon={<MdOutlineErrorOutline size={22} />}
+        onClose={onClose}
         title={
           <Group
             p={padding}
@@ -60,12 +63,13 @@ function CustomNotification({
     );
   }
 
-  if (isSuccess) {
+  if (isSuccessful) {
     notificationComponent = (
       <Notification
         closeButtonProps={{ color: 'green', 'aria-label': 'Hide notification' }}
-        icon={<TbCheck size={22} />}
         color="green"
+        icon={<TbCheck size={22} />}
+        onClose={onClose}
         title={
           <Group
             p={padding}
@@ -92,7 +96,7 @@ function CustomNotification({
       <Notification
         closeButtonProps={{ color: 'blue', 'aria-label': 'Hide notification' }}
         loading
-        withCloseButton={false}
+        onClose={onClose}
         title={
           <Group
             p={padding}
@@ -104,6 +108,7 @@ function CustomNotification({
           </Group>
         }
         withBorder
+        withCloseButton={false}
       >
         <Group p={padding}>
           <Text>{submitMessage}</Text>
@@ -144,7 +149,7 @@ function CustomNotification({
       <Notification
         closeButtonProps={{ color: 'blue', 'aria-label': 'Hide notification' }}
         loading
-        withCloseButton={false}
+        onClose={onClose}
         title={
           <Group
             p={padding}
@@ -156,6 +161,7 @@ function CustomNotification({
           </Group>
         }
         withBorder
+        withCloseButton={false}
       >
         <Group p={padding}>
           <Text>{loadingMessage}</Text>

@@ -26,6 +26,10 @@ function Dashboard() {
   const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
 
   useEffect(() => {
+    console.log('accessToken in dashboard: ', accessToken);
+  }, [accessToken]);
+
+  useEffect(() => {
     function timeToReadCalc(text: string[]) {
       return Math.ceil(text.join(' ').split(' ').length / 200);
     }

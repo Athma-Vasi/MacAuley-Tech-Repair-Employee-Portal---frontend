@@ -65,7 +65,7 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   submitMessage: '',
   isSuccessful: false,
   successMessage: '',
-  isLoading: false,
+  isLoading: true,
   loadingMessage: '',
 };
 

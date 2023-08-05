@@ -11,7 +11,8 @@
         "noExplicitAny": "off"
       },
       "style": {
-        "noParameterAssign": "off"
+        "noParameterAssign": "off",
+        "useTemplate": "off"
       }
     }
   }

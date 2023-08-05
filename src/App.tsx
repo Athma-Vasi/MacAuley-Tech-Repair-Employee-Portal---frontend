@@ -1,7 +1,7 @@
 import './index.css';
 
 import { MantineProvider } from '@mantine/core';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import {
   AddressChange,
@@ -57,6 +57,7 @@ function App() {
   const {
     globalState: { colorScheme },
   } = useGlobalState();
+  const navigate = useNavigate();
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme }}>
@@ -75,14 +76,17 @@ function App() {
               <CustomNotification
                 isError={false}
                 errorMessage="This is a long error message. This is a long error message. This is a long error message. This is a long error message."
-                isSuccess={false}
+                isSuccessful={true}
                 successMessage="This is a long success message. This is a long success message. This is a long success message. This is a long success message."
-                isSubmitting={true}
+                isSubmitting={false}
                 submitMessage="This is a long submit message. This is a long submit message. This is a long submit message. This is a long submit message."
                 // isSubmitted={false}
                 // submittedMessage="Submitted message"
-                isLoading={true}
+                isLoading={false}
                 loadingMessage="This is a long loading message. This is a long loading message. This is a long loading message. This is a long loading message."
+                onClose={() => {
+                  navigate('/portal');
+                }}
               />
             }
           />

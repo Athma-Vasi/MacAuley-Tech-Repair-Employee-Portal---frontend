@@ -52,8 +52,11 @@ import {
   surveyBuilderReducer,
 } from './state';
 import { SurveyBuilderDocument, SurveyRecipient } from './types';
+import { CustomNotification } from '../../customNotification/CustomNotification';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 function SurveyBuilder() {
+  /** ------------- begin hooks ------------- */
   const {
     globalState: { width },
   } = useGlobalState();
@@ -111,6 +114,16 @@ function SurveyBuilder() {
   const {
     authState: { accessToken },
   } = useAuth();
+  const navigate = useNavigate();
+  /** ------------- end hooks ------------- */
+
+  /** ------------- begin useEffects ------------- */
+  useEffect(() => {
+    surveyBuilderDispatch({
+      type: surveyBuilderAction.setIsLoading,
+      payload: false,
+    });
+  }, []);
 
   const newQuestionInputRef = useRef<HTMLInputElement>(null);
   // set focus on new question input
@@ -190,7 +203,7 @@ function SurveyBuilder() {
         },
       });
     });
-  }, [questions, width]);
+  }, [questions, stepperDescriptionObjects.length, width]);
 
   // validate questions length on every change
   useEffect(() => {
@@ -231,8 +244,7 @@ function SurveyBuilder() {
     });
   }, [responseDataOptionsArray]);
 
-  // on every response type change, set the corresponding input kind as default
-  // as logic for display of 'Add option' button depends on a state change and component rerender
+  // ensures 'Add option' button's disabled prop always receives the correct state
   useEffect(() => {
     responseKinds.forEach((responseKind, index) => {
       switch (responseKind) {
@@ -320,6 +332,7 @@ function SurveyBuilder() {
   // validate stepper state on every dynamically created question input groups
   useEffect(() => {
     areValidQuestions.forEach((isValidQuestion, index) => {
+      // data options must be present for checkbox and radio inputs
       const currentInputHtml = responseInputHtml[index];
       const correspondingDataOptions = responseDataOptionsArray?.[index];
       const isDataOptionsPresent =
@@ -361,11 +374,6 @@ function SurveyBuilder() {
             (isValidResponseDataOption) => !isValidResponseDataOption
           );
 
-        console.log(
-          'isAnyResponseDataForQuestionInError',
-          isAnyResponseDataForQuestionInError
-        );
-
         isAnyResponseDataForQuestionInError
           ? surveyBuilderDispatch({
               type: surveyBuilderAction.setStepsInError,
@@ -385,6 +393,142 @@ function SurveyBuilder() {
     );
   }, [areResponseDataOptionsValid]);
 
+  useEffect(() => {
+    let isMounted = true;
+    const surveyQuestions = setSurveyQuestions({
+      questions,
+      responseKinds,
+      responseInputHtml,
+      responseDataOptionsArray,
+    });
+    const controller = new AbortController();
+
+    async function handleSurveySubmit() {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url: URL = urlBuilder({
+        path: '/api/v1/actions/outreach/survey-builder',
+      });
+
+      const body = JSON.stringify({
+        survey: {
+          surveyTitle,
+          surveyDescription,
+          sendTo: surveyRecipients,
+          expiryDate,
+          questions: surveyQuestions,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: ResourceRequestServerResponse<SurveyBuilderDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (!response.ok) {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsError,
+            payload: true,
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setErrorMessage,
+            payload: data.message,
+          });
+        }
+
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setIsSuccessful,
+          payload: true,
+        });
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setSuccessMessage,
+          payload: data.message,
+        });
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setTriggerFormSubmit,
+          payload: false,
+        });
+      } catch (error: any) {
+        if (isMounted) {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsError,
+            payload: true,
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setErrorMessage,
+            payload:
+              error?.message ?? 'Unknown error occurred. Please try again.',
+          });
+        }
+      } finally {
+        if (isMounted) {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsSubmitting,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleSurveySubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // this effect should only run when triggerFormSubmit changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  useEffect(() => {
+    logState({
+      state: surveyBuilderState,
+      groupLabel: 'survey builder state',
+    });
+  }, [surveyBuilderState]);
+  /** ------------- end useEffects ------------- */
+
+  /** ------------- begin component render bypass ------------- */
+  if (isLoading || isError || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        errorMessage={errorMessage}
+        isLoading={isLoading}
+        isError={isError}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        onClose={() => {
+          navigate('/portal');
+        }}
+      />
+    );
+  }
+  /** ------------- end component render bypass ------------- */
+
+  /** ------------- begin text inputs validation ------------- */
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleErrorValidTextElements({
       inputElementKind: 'survey title',
@@ -458,8 +602,9 @@ function SurveyBuilder() {
 
     return [responseDataOptionsErrorTexts, responseDataOptionsValidTexts];
   });
+  /** ------------- end text inputs validation ------------- */
 
-  // following are info objects for input creators
+  /** ------------- begin input creators info objects */
   const surveyTitleInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: titleInputErrorText,
@@ -715,13 +860,11 @@ function SurveyBuilder() {
         }).map((_, optionIdx) => {
           const dynamicInputLabel = `Delete ${
             questions[questionIdx].length > 11
-              ? // rome-ignore lint/style/useTemplate: <explanation>
-                questions[questionIdx].slice(0, 11) + '...'
+              ? questions[questionIdx].slice(0, 11) + '...'
               : questions[questionIdx]
           } ${questions[questionIdx].length > 0 ? ':' : ''} ${
             responseDataOptionsArray?.[questionIdx]?.[optionIdx].length > 11
-              ? // rome-ignore lint/style/useTemplate: <explanation>
-                responseDataOptionsArray?.[questionIdx]?.[optionIdx].slice(
+              ? responseDataOptionsArray?.[questionIdx]?.[optionIdx].slice(
                   0,
                   11
                 ) + '...'
@@ -808,7 +951,6 @@ function SurveyBuilder() {
 
   const addNewQuestionButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonVariant: 'outline',
-
     buttonLabel: (
       <Tooltip label="Add new question">
         <Group>
@@ -832,15 +974,6 @@ function SurveyBuilder() {
           },
         },
       });
-
-      // surveyBuilderDispatch({
-      //   type: surveyBuilderAction.setResponseDataOptionsCounts,
-      //   payload: {
-      //     questionIdx: questions.length,
-      //     kind: 'increment',
-      //   },
-      // });
-
       // enables display of the newly created survey question page
       surveyBuilderDispatch({
         type: surveyBuilderAction.setCurrentStepperPosition,
@@ -877,13 +1010,6 @@ function SurveyBuilder() {
               questionIdx: index,
             },
           });
-          // surveyBuilderDispatch({
-          //   type: surveyBuilderAction.setResponseDataOptionsCounts,
-          //   payload: {
-          //     questionIdx: index,
-          //     kind: 'increment',
-          //   },
-          // });
           surveyBuilderDispatch({
             type: surveyBuilderAction.setIsMaxResponseDataOptionsReached,
             payload: {
@@ -922,7 +1048,9 @@ function SurveyBuilder() {
       openHelpModal();
     },
   };
+  /** ------------- end input creators info objects ------------- */
 
+  /** ------------- begin input creators ------------- */
   const [createdSurveyDescriptionTextAreaInput] =
     returnAccessibleTextAreaInputElements([
       surveyDescriptionTextAreaInputCreatorInfo,
@@ -973,6 +1101,19 @@ function SurveyBuilder() {
       submitButtonCreatorInfo,
     ]);
 
+  const createdAddNewResponseDataOptionButtons =
+    addNewResponseDataOptionButtonCreatorInfo.map(
+      (addNewResponseDataOptionButtonCreatorInfo, index) =>
+        responseInputHtml[index] === 'checkbox' ||
+        responseInputHtml[index] === 'radio'
+          ? returnAccessibleButtonElements([
+              addNewResponseDataOptionButtonCreatorInfo,
+            ])
+          : null
+    );
+  /** ------------- end input creators ------------- */
+
+  /** ------------- begin layout ------------- */
   const displayHelpTextModal = (
     <Modal
       opened={openedHelpModal}
@@ -1035,17 +1176,6 @@ function SurveyBuilder() {
     </Modal>
   );
 
-  const createdAddNewResponseDataOptionButtons =
-    addNewResponseDataOptionButtonCreatorInfo.map(
-      (addNewResponseDataOptionButtonCreatorInfo, index) =>
-        responseInputHtml[index] === 'checkbox' ||
-        responseInputHtml[index] === 'radio'
-          ? returnAccessibleButtonElements([
-              addNewResponseDataOptionButtonCreatorInfo,
-            ])
-          : null
-    );
-
   const maxStepperPosition = stepperDescriptionObjects.length;
   const displaySubmitButton =
     currentStepperPosition === maxStepperPosition ? createdSubmitButton : null;
@@ -1104,14 +1234,6 @@ function SurveyBuilder() {
       </FormLayoutWrapper>
     ) : null;
 
-  useEffect(() => {
-    logState({
-      state: surveyBuilderState,
-      groupLabel: 'survey builder state',
-    });
-  }, [surveyBuilderState, maxStepperPosition]);
-  console.log({ maxStepperPosition });
-
   const displaySurveyBuilderComponent = (
     <StepperWrapper
       childrenTitle="Survey Builder"
@@ -1126,129 +1248,7 @@ function SurveyBuilder() {
       {displayHelpTextModal}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    let isMounted = true;
-    const surveyQuestions = setSurveyQuestions({
-      questions,
-      responseKinds,
-      responseInputHtml,
-      responseDataOptionsArray,
-    });
-
-    console.log({ surveyQuestions });
-
-    const controller = new AbortController();
-
-    async function handleSurveySubmit() {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsSubmitting,
-        payload: true,
-      });
-
-      const url: URL = urlBuilder({
-        path: '/api/v1/actions/outreach/survey-builder',
-      });
-      const body = JSON.stringify({
-        survey: {
-          surveyTitle,
-          surveyDescription,
-          sendTo: surveyRecipients,
-          expiryDate,
-          questions: surveyQuestions,
-        },
-      });
-      const request: Request = new Request(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body,
-        signal: controller.signal,
-      });
-
-      try {
-        const response = await fetch(request);
-        const data: ResourceRequestServerResponse<SurveyBuilderDocument> =
-          await response.json();
-
-        if (isMounted) {
-          if (response.ok) {
-            console.log({ data });
-
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.setIsSuccessful,
-              payload: true,
-            });
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.setSuccessMessage,
-              payload: data.message,
-            });
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.setTriggerFormSubmit,
-              payload: false,
-            });
-          } else {
-            console.log({ data });
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.setIsError,
-              payload: true,
-            });
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.setErrorMessage,
-              payload: data.message,
-            });
-          }
-        }
-      } catch (error: any) {
-        console.log({ error });
-        if (isMounted) {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsError,
-            payload: true,
-          });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setErrorMessage,
-            payload:
-              error?.message ?? 'Unknown error occurred. Please try again.',
-          });
-        }
-      } finally {
-        if (isMounted) {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsSubmitting,
-            payload: false,
-          });
-        }
-      }
-    }
-
-    if (triggerFormSubmit) {
-      handleSurveySubmit();
-    }
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [triggerFormSubmit]);
-
-  if (isLoading) {
-    return <Notification title={loadingMessage} />;
-  }
-
-  if (isError) {
-    return <Notification title={errorMessage} />;
-  }
-
-  if (isSuccessful) {
-    return <Notification title={successMessage} />;
-  }
-
-  if (isSubmitting) {
-    return <Notification title={submitMessage} />;
-  }
+  /** ------------- end layout ------------- */
 
   return <>{displaySurveyBuilderComponent}</>;
 }
