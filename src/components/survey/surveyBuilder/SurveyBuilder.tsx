@@ -442,7 +442,20 @@ function SurveyBuilder() {
           return;
         }
 
-        if (!response.ok) {
+        if (response.ok) {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsSuccessful,
+            payload: true,
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setSuccessMessage,
+            payload: data.message,
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        } else {
           surveyBuilderDispatch({
             type: surveyBuilderAction.setIsError,
             payload: true,
@@ -452,19 +465,6 @@ function SurveyBuilder() {
             payload: data.message,
           });
         }
-
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setIsSuccessful,
-          payload: true,
-        });
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setSuccessMessage,
-          payload: data.message,
-        });
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setTriggerFormSubmit,
-          payload: false,
-        });
       } catch (error: any) {
         if (isMounted) {
           surveyBuilderDispatch({
@@ -729,8 +729,7 @@ function SurveyBuilder() {
           ? 'Survey must have atleast one question'
           : `Delete ${
               questions[index].length > 11
-                ? // rome-ignore lint/style/useTemplate: <explanation>
-                  questions[index].slice(0, 11) + '...'
+                ? questions[index].slice(0, 11) + '...'
                 : questions[index]
             } ?`;
 
