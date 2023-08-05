@@ -21,18 +21,13 @@ type SurveyRecipient =
   | 'Janitorial and Maintenance'
   | 'Security';
 
-// type SurveyResponseKind = {
-//   chooseOne: 'trueFalse' | 'yesNo' | 'radio';
-//   chooseAny: 'checkbox' | 'dropdown';
-//   answerKind: 'shortAnswer' | 'longAnswer';
-//   rating: 'scale' | 'emotion' | 'stars';
-// };
-
-type SurveyResponseKind = {
-  chooseOne: 'agreeDisagree' | 'radio';
-  chooseAny: 'checkbox';
-  rating: 'emotion' | 'stars';
-};
+type SurveyResponseKind = 'chooseOne' | 'chooseAny' | 'rating';
+type SurveyResponseInput =
+  | 'agreeDisagree'
+  | 'radio'
+  | 'checkbox'
+  | 'emotion'
+  | 'stars';
 
 type AgreeDisagreeResponse =
   | 'Strongly Agree'
@@ -45,37 +40,18 @@ type CheckboxResponse = Array<string>;
 type EmotionResponse = 'Upset' | 'Annoyed' | 'Neutral' | 'Happy' | 'Ecstatic';
 type StarsResponse = 1 | 2 | 3 | 4 | 5;
 
-type SurveyDataOptions =
+type SurveyResponseDataOptions =
   | AgreeDisagreeResponse
   | RadioResponse
   | CheckboxResponse
   | EmotionResponse
   | StarsResponse;
 
-// // The mapped type loops over each key in SurveyResponseKind and returns an object, ensuring that the value of `inputHtml` is constrained to the value of `kind` which is a key in the looped object.
-// type SurveyQuestion = {
-//   question: string;
-//   responseKind: {
-//     [Key in keyof SurveyResponseKind]: {
-//       kind: Key;
-//       inputHtml: SurveyResponseKind[Key];
-//       dataOptions: Array<string>;
-//     };
-//   }[keyof SurveyResponseKind];
-//   required: boolean;
-// };
-
-// The mapped type loops over each key in SurveyResponseKind and returns an object, ensuring that the value of `inputHtml` is constrained to the value of `kind` which is a key in the looped object.
 type SurveyQuestion = {
   question: string;
-  responseKind: {
-    [Key in keyof SurveyResponseKind]: {
-      kind: Key;
-      kindOption: SurveyResponseKind[Key];
-      dataOptions: SurveyDataOptions;
-    };
-  }[keyof SurveyResponseKind];
-  required: boolean;
+  responseKind: SurveyResponseKind;
+  responseInput: SurveyResponseInput;
+  responseDataOptions: SurveyResponseDataOptions;
 };
 
 type SurveyBuilderSchema = {
@@ -96,6 +72,13 @@ type SurveyBuilderDocument = SurveyBuilderSchema & {
   createdAt: string;
   updatedAt: string;
   __v: number;
+};
+
+type SetSurveyQuestionsInput = {
+  questions: string[];
+  responseKinds: string[];
+  responseInputHtml: string[];
+  responseDataOptionsArray: string[][];
 };
 
 type SurveyBuilderState = {
@@ -124,10 +107,13 @@ type SurveyBuilderState = {
   responseDataOptionsArray: Array<string[]>;
   areResponseDataOptionsValid: Array<boolean[]>;
   areResponseDataOptionsFocused: Array<boolean[]>;
+  // this is not being used. check if it is needed
   responseDataOptionsCounts: Array<number>;
   isMaxResponseDataOptionsReached: Array<boolean>;
 
   triggerFormSubmit: boolean;
+  submitButtonDisabled: boolean;
+
   stepperDescriptionObjects: DescriptionObjectsArray;
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -179,6 +165,8 @@ type SurveyBuilderAction = {
   deleteAllResponseDataOptionsForQuestion: 'deleteAllResponseDataOptionsForQuestion';
 
   setTriggerFormSubmit: 'setTriggerFormSubmit';
+  setSubmitButtonDisabled: 'setSubmitButtonDisabled';
+
   updateStepperDescriptionObjects: 'updateStepperDescriptionObjects';
   createStepperDescriptionObjects: 'createStepperDescriptionObjects';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
@@ -217,6 +205,7 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setIsExpiryDateFocused']
         | SurveyBuilderAction['setIsMaxQuestionsReached']
         | SurveyBuilderAction['setTriggerFormSubmit']
+        | SurveyBuilderAction['setSubmitButtonDisabled']
         | SurveyBuilderAction['setIsError']
         | SurveyBuilderAction['setIsSubmitting']
         | SurveyBuilderAction['setIsSuccessful']
@@ -325,6 +314,7 @@ type SurveyBuilderReducer = (
 ) => SurveyBuilderState;
 
 export type {
+  SetSurveyQuestionsInput,
   SurveyBuilderAction,
   SurveyBuilderDispatch,
   SurveyBuilderDocument,

@@ -1,5 +1,8 @@
 import { Group, Stack } from '@mantine/core';
 
+import { addFieldsToObject } from '../../utils';
+import { SetSurveyQuestionsInput } from './surveyBuilder/types';
+
 type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
   createdResponseKindRadioGroups: JSX.Element[];
@@ -63,4 +66,33 @@ function groupMergedQuestionsByAmount({
   }, []);
 }
 
-export { mergeSurveyQuestionsGroup, groupMergedQuestionsByAmount };
+function setSurveyQuestions({
+  questions,
+  responseKinds,
+  responseInputHtml,
+  responseDataOptionsArray,
+}: SetSurveyQuestionsInput) {
+  return questions.reduce(
+    (surveyQuestions: Record<string, string>[], question, questionIdx) => {
+      const surveyObject = addFieldsToObject({
+        object: Object.create(null),
+        fieldValuesTuples: [
+          ['question', question],
+          ['responseKind', responseKinds[questionIdx]],
+          ['responseInput', responseInputHtml[questionIdx]],
+          ['responseDataOptions', responseDataOptionsArray[questionIdx]] ?? [],
+        ],
+      });
+      surveyQuestions.push(surveyObject);
+
+      return surveyQuestions;
+    },
+    []
+  );
+}
+
+export {
+  groupMergedQuestionsByAmount,
+  mergeSurveyQuestionsGroup,
+  setSurveyQuestions,
+};

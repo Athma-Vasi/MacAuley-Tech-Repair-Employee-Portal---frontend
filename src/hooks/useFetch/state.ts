@@ -1,8 +1,10 @@
 import { UseFetchAction, UseFetchDispatch, UseFetchState } from './types';
 
 const initialUseFetchState: UseFetchState = {
-  data: [],
-  url: '',
+  data: null,
+  request: null,
+  triggerFetch: false,
+
   isLoading: false,
   loadingMessage: '',
   isError: false,
@@ -15,7 +17,8 @@ const initialUseFetchState: UseFetchState = {
 
 const useFetchAction: UseFetchAction = {
   setData: 'setData',
-  setUrl: 'setUrl',
+  setRequest: 'setRequest',
+  setTriggerFetch: 'setTriggerFetch',
 
   setIsLoading: 'setIsLoading',
   setLoadingMessage: 'setLoadingMessage',
@@ -41,10 +44,18 @@ function useFetchReducer(
         data: action.payload,
       };
 
-    case useFetchAction.setUrl:
+    case useFetchAction.setRequest: {
+      console.log('SET REQUEST REDUCER', action.payload);
       return {
         ...state,
-        url: action.payload,
+        request: action.payload,
+      };
+    }
+
+    case useFetchAction.setTriggerFetch:
+      return {
+        ...state,
+        triggerFetch: action.payload,
       };
 
     case useFetchAction.setIsLoading:

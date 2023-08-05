@@ -1,93 +1,60 @@
 import { useEffect, useReducer } from 'react';
-import { FetchDataInput, UseFetchProps } from './types';
-import { initialUseFetchState, useFetchReducer } from './state';
-import { useAuth } from '../useAuth';
 
-function useFetch({ initialUrl, request }: UseFetchProps) {
+import { initialUseFetchState, useFetchAction, useFetchReducer } from './state';
+import { FetchDataInput, FetchResponseGeneric } from './types';
+
+function useFetch() {
   const [useFetchState, fetchDispatch] = useReducer(
     useFetchReducer,
     initialUseFetchState
   );
-  const {
-    data,
-    url,
-    isLoading,
-    loadingMessage,
-    isError,
-    errorMessage,
-    isSubmitting,
-    submitMessage,
-    isSuccessful,
-    successMessage,
-  } = useFetchState;
-
-  const {
-    authState: { accessToken, roles, userId, username },
-  } = useAuth();
-
-  useEffect(() => {
-    fetchDispatch({
-      type: 'setUrl',
-      payload: initialUrl,
-    });
-  }, [initialUrl]);
+  const { request, triggerFetch } = useFetchState;
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
     const { signal } = controller;
 
-    async function fetchData({
-      isMounted,
-      request,
-      signal,
-      url,
-    }: FetchDataInput) {
-      fetchDispatch({
-        type: 'setIsLoading',
-        payload: true,
-      });
+    if (!request) {
+      return;
+    }
 
-      // const requestwithSignal: Request = new Request(url.toString(), {
-      //   method,
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //     Authorization: `Bearer ${accessToken}`,
-      //   },
-      //   body,
-      //   signal,
-      // });
+    async function fetchData({ isMounted, request, signal }: FetchDataInput) {
+      request?.method === 'GET'
+        ? fetchDispatch({
+            type: 'setIsLoading',
+            payload: true,
+          })
+        : fetchDispatch({
+            type: 'setIsSubmitting',
+            payload: true,
+          });
 
-      const requestWithSignal = new Request(url.toString(), {
+      const requestWithSignal = new Request({
         ...request,
         signal,
       });
 
       try {
         const response = await fetch(requestWithSignal);
-        const data: {
-          message: string;
-          pages?: number;
-          totalDocuments?: number;
-          resourceData: Record<string, any>[];
-        } = await response.json();
+        const data: FetchResponseGeneric = await response.json();
 
         if (isMounted) {
           if (response.ok) {
             fetchDispatch({
               type: 'setData',
-              payload: data.resourceData,
+              payload: data,
+            });
+          } else {
+            fetchDispatch({
+              type: 'setIsError',
+              payload: true,
+            });
+            fetchDispatch({
+              type: 'setErrorMessage',
+              payload: data.message,
             });
           }
-        } else {
-          fetchDispatch({
-            type: 'setIsError',
-            payload: true,
-          });
-          fetchDispatch({
-            type: 'setErrorMessage',
-            payload: data.message,
-          });
         }
       } catch (error: any) {
         if (isMounted) {
@@ -102,21 +69,30 @@ function useFetch({ initialUrl, request }: UseFetchProps) {
         }
       } finally {
         if (isMounted) {
-          fetchDispatch({
-            type: 'setIsLoading',
-            payload: false,
-          });
+          request.method === 'GET'
+            ? fetchDispatch({
+                type: 'setIsLoading',
+                payload: false,
+              })
+            : fetchDispatch({
+                type: 'setIsSubmitting',
+                payload: false,
+              });
         }
       }
     }
 
+    if (triggerFetch && request) {
+      fetchData({ isMounted, request, signal });
+    }
+
     return () => {
       isMounted = false;
-      controller.abort();
+      controller.abort('Fetch aborted.');
     };
-  }, [url, accessToken]);
+  }, [request]);
 
-  return { useFetchState, fetchDispatch };
+  return { useFetchState, fetchDispatch, useFetchAction };
 }
 
 export { useFetch };

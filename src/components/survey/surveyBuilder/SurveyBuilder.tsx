@@ -4,6 +4,7 @@ import {
   Flex,
   HoverCard,
   Modal,
+  Notification,
   Stack,
   Text,
 } from '@mantine/core';
@@ -16,7 +17,7 @@ import {
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
-import { useGlobalState } from '../../../hooks';
+import { useAuth, useFetch, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
@@ -30,9 +31,11 @@ import {
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
+  addFieldsToObject,
   logState,
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
+  urlBuilder,
 } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -51,14 +54,15 @@ import {
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
   SURVEY_MAX_RESPONSE_DATA_OPTIONS,
 } from '../constants';
-import { mergeSurveyQuestionsGroup } from '../utils';
+import { mergeSurveyQuestionsGroup, setSurveyQuestions } from '../utils';
 import {
   initialSurveyBuilderState,
   surveyBuilderAction,
   surveyBuilderReducer,
 } from './state';
-import { SurveyRecipient } from './types';
+import { SurveyBuilderDocument, SurveyRecipient } from './types';
 import { useDisclosure } from '@mantine/hooks';
+import { ResourceRequestServerResponse } from '../../../types';
 
 function SurveyBuilder() {
   const {
@@ -97,6 +101,8 @@ function SurveyBuilder() {
     isMaxResponseDataOptionsReached,
 
     triggerFormSubmit,
+    submitButtonDisabled,
+
     stepperDescriptionObjects,
     currentStepperPosition,
     stepsInError,
@@ -113,6 +119,9 @@ function SurveyBuilder() {
 
   const [openedHelpModal, { open: openHelpModal, close: closeHelpModal }] =
     useDisclosure(false);
+  const {
+    authState: { accessToken },
+  } = useAuth();
 
   const newQuestionInputRef = useRef<HTMLInputElement>(null);
   // set focus on new question input
@@ -861,19 +870,20 @@ function SurveyBuilder() {
       )
     );
 
+  console.log('isSubmitButtonDisabled', isSubmitButtonDisabled);
+
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Submit',
     semanticDescription: 'survey builder form submit button',
     semanticName: 'submit button',
     leftIcon: <TbUpload />,
-    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+    buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setTriggerFormSubmit,
         payload: true,
       });
     },
-    // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: isSubmitButtonDisabled,
   };
 
   const helpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -1049,6 +1059,8 @@ function SurveyBuilder() {
       </FormLayoutWrapper>
     ) : currentStepperPosition === maxStepperPosition - 1 ? (
       displaySurveyBuilderReviewPage
+    ) : currentStepperPosition === maxStepperPosition ? (
+      displaySubmitButton
     ) : currentStepperPosition === maxStepperPosition - questionsLength ? (
       <FormLayoutWrapper>
         {mergedSurveyQuestionsGroups.slice(
@@ -1063,22 +1075,7 @@ function SurveyBuilder() {
           maxStepperPosition - questionsLength + 1
         )}
       </FormLayoutWrapper>
-    ) : currentStepperPosition === maxStepperPosition ? (
-      displaySubmitButton
     ) : null;
-
-  // const displaySurveyBuilderForm =
-  //   currentStepperPosition === 0 ? (
-  //     displaySurveyDetailsFormPageOne
-  //   ) : currentStepperPosition === 1 ? (
-  //     <FormLayoutWrapper>
-  //       {mergedSurveyQuestionsGroups.slice(0, 1)}
-  //     </FormLayoutWrapper>
-  //   ) : currentStepperPosition === maxStepperPosition - 1 ? (
-  //     displaySurveyBuilderReviewPage
-  //   ) : currentStepperPosition === maxStepperPosition ? (
-  //     displaySubmitButton
-  //   ) : null;
 
   useEffect(() => {
     logState({
@@ -1086,6 +1083,7 @@ function SurveyBuilder() {
       groupLabel: 'survey builder state',
     });
   }, [surveyBuilderState, maxStepperPosition]);
+  console.log({ maxStepperPosition });
 
   const displaySurveyBuilderComponent = (
     <StepperWrapper
@@ -1103,14 +1101,122 @@ function SurveyBuilder() {
   );
 
   useEffect(() => {
-    async function handleExpenseClaimFormSubmit() {
-      console.log('handleExpenseClaimFormSubmit');
+    let isMounted = true;
+    const surveyQuestions = setSurveyQuestions({
+      questions,
+      responseKinds,
+      responseInputHtml,
+      responseDataOptionsArray,
+    });
+
+    console.log({ surveyQuestions });
+
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    async function handleSurveySubmit() {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url = urlBuilder({
+        path: '/api/v1/actions/outreach/survey-builder',
+      });
+      const body = JSON.stringify({
+        survey: {
+          surveyTitle,
+          surveyDescription,
+          sendTo: surveyRecipients,
+          expiryDate,
+          questions: surveyQuestions,
+        },
+      });
+      const request: Request = new Request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: ResourceRequestServerResponse<SurveyBuilderDocument> =
+          await response.json();
+
+        if (isMounted) {
+          if (response.ok) {
+            console.log({ data });
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setTriggerFormSubmit,
+              payload: false,
+            });
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setIsSuccessful,
+              payload: true,
+            });
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setSuccessMessage,
+              payload: data.message,
+            });
+          } else {
+            console.log({ data });
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setIsError,
+              payload: true,
+            });
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setErrorMessage,
+              payload: data.message,
+            });
+          }
+        }
+      } catch (error: any) {
+        console.log({ error });
+        if (isMounted) {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsError,
+            payload: true,
+          });
+        }
+      } finally {
+        if (isMounted) {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsSubmitting,
+            payload: false,
+          });
+        }
+      }
     }
 
     if (triggerFormSubmit) {
-      handleExpenseClaimFormSubmit();
+      handleSurveySubmit();
     }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, [triggerFormSubmit]);
+
+  if (isLoading) {
+    return <Notification title={loadingMessage} />;
+  }
+
+  if (isError) {
+    return <Notification title={errorMessage} />;
+  }
+
+  if (isSuccessful) {
+    return <Notification title={successMessage} />;
+  }
+
+  if (isSubmitting) {
+    return <Notification title={submitMessage} />;
+  }
 
   return <>{displaySurveyBuilderComponent}</>;
 }

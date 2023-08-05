@@ -1,11 +1,15 @@
-type UseFetchProps = {
-  request: Request;
-  initialUrl: URL;
+type FetchResponseGeneric = {
+  message: string;
+  pages?: number;
+  totalDocuments?: number;
+  resourceData: Record<string, any>[];
 };
 
 type UseFetchState = {
-  data: Record<string, any>[];
-  url: URL | string;
+  data: FetchResponseGeneric | null;
+  request: Request | null;
+  triggerFetch: boolean;
+
   isLoading: boolean;
   loadingMessage: string;
   isError: boolean;
@@ -20,12 +24,13 @@ type FetchDataInput = {
   request: Request;
   signal: AbortSignal;
   isMounted: boolean;
-  url: URL;
 };
 
 type UseFetchAction = {
   setData: 'setData';
-  setUrl: 'setUrl';
+  setRequest: 'setRequest';
+  setTriggerFetch: 'setTriggerFetch';
+
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
   setIsError: 'setIsError';
@@ -39,11 +44,11 @@ type UseFetchAction = {
 type UseFetchDispatch =
   | {
       type: UseFetchAction['setData'];
-      payload: Record<string, any>[];
+      payload: FetchResponseGeneric;
     }
   | {
-      type: 'setUrl';
-      payload: URL;
+      type: UseFetchAction['setRequest'];
+      payload: Request;
     }
   | {
       type:
@@ -56,6 +61,7 @@ type UseFetchDispatch =
     }
   | {
       type:
+        | UseFetchAction['setTriggerFetch']
         | UseFetchAction['setIsLoading']
         | UseFetchAction['setIsError']
         | UseFetchAction['setIsSubmitting']
@@ -71,9 +77,9 @@ type UseFetchReducer = {
 
 export type {
   FetchDataInput,
+  FetchResponseGeneric,
   UseFetchAction,
   UseFetchDispatch,
-  UseFetchProps,
   UseFetchReducer,
   UseFetchState,
 };

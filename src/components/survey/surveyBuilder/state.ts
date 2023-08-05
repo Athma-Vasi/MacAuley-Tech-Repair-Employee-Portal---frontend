@@ -54,6 +54,8 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   isMaxResponseDataOptionsReached: [false],
 
   triggerFormSubmit: false,
+  submitButtonDisabled: false,
+
   stepperDescriptionObjects: initialDescriptionObjects,
   currentStepperPosition: 0,
   stepsInError: new Set(),
@@ -106,6 +108,8 @@ const surveyBuilderAction: SurveyBuilderAction = {
     'deleteAllResponseDataOptionsForQuestion',
 
   setTriggerFormSubmit: 'setTriggerFormSubmit',
+  setSubmitButtonDisabled: 'setSubmitButtonDisabled',
+
   updateStepperDescriptionObjects: 'updateStepperDescriptionObjects',
   createStepperDescriptionObjects: 'createStepperDescriptionObjects',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
@@ -522,6 +526,12 @@ function surveyBuilderReducer(
       return {
         ...state,
         triggerFormSubmit: action.payload,
+      };
+
+    case surveyBuilderAction.setSubmitButtonDisabled:
+      return {
+        ...state,
+        submitButtonDisabled: action.payload,
       };
 
     case surveyBuilderAction.createStepperDescriptionObjects: {
