@@ -1,5 +1,5 @@
 import { QueryResponseData } from '../../../types';
-import { SurveyBuilderDocument } from '../types';
+import { SurveyBuilderDocument, SurveyResponseKind } from '../types';
 import { SurveyResponseInput } from '../types';
 
 type SurveySubmission = {
@@ -7,6 +7,7 @@ type SurveySubmission = {
   surveyTitle: string;
   surveyResponses: {
     question: string;
+    responseKind: SurveyResponseKind;
     inputKind: SurveyResponseInput;
     response: string[] | string | number;
   }[];
@@ -17,6 +18,7 @@ type DisplaySurveysState = {
   surveysMap: Map<string, SurveyBuilderDocument>;
   surveySubmissions: Map<string, SurveySubmission>;
   currentSurveyId: string;
+  response: string[] | string | number;
 
   isError: boolean;
   errorMessage: string;
@@ -33,6 +35,7 @@ type DisplaySurveysAction = {
   setSurveysMap: 'setSurveysMap';
   setSurveySubmissions: 'setSurveySubmissions';
   setCurrentSurveyId: 'setCurrentSurveyId';
+  setResponse: 'setResponse';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -56,6 +59,19 @@ type DisplaySurveysDispatch =
   | {
       type: DisplaySurveysAction['setSurveySubmissions'];
       payload: Map<string, SurveySubmission>;
+    }
+  | {
+      type: DisplaySurveysAction['setResponse'];
+      payload: {
+        surveyId: string;
+        surveyTitle: string;
+        surveyResponse: {
+          question: string;
+          responseKind: SurveyResponseKind;
+          inputKind: SurveyResponseInput;
+          response: string[] | string | number;
+        };
+      };
     }
   | {
       type:
