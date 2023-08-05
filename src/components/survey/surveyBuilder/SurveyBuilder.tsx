@@ -294,7 +294,8 @@ function SurveyBuilder() {
       areValidQuestions.includes(false) ||
       responseDataOptionsArray.includes([]) ||
       areResponseDataOptionsValid.flat().includes(false) ||
-      isMaxResponseDataOptionsReached.includes(true);
+      isMaxResponseDataOptionsReached.includes(true) ||
+      stepsInError.size > 0;
 
     surveyBuilderDispatch({
       type: surveyBuilderAction.setSubmitButtonDisabled,
@@ -311,6 +312,7 @@ function SurveyBuilder() {
     areValidQuestions,
     areResponseDataOptionsValid,
     isMaxResponseDataOptionsReached,
+    stepsInError.size,
   ]);
 
   // validate stepper state on every change
@@ -361,45 +363,6 @@ function SurveyBuilder() {
     responseInputHtml,
     responseDataOptionsArray,
   ]);
-
-  // // validate stepper state on response inputhtml change
-  // useEffect(() => {
-  //   responseInputHtml.forEach((inputHtml, index) => {
-  //     const correspondingDataOptions = responseDataOptionsArray?.[index];
-
-  //     console.log({ correspondingDataOptions });
-
-  //     if (inputHtml === 'checkbox' || inputHtml === 'radio') {
-  //       if (correspondingDataOptions?.length === 0) {
-  //         surveyBuilderDispatch({
-  //           type: surveyBuilderAction.setStepsInError,
-  //           payload: {
-  //             kind: 'add',
-  //             step: index + 1,
-  //           },
-  //         });
-  //         // surveyBuilderDispatch({
-  //         //   type: surveyBuilderAction.setSubmitButtonDisabled,
-  //         //   payload: true,
-  //         // });
-  //       } else {
-  //         surveyBuilderDispatch({
-  //           type: surveyBuilderAction.setStepsInError,
-  //           payload: {
-  //             kind: 'delete',
-  //             step: index + 1,
-  //           },
-  //         });
-  //       }
-  //     }
-  //   });
-  // }, [
-  //   currentStepperPosition,
-  //   areResponseDataOptionsValid,
-  //   responseKinds,
-  //   responseInputHtml,
-  //   responseDataOptionsArray,
-  // ]);
 
   // validate stepper state on every dynamically created response data options input groups
   useEffect(() => {
@@ -1251,6 +1214,11 @@ function SurveyBuilder() {
           surveyBuilderDispatch({
             type: surveyBuilderAction.setIsError,
             payload: true,
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setErrorMessage,
+            payload:
+              error?.message ?? 'Unknown error occurred. Please try again.',
           });
         }
       } finally {
