@@ -50,7 +50,6 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   responseDataOptionsArray: [],
   areResponseDataOptionsValid: [],
   areResponseDataOptionsFocused: [],
-  responseDataOptionsCounts: [0],
   isMaxResponseDataOptionsReached: [false],
 
   triggerFormSubmit: false,
@@ -88,7 +87,6 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setQuestions: 'setQuestions',
   setAreValidQuestions: 'setAreValidQuestions',
   setAreQuestionsFocused: 'setAreQuestionsFocused',
-  setResponseDataOptionsCounts: 'setResponseDataOptionsCounts',
   setIsMaxQuestionsReached: 'setIsMaxQuestionsReached',
 
   deleteQuestionGroup: 'deleteQuestionGroup',
@@ -203,8 +201,7 @@ function surveyBuilderReducer(
         ...state.areResponseDataOptionsFocused,
       ];
       areResponseDataOptionsFocused.splice(index, 1);
-      const responseDataOptionsCounts = [...state.responseDataOptionsCounts];
-      responseDataOptionsCounts.splice(index, 1);
+
       const isMaxResponseDataOptionsReached = [
         ...state.isMaxResponseDataOptionsReached,
       ];
@@ -357,22 +354,22 @@ function surveyBuilderReducer(
       };
     }
 
-    case surveyBuilderAction.setResponseDataOptionsCounts: {
-      const { questionIdx, kind } = action.payload;
-      const responseDataOptionsCounts = [...state.responseDataOptionsCounts];
+    // case surveyBuilderAction.setResponseDataOptionsCounts: {
+    //   const { questionIdx, kind } = action.payload;
+    //   const responseDataOptionsCounts = [...state.responseDataOptionsCounts];
 
-      const currentCount = responseDataOptionsCounts[questionIdx] ?? -1;
-      const newCount =
-        kind === 'increment' ? currentCount + 1 : currentCount - 1;
+    //   const currentCount = responseDataOptionsCounts[questionIdx] ?? -1;
+    //   const newCount =
+    //     kind === 'increment' ? currentCount + 1 : currentCount - 1;
 
-      // assign the new count to the question
-      responseDataOptionsCounts[questionIdx] = newCount;
+    //   // assign the new count to the question
+    //   responseDataOptionsCounts[questionIdx] = newCount;
 
-      return {
-        ...state,
-        responseDataOptionsCounts,
-      };
-    }
+    //   return {
+    //     ...state,
+    //     responseDataOptionsCounts,
+    //   };
+    // }
 
     case surveyBuilderAction.setIsMaxResponseDataOptionsReached: {
       const { index, value } = action.payload;
@@ -419,16 +416,11 @@ function surveyBuilderReducer(
       questionFocus.splice(optionIdx, 1);
       areResponseDataOptionsFocused[questionIdx] = questionFocus;
 
-      // decrement the responseDataOptionsCount
-      const responseDataOptionsCounts = [...state.responseDataOptionsCounts];
-      responseDataOptionsCounts[questionIdx] -= 1;
-
       return {
         ...state,
         responseDataOptionsArray,
         areResponseDataOptionsValid,
         areResponseDataOptionsFocused,
-        responseDataOptionsCounts,
       };
     }
 
@@ -502,10 +494,6 @@ function surveyBuilderReducer(
       questionFocus.splice(questionIdx);
       areResponseDataOptionsFocused[questionIdx] = questionFocus;
 
-      // decrement the responseDataOptionsCount
-      const responseDataOptionsCounts = [...state.responseDataOptionsCounts];
-      responseDataOptionsCounts[questionIdx] = 0;
-
       // remove the max response data options reached
       const isMaxResponseDataOptionsReached = [
         ...state.isMaxResponseDataOptionsReached,
@@ -517,7 +505,6 @@ function surveyBuilderReducer(
         responseDataOptionsArray,
         areResponseDataOptionsValid,
         areResponseDataOptionsFocused,
-        responseDataOptionsCounts,
         isMaxResponseDataOptionsReached,
       };
     }

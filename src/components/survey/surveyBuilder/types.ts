@@ -107,8 +107,7 @@ type SurveyBuilderState = {
   responseDataOptionsArray: Array<string[]>;
   areResponseDataOptionsValid: Array<boolean[]>;
   areResponseDataOptionsFocused: Array<boolean[]>;
-  // this is not being used. check if it is needed
-  responseDataOptionsCounts: Array<number>;
+
   isMaxResponseDataOptionsReached: Array<boolean>;
 
   triggerFormSubmit: boolean;
@@ -157,7 +156,6 @@ type SurveyBuilderAction = {
   setResponseDataOptions: 'setResponseDataOptions';
   setAreResponseDataOptionsValid: 'setAreResponseDataOptionsValid';
   setAreResponseDataOptionsFocused: 'setAreResponseDataOptionsFocused';
-  setResponseDataOptionsCounts: 'setResponseDataOptionsCounts';
   setIsMaxResponseDataOptionsReached: 'setIsMaxResponseDataOptionsReached';
 
   deleteResponseDataOption: 'deleteResponseDataOption';
@@ -259,13 +257,6 @@ type SurveyBuilderDispatch =
       payload: {
         index: number;
         value: boolean;
-      };
-    }
-  | {
-      type: SurveyBuilderAction['setResponseDataOptionsCounts'];
-      payload: {
-        questionIdx: number;
-        kind: 'increment' | 'decrement';
       };
     }
   | {

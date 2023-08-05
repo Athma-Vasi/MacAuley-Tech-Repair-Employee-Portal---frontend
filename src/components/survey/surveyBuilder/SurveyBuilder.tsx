@@ -1,14 +1,6 @@
-import {
-  Accordion,
-  Button,
-  Flex,
-  HoverCard,
-  Modal,
-  Notification,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Flex, Modal, Notification, Text } from '@mantine/core';
 import { Group, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { TbHelp, TbPlus, TbUpload } from 'react-icons/tb';
 
@@ -17,7 +9,7 @@ import {
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
-import { useAuth, useFetch, useGlobalState } from '../../../hooks';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
@@ -25,13 +17,12 @@ import {
   returnAccessibleDynamicTextInputElements,
   returnAccessibleErrorValidTextElements,
   returnAccessibleErrorValidTextElementsForDynamicInputs,
-  returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
+import { ResourceRequestServerResponse } from '../../../types';
 import {
-  addFieldsToObject,
   logState,
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
@@ -61,8 +52,6 @@ import {
   surveyBuilderReducer,
 } from './state';
 import { SurveyBuilderDocument, SurveyRecipient } from './types';
-import { useDisclosure } from '@mantine/hooks';
-import { ResourceRequestServerResponse } from '../../../types';
 
 function SurveyBuilder() {
   const {
@@ -98,7 +87,6 @@ function SurveyBuilder() {
     responseDataOptionsArray,
     areResponseDataOptionsValid,
     areResponseDataOptionsFocused,
-    responseDataOptionsCounts,
     isMaxResponseDataOptionsReached,
 
     triggerFormSubmit,
@@ -227,7 +215,7 @@ function SurveyBuilder() {
       type: surveyBuilderAction.setAreResponseDataOptionsValid,
       payload: isValid,
     });
-  }, [responseDataOptionsArray]);
+  }, [responseDataOptionsArray, currentStepperPosition]);
 
   // validate max response data options on every change
   useEffect(() => {
@@ -372,6 +360,11 @@ function SurveyBuilder() {
           areValidResponseDataOptions.some(
             (isValidResponseDataOption) => !isValidResponseDataOption
           );
+
+        console.log(
+          'isAnyResponseDataForQuestionInError',
+          isAnyResponseDataForQuestionInError
+        );
 
         isAnyResponseDataForQuestionInError
           ? surveyBuilderDispatch({
@@ -840,13 +833,13 @@ function SurveyBuilder() {
         },
       });
 
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setResponseDataOptionsCounts,
-        payload: {
-          questionIdx: questions.length,
-          kind: 'increment',
-        },
-      });
+      // surveyBuilderDispatch({
+      //   type: surveyBuilderAction.setResponseDataOptionsCounts,
+      //   payload: {
+      //     questionIdx: questions.length,
+      //     kind: 'increment',
+      //   },
+      // });
 
       // enables display of the newly created survey question page
       surveyBuilderDispatch({
@@ -884,13 +877,13 @@ function SurveyBuilder() {
               questionIdx: index,
             },
           });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setResponseDataOptionsCounts,
-            payload: {
-              questionIdx: index,
-              kind: 'increment',
-            },
-          });
+          // surveyBuilderDispatch({
+          //   type: surveyBuilderAction.setResponseDataOptionsCounts,
+          //   payload: {
+          //     questionIdx: index,
+          //     kind: 'increment',
+          //   },
+          // });
           surveyBuilderDispatch({
             type: surveyBuilderAction.setIsMaxResponseDataOptionsReached,
             payload: {
