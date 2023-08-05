@@ -98,6 +98,7 @@ function SurveyBuilder() {
     responseDataOptionsArray,
     areResponseDataOptionsValid,
     areResponseDataOptionsFocused,
+    responseDataOptionsCounts,
     isMaxResponseDataOptionsReached,
 
     triggerFormSubmit,
@@ -283,6 +284,35 @@ function SurveyBuilder() {
     });
   }, [responseKinds]);
 
+  // check submit button disabled state on every change
+  useEffect(() => {
+    const isDisabled =
+      !isValidSurveyTitle ||
+      !isValidExpiryDate ||
+      !isValidSurveyDescription ||
+      questions.length === 0 ||
+      areValidQuestions.includes(false) ||
+      responseDataOptionsArray.includes([]) ||
+      areResponseDataOptionsValid.flat().includes(false) ||
+      isMaxResponseDataOptionsReached.includes(true);
+
+    surveyBuilderDispatch({
+      type: surveyBuilderAction.setSubmitButtonDisabled,
+      payload: isDisabled,
+    });
+  }, [
+    responseKinds,
+    responseInputHtml,
+    responseDataOptionsArray,
+    isValidSurveyTitle,
+    isValidExpiryDate,
+    isValidSurveyDescription,
+    questions.length,
+    areValidQuestions,
+    areResponseDataOptionsValid,
+    isMaxResponseDataOptionsReached,
+  ]);
+
   // validate stepper state on every change
   useEffect(() => {
     const isStepInError =
@@ -300,7 +330,14 @@ function SurveyBuilder() {
   // validate stepper state on every dynamically created question input groups
   useEffect(() => {
     areValidQuestions.forEach((isValidQuestion, index) => {
-      isValidQuestion
+      const currentInputHtml = responseInputHtml[index];
+      const correspondingDataOptions = responseDataOptionsArray?.[index];
+      const isDataOptionsPresent =
+        currentInputHtml === 'checkbox' || currentInputHtml === 'radio'
+          ? correspondingDataOptions?.length > 0
+          : true;
+
+      isValidQuestion && isDataOptionsPresent
         ? surveyBuilderDispatch({
             type: surveyBuilderAction.setStepsInError,
             payload: {
@@ -316,7 +353,53 @@ function SurveyBuilder() {
             },
           });
     });
-  }, [areValidQuestions]);
+  }, [
+    areValidQuestions,
+    currentStepperPosition,
+    areResponseDataOptionsValid,
+    responseKinds,
+    responseInputHtml,
+    responseDataOptionsArray,
+  ]);
+
+  // // validate stepper state on response inputhtml change
+  // useEffect(() => {
+  //   responseInputHtml.forEach((inputHtml, index) => {
+  //     const correspondingDataOptions = responseDataOptionsArray?.[index];
+
+  //     console.log({ correspondingDataOptions });
+
+  //     if (inputHtml === 'checkbox' || inputHtml === 'radio') {
+  //       if (correspondingDataOptions?.length === 0) {
+  //         surveyBuilderDispatch({
+  //           type: surveyBuilderAction.setStepsInError,
+  //           payload: {
+  //             kind: 'add',
+  //             step: index + 1,
+  //           },
+  //         });
+  //         // surveyBuilderDispatch({
+  //         //   type: surveyBuilderAction.setSubmitButtonDisabled,
+  //         //   payload: true,
+  //         // });
+  //       } else {
+  //         surveyBuilderDispatch({
+  //           type: surveyBuilderAction.setStepsInError,
+  //           payload: {
+  //             kind: 'delete',
+  //             step: index + 1,
+  //           },
+  //         });
+  //       }
+  //     }
+  //   });
+  // }, [
+  //   currentStepperPosition,
+  //   areResponseDataOptionsValid,
+  //   responseKinds,
+  //   responseInputHtml,
+  //   responseDataOptionsArray,
+  // ]);
 
   // validate stepper state on every dynamically created response data options input groups
   useEffect(() => {
@@ -639,7 +722,7 @@ function SurveyBuilder() {
   const responseInputHtmlRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
-        description: 'Choose an input kind',
+        description: 'If radio or checkbox, data options must be present',
         dataObjectArray: SURVEY_BUILDER_INPUT_HTML_DATA.get(
           responseKinds?.[index]
         ) as {
@@ -860,18 +943,6 @@ function SurveyBuilder() {
       return creatorInfoObject;
     });
 
-  const isSubmitButtonDisabled =
-    stepsInError.size > 0 ||
-    triggerFormSubmit ||
-    questions.some((question) => question.length === 0) ||
-    responseDataOptionsArray.some((responseDataOptions) =>
-      responseDataOptions.some(
-        (responseDataOption) => responseDataOption.length === 0
-      )
-    );
-
-  console.log('isSubmitButtonDisabled', isSubmitButtonDisabled);
-
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Submit',
     semanticDescription: 'survey builder form submit button',
@@ -883,7 +954,7 @@ function SurveyBuilder() {
         payload: true,
       });
     },
-    buttonDisabled: isSubmitButtonDisabled,
+    buttonDisabled: submitButtonDisabled,
   };
 
   const helpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
