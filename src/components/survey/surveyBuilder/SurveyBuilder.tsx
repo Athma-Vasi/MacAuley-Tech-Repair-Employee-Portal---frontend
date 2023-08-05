@@ -1,8 +1,9 @@
-import { Flex, Modal, Notification, Text } from '@mantine/core';
+import { Flex, Modal, Text } from '@mantine/core';
 import { Group, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { TbHelp, TbPlus, TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -28,6 +29,7 @@ import {
   returnGrammarValidationText,
   urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification/CustomNotification';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -45,15 +47,13 @@ import {
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
   SURVEY_MAX_RESPONSE_DATA_OPTIONS,
 } from '../constants';
+import { SurveyBuilderDocument, SurveyRecipient } from '../types';
 import { mergeSurveyQuestionsGroup, setSurveyQuestions } from '../utils';
 import {
   initialSurveyBuilderState,
   surveyBuilderAction,
   surveyBuilderReducer,
 } from './state';
-import { SurveyBuilderDocument, SurveyRecipient } from './types';
-import { CustomNotification } from '../../customNotification/CustomNotification';
-import { Navigate, useNavigate } from 'react-router-dom';
 
 function SurveyBuilder() {
   /** ------------- begin hooks ------------- */

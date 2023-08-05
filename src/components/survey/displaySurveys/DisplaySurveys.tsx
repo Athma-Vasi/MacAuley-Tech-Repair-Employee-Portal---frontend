@@ -1,4 +1,4 @@
-import { CustomRating } from '../customRating/CustomRating';
+import { CustomRating } from '../../customRating/CustomRating';
 
 function DisplaySurveys() {
   return (
