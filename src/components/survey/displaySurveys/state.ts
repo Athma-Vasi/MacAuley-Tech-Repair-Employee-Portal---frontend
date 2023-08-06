@@ -1,3 +1,5 @@
+import { splitCamelCase } from '../../../utils';
+import { DescriptionObjectsArray } from '../../wrappers';
 import {
   DisplaySurveysAction,
   DisplaySurveysDispatch,
@@ -5,11 +7,18 @@ import {
 } from './types';
 
 const initialDisplaySurveysState: DisplaySurveysState = {
-  responseData: null,
+  responseData: [],
   surveysMap: new Map(),
   surveySubmissions: new Map(),
   currentSurveyId: '',
   response: '',
+  stepperDescriptionsMap: new Map(),
+
+  queryBuilderString: '?',
+  pageQueryString: '',
+  newQueryFlag: false,
+  totalDocuments: 0,
+  pages: 0,
 
   isError: false,
   errorMessage: '',
@@ -17,7 +26,7 @@ const initialDisplaySurveysState: DisplaySurveysState = {
   submitMessage: '',
   isSuccessful: false,
   successMessage: '',
-  isLoading: false,
+  isLoading: true,
   loadingMessage: '',
 };
 
@@ -27,6 +36,13 @@ const displaySurveysAction: DisplaySurveysAction = {
   setSurveySubmissions: 'setSurveySubmissions',
   setCurrentSurveyId: 'setCurrentSurveyId',
   setResponse: 'setResponse',
+  setStepperDescriptionsMap: 'setStepperDescriptionsMap',
+
+  setQueryBuilderString: 'setQueryBuilderString',
+  setPageQueryString: 'setPageQueryString',
+  setNewQueryFlag: 'setNewQueryFlag',
+  setTotalDocuments: 'setTotalDocuments',
+  setPages: 'setPages',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -48,11 +64,21 @@ function displaySurveysReducer(
         ...state,
         responseData: action.payload,
       };
-    case displaySurveysAction.setSurveysMap:
+    case displaySurveysAction.setSurveysMap: {
+      const surveys = action.payload;
+
+      const surveysMap = surveys.reduce((acc, survey) => {
+        acc.set(survey._id, survey);
+
+        return acc;
+      }, new Map());
+
       return {
         ...state,
-        surveysMap: action.payload,
+        surveysMap: surveysMap,
       };
+    }
+
     case displaySurveysAction.setSurveySubmissions:
       return {
         ...state,
@@ -63,6 +89,7 @@ function displaySurveysReducer(
         ...state,
         currentSurveyId: action.payload,
       };
+
     case displaySurveysAction.setResponse: {
       const {
         surveyResponse: { inputKind, question, response, responseKind },
@@ -90,7 +117,7 @@ function displaySurveysReducer(
       const surveyResponses = surveySubmission.surveyResponses.findIndex(
         (surveyResponse) => surveyResponse.question === question
       );
-      // if the question is not found, add it to the end of the array (its a new response)
+      // if the question is not found, add it to surveyResponses (it is a new response)
       if (surveyResponses === -1) {
         surveySubmission.surveyResponses.push({
           question,
@@ -115,6 +142,65 @@ function displaySurveysReducer(
         surveySubmissions: clonedSurveySubmissions,
       };
     }
+
+    case displaySurveysAction.setStepperDescriptionsMap: {
+      const surveys = action.payload;
+
+      const stepperDescriptionsMap = surveys.reduce(
+        (acc: Map<string, DescriptionObjectsArray>, survey) => {
+          const descriptionObjectsArray = survey.questions.map(
+            ({ question, responseKind }) => {
+              return {
+                ariaLabel: splitCamelCase(responseKind),
+                description: question,
+              };
+            }
+          );
+
+          acc.set(survey._id, descriptionObjectsArray);
+          //   survey.questions.forEach(({ question, responseKind }) => {
+          //     console.group('survey: ', survey._id);
+          //     console.log('question: ', question);
+          //     console.log('responseKind: ', responseKind);
+          //     console.groupEnd();
+          //   });
+
+          return acc;
+        },
+        new Map()
+      );
+
+      return {
+        ...state,
+        stepperDescriptionsMap,
+      };
+    }
+
+    case displaySurveysAction.setQueryBuilderString:
+      return {
+        ...state,
+        queryBuilderString: action.payload,
+      };
+    case displaySurveysAction.setPageQueryString:
+      return {
+        ...state,
+        pageQueryString: action.payload,
+      };
+    case displaySurveysAction.setNewQueryFlag:
+      return {
+        ...state,
+        newQueryFlag: action.payload,
+      };
+    case displaySurveysAction.setTotalDocuments:
+      return {
+        ...state,
+        totalDocuments: action.payload,
+      };
+    case displaySurveysAction.setPages:
+      return {
+        ...state,
+        pages: action.payload,
+      };
 
     case displaySurveysAction.setIsError:
       return {

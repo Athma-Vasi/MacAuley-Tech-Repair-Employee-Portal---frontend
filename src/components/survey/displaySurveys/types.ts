@@ -1,4 +1,5 @@
 import { QueryResponseData } from '../../../types';
+import { DescriptionObjectsArray } from '../../wrappers';
 import { SurveyBuilderDocument, SurveyResponseKind } from '../types';
 import { SurveyResponseInput } from '../types';
 
@@ -14,11 +15,18 @@ type SurveySubmission = {
 };
 
 type DisplaySurveysState = {
-  responseData: QueryResponseData<SurveyBuilderDocument> | null;
+  responseData: SurveyBuilderDocument[];
   surveysMap: Map<string, SurveyBuilderDocument>;
   surveySubmissions: Map<string, SurveySubmission>;
   currentSurveyId: string;
   response: string[] | string | number;
+  stepperDescriptionsMap: Map<string, DescriptionObjectsArray>;
+
+  queryBuilderString: string;
+  pageQueryString: string;
+  newQueryFlag: boolean;
+  totalDocuments: number;
+  pages: number;
 
   isError: boolean;
   errorMessage: string;
@@ -36,6 +44,13 @@ type DisplaySurveysAction = {
   setSurveySubmissions: 'setSurveySubmissions';
   setCurrentSurveyId: 'setCurrentSurveyId';
   setResponse: 'setResponse';
+  setStepperDescriptionsMap: 'setStepperDescriptionsMap';
+
+  setQueryBuilderString: 'setQueryBuilderString';
+  setPageQueryString: 'setPageQueryString';
+  setNewQueryFlag: 'setNewQueryFlag';
+  setTotalDocuments: 'setTotalDocuments';
+  setPages: 'setPages';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -50,11 +65,11 @@ type DisplaySurveysAction = {
 type DisplaySurveysDispatch =
   | {
       type: DisplaySurveysAction['setResponseData'];
-      payload: QueryResponseData<SurveyBuilderDocument> | null;
+      payload: SurveyBuilderDocument[];
     }
   | {
       type: DisplaySurveysAction['setSurveysMap'];
-      payload: Map<string, SurveyBuilderDocument>;
+      payload: SurveyBuilderDocument[];
     }
   | {
       type: DisplaySurveysAction['setSurveySubmissions'];
@@ -74,8 +89,14 @@ type DisplaySurveysDispatch =
       };
     }
   | {
+      type: DisplaySurveysAction['setStepperDescriptionsMap'];
+      payload: SurveyBuilderDocument[];
+    }
+  | {
       type:
         | DisplaySurveysAction['setCurrentSurveyId']
+        | DisplaySurveysAction['setQueryBuilderString']
+        | DisplaySurveysAction['setPageQueryString']
         | DisplaySurveysAction['setErrorMessage']
         | DisplaySurveysAction['setSubmitMessage']
         | DisplaySurveysAction['setSuccessMessage']
@@ -84,11 +105,18 @@ type DisplaySurveysDispatch =
     }
   | {
       type:
+        | DisplaySurveysAction['setNewQueryFlag']
         | DisplaySurveysAction['setIsError']
         | DisplaySurveysAction['setIsSubmitting']
         | DisplaySurveysAction['setIsSuccessful']
         | DisplaySurveysAction['setIsLoading'];
       payload: boolean;
+    }
+  | {
+      type:
+        | DisplaySurveysAction['setTotalDocuments']
+        | DisplaySurveysAction['setPages'];
+      payload: number;
     };
 
 type DisplaySurveysReducer = (

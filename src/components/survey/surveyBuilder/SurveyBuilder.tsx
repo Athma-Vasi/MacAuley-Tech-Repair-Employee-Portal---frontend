@@ -29,7 +29,7 @@ import {
   returnGrammarValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification/CustomNotification';
+import { CustomNotification } from '../../customNotification';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
