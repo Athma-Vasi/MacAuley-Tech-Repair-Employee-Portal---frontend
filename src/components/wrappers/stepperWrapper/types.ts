@@ -21,6 +21,7 @@ type DescriptionObjectsArray = Array<{
  * @property {number} currentStepperPosition - The current step number.
  * @property {'setCurrentStepperPosition'} setCurrentStepperPosition - A string literal that is the value of ${parentComponent}Action.setCurrentStepperPosition.
  * @property {React.Dispatch<{type: 'setCurrentStepperPosition'; payload: number;}>} parentComponentDispatch - The dispatch function of the parent component.
+ * @property {{id: string; dynamicSetStepperDispatch: React.Dispatch<{type: 'setCurrentStepperPositions'; payload: {id: string; currentStepperPosition: number;};}>;}} [dynamicStepperProps] - The props for a dynamic stepper. Used by the SurveyBuilder component.
  */
 type StepperWrapperProps = {
   allowNextStepsSelect?: boolean | undefined;
@@ -33,6 +34,17 @@ type StepperWrapperProps = {
     type: 'setCurrentStepperPosition';
     payload: number;
   }>;
+  dynamicStepperProps?: {
+    id: string;
+    dynamicSetStepperDispatch: React.Dispatch<{
+      type: 'setCurrentStepperPositions';
+      payload: {
+        id: string;
+        currentStepperPosition: number;
+      };
+    }>;
+  };
+
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   stepsInError: Set<number>;
 };

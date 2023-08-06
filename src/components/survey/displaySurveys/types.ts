@@ -1,4 +1,4 @@
-import { QueryResponseData } from '../../../types';
+import { QueryResponseData, SetStepsInErrorPayload } from '../../../types';
 import { DescriptionObjectsArray } from '../../wrappers';
 import { SurveyBuilderDocument, SurveyResponseKind } from '../types';
 import { SurveyResponseInput } from '../types';
@@ -20,7 +20,10 @@ type DisplaySurveysState = {
   surveySubmissions: Map<string, SurveySubmission>;
   currentSurveyId: string;
   response: string[] | string | number;
+
   stepperDescriptionsMap: Map<string, DescriptionObjectsArray>;
+  currentStepperPositions: Map<string, number>;
+  stepsInError: Map<string, Set<number>>;
 
   queryBuilderString: string;
   pageQueryString: string;
@@ -44,7 +47,10 @@ type DisplaySurveysAction = {
   setSurveySubmissions: 'setSurveySubmissions';
   setCurrentSurveyId: 'setCurrentSurveyId';
   setResponse: 'setResponse';
+
   setStepperDescriptionsMap: 'setStepperDescriptionsMap';
+  setCurrentStepperPositions: 'setCurrentStepperPositions';
+  setStepsInError: 'setStepsInError';
 
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
@@ -117,6 +123,20 @@ type DisplaySurveysDispatch =
         | DisplaySurveysAction['setTotalDocuments']
         | DisplaySurveysAction['setPages'];
       payload: number;
+    }
+  | {
+      type: DisplaySurveysAction['setCurrentStepperPositions'];
+      payload: {
+        id: string;
+        currentStepperPosition: number;
+      };
+    }
+  | {
+      type: DisplaySurveysAction['setStepsInError'];
+      payload: {
+        surveyId: string;
+        stepInError: SetStepsInErrorPayload;
+      };
     };
 
 type DisplaySurveysReducer = (

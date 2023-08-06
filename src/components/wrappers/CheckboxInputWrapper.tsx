@@ -1,5 +1,5 @@
 import { Checkbox, Grid } from '@mantine/core';
-import { ReactNode } from 'react';
+import { ChangeEvent, ReactNode, RefObject } from 'react';
 
 import { useGlobalState } from '../../hooks';
 
@@ -13,9 +13,9 @@ type AccessibleCheckboxSingleInputCreatorInfo = {
   ariaRequired?: boolean;
   checked: boolean;
   disabled?: boolean;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
-  ref?: React.RefObject<HTMLInputElement> | null;
+  ref?: RefObject<HTMLInputElement> | null;
 };
 
 type CheckboxSingleInputWrapperProps = {
@@ -81,7 +81,7 @@ type AccessibleCheckboxGroupInputCreatorInfo = {
   onChange: (value: string[]) => void;
   name?: string;
   required?: boolean;
-  ref?: React.RefObject<HTMLInputElement> | null;
+  ref?: RefObject<HTMLInputElement> | null;
   withAsterisk?: boolean;
   dataObjectArray: Array<{
     value: string;

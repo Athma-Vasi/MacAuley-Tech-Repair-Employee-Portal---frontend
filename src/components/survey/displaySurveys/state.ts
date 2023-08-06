@@ -12,7 +12,10 @@ const initialDisplaySurveysState: DisplaySurveysState = {
   surveySubmissions: new Map(),
   currentSurveyId: '',
   response: '',
+
   stepperDescriptionsMap: new Map(),
+  currentStepperPositions: new Map(),
+  stepsInError: new Map(),
 
   queryBuilderString: '?',
   pageQueryString: '',
@@ -36,7 +39,10 @@ const displaySurveysAction: DisplaySurveysAction = {
   setSurveySubmissions: 'setSurveySubmissions',
   setCurrentSurveyId: 'setCurrentSurveyId',
   setResponse: 'setResponse',
+
   setStepperDescriptionsMap: 'setStepperDescriptionsMap',
+  setCurrentStepperPositions: 'setCurrentStepperPositions',
+  setStepsInError: 'setStepsInError',
 
   setQueryBuilderString: 'setQueryBuilderString',
   setPageQueryString: 'setPageQueryString',
@@ -158,12 +164,6 @@ function displaySurveysReducer(
           );
 
           acc.set(survey._id, descriptionObjectsArray);
-          //   survey.questions.forEach(({ question, responseKind }) => {
-          //     console.group('survey: ', survey._id);
-          //     console.log('question: ', question);
-          //     console.log('responseKind: ', responseKind);
-          //     console.groupEnd();
-          //   });
 
           return acc;
         },
@@ -173,6 +173,34 @@ function displaySurveysReducer(
       return {
         ...state,
         stepperDescriptionsMap,
+      };
+    }
+    case displaySurveysAction.setCurrentStepperPositions: {
+      const { id, currentStepperPosition } = action.payload;
+      const clonedCurrentStepperPositions = new Map(
+        state.currentStepperPositions
+      );
+      clonedCurrentStepperPositions.set(id, currentStepperPosition);
+
+      return {
+        ...state,
+        currentStepperPositions: clonedCurrentStepperPositions,
+      };
+    }
+    case displaySurveysAction.setStepsInError: {
+      const {
+        surveyId,
+        stepInError: { kind, step },
+      } = action.payload;
+
+      const clonedStepsInError = structuredClone(state.stepsInError);
+      const stepInError = clonedStepsInError.get(surveyId) ?? new Set<number>();
+      kind === 'add' ? stepInError.add(step) : stepInError.delete(step);
+      clonedStepsInError.set(surveyId, stepInError);
+
+      return {
+        ...state,
+        stepsInError: clonedStepsInError,
       };
     }
 

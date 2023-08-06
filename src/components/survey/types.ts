@@ -45,7 +45,7 @@ type SurveyQuestion = {
   question: string;
   responseKind: SurveyResponseKind;
   responseInput: SurveyResponseInput;
-  responseDataOptions: Array<string[] | []> | [];
+  responseDataOptions: string[] | [];
 };
 
 type SurveyBuilderSchema = {

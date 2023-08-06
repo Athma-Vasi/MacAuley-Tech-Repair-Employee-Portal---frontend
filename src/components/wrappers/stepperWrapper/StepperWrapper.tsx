@@ -20,6 +20,7 @@ function StepperWrapper({
   descriptionObjectsArray,
   maxStepperPosition,
   parentComponentDispatch,
+  dynamicStepperProps,
   setCurrentStepperPosition,
   stepsInError,
 }: StepperWrapperProps) {
@@ -37,14 +38,25 @@ function StepperWrapper({
     buttonLabel: 'Back',
     semanticDescription: 'Back button to navigate to previous step',
     semanticName: 'back button',
-    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
-      parentComponentDispatch({
-        type: setCurrentStepperPosition,
-        payload:
-          currentStepperPosition > 0
-            ? currentStepperPosition - 1
-            : currentStepperPosition + 1,
-      });
+    buttonOnClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+      dynamicStepperProps
+        ? dynamicStepperProps.dynamicSetStepperDispatch({
+            type: 'setCurrentStepperPositions',
+            payload: {
+              id: dynamicStepperProps.id,
+              currentStepperPosition:
+                currentStepperPosition > 0
+                  ? currentStepperPosition - 1
+                  : currentStepperPosition + 1,
+            },
+          })
+        : parentComponentDispatch({
+            type: setCurrentStepperPosition,
+            payload:
+              currentStepperPosition > 0
+                ? currentStepperPosition - 1
+                : currentStepperPosition + 1,
+          });
     },
     leftIcon: <TiArrowLeftThick />,
     buttonDisabled: currentStepperPosition === 0,

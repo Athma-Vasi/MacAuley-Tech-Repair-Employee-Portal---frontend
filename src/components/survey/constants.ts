@@ -1,4 +1,4 @@
-import { SelectInputData } from '../../types';
+import { RadioGroupInputData, SelectInputData } from '../../types';
 
 const SURVEY_BUILDER_RECIPIENT_DATA = [
   'All',
@@ -75,7 +75,31 @@ const SURVEY_BUILDER_MAX_QUESTION_AMOUNT = 3;
 
 const SURVEY_MAX_RESPONSE_DATA_OPTIONS = 7;
 
+const SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS: RadioGroupInputData = [
+  {
+    label: 'Strongly Agree',
+    value: 'Strongly Agree',
+  },
+  {
+    label: 'Agree',
+    value: 'Agree',
+  },
+  {
+    label: 'Neutral',
+    value: 'Neutral',
+  },
+  {
+    label: 'Disagree',
+    value: 'Disagree',
+  },
+  {
+    label: 'Strongly Disagree',
+    value: 'Strongly Disagree',
+  },
+];
+
 export {
+  SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
   SURVEY_BUILDER_INPUT_HTML_DATA,
   SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
   SURVEY_BUILDER_RECIPIENT_DATA,

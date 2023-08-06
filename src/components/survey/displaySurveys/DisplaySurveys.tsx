@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { ChangeEvent, useEffect, useReducer } from 'react';
 import { CustomRating } from '../../customRating/CustomRating';
 import {
   displaySurveysAction,
@@ -7,10 +7,24 @@ import {
 } from './state';
 import { logState, urlBuilder } from '../../../utils';
 import { useAuth } from '../../../hooks';
-import { GetQueriedResourceRequestServerResponse } from '../../../types';
+import {
+  CheckBoxMultipleData,
+  GetQueriedResourceRequestServerResponse,
+  RadioGroupInputData,
+} from '../../../types';
 import { SurveyBuilderDocument } from '../types';
 import { CustomNotification } from '../../customNotification';
 import { useNavigate } from 'react-router-dom';
+import {
+  AccessibleCheckboxGroupInputCreatorInfo,
+  AccessibleRadioGroupInputCreatorInfo,
+} from '../../wrappers';
+import {
+  returnAccessibleCheckboxGroupInputsElements,
+  returnAccessibleRadioGroupInputsElements,
+} from '../../../jsxCreators';
+import { SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS } from '../constants';
+import { Stack, Text } from '@mantine/core';
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -96,12 +110,22 @@ function DisplaySurveys() {
 
           displaySurveysDispatch({
             type: displaySurveysAction.setSurveysMap,
-            payload: responseData,
+            payload: data.resourceData,
           });
 
           displaySurveysDispatch({
             type: displaySurveysAction.setStepperDescriptionsMap,
-            payload: responseData,
+            payload: data.resourceData,
+          });
+
+          data.resourceData.forEach((survey: SurveyBuilderDocument) => {
+            displaySurveysDispatch({
+              type: displaySurveysAction.setCurrentStepperPositions,
+              payload: {
+                id: survey._id,
+                currentStepperPosition: 0,
+              },
+            });
           });
 
           displaySurveysDispatch({
@@ -165,23 +189,33 @@ function DisplaySurveys() {
     totalDocuments,
   ]);
 
-  // useEffect(() => {
-  //   displaySurveysDispatch({
-  //     type: displaySurveysAction.setSurveysMap,
-  //     payload: responseData,
-  //   });
-
-  //   displaySurveysDispatch({
-  //     type: displaySurveysAction.setStepperDescriptionsMap,
-  //     payload: responseData,
-  //   });
-  // }, [responseData]);
+  // TODO: implement filtering based on survey sendTo and user's department
 
   useEffect(() => {
     logState({
       state: displaySurveysState,
       groupLabel: 'DisplaySurveys',
     });
+  }, [displaySurveysState]);
+
+  useEffect(() => {
+    displaySurveysState.responseData.forEach(
+      (survey: SurveyBuilderDocument) => {
+        const { questions } = survey;
+
+        console.group(`Survey: ${survey._id}`);
+        questions.forEach(
+          ({ question, responseDataOptions, responseInput, responseKind }) => {
+            console.group(`Question: ${question}`);
+            console.log('responseDataOptions: ', responseDataOptions);
+            console.log('responseInput: ', responseInput);
+            console.log('responseKind: ', responseKind);
+            console.groupEnd();
+          }
+        );
+        console.groupEnd();
+      }
+    );
   }, [displaySurveysState]);
 
   /** ------------- end useEffects ------------- */
@@ -206,10 +240,156 @@ function DisplaySurveys() {
   }
   /** ------------- end component render bypass ------------- */
 
+  const createdSurveys = responseData.reduce(
+    (acc: Array<JSX.Element[]>, survey, surveyIdx) => {
+      const { questions, _id, surveyTitle } = survey;
+
+      questions.forEach(
+        ({ question, responseDataOptions, responseInput, responseKind }) => {
+          switch (responseInput) {
+            case 'agreeDisagree': {
+              const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo =
+                {
+                  dataObjectArray: SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
+                  description: question,
+                  onChange: (value: string) => {
+                    displaySurveysDispatch({
+                      type: displaySurveysAction.setResponse,
+                      payload: {
+                        surveyId: _id,
+                        surveyTitle,
+                        surveyResponse: {
+                          question,
+                          inputKind: responseInput,
+                          response: value,
+                          responseKind,
+                        },
+                      },
+                    });
+                  },
+                  semanticName: question,
+                };
+
+              const [createdRadioInput] =
+                returnAccessibleRadioGroupInputsElements([
+                  radioInputCreatorInfoObj,
+                ]);
+
+              acc[surveyIdx].push(createdRadioInput);
+              break;
+            }
+
+            case 'radio': {
+              const dataObjectArray: RadioGroupInputData =
+                responseDataOptions.map((responseDataOption) => ({
+                  value: responseDataOption,
+                  label: responseDataOption,
+                }));
+
+              const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo =
+                {
+                  dataObjectArray,
+                  description: question,
+                  onChange: (value: string) => {
+                    displaySurveysDispatch({
+                      type: displaySurveysAction.setResponse,
+                      payload: {
+                        surveyId: _id,
+                        surveyTitle,
+                        surveyResponse: {
+                          question,
+                          inputKind: responseInput,
+                          response: value,
+                          responseKind,
+                        },
+                      },
+                    });
+                  },
+                  semanticName: question,
+                };
+
+              const [createdRadioInput] =
+                returnAccessibleRadioGroupInputsElements([
+                  radioInputCreatorInfoObj,
+                ]);
+
+              acc[surveyIdx].push(createdRadioInput);
+              break;
+            }
+
+            case 'checkbox': {
+              const dataObjectArray: CheckBoxMultipleData =
+                responseDataOptions.map((responseDataOption) => ({
+                  value: responseDataOption,
+                  label: responseDataOption,
+                }));
+
+              const surveySubmission = surveySubmissions.get(_id);
+              const checkboxValue = surveySubmission?.surveyResponses.find(
+                (surveyResponse) => surveyResponse.question === question
+              )?.response as string[];
+
+              const checkboxInputCreatorInfoObj: AccessibleCheckboxGroupInputCreatorInfo =
+                {
+                  dataObjectArray,
+                  description: {
+                    selected: <Text>Selected</Text>,
+                    deselected: <Text>Deselected</Text>,
+                  },
+                  onChange: (value: string[]) => {
+                    displaySurveysDispatch({
+                      type: displaySurveysAction.setResponse,
+                      payload: {
+                        surveyId: _id,
+                        surveyTitle,
+                        surveyResponse: {
+                          question,
+                          inputKind: responseInput,
+                          response: value,
+                          responseKind,
+                        },
+                      },
+                    });
+                  },
+                  semanticName: question,
+                  value: checkboxValue ?? [],
+                };
+
+              const [createdCheckboxInput] =
+                returnAccessibleCheckboxGroupInputsElements([
+                  checkboxInputCreatorInfoObj,
+                ]);
+
+              acc[surveyIdx].push(createdCheckboxInput);
+              break;
+            }
+
+            case 'emotion': {
+              break;
+            }
+
+            case 'stars': {
+              break;
+            }
+
+            default:
+              break;
+          }
+        }
+      );
+
+      return acc;
+    },
+    // create an array of arrays with the same length as responseData
+    Array.from({ length: responseData.length }).map(() => [])
+  );
+
   return (
-    <>
-      <CustomRating ratingKind="emotion" />
-    </>
+    <Stack>
+      {createdSurveys.map((survey, idx) => (
+        <Stack key={`${idx}`}>{survey}</Stack>
+      ))}
+    </Stack>
   );
 }
 
