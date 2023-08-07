@@ -48,6 +48,12 @@ type SurveyQuestion = {
   responseDataOptions: string[] | [];
 };
 
+type SurveyStatistics = {
+  question: string;
+  totalResponses: number;
+  responseDistribution: Record<string, number>;
+};
+
 type SurveyBuilderSchema = {
   creatorId: string;
   creatorUsername: string;
@@ -59,6 +65,8 @@ type SurveyBuilderSchema = {
   sendTo: SurveyRecipient;
   expiryDate: string;
   questions: Array<SurveyQuestion>;
+
+  surveyStatistics: SurveyStatistics[];
 };
 
 type SurveyBuilderDocument = SurveyBuilderSchema & {
@@ -81,4 +89,5 @@ export type {
   SurveyResponseDataOptions,
   SurveyResponseInput,
   SurveyResponseKind,
+  SurveyStatistics,
 };

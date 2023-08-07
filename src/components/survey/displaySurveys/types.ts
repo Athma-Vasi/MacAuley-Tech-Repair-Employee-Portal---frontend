@@ -14,11 +14,24 @@ type SurveySubmission = {
   }[];
 };
 
+type ResponsePayload = {
+  surveyId: string;
+  surveyTitle: string;
+  surveyResponse: {
+    question: string;
+    responseKind: SurveyResponseKind;
+    inputKind: SurveyResponseInput;
+    response: string[] | string | number;
+  };
+};
+
 type DisplaySurveysState = {
   responseData: SurveyBuilderDocument[];
   surveysMap: Map<string, SurveyBuilderDocument>;
   surveySubmissions: Map<string, SurveySubmission>;
+  surveyToSubmit: SurveySubmission;
   currentSurveyId: string;
+
   response: string[] | string | number;
 
   stepperDescriptionsMap: Map<string, DescriptionObjectsArray>;
@@ -30,6 +43,8 @@ type DisplaySurveysState = {
   newQueryFlag: boolean;
   totalDocuments: number;
   pages: number;
+
+  triggerSurveySubmission: boolean;
 
   isError: boolean;
   errorMessage: string;
@@ -45,11 +60,13 @@ type DisplaySurveysAction = {
   setResponseData: 'setResponseData';
   setSurveysMap: 'setSurveysMap';
   setSurveySubmissions: 'setSurveySubmissions';
+  setSurveyToSubmit: 'setSurveyToSubmit';
   setCurrentSurveyId: 'setCurrentSurveyId';
+
   setResponse: 'setResponse';
 
   setStepperDescriptionsMap: 'setStepperDescriptionsMap';
-  setCurrentStepperPositions: 'setCurrentStepperPositions';
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
   setQueryBuilderString: 'setQueryBuilderString';
@@ -57,6 +74,8 @@ type DisplaySurveysAction = {
   setNewQueryFlag: 'setNewQueryFlag';
   setTotalDocuments: 'setTotalDocuments';
   setPages: 'setPages';
+
+  setTriggerSurveySubmission: 'setTriggerSurveySubmission';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -82,17 +101,14 @@ type DisplaySurveysDispatch =
       payload: Map<string, SurveySubmission>;
     }
   | {
-      type: DisplaySurveysAction['setResponse'];
+      type: DisplaySurveysAction['setSurveyToSubmit'];
       payload: {
         surveyId: string;
-        surveyTitle: string;
-        surveyResponse: {
-          question: string;
-          responseKind: SurveyResponseKind;
-          inputKind: SurveyResponseInput;
-          response: string[] | string | number;
-        };
       };
+    }
+  | {
+      type: DisplaySurveysAction['setResponse'];
+      payload: ResponsePayload;
     }
   | {
       type: DisplaySurveysAction['setStepperDescriptionsMap'];
@@ -112,6 +128,7 @@ type DisplaySurveysDispatch =
   | {
       type:
         | DisplaySurveysAction['setNewQueryFlag']
+        | DisplaySurveysAction['setTriggerSurveySubmission']
         | DisplaySurveysAction['setIsError']
         | DisplaySurveysAction['setIsSubmitting']
         | DisplaySurveysAction['setIsSuccessful']
@@ -125,7 +142,7 @@ type DisplaySurveysDispatch =
       payload: number;
     }
   | {
-      type: DisplaySurveysAction['setCurrentStepperPositions'];
+      type: DisplaySurveysAction['setCurrentStepperPosition'];
       payload: {
         id: string;
         currentStepperPosition: number;
@@ -149,5 +166,6 @@ export type {
   DisplaySurveysDispatch,
   DisplaySurveysReducer,
   DisplaySurveysState,
+  ResponsePayload,
   SurveySubmission,
 };

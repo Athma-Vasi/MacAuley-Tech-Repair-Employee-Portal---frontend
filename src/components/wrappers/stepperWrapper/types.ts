@@ -30,14 +30,14 @@ type StepperWrapperProps = {
   currentStepperPosition: number;
   descriptionObjectsArray: DescriptionObjectsArray;
   maxStepperPosition: number;
-  parentComponentDispatch: React.Dispatch<{
+  parentComponentDispatch?: React.Dispatch<{
     type: 'setCurrentStepperPosition';
     payload: number;
   }>;
   dynamicStepperProps?: {
     id: string;
     dynamicSetStepperDispatch: React.Dispatch<{
-      type: 'setCurrentStepperPositions';
+      type: 'setCurrentStepperPosition';
       payload: {
         id: string;
         currentStepperPosition: number;

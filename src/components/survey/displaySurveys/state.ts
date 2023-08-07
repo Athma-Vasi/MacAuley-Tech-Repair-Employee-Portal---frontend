@@ -10,7 +10,13 @@ const initialDisplaySurveysState: DisplaySurveysState = {
   responseData: [],
   surveysMap: new Map(),
   surveySubmissions: new Map(),
+  surveyToSubmit: {
+    surveyId: '',
+    surveyTitle: '',
+    surveyResponses: [],
+  },
   currentSurveyId: '',
+
   response: '',
 
   stepperDescriptionsMap: new Map(),
@@ -22,6 +28,8 @@ const initialDisplaySurveysState: DisplaySurveysState = {
   newQueryFlag: false,
   totalDocuments: 0,
   pages: 0,
+
+  triggerSurveySubmission: false,
 
   isError: false,
   errorMessage: '',
@@ -37,11 +45,13 @@ const displaySurveysAction: DisplaySurveysAction = {
   setResponseData: 'setResponseData',
   setSurveysMap: 'setSurveysMap',
   setSurveySubmissions: 'setSurveySubmissions',
+  setSurveyToSubmit: 'setSurveyToSubmit',
   setCurrentSurveyId: 'setCurrentSurveyId',
+
   setResponse: 'setResponse',
 
   setStepperDescriptionsMap: 'setStepperDescriptionsMap',
-  setCurrentStepperPositions: 'setCurrentStepperPositions',
+  setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
   setQueryBuilderString: 'setQueryBuilderString',
@@ -49,6 +59,8 @@ const displaySurveysAction: DisplaySurveysAction = {
   setNewQueryFlag: 'setNewQueryFlag',
   setTotalDocuments: 'setTotalDocuments',
   setPages: 'setPages',
+
+  setTriggerSurveySubmission: 'setTriggerSurveySubmission',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -90,6 +102,23 @@ function displaySurveysReducer(
         ...state,
         surveySubmissions: action.payload,
       };
+
+    case displaySurveysAction.setSurveyToSubmit: {
+      const { surveyId } = action.payload;
+      const surveySubmissions = new Map(state.surveySubmissions);
+
+      const surveySubmission = surveySubmissions.get(surveyId) ?? {
+        surveyId,
+        surveyTitle: '',
+        surveyResponses: [],
+      };
+
+      return {
+        ...state,
+        surveyToSubmit: surveySubmission,
+      };
+    }
+
     case displaySurveysAction.setCurrentSurveyId:
       return {
         ...state,
@@ -157,8 +186,8 @@ function displaySurveysReducer(
           const descriptionObjectsArray = survey.questions.map(
             ({ question, responseKind }) => {
               return {
-                ariaLabel: splitCamelCase(responseKind),
-                description: question,
+                ariaLabel: question,
+                description: splitCamelCase(responseKind),
               };
             }
           );
@@ -175,7 +204,7 @@ function displaySurveysReducer(
         stepperDescriptionsMap,
       };
     }
-    case displaySurveysAction.setCurrentStepperPositions: {
+    case displaySurveysAction.setCurrentStepperPosition: {
       const { id, currentStepperPosition } = action.payload;
       const clonedCurrentStepperPositions = new Map(
         state.currentStepperPositions
@@ -228,6 +257,12 @@ function displaySurveysReducer(
       return {
         ...state,
         pages: action.payload,
+      };
+
+    case displaySurveysAction.setTriggerSurveySubmission:
+      return {
+        ...state,
+        triggerSurveySubmission: action.payload,
       };
 
     case displaySurveysAction.setIsError:

@@ -922,11 +922,26 @@ function filterFieldsFromObject({
   object: Record<string, any>;
   fieldsToFilter: string[];
 }): Record<string, any> {
-  const filteredObject = Object.fromEntries(
-    Object.entries(object).filter(([key]) => !fieldsToFilter.includes(key))
-  );
+  // const filteredObject = Object.fromEntries(
+  //   Object.entries(structuredClone(object)).filter(
+  //     ([key]) => !fieldsToFilter.includes(key)
+  //   )
+  // );
 
-  return filteredObject;
+  // return filteredObject;
+
+  return Object.entries(object).reduce((obj, [key, value]) => {
+    if (!fieldsToFilter.includes(key)) {
+      Object.defineProperty(obj, key, {
+        value,
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      });
+    }
+
+    return obj;
+  }, Object.create(null));
 }
 
 function addFieldsToObject({
@@ -946,22 +961,22 @@ function addFieldsToObject({
     configurable?: boolean;
   };
 }): Record<string, any> {
-  // return fieldValuesTuples.reduce((obj, [key, value]) => {
-  //   Object.defineProperty(obj, key, {
-  //     value,
-  //     ...options,
-  //   });
-
-  //   return obj;
-  // }, object);
-
-  fieldValuesTuples.forEach(([key, value]) => {
-    Object.defineProperty(object, key, {
+  return fieldValuesTuples.reduce((obj, [key, value]) => {
+    Object.defineProperty(obj, key, {
       value,
       ...options,
     });
-  });
-  return object;
+
+    return obj;
+  }, structuredClone(object));
+
+  // fieldValuesTuples.forEach(([key, value]) => {
+  //   Object.defineProperty(object, key, {
+  //     value,
+  //     ...options,
+  //   });
+  // });
+  // return object;
 }
 
 type UrlBuilderInput = {

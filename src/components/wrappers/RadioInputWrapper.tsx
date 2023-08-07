@@ -1,18 +1,19 @@
-import { Flex, Grid, Radio } from '@mantine/core';
+import { Flex, Grid, Group, Radio } from '@mantine/core';
 import React, { ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
 
 type AccessibleRadioSingleInputCreatorInfo = {
   semanticName: string;
-  label?: ReactNode | string | undefined;
+  label?: ReactNode | string;
   description: string;
-  ariaRequired?: boolean | undefined;
+  key?: string;
+  ariaRequired?: boolean;
   checked: boolean;
-  disabled?: boolean | undefined;
+  disabled?: boolean;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined | null;
+  required?: boolean;
+  ref?: React.RefObject<HTMLInputElement> | null;
 };
 type RadioSingleInputWrapperProps = {
   creatorInfoObject: AccessibleRadioSingleInputCreatorInfo;
@@ -30,6 +31,7 @@ function RadioSingleInputWrapper({
     description,
     onChange,
     semanticName,
+    key = semanticName,
     label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
     disabled = false,
     ref = null,
@@ -43,6 +45,7 @@ function RadioSingleInputWrapper({
     <Radio
       size={radioInputSize}
       label={label}
+      key={key}
       description={description}
       aria-required={ariaRequired}
       aria-label={semanticName}
@@ -67,38 +70,39 @@ type AccessibleRadioSingleInputCreatorInfo = {
     selected: string;
     deselected: string;
   };
-  ariaRequired?: boolean | undefined;
-  checked?: boolean | undefined;
+  ariaRequired?: boolean ;
+  checked?: boolean ;
   dataObjArray?:
     | Array<{
         value: string;
         label: string;
       }>
-    | undefined;
-  disabled?: boolean | undefined;
+    ;
+  disabled?: boolean ;
 
   onChange: (event: React.ChangeEvent<HTMLInputElement> | string) => void;
   onClick: () => void;
   radioKind: 'single' | 'multiple';
-  value?: string | undefined;
+  value?: string ;
 
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
+  withAsterisk?: boolean ;
+  ref?: React.RefObject<HTMLInputElement> ;
+  required?: boolean ;
 };
 */
 
 type AccessibleRadioGroupInputCreatorInfo = {
   semanticName: string;
-  label?: ReactNode | string | undefined;
-  description: string;
-  ariaRequired?: boolean | undefined;
+  label?: ReactNode | string;
+  description?: ReactNode | string;
+  ariaRequired?: boolean;
+  key?: string;
   value?: string;
   onChange: (value: string) => void;
-  name?: string | undefined;
-  required?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined | null;
-  withAsterisk?: boolean | undefined;
+  name?: string;
+  required?: boolean;
+  ref?: React.RefObject<HTMLInputElement> | null;
+  withAsterisk?: boolean;
   dataObjectArray: Array<{
     value: string;
     label: string;
@@ -114,7 +118,7 @@ function RadioGroupInputsWrapper({
   creatorInfoObject,
 }: RadioGroupInputsWrapperProps) {
   const {
-    globalState: { width, padding },
+    globalState: { width, padding, rowGap },
   } = useGlobalState();
 
   const {
@@ -123,6 +127,7 @@ function RadioGroupInputsWrapper({
     description,
     onChange,
     semanticName,
+    key = semanticName,
     label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
     ariaRequired = false,
     value,
@@ -141,6 +146,7 @@ function RadioGroupInputsWrapper({
       description={description}
       aria-required={ariaRequired}
       aria-describedby={semanticName}
+      key={key}
       value={value}
       onChange={onChange}
       name={name}
@@ -150,7 +156,7 @@ function RadioGroupInputsWrapper({
       w="100%"
       id={name}
     >
-      <Grid
+      {/* <Grid
         columns={
           columns
             ? columns
@@ -166,12 +172,31 @@ function RadioGroupInputsWrapper({
       >
         {dataObjectArray?.map(({ value, label }, idx) => {
           return (
-            <Grid.Col span={1} key={`${label}-${value}-${idx}`}>
+            <Grid.Col span={1} key={`${key}-${idx}-${label}-${value}`}>
               <Radio key={value} value={value} label={label} />
             </Grid.Col>
           );
         })}
-      </Grid>
+      </Grid> */}
+      <Flex
+        direction="column"
+        align="flex-start"
+        justify="space-between"
+        p={padding}
+        rowGap={rowGap}
+        columnGap={rowGap}
+        w="100%"
+        wrap="wrap"
+        key={`${key}-flex`}
+      >
+        {dataObjectArray?.map(({ value, label }, idx) => {
+          return (
+            <Group position="center" key={`${key}-${idx}-${label}-${value}`}>
+              <Radio value={value} label={label} />
+            </Group>
+          );
+        })}
+      </Flex>
     </Radio.Group>
   );
 

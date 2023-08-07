@@ -39,24 +39,47 @@ function StepperWrapper({
     semanticDescription: 'Back button to navigate to previous step',
     semanticName: 'back button',
     buttonOnClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
-      dynamicStepperProps
-        ? dynamicStepperProps.dynamicSetStepperDispatch({
-            type: 'setCurrentStepperPositions',
-            payload: {
-              id: dynamicStepperProps.id,
-              currentStepperPosition:
-                currentStepperPosition > 0
-                  ? currentStepperPosition - 1
-                  : currentStepperPosition + 1,
-            },
-          })
-        : parentComponentDispatch({
-            type: setCurrentStepperPosition,
-            payload:
+      // dynamicStepperProps
+      //   ? dynamicStepperProps.dynamicSetStepperDispatch({
+      //       type: 'setCurrentStepperPosition',
+      //       payload: {
+      //         id: dynamicStepperProps.id,
+      //         currentStepperPosition:
+      //           currentStepperPosition > 0
+      //             ? currentStepperPosition - 1
+      //             : currentStepperPosition + 1,
+      //       },
+      //     })
+      //   : parentComponentDispatch({
+      //       type: setCurrentStepperPosition,
+      //       payload:
+      //         currentStepperPosition > 0
+      //           ? currentStepperPosition - 1
+      //           : currentStepperPosition + 1,
+      //     });
+
+      if (parentComponentDispatch) {
+        parentComponentDispatch({
+          type: setCurrentStepperPosition,
+          payload:
+            currentStepperPosition > 0
+              ? currentStepperPosition - 1
+              : currentStepperPosition + 1,
+        });
+      }
+
+      if (dynamicStepperProps) {
+        dynamicStepperProps.dynamicSetStepperDispatch({
+          type: 'setCurrentStepperPosition',
+          payload: {
+            id: dynamicStepperProps.id,
+            currentStepperPosition:
               currentStepperPosition > 0
                 ? currentStepperPosition - 1
                 : currentStepperPosition + 1,
-          });
+          },
+        });
+      }
     },
     leftIcon: <TiArrowLeftThick />,
     buttonDisabled: currentStepperPosition === 0,
@@ -67,13 +90,28 @@ function StepperWrapper({
     semanticDescription: 'Next button to navigate to next step',
     semanticName: 'next button',
     buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
-      parentComponentDispatch({
-        type: setCurrentStepperPosition,
-        payload:
-          currentStepperPosition < maxStepperPosition
-            ? currentStepperPosition + 1
-            : currentStepperPosition - 1,
-      });
+      if (parentComponentDispatch) {
+        parentComponentDispatch({
+          type: setCurrentStepperPosition,
+          payload:
+            currentStepperPosition < maxStepperPosition
+              ? currentStepperPosition + 1
+              : currentStepperPosition - 1,
+        });
+      }
+
+      if (dynamicStepperProps) {
+        dynamicStepperProps.dynamicSetStepperDispatch({
+          type: 'setCurrentStepperPosition',
+          payload: {
+            id: dynamicStepperProps.id,
+            currentStepperPosition:
+              currentStepperPosition < maxStepperPosition
+                ? currentStepperPosition + 1
+                : currentStepperPosition - 1,
+          },
+        });
+      }
     },
     rightIcon: <TiArrowRightThick />,
     buttonDisabled: currentStepperPosition === maxStepperPosition,
@@ -111,14 +149,14 @@ function StepperWrapper({
   const padding =
     width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
   const descObjLen = descriptionObjectsArray.length;
-  const componentWidth =
-    width < 640
-      ? '100%'
-      : descObjLen > 4
-      ? '85%'
-      : width < 1440
-      ? '75%'
-      : '62%';
+  // const componentWidth =
+  //   width < 640
+  //     ? '100%'
+  //     : descObjLen > 4
+  //     ? '85%'
+  //     : width < 1440
+  //     ? '75%'
+  //     : '62%';
   const size = 'sm';
   const rowGap =
     width < 480 ? 'md' : width < 768 ? 'sm' : width < 1440 ? 'md' : 'lg';
@@ -130,23 +168,38 @@ function StepperWrapper({
       justify="center"
       rowGap={width < 480 ? 'sm' : 'md'}
       w="100%"
-      style={{ borderRadius: '5px' }}
+      style={{ borderRadius: '4px', border: '1px solid teal' }}
       bg="white"
       p={padding}
       h="100%"
     >
-      <Title order={3}>{childrenTitle}</Title>
+      <Title order={3} color="dark">
+        {childrenTitle}
+      </Title>
       <Stepper
         active={currentStepperPosition}
         onStepClick={(step) => {
-          parentComponentDispatch({
-            type: setCurrentStepperPosition,
-            payload: step,
-          });
+          if (parentComponentDispatch) {
+            parentComponentDispatch({
+              type: setCurrentStepperPosition,
+              payload: step,
+            });
+          }
+
+          if (dynamicStepperProps) {
+            dynamicStepperProps.dynamicSetStepperDispatch({
+              type: 'setCurrentStepperPosition',
+              payload: {
+                id: dynamicStepperProps.id,
+                currentStepperPosition: step,
+              },
+            });
+          }
         }}
         breakpoint={descObjLen < 4 ? 640 : 1440}
         allowNextStepsSelect={allowNextStepsSelect}
-        w={componentWidth}
+        // w={componentWidth}
+        w="100%"
         p={padding}
         size={size}
         style={{ borderRadius: '5px', border: '1px solid #e0e0e0' }}
@@ -209,7 +262,8 @@ function StepperWrapper({
         direction="column"
         align="flex-start"
         justify="space-between"
-        w={componentWidth}
+        // w={componentWidth}
+        w="100%"
         rowGap={rowGap}
       >
         {children ?? null}

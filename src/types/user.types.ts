@@ -17,8 +17,8 @@ type UserSchema = {
   address: {
     addressLine: string;
     city: string;
-    province: Province;
-    state: StatesUS;
+    province: Province | '';
+    state: StatesUS | '';
     postalCode: PostalCode;
     country: Country;
   };
@@ -32,6 +32,8 @@ type UserSchema = {
   startDate: string;
   roles: UserRoles;
   active: boolean;
+
+  completedSurveys: string[];
 };
 
 type UserDocument = UserSchema & {

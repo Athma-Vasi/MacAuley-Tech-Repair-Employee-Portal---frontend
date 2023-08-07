@@ -1,4 +1,4 @@
-import { Flex, Rating, rem, useMantineTheme } from '@mantine/core';
+import { Flex, Rating, rem, Text, useMantineTheme } from '@mantine/core';
 import { useEffect, useState } from 'react';
 import {
   TbMoodAnnoyed2,
@@ -17,18 +17,101 @@ import { TbMoodHappy } from 'react-icons/tb';
 import { TbMoodCrazyHappy } from 'react-icons/tb';
 import { TbMoodEmpty } from 'react-icons/tb';
 
-import { TextWrapper } from '../wrappers';
+import { useGlobalState } from '../../hooks';
+import { ResponsePayload } from '../survey/displaySurveys/types';
 
 type CustomRatingProps = {
-  ratingKind: 'scale' | 'emotion' | 'stars';
+  key?: string;
+  question: string;
+  ratingKind: 'emotion' | 'stars' | 'scale';
+  setRatingDispatch?: React.Dispatch<{
+    type: 'setRating';
+    payload: number;
+  }>;
+  /** components that are created dynamically need to pass in unique identifier props to the component
+   * for parent component to identify which component, or part of component among components, is being updated
+   */
+  dynamicComponentProps?: {
+    //a generic set up to be used with any dynamic component
+    genericProps?: Record<string, any>;
+    genericDispatch?: React.Dispatch<{
+      type: 'setGenericProps';
+      payload: any;
+    }>;
+    // currently only used for survey response dispatch
+    responsePayload?: ResponsePayload;
+    setResponseDispatch?: React.Dispatch<{
+      type: 'setResponse';
+      payload: ResponsePayload;
+    }>;
+  };
+  controlledValue?: number;
 };
 
-function CustomRating({ ratingKind }: CustomRatingProps) {
+function CustomRating({
+  controlledValue,
+  question,
+  key = question,
+  ratingKind,
+  setRatingDispatch,
+  dynamicComponentProps,
+}: CustomRatingProps) {
   const theme = useMantineTheme();
-  const [value, setValue] = useState<number>(0);
+  const {
+    globalState: { padding, rowGap },
+  } = useGlobalState();
+
+  const [value, setValue] = useState<number>(controlledValue ?? 0);
+
+  useEffect(() => {
+    if (dynamicComponentProps) {
+      if (
+        dynamicComponentProps.setResponseDispatch &&
+        dynamicComponentProps.responsePayload
+      ) {
+        const {
+          setResponseDispatch,
+          responsePayload: { surveyId, surveyTitle, surveyResponse },
+        } = dynamicComponentProps;
+
+        setResponseDispatch({
+          type: 'setResponse',
+          payload: {
+            surveyId: surveyId,
+            surveyTitle: surveyTitle,
+            surveyResponse: {
+              ...surveyResponse,
+              response: value,
+            },
+          },
+        });
+      }
+
+      if (
+        dynamicComponentProps.genericDispatch &&
+        dynamicComponentProps.genericProps
+      ) {
+        const { genericDispatch, genericProps } = dynamicComponentProps;
+        genericDispatch({
+          type: 'setGenericProps',
+          payload: {
+            ...genericProps,
+            rating: value,
+          },
+        });
+      }
+    }
+
+    if (setRatingDispatch) {
+      setRatingDispatch({
+        type: 'setRating',
+        payload: value,
+      });
+    }
+  }, [value]);
 
   function getEmptyIcon(value: number): JSX.Element {
-    const defaultProps = { size: rem(28), color: 'gray' };
+    const defaultProps = { size: rem(18), color: 'gray' };
     if (ratingKind === 'stars') {
       return <TbStar {...defaultProps} />;
     }
@@ -70,7 +153,7 @@ function CustomRating({ ratingKind }: CustomRatingProps) {
   }
 
   function getFullIcon(value: number): JSX.Element {
-    const defaultProps = { size: rem(28) };
+    const defaultProps = { size: rem(18) };
 
     if (ratingKind === 'stars') {
       return <TbStarFilled {...defaultProps} color={theme.colors.yellow[7]} />;
@@ -123,15 +206,21 @@ function CustomRating({ ratingKind }: CustomRatingProps) {
   return (
     <Flex
       //   w={350}
-      p="xl"
+      p={padding}
+      rowGap={rowGap}
       align="center"
-      justify="center"
-      style={{
-        border: '1px solid #e0e0e0',
-        borderRadius: '4px',
-      }}
+      justify="space-between"
+      // style={{
+      //   border: '1px solid #e0e0e0',
+      //   borderRadius: '4px',
+      // }}
+      wrap="wrap"
     >
+      <Text color="dark" size="sm">
+        {question}
+      </Text>
       <Rating
+        key={key}
         value={value}
         onChange={(value) => setValue(value)}
         emptySymbol={getEmptyIcon}
