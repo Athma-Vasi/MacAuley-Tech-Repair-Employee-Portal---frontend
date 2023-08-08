@@ -70,7 +70,7 @@ function App() {
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
 
           {/* DEV PATHS - DELETE LATER*/}
-          <Route
+          {/* <Route
             path="notification"
             element={
               <CustomNotification
@@ -89,7 +89,7 @@ function App() {
                 }}
               />
             }
-          />
+          /> */}
           {/* <Route path="expense-claim" element={<DisplayExpenseClaims />} /> */}
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}

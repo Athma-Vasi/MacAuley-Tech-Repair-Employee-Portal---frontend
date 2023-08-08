@@ -11,6 +11,8 @@ const initialLoginState: LoginState = {
   loadingMessage: '',
   isSubmitting: false,
   submitMessage: '',
+  isSuccessful: false,
+  successMessage: '',
 };
 
 const loginAction: LoginAction = {
@@ -24,6 +26,8 @@ const loginAction: LoginAction = {
   setLoadingMessage: 'setLoadingMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
+  setIsSuccessful: 'setIsSuccessful',
+  setSuccessMessage: 'setSuccessMessage',
 };
 
 function loginReducer(state: LoginState, action: LoginDispatch): LoginState {
@@ -73,6 +77,16 @@ function loginReducer(state: LoginState, action: LoginDispatch): LoginState {
       return {
         ...state,
         submitMessage: action.payload,
+      };
+    case loginAction.setIsSuccessful:
+      return {
+        ...state,
+        isSuccessful: action.payload,
+      };
+    case loginAction.setSuccessMessage:
+      return {
+        ...state,
+        successMessage: action.payload,
       };
     default:
       return state;

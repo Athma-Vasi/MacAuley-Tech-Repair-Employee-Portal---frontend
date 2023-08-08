@@ -621,8 +621,10 @@ function SurveyBuilder() {
         loadingMessage={loadingMessage}
         successMessage={successMessage}
         submitMessage={submitMessage}
-        onClose={() => {
-          navigate('/portal');
+        parentDispatch={surveyBuilderDispatch}
+        navigateTo={{
+          errorPath: '/portal',
+          successPath: '/portal/actions/outreach/survey-builder/display',
         }}
       />
     );

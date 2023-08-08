@@ -42,6 +42,8 @@ function Login() {
     loadingMessage,
     isSubmitting,
     submitMessage,
+    isSuccessful,
+    successMessage,
   } = loginState;
 
   const { authDispatch } = useAuth();
@@ -101,7 +103,8 @@ function Login() {
         if (!isMounted) {
           return;
         }
-        if (response.status === 200) {
+        const { ok } = response;
+        if (ok) {
           const { accessToken = '' } = data;
           const decodedToken: DecodedToken = jwtDecode(accessToken);
           const {
@@ -122,7 +125,7 @@ function Login() {
             },
           });
 
-          navigate('/');
+          navigate('/portal');
         } else {
           loginDispatch({
             type: loginAction.setIsError,
@@ -182,19 +185,23 @@ function Login() {
   /** ------------- begin component render bypass */
   if (isLoading || isError || isSubmitting) {
     return (
-      <CustomNotification
-        isError={isError}
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={false}
-        onClose={() => {
-          navigate('/');
-        }}
-        errorMessage={errorMessage}
-        loadingMessage={loadingMessage}
-        submitMessage={submitMessage}
-        successMessage=""
-      />
+      <Flex w="100%" h="100vh" align="center" justify="center" p={padding}>
+        <CustomNotification
+          isError={isError}
+          isLoading={isLoading}
+          isSubmitting={isSubmitting}
+          isSuccessful={isSuccessful}
+          errorMessage={errorMessage}
+          loadingMessage={loadingMessage}
+          submitMessage={submitMessage}
+          successMessage={successMessage}
+          parentDispatch={loginDispatch}
+          navigateTo={{
+            errorPath: '/',
+            successPath: '/portal',
+          }}
+        />
+      </Flex>
     );
   }
   /** ------------- end component render bypass */

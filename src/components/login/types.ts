@@ -9,6 +9,8 @@ type LoginState = {
   loadingMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
 };
 
 type LoginAction = {
@@ -22,6 +24,8 @@ type LoginAction = {
   setLoadingMessage: 'setLoadingMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
 };
 
 type LoginDispatch =
@@ -31,6 +35,7 @@ type LoginDispatch =
         | LoginAction['setPassword']
         | LoginAction['setErrorMessage']
         | LoginAction['setLoadingMessage']
+        | LoginAction['setSuccessMessage']
         | LoginAction['setSubmitMessage'];
 
       payload: string;
@@ -40,6 +45,7 @@ type LoginDispatch =
         | LoginAction['setTriggerLoginSubmit']
         | LoginAction['setIsError']
         | LoginAction['setIsLoading']
+        | LoginAction['setIsSuccessful']
         | LoginAction['setIsSubmitting'];
 
       payload: boolean;

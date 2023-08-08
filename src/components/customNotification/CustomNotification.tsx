@@ -1,8 +1,28 @@
 import { Flex, Group, Notification, Space, Text } from '@mantine/core';
 import { MdOutlineErrorOutline } from 'react-icons/md';
 import { TbCheck } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import { useGlobalState } from '../../hooks';
+
+type ParentDispatch = React.Dispatch<
+  | {
+      type:
+        | 'setIsError'
+        | 'setIsSuccessful'
+        | 'setIsSubmitting'
+        | 'setIsLoading';
+      payload: boolean;
+    }
+  | {
+      type:
+        | 'setErrorMessage'
+        | 'setSuccessMessage'
+        | 'setSubmitMessage'
+        | 'setLoadingMessage';
+      payload: string;
+    }
+>;
 
 type CustomNotificationProps = {
   isError: boolean;
@@ -11,11 +31,14 @@ type CustomNotificationProps = {
   successMessage?: string;
   isSubmitting: boolean;
   submitMessage?: string;
-  //   isSubmitted: boolean;
-  //   submittedMessage?: string;
   isLoading: boolean;
   loadingMessage?: string;
-  onClose: () => void;
+
+  navigateTo: {
+    errorPath: string;
+    successPath: string;
+  };
+  parentDispatch: ParentDispatch;
 };
 
 function CustomNotification({
@@ -25,15 +48,16 @@ function CustomNotification({
   successMessage = 'Success!',
   isSubmitting,
   submitMessage = 'Please wait. Submitting...',
-  //   isSubmitted,
-  //   submittedMessage = 'Successfully submitted!',
   isLoading,
   loadingMessage = 'Please wait. Loading...',
-  onClose,
+
+  navigateTo: { errorPath, successPath },
+  parentDispatch,
 }: CustomNotificationProps) {
   const {
     globalState: { padding, width },
   } = useGlobalState();
+  const navigate = useNavigate();
 
   let notificationComponent = null;
 
@@ -43,7 +67,18 @@ function CustomNotification({
         closeButtonProps={{ color: 'red', 'aria-label': 'Hide notification' }}
         color="red"
         icon={<MdOutlineErrorOutline size={22} />}
-        onClose={onClose}
+        onClose={() => {
+          parentDispatch({
+            type: 'setIsError',
+            payload: false,
+          });
+          parentDispatch({
+            type: 'setErrorMessage',
+            payload: '',
+          });
+
+          navigate(errorPath);
+        }}
         title={
           <Group
             p={padding}
@@ -69,7 +104,18 @@ function CustomNotification({
         closeButtonProps={{ color: 'green', 'aria-label': 'Hide notification' }}
         color="green"
         icon={<TbCheck size={22} />}
-        onClose={onClose}
+        onClose={() => {
+          parentDispatch({
+            type: 'setIsSuccessful',
+            payload: false,
+          });
+          parentDispatch({
+            type: 'setSuccessMessage',
+            payload: '',
+          });
+
+          navigate(successPath);
+        }}
         title={
           <Group
             p={padding}
@@ -96,7 +142,18 @@ function CustomNotification({
       <Notification
         closeButtonProps={{ color: 'blue', 'aria-label': 'Hide notification' }}
         loading
-        onClose={onClose}
+        onClose={() => {
+          parentDispatch({
+            type: 'setIsSubmitting',
+            payload: false,
+          });
+          parentDispatch({
+            type: 'setSubmitMessage',
+            payload: '',
+          });
+
+          navigate(successPath);
+        }}
         title={
           <Group
             p={padding}
@@ -117,39 +174,23 @@ function CustomNotification({
     );
   }
 
-  //   if (isSubmitted) {
-  //     notificationComponent = (
-  //       <Notification
-  //         closeButtonProps={{ color: 'green', 'aria-label': 'Hide notification' }}
-  //         icon={<TbCheck size={22} />}
-  //         color="teal"
-  //         title={
-  //           <Group
-  //             p={padding}
-  //             style={{
-  //               borderBottom: '1px solid #e0e0e0',
-  //             }}
-  //           >
-  //             <Text size="md">٩(^ ᗜ ^ )و ´- </Text>
-  //             <Space w="xs" />
-  //             <Text size="md">Successfully submitted form!</Text>
-  //           </Group>
-  //         }
-  //         withBorder
-  //       >
-  //         <Group p={padding}>
-  //           <Text>{submittedMessage}</Text>
-  //         </Group>
-  //       </Notification>
-  //     );
-  //   }
-
   if (isLoading) {
     notificationComponent = (
       <Notification
         closeButtonProps={{ color: 'blue', 'aria-label': 'Hide notification' }}
         loading
-        onClose={onClose}
+        onClose={() => {
+          parentDispatch({
+            type: 'setIsLoading',
+            payload: false,
+          });
+          parentDispatch({
+            type: 'setLoadingMessage',
+            payload: '',
+          });
+
+          navigate(successPath);
+        }}
         title={
           <Group
             p={padding}

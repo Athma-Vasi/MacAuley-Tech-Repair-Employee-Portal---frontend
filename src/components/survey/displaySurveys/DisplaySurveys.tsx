@@ -424,8 +424,10 @@ function DisplaySurveys() {
         loadingMessage={loadingMessage}
         successMessage={successMessage}
         submitMessage={submitMessage}
-        onClose={() => {
-          navigate('/portal');
+        parentDispatch={displaySurveysDispatch}
+        navigateTo={{
+          errorPath: '/portal',
+          successPath: '/portal/actions/outreach/survey-builder/display',
         }}
       />
     );

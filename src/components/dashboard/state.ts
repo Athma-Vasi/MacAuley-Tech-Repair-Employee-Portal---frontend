@@ -1,10 +1,10 @@
-import { DashboardAction, DashboardState } from './types';
+import { DashboardAction, DashboardDispatch, DashboardState } from './types';
 
 const initialDashboardState: DashboardState = {
   isError: false,
   errorMessage: '',
   isLoading: true,
-  loadingMessage: '',
+  loadingMessage: 'Fetching user data...',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -22,7 +22,10 @@ const dashboardAction: DashboardAction = {
   setSuccessMessage: 'setSuccessMessage',
 };
 
-function dashboardReducer(state: DashboardState, action: any): DashboardState {
+function dashboardReducer(
+  state: DashboardState,
+  action: DashboardDispatch
+): DashboardState {
   switch (action.type) {
     case dashboardAction.setIsError:
       return {
@@ -69,4 +72,4 @@ function dashboardReducer(state: DashboardState, action: any): DashboardState {
   }
 }
 
-export { initialDashboardState, dashboardAction, dashboardReducer };
+export { dashboardAction, dashboardReducer, initialDashboardState };
