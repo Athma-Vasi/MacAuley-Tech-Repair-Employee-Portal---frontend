@@ -18,7 +18,7 @@ import { TbMoodCrazyHappy } from 'react-icons/tb';
 import { TbMoodEmpty } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
-import { ResponsePayload } from '../survey/displaySurveys/types';
+import { SurveySubmissionPayload } from '../survey/displaySurveys/types';
 
 type CustomRatingProps = {
   key?: string;
@@ -39,10 +39,10 @@ type CustomRatingProps = {
       payload: any;
     }>;
     // currently only used for survey response dispatch
-    responsePayload?: ResponsePayload;
+    responsePayload?: SurveySubmissionPayload;
     setResponseDispatch?: React.Dispatch<{
-      type: 'setResponse';
-      payload: ResponsePayload;
+      type: 'setSurveySubmissions';
+      payload: SurveySubmissionPayload;
     }>;
   };
   controlledValue?: number;
@@ -75,7 +75,7 @@ function CustomRating({
         } = dynamicComponentProps;
 
         setResponseDispatch({
-          type: 'setResponse',
+          type: 'setSurveySubmissions',
           payload: {
             surveyId: surveyId,
             surveyTitle: surveyTitle,

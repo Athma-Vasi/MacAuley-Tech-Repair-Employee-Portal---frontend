@@ -39,11 +39,8 @@ function DisplaySurveys() {
   );
   const {
     responseData,
-    surveysMap,
     surveySubmissions,
     surveyToSubmit,
-    currentSurveyId,
-    response,
 
     stepperDescriptionsMap,
     currentStepperPositions,
@@ -119,11 +116,6 @@ function DisplaySurveys() {
         if (response.ok) {
           displaySurveysDispatch({
             type: displaySurveysAction.setResponseData,
-            payload: data.resourceData,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setSurveysMap,
             payload: data.resourceData,
           });
 
@@ -495,7 +487,7 @@ function DisplaySurveys() {
                   label: question,
                   onChange: (value: string) => {
                     displaySurveysDispatch({
-                      type: displaySurveysAction.setResponse,
+                      type: displaySurveysAction.setSurveySubmissions,
                       payload: {
                         surveyId: _id,
                         surveyTitle,
@@ -560,7 +552,7 @@ function DisplaySurveys() {
                   label: question,
                   onChange: (value: string) => {
                     displaySurveysDispatch({
-                      type: displaySurveysAction.setResponse,
+                      type: displaySurveysAction.setSurveySubmissions,
                       payload: {
                         surveyId: _id,
                         surveyTitle,
@@ -626,7 +618,7 @@ function DisplaySurveys() {
                   key: `${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`,
                   onChange: (value: string[]) => {
                     displaySurveysDispatch({
-                      type: displaySurveysAction.setResponse,
+                      type: displaySurveysAction.setSurveySubmissions,
                       payload: {
                         surveyId: _id,
                         surveyTitle,

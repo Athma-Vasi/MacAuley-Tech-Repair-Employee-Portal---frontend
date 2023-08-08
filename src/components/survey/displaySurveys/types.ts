@@ -16,7 +16,7 @@ type SurveySubmission = {
   surveyResponses: SurveyResponse[];
 };
 
-type ResponsePayload = {
+type SurveySubmissionPayload = {
   surveyId: string;
   surveyTitle: string;
   surveyResponse: {
@@ -29,12 +29,8 @@ type ResponsePayload = {
 
 type DisplaySurveysState = {
   responseData: SurveyBuilderDocument[];
-  surveysMap: Map<string, SurveyBuilderDocument>;
   surveySubmissions: Map<string, SurveySubmission>;
   surveyToSubmit: SurveySubmission;
-  currentSurveyId: string;
-
-  response: string[] | string | number;
 
   stepperDescriptionsMap: Map<string, DescriptionObjectsArray>;
   currentStepperPositions: Map<string, number>;
@@ -60,12 +56,8 @@ type DisplaySurveysState = {
 
 type DisplaySurveysAction = {
   setResponseData: 'setResponseData';
-  setSurveysMap: 'setSurveysMap';
   setSurveySubmissions: 'setSurveySubmissions';
   setSurveyToSubmit: 'setSurveyToSubmit';
-  setCurrentSurveyId: 'setCurrentSurveyId';
-
-  setResponse: 'setResponse';
 
   setStepperDescriptionsMap: 'setStepperDescriptionsMap';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
@@ -95,12 +87,8 @@ type DisplaySurveysDispatch =
       payload: SurveyBuilderDocument[];
     }
   | {
-      type: DisplaySurveysAction['setSurveysMap'];
-      payload: SurveyBuilderDocument[];
-    }
-  | {
       type: DisplaySurveysAction['setSurveySubmissions'];
-      payload: Map<string, SurveySubmission>;
+      payload: SurveySubmissionPayload;
     }
   | {
       type: DisplaySurveysAction['setSurveyToSubmit'];
@@ -109,16 +97,11 @@ type DisplaySurveysDispatch =
       };
     }
   | {
-      type: DisplaySurveysAction['setResponse'];
-      payload: ResponsePayload;
-    }
-  | {
       type: DisplaySurveysAction['setStepperDescriptionsMap'];
       payload: SurveyBuilderDocument[];
     }
   | {
       type:
-        | DisplaySurveysAction['setCurrentSurveyId']
         | DisplaySurveysAction['setQueryBuilderString']
         | DisplaySurveysAction['setPageQueryString']
         | DisplaySurveysAction['setErrorMessage']
@@ -168,7 +151,7 @@ export type {
   DisplaySurveysDispatch,
   DisplaySurveysReducer,
   DisplaySurveysState,
-  ResponsePayload,
+  SurveySubmissionPayload,
   SurveyResponse,
   SurveySubmission,
 };

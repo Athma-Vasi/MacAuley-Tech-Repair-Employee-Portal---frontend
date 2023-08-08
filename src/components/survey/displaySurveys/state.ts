@@ -10,16 +10,12 @@ import {
 
 const initialDisplaySurveysState: DisplaySurveysState = {
   responseData: [],
-  surveysMap: new Map(),
   surveySubmissions: new Map(),
   surveyToSubmit: {
     surveyId: '',
     surveyTitle: '',
     surveyResponses: [],
   },
-  currentSurveyId: '',
-
-  response: '',
 
   stepperDescriptionsMap: new Map(),
   currentStepperPositions: new Map(),
@@ -45,12 +41,8 @@ const initialDisplaySurveysState: DisplaySurveysState = {
 
 const displaySurveysAction: DisplaySurveysAction = {
   setResponseData: 'setResponseData',
-  setSurveysMap: 'setSurveysMap',
   setSurveySubmissions: 'setSurveySubmissions',
   setSurveyToSubmit: 'setSurveyToSubmit',
-  setCurrentSurveyId: 'setCurrentSurveyId',
-
-  setResponse: 'setResponse',
 
   setStepperDescriptionsMap: 'setStepperDescriptionsMap',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
@@ -84,50 +76,8 @@ function displaySurveysReducer(
         ...state,
         responseData: action.payload,
       };
-    case displaySurveysAction.setSurveysMap: {
-      const surveys = action.payload;
 
-      const surveysMap = surveys.reduce((acc, survey) => {
-        acc.set(survey._id, survey);
-
-        return acc;
-      }, new Map());
-
-      return {
-        ...state,
-        surveysMap: surveysMap,
-      };
-    }
-
-    case displaySurveysAction.setSurveySubmissions:
-      return {
-        ...state,
-        surveySubmissions: action.payload,
-      };
-
-    case displaySurveysAction.setSurveyToSubmit: {
-      const { surveyId } = action.payload;
-      const surveySubmissions = new Map(state.surveySubmissions);
-
-      const surveySubmission = surveySubmissions.get(surveyId) ?? {
-        surveyId,
-        surveyTitle: '',
-        surveyResponses: [],
-      };
-
-      return {
-        ...state,
-        surveyToSubmit: surveySubmission,
-      };
-    }
-
-    case displaySurveysAction.setCurrentSurveyId:
-      return {
-        ...state,
-        currentSurveyId: action.payload,
-      };
-
-    case displaySurveysAction.setResponse: {
+    case displaySurveysAction.setSurveySubmissions: {
       const {
         surveyResponse: { inputKind, question, response, responseKind },
         surveyId,
@@ -188,6 +138,84 @@ function displaySurveysReducer(
         surveySubmissions: clonedSurveySubmissions,
       };
     }
+
+    case displaySurveysAction.setSurveyToSubmit: {
+      const { surveyId } = action.payload;
+      const surveySubmissions = new Map(state.surveySubmissions);
+
+      const surveySubmission = surveySubmissions.get(surveyId) ?? {
+        surveyId,
+        surveyTitle: '',
+        surveyResponses: [],
+      };
+
+      return {
+        ...state,
+        surveyToSubmit: surveySubmission,
+      };
+    }
+
+    // case displaySurveysAction.setResponse: {
+    //   const {
+    //     surveyResponse: { inputKind, question, response, responseKind },
+    //     surveyId,
+    //     surveyTitle,
+    //   } = action.payload;
+
+    //   const clonedSurveySubmissions = structuredClone(state.surveySubmissions);
+
+    //   // if the surveyId is not in the map, create a new surveySubmission
+    //   const surveySubmission = clonedSurveySubmissions.get(surveyId) ?? {
+    //     surveyId,
+    //     surveyTitle,
+    //     surveyResponses: [
+    //       {
+    //         question,
+    //         responseKind,
+    //         inputKind,
+    //         response,
+    //       },
+    //     ],
+    //   };
+
+    //   // find the index of the question in the surveyResponses array
+    //   const surveyResponses = surveySubmission.surveyResponses.findIndex(
+    //     (surveyResponse: SurveyResponse) => surveyResponse.question === question
+    //   );
+
+    //   // find the index of the question in response data
+    //   const surveyFromServer = state.responseData.find(
+    //     (surveys) => surveys._id === surveyId
+    //   ) as SurveyBuilderDocument;
+    //   const responseData = surveyFromServer?.questions.findIndex(
+    //     (surveyResponse) => surveyResponse.question === question
+    //   );
+
+    //   // if the question is not found, add it to surveyResponses (it is a new response) at the same index as in responseData
+    //   if (surveyResponses === -1) {
+    //     surveySubmission.surveyResponses.splice(responseData, 0, {
+    //       question,
+    //       responseKind,
+    //       inputKind,
+    //       response,
+    //     });
+    //   }
+    //   // if the question is found, update the response
+    //   else {
+    //     surveySubmission.surveyResponses[surveyResponses] = {
+    //       question,
+    //       responseKind,
+    //       inputKind,
+    //       response,
+    //     };
+    //   }
+    //   clonedSurveySubmissions.set(surveyId, surveySubmission);
+
+    //   return {
+    //     ...state,
+    //     surveySubmissions: clonedSurveySubmissions,
+    //   };
+    // }
 
     case displaySurveysAction.setStepperDescriptionsMap: {
       const surveys = action.payload;
