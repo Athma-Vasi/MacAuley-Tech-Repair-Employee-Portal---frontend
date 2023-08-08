@@ -5,6 +5,7 @@ import {
   DisplaySurveysAction,
   DisplaySurveysDispatch,
   DisplaySurveysState,
+  SurveyResponse,
 } from './types';
 
 const initialDisplaySurveysState: DisplaySurveysState = {
@@ -133,7 +134,7 @@ function displaySurveysReducer(
         surveyTitle,
       } = action.payload;
 
-      const clonedSurveySubmissions = new Map(state.surveySubmissions);
+      const clonedSurveySubmissions = structuredClone(state.surveySubmissions);
 
       // if the surveyId is not in the map, create a new surveySubmission
       const surveySubmission = clonedSurveySubmissions.get(surveyId) ?? {
@@ -151,7 +152,7 @@ function displaySurveysReducer(
 
       // find the index of the question in the surveyResponses array
       const surveyResponses = surveySubmission.surveyResponses.findIndex(
-        (surveyResponse) => surveyResponse.question === question
+        (surveyResponse: SurveyResponse) => surveyResponse.question === question
       );
 
       // find the index of the question in response data

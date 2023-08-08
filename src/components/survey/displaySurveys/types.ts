@@ -3,15 +3,17 @@ import { DescriptionObjectsArray } from '../../wrappers';
 import { SurveyBuilderDocument, SurveyResponseKind } from '../types';
 import { SurveyResponseInput } from '../types';
 
+type SurveyResponse = {
+  question: string;
+  responseKind: SurveyResponseKind;
+  inputKind: SurveyResponseInput;
+  response: string[] | string | number;
+};
+
 type SurveySubmission = {
   surveyId: string;
   surveyTitle: string;
-  surveyResponses: {
-    question: string;
-    responseKind: SurveyResponseKind;
-    inputKind: SurveyResponseInput;
-    response: string[] | string | number;
-  }[];
+  surveyResponses: SurveyResponse[];
 };
 
 type ResponsePayload = {
@@ -167,5 +169,6 @@ export type {
   DisplaySurveysReducer,
   DisplaySurveysState,
   ResponsePayload,
+  SurveyResponse,
   SurveySubmission,
 };

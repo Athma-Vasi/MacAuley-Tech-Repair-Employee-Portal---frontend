@@ -310,26 +310,14 @@ function DisplaySurveys() {
     };
   }, [triggerSurveySubmission]);
 
-  // set steps in error for stepper
+  // set steps in error for each survey's stepper component
   useEffect(() => {
     Array.from(currentStepperPositions).forEach(
       ([surveyId, currentStepperPosition]) => {
         // get the corresponding survey submission
         const surveySubmission = surveySubmissions.get(surveyId);
-        // if there is no survey submission, then set the steps in error from current stepper position to zero
+        // if there is no survey submission, then set the steps in error from current stepper position to zero (the beginning of the stepper)
         if (!surveySubmission) {
-          // for (let idx = currentStepperPosition; idx > 0; idx -= 1) {
-          //   displaySurveysDispatch({
-          //     type: displaySurveysAction.setStepsInError,
-          //     payload: {
-          //       surveyId,
-          //       stepInError: {
-          //         kind: 'add',
-          //         step: idx,
-          //       },
-          //     },
-          //   });
-          // }
           Array.from({ length: currentStepperPosition }).forEach((_, idx) => {
             displaySurveysDispatch({
               type: displaySurveysAction.setStepsInError,
@@ -343,14 +331,35 @@ function DisplaySurveys() {
             });
           });
         }
-        // if there is a survey submission, iterate through it and see if any responses are an empty string, or if an array, are empty, or if a number, is not zero
+        // if there is a survey submission, check if any questions were skipped, or if any responses are empty strings, empty arrays or zero numbers
         else {
           const { surveyResponses } = surveySubmission;
+          // the user skipped a question
+          if (surveyResponses.length < currentStepperPosition) {
+            // set the steps in error from the surveyResponses length to the current stepper position
+            Array.from({
+              length: currentStepperPosition - surveyResponses.length,
+            }).forEach((_, idx) => {
+              displaySurveysDispatch({
+                type: displaySurveysAction.setStepsInError,
+                payload: {
+                  surveyId,
+                  stepInError: {
+                    kind: 'add',
+                    step: surveyResponses.length + idx,
+                  },
+                },
+              });
+            });
+          }
+
+          // iterate through responses and add or remove the step from the steps in error
           surveyResponses.forEach(({ response }, idx) => {
+            // the user did not respond to the question
             if (
-              response === '' ||
-              (Array.isArray(response) && response.length === 0) ||
-              response === 0
+              response === '' || // for 'radio' or 'agreeDisagree'
+              (Array.isArray(response) && response.length === 0) || // for 'checkbox'
+              response === 0 // for 'rating': 'emotion' or 'stars'
             ) {
               displaySurveysDispatch({
                 type: displaySurveysAction.setStepsInError,
@@ -431,15 +440,20 @@ function DisplaySurveys() {
   }
   /** ------------- end component render bypass ------------- */
 
+  /** ------------- begin surveys creation ------------- */
+
+  // loop through the response data and create the surveys based on the input kind
   const createdSurveys = responseData.reduce(
     (acc: Array<JSX.Element[]>, survey, surveyIdx) => {
       const { questions, _id, surveyTitle } = survey;
 
+      // every survey's inputs are controlled
       questions.forEach(
         (
           { question, responseDataOptions, responseInput, responseKind },
           questionIdx
         ) => {
+          // uniquely identifiers passed to and received from the rating component
           const dynamicComponentProps = {
             setResponseDispatch: displaySurveysDispatch,
             responsePayload: {
@@ -454,6 +468,7 @@ function DisplaySurveys() {
             },
           };
 
+          // agreeDisagree is a radio group with set values
           switch (responseInput) {
             case 'agreeDisagree': {
               const value = surveySubmissions
@@ -502,16 +517,18 @@ function DisplaySurveys() {
                   radioInputCreatorInfoObj,
                 ]);
 
-              acc[surveyIdx].push(
+              const displayRadioInput = (
                 <Fragment
                   key={`${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`}
                 >
                   {createdRadioInput}
                 </Fragment>
               );
+
+              acc[surveyIdx].push(displayRadioInput);
               break;
             }
-
+            // radio is a radio group with dynamic values with constrained single selection
             case 'radio': {
               const dataObjectArray: RadioGroupInputData =
                 responseDataOptions.map((responseDataOption) => ({
@@ -565,16 +582,18 @@ function DisplaySurveys() {
                   radioInputCreatorInfoObj,
                 ]);
 
-              acc[surveyIdx].push(
+              const displayRadioInput = (
                 <Fragment
                   key={`${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`}
                 >
                   {createdRadioInput}
                 </Fragment>
               );
+
+              acc[surveyIdx].push(displayRadioInput);
               break;
             }
-
+            // checkbox is a checkbox group with dynamic values with unconstrained multiple selections (array of strings)
             case 'checkbox': {
               const dataObjectArray: CheckBoxMultipleData =
                 responseDataOptions.map((responseDataOption) => ({
@@ -586,25 +605,24 @@ function DisplaySurveys() {
               const checkboxValue = surveySubmission?.surveyResponses.find(
                 (surveyResponse) => surveyResponse.question === question
               )?.response as string[];
+              const description = {
+                selected: (
+                  <Text
+                    size="sm"
+                    aria-label="polite"
+                  >{`You have selected: ${checkboxValue?.join(', ')}`}</Text>
+                ),
+                deselected: (
+                  <Text size="sm" aria-label="polite">
+                    Choose as many as you would like.
+                  </Text>
+                ),
+              };
 
               const checkboxInputCreatorInfoObj: AccessibleCheckboxGroupInputCreatorInfo =
                 {
                   dataObjectArray,
-                  description: {
-                    selected: (
-                      <Text
-                        size="sm"
-                        aria-label="polite"
-                      >{`You have selected: ${checkboxValue?.join(
-                        ', '
-                      )}`}</Text>
-                    ),
-                    deselected: (
-                      <Text size="sm" aria-label="polite">
-                        Choose as many as you would like.
-                      </Text>
-                    ),
-                  },
+                  description,
                   key: `${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`,
                   onChange: (value: string[]) => {
                     displaySurveysDispatch({
@@ -630,16 +648,18 @@ function DisplaySurveys() {
                   checkboxInputCreatorInfoObj,
                 ]);
 
-              acc[surveyIdx].push(
+              const displayCheckboxInput = (
                 <Fragment
                   key={`${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`}
                 >
                   {createdCheckboxInput}
                 </Fragment>
               );
+
+              acc[surveyIdx].push(displayCheckboxInput);
               break;
             }
-
+            // emotion is a rating component with emojis as values from 1-5
             case 'emotion': {
               const value = surveySubmissions
                 .get(_id)
@@ -656,16 +676,18 @@ function DisplaySurveys() {
                 />
               );
 
-              acc[surveyIdx].push(
+              const displayEmotionRatingInput = (
                 <Fragment
                   key={`${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`}
                 >
                   {createdEmotionRatingInput}
                 </Fragment>
               );
+
+              acc[surveyIdx].push(displayEmotionRatingInput);
               break;
             }
-
+            // stars is a rating component with stars as values from 1-5
             case 'stars': {
               const value = surveySubmissions
                 .get(_id)
@@ -682,13 +704,15 @@ function DisplaySurveys() {
                 />
               );
 
-              acc[surveyIdx].push(
+              const displayStarsRatingInput = (
                 <Fragment
                   key={`${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`}
                 >
                   {createdStarsRatingInput}
                 </Fragment>
               );
+
+              acc[surveyIdx].push(displayStarsRatingInput);
               break;
             }
 
@@ -700,10 +724,11 @@ function DisplaySurveys() {
 
       return acc;
     },
-    // create an array of arrays with the same length as responseData
+    // create an initial array of arrays with the same length as responseData
     Array.from({ length: responseData.length }).map(() => [])
   );
 
+  // each survey has its own stepper navigation and each question is a step
   const displayCreatedSurveys = responseData.map((responseData, idx) => {
     const { surveyTitle, _id } = responseData;
 
@@ -714,6 +739,7 @@ function DisplaySurveys() {
       id: _id,
       dynamicSetStepperDispatch: displaySurveysDispatch,
     };
+    // display the survey question's input based on the stepper position state
     const displaySurveyQuestion = (
       <Stack w="100%" p={padding}>
         {createdSurveys[idx].slice(
@@ -756,6 +782,7 @@ function DisplaySurveys() {
       </Tooltip>
     );
 
+    // if the stepper position is at the end of the stepper, display the submit button
     const displayPage =
       currentStepperPosition === descriptionObjectsArray.length
         ? displaySubmitButton
@@ -790,7 +817,9 @@ function DisplaySurveys() {
       </Stack>
     );
   });
+  /** ------------- end surveys creation ------------- */
 
+  /** ------------- begin surveys display ------------- */
   const displayQueryBuilder = (
     <QueryBuilder
       setQueryBuilderString={displaySurveysAction.setQueryBuilderString}
@@ -808,7 +837,7 @@ function DisplaySurveys() {
     />
   );
 
-  return (
+  const displaySurveyComponent = (
     <Flex
       w="100%"
       align="baseline"
@@ -828,6 +857,9 @@ function DisplaySurveys() {
       {displayPageNavigation}
     </Flex>
   );
+  /** ------------- end surveys display ------------- */
+
+  return <>{displaySurveyComponent}</>;
 }
 
 export { DisplaySurveys };
