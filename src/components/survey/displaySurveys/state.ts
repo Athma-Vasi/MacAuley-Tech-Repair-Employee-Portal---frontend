@@ -17,6 +17,10 @@ const initialDisplaySurveysState: DisplaySurveysState = {
     surveyResponses: [],
   },
 
+  uncompletedSurveys: [],
+  completedSurveys: [],
+  completedSurveyIds: new Set(),
+
   stepperDescriptionsMap: new Map(),
   currentStepperPositions: new Map(),
   stepsInError: new Map(),
@@ -43,6 +47,10 @@ const displaySurveysAction: DisplaySurveysAction = {
   setResponseData: 'setResponseData',
   setSurveySubmissions: 'setSurveySubmissions',
   setSurveyToSubmit: 'setSurveyToSubmit',
+
+  setUncompletedSurveys: 'setUncompletedSurveys',
+  setCompletedSurveys: 'setCompletedSurveys',
+  setCompletedSurveyIds: 'setCompletedSurveyIds',
 
   setStepperDescriptionsMap: 'setStepperDescriptionsMap',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
@@ -167,6 +175,27 @@ function displaySurveysReducer(
       };
     }
 
+    case displaySurveysAction.setUncompletedSurveys:
+      return {
+        ...state,
+        uncompletedSurveys: action.payload,
+      };
+
+    case displaySurveysAction.setCompletedSurveys:
+      return {
+        ...state,
+        completedSurveys: action.payload,
+      };
+
+    case displaySurveysAction.setCompletedSurveyIds: {
+      const completedSurveys = action.payload;
+
+      return {
+        ...state,
+        completedSurveyIds: new Set([...completedSurveys]),
+      };
+    }
+
     // case displaySurveysAction.setResponse: {
     //   const {
     //     surveyResponse: { inputKind, question, response, responseKind },
@@ -254,6 +283,7 @@ function displaySurveysReducer(
         stepperDescriptionsMap,
       };
     }
+
     case displaySurveysAction.setCurrentStepperPosition: {
       const { id, currentStepperPosition } = action.payload;
       const clonedCurrentStepperPositions = new Map(

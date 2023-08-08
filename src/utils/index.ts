@@ -916,9 +916,17 @@ function logState({
 }
 
 /**
- * @description Pure function. Creates a new object without the specified fields
- * @param param0  {object, fieldsToFilter}
- * @returns {object}
+ * Creates a new object by filtering out specified fields from the input object.
+ *
+ * This pure function takes an object and an array of field names to be filtered out.
+ * It returns a new object that includes all the properties from the input object,
+ * except for those specified in the `fieldsToFilter` array.
+ *
+ * @param {object} options - The options for filtering fields.
+ * @param {Record<string, any>} options.object - The source object to filter fields from.
+ * @param {string[]} options.fieldsToFilter - An array of field names to be filtered out.
+ *
+ * @returns {Record<string, any>} A new object with specified fields filtered out.
  */
 function filterFieldsFromObject({
   object,
@@ -927,14 +935,6 @@ function filterFieldsFromObject({
   object: Record<string, any>;
   fieldsToFilter: string[];
 }): Record<string, any> {
-  // const filteredObject = Object.fromEntries(
-  //   Object.entries(structuredClone(object)).filter(
-  //     ([key]) => !fieldsToFilter.includes(key)
-  //   )
-  // );
-
-  // return filteredObject;
-
   return Object.entries(object).reduce((obj, [key, value]) => {
     if (!fieldsToFilter.includes(key)) {
       Object.defineProperty(obj, key, {
@@ -950,9 +950,21 @@ function filterFieldsFromObject({
 }
 
 /**
- * @description Pure function. Clones object and adds properties and attributes
- * @param param0  {object, fieldValuesTuples, options}
- * @returns  {object}
+ * Adds specified properties and attributes to a cloned object.
+ *
+ * This function takes an object, an array of field-value tuples, and optional options
+ * to create a new object by cloning the input object and adding the specified properties
+ * with their corresponding values and attributes.
+ *
+ * @param {object} options - The options for adding properties.
+ * @param {Record<string, any>} options.object - The source object to be cloned.
+ * @param {[string, any][]} options.fieldValuesTuples - An array of field-value tuples to add.
+ * @param {Object} [options.options] - Additional options for property attributes.
+ * @param {boolean} [options.options.writable=true] - If the added properties should be writable.
+ * @param {boolean} [options.options.enumerable=true] - If the added properties should be enumerable.
+ * @param {boolean} [options.options.configurable=true] - If the added properties are configurable.
+ *
+ * @returns {Record<string, any>} A new object with added properties and attributes.
  */
 function addFieldsToObject({
   object,
@@ -979,14 +991,6 @@ function addFieldsToObject({
 
     return obj;
   }, structuredClone(object));
-
-  // fieldValuesTuples.forEach(([key, value]) => {
-  //   Object.defineProperty(object, key, {
-  //     value,
-  //     ...options,
-  //   });
-  // });
-  // return object;
 }
 
 type UrlBuilderInput = {
@@ -1013,14 +1017,30 @@ type GroupQueryResponseInput<Doc> = {
   groupBySelection: string;
   currentSelectionData: string[];
 };
+type GroupQueryResponseOutput<Doc> = {
+  groupedBy: Map<string | number, QueryResponseData<Doc>[]>;
+  rest: Record<string, number>[];
+};
+/**
+ * Groups query response data by a specified field and groups omitted fields as "rest".
+ *
+ * This function takes query response data, a field for grouping, and the current selection data.
+ * It organizes the query response data into groups based on the provided grouping field
+ *
+ * @template Doc - The type of the documents in the query response data.
+ *
+ * @param {GroupQueryResponseInput<Doc>} params - Parameters for grouping query response data.
+ * @param {Array<QueryResponseData<Doc>>} params.queryResponseData - The data to be grouped.
+ * @param {string} params.groupBySelection - The field used for grouping.
+ * @param {string[]} params.currentSelectionData - The current selection data.
+ *
+ * @returns {GroupQueryResponseOutput<Doc>} An object containing grouped data and "rest" data.
+ */
 function groupQueryResponse<Doc>({
   queryResponseData,
   groupBySelection,
   currentSelectionData,
-}: GroupQueryResponseInput<Doc>): {
-  groupedBy: Map<string | number, QueryResponseData<Doc>[]>;
-  rest: Record<string, number>[];
-} {
+}: GroupQueryResponseInput<Doc>): GroupQueryResponseOutput<Doc> {
   const groupedBy = queryResponseData.reduce(
     (
       acc: Map<string | number, Array<QueryResponseData<Doc>>>,
@@ -1092,12 +1112,16 @@ function groupQueryResponse<Doc>({
   const rest = currentSelectionData.reduce(
     (acc: Record<string, number>[], key) => {
       if (!groupedByKeysSet.has(key) && key.length > 0) {
-        const newObj = Object.create(null);
-        Object.defineProperty(newObj, key, {
-          value: 0,
-          enumerable: true,
-          writable: true,
-          configurable: true,
+        // const newObj = Object.create(null);
+        // Object.defineProperty(newObj, key, {
+        //   value: 0,
+        //   enumerable: true,
+        //   writable: true,
+        //   configurable: true,
+        // });
+        const newObj = addFieldsToObject({
+          object: Object.create(null),
+          fieldValuesTuples: [[key, 0]],
         });
         acc.push(newObj);
       }
@@ -1113,9 +1137,39 @@ function groupQueryResponse<Doc>({
   };
 }
 
-function splitCamelCase(word: string) {
+/**
+ * Splits a camelCase or PascalCase string into words and capitalizes the first letter.
+ *
+ * This function takes a camelCase or PascalCase string as input and splits it into words
+ * by inserting spaces between lowercase and uppercase letters. The first letter of the
+ * resulting string is then capitalized.
+ *
+ * @param {string} word - The camelCase or PascalCase string to be processed.
+ * @returns {string} A new string with words separated and the first letter capitalized.
+ */
+function splitCamelCase(word: string): string {
+  // Replace lowercase-uppercase pairs with a space in between
   const splitStr = word.replace(/([a-z])([A-Z])/g, '$1 $2');
+  // Capitalize the first letter of the resulting string
   return splitStr.charAt(0).toUpperCase() + splitStr.slice(1);
+}
+
+/**
+ * Replaces the last comma in a string with ' and ' if needed.
+ *
+ * This function takes a string as input and replaces the last comma in the string with ' and '
+ * if the string contains at least one comma. It then returns the modified string.
+ *
+ * @param {string} str - The input string to process.
+ * @returns {string} A new string with the last comma replaced by ' and ' if applicable.
+ */
+function replaceLastCommaWithAnd(str: string): string {
+  // returns an array of matches of all occurrences of a comma
+  const commaCount = str.match(/,/g)?.length ?? 0;
+  // /(?=[^,]*$)/: matches a comma that is followed by zero or more non-comma characters until the end of the string, using a positive lookahead assertion (?=...).
+  const strWithAnd = str.replace(/,(?=[^,]*$)/, commaCount > 0 ? ' and' : '');
+
+  return strWithAnd;
 }
 
 export {
@@ -1124,6 +1178,7 @@ export {
   formatDate,
   groupQueryResponse,
   logState,
+  replaceLastCommaWithAnd,
   returnAcknowledgementValidationText,
   returnAddressValidationText,
   returnCityValidationText,

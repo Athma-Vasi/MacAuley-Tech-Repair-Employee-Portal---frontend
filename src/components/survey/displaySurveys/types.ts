@@ -32,6 +32,10 @@ type DisplaySurveysState = {
   surveySubmissions: Map<string, SurveySubmission>;
   surveyToSubmit: SurveySubmission;
 
+  uncompletedSurveys: SurveyBuilderDocument[];
+  completedSurveys: SurveyBuilderDocument[];
+  completedSurveyIds: Set<string>;
+
   stepperDescriptionsMap: Map<string, DescriptionObjectsArray>;
   currentStepperPositions: Map<string, number>;
   stepsInError: Map<string, Set<number>>;
@@ -59,6 +63,10 @@ type DisplaySurveysAction = {
   setSurveySubmissions: 'setSurveySubmissions';
   setSurveyToSubmit: 'setSurveyToSubmit';
 
+  setUncompletedSurveys: 'setUncompletedSurveys';
+  setCompletedSurveys: 'setCompletedSurveys';
+  setCompletedSurveyIds: 'setCompletedSurveyIds';
+
   setStepperDescriptionsMap: 'setStepperDescriptionsMap';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
@@ -83,7 +91,10 @@ type DisplaySurveysAction = {
 
 type DisplaySurveysDispatch =
   | {
-      type: DisplaySurveysAction['setResponseData'];
+      type:
+        | DisplaySurveysAction['setResponseData']
+        | DisplaySurveysAction['setUncompletedSurveys']
+        | DisplaySurveysAction['setCompletedSurveys'];
       payload: SurveyBuilderDocument[];
     }
   | {
@@ -99,6 +110,10 @@ type DisplaySurveysDispatch =
   | {
       type: DisplaySurveysAction['setStepperDescriptionsMap'];
       payload: SurveyBuilderDocument[];
+    }
+  | {
+      type: DisplaySurveysAction['setCompletedSurveyIds'];
+      payload: Array<string>;
     }
   | {
       type:

@@ -42,6 +42,10 @@ function DisplaySurveys() {
     surveySubmissions,
     surveyToSubmit,
 
+    completedSurveys,
+    uncompletedSurveys,
+    completedSurveyIds,
+
     stepperDescriptionsMap,
     currentStepperPositions,
     stepsInError,
@@ -67,9 +71,9 @@ function DisplaySurveys() {
     authState: { accessToken, roles },
   } = useAuth();
   const {
-    globalState: { padding, rowGap, width },
+    globalState: { padding, rowGap, width, userDocument },
   } = useGlobalState();
-  const navigate = useNavigate();
+
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -117,21 +121,6 @@ function DisplaySurveys() {
           displaySurveysDispatch({
             type: displaySurveysAction.setResponseData,
             payload: data.resourceData,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setStepperDescriptionsMap,
-            payload: data.resourceData,
-          });
-
-          data.resourceData.forEach((survey: SurveyBuilderDocument) => {
-            displaySurveysDispatch({
-              type: displaySurveysAction.setCurrentStepperPosition,
-              payload: {
-                id: survey._id,
-                currentStepperPosition: 0,
-              },
-            });
           });
 
           displaySurveysDispatch({
@@ -302,6 +291,65 @@ function DisplaySurveys() {
     };
   }, [triggerSurveySubmission]);
 
+  // used to show statistics and disable survey submit button
+  useEffect(() => {
+    if (!userDocument) {
+      return;
+    }
+
+    const { completedSurveys } = userDocument;
+    displaySurveysDispatch({
+      type: displaySurveysAction.setCompletedSurveyIds,
+      payload: completedSurveys,
+    });
+  }, [userDocument]);
+
+  // separate responseData into completed and uncompleted surveys
+  useEffect(() => {
+    if (!responseData) {
+      return;
+    }
+
+    const [completedSurveys, uncompletedSurveys] = responseData.reduce(
+      (acc: [SurveyBuilderDocument[], SurveyBuilderDocument[]], survey) => {
+        const { _id: surveyId } = survey;
+        completedSurveyIds.has(surveyId)
+          ? acc[0].push(survey)
+          : acc[1].push(survey);
+
+        return acc;
+      },
+      [[], []]
+    );
+
+    displaySurveysDispatch({
+      type: displaySurveysAction.setCompletedSurveys,
+      payload: completedSurveys,
+    });
+    displaySurveysDispatch({
+      type: displaySurveysAction.setUncompletedSurveys,
+      payload: uncompletedSurveys,
+    });
+  }, [responseData, completedSurveyIds]);
+
+  // assign uncompleted surveys for further processing
+  useEffect(() => {
+    displaySurveysDispatch({
+      type: displaySurveysAction.setStepperDescriptionsMap,
+      payload: uncompletedSurveys,
+    });
+
+    uncompletedSurveys.forEach((survey: SurveyBuilderDocument) => {
+      displaySurveysDispatch({
+        type: displaySurveysAction.setCurrentStepperPosition,
+        payload: {
+          id: survey._id,
+          currentStepperPosition: 0,
+        },
+      });
+    });
+  }, [uncompletedSurveys, completedSurveys]);
+
   // set steps in error for each survey's stepper component
   useEffect(() => {
     Array.from(currentStepperPositions).forEach(
@@ -427,7 +475,7 @@ function DisplaySurveys() {
         parentDispatch={displaySurveysDispatch}
         navigateTo={{
           errorPath: '/portal',
-          successPath: '/portal/actions/outreach/survey-builder/display',
+          successPath: '/portal/outreach/survey-builder/display',
         }}
       />
     );
@@ -436,8 +484,8 @@ function DisplaySurveys() {
 
   /** ------------- begin surveys creation ------------- */
 
-  // loop through the response data and create the surveys based on the input kind
-  const createdSurveys = responseData.reduce(
+  // loop through the uncompleted surveys and create the surveys based on the input kind
+  const createdSurveys = uncompletedSurveys.reduce(
     (acc: Array<JSX.Element[]>, survey, surveyIdx) => {
       const { questions, _id, surveyTitle } = survey;
 
@@ -718,13 +766,13 @@ function DisplaySurveys() {
 
       return acc;
     },
-    // create an initial array of arrays with the same length as responseData
-    Array.from({ length: responseData.length }).map(() => [])
+    // create an initial array of arrays with the same length as uncompletedSurveys
+    Array.from({ length: uncompletedSurveys.length }).map(() => [])
   );
 
   // each survey has its own stepper navigation and each question is a step
-  const displayCreatedSurveys = responseData.map((responseData, idx) => {
-    const { surveyTitle, _id } = responseData;
+  const displayCreatedSurveys = uncompletedSurveys.map((survey, idx) => {
+    const { surveyTitle, _id } = survey;
 
     const currentStepperPosition = currentStepperPositions.get(_id) ?? 0;
     const descriptionObjectsArray = stepperDescriptionsMap.get(_id) ?? [];
@@ -748,7 +796,8 @@ function DisplaySurveys() {
         buttonLabel: 'Submit',
         buttonDisabled:
           surveySubmissions.get(_id) === undefined ||
-          stepsInError.get(_id)?.size !== 0,
+          stepsInError.get(_id)?.size !== 0 ||
+          completedSurveyIds.has(_id),
         semanticDescription: 'Submit survey',
         semanticName: 'Submit survey',
         buttonOnClick: () => {

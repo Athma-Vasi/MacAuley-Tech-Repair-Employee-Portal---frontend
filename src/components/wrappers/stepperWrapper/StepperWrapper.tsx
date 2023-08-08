@@ -12,6 +12,7 @@ import { AccessibleButtonCreatorInfo } from '../ButtonWrapper';
 import { TextWrapper } from '../TextWrapper';
 import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
+import { replaceLastCommaWithAnd } from '../../../utils';
 function StepperWrapper({
   allowNextStepsSelect = false,
   children,
@@ -138,13 +139,7 @@ function StepperWrapper({
       .join(', ') ?? ''
   }. Please fix the error${stepsInError.size > 1 ? 's' : ''} to proceed!`;
 
-  // returns an array of matches of all occurrences of a comma in the error message
-  const commaCount = errorMessage.match(/,/g)?.length ?? 0;
-  // /(?=[^,]*$)/: matches a comma that is followed by zero or more non-comma characters until the end of the string, using a positive lookahead assertion (?=...).
-  const errorMessageWithAnd = errorMessage.replace(
-    /,(?=[^,]*$)/,
-    commaCount > 0 ? ' and' : ''
-  );
+  const errorMessageWithAnd = replaceLastCommaWithAnd(errorMessage);
 
   const padding =
     width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';

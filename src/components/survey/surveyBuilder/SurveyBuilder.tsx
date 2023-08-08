@@ -624,7 +624,7 @@ function SurveyBuilder() {
         parentDispatch={surveyBuilderDispatch}
         navigateTo={{
           errorPath: '/portal',
-          successPath: '/portal/actions/outreach/survey-builder/display',
+          successPath: '/portal/outreach/survey-builder/display',
         }}
       />
     );
