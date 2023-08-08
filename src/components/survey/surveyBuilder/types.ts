@@ -5,7 +5,7 @@ import {
   UserRoles,
 } from '../../../types';
 import { DescriptionObjectsArray } from '../../wrappers';
-import { SurveyRecipient } from '../types';
+import { SurveyRecipient, SurveyStatistics } from '../types';
 
 type SetSurveyQuestionsInput = {
   questions: string[];
@@ -40,8 +40,9 @@ type SurveyBuilderState = {
   responseDataOptionsArray: Array<string[]>;
   areResponseDataOptionsValid: Array<boolean[]>;
   areResponseDataOptionsFocused: Array<boolean[]>;
-
   isMaxResponseDataOptionsReached: Array<boolean>;
+
+  surveyStatistics: SurveyStatistics[];
 
   triggerFormSubmit: boolean;
   submitButtonDisabled: boolean;
@@ -94,6 +95,8 @@ type SurveyBuilderAction = {
   deleteResponseDataOption: 'deleteResponseDataOption';
   addNewResponseDataOption: 'addNewResponseDataOption';
   deleteAllResponseDataOptionsForQuestion: 'deleteAllResponseDataOptionsForQuestion';
+
+  setSurveyStatistics: 'setSurveyStatistics';
 
   setTriggerFormSubmit: 'setTriggerFormSubmit';
   setSubmitButtonDisabled: 'setSubmitButtonDisabled';
@@ -230,6 +233,10 @@ type SurveyBuilderDispatch =
           ariaLabel: string;
         };
       };
+    }
+  | {
+      type: SurveyBuilderAction['setSurveyStatistics'];
+      payload: SurveyStatistics[];
     };
 
 type SurveyBuilderReducer = (

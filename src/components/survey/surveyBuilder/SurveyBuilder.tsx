@@ -24,6 +24,7 @@ import {
 } from '../../../jsxCreators';
 import { ResourceRequestServerResponse } from '../../../types';
 import {
+  addFieldsToObject,
   logState,
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
@@ -47,7 +48,11 @@ import {
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
   SURVEY_MAX_RESPONSE_DATA_OPTIONS,
 } from '../constants';
-import { SurveyBuilderDocument, SurveyRecipient } from '../types';
+import {
+  SurveyBuilderDocument,
+  SurveyRecipient,
+  SurveyStatistics,
+} from '../types';
 import { mergeSurveyQuestionsGroup, setSurveyQuestions } from '../utils';
 import {
   initialSurveyBuilderState,
@@ -91,6 +96,8 @@ function SurveyBuilder() {
     areResponseDataOptionsValid,
     areResponseDataOptionsFocused,
     isMaxResponseDataOptionsReached,
+
+    surveyStatistics,
 
     triggerFormSubmit,
     submitButtonDisabled,
@@ -214,6 +221,99 @@ function SurveyBuilder() {
       payload: isExceeded,
     });
   }, [questions.length]);
+
+  // create surveyStatistics on every responseDataOptions change
+  useEffect(() => {
+    if (!questions.length || !questions[0].length) {
+      return;
+    }
+
+    // each question group has a corresponding surveyStatistics object that is added to the final survey object form
+    const surveyStatistics = questions.reduce(
+      (
+        surveyStatisticsAcc: SurveyStatistics[],
+        question: string,
+        questionIdx
+      ) => {
+        // regardless of the responseKind, the surveyStatisticObj will have the question and totalResponses fields
+        let surveyStatisticObj = addFieldsToObject({
+          object: Object.create(null),
+          fieldValuesTuples: [
+            ['question', question],
+            ['totalResponses', 0],
+          ],
+        });
+        // the responseDistribution object will differ according to the responseKind
+        const correspondingInputHtml = responseInputHtml[questionIdx];
+        if (
+          correspondingInputHtml === 'checkbox' ||
+          correspondingInputHtml === 'radio'
+        ) {
+          const responseDataOptions = responseDataOptionsArray[questionIdx];
+          if (!responseDataOptions) {
+            return surveyStatisticsAcc;
+          }
+          // responseDistribution object has keys that are the response options and values that are the number of responses for that option (initialized to 0)
+          const responseDistribution = responseDataOptions.reduce(
+            (
+              responseDistributionAcc: Record<string, 0>,
+              responseDataOption: string
+            ) => {
+              responseDistributionAcc = addFieldsToObject({
+                object: responseDistributionAcc,
+                fieldValuesTuples: [[responseDataOption, 0]],
+              });
+
+              return responseDistributionAcc;
+            },
+            Object.create(null)
+          );
+
+          surveyStatisticObj = addFieldsToObject({
+            object: surveyStatisticObj,
+            fieldValuesTuples: [['responseDistribution', responseDistribution]],
+          });
+        } else if (correspondingInputHtml === 'agreeDisagree') {
+          const responseDistribution = {
+            'Strongly disagree': 0,
+            Disagree: 0,
+            'Neither agree nor disagree': 0,
+            Agree: 0,
+            'Strongly agree': 0,
+          };
+
+          surveyStatisticObj = addFieldsToObject({
+            object: surveyStatisticObj,
+            fieldValuesTuples: [['responseDistribution', responseDistribution]],
+          });
+        } else {
+          // for ratings: 'emotion' and 'scale'
+          const responseDistribution = {
+            '1': 0,
+            '2': 0,
+            '3': 0,
+            '4': 0,
+            '5': 0,
+          };
+
+          surveyStatisticObj = addFieldsToObject({
+            object: surveyStatisticObj,
+            fieldValuesTuples: [['responseDistribution', responseDistribution]],
+          });
+        }
+
+        surveyStatisticsAcc.push(surveyStatisticObj as SurveyStatistics);
+
+        return surveyStatisticsAcc;
+      },
+      []
+    );
+
+    surveyBuilderDispatch({
+      type: surveyBuilderAction.setSurveyStatistics,
+      payload: surveyStatistics,
+    });
+  }, [questions, responseDataOptionsArray, responseInputHtml]);
 
   // validate response data options on every change
   useEffect(() => {
@@ -420,6 +520,7 @@ function SurveyBuilder() {
           sendTo: surveyRecipients,
           expiryDate,
           questions: surveyQuestions,
+          surveyStatistics,
         },
       });
 

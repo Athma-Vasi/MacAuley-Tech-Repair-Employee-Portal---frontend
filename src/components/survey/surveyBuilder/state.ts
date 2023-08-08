@@ -44,6 +44,8 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   areQuestionsFocused: [false],
   isMaxQuestionsReached: false,
 
+  surveyStatistics: [],
+
   responseKinds: ['chooseAny'],
   responseInputHtml: ['checkbox'],
 
@@ -99,6 +101,8 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setAreResponseDataOptionsValid: 'setAreResponseDataOptionsValid',
   setAreResponseDataOptionsFocused: 'setAreResponseDataOptionsFocused',
   setIsMaxResponseDataOptionsReached: 'setIsMaxResponseDataOptionsReached',
+
+  setSurveyStatistics: 'setSurveyStatistics',
 
   deleteResponseDataOption: 'deleteResponseDataOption',
   addNewResponseDataOption: 'addNewResponseDataOption',
@@ -508,6 +512,12 @@ function surveyBuilderReducer(
         isMaxResponseDataOptionsReached,
       };
     }
+
+    case surveyBuilderAction.setSurveyStatistics:
+      return {
+        ...state,
+        surveyStatistics: action.payload,
+      };
 
     case surveyBuilderAction.setTriggerFormSubmit:
       return {
