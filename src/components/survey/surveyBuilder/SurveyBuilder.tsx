@@ -677,7 +677,7 @@ function SurveyBuilder() {
         content: question,
         contentKind: 'question',
         minLength: 2,
-        maxLength: 75,
+        maxLength: 100,
       })),
       regexValidationFunction: returnGrammarValidationText,
     });
@@ -869,6 +869,8 @@ function SurveyBuilder() {
             },
           });
         },
+        minLength: 2,
+        maxLength: 100,
         placeholder: 'Enter question',
         semanticName: `question ${index + 1}`,
         required: true,

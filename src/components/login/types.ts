@@ -1,25 +1,49 @@
 type LoginState = {
   username: string;
   password: string;
+  triggerLoginSubmit: boolean;
 
+  isError: boolean;
   errorMessage: string;
   isLoading: boolean;
+  loadingMessage: string;
+  isSubmitting: boolean;
+  submitMessage: string;
 };
 
 type LoginAction = {
   setUsername: 'setUsername';
   setPassword: 'setPassword';
+  setTriggerLoginSubmit: 'setTriggerLoginSubmit';
 
+  setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
 };
 
-type LoginPayload = string | boolean;
+type LoginDispatch =
+  | {
+      type:
+        | LoginAction['setUsername']
+        | LoginAction['setPassword']
+        | LoginAction['setErrorMessage']
+        | LoginAction['setLoadingMessage']
+        | LoginAction['setSubmitMessage'];
 
-type LoginDispatch = {
-  type: LoginAction[keyof LoginAction];
-  payload: LoginPayload;
-};
+      payload: string;
+    }
+  | {
+      type:
+        | LoginAction['setTriggerLoginSubmit']
+        | LoginAction['setIsError']
+        | LoginAction['setIsLoading']
+        | LoginAction['setIsSubmitting'];
+
+      payload: boolean;
+    };
 
 type LoginReducer = (state: LoginState, action: LoginDispatch) => LoginState;
 
@@ -40,7 +64,6 @@ export type {
   DecodedToken,
   LoginAction,
   LoginDispatch,
-  LoginPayload,
   LoginReducer,
   LoginResponse,
   LoginState,

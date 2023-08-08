@@ -3,27 +3,77 @@ import { LoginAction, LoginDispatch, LoginState } from './types';
 const initialLoginState: LoginState = {
   username: '',
   password: '',
+  triggerLoginSubmit: false,
+
+  isError: false,
   errorMessage: '',
-  isLoading: false,
+  isLoading: true,
+  loadingMessage: '',
+  isSubmitting: false,
+  submitMessage: '',
 };
 
 const loginAction: LoginAction = {
   setUsername: 'setUsername',
   setPassword: 'setPassword',
+  setTriggerLoginSubmit: 'setTriggerLoginSubmit',
+
+  setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
+  setLoadingMessage: 'setLoadingMessage',
+  setIsSubmitting: 'setIsSubmitting',
+  setSubmitMessage: 'setSubmitMessage',
 };
 
 function loginReducer(state: LoginState, action: LoginDispatch): LoginState {
   switch (action.type) {
     case loginAction.setUsername:
-      return { ...state, username: action.payload as string };
+      return {
+        ...state,
+        username: action.payload,
+      };
     case loginAction.setPassword:
-      return { ...state, password: action.payload as string };
+      return {
+        ...state,
+        password: action.payload,
+      };
+    case loginAction.setTriggerLoginSubmit:
+      return {
+        ...state,
+        triggerLoginSubmit: action.payload,
+      };
+
+    case loginAction.setIsError:
+      return {
+        ...state,
+        isError: action.payload,
+      };
     case loginAction.setErrorMessage:
-      return { ...state, errorMessage: action.payload as string };
+      return {
+        ...state,
+        errorMessage: action.payload,
+      };
     case loginAction.setIsLoading:
-      return { ...state, isLoading: action.payload as boolean };
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    case loginAction.setLoadingMessage:
+      return {
+        ...state,
+        loadingMessage: action.payload,
+      };
+    case loginAction.setIsSubmitting:
+      return {
+        ...state,
+        isSubmitting: action.payload,
+      };
+    case loginAction.setSubmitMessage:
+      return {
+        ...state,
+        submitMessage: action.payload,
+      };
     default:
       return state;
   }

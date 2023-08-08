@@ -15,6 +15,7 @@ const initialGlobalState: GlobalState = {
   colorScheme: 'light',
   scrollXDirection: '',
   scrollYDirection: '',
+  userDocument: null,
 };
 
 const globalAction: GlobalAction = {
@@ -25,6 +26,7 @@ const globalAction: GlobalAction = {
   setColorScheme: 'setColorScheme',
   setWindowSize: 'setWindowSize',
   setScrollAxesDirection: 'setScrollAxesDirection',
+  setUserDocument: 'setUserDocument',
 };
 
 function globalReducer(
@@ -50,6 +52,8 @@ function globalReducer(
       const { scrollXDirection, scrollYDirection } = action.payload;
       return { ...state, scrollXDirection, scrollYDirection };
     }
+    case globalAction.setUserDocument:
+      return { ...state, userDocument: action.payload };
 
     default:
       return state;

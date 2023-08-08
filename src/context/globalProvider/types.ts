@@ -4,6 +4,7 @@ import {
   ScrollXDirection,
   ScrollYDirection,
 } from '../../hooks/useScrollDirection';
+import { QueryResponseData, UserDocument } from '../../types';
 
 type ColorScheme = 'light' | 'dark';
 
@@ -15,6 +16,8 @@ type GlobalState = {
   colorScheme: ColorScheme;
   scrollXDirection: ScrollXDirection;
   scrollYDirection: ScrollYDirection;
+
+  userDocument: Omit<UserDocument, '__v' | 'password'> | null;
 };
 
 type GlobalAction = {
@@ -25,6 +28,8 @@ type GlobalAction = {
   setColorScheme: 'setColorScheme';
   setWindowSize: 'setWindowSize';
   setScrollAxesDirection: 'setScrollAxesDirection';
+
+  setUserDocument: 'setUserDocument';
 };
 
 type WindowDimensions = {
@@ -61,6 +66,10 @@ type GlobalDispatch =
   | {
       type: GlobalAction['setColorScheme'];
       payload: ColorScheme;
+    }
+  | {
+      type: GlobalAction['setUserDocument'];
+      payload: Omit<UserDocument, '__v' | 'password'>;
     };
 
 type GlobalReducer = (

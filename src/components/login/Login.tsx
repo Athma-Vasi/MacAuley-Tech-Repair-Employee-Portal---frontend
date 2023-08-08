@@ -13,39 +13,35 @@ import { useEffect, useReducer, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { axiosInstance } from '../../api/axios';
-import { COLORS } from '../../constants/data';
 import { authAction } from '../../context/authProvider/state';
 import { useAuth } from '../../hooks/useAuth';
-import { CustomError } from '../customError';
-import { LOGIN_BG_IMAGE_URL, LOGIN_URL } from './constants';
+import { LOGIN_URL } from './constants';
 import { initialLoginState, loginAction, loginReducer } from './state';
 import { DecodedToken, LoginResponse } from './types';
 
 function Login() {
-  const [{ username, password, errorMessage }, loginDispatch] = useReducer(
+  const [loginState, loginDispatch] = useReducer(
     loginReducer,
     initialLoginState
   );
+  const { username, password, errorMessage, isLoading } = loginState;
 
   const { authDispatch } = useAuth();
   const navigate = useNavigate();
 
   const usernameRef = useRef<HTMLInputElement>(null);
-
   // sets focus on username input on first render
   useEffect(() => {
     usernameRef.current?.focus();
   }, []);
 
-  // clears error message on username or password change
-  useEffect(() => {
-    loginDispatch({
-      type: loginAction.setErrorMessage,
-      payload: '',
-    });
-  }, [username, password]);
+  return <></>;
+}
 
-  async function handleLoginFormSubmit(
+export { Login };
+
+/**
+ * async function handleLoginFormSubmit(
     event: React.FormEvent<HTMLFormElement>
   ) {
     event.preventDefault();
@@ -167,7 +163,10 @@ function Login() {
     }
   }
 
-  const displayLoginForm = (
+ */
+
+/**
+ *  const displayLoginForm = (
     <Flex
       direction="column"
       align="flex-start"
@@ -261,6 +260,4 @@ function Login() {
       </Flex>
     </Flex>
   );
-}
-
-export { Login };
+  */
