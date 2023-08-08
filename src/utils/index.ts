@@ -915,6 +915,11 @@ function logState({
   console.groupEnd();
 }
 
+/**
+ * @description Pure function. Creates a new object without the specified fields
+ * @param param0  {object, fieldsToFilter}
+ * @returns {object}
+ */
 function filterFieldsFromObject({
   object,
   fieldsToFilter,
@@ -944,6 +949,11 @@ function filterFieldsFromObject({
   }, Object.create(null));
 }
 
+/**
+ * @description Pure function. Clones object and adds properties and attributes
+ * @param param0  {object, fieldValuesTuples, options}
+ * @returns  {object}
+ */
 function addFieldsToObject({
   object,
   fieldValuesTuples,

@@ -77,24 +77,24 @@ const SURVEY_MAX_RESPONSE_DATA_OPTIONS = 7;
 
 const SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS: RadioGroupInputData = [
   {
-    label: 'Strongly Agree',
-    value: 'Strongly Agree',
+    label: 'Strongly agree',
+    value: 'Strongly agree',
   },
   {
     label: 'Agree',
     value: 'Agree',
   },
   {
-    label: 'Neutral',
-    value: 'Neutral',
+    label: 'Neither agree nor disagree',
+    value: 'Neither agree nor disagree',
   },
   {
     label: 'Disagree',
     value: 'Disagree',
   },
   {
-    label: 'Strongly Disagree',
-    value: 'Strongly Disagree',
+    label: 'Strongly disagree',
+    value: 'Strongly disagree',
   },
 ];
 

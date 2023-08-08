@@ -222,7 +222,7 @@ function App() {
 
             {/* survey-builder */}
             <Route path="survey-builder">
-              <Route index element={<SurveyBuilder />} />
+              <Route index element={<DisplaySurveys />} />
               <Route path="create" element={<SurveyBuilder />} />
               <Route path="display" element={<DisplaySurveys />} />
             </Route>

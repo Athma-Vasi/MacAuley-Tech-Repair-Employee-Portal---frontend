@@ -468,11 +468,22 @@ function DisplaySurveys() {
                   (surveyResponse) => surveyResponse.question === question
                 )?.response as string;
 
+              const description = (
+                <Text size="sm" aria-label="polite">{`You have selected: ${
+                  surveySubmissions
+                    .get(_id)
+                    ?.surveyResponses.find(
+                      (surveyResponse) => surveyResponse.question === question
+                    )?.response ?? 'N/A'
+                }`}</Text>
+              );
+
               const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo =
                 {
                   dataObjectArray: SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
-                  description: question,
+                  description,
                   key: `${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`,
+                  label: question,
                   onChange: (value: string) => {
                     displaySurveysDispatch({
                       type: displaySurveysAction.setResponse,

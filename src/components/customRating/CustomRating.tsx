@@ -111,7 +111,7 @@ function CustomRating({
   }, [value]);
 
   function getEmptyIcon(value: number): JSX.Element {
-    const defaultProps = { size: rem(18), color: 'gray' };
+    const defaultProps = { size: rem(22), color: 'gray' };
     if (ratingKind === 'stars') {
       return <TbStar {...defaultProps} />;
     }
@@ -153,7 +153,7 @@ function CustomRating({
   }
 
   function getFullIcon(value: number): JSX.Element {
-    const defaultProps = { size: rem(18) };
+    const defaultProps = { size: rem(22) };
 
     if (ratingKind === 'stars') {
       return <TbStarFilled {...defaultProps} color={theme.colors.yellow[7]} />;
