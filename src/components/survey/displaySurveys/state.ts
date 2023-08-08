@@ -1,5 +1,6 @@
 import { splitCamelCase } from '../../../utils';
 import { DescriptionObjectsArray } from '../../wrappers';
+import { SurveyBuilderDocument } from '../types';
 import {
   DisplaySurveysAction,
   DisplaySurveysDispatch,
@@ -152,9 +153,18 @@ function displaySurveysReducer(
       const surveyResponses = surveySubmission.surveyResponses.findIndex(
         (surveyResponse) => surveyResponse.question === question
       );
-      // if the question is not found, add it to surveyResponses (it is a new response)
+
+      // find the index of the question in response data
+      const surveyFromServer = state.responseData.find(
+        (surveys) => surveys._id === surveyId
+      ) as SurveyBuilderDocument;
+      const responseData = surveyFromServer?.questions.findIndex(
+        (surveyResponse) => surveyResponse.question === question
+      );
+
+      // if the question is not found, add it to surveyResponses (it is a new response) at the same index as in responseData
       if (surveyResponses === -1) {
-        surveySubmission.surveyResponses.push({
+        surveySubmission.surveyResponses.splice(responseData, 0, {
           question,
           responseKind,
           inputKind,

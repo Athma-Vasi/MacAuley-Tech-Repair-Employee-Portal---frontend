@@ -1,13 +1,6 @@
-import {
-  Center,
-  Flex,
-  Group,
-  Stack,
-  Text,
-  Title,
-  Tooltip,
-} from '@mantine/core';
-import { ChangeEvent, Fragment, useEffect, useReducer } from 'react';
+import { Flex, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { Fragment, useEffect, useReducer } from 'react';
+import { TbChartPie3, TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
 import { useAuth, useGlobalState } from '../../../hooks';
@@ -20,22 +13,23 @@ import { CheckBoxMultipleData, RadioGroupInputData } from '../../../types';
 import { filterFieldsFromObject, logState, urlBuilder } from '../../../utils';
 import { CustomNotification } from '../../customNotification';
 import { CustomRating } from '../../customRating/CustomRating';
+import { PageBuilder } from '../../pageBuilder';
+import { QueryBuilder } from '../../queryBuilder';
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   StepperWrapper,
 } from '../../wrappers';
-import { SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS } from '../constants';
+import {
+  SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
+  SURVEY_QUERY_DATA,
+} from '../constants';
 import { SurveyBuilderDocument } from '../types';
 import {
   displaySurveysAction,
   displaySurveysReducer,
   initialDisplaySurveysState,
 } from './state';
-import { ResponsePayload } from './types';
-import { TbChartPie3, TbChartPie4, TbUpload } from 'react-icons/tb';
-import localforage from 'localforage';
-import { idText } from 'typescript';
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -797,6 +791,23 @@ function DisplaySurveys() {
     );
   });
 
+  const displayQueryBuilder = (
+    <QueryBuilder
+      setQueryBuilderString={displaySurveysAction.setQueryBuilderString}
+      parentComponentDispatch={displaySurveysDispatch}
+      componentQueryData={SURVEY_QUERY_DATA}
+      collectionName="Surveys"
+    />
+  );
+
+  const displayPageNavigation = (
+    <PageBuilder
+      total={pages}
+      setPageQueryString={displaySurveysAction.setPageQueryString}
+      parentComponentDispatch={displaySurveysDispatch}
+    />
+  );
+
   return (
     <Flex
       w="100%"
@@ -808,7 +819,13 @@ function DisplaySurveys() {
       wrap="wrap"
       style={{ backgroundColor: 'white', borderRadius: '4px' }}
     >
+      {displayQueryBuilder}
+      <Group w="100%" position="apart" p={padding}>
+        <Text color="dark">Total surveys</Text>
+        <Text color="dark">{totalDocuments}</Text>
+      </Group>
       {displayCreatedSurveys}
+      {displayPageNavigation}
     </Flex>
   );
 }

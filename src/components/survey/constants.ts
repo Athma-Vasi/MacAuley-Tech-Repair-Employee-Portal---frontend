@@ -1,4 +1,5 @@
 import { RadioGroupInputData, SelectInputData } from '../../types';
+import { ComponentQueryData } from '../queryBuilder';
 
 const SURVEY_BUILDER_RECIPIENT_DATA = [
   'All',
@@ -98,6 +99,81 @@ const SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS: RadioGroupInputData = [
   },
 ];
 
+const SURVEY_RESPONSE_INPUTS = [
+  'agreeDisagree',
+  'radio',
+  'checkbox',
+  'emotion',
+  'stars',
+];
+
+/**
+ * type ComponentQueryData = {
+  label: string;
+  value: string;
+  inputKind: QueryInputKind;
+  selectData?: string[];
+  booleanData?: boolean[];
+};
+ */
+const SURVEY_QUERY_DATA: ComponentQueryData[] = [
+  {
+    label: 'Survey title',
+    value: 'surveyTitle',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Survey description',
+    value: 'surveyDescription',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Send to',
+    value: 'sendTo',
+    inputKind: 'selectInput',
+    selectData: SURVEY_BUILDER_RECIPIENT_DATA,
+  },
+  {
+    label: 'Expiry date',
+    value: 'expiryDate',
+    inputKind: 'dateInput',
+  },
+  {
+    label: 'Question',
+    value: 'question',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Response kind',
+    value: 'responseKind',
+    inputKind: 'selectInput',
+    selectData: SURVEY_BUILDER_RESPONSE_KIND_DATA.map(
+      (responseKindData) => responseKindData.label
+    ),
+  },
+  {
+    label: 'Response input',
+    value: 'responseInput',
+    inputKind: 'selectInput',
+    selectData: SURVEY_RESPONSE_INPUTS,
+  },
+  {
+    label: 'Response options',
+    value: 'responseOptions',
+    inputKind: 'textInput',
+  },
+  {
+    label: 'Created at',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+  },
+  {
+    label: 'Updated at',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+  },
+];
+
 export {
   SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
   SURVEY_BUILDER_INPUT_HTML_DATA,
@@ -105,4 +181,6 @@ export {
   SURVEY_BUILDER_RECIPIENT_DATA,
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
   SURVEY_MAX_RESPONSE_DATA_OPTIONS,
+  SURVEY_QUERY_DATA,
+  SURVEY_RESPONSE_INPUTS,
 };
