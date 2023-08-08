@@ -1,6 +1,6 @@
 import { splitCamelCase } from '../../../utils';
 import { DescriptionObjectsArray } from '../../wrappers';
-import { SurveyBuilderDocument } from '../types';
+import { SurveyBuilderDocument, SurveyQuestion } from '../types';
 import {
   DisplaySurveysAction,
   DisplaySurveysDispatch,
@@ -83,44 +83,56 @@ function displaySurveysReducer(
         surveyId,
         surveyTitle,
       } = action.payload;
-
       const clonedSurveySubmissions = structuredClone(state.surveySubmissions);
-
-      // if the surveyId is not in the map, create a new surveySubmission
-      const surveySubmission = clonedSurveySubmissions.get(surveyId) ?? {
-        surveyId,
-        surveyTitle,
-        surveyResponses: [
-          {
-            question,
-            responseKind,
-            inputKind,
-            response,
-          },
-        ],
-      };
-
-      // find the index of the question in the surveyResponses array
-      const surveyResponses = surveySubmission.surveyResponses.findIndex(
-        (surveyResponse: SurveyResponse) => surveyResponse.question === question
-      );
 
       // find the index of the question in response data
       const surveyFromServer = state.responseData.find(
         (surveys) => surveys._id === surveyId
       ) as SurveyBuilderDocument;
       const responseData = surveyFromServer?.questions.findIndex(
-        (surveyResponse) => surveyResponse.question === question
+        (surveyResponse: SurveyQuestion) =>
+          surveyResponse?.question === question
       );
 
-      // if the question is not found, add it to surveyResponses (it is a new response) at the same index as in responseData
-      if (surveyResponses === -1) {
-        surveySubmission.surveyResponses.splice(responseData, 0, {
+      // if the surveyId is not in the map, create a new surveySubmission
+      let surveySubmission = clonedSurveySubmissions.get(surveyId);
+      if (!surveySubmission) {
+        // insert at the same index as in responseData
+        const surveyResponses = [];
+        surveyResponses[responseData] = {
           question,
           responseKind,
           inputKind,
           response,
-        });
+        };
+
+        surveySubmission = {
+          surveyId,
+          surveyTitle,
+          surveyResponses,
+        };
+        clonedSurveySubmissions.set(surveyId, surveySubmission);
+
+        return {
+          ...state,
+          surveySubmissions: clonedSurveySubmissions,
+        };
+      }
+
+      // find the index of the question in the surveyResponses array
+      const surveyResponses = surveySubmission.surveyResponses.findIndex(
+        (surveyResponse: SurveyResponse) =>
+          surveyResponse?.question === question
+      );
+
+      // if the question is not found, add it to surveyResponses (it is a new response) at the same index as in responseData
+      if (surveyResponses === -1) {
+        surveySubmission.surveyResponses[responseData] = {
+          question,
+          responseKind,
+          inputKind,
+          response,
+        };
       }
       // if the question is found, update the response
       else {
@@ -219,7 +231,7 @@ function displaySurveysReducer(
 
     case displaySurveysAction.setStepperDescriptionsMap: {
       const surveys = action.payload;
-
+      // sets the stepper descriptions for each survey based on the response kind
       const stepperDescriptionsMap = surveys.reduce(
         (acc: Map<string, DescriptionObjectsArray>, survey) => {
           const descriptionObjectsArray = survey.questions.map(
@@ -230,7 +242,6 @@ function displaySurveysReducer(
               };
             }
           );
-
           acc.set(survey._id, descriptionObjectsArray);
 
           return acc;
@@ -262,7 +273,9 @@ function displaySurveysReducer(
       } = action.payload;
 
       const clonedStepsInError = structuredClone(state.stepsInError);
+      // find the steps in error for the survey
       const stepInError = clonedStepsInError.get(surveyId) ?? new Set<number>();
+      // add or delete the step from the set
       kind === 'add' ? stepInError.add(step) : stepInError.delete(step);
       clonedStepsInError.set(surveyId, stepInError);
 
