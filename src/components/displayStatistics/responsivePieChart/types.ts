@@ -43,7 +43,7 @@ type NivoColorScheme =
   | 'yellow_orange_brown'
   | 'yellow_orange_red';
 
-type MotionConfig =
+type NivoMotionConfig =
   | 'default'
   | 'gentle'
   | 'wobbly'
@@ -51,7 +51,7 @@ type MotionConfig =
   | 'slow'
   | 'molasses';
 
-type TransitionMode =
+type NivoTransitionMode =
   | 'startAngle'
   | 'middleAngle'
   | 'endAngle'
@@ -63,8 +63,8 @@ type TransitionMode =
 
 type ResponsivePieChartState = {
   /** base */
-  startAngle: number; // 0 - 360 default: 0 step: 1
-  endAngle: number; // 0 - 360 default: 360 step: 1
+  startAngle: number; // -180 - 360 default: 0 step: 1
+  endAngle: number; // -360 - 360 default: 360 step: 1
   innerRadius: number; // 0 - 1 default: 0 step: 0.05
   padAngle: number; // 0 - 45 default: 0 step: 1
   cornerRadius: number; // 0px - 45px default: 0 step: 1
@@ -95,8 +95,8 @@ type ResponsivePieChartState = {
 
   /** motion */
   animate: boolean; // default: true
-  motionConfig: MotionConfig;
-  transitionMode: TransitionMode;
+  motionConfig: NivoMotionConfig;
+  transitionMode: NivoTransitionMode;
 };
 
 type ResponsivePieChartAction = {
@@ -130,8 +130,77 @@ type ResponsivePieChartAction = {
   /** interactivity */
   setActiveInnerRadiusOffset: 'setActiveInnerRadiusOffset';
   setActiveOuterRadiusOffset: 'setActiveOuterRadiusOffset';
+
   /** motion */
   setAnimate: 'setAnimate';
   setMotionConfig: 'setMotionConfig';
   setTransitionMode: 'setTransitionMode';
+};
+
+type ResponsivePieChartDispatch =
+  | {
+      // all number payloads
+      type:
+        | ResponsivePieChartAction['setStartAngle']
+        | ResponsivePieChartAction['setEndAngle']
+        | ResponsivePieChartAction['setInnerRadius']
+        | ResponsivePieChartAction['setPadAngle']
+        | ResponsivePieChartAction['setCornerRadius']
+        | ResponsivePieChartAction['setBorderWidth']
+        | ResponsivePieChartAction['setArcLabelsSkipAngle']
+        | ResponsivePieChartAction['setArcLinkLabelsSkipAngle']
+        | ResponsivePieChartAction['setArcLinkLabelsOffset']
+        | ResponsivePieChartAction['setArcLinkLabelsDiagonalLength']
+        | ResponsivePieChartAction['setArcLinkLabelsStraightLength']
+        | ResponsivePieChartAction['setArcLinkLabelsTextOffset']
+        | ResponsivePieChartAction['setArcLinkLabelsThickness']
+        | ResponsivePieChartAction['setActiveInnerRadiusOffset']
+        | ResponsivePieChartAction['setActiveOuterRadiusOffset'];
+
+      payload: number;
+    }
+  | {
+      // all boolean payloads
+      type:
+        | ResponsivePieChartAction['setSortByValue']
+        | ResponsivePieChartAction['setEnableArcLabels']
+        | ResponsivePieChartAction['setEnableArcLinkLabels']
+        | ResponsivePieChartAction['setAnimate'];
+
+      payload: boolean;
+    }
+  | {
+      type: ResponsivePieChartAction['setColorScheme'];
+      payload: NivoColorScheme;
+    }
+  | {
+      type:
+        | ResponsivePieChartAction['setArcLabelsTextColor']
+        | ResponsivePieChartAction['setArcLinkLabelsTextColor'];
+
+      payload: string;
+    }
+  | {
+      type: ResponsivePieChartAction['setMotionConfig'];
+      payload: NivoMotionConfig;
+    }
+  | {
+      type: ResponsivePieChartAction['setTransitionMode'];
+      payload: NivoTransitionMode;
+    };
+
+type ResponsivePieChartReducer = (
+  state: ResponsivePieChartState,
+  action: ResponsivePieChartDispatch
+) => ResponsivePieChartState;
+
+export type {
+  NivoColorScheme,
+  NivoMotionConfig,
+  NivoTransitionMode,
+  ResponsivePieChartAction,
+  ResponsivePieChartDispatch,
+  ResponsivePieChartProps,
+  ResponsivePieChartReducer,
+  ResponsivePieChartState,
 };
