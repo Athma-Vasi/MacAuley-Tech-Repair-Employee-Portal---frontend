@@ -698,7 +698,7 @@ function SurveyBuilder() {
           content: responseDataOption,
           contentKind: 'text',
           minLength: 2,
-          maxLength: 75,
+          maxLength: 100,
         })),
         regexValidationFunction: returnGrammarValidationText,
       });
@@ -1022,6 +1022,8 @@ function SurveyBuilder() {
                 },
               });
             },
+            minLength: 2,
+            maxLength: 100,
             placeholder: 'Enter a response option answer',
             ref:
               optionIdx === responseDataOptionsArray?.[questionIdx]?.length - 1

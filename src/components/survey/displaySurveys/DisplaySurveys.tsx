@@ -1,7 +1,6 @@
 import { Flex, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { Fragment, useEffect, useReducer } from 'react';
 import { TbChartPie3, TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
 
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
@@ -30,6 +29,7 @@ import {
   displaySurveysReducer,
   initialDisplaySurveysState,
 } from './state';
+import { DisplayStatistics } from '../../displayStatistics';
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -291,7 +291,7 @@ function DisplaySurveys() {
     };
   }, [triggerSurveySubmission]);
 
-  // used to show statistics and disable survey submit button
+  // allows discrimination between completed and uncompleted surveys
   useEffect(() => {
     if (!userDocument) {
       return;
@@ -332,7 +332,6 @@ function DisplaySurveys() {
     });
   }, [responseData, completedSurveyIds]);
 
-  // assign uncompleted surveys for further processing
   useEffect(() => {
     displaySurveysDispatch({
       type: displaySurveysAction.setStepperDescriptionsMap,
@@ -796,8 +795,7 @@ function DisplaySurveys() {
         buttonLabel: 'Submit',
         buttonDisabled:
           surveySubmissions.get(_id) === undefined ||
-          stepsInError.get(_id)?.size !== 0 ||
-          completedSurveyIds.has(_id),
+          stepsInError.get(_id)?.size !== 0,
         semanticDescription: 'Submit survey',
         semanticName: 'Submit survey',
         buttonOnClick: () => {
@@ -863,12 +861,28 @@ function DisplaySurveys() {
   /** ------------- end surveys creation ------------- */
 
   /** ------------- begin surveys display ------------- */
+
   const displayQueryBuilder = (
     <QueryBuilder
       setQueryBuilderString={displaySurveysAction.setQueryBuilderString}
       parentComponentDispatch={displaySurveysDispatch}
       componentQueryData={SURVEY_QUERY_DATA}
       collectionName="Surveys"
+    />
+  );
+
+  const displayTotalSurveys = (
+    <Group w="100%" position="apart" p={padding}>
+      <Text color="dark">Total surveys</Text>
+      <Text color="dark">{totalDocuments}</Text>
+    </Group>
+  );
+
+  const displayStatistics = (
+    <DisplayStatistics
+      surveyStatistics={completedSurveys.map(
+        (survey) => survey.surveyStatistics
+      )}
     />
   );
 
@@ -892,10 +906,8 @@ function DisplaySurveys() {
       style={{ backgroundColor: 'white', borderRadius: '4px' }}
     >
       {displayQueryBuilder}
-      <Group w="100%" position="apart" p={padding}>
-        <Text color="dark">Total surveys</Text>
-        <Text color="dark">{totalDocuments}</Text>
-      </Group>
+      {displayTotalSurveys}
+      {displayStatistics}
       {displayCreatedSurveys}
       {displayPageNavigation}
     </Flex>

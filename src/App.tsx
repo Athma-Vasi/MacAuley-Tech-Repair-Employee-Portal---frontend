@@ -52,6 +52,7 @@ import {
 } from './components/anonymousRequest';
 import { ImageUpload } from './components/imageUpload';
 import { CustomNotification } from './components/customNotification';
+import { DisplayStatistics } from './components/displayStatistics';
 
 function App() {
   const {
@@ -70,26 +71,7 @@ function App() {
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
 
           {/* DEV PATHS - DELETE LATER*/}
-          {/* <Route
-            path="notification"
-            element={
-              <CustomNotification
-                isError={false}
-                errorMessage="This is a long error message. This is a long error message. This is a long error message. This is a long error message."
-                isSuccessful={true}
-                successMessage="This is a long success message. This is a long success message. This is a long success message. This is a long success message."
-                isSubmitting={false}
-                submitMessage="This is a long submit message. This is a long submit message. This is a long submit message. This is a long submit message."
-                // isSubmitted={false}
-                // submittedMessage="Submitted message"
-                isLoading={false}
-                loadingMessage="This is a long loading message. This is a long loading message. This is a long loading message. This is a long loading message."
-                onClose={() => {
-                  navigate('/portal');
-                }}
-              />
-            }
-          /> */}
+          {/* <Route path="statistics" element={<DisplayStatistics />} /> */}
           {/* <Route path="expense-claim" element={<DisplayExpenseClaims />} /> */}
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
