@@ -33,6 +33,8 @@ import {
   RadioGroupInputsWrapper,
   RadioSingleInputWrapper,
 } from './RadioInputWrapper';
+import type { AccessibleSliderInputCreatorInfo } from './SliderWrapper';
+import { SliderWrapper } from './SliderWrapper';
 import { StepperWrapper } from './stepperWrapper';
 import type { DescriptionObjectsArray } from './stepperWrapper/types';
 import type { AccessibleTextAreaInputCreatorInfo } from './TextAreaInputWrapper';
@@ -53,6 +55,7 @@ export {
   PhoneTextInputWrapper,
   RadioGroupInputsWrapper,
   RadioSingleInputWrapper,
+  SliderWrapper,
   StepperWrapper,
   TextAreaInputWrapper,
   TextInputWrapper,
@@ -69,6 +72,7 @@ export type {
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleRadioSingleInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
+  AccessibleSliderInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   DescriptionObjectsArray,

@@ -8,17 +8,19 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   /** base */
   startAngle: 0,
   endAngle: 360,
-  innerRadius: 0,
-  padAngle: 0,
-  cornerRadius: 0,
+  innerRadius: 0.25,
+  padAngle: 4,
+  cornerRadius: 4,
   sortByValue: false,
 
   /** style */
   colorScheme: 'nivo',
+  borderColor: '#e0e0e0',
   borderWidth: 0,
 
   /** arc labels */
   enableArcLabels: true,
+  arcLabelsRadiusOffset: 0.5,
   arcLabelsSkipAngle: 0,
   arcLabelsTextColor: '#333333',
 
@@ -33,8 +35,8 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   arcLinkLabelsTextColor: '#333333',
 
   /** interactivity */
-  activeInnerRadiusOffset: 0,
-  activeOuterRadiusOffset: 0,
+  activeInnerRadiusOffset: 4,
+  activeOuterRadiusOffset: 4,
 
   /** motion */
   animate: true,
@@ -53,10 +55,12 @@ const responsivePieChartAction: ResponsivePieChartAction = {
 
   /** style */
   setColorScheme: 'setColorScheme',
+  setBorderColor: 'setBorderColor',
   setBorderWidth: 'setBorderWidth',
 
   /** arc labels */
   setEnableArcLabels: 'setEnableArcLabels',
+  setArcLabelsRadiusOffset: 'setArcLabelsRadiusOffset',
   setArcLabelsSkipAngle: 'setArcLabelsSkipAngle',
   setArcLabelsTextColor: 'setArcLabelsTextColor',
 
@@ -123,6 +127,11 @@ function responsivePieChartReducer(
         ...state,
         colorScheme: action.payload,
       };
+    case responsivePieChartAction.setBorderColor:
+      return {
+        ...state,
+        borderColor: action.payload,
+      };
     case responsivePieChartAction.setBorderWidth:
       return {
         ...state,
@@ -134,6 +143,11 @@ function responsivePieChartReducer(
       return {
         ...state,
         enableArcLabels: action.payload,
+      };
+    case responsivePieChartAction.setArcLabelsRadiusOffset:
+      return {
+        ...state,
+        arcLabelsRadiusOffset: action.payload,
       };
     case responsivePieChartAction.setArcLabelsSkipAngle:
       return {

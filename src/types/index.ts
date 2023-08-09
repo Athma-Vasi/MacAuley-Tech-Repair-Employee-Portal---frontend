@@ -57,6 +57,11 @@ type CheckboxInputData = Array<{
   label: string;
 }>;
 
+type SliderInputData = Array<{
+  value: number;
+  label: string;
+}>;
+
 type FileExtension = '.jpg' | 'jpeg' | 'png' | 'gif' | 'pdf';
 
 type FileUploadSchema = {
@@ -170,5 +175,6 @@ export type {
   ResourceRequestServerResponse,
   SelectInputData,
   SetStepsInErrorPayload,
+  SliderInputData,
   TimeRailway,
 };

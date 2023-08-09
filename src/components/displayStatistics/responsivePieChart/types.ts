@@ -1,7 +1,7 @@
 import { PieChartData } from '../types';
 
 type ResponsivePieChartProps = {
-  pieChartDataMap: Map<string, Map<string, PieChartData[]>>;
+  pieChartData: PieChartData[];
 };
 
 type NivoColorScheme =
@@ -72,10 +72,12 @@ type ResponsivePieChartState = {
 
   /** style */
   colorScheme: NivoColorScheme;
+  borderColor: string; // default: #ffffff
   borderWidth: number; // 0px - 20px default: 0 step: 1
 
   /** arc labels */
   enableArcLabels: boolean; // default: true
+  arcLabelsRadiusOffset: number; // 0 - 2 default:0.5 step: 0.05
   arcLabelsSkipAngle: number; // 0 - 45 default: 0 step: 1
   arcLabelsTextColor: string; // default: #333333
 
@@ -110,10 +112,12 @@ type ResponsivePieChartAction = {
 
   /** style */
   setColorScheme: 'setColorScheme';
+  setBorderColor: 'setBorderColor';
   setBorderWidth: 'setBorderWidth';
 
   /** arc labels */
   setEnableArcLabels: 'setEnableArcLabels';
+  setArcLabelsRadiusOffset: 'setArcLabelsRadiusOffset';
   setArcLabelsSkipAngle: 'setArcLabelsSkipAngle';
   setArcLabelsTextColor: 'setArcLabelsTextColor';
 
@@ -148,6 +152,7 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setCornerRadius']
         | ResponsivePieChartAction['setBorderWidth']
         | ResponsivePieChartAction['setArcLabelsSkipAngle']
+        | ResponsivePieChartAction['setArcLabelsRadiusOffset']
         | ResponsivePieChartAction['setArcLinkLabelsSkipAngle']
         | ResponsivePieChartAction['setArcLinkLabelsOffset']
         | ResponsivePieChartAction['setArcLinkLabelsDiagonalLength']
@@ -176,6 +181,7 @@ type ResponsivePieChartDispatch =
   | {
       type:
         | ResponsivePieChartAction['setArcLabelsTextColor']
+        | ResponsivePieChartAction['setBorderColor']
         | ResponsivePieChartAction['setArcLinkLabelsTextColor'];
 
       payload: string;

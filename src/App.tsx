@@ -53,6 +53,7 @@ import {
 import { ImageUpload } from './components/imageUpload';
 import { CustomNotification } from './components/customNotification';
 import { DisplayStatistics } from './components/displayStatistics';
+import { ResponsivePieChart } from './components/displayStatistics/responsivePieChart';
 
 function App() {
   const {
@@ -71,7 +72,10 @@ function App() {
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
 
           {/* DEV PATHS - DELETE LATER*/}
-          {/* <Route path="statistics" element={<DisplayStatistics />} /> */}
+          <Route
+            path="pie"
+            element={<ResponsivePieChart pieChartData={[]} />}
+          />
           {/* <Route path="expense-claim" element={<DisplayExpenseClaims />} /> */}
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}

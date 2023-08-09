@@ -2,9 +2,10 @@ import { NativeSelect } from '@mantine/core';
 import { ChangeEvent, RefObject } from 'react';
 
 import { useGlobalState } from '../../hooks';
+import { SelectInputData } from '../../types';
 
 type AccessibleSelectInputCreatorInfo = {
-  data: string[];
+  data: string[] | SelectInputData;
   label: string;
   description: string;
   describedBy?: string;

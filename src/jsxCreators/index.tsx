@@ -12,6 +12,7 @@ import type {
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleRadioSingleInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
+  AccessibleSliderInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
 } from '../components/wrappers';
@@ -25,6 +26,7 @@ import {
   PhoneTextInputWrapper,
   RadioGroupInputsWrapper,
   RadioSingleInputWrapper,
+  SliderWrapper,
   TextAreaInputWrapper,
   TextInputWrapper,
   TextWrapper,
@@ -508,6 +510,17 @@ function returnAccessibleCheckboxGroupInputsElements(
   ));
 }
 
+function returnAccessibleSliderInputElements(
+  creatorInfoObjectArray: AccessibleSliderInputCreatorInfo[]
+) {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
+    <SliderWrapper
+      key={`${index}${creatorInfoObject.label}`}
+      creatorInfoObject={creatorInfoObject}
+    />
+  ));
+}
+
 function returnAccessibleDynamicTextInputElements(
   creatorInfoObjectArray: AccessibleTextInputCreatorInfo[]
 ) {
@@ -548,6 +561,7 @@ export {
   returnAccessibleRadioSingleInputElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
+  returnAccessibleSliderInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 };
