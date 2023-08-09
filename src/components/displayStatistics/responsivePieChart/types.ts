@@ -61,6 +61,13 @@ type NivoTransitionMode =
   | 'pushIn'
   | 'pushOut';
 
+type FillPatternObject = {
+  match: {
+    id: string;
+  };
+  id: string;
+};
+
 type ResponsivePieChartState = {
   /** base */
   startAngle: number; // -180 - 360 default: 0 step: 1
@@ -72,6 +79,8 @@ type ResponsivePieChartState = {
 
   /** style */
   colorScheme: NivoColorScheme;
+  fillPatterns: FillPatternObject[];
+  enableFillPatterns: boolean; // default: false
   borderColor: string; // default: #ffffff
   borderWidth: number; // 0px - 20px default: 0 step: 1
 
@@ -112,6 +121,8 @@ type ResponsivePieChartAction = {
 
   /** style */
   setColorScheme: 'setColorScheme';
+  setFillPatterns: 'setFillPatterns';
+  setEnableFillPatterns: 'setEnableFillPatterns';
   setBorderColor: 'setBorderColor';
   setBorderWidth: 'setBorderWidth';
 
@@ -168,11 +179,16 @@ type ResponsivePieChartDispatch =
       // all boolean payloads
       type:
         | ResponsivePieChartAction['setSortByValue']
+        | ResponsivePieChartAction['setEnableFillPatterns']
         | ResponsivePieChartAction['setEnableArcLabels']
         | ResponsivePieChartAction['setEnableArcLinkLabels']
         | ResponsivePieChartAction['setAnimate'];
 
       payload: boolean;
+    }
+  | {
+      type: ResponsivePieChartAction['setFillPatterns'];
+      payload: FillPatternObject[];
     }
   | {
       type: ResponsivePieChartAction['setColorScheme'];
@@ -201,6 +217,7 @@ type ResponsivePieChartReducer = (
 ) => ResponsivePieChartState;
 
 export type {
+  FillPatternObject,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,

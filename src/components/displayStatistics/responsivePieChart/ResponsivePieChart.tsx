@@ -29,6 +29,7 @@ import {
   NIVO_TRANSITION_MODE_DATA,
 } from './constants';
 import {
+  FillPatternObject,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
@@ -38,6 +39,7 @@ import { useGlobalState } from '../../../hooks';
 import { PieChartControlsStack } from './utils';
 import { logState } from '../../../utils';
 import { ResponsivePie } from '@nivo/pie';
+import { PieChartData } from '../types';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
@@ -54,6 +56,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     sortByValue, // default: false
 
     colorScheme,
+    fillPatterns,
+    enableFillPatterns, // default: false
     borderColor, // default: #ffffff
     borderWidth, // 0px - 20px default: 0 step: 1
 
@@ -91,6 +95,52 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       groupLabel: 'ResponsivePieChart',
     });
   }, [responsivePieChartState]);
+
+  // set fill patterns on enable
+  useEffect(() => {
+    if (!pieChartData) {
+      return;
+    }
+
+    const fillPatterns = pieChartData.reduce(
+      (acc: FillPatternObject[], pieChartData: PieChartData, chartIdx) => {
+        const { id } = pieChartData;
+        const fillPattern: FillPatternObject = {
+          match: {
+            id,
+          },
+          id:
+            chartIdx % 2 === 0
+              ? 'dots'
+              : chartIdx % 3 === 0
+              ? 'lines'
+              : 'squares',
+        };
+        acc.push(fillPattern);
+
+        return acc;
+      },
+      []
+    );
+
+    responsivePieChartDispatch({
+      type: responsivePieChartAction.setFillPatterns,
+      payload: fillPatterns,
+    });
+  }, [enableFillPatterns, pieChartData]);
+
+  /**
+ * [
+          {
+            match: {
+              id: 'ruby',
+            },
+            id: 'dots',
+          },
+          
+        ]
+ */
+
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin accessible description texts ------------- */
@@ -105,6 +155,17 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       'Arcs will not be ordered according to their associated value.',
     selectedDescription:
       'Arcs will be ordered according to their associated value.',
+    theme: 'muted',
+  });
+
+  const [
+    enableFillPatternsAccessibleSelectedText,
+    enableFillPatternsAccessibleDeselectedText,
+  ] = returnAccessibleSelectedDeselectedTextElements({
+    isSelected: enableFillPatterns,
+    semanticName: 'enable fill patterns',
+    deselectedDescription: 'Fill patterns will not be displayed.',
+    selectedDescription: 'Fill patterns will be displayed.',
     theme: 'muted',
   });
 
@@ -284,6 +345,32 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       }}
       w={217}
+    />
+  );
+
+  const createdEnableFillPatternsSwitchInput = (
+    <Switch
+      description={
+        enableFillPatterns
+          ? enableFillPatternsAccessibleSelectedText
+          : enableFillPatternsAccessibleDeselectedText
+      }
+      aria-describedby={
+        enableFillPatterns
+          ? enableFillPatternsAccessibleSelectedText.props.id
+          : enableFillPatternsAccessibleDeselectedText.props.id
+      }
+      label={
+        <TextWrapper creatorInfoObj={{}}>Enable fill patterns</TextWrapper>
+      }
+      checked={enableFillPatterns}
+      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setEnableFillPatterns,
+          payload: event.currentTarget.checked,
+        });
+      }}
+      w="100%"
     />
   );
 
@@ -810,6 +897,14 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     </Group>
   );
 
+  const displayEnableFillPatternsSwitchInput = (
+    <PieChartControlsStack
+      input={createdEnableFillPatternsSwitchInput}
+      label=""
+      value={enableFillPatterns}
+    />
+  );
+
   const displayBorderColorInput = (
     <PieChartControlsStack
       input={createdBorderColorInput}
@@ -830,6 +925,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayStyleSection = (
     <Stack>
       {displayStyleText}
+      {displayEnableFillPatternsSwitchInput}
       {displayColorSchemeSelectInput}
       {displayBorderColorInput}
       {displayArcBorderWidthSliderInput}
@@ -1166,56 +1262,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
             spacing: 10,
           },
         ]}
-        // fill={[
-        //   {
-        //     match: {
-        //       id: 'ruby',
-        //     },
-        //     id: 'dots',
-        //   },
-        //   {
-        //     match: {
-        //       id: 'c',
-        //     },
-        //     id: 'dots',
-        //   },
-        //   {
-        //     match: {
-        //       id: 'go',
-        //     },
-        //     id: 'dots',
-        //   },
-        //   {
-        //     match: {
-        //       id: 'python',
-        //     },
-        //     id: 'dots',
-        //   },
-        //   {
-        //     match: {
-        //       id: 'scala',
-        //     },
-        //     id: 'lines',
-        //   },
-        //   {
-        //     match: {
-        //       id: 'lisp',
-        //     },
-        //     id: 'lines',
-        //   },
-        //   {
-        //     match: {
-        //       id: 'elixir',
-        //     },
-        //     id: 'lines',
-        //   },
-        //   {
-        //     match: {
-        //       id: 'javascript',
-        //     },
-        //     id: 'lines',
-        //   },
-        // ]}
+        fill={enableFillPatterns ? fillPatterns : []}
         legends={[
           {
             anchor: `${width < 640 ? 'bottom' : 'right'}`,

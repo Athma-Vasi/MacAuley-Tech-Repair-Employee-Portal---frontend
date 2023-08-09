@@ -15,6 +15,8 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
 
   /** style */
   colorScheme: 'nivo',
+  fillPatterns: [],
+  enableFillPatterns: false,
   borderColor: '#e0e0e0',
   borderWidth: 0,
 
@@ -55,6 +57,8 @@ const responsivePieChartAction: ResponsivePieChartAction = {
 
   /** style */
   setColorScheme: 'setColorScheme',
+  setFillPatterns: 'setFillPatterns',
+  setEnableFillPatterns: 'setEnableFillPatterns',
   setBorderColor: 'setBorderColor',
   setBorderWidth: 'setBorderWidth',
 
@@ -126,6 +130,16 @@ function responsivePieChartReducer(
       return {
         ...state,
         colorScheme: action.payload,
+      };
+    case responsivePieChartAction.setFillPatterns:
+      return {
+        ...state,
+        fillPatterns: action.payload,
+      };
+    case responsivePieChartAction.setEnableFillPatterns:
+      return {
+        ...state,
+        enableFillPatterns: action.payload,
       };
     case responsivePieChartAction.setBorderColor:
       return {
