@@ -1,18 +1,109 @@
 import { Flex } from '@mantine/core';
 import { ResponsivePie } from '@nivo/pie';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
+
+import { logState } from '../../utils';
 import {
   displayStatisticsReducer,
   initialDisplayStatisticsState,
 } from './state';
-import { DisplayStatisticsProps } from './types';
+import {
+  ChartData,
+  ChartKind,
+  DisplayStatisticsProps,
+  PieChartData,
+} from './types';
 
-function DisplayStatistics({ surveyStatistics }: DisplayStatisticsProps) {
+function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(
     displayStatisticsReducer,
     initialDisplayStatisticsState
   );
-  const { chartData, chartKind, chartTitle } = displayStatisticsState;
+  const { pieChartDataMap, chartKindsMap, chartTitlesMap } =
+    displayStatisticsState;
+
+  // set survey statistics
+
+  // set initial data structure
+  useEffect(() => {
+    if (!surveys) {
+      return;
+    }
+
+    const [pieChartDataMap, chartKindsMap, chartTitlesMap, totalResponsesMap] =
+      surveys.reduce(
+        (
+          [pieChartDataMap, chartKindsMap, chartTitlesMap, totalResponsesMap]: [
+            Map<string, Map<string, PieChartData[]>>,
+            Map<string, Map<string, ChartKind>>,
+            Map<string, string[]>,
+            Map<string, Map<string, number>>
+          ],
+          survey
+        ) => {
+          const { _id, surveyStatistics } = survey;
+
+          pieChartDataMap.set(_id, new Map());
+          chartKindsMap.set(_id, new Map());
+          chartTitlesMap.set(_id, []);
+          totalResponsesMap.set(_id, new Map());
+
+          surveyStatistics.forEach((surveyStatistic) => {
+            const { question, responseDistribution, totalResponses } =
+              surveyStatistic;
+
+            const chartDataArray = Object.entries(responseDistribution).map(
+              ([response, count]) => {
+                const chartData: PieChartData = {
+                  id: response,
+                  label: response,
+                  value: count,
+                };
+
+                return chartData;
+              }
+            );
+            pieChartDataMap.get(_id)?.set(question, chartDataArray);
+
+            chartKindsMap.get(_id)?.set(question, 'pie');
+            chartTitlesMap.get(_id)?.push(question);
+            totalResponsesMap.get(_id)?.set(question, totalResponses);
+          });
+
+          return [
+            pieChartDataMap,
+            chartKindsMap,
+            chartTitlesMap,
+            totalResponsesMap,
+          ];
+        },
+        [new Map(), new Map(), new Map(), new Map()]
+      );
+
+    displayStatisticsDispatch({
+      type: 'setPieChartDataMap',
+      payload: pieChartDataMap,
+    });
+    displayStatisticsDispatch({
+      type: 'setChartKindsMap',
+      payload: chartKindsMap,
+    });
+    displayStatisticsDispatch({
+      type: 'setChartTitlesMap',
+      payload: chartTitlesMap,
+    });
+    displayStatisticsDispatch({
+      type: 'setTotalResponsesMap',
+      payload: totalResponsesMap,
+    });
+  }, [surveys]);
+
+  useEffect(() => {
+    logState({
+      state: displayStatisticsState,
+      groupLabel: 'DisplayStatistics',
+    });
+  }, [displayStatisticsState]);
 
   const data = [
     {
@@ -47,6 +138,12 @@ function DisplayStatistics({ surveyStatistics }: DisplayStatisticsProps) {
     },
   ];
 
+  const testData =
+    pieChartDataMap
+      .get('64d1b31f255fd5fcf9d7e654')
+      ?.get('Select the factors that motivate you to perform at your best.') ??
+    [];
+
   const responsivePie = (
     <ResponsivePie
       onClick={(event) => console.log(event)}
@@ -57,7 +154,7 @@ function DisplayStatistics({ surveyStatistics }: DisplayStatisticsProps) {
       padAngle={3}
       cornerRadius={4}
       activeOuterRadiusOffset={8}
-      colors={{ scheme: 'green_blue' }}
+      colors={{ scheme: 'category10' }}
       borderWidth={1}
       borderColor={{
         from: 'color',
@@ -121,7 +218,7 @@ function DisplayStatistics({ surveyStatistics }: DisplayStatisticsProps) {
           match: {
             id: 'scala',
           },
-          id: 'lines',
+          id: 'dots',
         },
         {
           match: {

@@ -33,7 +33,18 @@ function Dashboard() {
   const {
     authState: { accessToken, userId },
   } = useAuth();
-  const navigate = useNavigate();
+
+  useEffect(() => {
+    dashboardDispatch({
+      type: 'setIsLoading',
+      payload: false,
+    });
+
+    dashboardDispatch({
+      type: 'setLoadingMessage',
+      payload: '',
+    });
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -95,15 +106,6 @@ function Dashboard() {
         }
       } finally {
         if (isMounted) {
-          dashboardDispatch({
-            type: 'setIsLoading',
-            payload: false,
-          });
-
-          dashboardDispatch({
-            type: 'setLoadingMessage',
-            payload: '',
-          });
         }
       }
     }

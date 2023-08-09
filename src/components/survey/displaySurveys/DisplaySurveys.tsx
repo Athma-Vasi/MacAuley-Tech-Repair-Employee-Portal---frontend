@@ -862,14 +862,14 @@ function DisplaySurveys() {
 
   /** ------------- begin surveys display ------------- */
 
-  const displayQueryBuilder = (
-    <QueryBuilder
-      setQueryBuilderString={displaySurveysAction.setQueryBuilderString}
-      parentComponentDispatch={displaySurveysDispatch}
-      componentQueryData={SURVEY_QUERY_DATA}
-      collectionName="Surveys"
-    />
-  );
+  // const displayQueryBuilder = (
+  //   <QueryBuilder
+  //     setQueryBuilderString={displaySurveysAction.setQueryBuilderString}
+  //     parentComponentDispatch={displaySurveysDispatch}
+  //     componentQueryData={SURVEY_QUERY_DATA}
+  //     collectionName="Surveys"
+  //   />
+  // );
 
   const displayTotalSurveys = (
     <Group w="100%" position="apart" p={padding}>
@@ -878,13 +878,7 @@ function DisplaySurveys() {
     </Group>
   );
 
-  const displayStatistics = (
-    <DisplayStatistics
-      surveyStatistics={completedSurveys.map(
-        (survey) => survey.surveyStatistics
-      )}
-    />
-  );
+  const displayStatistics = <DisplayStatistics surveys={completedSurveys} />;
 
   const displayPageNavigation = (
     <PageBuilder
@@ -905,7 +899,7 @@ function DisplaySurveys() {
       wrap="wrap"
       style={{ backgroundColor: 'white', borderRadius: '4px' }}
     >
-      {displayQueryBuilder}
+      {/* {displayQueryBuilder} */}
       {displayTotalSurveys}
       {displayStatistics}
       {displayCreatedSurveys}

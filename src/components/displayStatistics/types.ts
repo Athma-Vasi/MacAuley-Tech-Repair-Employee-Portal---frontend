@@ -1,42 +1,48 @@
-import { SurveyStatistics } from '../survey/types';
+import { SurveyBuilderDocument, SurveyStatistics } from '../survey/types';
 
 type DisplayStatisticsProps = {
-  surveyStatistics: Array<SurveyStatistics[]>;
+  surveys: SurveyBuilderDocument[];
 };
 
 type PieChartData = {
   id: string;
   label: string;
   value: number;
-}[];
-type BarChartData = Record<string, string | number>[];
-type ChartData = PieChartData | BarChartData;
+};
+type BarChartData = Record<string, string | number>;
+type ChartData = PieChartData[] | BarChartData[];
 type ChartKind = 'bar' | 'pie';
 
 type DisplayStatisticsState = {
-  chartKind: ChartKind;
-  chartData: ChartData;
-  chartTitle: string;
+  chartKindsMap: Map<string, Map<string, ChartKind>>;
+  pieChartDataMap: Map<string, Map<string, PieChartData[]>>;
+  chartTitlesMap: Map<string, string[]>;
+  totalResponsesMap: Map<string, Map<string, number>>;
 };
 
 type DisplayStatisticsAction = {
-  setChartKind: 'setChartKind';
-  setChartData: 'setChartData';
-  setChartTitle: 'setChartTitle';
+  setChartKindsMap: 'setChartKindsMap';
+  setPieChartDataMap: 'setPieChartDataMap';
+  setChartTitlesMap: 'setChartTitlesMap';
+  setTotalResponsesMap: 'setTotalResponsesMap';
 };
 
 type DisplayStatisticsDispatch =
   | {
-      type: DisplayStatisticsAction['setChartKind'];
-      payload: ChartKind;
+      type: DisplayStatisticsAction['setChartKindsMap'];
+      payload: Map<string, Map<string, ChartKind>>;
     }
   | {
-      type: DisplayStatisticsAction['setChartData'];
-      payload: ChartData;
+      type: DisplayStatisticsAction['setPieChartDataMap'];
+      payload: Map<string, Map<string, PieChartData[]>>;
     }
   | {
-      type: DisplayStatisticsAction['setChartTitle'];
-      payload: string;
+      type: DisplayStatisticsAction['setChartTitlesMap'];
+      payload: Map<string, string[]>;
+    }
+  | {
+      type: DisplayStatisticsAction['setTotalResponsesMap'];
+      payload: Map<string, Map<string, number>>;
     };
 
 type DisplayStatisticsReducer = (

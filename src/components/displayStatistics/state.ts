@@ -5,15 +5,17 @@ import {
 } from './types';
 
 const initialDisplayStatisticsState: DisplayStatisticsState = {
-  chartTitle: '',
-  chartKind: 'pie',
-  chartData: [],
+  chartTitlesMap: new Map(),
+  chartKindsMap: new Map(),
+  pieChartDataMap: new Map(),
+  totalResponsesMap: new Map(),
 };
 
 const displayStatisticsAction: DisplayStatisticsAction = {
-  setChartKind: 'setChartKind',
-  setChartData: 'setChartData',
-  setChartTitle: 'setChartTitle',
+  setChartKindsMap: 'setChartKindsMap',
+  setPieChartDataMap: 'setPieChartDataMap',
+  setChartTitlesMap: 'setChartTitlesMap',
+  setTotalResponsesMap: 'setTotalResponsesMap',
 };
 
 function displayStatisticsReducer(
@@ -21,22 +23,28 @@ function displayStatisticsReducer(
   action: DisplayStatisticsDispatch
 ): DisplayStatisticsState {
   switch (action.type) {
-    case displayStatisticsAction.setChartKind:
+    case displayStatisticsAction.setChartKindsMap:
       return {
         ...state,
-        chartKind: action.payload,
+        chartKindsMap: action.payload,
       };
 
-    case displayStatisticsAction.setChartData:
+    case displayStatisticsAction.setPieChartDataMap:
       return {
         ...state,
-        chartData: action.payload,
+        pieChartDataMap: action.payload,
       };
 
-    case displayStatisticsAction.setChartTitle:
+    case displayStatisticsAction.setChartTitlesMap:
       return {
         ...state,
-        chartTitle: action.payload,
+        chartTitlesMap: action.payload,
+      };
+
+    case displayStatisticsAction.setTotalResponsesMap:
+      return {
+        ...state,
+        totalResponsesMap: action.payload,
       };
 
     default:
