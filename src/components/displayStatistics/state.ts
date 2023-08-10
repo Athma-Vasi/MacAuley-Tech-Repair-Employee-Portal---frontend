@@ -11,6 +11,7 @@ const initialDisplayStatisticsState: DisplayStatisticsState = {
   totalResponsesMap: new Map(),
 
   currentSelectedSurvey: null,
+  currentlySelectedPieChartData: null,
   modalPage: 0,
 };
 
@@ -21,6 +22,7 @@ const displayStatisticsAction: DisplayStatisticsAction = {
   setTotalResponsesMap: 'setTotalResponsesMap',
 
   setCurrentSelectedSurvey: 'setCurrentSelectedSurvey',
+  setCurrentlySelectedPieChartData: 'setCurrentlySelectedPieChartData',
   setModalPage: 'setModalPage',
 };
 
@@ -57,6 +59,12 @@ function displayStatisticsReducer(
       return {
         ...state,
         currentSelectedSurvey: action.payload,
+      };
+
+    case displayStatisticsAction.setCurrentlySelectedPieChartData:
+      return {
+        ...state,
+        currentlySelectedPieChartData: action.payload,
       };
 
     case displayStatisticsAction.setModalPage:

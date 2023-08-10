@@ -25,9 +25,10 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     pieChartDataMap,
     chartKindsMap,
     chartTitlesMap,
-    currentSelectedSurvey,
-    modalPage,
     totalResponsesMap,
+    currentSelectedSurvey,
+    currentlySelectedPieChartData,
+    modalPage,
   } = displayStatisticsState;
   const {
     globalState: { width, height, padding, rowGap },
@@ -175,6 +176,42 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     });
   }, [surveys]);
 
+  // set currently selected survey's question's pie chart data
+  useEffect(() => {
+    if (!surveys || !currentSelectedSurvey || !pieChartDataMap) {
+      return;
+    }
+
+    const { _id } = currentSelectedSurvey;
+    const currentlySelectedSurveyPieChartData = pieChartDataMap.get(_id);
+    if (!currentlySelectedSurveyPieChartData) {
+      return;
+    }
+
+    const currentlySelectedSurveyQuestion =
+      chartTitlesMap.get(_id)?.[modalPage - 1];
+    if (!currentlySelectedSurveyQuestion) {
+      return;
+    }
+
+    const currentlySelectedPieChartData =
+      currentlySelectedSurveyPieChartData.get(currentlySelectedSurveyQuestion);
+    if (!currentlySelectedPieChartData) {
+      return;
+    }
+
+    displayStatisticsDispatch({
+      type: 'setCurrentlySelectedPieChartData',
+      payload: currentlySelectedPieChartData,
+    });
+  }, [
+    chartTitlesMap,
+    currentSelectedSurvey,
+    modalPage,
+    pieChartDataMap,
+    surveys,
+  ]);
+
   useEffect(() => {
     logState({
       state: displayStatisticsState,
@@ -196,6 +233,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
             type: displayStatisticsAction.setCurrentSelectedSurvey,
             payload: survey,
           });
+          openStatisticsModal();
         },
         leftIcon: <TbChartPie3 />,
       },
@@ -246,8 +284,8 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const createdStatisticsSection = (
     <Stack w="100%">
       <Flex w="100%" align="center" justify="space-between" wrap="wrap">
-        <Text color="dark" size="lg">
-          {currentSelectedSurvey?.questions?.[modalPage]?.question}
+        <Text color="dark" size="md">
+          {currentSelectedSurvey?.questions?.[modalPage - 1]?.question}
         </Text>
         <PageBuilder
           total={currentSelectedSurvey?.questions?.length ?? 0}
@@ -258,15 +296,23 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     </Stack>
   );
 
+  const displayResponsivePieChart = (
+    <Flex w="100%" h="100%" style={width < 1192 ? { overflowY: 'scroll' } : {}}>
+      <ResponsivePieChart pieChartData={currentlySelectedPieChartData ?? []} />
+      {/* {responsivePie} */}
+    </Flex>
+  );
+
   const createdSurveyStatisticModal = (
     <Modal
       opened={openedStatisticsModal}
       onClose={closeStatisticsModal}
       title={currentSelectedSurvey?.surveyTitle}
-      w={width * 0.75}
-      h={height * 0.75}
+      centered
+      size="calc(100vw - 2rem)"
     >
-      <></>
+      {createdStatisticsSection}
+      {displayResponsivePieChart}
     </Modal>
   );
 
@@ -276,14 +322,14 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       ?.get('How would you rate the communication skills of your manager?') ??
     [];
 
-  const displayResponsivePieChart = (
-    <Flex w="100%" h="100%" style={width < 1192 ? { overflowY: 'scroll' } : {}}>
-      <ResponsivePieChart pieChartData={testData} />
-      {/* {responsivePie} */}
-    </Flex>
+  const displayStatisticsComponent = (
+    <Stack w="100%" h="100%">
+      {displayCompletedSurveysCards}
+      {createdSurveyStatisticModal}
+    </Stack>
   );
 
-  return displayCompletedSurveysCards;
+  return displayStatisticsComponent;
 }
 
 export { DisplayStatistics };

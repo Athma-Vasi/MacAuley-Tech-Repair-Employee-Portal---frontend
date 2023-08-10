@@ -20,6 +20,7 @@ type DisplayStatisticsState = {
   totalResponsesMap: Map<string, Map<string, number>>;
 
   currentSelectedSurvey: SurveyBuilderDocument | null;
+  currentlySelectedPieChartData: PieChartData[] | null;
   modalPage: number;
 };
 
@@ -30,6 +31,7 @@ type DisplayStatisticsAction = {
   setTotalResponsesMap: 'setTotalResponsesMap';
 
   setCurrentSelectedSurvey: 'setCurrentSelectedSurvey';
+  setCurrentlySelectedPieChartData: 'setCurrentlySelectedPieChartData';
   setModalPage: 'setModalPage';
 };
 
@@ -53,6 +55,10 @@ type DisplayStatisticsDispatch =
   | {
       type: DisplayStatisticsAction['setCurrentSelectedSurvey'];
       payload: SurveyBuilderDocument;
+    }
+  | {
+      type: DisplayStatisticsAction['setCurrentlySelectedPieChartData'];
+      payload: PieChartData[];
     }
   | {
       type: DisplayStatisticsAction['setModalPage'];
