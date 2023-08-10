@@ -52,11 +52,74 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
           totalResponsesMap.set(_id, new Map());
 
           surveyStatistics.forEach((surveyStatistic) => {
-            const { question, responseDistribution, totalResponses } =
-              surveyStatistic;
+            const {
+              question,
+              responseDistribution,
+              totalResponses,
+              responseInput,
+            } = surveyStatistic;
 
             const chartDataArray = Object.entries(responseDistribution).map(
               ([response, count]) => {
+                switch (responseInput) {
+                  case 'emotion': {
+                    switch (response) {
+                      case '1': {
+                        response = 'Devastated';
+                        break;
+                      }
+                      case '2': {
+                        response = 'Annoyed';
+                        break;
+                      }
+                      case '3': {
+                        response = 'Neutral';
+                        break;
+                      }
+                      case '4': {
+                        response = 'Happy';
+                        break;
+                      }
+                      case '5': {
+                        response = 'Ecstatic';
+                        break;
+                      }
+                      default:
+                        break;
+                    }
+
+                    break;
+                  }
+                  case 'stars': {
+                    switch (response) {
+                      case '1': {
+                        response = '1 Star';
+                        break;
+                      }
+                      case '2': {
+                        response = '2 Stars';
+                        break;
+                      }
+                      case '3': {
+                        response = '3 Stars';
+                        break;
+                      }
+                      case '4': {
+                        response = '4 Stars';
+                        break;
+                      }
+                      case '5': {
+                        response = '5 Stars';
+                        break;
+                      }
+                      default:
+                        break;
+                    }
+
+                    break;
+                  }
+                }
+
                 const chartData: PieChartData = {
                   id: response,
                   label: response,
@@ -144,7 +207,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const testData =
     pieChartDataMap
       .get('64d1b31f255fd5fcf9d7e654')
-      ?.get('Select the factors that motivate you to perform at your best.') ??
+      ?.get('How would you rate the communication skills of your manager?') ??
     [];
 
   return (

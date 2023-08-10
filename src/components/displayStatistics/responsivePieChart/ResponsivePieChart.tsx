@@ -110,12 +110,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           match: {
             id,
           },
-          id:
-            chartIdx % 2 === 0
-              ? 'dots'
-              : chartIdx % 3 === 0
-              ? 'lines'
-              : 'squares',
+          id: chartIdx % 2 === 0 ? 'dots' : 'lines',
         };
 
         return fillPattern;
