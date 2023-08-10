@@ -7,11 +7,14 @@ import {
   TbCalendarPin,
   TbCashBanknote,
   TbChartBar,
+  TbChartPie,
   TbChevronRight,
   TbCircleTriangle,
   TbGift,
   TbHome2,
+  TbList,
   TbNotebook,
+  TbPlus,
   TbPrinterOff,
   TbReceipt2,
   TbSpeakerphone,
@@ -188,7 +191,26 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/portal/outreach/survey-builder');
         }}
-      />
+      >
+        {/* create survey */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create survey</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/outreach/survey-builder/create');
+          }}
+        />
+        {/* display surveys */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display surveys</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/outreach/survey-builder/display');
+          }}
+        />
+      </NavLink>
       {/* event creator */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Event creator</TextWrapper>}
@@ -207,7 +229,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       hiddenBreakpoint="sm"
       hidden={!openedNavbar}
       // width={{ sm: 200, lg: 300 }}
-      width={{ sm: 300, lg: 300 }}
+      width={{ sm: 200, lg: 300 }}
     >
       {displayHomeNavLink}
 

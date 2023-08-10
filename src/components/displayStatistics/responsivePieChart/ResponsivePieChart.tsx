@@ -1,14 +1,3 @@
-import { ChangeEvent, useEffect, useReducer } from 'react';
-import {
-  initialResponsivePieChartState,
-  responsivePieChartAction,
-  responsivePieChartReducer,
-} from './state';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-  TextWrapper,
-} from '../../wrappers';
 import {
   Center,
   ColorInput,
@@ -19,16 +8,32 @@ import {
   Switch,
   Text,
 } from '@mantine/core';
+import { ResponsivePie } from '@nivo/pie';
+import { ChangeEvent, useEffect, useReducer } from 'react';
+
+import { useGlobalState } from '../../../hooks';
 import {
-  returnAccessibleSelectInputElements,
   returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
+import { logState } from '../../../utils';
+import {
+  AccessibleSelectInputCreatorInfo,
+  AccessibleSliderInputCreatorInfo,
+  TextWrapper,
+} from '../../wrappers';
+import { PieChartData } from '../types';
 import {
   NIVO_COLOR_SCHEME_DATA,
   NIVO_MOTION_CONFIG_DATA,
   NIVO_TRANSITION_MODE_DATA,
 } from './constants';
+import {
+  initialResponsivePieChartState,
+  responsivePieChartAction,
+  responsivePieChartReducer,
+} from './state';
 import {
   FillPatternObject,
   NivoColorScheme,
@@ -36,11 +41,7 @@ import {
   NivoTransitionMode,
   ResponsivePieChartProps,
 } from './types';
-import { useGlobalState } from '../../../hooks';
 import { PieChartControlsStack } from './utils';
-import { logState } from '../../../utils';
-import { ResponsivePie } from '@nivo/pie';
-import { PieChartData } from '../types';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
@@ -1158,6 +1159,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       columns={1}
       h={width < 1192 ? '38vh' : '70vh'}
       style={{ overflowY: 'scroll' }}
+      py={padding}
     >
       <Grid.Col span={1}>{displayBaseSection}</Grid.Col>
       <Grid.Col span={1}>{displayStyleSection}</Grid.Col>

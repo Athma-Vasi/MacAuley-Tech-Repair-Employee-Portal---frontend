@@ -1,4 +1,4 @@
-import { Flex, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { Card, Flex, Group, Modal, Stack, Text, Tooltip } from '@mantine/core';
 import { Fragment, useEffect, useReducer } from 'react';
 import { TbChartPie3, TbUpload } from 'react-icons/tb';
 
@@ -18,6 +18,7 @@ import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   StepperWrapper,
+  TextWrapper,
 } from '../../wrappers';
 import {
   SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
@@ -30,6 +31,7 @@ import {
   initialDisplaySurveysState,
 } from './state';
 import { DisplayStatistics } from '../../displayStatistics';
+import { useDisclosure } from '@mantine/hooks';
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -71,7 +73,7 @@ function DisplaySurveys() {
     authState: { accessToken, roles },
   } = useAuth();
   const {
-    globalState: { padding, rowGap, width, userDocument },
+    globalState: { padding, rowGap, width, height, userDocument },
   } = useGlobalState();
 
   /** ------------- end hooks ------------- */
@@ -489,7 +491,7 @@ function DisplaySurveys() {
       const { questions, _id, surveyTitle } = survey;
 
       // every survey's inputs are controlled
-      questions.forEach(
+      questions?.forEach(
         (
           { question, responseDataOptions, responseInput, responseKind },
           questionIdx
@@ -515,7 +517,7 @@ function DisplaySurveys() {
               const value = surveySubmissions
                 .get(_id)
                 ?.surveyResponses.find(
-                  (surveyResponse) => surveyResponse.question === question
+                  (surveyResponse) => surveyResponse?.question === question
                 )?.response as string;
 
               const description = (
@@ -523,7 +525,7 @@ function DisplaySurveys() {
                   surveySubmissions
                     .get(_id)
                     ?.surveyResponses.find(
-                      (surveyResponse) => surveyResponse.question === question
+                      (surveyResponse) => surveyResponse?.question === question
                     )?.response ?? 'N/A'
                 }`}</Text>
               );
@@ -580,7 +582,7 @@ function DisplaySurveys() {
               const value = surveySubmissions
                 .get(_id)
                 ?.surveyResponses.find(
-                  (surveyResponse) => surveyResponse.question === question
+                  (surveyResponse) => surveyResponse?.question === question
                 )?.response as string;
 
               const description = (
@@ -588,7 +590,7 @@ function DisplaySurveys() {
                   surveySubmissions
                     .get(_id)
                     ?.surveyResponses.find(
-                      (surveyResponse) => surveyResponse.question === question
+                      (surveyResponse) => surveyResponse?.question === question
                     )?.response ?? 'N/A'
                 }`}</Text>
               );
@@ -644,7 +646,7 @@ function DisplaySurveys() {
 
               const surveySubmission = surveySubmissions.get(_id);
               const checkboxValue = surveySubmission?.surveyResponses.find(
-                (surveyResponse) => surveyResponse.question === question
+                (surveyResponse) => surveyResponse?.question === question
               )?.response as string[];
               const description = {
                 selected: (
@@ -705,7 +707,7 @@ function DisplaySurveys() {
               const value = surveySubmissions
                 .get(_id)
                 ?.surveyResponses.find(
-                  (surveyResponse) => surveyResponse.question === question
+                  (surveyResponse) => surveyResponse?.question === question
                 )?.response as number;
 
               const createdEmotionRatingInput = (
@@ -733,7 +735,7 @@ function DisplaySurveys() {
               const value = surveySubmissions
                 .get(_id)
                 ?.surveyResponses.find(
-                  (surveyResponse) => surveyResponse.question === question
+                  (surveyResponse) => surveyResponse?.question === question
                 )?.response as number;
 
               const createdStarsRatingInput = (
@@ -842,43 +844,36 @@ function DisplaySurveys() {
         stepsInError={stepInError}
         dynamicStepperProps={dynamicStepperProps}
       >
-        <Stack p={padding} w="100%">
-          {displayPage}
-        </Stack>
+        <Stack w="100%">{displayPage}</Stack>
       </StepperWrapper>
     );
 
     return (
-      <Stack
+      <Card
+        shadow="md"
+        radius="md"
+        withBorder
         w={width < 480 ? 350 : 640}
-        style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
         key={`${_id}-${idx}-${surveyTitle}`}
       >
-        {createdStepperWrapper}
-      </Stack>
+        <Card.Section>{createdStepperWrapper}</Card.Section>
+      </Card>
     );
   });
   /** ------------- end surveys creation ------------- */
 
   /** ------------- begin surveys display ------------- */
 
-  // const displayQueryBuilder = (
-  //   <QueryBuilder
-  //     setQueryBuilderString={displaySurveysAction.setQueryBuilderString}
-  //     parentComponentDispatch={displaySurveysDispatch}
-  //     componentQueryData={SURVEY_QUERY_DATA}
-  //     collectionName="Surveys"
-  //   />
-  // );
-
   const displayTotalSurveys = (
-    <Group w="100%" position="apart" p={padding}>
+    <Group
+      position="left"
+      p={padding}
+      style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
+    >
       <Text color="dark">Total surveys</Text>
       <Text color="dark">{totalDocuments}</Text>
     </Group>
   );
-
-  const displayStatistics = <DisplayStatistics surveys={completedSurveys} />;
 
   const displayPageNavigation = (
     <PageBuilder
@@ -888,23 +883,59 @@ function DisplaySurveys() {
     />
   );
 
-  const displaySurveyComponent = (
+  const displayTotalAndPageNavigation = (
     <Flex
       w="100%"
-      align="baseline"
-      justify="center"
+      align="center"
+      justify="space-between"
       p={padding}
       rowGap={rowGap}
       columnGap={rowGap}
       wrap="wrap"
+      style={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}
+    >
+      <Group>{displayPageNavigation}</Group>
+      {displayTotalSurveys}
+    </Flex>
+  );
+
+  const displayStatistics = <DisplayStatistics surveys={completedSurveys} />;
+
+  const displayUncompletedSurveys = (
+    <Stack
+      style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e0e0e0',
+      }}
+      p={padding}
+    >
+      <Text size="md" color="dark">
+        <strong>Uncompleted surveys</strong>
+      </Text>
+      <Flex
+        w="100%"
+        align="baseline"
+        justify="flex-start"
+        rowGap={rowGap}
+        columnGap={rowGap}
+        wrap="wrap"
+        style={{ backgroundColor: 'white', borderRadius: '4px' }}
+      >
+        {displayCreatedSurveys}
+      </Flex>
+    </Stack>
+  );
+
+  const displaySurveyComponent = (
+    <Stack
+      w="100%"
+      p={padding}
       style={{ backgroundColor: 'white', borderRadius: '4px' }}
     >
-      {/* {displayQueryBuilder} */}
-      {displayTotalSurveys}
+      {displayTotalAndPageNavigation}
       {displayStatistics}
-      {displayCreatedSurveys}
-      {displayPageNavigation}
-    </Flex>
+      {displayUncompletedSurveys}
+    </Stack>
   );
   /** ------------- end surveys display ------------- */
 

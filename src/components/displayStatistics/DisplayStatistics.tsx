@@ -1,31 +1,42 @@
-import { Flex } from '@mantine/core';
-import { ResponsivePie } from '@nivo/pie';
+import { Card, Flex, Group, Modal, Stack, Text } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
+import { useGlobalState } from '../../hooks';
 import { logState } from '../../utils';
+import { ResponsivePieChart } from './responsivePieChart';
 import {
+  displayStatisticsAction,
   displayStatisticsReducer,
   initialDisplayStatisticsState,
 } from './state';
-import {
-  ChartData,
-  ChartKind,
-  DisplayStatisticsProps,
-  PieChartData,
-} from './types';
-import { ResponsivePieChart } from './responsivePieChart';
-import { useGlobalState } from '../../hooks';
+import { ChartKind, DisplayStatisticsProps, PieChartData } from './types';
+import { returnAccessibleButtonElements } from '../../jsxCreators';
+import { TbChartPie3 } from 'react-icons/tb';
+import { TextWrapper } from '../wrappers';
+import { PageBuilder } from '../pageBuilder';
+import { useDisclosure } from '@mantine/hooks';
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(
     displayStatisticsReducer,
     initialDisplayStatisticsState
   );
-  const { pieChartDataMap, chartKindsMap, chartTitlesMap } =
-    displayStatisticsState;
   const {
-    globalState: { width },
+    pieChartDataMap,
+    chartKindsMap,
+    chartTitlesMap,
+    currentSelectedSurvey,
+    modalPage,
+    totalResponsesMap,
+  } = displayStatisticsState;
+  const {
+    globalState: { width, height, padding, rowGap },
   } = useGlobalState();
+
+  const [
+    openedStatisticsModal,
+    { open: openStatisticsModal, close: closeStatisticsModal },
+  ] = useDisclosure(false);
 
   // set initial data structure
   useEffect(() => {
@@ -171,38 +182,93 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     });
   }, [displayStatisticsState]);
 
-  const data = [
-    {
-      id: 'make',
-      label: 'make',
-      value: 415,
-      //   color: 'hsl(358, 70%, 50%)',
-    },
-    {
-      id: 'hack',
-      label: 'hack',
-      value: 352,
-      //   color: 'hsl(52, 70%, 50%)',
-    },
-    {
-      id: 'haskell',
-      label: 'haskell',
-      value: 28,
-      //   color: 'hsl(124, 70%, 50%)',
-    },
-    {
-      id: 'scala',
-      label: 'scala',
-      value: 255,
-      //   color: 'hsl(106, 70%, 50%)',
-    },
-    {
-      id: 'elixir',
-      label: 'elixir',
-      value: 356,
-      //   color: 'hsl(199, 70%, 50%)',
-    },
-  ];
+  // loop through completed surveys and create cards to display statistics modal
+  const completedSurveysCards = surveys.map((survey, idx) => {
+    const { surveyTitle, _id } = survey;
+
+    const createdViewModalButton = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'View statistics',
+        semanticDescription: 'View statistics for this completed survey',
+        semanticName: 'View statistics',
+        buttonOnClick: () => {
+          displayStatisticsDispatch({
+            type: displayStatisticsAction.setCurrentSelectedSurvey,
+            payload: survey,
+          });
+        },
+        leftIcon: <TbChartPie3 />,
+      },
+    ]);
+
+    const createdCard = (
+      <Card
+        shadow="sm"
+        padding={padding}
+        radius="md"
+        withBorder
+        key={`${_id}-${idx}-${surveyTitle}`}
+      >
+        <Group position="apart" w="100%">
+          <TextWrapper creatorInfoObj={{}}>{surveyTitle}</TextWrapper>
+          {createdViewModalButton}
+        </Group>
+      </Card>
+    );
+
+    return createdCard;
+  });
+
+  const displayCompletedSurveysCards = (
+    <Stack
+      style={{
+        backgroundColor: 'white',
+        borderBottom: '1px solid #e0e0e0',
+      }}
+      p={padding}
+    >
+      <Text size="md" color="dark">
+        <strong>Completed surveys</strong>
+      </Text>
+      <Flex
+        w="100%"
+        align="center"
+        justify="flex-start"
+        wrap="wrap"
+        rowGap={rowGap}
+        columnGap={rowGap}
+      >
+        {completedSurveysCards}
+      </Flex>
+    </Stack>
+  );
+
+  const createdStatisticsSection = (
+    <Stack w="100%">
+      <Flex w="100%" align="center" justify="space-between" wrap="wrap">
+        <Text color="dark" size="lg">
+          {currentSelectedSurvey?.questions?.[modalPage]?.question}
+        </Text>
+        <PageBuilder
+          total={currentSelectedSurvey?.questions?.length ?? 0}
+          setModalPage={displayStatisticsAction.setModalPage}
+          modalPageDispatch={displayStatisticsDispatch}
+        />
+      </Flex>
+    </Stack>
+  );
+
+  const createdSurveyStatisticModal = (
+    <Modal
+      opened={openedStatisticsModal}
+      onClose={closeStatisticsModal}
+      title={currentSelectedSurvey?.surveyTitle}
+      w={width * 0.75}
+      h={height * 0.75}
+    >
+      <></>
+    </Modal>
+  );
 
   const testData =
     pieChartDataMap
@@ -210,12 +276,14 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       ?.get('How would you rate the communication skills of your manager?') ??
     [];
 
-  return (
+  const displayResponsivePieChart = (
     <Flex w="100%" h="100%" style={width < 1192 ? { overflowY: 'scroll' } : {}}>
       <ResponsivePieChart pieChartData={testData} />
       {/* {responsivePie} */}
     </Flex>
   );
+
+  return displayCompletedSurveysCards;
 }
 
 export { DisplayStatistics };

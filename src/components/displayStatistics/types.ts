@@ -18,6 +18,9 @@ type DisplayStatisticsState = {
   pieChartDataMap: Map<string, Map<string, PieChartData[]>>;
   chartTitlesMap: Map<string, string[]>;
   totalResponsesMap: Map<string, Map<string, number>>;
+
+  currentSelectedSurvey: SurveyBuilderDocument | null;
+  modalPage: number;
 };
 
 type DisplayStatisticsAction = {
@@ -25,6 +28,9 @@ type DisplayStatisticsAction = {
   setPieChartDataMap: 'setPieChartDataMap';
   setChartTitlesMap: 'setChartTitlesMap';
   setTotalResponsesMap: 'setTotalResponsesMap';
+
+  setCurrentSelectedSurvey: 'setCurrentSelectedSurvey';
+  setModalPage: 'setModalPage';
 };
 
 type DisplayStatisticsDispatch =
@@ -43,6 +49,14 @@ type DisplayStatisticsDispatch =
   | {
       type: DisplayStatisticsAction['setTotalResponsesMap'];
       payload: Map<string, Map<string, number>>;
+    }
+  | {
+      type: DisplayStatisticsAction['setCurrentSelectedSurvey'];
+      payload: SurveyBuilderDocument;
+    }
+  | {
+      type: DisplayStatisticsAction['setModalPage'];
+      payload: number;
     };
 
 type DisplayStatisticsReducer = (

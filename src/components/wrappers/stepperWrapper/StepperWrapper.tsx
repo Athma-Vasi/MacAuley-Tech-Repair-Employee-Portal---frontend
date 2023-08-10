@@ -163,7 +163,7 @@ function StepperWrapper({
       justify="center"
       rowGap={width < 480 ? 'sm' : 'md'}
       w="100%"
-      style={{ borderRadius: '4px', border: '1px solid teal' }}
+      // style={{ borderRadius: '4px', border: '1px solid teal' }}
       bg="white"
       p={padding}
       h="100%"

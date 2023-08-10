@@ -91,6 +91,7 @@ function displaySurveysReducer(
         surveyId,
         surveyTitle,
       } = action.payload;
+
       const clonedSurveySubmissions = structuredClone(state.surveySubmissions);
 
       // find the index of the question in response data

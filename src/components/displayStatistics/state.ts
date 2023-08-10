@@ -9,6 +9,9 @@ const initialDisplayStatisticsState: DisplayStatisticsState = {
   chartKindsMap: new Map(),
   pieChartDataMap: new Map(),
   totalResponsesMap: new Map(),
+
+  currentSelectedSurvey: null,
+  modalPage: 0,
 };
 
 const displayStatisticsAction: DisplayStatisticsAction = {
@@ -16,6 +19,9 @@ const displayStatisticsAction: DisplayStatisticsAction = {
   setPieChartDataMap: 'setPieChartDataMap',
   setChartTitlesMap: 'setChartTitlesMap',
   setTotalResponsesMap: 'setTotalResponsesMap',
+
+  setCurrentSelectedSurvey: 'setCurrentSelectedSurvey',
+  setModalPage: 'setModalPage',
 };
 
 function displayStatisticsReducer(
@@ -45,6 +51,18 @@ function displayStatisticsReducer(
       return {
         ...state,
         totalResponsesMap: action.payload,
+      };
+
+    case displayStatisticsAction.setCurrentSelectedSurvey:
+      return {
+        ...state,
+        currentSelectedSurvey: action.payload,
+      };
+
+    case displayStatisticsAction.setModalPage:
+      return {
+        ...state,
+        modalPage: action.payload,
       };
 
     default:
