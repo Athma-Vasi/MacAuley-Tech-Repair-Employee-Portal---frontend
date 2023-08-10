@@ -124,8 +124,6 @@ function Login() {
               isLoggedIn: true,
             },
           });
-
-          navigate('/portal');
         } else {
           loginDispatch({
             type: loginAction.setIsError,
@@ -159,14 +157,16 @@ function Login() {
             });
       } finally {
         loginDispatch({
-          type: loginAction.setIsSubmitting,
+          type: loginAction.setTriggerLoginSubmit,
           payload: false,
         });
 
         loginDispatch({
-          type: loginAction.setTriggerLoginSubmit,
+          type: loginAction.setIsSubmitting,
           payload: false,
         });
+
+        navigate('/portal');
       }
     }
 

@@ -151,8 +151,6 @@ function CustomNotification({
             type: 'setSubmitMessage',
             payload: '',
           });
-
-          navigate(successPath);
         }}
         title={
           <Group

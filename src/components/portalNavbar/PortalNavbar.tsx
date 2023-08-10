@@ -206,7 +206,8 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       p="md"
       hiddenBreakpoint="sm"
       hidden={!openedNavbar}
-      width={{ sm: 200, lg: 300 }}
+      // width={{ sm: 200, lg: 300 }}
+      width={{ sm: 300, lg: 300 }}
     >
       {displayHomeNavLink}
 

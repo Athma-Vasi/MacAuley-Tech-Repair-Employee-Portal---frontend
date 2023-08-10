@@ -14,6 +14,7 @@ import {
   PieChartData,
 } from './types';
 import { ResponsivePieChart } from './responsivePieChart';
+import { useGlobalState } from '../../hooks';
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(
@@ -22,8 +23,9 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   );
   const { pieChartDataMap, chartKindsMap, chartTitlesMap } =
     displayStatisticsState;
-
-  // set survey statistics
+  const {
+    globalState: { width },
+  } = useGlobalState();
 
   // set initial data structure
   useEffect(() => {
@@ -146,7 +148,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     [];
 
   return (
-    <Flex w="100%">
+    <Flex w="100%" h="100%" style={width < 1192 ? { overflowY: 'scroll' } : {}}>
       <ResponsivePieChart pieChartData={testData} />
       {/* {responsivePie} */}
     </Flex>

@@ -24,7 +24,7 @@ type AccessibleSliderInputCreatorInfo = {
   thumbChildren?: ReactNode;
   thumbSize?: number;
   value: number;
-  width?: number | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'auto';
+  width?: number | string;
 };
 
 type SliderWrapperProps = {
@@ -53,7 +53,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     thumbChildren,
     thumbSize,
     value,
-    width = 'auto',
+    width = '100%',
   } = creatorInfoObject;
 
   return kind === 'slider' ? (

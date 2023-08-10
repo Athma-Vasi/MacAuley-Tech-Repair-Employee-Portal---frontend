@@ -13,6 +13,7 @@ import {
   Center,
   ColorInput,
   Flex,
+  Grid,
   Group,
   Stack,
   Switch,
@@ -102,8 +103,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       return;
     }
 
-    const fillPatterns = pieChartData.reduce(
-      (acc: FillPatternObject[], pieChartData: PieChartData, chartIdx) => {
+    const fillPatterns = pieChartData.map(
+      (pieChartData: PieChartData, chartIdx) => {
         const { id } = pieChartData;
         const fillPattern: FillPatternObject = {
           match: {
@@ -116,11 +117,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
               ? 'lines'
               : 'squares',
         };
-        acc.push(fillPattern);
 
-        return acc;
-      },
-      []
+        return fillPattern;
+      }
     );
 
     responsivePieChartDispatch({
@@ -128,18 +127,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       payload: fillPatterns,
     });
   }, [enableFillPatterns, pieChartData]);
-
-  /**
- * [
-          {
-            match: {
-              id: 'ruby',
-            },
-            id: 'dots',
-          },
-          
-        ]
- */
 
   /** ------------- end useEffects ------------- */
 
@@ -856,15 +843,13 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displaySortByValueSwitchInput = (
-    <PieChartControlsStack
-      input={createdSortByValueSwitchInput}
-      label=""
-      value={sortByValue}
-    />
+    <Group w="100%" p={padding}>
+      {createdSortByValueSwitchInput}
+    </Group>
   );
 
   const displayBaseSection = (
-    <Stack>
+    <Stack w="100%">
       {displayBaseText}
       {displayStartAngleSliderInput}
       {displayEndAngleSliderInput}
@@ -891,18 +876,16 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     </TextWrapper>
   );
 
-  const displayColorSchemeSelectInput = (
-    <Group w="100%" p={padding}>
-      {createdColorSchemeSelectInput}
+  const displayEnableFillPatternsSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+      {createdEnableFillPatternsSwitchInput}
     </Group>
   );
 
-  const displayEnableFillPatternsSwitchInput = (
-    <PieChartControlsStack
-      input={createdEnableFillPatternsSwitchInput}
-      label=""
-      value={enableFillPatterns}
-    />
+  const displayColorSchemeSelectInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+      {createdColorSchemeSelectInput}
+    </Group>
   );
 
   const displayBorderColorInput = (
@@ -923,7 +906,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayStyleSection = (
-    <Stack>
+    <Stack w="100%">
       {displayStyleText}
       {displayEnableFillPatternsSwitchInput}
       {displayColorSchemeSelectInput}
@@ -949,11 +932,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayEnableArcLabelsSwitchInput = (
-    <PieChartControlsStack
-      input={createdEnableArcLabelsSwitchInput}
-      label=""
-      value={enableArcLabels}
-    />
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+      {createdEnableArcLabelsSwitchInput}
+    </Group>
   );
 
   const displayArcLabelsRadiusOffsetSliderInput = (
@@ -984,7 +965,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayArcLabelsSection = (
-    <Stack>
+    <Stack w="100%">
       {displayArcLabelsText}
       {displayEnableArcLabelsSwitchInput}
       {displayArcLabelsRadiusOffsetSliderInput}
@@ -1010,11 +991,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayEnableArcLinkLabelsSwitchInput = (
-    <PieChartControlsStack
-      input={createdEnableArcLinkLabelsSwitchInput}
-      label=""
-      value={enableArcLinkLabels}
-    />
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+      {createdEnableArcLinkLabelsSwitchInput}
+    </Group>
   );
 
   const displayArcLinkLabelsSkipAngleSliderInput = (
@@ -1081,7 +1060,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayArcLinkLabelsSection = (
-    <Stack>
+    <Stack w="100%">
       {displayArcLinkLabelsText}
       {displayEnableArcLinkLabelsSwitchInput}
       {displayArcLinkLabelsSkipAngleSliderInput}
@@ -1129,7 +1108,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayInteractivitySection = (
-    <Stack>
+    <Stack w="100%">
       {displayInteractivityText}
       {displayActiveInnerRadiusOffsetSliderInput}
       {displayActiveOuterRadiusOffsetSliderInput}
@@ -1153,27 +1132,25 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayAnimateMotionSwitchInput = (
-    <PieChartControlsStack
-      input={createdAnimateSwitchInput}
-      label=""
-      value={animate}
-    />
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+      {createdAnimateSwitchInput}
+    </Group>
   );
 
   const displayMotionConfigSelectInput = (
-    <Group w="100%" p={padding}>
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
       {createdMotionConfigSelectInput}
     </Group>
   );
 
   const displayTransitionModeSelectInput = (
-    <Group w="100%" p={padding}>
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
       {createdTransitionModeSelectInput}
     </Group>
   );
 
   const displayMotionSection = (
-    <Stack>
+    <Stack w="100%">
       {displayMotionText}
       {displayAnimateMotionSwitchInput}
       {displayMotionConfigSelectInput}
@@ -1182,131 +1159,89 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayPieChartControls = (
-    <Stack
-      w={350}
-      h={height * 0.62}
-      p={padding}
-      style={{
-        overflowY: 'scroll',
-        border: '1px solid #e0e0e0',
-        borderRadius: '4px',
-      }}
+    <Grid
+      columns={1}
+      h={width < 1192 ? '38vh' : '70vh'}
+      style={{ overflowY: 'scroll' }}
     >
-      {displayBaseSection}
-      {displayStyleSection}
-      {displayArcLabelsSection}
-      {displayArcLinkLabelsSection}
-      {displayInteractivitySection}
-      {displayMotionSection}
-    </Stack>
+      <Grid.Col span={1}>{displayBaseSection}</Grid.Col>
+      <Grid.Col span={1}>{displayStyleSection}</Grid.Col>
+      <Grid.Col span={1}>{displayArcLabelsSection}</Grid.Col>
+      <Grid.Col span={1}>{displayArcLinkLabelsSection}</Grid.Col>
+      <Grid.Col span={1}>{displayInteractivitySection}</Grid.Col>
+      <Grid.Col span={1}>{displayMotionSection}</Grid.Col>
+    </Grid>
   );
 
   const displayResponsivePie = (
-    <Center
-      w={width * 0.62}
-      h={height * 0.62}
-      style={{ outline: '1px solid teal' }}
-    >
-      <ResponsivePie
-        data={pieChartData}
-        // base
-        margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        innerRadius={innerRadius}
-        padAngle={padAngle}
-        cornerRadius={cornerRadius}
-        sortByValue={sortByValue}
-        // style
-        colors={{ scheme: colorScheme }}
-        borderColor={borderColor}
-        borderWidth={borderWidth}
-        // arc labels
-        enableArcLabels={enableArcLabels}
-        arcLabelsRadiusOffset={arcLabelsRadiusOffset}
-        arcLabelsSkipAngle={arcLabelsSkipAngle}
-        arcLabelsTextColor={arcLabelsTextColor}
-        // arc link labels
-        enableArcLinkLabels={enableArcLinkLabels}
-        arcLinkLabelsSkipAngle={arcLinkLabelsSkipAngle}
-        arcLinkLabelsOffset={arcLinkLabelsOffset}
-        arcLinkLabelsDiagonalLength={arcLinkLabelsDiagonalLength}
-        arcLinkLabelsStraightLength={arcLinkLabelsStraightLength}
-        arcLinkLabelsTextOffset={arcLinkLabelsTextOffset}
-        arcLinkLabelsThickness={arcLinkLabelsThickness}
-        arcLinkLabelsTextColor={arcLinkLabelsTextColor}
-        // interactivity
-        activeInnerRadiusOffset={activeInnerRadiusOffset}
-        activeOuterRadiusOffset={activeOuterRadiusOffset}
-        // motion
-        animate={animate}
-        motionConfig={motionConfig}
-        transitionMode={transitionMode}
-        defs={[
-          {
-            id: 'dots',
-            type: 'patternDots',
-            background: 'inherit',
-            color: 'rgba(255, 255, 255, 0.3)',
-            size: 4,
-            padding: 1,
-            stagger: true,
-          },
-          {
-            id: 'lines',
-            type: 'patternLines',
-            background: 'inherit',
-            color: 'rgba(255, 255, 255, 0.3)',
-            rotation: -45,
-            lineWidth: 6,
-            spacing: 10,
-          },
-        ]}
-        fill={enableFillPatterns ? fillPatterns : []}
-        legends={[
-          {
-            anchor: `${width < 640 ? 'bottom' : 'right'}`,
-            direction: 'column',
-            justify: false,
-            translateX: 0,
-            translateY: 56,
-            itemsSpacing: 10,
-            itemWidth: 100,
-            itemHeight: 18,
-            itemTextColor: '#999',
-            itemDirection: 'left-to-right',
-            itemOpacity: 1,
-            symbolSize: 18,
-            symbolShape: 'circle',
-            effects: [
-              {
-                on: 'hover',
-                style: {
-                  itemTextColor: '#000',
-                },
-              },
-            ],
-          },
-        ]}
-      />
-    </Center>
+    <ResponsivePie
+      data={pieChartData}
+      // base
+      margin={{ top: 20, right: 100, bottom: 20, left: 100 }}
+      startAngle={startAngle}
+      endAngle={endAngle}
+      innerRadius={innerRadius}
+      padAngle={padAngle}
+      cornerRadius={cornerRadius}
+      sortByValue={sortByValue}
+      // style
+      colors={{ scheme: colorScheme }}
+      borderColor={borderColor}
+      borderWidth={borderWidth}
+      // arc labels
+      enableArcLabels={enableArcLabels}
+      arcLabelsRadiusOffset={arcLabelsRadiusOffset}
+      arcLabelsSkipAngle={arcLabelsSkipAngle}
+      arcLabelsTextColor={arcLabelsTextColor}
+      // arc link labels
+      enableArcLinkLabels={enableArcLinkLabels}
+      arcLinkLabelsSkipAngle={arcLinkLabelsSkipAngle}
+      arcLinkLabelsOffset={arcLinkLabelsOffset}
+      arcLinkLabelsDiagonalLength={arcLinkLabelsDiagonalLength}
+      arcLinkLabelsStraightLength={arcLinkLabelsStraightLength}
+      arcLinkLabelsTextOffset={arcLinkLabelsTextOffset}
+      arcLinkLabelsThickness={arcLinkLabelsThickness}
+      arcLinkLabelsTextColor={arcLinkLabelsTextColor}
+      // interactivity
+      activeInnerRadiusOffset={activeInnerRadiusOffset}
+      activeOuterRadiusOffset={activeOuterRadiusOffset}
+      // motion
+      animate={animate}
+      motionConfig={motionConfig}
+      transitionMode={transitionMode}
+      defs={[
+        {
+          id: 'dots',
+          type: 'patternDots',
+          background: 'inherit',
+          color: 'rgba(255, 255, 255, 0.3)',
+          size: 4,
+          padding: 1,
+          stagger: true,
+        },
+        {
+          id: 'lines',
+          type: 'patternLines',
+          background: 'inherit',
+          color: 'rgba(255, 255, 255, 0.3)',
+          rotation: -45,
+          lineWidth: 6,
+          spacing: 10,
+        },
+      ]}
+      fill={enableFillPatterns ? fillPatterns : []}
+    />
   );
 
   const displayResponsivePieChartComponent = (
-    <Flex
-      w="100%"
-      h="100%"
-      p={padding}
-      rowGap={rowGap}
-      columnGap={rowGap}
-      direction={width < 640 ? 'column' : 'row'}
-      align={width < 640 ? 'center' : 'flex-start'}
-      justify={width < 640 ? 'center' : 'flex-start'}
-      style={{ outline: '1px solid red' }}
-    >
-      {displayPieChartControls}
-      {displayResponsivePie}
-    </Flex>
+    <Grid columns={width < 1192 ? 1 : 11} w="100%" h="70vh">
+      <Grid.Col span={width < 1192 ? 1 : 4} h={width < 1192 ? '38vh' : '70vh'}>
+        {displayPieChartControls}
+      </Grid.Col>
+      <Grid.Col span={width < 1192 ? 1 : 7} h="100%">
+        {displayResponsivePie}
+      </Grid.Col>
+    </Grid>
   );
 
   /** ------------- end display ------------- */
@@ -1315,3 +1250,50 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 }
 
 export { ResponsivePieChart };
+
+/**
+ * legends={[
+        {
+          anchor: `${width < 1440 ? 'bottom' : 'right'}`,
+          direction: `${width < 768 ? 'row' : 'column'}`,
+          justify: false,
+          translateX: 0,
+          translateY: 56,
+          itemsSpacing: width < 768 ? 50 : 10,
+          itemWidth: 100,
+          itemHeight: 18,
+          itemTextColor: '#999',
+          itemDirection: 'left-to-right',
+          itemOpacity: 1,
+          symbolSize: 18,
+          symbolShape: 'circle',
+          effects: [
+            {
+              on: 'hover',
+              style: {
+                itemTextColor: '#000',
+              },
+            },
+          ],
+        },
+      ]}
+ */
+
+/**
+ * const displayResponsivePieChartComponent =
+    width < 1024 ? (
+      <Stack w="100%" h="100vh" p={padding}>
+        <Group h="38%">{displayPieChartControls}</Group>
+        <Group h="62%">{displayResponsivePie}</Group>
+      </Stack>
+    ) : (
+      <Flex w="100%" h="100%" p={padding} align="center" justify="flex-start">
+        <Group h="62%" w='100%' style={{ outline: '1px solid violet' }}>
+          {displayPieChartControls}
+        </Group>
+        <Group h="62%" w={600} style={{ outline: '1px solid teal' }}>
+          {displayResponsivePie}
+        </Group>
+      </Flex>
+    );
+ */
