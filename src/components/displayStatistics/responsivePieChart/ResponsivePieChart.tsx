@@ -92,6 +92,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     motionConfig,
     transitionMode,
 
+    marginBottom, // 0px - 60px default: 60 step: 1
+    marginLeft, // 0px - 60px default: 60 step: 1
+    marginRight, // 0px - 60px default: 60 step: 1
+    marginTop, // 0px - 60px default: 60 step: 1
+
     enableLegend, // default: true
     anchor, // default: bottom
     direction, // default: row
@@ -243,7 +248,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const startAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'start angle',
-    label: (value) => <Text>{value}</Text>,
+    label: (value) => <Text>{value} °</Text>,
     max: 360,
     min: -180,
     step: 1,
@@ -260,7 +265,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const endAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
-    label: (value) => <Text>{value}</Text>,
+    label: (value) => <Text>{value} °</Text>,
     ariaLabel: 'end angle',
     max: 360,
     min: -360,
@@ -278,7 +283,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const innerRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
-    label: (value) => <Text>{value}</Text>,
+    label: (value) => <Text>{value} px</Text>,
     ariaLabel: 'inner radius',
     max: 0.95,
     min: 0,
@@ -297,7 +302,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const padAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
-    label: (value) => <Text>{value}</Text>,
+    label: (value) => <Text>{value} °</Text>,
     ariaLabel: 'pad angle',
     max: 45,
     min: 0,
@@ -315,7 +320,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const cornerRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
-    label: (value) => <Text>{value}</Text>,
+    label: (value) => <Text>{value} px</Text>,
     ariaLabel: 'corner radius',
     max: 45,
     min: 0,
@@ -416,7 +421,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const borderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
-    label: (value) => <Text>{value}</Text>,
+    label: (value) => <Text>{value} px</Text>,
     ariaLabel: 'border width',
     max: 20,
     min: 0,
@@ -464,9 +469,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const arcLabelsRadiusOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'arc labels radius offset',
+      disabled: !enableArcLabels,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 2,
       min: 0,
       precision: 2,
@@ -484,9 +490,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const arcLabelsSkipAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'arc labels skip angle',
+      disabled: !enableArcLabels,
+      kind: 'slider',
+      label: (value) => <Text>{value} °</Text>,
       max: 45,
       min: 0,
       step: 1,
@@ -504,6 +511,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const createdArcLabelsTextColorInput = (
     <ColorInput
       aria-label="Arc labels text color"
+      disabled={!enableArcLabels}
       value={arcLabelsTextColor}
       onChange={(color: string) => {
         responsivePieChartDispatch({
@@ -547,9 +555,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const arcLinkLabelsSkipAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'arc link labels skip angle',
+      disabled: !enableArcLinkLabels,
+      kind: 'slider',
+      label: (value) => <Text>{value} °</Text>,
       max: 45,
       min: 0,
       step: 1,
@@ -566,9 +575,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const arcLinkLabelsOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'arc link labels offset',
+      disabled: !enableArcLinkLabels,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 24,
       min: -24,
       step: 1,
@@ -585,9 +595,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const arcLinkLabelsDiagonalLengthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'arc link labels diagonal length',
+      disabled: !enableArcLinkLabels,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 36,
       min: 0,
       step: 1,
@@ -604,9 +615,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const arcLinkLabelsStraightLengthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'arc link labels straight length',
+      disabled: !enableArcLinkLabels,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 36,
       min: 0,
       step: 1,
@@ -623,9 +635,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const arcLinkLabelsTextOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'arc link labels text offset',
+      disabled: !enableArcLinkLabels,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 36,
       min: 0,
       step: 1,
@@ -642,9 +655,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const arcLinkLabelsThicknessSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'arc link labels thickness',
+      disabled: !enableArcLinkLabels,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 20,
       min: 0,
       step: 1,
@@ -662,6 +676,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const createdArcLinkLabelsTextColorInput = (
     <ColorInput
       aria-label="arc link labels text color"
+      disabled={!enableArcLinkLabels}
       value={arcLinkLabelsTextColor}
       onChange={(color: string) => {
         responsivePieChartDispatch({
@@ -678,7 +693,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const activeInnerRadiusOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
+      label: (value) => <Text>{value} px</Text>,
       ariaLabel: 'active inner radius offset',
       max: 50,
       min: 0,
@@ -697,7 +712,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const activeOuterRadiusOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
+      label: (value) => <Text>{value} px</Text>,
       ariaLabel: 'active outer radius offset',
       max: 50,
       min: 0,
@@ -715,7 +730,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- end interactivity ------------- */
 
   /** ------------- begin motion ------------- */
-
   const createdAnimateSwitchInput = (
     <Switch
       description={
@@ -743,6 +757,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const motionConfigSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: NIVO_MOTION_CONFIG_DATA,
     description: 'Configure react-spring.',
+    disabled: !animate,
     value: motionConfig,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsivePieChartDispatch({
@@ -757,6 +772,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     {
       data: NIVO_TRANSITION_MODE_DATA,
       description: 'Define how transitions behave.',
+      disabled: !animate,
       value: transitionMode,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsivePieChartDispatch({
@@ -767,6 +783,80 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       width: sliderWidth,
     };
   /** ------------- end motion ------------- */
+
+  /** ------------- begin margin ------------- */
+  const marginBottomSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    label: (value) => <Text>{value} px</Text>,
+    ariaLabel: 'margin bottom',
+    max: 300,
+    min: 0,
+    step: 1,
+    value: marginBottom,
+    onChangeSlider: (value: number) => {
+      responsivePieChartDispatch({
+        type: responsivePieChartAction.setMarginBottom,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 80,
+    width: sliderWidth,
+  };
+
+  const marginLeftSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    label: (value) => <Text>{value} px</Text>,
+    ariaLabel: 'margin left',
+    max: 300,
+    min: 0,
+    step: 1,
+    value: marginLeft,
+    onChangeSlider: (value: number) => {
+      responsivePieChartDispatch({
+        type: responsivePieChartAction.setMarginLeft,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 80,
+    width: sliderWidth,
+  };
+
+  const marginRightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    label: (value) => <Text>{value} px</Text>,
+    ariaLabel: 'margin right',
+    max: 300,
+    min: 0,
+    step: 1,
+    value: marginRight,
+    onChangeSlider: (value: number) => {
+      responsivePieChartDispatch({
+        type: responsivePieChartAction.setMarginRight,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 80,
+    width: sliderWidth,
+  };
+
+  const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    label: (value) => <Text>{value} px</Text>,
+    ariaLabel: 'margin top',
+    max: 300,
+    min: 0,
+    step: 1,
+    value: marginTop,
+    onChangeSlider: (value: number) => {
+      responsivePieChartDispatch({
+        type: responsivePieChartAction.setMarginTop,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 80,
+    width: sliderWidth,
+  };
+  /** ------------- end margin ------------- */
 
   /** ------------- begin legend ------------- */
   const createdEnableLegendSwitchInput = (
@@ -798,6 +888,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const legendAnchorSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: NIVO_LEGEND_ANCHOR_DATA,
     description: "Defines legend anchor relative to chart's viewport.",
+    disabled: !enableLegend,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsivePieChartDispatch({
         type: responsivePieChartAction.setAnchor,
@@ -812,6 +903,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     {
       data: NIVO_LEGEND_DIRECTION_DATA,
       description: 'Defines legend direction.',
+      disabled: !enableLegend,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setDirection,
@@ -824,10 +916,17 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const createdEnableLegendJustifySwitchInput = (
     <Switch
+      disabled={!enableLegend}
       description={
-        justify
-          ? enableLegendJustifyAccessibleSelectedText
-          : enableLegendJustifyAccessibleDeselectedText
+        enableLegend ? (
+          justify ? (
+            enableLegendJustifyAccessibleSelectedText
+          ) : (
+            enableLegendJustifyAccessibleDeselectedText
+          )
+        ) : (
+          <Text>Enable legend to modify justify.</Text>
+        )
       }
       aria-describedby={
         justify
@@ -848,10 +947,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const legendTranslateXSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'Translate legend in x-axis: horizontal direction',
-
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 200,
       min: -200,
       step: 1,
@@ -868,9 +967,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const legendTranslateYSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'Translate legend in y-axis: vertical direction',
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 200,
       min: -200,
       step: 1,
@@ -887,9 +987,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const legendItemsSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'Legend items spacing',
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 60,
       min: 0,
       step: 1,
@@ -906,9 +1007,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const legendItemWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'Legend item width',
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 200,
       min: 10,
       step: 1,
@@ -925,9 +1027,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const legendItemHeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'Legend item height',
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 200,
       min: 10,
       step: 1,
@@ -946,6 +1049,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     {
       data: NIVO_LEGEND_ITEM_DIRECTION_DATA,
       description: 'Defines legend item direction.',
+      disabled: !enableLegend,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setItemDirection,
@@ -959,6 +1063,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const legendItemTextColorInput = (
     <ColorInput
       aria-label="Legend item text color"
+      disabled={!enableLegend}
       value={itemTextColor}
       onChange={(color: string) => {
         responsivePieChartDispatch({
@@ -972,9 +1077,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const legendSymbolSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
-      kind: 'slider',
-      label: (value) => <Text>{value}</Text>,
       ariaLabel: 'Legend symbol size',
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => <Text>{value} px</Text>,
       max: 60,
       min: 2,
       step: 1,
@@ -993,6 +1099,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     {
       data: NIVO_LEGEND_SYMBOL_SHAPE_DATA,
       description: 'Defines legend symbol shape.',
+      disabled: !enableLegend,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setSymbolShape,
@@ -1071,6 +1178,19 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       motionConfigSelectInputCreatorInfo,
       transitionModeSelectInputCreatorInfo,
     ]);
+
+  /** margin */
+  const [
+    createdMarginBottomSliderInput,
+    createdMarginLeftSliderInput,
+    createdMarginRightSliderInput,
+    createdMarginTopSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    marginBottomSliderInputCreatorInfo,
+    marginLeftSliderInputCreatorInfo,
+    marginRightSliderInputCreatorInfo,
+    marginTopSliderInputCreatorInfo,
+  ]);
 
   /** legend */
   const [
@@ -1225,7 +1345,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       input={createdArcBorderWidthSliderInput}
       label="Arc border width"
       value={borderWidth}
-      symbol=""
+      symbol="px"
     />
   );
 
@@ -1628,6 +1748,69 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     </Stack>
   );
 
+  /** margin */
+  const displayMarginText = (
+    <TextWrapper
+      creatorInfoObj={{
+        size: 'md',
+        style: {
+          background: 'skyblue',
+          padding: '0.75rem',
+          borderRadius: '4px',
+        },
+      }}
+    >
+      Margin
+    </TextWrapper>
+  );
+
+  const displayMarginBottomSliderInput = (
+    <PieChartControlsStack
+      input={createdMarginBottomSliderInput}
+      label="Bottom"
+      value={marginBottom}
+      symbol="px"
+    />
+  );
+
+  const displayMarginLeftSliderInput = (
+    <PieChartControlsStack
+      input={createdMarginLeftSliderInput}
+      label="Left"
+      value={marginLeft}
+      symbol="px"
+    />
+  );
+
+  const displayMarginRightSliderInput = (
+    <PieChartControlsStack
+      input={createdMarginRightSliderInput}
+      label="Right"
+      value={marginRight}
+      symbol="px"
+    />
+  );
+
+  const displayMarginTopSliderInput = (
+    <PieChartControlsStack
+      input={createdMarginTopSliderInput}
+      label="Top"
+      value={marginTop}
+      symbol="px"
+    />
+  );
+
+  const displayMarginSection = (
+    <Stack w="100%">
+      {displayMarginText}
+      {displayMarginRightSliderInput}
+      {displayMarginTopSliderInput}
+      {displayMarginLeftSliderInput}
+      {displayMarginBottomSliderInput}
+    </Stack>
+  );
+
+  /** pie chart controls */
   const displayPieChartControls = (
     <Grid
       columns={1}
@@ -1646,6 +1829,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       <Grid.Col span={1}>{displayArcLinkLabelsSection}</Grid.Col>
       <Grid.Col span={1}>{displayInteractivitySection}</Grid.Col>
       <Grid.Col span={1}>{displayMotionSection}</Grid.Col>
+      <Grid.Col span={1}>{displayMarginSection}</Grid.Col>
       <Grid.Col span={1}>{displayLegendSection}</Grid.Col>
     </Grid>
   );
@@ -1654,7 +1838,12 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ResponsivePie
       data={pieChartData}
       // base
-      margin={{ top: 40, right: 100, bottom: 40, left: 100 }}
+      margin={{
+        top: marginTop,
+        right: marginRight,
+        bottom: marginBottom,
+        left: marginLeft,
+      }}
       startAngle={startAngle}
       endAngle={endAngle}
       innerRadius={innerRadius}

@@ -6,11 +6,12 @@ import { SliderInputData } from '../../types';
 type AccessibleSliderInputCreatorInfo = {
   ariaLabel: string;
   ariaDescribedBy?: string;
+  disabled?: boolean;
   thumbLabel?: string; // slider
   thumbFromLabel?: string; // range slider
   color?: string;
   kind?: 'slider' | 'range-slider';
-  label?: React.ReactNode | ((value: number) => React.ReactNode);
+  label?: ReactNode | ((value: number) => ReactNode);
   min: number;
   max: number;
   marks?: SliderInputData;
@@ -35,6 +36,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
   const {
     ariaLabel,
     ariaDescribedBy,
+    disabled = false,
     thumbLabel,
     thumbFromLabel,
     color,
@@ -60,6 +62,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     <Slider
       aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
+      disabled={disabled}
       thumbLabel={thumbLabel}
       color={color}
       label={label}
@@ -81,6 +84,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     <RangeSlider
       aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
+      disabled={disabled}
       thumbFromLabel={thumbFromLabel}
       color={color}
       label={label}

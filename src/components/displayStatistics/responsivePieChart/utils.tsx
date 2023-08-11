@@ -1,7 +1,8 @@
 import { Flex, Group } from '@mantine/core';
+
 import { useGlobalState } from '../../../hooks';
-import { TextWrapper } from '../../wrappers';
 import { splitCamelCase } from '../../../utils';
+import { TextWrapper } from '../../wrappers';
 
 function PieChartControlsStack({
   label,

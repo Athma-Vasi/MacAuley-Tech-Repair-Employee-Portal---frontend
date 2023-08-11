@@ -9,6 +9,7 @@ type AccessibleSelectInputCreatorInfo = {
   label?: string;
   description: string;
   describedBy?: string;
+  disabled?: boolean;
   value: string;
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   withAsterisk?: boolean;
@@ -27,6 +28,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     label = '',
     description,
     describedBy = '',
+    disabled = false,
     value,
     onChange,
     withAsterisk = false,
@@ -41,6 +43,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     <NativeSelect
       size={selectInputSize}
       data={data}
+      disabled={disabled}
       label={`${label.charAt(0).toUpperCase() + label.slice(1)}`}
       aria-label={`Currently selected ${value}`}
       aria-required={required}

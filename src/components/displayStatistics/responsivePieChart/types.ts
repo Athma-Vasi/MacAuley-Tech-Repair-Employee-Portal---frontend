@@ -130,6 +130,12 @@ type ResponsivePieChartState = {
   motionConfig: NivoMotionConfig;
   transitionMode: NivoTransitionMode;
 
+  /** margin */
+  marginTop: number; // 0px - 200px default: 60 step: 1
+  marginRight: number; // 0px - 200px default: 60 step: 1
+  marginBottom: number; // 0px - 200px default: 60 step: 1
+  marginLeft: number; // 0px - 200px default: 60 step: 1
+
   /** legend */
   enableLegend: boolean; // default: true
   anchor: LegendAnchor; // default: bottom
@@ -187,6 +193,12 @@ type ResponsivePieChartAction = {
   setMotionConfig: 'setMotionConfig';
   setTransitionMode: 'setTransitionMode';
 
+  /** margin */
+  setMarginTop: 'setMarginTop';
+  setMarginRight: 'setMarginRight';
+  setMarginBottom: 'setMarginBottom';
+  setMarginLeft: 'setMarginLeft';
+
   /** legend */
   setEnableLegend: 'setEnableLegend';
   setAnchor: 'setAnchor';
@@ -223,6 +235,10 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setArcLinkLabelsThickness']
         | ResponsivePieChartAction['setActiveInnerRadiusOffset']
         | ResponsivePieChartAction['setActiveOuterRadiusOffset']
+        | ResponsivePieChartAction['setMarginTop']
+        | ResponsivePieChartAction['setMarginRight']
+        | ResponsivePieChartAction['setMarginBottom']
+        | ResponsivePieChartAction['setMarginLeft']
         | ResponsivePieChartAction['setTranslateX']
         | ResponsivePieChartAction['setTranslateY']
         | ResponsivePieChartAction['setItemsSpacing']

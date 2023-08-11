@@ -14,10 +14,10 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   sortByValue: false,
 
   /** style */
-  colorScheme: 'nivo',
+  colorScheme: 'accent',
   fillPatterns: [],
   enableFillPatterns: false,
-  borderColor: '#e0e0e0',
+  borderColor: '#ffffff',
   borderWidth: 0,
 
   /** arc labels */
@@ -45,14 +45,20 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   motionConfig: 'gentle',
   transitionMode: 'innerRadius',
 
+  /** margin */
+  marginTop: 80,
+  marginRight: 80,
+  marginBottom: 80,
+  marginLeft: 80,
+
   /** legend */
   enableLegend: false,
   anchor: 'top-left',
-  direction: 'row',
+  direction: 'column',
   justify: false,
   translateX: 0,
   translateY: 0,
-  itemsSpacing: 0,
+  itemsSpacing: 10,
   itemWidth: 60,
   itemHeight: 20,
   itemDirection: 'left-to-right',
@@ -101,6 +107,12 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setAnimate: 'setAnimate',
   setMotionConfig: 'setMotionConfig',
   setTransitionMode: 'setTransitionMode',
+
+  /** margin */
+  setMarginTop: 'setMarginTop',
+  setMarginRight: 'setMarginRight',
+  setMarginBottom: 'setMarginBottom',
+  setMarginLeft: 'setMarginLeft',
 
   /** legend */
   setEnableLegend: 'setEnableLegend',
@@ -273,6 +285,28 @@ function responsivePieChartReducer(
       return {
         ...state,
         transitionMode: action.payload,
+      };
+
+    /** margin */
+    case responsivePieChartAction.setMarginTop:
+      return {
+        ...state,
+        marginTop: action.payload,
+      };
+    case responsivePieChartAction.setMarginRight:
+      return {
+        ...state,
+        marginRight: action.payload,
+      };
+    case responsivePieChartAction.setMarginBottom:
+      return {
+        ...state,
+        marginBottom: action.payload,
+      };
+    case responsivePieChartAction.setMarginLeft:
+      return {
+        ...state,
+        marginLeft: action.payload,
       };
 
     /** legend */
