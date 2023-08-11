@@ -23,7 +23,7 @@ import { CheckBoxMultipleData, RadioGroupInputData } from '../../../types';
 import { CustomRating } from '../../customRating/CustomRating';
 import { TbChartPie3, TbUpload } from 'react-icons/tb';
 import { useGlobalState } from '../../../hooks';
-import { logState } from '../../../utils';
+import { logState, replaceLastCommaWithAnd } from '../../../utils';
 
 function PreviewSurvey({
   surveyDescription,
@@ -37,7 +37,7 @@ function PreviewSurvey({
     initialPreviewSurveyState
   );
   const {
-    surveyResponsesMap,
+    surveyResponsesArray,
     questionsResponseInputMap,
     questionsResponseDataOptionsMap,
 
@@ -53,6 +53,18 @@ function PreviewSurvey({
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
+
+  // set survey questions to state on mount
+  useEffect(() => {
+    if (!surveyQuestions) {
+      return;
+    }
+
+    previewSurveyDispatch({
+      type: previewSurveyAction.setSurveyQuestions,
+      payload: surveyQuestions,
+    });
+  }, [surveyQuestions]);
 
   // set stepper descriptions on mount
   useEffect(() => {
@@ -103,7 +115,7 @@ function PreviewSurvey({
   // check steps in error on every response / stepper position change
   useEffect(() => {
     // if there is no responses, then set the steps in error from current stepper position to zero (the beginning of the stepper)
-    if (surveyResponsesMap.size === 0) {
+    if (surveyResponsesArray.length === 0) {
       Array.from({ length: currentStepperPosition }).forEach((_, idx) => {
         previewSurveyDispatch({
           type: previewSurveyAction.setStepsInError,
@@ -116,23 +128,25 @@ function PreviewSurvey({
     }
     // if there are responses, check if any questions were skipped, or if any responses are empty strings, empty arrays or zero numbers
     else {
-      if (surveyResponsesMap.size < currentStepperPosition) {
+      if (surveyResponsesArray.length < currentStepperPosition) {
         // set the steps in error from the surveyResponses length to the current stepper position
         Array.from({
-          length: currentStepperPosition - surveyResponsesMap.size,
+          length: currentStepperPosition - surveyResponsesArray.length,
         }).forEach((_, idx) => {
           previewSurveyDispatch({
             type: previewSurveyAction.setStepsInError,
             payload: {
               kind: 'add',
-              step: surveyResponsesMap.size + idx,
+              step: surveyResponsesArray.length + idx,
             },
           });
         });
       }
 
       // iterate through responses and add or remove the step from the steps in error
-      Array.from(surveyResponsesMap).forEach(([question, response], idx) => {
+      surveyResponsesArray.forEach((surveyResponse, idx) => {
+        const { question, response } = surveyResponse;
+
         // the user did not respond to the question
         if (
           response === '' || // for 'radio' or 'agreeDisagree'
@@ -157,7 +171,7 @@ function PreviewSurvey({
         }
       });
     }
-  }, [currentStepperPosition, surveyResponsesMap]);
+  }, [currentStepperPosition, surveyResponsesArray]);
 
   useEffect(() => {
     logState({
@@ -188,11 +202,14 @@ function PreviewSurvey({
       switch (responseInput) {
         // agreeDisagree is a radio group with set values
         case 'agreeDisagree': {
-          const value = surveyResponsesMap.get(question) as string;
+          // const value = surveyResponsesArray.get(question) as string;
+          const value = surveyResponsesArray.find(
+            (q) => q?.question === question
+          )?.response as string;
 
           const description = (
             <Text size="sm" aria-label="polite">{`You have selected: ${
-              surveyResponsesMap.get(question) ?? 'N/A'
+              value ?? 'N/A'
             }`}</Text>
           );
 
@@ -204,7 +221,7 @@ function PreviewSurvey({
               label: question,
               onChange: (value: string) => {
                 previewSurveyDispatch({
-                  type: previewSurveyAction.setSurveyResponsesMap,
+                  type: previewSurveyAction.setSurveyResponsesArray,
                   payload: {
                     question,
                     response: value,
@@ -238,10 +255,12 @@ function PreviewSurvey({
               label: responseDataOption,
             })
           );
-          const value = surveyResponsesMap.get(question) as string;
+          const value = surveyResponsesArray.find(
+            (q) => q?.question === question
+          )?.response as string;
           const description = (
             <Text size="sm" aria-label="polite">{`You have selected: ${
-              surveyResponsesMap.get(question) ?? 'N/A'
+              value ?? 'N/A'
             }`}</Text>
           );
 
@@ -253,7 +272,7 @@ function PreviewSurvey({
               label: question,
               onChange: (value: string) => {
                 previewSurveyDispatch({
-                  type: previewSurveyAction.setSurveyResponsesMap,
+                  type: previewSurveyAction.setSurveyResponsesArray,
                   payload: {
                     question,
                     response: value,
@@ -287,13 +306,18 @@ function PreviewSurvey({
               label: responseDataOption,
             })
           );
-          const checkboxValue = surveyResponsesMap.get(question) as string[];
+          const checkboxValue = surveyResponsesArray.find(
+            (q) => q?.question === question
+          )?.response as string[];
+          const selectedValues = replaceLastCommaWithAnd(
+            checkboxValue?.join(', ') ?? ''
+          );
           const description = {
             selected: (
               <Text
                 size="sm"
                 aria-label="polite"
-              >{`You have selected: ${checkboxValue?.join(', ')}`}</Text>
+              >{`You have selected: ${selectedValues}`}</Text>
             ),
             deselected: (
               <Text size="sm" aria-label="polite">
@@ -309,7 +333,7 @@ function PreviewSurvey({
               key: `${questionIdx}-${question}-${responseInput}-${responseKind}`,
               onChange: (value: string[]) => {
                 previewSurveyDispatch({
-                  type: previewSurveyAction.setSurveyResponsesMap,
+                  type: previewSurveyAction.setSurveyResponsesArray,
                   payload: {
                     question,
                     response: value,
@@ -338,11 +362,13 @@ function PreviewSurvey({
         }
         // emotion is a rating component with emojis as values from 1-5
         case 'emotion': {
-          const value = surveyResponsesMap.get(question) as number;
+          const value = surveyResponsesArray.find(
+            (q) => q?.question === question
+          )?.response as number;
 
           const createdEmotionRatingInput = (
             <CustomRating
-              controlledValue={value}
+              controlledValue={value ?? 0}
               question={question}
               ratingKind="emotion"
               dynamicComponentProps={dynamicComponentProps}
@@ -362,7 +388,9 @@ function PreviewSurvey({
         }
         // stars is a rating component with stars as values from 1-5
         case 'stars': {
-          const value = surveyResponsesMap.get(question) as number;
+          const value = surveyResponsesArray.find(
+            (q) => q?.question === question
+          )?.response as number;
 
           const createdStarsRatingInput = (
             <CustomRating
@@ -405,7 +433,8 @@ function PreviewSurvey({
   const createdSubmitButton = returnAccessibleButtonElements([
     {
       buttonLabel: 'Submit',
-      buttonDisabled: surveyResponsesMap.size === 0 || stepsInError.size !== 0,
+      buttonDisabled:
+        surveyResponsesArray.length === 0 || stepsInError.size !== 0,
       semanticDescription: 'Submit survey',
       semanticName: 'Submit survey',
       buttonOnClick: () => {

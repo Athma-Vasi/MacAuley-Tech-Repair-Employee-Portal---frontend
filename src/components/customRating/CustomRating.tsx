@@ -200,7 +200,11 @@ function CustomRating({
   }
 
   useEffect(() => {
-    console.log('rating value', value);
+    console.group('rating');
+    console.log('value', value);
+    console.log('controlledValue', controlledValue);
+    console.log('dynamicComponentProps', dynamicComponentProps);
+    console.groupEnd();
   }, [value]);
 
   return (

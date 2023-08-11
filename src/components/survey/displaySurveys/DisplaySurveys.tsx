@@ -9,7 +9,12 @@ import {
   returnAccessibleRadioGroupInputsElements,
 } from '../../../jsxCreators';
 import { CheckBoxMultipleData, RadioGroupInputData } from '../../../types';
-import { filterFieldsFromObject, logState, urlBuilder } from '../../../utils';
+import {
+  filterFieldsFromObject,
+  logState,
+  replaceLastCommaWithAnd,
+  urlBuilder,
+} from '../../../utils';
 import { CustomNotification } from '../../customNotification';
 import { CustomRating } from '../../customRating/CustomRating';
 import { PageBuilder } from '../../pageBuilder';
@@ -522,11 +527,7 @@ function DisplaySurveys() {
 
               const description = (
                 <Text size="sm" aria-label="polite">{`You have selected: ${
-                  surveySubmissions
-                    .get(_id)
-                    ?.surveyResponses.find(
-                      (surveyResponse) => surveyResponse?.question === question
-                    )?.response ?? 'N/A'
+                  value ?? 'N/A'
                 }`}</Text>
               );
 
@@ -587,11 +588,7 @@ function DisplaySurveys() {
 
               const description = (
                 <Text size="sm" aria-label="polite">{`You have selected: ${
-                  surveySubmissions
-                    .get(_id)
-                    ?.surveyResponses.find(
-                      (surveyResponse) => surveyResponse?.question === question
-                    )?.response ?? 'N/A'
+                  value ?? 'N/A'
                 }`}</Text>
               );
 
@@ -653,7 +650,9 @@ function DisplaySurveys() {
                   <Text
                     size="sm"
                     aria-label="polite"
-                  >{`You have selected: ${checkboxValue?.join(', ')}`}</Text>
+                  >{`You have selected: ${replaceLastCommaWithAnd(
+                    checkboxValue?.join(', ') ?? ''
+                  )}`}</Text>
                 ),
                 deselected: (
                   <Text size="sm" aria-label="polite">

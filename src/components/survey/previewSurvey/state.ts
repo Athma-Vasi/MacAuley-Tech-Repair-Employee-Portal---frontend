@@ -1,11 +1,14 @@
+import { addFieldsToObject } from '../../../utils';
 import {
   PreviewSurveyAction,
   PreviewSurveyDispatch,
+  PreviewSurveyResponse,
   PreviewSurveyState,
 } from './types';
 
 const initialPreviewSurveyState: PreviewSurveyState = {
-  surveyResponsesMap: new Map(),
+  surveyQuestions: [],
+  surveyResponsesArray: [],
   questionsResponseInputMap: new Map(),
   questionsResponseDataOptionsMap: new Map(),
   genericProps: {
@@ -19,7 +22,8 @@ const initialPreviewSurveyState: PreviewSurveyState = {
 };
 
 const previewSurveyAction: PreviewSurveyAction = {
-  setSurveyResponsesMap: 'setSurveyResponsesMap',
+  setSurveyQuestions: 'setSurveyQuestions',
+  setSurveyResponsesArray: 'setSurveyResponsesArray',
   setQuestionsResponseInputMap: 'setQuestionsResponseInputMap',
   setQuestionsResponseDataOptionsMap: 'setQuestionsResponseDataOptionsMap',
   setGenericProps: 'setGenericProps',
@@ -34,15 +38,36 @@ function previewSurveyReducer(
   action: PreviewSurveyDispatch
 ): PreviewSurveyState {
   switch (action.type) {
-    case previewSurveyAction.setSurveyResponsesMap: {
+    case previewSurveyAction.setSurveyQuestions:
+      return {
+        ...state,
+        surveyQuestions: action.payload,
+      };
+
+    case previewSurveyAction.setSurveyResponsesArray: {
       const { question, response } = action.payload;
 
-      const surveyResponsesMap = new Map(state.surveyResponsesMap);
-      surveyResponsesMap.set(question, response);
+      const surveyResponsesArray = structuredClone(state.surveyResponsesArray);
+
+      // find the question location in surveyQuestions
+      const questionIndex = state.surveyQuestions.findIndex(
+        (q) => q?.question === question
+      );
+
+      // update the survey response at the same location
+      const newResponse = addFieldsToObject({
+        object: Object.create(null),
+        fieldValuesTuples: [
+          ['question', question],
+          ['response', response],
+        ],
+      }) as PreviewSurveyResponse;
+
+      surveyResponsesArray[questionIndex] = newResponse;
 
       return {
         ...state,
-        surveyResponsesMap,
+        surveyResponsesArray,
       };
     }
     case previewSurveyAction.setQuestionsResponseInputMap:
@@ -70,13 +95,25 @@ function previewSurveyReducer(
     case previewSurveyAction.setGenericProps: {
       const { question, rating } = action.payload;
 
-      // find the question in surveyresponses map and update it
-      const surveyResponsesMap = new Map(state.surveyResponsesMap);
-      surveyResponsesMap.set(question, rating);
+      // find the question in survey responses array
+      const questionIndex = state.surveyQuestions.findIndex(
+        (q) => q?.question === question
+      );
+
+      // update the survey response at the same location
+      const surveyResponsesArray = structuredClone(state.surveyResponsesArray);
+      const newResponse = addFieldsToObject({
+        object: Object.create(null),
+        fieldValuesTuples: [
+          ['question', question],
+          ['response', rating],
+        ],
+      }) as PreviewSurveyResponse;
+      surveyResponsesArray[questionIndex] = newResponse;
 
       return {
         ...state,
-        surveyResponsesMap,
+        surveyResponsesArray,
         genericProps: {
           question,
           rating,

@@ -1,6 +1,7 @@
 import { SetStepsInErrorPayload } from '../../../types';
 import { DescriptionObjectsArray } from '../../wrappers';
 import { SurveyQuestions } from '../surveyBuilder/types';
+
 type PreviewSurveyProps = {
   surveyTitle: string;
   surveyDescription: string;
@@ -8,8 +9,15 @@ type PreviewSurveyProps = {
   closePreviewSurveyModal: () => void;
 };
 
+type PreviewSurveyResponse = {
+  question: string;
+  response: string | string[] | number;
+};
+
 type PreviewSurveyState = {
-  surveyResponsesMap: Map<string, string | string[] | number>; // Map<question, response>
+  surveyQuestions: SurveyQuestions[];
+
+  surveyResponsesArray: Array<PreviewSurveyResponse>;
   questionsResponseInputMap: Map<string, string>; // Map<question, responseInput>
   questionsResponseDataOptionsMap: Map<string, string[]>; // Map<question, responseDataOptions>
   genericProps: {
@@ -23,7 +31,8 @@ type PreviewSurveyState = {
 };
 
 type PreviewSurveyAction = {
-  setSurveyResponsesMap: 'setSurveyResponsesMap';
+  setSurveyQuestions: 'setSurveyQuestions';
+  setSurveyResponsesArray: 'setSurveyResponsesArray';
   setQuestionsResponseInputMap: 'setQuestionsResponseInputMap';
   setQuestionsResponseDataOptionsMap: 'setQuestionsResponseDataOptionsMap';
   setGenericProps: 'setGenericProps'; // for rating
@@ -35,7 +44,11 @@ type PreviewSurveyAction = {
 
 type PreviewSurveyDispatch =
   | {
-      type: PreviewSurveyAction['setSurveyResponsesMap'];
+      type: PreviewSurveyAction['setSurveyQuestions'];
+      payload: SurveyQuestions[];
+    }
+  | {
+      type: PreviewSurveyAction['setSurveyResponsesArray'];
       payload: {
         question: string;
         response: string | string[] | number;
@@ -79,5 +92,6 @@ export type {
   PreviewSurveyDispatch,
   PreviewSurveyProps,
   PreviewSurveyReducer,
+  PreviewSurveyResponse,
   PreviewSurveyState,
 };
