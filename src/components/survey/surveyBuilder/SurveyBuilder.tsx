@@ -76,6 +76,7 @@ import {
   surveyBuilderReducer,
 } from './state';
 import { CustomRating } from '../../customRating/CustomRating';
+import PreviewSurvey from '../previewSurvey/PreviewSurvey';
 
 function SurveyBuilder() {
   /** ------------- begin hooks ------------- */
@@ -119,6 +120,7 @@ function SurveyBuilder() {
     triggerFormSubmit,
     submitButtonDisabled,
     triggerPreviewSurvey,
+    previewSurveyProps,
 
     stepperDescriptionObjects,
     currentStepperPosition,
@@ -147,6 +149,14 @@ function SurveyBuilder() {
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
+  // allows repeated openings of preview modal
+  useEffect(() => {
+    surveyBuilderDispatch({
+      type: surveyBuilderAction.setTriggerPreviewSurvey,
+      payload: false,
+    });
+  }, [openedPreviewSurveyModal]);
+
   useEffect(() => {
     surveyBuilderDispatch({
       type: surveyBuilderAction.setIsLoading,
@@ -514,6 +524,29 @@ function SurveyBuilder() {
       }
     );
   }, [areResponseDataOptionsValid]);
+
+  // set preview survey props on trigger preview survey button
+  useEffect(() => {
+    if (triggerPreviewSurvey) {
+      const surveyQuestions = setSurveyQuestions({
+        questions,
+        responseKinds,
+        responseInputHtml,
+        responseDataOptionsArray,
+      });
+
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setPreviewSurveyProps,
+        payload: {
+          surveyTitle,
+          surveyDescription,
+          surveyQuestions,
+        },
+      });
+
+      openPreviewSurveyModal();
+    }
+  }, [triggerPreviewSurvey]);
 
   // submit survey form
   useEffect(() => {
@@ -1325,6 +1358,22 @@ function SurveyBuilder() {
           : null
     );
 
+  const previewSurveyModal = (
+    <Modal
+      opened={openedPreviewSurveyModal}
+      onClose={closePreviewSurveyModal}
+      centered
+      size={width < 768 ? 'calc(100% - 2rem)' : 'calc(768px - 2rem)'}
+    >
+      <PreviewSurvey
+        surveyDescription={previewSurveyProps.surveyDescription}
+        surveyTitle={previewSurveyProps.surveyTitle}
+        surveyQuestions={previewSurveyProps.surveyQuestions}
+        closePreviewSurveyModal={closePreviewSurveyModal}
+      />
+    </Modal>
+  );
+
   /** ------------- end input creators ------------- */
 
   /** ------------- begin layout ------------- */
@@ -1403,6 +1452,7 @@ function SurveyBuilder() {
       stepsInError={stepsInError}
     >
       {displaySurveyBuilderForm}
+      {previewSurveyModal}
       {displayHelpTextModal}
     </StepperWrapper>
   );

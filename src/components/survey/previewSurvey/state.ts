@@ -8,26 +8,25 @@ const initialPreviewSurveyState: PreviewSurveyState = {
   surveyResponsesMap: new Map(),
   questionsResponseInputMap: new Map(),
   questionsResponseDataOptionsMap: new Map(),
+  genericProps: {
+    question: '',
+    rating: 0,
+  },
 
   stepperDescriptionsArray: [],
   currentStepperPosition: 0,
   stepsInError: new Set(),
-
-  isLoading: true,
-  loadingMessage: 'Loading...',
 };
 
 const previewSurveyAction: PreviewSurveyAction = {
   setSurveyResponsesMap: 'setSurveyResponsesMap',
   setQuestionsResponseInputMap: 'setQuestionsResponseInputMap',
   setQuestionsResponseDataOptionsMap: 'setQuestionsResponseDataOptionsMap',
+  setGenericProps: 'setGenericProps',
 
   setStepperDescriptionsArray: 'setStepperDescriptionsArray',
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
-
-  setIsLoading: 'setIsLoading',
-  setLoadingMessage: 'setLoadingMessage',
 };
 
 function previewSurveyReducer(
@@ -35,11 +34,17 @@ function previewSurveyReducer(
   action: PreviewSurveyDispatch
 ): PreviewSurveyState {
   switch (action.type) {
-    case previewSurveyAction.setSurveyResponsesMap:
+    case previewSurveyAction.setSurveyResponsesMap: {
+      const { question, response } = action.payload;
+
+      const surveyResponsesMap = new Map(state.surveyResponsesMap);
+      surveyResponsesMap.set(question, response);
+
       return {
         ...state,
-        surveyResponsesMap: action.payload,
+        surveyResponsesMap,
       };
+    }
     case previewSurveyAction.setQuestionsResponseInputMap:
       return {
         ...state,
@@ -61,6 +66,24 @@ function previewSurveyReducer(
         ...state,
         currentStepperPosition: action.payload,
       };
+
+    case previewSurveyAction.setGenericProps: {
+      const { question, rating } = action.payload;
+
+      // find the question in surveyresponses map and update it
+      const surveyResponsesMap = new Map(state.surveyResponsesMap);
+      surveyResponsesMap.set(question, rating);
+
+      return {
+        ...state,
+        surveyResponsesMap,
+        genericProps: {
+          question,
+          rating,
+        },
+      };
+    }
+
     case previewSurveyAction.setStepsInError: {
       const { kind, step } = action.payload;
       const stepsInError = new Set(state.stepsInError);
@@ -71,17 +94,6 @@ function previewSurveyReducer(
         stepsInError,
       };
     }
-
-    case previewSurveyAction.setIsLoading:
-      return {
-        ...state,
-        isLoading: action.payload,
-      };
-    case previewSurveyAction.setLoadingMessage:
-      return {
-        ...state,
-        loadingMessage: action.payload,
-      };
 
     default:
       return state;

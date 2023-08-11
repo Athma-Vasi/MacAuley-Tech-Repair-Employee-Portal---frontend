@@ -1,5 +1,6 @@
 import { SetStepsInErrorPayload } from '../../../types';
 import { DescriptionObjectsArray } from '../../wrappers';
+import { PreviewSurveyProps } from '../previewSurvey/types';
 import {
   SurveyRecipient,
   SurveyResponseInput,
@@ -47,7 +48,11 @@ type SurveyBuilderState = {
   triggerFormSubmit: boolean;
   submitButtonDisabled: boolean;
   triggerPreviewSurvey: boolean;
-  // previewSurveyMap: Map<string, string>
+  previewSurveyProps: {
+    surveyTitle: string;
+    surveyDescription: string;
+    surveyQuestions: SurveyQuestions[];
+  };
 
   stepperDescriptionObjects: DescriptionObjectsArray;
   currentStepperPosition: number;
@@ -103,6 +108,7 @@ type SurveyBuilderAction = {
   setTriggerFormSubmit: 'setTriggerFormSubmit';
   setSubmitButtonDisabled: 'setSubmitButtonDisabled';
   setTriggerPreviewSurvey: 'setTriggerPreviewSurvey';
+  setPreviewSurveyProps: 'setPreviewSurveyProps';
 
   updateStepperDescriptionObjects: 'updateStepperDescriptionObjects';
   createStepperDescriptionObjects: 'createStepperDescriptionObjects';
@@ -241,6 +247,10 @@ type SurveyBuilderDispatch =
   | {
       type: SurveyBuilderAction['setSurveyStatistics'];
       payload: SurveyStatistics[];
+    }
+  | {
+      type: SurveyBuilderAction['setPreviewSurveyProps'];
+      payload: Omit<PreviewSurveyProps, 'closePreviewSurveyModal'>;
     };
 
 type SurveyBuilderReducer = (

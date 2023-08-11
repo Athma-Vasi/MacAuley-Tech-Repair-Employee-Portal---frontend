@@ -5,46 +5,41 @@ type PreviewSurveyProps = {
   surveyTitle: string;
   surveyDescription: string;
   surveyQuestions: SurveyQuestions[];
+  closePreviewSurveyModal: () => void;
 };
 
-/**
- * type SetSurveyQuestionsOutput = {
-  question: string;
-  responseKind: SurveyResponseKind;
-  responseInput: SurveyResponseInput;
-  responseDataOptions: string[] | [];
-}[];
- */
 type PreviewSurveyState = {
-  surveyResponsesMap: Map<string, string | string[]>; // Map<question, response>
+  surveyResponsesMap: Map<string, string | string[] | number>; // Map<question, response>
   questionsResponseInputMap: Map<string, string>; // Map<question, responseInput>
   questionsResponseDataOptionsMap: Map<string, string[]>; // Map<question, responseDataOptions>
+  genericProps: {
+    question: string;
+    rating: number;
+  }; // for rating
 
   stepperDescriptionsArray: DescriptionObjectsArray;
   currentStepperPosition: number;
   stepsInError: Set<number>;
-
-  isLoading: boolean;
-  loadingMessage: string;
 };
 
 type PreviewSurveyAction = {
   setSurveyResponsesMap: 'setSurveyResponsesMap';
   setQuestionsResponseInputMap: 'setQuestionsResponseInputMap';
   setQuestionsResponseDataOptionsMap: 'setQuestionsResponseDataOptionsMap';
+  setGenericProps: 'setGenericProps'; // for rating
 
   setStepperDescriptionsArray: 'setStepperDescriptionsArray';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
-
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
 };
 
 type PreviewSurveyDispatch =
   | {
       type: PreviewSurveyAction['setSurveyResponsesMap'];
-      payload: Map<string, string | string[]>;
+      payload: {
+        question: string;
+        response: string | string[] | number;
+      };
     }
   | {
       type: PreviewSurveyAction['setQuestionsResponseInputMap'];
@@ -53,6 +48,13 @@ type PreviewSurveyDispatch =
   | {
       type: PreviewSurveyAction['setQuestionsResponseDataOptionsMap'];
       payload: Map<string, string[]>;
+    }
+  | {
+      type: PreviewSurveyAction['setGenericProps'];
+      payload: {
+        question: string;
+        rating: number;
+      };
     }
   | {
       type: PreviewSurveyAction['setStepperDescriptionsArray'];
@@ -65,14 +67,6 @@ type PreviewSurveyDispatch =
   | {
       type: PreviewSurveyAction['setStepsInError'];
       payload: SetStepsInErrorPayload;
-    }
-  | {
-      type: PreviewSurveyAction['setIsLoading'];
-      payload: boolean;
-    }
-  | {
-      type: PreviewSurveyAction['setLoadingMessage'];
-      payload: string;
     };
 
 type PreviewSurveyReducer = (
