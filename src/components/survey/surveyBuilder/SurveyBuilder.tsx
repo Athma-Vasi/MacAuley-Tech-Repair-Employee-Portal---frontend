@@ -1,8 +1,15 @@
-import { Flex, Modal, Text } from '@mantine/core';
+import { Flex, Modal, Text, Title } from '@mantine/core';
 import { Group, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
-import { TbHelp, TbPlus, TbUpload } from 'react-icons/tb';
+import {
+  ChangeEvent,
+  Fragment,
+  MouseEvent,
+  useEffect,
+  useReducer,
+  useRef,
+} from 'react';
+import { TbChartPie, TbEye, TbHelp, TbPlus, TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -13,16 +20,22 @@ import {
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
+  returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleDateTimeElements,
   returnAccessibleDynamicRadioGroupInputsElements,
   returnAccessibleDynamicTextInputElements,
   returnAccessibleErrorValidTextElements,
   returnAccessibleErrorValidTextElementsForDynamicInputs,
+  returnAccessibleRadioGroupInputsElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { ResourceRequestServerResponse } from '../../../types';
+import {
+  CheckBoxMultipleData,
+  RadioGroupInputData,
+  ResourceRequestServerResponse,
+} from '../../../types';
 import {
   addFieldsToObject,
   logState,
@@ -33,15 +46,18 @@ import {
 import { CustomNotification } from '../../customNotification';
 import {
   AccessibleButtonCreatorInfo,
+  AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
+  DescriptionObjectsArray,
   FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
 import {
+  SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
   SURVEY_BUILDER_INPUT_HTML_DATA,
   SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
   SURVEY_BUILDER_RECIPIENT_DATA,
@@ -59,6 +75,7 @@ import {
   surveyBuilderAction,
   surveyBuilderReducer,
 } from './state';
+import { CustomRating } from '../../customRating/CustomRating';
 
 function SurveyBuilder() {
   /** ------------- begin hooks ------------- */
@@ -101,6 +118,7 @@ function SurveyBuilder() {
 
     triggerFormSubmit,
     submitButtonDisabled,
+    triggerPreviewSurvey,
 
     stepperDescriptionObjects,
     currentStepperPosition,
@@ -115,13 +133,17 @@ function SurveyBuilder() {
     isLoading,
     loadingMessage,
   } = surveyBuilderState;
-
-  const [openedHelpModal, { open: openHelpModal, close: closeHelpModal }] =
-    useDisclosure(false);
   const {
     authState: { accessToken },
   } = useAuth();
-  const navigate = useNavigate();
+
+  const [openedHelpModal, { open: openHelpModal, close: closeHelpModal }] =
+    useDisclosure(false);
+  const [
+    openedPreviewSurveyModal,
+    { open: openPreviewSurveyModal, close: closePreviewSurveyModal },
+  ] = useDisclosure(false);
+
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -493,6 +515,7 @@ function SurveyBuilder() {
     );
   }, [areResponseDataOptionsValid]);
 
+  // submit survey form
   useEffect(() => {
     let isMounted = true;
     const surveyQuestions = setSurveyQuestions({
@@ -589,7 +612,8 @@ function SurveyBuilder() {
     }
 
     if (triggerFormSubmit) {
-      handleSurveySubmit();
+      // handleSurveySubmit();
+      console.log('surveyQuestions', surveyQuestions);
     }
 
     return () => {
@@ -963,12 +987,12 @@ function SurveyBuilder() {
           length: responseDataOptionsArray?.[questionIdx]?.length,
         }).map((_, optionIdx) => {
           const dynamicInputLabel = `Delete ${
-            questions[questionIdx].length > 11
-              ? questions[questionIdx].slice(0, 11) + '...'
-              : questions[questionIdx]
-          } ${questions[questionIdx].length > 0 ? ':' : ''} ${
-            responseDataOptionsArray?.[questionIdx]?.[optionIdx].length > 11
-              ? responseDataOptionsArray?.[questionIdx]?.[optionIdx].slice(
+            questions?.[questionIdx]?.length > 11
+              ? questions?.[questionIdx].slice(0, 11) + '...'
+              : questions?.[questionIdx]
+          } ${questions?.[questionIdx]?.length > 0 ? ':' : ''} ${
+            responseDataOptionsArray?.[questionIdx]?.[optionIdx]?.length > 11
+              ? responseDataOptionsArray?.[questionIdx]?.[optionIdx]?.slice(
                   0,
                   11
                 ) + '...'
@@ -978,11 +1002,11 @@ function SurveyBuilder() {
           const creatorInfoObject: AccessibleTextInputCreatorInfo = {
             description: {
               error:
-                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[0][
+                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[0]?.[
                   optionIdx
                 ],
               valid:
-                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[1][
+                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[1]?.[
                   optionIdx
                 ],
             },
@@ -1136,6 +1160,7 @@ function SurveyBuilder() {
     semanticDescription: 'survey builder form submit button',
     semanticName: 'submit button',
     leftIcon: <TbUpload />,
+    rightIcon: <TbChartPie />,
     buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setTriggerFormSubmit,
@@ -1154,72 +1179,24 @@ function SurveyBuilder() {
       openHelpModal();
     },
   };
+
+  const previewSurveyButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Preview Survey',
+    semanticDescription: 'survey builder preview survey button',
+    semanticName: 'preview survey button',
+    leftIcon: <TbEye />,
+    buttonOnClick: () => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setTriggerPreviewSurvey,
+        payload: true,
+      });
+    },
+    buttonDisabled: submitButtonDisabled,
+  };
+
   /** ------------- end input creators info objects ------------- */
 
   /** ------------- begin input creators ------------- */
-  const [createdSurveyDescriptionTextAreaInput] =
-    returnAccessibleTextAreaInputElements([
-      surveyDescriptionTextAreaInputCreatorInfo,
-    ]);
-
-  const [createdSurveyRecipientsSelectInput] =
-    returnAccessibleSelectInputElements([
-      surveyRecipientsSelectInputCreatorInfo,
-    ]);
-
-  const [createdExpiryDateInput] = returnAccessibleDateTimeElements([
-    expiryDateInputCreatorInfo,
-  ]);
-
-  const [createdSurveyTitleInput] = returnAccessibleTextInputElements([
-    surveyTitleInputCreatorInfo,
-  ]);
-
-  const createdQuestionsTextInputs = returnAccessibleDynamicTextInputElements(
-    questionsInputCreatorInfo
-  );
-
-  const createdResponseDataOptionsTextInputs =
-    responseDataOptionsTextInputCreatorInfoArray.map(
-      (responseDataOptionsTextInputCreatorInfo, index) =>
-        responseInputHtml[index] === 'checkbox' ||
-        responseInputHtml[index] === 'radio'
-          ? returnAccessibleDynamicTextInputElements(
-              responseDataOptionsTextInputCreatorInfo
-            )
-          : null
-    );
-
-  const createdResponseKindRadioGroups =
-    returnAccessibleDynamicRadioGroupInputsElements(
-      responseKindRadioGroupCreatorInfo
-    );
-
-  const createdResponseInputHtmlRadioGroups =
-    returnAccessibleDynamicRadioGroupInputsElements(
-      responseInputHtmlRadioGroupCreatorInfo
-    );
-
-  const [createdAddNewQuestionButton, createdHelpButton, createdSubmitButton] =
-    returnAccessibleButtonElements([
-      addNewQuestionButtonCreatorInfo,
-      helpButtonCreatorInfo,
-      submitButtonCreatorInfo,
-    ]);
-
-  const createdAddNewResponseDataOptionButtons =
-    addNewResponseDataOptionButtonCreatorInfo.map(
-      (addNewResponseDataOptionButtonCreatorInfo, index) =>
-        responseInputHtml[index] === 'checkbox' ||
-        responseInputHtml[index] === 'radio'
-          ? returnAccessibleButtonElements([
-              addNewResponseDataOptionButtonCreatorInfo,
-            ])
-          : null
-    );
-  /** ------------- end input creators ------------- */
-
-  /** ------------- begin layout ------------- */
   const displayHelpTextModal = (
     <Modal
       opened={openedHelpModal}
@@ -1282,10 +1259,77 @@ function SurveyBuilder() {
     </Modal>
   );
 
-  const maxStepperPosition = stepperDescriptionObjects.length;
-  const displaySubmitButton =
-    currentStepperPosition === maxStepperPosition ? createdSubmitButton : null;
+  const [createdSurveyDescriptionTextAreaInput] =
+    returnAccessibleTextAreaInputElements([
+      surveyDescriptionTextAreaInputCreatorInfo,
+    ]);
 
+  const [createdSurveyRecipientsSelectInput] =
+    returnAccessibleSelectInputElements([
+      surveyRecipientsSelectInputCreatorInfo,
+    ]);
+
+  const [createdExpiryDateInput] = returnAccessibleDateTimeElements([
+    expiryDateInputCreatorInfo,
+  ]);
+
+  const [createdSurveyTitleInput] = returnAccessibleTextInputElements([
+    surveyTitleInputCreatorInfo,
+  ]);
+
+  const createdQuestionsTextInputs = returnAccessibleDynamicTextInputElements(
+    questionsInputCreatorInfo
+  );
+
+  const createdResponseDataOptionsTextInputs =
+    responseDataOptionsTextInputCreatorInfoArray.map(
+      (responseDataOptionsTextInputCreatorInfo, index) =>
+        responseInputHtml[index] === 'checkbox' ||
+        responseInputHtml[index] === 'radio'
+          ? returnAccessibleDynamicTextInputElements(
+              responseDataOptionsTextInputCreatorInfo
+            )
+          : null
+    );
+
+  const createdResponseKindRadioGroups =
+    returnAccessibleDynamicRadioGroupInputsElements(
+      responseKindRadioGroupCreatorInfo
+    );
+
+  const createdResponseInputHtmlRadioGroups =
+    returnAccessibleDynamicRadioGroupInputsElements(
+      responseInputHtmlRadioGroupCreatorInfo
+    );
+
+  const [
+    createdAddNewQuestionButton,
+    createdHelpButton,
+    createdSubmitButton,
+    createdPreviewSurveyButton,
+  ] = returnAccessibleButtonElements([
+    addNewQuestionButtonCreatorInfo,
+    helpButtonCreatorInfo,
+    submitButtonCreatorInfo,
+    previewSurveyButtonCreatorInfo,
+  ]);
+
+  const createdAddNewResponseDataOptionButtons =
+    addNewResponseDataOptionButtonCreatorInfo.map(
+      (addNewResponseDataOptionButtonCreatorInfo, index) =>
+        responseInputHtml[index] === 'checkbox' ||
+        responseInputHtml[index] === 'radio'
+          ? returnAccessibleButtonElements([
+              addNewResponseDataOptionButtonCreatorInfo,
+            ])
+          : null
+    );
+
+  /** ------------- end input creators ------------- */
+
+  /** ------------- begin layout ------------- */
+
+  const maxStepperPosition = stepperDescriptionObjects.length;
   const displayAddNewQuestionButton = isMaxQuestionsReached
     ? null
     : createdAddNewQuestionButton;
@@ -1311,6 +1355,14 @@ function SurveyBuilder() {
 
   const displaySurveyBuilderReviewPage = <h4>survey builder review page</h4>;
 
+  const displaySubmitPreviewButtons =
+    currentStepperPosition === maxStepperPosition ? (
+      <Group w="100%" position="center">
+        {createdSubmitButton}
+        {createdPreviewSurveyButton}
+      </Group>
+    ) : null;
+
   const questionsLength = questions.length;
 
   const displaySurveyBuilderForm =
@@ -1323,7 +1375,7 @@ function SurveyBuilder() {
     ) : currentStepperPosition === maxStepperPosition - 1 ? (
       displaySurveyBuilderReviewPage
     ) : currentStepperPosition === maxStepperPosition ? (
-      displaySubmitButton
+      displaySubmitPreviewButtons
     ) : currentStepperPosition === maxStepperPosition - questionsLength ? (
       <FormLayoutWrapper>
         {mergedSurveyQuestionsGroups.slice(

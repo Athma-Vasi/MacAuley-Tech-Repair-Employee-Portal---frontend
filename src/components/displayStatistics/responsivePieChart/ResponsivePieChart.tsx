@@ -1158,7 +1158,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Grid
       columns={1}
       h={width < 1192 ? '38vh' : '70vh'}
-      style={{ overflowY: 'scroll' }}
+      style={{
+        overflowY: 'scroll',
+        borderRight: '1px solid #e0e0e0',
+        // boxShadow: '0 0 10px #e0e0e0',
+      }}
       py={padding}
     >
       <Grid.Col span={1}>{displayBaseSection}</Grid.Col>

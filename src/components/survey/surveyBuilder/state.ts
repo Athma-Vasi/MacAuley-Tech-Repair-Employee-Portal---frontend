@@ -56,6 +56,7 @@ const initialSurveyBuilderState: SurveyBuilderState = {
 
   triggerFormSubmit: false,
   submitButtonDisabled: false,
+  triggerPreviewSurvey: false,
 
   stepperDescriptionObjects: initialDescriptionObjects,
   currentStepperPosition: 0,
@@ -111,6 +112,7 @@ const surveyBuilderAction: SurveyBuilderAction = {
 
   setTriggerFormSubmit: 'setTriggerFormSubmit',
   setSubmitButtonDisabled: 'setSubmitButtonDisabled',
+  setTriggerPreviewSurvey: 'setTriggerPreviewSurvey',
 
   updateStepperDescriptionObjects: 'updateStepperDescriptionObjects',
   createStepperDescriptionObjects: 'createStepperDescriptionObjects',
@@ -529,6 +531,12 @@ function surveyBuilderReducer(
       return {
         ...state,
         submitButtonDisabled: action.payload,
+      };
+
+    case surveyBuilderAction.setTriggerPreviewSurvey:
+      return {
+        ...state,
+        triggerPreviewSurvey: action.payload,
       };
 
     case surveyBuilderAction.createStepperDescriptionObjects: {

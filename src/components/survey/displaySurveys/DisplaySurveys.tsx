@@ -768,7 +768,7 @@ function DisplaySurveys() {
       return acc;
     },
     // create an initial array of arrays with the same length as uncompletedSurveys
-    Array.from({ length: uncompletedSurveys.length }).map(() => [])
+    Array.from({ length: uncompletedSurveys.length }, () => [])
   );
 
   // each survey has its own stepper navigation and each question is a step

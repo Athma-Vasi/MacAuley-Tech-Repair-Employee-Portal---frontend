@@ -7,13 +7,6 @@ import {
 import { DescriptionObjectsArray } from '../../wrappers';
 import { SurveyRecipient, SurveyStatistics } from '../types';
 
-type SetSurveyQuestionsInput = {
-  questions: string[];
-  responseKinds: string[];
-  responseInputHtml: string[];
-  responseDataOptionsArray: string[][];
-};
-
 type SurveyBuilderState = {
   surveyTitle: string;
   isValidSurveyTitle: boolean;
@@ -46,6 +39,8 @@ type SurveyBuilderState = {
 
   triggerFormSubmit: boolean;
   submitButtonDisabled: boolean;
+  triggerPreviewSurvey: boolean;
+  // previewSurveyMap: Map<string, string>
 
   stepperDescriptionObjects: DescriptionObjectsArray;
   currentStepperPosition: number;
@@ -100,6 +95,7 @@ type SurveyBuilderAction = {
 
   setTriggerFormSubmit: 'setTriggerFormSubmit';
   setSubmitButtonDisabled: 'setSubmitButtonDisabled';
+  setTriggerPreviewSurvey: 'setTriggerPreviewSurvey';
 
   updateStepperDescriptionObjects: 'updateStepperDescriptionObjects';
   createStepperDescriptionObjects: 'createStepperDescriptionObjects';
@@ -140,6 +136,7 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setIsMaxQuestionsReached']
         | SurveyBuilderAction['setTriggerFormSubmit']
         | SurveyBuilderAction['setSubmitButtonDisabled']
+        | SurveyBuilderAction['setTriggerPreviewSurvey']
         | SurveyBuilderAction['setIsError']
         | SurveyBuilderAction['setIsSubmitting']
         | SurveyBuilderAction['setIsSuccessful']
@@ -245,7 +242,6 @@ type SurveyBuilderReducer = (
 ) => SurveyBuilderState;
 
 export type {
-  SetSurveyQuestionsInput,
   SurveyBuilderAction,
   SurveyBuilderDispatch,
   SurveyBuilderReducer,

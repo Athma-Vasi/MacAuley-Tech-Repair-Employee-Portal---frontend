@@ -1,7 +1,7 @@
 import { Group, Stack } from '@mantine/core';
 
 import { addFieldsToObject } from '../../utils';
-import { SetSurveyQuestionsInput } from './surveyBuilder/types';
+import { SurveyResponseInput, SurveyResponseKind } from './types';
 
 type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
@@ -66,14 +66,34 @@ function groupMergedQuestionsByAmount({
   }, []);
 }
 
+type SetSurveyQuestionsInput = {
+  questions: string[];
+  responseKinds: string[];
+  responseInputHtml: string[];
+  responseDataOptionsArray: string[][];
+};
+
+type SetSurveyQuestionsOutput = {
+  question: string;
+  responseKind: SurveyResponseKind;
+  responseInput: SurveyResponseInput;
+  responseDataOptions: string[] | [];
+};
+
 function setSurveyQuestions({
   questions,
   responseKinds,
   responseInputHtml,
   responseDataOptionsArray,
-}: SetSurveyQuestionsInput) {
+}: SetSurveyQuestionsInput): SetSurveyQuestionsOutput[] {
+  // replace empty values in responseDataOptionsArray with empty array
+  // @see https://stackoverflow.com/questions/61700308/replace-the-empty-element-of-an-array-with-another-array-or-with-another-element
+  responseDataOptionsArray = Array.from(responseDataOptionsArray, (arr, idx) =>
+    idx in responseDataOptionsArray ? arr : []
+  );
+
   return questions.reduce(
-    (surveyQuestions: Record<string, string>[], question, questionIdx) => {
+    (surveyQuestions: SetSurveyQuestionsOutput[], question, questionIdx) => {
       const surveyObject = addFieldsToObject({
         object: Object.create(null),
         fieldValuesTuples: [
@@ -82,7 +102,7 @@ function setSurveyQuestions({
           ['responseInput', responseInputHtml[questionIdx]],
           ['responseDataOptions', responseDataOptionsArray[questionIdx]] ?? [],
         ],
-      });
+      }) as SetSurveyQuestionsOutput;
       surveyQuestions.push(surveyObject);
 
       return surveyQuestions;

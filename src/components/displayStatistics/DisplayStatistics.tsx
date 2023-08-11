@@ -1,4 +1,4 @@
-import { Card, Flex, Group, Modal, Stack, Text } from '@mantine/core';
+import { Card, Flex, Group, Modal, Stack, Text, Title } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useGlobalState } from '../../hooks';
@@ -281,25 +281,81 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     </Stack>
   );
 
-  const createdStatisticsSection = (
+  const createdModalHeadingSection = (
     <Stack w="100%">
-      <Flex w="100%" align="center" justify="space-between" wrap="wrap">
-        <Text color="dark" size="md">
-          {currentSelectedSurvey?.questions?.[modalPage - 1]?.question}
-        </Text>
-        <PageBuilder
-          total={currentSelectedSurvey?.questions?.length ?? 0}
-          setModalPage={displayStatisticsAction.setModalPage}
-          modalPageDispatch={displayStatisticsDispatch}
-        />
+      <Flex
+        w="100%"
+        align="center"
+        justify="space-between"
+        wrap="wrap"
+        // style={{ outline: '1px solid violet' }}
+        rowGap={rowGap}
+      >
+        <Group w="100%" position="apart">
+          <Group position="left">
+            <Title order={4} color="dark">
+              {currentSelectedSurvey?.surveyTitle ?? ''}
+            </Title>
+          </Group>
+          <Group position="right">
+            <PageBuilder
+              total={currentSelectedSurvey?.questions?.length ?? 0}
+              setModalPage={displayStatisticsAction.setModalPage}
+              modalPageDispatch={displayStatisticsDispatch}
+            />
+          </Group>
+        </Group>
+
+        <Group
+          w="100%"
+          position="apart"
+          style={{ borderBottom: '1px solid #e0e0e0' }}
+          pb={padding}
+        >
+          <Group
+            // w="100%"
+            position="left"
+            align="center"
+          >
+            <Text color="dark" size="md">
+              Question:{' '}
+            </Text>
+            <Text color="dark" size="md">
+              {currentSelectedSurvey?.questions?.[modalPage - 1]?.question}
+            </Text>
+          </Group>
+
+          {/* total responses */}
+          <Group
+            // w="100%"
+            position="left"
+            align="center"
+          >
+            <Text color="dark" size="md">
+              Total responses:{' '}
+            </Text>
+            <Text color="dark" size="md">
+              {totalResponsesMap
+                .get(currentSelectedSurvey?._id ?? '')
+                ?.get(
+                  currentSelectedSurvey?.questions?.[modalPage - 1]?.question ??
+                    ''
+                ) ?? 0}
+            </Text>
+          </Group>
+        </Group>
       </Flex>
     </Stack>
   );
 
   const displayResponsivePieChart = (
-    <Flex w="100%" h="100%" style={width < 1192 ? { overflowY: 'scroll' } : {}}>
+    <Flex
+      w="100%"
+      h="100%"
+      py={padding}
+      style={width < 1192 ? { overflowY: 'scroll' } : {}}
+    >
       <ResponsivePieChart pieChartData={currentlySelectedPieChartData ?? []} />
-      {/* {responsivePie} */}
     </Flex>
   );
 
@@ -307,11 +363,10 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     <Modal
       opened={openedStatisticsModal}
       onClose={closeStatisticsModal}
-      title={currentSelectedSurvey?.surveyTitle}
       centered
       size="calc(100vw - 2rem)"
     >
-      {createdStatisticsSection}
+      {createdModalHeadingSection}
       {displayResponsivePieChart}
     </Modal>
   );
