@@ -187,6 +187,15 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin input objects ------------- */
 
   /** ------------- begin base ------------- */
+  const sliderWidth =
+    width < 480
+      ? '217px'
+      : width < 768
+      ? `${width * 0.38}px`
+      : width < 1192
+      ? '500px'
+      : `${width * 0.17}px`;
+
   const startAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'start angle',
@@ -202,7 +211,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       });
     },
     sliderDefaultValue: 0,
-    width: 217,
+    width: sliderWidth,
   };
 
   const endAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
@@ -220,7 +229,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       });
     },
     sliderDefaultValue: 360,
-    width: 217,
+    width: sliderWidth,
   };
 
   const innerRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
@@ -239,7 +248,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       });
     },
     sliderDefaultValue: 0,
-    width: 217,
+    width: sliderWidth,
   };
 
   const padAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
@@ -257,7 +266,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       });
     },
     sliderDefaultValue: 0,
-    width: 217,
+    width: sliderWidth,
   };
 
   const cornerRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
@@ -275,7 +284,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       });
     },
     sliderDefaultValue: 0,
-    width: 217,
+    width: sliderWidth,
   };
 
   const createdSortByValueSwitchInput = (
@@ -307,7 +316,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const colorSchemeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: NIVO_COLOR_SCHEME_DATA,
     description: "Define chart's colors",
-    label: 'Color scheme',
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsivePieChartDispatch({
         type: responsivePieChartAction.setColorScheme,
@@ -315,6 +323,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       });
     },
     value: colorScheme,
+    width: sliderWidth,
   };
 
   const createdBorderColorInput = (
@@ -327,7 +336,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           payload: color,
         });
       }}
-      w={217}
+      w={sliderWidth}
     />
   );
 
@@ -372,7 +381,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       });
     },
     sliderDefaultValue: 0,
-    width: 217,
+    width: sliderWidth,
   };
   /** ------------- end style ------------- */
 
@@ -418,7 +427,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 0.5,
-      width: 217,
+      width: sliderWidth,
     };
 
   const arcLabelsSkipAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
@@ -437,7 +446,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 0,
-      width: 217,
+      width: sliderWidth,
     };
 
   const createdArcLabelsTextColorInput = (
@@ -450,7 +459,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           payload: color,
         });
       }}
-      w={217}
+      w={sliderWidth}
     />
   );
   /** ------------- end arc labels ------------- */
@@ -498,7 +507,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 0,
-      width: 217,
+      width: sliderWidth,
     };
 
   const arcLinkLabelsOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
@@ -517,7 +526,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 0,
-      width: 217,
+      width: sliderWidth,
     };
 
   const arcLinkLabelsDiagonalLengthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
@@ -536,7 +545,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 16,
-      width: 217,
+      width: sliderWidth,
     };
 
   const arcLinkLabelsStraightLengthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
@@ -555,7 +564,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 24,
-      width: 217,
+      width: sliderWidth,
     };
 
   const arcLinkLabelsTextOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
@@ -574,7 +583,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 6,
-      width: 217,
+      width: sliderWidth,
     };
 
   const arcLinkLabelsThicknessSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
@@ -593,7 +602,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 1,
-      width: 217,
+      width: sliderWidth,
     };
 
   const createdArcLinkLabelsTextColorInput = (
@@ -606,7 +615,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           payload: color,
         });
       }}
-      w={217}
+      w={sliderWidth}
     />
   );
   /** ------------- end arc link labels ------------- */
@@ -628,7 +637,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 0,
-      width: 217,
+      width: sliderWidth,
     };
 
   const activeOuterRadiusOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
@@ -647,7 +656,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       },
       sliderDefaultValue: 0,
-      width: 217,
+      width: sliderWidth,
     };
   /** ------------- end interactivity ------------- */
 
@@ -680,7 +689,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const motionConfigSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: NIVO_MOTION_CONFIG_DATA,
     description: 'Configure react-spring.',
-    label: 'motion configuration',
     value: motionConfig,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsivePieChartDispatch({
@@ -688,13 +696,13 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         payload: event.currentTarget.value as NivoMotionConfig,
       });
     },
+    width: sliderWidth,
   };
 
   const transitionModeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       data: NIVO_TRANSITION_MODE_DATA,
       description: 'Define how transitions behave.',
-      label: 'transition mode',
       value: transitionMode,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsivePieChartDispatch({
@@ -702,6 +710,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           payload: event.currentTarget.value as NivoTransitionMode,
         });
       },
+      width: sliderWidth,
     };
   /** ------------- end motion ------------- */
 
@@ -879,9 +888,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayColorSchemeSelectInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
-      {createdColorSchemeSelectInput}
-    </Group>
+    <PieChartControlsStack
+      input={createdColorSchemeSelectInput}
+      label="Color scheme"
+      value={colorScheme}
+    />
   );
 
   const displayBorderColorInput = (
@@ -1134,15 +1145,19 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayMotionConfigSelectInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
-      {createdMotionConfigSelectInput}
-    </Group>
+    <PieChartControlsStack
+      input={createdMotionConfigSelectInput}
+      label="Motion configuration"
+      value={motionConfig}
+    />
   );
 
   const displayTransitionModeSelectInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
-      {createdTransitionModeSelectInput}
-    </Group>
+    <PieChartControlsStack
+      input={createdTransitionModeSelectInput}
+      label="Transition mode"
+      value={transitionMode}
+    />
   );
 
   const displayMotionSection = (
@@ -1161,6 +1176,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       style={{
         overflowY: 'scroll',
         borderRight: '1px solid #e0e0e0',
+        borderBottom: width < 1192 ? '1px solid #e0e0e0' : '',
         // boxShadow: '0 0 10px #e0e0e0',
       }}
       py={padding}
@@ -1235,11 +1251,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayResponsivePieChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 11} w="100%" h="70vh">
+    <Grid columns={width < 1192 ? 1 : 12} w="100%" h="70vh">
       <Grid.Col span={width < 1192 ? 1 : 4} h={width < 1192 ? '38vh' : '70vh'}>
         {displayPieChartControls}
       </Grid.Col>
-      <Grid.Col span={width < 1192 ? 1 : 7} h="100%">
+      <Grid.Col span={width < 1192 ? 1 : 8} h="100%">
         {displayResponsivePie}
       </Grid.Col>
     </Grid>

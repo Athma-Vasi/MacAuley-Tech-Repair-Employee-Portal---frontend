@@ -6,7 +6,7 @@ import { SelectInputData } from '../../types';
 
 type AccessibleSelectInputCreatorInfo = {
   data: string[] | SelectInputData;
-  label: string;
+  label?: string;
   description: string;
   describedBy?: string;
   value: string;
@@ -14,6 +14,7 @@ type AccessibleSelectInputCreatorInfo = {
   withAsterisk?: boolean;
   ref?: RefObject<HTMLSelectElement>;
   required?: boolean;
+  width?: string | number;
 };
 
 type NativeSelectWrapperProps = {
@@ -22,12 +23,8 @@ type NativeSelectWrapperProps = {
 
 function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
   const {
-    globalState: { width },
-  } = useGlobalState();
-
-  const {
     data,
-    label,
+    label = '',
     description,
     describedBy = '',
     value,
@@ -35,6 +32,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     withAsterisk = false,
     ref = null,
     required = false,
+    width = '100%',
   } = creatorInfoObject;
 
   const selectInputSize = 'sm';
@@ -43,7 +41,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     <NativeSelect
       size={selectInputSize}
       data={data}
-      label={`${label.charAt(0).toUpperCase() + label.slice(1)}:`}
+      label={`${label.charAt(0).toUpperCase() + label.slice(1)}`}
       aria-label={`Currently selected ${value}`}
       aria-required={required}
       description={description}
@@ -54,7 +52,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
       name={label.split(' ').join('-').toLowerCase()}
       withAsterisk={withAsterisk}
       required={required}
-      w="100%"
+      w={width}
     />
   );
 }

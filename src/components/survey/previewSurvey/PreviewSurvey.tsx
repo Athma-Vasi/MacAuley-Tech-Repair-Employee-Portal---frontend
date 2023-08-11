@@ -145,7 +145,7 @@ function PreviewSurvey({
 
       // iterate through responses and add or remove the step from the steps in error
       surveyResponsesArray.forEach((surveyResponse, idx) => {
-        const { question, response } = surveyResponse;
+        const { response } = surveyResponse;
 
         // the user did not respond to the question
         if (
@@ -394,7 +394,7 @@ function PreviewSurvey({
 
           const createdStarsRatingInput = (
             <CustomRating
-              controlledValue={value}
+              controlledValue={value ?? 0}
               question={question}
               ratingKind="stars"
               dynamicComponentProps={dynamicComponentProps}
@@ -445,7 +445,7 @@ function PreviewSurvey({
     },
   ]);
   const displaySubmitButton = (
-    <Tooltip label={`Submit ${surveyTitle}`}>
+    <Tooltip label={'Will not submit response. Closes modal.'}>
       <Group w="100%" position="center">
         {createdSubmitButton}
       </Group>

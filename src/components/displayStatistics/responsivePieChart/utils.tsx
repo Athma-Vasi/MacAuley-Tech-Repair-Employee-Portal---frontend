@@ -1,6 +1,7 @@
 import { Flex, Group } from '@mantine/core';
 import { useGlobalState } from '../../../hooks';
 import { TextWrapper } from '../../wrappers';
+import { splitCamelCase } from '../../../utils';
 
 function PieChartControlsStack({
   label,
@@ -14,7 +15,7 @@ function PieChartControlsStack({
   symbol?: string;
 }) {
   const {
-    globalState: { padding, rowGap, width },
+    globalState: { padding, rowGap },
   } = useGlobalState();
 
   return (
@@ -24,8 +25,9 @@ function PieChartControlsStack({
       wrap="wrap"
       w="100%"
       style={{ borderBottom: '1px solid #e0e0e0' }}
-      p={padding}
-      rowGap={rowGap}
+      px={padding}
+      py="xs"
+      // rowGap={rowGap}
       //   columnGap={rowGap}
     >
       <TextWrapper creatorInfoObj={{}}>{label}</TextWrapper>
@@ -39,7 +41,7 @@ function PieChartControlsStack({
         w="100%"
       >
         <TextWrapper creatorInfoObj={{}} aria-live="polite">
-          {value} {symbol}
+          {splitCamelCase(value.toString())} {symbol}
         </TextWrapper>
         <Group>{input}</Group>
       </Flex>
