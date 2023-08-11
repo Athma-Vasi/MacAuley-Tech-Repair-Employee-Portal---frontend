@@ -68,6 +68,27 @@ type FillPatternObject = {
   id: string;
 };
 
+type LegendAnchor =
+  | 'top'
+  | 'top-right'
+  | 'right'
+  | 'bottom-right'
+  | 'bottom'
+  | 'bottom-left'
+  | 'left'
+  | 'top-left'
+  | 'center';
+
+type LegendDirection = 'row' | 'column';
+
+type LegendItemDirection =
+  | 'left-to-right'
+  | 'right-to-left'
+  | 'top-to-bottom'
+  | 'bottom-to-top';
+
+type LegendSymbolShape = 'circle' | 'diamond' | 'square' | 'triangle';
+
 type ResponsivePieChartState = {
   /** base */
   startAngle: number; // -180 - 360 default: 0 step: 1
@@ -108,6 +129,24 @@ type ResponsivePieChartState = {
   animate: boolean; // default: true
   motionConfig: NivoMotionConfig;
   transitionMode: NivoTransitionMode;
+
+  /** legend */
+  enableLegend: boolean; // default: true
+  anchor: LegendAnchor; // default: bottom
+  direction: LegendDirection; // default: row
+  justify: boolean; // default: false
+  translateX: number; // -200px - 200px default: 0 step: 1
+  translateY: number; // -200px - 200px default: 0 step: 1
+  itemsSpacing: number; // 0px - 60px default: 0 step: 1
+  itemWidth: number; // 10px - 200px default: 60 step: 1
+  itemHeight: number; // 10px - 200px default: 20 step: 1
+  itemDirection: LegendItemDirection; // default: left-to-right
+  itemTextColor: string; // default: #000000
+  symbolSize: number; // 2px - 60px default: 12 step: 1
+  symbolShape: LegendSymbolShape; // default: circle
+
+  symbolBorderColor: string; // default: #000000
+  symbolBorderWidth: number; // 0px - 10px default: 0 step: 1
 };
 
 type ResponsivePieChartAction = {
@@ -150,6 +189,23 @@ type ResponsivePieChartAction = {
   setAnimate: 'setAnimate';
   setMotionConfig: 'setMotionConfig';
   setTransitionMode: 'setTransitionMode';
+
+  /** legend */
+  setEnableLegend: 'setEnableLegend';
+  setAnchor: 'setAnchor';
+  setDirection: 'setDirection';
+  setJustify: 'setJustify';
+  setTranslateX: 'setTranslateX';
+  setTranslateY: 'setTranslateY';
+  setItemsSpacing: 'setItemsSpacing';
+  setItemWidth: 'setItemWidth';
+  setItemHeight: 'setItemHeight';
+  setItemDirection: 'setItemDirection';
+  setItemTextColor: 'setItemTextColor';
+  setSymbolSize: 'setSymbolSize';
+  setSymbolShape: 'setSymbolShape';
+  setSymbolBorderColor: 'setSymbolBorderColor';
+  setSymbolBorderWidth: 'setSymbolBorderWidth';
 };
 
 type ResponsivePieChartDispatch =
@@ -171,7 +227,14 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setArcLinkLabelsTextOffset']
         | ResponsivePieChartAction['setArcLinkLabelsThickness']
         | ResponsivePieChartAction['setActiveInnerRadiusOffset']
-        | ResponsivePieChartAction['setActiveOuterRadiusOffset'];
+        | ResponsivePieChartAction['setActiveOuterRadiusOffset']
+        | ResponsivePieChartAction['setTranslateX']
+        | ResponsivePieChartAction['setTranslateY']
+        | ResponsivePieChartAction['setItemsSpacing']
+        | ResponsivePieChartAction['setItemWidth']
+        | ResponsivePieChartAction['setItemHeight']
+        | ResponsivePieChartAction['setSymbolSize']
+        | ResponsivePieChartAction['setSymbolBorderWidth'];
 
       payload: number;
     }
@@ -182,7 +245,9 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setEnableFillPatterns']
         | ResponsivePieChartAction['setEnableArcLabels']
         | ResponsivePieChartAction['setEnableArcLinkLabels']
-        | ResponsivePieChartAction['setAnimate'];
+        | ResponsivePieChartAction['setAnimate']
+        | ResponsivePieChartAction['setEnableLegend']
+        | ResponsivePieChartAction['setJustify'];
 
       payload: boolean;
     }
@@ -198,7 +263,9 @@ type ResponsivePieChartDispatch =
       type:
         | ResponsivePieChartAction['setArcLabelsTextColor']
         | ResponsivePieChartAction['setBorderColor']
-        | ResponsivePieChartAction['setArcLinkLabelsTextColor'];
+        | ResponsivePieChartAction['setArcLinkLabelsTextColor']
+        | ResponsivePieChartAction['setItemTextColor']
+        | ResponsivePieChartAction['setSymbolBorderColor'];
 
       payload: string;
     }
@@ -209,6 +276,22 @@ type ResponsivePieChartDispatch =
   | {
       type: ResponsivePieChartAction['setTransitionMode'];
       payload: NivoTransitionMode;
+    }
+  | {
+      type: ResponsivePieChartAction['setAnchor'];
+      payload: LegendAnchor;
+    }
+  | {
+      type: ResponsivePieChartAction['setDirection'];
+      payload: LegendDirection;
+    }
+  | {
+      type: ResponsivePieChartAction['setItemDirection'];
+      payload: LegendItemDirection;
+    }
+  | {
+      type: ResponsivePieChartAction['setSymbolShape'];
+      payload: LegendSymbolShape;
     };
 
 type ResponsivePieChartReducer = (

@@ -298,7 +298,7 @@ function SurveyBuilder() {
       return;
     }
 
-    // each question group has a corresponding surveyStatistics object that is added to the final survey object form
+    // each question group has a corresponding surveyStatistics object that is added to the final survey object on submit
     const surveyStatistics = questions.reduce(
       (
         surveyStatisticsAcc: SurveyStatistics[],
@@ -323,7 +323,9 @@ function SurveyBuilder() {
           if (!responseDataOptions) {
             return surveyStatisticsAcc;
           }
-          //for 'checkbox' || 'radio', responseDistribution object has keys that are the response options and values that are the number of responses for that option (initialized to 0)
+          // all questions require an answer before submission, so there are no 'No responses' option
+
+          //for 'checkbox' || 'radio', responseDistribution object has keys that are the response options and values that are the total responses for that option (initialized to 0)
           const responseDistribution = responseDataOptions.reduce(
             (
               responseDistributionAcc: Record<string, 0>,
@@ -343,7 +345,9 @@ function SurveyBuilder() {
             object: surveyStatisticObj,
             fieldValuesTuples: [['responseDistribution', responseDistribution]],
           });
-        } else if (responseInput === 'agreeDisagree') {
+        }
+        // agreeDisagree inputs share the same responseDistribution structure
+        else if (responseInput === 'agreeDisagree') {
           const responseDistribution = {
             'Strongly disagree': 0,
             Disagree: 0,
