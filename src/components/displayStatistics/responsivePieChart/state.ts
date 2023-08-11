@@ -44,6 +44,23 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   animate: true,
   motionConfig: 'gentle',
   transitionMode: 'innerRadius',
+
+  /** legend */
+  enableLegend: true,
+  anchor: 'top-left',
+  direction: 'row',
+  justify: false,
+  translateX: 0,
+  translateY: 0,
+  itemsSpacing: 0,
+  itemWidth: 60,
+  itemHeight: 20,
+  itemDirection: 'left-to-right',
+  itemTextColor: '#999',
+  symbolSize: 20,
+  symbolShape: 'circle',
+  symbolBorderColor: 'rgba(0, 0, 0, .5)',
+  symbolBorderWidth: 1,
 };
 
 const responsivePieChartAction: ResponsivePieChartAction = {
@@ -86,6 +103,23 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setAnimate: 'setAnimate',
   setMotionConfig: 'setMotionConfig',
   setTransitionMode: 'setTransitionMode',
+
+  /** legend */
+  setEnableLegend: 'setEnableLegend',
+  setAnchor: 'setAnchor',
+  setDirection: 'setDirection',
+  setJustify: 'setJustify',
+  setTranslateX: 'setTranslateX',
+  setTranslateY: 'setTranslateY',
+  setItemsSpacing: 'setItemsSpacing',
+  setItemWidth: 'setItemWidth',
+  setItemHeight: 'setItemHeight',
+  setItemDirection: 'setItemDirection',
+  setItemTextColor: 'setItemTextColor',
+  setSymbolSize: 'setSymbolSize',
+  setSymbolShape: 'setSymbolShape',
+  setSymbolBorderColor: 'setSymbolBorderColor',
+  setSymbolBorderWidth: 'setSymbolBorderWidth',
 };
 
 function responsivePieChartReducer(
@@ -243,6 +277,83 @@ function responsivePieChartReducer(
       return {
         ...state,
         transitionMode: action.payload,
+      };
+
+    /** legend */
+    case responsivePieChartAction.setEnableLegend:
+      return {
+        ...state,
+        enableLegend: action.payload,
+      };
+    case responsivePieChartAction.setAnchor:
+      return {
+        ...state,
+        anchor: action.payload,
+      };
+    case responsivePieChartAction.setDirection:
+      return {
+        ...state,
+        direction: action.payload,
+      };
+    case responsivePieChartAction.setJustify:
+      return {
+        ...state,
+        justify: action.payload,
+      };
+    case responsivePieChartAction.setTranslateX:
+      return {
+        ...state,
+        translateX: action.payload,
+      };
+    case responsivePieChartAction.setTranslateY:
+      return {
+        ...state,
+        translateY: action.payload,
+      };
+    case responsivePieChartAction.setItemsSpacing:
+      return {
+        ...state,
+        itemsSpacing: action.payload,
+      };
+    case responsivePieChartAction.setItemWidth:
+      return {
+        ...state,
+        itemWidth: action.payload,
+      };
+    case responsivePieChartAction.setItemHeight:
+      return {
+        ...state,
+        itemHeight: action.payload,
+      };
+    case responsivePieChartAction.setItemDirection:
+      return {
+        ...state,
+        itemDirection: action.payload,
+      };
+    case responsivePieChartAction.setItemTextColor:
+      return {
+        ...state,
+        itemTextColor: action.payload,
+      };
+    case responsivePieChartAction.setSymbolSize:
+      return {
+        ...state,
+        symbolSize: action.payload,
+      };
+    case responsivePieChartAction.setSymbolShape:
+      return {
+        ...state,
+        symbolShape: action.payload,
+      };
+    case responsivePieChartAction.setSymbolBorderColor:
+      return {
+        ...state,
+        symbolBorderColor: action.payload,
+      };
+    case responsivePieChartAction.setSymbolBorderWidth:
+      return {
+        ...state,
+        symbolBorderWidth: action.payload,
       };
 
     default:
