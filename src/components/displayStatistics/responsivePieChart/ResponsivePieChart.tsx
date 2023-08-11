@@ -26,6 +26,10 @@ import {
 import { PieChartData } from '../types';
 import {
   NIVO_COLOR_SCHEME_DATA,
+  NIVO_LEGEND_ANCHOR_DATA,
+  NIVO_LEGEND_DIRECTION_DATA,
+  NIVO_LEGEND_ITEM_DIRECTION_DATA,
+  NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
   NIVO_TRANSITION_MODE_DATA,
 } from './constants';
@@ -36,6 +40,10 @@ import {
 } from './state';
 import {
   FillPatternObject,
+  LegendAnchor,
+  LegendDirection,
+  LegendItemDirection,
+  LegendSymbolShape,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
@@ -83,6 +91,20 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     animate, // default: true
     motionConfig,
     transitionMode,
+
+    enableLegend, // default: true
+    anchor, // default: bottom
+    direction, // default: row
+    justify, // default: false
+    translateX, // -200px - 200px default: 0 step: 1
+    translateY, // -200px - 200px default: 0 step: 1
+    itemsSpacing, // 0px - 60px default: 0 step: 1
+    itemWidth, // 10px - 200px default: 60 step: 1
+    itemHeight, // 10px - 200px default: 20 step: 1
+    itemDirection, // default: left-to-right
+    itemTextColor, // default: #000000
+    symbolSize, // 2px - 60px default: 12 step: 1
+    symbolShape, // default: circle
   } = responsivePieChartState;
 
   const {
@@ -182,10 +204,32 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       selectedDescription: 'Transitions will be enabled.',
       theme: 'muted',
     });
+
+  const [
+    enableLegendAccessibleSelectedText,
+    enableLegendAccessibleDeselectedText,
+  ] = returnAccessibleSelectedDeselectedTextElements({
+    isSelected: enableLegend,
+    semanticName: 'enable legend',
+    deselectedDescription: 'Legend will not be displayed.',
+    selectedDescription: 'Legend will be displayed.',
+    theme: 'muted',
+  });
+
+  // legend justify description texts
+  const [
+    enableLegendJustifyAccessibleSelectedText,
+    enableLegendJustifyAccessibleDeselectedText,
+  ] = returnAccessibleSelectedDeselectedTextElements({
+    isSelected: justify,
+    semanticName: 'justify',
+    deselectedDescription: 'Legend symbol and label will not be justified.',
+    selectedDescription: 'Legend symbol and label will be justified.',
+    theme: 'muted',
+  });
   /** ------------- end accessible description texts ------------- */
 
   /** ------------- begin input objects ------------- */
-
   /** ------------- begin base ------------- */
   const sliderWidth =
     width < 480
@@ -724,10 +768,245 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     };
   /** ------------- end motion ------------- */
 
+  /** ------------- begin legend ------------- */
+  const createdEnableLegendSwitchInput = (
+    <Switch
+      description={
+        enableLegend
+          ? enableLegendAccessibleSelectedText
+          : enableLegendAccessibleDeselectedText
+      }
+      aria-describedby={
+        enableLegend
+          ? enableLegendAccessibleSelectedText.props.id
+          : enableLegendAccessibleDeselectedText.props.id
+      }
+      label={
+        <TextWrapper creatorInfoObj={{ size: 'md' }}>Enable legend</TextWrapper>
+      }
+      checked={enableLegend}
+      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setEnableLegend,
+          payload: event.currentTarget.checked,
+        });
+      }}
+      w="100%"
+    />
+  );
+
+  const legendAnchorSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: NIVO_LEGEND_ANCHOR_DATA,
+    description: "Defines legend anchor relative to chart's viewport.",
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      responsivePieChartDispatch({
+        type: responsivePieChartAction.setAnchor,
+        payload: event.currentTarget.value as LegendAnchor,
+      });
+    },
+    value: anchor,
+    width: sliderWidth,
+  };
+
+  const legendDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: NIVO_LEGEND_DIRECTION_DATA,
+      description: 'Defines legend direction.',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setDirection,
+          payload: event.currentTarget.value as LegendDirection,
+        });
+      },
+      value: direction,
+      width: sliderWidth,
+    };
+
+  const createdEnableLegendJustifySwitchInput = (
+    <Switch
+      description={
+        justify
+          ? enableLegendJustifyAccessibleSelectedText
+          : enableLegendJustifyAccessibleDeselectedText
+      }
+      aria-describedby={
+        justify
+          ? enableLegendJustifyAccessibleSelectedText.props.id
+          : enableLegendJustifyAccessibleDeselectedText.props.id
+      }
+      label={<TextWrapper creatorInfoObj={{ size: 'md' }}>Justify</TextWrapper>}
+      checked={justify}
+      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setJustify,
+          payload: event.currentTarget.checked,
+        });
+      }}
+      w="100%"
+    />
+  );
+
+  const legendTranslateXSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      kind: 'slider',
+      label: (value) => <Text>{value}</Text>,
+      ariaLabel: 'Translate legend in x-axis: horizontal direction',
+
+      max: 200,
+      min: -200,
+      step: 1,
+      value: translateX,
+      onChangeSlider: (value: number) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setTranslateX,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 0,
+      width: sliderWidth,
+    };
+
+  const legendTranslateYSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      kind: 'slider',
+      label: (value) => <Text>{value}</Text>,
+      ariaLabel: 'Translate legend in y-axis: vertical direction',
+      max: 200,
+      min: -200,
+      step: 1,
+      value: translateY,
+      onChangeSlider: (value: number) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setTranslateY,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 0,
+      width: sliderWidth,
+    };
+
+  const legendItemsSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      kind: 'slider',
+      label: (value) => <Text>{value}</Text>,
+      ariaLabel: 'Legend items spacing',
+      max: 60,
+      min: 0,
+      step: 1,
+      value: itemsSpacing,
+      onChangeSlider: (value: number) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setItemsSpacing,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 0,
+      width: sliderWidth,
+    };
+
+  const legendItemWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      kind: 'slider',
+      label: (value) => <Text>{value}</Text>,
+      ariaLabel: 'Legend item width',
+      max: 200,
+      min: 10,
+      step: 1,
+      value: itemWidth,
+      onChangeSlider: (value: number) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setItemWidth,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 60,
+      width: sliderWidth,
+    };
+
+  const legendItemHeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      kind: 'slider',
+      label: (value) => <Text>{value}</Text>,
+      ariaLabel: 'Legend item height',
+      max: 200,
+      min: 10,
+      step: 1,
+      value: itemHeight,
+      onChangeSlider: (value: number) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setItemHeight,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 20,
+      width: sliderWidth,
+    };
+
+  const legendItemDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: NIVO_LEGEND_ITEM_DIRECTION_DATA,
+      description: 'Defines legend item direction.',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setItemDirection,
+          payload: event.currentTarget.value as LegendItemDirection,
+        });
+      },
+      value: itemDirection,
+      width: sliderWidth,
+    };
+
+  const legendItemTextColorInput = (
+    <ColorInput
+      aria-label="Legend item text color"
+      value={itemTextColor}
+      onChange={(color: string) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setItemTextColor,
+          payload: color,
+        });
+      }}
+      w={sliderWidth}
+    />
+  );
+
+  const legendSymbolSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      kind: 'slider',
+      label: (value) => <Text>{value}</Text>,
+      ariaLabel: 'Legend symbol size',
+      max: 60,
+      min: 2,
+      step: 1,
+      value: symbolSize,
+      onChangeSlider: (value: number) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setSymbolSize,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 12,
+      width: sliderWidth,
+    };
+
+  const legendSymbolShapeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: NIVO_LEGEND_SYMBOL_SHAPE_DATA,
+      description: 'Defines legend symbol shape.',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setSymbolShape,
+          payload: event.currentTarget.value as LegendSymbolShape,
+        });
+      },
+      value: symbolShape,
+      width: sliderWidth,
+    };
+
+  /** ------------- end legend ------------- */
   /** ------------- end input objects ------------- */
 
   /** ------------- begin input creation ------------- */
-
   /** base */
   const [
     createdStartAngleSliderInput,
@@ -792,10 +1071,38 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       motionConfigSelectInputCreatorInfo,
       transitionModeSelectInputCreatorInfo,
     ]);
+
+  /** legend */
+  const [
+    createdLegendTranslateXSliderInput,
+    createdLegendTranslateYSliderInput,
+    createdLegendItemsSpacingSliderInput,
+    createdLegendItemWidthSliderInput,
+    createdLegendItemHeightSliderInput,
+    createdLegendSymbolSizeSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    legendTranslateXSliderInputCreatorInfo,
+    legendTranslateYSliderInputCreatorInfo,
+    legendItemsSpacingSliderInputCreatorInfo,
+    legendItemWidthSliderInputCreatorInfo,
+    legendItemHeightSliderInputCreatorInfo,
+    legendSymbolSizeSliderInputCreatorInfo,
+  ]);
+
+  const [
+    createdLegendAnchorSelectInput,
+    createdLegendDirectionSelectInput,
+    createdLegendItemDirectionSelectInput,
+    createdLegendSymbolShapeSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    legendAnchorSelectInputCreatorInfo,
+    legendDirectionSelectInputCreatorInfo,
+    legendItemDirectionSelectInputCreatorInfo,
+    legendSymbolShapeSelectInputCreatorInfo,
+  ]);
   /** ------------- end input creation ------------- */
 
   /** ------------- begin display ------------- */
-
   /** base */
   const displayBaseText = (
     <TextWrapper
@@ -1179,6 +1486,148 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     </Stack>
   );
 
+  /** legend */
+  const displayLegendText = (
+    <TextWrapper
+      creatorInfoObj={{
+        size: 'md',
+        style: {
+          background: 'skyblue',
+          padding: '0.75rem',
+          borderRadius: '4px',
+        },
+      }}
+    >
+      Legend
+    </TextWrapper>
+  );
+
+  const displayEnableLegendSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+      {createdEnableLegendSwitchInput}
+    </Group>
+  );
+
+  const displayLegendAnchorSelectInput = (
+    <PieChartControlsStack
+      input={createdLegendAnchorSelectInput}
+      label="Anchor"
+      value={anchor}
+    />
+  );
+
+  const displayLegendDirectionSelectInput = (
+    <PieChartControlsStack
+      input={createdLegendDirectionSelectInput}
+      label="Direction"
+      value={direction}
+    />
+  );
+
+  const displayEnableLegendJustifySwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+      {createdEnableLegendJustifySwitchInput}
+    </Group>
+  );
+
+  const displayLegendTranslateXSliderInput = (
+    <PieChartControlsStack
+      input={createdLegendTranslateXSliderInput}
+      label="Translate in x-axis"
+      value={translateX}
+      symbol="px"
+    />
+  );
+
+  const displayLegendTranslateYSliderInput = (
+    <PieChartControlsStack
+      input={createdLegendTranslateYSliderInput}
+      label="Translate in y-axis"
+      value={translateY}
+      symbol="px"
+    />
+  );
+
+  const displayLegendItemsSpacingSliderInput = (
+    <PieChartControlsStack
+      input={createdLegendItemsSpacingSliderInput}
+      label="Items spacing"
+      value={itemsSpacing}
+      symbol="px"
+    />
+  );
+
+  const displayLegendItemWidthSliderInput = (
+    <PieChartControlsStack
+      input={createdLegendItemWidthSliderInput}
+      label="Item width"
+      value={itemWidth}
+      symbol="px"
+    />
+  );
+
+  const displayLegendItemHeightSliderInput = (
+    <PieChartControlsStack
+      input={createdLegendItemHeightSliderInput}
+      label="Item height"
+      value={itemHeight}
+      symbol="px"
+    />
+  );
+
+  const displayLegendItemDirectionSelectInput = (
+    <PieChartControlsStack
+      input={createdLegendItemDirectionSelectInput}
+      label="Item direction"
+      value={itemDirection}
+    />
+  );
+
+  const displayLegendItemTextColorInput = (
+    <PieChartControlsStack
+      input={legendItemTextColorInput}
+      label="Item text color"
+      value={itemTextColor}
+      symbol=""
+    />
+  );
+
+  const displayLegendSymbolSizeSliderInput = (
+    <PieChartControlsStack
+      input={createdLegendSymbolSizeSliderInput}
+      label="Symbol size"
+      value={symbolSize}
+      symbol="px"
+    />
+  );
+
+  const displayLegendSymbolShapeSelectInput = (
+    <PieChartControlsStack
+      input={createdLegendSymbolShapeSelectInput}
+      label="Symbol shape"
+      value={symbolShape}
+    />
+  );
+
+  const displayLegendSection = (
+    <Stack w="100%">
+      {displayLegendText}
+      {displayEnableLegendSwitchInput}
+      {displayLegendAnchorSelectInput}
+      {displayLegendDirectionSelectInput}
+      {displayEnableLegendJustifySwitchInput}
+      {displayLegendTranslateXSliderInput}
+      {displayLegendTranslateYSliderInput}
+      {displayLegendItemsSpacingSliderInput}
+      {displayLegendItemWidthSliderInput}
+      {displayLegendItemHeightSliderInput}
+      {displayLegendItemDirectionSelectInput}
+      {displayLegendItemTextColorInput}
+      {displayLegendSymbolSizeSliderInput}
+      {displayLegendSymbolShapeSelectInput}
+    </Stack>
+  );
+
   const displayPieChartControls = (
     <Grid
       columns={1}
@@ -1197,6 +1646,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       <Grid.Col span={1}>{displayArcLinkLabelsSection}</Grid.Col>
       <Grid.Col span={1}>{displayInteractivitySection}</Grid.Col>
       <Grid.Col span={1}>{displayMotionSection}</Grid.Col>
+      <Grid.Col span={1}>{displayLegendSection}</Grid.Col>
     </Grid>
   );
 
@@ -1257,6 +1707,35 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         },
       ]}
       fill={enableFillPatterns ? fillPatterns : []}
+      legends={
+        enableLegend
+          ? [
+              {
+                anchor,
+                direction,
+                justify,
+                translateX,
+                translateY,
+                itemsSpacing,
+                itemWidth,
+                itemHeight,
+                itemTextColor,
+                itemDirection,
+                itemOpacity: 1,
+                symbolSize,
+                symbolShape,
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemTextColor: '#000',
+                    },
+                  },
+                ],
+              },
+            ]
+          : []
+      }
     />
   );
 

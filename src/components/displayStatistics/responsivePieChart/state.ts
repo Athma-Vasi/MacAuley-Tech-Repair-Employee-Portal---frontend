@@ -46,7 +46,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   transitionMode: 'innerRadius',
 
   /** legend */
-  enableLegend: true,
+  enableLegend: false,
   anchor: 'top-left',
   direction: 'row',
   justify: false,
@@ -59,8 +59,6 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   itemTextColor: '#999',
   symbolSize: 20,
   symbolShape: 'circle',
-  symbolBorderColor: 'rgba(0, 0, 0, .5)',
-  symbolBorderWidth: 1,
 };
 
 const responsivePieChartAction: ResponsivePieChartAction = {
@@ -118,8 +116,6 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setItemTextColor: 'setItemTextColor',
   setSymbolSize: 'setSymbolSize',
   setSymbolShape: 'setSymbolShape',
-  setSymbolBorderColor: 'setSymbolBorderColor',
-  setSymbolBorderWidth: 'setSymbolBorderWidth',
 };
 
 function responsivePieChartReducer(
@@ -344,16 +340,6 @@ function responsivePieChartReducer(
       return {
         ...state,
         symbolShape: action.payload,
-      };
-    case responsivePieChartAction.setSymbolBorderColor:
-      return {
-        ...state,
-        symbolBorderColor: action.payload,
-      };
-    case responsivePieChartAction.setSymbolBorderWidth:
-      return {
-        ...state,
-        symbolBorderWidth: action.payload,
       };
 
     default:

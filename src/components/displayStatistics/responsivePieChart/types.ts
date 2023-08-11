@@ -144,9 +144,6 @@ type ResponsivePieChartState = {
   itemTextColor: string; // default: #000000
   symbolSize: number; // 2px - 60px default: 12 step: 1
   symbolShape: LegendSymbolShape; // default: circle
-
-  symbolBorderColor: string; // default: #000000
-  symbolBorderWidth: number; // 0px - 10px default: 0 step: 1
 };
 
 type ResponsivePieChartAction = {
@@ -204,8 +201,6 @@ type ResponsivePieChartAction = {
   setItemTextColor: 'setItemTextColor';
   setSymbolSize: 'setSymbolSize';
   setSymbolShape: 'setSymbolShape';
-  setSymbolBorderColor: 'setSymbolBorderColor';
-  setSymbolBorderWidth: 'setSymbolBorderWidth';
 };
 
 type ResponsivePieChartDispatch =
@@ -233,8 +228,7 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setItemsSpacing']
         | ResponsivePieChartAction['setItemWidth']
         | ResponsivePieChartAction['setItemHeight']
-        | ResponsivePieChartAction['setSymbolSize']
-        | ResponsivePieChartAction['setSymbolBorderWidth'];
+        | ResponsivePieChartAction['setSymbolSize'];
 
       payload: number;
     }
@@ -264,8 +258,7 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setArcLabelsTextColor']
         | ResponsivePieChartAction['setBorderColor']
         | ResponsivePieChartAction['setArcLinkLabelsTextColor']
-        | ResponsivePieChartAction['setItemTextColor']
-        | ResponsivePieChartAction['setSymbolBorderColor'];
+        | ResponsivePieChartAction['setItemTextColor'];
 
       payload: string;
     }
@@ -301,6 +294,10 @@ type ResponsivePieChartReducer = (
 
 export type {
   FillPatternObject,
+  LegendAnchor,
+  LegendDirection,
+  LegendItemDirection,
+  LegendSymbolShape,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,

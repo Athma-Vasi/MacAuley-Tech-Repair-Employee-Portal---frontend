@@ -60,8 +60,43 @@ const NIVO_TRANSITION_MODE_DATA: SelectInputData = [
   { label: 'Push Out', value: 'pushOut' },
 ];
 
+const NIVO_LEGEND_ANCHOR_DATA: SelectInputData = [
+  { value: 'top', label: 'Top' },
+  { value: 'top-right', label: 'Top Right' },
+  { value: 'right', label: 'Right' },
+  { value: 'bottom-right', label: 'Bottom Right' },
+  { value: 'bottom', label: 'Bottom' },
+  { value: 'bottom-left', label: 'Bottom Left' },
+  { value: 'left', label: 'Left' },
+  { value: 'top-left', label: 'Top Left' },
+  { value: 'center', label: 'Center' },
+];
+
+const NIVO_LEGEND_DIRECTION_DATA: SelectInputData = [
+  { value: 'row', label: 'Row' },
+  { value: 'column', label: 'Column' },
+];
+
+const NIVO_LEGEND_ITEM_DIRECTION_DATA: SelectInputData = [
+  { value: 'left-to-right', label: 'Left to Right' },
+  { value: 'right-to-left', label: 'Right to Left' },
+  { value: 'top-to-bottom', label: 'Top to Bottom' },
+  { value: 'bottom-to-top', label: 'Bottom to Top' },
+];
+
+const NIVO_LEGEND_SYMBOL_SHAPE_DATA: SelectInputData = [
+  { value: 'circle', label: 'Circle' },
+  { value: 'diamond', label: 'Diamond' },
+  { value: 'square', label: 'Square' },
+  { value: 'triangle', label: 'Triangle' },
+];
+
 export {
   NIVO_COLOR_SCHEME_DATA,
+  NIVO_LEGEND_ANCHOR_DATA,
+  NIVO_LEGEND_DIRECTION_DATA,
+  NIVO_LEGEND_ITEM_DIRECTION_DATA,
+  NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
   NIVO_TRANSITION_MODE_DATA,
 };

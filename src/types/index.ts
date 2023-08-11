@@ -37,29 +37,29 @@ type SetStepsInErrorPayload = {
   step: number;
 };
 type CheckBoxMultipleData = {
-  value: string;
   label: string;
+  value: string;
 }[];
 type Currency = 'USD' | 'EUR' | 'GBP' | 'CAD' | 'AUD' | 'JPY' | 'CNY';
 
 type SelectInputData = Array<{
-  value: string;
   label: string;
+  value: string;
 }>;
 
 type RadioGroupInputData = Array<{
-  value: string;
   label: string;
+  value: string;
 }>;
 
 type CheckboxInputData = Array<{
-  value: string;
   label: string;
+  value: string;
 }>;
 
 type SliderInputData = Array<{
-  value: number;
   label: string;
+  value: number;
 }>;
 
 type FileExtension = '.jpg' | 'jpeg' | 'png' | 'gif' | 'pdf';
