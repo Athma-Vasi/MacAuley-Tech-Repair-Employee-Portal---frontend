@@ -206,7 +206,7 @@ function displaySurveysReducer(
             ({ question, responseKind }) => {
               return {
                 ariaLabel: question,
-                description: splitCamelCase(responseKind),
+                description: question,
               };
             }
           );

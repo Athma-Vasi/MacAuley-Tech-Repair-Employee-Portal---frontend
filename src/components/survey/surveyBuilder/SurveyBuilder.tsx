@@ -9,7 +9,16 @@ import {
   useReducer,
   useRef,
 } from 'react';
-import { TbChartPie, TbEye, TbHelp, TbPlus, TbUpload } from 'react-icons/tb';
+import {
+  TbChartPie,
+  TbChartPie2,
+  TbChartPie3,
+  TbChartPie4,
+  TbEye,
+  TbHelp,
+  TbPlus,
+  TbUpload,
+} from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -1193,7 +1202,7 @@ function SurveyBuilder() {
     semanticDescription: 'survey builder form submit button',
     semanticName: 'submit button',
     leftIcon: <TbUpload />,
-    rightIcon: <TbChartPie />,
+    rightIcon: <TbChartPie4 />,
     buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setTriggerFormSubmit,
@@ -1214,10 +1223,11 @@ function SurveyBuilder() {
   };
 
   const previewSurveyButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Preview Survey',
-    semanticDescription: 'survey builder preview survey button',
+    buttonLabel: 'Preview',
+    semanticDescription: 'View survey as it would appear to respondents',
     semanticName: 'preview survey button',
     leftIcon: <TbEye />,
+    rightIcon: <TbChartPie4 />,
     buttonOnClick: () => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setTriggerPreviewSurvey,
@@ -1407,8 +1417,32 @@ function SurveyBuilder() {
   const displaySubmitPreviewButtons =
     currentStepperPosition === maxStepperPosition ? (
       <Group w="100%" position="center">
-        {createdSubmitButton}
-        {createdPreviewSurveyButton}
+        <Tooltip
+          label={
+            submitButtonDisabled
+              ? 'Fix errors to enable preview survey button'
+              : `Preview survey: ${
+                  surveyTitle.length > 23
+                    ? surveyTitle.slice(0, 23) + '...'
+                    : surveyTitle
+                }`
+          }
+        >
+          <Group>{createdPreviewSurveyButton}</Group>
+        </Tooltip>
+        <Tooltip
+          label={
+            submitButtonDisabled
+              ? 'Fix errors to enable submit button'
+              : `Submit survey: ${
+                  surveyTitle.length > 23
+                    ? surveyTitle.slice(0, 23) + '...'
+                    : surveyTitle
+                }`
+          }
+        >
+          <Group>{createdSubmitButton}</Group>
+        </Tooltip>
       </Group>
     ) : null;
 

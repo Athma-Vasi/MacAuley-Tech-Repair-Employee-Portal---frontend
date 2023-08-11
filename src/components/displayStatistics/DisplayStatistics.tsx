@@ -41,7 +41,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
   // set initial data structure
   useEffect(() => {
-    if (!surveys) {
+    if (!surveys || !surveys.length) {
       return;
     }
 
@@ -104,6 +104,10 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
                   }
                   case 'stars': {
                     switch (response) {
+                      case '0': {
+                        response = 'No response';
+                        break;
+                      }
                       case '1': {
                         response = '1 Star';
                         break;
@@ -178,7 +182,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
   // set currently selected survey's question's pie chart data
   useEffect(() => {
-    if (!surveys || !currentSelectedSurvey || !pieChartDataMap) {
+    if (!surveys.length || !currentSelectedSurvey || !pieChartDataMap) {
       return;
     }
 
@@ -219,6 +223,29 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     });
   }, [displayStatisticsState]);
 
+  /** ------------- begin component render bypass ------------- */
+  if (surveys.length === 0) {
+    return (
+      <Stack
+        w="100%"
+        p={padding}
+        style={{
+          borderBottom: '1px solid #e0e0e0',
+        }}
+      >
+        <Title order={4} color="dark">
+          Completed surveys
+        </Title>
+        <TextWrapper creatorInfoObj={{}}>
+          Complete surveys to view statistics!
+        </TextWrapper>
+      </Stack>
+    );
+  }
+
+  /** ------------- end component render bypass ------------- */
+
+  /** ------------- begin input creators ------------- */
   // loop through completed surveys and create cards to display statistics modal
   const completedSurveysCards = surveys.map((survey, idx) => {
     const { surveyTitle, _id } = survey;
@@ -265,9 +292,9 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       }}
       p={padding}
     >
-      <Text size="md" color="dark">
-        <strong>Completed surveys</strong>
-      </Text>
+      <Title order={4} color="dark">
+        Completed surveys
+      </Title>
       <Flex
         w="100%"
         align="center"
@@ -370,12 +397,6 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       {displayResponsivePieChart}
     </Modal>
   );
-
-  const testData =
-    pieChartDataMap
-      .get('64d1b31f255fd5fcf9d7e654')
-      ?.get('How would you rate the communication skills of your manager?') ??
-    [];
 
   const displayStatisticsComponent = (
     <Stack w="100%" h="100%">

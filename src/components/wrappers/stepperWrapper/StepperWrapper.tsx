@@ -202,15 +202,23 @@ function StepperWrapper({
         {descriptionObjectsArray.map((value, index) => {
           const { ariaLabel, description } = value;
 
-          const capsLabel = `Step ${numberSpellingMap
-            .get(index)?.[0]
-            .toUpperCase()}${numberSpellingMap.get(index)?.slice(1)}`;
+          const capsLabel = (
+            <TextWrapper creatorInfoObj={{}}>
+              {`Step ${numberSpellingMap
+                .get(index)?.[0]
+                .toUpperCase()}${numberSpellingMap.get(index)?.slice(1)}`}
+            </TextWrapper>
+          );
 
           return (
             <Stepper.Step
               key={`step-${index}`}
               label={capsLabel}
-              description={description}
+              description={
+                description.length > 23
+                  ? `${description.slice(0, 23)}...`
+                  : description
+              }
               aria-label={ariaLabel}
               aria-current={
                 currentStepperPosition === index ? 'step' : undefined
@@ -226,10 +234,7 @@ function StepperWrapper({
                   <FontAwesomeIcon icon={faCheck} size="xl" />
                 )
               }
-            >
-              {/* <Text color="dimmed">{description}</Text> */}
-              <TextWrapper creatorInfoObj={{}}>{description}</TextWrapper>
-            </Stepper.Step>
+            />
           );
         })}
 

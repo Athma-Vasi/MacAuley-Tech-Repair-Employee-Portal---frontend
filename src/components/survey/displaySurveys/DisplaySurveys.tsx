@@ -1,4 +1,13 @@
-import { Card, Flex, Group, Modal, Stack, Text, Tooltip } from '@mantine/core';
+import {
+  Card,
+  Flex,
+  Group,
+  Modal,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core';
 import { Fragment, useEffect, useReducer } from 'react';
 import { TbChartPie3, TbUpload } from 'react-icons/tb';
 
@@ -8,7 +17,11 @@ import {
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleRadioGroupInputsElements,
 } from '../../../jsxCreators';
-import { CheckBoxMultipleData, RadioGroupInputData } from '../../../types';
+import {
+  CheckBoxMultipleData,
+  RadioGroupInputData,
+  UserDocument,
+} from '../../../types';
 import {
   filterFieldsFromObject,
   logState,
@@ -37,6 +50,7 @@ import {
 } from './state';
 import { DisplayStatistics } from '../../displayStatistics';
 import { useDisclosure } from '@mantine/hooks';
+import { globalAction } from '../../../context/globalProvider/state';
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -79,6 +93,7 @@ function DisplaySurveys() {
   } = useAuth();
   const {
     globalState: { padding, rowGap, width, height, userDocument },
+    globalDispatch,
   } = useGlobalState();
 
   /** ------------- end hooks ------------- */
@@ -232,14 +247,22 @@ function DisplaySurveys() {
 
       try {
         const response: Response = await fetch(request);
-        const data: { message: string; resourceData: SurveyBuilderDocument } =
-          await response.json();
+        const data: {
+          message: string;
+          resourceData: [SurveyBuilderDocument, UserDocument];
+        } = await response.json();
 
         if (!isMounted) {
           return;
         }
 
         if (response.ok) {
+          const [_, userDocument] = data.resourceData;
+          globalDispatch({
+            type: globalAction.setUserDocument,
+            payload: userDocument,
+          });
+
           displaySurveysDispatch({
             type: displaySurveysAction.setIsSuccessful,
             payload: true,
@@ -486,6 +509,24 @@ function DisplaySurveys() {
       />
     );
   }
+
+  if (!uncompletedSurveys.length) {
+    return (
+      <Stack
+        w="100%"
+        p={padding}
+        style={{ backgroundColor: 'white', borderRadius: '4px' }}
+      >
+        <Title order={4} color="dark">
+          Completed surveys
+        </Title>
+        <TextWrapper creatorInfoObj={{}}>
+          Congragulations! You have completed all available surveys!
+        </TextWrapper>
+      </Stack>
+    );
+  }
+
   /** ------------- end component render bypass ------------- */
 
   /** ------------- begin surveys creation ------------- */
@@ -645,6 +686,7 @@ function DisplaySurveys() {
               const checkboxValue = surveySubmission?.surveyResponses.find(
                 (surveyResponse) => surveyResponse?.question === question
               )?.response as string[];
+
               const description = {
                 selected: (
                   <Text

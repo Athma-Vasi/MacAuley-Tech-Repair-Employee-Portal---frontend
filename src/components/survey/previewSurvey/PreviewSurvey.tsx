@@ -21,7 +21,7 @@ import {
 } from '../../../jsxCreators';
 import { CheckBoxMultipleData, RadioGroupInputData } from '../../../types';
 import { CustomRating } from '../../customRating/CustomRating';
-import { TbChartPie3, TbUpload } from 'react-icons/tb';
+import { TbChartPie3, TbChartPie4, TbUpload } from 'react-icons/tb';
 import { useGlobalState } from '../../../hooks';
 import { logState, replaceLastCommaWithAnd } from '../../../utils';
 
@@ -440,12 +440,12 @@ function PreviewSurvey({
       buttonOnClick: () => {
         closePreviewSurveyModal();
       },
-      leftIcon: <TbChartPie3 />,
+      leftIcon: <TbChartPie4 />,
       rightIcon: <TbUpload />,
     },
   ]);
   const displaySubmitButton = (
-    <Tooltip label={'Will not submit response. Closes modal.'}>
+    <Tooltip label={'Closes modal only.'}>
       <Group w="100%" position="center">
         {createdSubmitButton}
       </Group>
