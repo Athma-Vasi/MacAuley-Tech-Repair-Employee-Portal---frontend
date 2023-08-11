@@ -2,6 +2,7 @@ import { Group, Stack } from '@mantine/core';
 
 import { addFieldsToObject } from '../../utils';
 import { SurveyResponseInput, SurveyResponseKind } from './types';
+import { SurveyQuestions } from './surveyBuilder/types';
 
 type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
@@ -73,19 +74,12 @@ type SetSurveyQuestionsInput = {
   responseDataOptionsArray: string[][];
 };
 
-type SetSurveyQuestionsOutput = {
-  question: string;
-  responseKind: SurveyResponseKind;
-  responseInput: SurveyResponseInput;
-  responseDataOptions: string[] | [];
-};
-
 function setSurveyQuestions({
   questions,
   responseKinds,
   responseInputHtml,
   responseDataOptionsArray,
-}: SetSurveyQuestionsInput): SetSurveyQuestionsOutput[] {
+}: SetSurveyQuestionsInput): SurveyQuestions[] {
   // replace empty values in responseDataOptionsArray with empty array
   // @see https://stackoverflow.com/questions/61700308/replace-the-empty-element-of-an-array-with-another-array-or-with-another-element
   responseDataOptionsArray = Array.from(responseDataOptionsArray, (arr, idx) =>
@@ -93,16 +87,21 @@ function setSurveyQuestions({
   );
 
   return questions.reduce(
-    (surveyQuestions: SetSurveyQuestionsOutput[], question, questionIdx) => {
+    (surveyQuestions: SurveyQuestions[], question, questionIdx) => {
       const surveyObject = addFieldsToObject({
         object: Object.create(null),
         fieldValuesTuples: [
           ['question', question],
           ['responseKind', responseKinds[questionIdx]],
           ['responseInput', responseInputHtml[questionIdx]],
-          ['responseDataOptions', responseDataOptionsArray[questionIdx]] ?? [],
+          [
+            'responseDataOptions',
+            questionIdx > responseDataOptionsArray.length - 1
+              ? []
+              : responseDataOptionsArray[questionIdx],
+          ] ?? [],
         ],
-      }) as SetSurveyQuestionsOutput;
+      }) as SurveyQuestions;
       surveyQuestions.push(surveyObject);
 
       return surveyQuestions;

@@ -1,11 +1,18 @@
-import {
-  Action,
-  ActionsOutreach,
-  SetStepsInErrorPayload,
-  UserRoles,
-} from '../../../types';
+import { SetStepsInErrorPayload } from '../../../types';
 import { DescriptionObjectsArray } from '../../wrappers';
-import { SurveyRecipient, SurveyStatistics } from '../types';
+import {
+  SurveyRecipient,
+  SurveyResponseInput,
+  SurveyResponseKind,
+  SurveyStatistics,
+} from '../types';
+
+type SurveyQuestions = {
+  question: string;
+  responseKind: SurveyResponseKind;
+  responseInput: SurveyResponseInput;
+  responseDataOptions: string[] | [];
+};
 
 type SurveyBuilderState = {
   surveyTitle: string;
@@ -246,4 +253,5 @@ export type {
   SurveyBuilderDispatch,
   SurveyBuilderReducer,
   SurveyBuilderState,
+  SurveyQuestions,
 };
