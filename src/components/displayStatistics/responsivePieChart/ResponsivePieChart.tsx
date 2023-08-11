@@ -299,7 +299,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? sortByValueAccessibleSelectedText.props.id
           : sortByValueAccessibleDeselectedText.props.id
       }
-      label={<TextWrapper creatorInfoObj={{}}>Sort by value</TextWrapper>}
+      label={
+        <TextWrapper creatorInfoObj={{ size: 'md' }}>Sort by value</TextWrapper>
+      }
       checked={sortByValue}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
@@ -353,7 +355,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           : enableFillPatternsAccessibleDeselectedText.props.id
       }
       label={
-        <TextWrapper creatorInfoObj={{}}>Enable fill patterns</TextWrapper>
+        <TextWrapper creatorInfoObj={{ size: 'md' }}>
+          Enable fill patterns
+        </TextWrapper>
       }
       checked={enableFillPatterns}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -398,7 +402,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableArcLabelsAccessibleSelectedText.props.id
           : enableArcLabelsAccessibleDeselectedText.props.id
       }
-      label={<TextWrapper creatorInfoObj={{}}>Enable arc labels</TextWrapper>}
+      label={
+        <TextWrapper creatorInfoObj={{ size: 'md' }}>
+          Enable arc labels
+        </TextWrapper>
+      }
       checked={enableArcLabels}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
@@ -478,7 +486,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           : enableArcLinkLabelsAccessibleDeselectedText.props.id
       }
       label={
-        <TextWrapper creatorInfoObj={{}}>Enable arc link labels</TextWrapper>
+        <TextWrapper creatorInfoObj={{ size: 'md' }}>
+          Enable arc link labels
+        </TextWrapper>
       }
       checked={enableArcLinkLabels}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -674,7 +684,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? animateAccessibleSelectedText.props.id
           : animateAccessibleDeselectedText.props.id
       }
-      label={<TextWrapper creatorInfoObj={{}}>Animate</TextWrapper>}
+      label={<TextWrapper creatorInfoObj={{ size: 'md' }}>Animate</TextWrapper>}
       checked={animate}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
@@ -1194,7 +1204,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ResponsivePie
       data={pieChartData}
       // base
-      margin={{ top: 20, right: 100, bottom: 20, left: 100 }}
+      margin={{ top: 40, right: 100, bottom: 40, left: 100 }}
       startAngle={startAngle}
       endAngle={endAngle}
       innerRadius={innerRadius}

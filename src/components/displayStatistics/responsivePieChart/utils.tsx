@@ -27,10 +27,10 @@ function PieChartControlsStack({
       style={{ borderBottom: '1px solid #e0e0e0' }}
       px={padding}
       py="xs"
-      // rowGap={rowGap}
+      rowGap={rowGap}
       //   columnGap={rowGap}
     >
-      <TextWrapper creatorInfoObj={{}}>{label}</TextWrapper>
+      <TextWrapper creatorInfoObj={{ size: 'md' }}>{label}</TextWrapper>
 
       <Flex
         align="center"
