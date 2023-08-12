@@ -510,7 +510,7 @@ function DisplayResource<Doc>({
     />
   );
 
-  return (
+  const displayResourceComponent = (
     <Flex
       direction="column"
       align="flex-start"
@@ -541,6 +541,8 @@ function DisplayResource<Doc>({
       />
     </Flex>
   );
+
+  return displayResourceComponent;
 }
 
 export { DisplayResource };

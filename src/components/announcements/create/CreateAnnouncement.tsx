@@ -51,6 +51,7 @@ import {
 import { useAuth, useGlobalState } from '../../../hooks';
 import { ResourceRequestServerResponse } from '../../../types';
 import { AnnouncementDocument } from './types';
+import { CustomNotification } from '../../customNotification';
 
 function CreateAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -328,7 +329,29 @@ function CreateAnnouncement() {
   }, [createAnnouncementState]);
   /** ------------- end useEffects ------------- */
 
-  // below are the accessible text elements for the screen reader to read out
+  /** ------------- begin component render bypass ------------- */
+  if (isLoading || isError || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        errorMessage={errorMessage}
+        isLoading={isLoading}
+        isError={isError}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={createAnnouncementDispatch}
+        navigateTo={{
+          errorPath: '/portal',
+          successPath: '/portal/outreach/announcement/display',
+        }}
+      />
+    );
+  }
+  /** ------------- end component render bypass ------------- */
+
+  /** ------------- begin accessible text elements ------------- */
   const [titleInputErrorText, titleInputValidText] =
     returnAccessibleErrorValidTextElements({
       inputElementKind: 'title',
@@ -394,8 +417,9 @@ function CreateAnnouncement() {
       })),
       regexValidationFunction: returnGrammarValidationText,
     });
+  /** ------------- end accessible text elements ------------- */
 
-  // following are info objects for input creators
+  /** ------------- begin info objects for input creators ------------- */
   const titleTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: titleInputErrorText,
@@ -664,7 +688,9 @@ function CreateAnnouncement() {
     // ensures form submit happens only once
     buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
+  /** ------------- end info objects for input creators ------------- */
 
+  /** ------------- begin input creators ------------- */
   const createdArticleParagraphsTextAreaInputs =
     returnAccessibleDynamicTextAreaInputElements(
       articleParagraphTextAreaInputsCreatorInfo
@@ -687,6 +713,9 @@ function CreateAnnouncement() {
       addNewArticleParagraphButtonCreatorInfo,
       submitButtonCreatorInfo,
     ]);
+  /** ------------- end input creators ------------- */
+
+  /** ------------- begin input display ------------- */
   const displaySubmitButton =
     currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION
       ? createdSubmitButton
@@ -756,7 +785,7 @@ function CreateAnnouncement() {
       {displayCreateAnnouncementForm}
     </StepperWrapper>
   );
-
+  /** ------------- end input display ------------- */
   return <>{displayCreateAnnouncementComponent}</>;
 }
 

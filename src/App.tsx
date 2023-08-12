@@ -7,7 +7,10 @@ import {
   AddressChange,
   DisplayAddressChanges,
 } from './components/addressChange';
-import { CreateAnnouncement } from './components/announcements/createAnnouncement';
+import {
+  CreateAnnouncement,
+  DisplayAnnouncements,
+} from './components/announcements';
 import { CreateBenefit, DisplayBenefits } from './components/benefits';
 import { CreateComment } from './components/comments';
 
@@ -215,9 +218,9 @@ function App() {
 
             {/* announcements */}
             <Route path="announcement">
-              <Route index element={<CreateAnnouncement />} />
+              <Route index element={<DisplayAnnouncements />} />
               <Route path="create" element={<CreateAnnouncement />} />
-              <Route path="display" element={<CreateAnnouncement />} />
+              <Route path="display" element={<DisplayAnnouncements />} />
             </Route>
           </Route>
         </Route>
