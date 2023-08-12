@@ -228,9 +228,10 @@ function StepperWrapper({
               key={`step-${index}`}
               label={capsLabel}
               description={
-                description.length > 23
-                  ? `${description.slice(0, 23)}...`
-                  : description
+                // description.length > 23
+                //   ? `${description.slice(0, 23)}...`
+                //   : description
+                description
               }
               aria-label={ariaLabel}
               aria-current={

@@ -1405,7 +1405,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       input={createdArcLabelsRadiusOffsetSliderInput}
       label="Radius offset"
       value={arcLabelsRadiusOffset}
-      symbol=""
+      symbol="px"
     />
   );
 

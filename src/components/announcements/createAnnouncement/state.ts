@@ -63,7 +63,7 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setAreArticleParagraphsFocused: 'setAreArticleParagraphsFocused',
   setIsArticleLengthExceeded: 'setIsArticleLengthExceeded',
 
-  setDeleteArticleParagraph: 'setDeleteArticleParagraph',
+  setModifyArticleParagraph: 'setModifyArticleParagraph',
   setTimeToRead: 'setTimeToRead',
 
   setTriggerFormSubmit: 'setTriggerFormSubmit',
@@ -189,18 +189,30 @@ function createAnnouncementReducer(
         isArticleLengthExceeded: action.payload,
       };
 
-    case createAnnouncementAction.setDeleteArticleParagraph: {
-      const index = action.payload;
+    case createAnnouncementAction.setModifyArticleParagraph: {
+      const { index, kind } = action.payload;
       const article = [...state.article];
-      article.splice(index, 1);
-
       const areValidArticleParagraphs = [...state.areValidArticleParagraphs];
-      areValidArticleParagraphs.splice(index, 1);
-
       const areArticleParagraphsFocused = [
         ...state.areArticleParagraphsFocused,
       ];
-      areArticleParagraphsFocused.splice(index, 1);
+
+      switch (kind) {
+        case 'insert': {
+          article.splice(index, 0, '');
+          areValidArticleParagraphs.splice(index, 0, false);
+          areArticleParagraphsFocused.splice(index, 0, false);
+          break;
+        }
+        case 'delete': {
+          article.splice(index, 1);
+          areValidArticleParagraphs.splice(index, 1);
+          areArticleParagraphsFocused.splice(index, 1);
+          break;
+        }
+        default:
+          break;
+      }
 
       return {
         ...state,
@@ -209,6 +221,7 @@ function createAnnouncementReducer(
         areArticleParagraphsFocused,
       };
     }
+
     case createAnnouncementAction.setTimeToRead:
       return {
         ...state,

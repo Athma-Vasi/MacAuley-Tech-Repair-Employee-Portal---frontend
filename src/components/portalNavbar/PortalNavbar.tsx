@@ -19,6 +19,7 @@ import {
   TbReceipt2,
   TbSpeakerphone,
   TbTimelineEventPlus,
+  TbTimelineEventText,
   TbUserCheck,
 } from 'react-icons/tb';
 import { TiThumbsUp } from 'react-icons/ti';
@@ -179,18 +180,35 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         label={<TextWrapper creatorInfoObj={{}}>Announcements</TextWrapper>}
         rightSection={<TbChevronRight />}
         icon={<TbSpeakerphone />}
-        onClick={() => {
-          navigate('/portal/outreach/announcements');
-        }}
-      />
+      >
+        {/* create announcement */}
+        <NavLink
+          label={
+            <TextWrapper creatorInfoObj={{}}>Create announcement</TextWrapper>
+          }
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/outreach/announcement/create');
+          }}
+        />
+        {/* display announcements */}
+        <NavLink
+          label={
+            <TextWrapper creatorInfoObj={{}}>Display announcements</TextWrapper>
+          }
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/outreach/announcement/display');
+          }}
+        />
+      </NavLink>
       {/* survey builder */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Survey builder</TextWrapper>}
         icon={<TbChartBar />}
         rightSection={<TbChevronRight />}
-        onClick={() => {
-          navigate('/portal/outreach/survey-builder');
-        }}
       >
         {/* create survey */}
         <NavLink
@@ -206,9 +224,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           label={<TextWrapper creatorInfoObj={{}}>Display surveys</TextWrapper>}
           icon={<TbList />}
           rightSection={<TbChevronRight />}
-          onClick={() => {
-            navigate('/portal/outreach/survey-builder/display');
-          }}
         />
       </NavLink>
       {/* event creator */}
@@ -219,7 +234,26 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/portal/outreach/event-creator');
         }}
-      />
+      >
+        {/* create event */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create event</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/outreach/event-creator/create');
+          }}
+        />
+        {/* display events */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display events</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/outreach/event-creator/display');
+          }}
+        />
+      </NavLink>
     </NavLink>
   );
 

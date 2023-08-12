@@ -91,7 +91,7 @@ type CreateAnnouncementAction = {
   setAreArticleParagraphsFocused: 'setAreArticleParagraphsFocused';
   setIsArticleLengthExceeded: 'setIsArticleLengthExceeded';
 
-  setDeleteArticleParagraph: 'setDeleteArticleParagraph';
+  setModifyArticleParagraph: 'setModifyArticleParagraph';
   setTimeToRead: 'setTimeToRead';
 
   setTriggerFormSubmit: 'setTriggerFormSubmit';
@@ -164,9 +164,15 @@ type CreateAnnouncementDispatch =
   | {
       type:
         | CreateAnnouncementAction['setTimeToRead']
-        | CreateAnnouncementAction['setCurrentStepperPosition']
-        | CreateAnnouncementAction['setDeleteArticleParagraph'];
+        | CreateAnnouncementAction['setCurrentStepperPosition'];
       payload: number;
+    }
+  | {
+      type: CreateAnnouncementAction['setModifyArticleParagraph'];
+      payload: {
+        index: number;
+        kind: 'insert' | 'delete';
+      };
     }
   | {
       type: CreateAnnouncementAction['setStepsInError'];

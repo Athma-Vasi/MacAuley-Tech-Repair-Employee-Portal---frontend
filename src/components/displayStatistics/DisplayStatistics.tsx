@@ -1,4 +1,13 @@
-import { Card, Flex, Group, Modal, Stack, Text, Title } from '@mantine/core';
+import {
+  Card,
+  Flex,
+  Group,
+  Modal,
+  Stack,
+  Text,
+  Title,
+  UnstyledButton,
+} from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useGlobalState } from '../../hooks';
@@ -11,7 +20,7 @@ import {
 } from './state';
 import { ChartKind, DisplayStatisticsProps, PieChartData } from './types';
 import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { TbChartPie3 } from 'react-icons/tb';
+import { TbChartPie3, TbChartPie4 } from 'react-icons/tb';
 import { TextWrapper } from '../wrappers';
 import { PageBuilder } from '../pageBuilder';
 import { useDisclosure } from '@mantine/hooks';
@@ -251,35 +260,50 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const completedSurveysCards = surveys.map((survey, idx) => {
     const { surveyTitle, _id } = survey;
 
-    const createdViewModalButton = returnAccessibleButtonElements([
-      {
-        buttonLabel: 'View statistics',
-        semanticDescription: 'View statistics for this completed survey',
-        semanticName: 'View statistics',
-        buttonOnClick: () => {
+    // const createdViewModalButton = returnAccessibleButtonElements([
+    //   {
+    //     buttonLabel: 'View statistics',
+    //     semanticDescription: 'View statistics for this completed survey',
+    //     semanticName: 'View statistics',
+    //     buttonOnClick: () => {
+    //       displayStatisticsDispatch({
+    //         type: displayStatisticsAction.setCurrentSelectedSurvey,
+    //         payload: survey,
+    //       });
+    //       openStatisticsModal();
+    //     },
+    //     leftIcon: <TbChartPie3 />,
+    //   },
+    // ]);
+
+    const createdCard = (
+      <UnstyledButton
+        aria-label={`View statistics for ${surveyTitle}`}
+        onClick={() => {
           displayStatisticsDispatch({
             type: displayStatisticsAction.setCurrentSelectedSurvey,
             payload: survey,
           });
           openStatisticsModal();
-        },
-        leftIcon: <TbChartPie3 />,
-      },
-    ]);
-
-    const createdCard = (
-      <Card
-        shadow="sm"
-        padding={padding}
-        radius="md"
-        withBorder
-        key={`${_id}-${idx}-${surveyTitle}`}
+        }}
       >
-        <Group position="apart" w="100%">
-          <TextWrapper creatorInfoObj={{}}>{surveyTitle}</TextWrapper>
-          {createdViewModalButton}
-        </Group>
-      </Card>
+        <Card
+          shadow="sm"
+          padding={padding}
+          radius="md"
+          withBorder
+          key={`${_id}-${idx}-${surveyTitle}`}
+        >
+          {/* <Group position="apart" w="100%">
+            <TextWrapper creatorInfoObj={{}}>{surveyTitle}</TextWrapper>
+            {createdViewModalButton}
+          </Group> */}
+          <Group position="apart" w="100%">
+            <TbChartPie4 color="grey" />
+            <TextWrapper creatorInfoObj={{}}>{surveyTitle}</TextWrapper>
+          </Group>
+        </Card>
+      </UnstyledButton>
     );
 
     return createdCard;

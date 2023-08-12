@@ -14,7 +14,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   sortByValue: false,
 
   /** style */
-  colorScheme: 'accent',
+  colorScheme: 'set2',
   fillPatterns: [],
   enableFillPatterns: false,
   borderColor: '#ffffff',
@@ -37,8 +37,8 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   arcLinkLabelsTextColor: '#333333',
 
   /** interactivity */
-  activeInnerRadiusOffset: 8,
-  activeOuterRadiusOffset: 8,
+  activeInnerRadiusOffset: 6,
+  activeOuterRadiusOffset: 6,
 
   /** motion */
   animate: true,

@@ -11,41 +11,34 @@ type AccessibleTextAreaInputCreatorInfo = {
   semanticName: string;
   inputText: string;
   isValidInputText: boolean;
-  label?: string | undefined;
+  label?: string;
   /**
    * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
    */
-  dynamicInputProps?:
-    | {
-        semanticAction: string;
-        dynamicIndex: number;
-        dynamicIcon?: ReactNode | IconDefinition | undefined;
-        dynamicInputOnClick: () => void;
-      }
-    | undefined;
-  ariaRequired?: boolean | undefined;
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline' | undefined;
+  dynamicInputs?: ReactNode[];
+  ariaRequired?: boolean;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
   description: {
     error: JSX.Element;
     valid: JSX.Element;
   };
   placeholder: string;
-  initialInputValue?: string | undefined;
-  icon?: IconDefinition | undefined;
+  initialInputValue?: string;
+  icon?: IconDefinition;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus: () => void;
   onBlur: () => void;
 
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLTextAreaElement> | undefined | null;
-  required?: boolean | undefined;
-  autoComplete?: 'on' | 'off' | undefined;
+  minLength?: number;
+  maxLength?: number;
+  withAsterisk?: boolean;
+  ref?: React.RefObject<HTMLTextAreaElement> | null;
+  required?: boolean;
+  autoComplete?: 'on' | 'off';
 
-  autosize?: boolean | undefined;
-  minRows?: number | undefined;
-  maxRows?: number | undefined;
+  autosize?: boolean;
+  minRows?: number;
+  maxRows?: number;
 };
 
 type TextAreaInputWrapperProps = {
@@ -67,7 +60,7 @@ function TextAreaInputWrapper({
     ariaRequired = false,
     ariaAutoComplete = 'none',
     description,
-    dynamicInputProps = null,
+    dynamicInputs = null,
     placeholder,
     initialInputValue = '',
     icon = null,
@@ -82,50 +75,30 @@ function TextAreaInputWrapper({
     autoComplete = 'off',
     autosize = true,
     minRows = 3,
-    maxRows = 5,
+    maxRows = 7,
   } = creatorInfoObject;
 
-  const semanticNameCapitalized =
-    semanticName.charAt(0).toUpperCase() + semanticName.slice(1);
-  const semanticActionCapitalized = dynamicInputProps
-    ? dynamicInputProps?.semanticAction.charAt(0).toUpperCase() +
-      dynamicInputProps?.semanticAction.slice(1)
-    : '';
-
   const textAreaSize = 'sm';
+  // const semanticNameCapitalized =
+  //   semanticName.charAt(0).toUpperCase() + semanticName.slice(1);
+
+  const dynamicInputLabel = dynamicInputs ? (
+    <Group w="100%" position="apart">
+      <Text size="sm">{label}</Text>
+      {dynamicInputs.map((input, index) => (
+        <Group key={`${index}`}>{input}</Group>
+      ))}
+    </Group>
+  ) : (
+    label
+  );
 
   return (
     <Textarea
       size={textAreaSize}
       w="100%"
       color="dark"
-      label={
-        dynamicInputProps ? (
-          <Flex align="center" justify="space-between" columnGap="xl">
-            <Text>{`${semanticNameCapitalized}`}</Text>
-            <Tooltip label={`${semanticActionCapitalized} ${semanticName}`}>
-              <Group>
-                <ButtonWrapper
-                  creatorInfoObject={{
-                    buttonVariant: 'outline',
-                    buttonLabel: 'Delete',
-                    buttonOnClick: dynamicInputProps.dynamicInputOnClick,
-                    semanticDescription: `${
-                      dynamicInputProps.semanticAction
-                    } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
-                    semanticName: `${
-                      dynamicInputProps.semanticAction
-                    } ${semanticName} ${dynamicInputProps.dynamicIndex + 1}`,
-                    leftIcon: <BsTrash />,
-                  }}
-                />
-              </Group>
-            </Tooltip>
-          </Flex>
-        ) : (
-          label
-        )
-      }
+      label={dynamicInputLabel}
       aria-required={ariaRequired}
       aria-describedby={
         isValidInputText

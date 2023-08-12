@@ -212,7 +212,13 @@ function App() {
               <Route path="create" element={<SurveyBuilder />} />
               <Route path="display" element={<DisplaySurveys />} />
             </Route>
-            {/* <Route path="announcements" element={<CreateAnnouncement />} /> */}
+
+            {/* announcements */}
+            <Route path="announcement">
+              <Route index element={<CreateAnnouncement />} />
+              <Route path="create" element={<CreateAnnouncement />} />
+              <Route path="display" element={<CreateAnnouncement />} />
+            </Route>
           </Route>
         </Route>
 
