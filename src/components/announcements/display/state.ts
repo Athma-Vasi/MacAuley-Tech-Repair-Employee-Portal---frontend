@@ -9,15 +9,15 @@ const initialDisplayAnnouncementsState: DisplayAnnouncementsState = {
   pages: 0,
   totalDocuments: 0,
   newQueryFlag: false,
-  queryBuilderString: '',
+  queryBuilderString: '?',
   pageQueryString: '',
 
   triggerRefresh: false,
 
   isError: false,
   errorMessage: '',
-  isLoading: false,
-  loadingMessage: '',
+  isLoading: true,
+  loadingMessage: 'Please wait. Fetching announcements...',
   isSuccessful: false,
   successMessage: '',
   isSubmitting: false,

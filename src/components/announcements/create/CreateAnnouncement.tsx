@@ -52,6 +52,7 @@ import { useAuth, useGlobalState } from '../../../hooks';
 import { ResourceRequestServerResponse } from '../../../types';
 import { AnnouncementDocument } from './types';
 import { CustomNotification } from '../../customNotification';
+import { InvalidTokenError } from 'jwt-decode';
 
 function CreateAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -182,11 +183,22 @@ function CreateAnnouncement() {
           type: createAnnouncementAction.setIsError,
           payload: true,
         });
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setErrorMessage,
-          payload:
-            error?.message ?? 'Unknown error occurred. Please try again.',
-        });
+
+        error instanceof InvalidTokenError
+          ? createAnnouncementDispatch({
+              type: createAnnouncementAction.setErrorMessage,
+              payload: 'Invalid token',
+            })
+          : !error?.response
+          ? createAnnouncementDispatch({
+              type: createAnnouncementAction.setErrorMessage,
+              payload: 'No response from server',
+            })
+          : createAnnouncementDispatch({
+              type: createAnnouncementAction.setErrorMessage,
+              payload:
+                error?.message ?? 'Unknown error occurred. Please try again.',
+            });
       }
     }
 
