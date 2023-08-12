@@ -5,7 +5,6 @@ type DisplayAnnouncementsState = {
   responseData: QueryResponseData<AnnouncementDocument>[] | null;
   pages: number;
   totalDocuments: number;
-
   newQueryFlag: boolean;
   queryBuilderString: string;
   pageQueryString: string;
@@ -26,7 +25,6 @@ type DisplayAnnouncementsAction = {
   setResponseData: 'setResponseData';
   setPages: 'setPages';
   setTotalDocuments: 'setTotalDocuments';
-
   setNewQueryFlag: 'setNewQueryFlag';
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
