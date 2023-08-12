@@ -134,25 +134,25 @@ function Dashboard() {
     }
 
     const welcomeSectionTimeToRead = timeToReadCalc([
-      'Welcome to MacAuley Tech Repair!',
+      `
+      Greetings and Welcome to MacAuley Tech Repair!
 
-      'We are thrilled to extend a warm and heartfelt welcome to each and every member of our exceptional team. Your expertise, dedication, and passion for technology repair are invaluable to our success, and we truly appreciate the contributions you make to our business every day.',
+With genuine enthusiasm, we extend a heartfelt welcome to each esteemed member of our exceptional team. Your intricate expertise, unwavering dedication, and fervent passion for the realm of technology repair serve as the bedrock of our accomplishments. We profoundly acknowledge and hold in high esteem the valuable contributions you render to our enterprise on a daily basis.
 
-      "At MacAuley Tech Repair, we understand the vital role you play in ensuring our customers' devices are repaired swiftly and effectively. Your commitment to delivering top-notch service and technical expertise is what sets us apart in the industry.",
+At MacAuley Tech Repair, we recognize the pivotal role you play in swiftly and proficiently restoring our customers' devices to their optimal functionality. Your unwavering commitment to delivering an unparalleled level of service and harnessing your technical acumen positions us uniquely within the industry landscape.
 
-      "This employee portal is designed to be your gateway to a wealth of resources, support, and collaboration. Here, you'll find everything you need to excel in your role, including training materials, company policies, and the latest updates. It's a place where knowledge is shared, skills are honed, and new ideas flourish.",
+This employee portal stands as your portal to a vast repository of resources, unfaltering support, and seamless collaboration. Within these virtual walls, you will discover a comprehensive array of tools meticulously curated to foster excellence within your role. From meticulously crafted training materials to our company's guiding policies, alongside real-time updates, this platform serves as the hub where knowledge converges, competencies evolve, and innovative concepts take root.
 
-      "We believe in fostering a positive work environment that encourages growth, innovation, and teamwork. Your dedication and commitment to providing outstanding customer experiences are the driving force behind our success. Together, we'll continue to exceed expectations and build lasting relationships with our valued clients.",
+Our conviction lies in nurturing a constructive work environment that acts as a crucible for growth, fostering innovation, and propagating teamwork. Your steadfast commitment and resolute efforts in ensuring unparalleled customer experiences serve as the fulcrum upon which our accomplishments pivot. Together, we pledge to perpetually transcend expectations and to forge enduring bonds with our esteemed clientele.
 
-      'As you embark on this exciting journey with MacAuley Tech Repair, remember that you are an essential part of our family. We encourage you to share your insights, collaborate with your colleagues, and explore new opportunities for personal and professional development. Your talents and expertise are the foundation upon which we build our reputation as a leading tech repair business.',
+Embarking upon this thrilling journey with MacAuley Tech Repair, we entreat you to recognize your status as an integral member of our extended family. We ardently invite you to contribute your insights, engage in synergistic collaborations with your peers, and embark on the pursuit of new horizons in both personal and professional capacities. Your unique talents and resplendent expertise serve as the cornerstone upon which we erect our reputation as an illustrious leader in the tech repair domain.
 
-      'Once again, welcome to MacAuley Tech Repair! We are thrilled to have you on board, and we look forward to achieving great things together.',
+In reiteration, we extend a resounding welcome to you at MacAuley Tech Repair! Our anticipation brims as we share the prospect of achieving remarkable feats in collaboration.
 
-      'Sincerely,',
+Warm regards,
 
-      'Michael Scott',
-
-      'CEO, MacAuley Tech Repair',
+[Your Name]
+CEO, MacAuley Tech Repair`,
     ]);
 
     console.log({ welcomeSectionTimeToRead });
@@ -185,7 +185,7 @@ function Dashboard() {
       </Title>
       <Image
         src="https://images.pexels.com/photos/7792804/pexels-photo-7792804.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-        alt="Triumphant Colleagues doing a Fist Bump"
+        alt="Triumphant colleagues doing a fist bump"
         withPlaceholder
         h="100%"
         w="100%"

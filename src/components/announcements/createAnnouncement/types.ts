@@ -14,6 +14,7 @@ type AnnouncementSchema = {
   userId: string;
   username: string;
   title: string;
+  author: string;
   bannerImageSrc: string;
   bannerImageAlt: string;
   article: string[];

@@ -158,6 +158,116 @@ function SurveyBuilder() {
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
+  // submit survey form
+  useEffect(() => {
+    let isMounted = true;
+    const surveyQuestions = setSurveyQuestions({
+      questions,
+      responseKinds,
+      responseInputHtml,
+      responseDataOptionsArray,
+    });
+    const controller = new AbortController();
+
+    async function handleSurveySubmit() {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url: URL = urlBuilder({
+        path: '/api/v1/actions/outreach/survey-builder',
+      });
+
+      const body = JSON.stringify({
+        survey: {
+          surveyTitle,
+          surveyDescription,
+          sendTo: surveyRecipients,
+          expiryDate,
+          questions: surveyQuestions,
+          surveyStatistics,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: ResourceRequestServerResponse<SurveyBuilderDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+
+        const { ok } = response;
+        if (!ok) {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsError,
+            payload: true,
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setErrorMessage,
+            payload: data.message,
+          });
+
+          return;
+        }
+
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setIsSuccessful,
+          payload: true,
+        });
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setSuccessMessage,
+          payload: data.message,
+        });
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setTriggerFormSubmit,
+          payload: false,
+        });
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setIsSubmitting,
+          payload: false,
+        });
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setIsError,
+          payload: true,
+        });
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setErrorMessage,
+          payload:
+            error?.message ?? 'Unknown error occurred. Please try again.',
+        });
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleSurveySubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // this effect should only run when triggerFormSubmit changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
   // allows repeated openings of preview modal
   useEffect(() => {
     surveyBuilderDispatch({
@@ -560,116 +670,6 @@ function SurveyBuilder() {
       openPreviewSurveyModal();
     }
   }, [triggerPreviewSurvey]);
-
-  // submit survey form
-  useEffect(() => {
-    let isMounted = true;
-    const surveyQuestions = setSurveyQuestions({
-      questions,
-      responseKinds,
-      responseInputHtml,
-      responseDataOptionsArray,
-    });
-    const controller = new AbortController();
-
-    async function handleSurveySubmit() {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsSubmitting,
-        payload: true,
-      });
-
-      const url: URL = urlBuilder({
-        path: '/api/v1/actions/outreach/survey-builder',
-      });
-
-      const body = JSON.stringify({
-        survey: {
-          surveyTitle,
-          surveyDescription,
-          sendTo: surveyRecipients,
-          expiryDate,
-          questions: surveyQuestions,
-          surveyStatistics,
-        },
-      });
-
-      const request: Request = new Request(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body,
-        signal: controller.signal,
-      });
-
-      try {
-        const response = await fetch(request);
-        const data: ResourceRequestServerResponse<SurveyBuilderDocument> =
-          await response.json();
-
-        if (!isMounted) {
-          return;
-        }
-
-        if (response.ok) {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsSuccessful,
-            payload: true,
-          });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setSuccessMessage,
-            payload: data.message,
-          });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setTriggerFormSubmit,
-            payload: false,
-          });
-        } else {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsError,
-            payload: true,
-          });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setErrorMessage,
-            payload: data.message,
-          });
-        }
-      } catch (error: any) {
-        if (isMounted) {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsError,
-            payload: true,
-          });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setErrorMessage,
-            payload:
-              error?.message ?? 'Unknown error occurred. Please try again.',
-          });
-        }
-      } finally {
-        if (isMounted) {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsSubmitting,
-            payload: false,
-          });
-        }
-      }
-    }
-
-    if (triggerFormSubmit) {
-      // handleSurveySubmit();
-      console.log('surveyQuestions', surveyQuestions);
-    }
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-
-    // this effect should only run when triggerFormSubmit changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
 
   useEffect(() => {
     logState({

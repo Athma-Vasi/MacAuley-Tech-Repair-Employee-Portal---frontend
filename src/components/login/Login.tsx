@@ -104,27 +104,7 @@ function Login() {
           return;
         }
         const { ok } = response;
-        if (ok) {
-          const { accessToken = '' } = data;
-          const decodedToken: DecodedToken = jwtDecode(accessToken);
-          const {
-            userInfo: { username, userId, roles },
-          } = decodedToken;
-
-          // set all auth state upon login
-          authDispatch({
-            type: authAction.setAllAuthState,
-            payload: {
-              username,
-              userId,
-              password,
-              roles,
-              accessToken,
-              errorMessage: '',
-              isLoggedIn: true,
-            },
-          });
-        } else {
+        if (!ok) {
           loginDispatch({
             type: loginAction.setIsError,
             payload: true,
@@ -133,8 +113,44 @@ function Login() {
             type: loginAction.setErrorMessage,
             payload: data.message,
           });
+          return;
         }
+
+        const { accessToken = '' } = data;
+        const decodedToken: DecodedToken = jwtDecode(accessToken);
+        const {
+          userInfo: { username, userId, roles },
+        } = decodedToken;
+
+        // set all auth state upon login
+        authDispatch({
+          type: authAction.setAllAuthState,
+          payload: {
+            username,
+            userId,
+            password,
+            roles,
+            accessToken,
+            errorMessage: '',
+            isLoggedIn: true,
+          },
+        });
+
+        loginDispatch({
+          type: loginAction.setTriggerLoginSubmit,
+          payload: false,
+        });
+        loginDispatch({
+          type: loginAction.setIsSubmitting,
+          payload: false,
+        });
+
+        navigate('/portal');
       } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+
         loginDispatch({
           type: loginAction.setIsError,
           payload: true,
@@ -155,18 +171,6 @@ function Login() {
               payload:
                 error?.message ?? 'Unknown error occurred. Please try again.',
             });
-      } finally {
-        loginDispatch({
-          type: loginAction.setTriggerLoginSubmit,
-          payload: false,
-        });
-
-        loginDispatch({
-          type: loginAction.setIsSubmitting,
-          payload: false,
-        });
-
-        navigate('/portal');
       }
     }
 

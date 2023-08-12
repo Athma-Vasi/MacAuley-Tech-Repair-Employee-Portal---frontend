@@ -2,7 +2,13 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Flex, Group, Stack, Text, Tooltip } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { MdOutlineAdd } from 'react-icons/md';
-import { TbPlus, TbTrash, TbUpload } from 'react-icons/tb';
+import {
+  TbPlus,
+  TbRowInsertBottom,
+  TbRowInsertTop,
+  TbTrash,
+  TbUpload,
+} from 'react-icons/tb';
 
 import {
   GRAMMAR_TEXT_INPUT_REGEX,
@@ -21,6 +27,7 @@ import {
   returnGrammarValidationText,
   returnNameValidationText,
   returnUrlValidationText,
+  urlBuilder,
 } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -41,9 +48,12 @@ import {
   createAnnouncementReducer,
   initialCreateAnnouncementState,
 } from './state';
-import { useGlobalState } from '../../../hooks';
+import { useAuth, useGlobalState } from '../../../hooks';
+import { ResourceRequestServerResponse } from '../../../types';
+import { AnnouncementDocument } from './types';
 
 function CreateAnnouncement() {
+  /** ------------- begin hooks ------------- */
   const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
     createAnnouncementReducer,
     initialCreateAnnouncementState
@@ -87,6 +97,107 @@ function CreateAnnouncement() {
   const {
     globalState: { padding, rowGap, width },
   } = useGlobalState();
+  const {
+    authState: { accessToken },
+  } = useAuth();
+  /** ------------- end hooks ------------- */
+
+  /** ------------- begin useEffects ------------- */
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function createAnnouncementFormSubmit() {
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url: URL = urlBuilder({
+        path: '/api/v1/actions/outreach/announcement',
+      });
+
+      const body = JSON.stringify({
+        announcement: {
+          title,
+          author,
+          bannerImageSrc,
+          bannerImageAlt,
+          article,
+          timeToRead,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: ResourceRequestServerResponse<AnnouncementDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+
+        const { ok } = response;
+        if (!ok) {
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setIsError,
+            payload: true,
+          });
+          createAnnouncementDispatch({
+            type: createAnnouncementAction.setErrorMessage,
+            payload: data.message,
+          });
+
+          return;
+        }
+
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setIsSuccessful,
+          payload: true,
+        });
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setSuccessMessage,
+          payload: data.message,
+        });
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setIsSubmitting,
+          payload: false,
+        });
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setIsError,
+          payload: true,
+        });
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setErrorMessage,
+          payload:
+            error?.message ?? 'Unknown error occurred. Please try again.',
+        });
+      }
+    }
+
+    if (triggerFormSubmit) {
+      createAnnouncementFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [triggerFormSubmit]);
 
   const newArticleParagraphRef = useRef<HTMLTextAreaElement>(null);
   // sets focus on paragraph input on render, and on every new paragraph textarea creation
@@ -215,6 +326,7 @@ function CreateAnnouncement() {
       groupLabel: 'create announcement state',
     });
   }, [createAnnouncementState]);
+  /** ------------- end useEffects ------------- */
 
   // below are the accessible text elements for the screen reader to read out
   const [titleInputErrorText, titleInputValidText] =
@@ -430,8 +542,8 @@ function CreateAnnouncement() {
             },
           });
         },
-        semanticDescription: `delete paragraph ${index + 1} text input button`,
-        semanticName: `delete paragraph ${index + 1} button`,
+        semanticDescription: `Delete paragraph ${index + 1} button`,
+        semanticName: 'Delete paragraph button',
       };
 
       const insertParagraphButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -439,7 +551,7 @@ function CreateAnnouncement() {
         buttonLabel: (
           <Tooltip label={`Insert paragraph between ${index} and ${index + 1}`}>
             <Group>
-              <TbPlus />
+              <TbRowInsertTop />
               <Text>Insert</Text>
             </Group>
           </Tooltip>
@@ -453,8 +565,10 @@ function CreateAnnouncement() {
             },
           });
         },
-        semanticDescription: `insert paragraph ${index} text input button`,
-        semanticName: `insert paragraph ${index} button`,
+        semanticDescription: `Insert paragraph between ${index} and ${
+          index + 1
+        }`,
+        semanticName: 'Insert paragraph button',
       };
 
       const [createdDeleteParagraphButton, createdInsertParagraphButton] =
@@ -518,7 +632,7 @@ function CreateAnnouncement() {
     buttonLabel: (
       <Tooltip label="Add new paragraph">
         <Group>
-          <TbPlus />
+          <TbRowInsertBottom />
           <Text>Add</Text>
         </Group>
       </Tooltip>
@@ -642,16 +756,6 @@ function CreateAnnouncement() {
       {displayCreateAnnouncementForm}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    async function createAnnouncementFormSubmit() {
-      console.log('create announcement form submit');
-    }
-
-    if (triggerFormSubmit) {
-      createAnnouncementFormSubmit();
-    }
-  }, [triggerFormSubmit]);
 
   return <>{displayCreateAnnouncementComponent}</>;
 }
