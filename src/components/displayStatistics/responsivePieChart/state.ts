@@ -37,8 +37,8 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   arcLinkLabelsTextColor: '#333333',
 
   /** interactivity */
-  activeInnerRadiusOffset: 4,
-  activeOuterRadiusOffset: 4,
+  activeInnerRadiusOffset: 8,
+  activeOuterRadiusOffset: 8,
 
   /** motion */
   animate: true,
@@ -47,9 +47,9 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
 
   /** margin */
   marginTop: 80,
-  marginRight: 80,
+  marginRight: 150,
   marginBottom: 80,
-  marginLeft: 80,
+  marginLeft: 150,
 
   /** legend */
   enableLegend: false,
@@ -63,6 +63,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   itemHeight: 20,
   itemDirection: 'left-to-right',
   itemTextColor: '#999',
+  itemOpacity: 1,
   symbolSize: 20,
   symbolShape: 'circle',
 };
@@ -126,6 +127,7 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setItemHeight: 'setItemHeight',
   setItemDirection: 'setItemDirection',
   setItemTextColor: 'setItemTextColor',
+  setItemOpacity: 'setItemOpacity',
   setSymbolSize: 'setSymbolSize',
   setSymbolShape: 'setSymbolShape',
 };
@@ -364,6 +366,11 @@ function responsivePieChartReducer(
       return {
         ...state,
         itemTextColor: action.payload,
+      };
+    case responsivePieChartAction.setItemOpacity:
+      return {
+        ...state,
+        itemOpacity: action.payload,
       };
     case responsivePieChartAction.setSymbolSize:
       return {

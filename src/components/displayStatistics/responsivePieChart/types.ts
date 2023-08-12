@@ -148,6 +148,7 @@ type ResponsivePieChartState = {
   itemHeight: number; // 10px - 200px default: 20 step: 1
   itemDirection: LegendItemDirection; // default: left-to-right
   itemTextColor: string; // default: #000000
+  itemOpacity: number; // 0 - 1 default: 1 step: 0.05
   symbolSize: number; // 2px - 60px default: 12 step: 1
   symbolShape: LegendSymbolShape; // default: circle
 };
@@ -211,6 +212,7 @@ type ResponsivePieChartAction = {
   setItemHeight: 'setItemHeight';
   setItemDirection: 'setItemDirection';
   setItemTextColor: 'setItemTextColor';
+  setItemOpacity: 'setItemOpacity';
   setSymbolSize: 'setSymbolSize';
   setSymbolShape: 'setSymbolShape';
 };
@@ -244,6 +246,7 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setItemsSpacing']
         | ResponsivePieChartAction['setItemWidth']
         | ResponsivePieChartAction['setItemHeight']
+        | ResponsivePieChartAction['setItemOpacity']
         | ResponsivePieChartAction['setSymbolSize'];
 
       payload: number;

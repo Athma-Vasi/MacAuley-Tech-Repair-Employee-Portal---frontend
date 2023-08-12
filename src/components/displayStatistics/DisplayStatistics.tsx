@@ -246,6 +246,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   /** ------------- end component render bypass ------------- */
 
   /** ------------- begin input creators ------------- */
+
   // loop through completed surveys and create cards to display statistics modal
   const completedSurveysCards = surveys.map((survey, idx) => {
     const { surveyTitle, _id } = survey;

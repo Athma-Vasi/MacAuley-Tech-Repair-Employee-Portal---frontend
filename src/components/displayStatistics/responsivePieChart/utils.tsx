@@ -27,21 +27,30 @@ function PieChartControlsStack({
       w="100%"
       style={{ borderBottom: '1px solid #e0e0e0' }}
       px={padding}
-      py="xs"
-      rowGap={rowGap}
+      pb={padding}
+      rowGap="xs"
       //   columnGap={rowGap}
     >
       <TextWrapper creatorInfoObj={{ size: 'md' }}>{label}</TextWrapper>
 
       <Flex
-        align="center"
+        align="flex-end"
         justify="space-between"
         wrap="wrap"
         columnGap={rowGap}
         // rowGap={rowGap}
         w="100%"
       >
-        <TextWrapper creatorInfoObj={{}} aria-live="polite">
+        <TextWrapper
+          creatorInfoObj={{
+            style: {
+              padding: '0.5rem 0.75rem',
+              border: '1px solid #e0e0e0',
+              borderRadius: '4px',
+            },
+          }}
+          aria-live="polite"
+        >
           {splitCamelCase(value.toString())} {symbol}
         </TextWrapper>
         <Group>{input}</Group>

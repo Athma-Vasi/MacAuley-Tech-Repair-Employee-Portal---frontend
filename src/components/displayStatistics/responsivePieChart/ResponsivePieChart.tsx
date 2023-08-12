@@ -1,13 +1,4 @@
-import {
-  Center,
-  ColorInput,
-  Flex,
-  Grid,
-  Group,
-  Stack,
-  Switch,
-  Text,
-} from '@mantine/core';
+import { ColorInput, Grid, Group, Stack, Switch, Text } from '@mantine/core';
 import { ResponsivePie } from '@nivo/pie';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 
@@ -108,12 +99,13 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     itemHeight, // 10px - 200px default: 20 step: 1
     itemDirection, // default: left-to-right
     itemTextColor, // default: #000000
+    itemOpacity, // 0 - 1 default: 1 step: 0.05
     symbolSize, // 2px - 60px default: 12 step: 1
     symbolShape, // default: circle
   } = responsivePieChartState;
 
   const {
-    globalState: { padding, rowGap, width, height },
+    globalState: { padding, width },
   } = useGlobalState();
   /** ------------- end hooks ------------- */
 
@@ -817,7 +809,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         payload: value,
       });
     },
-    sliderDefaultValue: 80,
+    sliderDefaultValue: 150,
     width: sliderWidth,
   };
 
@@ -835,7 +827,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         payload: value,
       });
     },
-    sliderDefaultValue: 80,
+    sliderDefaultValue: 150,
     width: sliderWidth,
   };
 
@@ -1075,6 +1067,27 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     />
   );
 
+  const legendItemOpacitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      ariaLabel: 'Legend item opacity',
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => <Text>{(value * 100).toFixed(0)} %</Text>,
+      max: 1,
+      min: 0,
+      precision: 2,
+      step: 0.05,
+      value: itemOpacity,
+      onChangeSlider: (value: number) => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.setItemOpacity,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 1,
+      width: sliderWidth,
+    };
+
   const legendSymbolSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'Legend symbol size',
@@ -1199,6 +1212,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     createdLegendItemsSpacingSliderInput,
     createdLegendItemWidthSliderInput,
     createdLegendItemHeightSliderInput,
+    createdLegendItemOpacitySliderInput,
     createdLegendSymbolSizeSliderInput,
   ] = returnAccessibleSliderInputElements([
     legendTranslateXSliderInputCreatorInfo,
@@ -1206,6 +1220,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     legendItemsSpacingSliderInputCreatorInfo,
     legendItemWidthSliderInputCreatorInfo,
     legendItemHeightSliderInputCreatorInfo,
+    legendItemOpacitySliderInputCreatorInfo,
     legendSymbolSizeSliderInputCreatorInfo,
   ]);
 
@@ -1328,7 +1343,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <PieChartControlsStack
       input={createdColorSchemeSelectInput}
       label="Color scheme"
-      value={colorScheme}
+      // prevents display of camelCased or snake_cased value
+      value={
+        NIVO_COLOR_SCHEME_DATA.find(({ value }) => value === colorScheme)
+          ?.label ?? colorScheme
+      }
     />
   );
 
@@ -1632,7 +1651,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <PieChartControlsStack
       input={createdLegendAnchorSelectInput}
       label="Anchor"
-      value={anchor}
+      // prevents display of camelCased or snake_cased value
+      value={
+        NIVO_LEGEND_ANCHOR_DATA.find(({ value }) => value === anchor)?.label ??
+        anchor
+      }
     />
   );
 
@@ -1699,7 +1722,12 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <PieChartControlsStack
       input={createdLegendItemDirectionSelectInput}
       label="Item direction"
-      value={itemDirection}
+      // prevents display of camelCased or snake_cased value
+      value={
+        NIVO_LEGEND_ITEM_DIRECTION_DATA.find(
+          ({ value }) => value === itemDirection
+        )?.label ?? itemDirection
+      }
     />
   );
 
@@ -1709,6 +1737,15 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       label="Item text color"
       value={itemTextColor}
       symbol=""
+    />
+  );
+
+  const displayLegendItemOpacitySliderInput = (
+    <PieChartControlsStack
+      input={createdLegendItemOpacitySliderInput}
+      label="Item opacity"
+      value={(itemOpacity * 100).toFixed(0)}
+      symbol="%"
     />
   );
 
@@ -1743,6 +1780,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       {displayLegendItemHeightSliderInput}
       {displayLegendItemDirectionSelectInput}
       {displayLegendItemTextColorInput}
+      {displayLegendItemOpacitySliderInput}
       {displayLegendSymbolSizeSliderInput}
       {displayLegendSymbolShapeSelectInput}
     </Stack>
@@ -1819,7 +1857,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         overflowY: 'scroll',
         borderRight: '1px solid #e0e0e0',
         borderBottom: width < 1192 ? '1px solid #e0e0e0' : '',
-        // boxShadow: '0 0 10px #e0e0e0',
       }}
       py={padding}
     >
@@ -1910,7 +1947,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
                 itemHeight,
                 itemTextColor,
                 itemDirection,
-                itemOpacity: 1,
+                itemOpacity,
                 symbolSize,
                 symbolShape,
                 effects: [
@@ -1945,50 +1982,3 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 }
 
 export { ResponsivePieChart };
-
-/**
- * legends={[
-        {
-          anchor: `${width < 1440 ? 'bottom' : 'right'}`,
-          direction: `${width < 768 ? 'row' : 'column'}`,
-          justify: false,
-          translateX: 0,
-          translateY: 56,
-          itemsSpacing: width < 768 ? 50 : 10,
-          itemWidth: 100,
-          itemHeight: 18,
-          itemTextColor: '#999',
-          itemDirection: 'left-to-right',
-          itemOpacity: 1,
-          symbolSize: 18,
-          symbolShape: 'circle',
-          effects: [
-            {
-              on: 'hover',
-              style: {
-                itemTextColor: '#000',
-              },
-            },
-          ],
-        },
-      ]}
- */
-
-/**
- * const displayResponsivePieChartComponent =
-    width < 1024 ? (
-      <Stack w="100%" h="100vh" p={padding}>
-        <Group h="38%">{displayPieChartControls}</Group>
-        <Group h="62%">{displayResponsivePie}</Group>
-      </Stack>
-    ) : (
-      <Flex w="100%" h="100%" p={padding} align="center" justify="flex-start">
-        <Group h="62%" w='100%' style={{ outline: '1px solid violet' }}>
-          {displayPieChartControls}
-        </Group>
-        <Group h="62%" w={600} style={{ outline: '1px solid teal' }}>
-          {displayResponsivePie}
-        </Group>
-      </Flex>
-    );
- */

@@ -49,7 +49,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     onChangeRangeSlider = () => {},
     precision = 1,
     rangeSliderDefaultValues = [min, max],
-    size = 'xs',
+    size = 'sm',
     sliderDefaultValue = min,
     step,
     thumbChildren,
