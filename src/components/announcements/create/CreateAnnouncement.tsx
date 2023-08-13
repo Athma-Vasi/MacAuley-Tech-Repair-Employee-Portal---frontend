@@ -50,7 +50,7 @@ import {
 } from './state';
 import { useAuth, useGlobalState } from '../../../hooks';
 import { ResourceRequestServerResponse } from '../../../types';
-import { AnnouncementDocument } from './types';
+import { AnnouncementDocument, RatingResponse } from './types';
 import { CustomNotification } from '../../customNotification';
 import { InvalidTokenError } from 'jwt-decode';
 
@@ -119,6 +119,17 @@ function CreateAnnouncement() {
         path: '/api/v1/actions/outreach/announcement',
       });
 
+      const ratingResponse: RatingResponse = {
+        ratingEmotion: {
+          estatic: 0,
+          happy: 0,
+          neutral: 0,
+          annoyed: 0,
+          devastated: 0,
+        },
+        ratingCount: 0,
+      };
+
       const body = JSON.stringify({
         announcement: {
           title,
@@ -127,6 +138,8 @@ function CreateAnnouncement() {
           bannerImageAlt,
           article,
           timeToRead,
+          ratingResponse,
+          commentIds: [],
         },
       });
 

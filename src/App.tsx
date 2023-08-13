@@ -9,6 +9,7 @@ import {
 } from './components/addressChange';
 import {
   CreateAnnouncement,
+  DisplayAnnouncement,
   DisplayAnnouncements,
 } from './components/announcements';
 import { CreateBenefit, DisplayBenefits } from './components/benefits';
@@ -221,6 +222,10 @@ function App() {
               <Route index element={<DisplayAnnouncements />} />
               <Route path="create" element={<CreateAnnouncement />} />
               <Route path="display" element={<DisplayAnnouncements />} />
+              <Route
+                path="display/:announcementId"
+                element={<DisplayAnnouncement />}
+              />
             </Route>
           </Route>
         </Route>

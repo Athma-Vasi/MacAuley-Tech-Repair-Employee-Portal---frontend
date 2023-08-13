@@ -1,13 +1,17 @@
 import { SetStepsInErrorPayload } from '../../../types';
 
-type RatingFeel = 'estatic' | 'happy' | 'neutral' | 'sad' | 'devastated' | '';
+// type RatingFeel = 'estatic' | 'happy' | 'neutral' | 'sad' | 'devastated' | '';
+type RatingEmotion = {
+  estatic: number;
+  happy: number;
+  neutral: number;
+  annoyed: number;
+  devastated: number;
+};
 
-type Comment = {
-  userId: string;
-  username: string;
-  comment: string;
-  createdAt: string;
-  updatedAt: string;
+type RatingResponse = {
+  ratingEmotion: RatingEmotion;
+  ratingCount: number;
 };
 
 type AnnouncementSchema = {
@@ -19,11 +23,8 @@ type AnnouncementSchema = {
   bannerImageAlt: string;
   article: string[];
   timeToRead: number;
-  rating: {
-    feel: RatingFeel;
-    count: number;
-  };
-  comments: Array<Comment>;
+  ratingResponse: RatingResponse;
+  commentIds: string[];
 };
 
 type AnnouncementDocument = AnnouncementSchema & {
@@ -192,11 +193,11 @@ type CreateAnnouncementResponse = {
 export type {
   AnnouncementDocument,
   AnnouncementSchema,
-  Comment,
   CreateAnnouncementAction,
   CreateAnnouncementDispatch,
   CreateAnnouncementReducer,
   CreateAnnouncementResponse,
   CreateAnnouncementState,
-  RatingFeel,
+  RatingEmotion,
+  RatingResponse,
 };

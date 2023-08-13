@@ -1,4 +1,4 @@
-import { Text } from '@mantine/core';
+import { Card, Flex, Group, Image, Text, UnstyledButton } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 import {
   displayAnnouncementsAction,
@@ -6,7 +6,7 @@ import {
   initialDisplayAnnouncementsState,
 } from './state';
 import { logState, urlBuilder } from '../../../utils';
-import { useAuth } from '../../../hooks';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   GetQueriedResourceRequestServerResponse,
   ResourceRequestServerResponse,
@@ -14,6 +14,7 @@ import {
 import { AnnouncementDocument } from '../create/types';
 import { InvalidTokenError } from 'jwt-decode';
 import { CustomNotification } from '../../customNotification';
+import { useNavigate } from 'react-router-dom';
 
 function DisplayAnnouncements() {
   /** ------------- begin hooks ------------- */
@@ -44,6 +45,10 @@ function DisplayAnnouncements() {
   const {
     authState: { accessToken },
   } = useAuth();
+  const {
+    globalState: { padding, rowGap, width },
+  } = useGlobalState();
+  const navigate = useNavigate();
 
   /** ------------- end hooks ------------- */
 
@@ -78,6 +83,15 @@ function DisplayAnnouncements() {
 
         const { ok } = response;
         if (!ok) {
+          displayAnnouncementsDispatch({
+            type: displayAnnouncementsAction.setIsLoading,
+            payload: false,
+          });
+          displayAnnouncementsDispatch({
+            type: displayAnnouncementsAction.setLoadingMessage,
+            payload: '',
+          });
+
           displayAnnouncementsDispatch({
             type: displayAnnouncementsAction.setIsError,
             payload: true,
@@ -134,6 +148,11 @@ function DisplayAnnouncements() {
               payload:
                 error?.message ?? 'Unknown error occurred. Please try again.',
             });
+
+        displayAnnouncementsDispatch({
+          type: displayAnnouncementsAction.setIsLoading,
+          payload: false,
+        });
       }
     }
 
@@ -143,6 +162,8 @@ function DisplayAnnouncements() {
       isMounted = false;
       controller.abort();
     };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -175,11 +196,89 @@ function DisplayAnnouncements() {
   }
   /** ------------- end component render bypass ------------- */
 
-  return (
-    <>
-      <Text>display announcement</Text>
-    </>
+  /** ------------- begin input creators ------------- */
+
+  const createdAnnouncementsCards = responseData?.map(
+    (announcement, announcementIdx) => {
+      const { _id, bannerImageSrc, bannerImageAlt, title } = announcement;
+
+      const announcementCard = (
+        <UnstyledButton
+          key={`${_id}-${announcementIdx}`}
+          w={350}
+          h={217}
+          onClick={() => {
+            navigate(`/portal/outreach/announcement/display/${_id}`, {
+              state: { announcement },
+              replace: false,
+            });
+          }}
+        >
+          <Card shadow="sm" radius="md" withBorder w="100%" h="100%">
+            <Card.Section>
+              <Image
+                src={bannerImageSrc}
+                alt={bannerImageAlt}
+                fit="fill"
+                style={{
+                  position: 'relative',
+                  opacity: 0.7,
+                  width: '100%',
+                  height: '100%',
+                }}
+                radius="md"
+                withPlaceholder
+              />
+            </Card.Section>
+
+            <Text
+              size="md"
+              p={padding}
+              weight={700}
+              color="white"
+              style={{
+                position: 'absolute',
+                width: '100%',
+                top: '75%',
+                left: '0%',
+                zIndex: 1,
+                backgroundColor: 'rgba(0,0,0,0.5)',
+              }}
+            >
+              {title}
+            </Text>
+          </Card>
+        </UnstyledButton>
+      );
+
+      return announcementCard;
+    }
   );
+
+  /** ------------- end input creators ------------- */
+
+  /** ------------- begin input display ------------- */
+  const displayAnnouncementCards = (
+    <Flex
+      align="center"
+      justify="flex-start"
+      w="100%"
+      wrap="wrap"
+      rowGap={rowGap}
+      p={padding}
+      columnGap={rowGap}
+      style={{
+        background: 'white',
+        borderRadius: '4px',
+      }}
+    >
+      {createdAnnouncementsCards}
+    </Flex>
+  );
+
+  /** ------------- end input display ------------- */
+
+  return displayAnnouncementCards;
 }
 
 export { DisplayAnnouncements };
