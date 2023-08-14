@@ -1,4 +1,5 @@
 import {
+  Card,
   Flex,
   Group,
   Image,
@@ -10,6 +11,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 import { FaRegCommentDots } from 'react-icons/fa';
 import { MdOutlineAddReaction } from 'react-icons/md';
@@ -34,6 +36,7 @@ import {
   returnAccessibleErrorValidTextElements,
   returnAccessibleTextAreaInputElements,
 } from '../../../../jsxCreators';
+import { ResourceRequestServerResponse, UserDocument } from '../../../../types';
 import {
   formatDate,
   logState,
@@ -43,19 +46,14 @@ import {
 import { CustomNotification } from '../../../customNotification';
 import { CustomRating } from '../../../customRating/CustomRating';
 import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+import { AnnouncementDocument, RatingResponse } from '../../create/types';
 import {
   displayAnnouncementAction,
   displayAnnouncementReducer,
   initialDisplayAnnouncementState,
 } from './state';
-import {
-  AnnouncementDocument,
-  RatingEmotion,
-  RatingResponse,
-} from '../../create/types';
-import { ResourceRequestServerResponse } from '../../../../types';
-import { InvalidTokenError } from 'jwt-decode';
-import { CommentSchema } from '../../../comments/types';
+import { globalAction } from '../../../../context/globalProvider/state';
+import { ResponsivePieChart } from '../../../displayStatistics/responsivePieChart';
 
 function DisplayAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -67,6 +65,8 @@ function DisplayAnnouncement() {
     announcement,
     rating,
     triggerRatingSubmit,
+    ratedAnnouncementsIds,
+    ratingPieChartDataArray,
 
     comment,
     isCommentValid,
@@ -84,7 +84,8 @@ function DisplayAnnouncement() {
   } = displayAnnouncementState;
 
   const {
-    globalState: { padding, rowGap, width, announcementDocument },
+    globalState: { padding, rowGap, width, announcementDocument, userDocument },
+    globalDispatch,
   } = useGlobalState();
   const {
     authState: { username, accessToken },
@@ -116,7 +117,7 @@ function DisplayAnnouncement() {
       });
 
       const url: URL = urlBuilder({
-        path: `/api/v1/actions/outreach/announcement/${announcement._id}`,
+        path: `/api/v1/actions/outreach/announcement/${announcement._id}/rating`,
       });
 
       const prevRatingResponse = structuredClone(announcement.ratingResponse);
@@ -155,9 +156,14 @@ function DisplayAnnouncement() {
         ratingCount: prevRatingResponse.ratingCount + 1,
       };
 
+      const updatedRatedAnnouncementsIds = Array.from(
+        ratedAnnouncementsIds.has(announcement._id) ? ratedAnnouncementsIds : []
+      );
+
       const body = JSON.stringify({
         announcementFields: {
           ratingResponse,
+          ratedAnnouncementsIds: updatedRatedAnnouncementsIds,
         },
       });
 
@@ -173,8 +179,13 @@ function DisplayAnnouncement() {
 
       try {
         const response = await fetch(request);
-        const data: ResourceRequestServerResponse<AnnouncementDocument> =
-          await response.json();
+        const data: {
+          message: string;
+          resourceData: [
+            Omit<AnnouncementDocument, '__v'>,
+            Omit<UserDocument, '__v' | 'password'>
+          ];
+        } = await response.json();
 
         if (!isMounted) {
           return;
@@ -192,6 +203,13 @@ function DisplayAnnouncement() {
           });
           return;
         }
+
+        const [updatedAnnouncementDocument, updatedUserDocument] =
+          data.resourceData;
+        globalDispatch({
+          type: globalAction.setUserDocument,
+          payload: updatedUserDocument,
+        });
 
         displayAnnouncementDispatch({
           type: displayAnnouncementAction.setIsSuccessful,
@@ -269,6 +287,29 @@ function DisplayAnnouncement() {
       payload: '',
     });
   }, [announcementDocument]);
+
+  // set rated announcement ids to state
+  useEffect(() => {
+    displayAnnouncementDispatch({
+      type: displayAnnouncementAction.setRatedAnnouncementsIds,
+      payload: userDocument?.ratedAnnouncementsIds ?? [],
+    });
+  }, [userDocument, announcement]);
+
+  // set rating response to state
+  useEffect(() => {
+    if (!announcement) {
+      return;
+    }
+    if (!announcement.ratingResponse) {
+      return;
+    }
+
+    displayAnnouncementDispatch({
+      type: displayAnnouncementAction.setRatingPieChartDataArray,
+      payload: announcement.ratingResponse,
+    });
+  }, [ratedAnnouncementsIds]);
 
   // submit comment on trigger
 
@@ -623,24 +664,55 @@ function DisplayAnnouncement() {
       },
     ]);
 
+  const displayRatingAndSubmit = (
+    <Group
+      position="right"
+      spacing={rowGap}
+      p={padding}
+      w="100%"
+      style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
+    >
+      <Group position="left">{createdRatingComponent}</Group>
+      <Group position="right">{createdSubmitRatingButton}</Group>
+    </Group>
+  );
+
+  const showStatisticsCard = (
+    <Stack w="100%">
+      <Group position="right">
+        <Text size="md" color="dark">
+          {announcement?.ratingResponse?.ratingCount ?? 0} people have rated
+          this
+        </Text>
+      </Group>
+      <ResponsivePieChart pieChartData={ratingPieChartDataArray} />
+    </Stack>
+  );
+
+  const ratingModalSize = ratedAnnouncementsIds.has(announcement?._id ?? '')
+    ? 'calc(100% - 2rem)'
+    : width < 480
+    ? 'calc(100% - 3rem)'
+    : '640px';
+
   const displayRatingModal = (
     <Modal
       opened={openedRatingModal}
       onClose={closeRatingModal}
       centered
-      size={width < 480 ? 'calc(100% - 3rem)' : '640px'}
-      title="Rate this article"
+      size={ratingModalSize}
+      title={
+        <Title order={2} color="dark">
+          {ratedAnnouncementsIds.has(announcement?._id ?? '')
+            ? `MacAuley family responses
+          to ${announcement?.title ?? ''}`
+            : announcement?.title ?? ''}
+        </Title>
+      }
     >
-      <Group
-        position="right"
-        spacing={rowGap}
-        p={padding}
-        w="100%"
-        style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
-      >
-        <Group position="left">{createdRatingComponent}</Group>
-        <Group position="right">{createdSubmitRatingButton}</Group>
-      </Group>
+      {ratedAnnouncementsIds.has(announcement?._id ?? '')
+        ? showStatisticsCard
+        : displayRatingAndSubmit}
     </Modal>
   );
 
@@ -648,6 +720,17 @@ function DisplayAnnouncement() {
   const [createdCommentTextAreaInput] = returnAccessibleTextAreaInputElements([
     commentTextAreaInputCreatorInfo,
   ]);
+
+  const displayCommentAndSubmit = (
+    <Stack
+      w="100%"
+      p={padding}
+      // style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
+    >
+      {createdCommentTextAreaInput}
+      <Group position="right">{createdSubmitCommentButton}</Group>
+    </Stack>
+  );
 
   const displayCommentModal = (
     <Modal
@@ -668,34 +751,43 @@ function DisplayAnnouncement() {
         </Title>
       }
     >
-      <Stack
-        w="100%"
-        p={padding}
-        // style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
-      >
-        {createdCommentTextAreaInput}
-        <Group position="right">{createdSubmitCommentButton}</Group>
-      </Stack>
+      {displayCommentAndSubmit}
     </Modal>
   );
 
   /** reader response */
   const displayReaderResponseIcons = (
     <Group w="100%" position="left" spacing={padding} p={padding}>
-      <MdOutlineAddReaction
-        size={24}
-        style={{ cursor: 'pointer', color: 'dimgray' }}
-        onClick={() => {
-          openRatingModal();
-        }}
-      />
-      <FaRegCommentDots
-        size={24}
-        style={{ cursor: 'pointer', color: 'dimgray' }}
-        onClick={() => {
-          openCommentModal();
-        }}
-      />
+      {/* rating icon */}
+      <Tooltip
+        label={
+          ratedAnnouncementsIds.has(announcement?._id ?? '')
+            ? 'View statistics'
+            : 'Rate to view statistics'
+        }
+      >
+        <Group>
+          <MdOutlineAddReaction
+            size={24}
+            style={{ cursor: 'pointer', color: 'dimgray' }}
+            onClick={() => {
+              openRatingModal();
+            }}
+          />
+        </Group>
+      </Tooltip>
+      {/* comment icon */}
+      <Tooltip label={`Comment on ${announcement?.title ?? 'this article'}`}>
+        <Group>
+          <FaRegCommentDots
+            size={24}
+            style={{ cursor: 'pointer', color: 'dimgray' }}
+            onClick={() => {
+              openCommentModal();
+            }}
+          />
+        </Group>
+      </Tooltip>
     </Group>
   );
 

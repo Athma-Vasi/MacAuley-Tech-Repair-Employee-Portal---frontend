@@ -1,10 +1,13 @@
 import { QueryResponseData } from '../../../../types';
-import { AnnouncementDocument } from '../../create/types';
+import { PieChartData } from '../../../displayStatistics/types';
+import { AnnouncementDocument, RatingResponse } from '../../create/types';
 
 type DisplayAnnouncementState = {
   announcement: QueryResponseData<AnnouncementDocument> | null;
   rating: number;
   triggerRatingSubmit: boolean;
+  ratedAnnouncementsIds: Set<string>;
+  ratingPieChartDataArray: PieChartData[];
 
   comment: string;
   isCommentValid: boolean;
@@ -26,6 +29,8 @@ type DisplayAnnouncementAction = {
 
   setRating: 'setRating';
   setTriggerRatingSubmit: 'setTriggerRatingSubmit';
+  setRatedAnnouncementsIds: 'setRatedAnnouncementsIds';
+  setRatingPieChartDataArray: 'setRatingPieChartDataArray';
 
   setComment: 'setComment';
   setIsCommentValid: 'setIsCommentValid';
@@ -50,6 +55,14 @@ type DisplayAnnouncementDispatch =
   | {
       type: DisplayAnnouncementAction['setRating'];
       payload: number;
+    }
+  | {
+      type: DisplayAnnouncementAction['setRatedAnnouncementsIds'];
+      payload: string[];
+    }
+  | {
+      type: DisplayAnnouncementAction['setRatingPieChartDataArray'];
+      payload: RatingResponse;
     }
   | {
       type:

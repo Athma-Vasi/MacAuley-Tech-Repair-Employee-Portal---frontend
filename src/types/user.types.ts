@@ -34,6 +34,7 @@ type UserSchema = {
   active: boolean;
 
   completedSurveys: string[];
+  ratedAnnouncementsIds: string[];
 };
 
 type UserDocument = UserSchema & {

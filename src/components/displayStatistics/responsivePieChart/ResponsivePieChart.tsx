@@ -165,7 +165,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     enableFillPatternsAccessibleDeselectedText,
   ] = returnAccessibleSelectedDeselectedTextElements({
     isSelected: enableFillPatterns,
-    semanticName: 'enable fill patterns',
+    semanticName: 'fill patterns',
     deselectedDescription: 'Fill patterns will not be displayed.',
     selectedDescription: 'Fill patterns will be displayed.',
     theme: 'muted',
@@ -176,7 +176,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     enableArcLabelsAccessibleDeselectedText,
   ] = returnAccessibleSelectedDeselectedTextElements({
     isSelected: enableArcLabels,
-    semanticName: 'enable arc labels',
+    semanticName: 'arc labels',
     deselectedDescription: 'Arc labels will not be displayed.',
     selectedDescription: 'Arc labels will be displayed.',
     theme: 'muted',
@@ -187,7 +187,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     enableArcLinkLabelsAccessibleDeselectedText,
   ] = returnAccessibleSelectedDeselectedTextElements({
     isSelected: enableArcLinkLabels,
-    semanticName: 'enable arc link labels',
+    semanticName: 'arc link labels',
     deselectedDescription: 'Arc link labels will not be displayed..',
     selectedDescription: 'Arc link labels will be displayed.',
     theme: 'muted',
@@ -207,7 +207,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     enableLegendAccessibleDeselectedText,
   ] = returnAccessibleSelectedDeselectedTextElements({
     isSelected: enableLegend,
-    semanticName: 'enable legend',
+    semanticName: 'legend',
     deselectedDescription: 'Legend will not be displayed.',
     selectedDescription: 'Legend will be displayed.',
     theme: 'muted',
@@ -396,9 +396,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           : enableFillPatternsAccessibleDeselectedText.props.id
       }
       label={
-        <TextWrapper creatorInfoObj={{ size: 'md' }}>
-          Enable fill patterns
-        </TextWrapper>
+        <TextWrapper creatorInfoObj={{ size: 'md' }}>Fill patterns</TextWrapper>
       }
       checked={enableFillPatterns}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -444,9 +442,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           : enableArcLabelsAccessibleDeselectedText.props.id
       }
       label={
-        <TextWrapper creatorInfoObj={{ size: 'md' }}>
-          Enable arc labels
-        </TextWrapper>
+        <TextWrapper creatorInfoObj={{ size: 'md' }}>Arc labels</TextWrapper>
       }
       checked={enableArcLabels}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -531,7 +527,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       }
       label={
         <TextWrapper creatorInfoObj={{ size: 'md' }}>
-          Enable arc link labels
+          Arc link labels
         </TextWrapper>
       }
       checked={enableArcLinkLabels}
@@ -863,9 +859,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableLegendAccessibleSelectedText.props.id
           : enableLegendAccessibleDeselectedText.props.id
       }
-      label={
-        <TextWrapper creatorInfoObj={{ size: 'md' }}>Enable legend</TextWrapper>
-      }
+      label={<TextWrapper creatorInfoObj={{ size: 'md' }}>Legend</TextWrapper>}
       checked={enableLegend}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({

@@ -218,6 +218,7 @@ function Register() {
         roles: ['Employee'],
         active: true,
         completedSurveys: [],
+        ratedAnnouncementsIds: [],
       };
 
       const controller = new AbortController();

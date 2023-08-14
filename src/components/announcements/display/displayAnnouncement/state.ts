@@ -1,3 +1,4 @@
+import { PieChartData } from '../../../displayStatistics/types';
 import {
   DisplayAnnouncementAction,
   DisplayAnnouncementDispatch,
@@ -8,6 +9,8 @@ const initialDisplayAnnouncementState: DisplayAnnouncementState = {
   announcement: null,
   rating: 0,
   triggerRatingSubmit: false,
+  ratedAnnouncementsIds: new Set<string>(),
+  ratingPieChartDataArray: [],
 
   comment: '',
   isCommentValid: false,
@@ -28,6 +31,8 @@ const displayAnnouncementAction: DisplayAnnouncementAction = {
   setAnnouncement: 'setAnnouncement',
   setRating: 'setRating',
   setTriggerRatingSubmit: 'setTriggerRatingSubmit',
+  setRatedAnnouncementsIds: 'setRatedAnnouncementsIds',
+  setRatingPieChartDataArray: 'setRatingPieChartDataArray',
 
   setComment: 'setComment',
   setIsCommentValid: 'setIsCommentValid',
@@ -66,6 +71,35 @@ function displayAnnouncementReducer(
         ...state,
         triggerRatingSubmit: action.payload,
       };
+
+    case displayAnnouncementAction.setRatedAnnouncementsIds:
+      return {
+        ...state,
+        ratedAnnouncementsIds: new Set<string>([...action.payload]),
+      };
+
+    case displayAnnouncementAction.setRatingPieChartDataArray: {
+      const ratingResponse = action.payload;
+      const { ratingEmotion } = ratingResponse;
+
+      const ratingPieChartDataArray = Object.entries(ratingEmotion).map(
+        ([key, value]) => {
+          const capsKey = `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+          const pieChartData: PieChartData = {
+            id: capsKey,
+            label: capsKey,
+            value,
+          };
+
+          return pieChartData;
+        }
+      );
+
+      return {
+        ...state,
+        ratingPieChartDataArray,
+      };
+    }
 
     case displayAnnouncementAction.setComment:
       return {
