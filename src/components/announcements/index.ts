@@ -1,5 +1,5 @@
 import { CreateAnnouncement } from './create/CreateAnnouncement';
-import { DisplayAnnouncements } from './display/DisplayAnnouncements';
-import DisplayAnnouncement from './display/DisplayAnnouncement';
+import { DisplayAnnouncements } from './display/displayAnnouncements/DisplayAnnouncements';
+import DisplayAnnouncement from './display/displayAnnouncement/DisplayAnnouncement';
 
 export { CreateAnnouncement, DisplayAnnouncements, DisplayAnnouncement };

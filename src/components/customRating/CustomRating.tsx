@@ -111,7 +111,7 @@ function CustomRating({
   }, [value]);
 
   function getEmptyIcon(value: number): JSX.Element {
-    const defaultProps = { size: rem(22), color: 'gray' };
+    const defaultProps = { size: rem(24), color: 'gray' };
     if (ratingKind === 'stars') {
       return <TbStar {...defaultProps} />;
     }
@@ -153,7 +153,7 @@ function CustomRating({
   }
 
   function getFullIcon(value: number): JSX.Element {
-    const defaultProps = { size: rem(22) };
+    const defaultProps = { size: rem(24) };
 
     if (ratingKind === 'stars') {
       return <TbStarFilled {...defaultProps} color={theme.colors.yellow[7]} />;
@@ -199,25 +199,12 @@ function CustomRating({
     }
   }
 
-  useEffect(() => {
-    console.group('rating');
-    console.log('value', value);
-    console.log('controlledValue', controlledValue);
-    console.log('dynamicComponentProps', dynamicComponentProps);
-    console.groupEnd();
-  }, [value]);
-
   return (
     <Flex
-      //   w={350}
-      p={padding}
       rowGap={rowGap}
+      columnGap={rowGap}
       align="center"
       justify="space-between"
-      // style={{
-      //   border: '1px solid #e0e0e0',
-      //   borderRadius: '4px',
-      // }}
       wrap="wrap"
     >
       <Text color="dark" size="sm">

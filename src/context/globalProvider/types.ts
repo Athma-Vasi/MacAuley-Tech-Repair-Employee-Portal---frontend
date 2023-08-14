@@ -5,6 +5,7 @@ import {
   ScrollYDirection,
 } from '../../hooks/useScrollDirection';
 import { QueryResponseData, UserDocument } from '../../types';
+import { AnnouncementDocument } from '../../components/announcements/create/types';
 
 type ColorScheme = 'light' | 'dark';
 
@@ -18,6 +19,7 @@ type GlobalState = {
   scrollYDirection: ScrollYDirection;
 
   userDocument: Omit<UserDocument, '__v' | 'password'> | null;
+  announcementDocument: QueryResponseData<AnnouncementDocument> | null;
 };
 
 type GlobalAction = {
@@ -30,6 +32,7 @@ type GlobalAction = {
   setScrollAxesDirection: 'setScrollAxesDirection';
 
   setUserDocument: 'setUserDocument';
+  setAnnouncementDocument: 'setAnnouncementDocument';
 };
 
 type WindowDimensions = {
@@ -70,6 +73,10 @@ type GlobalDispatch =
   | {
       type: GlobalAction['setUserDocument'];
       payload: Omit<UserDocument, '__v' | 'password'>;
+    }
+  | {
+      type: GlobalAction['setAnnouncementDocument'];
+      payload: QueryResponseData<AnnouncementDocument>;
     };
 
 type GlobalReducer = (

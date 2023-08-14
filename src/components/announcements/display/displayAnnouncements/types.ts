@@ -1,5 +1,5 @@
-import { QueryResponseData } from '../../../types';
-import { AnnouncementDocument } from '../create/types';
+import { QueryResponseData } from '../../../../types';
+import { AnnouncementDocument } from '../../create/types';
 
 type DisplayAnnouncementsState = {
   responseData: QueryResponseData<AnnouncementDocument>[] | null;

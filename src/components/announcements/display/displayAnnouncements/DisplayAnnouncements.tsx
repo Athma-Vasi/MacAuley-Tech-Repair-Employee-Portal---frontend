@@ -5,16 +5,17 @@ import {
   displayAnnouncementsReducer,
   initialDisplayAnnouncementsState,
 } from './state';
-import { logState, urlBuilder } from '../../../utils';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { logState, urlBuilder } from '../../../../utils';
+import { useAuth, useGlobalState } from '../../../../hooks';
 import {
   GetQueriedResourceRequestServerResponse,
   ResourceRequestServerResponse,
-} from '../../../types';
-import { AnnouncementDocument } from '../create/types';
+} from '../../../../types';
+import { AnnouncementDocument } from '../../create/types';
 import { InvalidTokenError } from 'jwt-decode';
-import { CustomNotification } from '../../customNotification';
+import { CustomNotification } from '../../../customNotification';
 import { useNavigate } from 'react-router-dom';
+import { globalAction } from '../../../../context/globalProvider/state';
 
 function DisplayAnnouncements() {
   /** ------------- begin hooks ------------- */
@@ -47,6 +48,7 @@ function DisplayAnnouncements() {
   } = useAuth();
   const {
     globalState: { padding, rowGap, width },
+    globalDispatch,
   } = useGlobalState();
   const navigate = useNavigate();
 
@@ -208,8 +210,16 @@ function DisplayAnnouncements() {
           w={350}
           h={217}
           onClick={() => {
+            // navigate(`/portal/outreach/announcement/display/${_id}`, {
+            //   state: { announcement },
+            //   replace: false,
+            // });
+            globalDispatch({
+              type: globalAction.setAnnouncementDocument,
+              payload: announcement,
+            });
+
             navigate(`/portal/outreach/announcement/display/${_id}`, {
-              state: { announcement },
               replace: false,
             });
           }}
@@ -222,7 +232,7 @@ function DisplayAnnouncements() {
                 fit="fill"
                 style={{
                   position: 'relative',
-                  opacity: 0.7,
+                  opacity: 0.05,
                   width: '100%',
                   height: '100%',
                 }}
