@@ -1,14 +1,24 @@
 import { UserRoles } from '../../types';
 
 type CommentSchema = {
-  creatorId: string;
-  creatorUsername: string;
-  creatorRole: UserRoles;
+  userId: string;
+  username: string;
+  roles: UserRoles;
 
-  announcementId: string;
+  // id of resource the comment is attached to: announcement, article, etc.
+  resourceId: string;
+  // id of parent comment that will be updated
   parentCommentId: string;
+  // children comment ids
+  childrenIds: string[];
+
   comment: string;
-  isAnonymous: boolean;
+  repliesCount: number;
+  likesCount: number;
+  dislikesCount: number;
+  reportsCount: number;
+
+  isFeatured: boolean;
   isDeleted: boolean;
 };
 

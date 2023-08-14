@@ -1,7 +1,7 @@
 import { SetStepsInErrorPayload } from '../../../types';
 
 type RatingEmotion = {
-  estatic: number;
+  ecstatic: number;
   happy: number;
   neutral: number;
   annoyed: number;

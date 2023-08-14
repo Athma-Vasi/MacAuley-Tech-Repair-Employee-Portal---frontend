@@ -4,10 +4,12 @@ import { AnnouncementDocument } from '../../create/types';
 type DisplayAnnouncementState = {
   announcement: QueryResponseData<AnnouncementDocument> | null;
   rating: number;
+  triggerRatingSubmit: boolean;
 
   comment: string;
   isCommentValid: boolean;
   isCommentFocused: boolean;
+  triggerCommentSubmit: boolean;
 
   isError: boolean;
   errorMessage: string;
@@ -21,11 +23,14 @@ type DisplayAnnouncementState = {
 
 type DisplayAnnouncementAction = {
   setAnnouncement: 'setAnnouncement';
+
   setRating: 'setRating';
+  setTriggerRatingSubmit: 'setTriggerRatingSubmit';
 
   setComment: 'setComment';
   setIsCommentValid: 'setIsCommentValid';
   setIsCommentFocused: 'setIsCommentFocused';
+  setTriggerCommentSubmit: 'setTriggerCommentSubmit';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -48,8 +53,10 @@ type DisplayAnnouncementDispatch =
     }
   | {
       type:
+        | DisplayAnnouncementAction['setTriggerRatingSubmit']
         | DisplayAnnouncementAction['setIsCommentValid']
         | DisplayAnnouncementAction['setIsCommentFocused']
+        | DisplayAnnouncementAction['setTriggerCommentSubmit']
         | DisplayAnnouncementAction['setIsError']
         | DisplayAnnouncementAction['setIsLoading']
         | DisplayAnnouncementAction['setIsSubmitting']

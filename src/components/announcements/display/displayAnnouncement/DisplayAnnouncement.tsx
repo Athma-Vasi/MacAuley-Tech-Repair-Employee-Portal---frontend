@@ -38,6 +38,7 @@ import {
   formatDate,
   logState,
   returnGrammarValidationText,
+  urlBuilder,
 } from '../../../../utils';
 import { CustomNotification } from '../../../customNotification';
 import { CustomRating } from '../../../customRating/CustomRating';
@@ -47,6 +48,14 @@ import {
   displayAnnouncementReducer,
   initialDisplayAnnouncementState,
 } from './state';
+import {
+  AnnouncementDocument,
+  RatingEmotion,
+  RatingResponse,
+} from '../../create/types';
+import { ResourceRequestServerResponse } from '../../../../types';
+import { InvalidTokenError } from 'jwt-decode';
+import { CommentSchema } from '../../../comments/types';
 
 function DisplayAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -57,10 +66,12 @@ function DisplayAnnouncement() {
   const {
     announcement,
     rating,
+    triggerRatingSubmit,
 
     comment,
     isCommentValid,
     isCommentFocused,
+    triggerCommentSubmit,
 
     isError,
     errorMessage,
@@ -76,7 +87,7 @@ function DisplayAnnouncement() {
     globalState: { padding, rowGap, width, announcementDocument },
   } = useGlobalState();
   const {
-    authState: { username },
+    authState: { username, accessToken },
   } = useAuth();
 
   const [
@@ -90,6 +101,156 @@ function DisplayAnnouncement() {
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
+  // submit rating on trigger
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function submitRating() {
+      if (!announcement) {
+        return;
+      }
+      displayAnnouncementDispatch({
+        type: displayAnnouncementAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url: URL = urlBuilder({
+        path: `/api/v1/actions/outreach/announcement/${announcement._id}`,
+      });
+
+      const prevRatingResponse = structuredClone(announcement.ratingResponse);
+      if (!prevRatingResponse) {
+        return;
+      }
+
+      const prevRatingEmotion = prevRatingResponse.ratingEmotion;
+      switch (rating) {
+        case 1: {
+          prevRatingEmotion.devastated += 1;
+          break;
+        }
+        case 2: {
+          prevRatingEmotion.annoyed += 1;
+          break;
+        }
+        case 3: {
+          prevRatingEmotion.neutral += 1;
+          break;
+        }
+        case 4: {
+          prevRatingEmotion.happy += 1;
+          break;
+        }
+        case 5: {
+          prevRatingEmotion.ecstatic += 1;
+          break;
+        }
+        default:
+          break;
+      }
+
+      const ratingResponse: RatingResponse = {
+        ratingEmotion: prevRatingEmotion,
+        ratingCount: prevRatingResponse.ratingCount + 1,
+      };
+
+      const body = JSON.stringify({
+        announcementFields: {
+          ratingResponse,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: ResourceRequestServerResponse<AnnouncementDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+
+        const { ok } = response;
+        if (!ok) {
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setIsError,
+            payload: true,
+          });
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setErrorMessage,
+            payload: data.message,
+          });
+          return;
+        }
+
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setIsSuccessful,
+          payload: true,
+        });
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setSuccessMessage,
+          payload: data.message,
+        });
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+        if (error.name === 'AbortError') {
+          return;
+        }
+
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setIsError,
+          payload: true,
+        });
+
+        error instanceof InvalidTokenError
+          ? displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload: 'Invalid token',
+            })
+          : !error.response
+          ? displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload: 'No response from server',
+            })
+          : displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload:
+                error.message ?? 'Unknown error occurred. Please try again.',
+            });
+      } finally {
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setIsSubmitting,
+          payload: false,
+        });
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setTriggerRatingSubmit,
+          payload: false,
+        });
+      }
+    }
+
+    if (triggerRatingSubmit) {
+      submitRating();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [triggerRatingSubmit]);
+
   useEffect(() => {
     if (!announcementDocument) {
       return;
@@ -108,6 +269,8 @@ function DisplayAnnouncement() {
       payload: '',
     });
   }, [announcementDocument]);
+
+  // submit comment on trigger
 
   // validate comment on every change
   useEffect(() => {
@@ -142,7 +305,7 @@ function DisplayAnnouncement() {
         parentDispatch={displayAnnouncementDispatch}
         navigateTo={{
           errorPath: '/portal',
-          successPath: '/portal/outreach/announcement/display',
+          successPath: `/portal/outreach/announcement/display/${announcement?._id}`,
         }}
       />
     );
@@ -434,6 +597,11 @@ function DisplayAnnouncement() {
         semanticName: 'submitRatingButton',
         buttonDisabled: rating === 0,
         buttonOnClick: () => {
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setTriggerRatingSubmit,
+            payload: true,
+          });
+
           closeRatingModal();
         },
       },
@@ -446,6 +614,10 @@ function DisplayAnnouncement() {
         semanticName: 'submitCommentButton',
         buttonDisabled: !isCommentValid,
         buttonOnClick: () => {
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setTriggerCommentSubmit,
+            payload: true,
+          });
           closeCommentModal();
         },
       },
@@ -481,16 +653,20 @@ function DisplayAnnouncement() {
     <Modal
       opened={openedCommentModal}
       onClose={() => {
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setIsCommentFocused,
-          payload: false,
-        });
-
         closeCommentModal();
       }}
       centered
       size={width < 480 ? 'calc(100% - 3rem)' : '640px'}
-      title={`You are commenting on ${announcement?.title ?? ''}`}
+      title={
+        <Title
+          order={5}
+          style={{ borderBottom: '1px solid #e0e0e0' }}
+          color="dark"
+          pr={padding}
+        >
+          You are commenting on {announcement?.title ?? ''}
+        </Title>
+      }
     >
       <Stack
         w="100%"
@@ -517,11 +693,6 @@ function DisplayAnnouncement() {
         size={24}
         style={{ cursor: 'pointer', color: 'dimgray' }}
         onClick={() => {
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setIsCommentFocused,
-            payload: true,
-          });
-
           openCommentModal();
         }}
       />

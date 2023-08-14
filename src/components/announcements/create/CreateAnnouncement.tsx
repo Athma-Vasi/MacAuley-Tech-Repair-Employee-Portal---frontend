@@ -121,7 +121,7 @@ function CreateAnnouncement() {
 
       const ratingResponse: RatingResponse = {
         ratingEmotion: {
-          estatic: 0,
+          ecstatic: 0,
           happy: 0,
           neutral: 0,
           annoyed: 0,
@@ -184,14 +184,14 @@ function CreateAnnouncement() {
           type: createAnnouncementAction.setSuccessMessage,
           payload: data.message,
         });
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setIsSubmitting,
-          payload: false,
-        });
       } catch (error: any) {
         if (!isMounted) {
           return;
         }
+        if (error.name === 'AbortError') {
+          return;
+        }
+
         createAnnouncementDispatch({
           type: createAnnouncementAction.setIsError,
           payload: true,
@@ -202,7 +202,7 @@ function CreateAnnouncement() {
               type: createAnnouncementAction.setErrorMessage,
               payload: 'Invalid token',
             })
-          : !error?.response
+          : !error.response
           ? createAnnouncementDispatch({
               type: createAnnouncementAction.setErrorMessage,
               payload: 'No response from server',
@@ -210,8 +210,13 @@ function CreateAnnouncement() {
           : createAnnouncementDispatch({
               type: createAnnouncementAction.setErrorMessage,
               payload:
-                error?.message ?? 'Unknown error occurred. Please try again.',
+                error.message ?? 'Unknown error occurred. Please try again.',
             });
+      } finally {
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setIsSubmitting,
+          payload: false,
+        });
       }
     }
 

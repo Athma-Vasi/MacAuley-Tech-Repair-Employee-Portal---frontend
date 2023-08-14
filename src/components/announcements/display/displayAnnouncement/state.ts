@@ -7,10 +7,12 @@ import {
 const initialDisplayAnnouncementState: DisplayAnnouncementState = {
   announcement: null,
   rating: 0,
+  triggerRatingSubmit: false,
 
   comment: '',
   isCommentValid: false,
   isCommentFocused: false,
+  triggerCommentSubmit: false,
 
   isError: false,
   errorMessage: '',
@@ -25,10 +27,12 @@ const initialDisplayAnnouncementState: DisplayAnnouncementState = {
 const displayAnnouncementAction: DisplayAnnouncementAction = {
   setAnnouncement: 'setAnnouncement',
   setRating: 'setRating',
+  setTriggerRatingSubmit: 'setTriggerRatingSubmit',
 
   setComment: 'setComment',
   setIsCommentValid: 'setIsCommentValid',
   setIsCommentFocused: 'setIsCommentFocused',
+  setTriggerCommentSubmit: 'setTriggerCommentSubmit',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -57,15 +61,34 @@ function displayAnnouncementReducer(
         rating: action.payload,
       };
 
+    case displayAnnouncementAction.setTriggerRatingSubmit:
+      return {
+        ...state,
+        triggerRatingSubmit: action.payload,
+      };
+
     case displayAnnouncementAction.setComment:
       return {
         ...state,
         comment: action.payload,
       };
+
     case displayAnnouncementAction.setIsCommentValid:
       return {
         ...state,
         isCommentValid: action.payload,
+      };
+
+    case displayAnnouncementAction.setIsCommentFocused:
+      return {
+        ...state,
+        isCommentFocused: action.payload,
+      };
+
+    case displayAnnouncementAction.setTriggerCommentSubmit:
+      return {
+        ...state,
+        triggerCommentSubmit: action.payload,
       };
 
     case displayAnnouncementAction.setIsError:
