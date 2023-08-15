@@ -9,10 +9,8 @@ type DisplayAnnouncementState = {
   ratedAnnouncementsIds: Set<string>;
   ratingPieChartDataArray: PieChartData[];
 
-  comment: string;
-  isCommentValid: boolean;
-  isCommentFocused: boolean;
-  triggerCommentSubmit: boolean;
+  newCommentId: string;
+  triggerUpdateCommentIds: boolean;
 
   isError: boolean;
   errorMessage: string;
@@ -32,10 +30,8 @@ type DisplayAnnouncementAction = {
   setRatedAnnouncementsIds: 'setRatedAnnouncementsIds';
   setRatingPieChartDataArray: 'setRatingPieChartDataArray';
 
-  setComment: 'setComment';
-  setIsCommentValid: 'setIsCommentValid';
-  setIsCommentFocused: 'setIsCommentFocused';
-  setTriggerCommentSubmit: 'setTriggerCommentSubmit';
+  setNewCommentId: 'setNewCommentId';
+  setTriggerUpdateCommentIds: 'setTriggerUpdateCommentIds';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -67,9 +63,7 @@ type DisplayAnnouncementDispatch =
   | {
       type:
         | DisplayAnnouncementAction['setTriggerRatingSubmit']
-        | DisplayAnnouncementAction['setIsCommentValid']
-        | DisplayAnnouncementAction['setIsCommentFocused']
-        | DisplayAnnouncementAction['setTriggerCommentSubmit']
+        | DisplayAnnouncementAction['setTriggerUpdateCommentIds']
         | DisplayAnnouncementAction['setIsError']
         | DisplayAnnouncementAction['setIsLoading']
         | DisplayAnnouncementAction['setIsSubmitting']
@@ -79,7 +73,7 @@ type DisplayAnnouncementDispatch =
     }
   | {
       type:
-        | DisplayAnnouncementAction['setComment']
+        | DisplayAnnouncementAction['setNewCommentId']
         | DisplayAnnouncementAction['setErrorMessage']
         | DisplayAnnouncementAction['setLoadingMessage']
         | DisplayAnnouncementAction['setSubmitMessage']

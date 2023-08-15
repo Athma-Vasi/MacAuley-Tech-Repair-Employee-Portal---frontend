@@ -1,5 +1,4 @@
 import {
-  Card,
   Flex,
   Group,
   Image,
@@ -12,8 +11,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, useEffect, useReducer } from 'react';
-import { FaRegCommentDots } from 'react-icons/fa';
+import { useEffect, useReducer } from 'react';
 import { MdOutlineAddReaction } from 'react-icons/md';
 import {
   TbBrandFacebook,
@@ -29,31 +27,21 @@ import {
   TiSocialLinkedin,
 } from 'react-icons/ti';
 
-import { GRAMMAR_TEXTAREA_INPUT_REGEX } from '../../../../constants/regex';
+import { globalAction } from '../../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../../hooks';
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleErrorValidTextElements,
-  returnAccessibleTextAreaInputElements,
-} from '../../../../jsxCreators';
-import { ResourceRequestServerResponse, UserDocument } from '../../../../types';
-import {
-  formatDate,
-  logState,
-  returnGrammarValidationText,
-  urlBuilder,
-} from '../../../../utils';
+import { returnAccessibleButtonElements } from '../../../../jsxCreators';
+import { UserDocument } from '../../../../types';
+import { formatDate, logState, urlBuilder } from '../../../../utils';
+import { Comment } from '../../../comment';
 import { CustomNotification } from '../../../customNotification';
 import { CustomRating } from '../../../customRating/CustomRating';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+import { ResponsivePieChart } from '../../../displayStatistics/responsivePieChart';
 import { AnnouncementDocument, RatingResponse } from '../../create/types';
 import {
   displayAnnouncementAction,
   displayAnnouncementReducer,
   initialDisplayAnnouncementState,
 } from './state';
-import { globalAction } from '../../../../context/globalProvider/state';
-import { ResponsivePieChart } from '../../../displayStatistics/responsivePieChart';
 
 function DisplayAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -68,10 +56,8 @@ function DisplayAnnouncement() {
     ratedAnnouncementsIds,
     ratingPieChartDataArray,
 
-    comment,
-    isCommentValid,
-    isCommentFocused,
-    triggerCommentSubmit,
+    newCommentId,
+    triggerUpdateCommentIds,
 
     isError,
     errorMessage,
@@ -95,10 +81,7 @@ function DisplayAnnouncement() {
     openedRatingModal,
     { open: openRatingModal, close: closeRatingModal },
   ] = useDisclosure(false);
-  const [
-    openedCommentModal,
-    { open: openCommentModal, close: closeCommentModal },
-  ] = useDisclosure(false);
+
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -269,6 +252,127 @@ function DisplayAnnouncement() {
     };
   }, [triggerRatingSubmit]);
 
+  // update comment ids on trigger
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function updateCommentIds() {
+      if (!announcement || !newCommentId) {
+        return;
+      }
+
+      const url: URL = urlBuilder({
+        path: `/api/v1/actions/outreach/announcement/${announcement._id}`,
+      });
+
+      const prevCommentIds = announcement.commentIds;
+      if (prevCommentIds === undefined) {
+        return;
+      }
+      const updatedCommentIds = Array.from(
+        new Set([...prevCommentIds, newCommentId])
+      );
+
+      const body = JSON.stringify({
+        announcementFields: {
+          commentIds: updatedCommentIds,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: {
+          message: string;
+          resourceData: [Omit<AnnouncementDocument, '__v'>];
+        } = await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+
+        const { ok } = response;
+        if (!ok) {
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setIsError,
+            payload: true,
+          });
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setErrorMessage,
+            payload: data.message,
+          });
+          return;
+        }
+
+        const updatedAnnouncementDocument = data.resourceData[0];
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setAnnouncement,
+          payload: updatedAnnouncementDocument,
+        });
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+        if (error.name === 'AbortError') {
+          return;
+        }
+
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setIsError,
+          payload: true,
+        });
+
+        error instanceof InvalidTokenError
+          ? displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload: 'Invalid token',
+            })
+          : !error.response
+          ? displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload: 'No response from server',
+            })
+          : displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload:
+                error.message ?? 'Unknown error occurred. Please try again.',
+            });
+      } finally {
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setIsSubmitting,
+          payload: false,
+        });
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setTriggerRatingSubmit,
+          payload: false,
+        });
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setNewCommentId,
+          payload: '',
+        });
+      }
+    }
+
+    if (newCommentId) {
+      updateCommentIds();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [newCommentId]);
+
   useEffect(() => {
     if (!announcementDocument) {
       return;
@@ -311,18 +415,6 @@ function DisplayAnnouncement() {
     });
   }, [ratedAnnouncementsIds]);
 
-  // submit comment on trigger
-
-  // validate comment on every change
-  useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(comment);
-
-    displayAnnouncementDispatch({
-      type: displayAnnouncementAction.setIsCommentValid,
-      payload: isValid,
-    });
-  }, [comment]);
-
   useEffect(() => {
     logState({
       state: displayAnnouncementState,
@@ -352,55 +444,6 @@ function DisplayAnnouncement() {
     );
   }
   /** ------------- end component render bypass ------------- */
-
-  /** ------------- begin accessible texts ------------- */
-  const [commentInputErrorText, commentInputValidText] =
-    returnAccessibleErrorValidTextElements({
-      inputElementKind: 'comment',
-      inputText: comment,
-      isInputTextFocused: isCommentFocused,
-      isValidInputText: isCommentValid,
-      regexValidationText: returnGrammarValidationText({
-        content: comment,
-        contentKind: 'comment',
-        maxLength: 2000,
-        minLength: 2,
-      }),
-    });
-  /** ------------- end accessible texts ------------- */
-
-  /** ------------- begin input creator info objects ------------- */
-  const commentTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
-    description: {
-      error: commentInputErrorText,
-      valid: commentInputValidText,
-    },
-    inputText: comment,
-    isValidInputText: isCommentValid,
-    onBlur: () => {
-      displayAnnouncementDispatch({
-        type: displayAnnouncementAction.setIsCommentFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      displayAnnouncementDispatch({
-        type: displayAnnouncementAction.setComment,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      displayAnnouncementDispatch({
-        type: displayAnnouncementAction.setIsCommentFocused,
-        payload: true,
-      });
-    },
-    label: `${username}: `,
-    placeholder: 'Enter your comment here',
-    semanticName: 'comment',
-    required: true,
-  };
-  /** ------------- end input creator info objects ------------- */
 
   /** ------------- begin input creators ------------- */
   const articleTitle = (
@@ -619,6 +662,27 @@ function DisplayAnnouncement() {
     </Flex>
   );
 
+  /** buttons */
+  const [createdSubmitRatingButton] = returnAccessibleButtonElements([
+    // submit rating button
+    {
+      buttonLabel: 'Submit',
+      leftIcon: <MdOutlineAddReaction />,
+      rightIcon: <TbUpload />,
+      semanticDescription: 'Button to submit rating and view results',
+      semanticName: 'submitRatingButton',
+      buttonDisabled: rating === 0,
+      buttonOnClick: () => {
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setTriggerRatingSubmit,
+          payload: true,
+        });
+
+        closeRatingModal();
+      },
+    },
+  ]);
+
   /** rating */
   const createdRatingComponent = (
     <CustomRating
@@ -627,42 +691,6 @@ function DisplayAnnouncement() {
       setRatingDispatch={displayAnnouncementDispatch}
     />
   );
-
-  const [createdSubmitRatingButton, createdSubmitCommentButton] =
-    returnAccessibleButtonElements([
-      {
-        buttonLabel: 'Submit',
-        leftIcon: <MdOutlineAddReaction />,
-        rightIcon: <TbUpload />,
-        semanticDescription: 'Button to submit rating and view results',
-        semanticName: 'submitRatingButton',
-        buttonDisabled: rating === 0,
-        buttonOnClick: () => {
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setTriggerRatingSubmit,
-            payload: true,
-          });
-
-          closeRatingModal();
-        },
-      },
-      // submit comment button
-      {
-        buttonLabel: 'Submit',
-        leftIcon: <FaRegCommentDots />,
-        rightIcon: <TbUpload />,
-        semanticDescription: 'Button to submit comment',
-        semanticName: 'submitCommentButton',
-        buttonDisabled: !isCommentValid,
-        buttonOnClick: () => {
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setTriggerCommentSubmit,
-            payload: true,
-          });
-          closeCommentModal();
-        },
-      },
-    ]);
 
   const displayRatingAndSubmit = (
     <Group
@@ -673,6 +701,7 @@ function DisplayAnnouncement() {
       style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
     >
       <Group position="left">{createdRatingComponent}</Group>
+      <Space w="lg" />
       <Group position="right">{createdSubmitRatingButton}</Group>
     </Group>
   );
@@ -694,6 +723,14 @@ function DisplayAnnouncement() {
     : width < 480
     ? 'calc(100% - 3rem)'
     : '640px';
+  const ratingModalTitle = (
+    <Title order={2} color="dark">
+      {ratedAnnouncementsIds.has(announcement?._id ?? '')
+        ? `MacAuley family responses
+    to ${announcement?.title ?? ''}`
+        : announcement?.title ?? ''}
+    </Title>
+  );
 
   const displayRatingModal = (
     <Modal
@@ -701,14 +738,7 @@ function DisplayAnnouncement() {
       onClose={closeRatingModal}
       centered
       size={ratingModalSize}
-      title={
-        <Title order={2} color="dark">
-          {ratedAnnouncementsIds.has(announcement?._id ?? '')
-            ? `MacAuley family responses
-          to ${announcement?.title ?? ''}`
-            : announcement?.title ?? ''}
-        </Title>
-      }
+      title={ratingModalTitle}
     >
       {ratedAnnouncementsIds.has(announcement?._id ?? '')
         ? showStatisticsCard
@@ -716,91 +746,54 @@ function DisplayAnnouncement() {
     </Modal>
   );
 
-  /** comment */
-  const [createdCommentTextAreaInput] = returnAccessibleTextAreaInputElements([
-    commentTextAreaInputCreatorInfo,
-  ]);
-
-  const displayCommentAndSubmit = (
-    <Stack
-      w="100%"
-      p={padding}
-      // style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
-    >
-      {createdCommentTextAreaInput}
-      <Group position="right">{createdSubmitCommentButton}</Group>
-    </Stack>
-  );
-
-  const displayCommentModal = (
-    <Modal
-      opened={openedCommentModal}
-      onClose={() => {
-        closeCommentModal();
-      }}
-      centered
-      size={width < 480 ? 'calc(100% - 3rem)' : '640px'}
-      title={
-        <Title
-          order={5}
-          style={{ borderBottom: '1px solid #e0e0e0' }}
-          color="dark"
-          pr={padding}
-        >
-          You are commenting on {announcement?.title ?? ''}
-        </Title>
-      }
-    >
-      {displayCommentAndSubmit}
-    </Modal>
-  );
-
   /** reader response */
   const displayReaderResponseIcons = (
-    <Group w="100%" position="left" spacing={padding} p={padding}>
-      {/* rating icon */}
-      <Tooltip
-        label={
-          ratedAnnouncementsIds.has(announcement?._id ?? '')
-            ? 'View statistics'
-            : 'Rate to view statistics'
-        }
+    <Group w="100%" position="center" p={padding}>
+      <Group
+        w={width < 480 ? '85%' : '62%'}
+        p={padding}
+        spacing={rowGap}
+        style={{ borderTop: '1px solid #e0e0e0' }}
       >
-        <Group>
-          <MdOutlineAddReaction
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-            onClick={() => {
-              openRatingModal();
-            }}
-          />
-        </Group>
-      </Tooltip>
-      {/* comment icon */}
-      <Tooltip label={`Comment on ${announcement?.title ?? 'this article'}`}>
-        <Group>
-          <FaRegCommentDots
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-            onClick={() => {
-              openCommentModal();
-            }}
-          />
-        </Group>
-      </Tooltip>
+        {/* rating icon */}
+        <Tooltip
+          label={
+            ratedAnnouncementsIds.has(announcement?._id ?? '')
+              ? 'View statistics'
+              : 'Rate to view statistics'
+          }
+        >
+          <Group>
+            <MdOutlineAddReaction
+              size={24}
+              style={{ cursor: 'pointer', color: 'dimgray' }}
+              onClick={() => {
+                openRatingModal();
+              }}
+            />
+          </Group>
+        </Tooltip>
+
+        {/* spacer */}
+        <Space w="xs" />
+      </Group>
     </Group>
   );
 
   const displayAnnouncementComponent = (
     <Stack w="100%" style={{ background: 'white' }}>
       {displayRatingModal}
-      {displayCommentModal}
       {articleTitle}
       {displayArticleInfo}
       {createdSocialMediaIcons}
       {articleImage}
       {displayArticleParagraphs}
       {displayReaderResponseIcons}
+      <Comment
+        commentIds={announcement?.commentIds ?? []}
+        setNewCommentIdDispatch={displayAnnouncementDispatch}
+        parentParamId={announcement?._id ?? ''}
+      />
     </Stack>
   );
   /** ------------- end input creators ------------- */

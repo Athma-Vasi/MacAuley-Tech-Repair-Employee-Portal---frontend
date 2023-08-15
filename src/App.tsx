@@ -13,7 +13,7 @@ import {
   DisplayAnnouncements,
 } from './components/announcements';
 import { CreateBenefit, DisplayBenefits } from './components/benefits';
-import { CreateComment } from './components/comments';
+import { Comment } from './components/comment';
 
 import { Dashboard } from './components/dashboard';
 import {

@@ -380,6 +380,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
         });
       }}
       w={sliderWidth}
+      value={borderColor}
     />
   );
 

@@ -12,10 +12,8 @@ const initialDisplayAnnouncementState: DisplayAnnouncementState = {
   ratedAnnouncementsIds: new Set<string>(),
   ratingPieChartDataArray: [],
 
-  comment: '',
-  isCommentValid: false,
-  isCommentFocused: false,
-  triggerCommentSubmit: false,
+  newCommentId: '',
+  triggerUpdateCommentIds: false,
 
   isError: false,
   errorMessage: '',
@@ -34,10 +32,8 @@ const displayAnnouncementAction: DisplayAnnouncementAction = {
   setRatedAnnouncementsIds: 'setRatedAnnouncementsIds',
   setRatingPieChartDataArray: 'setRatingPieChartDataArray',
 
-  setComment: 'setComment',
-  setIsCommentValid: 'setIsCommentValid',
-  setIsCommentFocused: 'setIsCommentFocused',
-  setTriggerCommentSubmit: 'setTriggerCommentSubmit',
+  setNewCommentId: 'setNewCommentId',
+  setTriggerUpdateCommentIds: 'setTriggerUpdateCommentIds',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -101,28 +97,16 @@ function displayAnnouncementReducer(
       };
     }
 
-    case displayAnnouncementAction.setComment:
+    case displayAnnouncementAction.setNewCommentId:
       return {
         ...state,
-        comment: action.payload,
+        newCommentId: action.payload,
       };
 
-    case displayAnnouncementAction.setIsCommentValid:
+    case displayAnnouncementAction.setTriggerUpdateCommentIds:
       return {
         ...state,
-        isCommentValid: action.payload,
-      };
-
-    case displayAnnouncementAction.setIsCommentFocused:
-      return {
-        ...state,
-        isCommentFocused: action.payload,
-      };
-
-    case displayAnnouncementAction.setTriggerCommentSubmit:
-      return {
-        ...state,
-        triggerCommentSubmit: action.payload,
+        triggerUpdateCommentIds: action.payload,
       };
 
     case displayAnnouncementAction.setIsError:
