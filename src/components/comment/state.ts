@@ -1,19 +1,20 @@
-import { CommentAction, CommentDispatch, CommentState } from './types';
+import {
+  CommentAction,
+  CommentDispatch,
+  CommentState,
+  CustomCommentObject,
+} from './types';
 
 const initialCommentState: CommentState = {
   newComment: '',
   isNewCommentValid: false,
   isNewCommentFocused: false,
 
-  commentsArray: [],
+  commentIdsToFetch: [],
+  commentIdsTreeArray: [],
+  customCommentObjectsMap: new Map(),
 
   triggerFormSubmit: false,
-
-  pages: 0,
-  totalDocuments: 0,
-  pageQueryString: '',
-  queryBuilderString: '?',
-  newQueryFlag: false,
 
   isError: false,
   errorMessage: '',
@@ -30,15 +31,11 @@ const commentAction: CommentAction = {
   setIsNewCommentValid: 'setIsNewCommentValid',
   setIsNewCommentFocused: 'setIsNewCommentFocused',
 
-  setCommentsArray: 'setCommentsArray',
+  setCommentIdsToFetch: 'setCommentIdsToFetch',
+  setInitialCommentIdsTreeArray: 'setInitialCommentIdsTreeArray',
+  setCustomCommentObjectsMap: 'setCustomCommentObjectsMap',
 
   setTriggerFormSubmit: 'setTriggerFormSubmit',
-
-  setPages: 'setPages',
-  setTotalDocuments: 'setTotalDocuments',
-  setNewQueryFlag: 'setNewQueryFlag',
-  setQueryBuilderString: 'setQueryBuilderString',
-  setPageQueryString: 'setPageQueryString',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -71,42 +68,60 @@ function commentReducer(
         isNewCommentFocused: action.payload,
       };
 
-    case commentAction.setCommentsArray:
+    case commentAction.setCommentIdsToFetch:
       return {
         ...state,
-        commentsArray: [...state.commentsArray, action.payload],
+        commentIdsToFetch: action.payload,
       };
+
+    /**
+ * type CustomCommentObject = {
+  commentDoc: QueryResponseData<CommentDocument>;
+  childCommentsArray: CustomCommentObject[];
+  childPagesCount: number;
+  childLimitPerPage: number;
+  totalChildComments: number;
+  newQueryFlag: boolean;
+  queryBuilderString: string;
+  pageQueryString: string;
+  isShowChildComments: boolean;
+};
+ */
+
+    case commentAction.setInitialCommentIdsTreeArray:
+      return {
+        ...state,
+        commentIdsTreeArray: action.payload,
+      };
+
+    case commentAction.setCustomCommentObjectsMap: {
+      const { payload } = action;
+      const customCommentObject: CustomCommentObject = {
+        commentDoc: payload,
+        childPagesCount: 0,
+        childLimitPerPage: 10,
+        totalChildComments: 0,
+        newQueryFlag: false,
+        queryBuilderString: '',
+        pageQueryString: '',
+        isShowChildComments: false,
+      };
+
+      const customCommentObjectsMap = structuredClone(
+        state.customCommentObjectsMap
+      );
+      customCommentObjectsMap.set(payload._id, customCommentObject);
+
+      return {
+        ...state,
+        customCommentObjectsMap,
+      };
+    }
 
     case commentAction.setTriggerFormSubmit:
       return {
         ...state,
         triggerFormSubmit: action.payload,
-      };
-
-    case commentAction.setPages:
-      return {
-        ...state,
-        pages: action.payload,
-      };
-    case commentAction.setTotalDocuments:
-      return {
-        ...state,
-        totalDocuments: action.payload,
-      };
-    case commentAction.setNewQueryFlag:
-      return {
-        ...state,
-        newQueryFlag: action.payload,
-      };
-    case commentAction.setQueryBuilderString:
-      return {
-        ...state,
-        queryBuilderString: action.payload,
-      };
-    case commentAction.setPageQueryString:
-      return {
-        ...state,
-        pageQueryString: action.payload,
       };
 
     case commentAction.setIsError:

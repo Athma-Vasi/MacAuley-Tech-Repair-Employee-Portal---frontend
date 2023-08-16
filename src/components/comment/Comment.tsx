@@ -15,7 +15,12 @@ import {
   FormLayoutWrapper,
 } from '../wrappers';
 import { commentAction, commentReducer, initialCommentState } from './state';
-import { CommentDocument, CommentProps } from './types';
+import {
+  CommentDocument,
+  CommentIdsTree,
+  CommentProps,
+  CustomCommentObject,
+} from './types';
 import { useDisclosure } from '@mantine/hooks';
 import { FaRegCommentDots } from 'react-icons/fa';
 import { useAuth, useGlobalState } from '../../hooks';
@@ -41,15 +46,10 @@ function Comment({
     isNewCommentValid,
     isNewCommentFocused,
 
-    commentsArray,
+    commentIdsToFetch,
+    customCommentObjectsMap,
 
     triggerFormSubmit,
-
-    pages,
-    totalDocuments,
-    pageQueryString,
-    queryBuilderString,
-    newQueryFlag,
 
     isError,
     errorMessage,
@@ -85,8 +85,6 @@ function Comment({
 
     let isMounted = true;
     const controller = new AbortController();
-
-    // REFACTOR SO THAT YOU ARE ONLY FETCHING COMMENTS FROM COMMENT IDS
 
     async function fetchComments() {
       commentDispatch({
@@ -141,8 +139,7 @@ function Comment({
             type: commentAction.setErrorMessage,
             payload: isAnyResponseNotOk.data.message,
           });
-
-          return;
+          // no early return as the comments that were fetched successfully will still be displayed
         }
 
         dataObjArr.forEach((dataObj) => {
@@ -153,7 +150,7 @@ function Comment({
 
           resourceData.forEach((commentDoc) => {
             commentDispatch({
-              type: commentAction.setCommentsArray,
+              type: commentAction.setCustomCommentObjectsMap,
               payload: commentDoc,
             });
           });
@@ -200,7 +197,7 @@ function Comment({
       isMounted = false;
       controller.abort();
     };
-  }, []);
+  }, [commentIdsToFetch]);
 
   // submit comment
   useEffect(() => {
@@ -328,6 +325,31 @@ function Comment({
       controller.abort();
     };
   }, [triggerFormSubmit]);
+
+  useEffect(() => {
+    if (!commentIds.length) {
+      return;
+    }
+
+    commentDispatch({
+      type: commentAction.setCommentIdsToFetch,
+      payload: commentIds,
+    });
+
+    const initialCommentIdsTreeArray = commentIds.map((commentId) => {
+      const commentIdsTree: CommentIdsTree = {
+        id: commentId,
+        children: [],
+      };
+
+      return commentIdsTree;
+    });
+
+    commentDispatch({
+      type: commentAction.setInitialCommentIdsTreeArray,
+      payload: initialCommentIdsTreeArray,
+    });
+  }, [commentIds]);
 
   // sets focus to comment text area on page load
   const commentTextAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -499,21 +521,21 @@ function Comment({
 
   const displayCommentsSection = commentIds.length ? (
     <Stack>
-      {commentsArray.map((commentDoc, commentIdx) => {
+      {/* {commentsArray.map((commentDoc, commentIdx) => {
         const displayComment = (
           <Text color="dark" key={`${commentIdx}`}>
             {commentDoc.comment}
           </Text>
         );
         return displayComment;
-      })}
+      })} */}
       {createdReplyCommentButton}
     </Stack>
   ) : (
     <Group w={width < 480 ? '85%' : '62%'} px={padding}>
-      <Title order={5} color="dark" pr={padding}>
+      <Text color="dark" pr={padding}>
         Be the first one to comment!
-      </Title>
+      </Text>
       {createdReplyCommentButton}
     </Group>
   );

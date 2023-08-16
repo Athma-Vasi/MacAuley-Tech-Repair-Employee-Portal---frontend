@@ -1,3 +1,4 @@
+import { CustomCommentObject } from '../components/comment/types';
 import { ComponentQueryData } from '../components/queryBuilder';
 import type { Country, PostalCode, QueryResponseData } from '../types';
 
@@ -1172,8 +1173,103 @@ function replaceLastCommaWithAnd(str: string): string {
   return strWithAnd;
 }
 
+/**
+ * type CustomCommentObject = {
+  commentDoc: QueryResponseData<CommentDocument>;
+  childCommentsArray: CustomCommentObject[];
+  pages: number;
+  totalDocuments: number;
+  newQueryFlag: boolean;
+  queryBuilderString: string;
+  pageQueryString: string;
+  isShowChildComments: boolean;
+};
+ */
+
+type CommentIdsTree = {
+  id: string;
+  children: CommentIdsTree[];
+};
+
+type Operation =
+  | { kind: 'find' }
+  | { kind: 'replace'; children: CommentIdsTree[] }
+  | { kind: 'insert'; children: CommentIdsTree[] };
+
+type CommentDFSIterativeInput = {
+  rootComment: CommentIdsTree;
+  searchCommentId: string;
+  operation: Operation;
+};
+
+type CommentDFSIterativeOutput = {
+  foundComment: CommentIdsTree;
+  rootComment: CommentIdsTree;
+} | null;
+
+function commentDFSIterative({
+  rootComment,
+  searchCommentId,
+  operation,
+}: CommentDFSIterativeInput): CommentDFSIterativeOutput {
+  const stack = [rootComment];
+  // prevents visiting the same node twice
+  const visitedIds = new Set<string>();
+
+  while (stack.length > 0) {
+    const currentComment = stack.pop() as CommentIdsTree;
+    const currentCommentId = currentComment.id;
+
+    // found the comment
+    if (currentCommentId === searchCommentId) {
+      switch (operation.kind) {
+        case 'find':
+          // rootComment is also returned to simplify the type signature
+          return { foundComment: currentComment, rootComment };
+        case 'replace': {
+          currentComment.children = operation.children;
+          return { foundComment: currentComment, rootComment };
+        }
+        case 'insert': {
+          currentComment.children = [
+            ...currentComment.children,
+            ...operation.children,
+          ];
+          return { foundComment: currentComment, rootComment };
+        }
+        default:
+          break;
+      }
+    }
+
+    // else, search the comment's children
+    const currentCommentChildren = currentComment.children;
+
+    // if the comment has no children, skip it
+    if (!currentCommentChildren.length) {
+      continue;
+    }
+
+    // if the comment has children, search them
+    currentCommentChildren.forEach((currentChildComment) => {
+      const currentChildCommentId = currentChildComment.id;
+      // if the child comment has already been visited, skip it
+      if (visitedIds.has(currentChildCommentId)) {
+        return;
+      }
+
+      // else, add it to the stack and mark it as visited
+      stack.push(currentChildComment);
+      visitedIds.add(currentChildCommentId);
+    });
+  }
+
+  return null;
+}
+
 export {
   addFieldsToObject,
+  commentDFSIterative,
   filterFieldsFromObject,
   formatDate,
   groupQueryResponse,
@@ -1206,3 +1302,119 @@ export {
 };
 
 export type { RegexValidationProps };
+
+/**
+ * // function grabCommentDFSRecursive(
+//   startComment: CustomCommentObject,
+//   commentId: string
+// ): CustomCommentObject | null {
+//   // recursive
+//   if (startComment.commentDoc._id === commentId) {
+//     return startComment;
+//   }
+
+//   if (startComment.childCommentsArray.length > 0) {
+//     for (let i = 0; i < startComment.childCommentsArray.length; i++) {
+//       const foundComment: CustomCommentObject | null = grabCommentDFS(
+//         startComment.childCommentsArray[i],
+//         commentId
+//       );
+//       if (foundComment) {
+//         return foundComment;
+//       }
+//     }
+//   }
+
+//   return null;
+// }
+
+function findCommentDFSIterative({
+  startComment,
+  searchCommentId,
+}: {
+  startComment: CustomCommentObject;
+  searchCommentId: string;
+}): CustomCommentObject | null {
+  const stack: CustomCommentObject[] = [startComment];
+  // prevents visiting the same node twice
+  const visitedIds = new Set<string>();
+
+  while (stack.length > 0) {
+    const currentComment = stack.pop() as CustomCommentObject;
+    const currentCommentId = currentComment.commentDoc._id;
+
+    // found the comment
+    if (currentCommentId === searchCommentId) {
+      return currentComment;
+    }
+
+    // else, search the comment's children
+    const currentCommentChildren = currentComment.childCommentsArray;
+
+    // if the comment has no children, skip it
+    if (!currentCommentChildren.length) {
+      continue;
+    }
+
+    // if the comment has children, search them
+    currentCommentChildren.forEach((currentChildComment) => {
+      const currentChildCommentId = currentChildComment.commentDoc._id;
+      // if the child comment has already been visited, skip it
+      if (visitedIds.has(currentChildCommentId)) {
+        return;
+      }
+
+      // else, add it to the stack and mark it as visited
+      stack.push(currentChildComment);
+      visitedIds.add(currentChildCommentId);
+    });
+  }
+
+  return null;
+}
+
+function findCommentBFSIterative({
+  startComment,
+  searchCommentId,
+}: {
+  startComment: CustomCommentObject;
+  searchCommentId: string;
+}): CustomCommentObject | null {
+  const queue: CustomCommentObject[] = [startComment];
+  // prevents visiting the same node twice
+  const visitedIds = new Set<string>();
+
+  while (queue.length > 0) {
+    const currentComment = queue.shift() as CustomCommentObject;
+    const currentCommentId = currentComment.commentDoc._id;
+
+    // found the comment
+    if (currentCommentId === searchCommentId) {
+      return currentComment;
+    }
+
+    // else, search the comment's children
+    const currentCommentChildren = currentComment.childCommentsArray;
+
+    // if the comment has no children, skip it
+    if (!currentCommentChildren.length) {
+      continue;
+    }
+
+    // if the comment has children, search them
+    currentCommentChildren.forEach((currentChildComment) => {
+      const currentChildCommentId = currentChildComment.commentDoc._id;
+      // if the child comment has already been visited, skip it
+      if (visitedIds.has(currentChildCommentId)) {
+        return;
+      }
+
+      // else, add it to the queue and mark it as visited
+      queue.push(currentChildComment);
+      visitedIds.add(currentChildCommentId);
+    });
+  }
+
+  return null;
+}
+ */

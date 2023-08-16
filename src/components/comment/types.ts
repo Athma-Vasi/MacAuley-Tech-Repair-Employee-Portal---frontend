@@ -35,21 +35,35 @@ type CommentProps = {
   }>;
   parentParamId?: string;
 };
+/**
+ * @desc - used to store the data of a comment and its child comments, along with some bookkeeping fields
+ */
+type CustomCommentObject = {
+  commentDoc: QueryResponseData<CommentDocument>;
+  childPagesCount: number;
+  childLimitPerPage: number;
+  totalChildComments: number;
+  newQueryFlag: boolean;
+  queryBuilderString: string;
+  pageQueryString: string;
+  isShowChildComments: boolean;
+};
+
+type CommentIdsTree = {
+  id: string;
+  children: CommentIdsTree[];
+};
 
 type CommentState = {
   newComment: string;
   isNewCommentValid: boolean;
   isNewCommentFocused: boolean;
 
-  commentsArray: QueryResponseData<CommentDocument>[];
+  commentIdsToFetch: string[];
+  commentIdsTreeArray: CommentIdsTree[];
+  customCommentObjectsMap: Map<string, CustomCommentObject>;
 
   triggerFormSubmit: boolean;
-
-  pages: number;
-  totalDocuments: number;
-  newQueryFlag: boolean;
-  queryBuilderString: string;
-  pageQueryString: string;
 
   isError: boolean;
   errorMessage: string;
@@ -66,15 +80,11 @@ type CommentAction = {
   setIsNewCommentValid: 'setIsNewCommentValid';
   setIsNewCommentFocused: 'setIsNewCommentFocused';
 
-  setCommentsArray: 'setCommentsArray';
+  setCommentIdsToFetch: 'setCommentIdsToFetch';
+  setInitialCommentIdsTreeArray: 'setInitialCommentIdsTreeArray';
+  setCustomCommentObjectsMap: 'setCustomCommentObjectsMap';
 
   setTriggerFormSubmit: 'setTriggerFormSubmit';
-
-  setPages: 'setPages';
-  setTotalDocuments: 'setTotalDocuments';
-  setNewQueryFlag: 'setNewQueryFlag';
-  setQueryBuilderString: 'setQueryBuilderString';
-  setPageQueryString: 'setPageQueryString';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -90,8 +100,6 @@ type CommentDispatch =
   | {
       type:
         | CommentAction['setNewComment']
-        | CommentAction['setQueryBuilderString']
-        | CommentAction['setPageQueryString']
         | CommentAction['setErrorMessage']
         | CommentAction['setSuccessMessage']
         | CommentAction['setLoadingMessage']
@@ -99,15 +107,10 @@ type CommentDispatch =
       payload: string;
     }
   | {
-      type: CommentAction['setPages'] | CommentAction['setTotalDocuments'];
-      payload: number;
-    }
-  | {
       type:
         | CommentAction['setIsNewCommentValid']
         | CommentAction['setIsNewCommentFocused']
         | CommentAction['setTriggerFormSubmit']
-        | CommentAction['setNewQueryFlag']
         | CommentAction['setIsError']
         | CommentAction['setIsSubmitting']
         | CommentAction['setIsLoading']
@@ -115,7 +118,15 @@ type CommentDispatch =
       payload: boolean;
     }
   | {
-      type: CommentAction['setCommentsArray'];
+      type: CommentAction['setCommentIdsToFetch'];
+      payload: string[];
+    }
+  | {
+      type: CommentAction['setInitialCommentIdsTreeArray'];
+      payload: CommentIdsTree[];
+    }
+  | {
+      type: CommentAction['setCustomCommentObjectsMap'];
       payload: QueryResponseData<CommentDocument>;
     };
 
@@ -128,8 +139,10 @@ export type {
   CommentAction,
   CommentDispatch,
   CommentDocument,
+  CommentIdsTree,
   CommentProps,
   CommentReducer,
   CommentSchema,
   CommentState,
+  CustomCommentObject,
 };
