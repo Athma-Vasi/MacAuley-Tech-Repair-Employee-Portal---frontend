@@ -29,10 +29,11 @@ function PageBuilder({
   setModalPage = 'setModalPage',
   modalPageDispatch,
 }: PageBuilderProps): JSX.Element {
-  const {
-    globalState: { padding },
-  } = useGlobalState();
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    console.log('page', page);
+  }, [page]);
 
   useEffect(() => {
     if (parentComponentDispatch) {

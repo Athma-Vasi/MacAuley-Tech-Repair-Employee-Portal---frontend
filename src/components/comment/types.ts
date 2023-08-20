@@ -1,57 +1,73 @@
-import { QueryResponseData, UserRoles } from '../../types';
+import {
+  Department,
+  JobPosition,
+  QueryResponseData,
+  User,
+  UserRoles,
+} from '../../types';
 
 type CommentSchema = {
   userId: string;
   username: string;
   roles: UserRoles;
 
-  // (if applicable) id of parent comment that will be updated
-  parentCommentId: [string];
-  // (if applicable) children comment ids
-  childrenIds: string[];
-
+  jobPosition: JobPosition;
+  department: Department;
+  profilePictureUrl: string;
+  parentResourceId: string;
   comment: string;
-  repliesCount: number;
+  quotedComment: string;
   likesCount: number;
   dislikesCount: number;
   reportsCount: number;
 
   isFeatured: boolean;
   isDeleted: boolean;
+
+  likedUserIds: string[];
+  dislikedUserIds: string[];
+  reportedUserIds: string[];
 };
 
 type CommentDocument = CommentSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
-type CommentProps = {
-  commentIds: string[];
-  setNewCommentIdDispatch: React.Dispatch<{
-    type: 'setNewCommentId';
-    payload: string;
-  }>;
-  parentParamId?: string;
-};
-/**
- * @desc - used to store the data of a comment and its child comments, along with some bookkeeping fields
- */
-type CustomCommentObject = {
-  commentDoc: QueryResponseData<CommentDocument>;
-  childPagesCount: number;
-  childLimitPerPage: number;
-  totalChildComments: number;
-  newQueryFlag: boolean;
-  queryBuilderString: string;
-  pageQueryString: string;
-  isShowChildComments: boolean;
+type GetCommentsServerResponse = {
+  message: string;
+  pages: number;
+  totalDocuments: number;
+  resourceData: CommentDocument[];
 };
 
-type CommentIdsTree = {
-  id: string;
-  children: CommentIdsTree[];
+type CommentProps = {
+  parentResourceId?: string;
+};
+
+type CommentsMap = Map<string, CommentDocument>;
+
+type ReactedCommentRequestBody = {
+  fieldsToUpdate: Partial<
+    Pick<
+      CommentDocument,
+      | 'dislikedUserIds'
+      | 'dislikesCount'
+      | 'likedUserIds'
+      | 'likesCount'
+      | 'reportedUserIds'
+      | 'reportsCount'
+    >
+  >;
+};
+
+type ReactedCommentPayload = {
+  field: 'likes' | 'dislikes' | 'reports' | '';
+  value: boolean;
+  userId: string;
+  commentId: string;
 };
 
 type CommentState = {
@@ -59,11 +75,21 @@ type CommentState = {
   isNewCommentValid: boolean;
   isNewCommentFocused: boolean;
 
-  commentIdsToFetch: string[];
-  commentIdsTreeArray: CommentIdsTree[];
-  customCommentObjectsMap: Map<string, CustomCommentObject>;
+  quotedComment: string;
+  reactedRequestBody: ReactedCommentRequestBody;
+  totalDocuments: number;
+  numberOfPages: number;
+  limitPerPage: string;
+  newQueryFlag: boolean;
+  queryBuilderString: string;
+  pageQueryString: string;
+  areCommentsVisible: boolean;
 
-  triggerFormSubmit: boolean;
+  commentIdsToFetch: string[];
+  commentsMap: CommentsMap;
+
+  triggerCommentUpdate: boolean;
+  triggerCommentSubmit: boolean;
 
   isError: boolean;
   errorMessage: string;
@@ -80,11 +106,22 @@ type CommentAction = {
   setIsNewCommentValid: 'setIsNewCommentValid';
   setIsNewCommentFocused: 'setIsNewCommentFocused';
 
-  setCommentIdsToFetch: 'setCommentIdsToFetch';
-  setInitialCommentIdsTreeArray: 'setInitialCommentIdsTreeArray';
-  setCustomCommentObjectsMap: 'setCustomCommentObjectsMap';
+  setQuotedComment: 'setQuotedComment';
+  setReactedRequestBody: 'setReactedRequestBody';
+  setTotalDocuments: 'setTotalDocuments';
+  setNumberOfPages: 'setNumberOfPages';
+  setLimitPerPage: 'setLimitPerPage';
+  setNewQueryFlag: 'setNewQueryFlag';
+  setQueryBuilderString: 'setQueryBuilderString';
+  setPageQueryString: 'setPageQueryString';
+  setAreCommentsVisible: 'setAreCommentsVisible';
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
+  setCommentIdsToFetch: 'setCommentIdsToFetch';
+  setCommentsMap: 'setCommentsMap';
+  updateCommentsMap: 'updateCommentsMap';
+
+  setTriggerCommentUpdate: 'setTriggerCommentUpdate';
+  setTriggerCommentSubmit: 'setTriggerCommentSubmit';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -99,7 +136,17 @@ type CommentAction = {
 type CommentDispatch =
   | {
       type:
+        | CommentAction['setTotalDocuments']
+        | CommentAction['setNumberOfPages'];
+      payload: number;
+    }
+  | {
+      type:
+        | CommentAction['setQuotedComment']
         | CommentAction['setNewComment']
+        | CommentAction['setLimitPerPage']
+        | CommentAction['setQueryBuilderString']
+        | CommentAction['setPageQueryString']
         | CommentAction['setErrorMessage']
         | CommentAction['setSuccessMessage']
         | CommentAction['setLoadingMessage']
@@ -110,7 +157,10 @@ type CommentDispatch =
       type:
         | CommentAction['setIsNewCommentValid']
         | CommentAction['setIsNewCommentFocused']
-        | CommentAction['setTriggerFormSubmit']
+        | CommentAction['setNewQueryFlag']
+        | CommentAction['setAreCommentsVisible']
+        | CommentAction['setTriggerCommentUpdate']
+        | CommentAction['setTriggerCommentSubmit']
         | CommentAction['setIsError']
         | CommentAction['setIsSubmitting']
         | CommentAction['setIsLoading']
@@ -122,12 +172,16 @@ type CommentDispatch =
       payload: string[];
     }
   | {
-      type: CommentAction['setInitialCommentIdsTreeArray'];
-      payload: CommentIdsTree[];
+      type: CommentAction['setCommentsMap'];
+      payload: { commentsMap: CommentsMap };
     }
   | {
-      type: CommentAction['setCustomCommentObjectsMap'];
-      payload: QueryResponseData<CommentDocument>;
+      type: CommentAction['updateCommentsMap'];
+      payload: { commentDoc: CommentDocument };
+    }
+  | {
+      type: CommentAction['setReactedRequestBody'];
+      payload: ReactedCommentPayload;
     };
 
 type CommentReducer = (
@@ -135,14 +189,36 @@ type CommentReducer = (
   action: CommentDispatch
 ) => CommentState;
 
+type CreatedCommentsSectionObject = {
+  profilePicElement: React.JSX.Element;
+  usernameElement: React.JSX.Element;
+  jobPositionElement: React.JSX.Element;
+  departmentElement: React.JSX.Element;
+  commentElement: React.JSX.Element;
+  quotedCommentElement: React.JSX.Element | null;
+  likesCountElement: React.JSX.Element;
+  dislikesCountElement: React.JSX.Element;
+  totalLikesDislikesElement: React.JSX.Element;
+  reportsCountElement: React.JSX.Element;
+  replyButtonElement: React.JSX.Element;
+  likeButtonElement: React.JSX.Element;
+  dislikeButtonElement: React.JSX.Element;
+  reportButtonElement: React.JSX.Element;
+  isFeaturedElement: React.JSX.Element | null;
+  createdAtElement: React.JSX.Element;
+  updatedAtElement: React.JSX.Element;
+};
+
 export type {
   CommentAction,
   CommentDispatch,
   CommentDocument,
-  CommentIdsTree,
   CommentProps,
   CommentReducer,
   CommentSchema,
+  CommentsMap,
   CommentState,
-  CustomCommentObject,
+  CreatedCommentsSectionObject,
+  GetCommentsServerResponse,
+  ReactedCommentRequestBody,
 };

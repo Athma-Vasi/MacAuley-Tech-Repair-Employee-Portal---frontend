@@ -1,4 +1,3 @@
-import { CustomCommentObject } from '../components/comment/types';
 import { ComponentQueryData } from '../components/queryBuilder';
 import type { Country, PostalCode, QueryResponseData } from '../types';
 
@@ -950,6 +949,21 @@ function filterFieldsFromObject({
   }, Object.create(null));
 }
 
+type AddFieldsToObjectInput<
+  Obj extends Record<string | number | symbol, any> = Record<
+    string | symbol | number,
+    any
+  >
+> = {
+  object: Obj;
+  fieldValuesTuples: [string, any][];
+  options?: {
+    writable?: boolean;
+    enumerable?: boolean;
+    configurable?: boolean;
+  };
+};
+
 /**
  * Adds specified properties and attributes to a cloned object.
  *
@@ -958,7 +972,7 @@ function filterFieldsFromObject({
  * with their corresponding values and attributes.
  *
  * @param {object} options - The options for adding properties.
- * @param {Record<string, any>} options.object - The source object to be cloned.
+ * @param {Record<string, any>} options.object - The source object to add properties to.
  * @param {[string, any][]} options.fieldValuesTuples - An array of field-value tuples to add.
  * @param {Object} [options.options] - Additional options for property attributes.
  * @param {boolean} [options.options.writable=true] - If the added properties should be writable.
@@ -967,7 +981,12 @@ function filterFieldsFromObject({
  *
  * @returns {Record<string, any>} A new object with added properties and attributes.
  */
-function addFieldsToObject({
+function addFieldsToObject<
+  Obj extends Record<string | number | symbol, any> = Record<
+    string | symbol | number,
+    any
+  >
+>({
   object,
   fieldValuesTuples,
   options = {
@@ -975,15 +994,7 @@ function addFieldsToObject({
     enumerable: true,
     configurable: true,
   },
-}: {
-  object: Record<string, any>;
-  fieldValuesTuples: [string, any][];
-  options?: {
-    writable?: boolean;
-    enumerable?: boolean;
-    configurable?: boolean;
-  };
-}): Record<string, any> {
+}: AddFieldsToObjectInput<Obj>): Obj {
   return fieldValuesTuples.reduce((obj, [key, value]) => {
     Object.defineProperty(obj, key, {
       value,
@@ -1173,19 +1184,6 @@ function replaceLastCommaWithAnd(str: string): string {
   return strWithAnd;
 }
 
-/**
- * type CustomCommentObject = {
-  commentDoc: QueryResponseData<CommentDocument>;
-  childCommentsArray: CustomCommentObject[];
-  pages: number;
-  totalDocuments: number;
-  newQueryFlag: boolean;
-  queryBuilderString: string;
-  pageQueryString: string;
-  isShowChildComments: boolean;
-};
- */
-
 type CommentIdsTree = {
   id: string;
   children: CommentIdsTree[];
@@ -1200,68 +1198,124 @@ type CommentDFSIterativeInput = {
   rootComment: CommentIdsTree;
   searchCommentId: string;
   operation: Operation;
+  searchKind?: 'depth-first' | 'breadth-first';
 };
 
-type CommentDFSIterativeOutput = {
-  foundComment: CommentIdsTree;
-  rootComment: CommentIdsTree;
-} | null;
-
-function commentDFSIterative({
+function commentIdsTreeOpsIterative({
   rootComment,
   searchCommentId,
   operation,
-}: CommentDFSIterativeInput): CommentDFSIterativeOutput {
-  const stack = [rootComment];
-  // prevents visiting the same node twice
-  const visitedIds = new Set<string>();
+  searchKind = 'depth-first',
+}: CommentDFSIterativeInput) {
+  switch (searchKind) {
+    case 'depth-first': {
+      const stack = [rootComment];
+      const visitedIds = new Set<string>();
 
-  while (stack.length > 0) {
-    const currentComment = stack.pop() as CommentIdsTree;
-    const currentCommentId = currentComment.id;
+      while (stack.length > 0) {
+        const currentComment = stack.pop() as CommentIdsTree;
+        const currentCommentId = currentComment.id;
 
-    // found the comment
-    if (currentCommentId === searchCommentId) {
-      switch (operation.kind) {
-        case 'find':
-          // rootComment is also returned to simplify the type signature
-          return { foundComment: currentComment, rootComment };
-        case 'replace': {
-          currentComment.children = operation.children;
-          return { foundComment: currentComment, rootComment };
+        // found the comment
+        if (currentCommentId === searchCommentId) {
+          switch (operation.kind) {
+            case 'find':
+              // rootComment is also returned to simplify the type signature
+              return { foundComment: currentComment, rootComment };
+            case 'replace': {
+              currentComment.children = operation.children;
+              return { foundComment: currentComment, rootComment };
+            }
+            case 'insert': {
+              currentComment.children = [
+                ...currentComment.children,
+                ...operation.children,
+              ];
+              return { foundComment: currentComment, rootComment };
+            }
+            default:
+              break;
+          }
         }
-        case 'insert': {
-          currentComment.children = [
-            ...currentComment.children,
-            ...operation.children,
-          ];
-          return { foundComment: currentComment, rootComment };
+
+        // else, search the comment's children
+        const currentCommentChildren = currentComment.children;
+
+        // if the comment has no children, skip it
+        if (!currentCommentChildren.length) {
+          continue;
         }
-        default:
-          break;
+
+        // if the comment has children, search them
+        currentCommentChildren.forEach((currentChildComment) => {
+          const currentChildCommentId = currentChildComment.id;
+          // if the child comment has already been visited, skip it
+          if (visitedIds.has(currentChildCommentId)) {
+            return;
+          }
+
+          // else, add it to the stack and mark it as visited
+          stack.push(currentChildComment);
+          visitedIds.add(currentChildCommentId);
+        });
       }
+      break;
     }
+    case 'breadth-first': {
+      const queue = [rootComment];
+      const visitedIds = new Set<string>();
 
-    // else, search the comment's children
-    const currentCommentChildren = currentComment.children;
+      while (queue.length > 0) {
+        const currentComment = queue.shift() as CommentIdsTree;
+        const currentCommentId = currentComment.id;
 
-    // if the comment has no children, skip it
-    if (!currentCommentChildren.length) {
-      continue;
-    }
+        // found the comment
+        if (currentCommentId === searchCommentId) {
+          switch (operation.kind) {
+            case 'find':
+              // rootComment is also returned to simplify the type signature
+              return { foundComment: currentComment, rootComment };
+            case 'replace': {
+              currentComment.children = operation.children;
+              return { foundComment: currentComment, rootComment };
+            }
+            case 'insert': {
+              currentComment.children = [
+                ...currentComment.children,
+                ...operation.children,
+              ];
+              return { foundComment: currentComment, rootComment };
+            }
+            default:
+              break;
+          }
+        }
 
-    // if the comment has children, search them
-    currentCommentChildren.forEach((currentChildComment) => {
-      const currentChildCommentId = currentChildComment.id;
-      // if the child comment has already been visited, skip it
-      if (visitedIds.has(currentChildCommentId)) {
-        return;
+        // else, search the comment's children
+        const currentCommentChildren = currentComment.children;
+
+        // if the comment has no children, skip it
+        if (!currentCommentChildren.length) {
+          continue;
+        }
+
+        // if the comment has children, search them
+        currentCommentChildren.forEach((currentChildComment) => {
+          const currentChildCommentId = currentChildComment.id;
+          // if the child comment has already been visited, skip it
+          if (visitedIds.has(currentChildCommentId)) {
+            return;
+          }
+
+          // else, add it to the stack and mark it as visited
+          queue.push(currentChildComment);
+          visitedIds.add(currentChildCommentId);
+        });
       }
-
-      // else, add it to the stack and mark it as visited
-      stack.push(currentChildComment);
-      visitedIds.add(currentChildCommentId);
-    });
+      break;
+    }
+    default:
+      break;
   }
 
   return null;
@@ -1269,7 +1323,7 @@ function commentDFSIterative({
 
 export {
   addFieldsToObject,
-  commentDFSIterative,
+  commentIdsTreeOpsIterative,
   filterFieldsFromObject,
   formatDate,
   groupQueryResponse,

@@ -29,6 +29,7 @@ type QueryLabelValueTypesMap = Map<string, QueryValueTypes>;
 type QueryBuilderProps = {
   collectionName: string;
   componentQueryData: ComponentQueryData[];
+  disableProjection?: boolean;
   setQueryBuilderString: 'setQueryBuilderString';
   parentComponentDispatch: React.Dispatch<{
     type: 'setQueryBuilderString';

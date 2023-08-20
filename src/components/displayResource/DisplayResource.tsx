@@ -205,6 +205,7 @@ function DisplayResource<Doc>({
           });
         }
 
+        // do this regardless of whether there are file uploads or not
         displayResourceDispatch({
           type: displayResourceAction.setPages,
           payload: data.pages ?? pages,

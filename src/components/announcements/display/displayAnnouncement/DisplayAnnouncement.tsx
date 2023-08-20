@@ -56,9 +56,6 @@ function DisplayAnnouncement() {
     ratedAnnouncementsIds,
     ratingPieChartDataArray,
 
-    newCommentId,
-    triggerUpdateCommentIds,
-
     isError,
     errorMessage,
     isLoading,
@@ -251,127 +248,6 @@ function DisplayAnnouncement() {
       controller.abort();
     };
   }, [triggerRatingSubmit]);
-
-  // update comment ids on trigger
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
-    async function updateCommentIds() {
-      if (!announcement || !newCommentId) {
-        return;
-      }
-
-      const url: URL = urlBuilder({
-        path: `/api/v1/actions/outreach/announcement/${announcement._id}`,
-      });
-
-      const prevCommentIds = announcement.commentIds;
-      if (prevCommentIds === undefined) {
-        return;
-      }
-      const updatedCommentIds = Array.from(
-        new Set([...prevCommentIds, newCommentId])
-      );
-
-      const body = JSON.stringify({
-        announcementFields: {
-          commentIds: updatedCommentIds,
-        },
-      });
-
-      const request: Request = new Request(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body,
-        signal: controller.signal,
-      });
-
-      try {
-        const response = await fetch(request);
-        const data: {
-          message: string;
-          resourceData: [Omit<AnnouncementDocument, '__v'>];
-        } = await response.json();
-
-        if (!isMounted) {
-          return;
-        }
-
-        const { ok } = response;
-        if (!ok) {
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setIsError,
-            payload: true,
-          });
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
-        }
-
-        const updatedAnnouncementDocument = data.resourceData[0];
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setAnnouncement,
-          payload: updatedAnnouncementDocument,
-        });
-      } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
-          return;
-        }
-
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setIsError,
-          payload: true,
-        });
-
-        error instanceof InvalidTokenError
-          ? displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error.response
-          ? displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload:
-                error.message ?? 'Unknown error occurred. Please try again.',
-            });
-      } finally {
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setIsSubmitting,
-          payload: false,
-        });
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setTriggerRatingSubmit,
-          payload: false,
-        });
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setNewCommentId,
-          payload: '',
-        });
-      }
-    }
-
-    if (newCommentId) {
-      updateCommentIds();
-    }
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [newCommentId]);
 
   useEffect(() => {
     if (!announcementDocument) {
@@ -789,11 +665,7 @@ function DisplayAnnouncement() {
       {articleImage}
       {displayArticleParagraphs}
       {displayReaderResponseIcons}
-      <Comment
-        commentIds={announcement?.commentIds ?? []}
-        setNewCommentIdDispatch={displayAnnouncementDispatch}
-        parentParamId={announcement?._id ?? ''}
-      />
+      <Comment parentResourceId={announcement?._id ?? ''} />
     </Stack>
   );
   /** ------------- end input creators ------------- */
@@ -801,3 +673,126 @@ function DisplayAnnouncement() {
 }
 
 export default DisplayAnnouncement;
+
+/**
+ * // update comment ids on trigger
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function updateCommentIds() {
+      if (!announcement || !newCommentId) {
+        return;
+      }
+
+      const url: URL = urlBuilder({
+        path: `/api/v1/actions/outreach/announcement/${announcement._id}`,
+      });
+
+      const prevCommentIds = announcement.commentIds;
+      if (prevCommentIds === undefined) {
+        return;
+      }
+      const updatedCommentIds = Array.from(
+        new Set([...prevCommentIds, newCommentId])
+      );
+
+      const body = JSON.stringify({
+        announcementFields: {
+          commentIds: updatedCommentIds,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response = await fetch(request);
+        const data: {
+          message: string;
+          resourceData: [Omit<AnnouncementDocument, '__v'>];
+        } = await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+
+        const { ok } = response;
+        if (!ok) {
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setIsError,
+            payload: true,
+          });
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setErrorMessage,
+            payload: data.message,
+          });
+          return;
+        }
+
+        const updatedAnnouncementDocument = data.resourceData[0];
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setAnnouncement,
+          payload: updatedAnnouncementDocument,
+        });
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+        if (error.name === 'AbortError') {
+          return;
+        }
+
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setIsError,
+          payload: true,
+        });
+
+        error instanceof InvalidTokenError
+          ? displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload: 'Invalid token',
+            })
+          : !error.response
+          ? displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload: 'No response from server',
+            })
+          : displayAnnouncementDispatch({
+              type: displayAnnouncementAction.setErrorMessage,
+              payload:
+                error.message ?? 'Unknown error occurred. Please try again.',
+            });
+      } finally {
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setIsSubmitting,
+          payload: false,
+        });
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setTriggerRatingSubmit,
+          payload: false,
+        });
+        displayAnnouncementDispatch({
+          type: displayAnnouncementAction.setNewCommentId,
+          payload: '',
+        });
+      }
+    }
+
+    if (newCommentId) {
+      updateCommentIds();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [newCommentId]);
+ */

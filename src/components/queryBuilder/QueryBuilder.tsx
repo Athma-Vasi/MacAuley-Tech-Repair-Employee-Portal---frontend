@@ -67,6 +67,7 @@ import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
 function QueryBuilder({
   componentQueryData,
   collectionName,
+  disableProjection = false,
   setQueryBuilderString,
   parentComponentDispatch,
 }: QueryBuilderProps) {
@@ -829,7 +830,7 @@ function QueryBuilder({
         icon={<VscExclude />}
         rightSection={<TbChevronRight />}
         childrenOffset="xs"
-        // disabled={filteredFilterSelectData.length === 0}
+        disabled={disableProjection}
         w="62%"
       >
         {createdProjectionCheckboxGroupInput}

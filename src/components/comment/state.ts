@@ -1,8 +1,10 @@
+import { QueryResponseData } from '../../types';
 import {
   CommentAction,
   CommentDispatch,
+  CommentDocument,
   CommentState,
-  CustomCommentObject,
+  ReactedCommentRequestBody,
 } from './types';
 
 const initialCommentState: CommentState = {
@@ -10,11 +12,30 @@ const initialCommentState: CommentState = {
   isNewCommentValid: false,
   isNewCommentFocused: false,
 
-  commentIdsToFetch: [],
-  commentIdsTreeArray: [],
-  customCommentObjectsMap: new Map(),
+  quotedComment: '',
+  reactedRequestBody: {
+    fieldsToUpdate: {
+      dislikedUserIds: [],
+      dislikesCount: 0,
+      likedUserIds: [],
+      likesCount: 0,
+      reportedUserIds: [],
+      reportsCount: 0,
+    },
+  },
+  totalDocuments: 0,
+  numberOfPages: 0,
+  limitPerPage: '10',
+  newQueryFlag: false,
+  queryBuilderString: '?',
+  pageQueryString: '',
+  areCommentsVisible: false,
 
-  triggerFormSubmit: false,
+  commentIdsToFetch: [],
+  commentsMap: new Map(),
+
+  triggerCommentUpdate: false,
+  triggerCommentSubmit: false,
 
   isError: false,
   errorMessage: '',
@@ -31,11 +52,22 @@ const commentAction: CommentAction = {
   setIsNewCommentValid: 'setIsNewCommentValid',
   setIsNewCommentFocused: 'setIsNewCommentFocused',
 
-  setCommentIdsToFetch: 'setCommentIdsToFetch',
-  setInitialCommentIdsTreeArray: 'setInitialCommentIdsTreeArray',
-  setCustomCommentObjectsMap: 'setCustomCommentObjectsMap',
+  setQuotedComment: 'setQuotedComment',
+  setReactedRequestBody: 'setReactedRequestBody',
+  setTotalDocuments: 'setTotalDocuments',
+  setNumberOfPages: 'setNumberOfPages',
+  setLimitPerPage: 'setLimitPerPage',
+  setNewQueryFlag: 'setNewQueryFlag',
+  setQueryBuilderString: 'setQueryBuilderString',
+  setPageQueryString: 'setPageQueryString',
+  setAreCommentsVisible: 'setAreCommentsVisible',
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit',
+  setCommentIdsToFetch: 'setCommentIdsToFetch',
+  setCommentsMap: 'setCommentsMap',
+  updateCommentsMap: 'updateCommentsMap',
+
+  setTriggerCommentUpdate: 'setTriggerCommentUpdate',
+  setTriggerCommentSubmit: 'setTriggerCommentSubmit',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -68,60 +100,176 @@ function commentReducer(
         isNewCommentFocused: action.payload,
       };
 
+    case commentAction.setQuotedComment:
+      return {
+        ...state,
+        quotedComment: action.payload,
+      };
+
+    case commentAction.setReactedRequestBody: {
+      const { field, commentId, userId, value } = action.payload;
+      if (!field) {
+        return state;
+      }
+
+      const comment = state.commentsMap.get(commentId);
+      if (!comment) {
+        return state;
+      }
+
+      switch (field) {
+        case 'likes': {
+          const { likedUserIds, likesCount } = comment;
+
+          const isLikedNew = !value;
+          const likesCountNew = isLikedNew ? likesCount + 1 : likesCount - 1;
+          const likedUserIdsNew = isLikedNew
+            ? Array.from(new Set([...likedUserIds, userId]))
+            : likedUserIds.filter((id) => id !== userId);
+
+          const reactedRequestBody: ReactedCommentRequestBody = {
+            fieldsToUpdate: {
+              likedUserIds: likedUserIdsNew,
+              likesCount: likesCountNew,
+            },
+          };
+
+          return {
+            ...state,
+            reactedRequestBody,
+          };
+        }
+        case 'dislikes': {
+          const { dislikedUserIds, dislikesCount } = comment;
+
+          const isDislikedNew = !value;
+          const dislikesCountNew = isDislikedNew
+            ? dislikesCount + 1
+            : dislikesCount - 1;
+          const dislikedUserIdsNew = isDislikedNew
+            ? Array.from(new Set([...dislikedUserIds, userId]))
+            : dislikedUserIds.filter((id) => id !== userId);
+
+          const reactedRequestBody: ReactedCommentRequestBody = {
+            fieldsToUpdate: {
+              dislikedUserIds: dislikedUserIdsNew,
+              dislikesCount: dislikesCountNew,
+            },
+          };
+
+          return {
+            ...state,
+            reactedRequestBody,
+          };
+        }
+        case 'reports': {
+          const { reportedUserIds, reportsCount } = comment;
+
+          const isReportedNew = !value;
+          const reportsCountNew = isReportedNew
+            ? reportsCount + 1
+            : reportsCount - 1;
+          const reportedUserIdsNew = isReportedNew
+            ? Array.from(new Set([...reportedUserIds, userId]))
+            : reportedUserIds.filter((id) => id !== userId);
+
+          const reactedRequestBody: ReactedCommentRequestBody = {
+            fieldsToUpdate: {
+              reportedUserIds: reportedUserIdsNew,
+              reportsCount: reportsCountNew,
+            },
+          };
+
+          return {
+            ...state,
+            reactedRequestBody,
+          };
+        }
+        default:
+          return state;
+      }
+    }
+
+    case commentAction.setTotalDocuments:
+      return {
+        ...state,
+        totalDocuments: action.payload,
+      };
+
+    case commentAction.setNumberOfPages:
+      return {
+        ...state,
+        numberOfPages: action.payload,
+      };
+
+    case commentAction.setLimitPerPage:
+      return {
+        ...state,
+        limitPerPage: action.payload,
+      };
+
+    case commentAction.setNewQueryFlag:
+      return {
+        ...state,
+        newQueryFlag: action.payload,
+      };
+
+    case commentAction.setQueryBuilderString:
+      return {
+        ...state,
+        queryBuilderString: action.payload,
+      };
+
+    case commentAction.setPageQueryString:
+      return {
+        ...state,
+        pageQueryString: action.payload,
+      };
+
+    case commentAction.setAreCommentsVisible:
+      return {
+        ...state,
+        areCommentsVisible: action.payload,
+      };
+
     case commentAction.setCommentIdsToFetch:
       return {
         ...state,
         commentIdsToFetch: action.payload,
       };
 
-    /**
- * type CustomCommentObject = {
-  commentDoc: QueryResponseData<CommentDocument>;
-  childCommentsArray: CustomCommentObject[];
-  childPagesCount: number;
-  childLimitPerPage: number;
-  totalChildComments: number;
-  newQueryFlag: boolean;
-  queryBuilderString: string;
-  pageQueryString: string;
-  isShowChildComments: boolean;
-};
- */
-
-    case commentAction.setInitialCommentIdsTreeArray:
-      return {
-        ...state,
-        commentIdsTreeArray: action.payload,
-      };
-
-    case commentAction.setCustomCommentObjectsMap: {
-      const { payload } = action;
-      const customCommentObject: CustomCommentObject = {
-        commentDoc: payload,
-        childPagesCount: 0,
-        childLimitPerPage: 10,
-        totalChildComments: 0,
-        newQueryFlag: false,
-        queryBuilderString: '',
-        pageQueryString: '',
-        isShowChildComments: false,
-      };
-
-      const customCommentObjectsMap = structuredClone(
-        state.customCommentObjectsMap
-      );
-      customCommentObjectsMap.set(payload._id, customCommentObject);
+    case commentAction.setCommentsMap: {
+      const { commentsMap } = action.payload;
 
       return {
         ...state,
-        customCommentObjectsMap,
+        commentsMap,
       };
     }
 
-    case commentAction.setTriggerFormSubmit:
+    case commentAction.updateCommentsMap: {
+      const { commentDoc } = action.payload;
+      const { _id } = commentDoc;
+
+      const commentsMap = structuredClone(state.commentsMap);
+      commentsMap.set(_id, commentDoc);
+
       return {
         ...state,
-        triggerFormSubmit: action.payload,
+        commentsMap,
+      };
+    }
+
+    case commentAction.setTriggerCommentUpdate:
+      return {
+        ...state,
+        triggerCommentUpdate: action.payload,
+      };
+
+    case commentAction.setTriggerCommentSubmit:
+      return {
+        ...state,
+        triggerCommentSubmit: action.payload,
       };
 
     case commentAction.setIsError:

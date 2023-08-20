@@ -12,9 +12,6 @@ const initialDisplayAnnouncementState: DisplayAnnouncementState = {
   ratedAnnouncementsIds: new Set<string>(),
   ratingPieChartDataArray: [],
 
-  newCommentId: '',
-  triggerUpdateCommentIds: false,
-
   isError: false,
   errorMessage: '',
   isLoading: true,
@@ -31,9 +28,6 @@ const displayAnnouncementAction: DisplayAnnouncementAction = {
   setTriggerRatingSubmit: 'setTriggerRatingSubmit',
   setRatedAnnouncementsIds: 'setRatedAnnouncementsIds',
   setRatingPieChartDataArray: 'setRatingPieChartDataArray',
-
-  setNewCommentId: 'setNewCommentId',
-  setTriggerUpdateCommentIds: 'setTriggerUpdateCommentIds',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -96,18 +90,6 @@ function displayAnnouncementReducer(
         ratingPieChartDataArray,
       };
     }
-
-    case displayAnnouncementAction.setNewCommentId:
-      return {
-        ...state,
-        newCommentId: action.payload,
-      };
-
-    case displayAnnouncementAction.setTriggerUpdateCommentIds:
-      return {
-        ...state,
-        triggerUpdateCommentIds: action.payload,
-      };
 
     case displayAnnouncementAction.setIsError:
       return {
