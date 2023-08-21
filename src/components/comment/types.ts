@@ -16,6 +16,7 @@ type CommentSchema = {
   profilePictureUrl: string;
   parentResourceId: string;
   comment: string;
+  quotedUsername: string;
   quotedComment: string;
   likesCount: number;
   dislikesCount: number;
@@ -83,6 +84,7 @@ type CommentState = {
   totalDocuments: number;
   numberOfPages: number;
   limitPerPage: string;
+  resetPage: boolean;
   newQueryFlag: boolean;
   queryBuilderString: string;
   pageQueryString: string;
@@ -91,6 +93,7 @@ type CommentState = {
   commentIdsToFetch: string[];
   commentsMap: CommentsMap;
 
+  triggerCommentFetch: boolean;
   triggerCommentUpdate: boolean;
   triggerCommentSubmit: boolean;
 
@@ -118,6 +121,7 @@ type CommentAction = {
   setTotalDocuments: 'setTotalDocuments';
   setNumberOfPages: 'setNumberOfPages';
   setLimitPerPage: 'setLimitPerPage';
+  setResetPage: 'setResetPage';
   setNewQueryFlag: 'setNewQueryFlag';
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
@@ -127,6 +131,7 @@ type CommentAction = {
   setCommentsMap: 'setCommentsMap';
   updateCommentsMap: 'updateCommentsMap';
 
+  setTriggerCommentFetch: 'setTriggerCommentFetch';
   setTriggerCommentUpdate: 'setTriggerCommentUpdate';
   setTriggerCommentSubmit: 'setTriggerCommentSubmit';
 
@@ -166,8 +171,10 @@ type CommentDispatch =
       type:
         | CommentAction['setIsNewCommentValid']
         | CommentAction['setIsNewCommentFocused']
+        | CommentAction['setResetPage']
         | CommentAction['setNewQueryFlag']
         | CommentAction['setAreCommentsVisible']
+        | CommentAction['setTriggerCommentFetch']
         | CommentAction['setTriggerCommentUpdate']
         | CommentAction['setTriggerCommentSubmit']
         | CommentAction['setIsError']
@@ -203,7 +210,9 @@ type CreatedCommentsSectionObject = {
   usernameElement: React.JSX.Element;
   jobPositionElement: React.JSX.Element;
   departmentElement: React.JSX.Element;
+  socialMediaIconsElement: React.JSX.Element;
   commentElement: React.JSX.Element;
+  quotedUsernameElement: React.JSX.Element | null;
   quotedCommentElement: React.JSX.Element | null;
   likesCountElement: React.JSX.Element;
   dislikesCountElement: React.JSX.Element;
@@ -215,6 +224,7 @@ type CreatedCommentsSectionObject = {
   reportButtonElement: React.JSX.Element;
   isFeaturedElement: React.JSX.Element | null;
   createdAtElement: React.JSX.Element;
+  updatedAtElement: React.JSX.Element | null;
 };
 
 export type {

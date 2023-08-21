@@ -30,6 +30,7 @@ const initialCommentState: CommentState = {
   totalDocuments: 0,
   numberOfPages: 0,
   limitPerPage: '10',
+  resetPage: false,
   newQueryFlag: false,
   queryBuilderString: '?',
   pageQueryString: '',
@@ -38,6 +39,7 @@ const initialCommentState: CommentState = {
   commentIdsToFetch: [],
   commentsMap: new Map(),
 
+  triggerCommentFetch: false,
   triggerCommentUpdate: false,
   triggerCommentSubmit: false,
 
@@ -65,6 +67,7 @@ const commentAction: CommentAction = {
   setTotalDocuments: 'setTotalDocuments',
   setNumberOfPages: 'setNumberOfPages',
   setLimitPerPage: 'setLimitPerPage',
+  setResetPage: 'setResetPage',
   setNewQueryFlag: 'setNewQueryFlag',
   setQueryBuilderString: 'setQueryBuilderString',
   setPageQueryString: 'setPageQueryString',
@@ -74,6 +77,7 @@ const commentAction: CommentAction = {
   setCommentsMap: 'setCommentsMap',
   updateCommentsMap: 'updateCommentsMap',
 
+  setTriggerCommentFetch: 'setTriggerCommentFetch',
   setTriggerCommentUpdate: 'setTriggerCommentUpdate',
   setTriggerCommentSubmit: 'setTriggerCommentSubmit',
 
@@ -247,6 +251,12 @@ function commentReducer(
         limitPerPage: action.payload,
       };
 
+    case commentAction.setResetPage:
+      return {
+        ...state,
+        resetPage: action.payload,
+      };
+
     case commentAction.setNewQueryFlag:
       return {
         ...state,
@@ -298,6 +308,12 @@ function commentReducer(
         commentsMap,
       };
     }
+
+    case commentAction.setTriggerCommentFetch:
+      return {
+        ...state,
+        triggerCommentFetch: action.payload,
+      };
 
     case commentAction.setTriggerCommentUpdate:
       return {

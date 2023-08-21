@@ -13,19 +13,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
 import { MdOutlineAddReaction } from 'react-icons/md';
-import {
-  TbBrandFacebook,
-  TbBrandMastodon,
-  TbBrandWhatsapp,
-  TbUpload,
-} from 'react-icons/tb';
-import {
-  TiSocialDribbble,
-  TiSocialFlickr,
-  TiSocialGithub,
-  TiSocialInstagram,
-  TiSocialLinkedin,
-} from 'react-icons/ti';
+import { TbMoodHappy, TbUpload } from 'react-icons/tb';
 
 import { globalAction } from '../../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../../hooks';
@@ -300,25 +288,25 @@ function DisplayAnnouncement() {
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin component render bypass ------------- */
-  if (isLoading || isError || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        errorMessage={errorMessage}
-        isLoading={isLoading}
-        isError={isError}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={displayAnnouncementDispatch}
-        navigateTo={{
-          errorPath: '/portal',
-          successPath: `/portal/outreach/announcement/display/${announcement?._id}`,
-        }}
-      />
-    );
-  }
+  // if (isLoading || isError || isSubmitting || isSuccessful) {
+  //   return (
+  //     <CustomNotification
+  //       errorMessage={errorMessage}
+  //       isLoading={isLoading}
+  //       isError={isError}
+  //       isSubmitting={isSubmitting}
+  //       isSuccessful={isSuccessful}
+  //       loadingMessage={loadingMessage}
+  //       successMessage={successMessage}
+  //       submitMessage={submitMessage}
+  //       parentDispatch={displayAnnouncementDispatch}
+  //       navigateTo={{
+  //         errorPath: '/portal',
+  //         successPath: `/portal/outreach/announcement/display/${announcement?._id}`,
+  //       }}
+  //     />
+  //   );
+  // }
   /** ------------- end component render bypass ------------- */
 
   /** ------------- begin input creators ------------- */
@@ -404,82 +392,6 @@ function DisplayAnnouncement() {
     />
   );
 
-  const createdSocialMediaIcons = (
-    <Group px={padding}>
-      <Tooltip label="Github">
-        <Group>
-          <TiSocialGithub
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-
-      <Tooltip label="Mastodon">
-        <Group>
-          <TbBrandMastodon
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-
-      <Tooltip label="Facebook">
-        <Group>
-          <TbBrandFacebook
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-
-      <Tooltip label="WhatsApp">
-        <Group>
-          <TbBrandWhatsapp
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-
-      <Tooltip label="LinkedIn">
-        <Group>
-          <TiSocialLinkedin
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-
-      <Tooltip label="Instagram">
-        <Group>
-          <TiSocialInstagram
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-
-      <Tooltip label="Flickr">
-        <Group>
-          <TiSocialFlickr
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-
-      <Tooltip label="Dribbble">
-        <Group>
-          <TiSocialDribbble
-            size={24}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-    </Group>
-  );
-
   /** article paragraphs */
   const articleParagraphs = announcement?.article?.map((paragraph, index) => {
     const firstWordsStartingParagraph =
@@ -539,7 +451,11 @@ function DisplayAnnouncement() {
   );
 
   /** buttons */
-  const [createdSubmitRatingButton] = returnAccessibleButtonElements([
+  const [
+    createdSubmitRatingButton,
+    createdRateAnnouncementButton,
+    createdViewStatisticsButton,
+  ] = returnAccessibleButtonElements([
     // submit rating button
     {
       buttonLabel: 'Submit',
@@ -555,6 +471,28 @@ function DisplayAnnouncement() {
         });
 
         closeRatingModal();
+      },
+    },
+    // rate button
+    {
+      buttonLabel: 'Rate',
+      leftIcon: <TbMoodHappy />,
+      rightIcon: <TbUpload />,
+      semanticDescription: 'Button to submit rating',
+      semanticName: 'submitRatingButton',
+      buttonOnClick: () => {
+        openRatingModal();
+      },
+    },
+    // view statistics button
+    {
+      buttonLabel: 'View',
+      leftIcon: <MdOutlineAddReaction />,
+      semanticDescription: 'Button to submit rating and view results',
+      semanticName: 'submitRatingButton',
+      // buttonDisabled: ratedAnnouncementsIds.has(announcement?._id ?? ''),
+      buttonOnClick: () => {
+        openRatingModal();
       },
     },
   ]);
@@ -624,32 +562,39 @@ function DisplayAnnouncement() {
 
   /** reader response */
   const displayReaderResponseIcons = (
-    <Group w="100%" position="center" p={padding}>
+    <Group w="100%" position="center" pt={padding}>
       <Group
         w={width < 480 ? '85%' : '62%'}
         p={padding}
         spacing={rowGap}
         style={{ borderTop: '1px solid #e0e0e0' }}
       >
+        <Text color="dark">
+          {ratedAnnouncementsIds.has(announcement?._id ?? '')
+            ? 'View reactions of MacAuley family members!'
+            : 'How do you feel about this?'}
+        </Text>
         {/* rating icon */}
         <Tooltip
           label={
             ratedAnnouncementsIds.has(announcement?._id ?? '')
               ? 'View statistics'
-              : 'Rate to view statistics'
+              : 'Rate to view reactions of MacAuley family members'
           }
         >
           <Group>
-            <MdOutlineAddReaction
+            {/* <MdOutlineAddReaction
               size={24}
               style={{ cursor: 'pointer', color: 'dimgray' }}
               onClick={() => {
                 openRatingModal();
               }}
-            />
+            /> */}
+            {ratedAnnouncementsIds.has(announcement?._id ?? '')
+              ? createdViewStatisticsButton
+              : createdRateAnnouncementButton}
           </Group>
         </Tooltip>
-
         {/* spacer */}
         <Space w="xs" />
       </Group>
@@ -661,7 +606,6 @@ function DisplayAnnouncement() {
       {displayRatingModal}
       {articleTitle}
       {displayArticleInfo}
-      {createdSocialMediaIcons}
       {articleImage}
       {displayArticleParagraphs}
       {displayReaderResponseIcons}

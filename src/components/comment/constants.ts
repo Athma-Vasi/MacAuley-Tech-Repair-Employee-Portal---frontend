@@ -3,6 +3,7 @@ import { SelectInputData } from '../../types';
 import { ComponentQueryData } from '../queryBuilder';
 
 const COMMENT_QUERY_DATA: ComponentQueryData[] = [
+  { label: 'Username', value: 'username', inputKind: 'textInput' },
   {
     label: 'Job Position',
     value: 'jobPosition',
@@ -34,11 +35,13 @@ const COMMENT_QUERY_DATA: ComponentQueryData[] = [
     label: 'Featured',
     value: 'isFeatured',
     inputKind: 'booleanInput',
+    booleanData: [true, false],
   },
   {
     label: 'Deleted',
     value: 'isDeleted',
     inputKind: 'booleanInput',
+    booleanData: [true, false],
   },
   {
     label: 'Created date',

@@ -277,6 +277,7 @@ function queryBuilderReducer(
     case queryBuilderAction.setClearAllQueryData: {
       return {
         ...state,
+        queryString: '?',
         filterStatementsQueue: [],
         sortStatementsQueue: [],
         projectionArray: [],

@@ -17,6 +17,7 @@ type PageBuilderProps = {
     payload: number;
   }>;
 
+  resetPage?: boolean;
   // total = pages from server response
   total: number;
 };
@@ -26,6 +27,7 @@ function PageBuilder({
   total,
   setPageQueryString = 'setPageQueryString',
   parentComponentDispatch,
+  resetPage = false,
   setModalPage = 'setModalPage',
   modalPageDispatch,
 }: PageBuilderProps): JSX.Element {
@@ -56,6 +58,12 @@ function PageBuilder({
     modalPageDispatch,
     setModalPage,
   ]);
+
+  useEffect(() => {
+    if (resetPage) {
+      setPage(1);
+    }
+  }, [resetPage]);
 
   return (
     <Flex
