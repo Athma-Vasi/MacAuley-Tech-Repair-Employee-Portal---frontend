@@ -75,7 +75,10 @@ type CommentState = {
   isNewCommentValid: boolean;
   isNewCommentFocused: boolean;
 
+  quotedUsername: string;
   quotedComment: string;
+
+  reactedCommentId: string;
   reactedRequestBody: ReactedCommentRequestBody;
   totalDocuments: number;
   numberOfPages: number;
@@ -106,8 +109,12 @@ type CommentAction = {
   setIsNewCommentValid: 'setIsNewCommentValid';
   setIsNewCommentFocused: 'setIsNewCommentFocused';
 
+  setQuotedUsername: 'setQuotedUsername';
   setQuotedComment: 'setQuotedComment';
+
+  setReactedCommentId: 'setReactedCommentId';
   setReactedRequestBody: 'setReactedRequestBody';
+
   setTotalDocuments: 'setTotalDocuments';
   setNumberOfPages: 'setNumberOfPages';
   setLimitPerPage: 'setLimitPerPage';
@@ -142,7 +149,9 @@ type CommentDispatch =
     }
   | {
       type:
+        | CommentAction['setQuotedUsername']
         | CommentAction['setQuotedComment']
+        | CommentAction['setReactedCommentId']
         | CommentAction['setNewComment']
         | CommentAction['setLimitPerPage']
         | CommentAction['setQueryBuilderString']
@@ -206,7 +215,6 @@ type CreatedCommentsSectionObject = {
   reportButtonElement: React.JSX.Element;
   isFeaturedElement: React.JSX.Element | null;
   createdAtElement: React.JSX.Element;
-  updatedAtElement: React.JSX.Element;
 };
 
 export type {

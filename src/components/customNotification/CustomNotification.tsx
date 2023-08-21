@@ -187,7 +187,7 @@ function CustomNotification({
             payload: '',
           });
 
-          navigate(successPath);
+          // navigate(successPath);
         }}
         title={
           <Group

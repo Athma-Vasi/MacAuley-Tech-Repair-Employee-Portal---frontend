@@ -12,7 +12,10 @@ const initialCommentState: CommentState = {
   isNewCommentValid: false,
   isNewCommentFocused: false,
 
+  quotedUsername: '',
   quotedComment: '',
+
+  reactedCommentId: '',
   reactedRequestBody: {
     fieldsToUpdate: {
       dislikedUserIds: [],
@@ -23,6 +26,7 @@ const initialCommentState: CommentState = {
       reportsCount: 0,
     },
   },
+
   totalDocuments: 0,
   numberOfPages: 0,
   limitPerPage: '10',
@@ -52,8 +56,12 @@ const commentAction: CommentAction = {
   setIsNewCommentValid: 'setIsNewCommentValid',
   setIsNewCommentFocused: 'setIsNewCommentFocused',
 
+  setQuotedUsername: 'setQuotedUsername',
   setQuotedComment: 'setQuotedComment',
+
+  setReactedCommentId: 'setReactedCommentId',
   setReactedRequestBody: 'setReactedRequestBody',
+
   setTotalDocuments: 'setTotalDocuments',
   setNumberOfPages: 'setNumberOfPages',
   setLimitPerPage: 'setLimitPerPage',
@@ -100,13 +108,27 @@ function commentReducer(
         isNewCommentFocused: action.payload,
       };
 
+    case commentAction.setQuotedUsername:
+      return {
+        ...state,
+        quotedUsername: action.payload,
+      };
+
     case commentAction.setQuotedComment:
       return {
         ...state,
         quotedComment: action.payload,
       };
 
+    case commentAction.setReactedCommentId:
+      return {
+        ...state,
+        reactedCommentId: action.payload,
+      };
+
     case commentAction.setReactedRequestBody: {
+      const { payload } = action;
+      console.log({ payload });
       const { field, commentId, userId, value } = action.payload;
       if (!field) {
         return state;
@@ -119,18 +141,28 @@ function commentReducer(
 
       switch (field) {
         case 'likes': {
-          const { likedUserIds, likesCount } = comment;
+          const { likedUserIds, likesCount, dislikedUserIds, dislikesCount } =
+            comment;
 
-          const isLikedNew = !value;
-          const likesCountNew = isLikedNew ? likesCount + 1 : likesCount - 1;
-          const likedUserIdsNew = isLikedNew
+          const likesCountNew = value ? likesCount + 1 : likesCount - 1;
+          const likedUserIdsNew = value
             ? Array.from(new Set([...likedUserIds, userId]))
             : likedUserIds.filter((id) => id !== userId);
+
+          // remove from dislikedUserIds and decrement count if liked
+          const dislikedUserIdsNew = dislikedUserIds.includes(userId)
+            ? dislikedUserIds.filter((id) => id !== userId)
+            : dislikedUserIds;
+          const dislikesCountNew = dislikedUserIds.includes(userId)
+            ? dislikesCount - 1
+            : dislikesCount;
 
           const reactedRequestBody: ReactedCommentRequestBody = {
             fieldsToUpdate: {
               likedUserIds: likedUserIdsNew,
               likesCount: likesCountNew,
+              dislikedUserIds: dislikedUserIdsNew,
+              dislikesCount: dislikesCountNew,
             },
           };
 
@@ -140,20 +172,30 @@ function commentReducer(
           };
         }
         case 'dislikes': {
-          const { dislikedUserIds, dislikesCount } = comment;
+          const { dislikedUserIds, dislikesCount, likedUserIds, likesCount } =
+            comment;
 
-          const isDislikedNew = !value;
-          const dislikesCountNew = isDislikedNew
+          const dislikesCountNew = value
             ? dislikesCount + 1
             : dislikesCount - 1;
-          const dislikedUserIdsNew = isDislikedNew
+          const dislikedUserIdsNew = value
             ? Array.from(new Set([...dislikedUserIds, userId]))
             : dislikedUserIds.filter((id) => id !== userId);
+
+          // remove from likedUserIds and decrement count if disliked
+          const likedUserIdsNew = likedUserIds.includes(userId)
+            ? likedUserIds.filter((id) => id !== userId)
+            : likedUserIds;
+          const likesCountNew = likedUserIds.includes(userId)
+            ? likesCount - 1
+            : likesCount;
 
           const reactedRequestBody: ReactedCommentRequestBody = {
             fieldsToUpdate: {
               dislikedUserIds: dislikedUserIdsNew,
               dislikesCount: dislikesCountNew,
+              likedUserIds: likedUserIdsNew,
+              likesCount: likesCountNew,
             },
           };
 
@@ -165,11 +207,8 @@ function commentReducer(
         case 'reports': {
           const { reportedUserIds, reportsCount } = comment;
 
-          const isReportedNew = !value;
-          const reportsCountNew = isReportedNew
-            ? reportsCount + 1
-            : reportsCount - 1;
-          const reportedUserIdsNew = isReportedNew
+          const reportsCountNew = value ? reportsCount + 1 : reportsCount - 1;
+          const reportedUserIdsNew = value
             ? Array.from(new Set([...reportedUserIds, userId]))
             : reportedUserIds.filter((id) => id !== userId);
 
