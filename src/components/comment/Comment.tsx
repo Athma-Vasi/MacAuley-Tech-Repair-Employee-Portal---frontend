@@ -8,6 +8,7 @@ import {
   Modal,
   Pagination,
   Space,
+  Spoiler,
   Stack,
   Text,
   Title,
@@ -47,6 +48,8 @@ import {
   TbFlag2,
   TbStarOff,
   TbTrashOff,
+  TbArrowDown,
+  TbArrowUp,
 } from 'react-icons/tb';
 
 import {
@@ -448,8 +451,10 @@ function Comment({ parentResourceId = '' }: CommentProps) {
 
       try {
         const response = await fetch(request);
-        const data: ResourceRequestServerResponse<CommentDocument> =
-          await response.json();
+        const data: {
+          message: string;
+          resourceData: [CommentDocument];
+        } = await response.json();
 
         if (!isMounted) {
           return;
@@ -467,6 +472,13 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           });
           return;
         }
+
+        commentDispatch({
+          type: commentAction.updateCommentsMap,
+          payload: {
+            commentDoc: data.resourceData[0],
+          },
+        });
 
         commentDispatch({
           type: commentAction.setIsSuccessful,
@@ -717,209 +729,13 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         updatedAt,
       } = commentDoc;
 
-      const usernameElementWithTooltip = (
-        <Tooltip label={`Filter comments by ${username}`}>
-          <Text
-            color="dark"
-            size="lg"
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              commentDispatch({
-                type: commentAction.setQueryBuilderString,
-                payload: `?&username[in]=${username}`,
-              });
-            }}
-          >
-            <strong>{username}</strong>
-          </Text>
-        </Tooltip>
-      );
-      const jobPositionElementWithTooltip = (
-        <Tooltip label={`Filter comments by ${jobPosition}s`}>
-          <Text
-            color="dark"
-            size="sm"
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              commentDispatch({
-                type: commentAction.setQueryBuilderString,
-                payload: `?&jobPosition[in]=${jobPosition}`,
-              });
-            }}
-          >
-            {jobPosition}
-          </Text>
-        </Tooltip>
-      );
-
-      const departmentElementWithTooltip = (
-        <Tooltip label={`Filter comments by ${department} members`}>
-          <Text
-            color="dark"
-            size="sm"
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              commentDispatch({
-                type: commentAction.setQueryBuilderString,
-                payload: `?&department[in]=${department}`,
-              });
-            }}
-          >
-            {department}
-          </Text>
-        </Tooltip>
-      );
-
-      const profilePicElement = (
-        <Image
-          width={width < 640 ? 48 : 96}
-          height={width < 640 ? 48 : 96}
-          radius={9999}
-          src={profilePictureUrl}
-          // alt={`profile pic of ${username}`}
-          withPlaceholder
-          placeholder={<TbPhotoOff size={width < 640 ? 16 : 28} />}
-        />
-      );
-
-      const createdSocialMediaIcons = (
-        <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
-          <Tooltip label="Github">
-            <Group>
-              <TiSocialGithub
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
-              />
-            </Group>
-          </Tooltip>
-
-          <Tooltip label="Mastodon">
-            <Group>
-              <TbBrandMastodon
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
-              />
-            </Group>
-          </Tooltip>
-
-          {/* <Tooltip label="Facebook">
-            <Group>
-              <TbBrandFacebook
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
-              />
-            </Group>
-          </Tooltip> */}
-
-          {/* <Tooltip label="WhatsApp">
-            <Group>
-              <TbBrandWhatsapp
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
-              />
-            </Group>
-          </Tooltip> */}
-
-          <Tooltip label="LinkedIn">
-            <Group>
-              <TiSocialLinkedin
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
-              />
-            </Group>
-          </Tooltip>
-
-          <Tooltip label="Instagram">
-            <Group>
-              <TiSocialInstagram
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
-              />
-            </Group>
-          </Tooltip>
-
-          <Tooltip label="Flickr">
-            <Group>
-              <TiSocialFlickr
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
-              />
-            </Group>
-          </Tooltip>
-
-          <Tooltip label="Dribbble">
-            <Group>
-              <TiSocialDribbble
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
-              />
-            </Group>
-          </Tooltip>
-        </Flex>
-      );
-
-      const commentElement = (
-        <Text color="dark" size="sm">
-          {isDeleted ? 'Comment has been deleted' : comment}
-          {isDeleted ? 'Comment has been deleted' : comment}
-          {isDeleted ? 'Comment has been deleted' : comment}
-          {isDeleted ? 'Comment has been deleted' : comment}
-          {isDeleted ? 'Comment has been deleted' : comment}
-          {isDeleted ? 'Comment has been deleted' : comment}
-          {isDeleted ? 'Comment has been deleted' : comment}
-          {isDeleted ? 'Comment has been deleted' : comment}
-        </Text>
-      );
-      const quotedUsernameElement = quotedUsername ? (
-        <Text color="teal" size="sm">
-          {quotedUsername} commented:
-        </Text>
-      ) : null;
-      const quotedCommentElement = quotedComment ? (
-        <Blockquote icon={<VscQuote />}>
-          <Text color="dark" size="sm">
-            {quotedComment}
-            {quotedComment}
-            {quotedComment}
-            {quotedComment}
-          </Text>
-        </Blockquote>
-      ) : null;
-
-      const likesCountWithTooltipElement = (
-        <Tooltip label={`${likesCount} people have liked this comment`}>
-          <Text color="dark" size="sm">
-            {likesCount}
-          </Text>
-        </Tooltip>
-      );
-      const dislikesCountWithTooltipElement = (
-        <Tooltip label={`${dislikesCount} people have disliked this comment`}>
-          <Text color="dark" size="sm">
-            {dislikesCount}
-          </Text>
-        </Tooltip>
-      );
-      const totalLikesDislikesWithTooltipElement = (
-        <Tooltip label="Overall feeling towards this comment">
-          <Text color="dark" size="sm">
-            {likesCount + dislikesCount}
-          </Text>
-        </Tooltip>
-      );
-      const reportsCountWithTooltipElement = (
-        <Tooltip label={`${reportsCount} people have reported this comment`}>
-          <Text color="dark" size="sm">
-            {reportsCount}
-          </Text>
-        </Tooltip>
-      );
-
       const [
         replyButtonElement,
         likeButtonElement,
         dislikeButtonElement,
         reportButtonElement,
+        showMoreSpoilerButtonElement,
+        showLessSpoilerButtonElement,
       ] = returnAccessibleButtonElements([
         // reply with quote button
         {
@@ -1038,6 +854,22 @@ function Comment({ parentResourceId = '' }: CommentProps) {
               payload: true,
             });
           },
+        },
+        // show more spoiler button
+        {
+          buttonLabel: 'Show',
+          buttonVariant: 'outline',
+          leftIcon: <TbArrowDown />,
+          semanticDescription: 'show more comment button',
+          semanticName: 'showMoreCommentButton',
+        },
+        // show less spoiler button
+        {
+          buttonLabel: 'Hide',
+          buttonVariant: 'outline',
+          leftIcon: <TbArrowUp />,
+          semanticDescription: 'hide comment button',
+          semanticName: 'hideCommentButton',
         },
       ]);
 
@@ -1184,6 +1016,179 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           <Group>{featureButtonElement}</Group>
         </Tooltip>
       ) : null;
+
+      const usernameElementWithTooltip = (
+        <Tooltip label={`Filter comments by ${username}`}>
+          <Text
+            color="dark"
+            size="lg"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&username[in]=${username}`,
+              });
+            }}
+          >
+            <strong>{username}</strong>
+          </Text>
+        </Tooltip>
+      );
+      const jobPositionElementWithTooltip = (
+        <Tooltip label={`Filter comments by ${jobPosition}s`}>
+          <Text
+            color="dark"
+            size="sm"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&jobPosition[in]=${jobPosition}`,
+              });
+            }}
+          >
+            {jobPosition}
+          </Text>
+        </Tooltip>
+      );
+
+      const departmentElementWithTooltip = (
+        <Tooltip label={`Filter comments by ${department} members`}>
+          <Text
+            color="dark"
+            size="sm"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&department[in]=${department}`,
+              });
+            }}
+          >
+            {department}
+          </Text>
+        </Tooltip>
+      );
+
+      const profilePicElement = (
+        <Image
+          width={width < 640 ? 48 : 96}
+          height={width < 640 ? 48 : 96}
+          radius={9999}
+          src={profilePictureUrl}
+          // alt={`profile pic of ${username}`}
+          withPlaceholder
+          placeholder={<TbPhotoOff size={width < 640 ? 16 : 28} />}
+        />
+      );
+
+      const createdSocialMediaIcons = (
+        <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
+          <Tooltip label="Github">
+            <Group>
+              <TiSocialGithub
+                size={width < 640 ? 20 : 24}
+                style={{ cursor: 'pointer', color: 'dimgray' }}
+              />
+            </Group>
+          </Tooltip>
+
+          <Tooltip label="Mastodon">
+            <Group>
+              <TbBrandMastodon
+                size={width < 640 ? 20 : 24}
+                style={{ cursor: 'pointer', color: 'dimgray' }}
+              />
+            </Group>
+          </Tooltip>
+
+          <Tooltip label="LinkedIn">
+            <Group>
+              <TiSocialLinkedin
+                size={width < 640 ? 20 : 24}
+                style={{ cursor: 'pointer', color: 'dimgray' }}
+              />
+            </Group>
+          </Tooltip>
+
+          <Tooltip label="Flickr">
+            <Group>
+              <TiSocialFlickr
+                size={width < 640 ? 20 : 24}
+                style={{ cursor: 'pointer', color: 'dimgray' }}
+              />
+            </Group>
+          </Tooltip>
+
+          <Tooltip label="Dribbble">
+            <Group>
+              <TiSocialDribbble
+                size={width < 640 ? 20 : 24}
+                style={{ cursor: 'pointer', color: 'dimgray' }}
+              />
+            </Group>
+          </Tooltip>
+        </Flex>
+      );
+
+      const commentElement = (
+        <Spoiler
+          maxHeight={217}
+          showLabel={showMoreSpoilerButtonElement}
+          hideLabel={showLessSpoilerButtonElement}
+        >
+          <Text color="dark" size="sm">
+            {isDeleted ? 'Comment has been deleted' : comment}
+          </Text>
+        </Spoiler>
+      );
+      const quotedUsernameElement = quotedUsername ? (
+        <Text color="teal" size="sm">
+          {quotedUsername} commented:
+        </Text>
+      ) : null;
+      const quotedCommentElement = quotedComment ? (
+        <Blockquote icon={<VscQuote />}>
+          <Spoiler
+            maxHeight={217}
+            showLabel={showMoreSpoilerButtonElement}
+            hideLabel={showLessSpoilerButtonElement}
+          >
+            <Text color="dark" size="sm">
+              {quotedComment}
+            </Text>
+          </Spoiler>
+        </Blockquote>
+      ) : null;
+
+      const likesCountWithTooltipElement = (
+        <Tooltip label={`${likesCount} people have liked this comment`}>
+          <Text color="dark" size="sm">
+            {likesCount}
+          </Text>
+        </Tooltip>
+      );
+      const dislikesCountWithTooltipElement = (
+        <Tooltip label={`${dislikesCount} people have disliked this comment`}>
+          <Text color="dark" size="sm">
+            {dislikesCount}
+          </Text>
+        </Tooltip>
+      );
+      const totalLikesDislikesWithTooltipElement = (
+        <Tooltip label="Overall feeling towards this comment">
+          <Text color="dark" size="sm">
+            {likesCount + dislikesCount}
+          </Text>
+        </Tooltip>
+      );
+      const reportsCountWithTooltipElement = (
+        <Tooltip label={`${reportsCount} people have reported this comment`}>
+          <Text color="dark" size="sm">
+            {reportsCount}
+          </Text>
+        </Tooltip>
+      );
 
       const [createdAtDateTime, updatedAtDateTime] = [createdAt, updatedAt].map(
         (date: string) =>
@@ -1359,7 +1364,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           <Group style={{ position: 'absolute', top: 0, right: 0 }}>
             {isFeaturedElement}
           </Group>
-          {createdAtElement}
+          <Group pt={padding}>{createdAtElement}</Group>
           {updatedAtElement ? (
             <span>
               <Space w="lg" />
@@ -1412,7 +1417,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       const commentSectionDesktop = (
         <Stack w="100%" align="flex-start" justify="flex-start" p={padding}>
           {quotedSection}
-          <Space h={rowGap} />
+          <Space h="xs" />
           {commentElement}
         </Stack>
       );
@@ -1420,45 +1425,17 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       const commentSectionMobile = (
         <Stack w="100%" spacing={rowGap} align="center" p={padding}>
           {quotedSection}
+          <Space h="xs" />
           {commentElement}
         </Stack>
       );
 
-      // comment section footer desktop
-      const commentSectionFooterDesktop = (
-        <Flex w="100%" align="center" justify="center" wrap="wrap">
-          <Group
-            w="100%"
-            spacing={rowGap}
-            pt={padding}
-            align="center"
-            position="right"
-            style={{ borderTop: '1px solid #e0e0e0' }}
-          >
-            <Group
-              pr={18}
-              style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}
-            >
-              {reportButtonElement} {reportsCountElement}
-            </Group>
-            <Group style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}>
-              <Group position="left">{likeButtonElement}</Group>
-              <Group position="center">
-                {totalLikesDislikesElement} ({likesCountElement} /
-                {dislikesCountElement})
-              </Group>
-              <Group position="right">{dislikeButtonElement}</Group>
-            </Group>
-            {replyButtonElement}
-          </Group>
-        </Flex>
-      );
-      // comment section footer mobile
-      const commentSectionFooterMobile = (
+      // comment section footer desktop and mobile
+      const commentSectionFooter = (
         <Group
           w="100%"
           spacing={rowGap}
-          py={padding}
+          pt={padding}
           position="right"
           style={{ borderTop: '1px solid #e0e0e0' }}
         >
@@ -1484,17 +1461,48 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           </Group>
         </Group>
       );
+      // // comment section footer mobile
+      // const commentSectionFooterMobile = (
+      //   <Group
+      //     w="100%"
+      //     spacing={rowGap}
+      //     py={padding}
+      //     position="right"
+      //     style={{ borderTop: '1px solid #e0e0e0' }}
+      //   >
+      //     <Group
+      //       pr={18}
+      //       style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}
+      //     >
+      //       {reportButtonElement} {reportsCountElement}
+      //     </Group>
+      //     <Group style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}>
+      //       <Group position="left">{likeButtonElement}</Group>
+      //       <Group position="center">
+      //         {totalLikesDislikesElement} ({likesCountElement} /
+      //         {dislikesCountElement})
+      //       </Group>
+      //       <Group position="right">{dislikeButtonElement}</Group>
+      //     </Group>
+      //     <Group position="right" spacing={padding}>
+      //       <Group position="right">
+      //         {featureButtonElement} {deleteButtonElement}
+      //         {replyButtonElement}
+      //       </Group>
+      //     </Group>
+      //   </Group>
+      // );
 
       // comment section full desktop
       const createdCommentSectionDesktop = (
-        <Grid columns={10} w="100%">
+        <Grid columns={10} w="100%" py={padding}>
           <Grid.Col span={3} style={{ borderRight: '1px solid #e0e0e0' }}>
             {userInfoSectionDesktop}
           </Grid.Col>
           <Grid.Col span={7}>
             {commentSectionHeaderDesktop}
             {commentSectionDesktop}
-            {commentSectionFooterDesktop}
+            {commentSectionFooter}
           </Grid.Col>
         </Grid>
       );
@@ -1503,7 +1511,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         <Stack w="100%" py={padding}>
           {commentSectionHeaderMobile}
           {commentSectionMobile}
-          {commentSectionFooterMobile}
+          {commentSectionFooter}
         </Stack>
       );
 
@@ -1544,7 +1552,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
   );
 
   const commentModalQuotedComment = quotedComment ? (
-    <Group px={padding}>
+    <Group p={padding} style={{ borderTop: '1px solid #e0e0e0' }}>
       <Blockquote
         icon={<VscQuote />}
         style={{ borderLeft: '2px solid #e0e0e0' }}
