@@ -23,6 +23,7 @@ type AnnouncementSchema = {
   article: string[];
   timeToRead: number;
   ratingResponse: RatingResponse;
+  ratedUserIds: string[];
 };
 
 type AnnouncementDocument = AnnouncementSchema & {

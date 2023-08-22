@@ -5,8 +5,8 @@ import { AnnouncementDocument, RatingResponse } from '../../create/types';
 type DisplayAnnouncementState = {
   announcement: QueryResponseData<AnnouncementDocument> | null;
   rating: number;
+
   triggerRatingSubmit: boolean;
-  ratedAnnouncementsIds: Set<string>;
   ratingPieChartDataArray: PieChartData[];
 
   isError: boolean;
@@ -23,8 +23,8 @@ type DisplayAnnouncementAction = {
   setAnnouncement: 'setAnnouncement';
 
   setRating: 'setRating';
+  updateRatingResponse: 'updateRatingResponse';
   setTriggerRatingSubmit: 'setTriggerRatingSubmit';
-  setRatedAnnouncementsIds: 'setRatedAnnouncementsIds';
   setRatingPieChartDataArray: 'setRatingPieChartDataArray';
 
   setIsError: 'setIsError';
@@ -47,8 +47,11 @@ type DisplayAnnouncementDispatch =
       payload: number;
     }
   | {
-      type: DisplayAnnouncementAction['setRatedAnnouncementsIds'];
-      payload: string[];
+      type: DisplayAnnouncementAction['updateRatingResponse'];
+      payload: {
+        rating: number;
+        userId: string;
+      };
     }
   | {
       type: DisplayAnnouncementAction['setRatingPieChartDataArray'];

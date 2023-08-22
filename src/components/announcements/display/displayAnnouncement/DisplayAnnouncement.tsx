@@ -41,7 +41,6 @@ function DisplayAnnouncement() {
     announcement,
     rating,
     triggerRatingSubmit,
-    ratedAnnouncementsIds,
     ratingPieChartDataArray,
 
     isError,
@@ -59,12 +58,16 @@ function DisplayAnnouncement() {
     globalDispatch,
   } = useGlobalState();
   const {
-    authState: { username, accessToken },
+    authState: { userId, accessToken },
   } = useAuth();
 
   const [
     openedRatingModal,
     { open: openRatingModal, close: closeRatingModal },
+  ] = useDisclosure(false);
+  const [
+    openedStatisticsModal,
+    { open: openStatisticsModal, close: closeStatisticsModal },
   ] = useDisclosure(false);
 
   /** ------------- end hooks ------------- */
@@ -88,50 +91,10 @@ function DisplayAnnouncement() {
         path: `/api/v1/actions/outreach/announcement/${announcement._id}/rating`,
       });
 
-      const prevRatingResponse = structuredClone(announcement.ratingResponse);
-      if (!prevRatingResponse) {
-        return;
-      }
-
-      const prevRatingEmotion = prevRatingResponse.ratingEmotion;
-      switch (rating) {
-        case 1: {
-          prevRatingEmotion.devastated += 1;
-          break;
-        }
-        case 2: {
-          prevRatingEmotion.annoyed += 1;
-          break;
-        }
-        case 3: {
-          prevRatingEmotion.neutral += 1;
-          break;
-        }
-        case 4: {
-          prevRatingEmotion.happy += 1;
-          break;
-        }
-        case 5: {
-          prevRatingEmotion.ecstatic += 1;
-          break;
-        }
-        default:
-          break;
-      }
-
-      const ratingResponse: RatingResponse = {
-        ratingEmotion: prevRatingEmotion,
-        ratingCount: prevRatingResponse.ratingCount + 1,
-      };
-
-      const updatedRatedAnnouncementsIds = Array.from(
-        ratedAnnouncementsIds.has(announcement._id) ? ratedAnnouncementsIds : []
-      );
-
       const body = JSON.stringify({
         announcementFields: {
-          ratingResponse,
-          ratedAnnouncementsIds: updatedRatedAnnouncementsIds,
+          ratingResponse: announcement.ratingResponse,
+          ratedUserIds: announcement.ratedUserIds,
         },
       });
 
@@ -256,14 +219,6 @@ function DisplayAnnouncement() {
     });
   }, [announcementDocument]);
 
-  // set rated announcement ids to state
-  useEffect(() => {
-    displayAnnouncementDispatch({
-      type: displayAnnouncementAction.setRatedAnnouncementsIds,
-      payload: userDocument?.ratedAnnouncementsIds ?? [],
-    });
-  }, [userDocument, announcement]);
-
   // set rating response to state
   useEffect(() => {
     if (!announcement) {
@@ -277,7 +232,7 @@ function DisplayAnnouncement() {
       type: displayAnnouncementAction.setRatingPieChartDataArray,
       payload: announcement.ratingResponse,
     });
-  }, [ratedAnnouncementsIds]);
+  }, [triggerRatingSubmit]);
 
   useEffect(() => {
     logState({
@@ -376,7 +331,7 @@ function DisplayAnnouncement() {
   );
 
   const displayArticleInfo = (
-    <Group position="left" px={padding}>
+    <Group position="left" p={padding}>
       {articleAuthor}
       {articleCreatedAt}
       {articleTimeToRead}
@@ -466,6 +421,13 @@ function DisplayAnnouncement() {
       buttonDisabled: rating === 0,
       buttonOnClick: () => {
         displayAnnouncementDispatch({
+          type: displayAnnouncementAction.updateRatingResponse,
+          payload: {
+            rating,
+            userId,
+          },
+        });
+        displayAnnouncementDispatch({
           type: displayAnnouncementAction.setTriggerRatingSubmit,
           payload: true,
         });
@@ -490,9 +452,8 @@ function DisplayAnnouncement() {
       leftIcon: <MdOutlineAddReaction />,
       semanticDescription: 'Button to submit rating and view results',
       semanticName: 'submitRatingButton',
-      // buttonDisabled: ratedAnnouncementsIds.has(announcement?._id ?? ''),
       buttonOnClick: () => {
-        openRatingModal();
+        openStatisticsModal();
       },
     },
   ]);
@@ -532,20 +493,16 @@ function DisplayAnnouncement() {
     </Stack>
   );
 
-  const ratingModalSize = ratedAnnouncementsIds.has(announcement?._id ?? '')
+  const ratingModalSize = announcement?.ratedUserIds?.includes(userId ?? '')
     ? 'calc(100% - 2rem)'
     : width < 480
     ? 'calc(100% - 3rem)'
     : '640px';
   const ratingModalTitle = (
     <Title order={2} color="dark">
-      {ratedAnnouncementsIds.has(announcement?._id ?? '')
-        ? `MacAuley family responses
-    to ${announcement?.title ?? ''}`
-        : announcement?.title ?? ''}
+      {announcement?.title ?? ''}
     </Title>
   );
-
   const displayRatingModal = (
     <Modal
       opened={openedRatingModal}
@@ -554,9 +511,24 @@ function DisplayAnnouncement() {
       size={ratingModalSize}
       title={ratingModalTitle}
     >
-      {ratedAnnouncementsIds.has(announcement?._id ?? '')
-        ? showStatisticsCard
-        : displayRatingAndSubmit}
+      {displayRatingAndSubmit}
+    </Modal>
+  );
+
+  const statisticsModalTitle = (
+    <Title order={2} color="dark">
+      MacAuley family responses to {announcement?.title ?? ''}
+    </Title>
+  );
+  const displayStatisticsModal = (
+    <Modal
+      opened={openedStatisticsModal}
+      onClose={closeStatisticsModal}
+      centered
+      size="calc(100% - 3rem)"
+      title={statisticsModalTitle}
+    >
+      {showStatisticsCard}
     </Modal>
   );
 
@@ -567,30 +539,29 @@ function DisplayAnnouncement() {
         w={width < 480 ? '85%' : '62%'}
         p={padding}
         spacing={rowGap}
-        style={{ borderTop: '1px solid #e0e0e0' }}
+        style={{
+          borderTop: '1px solid #e0e0e0',
+          borderLeft: '1px solid #e0e0e0',
+          borderRight: '1px solid #e0e0e0',
+          borderRadius: '4px 4px 0 0',
+        }}
+        position="left"
       >
         <Text color="dark">
-          {ratedAnnouncementsIds.has(announcement?._id ?? '')
+          {announcement?.ratedUserIds?.includes(userId ?? '')
             ? 'View reactions of MacAuley family members!'
             : 'How do you feel about this?'}
         </Text>
         {/* rating icon */}
         <Tooltip
           label={
-            ratedAnnouncementsIds.has(announcement?._id ?? '')
+            announcement?.ratedUserIds?.includes(userId ?? '')
               ? 'View statistics'
               : 'Rate to view reactions of MacAuley family members'
           }
         >
           <Group>
-            {/* <MdOutlineAddReaction
-              size={24}
-              style={{ cursor: 'pointer', color: 'dimgray' }}
-              onClick={() => {
-                openRatingModal();
-              }}
-            /> */}
-            {ratedAnnouncementsIds.has(announcement?._id ?? '')
+            {announcement?.ratedUserIds?.includes(userId ?? '')
               ? createdViewStatisticsButton
               : createdRateAnnouncementButton}
           </Group>
@@ -602,141 +573,19 @@ function DisplayAnnouncement() {
   );
 
   const displayAnnouncementComponent = (
-    <Stack w="100%" style={{ background: 'white' }}>
+    <Flex direction="column" w="100%" style={{ background: 'white' }}>
       {displayRatingModal}
+      {displayStatisticsModal}
       {articleTitle}
       {displayArticleInfo}
       {articleImage}
       {displayArticleParagraphs}
       {displayReaderResponseIcons}
       <Comment parentResourceId={announcement?._id ?? ''} />
-    </Stack>
+    </Flex>
   );
   /** ------------- end input creators ------------- */
   return displayAnnouncementComponent;
 }
 
 export default DisplayAnnouncement;
-
-/**
- * // update comment ids on trigger
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
-    async function updateCommentIds() {
-      if (!announcement || !newCommentId) {
-        return;
-      }
-
-      const url: URL = urlBuilder({
-        path: `/api/v1/actions/outreach/announcement/${announcement._id}`,
-      });
-
-      const prevCommentIds = announcement.commentIds;
-      if (prevCommentIds === undefined) {
-        return;
-      }
-      const updatedCommentIds = Array.from(
-        new Set([...prevCommentIds, newCommentId])
-      );
-
-      const body = JSON.stringify({
-        announcementFields: {
-          commentIds: updatedCommentIds,
-        },
-      });
-
-      const request: Request = new Request(url, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body,
-        signal: controller.signal,
-      });
-
-      try {
-        const response = await fetch(request);
-        const data: {
-          message: string;
-          resourceData: [Omit<AnnouncementDocument, '__v'>];
-        } = await response.json();
-
-        if (!isMounted) {
-          return;
-        }
-
-        const { ok } = response;
-        if (!ok) {
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setIsError,
-            payload: true,
-          });
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
-        }
-
-        const updatedAnnouncementDocument = data.resourceData[0];
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setAnnouncement,
-          payload: updatedAnnouncementDocument,
-        });
-      } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
-          return;
-        }
-
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setIsError,
-          payload: true,
-        });
-
-        error instanceof InvalidTokenError
-          ? displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error.response
-          ? displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload:
-                error.message ?? 'Unknown error occurred. Please try again.',
-            });
-      } finally {
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setIsSubmitting,
-          payload: false,
-        });
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setTriggerRatingSubmit,
-          payload: false,
-        });
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setNewCommentId,
-          payload: '',
-        });
-      }
-    }
-
-    if (newCommentId) {
-      updateCommentIds();
-    }
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [newCommentId]);
- */

@@ -1,4 +1,5 @@
 import { PieChartData } from '../../../displayStatistics/types';
+import { RatingResponse } from '../../create/types';
 import {
   DisplayAnnouncementAction,
   DisplayAnnouncementDispatch,
@@ -9,7 +10,6 @@ const initialDisplayAnnouncementState: DisplayAnnouncementState = {
   announcement: null,
   rating: 0,
   triggerRatingSubmit: false,
-  ratedAnnouncementsIds: new Set<string>(),
   ratingPieChartDataArray: [],
 
   isError: false,
@@ -25,8 +25,8 @@ const initialDisplayAnnouncementState: DisplayAnnouncementState = {
 const displayAnnouncementAction: DisplayAnnouncementAction = {
   setAnnouncement: 'setAnnouncement',
   setRating: 'setRating',
+  updateRatingResponse: 'updateRatingResponse',
   setTriggerRatingSubmit: 'setTriggerRatingSubmit',
-  setRatedAnnouncementsIds: 'setRatedAnnouncementsIds',
   setRatingPieChartDataArray: 'setRatingPieChartDataArray',
 
   setIsError: 'setIsError',
@@ -56,16 +56,76 @@ function displayAnnouncementReducer(
         rating: action.payload,
       };
 
+    case displayAnnouncementAction.updateRatingResponse: {
+      const { rating, userId } = action.payload;
+
+      const prevAnnouncement = structuredClone(state.announcement);
+      if (!prevAnnouncement) {
+        return state;
+      }
+
+      const prevRatingResponse = structuredClone(
+        prevAnnouncement.ratingResponse
+      );
+      if (!prevRatingResponse) {
+        return state;
+      }
+
+      const prevRatingEmotion = prevRatingResponse.ratingEmotion;
+      switch (rating) {
+        case 1: {
+          prevRatingEmotion.devastated += 1;
+          break;
+        }
+        case 2: {
+          prevRatingEmotion.annoyed += 1;
+          break;
+        }
+        case 3: {
+          prevRatingEmotion.neutral += 1;
+          break;
+        }
+        case 4: {
+          prevRatingEmotion.happy += 1;
+          break;
+        }
+        case 5: {
+          prevRatingEmotion.ecstatic += 1;
+          break;
+        }
+        default:
+          break;
+      }
+
+      const ratingResponse: RatingResponse = {
+        ratingEmotion: prevRatingEmotion,
+        ratingCount: prevRatingResponse.ratingCount + 1,
+      };
+
+      const prevRatedUserIds = prevAnnouncement.ratedUserIds;
+      if (!prevRatedUserIds) {
+        return state;
+      }
+      const updatedRatedUserIds = Array.from(
+        new Set([...prevRatedUserIds, userId])
+      );
+
+      const updatedAnnouncement = {
+        ...prevAnnouncement,
+        ratingResponse,
+        ratedUserIds: updatedRatedUserIds,
+      };
+
+      return {
+        ...state,
+        announcement: updatedAnnouncement,
+      };
+    }
+
     case displayAnnouncementAction.setTriggerRatingSubmit:
       return {
         ...state,
         triggerRatingSubmit: action.payload,
-      };
-
-    case displayAnnouncementAction.setRatedAnnouncementsIds:
-      return {
-        ...state,
-        ratedAnnouncementsIds: new Set<string>([...action.payload]),
       };
 
     case displayAnnouncementAction.setRatingPieChartDataArray: {

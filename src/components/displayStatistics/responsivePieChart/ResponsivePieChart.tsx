@@ -235,7 +235,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       ? `${width * 0.38}px`
       : width < 1192
       ? '500px'
-      : `${width * 0.17}px`;
+      : `${width * 0.15}px`;
 
   const startAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',

@@ -413,6 +413,10 @@ function Comment({ parentResourceId = '' }: CommentProps) {
     const controller = new AbortController();
 
     async function submitComment() {
+      if (!userDocument) {
+        return;
+      }
+
       commentDispatch({
         type: commentAction.setIsSubmitting,
         payload: true,
@@ -423,18 +427,21 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       });
 
       const comment = {
-        jobPosition: userDocument?.jobPosition,
-        department: userDocument?.department,
-        profilePictureUrl: userDocument?.profilePictureUrl,
+        jobPosition: userDocument.jobPosition,
+        department: userDocument.department,
+        profilePictureUrl: userDocument.profilePictureUrl,
         parentResourceId: parentResourceId,
         comment: newComment,
+        quotedUsername,
         quotedComment,
-        repliesCount: 0,
         likesCount: 0,
         dislikesCount: 0,
         reportsCount: 0,
         isFeatured: false,
         isDeleted: false,
+        likedUserIds: [],
+        dislikedUserIds: [],
+        reportedUserIds: [],
       };
 
       const request: Request = new Request(url, {
@@ -1357,7 +1364,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           align="baseline"
           justify="flex-end"
           columnGap={rowGap}
-          rowGap={rowGap}
+          rowGap="xs"
           style={{
             borderBottom: '1px solid #e0e0e0',
           }}
@@ -1383,13 +1390,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
             {userInfoSectionMobile}
           </Grid.Col>
           <Grid.Col span={4} w="100%">
-            <Stack
-              w="100%"
-              h="100%"
-              spacing={rowGap}
-              align="center"
-              justify="center"
-            >
+            <Stack w="100%" h="100%" align="center" justify="center">
               <Group style={{ position: 'absolute', top: 0, right: 0 }}>
                 {isFeaturedElement}
               </Group>
@@ -1548,22 +1549,25 @@ function Comment({ parentResourceId = '' }: CommentProps) {
   );
 
   const displayReplyCommentSection = (
-    <Group w={width < 480 ? '85%' : '62%'} px={padding} position="left">
-      <Text color="dark">
-        {queryBuilderString.length > 1
-          ? 'Let the MacAuley family know your thoughts!'
-          : 'Be the first to comment!'}
-      </Text>
+    <Group
+      w={width < 480 ? '85%' : '62%'}
+      px={padding}
+      pb={padding}
+      style={{
+        borderBottom: '1px solid #e0e0e0',
+        borderLeft: '1px solid #e0e0e0',
+        borderRight: '1px solid #e0e0e0',
+        borderRadius: '0 0 4px 4px ',
+      }}
+      position="left"
+    >
+      <Text color="dark">Let the MacAuley family know your thoughts!</Text>
       {createdReplyCommentButton}
     </Group>
   );
 
   const displayCommentsSection = commentsMap.size ? (
-    <Stack
-      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
-      py={padding}
-      px={width < 480 ? 0 : padding}
-    >
+    <Stack w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'} py={padding}>
       {displayCommentsSectionObjects}
     </Stack>
   ) : (
@@ -1607,7 +1611,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
   );
 
   const displayCommentFormPage = (
-    <Group w="100%" position="center" py={padding}>
+    <Group w="100%" position="center" pb={padding}>
       {createdCommentModal}
       {displayReplyCommentSection}
       {displayQueryBuilder}
