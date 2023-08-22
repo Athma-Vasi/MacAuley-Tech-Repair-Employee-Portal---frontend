@@ -1375,15 +1375,11 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       );
       // comment section header mobile
       const commentSectionHeaderMobile = (
-        <Grid
-          columns={10}
-          style={{ borderBottom: '1px solid #e0e0e0' }}
-          py={padding}
-        >
+        <Grid columns={10} py={padding} w="100%">
           <Grid.Col span={6} style={{ borderRight: '1px solid #e0e0e0' }}>
             {userInfoSectionMobile}
           </Grid.Col>
-          <Grid.Col span={4}>
+          <Grid.Col span={4} w="100%">
             <Stack
               w="100%"
               h="100%"
@@ -1395,8 +1391,10 @@ function Comment({ parentResourceId = '' }: CommentProps) {
                 {isFeaturedElement}
               </Group>
 
-              <Group pt={padding}>{createdAtElement}</Group>
-              {updatedAtElement}
+              <Group pt={padding} position="right">
+                {createdAtElement}
+                {updatedAtElement}
+              </Group>
             </Stack>
           </Grid.Col>
         </Grid>
@@ -1413,17 +1411,9 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         </Stack>
       );
 
-      // comment section desktop
-      const commentSectionDesktop = (
-        <Stack w="100%" align="flex-start" justify="flex-start" p={padding}>
-          {quotedSection}
-          <Space h="xs" />
-          {commentElement}
-        </Stack>
-      );
-      // comment section mobile
-      const commentSectionMobile = (
-        <Stack w="100%" spacing={rowGap} align="center" p={padding}>
+      // comment section desktop and mobile
+      const commentQuoteSection = (
+        <Stack w="100%" pt={padding}>
           {quotedSection}
           <Space h="xs" />
           {commentElement}
@@ -1461,37 +1451,6 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           </Group>
         </Group>
       );
-      // // comment section footer mobile
-      // const commentSectionFooterMobile = (
-      //   <Group
-      //     w="100%"
-      //     spacing={rowGap}
-      //     py={padding}
-      //     position="right"
-      //     style={{ borderTop: '1px solid #e0e0e0' }}
-      //   >
-      //     <Group
-      //       pr={18}
-      //       style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}
-      //     >
-      //       {reportButtonElement} {reportsCountElement}
-      //     </Group>
-      //     <Group style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}>
-      //       <Group position="left">{likeButtonElement}</Group>
-      //       <Group position="center">
-      //         {totalLikesDislikesElement} ({likesCountElement} /
-      //         {dislikesCountElement})
-      //       </Group>
-      //       <Group position="right">{dislikeButtonElement}</Group>
-      //     </Group>
-      //     <Group position="right" spacing={padding}>
-      //       <Group position="right">
-      //         {featureButtonElement} {deleteButtonElement}
-      //         {replyButtonElement}
-      //       </Group>
-      //     </Group>
-      //   </Group>
-      // );
 
       // comment section full desktop
       const createdCommentSectionDesktop = (
@@ -1501,7 +1460,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           </Grid.Col>
           <Grid.Col span={7}>
             {commentSectionHeaderDesktop}
-            {commentSectionDesktop}
+            {commentQuoteSection}
             {commentSectionFooter}
           </Grid.Col>
         </Grid>
@@ -1509,8 +1468,10 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       // comment section full mobile
       const createdCommentSectionMobile = (
         <Stack w="100%" py={padding}>
-          {commentSectionHeaderMobile}
-          {commentSectionMobile}
+          <Group pb={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+            {commentSectionHeaderMobile}
+          </Group>
+          {commentQuoteSection}
           {commentSectionFooter}
         </Stack>
       );
