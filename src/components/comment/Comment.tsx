@@ -98,7 +98,10 @@ import {
 } from './constants';
 import { QueryBuilder } from '../queryBuilder';
 
-function Comment({ parentResourceId = '' }: CommentProps) {
+function Comment({
+  parentResourceId = '',
+  parentResourceTitle = '',
+}: CommentProps) {
   /** ------------- begin hooks ------------- */
   const [commentState, commentDispatch] = useReducer(
     commentReducer,
@@ -686,6 +689,10 @@ function Comment({ parentResourceId = '' }: CommentProps) {
     semanticName: 'reply button',
     leftIcon: <TbUpload />,
     buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+      commentDispatch({
+        type: commentAction.setQuotedUsername,
+        payload: '',
+      });
       commentDispatch({
         type: commentAction.setQuotedComment,
         payload: '',
@@ -1512,7 +1519,9 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       <Text color="dark" pr={padding}>
         {quotedUsername
           ? `You are commenting to: ${quotedUsername}`
-          : 'Create comment'}
+          : parentResourceTitle
+          ? `You are commenting on: ${parentResourceTitle}`
+          : 'Create a comment'}
       </Text>
     </Group>
   );

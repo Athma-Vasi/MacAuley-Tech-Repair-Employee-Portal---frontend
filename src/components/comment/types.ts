@@ -45,6 +45,7 @@ type GetCommentsServerResponse = {
 };
 
 type CommentProps = {
+  parentResourceTitle: string;
   parentResourceId?: string;
 };
 

@@ -581,7 +581,10 @@ function DisplayAnnouncement() {
       {articleImage}
       {displayArticleParagraphs}
       {displayReaderResponseIcons}
-      <Comment parentResourceId={announcement?._id ?? ''} />
+      <Comment
+        parentResourceId={announcement?._id ?? ''}
+        parentResourceTitle={announcement?.title ?? ''}
+      />
     </Flex>
   );
   /** ------------- end input creators ------------- */
