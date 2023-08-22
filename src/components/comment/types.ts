@@ -50,7 +50,7 @@ type CommentProps = {
 
 type CommentsMap = Map<string, CommentDocument>;
 
-type ReactedCommentRequestBody = {
+type UpdateCommentRequestBody = {
   fieldsToUpdate: Partial<
     Pick<
       CommentDocument,
@@ -60,12 +60,14 @@ type ReactedCommentRequestBody = {
       | 'likesCount'
       | 'reportedUserIds'
       | 'reportsCount'
+      | 'isDeleted'
+      | 'isFeatured'
     >
   >;
 };
 
-type ReactedCommentPayload = {
-  field: 'likes' | 'dislikes' | 'reports' | '';
+type UpdateCommentPayload = {
+  kind: 'like' | 'dislike' | 'report' | 'delete' | 'feature';
   value: boolean;
   userId: string;
   commentId: string;
@@ -79,8 +81,8 @@ type CommentState = {
   quotedUsername: string;
   quotedComment: string;
 
-  reactedCommentId: string;
-  reactedRequestBody: ReactedCommentRequestBody;
+  updateCommentId: string;
+  updateCommentRequestBody: UpdateCommentRequestBody;
   totalDocuments: number;
   numberOfPages: number;
   limitPerPage: string;
@@ -116,7 +118,7 @@ type CommentAction = {
   setQuotedComment: 'setQuotedComment';
 
   setReactedCommentId: 'setReactedCommentId';
-  setReactedRequestBody: 'setReactedRequestBody';
+  setUpdateCommentRequestBody: 'setUpdateCommentRequestBody';
 
   setTotalDocuments: 'setTotalDocuments';
   setNumberOfPages: 'setNumberOfPages';
@@ -196,8 +198,8 @@ type CommentDispatch =
       payload: { commentDoc: CommentDocument };
     }
   | {
-      type: CommentAction['setReactedRequestBody'];
-      payload: ReactedCommentPayload;
+      type: CommentAction['setUpdateCommentRequestBody'];
+      payload: UpdateCommentPayload;
     };
 
 type CommentReducer = (
@@ -222,6 +224,8 @@ type CreatedCommentsSectionObject = {
   likeButtonElement: React.JSX.Element;
   dislikeButtonElement: React.JSX.Element;
   reportButtonElement: React.JSX.Element;
+  deleteButtonElement: React.JSX.Element | null;
+  featureButtonElement: React.JSX.Element | null;
   isFeaturedElement: React.JSX.Element | null;
   createdAtElement: React.JSX.Element;
   updatedAtElement: React.JSX.Element | null;
@@ -238,5 +242,5 @@ export type {
   CommentState,
   CreatedCommentsSectionObject,
   GetCommentsServerResponse,
-  ReactedCommentRequestBody,
+  UpdateCommentRequestBody,
 };

@@ -4,7 +4,7 @@ import {
   CommentDispatch,
   CommentDocument,
   CommentState,
-  ReactedCommentRequestBody,
+  UpdateCommentRequestBody,
 } from './types';
 
 const initialCommentState: CommentState = {
@@ -15,8 +15,8 @@ const initialCommentState: CommentState = {
   quotedUsername: '',
   quotedComment: '',
 
-  reactedCommentId: '',
-  reactedRequestBody: {
+  updateCommentId: '',
+  updateCommentRequestBody: {
     fieldsToUpdate: {
       dislikedUserIds: [],
       dislikesCount: 0,
@@ -62,7 +62,7 @@ const commentAction: CommentAction = {
   setQuotedComment: 'setQuotedComment',
 
   setReactedCommentId: 'setReactedCommentId',
-  setReactedRequestBody: 'setReactedRequestBody',
+  setUpdateCommentRequestBody: 'setUpdateCommentRequestBody',
 
   setTotalDocuments: 'setTotalDocuments',
   setNumberOfPages: 'setNumberOfPages',
@@ -127,14 +127,14 @@ function commentReducer(
     case commentAction.setReactedCommentId:
       return {
         ...state,
-        reactedCommentId: action.payload,
+        updateCommentId: action.payload,
       };
 
-    case commentAction.setReactedRequestBody: {
+    case commentAction.setUpdateCommentRequestBody: {
       const { payload } = action;
       console.log({ payload });
-      const { field, commentId, userId, value } = action.payload;
-      if (!field) {
+      const { kind, commentId, userId, value } = action.payload;
+      if (!kind) {
         return state;
       }
 
@@ -143,89 +143,114 @@ function commentReducer(
         return state;
       }
 
-      switch (field) {
-        case 'likes': {
+      switch (kind) {
+        case 'like': {
           const { likedUserIds, likesCount, dislikedUserIds, dislikesCount } =
             comment;
-
-          const likesCountNew = value ? likesCount + 1 : likesCount - 1;
-          const likedUserIdsNew = value
+          const likesCountUpdated = value ? likesCount + 1 : likesCount - 1;
+          const likedUserIdsUpdated = value
             ? Array.from(new Set([...likedUserIds, userId]))
             : likedUserIds.filter((id) => id !== userId);
 
           // remove from dislikedUserIds and decrement count if liked
-          const dislikedUserIdsNew = dislikedUserIds.includes(userId)
+          const dislikedUserIdsUpdated = dislikedUserIds.includes(userId)
             ? dislikedUserIds.filter((id) => id !== userId)
             : dislikedUserIds;
-          const dislikesCountNew = dislikedUserIds.includes(userId)
+          const dislikesCountUpdated = dislikedUserIds.includes(userId)
             ? dislikesCount - 1
             : dislikesCount;
 
-          const reactedRequestBody: ReactedCommentRequestBody = {
+          const updateCommentRequestBody: UpdateCommentRequestBody = {
             fieldsToUpdate: {
-              likedUserIds: likedUserIdsNew,
-              likesCount: likesCountNew,
-              dislikedUserIds: dislikedUserIdsNew,
-              dislikesCount: dislikesCountNew,
+              likedUserIds: likedUserIdsUpdated,
+              likesCount: likesCountUpdated,
+              dislikedUserIds: dislikedUserIdsUpdated,
+              dislikesCount: dislikesCountUpdated,
             },
           };
 
           return {
             ...state,
-            reactedRequestBody,
+            updateCommentRequestBody,
           };
         }
-        case 'dislikes': {
+        case 'dislike': {
           const { dislikedUserIds, dislikesCount, likedUserIds, likesCount } =
             comment;
-
-          const dislikesCountNew = value
+          const dislikesCountUpdated = value
             ? dislikesCount + 1
             : dislikesCount - 1;
-          const dislikedUserIdsNew = value
+          const dislikedUserIdsUpdated = value
             ? Array.from(new Set([...dislikedUserIds, userId]))
             : dislikedUserIds.filter((id) => id !== userId);
 
           // remove from likedUserIds and decrement count if disliked
-          const likedUserIdsNew = likedUserIds.includes(userId)
+          const likedUserIdsUpdated = likedUserIds.includes(userId)
             ? likedUserIds.filter((id) => id !== userId)
             : likedUserIds;
-          const likesCountNew = likedUserIds.includes(userId)
+          const likesCountUpdated = likedUserIds.includes(userId)
             ? likesCount - 1
             : likesCount;
 
-          const reactedRequestBody: ReactedCommentRequestBody = {
+          const updateCommentRequestBody: UpdateCommentRequestBody = {
             fieldsToUpdate: {
-              dislikedUserIds: dislikedUserIdsNew,
-              dislikesCount: dislikesCountNew,
-              likedUserIds: likedUserIdsNew,
-              likesCount: likesCountNew,
+              dislikedUserIds: dislikedUserIdsUpdated,
+              dislikesCount: dislikesCountUpdated,
+              likedUserIds: likedUserIdsUpdated,
+              likesCount: likesCountUpdated,
             },
           };
 
           return {
             ...state,
-            reactedRequestBody,
+            updateCommentRequestBody,
           };
         }
-        case 'reports': {
+        case 'report': {
           const { reportedUserIds, reportsCount } = comment;
-
-          const reportsCountNew = value ? reportsCount + 1 : reportsCount - 1;
-          const reportedUserIdsNew = value
+          const reportsCountUpdated = value
+            ? reportsCount + 1
+            : reportsCount - 1;
+          const reportedUserIdsUpdated = value
             ? Array.from(new Set([...reportedUserIds, userId]))
             : reportedUserIds.filter((id) => id !== userId);
 
-          const reactedRequestBody: ReactedCommentRequestBody = {
+          const updateCommentRequestBody: UpdateCommentRequestBody = {
             fieldsToUpdate: {
-              reportedUserIds: reportedUserIdsNew,
-              reportsCount: reportsCountNew,
+              reportedUserIds: reportedUserIdsUpdated,
+              reportsCount: reportsCountUpdated,
             },
           };
 
           return {
             ...state,
-            reactedRequestBody,
+            updateCommentRequestBody,
+          };
+        }
+        case 'delete': {
+          const { isDeleted } = comment;
+          const updateCommentRequestBody: UpdateCommentRequestBody = {
+            fieldsToUpdate: {
+              isDeleted: !isDeleted,
+            },
+          };
+
+          return {
+            ...state,
+            updateCommentRequestBody,
+          };
+        }
+        case 'feature': {
+          const { isFeatured } = comment;
+          const updateCommentRequestBody: UpdateCommentRequestBody = {
+            fieldsToUpdate: {
+              isFeatured: !isFeatured,
+            },
+          };
+
+          return {
+            ...state,
+            updateCommentRequestBody,
           };
         }
         default:

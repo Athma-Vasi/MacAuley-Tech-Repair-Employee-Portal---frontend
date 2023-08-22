@@ -41,6 +41,12 @@ import {
   TbBrandMastodon,
   TbBrandWhatsapp,
   TbFilter,
+  TbTrash,
+  TbStar,
+  TbFlag2Filled,
+  TbFlag2,
+  TbStarOff,
+  TbTrashOff,
 } from 'react-icons/tb';
 
 import {
@@ -103,8 +109,8 @@ function Comment({ parentResourceId = '' }: CommentProps) {
     quotedUsername,
     quotedComment,
 
-    reactedCommentId,
-    reactedRequestBody,
+    updateCommentId,
+    updateCommentRequestBody,
 
     totalDocuments,
     numberOfPages,
@@ -164,7 +170,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
 
       const url: URL = urlBuilder({
         path: `/api/v1/comment/parentResource/${parentResourceId}/`,
-        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=0&limit=${limitPerPage}`,
+        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=${limitPerPage}`,
       });
 
       const request: Request = new Request(url, {
@@ -291,7 +297,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
     });
   }, [newQueryFlag, queryBuilderString, pageQueryString]);
 
-  // update user reaction: liked, disliked or reported
+  // update user reaction: liked, disliked, reported, deleted or featured
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -303,7 +309,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       });
 
       const url: URL = urlBuilder({
-        path: `/api/v1/comment/${reactedCommentId}`,
+        path: `/api/v1/comment/${updateCommentId}`,
       });
 
       const request: Request = new Request(url, {
@@ -312,7 +318,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        body: JSON.stringify(reactedRequestBody),
+        body: JSON.stringify(updateCommentRequestBody),
         signal: controller.signal,
       });
 
@@ -527,6 +533,10 @@ function Comment({ parentResourceId = '' }: CommentProps) {
     commentDispatch({
       type: commentAction.setResetPage,
       payload: false,
+    });
+    commentDispatch({
+      type: commentAction.setNewQueryFlag,
+      payload: true,
     });
   }, [limitPerPage]);
 
@@ -766,7 +776,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           height={width < 640 ? 48 : 96}
           radius={9999}
           src={profilePictureUrl}
-          alt={`profile pic of ${username}`}
+          // alt={`profile pic of ${username}`}
           withPlaceholder
           placeholder={<TbPhotoOff size={width < 640 ? 16 : 28} />}
         />
@@ -792,23 +802,23 @@ function Comment({ parentResourceId = '' }: CommentProps) {
             </Group>
           </Tooltip>
 
-          <Tooltip label="Facebook">
+          {/* <Tooltip label="Facebook">
             <Group>
               <TbBrandFacebook
                 size={width < 640 ? 20 : 24}
                 style={{ cursor: 'pointer', color: 'dimgray' }}
               />
             </Group>
-          </Tooltip>
+          </Tooltip> */}
 
-          <Tooltip label="WhatsApp">
+          {/* <Tooltip label="WhatsApp">
             <Group>
               <TbBrandWhatsapp
                 size={width < 640 ? 20 : 24}
                 style={{ cursor: 'pointer', color: 'dimgray' }}
               />
             </Group>
-          </Tooltip>
+          </Tooltip> */}
 
           <Tooltip label="LinkedIn">
             <Group>
@@ -910,7 +920,6 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         likeButtonElement,
         dislikeButtonElement,
         reportButtonElement,
-        filterByUserButtonElement,
       ] = returnAccessibleButtonElements([
         // reply with quote button
         {
@@ -939,7 +948,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           ),
           // buttonDisabled: likedUserIds.includes(userId),
           buttonVariant: likedUserIds.includes(userId) ? 'outline' : 'subtle',
-          buttonStyle: { borderRadius: 9999 },
+          buttonStyle: { borderRadius: '9999px 4px 4px 9999px' },
           semanticDescription: 'like comment button',
           semanticName: 'likeCommentButton',
           buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
@@ -948,11 +957,11 @@ function Comment({ parentResourceId = '' }: CommentProps) {
               payload: commentId,
             });
             commentDispatch({
-              type: commentAction.setReactedRequestBody,
+              type: commentAction.setUpdateCommentRequestBody,
               payload: {
                 commentId,
                 userId,
-                field: 'likes',
+                kind: 'like',
                 value: likedUserIds.includes(userId) ? false : true,
               },
             });
@@ -973,7 +982,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           buttonVariant: dislikedUserIds.includes(userId)
             ? 'outline'
             : 'subtle',
-          buttonStyle: { borderRadius: 9999 },
+          buttonStyle: { borderRadius: '4px 9999px 9999px 4px' },
           semanticDescription: 'dislike comment button',
           semanticName: 'dislikeCommentButton',
           buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
@@ -982,11 +991,11 @@ function Comment({ parentResourceId = '' }: CommentProps) {
               payload: commentId,
             });
             commentDispatch({
-              type: commentAction.setReactedRequestBody,
+              type: commentAction.setUpdateCommentRequestBody,
               payload: {
                 commentId,
                 userId,
-                field: 'dislikes',
+                kind: 'dislike',
                 value: dislikedUserIds.includes(userId) ? false : true,
               },
             });
@@ -999,15 +1008,15 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         // report button
         {
           buttonLabel: reportedUserIds.includes(userId) ? (
-            <HiExclamationCircle />
+            <TbFlag2Filled />
           ) : (
-            <HiOutlineExclamationCircle />
+            <TbFlag2 />
           ),
-          // buttonDisabled: reportedUserIds.includes(userId),
+          // buttonLabel: <Title order={6}>!</Title>,
           buttonVariant: reportedUserIds.includes(userId)
             ? 'outline'
             : 'subtle',
-          buttonStyle: { borderRadius: 9999 },
+          buttonStyle: { borderRadius: '9999px 4px 4px 9999px' },
           semanticDescription: 'report comment button',
           semanticName: 'reportCommentButton',
           buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
@@ -1016,11 +1025,11 @@ function Comment({ parentResourceId = '' }: CommentProps) {
               payload: commentId,
             });
             commentDispatch({
-              type: commentAction.setReactedRequestBody,
+              type: commentAction.setUpdateCommentRequestBody,
               payload: {
                 commentId,
                 userId,
-                field: 'reports',
+                kind: 'report',
                 value: reportedUserIds.includes(userId) ? false : true,
               },
             });
@@ -1033,7 +1042,13 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       ]);
 
       const replyButtonWithTooltip = (
-        <Tooltip label={`Reply to ${username}'s comment`}>
+        <Tooltip
+          label={
+            userId === commentDoc.userId
+              ? 'Reply to your comment'
+              : `Reply to ${username}'s comment`
+          }
+        >
           <Group>{replyButtonElement}</Group>
         </Tooltip>
       );
@@ -1041,8 +1056,12 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         <Tooltip
           label={
             likedUserIds.includes(userId)
-              ? `Undo like of ${username}'s comment`
-              : `Like ${username}'s comment`
+              ? `Undo like of ${
+                  userId === commentDoc.userId ? 'your' : `${username}'s`
+                } comment`
+              : `Like ${
+                  userId === commentDoc.userId ? 'your' : `${username}'s`
+                } comment`
           }
         >
           <Group>{likeButtonElement}</Group>
@@ -1052,8 +1071,12 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         <Tooltip
           label={
             dislikedUserIds.includes(userId)
-              ? `Undo dislike of ${username}'s comment`
-              : `Dislike ${username}'s comment`
+              ? `Undo dislike of ${
+                  userId === commentDoc.userId ? 'your' : `${username}'s`
+                } comment`
+              : `Dislike ${
+                  userId === commentDoc.userId ? 'your' : `${username}'s`
+                } comment`
           }
         >
           <Group>{dislikeButtonElement}</Group>
@@ -1063,13 +1086,104 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         <Tooltip
           label={
             reportedUserIds.includes(userId)
-              ? `Undo report of ${username}'s comment`
-              : `Report ${username}'s comment`
+              ? `Undo report of ${
+                  userId === commentDoc.userId ? 'your' : `${username}'s`
+                } comment`
+              : `Report ${
+                  userId === commentDoc.userId ? 'your' : `${username}'s`
+                } comment`
           }
         >
           <Group>{reportButtonElement}</Group>
         </Tooltip>
       );
+
+      // only comment owners are allowed to delete comments
+      const [deleteButtonElement] =
+        userId === commentDoc.userId
+          ? returnAccessibleButtonElements([
+              {
+                buttonLabel: isDeleted ? 'Undelete' : 'Delete',
+                leftIcon: isDeleted ? <TbTrashOff /> : <TbTrash />,
+                buttonVariant: 'outline',
+                semanticDescription: 'delete comment button',
+                semanticName: 'deleteCommentButton',
+                buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+                  commentDispatch({
+                    type: commentAction.setReactedCommentId,
+                    payload: commentId,
+                  });
+                  commentDispatch({
+                    type: commentAction.setUpdateCommentRequestBody,
+                    payload: {
+                      commentId,
+                      userId,
+                      kind: 'delete',
+                      value: true,
+                    },
+                  });
+                  commentDispatch({
+                    type: commentAction.setTriggerCommentUpdate,
+                    payload: true,
+                  });
+                },
+              },
+            ])
+          : [null];
+
+      const deleteButtonWithTooltip = deleteButtonElement ? (
+        <Tooltip
+          label={isDeleted ? 'Undelete your comment' : 'Delete your comment'}
+        >
+          <Group>{deleteButtonElement}</Group>
+        </Tooltip>
+      ) : null;
+
+      // only managers/admins are allowed to feature comments
+      const [featureButtonElement] =
+        userDocument?.roles.includes('Manager') ||
+        userDocument?.roles.includes('Admin')
+          ? returnAccessibleButtonElements([
+              {
+                buttonLabel: isFeatured ? 'Unfeature' : 'Feature',
+                leftIcon: isFeatured ? <TbStarOff /> : <TbStar />,
+                buttonVariant: 'outline',
+                semanticDescription: 'feature comment button',
+                semanticName: 'featureCommentButton',
+                buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+                  commentDispatch({
+                    type: commentAction.setReactedCommentId,
+                    payload: commentId,
+                  });
+                  commentDispatch({
+                    type: commentAction.setUpdateCommentRequestBody,
+                    payload: {
+                      commentId,
+                      userId,
+                      kind: 'feature',
+                      value: true,
+                    },
+                  });
+                  commentDispatch({
+                    type: commentAction.setTriggerCommentUpdate,
+                    payload: true,
+                  });
+                },
+              },
+            ])
+          : [null];
+
+      const featureButtonWithTooltip = featureButtonElement ? (
+        <Tooltip
+          label={
+            isFeatured
+              ? `Unfeature ${username}'s comment`
+              : `Feature ${username}'s comment`
+          }
+        >
+          <Group>{featureButtonElement}</Group>
+        </Tooltip>
+      ) : null;
 
       const [createdAtDateTime, updatedAtDateTime] = [createdAt, updatedAt].map(
         (date: string) =>
@@ -1101,12 +1215,6 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           </Tooltip>
         );
 
-      const filterByUserButtonWithTooltip = (
-        <Tooltip label={`Filter by ${username}`}>
-          <Group>{filterByUserButtonElement}</Group>
-        </Tooltip>
-      );
-
       const isFeaturedElement = isFeatured ? (
         <Badge
           variant="gradient"
@@ -1117,36 +1225,33 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         </Badge>
       ) : null;
 
-      const createdCommentsSectionObject =
-        addFieldsToObject<CreatedCommentsSectionObject>({
-          object: Object.create(null),
-          fieldValuesTuples: [
-            ['usernameElement', usernameElementWithTooltip],
-            ['jobPositionElement', jobPositionElementWithTooltip],
-            ['departmentElement', departmentElementWithTooltip],
-            ['profilePicElement', profilePicElement],
-            ['socialMediaIconsElement', createdSocialMediaIcons],
+      const createdCommentsSectionObject: CreatedCommentsSectionObject = {
+        usernameElement: usernameElementWithTooltip,
+        jobPositionElement: jobPositionElementWithTooltip,
+        departmentElement: departmentElementWithTooltip,
+        profilePicElement: profilePicElement,
+        socialMediaIconsElement: createdSocialMediaIcons,
 
-            ['commentElement', commentElement],
-            ['quotedUsernameElement', quotedUsernameElement],
-            ['quotedCommentElement', quotedCommentElement],
+        commentElement,
+        quotedUsernameElement,
+        quotedCommentElement,
 
-            ['likesCountElement', likesCountWithTooltipElement],
-            ['dislikesCountElement', dislikesCountWithTooltipElement],
-            ['totalLikesDislikesElement', totalLikesDislikesWithTooltipElement],
-            ['reportsCountElement', reportsCountWithTooltipElement],
+        likesCountElement: likesCountWithTooltipElement,
+        dislikesCountElement: dislikesCountWithTooltipElement,
+        totalLikesDislikesElement: totalLikesDislikesWithTooltipElement,
+        reportsCountElement: reportsCountWithTooltipElement,
 
-            ['replyButtonElement', replyButtonWithTooltip],
-            ['likeButtonElement', likeButtonWithTooltip],
-            ['dislikeButtonElement', dislikeButtonWithTooltip],
-            ['reportButtonElement', reportButtonWithTooltip],
+        replyButtonElement: replyButtonWithTooltip,
+        likeButtonElement: likeButtonWithTooltip,
+        dislikeButtonElement: dislikeButtonWithTooltip,
+        reportButtonElement: reportButtonWithTooltip,
 
-            ['isFeaturedElement', isFeaturedElement],
-            ['createdAtElement', createdAtElementWithTooltip],
-            ['updatedAtElement', updatedAtElementWithTooltip],
-            ['filterByUserElement', filterByUserButtonWithTooltip],
-          ],
-        });
+        isFeaturedElement: isFeaturedElement,
+        createdAtElement: createdAtElementWithTooltip,
+        updatedAtElement: updatedAtElementWithTooltip,
+        deleteButtonElement: deleteButtonWithTooltip,
+        featureButtonElement: featureButtonWithTooltip,
+      };
 
       return createdCommentsSectionObject;
     }
@@ -1191,9 +1296,11 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         dislikeButtonElement,
         reportButtonElement,
 
-        isFeaturedElement,
         createdAtElement,
         updatedAtElement,
+        deleteButtonElement,
+        featureButtonElement,
+        isFeaturedElement,
       } = createdCommentsSectionObject;
 
       // user info section desktop
@@ -1203,9 +1310,8 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           h="100%"
           px={padding}
           spacing={rowGap}
-          align="flex-start"
+          align="center"
           justify="center"
-          style={{ borderRight: '1px solid #e0e0e0' }}
         >
           {profilePicElement}
           {usernameElement}
@@ -1218,16 +1324,15 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       const userInfoSectionMobile = (
         <Group
           w="100%"
-          position="left"
-          // h={128}
-          style={{ borderRight: '1px solid #e0e0e0' }}
+          position={width < 480 ? 'center' : 'left'}
+          spacing={rowGap}
         >
           {profilePicElement}
           <Flex
             direction="column"
             wrap="wrap"
             rowGap={4}
-            align="flex-start"
+            align={width < 480 ? 'center' : 'flex-start'}
             justify="center"
             h="100%"
           >
@@ -1251,6 +1356,9 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           style={{ borderBottom: '1px solid #e0e0e0' }}
           py={padding}
         >
+          <Group style={{ position: 'absolute', top: 0, right: 0 }}>
+            {isFeaturedElement}
+          </Group>
           {createdAtElement}
           {updatedAtElement ? (
             <span>
@@ -1258,20 +1366,19 @@ function Comment({ parentResourceId = '' }: CommentProps) {
               {updatedAtElement}
             </span>
           ) : null}
-
-          <Group style={{ position: 'absolute', top: 0, right: 0 }}>
-            {isFeaturedElement}
-          </Group>
         </Flex>
       );
       // comment section header mobile
       const commentSectionHeaderMobile = (
-        <Grid columns={10}>
-          <Grid.Col span={6}>{userInfoSectionMobile}</Grid.Col>
+        <Grid
+          columns={10}
+          style={{ borderBottom: '1px solid #e0e0e0' }}
+          py={padding}
+        >
+          <Grid.Col span={6} style={{ borderRight: '1px solid #e0e0e0' }}>
+            {userInfoSectionMobile}
+          </Grid.Col>
           <Grid.Col span={4}>
-            <Group style={{ position: 'absolute', top: 0, right: 0 }}>
-              {isFeaturedElement}
-            </Group>
             <Stack
               w="100%"
               h="100%"
@@ -1279,7 +1386,11 @@ function Comment({ parentResourceId = '' }: CommentProps) {
               align="center"
               justify="center"
             >
-              {createdAtElement}
+              <Group style={{ position: 'absolute', top: 0, right: 0 }}>
+                {isFeaturedElement}
+              </Group>
+
+              <Group pt={padding}>{createdAtElement}</Group>
               {updatedAtElement}
             </Stack>
           </Grid.Col>
@@ -1307,13 +1418,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       );
       // comment section mobile
       const commentSectionMobile = (
-        <Stack
-          w="100%"
-          spacing={rowGap}
-          align="center"
-          style={{ borderTop: '1px solid #e0e0e0' }}
-          p={padding}
-        >
+        <Stack w="100%" spacing={rowGap} align="center" p={padding}>
           {quotedSection}
           {commentElement}
         </Stack>
@@ -1331,17 +1436,12 @@ function Comment({ parentResourceId = '' }: CommentProps) {
             style={{ borderTop: '1px solid #e0e0e0' }}
           >
             <Group
-              py={2}
-              pl={2}
               pr={18}
               style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}
             >
               {reportButtonElement} {reportsCountElement}
             </Group>
-            <Group
-              p={2}
-              style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}
-            >
+            <Group style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}>
               <Group position="left">{likeButtonElement}</Group>
               <Group position="center">
                 {totalLikesDislikesElement} ({likesCountElement} /
@@ -1363,9 +1463,12 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           style={{ borderTop: '1px solid #e0e0e0' }}
         >
           <Group
-            p={2}
+            pr={18}
             style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}
           >
+            {reportButtonElement} {reportsCountElement}
+          </Group>
+          <Group style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}>
             <Group position="left">{likeButtonElement}</Group>
             <Group position="center">
               {totalLikesDislikesElement} ({likesCountElement} /
@@ -1374,15 +1477,10 @@ function Comment({ parentResourceId = '' }: CommentProps) {
             <Group position="right">{dislikeButtonElement}</Group>
           </Group>
           <Group position="right" spacing={padding}>
-            <Group
-              py={2}
-              pl={2}
-              pr={18}
-              style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}
-            >
-              {reportButtonElement} {reportsCountElement}
+            <Group position="right">
+              {featureButtonElement} {deleteButtonElement}
+              {replyButtonElement}
             </Group>
-            {replyButtonElement}
           </Group>
         </Group>
       );
@@ -1390,7 +1488,9 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       // comment section full desktop
       const createdCommentSectionDesktop = (
         <Grid columns={10} w="100%">
-          <Grid.Col span={3}>{userInfoSectionDesktop}</Grid.Col>
+          <Grid.Col span={3} style={{ borderRight: '1px solid #e0e0e0' }}>
+            {userInfoSectionDesktop}
+          </Grid.Col>
           <Grid.Col span={7}>
             {commentSectionHeaderDesktop}
             {commentSectionDesktop}
@@ -1400,7 +1500,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
       );
       // comment section full mobile
       const createdCommentSectionMobile = (
-        <Stack w="100%">
+        <Stack w="100%" py={padding}>
           {commentSectionHeaderMobile}
           {commentSectionMobile}
           {commentSectionFooterMobile}
@@ -1411,7 +1511,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
         <Group
           key={`${index}`}
           w="100%"
-          p={padding}
+          px={padding}
           style={{
             border: '1px solid #e0e0e0',
             borderRadius: '4px',
