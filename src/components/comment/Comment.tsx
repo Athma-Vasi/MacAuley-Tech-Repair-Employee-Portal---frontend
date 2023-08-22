@@ -1358,8 +1358,11 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           justify="flex-end"
           columnGap={rowGap}
           rowGap={rowGap}
-          style={{ borderBottom: '1px solid #e0e0e0' }}
+          style={{
+            borderBottom: '1px solid #e0e0e0',
+          }}
           py={padding}
+          ml={padding}
         >
           <Group style={{ position: 'absolute', top: 0, right: 0 }}>
             {isFeaturedElement}
@@ -1413,7 +1416,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
 
       // comment section desktop and mobile
       const commentQuoteSection = (
-        <Stack w="100%" pt={padding}>
+        <Stack w="100%" p={padding}>
           {quotedSection}
           <Space h="xs" />
           {commentElement}
@@ -1426,6 +1429,7 @@ function Comment({ parentResourceId = '' }: CommentProps) {
           w="100%"
           spacing={rowGap}
           pt={padding}
+          ml={width < 640 ? undefined : padding}
           position="right"
           style={{ borderTop: '1px solid #e0e0e0' }}
         >
@@ -1555,7 +1559,11 @@ function Comment({ parentResourceId = '' }: CommentProps) {
   );
 
   const displayCommentsSection = commentsMap.size ? (
-    <Stack w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'} py={padding}>
+    <Stack
+      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+      py={padding}
+      px={width < 480 ? 0 : padding}
+    >
       {displayCommentsSectionObjects}
     </Stack>
   ) : (
