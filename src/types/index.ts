@@ -109,7 +109,7 @@ type QueryResponseData<Doc> = {
 } & Partial<Doc>;
 
 /**
- * Default server response type for all (except GET) REST API requests
+ * Default server response type for most (except GET many) REST API requests
  */
 type ResourceRequestServerResponse<Doc> = {
   message: string;
@@ -117,7 +117,7 @@ type ResourceRequestServerResponse<Doc> = {
 };
 
 /**
- * Default server response type for GET REST API requests with query parameters
+ * Default server response type for GET(many) REST API requests with query parameters
  */
 type GetQueriedResourceRequestServerResponse<Doc> = {
   message: string;

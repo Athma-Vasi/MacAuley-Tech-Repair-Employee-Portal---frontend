@@ -82,7 +82,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
 
     const isValid =
       DATE_NEAR_PAST_REGEX.test(dateReceived) &&
-      new Date(dateReceived) <= new Date();
+      new Date(dateReceived).getTime() <= new Date().getTime();
 
     createRepairNoteDispatch({
       type: createRepairNoteAction.setIsValidDateReceived,
@@ -173,13 +173,19 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
       }),
     });
 
+  const dateReceivedInvalidText =
+    new Date(dateReceived).getTime() > new Date().getTime()
+      ? 'Date received must be in the past'
+      : '';
   const [dateReceivedInputErrorText, dateReceivedInputValidText] =
     returnAccessibleErrorValidTextElements({
       inputElementKind: 'date received',
       inputText: dateReceived,
       isValidInputText: isValidDateReceived,
       isInputTextFocused: isDateReceivedFocused,
-      regexValidationText: returnDateNearPastValidationText(dateReceived),
+      regexValidationText: `${dateReceivedInvalidText}${returnDateNearPastValidationText(
+        dateReceived
+      )}`,
     });
 
   const [descriptionOfIssueInputErrorText, descriptionOfIssueInputValidText] =

@@ -2,18 +2,18 @@ import './style.css';
 
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Stepper, Text, Title } from '@mantine/core';
+import { Flex, Group, Stepper, Text, Title, Tooltip } from '@mantine/core';
 import { useEffect, useRef } from 'react';
+import { TbCheck, TbX } from 'react-icons/tb';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { useGlobalState } from '../../../hooks';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
+import { replaceLastCommaWithAnd } from '../../../utils';
 import { AccessibleButtonCreatorInfo } from '../ButtonWrapper';
 import { TextWrapper } from '../TextWrapper';
 import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
-import { replaceLastCommaWithAnd } from '../../../utils';
-import { TbCheck, TbX } from 'react-icons/tb';
 function StepperWrapper({
   allowNextStepsSelect = false,
   children,
@@ -41,25 +41,6 @@ function StepperWrapper({
     semanticDescription: 'Back button to navigate to previous step',
     semanticName: 'back button',
     buttonOnClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
-      // dynamicStepperProps
-      //   ? dynamicStepperProps.dynamicSetStepperDispatch({
-      //       type: 'setCurrentStepperPosition',
-      //       payload: {
-      //         id: dynamicStepperProps.id,
-      //         currentStepperPosition:
-      //           currentStepperPosition > 0
-      //             ? currentStepperPosition - 1
-      //             : currentStepperPosition + 1,
-      //       },
-      //     })
-      //   : parentComponentDispatch({
-      //       type: setCurrentStepperPosition,
-      //       payload:
-      //         currentStepperPosition > 0
-      //           ? currentStepperPosition - 1
-      //           : currentStepperPosition + 1,
-      //     });
-
       if (parentComponentDispatch) {
         parentComponentDispatch({
           type: setCurrentStepperPosition,
@@ -145,14 +126,6 @@ function StepperWrapper({
   const padding =
     width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
   const descObjLen = descriptionObjectsArray.length;
-  // const componentWidth =
-  //   width < 640
-  //     ? '100%'
-  //     : descObjLen > 4
-  //     ? '85%'
-  //     : width < 1440
-  //     ? '75%'
-  //     : '62%';
   const size = 'sm';
   const rowGap =
     width < 480 ? 'md' : width < 768 ? 'sm' : width < 1440 ? 'md' : 'lg';
@@ -164,7 +137,6 @@ function StepperWrapper({
       justify="center"
       rowGap={width < 480 ? 'sm' : 'md'}
       w="100%"
-      // style={{ borderRadius: '4px', border: '1px solid teal' }}
       bg="white"
       p={padding}
       h="100%"
@@ -194,7 +166,6 @@ function StepperWrapper({
         }}
         breakpoint={descObjLen < 4 ? 640 : 1440}
         allowNextStepsSelect={allowNextStepsSelect}
-        // w={componentWidth}
         w="100%"
         p={padding}
         size={size}
@@ -211,12 +182,6 @@ function StepperWrapper({
             </TextWrapper>
           );
 
-          // const completedIcon = stepsInError.has(index) ? (
-          //   <FontAwesomeIcon icon={faX} size="1x" />
-          // ) : (
-          //   <FontAwesomeIcon icon={faCheck} size="lg" />
-          // );
-
           const completedIcon = stepsInError.has(index) ? (
             <TbX size={26} />
           ) : (
@@ -227,12 +192,7 @@ function StepperWrapper({
             <Stepper.Step
               key={`step-${index}`}
               label={capsLabel}
-              description={
-                // description.length > 23
-                //   ? `${description.slice(0, 23)}...`
-                //   : description
-                description
-              }
+              description={description}
               aria-label={ariaLabel}
               aria-current={
                 currentStepperPosition === index ? 'step' : undefined
@@ -247,7 +207,6 @@ function StepperWrapper({
         })}
 
         {/* final page */}
-
         <Stepper.Completed>
           <Flex
             direction="column"
@@ -270,7 +229,6 @@ function StepperWrapper({
         direction="column"
         align="flex-start"
         justify="space-between"
-        // w={componentWidth}
         w="100%"
         rowGap={rowGap}
       >
@@ -287,8 +245,35 @@ function StepperWrapper({
             border: '1px solid #e0e0e0',
           }}
         >
-          {createdPrevButton}
-          {createdNextButton}
+          {/* prev button */}
+          <Tooltip
+            label={
+              currentStepperPosition === 0
+                ? 'You are at the first page'
+                : `Go back to ${
+                    descriptionObjectsArray[currentStepperPosition - 1]
+                      .description
+                  }`
+            }
+          >
+            <Group>{createdPrevButton}</Group>
+          </Tooltip>
+
+          {/* next button */}
+          <Tooltip
+            label={
+              currentStepperPosition === descriptionObjectsArray.length - 1
+                ? 'Go to submit page'
+                : currentStepperPosition === descriptionObjectsArray.length
+                ? 'You are the last page'
+                : `Go to ${
+                    descriptionObjectsArray[currentStepperPosition + 1]
+                      .description
+                  }`
+            }
+          >
+            <Group>{createdNextButton}</Group>
+          </Tooltip>
         </Flex>
       </Flex>
     </Flex>

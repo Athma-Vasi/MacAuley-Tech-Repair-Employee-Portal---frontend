@@ -40,7 +40,7 @@ import {
 import { PublicLayout } from './components/publicLayout';
 import { CreateReferment, DisplayReferments } from './components/referments';
 import { Register } from './components/register';
-import { CreateRepairNote } from './components/repairNote';
+import { CreateRepairNote, DisplayRepairNotes } from './components/repairNote';
 import {
   DisplayRequestResources,
   RequestResource,
@@ -76,10 +76,10 @@ function App() {
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
 
           {/* DEV PATHS - DELETE LATER*/}
-          <Route
+          {/* <Route
             path="pie"
             element={<ResponsivePieChart pieChartData={[]} />}
-          />
+          /> */}
           {/* <Route path="expense-claim" element={<DisplayExpenseClaims />} /> */}
           {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
           {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
@@ -130,9 +130,9 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
 
-          <Route path="repair-notes">
-            {/* <Route index element={<DisplayRepairNotes />} /> */}
-            {/* <Route path="display" element={<DisplayRepairNotes />} /> */}
+          <Route path="repair-note">
+            <Route index element={<DisplayRepairNotes />} />
+            <Route path="display" element={<DisplayRepairNotes />} />
             <Route path="create" element={<CreateRepairNote />} />
           </Route>
 

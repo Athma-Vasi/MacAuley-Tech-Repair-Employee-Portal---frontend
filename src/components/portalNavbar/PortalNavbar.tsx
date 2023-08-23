@@ -61,10 +61,28 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     <NavLink
       label={<TextWrapper creatorInfoObj={{}}>Notes</TextWrapper>}
       icon={<TbNotebook />}
-      onClick={() => {
-        navigate('/portal/notes');
-      }}
-    />
+      childrenOffset="md"
+      rightSection={<TbChevronRight />}
+    >
+      {/* create note */}
+      <NavLink
+        label={<TextWrapper creatorInfoObj={{}}>Create note</TextWrapper>}
+        icon={<TbPlus />}
+        rightSection={<TbChevronRight />}
+        onClick={() => {
+          navigate('/portal/repair-note/create');
+        }}
+      />
+      {/* display notes */}
+      <NavLink
+        label={<TextWrapper creatorInfoObj={{}}>Display notes</TextWrapper>}
+        icon={<TbList />}
+        rightSection={<TbChevronRight />}
+        onClick={() => {
+          navigate('/portal/repair-note/display');
+        }}
+      />
+    </NavLink>
   );
 
   const displayCompanyNavLinks = (

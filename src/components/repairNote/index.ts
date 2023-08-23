@@ -1,3 +1,4 @@
-import { CreateRepairNote } from './createRepairNote/CreateRepairNote';
+import { CreateRepairNote } from './create/CreateRepairNote';
+import DisplayRepairNotes from './display/DisplayRepairNotes';
 
-export { CreateRepairNote };
+export { CreateRepairNote, DisplayRepairNotes };

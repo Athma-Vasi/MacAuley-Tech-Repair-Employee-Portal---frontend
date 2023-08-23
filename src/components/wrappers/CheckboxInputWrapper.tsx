@@ -43,7 +43,7 @@ function CheckboxSingleInputWrapper({
     ariaRequired = required,
   } = creatorInfoObject;
 
-  const checkboxInputSize = width < 1024 ? 'sm' : 'md';
+  const checkboxInputSize = 'sm';
 
   const createdCheckboxSingleInput = (
     <Checkbox

@@ -27,6 +27,7 @@ import { Currency, Urgency } from '../../../../types';
 import {
   filterFieldsFromObject,
   logState,
+  replaceLastCommaWithAnd,
   returnDateNearFutureValidationText,
   returnNoteTextValidationText,
   returnNumberAmountValidationText,
@@ -174,7 +175,9 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       isSelected: requiredRepairs.length > 0,
       semanticName: 'required repairs',
       deselectedDescription: 'Nothing to repair!',
-      selectedDescription: `${requiredRepairs.join(', ')}`,
+      selectedDescription: `${replaceLastCommaWithAnd(
+        requiredRepairs.join(', ')
+      )}`,
       theme: 'muted',
     });
 
@@ -183,7 +186,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       isSelected: partsNeeded.length > 0,
       semanticName: 'parts needed',
       deselectedDescription: 'No parts required!',
-      selectedDescription: `${partsNeeded.join(', ')}`,
+      selectedDescription: `${replaceLastCommaWithAnd(partsNeeded.join(', '))}`,
       theme: 'muted',
     });
 
