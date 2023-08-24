@@ -103,10 +103,6 @@ const DEPARTMENT_DATA: Department[] = [
   'Field Service Technicians',
   'Logistics and Inventory',
   'Customer Service',
-  'Quality Control',
-  'Training and Development',
-  'Janitorial and Maintenance',
-  'Security',
 ];
 
 const JOB_POSITION_DATA: JobPosition[] = [
@@ -115,6 +111,9 @@ const JOB_POSITION_DATA: JobPosition[] = [
   'Chief Financial Officer',
   'Chief Technology Officer',
   'Chief Marketing Officer',
+  'Store Manager',
+  'Assistant Store Manager',
+  'Shift Supervisor',
   'Office Manager',
   'Administrative Assistant',
   'Human Resources Manager',
@@ -140,11 +139,6 @@ const JOB_POSITION_DATA: JobPosition[] = [
   'Delivery Driver',
   'Customer Service Representative',
   'Technical Support Specialist',
-  'Quality Assurance Inspector',
-  'Testing and Diagnostics Specialist',
-  'Technical Trainer',
-  'Janitor/Cleaner',
-  'Security Guard',
 ];
 
 const DEPARTMENT_JOB_POSITION_MAP = new Map([
@@ -161,6 +155,9 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
   [
     'Administrative',
     [
+      'Store Manager',
+      'Assistant Store Manager',
+      'Shift Supervisor',
       'Office Manager',
       'Administrative Assistant',
       'Human Resources Manager',
@@ -208,13 +205,6 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
     'Customer Service',
     ['Customer Service Representative', 'Technical Support Specialist'],
   ],
-  [
-    'Quality Control',
-    ['Quality Assurance Inspector', 'Testing and Diagnostics Specialist'],
-  ],
-  ['Training and Development', ['Technical Trainer']],
-  ['Janitorial and Maintenance', ['Janitor/Cleaner']],
-  ['Security', ['Security Guard']],
 ]);
 
 /**

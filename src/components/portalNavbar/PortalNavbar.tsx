@@ -7,7 +7,6 @@ import {
   TbCalendarPin,
   TbCashBanknote,
   TbChartBar,
-  TbChartPie,
   TbChevronRight,
   TbCircleTriangle,
   TbGift,
@@ -19,7 +18,6 @@ import {
   TbReceipt2,
   TbSpeakerphone,
   TbTimelineEventPlus,
-  TbTimelineEventText,
   TbUserCheck,
 } from 'react-icons/tb';
 import { TiThumbsUp } from 'react-icons/ti';
@@ -242,6 +240,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           label={<TextWrapper creatorInfoObj={{}}>Display surveys</TextWrapper>}
           icon={<TbList />}
           rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/outreach/survey-builder/display');
+          }}
         />
       </NavLink>
       {/* event creator */}
@@ -280,7 +281,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       p="md"
       hiddenBreakpoint="sm"
       hidden={!openedNavbar}
-      // width={{ sm: 200, lg: 300 }}
       width={{ sm: 200, lg: 300 }}
     >
       {displayHomeNavLink}

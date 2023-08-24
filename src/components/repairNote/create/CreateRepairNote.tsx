@@ -268,7 +268,7 @@ function CreateRepairNote() {
           payload: true,
         });
       },
-      buttonDisabled: stepsInError.size > 0,
+      buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
       leftIcon: <TbNote />,
       rightIcon: <TbUpload />,
     },

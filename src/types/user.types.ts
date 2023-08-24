@@ -151,6 +151,9 @@ type ExecutiveManagement =
   | 'Chief Marketing Officer';
 
 type AdministrativeDepartment =
+  | 'Store Manager'
+  | 'Assistant Store Manager'
+  | 'Shift Supervisor'
   | 'Office Manager'
   | 'Administrative Assistant'
   | 'Human Resources Manager'
