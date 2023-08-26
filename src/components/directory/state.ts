@@ -17,6 +17,10 @@ const initialDirectoryState: DirectoryState = {
   groupedByJobPositon: {} as Record<JobPosition, UserDocument[]>,
   groupedByStoreLocation: {} as Record<StoreLocation, UserDocument[]>,
 
+  filterByDepartment: 'All Departments',
+  filterByJobPosition: 'All Job Positions',
+  filterByStoreLocation: 'All Store Locations',
+
   layoutDirection: 'LR',
 
   storeLocationsNodes: [],
@@ -60,6 +64,10 @@ const directoryAction: DirectoryAction = {
   setGroupedByDepartment: 'setGroupedByDepartment',
   setGroupedByJobPositon: 'setGroupedByJobPositon',
   setGroupedByStoreLocation: 'setGroupedByStoreLocation',
+
+  setFilterByDepartment: 'setFilterByDepartment',
+  setFilterByJobPosition: 'setFilterByJobPosition',
+  setFilterByStoreLocation: 'setFilterByStoreLocation',
 
   setLayoutDirection: 'setLayoutDirection',
 
@@ -134,6 +142,52 @@ function directoryReducer(
 
       return { ...state, groupedByStoreLocation };
     }
+
+    case directoryAction.setFilterByDepartment: {
+      const filterByDepartment = action.payload;
+
+      console.log('filterByDepartment', filterByDepartment);
+
+      if (filterByDepartment === 'All Departments') {
+        return { ...state, filterByDepartment };
+      }
+
+      // // only show the selected department
+      // const filteredGroupedByDepartment = Object.entries(
+      //   state.groupedByDepartment
+      // ).reduce(
+      //   (
+      //     filteredAcc: Record<Department, DirectoryUserDocument[]>,
+      //     [department, users]
+      //   ) => {
+      //     if (department !== filterByDepartment) {
+      //       return filteredAcc;
+      //     }
+
+      //     Object.defineProperty(filteredAcc, department, {
+      //       value: users,
+      //       enumerable: true,
+      //       configurable: true,
+      //       writable: true,
+      //     });
+
+      //     return filteredAcc;
+      //   },
+      //   Object.create(null)
+      // );
+
+      return {
+        ...state,
+        filterByDepartment,
+        // groupedByDepartment: filteredGroupedByDepartment,
+      };
+    }
+
+    case directoryAction.setFilterByJobPosition:
+      return { ...state, filterByJobPosition: action.payload };
+
+    case directoryAction.setFilterByStoreLocation:
+      return { ...state, filterByStoreLocation: action.payload };
 
     case directoryAction.setLayoutDirection:
       return { ...state, layoutDirection: action.payload };

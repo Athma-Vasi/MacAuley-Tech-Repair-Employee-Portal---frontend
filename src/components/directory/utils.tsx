@@ -13,12 +13,10 @@ import { TbBrandMastodon, TbPhotoOff } from 'react-icons/tb';
 import {
   TiSocialDribbble,
   TiSocialFlickr,
-  TiSocialGithub,
   TiSocialLinkedin,
 } from 'react-icons/ti';
 import { Edge, Node } from 'reactflow';
 
-import { UserDocument } from '../../types';
 import { DirectoryUserDocument, FlowNodesLayoutDirection } from './types';
 
 type ReturnDirectoryProfileCardInput = {

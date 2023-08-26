@@ -32,6 +32,10 @@ type DirectoryState = {
   groupedByJobPositon: Record<JobPosition, DirectoryUserDocument[]>;
   groupedByStoreLocation: Record<StoreLocation, DirectoryUserDocument[]>;
 
+  filterByDepartment: Department | 'All Departments';
+  filterByJobPosition: JobPosition | 'All Job Positions';
+  filterByStoreLocation: StoreLocation | 'All Store Locations';
+
   layoutDirection: FlowNodesLayoutDirection;
 
   storeLocationsNodes: Node[];
@@ -75,6 +79,10 @@ type DirectoryAction = {
   setGroupedByDepartment: 'setGroupedByDepartment';
   setGroupedByJobPositon: 'setGroupedByJobPositon';
   setGroupedByStoreLocation: 'setGroupedByStoreLocation';
+
+  setFilterByDepartment: 'setFilterByDepartment';
+  setFilterByJobPosition: 'setFilterByJobPosition';
+  setFilterByStoreLocation: 'setFilterByStoreLocation';
 
   setLayoutDirection: 'setLayoutDirection';
 
@@ -143,6 +151,18 @@ type DirectoryDispatch =
         | DirectoryAction['setCustomerServiceEdges'];
 
       payload: Edge[];
+    }
+  | {
+      type: DirectoryAction['setFilterByDepartment'];
+      payload: Department | 'All Departments';
+    }
+  | {
+      type: DirectoryAction['setFilterByJobPosition'];
+      payload: JobPosition | 'All Job Positions';
+    }
+  | {
+      type: DirectoryAction['setFilterByStoreLocation'];
+      payload: StoreLocation | 'All Store Locations';
     }
   | {
       type: DirectoryAction['setLayoutDirection'];

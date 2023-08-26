@@ -206,6 +206,8 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
   ],
 ]);
 
+const STORE_LOCATION_DATA = ['Edmonton', 'Calgary', 'Vancouver'];
+
 /**
  * these are the field names that have date values that are not time stamps.
  * the timestamps are formatted differently from the other date values.
@@ -236,6 +238,7 @@ export {
   PROVINCES,
   REQUEST_STATUS,
   STATES_US,
+  STORE_LOCATION_DATA,
   TEXT_OVERFLOW,
   URGENCY_DATA,
 };

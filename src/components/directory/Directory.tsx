@@ -10,7 +10,13 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
-import { ComponentType, Suspense, useEffect, useReducer } from 'react';
+import {
+  ChangeEvent,
+  ComponentType,
+  Suspense,
+  useEffect,
+  useReducer,
+} from 'react';
 import {
   ErrorBoundary,
   FallbackProps,
@@ -29,7 +35,7 @@ import { Edge, Node } from 'reactflow';
 import { authAction } from '../../context/authProvider';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
-import { Department, JobPosition } from '../../types';
+import { Department, JobPosition, StoreLocation } from '../../types';
 import {
   addFieldsToObject,
   fetchData,
@@ -49,6 +55,13 @@ import { FetchUsersDirectoryResponse, DirectoryUserDocument } from './types';
 import { returnDirectoryProfileCard } from './utils';
 import { create } from 'domain';
 import localforage from 'localforage';
+import { AccessibleSelectInputCreatorInfo } from '../wrappers';
+import {
+  DEPARTMENT_DATA,
+  JOB_POSITION_DATA,
+  STORE_LOCATION_DATA,
+} from '../../constants/data';
+import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -61,6 +74,10 @@ function Directory() {
     groupedByDepartment,
     groupedByJobPositon,
     groupedByStoreLocation,
+
+    filterByDepartment,
+    filterByJobPosition,
+    filterByStoreLocation,
 
     layoutDirection,
 
@@ -111,7 +128,7 @@ function Directory() {
     let isMounted = true;
     const controller = new AbortController();
 
-    async function fetchUsers() {
+    async function fetchUsers(): Promise<void> {
       directoryDispatch({
         type: directoryAction.setIsLoading,
         payload: true,
@@ -216,7 +233,7 @@ function Directory() {
     }
 
     // only fetch if there is no directory in local forage
-    async function checkLocalForageBeforeFetch() {
+    async function checkLocalForageBeforeFetch(): Promise<void> {
       const directory = await localforage.getItem('directory');
       if (directory) {
         return;
@@ -234,18 +251,14 @@ function Directory() {
   }, []);
 
   // on every mount, check if there is a directory in local forage
-
   useEffect(() => {
     let isMounted = true;
 
-    async function checkLocalForage() {
+    async function checkLocalForage(): Promise<void> {
       const directory = await localforage.getItem<DirectoryUserDocument[]>(
         'directory'
       );
-      if (!directory || !directory.length) {
-        return;
-      }
-      if (!isMounted) {
+      if (!isMounted || !directory || !directory.length) {
         return;
       }
 
@@ -1802,33 +1815,114 @@ function Directory() {
     });
   }, [directoryState]);
 
+  // ┏━ begin input creators info objects ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  const filterByDepartmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: [...DEPARTMENT_DATA, 'All Departments'],
+      description: 'Filter by department',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        directoryDispatch({
+          type: directoryAction.setFilterByDepartment,
+          payload: event.currentTarget.value as Department,
+        });
+      },
+      value: filterByDepartment,
+    };
+
+  const filterByJobPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: [...JOB_POSITION_DATA, 'All Job Positions'],
+      description: 'Filter by job position',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        directoryDispatch({
+          type: directoryAction.setFilterByJobPosition,
+          payload: event.currentTarget.value as JobPosition,
+        });
+      },
+      value: filterByJobPosition,
+    };
+
+  const filterByStoreLocationSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: [...STORE_LOCATION_DATA, 'All Store Locations'],
+      description: 'Filter by store location',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        directoryDispatch({
+          type: directoryAction.setFilterByStoreLocation,
+          payload: event.currentTarget.value as StoreLocation,
+        });
+      },
+      value: filterByStoreLocation,
+    };
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators info objects━┛
+
+  // ┏━ begin input creators ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  const [
+    createdFilterByDepartmentSelectInput,
+    createdFilterByJobPositionSelectInput,
+    createdFilterByStoreLocationSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    filterByDepartmentSelectInputCreatorInfo,
+    filterByJobPositionSelectInputCreatorInfo,
+    filterByStoreLocationSelectInputCreatorInfo,
+  ]);
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators ━┛
+
+  // ┏━ begin input display ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  const displayFilterSelectInputs = (
+    <Flex
+      w="100%"
+      align="center"
+      justify="flex-start"
+      wrap="wrap"
+      rowGap={rowGap}
+      columnGap={rowGap}
+      p={padding}
+    >
+      <Group w={350}>{createdFilterByDepartmentSelectInput}</Group>
+      <Group w={350}>{createdFilterByJobPositionSelectInput}</Group>
+      <Group w={350}>{createdFilterByStoreLocationSelectInput}</Group>
+    </Flex>
+  );
+
+  const displayNodeBuilder = (
+    <NodeBuilder
+      initialNodes={[
+        ...storeLocationsNodes,
+        ...executiveManagementNodes,
+        ...administrativeDepartmentNodes,
+        ...salesAndMarketingNodes,
+        ...informationTechnologyNodes,
+        ...repairTechniciansNodes,
+        ...fieldServiceTechniciansNodes,
+        ...logisticsAndInventoryNodes,
+        ...customerServiceNodes,
+      ]}
+      initialEdges={[
+        ...storeLocationsEdges,
+        ...executiveManagementEdges,
+        ...administrativeDepartmentEdges,
+        ...salesAndMarketingEdges,
+        ...informationTechnologyEdges,
+        ...repairTechniciansEdges,
+        ...fieldServiceTechniciansEdges,
+        ...logisticsAndInventoryEdges,
+        ...customerServiceEdges,
+      ]}
+    />
+  );
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input display ━┛
   return (
-    <Group>
-      <NodeBuilder
-        initialNodes={[
-          ...storeLocationsNodes,
-          ...executiveManagementNodes,
-          ...administrativeDepartmentNodes,
-          ...salesAndMarketingNodes,
-          ...informationTechnologyNodes,
-          ...repairTechniciansNodes,
-          ...fieldServiceTechniciansNodes,
-          ...logisticsAndInventoryNodes,
-          ...customerServiceNodes,
-        ]}
-        initialEdges={[
-          ...storeLocationsEdges,
-          ...executiveManagementEdges,
-          ...administrativeDepartmentEdges,
-          ...salesAndMarketingEdges,
-          ...informationTechnologyEdges,
-          ...repairTechniciansEdges,
-          ...fieldServiceTechniciansEdges,
-          ...logisticsAndInventoryEdges,
-          ...customerServiceEdges,
-        ]}
-      />
-    </Group>
+    <Stack w="100%">
+      {displayFilterSelectInputs}
+      {displayNodeBuilder}
+    </Stack>
   );
 }
 
