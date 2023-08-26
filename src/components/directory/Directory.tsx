@@ -323,7 +323,7 @@ function Directory() {
     ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
       const initialAdministrativeDepartmentDocNode: FlowNode = {
         id: `administrative-department-${store}`,
-        type: 'input',
+        type: 'default',
         data: { label: `${store} Administrative Department` },
         position: { x: 0, y: 0 },
         style: { width: 500, height: 309 },
@@ -367,8 +367,31 @@ function Directory() {
         ]
       );
 
+    // edmonton store location node id
+    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Edmonton'
+    )?.id as string;
+
+    // edmonton administrative node id
     const edmontonAdministrativeSourceId =
       edmontonAdministrativeStartingNode.id;
+
+    // edge from edmonton store location to edmonton administrative node
+    const edmontonStoreLocationToEdmontonAdministrativeEdge: Edge = {
+      id: `${edmontonStoreLocationSourceId}-${edmontonAdministrativeSourceId}`, // source-target
+      source: edmontonStoreLocationSourceId,
+      target: edmontonAdministrativeSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
     const edmontonAdministrativeEdges = administrativeDepartmentDocs.reduce(
       (edmontonAdministrativeEdgesAcc: Edge[], userDocument: UserDocument) => {
         const { _id, storeLocation } = userDocument;
@@ -394,10 +417,33 @@ function Directory() {
 
         return edmontonAdministrativeEdgesAcc;
       },
-      []
+      [edmontonStoreLocationToEdmontonAdministrativeEdge]
     );
 
+    // calgary store location node id
+    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Calgary'
+    )?.id as string;
+
+    // calgary administrative node id
     const calgaryAdministrativeSourceId = calgaryAdministrativeStartingNode.id;
+
+    // edge from calgary store location to calgary administrative node
+    const calgaryStoreLocationToCalgaryAdministrativeEdge: Edge = {
+      id: `${calgaryStoreLocationSourceId}-${calgaryAdministrativeSourceId}`, // source-target
+      source: calgaryStoreLocationSourceId,
+      target: calgaryAdministrativeSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
     const calgaryAdministrativeEdges = administrativeDepartmentDocs.reduce(
       (calgaryAdministrativeEdgesAcc: Edge[], userDocument: UserDocument) => {
         const { _id, storeLocation } = userDocument;
@@ -423,11 +469,34 @@ function Directory() {
 
         return calgaryAdministrativeEdgesAcc;
       },
-      []
+      [calgaryStoreLocationToCalgaryAdministrativeEdge]
     );
 
+    // vancouver store location node id
+    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Vancouver'
+    )?.id as string;
+
+    // vancouver administrative node id
     const vancouverAdministrativeSourceId =
       vancouverAdministrativeStartingNode.id;
+
+    // edge from vancouver store location to vancouver administrative node
+    const vancouverStoreLocationToVancouverAdministrativeEdge: Edge = {
+      id: `${vancouverStoreLocationSourceId}-${vancouverAdministrativeSourceId}`, // source-target
+      source: vancouverStoreLocationSourceId,
+      target: vancouverAdministrativeSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
     const vancouverAdministrativeEdges = administrativeDepartmentDocs.reduce(
       (vancouverAdministrativeEdgesAcc: Edge[], userDocument: UserDocument) => {
         const { _id, storeLocation } = userDocument;
@@ -453,7 +522,7 @@ function Directory() {
 
         return vancouverAdministrativeEdgesAcc;
       },
-      []
+      [vancouverStoreLocationToVancouverAdministrativeEdge]
     );
 
     directoryDispatch({
@@ -469,10 +538,242 @@ function Directory() {
         ...vancouverAdministrativeEdges,
       ],
     });
-  }, [groupedByDepartment, padding, rowGap]);
+  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
 
   // set sales and marketing nodes
-  useEffect(() => {}, [groupedByDepartment, padding, rowGap]);
+  useEffect(() => {
+    const salesAndMarketingDocs =
+      groupedByDepartment['Sales and Marketing'] ?? [];
+
+    // starting sales and marketing nodes for each store location
+    const [
+      edmontonSalesAndMarketingStartingNode,
+      calgarySalesAndMarketingStartingNode,
+      vancouverSalesAndMarketingStartingNode,
+    ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      const initialSalesAndMarketingDepartmentDocNode: FlowNode = {
+        id: `sales-and-marketing-department-${store}`,
+        type: 'default',
+        data: { label: `${store} Sales and Marketing Department` },
+        position: { x: 0, y: 0 },
+        style: { width: 500, height: 309 },
+      };
+
+      return initialSalesAndMarketingDepartmentDocNode;
+    });
+
+    const nodePosition = { x: 0, y: 0 };
+
+    const salesAndMarketingDocsNodes = salesAndMarketingDocs.reduce(
+      (salesAndMarketingNodesAcc: Node[], userDocument: UserDocument) => {
+        const { _id } = userDocument;
+
+        const displayProfileCard = returnDirectoryProfileCard({
+          userDocument,
+          padding,
+          rowGap,
+        });
+
+        const salesAndMarketingNode: Node = {
+          id: _id,
+          type: 'output',
+          data: { label: displayProfileCard },
+          position: nodePosition,
+          style: { width: 500, height: 309 },
+        };
+        salesAndMarketingNodesAcc.push(salesAndMarketingNode);
+
+        return salesAndMarketingNodesAcc;
+      },
+      [
+        edmontonSalesAndMarketingStartingNode,
+        calgarySalesAndMarketingStartingNode,
+        vancouverSalesAndMarketingStartingNode,
+      ]
+    );
+
+    // edmonton store location node id
+    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Edmonton'
+    )?.id as string;
+
+    // edmonton sales and marketing node id
+    const edmontonSalesAndMarketingSourceId =
+      edmontonSalesAndMarketingStartingNode.id;
+
+    // edge from edmonton store location to edmonton sales and marketing node
+    const edmontonStoreLocationToEdmontonSalesAndMarketingEdge: Edge = {
+      id: `${edmontonStoreLocationSourceId}-${edmontonSalesAndMarketingSourceId}`, // source-target
+      source: edmontonStoreLocationSourceId,
+      target: edmontonSalesAndMarketingSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const edmontonSalesAndMarketingEdges = salesAndMarketingDocs.reduce(
+      (
+        edmontonSalesAndMarketingEdgesAcc: Edge[],
+        userDocument: UserDocument
+      ) => {
+        const { _id, storeLocation } = userDocument;
+
+        if (storeLocation === 'Vancouver' || storeLocation === 'Calgary') {
+          return edmontonSalesAndMarketingEdgesAcc;
+        }
+
+        const edmontonSalesAndMarketingEdge: Edge = {
+          id: `${edmontonSalesAndMarketingSourceId}-${_id}`, // source-target
+          source: edmontonSalesAndMarketingSourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        edmontonSalesAndMarketingEdgesAcc.push(edmontonSalesAndMarketingEdge);
+
+        return edmontonSalesAndMarketingEdgesAcc;
+      },
+      [edmontonStoreLocationToEdmontonSalesAndMarketingEdge]
+    );
+
+    // calgary store location node id
+    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Calgary'
+    )?.id as string;
+
+    // calgary sales and marketing node id
+    const calgarySalesAndMarketingSourceId =
+      calgarySalesAndMarketingStartingNode.id;
+
+    // edge from calgary store location to calgary sales and marketing node
+    const calgaryStoreLocationToCalgarySalesAndMarketingEdge: Edge = {
+      id: `${calgaryStoreLocationSourceId}-${calgarySalesAndMarketingSourceId}`, // source-target
+      source: calgaryStoreLocationSourceId,
+      target: calgarySalesAndMarketingSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const calgarySalesAndMarketingEdges = salesAndMarketingDocs.reduce(
+      (
+        calgarySalesAndMarketingEdgesAcc: Edge[],
+        userDocument: UserDocument
+      ) => {
+        const { _id, storeLocation } = userDocument;
+
+        if (storeLocation === 'Vancouver' || storeLocation === 'Edmonton') {
+          return calgarySalesAndMarketingEdgesAcc;
+        }
+
+        const calgarySalesAndMarketingEdge: Edge = {
+          id: `${calgarySalesAndMarketingSourceId}-${_id}`, // source-target
+          source: calgarySalesAndMarketingSourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        calgarySalesAndMarketingEdgesAcc.push(calgarySalesAndMarketingEdge);
+
+        return calgarySalesAndMarketingEdgesAcc;
+      },
+      [calgaryStoreLocationToCalgarySalesAndMarketingEdge]
+    );
+
+    // vancouver store location node id
+    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Vancouver'
+    )?.id as string;
+
+    // vancouver sales and marketing node id
+    const vancouverSalesAndMarketingSourceId =
+      vancouverSalesAndMarketingStartingNode.id;
+
+    // edge from vancouver store location to vancouver sales and marketing node
+    const vancouverStoreLocationToVancouverSalesAndMarketingEdge: Edge = {
+      id: `${vancouverStoreLocationSourceId}-${vancouverSalesAndMarketingSourceId}`, // source-target
+      source: vancouverStoreLocationSourceId,
+      target: vancouverSalesAndMarketingSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const vancouverSalesAndMarketingEdges = salesAndMarketingDocs.reduce(
+      (
+        vancouverSalesAndMarketingEdgesAcc: Edge[],
+        userDocument: UserDocument
+      ) => {
+        const { _id, storeLocation } = userDocument;
+
+        if (storeLocation === 'Edmonton' || storeLocation === 'Calgary') {
+          return vancouverSalesAndMarketingEdgesAcc;
+        }
+
+        const vancouverSalesAndMarketingEdge: Edge = {
+          id: `${vancouverSalesAndMarketingSourceId}-${_id}`, // source-target
+          source: vancouverSalesAndMarketingSourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        vancouverSalesAndMarketingEdgesAcc.push(vancouverSalesAndMarketingEdge);
+
+        return vancouverSalesAndMarketingEdgesAcc;
+      },
+      [vancouverStoreLocationToVancouverSalesAndMarketingEdge]
+    );
+
+    directoryDispatch({
+      type: directoryAction.setSalesAndMarketingNodes,
+      payload: salesAndMarketingDocsNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setSalesAndMarketingEdges,
+      payload: [
+        ...edmontonSalesAndMarketingEdges,
+        ...calgarySalesAndMarketingEdges,
+        ...vancouverSalesAndMarketingEdges,
+      ],
+    });
+  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
 
   useEffect(() => {
     logState({
@@ -485,12 +786,15 @@ function Directory() {
     <Group>
       <NodeBuilder
         initialNodes={[
+          ...storeLocationsNodes,
           ...executiveManagementNodes,
           ...administrativeDepartmentNodes,
+          ...salesAndMarketingNodes,
         ]}
         initialEdges={[
           ...executiveManagementEdges,
           ...administrativeDepartmentEdges,
+          ...salesAndMarketingEdges,
         ]}
       />
     </Group>
