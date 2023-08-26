@@ -775,6 +775,85 @@ function Directory() {
     });
   }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
 
+  // set information technology nodes
+  useEffect(() => {
+    const informationTechnologyDocs =
+      groupedByDepartment['Information Technology'] ?? [];
+
+    // starting information technology node
+    const initialInformationTechnologyDepartmentDocNode: FlowNode = {
+      id: 'information-technology-department',
+      type: 'input',
+      data: { label: 'Information Technology Department' },
+      position: { x: 0, y: 0 },
+      style: { width: 500, height: 309 },
+    };
+
+    const nodePosition = { x: 0, y: 0 };
+
+    const informationTechnologyDocsNodes = informationTechnologyDocs.reduce(
+      (informationTechnologyNodesAcc: Node[], userDocument: UserDocument) => {
+        const { _id } = userDocument;
+
+        const displayProfileCard = returnDirectoryProfileCard({
+          userDocument,
+          padding,
+          rowGap,
+        });
+
+        const informationTechnologyNode: Node = {
+          id: _id,
+          type: 'output',
+          data: { label: displayProfileCard },
+          position: nodePosition,
+          style: { width: 500, height: 309 },
+        };
+        informationTechnologyNodesAcc.push(informationTechnologyNode);
+
+        return informationTechnologyNodesAcc;
+      },
+      [initialInformationTechnologyDepartmentDocNode]
+    );
+
+    const informationTechnologyDepartmentSourceId =
+      initialInformationTechnologyDepartmentDocNode.id;
+
+    // edges from information technology department to information technology nodes
+    const informationTechnologyEdges = informationTechnologyDocs.reduce(
+      (informationTechnologyEdgesAcc: Edge[], userDocument: UserDocument) => {
+        const { _id } = userDocument;
+
+        const informationTechnologyEdge: Edge = {
+          id: `${informationTechnologyDepartmentSourceId}-${_id}`, // source-target
+          source: informationTechnologyDepartmentSourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        informationTechnologyEdgesAcc.push(informationTechnologyEdge);
+
+        return informationTechnologyEdgesAcc;
+      },
+      []
+    );
+
+    directoryDispatch({
+      type: directoryAction.setInformationTechnologyNodes,
+      payload: informationTechnologyDocsNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setInformationTechnologyEdges,
+      payload: informationTechnologyEdges,
+    });
+  }, [groupedByDepartment, padding, rowGap]);
+
   useEffect(() => {
     logState({
       state: directoryState,
@@ -790,11 +869,13 @@ function Directory() {
           ...executiveManagementNodes,
           ...administrativeDepartmentNodes,
           ...salesAndMarketingNodes,
+          ...informationTechnologyNodes,
         ]}
         initialEdges={[
           ...executiveManagementEdges,
           ...administrativeDepartmentEdges,
           ...salesAndMarketingEdges,
+          ...informationTechnologyEdges,
         ]}
       />
     </Group>

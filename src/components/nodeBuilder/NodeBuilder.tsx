@@ -29,7 +29,7 @@ function NodeBuilder({ initialEdges, initialNodes }: NodeBuilderProps) {
   });
 
   return (
-    <Flex w="400px" h="400px" style={{ outline: '1px solid brown' }}>
+    <Flex w="75vw" h="75vh" style={{ outline: '1px solid brown' }}>
       <ReactFlow
         nodes={nodes}
         edges={edges}
