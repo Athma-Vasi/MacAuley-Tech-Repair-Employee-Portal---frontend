@@ -19,6 +19,7 @@ import {
 import { Edge, Node } from 'reactflow';
 
 import { UserDocument } from '../../types';
+import { FlowNodesLayoutDirection } from './types';
 
 type ReturnDirectoryProfileCardInput = {
   userDocument: UserDocument;
@@ -45,7 +46,7 @@ function returnDirectoryProfileCard({
       <Tooltip label={`View ${firstName} ${lastName}'s Github profile`}>
         <Group>
           <TiSocialGithub
-            size={24}
+            size={20}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -54,7 +55,7 @@ function returnDirectoryProfileCard({
       <Tooltip label={`View ${firstName} ${lastName}'s Mastodon profile`}>
         <Group>
           <TbBrandMastodon
-            size={24}
+            size={20}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -63,7 +64,7 @@ function returnDirectoryProfileCard({
       <Tooltip label={`View ${firstName} ${lastName}'s LinkedIn profile`}>
         <Group>
           <TiSocialLinkedin
-            size={24}
+            size={20}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -72,7 +73,7 @@ function returnDirectoryProfileCard({
       <Tooltip label={`View ${firstName} ${lastName}'s Flickr profile`}>
         <Group>
           <TiSocialFlickr
-            size={24}
+            size={20}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -81,7 +82,7 @@ function returnDirectoryProfileCard({
       <Tooltip label={`View ${firstName} ${lastName}'s Dribbble profile`}>
         <Group>
           <TiSocialDribbble
-            size={24}
+            size={20}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -99,12 +100,7 @@ function returnDirectoryProfileCard({
         align="center"
         p={padding}
       >
-        <Stack
-          align="center"
-          style={{ borderRight: '1px solid #e0e0e0' }}
-          px={padding}
-          w="38%"
-        >
+        <Stack align="center" px={padding} w="38%">
           <Image
             src={profilePictureUrl}
             alt={`Picture of ${firstName} ${lastName}`}
@@ -123,6 +119,7 @@ function returnDirectoryProfileCard({
           justify="center"
           w="62%"
           rowGap={rowGap}
+          style={{ borderLeft: '1px solid #e0e0e0' }}
         >
           <Title order={4} color="dark">{`${firstName} ${lastName}`}</Title>
           <Text color="dark" size="md">
@@ -145,7 +142,7 @@ function returnDirectoryProfileCard({
 type ReturnDagreLayoutedElementsInput = {
   nodes: Node[];
   edges: Edge[];
-  direction?: 'TB' | 'LR';
+  direction?: FlowNodesLayoutDirection;
 };
 
 function returnDagreLayoutedElements({

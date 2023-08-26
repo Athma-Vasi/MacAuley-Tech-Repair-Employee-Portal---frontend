@@ -1,4 +1,5 @@
 import { Edge, Node } from 'reactflow';
+
 import {
   Department,
   JobPosition,
@@ -159,8 +160,9 @@ type DirectoryDispatch =
     };
 
 export type {
+  DirectoryAction,
+  DirectoryDispatch,
   DirectoryState,
   FetchUsersDirectoryResponse,
-  DirectoryDispatch,
-  DirectoryAction,
+  FlowNodesLayoutDirection,
 };
