@@ -25,7 +25,7 @@ function NodeBuilder({ initialEdges, initialNodes }: NodeBuilderProps) {
   const { nodes, edges } = returnDagreLayoutedElements({
     edges: initialEdges,
     nodes: initialNodes,
-    direction: 'TB',
+    direction: 'LR',
   });
 
   return (
