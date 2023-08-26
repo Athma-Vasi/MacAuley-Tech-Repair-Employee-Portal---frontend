@@ -509,11 +509,10 @@ function Directory() {
       ],
     });
 
-    // ━━━━ end administrative department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  }, [groupedByDepartment, padding, rowGap, layoutDirection]);
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end administrative department ━┛
 
-  // set sales and marketing nodes
-  useEffect(() => {
+    // ┏━ begin sales and marketing department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
     const salesAndMarketingDocs =
       groupedByDepartment['Sales and Marketing'] ?? [];
 
@@ -527,14 +526,12 @@ function Directory() {
         id: `sales-and-marketing-department-${store}`,
         type: 'default',
         data: { label: `${store} Sales and Marketing Department` },
-        position: { x: 0, y: 0 },
+        position: nodePosition,
         style: { width: 500, height: 309 },
       };
 
       return initialSalesAndMarketingDepartmentDocNode;
     });
-
-    const nodePosition = { x: 0, y: 0 };
 
     const salesAndMarketingDocsNodes = salesAndMarketingDocs.reduce(
       (salesAndMarketingNodesAcc: Node[], userDocument: UserDocument) => {
@@ -564,29 +561,16 @@ function Directory() {
       ]
     );
 
-    // edmonton store location node id
-    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Edmonton'
-    )?.id as string;
-
     // edmonton sales and marketing node id
     const edmontonSalesAndMarketingSourceId =
       edmontonSalesAndMarketingStartingNode.id;
 
     // edge from edmonton store location to edmonton sales and marketing node
     const edmontonStoreLocationToEdmontonSalesAndMarketingEdge: Edge = {
+      ...edgeDefaults,
       id: `${edmontonStoreLocationSourceId}-${edmontonSalesAndMarketingSourceId}`, // source-target
       source: edmontonStoreLocationSourceId,
       target: edmontonSalesAndMarketingSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const edmontonSalesAndMarketingEdges = salesAndMarketingDocs.reduce(
@@ -601,17 +585,10 @@ function Directory() {
         }
 
         const edmontonSalesAndMarketingEdge: Edge = {
+          ...edgeDefaults,
           id: `${edmontonSalesAndMarketingSourceId}-${_id}`, // source-target
           source: edmontonSalesAndMarketingSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         edmontonSalesAndMarketingEdgesAcc.push(edmontonSalesAndMarketingEdge);
 
@@ -620,29 +597,16 @@ function Directory() {
       [edmontonStoreLocationToEdmontonSalesAndMarketingEdge]
     );
 
-    // calgary store location node id
-    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Calgary'
-    )?.id as string;
-
     // calgary sales and marketing node id
     const calgarySalesAndMarketingSourceId =
       calgarySalesAndMarketingStartingNode.id;
 
     // edge from calgary store location to calgary sales and marketing node
     const calgaryStoreLocationToCalgarySalesAndMarketingEdge: Edge = {
+      ...edgeDefaults,
       id: `${calgaryStoreLocationSourceId}-${calgarySalesAndMarketingSourceId}`, // source-target
       source: calgaryStoreLocationSourceId,
       target: calgarySalesAndMarketingSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const calgarySalesAndMarketingEdges = salesAndMarketingDocs.reduce(
@@ -657,17 +621,10 @@ function Directory() {
         }
 
         const calgarySalesAndMarketingEdge: Edge = {
+          ...edgeDefaults,
           id: `${calgarySalesAndMarketingSourceId}-${_id}`, // source-target
           source: calgarySalesAndMarketingSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         calgarySalesAndMarketingEdgesAcc.push(calgarySalesAndMarketingEdge);
 
@@ -676,29 +633,16 @@ function Directory() {
       [calgaryStoreLocationToCalgarySalesAndMarketingEdge]
     );
 
-    // vancouver store location node id
-    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Vancouver'
-    )?.id as string;
-
     // vancouver sales and marketing node id
     const vancouverSalesAndMarketingSourceId =
       vancouverSalesAndMarketingStartingNode.id;
 
     // edge from vancouver store location to vancouver sales and marketing node
     const vancouverStoreLocationToVancouverSalesAndMarketingEdge: Edge = {
+      ...edgeDefaults,
       id: `${vancouverStoreLocationSourceId}-${vancouverSalesAndMarketingSourceId}`, // source-target
       source: vancouverStoreLocationSourceId,
       target: vancouverSalesAndMarketingSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const vancouverSalesAndMarketingEdges = salesAndMarketingDocs.reduce(
@@ -713,17 +657,10 @@ function Directory() {
         }
 
         const vancouverSalesAndMarketingEdge: Edge = {
+          ...edgeDefaults,
           id: `${vancouverSalesAndMarketingSourceId}-${_id}`, // source-target
           source: vancouverSalesAndMarketingSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         vancouverSalesAndMarketingEdgesAcc.push(vancouverSalesAndMarketingEdge);
 
@@ -745,10 +682,11 @@ function Directory() {
         ...vancouverSalesAndMarketingEdges,
       ],
     });
-  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
 
-  // set information technology nodes
-  useEffect(() => {
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end sales and marketing department ━┛
+
+    // ┏━ begin information technology department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
     const informationTechnologyDocs =
       groupedByDepartment['Information Technology'] ?? [];
 
@@ -757,11 +695,9 @@ function Directory() {
       id: 'information-technology-department',
       type: 'input',
       data: { label: 'Information Technology Department' },
-      position: { x: 0, y: 0 },
+      position: nodePosition,
       style: { width: 500, height: 309 },
     };
-
-    const nodePosition = { x: 0, y: 0 };
 
     const informationTechnologyDocsNodes = informationTechnologyDocs.reduce(
       (informationTechnologyNodesAcc: Node[], userDocument: UserDocument) => {
@@ -796,17 +732,10 @@ function Directory() {
         const { _id } = userDocument;
 
         const informationTechnologyEdge: Edge = {
+          ...edgeDefaults,
           id: `${informationTechnologyDepartmentSourceId}-${_id}`, // source-target
           source: informationTechnologyDepartmentSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         informationTechnologyEdgesAcc.push(informationTechnologyEdge);
 
@@ -824,7 +753,9 @@ function Directory() {
       type: directoryAction.setInformationTechnologyEdges,
       payload: informationTechnologyEdges,
     });
-  }, [groupedByDepartment, padding, rowGap]);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end information technology department ━┛
+  }, [groupedByDepartment, padding, rowGap, layoutDirection]);
 
   // set repair technicians nodes
   useEffect(() => {
