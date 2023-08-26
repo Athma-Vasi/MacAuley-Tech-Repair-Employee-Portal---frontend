@@ -755,10 +755,9 @@ function Directory() {
     });
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end information technology department ━┛
-  }, [groupedByDepartment, padding, rowGap, layoutDirection]);
 
-  // set repair technicians nodes
-  useEffect(() => {
+    // ┏━ begin repair technicians department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
     const repairTechniciansDocs =
       groupedByDepartment['Repair Technicians'] ?? [];
 
@@ -772,14 +771,12 @@ function Directory() {
         id: `repair-technicians-department-${store}`,
         type: 'default',
         data: { label: `${store} Repair Technicians Department` },
-        position: { x: 0, y: 0 },
+        position: nodePosition,
         style: { width: 500, height: 309 },
       };
 
       return initialRepairTechniciansDepartmentDocNode;
     });
-
-    const nodePosition = { x: 0, y: 0 };
 
     const repairTechniciansDocsNodes = repairTechniciansDocs.reduce(
       (repairTechniciansNodesAcc: Node[], userDocument: UserDocument) => {
@@ -809,29 +806,16 @@ function Directory() {
       ]
     );
 
-    // edmonton store location node id
-    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Edmonton'
-    )?.id as string;
-
     // edmonton repair technicians node id
     const edmontonRepairTechniciansSourceId =
       edmontonRepairTechniciansStartingNode.id;
 
     // edge from edmonton store location to edmonton repair technicians node
     const edmontonStoreLocationToEdmontonRepairTechniciansEdge: Edge = {
+      ...edgeDefaults,
       id: `${edmontonStoreLocationSourceId}-${edmontonRepairTechniciansSourceId}`, // source-target
       source: edmontonStoreLocationSourceId,
       target: edmontonRepairTechniciansSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const edmontonRepairTechniciansEdges = repairTechniciansDocs.reduce(
@@ -846,17 +830,10 @@ function Directory() {
         }
 
         const edmontonRepairTechniciansEdge: Edge = {
+          ...edgeDefaults,
           id: `${edmontonRepairTechniciansSourceId}-${_id}`, // source-target
           source: edmontonRepairTechniciansSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         edmontonRepairTechniciansEdgesAcc.push(edmontonRepairTechniciansEdge);
 
@@ -865,29 +842,16 @@ function Directory() {
       [edmontonStoreLocationToEdmontonRepairTechniciansEdge]
     );
 
-    // calgary store location node id
-    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Calgary'
-    )?.id as string;
-
     // calgary repair technicians node id
     const calgaryRepairTechniciansSourceId =
       calgaryRepairTechniciansStartingNode.id;
 
     // edge from calgary store location to calgary repair technicians node
     const calgaryStoreLocationToCalgaryRepairTechniciansEdge: Edge = {
+      ...edgeDefaults,
       id: `${calgaryStoreLocationSourceId}-${calgaryRepairTechniciansSourceId}`, // source-target
       source: calgaryStoreLocationSourceId,
       target: calgaryRepairTechniciansSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const calgaryRepairTechniciansEdges = repairTechniciansDocs.reduce(
@@ -902,17 +866,10 @@ function Directory() {
         }
 
         const calgaryRepairTechniciansEdge: Edge = {
+          ...edgeDefaults,
           id: `${calgaryRepairTechniciansSourceId}-${_id}`, // source-target
           source: calgaryRepairTechniciansSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         calgaryRepairTechniciansEdgesAcc.push(calgaryRepairTechniciansEdge);
 
@@ -921,29 +878,16 @@ function Directory() {
       [calgaryStoreLocationToCalgaryRepairTechniciansEdge]
     );
 
-    // vancouver store location node id
-    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Vancouver'
-    )?.id as string;
-
     // vancouver repair technicians node id
     const vancouverRepairTechniciansSourceId =
       vancouverRepairTechniciansStartingNode.id;
 
     // edge from vancouver store location to vancouver repair technicians node
     const vancouverStoreLocationToVancouverRepairTechniciansEdge: Edge = {
+      ...edgeDefaults,
       id: `${vancouverStoreLocationSourceId}-${vancouverRepairTechniciansSourceId}`, // source-target
       source: vancouverStoreLocationSourceId,
       target: vancouverRepairTechniciansSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const vancouverRepairTechniciansEdges = repairTechniciansDocs.reduce(
@@ -958,17 +902,10 @@ function Directory() {
         }
 
         const vancouverRepairTechniciansEdge: Edge = {
+          ...edgeDefaults,
           id: `${vancouverRepairTechniciansSourceId}-${_id}`, // source-target
           source: vancouverRepairTechniciansSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         vancouverRepairTechniciansEdgesAcc.push(vancouverRepairTechniciansEdge);
 
@@ -990,7 +927,9 @@ function Directory() {
         ...vancouverRepairTechniciansEdges,
       ],
     });
-  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end repair technicians department ━┛
+  }, [groupedByDepartment, padding, rowGap, layoutDirection]);
 
   // field service technicians nodes and edges
   useEffect(() => {
