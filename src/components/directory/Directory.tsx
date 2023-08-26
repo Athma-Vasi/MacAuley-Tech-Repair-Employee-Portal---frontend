@@ -854,6 +854,727 @@ function Directory() {
     });
   }, [groupedByDepartment, padding, rowGap]);
 
+  // set repair technicians nodes
+  useEffect(() => {
+    const repairTechniciansDocs =
+      groupedByDepartment['Repair Technicians'] ?? [];
+
+    // starting repair technicians node for each store location
+    const [
+      edmontonRepairTechniciansStartingNode,
+      calgaryRepairTechniciansStartingNode,
+      vancouverRepairTechniciansStartingNode,
+    ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      const initialRepairTechniciansDepartmentDocNode: FlowNode = {
+        id: `repair-technicians-department-${store}`,
+        type: 'default',
+        data: { label: `${store} Repair Technicians Department` },
+        position: { x: 0, y: 0 },
+        style: { width: 500, height: 309 },
+      };
+
+      return initialRepairTechniciansDepartmentDocNode;
+    });
+
+    const nodePosition = { x: 0, y: 0 };
+
+    const repairTechniciansDocsNodes = repairTechniciansDocs.reduce(
+      (repairTechniciansNodesAcc: Node[], userDocument: UserDocument) => {
+        const { _id } = userDocument;
+
+        const displayProfileCard = returnDirectoryProfileCard({
+          userDocument,
+          padding,
+          rowGap,
+        });
+
+        const repairTechniciansNode: Node = {
+          id: _id,
+          type: 'output',
+          data: { label: displayProfileCard },
+          position: nodePosition,
+          style: { width: 500, height: 309 },
+        };
+        repairTechniciansNodesAcc.push(repairTechniciansNode);
+
+        return repairTechniciansNodesAcc;
+      },
+      [
+        edmontonRepairTechniciansStartingNode,
+        calgaryRepairTechniciansStartingNode,
+        vancouverRepairTechniciansStartingNode,
+      ]
+    );
+
+    // edmonton store location node id
+    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Edmonton'
+    )?.id as string;
+
+    // edmonton repair technicians node id
+    const edmontonRepairTechniciansSourceId =
+      edmontonRepairTechniciansStartingNode.id;
+
+    // edge from edmonton store location to edmonton repair technicians node
+    const edmontonStoreLocationToEdmontonRepairTechniciansEdge: Edge = {
+      id: `${edmontonStoreLocationSourceId}-${edmontonRepairTechniciansSourceId}`, // source-target
+      source: edmontonStoreLocationSourceId,
+      target: edmontonRepairTechniciansSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const edmontonRepairTechniciansEdges = repairTechniciansDocs.reduce(
+      (
+        edmontonRepairTechniciansEdgesAcc: Edge[],
+        userDocument: UserDocument
+      ) => {
+        const { _id, storeLocation } = userDocument;
+
+        if (storeLocation === 'Vancouver' || storeLocation === 'Calgary') {
+          return edmontonRepairTechniciansEdgesAcc;
+        }
+
+        const edmontonRepairTechniciansEdge: Edge = {
+          id: `${edmontonRepairTechniciansSourceId}-${_id}`, // source-target
+          source: edmontonRepairTechniciansSourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        edmontonRepairTechniciansEdgesAcc.push(edmontonRepairTechniciansEdge);
+
+        return edmontonRepairTechniciansEdgesAcc;
+      },
+      [edmontonStoreLocationToEdmontonRepairTechniciansEdge]
+    );
+
+    // calgary store location node id
+    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Calgary'
+    )?.id as string;
+
+    // calgary repair technicians node id
+    const calgaryRepairTechniciansSourceId =
+      calgaryRepairTechniciansStartingNode.id;
+
+    // edge from calgary store location to calgary repair technicians node
+    const calgaryStoreLocationToCalgaryRepairTechniciansEdge: Edge = {
+      id: `${calgaryStoreLocationSourceId}-${calgaryRepairTechniciansSourceId}`, // source-target
+      source: calgaryStoreLocationSourceId,
+      target: calgaryRepairTechniciansSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const calgaryRepairTechniciansEdges = repairTechniciansDocs.reduce(
+      (
+        calgaryRepairTechniciansEdgesAcc: Edge[],
+        userDocument: UserDocument
+      ) => {
+        const { _id, storeLocation } = userDocument;
+
+        if (storeLocation === 'Vancouver' || storeLocation === 'Edmonton') {
+          return calgaryRepairTechniciansEdgesAcc;
+        }
+
+        const calgaryRepairTechniciansEdge: Edge = {
+          id: `${calgaryRepairTechniciansSourceId}-${_id}`, // source-target
+          source: calgaryRepairTechniciansSourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        calgaryRepairTechniciansEdgesAcc.push(calgaryRepairTechniciansEdge);
+
+        return calgaryRepairTechniciansEdgesAcc;
+      },
+      [calgaryStoreLocationToCalgaryRepairTechniciansEdge]
+    );
+
+    // vancouver store location node id
+    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Vancouver'
+    )?.id as string;
+
+    // vancouver repair technicians node id
+    const vancouverRepairTechniciansSourceId =
+      vancouverRepairTechniciansStartingNode.id;
+
+    // edge from vancouver store location to vancouver repair technicians node
+    const vancouverStoreLocationToVancouverRepairTechniciansEdge: Edge = {
+      id: `${vancouverStoreLocationSourceId}-${vancouverRepairTechniciansSourceId}`, // source-target
+      source: vancouverStoreLocationSourceId,
+      target: vancouverRepairTechniciansSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const vancouverRepairTechniciansEdges = repairTechniciansDocs.reduce(
+      (
+        vancouverRepairTechniciansEdgesAcc: Edge[],
+        userDocument: UserDocument
+      ) => {
+        const { _id, storeLocation } = userDocument;
+
+        if (storeLocation === 'Edmonton' || storeLocation === 'Calgary') {
+          return vancouverRepairTechniciansEdgesAcc;
+        }
+
+        const vancouverRepairTechniciansEdge: Edge = {
+          id: `${vancouverRepairTechniciansSourceId}-${_id}`, // source-target
+          source: vancouverRepairTechniciansSourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        vancouverRepairTechniciansEdgesAcc.push(vancouverRepairTechniciansEdge);
+
+        return vancouverRepairTechniciansEdgesAcc;
+      },
+      [vancouverStoreLocationToVancouverRepairTechniciansEdge]
+    );
+
+    directoryDispatch({
+      type: directoryAction.setRepairTechniciansNodes,
+      payload: repairTechniciansDocsNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setRepairTechniciansEdges,
+      payload: [
+        ...edmontonRepairTechniciansEdges,
+        ...calgaryRepairTechniciansEdges,
+        ...vancouverRepairTechniciansEdges,
+      ],
+    });
+  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
+
+  // field service technicians nodes and edges
+  useEffect(() => {
+    const fieldServiceTechniciansDocs =
+      groupedByDepartment['Field Service Technicians'] ?? [];
+
+    // starting field service technicians node for each store location
+    const [
+      edmontonFieldServiceTechniciansStartingNode,
+      calgaryFieldServiceTechniciansStartingNode,
+      vancouverFieldServiceTechniciansStartingNode,
+    ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      const initialFieldServiceTechniciansDepartmentDocNode: FlowNode = {
+        id: `field-service-technicians-department-${store}`,
+        type: 'default',
+        data: { label: `${store} Field Service Technicians Department` },
+        position: { x: 0, y: 0 },
+        style: { width: 500, height: 309 },
+      };
+
+      return initialFieldServiceTechniciansDepartmentDocNode;
+    });
+
+    const nodePosition = { x: 0, y: 0 };
+
+    const fieldServiceTechniciansDocsNodes = fieldServiceTechniciansDocs.reduce(
+      (fieldServiceTechniciansNodesAcc: Node[], userDocument: UserDocument) => {
+        const { _id } = userDocument;
+
+        const displayProfileCard = returnDirectoryProfileCard({
+          userDocument,
+          padding,
+          rowGap,
+        });
+
+        const fieldServiceTechniciansNode: Node = {
+          id: _id,
+          type: 'output',
+          data: { label: displayProfileCard },
+          position: nodePosition,
+          style: { width: 500, height: 309 },
+        };
+        fieldServiceTechniciansNodesAcc.push(fieldServiceTechniciansNode);
+
+        return fieldServiceTechniciansNodesAcc;
+      },
+      [
+        edmontonFieldServiceTechniciansStartingNode,
+        calgaryFieldServiceTechniciansStartingNode,
+        vancouverFieldServiceTechniciansStartingNode,
+      ]
+    );
+
+    // edmonton store location node id
+    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Edmonton'
+    )?.id as string;
+
+    // edmonton field service technicians node id
+    const edmontonFieldServiceTechniciansSourceId =
+      edmontonFieldServiceTechniciansStartingNode.id;
+
+    // edge from edmonton store location to edmonton field service technicians node
+    const edmontonStoreLocationToEdmontonFieldServiceTechniciansEdge: Edge = {
+      id: `${edmontonStoreLocationSourceId}-${edmontonFieldServiceTechniciansSourceId}`, // source-target
+      source: edmontonStoreLocationSourceId,
+      target: edmontonFieldServiceTechniciansSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const edmontonFieldServiceTechniciansEdges =
+      fieldServiceTechniciansDocs.reduce(
+        (
+          edmontonFieldServiceTechniciansEdgesAcc: Edge[],
+          userDocument: UserDocument
+        ) => {
+          const { _id, storeLocation } = userDocument;
+
+          if (storeLocation === 'Vancouver' || storeLocation === 'Calgary') {
+            return edmontonFieldServiceTechniciansEdgesAcc;
+          }
+
+          const edmontonFieldServiceTechniciansEdge: Edge = {
+            id: `${edmontonFieldServiceTechniciansSourceId}-${_id}`, // source-target
+            source: edmontonFieldServiceTechniciansSourceId,
+            target: _id,
+            type: 'smoothstep',
+            animated: true,
+            // label: 'has subordinates',
+            labelBgPadding: [8, 4],
+            labelBgBorderRadius: 4,
+            labelBgStyle: { fill: 'white' },
+            labelStyle: { fill: 'black', fontWeight: 700 },
+            style: { stroke: 'black' },
+          };
+          edmontonFieldServiceTechniciansEdgesAcc.push(
+            edmontonFieldServiceTechniciansEdge
+          );
+
+          return edmontonFieldServiceTechniciansEdgesAcc;
+        },
+        [edmontonStoreLocationToEdmontonFieldServiceTechniciansEdge]
+      );
+
+    // calgary store location node id
+    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Calgary'
+    )?.id as string;
+
+    // calgary field service technicians node id
+    const calgaryFieldServiceTechniciansSourceId =
+      calgaryFieldServiceTechniciansStartingNode.id;
+
+    // edge from calgary store location to calgary field service technicians node
+    const calgaryStoreLocationToCalgaryFieldServiceTechniciansEdge: Edge = {
+      id: `${calgaryStoreLocationSourceId}-${calgaryFieldServiceTechniciansSourceId}`, // source-target
+      source: calgaryStoreLocationSourceId,
+      target: calgaryFieldServiceTechniciansSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const calgaryFieldServiceTechniciansEdges =
+      fieldServiceTechniciansDocs.reduce(
+        (
+          calgaryFieldServiceTechniciansEdgesAcc: Edge[],
+          userDocument: UserDocument
+        ) => {
+          const { _id, storeLocation } = userDocument;
+
+          if (storeLocation === 'Vancouver' || storeLocation === 'Edmonton') {
+            return calgaryFieldServiceTechniciansEdgesAcc;
+          }
+
+          const calgaryFieldServiceTechniciansEdge: Edge = {
+            id: `${calgaryFieldServiceTechniciansSourceId}-${_id}`, // source-target
+            source: calgaryFieldServiceTechniciansSourceId,
+            target: _id,
+            type: 'smoothstep',
+            animated: true,
+            // label: 'has subordinates',
+            labelBgPadding: [8, 4],
+            labelBgBorderRadius: 4,
+            labelBgStyle: { fill: 'white' },
+            labelStyle: { fill: 'black', fontWeight: 700 },
+            style: { stroke: 'black' },
+          };
+          calgaryFieldServiceTechniciansEdgesAcc.push(
+            calgaryFieldServiceTechniciansEdge
+          );
+
+          return calgaryFieldServiceTechniciansEdgesAcc;
+        },
+        [calgaryStoreLocationToCalgaryFieldServiceTechniciansEdge]
+      );
+
+    // vancouver store location node id
+    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Vancouver'
+    )?.id as string;
+
+    // vancouver field service technicians node id
+    const vancouverFieldServiceTechniciansSourceId =
+      vancouverFieldServiceTechniciansStartingNode.id;
+
+    // edge from vancouver store location to vancouver field service technicians node
+    const vancouverStoreLocationToVancouverFieldServiceTechniciansEdge: Edge = {
+      id: `${vancouverStoreLocationSourceId}-${vancouverFieldServiceTechniciansSourceId}`, // source-target
+      source: vancouverStoreLocationSourceId,
+      target: vancouverFieldServiceTechniciansSourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const vancouverFieldServiceTechniciansEdges =
+      fieldServiceTechniciansDocs.reduce(
+        (
+          vancouverFieldServiceTechniciansEdgesAcc: Edge[],
+          userDocument: UserDocument
+        ) => {
+          const { _id, storeLocation } = userDocument;
+
+          if (storeLocation === 'Edmonton' || storeLocation === 'Calgary') {
+            return vancouverFieldServiceTechniciansEdgesAcc;
+          }
+
+          const vancouverFieldServiceTechniciansEdge: Edge = {
+            id: `${vancouverFieldServiceTechniciansSourceId}-${_id}`, // source-target
+            source: vancouverFieldServiceTechniciansSourceId,
+            target: _id,
+            type: 'smoothstep',
+            animated: true,
+            // label: 'has subordinates',
+            labelBgPadding: [8, 4],
+            labelBgBorderRadius: 4,
+            labelBgStyle: { fill: 'white' },
+            labelStyle: { fill: 'black', fontWeight: 700 },
+            style: { stroke: 'black' },
+          };
+          vancouverFieldServiceTechniciansEdgesAcc.push(
+            vancouverFieldServiceTechniciansEdge
+          );
+
+          return vancouverFieldServiceTechniciansEdgesAcc;
+        },
+        [vancouverStoreLocationToVancouverFieldServiceTechniciansEdge]
+      );
+
+    directoryDispatch({
+      type: directoryAction.setFieldServiceTechniciansNodes,
+      payload: fieldServiceTechniciansDocsNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setFieldServiceTechniciansEdges,
+      payload: [
+        ...edmontonFieldServiceTechniciansEdges,
+        ...calgaryFieldServiceTechniciansEdges,
+        ...vancouverFieldServiceTechniciansEdges,
+      ],
+    });
+  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
+
+  // logistics and inventory nodes and edges
+  useEffect(() => {
+    const logisticsAndInventoryDocs =
+      groupedByDepartment['Logistics and Inventory'] ?? [];
+
+    // starting logistics and inventory node for each store location
+    const [
+      edmontonLogisticsAndInventoryStartingNode,
+      calgaryLogisticsAndInventoryStartingNode,
+      vancouverLogisticsAndInventoryStartingNode,
+    ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      const initialLogisticsAndInventoryDepartmentDocNode: FlowNode = {
+        id: `logistics-and-inventory-department-${store}`,
+        type: 'default',
+        data: { label: `${store} Logistics and Inventory Department` },
+        position: { x: 0, y: 0 },
+        style: { width: 500, height: 309 },
+      };
+
+      return initialLogisticsAndInventoryDepartmentDocNode;
+    });
+
+    const nodePosition = { x: 0, y: 0 };
+
+    const logisticsAndInventoryDocsNodes = logisticsAndInventoryDocs.reduce(
+      (logisticsAndInventoryNodesAcc: Node[], userDocument: UserDocument) => {
+        const { _id } = userDocument;
+
+        const displayProfileCard = returnDirectoryProfileCard({
+          userDocument,
+          padding,
+          rowGap,
+        });
+
+        const logisticsAndInventoryNode: Node = {
+          id: _id,
+          type: 'output',
+          data: { label: displayProfileCard },
+          position: nodePosition,
+          style: { width: 500, height: 309 },
+        };
+        logisticsAndInventoryNodesAcc.push(logisticsAndInventoryNode);
+
+        return logisticsAndInventoryNodesAcc;
+      },
+      [
+        edmontonLogisticsAndInventoryStartingNode,
+        calgaryLogisticsAndInventoryStartingNode,
+        vancouverLogisticsAndInventoryStartingNode,
+      ]
+    );
+
+    // edmonton store location node id
+    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Edmonton'
+    )?.id as string;
+
+    // edmonton logistics and inventory node id
+    const edmontonLogisticsAndInventorySourceId =
+      edmontonLogisticsAndInventoryStartingNode.id;
+
+    // edge from edmonton store location to edmonton logistics and inventory node
+    const edmontonStoreLocationToEdmontonLogisticsAndInventoryEdge: Edge = {
+      id: `${edmontonStoreLocationSourceId}-${edmontonLogisticsAndInventorySourceId}`, // source-target
+      source: edmontonStoreLocationSourceId,
+      target: edmontonLogisticsAndInventorySourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const edmontonLogisticsAndInventoryEdges = logisticsAndInventoryDocs.reduce(
+      (
+        edmontonLogisticsAndInventoryEdgesAcc: Edge[],
+        userDocument: UserDocument
+      ) => {
+        const { _id, storeLocation } = userDocument;
+
+        if (storeLocation === 'Vancouver' || storeLocation === 'Calgary') {
+          return edmontonLogisticsAndInventoryEdgesAcc;
+        }
+
+        const edmontonLogisticsAndInventoryEdge: Edge = {
+          id: `${edmontonLogisticsAndInventorySourceId}-${_id}`, // source-target
+          source: edmontonLogisticsAndInventorySourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        edmontonLogisticsAndInventoryEdgesAcc.push(
+          edmontonLogisticsAndInventoryEdge
+        );
+
+        return edmontonLogisticsAndInventoryEdgesAcc;
+      },
+      [edmontonStoreLocationToEdmontonLogisticsAndInventoryEdge]
+    );
+
+    // calgary store location node id
+    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Calgary'
+    )?.id as string;
+
+    // calgary logistics and inventory node id
+    const calgaryLogisticsAndInventorySourceId =
+      calgaryLogisticsAndInventoryStartingNode.id;
+
+    // edge from calgary store location to calgary logistics and inventory node
+    const calgaryStoreLocationToCalgaryLogisticsAndInventoryEdge: Edge = {
+      id: `${calgaryStoreLocationSourceId}-${calgaryLogisticsAndInventorySourceId}`, // source-target
+      source: calgaryStoreLocationSourceId,
+      target: calgaryLogisticsAndInventorySourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const calgaryLogisticsAndInventoryEdges = logisticsAndInventoryDocs.reduce(
+      (
+        calgaryLogisticsAndInventoryEdgesAcc: Edge[],
+        userDocument: UserDocument
+      ) => {
+        const { _id, storeLocation } = userDocument;
+
+        if (storeLocation === 'Vancouver' || storeLocation === 'Edmonton') {
+          return calgaryLogisticsAndInventoryEdgesAcc;
+        }
+
+        const calgaryLogisticsAndInventoryEdge: Edge = {
+          id: `${calgaryLogisticsAndInventorySourceId}-${_id}`, // source-target
+          source: calgaryLogisticsAndInventorySourceId,
+          target: _id,
+          type: 'smoothstep',
+          animated: true,
+          // label: 'has subordinates',
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
+        calgaryLogisticsAndInventoryEdgesAcc.push(
+          calgaryLogisticsAndInventoryEdge
+        );
+
+        return calgaryLogisticsAndInventoryEdgesAcc;
+      },
+      [calgaryStoreLocationToCalgaryLogisticsAndInventoryEdge]
+    );
+
+    // vancouver store location node id
+    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Vancouver'
+    )?.id as string;
+
+    // vancouver logistics and inventory node id
+    const vancouverLogisticsAndInventorySourceId =
+      vancouverLogisticsAndInventoryStartingNode.id;
+
+    // edge from vancouver store location to vancouver logistics and inventory node
+    const vancouverStoreLocationToVancouverLogisticsAndInventoryEdge: Edge = {
+      id: `${vancouverStoreLocationSourceId}-${vancouverLogisticsAndInventorySourceId}`, // source-target
+      source: vancouverStoreLocationSourceId,
+      target: vancouverLogisticsAndInventorySourceId,
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    const vancouverLogisticsAndInventoryEdges =
+      logisticsAndInventoryDocs.reduce(
+        (
+          vancouverLogisticsAndInventoryEdgesAcc: Edge[],
+          userDocument: UserDocument
+        ) => {
+          const { _id, storeLocation } = userDocument;
+
+          if (storeLocation === 'Edmonton' || storeLocation === 'Calgary') {
+            return vancouverLogisticsAndInventoryEdgesAcc;
+          }
+
+          const vancouverLogisticsAndInventoryEdge: Edge = {
+            id: `${vancouverLogisticsAndInventorySourceId}-${_id}`, // source-target
+            source: vancouverLogisticsAndInventorySourceId,
+            target: _id,
+            type: 'smoothstep',
+            animated: true,
+            // label: 'has subordinates',
+            labelBgPadding: [8, 4],
+            labelBgBorderRadius: 4,
+            labelBgStyle: { fill: 'white' },
+            labelStyle: { fill: 'black', fontWeight: 700 },
+            style: { stroke: 'black' },
+          };
+          vancouverLogisticsAndInventoryEdgesAcc.push(
+            vancouverLogisticsAndInventoryEdge
+          );
+
+          return vancouverLogisticsAndInventoryEdgesAcc;
+        },
+        [vancouverStoreLocationToVancouverLogisticsAndInventoryEdge]
+      );
+
+    directoryDispatch({
+      type: directoryAction.setLogisticsAndInventoryNodes,
+      payload: logisticsAndInventoryDocsNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setLogisticsAndInventoryEdges,
+      payload: [
+        ...edmontonLogisticsAndInventoryEdges,
+        ...calgaryLogisticsAndInventoryEdges,
+        ...vancouverLogisticsAndInventoryEdges,
+      ],
+    });
+  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
+
   useEffect(() => {
     logState({
       state: directoryState,
@@ -870,12 +1591,18 @@ function Directory() {
           ...administrativeDepartmentNodes,
           ...salesAndMarketingNodes,
           ...informationTechnologyNodes,
+          ...repairTechniciansNodes,
+          ...fieldServiceTechniciansNodes,
+          ...logisticsAndInventoryNodes,
         ]}
         initialEdges={[
           ...executiveManagementEdges,
           ...administrativeDepartmentEdges,
           ...salesAndMarketingEdges,
           ...informationTechnologyEdges,
+          ...repairTechniciansEdges,
+          ...fieldServiceTechniciansEdges,
+          ...logisticsAndInventoryEdges,
         ]}
       />
     </Group>
