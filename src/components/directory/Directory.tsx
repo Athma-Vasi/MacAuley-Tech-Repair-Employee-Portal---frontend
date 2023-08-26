@@ -1293,10 +1293,9 @@ function Directory() {
     });
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end logistics and inventory department ━┛
-  }, [groupedByDepartment, padding, rowGap, layoutDirection]);
 
-  // customer service nodes and edges
-  useEffect(() => {
+    // ┏━ begin customer service department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
     const customerServiceDocs = groupedByDepartment['Customer Service'] ?? [];
 
     // starting customer service node for each store location
@@ -1309,14 +1308,12 @@ function Directory() {
         id: `customer-service-department-${store}`,
         type: 'default',
         data: { label: `${store} Customer Service Department` },
-        position: { x: 0, y: 0 },
+        position: nodePosition,
         style: { width: 500, height: 309 },
       };
 
       return initialCustomerServiceDepartmentDocNode;
     });
-
-    const nodePosition = { x: 0, y: 0 };
 
     const customerServiceDocsNodes = customerServiceDocs.reduce(
       (customerServiceNodesAcc: Node[], userDocument: UserDocument) => {
@@ -1346,29 +1343,16 @@ function Directory() {
       ]
     );
 
-    // edmonton store location node id
-    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Edmonton'
-    )?.id as string;
-
     // edmonton customer service node id
     const edmontonCustomerServiceSourceId =
       edmontonCustomerServiceStartingNode.id;
 
     // edge from edmonton store location to edmonton customer service node
     const edmontonStoreLocationToEdmontonCustomerServiceEdge: Edge = {
+      ...edgeDefaults,
       id: `${edmontonStoreLocationSourceId}-${edmontonCustomerServiceSourceId}`, // source-target
       source: edmontonStoreLocationSourceId,
       target: edmontonCustomerServiceSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const edmontonCustomerServiceEdges = customerServiceDocs.reduce(
@@ -1380,17 +1364,10 @@ function Directory() {
         }
 
         const edmontonCustomerServiceEdge: Edge = {
+          ...edgeDefaults,
           id: `${edmontonCustomerServiceSourceId}-${_id}`, // source-target
           source: edmontonCustomerServiceSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         edmontonCustomerServiceEdgesAcc.push(edmontonCustomerServiceEdge);
 
@@ -1399,29 +1376,16 @@ function Directory() {
       [edmontonStoreLocationToEdmontonCustomerServiceEdge]
     );
 
-    // calgary store location node id
-    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Calgary'
-    )?.id as string;
-
     // calgary customer service node id
     const calgaryCustomerServiceSourceId =
       calgaryCustomerServiceStartingNode.id;
 
     // edge from calgary store location to calgary customer service node
     const calgaryStoreLocationToCalgaryCustomerServiceEdge: Edge = {
+      ...edgeDefaults,
       id: `${calgaryStoreLocationSourceId}-${calgaryCustomerServiceSourceId}`, // source-target
       source: calgaryStoreLocationSourceId,
       target: calgaryCustomerServiceSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const calgaryCustomerServiceEdges = customerServiceDocs.reduce(
@@ -1433,17 +1397,10 @@ function Directory() {
         }
 
         const calgaryCustomerServiceEdge: Edge = {
+          ...edgeDefaults,
           id: `${calgaryCustomerServiceSourceId}-${_id}`, // source-target
           source: calgaryCustomerServiceSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         calgaryCustomerServiceEdgesAcc.push(calgaryCustomerServiceEdge);
 
@@ -1452,29 +1409,16 @@ function Directory() {
       [calgaryStoreLocationToCalgaryCustomerServiceEdge]
     );
 
-    // vancouver store location node id
-    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Vancouver'
-    )?.id as string;
-
     // vancouver customer service node id
     const vancouverCustomerServiceSourceId =
       vancouverCustomerServiceStartingNode.id;
 
     // edge from vancouver store location to vancouver customer service node
     const vancouverStoreLocationToVancouverCustomerServiceEdge: Edge = {
+      ...edgeDefaults,
       id: `${vancouverStoreLocationSourceId}-${vancouverCustomerServiceSourceId}`, // source-target
       source: vancouverStoreLocationSourceId,
       target: vancouverCustomerServiceSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const vancouverCustomerServiceEdges = customerServiceDocs.reduce(
@@ -1489,17 +1433,10 @@ function Directory() {
         }
 
         const vancouverCustomerServiceEdge: Edge = {
+          ...edgeDefaults,
           id: `${vancouverCustomerServiceSourceId}-${_id}`, // source-target
           source: vancouverCustomerServiceSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         vancouverCustomerServiceEdgesAcc.push(vancouverCustomerServiceEdge);
 
@@ -1521,7 +1458,15 @@ function Directory() {
         ...vancouverCustomerServiceEdges,
       ],
     });
-  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end customer service department ━┛
+  }, [
+    groupedByDepartment,
+    padding,
+    rowGap,
+    layoutDirection,
+    storeLocationsNodes,
+  ]);
 
   useEffect(() => {
     logState({
