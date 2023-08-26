@@ -234,8 +234,48 @@ function Directory() {
     });
   }, [groupedByStoreLocation, padding, rowGap]);
 
-  // set executive management nodes and edges
   useEffect(() => {
+    // ┏━ begin defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    const storeLocations = ['Edmonton', 'Calgary', 'Vancouver'];
+    const nodePosition = { x: 0, y: 0 };
+    const edgeDefaults: Edge = {
+      // will be overwritten
+      id: '',
+      source: '',
+      target: '',
+      // defaults shared across all edges
+      type: 'smoothstep',
+      animated: true,
+      // label: 'has subordinates',
+      labelBgPadding: [8, 4],
+      labelBgBorderRadius: 4,
+      labelBgStyle: { fill: 'white' },
+      labelStyle: { fill: 'black', fontWeight: 700 },
+      style: { stroke: 'black' },
+    };
+
+    // edmonton store location node id
+    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Edmonton'
+    )?.id as string;
+
+    // calgary store location node id
+    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Calgary'
+    )?.id as string;
+
+    // vancouver store location node id
+    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'storeLocation-Vancouver'
+    )?.id as string;
+
+    // ━━━━━ end defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+    // ┏━ begin executive management ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const executiveManagementDocs =
       groupedByDepartment['Executive Management'] ?? [];
 
@@ -254,7 +294,7 @@ function Directory() {
           type: jobPosition === 'Chief Executive Officer' ? 'input' : 'output',
           extent: 'parent',
           data: { label: displayProfileCard },
-          position: { x: 0, y: 0 },
+          position: nodePosition,
           style: { width: 500, height: 309 },
         };
         executiveManagementNodesAcc.push(executiveManagementNode);
@@ -279,19 +319,11 @@ function Directory() {
         }
 
         const executiveManagementEdge: Edge = {
+          ...edgeDefaults,
           id: `${ceoId}-${_id}`, // source-target
           source: ceoId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
-
         executiveManagementEdgesAcc.push(executiveManagementEdge);
 
         return executiveManagementEdgesAcc;
@@ -308,10 +340,11 @@ function Directory() {
       type: directoryAction.setExecutiveManagementEdges,
       payload: executiveManagementEdges,
     });
-  }, [groupedByDepartment, padding, rowGap, layoutDirection]);
 
-  // set administrative department nodes
-  useEffect(() => {
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end executive management ━┛
+
+    // ┏━ begin administrative department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
     const administrativeDepartmentDocs =
       groupedByDepartment.Administrative ?? [];
 
@@ -320,19 +353,17 @@ function Directory() {
       edmontonAdministrativeStartingNode,
       calgaryAdministrativeStartingNode,
       vancouverAdministrativeStartingNode,
-    ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+    ]: FlowNode[] = storeLocations.map((store) => {
       const initialAdministrativeDepartmentDocNode: FlowNode = {
         id: `administrative-department-${store}`,
         type: 'default',
         data: { label: `${store} Administrative Department` },
-        position: { x: 0, y: 0 },
+        position: nodePosition,
         style: { width: 500, height: 309 },
       };
 
       return initialAdministrativeDepartmentDocNode;
     });
-
-    const nodePosition = { x: 0, y: 0 };
 
     const administrativeDepartmentDocsNodes =
       administrativeDepartmentDocs.reduce(
@@ -341,7 +372,6 @@ function Directory() {
           userDocument: UserDocument
         ) => {
           const { _id } = userDocument;
-
           const displayProfileCard = returnDirectoryProfileCard({
             userDocument,
             padding,
@@ -367,29 +397,16 @@ function Directory() {
         ]
       );
 
-    // edmonton store location node id
-    const edmontonStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Edmonton'
-    )?.id as string;
-
     // edmonton administrative node id
     const edmontonAdministrativeSourceId =
       edmontonAdministrativeStartingNode.id;
 
     // edge from edmonton store location to edmonton administrative node
     const edmontonStoreLocationToEdmontonAdministrativeEdge: Edge = {
+      ...edgeDefaults,
       id: `${edmontonStoreLocationSourceId}-${edmontonAdministrativeSourceId}`, // source-target
       source: edmontonStoreLocationSourceId,
       target: edmontonAdministrativeSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const edmontonAdministrativeEdges = administrativeDepartmentDocs.reduce(
@@ -401,17 +418,10 @@ function Directory() {
         }
 
         const edmontonAdministrativeEdge: Edge = {
+          ...edgeDefaults,
           id: `${edmontonAdministrativeSourceId}-${_id}`, // source-target
           source: edmontonAdministrativeSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         edmontonAdministrativeEdgesAcc.push(edmontonAdministrativeEdge);
 
@@ -420,28 +430,15 @@ function Directory() {
       [edmontonStoreLocationToEdmontonAdministrativeEdge]
     );
 
-    // calgary store location node id
-    const calgaryStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Calgary'
-    )?.id as string;
-
     // calgary administrative node id
     const calgaryAdministrativeSourceId = calgaryAdministrativeStartingNode.id;
 
     // edge from calgary store location to calgary administrative node
     const calgaryStoreLocationToCalgaryAdministrativeEdge: Edge = {
+      ...edgeDefaults,
       id: `${calgaryStoreLocationSourceId}-${calgaryAdministrativeSourceId}`, // source-target
       source: calgaryStoreLocationSourceId,
       target: calgaryAdministrativeSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const calgaryAdministrativeEdges = administrativeDepartmentDocs.reduce(
@@ -453,17 +450,10 @@ function Directory() {
         }
 
         const calgaryAdministrativeEdge: Edge = {
+          ...edgeDefaults,
           id: `${calgaryAdministrativeSourceId}-${_id}`, // source-target
           source: calgaryAdministrativeSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         calgaryAdministrativeEdgesAcc.push(calgaryAdministrativeEdge);
 
@@ -472,29 +462,16 @@ function Directory() {
       [calgaryStoreLocationToCalgaryAdministrativeEdge]
     );
 
-    // vancouver store location node id
-    const vancouverStoreLocationSourceId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'storeLocation-Vancouver'
-    )?.id as string;
-
     // vancouver administrative node id
     const vancouverAdministrativeSourceId =
       vancouverAdministrativeStartingNode.id;
 
     // edge from vancouver store location to vancouver administrative node
     const vancouverStoreLocationToVancouverAdministrativeEdge: Edge = {
+      ...edgeDefaults,
       id: `${vancouverStoreLocationSourceId}-${vancouverAdministrativeSourceId}`, // source-target
       source: vancouverStoreLocationSourceId,
       target: vancouverAdministrativeSourceId,
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
     };
 
     const vancouverAdministrativeEdges = administrativeDepartmentDocs.reduce(
@@ -506,17 +483,10 @@ function Directory() {
         }
 
         const vancouverAdministrativeEdge: Edge = {
+          ...edgeDefaults,
           id: `${vancouverAdministrativeSourceId}-${_id}`, // source-target
           source: vancouverAdministrativeSourceId,
           target: _id,
-          type: 'smoothstep',
-          animated: true,
-          // label: 'has subordinates',
-          labelBgPadding: [8, 4],
-          labelBgBorderRadius: 4,
-          labelBgStyle: { fill: 'white' },
-          labelStyle: { fill: 'black', fontWeight: 700 },
-          style: { stroke: 'black' },
         };
         vancouverAdministrativeEdgesAcc.push(vancouverAdministrativeEdge);
 
@@ -538,7 +508,9 @@ function Directory() {
         ...vancouverAdministrativeEdges,
       ],
     });
-  }, [groupedByDepartment, padding, rowGap, storeLocationsNodes]);
+
+    // ━━━━ end administrative department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  }, [groupedByDepartment, padding, rowGap, layoutDirection]);
 
   // set sales and marketing nodes
   useEffect(() => {
