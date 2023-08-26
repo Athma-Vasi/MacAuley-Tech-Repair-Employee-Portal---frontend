@@ -5,7 +5,12 @@ import {
   StoreLocation,
 } from '../../types';
 import { groupByField } from '../../utils';
-import { DirectoryAction, DirectoryDispatch, DirectoryState } from './types';
+import {
+  DirectoryAction,
+  DirectoryDispatch,
+  DirectoryState,
+  DirectoryUserDocument,
+} from './types';
 
 const initialDirectoryState: DirectoryState = {
   groupedByDepartment: {} as Record<Department, UserDocument[]>,
@@ -102,7 +107,7 @@ function directoryReducer(
   switch (action.type) {
     case directoryAction.setGroupedByDepartment: {
       const users = action.payload;
-      const groupedByDepartment = groupByField<UserDocument>({
+      const groupedByDepartment = groupByField<DirectoryUserDocument>({
         objectArray: users,
         field: 'department',
       });
@@ -112,7 +117,7 @@ function directoryReducer(
 
     case directoryAction.setGroupedByJobPositon: {
       const users = action.payload;
-      const groupedByJobPositon = groupByField<UserDocument>({
+      const groupedByJobPositon = groupByField<DirectoryUserDocument>({
         objectArray: users,
         field: 'jobPosition',
       });
@@ -122,7 +127,7 @@ function directoryReducer(
 
     case directoryAction.setGroupedByStoreLocation: {
       const users = action.payload;
-      const groupedByStoreLocation = groupByField<UserDocument>({
+      const groupedByStoreLocation = groupByField<DirectoryUserDocument>({
         objectArray: users,
         field: 'storeLocation',
       });

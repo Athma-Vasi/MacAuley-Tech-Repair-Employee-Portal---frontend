@@ -8,13 +8,29 @@ import {
   UserDocument,
 } from '../../types';
 
+type DirectoryUserDocument = Omit<
+  UserDocument,
+  | 'password'
+  | '__v'
+  | 'dateOfBirth'
+  | 'address'
+  | 'contactNumber'
+  | 'emergencyContact'
+  | 'startDate'
+  | 'completedSurveys'
+  | 'email'
+>;
+
 type FetchUsersDirectoryResponse = ResourceRequestServerResponse<UserDocument>;
 
 type FlowNodesLayoutDirection = 'LR' | 'TB' | 'RL' | 'BT';
+
+type NodeDefaults = Record<Department, Node>;
+
 type DirectoryState = {
-  groupedByDepartment: Record<Department, UserDocument[]>;
-  groupedByJobPositon: Record<JobPosition, UserDocument[]>;
-  groupedByStoreLocation: Record<StoreLocation, UserDocument[]>;
+  groupedByDepartment: Record<Department, DirectoryUserDocument[]>;
+  groupedByJobPositon: Record<JobPosition, DirectoryUserDocument[]>;
+  groupedByStoreLocation: Record<StoreLocation, DirectoryUserDocument[]>;
 
   layoutDirection: FlowNodesLayoutDirection;
 
@@ -138,7 +154,7 @@ type DirectoryDispatch =
         | DirectoryAction['setGroupedByJobPositon']
         | DirectoryAction['setGroupedByStoreLocation'];
 
-      payload: UserDocument[];
+      payload: DirectoryUserDocument[];
     }
   | {
       type:
@@ -163,6 +179,7 @@ export type {
   DirectoryAction,
   DirectoryDispatch,
   DirectoryState,
+  DirectoryUserDocument,
   FetchUsersDirectoryResponse,
   FlowNodesLayoutDirection,
 };

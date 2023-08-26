@@ -19,10 +19,10 @@ import {
 import { Edge, Node } from 'reactflow';
 
 import { UserDocument } from '../../types';
-import { FlowNodesLayoutDirection } from './types';
+import { DirectoryUserDocument, FlowNodesLayoutDirection } from './types';
 
 type ReturnDirectoryProfileCardInput = {
-  userDocument: UserDocument;
+  userDocument: DirectoryUserDocument;
   padding: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   rowGap: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 };
@@ -38,24 +38,14 @@ function returnDirectoryProfileCard({
     profilePictureUrl,
     preferredPronouns,
     jobPosition,
-    department,
   } = userDocument;
 
   const createdSocialMediaIcons = (
     <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
-      <Tooltip label={`View ${firstName} ${lastName}'s Github profile`}>
-        <Group>
-          <TiSocialGithub
-            size={20}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
-        </Group>
-      </Tooltip>
-
       <Tooltip label={`View ${firstName} ${lastName}'s Mastodon profile`}>
         <Group>
           <TbBrandMastodon
-            size={20}
+            size={18}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -64,7 +54,7 @@ function returnDirectoryProfileCard({
       <Tooltip label={`View ${firstName} ${lastName}'s LinkedIn profile`}>
         <Group>
           <TiSocialLinkedin
-            size={20}
+            size={18}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -73,7 +63,7 @@ function returnDirectoryProfileCard({
       <Tooltip label={`View ${firstName} ${lastName}'s Flickr profile`}>
         <Group>
           <TiSocialFlickr
-            size={20}
+            size={18}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -82,7 +72,7 @@ function returnDirectoryProfileCard({
       <Tooltip label={`View ${firstName} ${lastName}'s Dribbble profile`}>
         <Group>
           <TiSocialDribbble
-            size={20}
+            size={18}
             style={{ cursor: 'pointer', color: 'dimgray' }}
           />
         </Group>
@@ -98,17 +88,22 @@ function returnDirectoryProfileCard({
         h="100%"
         style={{ outline: '1px solid teal' }}
         align="center"
-        p={padding}
+        // p={padding}
       >
-        <Stack align="center" px={padding} w="38%">
+        <Stack
+          align="center"
+          // px={padding}
+          w="38%"
+          style={{ outline: '1px solid brown' }}
+        >
           <Image
             src={profilePictureUrl}
             alt={`Picture of ${firstName} ${lastName}`}
-            width={96}
-            height={96}
+            width={72}
+            height={72}
             radius={9999}
             withPlaceholder
-            placeholder={<TbPhotoOff size={20} />}
+            placeholder={<TbPhotoOff size={18} />}
           />
           {createdSocialMediaIcons}
         </Stack>
@@ -118,18 +113,14 @@ function returnDirectoryProfileCard({
           align="center"
           justify="center"
           w="62%"
-          rowGap={rowGap}
           style={{ borderLeft: '1px solid #e0e0e0' }}
         >
           <Title order={4} color="dark">{`${firstName} ${lastName}`}</Title>
-          <Text color="dark" size="md">
-            {jobPosition}
-          </Text>
-          <Text color="dark" size="sm">
-            {department}
-          </Text>
-          <Text color="dark" size="sm">
+          <Text color="dark" size="sm" pb={padding}>
             {preferredPronouns}
+          </Text>
+          <Text color="dark" size="sm">
+            {jobPosition}
           </Text>
         </Flex>
       </Flex>
@@ -153,8 +144,8 @@ function returnDagreLayoutedElements({
   const dagreGraph = new dagre.graphlib.Graph();
   dagreGraph.setDefaultEdgeLabel(() => ({}));
 
-  const nodeWidth = 500;
-  const nodeHeight = 309;
+  const nodeWidth = 351;
+  const nodeHeight = 217;
 
   const getLayoutedElements = (
     nodes: Node[],

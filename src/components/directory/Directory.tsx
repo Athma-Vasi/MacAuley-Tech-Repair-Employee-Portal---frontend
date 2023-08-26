@@ -29,7 +29,7 @@ import { Edge, Node } from 'reactflow';
 import { authAction } from '../../context/authProvider';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
-import { Department, JobPosition, UserDocument } from '../../types';
+import { Department, JobPosition } from '../../types';
 import {
   addFieldsToObject,
   fetchData,
@@ -45,9 +45,10 @@ import {
   directoryReducer,
   initialDirectoryState,
 } from './state';
-import { FetchUsersDirectoryResponse } from './types';
+import { FetchUsersDirectoryResponse, DirectoryUserDocument } from './types';
 import { returnDirectoryProfileCard } from './utils';
 import { create } from 'domain';
+import localforage from 'localforage';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -97,7 +98,7 @@ function Directory() {
 
   const {
     globalDispatch,
-    globalState: { padding, rowGap, width },
+    globalState: { padding, rowGap },
   } = useGlobalState();
 
   const { showBoundary } = useErrorBoundary();
@@ -135,7 +136,8 @@ function Directory() {
 
       try {
         const response = await fetch(request);
-        const data = await response.json();
+        const data: { message: string; resourceData: DirectoryUserDocument[] } =
+          await response.json();
         if (!isMounted) {
           return;
         }
@@ -157,6 +159,12 @@ function Directory() {
           type: directoryAction.setGroupedByStoreLocation,
           payload: data.resourceData,
         });
+
+        // set data to local forage to prevent refetches on every refresh
+        localforage.setItem<DirectoryUserDocument[]>(
+          'directory',
+          data.resourceData
+        );
 
         console.log('data from fetchUsers()', data);
       } catch (error: any) {
@@ -207,7 +215,17 @@ function Directory() {
       }
     }
 
-    fetchUsers();
+    // only fetch if there is no directory in local forage
+    async function checkLocalForageBeforeFetch() {
+      const directory = await localforage.getItem('directory');
+      if (directory) {
+        return;
+      }
+
+      await fetchUsers();
+    }
+
+    checkLocalForageBeforeFetch();
 
     return () => {
       isMounted = false;
@@ -215,9 +233,55 @@ function Directory() {
     };
   }, []);
 
+  // on every mount, check if there is a directory in local forage
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkLocalForage() {
+      const directory = await localforage.getItem<DirectoryUserDocument[]>(
+        'directory'
+      );
+      if (!directory || !directory.length) {
+        return;
+      }
+      if (!isMounted) {
+        return;
+      }
+
+      // if present, set groupedByDepartment, groupedByJobPositon, groupedByStoreLocation from local forage
+      directoryDispatch({
+        type: directoryAction.setGroupedByDepartment,
+        payload: directory,
+      });
+      directoryDispatch({
+        type: directoryAction.setGroupedByJobPositon,
+        payload: directory,
+      });
+      directoryDispatch({
+        type: directoryAction.setGroupedByStoreLocation,
+        payload: directory,
+      });
+    }
+
+    checkLocalForage();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   // set store locations nodes and edges
   useEffect(() => {
     const storeLocations = ['Edmonton', 'Calgary', 'Vancouver'];
+
+    const initialStoreLocationNode: Node = {
+      id: 'starting-node-storeLocation',
+      type: 'default',
+      data: { label: 'Store Locations' },
+      position: { x: 0, y: 0 },
+      style: { width: 351, height: 217 },
+    };
 
     const storeLocationsNodes = storeLocations.reduce(
       (storeLocationsNodesAcc: Node[], storeLocation: string) => {
@@ -226,13 +290,13 @@ function Directory() {
           type: 'default',
           data: { label: storeLocation },
           position: { x: 0, y: 0 },
-          style: { width: 500, height: 309 },
+          style: { width: 351, height: 217 },
         };
         storeLocationsNodesAcc.push(storeLocationNode);
 
         return storeLocationsNodesAcc;
       },
-      []
+      [initialStoreLocationNode]
     );
 
     directoryDispatch({
@@ -243,13 +307,49 @@ function Directory() {
 
   // set store location edges after executive management nodes and edges are set
   useEffect(() => {
+    const startingStoreLocationNodeId = storeLocationsNodes.find(
+      (storeLocationNode: Node) =>
+        storeLocationNode.id === 'starting-node-storeLocation'
+    )?.id as string;
+
+    //  set edges from starting store location node to each store location node
+    const edgesFromStartingStoreLocationToEachStoreLocations =
+      storeLocationsNodes.reduce(
+        (storeLocationsEdgesAcc: Edge[], storeLocationNode: Node) => {
+          const { id: storeLocationNodeId } = storeLocationNode;
+
+          if (storeLocationNodeId === startingStoreLocationNodeId) {
+            return storeLocationsEdgesAcc;
+          }
+
+          const storeLocationEdge: Edge = {
+            id: `${startingStoreLocationNodeId}-${storeLocationNodeId}`,
+            source: startingStoreLocationNodeId,
+            target: storeLocationNodeId,
+            type: 'smoothstep',
+            animated: true,
+            // label: jobPosition,
+            labelBgPadding: [8, 4],
+            labelBgBorderRadius: 4,
+            labelBgStyle: { fill: 'white' },
+            labelStyle: { fill: 'black', fontWeight: 700 },
+            style: { stroke: 'black' },
+          };
+
+          storeLocationsEdgesAcc.push(storeLocationEdge);
+
+          return storeLocationsEdgesAcc;
+        },
+        []
+      );
+
     const executiveManagements =
       groupedByDepartment['Executive Management'] ?? [];
     // find all ids except ceo
     const executiveManagementIds = executiveManagements.reduce(
       (
         executiveManagementIdsAcc: Record<string, string>,
-        userDocument: UserDocument
+        userDocument: DirectoryUserDocument
       ) => {
         const { _id, jobPosition } = userDocument;
 
@@ -267,37 +367,28 @@ function Directory() {
       Object.create(null)
     );
 
-    const storeLocations = ['Edmonton', 'Calgary', 'Vancouver'];
-
-    // set edges from each executive managements to all store locations
+    // set edges from each executive managements (except ceo) to starting store location node
     const storeLocationsEdges = Object.entries(executiveManagementIds).reduce(
-      (
-        storeLocationsEdgesAcc: Edge[],
-        [jobPosition, executiveManagementId]
-      ) => {
-        const storeLocationsEdges = storeLocations.map((storeLocation) => {
-          const storeLocationEdge: Edge = {
-            id: `${executiveManagementId}-${storeLocation}`,
-            source: executiveManagementId,
-            target: `storeLocation-${storeLocation}`,
-            type: 'smoothstep',
-            animated: true,
-            // label: jobPosition,
-            labelBgPadding: [8, 4],
-            labelBgBorderRadius: 4,
-            labelBgStyle: { fill: 'white' },
-            labelStyle: { fill: 'black', fontWeight: 700 },
-            style: { stroke: 'black' },
-          };
+      (storeLocationsEdgesAcc: Edge[], [_, executiveManagementId]) => {
+        const storeLocationEdge: Edge = {
+          id: `${executiveManagementId}-${startingStoreLocationNodeId}`,
+          source: executiveManagementId,
+          target: startingStoreLocationNodeId,
+          type: 'smoothstep',
+          animated: true,
+          // label: jobPosition,
+          labelBgPadding: [8, 4],
+          labelBgBorderRadius: 4,
+          labelBgStyle: { fill: 'white' },
+          labelStyle: { fill: 'black', fontWeight: 700 },
+          style: { stroke: 'black' },
+        };
 
-          return storeLocationEdge;
-        });
-
-        storeLocationsEdgesAcc.push(...storeLocationsEdges);
+        storeLocationsEdgesAcc.push(storeLocationEdge);
 
         return storeLocationsEdgesAcc;
       },
-      []
+      [...edgesFromStartingStoreLocationToEachStoreLocations]
     );
 
     directoryDispatch({
@@ -313,10 +404,18 @@ function Directory() {
 
   // ┏━ begin main node & edges effect ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   useEffect(() => {
+    if (!storeLocationsNodes.length) {
+      return;
+    }
+    if (!Object.keys(groupedByDepartment).length) {
+      return;
+    }
+
     // ┏━ begin defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     const storeLocations = ['Edmonton', 'Calgary', 'Vancouver'];
     const nodePosition = { x: 0, y: 0 };
+    const nodeDimensions = { width: 351, height: 217 };
     const edgeDefaults: Edge = {
       // will be overwritten
       id: '',
@@ -360,23 +459,37 @@ function Directory() {
         groupedByDepartment['Executive Management'] ?? [];
 
       const executiveManagementDocsNodes = executiveManagementDocs.reduce(
-        (executiveManagementNodesAcc: Node[], userDocument: UserDocument) => {
+        (
+          executiveManagementNodesAcc: Node[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id, jobPosition } = userDocument;
 
-          const displayProfileCard = returnDirectoryProfileCard({
+          const directoryProfileCard = returnDirectoryProfileCard({
             userDocument,
             padding,
             rowGap,
           });
 
+          const displayProfileCard = (
+            <Group
+              w="100%"
+              h="100%"
+              onClick={() => {
+                console.log('executive management node clicked');
+              }}
+            >
+              {directoryProfileCard}
+            </Group>
+          );
+
           const executiveManagementNode: Node = {
             id: _id,
             type:
               jobPosition === 'Chief Executive Officer' ? 'input' : 'default',
-            extent: 'parent',
             data: { label: displayProfileCard },
             position: { x: 0, y: 0 },
-            style: { width: 500, height: 309 },
+            style: nodeDimensions,
           };
           executiveManagementNodesAcc.push(executiveManagementNode);
 
@@ -387,12 +500,15 @@ function Directory() {
 
       const ceoId =
         executiveManagementDocs.find(
-          (userDocument: UserDocument) =>
+          (userDocument: DirectoryUserDocument) =>
             userDocument.jobPosition === 'Chief Executive Officer'
         )?._id ?? '';
 
       const executiveManagementEdges = executiveManagementDocs.reduce(
-        (executiveManagementEdgesAcc: Edge[], userDocument: UserDocument) => {
+        (
+          executiveManagementEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id, jobPosition } = userDocument;
 
           if (jobPosition === 'Chief Executive Officer') {
@@ -431,16 +547,6 @@ function Directory() {
       const administrativeDepartmentDocs =
         groupedByDepartment.Administrative ?? [];
 
-      const xPosition =
-        layoutDirection === 'LR' || layoutDirection === 'RL'
-          ? 0
-          : 500 * 4 + 100;
-      const yPosition =
-        layoutDirection === 'TB' || layoutDirection === 'BT'
-          ? 0
-          : 309 * 4 + 100;
-      const startingPosition = { x: xPosition, y: yPosition };
-
       // starting administrative nodes for each store location
       const [
         edmontonAdministrativeStartingNode,
@@ -451,8 +557,8 @@ function Directory() {
           id: `administrative-department-${store}`,
           type: 'default',
           data: { label: `${store} Administrative Department` },
-          position: startingPosition,
-          style: { width: 500, height: 309 },
+          position: nodePosition,
+          style: nodeDimensions,
         };
 
         return initialAdministrativeDepartmentDocNode;
@@ -462,7 +568,7 @@ function Directory() {
         administrativeDepartmentDocs.reduce(
           (
             administrativeDepartmentNodesAcc: Node[],
-            userDocument: UserDocument
+            userDocument: DirectoryUserDocument
           ) => {
             const { _id } = userDocument;
             const displayProfileCard = returnDirectoryProfileCard({
@@ -476,7 +582,7 @@ function Directory() {
               type: 'output',
               data: { label: displayProfileCard },
               position: nodePosition,
-              style: { width: 500, height: 309 },
+              style: nodeDimensions,
             };
             administrativeDepartmentNodesAcc.push(administrativeDepartmentNode);
 
@@ -505,7 +611,7 @@ function Directory() {
       const edmontonAdministrativeEdges = administrativeDepartmentDocs.reduce(
         (
           edmontonAdministrativeEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -539,7 +645,10 @@ function Directory() {
       };
 
       const calgaryAdministrativeEdges = administrativeDepartmentDocs.reduce(
-        (calgaryAdministrativeEdgesAcc: Edge[], userDocument: UserDocument) => {
+        (
+          calgaryAdministrativeEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id, storeLocation } = userDocument;
 
           if (storeLocation === 'Vancouver' || storeLocation === 'Edmonton') {
@@ -574,7 +683,7 @@ function Directory() {
       const vancouverAdministrativeEdges = administrativeDepartmentDocs.reduce(
         (
           vancouverAdministrativeEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -623,20 +732,23 @@ function Directory() {
         edmontonSalesAndMarketingStartingNode,
         calgarySalesAndMarketingStartingNode,
         vancouverSalesAndMarketingStartingNode,
-      ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      ]: FlowNode[] = storeLocations.map((store) => {
         const initialSalesAndMarketingDepartmentDocNode: FlowNode = {
           id: `sales-and-marketing-department-${store}`,
           type: 'default',
           data: { label: `${store} Sales and Marketing Department` },
           position: nodePosition,
-          style: { width: 500, height: 309 },
+          style: nodeDimensions,
         };
 
         return initialSalesAndMarketingDepartmentDocNode;
       });
 
       const salesAndMarketingDocsNodes = salesAndMarketingDocs.reduce(
-        (salesAndMarketingNodesAcc: Node[], userDocument: UserDocument) => {
+        (
+          salesAndMarketingNodesAcc: Node[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id } = userDocument;
 
           const displayProfileCard = returnDirectoryProfileCard({
@@ -650,7 +762,7 @@ function Directory() {
             type: 'output',
             data: { label: displayProfileCard },
             position: nodePosition,
-            style: { width: 500, height: 309 },
+            style: nodeDimensions,
           };
           salesAndMarketingNodesAcc.push(salesAndMarketingNode);
 
@@ -678,7 +790,7 @@ function Directory() {
       const edmontonSalesAndMarketingEdges = salesAndMarketingDocs.reduce(
         (
           edmontonSalesAndMarketingEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -714,7 +826,7 @@ function Directory() {
       const calgarySalesAndMarketingEdges = salesAndMarketingDocs.reduce(
         (
           calgarySalesAndMarketingEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -750,7 +862,7 @@ function Directory() {
       const vancouverSalesAndMarketingEdges = salesAndMarketingDocs.reduce(
         (
           vancouverSalesAndMarketingEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -799,14 +911,17 @@ function Directory() {
       // starting information technology node
       const initialInformationTechnologyDepartmentDocNode: FlowNode = {
         id: 'information-technology-department',
-        type: 'input',
+        type: 'default',
         data: { label: 'Information Technology Department' },
         position: nodePosition,
-        style: { width: 500, height: 309 },
+        style: nodeDimensions,
       };
 
       const informationTechnologyDocsNodes = informationTechnologyDocs.reduce(
-        (informationTechnologyNodesAcc: Node[], userDocument: UserDocument) => {
+        (
+          informationTechnologyNodesAcc: Node[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id } = userDocument;
 
           const displayProfileCard = returnDirectoryProfileCard({
@@ -820,7 +935,7 @@ function Directory() {
             type: 'output',
             data: { label: displayProfileCard },
             position: nodePosition,
-            style: { width: 500, height: 309 },
+            style: nodeDimensions,
           };
           informationTechnologyNodesAcc.push(informationTechnologyNode);
 
@@ -834,7 +949,10 @@ function Directory() {
 
       // edges from information technology department to information technology nodes
       const informationTechnologyEdges = informationTechnologyDocs.reduce(
-        (informationTechnologyEdgesAcc: Edge[], userDocument: UserDocument) => {
+        (
+          informationTechnologyEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id } = userDocument;
 
           const informationTechnologyEdge: Edge = {
@@ -850,6 +968,53 @@ function Directory() {
         []
       );
 
+      const executiveManagements =
+        groupedByDepartment['Executive Management'] ?? [];
+      // find all ids except ceo
+      const executiveManagementIds = executiveManagements.reduce(
+        (
+          executiveManagementIdsAcc: Record<string, string>,
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          if (jobPosition === 'Chief Executive Officer') {
+            return executiveManagementIdsAcc;
+          }
+
+          executiveManagementIdsAcc = addFieldsToObject({
+            object: executiveManagementIdsAcc,
+            fieldValuesTuples: [[jobPosition, _id]],
+          });
+
+          return executiveManagementIdsAcc;
+        },
+        Object.create(null)
+      );
+
+      // edges from each executive managements (except ceo) to information technology department starting node
+      const informationTechnologyDepartmentEdges = Object.entries(
+        executiveManagementIds
+      ).reduce(
+        (
+          informationTechnologyDepartmentEdgesAcc: Edge[],
+          [_, executiveManagementId]
+        ) => {
+          const informationTechnologyDepartmentEdge: Edge = {
+            ...edgeDefaults,
+            id: `${executiveManagementId}-${informationTechnologyDepartmentSourceId}`, // source-target
+            source: executiveManagementId,
+            target: informationTechnologyDepartmentSourceId,
+          };
+          informationTechnologyDepartmentEdgesAcc.push(
+            informationTechnologyDepartmentEdge
+          );
+
+          return informationTechnologyDepartmentEdgesAcc;
+        },
+        [...informationTechnologyEdges]
+      );
+
       directoryDispatch({
         type: directoryAction.setInformationTechnologyNodes,
         payload: informationTechnologyDocsNodes,
@@ -857,7 +1022,7 @@ function Directory() {
 
       directoryDispatch({
         type: directoryAction.setInformationTechnologyEdges,
-        payload: informationTechnologyEdges,
+        payload: informationTechnologyDepartmentEdges,
       });
     }
 
@@ -874,20 +1039,23 @@ function Directory() {
         edmontonRepairTechniciansStartingNode,
         calgaryRepairTechniciansStartingNode,
         vancouverRepairTechniciansStartingNode,
-      ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      ]: FlowNode[] = storeLocations.map((store) => {
         const initialRepairTechniciansDepartmentDocNode: FlowNode = {
           id: `repair-technicians-department-${store}`,
           type: 'default',
           data: { label: `${store} Repair Technicians Department` },
           position: nodePosition,
-          style: { width: 500, height: 309 },
+          style: nodeDimensions,
         };
 
         return initialRepairTechniciansDepartmentDocNode;
       });
 
       const repairTechniciansDocsNodes = repairTechniciansDocs.reduce(
-        (repairTechniciansNodesAcc: Node[], userDocument: UserDocument) => {
+        (
+          repairTechniciansNodesAcc: Node[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id } = userDocument;
 
           const displayProfileCard = returnDirectoryProfileCard({
@@ -901,7 +1069,7 @@ function Directory() {
             type: 'output',
             data: { label: displayProfileCard },
             position: nodePosition,
-            style: { width: 500, height: 309 },
+            style: nodeDimensions,
           };
           repairTechniciansNodesAcc.push(repairTechniciansNode);
 
@@ -929,7 +1097,7 @@ function Directory() {
       const edmontonRepairTechniciansEdges = repairTechniciansDocs.reduce(
         (
           edmontonRepairTechniciansEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -965,7 +1133,7 @@ function Directory() {
       const calgaryRepairTechniciansEdges = repairTechniciansDocs.reduce(
         (
           calgaryRepairTechniciansEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -1001,7 +1169,7 @@ function Directory() {
       const vancouverRepairTechniciansEdges = repairTechniciansDocs.reduce(
         (
           vancouverRepairTechniciansEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -1052,13 +1220,13 @@ function Directory() {
         edmontonFieldServiceTechniciansStartingNode,
         calgaryFieldServiceTechniciansStartingNode,
         vancouverFieldServiceTechniciansStartingNode,
-      ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      ]: FlowNode[] = storeLocations.map((store) => {
         const initialFieldServiceTechniciansDepartmentDocNode: FlowNode = {
           id: `field-service-technicians-department-${store}`,
           type: 'default',
           data: { label: `${store} Field Service Technicians Department` },
           position: nodePosition,
-          style: { width: 500, height: 309 },
+          style: nodeDimensions,
         };
 
         return initialFieldServiceTechniciansDepartmentDocNode;
@@ -1068,7 +1236,7 @@ function Directory() {
         fieldServiceTechniciansDocs.reduce(
           (
             fieldServiceTechniciansNodesAcc: Node[],
-            userDocument: UserDocument
+            userDocument: DirectoryUserDocument
           ) => {
             const { _id } = userDocument;
 
@@ -1083,7 +1251,7 @@ function Directory() {
               type: 'output',
               data: { label: displayProfileCard },
               position: nodePosition,
-              style: { width: 500, height: 309 },
+              style: nodeDimensions,
             };
             fieldServiceTechniciansNodesAcc.push(fieldServiceTechniciansNode);
 
@@ -1112,7 +1280,7 @@ function Directory() {
         fieldServiceTechniciansDocs.reduce(
           (
             edmontonFieldServiceTechniciansEdgesAcc: Edge[],
-            userDocument: UserDocument
+            userDocument: DirectoryUserDocument
           ) => {
             const { _id, storeLocation } = userDocument;
 
@@ -1151,7 +1319,7 @@ function Directory() {
         fieldServiceTechniciansDocs.reduce(
           (
             calgaryFieldServiceTechniciansEdgesAcc: Edge[],
-            userDocument: UserDocument
+            userDocument: DirectoryUserDocument
           ) => {
             const { _id, storeLocation } = userDocument;
 
@@ -1191,7 +1359,7 @@ function Directory() {
         fieldServiceTechniciansDocs.reduce(
           (
             vancouverFieldServiceTechniciansEdgesAcc: Edge[],
-            userDocument: UserDocument
+            userDocument: DirectoryUserDocument
           ) => {
             const { _id, storeLocation } = userDocument;
 
@@ -1241,20 +1409,23 @@ function Directory() {
         edmontonLogisticsAndInventoryStartingNode,
         calgaryLogisticsAndInventoryStartingNode,
         vancouverLogisticsAndInventoryStartingNode,
-      ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      ]: FlowNode[] = storeLocations.map((store) => {
         const initialLogisticsAndInventoryDepartmentDocNode: FlowNode = {
           id: `logistics-and-inventory-department-${store}`,
           type: 'default',
           data: { label: `${store} Logistics and Inventory Department` },
           position: nodePosition,
-          style: { width: 500, height: 309 },
+          style: nodeDimensions,
         };
 
         return initialLogisticsAndInventoryDepartmentDocNode;
       });
 
       const logisticsAndInventoryDocsNodes = logisticsAndInventoryDocs.reduce(
-        (logisticsAndInventoryNodesAcc: Node[], userDocument: UserDocument) => {
+        (
+          logisticsAndInventoryNodesAcc: Node[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id } = userDocument;
 
           const displayProfileCard = returnDirectoryProfileCard({
@@ -1268,7 +1439,7 @@ function Directory() {
             type: 'output',
             data: { label: displayProfileCard },
             position: nodePosition,
-            style: { width: 500, height: 309 },
+            style: nodeDimensions,
           };
           logisticsAndInventoryNodesAcc.push(logisticsAndInventoryNode);
 
@@ -1297,7 +1468,7 @@ function Directory() {
         logisticsAndInventoryDocs.reduce(
           (
             edmontonLogisticsAndInventoryEdgesAcc: Edge[],
-            userDocument: UserDocument
+            userDocument: DirectoryUserDocument
           ) => {
             const { _id, storeLocation } = userDocument;
 
@@ -1336,7 +1507,7 @@ function Directory() {
         logisticsAndInventoryDocs.reduce(
           (
             calgaryLogisticsAndInventoryEdgesAcc: Edge[],
-            userDocument: UserDocument
+            userDocument: DirectoryUserDocument
           ) => {
             const { _id, storeLocation } = userDocument;
 
@@ -1375,7 +1546,7 @@ function Directory() {
         logisticsAndInventoryDocs.reduce(
           (
             vancouverLogisticsAndInventoryEdgesAcc: Edge[],
-            userDocument: UserDocument
+            userDocument: DirectoryUserDocument
           ) => {
             const { _id, storeLocation } = userDocument;
 
@@ -1424,20 +1595,23 @@ function Directory() {
         edmontonCustomerServiceStartingNode,
         calgaryCustomerServiceStartingNode,
         vancouverCustomerServiceStartingNode,
-      ]: FlowNode[] = ['Edmonton', 'Calgary', 'Vancouver'].map((store) => {
+      ]: FlowNode[] = storeLocations.map((store) => {
         const initialCustomerServiceDepartmentDocNode: FlowNode = {
           id: `customer-service-department-${store}`,
           type: 'default',
           data: { label: `${store} Customer Service Department` },
           position: nodePosition,
-          style: { width: 500, height: 309 },
+          style: nodeDimensions,
         };
 
         return initialCustomerServiceDepartmentDocNode;
       });
 
       const customerServiceDocsNodes = customerServiceDocs.reduce(
-        (customerServiceNodesAcc: Node[], userDocument: UserDocument) => {
+        (
+          customerServiceNodesAcc: Node[],
+          userDocument: DirectoryUserDocument
+        ) => {
           const { _id } = userDocument;
 
           const displayProfileCard = returnDirectoryProfileCard({
@@ -1451,7 +1625,7 @@ function Directory() {
             type: 'output',
             data: { label: displayProfileCard },
             position: nodePosition,
-            style: { width: 500, height: 309 },
+            style: nodeDimensions,
           };
           customerServiceNodesAcc.push(customerServiceNode);
 
@@ -1479,7 +1653,7 @@ function Directory() {
       const edmontonCustomerServiceEdges = customerServiceDocs.reduce(
         (
           edmontonCustomerServiceEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -1515,7 +1689,7 @@ function Directory() {
       const calgaryCustomerServiceEdges = customerServiceDocs.reduce(
         (
           calgaryCustomerServiceEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -1551,7 +1725,7 @@ function Directory() {
       const vancouverCustomerServiceEdges = customerServiceDocs.reduce(
         (
           vancouverCustomerServiceEdgesAcc: Edge[],
-          userDocument: UserDocument
+          userDocument: DirectoryUserDocument
         ) => {
           const { _id, storeLocation } = userDocument;
 
@@ -1595,13 +1769,13 @@ function Directory() {
       try {
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
-          setAdministrativeDepartmentEdgesAndNodes(),
+          // setAdministrativeDepartmentEdgesAndNodes(),
           // setSalesAndMarketingEdgesAndNodes(),
-          // setInformationTechnologyEdgesAndNodes(),
+          setInformationTechnologyEdgesAndNodes(),
           // setRepairTechniciansEdgesAndNodes(),
           // setFieldServiceTechniciansEdgesAndNodes(),
-          // setLogisticsAndInventoryEdgesAndNodes(),
-          // setCustomerServiceEdgesAndNodes(),
+          setLogisticsAndInventoryEdgesAndNodes(),
+          setCustomerServiceEdgesAndNodes(),
         ]);
       } catch (error: any) {
         // TODO: TRIGGER ERROR BOUNDARY HOOK
