@@ -20,6 +20,7 @@ import {
   TbTimelineEventPlus,
   TbUserCheck,
 } from 'react-icons/tb';
+import { CgDatabase } from 'react-icons/cg';
 import { TiThumbsUp } from 'react-icons/ti';
 import { useNavigate } from 'react-router-dom';
 
@@ -43,17 +44,27 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     />
   );
 
-  const displayUsersNavLink =
-    roles.includes('Admin') || roles.includes('Manager') ? (
-      <NavLink
-        label={<TextWrapper creatorInfoObj={{}}>Users</TextWrapper>}
-        description="Display list of all users"
-        icon={null}
-        onClick={() => {
-          navigate('/portal/users');
-        }}
-      />
-    ) : null;
+  // const displayUsersNavLink =
+  //   roles.includes('Admin') || roles.includes('Manager') ? (
+  //     <NavLink
+  //       label={<TextWrapper creatorInfoObj={{}}>Users</TextWrapper>}
+  //       description="Display list of all users"
+  //       icon={null}
+  //       onClick={() => {
+  //         navigate('/portal/users');
+  //       }}
+  //     />
+  //   ) : null;
+
+  const displayDirectoryNavLink = (
+    <NavLink
+      label={<TextWrapper creatorInfoObj={{}}>Directory</TextWrapper>}
+      icon={<CgDatabase />}
+      onClick={() => {
+        navigate('/portal/directory');
+      }}
+    />
+  );
 
   const displayNotesNavLink = (
     <NavLink
@@ -285,7 +296,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     >
       {displayHomeNavLink}
 
-      {displayUsersNavLink}
+      {displayDirectoryNavLink}
 
       {displayNotesNavLink}
 

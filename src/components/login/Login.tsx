@@ -77,9 +77,7 @@ function Login() {
     const controller = new AbortController();
 
     async function loginFormSubmit() {
-      const url: URL = urlBuilder({
-        path: '/auth/login',
-      });
+      const url: URL = new URL('http://localhost:3500/auth/login');
       const body = JSON.stringify({ username, password });
 
       const request: Request = new Request(url, {

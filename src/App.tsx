@@ -1,6 +1,7 @@
 import './index.css';
 
-import { MantineProvider } from '@mantine/core';
+import { MantineProvider, Text } from '@mantine/core';
+import { lazy, Suspense } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import {
@@ -12,9 +13,11 @@ import {
   DisplayAnnouncement,
   DisplayAnnouncements,
 } from './components/announcements';
+import {
+  CreateAnonymousRequest,
+  DisplayAnonymousRequests,
+} from './components/anonymousRequest';
 import { CreateBenefit, DisplayBenefits } from './components/benefits';
-import { Comment } from './components/comment';
-
 import { Dashboard } from './components/dashboard';
 import {
   CreateEndorsement,
@@ -22,15 +25,14 @@ import {
 } from './components/endorsements/';
 import { DisplayEvents, EventCreator } from './components/events';
 import {
-  DisplayExpenseClaims,
   CreateExpenseClaim,
+  DisplayExpenseClaims,
 } from './components/expenseClaim';
 import {
   CreateLeaveRequest,
   DisplayLeaveRequests,
 } from './components/leaveRequest';
 import { Login } from './components/login';
-import { NotesList } from './components/notesList';
 import { NotFound } from './components/notFound';
 import { PortalLayout } from './components/portalLayout';
 import {
@@ -45,24 +47,26 @@ import {
   DisplayRequestResources,
   RequestResource,
 } from './components/requestResource';
-import { RequireAuth } from './components/requireAuth';
 import { DisplaySurveys, SurveyBuilder } from './components/survey';
-import { Unauthorized } from './components/unauthorized';
-import { UsersList } from './components/usersList';
 import { useGlobalState } from './hooks/useGlobalState';
-import {
-  CreateAnonymousRequest,
-  DisplayAnonymousRequests,
-} from './components/anonymousRequest';
-import { ImageUpload } from './components/imageUpload';
-import { CustomNotification } from './components/customNotification';
-import { DisplayStatistics } from './components/displayStatistics';
-import { ResponsivePieChart } from './components/displayStatistics/responsivePieChart';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorFallback from './components/errorFallback/ErrorFallback';
+import { useAuth } from './hooks';
+
+// ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+const Directory = lazy(() => import('./components/directory/Directory'));
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end lazy loading ━┛
 
 function App() {
   const {
-    globalState: { colorScheme },
+    globalState: { colorScheme, errorState },
   } = useGlobalState();
+
+  const {
+    authState: { errorMessage },
+  } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -74,33 +78,6 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
-
-          {/* DEV PATHS - DELETE LATER*/}
-          {/* <Route
-            path="pie"
-            element={<ResponsivePieChart pieChartData={[]} />}
-          /> */}
-          {/* <Route path="expense-claim" element={<DisplayExpenseClaims />} /> */}
-          {/* <Route path="create-announcement" element={<CreateAnnouncement />} /> */}
-          {/* <Route path="create-benefit" element={<CreateBenefit />} /> */}
-          {/* <Route path="create-address-change" element={<AddressChange />} /> */}
-          {/* <Route path="create-leave-request" element={<CreateLeaveRequest />} /> */}
-          {/* <Route
-            path="display-leave-requests"
-            element={<DisplayLeaveRequests />}
-          /> */}
-          {/* <Route path="create-request-resource" element={<RequestResource />} /> */}
-          {/* <Route path="create-endorsement" element={<CreateEndorsement />} /> */}
-          {/* <Route path="create-printer-issue" element={<CreatePrinterIssue />} /> */}
-          {/* <Route path="create-referment" element={<CreateReferment />} /> */}
-          {/* <Route
-            path="create-anonymous-request"
-            element={<CreateAnonymousRequest />}
-          /> */}
-          {/* <Route path="event-creator" element={<EventCreator />} /> */}
-          {/* <Route path="create-expense-claim" element={<ExpenseClaim />} /> */}
-          {/* <Route path="survey-builder" element={<SurveyBuilder />} /> */}
-          {/* <Route path="create-comment" element={<CreateComment />} /> */}
         </Route>
 
         {/* these are protected routes */}
@@ -130,6 +107,24 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="dashboard" element={<Dashboard />} />
 
+          {/* directory */}
+
+          <Route path="directory">
+            <Route
+              index
+              element={
+                <ErrorBoundary
+                  fallback={<ErrorFallback errorState={errorState} />}
+                >
+                  <Suspense fallback={<div>Generic Loading message...</div>}>
+                    <Directory />
+                  </Suspense>
+                </ErrorBoundary>
+              }
+            />
+          </Route>
+
+          {/* repair-note */}
           <Route path="repair-note">
             <Route index element={<DisplayRepairNotes />} />
             <Route path="display" element={<DisplayRepairNotes />} />

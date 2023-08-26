@@ -59,8 +59,7 @@ function GlobalProvider({ children }: GlobalProviderProps) {
     });
   }, [scrollXDirection, scrollYDirection]);
 
-  // useMemo is used to prevent unnecessary re-renders of the context provider value object when the global state changes
-  // (which would cause all components that use the global context to re-render)
+  // useMemo is used to prevent unnecessary re-renders of the context provider
   const globalContextValue = useMemo(
     () => ({
       globalState,

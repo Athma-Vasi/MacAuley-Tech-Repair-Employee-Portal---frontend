@@ -34,7 +34,7 @@ function Dashboard() {
 
     async function getUserData() {
       const url: URL = urlBuilder({
-        path: `/api/v1/users/${userId}`,
+        path: `user/${userId}`,
       });
 
       const request: Request = new Request(url, {

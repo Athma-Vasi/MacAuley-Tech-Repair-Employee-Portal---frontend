@@ -18,6 +18,12 @@ const initialGlobalState: GlobalState = {
 
   userDocument: null,
   announcementDocument: null,
+
+  errorState: {
+    isError: false,
+    errorMessage: '',
+    errorCallback: () => {},
+  },
 };
 
 const globalAction: GlobalAction = {
@@ -31,6 +37,8 @@ const globalAction: GlobalAction = {
 
   setUserDocument: 'setUserDocument',
   setAnnouncementDocument: 'setAnnouncementDocument',
+
+  setErrorState: 'setErrorState',
 };
 
 function globalReducer(
@@ -60,6 +68,9 @@ function globalReducer(
       return { ...state, userDocument: action.payload };
     case globalAction.setAnnouncementDocument:
       return { ...state, announcementDocument: action.payload };
+
+    case globalAction.setErrorState:
+      return { ...state, errorState: action.payload };
 
     default:
       return state;

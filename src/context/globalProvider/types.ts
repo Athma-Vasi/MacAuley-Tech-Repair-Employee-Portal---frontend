@@ -1,13 +1,19 @@
 import { ReactNode } from 'react';
 
+import { AnnouncementDocument } from '../../components/announcements/create/types';
 import {
   ScrollXDirection,
   ScrollYDirection,
 } from '../../hooks/useScrollDirection';
 import { QueryResponseData, UserDocument } from '../../types';
-import { AnnouncementDocument } from '../../components/announcements/create/types';
 
 type ColorScheme = 'light' | 'dark';
+
+type ErrorState = {
+  isError: boolean;
+  errorMessage: string;
+  errorCallback: () => void;
+};
 
 type GlobalState = {
   width: number;
@@ -20,6 +26,8 @@ type GlobalState = {
 
   userDocument: Omit<UserDocument, '__v' | 'password'> | null;
   announcementDocument: QueryResponseData<AnnouncementDocument> | null;
+
+  errorState: ErrorState;
 };
 
 type GlobalAction = {
@@ -33,6 +41,8 @@ type GlobalAction = {
 
   setUserDocument: 'setUserDocument';
   setAnnouncementDocument: 'setAnnouncementDocument';
+
+  setErrorState: 'setErrorState';
 };
 
 type WindowDimensions = {
@@ -77,6 +87,10 @@ type GlobalDispatch =
   | {
       type: GlobalAction['setAnnouncementDocument'];
       payload: QueryResponseData<AnnouncementDocument>;
+    }
+  | {
+      type: GlobalAction['setErrorState'];
+      payload: ErrorState;
     };
 
 type GlobalReducer = (
@@ -92,9 +106,75 @@ export type {
   ColorScheme,
   GlobalAction,
   GlobalDispatch,
+  ErrorState,
   GlobalProviderProps,
   GlobalReducer,
   GlobalState,
   ScrollAxesDirection,
   WindowDimensions,
 };
+
+/**
+ * type RenderState = {
+  error: {
+    isError: boolean;
+    errorMessage: string;
+    errorCallback: () => void;
+  };
+
+  loading: {
+    isLoading: boolean;
+    loadingMessage: string;
+    loadingCallback: () => void;
+  };
+
+  submitting: {
+    isSubmitting: boolean;
+    submittingMessage: string;
+    submittingCallback: () => void;
+  };
+
+  successfull: {
+    isSuccessfull: boolean;
+    successfullMessage: string;
+    successfullCallback: () => void;
+  };
+};
+
+type ComponentNames =
+  | 'addressChange'
+  | 'announcement'
+  | 'anonymousRequest'
+  | 'benefit'
+  | 'comment'
+  | 'dashboard'
+  | 'directory'
+  | 'fileUpload'
+  | 'displayQueryDesktop'
+  | 'displayQueryMobile'
+  | 'displayResource'
+  | 'displayStatistic'
+  | 'endorsement'
+  | 'event'
+  | 'expenseClaim'
+  | 'imageUpload'
+  | 'leaveRequest'
+  | 'login'
+  | 'portalFooter'
+  | 'portalNavbar'
+  | 'portalHeader'
+  | 'printerIssue'
+  | 'referment'
+  | 'register'
+  | 'repairNote'
+  | 'requestResource'
+  | 'requireAuth'
+  | 'survey';
+
+type ComponentsRenderStatePayload = {
+  component: ComponentNames;
+  renderState: Partial<RenderState>;
+};
+
+type ComponentsRenderState = Record<ComponentNames, RenderState>;
+ */

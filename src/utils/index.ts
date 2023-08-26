@@ -1,3 +1,5 @@
+import { constants } from 'zlib';
+
 import { ComponentQueryData } from '../components/queryBuilder';
 import type { Country, PostalCode, QueryResponseData } from '../types';
 
@@ -1021,7 +1023,7 @@ function urlBuilder({
   protocol = 'http',
   query = '',
 }: UrlBuilderInput): URL {
-  return new URL(`${protocol}://${host}:${port}${path}${query}${hash}`);
+  return new URL(`${protocol}://${host}:${port}/api/v1/${path}${query}${hash}`);
 }
 
 type GroupQueryResponseInput<Doc> = {
@@ -1111,26 +1113,11 @@ function groupQueryResponse<Doc>({
     })
   );
 
-  console.group('groupQueryResponse');
-  console.log('groupBySelection', groupBySelection);
-  console.log('currentSelectionData', currentSelectionData);
-  console.log('queryResponseData', queryResponseData);
-  console.log('groupedBy', groupedBy);
-  console.log('sortedGroupedBy', sortedGroupedBy);
-  console.groupEnd();
-
   // this allows user to see the rest of the values for groupedBy selection
   const groupedByKeysSet = new Set(Object.keys(Object.fromEntries(groupedBy)));
   const rest = currentSelectionData.reduce(
     (acc: Record<string, number>[], key) => {
       if (!groupedByKeysSet.has(key) && key.length > 0) {
-        // const newObj = Object.create(null);
-        // Object.defineProperty(newObj, key, {
-        //   value: 0,
-        //   enumerable: true,
-        //   writable: true,
-        //   configurable: true,
-        // });
         const newObj = addFieldsToObject({
           object: Object.create(null),
           fieldValuesTuples: [[key, 0]],
@@ -1321,11 +1308,109 @@ function commentIdsTreeOpsIterative({
   return null;
 }
 
+function wrapPromise<T>(promise: Promise<T>): { read: () => T } {
+  let status = 'pending';
+  let result: T;
+  const suspender = promise.then(
+    (res: T) => {
+      status = 'success';
+      result = res;
+    },
+    (error: any) => {
+      status = 'error';
+      result = error;
+    }
+  );
+
+  function read(): T {
+    switch (status) {
+      case 'pending':
+        throw suspender;
+      case 'error':
+        throw result;
+      case 'success':
+        return result;
+      default:
+        throw new Error('This should be impossible', { cause: 'wrapPromise' });
+    }
+  }
+
+  return { read };
+}
+
+type FetchDataInput = {
+  request: Request;
+  wrapPromise: <T>(promise: Promise<T>) => { read: () => T };
+};
+type FetchData = <T>(input: FetchDataInput) => { read: () => T };
+function fetchData<T>({ request, wrapPromise }: FetchDataInput) {
+  const promise = fetch(request)
+    .then((res) => res.json())
+    .then((data) => data) as Promise<T>;
+
+  return wrapPromise<T>(promise);
+}
+
+type GroupByFieldInput<
+  Obj extends Record<string | symbol | number, any> = Record<
+    string | symbol | number,
+    any
+  >
+> = {
+  objectArray: Obj[];
+  field?: keyof Obj;
+  callbackFn?: (obj: Obj) => string | number;
+};
+
+function groupByField<
+  Obj extends Record<string | symbol | number, any> = Record<
+    string | symbol | number,
+    any
+  >
+>({
+  objectArray,
+  field,
+  callbackFn,
+}: GroupByFieldInput<Obj>): Record<string | symbol | number, Obj[]> {
+  if (!objectArray.length) {
+    return Object.create(null);
+  }
+  if (!field && !callbackFn) {
+    return Object.create(null);
+  }
+
+  return objectArray.reduce(
+    (objAcc: Record<string | symbol | number, Obj[]>, obj) => {
+      const objField = callbackFn ? callbackFn(obj) : field ? obj[field] : '';
+      const propertyDescriptor: PropertyDescriptor = {
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      };
+
+      Object.hasOwn(objAcc, objField)
+        ? Object.defineProperty(objAcc, objField, {
+            value: [...objAcc[objField], obj],
+            ...propertyDescriptor,
+          })
+        : Object.defineProperty(objAcc, objField, {
+            value: [obj],
+            ...propertyDescriptor,
+          });
+
+      return objAcc;
+    },
+    Object.create(null)
+  );
+}
+
 export {
   addFieldsToObject,
   commentIdsTreeOpsIterative,
+  fetchData,
   filterFieldsFromObject,
   formatDate,
+  groupByField,
   groupQueryResponse,
   logState,
   replaceLastCommaWithAnd,
@@ -1353,9 +1438,10 @@ export {
   returnUsernameRegexValidationText,
   splitCamelCase,
   urlBuilder,
+  wrapPromise,
 };
 
-export type { RegexValidationProps };
+export type { FetchData, RegexValidationProps };
 
 /**
  * // function grabCommentDFSRecursive(
