@@ -27,6 +27,11 @@ type FlowNodesLayoutDirection = 'LR' | 'TB' | 'RL' | 'BT';
 
 type NodeDefaults = Record<Department, Node>;
 
+type DepartmentsNodesAndEdges = Record<
+  Department | 'Store Locations',
+  { nodes: Node[]; edges: Edge[] }
+>;
+
 type DirectoryState = {
   groupedByDepartment: Record<Department, DirectoryUserDocument[]>;
   groupedByJobPositon: Record<JobPosition, DirectoryUserDocument[]>;
@@ -38,32 +43,8 @@ type DirectoryState = {
 
   layoutDirection: FlowNodesLayoutDirection;
 
-  storeLocationsNodes: Node[];
-  storeLocationsEdges: Edge[];
-
-  executiveManagementNodes: Node[];
-  executiveManagementEdges: Edge[];
-
-  administrativeDepartmentNodes: Node[];
-  administrativeDepartmentEdges: Edge[];
-
-  salesAndMarketingNodes: Node[];
-  salesAndMarketingEdges: Edge[];
-
-  informationTechnologyNodes: Node[];
-  informationTechnologyEdges: Edge[];
-
-  repairTechniciansNodes: Node[];
-  repairTechniciansEdges: Edge[];
-
-  fieldServiceTechniciansNodes: Node[];
-  fieldServiceTechniciansEdges: Edge[];
-
-  logisticsAndInventoryNodes: Node[];
-  logisticsAndInventoryEdges: Edge[];
-
-  customerServiceNodes: Node[];
-  customerServiceEdges: Edge[];
+  triggerSetDepartmentsNodesAndEdges: boolean;
+  departmentsNodesAndEdges: DepartmentsNodesAndEdges;
 
   isError: boolean;
   errorMessage: string;
@@ -86,32 +67,8 @@ type DirectoryAction = {
 
   setLayoutDirection: 'setLayoutDirection';
 
-  setStoreLocationsNodes: 'setStoreLocationsNodes';
-  setStoreLocationsEdges: 'setStoreLocationsEdges';
-
-  setExecutiveManagementNodes: 'setExecutiveManagementNodes';
-  setExecutiveManagementEdges: 'setExecutiveManagementEdges';
-
-  setAdministrativeDepartmentNodes: 'setAdministrativeDepartmentNodes';
-  setAdministrativeDepartmentEdges: 'setAdministrativeDepartmentEdges';
-
-  setSalesAndMarketingNodes: 'setSalesAndMarketingNodes';
-  setSalesAndMarketingEdges: 'setSalesAndMarketingEdges';
-
-  setInformationTechnologyNodes: 'setInformationTechnologyNodes';
-  setInformationTechnologyEdges: 'setInformationTechnologyEdges';
-
-  setRepairTechniciansNodes: 'setRepairTechniciansNodes';
-  setRepairTechniciansEdges: 'setRepairTechniciansEdges';
-
-  setFieldServiceTechniciansNodes: 'setFieldServiceTechniciansNodes';
-  setFieldServiceTechniciansEdges: 'setFieldServiceTechniciansEdges';
-
-  setLogisticsAndInventoryNodes: 'setLogisticsAndInventoryNodes';
-  setLogisticsAndInventoryEdges: 'setLogisticsAndInventoryEdges';
-
-  setCustomerServiceNodes: 'setCustomerServiceNodes';
-  setCustomerServiceEdges: 'setCustomerServiceEdges';
+  setTriggerSetDepartmentsNodesAndEdges: 'setTriggerSetDepartmentsNodesAndEdges';
+  setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -123,34 +80,14 @@ type DirectoryAction = {
   setSuccessMessage: 'setSuccessMessage';
 };
 
+type SetDepartmentNodesAndEdgesPayload =
+  | { department: Department | 'Store Locations'; kind: 'nodes'; data: Node[] }
+  | { department: Department | 'Store Locations'; kind: 'edges'; data: Edge[] };
+
 type DirectoryDispatch =
   | {
-      type:
-        | DirectoryAction['setStoreLocationsNodes']
-        | DirectoryAction['setExecutiveManagementNodes']
-        | DirectoryAction['setAdministrativeDepartmentNodes']
-        | DirectoryAction['setSalesAndMarketingNodes']
-        | DirectoryAction['setInformationTechnologyNodes']
-        | DirectoryAction['setRepairTechniciansNodes']
-        | DirectoryAction['setFieldServiceTechniciansNodes']
-        | DirectoryAction['setLogisticsAndInventoryNodes']
-        | DirectoryAction['setCustomerServiceNodes'];
-
-      payload: Node[];
-    }
-  | {
-      type:
-        | DirectoryAction['setStoreLocationsEdges']
-        | DirectoryAction['setExecutiveManagementEdges']
-        | DirectoryAction['setAdministrativeDepartmentEdges']
-        | DirectoryAction['setSalesAndMarketingEdges']
-        | DirectoryAction['setInformationTechnologyEdges']
-        | DirectoryAction['setRepairTechniciansEdges']
-        | DirectoryAction['setFieldServiceTechniciansEdges']
-        | DirectoryAction['setLogisticsAndInventoryEdges']
-        | DirectoryAction['setCustomerServiceEdges'];
-
-      payload: Edge[];
+      type: DirectoryAction['setDepartmentsNodesAndEdges'];
+      payload: SetDepartmentNodesAndEdgesPayload;
     }
   | {
       type: DirectoryAction['setFilterByDepartment'];
@@ -178,6 +115,7 @@ type DirectoryDispatch =
     }
   | {
       type:
+        | DirectoryAction['setTriggerSetDepartmentsNodesAndEdges']
         | DirectoryAction['setIsError']
         | DirectoryAction['setIsLoading']
         | DirectoryAction['setIsSubmitting']
@@ -196,6 +134,7 @@ type DirectoryDispatch =
     };
 
 export type {
+  DepartmentsNodesAndEdges,
   DirectoryAction,
   DirectoryDispatch,
   DirectoryState,

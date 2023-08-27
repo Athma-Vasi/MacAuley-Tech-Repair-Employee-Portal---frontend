@@ -6,6 +6,7 @@ import {
 } from '../../types';
 import { groupByField } from '../../utils';
 import {
+  DepartmentsNodesAndEdges,
   DirectoryAction,
   DirectoryDispatch,
   DirectoryState,
@@ -23,32 +24,8 @@ const initialDirectoryState: DirectoryState = {
 
   layoutDirection: 'LR',
 
-  storeLocationsNodes: [],
-  storeLocationsEdges: [],
-
-  executiveManagementNodes: [],
-  executiveManagementEdges: [],
-
-  administrativeDepartmentNodes: [],
-  administrativeDepartmentEdges: [],
-
-  salesAndMarketingNodes: [],
-  salesAndMarketingEdges: [],
-
-  informationTechnologyNodes: [],
-  informationTechnologyEdges: [],
-
-  repairTechniciansNodes: [],
-  repairTechniciansEdges: [],
-
-  fieldServiceTechniciansNodes: [],
-  fieldServiceTechniciansEdges: [],
-
-  logisticsAndInventoryNodes: [],
-  logisticsAndInventoryEdges: [],
-
-  customerServiceNodes: [],
-  customerServiceEdges: [],
+  triggerSetDepartmentsNodesAndEdges: false,
+  departmentsNodesAndEdges: {} as DepartmentsNodesAndEdges,
 
   isError: false,
   errorMessage: '',
@@ -71,32 +48,9 @@ const directoryAction: DirectoryAction = {
 
   setLayoutDirection: 'setLayoutDirection',
 
-  setStoreLocationsNodes: 'setStoreLocationsNodes',
-  setStoreLocationsEdges: 'setStoreLocationsEdges',
-
-  setExecutiveManagementNodes: 'setExecutiveManagementNodes',
-  setExecutiveManagementEdges: 'setExecutiveManagementEdges',
-
-  setAdministrativeDepartmentNodes: 'setAdministrativeDepartmentNodes',
-  setAdministrativeDepartmentEdges: 'setAdministrativeDepartmentEdges',
-
-  setSalesAndMarketingNodes: 'setSalesAndMarketingNodes',
-  setSalesAndMarketingEdges: 'setSalesAndMarketingEdges',
-
-  setInformationTechnologyNodes: 'setInformationTechnologyNodes',
-  setInformationTechnologyEdges: 'setInformationTechnologyEdges',
-
-  setRepairTechniciansNodes: 'setRepairTechniciansNodes',
-  setRepairTechniciansEdges: 'setRepairTechniciansEdges',
-
-  setFieldServiceTechniciansNodes: 'setFieldServiceTechniciansNodes',
-  setFieldServiceTechniciansEdges: 'setFieldServiceTechniciansEdges',
-
-  setLogisticsAndInventoryNodes: 'setLogisticsAndInventoryNodes',
-  setLogisticsAndInventoryEdges: 'setLogisticsAndInventoryEdges',
-
-  setCustomerServiceNodes: 'setCustomerServiceNodes',
-  setCustomerServiceEdges: 'setCustomerServiceEdges',
+  setTriggerSetDepartmentsNodesAndEdges:
+    'setTriggerSetDepartmentsNodesAndEdges',
+  setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -120,7 +74,10 @@ function directoryReducer(
         field: 'department',
       });
 
-      return { ...state, groupedByDepartment };
+      return {
+        ...state,
+        groupedByDepartment,
+      };
     }
 
     case directoryAction.setGroupedByJobPositon: {
@@ -152,34 +109,36 @@ function directoryReducer(
         return { ...state, filterByDepartment };
       }
 
-      // // only show the selected department
-      // const filteredGroupedByDepartment = Object.entries(
-      //   state.groupedByDepartment
-      // ).reduce(
-      //   (
-      //     filteredAcc: Record<Department, DirectoryUserDocument[]>,
-      //     [department, users]
-      //   ) => {
-      //     if (department !== filterByDepartment) {
-      //       return filteredAcc;
-      //     }
+      // only show the selected department
+      const propertyDescriptor: PropertyDescriptor = {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      };
 
-      //     Object.defineProperty(filteredAcc, department, {
-      //       value: users,
-      //       enumerable: true,
-      //       configurable: true,
-      //       writable: true,
-      //     });
+      const departmentsNodesAndEdges = Object.entries(
+        state.departmentsNodesAndEdges
+      ).reduce(
+        (
+          departmentsNodesAndEdgesAcc: DepartmentsNodesAndEdges,
+          [department, { nodes, edges }]
+        ) => {
+          if (department === filterByDepartment) {
+            Object.defineProperty(departmentsNodesAndEdgesAcc, department, {
+              ...propertyDescriptor,
+              value: { nodes, edges },
+            });
+          }
 
-      //     return filteredAcc;
-      //   },
-      //   Object.create(null)
-      // );
+          return departmentsNodesAndEdgesAcc;
+        },
+        Object.create(null)
+      );
 
       return {
         ...state,
         filterByDepartment,
-        // groupedByDepartment: filteredGroupedByDepartment,
+        departmentsNodesAndEdges,
       };
     }
 
@@ -192,59 +151,58 @@ function directoryReducer(
     case directoryAction.setLayoutDirection:
       return { ...state, layoutDirection: action.payload };
 
-    case directoryAction.setStoreLocationsNodes:
-      return { ...state, storeLocationsNodes: action.payload };
+    case directoryAction.setTriggerSetDepartmentsNodesAndEdges:
+      return { ...state, triggerSetDepartmentsNodesAndEdges: action.payload };
 
-    case directoryAction.setStoreLocationsEdges:
-      return { ...state, storeLocationsEdges: action.payload };
+    case directoryAction.setDepartmentsNodesAndEdges: {
+      const { department, kind, data } = action.payload;
 
-    case directoryAction.setExecutiveManagementNodes:
-      return { ...state, executiveManagementNodes: action.payload };
+      // a shallow copy of the object
+      // however, the nodes and edges are built anew upon each change of these state values: groupedByDepartment, any of the filters, and layoutDirection, padding, rowGap and storeLocationsNodes
+      const departmentsNodesAndEdges = state.departmentsNodesAndEdges;
 
-    case directoryAction.setExecutiveManagementEdges:
-      return { ...state, executiveManagementEdges: action.payload };
+      const propertyDescriptor: PropertyDescriptor = {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      };
 
-    case directoryAction.setAdministrativeDepartmentNodes:
-      return { ...state, administrativeDepartmentNodes: action.payload };
+      // set trigger to false
+      const triggerSetDepartmentsNodesAndEdges = false;
 
-    case directoryAction.setAdministrativeDepartmentEdges:
-      return { ...state, administrativeDepartmentEdges: action.payload };
-
-    case directoryAction.setSalesAndMarketingNodes:
-      return { ...state, salesAndMarketingNodes: action.payload };
-
-    case directoryAction.setSalesAndMarketingEdges:
-      return { ...state, salesAndMarketingEdges: action.payload };
-
-    case directoryAction.setInformationTechnologyNodes:
-      return { ...state, informationTechnologyNodes: action.payload };
-
-    case directoryAction.setInformationTechnologyEdges:
-      return { ...state, informationTechnologyEdges: action.payload };
-
-    case directoryAction.setRepairTechniciansNodes:
-      return { ...state, repairTechniciansNodes: action.payload };
-
-    case directoryAction.setRepairTechniciansEdges:
-      return { ...state, repairTechniciansEdges: action.payload };
-
-    case directoryAction.setFieldServiceTechniciansNodes:
-      return { ...state, fieldServiceTechniciansNodes: action.payload };
-
-    case directoryAction.setFieldServiceTechniciansEdges:
-      return { ...state, fieldServiceTechniciansEdges: action.payload };
-
-    case directoryAction.setLogisticsAndInventoryNodes:
-      return { ...state, logisticsAndInventoryNodes: action.payload };
-
-    case directoryAction.setLogisticsAndInventoryEdges:
-      return { ...state, logisticsAndInventoryEdges: action.payload };
-
-    case directoryAction.setCustomerServiceNodes:
-      return { ...state, customerServiceNodes: action.payload };
-
-    case directoryAction.setCustomerServiceEdges:
-      return { ...state, customerServiceEdges: action.payload };
+      switch (kind) {
+        case 'nodes': {
+          Object.defineProperty(departmentsNodesAndEdges, department, {
+            ...propertyDescriptor,
+            value: {
+              ...departmentsNodesAndEdges[department],
+              nodes: data,
+            },
+          });
+          return {
+            ...state,
+            departmentsNodesAndEdges,
+            triggerSetDepartmentsNodesAndEdges,
+          };
+        }
+        case 'edges': {
+          Object.defineProperty(departmentsNodesAndEdges, department, {
+            ...propertyDescriptor,
+            value: {
+              ...departmentsNodesAndEdges[department],
+              edges: data,
+            },
+          });
+          return {
+            ...state,
+            departmentsNodesAndEdges,
+            triggerSetDepartmentsNodesAndEdges,
+          };
+        }
+        default:
+          return state;
+      }
+    }
 
     case directoryAction.setIsError:
       return { ...state, isError: action.payload };

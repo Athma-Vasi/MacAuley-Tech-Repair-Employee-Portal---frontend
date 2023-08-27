@@ -80,33 +80,8 @@ function Directory() {
     filterByStoreLocation,
 
     layoutDirection,
-
-    storeLocationsNodes,
-    storeLocationsEdges,
-
-    executiveManagementNodes,
-    executiveManagementEdges,
-
-    administrativeDepartmentNodes,
-    administrativeDepartmentEdges,
-
-    salesAndMarketingNodes,
-    salesAndMarketingEdges,
-
-    informationTechnologyNodes,
-    informationTechnologyEdges,
-
-    repairTechniciansNodes,
-    repairTechniciansEdges,
-
-    fieldServiceTechniciansNodes,
-    fieldServiceTechniciansEdges,
-
-    logisticsAndInventoryNodes,
-    logisticsAndInventoryEdges,
-
-    customerServiceNodes,
-    customerServiceEdges,
+    triggerSetDepartmentsNodesAndEdges,
+    departmentsNodesAndEdges,
   } = directoryState;
 
   const {
@@ -267,6 +242,7 @@ function Directory() {
         type: directoryAction.setGroupedByDepartment,
         payload: directory,
       });
+
       directoryDispatch({
         type: directoryAction.setGroupedByJobPositon,
         payload: directory,
@@ -284,10 +260,23 @@ function Directory() {
     };
   }, []);
 
-  // set store locations nodes and edges
+  // once groupedByDepartment is set, trigger effect to set departments nodes and edges
   useEffect(() => {
-    const storeLocations = ['Edmonton', 'Calgary', 'Vancouver'];
+    if (!Object.keys(groupedByDepartment).length) {
+      return;
+    }
 
+    directoryDispatch({
+      type: directoryAction.setTriggerSetDepartmentsNodesAndEdges,
+      payload: true,
+    });
+  }, [groupedByDepartment]);
+
+  useEffect(() => {
+    if (!Object.keys(groupedByDepartment).length) {
+      return;
+    }
+    // ┏━ begin store locations node creation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     const initialStoreLocationNode: Node = {
       id: 'starting-node-storeLocation',
       type: 'default',
@@ -296,7 +285,7 @@ function Directory() {
       style: { width: 351, height: 217 },
     };
 
-    const storeLocationsNodes = storeLocations.reduce(
+    const storeLocationsNodes = STORE_LOCATION_DATA.reduce(
       (storeLocationsNodesAcc: Node[], storeLocation: string) => {
         const storeLocationNode: Node = {
           id: `storeLocation-${storeLocation}`,
@@ -313,19 +302,17 @@ function Directory() {
     );
 
     directoryDispatch({
-      type: directoryAction.setStoreLocationsNodes,
-      payload: storeLocationsNodes,
+      type: directoryAction.setDepartmentsNodesAndEdges,
+      payload: {
+        department: 'Store Locations',
+        kind: 'nodes',
+        data: storeLocationsNodes,
+      },
     });
-  }, [groupedByStoreLocation, padding, rowGap]);
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end store locations node creation ━┛
 
-  // set store location edges after executive management nodes and edges are set
-  useEffect(() => {
-    const startingStoreLocationNodeId = storeLocationsNodes.find(
-      (storeLocationNode: Node) =>
-        storeLocationNode.id === 'starting-node-storeLocation'
-    )?.id as string;
-
-    //  set edges from starting store location node to each store location node
+    // ┏━ begin store locations edge creation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const startingStoreLocationNodeId = initialStoreLocationNode.id;
     const edgesFromStartingStoreLocationToEachStoreLocations =
       storeLocationsNodes.reduce(
         (storeLocationsEdgesAcc: Edge[], storeLocationNode: Node) => {
@@ -405,19 +392,127 @@ function Directory() {
     );
 
     directoryDispatch({
-      type: directoryAction.setStoreLocationsEdges,
-      payload: storeLocationsEdges,
+      type: directoryAction.setDepartmentsNodesAndEdges,
+      payload: {
+        department: 'Store Locations',
+        kind: 'edges',
+        data: storeLocationsEdges,
+      },
     });
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end store locations edge creation ━┛
   }, [
-    executiveManagementNodes,
-    executiveManagementEdges,
-    groupedByDepartment,
-    storeLocationsNodes,
+    filterByDepartment,
+    filterByJobPosition,
+    filterByStoreLocation,
+    layoutDirection,
+    triggerSetDepartmentsNodesAndEdges,
   ]);
+
+  // // set store location edges after executive management nodes and edges are set
+  // useEffect(() => {
+  //   if (!Object.keys(groupedByDepartment).length) {
+  //     return;
+  //   }
+
+  //   const storeLocationsNodes =
+  //     departmentsNodesAndEdges['Store Locations'].nodes ?? [];
+  //   const startingStoreLocationNodeId = storeLocationsNodes.find(
+  //     (storeLocationNode: Node) =>
+  //       storeLocationNode.id === 'starting-node-storeLocation'
+  //   )?.id as string;
+
+  //   //  set edges from starting store location node to each store location node
+  //   const edgesFromStartingStoreLocationToEachStoreLocations =
+  //     storeLocationsNodes.reduce(
+  //       (storeLocationsEdgesAcc: Edge[], storeLocationNode: Node) => {
+  //         const { id: storeLocationNodeId } = storeLocationNode;
+
+  //         if (storeLocationNodeId === startingStoreLocationNodeId) {
+  //           return storeLocationsEdgesAcc;
+  //         }
+
+  //         const storeLocationEdge: Edge = {
+  //           id: `${startingStoreLocationNodeId}-${storeLocationNodeId}`,
+  //           source: startingStoreLocationNodeId,
+  //           target: storeLocationNodeId,
+  //           type: 'smoothstep',
+  //           animated: true,
+  //           // label: jobPosition,
+  //           labelBgPadding: [8, 4],
+  //           labelBgBorderRadius: 4,
+  //           labelBgStyle: { fill: 'white' },
+  //           labelStyle: { fill: 'black', fontWeight: 700 },
+  //           style: { stroke: 'black' },
+  //         };
+
+  //         storeLocationsEdgesAcc.push(storeLocationEdge);
+
+  //         return storeLocationsEdgesAcc;
+  //       },
+  //       []
+  //     );
+
+  //   const executiveManagements =
+  //     groupedByDepartment['Executive Management'] ?? [];
+  //   // find all ids except ceo
+  //   const executiveManagementIds = executiveManagements.reduce(
+  //     (
+  //       executiveManagementIdsAcc: Record<string, string>,
+  //       userDocument: DirectoryUserDocument
+  //     ) => {
+  //       const { _id, jobPosition } = userDocument;
+
+  //       if (jobPosition === 'Chief Executive Officer') {
+  //         return executiveManagementIdsAcc;
+  //       }
+
+  //       executiveManagementIdsAcc = addFieldsToObject({
+  //         object: executiveManagementIdsAcc,
+  //         fieldValuesTuples: [[jobPosition, _id]],
+  //       });
+
+  //       return executiveManagementIdsAcc;
+  //     },
+  //     Object.create(null)
+  //   );
+
+  //   // set edges from each executive managements (except ceo) to starting store location node
+  //   const storeLocationsEdges = Object.entries(executiveManagementIds).reduce(
+  //     (storeLocationsEdgesAcc: Edge[], [_, executiveManagementId]) => {
+  //       const storeLocationEdge: Edge = {
+  //         id: `${executiveManagementId}-${startingStoreLocationNodeId}`,
+  //         source: executiveManagementId,
+  //         target: startingStoreLocationNodeId,
+  //         type: 'smoothstep',
+  //         animated: true,
+  //         // label: jobPosition,
+  //         labelBgPadding: [8, 4],
+  //         labelBgBorderRadius: 4,
+  //         labelBgStyle: { fill: 'white' },
+  //         labelStyle: { fill: 'black', fontWeight: 700 },
+  //         style: { stroke: 'black' },
+  //       };
+
+  //       storeLocationsEdgesAcc.push(storeLocationEdge);
+
+  //       return storeLocationsEdgesAcc;
+  //     },
+  //     [...edgesFromStartingStoreLocationToEachStoreLocations]
+  //   );
+
+  //   directoryDispatch({
+  //     type: directoryAction.setDepartmentsNodesAndEdges,
+  //     payload: {
+  //       department: 'Store Locations',
+  //       kind: 'edges',
+  //       data: storeLocationsEdges,
+  //     },
+  //   });
+  // }, [groupedByDepartment, departmentsNodesAndEdges['Store Locations'].nodes]);
 
   // ┏━ begin main node & edges effect ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   useEffect(() => {
-    if (!storeLocationsNodes.length) {
+    if (!Object.keys(departmentsNodesAndEdges).length) {
       return;
     }
     if (!Object.keys(groupedByDepartment).length) {
@@ -444,6 +539,13 @@ function Directory() {
       labelStyle: { fill: 'black', fontWeight: 700 },
       style: { stroke: 'black' },
     };
+
+    const storeLocationsNodes =
+      departmentsNodesAndEdges?.['Store Locations']?.nodes;
+
+    if (!storeLocationsNodes) {
+      return;
+    }
 
     // edmonton store location node id
     const edmontonStoreLocationSourceId = storeLocationsNodes.find(
@@ -542,13 +644,21 @@ function Directory() {
       );
 
       directoryDispatch({
-        type: directoryAction.setExecutiveManagementNodes,
-        payload: executiveManagementDocsNodes,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Executive Management',
+          kind: 'nodes',
+          data: executiveManagementDocsNodes,
+        },
       });
 
       directoryDispatch({
-        type: directoryAction.setExecutiveManagementEdges,
-        payload: executiveManagementEdges,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Executive Management',
+          kind: 'edges',
+          data: executiveManagementEdges,
+        },
       });
     }
 
@@ -718,17 +828,25 @@ function Directory() {
       );
 
       directoryDispatch({
-        type: directoryAction.setAdministrativeDepartmentNodes,
-        payload: administrativeDepartmentDocsNodes,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Administrative',
+          kind: 'nodes',
+          data: administrativeDepartmentDocsNodes,
+        },
       });
 
       directoryDispatch({
-        type: directoryAction.setAdministrativeDepartmentEdges,
-        payload: [
-          ...edmontonAdministrativeEdges,
-          ...calgaryAdministrativeEdges,
-          ...vancouverAdministrativeEdges,
-        ],
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Administrative',
+          kind: 'edges',
+          data: [
+            ...edmontonAdministrativeEdges,
+            ...calgaryAdministrativeEdges,
+            ...vancouverAdministrativeEdges,
+          ],
+        },
       });
     }
 
@@ -899,17 +1017,25 @@ function Directory() {
       );
 
       directoryDispatch({
-        type: directoryAction.setSalesAndMarketingNodes,
-        payload: salesAndMarketingDocsNodes,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Sales and Marketing',
+          kind: 'nodes',
+          data: salesAndMarketingDocsNodes,
+        },
       });
 
       directoryDispatch({
-        type: directoryAction.setSalesAndMarketingEdges,
-        payload: [
-          ...edmontonSalesAndMarketingEdges,
-          ...calgarySalesAndMarketingEdges,
-          ...vancouverSalesAndMarketingEdges,
-        ],
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Sales and Marketing',
+          kind: 'edges',
+          data: [
+            ...edmontonSalesAndMarketingEdges,
+            ...calgarySalesAndMarketingEdges,
+            ...vancouverSalesAndMarketingEdges,
+          ],
+        },
       });
     }
 
@@ -1029,13 +1155,21 @@ function Directory() {
       );
 
       directoryDispatch({
-        type: directoryAction.setInformationTechnologyNodes,
-        payload: informationTechnologyDocsNodes,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Information Technology',
+          kind: 'nodes',
+          data: informationTechnologyDocsNodes,
+        },
       });
 
       directoryDispatch({
-        type: directoryAction.setInformationTechnologyEdges,
-        payload: informationTechnologyDepartmentEdges,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Information Technology',
+          kind: 'edges',
+          data: informationTechnologyDepartmentEdges,
+        },
       });
     }
 
@@ -1206,17 +1340,25 @@ function Directory() {
       );
 
       directoryDispatch({
-        type: directoryAction.setRepairTechniciansNodes,
-        payload: repairTechniciansDocsNodes,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Repair Technicians',
+          kind: 'nodes',
+          data: repairTechniciansDocsNodes,
+        },
       });
 
       directoryDispatch({
-        type: directoryAction.setRepairTechniciansEdges,
-        payload: [
-          ...edmontonRepairTechniciansEdges,
-          ...calgaryRepairTechniciansEdges,
-          ...vancouverRepairTechniciansEdges,
-        ],
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Repair Technicians',
+          kind: 'edges',
+          data: [
+            ...edmontonRepairTechniciansEdges,
+            ...calgaryRepairTechniciansEdges,
+            ...vancouverRepairTechniciansEdges,
+          ],
+        },
       });
     }
 
@@ -1396,17 +1538,25 @@ function Directory() {
         );
 
       directoryDispatch({
-        type: directoryAction.setFieldServiceTechniciansNodes,
-        payload: fieldServiceTechniciansDocsNodes,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Field Service Technicians',
+          kind: 'nodes',
+          data: fieldServiceTechniciansDocsNodes,
+        },
       });
 
       directoryDispatch({
-        type: directoryAction.setFieldServiceTechniciansEdges,
-        payload: [
-          ...edmontonFieldServiceTechniciansEdges,
-          ...calgaryFieldServiceTechniciansEdges,
-          ...vancouverFieldServiceTechniciansEdges,
-        ],
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Field Service Technicians',
+          kind: 'edges',
+          data: [
+            ...edmontonFieldServiceTechniciansEdges,
+            ...calgaryFieldServiceTechniciansEdges,
+            ...vancouverFieldServiceTechniciansEdges,
+          ],
+        },
       });
     }
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━ end field service technicians department ━┛
@@ -1583,17 +1733,25 @@ function Directory() {
         );
 
       directoryDispatch({
-        type: directoryAction.setLogisticsAndInventoryNodes,
-        payload: logisticsAndInventoryDocsNodes,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Logistics and Inventory',
+          kind: 'nodes',
+          data: logisticsAndInventoryDocsNodes,
+        },
       });
 
       directoryDispatch({
-        type: directoryAction.setLogisticsAndInventoryEdges,
-        payload: [
-          ...edmontonLogisticsAndInventoryEdges,
-          ...calgaryLogisticsAndInventoryEdges,
-          ...vancouverLogisticsAndInventoryEdges,
-        ],
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Logistics and Inventory',
+          kind: 'edges',
+          data: [
+            ...edmontonLogisticsAndInventoryEdges,
+            ...calgaryLogisticsAndInventoryEdges,
+            ...vancouverLogisticsAndInventoryEdges,
+          ],
+        },
       });
     }
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end logistics and inventory department ━┛
@@ -1760,17 +1918,25 @@ function Directory() {
       );
 
       directoryDispatch({
-        type: directoryAction.setCustomerServiceNodes,
-        payload: customerServiceDocsNodes,
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Customer Service',
+          kind: 'nodes',
+          data: customerServiceDocsNodes,
+        },
       });
 
       directoryDispatch({
-        type: directoryAction.setCustomerServiceEdges,
-        payload: [
-          ...edmontonCustomerServiceEdges,
-          ...calgaryCustomerServiceEdges,
-          ...vancouverCustomerServiceEdges,
-        ],
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Customer Service',
+          kind: 'edges',
+          data: [
+            ...edmontonCustomerServiceEdges,
+            ...calgaryCustomerServiceEdges,
+            ...vancouverCustomerServiceEdges,
+          ],
+        },
       });
     }
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end customer service department ━┛
@@ -1782,11 +1948,11 @@ function Directory() {
       try {
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
-          // setAdministrativeDepartmentEdgesAndNodes(),
-          // setSalesAndMarketingEdgesAndNodes(),
+          setAdministrativeDepartmentEdgesAndNodes(),
+          setSalesAndMarketingEdgesAndNodes(),
           setInformationTechnologyEdgesAndNodes(),
-          // setRepairTechniciansEdgesAndNodes(),
-          // setFieldServiceTechniciansEdgesAndNodes(),
+          setRepairTechniciansEdgesAndNodes(),
+          setFieldServiceTechniciansEdgesAndNodes(),
           setLogisticsAndInventoryEdgesAndNodes(),
           setCustomerServiceEdgesAndNodes(),
         ]);
@@ -1800,11 +1966,11 @@ function Directory() {
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end concurrent fn calls ━┛
   }, [
-    groupedByDepartment,
-    padding,
-    rowGap,
+    triggerSetDepartmentsNodesAndEdges,
+    filterByDepartment,
+    filterByJobPosition,
+    filterByStoreLocation,
     layoutDirection,
-    storeLocationsNodes,
   ]);
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end main nodes & edges effect ━┛
 
@@ -1890,31 +2056,29 @@ function Directory() {
     </Flex>
   );
 
+  const [initialNodes, initialEdges] = Object.entries(
+    departmentsNodesAndEdges
+  ).reduce(
+    (initialNodesAndEdgesAcc: [Node[], Edge[]], departmentNodesAndEdges) => {
+      const [_, nodesAndEdges] = departmentNodesAndEdges;
+
+      const departmentNodes = nodesAndEdges.nodes;
+      const departmentEdges = nodesAndEdges.edges;
+
+      departmentNodes.forEach((node: Node) => {
+        initialNodesAndEdgesAcc[0].push(node);
+      });
+      departmentEdges.forEach((edge: Edge) => {
+        initialNodesAndEdgesAcc[1].push(edge);
+      });
+
+      return initialNodesAndEdgesAcc;
+    },
+    [[], []]
+  );
+
   const displayNodeBuilder = (
-    <NodeBuilder
-      initialNodes={[
-        ...storeLocationsNodes,
-        ...executiveManagementNodes,
-        ...administrativeDepartmentNodes,
-        ...salesAndMarketingNodes,
-        ...informationTechnologyNodes,
-        ...repairTechniciansNodes,
-        ...fieldServiceTechniciansNodes,
-        ...logisticsAndInventoryNodes,
-        ...customerServiceNodes,
-      ]}
-      initialEdges={[
-        ...storeLocationsEdges,
-        ...executiveManagementEdges,
-        ...administrativeDepartmentEdges,
-        ...salesAndMarketingEdges,
-        ...informationTechnologyEdges,
-        ...repairTechniciansEdges,
-        ...fieldServiceTechniciansEdges,
-        ...logisticsAndInventoryEdges,
-        ...customerServiceEdges,
-      ]}
-    />
+    <NodeBuilder initialNodes={initialNodes} initialEdges={initialEdges} />
   );
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input display ━┛
