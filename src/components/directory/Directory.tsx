@@ -237,12 +237,11 @@ function Directory() {
         return;
       }
 
-      // if present, set groupedByDepartment, groupedByJobPositon, groupedByStoreLocation from local forage
+      // if present, set following state from local forage
       directoryDispatch({
         type: directoryAction.setGroupedByDepartment,
         payload: directory,
       });
-
       directoryDispatch({
         type: directoryAction.setGroupedByJobPositon,
         payload: directory,
@@ -407,108 +406,6 @@ function Directory() {
     layoutDirection,
     triggerSetDepartmentsNodesAndEdges,
   ]);
-
-  // // set store location edges after executive management nodes and edges are set
-  // useEffect(() => {
-  //   if (!Object.keys(groupedByDepartment).length) {
-  //     return;
-  //   }
-
-  //   const storeLocationsNodes =
-  //     departmentsNodesAndEdges['Store Locations'].nodes ?? [];
-  //   const startingStoreLocationNodeId = storeLocationsNodes.find(
-  //     (storeLocationNode: Node) =>
-  //       storeLocationNode.id === 'starting-node-storeLocation'
-  //   )?.id as string;
-
-  //   //  set edges from starting store location node to each store location node
-  //   const edgesFromStartingStoreLocationToEachStoreLocations =
-  //     storeLocationsNodes.reduce(
-  //       (storeLocationsEdgesAcc: Edge[], storeLocationNode: Node) => {
-  //         const { id: storeLocationNodeId } = storeLocationNode;
-
-  //         if (storeLocationNodeId === startingStoreLocationNodeId) {
-  //           return storeLocationsEdgesAcc;
-  //         }
-
-  //         const storeLocationEdge: Edge = {
-  //           id: `${startingStoreLocationNodeId}-${storeLocationNodeId}`,
-  //           source: startingStoreLocationNodeId,
-  //           target: storeLocationNodeId,
-  //           type: 'smoothstep',
-  //           animated: true,
-  //           // label: jobPosition,
-  //           labelBgPadding: [8, 4],
-  //           labelBgBorderRadius: 4,
-  //           labelBgStyle: { fill: 'white' },
-  //           labelStyle: { fill: 'black', fontWeight: 700 },
-  //           style: { stroke: 'black' },
-  //         };
-
-  //         storeLocationsEdgesAcc.push(storeLocationEdge);
-
-  //         return storeLocationsEdgesAcc;
-  //       },
-  //       []
-  //     );
-
-  //   const executiveManagements =
-  //     groupedByDepartment['Executive Management'] ?? [];
-  //   // find all ids except ceo
-  //   const executiveManagementIds = executiveManagements.reduce(
-  //     (
-  //       executiveManagementIdsAcc: Record<string, string>,
-  //       userDocument: DirectoryUserDocument
-  //     ) => {
-  //       const { _id, jobPosition } = userDocument;
-
-  //       if (jobPosition === 'Chief Executive Officer') {
-  //         return executiveManagementIdsAcc;
-  //       }
-
-  //       executiveManagementIdsAcc = addFieldsToObject({
-  //         object: executiveManagementIdsAcc,
-  //         fieldValuesTuples: [[jobPosition, _id]],
-  //       });
-
-  //       return executiveManagementIdsAcc;
-  //     },
-  //     Object.create(null)
-  //   );
-
-  //   // set edges from each executive managements (except ceo) to starting store location node
-  //   const storeLocationsEdges = Object.entries(executiveManagementIds).reduce(
-  //     (storeLocationsEdgesAcc: Edge[], [_, executiveManagementId]) => {
-  //       const storeLocationEdge: Edge = {
-  //         id: `${executiveManagementId}-${startingStoreLocationNodeId}`,
-  //         source: executiveManagementId,
-  //         target: startingStoreLocationNodeId,
-  //         type: 'smoothstep',
-  //         animated: true,
-  //         // label: jobPosition,
-  //         labelBgPadding: [8, 4],
-  //         labelBgBorderRadius: 4,
-  //         labelBgStyle: { fill: 'white' },
-  //         labelStyle: { fill: 'black', fontWeight: 700 },
-  //         style: { stroke: 'black' },
-  //       };
-
-  //       storeLocationsEdgesAcc.push(storeLocationEdge);
-
-  //       return storeLocationsEdgesAcc;
-  //     },
-  //     [...edgesFromStartingStoreLocationToEachStoreLocations]
-  //   );
-
-  //   directoryDispatch({
-  //     type: directoryAction.setDepartmentsNodesAndEdges,
-  //     payload: {
-  //       department: 'Store Locations',
-  //       kind: 'edges',
-  //       data: storeLocationsEdges,
-  //     },
-  //   });
-  // }, [groupedByDepartment, departmentsNodesAndEdges['Store Locations'].nodes]);
 
   // ┏━ begin main node & edges effect ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   useEffect(() => {
@@ -1949,11 +1846,11 @@ function Directory() {
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
           setAdministrativeDepartmentEdgesAndNodes(),
-          setSalesAndMarketingEdgesAndNodes(),
-          setInformationTechnologyEdgesAndNodes(),
-          setRepairTechniciansEdgesAndNodes(),
-          setFieldServiceTechniciansEdgesAndNodes(),
-          setLogisticsAndInventoryEdgesAndNodes(),
+          // setSalesAndMarketingEdgesAndNodes(),
+          // setInformationTechnologyEdgesAndNodes(),
+          // setRepairTechniciansEdgesAndNodes(),
+          // setFieldServiceTechniciansEdgesAndNodes(),
+          // setLogisticsAndInventoryEdgesAndNodes(),
           setCustomerServiceEdgesAndNodes(),
         ]);
       } catch (error: any) {
@@ -2091,3 +1988,107 @@ function Directory() {
 }
 
 export default Directory;
+
+/**
+ * // // set store location edges after executive management nodes and edges are set
+  // useEffect(() => {
+  //   if (!Object.keys(groupedByDepartment).length) {
+  //     return;
+  //   }
+
+  //   const storeLocationsNodes =
+  //     departmentsNodesAndEdges['Store Locations'].nodes ?? [];
+  //   const startingStoreLocationNodeId = storeLocationsNodes.find(
+  //     (storeLocationNode: Node) =>
+  //       storeLocationNode.id === 'starting-node-storeLocation'
+  //   )?.id as string;
+
+  //   //  set edges from starting store location node to each store location node
+  //   const edgesFromStartingStoreLocationToEachStoreLocations =
+  //     storeLocationsNodes.reduce(
+  //       (storeLocationsEdgesAcc: Edge[], storeLocationNode: Node) => {
+  //         const { id: storeLocationNodeId } = storeLocationNode;
+
+  //         if (storeLocationNodeId === startingStoreLocationNodeId) {
+  //           return storeLocationsEdgesAcc;
+  //         }
+
+  //         const storeLocationEdge: Edge = {
+  //           id: `${startingStoreLocationNodeId}-${storeLocationNodeId}`,
+  //           source: startingStoreLocationNodeId,
+  //           target: storeLocationNodeId,
+  //           type: 'smoothstep',
+  //           animated: true,
+  //           // label: jobPosition,
+  //           labelBgPadding: [8, 4],
+  //           labelBgBorderRadius: 4,
+  //           labelBgStyle: { fill: 'white' },
+  //           labelStyle: { fill: 'black', fontWeight: 700 },
+  //           style: { stroke: 'black' },
+  //         };
+
+  //         storeLocationsEdgesAcc.push(storeLocationEdge);
+
+  //         return storeLocationsEdgesAcc;
+  //       },
+  //       []
+  //     );
+
+  //   const executiveManagements =
+  //     groupedByDepartment['Executive Management'] ?? [];
+  //   // find all ids except ceo
+  //   const executiveManagementIds = executiveManagements.reduce(
+  //     (
+  //       executiveManagementIdsAcc: Record<string, string>,
+  //       userDocument: DirectoryUserDocument
+  //     ) => {
+  //       const { _id, jobPosition } = userDocument;
+
+  //       if (jobPosition === 'Chief Executive Officer') {
+  //         return executiveManagementIdsAcc;
+  //       }
+
+  //       executiveManagementIdsAcc = addFieldsToObject({
+  //         object: executiveManagementIdsAcc,
+  //         fieldValuesTuples: [[jobPosition, _id]],
+  //       });
+
+  //       return executiveManagementIdsAcc;
+  //     },
+  //     Object.create(null)
+  //   );
+
+  //   // set edges from each executive managements (except ceo) to starting store location node
+  //   const storeLocationsEdges = Object.entries(executiveManagementIds).reduce(
+  //     (storeLocationsEdgesAcc: Edge[], [_, executiveManagementId]) => {
+  //       const storeLocationEdge: Edge = {
+  //         id: `${executiveManagementId}-${startingStoreLocationNodeId}`,
+  //         source: executiveManagementId,
+  //         target: startingStoreLocationNodeId,
+  //         type: 'smoothstep',
+  //         animated: true,
+  //         // label: jobPosition,
+  //         labelBgPadding: [8, 4],
+  //         labelBgBorderRadius: 4,
+  //         labelBgStyle: { fill: 'white' },
+  //         labelStyle: { fill: 'black', fontWeight: 700 },
+  //         style: { stroke: 'black' },
+  //       };
+
+  //       storeLocationsEdgesAcc.push(storeLocationEdge);
+
+  //       return storeLocationsEdgesAcc;
+  //     },
+  //     [...edgesFromStartingStoreLocationToEachStoreLocations]
+  //   );
+
+  //   directoryDispatch({
+  //     type: directoryAction.setDepartmentsNodesAndEdges,
+  //     payload: {
+  //       department: 'Store Locations',
+  //       kind: 'edges',
+  //       data: storeLocationsEdges,
+  //     },
+  //   });
+  // }, [groupedByDepartment, departmentsNodesAndEdges['Store Locations'].nodes]);
+ */

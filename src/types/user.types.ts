@@ -17,14 +17,14 @@ type UserSchema = {
   address: {
     addressLine: string;
     city: string;
-    province: Province | '';
-    state: StatesUS | '';
+    province?: Province;
+    state?: StatesUS;
     postalCode: PostalCode;
     country: Country;
   };
   jobPosition: JobPosition;
   department: Department;
-  storeLocation: StoreLocation;
+  storeLocation?: StoreLocation;
   emergencyContact: {
     fullName: string;
     contactNumber: PhoneNumber | string;
@@ -128,20 +128,20 @@ type PhoneNumber =
   `+(${string})(${string}${string}${string}) ${string}${string}${string}-${string}${string}${string}${string}`;
 type Country = 'Canada' | 'United States';
 
+type StoreLocation = 'Calgary' | 'Edmonton' | 'Vancouver';
+
 type Department =
   | 'Executive Management'
-  | 'Administrative'
+  | 'Store Administration'
+  | 'Accounting'
+  | 'Human Resources'
   | 'Sales and Marketing'
   | 'Information Technology'
   | 'Repair Technicians'
   | 'Field Service Technicians'
   | 'Logistics and Inventory'
   | 'Customer Service'
-  | 'Quality Control'
-  | 'Training and Development'
-  | 'Janitorial and Maintenance'
-  | 'Security';
-type StoreLocation = 'Calgary' | 'Edmonton' | 'Vancouver';
+  | 'Maintenance';
 
 type ExecutiveManagement =
   | 'Chief Executive Officer'
@@ -151,18 +151,26 @@ type ExecutiveManagement =
   | 'Chief Marketing Officer'
   | 'Chief Human Resources Officer';
 
-type AdministrativeDepartment =
+type HumanResources =
+  | 'Training Manager'
+  | 'Training Specialist'
+  | 'Recruiting Manager'
+  | 'Recruiting Specialist';
+
+type StoreAdministration =
   | 'Store Manager'
-  | 'Assistant Store Manager'
   | 'Shift Supervisor'
-  | 'Office Manager'
-  | 'Administrative Assistant'
-  | 'Accountant';
+  | 'Office Manager';
+
+type Accounting =
+  | 'Accounting Manager'
+  | 'Accounts Payable Clerk'
+  | 'Accounts Receivable Clerk';
 
 type SalesAndMarketing =
   | 'Sales Manager'
-  | 'Marketing Manager'
   | 'Sales Representative'
+  | 'Marketing Manager'
   | 'Digital Marketing Specialist';
 
 type InformationTechnology =
@@ -173,48 +181,44 @@ type InformationTechnology =
   | 'Database Administrator';
 
 type RepairTechnicians =
-  | 'Electronics Repair Technician'
-  | 'Computer Repair Technician'
-  | 'Smartphone Repair Technician'
-  | 'Tablet Repair Technician'
-  | 'Audio/Video Equipment Repair Technician';
+  | 'Repair Technicians Supervisor'
+  | 'Electronics Technician'
+  | 'Computer Technician'
+  | 'Smartphone Technician'
+  | 'Tablet Technician'
+  | 'Audio/Video Equipment Technician';
 
 type FieldServiceTechnicians =
-  | 'On-Site Repair Technician'
-  | 'Mobile Device Technician';
+  | 'Field Service Supervisor'
+  | 'On-Site Technician';
 
 type LogisticsAndInventory =
-  | 'Warehouse Manager'
+  | 'Warehouse Supervisor'
   | 'Inventory Clerk'
   | 'Delivery Driver';
 
 type CustomerService =
+  | 'Customer Service Supervisor'
   | 'Customer Service Representative'
   | 'Technical Support Specialist';
 
-type QualityControl =
-  | 'Quality Assurance Inspector'
-  | 'Testing and Diagnostics Specialist';
-
-type TrainingAndDevelopment = 'Technical Trainer';
-
-type JanitorialAndMaintenance = 'Janitor/Cleaner';
-
-type Security = 'Security Guard';
+type Maintenance =
+  | 'Maintenance Supervisor'
+  | 'Maintenance Worker'
+  | 'Custodian';
 
 type JobPosition =
   | ExecutiveManagement
-  | AdministrativeDepartment
+  | StoreAdministration
   | SalesAndMarketing
   | InformationTechnology
   | RepairTechnicians
   | FieldServiceTechnicians
   | LogisticsAndInventory
   | CustomerService
-  | QualityControl
-  | TrainingAndDevelopment
-  | JanitorialAndMaintenance
-  | Security;
+  | HumanResources
+  | Accounting
+  | Maintenance;
 
 export type {
   CanadianPostalCode,

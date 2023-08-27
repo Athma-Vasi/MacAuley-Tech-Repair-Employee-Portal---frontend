@@ -96,13 +96,16 @@ const REQUEST_STATUS = ['pending', 'approved', 'rejected'];
 
 const DEPARTMENT_DATA: Department[] = [
   'Executive Management',
-  'Administrative',
+  'Store Administration',
+  'Accounting',
+  'Human Resources',
   'Sales and Marketing',
   'Information Technology',
   'Repair Technicians',
   'Field Service Technicians',
   'Logistics and Inventory',
   'Customer Service',
+  'Maintenance',
 ];
 
 const JOB_POSITION_DATA: JobPosition[] = [
@@ -111,34 +114,43 @@ const JOB_POSITION_DATA: JobPosition[] = [
   'Chief Financial Officer',
   'Chief Technology Officer',
   'Chief Marketing Officer',
+  'Chief Human Resources Officer',
+  'Training Manager',
+  'Training Specialist',
+  'Recruiting Manager',
+  'Recruiting Specialist',
   'Store Manager',
-  'Assistant Store Manager',
   'Shift Supervisor',
   'Office Manager',
-  'Administrative Assistant',
-  'Chief Human Resources Officer',
-  'Accountant',
+  'Accounting Manager',
+  'Accounts Payable Clerk',
+  'Accounts Receivable Clerk',
   'Sales Manager',
-  'Marketing Manager',
   'Sales Representative',
+  'Marketing Manager',
   'Digital Marketing Specialist',
   'IT Manager',
   'Network Administrator',
   'Systems Administrator',
   'IT Support Specialist',
   'Database Administrator',
-  'Electronics Repair Technician',
-  'Computer Repair Technician',
-  'Smartphone Repair Technician',
-  'Tablet Repair Technician',
-  'Audio/Video Equipment Repair Technician',
-  'On-Site Repair Technician',
-  'Mobile Device Technician',
-  'Warehouse Manager',
+  'Repair Technicians Supervisor',
+  'Electronics Technician',
+  'Computer Technician',
+  'Smartphone Technician',
+  'Tablet Technician',
+  'Audio/Video Equipment Technician',
+  'Field Service Supervisor',
+  'On-Site Technician',
+  'Warehouse Supervisor',
   'Inventory Clerk',
   'Delivery Driver',
+  'Customer Service Supervisor',
   'Customer Service Representative',
   'Technical Support Specialist',
+  'Maintenance Supervisor',
+  'Maintenance Worker',
+  'Custodian',
 ];
 
 const DEPARTMENT_JOB_POSITION_MAP = new Map([
@@ -150,28 +162,44 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
       'Chief Financial Officer',
       'Chief Technology Officer',
       'Chief Marketing Officer',
+      'Chief Human Resources Officer',
     ],
   ],
+
   [
-    'Administrative',
+    'Human Resources',
     [
-      'Store Manager',
-      'Assistant Store Manager',
-      'Shift Supervisor',
-      'Office Manager',
-      'Administrative Assistant',
-      'Accountant',
+      'Training Manager',
+      'Training Specialist',
+      'Recruiting Manager',
+      'Recruiting Specialist',
     ],
   ],
+
+  [
+    'Store Administration',
+    ['Store Manager', 'Shift Supervisor', 'Office Manager'],
+  ],
+
+  [
+    'Accounting',
+    [
+      'Accounting Manager',
+      'Accounts Payable Clerk',
+      'Accounts Receivable Clerk',
+    ],
+  ],
+
   [
     'Sales and Marketing',
     [
       'Sales Manager',
-      'Marketing Manager',
       'Sales Representative',
+      'Marketing Manager',
       'Digital Marketing Specialist',
     ],
   ],
+
   [
     'Information Technology',
     [
@@ -182,27 +210,41 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
       'Database Administrator',
     ],
   ],
+
   [
     'Repair Technicians',
     [
-      'Electronics Repair Technician',
-      'Computer Repair Technician',
-      'Smartphone Repair Technician',
-      'Tablet Repair Technician',
-      'Audio/Video Equipment Repair Technician',
+      'Repair Technicians Supervisor',
+      'Electronics Technician',
+      'Computer Technician',
+      'Smartphone Technician',
+      'Tablet Technician',
+      'Audio/Video Equipment Technician',
     ],
   ],
+
   [
     'Field Service Technicians',
-    ['On-Site Repair Technician', 'Mobile Device Technician'],
+    ['Field Service Supervisor', 'On-Site Technician'],
   ],
+
   [
     'Logistics and Inventory',
-    ['Warehouse Manager', 'Inventory Clerk', 'Delivery Driver'],
+    ['Warehouse Supervisor', 'Inventory Clerk', 'Delivery Driver'],
   ],
+
   [
     'Customer Service',
-    ['Customer Service Representative', 'Technical Support Specialist'],
+    [
+      'Customer Service Supervisor',
+      'Customer Service Representative',
+      'Technical Support Specialist',
+    ],
+  ],
+
+  [
+    'Maintenance',
+    ['Maintenance Supervisor', 'Maintenance Worker', 'Custodian'],
   ],
 ]);
 
