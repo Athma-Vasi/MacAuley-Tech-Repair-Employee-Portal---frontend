@@ -38,20 +38,20 @@ type DirectoryUserDocument = {
   active: boolean;
 };
 
-type FetchUsersDirectoryResponse = ResourceRequestServerResponse<UserDocument>;
+type FetchUsersDirectoryResponse =
+  ResourceRequestServerResponse<DirectoryUserDocument>;
 
 type FlowNodesLayoutDirection = 'LR' | 'TB' | 'RL' | 'BT';
 
-type NodeDefaults = Record<Department, Node>;
-
-type DirectoryDepartments = Department | 'All Departments' | 'Store Locations';
-type DirectoryJobPositions = JobPosition | 'All Job Positions';
-type DirectoryStoreLocations = StoreLocation | 'All Store Locations';
+type DirectoryDepartments = Department;
+type DirectoryJobPositions = JobPosition;
+type DirectoryStoreLocations = StoreLocation;
 
 type DepartmentsNodesAndEdges = Record<
   DirectoryDepartments,
   { nodes: Node[]; edges: Edge[] }
 >;
+type FilteredDepartmentNodesAndEdges = Partial<DepartmentsNodesAndEdges>;
 
 type DirectoryState = {
   groupedByDepartment: Record<DirectoryDepartments, DirectoryUserDocument[]>;
@@ -61,10 +61,10 @@ type DirectoryState = {
     DirectoryUserDocument[]
   >;
 
-  filterByDepartment: DirectoryDepartments;
-  filterByJobPosition: DirectoryJobPositions;
-  filterByStoreLocation: DirectoryStoreLocations;
-  filteredDepartmentsNodesAndEdges: Partial<DepartmentsNodesAndEdges>;
+  filterByDepartment: DirectoryDepartments[];
+  filterByJobPosition: DirectoryJobPositions[];
+  filterByStoreLocation: DirectoryStoreLocations[];
+  filteredDepartmentsNodesAndEdges: FilteredDepartmentNodesAndEdges;
 
   triggerSetDepartmentsNodesAndEdges: boolean;
   departmentsNodesAndEdges: DepartmentsNodesAndEdges;
@@ -111,8 +111,7 @@ type SetDepartmentNodesAndEdgesPayload =
   | { department: DirectoryDepartments; kind: 'edges'; data: Edge[] };
 
 type SetFilteredDepartmentsNodesAndEdgesPayload =
-  | { department: DirectoryDepartments; kind: 'nodes'; data: Node[] }
-  | { department: DirectoryDepartments; kind: 'edges'; data: Edge[] };
+  SetDepartmentNodesAndEdgesPayload;
 
 type DirectoryDispatch =
   | {
@@ -125,15 +124,15 @@ type DirectoryDispatch =
     }
   | {
       type: DirectoryAction['setFilterByDepartment'];
-      payload: DirectoryDepartments;
+      payload: DirectoryDepartments[];
     }
   | {
       type: DirectoryAction['setFilterByJobPosition'];
-      payload: DirectoryJobPositions;
+      payload: DirectoryJobPositions[];
     }
   | {
       type: DirectoryAction['setFilterByStoreLocation'];
-      payload: DirectoryStoreLocations;
+      payload: DirectoryStoreLocations[];
     }
   | {
       type: DirectoryAction['setLayoutDirection'];
@@ -170,14 +169,14 @@ type DirectoryDispatch =
 export type {
   DepartmentsNodesAndEdges,
   DirectoryAction,
+  DirectoryDepartments,
   DirectoryDispatch,
+  DirectoryJobPositions,
   DirectoryState,
+  DirectoryStoreLocations,
   DirectoryUserDocument,
   FetchUsersDirectoryResponse,
+  FilteredDepartmentNodesAndEdges,
   FlowNodesLayoutDirection,
-  NodeDefaults,
   SetDepartmentNodesAndEdgesPayload,
-  DirectoryDepartments,
-  DirectoryJobPositions,
-  DirectoryStoreLocations,
 };

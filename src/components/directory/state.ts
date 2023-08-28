@@ -14,6 +14,7 @@ import {
   DirectoryState,
   DirectoryStoreLocations,
   DirectoryUserDocument,
+  FilteredDepartmentNodesAndEdges,
 } from './types';
 
 const initialDirectoryState: DirectoryState = {
@@ -21,10 +22,10 @@ const initialDirectoryState: DirectoryState = {
   groupedByJobPositon: {} as Record<DirectoryJobPositions, UserDocument[]>,
   groupedByStoreLocation: {} as Record<DirectoryStoreLocations, UserDocument[]>,
 
-  filterByDepartment: 'All Departments',
-  filterByJobPosition: 'All Job Positions',
-  filterByStoreLocation: 'All Store Locations',
-  filteredDepartmentsNodesAndEdges: {} as Partial<DepartmentsNodesAndEdges>,
+  filterByDepartment: [],
+  filterByJobPosition: [],
+  filterByStoreLocation: [],
+  filteredDepartmentsNodesAndEdges: {} as FilteredDepartmentNodesAndEdges,
 
   triggerSetDepartmentsNodesAndEdges: false,
   departmentsNodesAndEdges: {} as DepartmentsNodesAndEdges,
@@ -71,6 +72,12 @@ function directoryReducer(
   state: DirectoryState,
   action: DirectoryDispatch
 ): DirectoryState {
+  const propertyDescriptor: PropertyDescriptor = {
+    enumerable: true,
+    configurable: true,
+    writable: true,
+  };
+
   switch (action.type) {
     case directoryAction.setGroupedByDepartment: {
       const users = action.payload;
@@ -164,31 +171,54 @@ function directoryReducer(
     case directoryAction.setFilterByStoreLocation:
       return { ...state, filterByStoreLocation: action.payload };
 
-    case directoryAction.setFilteredDepartmentsNodesAndEdges:
-      return {
-        ...state,
-        // filteredDepartmentsNodesAndEdges: action.payload,
-      };
+    case directoryAction.setFilteredDepartmentsNodesAndEdges: {
+      const { department, kind, data } = action.payload;
+
+      // a shallow copy of the object
+      // however, the nodes and edges are built anew upon each change of these state values: groupedByDepartment, any of the filters, and layoutDirection, padding, rowGap and storeLocationsNodes
+      const filteredDepartmentsNodesAndEdges =
+        state.filteredDepartmentsNodesAndEdges;
+
+      switch (kind) {
+        case 'nodes': {
+          Object.defineProperty(filteredDepartmentsNodesAndEdges, department, {
+            ...propertyDescriptor,
+            value: {
+              ...filteredDepartmentsNodesAndEdges[department],
+              nodes: data,
+            },
+          });
+          return {
+            ...state,
+            filteredDepartmentsNodesAndEdges,
+          };
+        }
+        case 'edges': {
+          Object.defineProperty(filteredDepartmentsNodesAndEdges, department, {
+            ...propertyDescriptor,
+            value: {
+              ...filteredDepartmentsNodesAndEdges[department],
+              edges: data,
+            },
+          });
+          return {
+            ...state,
+            filteredDepartmentsNodesAndEdges,
+          };
+        }
+        default:
+          return state;
+      }
+    }
 
     case directoryAction.setTriggerSetDepartmentsNodesAndEdges:
       return { ...state, triggerSetDepartmentsNodesAndEdges: action.payload };
 
     case directoryAction.setDepartmentsNodesAndEdges: {
+      // separate state from filtered departments because cannot deep copy Node using structuredClone (contains DOM elements)
       const { department, kind, data } = action.payload;
 
-      console.log('department', department);
-      console.log('kind', kind);
-      console.log('data', data);
-
-      // a shallow copy of the object
-      // however, the nodes and edges are built anew upon each change of these state values: groupedByDepartment, any of the filters, and layoutDirection, padding, rowGap and storeLocationsNodes
       const departmentsNodesAndEdges = state.departmentsNodesAndEdges;
-
-      const propertyDescriptor: PropertyDescriptor = {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-      };
 
       switch (kind) {
         case 'nodes': {

@@ -52,9 +52,9 @@ type RadioGroupInputData = Array<{
   value: string;
 }>;
 
-type CheckboxInputData = Array<{
-  label: string;
-  value: string;
+type CheckboxInputData<T extends string = string> = Array<{
+  label: T;
+  value: T;
 }>;
 
 type SliderInputData = Array<{

@@ -1,4 +1,4 @@
-import { Flex, Group, Stack } from '@mantine/core';
+import { Accordion, Flex, Group, Stack, Text } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import localforage from 'localforage';
 import { ChangeEvent, useEffect, useReducer } from 'react';
@@ -13,12 +13,24 @@ import {
 } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
+import {
+  returnAccessibleCheckboxGroupInputsElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleSelectedDeselectedTextElements,
+} from '../../jsxCreators';
 import { Department, JobPosition, StoreLocation } from '../../types';
-import { addFieldsToObject, logState, urlBuilder } from '../../utils';
+import {
+  addFieldsToObject,
+  logState,
+  replaceLastCommaWithAnd,
+  urlBuilder,
+} from '../../utils';
 import NodeBuilder from '../nodeBuilder/NodeBuilder';
 import { FlowNode } from '../nodeBuilder/types';
-import { AccessibleSelectInputCreatorInfo } from '../wrappers';
+import {
+  AccessibleCheckboxGroupInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+} from '../wrappers';
 import {
   directoryAction,
   directoryReducer,
@@ -26,6 +38,11 @@ import {
 } from './state';
 import { DirectoryUserDocument, FetchUsersDirectoryResponse } from './types';
 import { returnDirectoryProfileCard } from './utils';
+import {
+  DIRECTORY_DEPARTMENT_CHECKBOX_DATA,
+  DIRECTORY_JOB_POSITION_CHECKBOX_DATA,
+  DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
+} from './constants';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -598,49 +615,39 @@ function Directory() {
 
           return calgaryStoreAdministrationEdgesAcc;
         },
-        [...edmontonStoreAdministrationEdges]
+        []
       );
 
       // for vancouver store location with accumulated edges from edmonton and calgary store locations
-      const allLocationsStoreAdministrationEdges =
-        storeAdministrationDocs.reduce(
-          (
-            allLocationsStoreAdministrationEdgesAcc: Edge[],
-            userDocument: DirectoryUserDocument
-          ) => {
-            const { _id, storeLocation, jobPosition } = userDocument;
+      const vancouverStoreAdministrationEdges = storeAdministrationDocs.reduce(
+        (
+          vancouverStoreAdministrationEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation, jobPosition } = userDocument;
 
-            if (
-              storeLocation !== 'Vancouver' ||
-              jobPosition === 'Store Manager'
-            ) {
-              return allLocationsStoreAdministrationEdgesAcc;
-            }
+          if (
+            storeLocation !== 'Vancouver' ||
+            jobPosition === 'Store Manager'
+          ) {
+            return vancouverStoreAdministrationEdgesAcc;
+          }
 
-            // edge from store manager profile node to subordinate profile node
-            const vancouverStoreAdministrationEdge: Edge = {
-              ...edgeDefaults,
-              id: `${vancouverStoreManagerNodeId}-${_id}`, // source-target
-              source: vancouverStoreManagerNodeId,
-              target: _id,
-            };
+          // edge from store manager profile node to subordinate profile node
+          const vancouverStoreAdministrationEdge: Edge = {
+            ...edgeDefaults,
+            id: `${vancouverStoreManagerNodeId}-${_id}`, // source-target
+            source: vancouverStoreManagerNodeId,
+            target: _id,
+          };
 
-            allLocationsStoreAdministrationEdgesAcc.push(
-              vancouverStoreAdministrationEdge
-            );
+          vancouverStoreAdministrationEdgesAcc.push(
+            vancouverStoreAdministrationEdge
+          );
 
-            return allLocationsStoreAdministrationEdgesAcc;
-          },
-          [...calgaryStoreAdministrationEdges]
-        );
-
-      console.log(
-        'allLocationsStoreAdministrationEdges',
-        allLocationsStoreAdministrationEdges
-      );
-      console.log(
-        'storeAdministrationProfileNodes',
-        storeAdministrationProfileNodes
+          return vancouverStoreAdministrationEdgesAcc;
+        },
+        []
       );
 
       directoryDispatch({
@@ -657,7 +664,11 @@ function Directory() {
         payload: {
           department: 'Store Administration',
           kind: 'edges',
-          data: allLocationsStoreAdministrationEdges,
+          data: [
+            ...edmontonStoreAdministrationEdges,
+            ...calgaryStoreAdministrationEdges,
+            ...vancouverStoreAdministrationEdges,
+          ],
         },
       });
     }
@@ -699,11 +710,17 @@ function Directory() {
             style: nodeDimensions,
           };
 
-          jobPosition.toLowerCase().includes('human resources manager')
-            ? (humanResourcesNodesAcc[0] = humanResourcesNode)
-            : jobPosition.toLowerCase().includes('specialist')
-            ? humanResourcesNodesAcc[2].push(humanResourcesNode)
-            : humanResourcesNodesAcc[1].push(humanResourcesNode);
+          if (jobPosition.toLowerCase().includes('human resources manager')) {
+            humanResourcesNodesAcc[0] = humanResourcesNode;
+            return humanResourcesNodesAcc;
+          }
+
+          if (jobPosition.toLowerCase().includes('specialist')) {
+            humanResourcesNodesAcc[2].push(humanResourcesNode);
+            return humanResourcesNodesAcc;
+          }
+
+          humanResourcesNodesAcc[1].push(humanResourcesNode);
 
           return humanResourcesNodesAcc;
         },
@@ -813,13 +830,247 @@ function Directory() {
           data: hrSubManagersToHrSpecialistsProfileEdges, // contains all edges
         },
       });
+
+      if (filterByDepartment) {
+      }
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end human resources department ━┛
 
-    // ┏━ begin sales department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ┏━ begin sales department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end sales and marketing department ━┛
+    async function setSalesDepartmentEdgesAndNodes() {
+      const salesDocs = groupedByDepartment.Sales ?? [];
+
+      // create sales profile nodes
+      const [salesManagerProfileNode, salesSpecialistsProfileNodes] =
+        salesDocs.reduce(
+          (
+            salesNodesAcc: [Node, Node[]],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition } = userDocument;
+
+            const nodeType = jobPosition.toLowerCase().includes('manager')
+              ? 'default'
+              : 'output';
+
+            const displayProfileCard = returnDirectoryProfileCard({
+              userDocument,
+              padding,
+              rowGap,
+            });
+
+            const salesNode: Node = {
+              id: _id,
+              type: nodeType,
+              data: { label: displayProfileCard },
+              position: nodePosition,
+              style: nodeDimensions,
+            };
+
+            if (jobPosition.toLowerCase().includes('sales manager')) {
+              salesNodesAcc[0] = salesNode;
+              return salesNodesAcc;
+            }
+
+            salesNodesAcc[1].push(salesNode);
+
+            return salesNodesAcc;
+          },
+          [{} as Node, []]
+        );
+
+      // chief sales officer node id
+      const chiefSalesOfficerId =
+        groupedByDepartment['Executive Management'].find(
+          (userDocument: DirectoryUserDocument) =>
+            userDocument.jobPosition === 'Chief Sales Officer'
+        )?._id ?? '';
+
+      // connect sales manager to cso
+      // [CSO] ━━━ [SALES MANAGER]
+      const salesManagerProfileNodeId = salesManagerProfileNode.id;
+
+      const csoToSalesManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefSalesOfficerId}-${salesManagerProfileNodeId}`, // source-target
+        source: chiefSalesOfficerId,
+        target: salesManagerProfileNodeId,
+      };
+
+      // connect sales manager to sales specialists profile nodes
+      //                            ┏━ [SALES REPRESENTATIVE]
+      // [CSO] ━━━ [SALES MANAGER] ━━━ [BUSINESS DEVELOPMENT SPECIALIST]
+      //                            ┗━ [SALES SUPPORT SPECIALIST]
+      //                            ┗━ [SALES OPERATIONS ANALYST]
+
+      const salesSubordinatesProfileEdges = salesDocs.reduce(
+        (
+          salesSubordinatesProfileEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          if (jobPosition.toLowerCase().includes('sales manager')) {
+            return salesSubordinatesProfileEdgesAcc;
+          }
+
+          const salesSubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${salesManagerProfileNodeId}-${_id}`, // source-target
+            source: salesManagerProfileNodeId,
+            target: _id,
+          };
+
+          salesSubordinatesProfileEdgesAcc.push(salesSubordinateProfileEdge);
+
+          return salesSubordinatesProfileEdgesAcc;
+        },
+        [csoToSalesManagerEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Sales',
+          kind: 'nodes',
+          data: [salesManagerProfileNode, ...salesSpecialistsProfileNodes],
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Sales',
+          kind: 'edges',
+          data: salesSubordinatesProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end sales  department ━┛
+
+    // ┏━ begin marketing department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    async function setMarketingEdgesAndNodes() {
+      const marketingDocs = groupedByDepartment.Marketing ?? [];
+
+      // create marketing profile nodes
+      const [marketingManagerProfileNode, marketingSpecialistsProfileNodes] =
+        marketingDocs.reduce(
+          (
+            marketingNodesAcc: [Node, Node[]],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition } = userDocument;
+
+            const nodeType = jobPosition.toLowerCase().includes('manager')
+              ? 'default'
+              : 'output';
+
+            const displayProfileCard = returnDirectoryProfileCard({
+              userDocument,
+              padding,
+              rowGap,
+            });
+
+            const salesNode: Node = {
+              id: _id,
+              type: nodeType,
+              data: { label: displayProfileCard },
+              position: nodePosition,
+              style: nodeDimensions,
+            };
+
+            if (jobPosition.toLowerCase().includes('marketing manager')) {
+              marketingNodesAcc[0] = salesNode;
+              return marketingNodesAcc;
+            }
+
+            marketingNodesAcc[1].push(salesNode);
+
+            return marketingNodesAcc;
+          },
+          [{} as Node, []]
+        );
+
+      // chief marketing officer node id
+      const chiefMarketingOfficerId =
+        groupedByDepartment['Executive Management'].find(
+          (userDocument: DirectoryUserDocument) =>
+            userDocument.jobPosition === 'Chief Marketing Officer'
+        )?._id ?? '';
+
+      // connect marketing manager to cso
+      // [CSO] ━━━ [MARKETING MANAGER]
+      const marketingManagerProfileNodeId = marketingManagerProfileNode.id;
+
+      const cmoToMarketingManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefMarketingOfficerId}-${marketingManagerProfileNodeId}`, // source-target
+        source: chiefMarketingOfficerId,
+        target: marketingManagerProfileNodeId,
+      };
+
+      // connect marketing manager to marketing specialists profile nodes
+      //                                ┏━ [SEO SPECIALIST]
+      //                                ┏━ [DIGITAL MARKETING SPECIALIST]
+      //                                ┏━ [SOCIAL MEDIA SPECIALIST]
+      // [CSO] ━━━ [MARKETING MANAGER] ━━━ [GRAPHIC DESIGNER]
+      //                                ┗━ [PUBLIC RELATIONS SPECIALIST]
+      //                                ┗━ [MARKETING ANALYST]
+      //                                ┗━ [BRAND SPECIALIST]
+
+      const marketingSubordinatesProfileEdges = marketingDocs.reduce(
+        (
+          marketingSubordinatesProfileEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          if (jobPosition.toLowerCase().includes('marketing manager')) {
+            return marketingSubordinatesProfileEdgesAcc;
+          }
+
+          const marketingSubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${marketingManagerProfileNodeId}-${_id}`, // source-target
+            source: marketingManagerProfileNodeId,
+            target: _id,
+          };
+
+          marketingSubordinatesProfileEdgesAcc.push(
+            marketingSubordinateProfileEdge
+          );
+
+          return marketingSubordinatesProfileEdgesAcc;
+        },
+        [cmoToMarketingManagerEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Marketing',
+          kind: 'nodes',
+          data: [
+            marketingManagerProfileNode,
+            ...marketingSpecialistsProfileNodes,
+          ],
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Marketing',
+          kind: 'edges',
+          data: marketingSubordinatesProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end marketing department ━┛
 
     // ┏━ begin information technology department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -980,7 +1231,8 @@ function Directory() {
           setExecutiveManagementEdgesAndNodes(),
           setStoreAdministrationEdgesAndNodes(),
           setHumanResourcesEdgesAndNodes(),
-          // setSalesAndMarketingEdgesAndNodes(),
+          setSalesDepartmentEdgesAndNodes(),
+          setMarketingEdgesAndNodes(),
           // setInformationTechnologyEdgesAndNodes(),
           // setRepairTechniciansEdgesAndNodes(),
           // setFieldServiceTechniciansEdgesAndNodes(),
@@ -1018,45 +1270,96 @@ function Directory() {
     });
   }, [directoryState]);
 
+  // ┏━ begin accessible text elements ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  const [filterByDepartmentSelectedText, filterByDepartmentDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: filterByDepartment.length > 0,
+      semanticName: 'filter by department',
+      deselectedDescription: 'Select a field to filter by department',
+      selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
+        filterByDepartment.join(', ')
+      )}`,
+      theme: 'muted',
+    });
+
+  const [filterByJobPositionSelectedText, filterByJobPositionDeselectedText] =
+    returnAccessibleSelectedDeselectedTextElements({
+      isSelected: filterByJobPosition.length > 0,
+      semanticName: 'filter by job position',
+      deselectedDescription: 'Select a field to filter by job position',
+      selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
+        filterByJobPosition.join(', ')
+      )}`,
+      theme: 'muted',
+    });
+
+  const [
+    filterByStoreLocationSelectedText,
+    filterByStoreLocationDeselectedText,
+  ] = returnAccessibleSelectedDeselectedTextElements({
+    isSelected: filterByStoreLocation.length > 0,
+    semanticName: 'filter by store location',
+    deselectedDescription: 'Select a field to filter by store location',
+    selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
+      filterByStoreLocation.join(', ')
+    )}`,
+    theme: 'muted',
+  });
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end accessible text elements ━┛
+
   // ┏━ begin input creators info objects ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  const filterByDepartmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+  const filterByDepartmentCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
     {
-      data: [...DEPARTMENT_DATA, 'All Departments'],
-      description: 'Filter by department',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      dataObjectArray: DIRECTORY_DEPARTMENT_CHECKBOX_DATA,
+      description: {
+        selected: filterByDepartmentSelectedText,
+        deselected: filterByDepartmentDeselectedText,
+      },
+      onChange: (value: string[]) => {
         directoryDispatch({
           type: directoryAction.setFilterByDepartment,
-          payload: event.currentTarget.value as Department,
+          payload: value as Department[],
         });
       },
       value: filterByDepartment,
+      semanticName: 'filter by department',
     };
 
-  const filterByJobPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+  const filterByJobPositionCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
     {
-      data: [...JOB_POSITION_DATA, 'All Job Positions'],
-      description: 'Filter by job position',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      dataObjectArray: DIRECTORY_JOB_POSITION_CHECKBOX_DATA,
+      description: {
+        selected: filterByJobPositionSelectedText,
+        deselected: filterByJobPositionDeselectedText,
+      },
+      onChange: (value: string[]) => {
         directoryDispatch({
           type: directoryAction.setFilterByJobPosition,
-          payload: event.currentTarget.value as JobPosition,
+          payload: value as JobPosition[],
         });
       },
       value: filterByJobPosition,
+      semanticName: 'filter by job position',
     };
 
-  const filterByStoreLocationSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+  const filterByStoreLocationCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
     {
-      data: [...STORE_LOCATION_DATA, 'All Store Locations'],
-      description: 'Filter by store location',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      dataObjectArray: DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
+      description: {
+        selected: filterByStoreLocationSelectedText,
+        deselected: filterByStoreLocationDeselectedText,
+      },
+      onChange: (value: string[]) => {
         directoryDispatch({
           type: directoryAction.setFilterByStoreLocation,
-          payload: event.currentTarget.value as StoreLocation,
+          payload: value as StoreLocation[],
         });
       },
       value: filterByStoreLocation,
+      semanticName: 'filter by store location',
     };
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators info objects━┛
@@ -1064,33 +1367,50 @@ function Directory() {
   // ┏━ begin input creators ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   const [
-    createdFilterByDepartmentSelectInput,
-    createdFilterByJobPositionSelectInput,
-    createdFilterByStoreLocationSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    filterByDepartmentSelectInputCreatorInfo,
-    filterByJobPositionSelectInputCreatorInfo,
-    filterByStoreLocationSelectInputCreatorInfo,
+    createdFilterByDepartmentCheckboxGroupInputElements,
+    createdFilterByJobPositionCheckboxGroupInputElements,
+    createdFilterByStoreLocationCheckboxGroupInputElements,
+  ] = returnAccessibleCheckboxGroupInputsElements([
+    filterByDepartmentCheckboxGroupCreatorInfo,
+    filterByJobPositionCheckboxGroupCreatorInfo,
+    filterByStoreLocationCheckboxGroupCreatorInfo,
   ]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators ━┛
 
   // ┏━ begin input display ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  const displayFilterSelectInputs = (
-    <Flex
-      w="100%"
-      align="center"
-      justify="flex-start"
-      wrap="wrap"
-      rowGap={rowGap}
-      columnGap={rowGap}
-      p={padding}
-    >
-      <Group w={350}>{createdFilterByDepartmentSelectInput}</Group>
-      <Group w={350}>{createdFilterByJobPositionSelectInput}</Group>
-      <Group w={350}>{createdFilterByStoreLocationSelectInput}</Group>
-    </Flex>
+  const displayFilterCheckboxAccordion = (
+    <Accordion w="100%">
+      <Accordion.Item value="Filter by Departments, Job Positions or Store Locations">
+        <Accordion.Control>
+          <Text color="dark">
+            {'Filter by Departments, Job Positions or Store Locations'}
+          </Text>
+        </Accordion.Control>
+        <Accordion.Panel>
+          <Flex
+            w="100%"
+            align="center"
+            justify="flex-start"
+            wrap="wrap"
+            rowGap={rowGap}
+            columnGap={rowGap}
+            p={padding}
+          >
+            <Group w={350}>
+              {createdFilterByDepartmentCheckboxGroupInputElements}
+            </Group>
+            <Group w={350}>
+              {createdFilterByJobPositionCheckboxGroupInputElements}
+            </Group>
+            <Group w={350}>
+              {createdFilterByStoreLocationCheckboxGroupInputElements}
+            </Group>
+          </Flex>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
   );
 
   const [initialNodes, initialEdges] = Object.entries(
@@ -1122,7 +1442,7 @@ function Directory() {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input display ━┛
   return (
     <Stack w="100%">
-      {displayFilterSelectInputs}
+      {displayFilterCheckboxAccordion}
       {displayNodeBuilder}
     </Stack>
   );
