@@ -1205,6 +1205,126 @@ function Directory() {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end information technology department ━┛
 
     // ┏━ begin accounting department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    async function setAccountingEdgesAndNodes() {
+      const accountingDocs = groupedByDepartment.Accounting ?? [];
+
+      // create accounting profile nodes
+      const [accountingManagerProfileNode, accountingSpecialistsProfileNodes] =
+        accountingDocs.reduce(
+          (
+            accountingNodesAcc: [Node, Node[]],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition } = userDocument;
+
+            const nodeType = jobPosition
+              .toLowerCase()
+              .includes('accounting manager')
+              ? 'default'
+              : 'output';
+
+            const displayProfileCard = returnDirectoryProfileCard({
+              userDocument,
+              padding,
+              rowGap,
+            });
+
+            const salesNode: Node = {
+              id: _id,
+              type: nodeType,
+              data: { label: displayProfileCard },
+              position: nodePosition,
+              style: nodeDimensions,
+            };
+
+            if (jobPosition.toLowerCase().includes('accounting manager')) {
+              accountingNodesAcc[0] = salesNode;
+              return accountingNodesAcc;
+            }
+
+            accountingNodesAcc[1].push(salesNode);
+
+            return accountingNodesAcc;
+          },
+          [{} as Node, []]
+        );
+
+      // chief financial officer node id
+      const chiefFinancialOfficerId =
+        groupedByDepartment['Executive Management'].find(
+          (userDocument: DirectoryUserDocument) =>
+            userDocument.jobPosition === 'Chief Financial Officer'
+        )?._id ?? '';
+
+      // connect accounting manager to cfo
+      // [CFO] ━━━ [ACCOUNTING MANAGER]
+      const accountingManagerProfileNodeId = accountingManagerProfileNode.id;
+
+      const cfoToAccountingManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefFinancialOfficerId}-${accountingManagerProfileNodeId}`, // source-target
+        source: chiefFinancialOfficerId,
+        target: accountingManagerProfileNodeId,
+      };
+
+      // connect accounting manager to accounting specialists profile nodes
+      //                                 ┏━ [ACCOUNTS PAYABLE CLERK]
+      //                                 ┏━ [ACCOUNTS RECEIVABLE CLERK]
+      //                                 ┏━ [FINANCIAL ANALYST]
+      // [CFO] ━━━ [ACCOUNTING MANAGER] ━━━ [TAX SPECIALIST]
+      //                                 ┗━ [PAYROLL SPECIALIST]
+      //                                 ┗━ [BUDGET ANALYST]
+      //                                 ┗━ [AUDITOR]
+
+      const accountingSpecialistsProfileEdges = accountingDocs.reduce(
+        (
+          accountingSpecialistsProfileEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          if (jobPosition.toLowerCase().includes('accounting manager')) {
+            return accountingSpecialistsProfileEdgesAcc;
+          }
+
+          const accountingSpecialistProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${accountingManagerProfileNodeId}-${_id}`, // source-target
+            source: accountingManagerProfileNodeId,
+            target: _id,
+          };
+
+          accountingSpecialistsProfileEdgesAcc.push(
+            accountingSpecialistProfileEdge
+          );
+
+          return accountingSpecialistsProfileEdgesAcc;
+        },
+        [cfoToAccountingManagerEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Accounting',
+          kind: 'nodes',
+          data: [
+            accountingManagerProfileNode,
+            ...accountingSpecialistsProfileNodes,
+          ],
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Accounting',
+          kind: 'edges',
+          data: accountingSpecialistsProfileEdges,
+        },
+      });
+    }
+
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end accounting department ━┛
 
     // ┏━ begin repair technicians department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1235,6 +1355,7 @@ function Directory() {
           setSalesDepartmentEdgesAndNodes(),
           setMarketingEdgesAndNodes(),
           setInformationTechnologyEdgesAndNodes(),
+          setAccountingEdgesAndNodes(),
           // setRepairTechniciansEdgesAndNodes(),
           // setFieldServiceTechniciansEdgesAndNodes(),
           // setLogisticsAndInventoryEdgesAndNodes(),
