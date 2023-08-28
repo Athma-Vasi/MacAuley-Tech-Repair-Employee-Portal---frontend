@@ -1078,21 +1078,20 @@ function Directory() {
       const informationTechnologyDocs =
         groupedByDepartment['Information Technology'] ?? [];
 
-      // starting information technology node
-      const initialInformationTechnologyDepartmentDocNode: FlowNode = {
-        id: 'information-technology-department',
-        type: 'default',
-        data: { label: 'Information Technology Department' },
-        position: nodePosition,
-        style: nodeDimensions,
-      };
-
-      const informationTechnologyDocsNodes = informationTechnologyDocs.reduce(
+      // create information technology profile nodes
+      const [
+        informationTechnologyManagerProfileNode,
+        informationTechnologySpecialistsProfileNodes,
+      ] = informationTechnologyDocs.reduce(
         (
-          informationTechnologyNodesAcc: Node[],
+          informationTechnologyNodesAcc: [Node, Node[]],
           userDocument: DirectoryUserDocument
         ) => {
-          const { _id } = userDocument;
+          const { _id, jobPosition } = userDocument;
+
+          const nodeType = jobPosition.toLowerCase().includes('it manager')
+            ? 'default'
+            : 'output';
 
           const displayProfileCard = returnDirectoryProfileCard({
             userDocument,
@@ -1100,97 +1099,96 @@ function Directory() {
             rowGap,
           });
 
-          const informationTechnologyNode: Node = {
+          const salesNode: Node = {
             id: _id,
-            type: 'output',
+            type: nodeType,
             data: { label: displayProfileCard },
             position: nodePosition,
             style: nodeDimensions,
           };
-          informationTechnologyNodesAcc.push(informationTechnologyNode);
+
+          if (jobPosition.toLowerCase().includes('it manager')) {
+            informationTechnologyNodesAcc[0] = salesNode;
+            return informationTechnologyNodesAcc;
+          }
+
+          informationTechnologyNodesAcc[1].push(salesNode);
 
           return informationTechnologyNodesAcc;
         },
-        [initialInformationTechnologyDepartmentDocNode]
+        [{} as Node, []]
       );
 
-      const informationTechnologyDepartmentSourceId =
-        initialInformationTechnologyDepartmentDocNode.id;
+      // chief technology officer node id
+      const chiefTechnologyOfficerId =
+        groupedByDepartment['Executive Management'].find(
+          (userDocument: DirectoryUserDocument) =>
+            userDocument.jobPosition === 'Chief Technology Officer'
+        )?._id ?? '';
 
-      // edges from information technology department to information technology nodes
-      const informationTechnologyEdges = informationTechnologyDocs.reduce(
-        (
-          informationTechnologyEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id } = userDocument;
+      // connect information technology manager to cto
+      // [CTO] ━━━ [IT MANAGER]
+      const informationTechnologyManagerProfileNodeId =
+        informationTechnologyManagerProfileNode.id;
 
-          const informationTechnologyEdge: Edge = {
-            ...edgeDefaults,
-            id: `${informationTechnologyDepartmentSourceId}-${_id}`, // source-target
-            source: informationTechnologyDepartmentSourceId,
-            target: _id,
-          };
-          informationTechnologyEdgesAcc.push(informationTechnologyEdge);
+      const ctoToInformationTechnologyManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefTechnologyOfficerId}-${informationTechnologyManagerProfileNodeId}`, // source-target
+        source: chiefTechnologyOfficerId,
+        target: informationTechnologyManagerProfileNodeId,
+      };
 
-          return informationTechnologyEdgesAcc;
-        },
-        []
-      );
+      // connect information technology manager to information technology specialists profile nodes
+      //                         ┏━ [NETWORK ADMINISTRATOR]
+      //                         ┏━ [SYSTEMS ADMINISTRATOR]
+      //                         ┏━ [IT SUPPORT SPECIALIST]
+      //                         ┏━ [DATABASE ADMINISTRATOR]
+      //                         ┏━ [WEB DEVELOPER]
+      // [CTO] ━━━ [IT MANAGER] ━━━ [SOFTWARE DEVELOPER]
+      //                         ┗━ [SOFTWARE ENGINEER]
+      //                         ┗━ [INFRASTRUCTURE ARCHITECT]
+      //                         ┗━ [IT SECURITY SPECIALIST]
+      //                         ┗━ [CLOUD ARCHITECT]
+      //                         ┗━ [DATA SCIENTIST]
+      //                         ┗━ [IT TRAINING SPECIALIST]
 
-      const executiveManagements =
-        groupedByDepartment['Executive Management'] ?? [];
-      // find all ids except ceo
-      const executiveManagementIds = executiveManagements.reduce(
-        (
-          executiveManagementIdsAcc: Record<string, string>,
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, jobPosition } = userDocument;
+      const informationTechnologySpecialistsProfileEdges =
+        informationTechnologyDocs.reduce(
+          (
+            informationTechnologySpecialistsProfileEdgesAcc: Edge[],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition } = userDocument;
 
-          if (jobPosition === 'Chief Executive Officer') {
-            return executiveManagementIdsAcc;
-          }
+            if (jobPosition.toLowerCase().includes('it manager')) {
+              return informationTechnologySpecialistsProfileEdgesAcc;
+            }
 
-          executiveManagementIdsAcc = addFieldsToObject({
-            object: executiveManagementIdsAcc,
-            fieldValuesTuples: [[jobPosition, _id]],
-          });
+            const informationTechnologySpecialistProfileEdge: Edge = {
+              ...edgeDefaults,
+              id: `${informationTechnologyManagerProfileNodeId}-${_id}`, // source-target
+              source: informationTechnologyManagerProfileNodeId,
+              target: _id,
+            };
 
-          return executiveManagementIdsAcc;
-        },
-        Object.create(null)
-      );
+            informationTechnologySpecialistsProfileEdgesAcc.push(
+              informationTechnologySpecialistProfileEdge
+            );
 
-      // edges from each executive managements (except ceo) to information technology department starting node
-      const informationTechnologyDepartmentEdges = Object.entries(
-        executiveManagementIds
-      ).reduce(
-        (
-          informationTechnologyDepartmentEdgesAcc: Edge[],
-          [_, executiveManagementId]
-        ) => {
-          const informationTechnologyDepartmentEdge: Edge = {
-            ...edgeDefaults,
-            id: `${executiveManagementId}-${informationTechnologyDepartmentSourceId}`, // source-target
-            source: executiveManagementId,
-            target: informationTechnologyDepartmentSourceId,
-          };
-          informationTechnologyDepartmentEdgesAcc.push(
-            informationTechnologyDepartmentEdge
-          );
-
-          return informationTechnologyDepartmentEdgesAcc;
-        },
-        [...informationTechnologyEdges]
-      );
+            return informationTechnologySpecialistsProfileEdgesAcc;
+          },
+          [ctoToInformationTechnologyManagerEdge]
+        );
 
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
           department: 'Information Technology',
           kind: 'nodes',
-          data: informationTechnologyDocsNodes,
+          data: [
+            informationTechnologyManagerProfileNode,
+            ...informationTechnologySpecialistsProfileNodes,
+          ],
         },
       });
 
@@ -1199,12 +1197,15 @@ function Directory() {
         payload: {
           department: 'Information Technology',
           kind: 'edges',
-          data: informationTechnologyDepartmentEdges,
+          data: informationTechnologySpecialistsProfileEdges,
         },
       });
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end information technology department ━┛
+
+    // ┏━ begin accounting department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end accounting department ━┛
 
     // ┏━ begin repair technicians department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -1233,7 +1234,7 @@ function Directory() {
           setHumanResourcesEdgesAndNodes(),
           setSalesDepartmentEdgesAndNodes(),
           setMarketingEdgesAndNodes(),
-          // setInformationTechnologyEdgesAndNodes(),
+          setInformationTechnologyEdgesAndNodes(),
           // setRepairTechniciansEdgesAndNodes(),
           // setFieldServiceTechniciansEdgesAndNodes(),
           // setLogisticsAndInventoryEdgesAndNodes(),
