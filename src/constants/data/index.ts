@@ -99,7 +99,8 @@ const DEPARTMENT_DATA: Department[] = [
   'Store Administration',
   'Accounting',
   'Human Resources',
-  'Sales and Marketing',
+  'Sales',
+  'Marketing',
   'Information Technology',
   'Repair Technicians',
   'Field Service Technicians',
@@ -109,45 +110,95 @@ const DEPARTMENT_DATA: Department[] = [
 ];
 
 const JOB_POSITION_DATA: JobPosition[] = [
+  // executive management
   'Chief Executive Officer',
   'Chief Operations Officer',
   'Chief Financial Officer',
   'Chief Technology Officer',
   'Chief Marketing Officer',
   'Chief Human Resources Officer',
+
+  // human resources
+  'Human Resources Manager',
+  'Compensation and Benefits Manager',
+  'Compensation and Benefits Specialist',
+  'Health and Safety Manager',
+  'Health and Safety Specialist',
   'Training Manager',
   'Training Specialist',
   'Recruiting Manager',
   'Recruiting Specialist',
+
+  // store administration
   'Store Manager',
   'Shift Supervisor',
   'Office Manager',
+
+  // accounting
   'Accounting Manager',
   'Accounts Payable Clerk',
   'Accounts Receivable Clerk',
+  'Financial Analyst',
+  'Tax Specialist',
+  'Payroll Specialist',
+  'Budget Analyst',
+  'Auditor',
+
+  // sales
   'Sales Manager',
   'Sales Representative',
+  'Business Development Specialist',
+  'Sales Support Specialist',
+  'Sales Operations Analyst',
+
+  // marketing
   'Marketing Manager',
+  'SEO Specialist',
   'Digital Marketing Specialist',
+  'Social Media Specialist',
+  'Graphic Designer',
+  'Public Relations Specialist',
+  'Marketing Analyst',
+  'Brand Specialist',
+
+  // information technology
   'IT Manager',
   'Network Administrator',
   'Systems Administrator',
   'IT Support Specialist',
   'Database Administrator',
+  'Web Developer',
+  'Software Developer',
+  'Software Engineer',
+  'Infrastructure Architect',
+  'IT Security Specialist',
+  'Cloud Architect',
+  'Data Scientist',
+  'IT Training Specialist',
+
+  // repair technicians
   'Repair Technicians Supervisor',
   'Electronics Technician',
   'Computer Technician',
   'Smartphone Technician',
   'Tablet Technician',
   'Audio/Video Equipment Technician',
+
+  // field service technicians
   'Field Service Supervisor',
   'On-Site Technician',
+
+  // logistics and inventory
   'Warehouse Supervisor',
   'Inventory Clerk',
   'Delivery Driver',
+
+  // customer service
   'Customer Service Supervisor',
   'Customer Service Representative',
   'Technical Support Specialist',
+
+  // maintenance
   'Maintenance Supervisor',
   'Maintenance Worker',
   'Custodian',
@@ -169,6 +220,11 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
   [
     'Human Resources',
     [
+      'Human Resources Manager',
+      'Compensation and Benefits Manager',
+      'Compensation and Benefits Specialist',
+      'Health and Safety Manager',
+      'Health and Safety Specialist',
       'Training Manager',
       'Training Specialist',
       'Recruiting Manager',
@@ -187,16 +243,36 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
       'Accounting Manager',
       'Accounts Payable Clerk',
       'Accounts Receivable Clerk',
+      'Financial Analyst',
+      'Tax Specialist',
+      'Payroll Specialist',
+      'Budget Analyst',
+      'Auditor',
     ],
   ],
 
   [
-    'Sales and Marketing',
+    'Sales',
     [
       'Sales Manager',
       'Sales Representative',
+      'Business Development Specialist',
+      'Sales Support Specialist',
+      'Sales Operations Analyst',
+    ],
+  ],
+
+  [
+    'Marketing',
+    [
       'Marketing Manager',
+      'SEO Specialist',
       'Digital Marketing Specialist',
+      'Social Media Specialist',
+      'Graphic Designer',
+      'Public Relations Specialist',
+      'Marketing Analyst',
+      'Brand Specialist',
     ],
   ],
 
@@ -208,6 +284,14 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
       'Systems Administrator',
       'IT Support Specialist',
       'Database Administrator',
+      'Web Developer',
+      'Software Developer',
+      'Software Engineer',
+      'Infrastructure Architect',
+      'IT Security Specialist',
+      'Cloud Architect',
+      'Data Scientist',
+      'IT Training Specialist',
     ],
   ],
 

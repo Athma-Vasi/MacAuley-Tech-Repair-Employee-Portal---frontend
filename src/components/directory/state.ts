@@ -79,9 +79,13 @@ function directoryReducer(
         field: 'department',
       });
 
+      // set trigger to true
+      const triggerSetDepartmentsNodesAndEdges = true;
+
       return {
         ...state,
         groupedByDepartment,
+        triggerSetDepartmentsNodesAndEdges,
       };
     }
 
@@ -91,6 +95,9 @@ function directoryReducer(
         objectArray: users,
         field: 'jobPosition',
       });
+
+      // set trigger to true
+      // const triggerSetDepartmentsNodesAndEdges = true;
 
       return { ...state, groupedByJobPositon };
     }
@@ -102,49 +109,53 @@ function directoryReducer(
         field: 'storeLocation',
       });
 
+      // set trigger to true
+      // const triggerSetDepartmentsNodesAndEdges = true;
+
       return { ...state, groupedByStoreLocation };
     }
 
     case directoryAction.setFilterByDepartment: {
-      const filterByDepartment = action.payload;
+      // const filterByDepartment = action.payload;
 
-      console.log('filterByDepartment', filterByDepartment);
+      // console.log('filterByDepartment', filterByDepartment);
 
-      if (filterByDepartment === 'All Departments') {
-        return { ...state, filterByDepartment };
-      }
+      // if (filterByDepartment === 'All Departments') {
+      //   return { ...state, filterByDepartment };
+      // }
 
-      // only show the selected department
-      const propertyDescriptor: PropertyDescriptor = {
-        enumerable: true,
-        configurable: true,
-        writable: true,
-      };
+      // // only show the selected department
+      // const propertyDescriptor: PropertyDescriptor = {
+      //   enumerable: true,
+      //   configurable: true,
+      //   writable: true,
+      // };
 
-      const departmentsNodesAndEdges = Object.entries(
-        state.departmentsNodesAndEdges
-      ).reduce(
-        (
-          departmentsNodesAndEdgesAcc: DepartmentsNodesAndEdges,
-          [department, { nodes, edges }]
-        ) => {
-          if (department === filterByDepartment) {
-            Object.defineProperty(departmentsNodesAndEdgesAcc, department, {
-              ...propertyDescriptor,
-              value: { nodes, edges },
-            });
-          }
+      // const departmentsNodesAndEdges = Object.entries(
+      //   state.departmentsNodesAndEdges
+      // ).reduce(
+      //   (
+      //     departmentsNodesAndEdgesAcc: DepartmentsNodesAndEdges,
+      //     [department, { nodes, edges }]
+      //   ) => {
+      //     if (department === filterByDepartment) {
+      //       Object.defineProperty(departmentsNodesAndEdgesAcc, department, {
+      //         ...propertyDescriptor,
+      //         value: { nodes, edges },
+      //       });
+      //     }
 
-          return departmentsNodesAndEdgesAcc;
-        },
-        Object.create(null)
-      );
+      //     return departmentsNodesAndEdgesAcc;
+      //   },
+      //   Object.create(null)
+      // );
 
-      return {
-        ...state,
-        filterByDepartment,
-        departmentsNodesAndEdges,
-      };
+      // return {
+      //   ...state,
+      //   filterByDepartment,
+      //   departmentsNodesAndEdges,
+      // };
+      return { ...state };
     }
 
     case directoryAction.setFilterByJobPosition:
@@ -165,6 +176,10 @@ function directoryReducer(
     case directoryAction.setDepartmentsNodesAndEdges: {
       const { department, kind, data } = action.payload;
 
+      console.log('department', department);
+      console.log('kind', kind);
+      console.log('data', data);
+
       // a shallow copy of the object
       // however, the nodes and edges are built anew upon each change of these state values: groupedByDepartment, any of the filters, and layoutDirection, padding, rowGap and storeLocationsNodes
       const departmentsNodesAndEdges = state.departmentsNodesAndEdges;
@@ -174,9 +189,6 @@ function directoryReducer(
         configurable: true,
         writable: true,
       };
-
-      // set trigger to false
-      const triggerSetDepartmentsNodesAndEdges = false;
 
       switch (kind) {
         case 'nodes': {
@@ -190,7 +202,6 @@ function directoryReducer(
           return {
             ...state,
             departmentsNodesAndEdges,
-            triggerSetDepartmentsNodesAndEdges,
           };
         }
         case 'edges': {
@@ -204,7 +215,6 @@ function directoryReducer(
           return {
             ...state,
             departmentsNodesAndEdges,
-            triggerSetDepartmentsNodesAndEdges,
           };
         }
         default:

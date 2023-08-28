@@ -135,7 +135,8 @@ type Department =
   | 'Store Administration'
   | 'Accounting'
   | 'Human Resources'
-  | 'Sales and Marketing'
+  | 'Sales'
+  | 'Marketing'
   | 'Information Technology'
   | 'Repair Technicians'
   | 'Field Service Technicians'
@@ -149,9 +150,15 @@ type ExecutiveManagement =
   | 'Chief Financial Officer'
   | 'Chief Technology Officer'
   | 'Chief Marketing Officer'
+  | 'Chief Sales Officer'
   | 'Chief Human Resources Officer';
 
 type HumanResources =
+  | 'Human Resources Manager'
+  | 'Compensation and Benefits Manager'
+  | 'Compensation and Benefits Specialist'
+  | 'Health and Safety Manager'
+  | 'Health and Safety Specialist'
   | 'Training Manager'
   | 'Training Specialist'
   | 'Recruiting Manager'
@@ -165,20 +172,44 @@ type StoreAdministration =
 type Accounting =
   | 'Accounting Manager'
   | 'Accounts Payable Clerk'
-  | 'Accounts Receivable Clerk';
+  | 'Accounts Receivable Clerk'
+  | 'Financial Analyst'
+  | 'Tax Specialist'
+  | 'Payroll Specialist'
+  | 'Budget Analyst'
+  | 'Auditor';
 
-type SalesAndMarketing =
+type Sales =
   | 'Sales Manager'
   | 'Sales Representative'
+  | 'Business Development Specialist'
+  | 'Sales Support Specialist'
+  | 'Sales Operations Analyst';
+
+type Marketing =
   | 'Marketing Manager'
-  | 'Digital Marketing Specialist';
+  | 'SEO Specialist'
+  | 'Digital Marketing Specialist'
+  | 'Social Media Specialist'
+  | 'Graphic Designer'
+  | 'Public Relations Specialist'
+  | 'Marketing Analyst'
+  | 'Brand Specialist';
 
 type InformationTechnology =
   | 'IT Manager'
   | 'Network Administrator'
   | 'Systems Administrator'
   | 'IT Support Specialist'
-  | 'Database Administrator';
+  | 'Database Administrator'
+  | 'Web Developer'
+  | 'Software Developer'
+  | 'Software Engineer'
+  | 'Infrastructure Architect'
+  | 'IT Security Specialist'
+  | 'Cloud Architect'
+  | 'Data Scientist'
+  | 'IT Training Specialist';
 
 type RepairTechnicians =
   | 'Repair Technicians Supervisor'
@@ -210,7 +241,8 @@ type Maintenance =
 type JobPosition =
   | ExecutiveManagement
   | StoreAdministration
-  | SalesAndMarketing
+  | Sales
+  | Marketing
   | InformationTechnology
   | RepairTechnicians
   | FieldServiceTechnicians
