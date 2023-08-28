@@ -1,67 +1,31 @@
-import {
-  Card,
-  ColorPicker,
-  Flex,
-  Group,
-  Image,
-  Stack,
-  Text,
-  Title,
-  Tooltip,
-} from '@mantine/core';
+import { Flex, Group, Stack } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
-import {
-  ChangeEvent,
-  ComponentType,
-  Suspense,
-  useEffect,
-  useReducer,
-} from 'react';
-import {
-  ErrorBoundary,
-  FallbackProps,
-  useErrorBoundary,
-} from 'react-error-boundary';
-import { TbBrandMastodon, TbPhotoOff } from 'react-icons/tb';
-import {
-  TiSocialDribbble,
-  TiSocialFlickr,
-  TiSocialGithub,
-  TiSocialLinkedin,
-} from 'react-icons/ti';
+import localforage from 'localforage';
+import { ChangeEvent, useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { Edge, Node } from 'reactflow';
 
-import { authAction } from '../../context/authProvider';
-import { globalAction } from '../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../hooks';
-import { Department, JobPosition, StoreLocation } from '../../types';
-import {
-  addFieldsToObject,
-  fetchData,
-  logState,
-  urlBuilder,
-  wrapPromise,
-} from '../../utils';
-import ErrorFallback from '../errorFallback/ErrorFallback';
-import NodeBuilder from '../nodeBuilder/NodeBuilder';
-import { FlowNode } from '../nodeBuilder/types';
-import {
-  directoryAction,
-  directoryReducer,
-  initialDirectoryState,
-} from './state';
-import { FetchUsersDirectoryResponse, DirectoryUserDocument } from './types';
-import { returnDirectoryProfileCard } from './utils';
-import { create } from 'domain';
-import localforage from 'localforage';
-import { AccessibleSelectInputCreatorInfo } from '../wrappers';
 import {
   DEPARTMENT_DATA,
   JOB_POSITION_DATA,
   STORE_LOCATION_DATA,
 } from '../../constants/data';
+import { globalAction } from '../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../hooks';
 import { returnAccessibleSelectInputElements } from '../../jsxCreators';
+import { Department, JobPosition, StoreLocation } from '../../types';
+import { addFieldsToObject, logState, urlBuilder } from '../../utils';
+import NodeBuilder from '../nodeBuilder/NodeBuilder';
+import { FlowNode } from '../nodeBuilder/types';
+import { AccessibleSelectInputCreatorInfo } from '../wrappers';
+import {
+  directoryAction,
+  directoryReducer,
+  initialDirectoryState,
+} from './state';
+import { DirectoryUserDocument, FetchUsersDirectoryResponse } from './types';
+import { returnDirectoryProfileCard } from './utils';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -561,193 +525,292 @@ function Directory() {
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end executive management ━┛
 
-    // ┏━ begin administrative department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ┏━ begin store administration department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    async function setAdministrativeDepartmentEdgesAndNodes() {
-      const administrativeDepartmentDocs =
-        groupedByDepartment.Administrative ?? [];
+    async function setStoreAdministrationEdgesAndNodes() {
+      const storeAdministrationDocs =
+        groupedByDepartment['Store Administration'] ?? [];
 
-      // starting administrative nodes for each store location
-      const [
-        edmontonAdministrativeStartingNode,
-        calgaryAdministrativeStartingNode,
-        vancouverAdministrativeStartingNode,
-      ]: FlowNode[] = storeLocations.map((store) => {
-        const initialAdministrativeDepartmentDocNode: FlowNode = {
-          id: `administrative-department-${store}`,
-          type: 'default',
-          data: { label: `${store} Administrative Department` },
-          position: nodePosition,
-          style: nodeDimensions,
-        };
+      // starting stores heading node [STORES]
+      const initialStoresHeadingNode: FlowNode = {
+        id: 'stores-heading',
+        type: 'default',
+        data: { label: 'Stores' },
+        position: nodePosition,
+        style: nodeDimensions,
+      };
 
-        return initialAdministrativeDepartmentDocNode;
-      });
+      // store administration department node for each store location
 
-      const administrativeDepartmentDocsNodes =
-        administrativeDepartmentDocs.reduce(
+      const storeLocationsHeadingNodes: FlowNode[] = STORE_LOCATION_DATA.map(
+        (store) => {
+          const initialStoreLocationsHeadingNode: FlowNode = {
+            id: `store-location-heading-${store}`,
+            type: 'default',
+            data: { label: `${store} Store Administration` },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          return initialStoreLocationsHeadingNode;
+        }
+      );
+
+      const storeAdministrationDocsNodes = storeAdministrationDocs.reduce(
+        (
+          storeAdministrationNodesAcc: Node[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id } = userDocument;
+
+          const displayProfileCard = returnDirectoryProfileCard({
+            userDocument,
+            padding,
+            rowGap,
+          });
+
+          const storeAdministrationNode: Node = {
+            id: _id,
+            type: 'default',
+            data: { label: displayProfileCard },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+          storeAdministrationNodesAcc.push(storeAdministrationNode);
+
+          return storeAdministrationNodesAcc;
+        },
+        [initialStoresHeadingNode, ...storeLocationsHeadingNodes]
+      );
+
+      // connecting initial store heading node to each store location heading node
+      //           ┏━ [EDMONTON]
+      // [STORES] ━━━ [CALGARY]
+      //           ┗━ [VANCOUVER]
+      const storesHeadingNodeId = initialStoresHeadingNode.id;
+      const edgesFromStoresHeadingToEachStoreLocationsHeading =
+        storeLocationsHeadingNodes.reduce(
           (
-            administrativeDepartmentNodesAcc: Node[],
-            userDocument: DirectoryUserDocument
+            storeLocationsHeadingEdgesAcc: Edge[],
+            storeLocationHeadingNode: FlowNode
           ) => {
-            const { _id } = userDocument;
-            const displayProfileCard = returnDirectoryProfileCard({
-              userDocument,
-              padding,
-              rowGap,
-            });
+            const { id: storeLocationHeadingNodeId } = storeLocationHeadingNode;
 
-            const administrativeDepartmentNode: Node = {
-              id: _id,
-              type: 'output',
-              data: { label: displayProfileCard },
-              position: nodePosition,
-              style: nodeDimensions,
+            const storeLocationHeadingEdge: Edge = {
+              id: `${storesHeadingNodeId}-${storeLocationHeadingNodeId}`,
+              source: storesHeadingNodeId,
+              target: storeLocationHeadingNodeId,
+              type: 'smoothstep',
+              animated: true,
+              // label: jobPosition,
+              labelBgPadding: [8, 4],
+              labelBgBorderRadius: 4,
+              labelBgStyle: { fill: 'white' },
+              labelStyle: { fill: 'black', fontWeight: 700 },
+              style: { stroke: 'black' },
             };
-            administrativeDepartmentNodesAcc.push(administrativeDepartmentNode);
 
-            return administrativeDepartmentNodesAcc;
+            storeLocationsHeadingEdgesAcc.push(storeLocationHeadingEdge);
+
+            return storeLocationsHeadingEdgesAcc;
           },
-
-          [
-            edmontonAdministrativeStartingNode,
-            calgaryAdministrativeStartingNode,
-            vancouverAdministrativeStartingNode,
-          ]
+          []
         );
 
-      // edmonton administrative node id
-      const edmontonAdministrativeSourceId =
-        edmontonAdministrativeStartingNode.id;
+      // connect each store location heading node to its store manager profile node
+      //
+      //           ┏━ [EDMONTON]  ━ [STORE MANAGER]
+      // [STORES] ━━━ [CALGARY]   ━ [STORE MANAGER]
+      //           ┗━ [VANCOUVER] ━ [STORE MANAGER]
 
-      // edge from edmonton store location to edmonton administrative node
-      const edmontonStoreLocationToEdmontonAdministrativeEdge: Edge = {
-        ...edgeDefaults,
-        id: `${edmontonStoreLocationSourceId}-${edmontonAdministrativeSourceId}`, // source-target
-        source: edmontonStoreLocationSourceId,
-        target: edmontonAdministrativeSourceId,
-      };
-
-      const edmontonAdministrativeEdges = administrativeDepartmentDocs.reduce(
+      const storeAdministrationEdges = storeAdministrationDocs.reduce(
         (
-          edmontonAdministrativeEdgesAcc: Edge[],
+          storeAdministrationEdgesAcc: Edge[],
           userDocument: DirectoryUserDocument
         ) => {
-          const { _id, storeLocation } = userDocument;
+          const { _id, storeLocation, jobPosition } = userDocument;
 
-          if (storeLocation === 'Vancouver' || storeLocation === 'Calgary') {
-            return edmontonAdministrativeEdgesAcc;
+          const storeLocationHeadingNodeId = storeLocationsHeadingNodes.find(
+            (storeLocationHeadingNode: FlowNode) =>
+              storeLocationHeadingNode.id ===
+              `store-location-heading-${storeLocation}`
+          )?.id as string;
+
+          //  edge from store location heading node to store manager profile node
+          if (jobPosition === 'Store Manager') {
+            const storeAdministrationEdge: Edge = {
+              ...edgeDefaults,
+              id: `${storeLocationHeadingNodeId}-${_id}`, // source-target
+              source: storeLocationHeadingNodeId,
+              target: _id,
+            };
+            storeAdministrationEdgesAcc.push(storeAdministrationEdge);
           }
 
-          const edmontonAdministrativeEdge: Edge = {
-            ...edgeDefaults,
-            id: `${edmontonAdministrativeSourceId}-${_id}`, // source-target
-            source: edmontonAdministrativeSourceId,
-            target: _id,
-          };
-          edmontonAdministrativeEdgesAcc.push(edmontonAdministrativeEdge);
-
-          return edmontonAdministrativeEdgesAcc;
+          return storeAdministrationEdgesAcc;
         },
-        [edmontonStoreLocationToEdmontonAdministrativeEdge]
+        [...edgesFromStoresHeadingToEachStoreLocationsHeading]
       );
 
-      // calgary administrative node id
-      const calgaryAdministrativeSourceId =
-        calgaryAdministrativeStartingNode.id;
+      // connect store managers to their subordinates
+      //                                               ┏━ [OFFICE MANAGER]
+      //           ┏━ [EDMONTON]  ━━━ [STORE MANAGER] ━━━ [SHIFT SUPERVISOR]
+      // [STORES] ━━━ [CALGARY]   ━━━ [STORE MANAGER] ━━━ // same
+      //           ┗━ [VANCOUVER] ━━━ [STORE MANAGER] ━━━ // same
 
-      // edge from calgary store location to calgary administrative node
-      const calgaryStoreLocationToCalgaryAdministrativeEdge: Edge = {
-        ...edgeDefaults,
-        id: `${calgaryStoreLocationSourceId}-${calgaryAdministrativeSourceId}`, // source-target
-        source: calgaryStoreLocationSourceId,
-        target: calgaryAdministrativeSourceId,
-      };
-
-      const calgaryAdministrativeEdges = administrativeDepartmentDocs.reduce(
+      // find store managers node ids
+      const [
+        edmontonStoreManagerNodeId,
+        calgaryStoreManagerNodeId,
+        vancouverStoreManagerNodeId,
+      ] = storeAdministrationDocs.reduce(
         (
-          calgaryAdministrativeEdgesAcc: Edge[],
+          storeManagersNodeIdsAcc: string[],
           userDocument: DirectoryUserDocument
         ) => {
-          const { _id, storeLocation } = userDocument;
+          const { _id, storeLocation, jobPosition } = userDocument;
 
-          if (storeLocation === 'Vancouver' || storeLocation === 'Edmonton') {
-            return calgaryAdministrativeEdgesAcc;
+          if (storeLocation === 'Edmonton' && jobPosition === 'Store Manager') {
+            // find the store manager node id
+            const edmontonStoreManagerNodeId =
+              storeAdministrationDocsNodes.find((node: Node) => node.id === _id)
+                ?.id as string;
+            storeManagersNodeIdsAcc[0] = edmontonStoreManagerNodeId;
           }
 
-          const calgaryAdministrativeEdge: Edge = {
-            ...edgeDefaults,
-            id: `${calgaryAdministrativeSourceId}-${_id}`, // source-target
-            source: calgaryAdministrativeSourceId,
-            target: _id,
-          };
-          calgaryAdministrativeEdgesAcc.push(calgaryAdministrativeEdge);
+          if (storeLocation === 'Calgary' && jobPosition === 'Store Manager') {
+            // find the store manager node id
+            const calgaryStoreManagerNodeId = storeAdministrationDocsNodes.find(
+              (node: Node) => node.id === _id
+            )?.id as string;
+            storeManagersNodeIdsAcc[1] = calgaryStoreManagerNodeId;
+          }
 
-          return calgaryAdministrativeEdgesAcc;
+          if (
+            storeLocation === 'Vancouver' &&
+            jobPosition === 'Store Manager'
+          ) {
+            // find the store manager node id
+            const vancouverStoreManagerNodeId =
+              storeAdministrationDocsNodes.find((node: Node) => node.id === _id)
+                ?.id as string;
+            storeManagersNodeIdsAcc[2] = vancouverStoreManagerNodeId;
+          }
+          return storeManagersNodeIdsAcc;
         },
-        [calgaryStoreLocationToCalgaryAdministrativeEdge]
+        ['', '', '']
       );
 
-      // vancouver administrative node id
-      const vancouverAdministrativeSourceId =
-        vancouverAdministrativeStartingNode.id;
-
-      // edge from vancouver store location to vancouver administrative node
-      const vancouverStoreLocationToVancouverAdministrativeEdge: Edge = {
-        ...edgeDefaults,
-        id: `${vancouverStoreLocationSourceId}-${vancouverAdministrativeSourceId}`, // source-target
-        source: vancouverStoreLocationSourceId,
-        target: vancouverAdministrativeSourceId,
-      };
-
-      const vancouverAdministrativeEdges = administrativeDepartmentDocs.reduce(
+      // for edmonton store location
+      const edmontonStoreAdministrationEdges = storeAdministrationDocs.reduce(
         (
-          vancouverAdministrativeEdgesAcc: Edge[],
+          edmontonStoreAdministrationEdgesAcc: Edge[],
           userDocument: DirectoryUserDocument
         ) => {
-          const { _id, storeLocation } = userDocument;
+          const { _id, storeLocation, jobPosition } = userDocument;
 
-          if (storeLocation === 'Edmonton' || storeLocation === 'Calgary') {
-            return vancouverAdministrativeEdgesAcc;
+          if (storeLocation !== 'Edmonton' || jobPosition === 'Store Manager') {
+            return edmontonStoreAdministrationEdgesAcc;
           }
 
-          const vancouverAdministrativeEdge: Edge = {
+          // edge from store manager profile node to subordinate profile node
+          const edmontonStoreAdministrationEdge: Edge = {
             ...edgeDefaults,
-            id: `${vancouverAdministrativeSourceId}-${_id}`, // source-target
-            source: vancouverAdministrativeSourceId,
+            id: `${edmontonStoreManagerNodeId}-${_id}`, // source-target
+            source: edmontonStoreManagerNodeId,
             target: _id,
           };
-          vancouverAdministrativeEdgesAcc.push(vancouverAdministrativeEdge);
+          edmontonStoreAdministrationEdgesAcc.push(
+            edmontonStoreAdministrationEdge
+          );
 
-          return vancouverAdministrativeEdgesAcc;
+          return edmontonStoreAdministrationEdgesAcc;
         },
-        [vancouverStoreLocationToVancouverAdministrativeEdge]
+        [...storeAdministrationEdges]
       );
+
+      // for calgary store location with accumulated edges from edmonton store location
+      const calgaryStoreAdministrationEdges = storeAdministrationDocs.reduce(
+        (
+          calgaryStoreAdministrationEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation, jobPosition } = userDocument;
+
+          if (storeLocation !== 'Calgary' || jobPosition === 'Store Manager') {
+            return calgaryStoreAdministrationEdgesAcc;
+          }
+
+          // edge from store manager profile node to subordinate profile node
+          const calgaryStoreAdministrationEdge: Edge = {
+            ...edgeDefaults,
+            id: `${calgaryStoreManagerNodeId}-${_id}`, // source-target
+            source: calgaryStoreManagerNodeId,
+            target: _id,
+          };
+
+          calgaryStoreAdministrationEdgesAcc.push(
+            calgaryStoreAdministrationEdge
+          );
+
+          return calgaryStoreAdministrationEdgesAcc;
+        },
+        [...edmontonStoreAdministrationEdges]
+      );
+
+      // for vancouver store location with accumulated edges from edmonton and calgary store locations
+      const allLocationsStoreAdministrationEdges =
+        storeAdministrationDocs.reduce(
+          (
+            vancouverStoreAdministrationEdgesAcc: Edge[],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, storeLocation, jobPosition } = userDocument;
+
+            if (
+              storeLocation !== 'Vancouver' ||
+              jobPosition === 'Store Manager'
+            ) {
+              return vancouverStoreAdministrationEdgesAcc;
+            }
+
+            // edge from store manager profile node to subordinate profile node
+            const vancouverStoreAdministrationEdge: Edge = {
+              ...edgeDefaults,
+              id: `${vancouverStoreManagerNodeId}-${_id}`, // source-target
+              source: vancouverStoreManagerNodeId,
+              target: _id,
+            };
+
+            vancouverStoreAdministrationEdgesAcc.push(
+              vancouverStoreAdministrationEdge
+            );
+
+            return vancouverStoreAdministrationEdgesAcc;
+          },
+          [...calgaryStoreAdministrationEdges]
+        );
 
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
-          department: 'Administrative',
+          department: 'Store Administration',
           kind: 'nodes',
-          data: administrativeDepartmentDocsNodes,
+          data: storeAdministrationDocsNodes,
         },
       });
 
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
-          department: 'Administrative',
+          department: 'Store Administration',
           kind: 'edges',
-          data: [
-            ...edmontonAdministrativeEdges,
-            ...calgaryAdministrativeEdges,
-            ...vancouverAdministrativeEdges,
-          ],
+          data: allLocationsStoreAdministrationEdges,
         },
       });
     }
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end administrative department ━┛
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end store administration department ━┛
 
     // ┏━ begin sales and marketing department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -760,7 +823,7 @@ function Directory() {
         edmontonSalesAndMarketingStartingNode,
         calgarySalesAndMarketingStartingNode,
         vancouverSalesAndMarketingStartingNode,
-      ]: FlowNode[] = storeLocations.map((store) => {
+      ]: FlowNode[] = STORE_LOCATION_DATA.map((store) => {
         const initialSalesAndMarketingDepartmentDocNode: FlowNode = {
           id: `sales-and-marketing-department-${store}`,
           type: 'default',
@@ -1845,13 +1908,13 @@ function Directory() {
       try {
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
-          setAdministrativeDepartmentEdgesAndNodes(),
+          setStoreAdministrationEdgesAndNodes(),
           // setSalesAndMarketingEdgesAndNodes(),
           // setInformationTechnologyEdgesAndNodes(),
           // setRepairTechniciansEdgesAndNodes(),
           // setFieldServiceTechniciansEdgesAndNodes(),
           // setLogisticsAndInventoryEdgesAndNodes(),
-          setCustomerServiceEdgesAndNodes(),
+          // setCustomerServiceEdgesAndNodes(),
         ]);
       } catch (error: any) {
         // TODO: TRIGGER ERROR BOUNDARY HOOK
@@ -2092,3 +2155,189 @@ export default Directory;
   //   });
   // }, [groupedByDepartment, departmentsNodesAndEdges['Store Locations'].nodes]);
  */
+
+/**
+   * async function setAdministrativeDepartmentEdgesAndNodes() {
+      const administrativeDepartmentDocs =
+        groupedByDepartment.Administrative ?? [];
+
+      // starting administrative nodes for each store location
+      const [
+        edmontonAdministrativeStartingNode,
+        calgaryAdministrativeStartingNode,
+        vancouverAdministrativeStartingNode,
+      ]: FlowNode[] = storeLocations.map((store) => {
+        const initialAdministrativeDepartmentDocNode: FlowNode = {
+          id: `administrative-department-${store}`,
+          type: 'default',
+          data: { label: `${store} Administrative Department` },
+          position: nodePosition,
+          style: nodeDimensions,
+        };
+
+        return initialAdministrativeDepartmentDocNode;
+      });
+
+      const administrativeDepartmentDocsNodes =
+        administrativeDepartmentDocs.reduce(
+          (
+            administrativeDepartmentNodesAcc: Node[],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id } = userDocument;
+            const displayProfileCard = returnDirectoryProfileCard({
+              userDocument,
+              padding,
+              rowGap,
+            });
+
+            const administrativeDepartmentNode: Node = {
+              id: _id,
+              type: 'output',
+              data: { label: displayProfileCard },
+              position: nodePosition,
+              style: nodeDimensions,
+            };
+            administrativeDepartmentNodesAcc.push(administrativeDepartmentNode);
+
+            return administrativeDepartmentNodesAcc;
+          },
+
+          [
+            edmontonAdministrativeStartingNode,
+            calgaryAdministrativeStartingNode,
+            vancouverAdministrativeStartingNode,
+          ]
+        );
+
+      // edmonton administrative node id
+      const edmontonAdministrativeSourceId =
+        edmontonAdministrativeStartingNode.id;
+
+      // edge from edmonton store location to edmonton administrative node
+      const edmontonStoreLocationToEdmontonAdministrativeEdge: Edge = {
+        ...edgeDefaults,
+        id: `${edmontonStoreLocationSourceId}-${edmontonAdministrativeSourceId}`, // source-target
+        source: edmontonStoreLocationSourceId,
+        target: edmontonAdministrativeSourceId,
+      };
+
+      const edmontonAdministrativeEdges = administrativeDepartmentDocs.reduce(
+        (
+          edmontonAdministrativeEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation } = userDocument;
+
+          if (storeLocation === 'Vancouver' || storeLocation === 'Calgary') {
+            return edmontonAdministrativeEdgesAcc;
+          }
+
+          const edmontonAdministrativeEdge: Edge = {
+            ...edgeDefaults,
+            id: `${edmontonAdministrativeSourceId}-${_id}`, // source-target
+            source: edmontonAdministrativeSourceId,
+            target: _id,
+          };
+          edmontonAdministrativeEdgesAcc.push(edmontonAdministrativeEdge);
+
+          return edmontonAdministrativeEdgesAcc;
+        },
+        [edmontonStoreLocationToEdmontonAdministrativeEdge]
+      );
+
+      // calgary administrative node id
+      const calgaryAdministrativeSourceId =
+        calgaryAdministrativeStartingNode.id;
+
+      // edge from calgary store location to calgary administrative node
+      const calgaryStoreLocationToCalgaryAdministrativeEdge: Edge = {
+        ...edgeDefaults,
+        id: `${calgaryStoreLocationSourceId}-${calgaryAdministrativeSourceId}`, // source-target
+        source: calgaryStoreLocationSourceId,
+        target: calgaryAdministrativeSourceId,
+      };
+
+      const calgaryAdministrativeEdges = administrativeDepartmentDocs.reduce(
+        (
+          calgaryAdministrativeEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation } = userDocument;
+
+          if (storeLocation === 'Vancouver' || storeLocation === 'Edmonton') {
+            return calgaryAdministrativeEdgesAcc;
+          }
+
+          const calgaryAdministrativeEdge: Edge = {
+            ...edgeDefaults,
+            id: `${calgaryAdministrativeSourceId}-${_id}`, // source-target
+            source: calgaryAdministrativeSourceId,
+            target: _id,
+          };
+          calgaryAdministrativeEdgesAcc.push(calgaryAdministrativeEdge);
+
+          return calgaryAdministrativeEdgesAcc;
+        },
+        [calgaryStoreLocationToCalgaryAdministrativeEdge]
+      );
+
+      // vancouver administrative node id
+      const vancouverAdministrativeSourceId =
+        vancouverAdministrativeStartingNode.id;
+
+      // edge from vancouver store location to vancouver administrative node
+      const vancouverStoreLocationToVancouverAdministrativeEdge: Edge = {
+        ...edgeDefaults,
+        id: `${vancouverStoreLocationSourceId}-${vancouverAdministrativeSourceId}`, // source-target
+        source: vancouverStoreLocationSourceId,
+        target: vancouverAdministrativeSourceId,
+      };
+
+      const vancouverAdministrativeEdges = administrativeDepartmentDocs.reduce(
+        (
+          vancouverAdministrativeEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation } = userDocument;
+
+          if (storeLocation === 'Edmonton' || storeLocation === 'Calgary') {
+            return vancouverAdministrativeEdgesAcc;
+          }
+
+          const vancouverAdministrativeEdge: Edge = {
+            ...edgeDefaults,
+            id: `${vancouverAdministrativeSourceId}-${_id}`, // source-target
+            source: vancouverAdministrativeSourceId,
+            target: _id,
+          };
+          vancouverAdministrativeEdgesAcc.push(vancouverAdministrativeEdge);
+
+          return vancouverAdministrativeEdgesAcc;
+        },
+        [vancouverStoreLocationToVancouverAdministrativeEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Administrative',
+          kind: 'nodes',
+          data: administrativeDepartmentDocsNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Administrative',
+          kind: 'edges',
+          data: [
+            ...edmontonAdministrativeEdges,
+            ...calgaryAdministrativeEdges,
+            ...vancouverAdministrativeEdges,
+          ],
+        },
+      });
+    }
+   */

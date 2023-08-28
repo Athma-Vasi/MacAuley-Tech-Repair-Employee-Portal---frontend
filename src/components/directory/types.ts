@@ -1,25 +1,42 @@
 import { Edge, Node } from 'reactflow';
 
 import {
+  Country,
   Department,
   JobPosition,
+  PreferredPronouns,
+  Province,
   ResourceRequestServerResponse,
+  StatesUS,
   StoreLocation,
   UserDocument,
 } from '../../types';
 
-type DirectoryUserDocument = Omit<
-  UserDocument,
-  | 'password'
-  | '__v'
-  | 'dateOfBirth'
-  | 'address'
-  | 'contactNumber'
-  | 'emergencyContact'
-  | 'startDate'
-  | 'completedSurveys'
-  | 'email'
->;
+type DirectoryUserDocument = {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  username: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  preferredName: string;
+  preferredPronouns: PreferredPronouns;
+  profilePictureUrl: string;
+
+  address: {
+    city: string;
+    province?: Province;
+    state?: StatesUS;
+    country: Country;
+  };
+
+  jobPosition: JobPosition;
+  department: Department;
+  storeLocation?: StoreLocation;
+  startDate: string;
+  active: boolean;
+};
 
 type FetchUsersDirectoryResponse = ResourceRequestServerResponse<UserDocument>;
 
@@ -27,24 +44,32 @@ type FlowNodesLayoutDirection = 'LR' | 'TB' | 'RL' | 'BT';
 
 type NodeDefaults = Record<Department, Node>;
 
+type DirectoryDepartments = Department | 'All Departments' | 'Store Locations';
+type DirectoryJobPositions = JobPosition | 'All Job Positions';
+type DirectoryStoreLocations = StoreLocation | 'All Store Locations';
+
 type DepartmentsNodesAndEdges = Record<
-  Department | 'Store Locations',
+  DirectoryDepartments,
   { nodes: Node[]; edges: Edge[] }
 >;
 
 type DirectoryState = {
-  groupedByDepartment: Record<Department, DirectoryUserDocument[]>;
-  groupedByJobPositon: Record<JobPosition, DirectoryUserDocument[]>;
-  groupedByStoreLocation: Record<StoreLocation, DirectoryUserDocument[]>;
+  groupedByDepartment: Record<DirectoryDepartments, DirectoryUserDocument[]>;
+  groupedByJobPositon: Record<DirectoryJobPositions, DirectoryUserDocument[]>;
+  groupedByStoreLocation: Record<
+    DirectoryStoreLocations,
+    DirectoryUserDocument[]
+  >;
 
-  filterByDepartment: Department | 'All Departments';
-  filterByJobPosition: JobPosition | 'All Job Positions';
-  filterByStoreLocation: StoreLocation | 'All Store Locations';
-
-  layoutDirection: FlowNodesLayoutDirection;
+  filterByDepartment: DirectoryDepartments;
+  filterByJobPosition: DirectoryJobPositions;
+  filterByStoreLocation: DirectoryStoreLocations;
+  filteredDepartmentsNodesAndEdges: Partial<DepartmentsNodesAndEdges>;
 
   triggerSetDepartmentsNodesAndEdges: boolean;
   departmentsNodesAndEdges: DepartmentsNodesAndEdges;
+
+  layoutDirection: FlowNodesLayoutDirection;
 
   isError: boolean;
   errorMessage: string;
@@ -64,11 +89,12 @@ type DirectoryAction = {
   setFilterByDepartment: 'setFilterByDepartment';
   setFilterByJobPosition: 'setFilterByJobPosition';
   setFilterByStoreLocation: 'setFilterByStoreLocation';
-
-  setLayoutDirection: 'setLayoutDirection';
+  setFilteredDepartmentsNodesAndEdges: 'setFilteredDepartmentsNodesAndEdges';
 
   setTriggerSetDepartmentsNodesAndEdges: 'setTriggerSetDepartmentsNodesAndEdges';
   setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges';
+
+  setLayoutDirection: 'setLayoutDirection';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -81,8 +107,12 @@ type DirectoryAction = {
 };
 
 type SetDepartmentNodesAndEdgesPayload =
-  | { department: Department | 'Store Locations'; kind: 'nodes'; data: Node[] }
-  | { department: Department | 'Store Locations'; kind: 'edges'; data: Edge[] };
+  | { department: DirectoryDepartments; kind: 'nodes'; data: Node[] }
+  | { department: DirectoryDepartments; kind: 'edges'; data: Edge[] };
+
+type SetFilteredDepartmentsNodesAndEdgesPayload =
+  | { department: DirectoryDepartments; kind: 'nodes'; data: Node[] }
+  | { department: DirectoryDepartments; kind: 'edges'; data: Edge[] };
 
 type DirectoryDispatch =
   | {
@@ -90,16 +120,20 @@ type DirectoryDispatch =
       payload: SetDepartmentNodesAndEdgesPayload;
     }
   | {
+      type: DirectoryAction['setFilteredDepartmentsNodesAndEdges'];
+      payload: SetFilteredDepartmentsNodesAndEdgesPayload;
+    }
+  | {
       type: DirectoryAction['setFilterByDepartment'];
-      payload: Department | 'All Departments';
+      payload: DirectoryDepartments;
     }
   | {
       type: DirectoryAction['setFilterByJobPosition'];
-      payload: JobPosition | 'All Job Positions';
+      payload: DirectoryJobPositions;
     }
   | {
       type: DirectoryAction['setFilterByStoreLocation'];
-      payload: StoreLocation | 'All Store Locations';
+      payload: DirectoryStoreLocations;
     }
   | {
       type: DirectoryAction['setLayoutDirection'];
@@ -141,4 +175,9 @@ export type {
   DirectoryUserDocument,
   FetchUsersDirectoryResponse,
   FlowNodesLayoutDirection,
+  NodeDefaults,
+  SetDepartmentNodesAndEdgesPayload,
+  DirectoryDepartments,
+  DirectoryJobPositions,
+  DirectoryStoreLocations,
 };

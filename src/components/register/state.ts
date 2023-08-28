@@ -71,8 +71,8 @@ const initialRegisterState: RegisterState = {
     country: 'Canada',
   },
 
-  department: 'Administrative',
-  jobPosition: 'Accountant',
+  department: 'Store Administration',
+  jobPosition: 'Accounting Manager',
   storeLocation: 'Edmonton',
 
   emergencyContact: {

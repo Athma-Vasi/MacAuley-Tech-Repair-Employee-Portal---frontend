@@ -5,7 +5,7 @@ import type {
 } from './types';
 
 const initialRequestResourceState: RequestResourceState = {
-  department: 'Administrative',
+  department: 'Store Administration',
   resourceType: 'Access',
 
   resourceQuantity: '0',

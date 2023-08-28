@@ -29,8 +29,8 @@ const initialCreateRefermentState: CreateRefermentState = {
   isValidCandidateProfileUrl: false,
   isCandidateProfileUrlFocused: false,
 
-  departmentReferredFor: 'Administrative',
-  positionReferredFor: 'Accountant',
+  departmentReferredFor: 'Store Administration',
+  positionReferredFor: 'Accounting Manager',
 
   positionJobDescription: '',
   isValidPositionJobDescription: false,

@@ -8,24 +8,28 @@ import { groupByField } from '../../utils';
 import {
   DepartmentsNodesAndEdges,
   DirectoryAction,
+  DirectoryDepartments,
   DirectoryDispatch,
+  DirectoryJobPositions,
   DirectoryState,
+  DirectoryStoreLocations,
   DirectoryUserDocument,
 } from './types';
 
 const initialDirectoryState: DirectoryState = {
-  groupedByDepartment: {} as Record<Department, UserDocument[]>,
-  groupedByJobPositon: {} as Record<JobPosition, UserDocument[]>,
-  groupedByStoreLocation: {} as Record<StoreLocation, UserDocument[]>,
+  groupedByDepartment: {} as Record<DirectoryDepartments, UserDocument[]>,
+  groupedByJobPositon: {} as Record<DirectoryJobPositions, UserDocument[]>,
+  groupedByStoreLocation: {} as Record<DirectoryStoreLocations, UserDocument[]>,
 
   filterByDepartment: 'All Departments',
   filterByJobPosition: 'All Job Positions',
   filterByStoreLocation: 'All Store Locations',
-
-  layoutDirection: 'LR',
+  filteredDepartmentsNodesAndEdges: {} as Partial<DepartmentsNodesAndEdges>,
 
   triggerSetDepartmentsNodesAndEdges: false,
   departmentsNodesAndEdges: {} as DepartmentsNodesAndEdges,
+
+  layoutDirection: 'LR',
 
   isError: false,
   errorMessage: '',
@@ -45,12 +49,13 @@ const directoryAction: DirectoryAction = {
   setFilterByDepartment: 'setFilterByDepartment',
   setFilterByJobPosition: 'setFilterByJobPosition',
   setFilterByStoreLocation: 'setFilterByStoreLocation',
-
-  setLayoutDirection: 'setLayoutDirection',
+  setFilteredDepartmentsNodesAndEdges: 'setFilteredDepartmentsNodesAndEdges',
 
   setTriggerSetDepartmentsNodesAndEdges:
     'setTriggerSetDepartmentsNodesAndEdges',
   setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges',
+
+  setLayoutDirection: 'setLayoutDirection',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -148,8 +153,11 @@ function directoryReducer(
     case directoryAction.setFilterByStoreLocation:
       return { ...state, filterByStoreLocation: action.payload };
 
-    case directoryAction.setLayoutDirection:
-      return { ...state, layoutDirection: action.payload };
+    case directoryAction.setFilteredDepartmentsNodesAndEdges:
+      return {
+        ...state,
+        // filteredDepartmentsNodesAndEdges: action.payload,
+      };
 
     case directoryAction.setTriggerSetDepartmentsNodesAndEdges:
       return { ...state, triggerSetDepartmentsNodesAndEdges: action.payload };
@@ -203,6 +211,9 @@ function directoryReducer(
           return state;
       }
     }
+
+    case directoryAction.setLayoutDirection:
+      return { ...state, layoutDirection: action.payload };
 
     case directoryAction.setIsError:
       return { ...state, isError: action.payload };
