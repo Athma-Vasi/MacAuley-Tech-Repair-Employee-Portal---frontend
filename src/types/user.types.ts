@@ -133,6 +133,7 @@ type StoreLocation = 'Calgary' | 'Edmonton' | 'Vancouver';
 type Department =
   | 'Executive Management'
   | 'Store Administration'
+  | 'Office Administration'
   | 'Accounting'
   | 'Human Resources'
   | 'Sales'
@@ -155,13 +156,9 @@ type ExecutiveManagement =
 
 type HumanResources =
   | 'Human Resources Manager'
-  | 'Compensation and Benefits Manager'
   | 'Compensation and Benefits Specialist'
-  | 'Health and Safety Manager'
   | 'Health and Safety Specialist'
-  | 'Training Manager'
   | 'Training Specialist'
-  | 'Recruiting Manager'
   | 'Recruiting Specialist';
 
 type StoreAdministration =
@@ -169,15 +166,16 @@ type StoreAdministration =
   | 'Shift Supervisor'
   | 'Office Manager';
 
+type OfficeAdministration =
+  | 'Office Administrator'
+  | 'Receptionist'
+  | 'Data Entry Specialist';
+
 type Accounting =
   | 'Accounting Manager'
   | 'Accounts Payable Clerk'
   | 'Accounts Receivable Clerk'
-  | 'Financial Analyst'
-  | 'Tax Specialist'
-  | 'Payroll Specialist'
-  | 'Budget Analyst'
-  | 'Auditor';
+  | 'Financial Analyst';
 
 type Sales =
   | 'Sales Manager'
@@ -188,28 +186,19 @@ type Sales =
 
 type Marketing =
   | 'Marketing Manager'
-  | 'SEO Specialist'
   | 'Digital Marketing Specialist'
-  | 'Social Media Specialist'
   | 'Graphic Designer'
   | 'Public Relations Specialist'
-  | 'Marketing Analyst'
-  | 'Brand Specialist';
+  | 'Marketing Analyst';
 
 type InformationTechnology =
   | 'IT Manager'
-  | 'Network Administrator'
   | 'Systems Administrator'
   | 'IT Support Specialist'
   | 'Database Administrator'
   | 'Web Developer'
   | 'Software Developer'
-  | 'Software Engineer'
-  | 'Infrastructure Architect'
-  | 'IT Security Specialist'
-  | 'Cloud Architect'
-  | 'Data Scientist'
-  | 'IT Training Specialist';
+  | 'Software Engineer';
 
 type RepairTechnicians =
   | 'Repair Technicians Supervisor'
@@ -226,7 +215,9 @@ type FieldServiceTechnicians =
 type LogisticsAndInventory =
   | 'Warehouse Supervisor'
   | 'Inventory Clerk'
-  | 'Delivery Driver';
+  | 'Delivery Driver'
+  | 'Parts and Materials Handler'
+  | 'Shipper/Receiver';
 
 type CustomerService =
   | 'Customer Service Supervisor'
@@ -241,6 +232,7 @@ type Maintenance =
 type JobPosition =
   | ExecutiveManagement
   | StoreAdministration
+  | OfficeAdministration
   | Sales
   | Marketing
   | InformationTechnology

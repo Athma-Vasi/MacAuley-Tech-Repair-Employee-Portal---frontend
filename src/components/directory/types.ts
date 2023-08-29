@@ -166,6 +166,14 @@ type DirectoryDispatch =
       payload: string;
     };
 
+type OfficeAdministrationProfileNodesObject = Record<
+  StoreLocation,
+  {
+    administrator: Node;
+    specialists: Node[];
+  }
+>;
+
 export type {
   DepartmentsNodesAndEdges,
   DirectoryAction,
@@ -178,5 +186,6 @@ export type {
   FetchUsersDirectoryResponse,
   FilteredDepartmentNodesAndEdges,
   FlowNodesLayoutDirection,
+  OfficeAdministrationProfileNodesObject,
   SetDepartmentNodesAndEdgesPayload,
 };

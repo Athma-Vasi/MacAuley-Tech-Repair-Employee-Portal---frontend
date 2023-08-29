@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react';
 
-import { Department, JobPosition } from '../../types';
+import { Department, JobPosition, StoreLocation } from '../../types';
 
 const PROVINCES = [
   'Alberta',
@@ -120,13 +120,9 @@ const JOB_POSITION_DATA: JobPosition[] = [
 
   // human resources
   'Human Resources Manager',
-  'Compensation and Benefits Manager',
   'Compensation and Benefits Specialist',
-  'Health and Safety Manager',
   'Health and Safety Specialist',
-  'Training Manager',
   'Training Specialist',
-  'Recruiting Manager',
   'Recruiting Specialist',
 
   // store administration
@@ -134,15 +130,16 @@ const JOB_POSITION_DATA: JobPosition[] = [
   'Shift Supervisor',
   'Office Manager',
 
+  // office administration
+  'Office Administrator',
+  'Receptionist',
+  'Data Entry Specialist',
+
   // accounting
   'Accounting Manager',
   'Accounts Payable Clerk',
   'Accounts Receivable Clerk',
   'Financial Analyst',
-  'Tax Specialist',
-  'Payroll Specialist',
-  'Budget Analyst',
-  'Auditor',
 
   // sales
   'Sales Manager',
@@ -153,28 +150,19 @@ const JOB_POSITION_DATA: JobPosition[] = [
 
   // marketing
   'Marketing Manager',
-  'SEO Specialist',
   'Digital Marketing Specialist',
-  'Social Media Specialist',
   'Graphic Designer',
   'Public Relations Specialist',
   'Marketing Analyst',
-  'Brand Specialist',
 
   // information technology
   'IT Manager',
-  'Network Administrator',
   'Systems Administrator',
   'IT Support Specialist',
   'Database Administrator',
   'Web Developer',
   'Software Developer',
   'Software Engineer',
-  'Infrastructure Architect',
-  'IT Security Specialist',
-  'Cloud Architect',
-  'Data Scientist',
-  'IT Training Specialist',
 
   // repair technicians
   'Repair Technicians Supervisor',
@@ -192,6 +180,8 @@ const JOB_POSITION_DATA: JobPosition[] = [
   'Warehouse Supervisor',
   'Inventory Clerk',
   'Delivery Driver',
+  'Parts and Materials Handler',
+  'Shipper/Receiver',
 
   // customer service
   'Customer Service Supervisor',
@@ -221,13 +211,9 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
     'Human Resources',
     [
       'Human Resources Manager',
-      'Compensation and Benefits Manager',
       'Compensation and Benefits Specialist',
-      'Health and Safety Manager',
       'Health and Safety Specialist',
-      'Training Manager',
       'Training Specialist',
-      'Recruiting Manager',
       'Recruiting Specialist',
     ],
   ],
@@ -238,16 +224,17 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
   ],
 
   [
+    'Office Administration',
+    ['Office Administrator', 'Receptionist', 'Data Entry Specialist'],
+  ],
+
+  [
     'Accounting',
     [
       'Accounting Manager',
       'Accounts Payable Clerk',
       'Accounts Receivable Clerk',
       'Financial Analyst',
-      'Tax Specialist',
-      'Payroll Specialist',
-      'Budget Analyst',
-      'Auditor',
     ],
   ],
 
@@ -266,13 +253,10 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
     'Marketing',
     [
       'Marketing Manager',
-      'SEO Specialist',
       'Digital Marketing Specialist',
-      'Social Media Specialist',
       'Graphic Designer',
       'Public Relations Specialist',
       'Marketing Analyst',
-      'Brand Specialist',
     ],
   ],
 
@@ -280,18 +264,12 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
     'Information Technology',
     [
       'IT Manager',
-      'Network Administrator',
       'Systems Administrator',
       'IT Support Specialist',
       'Database Administrator',
       'Web Developer',
       'Software Developer',
       'Software Engineer',
-      'Infrastructure Architect',
-      'IT Security Specialist',
-      'Cloud Architect',
-      'Data Scientist',
-      'IT Training Specialist',
     ],
   ],
 
@@ -314,7 +292,13 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
 
   [
     'Logistics and Inventory',
-    ['Warehouse Supervisor', 'Inventory Clerk', 'Delivery Driver'],
+    [
+      'Warehouse Supervisor',
+      'Inventory Clerk',
+      'Delivery Driver',
+      'Parts and Materials Handler',
+      'Shipper/Receiver',
+    ],
   ],
 
   [
@@ -332,7 +316,11 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map([
   ],
 ]);
 
-const STORE_LOCATION_DATA = ['Edmonton', 'Calgary', 'Vancouver'];
+const STORE_LOCATION_DATA: StoreLocation[] = [
+  'Edmonton',
+  'Calgary',
+  'Vancouver',
+];
 
 /**
  * these are the field names that have date values that are not time stamps.
@@ -355,12 +343,20 @@ const FIELDNAMES_WITH_DATE_VALUES = new Set([
   'dateofBirth',
 ]);
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+const PROPERTY_DESCRIPTOR: PropertyDescriptor = {
+  writable: true,
+  enumerable: true,
+  configurable: true,
+};
+
 export {
   COLORS,
   DEPARTMENT_DATA,
   DEPARTMENT_JOB_POSITION_MAP,
   FIELDNAMES_WITH_DATE_VALUES,
   JOB_POSITION_DATA,
+  PROPERTY_DESCRIPTOR,
   PROVINCES,
   REQUEST_STATUS,
   STATES_US,

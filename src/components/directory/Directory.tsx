@@ -9,6 +9,7 @@ import { Edge, Node } from 'reactflow';
 import {
   DEPARTMENT_DATA,
   JOB_POSITION_DATA,
+  PROPERTY_DESCRIPTOR,
   STORE_LOCATION_DATA,
 } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
@@ -36,7 +37,11 @@ import {
   directoryReducer,
   initialDirectoryState,
 } from './state';
-import { DirectoryUserDocument, FetchUsersDirectoryResponse } from './types';
+import {
+  DirectoryUserDocument,
+  FetchUsersDirectoryResponse,
+  OfficeAdministrationProfileNodesObject,
+} from './types';
 import { returnDirectoryProfileCard } from './utils';
 import {
   DIRECTORY_DEPARTMENT_CHECKBOX_DATA,
@@ -422,13 +427,9 @@ function Directory() {
             rowGap,
           });
 
-          const nodeType = jobPosition.toLowerCase().includes('store manager')
-            ? 'default'
-            : 'output';
-
           const storeAdministrationNode: Node = {
             id: _id,
-            type: nodeType,
+            type: 'default',
             data: { label: displayProfileCard },
             position: nodePosition,
             style: nodeDimensions,
@@ -476,9 +477,9 @@ function Directory() {
 
       // connect each store location heading node to its store manager profile node
       //
-      //           ┏━ [EDMONTON]  ━ [STORE MANAGER]
-      // [STORES] ━━━ [CALGARY]   ━ [STORE MANAGER]
-      //           ┗━ [VANCOUVER] ━ [STORE MANAGER]
+      //           ┏━ [EDMONTON]  ━━━ [STORE MANAGER]
+      // [STORES] ━━━ [CALGARY]   ━━━ [STORE MANAGER]
+      //           ┗━ [VANCOUVER] ━━━ [STORE MANAGER]
 
       const storeAdministrationEdges = storeAdministrationDocs.reduce(
         (
@@ -674,6 +675,204 @@ function Directory() {
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end store administration department ━┛
+
+    // ┏━ end office administration department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    async function setOfficeAdministrationEdgesAndNodes() {
+      const officeAdministrationDocs =
+        groupedByDepartment['Office Administration'] ?? [];
+
+      // sets the shape of acc object passed in reduce
+      // why? store locations may change
+      const officeAdministrationProfileNodesInitialAcc =
+        STORE_LOCATION_DATA.reduce(
+          (
+            officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
+            storeLocation: StoreLocation
+          ) => {
+            const value = {
+              administrator: {} as Node,
+              specialists: [],
+            };
+
+            Object.defineProperty(officeAdministrationNodesAcc, storeLocation, {
+              ...PROPERTY_DESCRIPTOR,
+              value,
+            });
+
+            return officeAdministrationNodesAcc;
+          },
+          Object.create(null)
+        );
+
+      // create office administration profile nodes
+      const officeAdministrationProfileNodesObject =
+        officeAdministrationDocs.reduce(
+          (
+            officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition, storeLocation } = userDocument;
+
+            if (!storeLocation) {
+              return officeAdministrationNodesAcc;
+            }
+
+            const nodeType = jobPosition
+              .toLowerCase()
+              .includes('office administrator')
+              ? 'default'
+              : 'output';
+
+            const displayProfileCard = returnDirectoryProfileCard({
+              userDocument,
+              padding,
+              rowGap,
+            });
+
+            const officeAdministrationNode: Node = {
+              id: _id,
+              type: nodeType,
+              data: { label: displayProfileCard },
+              position: nodePosition,
+              style: nodeDimensions,
+            };
+
+            if (jobPosition.toLowerCase().includes('office administrator')) {
+              Object.defineProperty(
+                officeAdministrationNodesAcc[storeLocation],
+                'administrator',
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: officeAdministrationNode,
+                }
+              );
+              return officeAdministrationNodesAcc;
+            }
+
+            Object.defineProperty(
+              officeAdministrationNodesAcc[storeLocation],
+              'specialists',
+              {
+                ...PROPERTY_DESCRIPTOR,
+                value: [
+                  ...officeAdministrationNodesAcc[storeLocation].specialists,
+                  officeAdministrationNode,
+                ],
+              }
+            );
+
+            return officeAdministrationNodesAcc;
+          },
+          officeAdministrationProfileNodesInitialAcc
+        );
+
+      console.log(
+        'officeAdministrationProfileNodesObject',
+        officeAdministrationProfileNodesObject
+      );
+
+      // connect each store location's office manager to office administrator to subordinates
+      //           ┏━ [EDMONTON] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
+      // [STORES] ━━━ [CALGARY] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
+      //           ┗━ [VANCOUVER] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
+
+      // connect each store location's office administrator to office manager, and subordinates to administrator
+      const officeAdministrationProfileEdges = STORE_LOCATION_DATA.reduce(
+        (
+          officeAdministrationEdgesAcc: Edge[],
+          storeLocation: StoreLocation
+        ) => {
+          // find office manager profile node id for this store location
+          const storeAdministrationDocs =
+            groupedByDepartment['Store Administration'] ?? [];
+
+          const officeManagerProfileNodeId =
+            storeAdministrationDocs.find(
+              (userDocument: DirectoryUserDocument) =>
+                userDocument.storeLocation === storeLocation &&
+                userDocument.jobPosition === 'Office Manager'
+            )?._id ?? '';
+
+          // find office administrators profile node id for this store location
+          const officeAdministratorProfileNodeId =
+            officeAdministrationProfileNodesObject[storeLocation].administrator
+              .id;
+
+          // connect office manager to office administrator
+          const officeManagerToOfficeAdministratorEdge: Edge = {
+            ...edgeDefaults,
+            id: `${officeManagerProfileNodeId}-${officeAdministratorProfileNodeId}`, // source-target
+            source: officeManagerProfileNodeId,
+            target: officeAdministratorProfileNodeId,
+          };
+
+          officeAdministrationEdgesAcc.push(
+            officeManagerToOfficeAdministratorEdge
+          );
+
+          // find specialists profile nodes for this store location
+          const specialistsProfileNodes =
+            officeAdministrationProfileNodesObject[storeLocation].specialists;
+
+          // connect office administrator to specialists
+          const officeAdministratorToSpecialistsEdges =
+            specialistsProfileNodes.map((node: Node) => {
+              const officeAdministratorToSpecialistEdge: Edge = {
+                ...edgeDefaults,
+                id: `${officeAdministratorProfileNodeId}-${node.id}`, // source-target
+                source: officeAdministratorProfileNodeId,
+                target: node.id,
+              };
+
+              return officeAdministratorToSpecialistEdge;
+            });
+
+          officeAdministrationEdgesAcc.push(
+            ...officeAdministratorToSpecialistsEdges
+          );
+
+          return officeAdministrationEdgesAcc;
+        },
+        []
+      );
+
+      const dispatchPayloadDataNodes = Object.entries(
+        officeAdministrationProfileNodesObject
+      ).reduce(
+        (dispatchPayloadDataNodesAcc: Node[], [_, hierarchicalDivisor]) => {
+          const { administrator, specialists } = hierarchicalDivisor;
+
+          dispatchPayloadDataNodesAcc.push(administrator);
+          specialists.forEach((node: Node) => {
+            dispatchPayloadDataNodesAcc.push(node);
+          });
+
+          return dispatchPayloadDataNodesAcc;
+        },
+        []
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Office Administration',
+          kind: 'nodes',
+          data: dispatchPayloadDataNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Office Administration',
+          kind: 'edges',
+          data: officeAdministrationProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end office administration department ━┛
 
     // ┏━ begin human resources department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -1351,6 +1550,7 @@ function Directory() {
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
           setStoreAdministrationEdgesAndNodes(),
+          setOfficeAdministrationEdgesAndNodes(),
           setHumanResourcesEdgesAndNodes(),
           setSalesDepartmentEdgesAndNodes(),
           setMarketingEdgesAndNodes(),
