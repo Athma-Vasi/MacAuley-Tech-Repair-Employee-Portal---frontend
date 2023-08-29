@@ -22,6 +22,7 @@ import {
 import { Department, JobPosition, StoreLocation } from '../../types';
 import {
   addFieldsToObject,
+  groupByField,
   logState,
   replaceLastCommaWithAnd,
   urlBuilder,
@@ -41,6 +42,7 @@ import {
   DirectoryUserDocument,
   FetchUsersDirectoryResponse,
   OfficeAdministrationProfileNodesObject,
+  RepairTechniciansProfileNodesObject,
 } from './types';
 import { returnDirectoryProfileCard } from './utils';
 import {
@@ -767,11 +769,6 @@ function Directory() {
           officeAdministrationProfileNodesInitialAcc
         );
 
-      console.log(
-        'officeAdministrationProfileNodesObject',
-        officeAdministrationProfileNodesObject
-      );
-
       // connect each store location's office manager to office administrator to subordinates
       //           ┏━ [EDMONTON] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
       // [STORES] ━━━ [CALGARY] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
@@ -837,18 +834,21 @@ function Directory() {
         []
       );
 
-      const dispatchPayloadDataNodes = Object.entries(
+      const officeAdministrationProfileNodes = Object.entries(
         officeAdministrationProfileNodesObject
       ).reduce(
-        (dispatchPayloadDataNodesAcc: Node[], [_, hierarchicalDivisor]) => {
+        (
+          officeAdministrationProfileNodesAcc: Node[],
+          [_, hierarchicalDivisor]
+        ) => {
           const { administrator, specialists } = hierarchicalDivisor;
 
-          dispatchPayloadDataNodesAcc.push(administrator);
+          officeAdministrationProfileNodesAcc.push(administrator);
           specialists.forEach((node: Node) => {
-            dispatchPayloadDataNodesAcc.push(node);
+            officeAdministrationProfileNodesAcc.push(node);
           });
 
-          return dispatchPayloadDataNodesAcc;
+          return officeAdministrationProfileNodesAcc;
         },
         []
       );
@@ -858,7 +858,7 @@ function Directory() {
         payload: {
           department: 'Office Administration',
           kind: 'nodes',
-          data: dispatchPayloadDataNodes,
+          data: officeAdministrationProfileNodes,
         },
       });
 
@@ -1528,6 +1528,77 @@ function Directory() {
 
     // ┏━ begin repair technicians department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+    async function setRepairTechniciansEdgesAndNodes() {
+      const repairTechniciansDocs =
+        groupedByDepartment['Repair Technicians'] ?? [];
+
+      // group by store locations
+      const repairTechniciansDocsGroupedByStoreLocation: Record<
+        StoreLocation,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: repairTechniciansDocs,
+        field: 'storeLocation',
+      });
+
+      const repairTechniciansDocsGroupedByStoreLocationAndJobPosition =
+        Object.entries(repairTechniciansDocsGroupedByStoreLocation).reduce(
+          (
+            repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc: Record<
+              StoreLocation,
+              Record<JobPosition, DirectoryUserDocument[]>
+            >,
+            storeLocationGroupedRepairTechniciansDocsTuple
+          ) => {
+            const [storeLocation, groupedRepairTechniciansDocs] =
+              storeLocationGroupedRepairTechniciansDocsTuple as [
+                StoreLocation,
+                DirectoryUserDocument[]
+              ];
+
+            // add store location field
+            Object.defineProperty(
+              repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc,
+              storeLocation,
+              {
+                ...PROPERTY_DESCRIPTOR,
+                value: Object.create(null),
+              }
+            );
+
+            // for each store location docs, group by job position
+            groupedRepairTechniciansDocs.forEach(
+              (userDocument: DirectoryUserDocument) => {
+                const { jobPosition } = userDocument;
+
+                const obj =
+                  repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc[
+                    storeLocation
+                  ];
+                const key = jobPosition;
+                const newValue = [
+                  ...(obj[key] ?? []),
+                  userDocument,
+                ] as DirectoryUserDocument[];
+
+                Object.defineProperty(obj, key, {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: newValue,
+                });
+              }
+            );
+
+            return repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc;
+          },
+          Object.create(null)
+        );
+
+      console.log(
+        'repairTechniciansDocsGroupedByStoreLocationAndJobPosition',
+        repairTechniciansDocsGroupedByStoreLocationAndJobPosition
+      );
+    }
+
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end repair technicians department ━┛
 
     // ┏━ begin field service technicians department ━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1556,7 +1627,7 @@ function Directory() {
           setMarketingEdgesAndNodes(),
           setInformationTechnologyEdgesAndNodes(),
           setAccountingEdgesAndNodes(),
-          // setRepairTechniciansEdgesAndNodes(),
+          setRepairTechniciansEdgesAndNodes(),
           // setFieldServiceTechniciansEdgesAndNodes(),
           // setLogisticsAndInventoryEdgesAndNodes(),
           // setCustomerServiceEdgesAndNodes(),
@@ -1739,7 +1810,6 @@ function Directory() {
     departmentsNodesAndEdges
   ).reduce(
     (initialNodesAndEdgesAcc: [Node[], Edge[]], departmentNodesAndEdges) => {
-      console.log('departmentNodesAndEdges', departmentNodesAndEdges);
       const [_, nodesAndEdges] = departmentNodesAndEdges;
 
       const departmentNodes = nodesAndEdges.nodes;

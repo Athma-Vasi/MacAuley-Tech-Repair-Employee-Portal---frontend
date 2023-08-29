@@ -174,6 +174,11 @@ type OfficeAdministrationProfileNodesObject = Record<
   }
 >;
 
+type RepairTechniciansProfileNodesObject = Record<
+  StoreLocation,
+  Record<JobPosition, Node[]>
+>;
+
 export type {
   DepartmentsNodesAndEdges,
   DirectoryAction,
@@ -187,5 +192,6 @@ export type {
   FilteredDepartmentNodesAndEdges,
   FlowNodesLayoutDirection,
   OfficeAdministrationProfileNodesObject,
+  RepairTechniciansProfileNodesObject,
   SetDepartmentNodesAndEdgesPayload,
 };
