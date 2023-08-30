@@ -685,121 +685,177 @@ function Directory() {
       const officeAdministrationDocs =
         groupedByDepartment['Office Administration'] ?? [];
 
-      // sets the shape of acc object passed in reduce
-      // why? store locations may change
-      const officeAdministrationProfileNodesInitialAcc =
-        STORE_LOCATION_DATA.reduce(
-          (
-            // officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
-            officeAdministrationNodesAcc,
-            storeLocation: StoreLocation
-          ) => {
-            const value = {
-              administrator: {} as Node,
-              specialists: [],
-            };
+      // group by store locations
+      const officeAdministrationDocsGroupedByStoreLocation: Record<
+        StoreLocation,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: officeAdministrationDocs,
+        field: 'storeLocation',
+      });
 
-            Object.defineProperty(officeAdministrationNodesAcc, storeLocation, {
+      // using the created object structure, create profile nodes
+      const officeAdministrationProfileNodesObject = Object.entries(
+        officeAdministrationDocsGroupedByStoreLocation
+      ).reduce(
+        (
+          officeAdministrationProfileNodesObjectAcc: StoreDepartmentsProfileNodesObject,
+          officeAdministrationGroupedDocsTuple
+        ) => {
+          const [storeLocation, groupedOfficeAdministrationByStoreLocationArr] =
+            officeAdministrationGroupedDocsTuple as [
+              StoreLocation,
+              DirectoryUserDocument[]
+            ];
+
+          // create store location field
+          Object.defineProperty(
+            officeAdministrationProfileNodesObjectAcc,
+            storeLocation,
+            {
               ...PROPERTY_DESCRIPTOR,
-              value,
-            });
-
-            return officeAdministrationNodesAcc;
-          },
-          Object.create(null)
-        );
-
-      // create office administration profile nodes
-      const officeAdministrationProfileNodesObject =
-        officeAdministrationDocs.reduce(
-          (
-            // officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
-            officeAdministrationNodesAcc,
-            userDocument: DirectoryUserDocument
-          ) => {
-            const { _id, jobPosition, storeLocation } = userDocument;
-
-            if (!storeLocation) {
-              return officeAdministrationNodesAcc;
+              value: Object.create(null),
             }
+          );
 
-            const nodeType = jobPosition
-              .toLowerCase()
-              .includes('office administrator')
-              ? 'default'
-              : 'output';
+          // iterate through docs for each store location and create profile cards for each job position
+          const jobPositionsProfileNodesObj =
+            groupedOfficeAdministrationByStoreLocationArr.reduce(
+              (
+                jobPositionsProfileNodesObjAcc: Record<
+                  JobPosition,
+                  React.JSX.Element[]
+                >,
+                userDocument: DirectoryUserDocument
+              ) => {
+                const { jobPosition } = userDocument;
 
-            const displayProfileCard = returnDirectoryProfileCard({
-              userDocument,
-              padding,
-              rowGap,
-            });
+                // create profile card
+                const displayProfileCard = returnDirectoryProfileCard({
+                  userDocument,
+                  padding,
+                  rowGap,
+                });
 
-            const officeAdministrationNode: Node = {
-              id: _id,
-              type: nodeType,
-              data: { label: displayProfileCard },
-              position: nodePosition,
-              style: nodeDimensions,
-            };
+                // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
+                const value = [
+                  ...(jobPositionsProfileNodesObjAcc[jobPosition] ?? []),
+                  displayProfileCard,
+                ] as React.JSX.Element[];
 
-            if (jobPosition.toLowerCase().includes('office administrator')) {
-              Object.defineProperty(
-                officeAdministrationNodesAcc[storeLocation],
-                'administrator',
-                {
-                  ...PROPERTY_DESCRIPTOR,
-                  value: officeAdministrationNode,
-                }
-              );
-              return officeAdministrationNodesAcc;
-            }
+                // add job position field
+                Object.defineProperty(
+                  jobPositionsProfileNodesObjAcc,
+                  jobPosition,
+                  {
+                    ...PROPERTY_DESCRIPTOR,
+                    value,
+                  }
+                );
 
-            Object.defineProperty(
-              officeAdministrationNodesAcc[storeLocation],
-              'specialists',
-              {
-                ...PROPERTY_DESCRIPTOR,
-                value: [
-                  ...officeAdministrationNodesAcc[storeLocation].specialists,
-                  officeAdministrationNode,
-                ],
-              }
+                return jobPositionsProfileNodesObjAcc;
+              },
+              Object.create(null)
             );
 
-            return officeAdministrationNodesAcc;
-          },
-          officeAdministrationProfileNodesInitialAcc
-        );
+          // for each job position, create a single profile node that will hold a carousel of created profile cards
+          Object.entries(jobPositionsProfileNodesObj).forEach(
+            (jobPositionAndProfileCardsTuple) => {
+              const [jobPosition, profileCards] =
+                jobPositionAndProfileCardsTuple as [
+                  JobPosition,
+                  React.JSX.Element[]
+                ];
 
-      // connect each store location's office manager to office administrator to subordinates
-      //           ┏━ [EDMONTON] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
-      // [STORES] ━━━ [CALGARY] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
-      //           ┗━ [VANCOUVER] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
+              const nodeType = jobPosition
+                .toLowerCase()
+                .includes('administrator')
+                ? 'default'
+                : 'output';
 
-      // connect each store location's office administrator to office manager, and subordinates to administrator
-      const officeAdministrationProfileEdges = STORE_LOCATION_DATA.reduce(
+              const groupedOfficeAdministrationByStoreLocationCarousel = (
+                <CarouselBuilder carouselProps={{}} slides={profileCards} />
+              );
+
+              // create profile node with carousel
+              const groupedOfficeAdministrationByStoreLocationProfileNode: Node =
+                {
+                  id: `${storeLocation}-${jobPosition}`,
+                  type: nodeType,
+                  data: {
+                    label: groupedOfficeAdministrationByStoreLocationCarousel,
+                  },
+                  position: nodePosition,
+                  style: nodeDimensions,
+                };
+
+              // add job position field with profile node
+              Object.defineProperty(
+                officeAdministrationProfileNodesObjectAcc[storeLocation],
+                jobPosition,
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: groupedOfficeAdministrationByStoreLocationProfileNode,
+                }
+              );
+            },
+            Object.create(null)
+          );
+
+          return officeAdministrationProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log(
+        'officeAdministrationProfileNodesObject',
+        officeAdministrationProfileNodesObject
+      );
+
+      // create edges
+      const officeAdministrationProfileEdges = Object.entries(
+        officeAdministrationProfileNodesObject
+      ).reduce(
         (
-          officeAdministrationEdgesAcc: Edge[],
-          storeLocation: StoreLocation
+          officeAdministrationProfileEdgesAcc: Edge[],
+          storeLocationAndJobPositionProfileNodesTuple
         ) => {
-          // find office manager profile node id for this store location
-          const storeAdministrationDocs =
-            groupedByDepartment['Store Administration'] ?? [];
+          const [storeLocation, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
 
+          // find the office manager profile node id for the store location
           const officeManagerProfileNodeId =
-            storeAdministrationDocs.find(
+            groupedByDepartment['Store Administration'].find(
               (userDocument: DirectoryUserDocument) =>
-                userDocument.storeLocation === storeLocation &&
-                userDocument.jobPosition === 'Office Manager'
+                userDocument.jobPosition === 'Office Manager' &&
+                userDocument.storeLocation === storeLocation
             )?._id ?? '';
 
-          // find office administrators profile node id for this store location
-          const officeAdministratorProfileNodeId =
-            officeAdministrationProfileNodesObject[storeLocation].administrator
-              .id;
+          // find the office administrator profile node id for the store location
+          const officeAdministratorProfileNodeId = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              officeAdministratorProfileNodeIdAcc: string,
+              jobPositionAndProfileNodeTuple
+            ) => {
+              const [jobPosition, profileNode] =
+                jobPositionAndProfileNodeTuple as [JobPosition, Node];
+
+              if (jobPosition.toLowerCase().includes('administrator')) {
+                officeAdministratorProfileNodeIdAcc = profileNode.id;
+              }
+
+              return officeAdministratorProfileNodeIdAcc;
+            },
+            ''
+          );
 
           // connect office manager to office administrator
+          // [OFFICE MANAGER] ━━━ [OFFICE ADMINISTRATOR]
           const officeManagerToOfficeAdministratorEdge: Edge = {
             ...edgeDefaults,
             id: `${officeManagerProfileNodeId}-${officeAdministratorProfileNodeId}`, // source-target
@@ -807,52 +863,68 @@ function Directory() {
             target: officeAdministratorProfileNodeId,
           };
 
-          officeAdministrationEdgesAcc.push(
-            officeManagerToOfficeAdministratorEdge
-          );
+          // connect office administrator to subordinates
+          //           ┏━ [EDMONTON] ━━━ [O.M] ━━━ [OFFICE ADMIN...]
+          // [STORES] ━━━ [CALGARY] ━━━ [O.M] ━━━ [OFFICE ADMIN...]
+          //           ┗━ [VANCOUVER] ━━━ [O.M] ━━━ [OFFICE ADMIN...]
+          const officeSubordinatesProfileEdges = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              officeSubordinatesProfileEdgesAcc: Edge[],
+              jobPositionProfileNodesTuple
+            ) => {
+              const [jobPosition, officeProfileNode] =
+                jobPositionProfileNodesTuple as [JobPosition, Node];
 
-          // find specialists profile nodes for this store location
-          const specialistsProfileNodes =
-            officeAdministrationProfileNodesObject[storeLocation].specialists;
+              if (jobPosition.toLowerCase().includes('administrator')) {
+                return officeSubordinatesProfileEdgesAcc;
+              }
 
-          // connect office administrator to specialists
-          const officeAdministratorToSpecialistsEdges =
-            specialistsProfileNodes.map((node: Node) => {
-              const officeAdministratorToSpecialistEdge: Edge = {
+              const officeSubordinateProfileEdge: Edge = {
                 ...edgeDefaults,
-                id: `${officeAdministratorProfileNodeId}-${node.id}`, // source-target
+                id: `${officeAdministratorProfileNodeId}-${officeProfileNode.id}`, // source-target
                 source: officeAdministratorProfileNodeId,
-                target: node.id,
+                target: officeProfileNode.id,
               };
 
-              return officeAdministratorToSpecialistEdge;
-            });
+              officeSubordinatesProfileEdgesAcc.push(
+                officeSubordinateProfileEdge
+              );
 
-          officeAdministrationEdgesAcc.push(
-            ...officeAdministratorToSpecialistsEdges
+              return officeSubordinatesProfileEdgesAcc;
+            },
+            [officeManagerToOfficeAdministratorEdge]
           );
 
-          return officeAdministrationEdgesAcc;
+          officeAdministrationProfileEdgesAcc.push(
+            ...officeSubordinatesProfileEdges
+          );
+
+          return officeAdministrationProfileEdgesAcc;
         },
         []
       );
 
+      // set office administration profile nodes for dispatch
       const officeAdministrationProfileNodes = Object.entries(
         officeAdministrationProfileNodesObject
       ).reduce(
         (
           officeAdministrationProfileNodesAcc: Node[],
-          [_, hierarchicalDivisor]
+          storeLocationAndJobPositionProfileNodesTuple
         ) => {
-          const { administrator, specialists } = hierarchicalDivisor as {
-            administrator: Node;
-            specialists: Node[];
-          };
+          const [_, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
 
-          officeAdministrationProfileNodesAcc.push(administrator);
-          specialists.forEach((node: Node) => {
-            officeAdministrationProfileNodesAcc.push(node);
-          });
+          const jobPositionsProfileNodes = Object.values(
+            jobPositionsProfileNodesObj
+          );
+
+          officeAdministrationProfileNodesAcc.push(...jobPositionsProfileNodes);
 
           return officeAdministrationProfileNodesAcc;
         },
@@ -5420,3 +5492,202 @@ export default Directory;
       
     }
  */
+
+/**
+     *  async function setOfficeAdministrationEdgesAndNodes() {
+      const officeAdministrationDocs =
+        groupedByDepartment['Office Administration'] ?? [];
+
+      // sets the shape of acc object passed in reduce
+      // why? store locations may change
+      const officeAdministrationProfileNodesInitialAcc =
+        STORE_LOCATION_DATA.reduce(
+          (
+            // officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
+            officeAdministrationNodesAcc,
+            storeLocation: StoreLocation
+          ) => {
+            const value = {
+              administrator: {} as Node,
+              specialists: [],
+            };
+
+            Object.defineProperty(officeAdministrationNodesAcc, storeLocation, {
+              ...PROPERTY_DESCRIPTOR,
+              value,
+            });
+
+            return officeAdministrationNodesAcc;
+          },
+          Object.create(null)
+        );
+
+      // create office administration profile nodes
+      const officeAdministrationProfileNodesObject =
+        officeAdministrationDocs.reduce(
+          (
+            // officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
+            officeAdministrationNodesAcc,
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition, storeLocation } = userDocument;
+
+            if (!storeLocation) {
+              return officeAdministrationNodesAcc;
+            }
+
+            const nodeType = jobPosition
+              .toLowerCase()
+              .includes('office administrator')
+              ? 'default'
+              : 'output';
+
+            const displayProfileCard = returnDirectoryProfileCard({
+              userDocument,
+              padding,
+              rowGap,
+            });
+
+            const officeAdministrationNode: Node = {
+              id: _id,
+              type: nodeType,
+              data: { label: displayProfileCard },
+              position: nodePosition,
+              style: nodeDimensions,
+            };
+
+            if (jobPosition.toLowerCase().includes('office administrator')) {
+              Object.defineProperty(
+                officeAdministrationNodesAcc[storeLocation],
+                'administrator',
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: officeAdministrationNode,
+                }
+              );
+              return officeAdministrationNodesAcc;
+            }
+
+            Object.defineProperty(
+              officeAdministrationNodesAcc[storeLocation],
+              'specialists',
+              {
+                ...PROPERTY_DESCRIPTOR,
+                value: [
+                  ...officeAdministrationNodesAcc[storeLocation].specialists,
+                  officeAdministrationNode,
+                ],
+              }
+            );
+
+            return officeAdministrationNodesAcc;
+          },
+          officeAdministrationProfileNodesInitialAcc
+        );
+
+      // connect each store location's office manager to office administrator to subordinates
+      //           ┏━ [EDMONTON] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
+      // [STORES] ━━━ [CALGARY] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
+      //           ┗━ [VANCOUVER] ━━━ [OFFICE MANAGER] ━━━ [OFFICE ADMIN...]
+
+      // connect each store location's office administrator to office manager, and subordinates to administrator
+      const officeAdministrationProfileEdges = STORE_LOCATION_DATA.reduce(
+        (
+          officeAdministrationEdgesAcc: Edge[],
+          storeLocation: StoreLocation
+        ) => {
+          // find office manager profile node id for this store location
+          const storeAdministrationDocs =
+            groupedByDepartment['Store Administration'] ?? [];
+
+          const officeManagerProfileNodeId =
+            storeAdministrationDocs.find(
+              (userDocument: DirectoryUserDocument) =>
+                userDocument.storeLocation === storeLocation &&
+                userDocument.jobPosition === 'Office Manager'
+            )?._id ?? '';
+
+          // find office administrators profile node id for this store location
+          const officeAdministratorProfileNodeId =
+            officeAdministrationProfileNodesObject[storeLocation].administrator
+              .id;
+
+          // connect office manager to office administrator
+          const officeManagerToOfficeAdministratorEdge: Edge = {
+            ...edgeDefaults,
+            id: `${officeManagerProfileNodeId}-${officeAdministratorProfileNodeId}`, // source-target
+            source: officeManagerProfileNodeId,
+            target: officeAdministratorProfileNodeId,
+          };
+
+          officeAdministrationEdgesAcc.push(
+            officeManagerToOfficeAdministratorEdge
+          );
+
+          // find specialists profile nodes for this store location
+          const specialistsProfileNodes =
+            officeAdministrationProfileNodesObject[storeLocation].specialists;
+
+          // connect office administrator to specialists
+          const officeAdministratorToSpecialistsEdges =
+            specialistsProfileNodes.map((node: Node) => {
+              const officeAdministratorToSpecialistEdge: Edge = {
+                ...edgeDefaults,
+                id: `${officeAdministratorProfileNodeId}-${node.id}`, // source-target
+                source: officeAdministratorProfileNodeId,
+                target: node.id,
+              };
+
+              return officeAdministratorToSpecialistEdge;
+            });
+
+          officeAdministrationEdgesAcc.push(
+            ...officeAdministratorToSpecialistsEdges
+          );
+
+          return officeAdministrationEdgesAcc;
+        },
+        []
+      );
+
+      const officeAdministrationProfileNodes = Object.entries(
+        officeAdministrationProfileNodesObject
+      ).reduce(
+        (
+          officeAdministrationProfileNodesAcc: Node[],
+          [_, hierarchicalDivisor]
+        ) => {
+          const { administrator, specialists } = hierarchicalDivisor as {
+            administrator: Node;
+            specialists: Node[];
+          };
+
+          officeAdministrationProfileNodesAcc.push(administrator);
+          specialists.forEach((node: Node) => {
+            officeAdministrationProfileNodesAcc.push(node);
+          });
+
+          return officeAdministrationProfileNodesAcc;
+        },
+        []
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Office Administration',
+          kind: 'nodes',
+          data: officeAdministrationProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Office Administration',
+          kind: 'edges',
+          data: officeAdministrationProfileEdges,
+        },
+      });
+    }
+     */
