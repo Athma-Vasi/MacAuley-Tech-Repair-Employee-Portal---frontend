@@ -78,8 +78,14 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
         orientation={orientation}
         nextControlIcon={nextControlIcon}
         previousControlIcon={previousControlIcon}
-        onMouseEnter={() => setShowControlIcon(true)}
-        onMouseLeave={() => setShowControlIcon(false)}
+        onMouseEnter={() =>
+          //   slides.length > 1 ? setShowControlIcon(true) : false
+          setShowControlIcon(true)
+        }
+        onMouseLeave={() =>
+          //   slides.length > 1 ? setShowControlIcon(false) : false
+          setShowControlIcon(false)
+        }
         // hide inactive controls
         styles={
           showControlIcon

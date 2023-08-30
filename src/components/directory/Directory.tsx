@@ -42,7 +42,7 @@ import {
   DirectoryUserDocument,
   FetchUsersDirectoryResponse,
   OfficeAdministrationProfileNodesObject,
-  RepairTechniciansProfileNodesObject,
+  DepartmentProfileNodesObject,
 } from './types';
 import { returnDirectoryProfileCard } from './utils';
 import {
@@ -1538,71 +1538,23 @@ function Directory() {
         field: 'storeLocation',
       });
 
-      // group by key: store location and value: (key: job position, value: docs)
-      const repairTechniciansDocsGroupedByStoreLocationAndJobPosition =
-        Object.entries(repairTechniciansDocsGroupedByStoreLocation).reduce(
-          (
-            repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc: Record<
-              StoreLocation,
-              Record<JobPosition, DirectoryUserDocument[]>
-            >,
-            storeLocationGroupedRepairTechniciansDocsTuple
-          ) => {
-            const [storeLocation, groupedRepairTechniciansDocs] =
-              storeLocationGroupedRepairTechniciansDocsTuple as [
-                StoreLocation,
-                DirectoryUserDocument[]
-              ];
-
-            // add store location field
-            Object.defineProperty(
-              repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc,
-              storeLocation,
-              {
-                ...PROPERTY_DESCRIPTOR,
-                value: Object.create(null),
-              }
-            );
-
-            // for each store location, group by job position
-            groupedRepairTechniciansDocs.forEach(
-              (userDocument: DirectoryUserDocument) => {
-                const { jobPosition } = userDocument;
-
-                const obj =
-                  repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc[
-                    storeLocation
-                  ];
-                const key = jobPosition;
-                const newValue = [
-                  ...(obj[key] ?? []),
-                  userDocument,
-                ] as DirectoryUserDocument[];
-
-                Object.defineProperty(obj, key, {
-                  ...PROPERTY_DESCRIPTOR,
-                  value: newValue,
-                });
-              }
-            );
-
-            return repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc;
-          },
-          Object.create(null)
-        );
+      console.log(
+        'repairTechniciansDocsGroupedByStoreLocation',
+        repairTechniciansDocsGroupedByStoreLocation
+      );
 
       // using the created object structure, create profile nodes
       const repairTechniciansProfileNodesObject = Object.entries(
-        repairTechniciansDocsGroupedByStoreLocationAndJobPosition
+        repairTechniciansDocsGroupedByStoreLocation
       ).reduce(
         (
-          repairTechniciansProfileNodesObjectAcc: RepairTechniciansProfileNodesObject,
-          storeLocationGroupedRepairTechniciansByJobPositionsObjTuple
+          repairTechniciansProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          repairTechniciansGroupedDocsTuple
         ) => {
-          const [storeLocation, groupedRepairTechniciansByJobPositionsObj] =
-            storeLocationGroupedRepairTechniciansByJobPositionsObjTuple as [
+          const [storeLocation, groupedRepairTechniciansByStoreLocationsArr] =
+            repairTechniciansGroupedDocsTuple as [
               StoreLocation,
-              Record<JobPosition, DirectoryUserDocument[]>
+              DirectoryUserDocument[]
             ];
 
           // create store location field
@@ -1615,34 +1567,60 @@ function Directory() {
             }
           );
 
-          // for each job position, create a single profile node that will hold a carousel of profile cards that correspond to employees with that job position
-          Object.entries(groupedRepairTechniciansByJobPositionsObj).forEach(
+          // iterate through docs for each store location and create profile cards for each job position
+          const jobPositionsProfileNodesObj =
+            groupedRepairTechniciansByStoreLocationsArr.reduce(
+              (
+                jobPositionsProfileNodesObjAcc: Record<
+                  JobPosition,
+                  React.JSX.Element[]
+                >,
+                userDocument: DirectoryUserDocument
+              ) => {
+                const { jobPosition } = userDocument;
+
+                // create profile card
+                const displayProfileCard = returnDirectoryProfileCard({
+                  userDocument,
+                  padding,
+                  rowGap,
+                });
+
+                // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
+                const value = [
+                  ...(jobPositionsProfileNodesObjAcc[jobPosition] ?? []),
+                  displayProfileCard,
+                ] as React.JSX.Element[];
+
+                // add job position field
+                Object.defineProperty(
+                  jobPositionsProfileNodesObjAcc,
+                  jobPosition,
+                  {
+                    ...PROPERTY_DESCRIPTOR,
+                    value,
+                  }
+                );
+
+                return jobPositionsProfileNodesObjAcc;
+              },
+              Object.create(null)
+            );
+
+          // for each job position, create a single profile node that will hold a carousel of created profile cards
+          Object.entries(jobPositionsProfileNodesObj).forEach(
             (jobPositionGroupedRepairTechniciansTuple) => {
               const [jobPosition, groupedRepairEmployeesForJobPosition] =
                 jobPositionGroupedRepairTechniciansTuple as [
                   JobPosition,
-                  DirectoryUserDocument[]
+                  React.JSX.Element[]
                 ];
-
-              // create profile cards for each grouped repair technician
-              const groupedRepairEmployeesForJobPositionProfileCards: React.JSX.Element[] =
-                groupedRepairEmployeesForJobPosition.map(
-                  (userDocument: DirectoryUserDocument) => {
-                    const displayProfileCard = returnDirectoryProfileCard({
-                      userDocument,
-                      padding,
-                      rowGap,
-                    });
-
-                    return displayProfileCard;
-                  }
-                );
 
               // create a carousel from said profile cards
               const groupedRepairEmployeesForJobPositionProfileCarousel = (
                 <CarouselBuilder
                   carouselProps={{}}
-                  slides={groupedRepairEmployeesForJobPositionProfileCards}
+                  slides={groupedRepairEmployeesForJobPosition}
                 />
               );
 
@@ -1713,6 +1691,11 @@ function Directory() {
               }
             )?.[1].id ?? '';
 
+          console.log(
+            'repairTechSupervisorProfileNodeId',
+            repairTechSupervisorProfileNodeId
+          );
+
           // connect shift supervisor to repair technician supervisor
           // [SHIFT SUPERVISOR] ━━━ [REPAIR TECHNICIAN SUPERVISOR]
           const shiftSupervisorToRepairTechSupervisorEdge: Edge = {
@@ -1765,11 +1748,6 @@ function Directory() {
           return repairTechniciansProfileEdgesAcc;
         },
         []
-      );
-
-      console.log(
-        'repairTechniciansDocsGroupedByStoreLocationAndJobPosition',
-        repairTechniciansDocsGroupedByStoreLocationAndJobPosition
       );
 
       console.log(
@@ -1829,6 +1807,289 @@ function Directory() {
 
     // ┏━ begin field service technicians department ━━━━━━━━━━━━━━━━━━━━━━━━━
 
+    async function setFieldServiceTechniciansEdgesAndNodes() {
+      const fieldServiceTechniciansDocs =
+        groupedByDepartment['Field Service Technicians'] ?? [];
+
+      // group by store locations
+      const fieldServiceTechniciansDocsGroupedByStoreLocation: Record<
+        StoreLocation,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: fieldServiceTechniciansDocs,
+        field: 'storeLocation',
+      });
+
+      console.log(
+        'fieldServiceTechniciansDocsGroupedByStoreLocation',
+        fieldServiceTechniciansDocsGroupedByStoreLocation
+      );
+
+      // using the created object structure, create profile nodes
+      const fieldServiceTechniciansProfileNodesObject = Object.entries(
+        fieldServiceTechniciansDocsGroupedByStoreLocation
+      ).reduce(
+        (
+          fieldServiceTechniciansProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          fieldServiceTechniciansGroupedDocsTuple
+        ) => {
+          const [
+            storeLocation,
+            groupedFieldServiceTechniciansByStoreLocationsArr,
+          ] = fieldServiceTechniciansGroupedDocsTuple as [
+            StoreLocation,
+            DirectoryUserDocument[]
+          ];
+
+          // create store location field
+          Object.defineProperty(
+            fieldServiceTechniciansProfileNodesObjectAcc,
+            storeLocation,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: Object.create(null),
+            }
+          );
+
+          // iterate through docs for each store location and create profile cards for each job position
+          const jobPositionsProfileNodesObj =
+            groupedFieldServiceTechniciansByStoreLocationsArr.reduce(
+              (
+                jobPositionsProfileNodesObjAcc: Record<
+                  JobPosition,
+                  React.JSX.Element[]
+                >,
+                userDocument: DirectoryUserDocument
+              ) => {
+                const { jobPosition } = userDocument;
+
+                // create profile card
+                const displayProfileCard = returnDirectoryProfileCard({
+                  userDocument,
+                  padding,
+                  rowGap,
+                });
+
+                // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
+                const value = [
+                  ...(jobPositionsProfileNodesObjAcc[jobPosition] ?? []),
+                  displayProfileCard,
+                ] as React.JSX.Element[];
+
+                // add job position field
+                Object.defineProperty(
+                  jobPositionsProfileNodesObjAcc,
+                  jobPosition,
+                  {
+                    ...PROPERTY_DESCRIPTOR,
+                    value,
+                  }
+                );
+
+                return jobPositionsProfileNodesObjAcc;
+              },
+              Object.create(null)
+            );
+
+          // for each job position, create a single profile node that will hold a carousel of created profile cards
+          Object.entries(jobPositionsProfileNodesObj).forEach(
+            (jobPositionGroupedFieldServiceTechniciansTuple) => {
+              const [jobPosition, groupedFieldServiceEmployeesForJobPosition] =
+                jobPositionGroupedFieldServiceTechniciansTuple as [
+                  JobPosition,
+                  React.JSX.Element[]
+                ];
+
+              // create a carousel from said profile cards
+              const groupedFieldServiceEmployeesForJobPositionProfileCarousel =
+                (
+                  <CarouselBuilder
+                    carouselProps={{}}
+                    slides={groupedFieldServiceEmployeesForJobPosition}
+                  />
+                );
+
+              const nodeType = jobPosition.toLowerCase().includes('supervisor')
+                ? 'default'
+                : 'output';
+
+              // create profile node with carousel
+              const groupedFieldServiceEmployeesForJobPositionProfileNode: Node =
+                {
+                  id: `${storeLocation}-${jobPosition}`,
+                  type: nodeType,
+                  data: {
+                    label:
+                      groupedFieldServiceEmployeesForJobPositionProfileCarousel,
+                  },
+                  position: nodePosition,
+                  style: nodeDimensions,
+                };
+
+              // add job position field with profile node
+              Object.defineProperty(
+                fieldServiceTechniciansProfileNodesObjectAcc[storeLocation],
+                jobPosition,
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: groupedFieldServiceEmployeesForJobPositionProfileNode,
+                }
+              );
+            },
+            Object.create(null)
+          );
+
+          return fieldServiceTechniciansProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log('fieldServiceTechniciansProfileNodesObject', {
+        fieldServiceTechniciansProfileNodesObject,
+      });
+
+      // create edges
+      const fieldServiceTechniciansProfileEdges = Object.entries(
+        fieldServiceTechniciansProfileNodesObject
+      ).reduce(
+        (
+          fieldServiceTechniciansProfileEdgesAcc: Edge[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [storeLocation, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          // find the shift supervisor profile node id for the store location
+          const shiftSupervisorProfileNodeId =
+            groupedByDepartment['Store Administration'].find(
+              (userDocument: DirectoryUserDocument) =>
+                userDocument.jobPosition === 'Shift Supervisor' &&
+                userDocument.storeLocation === storeLocation
+            )?._id ?? '';
+
+          // find the field service technician supervisor profile node id for the store location
+          const fieldServiceTechSupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodesTuple) => {
+                const [jobPosition, _] = jobPositionProfileNodesTuple as [
+                  JobPosition,
+                  Node
+                ];
+
+                return jobPosition.toLowerCase().includes('supervisor');
+              }
+            )?.[1].id ?? '';
+
+          // connect shift supervisor to field service technician supervisor
+          // [SHIFT SUPERVISOR] ━━━ [FIELD SERVICE TECHNICIAN SUPERVISOR]
+          const shiftSupervisorToFieldServiceTechSupervisorEdge: Edge = {
+            ...edgeDefaults,
+            id: `${shiftSupervisorProfileNodeId}-${fieldServiceTechSupervisorProfileNodeId}`, // source-target
+            source: shiftSupervisorProfileNodeId,
+            target: fieldServiceTechSupervisorProfileNodeId,
+          };
+
+          // connect field service technicians to field service technician supervisor
+          // [FS SUPERVISOR] ━━━ [ON-SITE TECHNICIAN]
+
+          const fieldServiceSubordinatesProfileEdges = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              fieldServiceSubordinatesProfileEdgesAcc: Edge[],
+              jobPositionProfileNodesTuple
+            ) => {
+              const [jobPosition, fieldServiceTechnicianProfileNode] =
+                jobPositionProfileNodesTuple as [JobPosition, Node];
+
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                return fieldServiceSubordinatesProfileEdgesAcc;
+              }
+
+              const fieldServiceSubordinateProfileEdge: Edge = {
+                ...edgeDefaults,
+                id: `${fieldServiceTechSupervisorProfileNodeId}-${fieldServiceTechnicianProfileNode.id}`, // source-target
+                source: fieldServiceTechSupervisorProfileNodeId,
+                target: fieldServiceTechnicianProfileNode.id,
+              };
+
+              fieldServiceSubordinatesProfileEdgesAcc.push(
+                fieldServiceSubordinateProfileEdge
+              );
+
+              return fieldServiceSubordinatesProfileEdgesAcc;
+            },
+            [shiftSupervisorToFieldServiceTechSupervisorEdge]
+          );
+
+          fieldServiceTechniciansProfileEdgesAcc.push(
+            ...fieldServiceSubordinatesProfileEdges
+          );
+
+          return fieldServiceTechniciansProfileEdgesAcc;
+        },
+        []
+      );
+
+      console.log(
+        'fieldServiceTechniciansProfileNodesObject',
+        fieldServiceTechniciansProfileNodesObject
+      );
+
+      console.log(
+        'fieldServiceTechniciansProfileEdges',
+        fieldServiceTechniciansProfileEdges
+      );
+
+      // set field service technicians profile nodes for dispatch
+      const fieldServiceTechniciansProfileNodes = Object.entries(
+        fieldServiceTechniciansProfileNodesObject
+      ).reduce(
+        (
+          fieldServiceTechniciansProfileNodesAcc: Node[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [_, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          const jobPositionsProfileNodes = Object.values(
+            jobPositionsProfileNodesObj
+          );
+
+          fieldServiceTechniciansProfileNodesAcc.push(
+            ...jobPositionsProfileNodes
+          );
+
+          return fieldServiceTechniciansProfileNodesAcc;
+        },
+        []
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Field Service Technicians',
+          kind: 'nodes',
+          data: fieldServiceTechniciansProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Field Service Technicians',
+          kind: 'edges',
+          data: fieldServiceTechniciansProfileEdges,
+        },
+      });
+    }
+
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━ end field service technicians department ━┛
 
     // ┏━ begin logistics and inventory department ━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1854,7 +2115,7 @@ function Directory() {
           setInformationTechnologyEdgesAndNodes(),
           setAccountingEdgesAndNodes(),
           setRepairTechniciansEdgesAndNodes(),
-          // setFieldServiceTechniciansEdgesAndNodes(),
+          setFieldServiceTechniciansEdgesAndNodes(),
           // setLogisticsAndInventoryEdgesAndNodes(),
           // setCustomerServiceEdgesAndNodes(),
         ]);
@@ -3444,4 +3705,118 @@ export default Directory;
         },
       });
     }
+     */
+
+/**
+     * // group by key: store location and value: (key: job position, value: docs)
+      const repairTechniciansDocsGroupedByStoreLocationAndJobPosition =
+        Object.entries(repairTechniciansDocsGroupedByStoreLocation).reduce(
+          (
+            repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc: Record<
+              StoreLocation,
+              Record<JobPosition, DirectoryUserDocument[]>
+            >,
+            storeLocationGroupedRepairTechniciansDocsTuple
+          ) => {
+            const [storeLocation, groupedRepairTechniciansDocs] =
+              storeLocationGroupedRepairTechniciansDocsTuple as [
+                StoreLocation,
+                DirectoryUserDocument[]
+              ];
+
+            // add store location field
+            Object.defineProperty(
+              repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc,
+              storeLocation,
+              {
+                ...PROPERTY_DESCRIPTOR,
+                value: Object.create(null),
+              }
+            );
+
+            // for each store location, group by job position
+            groupedRepairTechniciansDocs.forEach(
+              (userDocument: DirectoryUserDocument) => {
+                const { jobPosition } = userDocument;
+
+                const obj =
+                  repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc[
+                    storeLocation
+                  ];
+                const key = jobPosition;
+                const newValue = [
+                  ...(obj[key] ?? []),
+                  userDocument,
+                ] as DirectoryUserDocument[];
+
+                Object.defineProperty(obj, key, {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: newValue,
+                });
+              }
+            );
+
+            return repairTechniciansDocsGroupedByStoreLocationAndJobPositionAcc;
+          },
+          Object.create(null)
+        );
+     *  
+     * // // for each job position, create a single profile node that will hold a carousel of profile cards that correspond to employees with that job position
+          // Object.entries(groupedRepairTechniciansByJobPositionsObj).forEach(
+          //   (jobPositionGroupedRepairTechniciansTuple) => {
+          //     const [jobPosition, groupedRepairEmployeesForJobPosition] =
+          //       jobPositionGroupedRepairTechniciansTuple as [
+          //         JobPosition,
+          //         DirectoryUserDocument[]
+          //       ];
+
+          //     // create profile cards for each grouped repair technician
+          //     const groupedRepairEmployeesForJobPositionProfileCards: React.JSX.Element[] =
+          //       groupedRepairEmployeesForJobPosition.map(
+          //         (userDocument: DirectoryUserDocument) => {
+          //           const displayProfileCard = returnDirectoryProfileCard({
+          //             userDocument,
+          //             padding,
+          //             rowGap,
+          //           });
+
+          //           return displayProfileCard;
+          //         }
+          //       );
+
+          //     // create a carousel from said profile cards
+          //     const groupedRepairEmployeesForJobPositionProfileCarousel = (
+          //       <CarouselBuilder
+          //         carouselProps={{}}
+          //         slides={groupedRepairEmployeesForJobPositionProfileCards}
+          //       />
+          //     );
+
+          //     const nodeType = jobPosition.toLowerCase().includes('supervisor')
+          //       ? 'default'
+          //       : 'output';
+
+          //     // create profile node with carousel
+          //     const groupedRepairEmployeesForJobPositionProfileNode: Node = {
+          //       id: `${storeLocation}-${jobPosition}`,
+          //       type: nodeType,
+          //       data: {
+          //         label: groupedRepairEmployeesForJobPositionProfileCarousel,
+          //       },
+          //       position: nodePosition,
+          //       style: nodeDimensions,
+          //     };
+
+          //     // add job position field with profile node
+          //     Object.defineProperty(
+          //       repairTechniciansProfileNodesObjectAcc[storeLocation],
+          //       jobPosition,
+          //       {
+          //         ...PROPERTY_DESCRIPTOR,
+          //         value: groupedRepairEmployeesForJobPositionProfileNode,
+          //       }
+          //     );
+          //   }
+          // );
+
      */
