@@ -1039,7 +1039,7 @@ function Directory() {
 
     // ┏━ begin sales department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    async function setSalesDepartmentEdgesAndNodes() {
+    async function setSalesEdgesAndNodes() {
       const salesDocs = groupedByDepartment.Sales ?? [];
 
       // create sales profile nodes
@@ -2670,6 +2670,287 @@ function Directory() {
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end customer service department ━┛
 
+    // ┏━ begin maintenance department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    async function setMaintenanceEdgesAndNodes() {
+      const maintenanceDocs = groupedByDepartment.Maintenance ?? [];
+
+      // group by store locations
+      const maintenanceDocsGroupedByStoreLocation: Record<
+        StoreLocation,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: maintenanceDocs,
+        field: 'storeLocation',
+      });
+
+      console.log(
+        'maintenanceDocsGroupedByStoreLocation',
+        maintenanceDocsGroupedByStoreLocation
+      );
+
+      // using the created object structure, create profile nodes
+      const maintenanceProfileNodesObject = Object.entries(
+        maintenanceDocsGroupedByStoreLocation
+      ).reduce(
+        (
+          maintenanceProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          maintenanceGroupedDocsTuple
+        ) => {
+          const [storeLocation, groupedMaintenanceByStoreLocationsArr] =
+            maintenanceGroupedDocsTuple as [
+              StoreLocation,
+              DirectoryUserDocument[]
+            ];
+
+          // create store location field
+          Object.defineProperty(
+            maintenanceProfileNodesObjectAcc,
+            storeLocation,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: Object.create(null),
+            }
+          );
+
+          // iterate through docs for each store location and create profile cards for each job position
+          const jobPositionsProfileNodesObj =
+            groupedMaintenanceByStoreLocationsArr.reduce(
+              (
+                jobPositionsProfileNodesObjAcc: Record<
+                  JobPosition,
+                  React.JSX.Element[]
+                >,
+                userDocument: DirectoryUserDocument
+              ) => {
+                const { jobPosition } = userDocument;
+
+                // create profile card
+                const displayProfileCard = returnDirectoryProfileCard({
+                  userDocument,
+                  padding,
+                  rowGap,
+                });
+
+                // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
+                const value = [
+                  ...(jobPositionsProfileNodesObjAcc[jobPosition] ?? []),
+                  displayProfileCard,
+                ] as React.JSX.Element[];
+
+                // add job position field
+                Object.defineProperty(
+                  jobPositionsProfileNodesObjAcc,
+                  jobPosition,
+                  {
+                    ...PROPERTY_DESCRIPTOR,
+                    value,
+                  }
+                );
+
+                return jobPositionsProfileNodesObjAcc;
+              },
+              Object.create(null)
+            );
+
+          // for each job position, create a single profile node that will hold a carousel of created profile cards
+          Object.entries(jobPositionsProfileNodesObj).forEach(
+            (jobPositionGroupedMaintenanceTuple) => {
+              const [jobPosition, groupedMaintenanceEmployeesForJobPosition] =
+                jobPositionGroupedMaintenanceTuple as [
+                  JobPosition,
+                  React.JSX.Element[]
+                ];
+
+              // create a carousel from said profile cards
+              const groupedMaintenanceEmployeesForJobPositionProfileCarousel = (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={groupedMaintenanceEmployeesForJobPosition}
+                />
+              );
+
+              const nodeType = jobPosition.toLowerCase().includes('supervisor')
+                ? 'default'
+                : 'output';
+
+              // create profile node with carousel
+              const groupedMaintenanceEmployeesForJobPositionProfileNode: Node =
+                {
+                  id: `${storeLocation}-${jobPosition}`,
+                  type: nodeType,
+                  data: {
+                    label:
+                      groupedMaintenanceEmployeesForJobPositionProfileCarousel,
+                  },
+                  position: nodePosition,
+                  style: nodeDimensions,
+                };
+
+              // add job position field with profile node
+              Object.defineProperty(
+                maintenanceProfileNodesObjectAcc[storeLocation],
+                jobPosition,
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: groupedMaintenanceEmployeesForJobPositionProfileNode,
+                }
+              );
+
+              return maintenanceProfileNodesObjectAcc;
+            },
+            Object.create(null)
+          );
+
+          return maintenanceProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log('maintenanceProfileNodesObject', {
+        maintenanceProfileNodesObject,
+      });
+
+      // create edges
+      const maintenanceProfileEdges = Object.entries(
+        maintenanceProfileNodesObject
+      ).reduce(
+        (
+          maintenanceProfileEdgesAcc: Edge[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [storeLocation, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          // find the shift supervisor profile node id for the store location
+          const shiftSupervisorProfileNodeId =
+            groupedByDepartment['Store Administration'].find(
+              (userDocument: DirectoryUserDocument) =>
+                userDocument.jobPosition === 'Shift Supervisor' &&
+                userDocument.storeLocation === storeLocation
+            )?._id ?? '';
+
+          // find the maintenance supervisor profile node id for the store location
+          const maintenanceSupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodesTuple) => {
+                const [jobPosition, _] = jobPositionProfileNodesTuple as [
+                  JobPosition,
+                  Node
+                ];
+
+                return jobPosition.toLowerCase().includes('supervisor');
+              }
+            )?.[1].id ?? '';
+
+          // connect shift supervisor to maintenance supervisor
+          // [SHIFT SUPERVISOR] ━━━ [MAINTENANCE SUPERVISOR]
+          const shiftSupervisorToMaintenanceSupervisorEdge: Edge = {
+            ...edgeDefaults,
+            id: `${shiftSupervisorProfileNodeId}-${maintenanceSupervisorProfileNodeId}`, // source-target
+            source: shiftSupervisorProfileNodeId,
+            target: maintenanceSupervisorProfileNodeId,
+          };
+
+          // connect maintenance employees to maintenance supervisor
+
+          // [MAINTENANCE SUPERVISOR] ━━━ [MAINTENANCE WORKER]
+          //                           ┗━ [CUSTODIAN]
+
+          const maintenanceSubordinatesProfileEdges = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              maintenanceSubordinatesProfileEdgesAcc: Edge[],
+              jobPositionProfileNodesTuple
+            ) => {
+              const [jobPosition, maintenanceProfileNode] =
+                jobPositionProfileNodesTuple as [JobPosition, Node];
+
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                return maintenanceSubordinatesProfileEdgesAcc;
+              }
+
+              const maintenanceSubordinateProfileEdge: Edge = {
+                ...edgeDefaults,
+                id: `${maintenanceSupervisorProfileNodeId}-${maintenanceProfileNode.id}`, // source-target
+                source: maintenanceSupervisorProfileNodeId,
+                target: maintenanceProfileNode.id,
+              };
+
+              maintenanceSubordinatesProfileEdgesAcc.push(
+                maintenanceSubordinateProfileEdge
+              );
+
+              return maintenanceSubordinatesProfileEdgesAcc;
+            },
+            [shiftSupervisorToMaintenanceSupervisorEdge]
+          );
+
+          maintenanceProfileEdgesAcc.push(
+            ...maintenanceSubordinatesProfileEdges
+          );
+
+          return maintenanceProfileEdgesAcc;
+        },
+        []
+      );
+
+      console.log(
+        'maintenanceProfileNodesObject',
+        maintenanceProfileNodesObject
+      );
+
+      console.log('maintenanceProfileEdges', maintenanceProfileEdges);
+
+      // set maintenance profile nodes for dispatch
+      const maintenanceProfileNodes = Object.entries(
+        maintenanceProfileNodesObject
+      ).reduce(
+        (
+          maintenanceProfileNodesAcc: Node[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [_, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          const jobPositionsProfileNodes = Object.values(
+            jobPositionsProfileNodesObj
+          );
+
+          maintenanceProfileNodesAcc.push(...jobPositionsProfileNodes);
+
+          return maintenanceProfileNodesAcc;
+        },
+        []
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Maintenance',
+          kind: 'nodes',
+          data: maintenanceProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Maintenance',
+          kind: 'edges',
+          data: maintenanceProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end maintenance department ━┛
     // ┏━ begin concurrent fn calls ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     // utilizes the micro-task queue for performance
@@ -2680,7 +2961,7 @@ function Directory() {
           setStoreAdministrationEdgesAndNodes(),
           setOfficeAdministrationEdgesAndNodes(),
           setHumanResourcesEdgesAndNodes(),
-          setSalesDepartmentEdgesAndNodes(),
+          setSalesEdgesAndNodes(),
           setMarketingEdgesAndNodes(),
           setInformationTechnologyEdgesAndNodes(),
           setAccountingEdgesAndNodes(),
@@ -2688,6 +2969,7 @@ function Directory() {
           setFieldServiceTechniciansEdgesAndNodes(),
           setLogisticsAndInventoryEdgesAndNodes(),
           setCustomerServiceEdgesAndNodes(),
+          setMaintenanceEdgesAndNodes(),
         ]);
       } catch (error: any) {
         // TODO: TRIGGER ERROR BOUNDARY HOOK
