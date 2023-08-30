@@ -2387,6 +2387,287 @@ function Directory() {
 
     // ┏━ begin customer service department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+    async function setCustomerServiceEdgesAndNodes() {
+      const customerServiceDocs = groupedByDepartment['Customer Service'] ?? [];
+
+      // group by store locations
+      const customerServiceDocsGroupedByStoreLocation: Record<
+        StoreLocation,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: customerServiceDocs,
+        field: 'storeLocation',
+      });
+
+      console.log(
+        'customerServiceDocsGroupedByStoreLocation',
+        customerServiceDocsGroupedByStoreLocation
+      );
+
+      // using the created object structure, create profile nodes
+      const customerServiceProfileNodesObject = Object.entries(
+        customerServiceDocsGroupedByStoreLocation
+      ).reduce(
+        (
+          customerServiceProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          customerServiceGroupedDocsTuple
+        ) => {
+          const [storeLocation, groupedCustomerServiceByStoreLocationsArr] =
+            customerServiceGroupedDocsTuple as [
+              StoreLocation,
+              DirectoryUserDocument[]
+            ];
+
+          // create store location field
+          Object.defineProperty(
+            customerServiceProfileNodesObjectAcc,
+            storeLocation,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: Object.create(null),
+            }
+          );
+
+          // iterate through docs for each store location and create profile cards for each job position
+          const jobPositionsProfileNodesObj =
+            groupedCustomerServiceByStoreLocationsArr.reduce(
+              (
+                jobPositionsProfileNodesObjAcc: Record<
+                  JobPosition,
+                  React.JSX.Element[]
+                >,
+                userDocument: DirectoryUserDocument
+              ) => {
+                const { jobPosition } = userDocument;
+
+                // create profile card
+                const displayProfileCard = returnDirectoryProfileCard({
+                  userDocument,
+                  padding,
+                  rowGap,
+                });
+
+                // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
+                const value = [
+                  ...(jobPositionsProfileNodesObjAcc[jobPosition] ?? []),
+                  displayProfileCard,
+                ] as React.JSX.Element[];
+
+                // add job position field
+                Object.defineProperty(
+                  jobPositionsProfileNodesObjAcc,
+                  jobPosition,
+                  {
+                    ...PROPERTY_DESCRIPTOR,
+                    value,
+                  }
+                );
+
+                return jobPositionsProfileNodesObjAcc;
+              },
+              Object.create(null)
+            );
+
+          // for each job position, create a single profile node that will hold a carousel of created profile cards
+          Object.entries(jobPositionsProfileNodesObj).forEach(
+            (jobPositionGroupedCustomerServiceTuple) => {
+              const [
+                jobPosition,
+                groupedCustomerServiceEmployeesForJobPosition,
+              ] = jobPositionGroupedCustomerServiceTuple as [
+                JobPosition,
+                React.JSX.Element[]
+              ];
+
+              // create a carousel from said profile cards
+              const groupedCustomerServiceEmployeesForJobPositionProfileCarousel =
+                (
+                  <CarouselBuilder
+                    carouselProps={{}}
+                    slides={groupedCustomerServiceEmployeesForJobPosition}
+                  />
+                );
+
+              const nodeType = jobPosition.toLowerCase().includes('supervisor')
+                ? 'default'
+                : 'output';
+
+              // create profile node with carousel
+              const groupedCustomerServiceEmployeesForJobPositionProfileNode: Node =
+                {
+                  id: `${storeLocation}-${jobPosition}`,
+                  type: nodeType,
+                  data: {
+                    label:
+                      groupedCustomerServiceEmployeesForJobPositionProfileCarousel,
+                  },
+                  position: nodePosition,
+                  style: nodeDimensions,
+                };
+
+              // add job position field with profile node
+              Object.defineProperty(
+                customerServiceProfileNodesObjectAcc[storeLocation],
+                jobPosition,
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value:
+                    groupedCustomerServiceEmployeesForJobPositionProfileNode,
+                }
+              );
+            },
+            Object.create(null)
+          );
+
+          return customerServiceProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log('customerServiceProfileNodesObject', {
+        customerServiceProfileNodesObject,
+      });
+
+      // create edges
+      const customerServiceProfileEdges = Object.entries(
+        customerServiceProfileNodesObject
+      ).reduce(
+        (
+          customerServiceProfileEdgesAcc: Edge[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [storeLocation, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          // find the shift supervisor profile node id for the store location
+          const shiftSupervisorProfileNodeId =
+            groupedByDepartment['Store Administration'].find(
+              (userDocument: DirectoryUserDocument) =>
+                userDocument.jobPosition === 'Shift Supervisor' &&
+                userDocument.storeLocation === storeLocation
+            )?._id ?? '';
+
+          // find the customer service supervisor profile node id for the store location
+          const customerServiceSupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodesTuple) => {
+                const [jobPosition, _] = jobPositionProfileNodesTuple as [
+                  JobPosition,
+                  Node
+                ];
+
+                return jobPosition.toLowerCase().includes('supervisor');
+              }
+            )?.[1].id ?? '';
+
+          // connect shift supervisor to customer service supervisor
+          // [SHIFT SUPERVISOR] ━━━ [CUSTOMER SERVICE SUPERVISOR]
+          const shiftSupervisorToCustomerServiceSupervisorEdge: Edge = {
+            ...edgeDefaults,
+            id: `${shiftSupervisorProfileNodeId}-${customerServiceSupervisorProfileNodeId}`, // source-target
+            source: shiftSupervisorProfileNodeId,
+            target: customerServiceSupervisorProfileNodeId,
+          };
+
+          // connect customer service employees to customer service supervisor
+          //                         ┏━ [CUSTOMER SERVICE ASSOCIATE]
+          // [CUSTOMER SERVICE SUPERVISOR] ━━━ [CUSTOMER SERVICE ASSOCIATE]
+          //                         ┗━ [CUSTOMER SERVICE ASSOCIATE]
+          //                         ┗━ [CUSTOMER SERVICE ASSOCIATE]
+
+          const customerServiceSubordinatesProfileEdges = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              customerServiceSubordinatesProfileEdgesAcc: Edge[],
+              jobPositionProfileNodesTuple
+            ) => {
+              const [jobPosition, customerServiceProfileNode] =
+                jobPositionProfileNodesTuple as [JobPosition, Node];
+
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                return customerServiceSubordinatesProfileEdgesAcc;
+              }
+
+              const customerServiceSubordinateProfileEdge: Edge = {
+                ...edgeDefaults,
+                id: `${customerServiceSupervisorProfileNodeId}-${customerServiceProfileNode.id}`, // source-target
+                source: customerServiceSupervisorProfileNodeId,
+                target: customerServiceProfileNode.id,
+              };
+
+              customerServiceSubordinatesProfileEdgesAcc.push(
+                customerServiceSubordinateProfileEdge
+              );
+
+              return customerServiceSubordinatesProfileEdgesAcc;
+            },
+            [shiftSupervisorToCustomerServiceSupervisorEdge]
+          );
+
+          customerServiceProfileEdgesAcc.push(
+            ...customerServiceSubordinatesProfileEdges
+          );
+
+          return customerServiceProfileEdgesAcc;
+        },
+        []
+      );
+
+      console.log(
+        'customerServiceProfileNodesObject',
+        customerServiceProfileNodesObject
+      );
+
+      console.log('customerServiceProfileEdges', customerServiceProfileEdges);
+
+      // set customer service profile nodes for dispatch
+      const customerServiceProfileNodes = Object.entries(
+        customerServiceProfileNodesObject
+      ).reduce(
+        (
+          customerServiceProfileNodesAcc: Node[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [_, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          const jobPositionsProfileNodes = Object.values(
+            jobPositionsProfileNodesObj
+          );
+
+          customerServiceProfileNodesAcc.push(...jobPositionsProfileNodes);
+
+          return customerServiceProfileNodesAcc;
+        },
+        []
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Customer Service',
+          kind: 'nodes',
+          data: customerServiceProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Customer Service',
+          kind: 'edges',
+          data: customerServiceProfileEdges,
+        },
+      });
+    }
+
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end customer service department ━┛
 
     // ┏━ begin concurrent fn calls ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2406,7 +2687,7 @@ function Directory() {
           setRepairTechniciansEdgesAndNodes(),
           setFieldServiceTechniciansEdgesAndNodes(),
           setLogisticsAndInventoryEdgesAndNodes(),
-          // setCustomerServiceEdgesAndNodes(),
+          setCustomerServiceEdgesAndNodes(),
         ]);
       } catch (error: any) {
         // TODO: TRIGGER ERROR BOUNDARY HOOK
