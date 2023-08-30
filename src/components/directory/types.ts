@@ -176,7 +176,7 @@ type OfficeAdministrationProfileNodesObject = Record<
 
 type RepairTechniciansProfileNodesObject = Record<
   StoreLocation,
-  Record<JobPosition, Node[]>
+  Record<JobPosition, Node>
 >;
 
 export type {

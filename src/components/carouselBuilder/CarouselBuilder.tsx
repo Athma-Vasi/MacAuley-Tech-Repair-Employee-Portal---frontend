@@ -1,7 +1,9 @@
 import { Carousel } from '@mantine/carousel';
-import { MantineNumberSize } from '@mantine/core';
+import { Group, MantineNumberSize } from '@mantine/core';
 
 import { useGlobalState } from '../../hooks';
+import { ReactNode, useState } from 'react';
+import { TbArrowLeft, TbArrowRight } from 'react-icons/tb';
 
 type CarouselBuilderProps = {
   slides: React.JSX.Element[];
@@ -16,6 +18,8 @@ type CarouselBuilderProps = {
     dragFree?: boolean;
     draggable?: boolean;
     orientation?: 'horizontal' | 'vertical';
+    nextControlIcon?: ReactNode;
+    previousControlIcon?: ReactNode;
   };
 };
 
@@ -23,6 +27,7 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
   const {
     globalState: { padding, rowGap },
   } = useGlobalState();
+  const [showControlIcon, setShowControlIcon] = useState<boolean>(false);
 
   const {
     height = '100%',
@@ -35,10 +40,30 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
     dragFree = false,
     draggable = true,
     orientation = 'horizontal',
+    nextControlIcon = (
+      <Group
+        style={{ borderRadius: 9999, background: 'violet' }}
+        h={26}
+        w={26}
+        position="center"
+      >
+        <TbArrowRight color="white" />
+      </Group>
+    ),
+    previousControlIcon = (
+      <Group
+        style={{ borderRadius: 9999, background: 'violet' }}
+        h={26}
+        w={26}
+        position="center"
+      >
+        <TbArrowLeft color="white" />
+      </Group>
+    ),
   } = carouselProps;
 
   return (
-    <div style={{ height: 300, display: 'flex' }}>
+    <div style={{ height: 200, display: 'flex' }}>
       <Carousel
         height={height}
         sx={{ flex: 1 }}
@@ -51,6 +76,23 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
         withIndicators={withIndicators}
         draggable={draggable}
         orientation={orientation}
+        nextControlIcon={nextControlIcon}
+        previousControlIcon={previousControlIcon}
+        onMouseEnter={() => setShowControlIcon(true)}
+        onMouseLeave={() => setShowControlIcon(false)}
+        // hide inactive controls
+        styles={
+          showControlIcon
+            ? {}
+            : {
+                control: {
+                  '&[data-inactive]': {
+                    opacity: 0,
+                    cursor: 'default',
+                  },
+                },
+              }
+        }
       >
         {slides.map((slide, index) => (
           <Carousel.Slide key={`${index}`}>{slide}</Carousel.Slide>

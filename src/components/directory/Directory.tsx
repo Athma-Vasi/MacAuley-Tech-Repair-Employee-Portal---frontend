@@ -50,6 +50,7 @@ import {
   DIRECTORY_JOB_POSITION_CHECKBOX_DATA,
   DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
 } from './constants';
+import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -1468,12 +1469,8 @@ function Directory() {
 
       // connect accounting manager to accounting specialists profile nodes
       //                                 ┏━ [ACCOUNTS PAYABLE CLERK]
-      //                                 ┏━ [ACCOUNTS RECEIVABLE CLERK]
-      //                                 ┏━ [FINANCIAL ANALYST]
-      // [CFO] ━━━ [ACCOUNTING MANAGER] ━━━ [TAX SPECIALIST]
-      //                                 ┗━ [PAYROLL SPECIALIST]
-      //                                 ┗━ [BUDGET ANALYST]
-      //                                 ┗━ [AUDITOR]
+      // [CFO] ━━━ [ACCOUNTING MANAGER] ━━━ [FINANCIAL ANALYST]
+      //                                 ┗━ [ACCOUNTS RECEIVABLE CLERK]
 
       const accountingSpecialistsProfileEdges = accountingDocs.reduce(
         (
@@ -1541,6 +1538,7 @@ function Directory() {
         field: 'storeLocation',
       });
 
+      // group by key: store location and value: (key: job position, value: docs)
       const repairTechniciansDocsGroupedByStoreLocationAndJobPosition =
         Object.entries(repairTechniciansDocsGroupedByStoreLocation).reduce(
           (
@@ -1566,7 +1564,7 @@ function Directory() {
               }
             );
 
-            // for each store location docs, group by job position
+            // for each store location, group by job position
             groupedRepairTechniciansDocs.forEach(
               (userDocument: DirectoryUserDocument) => {
                 const { jobPosition } = userDocument;
@@ -1593,10 +1591,238 @@ function Directory() {
           Object.create(null)
         );
 
+      // using the created object structure, create profile nodes
+      const repairTechniciansProfileNodesObject = Object.entries(
+        repairTechniciansDocsGroupedByStoreLocationAndJobPosition
+      ).reduce(
+        (
+          repairTechniciansProfileNodesObjectAcc: RepairTechniciansProfileNodesObject,
+          storeLocationGroupedRepairTechniciansByJobPositionsObjTuple
+        ) => {
+          const [storeLocation, groupedRepairTechniciansByJobPositionsObj] =
+            storeLocationGroupedRepairTechniciansByJobPositionsObjTuple as [
+              StoreLocation,
+              Record<JobPosition, DirectoryUserDocument[]>
+            ];
+
+          // create store location field
+          Object.defineProperty(
+            repairTechniciansProfileNodesObjectAcc,
+            storeLocation,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: Object.create(null),
+            }
+          );
+
+          // for each job position, create a single profile node that will hold a carousel of profile cards that correspond to employees with that job position
+          Object.entries(groupedRepairTechniciansByJobPositionsObj).forEach(
+            (jobPositionGroupedRepairTechniciansTuple) => {
+              const [jobPosition, groupedRepairEmployeesForJobPosition] =
+                jobPositionGroupedRepairTechniciansTuple as [
+                  JobPosition,
+                  DirectoryUserDocument[]
+                ];
+
+              // create profile cards for each grouped repair technician
+              const groupedRepairEmployeesForJobPositionProfileCards: React.JSX.Element[] =
+                groupedRepairEmployeesForJobPosition.map(
+                  (userDocument: DirectoryUserDocument) => {
+                    const displayProfileCard = returnDirectoryProfileCard({
+                      userDocument,
+                      padding,
+                      rowGap,
+                    });
+
+                    return displayProfileCard;
+                  }
+                );
+
+              // create a carousel from said profile cards
+              const groupedRepairEmployeesForJobPositionProfileCarousel = (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={groupedRepairEmployeesForJobPositionProfileCards}
+                />
+              );
+
+              const nodeType = jobPosition.toLowerCase().includes('supervisor')
+                ? 'default'
+                : 'output';
+
+              // create profile node with carousel
+              const groupedRepairEmployeesForJobPositionProfileNode: Node = {
+                id: `${storeLocation}-${jobPosition}`,
+                type: nodeType,
+                data: {
+                  label: groupedRepairEmployeesForJobPositionProfileCarousel,
+                },
+                position: nodePosition,
+                style: nodeDimensions,
+              };
+
+              // add job position field with profile node
+              Object.defineProperty(
+                repairTechniciansProfileNodesObjectAcc[storeLocation],
+                jobPosition,
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: groupedRepairEmployeesForJobPositionProfileNode,
+                }
+              );
+            }
+          );
+
+          return repairTechniciansProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      // create edges
+      const repairTechniciansProfileEdges = Object.entries(
+        repairTechniciansProfileNodesObject
+      ).reduce(
+        (
+          repairTechniciansProfileEdgesAcc: Edge[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [storeLocation, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          // find the shift supervisor profile node id for the store location
+          const shiftSupervisorProfileNodeId =
+            groupedByDepartment['Store Administration'].find(
+              (userDocument: DirectoryUserDocument) =>
+                userDocument.jobPosition === 'Shift Supervisor' &&
+                userDocument.storeLocation === storeLocation
+            )?._id ?? '';
+
+          // find the repair technician supervisor profile node id for the store location
+          const repairTechSupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodesTuple) => {
+                const [jobPosition, _] = jobPositionProfileNodesTuple as [
+                  JobPosition,
+                  Node
+                ];
+
+                return jobPosition.toLowerCase().includes('supervisor');
+              }
+            )?.[1].id ?? '';
+
+          // connect shift supervisor to repair technician supervisor
+          // [SHIFT SUPERVISOR] ━━━ [REPAIR TECHNICIAN SUPERVISOR]
+          const shiftSupervisorToRepairTechSupervisorEdge: Edge = {
+            ...edgeDefaults,
+            id: `${shiftSupervisorProfileNodeId}-${repairTechSupervisorProfileNodeId}`, // source-target
+            source: shiftSupervisorProfileNodeId,
+            target: repairTechSupervisorProfileNodeId,
+          };
+
+          // connect repair technicians to repair technician supervisor
+          //                                 ┏━ [A/V EQUIP. TECH.]
+          //                                 ┏━ [COMP. TECH.]
+          // [REPAIR TECHNICIAN SUPERVISOR] ━━━ [ELECTRONICS TECH.]
+          //                                 ┗━ [SMARTPHONE TECH.]
+          //                                 ┗━ [TABLET TECH.]
+          const repairSubordinatesProfileEdges = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              repairSubordinatesProfileEdgesAcc: Edge[],
+              jobPositionProfileNodesTuple
+            ) => {
+              const [jobPosition, repairTechnicianProfileNode] =
+                jobPositionProfileNodesTuple as [JobPosition, Node];
+
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                return repairSubordinatesProfileEdgesAcc;
+              }
+
+              const repairSubordinateProfileEdge: Edge = {
+                ...edgeDefaults,
+                id: `${repairTechSupervisorProfileNodeId}-${repairTechnicianProfileNode.id}`, // source-target
+                source: repairTechSupervisorProfileNodeId,
+                target: repairTechnicianProfileNode.id,
+              };
+
+              repairSubordinatesProfileEdgesAcc.push(
+                repairSubordinateProfileEdge
+              );
+
+              return repairSubordinatesProfileEdgesAcc;
+            },
+            [shiftSupervisorToRepairTechSupervisorEdge]
+          );
+
+          repairTechniciansProfileEdgesAcc.push(
+            ...repairSubordinatesProfileEdges
+          );
+
+          return repairTechniciansProfileEdgesAcc;
+        },
+        []
+      );
+
       console.log(
         'repairTechniciansDocsGroupedByStoreLocationAndJobPosition',
         repairTechniciansDocsGroupedByStoreLocationAndJobPosition
       );
+
+      console.log(
+        'repairTechniciansProfileNodesObject',
+        repairTechniciansProfileNodesObject
+      );
+
+      console.log(
+        'repairTechniciansProfileEdges',
+        repairTechniciansProfileEdges
+      );
+
+      // set repair technicians profile nodes for dispatch
+      const repairTechniciansProfileNodes = Object.entries(
+        repairTechniciansProfileNodesObject
+      ).reduce(
+        (
+          repairTechniciansProfileNodesAcc: Node[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [_, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          const jobPositionsProfileNodes = Object.values(
+            jobPositionsProfileNodesObj
+          );
+          repairTechniciansProfileNodesAcc.push(...jobPositionsProfileNodes);
+
+          return repairTechniciansProfileNodesAcc;
+        },
+        []
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Repair Technicians',
+          kind: 'nodes',
+          data: repairTechniciansProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Repair Technicians',
+          kind: 'edges',
+          data: repairTechniciansProfileEdges,
+        },
+      });
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end repair technicians department ━┛
