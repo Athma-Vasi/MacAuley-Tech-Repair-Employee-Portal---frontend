@@ -2094,6 +2094,295 @@ function Directory() {
 
     // ┏━ begin logistics and inventory department ━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+    async function setLogisticsAndInventoryEdgesAndNodes() {
+      const logisticsAndInventoryDocs =
+        groupedByDepartment['Logistics and Inventory'] ?? [];
+
+      // group by store locations
+      const logisticsAndInventoryDocsGroupedByStoreLocation: Record<
+        StoreLocation,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: logisticsAndInventoryDocs,
+        field: 'storeLocation',
+      });
+
+      console.log(
+        'logisticsAndInventoryDocsGroupedByStoreLocation',
+        logisticsAndInventoryDocsGroupedByStoreLocation
+      );
+
+      // using the created object structure, create profile nodes
+      const logisticsAndInventoryProfileNodesObject = Object.entries(
+        logisticsAndInventoryDocsGroupedByStoreLocation
+      ).reduce(
+        (
+          logisticsAndInventoryProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          logisticsAndInventoryGroupedDocsTuple
+        ) => {
+          const [
+            storeLocation,
+            groupedLogisticsAndInventoryByStoreLocationsArr,
+          ] = logisticsAndInventoryGroupedDocsTuple as [
+            StoreLocation,
+            DirectoryUserDocument[]
+          ];
+
+          // create store location field
+          Object.defineProperty(
+            logisticsAndInventoryProfileNodesObjectAcc,
+            storeLocation,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: Object.create(null),
+            }
+          );
+
+          // iterate through docs for each store location and create profile cards for each job position
+          const jobPositionsProfileNodesObj =
+            groupedLogisticsAndInventoryByStoreLocationsArr.reduce(
+              (
+                jobPositionsProfileNodesObjAcc: Record<
+                  JobPosition,
+                  React.JSX.Element[]
+                >,
+                userDocument: DirectoryUserDocument
+              ) => {
+                const { jobPosition } = userDocument;
+
+                // create profile card
+                const displayProfileCard = returnDirectoryProfileCard({
+                  userDocument,
+                  padding,
+                  rowGap,
+                });
+
+                // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
+                const value = [
+                  ...(jobPositionsProfileNodesObjAcc[jobPosition] ?? []),
+                  displayProfileCard,
+                ] as React.JSX.Element[];
+
+                // add job position field
+                Object.defineProperty(
+                  jobPositionsProfileNodesObjAcc,
+                  jobPosition,
+                  {
+                    ...PROPERTY_DESCRIPTOR,
+                    value,
+                  }
+                );
+
+                return jobPositionsProfileNodesObjAcc;
+              },
+              Object.create(null)
+            );
+
+          // for each job position, create a single profile node that will hold a carousel of created profile cards
+          Object.entries(jobPositionsProfileNodesObj).forEach(
+            (jobPositionGroupedLogisticsAndInventoryTuple) => {
+              const [
+                jobPosition,
+                groupedLogisticsAndInventoryEmployeesForJobPosition,
+              ] = jobPositionGroupedLogisticsAndInventoryTuple as [
+                JobPosition,
+                React.JSX.Element[]
+              ];
+
+              // create a carousel from said profile cards
+              const groupedLogisticsAndInventoryEmployeesForJobPositionProfileCarousel =
+                (
+                  <CarouselBuilder
+                    carouselProps={{}}
+                    slides={groupedLogisticsAndInventoryEmployeesForJobPosition}
+                  />
+                );
+
+              const nodeType = jobPosition.toLowerCase().includes('supervisor')
+                ? 'default'
+                : 'output';
+
+              // create profile node with carousel
+              const groupedLogisticsAndInventoryEmployeesForJobPositionProfileNode: Node =
+                {
+                  id: `${storeLocation}-${jobPosition}`,
+                  type: nodeType,
+                  data: {
+                    label:
+                      groupedLogisticsAndInventoryEmployeesForJobPositionProfileCarousel,
+                  },
+                  position: nodePosition,
+                  style: nodeDimensions,
+                };
+
+              // add job position field with profile node
+              Object.defineProperty(
+                logisticsAndInventoryProfileNodesObjectAcc[storeLocation],
+                jobPosition,
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value:
+                    groupedLogisticsAndInventoryEmployeesForJobPositionProfileNode,
+                }
+              );
+            },
+            Object.create(null)
+          );
+
+          return logisticsAndInventoryProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log('logisticsAndInventoryProfileNodesObject', {
+        logisticsAndInventoryProfileNodesObject,
+      });
+
+      // create edges
+      const logisticsAndInventoryProfileEdges = Object.entries(
+        logisticsAndInventoryProfileNodesObject
+      ).reduce(
+        (
+          logisticsAndInventoryProfileEdgesAcc: Edge[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [storeLocation, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          // find the shift supervisor profile node id for the store location
+          const shiftSupervisorProfileNodeId =
+            groupedByDepartment['Store Administration'].find(
+              (userDocument: DirectoryUserDocument) =>
+                userDocument.jobPosition === 'Shift Supervisor' &&
+                userDocument.storeLocation === storeLocation
+            )?._id ?? '';
+
+          // find the logistics and inventory supervisor profile node id for the store location
+          const logisticsAndInventorySupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodesTuple) => {
+                const [jobPosition, _] = jobPositionProfileNodesTuple as [
+                  JobPosition,
+                  Node
+                ];
+
+                return jobPosition.toLowerCase().includes('supervisor');
+              }
+            )?.[1].id ?? '';
+
+          // connect shift supervisor to logistics and inventory supervisor
+          // [SHIFT SUPERVISOR] ━━━ [WAREHOUSE SUPERVISOR]
+          const shiftSupervisorToLogisticsAndInventorySupervisorEdge: Edge = {
+            ...edgeDefaults,
+            id: `${shiftSupervisorProfileNodeId}-${logisticsAndInventorySupervisorProfileNodeId}`, // source-target
+            source: shiftSupervisorProfileNodeId,
+            target: logisticsAndInventorySupervisorProfileNodeId,
+          };
+
+          // connect logistics and inventory employees to logistics and inventory supervisor
+          //                         ┏━ [INVENTORY CLERK]
+          // [WAREHOUSE SUPERVISOR] ━━━ [DELIVERY DRIVER]
+          //                         ┗━ [PARTS AND MATERIALS HANDLER]
+          //                         ┗━ [SHIPPER/RECEIVER]
+
+          const logisticsAndInventorySubordinatesProfileEdges = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              logisticsAndInventorySubordinatesProfileEdgesAcc: Edge[],
+              jobPositionProfileNodesTuple
+            ) => {
+              const [jobPosition, logisticsAndInventoryProfileNode] =
+                jobPositionProfileNodesTuple as [JobPosition, Node];
+
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                return logisticsAndInventorySubordinatesProfileEdgesAcc;
+              }
+
+              const logisticsAndInventorySubordinateProfileEdge: Edge = {
+                ...edgeDefaults,
+                id: `${logisticsAndInventorySupervisorProfileNodeId}-${logisticsAndInventoryProfileNode.id}`, // source-target
+                source: logisticsAndInventorySupervisorProfileNodeId,
+                target: logisticsAndInventoryProfileNode.id,
+              };
+
+              logisticsAndInventorySubordinatesProfileEdgesAcc.push(
+                logisticsAndInventorySubordinateProfileEdge
+              );
+
+              return logisticsAndInventorySubordinatesProfileEdgesAcc;
+            },
+            [shiftSupervisorToLogisticsAndInventorySupervisorEdge]
+          );
+
+          logisticsAndInventoryProfileEdgesAcc.push(
+            ...logisticsAndInventorySubordinatesProfileEdges
+          );
+
+          return logisticsAndInventoryProfileEdgesAcc;
+        },
+        []
+      );
+
+      console.log(
+        'logisticsAndInventoryProfileNodesObject',
+        logisticsAndInventoryProfileNodesObject
+      );
+
+      console.log(
+        'logisticsAndInventoryProfileEdges',
+        logisticsAndInventoryProfileEdges
+      );
+
+      // set logistics and inventory profile nodes for dispatch
+      const logisticsAndInventoryProfileNodes = Object.entries(
+        logisticsAndInventoryProfileNodesObject
+      ).reduce(
+        (
+          logisticsAndInventoryProfileNodesAcc: Node[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [_, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          const jobPositionsProfileNodes = Object.values(
+            jobPositionsProfileNodesObj
+          );
+
+          logisticsAndInventoryProfileNodesAcc.push(
+            ...jobPositionsProfileNodes
+          );
+
+          return logisticsAndInventoryProfileNodesAcc;
+        },
+        []
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Logistics and Inventory',
+          kind: 'nodes',
+          data: logisticsAndInventoryProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Logistics and Inventory',
+          kind: 'edges',
+          data: logisticsAndInventoryProfileEdges,
+        },
+      });
+    }
+
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end logistics and inventory department ━┛
 
     // ┏━ begin customer service department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -2116,7 +2405,7 @@ function Directory() {
           setAccountingEdgesAndNodes(),
           setRepairTechniciansEdgesAndNodes(),
           setFieldServiceTechniciansEdgesAndNodes(),
-          // setLogisticsAndInventoryEdgesAndNodes(),
+          setLogisticsAndInventoryEdgesAndNodes(),
           // setCustomerServiceEdgesAndNodes(),
         ]);
       } catch (error: any) {
