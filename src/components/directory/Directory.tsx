@@ -885,145 +885,162 @@ function Directory() {
     async function setHumanResourcesEdgesAndNodes() {
       const humanResourcesDocs = groupedByDepartment['Human Resources'] ?? [];
 
-      // create human resources profile nodes
-      const [
-        hrManagerProfileNode,
-        hrSubManagersProfileNodes,
-        hrSpecialistsProfileNodes,
-      ] = humanResourcesDocs.reduce(
+      // group by job positions
+      const humanResourcesDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: humanResourcesDocs,
+        field: 'jobPosition',
+      });
+
+      // using the created object structure, create profile nodes
+      const humanResourcesProfileNodesObject = Object.entries(
+        humanResourcesDocsGroupedByJobPosition
+      ).reduce(
         (
-          humanResourcesNodesAcc: [Node, Node[], Node[]],
-          userDocument: DirectoryUserDocument
+          humanResourcesProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
+          humanResourcesGroupedDocsTuple
         ) => {
-          const { _id, jobPosition } = userDocument;
+          const [jobPosition, groupedHumanResourcesByJobPositionArr] =
+            humanResourcesGroupedDocsTuple as [
+              JobPosition,
+              DirectoryUserDocument[]
+            ];
 
-          const nodeType = jobPosition.toLowerCase().includes('specialist')
-            ? 'output'
-            : 'default';
+          // create profile cards for each grouped doc
+          const profileCards = groupedHumanResourcesByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
 
-          const displayProfileCard = returnDirectoryProfileCard({
-            userDocument,
-            padding,
-            rowGap,
-          });
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
 
-          const humanResourcesNode: Node = {
-            id: _id,
+          // create profile node with carousel
+          const groupedHumanResourcesByJobPositionProfileNode: Node = {
+            id: jobPosition,
             type: nodeType,
-            data: { label: displayProfileCard },
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedHumanResourcesByJobPositionProfileCards}
+                />
+              ),
+            },
             position: nodePosition,
             style: nodeDimensions,
           };
 
-          if (jobPosition.toLowerCase().includes('human resources manager')) {
-            humanResourcesNodesAcc[0] = humanResourcesNode;
-            return humanResourcesNodesAcc;
-          }
+          // add job position field with profile node
+          Object.defineProperty(
+            humanResourcesProfileNodesObjectAcc,
+            jobPosition,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: groupedHumanResourcesByJobPositionProfileNode,
+            }
+          );
 
-          if (jobPosition.toLowerCase().includes('specialist')) {
-            humanResourcesNodesAcc[2].push(humanResourcesNode);
-            return humanResourcesNodesAcc;
-          }
-
-          humanResourcesNodesAcc[1].push(humanResourcesNode);
-
-          return humanResourcesNodesAcc;
+          return humanResourcesProfileNodesObjectAcc;
         },
-        [{} as Node, [], []]
+        Object.create(null)
       );
 
-      // chief human resources officer node id
+      console.log(
+        'humanResourcesProfileNodesObject',
+        humanResourcesProfileNodesObject
+      );
+
+      // create edges
+      // find the chief human resources officer profile node id
       const chiefHumanResourcesOfficerId =
         groupedByDepartment['Executive Management'].find(
           (userDocument: DirectoryUserDocument) =>
             userDocument.jobPosition === 'Chief Human Resources Officer'
         )?._id ?? '';
 
-      // connect hr manager to chro
-      // [CHRO] ━━━ [HR MANAGER]
-      const hrManagerProfileNodeId = hrManagerProfileNode.id;
+      // find the human resources manager profile node id
+      const humanResourcesManagerId = Object.entries(
+        humanResourcesProfileNodesObject
+      ).reduce(
+        (
+          humanResourcesManagerIdAcc: string,
+          humanResourcesProfileNodeTuple
+        ) => {
+          const [jobPosition, profileNode] = humanResourcesProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
 
-      const chroToHrManagerEdge: Edge = {
+          if (jobPosition.toLowerCase().includes('manager')) {
+            humanResourcesManagerIdAcc = profileNode.id;
+          }
+
+          return humanResourcesManagerIdAcc;
+        },
+        ''
+      );
+
+      // connect chief human resources officer to human resources manager
+      // [CHRO] ━━━ [HR MANAGER]
+      const chiefHumanResourcesOfficerToHumanResourcesManagerEdge: Edge = {
         ...edgeDefaults,
-        id: `${chiefHumanResourcesOfficerId}-${hrManagerProfileNodeId}`, // source-target
+        id: `${chiefHumanResourcesOfficerId}-${humanResourcesManagerId}`, // source-target
         source: chiefHumanResourcesOfficerId,
-        target: hrManagerProfileNodeId,
+        target: humanResourcesManagerId,
       };
 
-      // connect HR manager to HR sub managers profile nodes
-      //                          ┏━ [COMPENSATION & BENEFITS MANAGER]
-      //                          ┏━ [HEALTH & SAFETY MANAGER]
-      // [CHRO] ━━━ [HR MANAGER] ━━━ [TRAINING MANAGER]
-      //                          ┗━ [RECRUITING MANAGER]
-      const hrSubManagersProfileNodesIds = hrSubManagersProfileNodes.map(
-        (node: Node) => node.id
-      );
-
-      const hrManagerToHrSubManagersEdges = hrSubManagersProfileNodesIds.reduce(
+      const humanResourcesProfileEdges = Object.entries(
+        humanResourcesProfileNodesObject
+      ).reduce(
         (
-          hrManagerToHrSubManagersEdgesAcc: Edge[],
-          hrSubManagerProfileNodeId: string
+          humanResourcesProfileEdgesAcc: Edge[],
+          jobPositionAndProfileNodeTuple
         ) => {
-          const hrManagerToHrSubManagerEdge: Edge = {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
+
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return humanResourcesProfileEdgesAcc;
+          }
+
+          // connect subordinates to human resources manager
+          //                          ┏━ [CB&M MANAGER] ━━━ [CB&M SPECIALIST]
+          //                          ┏━ [H&S MANAGER]  ━━━ [H&S SPECIALIST]
+          // [CHRO] ━━━ [HR MANAGER] ━━━ [TR. MANAGER]  ━━━ [TR. SPECIALIST]
+          //                          ┗━ [REC. MANAGER] ━━━ [REC. SPECIALIST]
+          const humanResourcesSubordinateProfileEdge: Edge = {
             ...edgeDefaults,
-            id: `${hrManagerProfileNodeId}-${hrSubManagerProfileNodeId}`, // source-target
-            source: hrManagerProfileNodeId,
-            target: hrSubManagerProfileNodeId,
+            id: `${humanResourcesManagerId}-${profileNode.id}`, // source-target
+            source: humanResourcesManagerId,
+            target: profileNode.id,
           };
 
-          hrManagerToHrSubManagersEdgesAcc.push(hrManagerToHrSubManagerEdge);
+          humanResourcesProfileEdgesAcc.push(
+            humanResourcesSubordinateProfileEdge
+          );
 
-          return hrManagerToHrSubManagersEdgesAcc;
+          return humanResourcesProfileEdgesAcc;
         },
-        [chroToHrManagerEdge]
+        [chiefHumanResourcesOfficerToHumanResourcesManagerEdge]
       );
-
-      // connect HR sub managers to HR specialists profile nodes
-      //                          ┏━ [CB&M MANAGER] ━━━ [CB&M SPECIALIST]
-      //                          ┏━ [H&S MANAGER]  ━━━ [H&S SPECIALIST]
-      // [CHRO] ━━━ [HR MANAGER] ━━━ [TR. MANAGER]  ━━━ [TR. SPECIALIST]
-      //                          ┗━ [REC. MANAGER] ━━━ [REC. SPECIALIST]
-      const hrSpecialistsProfileNodesIds = hrSpecialistsProfileNodes.map(
-        (node: Node) => node.id
-      );
-
-      // as the nodes are created from an obj array, the order is guaranteed
-      const hrSubManagersToHrSpecialistsProfileEdges =
-        hrSubManagersProfileNodesIds.reduce(
-          (
-            hrSubManagersToHrSpecialistsProfileEdgesAcc,
-            hrSubManagerProfileNodeId,
-            index
-          ) => {
-            const hrSpecialistProfileNodeId =
-              hrSpecialistsProfileNodesIds[index];
-
-            const hrSubManagerToHrSpecialistEdge: Edge = {
-              ...edgeDefaults,
-              id: `${hrSubManagerProfileNodeId}-${hrSpecialistProfileNodeId}`, // source-target
-              source: hrSubManagerProfileNodeId,
-              target: hrSpecialistProfileNodeId,
-            };
-
-            hrSubManagersToHrSpecialistsProfileEdgesAcc.push(
-              hrSubManagerToHrSpecialistEdge
-            );
-
-            return hrSubManagersToHrSpecialistsProfileEdgesAcc;
-          },
-          [...hrManagerToHrSubManagersEdges]
-        );
 
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
           department: 'Human Resources',
           kind: 'nodes',
-          data: [
-            hrManagerProfileNode,
-            ...hrSubManagersProfileNodes,
-            ...hrSpecialistsProfileNodes,
-          ],
+          data: Object.values(humanResourcesProfileNodesObject),
         },
       });
 
@@ -1032,12 +1049,9 @@ function Directory() {
         payload: {
           department: 'Human Resources',
           kind: 'edges',
-          data: hrSubManagersToHrSpecialistsProfileEdges, // contains all edges
+          data: humanResourcesProfileEdges,
         },
       });
-
-      if (filterByDepartment) {
-      }
     }
 
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end human resources department ━┛
@@ -1157,9 +1171,10 @@ function Directory() {
           }
 
           // connect subordinates to sales manager
-          //                                ┏━ [SALES REPRESENTATIVE]
-          // [CSO] ━━━ [SALES MANAGER] ━━━ [SALES REPRESENTATIVE]
-          //                                ┗━ [SALES REPRESENTATIVE]
+          //                            ┏━ [SALES REPRESENTATIVE]
+          // [CSO] ━━━ [SALES MANAGER] ━━━ [BUSINESS DEVELOPMENT SPECIALIST]
+          //                            ┗━ [SALES SUPPORT SPECIALIST]
+          //                            ┗━ [SALES OPERATIONS ANALYST]
           const salesSubordinateProfileEdge: Edge = {
             ...edgeDefaults,
             id: `${salesManagerId}-${profileNode.id}`, // source-target
@@ -5244,5 +5259,164 @@ export default Directory;
           data: salesSubordinatesProfileEdges,
         },
       });
+    }
+ */
+
+/**
+ * async function setHumanResourcesEdgesAndNodes() {
+      const humanResourcesDocs = groupedByDepartment['Human Resources'] ?? [];
+
+      // create human resources profile nodes
+      const [
+        hrManagerProfileNode,
+        hrSubManagersProfileNodes,
+        hrSpecialistsProfileNodes,
+      ] = humanResourcesDocs.reduce(
+        (
+          humanResourcesNodesAcc: [Node, Node[], Node[]],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          const nodeType = jobPosition.toLowerCase().includes('specialist')
+            ? 'output'
+            : 'default';
+
+          const displayProfileCard = returnDirectoryProfileCard({
+            userDocument,
+            padding,
+            rowGap,
+          });
+
+          const humanResourcesNode: Node = {
+            id: _id,
+            type: nodeType,
+            data: { label: displayProfileCard },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          if (jobPosition.toLowerCase().includes('human resources manager')) {
+            humanResourcesNodesAcc[0] = humanResourcesNode;
+            return humanResourcesNodesAcc;
+          }
+
+          if (jobPosition.toLowerCase().includes('specialist')) {
+            humanResourcesNodesAcc[2].push(humanResourcesNode);
+            return humanResourcesNodesAcc;
+          }
+
+          humanResourcesNodesAcc[1].push(humanResourcesNode);
+
+          return humanResourcesNodesAcc;
+        },
+        [{} as Node, [], []]
+      );
+
+      // chief human resources officer node id
+      const chiefHumanResourcesOfficerId =
+        groupedByDepartment['Executive Management'].find(
+          (userDocument: DirectoryUserDocument) =>
+            userDocument.jobPosition === 'Chief Human Resources Officer'
+        )?._id ?? '';
+
+      // connect hr manager to chro
+      // [CHRO] ━━━ [HR MANAGER]
+      const hrManagerProfileNodeId = hrManagerProfileNode.id;
+
+      const chroToHrManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefHumanResourcesOfficerId}-${hrManagerProfileNodeId}`, // source-target
+        source: chiefHumanResourcesOfficerId,
+        target: hrManagerProfileNodeId,
+      };
+
+      // connect HR manager to HR sub managers profile nodes
+      //                          ┏━ [COMPENSATION & BENEFITS MANAGER]
+      //                          ┏━ [HEALTH & SAFETY MANAGER]
+      // [CHRO] ━━━ [HR MANAGER] ━━━ [TRAINING MANAGER]
+      //                          ┗━ [RECRUITING MANAGER]
+      const hrSubManagersProfileNodesIds = hrSubManagersProfileNodes.map(
+        (node: Node) => node.id
+      );
+
+      const hrManagerToHrSubManagersEdges = hrSubManagersProfileNodesIds.reduce(
+        (
+          hrManagerToHrSubManagersEdgesAcc: Edge[],
+          hrSubManagerProfileNodeId: string
+        ) => {
+          const hrManagerToHrSubManagerEdge: Edge = {
+            ...edgeDefaults,
+            id: `${hrManagerProfileNodeId}-${hrSubManagerProfileNodeId}`, // source-target
+            source: hrManagerProfileNodeId,
+            target: hrSubManagerProfileNodeId,
+          };
+
+          hrManagerToHrSubManagersEdgesAcc.push(hrManagerToHrSubManagerEdge);
+
+          return hrManagerToHrSubManagersEdgesAcc;
+        },
+        [chroToHrManagerEdge]
+      );
+
+      // connect HR sub managers to HR specialists profile nodes
+      //                          ┏━ [CB&M MANAGER] ━━━ [CB&M SPECIALIST]
+      //                          ┏━ [H&S MANAGER]  ━━━ [H&S SPECIALIST]
+      // [CHRO] ━━━ [HR MANAGER] ━━━ [TR. MANAGER]  ━━━ [TR. SPECIALIST]
+      //                          ┗━ [REC. MANAGER] ━━━ [REC. SPECIALIST]
+      const hrSpecialistsProfileNodesIds = hrSpecialistsProfileNodes.map(
+        (node: Node) => node.id
+      );
+
+      // as the nodes are created from an obj array, the order is guaranteed
+      const hrSubManagersToHrSpecialistsProfileEdges =
+        hrSubManagersProfileNodesIds.reduce(
+          (
+            hrSubManagersToHrSpecialistsProfileEdgesAcc,
+            hrSubManagerProfileNodeId,
+            index
+          ) => {
+            const hrSpecialistProfileNodeId =
+              hrSpecialistsProfileNodesIds[index];
+
+            const hrSubManagerToHrSpecialistEdge: Edge = {
+              ...edgeDefaults,
+              id: `${hrSubManagerProfileNodeId}-${hrSpecialistProfileNodeId}`, // source-target
+              source: hrSubManagerProfileNodeId,
+              target: hrSpecialistProfileNodeId,
+            };
+
+            hrSubManagersToHrSpecialistsProfileEdgesAcc.push(
+              hrSubManagerToHrSpecialistEdge
+            );
+
+            return hrSubManagersToHrSpecialistsProfileEdgesAcc;
+          },
+          [...hrManagerToHrSubManagersEdges]
+        );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Human Resources',
+          kind: 'nodes',
+          data: [
+            hrManagerProfileNode,
+            ...hrSubManagersProfileNodes,
+            ...hrSpecialistsProfileNodes,
+          ],
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Human Resources',
+          kind: 'edges',
+          data: hrSubManagersToHrSpecialistsProfileEdges, // contains all edges
+        },
+      });
+
+      
     }
  */
