@@ -1,25 +1,28 @@
 import { Carousel } from '@mantine/carousel';
 import { Group, MantineNumberSize } from '@mantine/core';
-
-import { useGlobalState } from '../../hooks';
 import { ReactNode, useState } from 'react';
 import { TbArrowLeft, TbArrowRight } from 'react-icons/tb';
+
+import { useGlobalState } from '../../hooks';
 
 type CarouselBuilderProps = {
   slides: React.JSX.Element[];
   carouselProps: {
-    height?: string;
     align?: 'start' | 'center' | 'end';
-    slideGap?: MantineNumberSize;
     controlsOffset?: MantineNumberSize;
     controlSize?: number;
-    loop?: boolean;
-    withIndicators?: boolean;
-    dragFree?: boolean;
     draggable?: boolean;
-    orientation?: 'horizontal' | 'vertical';
+    dragFree?: boolean;
+    height?: string;
+    inViewThreshold?: number;
+    loop?: boolean;
     nextControlIcon?: ReactNode;
+    orientation?: 'horizontal' | 'vertical';
     previousControlIcon?: ReactNode;
+    slideGap?: MantineNumberSize;
+    slideSize?: string | number;
+    width?: string;
+    withIndicators?: boolean;
   };
 };
 
@@ -30,16 +33,16 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
   const [showControlIcon, setShowControlIcon] = useState<boolean>(false);
 
   const {
-    height = '100%',
-    align = 'end',
-    slideGap = rowGap,
-    controlsOffset = padding,
+    align = 'center',
     controlSize = 28,
-    loop = true,
-    withIndicators = true,
-    dragFree = false,
+    controlsOffset = padding,
+    dragFree = true,
     draggable = true,
-    orientation = 'horizontal',
+    height = '100%',
+    inViewThreshold = 1,
+    loop = true,
+    slideGap = 0,
+    slideSize = '100%',
     nextControlIcon = (
       <Group
         style={{ borderRadius: 9999, background: 'violet' }}
@@ -50,6 +53,7 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
         <TbArrowRight color="white" />
       </Group>
     ),
+    orientation = 'horizontal',
     previousControlIcon = (
       <Group
         style={{ borderRadius: 9999, background: 'violet' }}
@@ -60,24 +64,31 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
         <TbArrowLeft color="white" />
       </Group>
     ),
+    width = '100%',
+    withIndicators = true,
   } = carouselProps;
 
   return (
-    <div style={{ height: 200, display: 'flex' }}>
+    <div
+      style={{
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        outline: '1px solid blue',
+      }}
+    >
       <Carousel
-        height={height}
-        sx={{ flex: 1 }}
         align={align}
-        slideGap={slideGap}
-        controlsOffset={controlsOffset}
         controlSize={controlSize}
+        controlsOffset={controlsOffset}
         dragFree={dragFree}
-        loop={loop}
-        withIndicators={withIndicators}
         draggable={draggable}
-        orientation={orientation}
+        height={height}
+        inViewThreshold={inViewThreshold}
+        loop={loop}
+        slideGap={slideGap}
+        slideSize={slideSize}
         nextControlIcon={nextControlIcon}
-        previousControlIcon={previousControlIcon}
         onMouseEnter={() =>
           //   slides.length > 1 ? setShowControlIcon(true) : false
           setShowControlIcon(true)
@@ -86,6 +97,8 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
           //   slides.length > 1 ? setShowControlIcon(false) : false
           setShowControlIcon(false)
         }
+        orientation={orientation}
+        previousControlIcon={previousControlIcon}
         // hide inactive controls
         styles={
           showControlIcon
@@ -99,6 +112,10 @@ function CarouselBuilder({ slides, carouselProps }: CarouselBuilderProps) {
                 },
               }
         }
+        sx={{ flex: 1 }}
+        w={width}
+        withControls={slides.length > 1 && showControlIcon}
+        withIndicators={withIndicators}
       >
         {slides.map((slide, index) => (
           <Carousel.Slide key={`${index}`}>{slide}</Carousel.Slide>

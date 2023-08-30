@@ -1,3 +1,0 @@
-const initialNodeBuilderState = {};
-
-export { initialNodeBuilderState };

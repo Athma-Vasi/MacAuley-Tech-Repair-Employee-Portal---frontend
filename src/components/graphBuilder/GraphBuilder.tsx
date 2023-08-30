@@ -2,7 +2,7 @@ import 'reactflow/dist/style.css';
 
 import { Flex } from '@mantine/core';
 
-import { FlowEdge, FlowNode, NodeBuilderProps } from './types';
+import { FlowEdge, FlowNode, GraphBuilderProps } from './types';
 
 import React, { useCallback } from 'react';
 import ReactFlow, {
@@ -17,11 +17,9 @@ import ReactFlow, {
   Node,
 } from 'reactflow';
 import dagre from 'dagre';
-import { returnDagreLayoutedElements } from '../directory/utils';
+import { returnDagreLayoutedElements } from './utils';
 
-// import { initialNodes, initialEdges } from './nodes-edges.js';
-
-function NodeBuilder({ initialEdges, initialNodes }: NodeBuilderProps) {
+function GraphBuilder({ initialEdges, initialNodes }: GraphBuilderProps) {
   const { nodes, edges } = returnDagreLayoutedElements({
     edges: initialEdges,
     nodes: initialNodes,
@@ -54,4 +52,4 @@ function NodeBuilder({ initialEdges, initialNodes }: NodeBuilderProps) {
   );
 }
 
-export default NodeBuilder;
+export default GraphBuilder;

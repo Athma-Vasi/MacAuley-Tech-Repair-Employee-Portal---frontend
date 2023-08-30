@@ -1,4 +1,4 @@
-import { Accordion, Flex, Group, Stack, Text } from '@mantine/core';
+import { Accordion, Card, Flex, Group, Stack, Text } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import localforage from 'localforage';
 import { ChangeEvent, useEffect, useReducer } from 'react';
@@ -27,8 +27,8 @@ import {
   replaceLastCommaWithAnd,
   urlBuilder,
 } from '../../utils';
-import NodeBuilder from '../nodeBuilder/NodeBuilder';
-import { FlowNode } from '../nodeBuilder/types';
+import GraphBuilder from '../graphBuilder/GraphBuilder';
+import { FlowNode } from '../graphBuilder/types';
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -268,7 +268,6 @@ function Directory() {
 
     // ┏━ begin defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    const storeLocations = ['Edmonton', 'Calgary', 'Vancouver'];
     const nodePosition = { x: 0, y: 0 };
     const nodeDimensions = { width: 351, height: 217 };
     const edgeDefaults: Edge = {
@@ -308,23 +307,11 @@ function Directory() {
             rowGap,
           });
 
-          const displayProfileCard = (
-            <Group
-              w="100%"
-              h="100%"
-              onClick={() => {
-                console.log('executive management node clicked');
-              }}
-            >
-              {directoryProfileCard}
-            </Group>
-          );
-
           const executiveManagementNode: Node = {
             id: _id,
             type:
               jobPosition === 'Chief Executive Officer' ? 'input' : 'default',
-            data: { label: displayProfileCard },
+            data: { label: directoryProfileCard },
             position: { x: 0, y: 0 },
             style: nodeDimensions,
           };
@@ -392,264 +379,303 @@ function Directory() {
       const storeAdministrationDocs =
         groupedByDepartment['Store Administration'] ?? [];
 
-      // starting stores heading node [STORES]
-      const initialStoresHeadingNode: FlowNode = {
-        id: 'stores-heading',
-        type: 'default',
-        data: { label: 'Stores' },
-        position: nodePosition,
-        style: nodeDimensions,
-      };
+      // group by store locations
+      const storeAdministrationDocsGroupedByStoreLocation: Record<
+        StoreLocation,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: storeAdministrationDocs,
+        field: 'storeLocation',
+      });
 
-      // store administration heading node for each store location
-      const storeLocationsHeadingNodes: FlowNode[] = STORE_LOCATION_DATA.map(
-        (store) => {
-          const initialStoreLocationsHeadingNode: FlowNode = {
-            id: `store-location-heading-${store}`,
-            type: 'default',
-            data: { label: `${store} Store Administration` },
-            position: nodePosition,
-            style: nodeDimensions,
-          };
-
-          return initialStoreLocationsHeadingNode;
-        }
-      );
-
-      // store administration profile nodes for each store location
-      const storeAdministrationProfileNodes = storeAdministrationDocs.reduce(
-        (
-          storeAdministrationNodesAcc: Node[],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, jobPosition } = userDocument;
-
-          const displayProfileCard = returnDirectoryProfileCard({
-            userDocument,
-            padding,
-            rowGap,
-          });
-
-          const storeAdministrationNode: Node = {
-            id: _id,
-            type: 'default',
-            data: { label: displayProfileCard },
-            position: nodePosition,
-            style: nodeDimensions,
-          };
-          storeAdministrationNodesAcc.push(storeAdministrationNode);
-
-          return storeAdministrationNodesAcc;
-        },
-        [initialStoresHeadingNode, ...storeLocationsHeadingNodes]
-      );
-
-      // connecting initial store heading node to each store location heading node
-      //           ┏━ [EDMONTON]
-      // [STORES] ━━━ [CALGARY]
-      //           ┗━ [VANCOUVER]
-      const storesHeadingNodeId = initialStoresHeadingNode.id;
-      const edgesFromStoresHeadingToEachStoreLocationsHeading =
-        storeLocationsHeadingNodes.reduce(
+      // TODO: REMOVE THIS FILTER FUNCTION IN PRODUCTION
+      // filter out manager account used for development
+      const storeAdministrationDocsGroupedByStoreLocationFiltered =
+        Object.entries(storeAdministrationDocsGroupedByStoreLocation).reduce(
           (
-            storeLocationsHeadingEdgesAcc: Edge[],
-            storeLocationHeadingNode: FlowNode
+            storeAdministrationDocsGroupedByStoreLocationFilteredAcc: Record<
+              StoreLocation,
+              DirectoryUserDocument[]
+            >,
+            storeLocationAndDocsTuple
           ) => {
-            const { id: storeLocationHeadingNodeId } = storeLocationHeadingNode;
+            const [storeLocation, storeAdministrationDocsArr] =
+              storeLocationAndDocsTuple as [
+                StoreLocation,
+                DirectoryUserDocument[]
+              ];
 
-            const storeLocationHeadingEdge: Edge = {
-              id: `${storesHeadingNodeId}-${storeLocationHeadingNodeId}`,
-              source: storesHeadingNodeId,
-              target: storeLocationHeadingNodeId,
-              type: 'smoothstep',
-              animated: true,
-              // label: jobPosition,
-              labelBgPadding: [8, 4],
-              labelBgBorderRadius: 4,
-              labelBgStyle: { fill: 'white' },
-              labelStyle: { fill: 'black', fontWeight: 700 },
-              style: { stroke: 'black' },
-            };
+            const filteredStoreAdministrationDocsArr =
+              storeAdministrationDocsArr.filter(
+                (userDocument: DirectoryUserDocument) =>
+                  userDocument.lastName !== 'Vorkosigan'
+              );
 
-            storeLocationsHeadingEdgesAcc.push(storeLocationHeadingEdge);
+            Object.defineProperty(
+              storeAdministrationDocsGroupedByStoreLocationFilteredAcc,
+              storeLocation,
+              {
+                ...PROPERTY_DESCRIPTOR,
+                value: filteredStoreAdministrationDocsArr,
+              }
+            );
 
-            return storeLocationsHeadingEdgesAcc;
+            return storeAdministrationDocsGroupedByStoreLocationFilteredAcc;
           },
-          []
+          Object.create(null)
         );
 
-      // connect each store location heading node to its store manager profile node
-      //
-      //           ┏━ [EDMONTON]  ━━━ [STORE MANAGER]
-      // [STORES] ━━━ [CALGARY]   ━━━ [STORE MANAGER]
-      //           ┗━ [VANCOUVER] ━━━ [STORE MANAGER]
-
-      const storeAdministrationEdges = storeAdministrationDocs.reduce(
+      // using the created object structure, create profile nodes
+      const storeAdministrationProfileNodesObject = Object.entries(
+        storeAdministrationDocsGroupedByStoreLocationFiltered
+      ).reduce(
         (
-          storeAdministrationEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
+          storeAdministrationProfileNodesObjectAcc: StoreDepartmentsProfileNodesObject,
+          storeAdministrationGroupedDocsTuple
         ) => {
-          const { _id, storeLocation, jobPosition } = userDocument;
+          const [storeLocation, groupedStoreAdministrationByStoreLocationArr] =
+            storeAdministrationGroupedDocsTuple as [
+              StoreLocation,
+              DirectoryUserDocument[]
+            ];
 
-          const storeLocationHeadingNodeId = storeLocationsHeadingNodes.find(
-            (storeLocationHeadingNode: FlowNode) =>
-              storeLocationHeadingNode.id ===
-              `store-location-heading-${storeLocation}`
-          )?.id as string;
-
-          //  edge from store location heading node to store manager profile node
-          if (jobPosition === 'Store Manager') {
-            const storeAdministrationEdge: Edge = {
-              ...edgeDefaults,
-              id: `${storeLocationHeadingNodeId}-${_id}`, // source-target
-              source: storeLocationHeadingNodeId,
-              target: _id,
-            };
-            storeAdministrationEdgesAcc.push(storeAdministrationEdge);
-          }
-
-          return storeAdministrationEdgesAcc;
-        },
-        [...edgesFromStoresHeadingToEachStoreLocationsHeading]
-      );
-
-      // connect store managers to their subordinates
-      //                                               ┏━ [OFFICE MANAGER]
-      //           ┏━ [EDMONTON]  ━━━ [STORE MANAGER] ━━━ [SHIFT SUPERVISOR]
-      // [STORES] ━━━ [CALGARY]   ━━━ [STORE MANAGER] ━━━ // same
-      //           ┗━ [VANCOUVER] ━━━ [STORE MANAGER] ━━━ // same
-
-      // find store managers node ids
-      const [
-        edmontonStoreManagerNodeId,
-        calgaryStoreManagerNodeId,
-        vancouverStoreManagerNodeId,
-      ] = storeAdministrationDocs.reduce(
-        (
-          storeManagersNodeIdsAcc: string[],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, storeLocation, jobPosition } = userDocument;
-
-          if (storeLocation === 'Edmonton' && jobPosition === 'Store Manager') {
-            // find the store manager node id
-            const edmontonStoreManagerNodeId =
-              storeAdministrationProfileNodes.find(
-                (node: Node) => node.id === _id
-              )?.id as string;
-            storeManagersNodeIdsAcc[0] = edmontonStoreManagerNodeId;
-          }
-
-          if (storeLocation === 'Calgary' && jobPosition === 'Store Manager') {
-            // find the store manager node id
-            const calgaryStoreManagerNodeId =
-              storeAdministrationProfileNodes.find(
-                (node: Node) => node.id === _id
-              )?.id as string;
-            storeManagersNodeIdsAcc[1] = calgaryStoreManagerNodeId;
-          }
-
-          if (
-            storeLocation === 'Vancouver' &&
-            jobPosition === 'Store Manager'
-          ) {
-            // find the store manager node id
-            const vancouverStoreManagerNodeId =
-              storeAdministrationProfileNodes.find(
-                (node: Node) => node.id === _id
-              )?.id as string;
-            storeManagersNodeIdsAcc[2] = vancouverStoreManagerNodeId;
-          }
-          return storeManagersNodeIdsAcc;
-        },
-        ['', '', '']
-      );
-
-      // for edmonton store location
-      const edmontonStoreAdministrationEdges = storeAdministrationDocs.reduce(
-        (
-          edmontonStoreAdministrationEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, storeLocation, jobPosition } = userDocument;
-
-          if (storeLocation !== 'Edmonton' || jobPosition === 'Store Manager') {
-            return edmontonStoreAdministrationEdgesAcc;
-          }
-
-          // edge from store manager profile node to subordinate profile node
-          const edmontonStoreAdministrationEdge: Edge = {
-            ...edgeDefaults,
-            id: `${edmontonStoreManagerNodeId}-${_id}`, // source-target
-            source: edmontonStoreManagerNodeId,
-            target: _id,
-          };
-          edmontonStoreAdministrationEdgesAcc.push(
-            edmontonStoreAdministrationEdge
+          // create store location field
+          Object.defineProperty(
+            storeAdministrationProfileNodesObjectAcc,
+            storeLocation,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: Object.create(null),
+            }
           );
 
-          return edmontonStoreAdministrationEdgesAcc;
-        },
-        [...storeAdministrationEdges]
-      );
+          // // create store location heading card for better visual differentiation
+          // const storesHeadingCard = (
+          //   <Group
+          //     w="100%"
+          //     h="100%"
+          //     onClick={() => {
+          //       console.log('stores heading card clicked');
+          //     }}
+          //   >
+          //     <Card shadow="sm" padding={padding} radius="md" w="100%" h="100%">
+          //       <Text size="sm" weight={700}>
+          //         {storeLocation}
+          //       </Text>
+          //     </Card>
+          //   </Group>
+          // );
 
-      // for calgary store location with accumulated edges from edmonton store location
-      const calgaryStoreAdministrationEdges = storeAdministrationDocs.reduce(
-        (
-          calgaryStoreAdministrationEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, storeLocation, jobPosition } = userDocument;
+          // // assign it to the store location field
+          // Object.defineProperty(
+          //   storeAdministrationProfileNodesObjectAcc[storeLocation],
+          //   'heading',
+          //   {
+          //     ...PROPERTY_DESCRIPTOR,
+          //     value: {
+          //       id: `${storeLocation}-heading`,
+          //       type: 'default',
+          //       data: { label: storesHeadingCard },
+          //       position: nodePosition,
+          //       style: nodeDimensions,
+          //     },
+          //   }
+          // );
 
-          if (storeLocation !== 'Calgary' || jobPosition === 'Store Manager') {
-            return calgaryStoreAdministrationEdgesAcc;
-          }
+          // iterate through docs for each store location and create profile cards for each job position
+          const jobPositionsProfileNodesObj =
+            groupedStoreAdministrationByStoreLocationArr.reduce(
+              (
+                jobPositionsProfileNodesObjAcc: Record<
+                  JobPosition,
+                  React.JSX.Element[]
+                >,
+                userDocument: DirectoryUserDocument
+              ) => {
+                const { jobPosition } = userDocument;
 
-          // edge from store manager profile node to subordinate profile node
-          const calgaryStoreAdministrationEdge: Edge = {
-            ...edgeDefaults,
-            id: `${calgaryStoreManagerNodeId}-${_id}`, // source-target
-            source: calgaryStoreManagerNodeId,
-            target: _id,
-          };
+                // create profile card
+                const displayProfileCard = returnDirectoryProfileCard({
+                  userDocument,
+                  padding,
+                  rowGap,
+                });
 
-          calgaryStoreAdministrationEdgesAcc.push(
-            calgaryStoreAdministrationEdge
+                // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
+                const value = [
+                  ...(jobPositionsProfileNodesObjAcc[jobPosition] ?? []),
+                  displayProfileCard,
+                ] as React.JSX.Element[];
+
+                // add job position field
+                Object.defineProperty(
+                  jobPositionsProfileNodesObjAcc,
+                  jobPosition,
+                  {
+                    ...PROPERTY_DESCRIPTOR,
+                    value,
+                  }
+                );
+
+                return jobPositionsProfileNodesObjAcc;
+              },
+              Object.create(null)
+            );
+
+          // for each job position, create a single profile node that will hold a carousel of created profile cards
+          Object.entries(jobPositionsProfileNodesObj).forEach(
+            (jobPositionAndProfileCardsTuple) => {
+              const [jobPosition, profileCards] =
+                jobPositionAndProfileCardsTuple as [
+                  JobPosition,
+                  React.JSX.Element[]
+                ];
+
+              const groupedStoreAdministrationByStoreLocationCarousel = (
+                <CarouselBuilder carouselProps={{}} slides={profileCards} />
+              );
+
+              // create profile node with carousel
+              const groupedStoreAdministrationByStoreLocationProfileNode: Node =
+                {
+                  id: `${storeLocation}-${jobPosition}`,
+                  type: 'default',
+                  data: {
+                    label: groupedStoreAdministrationByStoreLocationCarousel,
+                  },
+                  position: nodePosition,
+                  style: nodeDimensions,
+                };
+
+              // add job position field with profile node
+              Object.defineProperty(
+                storeAdministrationProfileNodesObjectAcc[storeLocation],
+                jobPosition,
+                {
+                  ...PROPERTY_DESCRIPTOR,
+                  value: groupedStoreAdministrationByStoreLocationProfileNode,
+                }
+              );
+            },
+            Object.create(null)
           );
 
-          return calgaryStoreAdministrationEdgesAcc;
+          return storeAdministrationProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log(
+        'storeAdministrationProfileNodesObject',
+        storeAdministrationProfileNodesObject
+      );
+
+      // create edges
+      const storeAdministrationProfileEdges = Object.entries(
+        storeAdministrationProfileNodesObject
+      ).reduce(
+        (
+          storeAdministrationProfileEdgesAcc: Edge[],
+          storeLocationAndJobPositionProfileNodesTuple
+        ) => {
+          const [_storeLocation, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
+
+          // find the coo profile node id
+          const cooProfileNodeId =
+            groupedByDepartment['Executive Management'].find(
+              (userDocument: DirectoryUserDocument) =>
+                userDocument.jobPosition === 'Chief Operations Officer'
+            )?._id ?? '';
+
+          // find the store manager profile node id for the store location
+          const storeManagerProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionAndProfileNodeTuple) => {
+                const [jobPosition, _profileNode] =
+                  jobPositionAndProfileNodeTuple as [JobPosition, Node];
+
+                return jobPosition.toLowerCase().includes('store manager');
+              }
+            )?.[1].id ?? '';
+
+          // connect coo to store manager
+          // [COO] ━━━ [STORE MANAGER]
+          const cooToStoreManagerEdge: Edge = {
+            ...edgeDefaults,
+            id: `${cooProfileNodeId}-${storeManagerProfileNodeId}`, // source-target
+            source: cooProfileNodeId,
+            target: storeManagerProfileNodeId,
+          };
+
+          // connect store manager to subordinates
+          //        ┏━  [STORE MANAGER]
+          // [COO] ━━━ [STORE MANAGER]
+          //        ┗━ [STORE MANAGER]
+
+          const storeSubordinatesProfileEdges = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              storeSubordinatesProfileEdgesAcc: Edge[],
+              jobPositionProfileNodesTuple
+            ) => {
+              const [jobPosition, storeProfileNode] =
+                jobPositionProfileNodesTuple as [JobPosition, Node];
+
+              if (jobPosition.toLowerCase().includes('store manager')) {
+                return storeSubordinatesProfileEdgesAcc;
+              }
+
+              const storeSubordinateProfileEdge: Edge = {
+                ...edgeDefaults,
+                id: `${storeManagerProfileNodeId}-${storeProfileNode.id}`, // source-target
+                source: storeManagerProfileNodeId,
+                target: storeProfileNode.id,
+              };
+
+              storeSubordinatesProfileEdgesAcc.push(
+                storeSubordinateProfileEdge
+              );
+
+              return storeSubordinatesProfileEdgesAcc;
+            },
+            [cooToStoreManagerEdge]
+          );
+
+          storeAdministrationProfileEdgesAcc.push(
+            ...storeSubordinatesProfileEdges
+          );
+
+          return storeAdministrationProfileEdgesAcc;
         },
         []
       );
 
-      // for vancouver store location with accumulated edges from edmonton and calgary store locations
-      const vancouverStoreAdministrationEdges = storeAdministrationDocs.reduce(
+      // set store administration profile nodes for dispatch
+      const storeAdministrationProfileNodes = Object.entries(
+        storeAdministrationProfileNodesObject
+      ).reduce(
         (
-          vancouverStoreAdministrationEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
+          storeAdministrationProfileNodesAcc: Node[],
+          storeLocationAndJobPositionProfileNodesTuple
         ) => {
-          const { _id, storeLocation, jobPosition } = userDocument;
+          const [_, jobPositionsProfileNodesObj] =
+            storeLocationAndJobPositionProfileNodesTuple as [
+              StoreLocation,
+              Record<JobPosition, Node>
+            ];
 
-          if (
-            storeLocation !== 'Vancouver' ||
-            jobPosition === 'Store Manager'
-          ) {
-            return vancouverStoreAdministrationEdgesAcc;
-          }
-
-          // edge from store manager profile node to subordinate profile node
-          const vancouverStoreAdministrationEdge: Edge = {
-            ...edgeDefaults,
-            id: `${vancouverStoreManagerNodeId}-${_id}`, // source-target
-            source: vancouverStoreManagerNodeId,
-            target: _id,
-          };
-
-          vancouverStoreAdministrationEdgesAcc.push(
-            vancouverStoreAdministrationEdge
+          const jobPositionsProfileNodes = Object.values(
+            jobPositionsProfileNodesObj
           );
 
-          return vancouverStoreAdministrationEdgesAcc;
+          storeAdministrationProfileNodesAcc.push(...jobPositionsProfileNodes);
+
+          return storeAdministrationProfileNodesAcc;
         },
         []
       );
@@ -668,11 +694,7 @@ function Directory() {
         payload: {
           department: 'Store Administration',
           kind: 'edges',
-          data: [
-            ...edmontonStoreAdministrationEdges,
-            ...calgaryStoreAdministrationEdges,
-            ...vancouverStoreAdministrationEdges,
-          ],
+          data: storeAdministrationProfileEdges,
         },
       });
     }
@@ -826,33 +848,18 @@ function Directory() {
               Record<JobPosition, Node>
             ];
 
-          // find the office manager profile node id for the store location
-          const officeManagerProfileNodeId =
-            groupedByDepartment['Store Administration'].find(
-              (userDocument: DirectoryUserDocument) =>
-                userDocument.jobPosition === 'Office Manager' &&
-                userDocument.storeLocation === storeLocation
-            )?._id ?? '';
+          const officeManagerProfileNodeId = `${storeLocation}-Office Manager`;
 
           // find the office administrator profile node id for the store location
-          const officeAdministratorProfileNodeId = Object.entries(
-            jobPositionsProfileNodesObj
-          ).reduce(
-            (
-              officeAdministratorProfileNodeIdAcc: string,
-              jobPositionAndProfileNodeTuple
-            ) => {
-              const [jobPosition, profileNode] =
-                jobPositionAndProfileNodeTuple as [JobPosition, Node];
+          const officeAdministratorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionAndProfileNodeTuple) => {
+                const [jobPosition, _profileNode] =
+                  jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-              if (jobPosition.toLowerCase().includes('administrator')) {
-                officeAdministratorProfileNodeIdAcc = profileNode.id;
+                return jobPosition.toLowerCase().includes('administrator');
               }
-
-              return officeAdministratorProfileNodeIdAcc;
-            },
-            ''
-          );
+            )?.[1].id ?? '';
 
           // connect office manager to office administrator
           // [OFFICE MANAGER] ━━━ [OFFICE ADMINISTRATOR]
@@ -1040,26 +1047,15 @@ function Directory() {
         )?._id ?? '';
 
       // find the human resources manager profile node id
-      const humanResourcesManagerId = Object.entries(
-        humanResourcesProfileNodesObject
-      ).reduce(
-        (
-          humanResourcesManagerIdAcc: string,
-          humanResourcesProfileNodeTuple
-        ) => {
-          const [jobPosition, profileNode] = humanResourcesProfileNodeTuple as [
-            JobPosition,
-            Node
-          ];
+      const humanResourcesManagerId =
+        Object.entries(humanResourcesProfileNodesObject).find(
+          (jobPositionAndProfileNodeTuple) => {
+            const [jobPosition, _profileNode] =
+              jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-          if (jobPosition.toLowerCase().includes('manager')) {
-            humanResourcesManagerIdAcc = profileNode.id;
+            return jobPosition.toLowerCase().includes('manager');
           }
-
-          return humanResourcesManagerIdAcc;
-        },
-        ''
-      );
+        )?.[1].id ?? '';
 
       // connect chief human resources officer to human resources manager
       // [CHRO] ━━━ [HR MANAGER]
@@ -1206,21 +1202,15 @@ function Directory() {
         )?._id ?? '';
 
       // find the sales manager profile node id
-      const salesManagerId = Object.entries(salesProfileNodesObject).reduce(
-        (salesManagerIdAcc: string, salesProfileNodeTuple) => {
-          const [jobPosition, profileNode] = salesProfileNodeTuple as [
-            JobPosition,
-            Node
-          ];
+      const salesManagerId =
+        Object.entries(salesProfileNodesObject).find(
+          (jobPositionAndProfileNodeTuple) => {
+            const [jobPosition, _profileNode] =
+              jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-          if (jobPosition.toLowerCase().includes('manager')) {
-            salesManagerIdAcc = profileNode.id;
+            return jobPosition.toLowerCase().includes('manager');
           }
-
-          return salesManagerIdAcc;
-        },
-        ''
-      );
+        )?.[1].id ?? '';
 
       // connect chief sales officer to sales manager
       // [CSO] ━━━ [SALES MANAGER]
@@ -1359,20 +1349,15 @@ function Directory() {
         )?._id ?? '';
 
       // find the marketing manager profile node id
-      const marketingManagerId = Object.entries(
-        marketingProfileNodesObject
-      ).reduce((marketingManagerIdAcc: string, marketingProfileNodeTuple) => {
-        const [jobPosition, profileNode] = marketingProfileNodeTuple as [
-          JobPosition,
-          Node
-        ];
+      const marketingManagerId =
+        Object.entries(marketingProfileNodesObject).find(
+          (jobPositionAndProfileNodeTuple) => {
+            const [jobPosition, _profileNode] =
+              jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-        if (jobPosition.toLowerCase().includes('manager')) {
-          marketingManagerIdAcc = profileNode.id;
-        }
-
-        return marketingManagerIdAcc;
-      }, '');
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
 
       // connect chief marketing officer to marketing manager
       // [CMO] ━━━ [MARKETING MANAGER]
@@ -1524,24 +1509,15 @@ function Directory() {
         )?._id ?? '';
 
       // find the information technology manager profile node id
-      const informationTechnologyManagerId = Object.entries(
-        informationTechnologyProfileNodesObject
-      ).reduce(
-        (
-          informationTechnologyManagerIdAcc: string,
-          informationTechnologyProfileNodeTuple
-        ) => {
-          const [jobPosition, profileNode] =
-            informationTechnologyProfileNodeTuple as [JobPosition, Node];
+      const informationTechnologyManagerId =
+        Object.entries(informationTechnologyProfileNodesObject).find(
+          (jobPositionAndProfileNodeTuple) => {
+            const [jobPosition, _profileNode] =
+              jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-          if (jobPosition.toLowerCase().includes('manager')) {
-            informationTechnologyManagerIdAcc = profileNode.id;
+            return jobPosition.toLowerCase().includes('manager');
           }
-
-          return informationTechnologyManagerIdAcc;
-        },
-        ''
-      );
+        )?.[1].id ?? '';
 
       // connect chief technology officer to information technology manager
       // [CTO] ━━━ [INFORMATION TECHNOLOGY MANAGER]
@@ -1693,20 +1669,17 @@ function Directory() {
         )?._id ?? '';
 
       // find the accounting manager profile node id
-      const accountingManagerId = Object.entries(
-        accountingProfileNodesObject
-      ).reduce((accountingManagerIdAcc: string, accountingProfileNodeTuple) => {
-        const [jobPosition, profileNode] = accountingProfileNodeTuple as [
-          JobPosition,
-          Node
-        ];
+      const accountingManagerId =
+        Object.entries(accountingProfileNodesObject).find(
+          (accountingProfileNodeTuple) => {
+            const [jobPosition, _profileNode] = accountingProfileNodeTuple as [
+              JobPosition,
+              Node
+            ];
 
-        if (jobPosition.toLowerCase().includes('manager')) {
-          accountingManagerIdAcc = profileNode.id;
-        }
-
-        return accountingManagerIdAcc;
-      }, '');
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
 
       // connect chief financial officer to accounting manager
       // [CFO] ━━━ [ACCOUNTING MANAGER]
@@ -1914,33 +1887,18 @@ function Directory() {
               Record<JobPosition, Node>
             ];
 
-          // find the shift supervisor profile node id for the store location
-          const shiftSupervisorProfileNodeId =
-            groupedByDepartment['Store Administration'].find(
-              (userDocument: DirectoryUserDocument) =>
-                userDocument.jobPosition === 'Shift Supervisor' &&
-                userDocument.storeLocation === storeLocation
-            )?._id ?? '';
+          const shiftSupervisorProfileNodeId = `${storeLocation}-Shift Supervisor`;
 
           // find the repair technician supervisor profile node id for the store location
-          const repairTechSupervisorProfileNodeId = Object.entries(
-            jobPositionsProfileNodesObj
-          ).reduce(
-            (
-              repairTechSupervisorProfileNodeIdAcc: string,
-              jobPositionAndProfileNodeTuple
-            ) => {
-              const [jobPosition, profileNode] =
-                jobPositionAndProfileNodeTuple as [JobPosition, Node];
+          const repairTechSupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodeTuple) => {
+                const [jobPosition, _profileNode] =
+                  jobPositionProfileNodeTuple as [JobPosition, Node];
 
-              if (jobPosition.toLowerCase().includes('supervisor')) {
-                repairTechSupervisorProfileNodeIdAcc = profileNode.id;
+                return jobPosition.toLowerCase().includes('supervisor');
               }
-
-              return repairTechSupervisorProfileNodeIdAcc;
-            },
-            ''
-          );
+            )?.[1].id ?? '';
 
           // connect shift supervisor to repair technician supervisor
           // [SHIFT SUPERVISOR] ━━━ [REPAIR TECHNICIAN SUPERVISOR]
@@ -2189,33 +2147,18 @@ function Directory() {
               Record<JobPosition, Node>
             ];
 
-          // find the shift supervisor profile node id for the store location
-          const shiftSupervisorProfileNodeId =
-            groupedByDepartment['Store Administration'].find(
-              (userDocument: DirectoryUserDocument) =>
-                userDocument.jobPosition === 'Shift Supervisor' &&
-                userDocument.storeLocation === storeLocation
-            )?._id ?? '';
+          const shiftSupervisorProfileNodeId = `${storeLocation}-Shift Supervisor`;
 
           // find the field service technician supervisor profile node id for the store location
-          const fieldServiceTechSupervisorProfileNodeId = Object.entries(
-            jobPositionsProfileNodesObj
-          ).reduce(
-            (
-              fieldServiceTechSupervisorProfileNodeIdAcc: string,
-              jobPositionAndProfileNodeTuple
-            ) => {
-              const [jobPosition, profileNode] =
-                jobPositionAndProfileNodeTuple as [JobPosition, Node];
+          const fieldServiceTechSupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodeTuple) => {
+                const [jobPosition, _profileNode] =
+                  jobPositionProfileNodeTuple as [JobPosition, Node];
 
-              if (jobPosition.toLowerCase().includes('supervisor')) {
-                fieldServiceTechSupervisorProfileNodeIdAcc = profileNode.id;
+                return jobPosition.toLowerCase().includes('supervisor');
               }
-
-              return fieldServiceTechSupervisorProfileNodeIdAcc;
-            },
-            ''
-          );
+            )?.[1].id ?? '';
 
           // connect shift supervisor to field service technician supervisor
           // [SHIFT SUPERVISOR] ━━━ [FIELD SERVICE TECHNICIAN SUPERVISOR]
@@ -2467,34 +2410,18 @@ function Directory() {
               Record<JobPosition, Node>
             ];
 
-          // find the shift supervisor profile node id for the store location
-          const shiftSupervisorProfileNodeId =
-            groupedByDepartment['Store Administration'].find(
-              (userDocument: DirectoryUserDocument) =>
-                userDocument.jobPosition === 'Shift Supervisor' &&
-                userDocument.storeLocation === storeLocation
-            )?._id ?? '';
+          const shiftSupervisorProfileNodeId = `${storeLocation}-Shift Supervisor`;
 
           // find the logistics and inventory supervisor profile node id for the store location
-          const logisticsAndInventorySupervisorProfileNodeId = Object.entries(
-            jobPositionsProfileNodesObj
-          ).reduce(
-            (
-              logisticsAndInventorySupervisorProfileNodeIdAcc: string,
-              jobPositionAndProfileNodeTuple
-            ) => {
-              const [jobPosition, profileNode] =
-                jobPositionAndProfileNodeTuple as [JobPosition, Node];
+          const logisticsAndInventorySupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodeTuple) => {
+                const [jobPosition, _profileNode] =
+                  jobPositionProfileNodeTuple as [JobPosition, Node];
 
-              if (jobPosition.toLowerCase().includes('supervisor')) {
-                logisticsAndInventorySupervisorProfileNodeIdAcc =
-                  profileNode.id;
+                return jobPosition.toLowerCase().includes('supervisor');
               }
-
-              return logisticsAndInventorySupervisorProfileNodeIdAcc;
-            },
-            ''
-          );
+            )?.[1].id ?? '';
 
           // connect shift supervisor to logistics and inventory supervisor
           // [SHIFT SUPERVISOR] ━━━ [WAREHOUSE SUPERVISOR]
@@ -2746,33 +2673,18 @@ function Directory() {
               Record<JobPosition, Node>
             ];
 
-          // find the shift supervisor profile node id for the store location
-          const shiftSupervisorProfileNodeId =
-            groupedByDepartment['Store Administration'].find(
-              (userDocument: DirectoryUserDocument) =>
-                userDocument.jobPosition === 'Shift Supervisor' &&
-                userDocument.storeLocation === storeLocation
-            )?._id ?? '';
+          const shiftSupervisorProfileNodeId = `${storeLocation}-Shift Supervisor`;
 
           // find the customer service supervisor profile node id for the store location
-          const customerServiceSupervisorProfileNodeId = Object.entries(
-            jobPositionsProfileNodesObj
-          ).reduce(
-            (
-              customerServiceSupervisorProfileNodeIdAcc: string,
-              jobPositionAndProfileNodeTuple
-            ) => {
-              const [jobPosition, profileNode] =
-                jobPositionAndProfileNodeTuple as [JobPosition, Node];
+          const customerServiceSupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodeTuple) => {
+                const [jobPosition, _profileNode] =
+                  jobPositionProfileNodeTuple as [JobPosition, Node];
 
-              if (jobPosition.toLowerCase().includes('supervisor')) {
-                customerServiceSupervisorProfileNodeIdAcc = profileNode.id;
+                return jobPosition.toLowerCase().includes('supervisor');
               }
-
-              return customerServiceSupervisorProfileNodeIdAcc;
-            },
-            ''
-          );
+            )?.[1].id ?? '';
 
           // connect shift supervisor to customer service supervisor
           // [SHIFT SUPERVISOR] ━━━ [CUSTOMER SERVICE SUPERVISOR]
@@ -3020,33 +2932,18 @@ function Directory() {
               Record<JobPosition, Node>
             ];
 
-          // find the shift supervisor profile node id for the store location
-          const shiftSupervisorProfileNodeId =
-            groupedByDepartment['Store Administration'].find(
-              (userDocument: DirectoryUserDocument) =>
-                userDocument.jobPosition === 'Shift Supervisor' &&
-                userDocument.storeLocation === storeLocation
-            )?._id ?? '';
+          const shiftSupervisorProfileNodeId = `${storeLocation}-Shift Supervisor`;
 
           // find the maintenance supervisor profile node id for the store location
-          const maintenanceSupervisorProfileNodeId = Object.entries(
-            jobPositionsProfileNodesObj
-          ).reduce(
-            (
-              maintenanceSupervisorProfileNodeIdAcc: string,
-              jobPositionAndProfileNodeTuple
-            ) => {
-              const [jobPosition, profileNode] =
-                jobPositionAndProfileNodeTuple as [JobPosition, Node];
+          const maintenanceSupervisorProfileNodeId =
+            Object.entries(jobPositionsProfileNodesObj).find(
+              (jobPositionProfileNodeTuple) => {
+                const [jobPosition, _profileNode] =
+                  jobPositionProfileNodeTuple as [JobPosition, Node];
 
-              if (jobPosition.toLowerCase().includes('supervisor')) {
-                maintenanceSupervisorProfileNodeIdAcc = profileNode.id;
+                return jobPosition.toLowerCase().includes('supervisor');
               }
-
-              return maintenanceSupervisorProfileNodeIdAcc;
-            },
-            ''
-          );
+            )?.[1].id ?? '';
 
           // connect shift supervisor to maintenance supervisor
           // [SHIFT SUPERVISOR] ━━━ [MAINTENANCE SUPERVISOR]
@@ -3362,7 +3259,7 @@ function Directory() {
   );
 
   const displayNodeBuilder = (
-    <NodeBuilder initialNodes={initialNodes} initialEdges={initialEdges} />
+    <GraphBuilder initialNodes={initialNodes} initialEdges={initialEdges} />
   );
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input display ━┛
@@ -5691,3 +5588,294 @@ export default Directory;
       });
     }
      */
+
+/**
+ * async function setStoreAdministrationEdgesAndNodes() {
+      const storeAdministrationDocs =
+        groupedByDepartment['Store Administration'] ?? [];
+
+      // starting stores heading node [STORES]
+      const initialStoresHeadingNode: FlowNode = {
+        id: 'stores-heading',
+        type: 'default',
+        data: { label: 'Stores' },
+        position: nodePosition,
+        style: nodeDimensions,
+      };
+
+      // store administration heading node for each store location
+      const storeLocationsHeadingNodes: FlowNode[] = STORE_LOCATION_DATA.map(
+        (store) => {
+          const initialStoreLocationsHeadingNode: FlowNode = {
+            id: `store-location-heading-${store}`,
+            type: 'default',
+            data: { label: `${store} Store Administration` },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          return initialStoreLocationsHeadingNode;
+        }
+      );
+
+      // store administration profile nodes for each store location
+      const storeAdministrationProfileNodes = storeAdministrationDocs.reduce(
+        (
+          storeAdministrationNodesAcc: Node[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          const displayProfileCard = returnDirectoryProfileCard({
+            userDocument,
+            padding,
+            rowGap,
+          });
+
+          const storeAdministrationNode: Node = {
+            id: _id,
+            type: 'default',
+            data: { label: displayProfileCard },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+          storeAdministrationNodesAcc.push(storeAdministrationNode);
+
+          return storeAdministrationNodesAcc;
+        },
+        [initialStoresHeadingNode, ...storeLocationsHeadingNodes]
+      );
+
+      // connecting initial store heading node to each store location heading node
+      //           ┏━ [EDMONTON]
+      // [STORES] ━━━ [CALGARY]
+      //           ┗━ [VANCOUVER]
+      const storesHeadingNodeId = initialStoresHeadingNode.id;
+      const edgesFromStoresHeadingToEachStoreLocationsHeading =
+        storeLocationsHeadingNodes.reduce(
+          (
+            storeLocationsHeadingEdgesAcc: Edge[],
+            storeLocationHeadingNode: FlowNode
+          ) => {
+            const { id: storeLocationHeadingNodeId } = storeLocationHeadingNode;
+
+            const storeLocationHeadingEdge: Edge = {
+              id: `${storesHeadingNodeId}-${storeLocationHeadingNodeId}`,
+              source: storesHeadingNodeId,
+              target: storeLocationHeadingNodeId,
+              type: 'smoothstep',
+              animated: true,
+              // label: jobPosition,
+              labelBgPadding: [8, 4],
+              labelBgBorderRadius: 4,
+              labelBgStyle: { fill: 'white' },
+              labelStyle: { fill: 'black', fontWeight: 700 },
+              style: { stroke: 'black' },
+            };
+
+            storeLocationsHeadingEdgesAcc.push(storeLocationHeadingEdge);
+
+            return storeLocationsHeadingEdgesAcc;
+          },
+          []
+        );
+
+      // connect each store location heading node to its store manager profile node
+      //
+      //           ┏━ [EDMONTON]  ━━━ [STORE MANAGER]
+      // [STORES] ━━━ [CALGARY]   ━━━ [STORE MANAGER]
+      //           ┗━ [VANCOUVER] ━━━ [STORE MANAGER]
+
+      const storeAdministrationEdges = storeAdministrationDocs.reduce(
+        (
+          storeAdministrationEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation, jobPosition } = userDocument;
+
+          const storeLocationHeadingNodeId = storeLocationsHeadingNodes.find(
+            (storeLocationHeadingNode: FlowNode) =>
+              storeLocationHeadingNode.id ===
+              `store-location-heading-${storeLocation}`
+          )?.id as string;
+
+          //  edge from store location heading node to store manager profile node
+          if (jobPosition === 'Store Manager') {
+            const storeAdministrationEdge: Edge = {
+              ...edgeDefaults,
+              id: `${storeLocationHeadingNodeId}-${_id}`, // source-target
+              source: storeLocationHeadingNodeId,
+              target: _id,
+            };
+            storeAdministrationEdgesAcc.push(storeAdministrationEdge);
+          }
+
+          return storeAdministrationEdgesAcc;
+        },
+        [...edgesFromStoresHeadingToEachStoreLocationsHeading]
+      );
+
+      // connect store managers to their subordinates
+      //                                               ┏━ [OFFICE MANAGER]
+      //           ┏━ [EDMONTON]  ━━━ [STORE MANAGER] ━━━ [SHIFT SUPERVISOR]
+      // [STORES] ━━━ [CALGARY]   ━━━ [STORE MANAGER] ━━━ // same
+      //           ┗━ [VANCOUVER] ━━━ [STORE MANAGER] ━━━ // same
+
+      // find store managers node ids
+      const [
+        edmontonStoreManagerNodeId,
+        calgaryStoreManagerNodeId,
+        vancouverStoreManagerNodeId,
+      ] = storeAdministrationDocs.reduce(
+        (
+          storeManagersNodeIdsAcc: string[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation, jobPosition } = userDocument;
+
+          if (storeLocation === 'Edmonton' && jobPosition === 'Store Manager') {
+            // find the store manager node id
+            const edmontonStoreManagerNodeId =
+              storeAdministrationProfileNodes.find(
+                (node: Node) => node.id === _id
+              )?.id as string;
+            storeManagersNodeIdsAcc[0] = edmontonStoreManagerNodeId;
+          }
+
+          if (storeLocation === 'Calgary' && jobPosition === 'Store Manager') {
+            // find the store manager node id
+            const calgaryStoreManagerNodeId =
+              storeAdministrationProfileNodes.find(
+                (node: Node) => node.id === _id
+              )?.id as string;
+            storeManagersNodeIdsAcc[1] = calgaryStoreManagerNodeId;
+          }
+
+          if (
+            storeLocation === 'Vancouver' &&
+            jobPosition === 'Store Manager'
+          ) {
+            // find the store manager node id
+            const vancouverStoreManagerNodeId =
+              storeAdministrationProfileNodes.find(
+                (node: Node) => node.id === _id
+              )?.id as string;
+            storeManagersNodeIdsAcc[2] = vancouverStoreManagerNodeId;
+          }
+          return storeManagersNodeIdsAcc;
+        },
+        ['', '', '']
+      );
+
+      // for edmonton store location
+      const edmontonStoreAdministrationEdges = storeAdministrationDocs.reduce(
+        (
+          edmontonStoreAdministrationEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation, jobPosition } = userDocument;
+
+          if (storeLocation !== 'Edmonton' || jobPosition === 'Store Manager') {
+            return edmontonStoreAdministrationEdgesAcc;
+          }
+
+          // edge from store manager profile node to subordinate profile node
+          const edmontonStoreAdministrationEdge: Edge = {
+            ...edgeDefaults,
+            id: `${edmontonStoreManagerNodeId}-${_id}`, // source-target
+            source: edmontonStoreManagerNodeId,
+            target: _id,
+          };
+          edmontonStoreAdministrationEdgesAcc.push(
+            edmontonStoreAdministrationEdge
+          );
+
+          return edmontonStoreAdministrationEdgesAcc;
+        },
+        [...storeAdministrationEdges]
+      );
+
+      // for calgary store location with accumulated edges from edmonton store location
+      const calgaryStoreAdministrationEdges = storeAdministrationDocs.reduce(
+        (
+          calgaryStoreAdministrationEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation, jobPosition } = userDocument;
+
+          if (storeLocation !== 'Calgary' || jobPosition === 'Store Manager') {
+            return calgaryStoreAdministrationEdgesAcc;
+          }
+
+          // edge from store manager profile node to subordinate profile node
+          const calgaryStoreAdministrationEdge: Edge = {
+            ...edgeDefaults,
+            id: `${calgaryStoreManagerNodeId}-${_id}`, // source-target
+            source: calgaryStoreManagerNodeId,
+            target: _id,
+          };
+
+          calgaryStoreAdministrationEdgesAcc.push(
+            calgaryStoreAdministrationEdge
+          );
+
+          return calgaryStoreAdministrationEdgesAcc;
+        },
+        []
+      );
+
+      // for vancouver store location with accumulated edges from edmonton and calgary store locations
+      const vancouverStoreAdministrationEdges = storeAdministrationDocs.reduce(
+        (
+          vancouverStoreAdministrationEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, storeLocation, jobPosition } = userDocument;
+
+          if (
+            storeLocation !== 'Vancouver' ||
+            jobPosition === 'Store Manager'
+          ) {
+            return vancouverStoreAdministrationEdgesAcc;
+          }
+
+          // edge from store manager profile node to subordinate profile node
+          const vancouverStoreAdministrationEdge: Edge = {
+            ...edgeDefaults,
+            id: `${vancouverStoreManagerNodeId}-${_id}`, // source-target
+            source: vancouverStoreManagerNodeId,
+            target: _id,
+          };
+
+          vancouverStoreAdministrationEdgesAcc.push(
+            vancouverStoreAdministrationEdge
+          );
+
+          return vancouverStoreAdministrationEdgesAcc;
+        },
+        []
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Store Administration',
+          kind: 'nodes',
+          data: storeAdministrationProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Store Administration',
+          kind: 'edges',
+          data: [
+            ...edmontonStoreAdministrationEdges,
+            ...calgaryStoreAdministrationEdges,
+            ...vancouverStoreAdministrationEdges,
+          ],
+        },
+      });
+    }
+ */

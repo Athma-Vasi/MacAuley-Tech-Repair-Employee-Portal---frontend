@@ -36,6 +36,7 @@ function returnDirectoryProfileCard({
     profilePictureUrl,
     preferredPronouns,
     jobPosition,
+    storeLocation,
   } = userDocument;
 
   const createdSocialMediaIcons = (
@@ -79,26 +80,21 @@ function returnDirectoryProfileCard({
   );
 
   const displayProfileCard = (
-    <Card shadow="sm" padding={padding} radius="md" w="100%" h="100%">
+    <Card radius="md" w={325} h={200}>
       <Flex
         justify="space-between"
         w="100%"
         h="100%"
+        pb="sm"
         style={{ outline: '1px solid teal' }}
         align="center"
-        // p={padding}
       >
-        <Stack
-          align="center"
-          // px={padding}
-          w="38%"
-          style={{ outline: '1px solid brown' }}
-        >
+        <Stack align="center" w="38%" style={{ outline: '1px solid brown' }}>
           <Image
             src={profilePictureUrl}
             alt={`Picture of ${firstName} ${lastName}`}
-            width={72}
-            height={72}
+            width={84}
+            height={84}
             radius={9999}
             withPlaceholder
             placeholder={<TbPhotoOff size={18} />}
@@ -120,6 +116,11 @@ function returnDirectoryProfileCard({
           <Text color="dark" size="sm">
             {jobPosition}
           </Text>
+          {storeLocation ? (
+            <Text color="dark" size="sm">
+              {storeLocation}
+            </Text>
+          ) : null}
         </Flex>
       </Flex>
     </Card>
@@ -128,61 +129,4 @@ function returnDirectoryProfileCard({
   return displayProfileCard;
 }
 
-type ReturnDagreLayoutedElementsInput = {
-  nodes: Node[];
-  edges: Edge[];
-  direction?: FlowNodesLayoutDirection;
-};
-
-function returnDagreLayoutedElements({
-  nodes,
-  edges,
-  direction = 'TB',
-}: ReturnDagreLayoutedElementsInput) {
-  const dagreGraph = new dagre.graphlib.Graph();
-  dagreGraph.setDefaultEdgeLabel(() => ({}));
-
-  const nodeWidth = 351;
-  const nodeHeight = 217;
-
-  const getLayoutedElements = (
-    nodes: Node[],
-    edges: Edge[],
-    direction = 'TB'
-  ) => {
-    const isHorizontal = direction === 'LR';
-    dagreGraph.setGraph({ rankdir: direction });
-
-    nodes.forEach((node) => {
-      dagreGraph.setNode(node.id, { width: nodeWidth, height: nodeHeight });
-    });
-
-    edges.forEach((edge) => {
-      dagreGraph.setEdge(edge.source, edge.target);
-    });
-
-    dagre.layout(dagreGraph);
-
-    nodes.forEach((node) => {
-      const nodeWithPosition = dagreGraph.node(node.id);
-      //  type mismatch in library defs
-      node.targetPosition = isHorizontal ? ('left' as any) : ('top' as any);
-      node.sourcePosition = isHorizontal ? ('right' as any) : ('bottom' as any);
-
-      // We are shifting the dagre node position (anchor=center center) to the top left
-      // so it matches the React Flow node anchor point (top left).
-      node.position = {
-        x: nodeWithPosition.x - nodeWidth / 2,
-        y: nodeWithPosition.y - nodeHeight / 2,
-      };
-
-      return node;
-    });
-
-    return { nodes, edges };
-  };
-
-  return getLayoutedElements(nodes, edges, direction);
-}
-
-export { returnDagreLayoutedElements, returnDirectoryProfileCard };
+export { returnDirectoryProfileCard };
