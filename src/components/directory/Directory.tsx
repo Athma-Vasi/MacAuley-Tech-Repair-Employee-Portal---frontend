@@ -1283,117 +1283,158 @@ function Directory() {
       const informationTechnologyDocs =
         groupedByDepartment['Information Technology'] ?? [];
 
-      // create information technology profile nodes
-      const [
-        informationTechnologyManagerProfileNode,
-        informationTechnologySpecialistsProfileNodes,
-      ] = informationTechnologyDocs.reduce(
-        (
-          informationTechnologyNodesAcc: [Node, Node[]],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, jobPosition } = userDocument;
+      // group by job positions
+      const informationTechnologyDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: informationTechnologyDocs,
+        field: 'jobPosition',
+      });
 
-          const nodeType = jobPosition.toLowerCase().includes('it manager')
+      // using the created object structure, create profile nodes
+      const informationTechnologyProfileNodesObject = Object.entries(
+        informationTechnologyDocsGroupedByJobPosition
+      ).reduce(
+        (
+          informationTechnologyProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
+          informationTechnologyGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedInformationTechnologyByJobPositionArr] =
+            informationTechnologyGroupedDocsTuple as [
+              JobPosition,
+              DirectoryUserDocument[]
+            ];
+
+          // create profile cards for each grouped doc
+          const profileCards = groupedInformationTechnologyByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
+
+          const nodeType = jobPosition.toLowerCase().includes('manager')
             ? 'default'
             : 'output';
 
-          const displayProfileCard = returnDirectoryProfileCard({
-            userDocument,
-            padding,
-            rowGap,
-          });
-
-          const salesNode: Node = {
-            id: _id,
+          // create profile node with carousel
+          const groupedInformationTechnologyByJobPositionProfileNode: Node = {
+            id: jobPosition,
             type: nodeType,
-            data: { label: displayProfileCard },
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedInformationTechnologyByJobPositionProfileCards}
+                />
+              ),
+            },
             position: nodePosition,
             style: nodeDimensions,
           };
 
-          if (jobPosition.toLowerCase().includes('it manager')) {
-            informationTechnologyNodesAcc[0] = salesNode;
-            return informationTechnologyNodesAcc;
-          }
+          // add job position field with profile node
+          Object.defineProperty(
+            informationTechnologyProfileNodesObjectAcc,
+            jobPosition,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: groupedInformationTechnologyByJobPositionProfileNode,
+            }
+          );
 
-          informationTechnologyNodesAcc[1].push(salesNode);
-
-          return informationTechnologyNodesAcc;
+          return informationTechnologyProfileNodesObjectAcc;
         },
-        [{} as Node, []]
+        Object.create(null)
       );
 
-      // chief technology officer node id
+      console.log(
+        'informationTechnologyProfileNodesObject',
+        informationTechnologyProfileNodesObject
+      );
+
+      // create edges
+      // find the chief technology officer profile node id
       const chiefTechnologyOfficerId =
         groupedByDepartment['Executive Management'].find(
           (userDocument: DirectoryUserDocument) =>
             userDocument.jobPosition === 'Chief Technology Officer'
         )?._id ?? '';
 
-      // connect information technology manager to cto
-      // [CTO] ━━━ [IT MANAGER]
-      const informationTechnologyManagerProfileNodeId =
-        informationTechnologyManagerProfileNode.id;
+      // find the information technology manager profile node id
+      const informationTechnologyManagerId =
+        Object.entries(informationTechnologyProfileNodesObject).find(
+          (informationTechnologyProfileNodeTuple) => {
+            const [jobPosition, _] = informationTechnologyProfileNodeTuple as [
+              JobPosition,
+              Node
+            ];
 
-      const ctoToInformationTechnologyManagerEdge: Edge = {
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
+
+      // connect chief technology officer to information technology manager
+      // [CTO] ━━━ [INFORMATION TECHNOLOGY MANAGER]
+      const chiefTechnologyOfficerToInformationTechnologyManagerEdge: Edge = {
         ...edgeDefaults,
-        id: `${chiefTechnologyOfficerId}-${informationTechnologyManagerProfileNodeId}`, // source-target
+        id: `${chiefTechnologyOfficerId}-${informationTechnologyManagerId}`, // source-target
         source: chiefTechnologyOfficerId,
-        target: informationTechnologyManagerProfileNodeId,
+        target: informationTechnologyManagerId,
       };
 
-      // connect information technology manager to information technology specialists profile nodes
-      //                         ┏━ [NETWORK ADMINISTRATOR]
-      //                         ┏━ [SYSTEMS ADMINISTRATOR]
-      //                         ┏━ [IT SUPPORT SPECIALIST]
-      //                         ┏━ [DATABASE ADMINISTRATOR]
-      //                         ┏━ [WEB DEVELOPER]
-      // [CTO] ━━━ [IT MANAGER] ━━━ [SOFTWARE DEVELOPER]
-      //                         ┗━ [SOFTWARE ENGINEER]
-      //                         ┗━ [INFRASTRUCTURE ARCHITECT]
-      //                         ┗━ [IT SECURITY SPECIALIST]
-      //                         ┗━ [CLOUD ARCHITECT]
-      //                         ┗━ [DATA SCIENTIST]
-      //                         ┗━ [IT TRAINING SPECIALIST]
+      const informationTechnologyProfileEdges = Object.entries(
+        informationTechnologyProfileNodesObject
+      ).reduce(
+        (
+          informationTechnologyProfileEdgesAcc: Edge[],
+          jobPositionAndProfileNodeTuple
+        ) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
 
-      const informationTechnologySpecialistsProfileEdges =
-        informationTechnologyDocs.reduce(
-          (
-            informationTechnologySpecialistsProfileEdgesAcc: Edge[],
-            userDocument: DirectoryUserDocument
-          ) => {
-            const { _id, jobPosition } = userDocument;
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return informationTechnologyProfileEdgesAcc;
+          }
 
-            if (jobPosition.toLowerCase().includes('it manager')) {
-              return informationTechnologySpecialistsProfileEdgesAcc;
-            }
+          // connect subordinates to information technology manager
+          //                         ┏━ [SYSTEMS ADMINISTRATOR]
+          //                         ┏━ [IT SUPPORT SPECIALIST]
+          //                         ┏━ [DATABASE ADMINISTRATOR]
+          // [CTO] ━━━ [IT MANAGER] ━━━ [WEB DEVELOPER]
+          //                         ┗━ [SOFTWARE DEVELOPER]
+          //                         ┗━ [SOFTWARE ENGINEER]
+          const informationTechnologySubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${informationTechnologyManagerId}-${profileNode.id}`, // source-target
+            source: informationTechnologyManagerId,
+            target: profileNode.id,
+          };
+          informationTechnologyProfileEdgesAcc.push(
+            informationTechnologySubordinateProfileEdge
+          );
 
-            const informationTechnologySpecialistProfileEdge: Edge = {
-              ...edgeDefaults,
-              id: `${informationTechnologyManagerProfileNodeId}-${_id}`, // source-target
-              source: informationTechnologyManagerProfileNodeId,
-              target: _id,
-            };
+          return informationTechnologyProfileEdgesAcc;
+        },
+        [chiefTechnologyOfficerToInformationTechnologyManagerEdge]
+      );
 
-            informationTechnologySpecialistsProfileEdgesAcc.push(
-              informationTechnologySpecialistProfileEdge
-            );
-
-            return informationTechnologySpecialistsProfileEdgesAcc;
-          },
-          [ctoToInformationTechnologyManagerEdge]
-        );
+      const informationTechnologyProfileNodes = Object.values(
+        informationTechnologyProfileNodesObject
+      );
 
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
           department: 'Information Technology',
           kind: 'nodes',
-          data: [
-            informationTechnologyManagerProfileNode,
-            ...informationTechnologySpecialistsProfileNodes,
-          ],
+          data: informationTechnologyProfileNodes,
         },
       });
 
@@ -1402,7 +1443,7 @@ function Directory() {
         payload: {
           department: 'Information Technology',
           kind: 'edges',
-          data: informationTechnologySpecialistsProfileEdges,
+          data: informationTechnologyProfileEdges,
         },
       });
     }
@@ -1421,11 +1462,6 @@ function Directory() {
         objectArray: accountingDocs,
         field: 'jobPosition',
       });
-
-      console.log(
-        'accountingDocsGroupedByJobPosition',
-        accountingDocsGroupedByJobPosition
-      );
 
       // using the created object structure, create profile nodes
       const accountingProfileNodesObject = Object.entries(
@@ -1483,10 +1519,7 @@ function Directory() {
         Object.create(null)
       );
 
-      console.log('accountingProfileNodesObject', accountingProfileNodesObject);
-
       // create edges
-
       // find the chief financial officer profile node id
       const chiefFinancialOfficerId =
         groupedByDepartment['Executive Management'].find(
@@ -1546,8 +1579,6 @@ function Directory() {
         [chiefFinancialOfficerToAccountingManagerEdge]
       );
 
-      console.log('accountingProfileEdges', accountingProfileEdges);
-
       const accountingProfileNodes = Object.values(
         accountingProfileNodesObject
       );
@@ -1587,11 +1618,6 @@ function Directory() {
         objectArray: repairTechniciansDocs,
         field: 'storeLocation',
       });
-
-      console.log(
-        'repairTechniciansDocsGroupedByStoreLocation',
-        repairTechniciansDocsGroupedByStoreLocation
-      );
 
       // using the created object structure, create profile nodes
       const repairTechniciansProfileNodesObject = Object.entries(
@@ -1741,11 +1767,6 @@ function Directory() {
               }
             )?.[1].id ?? '';
 
-          console.log(
-            'repairTechSupervisorProfileNodeId',
-            repairTechSupervisorProfileNodeId
-          );
-
           // connect shift supervisor to repair technician supervisor
           // [SHIFT SUPERVISOR] ━━━ [REPAIR TECHNICIAN SUPERVISOR]
           const shiftSupervisorToRepairTechSupervisorEdge: Edge = {
@@ -1798,16 +1819,6 @@ function Directory() {
           return repairTechniciansProfileEdgesAcc;
         },
         []
-      );
-
-      console.log(
-        'repairTechniciansProfileNodesObject',
-        repairTechniciansProfileNodesObject
-      );
-
-      console.log(
-        'repairTechniciansProfileEdges',
-        repairTechniciansProfileEdges
       );
 
       // set repair technicians profile nodes for dispatch
@@ -1869,11 +1880,6 @@ function Directory() {
         objectArray: fieldServiceTechniciansDocs,
         field: 'storeLocation',
       });
-
-      console.log(
-        'fieldServiceTechniciansDocsGroupedByStoreLocation',
-        fieldServiceTechniciansDocsGroupedByStoreLocation
-      );
 
       // using the created object structure, create profile nodes
       const fieldServiceTechniciansProfileNodesObject = Object.entries(
@@ -1994,10 +2000,6 @@ function Directory() {
         Object.create(null)
       );
 
-      console.log('fieldServiceTechniciansProfileNodesObject', {
-        fieldServiceTechniciansProfileNodesObject,
-      });
-
       // create edges
       const fieldServiceTechniciansProfileEdges = Object.entries(
         fieldServiceTechniciansProfileNodesObject
@@ -2084,16 +2086,6 @@ function Directory() {
         []
       );
 
-      console.log(
-        'fieldServiceTechniciansProfileNodesObject',
-        fieldServiceTechniciansProfileNodesObject
-      );
-
-      console.log(
-        'fieldServiceTechniciansProfileEdges',
-        fieldServiceTechniciansProfileEdges
-      );
-
       // set field service technicians profile nodes for dispatch
       const fieldServiceTechniciansProfileNodes = Object.entries(
         fieldServiceTechniciansProfileNodesObject
@@ -2156,11 +2148,6 @@ function Directory() {
         objectArray: logisticsAndInventoryDocs,
         field: 'storeLocation',
       });
-
-      console.log(
-        'logisticsAndInventoryDocsGroupedByStoreLocation',
-        logisticsAndInventoryDocsGroupedByStoreLocation
-      );
 
       // using the created object structure, create profile nodes
       const logisticsAndInventoryProfileNodesObject = Object.entries(
@@ -2284,10 +2271,6 @@ function Directory() {
         Object.create(null)
       );
 
-      console.log('logisticsAndInventoryProfileNodesObject', {
-        logisticsAndInventoryProfileNodesObject,
-      });
-
       // create edges
       const logisticsAndInventoryProfileEdges = Object.entries(
         logisticsAndInventoryProfileNodesObject
@@ -2377,16 +2360,6 @@ function Directory() {
         []
       );
 
-      console.log(
-        'logisticsAndInventoryProfileNodesObject',
-        logisticsAndInventoryProfileNodesObject
-      );
-
-      console.log(
-        'logisticsAndInventoryProfileEdges',
-        logisticsAndInventoryProfileEdges
-      );
-
       // set logistics and inventory profile nodes for dispatch
       const logisticsAndInventoryProfileNodes = Object.entries(
         logisticsAndInventoryProfileNodesObject
@@ -2448,11 +2421,6 @@ function Directory() {
         objectArray: customerServiceDocs,
         field: 'storeLocation',
       });
-
-      console.log(
-        'customerServiceDocsGroupedByStoreLocation',
-        customerServiceDocsGroupedByStoreLocation
-      );
 
       // using the created object structure, create profile nodes
       const customerServiceProfileNodesObject = Object.entries(
@@ -2574,10 +2542,6 @@ function Directory() {
         Object.create(null)
       );
 
-      console.log('customerServiceProfileNodesObject', {
-        customerServiceProfileNodesObject,
-      });
-
       // create edges
       const customerServiceProfileEdges = Object.entries(
         customerServiceProfileNodesObject
@@ -2667,13 +2631,6 @@ function Directory() {
         []
       );
 
-      console.log(
-        'customerServiceProfileNodesObject',
-        customerServiceProfileNodesObject
-      );
-
-      console.log('customerServiceProfileEdges', customerServiceProfileEdges);
-
       // set customer service profile nodes for dispatch
       const customerServiceProfileNodes = Object.entries(
         customerServiceProfileNodesObject
@@ -2733,11 +2690,6 @@ function Directory() {
         objectArray: maintenanceDocs,
         field: 'storeLocation',
       });
-
-      console.log(
-        'maintenanceDocsGroupedByStoreLocation',
-        maintenanceDocsGroupedByStoreLocation
-      );
 
       // using the created object structure, create profile nodes
       const maintenanceProfileNodesObject = Object.entries(
@@ -2857,10 +2809,6 @@ function Directory() {
         Object.create(null)
       );
 
-      console.log('maintenanceProfileNodesObject', {
-        maintenanceProfileNodesObject,
-      });
-
       // create edges
       const maintenanceProfileEdges = Object.entries(
         maintenanceProfileNodesObject
@@ -2948,13 +2896,6 @@ function Directory() {
         },
         []
       );
-
-      console.log(
-        'maintenanceProfileNodesObject',
-        maintenanceProfileNodesObject
-      );
-
-      console.log('maintenanceProfileEdges', maintenanceProfileEdges);
 
       // set maintenance profile nodes for dispatch
       const maintenanceProfileNodes = Object.entries(
@@ -4835,4 +4776,127 @@ export default Directory;
       //     data: accountingSpecialistsProfileEdges,
       //   },
       // });
+ */
+/**
+ * async function setInformationTechnologyEdgesAndNodes() {
+      const informationTechnologyDocs =
+        groupedByDepartment['Information Technology'] ?? [];
+
+      // create information technology profile nodes
+      const [
+        informationTechnologyManagerProfileNode,
+        informationTechnologySpecialistsProfileNodes,
+      ] = informationTechnologyDocs.reduce(
+        (
+          informationTechnologyNodesAcc: [Node, Node[]],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          const nodeType = jobPosition.toLowerCase().includes('it manager')
+            ? 'default'
+            : 'output';
+
+          const displayProfileCard = returnDirectoryProfileCard({
+            userDocument,
+            padding,
+            rowGap,
+          });
+
+          const salesNode: Node = {
+            id: _id,
+            type: nodeType,
+            data: { label: displayProfileCard },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          if (jobPosition.toLowerCase().includes('it manager')) {
+            informationTechnologyNodesAcc[0] = salesNode;
+            return informationTechnologyNodesAcc;
+          }
+
+          informationTechnologyNodesAcc[1].push(salesNode);
+
+          return informationTechnologyNodesAcc;
+        },
+        [{} as Node, []]
+      );
+
+      // chief technology officer node id
+      const chiefTechnologyOfficerId =
+        groupedByDepartment['Executive Management'].find(
+          (userDocument: DirectoryUserDocument) =>
+            userDocument.jobPosition === 'Chief Technology Officer'
+        )?._id ?? '';
+
+      // connect information technology manager to cto
+      // [CTO] ━━━ [IT MANAGER]
+      const informationTechnologyManagerProfileNodeId =
+        informationTechnologyManagerProfileNode.id;
+
+      const ctoToInformationTechnologyManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefTechnologyOfficerId}-${informationTechnologyManagerProfileNodeId}`, // source-target
+        source: chiefTechnologyOfficerId,
+        target: informationTechnologyManagerProfileNodeId,
+      };
+
+      // connect information technology manager to information technology specialists profile nodes
+      //                         ┏━ [SYSTEMS ADMINISTRATOR]
+      //                         ┏━ [IT SUPPORT SPECIALIST]
+      //                         ┏━ [DATABASE ADMINISTRATOR]
+      //                         ┏━ [WEB DEVELOPER]
+      // [CTO] ━━━ [IT MANAGER] ━━━ [SOFTWARE DEVELOPER]
+      //                         ┗━ [SOFTWARE ENGINEER]
+
+      const informationTechnologySpecialistsProfileEdges =
+        informationTechnologyDocs.reduce(
+          (
+            informationTechnologySpecialistsProfileEdgesAcc: Edge[],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition } = userDocument;
+
+            if (jobPosition.toLowerCase().includes('it manager')) {
+              return informationTechnologySpecialistsProfileEdgesAcc;
+            }
+
+            const informationTechnologySpecialistProfileEdge: Edge = {
+              ...edgeDefaults,
+              id: `${informationTechnologyManagerProfileNodeId}-${_id}`, // source-target
+              source: informationTechnologyManagerProfileNodeId,
+              target: _id,
+            };
+
+            informationTechnologySpecialistsProfileEdgesAcc.push(
+              informationTechnologySpecialistProfileEdge
+            );
+
+            return informationTechnologySpecialistsProfileEdgesAcc;
+          },
+          [ctoToInformationTechnologyManagerEdge]
+        );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Information Technology',
+          kind: 'nodes',
+          data: [
+            informationTechnologyManagerProfileNode,
+            ...informationTechnologySpecialistsProfileNodes,
+          ],
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Information Technology',
+          kind: 'edges',
+          data: informationTechnologySpecialistsProfileEdges,
+        },
+      });
+    }
  */
