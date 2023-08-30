@@ -1047,92 +1047,130 @@ function Directory() {
     async function setSalesEdgesAndNodes() {
       const salesDocs = groupedByDepartment.Sales ?? [];
 
-      // create sales profile nodes
-      const [salesManagerProfileNode, salesSpecialistsProfileNodes] =
-        salesDocs.reduce(
-          (
-            salesNodesAcc: [Node, Node[]],
-            userDocument: DirectoryUserDocument
-          ) => {
-            const { _id, jobPosition } = userDocument;
+      // group by job positions
+      const salesDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: salesDocs,
+        field: 'jobPosition',
+      });
 
-            const nodeType = jobPosition.toLowerCase().includes('manager')
-              ? 'default'
-              : 'output';
+      // using the created object structure, create profile nodes
+      const salesProfileNodesObject = Object.entries(
+        salesDocsGroupedByJobPosition
+      ).reduce(
+        (
+          salesProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
+          salesGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedSalesByJobPositionArr] =
+            salesGroupedDocsTuple as [JobPosition, DirectoryUserDocument[]];
 
-            const displayProfileCard = returnDirectoryProfileCard({
-              userDocument,
-              padding,
-              rowGap,
-            });
+          // create profile cards for each grouped doc
+          const profileCards = groupedSalesByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
 
-            const salesNode: Node = {
-              id: _id,
-              type: nodeType,
-              data: { label: displayProfileCard },
-              position: nodePosition,
-              style: nodeDimensions,
-            };
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
 
-            if (jobPosition.toLowerCase().includes('sales manager')) {
-              salesNodesAcc[0] = salesNode;
-              return salesNodesAcc;
-            }
+          // create profile node with carousel
+          const groupedSalesByJobPositionProfileNode: Node = {
+            id: jobPosition,
+            type: nodeType,
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedSalesByJobPositionProfileCards}
+                />
+              ),
+            },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
 
-            salesNodesAcc[1].push(salesNode);
+          // add job position field with profile node
+          Object.defineProperty(salesProfileNodesObjectAcc, jobPosition, {
+            ...PROPERTY_DESCRIPTOR,
+            value: groupedSalesByJobPositionProfileNode,
+          });
 
-            return salesNodesAcc;
-          },
-          [{} as Node, []]
-        );
+          return salesProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
 
-      // chief sales officer node id
+      console.log('salesProfileNodesObject', salesProfileNodesObject);
+
+      // create edges
+      // find the chief sales officer profile node id
       const chiefSalesOfficerId =
         groupedByDepartment['Executive Management'].find(
           (userDocument: DirectoryUserDocument) =>
             userDocument.jobPosition === 'Chief Sales Officer'
         )?._id ?? '';
 
-      // connect sales manager to cso
-      // [CSO] ━━━ [SALES MANAGER]
-      const salesManagerProfileNodeId = salesManagerProfileNode.id;
+      // find the sales manager profile node id
+      const salesManagerId = Object.entries(salesProfileNodesObject).reduce(
+        (salesManagerIdAcc: string, salesProfileNodeTuple) => {
+          const [jobPosition, profileNode] = salesProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
 
-      const csoToSalesManagerEdge: Edge = {
-        ...edgeDefaults,
-        id: `${chiefSalesOfficerId}-${salesManagerProfileNodeId}`, // source-target
-        source: chiefSalesOfficerId,
-        target: salesManagerProfileNodeId,
-      };
-
-      // connect sales manager to sales specialists profile nodes
-      //                            ┏━ [SALES REPRESENTATIVE]
-      // [CSO] ━━━ [SALES MANAGER] ━━━ [BUSINESS DEVELOPMENT SPECIALIST]
-      //                            ┗━ [SALES SUPPORT SPECIALIST]
-      //                            ┗━ [SALES OPERATIONS ANALYST]
-
-      const salesSubordinatesProfileEdges = salesDocs.reduce(
-        (
-          salesSubordinatesProfileEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, jobPosition } = userDocument;
-
-          if (jobPosition.toLowerCase().includes('sales manager')) {
-            return salesSubordinatesProfileEdgesAcc;
+          if (jobPosition.toLowerCase().includes('manager')) {
+            salesManagerIdAcc = profileNode.id;
           }
 
+          return salesManagerIdAcc;
+        },
+        ''
+      );
+
+      // connect chief sales officer to sales manager
+      // [CSO] ━━━ [SALES MANAGER]
+      const chiefSalesOfficerToSalesManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefSalesOfficerId}-${salesManagerId}`, // source-target
+        source: chiefSalesOfficerId,
+        target: salesManagerId,
+      };
+
+      const salesProfileEdges = Object.entries(salesProfileNodesObject).reduce(
+        (salesProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
+
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return salesProfileEdgesAcc;
+          }
+
+          // connect subordinates to sales manager
+          //                                ┏━ [SALES REPRESENTATIVE]
+          // [CSO] ━━━ [SALES MANAGER] ━━━ [SALES REPRESENTATIVE]
+          //                                ┗━ [SALES REPRESENTATIVE]
           const salesSubordinateProfileEdge: Edge = {
             ...edgeDefaults,
-            id: `${salesManagerProfileNodeId}-${_id}`, // source-target
-            source: salesManagerProfileNodeId,
-            target: _id,
+            id: `${salesManagerId}-${profileNode.id}`, // source-target
+            source: salesManagerId,
+            target: profileNode.id,
           };
+          salesProfileEdgesAcc.push(salesSubordinateProfileEdge);
 
-          salesSubordinatesProfileEdgesAcc.push(salesSubordinateProfileEdge);
-
-          return salesSubordinatesProfileEdgesAcc;
+          return salesProfileEdgesAcc;
         },
-        [csoToSalesManagerEdge]
+        [chiefSalesOfficerToSalesManagerEdge]
       );
 
       directoryDispatch({
@@ -1140,7 +1178,7 @@ function Directory() {
         payload: {
           department: 'Sales',
           kind: 'nodes',
-          data: [salesManagerProfileNode, ...salesSpecialistsProfileNodes],
+          data: Object.values(salesProfileNodesObject),
         },
       });
 
@@ -1149,7 +1187,7 @@ function Directory() {
         payload: {
           department: 'Sales',
           kind: 'edges',
-          data: salesSubordinatesProfileEdges,
+          data: salesProfileEdges,
         },
       });
     }
@@ -1157,100 +1195,136 @@ function Directory() {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end sales  department ━┛
 
     // ┏━ begin marketing department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
     async function setMarketingEdgesAndNodes() {
       const marketingDocs = groupedByDepartment.Marketing ?? [];
 
-      // create marketing profile nodes
-      const [marketingManagerProfileNode, marketingSpecialistsProfileNodes] =
-        marketingDocs.reduce(
-          (
-            marketingNodesAcc: [Node, Node[]],
-            userDocument: DirectoryUserDocument
-          ) => {
-            const { _id, jobPosition } = userDocument;
+      // group by job positions
+      const marketingDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: marketingDocs,
+        field: 'jobPosition',
+      });
 
-            const nodeType = jobPosition.toLowerCase().includes('manager')
-              ? 'default'
-              : 'output';
+      // using the created object structure, create profile nodes
+      const marketingProfileNodesObject = Object.entries(
+        marketingDocsGroupedByJobPosition
+      ).reduce(
+        (
+          marketingProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
+          marketingGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedMarketingByJobPositionArr] =
+            marketingGroupedDocsTuple as [JobPosition, DirectoryUserDocument[]];
 
-            const displayProfileCard = returnDirectoryProfileCard({
-              userDocument,
-              padding,
-              rowGap,
-            });
+          // create profile cards for each grouped doc
+          const profileCards = groupedMarketingByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
 
-            const salesNode: Node = {
-              id: _id,
-              type: nodeType,
-              data: { label: displayProfileCard },
-              position: nodePosition,
-              style: nodeDimensions,
-            };
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
 
-            if (jobPosition.toLowerCase().includes('marketing manager')) {
-              marketingNodesAcc[0] = salesNode;
-              return marketingNodesAcc;
-            }
+          // create profile node with carousel
+          const groupedMarketingByJobPositionProfileNode: Node = {
+            id: jobPosition,
+            type: nodeType,
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedMarketingByJobPositionProfileCards}
+                />
+              ),
+            },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
 
-            marketingNodesAcc[1].push(salesNode);
+          // add job position field with profile node
+          Object.defineProperty(marketingProfileNodesObjectAcc, jobPosition, {
+            ...PROPERTY_DESCRIPTOR,
+            value: groupedMarketingByJobPositionProfileNode,
+          });
 
-            return marketingNodesAcc;
-          },
-          [{} as Node, []]
-        );
+          return marketingProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
 
-      // chief marketing officer node id
+      console.log('marketingProfileNodesObject', marketingProfileNodesObject);
+
+      // create edges
+      // find the chief marketing officer profile node id
       const chiefMarketingOfficerId =
         groupedByDepartment['Executive Management'].find(
           (userDocument: DirectoryUserDocument) =>
             userDocument.jobPosition === 'Chief Marketing Officer'
         )?._id ?? '';
 
-      // connect marketing manager to cso
-      // [CSO] ━━━ [MARKETING MANAGER]
-      const marketingManagerProfileNodeId = marketingManagerProfileNode.id;
+      // find the marketing manager profile node id
+      const marketingManagerId = Object.entries(
+        marketingProfileNodesObject
+      ).reduce((marketingManagerIdAcc: string, marketingProfileNodeTuple) => {
+        const [jobPosition, profileNode] = marketingProfileNodeTuple as [
+          JobPosition,
+          Node
+        ];
 
-      const cmoToMarketingManagerEdge: Edge = {
+        if (jobPosition.toLowerCase().includes('manager')) {
+          marketingManagerIdAcc = profileNode.id;
+        }
+
+        return marketingManagerIdAcc;
+      }, '');
+
+      // connect chief marketing officer to marketing manager
+      // [CMO] ━━━ [MARKETING MANAGER]
+      const chiefMarketingOfficerToMarketingManagerEdge: Edge = {
         ...edgeDefaults,
-        id: `${chiefMarketingOfficerId}-${marketingManagerProfileNodeId}`, // source-target
+        id: `${chiefMarketingOfficerId}-${marketingManagerId}`, // source-target
         source: chiefMarketingOfficerId,
-        target: marketingManagerProfileNodeId,
+        target: marketingManagerId,
       };
 
-      // connect marketing manager to marketing specialists profile nodes
-      //                                ┏━ [SEO SPECIALIST]
-      //                                ┏━ [DIGITAL MARKETING SPECIALIST]
-      //                                ┏━ [SOCIAL MEDIA SPECIALIST]
-      // [CSO] ━━━ [MARKETING MANAGER] ━━━ [GRAPHIC DESIGNER]
-      //                                ┗━ [PUBLIC RELATIONS SPECIALIST]
-      //                                ┗━ [MARKETING ANALYST]
-      //                                ┗━ [BRAND SPECIALIST]
+      const marketingProfileEdges = Object.entries(
+        marketingProfileNodesObject
+      ).reduce(
+        (marketingProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
 
-      const marketingSubordinatesProfileEdges = marketingDocs.reduce(
-        (
-          marketingSubordinatesProfileEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, jobPosition } = userDocument;
-
-          if (jobPosition.toLowerCase().includes('marketing manager')) {
-            return marketingSubordinatesProfileEdgesAcc;
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return marketingProfileEdgesAcc;
           }
 
+          // connect subordinates to marketing manager
+          //                                ┏━ [DIGITAL MARKETING SPECIALIST]
+          // [CSO] ━━━ [MARKETING MANAGER] ━━━ [GRAPHIC DESIGNER]
+          //                                ┗━ [PUBLIC RELATIONS SPECIALIST]
+          //                                ┗━ [MARKETING ANALYST]
           const marketingSubordinateProfileEdge: Edge = {
             ...edgeDefaults,
-            id: `${marketingManagerProfileNodeId}-${_id}`, // source-target
-            source: marketingManagerProfileNodeId,
-            target: _id,
+            id: `${marketingManagerId}-${profileNode.id}`, // source-target
+            source: marketingManagerId,
+            target: profileNode.id,
           };
+          marketingProfileEdgesAcc.push(marketingSubordinateProfileEdge);
 
-          marketingSubordinatesProfileEdgesAcc.push(
-            marketingSubordinateProfileEdge
-          );
-
-          return marketingSubordinatesProfileEdgesAcc;
+          return marketingProfileEdgesAcc;
         },
-        [cmoToMarketingManagerEdge]
+        [chiefMarketingOfficerToMarketingManagerEdge]
       );
 
       directoryDispatch({
@@ -1258,10 +1332,7 @@ function Directory() {
         payload: {
           department: 'Marketing',
           kind: 'nodes',
-          data: [
-            marketingManagerProfileNode,
-            ...marketingSpecialistsProfileNodes,
-          ],
+          data: Object.values(marketingProfileNodesObject),
         },
       });
 
@@ -1270,7 +1341,7 @@ function Directory() {
         payload: {
           department: 'Marketing',
           kind: 'edges',
-          data: marketingSubordinatesProfileEdges,
+          data: marketingProfileEdges,
         },
       });
     }
@@ -1366,17 +1437,24 @@ function Directory() {
         )?._id ?? '';
 
       // find the information technology manager profile node id
-      const informationTechnologyManagerId =
-        Object.entries(informationTechnologyProfileNodesObject).find(
-          (informationTechnologyProfileNodeTuple) => {
-            const [jobPosition, _] = informationTechnologyProfileNodeTuple as [
-              JobPosition,
-              Node
-            ];
+      const informationTechnologyManagerId = Object.entries(
+        informationTechnologyProfileNodesObject
+      ).reduce(
+        (
+          informationTechnologyManagerIdAcc: string,
+          informationTechnologyProfileNodeTuple
+        ) => {
+          const [jobPosition, profileNode] =
+            informationTechnologyProfileNodeTuple as [JobPosition, Node];
 
-            return jobPosition.toLowerCase().includes('manager');
+          if (jobPosition.toLowerCase().includes('manager')) {
+            informationTechnologyManagerIdAcc = profileNode.id;
           }
-        )?.[1].id ?? '';
+
+          return informationTechnologyManagerIdAcc;
+        },
+        ''
+      );
 
       // connect chief technology officer to information technology manager
       // [CTO] ━━━ [INFORMATION TECHNOLOGY MANAGER]
@@ -1528,17 +1606,20 @@ function Directory() {
         )?._id ?? '';
 
       // find the accounting manager profile node id
-      const accountingManagerId =
-        Object.entries(accountingProfileNodesObject).find(
-          (accountingProfileNodeTuple) => {
-            const [jobPosition, _] = accountingProfileNodeTuple as [
-              JobPosition,
-              Node
-            ];
+      const accountingManagerId = Object.entries(
+        accountingProfileNodesObject
+      ).reduce((accountingManagerIdAcc: string, accountingProfileNodeTuple) => {
+        const [jobPosition, profileNode] = accountingProfileNodeTuple as [
+          JobPosition,
+          Node
+        ];
 
-            return jobPosition.toLowerCase().includes('manager');
-          }
-        )?.[1].id ?? '';
+        if (jobPosition.toLowerCase().includes('manager')) {
+          accountingManagerIdAcc = profileNode.id;
+        }
+
+        return accountingManagerIdAcc;
+      }, '');
 
       // connect chief financial officer to accounting manager
       // [CFO] ━━━ [ACCOUNTING MANAGER]
@@ -1755,17 +1836,24 @@ function Directory() {
             )?._id ?? '';
 
           // find the repair technician supervisor profile node id for the store location
-          const repairTechSupervisorProfileNodeId =
-            Object.entries(jobPositionsProfileNodesObj).find(
-              (jobPositionProfileNodesTuple) => {
-                const [jobPosition, _] = jobPositionProfileNodesTuple as [
-                  JobPosition,
-                  Node
-                ];
+          const repairTechSupervisorProfileNodeId = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              repairTechSupervisorProfileNodeIdAcc: string,
+              jobPositionAndProfileNodeTuple
+            ) => {
+              const [jobPosition, profileNode] =
+                jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-                return jobPosition.toLowerCase().includes('supervisor');
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                repairTechSupervisorProfileNodeIdAcc = profileNode.id;
               }
-            )?.[1].id ?? '';
+
+              return repairTechSupervisorProfileNodeIdAcc;
+            },
+            ''
+          );
 
           // connect shift supervisor to repair technician supervisor
           // [SHIFT SUPERVISOR] ━━━ [REPAIR TECHNICIAN SUPERVISOR]
@@ -2023,17 +2111,24 @@ function Directory() {
             )?._id ?? '';
 
           // find the field service technician supervisor profile node id for the store location
-          const fieldServiceTechSupervisorProfileNodeId =
-            Object.entries(jobPositionsProfileNodesObj).find(
-              (jobPositionProfileNodesTuple) => {
-                const [jobPosition, _] = jobPositionProfileNodesTuple as [
-                  JobPosition,
-                  Node
-                ];
+          const fieldServiceTechSupervisorProfileNodeId = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              fieldServiceTechSupervisorProfileNodeIdAcc: string,
+              jobPositionAndProfileNodeTuple
+            ) => {
+              const [jobPosition, profileNode] =
+                jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-                return jobPosition.toLowerCase().includes('supervisor');
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                fieldServiceTechSupervisorProfileNodeIdAcc = profileNode.id;
               }
-            )?.[1].id ?? '';
+
+              return fieldServiceTechSupervisorProfileNodeIdAcc;
+            },
+            ''
+          );
 
           // connect shift supervisor to field service technician supervisor
           // [SHIFT SUPERVISOR] ━━━ [FIELD SERVICE TECHNICIAN SUPERVISOR]
@@ -2294,17 +2389,25 @@ function Directory() {
             )?._id ?? '';
 
           // find the logistics and inventory supervisor profile node id for the store location
-          const logisticsAndInventorySupervisorProfileNodeId =
-            Object.entries(jobPositionsProfileNodesObj).find(
-              (jobPositionProfileNodesTuple) => {
-                const [jobPosition, _] = jobPositionProfileNodesTuple as [
-                  JobPosition,
-                  Node
-                ];
+          const logisticsAndInventorySupervisorProfileNodeId = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              logisticsAndInventorySupervisorProfileNodeIdAcc: string,
+              jobPositionAndProfileNodeTuple
+            ) => {
+              const [jobPosition, profileNode] =
+                jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-                return jobPosition.toLowerCase().includes('supervisor');
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                logisticsAndInventorySupervisorProfileNodeIdAcc =
+                  profileNode.id;
               }
-            )?.[1].id ?? '';
+
+              return logisticsAndInventorySupervisorProfileNodeIdAcc;
+            },
+            ''
+          );
 
           // connect shift supervisor to logistics and inventory supervisor
           // [SHIFT SUPERVISOR] ━━━ [WAREHOUSE SUPERVISOR]
@@ -2565,17 +2668,24 @@ function Directory() {
             )?._id ?? '';
 
           // find the customer service supervisor profile node id for the store location
-          const customerServiceSupervisorProfileNodeId =
-            Object.entries(jobPositionsProfileNodesObj).find(
-              (jobPositionProfileNodesTuple) => {
-                const [jobPosition, _] = jobPositionProfileNodesTuple as [
-                  JobPosition,
-                  Node
-                ];
+          const customerServiceSupervisorProfileNodeId = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              customerServiceSupervisorProfileNodeIdAcc: string,
+              jobPositionAndProfileNodeTuple
+            ) => {
+              const [jobPosition, profileNode] =
+                jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-                return jobPosition.toLowerCase().includes('supervisor');
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                customerServiceSupervisorProfileNodeIdAcc = profileNode.id;
               }
-            )?.[1].id ?? '';
+
+              return customerServiceSupervisorProfileNodeIdAcc;
+            },
+            ''
+          );
 
           // connect shift supervisor to customer service supervisor
           // [SHIFT SUPERVISOR] ━━━ [CUSTOMER SERVICE SUPERVISOR]
@@ -2832,17 +2942,24 @@ function Directory() {
             )?._id ?? '';
 
           // find the maintenance supervisor profile node id for the store location
-          const maintenanceSupervisorProfileNodeId =
-            Object.entries(jobPositionsProfileNodesObj).find(
-              (jobPositionProfileNodesTuple) => {
-                const [jobPosition, _] = jobPositionProfileNodesTuple as [
-                  JobPosition,
-                  Node
-                ];
+          const maintenanceSupervisorProfileNodeId = Object.entries(
+            jobPositionsProfileNodesObj
+          ).reduce(
+            (
+              maintenanceSupervisorProfileNodeIdAcc: string,
+              jobPositionAndProfileNodeTuple
+            ) => {
+              const [jobPosition, profileNode] =
+                jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-                return jobPosition.toLowerCase().includes('supervisor');
+              if (jobPosition.toLowerCase().includes('supervisor')) {
+                maintenanceSupervisorProfileNodeIdAcc = profileNode.id;
               }
-            )?.[1].id ?? '';
+
+              return maintenanceSupervisorProfileNodeIdAcc;
+            },
+            ''
+          );
 
           // connect shift supervisor to maintenance supervisor
           // [SHIFT SUPERVISOR] ━━━ [MAINTENANCE SUPERVISOR]
@@ -4896,6 +5013,235 @@ export default Directory;
           department: 'Information Technology',
           kind: 'edges',
           data: informationTechnologySpecialistsProfileEdges,
+        },
+      });
+    }
+ */
+
+/**
+ * async function setMarketingEdgesAndNodes() {
+      const marketingDocs = groupedByDepartment.Marketing ?? [];
+
+      // create marketing profile nodes
+      const [marketingManagerProfileNode, marketingSpecialistsProfileNodes] =
+        marketingDocs.reduce(
+          (
+            marketingNodesAcc: [Node, Node[]],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition } = userDocument;
+
+            const nodeType = jobPosition.toLowerCase().includes('manager')
+              ? 'default'
+              : 'output';
+
+            const displayProfileCard = returnDirectoryProfileCard({
+              userDocument,
+              padding,
+              rowGap,
+            });
+
+            const salesNode: Node = {
+              id: _id,
+              type: nodeType,
+              data: { label: displayProfileCard },
+              position: nodePosition,
+              style: nodeDimensions,
+            };
+
+            if (jobPosition.toLowerCase().includes('marketing manager')) {
+              marketingNodesAcc[0] = salesNode;
+              return marketingNodesAcc;
+            }
+
+            marketingNodesAcc[1].push(salesNode);
+
+            return marketingNodesAcc;
+          },
+          [{} as Node, []]
+        );
+
+      // chief marketing officer node id
+      const chiefMarketingOfficerId =
+        groupedByDepartment['Executive Management'].find(
+          (userDocument: DirectoryUserDocument) =>
+            userDocument.jobPosition === 'Chief Marketing Officer'
+        )?._id ?? '';
+
+      // connect marketing manager to cso
+      // [CSO] ━━━ [MARKETING MANAGER]
+      const marketingManagerProfileNodeId = marketingManagerProfileNode.id;
+
+      const cmoToMarketingManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefMarketingOfficerId}-${marketingManagerProfileNodeId}`, // source-target
+        source: chiefMarketingOfficerId,
+        target: marketingManagerProfileNodeId,
+      };
+
+      // connect marketing manager to marketing specialists profile nodes
+      //                                ┏━ [DIGITAL MARKETING SPECIALIST]
+      // [CSO] ━━━ [MARKETING MANAGER] ━━━ [GRAPHIC DESIGNER]
+      //                                ┗━ [PUBLIC RELATIONS SPECIALIST]
+      //                                ┗━ [MARKETING ANALYST]
+
+      const marketingSubordinatesProfileEdges = marketingDocs.reduce(
+        (
+          marketingSubordinatesProfileEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          if (jobPosition.toLowerCase().includes('marketing manager')) {
+            return marketingSubordinatesProfileEdgesAcc;
+          }
+
+          const marketingSubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${marketingManagerProfileNodeId}-${_id}`, // source-target
+            source: marketingManagerProfileNodeId,
+            target: _id,
+          };
+
+          marketingSubordinatesProfileEdgesAcc.push(
+            marketingSubordinateProfileEdge
+          );
+
+          return marketingSubordinatesProfileEdgesAcc;
+        },
+        [cmoToMarketingManagerEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Marketing',
+          kind: 'nodes',
+          data: [
+            marketingManagerProfileNode,
+            ...marketingSpecialistsProfileNodes,
+          ],
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Marketing',
+          kind: 'edges',
+          data: marketingSubordinatesProfileEdges,
+        },
+      });
+    }
+ */
+
+/**
+ * async function setSalesEdgesAndNodes() {
+      const salesDocs = groupedByDepartment.Sales ?? [];
+
+      // create sales profile nodes
+      const [salesManagerProfileNode, salesSpecialistsProfileNodes] =
+        salesDocs.reduce(
+          (
+            salesNodesAcc: [Node, Node[]],
+            userDocument: DirectoryUserDocument
+          ) => {
+            const { _id, jobPosition } = userDocument;
+
+            const nodeType = jobPosition.toLowerCase().includes('manager')
+              ? 'default'
+              : 'output';
+
+            const displayProfileCard = returnDirectoryProfileCard({
+              userDocument,
+              padding,
+              rowGap,
+            });
+
+            const salesNode: Node = {
+              id: _id,
+              type: nodeType,
+              data: { label: displayProfileCard },
+              position: nodePosition,
+              style: nodeDimensions,
+            };
+
+            if (jobPosition.toLowerCase().includes('sales manager')) {
+              salesNodesAcc[0] = salesNode;
+              return salesNodesAcc;
+            }
+
+            salesNodesAcc[1].push(salesNode);
+
+            return salesNodesAcc;
+          },
+          [{} as Node, []]
+        );
+
+      // chief sales officer node id
+      const chiefSalesOfficerId =
+        groupedByDepartment['Executive Management'].find(
+          (userDocument: DirectoryUserDocument) =>
+            userDocument.jobPosition === 'Chief Sales Officer'
+        )?._id ?? '';
+
+      // connect sales manager to cso
+      // [CSO] ━━━ [SALES MANAGER]
+      const salesManagerProfileNodeId = salesManagerProfileNode.id;
+
+      const csoToSalesManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefSalesOfficerId}-${salesManagerProfileNodeId}`, // source-target
+        source: chiefSalesOfficerId,
+        target: salesManagerProfileNodeId,
+      };
+
+      // connect sales manager to sales specialists profile nodes
+      //                            ┏━ [SALES REPRESENTATIVE]
+      // [CSO] ━━━ [SALES MANAGER] ━━━ [BUSINESS DEVELOPMENT SPECIALIST]
+      //                            ┗━ [SALES SUPPORT SPECIALIST]
+      //                            ┗━ [SALES OPERATIONS ANALYST]
+
+      const salesSubordinatesProfileEdges = salesDocs.reduce(
+        (
+          salesSubordinatesProfileEdgesAcc: Edge[],
+          userDocument: DirectoryUserDocument
+        ) => {
+          const { _id, jobPosition } = userDocument;
+
+          if (jobPosition.toLowerCase().includes('sales manager')) {
+            return salesSubordinatesProfileEdgesAcc;
+          }
+
+          const salesSubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${salesManagerProfileNodeId}-${_id}`, // source-target
+            source: salesManagerProfileNodeId,
+            target: _id,
+          };
+
+          salesSubordinatesProfileEdgesAcc.push(salesSubordinateProfileEdge);
+
+          return salesSubordinatesProfileEdgesAcc;
+        },
+        [csoToSalesManagerEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Sales',
+          kind: 'nodes',
+          data: [salesManagerProfileNode, ...salesSpecialistsProfileNodes],
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Sales',
+          kind: 'edges',
+          data: salesSubordinatesProfileEdges,
         },
       });
     }
