@@ -166,21 +166,14 @@ type DirectoryDispatch =
       payload: string;
     };
 
-type OfficeAdministrationProfileNodesObject = Record<
-  StoreLocation,
-  {
-    administrator: Node;
-    specialists: Node[];
-  }
->;
+type RemoteDepartmentsProfileNodesObject = Record<JobPosition, Node>;
 
-type DepartmentProfileNodesObject = Record<
+type StoreDepartmentsProfileNodesObject = Record<
   StoreLocation,
   Record<JobPosition, Node>
 >;
 
 export type {
-  DepartmentProfileNodesObject,
   DepartmentsNodesAndEdges,
   DirectoryAction,
   DirectoryDepartments,
@@ -192,6 +185,7 @@ export type {
   FetchUsersDirectoryResponse,
   FilteredDepartmentNodesAndEdges,
   FlowNodesLayoutDirection,
-  OfficeAdministrationProfileNodesObject,
+  RemoteDepartmentsProfileNodesObject,
   SetDepartmentNodesAndEdgesPayload,
+  StoreDepartmentsProfileNodesObject,
 };

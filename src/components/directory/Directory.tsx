@@ -41,8 +41,8 @@ import {
 import {
   DirectoryUserDocument,
   FetchUsersDirectoryResponse,
-  OfficeAdministrationProfileNodesObject,
-  DepartmentProfileNodesObject,
+  RemoteDepartmentsProfileNodesObject,
+  StoreDepartmentsProfileNodesObject,
 } from './types';
 import { returnDirectoryProfileCard } from './utils';
 import {
@@ -690,7 +690,8 @@ function Directory() {
       const officeAdministrationProfileNodesInitialAcc =
         STORE_LOCATION_DATA.reduce(
           (
-            officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
+            // officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
+            officeAdministrationNodesAcc,
             storeLocation: StoreLocation
           ) => {
             const value = {
@@ -712,7 +713,8 @@ function Directory() {
       const officeAdministrationProfileNodesObject =
         officeAdministrationDocs.reduce(
           (
-            officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
+            // officeAdministrationNodesAcc: OfficeAdministrationProfileNodesObject,
+            officeAdministrationNodesAcc,
             userDocument: DirectoryUserDocument
           ) => {
             const { _id, jobPosition, storeLocation } = userDocument;
@@ -842,7 +844,10 @@ function Directory() {
           officeAdministrationProfileNodesAcc: Node[],
           [_, hierarchicalDivisor]
         ) => {
-          const { administrator, specialists } = hierarchicalDivisor;
+          const { administrator, specialists } = hierarchicalDivisor as {
+            administrator: Node;
+            specialists: Node[];
+          };
 
           officeAdministrationProfileNodesAcc.push(administrator);
           specialists.forEach((node: Node) => {
@@ -1408,95 +1413,143 @@ function Directory() {
     async function setAccountingEdgesAndNodes() {
       const accountingDocs = groupedByDepartment.Accounting ?? [];
 
-      // create accounting profile nodes
-      const [accountingManagerProfileNode, accountingSpecialistsProfileNodes] =
-        accountingDocs.reduce(
-          (
-            accountingNodesAcc: [Node, Node[]],
-            userDocument: DirectoryUserDocument
-          ) => {
-            const { _id, jobPosition } = userDocument;
+      // group by job positions
+      const accountingDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: accountingDocs,
+        field: 'jobPosition',
+      });
 
-            const nodeType = jobPosition
-              .toLowerCase()
-              .includes('accounting manager')
-              ? 'default'
-              : 'output';
+      console.log(
+        'accountingDocsGroupedByJobPosition',
+        accountingDocsGroupedByJobPosition
+      );
 
-            const displayProfileCard = returnDirectoryProfileCard({
-              userDocument,
-              padding,
-              rowGap,
-            });
+      // using the created object structure, create profile nodes
+      const accountingProfileNodesObject = Object.entries(
+        accountingDocsGroupedByJobPosition
+      ).reduce(
+        (
+          accountingProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
+          accountingGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedAccountingByJobPositionArr] =
+            accountingGroupedDocsTuple as [
+              JobPosition,
+              DirectoryUserDocument[]
+            ];
 
-            const salesNode: Node = {
-              id: _id,
-              type: nodeType,
-              data: { label: displayProfileCard },
-              position: nodePosition,
-              style: nodeDimensions,
-            };
+          // create profile cards for each grouped doc
+          const profileCards = groupedAccountingByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
 
-            if (jobPosition.toLowerCase().includes('accounting manager')) {
-              accountingNodesAcc[0] = salesNode;
-              return accountingNodesAcc;
-            }
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
 
-            accountingNodesAcc[1].push(salesNode);
+          // create profile node with carousel
+          const groupedAccountingByJobPositionProfileNode: Node = {
+            id: jobPosition,
+            type: nodeType,
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedAccountingByJobPositionProfileCards}
+                />
+              ),
+            },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
 
-            return accountingNodesAcc;
-          },
-          [{} as Node, []]
-        );
+          // add job position field with profile node
+          Object.defineProperty(accountingProfileNodesObjectAcc, jobPosition, {
+            ...PROPERTY_DESCRIPTOR,
+            value: groupedAccountingByJobPositionProfileNode,
+          });
 
-      // chief financial officer node id
+          return accountingProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log('accountingProfileNodesObject', accountingProfileNodesObject);
+
+      // create edges
+
+      // find the chief financial officer profile node id
       const chiefFinancialOfficerId =
         groupedByDepartment['Executive Management'].find(
           (userDocument: DirectoryUserDocument) =>
             userDocument.jobPosition === 'Chief Financial Officer'
         )?._id ?? '';
 
-      // connect accounting manager to cfo
-      // [CFO] ━━━ [ACCOUNTING MANAGER]
-      const accountingManagerProfileNodeId = accountingManagerProfileNode.id;
+      // find the accounting manager profile node id
+      const accountingManagerId =
+        Object.entries(accountingProfileNodesObject).find(
+          (accountingProfileNodeTuple) => {
+            const [jobPosition, _] = accountingProfileNodeTuple as [
+              JobPosition,
+              Node
+            ];
 
-      const cfoToAccountingManagerEdge: Edge = {
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
+
+      // connect chief financial officer to accounting manager
+      // [CFO] ━━━ [ACCOUNTING MANAGER]
+      const chiefFinancialOfficerToAccountingManagerEdge: Edge = {
         ...edgeDefaults,
-        id: `${chiefFinancialOfficerId}-${accountingManagerProfileNodeId}`, // source-target
+        id: `${chiefFinancialOfficerId}-${accountingManagerId}`, // source-target
         source: chiefFinancialOfficerId,
-        target: accountingManagerProfileNodeId,
+        target: accountingManagerId,
       };
 
-      // connect accounting manager to accounting specialists profile nodes
-      //                                 ┏━ [ACCOUNTS PAYABLE CLERK]
-      // [CFO] ━━━ [ACCOUNTING MANAGER] ━━━ [FINANCIAL ANALYST]
-      //                                 ┗━ [ACCOUNTS RECEIVABLE CLERK]
+      const accountingProfileEdges = Object.entries(
+        accountingProfileNodesObject
+      ).reduce(
+        (accountingProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
 
-      const accountingSpecialistsProfileEdges = accountingDocs.reduce(
-        (
-          accountingSpecialistsProfileEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
-        ) => {
-          const { _id, jobPosition } = userDocument;
-
-          if (jobPosition.toLowerCase().includes('accounting manager')) {
-            return accountingSpecialistsProfileEdgesAcc;
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return accountingProfileEdgesAcc;
           }
 
-          const accountingSpecialistProfileEdge: Edge = {
+          // connect subordinates to accounting manager
+          //                                 ┏━ [ACCOUNTS PAYABLE CLERK]
+          // [CFO] ━━━ [ACCOUNTING MANAGER] ━━━ [FINANCIAL ANALYIST]
+          //                                 ┗━ [ACCOUNTS RECEIVABLE CLERK]
+          const accountingSubordinateProfileEdge: Edge = {
             ...edgeDefaults,
-            id: `${accountingManagerProfileNodeId}-${_id}`, // source-target
-            source: accountingManagerProfileNodeId,
-            target: _id,
+            id: `${accountingManagerId}-${profileNode.id}`, // source-target
+            source: accountingManagerId,
+            target: profileNode.id,
           };
+          accountingProfileEdgesAcc.push(accountingSubordinateProfileEdge);
 
-          accountingSpecialistsProfileEdgesAcc.push(
-            accountingSpecialistProfileEdge
-          );
-
-          return accountingSpecialistsProfileEdgesAcc;
+          return accountingProfileEdgesAcc;
         },
-        [cfoToAccountingManagerEdge]
+        [chiefFinancialOfficerToAccountingManagerEdge]
+      );
+
+      console.log('accountingProfileEdges', accountingProfileEdges);
+
+      const accountingProfileNodes = Object.values(
+        accountingProfileNodesObject
       );
 
       directoryDispatch({
@@ -1504,10 +1557,7 @@ function Directory() {
         payload: {
           department: 'Accounting',
           kind: 'nodes',
-          data: [
-            accountingManagerProfileNode,
-            ...accountingSpecialistsProfileNodes,
-          ],
+          data: accountingProfileNodes,
         },
       });
 
@@ -1516,7 +1566,7 @@ function Directory() {
         payload: {
           department: 'Accounting',
           kind: 'edges',
-          data: accountingSpecialistsProfileEdges,
+          data: accountingProfileEdges,
         },
       });
     }
@@ -1548,7 +1598,7 @@ function Directory() {
         repairTechniciansDocsGroupedByStoreLocation
       ).reduce(
         (
-          repairTechniciansProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          repairTechniciansProfileNodesObjectAcc: StoreDepartmentsProfileNodesObject,
           repairTechniciansGroupedDocsTuple
         ) => {
           const [storeLocation, groupedRepairTechniciansByStoreLocationsArr] =
@@ -1830,7 +1880,7 @@ function Directory() {
         fieldServiceTechniciansDocsGroupedByStoreLocation
       ).reduce(
         (
-          fieldServiceTechniciansProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          fieldServiceTechniciansProfileNodesObjectAcc: StoreDepartmentsProfileNodesObject,
           fieldServiceTechniciansGroupedDocsTuple
         ) => {
           const [
@@ -2117,7 +2167,7 @@ function Directory() {
         logisticsAndInventoryDocsGroupedByStoreLocation
       ).reduce(
         (
-          logisticsAndInventoryProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          logisticsAndInventoryProfileNodesObjectAcc: StoreDepartmentsProfileNodesObject,
           logisticsAndInventoryGroupedDocsTuple
         ) => {
           const [
@@ -2409,7 +2459,7 @@ function Directory() {
         customerServiceDocsGroupedByStoreLocation
       ).reduce(
         (
-          customerServiceProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          customerServiceProfileNodesObjectAcc: StoreDepartmentsProfileNodesObject,
           customerServiceGroupedDocsTuple
         ) => {
           const [storeLocation, groupedCustomerServiceByStoreLocationsArr] =
@@ -2694,7 +2744,7 @@ function Directory() {
         maintenanceDocsGroupedByStoreLocation
       ).reduce(
         (
-          maintenanceProfileNodesObjectAcc: DepartmentProfileNodesObject,
+          maintenanceProfileNodesObjectAcc: StoreDepartmentsProfileNodesObject,
           maintenanceGroupedDocsTuple
         ) => {
           const [storeLocation, groupedMaintenanceByStoreLocationsArr] =
@@ -4672,3 +4722,117 @@ export default Directory;
           // );
 
      */
+
+/**
+ * // // create accounting profile nodes
+      // const [accountingManagerProfileNode, accountingSpecialistsProfileNodes] =
+      //   accountingDocs.reduce(
+      //     (
+      //       accountingNodesAcc: [Node, Node[]],
+      //       userDocument: DirectoryUserDocument
+      //     ) => {
+      //       const { _id, jobPosition } = userDocument;
+
+      //       const nodeType = jobPosition
+      //         .toLowerCase()
+      //         .includes('accounting manager')
+      //         ? 'default'
+      //         : 'output';
+
+      //       const displayProfileCard = returnDirectoryProfileCard({
+      //         userDocument,
+      //         padding,
+      //         rowGap,
+      //       });
+
+      //       const salesNode: Node = {
+      //         id: _id,
+      //         type: nodeType,
+      //         data: { label: displayProfileCard },
+      //         position: nodePosition,
+      //         style: nodeDimensions,
+      //       };
+
+      //       if (jobPosition.toLowerCase().includes('accounting manager')) {
+      //         accountingNodesAcc[0] = salesNode;
+      //         return accountingNodesAcc;
+      //       }
+
+      //       accountingNodesAcc[1].push(salesNode);
+
+      //       return accountingNodesAcc;
+      //     },
+      //     [{} as Node, []]
+      //   );
+
+      // // chief financial officer node id
+      // const chiefFinancialOfficerId =
+      //   groupedByDepartment['Executive Management'].find(
+      //     (userDocument: DirectoryUserDocument) =>
+      //       userDocument.jobPosition === 'Chief Financial Officer'
+      //   )?._id ?? '';
+
+      // // connect accounting manager to cfo
+      // // [CFO] ━━━ [ACCOUNTING MANAGER]
+      // const accountingManagerProfileNodeId = accountingManagerProfileNode.id;
+
+      // const cfoToAccountingManagerEdge: Edge = {
+      //   ...edgeDefaults,
+      //   id: `${chiefFinancialOfficerId}-${accountingManagerProfileNodeId}`, // source-target
+      //   source: chiefFinancialOfficerId,
+      //   target: accountingManagerProfileNodeId,
+      // };
+
+      // // connect accounting manager to accounting specialists profile nodes
+      // //                                 ┏━ [ACCOUNTS PAYABLE CLERK]
+      // // [CFO] ━━━ [ACCOUNTING MANAGER] ━━━ [FINANCIAL ANALYST]
+      // //                                 ┗━ [ACCOUNTS RECEIVABLE CLERK]
+
+      // const accountingSpecialistsProfileEdges = accountingDocs.reduce(
+      //   (
+      //     accountingSpecialistsProfileEdgesAcc: Edge[],
+      //     userDocument: DirectoryUserDocument
+      //   ) => {
+      //     const { _id, jobPosition } = userDocument;
+
+      //     if (jobPosition.toLowerCase().includes('accounting manager')) {
+      //       return accountingSpecialistsProfileEdgesAcc;
+      //     }
+
+      //     const accountingSpecialistProfileEdge: Edge = {
+      //       ...edgeDefaults,
+      //       id: `${accountingManagerProfileNodeId}-${_id}`, // source-target
+      //       source: accountingManagerProfileNodeId,
+      //       target: _id,
+      //     };
+
+      //     accountingSpecialistsProfileEdgesAcc.push(
+      //       accountingSpecialistProfileEdge
+      //     );
+
+      //     return accountingSpecialistsProfileEdgesAcc;
+      //   },
+      //   [cfoToAccountingManagerEdge]
+      // );
+
+      // directoryDispatch({
+      //   type: directoryAction.setDepartmentsNodesAndEdges,
+      //   payload: {
+      //     department: 'Accounting',
+      //     kind: 'nodes',
+      //     data: [
+      //       accountingManagerProfileNode,
+      //       ...accountingSpecialistsProfileNodes,
+      //     ],
+      //   },
+      // });
+
+      // directoryDispatch({
+      //   type: directoryAction.setDepartmentsNodesAndEdges,
+      //   payload: {
+      //     department: 'Accounting',
+      //     kind: 'edges',
+      //     data: accountingSpecialistsProfileEdges,
+      //   },
+      // });
+ */
