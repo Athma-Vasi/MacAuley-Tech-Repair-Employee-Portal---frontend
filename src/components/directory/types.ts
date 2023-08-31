@@ -46,27 +46,33 @@ type DagreLabelPos = 'l' | 'c' | 'r';
 type FetchUsersDirectoryResponse =
   ResourceRequestServerResponse<DirectoryUserDocument>;
 
-type DirectoryDepartments = Department;
-type DirectoryJobPositions = JobPosition;
-type DirectoryStoreLocations = StoreLocation;
+type DepartmentsWithDefaultKey = Department | 'All Departments';
+type JobPositionsWithDefaultKey = JobPosition | 'All Job Positions';
+type StoreLocationsWithDefaultKey = StoreLocation | 'All Store Locations';
 
 type DepartmentsNodesAndEdges = Record<
-  DirectoryDepartments,
+  DepartmentsWithDefaultKey,
   { nodes: Node[]; edges: Edge[] }
 >;
 type FilteredDepartmentNodesAndEdges = Partial<DepartmentsNodesAndEdges>;
 
 type DirectoryState = {
-  groupedByDepartment: Record<DirectoryDepartments, DirectoryUserDocument[]>;
-  groupedByJobPositon: Record<DirectoryJobPositions, DirectoryUserDocument[]>;
+  groupedByDepartment: Record<
+    DepartmentsWithDefaultKey,
+    DirectoryUserDocument[]
+  >;
+  groupedByJobPositon: Record<
+    JobPositionsWithDefaultKey,
+    DirectoryUserDocument[]
+  >;
   groupedByStoreLocation: Record<
-    DirectoryStoreLocations,
+    StoreLocationsWithDefaultKey,
     DirectoryUserDocument[]
   >;
 
-  filterByDepartment: DirectoryDepartments[];
-  filterByJobPosition: DirectoryJobPositions[];
-  filterByStoreLocation: DirectoryStoreLocations[];
+  filterByDepartment: DepartmentsWithDefaultKey;
+  filterByJobPosition: JobPositionsWithDefaultKey;
+  filterByStoreLocation: StoreLocationsWithDefaultKey;
   filteredDepartmentsNodesAndEdges: FilteredDepartmentNodesAndEdges;
 
   triggerSetDepartmentsNodesAndEdges: boolean;
@@ -80,15 +86,10 @@ type DirectoryState = {
   dagreRankDir: DagreRankDir;
   dagreRankAlign: DagreRankAlign;
   dagreNodeSep: number; // default 50
-  dagreEdgeSep: number; // default 10
   dagreRankSep: number; // default 50
-  dagreMarginX: number; // default 0
-  dagreMarginY: number; // default 0
   dagreRanker: DagreRankerAlgorithm; // default 'network-simplex'
   dagreMinLen: number; // minimum edge length default: 1
   dagreWeight: number; // default: 1
-  dagreLabelPos: DagreLabelPos; // default: 'r'
-  dagreLabelOffset: number; // default: 10
 
   isError: boolean;
   errorMessage: string;
@@ -121,15 +122,10 @@ type DirectoryAction = {
   setDagreRankDir: 'setDagreRankDir';
   setDagreRankAlign: 'setDagreRankAlign';
   setDagreNodeSep: 'setDagreNodeSep';
-  setDagreEdgeSep: 'setDagreEdgeSep';
   setDagreRankSep: 'setDagreRankSep';
-  setDagreMarginX: 'setDagreMarginX';
-  setDagreMarginY: 'setDagreMarginY';
   setDagreRanker: 'setDagreRanker';
   setDagreMinLen: 'setDagreMinLen';
   setDagreWeight: 'setDagreWeight';
-  setDagreLabelPos: 'setDagreLabelPos';
-  setDagreLabelOffset: 'setDagreLabelOffset';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -142,8 +138,8 @@ type DirectoryAction = {
 };
 
 type SetDepartmentNodesAndEdgesPayload =
-  | { department: DirectoryDepartments; kind: 'nodes'; data: Node[] }
-  | { department: DirectoryDepartments; kind: 'edges'; data: Edge[] };
+  | { department: DepartmentsWithDefaultKey; kind: 'nodes'; data: Node[] }
+  | { department: DepartmentsWithDefaultKey; kind: 'edges'; data: Edge[] };
 
 type SetFilteredDepartmentsNodesAndEdgesPayload =
   SetDepartmentNodesAndEdgesPayload;
@@ -159,15 +155,15 @@ type DirectoryDispatch =
     }
   | {
       type: DirectoryAction['setFilterByDepartment'];
-      payload: DirectoryDepartments[];
+      payload: DepartmentsWithDefaultKey;
     }
   | {
       type: DirectoryAction['setFilterByJobPosition'];
-      payload: DirectoryJobPositions[];
+      payload: JobPositionsWithDefaultKey;
     }
   | {
       type: DirectoryAction['setFilterByStoreLocation'];
-      payload: DirectoryStoreLocations[];
+      payload: StoreLocationsWithDefaultKey;
     }
   | {
       type:
@@ -219,19 +215,11 @@ type DirectoryDispatch =
       payload: DagreRankerAlgorithm;
     }
   | {
-      type: DirectoryAction['setDagreLabelPos'];
-      payload: DagreLabelPos;
-    }
-  | {
       type:
         | DirectoryAction['setDagreNodeSep']
-        | DirectoryAction['setDagreEdgeSep']
         | DirectoryAction['setDagreRankSep']
-        | DirectoryAction['setDagreMarginX']
-        | DirectoryAction['setDagreMarginY']
         | DirectoryAction['setDagreMinLen']
-        | DirectoryAction['setDagreWeight']
-        | DirectoryAction['setDagreLabelOffset'];
+        | DirectoryAction['setDagreWeight'];
 
       payload: number;
     };
@@ -249,16 +237,16 @@ export type {
   DagreRankDir,
   DagreRankerAlgorithm,
   DepartmentsNodesAndEdges,
+  DepartmentsWithDefaultKey,
   DirectoryAction,
-  DirectoryDepartments,
   DirectoryDispatch,
-  DirectoryJobPositions,
   DirectoryState,
-  DirectoryStoreLocations,
   DirectoryUserDocument,
   FetchUsersDirectoryResponse,
   FilteredDepartmentNodesAndEdges,
+  JobPositionsWithDefaultKey,
   RemoteDepartmentsProfileNodesObject,
   SetDepartmentNodesAndEdgesPayload,
   StoreDepartmentsProfileNodesObject,
+  StoreLocationsWithDefaultKey,
 };

@@ -8,23 +8,26 @@ import { groupByField } from '../../utils';
 import {
   DepartmentsNodesAndEdges,
   DirectoryAction,
-  DirectoryDepartments,
+  DepartmentsWithDefaultKey,
   DirectoryDispatch,
-  DirectoryJobPositions,
+  JobPositionsWithDefaultKey,
   DirectoryState,
-  DirectoryStoreLocations,
+  StoreLocationsWithDefaultKey,
   DirectoryUserDocument,
   FilteredDepartmentNodesAndEdges,
 } from './types';
 
 const initialDirectoryState: DirectoryState = {
-  groupedByDepartment: {} as Record<DirectoryDepartments, UserDocument[]>,
-  groupedByJobPositon: {} as Record<DirectoryJobPositions, UserDocument[]>,
-  groupedByStoreLocation: {} as Record<DirectoryStoreLocations, UserDocument[]>,
+  groupedByDepartment: {} as Record<DepartmentsWithDefaultKey, UserDocument[]>,
+  groupedByJobPositon: {} as Record<JobPositionsWithDefaultKey, UserDocument[]>,
+  groupedByStoreLocation: {} as Record<
+    StoreLocationsWithDefaultKey,
+    UserDocument[]
+  >,
 
-  filterByDepartment: [],
-  filterByJobPosition: [],
-  filterByStoreLocation: [],
+  filterByDepartment: 'All Departments',
+  filterByJobPosition: 'All Job Positions',
+  filterByStoreLocation: 'All Store Locations',
   filteredDepartmentsNodesAndEdges: {} as FilteredDepartmentNodesAndEdges,
 
   triggerSetDepartmentsNodesAndEdges: false,
@@ -38,15 +41,10 @@ const initialDirectoryState: DirectoryState = {
   dagreRankDir: 'TB',
   dagreRankAlign: 'undefined',
   dagreNodeSep: 50, // default 50
-  dagreEdgeSep: 10, // default 10
   dagreRankSep: 50, // default 50
-  dagreMarginX: 0, // default 0
-  dagreMarginY: 0, // default 0
   dagreRanker: 'network-simplex', // default 'network-simplex'
   dagreMinLen: 1, // minimum edge length default: 1
   dagreWeight: 1, // default: 1
-  dagreLabelPos: 'r', // default: 'r'
-  dagreLabelOffset: 10, // default: 10
 
   isError: false,
   errorMessage: '',
@@ -79,15 +77,10 @@ const directoryAction: DirectoryAction = {
   setDagreRankDir: 'setDagreRankDir',
   setDagreRankAlign: 'setDagreRankAlign',
   setDagreNodeSep: 'setDagreNodeSep',
-  setDagreEdgeSep: 'setDagreEdgeSep',
   setDagreRankSep: 'setDagreRankSep',
-  setDagreMarginX: 'setDagreMarginX',
-  setDagreMarginY: 'setDagreMarginY',
   setDagreRanker: 'setDagreRanker',
   setDagreMinLen: 'setDagreMinLen',
   setDagreWeight: 'setDagreWeight',
-  setDagreLabelPos: 'setDagreLabelPos',
-  setDagreLabelOffset: 'setDagreLabelOffset',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -280,25 +273,10 @@ function directoryReducer(
         ...state,
         dagreNodeSep: action.payload,
       };
-    case directoryAction.setDagreEdgeSep:
-      return {
-        ...state,
-        dagreEdgeSep: action.payload,
-      };
     case directoryAction.setDagreRankSep:
       return {
         ...state,
         dagreRankSep: action.payload,
-      };
-    case directoryAction.setDagreMarginX:
-      return {
-        ...state,
-        dagreMarginX: action.payload,
-      };
-    case directoryAction.setDagreMarginY:
-      return {
-        ...state,
-        dagreMarginY: action.payload,
       };
     case directoryAction.setDagreRanker:
       return {
@@ -314,16 +292,6 @@ function directoryReducer(
       return {
         ...state,
         dagreWeight: action.payload,
-      };
-    case directoryAction.setDagreLabelPos:
-      return {
-        ...state,
-        dagreLabelPos: action.payload,
-      };
-    case directoryAction.setDagreLabelOffset:
-      return {
-        ...state,
-        dagreLabelOffset: action.payload,
       };
 
     case directoryAction.setIsError:

@@ -3,6 +3,7 @@ import { Flex, Group } from '@mantine/core';
 import { useGlobalState } from '../../../hooks';
 import { splitCamelCase } from '../../../utils';
 import { TextWrapper } from '../../wrappers';
+import { ReactNode } from 'react';
 
 function PieChartControlsStack({
   label,
@@ -10,7 +11,7 @@ function PieChartControlsStack({
   input,
   symbol = '',
 }: {
-  label: string;
+  label: string | ReactNode;
   value: string | number | boolean;
   input: JSX.Element;
   symbol?: string;

@@ -52,22 +52,24 @@ import {
   DagreRankAlign,
   DagreRankDir,
   DagreRankerAlgorithm,
+  DepartmentsWithDefaultKey,
   DirectoryUserDocument,
+  JobPositionsWithDefaultKey,
   RemoteDepartmentsProfileNodesObject,
   StoreDepartmentsProfileNodesObject,
+  StoreLocationsWithDefaultKey,
 } from './types';
 import {
   returnDagreLayoutedElements,
   returnDirectoryProfileCard,
 } from './utils';
 import {
-  DAGRE_LAYOUT_LABELPOS_SELECT_OPTIONS,
   DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
   DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
   DAGRE_LAYOUT_RANKER_SELECT_OPTIONS,
-  DIRECTORY_DEPARTMENT_CHECKBOX_DATA,
-  DIRECTORY_JOB_POSITION_CHECKBOX_DATA,
-  DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
+  DIRECTORY_DEPARTMENT_SELECT_OPTIONS,
+  DIRECTORY_JOB_POSITION_SELECT_OPTIONS,
+  DIRECTORY_STORE_LOCATION_SELECT_OPTIONS,
 } from './constants';
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
 import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
@@ -101,15 +103,10 @@ function Directory() {
     dagreRankDir,
     dagreRankAlign,
     dagreNodeSep, // default 50
-    dagreEdgeSep, // default 10
     dagreRankSep, // default 50
-    dagreMarginX, // default 0
-    dagreMarginY, // default 0
     dagreRanker, // default 'network-simplex'
     dagreMinLen, // minimum edge length default
     dagreWeight, // default: 1
-    dagreLabelPos, // default: 'r'
-    dagreLabelOffset, // default: 10
   } = directoryState;
 
   const {
@@ -3136,7 +3133,10 @@ function Directory() {
       departmentsNodesAndEdges
     ).reduce(
       (initialNodesAndEdgesAcc: [Node[], Edge[]], departmentNodesAndEdges) => {
-        const [_, nodesAndEdges] = departmentNodesAndEdges;
+        const [_department, nodesAndEdges] = departmentNodesAndEdges as [
+          Department,
+          { nodes: Node[]; edges: Edge[] }
+        ];
 
         const departmentNodes = nodesAndEdges.nodes;
         const departmentEdges = nodesAndEdges.edges;
@@ -3163,15 +3163,10 @@ function Directory() {
         rankdir: dagreRankDir,
         align: dagreRankAlign === 'undefined' ? undefined : dagreRankAlign,
         nodesep: dagreNodeSep,
-        edgesep: dagreEdgeSep,
         ranksep: dagreRankSep,
-        marginx: dagreMarginX,
-        marginy: dagreMarginY,
         ranker: dagreRanker,
         minlen: dagreMinLen,
         weight: dagreWeight,
-        labelpos: dagreLabelPos,
-        labeloffset: dagreLabelOffset,
       });
 
     directoryDispatch({
@@ -3184,11 +3179,6 @@ function Directory() {
       payload: layoutedEdges,
     });
   }, [
-    dagreEdgeSep,
-    dagreLabelOffset,
-    dagreLabelPos,
-    dagreMarginX,
-    dagreMarginY,
     dagreMinLen,
     dagreNodeSep,
     dagreRankAlign,
@@ -3211,94 +3201,135 @@ function Directory() {
 
   // ┏━ begin accessible text elements ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  const [filterByDepartmentSelectedText, filterByDepartmentDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
-      isSelected: filterByDepartment.length > 0,
-      semanticName: 'filter by department',
-      deselectedDescription: 'Select a field to filter by department',
-      selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
-        filterByDepartment.join(', ')
-      )}`,
-      theme: 'muted',
-    });
+  // const [filterByDepartmentSelectedText, filterByDepartmentDeselectedText] =
+  //   returnAccessibleSelectedDeselectedTextElements({
+  //     isSelected: filterByDepartment.length > 0,
+  //     semanticName: 'filter by department',
+  //     deselectedDescription: 'Select a field to filter by department',
+  //     selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
+  //       filterByDepartment.join(', ')
+  //     )}`,
+  //     theme: 'muted',
+  //   });
 
-  const [filterByJobPositionSelectedText, filterByJobPositionDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
-      isSelected: filterByJobPosition.length > 0,
-      semanticName: 'filter by job position',
-      deselectedDescription: 'Select a field to filter by job position',
-      selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
-        filterByJobPosition.join(', ')
-      )}`,
-      theme: 'muted',
-    });
+  // const [filterByJobPositionSelectedText, filterByJobPositionDeselectedText] =
+  //   returnAccessibleSelectedDeselectedTextElements({
+  //     isSelected: filterByJobPosition.length > 0,
+  //     semanticName: 'filter by job position',
+  //     deselectedDescription: 'Select a field to filter by job position',
+  //     selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
+  //       filterByJobPosition.join(', ')
+  //     )}`,
+  //     theme: 'muted',
+  //   });
 
-  const [
-    filterByStoreLocationSelectedText,
-    filterByStoreLocationDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
-    isSelected: filterByStoreLocation.length > 0,
-    semanticName: 'filter by store location',
-    deselectedDescription: 'Select a field to filter by store location',
-    selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
-      filterByStoreLocation.join(', ')
-    )}`,
-    theme: 'muted',
-  });
+  // const [
+  //   filterByStoreLocationSelectedText,
+  //   filterByStoreLocationDeselectedText,
+  // ] = returnAccessibleSelectedDeselectedTextElements({
+  //   isSelected: filterByStoreLocation.length > 0,
+  //   semanticName: 'filter by store location',
+  //   deselectedDescription: 'Select a field to filter by store location',
+  //   selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
+  //     filterByStoreLocation.join(', ')
+  //   )}`,
+  //   theme: 'muted',
+  // });
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end accessible text elements ━┛
 
   // ┏━ begin input creators info objects ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  const filterByDepartmentCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
+  // const filterByDepartmentCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
+  //   {
+  //     dataObjectArray: DIRECTORY_DEPARTMENT_CHECKBOX_DATA,
+  //     description: {
+  //       selected: filterByDepartmentSelectedText,
+  //       deselected: filterByDepartmentDeselectedText,
+  //     },
+  //     onChange: (value: string[]) => {
+  //       directoryDispatch({
+  //         type: directoryAction.setFilterByDepartment,
+  //         payload: value as Department[],
+  //       });
+  //     },
+  //     value: filterByDepartment,
+  //     semanticName: 'filter by department',
+  //   };
+  const filterByDepartmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
-      dataObjectArray: DIRECTORY_DEPARTMENT_CHECKBOX_DATA,
-      description: {
-        selected: filterByDepartmentSelectedText,
-        deselected: filterByDepartmentDeselectedText,
-      },
-      onChange: (value: string[]) => {
+      data: DIRECTORY_DEPARTMENT_SELECT_OPTIONS,
+      description: 'Show department employees',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         directoryDispatch({
           type: directoryAction.setFilterByDepartment,
-          payload: value as Department[],
+          payload: event.currentTarget.value as DepartmentsWithDefaultKey,
         });
       },
       value: filterByDepartment,
-      semanticName: 'filter by department',
+      label: 'Filter by department',
     };
 
-  const filterByJobPositionCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
+  // const filterByJobPositionCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
+  //   {
+  //     dataObjectArray: DIRECTORY_JOB_POSITION_CHECKBOX_DATA,
+  //     description: {
+  //       selected: filterByJobPositionSelectedText,
+  //       deselected: filterByJobPositionDeselectedText,
+  //     },
+  //     onChange: (value: string[]) => {
+  //       directoryDispatch({
+  //         type: directoryAction.setFilterByJobPosition,
+  //         payload: value as JobPosition[],
+  //       });
+  //     },
+  //     value: filterByJobPosition,
+  //     semanticName: 'filter by job position',
+  //   };
+
+  const filterByJobPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
-      dataObjectArray: DIRECTORY_JOB_POSITION_CHECKBOX_DATA,
-      description: {
-        selected: filterByJobPositionSelectedText,
-        deselected: filterByJobPositionDeselectedText,
-      },
-      onChange: (value: string[]) => {
+      data: DIRECTORY_JOB_POSITION_SELECT_OPTIONS,
+      description: 'Show job position employees',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         directoryDispatch({
           type: directoryAction.setFilterByJobPosition,
-          payload: value as JobPosition[],
+          payload: event.currentTarget.value as JobPositionsWithDefaultKey,
         });
       },
       value: filterByJobPosition,
-      semanticName: 'filter by job position',
+      label: 'Filter by job position',
     };
 
-  const filterByStoreLocationCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
+  // const filterByStoreLocationCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
+  //   {
+  //     dataObjectArray: DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
+  //     description: {
+  //       selected: filterByStoreLocationSelectedText,
+  //       deselected: filterByStoreLocationDeselectedText,
+  //     },
+  //     onChange: (value: string[]) => {
+  //       directoryDispatch({
+  //         type: directoryAction.setFilterByStoreLocation,
+  //         payload: value as StoreLocation[],
+  //       });
+  //     },
+  //     value: filterByStoreLocation,
+  //     semanticName: 'filter by store location',
+  //   };
+
+  const filterByStoreLocationSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
-      dataObjectArray: DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
-      description: {
-        selected: filterByStoreLocationSelectedText,
-        deselected: filterByStoreLocationDeselectedText,
-      },
-      onChange: (value: string[]) => {
+      data: DIRECTORY_STORE_LOCATION_SELECT_OPTIONS,
+      description: 'Show store location employees',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         directoryDispatch({
           type: directoryAction.setFilterByStoreLocation,
-          payload: value as StoreLocation[],
+          payload: event.currentTarget.value as StoreLocationsWithDefaultKey,
         });
       },
       value: filterByStoreLocation,
-      semanticName: 'filter by store location',
+      label: 'Filter by store location',
     };
 
   // sliders
@@ -3329,24 +3360,6 @@ function Directory() {
     width: sliderWidth,
   };
 
-  const dagreEdgeSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    kind: 'slider',
-    ariaLabel: 'edge separation',
-    label: (value) => <Text>{value} px</Text>,
-    max: 100,
-    min: 5,
-    step: 1,
-    value: dagreEdgeSep,
-    onChangeSlider: (value: number) => {
-      directoryDispatch({
-        type: directoryAction.setDagreEdgeSep,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 10,
-    width: sliderWidth,
-  };
-
   const dagreRankSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'rank separation',
@@ -3362,42 +3375,6 @@ function Directory() {
       });
     },
     sliderDefaultValue: 50,
-    width: sliderWidth,
-  };
-
-  const dagreMarginXSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    kind: 'slider',
-    ariaLabel: 'margin x',
-    label: (value) => <Text>{value} px</Text>,
-    max: 200,
-    min: 0,
-    step: 1,
-    value: dagreMarginX,
-    onChangeSlider: (value: number) => {
-      directoryDispatch({
-        type: directoryAction.setDagreMarginX,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    width: sliderWidth,
-  };
-
-  const dagreMarginYSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    kind: 'slider',
-    ariaLabel: 'margin y',
-    label: (value) => <Text>{value} px</Text>,
-    max: 200,
-    min: 0,
-    step: 1,
-    value: dagreMarginY,
-    onChangeSlider: (value: number) => {
-      directoryDispatch({
-        type: directoryAction.setDagreMarginY,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
     width: sliderWidth,
   };
 
@@ -3436,26 +3413,6 @@ function Directory() {
     sliderDefaultValue: 1,
     width: sliderWidth,
   };
-
-  const dagreLabelOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      kind: 'slider',
-      ariaLabel: 'label offset',
-      disabled: dagreLabelPos === 'c',
-      label: (value) => <Text>{value} px</Text>,
-      max: 200,
-      min: 10,
-      step: 1,
-      value: dagreLabelOffset,
-      onChangeSlider: (value: number) => {
-        directoryDispatch({
-          type: directoryAction.setDagreLabelOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 10,
-      width: sliderWidth,
-    };
 
   const dagreRankDirSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
@@ -3497,102 +3454,55 @@ function Directory() {
     label: 'Ranker Algorithm',
   };
 
-  const dagreLabelPosSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: DAGRE_LAYOUT_LABELPOS_SELECT_OPTIONS,
-      description: 'Select the label position',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        directoryDispatch({
-          type: directoryAction.setDagreLabelPos,
-          payload: event.currentTarget.value as DagreLabelPos,
-        });
-      },
-      value: dagreLabelPos,
-      label: 'Label Position',
-    };
-
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators info objects━┛
 
   // ┏━ begin input creators ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+  // const [
+  //   createdFilterByDepartmentCheckboxGroupInputElements,
+  //   createdFilterByJobPositionCheckboxGroupInputElements,
+  //   createdFilterByStoreLocationCheckboxGroupInputElements,
+  // ] = returnAccessibleCheckboxGroupInputsElements([
+  //   filterByDepartmentCheckboxGroupCreatorInfo,
+  //   filterByJobPositionCheckboxGroupCreatorInfo,
+  //   filterByStoreLocationCheckboxGroupCreatorInfo,
+  // ]);
+
   const [
-    createdFilterByDepartmentCheckboxGroupInputElements,
-    createdFilterByJobPositionCheckboxGroupInputElements,
-    createdFilterByStoreLocationCheckboxGroupInputElements,
-  ] = returnAccessibleCheckboxGroupInputsElements([
-    filterByDepartmentCheckboxGroupCreatorInfo,
-    filterByJobPositionCheckboxGroupCreatorInfo,
-    filterByStoreLocationCheckboxGroupCreatorInfo,
+    createdFilterByDepartmentSelectInputElements,
+    createdFilterByJobPositionSelectInputElements,
+    createdFilterByStoreLocationSelectInputElements,
+  ] = returnAccessibleSelectInputElements([
+    filterByDepartmentSelectInputCreatorInfo,
+    filterByJobPositionSelectInputCreatorInfo,
+    filterByStoreLocationSelectInputCreatorInfo,
   ]);
 
   const [
     createdDagreNodeSepSliderInput,
-    createdDagreEdgeSepSliderInput,
     createdDagreRankSepSliderInput,
-    createdDagreMarginXSliderInput,
-    createdDagreMarginYSliderInput,
     createdDagreMinLenSliderInput,
     createdDagreWeightSliderInput,
-    createdDagreLabelOffsetSliderInput,
   ] = returnAccessibleSliderInputElements([
     dagreNodeSepSliderInputCreatorInfo,
-    dagreEdgeSepSliderInputCreatorInfo,
     dagreRankSepSliderInputCreatorInfo,
-    dagreMarginXSliderInputCreatorInfo,
-    dagreMarginYSliderInputCreatorInfo,
     dagreMinLenSliderInputCreatorInfo,
     dagreWeightSliderInputCreatorInfo,
-    dagreLabelOffsetSliderInputCreatorInfo,
   ]);
 
   const [
     createdDagreRankDirSelectInput,
     createdDagreRankAlignSelectInput,
     createdDagreRankerSelectInput,
-    createdDagreLabelPosSelectInput,
   ] = returnAccessibleSelectInputElements([
     dagreRankDirSelectInputCreatorInfo,
     dagreRankAlignSelectInputCreatorInfo,
     dagreRankerSelectInputCreatorInfo,
-    dagreLabelPosSelectInputCreatorInfo,
   ]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators ━┛
 
   // ┏━ begin input display ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  const displayFilterCheckboxAccordion = (
-    <Accordion w="100%">
-      <Accordion.Item value="Filter by Departments, Job Positions or Store Locations">
-        <Accordion.Control>
-          <Text color="dark">
-            {'Filter by Departments, Job Positions or Store Locations'}
-          </Text>
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Flex
-            w="100%"
-            align="center"
-            justify="flex-start"
-            wrap="wrap"
-            rowGap={rowGap}
-            columnGap={rowGap}
-            p={padding}
-          >
-            <Group w={350}>
-              {createdFilterByDepartmentCheckboxGroupInputElements}
-            </Group>
-            <Group w={350}>
-              {createdFilterByJobPositionCheckboxGroupInputElements}
-            </Group>
-            <Group w={350}>
-              {createdFilterByStoreLocationCheckboxGroupInputElements}
-            </Group>
-          </Flex>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
-  );
 
   const displayDagreNodeSepSliderInput = (
     <PieChartControlsStack
@@ -3603,38 +3513,11 @@ function Directory() {
     />
   );
 
-  const displayDagreEdgeSepSliderInput = (
-    <PieChartControlsStack
-      input={createdDagreEdgeSepSliderInput}
-      label="Edge Separation"
-      value={dagreEdgeSep}
-      symbol="px"
-    />
-  );
-
   const displayDagreRankSepSliderInput = (
     <PieChartControlsStack
       input={createdDagreRankSepSliderInput}
       label="Rank Separation"
       value={dagreRankSep}
-      symbol="px"
-    />
-  );
-
-  const displayDagreMarginXSliderInput = (
-    <PieChartControlsStack
-      input={createdDagreMarginXSliderInput}
-      label="Margin X"
-      value={dagreMarginX}
-      symbol="px"
-    />
-  );
-
-  const displayDagreMarginYSliderInput = (
-    <PieChartControlsStack
-      input={createdDagreMarginYSliderInput}
-      label="Margin Y"
-      value={dagreMarginY}
       symbol="px"
     />
   );
@@ -3654,15 +3537,6 @@ function Directory() {
       label="Weight"
       value={dagreWeight}
       symbol=""
-    />
-  );
-
-  const displayDagreLabelOffsetSliderInput = (
-    <PieChartControlsStack
-      input={createdDagreLabelOffsetSliderInput}
-      label="Label Offset"
-      value={dagreLabelOffset}
-      symbol="px"
     />
   );
 
@@ -3693,45 +3567,82 @@ function Directory() {
     />
   );
 
-  const displayDagreLabelPosSelectInput = (
-    <PieChartControlsStack
-      input={createdDagreLabelPosSelectInput}
-      label="Label Position"
-      value={dagreLabelPos}
-      symbol=""
-    />
-  );
-
   const displayDagreLayoutSlidersSection = (
     <Stack w="100%">
       {displayDagreNodeSepSliderInput}
-      {displayDagreEdgeSepSliderInput}
       {displayDagreRankSepSliderInput}
-      {displayDagreMarginXSliderInput}
-      {displayDagreMarginYSliderInput}
       {displayDagreMinLenSliderInput}
       {displayDagreWeightSliderInput}
-      {displayDagreLabelOffsetSliderInput}
     </Stack>
   );
 
   const displayDagreLayoutSelectsSection = (
     <Stack w="100%">
+      {displayDagreRankerSelectInput}
       {displayDagreRankDirSelectInput}
       {displayDagreRankAlignSelectInput}
-      {displayDagreRankerSelectInput}
-      {displayDagreLabelPosSelectInput}
     </Stack>
   );
 
   const displayDagreLayoutSection = (
     <Stack w="100%">
-      {displayDagreLayoutSlidersSection}
       {displayDagreLayoutSelectsSection}
+      {displayDagreLayoutSlidersSection}
     </Stack>
   );
 
-  const displayGraphBuilder = (
+  // filter selects section
+  const displayFilterByDepartmentSelectInput = (
+    <PieChartControlsStack
+      input={createdFilterByDepartmentSelectInputElements}
+      label="Filter by department"
+      value={filterByDepartment}
+      symbol=""
+    />
+  );
+
+  const displayFilterByJobPositionSelectInput = (
+    <PieChartControlsStack
+      input={createdFilterByJobPositionSelectInputElements}
+      label="Filter by job position"
+      value={filterByJobPosition}
+      symbol=""
+    />
+  );
+
+  const displayFilterByStoreLocationSelectInput = (
+    <PieChartControlsStack
+      input={createdFilterByStoreLocationSelectInputElements}
+      label="Filter by store location"
+      value={filterByStoreLocation}
+      symbol=""
+    />
+  );
+
+  const displayFilterSelectsSection = (
+    <Stack w="100%">
+      {displayFilterByDepartmentSelectInput}
+      {displayFilterByJobPositionSelectInput}
+      {displayFilterByStoreLocationSelectInput}
+    </Stack>
+  );
+
+  const displayGraphControls = (
+    <Stack
+      h={width < 1192 ? '38vh' : '70vh'}
+      style={{
+        overflowY: 'scroll',
+        borderRight: '1px solid #e0e0e0',
+        borderBottom: width < 1192 ? '1px solid #e0e0e0' : '',
+      }}
+      py={padding}
+    >
+      {displayFilterSelectsSection}
+      {displayDagreLayoutSection}
+    </Stack>
+  );
+
+  const displayGraphViewport = (
     <GraphBuilderWrapper
       layoutedNodes={layoutedNodes}
       layoutedEdges={layoutedEdges}
@@ -3739,22 +3650,56 @@ function Directory() {
   );
 
   const displayLayoutAndGraph = (
-    <Grid columns={10}>
-      <Grid.Col span={3}>{displayDagreLayoutSection}</Grid.Col>
-      <Grid.Col span={7}>{displayGraphBuilder}</Grid.Col>
+    <Grid columns={width < 1192 ? 1 : 12} w="100%" h="70vh">
+      <Grid.Col span={width < 1192 ? 1 : 4} h={width < 1192 ? '38vh' : '70vh'}>
+        {displayGraphControls}
+      </Grid.Col>
+      <Grid.Col span={width < 1192 ? 1 : 8} h="100%">
+        {displayGraphViewport}
+      </Grid.Col>
     </Grid>
   );
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input display ━┛
-  return (
-    <Stack w="100%">
-      {displayFilterCheckboxAccordion}
-      {displayLayoutAndGraph}
-    </Stack>
-  );
+  return <Stack w="100%">{displayLayoutAndGraph}</Stack>;
 }
 
 export default Directory;
+
+/**
+ * const displayGraphOptionsAccordion = (
+    <Accordion w="100%">
+      <Accordion.Item value="Filter by Departments, Job Positions or Store Locations">
+        <Accordion.Control>
+          <Text color="dark">
+            {'Filter by Departments, Job Positions or Store Locations'}
+          </Text>
+        </Accordion.Control>
+        <Accordion.Panel>
+          <Flex
+            w="100%"
+            align="center"
+            justify="flex-start"
+            wrap="wrap"
+            rowGap={rowGap}
+            columnGap={rowGap}
+            p={padding}
+          >
+            <Group w={350}>
+              {createdFilterByDepartmentSelectInputElements}
+            </Group>
+            <Group w={350}>
+              {createdFilterByJobPositionSelectInputElements}
+            </Group>
+            <Group w={350}>
+              {createdFilterByStoreLocationSelectInputElements}
+            </Group>
+          </Flex>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+  );
+ */
 
 /**
  * // // set store location edges after executive management nodes and edges are set

@@ -36,13 +36,19 @@ function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
     });
 
     reactFlowInstance.fitView({
-      minZoom: 0.1,
+      minZoom: 0.4,
       maxZoom: 2,
     });
   }, [layoutedEdges, layoutedNodes, reactFlowInstance]);
 
   const displayReactFlow = (
-    <ReactFlow nodes={layoutedNodes} edges={layoutedEdges} fitView>
+    <ReactFlow
+      nodes={layoutedNodes}
+      edges={layoutedEdges}
+      fitView
+      minZoom={0.1}
+      maxZoom={2}
+    >
       <Background />
       <Controls
         onZoomIn={() => {
@@ -57,9 +63,9 @@ function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
 
   return (
     <Flex
-      w="75vw"
-      h="75vh"
-      style={{ outline: '1px solid brown' }}
+      w="100%"
+      h="100%"
+      style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
       direction="column"
     >
       {/* {displayButtons} */}
