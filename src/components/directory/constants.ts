@@ -46,7 +46,7 @@ const DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS: SelectInputData = [
 ];
 
 const DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS: SelectInputData = [
-  { label: 'None', value: 'undefined' },
+  { label: 'Default', value: 'undefined' },
   { label: 'Upper Left', value: 'UL' },
   { label: 'Upper Right', value: 'UR' },
   { label: 'Down Left', value: 'DL' },

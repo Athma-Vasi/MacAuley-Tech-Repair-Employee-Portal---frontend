@@ -37,8 +37,6 @@ import {
   replaceLastCommaWithAnd,
   urlBuilder,
 } from '../../utils';
-import GraphBuilder from '../graphBuilder/GraphBuilder';
-import { FlowNode } from '../graphBuilder/types';
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -55,11 +53,13 @@ import {
   DagreRankDir,
   DagreRankerAlgorithm,
   DirectoryUserDocument,
-  FetchUsersDirectoryResponse,
   RemoteDepartmentsProfileNodesObject,
   StoreDepartmentsProfileNodesObject,
 } from './types';
-import { returnDirectoryProfileCard } from './utils';
+import {
+  returnDagreLayoutedElements,
+  returnDirectoryProfileCard,
+} from './utils';
 import {
   DAGRE_LAYOUT_LABELPOS_SELECT_OPTIONS,
   DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
@@ -71,7 +71,7 @@ import {
 } from './constants';
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
 import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
-import { returnDagreLayoutedElements } from '../graphBuilder/utils';
+
 import { PieChartControlsStack } from '../displayStatistics/responsivePieChart/utils';
 
 function Directory() {
@@ -3679,7 +3679,7 @@ function Directory() {
     <PieChartControlsStack
       input={createdDagreRankAlignSelectInput}
       label="Rank Alignment"
-      value={dagreRankAlign ?? ''}
+      value={dagreRankAlign === 'undefined' ? 'Default' : dagreRankAlign}
       symbol=""
     />
   );
