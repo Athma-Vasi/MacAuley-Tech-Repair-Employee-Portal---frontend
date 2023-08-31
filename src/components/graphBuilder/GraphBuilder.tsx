@@ -50,7 +50,7 @@ function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
         }}
       />
       <Panel position="top-right">
-        <Button variant="outline">dummy</Button>
+        <></>
       </Panel>
     </ReactFlow>
   );

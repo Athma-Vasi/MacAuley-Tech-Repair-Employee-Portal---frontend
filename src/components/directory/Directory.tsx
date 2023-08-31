@@ -3,6 +3,7 @@ import {
   Button,
   Card,
   Flex,
+  Grid,
   Group,
   Stack,
   Text,
@@ -26,6 +27,7 @@ import {
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSelectedDeselectedTextElements,
+  returnAccessibleSliderInputElements,
 } from '../../jsxCreators';
 import { Department, JobPosition, StoreLocation } from '../../types';
 import {
@@ -40,6 +42,7 @@ import { FlowNode } from '../graphBuilder/types';
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
+  AccessibleSliderInputCreatorInfo,
 } from '../wrappers';
 import {
   directoryAction,
@@ -47,6 +50,10 @@ import {
   initialDirectoryState,
 } from './state';
 import {
+  DagreLabelPos,
+  DagreRankAlign,
+  DagreRankDir,
+  DagreRankerAlgorithm,
   DirectoryUserDocument,
   FetchUsersDirectoryResponse,
   RemoteDepartmentsProfileNodesObject,
@@ -54,6 +61,10 @@ import {
 } from './types';
 import { returnDirectoryProfileCard } from './utils';
 import {
+  DAGRE_LAYOUT_LABELPOS_SELECT_OPTIONS,
+  DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
+  DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
+  DAGRE_LAYOUT_RANKER_SELECT_OPTIONS,
   DIRECTORY_DEPARTMENT_CHECKBOX_DATA,
   DIRECTORY_JOB_POSITION_CHECKBOX_DATA,
   DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
@@ -61,6 +72,7 @@ import {
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
 import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
 import { returnDagreLayoutedElements } from '../graphBuilder/utils';
+import { PieChartControlsStack } from '../displayStatistics/responsivePieChart/utils';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -106,7 +118,7 @@ function Directory() {
 
   const {
     globalDispatch,
-    globalState: { padding, rowGap },
+    globalState: { padding, rowGap, width },
   } = useGlobalState();
 
   const { showBoundary } = useErrorBoundary();
@@ -3149,7 +3161,7 @@ function Directory() {
         edges: initialEdges,
         nodes: initialNodes,
         rankdir: dagreRankDir,
-        align: dagreRankAlign,
+        align: dagreRankAlign === 'undefined' ? undefined : dagreRankAlign,
         nodesep: dagreNodeSep,
         edgesep: dagreEdgeSep,
         ranksep: dagreRankSep,
@@ -3289,6 +3301,216 @@ function Directory() {
       semanticName: 'filter by store location',
     };
 
+  // sliders
+  const sliderWidth =
+    width < 480
+      ? '217px'
+      : width < 768
+      ? `${width * 0.38}px`
+      : width < 1192
+      ? '500px'
+      : `${width * 0.15}px`;
+
+  const dagreNodeSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    ariaLabel: 'node separation',
+    label: (value) => <Text>{value} px</Text>,
+    max: 200,
+    min: 25,
+    step: 1,
+    value: dagreNodeSep,
+    onChangeSlider: (value: number) => {
+      directoryDispatch({
+        type: directoryAction.setDagreNodeSep,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 50,
+    width: sliderWidth,
+  };
+
+  const dagreEdgeSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    ariaLabel: 'edge separation',
+    label: (value) => <Text>{value} px</Text>,
+    max: 100,
+    min: 5,
+    step: 1,
+    value: dagreEdgeSep,
+    onChangeSlider: (value: number) => {
+      directoryDispatch({
+        type: directoryAction.setDagreEdgeSep,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 10,
+    width: sliderWidth,
+  };
+
+  const dagreRankSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    ariaLabel: 'rank separation',
+    label: (value) => <Text>{value} px</Text>,
+    max: 200,
+    min: 25,
+    step: 1,
+    value: dagreRankSep,
+    onChangeSlider: (value: number) => {
+      directoryDispatch({
+        type: directoryAction.setDagreRankSep,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 50,
+    width: sliderWidth,
+  };
+
+  const dagreMarginXSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    ariaLabel: 'margin x',
+    label: (value) => <Text>{value} px</Text>,
+    max: 200,
+    min: 0,
+    step: 1,
+    value: dagreMarginX,
+    onChangeSlider: (value: number) => {
+      directoryDispatch({
+        type: directoryAction.setDagreMarginX,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 0,
+    width: sliderWidth,
+  };
+
+  const dagreMarginYSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    ariaLabel: 'margin y',
+    label: (value) => <Text>{value} px</Text>,
+    max: 200,
+    min: 0,
+    step: 1,
+    value: dagreMarginY,
+    onChangeSlider: (value: number) => {
+      directoryDispatch({
+        type: directoryAction.setDagreMarginY,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 0,
+    width: sliderWidth,
+  };
+
+  const dagreMinLenSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    ariaLabel: 'min length',
+    label: (value) => <Text>{value}</Text>,
+    max: 10,
+    min: 1,
+    step: 1,
+    value: dagreMinLen,
+    onChangeSlider: (value: number) => {
+      directoryDispatch({
+        type: directoryAction.setDagreMinLen,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 1,
+    width: sliderWidth,
+  };
+
+  const dagreWeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    kind: 'slider',
+    ariaLabel: 'weight',
+    label: (value) => <Text>{value}</Text>,
+    max: 10,
+    min: 1,
+    step: 1,
+    value: dagreWeight,
+    onChangeSlider: (value: number) => {
+      directoryDispatch({
+        type: directoryAction.setDagreWeight,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 1,
+    width: sliderWidth,
+  };
+
+  const dagreLabelOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      kind: 'slider',
+      ariaLabel: 'label offset',
+      disabled: dagreLabelPos === 'c',
+      label: (value) => <Text>{value} px</Text>,
+      max: 200,
+      min: 10,
+      step: 1,
+      value: dagreLabelOffset,
+      onChangeSlider: (value: number) => {
+        directoryDispatch({
+          type: directoryAction.setDagreLabelOffset,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 10,
+      width: sliderWidth,
+    };
+
+  const dagreRankDirSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
+    description: 'Select the rank direction',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      directoryDispatch({
+        type: directoryAction.setDagreRankDir,
+        payload: event.currentTarget.value as DagreRankDir,
+      });
+    },
+    value: dagreRankDir,
+    label: 'Rank Direction',
+  };
+
+  const dagreRankAlignSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
+      description: 'Select the rank alignment',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        directoryDispatch({
+          type: directoryAction.setDagreRankAlign,
+          payload: event.currentTarget.value as DagreRankAlign,
+        });
+      },
+      value: dagreRankAlign,
+      label: 'Rank Alignment',
+    };
+
+  const dagreRankerSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DAGRE_LAYOUT_RANKER_SELECT_OPTIONS,
+    description: 'Select the ranker algorithm',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      directoryDispatch({
+        type: directoryAction.setDagreRanker,
+        payload: event.currentTarget.value as DagreRankerAlgorithm,
+      });
+    },
+    value: dagreRanker,
+    label: 'Ranker Algorithm',
+  };
+
+  const dagreLabelPosSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: DAGRE_LAYOUT_LABELPOS_SELECT_OPTIONS,
+      description: 'Select the label position',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        directoryDispatch({
+          type: directoryAction.setDagreLabelPos,
+          payload: event.currentTarget.value as DagreLabelPos,
+        });
+      },
+      value: dagreLabelPos,
+      label: 'Label Position',
+    };
+
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators info objects━┛
 
   // ┏━ begin input creators ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -3301,6 +3523,38 @@ function Directory() {
     filterByDepartmentCheckboxGroupCreatorInfo,
     filterByJobPositionCheckboxGroupCreatorInfo,
     filterByStoreLocationCheckboxGroupCreatorInfo,
+  ]);
+
+  const [
+    createdDagreNodeSepSliderInput,
+    createdDagreEdgeSepSliderInput,
+    createdDagreRankSepSliderInput,
+    createdDagreMarginXSliderInput,
+    createdDagreMarginYSliderInput,
+    createdDagreMinLenSliderInput,
+    createdDagreWeightSliderInput,
+    createdDagreLabelOffsetSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    dagreNodeSepSliderInputCreatorInfo,
+    dagreEdgeSepSliderInputCreatorInfo,
+    dagreRankSepSliderInputCreatorInfo,
+    dagreMarginXSliderInputCreatorInfo,
+    dagreMarginYSliderInputCreatorInfo,
+    dagreMinLenSliderInputCreatorInfo,
+    dagreWeightSliderInputCreatorInfo,
+    dagreLabelOffsetSliderInputCreatorInfo,
+  ]);
+
+  const [
+    createdDagreRankDirSelectInput,
+    createdDagreRankAlignSelectInput,
+    createdDagreRankerSelectInput,
+    createdDagreLabelPosSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    dagreRankDirSelectInputCreatorInfo,
+    dagreRankAlignSelectInputCreatorInfo,
+    dagreRankerSelectInputCreatorInfo,
+    dagreLabelPosSelectInputCreatorInfo,
   ]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators ━┛
@@ -3340,42 +3594,162 @@ function Directory() {
     </Accordion>
   );
 
-  const displayNodeBuilder = (
+  const displayDagreNodeSepSliderInput = (
+    <PieChartControlsStack
+      input={createdDagreNodeSepSliderInput}
+      label="Node Separation"
+      value={dagreNodeSep}
+      symbol="px"
+    />
+  );
+
+  const displayDagreEdgeSepSliderInput = (
+    <PieChartControlsStack
+      input={createdDagreEdgeSepSliderInput}
+      label="Edge Separation"
+      value={dagreEdgeSep}
+      symbol="px"
+    />
+  );
+
+  const displayDagreRankSepSliderInput = (
+    <PieChartControlsStack
+      input={createdDagreRankSepSliderInput}
+      label="Rank Separation"
+      value={dagreRankSep}
+      symbol="px"
+    />
+  );
+
+  const displayDagreMarginXSliderInput = (
+    <PieChartControlsStack
+      input={createdDagreMarginXSliderInput}
+      label="Margin X"
+      value={dagreMarginX}
+      symbol="px"
+    />
+  );
+
+  const displayDagreMarginYSliderInput = (
+    <PieChartControlsStack
+      input={createdDagreMarginYSliderInput}
+      label="Margin Y"
+      value={dagreMarginY}
+      symbol="px"
+    />
+  );
+
+  const displayDagreMinLenSliderInput = (
+    <PieChartControlsStack
+      input={createdDagreMinLenSliderInput}
+      label="Min Length"
+      value={dagreMinLen}
+      symbol=""
+    />
+  );
+
+  const displayDagreWeightSliderInput = (
+    <PieChartControlsStack
+      input={createdDagreWeightSliderInput}
+      label="Weight"
+      value={dagreWeight}
+      symbol=""
+    />
+  );
+
+  const displayDagreLabelOffsetSliderInput = (
+    <PieChartControlsStack
+      input={createdDagreLabelOffsetSliderInput}
+      label="Label Offset"
+      value={dagreLabelOffset}
+      symbol="px"
+    />
+  );
+
+  const displayDagreRankDirSelectInput = (
+    <PieChartControlsStack
+      input={createdDagreRankDirSelectInput}
+      label="Rank Direction"
+      value={dagreRankDir}
+      symbol=""
+    />
+  );
+
+  const displayDagreRankAlignSelectInput = (
+    <PieChartControlsStack
+      input={createdDagreRankAlignSelectInput}
+      label="Rank Alignment"
+      value={dagreRankAlign ?? ''}
+      symbol=""
+    />
+  );
+
+  const displayDagreRankerSelectInput = (
+    <PieChartControlsStack
+      input={createdDagreRankerSelectInput}
+      label="Ranker Algorithm"
+      value={dagreRanker}
+      symbol=""
+    />
+  );
+
+  const displayDagreLabelPosSelectInput = (
+    <PieChartControlsStack
+      input={createdDagreLabelPosSelectInput}
+      label="Label Position"
+      value={dagreLabelPos}
+      symbol=""
+    />
+  );
+
+  const displayDagreLayoutSlidersSection = (
+    <Stack w="100%">
+      {displayDagreNodeSepSliderInput}
+      {displayDagreEdgeSepSliderInput}
+      {displayDagreRankSepSliderInput}
+      {displayDagreMarginXSliderInput}
+      {displayDagreMarginYSliderInput}
+      {displayDagreMinLenSliderInput}
+      {displayDagreWeightSliderInput}
+      {displayDagreLabelOffsetSliderInput}
+    </Stack>
+  );
+
+  const displayDagreLayoutSelectsSection = (
+    <Stack w="100%">
+      {displayDagreRankDirSelectInput}
+      {displayDagreRankAlignSelectInput}
+      {displayDagreRankerSelectInput}
+      {displayDagreLabelPosSelectInput}
+    </Stack>
+  );
+
+  const displayDagreLayoutSection = (
+    <Stack w="100%">
+      {displayDagreLayoutSlidersSection}
+      {displayDagreLayoutSelectsSection}
+    </Stack>
+  );
+
+  const displayGraphBuilder = (
     <GraphBuilderWrapper
       layoutedNodes={layoutedNodes}
       layoutedEdges={layoutedEdges}
     />
   );
 
+  const displayLayoutAndGraph = (
+    <Grid columns={10}>
+      <Grid.Col span={3}>{displayDagreLayoutSection}</Grid.Col>
+      <Grid.Col span={7}>{displayGraphBuilder}</Grid.Col>
+    </Grid>
+  );
+
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input display ━┛
   return (
     <Stack w="100%">
       {displayFilterCheckboxAccordion}
-      <Group>
-        <Button
-          variant="outline"
-          onClick={() => {
-            directoryDispatch({
-              type: directoryAction.setDagreRankDir,
-              payload: 'LR',
-            });
-          }}
-        >
-          set horizontal
-        </Button>
-        <Button
-          variant="outline"
-          onClick={() => {
-            directoryDispatch({
-              type: directoryAction.setDagreRankDir,
-              payload: 'TB',
-            });
-          }}
-        >
-          set vertical
-        </Button>
-      </Group>
-      {displayNodeBuilder}
+      {displayLayoutAndGraph}
     </Stack>
   );
 }

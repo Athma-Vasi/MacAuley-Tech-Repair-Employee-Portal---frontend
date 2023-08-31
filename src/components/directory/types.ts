@@ -39,7 +39,7 @@ type DirectoryUserDocument = {
 };
 
 type DagreRankDir = 'TB' | 'BT' | 'LR' | 'RL';
-type DagreRankAlign = 'UL' | 'UR' | 'DL' | 'DR' | undefined;
+type DagreRankAlign = 'UL' | 'UR' | 'DL' | 'DR' | 'undefined';
 type DagreRankerAlgorithm = 'network-simplex' | 'tight-tree' | 'longest-path';
 type DagreLabelPos = 'l' | 'c' | 'r';
 
@@ -78,7 +78,7 @@ type DirectoryState = {
 
   // dagre layout options
   dagreRankDir: DagreRankDir;
-  dagreRankAlign?: DagreRankAlign;
+  dagreRankAlign: DagreRankAlign;
   dagreNodeSep: number; // default 50
   dagreEdgeSep: number; // default 10
   dagreRankSep: number; // default 50

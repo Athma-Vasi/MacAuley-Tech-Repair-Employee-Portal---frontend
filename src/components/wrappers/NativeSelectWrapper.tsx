@@ -10,7 +10,7 @@ type AccessibleSelectInputCreatorInfo = {
   description: string;
   describedBy?: string;
   disabled?: boolean;
-  value: string;
+  value?: string;
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   withAsterisk?: boolean;
   ref?: RefObject<HTMLSelectElement>;

@@ -1,4 +1,4 @@
-import { Flex, Grid, Group, Radio } from '@mantine/core';
+import { Flex, Grid, Group, MantineNumberSize, Radio } from '@mantine/core';
 import React, { ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
@@ -108,6 +108,7 @@ type AccessibleRadioGroupInputCreatorInfo = {
     label: string;
   }>;
   columns?: number;
+  widthRadioGroup?: MantineNumberSize;
 };
 
 type RadioGroupInputsWrapperProps = {
@@ -122,6 +123,7 @@ function RadioGroupInputsWrapper({
   } = useGlobalState();
 
   const {
+    ariaRequired = false,
     columns,
     dataObjectArray,
     description,
@@ -129,12 +131,12 @@ function RadioGroupInputsWrapper({
     semanticName,
     key = semanticName,
     label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
-    ariaRequired = false,
-    value,
+    name = semanticName,
     required = false,
     ref = null,
+    value,
     withAsterisk = required,
-    name = semanticName,
+    widthRadioGroup = '100%',
   } = creatorInfoObject;
 
   const radioInputsSize = 'sm';
@@ -153,31 +155,9 @@ function RadioGroupInputsWrapper({
       required={required}
       ref={ref}
       withAsterisk={withAsterisk}
-      w="100%"
+      w={widthRadioGroup}
       id={name}
     >
-      {/* <Grid
-        columns={
-          columns
-            ? columns
-            : width < 480
-            ? 1
-            : width < 768
-            ? 2
-            : width < 1440
-            ? 3
-            : 4
-        }
-        p={padding}
-      >
-        {dataObjectArray?.map(({ value, label }, idx) => {
-          return (
-            <Grid.Col span={1} key={`${key}-${idx}-${label}-${value}`}>
-              <Radio key={value} value={value} label={label} />
-            </Grid.Col>
-          );
-        })}
-      </Grid> */}
       <Flex
         direction="column"
         align="flex-start"

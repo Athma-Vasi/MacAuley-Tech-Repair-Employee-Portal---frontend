@@ -36,7 +36,7 @@ const initialDirectoryState: DirectoryState = {
 
   // dagre layout options
   dagreRankDir: 'TB',
-  dagreRankAlign: undefined,
+  dagreRankAlign: 'undefined',
   dagreNodeSep: 50, // default 50
   dagreEdgeSep: 10, // default 10
   dagreRankSep: 50, // default 50
@@ -274,6 +274,7 @@ function directoryReducer(
         ...state,
         dagreRankAlign: action.payload,
       };
+
     case directoryAction.setDagreNodeSep:
       return {
         ...state,
