@@ -1,55 +1,87 @@
 import 'reactflow/dist/style.css';
 
-import { Flex } from '@mantine/core';
+import { Button, Flex } from '@mantine/core';
 
-import { FlowEdge, FlowNode, GraphBuilderProps } from './types';
-
-import React, { useCallback } from 'react';
 import ReactFlow, {
-  addEdge,
-  ConnectionLineType,
-  Panel,
-  useNodesState,
-  useEdgesState,
   Background,
   Controls,
   Edge,
   Node,
+  Panel,
+  useReactFlow,
+  ReactFlowProvider,
 } from 'reactflow';
-import dagre from 'dagre';
-import { returnDagreLayoutedElements } from './utils';
 
-function GraphBuilder({ initialEdges, initialNodes }: GraphBuilderProps) {
-  const { nodes, edges } = returnDagreLayoutedElements({
-    edges: initialEdges,
-    nodes: initialNodes,
-    direction: 'LR',
-  });
+import { useEffect } from 'react';
+
+type GraphBuilderProps = {
+  layoutedNodes: Node[];
+  layoutedEdges: Edge[];
+};
+
+function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
+  // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  const reactFlowInstance = useReactFlow();
+
+  // ━━━━━ end hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+  // ┏━ begin useEffects ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  useEffect(() => {
+    reactFlowInstance.setViewport({
+      x: 0,
+      y: 0,
+      zoom: 1,
+    });
+
+    reactFlowInstance.fitView({
+      minZoom: 0.1,
+      maxZoom: 2,
+    });
+  }, [layoutedEdges, layoutedNodes, reactFlowInstance]);
+
+  const displayReactFlow = (
+    <ReactFlow nodes={layoutedNodes} edges={layoutedEdges} fitView>
+      <Background />
+      <Controls
+        onZoomIn={() => {
+          reactFlowInstance.zoomIn();
+        }}
+      />
+      <Panel position="top-right">
+        <Button variant="outline">dummy</Button>
+      </Panel>
+    </ReactFlow>
+  );
 
   return (
-    <Flex w="75vw" h="75vh" style={{ outline: '1px solid brown' }}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        // onNodesChange={onNodesChange}
-        // onEdgesChange={onEdgesChange}
-        // onConnect={onConnect}
-        // connectionLineType={ConnectionLineType.SmoothStep}
-        fitView
-      >
-        <Background />
-        <Controls />
-        {/* <Panel position="top-right">
-          <button type="button" onClick={() => onLayout('TB')}>
-            vertical layout
-          </button>
-          <button type="button" onClick={() => onLayout('LR')}>
-            horizontal layout
-          </button>
-        </Panel> */}
-      </ReactFlow>
+    <Flex
+      w="75vw"
+      h="75vh"
+      style={{ outline: '1px solid brown' }}
+      direction="column"
+    >
+      {/* {displayButtons} */}
+      {displayReactFlow}
     </Flex>
   );
 }
 
-export default GraphBuilder;
+// done in order to use the react flow hooks
+export default function GraphBuilderWrapper({
+  layoutedEdges = [],
+  layoutedNodes = [],
+}: {
+  layoutedEdges?: Edge[];
+  layoutedNodes?: Node[];
+}) {
+  return (
+    <ReactFlowProvider>
+      <GraphBuilder
+        layoutedEdges={layoutedEdges}
+        layoutedNodes={layoutedNodes}
+      />
+    </ReactFlowProvider>
+  );
+}

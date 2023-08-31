@@ -30,7 +30,23 @@ const initialDirectoryState: DirectoryState = {
   triggerSetDepartmentsNodesAndEdges: false,
   departmentsNodesAndEdges: {} as DepartmentsNodesAndEdges,
 
-  layoutDirection: 'LR',
+  layoutedNodes: [],
+  layoutedEdges: [],
+  triggerSetLayoutedNodesAndEdges: false,
+
+  // dagre layout options
+  dagreRankDir: 'TB',
+  dagreRankAlign: undefined,
+  dagreNodeSep: 50, // default 50
+  dagreEdgeSep: 10, // default 10
+  dagreRankSep: 50, // default 50
+  dagreMarginX: 0, // default 0
+  dagreMarginY: 0, // default 0
+  dagreRanker: 'network-simplex', // default 'network-simplex'
+  dagreMinLen: 1, // minimum edge length default: 1
+  dagreWeight: 1, // default: 1
+  dagreLabelPos: 'r', // default: 'r'
+  dagreLabelOffset: 10, // default: 10
 
   isError: false,
   errorMessage: '',
@@ -52,11 +68,26 @@ const directoryAction: DirectoryAction = {
   setFilterByStoreLocation: 'setFilterByStoreLocation',
   setFilteredDepartmentsNodesAndEdges: 'setFilteredDepartmentsNodesAndEdges',
 
-  setTriggerSetDepartmentsNodesAndEdges:
-    'setTriggerSetDepartmentsNodesAndEdges',
+  triggerSetDepartmentsNodesAndEdges: 'triggerSetDepartmentsNodesAndEdges',
   setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges',
 
-  setLayoutDirection: 'setLayoutDirection',
+  setLayoutedNodes: 'setLayoutedNodes',
+  setLayoutedEdges: 'setLayoutedEdges',
+  triggerSetLayoutedNodesAndEdges: 'triggerSetLayoutedNodesAndEdges',
+
+  // dagre layout options
+  setDagreRankDir: 'setDagreRankDir',
+  setDagreRankAlign: 'setDagreRankAlign',
+  setDagreNodeSep: 'setDagreNodeSep',
+  setDagreEdgeSep: 'setDagreEdgeSep',
+  setDagreRankSep: 'setDagreRankSep',
+  setDagreMarginX: 'setDagreMarginX',
+  setDagreMarginY: 'setDagreMarginY',
+  setDagreRanker: 'setDagreRanker',
+  setDagreMinLen: 'setDagreMinLen',
+  setDagreWeight: 'setDagreWeight',
+  setDagreLabelPos: 'setDagreLabelPos',
+  setDagreLabelOffset: 'setDagreLabelOffset',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -123,46 +154,8 @@ function directoryReducer(
     }
 
     case directoryAction.setFilterByDepartment: {
-      // const filterByDepartment = action.payload;
-
-      // console.log('filterByDepartment', filterByDepartment);
-
-      // if (filterByDepartment === 'All Departments') {
-      //   return { ...state, filterByDepartment };
-      // }
-
-      // // only show the selected department
-      // const propertyDescriptor: PropertyDescriptor = {
-      //   enumerable: true,
-      //   configurable: true,
-      //   writable: true,
-      // };
-
-      // const departmentsNodesAndEdges = Object.entries(
-      //   state.departmentsNodesAndEdges
-      // ).reduce(
-      //   (
-      //     departmentsNodesAndEdgesAcc: DepartmentsNodesAndEdges,
-      //     [department, { nodes, edges }]
-      //   ) => {
-      //     if (department === filterByDepartment) {
-      //       Object.defineProperty(departmentsNodesAndEdgesAcc, department, {
-      //         ...propertyDescriptor,
-      //         value: { nodes, edges },
-      //       });
-      //     }
-
-      //     return departmentsNodesAndEdgesAcc;
-      //   },
-      //   Object.create(null)
-      // );
-
-      // return {
-      //   ...state,
-      //   filterByDepartment,
-      //   departmentsNodesAndEdges,
-      // };
-      return { ...state };
+      const filterByDepartment = action.payload;
+      return { ...state, filterByDepartment };
     }
 
     case directoryAction.setFilterByJobPosition:
@@ -211,7 +204,7 @@ function directoryReducer(
       }
     }
 
-    case directoryAction.setTriggerSetDepartmentsNodesAndEdges:
+    case directoryAction.triggerSetDepartmentsNodesAndEdges:
       return { ...state, triggerSetDepartmentsNodesAndEdges: action.payload };
 
     case directoryAction.setDepartmentsNodesAndEdges: {
@@ -252,8 +245,85 @@ function directoryReducer(
       }
     }
 
-    case directoryAction.setLayoutDirection:
-      return { ...state, layoutDirection: action.payload };
+    case directoryAction.setLayoutedNodes:
+      return {
+        ...state,
+        layoutedNodes: action.payload,
+        triggerSetLayoutedNodesAndEdges: false,
+      };
+    case directoryAction.setLayoutedEdges:
+      return {
+        ...state,
+        layoutedEdges: action.payload,
+        triggerSetLayoutedNodesAndEdges: false,
+      };
+    case directoryAction.triggerSetLayoutedNodesAndEdges:
+      return {
+        ...state,
+        triggerSetLayoutedNodesAndEdges: action.payload,
+      };
+
+    // dagre layout options
+    case directoryAction.setDagreRankDir:
+      return {
+        ...state,
+        dagreRankDir: action.payload,
+      };
+    case directoryAction.setDagreRankAlign:
+      return {
+        ...state,
+        dagreRankAlign: action.payload,
+      };
+    case directoryAction.setDagreNodeSep:
+      return {
+        ...state,
+        dagreNodeSep: action.payload,
+      };
+    case directoryAction.setDagreEdgeSep:
+      return {
+        ...state,
+        dagreEdgeSep: action.payload,
+      };
+    case directoryAction.setDagreRankSep:
+      return {
+        ...state,
+        dagreRankSep: action.payload,
+      };
+    case directoryAction.setDagreMarginX:
+      return {
+        ...state,
+        dagreMarginX: action.payload,
+      };
+    case directoryAction.setDagreMarginY:
+      return {
+        ...state,
+        dagreMarginY: action.payload,
+      };
+    case directoryAction.setDagreRanker:
+      return {
+        ...state,
+        dagreRanker: action.payload,
+      };
+    case directoryAction.setDagreMinLen:
+      return {
+        ...state,
+        dagreMinLen: action.payload,
+      };
+    case directoryAction.setDagreWeight:
+      return {
+        ...state,
+        dagreWeight: action.payload,
+      };
+    case directoryAction.setDagreLabelPos:
+      return {
+        ...state,
+        dagreLabelPos: action.payload,
+      };
+    case directoryAction.setDagreLabelOffset:
+      return {
+        ...state,
+        dagreLabelOffset: action.payload,
+      };
 
     case directoryAction.setIsError:
       return { ...state, isError: action.payload };

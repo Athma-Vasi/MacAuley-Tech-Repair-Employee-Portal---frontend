@@ -1,4 +1,4 @@
-import { Checkbox, Flex, Grid, Group } from '@mantine/core';
+import { Checkbox, Flex, Grid, Group, MantineNumberSize } from '@mantine/core';
 import { ChangeEvent, ReactNode, RefObject } from 'react';
 
 import { useGlobalState } from '../../hooks';
@@ -91,6 +91,7 @@ type AccessibleCheckboxGroupInputCreatorInfo = {
     value: string;
     label: string;
   }>;
+  widthCheckbox?: MantineNumberSize;
 };
 
 type CheckboxGroupInputsWrapperProps = {
@@ -117,6 +118,7 @@ function CheckboxGroupInputsWrapper({
     required = false,
     ref = null,
     withAsterisk = required,
+    widthCheckbox = '100%',
   } = creatorInfoObject;
 
   const checkboxInputSize = 'sm';
@@ -135,26 +137,8 @@ function CheckboxGroupInputsWrapper({
       required={required}
       ref={ref}
       withAsterisk={withAsterisk}
+      w={widthCheckbox}
     >
-      {/* <Grid
-        columns={width < 480 ? 1 : width < 768 ? 2 : width < 1440 ? 3 : 4}
-        p={padding}
-      >
-        {dataObjectArray?.map(({ value, label }, index) => {
-          return (
-            <Grid.Col span={1} key={`${key}-${index}${value}-${label}`}>
-              <Checkbox
-                name={value}
-                value={value}
-                label={label}
-                disabled={
-                  disabledValuesSet.has(value) || disabledValuesSet.has(label)
-                }
-              />
-            </Grid.Col>
-          );
-        })}
-      </Grid> */}
       <Flex
         direction="column"
         align="flex-start"

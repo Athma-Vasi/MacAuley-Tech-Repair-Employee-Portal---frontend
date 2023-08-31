@@ -8,16 +8,14 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import dagre from 'dagre';
 import { TbBrandMastodon, TbPhotoOff } from 'react-icons/tb';
 import {
   TiSocialDribbble,
   TiSocialFlickr,
   TiSocialLinkedin,
 } from 'react-icons/ti';
-import { Edge, Node } from 'reactflow';
 
-import { DirectoryUserDocument, FlowNodesLayoutDirection } from './types';
+import { DirectoryUserDocument } from './types';
 
 type ReturnDirectoryProfileCardInput = {
   userDocument: DirectoryUserDocument;

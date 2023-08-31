@@ -1,4 +1,12 @@
-import { Accordion, Card, Flex, Group, Stack, Text } from '@mantine/core';
+import {
+  Accordion,
+  Button,
+  Card,
+  Flex,
+  Group,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import localforage from 'localforage';
 import { ChangeEvent, useEffect, useReducer } from 'react';
@@ -51,6 +59,8 @@ import {
   DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
 } from './constants';
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
+import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
+import { returnDagreLayoutedElements } from '../graphBuilder/utils';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -68,9 +78,26 @@ function Directory() {
     filterByJobPosition,
     filterByStoreLocation,
 
-    layoutDirection,
     triggerSetDepartmentsNodesAndEdges,
     departmentsNodesAndEdges,
+
+    layoutedNodes,
+    layoutedEdges,
+    triggerSetLayoutedNodesAndEdges,
+
+    // dagre layout options
+    dagreRankDir,
+    dagreRankAlign,
+    dagreNodeSep, // default 50
+    dagreEdgeSep, // default 10
+    dagreRankSep, // default 50
+    dagreMarginX, // default 0
+    dagreMarginY, // default 0
+    dagreRanker, // default 'network-simplex'
+    dagreMinLen, // minimum edge length default
+    dagreWeight, // default: 1
+    dagreLabelPos, // default: 'r'
+    dagreLabelOffset, // default: 10
   } = directoryState;
 
   const {
@@ -255,7 +282,7 @@ function Directory() {
   //   }
 
   //   directoryDispatch({
-  //     type: directoryAction.setTriggerSetDepartmentsNodesAndEdges,
+  //     type: directoryAction.triggerSetDepartmentsNodesAndEdges,
   //     payload: true,
   //   });
   // }, [groupedByDepartment]);
@@ -286,7 +313,7 @@ function Directory() {
       style: { stroke: 'black' },
     };
 
-    // ━━━━━ end defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end defaults ━┛
 
     // ┏━ begin executive management ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -3069,8 +3096,14 @@ function Directory() {
       } finally {
         // set trigger to false
         directoryDispatch({
-          type: directoryAction.setTriggerSetDepartmentsNodesAndEdges,
+          type: directoryAction.triggerSetDepartmentsNodesAndEdges,
           payload: false,
+        });
+
+        // set trigger layouted elements to true
+        directoryDispatch({
+          type: directoryAction.triggerSetLayoutedNodesAndEdges,
+          payload: true,
         });
       }
     }
@@ -3083,9 +3116,77 @@ function Directory() {
     filterByDepartment,
     filterByJobPosition,
     filterByStoreLocation,
-    layoutDirection,
   ]);
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end main nodes & edges effect ━┛
+
+  useEffect(() => {
+    const [initialNodes, initialEdges] = Object.entries(
+      departmentsNodesAndEdges
+    ).reduce(
+      (initialNodesAndEdgesAcc: [Node[], Edge[]], departmentNodesAndEdges) => {
+        const [_, nodesAndEdges] = departmentNodesAndEdges;
+
+        const departmentNodes = nodesAndEdges.nodes;
+        const departmentEdges = nodesAndEdges.edges;
+
+        departmentNodes.forEach((node: Node) => {
+          initialNodesAndEdgesAcc[0].push(node);
+        });
+        departmentEdges.forEach((edge: Edge) => {
+          initialNodesAndEdgesAcc[1].push(edge);
+        });
+
+        return initialNodesAndEdgesAcc;
+      },
+      [[], []]
+    );
+
+    console.log('initialNodes', initialNodes);
+    console.log('initialEdges', initialEdges);
+
+    const { nodes: layoutedNodes, edges: layoutedEdges } =
+      returnDagreLayoutedElements({
+        edges: initialEdges,
+        nodes: initialNodes,
+        rankdir: dagreRankDir,
+        align: dagreRankAlign,
+        nodesep: dagreNodeSep,
+        edgesep: dagreEdgeSep,
+        ranksep: dagreRankSep,
+        marginx: dagreMarginX,
+        marginy: dagreMarginY,
+        ranker: dagreRanker,
+        minlen: dagreMinLen,
+        weight: dagreWeight,
+        labelpos: dagreLabelPos,
+        labeloffset: dagreLabelOffset,
+      });
+
+    directoryDispatch({
+      type: directoryAction.setLayoutedNodes,
+      payload: layoutedNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setLayoutedEdges,
+      payload: layoutedEdges,
+    });
+  }, [
+    dagreEdgeSep,
+    dagreLabelOffset,
+    dagreLabelPos,
+    dagreMarginX,
+    dagreMarginY,
+    dagreMinLen,
+    dagreNodeSep,
+    dagreRankAlign,
+    dagreRankDir,
+    dagreRankSep,
+    dagreRanker,
+    dagreWeight,
+    departmentsNodesAndEdges,
+    triggerSetLayoutedNodesAndEdges,
+  ]);
 
   useEffect(() => {
     logState({
@@ -3093,6 +3194,8 @@ function Directory() {
       groupLabel: 'directoryState in Directory',
     });
   }, [directoryState]);
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end useEffect ━┛
 
   // ┏━ begin accessible text elements ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -3237,35 +3340,41 @@ function Directory() {
     </Accordion>
   );
 
-  const [initialNodes, initialEdges] = Object.entries(
-    departmentsNodesAndEdges
-  ).reduce(
-    (initialNodesAndEdgesAcc: [Node[], Edge[]], departmentNodesAndEdges) => {
-      const [_, nodesAndEdges] = departmentNodesAndEdges;
-
-      const departmentNodes = nodesAndEdges.nodes;
-      const departmentEdges = nodesAndEdges.edges;
-
-      departmentNodes.forEach((node: Node) => {
-        initialNodesAndEdgesAcc[0].push(node);
-      });
-      departmentEdges.forEach((edge: Edge) => {
-        initialNodesAndEdgesAcc[1].push(edge);
-      });
-
-      return initialNodesAndEdgesAcc;
-    },
-    [[], []]
-  );
-
   const displayNodeBuilder = (
-    <GraphBuilder initialNodes={initialNodes} initialEdges={initialEdges} />
+    <GraphBuilderWrapper
+      layoutedNodes={layoutedNodes}
+      layoutedEdges={layoutedEdges}
+    />
   );
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input display ━┛
   return (
     <Stack w="100%">
       {displayFilterCheckboxAccordion}
+      <Group>
+        <Button
+          variant="outline"
+          onClick={() => {
+            directoryDispatch({
+              type: directoryAction.setDagreRankDir,
+              payload: 'LR',
+            });
+          }}
+        >
+          set horizontal
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => {
+            directoryDispatch({
+              type: directoryAction.setDagreRankDir,
+              payload: 'TB',
+            });
+          }}
+        >
+          set vertical
+        </Button>
+      </Group>
       {displayNodeBuilder}
     </Stack>
   );
