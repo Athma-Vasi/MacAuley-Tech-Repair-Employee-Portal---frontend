@@ -17,6 +17,7 @@ import { Edge, Node } from 'reactflow';
 
 import {
   DEPARTMENT_DATA,
+  DEPARTMENT_JOB_POSITION_MAP,
   JOB_POSITION_DATA,
   PROPERTY_DESCRIPTOR,
   STORE_LOCATION_DATA,
@@ -29,7 +30,12 @@ import {
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSliderInputElements,
 } from '../../jsxCreators';
-import { Department, JobPosition, StoreLocation } from '../../types';
+import {
+  Department,
+  JobPosition,
+  SelectInputData,
+  StoreLocation,
+} from '../../types';
 import {
   addFieldsToObject,
   groupByField,
@@ -89,8 +95,11 @@ function Directory() {
     groupedByStoreLocation,
 
     filterByDepartment,
+    filteredDepartmentsNodesAndEdges,
     filterByJobPosition,
+    filteredJobPositionsNodesAndEdges,
     filterByStoreLocation,
+    filteredStoreLocationsNodesAndEdges,
 
     triggerSetDepartmentsNodesAndEdges,
     departmentsNodesAndEdges,
@@ -344,7 +353,7 @@ function Directory() {
           });
 
           const executiveManagementNode: Node = {
-            id: _id,
+            id: jobPosition,
             type:
               jobPosition === 'Chief Executive Officer' ? 'input' : 'default',
             data: { label: directoryProfileCard },
@@ -359,10 +368,10 @@ function Directory() {
       );
 
       const ceoId =
-        executiveManagementDocs.find(
-          (userDocument: DirectoryUserDocument) =>
-            userDocument.jobPosition === 'Chief Executive Officer'
-        )?._id ?? '';
+        executiveManagementDocsNodes.find(
+          (executiveManagementDocNode) =>
+            executiveManagementDocNode.id === 'Chief Executive Officer'
+        )?.id ?? '';
 
       const executiveManagementEdges = executiveManagementDocs.reduce(
         (
@@ -377,9 +386,9 @@ function Directory() {
 
           const executiveManagementEdge: Edge = {
             ...edgeDefaults,
-            id: `${ceoId}-${_id}`, // source-target
+            id: `${ceoId}-${jobPosition}`, // source-target
             source: ceoId,
-            target: _id,
+            target: jobPosition,
           };
           executiveManagementEdgesAcc.push(executiveManagementEdge);
 
@@ -621,11 +630,7 @@ function Directory() {
             ];
 
           // find the coo profile node id
-          const cooProfileNodeId =
-            groupedByDepartment['Executive Management'].find(
-              (userDocument: DirectoryUserDocument) =>
-                userDocument.jobPosition === 'Chief Operations Officer'
-            )?._id ?? '';
+          const cooProfileNodeId = 'Chief Operations Officer';
 
           // find the store manager profile node id for the store location
           const storeManagerProfileNodeId =
@@ -1076,11 +1081,7 @@ function Directory() {
 
       // create edges
       // find the chief human resources officer profile node id
-      const chiefHumanResourcesOfficerId =
-        groupedByDepartment['Executive Management'].find(
-          (userDocument: DirectoryUserDocument) =>
-            userDocument.jobPosition === 'Chief Human Resources Officer'
-        )?._id ?? '';
+      const chiefHumanResourcesOfficerId = 'Chief Human Resources Officer';
 
       // find the human resources manager profile node id
       const humanResourcesManagerId =
@@ -1231,11 +1232,7 @@ function Directory() {
 
       // create edges
       // find the chief sales officer profile node id
-      const chiefSalesOfficerId =
-        groupedByDepartment['Executive Management'].find(
-          (userDocument: DirectoryUserDocument) =>
-            userDocument.jobPosition === 'Chief Sales Officer'
-        )?._id ?? '';
+      const chiefSalesOfficerId = 'Chief Sales Officer';
 
       // find the sales manager profile node id
       const salesManagerId =
@@ -1378,11 +1375,7 @@ function Directory() {
 
       // create edges
       // find the chief marketing officer profile node id
-      const chiefMarketingOfficerId =
-        groupedByDepartment['Executive Management'].find(
-          (userDocument: DirectoryUserDocument) =>
-            userDocument.jobPosition === 'Chief Marketing Officer'
-        )?._id ?? '';
+      const chiefMarketingOfficerId = 'Chief Marketing Officer';
 
       // find the marketing manager profile node id
       const marketingManagerId =
@@ -1538,11 +1531,7 @@ function Directory() {
 
       // create edges
       // find the chief technology officer profile node id
-      const chiefTechnologyOfficerId =
-        groupedByDepartment['Executive Management'].find(
-          (userDocument: DirectoryUserDocument) =>
-            userDocument.jobPosition === 'Chief Technology Officer'
-        )?._id ?? '';
+      const chiefTechnologyOfficerId = 'Chief Technology Officer';
 
       // find the information technology manager profile node id
       const informationTechnologyManagerId =
@@ -1698,11 +1687,7 @@ function Directory() {
 
       // create edges
       // find the chief financial officer profile node id
-      const chiefFinancialOfficerId =
-        groupedByDepartment['Executive Management'].find(
-          (userDocument: DirectoryUserDocument) =>
-            userDocument.jobPosition === 'Chief Financial Officer'
-        )?._id ?? '';
+      const chiefFinancialOfficerId = 'Chief Financial Officer';
 
       // find the accounting manager profile node id
       const accountingManagerId =
@@ -3084,6 +3069,7 @@ function Directory() {
     // utilizes the micro-task queue for performance
     async function triggerDepartmentNodesAndEdgesCreation() {
       try {
+        console.log('triggerDepartmentNodesAndEdgesCreation');
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
           setStoreAdministrationEdgesAndNodes(),
@@ -3109,6 +3095,17 @@ function Directory() {
           payload: false,
         });
 
+        // triggers state update when filtered by department layout is changed
+        // because departmentNodesAndEdges are shallow copied
+        directoryDispatch({
+          type: directoryAction.setFilterByDepartment,
+          payload: filterByDepartment,
+        });
+        directoryDispatch({
+          type: directoryAction.setFilterByJobPosition,
+          payload: filterByJobPosition,
+        });
+
         // set trigger layouted elements to true
         directoryDispatch({
           type: directoryAction.triggerSetLayoutedNodesAndEdges,
@@ -3122,13 +3119,27 @@ function Directory() {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end concurrent fn calls ━┛
   }, [
     triggerSetDepartmentsNodesAndEdges,
-    filterByDepartment,
-    filterByJobPosition,
-    filterByStoreLocation,
+    dagreMinLen,
+    dagreNodeSep,
+    dagreRankAlign,
+    dagreRankDir,
+    dagreRankSep,
+    dagreRanker,
+    dagreWeight,
   ]);
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end main nodes & edges effect ━┛
 
   useEffect(() => {
+    // only update state when the following are not null
+    if (
+      filteredDepartmentsNodesAndEdges ||
+      filteredJobPositionsNodesAndEdges ||
+      filteredStoreLocationsNodesAndEdges
+    ) {
+      return;
+    }
+
+    // updates all departments nodes and edges
     const [initialNodes, initialEdges] = Object.entries(
       departmentsNodesAndEdges
     ).reduce(
@@ -3153,8 +3164,54 @@ function Directory() {
       [[], []]
     );
 
-    console.log('initialNodes', initialNodes);
-    console.log('initialEdges', initialEdges);
+    const { nodes: layoutedNodes, edges: layoutedEdges } =
+      returnDagreLayoutedElements({
+        edges: initialEdges,
+        nodes: initialNodes,
+        rankdir: dagreRankDir,
+        align: dagreRankAlign === 'undefined' ? undefined : dagreRankAlign,
+        nodesep: dagreNodeSep,
+        ranksep: dagreRankSep,
+        ranker: dagreRanker,
+        minlen: dagreMinLen,
+        weight: dagreWeight,
+      });
+
+    directoryDispatch({
+      type: directoryAction.setLayoutedNodes,
+      payload: layoutedNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setLayoutedEdges,
+      payload: layoutedEdges,
+    });
+
+    // set trigger to false
+    directoryDispatch({
+      type: directoryAction.triggerSetLayoutedNodesAndEdges,
+      payload: false,
+    });
+  }, [
+    dagreMinLen,
+    dagreNodeSep,
+    dagreRankAlign,
+    dagreRankDir,
+    dagreRankSep,
+    dagreRanker,
+    dagreWeight,
+    departmentsNodesAndEdges,
+    triggerSetLayoutedNodesAndEdges,
+  ]);
+
+  // update filteredDepartmentsNodesAndEdges
+  useEffect(() => {
+    if (!filteredDepartmentsNodesAndEdges) {
+      return;
+    }
+
+    const initialNodes = filteredDepartmentsNodesAndEdges.nodes;
+    const initialEdges = filteredDepartmentsNodesAndEdges.edges;
 
     const { nodes: layoutedNodes, edges: layoutedEdges } =
       returnDagreLayoutedElements({
@@ -3178,6 +3235,12 @@ function Directory() {
       type: directoryAction.setLayoutedEdges,
       payload: layoutedEdges,
     });
+
+    // set trigger to false
+    directoryDispatch({
+      type: directoryAction.triggerSetLayoutedNodesAndEdges,
+      payload: false,
+    });
   }, [
     dagreMinLen,
     dagreNodeSep,
@@ -3186,8 +3249,57 @@ function Directory() {
     dagreRankSep,
     dagreRanker,
     dagreWeight,
-    departmentsNodesAndEdges,
-    triggerSetLayoutedNodesAndEdges,
+    filterByDepartment,
+    filteredDepartmentsNodesAndEdges,
+  ]);
+
+  // update filteredJobPositionsNodesAndEdges
+  useEffect(() => {
+    if (!filteredJobPositionsNodesAndEdges) {
+      return;
+    }
+
+    const initialNodes = filteredJobPositionsNodesAndEdges.nodes;
+    const initialEdges = filteredJobPositionsNodesAndEdges.edges;
+
+    const { nodes: layoutedNodes, edges: layoutedEdges } =
+      returnDagreLayoutedElements({
+        edges: initialEdges,
+        nodes: initialNodes,
+        rankdir: dagreRankDir,
+        align: dagreRankAlign === 'undefined' ? undefined : dagreRankAlign,
+        nodesep: dagreNodeSep,
+        ranksep: dagreRankSep,
+        ranker: dagreRanker,
+        minlen: dagreMinLen,
+        weight: dagreWeight,
+      });
+
+    directoryDispatch({
+      type: directoryAction.setLayoutedNodes,
+      payload: layoutedNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setLayoutedEdges,
+      payload: layoutedEdges,
+    });
+
+    // set trigger to false
+    directoryDispatch({
+      type: directoryAction.triggerSetLayoutedNodesAndEdges,
+      payload: false,
+    });
+  }, [
+    dagreMinLen,
+    dagreNodeSep,
+    dagreRankAlign,
+    dagreRankDir,
+    dagreRankSep,
+    dagreRanker,
+    dagreWeight,
+    filterByJobPosition,
+    filteredJobPositionsNodesAndEdges,
   ]);
 
   useEffect(() => {
@@ -3287,10 +3399,26 @@ function Directory() {
   //     semanticName: 'filter by job position',
   //   };
 
+  let filterByJobPositionSelectData =
+    filterByDepartment === 'All Departments'
+      ? DIRECTORY_JOB_POSITION_SELECT_OPTIONS
+      : DEPARTMENT_JOB_POSITION_MAP.get(filterByDepartment) ??
+        DIRECTORY_JOB_POSITION_SELECT_OPTIONS;
+
+  // add 'All Job Positions' default to select data when a filterByDepartment value is chosen
+  filterByJobPositionSelectData =
+    filterByDepartment === 'All Departments'
+      ? filterByJobPositionSelectData
+      : ([
+          ...filterByJobPositionSelectData,
+          { label: 'All Job Positions', value: 'All Job Positions' },
+        ] as SelectInputData);
+
   const filterByJobPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
-      data: DIRECTORY_JOB_POSITION_SELECT_OPTIONS,
+      data: filterByJobPositionSelectData,
       description: 'Show job position employees',
+      disabled: filterByDepartment === 'All Departments',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         directoryDispatch({
           type: directoryAction.setFilterByJobPosition,
@@ -3318,9 +3446,19 @@ function Directory() {
   //     semanticName: 'filter by store location',
   //   };
 
+  const isFilterByStoreLocationSelectDisabled = [
+    'All Departments',
+    'Executive Management',
+    'Accounting',
+    'Human Resources',
+    'Sales and Marketing',
+    'Information Technology',
+  ].includes(filterByDepartment);
+
   const filterByStoreLocationSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       data: DIRECTORY_STORE_LOCATION_SELECT_OPTIONS,
+      disabled: isFilterByStoreLocationSelectDisabled,
       description: 'Show store location employees',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         directoryDispatch({
@@ -3346,7 +3484,7 @@ function Directory() {
     kind: 'slider',
     ariaLabel: 'node separation',
     label: (value) => <Text>{value} px</Text>,
-    max: 200,
+    max: 300,
     min: 25,
     step: 1,
     value: dagreNodeSep,
@@ -3364,7 +3502,7 @@ function Directory() {
     kind: 'slider',
     ariaLabel: 'rank separation',
     label: (value) => <Text>{value} px</Text>,
-    max: 200,
+    max: 300,
     min: 25,
     step: 1,
     value: dagreRankSep,

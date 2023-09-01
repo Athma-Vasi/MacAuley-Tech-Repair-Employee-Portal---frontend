@@ -46,34 +46,32 @@ type DagreLabelPos = 'l' | 'c' | 'r';
 type FetchUsersDirectoryResponse =
   ResourceRequestServerResponse<DirectoryUserDocument>;
 
+// default keys needed for select inputs
 type DepartmentsWithDefaultKey = Department | 'All Departments';
 type JobPositionsWithDefaultKey = JobPosition | 'All Job Positions';
 type StoreLocationsWithDefaultKey = StoreLocation | 'All Store Locations';
 
 type DepartmentsNodesAndEdges = Record<
-  DepartmentsWithDefaultKey,
+  Department,
   { nodes: Node[]; edges: Edge[] }
 >;
-type FilteredDepartmentNodesAndEdges = Partial<DepartmentsNodesAndEdges>;
+
+type FilteredNodesAndEdges = {
+  nodes: Node[];
+  edges: Edge[];
+};
 
 type DirectoryState = {
-  groupedByDepartment: Record<
-    DepartmentsWithDefaultKey,
-    DirectoryUserDocument[]
-  >;
-  groupedByJobPositon: Record<
-    JobPositionsWithDefaultKey,
-    DirectoryUserDocument[]
-  >;
-  groupedByStoreLocation: Record<
-    StoreLocationsWithDefaultKey,
-    DirectoryUserDocument[]
-  >;
+  groupedByDepartment: Record<Department, DirectoryUserDocument[]>;
+  groupedByJobPositon: Record<JobPosition, DirectoryUserDocument[]>;
+  groupedByStoreLocation: Record<StoreLocation, DirectoryUserDocument[]>;
 
   filterByDepartment: DepartmentsWithDefaultKey;
+  filteredDepartmentsNodesAndEdges: FilteredNodesAndEdges | null;
   filterByJobPosition: JobPositionsWithDefaultKey;
+  filteredJobPositionsNodesAndEdges: FilteredNodesAndEdges | null;
   filterByStoreLocation: StoreLocationsWithDefaultKey;
-  filteredDepartmentsNodesAndEdges: FilteredDepartmentNodesAndEdges;
+  filteredStoreLocationsNodesAndEdges: FilteredNodesAndEdges | null;
 
   triggerSetDepartmentsNodesAndEdges: boolean;
   departmentsNodesAndEdges: DepartmentsNodesAndEdges;
@@ -138,8 +136,8 @@ type DirectoryAction = {
 };
 
 type SetDepartmentNodesAndEdgesPayload =
-  | { department: DepartmentsWithDefaultKey; kind: 'nodes'; data: Node[] }
-  | { department: DepartmentsWithDefaultKey; kind: 'edges'; data: Edge[] };
+  | { department: Department; kind: 'nodes'; data: Node[] }
+  | { department: Department; kind: 'edges'; data: Edge[] };
 
 type SetFilteredDepartmentsNodesAndEdgesPayload =
   SetDepartmentNodesAndEdgesPayload;
@@ -243,7 +241,7 @@ export type {
   DirectoryState,
   DirectoryUserDocument,
   FetchUsersDirectoryResponse,
-  FilteredDepartmentNodesAndEdges,
+  FilteredNodesAndEdges,
   JobPositionsWithDefaultKey,
   RemoteDepartmentsProfileNodesObject,
   SetDepartmentNodesAndEdgesPayload,

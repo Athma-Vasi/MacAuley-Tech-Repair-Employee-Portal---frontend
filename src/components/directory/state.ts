@@ -1,3 +1,4 @@
+import { PROPERTY_DESCRIPTOR } from '../../constants/data';
 import {
   Department,
   UserDocument,
@@ -14,8 +15,9 @@ import {
   DirectoryState,
   StoreLocationsWithDefaultKey,
   DirectoryUserDocument,
-  FilteredDepartmentNodesAndEdges,
+  FilteredNodesAndEdges,
 } from './types';
+import type { Node, Edge } from 'reactflow';
 
 const initialDirectoryState: DirectoryState = {
   groupedByDepartment: {} as Record<DepartmentsWithDefaultKey, UserDocument[]>,
@@ -26,9 +28,11 @@ const initialDirectoryState: DirectoryState = {
   >,
 
   filterByDepartment: 'All Departments',
+  filteredDepartmentsNodesAndEdges: null,
   filterByJobPosition: 'All Job Positions',
+  filteredJobPositionsNodesAndEdges: null,
   filterByStoreLocation: 'All Store Locations',
-  filteredDepartmentsNodesAndEdges: {} as FilteredDepartmentNodesAndEdges,
+  filteredStoreLocationsNodesAndEdges: null,
 
   triggerSetDepartmentsNodesAndEdges: false,
   departmentsNodesAndEdges: {} as DepartmentsNodesAndEdges,
@@ -147,63 +151,107 @@ function directoryReducer(
     }
 
     case directoryAction.setFilterByDepartment: {
+      // set filterByDepartment string value to change
       const filterByDepartment = action.payload;
-      return { ...state, filterByDepartment };
+
+      // and set filteredDepartmentsNodesAndEdges based on said value
+      if (filterByDepartment === 'All Departments') {
+        return {
+          ...state,
+          filterByDepartment,
+          filteredDepartmentsNodesAndEdges: null,
+        };
+      }
+
+      const nodesAndEdgesObj =
+        state.departmentsNodesAndEdges[filterByDepartment];
+      // create a new object and assign nodes and edges
+      const filteredDepartmentsNodesAndEdges = Object.entries(
+        nodesAndEdgesObj
+      ).reduce(
+        (filteredDepartmentNodesAndEdgesAcc: FilteredNodesAndEdges, curr) => {
+          const key = curr[0]; // will be 'nodes' or 'edges'
+          const value = curr[1]; // will be Node[] | Edge[]
+
+          Object.defineProperty(filteredDepartmentNodesAndEdgesAcc, key, {
+            ...PROPERTY_DESCRIPTOR,
+            value,
+          });
+
+          return filteredDepartmentNodesAndEdgesAcc;
+        },
+        Object.create(null)
+      );
+
+      return {
+        ...state,
+        filterByDepartment,
+        filteredDepartmentsNodesAndEdges,
+      };
     }
 
-    case directoryAction.setFilterByJobPosition:
-      return { ...state, filterByJobPosition: action.payload };
+    case directoryAction.setFilterByJobPosition: {
+      // set filterByJobPosition string value to change
+      const filterByJobPosition = action.payload;
+
+      // filter by job position select input is only active when filterByDepartment value !== 'All Departments'
+      const filterByDepartment = state.filterByDepartment;
+
+      // and set filteredJobPositionsNodesAndEdges based on said value
+      if (filterByJobPosition === 'All Job Positions') {
+        return {
+          ...state,
+          filterByJobPosition,
+          filteredJobPositionsNodesAndEdges:
+            state.departmentsNodesAndEdges[filterByDepartment as Department],
+        };
+      }
+
+      const { nodes: departmentNodes, edges: departmentEdges } =
+        state.departmentsNodesAndEdges[filterByDepartment as Department];
+
+      const filteredNodes = departmentNodes.filter((node) => {
+        return node.id
+          .toLowerCase()
+          .includes(filterByJobPosition.toLowerCase());
+      });
+
+      const filteredEdges = departmentEdges.filter((edge) => {
+        return edge.id
+          .toLowerCase()
+          .includes(filterByJobPosition.toLowerCase());
+      });
+
+      // create a new object and assign nodes and edges
+      const filteredJobPositionsNodesAndEdges = Object.create(null);
+      Object.defineProperty(filteredJobPositionsNodesAndEdges, 'nodes', {
+        ...PROPERTY_DESCRIPTOR,
+        value: filteredNodes,
+      });
+      Object.defineProperty(filteredJobPositionsNodesAndEdges, 'edges', {
+        ...PROPERTY_DESCRIPTOR,
+        value: filteredEdges,
+      });
+
+      return {
+        ...state,
+        filterByJobPosition,
+        filteredJobPositionsNodesAndEdges,
+        // filteredDepartmentsNodesAndEdges: null,
+      };
+    }
 
     case directoryAction.setFilterByStoreLocation:
       return { ...state, filterByStoreLocation: action.payload };
-
-    case directoryAction.setFilteredDepartmentsNodesAndEdges: {
-      const { department, kind, data } = action.payload;
-
-      // a shallow copy of the object
-      // however, the nodes and edges are built anew upon each change of these state values: groupedByDepartment, any of the filters, and layoutDirection, padding, rowGap and storeLocationsNodes
-      const filteredDepartmentsNodesAndEdges =
-        state.filteredDepartmentsNodesAndEdges;
-
-      switch (kind) {
-        case 'nodes': {
-          Object.defineProperty(filteredDepartmentsNodesAndEdges, department, {
-            ...propertyDescriptor,
-            value: {
-              ...filteredDepartmentsNodesAndEdges[department],
-              nodes: data,
-            },
-          });
-          return {
-            ...state,
-            filteredDepartmentsNodesAndEdges,
-          };
-        }
-        case 'edges': {
-          Object.defineProperty(filteredDepartmentsNodesAndEdges, department, {
-            ...propertyDescriptor,
-            value: {
-              ...filteredDepartmentsNodesAndEdges[department],
-              edges: data,
-            },
-          });
-          return {
-            ...state,
-            filteredDepartmentsNodesAndEdges,
-          };
-        }
-        default:
-          return state;
-      }
-    }
 
     case directoryAction.triggerSetDepartmentsNodesAndEdges:
       return { ...state, triggerSetDepartmentsNodesAndEdges: action.payload };
 
     case directoryAction.setDepartmentsNodesAndEdges: {
-      // separate state from filtered departments because cannot deep copy Node using structuredClone (contains DOM elements)
       const { department, kind, data } = action.payload;
 
+      // cannot deep copy Node using structuredClone (contains DOM elements)
+      // state update cascade is orchestrated to ensure that the nodes and edges are built anew every change
       const departmentsNodesAndEdges = state.departmentsNodesAndEdges;
 
       switch (kind) {
@@ -242,13 +290,11 @@ function directoryReducer(
       return {
         ...state,
         layoutedNodes: action.payload,
-        triggerSetLayoutedNodesAndEdges: false,
       };
     case directoryAction.setLayoutedEdges:
       return {
         ...state,
         layoutedEdges: action.payload,
-        triggerSetLayoutedNodesAndEdges: false,
       };
     case directoryAction.triggerSetLayoutedNodesAndEdges:
       return {
