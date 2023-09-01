@@ -10,9 +10,10 @@ import ReactFlow, {
   Panel,
   useReactFlow,
   ReactFlowProvider,
+  Viewport,
 } from 'reactflow';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type GraphBuilderProps = {
   layoutedNodes: Node[];
@@ -29,15 +30,17 @@ function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
   // ┏━ begin useEffects ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   useEffect(() => {
-    reactFlowInstance.setViewport({
-      x: 0,
-      y: 0,
-      zoom: 1,
+    reactFlowInstance.fitView({
+      padding: 0.1,
+      nodes: layoutedNodes,
+      minZoom: 0.5,
+      maxZoom: 1,
     });
 
-    reactFlowInstance.fitView({
-      minZoom: 0.4,
-      maxZoom: 2,
+    reactFlowInstance.setViewport({
+      x: 100,
+      y: 100,
+      zoom: 0.5,
     });
   }, [layoutedEdges, layoutedNodes, reactFlowInstance]);
 

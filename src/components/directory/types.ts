@@ -107,7 +107,6 @@ type DirectoryAction = {
   setFilterByDepartment: 'setFilterByDepartment';
   setFilterByJobPosition: 'setFilterByJobPosition';
   setFilterByStoreLocation: 'setFilterByStoreLocation';
-  setFilteredDepartmentsNodesAndEdges: 'setFilteredDepartmentsNodesAndEdges';
 
   triggerSetDepartmentsNodesAndEdges: 'triggerSetDepartmentsNodesAndEdges';
   setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges';
@@ -146,10 +145,6 @@ type DirectoryDispatch =
   | {
       type: DirectoryAction['setDepartmentsNodesAndEdges'];
       payload: SetDepartmentNodesAndEdgesPayload;
-    }
-  | {
-      type: DirectoryAction['setFilteredDepartmentsNodesAndEdges'];
-      payload: SetFilteredDepartmentsNodesAndEdgesPayload;
     }
   | {
       type: DirectoryAction['setFilterByDepartment'];

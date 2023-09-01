@@ -68,7 +68,6 @@ const directoryAction: DirectoryAction = {
   setFilterByDepartment: 'setFilterByDepartment',
   setFilterByJobPosition: 'setFilterByJobPosition',
   setFilterByStoreLocation: 'setFilterByStoreLocation',
-  setFilteredDepartmentsNodesAndEdges: 'setFilteredDepartmentsNodesAndEdges',
 
   triggerSetDepartmentsNodesAndEdges: 'triggerSetDepartmentsNodesAndEdges',
   setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges',
@@ -151,7 +150,7 @@ function directoryReducer(
     }
 
     case directoryAction.setFilterByDepartment: {
-      // set filterByDepartment string value to change
+      // set filterByDepartment value
       const filterByDepartment = action.payload;
 
       // and set filteredDepartmentsNodesAndEdges based on said value
@@ -160,6 +159,10 @@ function directoryReducer(
           ...state,
           filterByDepartment,
           filteredDepartmentsNodesAndEdges: null,
+          filterByJobPosition: 'All Job Positions',
+          filteredJobPositionsNodesAndEdges: null,
+          filterByStoreLocation: 'All Store Locations',
+          filteredStoreLocationsNodesAndEdges: null,
         };
       }
 
@@ -183,66 +186,250 @@ function directoryReducer(
         Object.create(null)
       );
 
+      // on every filterByDepartment change, set filteredJobPositionsNodesAndEdges to null and filteredStoreLocationsNodesAndEdges to null
+
       return {
         ...state,
         filterByDepartment,
         filteredDepartmentsNodesAndEdges,
+        filterByJobPosition: 'All Job Positions',
+        filteredJobPositionsNodesAndEdges: null,
+        filterByStoreLocation: 'All Store Locations',
+        filteredStoreLocationsNodesAndEdges: null,
       };
     }
 
     case directoryAction.setFilterByJobPosition: {
-      // set filterByJobPosition string value to change
+      // set filterByJobPosition string value
       const filterByJobPosition = action.payload;
+      const filterByStoreLocation = state.filterByStoreLocation;
 
-      // filter by job position select input is only active when filterByDepartment value !== 'All Departments'
-      const filterByDepartment = state.filterByDepartment;
+      // filteredDepartmentNodesAndEdges will always be set when this reducer action is dispatched
+      const filteredDepartmentsNodesAndEdges =
+        state.filteredDepartmentsNodesAndEdges;
 
-      // and set filteredJobPositionsNodesAndEdges based on said value
+      if (!filteredDepartmentsNodesAndEdges) {
+        return state;
+      }
+
+      // if filterByJobPosition is 'All Job Positions' then return filteredDepartmentsNodesAndEdges filtered by filterByStoreLocation
       if (filterByJobPosition === 'All Job Positions') {
+        const {
+          nodes: filteredDepartmentsNodes,
+          edges: filteredDepartmentsEdges,
+        } = filteredDepartmentsNodesAndEdges;
+
+        const filteredJobPositionsNodes = filteredDepartmentsNodes.filter(
+          (node) => {
+            return filterByStoreLocation === 'All Store Locations'
+              ? node
+              : node.id
+                  .toLowerCase()
+                  .includes(filterByStoreLocation.toLowerCase());
+          }
+        );
+
+        const filteredJobPositionsEdges = filteredDepartmentsEdges.filter(
+          (edge) => {
+            return filterByStoreLocation === 'All Store Locations'
+              ? edge
+              : edge.id
+                  .toLowerCase()
+                  .includes(filterByStoreLocation.toLowerCase());
+          }
+        );
+
+        const filteredJobPositionsNodesAndEdges = Object.create(
+          null
+        ) as FilteredNodesAndEdges;
+
+        Object.defineProperty(filteredJobPositionsNodesAndEdges, 'nodes', {
+          ...PROPERTY_DESCRIPTOR,
+          value: filteredJobPositionsNodes,
+        });
+
+        Object.defineProperty(filteredJobPositionsNodesAndEdges, 'edges', {
+          ...PROPERTY_DESCRIPTOR,
+          value: filteredJobPositionsEdges,
+        });
+
         return {
           ...state,
           filterByJobPosition,
-          filteredJobPositionsNodesAndEdges:
-            state.departmentsNodesAndEdges[filterByDepartment as Department],
+          filteredJobPositionsNodesAndEdges,
         };
       }
 
-      const { nodes: departmentNodes, edges: departmentEdges } =
-        state.departmentsNodesAndEdges[filterByDepartment as Department];
+      // if filterByJobPosition is not 'All Job Positions' then return filteredDepartmentsNodesAndEdges filtered by filterByJobPosition and filterByStoreLocation
+      const {
+        nodes: filteredDepartmentsNodes,
+        edges: filteredDepartmentsEdges,
+      } = filteredDepartmentsNodesAndEdges;
 
-      const filteredNodes = departmentNodes.filter((node) => {
-        return node.id
-          .toLowerCase()
-          .includes(filterByJobPosition.toLowerCase());
-      });
+      const filteredJobPositionsNodes = filteredDepartmentsNodes.filter(
+        (node) => {
+          return filterByStoreLocation === 'All Store Locations'
+            ? node.id.toLowerCase().includes(filterByJobPosition.toLowerCase())
+            : node.id
+                .toLowerCase()
+                .includes(filterByJobPosition.toLowerCase()) &&
+                node.id
+                  .toLowerCase()
+                  .includes(filterByStoreLocation.toLowerCase());
+        }
+      );
 
-      const filteredEdges = departmentEdges.filter((edge) => {
-        return edge.id
-          .toLowerCase()
-          .includes(filterByJobPosition.toLowerCase());
-      });
+      const filteredJobPositionsEdges = filteredDepartmentsEdges.filter(
+        (edge) => {
+          return filterByStoreLocation === 'All Store Locations'
+            ? edge.id.toLowerCase().includes(filterByJobPosition.toLowerCase())
+            : edge.id
+                .toLowerCase()
+                .includes(filterByJobPosition.toLowerCase()) &&
+                edge.id
+                  .toLowerCase()
+                  .includes(filterByStoreLocation.toLowerCase());
+        }
+      );
 
-      // create a new object and assign nodes and edges
-      const filteredJobPositionsNodesAndEdges = Object.create(null);
+      const filteredJobPositionsNodesAndEdges = Object.create(
+        null
+      ) as FilteredNodesAndEdges;
+
       Object.defineProperty(filteredJobPositionsNodesAndEdges, 'nodes', {
         ...PROPERTY_DESCRIPTOR,
-        value: filteredNodes,
+        value: filteredJobPositionsNodes,
       });
+
       Object.defineProperty(filteredJobPositionsNodesAndEdges, 'edges', {
         ...PROPERTY_DESCRIPTOR,
-        value: filteredEdges,
+        value: filteredJobPositionsEdges,
       });
 
       return {
         ...state,
         filterByJobPosition,
         filteredJobPositionsNodesAndEdges,
-        // filteredDepartmentsNodesAndEdges: null,
       };
     }
 
-    case directoryAction.setFilterByStoreLocation:
-      return { ...state, filterByStoreLocation: action.payload };
+    case directoryAction.setFilterByStoreLocation: {
+      const filterByStoreLocation = action.payload;
+      // const filterByDepartment = state.filterByDepartment;
+      const filterByJobPosition = state.filterByJobPosition;
+
+      // filteredDepartmentsNodesAndEdges will always be set when this reducer action is dispatched
+      const filteredDepartmentsNodesAndEdges =
+        state.filteredDepartmentsNodesAndEdges;
+
+      if (!filteredDepartmentsNodesAndEdges) {
+        return state;
+      }
+
+      // if filterByStoreLocation is 'All Store Locations' then return filteredDepartmentsNodesAndEdges filtered by filterByJobPosition
+      if (filterByStoreLocation === 'All Store Locations') {
+        const {
+          nodes: filteredDepartmentsNodes,
+          edges: filteredDepartmentsEdges,
+        } = filteredDepartmentsNodesAndEdges;
+
+        const filteredStoreLocationsNodes = filteredDepartmentsNodes.filter(
+          (node) => {
+            return filterByJobPosition === 'All Job Positions'
+              ? node
+              : node.id
+                  .toLowerCase()
+                  .includes(filterByJobPosition.toLowerCase());
+          }
+        );
+
+        const filteredStoreLocationsEdges = filteredDepartmentsEdges.filter(
+          (edge) => {
+            return filterByJobPosition === 'All Job Positions'
+              ? edge
+              : edge.id
+                  .toLowerCase()
+                  .includes(filterByJobPosition.toLowerCase());
+          }
+        );
+
+        const filteredStoreLocationsNodesAndEdges = Object.create(
+          null
+        ) as FilteredNodesAndEdges;
+
+        Object.defineProperty(filteredStoreLocationsNodesAndEdges, 'nodes', {
+          ...PROPERTY_DESCRIPTOR,
+          value: filteredStoreLocationsNodes,
+        });
+
+        Object.defineProperty(filteredStoreLocationsNodesAndEdges, 'edges', {
+          ...PROPERTY_DESCRIPTOR,
+          value: filteredStoreLocationsEdges,
+        });
+
+        return {
+          ...state,
+          filterByStoreLocation,
+          filteredStoreLocationsNodesAndEdges,
+        };
+      }
+
+      // if filterByStoreLocation is not 'All Store Locations' then return filteredDepartmentsNodesAndEdges filtered by filterByStoreLocation and filterByJobPosition
+      const {
+        nodes: filteredDepartmentsNodes,
+        edges: filteredDepartmentsEdges,
+      } = filteredDepartmentsNodesAndEdges;
+
+      const filteredStoreLocationsNodes = filteredDepartmentsNodes.filter(
+        (node) => {
+          return filterByJobPosition === 'All Job Positions'
+            ? node.id
+                .toLowerCase()
+                .includes(filterByStoreLocation.toLowerCase())
+            : node.id
+                .toLowerCase()
+                .includes(filterByStoreLocation.toLowerCase()) &&
+                node.id
+                  .toLowerCase()
+                  .includes(filterByJobPosition.toLowerCase());
+        }
+      );
+
+      const filteredStoreLocationsEdges = filteredDepartmentsEdges.filter(
+        (edge) => {
+          return filterByJobPosition === 'All Job Positions'
+            ? edge.id
+                .toLowerCase()
+                .includes(filterByStoreLocation.toLowerCase())
+            : edge.id
+                .toLowerCase()
+                .includes(filterByStoreLocation.toLowerCase()) &&
+                edge.id
+                  .toLowerCase()
+                  .includes(filterByJobPosition.toLowerCase());
+        }
+      );
+
+      const filteredStoreLocationsNodesAndEdges = Object.create(
+        null
+      ) as FilteredNodesAndEdges;
+
+      Object.defineProperty(filteredStoreLocationsNodesAndEdges, 'nodes', {
+        ...PROPERTY_DESCRIPTOR,
+        value: filteredStoreLocationsNodes,
+      });
+
+      Object.defineProperty(filteredStoreLocationsNodesAndEdges, 'edges', {
+        ...PROPERTY_DESCRIPTOR,
+        value: filteredStoreLocationsEdges,
+      });
+
+      return {
+        ...state,
+        filterByStoreLocation,
+        filteredStoreLocationsNodesAndEdges,
+      };
+    }
 
     case directoryAction.triggerSetDepartmentsNodesAndEdges:
       return { ...state, triggerSetDepartmentsNodesAndEdges: action.payload };

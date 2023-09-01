@@ -3095,8 +3095,7 @@ function Directory() {
           payload: false,
         });
 
-        // triggers state update when filtered by department layout is changed
-        // because departmentNodesAndEdges are shallow copied
+        // triggers state update when filterBy${department, jobPosition, storeLocation} value is changed
         directoryDispatch({
           type: directoryAction.setFilterByDepartment,
           payload: filterByDepartment,
@@ -3104,6 +3103,10 @@ function Directory() {
         directoryDispatch({
           type: directoryAction.setFilterByJobPosition,
           payload: filterByJobPosition,
+        });
+        directoryDispatch({
+          type: directoryAction.setFilterByStoreLocation,
+          payload: filterByStoreLocation,
         });
 
         // set trigger layouted elements to true
@@ -3127,6 +3130,7 @@ function Directory() {
     dagreRanker,
     dagreWeight,
   ]);
+
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end main nodes & edges effect ━┛
 
   useEffect(() => {
@@ -3139,7 +3143,12 @@ function Directory() {
       return;
     }
 
-    // updates all departments nodes and edges
+    // if there is a filter by department term, set nodes and edges from that filteredDepartmentNodesAndEdges state
+    if (filterByDepartment !== 'All Departments') {
+      return;
+    }
+
+    // updates all departments nodes and edges when no filter terms are present
     const [initialNodes, initialEdges] = Object.entries(
       departmentsNodesAndEdges
     ).reduce(
@@ -3202,6 +3211,7 @@ function Directory() {
     dagreWeight,
     departmentsNodesAndEdges,
     triggerSetLayoutedNodesAndEdges,
+    filterByDepartment,
   ]);
 
   // update filteredDepartmentsNodesAndEdges
@@ -3251,10 +3261,13 @@ function Directory() {
     dagreWeight,
     filterByDepartment,
     filteredDepartmentsNodesAndEdges,
+    triggerSetLayoutedNodesAndEdges,
   ]);
 
   // update filteredJobPositionsNodesAndEdges
   useEffect(() => {
+    console.log('update filteredJobPositionsNodesAndEdges effect entered');
+
     if (!filteredJobPositionsNodesAndEdges) {
       return;
     }
@@ -3300,6 +3313,57 @@ function Directory() {
     dagreWeight,
     filterByJobPosition,
     filteredJobPositionsNodesAndEdges,
+    triggerSetLayoutedNodesAndEdges,
+  ]);
+
+  // update filteredStoreLocationsNodesAndEdges
+  useEffect(() => {
+    if (!filteredStoreLocationsNodesAndEdges) {
+      return;
+    }
+
+    const initialNodes = filteredStoreLocationsNodesAndEdges.nodes;
+    const initialEdges = filteredStoreLocationsNodesAndEdges.edges;
+
+    const { nodes: layoutedNodes, edges: layoutedEdges } =
+      returnDagreLayoutedElements({
+        edges: initialEdges,
+        nodes: initialNodes,
+        rankdir: dagreRankDir,
+        align: dagreRankAlign === 'undefined' ? undefined : dagreRankAlign,
+        nodesep: dagreNodeSep,
+        ranksep: dagreRankSep,
+        ranker: dagreRanker,
+        minlen: dagreMinLen,
+        weight: dagreWeight,
+      });
+
+    directoryDispatch({
+      type: directoryAction.setLayoutedNodes,
+      payload: layoutedNodes,
+    });
+
+    directoryDispatch({
+      type: directoryAction.setLayoutedEdges,
+      payload: layoutedEdges,
+    });
+
+    // set trigger to false
+    directoryDispatch({
+      type: directoryAction.triggerSetLayoutedNodesAndEdges,
+      payload: false,
+    });
+  }, [
+    dagreMinLen,
+    dagreNodeSep,
+    dagreRankAlign,
+    dagreRankDir,
+    dagreRankSep,
+    dagreRanker,
+    dagreWeight,
+    filterByStoreLocation,
+    filteredStoreLocationsNodesAndEdges,
+    triggerSetLayoutedNodesAndEdges,
   ]);
 
   useEffect(() => {
@@ -3311,63 +3375,8 @@ function Directory() {
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end useEffect ━┛
 
-  // ┏━ begin accessible text elements ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  // const [filterByDepartmentSelectedText, filterByDepartmentDeselectedText] =
-  //   returnAccessibleSelectedDeselectedTextElements({
-  //     isSelected: filterByDepartment.length > 0,
-  //     semanticName: 'filter by department',
-  //     deselectedDescription: 'Select a field to filter by department',
-  //     selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
-  //       filterByDepartment.join(', ')
-  //     )}`,
-  //     theme: 'muted',
-  //   });
-
-  // const [filterByJobPositionSelectedText, filterByJobPositionDeselectedText] =
-  //   returnAccessibleSelectedDeselectedTextElements({
-  //     isSelected: filterByJobPosition.length > 0,
-  //     semanticName: 'filter by job position',
-  //     deselectedDescription: 'Select a field to filter by job position',
-  //     selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
-  //       filterByJobPosition.join(', ')
-  //     )}`,
-  //     theme: 'muted',
-  //   });
-
-  // const [
-  //   filterByStoreLocationSelectedText,
-  //   filterByStoreLocationDeselectedText,
-  // ] = returnAccessibleSelectedDeselectedTextElements({
-  //   isSelected: filterByStoreLocation.length > 0,
-  //   semanticName: 'filter by store location',
-  //   deselectedDescription: 'Select a field to filter by store location',
-  //   selectedDescription: `Filtering by ${replaceLastCommaWithAnd(
-  //     filterByStoreLocation.join(', ')
-  //   )}`,
-  //   theme: 'muted',
-  // });
-
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end accessible text elements ━┛
-
   // ┏━ begin input creators info objects ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  // const filterByDepartmentCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
-  //   {
-  //     dataObjectArray: DIRECTORY_DEPARTMENT_CHECKBOX_DATA,
-  //     description: {
-  //       selected: filterByDepartmentSelectedText,
-  //       deselected: filterByDepartmentDeselectedText,
-  //     },
-  //     onChange: (value: string[]) => {
-  //       directoryDispatch({
-  //         type: directoryAction.setFilterByDepartment,
-  //         payload: value as Department[],
-  //       });
-  //     },
-  //     value: filterByDepartment,
-  //     semanticName: 'filter by department',
-  //   };
   const filterByDepartmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       data: DIRECTORY_DEPARTMENT_SELECT_OPTIONS,
@@ -3381,23 +3390,6 @@ function Directory() {
       value: filterByDepartment,
       label: 'Filter by department',
     };
-
-  // const filterByJobPositionCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
-  //   {
-  //     dataObjectArray: DIRECTORY_JOB_POSITION_CHECKBOX_DATA,
-  //     description: {
-  //       selected: filterByJobPositionSelectedText,
-  //       deselected: filterByJobPositionDeselectedText,
-  //     },
-  //     onChange: (value: string[]) => {
-  //       directoryDispatch({
-  //         type: directoryAction.setFilterByJobPosition,
-  //         payload: value as JobPosition[],
-  //       });
-  //     },
-  //     value: filterByJobPosition,
-  //     semanticName: 'filter by job position',
-  //   };
 
   let filterByJobPositionSelectData =
     filterByDepartment === 'All Departments'
@@ -3595,16 +3587,6 @@ function Directory() {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators info objects━┛
 
   // ┏━ begin input creators ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  // const [
-  //   createdFilterByDepartmentCheckboxGroupInputElements,
-  //   createdFilterByJobPositionCheckboxGroupInputElements,
-  //   createdFilterByStoreLocationCheckboxGroupInputElements,
-  // ] = returnAccessibleCheckboxGroupInputsElements([
-  //   filterByDepartmentCheckboxGroupCreatorInfo,
-  //   filterByJobPositionCheckboxGroupCreatorInfo,
-  //   filterByStoreLocationCheckboxGroupCreatorInfo,
-  // ]);
 
   const [
     createdFilterByDepartmentSelectInputElements,
