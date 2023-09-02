@@ -347,7 +347,7 @@ const FIELDNAMES_WITH_DATE_VALUES = new Set([
 const PROPERTY_DESCRIPTOR: PropertyDescriptor = {
   writable: true,
   enumerable: true,
-  configurable: true,
+  configurable: false,
 };
 
 export {
