@@ -41,6 +41,9 @@ const initialDirectoryState: DirectoryState = {
   layoutedEdges: [],
   triggerSetLayoutedNodesAndEdges: false,
 
+  // profile picture blobs
+  profilePictureBlobs: new Map(),
+
   // dagre layout options
   dagreRankDir: 'TB',
   dagreRankAlign: 'undefined',
@@ -74,6 +77,8 @@ const directoryAction: DirectoryAction = {
   setLayoutedNodes: 'setLayoutedNodes',
   setLayoutedEdges: 'setLayoutedEdges',
   triggerSetLayoutedNodesAndEdges: 'triggerSetLayoutedNodesAndEdges',
+
+  setProfilePictureBlobs: 'setProfilePictureBlobs',
 
   // dagre layout options
   setDagreRankDir: 'setDagreRankDir',
@@ -445,6 +450,25 @@ function directoryReducer(
         default:
           return state;
       }
+    }
+
+    case directoryAction.setProfilePictureBlobs: {
+      const blobsWithIds = action.payload as {
+        _id: string;
+        blob: Blob;
+      }[];
+
+      const profilePictureBlobs = new Map(state.profilePictureBlobs);
+
+      blobsWithIds.forEach((blobWithId) => {
+        const { _id, blob } = blobWithId;
+        profilePictureBlobs.set(_id, blob);
+      });
+
+      return {
+        ...state,
+        profilePictureBlobs,
+      };
     }
 
     case directoryAction.setLayoutedNodes:

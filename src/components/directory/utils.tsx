@@ -3,6 +3,7 @@ import {
   Flex,
   Group,
   Image,
+  MantineNumberSize,
   Stack,
   Text,
   Title,
@@ -27,19 +28,21 @@ import { Edge, Node } from 'reactflow';
 
 type ReturnDirectoryProfileCardInput = {
   userDocument: DirectoryUserDocument;
-  padding: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  rowGap: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  padding: MantineNumberSize;
+  rowGap: MantineNumberSize;
+  profilePictureObjectUrl: string;
 };
 
 function returnDirectoryProfileCard({
   userDocument,
   padding,
   rowGap,
+  profilePictureObjectUrl,
 }: ReturnDirectoryProfileCardInput) {
   const {
+    _id,
     firstName,
     lastName,
-    profilePictureUrl,
     preferredPronouns,
     jobPosition,
     storeLocation,
@@ -97,7 +100,7 @@ function returnDirectoryProfileCard({
       >
         <Stack align="center" w="38%" style={{ outline: '1px solid brown' }}>
           <Image
-            src={profilePictureUrl}
+            src={profilePictureObjectUrl}
             alt={`Picture of ${firstName} ${lastName}`}
             width={84}
             height={84}

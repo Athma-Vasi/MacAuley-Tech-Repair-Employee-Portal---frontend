@@ -80,6 +80,7 @@ import {
   returnDagreLayoutedElements,
   returnDirectoryProfileCard,
 } from './utils';
+import { compress } from 'image-conversion';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -106,6 +107,8 @@ function Directory() {
     layoutedNodes,
     layoutedEdges,
     triggerSetLayoutedNodesAndEdges,
+
+    profilePictureBlobs,
 
     // dagre layout options
     dagreRankDir,
@@ -185,10 +188,69 @@ function Directory() {
         });
 
         // set data to local forage to prevent refetches on every refresh
-        localforage.setItem<DirectoryUserDocument[]>(
+        await localforage.setItem<DirectoryUserDocument[]>(
           'directory',
           data.resourceData
         );
+
+        // as all nodes and edges are built anew on every state change, this reduces data usage by only fetching images once
+        async function fetchAndSetImagesToLocalForage(): Promise<void> {
+          // iterate through each user document and fetch their profile image
+          const userDocuments = data.resourceData;
+
+          const imagesBlobs = await Promise.all(
+            userDocuments.map(async (userDocument) => {
+              const { _id, profilePictureUrl } = userDocument;
+
+              const request: Request = new Request(profilePictureUrl, {
+                method: 'GET',
+                signal: controller.signal,
+              });
+
+              const response = await fetch(request);
+              const blob = await response.blob();
+
+              if (!response.ok) {
+                throw new Error('Could not fetch profile picture');
+              }
+
+              // in case image sizes are too large, compress them
+              const blobSize = blob.size;
+              if (blobSize > 100_000) {
+                const sizeDifference = blobSize / 100_000;
+
+                // determine compression ratio to reduce image below 100kb
+                const compressionRatio = 1 / sizeDifference;
+
+                // round to 1 decimal place
+                const compressionRatioRounded =
+                  Math.round(compressionRatio * 10) / 10;
+
+                const compressedImage = await compress(blob, {
+                  quality: compressionRatioRounded,
+                });
+
+                return {
+                  _id,
+                  blob: compressedImage,
+                };
+              }
+
+              return {
+                _id,
+                blob,
+              };
+            })
+          );
+
+          // and set it to local forage to prevent refetches on every refresh
+          await localforage.setItem<{ _id: string; blob: Blob }[]>(
+            'directory-profilePictures',
+            imagesBlobs
+          );
+        }
+
+        fetchAndSetImagesToLocalForage();
 
         console.log('data from fetchUsers()', data);
       } catch (error: any) {
@@ -257,11 +319,11 @@ function Directory() {
     };
   }, []);
 
-  // on every mount, check if there is a directory in local forage
+  // on every mount, check if there are directory docs in local forage
   useEffect(() => {
     let isMounted = true;
 
-    async function checkLocalForage(): Promise<void> {
+    async function checkLocalForageForDirectoryDocs(): Promise<void> {
       const directory = await localforage.getItem<DirectoryUserDocument[]>(
         'directory'
       );
@@ -284,7 +346,36 @@ function Directory() {
       });
     }
 
-    checkLocalForage();
+    checkLocalForageForDirectoryDocs();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // on every mount check if there are profile pictures present
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkLocalForageForProfilePictures(): Promise<void> {
+      const profilePictures = await localforage.getItem<
+        {
+          _id: string;
+          blob: Blob;
+        }[]
+      >('directory-profilePictures');
+      if (!isMounted || !profilePictures || !profilePictures.length) {
+        return;
+      }
+
+      // dispatch profile pictures to state
+      directoryDispatch({
+        type: directoryAction.setProfilePictureBlobs,
+        payload: profilePictures,
+      });
+    }
+
+    checkLocalForageForProfilePictures();
 
     return () => {
       isMounted = false;
@@ -344,10 +435,16 @@ function Directory() {
         ) => {
           const { _id, jobPosition } = userDocument;
 
+          // grab profile picture image blob
+          const profilePictureBlob = profilePictureBlobs.get(_id) ?? new Blob();
+          const profilePictureObjectUrl =
+            URL.createObjectURL(profilePictureBlob);
+
           const directoryProfileCard = returnDirectoryProfileCard({
             userDocument,
             padding,
             rowGap,
+            profilePictureObjectUrl,
           });
 
           const nodeType =
@@ -503,13 +600,20 @@ function Directory() {
                 >,
                 userDocument: DirectoryUserDocument
               ) => {
-                const { jobPosition } = userDocument;
+                const { _id, jobPosition } = userDocument;
+
+                // grab profile picture image blob
+                const profilePictureBlob =
+                  profilePictureBlobs.get(_id) ?? new Blob();
+                const profilePictureObjectUrl =
+                  URL.createObjectURL(profilePictureBlob);
 
                 // create profile card
                 const displayProfileCard = returnDirectoryProfileCard({
                   userDocument,
                   padding,
                   rowGap,
+                  profilePictureObjectUrl,
                 });
 
                 // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -750,13 +854,20 @@ function Directory() {
                 >,
                 userDocument: DirectoryUserDocument
               ) => {
-                const { jobPosition } = userDocument;
+                const { _id, jobPosition } = userDocument;
+
+                // grab profile picture image blob
+                const profilePictureBlob =
+                  profilePictureBlobs.get(_id) ?? new Blob();
+                const profilePictureObjectUrl =
+                  URL.createObjectURL(profilePictureBlob);
 
                 // create profile card
                 const displayProfileCard = returnDirectoryProfileCard({
                   userDocument,
                   padding,
                   rowGap,
+                  profilePictureObjectUrl,
                 });
 
                 // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -1017,12 +1128,24 @@ function Directory() {
               // create profile cards for each grouped doc
               const profileCards =
                 groupedCorporateDepartmentByJobPositionArr.map(
-                  (userDocument: DirectoryUserDocument) =>
-                    returnDirectoryProfileCard({
+                  (userDocument: DirectoryUserDocument) => {
+                    const { _id } = userDocument;
+
+                    // grab profile picture image blob
+                    const profilePictureBlob =
+                      profilePictureBlobs.get(_id) ?? new Blob();
+                    const profilePictureObjectUrl =
+                      URL.createObjectURL(profilePictureBlob);
+
+                    const profileCard = returnDirectoryProfileCard({
                       userDocument,
                       padding,
                       rowGap,
-                    })
+                      profilePictureObjectUrl,
+                    });
+
+                    return profileCard;
+                  }
                 );
 
               const nodeType = jobPosition.toLowerCase().includes('manager')
@@ -1238,13 +1361,20 @@ function Directory() {
                     >,
                     userDocument: DirectoryUserDocument
                   ) => {
-                    const { jobPosition } = userDocument;
+                    const { _id, jobPosition } = userDocument;
+
+                    // grab profile picture image blob
+                    const profilePictureBlob =
+                      profilePictureBlobs.get(_id) ?? new Blob();
+                    const profilePictureObjectUrl =
+                      URL.createObjectURL(profilePictureBlob);
 
                     // create profile card
                     const displayProfileCard = returnDirectoryProfileCard({
                       userDocument,
                       padding,
                       rowGap,
+                      profilePictureObjectUrl,
                     });
 
                     // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -2011,7 +2141,7 @@ function Directory() {
         },
       }}
     >
-      Graphs Filter
+      Graph Filter
     </TextWrapper>
   );
 
@@ -2043,7 +2173,7 @@ function Directory() {
       label="Filter by store location"
       value={
         isFilterByStoreLocationSelectDisabled
-          ? 'N/A for corporate'
+          ? 'Not applicable'
           : filterByStoreLocation
       }
       symbol=""
@@ -2071,7 +2201,7 @@ function Directory() {
         },
       }}
     >
-      Graphs Layout
+      Graph Layout
     </TextWrapper>
   );
 
