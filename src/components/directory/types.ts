@@ -41,7 +41,7 @@ type DirectoryUserDocument = {
 type DagreRankDir = 'TB' | 'BT' | 'LR' | 'RL';
 type DagreRankAlign = 'UL' | 'UR' | 'DL' | 'DR' | 'undefined';
 type DagreRankerAlgorithm = 'network-simplex' | 'tight-tree' | 'longest-path';
-type DagreLabelPos = 'l' | 'c' | 'r';
+type DagreLabelPos = 'l' | 'r' | 'c';
 
 type FetchUsersDirectoryResponse =
   ResourceRequestServerResponse<DirectoryUserDocument>;
@@ -87,7 +87,6 @@ type DirectoryState = {
   dagreRankSep: number; // default 50
   dagreRanker: DagreRankerAlgorithm; // default 'network-simplex'
   dagreMinLen: number; // minimum edge length default: 1
-  dagreWeight: number; // default: 1
 
   isError: boolean;
   errorMessage: string;
@@ -122,7 +121,6 @@ type DirectoryAction = {
   setDagreRankSep: 'setDagreRankSep';
   setDagreRanker: 'setDagreRanker';
   setDagreMinLen: 'setDagreMinLen';
-  setDagreWeight: 'setDagreWeight';
 
   setIsError: 'setIsError';
   setErrorMessage: 'setErrorMessage';
@@ -211,8 +209,7 @@ type DirectoryDispatch =
       type:
         | DirectoryAction['setDagreNodeSep']
         | DirectoryAction['setDagreRankSep']
-        | DirectoryAction['setDagreMinLen']
-        | DirectoryAction['setDagreWeight'];
+        | DirectoryAction['setDagreMinLen'];
 
       payload: number;
     };
@@ -225,6 +222,7 @@ type StoreDepartmentsProfileNodesObject = Record<
 >;
 
 export type {
+  CorporateDepartmentsProfileNodesObject,
   DagreLabelPos,
   DagreRankAlign,
   DagreRankDir,
@@ -238,7 +236,6 @@ export type {
   FetchUsersDirectoryResponse,
   FilteredNodesAndEdges,
   JobPositionsWithDefaultKey,
-  CorporateDepartmentsProfileNodesObject,
   SetDepartmentNodesAndEdgesPayload,
   StoreDepartmentsProfileNodesObject,
   StoreLocationsWithDefaultKey,

@@ -39,7 +39,7 @@ function PieChartControlsStack({
         justify="space-between"
         wrap="wrap"
         columnGap={rowGap}
-        // rowGap={rowGap}
+        rowGap={rowGap}
         w="100%"
       >
         <TextWrapper

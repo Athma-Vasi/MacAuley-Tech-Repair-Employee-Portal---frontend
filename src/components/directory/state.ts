@@ -48,7 +48,6 @@ const initialDirectoryState: DirectoryState = {
   dagreRankSep: 50, // default 50
   dagreRanker: 'network-simplex', // default 'network-simplex'
   dagreMinLen: 1, // minimum edge length default: 1
-  dagreWeight: 1, // default: 1
 
   isError: false,
   errorMessage: '',
@@ -83,7 +82,6 @@ const directoryAction: DirectoryAction = {
   setDagreRankSep: 'setDagreRankSep',
   setDagreRanker: 'setDagreRanker',
   setDagreMinLen: 'setDagreMinLen',
-  setDagreWeight: 'setDagreWeight',
 
   setIsError: 'setIsError',
   setErrorMessage: 'setErrorMessage',
@@ -99,12 +97,6 @@ function directoryReducer(
   state: DirectoryState,
   action: DirectoryDispatch
 ): DirectoryState {
-  const propertyDescriptor: PropertyDescriptor = {
-    enumerable: true,
-    configurable: true,
-    writable: true,
-  };
-
   switch (action.type) {
     case directoryAction.setGroupedByDepartment: {
       const users = action.payload;
@@ -176,6 +168,7 @@ function directoryReducer(
           const key = curr[0]; // will be 'nodes' or 'edges'
           const value = curr[1]; // will be Node[] | Edge[]
 
+          // to pacify TS compiler as it does not know that key will be either 'nodes' or 'edges'
           Object.defineProperty(filteredDepartmentNodesAndEdgesAcc, key, {
             ...PROPERTY_DESCRIPTOR,
             value,
@@ -185,8 +178,6 @@ function directoryReducer(
         },
         Object.create(null)
       );
-
-      // on every filterByDepartment change, set filteredJobPositionsNodesAndEdges to null and filteredStoreLocationsNodesAndEdges to null
 
       return {
         ...state,
@@ -243,15 +234,8 @@ function directoryReducer(
           null
         ) as FilteredNodesAndEdges;
 
-        Object.defineProperty(filteredJobPositionsNodesAndEdges, 'nodes', {
-          ...PROPERTY_DESCRIPTOR,
-          value: filteredJobPositionsNodes,
-        });
-
-        Object.defineProperty(filteredJobPositionsNodesAndEdges, 'edges', {
-          ...PROPERTY_DESCRIPTOR,
-          value: filteredJobPositionsEdges,
-        });
+        filteredJobPositionsNodesAndEdges.nodes = filteredJobPositionsNodes;
+        filteredJobPositionsNodesAndEdges.edges = filteredJobPositionsEdges;
 
         return {
           ...state,
@@ -296,15 +280,8 @@ function directoryReducer(
         null
       ) as FilteredNodesAndEdges;
 
-      Object.defineProperty(filteredJobPositionsNodesAndEdges, 'nodes', {
-        ...PROPERTY_DESCRIPTOR,
-        value: filteredJobPositionsNodes,
-      });
-
-      Object.defineProperty(filteredJobPositionsNodesAndEdges, 'edges', {
-        ...PROPERTY_DESCRIPTOR,
-        value: filteredJobPositionsEdges,
-      });
+      filteredJobPositionsNodesAndEdges.nodes = filteredJobPositionsNodes;
+      filteredJobPositionsNodesAndEdges.edges = filteredJobPositionsEdges;
 
       return {
         ...state,
@@ -357,15 +334,8 @@ function directoryReducer(
           null
         ) as FilteredNodesAndEdges;
 
-        Object.defineProperty(filteredStoreLocationsNodesAndEdges, 'nodes', {
-          ...PROPERTY_DESCRIPTOR,
-          value: filteredStoreLocationsNodes,
-        });
-
-        Object.defineProperty(filteredStoreLocationsNodesAndEdges, 'edges', {
-          ...PROPERTY_DESCRIPTOR,
-          value: filteredStoreLocationsEdges,
-        });
+        filteredStoreLocationsNodesAndEdges.nodes = filteredStoreLocationsNodes;
+        filteredStoreLocationsNodesAndEdges.edges = filteredStoreLocationsEdges;
 
         return {
           ...state,
@@ -414,15 +384,8 @@ function directoryReducer(
         null
       ) as FilteredNodesAndEdges;
 
-      Object.defineProperty(filteredStoreLocationsNodesAndEdges, 'nodes', {
-        ...PROPERTY_DESCRIPTOR,
-        value: filteredStoreLocationsNodes,
-      });
-
-      Object.defineProperty(filteredStoreLocationsNodesAndEdges, 'edges', {
-        ...PROPERTY_DESCRIPTOR,
-        value: filteredStoreLocationsEdges,
-      });
+      filteredStoreLocationsNodesAndEdges.nodes = filteredStoreLocationsNodes;
+      filteredStoreLocationsNodesAndEdges.edges = filteredStoreLocationsEdges;
 
       return {
         ...state,
@@ -443,26 +406,37 @@ function directoryReducer(
 
       switch (kind) {
         case 'nodes': {
-          Object.defineProperty(departmentsNodesAndEdges, department, {
-            ...propertyDescriptor,
-            value: {
-              ...departmentsNodesAndEdges[department],
-              nodes: data,
-            },
-          });
+          // Object.defineProperty(departmentsNodesAndEdges, department, {
+          //   ...propertyDescriptor,
+          //   value: {
+          //     ...departmentsNodesAndEdges[department],
+          //     nodes: data,
+          //   },
+          // });
+          departmentsNodesAndEdges[department] = {
+            ...departmentsNodesAndEdges[department],
+            nodes: data,
+          };
+
           return {
             ...state,
             departmentsNodesAndEdges,
           };
         }
         case 'edges': {
-          Object.defineProperty(departmentsNodesAndEdges, department, {
-            ...propertyDescriptor,
-            value: {
-              ...departmentsNodesAndEdges[department],
-              edges: data,
-            },
-          });
+          // Object.defineProperty(departmentsNodesAndEdges, department, {
+          //   ...propertyDescriptor,
+          //   value: {
+          //     ...departmentsNodesAndEdges[department],
+          //     edges: data,
+          //   },
+          // });
+
+          departmentsNodesAndEdges[department] = {
+            ...departmentsNodesAndEdges[department],
+            edges: data,
+          };
+
           return {
             ...state,
             departmentsNodesAndEdges,
@@ -520,11 +494,6 @@ function directoryReducer(
       return {
         ...state,
         dagreMinLen: action.payload,
-      };
-    case directoryAction.setDagreWeight:
-      return {
-        ...state,
-        dagreWeight: action.payload,
       };
 
     case directoryAction.setIsError:
