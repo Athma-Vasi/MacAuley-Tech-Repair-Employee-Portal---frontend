@@ -217,7 +217,7 @@ type DirectoryDispatch =
       payload: number;
     };
 
-type RemoteDepartmentsProfileNodesObject = Record<JobPosition, Node>;
+type CorporateDepartmentsProfileNodesObject = Record<JobPosition, Node>;
 
 type StoreDepartmentsProfileNodesObject = Record<
   StoreLocation,
@@ -238,7 +238,7 @@ export type {
   FetchUsersDirectoryResponse,
   FilteredNodesAndEdges,
   JobPositionsWithDefaultKey,
-  RemoteDepartmentsProfileNodesObject,
+  CorporateDepartmentsProfileNodesObject,
   SetDepartmentNodesAndEdgesPayload,
   StoreDepartmentsProfileNodesObject,
   StoreLocationsWithDefaultKey,

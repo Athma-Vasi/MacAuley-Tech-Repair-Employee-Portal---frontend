@@ -61,7 +61,7 @@ import {
   DepartmentsWithDefaultKey,
   DirectoryUserDocument,
   JobPositionsWithDefaultKey,
-  RemoteDepartmentsProfileNodesObject,
+  CorporateDepartmentsProfileNodesObject,
   StoreDepartmentsProfileNodesObject,
   StoreLocationsWithDefaultKey,
 } from './types';
@@ -970,778 +970,247 @@ function Directory() {
         },
       });
     }
-
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end office administration department ━┛
 
-    // ┏━ begin human resources department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ┏━ begin corporate departments ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    async function setHumanResourcesEdgesAndNodes() {
-      const humanResourcesDocs = groupedByDepartment['Human Resources'] ?? [];
+    async function setCorporateDepartmentsEdgesAndNodes() {
+      // consolidates logic to set following corporate departments' edges and nodes which were previously set individually and contained duplicate code
+      // possible only because the org hierarchy and job positions naming scheme are consistent (superiors contain '... manager', and only one subordinate level)
 
-      // group by job positions
-      const humanResourcesDocsGroupedByJobPosition: Record<
-        JobPosition,
-        DirectoryUserDocument[]
-      > = groupByField<DirectoryUserDocument>({
-        objectArray: humanResourcesDocs,
-        field: 'jobPosition',
-      });
+      // required to link officers to their respective departments' managers
+      const CORPORATE_DEPARTMENTS_OFFICER_TUPLE = [
+        ['Accounting', 'Chief Financial Officer'],
+        ['Human Resources', 'Chief Human Resources Officer'],
+        ['Sales', 'Chief Sales Officer'],
+        ['Marketing', 'Chief Marketing Officer'],
+        ['Information Technology', 'Chief Technology Officer'],
+      ] as const;
 
-      // using the created object structure, create profile nodes
-      const humanResourcesProfileNodesObject = Object.entries(
-        humanResourcesDocsGroupedByJobPosition
-      ).reduce(
+      const [
+        corporateDepartmentsProfileNodesObject,
+        corporateDepartmentsEdgesObject,
+      ] = CORPORATE_DEPARTMENTS_OFFICER_TUPLE.reduce(
         (
-          humanResourcesProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
-          humanResourcesGroupedDocsTuple
+          corporateDepartmentsEdgesAndNodesObjectAcc: [
+            Record<Department, CorporateDepartmentsProfileNodesObject>,
+            Record<Department, Edge[]>
+          ],
+          corporateDepartmentOfficerTuple
         ) => {
-          const [jobPosition, groupedHumanResourcesByJobPositionArr] =
-            humanResourcesGroupedDocsTuple as [
-              JobPosition,
-              DirectoryUserDocument[]
-            ];
+          const [
+            corporateDepartmentsProfileNodesObjectAcc,
+            corporateDepartmentsEdgesObjAcc,
+          ] = corporateDepartmentsEdgesAndNodesObjectAcc;
 
-          // create profile cards for each grouped doc
-          const profileCards = groupedHumanResourcesByJobPositionArr.map(
-            (userDocument: DirectoryUserDocument) =>
-              returnDirectoryProfileCard({
-                userDocument,
-                padding,
-                rowGap,
-              })
+          const [corporateDepartment, officerJobPosition] =
+            corporateDepartmentOfficerTuple as [Department, JobPosition];
+
+          const corporateDepartmentDocs =
+            groupedByDepartment[corporateDepartment] ?? [];
+
+          // ╭───────────────────────────────────────────────────────────────╮
+          //   nodes creation
+          // ╰───────────────────────────────────────────────────────────────╯
+          // group by job positions
+          const corporateDepartmentDocsGroupedByJobPosition: Record<
+            JobPosition,
+            DirectoryUserDocument[]
+          > = groupByField<DirectoryUserDocument>({
+            objectArray: corporateDepartmentDocs,
+            field: 'jobPosition',
+          });
+
+          // using the created object structure, create profile nodes
+          const jobPositionsProfileNodes = Object.entries(
+            corporateDepartmentDocsGroupedByJobPosition
+          ).reduce(
+            (
+              jobPositionsProfileNodesAcc: CorporateDepartmentsProfileNodesObject,
+              corporateDepartmentGroupedDocsTuple
+            ) => {
+              const [jobPosition, groupedCorporateDepartmentByJobPositionArr] =
+                corporateDepartmentGroupedDocsTuple as [
+                  JobPosition,
+                  DirectoryUserDocument[]
+                ];
+
+              // create profile cards for each grouped doc
+              const profileCards =
+                groupedCorporateDepartmentByJobPositionArr.map(
+                  (userDocument: DirectoryUserDocument) =>
+                    returnDirectoryProfileCard({
+                      userDocument,
+                      padding,
+                      rowGap,
+                    })
+                );
+
+              const nodeType = jobPosition.toLowerCase().includes('manager')
+                ? 'default'
+                : 'output';
+
+              const groupedCorporateDepartmentByJobPositionCarousel = (
+                <CarouselBuilder carouselProps={{}} slides={profileCards} />
+              );
+
+              // create profile node with carousel
+              const groupedCorporateDepartmentByJobPositionProfileNode: Node = {
+                id: jobPosition,
+                type: nodeType,
+                data: {
+                  label: groupedCorporateDepartmentByJobPositionCarousel,
+                },
+                position: nodePosition,
+                style: nodeDimensions,
+              };
+
+              // add job position field with profile node
+              Object.defineProperty(jobPositionsProfileNodesAcc, jobPosition, {
+                ...PROPERTY_DESCRIPTOR,
+                value: groupedCorporateDepartmentByJobPositionProfileNode,
+              });
+
+              return jobPositionsProfileNodesAcc;
+            },
+            Object.create(null)
           );
 
-          const nodeType = jobPosition.toLowerCase().includes('manager')
-            ? 'default'
-            : 'output';
-
-          // create profile node with carousel
-          const groupedHumanResourcesByJobPositionProfileNode: Node = {
-            id: jobPosition,
-            type: nodeType,
-            data: {
-              label: (
-                <CarouselBuilder
-                  carouselProps={{}}
-                  slides={profileCards}
-                  // slides={groupedHumanResourcesByJobPositionProfileCards}
-                />
-              ),
-            },
-            position: nodePosition,
-            style: nodeDimensions,
-          };
-
-          // add job position field with profile node
           Object.defineProperty(
-            humanResourcesProfileNodesObjectAcc,
-            jobPosition,
+            corporateDepartmentsProfileNodesObjectAcc,
+            corporateDepartment,
             {
               ...PROPERTY_DESCRIPTOR,
-              value: groupedHumanResourcesByJobPositionProfileNode,
+              value: jobPositionsProfileNodes,
             }
           );
 
-          return humanResourcesProfileNodesObjectAcc;
-        },
-        Object.create(null)
-      );
+          // ╭───────────────────────────────────────────────────────────────╮
+          //   edges creation
+          // ╰───────────────────────────────────────────────────────────────╯
+          // find the corporate department manager profile node id
+          const corporateDepartmentManagerId =
+            Object.entries(jobPositionsProfileNodes).find(
+              (jobPositionAndProfileNodeTuple) => {
+                const [jobPosition, _profileNode] =
+                  jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-      console.log(
-        'humanResourcesProfileNodesObject',
-        humanResourcesProfileNodesObject
-      );
+                return jobPosition.toLowerCase().includes('manager');
+              }
+            )?.[1].id ?? '';
 
-      // create edges
-      // find the chief human resources officer profile node id
-      const chiefHumanResourcesOfficerId = 'Chief Human Resources Officer';
-
-      // find the human resources manager profile node id
-      const humanResourcesManagerId =
-        Object.entries(humanResourcesProfileNodesObject).find(
-          (jobPositionAndProfileNodeTuple) => {
-            const [jobPosition, _profileNode] =
-              jobPositionAndProfileNodeTuple as [JobPosition, Node];
-
-            return jobPosition.toLowerCase().includes('manager');
-          }
-        )?.[1].id ?? '';
-
-      // connect chief human resources officer to human resources manager
-      // [CHRO] ━━━ [HR MANAGER]
-      const chiefHumanResourcesOfficerToHumanResourcesManagerEdge: Edge = {
-        ...edgeDefaults,
-        id: `${chiefHumanResourcesOfficerId}-${humanResourcesManagerId}`, // source-target
-        source: chiefHumanResourcesOfficerId,
-        target: humanResourcesManagerId,
-      };
-
-      const humanResourcesProfileEdges = Object.entries(
-        humanResourcesProfileNodesObject
-      ).reduce(
-        (
-          humanResourcesProfileEdgesAcc: Edge[],
-          jobPositionAndProfileNodeTuple
-        ) => {
-          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
-            JobPosition,
-            Node
-          ];
-
-          if (jobPosition.toLowerCase().includes('manager')) {
-            return humanResourcesProfileEdgesAcc;
-          }
-
-          // connect subordinates to human resources manager
-          //                          ┏━ [CB&M MANAGER] ━━━ [CB&M SPECIALIST]
-          //                          ┏━ [H&S MANAGER]  ━━━ [H&S SPECIALIST]
-          // [CHRO] ━━━ [HR MANAGER] ━━━ [TR. MANAGER]  ━━━ [TR. SPECIALIST]
-          //                          ┗━ [REC. MANAGER] ━━━ [REC. SPECIALIST]
-          const humanResourcesSubordinateProfileEdge: Edge = {
+          // connect officer to corporate department manager
+          // [OFFICER] ━━━ [... MANAGER]
+          const officerToCorporateDepartmentManagerEdge: Edge = {
             ...edgeDefaults,
-            id: `${humanResourcesManagerId}-${profileNode.id}`, // source-target
-            source: humanResourcesManagerId,
-            target: profileNode.id,
+            id: `${officerJobPosition}-${corporateDepartmentManagerId}`, // source-target
+            source: officerJobPosition,
+            target: corporateDepartmentManagerId,
           };
 
-          humanResourcesProfileEdgesAcc.push(
-            humanResourcesSubordinateProfileEdge
-          );
+          const corporateDepartmentsEdges = Object.entries(
+            jobPositionsProfileNodes
+          ).reduce(
+            (
+              corporateDepartmentsEdgesAcc: Edge[],
+              jobPositionAndProfileNode
+            ) => {
+              const [jobPosition, profileNode] = jobPositionAndProfileNode as [
+                JobPosition,
+                Node
+              ];
 
-          return humanResourcesProfileEdgesAcc;
-        },
-        [chiefHumanResourcesOfficerToHumanResourcesManagerEdge]
-      );
+              // ignore manager as it is already connected to officer
+              if (jobPosition.toLowerCase().includes('manager')) {
+                return corporateDepartmentsEdgesAcc;
+              }
 
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Human Resources',
-          kind: 'nodes',
-          data: Object.values(humanResourcesProfileNodesObject),
-        },
-      });
+              // connect subordinates to corporate department manager
+              //                              ┏━ [SUBORDINATE]
+              // [OFFICER] ━━━ [... MANAGER] ━━━ [SUBORDINATE]
+              //                              ┗━ [SUBORDINATE]
+              const corporateDepartmentSubordinateProfileEdge: Edge = {
+                ...edgeDefaults,
+                id: `${corporateDepartmentManagerId}-${profileNode.id}`, // source-target
+                source: corporateDepartmentManagerId,
+                target: profileNode.id,
+              };
 
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Human Resources',
-          kind: 'edges',
-          data: humanResourcesProfileEdges,
-        },
-      });
-    }
+              corporateDepartmentsEdgesAcc.push(
+                corporateDepartmentSubordinateProfileEdge
+              );
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end human resources department ━┛
-
-    // ┏━ begin sales department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    async function setSalesEdgesAndNodes() {
-      const salesDocs = groupedByDepartment.Sales ?? [];
-
-      // group by job positions
-      const salesDocsGroupedByJobPosition: Record<
-        JobPosition,
-        DirectoryUserDocument[]
-      > = groupByField<DirectoryUserDocument>({
-        objectArray: salesDocs,
-        field: 'jobPosition',
-      });
-
-      // using the created object structure, create profile nodes
-      const salesProfileNodesObject = Object.entries(
-        salesDocsGroupedByJobPosition
-      ).reduce(
-        (
-          salesProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
-          salesGroupedDocsTuple
-        ) => {
-          const [jobPosition, groupedSalesByJobPositionArr] =
-            salesGroupedDocsTuple as [JobPosition, DirectoryUserDocument[]];
-
-          // create profile cards for each grouped doc
-          const profileCards = groupedSalesByJobPositionArr.map(
-            (userDocument: DirectoryUserDocument) =>
-              returnDirectoryProfileCard({
-                userDocument,
-                padding,
-                rowGap,
-              })
-          );
-
-          const nodeType = jobPosition.toLowerCase().includes('manager')
-            ? 'default'
-            : 'output';
-
-          // create profile node with carousel
-          const groupedSalesByJobPositionProfileNode: Node = {
-            id: jobPosition,
-            type: nodeType,
-            data: {
-              label: (
-                <CarouselBuilder
-                  carouselProps={{}}
-                  slides={profileCards}
-                  // slides={groupedSalesByJobPositionProfileCards}
-                />
-              ),
+              return corporateDepartmentsEdgesAcc;
             },
-            position: nodePosition,
-            style: nodeDimensions,
-          };
-
-          // add job position field with profile node
-          Object.defineProperty(salesProfileNodesObjectAcc, jobPosition, {
-            ...PROPERTY_DESCRIPTOR,
-            value: groupedSalesByJobPositionProfileNode,
-          });
-
-          return salesProfileNodesObjectAcc;
-        },
-        Object.create(null)
-      );
-
-      console.log('salesProfileNodesObject', salesProfileNodesObject);
-
-      // create edges
-      // find the chief sales officer profile node id
-      const chiefSalesOfficerId = 'Chief Sales Officer';
-
-      // find the sales manager profile node id
-      const salesManagerId =
-        Object.entries(salesProfileNodesObject).find(
-          (jobPositionAndProfileNodeTuple) => {
-            const [jobPosition, _profileNode] =
-              jobPositionAndProfileNodeTuple as [JobPosition, Node];
-
-            return jobPosition.toLowerCase().includes('manager');
-          }
-        )?.[1].id ?? '';
-
-      // connect chief sales officer to sales manager
-      // [CSO] ━━━ [SALES MANAGER]
-      const chiefSalesOfficerToSalesManagerEdge: Edge = {
-        ...edgeDefaults,
-        id: `${chiefSalesOfficerId}-${salesManagerId}`, // source-target
-        source: chiefSalesOfficerId,
-        target: salesManagerId,
-      };
-
-      const salesProfileEdges = Object.entries(salesProfileNodesObject).reduce(
-        (salesProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
-          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
-            JobPosition,
-            Node
-          ];
-
-          if (jobPosition.toLowerCase().includes('manager')) {
-            return salesProfileEdgesAcc;
-          }
-
-          // connect subordinates to sales manager
-          //                            ┏━ [SALES REPRESENTATIVE]
-          // [CSO] ━━━ [SALES MANAGER] ━━━ [BUSINESS DEVELOPMENT SPECIALIST]
-          //                            ┗━ [SALES SUPPORT SPECIALIST]
-          //                            ┗━ [SALES OPERATIONS ANALYST]
-          const salesSubordinateProfileEdge: Edge = {
-            ...edgeDefaults,
-            id: `${salesManagerId}-${profileNode.id}`, // source-target
-            source: salesManagerId,
-            target: profileNode.id,
-          };
-          salesProfileEdgesAcc.push(salesSubordinateProfileEdge);
-
-          return salesProfileEdgesAcc;
-        },
-        [chiefSalesOfficerToSalesManagerEdge]
-      );
-
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Sales',
-          kind: 'nodes',
-          data: Object.values(salesProfileNodesObject),
-        },
-      });
-
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Sales',
-          kind: 'edges',
-          data: salesProfileEdges,
-        },
-      });
-    }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end sales  department ━┛
-
-    // ┏━ begin marketing department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    async function setMarketingEdgesAndNodes() {
-      const marketingDocs = groupedByDepartment.Marketing ?? [];
-
-      // group by job positions
-      const marketingDocsGroupedByJobPosition: Record<
-        JobPosition,
-        DirectoryUserDocument[]
-      > = groupByField<DirectoryUserDocument>({
-        objectArray: marketingDocs,
-        field: 'jobPosition',
-      });
-
-      // using the created object structure, create profile nodes
-      const marketingProfileNodesObject = Object.entries(
-        marketingDocsGroupedByJobPosition
-      ).reduce(
-        (
-          marketingProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
-          marketingGroupedDocsTuple
-        ) => {
-          const [jobPosition, groupedMarketingByJobPositionArr] =
-            marketingGroupedDocsTuple as [JobPosition, DirectoryUserDocument[]];
-
-          // create profile cards for each grouped doc
-          const profileCards = groupedMarketingByJobPositionArr.map(
-            (userDocument: DirectoryUserDocument) =>
-              returnDirectoryProfileCard({
-                userDocument,
-                padding,
-                rowGap,
-              })
+            [officerToCorporateDepartmentManagerEdge]
           );
 
-          const nodeType = jobPosition.toLowerCase().includes('manager')
-            ? 'default'
-            : 'output';
-
-          // create profile node with carousel
-          const groupedMarketingByJobPositionProfileNode: Node = {
-            id: jobPosition,
-            type: nodeType,
-            data: {
-              label: (
-                <CarouselBuilder
-                  carouselProps={{}}
-                  slides={profileCards}
-                  // slides={groupedMarketingByJobPositionProfileCards}
-                />
-              ),
-            },
-            position: nodePosition,
-            style: nodeDimensions,
-          };
-
-          // add job position field with profile node
-          Object.defineProperty(marketingProfileNodesObjectAcc, jobPosition, {
-            ...PROPERTY_DESCRIPTOR,
-            value: groupedMarketingByJobPositionProfileNode,
-          });
-
-          return marketingProfileNodesObjectAcc;
-        },
-        Object.create(null)
-      );
-
-      console.log('marketingProfileNodesObject', marketingProfileNodesObject);
-
-      // create edges
-      // find the chief marketing officer profile node id
-      const chiefMarketingOfficerId = 'Chief Marketing Officer';
-
-      // find the marketing manager profile node id
-      const marketingManagerId =
-        Object.entries(marketingProfileNodesObject).find(
-          (jobPositionAndProfileNodeTuple) => {
-            const [jobPosition, _profileNode] =
-              jobPositionAndProfileNodeTuple as [JobPosition, Node];
-
-            return jobPosition.toLowerCase().includes('manager');
-          }
-        )?.[1].id ?? '';
-
-      // connect chief marketing officer to marketing manager
-      // [CMO] ━━━ [MARKETING MANAGER]
-      const chiefMarketingOfficerToMarketingManagerEdge: Edge = {
-        ...edgeDefaults,
-        id: `${chiefMarketingOfficerId}-${marketingManagerId}`, // source-target
-        source: chiefMarketingOfficerId,
-        target: marketingManagerId,
-      };
-
-      const marketingProfileEdges = Object.entries(
-        marketingProfileNodesObject
-      ).reduce(
-        (marketingProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
-          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
-            JobPosition,
-            Node
-          ];
-
-          if (jobPosition.toLowerCase().includes('manager')) {
-            return marketingProfileEdgesAcc;
-          }
-
-          // connect subordinates to marketing manager
-          //                                ┏━ [DIGITAL MARKETING SPECIALIST]
-          // [CSO] ━━━ [MARKETING MANAGER] ━━━ [GRAPHIC DESIGNER]
-          //                                ┗━ [PUBLIC RELATIONS SPECIALIST]
-          //                                ┗━ [MARKETING ANALYST]
-          const marketingSubordinateProfileEdge: Edge = {
-            ...edgeDefaults,
-            id: `${marketingManagerId}-${profileNode.id}`, // source-target
-            source: marketingManagerId,
-            target: profileNode.id,
-          };
-          marketingProfileEdgesAcc.push(marketingSubordinateProfileEdge);
-
-          return marketingProfileEdgesAcc;
-        },
-        [chiefMarketingOfficerToMarketingManagerEdge]
-      );
-
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Marketing',
-          kind: 'nodes',
-          data: Object.values(marketingProfileNodesObject),
-        },
-      });
-
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Marketing',
-          kind: 'edges',
-          data: marketingProfileEdges,
-        },
-      });
-    }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end marketing department ━┛
-
-    // ┏━ begin information technology department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    async function setInformationTechnologyEdgesAndNodes() {
-      const informationTechnologyDocs =
-        groupedByDepartment['Information Technology'] ?? [];
-
-      // group by job positions
-      const informationTechnologyDocsGroupedByJobPosition: Record<
-        JobPosition,
-        DirectoryUserDocument[]
-      > = groupByField<DirectoryUserDocument>({
-        objectArray: informationTechnologyDocs,
-        field: 'jobPosition',
-      });
-
-      // using the created object structure, create profile nodes
-      const informationTechnologyProfileNodesObject = Object.entries(
-        informationTechnologyDocsGroupedByJobPosition
-      ).reduce(
-        (
-          informationTechnologyProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
-          informationTechnologyGroupedDocsTuple
-        ) => {
-          const [jobPosition, groupedInformationTechnologyByJobPositionArr] =
-            informationTechnologyGroupedDocsTuple as [
-              JobPosition,
-              DirectoryUserDocument[]
-            ];
-
-          // create profile cards for each grouped doc
-          const profileCards = groupedInformationTechnologyByJobPositionArr.map(
-            (userDocument: DirectoryUserDocument) =>
-              returnDirectoryProfileCard({
-                userDocument,
-                padding,
-                rowGap,
-              })
-          );
-
-          const nodeType = jobPosition.toLowerCase().includes('manager')
-            ? 'default'
-            : 'output';
-
-          // create profile node with carousel
-          const groupedInformationTechnologyByJobPositionProfileNode: Node = {
-            id: jobPosition,
-            type: nodeType,
-            data: {
-              label: (
-                <CarouselBuilder
-                  carouselProps={{}}
-                  slides={profileCards}
-                  // slides={groupedInformationTechnologyByJobPositionProfileCards}
-                />
-              ),
-            },
-            position: nodePosition,
-            style: nodeDimensions,
-          };
-
-          // add job position field with profile node
+          // add corporate department edges to acc tuple
           Object.defineProperty(
-            informationTechnologyProfileNodesObjectAcc,
-            jobPosition,
+            corporateDepartmentsEdgesObjAcc,
+            corporateDepartment,
             {
               ...PROPERTY_DESCRIPTOR,
-              value: groupedInformationTechnologyByJobPositionProfileNode,
+              value: corporateDepartmentsEdges,
             }
           );
 
-          return informationTechnologyProfileNodesObjectAcc;
+          return corporateDepartmentsEdgesAndNodesObjectAcc;
         },
-        Object.create(null)
+        [Object.create(null), Object.create(null)]
       );
 
-      console.log(
-        'informationTechnologyProfileNodesObject',
-        informationTechnologyProfileNodesObject
-      );
+      // set corporate departments' nodes and dispatch
+      Object.entries(corporateDepartmentsProfileNodesObject).forEach(
+        (corporateDepartmentAndProfileNodesTuple) => {
+          const [corporateDepartment, profileNodes] =
+            corporateDepartmentAndProfileNodesTuple as [
+              Department,
+              CorporateDepartmentsProfileNodesObject
+            ];
 
-      // create edges
-      // find the chief technology officer profile node id
-      const chiefTechnologyOfficerId = 'Chief Technology Officer';
-
-      // find the information technology manager profile node id
-      const informationTechnologyManagerId =
-        Object.entries(informationTechnologyProfileNodesObject).find(
-          (jobPositionAndProfileNodeTuple) => {
-            const [jobPosition, _profileNode] =
+          const corporateDepartmentProfileNodes = Object.entries(
+            profileNodes
+          ).map((jobPositionAndProfileNodeTuple) => {
+            const [_jobPosition, profileNode] =
               jobPositionAndProfileNodeTuple as [JobPosition, Node];
 
-            return jobPosition.toLowerCase().includes('manager');
-          }
-        )?.[1].id ?? '';
-
-      // connect chief technology officer to information technology manager
-      // [CTO] ━━━ [INFORMATION TECHNOLOGY MANAGER]
-      const chiefTechnologyOfficerToInformationTechnologyManagerEdge: Edge = {
-        ...edgeDefaults,
-        id: `${chiefTechnologyOfficerId}-${informationTechnologyManagerId}`, // source-target
-        source: chiefTechnologyOfficerId,
-        target: informationTechnologyManagerId,
-      };
-
-      const informationTechnologyProfileEdges = Object.entries(
-        informationTechnologyProfileNodesObject
-      ).reduce(
-        (
-          informationTechnologyProfileEdgesAcc: Edge[],
-          jobPositionAndProfileNodeTuple
-        ) => {
-          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
-            JobPosition,
-            Node
-          ];
-
-          if (jobPosition.toLowerCase().includes('manager')) {
-            return informationTechnologyProfileEdgesAcc;
-          }
-
-          // connect subordinates to information technology manager
-          //                         ┏━ [SYSTEMS ADMINISTRATOR]
-          //                         ┏━ [IT SUPPORT SPECIALIST]
-          //                         ┏━ [DATABASE ADMINISTRATOR]
-          // [CTO] ━━━ [IT MANAGER] ━━━ [WEB DEVELOPER]
-          //                         ┗━ [SOFTWARE DEVELOPER]
-          //                         ┗━ [SOFTWARE ENGINEER]
-          const informationTechnologySubordinateProfileEdge: Edge = {
-            ...edgeDefaults,
-            id: `${informationTechnologyManagerId}-${profileNode.id}`, // source-target
-            source: informationTechnologyManagerId,
-            target: profileNode.id,
-          };
-          informationTechnologyProfileEdgesAcc.push(
-            informationTechnologySubordinateProfileEdge
-          );
-
-          return informationTechnologyProfileEdgesAcc;
-        },
-        [chiefTechnologyOfficerToInformationTechnologyManagerEdge]
-      );
-
-      const informationTechnologyProfileNodes = Object.values(
-        informationTechnologyProfileNodesObject
-      );
-
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Information Technology',
-          kind: 'nodes',
-          data: informationTechnologyProfileNodes,
-        },
-      });
-
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Information Technology',
-          kind: 'edges',
-          data: informationTechnologyProfileEdges,
-        },
-      });
-    }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end information technology department ━┛
-
-    // ┏━ begin accounting department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    async function setAccountingEdgesAndNodes() {
-      const accountingDocs = groupedByDepartment.Accounting ?? [];
-
-      // group by job positions
-      const accountingDocsGroupedByJobPosition: Record<
-        JobPosition,
-        DirectoryUserDocument[]
-      > = groupByField<DirectoryUserDocument>({
-        objectArray: accountingDocs,
-        field: 'jobPosition',
-      });
-
-      // using the created object structure, create profile nodes
-      const accountingProfileNodesObject = Object.entries(
-        accountingDocsGroupedByJobPosition
-      ).reduce(
-        (
-          accountingProfileNodesObjectAcc: RemoteDepartmentsProfileNodesObject,
-          accountingGroupedDocsTuple
-        ) => {
-          const [jobPosition, groupedAccountingByJobPositionArr] =
-            accountingGroupedDocsTuple as [
-              JobPosition,
-              DirectoryUserDocument[]
-            ];
-
-          // create profile cards for each grouped doc
-          const profileCards = groupedAccountingByJobPositionArr.map(
-            (userDocument: DirectoryUserDocument) =>
-              returnDirectoryProfileCard({
-                userDocument,
-                padding,
-                rowGap,
-              })
-          );
-
-          const nodeType = jobPosition.toLowerCase().includes('manager')
-            ? 'default'
-            : 'output';
-
-          // create profile node with carousel
-          const groupedAccountingByJobPositionProfileNode: Node = {
-            id: jobPosition,
-            type: nodeType,
-            data: {
-              label: (
-                <CarouselBuilder
-                  carouselProps={{}}
-                  slides={profileCards}
-                  // slides={groupedAccountingByJobPositionProfileCards}
-                />
-              ),
-            },
-            position: nodePosition,
-            style: nodeDimensions,
-          };
-
-          // add job position field with profile node
-          Object.defineProperty(accountingProfileNodesObjectAcc, jobPosition, {
-            ...PROPERTY_DESCRIPTOR,
-            value: groupedAccountingByJobPositionProfileNode,
+            return profileNode;
           });
 
-          return accountingProfileNodesObjectAcc;
-        },
-        Object.create(null)
+          directoryDispatch({
+            type: directoryAction.setDepartmentsNodesAndEdges,
+            payload: {
+              department: corporateDepartment,
+              kind: 'nodes',
+              data: corporateDepartmentProfileNodes,
+            },
+          });
+        }
       );
 
-      // create edges
-      // find the chief financial officer profile node id
-      const chiefFinancialOfficerId = 'Chief Financial Officer';
+      // set corporate departments' edges and dispatch
+      Object.entries(corporateDepartmentsEdgesObject).forEach(
+        (corporateDepartmentAndEdgesTuple) => {
+          const [corporateDepartment, edges] =
+            corporateDepartmentAndEdgesTuple as [Department, Edge[]];
 
-      // find the accounting manager profile node id
-      const accountingManagerId =
-        Object.entries(accountingProfileNodesObject).find(
-          (accountingProfileNodeTuple) => {
-            const [jobPosition, _profileNode] = accountingProfileNodeTuple as [
-              JobPosition,
-              Node
-            ];
-
-            return jobPosition.toLowerCase().includes('manager');
-          }
-        )?.[1].id ?? '';
-
-      // connect chief financial officer to accounting manager
-      // [CFO] ━━━ [ACCOUNTING MANAGER]
-      const chiefFinancialOfficerToAccountingManagerEdge: Edge = {
-        ...edgeDefaults,
-        id: `${chiefFinancialOfficerId}-${accountingManagerId}`, // source-target
-        source: chiefFinancialOfficerId,
-        target: accountingManagerId,
-      };
-
-      const accountingProfileEdges = Object.entries(
-        accountingProfileNodesObject
-      ).reduce(
-        (accountingProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
-          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
-            JobPosition,
-            Node
-          ];
-
-          if (jobPosition.toLowerCase().includes('manager')) {
-            return accountingProfileEdgesAcc;
-          }
-
-          // connect subordinates to accounting manager
-          //                                 ┏━ [ACCOUNTS PAYABLE CLERK]
-          // [CFO] ━━━ [ACCOUNTING MANAGER] ━━━ [FINANCIAL ANALYIST]
-          //                                 ┗━ [ACCOUNTS RECEIVABLE CLERK]
-          const accountingSubordinateProfileEdge: Edge = {
-            ...edgeDefaults,
-            id: `${accountingManagerId}-${profileNode.id}`, // source-target
-            source: accountingManagerId,
-            target: profileNode.id,
-          };
-          accountingProfileEdgesAcc.push(accountingSubordinateProfileEdge);
-
-          return accountingProfileEdgesAcc;
-        },
-        [chiefFinancialOfficerToAccountingManagerEdge]
+          directoryDispatch({
+            type: directoryAction.setDepartmentsNodesAndEdges,
+            payload: {
+              department: corporateDepartment,
+              kind: 'edges',
+              data: edges,
+            },
+          });
+        }
       );
-
-      const accountingProfileNodes = Object.values(
-        accountingProfileNodesObject
-      );
-
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Accounting',
-          kind: 'nodes',
-          data: accountingProfileNodes,
-        },
-      });
-
-      directoryDispatch({
-        type: directoryAction.setDepartmentsNodesAndEdges,
-        payload: {
-          department: 'Accounting',
-          kind: 'edges',
-          data: accountingProfileEdges,
-        },
-      });
     }
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end accounting department ━┛
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end corporate departments ━┛
 
     // ┏━ begin store departments ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    // consolidates logic to set following store departments' edges and nodes which were previously set individually and contained duplicate code
+    // akin to corporate, consolidates logic to set following store departments' edges and nodes which were previously set individually and contained duplicate code
     // possible only because the org hierarchy and job positions naming scheme are consistent (superiors contain '... supervisor', and only one subordinate level)
     async function setStoreDepartmentsEdgesAndNodes() {
       const STORE_DEPARTMENTS: Department[] = [
@@ -2086,14 +1555,10 @@ function Directory() {
         console.log('triggerDepartmentNodesAndEdgesCreation');
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
+          setCorporateDepartmentsEdgesAndNodes(),
+
           setStoreAdministrationEdgesAndNodes(),
           setOfficeAdministrationEdgesAndNodes(),
-          setHumanResourcesEdgesAndNodes(),
-          setSalesEdgesAndNodes(),
-          setMarketingEdgesAndNodes(),
-          setInformationTechnologyEdgesAndNodes(),
-          setAccountingEdgesAndNodes(),
-          //
           setStoreDepartmentsEdgesAndNodes(),
         ]);
       } catch (error: any) {
@@ -2432,23 +1897,6 @@ function Directory() {
       label: 'Filter by job position',
     };
 
-  // const filterByStoreLocationCheckboxGroupCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
-  //   {
-  //     dataObjectArray: DIRECTORY_STORE_LOCATION_CHECKBOX_DATA,
-  //     description: {
-  //       selected: filterByStoreLocationSelectedText,
-  //       deselected: filterByStoreLocationDeselectedText,
-  //     },
-  //     onChange: (value: string[]) => {
-  //       directoryDispatch({
-  //         type: directoryAction.setFilterByStoreLocation,
-  //         payload: value as StoreLocation[],
-  //       });
-  //     },
-  //     value: filterByStoreLocation,
-  //     semanticName: 'filter by store location',
-  //   };
-
   const isFilterByStoreLocationSelectDisabled = [
     'All Departments',
     'Executive Management',
@@ -2745,7 +2193,11 @@ function Directory() {
     <PieChartControlsStack
       input={createdFilterByStoreLocationSelectInputElements}
       label="Filter by store location"
-      value={filterByStoreLocation}
+      value={
+        isFilterByStoreLocationSelectDisabled
+          ? 'N/A for corporate'
+          : filterByStoreLocation
+      }
       symbol=""
     />
   );
@@ -2796,6 +2248,776 @@ function Directory() {
 }
 
 export default Directory;
+
+/**
+ * // ┏━ begin human resources department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    async function setHumanResourcesEdgesAndNodes() {
+      const humanResourcesDocs = groupedByDepartment['Human Resources'] ?? [];
+
+      // group by job positions
+      const humanResourcesDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: humanResourcesDocs,
+        field: 'jobPosition',
+      });
+
+      // using the created object structure, create profile nodes
+      const humanResourcesProfileNodesObject = Object.entries(
+        humanResourcesDocsGroupedByJobPosition
+      ).reduce(
+        (
+          humanResourcesProfileNodesObjectAcc: CorporateDepartmentsProfileNodesObject,
+          humanResourcesGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedHumanResourcesByJobPositionArr] =
+            humanResourcesGroupedDocsTuple as [
+              JobPosition,
+              DirectoryUserDocument[]
+            ];
+
+          // create profile cards for each grouped doc
+          const profileCards = groupedHumanResourcesByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
+
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
+
+          // create profile node with carousel
+          const groupedHumanResourcesByJobPositionProfileNode: Node = {
+            id: jobPosition,
+            type: nodeType,
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedHumanResourcesByJobPositionProfileCards}
+                />
+              ),
+            },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          // add job position field with profile node
+          Object.defineProperty(
+            humanResourcesProfileNodesObjectAcc,
+            jobPosition,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: groupedHumanResourcesByJobPositionProfileNode,
+            }
+          );
+
+          return humanResourcesProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log(
+        'humanResourcesProfileNodesObject',
+        humanResourcesProfileNodesObject
+      );
+
+      // create edges
+      // find the chief human resources officer profile node id
+      const chiefHumanResourcesOfficerId = 'Chief Human Resources Officer';
+
+      // find the human resources manager profile node id
+      const humanResourcesManagerId =
+        Object.entries(humanResourcesProfileNodesObject).find(
+          (jobPositionAndProfileNodeTuple) => {
+            const [jobPosition, _profileNode] =
+              jobPositionAndProfileNodeTuple as [JobPosition, Node];
+
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
+
+      // connect chief human resources officer to human resources manager
+      // [CHRO] ━━━ [HR MANAGER]
+      const chiefHumanResourcesOfficerToHumanResourcesManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefHumanResourcesOfficerId}-${humanResourcesManagerId}`, // source-target
+        source: chiefHumanResourcesOfficerId,
+        target: humanResourcesManagerId,
+      };
+
+      const humanResourcesProfileEdges = Object.entries(
+        humanResourcesProfileNodesObject
+      ).reduce(
+        (
+          humanResourcesProfileEdgesAcc: Edge[],
+          jobPositionAndProfileNodeTuple
+        ) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
+
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return humanResourcesProfileEdgesAcc;
+          }
+
+          // connect subordinates to human resources manager
+          //                          ┏━ [CB&M MANAGER] ━━━ [CB&M SPECIALIST]
+          //                          ┏━ [H&S MANAGER]  ━━━ [H&S SPECIALIST]
+          // [CHRO] ━━━ [HR MANAGER] ━━━ [TR. MANAGER]  ━━━ [TR. SPECIALIST]
+          //                          ┗━ [REC. MANAGER] ━━━ [REC. SPECIALIST]
+          const humanResourcesSubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${humanResourcesManagerId}-${profileNode.id}`, // source-target
+            source: humanResourcesManagerId,
+            target: profileNode.id,
+          };
+
+          humanResourcesProfileEdgesAcc.push(
+            humanResourcesSubordinateProfileEdge
+          );
+
+          return humanResourcesProfileEdgesAcc;
+        },
+        [chiefHumanResourcesOfficerToHumanResourcesManagerEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Human Resources',
+          kind: 'nodes',
+          data: Object.values(humanResourcesProfileNodesObject),
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Human Resources',
+          kind: 'edges',
+          data: humanResourcesProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end human resources department ━┛
+
+    // ┏━ begin sales department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    async function setSalesEdgesAndNodes() {
+      const salesDocs = groupedByDepartment.Sales ?? [];
+
+      // group by job positions
+      const salesDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: salesDocs,
+        field: 'jobPosition',
+      });
+
+      // using the created object structure, create profile nodes
+      const salesProfileNodesObject = Object.entries(
+        salesDocsGroupedByJobPosition
+      ).reduce(
+        (
+          salesProfileNodesObjectAcc: CorporateDepartmentsProfileNodesObject,
+          salesGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedSalesByJobPositionArr] =
+            salesGroupedDocsTuple as [JobPosition, DirectoryUserDocument[]];
+
+          // create profile cards for each grouped doc
+          const profileCards = groupedSalesByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
+
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
+
+          // create profile node with carousel
+          const groupedSalesByJobPositionProfileNode: Node = {
+            id: jobPosition,
+            type: nodeType,
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedSalesByJobPositionProfileCards}
+                />
+              ),
+            },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          // add job position field with profile node
+          Object.defineProperty(salesProfileNodesObjectAcc, jobPosition, {
+            ...PROPERTY_DESCRIPTOR,
+            value: groupedSalesByJobPositionProfileNode,
+          });
+
+          return salesProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log('salesProfileNodesObject', salesProfileNodesObject);
+
+      // create edges
+      // find the chief sales officer profile node id
+      const chiefSalesOfficerId = 'Chief Sales Officer';
+
+      // find the sales manager profile node id
+      const salesManagerId =
+        Object.entries(salesProfileNodesObject).find(
+          (jobPositionAndProfileNodeTuple) => {
+            const [jobPosition, _profileNode] =
+              jobPositionAndProfileNodeTuple as [JobPosition, Node];
+
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
+
+      // connect chief sales officer to sales manager
+      // [CSO] ━━━ [SALES MANAGER]
+      const chiefSalesOfficerToSalesManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefSalesOfficerId}-${salesManagerId}`, // source-target
+        source: chiefSalesOfficerId,
+        target: salesManagerId,
+      };
+
+      const salesProfileEdges = Object.entries(salesProfileNodesObject).reduce(
+        (salesProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
+
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return salesProfileEdgesAcc;
+          }
+
+          // connect subordinates to sales manager
+          //                            ┏━ [SALES REPRESENTATIVE]
+          // [CSO] ━━━ [SALES MANAGER] ━━━ [BUSINESS DEVELOPMENT SPECIALIST]
+          //                            ┗━ [SALES SUPPORT SPECIALIST]
+          //                            ┗━ [SALES OPERATIONS ANALYST]
+          const salesSubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${salesManagerId}-${profileNode.id}`, // source-target
+            source: salesManagerId,
+            target: profileNode.id,
+          };
+          salesProfileEdgesAcc.push(salesSubordinateProfileEdge);
+
+          return salesProfileEdgesAcc;
+        },
+        [chiefSalesOfficerToSalesManagerEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Sales',
+          kind: 'nodes',
+          data: Object.values(salesProfileNodesObject),
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Sales',
+          kind: 'edges',
+          data: salesProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end sales  department ━┛
+
+    // ┏━ begin marketing department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    async function setMarketingEdgesAndNodes() {
+      const marketingDocs = groupedByDepartment.Marketing ?? [];
+
+      // group by job positions
+      const marketingDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: marketingDocs,
+        field: 'jobPosition',
+      });
+
+      // using the created object structure, create profile nodes
+      const marketingProfileNodesObject = Object.entries(
+        marketingDocsGroupedByJobPosition
+      ).reduce(
+        (
+          marketingProfileNodesObjectAcc: CorporateDepartmentsProfileNodesObject,
+          marketingGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedMarketingByJobPositionArr] =
+            marketingGroupedDocsTuple as [JobPosition, DirectoryUserDocument[]];
+
+          // create profile cards for each grouped doc
+          const profileCards = groupedMarketingByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
+
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
+
+          // create profile node with carousel
+          const groupedMarketingByJobPositionProfileNode: Node = {
+            id: jobPosition,
+            type: nodeType,
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedMarketingByJobPositionProfileCards}
+                />
+              ),
+            },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          // add job position field with profile node
+          Object.defineProperty(marketingProfileNodesObjectAcc, jobPosition, {
+            ...PROPERTY_DESCRIPTOR,
+            value: groupedMarketingByJobPositionProfileNode,
+          });
+
+          return marketingProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log('marketingProfileNodesObject', marketingProfileNodesObject);
+
+      // create edges
+      // find the chief marketing officer profile node id
+      const chiefMarketingOfficerId = 'Chief Marketing Officer';
+
+      // find the marketing manager profile node id
+      const marketingManagerId =
+        Object.entries(marketingProfileNodesObject).find(
+          (jobPositionAndProfileNodeTuple) => {
+            const [jobPosition, _profileNode] =
+              jobPositionAndProfileNodeTuple as [JobPosition, Node];
+
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
+
+      // connect chief marketing officer to marketing manager
+      // [CMO] ━━━ [MARKETING MANAGER]
+      const chiefMarketingOfficerToMarketingManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefMarketingOfficerId}-${marketingManagerId}`, // source-target
+        source: chiefMarketingOfficerId,
+        target: marketingManagerId,
+      };
+
+      const marketingProfileEdges = Object.entries(
+        marketingProfileNodesObject
+      ).reduce(
+        (marketingProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
+
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return marketingProfileEdgesAcc;
+          }
+
+          // connect subordinates to marketing manager
+          //                                ┏━ [DIGITAL MARKETING SPECIALIST]
+          // [CSO] ━━━ [MARKETING MANAGER] ━━━ [GRAPHIC DESIGNER]
+          //                                ┗━ [PUBLIC RELATIONS SPECIALIST]
+          //                                ┗━ [MARKETING ANALYST]
+          const marketingSubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${marketingManagerId}-${profileNode.id}`, // source-target
+            source: marketingManagerId,
+            target: profileNode.id,
+          };
+          marketingProfileEdgesAcc.push(marketingSubordinateProfileEdge);
+
+          return marketingProfileEdgesAcc;
+        },
+        [chiefMarketingOfficerToMarketingManagerEdge]
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Marketing',
+          kind: 'nodes',
+          data: Object.values(marketingProfileNodesObject),
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Marketing',
+          kind: 'edges',
+          data: marketingProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end marketing department ━┛
+
+    // ┏━ begin information technology department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+    async function setInformationTechnologyEdgesAndNodes() {
+      const informationTechnologyDocs =
+        groupedByDepartment['Information Technology'] ?? [];
+
+      // group by job positions
+      const informationTechnologyDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: informationTechnologyDocs,
+        field: 'jobPosition',
+      });
+
+      // using the created object structure, create profile nodes
+      const informationTechnologyProfileNodesObject = Object.entries(
+        informationTechnologyDocsGroupedByJobPosition
+      ).reduce(
+        (
+          informationTechnologyProfileNodesObjectAcc: CorporateDepartmentsProfileNodesObject,
+          informationTechnologyGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedInformationTechnologyByJobPositionArr] =
+            informationTechnologyGroupedDocsTuple as [
+              JobPosition,
+              DirectoryUserDocument[]
+            ];
+
+          // create profile cards for each grouped doc
+          const profileCards = groupedInformationTechnologyByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
+
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
+
+          // create profile node with carousel
+          const groupedInformationTechnologyByJobPositionProfileNode: Node = {
+            id: jobPosition,
+            type: nodeType,
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedInformationTechnologyByJobPositionProfileCards}
+                />
+              ),
+            },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          // add job position field with profile node
+          Object.defineProperty(
+            informationTechnologyProfileNodesObjectAcc,
+            jobPosition,
+            {
+              ...PROPERTY_DESCRIPTOR,
+              value: groupedInformationTechnologyByJobPositionProfileNode,
+            }
+          );
+
+          return informationTechnologyProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      console.log(
+        'informationTechnologyProfileNodesObject',
+        informationTechnologyProfileNodesObject
+      );
+
+      // create edges
+      // find the chief technology officer profile node id
+      const chiefTechnologyOfficerId = 'Chief Technology Officer';
+
+      // find the information technology manager profile node id
+      const informationTechnologyManagerId =
+        Object.entries(informationTechnologyProfileNodesObject).find(
+          (jobPositionAndProfileNodeTuple) => {
+            const [jobPosition, _profileNode] =
+              jobPositionAndProfileNodeTuple as [JobPosition, Node];
+
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
+
+      // connect chief technology officer to information technology manager
+      // [CTO] ━━━ [INFORMATION TECHNOLOGY MANAGER]
+      const chiefTechnologyOfficerToInformationTechnologyManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefTechnologyOfficerId}-${informationTechnologyManagerId}`, // source-target
+        source: chiefTechnologyOfficerId,
+        target: informationTechnologyManagerId,
+      };
+
+      const informationTechnologyProfileEdges = Object.entries(
+        informationTechnologyProfileNodesObject
+      ).reduce(
+        (
+          informationTechnologyProfileEdgesAcc: Edge[],
+          jobPositionAndProfileNodeTuple
+        ) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
+
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return informationTechnologyProfileEdgesAcc;
+          }
+
+          // connect subordinates to information technology manager
+          //                         ┏━ [SYSTEMS ADMINISTRATOR]
+          //                         ┏━ [IT SUPPORT SPECIALIST]
+          //                         ┏━ [DATABASE ADMINISTRATOR]
+          // [CTO] ━━━ [IT MANAGER] ━━━ [WEB DEVELOPER]
+          //                         ┗━ [SOFTWARE DEVELOPER]
+          //                         ┗━ [SOFTWARE ENGINEER]
+          const informationTechnologySubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${informationTechnologyManagerId}-${profileNode.id}`, // source-target
+            source: informationTechnologyManagerId,
+            target: profileNode.id,
+          };
+          informationTechnologyProfileEdgesAcc.push(
+            informationTechnologySubordinateProfileEdge
+          );
+
+          return informationTechnologyProfileEdgesAcc;
+        },
+        [chiefTechnologyOfficerToInformationTechnologyManagerEdge]
+      );
+
+      const informationTechnologyProfileNodes = Object.values(
+        informationTechnologyProfileNodesObject
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Information Technology',
+          kind: 'nodes',
+          data: informationTechnologyProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Information Technology',
+          kind: 'edges',
+          data: informationTechnologyProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end information technology department ━┛
+ */
+
+/**
+ * // ┏━ begin accounting department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    async function setAccountingEdgesAndNodes() {
+      const accountingDocs = groupedByDepartment.Accounting ?? [];
+
+      // group by job positions
+      const accountingDocsGroupedByJobPosition: Record<
+        JobPosition,
+        DirectoryUserDocument[]
+      > = groupByField<DirectoryUserDocument>({
+        objectArray: accountingDocs,
+        field: 'jobPosition',
+      });
+
+      // using the created object structure, create profile nodes
+      const accountingProfileNodesObject = Object.entries(
+        accountingDocsGroupedByJobPosition
+      ).reduce(
+        (
+          accountingProfileNodesObjectAcc: CorporateDepartmentsProfileNodesObject,
+          accountingGroupedDocsTuple
+        ) => {
+          const [jobPosition, groupedAccountingByJobPositionArr] =
+            accountingGroupedDocsTuple as [
+              JobPosition,
+              DirectoryUserDocument[]
+            ];
+
+          // create profile cards for each grouped doc
+          const profileCards = groupedAccountingByJobPositionArr.map(
+            (userDocument: DirectoryUserDocument) =>
+              returnDirectoryProfileCard({
+                userDocument,
+                padding,
+                rowGap,
+              })
+          );
+
+          const nodeType = jobPosition.toLowerCase().includes('manager')
+            ? 'default'
+            : 'output';
+
+          // create profile node with carousel
+          const groupedAccountingByJobPositionProfileNode: Node = {
+            id: jobPosition,
+            type: nodeType,
+            data: {
+              label: (
+                <CarouselBuilder
+                  carouselProps={{}}
+                  slides={profileCards}
+                  // slides={groupedAccountingByJobPositionProfileCards}
+                />
+              ),
+            },
+            position: nodePosition,
+            style: nodeDimensions,
+          };
+
+          // add job position field with profile node
+          Object.defineProperty(accountingProfileNodesObjectAcc, jobPosition, {
+            ...PROPERTY_DESCRIPTOR,
+            value: groupedAccountingByJobPositionProfileNode,
+          });
+
+          return accountingProfileNodesObjectAcc;
+        },
+        Object.create(null)
+      );
+
+      // create edges
+      // find the chief financial officer profile node id
+      const chiefFinancialOfficerId = 'Chief Financial Officer';
+
+      // find the accounting manager profile node id
+      const accountingManagerId =
+        Object.entries(accountingProfileNodesObject).find(
+          (accountingProfileNodeTuple) => {
+            const [jobPosition, _profileNode] = accountingProfileNodeTuple as [
+              JobPosition,
+              Node
+            ];
+
+            return jobPosition.toLowerCase().includes('manager');
+          }
+        )?.[1].id ?? '';
+
+      // connect chief financial officer to accounting manager
+      // [CFO] ━━━ [ACCOUNTING MANAGER]
+      const chiefFinancialOfficerToAccountingManagerEdge: Edge = {
+        ...edgeDefaults,
+        id: `${chiefFinancialOfficerId}-${accountingManagerId}`, // source-target
+        source: chiefFinancialOfficerId,
+        target: accountingManagerId,
+      };
+
+      const accountingProfileEdges = Object.entries(
+        accountingProfileNodesObject
+      ).reduce(
+        (accountingProfileEdgesAcc: Edge[], jobPositionAndProfileNodeTuple) => {
+          const [jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+            JobPosition,
+            Node
+          ];
+
+          if (jobPosition.toLowerCase().includes('manager')) {
+            return accountingProfileEdgesAcc;
+          }
+
+          // connect subordinates to accounting manager
+          //                                 ┏━ [ACCOUNTS PAYABLE CLERK]
+          // [CFO] ━━━ [ACCOUNTING MANAGER] ━━━ [FINANCIAL ANALYIST]
+          //                                 ┗━ [ACCOUNTS RECEIVABLE CLERK]
+          const accountingSubordinateProfileEdge: Edge = {
+            ...edgeDefaults,
+            id: `${accountingManagerId}-${profileNode.id}`, // source-target
+            source: accountingManagerId,
+            target: profileNode.id,
+          };
+          accountingProfileEdgesAcc.push(accountingSubordinateProfileEdge);
+
+          return accountingProfileEdgesAcc;
+        },
+        [chiefFinancialOfficerToAccountingManagerEdge]
+      );
+
+      const accountingProfileNodes = Object.values(
+        accountingProfileNodesObject
+      );
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Accounting',
+          kind: 'nodes',
+          data: accountingProfileNodes,
+        },
+      });
+
+      directoryDispatch({
+        type: directoryAction.setDepartmentsNodesAndEdges,
+        payload: {
+          department: 'Accounting',
+          kind: 'edges',
+          data: accountingProfileEdges,
+        },
+      });
+    }
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end accounting department ━┛
+ */
 
 /**
  * // ┏━ begin repair technicians department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
