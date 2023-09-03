@@ -53,11 +53,7 @@ function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
       maxZoom={2}
     >
       <Background />
-      <Controls
-        onZoomIn={() => {
-          reactFlowInstance.zoomIn();
-        }}
-      />
+      <Controls />
       <Panel position="top-right">
         <></>
       </Panel>

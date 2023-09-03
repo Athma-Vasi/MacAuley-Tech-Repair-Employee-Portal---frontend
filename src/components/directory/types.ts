@@ -80,9 +80,6 @@ type DirectoryState = {
   layoutedEdges: Edge[];
   triggerSetLayoutedNodesAndEdges: boolean;
 
-  // profile picture blobs
-  profilePictureBlobs: Map<string, Blob>;
-
   // dagre layout options
   dagreRankDir: DagreRankDir;
   dagreRankAlign: DagreRankAlign;
@@ -116,8 +113,6 @@ type DirectoryAction = {
   setLayoutedNodes: 'setLayoutedNodes';
   setLayoutedEdges: 'setLayoutedEdges';
   triggerSetLayoutedNodesAndEdges: 'triggerSetLayoutedNodesAndEdges';
-
-  setProfilePictureBlobs: 'setProfilePictureBlobs';
 
   // dagre layout options
   setDagreRankDir: 'setDagreRankDir';
@@ -188,10 +183,6 @@ type DirectoryDispatch =
         | DirectoryAction['setSuccessMessage'];
 
       payload: string;
-    }
-  | {
-      type: DirectoryAction['setProfilePictureBlobs'];
-      payload: { _id: string; blob: Blob }[];
     }
   // dagre layout options
   | {

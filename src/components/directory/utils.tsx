@@ -30,24 +30,20 @@ type ReturnDirectoryProfileCardInput = {
   userDocument: DirectoryUserDocument;
   padding: MantineNumberSize;
   rowGap: MantineNumberSize;
-  profilePictureObjectUrl: string;
 };
 
 function returnDirectoryProfileCard({
-  userDocument,
-  padding,
-  rowGap,
-  profilePictureObjectUrl,
-}: ReturnDirectoryProfileCardInput) {
-  const {
-    _id,
+  userDocument: {
     firstName,
     lastName,
     preferredPronouns,
     jobPosition,
     storeLocation,
-  } = userDocument;
-
+    profilePictureUrl,
+  },
+  padding,
+  rowGap,
+}: ReturnDirectoryProfileCardInput) {
   const createdSocialMediaIcons = (
     <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
       <Tooltip label={`View ${firstName} ${lastName}'s Mastodon profile`}>
@@ -100,7 +96,7 @@ function returnDirectoryProfileCard({
       >
         <Stack align="center" w="38%" style={{ outline: '1px solid brown' }}>
           <Image
-            src={profilePictureObjectUrl}
+            src={profilePictureUrl}
             alt={`Picture of ${firstName} ${lastName}`}
             width={84}
             height={84}
