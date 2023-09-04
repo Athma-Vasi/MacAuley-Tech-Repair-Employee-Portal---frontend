@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { globalAction } from '../../context/globalProvider/state';
 import { useGlobalState } from '../../hooks/useGlobalState';
 
-function ThemeSwitch() {
+function ColorSchemeSwitch() {
   const {
-    globalState: { colorScheme },
+    globalState: { themeObject },
     globalDispatch,
   } = useGlobalState();
   const [checked, setChecked] = useState<boolean>(false);
@@ -21,16 +21,18 @@ function ThemeSwitch() {
           setChecked((check) => !check);
           globalDispatch({
             type: globalAction.setColorScheme,
-            payload: colorScheme === 'light' ? 'dark' : 'light',
+            payload: themeObject.colorScheme === 'light' ? 'dark' : 'light',
           });
         }}
+        onLabel="Light"
+        offLabel="Dark"
       />
       <FontAwesomeIcon
-        icon={colorScheme === 'light' ? faSun : faMoon}
+        icon={themeObject.colorScheme === 'light' ? faSun : faMoon}
         color="dimgray"
       />
     </Flex>
   );
 }
 
-export { ThemeSwitch };
+export { ColorSchemeSwitch };

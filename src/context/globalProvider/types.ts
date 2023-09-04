@@ -1,3 +1,9 @@
+import {
+  MantineColor,
+  MantineTheme,
+  MantineThemeOverride,
+  Tuple,
+} from '@mantine/core';
 import { ReactNode } from 'react';
 
 import { AnnouncementDocument } from '../../components/announcements/create/types';
@@ -9,20 +15,51 @@ import { QueryResponseData, UserDocument } from '../../types';
 
 type ColorScheme = 'light' | 'dark';
 
+type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
 type ErrorState = {
   isError: boolean;
   errorMessage: string;
   errorCallback: () => void;
 };
 
+interface ThemeObject extends MantineThemeOverride {
+  // Defines color scheme for all components, defaults to "light"
+  colorScheme: ColorScheme;
+
+  // Determines whether motion based animations should be disabled for
+  // users who prefer to reduce motion in their OS settings
+  respectReducedMotion: boolean;
+
+  // White and black colors, defaults to '#fff' and '#000'
+  white: string;
+  black: string;
+
+  // Key of theme.colors
+  primaryColor: string;
+
+  // Index of color from theme.colors that is considered primary
+  primaryShade: Shade | { light: Shade; dark: Shade };
+
+  // Default gradient used in components that support `variant="gradient"` (Button, ThemeIcon, etc.)
+  defaultGradient: { deg: number; from: MantineColor; to: MantineColor };
+
+  fontFamily: string;
+
+  components: any;
+}
+
 type GlobalState = {
   width: number;
   height: number;
   rowGap: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   padding: 'xs' | 'sm' | 'md';
-  colorScheme: ColorScheme;
+  // colorScheme: ColorScheme;
   scrollXDirection: ScrollXDirection;
   scrollYDirection: ScrollYDirection;
+
+  // mantine theme object
+  themeObject: ThemeObject;
 
   userDocument: Omit<UserDocument, '__v' | 'password'> | null;
   announcementDocument: QueryResponseData<AnnouncementDocument> | null;
@@ -35,9 +72,18 @@ type GlobalAction = {
   setHeight: 'setHeight';
   setRowGap: 'setRowGap';
   setPadding: 'setPadding';
-  setColorScheme: 'setColorScheme';
+  // setColorScheme: 'setColorScheme';
   setWindowSize: 'setWindowSize';
   setScrollAxesDirection: 'setScrollAxesDirection';
+
+  // mantine theme object
+  setRespectReducedMotion: 'setRespectReducedMotion';
+  setColorScheme: 'setColorScheme';
+  setPrimaryColor: 'setPrimaryColor';
+  setPrimaryShade: 'setPrimaryShade';
+  setDefaultGradient: 'setDefaultGradient';
+  setFontFamily: 'setFontFamily';
+  setComponents: 'setComponents';
 
   setUserDocument: 'setUserDocument';
   setAnnouncementDocument: 'setAnnouncementDocument';
@@ -76,10 +122,36 @@ type GlobalDispatch =
       type: GlobalAction['setPadding'];
       payload: 'xs' | 'sm' | 'md';
     }
+  // mantine theme object
+  | {
+      type: GlobalAction['setRespectReducedMotion'];
+      payload: boolean;
+    }
   | {
       type: GlobalAction['setColorScheme'];
       payload: ColorScheme;
     }
+  | {
+      type: GlobalAction['setPrimaryColor'];
+      payload: MantineColor;
+    }
+  | {
+      type: GlobalAction['setPrimaryShade'];
+      payload: Shade | { light: Shade; dark: Shade };
+    }
+  | {
+      type: GlobalAction['setDefaultGradient'];
+      payload: { deg: number; from: MantineColor; to: MantineColor };
+    }
+  | {
+      type: GlobalAction['setFontFamily'];
+      payload: string;
+    }
+  | {
+      type: GlobalAction['setComponents'];
+      payload: any;
+    }
+  // documents
   | {
       type: GlobalAction['setUserDocument'];
       payload: Omit<UserDocument, '__v' | 'password'>;
@@ -88,6 +160,8 @@ type GlobalDispatch =
       type: GlobalAction['setAnnouncementDocument'];
       payload: QueryResponseData<AnnouncementDocument>;
     }
+
+  // error state
   | {
       type: GlobalAction['setErrorState'];
       payload: ErrorState;
@@ -104,13 +178,14 @@ type GlobalProviderProps = {
 
 export type {
   ColorScheme,
+  ErrorState,
   GlobalAction,
   GlobalDispatch,
-  ErrorState,
   GlobalProviderProps,
   GlobalReducer,
   GlobalState,
   ScrollAxesDirection,
+  ThemeObject,
   WindowDimensions,
 };
 

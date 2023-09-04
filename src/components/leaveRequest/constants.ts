@@ -67,9 +67,9 @@ const LEAVE_REQUESTS_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const LEAVE_REQUESTS_PATHS = {
-  manager: '/api/v1/actions/company/leave-request',
-  admin: '/api/v1/actions/company/leave-request',
-  employee: '/api/v1/actions/company/leave-request/user',
+  manager: 'actions/company/leave-request',
+  admin: 'actions/company/leave-request',
+  employee: 'actions/company/leave-request/user',
 };
 
 export { LEAVE_REQUESTS_PATHS, LEAVE_REQUESTS_QUERY_DATA };

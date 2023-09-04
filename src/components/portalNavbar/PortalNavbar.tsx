@@ -136,7 +136,26 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/portal/company/leave-request');
         }}
-      />
+      >
+        {/* create leave request */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/company/leave-request/create');
+          }}
+        />
+        {/* display leave requests */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/portal/company/leave-request/display');
+          }}
+        />
+      </NavLink>
       {/* request-resource */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Request resource</TextWrapper>}
@@ -296,8 +315,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     >
       {displayHomeNavLink}
 
-      {displayDirectoryNavLink}
-
       {displayNotesNavLink}
 
       {displayCompanyNavLinks}
@@ -305,6 +322,8 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       {displayGeneralNavLinks}
 
       {displayOutreachNavLinks}
+
+      {displayDirectoryNavLink}
     </Navbar>
   );
 }

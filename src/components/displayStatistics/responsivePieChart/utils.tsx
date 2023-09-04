@@ -5,17 +5,19 @@ import { splitCamelCase } from '../../../utils';
 import { TextWrapper } from '../../wrappers';
 import { ReactNode } from 'react';
 
-function PieChartControlsStack({
-  label,
-  value,
-  input,
-  symbol = '',
-}: {
+type ChartsGraphsControlsStackerProps = {
   label: string | ReactNode;
   value: string | number | boolean;
   input: JSX.Element;
   symbol?: string;
-}) {
+};
+
+function ChartsGraphsControlsStacker({
+  label,
+  value,
+  input,
+  symbol = '',
+}: ChartsGraphsControlsStackerProps) {
   const {
     globalState: { padding, rowGap },
   } = useGlobalState();
@@ -30,7 +32,6 @@ function PieChartControlsStack({
       px={padding}
       pb={padding}
       rowGap="xs"
-      //   columnGap={rowGap}
     >
       <TextWrapper creatorInfoObj={{ size: 'md' }}>{label}</TextWrapper>
 
@@ -60,4 +61,4 @@ function PieChartControlsStack({
   );
 }
 
-export { PieChartControlsStack };
+export { ChartsGraphsControlsStacker };

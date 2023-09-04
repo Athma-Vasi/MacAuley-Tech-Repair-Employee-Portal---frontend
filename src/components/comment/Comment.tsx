@@ -1488,7 +1488,7 @@ function Comment({
         </Stack>
       );
 
-      return (
+      const displayCommentSection = (
         <Group
           key={`${index}`}
           w="100%"
@@ -1504,6 +1504,8 @@ function Comment({
             : createdCommentSectionDesktop}
         </Group>
       );
+
+      return displayCommentSection;
     }
   );
 

@@ -61,7 +61,7 @@ const Directory = lazy(() => import('./components/directory/Directory'));
 
 function App() {
   const {
-    globalState: { colorScheme, errorState },
+    globalState: { themeObject, errorState },
   } = useGlobalState();
 
   const {
@@ -70,7 +70,7 @@ function App() {
   const navigate = useNavigate();
 
   return (
-    <MantineProvider withGlobalStyles withNormalizeCSS theme={{ colorScheme }}>
+    <MantineProvider withGlobalStyles withNormalizeCSS theme={themeObject}>
       <Routes>
         {/* these are public routes */}
         <Route path="/" element={<PublicLayout />}>
@@ -104,8 +104,30 @@ function App() {
 
         {/* DEV TEST ROUTES */}
         <Route path="portal" element={<PortalLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route
+            index
+            element={
+              <ErrorBoundary
+                fallback={<ErrorFallback errorState={errorState} />}
+              >
+                <Suspense fallback={<div>Generic Loading message...</div>}>
+                  <Dashboard />
+                </Suspense>
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="dashboard"
+            element={
+              <ErrorBoundary
+                fallback={<ErrorFallback errorState={errorState} />}
+              >
+                <Suspense fallback={<div>Generic Loading message...</div>}>
+                  <Dashboard />
+                </Suspense>
+              </ErrorBoundary>
+            }
+          />
 
           {/* directory */}
 

@@ -45,7 +45,7 @@ import {
   urlBuilder,
 } from '../../utils';
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
-import { PieChartControlsStack } from '../displayStatistics/responsivePieChart/utils';
+import { ChartsGraphsControlsStacker } from '../displayStatistics/responsivePieChart/utils';
 import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
@@ -194,10 +194,7 @@ function Directory() {
 
         console.log('data from fetchUsers()', data);
       } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
@@ -2001,7 +1998,7 @@ function Directory() {
   );
 
   const displayFilterByDepartmentSelectInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdFilterByDepartmentSelectInputElements}
       label="Filter by department"
       value={filterByDepartment}
@@ -2010,7 +2007,7 @@ function Directory() {
   );
 
   const displayFilterByJobPositionSelectInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdFilterByJobPositionSelectInputElements}
       label="Filter by job position"
       value={
@@ -2023,7 +2020,7 @@ function Directory() {
   );
 
   const displayFilterByStoreLocationSelectInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdFilterByStoreLocationSelectInputElements}
       label="Filter by store location"
       value={
@@ -2061,7 +2058,7 @@ function Directory() {
   );
 
   const displayDagreNodeSepSliderInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdDagreNodeSepSliderInput}
       label="Node Separation"
       value={dagreNodeSep}
@@ -2070,7 +2067,7 @@ function Directory() {
   );
 
   const displayDagreRankSepSliderInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdDagreRankSepSliderInput}
       label="Rank Separation"
       value={dagreRankSep}
@@ -2079,7 +2076,7 @@ function Directory() {
   );
 
   const displayDagreMinLenSliderInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdDagreMinLenSliderInput}
       label="Min Length"
       value={dagreMinLen}
@@ -2088,7 +2085,7 @@ function Directory() {
   );
 
   const displayDagreRankDirSelectInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdDagreRankDirSelectInput}
       label="Rank Direction"
       value={dagreRankDir}
@@ -2097,7 +2094,7 @@ function Directory() {
   );
 
   const displayDagreRankAlignSelectInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdDagreRankAlignSelectInput}
       label="Rank Alignment"
       value={dagreRankAlign === 'undefined' ? 'Default' : dagreRankAlign}
@@ -2106,7 +2103,7 @@ function Directory() {
   );
 
   const displayDagreRankerSelectInput = (
-    <PieChartControlsStack
+    <ChartsGraphsControlsStacker
       input={createdDagreRankerSelectInput}
       label="Ranker Algorithm"
       value={dagreRanker}

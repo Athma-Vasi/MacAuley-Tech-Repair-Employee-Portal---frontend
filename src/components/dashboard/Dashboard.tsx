@@ -7,26 +7,33 @@ import { useGlobalState } from '../../hooks/useGlobalState';
 import { UserDocument } from '../../types';
 import { logState, urlBuilder } from '../../utils';
 import { dashboardReducer, initialDashboardState } from './state';
+import { InvalidTokenError } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { useErrorBoundary } from 'react-error-boundary';
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
     dashboardReducer,
     initialDashboardState
   );
-  const {
-    errorMessage,
-    isError,
-    isLoading,
-    isSubmitting,
-    isSuccessful,
-    loadingMessage,
-    submitMessage,
-    successMessage,
-  } = dashboardState;
+  // const {
+  //   errorMessage,
+  //   isError,
+  //   isLoading,
+  //   isSubmitting,
+  //   isSuccessful,
+  //   loadingMessage,
+  //   submitMessage,
+  //   successMessage,
+  // } = dashboardState;
   const { globalState, globalDispatch } = useGlobalState();
   const {
     authState: { accessToken, userId },
   } = useAuth();
+
+  const navigate = useNavigate();
+
+  const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
     let isMounted = true;
@@ -58,34 +65,47 @@ function Dashboard() {
           return;
         }
         const { ok } = response;
-        if (ok) {
-          globalDispatch({
-            type: globalAction.setUserDocument,
-            payload: resourceData[0],
-          });
-        } else {
-          dashboardDispatch({
-            type: 'setErrorMessage',
-            payload: message,
-          });
-
-          dashboardDispatch({
-            type: 'setIsError',
-            payload: true,
-          });
+        if (!ok) {
+          throw new Error(data.message);
         }
+
+        globalDispatch({
+          type: globalAction.setUserDocument,
+          payload: resourceData[0],
+        });
       } catch (error: any) {
-        if (isMounted) {
-          dashboardDispatch({
-            type: 'setErrorMessage',
-            payload: error?.message ?? 'Unknown error occurred.',
-          });
-
-          dashboardDispatch({
-            type: 'setIsError',
-            payload: true,
-          });
+        if (!isMounted || error.name === 'AbortError') {
+          return;
         }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error.message ?? 'Unknown error occured. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/portal');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
       } finally {
         dashboardDispatch({
           type: 'setIsLoading',

@@ -14,9 +14,10 @@ import { axiosInstance } from '../../api/axios';
 import { COLORS } from '../../constants/data';
 import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { ThemeSwitch } from '../themeSwitch';
+import { ColorSchemeSwitch } from '../colorSchemeSwitch/ColorSchemeSwitch';
 import { TextWrapper } from '../wrappers';
 import { LOGOUT_URL } from './constants';
+import ProfileInfo from './profileInfo/ProfileInfo';
 import { LogoutResponse, PortalHeaderProps } from './types';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
@@ -25,7 +26,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   } = useAuth();
   const navigate = useNavigate();
   const {
-    globalState: { colorScheme, width },
+    globalState: { themeObject, width },
   } = useGlobalState();
 
   async function handleLogoutFormSubmit(
@@ -61,9 +62,6 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     }
   }
 
-  const { darkTextColor, lightTextColor, buttonTextColor } = COLORS;
-  const textColor = colorScheme === 'dark' ? lightTextColor : darkTextColor;
-
   return (
     <Header
       height={{ base: 50, md: 70 }}
@@ -79,18 +77,13 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
             onClick={() => setOpenedHeader((open) => !open)}
             size="sm"
             mr="xl"
-            color={buttonTextColor}
           />
         </MediaQuery>
         {/* title */}
         {width < 768 ? null : (
           <Flex columnGap="xl" align="center">
             <Flex align="center" justify="center">
-              <Title
-                order={3}
-                color={textColor}
-                style={{ letterSpacing: '0.30rem' }}
-              >
+              <Title order={3} style={{ letterSpacing: '0.30rem' }}>
                 MACAULEY
               </Title>
               <Title order={3} color="red">
@@ -109,17 +102,17 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
 
         <Flex align="center" justify="flex-end">
           {/* theme switch */}
-          <ThemeSwitch />
-          <Space w="xl" />
+          <ColorSchemeSwitch />
+          <ProfileInfo />
           {/* logout button */}
-          <form onSubmit={handleLogoutFormSubmit}>
+          {/* <form onSubmit={handleLogoutFormSubmit}>
             <Button
               variant={colorScheme === 'dark' ? 'outline' : 'filled'}
               type="submit"
             >
               Sign Out
             </Button>
-          </form>
+          </form> */}
         </Flex>
       </Flex>
     </Header>
