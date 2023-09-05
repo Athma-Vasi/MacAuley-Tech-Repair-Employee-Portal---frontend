@@ -2,6 +2,7 @@ import { RangeSlider, Slider } from '@mantine/core';
 import { ReactNode } from 'react';
 
 import { SliderInputData } from '../../types';
+import { useGlobalState } from '../../hooks';
 
 type AccessibleSliderInputCreatorInfo = {
   ariaLabel: string;
@@ -33,6 +34,12 @@ type SliderWrapperProps = {
 };
 
 function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
+  const {
+    globalState: {
+      themeObject: { colorScheme },
+    },
+  } = useGlobalState();
+
   const {
     ariaLabel,
     ariaDescribedBy,

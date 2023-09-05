@@ -43,6 +43,17 @@ type ButtonWrapperProps = {
 
 function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
   const {
+    globalState: { themeObject },
+  } = useGlobalState();
+  const {
+    defaultGradient,
+    components: { Button: ButtonComponent }, // avoids name conflict
+  } = themeObject;
+  const defaultProps = ButtonComponent.defaultProps as Record<string, any>;
+
+  console.log('defaultProps: ', defaultProps);
+
+  const {
     buttonLabel,
     buttonType = 'button',
     buttonOnClick = () => {},
@@ -52,7 +63,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
     buttonStyle = {},
     buttonDisabled = false,
     buttonRef = null,
-    buttonVariant = 'outline',
+    buttonVariant = defaultProps.variant,
     compact = false,
     leftIcon = buttonType === 'submit' ? <TbUpload /> : null,
     rightIcon = null,
@@ -69,6 +80,7 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
       type={buttonType}
       variant={buttonVariant}
       compact={compact}
+      gradient={buttonVariant === 'gradient' ? defaultGradient : undefined}
       leftIcon={leftIcon}
       name={semanticName.split(' ').join('-')}
       rightIcon={rightIcon}

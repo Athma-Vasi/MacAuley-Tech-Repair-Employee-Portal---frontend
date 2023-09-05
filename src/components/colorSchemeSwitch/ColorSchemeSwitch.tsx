@@ -5,13 +5,16 @@ import { useState } from 'react';
 
 import { globalAction } from '../../context/globalProvider/state';
 import { useGlobalState } from '../../hooks/useGlobalState';
+import { TbMoon, TbSun } from 'react-icons/tb';
 
 function ColorSchemeSwitch() {
   const {
-    globalState: { themeObject },
+    globalState: {
+      themeObject: { colorScheme },
+    },
     globalDispatch,
   } = useGlobalState();
-  const [checked, setChecked] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>(colorScheme === 'light');
 
   return (
     <Flex align="center" justify="center" columnGap="sm">
@@ -21,16 +24,17 @@ function ColorSchemeSwitch() {
           setChecked((check) => !check);
           globalDispatch({
             type: globalAction.setColorScheme,
-            payload: themeObject.colorScheme === 'light' ? 'dark' : 'light',
+            payload: colorScheme === 'light' ? 'dark' : 'light',
           });
         }}
-        onLabel="Light"
-        offLabel="Dark"
+        onLabel={<TbSun size={14} />}
+        offLabel={<TbMoon size={14} />}
+        size="md"
       />
-      <FontAwesomeIcon
+      {/* <FontAwesomeIcon
         icon={themeObject.colorScheme === 'light' ? faSun : faMoon}
         color="dimgray"
-      />
+      /> */}
     </Flex>
   );
 }

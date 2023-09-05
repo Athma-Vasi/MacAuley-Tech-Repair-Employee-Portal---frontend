@@ -70,7 +70,12 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
         boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
       }}
     >
-      <Flex justify="space-between" align="center" h="100%">
+      <Flex
+        justify="space-between"
+        align="center"
+        h="100%"
+        style={{ outline: '1px solid teal' }}
+      >
         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
           <Burger
             opened={openedHeader}

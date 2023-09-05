@@ -2,7 +2,15 @@ import './style.css';
 
 import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Group, Stepper, Text, Title, Tooltip } from '@mantine/core';
+import {
+  Button,
+  Flex,
+  Group,
+  Stepper,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core';
 import { useEffect, useRef } from 'react';
 import { TbCheck, TbX } from 'react-icons/tb';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
@@ -72,7 +80,7 @@ function StepperWrapper({
     buttonLabel: 'Next',
     semanticDescription: 'Next button to navigate to next step',
     semanticName: 'next button',
-    buttonOnClick: (event: React.MouseEvent<HTMLButtonElement>) => {
+    buttonOnClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
       if (parentComponentDispatch) {
         parentComponentDispatch({
           type: setCurrentStepperPosition,
@@ -258,6 +266,13 @@ function StepperWrapper({
           >
             <Group>{createdPrevButton}</Group>
           </Tooltip>
+
+          <Button
+            variant="gradient"
+            gradient={{ from: 'violet', to: 'indigo' }}
+          >
+            TEST
+          </Button>
 
           {/* next button */}
           <Tooltip

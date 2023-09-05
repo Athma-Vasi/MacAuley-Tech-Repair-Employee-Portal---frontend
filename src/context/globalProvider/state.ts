@@ -11,24 +11,29 @@ import {
 
 const initialThemeObject: ThemeObject = {
   colorScheme: 'light',
-  respectReducedMotion: false,
+  respectReducedMotion: true,
 
   white: '#ffffff',
   black: '#000000',
 
   primaryColor: 'violet',
-  primaryShade: { light: 3, dark: 7 },
+  primaryShade: { light: 5, dark: 7 },
 
   defaultGradient: { deg: 45, from: 'blue', to: 'cyan' },
 
-  fontFamily: 'Inter, sans-serif',
+  fontFamily: 'sans-serif',
 
   components: {
-    // buttons
     Button: {
-      defaultProps: (theme: MantineTheme) => ({
-        variant: theme.colorScheme === 'dark' ? 'outline' : 'filled',
-      }),
+      // Variants<'filled' | 'outline' | 'light' | 'white' | 'default' | 'subtle' | 'gradient'>
+      defaultProps: {
+        variant: 'light',
+      },
+    },
+    Text: {
+      defaultProps: {
+        color: 'dark.7',
+      },
     },
   },
 };
@@ -70,6 +75,7 @@ const globalAction: GlobalAction = {
   setDefaultGradient: 'setDefaultGradient',
   setFontFamily: 'setFontFamily',
   setComponents: 'setComponents',
+
   setUserDocument: 'setUserDocument',
   setAnnouncementDocument: 'setAnnouncementDocument',
 
@@ -107,14 +113,44 @@ function globalReducer(
           respectReducedMotion: action.payload,
         },
       };
-    case globalAction.setColorScheme:
+    case globalAction.setColorScheme: {
+      const colorScheme = action.payload;
+      const { components } = state.themeObject;
+      const { Button, Text } = components;
+
+      // set button variant
+      const { defaultProps } = Button;
+      const newButtonDefaultProps = {
+        ...defaultProps,
+        variant: colorScheme === 'dark' ? 'outline' : 'light',
+      };
+
+      // set text color
+      const { defaultProps: textDefaultProps } = Text;
+      const newTextDefaultProps = {
+        ...textDefaultProps,
+        color: colorScheme === 'dark' ? 'gray.5' : 'dark.7',
+      };
+
       return {
         ...state,
         themeObject: {
           ...state.themeObject,
-          colorScheme: action.payload,
+          colorScheme,
+          components: {
+            ...components,
+            Button: {
+              ...Button,
+              defaultProps: newButtonDefaultProps,
+            },
+            Text: {
+              ...Text,
+              defaultProps: newTextDefaultProps,
+            },
+          },
         },
       };
+    }
     case globalAction.setPrimaryColor:
       return {
         ...state,

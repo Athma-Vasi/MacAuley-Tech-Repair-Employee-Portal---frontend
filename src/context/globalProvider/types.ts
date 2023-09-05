@@ -1,4 +1,6 @@
 import {
+  CSSObject,
+  ContextStylesParams,
   MantineColor,
   MantineTheme,
   MantineThemeOverride,
@@ -14,14 +16,37 @@ import {
 import { QueryResponseData, UserDocument } from '../../types';
 
 type ColorScheme = 'light' | 'dark';
-
 type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-type ErrorState = {
-  isError: boolean;
-  errorMessage: string;
-  errorCallback: () => void;
-};
+interface ThemeComponent {
+  defaultProps?:
+    | Record<string, any>
+    | ((theme: MantineTheme) => Record<string, any>);
+  classNames?: Record<string, string>;
+  styles?:
+    | Record<string, CSSObject>
+    | ((
+        theme: MantineTheme,
+        params: any,
+        context: ContextStylesParams
+      ) => Record<string, CSSObject>);
+  variants?: Record<
+    PropertyKey,
+    (
+      theme: MantineTheme,
+      params: any,
+      context: ContextStylesParams
+    ) => Record<string, CSSObject>
+  >;
+  sizes?: Record<
+    PropertyKey,
+    (
+      theme: MantineTheme,
+      params: any,
+      context: ContextStylesParams
+    ) => Record<string, CSSObject>
+  >;
+}
 
 interface ThemeObject extends MantineThemeOverride {
   // Defines color scheme for all components, defaults to "light"
@@ -39,15 +64,23 @@ interface ThemeObject extends MantineThemeOverride {
   primaryColor: string;
 
   // Index of color from theme.colors that is considered primary
-  primaryShade: Shade | { light: Shade; dark: Shade };
+  primaryShade: { light: Shade; dark: Shade };
 
   // Default gradient used in components that support `variant="gradient"` (Button, ThemeIcon, etc.)
   defaultGradient: { deg: number; from: MantineColor; to: MantineColor };
 
   fontFamily: string;
 
-  components: any;
+  components: {
+    [x: string]: ThemeComponent;
+  };
 }
+
+type ErrorState = {
+  isError: boolean;
+  errorMessage: string;
+  errorCallback: () => void;
+};
 
 type GlobalState = {
   width: number;
@@ -137,7 +170,7 @@ type GlobalDispatch =
     }
   | {
       type: GlobalAction['setPrimaryShade'];
-      payload: Shade | { light: Shade; dark: Shade };
+      payload: { light: Shade; dark: Shade };
     }
   | {
       type: GlobalAction['setDefaultGradient'];
@@ -185,6 +218,7 @@ export type {
   GlobalReducer,
   GlobalState,
   ScrollAxesDirection,
+  Shade,
   ThemeObject,
   WindowDimensions,
 };

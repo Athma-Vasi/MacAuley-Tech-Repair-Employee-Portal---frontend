@@ -70,13 +70,16 @@ function TextWrapper({
   creatorInfoObj,
 }: TextWrapperProps): JSX.Element {
   const {
-    globalState: { width },
+    globalState: { width, themeObject },
   } = useGlobalState();
+
+  const { colorScheme, components } = themeObject;
+  const defaultProps = components.Text.defaultProps as Record<string, any>;
 
   const {
     size,
     align = 'start',
-    color = 'dark',
+    color = defaultProps.color,
     weight = 500,
     variant = 'text',
     lineClamp = 1,

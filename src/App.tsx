@@ -52,6 +52,7 @@ import { useGlobalState } from './hooks/useGlobalState';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallback from './components/errorFallback/ErrorFallback';
 import { useAuth } from './hooks';
+import CustomFonts from './components/customFonts/CustomFonts';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -71,6 +72,7 @@ function App() {
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={themeObject}>
+      <CustomFonts />
       <Routes>
         {/* these are public routes */}
         <Route path="/" element={<PublicLayout />}>
@@ -170,7 +172,7 @@ function App() {
 
             {/* leave-request */}
             <Route path="leave-request">
-              <Route index element={<DisplayLeaveRequests />} />
+              <Route index element={<CreateLeaveRequest />} />
               <Route path="display" element={<DisplayLeaveRequests />} />
               <Route path="create" element={<CreateLeaveRequest />} />
             </Route>
