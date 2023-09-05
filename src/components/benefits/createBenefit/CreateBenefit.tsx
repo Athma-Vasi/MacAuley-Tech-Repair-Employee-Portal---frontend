@@ -27,7 +27,7 @@ import {
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -377,7 +377,7 @@ function CreateBenefit() {
   });
 
   const [planActiveInputSelectedText, planActiveInputDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: isPlanActive,
       semanticName: 'active status',
       selectedDescription: 'plan is active',

@@ -81,7 +81,8 @@ function App() {
           <Route path="register" element={<PortalLayout />}>
             <Route index element={<Register />} />
           </Route>
-          {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
+          <Route path="survey-builder" element={<SurveyBuilder />} />
+          <Route path="expense-claim" element={<CreateExpenseClaim />} />
         </Route>
 
         {/* these are protected routes */}

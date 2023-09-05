@@ -9,6 +9,7 @@ import {
   SegmentedControl,
   Stack,
   Text,
+  Title,
   UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
@@ -46,7 +47,7 @@ function ProfileInfo() {
     authState: { accessToken, isLoggedIn },
   } = useAuth();
 
-  const mantineTheme = useMantineTheme();
+  const { colors } = useMantineTheme();
 
   const [openedThemeModal, { open: openThemeModal, close: closeThemeModal }] =
     useDisclosure(false);
@@ -62,7 +63,7 @@ function ProfileInfo() {
   );
 
   // color swatches section
-  const colorSwatches = Object.entries(mantineTheme.colors).map(
+  const colorSwatches = Object.entries(colors).map(
     ([colorName, colorShades], idx) => {
       const shade =
         colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
@@ -115,6 +116,7 @@ function ProfileInfo() {
     }
   );
 
+  const borderColor = colorScheme === 'light' ? colors.gray[3] : colors.gray[8];
   const displayColorSwatches = (
     <Stack w="100%">
       <Stack px={padding}>
@@ -123,7 +125,7 @@ function ProfileInfo() {
           aria-live="polite"
           style={{
             padding: '0.5rem 0.75rem',
-            border: '1px solid #e0e0e0',
+            border: `1px solid ${borderColor}`,
             borderRadius: '4px',
           }}
           w="fit-content"
@@ -139,7 +141,7 @@ function ProfileInfo() {
         rowGap={rowGap}
         columnGap={rowGap}
         py={padding}
-        style={{ borderBottom: '1px solid #e0e0e0' }}
+        style={{ borderBottom: `1px solid ${borderColor}` }}
       >
         {colorSwatches}
       </Flex>
@@ -263,7 +265,7 @@ function ProfileInfo() {
       opened={openedThemeModal}
       onClose={closeThemeModal}
       size="sm"
-      title={<Text size="xl">Theme options</Text>}
+      title={<Title order={3}>Theme options</Title>}
     >
       <Stack w="100%">
         {displayColorSchemeSwitch}

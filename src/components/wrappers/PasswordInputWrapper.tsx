@@ -1,6 +1,5 @@
-import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { PasswordInput } from '@mantine/core';
+import { PasswordInput, Popover, Stack, useMantineTheme } from '@mantine/core';
+import { ReactNode, useState } from 'react';
 import { TbCheck } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
@@ -10,23 +9,24 @@ type AccessiblePasswordInputCreatorInfo = {
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired?: boolean | undefined;
+  ariaRequired?: boolean;
   description: {
     error: JSX.Element;
     valid: JSX.Element;
   };
   placeholder: string;
-  initialInputValue?: string | undefined;
-  icon?: IconDefinition | null | undefined;
+  initialInputValue?: string;
+  icon?: ReactNode;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onBlur: () => void;
 
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
+  minLength?: number;
+  maxLength?: number;
+  withAsterisk?: boolean;
+  ref?: React.RefObject<HTMLInputElement>;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  required?: boolean;
 };
 
 type PasswordInputWrapperProps = {
@@ -36,8 +36,12 @@ type PasswordInputWrapperProps = {
 function PasswordInputWrapper({
   creatorInfoObject,
 }: PasswordInputWrapperProps) {
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const { colors } = useMantineTheme();
   const {
-    globalState: { width },
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+    },
   } = useGlobalState();
 
   const {
@@ -58,13 +62,82 @@ function PasswordInputWrapper({
     withAsterisk = false,
     ref = null,
     required = false,
+    size = 'sm',
   } = creatorInfoObject;
 
-  const passwordInputSize = 'sm';
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
 
-  return (
-    <PasswordInput
-      size={passwordInputSize}
+  const leftIcon = isValidInputText ? (
+    icon ? (
+      icon
+    ) : (
+      <TbCheck color={colors.green[colorShade]} size={18} />
+    )
+  ) : null;
+
+  const inputWithPopover = (
+    <Popover
+      opened={inputText ? popoverOpened : false}
+      position="bottom"
+      shadow="md"
+      transitionProps={{ transition: 'pop' }}
+      width="target"
+      withArrow
+    >
+      <Popover.Target>
+        <div
+          onFocusCapture={() => setPopoverOpened(true)}
+          onBlurCapture={() => setPopoverOpened(false)}
+        >
+          <PasswordInput
+            size={size}
+            w={325}
+            color="dark"
+            label={label}
+            aria-required={ariaRequired}
+            aria-describedby={
+              isValidInputText
+                ? `${semanticName.split(' ').join('-')}-input-note-valid`
+                : `${semanticName.split(' ').join('-')}-input-note-error`
+            }
+            placeholder={placeholder}
+            aria-invalid={isValidInputText ? false : true}
+            value={inputText}
+            icon={leftIcon}
+            error={!isValidInputText && inputText !== initialInputValue}
+            // description={isValidInputText ? description.valid : description.error}
+            onChange={onChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            minLength={minLength}
+            maxLength={maxLength}
+            name={semanticName.split(' ').join('-')}
+            ref={ref}
+            withAsterisk={withAsterisk}
+            required={required}
+          />
+        </div>
+      </Popover.Target>
+
+      <Popover.Dropdown>
+        <Stack>
+          {isValidInputText ? description.valid : description.error}
+        </Stack>
+      </Popover.Dropdown>
+    </Popover>
+  );
+
+  return inputWithPopover;
+}
+
+export { PasswordInputWrapper };
+
+export type { AccessiblePasswordInputCreatorInfo };
+
+/**
+ * <PasswordInput
+      size={size}
       w="100%"
       color="dark"
       label={label}
@@ -98,9 +171,4 @@ function PasswordInputWrapper({
       withAsterisk={withAsterisk}
       required={required}
     />
-  );
-}
-
-export { PasswordInputWrapper };
-
-export type { AccessiblePasswordInputCreatorInfo };
+ */

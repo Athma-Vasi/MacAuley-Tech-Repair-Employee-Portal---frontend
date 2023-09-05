@@ -9,6 +9,7 @@ import {
   Stack,
   Text,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core';
 import { compress } from 'image-conversion';
 import localforage from 'localforage';
@@ -19,8 +20,8 @@ import { TbTrash } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 import {
+  AccessibleErrorValidTextElementsForDynamicImageUploads,
   returnAccessibleButtonElements,
-  returnAccessibleErrorValidTextElementsForDynamicImageUploads,
 } from '../../jsxCreators';
 import { logState, returnImageValidationText } from '../../utils';
 import { TextWrapper } from '../wrappers';
@@ -77,8 +78,13 @@ function ImageUpload({
     submitMessage,
   } = imageUploadState;
   const {
-    globalState: { padding, rowGap },
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+      rowGap,
+      padding,
+    },
   } = useGlobalState();
+  const { colors } = useMantineTheme();
 
   // set localforage imageupload state to initial state on every mount
   useEffect(() => {
@@ -234,7 +240,7 @@ function ImageUpload({
   useEffect(() => {
     async function modifyImage() {
       await Promise.all(
-        images.map(async (image, index) => {
+        images.map(async (image: File, index) => {
           if (!qualities[index] && !orientations[index]) {
             return;
           }
@@ -273,7 +279,7 @@ function ImageUpload({
     }
 
     const formDataArray = imagePreviews.reduce(
-      (formDataArray: FormData[], image, idx) => {
+      (formDataArray: FormData[], image: File | Blob, idx) => {
         const formData = new FormData();
         // because the Blob type returned by compress() does not have a name property
         formData.append('file', image, images[idx].name);
@@ -297,7 +303,7 @@ function ImageUpload({
   }, [images, imagePreviews]);
 
   const [imageFileUploadErrorTexts, imageFileUploadValidTexts] =
-    returnAccessibleErrorValidTextElementsForDynamicImageUploads({
+    AccessibleErrorValidTextElementsForDynamicImageUploads({
       areValidImageKinds,
       areValidImageSizes,
       areValidImageTypes,
@@ -312,13 +318,15 @@ function ImageUpload({
       <FileInput
         disabled={imageCount >= maxImages}
         label={
-          <Text size="sm" color="dark">
-            {`Upload an image. Available: ${maxImages - imageCount}`}
+          <Text>
+            {maxImages - imageCount > 0
+              ? `Upload an image. Available: ${maxImages - imageCount}`
+              : 'Maximum images amount reached.'}
           </Text>
         }
         onChange={(file: File | null) => {
           // since max image size is 1 MB, and highest compression is 0.9
-          if (!file || file.size > 10_000_000) {
+          if (!file || file.size > 9_000_000) {
             return;
           }
 
@@ -341,14 +349,13 @@ function ImageUpload({
             },
           });
         }}
-        // placeholder="Click to select image"
         placeholder={`${
           imageCount >= maxImages
             ? 'Max image count reached'
             : 'Click to select an image'
         }`}
         value={images[imageCount]}
-        w="62%"
+        w={350}
       />
     </Flex>
   );
@@ -357,7 +364,7 @@ function ImageUpload({
     (_, index) => {
       const imagePreview = (
         <Image
-          maw={382}
+          maw={325}
           mx="auto"
           radius="sm"
           //   src={`data:${images[index]?.arrayBuffer};base64,${images[index]}`}
@@ -378,7 +385,7 @@ function ImageUpload({
                 width: '100%',
               }}
             >
-              <Text size="sm">Invalid image</Text>
+              <Text>Invalid image</Text>
             </Flex>
           }
         />
@@ -390,8 +397,8 @@ function ImageUpload({
             buttonLabel: 'Reset',
             buttonDisabled:
               !areValidImageKinds[index] || !areValidImageTypes[index],
-            semanticDescription: 'Reset image to default values',
-            semanticName: 'reset image button',
+            semanticDescription: `Reset values of ${images[index].name} to default`,
+            semanticName: `reset ${images[index].name} to default values`,
             leftIcon: <BiReset />,
             buttonOnClick: () => {
               imageUploadDispatch({
@@ -410,8 +417,8 @@ function ImageUpload({
           },
           {
             buttonLabel: 'Remove',
-            semanticDescription: 'Remove image from selection',
-            semanticName: 'remove image button',
+            semanticDescription: `Remove ${images[index].name} from selection`,
+            semanticName: `remove ${images[index].name} from selection`,
             leftIcon: <TbTrash />,
             buttonOnClick: () => {
               imageUploadDispatch({
@@ -422,198 +429,253 @@ function ImageUpload({
           },
         ]);
 
+      const errorValidTexts = (
+        <Flex
+          align="center"
+          justify="space-between"
+          wrap="wrap"
+          w="100%"
+          rowGap={rowGap}
+        >
+          {imageFileUploadErrorTexts[index]}
+          {imageFileUploadValidTexts[index]}
+        </Flex>
+      );
+
+      const imageName = (
+        <Flex
+          align="center"
+          justify="space-between"
+          wrap="wrap"
+          w="100%"
+          rowGap={rowGap}
+          style={{
+            borderBottom: '1px solid #e0e0e0',
+          }}
+        >
+          <TextWrapper creatorInfoObj={{}}>Name: </TextWrapper>
+          <TextWrapper creatorInfoObj={{}}>
+            <Tooltip label={images[index].name}>
+              <Group>
+                {images[index].name.length > 17
+                  ? `${images[index].name.slice(0, 17)}...`
+                  : images[index].name}
+              </Group>
+            </Tooltip>
+          </TextWrapper>
+        </Flex>
+      );
+
+      const borderColorGray =
+        colorScheme === 'light'
+          ? `1px solid ${colors.gray[3]}`
+          : `1px solid ${colors.gray[8]}`;
+      const borderColorRed =
+        colorScheme === 'light'
+          ? `1px solid ${colors.red[primaryShade.light]}`
+          : `1px solid ${colors.red[primaryShade.dark]}`;
+
+      const imageSize = (
+        <Flex
+          align="center"
+          justify="space-between"
+          wrap="wrap"
+          w="100%"
+          style={{
+            borderBottom: areValidImageSizes[index]
+              ? borderColorGray
+              : borderColorRed,
+          }}
+        >
+          <TextWrapper creatorInfoObj={{}}>Size: </TextWrapper>
+          <TextWrapper creatorInfoObj={{}}>
+            {(imagePreviews[index].size / 1_000).toFixed(2)} KB
+          </TextWrapper>
+        </Flex>
+      );
+
+      const imageKind = (
+        <Flex
+          align="center"
+          justify="space-between"
+          wrap="wrap"
+          w="100%"
+          style={{
+            borderBottom: areValidImageKinds[index]
+              ? borderColorGray
+              : borderColorRed,
+          }}
+        >
+          <TextWrapper creatorInfoObj={{}}>Kind: </TextWrapper>
+          <TextWrapper creatorInfoObj={{}}>
+            {images[index].type.split('/')[0]}
+          </TextWrapper>
+        </Flex>
+      );
+
+      const imageType = (
+        <Flex
+          align="center"
+          justify="space-between"
+          wrap="wrap"
+          w="100%"
+          style={{
+            borderBottom: areValidImageTypes[index]
+              ? borderColorGray
+              : borderColorRed,
+          }}
+        >
+          <TextWrapper creatorInfoObj={{}}>Type: </TextWrapper>
+          <TextWrapper creatorInfoObj={{}}>
+            {images[index].type.split('/')[1]}
+          </TextWrapper>
+        </Flex>
+      );
+
+      const resetRemoveButtons = (
+        <Group w="100%" position="apart">
+          <Tooltip
+            label={
+              !areValidImageKinds[index] || !areValidImageTypes[index]
+                ? 'Please select a valid image'
+                : `Reset values of ${images[index].name} to default`
+            }
+          >
+            <Group>{createdResetButton}</Group>
+          </Tooltip>
+          <Tooltip label={`Remove ${images[index].name} from selection`}>
+            <Group>{createdRemoveButton}</Group>
+          </Tooltip>
+        </Group>
+      );
+
+      const imageQualitySlider = (
+        <Stack w="100%">
+          <TextWrapper creatorInfoObj={{}}>Quality: </TextWrapper>
+          <Slider
+            aria-label={`Quality slider for ${images[index].name}`}
+            min={1}
+            max={8}
+            step={1}
+            marks={IMG_QUALITY_SLIDER_DATA}
+            value={qualities[index] ?? 8}
+            onChange={(value) => {
+              imageUploadDispatch({
+                type: imageUploadAction.setQualities,
+                payload: {
+                  index,
+                  value,
+                },
+              });
+            }}
+          />
+        </Stack>
+      );
+
+      const imageOrientationSlider = (
+        <Stack w="100%">
+          <Text>
+            {!qualities[index] || qualities[index] >= 8
+              ? 'To enable orientation slider, set quality to less than 80%'
+              : 'Orientation:'}
+          </Text>
+          <Slider
+            aria-label={`Orientation slider for ${images[index].name}`}
+            showLabelOnHover
+            disabled={!qualities[index] || qualities[index] >= 8}
+            min={1}
+            max={8}
+            step={1}
+            marks={IMG_ORIENTATION_SLIDER_DATA}
+            label={(value) => displayOrientationLabel(value)}
+            value={orientations[index] ?? 1}
+            onChange={(value) => {
+              imageUploadDispatch({
+                type: imageUploadAction.setOrientations,
+                payload: {
+                  index,
+                  value,
+                },
+              });
+            }}
+            thumbChildren={<LuRotate3D />}
+          />
+        </Stack>
+      );
+
+      const accordionSection = (
+        <Accordion w="100%" pb={padding}>
+          <Accordion.Item
+            value={
+              areValidImageKinds[index] || areValidImageTypes[index]
+                ? 'Adjust compression and orientation'
+                : 'Can only modify images'
+            }
+          >
+            <Accordion.Control
+              disabled={
+                !areValidImageKinds[index] || !areValidImageTypes[index]
+              }
+              w="100%"
+            >
+              <Text>
+                {areValidImageKinds[index] || areValidImageTypes[index]
+                  ? 'Adjust compression and orientation'
+                  : 'Can only modify images'}
+              </Text>
+            </Accordion.Control>
+            <Accordion.Panel w="100%" pb={padding}>
+              <Flex
+                direction="column"
+                align="center"
+                justify="center"
+                w="100%"
+                rowGap={rowGap}
+              >
+                {/* quality slider */}
+                {imageQualitySlider}
+                <Space h="xl" />
+
+                {/* orientation slider */}
+                {imageOrientationSlider}
+              </Flex>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+      );
+
       return (
         <Stack
           key={`${index}-${images[index]?.name}-${imageCount}`}
-          w={375}
+          w={350}
           p={padding}
           style={{
-            border: '1px solid #e0e0e0',
+            border: borderColorGray,
             borderRadius: '4px',
           }}
         >
           {imagePreview}
-          <Flex
-            align="center"
-            justify="space-between"
-            wrap="wrap"
-            w="100%"
-            rowGap={rowGap}
-          >
-            {imageFileUploadErrorTexts[index]}
-            {imageFileUploadValidTexts[index]}
-          </Flex>
+
+          {/* error/valid texts */}
+          {errorValidTexts}
+
           {/* image name */}
-          <Flex
-            align="center"
-            justify="space-between"
-            wrap="wrap"
-            w="100%"
-            rowGap={rowGap}
-            style={{
-              borderBottom: '1px solid #e0e0e0',
-            }}
-          >
-            <TextWrapper creatorInfoObj={{}}>Name: </TextWrapper>
-            <TextWrapper creatorInfoObj={{}}>
-              <Tooltip label={images[index].name}>
-                <Group>
-                  {images[index].name.length > 17
-                    ? `${images[index].name.slice(0, 17)}...`
-                    : images[index].name}
-                </Group>
-              </Tooltip>
-            </TextWrapper>
-          </Flex>
+          {imageName}
+
           {/* image size */}
-          <Flex
-            align="center"
-            justify="space-between"
-            wrap="wrap"
-            w="100%"
-            style={{
-              borderBottom: areValidImageSizes[index]
-                ? '1px solid #e0e0e0'
-                : '1px solid red',
-            }}
-          >
-            <TextWrapper creatorInfoObj={{}}>Size: </TextWrapper>
-            <TextWrapper creatorInfoObj={{}}>
-              {(imagePreviews[index].size / 1_000).toFixed(2)} KB
-            </TextWrapper>
-          </Flex>
+          {imageSize}
+
           {/* image kind */}
-          <Flex
-            align="center"
-            justify="space-between"
-            wrap="wrap"
-            w="100%"
-            style={{
-              borderBottom: areValidImageKinds[index]
-                ? '1px solid #e0e0e0'
-                : '1px solid red',
-            }}
-          >
-            <TextWrapper creatorInfoObj={{}}>Kind: </TextWrapper>
-            <TextWrapper creatorInfoObj={{}}>
-              {images[index].type.split('/')[0]}
-            </TextWrapper>
-          </Flex>
+          {imageKind}
+
           {/* image type */}
-          <Flex
-            align="center"
-            justify="space-between"
-            wrap="wrap"
-            w="100%"
-            style={{
-              borderBottom: areValidImageTypes[index]
-                ? '1px solid #e0e0e0'
-                : '1px solid red',
-            }}
-          >
-            <TextWrapper creatorInfoObj={{}}>Type: </TextWrapper>
-            <TextWrapper creatorInfoObj={{}}>
-              {images[index].type.split('/')[1]}
-            </TextWrapper>
-          </Flex>
+          {imageType}
+
           {/* reset, remove buttons */}
-          <Group w="100%" position="apart">
-            <Tooltip
-              label={
-                !areValidImageKinds[index] || !areValidImageTypes[index]
-                  ? 'Please select a valid image'
-                  : `Reset values of ${images[index].name} to default`
-              }
-            >
-              <Group>{createdResetButton}</Group>
-            </Tooltip>
-            <Tooltip label={`Remove ${images[index].name} from selection`}>
-              <Group>{createdRemoveButton}</Group>
-            </Tooltip>
-          </Group>
+          {resetRemoveButtons}
 
-          {/* quality slider */}
-          <Accordion w="100%" pb={padding}>
-            <Accordion.Item
-              value={
-                areValidImageKinds[index] || areValidImageTypes[index]
-                  ? 'Adjust compression and orientation'
-                  : 'Can only modify images'
-              }
-            >
-              <Accordion.Control
-                disabled={
-                  !areValidImageKinds[index] || !areValidImageTypes[index]
-                }
-                w="100%"
-              >
-                <Text size="sm" color="dark">
-                  {areValidImageKinds[index] || areValidImageTypes[index]
-                    ? 'Adjust compression and orientation'
-                    : 'Can only modify images'}
-                </Text>
-              </Accordion.Control>
-              <Accordion.Panel w="100%" pb={padding}>
-                <Flex
-                  direction="column"
-                  align="center"
-                  justify="center"
-                  w="100%"
-                  rowGap={rowGap}
-                >
-                  <Stack w="100%">
-                    <TextWrapper creatorInfoObj={{}}>Quality: </TextWrapper>
-                    <Slider
-                      min={1}
-                      max={8}
-                      step={1}
-                      marks={IMG_QUALITY_SLIDER_DATA}
-                      value={qualities[index] ?? 8}
-                      onChange={(value) => {
-                        imageUploadDispatch({
-                          type: imageUploadAction.setQualities,
-                          payload: {
-                            index,
-                            value,
-                          },
-                        });
-                      }}
-                    />
-                  </Stack>
-                  <Space h="xl" />
-
-                  {/* orientation slider */}
-                  <Stack w="100%">
-                    <Text size="sm" color="dark">
-                      {!qualities[index] || qualities[index] >= 8
-                        ? 'To enable orientation slider, set quality to less than 80%'
-                        : 'Orientation:'}
-                    </Text>
-                    <Slider
-                      showLabelOnHover
-                      disabled={!qualities[index] || qualities[index] >= 8}
-                      min={1}
-                      max={8}
-                      step={1}
-                      marks={IMG_ORIENTATION_SLIDER_DATA}
-                      label={(value) => displayOrientationLabel(value)}
-                      value={orientations[index] ?? 1}
-                      onChange={(value) => {
-                        imageUploadDispatch({
-                          type: imageUploadAction.setOrientations,
-                          payload: {
-                            index,
-                            value,
-                          },
-                        });
-                      }}
-                      thumbChildren={<LuRotate3D />}
-                    />
-                  </Stack>
-                </Flex>
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
+          {/* accordion */}
+          {accordionSection}
         </Stack>
       );
     }
@@ -622,7 +684,7 @@ function ImageUpload({
   const displayImagePreviews = (
     <Flex
       align="flex-start"
-      justify="flex-start"
+      justify="center"
       w="100%"
       wrap="wrap"
       p={padding}
@@ -640,19 +702,19 @@ function ImageUpload({
     });
   }, [imageUploadState]);
 
-  return (
+  const displayImageUploadComponent = (
     <Stack
       w="100%"
       style={{
         ...style,
-        backgroundColor: '#fff',
-        borderRadius: '4px',
       }}
     >
       {createdImageUploadFileInput}
       {displayImagePreviews}
     </Stack>
   );
+
+  return displayImageUploadComponent;
 }
 
 export { ImageUpload };

@@ -34,7 +34,7 @@ import {
   returnAccessibleDynamicRadioGroupInputsElements,
   returnAccessibleDynamicTextInputElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleErrorValidTextElementsForDynamicInputs,
+  AccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleRadioGroupInputsElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -746,7 +746,7 @@ function SurveyBuilder() {
     });
 
   const [questionInputsErrorText, questionInputsValidText] =
-    returnAccessibleErrorValidTextElementsForDynamicInputs({
+    AccessibleErrorValidTextElementsForDynamicInputs({
       semanticName: 'question',
       inputTextArray: questions,
       areValidInputTexts: areValidQuestions,
@@ -765,7 +765,7 @@ function SurveyBuilder() {
     JSX.Element[]
   ][] = responseDataOptionsArray.map((responseDataOptions, questionIdx) => {
     const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
-      returnAccessibleErrorValidTextElementsForDynamicInputs({
+      AccessibleErrorValidTextElementsForDynamicInputs({
         semanticName: `Question ${questionIdx + 1}: option`,
         inputTextArray: responseDataOptions,
         areValidInputTexts: areResponseDataOptionsValid?.[questionIdx],

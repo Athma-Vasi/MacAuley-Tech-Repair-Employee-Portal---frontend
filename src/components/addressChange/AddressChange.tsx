@@ -20,7 +20,7 @@ import {
   returnAccessibleCheckboxSingleInputElements,
   AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
@@ -279,7 +279,7 @@ function AddressChange() {
     });
 
   const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: isAcknowledged,
       semanticName: 'acknowledgement',
       selectedDescription: 'I acknowledge that the information is correct',

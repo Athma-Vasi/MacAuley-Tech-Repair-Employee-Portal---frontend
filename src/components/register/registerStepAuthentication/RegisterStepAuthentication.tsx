@@ -8,7 +8,6 @@ import {
   PASSWORD_REGEX,
   USERNAME_REGEX,
 } from '../../../constants/regex';
-import { screenReaderPasswordSpecialCharacters } from '../../../domElements';
 import {
   AccessibleErrorValidTextElements,
   returnAccessiblePasswordInputElements,
@@ -132,7 +131,7 @@ function RegisterStepAuthentication({
       isInputTextFocused: isPasswordFocused,
       regexValidationText: `${passwordRegexValidationText}${
         passwordRegexValidationText.includes('special')
-          ? screenReaderPasswordSpecialCharacters
+          ? ' !, @, #, $, %, ^, &, *'
           : ''
       }`,
     });

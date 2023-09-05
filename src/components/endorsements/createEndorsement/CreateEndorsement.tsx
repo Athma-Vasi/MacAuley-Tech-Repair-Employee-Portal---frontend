@@ -10,7 +10,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
@@ -180,7 +180,7 @@ function CreateEndorsement() {
   const [
     attributeEndorsedInputSelectedText,
     attributeEndorsedInputDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
+  ] = AccessibleSelectedDeselectedTextElements({
     isSelected: attributeEndorsed.length > 0,
     semanticName: 'attributes endorsed',
     selectedDescription: `You have chosen: ${attributeEndorsed.join(

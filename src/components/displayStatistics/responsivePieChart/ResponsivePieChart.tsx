@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useReducer } from 'react';
 
 import { useGlobalState } from '../../../hooks';
 import {
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
@@ -150,7 +150,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const [
     sortByValueAccessibleSelectedText,
     sortByValueAccessibleDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
+  ] = AccessibleSelectedDeselectedTextElements({
     isSelected: sortByValue,
     semanticName: 'sort by value',
     deselectedDescription:
@@ -163,7 +163,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const [
     enableFillPatternsAccessibleSelectedText,
     enableFillPatternsAccessibleDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
+  ] = AccessibleSelectedDeselectedTextElements({
     isSelected: enableFillPatterns,
     semanticName: 'fill patterns',
     deselectedDescription: 'Fill patterns will not be displayed.',
@@ -174,7 +174,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const [
     enableArcLabelsAccessibleSelectedText,
     enableArcLabelsAccessibleDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
+  ] = AccessibleSelectedDeselectedTextElements({
     isSelected: enableArcLabels,
     semanticName: 'arc labels',
     deselectedDescription: 'Arc labels will not be displayed.',
@@ -185,7 +185,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const [
     enableArcLinkLabelsAccessibleSelectedText,
     enableArcLinkLabelsAccessibleDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
+  ] = AccessibleSelectedDeselectedTextElements({
     isSelected: enableArcLinkLabels,
     semanticName: 'arc link labels',
     deselectedDescription: 'Arc link labels will not be displayed..',
@@ -194,7 +194,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   });
 
   const [animateAccessibleSelectedText, animateAccessibleDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: animate,
       semanticName: 'animate',
       deselectedDescription: 'Transitions will be disabled.',
@@ -205,7 +205,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const [
     enableLegendAccessibleSelectedText,
     enableLegendAccessibleDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
+  ] = AccessibleSelectedDeselectedTextElements({
     isSelected: enableLegend,
     semanticName: 'legend',
     deselectedDescription: 'Legend will not be displayed.',
@@ -217,7 +217,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const [
     enableLegendJustifyAccessibleSelectedText,
     enableLegendJustifyAccessibleDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
+  ] = AccessibleSelectedDeselectedTextElements({
     isSelected: justify,
     semanticName: 'justify',
     deselectedDescription: 'Legend symbol and label will not be justified.',

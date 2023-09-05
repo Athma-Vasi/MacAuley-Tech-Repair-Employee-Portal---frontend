@@ -26,7 +26,7 @@ import {
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -291,7 +291,7 @@ function CreateExpenseClaim() {
     });
 
   const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: acknowledgement,
       semanticName: 'acknowledgement',
       selectedDescription: 'I acknowledge that the information is correct',

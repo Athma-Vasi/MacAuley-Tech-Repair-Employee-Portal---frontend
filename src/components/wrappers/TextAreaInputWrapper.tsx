@@ -1,11 +1,21 @@
 import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, Group, Text, Textarea, Tooltip } from '@mantine/core';
-import { ReactNode } from 'react';
+import {
+  Flex,
+  Group,
+  Popover,
+  Stack,
+  Text,
+  Textarea,
+  Tooltip,
+  useMantineTheme,
+} from '@mantine/core';
+import { ReactNode, useState } from 'react';
 import { BsTrash } from 'react-icons/bs';
 
 import { useGlobalState } from '../../hooks';
 import { ButtonWrapper } from './ButtonWrapper';
+import { TbCheck } from 'react-icons/tb';
 
 type AccessibleTextAreaInputCreatorInfo = {
   semanticName: string;
@@ -24,7 +34,7 @@ type AccessibleTextAreaInputCreatorInfo = {
   };
   placeholder: string;
   initialInputValue?: string;
-  icon?: IconDefinition;
+  icon?: ReactNode;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus: () => void;
   onBlur: () => void;
@@ -33,6 +43,7 @@ type AccessibleTextAreaInputCreatorInfo = {
   maxLength?: number;
   withAsterisk?: boolean;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   required?: boolean;
   autoComplete?: 'on' | 'off';
 
@@ -48,8 +59,12 @@ type TextAreaInputWrapperProps = {
 function TextAreaInputWrapper({
   creatorInfoObject,
 }: TextAreaInputWrapperProps) {
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const { colors } = useMantineTheme();
   const {
-    globalState: { width },
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+    },
   } = useGlobalState();
 
   const {
@@ -74,13 +89,10 @@ function TextAreaInputWrapper({
     required = false,
     autoComplete = 'off',
     autosize = true,
+    size = 'sm',
     minRows = 3,
     maxRows = 7,
   } = creatorInfoObject;
-
-  const textAreaSize = 'sm';
-  // const semanticNameCapitalized =
-  //   semanticName.charAt(0).toUpperCase() + semanticName.slice(1);
 
   const dynamicInputLabel = dynamicInputs ? (
     <Group w="100%" position="apart">
@@ -93,9 +105,86 @@ function TextAreaInputWrapper({
     label
   );
 
-  return (
-    <Textarea
-      size={textAreaSize}
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+
+  const leftIcon = isValidInputText ? (
+    icon ? (
+      icon
+    ) : (
+      <TbCheck color={colors.green[colorShade]} size={18} />
+    )
+  ) : null;
+
+  const inputWithPopover = (
+    <Popover
+      opened={inputText ? popoverOpened : false}
+      position="bottom"
+      shadow="md"
+      transitionProps={{ transition: 'pop' }}
+      width="target"
+      withArrow
+    >
+      <Popover.Target>
+        <div
+          onFocusCapture={() => setPopoverOpened(true)}
+          onBlurCapture={() => setPopoverOpened(false)}
+        >
+          <Textarea
+            size={size}
+            w={325}
+            color="dark"
+            label={dynamicInputLabel}
+            aria-required={ariaRequired}
+            aria-describedby={
+              isValidInputText
+                ? `${semanticName.split(' ').join('-')}-input-note-valid`
+                : `${semanticName.split(' ').join('-')}-input-note-error`
+            }
+            aria-autocomplete={ariaAutoComplete}
+            // description={
+            //   isValidInputText ? description.valid : description.error
+            // }
+            placeholder={placeholder}
+            aria-invalid={isValidInputText ? false : true}
+            value={inputText}
+            icon={leftIcon}
+            error={!isValidInputText && inputText !== initialInputValue}
+            name={semanticName.split(' ').join('-')}
+            onChange={onChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            minLength={minLength}
+            maxLength={maxLength}
+            autoComplete={autoComplete}
+            ref={ref}
+            withAsterisk={withAsterisk}
+            required={required}
+            autosize={autosize}
+            minRows={minRows}
+            maxRows={maxRows}
+          />
+        </div>
+      </Popover.Target>
+
+      <Popover.Dropdown>
+        <Stack>
+          {isValidInputText ? description.valid : description.error}
+        </Stack>
+      </Popover.Dropdown>
+    </Popover>
+  );
+
+  return inputWithPopover;
+}
+
+export { TextAreaInputWrapper };
+
+export type { AccessibleTextAreaInputCreatorInfo };
+
+/**
+ * <Textarea
+      size={size}
       w="100%"
       color="dark"
       label={dynamicInputLabel}
@@ -134,9 +223,4 @@ function TextAreaInputWrapper({
       minRows={minRows}
       maxRows={maxRows}
     />
-  );
-}
-
-export { TextAreaInputWrapper };
-
-export type { AccessibleTextAreaInputCreatorInfo };
+ */

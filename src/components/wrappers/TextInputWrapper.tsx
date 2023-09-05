@@ -17,6 +17,7 @@ import { ReactNode, useState } from 'react';
 import { useGlobalState } from '../../hooks';
 import React from 'react';
 import { TbCheck, TbRefresh, TbX } from 'react-icons/tb';
+import { splitCamelCase } from '../../utils';
 
 type AccessibleTextInputCreatorInfo = {
   semanticName: string;
@@ -130,7 +131,10 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       rightSectionIcon
     ) : (
       <TbRefresh
-        color={colors.gray[colorShade]}
+        aria-label={`Reset ${splitCamelCase(
+          semanticName
+        )} value to ${initialInputValue}`}
+        color={colors.gray[colorScheme === 'light' ? 5 : 3]}
         size={18}
         onClick={rightSectionOnClick}
       />

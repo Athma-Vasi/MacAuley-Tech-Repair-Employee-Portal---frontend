@@ -27,7 +27,7 @@ import {
   returnAccessibleCheckboxSingleInputElements,
   AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -424,7 +424,7 @@ function CreateReferment() {
   });
 
   const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: privacyConsent,
       semanticName: 'privacy consent',
       selectedDescription:

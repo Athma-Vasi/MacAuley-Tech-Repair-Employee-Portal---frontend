@@ -18,7 +18,7 @@ import {
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -188,7 +188,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
   // following are the accessible text elements for screen readers to read out based on the state of the input
 
   const [requiredRepairsSelectedText, requiredRepairsDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: requiredRepairs.length > 0,
       semanticName: 'required repairs',
       deselectedDescription: 'Nothing to repair!',
@@ -199,7 +199,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     });
 
   const [partsNeededSelectedText, partsNeededDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: partsNeeded.length > 0,
       semanticName: 'parts needed',
       deselectedDescription: 'No parts required!',
@@ -222,7 +222,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     });
 
   const [partUnderWarrantySelectedText, partUnderWarrantyDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: partUnderWarranty,
       semanticName: 'part under warranty',
       deselectedDescription: 'Part is not under warranty',

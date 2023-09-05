@@ -32,7 +32,7 @@ import {
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleDateTimeElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
@@ -240,7 +240,7 @@ function QueryBuilder({
   const [
     projectionCheckboxInputSelectedText,
     projectionCheckboxInputDeselectedText,
-  ] = returnAccessibleSelectedDeselectedTextElements({
+  ] = AccessibleSelectedDeselectedTextElements({
     isSelected: projectionArray.length > 0,
     semanticName: 'exclusion fields',
     deselectedDescription: 'All fields will be returned',

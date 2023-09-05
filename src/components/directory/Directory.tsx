@@ -27,7 +27,7 @@ import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
 import {
   returnAccessibleCheckboxGroupInputsElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../jsxCreators';

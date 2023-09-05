@@ -1,4 +1,4 @@
-import { Flex, Group, Text } from '@mantine/core';
+import { Flex, Group, Text, useMantineTheme } from '@mantine/core';
 
 import { useGlobalState } from '../../../hooks';
 import { splitCamelCase } from '../../../utils';
@@ -19,8 +19,18 @@ function ChartsGraphsControlsStacker({
   symbol = '',
 }: ChartsGraphsControlsStackerProps) {
   const {
-    globalState: { padding, rowGap },
+    globalState: {
+      padding,
+      rowGap,
+      themeObject: { colorScheme },
+    },
   } = useGlobalState();
+
+  const {
+    colors: { gray },
+  } = useMantineTheme();
+
+  const borderColor = colorScheme === 'light' ? gray[3] : gray[8];
 
   return (
     <Flex
@@ -28,7 +38,7 @@ function ChartsGraphsControlsStacker({
       justify="space-between"
       wrap="wrap"
       w="100%"
-      style={{ borderBottom: '1px solid #e0e0e0' }}
+      style={{ borderBottom: `1px solid ${borderColor}` }}
       px={padding}
       pb={padding}
       rowGap="xs"
@@ -48,7 +58,7 @@ function ChartsGraphsControlsStacker({
         <Text
           style={{
             padding: '0.5rem 0.75rem',
-            border: '1px solid #e0e0e0',
+            border: `1px solid ${borderColor}`,
             borderRadius: '4px',
           }}
           aria-live="polite"

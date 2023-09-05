@@ -32,13 +32,13 @@ const initialThemeObject: ThemeObject = {
     },
     Text: {
       defaultProps: {
-        color: 'dark.7',
+        color: 'gray.8',
         size: 'sm',
       },
     },
     Title: {
       defaultProps: {
-        color: 'dark.7',
+        color: 'dark.5',
       },
     },
   },
@@ -135,14 +135,14 @@ function globalReducer(
       const { defaultProps: textDefaultProps } = Text;
       const newTextDefaultProps = {
         ...textDefaultProps,
-        color: colorScheme === 'dark' ? 'gray.5' : 'dark.7',
+        color: colorScheme === 'dark' ? 'gray.5' : 'gray.8',
       };
 
       // set title color
       const { defaultProps: titleDefaultProps } = Title;
       const newTitleDefaultProps = {
         ...titleDefaultProps,
-        color: colorScheme === 'dark' ? 'gray.5' : 'dark.7',
+        color: colorScheme === 'dark' ? 'dark.1' : 'dark.5',
       };
 
       return {

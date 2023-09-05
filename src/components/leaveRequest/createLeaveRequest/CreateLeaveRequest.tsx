@@ -11,7 +11,7 @@ import {
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleSelectedDeselectedTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -258,7 +258,7 @@ function CreateLeaveRequest() {
     });
 
   const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
-    returnAccessibleSelectedDeselectedTextElements({
+    AccessibleSelectedDeselectedTextElements({
       isSelected: isAcknowledged,
       semanticName: 'acknowledgement',
       selectedDescription: 'I acknowledge that the information is correct',

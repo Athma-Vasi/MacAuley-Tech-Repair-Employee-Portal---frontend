@@ -4,37 +4,49 @@ import {
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Button, TextInput, Tooltip } from '@mantine/core';
+import {
+  Button,
+  Group,
+  Popover,
+  Stack,
+  TextInput,
+  Tooltip,
+  useMantineTheme,
+} from '@mantine/core';
 
 import { useGlobalState } from '../../hooks';
+import { ReactNode, useState } from 'react';
+import { TbCheck, TbRefresh } from 'react-icons/tb';
+import { splitCamelCase } from '../../utils';
 
 type AccessiblePhoneNumberTextInputCreatorInfo = {
   semanticName: string;
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired?: boolean | undefined;
+  ariaRequired?: boolean;
   description: {
     error: JSX.Element;
     valid: JSX.Element;
   };
   placeholder: string;
-  initialInputValue?: string | undefined;
-  icon?: IconDefinition | undefined;
+  initialInputValue?: string;
+  icon?: ReactNode;
   onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-  rightSection?: boolean | undefined;
-  rightSectionIcon?: IconDefinition | null | undefined;
-  rightSectionOnClick?: () => void | undefined;
+  rightSection?: boolean;
+  rightSectionIcon?: ReactNode;
+  rightSectionOnClick?: () => void;
 
-  minLength?: number | undefined;
-  maxLength?: number | undefined;
-  withAsterisk?: boolean | undefined;
-  ref?: React.RefObject<HTMLInputElement> | undefined;
-  required?: boolean | undefined;
-  autoComplete?: 'on' | 'off' | undefined;
+  minLength?: number;
+  maxLength?: number;
+  withAsterisk?: boolean;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  ref?: React.RefObject<HTMLInputElement>;
+  required?: boolean;
+  autoComplete?: 'on' | 'off';
 };
 
 type PhoneTextInputWrapperProps = {
@@ -44,8 +56,12 @@ type PhoneTextInputWrapperProps = {
 function PhoneTextInputWrapper({
   creatorInfoObject,
 }: PhoneTextInputWrapperProps) {
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const { colors } = useMantineTheme();
   const {
-    globalState: { width },
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+    },
   } = useGlobalState();
 
   const {
@@ -70,14 +86,107 @@ function PhoneTextInputWrapper({
     withAsterisk = false,
     ref = null,
     required = false,
+    size = 'sm',
     autoComplete = 'off',
   } = creatorInfoObject;
 
-  const textInputSize = 'sm';
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
 
-  return (
-    <TextInput
-      size={textInputSize}
+  const leftIcon = isValidInputText ? (
+    icon ? (
+      icon
+    ) : (
+      <TbCheck color={colors.green[colorShade]} size={18} />
+    )
+  ) : null;
+
+  const rightIcon = rightSection ? (
+    rightSectionIcon ? (
+      rightSectionIcon
+    ) : (
+      <Tooltip
+        label={`Reset ${splitCamelCase(semanticName)} to ${initialInputValue}`}
+      >
+        <Group style={{ cursor: 'pointer' }}>
+          <TbRefresh
+            aria-label={`Reset ${splitCamelCase(
+              semanticName
+            )} value to ${initialInputValue}`}
+            color={colors.gray[colorScheme === 'light' ? 5 : 3]}
+            size={18}
+            onClick={rightSectionOnClick}
+          />
+        </Group>
+      </Tooltip>
+    )
+  ) : null;
+
+  const inputWithPopover = (
+    <Popover
+      opened={inputText ? popoverOpened : false}
+      position="bottom"
+      shadow="md"
+      transitionProps={{ transition: 'pop' }}
+      width="target"
+      withArrow
+    >
+      <Popover.Target>
+        <div
+          onFocusCapture={() => setPopoverOpened(true)}
+          onBlurCapture={() => setPopoverOpened(false)}
+        >
+          <TextInput
+            size={size}
+            w={325}
+            color="dark"
+            label={label}
+            aria-required={ariaRequired}
+            aria-describedby={
+              isValidInputText
+                ? `${semanticName.split(' ').join('-')}-input-note-valid`
+                : `${semanticName.split(' ').join('-')}-input-note-error`
+            }
+            // description={isValidInputText ? description.valid : description.error}
+            placeholder={placeholder}
+            autoComplete={autoComplete}
+            aria-invalid={isValidInputText ? false : true}
+            value={inputText}
+            icon={leftIcon}
+            error={!isValidInputText && inputText !== initialInputValue}
+            name={semanticName.split(' ').join('-')}
+            onChange={onChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            onKeyDown={onKeyDown}
+            rightSection={rightIcon}
+            minLength={minLength}
+            maxLength={maxLength}
+            ref={ref}
+            withAsterisk={withAsterisk}
+            required={required}
+          />
+        </div>
+      </Popover.Target>
+
+      <Popover.Dropdown>
+        <Stack>
+          {isValidInputText ? description.valid : description.error}
+        </Stack>
+      </Popover.Dropdown>
+    </Popover>
+  );
+
+  return inputWithPopover;
+}
+
+export { PhoneTextInputWrapper };
+
+export type { AccessiblePhoneNumberTextInputCreatorInfo };
+
+/**
+ <TextInput
+      size={size}
       w="100%"
       color="dark"
       label={label}
@@ -87,19 +196,20 @@ function PhoneTextInputWrapper({
           ? `${semanticName.split(' ').join('-')}-input-note-valid`
           : `${semanticName.split(' ').join('-')}-input-note-error`
       }
-      description={isValidInputText ? description.valid : description.error}
+      // description={isValidInputText ? description.valid : description.error}
       placeholder={placeholder}
       autoComplete={autoComplete}
       aria-invalid={isValidInputText ? false : true}
       value={inputText}
       icon={
-        isValidInputText ? (
-          icon ? (
-            <FontAwesomeIcon icon={icon} color="green" />
-          ) : (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          )
-        ) : null
+        // isValidInputText ? (
+        //   icon ? (
+        //     <FontAwesomeIcon icon={icon} color="green" />
+        //   ) : (
+        //     <FontAwesomeIcon icon={faCheck} color="green" />
+        //   )
+        // ) : null
+        leftIcon
       }
       error={!isValidInputText && inputText !== initialInputValue}
       name={semanticName.split(' ').join('-')}
@@ -108,24 +218,25 @@ function PhoneTextInputWrapper({
       onBlur={onBlur}
       onKeyDown={onKeyDown}
       rightSection={
-        rightSection ? (
-          <Tooltip label={`Reset value to ${initialInputValue}`}>
-            <Button
-              type="button"
-              size="xs"
-              variant="white"
-              aria-label={`Reset personal contact number value to ${initialInputValue}`}
-              mr="md"
-            >
-              <FontAwesomeIcon
-                icon={rightSectionIcon ? rightSectionIcon : faRefresh}
-                cursor="pointer"
-                color="gray"
-                onClick={rightSectionOnClick}
-              />
-            </Button>
-          </Tooltip>
-        ) : null
+        // rightSection ? (
+        //   <Tooltip label={`Reset value to ${initialInputValue}`}>
+        //     <Button
+        //       type="button"
+        //       size="xs"
+        //       variant="white"
+        //       aria-label={`Reset personal contact number value to ${initialInputValue}`}
+        //       mr="md"
+        //     >
+        //       <FontAwesomeIcon
+        //         icon={rightSectionIcon ? rightSectionIcon : faRefresh}
+        //         cursor="pointer"
+        //         color="gray"
+        //         onClick={rightSectionOnClick}
+        //       />
+        //     </Button>
+        //   </Tooltip>
+        // ) : null
+        rightIcon
       }
       minLength={minLength}
       maxLength={maxLength}
@@ -133,9 +244,4 @@ function PhoneTextInputWrapper({
       withAsterisk={withAsterisk}
       required={required}
     />
-  );
-}
-
-export { PhoneTextInputWrapper };
-
-export type { AccessiblePhoneNumberTextInputCreatorInfo };
+*/

@@ -19,7 +19,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleDynamicTextAreaInputElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleErrorValidTextElementsForDynamicInputs,
+  AccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
@@ -434,7 +434,7 @@ function CreateAnnouncement() {
     });
 
   const [articleParagraphInputErrorTexts, articleParagraphInputValidTexts] =
-    returnAccessibleErrorValidTextElementsForDynamicInputs({
+    AccessibleErrorValidTextElementsForDynamicInputs({
       areInputTextsFocused: areArticleParagraphsFocused,
       areValidInputTexts: areValidArticleParagraphs,
       inputTextArray: article,
