@@ -105,7 +105,6 @@ type GlobalAction = {
   setHeight: 'setHeight';
   setRowGap: 'setRowGap';
   setPadding: 'setPadding';
-  // setColorScheme: 'setColorScheme';
   setWindowSize: 'setWindowSize';
   setScrollAxesDirection: 'setScrollAxesDirection';
 

@@ -51,8 +51,6 @@ function ButtonWrapper({ creatorInfoObject }: ButtonWrapperProps) {
   } = themeObject;
   const defaultProps = ButtonComponent.defaultProps as Record<string, any>;
 
-  console.log('defaultProps: ', defaultProps);
-
   const {
     buttonLabel,
     buttonType = 'button',

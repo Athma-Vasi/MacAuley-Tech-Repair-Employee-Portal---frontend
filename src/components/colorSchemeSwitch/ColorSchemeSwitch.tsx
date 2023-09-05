@@ -21,7 +21,7 @@ function ColorSchemeSwitch() {
       <Switch
         checked={checked}
         onChange={() => {
-          setChecked((check) => !check);
+          setChecked(() => (colorScheme === 'light' ? false : true));
           globalDispatch({
             type: globalAction.setColorScheme,
             payload: colorScheme === 'light' ? 'dark' : 'light',
@@ -31,10 +31,6 @@ function ColorSchemeSwitch() {
         offLabel={<TbMoon size={14} />}
         size="md"
       />
-      {/* <FontAwesomeIcon
-        icon={themeObject.colorScheme === 'light' ? faSun : faMoon}
-        color="dimgray"
-      /> */}
     </Flex>
   );
 }

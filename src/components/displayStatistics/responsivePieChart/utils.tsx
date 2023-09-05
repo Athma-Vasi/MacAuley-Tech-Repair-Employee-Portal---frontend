@@ -1,4 +1,4 @@
-import { Flex, Group } from '@mantine/core';
+import { Flex, Group, Text } from '@mantine/core';
 
 import { useGlobalState } from '../../../hooks';
 import { splitCamelCase } from '../../../utils';
@@ -33,7 +33,9 @@ function ChartsGraphsControlsStacker({
       pb={padding}
       rowGap="xs"
     >
-      <TextWrapper creatorInfoObj={{ size: 'md' }}>{label}</TextWrapper>
+      <Text size="md" weight={500}>
+        {label}
+      </Text>
 
       <Flex
         align="flex-end"
@@ -43,18 +45,16 @@ function ChartsGraphsControlsStacker({
         rowGap={rowGap}
         w="100%"
       >
-        <TextWrapper
-          creatorInfoObj={{
-            style: {
-              padding: '0.5rem 0.75rem',
-              border: '1px solid #e0e0e0',
-              borderRadius: '4px',
-            },
+        <Text
+          style={{
+            padding: '0.5rem 0.75rem',
+            border: '1px solid #e0e0e0',
+            borderRadius: '4px',
           }}
           aria-live="polite"
         >
           {splitCamelCase(value.toString())} {symbol}
-        </TextWrapper>
+        </Text>
         <Group>{input}</Group>
       </Flex>
     </Flex>

@@ -35,6 +35,11 @@ const initialThemeObject: ThemeObject = {
         color: 'dark.7',
       },
     },
+    Title: {
+      defaultProps: {
+        color: 'dark.7',
+      },
+    },
   },
 };
 
@@ -116,7 +121,7 @@ function globalReducer(
     case globalAction.setColorScheme: {
       const colorScheme = action.payload;
       const { components } = state.themeObject;
-      const { Button, Text } = components;
+      const { Button, Text, Title } = components;
 
       // set button variant
       const { defaultProps } = Button;
@@ -129,6 +134,13 @@ function globalReducer(
       const { defaultProps: textDefaultProps } = Text;
       const newTextDefaultProps = {
         ...textDefaultProps,
+        color: colorScheme === 'dark' ? 'gray.5' : 'dark.7',
+      };
+
+      // set title color
+      const { defaultProps: titleDefaultProps } = Title;
+      const newTitleDefaultProps = {
+        ...titleDefaultProps,
         color: colorScheme === 'dark' ? 'gray.5' : 'dark.7',
       };
 
@@ -146,6 +158,10 @@ function globalReducer(
             Text: {
               ...Text,
               defaultProps: newTextDefaultProps,
+            },
+            Title: {
+              ...Title,
+              defaultProps: newTitleDefaultProps,
             },
           },
         },

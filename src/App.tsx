@@ -105,7 +105,7 @@ function App() {
         </Route> */}
 
         {/* DEV TEST ROUTES */}
-        <Route path="portal" element={<PortalLayout />}>
+        <Route path="home" element={<PortalLayout />}>
           <Route
             index
             element={

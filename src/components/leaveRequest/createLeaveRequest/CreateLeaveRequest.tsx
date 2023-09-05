@@ -41,12 +41,18 @@ import {
   createLeaveRequestReducer,
   initialCreateLeaveRequestState,
 } from './state';
+import { useMantineTheme } from '@mantine/core';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function CreateLeaveRequest() {
   const [leaveRequestState, leaveRequestDispatch] = useReducer(
     createLeaveRequestReducer,
     initialCreateLeaveRequestState
   );
+
+  const location = useLocation();
+  console.log('location history in create leave request', location);
+
   const {
     startDate,
     isValidStartDate,

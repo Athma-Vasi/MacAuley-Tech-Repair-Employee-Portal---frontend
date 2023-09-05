@@ -10,6 +10,7 @@ import {
   Text,
   Title,
   Tooltip,
+  useMantineTheme,
 } from '@mantine/core';
 import { useEffect, useRef } from 'react';
 import { TbCheck, TbX } from 'react-icons/tb';
@@ -35,9 +36,14 @@ function StepperWrapper({
   stepsInError,
 }: StepperWrapperProps) {
   const {
-    globalState: { width },
+    globalState: {
+      width,
+      themeObject: { colorScheme, primaryColor, primaryShade },
+    },
   } = useGlobalState();
   const stepperRef = useRef<HTMLButtonElement>(null);
+
+  const { colors } = useMantineTheme();
 
   // sets focus on current step on each form page, for screen reader accessibility
   useEffect(() => {
@@ -145,13 +151,15 @@ function StepperWrapper({
       justify="center"
       rowGap={width < 480 ? 'sm' : 'md'}
       w="100%"
-      bg="white"
+      bg={
+        colorScheme === 'light'
+          ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+          : colors.dark[6]
+      }
       p={padding}
       h="100%"
     >
-      <Title order={3} color="dark">
-        {childrenTitle}
-      </Title>
+      <Title order={3}>{childrenTitle}</Title>
       <Stepper
         active={currentStepperPosition}
         onStepClick={(step) => {
@@ -177,7 +185,13 @@ function StepperWrapper({
         w="100%"
         p={padding}
         size={size}
-        style={{ borderRadius: '5px', border: '1px solid #e0e0e0' }}
+        style={{
+          borderRadius: '4px',
+          border:
+            colorScheme === 'light'
+              ? `1px solid ${colors.gray[3]}`
+              : `1px solid ${colors.gray[8]}`, // #303030
+        }}
       >
         {descriptionObjectsArray.map((value, index) => {
           const { ariaLabel, description } = value;
@@ -222,7 +236,13 @@ function StepperWrapper({
             justify="center"
             rowGap={width < 480 ? 'sm' : 'md'}
             w="100%"
-            style={{ borderRadius: '5px', border: '1px solid #e0e0e0' }}
+            style={{
+              borderRadius: '5px',
+              border:
+                colorScheme === 'light'
+                  ? `1px solid ${colors.gray[3]}`
+                  : `1px solid ${colors.gray[8]}`,
+            }}
             bg="white"
             p={padding}
           >
@@ -250,7 +270,10 @@ function StepperWrapper({
           w="100%"
           style={{
             borderRadius: '5px',
-            border: '1px solid #e0e0e0',
+            border:
+              colorScheme === 'light'
+                ? `1px solid ${colors.gray[3]}`
+                : `1px solid ${colors.gray[8]}`,
           }}
         >
           {/* prev button */}
@@ -266,13 +289,6 @@ function StepperWrapper({
           >
             <Group>{createdPrevButton}</Group>
           </Tooltip>
-
-          <Button
-            variant="gradient"
-            gradient={{ from: 'violet', to: 'indigo' }}
-          >
-            TEST
-          </Button>
 
           {/* next button */}
           <Tooltip

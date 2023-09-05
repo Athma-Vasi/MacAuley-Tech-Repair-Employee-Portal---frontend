@@ -39,7 +39,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       label={<TextWrapper creatorInfoObj={{}}>Home</TextWrapper>}
       icon={<TbHome2 />}
       onClick={() => {
-        navigate('/portal');
+        navigate('/home');
       }}
     />
   );
@@ -51,7 +51,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   //       description="Display list of all users"
   //       icon={null}
   //       onClick={() => {
-  //         navigate('/portal/users');
+  //         navigate('/home/users');
   //       }}
   //     />
   //   ) : null;
@@ -61,7 +61,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       label={<TextWrapper creatorInfoObj={{}}>Directory</TextWrapper>}
       icon={<CgDatabase />}
       onClick={() => {
-        navigate('/portal/directory');
+        navigate('/home/directory');
       }}
     />
   );
@@ -79,7 +79,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbPlus />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/repair-note/create');
+          navigate('/home/repair-note/create');
         }}
       />
       {/* display notes */}
@@ -88,7 +88,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbList />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/repair-note/display');
+          navigate('/home/repair-note/display');
         }}
       />
     </NavLink>
@@ -107,7 +107,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbAddressBook />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/company/address-change');
+          navigate('/home/company/address-change');
         }}
       />
       {/* benefit */}
@@ -116,7 +116,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbGift />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/company/benefit');
+          navigate('/home/company/benefit');
         }}
       />
       {/* expense-claim */}
@@ -125,7 +125,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbReceipt2 />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/company/expense-claim');
+          navigate('/home/company/expense-claim');
         }}
       />
       {/* leave-request */}
@@ -134,7 +134,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbCalendarPin />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/company/leave-request');
+          navigate('/home/company/leave-request');
         }}
       >
         {/* create leave request */}
@@ -143,7 +143,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           icon={<TbPlus />}
           rightSection={<TbChevronRight />}
           onClick={() => {
-            navigate('/portal/company/leave-request/create');
+            navigate('/home/company/leave-request/create');
           }}
         />
         {/* display leave requests */}
@@ -152,7 +152,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           icon={<TbList />}
           rightSection={<TbChevronRight />}
           onClick={() => {
-            navigate('/portal/company/leave-request/display');
+            navigate('/home/company/leave-request/display');
           }}
         />
       </NavLink>
@@ -162,7 +162,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbCashBanknote />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/company/request-resource');
+          navigate('/home/company/request-resource');
         }}
       />
     </NavLink>
@@ -181,7 +181,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbUserCheck />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/general/endorsement/display');
+          navigate('/home/general/endorsement/display');
         }}
       />
       {/* printer-issue */}
@@ -190,7 +190,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbPrinterOff />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/general/printer-issue');
+          navigate('/home/general/printer-issue');
         }}
       />
       {/* anonymous-request */}
@@ -199,7 +199,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<MdSafetyDivider />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/general/anonymous-request');
+          navigate('/home/general/anonymous-request');
         }}
       />
       {/* referment */}
@@ -208,7 +208,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TiThumbsUp />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/general/referment');
+          navigate('/home/general/referment');
         }}
       />
     </NavLink>
@@ -235,7 +235,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           icon={<TbPlus />}
           rightSection={<TbChevronRight />}
           onClick={() => {
-            navigate('/portal/outreach/announcement/create');
+            navigate('/home/outreach/announcement/create');
           }}
         />
         {/* display announcements */}
@@ -246,7 +246,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           icon={<TbList />}
           rightSection={<TbChevronRight />}
           onClick={() => {
-            navigate('/portal/outreach/announcement/display');
+            navigate('/home/outreach/announcement/display');
           }}
         />
       </NavLink>
@@ -262,7 +262,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           icon={<TbPlus />}
           rightSection={<TbChevronRight />}
           onClick={() => {
-            navigate('/portal/outreach/survey-builder/create');
+            navigate('/home/outreach/survey-builder/create');
           }}
         />
         {/* display surveys */}
@@ -271,7 +271,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           icon={<TbList />}
           rightSection={<TbChevronRight />}
           onClick={() => {
-            navigate('/portal/outreach/survey-builder/display');
+            navigate('/home/outreach/survey-builder/display');
           }}
         />
       </NavLink>
@@ -281,7 +281,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         icon={<TbTimelineEventPlus />}
         rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/portal/outreach/event-creator');
+          navigate('/home/outreach/event-creator');
         }}
       >
         {/* create event */}
@@ -290,7 +290,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           icon={<TbPlus />}
           rightSection={<TbChevronRight />}
           onClick={() => {
-            navigate('/portal/outreach/event-creator/create');
+            navigate('/home/outreach/event-creator/create');
           }}
         />
         {/* display events */}
@@ -299,7 +299,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           icon={<TbList />}
           rightSection={<TbChevronRight />}
           onClick={() => {
-            navigate('/portal/outreach/event-creator/display');
+            navigate('/home/outreach/event-creator/display');
           }}
         />
       </NavLink>

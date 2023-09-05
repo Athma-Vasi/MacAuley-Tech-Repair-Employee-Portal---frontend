@@ -1,4 +1,4 @@
-import { Flex } from '@mantine/core';
+import { Flex, useMantineTheme } from '@mantine/core';
 import { ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
@@ -15,8 +15,13 @@ function FormLayoutWrapper({
   style = {},
 }: FormLayoutWrapperProps): JSX.Element {
   const {
-    globalState: { width, rowGap, padding },
+    globalState: {
+      themeObject: { colorScheme },
+      rowGap,
+      padding,
+    },
   } = useGlobalState();
+  const { colors } = useMantineTheme();
 
   return (
     <Flex
@@ -34,7 +39,10 @@ function FormLayoutWrapper({
       rowGap={rowGap}
       style={{
         ...style,
-        border: '1px solid #e0e0e0',
+        border:
+          colorScheme === 'light'
+            ? `1px solid ${colors.gray[3]}`
+            : `1px solid ${colors.gray[8]}`,
         borderRadius: 4,
       }}
     >

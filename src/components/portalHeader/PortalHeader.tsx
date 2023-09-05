@@ -66,9 +66,9 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     <Header
       height={{ base: 50, md: 70 }}
       p="md"
-      style={{
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-      }}
+      // style={{
+      //   boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+      // }}
     >
       <Flex
         justify="space-between"
