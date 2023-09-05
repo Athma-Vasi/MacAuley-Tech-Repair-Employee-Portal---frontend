@@ -18,14 +18,15 @@ type AccessibleTextInputCreatorInfo = {
   /**
    * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
    */
-  dynamicInputProps?: {
-    semanticAction: string;
-    dynamicLabel?: string;
-    dynamicIndex: number;
-    dynamicIcon?: ReactNode;
-    buttonDisabled?: boolean;
-    dynamicInputOnClick: () => void;
-  };
+  dynamicInputs?: ReactNode[];
+  // dynamicInputProps?: {
+  //   semanticAction: string;
+  //   dynamicLabel?: string;
+  //   dynamicIndex: number;
+  //   dynamicIcon?: ReactNode;
+  //   buttonDisabled?: boolean;
+  //   dynamicInputOnClick: () => void;
+  // };
   isValidInputText: boolean;
   label?: ReactNode | string;
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
@@ -70,7 +71,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     label = semanticName,
     ariaAutoComplete = 'none',
     description,
-    dynamicInputProps = null,
+    dynamicInputs = null,
     placeholder,
     initialInputValue = '',
     icon = null,
@@ -90,12 +91,22 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     autoComplete = 'off',
   } = creatorInfoObject;
 
-  const semanticNameCapitalized =
-    semanticName.charAt(0).toUpperCase() + semanticName.slice(1);
-  const semanticActionCapitalized = dynamicInputProps
-    ? dynamicInputProps?.semanticAction.charAt(0).toUpperCase() +
-      dynamicInputProps?.semanticAction.slice(1)
-    : '';
+  // const semanticNameCapitalized =
+  //   semanticName.charAt(0).toUpperCase() + semanticName.slice(1);
+  // const semanticActionCapitalized = dynamicInputProps
+  //   ? dynamicInputProps?.semanticAction.charAt(0).toUpperCase() +
+  //     dynamicInputProps?.semanticAction.slice(1)
+  //   : '';
+  const dynamicInputLabel = dynamicInputs ? (
+    <Group w="100%" position="apart">
+      <Text size="sm">{label}</Text>
+      {dynamicInputs.map((input, index) => (
+        <Group key={`${index}`}>{input}</Group>
+      ))}
+    </Group>
+  ) : (
+    label
+  );
 
   const textInputSize = 'sm';
 
@@ -104,40 +115,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       size={textInputSize}
       w="100%"
       color="dark"
-      label={
-        dynamicInputProps ? (
-          <Flex align="center" justify="space-between" columnGap="xl">
-            <Text>{`${semanticNameCapitalized}`}</Text>
-            <Tooltip
-              label={
-                dynamicInputProps?.dynamicLabel
-                  ? dynamicInputProps?.dynamicLabel
-                  : `${semanticActionCapitalized} ${semanticName}`
-              }
-            >
-              <Group>
-                <ButtonWrapper
-                  creatorInfoObject={{
-                    buttonVariant: 'outline',
-                    buttonLabel: 'Delete',
-                    buttonDisabled: dynamicInputProps?.buttonDisabled,
-                    buttonOnClick: dynamicInputProps?.dynamicInputOnClick,
-                    semanticDescription: `${
-                      dynamicInputProps?.semanticAction
-                    } ${semanticName} ${dynamicInputProps?.dynamicIndex + 1}`,
-                    semanticName: `${
-                      dynamicInputProps?.semanticAction
-                    } ${semanticName} ${dynamicInputProps?.dynamicIndex + 1}`,
-                    leftIcon: <TbTrash />,
-                  }}
-                />
-              </Group>
-            </Tooltip>
-          </Flex>
-        ) : (
-          label
-        )
-      }
+      label={dynamicInputLabel}
       aria-required={required}
       aria-describedby={
         isValidInputText
@@ -187,3 +165,38 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
 export { TextInputWrapper };
 
 export type { AccessibleTextInputCreatorInfo };
+
+/**
+ * dynamicInputProps ? (
+          <Flex align="center" justify="space-between" columnGap="xl">
+            <Text>{`${semanticNameCapitalized}`}</Text>
+            <Tooltip
+              label={
+                dynamicInputProps?.dynamicLabel
+                  ? dynamicInputProps?.dynamicLabel
+                  : `${semanticActionCapitalized} ${semanticName}`
+              }
+            >
+              <Group>
+                <ButtonWrapper
+                  creatorInfoObject={{
+                    buttonVariant: 'outline',
+                    buttonLabel: 'Delete',
+                    buttonDisabled: dynamicInputProps?.buttonDisabled,
+                    buttonOnClick: dynamicInputProps?.dynamicInputOnClick,
+                    semanticDescription: `${
+                      dynamicInputProps?.semanticAction
+                    } ${semanticName} ${dynamicInputProps?.dynamicIndex + 1}`,
+                    semanticName: `${
+                      dynamicInputProps?.semanticAction
+                    } ${semanticName} ${dynamicInputProps?.dynamicIndex + 1}`,
+                    leftIcon: <TbTrash />,
+                  }}
+                />
+              </Group>
+            </Tooltip>
+          </Flex>
+        ) : (
+          label
+        )
+ */

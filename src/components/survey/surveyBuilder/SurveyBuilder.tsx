@@ -148,6 +148,12 @@ function SurveyBuilder() {
     authState: { accessToken },
   } = useAuth();
 
+  const {
+    globalState: {
+      themeObject: { colorScheme, primaryColor, primaryShade },
+    },
+  } = useGlobalState();
+
   const [openedHelpModal, { open: openHelpModal, close: closeHelpModal }] =
     useDisclosure(false);
   const [
@@ -897,7 +903,7 @@ function SurveyBuilder() {
     Array.from({
       length: questions.length,
     }).map((_, index) => {
-      const dynamicInputLabel =
+      const deleteQuestionGroupLabel =
         questions.length === 1
           ? 'Survey must have atleast one question'
           : `Delete ${
@@ -905,6 +911,32 @@ function SurveyBuilder() {
                 ? questions[index].slice(0, 11) + '...'
                 : questions[index]
             } ?`;
+
+      const createdDeleteQuestionGroupButton = returnAccessibleButtonElements([
+        {
+          buttonLabel: 'Delete',
+          semanticDescription: `Delete question group ${index + 1}`,
+          semanticName: `question ${index + 1}`,
+          buttonDisabled: questions.length === 1,
+          buttonOnClick: () => {
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.deleteQuestionGroup,
+              payload: index,
+            });
+            // enables display of the previous stepper page after deletion
+            surveyBuilderDispatch({
+              type: surveyBuilderAction.setCurrentStepperPosition,
+              payload: currentStepperPosition - 1,
+            });
+          },
+        },
+      ]);
+
+      const createdDeleteButtonWithTooltip = (
+        <Tooltip label={deleteQuestionGroupLabel}>
+          <Group>{createdDeleteQuestionGroupButton}</Group>
+        </Tooltip>
+      );
 
       const creatorInfoObject: AccessibleTextInputCreatorInfo = {
         description: {
@@ -946,23 +978,24 @@ function SurveyBuilder() {
         placeholder: 'Enter question',
         semanticName: `question ${index + 1}`,
         required: true,
-        dynamicInputProps: {
-          dynamicIndex: index,
-          buttonDisabled: questions.length === 1,
-          dynamicLabel: dynamicInputLabel,
-          dynamicInputOnClick: () => {
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.deleteQuestionGroup,
-              payload: index,
-            });
-            // enables display of the previous stepper page after deletion
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.setCurrentStepperPosition,
-              payload: currentStepperPosition - 1,
-            });
-          },
-          semanticAction: 'delete',
-        },
+        // dynamicInputProps: {
+        //   dynamicIndex: index,
+        //   buttonDisabled: questions.length === 1,
+        //   dynamicLabel: dynamicInputLabel,
+        //   dynamicInputOnClick: () => {
+        //     surveyBuilderDispatch({
+        //       type: surveyBuilderAction.deleteQuestionGroup,
+        //       payload: index,
+        //     });
+        //     // enables display of the previous stepper page after deletion
+        //     surveyBuilderDispatch({
+        //       type: surveyBuilderAction.setCurrentStepperPosition,
+        //       payload: currentStepperPosition - 1,
+        //     });
+        //   },
+        //   semanticAction: 'delete',
+        // },
+        dynamicInputs: [createdDeleteButtonWithTooltip],
         ref: index === questions.length - 1 ? newQuestionInputRef : null,
       };
 
@@ -1032,7 +1065,7 @@ function SurveyBuilder() {
         Array.from({
           length: responseDataOptionsArray?.[questionIdx]?.length,
         }).map((_, optionIdx) => {
-          const dynamicInputLabel = `Delete ${
+          const deleteResponseDataLabel = `Delete ${
             questions?.[questionIdx]?.length > 11
               ? questions?.[questionIdx].slice(0, 11) + '...'
               : questions?.[questionIdx]
@@ -1044,6 +1077,34 @@ function SurveyBuilder() {
                 ) + '...'
               : responseDataOptionsArray?.[questionIdx]?.[optionIdx]
           } ?`;
+
+          const createdDeleteResponseDataOptionButton =
+            returnAccessibleButtonElements([
+              {
+                buttonLabel: 'Delete',
+                semanticDescription: `Delete response data option ${
+                  optionIdx + 1
+                } for question ${questionIdx + 1}`,
+                semanticName: `response data option ${
+                  optionIdx + 1
+                } for question ${questionIdx + 1}`,
+                buttonOnClick: () => {
+                  surveyBuilderDispatch({
+                    type: surveyBuilderAction.deleteResponseDataOption,
+                    payload: {
+                      questionIdx,
+                      optionIdx,
+                    },
+                  });
+                },
+              },
+            ]);
+
+          const createdDeleteButtonWithTooltip = (
+            <Tooltip label={deleteResponseDataLabel}>
+              <Group>{createdDeleteResponseDataOptionButton}</Group>
+            </Tooltip>
+          );
 
           const creatorInfoObject: AccessibleTextInputCreatorInfo = {
             description: {
@@ -1103,20 +1164,21 @@ function SurveyBuilder() {
               optionIdx + 1
             }`,
             required: true,
-            dynamicInputProps: {
-              dynamicIndex: optionIdx,
-              dynamicLabel: dynamicInputLabel,
-              dynamicInputOnClick: () => {
-                surveyBuilderDispatch({
-                  type: surveyBuilderAction.deleteResponseDataOption,
-                  payload: {
-                    questionIdx,
-                    optionIdx,
-                  },
-                });
-              },
-              semanticAction: 'delete',
-            },
+            // dynamicInputProps: {
+            //   dynamicIndex: optionIdx,
+            //   dynamicLabel: dynamicInputLabel,
+            //   dynamicInputOnClick: () => {
+            //     surveyBuilderDispatch({
+            //       type: surveyBuilderAction.deleteResponseDataOption,
+            //       payload: {
+            //         questionIdx,
+            //         optionIdx,
+            //       },
+            //     });
+            //   },
+            //   semanticAction: 'delete',
+            // },
+            dynamicInputs: [createdDeleteButtonWithTooltip],
           };
 
           return creatorInfoObject;
@@ -1125,12 +1187,16 @@ function SurveyBuilder() {
       return responseDataOptionsTextInputCreatorInfo;
     });
 
+  const textColor =
+    colorScheme === 'light'
+      ? `${primaryColor}.${primaryShade.light}`
+      : `${primaryColor}.${primaryShade.dark}`;
   const addNewQuestionButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonVariant: 'outline',
+    // buttonVariant: 'outline',
     buttonLabel: (
       <Tooltip label="Add new question">
         <Group>
-          <Text>Add question</Text>
+          <Text color={textColor}>Add question</Text>
         </Group>
       </Tooltip>
     ),
@@ -1163,7 +1229,7 @@ function SurveyBuilder() {
   const addNewResponseDataOptionButtonCreatorInfo: AccessibleButtonCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleButtonCreatorInfo = {
-        buttonVariant: 'outline',
+        // buttonVariant: 'outline',
         buttonLabel: (
           <Tooltip
             label={
@@ -1173,7 +1239,7 @@ function SurveyBuilder() {
             }
           >
             <Group>
-              <Text>Add option</Text>
+              <Text color={textColor}>Add option</Text>
             </Group>
           </Tooltip>
         ),
