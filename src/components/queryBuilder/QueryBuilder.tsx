@@ -31,7 +31,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
@@ -229,7 +229,7 @@ function QueryBuilder({
       : '';
 
   const [filterValueErrorText, filterValueValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: currentFilterTerm,
       inputText: currentFilterValue,
       isInputTextFocused: isCurrentFilterValueFocused,

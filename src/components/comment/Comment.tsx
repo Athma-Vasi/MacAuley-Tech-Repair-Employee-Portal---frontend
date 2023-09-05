@@ -64,7 +64,7 @@ import { GRAMMAR_TEXTAREA_INPUT_REGEX } from '../../constants/regex';
 import { useAuth, useGlobalState } from '../../hooks';
 import {
   returnAccessibleButtonElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
 } from '../../jsxCreators';
@@ -618,7 +618,7 @@ function Comment({
 
   /** ------------- begin accessible texts ------------- */
   const [newCommentInputErrorText, newCommentInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'comment',
       inputText: newComment,
       isValidInputText: isNewCommentValid,

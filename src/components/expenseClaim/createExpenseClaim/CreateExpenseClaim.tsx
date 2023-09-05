@@ -6,19 +6,26 @@ import {
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
-import { TbUpload } from 'react-icons/tb';
+import {
+  TbCurrencyDollar,
+  TbCurrencyEuro,
+  TbCurrencyPound,
+  TbCurrencyRenminbi,
+  TbCurrencyYen,
+  TbUpload,
+} from 'react-icons/tb';
 
 import {
   DATE_NEAR_PAST_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../../constants/regex';
-import { useAuth } from '../../../hooks';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -57,6 +64,7 @@ import {
   initialCreateExpenseClaimState,
 } from './state';
 import type { ExpenseClaimDocument, ExpenseClaimKind } from './types';
+import { useMantineTheme } from '@mantine/core';
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -100,9 +108,18 @@ function CreateExpenseClaim() {
     isLoading,
     loadingMessage,
   } = createExpenseClaimState;
+
+  const {
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+    },
+  } = useGlobalState();
+
   const {
     authState: { accessToken },
   } = useAuth();
+
+  const { colors } = useMantineTheme();
 
   // validate expenseClaimAmount on every change
   useEffect(() => {
@@ -217,7 +234,7 @@ function CreateExpenseClaim() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [expenseClaimAmountInputErrorText, expenseClaimAmountInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'expense claim amount',
       inputText: expenseClaimAmount,
       isInputTextFocused: isExpenseClaimAmountFocused,
@@ -233,7 +250,7 @@ function CreateExpenseClaim() {
       ? 'Expense claim date cannot be in the future.'
       : '';
   const [expenseClaimDateInputErrorText, expenseClaimDateInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'expense claim date',
       inputText: expenseClaimDate,
       isInputTextFocused: isExpenseClaimDateFocused,
@@ -246,7 +263,7 @@ function CreateExpenseClaim() {
   const [
     expenseClaimDescriptionInputErrorText,
     expenseClaimDescriptionInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'expense claim description',
     inputText: expenseClaimDescription,
     isInputTextFocused: isExpenseClaimDescriptionFocused,
@@ -260,7 +277,7 @@ function CreateExpenseClaim() {
   });
 
   const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'additional comments',
       inputText: additionalComments,
       isInputTextFocused: isAdditionalCommentsFocused,
@@ -281,16 +298,20 @@ function CreateExpenseClaim() {
       deselectedDescription: 'I do not acknowledge',
     });
 
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
   const currencyIcon =
-    expenseClaimCurrency === 'CNY'
-      ? faYen
-      : expenseClaimCurrency === 'GBP'
-      ? faPoundSign
-      : expenseClaimCurrency === 'EUR'
-      ? faEuro
-      : expenseClaimCurrency === 'JPY'
-      ? faJpy
-      : faDollarSign;
+    expenseClaimCurrency === 'CNY' ? (
+      <TbCurrencyRenminbi size={14} color={colors.gray[colorShade]} />
+    ) : expenseClaimCurrency === 'GBP' ? (
+      <TbCurrencyPound size={14} color={colors.gray[colorShade]} />
+    ) : expenseClaimCurrency === 'EUR' ? (
+      <TbCurrencyEuro size={14} color={colors.gray[colorShade]} />
+    ) : expenseClaimCurrency === 'JPY' ? (
+      <TbCurrencyYen size={14} color={colors.gray[colorShade]} />
+    ) : (
+      <TbCurrencyDollar size={14} color={colors.gray[colorShade]} />
+    );
 
   const expenseClaimAmountTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
     {

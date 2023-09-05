@@ -25,7 +25,7 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
@@ -301,7 +301,7 @@ function CreateReferment() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [candidateFullNameInputErrorText, candidateFullNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'candidate full name',
       inputText: candidateFullName,
       isInputTextFocused: isCandidateFullNameFocused,
@@ -315,7 +315,7 @@ function CreateReferment() {
     });
 
   const [candidateEmailInputErrorText, candidateEmailInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'candidate email',
       inputText: candidateEmail,
       isInputTextFocused: isCandidateEmailFocused,
@@ -326,7 +326,7 @@ function CreateReferment() {
   const [
     candidateContactNumberInputErrorText,
     candidateContactNumberInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'candidate contact number',
     inputText: candidateContactNumber,
     isInputTextFocused: isCandidateContactNumberFocused,
@@ -339,7 +339,7 @@ function CreateReferment() {
   const [
     candidateCurrentJobTitleInputErrorText,
     candidateCurrentJobTitleInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'candidate current job title',
     inputText: candidateCurrentJobTitle,
     isInputTextFocused: isCandidateCurrentJobTitleFocused,
@@ -355,7 +355,7 @@ function CreateReferment() {
   const [
     candidateCurrentCompanyInputErrorText,
     candidateCurrentCompanyInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'candidate current company',
     inputText: candidateCurrentCompany,
     isInputTextFocused: isCandidateCurrentCompanyFocused,
@@ -369,7 +369,7 @@ function CreateReferment() {
   });
 
   const [candidateProfileUrlInputErrorText, candidateProfileUrlInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'candidate profile url',
       inputText: candidateProfileUrl,
       isInputTextFocused: isCandidateProfileUrlFocused,
@@ -380,7 +380,7 @@ function CreateReferment() {
   const [
     positionJobDescriptionInputErrorText,
     positionJobDescriptionInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'position job description',
     inputText: positionJobDescription,
     isInputTextFocused: isPositionJobDescriptionFocused,
@@ -394,7 +394,7 @@ function CreateReferment() {
   });
 
   const [referralReasonInputErrorText, referralReasonInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'referral reason',
       inputText: referralReason,
       isInputTextFocused: isReferralReasonFocused,
@@ -410,7 +410,7 @@ function CreateReferment() {
   const [
     additionalInformationInputErrorText,
     additionalInformationInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'additional information',
     inputText: additionalInformation,
     isInputTextFocused: isAdditionalInformationFocused,

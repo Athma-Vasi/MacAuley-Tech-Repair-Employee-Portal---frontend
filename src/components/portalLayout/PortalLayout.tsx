@@ -16,6 +16,7 @@ import { PortalNavbar } from '../portalNavbar';
 import { splitCamelCase } from '../../utils';
 import { TbArrowRight, TbArrowRightBar } from 'react-icons/tb';
 import { createBreadcrumbs } from './utils';
+import { useAuth } from '../../hooks';
 
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);
@@ -26,6 +27,10 @@ function PortalLayout() {
       themeObject: { colorScheme },
     },
   } = useGlobalState();
+
+  const {
+    authState: { accessToken, isLoggedIn },
+  } = useAuth();
 
   const location = useLocation();
   console.log('location in PortalLayout: ', location);
@@ -50,11 +55,23 @@ function PortalLayout() {
     <AppShell
       padding={0}
       navbarOffsetBreakpoint="sm"
-      navbar={<PortalNavbar openedNavbar={opened} />}
+      navbar={
+        accessToken && isLoggedIn ? (
+          <PortalNavbar openedNavbar={opened} />
+        ) : undefined
+      }
       header={
         <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
       }
-      footer={scrollYDirection === 'up' ? <PortalFooter /> : <></>}
+      footer={
+        accessToken && isLoggedIn ? (
+          scrollYDirection === 'up' ? (
+            <PortalFooter />
+          ) : (
+            <></>
+          )
+        ) : undefined
+      }
       // style={{
       //   backgroundImage:
       //     colorScheme === 'light'

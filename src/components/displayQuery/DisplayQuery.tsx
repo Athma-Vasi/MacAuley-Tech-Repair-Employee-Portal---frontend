@@ -21,7 +21,7 @@ import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
 import { useGlobalState } from '../../hooks';
 import {
   returnAccessibleButtonElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleRadioGroupInputsElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
@@ -209,7 +209,7 @@ function DisplayQuery<Doc>({
   /** ------------- accessible error/valid text elems ------------- */
 
   const [acknowledgementInputErrorText, acknowledgementInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'acknowledgement',
       inputText: acknowledgementText,
       isValidInputText: isValidAcknowledgementText,

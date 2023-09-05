@@ -17,7 +17,7 @@ import {
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -48,6 +48,15 @@ import {
 } from '../../constants';
 import { PartsNeeded, RequiredRepairs } from '../../types';
 import { RepairNoteStepDetailsProps } from './types';
+import { useMantineTheme } from '@mantine/core';
+import { useGlobalState } from '../../../../hooks';
+import {
+  TbCurrencyRenminbi,
+  TbCurrencyPound,
+  TbCurrencyEuro,
+  TbCurrencyYen,
+  TbCurrencyDollar,
+} from 'react-icons/tb';
 
 function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
   const {
@@ -72,6 +81,14 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     createRepairNoteAction,
     createRepairNoteDispatch,
   } = parentState;
+
+  const {
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+    },
+  } = useGlobalState();
+
+  const { colors } = useMantineTheme();
 
   /** ------------- input validation ------------- */
 
@@ -191,7 +208,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     });
 
   const [partsNeededModelsInputErrorText, partsNeededModelsInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'parts needed models',
       inputText: partsNeededModels,
       isValidInputText: isValidPartsNeededModels,
@@ -214,7 +231,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     });
 
   const [estimatedRepairCostInputErrorText, estimatedRepairCostInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'estimated repair cost',
       inputText: estimatedRepairCost,
       isValidInputText: isValidEstimatedRepairCost,
@@ -228,7 +245,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
   const [
     estimatedCompletionDateInputErrorText,
     estimatedCompletionDateInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'estimated completion date',
     inputText: estimatedCompletionDate,
     isValidInputText: isValidEstimatedCompletionDate,
@@ -332,16 +349,20 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       required: true,
     };
 
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
   const currencyIcon =
-    estimatedRepairCostCurrency === 'CNY'
-      ? faYen
-      : estimatedRepairCostCurrency === 'GBP'
-      ? faPoundSign
-      : estimatedRepairCostCurrency === 'EUR'
-      ? faEuro
-      : estimatedRepairCostCurrency === 'JPY'
-      ? faJpy
-      : faDollarSign;
+    estimatedRepairCostCurrency === 'CNY' ? (
+      <TbCurrencyRenminbi size={14} color={colors.gray[colorShade]} />
+    ) : estimatedRepairCostCurrency === 'GBP' ? (
+      <TbCurrencyPound size={14} color={colors.gray[colorShade]} />
+    ) : estimatedRepairCostCurrency === 'EUR' ? (
+      <TbCurrencyEuro size={14} color={colors.gray[colorShade]} />
+    ) : estimatedRepairCostCurrency === 'JPY' ? (
+      <TbCurrencyYen size={14} color={colors.gray[colorShade]} />
+    ) : (
+      <TbCurrencyDollar size={14} color={colors.gray[colorShade]} />
+    );
 
   const estimatedRepairCostCurrencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {

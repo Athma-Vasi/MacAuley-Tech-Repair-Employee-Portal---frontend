@@ -1,5 +1,6 @@
 import { Anchor, Breadcrumbs } from '@mantine/core';
 import { TbArrowRight } from 'react-icons/tb';
+
 import { splitCamelCase } from '../../utils';
 
 function createBreadcrumbs(pathname: string) {
@@ -10,12 +11,12 @@ function createBreadcrumbs(pathname: string) {
       const pathName = splitCamelCase(path);
       const pathNameCapitalized =
         pathName.charAt(0).toUpperCase() + pathName.slice(1);
-      const pathNameCapitalizedWithSpaces = pathNameCapitalized.replace(
-        /([A-Z])/g,
-        ' $1'
+      const pathNameCapitalizedWithNoHyphens = pathNameCapitalized.replace(
+        /-/g,
+        ' '
       );
       const pathNameCapitalizedWithSpacesAndNoHyphens =
-        pathNameCapitalizedWithSpaces.replace(/-/g, ' ');
+        pathNameCapitalizedWithNoHyphens.replace(/([A-Z])/g, ' $1');
 
       const href = pathArray.slice(0, index + 1).join('/');
       const label = pathNameCapitalizedWithSpacesAndNoHyphens;

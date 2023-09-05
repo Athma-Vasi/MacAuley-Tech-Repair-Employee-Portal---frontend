@@ -243,7 +243,11 @@ function StepperWrapper({
                   ? `1px solid ${colors.gray[3]}`
                   : `1px solid ${colors.gray[8]}`,
             }}
-            bg="white"
+            bg={
+              colorScheme === 'light'
+                ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+                : colors.dark[6]
+            }
             p={padding}
           >
             <Text color={stepsInError.size === 0 ? 'green' : 'red'}>

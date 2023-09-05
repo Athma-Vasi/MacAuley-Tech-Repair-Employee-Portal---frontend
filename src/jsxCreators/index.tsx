@@ -1,6 +1,15 @@
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Space, Text } from '@mantine/core';
+import {
+  Center,
+  Grid,
+  Group,
+  Space,
+  Stack,
+  Text,
+  useMantineTheme,
+} from '@mantine/core';
+import React from 'react';
 
 import type {
   AccessibleButtonCreatorInfo,
@@ -32,8 +41,10 @@ import {
   TextWrapper,
 } from '../components/wrappers';
 import { RegexValidationProps } from '../utils';
+import { TbCheck, TbExclamationCircle } from 'react-icons/tb';
+import { useGlobalState } from '../hooks';
 
-// The functions : returnAccessibleErrorValidTextElements and returnAccessibleErrorValidTextElementsForDynamicInputs return a tuple [error, valid] or tuple[error[], valid[]] of accessible text elements for screen readers to read out based on the state of the controlled input
+// The functions : AccessibleErrorValidTextElements and returnAccessibleErrorValidTextElementsForDynamicInputs return a tuple [error, valid] or tuple[error[], valid[]] of accessible text elements for screen readers to read out based on the state of the controlled input
 
 // Separating the error/valid states of the inputs allows the differently abled to easily distinguish input state as the aria-describedBy attribute of the returnAccessible${input kind}Elements creator functions is used to link the input with the error/valid text and forces the screen reader to immediately read out the text as the input state changes, providing instant feedback.
 
@@ -55,13 +66,23 @@ type ReturnAccessibleErrorValidTextElemProps = {
  * @property {object.isInputTextFocused} - whether the input element is focused - only show the accessible text elements if the input element is focused
  * @property {object.regexValidationText} - the text to show if the input text is invalid
  */
-function returnAccessibleErrorValidTextElements({
+function AccessibleErrorValidTextElements({
   inputElementKind,
   inputText,
   isValidInputText,
   isInputTextFocused,
   regexValidationText,
-}: ReturnAccessibleErrorValidTextElemProps): [JSX.Element, JSX.Element] {
+}: ReturnAccessibleErrorValidTextElemProps): [
+  React.JSX.Element,
+  React.JSX.Element
+] {
+  const { colors } = useMantineTheme();
+  const {
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+    },
+  } = useGlobalState();
+
   return [
     // error text elem
     <Text
@@ -72,11 +93,28 @@ function returnAccessibleErrorValidTextElements({
             ? 'block'
             : 'none',
       }}
-      color="red"
       w="100%"
       aria-live="polite"
     >
-      <FontAwesomeIcon icon={faInfoCircle} /> {regexValidationText}
+      <Grid columns={14}>
+        <Grid.Col span={2}>
+          <Group position="center">
+            <TbExclamationCircle
+              color={
+                colorScheme === 'light'
+                  ? colors.red[primaryShade.light]
+                  : colors.red[primaryShade.dark]
+              }
+              size={20}
+            />
+          </Group>
+        </Grid.Col>
+        <Grid.Col span={12}>
+          <Group position="left">
+            <Text size="sm">{regexValidationText}</Text>
+          </Group>
+        </Grid.Col>
+      </Grid>
     </Text>,
     // valid text elem
     <Text
@@ -87,16 +125,39 @@ function returnAccessibleErrorValidTextElements({
             ? 'block'
             : 'none',
       }}
-      color="green"
+      color={
+        colorScheme === 'light'
+          ? colors.green[primaryShade.light]
+          : colors.green[primaryShade.dark]
+      }
       w="100%"
       aria-live="polite"
     >
-      <FontAwesomeIcon icon={faCheck} />{' '}
-      {inputElementKind.length > 0
-        ? `${inputElementKind[0].toUpperCase()}${inputElementKind.slice(
-            1
-          )} is valid`
-        : ''}
+      <Grid columns={14}>
+        <Grid.Col span={2}>
+          <Group position="center">
+            <TbCheck
+              color={
+                colorScheme === 'light'
+                  ? colors.green[primaryShade.light]
+                  : colors.green[primaryShade.dark]
+              }
+              size={20}
+            />
+          </Group>
+        </Grid.Col>
+        <Grid.Col span={12}>
+          <Group position="left">
+            <Text size="sm">
+              {inputElementKind.length > 0
+                ? `${inputElementKind[0].toUpperCase()}${inputElementKind.slice(
+                    1
+                  )} is valid`
+                : ''}
+            </Text>
+          </Group>
+        </Grid.Col>
+      </Grid>
     </Text>,
   ];
 }
@@ -130,8 +191,8 @@ function returnAccessibleErrorValidTextElementsForDynamicInputs({
   regexValidationProps,
   regexValidationFunction,
 }: ReturnAccessibleErrorValidTextElementsForDynamicInputsProps): [
-  JSX.Element[],
-  JSX.Element[]
+  React.JSX.Element[],
+  React.JSX.Element[]
 ] {
   return [
     // error text elems
@@ -295,8 +356,8 @@ function returnAccessibleSelectedDeselectedTextElements({
   deselectedDescription = '',
   theme = 'default',
 }: ReturnAccessibleSelectedDeselectedTextElementsProps): [
-  JSX.Element,
-  JSX.Element
+  React.JSX.Element,
+  React.JSX.Element
 ] {
   return [
     // selected text elem
@@ -341,7 +402,7 @@ function returnAccessibleSelectedDeselectedTextElements({
 
 function returnAccessibleButtonElements(
   creatorInfoObjectArray: AccessibleButtonCreatorInfo[]
-): JSX.Element[] {
+): React.JSX.Element[] {
   return creatorInfoObjectArray.map((creatorInfoObject, index) => {
     const createdButton = (
       <ButtonWrapper
@@ -356,7 +417,7 @@ function returnAccessibleButtonElements(
 
 function returnAccessibleTextInputElements(
   creatorInfoObjectArray: AccessibleTextInputCreatorInfo[]
-): JSX.Element[] {
+): React.JSX.Element[] {
   return creatorInfoObjectArray.map((creatorInfoObject, index) => {
     const createdTextInput = (
       <TextInputWrapper
@@ -371,7 +432,7 @@ function returnAccessibleTextInputElements(
 
 function returnAccessibleSelectInputElements(
   creatorInfoObjectArray: AccessibleSelectInputCreatorInfo[]
-): JSX.Element[] {
+): React.JSX.Element[] {
   return creatorInfoObjectArray.map((creatorInfoObject, index) => {
     const createdSelectInput = (
       <NativeSelectWrapper
@@ -386,7 +447,7 @@ function returnAccessibleSelectInputElements(
 
 function returnAccessiblePasswordInputElements(
   creatorInfoObjectArray: AccessiblePasswordInputCreatorInfo[]
-): JSX.Element[] {
+): React.JSX.Element[] {
   return creatorInfoObjectArray.map((creatorInfoObject, index) => {
     const createdPasswordInput = (
       <PasswordInputWrapper
@@ -401,7 +462,7 @@ function returnAccessiblePasswordInputElements(
 
 function returnAccessiblePhoneNumberTextInputElements(
   creatorInfoObjectArray: AccessiblePhoneNumberTextInputCreatorInfo[]
-): JSX.Element[] {
+): React.JSX.Element[] {
   return creatorInfoObjectArray.map((creatorInfoObject, index) => {
     const createdPhoneNumberTextInput = (
       <PhoneTextInputWrapper
@@ -416,7 +477,7 @@ function returnAccessiblePhoneNumberTextInputElements(
 
 function returnAccessibleTextAreaInputElements(
   creatorInfoObjectArray: AccessibleTextAreaInputCreatorInfo[]
-): JSX.Element[] {
+): React.JSX.Element[] {
   return creatorInfoObjectArray.map((creatorInfoObject, index) => {
     const createdTextAreaInput = (
       <TextAreaInputWrapper
@@ -552,7 +613,7 @@ export {
   returnAccessibleDynamicRadioSingleInputElements,
   returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleDynamicTextInputElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleErrorValidTextElementsForDynamicImageUploads,
   returnAccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessiblePasswordInputElements,

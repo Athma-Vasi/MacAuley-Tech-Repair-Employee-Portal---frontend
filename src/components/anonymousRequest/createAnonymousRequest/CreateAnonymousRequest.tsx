@@ -16,7 +16,7 @@ import {
 } from '../../../constants/regex';
 import {
   returnAccessibleButtonElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -221,7 +221,7 @@ function CreateAnonymousRequest() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'title',
       inputText: title,
       isInputTextFocused: isTitleFocused,
@@ -235,7 +235,7 @@ function CreateAnonymousRequest() {
     });
 
   const [secureContactNumberInputErrorText, secureContactNumberInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'secure contact number',
       inputText: secureContactNumber,
       isInputTextFocused: isSecureContactNumberFocused,
@@ -244,7 +244,7 @@ function CreateAnonymousRequest() {
     });
 
   const [secureContactEmailInputErrorText, secureContactEmailInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'secure contact email',
       inputText: secureContactEmail,
       isInputTextFocused: isSecureContactEmailFocused,
@@ -253,7 +253,7 @@ function CreateAnonymousRequest() {
     });
 
   const [requestDescriptionInputErrorText, requestDescriptionInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'request description',
       inputText: requestDescription,
       isInputTextFocused: isRequestDescriptionFocused,
@@ -269,7 +269,7 @@ function CreateAnonymousRequest() {
   const [
     additionalInformationInputErrorText,
     additionalInformationInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'additional information',
     inputText: additionalInformation,
     isInputTextFocused: isAdditionalInformationFocused,

@@ -11,7 +11,7 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -315,7 +315,7 @@ function EventCreator() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [eventTitleErrorText, eventTitleValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'event title',
       inputText: eventTitle,
       isInputTextFocused: isEventTitleFocused,
@@ -332,7 +332,7 @@ function EventCreator() {
     ? ''
     : 'The event start date must be before the event end date and both must be in the future. ';
   const [eventStartDateErrorText, eventStartDateValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'event start date',
       inputText: eventStartDate,
       isInputTextFocused: isEventStartDateFocused,
@@ -343,7 +343,7 @@ function EventCreator() {
     });
 
   const [eventEndDateErrorText, eventEndDateValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'event end date',
       inputText: eventEndDate,
       isInputTextFocused: isEventEndDateFocused,
@@ -358,7 +358,7 @@ function EventCreator() {
     : 'The event start time must be before the event end time and both must be in the future.';
 
   const [eventStartTimeErrorText, eventStartTimeValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'event start time',
       inputText: eventStartTime,
       isInputTextFocused: isEventStartTimeFocused,
@@ -374,7 +374,7 @@ function EventCreator() {
     });
 
   const [eventEndTimeErrorText, eventEndTimeValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'event end time',
       inputText: eventEndTime,
       isInputTextFocused: isEventEndTimeFocused,
@@ -390,7 +390,7 @@ function EventCreator() {
     });
 
   const [eventLocationErrorText, eventLocationValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'event location',
       inputText: eventLocation,
       isInputTextFocused: isEventLocationFocused,
@@ -404,7 +404,7 @@ function EventCreator() {
     });
 
   const [eventDescriptionErrorText, eventDescriptionValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'event description',
       inputText: eventDescription,
       isInputTextFocused: isEventDescriptionFocused,
@@ -418,7 +418,7 @@ function EventCreator() {
     });
 
   const [eventAttendeesErrorText, eventAttendeesValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'event attendees',
       inputText: eventAttendees,
       isInputTextFocused: isEventAttendeesFocused,
@@ -432,7 +432,7 @@ function EventCreator() {
     });
 
   const [requiredItemsErrorText, requiredItemsValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'required items',
       inputText: requiredItems,
       isInputTextFocused: isRequiredItemsFocused,
@@ -449,7 +449,7 @@ function EventCreator() {
     ? ''
     : 'The RSVP deadline must be before the event start date and after today.';
   const [rsvpDeadlineErrorText, rsvpDeadlineValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'rsvp deadline',
       inputText: rsvpDeadline,
       isInputTextFocused: isRsvpDeadlineFocused,
@@ -464,7 +464,6 @@ function EventCreator() {
       error: eventTitleErrorText,
       valid: eventTitleValidText,
     },
-    icon: faCheck,
     inputText: eventTitle,
     isValidInputText: isValidEventTitle,
     label: 'Event title',
@@ -497,7 +496,6 @@ function EventCreator() {
       error: eventLocationErrorText,
       valid: eventLocationValidText,
     },
-    icon: faCheck,
     inputText: eventLocation,
     isValidInputText: isValidEventLocation,
     label: 'Event location',

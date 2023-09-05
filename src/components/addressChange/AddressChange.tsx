@@ -18,7 +18,7 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
@@ -230,7 +230,7 @@ function AddressChange() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'address line',
       inputText: addressLine,
       isValidInputText: isValidAddressLine,
@@ -244,7 +244,7 @@ function AddressChange() {
     });
 
   const [cityInputErrorText, cityInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'city',
       inputText: city,
       isValidInputText: isValidCity,
@@ -258,7 +258,7 @@ function AddressChange() {
     });
 
   const [postalCodeInputErrorText, postalCodeInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'postal code',
       inputText: postalCode,
       isValidInputText: isValidPostalCode,
@@ -270,7 +270,7 @@ function AddressChange() {
     });
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'contact number',
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,

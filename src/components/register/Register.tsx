@@ -461,4 +461,4 @@ function Register() {
   return <>{displayRegisterComponent}</>;
 }
 
-export { Register };
+export default Register;

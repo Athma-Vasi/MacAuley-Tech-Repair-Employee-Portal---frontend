@@ -18,7 +18,7 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleDynamicTextAreaInputElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
@@ -383,7 +383,7 @@ function CreateAnnouncement() {
 
   /** ------------- begin accessible text elements ------------- */
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'title',
       inputText: title,
       isInputTextFocused: isTitleFocused,
@@ -397,7 +397,7 @@ function CreateAnnouncement() {
     });
 
   const [authorInputErrorText, authorInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'author',
       inputText: author,
       isInputTextFocused: isAuthorFocused,
@@ -411,7 +411,7 @@ function CreateAnnouncement() {
     });
 
   const [bannerImgSrcInputErrorText, bannerImgSrcInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'banner image src',
       inputText: bannerImageSrc,
       isInputTextFocused: isBannerImageSrcFocused,
@@ -420,7 +420,7 @@ function CreateAnnouncement() {
     });
 
   const [bannerImgAltInputErrorText, bannerImgAltInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'banner image alt',
       inputText: bannerImageAlt,
       isInputTextFocused: isBannerImageAltFocused,

@@ -18,7 +18,7 @@ import { TbArrowBarDown, TbCheck } from 'react-icons/tb';
 
 import { globalAction } from '../../../context/globalProvider/state';
 import { Shade } from '../../../context/globalProvider/types';
-import { useGlobalState } from '../../../hooks';
+import { useAuth, useGlobalState } from '../../../hooks';
 import { returnAccessibleSliderInputElements } from '../../../jsxCreators';
 import { ColorSchemeSwitch } from '../../colorSchemeSwitch/ColorSchemeSwitch';
 import { ChartsGraphsControlsStacker } from '../../displayStatistics/responsivePieChart/utils';
@@ -41,6 +41,10 @@ function ProfileInfo() {
     primaryShade,
     white,
   } = themeObject;
+
+  const {
+    authState: { accessToken, isLoggedIn },
+  } = useAuth();
 
   const mantineTheme = useMantineTheme();
 
@@ -275,11 +279,13 @@ function ProfileInfo() {
 
   const displayAvatar = (
     <Group style={{ cursor: 'pointer' }}>
-      <Avatar
-        src={userDocument?.profilePictureUrl}
-        alt="profile pic"
-        radius={9999}
-      />
+      {accessToken && isLoggedIn ? (
+        <Avatar
+          src={userDocument?.profilePictureUrl}
+          alt="profile pic"
+          radius={9999}
+        />
+      ) : null}
       <TbArrowBarDown />
     </Group>
   );

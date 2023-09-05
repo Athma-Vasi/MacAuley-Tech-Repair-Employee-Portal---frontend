@@ -12,7 +12,7 @@ import {
 } from '../../../constants/regex';
 import {
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
@@ -142,7 +142,7 @@ function RegisterStepAdditional({
   const [
     emergencyContactFullNameInputErrorText,
     emergencyContactFullNameInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'full name',
     inputText: fullName,
     isInputTextFocused: isFullNameFocused,
@@ -158,7 +158,7 @@ function RegisterStepAdditional({
   const [
     emergencyPhoneNumberInputErrorText,
     emergencyPhoneNumberInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'phone number',
     inputText: phoneNumber,
     isInputTextFocused: isPhoneNumberFocused,
@@ -167,7 +167,7 @@ function RegisterStepAdditional({
   });
 
   const [startDateInputErrorText, startDateInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'start date',
       inputText: startDate,
       isInputTextFocused: isStartDateFocused,

@@ -20,7 +20,7 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -288,7 +288,7 @@ function CreatePrinterIssue() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'title',
       inputText: title,
       isInputTextFocused: isTitleFocused,
@@ -302,7 +302,7 @@ function CreatePrinterIssue() {
     });
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'contact number',
       inputText: contactNumber,
       isInputTextFocused: isContactNumberFocused,
@@ -311,7 +311,7 @@ function CreatePrinterIssue() {
     });
 
   const [contactEmailInputErrorText, contactEmailInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'contact email',
       inputText: contactEmail,
       isInputTextFocused: isContactEmailFocused,
@@ -320,7 +320,7 @@ function CreatePrinterIssue() {
     });
 
   const [dateOfOccurrenceInputErrorText, dateOfOccurrenceInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'date of occurrence',
       inputText: dateOfOccurrence,
       isInputTextFocused: isDateOfOccurrenceFocused,
@@ -329,7 +329,7 @@ function CreatePrinterIssue() {
     });
 
   const [timeOfOccurrenceInputErrorText, timeOfOccurrenceInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'time of occurrence',
       inputText: timeOfOccurrence,
       isInputTextFocused: isTimeOfOccurrenceFocused,
@@ -343,7 +343,7 @@ function CreatePrinterIssue() {
     });
 
   const [printerModelInputErrorText, printerModelInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'printer model',
       inputText: printerModel,
       isInputTextFocused: isPrinterModelFocused,
@@ -357,7 +357,7 @@ function CreatePrinterIssue() {
     });
 
   const [printerSerialNumberInputErrorText, printerSerialNumberInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'printer serial number',
       inputText: printerSerialNumber,
       isInputTextFocused: isPrinterSerialNumberFocused,
@@ -373,7 +373,7 @@ function CreatePrinterIssue() {
   const [
     printerIssueDescriptionInputErrorText,
     printerIssueDescriptionInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'printer issue description',
     inputText: printerIssueDescription,
     isInputTextFocused: isPrinterIssueDescriptionFocused,
@@ -389,7 +389,7 @@ function CreatePrinterIssue() {
   const [
     additionalInformationInputErrorText,
     additionalInformationInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'additional information',
     inputText: additionalInformation,
     isInputTextFocused: isAdditionalInformationFocused,

@@ -10,7 +10,7 @@ import {
 } from '../../../constants/regex';
 import { screenReaderPasswordSpecialCharacters } from '../../../domElements';
 import {
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessiblePasswordInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
@@ -74,7 +74,7 @@ function RegisterStepAuthentication({
     const matchPassword = password === confirmPassword;
     registerDispatch({
       type: registerAction.setIsValidConfirmPassword,
-      payload: matchPassword,
+      payload: matchPassword && password.length > 0,
     });
   }, [password, confirmPassword]);
 
@@ -104,7 +104,7 @@ function RegisterStepAuthentication({
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [emailInputErrorText, emailInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'email',
       inputText: email,
       isValidInputText: isValidEmail,
@@ -113,7 +113,7 @@ function RegisterStepAuthentication({
     });
 
   const [usernameInputErrorText, usernameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'username',
       inputText: username,
       isValidInputText: isValidUsername,
@@ -125,7 +125,7 @@ function RegisterStepAuthentication({
     returnPasswordRegexValidationText(password);
 
   const [passwordInputErrorText, passwordInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'password',
       inputText: password,
       isValidInputText: isValidPassword,
@@ -138,7 +138,7 @@ function RegisterStepAuthentication({
     });
 
   const [confirmPasswordInputErrorText, confirmPasswordInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'confirm password',
       inputText: confirmPassword,
       isValidInputText: isValidConfirmPassword,

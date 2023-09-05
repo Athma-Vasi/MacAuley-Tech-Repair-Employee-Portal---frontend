@@ -13,8 +13,8 @@ const initialThemeObject: ThemeObject = {
   colorScheme: 'light',
   respectReducedMotion: true,
 
-  white: '#ffffff',
-  black: '#000000',
+  white: '#f8f9fa', // gray.0
+  black: '#212529', // gray.9
 
   primaryColor: 'violet',
   primaryShade: { light: 5, dark: 7 },
@@ -33,6 +33,7 @@ const initialThemeObject: ThemeObject = {
     Text: {
       defaultProps: {
         color: 'dark.7',
+        size: 'sm',
       },
     },
     Title: {

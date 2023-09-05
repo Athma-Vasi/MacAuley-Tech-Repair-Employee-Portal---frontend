@@ -9,7 +9,7 @@ import {
   POSTAL_CODE_REGEX_US,
 } from '../../../constants/regex';
 import {
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
@@ -205,7 +205,7 @@ function RegisterStepAddress({
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'address line',
       inputText: addressLine,
       isValidInputText: isValidAddressLine,
@@ -219,7 +219,7 @@ function RegisterStepAddress({
     });
 
   const [cityInputErrorText, cityInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'city',
       inputText: city,
       isValidInputText: isValidCity,
@@ -233,7 +233,7 @@ function RegisterStepAddress({
     });
 
   const [postalCodeInputErrorText, postalCodeInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'postal code',
       inputText: postalCode,
       isValidInputText: isValidPostalCode,
@@ -245,7 +245,7 @@ function RegisterStepAddress({
     });
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'contact number',
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,

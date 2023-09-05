@@ -5,9 +5,17 @@ import {
   faPoundSign,
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
-import { Flex, Text } from '@mantine/core';
+import { Flex, Text, useMantineTheme } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
-import { TbUpload } from 'react-icons/tb';
+import {
+  TbCurrency,
+  TbCurrencyDollar,
+  TbCurrencyEuro,
+  TbCurrencyPound,
+  TbCurrencyRenminbi,
+  TbCurrencyYen,
+  TbUpload,
+} from 'react-icons/tb';
 
 import {
   DATE_REGEX,
@@ -18,7 +26,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -54,6 +62,7 @@ import {
   initialCreateBenefitState,
 } from './state';
 import { BenefitsPlanKind, Currency } from './types';
+import { useGlobalState } from '../../../hooks';
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
@@ -102,6 +111,14 @@ function CreateBenefit() {
     isLoading,
     loadingMessage,
   } = createBenefitState;
+
+  const { colors } = useMantineTheme();
+  const {
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+    },
+  } = useGlobalState();
+
   // validate benefitUsername input on every change
   useEffect(() => {
     const isValid = USERNAME_REGEX.test(benefitUsername);
@@ -286,7 +303,7 @@ function CreateBenefit() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [benefitUsernameInputErrorText, benefitUsernameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'benefit username',
       inputText: benefitUsername,
       isValidInputText: isValidBenefitUsername,
@@ -295,7 +312,7 @@ function CreateBenefit() {
     });
 
   const [planNameInputErrorText, planNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'plan name',
       inputText: planName,
       isValidInputText: isValidPlanName,
@@ -309,7 +326,7 @@ function CreateBenefit() {
     });
 
   const [planDescriptionInputErrorText, planDescriptionInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'plan description',
       inputText: planDescription,
       isValidInputText: isValidPlanDescription,
@@ -323,7 +340,7 @@ function CreateBenefit() {
     });
 
   const [planStartDateInputErrorText, planStartDateInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'plan start date',
       inputText: planStartDate,
       isValidInputText: isValidPlanStartDate,
@@ -334,7 +351,7 @@ function CreateBenefit() {
   const [
     employeeContributionInputErrorText,
     employeeContributionInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'employee contribution',
     inputText: employeeContribution,
     isValidInputText: isValidEmployeeContribution,
@@ -348,7 +365,7 @@ function CreateBenefit() {
   const [
     employerContributionInputErrorText,
     employerContributionInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'employer contribution',
     inputText: employerContribution,
     isValidInputText: isValidEmployerContribution,
@@ -532,16 +549,20 @@ function CreateBenefit() {
     withAsterisk: true,
   };
 
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
   const currencyIcon =
-    currency === 'CNY'
-      ? faYen
-      : currency === 'GBP'
-      ? faPoundSign
-      : currency === 'EUR'
-      ? faEuro
-      : currency === 'JPY'
-      ? faJpy
-      : faDollarSign;
+    currency === 'CNY' ? (
+      <TbCurrencyRenminbi size={14} color={colors.gray[colorShade]} />
+    ) : currency === 'GBP' ? (
+      <TbCurrencyPound size={14} color={colors.gray[colorShade]} />
+    ) : currency === 'EUR' ? (
+      <TbCurrencyEuro size={14} color={colors.gray[colorShade]} />
+    ) : currency === 'JPY' ? (
+      <TbCurrencyYen size={14} color={colors.gray[colorShade]} />
+    ) : (
+      <TbCurrencyDollar size={14} color={colors.gray[colorShade]} />
+    );
 
   const employeeContributionInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {

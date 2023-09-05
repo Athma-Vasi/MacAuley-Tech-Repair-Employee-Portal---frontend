@@ -33,7 +33,7 @@ import {
   returnAccessibleDateTimeElements,
   returnAccessibleDynamicRadioGroupInputsElements,
   returnAccessibleDynamicTextInputElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleRadioGroupInputsElements,
   returnAccessibleSelectInputElements,
@@ -709,7 +709,7 @@ function SurveyBuilder() {
 
   /** ------------- begin text inputs validation ------------- */
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'survey title',
       inputText: surveyTitle,
       isInputTextFocused: isSurveyTitleFocused,
@@ -723,7 +723,7 @@ function SurveyBuilder() {
     });
 
   const [descriptionInputErrorText, descriptionInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'survey description',
       inputText: surveyDescription,
       isInputTextFocused: isSurveyDescriptionFocused,
@@ -737,7 +737,7 @@ function SurveyBuilder() {
     });
 
   const [expiryDateInputErrorText, expiryDateInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'expiry date',
       inputText: expiryDate,
       isInputTextFocused: isExpiryDateFocused,

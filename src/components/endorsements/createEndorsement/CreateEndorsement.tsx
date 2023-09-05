@@ -9,7 +9,7 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -132,7 +132,7 @@ function CreateEndorsement() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'title',
       inputText: title,
       isInputTextFocused: isTitleFocused,
@@ -148,7 +148,7 @@ function CreateEndorsement() {
   const [
     employeeToBeEndorsedInputErrorText,
     employeeToBeEndorsedInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'employee to be endorsed',
     inputText: employeeToBeEndorsed,
     isInputTextFocused: isEmployeeToBeEndorsedFocused,
@@ -164,7 +164,7 @@ function CreateEndorsement() {
   const [
     summaryOfEndorsementInputErrorText,
     summaryOfEndorsementInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'summary of endorsement',
     inputText: summaryOfEndorsement,
     isInputTextFocused: isSummaryOfEndorsementFocused,

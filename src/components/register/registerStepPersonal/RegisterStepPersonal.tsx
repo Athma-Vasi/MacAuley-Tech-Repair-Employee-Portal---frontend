@@ -11,7 +11,7 @@ import {
 } from '../../../constants/regex';
 import {
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
@@ -185,7 +185,7 @@ function RegisterStepPersonal({
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [firstNameInputErrorText, firstNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'first name',
       inputText: firstName,
       isValidInputText: isValidFirstName,
@@ -199,7 +199,7 @@ function RegisterStepPersonal({
     });
 
   const [middleNameInputErrorText, middleNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'middle name',
       inputText: middleName,
       isValidInputText: isValidMiddleName,
@@ -213,7 +213,7 @@ function RegisterStepPersonal({
     });
 
   const [lastNameInputErrorText, lastNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'last name',
       inputText: lastName,
       isValidInputText: isValidLastName,
@@ -227,7 +227,7 @@ function RegisterStepPersonal({
     });
 
   const [preferredNameInputErrorText, preferredNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'preferred name',
       inputText: preferredName,
       isValidInputText: isValidPreferredName,
@@ -241,7 +241,7 @@ function RegisterStepPersonal({
     });
 
   const [profilePictureUrlInputErrorText, profilePictureUrlInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'profile picture url',
       inputText: profilePictureUrl,
       isValidInputText: isValidProfilePictureUrl,
@@ -256,7 +256,7 @@ function RegisterStepPersonal({
       ? ''
       : 'You must be 18 years or older to register.';
   const [dateOfBirthInputErrorText, dateOfBirthInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'date of birth',
       inputText: dateOfBirth,
       isValidInputText: isValidDateOfBirth,

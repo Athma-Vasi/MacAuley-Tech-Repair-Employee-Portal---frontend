@@ -11,7 +11,7 @@ import {
 import {
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -197,7 +197,7 @@ function RequestResource() {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [resourceQuantityInputErrorText, resourceQuantityInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'resource quantity',
       inputText: resourceQuantity,
       isInputTextFocused: isResourceQuantityFocused,
@@ -209,7 +209,7 @@ function RequestResource() {
     });
 
   const [resourceDescriptionInputErrorText, resourceDescriptionInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'resource description',
       inputText: resourceDescription,
       isInputTextFocused: isResourceDescriptionFocused,
@@ -223,7 +223,7 @@ function RequestResource() {
     });
 
   const [reasonForRequestInputErrorText, reasonForRequestInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'reason for request',
       inputText: reasonForRequest,
       isInputTextFocused: isReasonForRequestFocused,
@@ -237,7 +237,7 @@ function RequestResource() {
     });
 
   const [dateNeededByInputErrorText, dateNeededByInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'date needed by',
       inputText: dateNeededBy,
       isInputTextFocused: isDateNeededByFocused,
@@ -248,7 +248,7 @@ function RequestResource() {
   const [
     additionalInformationInputErrorText,
     additionalInformationInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'additional information',
     inputText: additionalInformation,
     isInputTextFocused: isAdditionalInformationFocused,

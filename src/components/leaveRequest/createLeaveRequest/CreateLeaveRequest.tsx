@@ -10,7 +10,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -192,7 +192,7 @@ function CreateLeaveRequest() {
     ? ''
     : 'The leave start date must be before the leave end date and both must be in the future. ';
   const [startDateInputErrorText, startDateInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'start date',
       inputText: startDate,
       isInputTextFocused: isStartDateFocused,
@@ -203,7 +203,7 @@ function CreateLeaveRequest() {
     });
 
   const [endDateInputErrorText, endDateInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'end date',
       inputText: endDate,
       isInputTextFocused: isEndDateFocused,
@@ -214,7 +214,7 @@ function CreateLeaveRequest() {
     });
 
   const [delegatedToEmployeeInputErrorText, delegatedToEmployeeInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'delegated to employee',
       inputText: delegatedToEmployee,
       isInputTextFocused: isDelegatedToEmployeeFocused,
@@ -230,7 +230,7 @@ function CreateLeaveRequest() {
   const [
     delegatedResponsibilitiesInputErrorText,
     delegatedResponsibilitiesInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'delegated responsibilities',
     inputText: delegatedResponsibilities,
     isInputTextFocused: isDelegatedResponsibilitiesFocused,
@@ -244,7 +244,7 @@ function CreateLeaveRequest() {
   });
 
   const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'additional comments',
       inputText: additionalComments,
       isInputTextFocused: isAdditionalCommentsFocused,

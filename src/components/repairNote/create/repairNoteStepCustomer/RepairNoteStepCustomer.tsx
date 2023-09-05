@@ -12,7 +12,7 @@ import {
   POSTAL_CODE_REGEX_US,
 } from '../../../../constants/regex';
 import {
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
@@ -276,7 +276,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [customerNameInputErrorText, customerNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'customer name',
       inputText: customerName,
       isValidInputText: isValidCustomerName,
@@ -290,7 +290,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     });
 
   const [customerPhoneInputErrorText, customerPhoneInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'customer phone',
       inputText: customerPhone,
       isValidInputText: isValidCustomerPhone,
@@ -299,7 +299,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     });
 
   const [customerEmailInputErrorText, customerEmailInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'customer email',
       inputText: customerEmail,
       isValidInputText: isValidCustomerEmail,
@@ -308,7 +308,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     });
 
   const [customerAddressLineInputErrorText, customerAddressLineInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'customer address line',
       inputText: customerAddressLine,
       isValidInputText: isValidCustomerAddressLine,
@@ -322,7 +322,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     });
 
   const [customerCityInputErrorText, customerCityInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'customer city',
       inputText: customerCity,
       isValidInputText: isValidCustomerCity,
@@ -336,7 +336,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     });
 
   const [customerPostalCodeInputErrorText, customerPostalCodeInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'customer postal code',
       inputText: customerPostalCode,
       isValidInputText: isValidCustomerPostalCode,

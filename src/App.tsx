@@ -2,6 +2,7 @@ import './index.css';
 
 import { MantineProvider, Text } from '@mantine/core';
 import { lazy, Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import {
@@ -18,11 +19,13 @@ import {
   DisplayAnonymousRequests,
 } from './components/anonymousRequest';
 import { CreateBenefit, DisplayBenefits } from './components/benefits';
+import CustomFonts from './components/customFonts/CustomFonts';
 import { Dashboard } from './components/dashboard';
 import {
   CreateEndorsement,
   DisplayEndorsements,
 } from './components/endorsements/';
+import ErrorFallback from './components/errorFallback/ErrorFallback';
 import { DisplayEvents, EventCreator } from './components/events';
 import {
   CreateExpenseClaim,
@@ -41,21 +44,18 @@ import {
 } from './components/printerIssue';
 import { PublicLayout } from './components/publicLayout';
 import { CreateReferment, DisplayReferments } from './components/referments';
-import { Register } from './components/register';
 import { CreateRepairNote, DisplayRepairNotes } from './components/repairNote';
 import {
   DisplayRequestResources,
   RequestResource,
 } from './components/requestResource';
 import { DisplaySurveys, SurveyBuilder } from './components/survey';
-import { useGlobalState } from './hooks/useGlobalState';
-import { ErrorBoundary } from 'react-error-boundary';
-import ErrorFallback from './components/errorFallback/ErrorFallback';
 import { useAuth } from './hooks';
-import CustomFonts from './components/customFonts/CustomFonts';
+import { useGlobalState } from './hooks/useGlobalState';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+const Register = lazy(() => import('./components/register/Register'));
 const Directory = lazy(() => import('./components/directory/Directory'));
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end lazy loading ━┛
@@ -78,7 +78,9 @@ function App() {
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<Login />} />
           <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
+          <Route path="register" element={<PortalLayout />}>
+            <Route index element={<Register />} />
+          </Route>
           {/* <Route path="unauthorized" element={<Unauthorized />} /> */}
         </Route>
 

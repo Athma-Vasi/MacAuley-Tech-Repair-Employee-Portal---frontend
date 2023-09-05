@@ -17,7 +17,7 @@ import {
 } from '../../../../utils';
 import {
   returnAccessibleDateTimeElements,
-  returnAccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../../jsxCreators';
@@ -146,7 +146,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
   // following are the accessible text elements for screen readers to read out based on the state of the input
 
   const [partNameInputErrorText, partNameInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'part name',
       inputText: partName,
       isValidInputText: isValidPartName,
@@ -160,7 +160,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     });
 
   const [partSerialIdInputErrorText, partSerialIdInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'part serial id',
       inputText: partSerialId,
       isValidInputText: isValidPartSerialId,
@@ -178,7 +178,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
       ? 'Date received must be in the past'
       : '';
   const [dateReceivedInputErrorText, dateReceivedInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'date received',
       inputText: dateReceived,
       isValidInputText: isValidDateReceived,
@@ -189,7 +189,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     });
 
   const [descriptionOfIssueInputErrorText, descriptionOfIssueInputValidText] =
-    returnAccessibleErrorValidTextElements({
+    AccessibleErrorValidTextElements({
       inputElementKind: 'description of issue',
       inputText: descriptionOfIssue,
       isValidInputText: isValidDescriptionOfIssue,
@@ -205,7 +205,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
   const [
     initialInspectionNotesInputErrorText,
     initialInspectionNotesInputValidText,
-  ] = returnAccessibleErrorValidTextElements({
+  ] = AccessibleErrorValidTextElements({
     inputElementKind: 'initial inspection notes',
     inputText: initialInspectionNotes,
     isValidInputText: isValidInitialInspectionNotes,
