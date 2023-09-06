@@ -82,9 +82,9 @@ function App() {
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* create benefit */}
-          <Route path="create-benefit" element={<PortalLayout />}>
-            <Route index element={<CreateBenefit />} />
+          {/* request resource */}
+          <Route path="request-resource" element={<PortalLayout />}>
+            <Route index element={<RequestResource />} />
           </Route>
 
           {/* create leave request */}

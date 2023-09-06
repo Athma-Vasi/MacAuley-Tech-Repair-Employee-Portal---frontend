@@ -9,9 +9,9 @@ import {
   MONEY_REGEX,
 } from '../../../constants/regex';
 import {
+  AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
-  AccessibleErrorValidTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -42,6 +42,10 @@ import {
   requestResourceReducer,
 } from './state';
 import { RequestResourceKind } from './types';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
+import { Group, Tooltip } from '@mantine/core';
 
 function RequestResource() {
   const [requestResourceState, requestResourceDispatch] = useReducer(
@@ -366,7 +370,7 @@ function RequestResource() {
     },
     inputText: reasonForRequest,
     isValidInputText: isValidReasonForRequest,
-    label: 'Reason for request',
+    label: 'Reason for Request',
     onBlur: () => {
       requestResourceDispatch({
         type: requestResourceAction.setIsReasonForRequestFocused,
@@ -412,7 +416,7 @@ function RequestResource() {
       },
       inputText: additionalInformation,
       isValidInputText: isValidAdditionalInformation,
-      label: 'Additional information',
+      label: 'Additional Information',
       onBlur: () => {
         requestResourceDispatch({
           type: requestResourceAction.setIsAdditionalInformationFocused,
@@ -442,7 +446,7 @@ function RequestResource() {
     },
     inputText: dateNeededBy,
     isValidInputText: isValidDateNeededBy,
-    label: 'Date needed by',
+    label: 'Date Needed by',
     onBlur: () => {
       requestResourceDispatch({
         type: requestResourceAction.setIsDateNeededByFocused,
@@ -516,9 +520,19 @@ function RequestResource() {
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === REQUEST_RESOURCE_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === REQUEST_RESOURCE_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Fix errors to submit'
+            : 'Submit Request Resource form'
+        }
+      >
+        <Group position="center" w="100%">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
 
   const displayRequestResourceFormPageOne = (
     <FormLayoutWrapper>
@@ -538,7 +552,59 @@ function RequestResource() {
     </FormLayoutWrapper>
   );
 
-  const displayReviewFormPage = <h3>request resource review</h3>;
+  const REQUEST_RESOURCE_REVIEW_OBJECT: FormReviewObject = {
+    'Resource Details': [
+      {
+        inputName: 'Department',
+        inputValue: department,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Resource',
+        inputValue: resourceType,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Quantity',
+        inputValue: resourceQuantity,
+        isInputValueValid: isValidResourceQuantity,
+      },
+      {
+        inputName: 'Description',
+        inputValue: resourceDescription,
+        isInputValueValid: isValidResourceDescription,
+      },
+    ],
+    'Reason and Urgency': [
+      {
+        inputName: 'Reason for Request',
+        inputValue: reasonForRequest,
+        isInputValueValid: isValidReasonForRequest,
+      },
+      {
+        inputName: 'Urgency',
+        inputValue: urgency,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Additional Information',
+        inputValue: additionalInformation,
+        isInputValueValid: isValidAdditionalInformation,
+      },
+      {
+        inputName: 'Date Needed by',
+        inputValue: dateNeededBy,
+        isInputValueValid: isValidDateNeededBy,
+      },
+    ],
+  };
+
+  const displayReviewFormPage = (
+    <FormReviewPage
+      formReviewObject={REQUEST_RESOURCE_REVIEW_OBJECT}
+      formName="Request Resource"
+    />
+  );
 
   const displayRequestResourceForm =
     currentStepperPosition === 0
@@ -579,333 +645,3 @@ function RequestResource() {
 }
 
 export { RequestResource };
-
-/**
- * <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w={400}
-    >
-      <NativeSelect
-        size="sm"
-        data={DEPARTMENTS}
-        label="Department"
-        description="
-          Select the department for which you are requesting a resource."
-        value={department}
-        onChange={(event) => {
-          requestResourceDispatch({
-            type: requestResourceAction.setDepartment,
-            payload: event.currentTarget.value as Department,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <NativeSelect
-        size="sm"
-        data={REQUEST_RESOURCE_KIND_DATA}
-        label="Resource"
-        description="
-          Select the kind of resource you are requesting."
-        value={resourceType}
-        onChange={(event) => {
-          requestResourceDispatch({
-            type: requestResourceAction.setResourceType,
-            payload: event.currentTarget.value as RequestResourceKind,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Resource quantity"
-        placeholder="Enter resource amount"
-        value={resourceQuantity}
-        aria-required
-        aria-describedby={
-          isValidResourceQuantity
-            ? 'resource-quantity-input-note-valid'
-            : 'resource-quantity-input-note-error'
-        }
-        description={
-          isValidResourceQuantity
-            ? resourceQuantityInputValidText
-            : resourceQuantityInputErrorText
-        }
-        aria-invalid={isValidResourceQuantity ? 'false' : 'true'}
-        icon={
-          isValidResourceQuantity ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidResourceQuantity && resourceQuantity !== ''}
-        onChange={(event) => {
-          requestResourceDispatch({
-            type: requestResourceAction.setResourceQuantity,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsResourceQuantityFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsResourceQuantityFocused,
-            payload: false,
-          });
-        }}
-        minLength={1}
-        maxLength={9}
-        required
-        withAsterisk
-      />
-
-      <Textarea
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Resource description"
-        placeholder="Enter description of resource requested"
-        value={resourceDescription}
-        aria-required
-        aria-describedby={
-          isValidResourceDescription
-            ? 'resource-description-input-note-valid'
-            : 'resource-description-input-note-error'
-        }
-        description={
-          isValidResourceDescription
-            ? resourceDescriptionInputValidText
-            : resourceDescriptionInputErrorText
-        }
-        aria-invalid={isValidResourceDescription ? 'false' : 'true'}
-        icon={
-          isValidResourceDescription ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidResourceDescription && resourceDescription !== ''}
-        onChange={(event) => {
-          requestResourceDispatch({
-            type: requestResourceAction.setResourceDescription,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsResourceDescriptionFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsResourceDescriptionFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={2000}
-        autosize
-        minRows={3}
-        maxRows={10}
-        required
-        withAsterisk
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Reason for request"
-        placeholder="Enter reason for request"
-        value={reasonForRequest}
-        aria-required
-        aria-describedby={
-          isValidReasonForRequest
-            ? 'reason-for-request-input-note-valid'
-            : 'reason-for-request-input-note-error'
-        }
-        description={
-          isValidReasonForRequest
-            ? reasonForRequestInputValidText
-            : reasonForRequestInputErrorText
-        }
-        aria-invalid={isValidReasonForRequest ? 'false' : 'true'}
-        icon={
-          isValidReasonForRequest ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidReasonForRequest && reasonForRequest !== ''}
-        onChange={(event) => {
-          requestResourceDispatch({
-            type: requestResourceAction.setReasonForRequest,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsReasonForRequestFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsReasonForRequestFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={75}
-        required
-        withAsterisk
-      />
-
-      <NativeSelect
-        size="sm"
-        data={URGENCY_DATA}
-        label="Urgency"
-        description="
-          Select the urgency of your request."
-        value={urgency}
-        onChange={(event) => {
-          requestResourceDispatch({
-            type: requestResourceAction.setUrgency,
-            payload: event.currentTarget.value as Urgency,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <Textarea
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Additional information"
-        placeholder="Enter additional information"
-        value={additionalInformation}
-        aria-required
-        aria-describedby={
-          isValidAdditionalInformation
-            ? 'additional-information-input-note-valid'
-            : 'additional-information-input-note-error'
-        }
-        description={
-          isValidAdditionalInformation
-            ? additionalInformationInputValidText
-            : additionalInformationInputErrorText
-        }
-        aria-invalid={isValidAdditionalInformation ? 'false' : 'true'}
-        icon={
-          isValidAdditionalInformation ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidAdditionalInformation && additionalInformation !== ''}
-        onChange={(event) => {
-          requestResourceDispatch({
-            type: requestResourceAction.setAdditionalInformation,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsAdditionalInformationFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsAdditionalInformationFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={2000}
-        autosize
-        minRows={3}
-        maxRows={10}
-        required
-        withAsterisk
-      />
-
-      <TextInput
-        type="date"
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Date needed by"
-        placeholder="DD-MM-YYYY"
-        autoComplete="off"
-        aria-required
-        aria-label='Please enter resource needed by date in format "date-date-month-month-year-year-year-year" from start year 1900 to end year 2024'
-        aria-describedby={
-          isValidDateNeededBy
-            ? 'date-needed-by-input-note-valid'
-            : 'date-needed-by-input-note-error'
-        }
-        aria-invalid={isValidDateNeededBy ? false : true}
-        value={dateNeededBy}
-        icon={
-          isValidDateNeededBy ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidDateNeededBy && dateNeededBy !== ''}
-        description={
-          isValidDateNeededBy
-            ? dateNeededByInputValidText
-            : dateNeededByInputErrorText
-        }
-        // current date for min
-        min={new Date().toISOString().split('T')[0]}
-        max={new Date(2026, 11, 31).toISOString().split('T')[0]}
-        onChange={(event) => {
-          requestResourceDispatch({
-            type: requestResourceAction.setDateNeededBy,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsDateNeededByFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          requestResourceDispatch({
-            type: requestResourceAction.setIsDateNeededByFocused,
-            payload: false,
-          });
-        }}
-        maxLength={10}
-        withAsterisk
-        required
-      />
-
-      <Button
-        type="button"
-        variant="filled"
-        disabled={
-          !isValidResourceQuantity ||
-          !isValidResourceDescription ||
-          !isValidDateNeededBy
-        }
-      >
-        Submit
-      </Button>
-    </Flex>
-  
- */

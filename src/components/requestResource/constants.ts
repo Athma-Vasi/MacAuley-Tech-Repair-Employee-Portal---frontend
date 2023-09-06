@@ -11,18 +11,18 @@ const REQUEST_RESOURCE_KIND_DATA = ['Hardware', 'Software', 'Access', 'Other'];
 
 const REQUEST_RESOURCE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Resource details',
+    description: 'Resource Details',
     ariaLabel: 'Enter department, resource kind, quantity and description',
   },
 
   {
-    description: 'Reason and urgency',
+    description: 'Reason and Urgency',
     ariaLabel:
       'Enter reason for request, urgency, additional information and date needed by',
   },
 
   {
-    description: 'Review and proceed',
+    description: 'Review and Proceed',
     ariaLabel: 'Review accuracy of information and proceed',
   },
 ];
