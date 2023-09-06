@@ -5,7 +5,7 @@ import {
   faPoundSign,
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
-import { Flex, Text, useMantineTheme } from '@mantine/core';
+import { Flex, Group, Text, Tooltip, useMantineTheme } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
 import {
   TbCurrency,
@@ -63,6 +63,10 @@ import {
 } from './state';
 import { BenefitsPlanKind, Currency } from './types';
 import { useGlobalState } from '../../../hooks';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
+import { COLORS_SWATCHES } from '../../../constants/data';
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
@@ -112,7 +116,7 @@ function CreateBenefit() {
     loadingMessage,
   } = createBenefitState;
 
-  const { colors } = useMantineTheme();
+  const { gray } = COLORS_SWATCHES;
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
@@ -296,7 +300,7 @@ function CreateBenefit() {
       type: createBenefitAction.setStepsInError,
       payload: {
         kind: isStepInError ? 'add' : 'delete',
-        step: 2,
+        step: 1,
       },
     });
   }, [isValidEmployeeContribution, isValidEmployerContribution]);
@@ -380,8 +384,8 @@ function CreateBenefit() {
     AccessibleSelectedDeselectedTextElements({
       isSelected: isPlanActive,
       semanticName: 'active status',
-      selectedDescription: 'plan is active',
-      deselectedDescription: 'plan is inactive',
+      selectedDescription: 'Plan is active',
+      deselectedDescription: 'Plan is inactive',
     });
 
   // following are info objects for input creators
@@ -392,7 +396,7 @@ function CreateBenefit() {
     },
     inputText: benefitUsername,
     isValidInputText: isValidBenefitUsername,
-    label: 'Benefit username',
+    label: 'Benefit Username',
     onBlur: () => {
       createBenefitDispatch({
         type: createBenefitAction.setIsBenefitUsernameFocused,
@@ -426,7 +430,7 @@ function CreateBenefit() {
     },
     inputText: planName,
     isValidInputText: isValidPlanName,
-    label: 'Plan name',
+    label: 'Plan Name',
     onBlur: () => {
       createBenefitDispatch({
         type: createBenefitAction.setIsPlanNameFocused,
@@ -460,7 +464,7 @@ function CreateBenefit() {
     },
     inputText: planDescription,
     isValidInputText: isValidPlanDescription,
-    label: 'Plan description',
+    label: 'Plan Description',
     onBlur: () => {
       createBenefitDispatch({
         type: createBenefitAction.setIsPlanDescriptionFocused,
@@ -492,7 +496,7 @@ function CreateBenefit() {
     },
     inputText: planStartDate,
     isValidInputText: isValidPlanStartDate,
-    label: 'Plan start date',
+    label: 'Plan Start Date',
     onBlur: () => {
       createBenefitDispatch({
         type: createBenefitAction.setIsPlanStartDateFocused,
@@ -522,7 +526,7 @@ function CreateBenefit() {
   const planKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     description: 'Select plan kind',
     data: BENEFIT_PLAN_DATA,
-    label: 'Plan kind',
+    label: 'Plan Kind',
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
       createBenefitDispatch({
         type: createBenefitAction.setPlanKind,
@@ -549,19 +553,18 @@ function CreateBenefit() {
     withAsterisk: true,
   };
 
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const currencyIconColor = colorScheme === 'light' ? gray[5] : gray[6];
   const currencyIcon =
     currency === 'CNY' ? (
-      <TbCurrencyRenminbi size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyRenminbi size={14} color={currencyIconColor} />
     ) : currency === 'GBP' ? (
-      <TbCurrencyPound size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyPound size={14} color={currencyIconColor} />
     ) : currency === 'EUR' ? (
-      <TbCurrencyEuro size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyEuro size={14} color={currencyIconColor} />
     ) : currency === 'JPY' ? (
-      <TbCurrencyYen size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyYen size={14} color={currencyIconColor} />
     ) : (
-      <TbCurrencyDollar size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyDollar size={14} color={currencyIconColor} />
     );
 
   const employeeContributionInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -571,7 +574,7 @@ function CreateBenefit() {
     },
     inputText: employeeContribution,
     isValidInputText: isValidEmployeeContribution,
-    label: 'Employee contribution',
+    label: 'Employee Contribution',
     onBlur: () => {
       createBenefitDispatch({
         type: createBenefitAction.setIsEmployeeContributionFocused,
@@ -607,7 +610,7 @@ function CreateBenefit() {
     },
     inputText: employerContribution,
     isValidInputText: isValidEmployerContribution,
-    label: 'Employer contribution',
+    label: 'Employer Contribution',
     onBlur: () => {
       createBenefitDispatch({
         type: createBenefitAction.setIsEmployerContributionFocused,
@@ -642,7 +645,7 @@ function CreateBenefit() {
         selected: planActiveInputSelectedText,
         deselected: planActiveInputDeselectedText,
       },
-      label: 'Plan status',
+      label: 'Plan Status',
       checked: isPlanActive,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createBenefitDispatch({
@@ -703,9 +706,13 @@ function CreateBenefit() {
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === CREATE_BENEFIT_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === CREATE_BENEFIT_MAX_STEPPER_POSITION ? (
+      <Tooltip label="Submit Benefit form">
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
 
   const displayPlanDetailsFormPage = (
     <FormLayoutWrapper>
@@ -729,17 +736,13 @@ function CreateBenefit() {
       : '$';
 
   const displayTotalContributions = (
-    <Flex w="100%" justify="space-between" align="center">
-      <Text size="sm" color="dark">
-        Total contribution
-      </Text>
-      <Flex justify="space-between" align="center" columnGap="xs">
-        <Text size="sm">{currencySymbol}</Text>
-        <Text size="sm" color="dark">
-          {totalContribution}
-        </Text>
-      </Flex>
-    </Flex>
+    <Group position="right" w="100%">
+      <Text>Total contribution</Text>
+      <Group spacing="lg">
+        <Text>{currencySymbol}</Text>
+        <Text>{totalContribution}</Text>
+      </Group>
+    </Group>
   );
 
   const displayPlanContributionsFormPage = (
@@ -752,7 +755,64 @@ function CreateBenefit() {
     </FormLayoutWrapper>
   );
 
-  const displayReviewPage = <h4>review page</h4>;
+  const CREATE_BENEFIT_REVIEW_OBJECT: FormReviewObject = {
+    'Plan Details': [
+      {
+        inputName: 'Benefit Username',
+        inputValue: benefitUsername,
+        isInputValueValid: isValidBenefitUsername,
+      },
+      {
+        inputName: 'Plan Name',
+        inputValue: planName,
+        isInputValueValid: isValidPlanName,
+      },
+      {
+        inputName: 'Plan Description',
+        inputValue: planDescription,
+        isInputValueValid: isValidPlanDescription,
+      },
+      {
+        inputName: 'Plan Start Date',
+        inputValue: planStartDate,
+        isInputValueValid: isValidPlanStartDate,
+      },
+      {
+        inputName: 'Plan Kind',
+        inputValue: planKind,
+        isInputValueValid: true,
+      },
+    ],
+    'Plan Contributions': [
+      {
+        inputName: 'Currency',
+        inputValue: currency,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Employee Contribution',
+        inputValue: employeeContribution,
+        isInputValueValid: isValidEmployeeContribution,
+      },
+      {
+        inputName: 'Employer Contribution',
+        inputValue: employerContribution,
+        isInputValueValid: isValidEmployerContribution,
+      },
+      {
+        inputName: 'Plan Status',
+        inputValue: isPlanActive ? 'Active' : 'Inactive',
+        isInputValueValid: true,
+      },
+    ],
+  };
+
+  const displayReviewPage = (
+    <FormReviewPage
+      formReviewObject={CREATE_BENEFIT_REVIEW_OBJECT}
+      formName="Create Benefit"
+    />
+  );
 
   const displayCreateBenefitForm =
     currentStepperPosition === 0
@@ -791,325 +851,3 @@ function CreateBenefit() {
 }
 
 export { CreateBenefit };
-
-/**
- * <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Plan name"
-        placeholder="Enter plan name"
-        value={planName}
-        aria-required
-        aria-describedby={
-          isValidPlanName
-            ? 'plan-name-input-note-valid'
-            : 'plan-name-input-note-error'
-        }
-        description={
-          isValidPlanName ? planNameInputValidText : planNameInputErrorText
-        }
-        aria-invalid={isValidPlanName ? 'false' : 'true'}
-        icon={
-          isValidPlanName ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidPlanName && planName !== ''}
-        onChange={(event) => {
-          createBenefitDispatch({
-            type: createBenefitAction.setPlanName,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsPlanNameFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsPlanNameFocused,
-            payload: false,
-          });
-        }}
-        minLength={1}
-        maxLength={50}
-        required
-        withAsterisk
-      />
-
-      <Textarea
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Plan description"
-        placeholder="Enter plan description"
-        value={planDescription}
-        aria-required
-        aria-describedby={
-          isValidPlanDescription
-            ? 'plan-description-input-note-valid'
-            : 'plan-description-input-note-error'
-        }
-        description={
-          isValidPlanDescription
-            ? planDescriptionInputValidText
-            : planDescriptionInputErrorText
-        }
-        aria-invalid={isValidPlanDescription ? 'false' : 'true'}
-        icon={
-          isValidPlanDescription ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidPlanDescription && planDescription !== ''}
-        onChange={(event) => {
-          createBenefitDispatch({
-            type: createBenefitAction.setPlanDescription,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsPlanDescriptionFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsPlanDescriptionFocused,
-            payload: false,
-          });
-        }}
-        minLength={1}
-        maxLength={300}
-        autosize
-        minRows={3}
-        maxRows={5}
-        required
-        withAsterisk
-      />
-
-      <NativeSelect
-        size="sm"
-        data={BENEFIT_PLAN_DATA}
-        label="Benefit plan kind"
-        value={planKind}
-        onChange={(event) => {
-          createBenefitDispatch({
-            type: createBenefitAction.setPlanKind,
-            payload: event.currentTarget.value as BenefitsPlanKind,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <Checkbox
-        size="sm"
-        color="dark"
-        label="Status"
-        aria-label={isPlanActive ? 'Plan is active' : 'Plan is inactive'}
-        description={isPlanActive ? 'Plan is active' : 'Plan is inactive'}
-        checked={isPlanActive}
-        onChange={(event) => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsPlanActive,
-            payload: event.currentTarget.checked,
-          });
-        }}
-      />
-
-      <TextInput
-        type="date"
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Plan start date"
-        placeholder="DD-MM-YYYY"
-        autoComplete="off"
-        aria-required
-        aria-label='Please enter start date of plan in format "date-date-month-month-year-year-year-year" from start year 1900 to end year 2024'
-        aria-describedby={
-          isValidPlanStartDate
-            ? 'plan-start-date-input-note-valid'
-            : 'plan-start-date-input-note-error'
-        }
-        aria-invalid={isValidPlanStartDate ? false : true}
-        value={planStartDate}
-        icon={
-          isValidPlanStartDate ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidPlanStartDate && planStartDate !== ''}
-        description={
-          isValidPlanStartDate
-            ? planStartDateInputValidText
-            : planStartDateInputErrorText
-        }
-        min={new Date(1900, 0, 1).toISOString().split('T')[0]}
-        max={new Date(2024, 11, 31).toISOString().split('T')[0]}
-        onChange={(event) => {
-          createBenefitDispatch({
-            type: createBenefitAction.setPlanStartDate,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsPlanStartDateFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsPlanStartDateFocused,
-            payload: false,
-          });
-        }}
-        maxLength={10}
-        withAsterisk
-        required
-      />
-
-      <NativeSelect
-        size="sm"
-        data={CURRENCY_DATA}
-        label="Currency"
-        description="Select currency of plan."
-        value={currency}
-        onChange={(event) => {
-          createBenefitDispatch({
-            type: createBenefitAction.setCurrency,
-            payload: event.currentTarget.value as Currency,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Employee contribution"
-        placeholder="Enter employee contribution"
-        value={employeeContribution}
-        aria-required
-        aria-describedby={
-          isValidEmployeeContribution
-            ? 'employee-contribution-input-note-valid'
-            : 'employee-contribution-input-note-error'
-        }
-        description={
-          isValidEmployeeContribution
-            ? employeeContributionInputValidText
-            : employeeContributionInputErrorText
-        }
-        aria-invalid={isValidEmployeeContribution ? 'false' : 'true'}
-        icon={
-          isValidEmployeeContribution ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        rightSection={currencyIcon}
-        error={!isValidEmployeeContribution && employeeContribution !== ''}
-        onChange={(event) => {
-          createBenefitDispatch({
-            type: createBenefitAction.setEmployeeContribution,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsEmployeeContributionFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsEmployeeContributionFocused,
-            payload: false,
-          });
-        }}
-        required
-        withAsterisk
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Employer contribution"
-        placeholder="Enter employer contribution"
-        value={employerContribution}
-        aria-required
-        aria-describedby={
-          isValidEmployerContribution
-            ? 'employer-contribution-input-note-valid'
-            : 'employer-contribution-input-note-error'
-        }
-        description={
-          isValidEmployerContribution
-            ? employerContributionInputValidText
-            : employerContributionInputErrorText
-        }
-        aria-invalid={isValidEmployerContribution ? 'false' : 'true'}
-        icon={
-          isValidEmployerContribution ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        rightSection={currencyIcon}
-        error={!isValidEmployerContribution && employerContribution !== ''}
-        onChange={(event) => {
-          createBenefitDispatch({
-            type: createBenefitAction.setEmployerContribution,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsEmployerContributionFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsEmployerContributionFocused,
-            payload: false,
-          });
-        }}
-        required
-        withAsterisk
-      />
-
-      <Flex w="100%" justify="space-between" align="center">
-        <Text size="sm" color="dark">
-          Total contribution
-        </Text>
-        <Flex justify="space-between" align="center" columnGap="sm">
-          {currencyIcon}
-          <Text size="sm" color="dark">
-            {totalContribution}
-          </Text>
-        </Flex>
-      </Flex>
-
-      <Button
-        size="sm"
-        variant="filled"
-        disabled={
-          !isValidPlanName ||
-          !isValidPlanStartDate ||
-          !isValidEmployeeContribution ||
-          !isValidEmployerContribution
-        }
-        type="button"
-      >
-        Submit
-      </Button>
- */

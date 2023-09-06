@@ -82,9 +82,9 @@ function App() {
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* create address change */}
-          <Route path="address-change" element={<PortalLayout />}>
-            <Route index element={<AddressChange />} />
+          {/* create benefit */}
+          <Route path="create-benefit" element={<PortalLayout />}>
+            <Route index element={<CreateBenefit />} />
           </Route>
 
           {/* create leave request */}

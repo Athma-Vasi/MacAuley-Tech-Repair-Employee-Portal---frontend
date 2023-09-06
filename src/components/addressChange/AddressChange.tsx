@@ -53,7 +53,7 @@ import {
 import FormReviewPage, {
   FormReviewObject,
 } from '../formReviewPage/FormReviewPage';
-import { Group } from '@mantine/core';
+import { Group, Tooltip } from '@mantine/core';
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -638,9 +638,11 @@ function AddressChange() {
   ]);
   const displaySubmitButton =
     currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION ? (
-      <Group w="100%" position="center">
-        {createdSubmitButton}
-      </Group>
+      <Tooltip label="Submit Address Change form">
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
     ) : null;
 
   const createdAddressChangeForm = (

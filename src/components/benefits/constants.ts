@@ -35,18 +35,18 @@ const PLAN_DESCRIPTION_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i;
 
 const CREATE_BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Plan details',
+    description: 'Plan Details',
     ariaLabel: 'Enter plan name, description, start date, and plan kind',
   },
 
   {
-    description: 'Plan contributions',
+    description: 'Plan Contributions',
     ariaLabel:
       'Enter currency, employer and employee contributions, and plan status',
   },
 
   {
-    description: 'Review and proceed',
+    description: 'Review and Proceed',
     ariaLabel:
       'Please review plan details and ensure accuracy of information before proceeding',
   },
