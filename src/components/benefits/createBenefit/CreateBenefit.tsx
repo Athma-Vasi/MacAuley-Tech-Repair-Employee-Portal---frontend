@@ -707,7 +707,13 @@ function CreateBenefit() {
   ]);
   const displaySubmitButton =
     currentStepperPosition === CREATE_BENEFIT_MAX_STEPPER_POSITION ? (
-      <Tooltip label="Submit Benefit form">
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Fix errors to submit form'
+            : 'Submit Benefit form'
+        }
+      >
         <Group w="100%" position="center">
           {createdSubmitButton}
         </Group>

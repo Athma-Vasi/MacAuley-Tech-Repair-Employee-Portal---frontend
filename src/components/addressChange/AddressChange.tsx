@@ -638,7 +638,13 @@ function AddressChange() {
   ]);
   const displaySubmitButton =
     currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION ? (
-      <Tooltip label="Submit Address Change form">
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Fix errors to submit form'
+            : 'Submit Address Change form'
+        }
+      >
         <Group w="100%" position="center">
           {createdSubmitButton}
         </Group>

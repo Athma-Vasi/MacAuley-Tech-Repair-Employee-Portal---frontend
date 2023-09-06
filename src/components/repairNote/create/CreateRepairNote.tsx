@@ -281,18 +281,6 @@ function CreateRepairNote() {
 
   /** ------------- begin input display ------------- */
 
-  const displaySubmitButton = (
-    <Tooltip
-      label={
-        stepsInError.size > 0
-          ? 'Please fix errors to submit repair note'
-          : 'Submit repair note'
-      }
-    >
-      <Group>{createdSubmitButton}</Group>
-    </Tooltip>
-  );
-
   const REPAIR_NOTE_REVIEW_OBJECT: FormReviewObject = {
     // customer info page
     'Customer Information': [
@@ -415,6 +403,20 @@ function CreateRepairNote() {
     />
   );
 
+  const displaySubmitButton = (
+    <Tooltip
+      label={
+        stepsInError.size > 0
+          ? 'Fix errors to submit form'
+          : 'Submit Repair Note form'
+      }
+    >
+      <Group w="100%" position="center">
+        {createdSubmitButton}
+      </Group>
+    </Tooltip>
+  );
+
   const displayRepairNoteComponentPage =
     currentStepperPosition === 0 ? (
       <RepairNoteStepCustomer
@@ -484,9 +486,7 @@ function CreateRepairNote() {
     ) : currentStepperPosition === 3 ? (
       displayReviewPage
     ) : (
-      <Group w="100%" position="center">
-        {displaySubmitButton}
-      </Group>
+      displaySubmitButton
     );
 
   const displayRepairNoteForm = (
