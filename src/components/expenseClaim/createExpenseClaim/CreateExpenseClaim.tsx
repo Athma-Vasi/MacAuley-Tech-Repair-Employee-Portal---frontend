@@ -553,7 +553,7 @@ function CreateExpenseClaim() {
       <Tooltip
         label={
           stepsInError.size > 0
-            ? 'Fix errors to submit.'
+            ? 'Please fix errors before submitting form.'
             : 'Submit expense claim form'
         }
       >

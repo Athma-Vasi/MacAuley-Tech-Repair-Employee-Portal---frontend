@@ -15,8 +15,8 @@ import {
   PHONE_NUMBER_REGEX,
 } from '../../../constants/regex';
 import {
-  returnAccessibleButtonElements,
   AccessibleErrorValidTextElements,
+  returnAccessibleButtonElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -48,6 +48,10 @@ import {
   initialCreateAnonymousRequestState,
 } from './state';
 import { AnonymousRequestKind } from './types';
+import { Group, Tooltip } from '@mantine/core';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 
 function CreateAnonymousRequest() {
   const [createAnonymousRequestState, createAnonymousRequestDispatch] =
@@ -322,7 +326,7 @@ function CreateAnonymousRequest() {
       },
       inputText: secureContactNumber,
       isValidInputText: isValidSecureContactNumber,
-      label: 'Contact number',
+      label: 'Secure Contact Number',
       onBlur: () => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setIsSecureContactNumberFocused,
@@ -374,7 +378,7 @@ function CreateAnonymousRequest() {
       },
       inputText: secureContactEmail,
       isValidInputText: isValidSecureContactEmail,
-      label: 'Contact email',
+      label: 'Secure Contact Email',
       onBlur: () => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setIsSecureContactEmailFocused,
@@ -402,7 +406,7 @@ function CreateAnonymousRequest() {
   const requestKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: ANONYMOUS_REQUEST_KINDS,
     description: 'Select the kind of request',
-    label: 'Request kind',
+    label: 'Request Kind',
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       createAnonymousRequestDispatch({
         type: createAnonymousRequestAction.setRequestKind,
@@ -456,7 +460,7 @@ function CreateAnonymousRequest() {
       },
       inputText: additionalInformation,
       isValidInputText: isValidAdditionalInformation,
-      label: 'Additional information',
+      label: 'Additional Information',
       onBlur: () => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setIsAdditionalInformationFocused,
@@ -484,7 +488,7 @@ function CreateAnonymousRequest() {
     {
       data: URGENCY_DATA,
       description: 'Select the urgency of request',
-      label: 'Request urgency',
+      label: 'Urgency',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createAnonymousRequestDispatch({
           type: createAnonymousRequestAction.setUrgency,
@@ -540,9 +544,19 @@ function CreateAnonymousRequest() {
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === CREATE_ANON_REQUEST_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === CREATE_ANON_REQUEST_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Please fix errors before submitting form'
+            : 'Submit Anonymous Request form'
+        }
+      >
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
 
   const displayAnonRequestFirstPage = (
     <FormLayoutWrapper>
@@ -561,7 +575,54 @@ function CreateAnonymousRequest() {
     </FormLayoutWrapper>
   );
 
-  const displayReviewFormPage = <h2>review page</h2>;
+  const ANONYMOUS_REQUEST_REVIEW_OBJECT: FormReviewObject = {
+    'Anonymous Request': [
+      {
+        inputName: 'Title',
+        inputValue: title,
+        isInputValueValid: isValidTitle,
+      },
+      {
+        inputName: 'Secure Contact Number',
+        inputValue: secureContactNumber,
+        isInputValueValid: isValidSecureContactNumber,
+      },
+      {
+        inputName: 'Secure Contact Email',
+        inputValue: secureContactEmail,
+        isInputValueValid: isValidSecureContactEmail,
+      },
+      {
+        inputName: 'Request Kind',
+        inputValue: requestKind,
+        isInputValueValid: true,
+      },
+    ],
+    'Request Details': [
+      {
+        inputName: 'Description',
+        inputValue: requestDescription,
+        isInputValueValid: isValidRequestDescription,
+      },
+      {
+        inputName: 'Additional Information',
+        inputValue: additionalInformation,
+        isInputValueValid: isValidAdditionalInformation,
+      },
+      {
+        inputName: 'Urgency',
+        inputValue: urgency,
+        isInputValueValid: true,
+      },
+    ],
+  };
+
+  const displayReviewFormPage = (
+    <FormReviewPage
+      formReviewObject={ANONYMOUS_REQUEST_REVIEW_OBJECT}
+      formName="Anonymous Request"
+    />
+  );
 
   const displayCreateAnonymousRequestForm =
     currentStepperPosition === 0
@@ -602,347 +663,3 @@ function CreateAnonymousRequest() {
 }
 
 export { CreateAnonymousRequest };
-
-/**
- * const titleTextInput = (
-    <TextInput
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Title"
-      aria-required
-      aria-describedby={
-        isValidTitle ? 'title-input-note-valid' : 'title-input-note-error'
-      }
-      description={isValidTitle ? titleInputValidText : titleInputErrorText}
-      placeholder="Enter title of request"
-      autoComplete="off"
-      aria-invalid={isValidTitle ? false : true}
-      value={title}
-      icon={
-        isValidTitle ? <FontAwesomeIcon icon={faCheck} color="green" /> : null
-      }
-      error={!isValidTitle && title !== ''}
-      onChange={(event) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setTitle,
-          payload: event.currentTarget.value,
-        });
-      }}
-      onFocus={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsTitleFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsTitleFocused,
-          payload: false,
-        });
-      }}
-      minLength={2}
-      maxLength={75}
-      withAsterisk
-      required
-    />
-  );
-
- */
-
-/**
- * const secureContactNumberTextInput = (
-    <TextInput
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Contact number"
-      aria-required
-      aria-describedby={
-        isValidSecureContactNumber
-          ? 'secure-contact-number-input-note-valid'
-          : 'secure-contact-number-input-note-error'
-      }
-      description={
-        isValidSecureContactNumber
-          ? secureContactNumberInputValidText
-          : secureContactNumberInputErrorText
-      }
-      placeholder="Enter secure contact number"
-      autoComplete="off"
-      aria-invalid={isValidSecureContactNumber ? false : true}
-      value={secureContactNumber}
-      onKeyDown={(event) => {
-        if (event.key === 'Backspace') {
-          if (secureContactNumber.length === 14) {
-            createAnonymousRequestDispatch({
-              type: createAnonymousRequestAction.setSecureContactNumber,
-              payload: secureContactNumber.slice(0, -1) as PhoneNumber | string,
-            });
-          } else if (secureContactNumber.length === 9) {
-            createAnonymousRequestDispatch({
-              type: createAnonymousRequestAction.setSecureContactNumber,
-              payload: secureContactNumber.slice(0, -1) as PhoneNumber | string,
-            });
-          }
-        }
-      }}
-      rightSection={
-        <Tooltip label="Reset value to +(1)">
-          <Button
-            type="button"
-            size="xs"
-            variant="white"
-            aria-label="Reset secure contact number value to +(1)"
-            mr="md"
-          >
-            <FontAwesomeIcon
-              icon={faRefresh}
-              cursor="pointer"
-              color="gray"
-              onClick={() => {
-                createAnonymousRequestDispatch({
-                  type: createAnonymousRequestAction.setSecureContactNumber,
-                  payload: '+(1)' as PhoneNumber | string,
-                });
-              }}
-            />
-          </Button>
-        </Tooltip>
-      }
-      icon={
-        isValidSecureContactNumber ? (
-          <FontAwesomeIcon icon={faCheck} color="green" />
-        ) : null
-      }
-      error={!isValidSecureContactNumber && secureContactNumber !== '+(1)'}
-      onChange={(event) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setSecureContactNumber,
-          payload: event.currentTarget.value,
-        });
-      }}
-      onFocus={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsSecureContactNumberFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsSecureContactNumberFocused,
-          payload: false,
-        });
-      }}
-      maxLength={18}
-      withAsterisk
-      required
-    />
-  );
- */
-
-/**
- * const secureContactEmailTextInput = (
-    <TextInput
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Contact email"
-      aria-required
-      aria-describedby={
-        isValidSecureContactEmail
-          ? 'secure-contact-email-input-note-valid'
-          : 'secure-contact-email-input-note-error'
-      }
-      description={
-        isValidSecureContactEmail
-          ? secureContactEmailInputValidText
-          : secureContactEmailInputErrorText
-      }
-      placeholder="Enter secure contact email"
-      autoComplete="off"
-      aria-invalid={isValidSecureContactEmail ? false : true}
-      value={secureContactEmail}
-      icon={
-        isValidSecureContactEmail ? (
-          <FontAwesomeIcon icon={faCheck} color="green" />
-        ) : null
-      }
-      error={!isValidSecureContactEmail && secureContactEmail !== ''}
-      onChange={(event) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setSecureContactEmail,
-          payload: event.currentTarget.value,
-        });
-      }}
-      onFocus={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsSecureContactEmailFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsSecureContactEmailFocused,
-          payload: false,
-        });
-      }}
-      withAsterisk
-      required
-    />
-  );
- */
-
-/**
- * const requestDescriptionTextareaInput = (
-    <Textarea
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Description"
-      aria-required
-      aria-describedby={
-        isValidRequestDescription
-          ? 'request-description-input-note-valid'
-          : 'request-description-input-note-error'
-      }
-      description={
-        isValidRequestDescription
-          ? requestDescriptionInputValidText
-          : requestDescriptionInputErrorText
-      }
-      placeholder="Enter description of request"
-      autoComplete="off"
-      aria-invalid={isValidRequestDescription ? false : true}
-      value={requestDescription}
-      icon={
-        isValidRequestDescription ? (
-          <FontAwesomeIcon icon={faCheck} color="green" />
-        ) : null
-      }
-      error={!isValidRequestDescription && requestDescription !== ''}
-      onChange={(event) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setRequestDescription,
-          payload: event.currentTarget.value,
-        });
-      }}
-      onFocus={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsRequestDescriptionFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsRequestDescriptionFocused,
-          payload: false,
-        });
-      }}
-      minLength={2}
-      maxLength={2000}
-      autosize
-      minRows={3}
-      maxRows={5}
-      withAsterisk
-      required
-    />
-  );
- */
-
-/**
- * const additionalInformationTextareaInput = (
-    <Textarea
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Additional information"
-      aria-required
-      aria-describedby={
-        isValidAdditionalInformation
-          ? 'additional-information-input-note-valid'
-          : 'additional-information-input-note-error'
-      }
-      description={
-        isValidAdditionalInformation
-          ? additionalInformationInputValidText
-          : additionalInformationInputErrorText
-      }
-      placeholder="Enter any other relevant additional information"
-      autoComplete="off"
-      aria-invalid={isValidAdditionalInformation ? false : true}
-      value={additionalInformation}
-      icon={
-        isValidAdditionalInformation ? (
-          <FontAwesomeIcon icon={faCheck} color="green" />
-        ) : null
-      }
-      error={!isValidAdditionalInformation && additionalInformation !== ''}
-      onChange={(event) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setAdditionalInformation,
-          payload: event.currentTarget.value,
-        });
-      }}
-      onFocus={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsAdditionalInformationFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsAdditionalInformationFocused,
-          payload: false,
-        });
-      }}
-      minLength={2}
-      maxLength={2000}
-      autosize
-      minRows={3}
-      maxRows={5}
-      withAsterisk
-      required
-    />
-  );
- */
-
-/**
- * const requestKindSelectInput = (
-    <NativeSelect
-      size="sm"
-      data={ANONYMOUS_REQUEST_KINDS}
-      label="Request kind"
-      description="Select the kind of request"
-      value={requestKind}
-      onChange={(event) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setRequestKind,
-          payload: event.currentTarget.value as AnonymousRequestKind,
-        });
-      }}
-      withAsterisk
-      required
-    />
-  );
- */
-
-/**
- * const requestUrgencySelectInput = (
-    <NativeSelect
-      size="sm"
-      data={URGENCY_DATA}
-      label="Request urgency"
-      description="Select the urgency of request"
-      value={urgency}
-      onChange={(event) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setUrgency,
-          payload: event.currentTarget.value as Urgency,
-        });
-      }}
-      withAsterisk
-      required
-    />
-  );
- */

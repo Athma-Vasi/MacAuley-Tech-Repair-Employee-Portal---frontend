@@ -5,18 +5,18 @@ import { DescriptionObjectsArray } from '../wrappers';
 
 const CREATE_ANON_REQUEST_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Anonymous request',
+    description: 'Anonymous Request',
     ariaLabel:
       'Enter title, (optional) secure contact number, (required) secure contact email and request kind',
   },
 
   {
-    description: 'Request details',
+    description: 'Request Details',
     ariaLabel: 'Enter request description, additional information, and urgency',
   },
 
   {
-    description: 'Review and proceed',
+    description: 'Review and Proceed',
     ariaLabel: 'Review and proceed',
   },
 ];

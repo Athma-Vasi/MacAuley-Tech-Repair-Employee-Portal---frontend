@@ -82,9 +82,9 @@ function App() {
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* expense claim */}
-          <Route path="expense-claim" element={<PortalLayout />}>
-            <Route index element={<CreateExpenseClaim />} />
+          {/* anonymous request */}
+          <Route path="anonymous-request" element={<PortalLayout />}>
+            <Route index element={<CreateAnonymousRequest />} />
           </Route>
 
           {/* create leave request */}
