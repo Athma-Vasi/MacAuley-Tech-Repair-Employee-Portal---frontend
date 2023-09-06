@@ -1,12 +1,18 @@
 import { ChangeEvent, useEffect } from 'react';
-import { RepairNoteStepPartProps } from './types';
+
 import {
   DATE_NEAR_PAST_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
   NOTE_TEXT_REGEX,
   SERIAL_ID_REGEX,
 } from '../../../../constants/regex';
+import {
+  AccessibleErrorValidTextElements,
+  returnAccessibleDateTimeElements,
+  returnAccessibleTextAreaInputElements,
+  returnAccessibleTextInputElements,
+} from '../../../../jsxCreators';
 import {
   filterFieldsFromObject,
   logState,
@@ -16,17 +22,12 @@ import {
   returnSerialIdValidationText,
 } from '../../../../utils';
 import {
-  returnAccessibleDateTimeElements,
-  AccessibleErrorValidTextElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
-import {
   AccessibleDateTimeInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
 } from '../../../wrappers';
+import { RepairNoteStepPartProps } from './types';
 
 function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
   const {
@@ -175,7 +176,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
 
   const dateReceivedInvalidText =
     new Date(dateReceived).getTime() > new Date().getTime()
-      ? 'Date received must be in the past'
+      ? 'Date received must be in the past. '
       : '';
   const [dateReceivedInputErrorText, dateReceivedInputValidText] =
     AccessibleErrorValidTextElements({
@@ -228,7 +229,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     },
     inputText: partName,
     isValidInputText: isValidPartName,
-    label: 'Part name',
+    label: 'Part Name',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsPartNameFocused,
@@ -260,7 +261,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     },
     inputText: partSerialId,
     isValidInputText: isValidPartSerialId,
-    label: 'Part serial Id',
+    label: 'Part Serial Id',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsPartSerialIdFocused,
@@ -292,7 +293,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     },
     inputText: dateReceived,
     isValidInputText: isValidDateReceived,
-    label: 'Date received',
+    label: 'Date Received',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsDateReceivedFocused,
@@ -326,7 +327,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     },
     inputText: descriptionOfIssue,
     isValidInputText: isValidDescriptionOfIssue,
-    label: 'Description of issue',
+    label: 'Description of Issue',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsDescriptionOfIssueFocused,
@@ -359,7 +360,7 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
       },
       inputText: initialInspectionNotes,
       isValidInputText: isValidInitialInspectionNotes,
-      label: 'Initial inspection notes',
+      label: 'Initial Inspection Notes',
       onBlur: () => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setIsInitialInspectionNotesFocused,

@@ -5,7 +5,15 @@ import {
   faPoundSign,
   faYen,
 } from '@fortawesome/free-solid-svg-icons';
+import { useMantineTheme } from '@mantine/core';
 import { ChangeEvent, useEffect } from 'react';
+import {
+  TbCurrencyDollar,
+  TbCurrencyEuro,
+  TbCurrencyPound,
+  TbCurrencyRenminbi,
+  TbCurrencyYen,
+} from 'react-icons/tb';
 
 import { URGENCY_DATA } from '../../../../constants/data';
 import {
@@ -13,12 +21,13 @@ import {
   MONEY_REGEX,
   NOTE_TEXT_AREA_REGEX,
 } from '../../../../constants/regex';
+import { useGlobalState } from '../../../../hooks';
 import {
+  AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -48,15 +57,6 @@ import {
 } from '../../constants';
 import { PartsNeeded, RequiredRepairs } from '../../types';
 import { RepairNoteStepDetailsProps } from './types';
-import { useMantineTheme } from '@mantine/core';
-import { useGlobalState } from '../../../../hooks';
-import {
-  TbCurrencyRenminbi,
-  TbCurrencyPound,
-  TbCurrencyEuro,
-  TbCurrencyYen,
-  TbCurrencyDollar,
-} from 'react-icons/tb';
 
 function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
   const {
@@ -271,7 +271,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
           payload: event as RequiredRepairs[],
         });
       },
-      label: 'Required repairs',
+      label: 'Required Repairs',
       semanticName: 'required repairs',
       value: requiredRepairs,
       required: true,
@@ -291,7 +291,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
           payload: event as PartsNeeded[],
         });
       },
-      label: 'Parts needed',
+      label: 'Parts Needed',
       semanticName: 'parts needed',
       value: partsNeeded,
       required: true,
@@ -306,7 +306,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       },
       inputText: partsNeededModels,
       isValidInputText: isValidPartsNeededModels,
-      label: 'Parts needed models',
+      label: 'Parts Needed Models',
       onBlur: () => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setIsPartsNeededModelsFocused,
@@ -345,7 +345,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
         });
       },
       semanticName: 'part under warranty',
-      label: 'Part under warranty',
+      label: 'Part Under Warranty',
       required: true,
     };
 
@@ -368,7 +368,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     {
       data: CURRENCY_DATA,
       description: 'Select the currency for estimated repair cost.',
-      label: 'Estimated repair cost currency',
+      label: 'Estimated Repair Cost Currency',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setEstimatedRepairCostCurrency,
@@ -388,7 +388,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       },
       inputText: estimatedRepairCost,
       isValidInputText: isValidEstimatedRepairCost,
-      label: 'Estimated repair cost',
+      label: 'Estimated Repair Cost',
       onBlur: () => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setIsEstimatedRepairCostFocused,
@@ -425,7 +425,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       },
       inputText: estimatedCompletionDate,
       isValidInputText: isValidEstimatedCompletionDate,
-      label: 'Estimated completion date',
+      label: 'Estimated Completion Date',
       onBlur: () => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setIsEstimatedCompletionDateFocused,
@@ -456,7 +456,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     {
       data: URGENCY_DATA,
       description: 'Select the urgency of the repair.',
-      label: 'Repair priority',
+      label: 'Repair Priority',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createRepairNoteDispatch({
           type: createRepairNoteAction.setRepairPriority,

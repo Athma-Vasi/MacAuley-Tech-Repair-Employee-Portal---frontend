@@ -91,6 +91,7 @@ type AccessibleCheckboxGroupInputCreatorInfo = {
     value: string;
     label: string;
   }>;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   widthCheckbox?: MantineNumberSize;
 };
 
@@ -117,15 +118,16 @@ function CheckboxGroupInputsWrapper({
     value,
     required = false,
     ref = null,
+    size = 'sm',
     withAsterisk = required,
     widthCheckbox = '100%',
   } = creatorInfoObject;
 
-  const checkboxInputSize = 'sm';
+  const inputWidth = width < 480 ? 330 : 450;
 
   const createdCheckboxGroupInputs = (
     <Checkbox.Group
-      size={checkboxInputSize}
+      size={size}
       label={label}
       key={key}
       description={
@@ -140,7 +142,7 @@ function CheckboxGroupInputsWrapper({
       w={widthCheckbox}
     >
       <Flex
-        direction="column"
+        // direction="column"
         align="flex-start"
         justify="space-between"
         p={padding}
@@ -154,6 +156,7 @@ function CheckboxGroupInputsWrapper({
           return (
             <Group position="center" key={`${key}-${idx}${value}-${label}`}>
               <Checkbox
+                w={inputWidth}
                 name={value}
                 value={value}
                 label={label}

@@ -86,7 +86,7 @@ function FormReviewPage({
 
         const displayValue = (
           <Spoiler
-            maxHeight={129}
+            maxHeight={131}
             showLabel={showLabelButton}
             hideLabel={hideLabelButton}
           >
@@ -99,9 +99,10 @@ function FormReviewPage({
             columns={10}
             key={`form-review-${index}`}
             style={{
-              borderBottom: isInputValueValid
-                ? borderColorGray
-                : borderColorRed,
+              // borderBottom: isInputValueValid
+              //   ? borderColorGray
+              //   : borderColorRed,
+              borderBottom: borderColorGray,
             }}
             gutter={rowGap}
             w="100%"
@@ -135,9 +136,9 @@ function FormReviewPage({
     <Stack
       w="100%"
       p={padding}
-      h="62vh"
+      // h="62vh"
       style={{
-        overflowY: 'scroll',
+        // overflowY: 'scroll',
         border: borderColorGray,
         borderRadius: 4,
       }}

@@ -11,7 +11,7 @@ import {
   CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
 } from './constants';
 import { RepairNoteStepCustomer } from './repairNoteStepCustomer/RepairNoteStepCustomer';
-import { logState, urlBuilder } from '../../../utils';
+import { logState, replaceLastCommaWithAnd, urlBuilder } from '../../../utils';
 import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
 import { RepairNoteStepDetail } from './repairNoteStepDetails/RepairNoteStepDetails';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
@@ -25,6 +25,10 @@ import {
 import { useAuth, useGlobalState } from '../../../hooks';
 import { ResourceRequestServerResponse } from '../../../types';
 import { InvalidTokenError } from 'jwt-decode';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
+import { Form } from 'react-router-dom';
 
 function CreateRepairNote() {
   /** ------------- begin hooks ------------- */
@@ -289,6 +293,128 @@ function CreateRepairNote() {
     </Tooltip>
   );
 
+  const REPAIR_NOTE_REVIEW_OBJECT: FormReviewObject = {
+    // customer info page
+    'Customer Information': [
+      {
+        inputName: 'Name',
+        inputValue: customerName,
+        isInputValueValid: isValidCustomerName,
+      },
+      {
+        inputName: 'Phone Number',
+        inputValue: customerPhone,
+        isInputValueValid: isValidCustomerPhone,
+      },
+      {
+        inputName: 'Email',
+        inputValue: customerEmail,
+        isInputValueValid: isValidCustomerEmail,
+      },
+      {
+        inputName: 'Address Line',
+        inputValue: customerAddressLine,
+        isInputValueValid: isValidCustomerAddressLine,
+      },
+      {
+        inputName: 'City',
+        inputValue: customerCity,
+        isInputValueValid: isValidCustomerCity,
+      },
+      {
+        inputName: customerCountry === 'United States' ? 'State' : 'Province',
+        inputValue:
+          customerCountry === 'United States'
+            ? customerState
+            : customerProvince,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Postal Code',
+        inputValue: customerPostalCode,
+        isInputValueValid: isValidCustomerPostalCode,
+      },
+    ],
+    // repair item info page
+    'Repair Item Information': [
+      {
+        inputName: 'Part Name',
+        inputValue: partName,
+        isInputValueValid: isValidPartName,
+      },
+      {
+        inputName: 'Part Serial ID',
+        inputValue: partSerialId,
+        isInputValueValid: isValidPartSerialId,
+      },
+      {
+        inputName: 'Date Received',
+        inputValue: dateReceived,
+        isInputValueValid: isValidDateReceived,
+      },
+      {
+        inputName: 'Description of Issue',
+        inputValue: descriptionOfIssue,
+        isInputValueValid: isValidDescriptionOfIssue,
+      },
+      {
+        inputName: 'Initial Inspection Notes',
+        inputValue: initialInspectionNotes,
+        isInputValueValid: isValidInitialInspectionNotes,
+      },
+    ],
+    // repair details page
+    'Repair Information': [
+      {
+        inputName: 'Required Repairs',
+        inputValue: replaceLastCommaWithAnd(requiredRepairs.join(', ')),
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Parts Needed',
+        inputValue: replaceLastCommaWithAnd(partsNeeded.join(', ')),
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Parts Needed Models',
+        inputValue: partsNeededModels,
+        isInputValueValid: isValidPartsNeededModels,
+      },
+      {
+        inputName: 'Part Under Warranty',
+        inputValue: partUnderWarranty ? 'Yes' : 'No',
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Estimated Repair Cost',
+        inputValue: estimatedRepairCost,
+        isInputValueValid: isValidEstimatedRepairCost,
+      },
+      {
+        inputName: 'Estimated Repair Cost Currency',
+        inputValue: estimatedRepairCostCurrency,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Estimated Completion Date',
+        inputValue: estimatedCompletionDate,
+        isInputValueValid: isValidEstimatedCompletionDate,
+      },
+      {
+        inputName: 'Repair Priority',
+        inputValue: repairPriority,
+        isInputValueValid: true,
+      },
+    ],
+  };
+
+  const displayReviewPage = (
+    <FormReviewPage
+      formReviewObject={REPAIR_NOTE_REVIEW_OBJECT}
+      formName="Repair Note"
+    />
+  );
+
   const displayRepairNoteComponentPage =
     currentStepperPosition === 0 ? (
       <RepairNoteStepCustomer
@@ -356,9 +482,9 @@ function CreateRepairNote() {
         createRepairNoteDispatch={createRepairNoteDispatch}
       />
     ) : currentStepperPosition === 3 ? (
-      <Text>Review</Text>
+      displayReviewPage
     ) : (
-      <Group w="100%" position="right">
+      <Group w="100%" position="center">
         {displaySubmitButton}
       </Group>
     );

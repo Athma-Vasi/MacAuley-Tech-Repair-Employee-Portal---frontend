@@ -486,7 +486,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     },
     inputText: customerAddressLine,
     isValidInputText: isValidCustomerAddressLine,
-    label: 'Address line',
+    label: 'Address Line',
     onBlur: () => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setIsCustomerAddressLineFocused,
@@ -571,7 +571,7 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
     },
     inputText: customerPostalCode,
     isValidInputText: isValidCustomerPostalCode,
-    label: customerCountry === 'Canada' ? 'Postal code' : 'Zip code',
+    label: customerCountry === 'Canada' ? 'Postal Code' : 'Zip Code',
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       createRepairNoteDispatch({
         type: createRepairNoteAction.setCustomerPostalCode,
