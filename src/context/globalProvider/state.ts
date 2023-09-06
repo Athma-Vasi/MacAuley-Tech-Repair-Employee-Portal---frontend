@@ -49,7 +49,6 @@ const initialGlobalState: GlobalState = {
   height: 0,
   rowGap: 'xs',
   padding: 'xs',
-  // colorScheme: 'light',
   scrollXDirection: '',
   scrollYDirection: '',
 

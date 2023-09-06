@@ -1,4 +1,4 @@
-import { Text, Title } from '@mantine/core';
+import { Group, Stack, Text, Title } from '@mantine/core';
 import { ChangeEvent, KeyboardEvent, useEffect } from 'react';
 
 import { PROVINCES, STATES_US } from '../../../../constants/data';
@@ -661,7 +661,9 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
 
   const displayRepairNoteStepCustomer = (
     <FormLayoutWrapper>
-      <TextWrapper creatorInfoObj={{}}>Customer information</TextWrapper>
+      <Group w="100%">
+        <Title order={4}>Customer Information</Title>
+      </Group>
       {createdCustomerNameInput}
       {createdCustomerPhoneInput}
       {createdCustomerEmailInput}

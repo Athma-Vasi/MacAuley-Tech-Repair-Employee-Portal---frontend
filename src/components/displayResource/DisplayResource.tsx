@@ -25,6 +25,7 @@ import {
   DisplayResourceState,
   UpdateRequestStatusInput,
 } from './types';
+import { PROPERTY_DESCRIPTOR } from '../../constants/data';
 
 function DisplayResource<Doc>({
   style = {},
@@ -158,22 +159,22 @@ function DisplayResource<Doc>({
                       [key, value]
                     ) => {
                       key === fileUploadFieldName
-                        ? // ? Object.defineProperty(objTuples[0], key, {
-                          //     value: structuredClone(value),
-                          //     enumerable: true,
-                          //   })
-                          addFieldsToObject({
-                            object: objTuples[0],
-                            fieldValuesTuples: [[key, structuredClone(value)]],
+                        ? Object.defineProperty(objTuples[0], key, {
+                            value: structuredClone(value),
+                            enumerable: true,
                           })
-                        : // : Object.defineProperty(objTuples[1], key, {
-                          //     value: structuredClone(value),
-                          //     enumerable: true,
-                          //   });
-                          addFieldsToObject({
-                            object: objTuples[1],
-                            fieldValuesTuples: [[key, structuredClone(value)]],
+                        : // addFieldsToObject({
+                          //   object: objTuples[0],
+                          //   fieldValuesTuples: [[key, structuredClone(value)]],
+                          // })
+                          Object.defineProperty(objTuples[1], key, {
+                            value: structuredClone(value),
+                            enumerable: true,
                           });
+                      // addFieldsToObject({
+                      //   object: objTuples[1],
+                      //   fieldValuesTuples: [[key, structuredClone(value)]],
+                      // });
 
                       return objTuples;
                     },
@@ -391,9 +392,13 @@ function DisplayResource<Doc>({
                   );
                   // add the filtered array to the resource obj
                   const clone = structuredClone(obj);
-                  addFieldsToObject({
-                    object: clone,
-                    fieldValuesTuples: [[key, filteredValue]],
+                  // addFieldsToObject({
+                  //   object: clone,
+                  //   fieldValuesTuples: [[key, filteredValue]],
+                  // });
+                  Object.defineProperty(clone, key, {
+                    ...PROPERTY_DESCRIPTOR,
+                    value: filteredValue,
                   });
                   acc = clone;
                 }
@@ -402,9 +407,13 @@ function DisplayResource<Doc>({
               else {
                 if (value === deleteResource.fileUploadId) {
                   const clone = structuredClone(obj);
-                  addFieldsToObject({
-                    object: clone,
-                    fieldValuesTuples: [[key, '']],
+                  // addFieldsToObject({
+                  //   object: clone,
+                  //   fieldValuesTuples: [[key, '']],
+                  // });
+                  Object.defineProperty(clone, key, {
+                    ...PROPERTY_DESCRIPTOR,
+                    value: '',
                   });
                   acc = clone;
                 }
@@ -423,7 +432,9 @@ function DisplayResource<Doc>({
       }
 
       const { _id } = associatedResource;
-      const filteredAssociatedResource = filterFieldsFromObject({
+      const filteredAssociatedResource = filterFieldsFromObject<
+        Record<string, any>
+      >({
         object: associatedResource,
         // delete was added at front end
         // fileUploads does not belong in the resource schema, and is added to response by server

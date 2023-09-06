@@ -11,7 +11,6 @@ import { AxiosRequestConfig } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import { axiosInstance } from '../../api/axios';
-import { COLORS } from '../../constants/data';
 import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
 import { ColorSchemeSwitch } from '../colorSchemeSwitch/ColorSchemeSwitch';
@@ -63,13 +62,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   }
 
   return (
-    <Header
-      height={{ base: 50, md: 70 }}
-      p="md"
-      // style={{
-      //   boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-      // }}
-    >
+    <Header height={{ base: 50, md: 70 }} p="md">
       <Flex
         justify="space-between"
         align="center"

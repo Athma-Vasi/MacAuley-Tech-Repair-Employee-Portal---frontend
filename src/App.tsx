@@ -81,8 +81,16 @@ function App() {
           <Route path="register" element={<PortalLayout />}>
             <Route index element={<Register />} />
           </Route>
-          <Route path="survey-builder" element={<SurveyBuilder />} />
-          <Route path="expense-claim" element={<CreateExpenseClaim />} />
+          {/* TEST ROUTES */}
+          {/* repair note */}
+          <Route path="repair-note" element={<PortalLayout />}>
+            <Route index element={<CreateRepairNote />} />
+          </Route>
+
+          {/* create leave request */}
+          <Route path="leave-request" element={<PortalLayout />}>
+            <Route index element={<CreateLeaveRequest />} />
+          </Route>
         </Route>
 
         {/* these are protected routes */}

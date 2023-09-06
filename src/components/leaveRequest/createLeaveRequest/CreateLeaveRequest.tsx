@@ -17,6 +17,7 @@ import {
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
+  filterFieldsFromObject,
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
 } from '../../../utils';
@@ -43,7 +44,9 @@ import {
 } from './state';
 import { useMantineTheme } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
-import FormReviewPage from '../../formReviewPage/FormReviewPage';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import { CreateLeaveRequestState } from './types';
 
 function CreateLeaveRequest() {
@@ -523,8 +526,67 @@ function CreateLeaveRequest() {
     </FormLayoutWrapper>
   );
 
+  const filteredLeaveRequestState =
+    filterFieldsFromObject<CreateLeaveRequestState>({
+      object: leaveRequestState,
+      fieldsToFilter: [
+        'isSubmitting',
+        'isSuccessful',
+        'isLoading',
+        'isError',
+        'errorMessage',
+        'submitMessage',
+        'successMessage',
+        'loadingMessage',
+        'triggerFormSubmit',
+        'currentStepperPosition',
+        'stepsInError',
+      ],
+    });
+
+  const LEAVE_REQUEST_REVIEW_OBJECT: FormReviewObject = {
+    'Leave request details': [
+      {
+        inputName: 'Leave start date',
+        inputValue: startDate,
+        isInputValueValid: isValidStartDate,
+      },
+      {
+        inputName: 'Leave end date',
+        inputValue: endDate,
+        isInputValueValid: isValidEndDate,
+      },
+      {
+        inputName: 'Reason for leave',
+        inputValue: reasonForLeave,
+      },
+      {
+        inputName: 'Delegated to employee',
+        inputValue: delegatedToEmployee,
+        isInputValueValid: isValidDelegatedToEmployee,
+      },
+      {
+        inputName: 'Delegated responsibilities',
+        inputValue: delegatedResponsibilities,
+        isInputValueValid: isValidDelegatedResponsibilities,
+      },
+      {
+        inputName: 'Additional comments',
+        inputValue: additionalComments,
+        isInputValueValid: isValidAdditionalComments,
+      },
+      {
+        inputName: 'Acknowledgement',
+        isInputValueValid: isAcknowledged,
+      },
+    ],
+  };
+
   const displayReviewPage = (
-    <FormReviewPage<CreateLeaveRequestState> formState={leaveRequestState} />
+    <FormReviewPage
+      formReviewObject={LEAVE_REQUEST_REVIEW_OBJECT}
+      formName="Leave request"
+    />
   );
 
   const displayCreateLeaveRequestForm =
