@@ -82,9 +82,9 @@ function App() {
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* repair note */}
-          <Route path="repair-note" element={<PortalLayout />}>
-            <Route index element={<CreateRepairNote />} />
+          {/* create address change */}
+          <Route path="address-change" element={<PortalLayout />}>
+            <Route index element={<AddressChange />} />
           </Route>
 
           {/* create leave request */}

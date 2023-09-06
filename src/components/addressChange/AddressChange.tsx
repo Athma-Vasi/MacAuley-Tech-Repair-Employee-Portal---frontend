@@ -50,6 +50,10 @@ import {
   addressChangeReducer,
   initialAddressChangeState,
 } from './state';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../formReviewPage/FormReviewPage';
+import { Group } from '@mantine/core';
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -329,7 +333,7 @@ function AddressChange() {
     },
     inputText: addressLine,
     isValidInputText: isValidAddressLine,
-    label: 'Address line',
+    label: 'Address Line',
     onBlur: () => {
       addressChangeDispatch({
         type: addressChangeAction.setIsAddressLineFocused,
@@ -396,7 +400,7 @@ function AddressChange() {
     },
     inputText: postalCode,
     isValidInputText: isValidPostalCode,
-    label: country === 'Canada' ? 'Postal code' : 'Zip code',
+    label: country === 'Canada' ? 'Postal Code' : 'Zip Code',
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setPostalCode,
@@ -463,7 +467,7 @@ function AddressChange() {
       },
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,
-      label: 'Personal contact number',
+      label: 'Personal Contact Number',
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         addressChangeDispatch({
           type: addressChangeAction.setContactNumber,
@@ -532,6 +536,21 @@ function AddressChange() {
       required: true,
     };
 
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Submit',
+    semanticDescription: 'address change form submit button',
+    semanticName: 'submit button',
+    leftIcon: <TbUpload />,
+    buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    // ensures form submit happens only once
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+  };
+
   // following are the created accessible input elements
   const [
     createdAddressLineTextInput,
@@ -559,7 +578,52 @@ function AddressChange() {
       acknowledgementCheckboxCreatorInfo,
     ]);
 
-  const displayAddressChangeReviewPage = <h2>Review</h2>;
+  const ADDRESS_CHANGE_REVIEW_OBJECT: FormReviewObject = {
+    'Contact Details': [
+      {
+        inputName: 'Personal Contact Number',
+        inputValue: contactNumber,
+        isInputValueValid: isValidContactNumber,
+      },
+      {
+        inputName: 'Country',
+        inputValue: country,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Address Line',
+        inputValue: addressLine,
+        isInputValueValid: isValidAddressLine,
+      },
+      {
+        inputName: 'City',
+        inputValue: city,
+        isInputValueValid: isValidCity,
+      },
+      {
+        inputName: country === 'Canada' ? 'Province' : 'State',
+        inputValue: country === 'Canada' ? province : state,
+        isInputValueValid: true,
+      },
+      {
+        inputName: country === 'Canada' ? 'Postal Code' : 'Zip Code',
+        inputValue: postalCode,
+        isInputValueValid: isValidPostalCode,
+      },
+      {
+        inputName: 'Acknowledgement',
+        inputValue: isAcknowledged ? 'Yes' : 'No',
+        isInputValueValid: isAcknowledged,
+      },
+    ],
+  };
+
+  const displayAddressChangeReviewPage = (
+    <FormReviewPage
+      formReviewObject={ADDRESS_CHANGE_REVIEW_OBJECT}
+      formName="Address Change"
+    />
+  );
 
   useEffect(() => {
     async function addressChangeFormSubmit() {}
@@ -569,28 +633,15 @@ function AddressChange() {
     }
   }, [triggerFormSubmit]);
 
-  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'address change form submit button',
-    semanticName: 'submit button',
-    leftIcon: <TbUpload />,
-    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      addressChangeDispatch({
-        type: addressChangeAction.setTriggerFormSubmit,
-        payload: true,
-      });
-    },
-    // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
-  };
-
   const [createdSubmitButton] = returnAccessibleButtonElements([
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION ? (
+      <Group w="100%" position="center">
+        {createdSubmitButton}
+      </Group>
+    ) : null;
 
   const createdAddressChangeForm = (
     <FormLayoutWrapper>
@@ -629,366 +680,3 @@ function AddressChange() {
 }
 
 export { AddressChange };
-
-/**
- * JUST IN CASE
- * const selectCanadianPostalCodeInput = (
-    <TextInput
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Postal code"
-      placeholder="Enter Canadian postal code"
-      autoComplete="off"
-      aria-required
-      aria-describedby={
-        isValidPostalCode
-          ? 'postal-code-input-note-valid'
-          : 'postal-code-input-note-error'
-      }
-      aria-invalid={isValidPostalCode ? false : true}
-      icon={
-        isValidPostalCode ? (
-          <FontAwesomeIcon icon={faCheck} color="green" />
-        ) : null
-      }
-      onKeyDown={(event) => {
-        if (event.key === 'Backspace' && postalCode.length === 4) {
-          addressChangeDispatch({
-            type: addressChangeAction.setPostalCode,
-            payload: postalCode.slice(0, 3),
-          });
-        }
-      }}
-      value={postalCode}
-      error={!isValidPostalCode && postalCode !== ''}
-      description={
-        isValidPostalCode ? postalCodeInputValidText : postalCodeInputErrorText
-      }
-      onChange={(event) => {
-        addressChangeDispatch({
-          type: addressChangeAction.setPostalCode,
-          payload: event.currentTarget.value.toUpperCase(),
-        });
-      }}
-      onFocus={() => {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsPostalCodeFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsPostalCodeFocused,
-          payload: false,
-        });
-      }}
-      withAsterisk
-      required
-      maxLength={7}
-    />
-  );
-
-  const selectUSPostalCodeInput = (
-    <TextInput
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Postal code"
-      placeholder="Enter US postal code"
-      autoComplete="off"
-      aria-required
-      aria-describedby={
-        isValidPostalCode
-          ? 'postal-code-input-note-valid'
-          : 'postal-code-input-note-error'
-      }
-      aria-invalid={isValidPostalCode ? false : true}
-      icon={
-        isValidPostalCode ? (
-          <FontAwesomeIcon icon={faCheck} color="green" />
-        ) : null
-      }
-      value={postalCode}
-      error={!isValidPostalCode && postalCode !== ''}
-      description={
-        isValidPostalCode ? postalCodeInputValidText : postalCodeInputErrorText
-      }
-      onChange={(event) => {
-        addressChangeDispatch({
-          type: addressChangeAction.setPostalCode,
-          payload: event.currentTarget.value,
-        });
-      }}
-      onFocus={() => {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsPostalCodeFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsPostalCodeFocused,
-          payload: false,
-        });
-      }}
-      onKeyDown={(event) => {
-        if (event.key === 'Backspace' && postalCode.length === 7) {
-          addressChangeDispatch({
-            type: addressChangeAction.setPostalCode,
-            payload: postalCode.slice(0, 6),
-          });
-        }
-      }}
-      withAsterisk
-      required
-      minLength={5}
-      maxLength={10}
-    />
-  );
- */
-
-/**
-  * contact number
-  * <TextInput
-          size="sm"
-          w="100%"
-          color="dark"
-          label="Personal contact number"
-          aria-required
-          aria-describedby={
-            isValidContactNumber
-              ? 'contact-number-input-note-valid'
-              : 'contact-number-input-note-error'
-          }
-          description={
-            isValidContactNumber
-              ? contactNumberInputValidText
-              : contactNumberInputErrorText
-          }
-          placeholder="Enter contact number"
-          autoComplete="off"
-          aria-invalid={isValidContactNumber ? false : true}
-          value={contactNumber}
-          onKeyDown={(event) => {
-            if (event.key === 'Backspace') {
-              if (contactNumber.length === 14) {
-                addressChangeDispatch({
-                  type: addressChangeAction.setContactNumber,
-                  payload: contactNumber.slice(0, -1),
-                });
-              } else if (contactNumber.length === 9) {
-                addressChangeDispatch({
-                  type: addressChangeAction.setContactNumber,
-                  payload: contactNumber.slice(0, -1),
-                });
-              }
-            }
-          }}
-          rightSection={
-            <Tooltip label="Reset value to +(1)">
-              <Button
-                type="button"
-                size="xs"
-                variant="white"
-                aria-label="Reset personal contact number value to +(1)"
-                mr="md"
-              >
-                <FontAwesomeIcon
-                  icon={faRefresh}
-                  cursor="pointer"
-                  color="gray"
-                  onClick={() => {
-                    addressChangeDispatch({
-                      type: addressChangeAction.setContactNumber,
-                      payload: '+(1)',
-                    });
-                  }}
-                />
-              </Button>
-            </Tooltip>
-          }
-          icon={
-            isValidContactNumber ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : null
-          }
-          error={!isValidContactNumber && contactNumber !== '+(1)'}
-          onChange={(event) => {
-            addressChangeDispatch({
-              type: addressChangeAction.setContactNumber,
-              payload: event.currentTarget.value,
-            });
-          }}
-          onFocus={() => {
-            addressChangeDispatch({
-              type: addressChangeAction.setIsContactNumberFocused,
-              payload: true,
-            });
-          }}
-          onBlur={() => {
-            addressChangeDispatch({
-              type: addressChangeAction.setIsContactNumberFocused,
-              payload: false,
-            });
-          }}
-          ref={contactNumberRef}
-          withAsterisk
-          required
-          maxLength={18}
-        />
-*/
-
-/**
- * address line and city
- * <TextInput
-          size="sm"
-          w="100%"
-          color="dark"
-          label="Address line"
-          placeholder="Enter address line"
-          autoComplete="off"
-          aria-required
-          aria-describedby={
-            isValidAddressLine
-              ? 'address-line-input-note-valid'
-              : 'address-line-input-note-error'
-          }
-          aria-invalid={isValidAddressLine ? false : true}
-          value={addressLine}
-          icon={
-            isValidAddressLine ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : null
-          }
-          error={!isValidAddressLine && addressLine !== ''}
-          description={
-            isValidAddressLine
-              ? addressLineInputValidText
-              : addressLineInputErrorText
-          }
-          onChange={(event) => {
-            addressChangeDispatch({
-              type: addressChangeAction.setAddressLine,
-              payload: event.currentTarget.value,
-            });
-          }}
-          onFocus={() => {
-            addressChangeDispatch({
-              type: addressChangeAction.setIsAddressLineFocused,
-              payload: true,
-            });
-          }}
-          onBlur={() => {
-            addressChangeDispatch({
-              type: addressChangeAction.setIsAddressLineFocused,
-              payload: false,
-            });
-          }}
-          withAsterisk
-          required
-          minLength={2}
-          maxLength={75}
-        />
-        <TextInput
-          size="sm"
-          w="100%"
-          color="dark"
-          label="City"
-          placeholder="Enter city"
-          autoComplete="off"
-          aria-required
-          aria-describedby={
-            isValidCity ? 'city-input-note-valid' : 'city-input-note-error'
-          }
-          aria-invalid={isValidCity ? false : true}
-          value={city}
-          icon={
-            isValidCity ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : null
-          }
-          error={!isValidCity && city !== ''}
-          description={isValidCity ? cityInputValidText : cityInputErrorText}
-          onChange={(event) => {
-            addressChangeDispatch({
-              type: addressChangeAction.setCity,
-              payload: event.currentTarget.value,
-            });
-          }}
-          onFocus={() => {
-            addressChangeDispatch({
-              type: addressChangeAction.setIsCityFocused,
-              payload: true,
-            });
-          }}
-          onBlur={() => {
-            addressChangeDispatch({
-              type: addressChangeAction.setIsCityFocused,
-              payload: false,
-            });
-          }}
-          minLength={2}
-          maxLength={75}
-          withAsterisk
-          required
-        />
-*/
-
-/**
- * acknowledgement
- * <Checkbox
-          size="sm"
-          color="dark"
-          label="I acknowledge that the information provided is accurate."
-          aria-label={
-            isAcknowledged
-              ? 'Acknowledgement checkbox is checked. I acknowledge that the information provided is accurate.'
-              : 'Acknowledgement checkbox is unchecked. I do not acknowledge.'
-          }
-          checked={isAcknowledged}
-          onChange={(event) => {
-            addressChangeDispatch({
-              type: addressChangeAction.setIsAcknowledged,
-              payload: event.currentTarget.checked,
-            });
-          }}
-        />
- */
-
-/**
- *  const displayProvinceOrStateInput =
-    country === 'Canada' ? (
-      <NativeSelect
-        size="sm"
-        data={PROVINCES}
-        label="Select your province"
-        // description="Select your province"
-        value={province}
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setProvince,
-            payload: event.currentTarget.value,
-          });
-        }}
-        required
-        withAsterisk
-      />
-    ) : (
-      <NativeSelect
-        size="sm"
-        data={STATES_US}
-        // description="Select your state"
-        label="Select your state"
-        value={state}
-        onChange={(event) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setState,
-            payload: event.currentTarget.value,
-          });
-        }}
-        required
-        withAsterisk
-      />
-    );
- */
