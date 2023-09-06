@@ -64,6 +64,7 @@ function TextAreaInputWrapper({
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
+      width,
     },
   } = useGlobalState();
 
@@ -116,6 +117,8 @@ function TextAreaInputWrapper({
     )
   ) : null;
 
+  const inputWidth = width < 480 ? 330 : 450;
+
   const inputWithPopover = (
     <Popover
       opened={inputText ? popoverOpened : false}
@@ -132,7 +135,7 @@ function TextAreaInputWrapper({
         >
           <Textarea
             size={size}
-            w={325}
+            w={inputWidth}
             color="dark"
             label={dynamicInputLabel}
             aria-required={ariaRequired}

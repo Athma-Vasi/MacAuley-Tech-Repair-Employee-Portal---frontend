@@ -917,35 +917,33 @@ function logState({
   console.groupEnd();
 }
 
+type FilterFieldsFromObjectInput<
+  Obj extends Record<string | number | symbol, any> = Record<
+    string | symbol | number,
+    any
+  >
+> = {
+  object: Obj;
+  fieldsToFilter: Array<keyof Obj>;
+};
 /**
- * Creates a new object by filtering out specified fields from the input object.
+ * Pure function: Filters specified fields from an object and returns a new object with the remaining fields.
  *
- * This pure function takes an object and an array of field names to be filtered out.
- * It returns a new object that includes all the properties from the input object,
- * except for those specified in the `fieldsToFilter` array.
- *
- * @param {object} options - The options for filtering fields.
- * @param {Record<string, any>} options.object - The source object to filter fields from.
- * @param {string[]} options.fieldsToFilter - An array of field names to be filtered out.
- *
- * @returns {Record<string, any>} A new object with specified fields filtered out.
+ * @template Obj - The type of the input object.
+ * @param {FilterFieldsFromObjectInput<Obj>} input - The input containing the object and fields to filter.
+ * @returns {Partial<Obj>} A new object with the specified fields filtered out.
  */
-function filterFieldsFromObject({
-  object,
-  fieldsToFilter,
-}: {
-  object: Record<string, any>;
-  fieldsToFilter: string[];
-}): Record<string, any> {
+function filterFieldsFromObject<
+  Obj extends Record<string | number | symbol, any> = Record<
+    string | symbol | number,
+    any
+  >
+>({ object, fieldsToFilter }: FilterFieldsFromObjectInput<Obj>): Partial<Obj> {
   return Object.entries(object).reduce((obj, [key, value]) => {
-    if (!fieldsToFilter.includes(key)) {
-      Object.defineProperty(obj, key, {
-        value,
-        writable: true,
-        enumerable: true,
-        configurable: true,
-      });
+    if (fieldsToFilter.includes(key)) {
+      return obj;
     }
+    obj[key] = value;
 
     return obj;
   }, Object.create(null));
@@ -958,30 +956,15 @@ type AddFieldsToObjectInput<
   >
 > = {
   object: Obj;
-  fieldValuesTuples: [string, any][];
-  options?: {
-    writable?: boolean;
-    enumerable?: boolean;
-    configurable?: boolean;
-  };
+  fieldValuesTuples: [keyof Obj, Obj[keyof Obj]][]; // [key, value][]
+  options?: PropertyDescriptor;
 };
-
 /**
- * Adds specified properties and attributes to a cloned object.
+ * Pure function: Adds fields to an object using the specified key-value pairs and options.
  *
- * This function takes an object, an array of field-value tuples, and optional options
- * to create a new object by cloning the input object and adding the specified properties
- * with their corresponding values and attributes.
- *
- * @param {object} options - The options for adding properties.
- * @param {Record<string, any>} options.object - The source object to add properties to.
- * @param {[string, any][]} options.fieldValuesTuples - An array of field-value tuples to add.
- * @param {Object} [options.options] - Additional options for property attributes.
- * @param {boolean} [options.options.writable=true] - If the added properties should be writable.
- * @param {boolean} [options.options.enumerable=true] - If the added properties should be enumerable.
- * @param {boolean} [options.options.configurable=true] - If the added properties are configurable.
- *
- * @returns {Record<string, any>} A new object with added properties and attributes.
+ * @template Obj - The type of the input object.
+ * @param {AddFieldsToObjectInput<Obj>} input - The input containing the object, field-value tuples, and options.
+ * @returns {Obj} A new object with the added fields.
  */
 function addFieldsToObject<
   Obj extends Record<string | number | symbol, any> = Record<

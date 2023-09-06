@@ -1,12 +1,12 @@
 import { Flex, useMantineTheme } from '@mantine/core';
-import { ReactNode } from 'react';
+import { CSSProperties, ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
 
 type FormLayoutWrapperProps = {
   children?: ReactNode;
   direction?: 'row' | 'column';
-  style?: React.CSSProperties;
+  style?: CSSProperties;
 };
 
 function FormLayoutWrapper({
@@ -25,18 +25,13 @@ function FormLayoutWrapper({
 
   return (
     <Flex
-      direction={
-        direction === 'row' || direction === 'column' ? direction : 'column'
-      }
-      align={
-        direction === 'row' || direction === 'column' ? 'center' : 'flex-start'
-      }
-      justify={
-        direction === 'row' || direction === 'column' ? 'center' : 'flex-start'
-      }
       w="100%"
+      align="baseline"
+      justify="flex-start"
+      wrap="wrap"
       p={padding}
       rowGap={rowGap}
+      columnGap={rowGap}
       style={{
         ...style,
         border:
@@ -52,3 +47,28 @@ function FormLayoutWrapper({
 }
 
 export { FormLayoutWrapper };
+
+// <Flex
+//   direction={
+//     direction === 'row' || direction === 'column' ? direction : 'column'
+//   }
+//   align={
+//     direction === 'row' || direction === 'column' ? 'center' : 'flex-start'
+//   }
+//   justify={
+//     direction === 'row' || direction === 'column' ? 'center' : 'flex-start'
+//   }
+//   w="100%"
+//   p={padding}
+//   rowGap={rowGap}
+//   style={{
+//     ...style,
+//     border:
+//       colorScheme === 'light'
+//         ? `1px solid ${colors.gray[3]}`
+//         : `1px solid ${colors.gray[8]}`,
+//     borderRadius: 4,
+//   }}
+// >
+//   {children}
+// </Flex>

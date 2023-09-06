@@ -15,6 +15,7 @@ type AccessibleSelectInputCreatorInfo = {
   withAsterisk?: boolean;
   ref?: RefObject<HTMLSelectElement>;
   required?: boolean;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   width?: string | number;
 };
 
@@ -23,6 +24,10 @@ type NativeSelectWrapperProps = {
 };
 
 function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
+  const {
+    globalState: { width: vWidth },
+  } = useGlobalState();
+
   const {
     data,
     label = '',
@@ -34,20 +39,19 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     withAsterisk = false,
     ref = null,
     required = false,
-    width = '100%',
+    size = 'sm',
+    width = vWidth < 480 ? 330 : 450,
   } = creatorInfoObject;
-
-  const selectInputSize = 'sm';
 
   return (
     <NativeSelect
-      size={selectInputSize}
+      size={size}
       data={data}
       disabled={disabled}
       label={`${label.charAt(0).toUpperCase() + label.slice(1)}`}
-      aria-label={`Currently selected ${value}`}
+      aria-label={`${description}. Currently selected ${value}`}
       aria-required={required}
-      description={description}
+      // description={description}
       aria-describedby={describedBy}
       value={value}
       onChange={onChange}

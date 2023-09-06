@@ -41,6 +41,7 @@ function PasswordInputWrapper({
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
+      width,
     },
   } = useGlobalState();
 
@@ -76,6 +77,8 @@ function PasswordInputWrapper({
     )
   ) : null;
 
+  const inputWidth = width < 480 ? 330 : 450;
+
   const inputWithPopover = (
     <Popover
       opened={inputText ? popoverOpened : false}
@@ -92,7 +95,7 @@ function PasswordInputWrapper({
         >
           <PasswordInput
             size={size}
-            w={325}
+            w={inputWidth}
             color="dark"
             label={label}
             aria-required={ariaRequired}

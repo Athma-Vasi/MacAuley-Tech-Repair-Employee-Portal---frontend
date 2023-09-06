@@ -48,6 +48,7 @@ function DateTimeInputWrapper({
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
+      width,
     },
   } = useGlobalState();
 
@@ -88,6 +89,8 @@ function DateTimeInputWrapper({
     )
   ) : null;
 
+  const inputWidth = width < 480 ? 330 : 450;
+
   const inputWithPopover = (
     <Popover
       opened={inputText ? popoverOpened : false}
@@ -105,7 +108,7 @@ function DateTimeInputWrapper({
           <TextInput
             type={inputKind}
             size={size}
-            w={325}
+            w={inputWidth}
             color="dark"
             label={label}
             placeholder={placeholder}

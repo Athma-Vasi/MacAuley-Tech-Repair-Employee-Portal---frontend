@@ -38,7 +38,9 @@ function StepperWrapper({
   const {
     globalState: {
       width,
-      themeObject: { colorScheme, primaryColor, primaryShade },
+      themeObject: { colorScheme },
+      rowGap,
+      padding,
     },
   } = useGlobalState();
   const stepperRef = useRef<HTMLButtonElement>(null);
@@ -134,22 +136,24 @@ function StepperWrapper({
       })
       .join(', ') ?? ''
   }. Please fix the error${stepsInError.size > 1 ? 's' : ''} to proceed!`;
-
   const errorMessageWithAnd = replaceLastCommaWithAnd(errorMessage);
 
-  const padding =
-    width < 480 ? 'xs' : width < 768 ? 'sm' : width < 1024 ? 'md' : 'lg';
   const descObjLen = descriptionObjectsArray.length;
-  const size = 'sm';
-  const rowGap =
-    width < 480 ? 'md' : width < 768 ? 'sm' : width < 1440 ? 'md' : 'lg';
+  const stepperWidth =
+    width < 480
+      ? 375 - 20
+      : width < 640
+      ? 640 - 20
+      : width >= 1024
+      ? 1024 - 20
+      : width - 20;
 
   return (
     <Flex
       direction="column"
       align="center"
       justify="center"
-      rowGap={width < 480 ? 'sm' : 'md'}
+      rowGap={rowGap}
       w="100%"
       bg={
         colorScheme === 'light'
@@ -182,15 +186,16 @@ function StepperWrapper({
         }}
         breakpoint={descObjLen < 4 ? 640 : 1440}
         allowNextStepsSelect={allowNextStepsSelect}
-        w="100%"
+        w={stepperWidth}
         p={padding}
-        size={size}
+        size="sm"
         style={{
           borderRadius: '4px',
           border:
             colorScheme === 'light'
               ? `1px solid ${colors.gray[3]}`
               : `1px solid ${colors.gray[8]}`, // #303030
+          // border: '1px solid teal',
         }}
       >
         {descriptionObjectsArray.map((value, index) => {
@@ -261,7 +266,7 @@ function StepperWrapper({
         direction="column"
         align="flex-start"
         justify="space-between"
-        w="100%"
+        w={stepperWidth}
         rowGap={rowGap}
       >
         {children ?? null}
@@ -300,7 +305,7 @@ function StepperWrapper({
               currentStepperPosition === descriptionObjectsArray.length - 1
                 ? 'Go to submit page'
                 : currentStepperPosition === descriptionObjectsArray.length
-                ? 'You are the last page'
+                ? 'You are at the last page'
                 : `Go to ${
                     descriptionObjectsArray[currentStepperPosition + 1]
                       .description

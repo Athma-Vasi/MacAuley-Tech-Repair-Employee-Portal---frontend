@@ -205,9 +205,19 @@ function RegisterStepAdditional({
     withAsterisk: true,
   };
 
+  const isStoreLocationSelectInputDisabled = [
+    'Executive Management',
+    'Accounting',
+    'Sales',
+    'Marketing',
+    'Human Resources',
+    'Information Technology',
+  ].includes(department);
+
   const storeLocationSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       data: STORE_LOCATION_DATA,
+      disabled: isStoreLocationSelectInputDisabled,
       description: 'Select your store location',
       label: 'Store location',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {

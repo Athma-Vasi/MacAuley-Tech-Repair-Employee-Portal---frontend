@@ -73,6 +73,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
+      width,
     },
   } = useGlobalState();
 
@@ -141,6 +142,8 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     )
   ) : null;
 
+  const inputWidth = width < 480 ? 330 : 450;
+
   const inputWithPopover = (
     <Popover
       opened={inputText ? popoverOpened : false}
@@ -156,7 +159,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
           onBlurCapture={() => setPopoverOpened(false)}
         >
           <TextInput
-            w={325}
+            w={inputWidth}
             color="dark"
             label={dynamicInputLabel}
             aria-required={required}

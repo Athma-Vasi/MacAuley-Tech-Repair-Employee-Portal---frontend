@@ -143,7 +143,7 @@ function Login() {
           payload: false,
         });
 
-        navigate('/portal');
+        navigate('/home');
       } catch (error: any) {
         if (!isMounted) {
           return;
@@ -200,7 +200,7 @@ function Login() {
           parentDispatch={loginDispatch}
           navigateTo={{
             errorPath: '/',
-            successPath: '/portal',
+            successPath: '/home',
           }}
         />
       </Flex>

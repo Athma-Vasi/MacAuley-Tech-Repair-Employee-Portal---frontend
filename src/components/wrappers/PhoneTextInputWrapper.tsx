@@ -61,6 +61,7 @@ function PhoneTextInputWrapper({
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
+      width,
     },
   } = useGlobalState();
 
@@ -122,6 +123,8 @@ function PhoneTextInputWrapper({
     )
   ) : null;
 
+  const inputWidth = width < 480 ? 330 : 450;
+
   const inputWithPopover = (
     <Popover
       opened={inputText ? popoverOpened : false}
@@ -138,7 +141,7 @@ function PhoneTextInputWrapper({
         >
           <TextInput
             size={size}
-            w={325}
+            w={inputWidth}
             color="dark"
             label={label}
             aria-required={ariaRequired}
