@@ -82,9 +82,9 @@ function App() {
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* printer issue */}
-          <Route path="printer-issue" element={<PortalLayout />}>
-            <Route index element={<CreatePrinterIssue />} />
+          {/* referment */}
+          <Route path="referment" element={<PortalLayout />}>
+            <Route index element={<CreateReferment />} />
           </Route>
 
           {/* create leave request */}

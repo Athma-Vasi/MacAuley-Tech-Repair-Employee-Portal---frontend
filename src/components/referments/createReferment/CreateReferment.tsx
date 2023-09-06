@@ -1,7 +1,5 @@
-import { Button, Flex } from '@mantine/core';
 import {
   ChangeEvent,
-  FormEvent,
   KeyboardEvent,
   MouseEvent,
   useEffect,
@@ -12,7 +10,6 @@ import { TbUpload } from 'react-icons/tb';
 import {
   DEPARTMENT_DATA,
   DEPARTMENT_JOB_POSITION_MAP,
-  JOB_POSITION_DATA,
 } from '../../../constants/data';
 import {
   EMAIL_REGEX,
@@ -23,11 +20,11 @@ import {
   URL_REGEX,
 } from '../../../constants/regex';
 import {
+  AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
-  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
-  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -58,6 +55,10 @@ import {
   createRefermentReducer,
   initialCreateRefermentState,
 } from './state';
+import { Group, Tooltip } from '@mantine/core';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 
 function CreateReferment() {
   const [createRefermentState, createRefermentDispatch] = useReducer(
@@ -440,7 +441,7 @@ function CreateReferment() {
     },
     inputText: candidateFullName,
     isValidInputText: isValidCandidateFullName,
-    label: 'Candidate name',
+    label: 'Candidate Name',
     onBlur: () => {
       createRefermentDispatch({
         type: createRefermentAction.setIsCandidateFullNameFocused,
@@ -474,7 +475,7 @@ function CreateReferment() {
     },
     inputText: candidateEmail,
     isValidInputText: isValidCandidateEmail,
-    label: 'Candidate email',
+    label: 'Candidate Email',
     onBlur: () => {
       createRefermentDispatch({
         type: createRefermentAction.setIsCandidateEmailFocused,
@@ -507,7 +508,7 @@ function CreateReferment() {
       },
       inputText: candidateContactNumber,
       isValidInputText: isValidCandidateContactNumber,
-      label: 'Candidate contact number',
+      label: 'Candidate Contact Number',
       onBlur: () => {
         createRefermentDispatch({
           type: createRefermentAction.setIsCandidateContactNumberFocused,
@@ -555,7 +556,7 @@ function CreateReferment() {
       },
       inputText: candidateProfileUrl,
       isValidInputText: isValidCandidateProfileUrl,
-      label: 'Candidate profile URL',
+      label: 'Candidate Profile URL',
       onBlur: () => {
         createRefermentDispatch({
           type: createRefermentAction.setIsCandidateProfileUrlFocused,
@@ -586,7 +587,7 @@ function CreateReferment() {
       },
       inputText: candidateCurrentJobTitle,
       isValidInputText: isValidCandidateCurrentJobTitle,
-      label: 'Candidate current job title',
+      label: 'Candidate Current Job Title',
       onBlur: () => {
         createRefermentDispatch({
           type: createRefermentAction.setIsCandidateCurrentJobTitleFocused,
@@ -619,7 +620,7 @@ function CreateReferment() {
       },
       inputText: candidateCurrentCompany,
       isValidInputText: isValidCandidateCurrentCompany,
-      label: 'Candidate current company',
+      label: 'Candidate Current Company',
       onBlur: () => {
         createRefermentDispatch({
           type: createRefermentAction.setIsCandidateCurrentCompanyFocused,
@@ -663,7 +664,7 @@ function CreateReferment() {
   const positionReferredForSelectCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       description: 'Position referred for',
-      label: 'Job position',
+      label: 'Job Position',
       data: DEPARTMENT_JOB_POSITION_MAP.get(departmentReferredFor) ?? [],
       value: positionReferredFor,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -684,7 +685,7 @@ function CreateReferment() {
       },
       inputText: positionJobDescription,
       isValidInputText: isValidPositionJobDescription,
-      label: 'Job description',
+      label: 'Job Description',
       onBlur: () => {
         createRefermentDispatch({
           type: createRefermentAction.setIsPositionJobDescriptionFocused,
@@ -715,7 +716,7 @@ function CreateReferment() {
       },
       inputText: referralReason,
       isValidInputText: isValidReferralReason,
-      label: 'Referral reason',
+      label: 'Referral Reason',
       onBlur: () => {
         createRefermentDispatch({
           type: createRefermentAction.setIsReferralReasonFocused,
@@ -748,7 +749,7 @@ function CreateReferment() {
       },
       inputText: additionalInformation,
       isValidInputText: isValidAdditionalInformation,
-      label: 'Additional information',
+      label: 'Additional Information',
       onBlur: () => {
         createRefermentDispatch({
           type: createRefermentAction.setIsAdditionalInformationFocused,
@@ -850,9 +851,19 @@ function CreateReferment() {
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === CREATE_REFERMENT_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === CREATE_REFERMENT_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Please fix errors before submitting'
+            : 'Submit Referment form'
+        }
+      >
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
 
   const displayCandidateDetailsFormPage = (
     <FormLayoutWrapper>
@@ -876,7 +887,79 @@ function CreateReferment() {
     </FormLayoutWrapper>
   );
 
-  const displayReviewFormPage = <h4>review</h4>;
+  const REFERMENT_REVIEW_OBJECT: FormReviewObject = {
+    'Candidate Details': [
+      {
+        inputName: 'Candidate Name',
+        inputValue: candidateFullName,
+        isInputValueValid: isValidCandidateFullName,
+      },
+      {
+        inputName: 'Candidate Email',
+        inputValue: candidateEmail,
+        isInputValueValid: isValidCandidateEmail,
+      },
+      {
+        inputName: 'Candidate Contact Number',
+        inputValue: candidateContactNumber,
+        isInputValueValid: isValidCandidateContactNumber,
+      },
+      {
+        inputName: 'Candidate Profile URL',
+        inputValue: candidateProfileUrl,
+        isInputValueValid: isValidCandidateProfileUrl,
+      },
+      {
+        inputName: 'Candidate Current Job Title',
+        inputValue: candidateCurrentJobTitle,
+        isInputValueValid: isValidCandidateCurrentJobTitle,
+      },
+      {
+        inputName: 'Candidate Current Company',
+        inputValue: candidateCurrentCompany,
+        isInputValueValid: isValidCandidateCurrentCompany,
+      },
+    ],
+    'Position Details': [
+      {
+        inputName: 'Department',
+        inputValue: departmentReferredFor,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Job Position',
+        inputValue: positionReferredFor,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Job Description',
+        inputValue: positionJobDescription,
+        isInputValueValid: isValidPositionJobDescription,
+      },
+      {
+        inputName: 'Referral Reason',
+        inputValue: referralReason,
+        isInputValueValid: isValidReferralReason,
+      },
+      {
+        inputName: 'Additional Information',
+        inputValue: additionalInformation,
+        isInputValueValid: isValidAdditionalInformation,
+      },
+      {
+        inputName: 'Privacy Consent',
+        inputValue: privacyConsent ? 'Yes' : 'No',
+        isInputValueValid: privacyConsent,
+      },
+    ],
+  };
+
+  const displayReviewFormPage = (
+    <FormReviewPage
+      formReviewObject={REFERMENT_REVIEW_OBJECT}
+      formName="Referment"
+    />
+  );
 
   const displayCreateRefermentForm =
     currentStepperPosition === 0
@@ -917,556 +1000,3 @@ function CreateReferment() {
 }
 
 export { CreateReferment };
-
-/**
- * const displayCandidateDetailsFormPage = (
-    <Flex direction="column" align="center" justify="center" w={400}>
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Candidate name"
-        aria-required
-        aria-describedby={
-          isValidCandidateFullName
-            ? 'candidate-full-name-input-note-valid'
-            : 'candidate-full-name-input-note-error'
-        }
-        description={
-          isValidCandidateFullName
-            ? candidateFullNameInputValidText
-            : candidateFullNameInputErrorText
-        }
-        placeholder="Enter full name"
-        autoComplete="off"
-        aria-invalid={isValidCandidateFullName ? false : true}
-        value={candidateFullName}
-        icon={
-          isValidCandidateFullName ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidCandidateFullName && candidateFullName !== ''}
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateFullName,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateFullNameFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateFullNameFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={100}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Candidate email"
-        aria-required
-        aria-describedby={
-          isValidCandidateEmail
-            ? 'candidate-email-input-note-valid'
-            : 'candidate-email-input-note-error'
-        }
-        description={
-          isValidCandidateEmail
-            ? candidateEmailInputValidText
-            : candidateEmailInputErrorText
-        }
-        placeholder="Enter email"
-        autoComplete="off"
-        aria-invalid={isValidCandidateEmail ? false : true}
-        value={candidateEmail}
-        icon={
-          isValidCandidateEmail ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidCandidateEmail && candidateEmail !== ''}
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateEmail,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateEmailFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateEmailFocused,
-            payload: false,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Candidate contact number"
-        aria-required
-        aria-describedby={
-          isValidCandidateContactNumber
-            ? 'candidate-contact-number-input-note-valid'
-            : 'candidate-contact-number-input-note-error'
-        }
-        description={
-          isValidCandidateContactNumber
-            ? candidateContactNumberInputValidText
-            : candidateContactNumberInputErrorText
-        }
-        placeholder="Enter contact number"
-        autoComplete="off"
-        aria-invalid={isValidCandidateContactNumber ? false : true}
-        value={candidateContactNumber}
-        onKeyDown={(event) => {
-          if (event.key === 'Backspace') {
-            if (candidateContactNumber.length === 14) {
-              createRefermentDispatch({
-                type: createRefermentAction.setCandidateContactNumber,
-                payload: candidateContactNumber.slice(0, -1) as
-                  | PhoneNumber
-                  | string,
-              });
-            } else if (candidateContactNumber.length === 9) {
-              createRefermentDispatch({
-                type: createRefermentAction.setCandidateContactNumber,
-                payload: candidateContactNumber.slice(0, -1) as
-                  | PhoneNumber
-                  | string,
-              });
-            }
-          }
-        }}
-        rightSection={
-          <Tooltip label="Reset value to +(1)">
-            <Button
-              type="button"
-              size="xs"
-              variant="white"
-              aria-label="Reset personal contact number value to +(1)"
-              mr="md"
-            >
-              <FontAwesomeIcon
-                icon={faRefresh}
-                cursor="pointer"
-                color="gray"
-                onClick={() => {
-                  createRefermentDispatch({
-                    type: createRefermentAction.setCandidateContactNumber,
-                    payload: candidateContactNumber,
-                  });
-                }}
-              />
-            </Button>
-          </Tooltip>
-        }
-        icon={
-          isValidCandidateContactNumber ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={
-          !isValidCandidateContactNumber && candidateContactNumber !== '+(1)'
-        }
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateContactNumber,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateContactNumberFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateContactNumberFocused,
-            payload: false,
-          });
-        }}
-        maxLength={18}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Candidate current job title"
-        aria-required
-        aria-describedby={
-          isValidCandidateCurrentJobTitle
-            ? 'candidate-current-job-title-input-note-valid'
-            : 'candidate-current-job-title-input-note-error'
-        }
-        description={
-          isValidCandidateCurrentJobTitle
-            ? candidateCurrentJobTitleInputValidText
-            : candidateCurrentJobTitleInputErrorText
-        }
-        placeholder="Enter current job title"
-        autoComplete="off"
-        aria-invalid={isValidCandidateCurrentJobTitle ? false : true}
-        value={candidateCurrentJobTitle}
-        icon={
-          isValidCandidateCurrentJobTitle ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={
-          !isValidCandidateCurrentJobTitle && candidateCurrentJobTitle !== ''
-        }
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateCurrentJobTitle,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateCurrentJobTitleFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateCurrentJobTitleFocused,
-            payload: false,
-          });
-        }}
-        minLength={1}
-        maxLength={50}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Candidate current company"
-        aria-required
-        aria-describedby={
-          isValidCandidateCurrentCompany
-            ? 'candidate-current-company-input-note-valid'
-            : 'candidate-current-company-input-note-error'
-        }
-        description={
-          isValidCandidateCurrentCompany
-            ? candidateCurrentCompanyInputValidText
-            : candidateCurrentCompanyInputErrorText
-        }
-        placeholder="Enter current company"
-        autoComplete="off"
-        aria-invalid={isValidCandidateCurrentCompany ? false : true}
-        value={candidateCurrentCompany}
-        icon={
-          isValidCandidateCurrentCompany ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={
-          !isValidCandidateCurrentCompany && candidateCurrentCompany !== ''
-        }
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateCurrentCompany,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateCurrentCompanyFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateCurrentCompanyFocused,
-            payload: false,
-          });
-        }}
-        minLength={1}
-        maxLength={50}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Candidate profile url"
-        aria-required
-        aria-describedby={
-          isValidCandidateProfileUrl
-            ? 'candidate-profile-url-input-note-valid'
-            : 'candidate-profile-url-input-note-error'
-        }
-        description={
-          isValidCandidateProfileUrl
-            ? candidateProfileUrlInputValidText
-            : candidateProfileUrlInputErrorText
-        }
-        placeholder="Enter profile url"
-        autoComplete="off"
-        aria-invalid={isValidCandidateProfileUrl ? false : true}
-        value={candidateProfileUrl}
-        icon={
-          isValidCandidateProfileUrl ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidCandidateProfileUrl && candidateProfileUrl !== ''}
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateProfileUrl,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateProfileUrlFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsCandidateProfileUrlFocused,
-            payload: false,
-          });
-        }}
-        withAsterisk
-        required
-      />
-    </Flex>
-  );
-
-  const displayPositionDetailsFormPage = (
-    <Flex direction="column" align="center" justify="center" w={400}>
-      <NativeSelect
-        size="sm"
-        data={JOB_POSITIONS}
-        label="Job position"
-        description="Position referred for"
-        value={positionReferredFor}
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setPositionReferredFor,
-            payload: event.currentTarget.value as JobPosition,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <Textarea
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Job description"
-        aria-required
-        aria-describedby={
-          isValidPositionJobDescription
-            ? 'position-job-description-input-note-valid'
-            : 'position-job-description-input-note-error'
-        }
-        description={
-          isValidPositionJobDescription
-            ? positionJobDescriptionInputValidText
-            : positionJobDescriptionInputErrorText
-        }
-        placeholder="Enter job description"
-        autoComplete="off"
-        aria-invalid={isValidPositionJobDescription ? false : true}
-        value={positionJobDescription}
-        icon={
-          isValidPositionJobDescription ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidPositionJobDescription && positionJobDescription !== ''}
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setPositionJobDescription,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsPositionJobDescriptionFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsPositionJobDescriptionFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={2000}
-        autosize
-        minRows={3}
-        maxRows={5}
-        withAsterisk
-        required
-      />
-
-      <Textarea
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Referral reason"
-        aria-required
-        aria-describedby={
-          isValidReferralReason
-            ? 'referral-reason-input-note-valid'
-            : 'referral-reason-input-note-error'
-        }
-        description={
-          isValidReferralReason
-            ? referralReasonInputValidText
-            : referralReasonInputErrorText
-        }
-        placeholder="Enter referral reason"
-        autoComplete="off"
-        aria-invalid={isValidReferralReason ? false : true}
-        value={referralReason}
-        icon={
-          isValidReferralReason ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidReferralReason && referralReason !== ''}
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setReferralReason,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsReferralReasonFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsReferralReasonFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={2000}
-        autosize
-        minRows={3}
-        maxRows={5}
-        withAsterisk
-        required
-      />
-
-      <Textarea
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Additional information"
-        aria-required
-        aria-describedby={
-          isValidAdditionalInformation
-            ? 'additional-information-input-note-valid'
-            : 'additional-information-input-note-error'
-        }
-        description={
-          isValidAdditionalInformation
-            ? additionalInformationInputValidText
-            : additionalInformationInputErrorText
-        }
-        placeholder="Enter additional information"
-        autoComplete="off"
-        aria-invalid={isValidAdditionalInformation ? false : true}
-        value={additionalInformation}
-        icon={
-          isValidAdditionalInformation ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidAdditionalInformation && additionalInformation !== ''}
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setAdditionalInformation,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsAdditionalInformationFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsAdditionalInformationFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={2000}
-        autosize
-        minRows={3}
-        maxRows={5}
-      />
-
-      <Radio
-        size="sm"
-        label="Privacy consent"
-        description={
-          privacyConsent
-            ? 'I acknowledge that the candidate has given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.'
-            : 'The candidate has not given consent for me to share their personal information with MacAuley Tech Repair Ltd. for the purpose of this referral.'
-        }
-        aria-required
-        aria-label={
-          privacyConsent ? 'Privacy consent given' : 'Privacy consent not given'
-        }
-        checked={privacyConsent}
-        onChange={(event) => {
-          createRefermentDispatch({
-            type: createRefermentAction.setPrivacyConsent,
-            payload: event.currentTarget.checked,
-          });
-        }}
-        onClick={() => {
-          createRefermentDispatch({
-            type: createRefermentAction.setPrivacyConsent,
-            payload: !privacyConsent,
-          });
-        }}
-      />
-    </Flex>
-  );
- */

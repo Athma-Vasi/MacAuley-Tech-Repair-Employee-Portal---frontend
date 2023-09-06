@@ -9,19 +9,19 @@ import { DescriptionObjectsArray } from '../wrappers';
 
 const CREATE_REFERMENT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Candidate details',
+    description: 'Candidate Details',
     ariaLabel:
       'Enter candidate: full name, email, contact number, current job title, current company, and profile URL',
   },
 
   {
-    description: 'Position details',
+    description: 'Position Details',
     ariaLabel:
       'Enter position: referred for, job description, and referral reason, and additional information, and privacy consent',
   },
 
   {
-    description: 'Review form',
+    description: 'Review and Proceed',
     ariaLabel: 'Review accuracy of form and proceed',
   },
 ];
