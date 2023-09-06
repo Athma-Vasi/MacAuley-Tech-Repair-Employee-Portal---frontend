@@ -442,6 +442,11 @@ function ImageUpload({
         </Flex>
       );
 
+      const borderColorGray =
+        colorScheme === 'light'
+          ? `1px solid ${colors.gray[3]}`
+          : `1px solid ${colors.gray[8]}`;
+
       const imageName = (
         <Flex
           align="center"
@@ -450,7 +455,7 @@ function ImageUpload({
           w="100%"
           rowGap={rowGap}
           style={{
-            borderBottom: '1px solid #e0e0e0',
+            borderBottom: borderColorGray,
           }}
         >
           <TextWrapper creatorInfoObj={{}}>Name: </TextWrapper>
@@ -466,10 +471,6 @@ function ImageUpload({
         </Flex>
       );
 
-      const borderColorGray =
-        colorScheme === 'light'
-          ? `1px solid ${colors.gray[3]}`
-          : `1px solid ${colors.gray[8]}`;
       const borderColorRed =
         colorScheme === 'light'
           ? `1px solid ${colors.red[primaryShade.light]}`

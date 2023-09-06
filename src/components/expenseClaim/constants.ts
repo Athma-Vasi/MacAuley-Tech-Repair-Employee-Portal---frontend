@@ -6,16 +6,16 @@ import { DescriptionObjectsArray } from '../wrappers';
 
 const EXPENSE_CLAIM_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Expense details',
+    description: 'Expense Details',
     ariaLabel:
       'Enter expense claim kind, amount, currency, date, description, additional comments, acknowledgement and receipt',
   },
   {
-    description: 'Upload receipts',
+    description: 'Upload Receipts',
     ariaLabel: 'Select up to 3 images of receipts to upload',
   },
   {
-    description: 'Review and proceed',
+    description: 'Review and Proceed',
     ariaLabel: 'Review accuracy of information and proceed',
   },
 ];

@@ -64,7 +64,10 @@ import {
   initialCreateExpenseClaimState,
 } from './state';
 import type { ExpenseClaimDocument, ExpenseClaimKind } from './types';
-import { useMantineTheme } from '@mantine/core';
+import { Group, Tooltip, useMantineTheme } from '@mantine/core';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -321,7 +324,7 @@ function CreateExpenseClaim() {
       },
       inputText: expenseClaimAmount,
       isValidInputText: isValidExpenseClaimAmount,
-      label: 'Expense claim amount',
+      label: 'Expense Claim Amount',
       onBlur: () => {
         createExpenseClaimDispatch({
           type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
@@ -354,7 +357,7 @@ function CreateExpenseClaim() {
     {
       data: EXPENSE_CLAIM_KIND_DATA,
       description: 'Select a category for your expense claim.',
-      label: 'Expense claim kind',
+      label: 'Expense Claim Kind',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createExpenseClaimDispatch({
           type: createExpenseClaimAction.setExpenseClaimKind,
@@ -370,7 +373,7 @@ function CreateExpenseClaim() {
     {
       data: CURRENCY_DATA,
       description: 'Select the currency for your expense claim.',
-      label: 'Expense claim currency',
+      label: 'Expense Claim Currency',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createExpenseClaimDispatch({
           type: createExpenseClaimAction.setExpenseClaimCurrency,
@@ -390,7 +393,7 @@ function CreateExpenseClaim() {
       },
       inputText: expenseClaimDate,
       isValidInputText: isValidExpenseClaimDate,
-      label: 'Expense claim date',
+      label: 'Expense Claim Date',
       onBlur: () => {
         createExpenseClaimDispatch({
           type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
@@ -425,7 +428,7 @@ function CreateExpenseClaim() {
       },
       inputText: expenseClaimDescription,
       isValidInputText: isValidExpenseClaimDescription,
-      label: 'Expense claim description',
+      label: 'Expense Claim Description',
       onBlur: () => {
         createExpenseClaimDispatch({
           type: createExpenseClaimAction.setIsExpenseClaimDescriptionFocused,
@@ -458,7 +461,7 @@ function CreateExpenseClaim() {
       },
       inputText: additionalComments,
       isValidInputText: isValidAdditionalComments,
-      label: 'Additional comments',
+      label: 'Additional Comments',
       onBlur: () => {
         createExpenseClaimDispatch({
           type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
@@ -546,11 +549,68 @@ function CreateExpenseClaim() {
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === EXPENSE_CLAIM_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === EXPENSE_CLAIM_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Fix errors to submit.'
+            : 'Submit expense claim form'
+        }
+      >
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
 
-  const displayExpenseClaimReviewPage = <h3>expense claim review</h3>;
+  const EXPENSE_CLAIM_REVIEW_OBJECT: FormReviewObject = {
+    'Expense Details': [
+      {
+        inputName: 'Expense Claim Kind',
+        inputValue: expenseClaimKind,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Expense Claim Currency',
+        inputValue: expenseClaimCurrency,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Expense Claim Amount',
+        inputValue: expenseClaimAmount,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Expense Claim Date',
+        inputValue: expenseClaimDate,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Expense Claim Description',
+        inputValue: expenseClaimDescription,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Additional Comments',
+        inputValue: additionalComments,
+        isInputValueValid: true,
+      },
+    ],
+    'Upload Receipts': [
+      {
+        inputName: 'Receipts',
+        inputValue: stepsInError.has(1) ? 'Error' : 'Valid',
+        isInputValueValid: !stepsInError.has(1),
+      },
+    ],
+  };
+
+  const displayExpenseClaimReviewPage = (
+    <FormReviewPage
+      formReviewObject={EXPENSE_CLAIM_REVIEW_OBJECT}
+      formName="Expense Claim"
+    />
+  );
 
   const displayExpenseClaimForm =
     currentStepperPosition === 0 ? (
@@ -582,7 +642,7 @@ function CreateExpenseClaim() {
 
   const displayExpenseClaimComponent = (
     <StepperWrapper
-      childrenTitle="Expense claim"
+      childrenTitle="Expense Claim"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={EXPENSE_CLAIM_DESCRIPTION_OBJECTS}
       maxStepperPosition={EXPENSE_CLAIM_MAX_STEPPER_POSITION}
