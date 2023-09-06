@@ -82,9 +82,9 @@ function App() {
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* referment */}
-          <Route path="referment" element={<PortalLayout />}>
-            <Route index element={<CreateReferment />} />
+          {/* event creator */}
+          <Route path="event-creator" element={<PortalLayout />}>
+            <Route index element={<EventCreator />} />
           </Route>
 
           {/* create leave request */}

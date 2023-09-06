@@ -41,6 +41,10 @@ import {
   initialEventCreatorState,
 } from './state';
 import { EventKind } from './types';
+import { Group, Tooltip } from '@mantine/core';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 
 function EventCreator() {
   const [eventCreatorState, eventCreatorDispatch] = useReducer(
@@ -466,7 +470,7 @@ function EventCreator() {
     },
     inputText: eventTitle,
     isValidInputText: isValidEventTitle,
-    label: 'Event title',
+    label: 'Event Title',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsTitleFocused,
@@ -498,7 +502,7 @@ function EventCreator() {
     },
     inputText: eventLocation,
     isValidInputText: isValidEventLocation,
-    label: 'Event location',
+    label: 'Event Location',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsEventLocationFocused,
@@ -526,7 +530,7 @@ function EventCreator() {
   const eventKindInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: EVENT_KIND_DATA,
     description: 'Select the kind of event',
-    label: 'Event kind',
+    label: 'Event Kind',
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       eventCreatorDispatch({
         type: eventCreatorAction.setEventKind,
@@ -546,7 +550,7 @@ function EventCreator() {
     },
     inputText: eventDescription,
     isValidInputText: isValidEventDescription,
-    label: 'Event description',
+    label: 'Event Description',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsEventDescriptionFocused,
@@ -579,7 +583,7 @@ function EventCreator() {
     },
     inputText: eventAttendees,
     isValidInputText: isValidEventAttendees,
-    label: 'Event attendees',
+    label: 'Event Attendees',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsEventAttendeesFocused,
@@ -609,7 +613,7 @@ function EventCreator() {
     },
     inputText: requiredItems,
     isValidInputText: isValidRequiredItems,
-    label: 'Required items',
+    label: 'Required Items',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsRequiredItemsFocused,
@@ -641,7 +645,7 @@ function EventCreator() {
     inputText: eventStartDate,
     inputKind: 'date',
     isValidInputText: isValidEventStartDate && areValidEventDates,
-    label: 'Event start date',
+    label: 'Event Start Date',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsEventStartDateFocused,
@@ -675,7 +679,7 @@ function EventCreator() {
     inputText: eventEndDate,
     inputKind: 'date',
     isValidInputText: isValidEventEndDate && areValidEventDates,
-    label: 'Event end date',
+    label: 'Event End Date',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsEventEndDateFocused,
@@ -708,7 +712,7 @@ function EventCreator() {
     inputText: eventStartTime,
     inputKind: 'time',
     isValidInputText: isValidEventStartTime && areValidEventTimes,
-    label: 'Event start time',
+    label: 'Event Start Time',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsEventStartTimeFocused,
@@ -741,7 +745,7 @@ function EventCreator() {
     inputText: eventEndTime,
     inputKind: 'time',
     isValidInputText: isValidEventEndTime && areValidEventTimes,
-    label: 'Event end time',
+    label: 'Event End Time',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsEventEndTimeFocused,
@@ -775,7 +779,7 @@ function EventCreator() {
     inputText: rsvpDeadline,
     inputKind: 'date',
     isValidInputText: isValidRsvpDeadline && areValidEventDates,
-    label: 'RSVP deadline',
+    label: 'RSVP Deadline',
     onBlur: () => {
       eventCreatorDispatch({
         type: eventCreatorAction.setIsRsvpDeadlineFocused,
@@ -853,9 +857,19 @@ function EventCreator() {
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === EVENT_CREATOR_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === EVENT_CREATOR_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Please fix errors before submitting'
+            : 'Submit Event Creator form'
+        }
+      >
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
 
   const displayEventDatesFormPage = (
     <FormLayoutWrapper>
@@ -878,7 +892,74 @@ function EventCreator() {
     </FormLayoutWrapper>
   );
 
-  const displayReviewFormPage = <h3>review form page</h3>;
+  const EVENT_CREATOR_REVIEW_OBJECT: FormReviewObject = {
+    'Event Date and Time': [
+      {
+        inputName: 'Event Title',
+        inputValue: eventTitle,
+        isInputValueValid: isValidEventTitle,
+      },
+      {
+        inputName: 'Event Start Date',
+        inputValue: eventStartDate,
+        isInputValueValid: isValidEventStartDate,
+      },
+      {
+        inputName: 'Event End Date',
+        inputValue: eventEndDate,
+        isInputValueValid: isValidEventEndDate,
+      },
+      {
+        inputName: 'Event Start Time',
+        inputValue: eventStartTime,
+        isInputValueValid: isValidEventStartTime,
+      },
+      {
+        inputName: 'Event End Time',
+        inputValue: eventEndTime,
+        isInputValueValid: isValidEventEndTime,
+      },
+      {
+        inputName: 'RSVP Deadline',
+        inputValue: rsvpDeadline,
+        isInputValueValid: isValidRsvpDeadline,
+      },
+    ],
+    'Event Location and Attendees': [
+      {
+        inputName: 'Event Kind',
+        inputValue: eventKind,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Event Location',
+        inputValue: eventLocation,
+        isInputValueValid: isValidEventLocation,
+      },
+      {
+        inputName: 'Event Description',
+        inputValue: eventDescription,
+        isInputValueValid: isValidEventDescription,
+      },
+      {
+        inputName: 'Event Attendees',
+        inputValue: eventAttendees,
+        isInputValueValid: isValidEventAttendees,
+      },
+      {
+        inputName: 'Required Items',
+        inputValue: requiredItems,
+        isInputValueValid: isValidRequiredItems,
+      },
+    ],
+  };
+
+  const displayReviewFormPage = (
+    <FormReviewPage
+      formReviewObject={EVENT_CREATOR_REVIEW_OBJECT}
+      formName="Event Creator"
+    />
+  );
 
   const displayEventCreatorForm =
     currentStepperPosition === 0

@@ -17,19 +17,19 @@ const EVENT_KIND_DATA = [
 
 const EVENT_CREATOR_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Event date and time',
+    description: 'Event Date and Time',
     ariaLabel:
       'Enter event title, description, kind, date, start time, end time',
   },
 
   {
-    description: 'Event location and attendees',
+    description: 'Event Location and Attendees',
     ariaLabel:
       'Enter event location, attendees, required items, and RSVP deadline',
   },
 
   {
-    description: 'Review and proceed',
+    description: 'Review and Proceed',
     ariaLabel:
       'Review all the information you have entered and ensure they are correct before proceeding',
   },
