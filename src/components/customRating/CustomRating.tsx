@@ -19,6 +19,7 @@ import { TbMoodEmpty } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 import { SurveySubmissionPayload } from '../survey/displaySurveys/types';
+import { COLORS_SWATCHES } from '../../constants/data';
 
 type CustomRatingProps = {
   key?: string;
@@ -55,13 +56,19 @@ function CustomRating({
   ratingKind,
   setRatingDispatch,
   dynamicComponentProps,
-}: CustomRatingProps) {
+}: CustomRatingProps): React.JSX.Element {
   const theme = useMantineTheme();
   const {
-    globalState: { padding, rowGap },
+    globalState: {
+      themeObject: { colorScheme, primaryShade },
+      rowGap,
+    },
   } = useGlobalState();
 
   const [value, setValue] = useState<number>(controlledValue ?? 0);
+
+  const { gray } = COLORS_SWATCHES;
+  const textColor = colorScheme === 'light' ? gray[8] : gray[5];
 
   useEffect(() => {
     if (dynamicComponentProps) {
@@ -110,7 +117,7 @@ function CustomRating({
     }
   }, [value]);
 
-  function getEmptyIcon(value: number): JSX.Element {
+  function getEmptyIcon(value: number): React.JSX.Element {
     const defaultProps = { size: rem(24), color: 'gray' };
     if (ratingKind === 'stars') {
       return <TbStar {...defaultProps} />;
@@ -152,7 +159,7 @@ function CustomRating({
     }
   }
 
-  function getFullIcon(value: number): JSX.Element {
+  function getFullIcon(value: number): React.JSX.Element {
     const defaultProps = { size: rem(24) };
 
     if (ratingKind === 'stars') {
@@ -207,9 +214,7 @@ function CustomRating({
       justify="space-between"
       wrap="wrap"
     >
-      <Text color="dark" size="sm">
-        {question}
-      </Text>
+      <Text color={textColor}>{question}</Text>
       <Rating
         key={key}
         value={value}

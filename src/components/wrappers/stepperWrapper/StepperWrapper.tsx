@@ -34,6 +34,7 @@ function StepperWrapper({
   dynamicStepperProps,
   setCurrentStepperPosition,
   stepsInError,
+  customWidth,
 }: StepperWrapperProps) {
   const {
     globalState: {
@@ -139,14 +140,15 @@ function StepperWrapper({
   const errorMessageWithAnd = replaceLastCommaWithAnd(errorMessage);
 
   const descObjLen = descriptionObjectsArray.length;
-  const stepperWidth =
-    width < 480
-      ? 375 - 20
-      : width < 640
-      ? 640 - 20
-      : width >= 1024
-      ? 1024 - 20
-      : width - 20;
+  const stepperWidth = customWidth
+    ? customWidth
+    : width < 480
+    ? 375 - 20
+    : width < 640
+    ? 640 - 20
+    : width >= 1024
+    ? 1024 - 20
+    : width - 20;
 
   return (
     <Flex

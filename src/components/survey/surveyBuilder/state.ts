@@ -7,7 +7,7 @@ import {
 
 const initialDescriptionObjects: DescriptionObjectsArray = [
   {
-    description: 'Enter survey details',
+    description: 'Survey details',
     ariaLabel:
       'Enter survey title, description, expiry date, recipients and anonymity',
   },

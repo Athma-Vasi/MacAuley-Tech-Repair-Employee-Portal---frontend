@@ -208,7 +208,7 @@ function PreviewSurvey({
           )?.response as string;
 
           const description = (
-            <Text size="sm" aria-label="polite">{`You have selected: ${
+            <Text aria-label="polite">{`You have selected: ${
               value ?? 'N/A'
             }`}</Text>
           );
@@ -259,7 +259,7 @@ function PreviewSurvey({
             (q) => q?.question === question
           )?.response as string;
           const description = (
-            <Text size="sm" aria-label="polite">{`You have selected: ${
+            <Text aria-label="polite">{`You have selected: ${
               value ?? 'N/A'
             }`}</Text>
           );
@@ -314,15 +314,10 @@ function PreviewSurvey({
           );
           const description = {
             selected: (
-              <Text
-                size="sm"
-                aria-label="polite"
-              >{`You have selected: ${selectedValues}`}</Text>
+              <Text aria-label="polite">{`You have selected: ${selectedValues}`}</Text>
             ),
             deselected: (
-              <Text size="sm" aria-label="polite">
-                Choose as many as you would like.
-              </Text>
+              <Text aria-label="polite">Choose as many as you would like.</Text>
             ),
           };
 
@@ -458,6 +453,15 @@ function PreviewSurvey({
       ? displaySubmitButton
       : displaySurveyQuestion;
 
+  const customWidth =
+    width < 480
+      ? 375 - 60
+      : width < 640
+      ? 640 * 0.75 - 60
+      : width >= 1024
+      ? 1024 - 60
+      : width * 0.75;
+
   const createdStepperWrapper = (
     <StepperWrapper
       childrenTitle={surveyTitle}
@@ -467,8 +471,10 @@ function PreviewSurvey({
       setCurrentStepperPosition={previewSurveyAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
       parentComponentDispatch={previewSurveyDispatch}
+      customWidth={customWidth}
     >
-      <Stack w="100%">{displayPage}</Stack>
+      {/* <Stack w="100%">{displayPage}</Stack> */}
+      {displayPage}
     </StepperWrapper>
   );
 
@@ -480,7 +486,7 @@ function PreviewSurvey({
 
   /** ------------- end input creation ------------- */
 
-  return <>{createdStepperCard}</>;
+  return createdStepperCard;
 }
 
 export default PreviewSurvey;

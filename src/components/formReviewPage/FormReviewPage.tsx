@@ -42,10 +42,10 @@ function FormReviewPage({
 
   const borderColorGray =
     colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
-  const borderColorRed =
-    colorScheme === 'light'
-      ? `1px solid ${red[primaryShade.light]}`
-      : `1px solid ${red[primaryShade.dark]}`;
+  // const borderColorRed =
+  //   colorScheme === 'light'
+  //     ? `1px solid ${red[primaryShade.light]}`
+  //     : `1px solid ${red[primaryShade.dark]}`;
 
   const textColorRed =
     colorScheme === 'light' ? red[primaryShade.light] : red[primaryShade.dark];
@@ -99,9 +99,6 @@ function FormReviewPage({
             columns={10}
             key={`form-review-${index}`}
             style={{
-              // borderBottom: isInputValueValid
-              //   ? borderColorGray
-              //   : borderColorRed,
               borderBottom: borderColorGray,
             }}
             gutter={rowGap}

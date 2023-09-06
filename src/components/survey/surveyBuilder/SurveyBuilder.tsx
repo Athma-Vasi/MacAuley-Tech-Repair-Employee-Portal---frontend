@@ -78,7 +78,11 @@ import {
   SurveyRecipient,
   SurveyStatistics,
 } from '../types';
-import { mergeSurveyQuestionsGroup, setSurveyQuestions } from '../utils';
+import {
+  createSurveyFormReviewObject,
+  mergeSurveyQuestionsGroup,
+  setSurveyQuestions,
+} from '../utils';
 import {
   initialSurveyBuilderState,
   surveyBuilderAction,
@@ -86,6 +90,9 @@ import {
 } from './state';
 import { CustomRating } from '../../customRating/CustomRating';
 import PreviewSurvey from '../previewSurvey/PreviewSurvey';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 
 function SurveyBuilder() {
   /** ------------- begin hooks ------------- */
@@ -1315,55 +1322,49 @@ function SurveyBuilder() {
       opened={openedHelpModal}
       onClose={closeHelpModal}
       centered
-      title={
-        <Text size="xl" color="dark">
-          Help
-        </Text>
-      }
+      title={<Title order={3}>Help</Title>}
     >
       <Flex direction="column" align="center" justify="flex-start" rowGap="xs">
-        <Text size="sm" color="dark">
+        <Text>
           <strong>Question: </strong>Enter a question for your survey. Your
           survey can have multiple questions (currently a maximum of 3).
         </Text>
         <Group w="100%" position="left" pl="sm">
-          <Text size="sm" color="dark">
-            Example: How do you typically commute to work?
-          </Text>
+          <Text>Example: How do you typically commute to work?</Text>
         </Group>
 
-        <Text size="sm" color="dark">
+        <Text>
           <strong>Response kind:</strong> Select the type of response you want
           to collect for your question from the entered options. Choose 'Choose
           one' for a single response, or 'Choose any' for multiple responses, or
           'Rating' for a rating.
         </Text>
         <Group w="100%" position="left" pl="sm">
-          <Text size="sm" color="dark">
+          <Text>
             Example: 'Choose one' or 'Choose any' for answer relating to
             commute.
           </Text>
         </Group>
 
-        <Text size="sm" color="dark">
+        <Text>
           <strong>Input kind</strong>: Select the type of HTML input you want to
           use for your response. Currently, there are 'Agree/Disagree', 'Radio',
           'Checkbox', and 'Emotion', 'Stars'.
         </Text>
         <Group w="100%" position="left" pl="sm">
-          <Text size="sm" color="dark">
+          <Text>
             Example: 'Radio' to constrain response to single choice. 'Checkbox'
             to allow multiple choices.
           </Text>
         </Group>
 
-        <Text size="sm" color="dark">
+        <Text>
           <strong>Response data options:</strong> Enter the response data
           options for your question (currently a maximum of 7 options per
           question).
         </Text>
         <Group w="100%" position="left" pl="sm">
-          <Text size="sm" color="dark">
+          <Text>
             Example: 'Personal vehicle', 'Public transport', 'Ride share', etc.
             Each response data option input corresponds to a choice.
           </Text>
@@ -1443,7 +1444,9 @@ function SurveyBuilder() {
       opened={openedPreviewSurveyModal}
       onClose={closePreviewSurveyModal}
       centered
-      size={width < 768 ? 'calc(100% - 2rem)' : 'calc(768px - 2rem)'}
+      size={
+        width < 480 ? 375 : width < 640 ? 640 : width >= 1024 ? 1024 : width
+      }
     >
       <PreviewSurvey
         surveyDescription={previewSurveyProps.surveyDescription}
@@ -1482,7 +1485,46 @@ function SurveyBuilder() {
     </FormLayoutWrapper>
   );
 
-  const displaySurveyBuilderReviewPage = <h4>survey builder review page</h4>;
+  const SURVEY_BUILDER_REVIEW_OBJECT: FormReviewObject = {
+    'Survey Details': [
+      {
+        inputName: 'Survey Title',
+        inputValue: surveyTitle,
+        isInputValueValid: isValidSurveyTitle,
+      },
+      {
+        inputName: 'Survey Description',
+        inputValue: surveyDescription,
+        isInputValueValid: isValidSurveyDescription,
+      },
+      {
+        inputName: 'Survey Recipients',
+        inputValue: surveyRecipients,
+        isInputValueValid: true,
+      },
+      {
+        inputName: 'Expiry Date',
+        inputValue: expiryDate,
+        isInputValueValid: isValidExpiryDate,
+      },
+    ],
+  };
+
+  const dynamicSurveyBuilderReviewObject = createSurveyFormReviewObject({
+    initialFormReviewObject: SURVEY_BUILDER_REVIEW_OBJECT,
+    questions,
+    responseKinds,
+    responseInputHtml,
+    responseDataOptionsArray,
+    areResponseDataOptionsValid,
+  });
+
+  const displaySurveyBuilderReviewPage = (
+    <FormReviewPage
+      formReviewObject={dynamicSurveyBuilderReviewObject}
+      formName="Survey Builder"
+    />
+  );
 
   const displaySubmitPreviewButtons =
     currentStepperPosition === maxStepperPosition ? (
@@ -1490,7 +1532,7 @@ function SurveyBuilder() {
         <Tooltip
           label={
             submitButtonDisabled
-              ? 'Fix errors to enable preview survey button'
+              ? 'Please fix errors to enable preview survey button'
               : `Preview survey: ${
                   surveyTitle.length > 23
                     ? surveyTitle.slice(0, 23) + '...'
@@ -1503,7 +1545,7 @@ function SurveyBuilder() {
         <Tooltip
           label={
             submitButtonDisabled
-              ? 'Fix errors to enable submit button'
+              ? 'Please fix errors before submitting'
               : `Submit survey: ${
                   surveyTitle.length > 23
                     ? surveyTitle.slice(0, 23) + '...'
@@ -1562,7 +1604,7 @@ function SurveyBuilder() {
   );
   /** ------------- end layout ------------- */
 
-  return <>{displaySurveyBuilderComponent}</>;
+  return displaySurveyBuilderComponent;
 }
 
 export { SurveyBuilder };

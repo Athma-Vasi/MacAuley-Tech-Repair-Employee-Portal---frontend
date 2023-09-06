@@ -28,12 +28,8 @@ type StepperWrapperProps = {
   childrenTitle?: string;
   children?: React.ReactNode;
   currentStepperPosition: number;
+  customWidth?: number; // mainly for use inside Modal
   descriptionObjectsArray: DescriptionObjectsArray;
-  maxStepperPosition: number;
-  parentComponentDispatch?: React.Dispatch<{
-    type: 'setCurrentStepperPosition';
-    payload: number;
-  }>;
   dynamicStepperProps?: {
     id: string;
     dynamicSetStepperDispatch: React.Dispatch<{
@@ -44,6 +40,11 @@ type StepperWrapperProps = {
       };
     }>;
   };
+  maxStepperPosition: number;
+  parentComponentDispatch?: React.Dispatch<{
+    type: 'setCurrentStepperPosition';
+    payload: number;
+  }>;
 
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   stepsInError: Set<number>;

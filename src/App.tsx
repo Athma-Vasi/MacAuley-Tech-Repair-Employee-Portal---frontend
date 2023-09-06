@@ -82,9 +82,9 @@ function App() {
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* event creator */}
-          <Route path="event-creator" element={<PortalLayout />}>
-            <Route index element={<EventCreator />} />
+          {/* survey builder */}
+          <Route path="survey-builder" element={<PortalLayout />}>
+            <Route index element={<SurveyBuilder />} />
           </Route>
 
           {/* create leave request */}

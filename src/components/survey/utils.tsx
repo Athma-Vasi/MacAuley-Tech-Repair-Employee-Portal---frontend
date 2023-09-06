@@ -1,8 +1,9 @@
 import { Group, Stack } from '@mantine/core';
 
-import { addFieldsToObject } from '../../utils';
-import { SurveyResponseInput, SurveyResponseKind } from './types';
+import { addFieldsToObject, splitCamelCase } from '../../utils';
+import { FormReviewObject } from '../formReviewPage/FormReviewPage';
 import { SurveyQuestions } from './surveyBuilder/types';
+import { SurveyResponseInput, SurveyResponseKind } from './types';
 
 type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
@@ -81,6 +82,7 @@ function setSurveyQuestions({
   responseDataOptionsArray,
 }: SetSurveyQuestionsInput): SurveyQuestions[] {
   // replace empty values in responseDataOptionsArray with empty array
+  // because dynamic input creation in SurveyBuilder.tsx creates empty values in responseDataOptionsArray, areResponseDataOptions${Valid, Focused}
   // @see https://stackoverflow.com/questions/61700308/replace-the-empty-element-of-an-array-with-another-array-or-with-another-element
   responseDataOptionsArray = Array.from(responseDataOptionsArray, (arr, idx) =>
     idx in responseDataOptionsArray ? arr : []
@@ -110,7 +112,95 @@ function setSurveyQuestions({
   );
 }
 
+/**
+ * @description Pure function. Creates a new form review object from dynamically created inputs in SurveyBuilder.tsx.
+ */
+
+type CreateSurveyFormReviewObjectInput = {
+  initialFormReviewObject: FormReviewObject;
+  questions: string[];
+  responseKinds: string[];
+  responseInputHtml: string[];
+  responseDataOptionsArray: string[][];
+  areResponseDataOptionsValid: boolean[][];
+};
+function createSurveyFormReviewObject({
+  initialFormReviewObject,
+  questions,
+  responseKinds,
+  responseInputHtml,
+  responseDataOptionsArray,
+  areResponseDataOptionsValid,
+}: CreateSurveyFormReviewObjectInput): FormReviewObject {
+  // only add to form review object if there are questions
+  if (questions.length === 1 && questions[0] === '') {
+    return initialFormReviewObject;
+  }
+
+  const formReviewObject = questions.reduce(
+    (formReviewObjectAcc: FormReviewObject, question: string, questionIdx) => {
+      // create question field in form review object
+      const modifiedQuestion = `Question ${
+        questionIdx + 1
+      }: ${question.trim()}`;
+      formReviewObjectAcc[modifiedQuestion] = [];
+
+      // add response type to form review object
+      {
+        const inputName = 'Response type';
+        const inputValue = splitCamelCase(responseKinds[questionIdx]);
+        const isInputValueValid = true;
+
+        formReviewObjectAcc[modifiedQuestion].push({
+          inputName,
+          inputValue,
+          isInputValueValid,
+        });
+      }
+
+      // add response input to form review object
+      const inputName = 'Response input';
+      const inputValue = splitCamelCase(responseInputHtml[questionIdx]);
+      const isInputValueValid = true;
+
+      formReviewObjectAcc[modifiedQuestion].push({
+        inputName,
+        inputValue,
+        isInputValueValid,
+      });
+
+      // only add response data options to form review object if there are response data options
+      if (!responseDataOptionsArray[questionIdx]) {
+        return formReviewObjectAcc;
+      }
+
+      // add response data options to form review object
+      const questionObjectArray = responseDataOptionsArray[questionIdx].map(
+        (responseDataOption: string, responseDataOptionIdx) => {
+          const inputName = `Option ${responseDataOptionIdx + 1}`;
+          const inputValue = responseDataOption;
+          const isInputValueValid =
+            areResponseDataOptionsValid[questionIdx][responseDataOptionIdx];
+
+          return {
+            inputName,
+            inputValue,
+            isInputValueValid,
+          };
+        }
+      );
+      formReviewObjectAcc[modifiedQuestion].push(...questionObjectArray);
+
+      return formReviewObjectAcc;
+    },
+    structuredClone(initialFormReviewObject)
+  );
+
+  return formReviewObject;
+}
+
 export {
+  createSurveyFormReviewObject,
   groupMergedQuestionsByAmount,
   mergeSurveyQuestionsGroup,
   setSurveyQuestions,
