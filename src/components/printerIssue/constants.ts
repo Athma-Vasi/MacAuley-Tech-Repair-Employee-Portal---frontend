@@ -5,19 +5,19 @@ import { DescriptionObjectsArray } from '../wrappers';
 
 const CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Personal and contact details',
+    description: 'Personal and Contact Details',
     ariaLabel:
       'Enter title, contact number, contact email, date and time of occurence',
   },
 
   {
-    description: 'Printer details',
+    description: 'Printer Details',
     ariaLabel:
       'Enter printer: make, model, serial number, description of issue, and any additional information',
   },
 
   {
-    description: 'Review and proceed',
+    description: 'Review and Proceed',
     ariaLabel: 'Review the accuracy of information entered and proceed',
   },
 ];
