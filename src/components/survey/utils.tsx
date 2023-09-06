@@ -112,21 +112,22 @@ function setSurveyQuestions({
   );
 }
 
-/**
- * @description Pure function. Creates a new form review object from dynamically created inputs in SurveyBuilder.tsx.
- */
-
 type CreateSurveyFormReviewObjectInput = {
   initialFormReviewObject: FormReviewObject;
   questions: string[];
+  areValidQuestions: boolean[];
   responseKinds: string[];
   responseInputHtml: string[];
   responseDataOptionsArray: string[][];
   areResponseDataOptionsValid: boolean[][];
 };
+/**
+ * @description Pure function. Creates a new form review object from dynamically created inputs in SurveyBuilder.tsx.
+ */
 function createSurveyFormReviewObject({
   initialFormReviewObject,
   questions,
+  areValidQuestions,
   responseKinds,
   responseInputHtml,
   responseDataOptionsArray,
@@ -140,10 +141,21 @@ function createSurveyFormReviewObject({
   const formReviewObject = questions.reduce(
     (formReviewObjectAcc: FormReviewObject, question: string, questionIdx) => {
       // create question field in form review object
-      const modifiedQuestion = `Question ${
-        questionIdx + 1
-      }: ${question.trim()}`;
+      const modifiedQuestion = `Question ${questionIdx + 1}`;
       formReviewObjectAcc[modifiedQuestion] = [];
+
+      // add question to form review object
+      {
+        const inputName = 'Question';
+        const inputValue = question;
+        const isInputValueValid = areValidQuestions[questionIdx];
+
+        formReviewObjectAcc[modifiedQuestion].push({
+          inputName,
+          inputValue,
+          isInputValueValid,
+        });
+      }
 
       // add response type to form review object
       {

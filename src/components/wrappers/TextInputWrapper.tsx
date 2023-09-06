@@ -74,6 +74,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     globalState: {
       themeObject: { colorScheme, primaryShade },
       width,
+      padding,
     },
   } = useGlobalState();
 
@@ -106,7 +107,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
   } = creatorInfoObject;
 
   const dynamicInputLabel = dynamicInputs ? (
-    <Group w="100%" position="apart">
+    <Group w="100%" position="apart" py={padding}>
       <Text size="sm">{label}</Text>
       {dynamicInputs.map((input, index) => (
         <Group key={`${index}`}>{input}</Group>

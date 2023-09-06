@@ -50,6 +50,7 @@ type AccessibleTextAreaInputCreatorInfo = {
   autosize?: boolean;
   minRows?: number;
   maxRows?: number;
+  textAreaWidth?: number;
 };
 
 type TextAreaInputWrapperProps = {
@@ -64,6 +65,7 @@ function TextAreaInputWrapper({
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
+      padding,
       width,
     },
   } = useGlobalState();
@@ -93,10 +95,11 @@ function TextAreaInputWrapper({
     size = 'sm',
     minRows = 3,
     maxRows = 7,
+    textAreaWidth,
   } = creatorInfoObject;
 
   const dynamicInputLabel = dynamicInputs ? (
-    <Group w="100%" position="apart">
+    <Group w="100%" position="apart" py={padding}>
       <Text size="sm">{label}</Text>
       {dynamicInputs.map((input, index) => (
         <Group key={`${index}`}>{input}</Group>
@@ -117,7 +120,7 @@ function TextAreaInputWrapper({
     )
   ) : null;
 
-  const inputWidth = width < 480 ? 330 : 450;
+  const inputWidth = textAreaWidth ? textAreaWidth : width < 480 ? 330 : 450;
 
   const inputWithPopover = (
     <Popover

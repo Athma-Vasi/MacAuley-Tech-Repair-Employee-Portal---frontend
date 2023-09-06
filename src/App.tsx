@@ -82,9 +82,9 @@ function App() {
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* survey builder */}
-          <Route path="survey-builder" element={<PortalLayout />}>
-            <Route index element={<SurveyBuilder />} />
+          {/* announcement */}
+          <Route path="announcement" element={<PortalLayout />}>
+            <Route index element={<CreateAnnouncement />} />
           </Route>
 
           {/* create leave request */}

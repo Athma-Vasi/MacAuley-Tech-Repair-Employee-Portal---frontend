@@ -1,5 +1,5 @@
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Flex, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { Flex, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { MdOutlineAdd } from 'react-icons/md';
 import {
@@ -53,6 +53,11 @@ import { ResourceRequestServerResponse } from '../../../types';
 import { AnnouncementDocument, RatingResponse } from './types';
 import { CustomNotification } from '../../customNotification';
 import { InvalidTokenError } from 'jwt-decode';
+import { COLORS_SWATCHES } from '../../../constants/data';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
+import { createAnnouncementFormReviewObject } from './utils';
 
 function CreateAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -97,7 +102,12 @@ function CreateAnnouncement() {
     loadingMessage,
   } = createAnnouncementState;
   const {
-    globalState: { padding, rowGap, width },
+    globalState: {
+      padding,
+      rowGap,
+      width,
+      themeObject: { colorScheme, primaryShade },
+    },
   } = useGlobalState();
   const {
     authState: { accessToken },
@@ -577,13 +587,12 @@ function CreateAnnouncement() {
   const articleParagraphTextAreaInputsCreatorInfo: AccessibleTextAreaInputCreatorInfo[] =
     Array.from({ length: article.length }, (_, index) => {
       const deleteParagraphButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-        buttonVariant: 'outline',
         buttonDisabled: article.length === 1,
         buttonLabel: (
           <Tooltip label={`Delete paragraph ${index + 1}`}>
             <Group>
               <TbTrash />
-              <Text>Delete</Text>
+              Delete
             </Group>
           </Tooltip>
         ),
@@ -601,12 +610,11 @@ function CreateAnnouncement() {
       };
 
       const insertParagraphButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-        buttonVariant: 'outline',
         buttonLabel: (
           <Tooltip label={`Insert paragraph between ${index} and ${index + 1}`}>
             <Group>
               <TbRowInsertTop />
-              <Text>Insert</Text>
+              Insert
             </Group>
           </Tooltip>
         ),
@@ -676,18 +684,19 @@ function CreateAnnouncement() {
         semanticName: `Paragraph ${index + 1}`,
         ref: index === article.length - 1 ? newArticleParagraphRef : null,
         required: true,
+        textAreaWidth:
+          width < 480 ? 330 : width >= 1024 ? 1024 * 0.62 : width * 0.62,
       };
 
       return creatorInfoObject;
     });
 
   const addNewArticleParagraphButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonVariant: 'outline',
     buttonLabel: (
       <Tooltip label="Add new paragraph">
         <Group>
           <TbRowInsertBottom />
-          <Text>Add</Text>
+          Add
         </Group>
       </Tooltip>
     ),
@@ -747,9 +756,19 @@ function CreateAnnouncement() {
 
   /** ------------- begin input display ------------- */
   const displaySubmitButton =
-    currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Please fix errors before submitting'
+            : 'Submit Announcement form'
+        }
+      >
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
   const displayAddArticleParagraphButton = createdAddNewArticleParagraphButton;
 
   const displayAnnouncementDetailsFormPage = (
@@ -761,35 +780,73 @@ function CreateAnnouncement() {
     </FormLayoutWrapper>
   );
 
+  const { red } = COLORS_SWATCHES;
+  const textErrorColor =
+    colorScheme === 'light' ? red[primaryShade.light] : red[primaryShade.dark];
+
   const displayArticleParagraphsFormPage = (
-    <Stack w="100%" p={padding}>
+    <FormLayoutWrapper>
       <Group position="apart" w="100%">
-        <TextWrapper creatorInfoObj={{ size: 'lg' }}>{title}</TextWrapper>
-        <TextWrapper creatorInfoObj={{}}>
-          Max article length: {MAX_ARTICLE_LENGTH} characters
-        </TextWrapper>
+        <Title order={4}>{title}</Title>
+        <Text>Max article length: {MAX_ARTICLE_LENGTH} characters</Text>
       </Group>
       {createdArticleParagraphsTextAreaInputs}
       <Group w="100%" position="apart">
-        <TextWrapper
-          creatorInfoObj={{}}
-        >{`${timeToRead} min read`}</TextWrapper>
+        <Text>{`${timeToRead} min read`}</Text>
 
         {displayAddArticleParagraphButton}
-
-        {isArticleLengthExceeded ? (
-          <TextWrapper creatorInfoObj={{ color: 'red' }}>
-            Maximum character length of {MAX_ARTICLE_LENGTH} reached
-          </TextWrapper>
-        ) : null}
       </Group>
-      <TextWrapper creatorInfoObj={{}}>
-        Current article length: {article.join(' ').length} characters
-      </TextWrapper>
-    </Stack>
+      <Text>Current article length: {article.join(' ').length} characters</Text>
+      {isArticleLengthExceeded ? (
+        <Text color={textErrorColor}>
+          {`Maximum character length of ${MAX_ARTICLE_LENGTH} ${
+            article.join(' ').length === MAX_ARTICLE_LENGTH
+              ? 'reached'
+              : 'exceeded'
+          }`}
+        </Text>
+      ) : null}
+    </FormLayoutWrapper>
   );
 
-  const displayCreateAnnouncementReviewPage = <h3>announcement review page</h3>;
+  const CREATE_ANNOUNCEMENT_REVIEW_OBJECT: FormReviewObject = {
+    'Announcement Details': [
+      {
+        inputName: 'Article Title',
+        inputValue: title,
+        isInputValueValid: isValidTitle,
+      },
+      {
+        inputName: 'Author',
+        inputValue: author,
+        isInputValueValid: isValidAuthor,
+      },
+      {
+        inputName: 'Banner Image Src',
+        inputValue: bannerImageSrc,
+        isInputValueValid: isValidBannerImageSrc,
+      },
+      {
+        inputName: 'Banner Image Alt',
+        inputValue: bannerImageAlt,
+        isInputValueValid: isValidBannerImageAlt,
+      },
+    ],
+  };
+
+  const dynamicCreateAnnouncementFormReviewObject =
+    createAnnouncementFormReviewObject({
+      initialAnnouncementFormReviewObject: CREATE_ANNOUNCEMENT_REVIEW_OBJECT,
+      article,
+      areValidArticleParagraphs,
+    });
+
+  const displayCreateAnnouncementReviewPage = (
+    <FormReviewPage
+      formReviewObject={dynamicCreateAnnouncementFormReviewObject}
+      formName="Create Announcement"
+    />
+  );
 
   const displayCreateAnnouncementForm =
     currentStepperPosition === 0

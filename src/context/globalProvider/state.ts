@@ -38,7 +38,7 @@ const initialThemeObject: ThemeObject = {
     },
     Title: {
       defaultProps: {
-        color: 'dark.5',
+        color: 'dark.4',
       },
     },
   },
@@ -141,7 +141,7 @@ function globalReducer(
       const { defaultProps: titleDefaultProps } = Title;
       const newTitleDefaultProps = {
         ...titleDefaultProps,
-        color: colorScheme === 'dark' ? 'dark.1' : 'dark.5',
+        color: colorScheme === 'dark' ? 'dark.1' : 'dark.4',
       };
 
       return {

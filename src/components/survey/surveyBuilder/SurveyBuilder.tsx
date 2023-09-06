@@ -1513,6 +1513,7 @@ function SurveyBuilder() {
   const dynamicSurveyBuilderReviewObject = createSurveyFormReviewObject({
     initialFormReviewObject: SURVEY_BUILDER_REVIEW_OBJECT,
     questions,
+    areValidQuestions,
     responseKinds,
     responseInputHtml,
     responseDataOptionsArray,
