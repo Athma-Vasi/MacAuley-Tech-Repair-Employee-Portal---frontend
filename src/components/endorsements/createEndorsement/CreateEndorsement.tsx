@@ -7,14 +7,15 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
 import {
-  returnAccessibleButtonElements,
-  returnAccessibleCheckboxGroupInputsElements,
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
+  returnAccessibleButtonElements,
+  returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
+  replaceLastCommaWithAnd,
   returnGrammarValidationText,
   returnNameValidationText,
 } from '../../../utils';
@@ -37,6 +38,10 @@ import {
   initialCreateEndorsementState,
 } from './state';
 import { EmployeeAttributes } from './types';
+import { Group, Tooltip } from '@mantine/core';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 
 function CreateEndorsement() {
   const [createEndorsementState, createEndorsementDispatch] = useReducer(
@@ -177,16 +182,31 @@ function CreateEndorsement() {
     }),
   });
 
+  const attributeEndorsedStrCapitalized = attributeEndorsed.map((str) => {
+    const splitStr = str.split(' and ');
+    if (splitStr.length > 1) {
+      return splitStr
+        .map((str) => str.charAt(0).toUpperCase() + str.slice(1))
+        .join(' and ');
+    }
+
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  });
+  const attributeEndorsedStr = replaceLastCommaWithAnd(
+    attributeEndorsedStrCapitalized.join(', ')
+  );
+
   const [
     attributeEndorsedInputSelectedText,
     attributeEndorsedInputDeselectedText,
   ] = AccessibleSelectedDeselectedTextElements({
     isSelected: attributeEndorsed.length > 0,
     semanticName: 'attributes endorsed',
-    selectedDescription: `You have chosen: ${attributeEndorsed.join(
-      ', '
-    )} attribute${attributeEndorsed.length > 1 ? 's' : ''} to endorse`,
+    selectedDescription: `You have chosen: ${attributeEndorsedStr} attribute${
+      attributeEndorsed.length > 1 ? 's' : ''
+    } to endorse`,
     deselectedDescription: 'Please select one or more attributes to endorse',
+    theme: 'muted',
   });
 
   const titleTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -196,7 +216,7 @@ function CreateEndorsement() {
     },
     inputText: title,
     isValidInputText: isValidTitle,
-    label: 'Endorsement title',
+    label: 'Endorsement Title',
     onBlur: () => {
       createEndorsementDispatch({
         type: createEndorsementAction.setIsTitleFocused,
@@ -228,7 +248,7 @@ function CreateEndorsement() {
     },
     inputText: employeeToBeEndorsed,
     isValidInputText: isValidEmployeeToBeEndorsed,
-    label: 'Employee to be endorsed',
+    label: 'Employee to be Endorsed',
     onBlur: () => {
       createEndorsementDispatch({
         type: createEndorsementAction.setIsEmployeeToBeEndorsedFocused,
@@ -263,7 +283,7 @@ function CreateEndorsement() {
       },
       inputText: summaryOfEndorsement,
       isValidInputText: isValidSummaryOfEndorsement,
-      label: 'Summary of endorsement',
+      label: 'Summary of Endorsement',
       onBlur: () => {
         createEndorsementDispatch({
           type: createEndorsementAction.setIsSummaryOfEndorsementFocused,
@@ -295,7 +315,7 @@ function CreateEndorsement() {
         selected: attributeEndorsedInputSelectedText,
         deselected: attributeEndorsedInputDeselectedText,
       },
-      label: 'Employee attributes',
+      label: 'Employee Attribute(s)',
       semanticName: 'employee attributes',
       value: attributeEndorsed,
       required: true,
@@ -342,9 +362,19 @@ function CreateEndorsement() {
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === CREATE_ENDORSEMENT_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === CREATE_ENDORSEMENT_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Please correct errors before submitting'
+            : 'Submit Endorsement form'
+        }
+      >
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
 
   const displayEndorsementFirstPage = (
     <FormLayoutWrapper>
@@ -360,7 +390,39 @@ function CreateEndorsement() {
     </FormLayoutWrapper>
   );
 
-  const displayCreateEndorsementReview = <h2>Review</h2>;
+  const CREATE_ENDORSEMENT_REVIEW_OBJECT: FormReviewObject = {
+    'Employee Endorsement': [
+      {
+        inputName: 'Endorsement Title',
+        inputValue: title,
+        isInputValueValid: isValidTitle,
+      },
+      {
+        inputName: 'Employee to be Endorsed',
+        inputValue: employeeToBeEndorsed,
+        isInputValueValid: isValidEmployeeToBeEndorsed,
+      },
+      {
+        inputName: 'Summary of Endorsement',
+        inputValue: summaryOfEndorsement,
+        isInputValueValid: isValidSummaryOfEndorsement,
+      },
+    ],
+    'Attribute(s) Endorsed': [
+      {
+        inputName: 'Employee Attribute(s)',
+        inputValue: attributeEndorsedStr,
+        isInputValueValid: attributeEndorsed.length > 0,
+      },
+    ],
+  };
+
+  const displayCreateEndorsementReview = (
+    <FormReviewPage
+      formReviewObject={CREATE_ENDORSEMENT_REVIEW_OBJECT}
+      formName="Endorsement"
+    />
+  );
 
   const displayCreateEndorsementForm =
     currentStepperPosition === 0
@@ -399,194 +461,3 @@ function CreateEndorsement() {
 }
 
 export { CreateEndorsement };
-
-/**
- * const displayCreateEndorsementForm =
-    currentStepperPosition === 0 ? (
-      <Flex
-        direction="column"
-        align="flex-start"
-        justify="center"
-        rowGap="lg"
-        w="100%"
-      >
-        <TextInput
-          size="sm"
-          w="100%"
-          color="dark"
-          label="Endorsement title"
-          placeholder="Enter title of endorsement"
-          autoComplete="off"
-          aria-required
-          aria-describedby={
-            isValidTitle ? 'title-input-note-valid' : 'title-input-note-error'
-          }
-          aria-invalid={isValidTitle ? false : true}
-          value={title}
-          icon={
-            isValidTitle ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : null
-          }
-          error={!isValidTitle && title !== ''}
-          description={isValidTitle ? titleInputValidText : titleInputErrorText}
-          onChange={(event) => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setTitle,
-              payload: event.currentTarget.value,
-            });
-          }}
-          onFocus={() => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setIsTitleFocused,
-              payload: true,
-            });
-          }}
-          onBlur={() => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setIsTitleFocused,
-              payload: false,
-            });
-          }}
-          withAsterisk
-          required
-          minLength={2}
-          maxLength={75}
-        />
-
-        <TextInput
-          size="sm"
-          w="100%"
-          color="dark"
-          label="Employee to be endorsed"
-          placeholder="Enter first, preferred or full name"
-          autoComplete="off"
-          aria-required
-          aria-describedby={
-            isValidEmployeeToBeEndorsed
-              ? 'employee-to-be-endorsed-input-note-valid'
-              : 'employee-to-be-endorsed-input-note-error'
-          }
-          aria-invalid={isValidEmployeeToBeEndorsed ? false : true}
-          value={employeeToBeEndorsed}
-          icon={
-            isValidEmployeeToBeEndorsed ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : null
-          }
-          error={!isValidEmployeeToBeEndorsed && employeeToBeEndorsed !== ''}
-          description={
-            isValidEmployeeToBeEndorsed
-              ? employeeToBeEndorsedInputValidText
-              : employeeToBeEndorsedInputErrorText
-          }
-          onChange={(event) => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setEmployeeToBeEndorsed,
-              payload: event.currentTarget.value,
-            });
-          }}
-          onFocus={() => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setIsEmployeeToBeEndorsedFocused,
-              payload: true,
-            });
-          }}
-          onBlur={() => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setIsEmployeeToBeEndorsedFocused,
-              payload: false,
-            });
-          }}
-          withAsterisk
-          required
-          minLength={2}
-          maxLength={100}
-        />
-
-        <Textarea
-          size="sm"
-          w="100%"
-          color="dark"
-          label="Summary of endorsement"
-          placeholder="Enter summary of endorsement"
-          autoComplete="off"
-          aria-required
-          aria-describedby={
-            isValidSummaryOfEndorsement
-              ? 'summary-of-endorsement-input-note-valid'
-              : 'summary-of-endorsement-input-note-error'
-          }
-          aria-invalid={isValidSummaryOfEndorsement ? false : true}
-          value={summaryOfEndorsement}
-          icon={
-            isValidSummaryOfEndorsement ? (
-              <FontAwesomeIcon icon={faCheck} color="green" />
-            ) : null
-          }
-          error={!isValidSummaryOfEndorsement && summaryOfEndorsement !== ''}
-          description={
-            isValidSummaryOfEndorsement
-              ? summaryOfEndorsementInputValidText
-              : summaryOfEndorsementInputErrorText
-          }
-          onChange={(event) => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setSummaryOfEndorsement,
-              payload: event.currentTarget.value,
-            });
-          }}
-          onFocus={() => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setIsSummaryOfEndorsementFocused,
-              payload: true,
-            });
-          }}
-          onBlur={() => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setIsSummaryOfEndorsementFocused,
-              payload: false,
-            });
-          }}
-          withAsterisk
-          autosize
-          minRows={3}
-          maxRows={10}
-          required
-          minLength={2}
-          maxLength={2000}
-        />
-
-        <Checkbox.Group
-          label="Employee attributes"
-          description="Select all attributes that apply"
-          value={attributeEndorsed}
-          onChange={(event) => {
-            createEndorsementDispatch({
-              type: createEndorsementAction.setAttributeEndorsed,
-              payload: event as EmployeeAttributes,
-            });
-          }}
-        >
-          <Flex
-            pt="lg"
-            direction="column"
-            align="flex-start"
-            justify="center"
-            rowGap="md"
-            w="100%"
-          >
-            {EMPLOYEE_ATTRIBUTES_DATA.map(({ value, label }) => (
-              <Checkbox
-                key={label}
-                value={value}
-                label={label}
-                // color="dark"
-                size="sm"
-              />
-            ))}
-          </Flex>
-        </Checkbox.Group>
-      </Flex>
-    ) : null;
- */

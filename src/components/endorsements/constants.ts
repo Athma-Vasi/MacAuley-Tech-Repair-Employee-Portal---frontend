@@ -7,17 +7,17 @@ const CREATE_ENDORSEMENT_MAX_STEPPER_POSITION = 3;
 
 const CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Employee endorsement',
+    description: 'Employee Endorsement',
     ariaLabel: 'Enter title, user to be endorsed and summary of endorsement',
   },
 
   {
-    description: 'Attribute(s) endorsed',
+    description: 'Attribute(s) Endorsed',
     ariaLabel: 'Select attributes to be endorsed',
   },
 
   {
-    description: 'Review and proceed',
+    description: 'Review and Proceed',
     ariaLabel: 'Review accuracy of entered information before proceeding',
   },
 ];
