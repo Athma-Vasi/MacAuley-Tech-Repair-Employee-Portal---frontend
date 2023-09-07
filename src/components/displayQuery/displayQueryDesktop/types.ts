@@ -6,6 +6,7 @@ import type { ComponentQueryData } from '../../queryBuilder';
 type DisplayQueryDesktopProps<Doc> = {
   componentQueryData: ComponentQueryData[];
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
+  groupByRadioData: Array<{ label: string; value: string }>;
   groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
   groupBySelection: string;
 
@@ -53,4 +54,35 @@ type DisplayQueryDesktopProps<Doc> = {
   tableViewSelection: 'expanded' | 'condensed';
 };
 
-export type { DisplayQueryDesktopProps };
+type DisplayQueryDesktopState = {
+  fieldToSortBy: string;
+  sortDirection: 'asc' | 'desc';
+};
+
+type DisplayQueryDesktopAction = {
+  setFieldToSortBy: 'setFieldToSortBy';
+  setSortDirection: 'setSortDirection';
+};
+
+type DisplayQueryDesktopReducer = (
+  state: DisplayQueryDesktopState,
+  action: DisplayQueryDesktopAction
+) => DisplayQueryDesktopState;
+
+type DisplayQueryDesktopDispatch =
+  | {
+      type: DisplayQueryDesktopAction['setFieldToSortBy'];
+      payload: string;
+    }
+  | {
+      type: DisplayQueryDesktopAction['setSortDirection'];
+      payload: 'asc' | 'desc';
+    };
+
+export type {
+  DisplayQueryDesktopAction,
+  DisplayQueryDesktopDispatch,
+  DisplayQueryDesktopProps,
+  DisplayQueryDesktopReducer,
+  DisplayQueryDesktopState,
+};

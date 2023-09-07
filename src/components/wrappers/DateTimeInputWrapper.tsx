@@ -99,7 +99,7 @@ function DateTimeInputWrapper({
       position="bottom"
       shadow="md"
       transitionProps={{ transition: 'pop' }}
-      width="target"
+      width={customWidth === '100%' ? 330 : 'target'}
       withArrow
     >
       <Popover.Target>

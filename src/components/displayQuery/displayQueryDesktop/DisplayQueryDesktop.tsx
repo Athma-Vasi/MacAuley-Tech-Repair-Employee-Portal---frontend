@@ -16,11 +16,11 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import { CSSProperties, FormEvent } from 'react';
+import { CSSProperties, FormEvent, useEffect, useReducer } from 'react';
 import { IoMdOpen } from 'react-icons/io';
 import {
-  TbArrowDown,
-  TbArrowUp,
+  TbSortAscending,
+  TbSortDescending,
   TbStatusChange,
   TbTrash,
   TbUpload,
@@ -35,6 +35,7 @@ import { RequestStatus } from '../../../types';
 import {
   addFieldsToObject,
   formatDate,
+  logState,
   replaceLastCommaWithAnd,
   splitCamelCase,
 } from '../../../utils';
@@ -43,6 +44,13 @@ import {
   COLORS_SWATCHES,
   FIELDNAMES_WITH_DATE_VALUES,
 } from '../../../constants/data';
+import {
+  displayQueryDesktopAction,
+  displayQueryDesktopReducer,
+  initialDisplayQueryDesktopState,
+} from './state';
+import { table } from 'console';
+import { sortGroupedByQueryResponseData } from './utils';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
@@ -51,6 +59,7 @@ function DisplayQueryDesktop<Doc>({
   deleteResourceKindDispatch,
   fileUploadsData = [],
   groupedByQueryResponseData,
+  groupByRadioData,
   groupBySelection,
 
   openDeleteAcknowledge,
@@ -65,6 +74,11 @@ function DisplayQueryDesktop<Doc>({
   style = {},
   tableViewSelection,
 }: DisplayQueryDesktopProps<Doc>) {
+  const [displayQueryDesktopState, displayQueryDesktopDispatch] = useReducer(
+    displayQueryDesktopReducer,
+    initialDisplayQueryDesktopState
+  );
+  const { fieldToSortBy, sortDirection } = displayQueryDesktopState;
   const {
     globalState: {
       width,
@@ -76,6 +90,53 @@ function DisplayQueryDesktop<Doc>({
   const {
     authState: { roles },
   } = useAuth();
+
+  const { dark, gray } = COLORS_SWATCHES;
+
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const themeColor = Object.entries(COLORS_SWATCHES).find(
+    ([color, _shades]) => color === primaryColor
+  )?.[1];
+  const scrollBarColor = themeColor ? themeColor[colorShade] : gray[5];
+  const tableHeadersBgColor = themeColor ? themeColor[3] : gray[0];
+  const highlightColor = themeColor
+    ? colorScheme === 'light'
+      ? themeColor[2]
+      : gray[6]
+    : gray[6];
+  const borderColor =
+    colorScheme === 'light'
+      ? `1px solid ${gray[3]}`
+      : `1px solid ${scrollBarColor}`;
+  const backgroundColor =
+    colorScheme === 'light'
+      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+      : dark[6];
+
+  console.log('colorScheme: ', colorScheme);
+  console.log('highlightColor: ', highlightColor);
+
+  const scrollBarStyle = {
+    scrollbar: {
+      '&, &:hover': {
+        background: colorScheme === 'dark' ? dark[6] : gray[0],
+      },
+
+      '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
+        backgroundColor: scrollBarColor,
+      },
+
+      '&[data-orientation="horizontal"] .mantine-ScrollArea-thumb': {
+        backgroundColor: scrollBarColor,
+      },
+    },
+
+    corner: {
+      opacity: 1,
+      background: colorScheme === 'dark' ? dark[6] : gray[0],
+    },
+  };
 
   const createdUpdateRequestStatusRadioGroup =
     returnAccessibleRadioGroupInputsElements([
@@ -109,56 +170,11 @@ function DisplayQueryDesktop<Doc>({
       buttonLabel: 'Submit',
       leftIcon: <TbUpload />,
       buttonType: 'submit',
+      buttonVariant: colorScheme === 'light' ? 'subtle' : 'outline',
       semanticDescription: 'Submit request status changes',
       semanticName: 'Submit',
-      // size: 'xs',
     },
   ]);
-
-  const { dark, gray } = COLORS_SWATCHES;
-  const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
-  const backgroundColor =
-    colorScheme === 'light'
-      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-      : dark[6];
-
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
-  const themeColor = Object.entries(COLORS_SWATCHES).find(
-    ([color, _shades]) => color === primaryColor
-  )?.[1];
-  const scrollBarColor = themeColor ? themeColor[colorShade] : gray[5];
-  const tableHeadersBgColor = themeColor ? themeColor[3] : gray[0];
-  const highlightColor = themeColor
-    ? colorScheme === 'light'
-      ? themeColor[2]
-      : gray[6]
-    : gray[6];
-
-  console.log('colorScheme: ', colorScheme);
-  console.log('highlightColor: ', highlightColor);
-
-  const scrollBarStyle = {
-    scrollbar: {
-      '&, &:hover': {
-        background: colorScheme === 'dark' ? dark[6] : gray[0],
-      },
-
-      '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
-        backgroundColor: scrollBarColor,
-      },
-
-      '&[data-orientation="horizontal"] .mantine-ScrollArea-thumb': {
-        backgroundColor: scrollBarColor,
-      },
-    },
-
-    corner: {
-      opacity: 1,
-      background: colorScheme === 'dark' ? dark[6] : gray[0],
-    },
-  };
 
   const tableHeaderValueExclusionSet = new Set(['_id', 'userId']); // used for expanded / condensed table view
 
@@ -182,7 +198,7 @@ function DisplayQueryDesktop<Doc>({
 
   console.log('groupedByFieldValuesSet: ', groupedByFieldValuesSet);
 
-  // because the data received is in a Map grouped by a field, header is created separately to avoid creating multiple tables
+  // because the data received is in a Map grouped by a field, header values are created separately to avoid creating multiple tables
   const tableHeaderValuesArr =
     groupedByQueryResponseData.size > 0
       ? Array.from(groupedByQueryResponseData).map(
@@ -208,6 +224,46 @@ function DisplayQueryDesktop<Doc>({
       : [];
   console.log('tableHeaderValuesArr: ', tableHeaderValuesArr);
 
+  const headerExclusionSet = new Set([
+    '_id',
+    'user id',
+    'file uploads',
+    'delete',
+  ]);
+  const groupByRadioDataLabels = new Set(
+    groupByRadioData.map(({ label }) => label.toLowerCase())
+  );
+  // filtering out grouped by data fields to allow sorting on non-grouped by fields (the grouped by field is already sorted)
+  const headerValuesToGetSortArrows = tableHeaderValuesArr.reduce(
+    (filteredHeaderValsAcc: string[], headerVal) => {
+      // ignore any header values present in group by radio data
+      if (
+        groupByRadioDataLabels.has(headerVal.toLowerCase()) ||
+        headerExclusionSet.has(headerVal.toLowerCase())
+      ) {
+        return filteredHeaderValsAcc;
+      }
+      filteredHeaderValsAcc.push(headerVal);
+
+      return filteredHeaderValsAcc;
+    },
+    []
+  );
+
+  console.log('headerValuesToGetSortArrows: ', headerValuesToGetSortArrows);
+
+  console.log('groupedByQueryResponseData: ', groupedByQueryResponseData);
+  const sortedGroupedQueryResponseData = sortGroupedByQueryResponseData({
+    componentQueryData,
+    groupedByQueryResponseData,
+    fieldToSortBy,
+    sortDirection,
+  });
+  console.log(
+    'sortedGroupedQueryResponseData: ',
+    sortedGroupedQueryResponseData
+  );
+
   const displayTable = (
     <ScrollArea styles={() => scrollBarStyle} type="auto">
       <Table captionSide="top" striped highlightOnHover w="100%">
@@ -221,6 +277,8 @@ function DisplayQueryDesktop<Doc>({
               const headerStyle: CSSProperties = {
                 border:
                   colorScheme === 'light' ? '' : `1px solid ${scrollBarColor}`,
+                borderLeft: borderColor,
+                borderRight: borderColor,
                 backgroundColor:
                   colorScheme === 'light' ? tableHeadersBgColor : '',
                 padding: '4px 4px 4px 8px',
@@ -228,28 +286,116 @@ function DisplayQueryDesktop<Doc>({
               const headerGroupStyle: CSSProperties = {
                 width:
                   headerValue === '_id'
-                    ? 'Document Id'.length * 10
-                    : headerValue.length * 10, // rough ch
+                    ? 'Document Id'.length * 10 + 50
+                    : headerValue.length * 10 + 50, // rough ch plus space for sort arrows
                 backgroundColor:
                   colorScheme === 'light' ? tableHeadersBgColor : '',
               };
 
-              const displayExpandedHeaderRows = (
-                <th key={`${headerIdx}`} style={headerStyle}>
-                  <Group style={headerGroupStyle}>
+              const ascendingIconColor =
+                headerValue === fieldToSortBy && sortDirection === 'asc'
+                  ? colorScheme === 'light'
+                    ? gray[0]
+                    : gray[3]
+                  : colorScheme === 'light'
+                  ? gray[6]
+                  : gray[8];
+
+              const ascendingIconWithTooltip = (
+                <Tooltip
+                  label={`Sort ${headerValue} within ${splitCamelCase(
+                    groupBySelection
+                  )} in ascending order`}
+                >
+                  <Group>
+                    <TbSortAscending
+                      color={ascendingIconColor}
+                      style={{ cursor: 'pointer' }}
+                      size={16}
+                      onClick={() => {
+                        displayQueryDesktopDispatch({
+                          type: displayQueryDesktopAction.setFieldToSortBy,
+                          payload: headerValue,
+                        });
+                        displayQueryDesktopDispatch({
+                          type: displayQueryDesktopAction.setSortDirection,
+                          payload: 'asc',
+                        });
+                      }}
+                    />
+                  </Group>
+                </Tooltip>
+              );
+
+              const descendingIconColor =
+                headerValue === fieldToSortBy && sortDirection === 'desc'
+                  ? colorScheme === 'light'
+                    ? gray[0]
+                    : gray[3]
+                  : colorScheme === 'light'
+                  ? gray[6]
+                  : gray[8];
+
+              const descendingIconWithTooltip = (
+                <Tooltip
+                  label={`Sort ${headerValue} within ${splitCamelCase(
+                    groupBySelection
+                  )} in descending order`}
+                >
+                  <Group>
+                    <TbSortDescending
+                      color={descendingIconColor}
+                      style={{ cursor: 'pointer' }}
+                      size={16}
+                      onClick={() => {
+                        displayQueryDesktopDispatch({
+                          type: displayQueryDesktopAction.setFieldToSortBy,
+                          payload: headerValue,
+                        });
+                        displayQueryDesktopDispatch({
+                          type: displayQueryDesktopAction.setSortDirection,
+                          payload: 'desc',
+                        });
+                      }}
+                    />
+                  </Group>
+                </Tooltip>
+              );
+
+              const headerRowWithSortArrows =
+                headerValuesToGetSortArrows.includes(headerValue) ? (
+                  <Group style={headerGroupStyle} position="center">
+                    {ascendingIconWithTooltip}
+                    <Title order={6}>
+                      {headerValue === '_id' ? 'Document Id' : headerValue}
+                    </Title>
+                    {descendingIconWithTooltip}
+                  </Group>
+                ) : (
+                  <Group style={headerGroupStyle} position="center">
                     <Title order={6}>
                       {headerValue === '_id' ? 'Document Id' : headerValue}
                     </Title>
                   </Group>
+                );
+
+              const displayExpandedHeaderRows = (
+                <th key={`${headerIdx}`} style={headerStyle}>
+                  {/* <Group style={headerGroupStyle} position="center">
+                    <Title order={6}>
+                      {headerValue === '_id' ? 'Document Id' : headerValue}
+                    </Title>
+                  </Group> */}
+                  {headerRowWithSortArrows}
                 </th>
               );
 
               const displayCondensedHeaderRows =
                 !tableHeaderValueExclusionSet.has(headerValue) ? (
                   <th key={`${headerIdx}`} style={headerStyle}>
-                    <Group style={headerGroupStyle}>
+                    {/* <Group style={headerGroupStyle} position="center">
                       <Title order={6}>{headerValue}</Title>
-                    </Group>
+                    </Group> */}
                   </th>
                 ) : null;
 
@@ -259,7 +405,7 @@ function DisplayQueryDesktop<Doc>({
             })}
           </tr>
         </thead>
-        {Array.from(groupedByQueryResponseData).map(
+        {Array.from(sortedGroupedQueryResponseData).map(
           ([groupedByFieldKey, queryResponseObjArrays], sectionIdx) => {
             return (
               <tbody>
@@ -375,9 +521,18 @@ function DisplayQueryDesktop<Doc>({
                               )}
 
                               <Group>
-                                <Text>{`Username: ${splitCamelCase(
-                                  username
-                                )}`}</Text>
+                                <Text>Username: </Text>
+
+                                <Text>
+                                  {groupBySelection === 'username' ? (
+                                    <strong>{`${splitCamelCase(
+                                      username
+                                    )}`}</strong>
+                                  ) : (
+                                    `${splitCamelCase(username)}`
+                                  )}
+                                </Text>
+
                                 <Text>{`User Id: ${userId}`}</Text>
                               </Group>
                             </Flex>
@@ -458,12 +613,15 @@ function DisplayQueryDesktop<Doc>({
                                 </HoverCard.Target>
                                 <HoverCard.Dropdown>
                                   <Stack>
-                                    <Text>
-                                      {key === '_id'
-                                        ? 'Document Id'
-                                        : splitCamelCase(key)}
-                                      : {formattedValue}
-                                    </Text>
+                                    {/* prevents displaying username twice in dropdown */}
+                                    {key === 'username' ? null : (
+                                      <Text>
+                                        {key === '_id'
+                                          ? 'Document Id'
+                                          : splitCamelCase(key)}
+                                        : {formattedValue}
+                                      </Text>
+                                    )}
                                     {dropDownFooter}
                                   </Stack>
                                 </HoverCard.Dropdown>
@@ -513,8 +671,14 @@ function DisplayQueryDesktop<Doc>({
                                 <Tooltip
                                   label={`Modify request status of id: ${queryResponseObjWithAddedFields._id}`}
                                 >
+                                  {/* most relevant info will be read out first */}
                                   <Button
-                                    variant="subtle"
+                                    aria-label={`Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`}
+                                    variant={
+                                      colorScheme === 'light'
+                                        ? 'subtle'
+                                        : 'outline'
+                                    }
                                     size="xs"
                                     onClick={() => {
                                       popoversStateDispatch({
@@ -561,12 +725,14 @@ function DisplayQueryDesktop<Doc>({
                           const displayExpandedBodyRows = (
                             <td key={`${keyValIdx}`}>
                               {key === 'requestStatus' ? (
-                                <Group w="100%" position="left">
+                                <Group w="100%" position="right">
                                   <Text>{truncatedValuesWithHoverCards}</Text>
                                   {displayUpdateRequestStatusButton}
                                 </Group>
                               ) : (
-                                truncatedValuesWithHoverCards
+                                <Group w="100%" position="center">
+                                  {truncatedValuesWithHoverCards}
+                                </Group>
                               )}
                             </td>
                           );
@@ -579,17 +745,14 @@ function DisplayQueryDesktop<Doc>({
                             ) ? (
                               <td key={`${keyValIdx}`}>
                                 {key === 'requestStatus' ? (
-                                  <Flex
-                                    wrap="wrap"
-                                    align="center"
-                                    justify="space-between"
-                                    w="100%"
-                                  >
+                                  <Group position="right" w="100%">
                                     <Text>{truncatedValuesWithHoverCards}</Text>
                                     {displayUpdateRequestStatusButton}
-                                  </Flex>
+                                  </Group>
                                 ) : (
-                                  truncatedValuesWithHoverCards
+                                  <Group w="100%" position="center">
+                                    {truncatedValuesWithHoverCards}
+                                  </Group>
                                 )}
                               </td>
                             ) : null;
@@ -600,9 +763,10 @@ function DisplayQueryDesktop<Doc>({
                           ] = returnAccessibleButtonElements([
                             {
                               buttonLabel: <TbTrash />,
-                              semanticDescription: 'Delete this form',
+                              semanticDescription: `Delete form with id: ${queryResponseObjWithAddedFields._id} belonging to username: ${queryResponseObjWithAddedFields.username}`,
                               semanticName: 'Delete',
-                              buttonVariant: 'subtle',
+                              buttonVariant:
+                                colorScheme === 'light' ? 'subtle' : 'outline',
                               buttonOnClick: () => {
                                 deleteFormIdDispatch({
                                   type: 'setDeleteFormId',
@@ -617,11 +781,15 @@ function DisplayQueryDesktop<Doc>({
                             },
                             {
                               buttonLabel: <IoMdOpen />,
-                              buttonVariant: 'subtle',
+                              buttonVariant:
+                                colorScheme === 'light' ? 'subtle' : 'outline',
                               buttonDisabled:
                                 !fileUploadsData[objIdx]?.fileUploads.length,
-                              semanticDescription:
-                                'Open modal to display file uploads associated with this document',
+                              semanticDescription: `${
+                                !fileUploadsData[objIdx]?.fileUploads.length
+                                  ? `No file uploads associated with username: ${queryResponseObjWithAddedFields.username}with form id: ${queryResponseObjWithAddedFields._id}}`
+                                  : `View file uploads belonging to username: ${queryResponseObjWithAddedFields.username}with form id: ${queryResponseObjWithAddedFields._id}`
+                              }`,
                               semanticName: 'Open file uploads modal',
                               buttonOnClick: () => {
                                 setFileUploadsForAFormDispatch({
@@ -765,6 +933,13 @@ function DisplayQueryDesktop<Doc>({
       </Accordion.Item>
     </Accordion>
   );
+
+  useEffect(() => {
+    logState({
+      state: displayQueryDesktopState,
+      groupLabel: 'displayQueryDesktopState',
+    });
+  }, [displayQueryDesktopState]);
 
   return (
     <Stack w="100%" style={{ ...style }}>

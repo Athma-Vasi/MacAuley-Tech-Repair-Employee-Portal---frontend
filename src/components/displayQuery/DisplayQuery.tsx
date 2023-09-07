@@ -933,6 +933,7 @@ function DisplayQuery<Doc>({
         deleteResourceKindDispatch={displayQueryDispatch}
         fileUploadsData={fileUploadsData}
         groupedByQueryResponseData={groupedByQueryResponseData}
+        groupByRadioData={groupByRadioData}
         groupBySelection={groupBySelection}
         openDeleteAcknowledge={openDeleteAcknowledge}
         openFileUploads={openFileUploads}
