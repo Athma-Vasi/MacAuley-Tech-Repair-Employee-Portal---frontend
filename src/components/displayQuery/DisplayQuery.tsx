@@ -933,6 +933,7 @@ function DisplayQuery<Doc>({
         deleteResourceKindDispatch={displayQueryDispatch}
         fileUploadsData={fileUploadsData}
         groupedByQueryResponseData={groupedByQueryResponseData}
+        groupBySelection={groupBySelection}
         openDeleteAcknowledge={openDeleteAcknowledge}
         openFileUploads={openFileUploads}
         setFileUploadsForAFormDispatch={displayQueryDispatch}
@@ -967,7 +968,7 @@ function DisplayQuery<Doc>({
       {displayAcknowledgementModal}
       {displayFileUploadsModal}
       <Flex align="center" justify="space-between" w="100%">
-        <Text>{parentComponentName}</Text>
+        <Title order={3}>{parentComponentName}s</Title>
         <Text>Total documents: {totalDocuments}</Text>
       </Flex>
       {displayQueryComponent}

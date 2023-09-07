@@ -7,6 +7,7 @@ type DisplayQueryDesktopProps<Doc> = {
   componentQueryData: ComponentQueryData[];
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  groupBySelection: string;
 
   openDeleteAcknowledge: () => void;
   deleteFormIdDispatch: React.Dispatch<{

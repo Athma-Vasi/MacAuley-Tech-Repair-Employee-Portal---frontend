@@ -48,17 +48,17 @@ function GlobalProvider({ children }: GlobalProviderProps) {
     });
   }, [width]);
 
-  const { scrollXDirection, scrollYDirection } = useScrollDirection();
-  // on scroll position change, update global state
-  useEffect(() => {
-    globalDispatch({
-      type: globalAction.setScrollAxesDirection,
-      payload: {
-        scrollXDirection,
-        scrollYDirection,
-      },
-    });
-  }, [scrollXDirection, scrollYDirection]);
+  // const { scrollXDirection, scrollYDirection } = useScrollDirection();
+  // // on scroll position change, update global state
+  // useEffect(() => {
+  //   globalDispatch({
+  //     type: globalAction.setScrollAxesDirection,
+  //     payload: {
+  //       scrollXDirection,
+  //       scrollYDirection,
+  //     },
+  //   });
+  // }, [scrollXDirection, scrollYDirection]);
 
   // useMemo is used to prevent unnecessary re-renders of the context provider
   const globalContextValue = useMemo(

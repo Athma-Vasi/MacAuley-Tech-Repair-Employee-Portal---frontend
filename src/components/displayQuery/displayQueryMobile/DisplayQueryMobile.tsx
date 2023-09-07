@@ -456,7 +456,7 @@ function DisplayQueryMobile({
                     columnGap={rowGap}
                     p={padding}
                     style={{
-                      border: borderColor,
+                      borderRight: borderColor,
                       borderRadius: 4,
                     }}
                   >

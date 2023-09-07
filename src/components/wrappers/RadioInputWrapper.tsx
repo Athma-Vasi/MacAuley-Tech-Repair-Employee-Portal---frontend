@@ -139,11 +139,11 @@ function RadioGroupInputsWrapper({
     ref = null,
     value,
     withAsterisk = required,
-    widthRadioGroup = '100%',
+    widthRadioGroup,
     size = 'sm',
   } = creatorInfoObject;
 
-  const inputWidth = 330;
+  const inputWidth = widthRadioGroup ? widthRadioGroup : 330;
 
   const createdRadioGroupInputs = (
     <Radio.Group
@@ -159,7 +159,7 @@ function RadioGroupInputsWrapper({
       required={required}
       ref={ref}
       withAsterisk={withAsterisk}
-      w={widthRadioGroup}
+      w="100%"
       id={name}
     >
       <Flex
