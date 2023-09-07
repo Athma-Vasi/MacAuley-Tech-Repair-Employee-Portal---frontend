@@ -14,6 +14,7 @@ type AccessibleRadioSingleInputCreatorInfo = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   required?: boolean;
   ref?: React.RefObject<HTMLInputElement> | null;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 };
 type RadioSingleInputWrapperProps = {
   creatorInfoObject: AccessibleRadioSingleInputCreatorInfo;
@@ -37,13 +38,14 @@ function RadioSingleInputWrapper({
     ref = null,
     required = false,
     ariaRequired = required,
+    size = 'sm',
   } = creatorInfoObject;
 
-  const radioInputSize = width < 1024 ? 'sm' : 'md';
+  const inputWidth = 330;
 
   const createdRadioSingleInput = (
     <Radio
-      size={radioInputSize}
+      size={size}
       label={label}
       key={key}
       description={description}
@@ -55,7 +57,7 @@ function RadioSingleInputWrapper({
       onChange={onChange}
       required={required}
       ref={ref}
-      w="100%"
+      w={inputWidth}
     />
   );
 
@@ -109,6 +111,7 @@ type AccessibleRadioGroupInputCreatorInfo = {
   }>;
   columns?: number;
   widthRadioGroup?: MantineNumberSize;
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 };
 
 type RadioGroupInputsWrapperProps = {
@@ -137,13 +140,14 @@ function RadioGroupInputsWrapper({
     value,
     withAsterisk = required,
     widthRadioGroup = '100%',
+    size = 'sm',
   } = creatorInfoObject;
 
-  const radioInputsSize = 'sm';
+  const inputWidth = 330;
 
   const createdRadioGroupInputs = (
     <Radio.Group
-      size={radioInputsSize}
+      size={size}
       label={label}
       description={description}
       aria-required={ariaRequired}
@@ -159,7 +163,6 @@ function RadioGroupInputsWrapper({
       id={name}
     >
       <Flex
-        direction="column"
         align="flex-start"
         justify="space-between"
         p={padding}
@@ -172,7 +175,7 @@ function RadioGroupInputsWrapper({
         {dataObjectArray?.map(({ value, label }, idx) => {
           return (
             <Group position="center" key={`${key}-${idx}-${label}-${value}`}>
-              <Radio value={value} label={label} />
+              <Radio value={value} label={label} w={inputWidth} />
             </Group>
           );
         })}

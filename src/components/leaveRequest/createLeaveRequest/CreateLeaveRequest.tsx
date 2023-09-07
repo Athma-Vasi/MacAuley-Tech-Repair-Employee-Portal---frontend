@@ -42,7 +42,7 @@ import {
   createLeaveRequestReducer,
   initialCreateLeaveRequestState,
 } from './state';
-import { useMantineTheme } from '@mantine/core';
+import { Group, Tooltip, useMantineTheme } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FormReviewPage, {
   FormReviewObject,
@@ -510,9 +510,19 @@ function CreateLeaveRequest() {
     submitButtonCreatorInfo,
   ]);
   const displaySubmitButton =
-    currentStepperPosition === LEAVE_REQUEST_MAX_STEPPER_POSITION
-      ? createdSubmitButton
-      : null;
+    currentStepperPosition === LEAVE_REQUEST_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Please fix errors before submitting'
+            : 'Submit Leave Request form'
+        }
+      >
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
 
   const displayCreateLeaveRequestFirstPage = (
     <FormLayoutWrapper>
@@ -525,24 +535,6 @@ function CreateLeaveRequest() {
       {createdAcknowledgementCheckbox}
     </FormLayoutWrapper>
   );
-
-  const filteredLeaveRequestState =
-    filterFieldsFromObject<CreateLeaveRequestState>({
-      object: leaveRequestState,
-      fieldsToFilter: [
-        'isSubmitting',
-        'isSuccessful',
-        'isLoading',
-        'isError',
-        'errorMessage',
-        'submitMessage',
-        'successMessage',
-        'loadingMessage',
-        'triggerFormSubmit',
-        'currentStepperPosition',
-        'stepsInError',
-      ],
-    });
 
   const LEAVE_REQUEST_REVIEW_OBJECT: FormReviewObject = {
     'Leave request details': [

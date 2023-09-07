@@ -17,6 +17,7 @@ import {
   TbUpload,
 } from 'react-icons/tb';
 
+import { FIELDNAMES_WITH_DATE_VALUES } from '../../../constants/data';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
@@ -25,7 +26,6 @@ import {
 import { RequestStatus } from '../../../types';
 import { addFieldsToObject, formatDate, splitCamelCase } from '../../../utils';
 import { DisplayQueryMobileProps } from './types';
-import { FIELDNAMES_WITH_DATE_VALUES } from '../../../constants/data';
 
 function DisplayQueryMobile({
   componentQueryData,

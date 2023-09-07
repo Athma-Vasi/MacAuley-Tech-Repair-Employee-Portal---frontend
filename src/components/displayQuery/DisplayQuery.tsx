@@ -45,6 +45,7 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
+import { COLORS_SWATCHES } from '../../constants/data';
 
 function DisplayQuery<Doc>({
   componentQueryData,
@@ -57,7 +58,12 @@ function DisplayQuery<Doc>({
   totalDocuments,
 }: DisplayQueryProps<Doc>) {
   const {
-    globalState: { padding, width, rowGap },
+    globalState: {
+      padding,
+      width,
+      rowGap,
+      themeObject: { colorScheme },
+    },
   } = useGlobalState();
 
   const [
@@ -233,7 +239,7 @@ function DisplayQuery<Doc>({
     },
     semanticName: 'group by',
     value: groupBySelection,
-    label: 'Group by',
+    label: <Title order={5}>Group by</Title>,
   };
 
   const segmentedControl = (
@@ -345,13 +351,28 @@ function DisplayQuery<Doc>({
 
   /** ------------- end created inputs------------- */
 
+  const sectionWidth =
+    width < 480
+      ? 375 - 20
+      : width < 640
+      ? 480 - 20
+      : width < 768
+      ? 640 - 20
+      : width < 1024
+      ? (width - 200) * 0.75
+      : 1024 - 250;
+
+  const { gray } = COLORS_SWATCHES;
+  const borderColor =
+    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
+
   const displayGroupByRadioGroup = (
     <Flex
       align="center"
       justify="flex-start"
-      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+      w={sectionWidth}
       style={{
-        border: '1px solid #e0e0e0',
+        border: borderColor,
         borderRadius: 4,
       }}
       columnGap={rowGap}
@@ -365,15 +386,15 @@ function DisplayQuery<Doc>({
     <Flex
       align="center"
       justify="flex-start"
-      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+      w={sectionWidth}
       style={{
-        border: '1px solid #e0e0e0',
+        border: borderColor,
         borderRadius: 4,
       }}
       columnGap={rowGap}
       p={padding}
     >
-      <Text>Table view</Text>
+      <Title order={5}>Table view</Title>
       {segmentedControl}
     </Flex>
   );

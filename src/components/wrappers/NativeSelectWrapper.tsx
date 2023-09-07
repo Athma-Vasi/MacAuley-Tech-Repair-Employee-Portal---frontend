@@ -40,7 +40,7 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     ref = null,
     required = false,
     size = 'sm',
-    width = vWidth < 480 ? 330 : 450,
+    width = 330,
   } = creatorInfoObject;
 
   return (

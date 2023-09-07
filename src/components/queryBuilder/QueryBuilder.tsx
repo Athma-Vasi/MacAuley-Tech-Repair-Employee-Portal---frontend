@@ -1,4 +1,5 @@
 import {
+  Accordion,
   Center,
   Flex,
   Grid,
@@ -6,6 +7,7 @@ import {
   NavLink,
   Stack,
   Text,
+  Title,
   Tooltip,
 } from '@mantine/core';
 import { ChangeEvent, useEffect, useReducer } from 'react';
@@ -28,17 +30,18 @@ import {
 } from '../../constants/regex';
 import { useGlobalState } from '../../hooks';
 import {
+  AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleDateTimeElements,
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import { CheckboxInputData } from '../../types';
 import {
   logState,
+  replaceLastCommaWithAnd,
   returnDateFullRangeValidationText,
   returnNumberAmountValidationText,
   returnTimeRailwayValidationText,
@@ -63,6 +66,8 @@ import {
   queryBuilderReducer,
 } from './state';
 import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
+import { COLORS_SWATCHES } from '../../constants/data';
+import { generateFilterChainStatement } from './utils';
 
 function QueryBuilder({
   componentQueryData,
@@ -81,6 +86,7 @@ function QueryBuilder({
     currentFilterValue,
     isCurrentFilterValueValid,
     isCurrentFilterValueFocused,
+    filterOperatorSelectData,
 
     currentSortTerm,
     currentSortDirection,
@@ -109,7 +115,12 @@ function QueryBuilder({
     successMessage,
   } = queryBuilderState;
   const {
-    globalState: { width, rowGap, padding },
+    globalState: {
+      width,
+      rowGap,
+      padding,
+      themeObject: { colorScheme, primaryShade },
+    },
   } = useGlobalState();
 
   useEffect(() => {
@@ -124,29 +135,36 @@ function QueryBuilder({
         acc: [string[], string[], CheckboxInputData, QueryLabelValueTypesMap],
         { label, value, inputKind, selectData, booleanData }
       ) => {
+        const [
+          filterSelectDataAcc,
+          sortSelectDataAcc,
+          projectionCheckboxDataAcc,
+          valueTypeObjectsAcc,
+        ] = acc;
+
         // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
         if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
-          acc[0].push(label);
+          filterSelectDataAcc.push(label);
         } else if (
           inputKind === 'dateInput' ||
           inputKind === 'timeInput' ||
           inputKind === 'numberInput'
         ) {
-          acc[0].push(label);
-          acc[1].push(label);
+          filterSelectDataAcc.push(label);
+          sortSelectDataAcc.push(label);
         }
 
         const checkboxDataObj = {
           label,
           value,
         };
-        acc[2].push(checkboxDataObj);
+        projectionCheckboxDataAcc.push(checkboxDataObj);
 
         selectData
-          ? acc[3].set(label, { value, inputKind, selectData })
+          ? valueTypeObjectsAcc.set(label, { value, inputKind, selectData })
           : booleanData
-          ? acc[3].set(label, { value, inputKind, booleanData })
-          : acc[3].set(label, { value, inputKind });
+          ? valueTypeObjectsAcc.set(label, { value, inputKind, booleanData })
+          : valueTypeObjectsAcc.set(label, { value, inputKind });
 
         return acc;
       },
@@ -185,6 +203,27 @@ function QueryBuilder({
     queryBuilderDispatch({
       type: queryBuilderAction.setIsCurrentFilterValueValid,
       payload: isValid,
+    });
+  }, [currentFilterTerm, currentFilterValue, labelValueTypesMap]);
+
+  // set appropriate filter operators
+  useEffect(() => {
+    const currentInputKind =
+      labelValueTypesMap.get(currentFilterTerm)?.inputKind;
+    const filterOperatorData =
+      currentInputKind === 'selectInput' || currentInputKind === 'booleanInput'
+        ? ['in']
+        : QUERY_BUILDER_FILTER_OPERATORS;
+
+    queryBuilderDispatch({
+      type: queryBuilderAction.setFilterOperatorSelectData,
+      payload: filterOperatorData,
+    });
+
+    // set current filter operator
+    queryBuilderDispatch({
+      type: queryBuilderAction.setCurrentFilterOperator,
+      payload: filterOperatorData[0],
     });
   }, [currentFilterTerm, currentFilterValue, labelValueTypesMap]);
 
@@ -237,6 +276,19 @@ function QueryBuilder({
       regexValidationText,
     });
 
+  const projectionExclusionFields = projectionArray
+    .map((item) => {
+      const findCorrespondingLabel = Array.from(labelValueTypesMap).find(
+        ([_label, obj]) => {
+          const { value } = obj;
+          return value === item;
+        }
+      )?.[0];
+
+      return findCorrespondingLabel;
+    })
+    .join(', ');
+
   const [
     projectionCheckboxInputSelectedText,
     projectionCheckboxInputDeselectedText,
@@ -247,43 +299,32 @@ function QueryBuilder({
     selectedDescription:
       projectionArray.length === labelValueTypesMap.size
         ? 'All fields have been selected for exclusion. Nothing to query!'
-        : `The following fields will not be returned: ${projectionArray
-            .map((item) => {
-              const findCorrespondingLabel = Array.from(
-                labelValueTypesMap
-              ).reduce((acc, curr) => {
-                const [label, obj] = curr;
-                const { value } = obj;
-                if (value === item) {
-                  // rome-ignore lint:
-                  acc = label;
-                }
-
-                return acc;
-              }, '');
-
-              return findCorrespondingLabel;
-            })
-            .join(', ')}`,
+        : `The following fields will not be returned: ${replaceLastCommaWithAnd(
+            projectionExclusionFields
+          )}`,
     theme: 'muted',
   });
   // ----------------- //
 
+  const { gray } = COLORS_SWATCHES;
+  const borderColor =
+    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
+
   // ----------------- filter section -----------------  //
 
   const createdFilterStatementsWithDeleteButton = filterStatementsQueue.map(
-    ([term, operator, value], index) => {
-      const statement = `Select ${term}${
-        term[term.length - 1] === 's' ? 'es' : 's'
-      } that are ${operator} ${value}. `;
+    (filterStatement, index) => {
+      const statement = generateFilterChainStatement({
+        filterStatement,
+      });
 
-      const displayStatement = <Text size="xs">{statement}</Text>;
+      const [term, operator, value] = filterStatement;
+      const displayStatement = <Text>{statement}</Text>;
 
       const deleteFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: <TbTrash />,
         semanticDescription: `Delete filter statement: ${term} ${operator} ${value}`,
         semanticName: 'delete filter',
-        // leftIcon: <TbTrash />,
         buttonOnClick: () => {
           queryBuilderDispatch({
             type: queryBuilderAction.setFilterStatementsQueue,
@@ -307,9 +348,7 @@ function QueryBuilder({
       ]);
 
       const displayDeleteFilterButton = (
-        <Tooltip
-          label={`Delete filter statement: ${term} ${operator} ${value}`}
-        >
+        <Tooltip label={`Delete: ${statement}`}>
           <Center>{createdDeleteFilterButton}</Center>
         </Tooltip>
       );
@@ -322,7 +361,7 @@ function QueryBuilder({
           w="100%"
           p={padding}
           columnGap={rowGap}
-          style={{ border: '1px solid #e0e0e0', borderRadius: 4 }}
+          style={{ border: borderColor, borderRadius: 4 }}
         >
           <Flex align="center" justify="flex-start" w="100%">
             {displayStatement}
@@ -364,13 +403,9 @@ function QueryBuilder({
     },
   };
 
-  const filterOperatorData =
-    currentInputKind === 'selectInput' || currentInputKind === 'booleanInput'
-      ? ['', 'in']
-      : QUERY_BUILDER_FILTER_OPERATORS;
   const filterOperatorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
-      data: filterOperatorData,
+      data: filterOperatorSelectData,
       label: 'Operator',
       description: `${
         currentFilterTerm === ''
@@ -558,6 +593,7 @@ function QueryBuilder({
   const filteredSortSelectData = sortSelectData.filter(
     (term) => !projectedFieldsSet.has(term)
   );
+  console.log('filteredSortSelectData: ', filteredSortSelectData);
   const sortSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: filteredSortSelectData,
     label: 'Field',
@@ -624,7 +660,7 @@ function QueryBuilder({
       const statement = `Sort ${term}${
         term[term.length - 1] === 's' ? 'es' : 's'
       } in ${direction} order. `;
-      const displayStatement = <Text size="xs">{statement}</Text>;
+      const displayStatement = <Text>{statement}</Text>;
 
       const deleteSortButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: <TbTrash />,
@@ -655,7 +691,7 @@ function QueryBuilder({
 
       const displayDeleteSortButton = (
         <Tooltip label={`Delete sort statement: ${term} ${direction}`}>
-          <Center>{createdDeleteSortButton}</Center>
+          <Group>{createdDeleteSortButton}</Group>
         </Tooltip>
       );
 
@@ -667,7 +703,7 @@ function QueryBuilder({
           w="100%"
           p={padding}
           columnGap={rowGap}
-          style={{ border: '1px solid #e0e0e0', borderRadius: 4 }}
+          style={{ border: borderColor, borderRadius: 4 }}
         >
           <Flex align="center" justify="flex-start" w="100%">
             {displayStatement}
@@ -776,155 +812,292 @@ function QueryBuilder({
     </Stack>
   );
 
-  const displayFilterSection = (
-    <Flex w="100%" direction="column">
-      {filteredFilterSelectData.length === 0 ? (
-        <TextWrapper creatorInfoObj={{}}>No fields to filter!</TextWrapper>
-      ) : (
-        <FormLayoutWrapper>
-          <NavLink
-            label="Filter"
-            icon={<TbFilterCog />}
-            rightSection={<TbChevronRight />}
-            childrenOffset="xs"
-            disabled={filteredFilterSelectData.length === 0}
-            w="62%"
-          >
-            <Flex direction="column" w="100%" rowGap={rowGap}>
-              {displayFilterChains}
+  // const displayFilterSection = (
+  //   <Flex w="100%" direction="column">
+  //     {filteredFilterSelectData.length === 0 ? (
+  //       <TextWrapper creatorInfoObj={{}}>No fields to filter!</TextWrapper>
+  //     ) : (
+  //       <FormLayoutWrapper>
+  //         <NavLink
+  //           label="Filter"
+  //           icon={<TbFilterCog />}
+  //           rightSection={<TbChevronRight />}
+  //           childrenOffset="xs"
+  //           disabled={filteredFilterSelectData.length === 0}
+  //           w="62%"
+  //         >
+  //           <Flex direction="column" w="100%" rowGap={rowGap}>
+  //             {displayFilterChains}
 
-              <Grid
-                w="100%"
-                align="flex-end"
-                justify="flex-start"
-                gutter={rowGap}
-              >
-                <Grid.Col md={6} lg={3}>
-                  {createdFilterSelectInput}
-                </Grid.Col>
-                <Grid.Col md={6} lg={3}>
-                  {createdFilterOperatorsSelectInput}
-                </Grid.Col>
-                <Grid.Col md={6} lg={3}>
-                  {createdFilterValueInput}
-                </Grid.Col>
-                <Grid.Col md={6} lg={3}>
-                  <Flex align="center" justify="flex-end">
+  //             <Grid
+  //               w="100%"
+  //               align="flex-end"
+  //               justify="flex-start"
+  //               gutter={rowGap}
+  //             >
+  //               <Grid.Col md={6} lg={3}>
+  //                 {createdFilterSelectInput}
+  //               </Grid.Col>
+  //               <Grid.Col md={6} lg={3}>
+  //                 {createdFilterOperatorsSelectInput}
+  //               </Grid.Col>
+  //               <Grid.Col md={6} lg={3}>
+  //                 {createdFilterValueInput}
+  //               </Grid.Col>
+  //               <Grid.Col md={6} lg={3}>
+  //                 <Flex align="center" justify="flex-end">
+  //                   <Tooltip label="Add a new filter chain">
+  //                     <Center>{createdAddNewFilterButton}</Center>
+  //                   </Tooltip>
+  //                 </Flex>
+  //               </Grid.Col>
+  //             </Grid>
+  //           </Flex>
+  //         </NavLink>
+  //       </FormLayoutWrapper>
+  //     )}
+  //   </Flex>
+  // );
+
+  const displayFilterSection = (
+    <Stack w="100%">
+      {filteredFilterSelectData.length === 0 ? (
+        <Text>No fields to filter!</Text>
+      ) : (
+        <Accordion w="100%">
+          <Accordion.Item value="Filter">
+            <Accordion.Control disabled={filteredFilterSelectData.length === 0}>
+              <Title order={5}>Filter</Title>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Stack w="100%">
+                {displayFilterChains}
+                <FormLayoutWrapper>
+                  <Group w="100%" position="apart">
+                    <Title order={5}>Build Filter Chain</Title>
                     <Tooltip label="Add a new filter chain">
-                      <Center>{createdAddNewFilterButton}</Center>
+                      <Group>{createdAddNewFilterButton}</Group>
                     </Tooltip>
-                  </Flex>
-                </Grid.Col>
-              </Grid>
-            </Flex>
-          </NavLink>
-        </FormLayoutWrapper>
+                  </Group>
+                  {createdFilterSelectInput}
+                  {createdFilterOperatorsSelectInput}
+                  {createdFilterValueInput}
+                </FormLayoutWrapper>
+              </Stack>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
       )}
-    </Flex>
+    </Stack>
   );
+
+  // const displayProjectionSection = (
+  //   <FormLayoutWrapper>
+  //     <NavLink
+  //       label="Projection"
+  //       icon={<VscExclude />}
+  //       rightSection={<TbChevronRight />}
+  //       childrenOffset="xs"
+  //       disabled={disableProjection}
+  //       w="62%"
+  //     >
+  //       {createdProjectionCheckboxGroupInput}
+  //     </NavLink>
+  //   </FormLayoutWrapper>
+  // );
 
   const displayProjectionSection = (
-    <FormLayoutWrapper>
-      <NavLink
-        label="Projection"
-        icon={<VscExclude />}
-        rightSection={<TbChevronRight />}
-        childrenOffset="xs"
-        disabled={disableProjection}
-        w="62%"
-      >
-        {createdProjectionCheckboxGroupInput}
-      </NavLink>
-    </FormLayoutWrapper>
+    <Stack w="100%">
+      <Accordion w="100%">
+        <Accordion.Item value="Projection">
+          <Accordion.Control disabled={disableProjection}>
+            <Title order={5}>Projection</Title>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <Stack w="100%">
+              <FormLayoutWrapper>
+                {createdProjectionCheckboxGroupInput}
+              </FormLayoutWrapper>
+            </Stack>
+          </Accordion.Panel>
+        </Accordion.Item>
+      </Accordion>
+    </Stack>
   );
 
+  // const displaySortSection = (
+  //   <Flex w="100%" direction="column">
+  //     {filteredSortSelectData.length === 0 ? (
+  //       <Text>No fields to sort!</Text>
+  //     ) : (
+  //       <FormLayoutWrapper>
+  //         <NavLink
+  //           label="Sort"
+  //           icon={<TbArrowsSort />}
+  //           rightSection={<TbChevronRight />}
+  //           childrenOffset="xs"
+  //           disabled={filteredSortSelectData.length === 0}
+  //           w="62%"
+  //         >
+  //           <Flex direction="column" w="100%" rowGap={rowGap}>
+  //             {displaySortChains}
+  //             <Grid
+  //               w="100%"
+  //               align="flex-end"
+  //               justify="flex-start"
+  //               gutter={rowGap}
+  //             >
+  //               <Grid.Col md={6} lg={3}>
+  //                 {createdSortSelectInput}
+  //               </Grid.Col>
+  //               <Grid.Col md={6} lg={3}>
+  //                 {createdSortDirectionSelectInput}
+  //               </Grid.Col>
+  //               <Grid.Col md={6} lg={3}>
+  //                 {}
+  //               </Grid.Col>
+  //               <Grid.Col md={6} lg={3}>
+  //                 <Flex align="center" justify="flex-end">
+  //                   <Tooltip label="Add a new sort chain">
+  //                     <Center>{createdAddNewSortButton}</Center>
+  //                   </Tooltip>
+  //                 </Flex>
+  //               </Grid.Col>
+  //             </Grid>
+  //           </Flex>
+  //         </NavLink>
+  //       </FormLayoutWrapper>
+  //     )}
+  //   </Flex>
+  // );
   const displaySortSection = (
-    <Flex w="100%" direction="column">
+    <Stack w="100%">
       {filteredSortSelectData.length === 0 ? (
-        <TextWrapper creatorInfoObj={{}}>No fields to sort!</TextWrapper>
+        <Text>No fields to sort!</Text>
       ) : (
-        <FormLayoutWrapper>
-          <NavLink
-            label="Sort"
-            icon={<TbArrowsSort />}
-            rightSection={<TbChevronRight />}
-            childrenOffset="xs"
-            disabled={filteredSortSelectData.length === 0}
-            w="62%"
-          >
-            <Flex direction="column" w="100%" rowGap={rowGap}>
-              {displaySortChains}
-              <Grid
-                w="100%"
-                align="flex-end"
-                justify="flex-start"
-                gutter={rowGap}
-              >
-                <Grid.Col md={6} lg={3}>
-                  {createdSortSelectInput}
-                </Grid.Col>
-                <Grid.Col md={6} lg={3}>
-                  {createdSortDirectionSelectInput}
-                </Grid.Col>
-                <Grid.Col md={6} lg={3}>
-                  {}
-                </Grid.Col>
-                <Grid.Col md={6} lg={3}>
-                  <Flex align="center" justify="flex-end">
+        <Accordion w="100%">
+          <Accordion.Item value="Sort">
+            <Accordion.Control disabled={filteredSortSelectData.length === 0}>
+              <Title order={5}>Sort</Title>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Stack w="100%">
+                {displaySortChains}
+                <FormLayoutWrapper>
+                  <Group w="100%" position="apart">
+                    <Title order={5}>Build Sort Chain</Title>
                     <Tooltip label="Add a new sort chain">
-                      <Center>{createdAddNewSortButton}</Center>
+                      <Group>{createdAddNewSortButton}</Group>
                     </Tooltip>
-                  </Flex>
-                </Grid.Col>
-              </Grid>
-            </Flex>
-          </NavLink>
-        </FormLayoutWrapper>
+                  </Group>
+                  {createdSortSelectInput}
+                  {createdSortDirectionSelectInput}
+                </FormLayoutWrapper>
+              </Stack>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
       )}
-    </Flex>
+    </Stack>
   );
 
   // ----------------- //
 
+  // const displayQueryBuilderComponent = (
+  //   <Flex
+  //     w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+  //     p={padding}
+  //     direction="column"
+  //     rowGap={rowGap}
+  //     style={{
+  //       border: borderColor,
+  //       borderRadius: 4,
+  //     }}
+  //   >
+  //     <NavLink
+  //       label="Query Builder"
+  //       icon={<TbArrowsSort />}
+  //       rightSection={<TbChevronRight />}
+  //       childrenOffset={0}
+  //       disabled={
+  //         filteredSortSelectData.length === 0 &&
+  //         filteredFilterSelectData.length === 0 &&
+  //         projectionArray.length === 0
+  //       }
+  //       w="62%"
+  //     >
+  //       <Flex w="100%" direction="column" rowGap={rowGap} p={padding}>
+  //         {displayFilterSection}
+  //         {displaySortSection}
+  //         {displayProjectionSection}
+  //         <Flex align="center" justify="flex-end">
+  //           <Group position="apart">
+  //             <Tooltip label={`Clear ${collectionName} query`}>
+  //               <Group>{createdClearButton}</Group>
+  //             </Tooltip>
+  //             <Tooltip label={`Submit ${collectionName} query`}>
+  //               <Group>{createdSubmitButton}</Group>
+  //             </Tooltip>
+  //           </Group>
+  //         </Flex>
+  //       </Flex>
+  //     </NavLink>
+  //   </Flex>
+  // );
+  const queryBuilderWidth =
+    width < 480
+      ? 375 - 20
+      : width < 640
+      ? 480 - 20
+      : width < 768
+      ? 640 - 20
+      : width < 1024
+      ? (width - 200) * 0.75
+      : 1024 - 250;
+
   const displayQueryBuilderComponent = (
     <Flex
-      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+      w={queryBuilderWidth}
       p={padding}
       direction="column"
       rowGap={rowGap}
       style={{
-        border: '1px solid #e0e0e0',
+        border: borderColor,
         borderRadius: 4,
       }}
     >
-      <NavLink
-        label="Query Builder"
-        icon={<TbArrowsSort />}
-        rightSection={<TbChevronRight />}
-        childrenOffset={0}
-        disabled={
-          filteredSortSelectData.length === 0 &&
-          filteredFilterSelectData.length === 0 &&
-          projectionArray.length === 0
-        }
-        w="62%"
-      >
-        <Flex w="100%" direction="column" rowGap={rowGap} p={padding}>
-          {displayFilterSection}
-          {displaySortSection}
-          {displayProjectionSection}
-          <Flex align="center" justify="flex-end">
-            <Group position="apart">
-              <Tooltip label={`Clear ${collectionName} query`}>
-                <Group>{createdClearButton}</Group>
-              </Tooltip>
-              <Tooltip label={`Submit ${collectionName} query`}>
-                <Group>{createdSubmitButton}</Group>
-              </Tooltip>
-            </Group>
-          </Flex>
-        </Flex>
-      </NavLink>
+      <Stack w="100%">
+        <Accordion w="100%">
+          <Accordion.Item value="Query Builder">
+            <Accordion.Control
+              disabled={
+                filteredSortSelectData.length === 0 &&
+                filteredFilterSelectData.length === 0 &&
+                projectionArray.length === 0
+              }
+            >
+              <Title order={4}>Query Builder</Title>
+            </Accordion.Control>
+            <Accordion.Panel>
+              <Stack w="100%">
+                {displayFilterSection}
+                {displaySortSection}
+                {displayProjectionSection}
+                <Flex align="center" justify="flex-end">
+                  <Group position="apart">
+                    <Tooltip label={`Clear ${collectionName} query`}>
+                      <Group>{createdClearButton}</Group>
+                    </Tooltip>
+                    <Tooltip label={`Submit ${collectionName} query`}>
+                      <Group>{createdSubmitButton}</Group>
+                    </Tooltip>
+                  </Group>
+                </Flex>
+              </Stack>
+            </Accordion.Panel>
+          </Accordion.Item>
+        </Accordion>
+      </Stack>
     </Flex>
   );
 

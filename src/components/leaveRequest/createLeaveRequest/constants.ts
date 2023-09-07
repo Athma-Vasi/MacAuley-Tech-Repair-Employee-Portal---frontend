@@ -14,13 +14,13 @@ const REASON_FOR_LEAVE_DATA = [
 
 const LEAVE_REQUEST_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Leave request details',
+    description: 'Leave Request Details',
     ariaLabel:
       'Enter start date, end date, reason for leave, delegated to employee, delegated responsibilities, additional comments and acknowledgement',
   },
 
   {
-    description: 'Review and proceed',
+    description: 'Review and Proceed',
     ariaLabel: 'Review accuracy of entered information before proceeding',
   },
 ];

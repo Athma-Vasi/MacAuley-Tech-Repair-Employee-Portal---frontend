@@ -1,5 +1,5 @@
 /**
- *  * - Queries must be of the form:
+ *  * - Queries are of the form:
  * /resource?filter1[operator]=value1&filter2[operator]=value2&projection=-field1ToExclude&projection=-field2ToExclude&sort[sortField1]=number&skip=number&limit=number  and so on
  */
 
@@ -55,12 +55,35 @@ function generateQueryString({
   if (projectionArray.length > 0) {
     queryString += projectionArray.reduce((acc, curr) => {
       return `${acc}&projection=-${curr}`;
-    }, '');
+    }, '&projection=-action&projection=-category');
   }
 
   return queryString;
 }
 
-export { generateQueryString };
+type GenerateFilterChainStatementInput = {
+  filterStatement: [string, string, string];
+};
+
+function generateFilterChainStatement({
+  filterStatement,
+}: GenerateFilterChainStatementInput) {
+  const [field, operator, value] = filterStatement;
+
+  switch (operator) {
+    case 'in': {
+      return `Select ${field}${
+        field[field.length - 1] === 's' ? 'es' : 's'
+      } that contain ${value}. `;
+    }
+    default: {
+      return `Select ${field}${
+        field[field.length - 1] === 's' ? 'es' : 's'
+      } that are ${operator} ${value}. `;
+    }
+  }
+}
+
+export { generateFilterChainStatement, generateQueryString };
 
 export type { GenerateQueryStringInput };

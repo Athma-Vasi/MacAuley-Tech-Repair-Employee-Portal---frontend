@@ -77,7 +77,7 @@ function PasswordInputWrapper({
     )
   ) : null;
 
-  const inputWidth = width < 480 ? 330 : 450;
+  const inputWidth = 330;
 
   const inputWithPopover = (
     <Popover

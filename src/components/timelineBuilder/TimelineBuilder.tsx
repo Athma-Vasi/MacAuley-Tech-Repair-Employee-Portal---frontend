@@ -1,4 +1,11 @@
-import { Flex, NavLink, Timeline } from '@mantine/core';
+import {
+  Accordion,
+  Flex,
+  Group,
+  NavLink,
+  Stack,
+  Timeline,
+} from '@mantine/core';
 import { TbChevronRight, TbLayersLinked, TbLink } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
@@ -10,36 +17,66 @@ function TimelineBuilder({ timelines }: TimelineBuilderProps): JSX.Element {
   } = useGlobalState();
 
   const createTimelines = Object.entries(timelines).map(
-    ([key, value], index) => {
+    ([chainKind, statementsArr], index) => {
       return (
-        <Flex direction="column" w="100%" key={`timeline-${index}`}>
-          <NavLink
-            label={`${key.charAt(0).toUpperCase()}${key.slice(1)}`}
+        <Stack w="100%" key={`timeline-${index}`}>
+          {/* <NavLink
+            label={`${chainKind.charAt(0).toUpperCase()}${chainKind.slice(1)}`}
             icon={<TbLayersLinked />}
             rightSection={<TbChevronRight />}
             childrenOffset="xs"
-            disabled={value.length === 0}
+            disabled={statementsArr.length === 0}
             w="62%"
           >
-            {value.length === 0 ? null : (
+            {statementsArr.length === 0 ? null : (
               <Timeline active={Number.MAX_SAFE_INTEGER} w="100%" py={padding}>
-                {value.map((item, index) => (
+                {statementsArr.map((statement, index) => (
                   <Timeline.Item
-                    key={`timeline-item-${index}`}
-                    title={item}
+                    key={`timeline-statement-${index}`}
+                    title={statement}
                     bullet={<TbLink />}
                     w="100%"
                   />
                 ))}
               </Timeline>
             )}
-          </NavLink>
-        </Flex>
+          </NavLink> */}
+          {/* accordion */}
+          <Accordion w="100%">
+            <Accordion.Item
+              value={`${chainKind.charAt(0).toUpperCase()}${chainKind.slice(
+                1
+              )}`}
+            >
+              <Accordion.Control
+                disabled={statementsArr.length === 0}
+              >{`${chainKind.charAt(0).toUpperCase()}${chainKind.slice(
+                1
+              )}`}</Accordion.Control>
+              <Accordion.Panel>
+                <Timeline
+                  active={Number.MAX_SAFE_INTEGER}
+                  w="100%"
+                  py={padding}
+                >
+                  {statementsArr.map((statement, index) => (
+                    <Timeline.Item
+                      key={`timeline-statement-${index}`}
+                      title={statement}
+                      bullet={<TbLink />}
+                      w="100%"
+                    />
+                  ))}
+                </Timeline>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+        </Stack>
       );
     }
   );
 
-  return <>{createTimelines}</>;
+  return <Group>{createTimelines}</Group>;
 }
 
 export { TimelineBuilder };

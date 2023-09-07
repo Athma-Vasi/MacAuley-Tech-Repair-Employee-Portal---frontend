@@ -120,7 +120,7 @@ function TextAreaInputWrapper({
     )
   ) : null;
 
-  const inputWidth = textAreaWidth ? textAreaWidth : width < 480 ? 330 : 450;
+  const inputWidth = textAreaWidth ? textAreaWidth : 330;
 
   const inputWithPopover = (
     <Popover

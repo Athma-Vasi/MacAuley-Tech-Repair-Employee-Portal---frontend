@@ -140,22 +140,18 @@ function StepperWrapper({
   const errorMessageWithAnd = replaceLastCommaWithAnd(errorMessage);
 
   const descObjLen = descriptionObjectsArray.length;
-  // const stepperWidth = customWidth
-  //   ? customWidth
-  //   : width < 480
-  //   ? 375 - 20
-  //   : width < 640
-  //   ? 640 - 20
-  //   : width >= 1024
-  //   ? 1024 - 20
-  //   : width - 20;
+
   const stepperWidth = customWidth
     ? customWidth
     : width < 480
     ? 375 - 20
-    : width >= 1024
-    ? 1024 - 20
-    : width * 0.85;
+    : width < 640
+    ? 480 - 20
+    : width < 768
+    ? 640 - 20
+    : width < 1024
+    ? (width - 200) * 0.75
+    : 1024 - 300;
 
   return (
     <Flex

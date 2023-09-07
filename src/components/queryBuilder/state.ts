@@ -1,3 +1,4 @@
+import { QUERY_BUILDER_FILTER_OPERATORS } from './constants';
 import {
   QueryBuilderAction,
   QueryBuilderDispatch,
@@ -11,6 +12,7 @@ const initialQueryBuilderState: QueryBuilderState = {
   currentFilterValue: '1970-01-01',
   isCurrentFilterValueValid: false,
   isCurrentFilterValueFocused: false,
+  filterOperatorSelectData: QUERY_BUILDER_FILTER_OPERATORS,
 
   currentSortTerm: 'Created date',
   currentSortDirection: 'ascending',
@@ -45,6 +47,7 @@ const queryBuilderAction: QueryBuilderAction = {
   setCurrentFilterValue: 'setCurrentFilterValue',
   setIsCurrentFilterValueValid: 'setIsCurrentFilterValueValid',
   setIsCurrentFilterValueFocused: 'setIsCurrentFilterValueFocused',
+  setFilterOperatorSelectData: 'setFilterOperatorSelectData',
 
   setCurrentSortTerm: 'setCurrentSortTerm',
   setCurrentSortDirection: 'setCurrentSortDirection',
@@ -104,6 +107,11 @@ function queryBuilderReducer(
         ...state,
         isCurrentFilterValueFocused: action.payload,
       };
+    case queryBuilderAction.setFilterOperatorSelectData:
+      return {
+        ...state,
+        filterOperatorSelectData: action.payload,
+      };
 
     case queryBuilderAction.setCurrentSortTerm:
       return {
@@ -134,6 +142,7 @@ function queryBuilderReducer(
 
     case queryBuilderAction.setFilterStatementsQueue: {
       const { index, value } = action.payload;
+      const [newField, newOperator, newValue] = value;
       const filterStatementsQueue = [...state.filterStatementsQueue];
 
       // if filter statement already present return state
@@ -146,13 +155,13 @@ function queryBuilderReducer(
         return state;
       }
 
-      // // if there are duplicate filter values, remove the previous one
-      // const duplicateFilterValuesIndex = filterStatementsQueue.findIndex(
-      //   (item) => item[0] === value[0]
-      // );
-      // if (duplicateFilterValuesIndex !== -1) {
-      //   filterStatementsQueue.splice(duplicateFilterValuesIndex, 1);
-      // }
+      // if newField is already present in filterStatementsQueue, remove it and add the new one
+      const duplicateFieldIndex = filterStatementsQueue.findIndex(
+        (item) => item[0] === newField
+      );
+      if (duplicateFieldIndex !== -1) {
+        filterStatementsQueue.splice(duplicateFieldIndex, 1);
+      }
 
       if (index >= filterStatementsQueue.length) {
         filterStatementsQueue.push(value);
@@ -252,18 +261,11 @@ function queryBuilderReducer(
       // this is required because projection checkbox value is the camel cased value that is not the client facing label (e.g. createdAt as opposed to Created date). The backend consumes the camel cased value.
       // the corresponding label from the map is found as the projectedFieldsSet is consumed by sort and field select inputs, whose values are the client facing (non-camelcased) labels.
       projectionArray.forEach((item) => {
-        const findCorrespondingLabel = Array.from(
-          state.labelValueTypesMap
-        ).reduce((acc, curr) => {
-          const [label, obj] = curr;
-          const { value } = obj;
-          if (value === item) {
-            // rome-ignore lint:
-            acc = label;
-          }
-
-          return acc;
-        }, '');
+        const findCorrespondingLabel =
+          Array.from(state.labelValueTypesMap).find(([_label, obj]) => {
+            const { value } = obj;
+            return value === item;
+          })?.[0] ?? '';
 
         projectedFieldsSet.add(findCorrespondingLabel);
       });

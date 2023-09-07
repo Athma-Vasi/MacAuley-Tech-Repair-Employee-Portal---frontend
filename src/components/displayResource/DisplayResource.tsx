@@ -25,7 +25,7 @@ import {
   DisplayResourceState,
   UpdateRequestStatusInput,
 } from './types';
-import { PROPERTY_DESCRIPTOR } from '../../constants/data';
+import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
 
 function DisplayResource<Doc>({
   style = {},
@@ -98,7 +98,11 @@ function DisplayResource<Doc>({
   } = displayResourceState;
 
   const {
-    globalState: { padding, rowGap },
+    globalState: {
+      padding,
+      rowGap,
+      themeObject: { colorScheme },
+    },
   } = useGlobalState();
   const {
     authState: { accessToken, roles },
@@ -522,6 +526,12 @@ function DisplayResource<Doc>({
     />
   );
 
+  const { dark } = COLORS_SWATCHES;
+  const backgroundColor =
+    colorScheme === 'light'
+      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+      : dark[6];
+
   const displayResourceComponent = (
     <Flex
       direction="column"
@@ -531,7 +541,7 @@ function DisplayResource<Doc>({
       h="100%"
       style={{
         ...style,
-        backgroundColor: '#fff',
+        backgroundColor,
         borderRadius: 4,
       }}
       p={padding}

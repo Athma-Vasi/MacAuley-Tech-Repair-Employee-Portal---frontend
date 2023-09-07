@@ -43,6 +43,7 @@ type QueryBuilderState = {
   currentFilterValue: string;
   isCurrentFilterValueValid: boolean;
   isCurrentFilterValueFocused: boolean;
+  filterOperatorSelectData: string[];
 
   currentSortTerm: string;
   currentSortDirection: string;
@@ -77,6 +78,7 @@ type QueryBuilderAction = {
   setCurrentFilterValue: 'setCurrentFilterValue';
   setIsCurrentFilterValueValid: 'setIsCurrentFilterValueValid';
   setIsCurrentFilterValueFocused: 'setIsCurrentFilterValueFocused';
+  setFilterOperatorSelectData: 'setFilterOperatorSelectData';
 
   setCurrentSortTerm: 'setCurrentSortTerm';
   setCurrentSortDirection: 'setCurrentSortDirection';
@@ -134,7 +136,9 @@ type QueryBuilderDispatch =
   | {
       type:
         | QueryBuilderAction['setFilterSelectData']
-        | QueryBuilderAction['setSortSelectData'];
+        | QueryBuilderAction['setSortSelectData']
+        | QueryBuilderAction['setFilterOperatorSelectData'];
+
       payload: string[];
     }
   | {
