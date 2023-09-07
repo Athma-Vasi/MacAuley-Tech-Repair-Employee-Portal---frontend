@@ -121,7 +121,7 @@ function DisplayResource<Doc>({
 
       const urlString: URL = urlBuilder({
         path,
-        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
+        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&projection=-action&projection=-category`,
       });
 
       const request: Request = new Request(urlString, {
@@ -539,9 +539,10 @@ function DisplayResource<Doc>({
       justify="center"
       w="100%"
       h="100%"
+      bg={backgroundColor}
       style={{
         ...style,
-        backgroundColor,
+        // backgroundColor,
         borderRadius: 4,
       }}
       p={padding}

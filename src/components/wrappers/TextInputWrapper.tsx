@@ -61,6 +61,7 @@ type AccessibleTextInputCreatorInfo = {
   ref?: React.RefObject<HTMLInputElement> | null;
   required?: boolean;
   autoComplete?: 'on' | 'off';
+  customWidth?: number;
 };
 
 type TextInputWrapperProps = {
@@ -73,7 +74,6 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
-      width,
       padding,
     },
   } = useGlobalState();
@@ -104,6 +104,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     ref = null,
     required = false,
     autoComplete = 'off',
+    customWidth,
   } = creatorInfoObject;
 
   const dynamicInputLabel = dynamicInputs ? (
@@ -143,7 +144,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     )
   ) : null;
 
-  const inputWidth = 330;
+  const inputWidth = customWidth ? customWidth : 330;
 
   const inputWithPopover = (
     <Popover

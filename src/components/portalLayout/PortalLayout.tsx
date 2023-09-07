@@ -40,6 +40,7 @@ function PortalLayout() {
 
   const displayBreadcrumbs = (
     <Group
+      w="100%"
       p={padding}
       bg={
         colorScheme === 'light'

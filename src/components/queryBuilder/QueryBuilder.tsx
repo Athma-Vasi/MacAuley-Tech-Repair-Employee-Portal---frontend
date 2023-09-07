@@ -426,6 +426,7 @@ function QueryBuilder({
 
   const filterValueDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     label: 'Value',
+    customWidth: '100%',
     description: {
       error: filterValueErrorText,
       valid: filterValueValidText,
@@ -812,53 +813,6 @@ function QueryBuilder({
     </Stack>
   );
 
-  // const displayFilterSection = (
-  //   <Flex w="100%" direction="column">
-  //     {filteredFilterSelectData.length === 0 ? (
-  //       <TextWrapper creatorInfoObj={{}}>No fields to filter!</TextWrapper>
-  //     ) : (
-  //       <FormLayoutWrapper>
-  //         <NavLink
-  //           label="Filter"
-  //           icon={<TbFilterCog />}
-  //           rightSection={<TbChevronRight />}
-  //           childrenOffset="xs"
-  //           disabled={filteredFilterSelectData.length === 0}
-  //           w="62%"
-  //         >
-  //           <Flex direction="column" w="100%" rowGap={rowGap}>
-  //             {displayFilterChains}
-
-  //             <Grid
-  //               w="100%"
-  //               align="flex-end"
-  //               justify="flex-start"
-  //               gutter={rowGap}
-  //             >
-  //               <Grid.Col md={6} lg={3}>
-  //                 {createdFilterSelectInput}
-  //               </Grid.Col>
-  //               <Grid.Col md={6} lg={3}>
-  //                 {createdFilterOperatorsSelectInput}
-  //               </Grid.Col>
-  //               <Grid.Col md={6} lg={3}>
-  //                 {createdFilterValueInput}
-  //               </Grid.Col>
-  //               <Grid.Col md={6} lg={3}>
-  //                 <Flex align="center" justify="flex-end">
-  //                   <Tooltip label="Add a new filter chain">
-  //                     <Center>{createdAddNewFilterButton}</Center>
-  //                   </Tooltip>
-  //                 </Flex>
-  //               </Grid.Col>
-  //             </Grid>
-  //           </Flex>
-  //         </NavLink>
-  //       </FormLayoutWrapper>
-  //     )}
-  //   </Flex>
-  // );
-
   const displayFilterSection = (
     <Stack w="100%">
       {filteredFilterSelectData.length === 0 ? (
@@ -891,21 +845,6 @@ function QueryBuilder({
     </Stack>
   );
 
-  // const displayProjectionSection = (
-  //   <FormLayoutWrapper>
-  //     <NavLink
-  //       label="Projection"
-  //       icon={<VscExclude />}
-  //       rightSection={<TbChevronRight />}
-  //       childrenOffset="xs"
-  //       disabled={disableProjection}
-  //       w="62%"
-  //     >
-  //       {createdProjectionCheckboxGroupInput}
-  //     </NavLink>
-  //   </FormLayoutWrapper>
-  // );
-
   const displayProjectionSection = (
     <Stack w="100%">
       <Accordion w="100%">
@@ -925,51 +864,6 @@ function QueryBuilder({
     </Stack>
   );
 
-  // const displaySortSection = (
-  //   <Flex w="100%" direction="column">
-  //     {filteredSortSelectData.length === 0 ? (
-  //       <Text>No fields to sort!</Text>
-  //     ) : (
-  //       <FormLayoutWrapper>
-  //         <NavLink
-  //           label="Sort"
-  //           icon={<TbArrowsSort />}
-  //           rightSection={<TbChevronRight />}
-  //           childrenOffset="xs"
-  //           disabled={filteredSortSelectData.length === 0}
-  //           w="62%"
-  //         >
-  //           <Flex direction="column" w="100%" rowGap={rowGap}>
-  //             {displaySortChains}
-  //             <Grid
-  //               w="100%"
-  //               align="flex-end"
-  //               justify="flex-start"
-  //               gutter={rowGap}
-  //             >
-  //               <Grid.Col md={6} lg={3}>
-  //                 {createdSortSelectInput}
-  //               </Grid.Col>
-  //               <Grid.Col md={6} lg={3}>
-  //                 {createdSortDirectionSelectInput}
-  //               </Grid.Col>
-  //               <Grid.Col md={6} lg={3}>
-  //                 {}
-  //               </Grid.Col>
-  //               <Grid.Col md={6} lg={3}>
-  //                 <Flex align="center" justify="flex-end">
-  //                   <Tooltip label="Add a new sort chain">
-  //                     <Center>{createdAddNewSortButton}</Center>
-  //                   </Tooltip>
-  //                 </Flex>
-  //               </Grid.Col>
-  //             </Grid>
-  //           </Flex>
-  //         </NavLink>
-  //       </FormLayoutWrapper>
-  //     )}
-  //   </Flex>
-  // );
   const displaySortSection = (
     <Stack w="100%">
       {filteredSortSelectData.length === 0 ? (
@@ -1003,47 +897,6 @@ function QueryBuilder({
 
   // ----------------- //
 
-  // const displayQueryBuilderComponent = (
-  //   <Flex
-  //     w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
-  //     p={padding}
-  //     direction="column"
-  //     rowGap={rowGap}
-  //     style={{
-  //       border: borderColor,
-  //       borderRadius: 4,
-  //     }}
-  //   >
-  //     <NavLink
-  //       label="Query Builder"
-  //       icon={<TbArrowsSort />}
-  //       rightSection={<TbChevronRight />}
-  //       childrenOffset={0}
-  //       disabled={
-  //         filteredSortSelectData.length === 0 &&
-  //         filteredFilterSelectData.length === 0 &&
-  //         projectionArray.length === 0
-  //       }
-  //       w="62%"
-  //     >
-  //       <Flex w="100%" direction="column" rowGap={rowGap} p={padding}>
-  //         {displayFilterSection}
-  //         {displaySortSection}
-  //         {displayProjectionSection}
-  //         <Flex align="center" justify="flex-end">
-  //           <Group position="apart">
-  //             <Tooltip label={`Clear ${collectionName} query`}>
-  //               <Group>{createdClearButton}</Group>
-  //             </Tooltip>
-  //             <Tooltip label={`Submit ${collectionName} query`}>
-  //               <Group>{createdSubmitButton}</Group>
-  //             </Tooltip>
-  //           </Group>
-  //         </Flex>
-  //       </Flex>
-  //     </NavLink>
-  //   </Flex>
-  // );
   const queryBuilderWidth =
     width < 480
       ? 375 - 20
@@ -1079,11 +932,11 @@ function QueryBuilder({
               <Title order={4}>Query Builder</Title>
             </Accordion.Control>
             <Accordion.Panel>
-              <Stack w="100%">
+              <Flex direction="column" w="100%">
                 {displayFilterSection}
                 {displaySortSection}
                 {displayProjectionSection}
-                <Flex align="center" justify="flex-end">
+                <Flex align="center" justify="flex-end" py={padding}>
                   <Group position="apart">
                     <Tooltip label={`Clear ${collectionName} query`}>
                       <Group>{createdClearButton}</Group>
@@ -1093,7 +946,7 @@ function QueryBuilder({
                     </Tooltip>
                   </Group>
                 </Flex>
-              </Stack>
+              </Flex>
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>

@@ -6,8 +6,9 @@ import {
   Popover,
   Spoiler,
   Text,
+  Title,
 } from '@mantine/core';
-import { FormEvent } from 'react';
+import { FormEvent, useEffect } from 'react';
 import { IoMdOpen } from 'react-icons/io';
 import {
   TbArrowDown,
@@ -17,7 +18,10 @@ import {
   TbUpload,
 } from 'react-icons/tb';
 
-import { FIELDNAMES_WITH_DATE_VALUES } from '../../../constants/data';
+import {
+  COLORS_SWATCHES,
+  FIELDNAMES_WITH_DATE_VALUES,
+} from '../../../constants/data';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
@@ -45,7 +49,12 @@ function DisplayQueryMobile({
   tableViewSelection,
 }: DisplayQueryMobileProps): JSX.Element {
   const {
-    globalState: { width, padding, rowGap },
+    globalState: {
+      width,
+      padding,
+      rowGap,
+      themeObject: { colorScheme },
+    },
   } = useGlobalState();
   const {
     authState: { roles },
@@ -106,7 +115,13 @@ function DisplayQueryMobile({
     },
   ]);
 
-  const tableKeyExclusionSet = new Set(['_id', 'userId', 'action', 'category']);
+  const { dark, gray } = COLORS_SWATCHES;
+  const borderColor =
+    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
+  const backgroundColor =
+    colorScheme === 'light'
+      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+      : dark[6];
 
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
@@ -128,7 +143,8 @@ function DisplayQueryMobile({
 
       const displayKeyValues = Object.entries(
         queryResponseObjWithAddedFields
-      ).map(([key, value], keyValIdx) => {
+      ).map((document, keyValIdx) => {
+        const [key, value] = document;
         // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
         const sectionKey =
           componentQueryData.find((queryDataObj) => queryDataObj.value === key)
@@ -217,7 +233,6 @@ function DisplayQueryMobile({
           >
             <Popover.Target>
               <Button
-                variant="outline"
                 size="xs"
                 onClick={() => {
                   popoversStateDispatch({
@@ -266,7 +281,6 @@ function DisplayQueryMobile({
               buttonLabel: 'Delete',
               semanticDescription: 'Delete this form',
               semanticName: 'Delete',
-              buttonVariant: 'outline',
               leftIcon: <TbTrash />,
               rightIcon: <TbUpload />,
               buttonOnClick: () => {
@@ -283,7 +297,6 @@ function DisplayQueryMobile({
             },
             {
               buttonLabel: 'Open',
-              buttonVariant: 'outline',
               buttonDisabled:
                 fileUploadsData[queryObjIdx]?.fileUploads.length < 1,
               leftIcon: <IoMdOpen />,
@@ -311,7 +324,7 @@ function DisplayQueryMobile({
         const displayFullLabelValueRow = (
           <>
             <Flex w="100%">
-              <Text>{sectionKey}</Text>
+              <Title order={6}>{sectionKey}</Title>
             </Flex>
             <Flex
               align="center"
@@ -334,32 +347,6 @@ function DisplayQueryMobile({
           </>
         );
 
-        const displayValueOnlyRow = (
-          <Flex
-            align="center"
-            justify="flex-end"
-            w="100%"
-            columnGap={rowGap}
-            py={padding}
-            style={{ outline: '1px solid violet' }}
-          >
-            {displayUpdateRequestStatusButton}
-            {displayCreatedDeleteButton}
-            <Text>{formattedValue}</Text>
-          </Flex>
-        );
-
-        const displayCondensedView = tableKeyExclusionSet.has(key) ? (
-          <Accordion w="100%">
-            <Accordion.Item value={sectionKey}>
-              <Accordion.Control>{sectionKey}</Accordion.Control>
-              <Accordion.Panel>{displayValueOnlyRow}</Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-        ) : (
-          displayFullLabelValueRow
-        );
-
         const displayExpandedView = displayFullLabelValueRow;
 
         return (
@@ -368,18 +355,16 @@ function DisplayQueryMobile({
             direction={width < 768 ? 'column' : 'row'}
             align={width < 768 ? 'flex-start' : 'center'}
             justify={width < 768 ? 'flex-start' : 'space-between'}
+            bg={backgroundColor}
             style={{
               borderRadius: 4,
-              backgroundColor: '#fff',
-              outline: '1px solid teal',
+              borderBottom: borderColor,
             }}
             rowGap={rowGap}
             w="100%"
             p={padding}
           >
-            {tableViewSelection === 'condensed'
-              ? displayCondensedView
-              : displayExpandedView}
+            {displayExpandedView}
           </Flex>
         );
       });
@@ -393,9 +378,10 @@ function DisplayQueryMobile({
           w="100%"
           rowGap={rowGap}
           style={{
-            // backgroundColor: '#f0f0f0',
-            // borderRadius: 4,
-            borderBottom: '2px solid #e0e0e0',
+            borderBottom:
+              colorScheme === 'light'
+                ? `4px solid ${gray[3]}`
+                : `4px solid ${gray[8]}`,
           }}
           py={padding}
         >
@@ -416,16 +402,17 @@ function DisplayQueryMobile({
         align="flex-start"
         justify="center"
         style={{
-          border: '1px solid #e0e0e0',
+          border: borderColor,
           borderRadius: 4,
-          outline: '1px solid violet',
         }}
         w="100%"
         rowGap={rowGap}
       >
         <Accordion w="100%">
           <Accordion.Item value={displaySection}>
-            <Accordion.Control>{displaySection}</Accordion.Control>
+            <Accordion.Control>
+              <Title order={5}>{displaySection}</Title>
+            </Accordion.Control>
             <Accordion.Panel>
               <Flex
                 direction="column"
@@ -454,28 +441,29 @@ function DisplayQueryMobile({
                   align="flex-start"
                   justify="center"
                   direction="column"
+                  bg={backgroundColor}
                   style={{
-                    backgroundColor: '#fff',
                     borderRadius: 4,
                   }}
                   rowGap={rowGap}
                   // w="100%"
-                  p={padding}
+                  // p={padding}
                 >
                   <Flex
                     w="100%"
                     align="center"
                     justify="space-between"
                     columnGap={rowGap}
+                    p={padding}
+                    style={{
+                      border: borderColor,
+                      borderRadius: 4,
+                    }}
                   >
-                    <Group>
-                      <Text>{`${key.charAt(0).toUpperCase()}${key.slice(
-                        1
-                      )}`}</Text>
-                    </Group>
-                    <Group>
-                      <Text>{value}</Text>
-                    </Group>
+                    <Text>{`${key.charAt(0).toUpperCase()}${key.slice(
+                      1
+                    )}`}</Text>
+                    <Text>{value}</Text>
                   </Flex>
                 </Flex>
               );
@@ -487,11 +475,11 @@ function DisplayQueryMobile({
               key={`${queryObjIdx}`}
               direction="column"
               p={padding}
+              bg={backgroundColor}
               align="flex-start"
               justify="center"
               style={{
                 borderRadius: 4,
-                backgroundColor: '#f0f0f0',
               }}
               // w="100%"
             >
@@ -508,7 +496,7 @@ function DisplayQueryMobile({
       align="flex-start"
       justify="center"
       style={{
-        border: '1px solid #e0e0e0',
+        border: borderColor,
         borderRadius: 4,
       }}
       w="100%"
@@ -529,13 +517,13 @@ function DisplayQueryMobile({
               restOfGroupedQueryResponseData.length === 0
             }
           >
-            <Text>{`${
+            <Title order={5}>{`${
               groupedByQueryResponseData.size === 0
                 ? 'No documents to display'
                 : restOfGroupedQueryResponseData.length === 0
                 ? 'All constrained values displayed'
                 : 'Rest of constrained values'
-            }`}</Text>
+            }`}</Title>
           </Accordion.Control>
           <Accordion.Panel>
             <Flex
@@ -546,7 +534,6 @@ function DisplayQueryMobile({
               pt={padding}
               w="100%"
               wrap="wrap"
-              style={{ outline: '1px solid teal' }}
             >
               {displayRestOfGroupedQueryResponseData}
             </Flex>
@@ -555,6 +542,8 @@ function DisplayQueryMobile({
       </Accordion>
     </Flex>
   );
+
+  console.log('groupedByQueryResponseData', groupedByQueryResponseData);
 
   return (
     <Flex

@@ -34,6 +34,7 @@ type AccessibleDateTimeInputCreatorInfo = {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   required?: boolean;
   autoComplete?: 'on' | 'off';
+  customWidth?: string | number;
 };
 
 type DateTimeInputWrapperProps = {
@@ -76,6 +77,7 @@ function DateTimeInputWrapper({
     required = false,
     size = 'sm',
     autoComplete = 'off',
+    customWidth,
   } = creatorInfoObject;
 
   const colorShade =
@@ -89,7 +91,7 @@ function DateTimeInputWrapper({
     )
   ) : null;
 
-  const inputWidth = 330;
+  const inputWidth = customWidth ? customWidth : 330;
 
   const inputWithPopover = (
     <Popover

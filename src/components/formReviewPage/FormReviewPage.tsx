@@ -113,7 +113,7 @@ function FormReviewPage({
       });
 
       const formReviewStack = (
-        <Stack key={`form-review-${index}`} w="100%">
+        <Stack key={`form-review-${index}`} w="100%" pb={padding}>
           {displayPageName}
           {displayPageSection}
         </Stack>

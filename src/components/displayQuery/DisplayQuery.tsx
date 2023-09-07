@@ -290,6 +290,7 @@ function DisplayQuery<Doc>({
     required: true,
     withAsterisk: true,
     semanticName: 'acknowledgement',
+    customWidth: 300,
   };
 
   const deleteButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -404,21 +405,21 @@ function DisplayQuery<Doc>({
       opened={openedDeleteAcknowledge}
       onClose={closeDeleteAcknowledge}
       centered
-      size={350}
+      size={375}
     >
       <form onSubmit={handleDeleteFormSubmit}>
         <Flex
           w="100%"
           style={{
-            border: '1px solid #e0e0e0',
+            border: borderColor,
             borderRadius: 4,
           }}
           rowGap={rowGap}
           p={padding}
           direction="column"
         >
-          <Title>Delete file</Title>
-          <Text size="sm">
+          <Title order={5}>Delete file</Title>
+          <Text>
             To delete this file, please enter: 'I solemnly swear that I am up to
             no good.'
           </Text>
@@ -447,7 +448,7 @@ function DisplayQuery<Doc>({
       <Flex
         w="100%"
         style={{
-          border: '1px solid #e0e0e0',
+          border: borderColor,
           borderRadius: 4,
         }}
         rowGap={rowGap}
@@ -476,7 +477,7 @@ function DisplayQuery<Doc>({
           const displayImage = (
             <Image
               src={`data:${fileMimeType};base64,${uploadedFile}`}
-              width={350}
+              width={325}
               fit="contain"
               withPlaceholder
             />
@@ -495,10 +496,10 @@ function DisplayQuery<Doc>({
                   justify="space-between"
                   wrap="wrap"
                   w="100%"
-                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                  style={{ borderBottom: borderColor }}
                 >
-                  <TextWrapper creatorInfoObj={{}}>File name: </TextWrapper>
-                  <Text size="sm" color="dark">
+                  <Text>File name: </Text>
+                  <Text>
                     {fileName.length > 11
                       ? `${fileName.slice(0, 11)}...`
                       : fileName}
@@ -507,9 +508,7 @@ function DisplayQuery<Doc>({
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
-                  <Text size="sm" color="dark">
-                    {fileName}
-                  </Text>
+                  <Text>{fileName}</Text>
                 </Flex>
               </HoverCard.Dropdown>
             </HoverCard>
@@ -535,12 +534,10 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
-              <TextWrapper creatorInfoObj={{}}>File name: </TextWrapper>
-              <Text size="sm" color="dark" pl={padding}>
-                {fileName}
-              </Text>
+              <Text>File name: </Text>
+              <Text pl={padding}>{fileName}</Text>
             </Flex>
           );
 
@@ -550,10 +547,10 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
-              <TextWrapper creatorInfoObj={{}}>File extension: </TextWrapper>
-              <TextWrapper creatorInfoObj={{}}>{fileExtension}</TextWrapper>
+              <Text>File extension: </Text>
+              <Text>{fileExtension}</Text>
             </Flex>
           );
 
@@ -563,10 +560,10 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
-              <TextWrapper creatorInfoObj={{}}>File mime type: </TextWrapper>
-              <TextWrapper creatorInfoObj={{}}>{fileMimeType}</TextWrapper>
+              <Text>File mime type: </Text>
+              <Text>{fileMimeType}</Text>
             </Flex>
           );
 
@@ -576,10 +573,10 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
-              <TextWrapper creatorInfoObj={{}}>File encoding: </TextWrapper>
-              <TextWrapper creatorInfoObj={{}}>{fileEncoding}</TextWrapper>
+              <Text>File encoding: </Text>
+              <Text>{fileEncoding}</Text>
             </Flex>
           );
 
@@ -589,12 +586,10 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
-              <TextWrapper creatorInfoObj={{}}>File size: </TextWrapper>
-              <TextWrapper creatorInfoObj={{}}>
-                {(fileSize / 1_000).toFixed(2)} KB
-              </TextWrapper>
+              <Text>File size: </Text>
+              <Text>{(fileSize / 1_000).toFixed(2)} KB</Text>
             </Flex>
           );
 
@@ -632,17 +627,13 @@ function DisplayQuery<Doc>({
                   w="100%"
                   style={{ borderBottom: '1px solid #e0e0e0' }}
                 >
-                  <TextWrapper creatorInfoObj={{}}>Created date: </TextWrapper>
-                  <TextWrapper creatorInfoObj={{}}>
-                    {formattedCreatedDate}
-                  </TextWrapper>
+                  <Text>Created date: </Text>
+                  <Text>{formattedCreatedDate}</Text>
                 </Flex>
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
-                  <TextWrapper creatorInfoObj={{}}>
-                    {dropDownFullCreatedDate}
-                  </TextWrapper>
+                  <Text>{dropDownFullCreatedDate}</Text>
                 </Flex>
               </HoverCard.Dropdown>
             </HoverCard>
@@ -656,7 +647,7 @@ function DisplayQuery<Doc>({
               w="100%"
               style={{ borderBottom: '1px solid #e0e0e0' }}
             >
-              <TextWrapper creatorInfoObj={{}}>Created date: </TextWrapper>
+              <Text>Created date: </Text>
               <Text size="sm" color="dark" pl={padding}>
                 {dropDownFullCreatedDate}
               </Text>
@@ -697,17 +688,13 @@ function DisplayQuery<Doc>({
                   w="100%"
                   style={{ borderBottom: '1px solid #e0e0e0' }}
                 >
-                  <TextWrapper creatorInfoObj={{}}>Updated date: </TextWrapper>
-                  <TextWrapper creatorInfoObj={{}}>
-                    {formattedUpdatedDate}
-                  </TextWrapper>
+                  <Text>Updated date: </Text>
+                  <Text>{formattedUpdatedDate}</Text>
                 </Flex>
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
-                  <TextWrapper creatorInfoObj={{}}>
-                    {dropdownFullUpdatedDate}
-                  </TextWrapper>
+                  <Text>{dropdownFullUpdatedDate}</Text>
                 </Flex>
               </HoverCard.Dropdown>
             </HoverCard>
@@ -721,7 +708,7 @@ function DisplayQuery<Doc>({
               w="100%"
               style={{ borderBottom: '1px solid #e0e0e0' }}
             >
-              <TextWrapper creatorInfoObj={{}}>Updated date: </TextWrapper>
+              <Text>Updated date: </Text>
               <Text size="sm" color="dark" pl={padding}>
                 {dropdownFullUpdatedDate}
               </Text>
@@ -736,8 +723,8 @@ function DisplayQuery<Doc>({
               w="100%"
               style={{ borderBottom: '1px solid #e0e0e0' }}
             >
-              <TextWrapper creatorInfoObj={{}}>Creator: </TextWrapper>
-              <TextWrapper creatorInfoObj={{}}>{username}</TextWrapper>
+              <Text>Creator: </Text>
+              <Text>{username}</Text>
             </Flex>
           );
 
@@ -756,7 +743,7 @@ function DisplayQuery<Doc>({
                   w="100%"
                   style={{ borderBottom: '1px solid #e0e0e0' }}
                 >
-                  <TextWrapper creatorInfoObj={{}}>File ID: </TextWrapper>
+                  <Text>File ID: </Text>
                   <Text size="sm" color="dark">
                     {_id.slice(0, 11)}...
                   </Text>
@@ -780,7 +767,7 @@ function DisplayQuery<Doc>({
               w="100%"
               style={{ borderBottom: '1px solid #e0e0e0' }}
             >
-              <TextWrapper creatorInfoObj={{}}>File ID: </TextWrapper>
+              <Text>File ID: </Text>
               <Text size="sm" color="dark" pl={padding}>
                 {_id}
               </Text>
@@ -802,7 +789,7 @@ function DisplayQuery<Doc>({
                   w="100%"
                   style={{ borderBottom: '1px solid #e0e0e0' }}
                 >
-                  <TextWrapper creatorInfoObj={{}}>User ID: </TextWrapper>
+                  <Text>User ID: </Text>
                   <Text size="sm" color="dark">
                     {userId.slice(0, 11)}...
                   </Text>
@@ -826,7 +813,7 @@ function DisplayQuery<Doc>({
               w="100%"
               style={{ borderBottom: '1px solid #e0e0e0' }}
             >
-              <TextWrapper creatorInfoObj={{}}>User ID: </TextWrapper>
+              <Text>User ID: </Text>
               <Text size="sm" color="dark" pl={padding}>
                 {userId}
               </Text>
@@ -858,11 +845,11 @@ function DisplayQuery<Doc>({
                 } info`}
               >
                 <Accordion.Control>
-                  <TextWrapper creatorInfoObj={{}}>
+                  <Text>
                     {fileName.length > 23
                       ? `${fileName.slice(0, 23)}...`
                       : fileName}
-                  </TextWrapper>
+                  </Text>
                 </Accordion.Control>
                 <Accordion.Panel>{displayFileUploadInfo}</Accordion.Panel>
               </Accordion.Item>
@@ -976,7 +963,7 @@ function DisplayQuery<Doc>({
       }}
     >
       {displayGroupByRadioGroup}
-      {displayTableViewSegmentControl}
+      {width >= 1024 ? displayTableViewSegmentControl : null}
       {displayAcknowledgementModal}
       {displayFileUploadsModal}
       <Flex align="center" justify="space-between" w="100%">

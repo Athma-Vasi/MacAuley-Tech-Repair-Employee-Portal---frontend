@@ -1,4 +1,4 @@
-import { Anchor, Breadcrumbs } from '@mantine/core';
+import { Anchor, Breadcrumbs, Flex, Space } from '@mantine/core';
 import { TbArrowRight } from 'react-icons/tb';
 
 import { splitCamelCase } from '../../utils';
@@ -31,17 +31,31 @@ function createBreadcrumbs(pathname: string) {
     []
   );
 
-  const anchorsArray = breadCrumbsItems.map((item, index) => {
+  const anchorsTuple = breadCrumbsItems.map((item, index) => {
     const anchor = (
       <Anchor href={item.href} key={`breadcrumb-${index}`}>
         {item.label}
       </Anchor>
     );
 
-    return anchor;
+    const spacing =
+      index === breadCrumbsItems.length - 1 ? null : index === 0 ? null : (
+        <Space w="xs" />
+      );
+
+    const separator =
+      index === breadCrumbsItems.length - 1 ? null : index === 0 ? null : (
+        <TbArrowRight size={14} />
+      );
+
+    return [anchor, spacing, separator, spacing];
   });
 
-  return <Breadcrumbs separator={<TbArrowRight />}>{anchorsArray}</Breadcrumbs>;
+  return (
+    <Flex w="100%" align="center" justify="flex-start">
+      {anchorsTuple}
+    </Flex>
+  );
 }
 
 export { createBreadcrumbs };
