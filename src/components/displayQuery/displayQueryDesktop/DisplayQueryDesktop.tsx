@@ -51,6 +51,12 @@ import {
 } from './state';
 import { table } from 'console';
 import { sortGroupedByQueryResponseData } from './utils';
+import { FaSortDown, FaSortUp } from 'react-icons/fa';
+import {
+  TiArrowDownThick,
+  TiArrowSortedDown,
+  TiArrowUpThick,
+} from 'react-icons/ti';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
@@ -99,16 +105,17 @@ function DisplayQueryDesktop<Doc>({
     ([color, _shades]) => color === primaryColor
   )?.[1];
   const scrollBarColor = themeColor ? themeColor[colorShade] : gray[5];
-  const tableHeadersBgColor = themeColor ? themeColor[3] : gray[0];
+  const tableHeadersBgColor = colorScheme === 'light' ? gray[4] : gray[8];
   const highlightColor = themeColor
     ? colorScheme === 'light'
-      ? themeColor[2]
+      ? gray[3]
       : gray[6]
     : gray[6];
-  const borderColor =
-    colorScheme === 'light'
-      ? `1px solid ${gray[3]}`
-      : `1px solid ${scrollBarColor}`;
+
+  const headerBorderColor =
+    colorScheme === 'light' ? `2px solid ${gray[3]}` : `2px solid ${gray[7]}`;
+  const rowsBorderColor =
+    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[7]}`;
   const backgroundColor =
     colorScheme === 'light'
       ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
@@ -275,12 +282,12 @@ function DisplayQueryDesktop<Doc>({
           <tr>
             {tableHeaderValuesArr.map((headerValue, headerIdx) => {
               const headerStyle: CSSProperties = {
-                border:
-                  colorScheme === 'light' ? '' : `1px solid ${scrollBarColor}`,
-                borderLeft: borderColor,
-                borderRight: borderColor,
-                backgroundColor:
-                  colorScheme === 'light' ? tableHeadersBgColor : '',
+                // border:
+                //   colorScheme === 'light' ? '' : `1px solid ${scrollBarColor}`,
+                // borderLeft: headerBorderColor,
+                // borderRight: headerBorderColor,
+                border: headerBorderColor,
+                backgroundColor: tableHeadersBgColor,
                 padding: '4px 4px 4px 8px',
               };
               const headerGroupStyle: CSSProperties = {
@@ -294,10 +301,10 @@ function DisplayQueryDesktop<Doc>({
 
               const ascendingIconColor =
                 headerValue === fieldToSortBy && sortDirection === 'asc'
-                  ? colorScheme === 'light'
-                    ? gray[0]
-                    : gray[3]
-                  : colorScheme === 'light'
+                  ? colorScheme === 'light' // on
+                    ? themeColor?.[primaryShade.light]
+                    : themeColor?.[primaryShade.dark]
+                  : colorScheme === 'light' // off
                   ? gray[6]
                   : gray[8];
 
@@ -308,10 +315,10 @@ function DisplayQueryDesktop<Doc>({
                   )} in ascending order`}
                 >
                   <Group>
-                    <TbSortAscending
+                    <TiArrowUpThick
                       color={ascendingIconColor}
                       style={{ cursor: 'pointer' }}
-                      size={16}
+                      size={17}
                       onClick={() => {
                         displayQueryDesktopDispatch({
                           type: displayQueryDesktopAction.setFieldToSortBy,
@@ -329,10 +336,10 @@ function DisplayQueryDesktop<Doc>({
 
               const descendingIconColor =
                 headerValue === fieldToSortBy && sortDirection === 'desc'
-                  ? colorScheme === 'light'
-                    ? gray[0]
-                    : gray[3]
-                  : colorScheme === 'light'
+                  ? colorScheme === 'light' // on
+                    ? themeColor?.[primaryShade.light]
+                    : themeColor?.[primaryShade.dark]
+                  : colorScheme === 'light' // off
                   ? gray[6]
                   : gray[8];
 
@@ -343,10 +350,10 @@ function DisplayQueryDesktop<Doc>({
                   )} in descending order`}
                 >
                   <Group>
-                    <TbSortDescending
+                    <TiArrowDownThick
                       color={descendingIconColor}
                       style={{ cursor: 'pointer' }}
-                      size={16}
+                      size={17}
                       onClick={() => {
                         displayQueryDesktopDispatch({
                           type: displayQueryDesktopAction.setFieldToSortBy,
@@ -381,11 +388,6 @@ function DisplayQueryDesktop<Doc>({
 
               const displayExpandedHeaderRows = (
                 <th key={`${headerIdx}`} style={headerStyle}>
-                  {/* <Group style={headerGroupStyle} position="center">
-                    <Title order={6}>
-                      {headerValue === '_id' ? 'Document Id' : headerValue}
-                    </Title>
-                  </Group> */}
                   {headerRowWithSortArrows}
                 </th>
               );
@@ -393,9 +395,7 @@ function DisplayQueryDesktop<Doc>({
               const displayCondensedHeaderRows =
                 !tableHeaderValueExclusionSet.has(headerValue) ? (
                   <th key={`${headerIdx}`} style={headerStyle}>
-                    {/* <Group style={headerGroupStyle} position="center">
-                      <Title order={6}>{headerValue}</Title>
-                    </Group> */}
+                    {headerRowWithSortArrows}
                   </th>
                 ) : null;
 
@@ -427,7 +427,10 @@ function DisplayQueryDesktop<Doc>({
                         });
 
                   const rowWithStringifiedValues = (
-                    <tr key={`${objIdx}`} style={{ borderBottom: borderColor }}>
+                    <tr
+                      key={`${objIdx}`}
+                      style={{ borderBottom: rowsBorderColor }}
+                    >
                       {Object.entries(queryResponseObjWithAddedFields).map(
                         ([key, value], keyValIdx) => {
                           const formattedValue =
@@ -730,7 +733,7 @@ function DisplayQueryDesktop<Doc>({
                                   {displayUpdateRequestStatusButton}
                                 </Group>
                               ) : (
-                                <Group w="100%" position="center">
+                                <Group w="100%" position="right">
                                   {truncatedValuesWithHoverCards}
                                 </Group>
                               )}
@@ -750,7 +753,7 @@ function DisplayQueryDesktop<Doc>({
                                     {displayUpdateRequestStatusButton}
                                   </Group>
                                 ) : (
-                                  <Group w="100%" position="center">
+                                  <Group w="100%" position="right">
                                     {truncatedValuesWithHoverCards}
                                   </Group>
                                 )}
@@ -832,7 +835,7 @@ function DisplayQueryDesktop<Doc>({
                                   <Tooltip
                                     label={`Delete form with id: ${queryResponseObjWithAddedFields._id}`}
                                   >
-                                    <Group w="100%" position="left">
+                                    <Group w="100%" position="right">
                                       {createdDeleteFormButton}
                                     </Group>
                                   </Tooltip>
@@ -899,7 +902,7 @@ function DisplayQueryDesktop<Doc>({
             style={{
               overflowX: 'auto',
               overflowY: 'hidden',
-              // border: borderColor,
+              // border: headerBorderColor,
               // borderRadius: 4,
             }}
           >
@@ -915,7 +918,7 @@ function DisplayQueryDesktop<Doc>({
                     bg={backgroundColor}
                     style={{
                       borderRadius: 4,
-                      borderRight: borderColor,
+                      borderRight: headerBorderColor,
                     }}
                   >
                     <Group>
