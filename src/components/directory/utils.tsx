@@ -49,7 +49,12 @@ function returnDirectoryProfileCard({
   style = {},
   cardHeight = 200,
 }: ReturnDirectoryProfileCardInput) {
-  const { border, color } = style;
+  const { backgroundColor = '#f5f5f5', border, color } = style;
+
+  console.log('backgroundColor: ', backgroundColor);
+  // console.log('border: ', border);
+  // console.log('color: ', color);
+
   const createdSocialMediaIcons = (
     <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
       <Tooltip label={`View ${firstName} ${lastName}'s Mastodon profile`}>
@@ -79,7 +84,16 @@ function returnDirectoryProfileCard({
   );
 
   const displayProfileCard = (
-    <Card radius="md" w={325} h={cardHeight} style={{ ...style }}>
+    <Card
+      radius="md"
+      w={325}
+      h={cardHeight}
+      style={{
+        border,
+        backgroundColor,
+        color,
+      }}
+    >
       <Flex
         justify="space-between"
         w="100%"

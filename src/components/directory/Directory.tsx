@@ -285,6 +285,7 @@ function Directory() {
       ? // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
         '#f5f5f5'
       : dark[6];
+
   const borderColor =
     colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
   const strokeColor = colorScheme === 'light' ? dark[5] : gray[7];
@@ -311,7 +312,6 @@ function Directory() {
     // defaults shared across all edges
     type: 'smoothstep',
     animated: true,
-    // label: 'has subordinates',
     labelBgPadding: [8, 4],
     labelBgBorderRadius: 4,
     labelBgStyle: { fill: 'white' },
@@ -320,7 +320,7 @@ function Directory() {
   };
 
   const profileCardStyles: CSSProperties = {
-    background: backgroundColor,
+    backgroundColor: backgroundColor,
     border: borderColor,
     color,
   };
@@ -1594,24 +1594,16 @@ function Directory() {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end concurrent fn calls ━┛
   }, [
     triggerSetDepartmentsNodesAndEdges,
-
     dagreMinLen,
     dagreNodeSep,
     dagreRankAlign,
     dagreRankDir,
     dagreRankSep,
     dagreRanker,
+    colorScheme,
   ]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end main nodes & edges effect ━┛
-
-  // trigger nodes and edges creation upon color scheme change
-  useEffect(() => {
-    directoryDispatch({
-      type: directoryAction.triggerSetDepartmentsNodesAndEdges,
-      payload: true,
-    });
-  }, [colorScheme]);
 
   useEffect(() => {
     // only update state when the following are not null
@@ -1690,6 +1682,7 @@ function Directory() {
     departmentsNodesAndEdges,
     triggerSetLayoutedNodesAndEdges,
     filterByDepartment,
+    // colorScheme,
   ]);
 
   // update filteredDepartmentsNodesAndEdges

@@ -27,7 +27,7 @@ const initialDirectoryState: DirectoryState = {
     UserDocument[]
   >,
 
-  filterByDepartment: 'All Departments',
+  filterByDepartment: 'Executive Management',
   filteredDepartmentsNodesAndEdges: null,
   filterByJobPosition: 'All Job Positions',
   filteredJobPositionsNodesAndEdges: null,

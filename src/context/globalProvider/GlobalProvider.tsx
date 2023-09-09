@@ -69,12 +69,12 @@ function GlobalProvider({ children }: GlobalProviderProps) {
     [globalState, globalDispatch]
   );
 
-  useEffect(() => {
-    logState({
-      state: globalState,
-      groupLabel: 'globalState in GlobalProvider',
-    });
-  }, [globalState]);
+  // useEffect(() => {
+  //   logState({
+  //     state: globalState,
+  //     groupLabel: 'globalState in GlobalProvider',
+  //   });
+  // }, [globalState]);
 
   return (
     <GlobalContext.Provider value={globalContextValue}>
