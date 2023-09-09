@@ -4,6 +4,7 @@ import { useGlobalState } from '../../../hooks';
 import { splitCamelCase } from '../../../utils';
 import { TextWrapper } from '../../wrappers';
 import { ReactNode } from 'react';
+import { COLORS_SWATCHES } from '../../../constants/data';
 
 type ChartsGraphsControlsStackerProps = {
   label: string | ReactNode;
@@ -26,9 +27,7 @@ function ChartsGraphsControlsStacker({
     },
   } = useGlobalState();
 
-  const {
-    colors: { gray },
-  } = useMantineTheme();
+  const { gray } = COLORS_SWATCHES;
 
   const borderColor = colorScheme === 'light' ? gray[3] : gray[8];
 

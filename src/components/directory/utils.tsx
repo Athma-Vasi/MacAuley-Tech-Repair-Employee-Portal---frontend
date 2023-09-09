@@ -9,12 +9,14 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
+import dagre from 'dagre';
 import { TbBrandMastodon, TbPhotoOff } from 'react-icons/tb';
 import {
   TiSocialDribbble,
   TiSocialFlickr,
   TiSocialLinkedin,
 } from 'react-icons/ti';
+import { Edge, Node } from 'reactflow';
 
 import {
   DagreLabelPos,
@@ -23,13 +25,14 @@ import {
   DagreRankerAlgorithm,
   DirectoryUserDocument,
 } from './types';
-import dagre from 'dagre';
-import { Edge, Node } from 'reactflow';
+import { CSSProperties } from 'react';
 
 type ReturnDirectoryProfileCardInput = {
   userDocument: DirectoryUserDocument;
   padding: MantineNumberSize;
   rowGap: MantineNumberSize;
+  style: CSSProperties;
+  cardHeight?: number;
 };
 
 function returnDirectoryProfileCard({
@@ -43,49 +46,40 @@ function returnDirectoryProfileCard({
   },
   padding,
   rowGap,
+  style = {},
+  cardHeight = 200,
 }: ReturnDirectoryProfileCardInput) {
+  const { border, color } = style;
   const createdSocialMediaIcons = (
     <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
       <Tooltip label={`View ${firstName} ${lastName}'s Mastodon profile`}>
         <Group>
-          <TbBrandMastodon
-            size={18}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
+          <TbBrandMastodon size={18} style={{ cursor: 'pointer', color }} />
         </Group>
       </Tooltip>
 
       <Tooltip label={`View ${firstName} ${lastName}'s LinkedIn profile`}>
         <Group>
-          <TiSocialLinkedin
-            size={18}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
+          <TiSocialLinkedin size={18} style={{ cursor: 'pointer', color }} />
         </Group>
       </Tooltip>
 
       <Tooltip label={`View ${firstName} ${lastName}'s Flickr profile`}>
         <Group>
-          <TiSocialFlickr
-            size={18}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
+          <TiSocialFlickr size={18} style={{ cursor: 'pointer', color }} />
         </Group>
       </Tooltip>
 
       <Tooltip label={`View ${firstName} ${lastName}'s Dribbble profile`}>
         <Group>
-          <TiSocialDribbble
-            size={18}
-            style={{ cursor: 'pointer', color: 'dimgray' }}
-          />
+          <TiSocialDribbble size={18} style={{ cursor: 'pointer', color }} />
         </Group>
       </Tooltip>
     </Flex>
   );
 
   const displayProfileCard = (
-    <Card radius="md" w={325} h={200}>
+    <Card radius="md" w={325} h={cardHeight} style={{ ...style }}>
       <Flex
         justify="space-between"
         w="100%"
@@ -112,20 +106,12 @@ function returnDirectoryProfileCard({
           align="center"
           justify="center"
           w="62%"
-          style={{ borderLeft: '1px solid #e0e0e0' }}
+          style={{ borderLeft: border }}
         >
-          <Title order={4} color="dark">{`${firstName} ${lastName}`}</Title>
-          <Text color="dark" size="sm" pb={padding}>
-            {preferredPronouns}
-          </Text>
-          <Text color="dark" size="sm">
-            {jobPosition}
-          </Text>
-          {storeLocation ? (
-            <Text color="dark" size="sm">
-              {storeLocation}
-            </Text>
-          ) : null}
+          <Title order={4}>{`${firstName} ${lastName}`}</Title>
+          <Text pb={padding}>{preferredPronouns}</Text>
+          <Text>{jobPosition}</Text>
+          {storeLocation ? <Text>{storeLocation}</Text> : null}
         </Flex>
       </Flex>
     </Card>
@@ -159,8 +145,8 @@ function returnDagreLayoutedElements(
   const {
     edges,
     nodes,
-    nodeHeight = 217,
-    nodeWidth = 351,
+    nodeHeight = 267,
+    nodeWidth = 371,
     rankdir = 'TB',
     align,
     nodesep = 50,
@@ -224,4 +210,4 @@ function returnDagreLayoutedElements(
   return { nodes, edges };
 }
 
-export { returnDirectoryProfileCard, returnDagreLayoutedElements };
+export { returnDagreLayoutedElements, returnDirectoryProfileCard };

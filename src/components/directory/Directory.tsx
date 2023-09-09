@@ -1,33 +1,19 @@
-import {
-  Accordion,
-  Button,
-  Card,
-  Flex,
-  Grid,
-  Group,
-  Image,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Grid, Group, ScrollArea, Stack, Text, Title } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import localforage from 'localforage';
-import { ChangeEvent, useEffect, useReducer } from 'react';
+import { ChangeEvent, CSSProperties, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { Edge, Node } from 'reactflow';
 
 import {
-  DEPARTMENT_DATA,
+  COLORS_SWATCHES,
   DEPARTMENT_JOB_POSITION_MAP,
-  JOB_POSITION_DATA,
   PROPERTY_DESCRIPTOR,
-  STORE_LOCATION_DATA,
 } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
 import {
-  returnAccessibleCheckboxGroupInputsElements,
-  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../jsxCreators';
@@ -37,21 +23,13 @@ import {
   SelectInputData,
   StoreLocation,
 } from '../../types';
-import {
-  addFieldsToObject,
-  groupByField,
-  logState,
-  replaceLastCommaWithAnd,
-  urlBuilder,
-} from '../../utils';
+import { groupByField, logState, urlBuilder } from '../../utils';
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
 import { ChartsGraphsControlsStacker } from '../displayStatistics/responsivePieChart/utils';
 import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
 import {
-  AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
-  TextWrapper,
 } from '../wrappers';
 import {
   DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
@@ -81,7 +59,6 @@ import {
   returnDagreLayoutedElements,
   returnDirectoryProfileCard,
 } from './utils';
-import { compress } from 'image-conversion';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -124,7 +101,12 @@ function Directory() {
 
   const {
     globalDispatch,
-    globalState: { padding, rowGap, width },
+    globalState: {
+      padding,
+      rowGap,
+      width,
+      themeObject: { colorScheme, primaryColor, primaryShade },
+    },
   } = useGlobalState();
 
   const { showBoundary } = useErrorBoundary();
@@ -290,33 +272,66 @@ function Directory() {
     };
   }, []);
 
+  // ┏━ begin defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  const { dark, gray } = COLORS_SWATCHES;
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const themeColor = Object.entries(COLORS_SWATCHES).find(
+    ([color, _shades]) => color === primaryColor
+  )?.[1];
+  const color = colorScheme === 'light' ? gray[8] : gray[5];
+  const backgroundColor =
+    colorScheme === 'light'
+      ? // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+        '#f5f5f5'
+      : dark[6];
+  const borderColor =
+    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
+  const strokeColor = colorScheme === 'light' ? dark[5] : gray[7];
+
+  const nodePosition = { x: 0, y: 0 };
+  const nodeDimensions = { width: 371, height: 267 };
+  const nodeDefaults: Node = {
+    // will be overwritten
+    id: '',
+    position: { ...nodePosition },
+    data: { label: '' },
+    // defaults shared across all nodes
+    style: {
+      ...nodeDimensions,
+      background: backgroundColor,
+      border: borderColor,
+    },
+  };
+  const edgeDefaults: Edge = {
+    // will be overwritten
+    id: '',
+    source: '',
+    target: '',
+    // defaults shared across all edges
+    type: 'smoothstep',
+    animated: true,
+    // label: 'has subordinates',
+    labelBgPadding: [8, 4],
+    labelBgBorderRadius: 4,
+    labelBgStyle: { fill: 'white' },
+    labelStyle: { fill: 'black', fontWeight: 700 },
+    style: { stroke: strokeColor },
+  };
+
+  const profileCardStyles: CSSProperties = {
+    background: backgroundColor,
+    border: borderColor,
+    color,
+  };
+
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end defaults ━┛
+
   // ┏━ begin main node & edges effect ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   useEffect(() => {
     if (!Object.keys(groupedByDepartment).length) {
       return;
     }
-
-    // ┏━ begin defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    const nodePosition = { x: 0, y: 0 };
-    const nodeDimensions = { width: 351, height: 217 };
-    const edgeDefaults: Edge = {
-      // will be overwritten
-      id: '',
-      source: '',
-      target: '',
-      // defaults shared across all edges
-      type: 'smoothstep',
-      animated: true,
-      // label: 'has subordinates',
-      labelBgPadding: [8, 4],
-      labelBgBorderRadius: 4,
-      labelBgStyle: { fill: 'white' },
-      labelStyle: { fill: 'black', fontWeight: 700 },
-      style: { stroke: 'black' },
-    };
-
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end defaults ━┛
 
     // ┏━ begin executive management ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -329,12 +344,14 @@ function Directory() {
           executiveManagementNodesAcc: Node[],
           userDocument: DirectoryUserDocument
         ) => {
-          const { _id, jobPosition } = userDocument;
+          const { jobPosition } = userDocument;
 
-          const directoryProfileCard = returnDirectoryProfileCard({
+          const executiveManagementProfileCard = returnDirectoryProfileCard({
             userDocument,
             padding,
             rowGap,
+            style: profileCardStyles,
+            cardHeight: 230, // all executive management departments have only one employee, so the card is taller (no carousel controls)
           });
 
           const nodeType =
@@ -344,12 +361,18 @@ function Directory() {
               ? 'output'
               : 'default';
 
+          const executiveManagementCarousel = (
+            <CarouselBuilder
+              nodeDimensions={nodeDimensions}
+              slides={[executiveManagementProfileCard]}
+            />
+          );
+
           const executiveManagementNode: Node = {
+            ...nodeDefaults,
             id: jobPosition,
             type: nodeType,
-            data: { label: directoryProfileCard },
-            position: { x: 0, y: 0 },
-            style: nodeDimensions,
+            data: { label: executiveManagementCarousel },
           };
           executiveManagementNodesAcc.push(executiveManagementNode);
 
@@ -369,7 +392,7 @@ function Directory() {
           executiveManagementEdgesAcc: Edge[],
           userDocument: DirectoryUserDocument
         ) => {
-          const { _id, jobPosition } = userDocument;
+          const { jobPosition } = userDocument;
 
           if (jobPosition === 'Chief Executive Officer') {
             return executiveManagementEdgesAcc;
@@ -423,6 +446,11 @@ function Directory() {
         objectArray: storeAdministrationDocs,
         field: 'storeLocation',
       });
+
+      console.log(
+        'storeAdministrationDocsGroupedByStoreLocation: ',
+        storeAdministrationDocsGroupedByStoreLocation
+      );
 
       // TODO: REMOVE THIS FILTER FUNCTION IN PRODUCTION
       // filter out manager account used for development
@@ -490,13 +518,22 @@ function Directory() {
                 >,
                 userDocument: DirectoryUserDocument
               ) => {
-                const { _id, jobPosition } = userDocument;
+                const { jobPosition } = userDocument;
 
-                // create profile card
+                // find how many employees for this jobPosition are there for the store location
+                const jobPositionsCount =
+                  groupedStoreAdministrationByStoreLocationArr.filter(
+                    (userDocument: DirectoryUserDocument) =>
+                      userDocument.jobPosition === jobPosition
+                  ).length;
+
+                // if there is only one employee, the profile card must be taller because carousel controls will not be displayed
                 const displayProfileCard = returnDirectoryProfileCard({
                   userDocument,
                   padding,
                   rowGap,
+                  style: profileCardStyles,
+                  cardHeight: jobPositionsCount === 1 ? 230 : 200,
                 });
 
                 // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -523,19 +560,21 @@ function Directory() {
                 ];
 
               const groupedStoreAdministrationByStoreLocationCarousel = (
-                <CarouselBuilder carouselProps={{}} slides={profileCards} />
+                <CarouselBuilder
+                  nodeDimensions={nodeDimensions}
+                  slides={profileCards}
+                />
               );
 
               // create profile node with carousel
               const groupedStoreAdministrationByStoreLocationProfileNode: Node =
                 {
+                  ...nodeDefaults,
                   id: `${storeLocation}-${jobPosition}`,
                   type: 'default',
                   data: {
                     label: groupedStoreAdministrationByStoreLocationCarousel,
                   },
-                  position: nodePosition,
-                  style: nodeDimensions,
                 };
 
               // add job position field with profile node
@@ -732,13 +771,22 @@ function Directory() {
                 >,
                 userDocument: DirectoryUserDocument
               ) => {
-                const { _id, jobPosition } = userDocument;
+                const { jobPosition } = userDocument;
 
-                // create profile card
+                // find how many employees for this jobPosition are there for the store location
+                const jobPositionsCount =
+                  groupedOfficeAdministrationByStoreLocationArr.filter(
+                    (userDocument: DirectoryUserDocument) =>
+                      userDocument.jobPosition === jobPosition
+                  ).length;
+
+                // if there is only one employee, the profile card must be taller because carousel controls will not be displayed
                 const displayProfileCard = returnDirectoryProfileCard({
                   userDocument,
                   padding,
                   rowGap,
+                  style: profileCardStyles,
+                  cardHeight: jobPositionsCount === 1 ? 230 : 200,
                 });
 
                 // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -771,19 +819,21 @@ function Directory() {
                 : 'output';
 
               const groupedOfficeAdministrationByStoreLocationCarousel = (
-                <CarouselBuilder carouselProps={{}} slides={profileCards} />
+                <CarouselBuilder
+                  nodeDimensions={nodeDimensions}
+                  slides={profileCards}
+                />
               );
 
               // create profile node with carousel
               const groupedOfficeAdministrationByStoreLocationProfileNode: Node =
                 {
+                  ...nodeDefaults,
                   id: `${storeLocation}-${jobPosition}`,
                   type: nodeType,
                   data: {
                     label: groupedOfficeAdministrationByStoreLocationCarousel,
                   },
-                  position: nodePosition,
-                  style: nodeDimensions,
                 };
 
               // add job position field with profile node
@@ -995,15 +1045,25 @@ function Directory() {
               const profileCards =
                 groupedCorporateDepartmentByJobPositionArr.map(
                   (userDocument: DirectoryUserDocument) => {
-                    const { _id } = userDocument;
+                    const { jobPosition } = userDocument;
 
-                    const profileCard = returnDirectoryProfileCard({
+                    // find how many employees for this jobPosition are there for the store location
+                    const jobPositionsCount =
+                      groupedCorporateDepartmentByJobPositionArr.filter(
+                        (userDocument: DirectoryUserDocument) =>
+                          userDocument.jobPosition === jobPosition
+                      ).length;
+
+                    // if there is only one employee, the profile card must be taller because carousel controls will not be displayed
+                    const displayProfileCard = returnDirectoryProfileCard({
                       userDocument,
                       padding,
                       rowGap,
+                      style: profileCardStyles,
+                      cardHeight: jobPositionsCount === 1 ? 230 : 200,
                     });
 
-                    return profileCard;
+                    return displayProfileCard;
                   }
                 );
 
@@ -1012,18 +1072,20 @@ function Directory() {
                 : 'output';
 
               const groupedCorporateDepartmentByJobPositionCarousel = (
-                <CarouselBuilder carouselProps={{}} slides={profileCards} />
+                <CarouselBuilder
+                  nodeDimensions={nodeDimensions}
+                  slides={profileCards}
+                />
               );
 
               // create profile node with carousel
               const groupedCorporateDepartmentByJobPositionProfileNode: Node = {
+                ...nodeDefaults,
                 id: jobPosition,
                 type: nodeType,
                 data: {
                   label: groupedCorporateDepartmentByJobPositionCarousel,
                 },
-                position: nodePosition,
-                style: nodeDimensions,
               };
 
               // add job position field with profile node
@@ -1220,13 +1282,22 @@ function Directory() {
                     >,
                     userDocument: DirectoryUserDocument
                   ) => {
-                    const { _id, jobPosition } = userDocument;
+                    const { jobPosition } = userDocument;
 
-                    // create profile card
+                    // find how many employees for this jobPosition are there for the store location
+                    const jobPositionsCount =
+                      groupedDepartmentByStoreLocationsArr.filter(
+                        (userDocument: DirectoryUserDocument) =>
+                          userDocument.jobPosition === jobPosition
+                      ).length;
+
+                    // if there is only one employee, the profile card must be taller because carousel controls will not be displayed
                     const displayProfileCard = returnDirectoryProfileCard({
                       userDocument,
                       padding,
                       rowGap,
+                      style: profileCardStyles,
+                      cardHeight: jobPositionsCount === 1 ? 230 : 200,
                     });
 
                     // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -1258,8 +1329,8 @@ function Directory() {
                   const groupedDepartmentEmployeesForJobPositionProfileCarousel =
                     (
                       <CarouselBuilder
-                        carouselProps={{}}
                         slides={groupedDepartmentEmployeesForJobPosition}
+                        nodeDimensions={nodeDimensions}
                       />
                     );
 
@@ -1272,14 +1343,13 @@ function Directory() {
                   // create profile node with carousel
                   const groupedDepartmentEmployeesForJobPositionProfileNode: Node =
                     {
+                      ...nodeDefaults,
                       id: `${storeLocation}-${jobPosition}`,
                       type: nodeType,
                       data: {
                         label:
                           groupedDepartmentEmployeesForJobPositionProfileCarousel,
                       },
-                      position: nodePosition,
-                      style: nodeDimensions,
                     };
 
                   // add job position field with profile node
@@ -1524,6 +1594,7 @@ function Directory() {
     // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end concurrent fn calls ━┛
   }, [
     triggerSetDepartmentsNodesAndEdges,
+
     dagreMinLen,
     dagreNodeSep,
     dagreRankAlign,
@@ -1533,6 +1604,14 @@ function Directory() {
   ]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end main nodes & edges effect ━┛
+
+  // trigger nodes and edges creation upon color scheme change
+  useEffect(() => {
+    directoryDispatch({
+      type: directoryAction.triggerSetDepartmentsNodesAndEdges,
+      payload: true,
+    });
+  }, [colorScheme]);
 
   useEffect(() => {
     // only update state when the following are not null
@@ -1981,20 +2060,40 @@ function Directory() {
 
   // ┏━ begin input display ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+  const scrollBarColor = themeColor ? themeColor[colorShade] : gray[5];
+  const sectionHeadersBgColor = colorScheme === 'light' ? gray[4] : gray[8];
+
+  const scrollBarStyle = {
+    scrollbar: {
+      '&, &:hover': {
+        background: colorScheme === 'dark' ? dark[6] : gray[0],
+      },
+
+      '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
+        backgroundColor: scrollBarColor,
+      },
+
+      '&[data-orientation="horizontal"] .mantine-ScrollArea-thumb': {
+        backgroundColor: scrollBarColor,
+      },
+    },
+
+    corner: {
+      opacity: 1,
+      background: colorScheme === 'dark' ? dark[6] : gray[0],
+    },
+  };
+
   // filter section
   const displayFilterGraphsText = (
-    <TextWrapper
-      creatorInfoObj={{
-        size: 'md',
-        style: {
-          background: 'skyblue',
-          padding: '0.75rem',
-          borderRadius: '4px',
-        },
-      }}
+    <Group
+      w="100%"
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
     >
-      Graph Filter
-    </TextWrapper>
+      <Title order={5}>Graph Filters</Title>
+    </Group>
   );
 
   const displayFilterByDepartmentSelectInput = (
@@ -2043,18 +2142,14 @@ function Directory() {
 
   // dagre layout section
   const displayDagreLayoutText = (
-    <TextWrapper
-      creatorInfoObj={{
-        size: 'md',
-        style: {
-          background: 'skyblue',
-          padding: '0.75rem',
-          borderRadius: '4px',
-        },
-      }}
+    <Group
+      w="100%"
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
     >
-      Graph Layout
-    </TextWrapper>
+      <Title order={5}>Graph Layouts</Title>
+    </Group>
   );
 
   const displayDagreNodeSepSliderInput = (
@@ -2136,18 +2231,19 @@ function Directory() {
   );
 
   const displayGraphControls = (
-    <Stack
-      h={width < 1192 ? '38vh' : '70vh'}
-      style={{
-        overflowY: 'scroll',
-        borderRight: '1px solid #e0e0e0',
-        borderBottom: width < 1192 ? '1px solid #e0e0e0' : '',
-      }}
-      py={padding}
-    >
-      {displayFilterSelectsSection}
-      {displayDagreLayoutSection}
-    </Stack>
+    <ScrollArea type="auto" styles={() => scrollBarStyle}>
+      <Stack
+        h={width < 1192 ? '38vh' : '70vh'}
+        style={{
+          borderRight: '1px solid #e0e0e0',
+          borderBottom: width < 1192 ? '1px solid #e0e0e0' : '',
+        }}
+        p={padding}
+      >
+        {displayFilterSelectsSection}
+        {displayDagreLayoutSection}
+      </Stack>
+    </ScrollArea>
   );
 
   const displayGraphViewport = (

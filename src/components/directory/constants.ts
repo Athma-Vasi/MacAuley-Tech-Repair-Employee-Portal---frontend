@@ -1,6 +1,5 @@
 import { DEPARTMENT_DATA, JOB_POSITION_DATA } from '../../constants/data';
 import {
-  CheckboxInputData,
   Department,
   JobPosition,
   SelectInputData,
