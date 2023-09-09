@@ -155,12 +155,18 @@ function queryBuilderReducer(
         return state;
       }
 
-      // if newField is already present in filterStatementsQueue, remove it and add the new one
+      // if newField is already present in filterStatementsQueue
       const duplicateFieldIndex = filterStatementsQueue.findIndex(
         (item) => item[0] === newField
       );
       if (duplicateFieldIndex !== -1) {
-        filterStatementsQueue.splice(duplicateFieldIndex, 1);
+        // if the operator is 'in', then add the new filter statement
+        if (newOperator === 'in') {
+          filterStatementsQueue.push(value);
+          // if the operator is not 'in', then replace the existing filter statement
+        } else {
+          filterStatementsQueue.splice(duplicateFieldIndex, 1);
+        }
       }
 
       if (index >= filterStatementsQueue.length) {

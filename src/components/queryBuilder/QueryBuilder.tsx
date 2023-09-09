@@ -1,9 +1,11 @@
 import {
   Accordion,
   Center,
+  Divider,
   Flex,
   Grid,
   Group,
+  Modal,
   NavLink,
   Stack,
   Text,
@@ -11,13 +13,16 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { ChangeEvent, useEffect, useReducer } from 'react';
+
 import {
+  TbArrowDown,
   TbArrowsSort,
   TbChevronRight,
   TbClearAll,
   TbFilterCog,
   TbLayersLinked,
   TbPlus,
+  TbQuestionMark,
   TbTrash,
   TbUpload,
 } from 'react-icons/tb';
@@ -57,9 +62,11 @@ import {
   TextWrapper,
 } from '../wrappers';
 import {
+  ORDINAL_TERMS,
   QUERY_BUILDER_FILTER_OPERATORS,
   QUERY_BUILDER_SORT_OPERATORS,
 } from './constants';
+import { RxLinkBreak2 } from 'react-icons/rx';
 import {
   initialQueryBuilderState,
   queryBuilderAction,
@@ -67,7 +74,14 @@ import {
 } from './state';
 import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
 import { COLORS_SWATCHES } from '../../constants/data';
-import { generateFilterChainStatement } from './utils';
+import {
+  FILTER_HELP_MODAL_CONTENT,
+  PROJECTION_HELP_MODAL_CONTENT,
+  QUERY_BUILDER_HELP_MODAL_CONTENT,
+  SORT_HELP_MODAL_CONTENT,
+  generateFilterChainStatement,
+} from './utils';
+import { useDisclosure } from '@mantine/hooks';
 
 function QueryBuilder({
   componentQueryData,
@@ -119,9 +133,26 @@ function QueryBuilder({
       width,
       rowGap,
       padding,
-      themeObject: { colorScheme, primaryShade },
+      themeObject: { colorScheme, primaryShade, primaryColor },
     },
   } = useGlobalState();
+
+  const [
+    openedQueryHelpModal,
+    { open: openQueryHelpModal, close: closeQueryHelpModal },
+  ] = useDisclosure(false);
+  const [
+    openedFilterHelpModal,
+    { open: openFilterHelpModal, close: closeFilterHelpModal },
+  ] = useDisclosure(false);
+  const [
+    openedSortHelpModal,
+    { open: openSortHelpModal, close: closeSortHelpModal },
+  ] = useDisclosure(false);
+  const [
+    openedProjectionHelpModal,
+    { open: openProjectionHelpModal, close: closeProjectionHelpModal },
+  ] = useDisclosure(false);
 
   useEffect(() => {
     // loop through componentQueryData and assign to both filter select data or sort select data, checkbox data, and labelValueTypesMap
@@ -307,6 +338,13 @@ function QueryBuilder({
   // ----------------- //
 
   const { gray } = COLORS_SWATCHES;
+
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const themeColor = Object.entries(COLORS_SWATCHES).find(
+    ([color, _shades]) => color === primaryColor
+  )?.[1];
+  const themeColorShade = themeColor ? themeColor[colorShade] : gray[5];
   const borderColor =
     colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
 
@@ -359,16 +397,17 @@ function QueryBuilder({
           align="center"
           justify="space-between"
           w="100%"
-          p={padding}
           columnGap={rowGap}
-          style={{ border: borderColor, borderRadius: 4 }}
         >
-          <Flex align="center" justify="flex-start" w="100%">
-            {displayStatement}
-          </Flex>
-          <Flex align="center" justify="flex-end">
+          <Group w="100%" position="apart">
+            <Divider
+              labelPosition="left"
+              label={displayStatement}
+              w="87%"
+              size="sm"
+            />
             {displayDeleteFilterButton}
-          </Flex>
+          </Group>
         </Flex>
       );
     }
@@ -696,35 +735,44 @@ function QueryBuilder({
         </Tooltip>
       );
 
+      const dividerLabel = (
+        <Group>
+          <RxLinkBreak2 color={themeColorShade} />
+          <Text>{ORDINAL_TERMS[index]} tiebreaker</Text>
+          <TbArrowDown color={themeColorShade} />
+        </Group>
+      );
+
       return (
-        <Flex
-          key={`sort-statement-${index}`}
-          align="center"
-          justify="space-between"
-          w="100%"
-          p={padding}
-          columnGap={rowGap}
-          style={{ border: borderColor, borderRadius: 4 }}
-        >
-          <Flex align="center" justify="flex-start" w="100%">
-            {displayStatement}
+        <Stack w="100%">
+          <Flex
+            key={`sort-statement-${index}`}
+            align="center"
+            justify="space-between"
+            w="100%"
+            columnGap={rowGap}
+          >
+            <Group position="apart" w="100%">
+              {displayStatement}
+              {displayDeleteSortButton}
+            </Group>
           </Flex>
-          <Flex align="center" justify="flex-end">
-            {displayDeleteSortButton}
-          </Flex>
-        </Flex>
+          {index === sortStatementsQueue.length - 1 ? null : (
+            <Divider size="sm" label={dividerLabel} labelPosition="center" />
+          )}
+        </Stack>
       );
     }
   );
   // ----------------- //
 
-  // ----------------- submit and clear button -----------------  //
+  // ----------------- button creator infos -----------------  //
   const submitQueryToParentComponentButtonCreatorInfo: AccessibleButtonCreatorInfo =
     {
       buttonLabel: 'Submit',
       semanticDescription: `Submit query to ${collectionName}`,
       semanticName: 'submit query',
-      buttonOnClick: (event) => {
+      buttonOnClick: () => {
         parentComponentDispatch({
           type: setQueryBuilderString,
           payload: queryString,
@@ -738,7 +786,7 @@ function QueryBuilder({
     buttonLabel: 'Clear',
     semanticDescription: `Clear query to ${collectionName}`,
     semanticName: 'clear query',
-    buttonOnClick: (event) => {
+    buttonOnClick: () => {
       queryBuilderDispatch({
         type: queryBuilderAction.setClearAllQueryData,
         payload: '',
@@ -750,6 +798,43 @@ function QueryBuilder({
     },
     leftIcon: <TbClearAll />,
   };
+
+  const queryBuilderHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: <TbQuestionMark />,
+    semanticDescription: 'Open query help modal',
+    semanticName: 'query help',
+    buttonOnClick: () => {
+      openQueryHelpModal();
+    },
+  };
+
+  const filterHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: <TbQuestionMark />,
+    semanticDescription: 'Open filter help modal',
+    semanticName: 'filter help',
+    buttonOnClick: () => {
+      openFilterHelpModal();
+    },
+  };
+
+  const sortHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: <TbQuestionMark />,
+    semanticDescription: 'Open sort help modal',
+    semanticName: 'sort help',
+    buttonOnClick: () => {
+      openSortHelpModal();
+    },
+  };
+
+  const projectionHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: <TbQuestionMark />,
+    semanticDescription: 'Open projection help modal',
+    semanticName: 'projection help',
+    buttonOnClick: () => {
+      openProjectionHelpModal();
+    },
+  };
+
   // ----------------- //
 
   // ----------------- create and display elements -----------------  //
@@ -771,11 +856,19 @@ function QueryBuilder({
     createdAddNewSortButton,
     createdSubmitButton,
     createdClearButton,
+    createdQueryBuilderHelpButton,
+    createdFilterHelpButton,
+    createdSortHelpButton,
+    createdProjectionHelpButton,
   ] = returnAccessibleButtonElements([
     addNewFilterButtonCreatorInfo,
     addNewSortButtonCreatorInfo,
     submitQueryToParentComponentButtonCreatorInfo,
     clearQueryButtonCreatorInfo,
+    queryBuilderHelpButtonCreatorInfo,
+    filterHelpButtonCreatorInfo,
+    sortHelpButtonCreatorInfo,
+    projectionHelpButtonCreatorInfo,
   ]);
 
   const createdProjectionCheckboxGroupInput =
@@ -828,7 +921,13 @@ function QueryBuilder({
                 {displayFilterChains}
                 <FormLayoutWrapper>
                   <Group w="100%" position="apart">
-                    <Title order={5}>Build Filter Chain</Title>
+                    <Group spacing={rowGap}>
+                      <Title order={5}>Build Filter Chain</Title>
+                      <Tooltip label="Filter help">
+                        <Group>{createdFilterHelpButton}</Group>
+                      </Tooltip>
+                    </Group>
+                    {/* add new filter button */}
                     <Tooltip label="Add a new filter chain">
                       <Group>{createdAddNewFilterButton}</Group>
                     </Tooltip>
@@ -855,6 +954,12 @@ function QueryBuilder({
           <Accordion.Panel>
             <Stack w="100%">
               <FormLayoutWrapper>
+                <Group spacing={rowGap}>
+                  <Title order={5}>Projection Exclusion</Title>
+                  <Tooltip label="Projection help">
+                    <Group>{createdProjectionHelpButton}</Group>
+                  </Tooltip>
+                </Group>
                 {createdProjectionCheckboxGroupInput}
               </FormLayoutWrapper>
             </Stack>
@@ -879,7 +984,13 @@ function QueryBuilder({
                 {displaySortChains}
                 <FormLayoutWrapper>
                   <Group w="100%" position="apart">
-                    <Title order={5}>Build Sort Chain</Title>
+                    <Group spacing={rowGap}>
+                      <Title order={5}>Build Sort Chain</Title>
+                      <Tooltip label="Sort help">
+                        <Group>{createdSortHelpButton}</Group>
+                      </Tooltip>
+                    </Group>
+                    {/* add new sort chain button */}
                     <Tooltip label="Add a new sort chain">
                       <Group>{createdAddNewSortButton}</Group>
                     </Tooltip>
@@ -898,15 +1009,17 @@ function QueryBuilder({
   // ----------------- //
 
   const queryBuilderWidth =
-    width < 480
+    width < 480 // for iPhone 5/SE
       ? 375 - 20
-      : width < 640
-      ? 480 - 20
-      : width < 768
-      ? 640 - 20
-      : width < 1024
-      ? (width - 200) * 0.75
-      : 1024 - 250;
+      : width < 768 // for iPhone 6/7/8
+      ? width - 40
+      : // at 768vw the navbar appears at width of 200px
+      width < 1024
+      ? (width - 200) * 0.85
+      : // at >= 1200vw the navbar width is 300px
+      width < 1200
+      ? (width - 300) * 0.85
+      : 900 - 40;
 
   const displayQueryBuilderComponent = (
     <Flex
@@ -932,12 +1045,15 @@ function QueryBuilder({
               <Title order={4}>Query Builder</Title>
             </Accordion.Control>
             <Accordion.Panel>
-              <Flex direction="column" w="100%">
+              <Stack w="100%">
                 {displayFilterSection}
                 {displaySortSection}
                 {displayProjectionSection}
                 <Flex align="center" justify="flex-end" py={padding}>
                   <Group position="apart">
+                    <Tooltip label="Query help">
+                      <Group>{createdQueryBuilderHelpButton}</Group>
+                    </Tooltip>
                     <Tooltip label={`Clear ${collectionName} query`}>
                       <Group>{createdClearButton}</Group>
                     </Tooltip>
@@ -946,12 +1062,60 @@ function QueryBuilder({
                     </Tooltip>
                   </Group>
                 </Flex>
-              </Flex>
+              </Stack>
             </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
       </Stack>
     </Flex>
+  );
+
+  const queryBuilderHelpModal = (
+    <Modal
+      opened={openedQueryHelpModal}
+      onClose={closeQueryHelpModal}
+      title={<Title order={4}>Query help</Title>}
+      size={width <= 1024 ? 'auto' : 1024 - 200}
+      centered
+    >
+      {QUERY_BUILDER_HELP_MODAL_CONTENT}
+    </Modal>
+  );
+
+  const filterHelpModal = (
+    <Modal
+      opened={openedFilterHelpModal}
+      onClose={closeFilterHelpModal}
+      title={<Title order={4}>Filter help</Title>}
+      size={width <= 1024 ? 'auto' : 1024 - 200}
+      centered
+    >
+      {FILTER_HELP_MODAL_CONTENT}
+    </Modal>
+  );
+
+  const sortHelpModal = (
+    <Modal
+      opened={openedSortHelpModal}
+      onClose={closeSortHelpModal}
+      title={<Title order={4}>Sort help</Title>}
+      size={width <= 1024 ? 'auto' : 1024 - 200}
+      centered
+    >
+      {SORT_HELP_MODAL_CONTENT}
+    </Modal>
+  );
+
+  const projectionHelpModal = (
+    <Modal
+      opened={openedProjectionHelpModal}
+      onClose={closeProjectionHelpModal}
+      title={<Title order={4}>Projection help</Title>}
+      size={width <= 1024 ? 'auto' : 1024 - 200}
+      centered
+    >
+      {PROJECTION_HELP_MODAL_CONTENT}
+    </Modal>
   );
 
   useEffect(() => {
@@ -961,7 +1125,15 @@ function QueryBuilder({
     });
   }, [queryBuilderState]);
 
-  return <>{displayQueryBuilderComponent}</>;
+  return (
+    <Group>
+      {displayQueryBuilderComponent}
+      {queryBuilderHelpModal}
+      {filterHelpModal}
+      {projectionHelpModal}
+      {sortHelpModal}
+    </Group>
+  );
 }
 
 export { QueryBuilder };

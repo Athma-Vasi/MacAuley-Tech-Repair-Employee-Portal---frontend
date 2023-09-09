@@ -1,13 +1,16 @@
-import { Anchor, Breadcrumbs, Flex, Space } from '@mantine/core';
+import { Anchor, Flex, Space } from '@mantine/core';
 import { TbArrowRight } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import { splitCamelCase } from '../../utils';
 
-function createBreadcrumbs(pathname: string) {
+function BreadcrumbsBuilder(pathname: string) {
+  const navigate = useNavigate();
+
   const pathArray = pathname.split('/');
 
   const breadCrumbsItems = pathArray.reduce(
-    (acc: { label: string; href: string }[], path, index) => {
+    (acc: { label: string; location: string }[], path, index) => {
       const pathName = splitCamelCase(path);
       const pathNameCapitalized =
         pathName.charAt(0).toUpperCase() + pathName.slice(1);
@@ -18,12 +21,12 @@ function createBreadcrumbs(pathname: string) {
       const pathNameCapitalizedWithSpacesAndNoHyphens =
         pathNameCapitalizedWithNoHyphens.replace(/([A-Z])/g, ' $1');
 
-      const href = pathArray.slice(0, index + 1).join('/');
+      const location = pathArray.slice(0, index + 1).join('/');
       const label = pathNameCapitalizedWithSpacesAndNoHyphens;
 
       acc.push({
         label,
-        href,
+        location,
       });
 
       return acc;
@@ -33,7 +36,12 @@ function createBreadcrumbs(pathname: string) {
 
   const anchorsTuple = breadCrumbsItems.map((item, index) => {
     const anchor = (
-      <Anchor href={item.href} key={`breadcrumb-${index}`}>
+      <Anchor
+        key={`breadcrumb-${index}`}
+        onClick={() => {
+          navigate(item.location);
+        }}
+      >
         {item.label}
       </Anchor>
     );
@@ -58,4 +66,4 @@ function createBreadcrumbs(pathname: string) {
   );
 }
 
-export { createBreadcrumbs };
+export { BreadcrumbsBuilder };

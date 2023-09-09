@@ -5,6 +5,7 @@ import {
   NavLink,
   Stack,
   Timeline,
+  Tooltip,
 } from '@mantine/core';
 import { TbChevronRight, TbLayersLinked, TbLink } from 'react-icons/tb';
 
@@ -20,27 +21,6 @@ function TimelineBuilder({ timelines }: TimelineBuilderProps): JSX.Element {
     ([chainKind, statementsArr], index) => {
       return (
         <Stack w="100%" key={`timeline-${index}`}>
-          {/* <NavLink
-            label={`${chainKind.charAt(0).toUpperCase()}${chainKind.slice(1)}`}
-            icon={<TbLayersLinked />}
-            rightSection={<TbChevronRight />}
-            childrenOffset="xs"
-            disabled={statementsArr.length === 0}
-            w="62%"
-          >
-            {statementsArr.length === 0 ? null : (
-              <Timeline active={Number.MAX_SAFE_INTEGER} w="100%" py={padding}>
-                {statementsArr.map((statement, index) => (
-                  <Timeline.Item
-                    key={`timeline-statement-${index}`}
-                    title={statement}
-                    bullet={<TbLink />}
-                    w="100%"
-                  />
-                ))}
-              </Timeline>
-            )}
-          </NavLink> */}
           {/* accordion */}
           <Accordion w="100%">
             <Accordion.Item
