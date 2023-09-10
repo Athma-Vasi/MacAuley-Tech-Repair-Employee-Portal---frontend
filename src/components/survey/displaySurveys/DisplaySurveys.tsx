@@ -111,7 +111,7 @@ function DisplaySurveys() {
       });
 
       const url: URL = urlBuilder({
-        path: `/api/v1/actions/outreach/survey-builder${
+        path: `actions/outreach/survey-builder${
           roles.includes('Manager') ? '' : '/user'
         }`,
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
@@ -220,7 +220,7 @@ function DisplaySurveys() {
       const { surveyId, surveyResponses, surveyTitle } = surveyToSubmit;
 
       const url: URL = urlBuilder({
-        path: `/api/v1/actions/outreach/survey-builder/${surveyId}`,
+        path: `actions/outreach/survey-builder/${surveyId}`,
       });
 
       const filteredSurveyResponses = surveyResponses.map((surveyResponse) => {
@@ -234,6 +234,8 @@ function DisplaySurveys() {
       const body = JSON.stringify({
         surveyResponses: filteredSurveyResponses,
       });
+
+      console.log('body: ', body);
 
       const request: Request = new Request(url, {
         method: 'PATCH',
@@ -503,8 +505,8 @@ function DisplaySurveys() {
         submitMessage={submitMessage}
         parentDispatch={displaySurveysDispatch}
         navigateTo={{
-          errorPath: '/portal',
-          successPath: '/portal/outreach/survey-builder/display',
+          errorPath: '/home',
+          successPath: '/home/outreach/survey-builder/display',
         }}
       />
     );
@@ -894,7 +896,7 @@ function DisplaySurveys() {
         shadow="md"
         radius="md"
         withBorder
-        w={width < 480 ? 350 : 640}
+        w="fit-content"
         key={`${_id}-${idx}-${surveyTitle}`}
       >
         <Card.Section>{createdStepperWrapper}</Card.Section>

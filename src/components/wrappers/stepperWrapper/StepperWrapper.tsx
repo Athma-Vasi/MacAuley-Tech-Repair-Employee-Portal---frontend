@@ -141,6 +141,32 @@ function StepperWrapper({
 
   const descObjLen = descriptionObjectsArray.length;
 
+  const prevButtonTooltipLabelTruncated =
+    currentStepperPosition === 0
+      ? 'You are at the first page'
+      : `Go to ${
+          descriptionObjectsArray[currentStepperPosition - 1]?.description
+            .length > 19
+            ? `${descriptionObjectsArray[
+                currentStepperPosition - 1
+              ]?.description.slice(0, 19)}...`
+            : descriptionObjectsArray[currentStepperPosition - 1]?.description
+        }`;
+
+  const nextButtonTooltipLabelTruncated =
+    currentStepperPosition === descriptionObjectsArray.length - 1
+      ? 'Go to submit page'
+      : currentStepperPosition === descriptionObjectsArray.length
+      ? 'You are at the last page'
+      : `Go to ${
+          descriptionObjectsArray[currentStepperPosition + 1]?.description
+            .length > 19
+            ? `${descriptionObjectsArray[
+                currentStepperPosition + 1
+              ]?.description.slice(0, 19)}...`
+            : descriptionObjectsArray[currentStepperPosition + 1]?.description
+        }`;
+
   const stepperWidth = customWidth
     ? customWidth
     : width < 480 // for iPhone 5/SE
@@ -295,12 +321,13 @@ function StepperWrapper({
           {/* prev button */}
           <Tooltip
             label={
-              currentStepperPosition === 0
-                ? 'You are at the first page'
-                : `Go back to ${
-                    descriptionObjectsArray[currentStepperPosition - 1]
-                      .description
-                  }`
+              // currentStepperPosition === 0
+              //   ? 'You are at the first page'
+              //   : `Go back to ${
+              //       descriptionObjectsArray[currentStepperPosition - 1]
+              //         .description
+              //     }`
+              prevButtonTooltipLabelTruncated
             }
           >
             <Group>{createdPrevButton}</Group>
@@ -309,14 +336,15 @@ function StepperWrapper({
           {/* next button */}
           <Tooltip
             label={
-              currentStepperPosition === descriptionObjectsArray.length - 1
-                ? 'Go to submit page'
-                : currentStepperPosition === descriptionObjectsArray.length
-                ? 'You are at the last page'
-                : `Go to ${
-                    descriptionObjectsArray[currentStepperPosition + 1]
-                      .description
-                  }`
+              // currentStepperPosition === descriptionObjectsArray.length - 1
+              //   ? 'Go to submit page'
+              //   : currentStepperPosition === descriptionObjectsArray.length
+              //   ? 'You are at the last page'
+              //   : `Go to ${
+              //       descriptionObjectsArray[currentStepperPosition + 1]
+              //         .description
+              //     }`
+              nextButtonTooltipLabelTruncated
             }
           >
             <Group>{createdNextButton}</Group>

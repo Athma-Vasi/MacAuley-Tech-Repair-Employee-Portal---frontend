@@ -20,11 +20,17 @@ import {
 import type { Node, Edge } from 'reactflow';
 
 const initialDirectoryState: DirectoryState = {
-  groupedByDepartment: {} as Record<DepartmentsWithDefaultKey, UserDocument[]>,
-  groupedByJobPositon: {} as Record<JobPositionsWithDefaultKey, UserDocument[]>,
+  groupedByDepartment: {} as Record<
+    DepartmentsWithDefaultKey,
+    DirectoryUserDocument[]
+  >,
+  groupedByJobPositon: {} as Record<
+    JobPositionsWithDefaultKey,
+    DirectoryUserDocument[]
+  >,
   groupedByStoreLocation: {} as Record<
     StoreLocationsWithDefaultKey,
-    UserDocument[]
+    DirectoryUserDocument[]
   >,
 
   filterByDepartment: 'Executive Management',

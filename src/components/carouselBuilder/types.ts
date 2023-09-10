@@ -1,8 +1,10 @@
 import { type } from 'os';
+import { ReactNode } from 'react';
 
 type CarouselBuilderProps = {
   slides: React.JSX.Element[];
   nodeDimensions: { width: number; height: number };
+  headings?: string[];
   // autoPlay?:boolean;
   // autoPlaySpeed?:number;
   // showArrows?:boolean;

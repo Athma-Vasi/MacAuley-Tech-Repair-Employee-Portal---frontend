@@ -1,7 +1,7 @@
 import { useReducer, useState } from 'react';
 import { CarouselBuilderProps } from './types';
 
-import { Center, Flex, Group } from '@mantine/core';
+import { Center, Flex, Group, Title } from '@mantine/core';
 import { AccessibleButtonCreatorInfo } from '../wrappers';
 import { TbArrowLeft, TbArrowRight } from 'react-icons/tb';
 import { returnAccessibleButtonElements } from '../../jsxCreators';
@@ -11,14 +11,14 @@ import { COLORS_SWATCHES } from '../../constants/data';
 function CarouselBuilder({
   nodeDimensions: { width: slideWidth, height: slideHeight },
   slides,
+  headings = [],
 }: CarouselBuilderProps) {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
   const {
     globalState: {
       padding,
-      rowGap,
-      themeObject: { colorScheme, primaryColor, primaryShade },
+      themeObject: { colorScheme },
     },
   } = useGlobalState();
 
@@ -55,14 +55,12 @@ function CarouselBuilder({
       rightControlIconButtonCreatorInfo,
     ]);
 
-  const { gray, dark } = COLORS_SWATCHES;
+  const { dark } = COLORS_SWATCHES;
   const backgroundColor =
     colorScheme === 'light'
       ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
       : // '#f5f5f5'
         dark[6];
-  const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
 
   const displayCarouselWithSlides = (
     <Flex
@@ -71,36 +69,22 @@ function CarouselBuilder({
       justify="space-evenly"
       w={carouselWrapperWidth}
       h={carouselWrapperHeight}
-      //   px={padding}
-      style={{ outline: '1px solid teal' }}
       bg={backgroundColor}
     >
-      <Group w="100%" position="apart" px={padding}>
-        {createdLeftControlIconButton}
-        {createdRightControlIconButton}
+      <Group
+        w="100%"
+        position={slides.length === 1 ? 'center' : 'apart'}
+        px={padding}
+      >
+        {slides.length === 1 ? null : createdLeftControlIconButton}
+        {<Title order={4}>{headings[currentSlide]}</Title>}
+        {slides.length === 1 ? null : createdRightControlIconButton}
       </Group>
       <Center w="100%">{slides[currentSlide]}</Center>
     </Flex>
   );
 
-  const displayCarouselWithoutSlides = (
-    <Flex
-      direction="column"
-      align="center"
-      justify="space-evenly"
-      w={carouselWrapperWidth}
-      h={carouselWrapperHeight}
-      //   px={padding}
-      style={{ outline: '1px solid teal' }}
-      bg={backgroundColor}
-    >
-      <Center w="100%">{slides[0]}</Center>
-    </Flex>
-  );
-
-  return slides.length === 1
-    ? displayCarouselWithoutSlides
-    : displayCarouselWithSlides;
+  return displayCarouselWithSlides;
 }
 
 export default CarouselBuilder;

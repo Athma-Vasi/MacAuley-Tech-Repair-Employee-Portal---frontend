@@ -4,6 +4,7 @@ import {
   Country,
   Department,
   JobPosition,
+  PhoneNumber,
   PreferredPronouns,
   Province,
   ResourceRequestServerResponse,
@@ -17,6 +18,7 @@ type DirectoryUserDocument = {
   createdAt: string;
   updatedAt: string;
   username: string;
+  email: string;
   firstName: string;
   middleName: string;
   lastName: string;
@@ -24,6 +26,7 @@ type DirectoryUserDocument = {
   preferredPronouns: PreferredPronouns;
   profilePictureUrl: string;
 
+  contactNumber: PhoneNumber;
   address: {
     city: string;
     province?: Province;

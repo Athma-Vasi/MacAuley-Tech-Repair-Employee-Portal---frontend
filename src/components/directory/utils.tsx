@@ -32,7 +32,6 @@ type ReturnDirectoryProfileCardInput = {
   padding: MantineNumberSize;
   rowGap: MantineNumberSize;
   style: CSSProperties;
-  cardHeight?: number;
 };
 
 function returnDirectoryProfileCard({
@@ -40,6 +39,9 @@ function returnDirectoryProfileCard({
     firstName,
     lastName,
     preferredPronouns,
+    email,
+    contactNumber,
+    department,
     jobPosition,
     storeLocation,
     profilePictureUrl,
@@ -47,7 +49,6 @@ function returnDirectoryProfileCard({
   padding,
   rowGap,
   style = {},
-  cardHeight = 200,
 }: ReturnDirectoryProfileCardInput) {
   const { backgroundColor = '#f5f5f5', border, color } = style;
 
@@ -87,22 +88,24 @@ function returnDirectoryProfileCard({
     <Card
       radius="md"
       w={325}
-      h={cardHeight}
+      h={200}
+      p={0}
       style={{
         border,
         backgroundColor,
         color,
       }}
     >
-      <Flex
-        justify="space-between"
-        w="100%"
-        h="100%"
-        pb="sm"
-        style={{ outline: '1px solid teal' }}
-        align="center"
-      >
-        <Stack align="center" w="38%" style={{ outline: '1px solid brown' }}>
+      <Flex justify="space-between" w={325} h={200} align="center">
+        <Flex
+          direction="column"
+          align="center"
+          w="38%"
+          rowGap="xs"
+          style={{
+            borderRight: border,
+          }}
+        >
           <Image
             src={profilePictureUrl}
             alt={`Picture of ${firstName} ${lastName}`}
@@ -112,19 +115,37 @@ function returnDirectoryProfileCard({
             withPlaceholder
             placeholder={<TbPhotoOff size={18} />}
           />
+          <Text>{preferredPronouns}</Text>
           {createdSocialMediaIcons}
-        </Stack>
+        </Flex>
         <Flex
           direction="column"
           p={padding}
-          align="center"
+          rowGap="xs"
+          align="flex-start"
           justify="center"
           w="62%"
-          style={{ borderLeft: border }}
+          h="100%"
+          // style={{ borderLeft: border }}
         >
-          <Title order={4}>{`${firstName} ${lastName}`}</Title>
-          <Text pb={padding}>{preferredPronouns}</Text>
-          <Text>{jobPosition}</Text>
+          <Title
+            order={6}
+            style={{
+              letterSpacing: '1px',
+            }}
+          >{`${firstName} ${lastName}`}</Title>
+          <Text align="initial">{jobPosition}</Text>
+          <Flex w="100%" align="center" justify="center" wrap="wrap">
+            {email.split('@').map((str, idx) => (
+              <Flex w="100%" gap={2}>
+                {idx === 1 ? <Text pl={padding}>@</Text> : null}
+                <Text key={`${str}-${idx}`} align="initial">
+                  {str}
+                </Text>
+              </Flex>
+            ))}
+          </Flex>
+          <Text>{contactNumber}</Text>
           {storeLocation ? <Text>{storeLocation}</Text> : null}
         </Flex>
       </Flex>

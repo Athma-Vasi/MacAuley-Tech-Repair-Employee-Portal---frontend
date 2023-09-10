@@ -1,4 +1,12 @@
-import { Grid, Group, ScrollArea, Stack, Text, Title } from '@mantine/core';
+import {
+  Grid,
+  Group,
+  ScrollArea,
+  Space,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import localforage from 'localforage';
 import { ChangeEvent, CSSProperties, useEffect, useReducer } from 'react';
@@ -287,7 +295,7 @@ function Directory() {
       : dark[6];
 
   const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
+    colorScheme === 'light' ? `1px solid ${dark[1]}` : `1px solid ${gray[8]}`;
   const strokeColor = colorScheme === 'light' ? dark[5] : gray[7];
 
   const nodePosition = { x: 0, y: 0 };
@@ -339,32 +347,30 @@ function Directory() {
       const executiveManagementDocs =
         groupedByDepartment['Executive Management'] ?? [];
 
+      console.log('executiveManagementDocs: ', executiveManagementDocs);
+
       const executiveManagementDocsNodes = executiveManagementDocs.reduce(
         (
           executiveManagementNodesAcc: Node[],
           userDocument: DirectoryUserDocument
         ) => {
-          const { jobPosition } = userDocument;
+          const { jobPosition, preferredName } = userDocument;
 
           const executiveManagementProfileCard = returnDirectoryProfileCard({
             userDocument,
             padding,
             rowGap,
             style: profileCardStyles,
-            cardHeight: 230, // all executive management departments have only one employee, so the card is taller (no carousel controls)
           });
 
           const nodeType =
-            jobPosition === 'Chief Executive Officer'
-              ? 'input'
-              : filterByDepartment === 'Executive Management'
-              ? 'output'
-              : 'default';
+            jobPosition === 'Chief Executive Officer' ? 'input' : 'default';
 
           const executiveManagementCarousel = (
             <CarouselBuilder
               nodeDimensions={nodeDimensions}
               slides={[executiveManagementProfileCard]}
+              headings={[preferredName]}
             />
           );
 
@@ -520,20 +526,11 @@ function Directory() {
               ) => {
                 const { jobPosition } = userDocument;
 
-                // find how many employees for this jobPosition are there for the store location
-                const jobPositionsCount =
-                  groupedStoreAdministrationByStoreLocationArr.filter(
-                    (userDocument: DirectoryUserDocument) =>
-                      userDocument.jobPosition === jobPosition
-                  ).length;
-
-                // if there is only one employee, the profile card must be taller because carousel controls will not be displayed
                 const displayProfileCard = returnDirectoryProfileCard({
                   userDocument,
                   padding,
                   rowGap,
                   style: profileCardStyles,
-                  cardHeight: jobPositionsCount === 1 ? 230 : 200,
                 });
 
                 // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -559,10 +556,24 @@ function Directory() {
                   React.JSX.Element[]
                 ];
 
+              // for each job position, find all the documents with that job position and grab the preferred names
+              // so the carousel can display the preferred names as headings
+              const preferredNames =
+                groupedStoreAdministrationByStoreLocationArr
+                  .filter(
+                    (userDocument: DirectoryUserDocument) =>
+                      userDocument.jobPosition === jobPosition
+                  )
+                  .map(
+                    (userDocument: DirectoryUserDocument) =>
+                      userDocument.preferredName
+                  );
+
               const groupedStoreAdministrationByStoreLocationCarousel = (
                 <CarouselBuilder
                   nodeDimensions={nodeDimensions}
                   slides={profileCards}
+                  headings={preferredNames}
                 />
               );
 
@@ -773,20 +784,11 @@ function Directory() {
               ) => {
                 const { jobPosition } = userDocument;
 
-                // find how many employees for this jobPosition are there for the store location
-                const jobPositionsCount =
-                  groupedOfficeAdministrationByStoreLocationArr.filter(
-                    (userDocument: DirectoryUserDocument) =>
-                      userDocument.jobPosition === jobPosition
-                  ).length;
-
-                // if there is only one employee, the profile card must be taller because carousel controls will not be displayed
                 const displayProfileCard = returnDirectoryProfileCard({
                   userDocument,
                   padding,
                   rowGap,
                   style: profileCardStyles,
-                  cardHeight: jobPositionsCount === 1 ? 230 : 200,
                 });
 
                 // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -812,6 +814,19 @@ function Directory() {
                   React.JSX.Element[]
                 ];
 
+              // for each job position, find all the documents with that job position and grab the preferred names
+              // so the carousel can display the preferred names as headings
+              const preferredNames =
+                groupedOfficeAdministrationByStoreLocationArr
+                  .filter(
+                    (userDocument: DirectoryUserDocument) =>
+                      userDocument.jobPosition === jobPosition
+                  )
+                  .map(
+                    (userDocument: DirectoryUserDocument) =>
+                      userDocument.preferredName
+                  );
+
               const nodeType = jobPosition
                 .toLowerCase()
                 .includes('administrator')
@@ -822,6 +837,7 @@ function Directory() {
                 <CarouselBuilder
                   nodeDimensions={nodeDimensions}
                   slides={profileCards}
+                  headings={preferredNames}
                 />
               );
 
@@ -1045,38 +1061,35 @@ function Directory() {
               const profileCards =
                 groupedCorporateDepartmentByJobPositionArr.map(
                   (userDocument: DirectoryUserDocument) => {
-                    const { jobPosition } = userDocument;
-
-                    // find how many employees for this jobPosition are there for the store location
-                    const jobPositionsCount =
-                      groupedCorporateDepartmentByJobPositionArr.filter(
-                        (userDocument: DirectoryUserDocument) =>
-                          userDocument.jobPosition === jobPosition
-                      ).length;
-
-                    // if there is only one employee, the profile card must be taller because carousel controls will not be displayed
                     const displayProfileCard = returnDirectoryProfileCard({
                       userDocument,
                       padding,
                       rowGap,
                       style: profileCardStyles,
-                      cardHeight: jobPositionsCount === 1 ? 230 : 200,
                     });
 
                     return displayProfileCard;
                   }
                 );
-
-              const nodeType = jobPosition.toLowerCase().includes('manager')
-                ? 'default'
-                : 'output';
+              // for each job position, find all the documents with that job position and grab the preferred names
+              // so the carousel can display the preferred names as headings
+              const preferredNames =
+                groupedCorporateDepartmentByJobPositionArr.map(
+                  (userDocument: DirectoryUserDocument) =>
+                    userDocument.preferredName
+                );
 
               const groupedCorporateDepartmentByJobPositionCarousel = (
                 <CarouselBuilder
                   nodeDimensions={nodeDimensions}
                   slides={profileCards}
+                  headings={preferredNames}
                 />
               );
+
+              const nodeType = jobPosition.toLowerCase().includes('manager')
+                ? 'default'
+                : 'output';
 
               // create profile node with carousel
               const groupedCorporateDepartmentByJobPositionProfileNode: Node = {
@@ -1284,20 +1297,11 @@ function Directory() {
                   ) => {
                     const { jobPosition } = userDocument;
 
-                    // find how many employees for this jobPosition are there for the store location
-                    const jobPositionsCount =
-                      groupedDepartmentByStoreLocationsArr.filter(
-                        (userDocument: DirectoryUserDocument) =>
-                          userDocument.jobPosition === jobPosition
-                      ).length;
-
-                    // if there is only one employee, the profile card must be taller because carousel controls will not be displayed
                     const displayProfileCard = returnDirectoryProfileCard({
                       userDocument,
                       padding,
                       rowGap,
                       style: profileCardStyles,
-                      cardHeight: jobPositionsCount === 1 ? 230 : 200,
                     });
 
                     // grab the array of profile cards for the job position if it exists, otherwise initialize an empty array
@@ -1325,12 +1329,25 @@ function Directory() {
                     React.JSX.Element[]
                   ];
 
+                  // for each job position, find all the documents with that job position and grab the preferred names
+                  // so the carousel can display the preferred names as headings
+                  const preferredNames = groupedDepartmentByStoreLocationsArr
+                    .filter(
+                      (userDocument: DirectoryUserDocument) =>
+                        userDocument.jobPosition === jobPosition
+                    )
+                    .map(
+                      (userDocument: DirectoryUserDocument) =>
+                        userDocument.preferredName
+                    );
+
                   // create a carousel from said profile cards
                   const groupedDepartmentEmployeesForJobPositionProfileCarousel =
                     (
                       <CarouselBuilder
                         slides={groupedDepartmentEmployeesForJobPosition}
                         nodeDimensions={nodeDimensions}
+                        headings={preferredNames}
                       />
                     );
 
@@ -1920,11 +1937,14 @@ function Directory() {
       : width < 1192
       ? '500px'
       : `${width * 0.15}px`;
+  const sliderLabelColor = gray[2];
 
   const dagreNodeSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'node separation',
-    label: (value) => <Text>{value} px</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 300,
     min: 25,
     step: 1,
@@ -1942,7 +1962,9 @@ function Directory() {
   const dagreRankSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'rank separation',
-    label: (value) => <Text>{value} px</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 300,
     min: 25,
     step: 1,
@@ -1960,7 +1982,7 @@ function Directory() {
   const dagreMinLenSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'min length',
-    label: (value) => <Text>{value}</Text>,
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
     max: 10,
     min: 1,
     step: 1,
@@ -2230,6 +2252,7 @@ function Directory() {
         style={{
           borderRight: '1px solid #e0e0e0',
           borderBottom: width < 1192 ? '1px solid #e0e0e0' : '',
+          maskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)',
         }}
         p={padding}
       >
@@ -2247,11 +2270,13 @@ function Directory() {
   );
 
   const displayLayoutAndGraph = (
-    <Grid columns={width < 1192 ? 1 : 12} w="100%" h="70vh">
+    <Grid columns={width < 1192 ? 1 : 12} w="100%" h="70vh" gutter={rowGap}>
       <Grid.Col span={width < 1192 ? 1 : 4} h={width < 1192 ? '38vh' : '70vh'}>
         {displayGraphControls}
+        {width < 1192 ? <Space h={rowGap} /> : null}
       </Grid.Col>
       <Grid.Col span={width < 1192 ? 1 : 8} h="100%">
+        {width < 1192 ? <Space h={rowGap} /> : null}
         {displayGraphViewport}
       </Grid.Col>
     </Grid>

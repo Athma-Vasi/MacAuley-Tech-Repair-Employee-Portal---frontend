@@ -1,19 +1,17 @@
 import 'reactflow/dist/style.css';
 
 import { Button, Flex } from '@mantine/core';
-
+import { useEffect } from 'react';
 import ReactFlow, {
   Background,
   Controls,
   Edge,
   Node,
   Panel,
-  useReactFlow,
   ReactFlowProvider,
+  useReactFlow,
   Viewport,
 } from 'reactflow';
-
-import { useEffect, useState } from 'react';
 
 type GraphBuilderProps = {
   layoutedNodes: Node[];

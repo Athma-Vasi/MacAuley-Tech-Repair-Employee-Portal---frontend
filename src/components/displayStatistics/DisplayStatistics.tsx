@@ -8,10 +8,15 @@ import {
   Title,
   UnstyledButton,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useReducer } from 'react';
+import { TbChartPie3, TbChartPie4 } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
+import { returnAccessibleButtonElements } from '../../jsxCreators';
 import { logState } from '../../utils';
+import { PageBuilder } from '../pageBuilder';
+import { TextWrapper } from '../wrappers';
 import { ResponsivePieChart } from './responsivePieChart';
 import {
   displayStatisticsAction,
@@ -19,11 +24,6 @@ import {
   initialDisplayStatisticsState,
 } from './state';
 import { ChartKind, DisplayStatisticsProps, PieChartData } from './types';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { TbChartPie3, TbChartPie4 } from 'react-icons/tb';
-import { TextWrapper } from '../wrappers';
-import { PageBuilder } from '../pageBuilder';
-import { useDisclosure } from '@mantine/hooks';
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(
