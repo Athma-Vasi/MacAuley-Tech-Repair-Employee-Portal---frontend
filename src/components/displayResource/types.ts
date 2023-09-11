@@ -48,8 +48,6 @@ type DisplayResourceState<Doc> = {
 
   triggerRefresh: boolean;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -71,6 +69,7 @@ type UpdateRequestStatusInput = {
 
 type DisplayResourceAction = {
   setResourceData: 'setResourceData';
+  updateResourceData: 'updateResourceData';
   setPages: 'setPages';
   setTotalDocuments: 'setTotalDocuments';
 
@@ -83,8 +82,6 @@ type DisplayResourceAction = {
   setRequestStatus: 'setRequestStatus';
   setTriggerRefresh: 'setTriggerRefresh';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -99,6 +96,14 @@ type DisplayResourceDispatch<Doc> =
       payload: QueryResponseData<Doc>[];
     }
   | {
+      type: DisplayResourceAction['updateResourceData'];
+      payload: {
+        id: string;
+        kind: 'update' | 'delete';
+        data: Partial<Doc>;
+      };
+    }
+  | {
       type:
         | DisplayResourceAction['setPages']
         | DisplayResourceAction['setTotalDocuments'];
@@ -108,7 +113,6 @@ type DisplayResourceDispatch<Doc> =
       type:
         | DisplayResourceAction['setNewQueryFlag']
         | DisplayResourceAction['setTriggerRefresh']
-        | DisplayResourceAction['setIsError']
         | DisplayResourceAction['setIsSubmitting']
         | DisplayResourceAction['setIsSuccessful']
         | DisplayResourceAction['setIsLoading'];
@@ -118,7 +122,6 @@ type DisplayResourceDispatch<Doc> =
       type:
         | DisplayResourceAction['setQueryBuilderString']
         | DisplayResourceAction['setPageQueryString']
-        | DisplayResourceAction['setErrorMessage']
         | DisplayResourceAction['setSubmitMessage']
         | DisplayResourceAction['setSuccessMessage']
         | DisplayResourceAction['setLoadingMessage'];

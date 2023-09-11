@@ -6,6 +6,7 @@ import {
 
 const displayResourceAction: DisplayResourceAction = {
   setResourceData: 'setResourceData',
+  updateResourceData: 'updateResourceData',
   setPages: 'setPages',
   setTotalDocuments: 'setTotalDocuments',
 
@@ -19,8 +20,6 @@ const displayResourceAction: DisplayResourceAction = {
   setDeleteResource: 'setDeleteResource',
   setTriggerRefresh: 'setTriggerRefresh',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -39,6 +38,42 @@ function displayResourceReducer<Doc>(
         ...state,
         resourceData: action.payload,
       };
+
+    case displayResourceAction.updateResourceData: {
+      const { id, data, kind } = action.payload;
+
+      switch (kind) {
+        case 'update': {
+          const updatedResourceData = state.resourceData.map((resource) => {
+            if (resource._id === id) {
+              return {
+                ...resource,
+                ...data,
+              };
+            }
+            return resource;
+          });
+
+          return {
+            ...state,
+            resourceData: updatedResourceData,
+          };
+        }
+        case 'delete': {
+          const updatedResourceData = state.resourceData.filter(
+            (resource) => resource._id !== id
+          );
+
+          return {
+            ...state,
+            resourceData: updatedResourceData,
+          };
+        }
+        default:
+          return state;
+      }
+    }
+
     case displayResourceAction.setPages:
       return {
         ...state,
@@ -89,16 +124,6 @@ function displayResourceReducer<Doc>(
         triggerRefresh: action.payload,
       };
 
-    case displayResourceAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case displayResourceAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case displayResourceAction.setIsSubmitting:
       return {
         ...state,

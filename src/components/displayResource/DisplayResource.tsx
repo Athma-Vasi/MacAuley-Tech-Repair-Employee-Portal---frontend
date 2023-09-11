@@ -12,6 +12,7 @@ import {
   addFieldsToObject,
   filterFieldsFromObject,
   logState,
+  returnThemeColors,
   splitCamelCase,
   urlBuilder,
 } from '../../utils';
@@ -26,6 +27,10 @@ import {
   UpdateRequestStatusInput,
 } from './types';
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
+import { InvalidTokenError } from 'jwt-decode';
+import { useErrorBoundary } from 'react-error-boundary';
+import { useNavigate } from 'react-router-dom';
+import { globalAction } from '../../context/globalProvider/state';
 
 function DisplayResource<Doc>({
   style = {},
@@ -58,10 +63,8 @@ function DisplayResource<Doc>({
       kind: '',
       value: false,
     },
-    triggerRefresh: false,
+    triggerRefresh: true,
 
-    isError: false,
-    errorMessage: '',
     isSubmitting: false,
     submitMessage: '',
     isSuccessful: false,
@@ -87,8 +90,6 @@ function DisplayResource<Doc>({
     deleteResource,
     triggerRefresh,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -98,19 +99,19 @@ function DisplayResource<Doc>({
   } = displayResourceState;
 
   const {
-    globalState: {
-      padding,
-      rowGap,
-      themeObject: { colorScheme },
-    },
+    globalState: { padding, rowGap, themeObject },
+    globalDispatch,
   } = useGlobalState();
   const {
     authState: { accessToken, roles },
   } = useAuth();
 
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
   useEffect(() => {
+    let isMounted = true;
     const controller = new AbortController();
-    const { signal } = controller;
 
     async function fetchResource() {
       // employees can view their own resources only
@@ -130,7 +131,7 @@ function DisplayResource<Doc>({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        signal,
+        signal: controller.signal,
       });
 
       try {
@@ -138,77 +139,96 @@ function DisplayResource<Doc>({
         const data: GetQueriedResourceRequestServerResponse<Doc> =
           await response.json();
         console.log('response json data', data);
-
-        // if there are file uploads, split the data into two arrays
-        // one for the resource data and the other for the file uploads
-        if (isFileUploadsWithResource && fileUploadFieldName) {
-          const [resourceDataWithoutFileUploadsArr, fileUploadsArr] =
-            data.resourceData.reduce(
-              (
-                acc: [
-                  QueryResponseData<Doc>[],
-                  Array<{ [key: string]: FileUploadDocument[] }>
-                ],
-                currObj: QueryResponseData<Doc>
-              ) => {
-                // reduce over the object entries of the current resource data
-                // to separate the file uploads from the rest of the data
-                const [fileUploadsObj, resourceDataWithoutFileUploadsObj] =
-                  Object.entries(currObj).reduce(
-                    (
-                      objTuples: [
-                        { fileUploads: FileUploadDocument[] },
-                        QueryResponseData<Doc>
-                      ],
-                      [key, value]
-                    ) => {
-                      key === fileUploadFieldName
-                        ? Object.defineProperty(objTuples[0], key, {
-                            value: structuredClone(value),
-                            enumerable: true,
-                          })
-                        : // addFieldsToObject({
-                          //   object: objTuples[0],
-                          //   fieldValuesTuples: [[key, structuredClone(value)]],
-                          // })
-                          Object.defineProperty(objTuples[1], key, {
-                            value: structuredClone(value),
-                            enumerable: true,
-                          });
-                      // addFieldsToObject({
-                      //   object: objTuples[1],
-                      //   fieldValuesTuples: [[key, structuredClone(value)]],
-                      // });
-
-                      return objTuples;
-                    },
-                    [Object.create(null), Object.create(null)]
-                  );
-
-                acc[0].push(resourceDataWithoutFileUploadsObj);
-                acc[1].push(fileUploadsObj);
-
-                return acc;
-              },
-              [[], []]
-            );
-
-          displayResourceDispatch({
-            type: displayResourceAction.setResourceData,
-            payload: resourceDataWithoutFileUploadsArr,
-          });
-          displayResourceDispatch({
-            type: displayResourceAction.setFileUploads,
-            payload: fileUploadsArr,
-          });
+        if (!isMounted) {
+          return;
         }
-        // if there are no file uploads, set the resource data as is
-        else {
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        if (!isFileUploadsWithResource || !fileUploadFieldName) {
+          // if there are no file uploads, set the resource data as is
           displayResourceDispatch({
             type: displayResourceAction.setResourceData,
             payload: data.resourceData,
           });
+
+          // do this regardless of whether there are file uploads or not
+          displayResourceDispatch({
+            type: displayResourceAction.setPages,
+            payload: data.pages ?? pages,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setTotalDocuments,
+            payload: data.totalDocuments ?? totalDocuments,
+          });
+          return;
         }
+
+        // if there are file uploads, split the data into two arrays
+        // one for the resource data and the other for the file uploads
+        const [resourceDataWithoutFileUploadsArr, fileUploadsArr] =
+          data.resourceData.reduce(
+            (
+              splitResourceDataTupleAcc: [
+                QueryResponseData<Doc>[],
+                Array<Record<string, FileUploadDocument[]>>
+              ],
+              currObj: QueryResponseData<Doc>
+            ) => {
+              const [resourceDataWithoutFileUploadsArrAcc, fileUploadsArrAcc] =
+                splitResourceDataTupleAcc;
+
+              // reduce over the object entries of the current resource data
+              // to separate the file uploads from the rest of the data
+              const [fileUploadsObj, resourceDataWithoutFileUploadsObj] =
+                Object.entries(currObj).reduce(
+                  (objTuplesAcc, [docKey, docValue]) => {
+                    const [
+                      fileUploadsObjAcc,
+                      resourceDataWithoutFileUploadsObjAcc,
+                    ] = objTuplesAcc as [
+                      { fileUploads: FileUploadDocument[] },
+                      QueryResponseData<Doc>
+                    ];
+
+                    docKey === fileUploadFieldName
+                      ? Object.defineProperty(fileUploadsObjAcc, docKey, {
+                          ...PROPERTY_DESCRIPTOR,
+                          value: structuredClone(docValue),
+                        })
+                      : Object.defineProperty(
+                          resourceDataWithoutFileUploadsObjAcc,
+                          docKey,
+                          {
+                            ...PROPERTY_DESCRIPTOR,
+                            value: structuredClone(docValue),
+                          }
+                        );
+
+                    return objTuplesAcc;
+                  },
+                  [Object.create(null), Object.create(null)]
+                );
+
+              resourceDataWithoutFileUploadsArrAcc.push(
+                resourceDataWithoutFileUploadsObj
+              );
+              fileUploadsArrAcc.push(fileUploadsObj);
+
+              return splitResourceDataTupleAcc;
+            },
+            [[], []]
+          );
+
+        displayResourceDispatch({
+          type: displayResourceAction.setResourceData,
+          payload: resourceDataWithoutFileUploadsArr,
+        });
+        displayResourceDispatch({
+          type: displayResourceAction.setFileUploads,
+          payload: fileUploadsArr,
+        });
 
         // do this regardless of whether there are file uploads or not
         displayResourceDispatch({
@@ -219,19 +239,71 @@ function DisplayResource<Doc>({
           type: displayResourceAction.setTotalDocuments,
           payload: data.totalDocuments ?? totalDocuments,
         });
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
       } finally {
-        console.log('finally');
+        if (isMounted) {
+          displayResourceDispatch({
+            type: displayResourceAction.setIsLoading,
+            payload: false,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setTriggerRefresh,
+            payload: false,
+          });
+        }
       }
     }
 
-    fetchResource();
+    if (triggerRefresh) {
+      fetchResource();
+    }
 
     return () => {
+      isMounted = false;
       controller.abort();
     };
-  }, [newQueryFlag, queryBuilderString, pageQueryString, triggerRefresh]);
+    // only trigger fetchResource on triggerRefresh change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerRefresh]);
+
+  useEffect(() => {
+    displayResourceDispatch({
+      type: displayResourceAction.setTriggerRefresh,
+      payload: true,
+    });
+  }, [newQueryFlag, queryBuilderString, pageQueryString]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {
@@ -250,32 +322,27 @@ function DisplayResource<Doc>({
 
   // submit request status form on change
   useEffect(() => {
+    let isMounted = true;
     const controller = new AbortController();
-    const { signal } = controller;
 
-    async function updateRequestStatus({
-      accessToken,
-      paths,
-      requestStatus: { id, status },
-      requestBodyHeading,
-      signal,
-    }: UpdateRequestStatusInput) {
+    async function updateRequestStatus() {
+      displayResourceDispatch({
+        type: displayResourceAction.setIsSubmitting,
+        payload: true,
+      });
+      displayResourceDispatch({
+        type: displayResourceAction.setSubmitMessage,
+        payload: `Submitting request status update of id: ${requestStatus.id}to ${requestStatus.status} ...`,
+      });
+
       const urlString: URL = urlBuilder({
-        path: `${paths.manager}/${id}`,
+        path: `${paths.manager}/${requestStatus.id}`,
       });
 
       const resourceBody = Object.create(null);
-      // Object.defineProperty(resourceBody, requestBodyHeading, {
-      //   value: {
-      //     requestStatus: status,
-      //   },
-      //   writable: true,
-      //   enumerable: true,
-      //   configurable: true,
-      // });
-      addFieldsToObject({
-        object: resourceBody,
-        fieldValuesTuples: [[requestBodyHeading, { requestStatus: status }]],
+      Object.defineProperty(resourceBody, requestBodyHeading, {
+        ...PROPERTY_DESCRIPTOR,
+        value: { requestStatus: requestStatus.status },
       });
       const body = JSON.stringify(resourceBody);
 
@@ -285,7 +352,7 @@ function DisplayResource<Doc>({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        signal,
+        signal: controller.signal,
         body,
       });
 
@@ -293,32 +360,79 @@ function DisplayResource<Doc>({
         const response = await fetch(request);
         const data: ResourceRequestServerResponse<Doc> = await response.json();
         console.log('request status update response', data);
-        // trigger component refresh
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        const [updatedResource] = data.resourceData;
+
         displayResourceDispatch({
-          type: displayResourceAction.setTriggerRefresh,
-          payload: !triggerRefresh,
+          type: displayResourceAction.updateResourceData,
+          payload: {
+            id: updatedResource._id,
+            kind: 'update',
+            data: updatedResource,
+          },
         });
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
       } finally {
-        console.log('finally');
+        if (isMounted) {
+          displayResourceDispatch({
+            type: displayResourceAction.setIsSubmitting,
+            payload: false,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setSubmitMessage,
+            payload: '',
+          });
+        }
       }
     }
 
     // only allow Admin and Manager to update request status
-    if (roles.includes('Manager')) {
+    if (roles.includes('Admin') || roles.includes('Manager')) {
       if (requestStatus.id !== '') {
-        updateRequestStatus({
-          accessToken,
-          requestStatus,
-          paths,
-          requestBodyHeading,
-          signal,
-        });
+        updateRequestStatus();
       }
     }
 
     return () => {
+      isMounted = false;
       controller.abort();
     };
   }, [requestStatus]);
@@ -326,15 +440,25 @@ function DisplayResource<Doc>({
   // delete resource on deleteResource status change
   // ALSO MAKE A PUT REQUEST WITH MODIFIED FORM DATA
   useEffect(() => {
+    let isMounted = true;
     const controller = new AbortController();
-    const { signal } = controller;
+
     const { formId, fileUploadId, kind, value } = deleteResource;
 
     async function deleteResourceRequest() {
+      displayResourceDispatch({
+        type: displayResourceAction.setIsSubmitting,
+        payload: true,
+      });
+      displayResourceDispatch({
+        type: displayResourceAction.setSubmitMessage,
+        payload: `Deleting ${kind} of id: ${formId} ...`,
+      });
+
       const path =
         kind === 'form'
           ? `${paths.manager}/${formId}`
-          : `/api/v1/file-upload/${fileUploadId}`;
+          : `file-upload/${fileUploadId}`;
       const urlString: URL = urlBuilder({ path });
 
       const request: Request = new Request(urlString, {
@@ -343,23 +467,83 @@ function DisplayResource<Doc>({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        signal,
+        signal: controller.signal,
       });
 
       try {
         const response = await fetch(request);
         const data: { message: string; resourceData?: [] } =
           await response.json();
+
         console.log('delete response', data);
-        // trigger component refresh
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
         displayResourceDispatch({
-          type: displayResourceAction.setTriggerRefresh,
-          payload: !triggerRefresh,
+          type: displayResourceAction.updateResourceData,
+          payload: {
+            id: formId,
+            kind: 'delete',
+            data: Object.create(null),
+          },
         });
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
       } finally {
-        console.log('finally');
+        if (isMounted) {
+          displayResourceDispatch({
+            type: displayResourceAction.setIsSubmitting,
+            payload: false,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setSubmitMessage,
+            payload: '',
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setIsSuccessful,
+            payload: true,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setSuccessMessage,
+            payload: `Successfully deleted ${kind} of id: ${formId}`,
+          });
+        }
       }
     }
 
@@ -371,16 +555,26 @@ function DisplayResource<Doc>({
     }
 
     return () => {
+      isMounted = false;
       controller.abort();
     };
   }, [deleteResource]);
 
   // when an uploaded file is deleted, patch request is made to update the asociated resource
   useEffect(() => {
+    let isMounted = true;
     const controller = new AbortController();
-    const { signal } = controller;
 
     async function updateAssociatedResource() {
+      displayResourceDispatch({
+        type: displayResourceAction.setIsSubmitting,
+        payload: true,
+      });
+      displayResourceDispatch({
+        type: displayResourceAction.setSubmitMessage,
+        payload: `Deleting file upload of id: ${deleteResource.fileUploadId} ...`,
+      });
+
       // find the associated resource with the fileUploadId
       const associatedResource = resourceData.reduce(
         (acc: QueryResponseData<Doc> | null, obj) => {
@@ -396,10 +590,6 @@ function DisplayResource<Doc>({
                   );
                   // add the filtered array to the resource obj
                   const clone = structuredClone(obj);
-                  // addFieldsToObject({
-                  //   object: clone,
-                  //   fieldValuesTuples: [[key, filteredValue]],
-                  // });
                   Object.defineProperty(clone, key, {
                     ...PROPERTY_DESCRIPTOR,
                     value: filteredValue,
@@ -411,10 +601,7 @@ function DisplayResource<Doc>({
               else {
                 if (value === deleteResource.fileUploadId) {
                   const clone = structuredClone(obj);
-                  // addFieldsToObject({
-                  //   object: clone,
-                  //   fieldValuesTuples: [[key, '']],
-                  // });
+
                   Object.defineProperty(clone, key, {
                     ...PROPERTY_DESCRIPTOR,
                     value: '',
@@ -452,9 +639,13 @@ function DisplayResource<Doc>({
       });
 
       const resourceBody = Object.create(null);
-      addFieldsToObject({
-        object: resourceBody,
-        fieldValuesTuples: [[requestBodyHeading, filteredAssociatedResource]],
+      // addFieldsToObject({
+      //   object: resourceBody,
+      //   fieldValuesTuples: [[requestBodyHeading, filteredAssociatedResource]],
+      // });
+      Object.defineProperty(resourceBody, requestBodyHeading, {
+        ...PROPERTY_DESCRIPTOR,
+        value: filteredAssociatedResource,
       });
       const body = JSON.stringify(resourceBody);
 
@@ -464,23 +655,92 @@ function DisplayResource<Doc>({
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        signal,
+        signal: controller.signal,
         body,
       });
 
       try {
         const response = await fetch(request);
         const data: ResourceRequestServerResponse<Doc> = await response.json();
+
         console.log('update associated resource response', data);
-        // trigger component refresh
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        const [updatedResource] = data.resourceData;
+
+        // // trigger component refresh
+        // displayResourceDispatch({
+        //   type: displayResourceAction.setTriggerRefresh,
+        //   payload: !triggerRefresh,
+        // });
+
+        // update resource data
         displayResourceDispatch({
-          type: displayResourceAction.setTriggerRefresh,
-          payload: !triggerRefresh,
+          type: displayResourceAction.updateResourceData,
+          payload: {
+            id: updatedResource._id,
+            kind: 'update',
+            data: updatedResource,
+          },
         });
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
       } finally {
-        console.log('finally');
+        if (isMounted) {
+          displayResourceDispatch({
+            type: displayResourceAction.setIsSubmitting,
+            payload: false,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setSubmitMessage,
+            payload: '',
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setIsSuccessful,
+            payload: true,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setSuccessMessage,
+            payload: `Successfully deleted file upload of id: ${deleteResource.fileUploadId} and updated form`,
+          });
+        }
       }
     }
 
@@ -489,6 +749,7 @@ function DisplayResource<Doc>({
     }
 
     return () => {
+      isMounted = false;
       controller.abort();
     };
   }, [deleteResource.fileUploadId]);
@@ -526,11 +787,12 @@ function DisplayResource<Doc>({
     />
   );
 
-  const { dark } = COLORS_SWATCHES;
-  const backgroundColor =
-    colorScheme === 'light'
-      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-      : dark[6];
+  const {
+    appThemeColors: { backgroundColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   const displayResourceComponent = (
     <Flex
@@ -542,7 +804,6 @@ function DisplayResource<Doc>({
       bg={backgroundColor}
       style={{
         ...style,
-        // backgroundColor,
         borderRadius: 4,
       }}
       p={padding}

@@ -113,7 +113,7 @@ type QueryResponseData<Doc> = {
  */
 type ResourceRequestServerResponse<Doc> = {
   message: string;
-  resourceData: QueryResponseData<Doc>[];
+  resourceData: [QueryResponseData<Doc>];
 };
 
 /**

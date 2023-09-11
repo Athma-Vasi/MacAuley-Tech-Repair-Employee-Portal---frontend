@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useGlobalState } from '../../hooks';
 import { COLORS_SWATCHES } from '../../constants/data';
+import { returnThemeColors } from '../../utils';
 
 type ParentDispatch = React.Dispatch<
   | {
@@ -54,29 +55,17 @@ function CustomNotification({
   parentDispatch,
 }: CustomNotificationProps) {
   const {
-    globalState: {
-      padding,
-      width,
-      themeObject: { colorScheme, primaryColor, primaryShade },
-    },
+    globalState: { padding, width, themeObject },
   } = useGlobalState();
   const navigate = useNavigate();
 
-  const { gray, green, cyan } = COLORS_SWATCHES;
-  const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
-  const themeColorShades: string[] | undefined = Object.entries(
-    COLORS_SWATCHES
-  ).find(([color, _shades]) => color === primaryColor)?.[1];
-  const themeColorShade = themeColorShades
-    ? themeColorShades[
-        colorScheme === 'light' ? primaryShade.light : primaryShade.dark
-      ]
-    : gray[5];
-  const greenColorShade =
-    green[colorScheme === 'light' ? primaryShade.light : primaryShade.dark];
-  const cyanColorShade =
-    cyan[colorScheme === 'light' ? primaryShade.light : primaryShade.dark];
+  const {
+    generalColors: { greenColorShade, cyanColorShade, themeColorShade },
+    appThemeColors: { borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   let notificationComponent = null;
   if (isSuccessful) {

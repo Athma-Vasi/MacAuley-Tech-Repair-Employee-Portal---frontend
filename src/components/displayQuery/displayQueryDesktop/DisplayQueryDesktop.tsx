@@ -127,7 +127,7 @@ function DisplayQueryDesktop<Doc>({
         description: 'Update request status of this form',
         onChange: () => {},
         name: 'requestStatus',
-        label: 'Update',
+        label: <Title order={5}>Update</Title>,
         semanticName: 'Update request status',
         widthRadioGroup: '100%',
       },
@@ -672,7 +672,7 @@ function DisplayQueryDesktop<Doc>({
                               : null;
 
                           const displayExpandedBodyRows = (
-                            <td key={`${keyValIdx}`}>
+                            <td key={`${objIdx}-${keyValIdx}`}>
                               {key === 'requestStatus' ? (
                                 <Group w="100%" position="right">
                                   <Text>{truncatedValuesWithHoverCards}</Text>
@@ -692,7 +692,7 @@ function DisplayQueryDesktop<Doc>({
                                 keyValIdx
                               ]
                             ) ? (
-                              <td key={`${keyValIdx}`}>
+                              <td key={`${objIdx}-${keyValIdx}`}>
                                 {key === 'requestStatus' ? (
                                   <Group position="right" w="100%">
                                     <Text>{truncatedValuesWithHoverCards}</Text>
