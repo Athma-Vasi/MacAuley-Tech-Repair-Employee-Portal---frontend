@@ -196,7 +196,7 @@ function StepperWrapper({
       p={padding}
       h="100%"
     >
-      <Title order={3}>{childrenTitle}</Title>
+      <Title order={4}>{childrenTitle}</Title>
       <Stepper
         active={currentStepperPosition}
         onStepClick={(step) => {
@@ -319,34 +319,12 @@ function StepperWrapper({
           }}
         >
           {/* prev button */}
-          <Tooltip
-            label={
-              // currentStepperPosition === 0
-              //   ? 'You are at the first page'
-              //   : `Go back to ${
-              //       descriptionObjectsArray[currentStepperPosition - 1]
-              //         .description
-              //     }`
-              prevButtonTooltipLabelTruncated
-            }
-          >
+          <Tooltip label={prevButtonTooltipLabelTruncated}>
             <Group>{createdPrevButton}</Group>
           </Tooltip>
 
           {/* next button */}
-          <Tooltip
-            label={
-              // currentStepperPosition === descriptionObjectsArray.length - 1
-              //   ? 'Go to submit page'
-              //   : currentStepperPosition === descriptionObjectsArray.length
-              //   ? 'You are at the last page'
-              //   : `Go to ${
-              //       descriptionObjectsArray[currentStepperPosition + 1]
-              //         .description
-              //     }`
-              nextButtonTooltipLabelTruncated
-            }
-          >
+          <Tooltip label={nextButtonTooltipLabelTruncated}>
             <Group>{createdNextButton}</Group>
           </Tooltip>
         </Flex>

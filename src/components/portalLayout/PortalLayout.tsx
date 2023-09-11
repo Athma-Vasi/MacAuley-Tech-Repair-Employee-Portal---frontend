@@ -78,4 +78,4 @@ function PortalLayout() {
   );
 }
 
-export { PortalLayout };
+export default PortalLayout;

@@ -1,12 +1,10 @@
 import { QueryResponseData } from '../../types';
 import { DisplayResource } from '../displayResource';
-import { ImageUpload } from '../imageUpload';
 import {
-  EXPENSE_CLAIMS_EXCLUDED_FIELDS_FROM_DISPLAY,
-  EXPENSE_CLAIM_QUERY_DATA,
   EXPENSE_CLAIM__ROUTE_PATHS,
+  EXPENSE_CLAIM_QUERY_DATA,
 } from './constants';
-import { ExpenseClaimDocument } from './createExpenseClaim/types';
+import { ExpenseClaimDocument } from './create/types';
 
 function DisplayExpenseClaims() {
   return (
@@ -21,4 +19,4 @@ function DisplayExpenseClaims() {
   );
 }
 
-export { DisplayExpenseClaims };
+export default DisplayExpenseClaims;

@@ -4,7 +4,7 @@ import {
   REQUEST_RESOURCE_PATHS,
   REQUEST_RESOURCE_QUERY_DATA,
 } from './constants';
-import { RequestResourceDocument } from './createRequestResource/types';
+import { RequestResourceDocument } from './create/types';
 
 function DisplayRequestResources() {
   return (
@@ -16,4 +16,4 @@ function DisplayRequestResources() {
   );
 }
 
-export { DisplayRequestResources };
+export default DisplayRequestResources;

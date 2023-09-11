@@ -8,7 +8,7 @@ import {
 } from '@mantine/core';
 import { ReactNode } from 'react';
 
-import { AnnouncementDocument } from '../../components/announcements/create/types';
+import { AnnouncementDocument } from '../../components/announcement/create/types';
 import {
   ScrollXDirection,
   ScrollYDirection,

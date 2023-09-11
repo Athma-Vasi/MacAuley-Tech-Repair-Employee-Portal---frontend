@@ -2,7 +2,7 @@ import { Group, Stack } from '@mantine/core';
 
 import { addFieldsToObject, splitCamelCase } from '../../utils';
 import { FormReviewObject } from '../formReviewPage/FormReviewPage';
-import { SurveyQuestions } from './surveyBuilder/types';
+import { SurveyQuestions } from './create/types';
 import { SurveyResponseInput, SurveyResponseKind } from './types';
 
 type MergeSurveyQuestionsGroupProps = {

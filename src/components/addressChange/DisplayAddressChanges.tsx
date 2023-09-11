@@ -11,4 +11,4 @@ function DisplayAddressChanges() {
   );
 }
 
-export { DisplayAddressChanges };
+export default DisplayAddressChanges;

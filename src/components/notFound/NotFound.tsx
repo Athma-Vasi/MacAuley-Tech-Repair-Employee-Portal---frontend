@@ -6,14 +6,14 @@ function NotFound() {
 
   return (
     <Alert color="red" title="Not Found!">
-      <Title order={4}>The page you are looking for does not exist.</Title>
+      <Title>The page you are looking for does not exist.</Title>
 
       <Button
         variant="light"
         color="red"
         size="lg"
         radius="lg"
-        onClick={() => navigate('/login')}
+        onClick={() => navigate('/home')}
       >
         Go to home
       </Button>
@@ -21,4 +21,4 @@ function NotFound() {
   );
 }
 
-export { NotFound };
+export default NotFound;

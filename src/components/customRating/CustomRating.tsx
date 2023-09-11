@@ -18,7 +18,7 @@ import { TbMoodCrazyHappy } from 'react-icons/tb';
 import { TbMoodEmpty } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
-import { SurveySubmissionPayload } from '../survey/displaySurveys/types';
+import { SurveySubmissionPayload } from '../survey/display/types';
 import { COLORS_SWATCHES } from '../../constants/data';
 
 type CustomRatingProps = {

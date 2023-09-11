@@ -5,58 +5,127 @@ import { lazy, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import {
-  AddressChange,
-  DisplayAddressChanges,
-} from './components/addressChange';
-import {
-  CreateAnnouncement,
-  DisplayAnnouncement,
-  DisplayAnnouncements,
-} from './components/announcements';
-import {
-  CreateAnonymousRequest,
-  DisplayAnonymousRequests,
-} from './components/anonymousRequest';
-import { CreateBenefit, DisplayBenefits } from './components/benefits';
 import CustomFonts from './components/customFonts/CustomFonts';
-import { Dashboard } from './components/dashboard';
-import {
-  CreateEndorsement,
-  DisplayEndorsements,
-} from './components/endorsements/';
+
 import ErrorFallback from './components/errorFallback/ErrorFallback';
-import { DisplayEvents, EventCreator } from './components/events';
-import {
-  CreateExpenseClaim,
-  DisplayExpenseClaims,
-} from './components/expenseClaim';
-import {
-  CreateLeaveRequest,
-  DisplayLeaveRequests,
-} from './components/leaveRequest';
-import { Login } from './components/login';
-import { NotFound } from './components/notFound';
-import { PortalLayout } from './components/portalLayout';
-import {
-  CreatePrinterIssue,
-  DisplayPrinterIssues,
-} from './components/printerIssue';
-import { PublicLayout } from './components/publicLayout';
-import { CreateReferment, DisplayReferments } from './components/referments';
-import { CreateRepairNote, DisplayRepairNotes } from './components/repairNote';
-import {
-  DisplayRequestResources,
-  RequestResource,
-} from './components/requestResource';
-import { DisplaySurveys, SurveyBuilder } from './components/survey';
+
 import { useAuth } from './hooks';
 import { useGlobalState } from './hooks/useGlobalState';
+import { createEvent } from '@testing-library/react';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+const PublicLayout = lazy(
+  () => import('./components/publicLayout/PublicLayout')
+);
+const Login = lazy(() => import('./components/login/Login'));
 const Register = lazy(() => import('./components/register/Register'));
+
+const PortalLayout = lazy(
+  () => import('./components/portalLayout/PortalLayout')
+);
+const Dashboard = lazy(() => import('./components/dashboard/Dashboard'));
 const Directory = lazy(() => import('./components/directory/Directory'));
+const CreateRepairNote = lazy(
+  () => import('./components/repairNote/create/CreateRepairNote')
+);
+const DisplayRepairNotes = lazy(
+  () => import('./components/repairNote/display/DisplayRepairNotes')
+);
+
+// company
+const AddressChange = lazy(
+  () => import('./components/addressChange/create/AddressChange')
+);
+const DisplayAddressChanges = lazy(
+  () => import('./components/addressChange/DisplayAddressChanges')
+);
+
+const CreateBenefit = lazy(
+  () => import('./components/benefits/create/CreateBenefit')
+);
+const DisplayBenefits = lazy(
+  () => import('./components/benefits/DisplayBenefits')
+);
+
+const CreateLeaveRequest = lazy(
+  () => import('./components/leaveRequest/create/CreateLeaveRequest')
+);
+const DisplayLeaveRequests = lazy(
+  () => import('./components/leaveRequest/DisplayLeaveRequests')
+);
+
+const DisplayRequestResources = lazy(
+  () => import('./components/requestResource/DisplayRequestResources')
+);
+const RequestResource = lazy(
+  () => import('./components/requestResource/create/RequestResource')
+);
+
+const DisplayExpenseClaims = lazy(
+  () => import('./components/expenseClaim/DisplayExpenseClaims')
+);
+const CreateExpenseClaim = lazy(
+  () => import('./components/expenseClaim/create/CreateExpenseClaim')
+);
+
+// general
+const DisplayAnonymousRequests = lazy(
+  () => import('./components/anonymousRequest/DisplayAnonymousRequests')
+);
+const CreateAnonymousRequest = lazy(
+  () => import('./components/anonymousRequest/create/CreateAnonymousRequest')
+);
+
+const DisplayEndorsements = lazy(
+  () => import('./components/endorsements/DisplayEndorsements')
+);
+const CreateEndorsement = lazy(
+  () => import('./components/endorsements/create/CreateEndorsement')
+);
+
+const DisplayPrinterIssues = lazy(
+  () => import('./components/printerIssue/DisplayPrinterIssues')
+);
+const CreatePrinterIssue = lazy(
+  () => import('./components/printerIssue/create/CreatePrinterIssue')
+);
+
+const DisplayReferments = lazy(
+  () => import('./components/referment/DisplayReferments')
+);
+const CreateReferment = lazy(
+  () => import('./components/referment/create/CreateReferment')
+);
+
+// outreach
+const DisplayEvents = lazy(() => import('./components/event/DisplayEvents'));
+const EventCreator = lazy(
+  () => import('./components/event/create/EventCreator')
+);
+
+const DisplaySurveys = lazy(
+  () => import('./components/survey/display/DisplaySurveys')
+);
+const SurveyBuilder = lazy(
+  () => import('./components/survey/create/SurveyBuilder')
+);
+
+const DisplayAnnouncements = lazy(
+  () =>
+    import(
+      './components/announcement/display/announcements/DisplayAnnouncements'
+    )
+);
+const CreateAnnouncement = lazy(
+  () => import('./components/announcement/create/CreateAnnouncement')
+);
+const DisplayAnnouncement = lazy(
+  () =>
+    import('./components/announcement/display/announcement/DisplayAnnouncement')
+);
+
+// catch all
+const NotFound = lazy(() => import('./components/notFound/NotFound'));
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end lazy loading ━┛
 
@@ -70,56 +139,423 @@ function App() {
   } = useAuth();
   const navigate = useNavigate();
 
+  // @desc   the public facing page
+  // @route  /
+  // @access public
+  const rootIndexWrapper = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <PublicLayout />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   the login page
+  // @route  /login
+  // @access public
+  const loginElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Login />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   the register page
+  // @route  /register
+  // @access public
+  const registerElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Register />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   the parent component for the entire app (logged in users only)
+  // @route  /home
+  // @access private
+  const homeIndexWrapper = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <PortalLayout />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   the home page (welcome page for logged in users)
+  // @route  /home
+  // @access private
+  const dashboardElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Dashboard />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   the directory page
+  // @route  /home/directory
+  // @access private
+  const directoryElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Directory />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   repair-note page (index and display)
+  // @route  /home/repair-note (index) and /home/repair-note/display
+  // @access private
+  const displayRepairNotesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayRepairNotes />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   repair-note page (create)
+  // @route  /home/repair-note/create
+  // @access private
+  const createRepairNoteElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateRepairNote />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   the company action landing page
+  // @route  /home/company
+  // @access private
+  const companyElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Text>Company</Text>
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   address-change page (index and display)
+  // @route  /home/company/address-change (index) and /home/company/address-change/display
+  // @access private
+  const displayAddressChangesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayAddressChanges />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   address-change page (create)
+  // @route  /home/company/address-change/create
+  // @access private
+  const addressChangeElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <AddressChange />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   benefits page (index and display)
+  // @route  /home/company/benefit (index) and /home/company/benefit/display
+  // @access private
+  const displayBenefitsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayBenefits />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   benefits page (create)
+  // @route  /home/company/benefit/create
+  // @access private
+  const createBenefitElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateBenefit />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   leave-request page (index and display)
+  // @route  /home/company/leave-request (index) and /home/company/leave-request/display
+  // @access private
+  const displayLeaveRequestsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayLeaveRequests />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   leave-request page (create)
+  // @route  /home/company/leave-request/create
+  // @access private
+  const createLeaveRequestElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateLeaveRequest />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   request-resource page (index and display)
+  // @route  /home/company/request-resource (index) and /home/company/request-resource/display
+  // @access private
+  const displayRequestResourcesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayRequestResources />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   request-resource page (create)
+  // @route  /home/company/request-resource/create
+  // @access private
+  const requestResourceElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <RequestResource />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   expense-claim page (index and display)
+  // @route  /home/company/expense-claim (index) and /home/company/expense-claim/display
+  // @access private
+  const displayExpenseClaimsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayExpenseClaims />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   expense-claim page (create)
+  // @route  /home/company/expense-claim/create
+  // @access private
+  const createExpenseClaimElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateExpenseClaim />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   general action landing page
+  // @route  /home/general
+  // @access private
+  const generalElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Text>General</Text>
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   anonymous-request page (index and display)
+  // @route  /home/general/anonymous-request (index) and /home/general/anonymous-request/display
+  // @access private
+  const displayAnonymousRequestsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayAnonymousRequests />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   anonymous-request page (create)
+  // @route  /home/general/anonymous-request/create
+  // @access private
+  const createAnonymousRequestElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateAnonymousRequest />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   endorsement page (index and display)
+  // @route  /home/general/endorsement (index) and /home/general/endorsement/display
+  // @access private
+  const displayEndorsementsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayEndorsements />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   endorsement page (create)
+  // @route  /home/general/endorsement/create
+  // @access private
+  const createEndorsementElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateEndorsement />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   printer-issue page (index and display)
+  // @route  /home/general/printer-issue (index) and /home/general/printer-issue/display
+  // @access private
+  const displayPrinterIssuesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayPrinterIssues />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   printer-issue page (create)
+  // @route  /home/general/printer-issue/create
+  // @access private
+  const createPrinterIssueElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreatePrinterIssue />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   referment page (index and display)
+  // @route  /home/general/referment (index) and /home/general/referment/display
+  // @access private
+  const displayRefermentsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayReferments />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   referment page (create)
+  // @route  /home/general/referment/create
+  // @access private
+  const createRefermentElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateReferment />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   outreach action landing page
+  // @route  /home/outreach
+  // @access private
+  const outreachElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Text>Outreach</Text>
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   event-creator page (index and display)
+  // @route  /home/outreach/event-creator (index) and /home/outreach/event-creator/display
+  // @access private
+  const displayEventsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayEvents />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   event-creator page (create)
+  // @route  /home/outreach/event-creator/create
+  // @access private
+  const eventCreatorElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <EventCreator />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   survey-builder page (index and display)
+  // @route  /home/outreach/survey-builder (index) and /home/outreach/survey-builder/display
+  // @access private
+  const displaySurveysElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplaySurveys />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   survey-builder page (create)
+  // @route  /home/outreach/survey-builder/create
+  // @access private
+  const surveyBuilderElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <SurveyBuilder />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   announcement page (index and display)
+  // @route  /home/outreach/announcement (index) and /home/outreach/announcement/display
+  // @access private
+  const displayAnnouncementsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayAnnouncements />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   announcement page (create)
+  // @route  /home/outreach/announcement/create
+  // @access private
+  const createAnnouncementElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateAnnouncement />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   announcement page (display single announcement)
+  // @route  /home/outreach/announcement/display/:announcementId
+  // @access private
+  const displayAnnouncementElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayAnnouncement />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   catch all page
+  // @route  *
+  // @access public
+  const notFoundElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <NotFound />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={themeObject}>
       <CustomFonts />
       <Routes>
         {/* these are public routes */}
-        <Route
-          path="/"
-          element={
-            <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-              <Suspense fallback={<div>Generic Loading message...</div>}>
-                <PublicLayout />
-              </Suspense>
-            </ErrorBoundary>
-          }
-        >
-          <Route
-            index
-            element={
-              <ErrorBoundary
-                fallback={<ErrorFallback errorState={errorState} />}
-              >
-                <Suspense fallback={<div>Generic Loading message...</div>}>
-                  <Login />
-                </Suspense>
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="login"
-            element={
-              <ErrorBoundary
-                fallback={<ErrorFallback errorState={errorState} />}
-              >
-                <Suspense fallback={<div>Generic Loading message...</div>}>
-                  <Login />
-                </Suspense>
-              </ErrorBoundary>
-            }
-          />
+        <Route path="/" element={rootIndexWrapper}>
+          <Route index element={loginElement} />
+          <Route path="login" element={loginElement} />
           <Route path="register" element={<PortalLayout />}>
-            <Route index element={<Register />} />
-          </Route>
-          {/* TEST ROUTES */}
-          <Route path="error">
-            <Route index element={<ErrorFallback errorState={errorState} />} />
-          </Route>
-
-          {/* create leave request */}
-          <Route path="leave-request" element={<PortalLayout />}>
-            <Route index element={<CreateLeaveRequest />} />
+            <Route index element={registerElement} />
           </Route>
         </Route>
 
@@ -146,175 +582,125 @@ function App() {
       </Route> */}
 
         {/* DEV TEST ROUTES */}
-        <Route path="home" element={<PortalLayout />}>
-          <Route
-            index
-            element={
-              <ErrorBoundary
-                fallback={<ErrorFallback errorState={errorState} />}
-              >
-                <Suspense fallback={<div>Generic Loading message...</div>}>
-                  <Dashboard />
-                </Suspense>
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path="dashboard"
-            element={
-              <ErrorBoundary
-                fallback={<ErrorFallback errorState={errorState} />}
-              >
-                <Suspense fallback={<div>Generic Loading message...</div>}>
-                  <Dashboard />
-                </Suspense>
-              </ErrorBoundary>
-            }
-          />
+        <Route path="home" element={homeIndexWrapper}>
+          <Route index element={dashboardElement} />
+          {/* <Route path="dashboard" element={dashboardElement} /> */}
 
           {/* directory */}
-
-          <Route path="directory">
-            <Route
-              index
-              element={
-                <ErrorBoundary
-                  fallback={<ErrorFallback errorState={errorState} />}
-                >
-                  <Suspense fallback={<div>Generic Loading message...</div>}>
-                    <Directory />
-                  </Suspense>
-                </ErrorBoundary>
-              }
-            />
-          </Route>
+          <Route path="directory" element={directoryElement} />
 
           {/* repair-note */}
           <Route path="repair-note">
-            <Route index element={<DisplayRepairNotes />} />
-            <Route path="display" element={<DisplayRepairNotes />} />
-            <Route path="create" element={<CreateRepairNote />} />
+            <Route index element={displayRepairNotesElement} />
+            <Route path="display" element={displayRepairNotesElement} />
+            <Route path="create" element={createRepairNoteElement} />
           </Route>
 
+          {/* company */}
           <Route path="company">
+            <Route index element={companyElement} />
+
             {/* address change */}
             <Route path="address-change">
-              <Route index element={<DisplayAddressChanges />} />
-              <Route path="create" element={<AddressChange />} />
-              <Route path="display" element={<DisplayAddressChanges />} />
+              <Route index element={displayAddressChangesElement} />
+              <Route path="create" element={addressChangeElement} />
+              <Route path="display" element={displayAddressChangesElement} />
             </Route>
 
             {/* benefit */}
             <Route path="benefit">
-              <Route index element={<DisplayBenefits />} />
-              <Route path="create" element={<CreateBenefit />} />
-              <Route path="display" element={<DisplayBenefits />} />
+              <Route index element={displayBenefitsElement} />
+              <Route path="create" element={createBenefitElement} />
+              <Route path="display" element={displayBenefitsElement} />
             </Route>
 
             {/* leave-request */}
             <Route path="leave-request">
-              <Route index element={<CreateLeaveRequest />} />
-              <Route path="display" element={<DisplayLeaveRequests />} />
-              <Route path="create" element={<CreateLeaveRequest />} />
+              <Route index element={displayLeaveRequestsElement} />
+              <Route path="display" element={displayLeaveRequestsElement} />
+              <Route path="create" element={createLeaveRequestElement} />
             </Route>
+
             {/* request-resource  */}
             <Route path="request-resource">
-              <Route index element={<DisplayRequestResources />} />
-              <Route path="create" element={<RequestResource />} />
-              <Route path="display" element={<DisplayRequestResources />} />
+              <Route index element={displayRequestResourcesElement} />
+              <Route path="create" element={requestResourceElement} />
+              <Route path="display" element={displayRequestResourcesElement} />
             </Route>
 
             {/* expense-claim */}
             <Route path="expense-claim">
-              <Route index element={<DisplayExpenseClaims />} />
-              <Route path="create" element={<CreateExpenseClaim />} />
-              <Route path="display" element={<DisplayExpenseClaims />} />
+              <Route index element={displayExpenseClaimsElement} />
+              <Route path="create" element={createExpenseClaimElement} />
+              <Route path="display" element={displayExpenseClaimsElement} />
             </Route>
           </Route>
 
           <Route path="general">
+            <Route index element={generalElement} />
+
             {/* anonymous-request */}
             <Route path="anonymous-request">
-              <Route index element={<DisplayAnonymousRequests />} />
-              <Route path="create" element={<CreateAnonymousRequest />} />
-              <Route path="display" element={<DisplayAnonymousRequests />} />
+              <Route index element={displayAnonymousRequestsElement} />
+              <Route path="create" element={createAnonymousRequestElement} />
+              <Route path="display" element={displayAnonymousRequestsElement} />
             </Route>
 
             {/* endorsement */}
             <Route path="endorsement">
-              <Route index element={<DisplayEndorsements />} />
-              <Route path="create" element={<CreateEndorsement />} />
-              <Route path="display" element={<DisplayEndorsements />} />
+              <Route index element={displayEndorsementsElement} />
+              <Route path="create" element={createEndorsementElement} />
+              <Route path="display" element={displayEndorsementsElement} />
             </Route>
 
             {/* printer-issue */}
             <Route path="printer-issue">
-              <Route index element={<DisplayPrinterIssues />} />
-              <Route path="create" element={<CreatePrinterIssue />} />
-              <Route path="display" element={<DisplayPrinterIssues />} />
+              <Route index element={displayPrinterIssuesElement} />
+              <Route path="create" element={createPrinterIssueElement} />
+              <Route path="display" element={displayPrinterIssuesElement} />
             </Route>
 
             {/* referment */}
             <Route path="referment">
-              <Route index element={<DisplayReferments />} />
-              <Route path="create" element={<CreateReferment />} />
-              <Route path="display" element={<DisplayReferments />} />
+              <Route index element={displayRefermentsElement} />
+              <Route path="create" element={createRefermentElement} />
+              <Route path="display" element={displayRefermentsElement} />
             </Route>
           </Route>
 
           <Route path="outreach">
+            <Route index element={outreachElement} />
+
             {/* event-creator */}
             <Route path="event-creator">
-              <Route index element={<DisplayEvents />} />
-              <Route path="create" element={<EventCreator />} />
-              <Route path="display" element={<DisplayEvents />} />
+              <Route index element={displayEventsElement} />
+              <Route path="create" element={eventCreatorElement} />
+              <Route path="display" element={displayEventsElement} />
             </Route>
 
             {/* survey-builder */}
             <Route path="survey-builder">
-              <Route index element={<DisplaySurveys />} />
-              <Route path="create" element={<SurveyBuilder />} />
-              <Route
-                path="display"
-                element={
-                  <ErrorBoundary
-                    fallback={<ErrorFallback errorState={errorState} />}
-                  >
-                    <Suspense fallback={<div>Generic Loading message...</div>}>
-                      <DisplaySurveys />
-                    </Suspense>
-                  </ErrorBoundary>
-                }
-              />
+              <Route index element={displaySurveysElement} />
+              <Route path="create" element={surveyBuilderElement} />
+              <Route path="display" element={displaySurveysElement} />
             </Route>
 
             {/* announcements */}
             <Route path="announcement">
-              <Route index element={<DisplayAnnouncements />} />
-              <Route path="create" element={<CreateAnnouncement />} />
-              <Route
-                path="display"
-                element={
-                  <ErrorBoundary
-                    fallback={<ErrorFallback errorState={errorState} />}
-                  >
-                    <Suspense fallback={<div>Generic Loading message...</div>}>
-                      <DisplayAnnouncements />
-                    </Suspense>
-                  </ErrorBoundary>
-                }
-              />
+              <Route index element={displayAnnouncementsElement} />
+              <Route path="create" element={createAnnouncementElement} />
+              <Route path="display" element={displayAnnouncementsElement} />
 
               <Route
                 path="display/:announcementId"
-                element={<DisplayAnnouncement />}
+                element={displayAnnouncementElement}
               />
             </Route>
           </Route>
         </Route>
 
         {/* catch all */}
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={notFoundElement} />
       </Routes>
     </MantineProvider>
   );

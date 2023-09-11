@@ -4,7 +4,7 @@ import {
   ANONYMOUS_REQUEST_QUERY_DATA,
   ANONYMOUS_REQUEST_ROUTES,
 } from './constants';
-import { AnonymousRequestDocument } from './createAnonymousRequest/types';
+import { AnonymousRequestDocument } from './create/types';
 
 function DisplayAnonymousRequests() {
   return (
@@ -16,4 +16,4 @@ function DisplayAnonymousRequests() {
   );
 }
 
-export { DisplayAnonymousRequests };
+export default DisplayAnonymousRequests;

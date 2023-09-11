@@ -1,6 +1,6 @@
 import { DisplayResource } from '../displayResource';
 import { ENDORSEMENTS_PATHS, ENDORSEMENTS_QUERY_DATA } from './constants';
-import { EndorsementDocument } from './createEndorsement/types';
+import { EndorsementDocument } from './create/types';
 
 function DisplayEndorsements() {
   return (
@@ -12,4 +12,4 @@ function DisplayEndorsements() {
   );
 }
 
-export { DisplayEndorsements };
+export default DisplayEndorsements;

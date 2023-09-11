@@ -3,7 +3,7 @@ import {
   PRINTER_ISSUE_QUERY_DATA,
   PRINTER_ISSUE_ROUTE_PATHS,
 } from './constants';
-import { PrinterIssueDocument } from './createPrinterIssue/types';
+import { PrinterIssueDocument } from './create/types';
 
 function DisplayPrinterIssues() {
   return (
@@ -15,4 +15,4 @@ function DisplayPrinterIssues() {
   );
 }
 
-export { DisplayPrinterIssues };
+export default DisplayPrinterIssues;

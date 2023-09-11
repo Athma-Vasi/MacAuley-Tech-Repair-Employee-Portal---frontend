@@ -1,6 +1,6 @@
 import { DisplayResource } from '../displayResource';
 import { BENEFIT_QUERY_DATA, BENEFIT_RESOURCE_PATHS } from './constants';
-import { BenefitsDocument } from './createBenefit/types';
+import { BenefitsDocument } from './create/types';
 
 function DisplayBenefits() {
   return (
@@ -12,4 +12,4 @@ function DisplayBenefits() {
   );
 }
 
-export { DisplayBenefits };
+export default DisplayBenefits;

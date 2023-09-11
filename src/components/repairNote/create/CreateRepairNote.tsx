@@ -522,4 +522,4 @@ function CreateRepairNote() {
   return <>{displayRepairNoteComponent}</>;
 }
 
-export { CreateRepairNote };
+export default CreateRepairNote;

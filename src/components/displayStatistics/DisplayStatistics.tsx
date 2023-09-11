@@ -3,6 +3,7 @@ import {
   Flex,
   Group,
   Modal,
+  ScrollArea,
   Stack,
   Text,
   Title,
@@ -235,6 +236,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
   const {
     appThemeColors: { backgroundColor, borderColor },
+    scrollBarStyle,
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -283,8 +285,8 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
           key={`${_id}-${idx}-${surveyTitle}`}
         >
           <Group position="apart" w="100%">
-            <TbChartPie4 color="grey" />
-            <TextWrapper creatorInfoObj={{}}>{surveyTitle}</TextWrapper>
+            <TbChartPie4 />
+            <Text>{surveyTitle}</Text>
           </Group>
         </Card>
       </UnstyledButton>
@@ -295,15 +297,13 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
   const displayCompletedSurveysCards = (
     <Stack
+      bg={backgroundColor}
       style={{
-        backgroundColor: 'white',
-        borderBottom: '1px solid #e0e0e0',
+        borderBottom: borderColor,
       }}
       p={padding}
     >
-      <Title order={4} color="dark">
-        Completed surveys
-      </Title>
+      <Title order={3}>Completed surveys</Title>
       <Flex
         w="100%"
         align="center"
@@ -324,14 +324,11 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
         align="center"
         justify="space-between"
         wrap="wrap"
-        // style={{ outline: '1px solid violet' }}
         rowGap={rowGap}
       >
         <Group w="100%" position="apart">
           <Group position="left">
-            <Title order={4} color="dark">
-              {currentSelectedSurvey?.surveyTitle ?? ''}
-            </Title>
+            <Title order={4}>{currentSelectedSurvey?.surveyTitle ?? ''}</Title>
           </Group>
           <Group position="right">
             <PageBuilder
@@ -345,32 +342,20 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
         <Group
           w="100%"
           position="apart"
-          style={{ borderBottom: '1px solid #e0e0e0' }}
+          style={{ borderBottom: borderColor }}
           pb={padding}
         >
-          <Group
-            // w="100%"
-            position="left"
-            align="center"
-          >
-            <Text color="dark" size="md">
-              Question:{' '}
-            </Text>
-            <Text color="dark" size="md">
+          <Group position="left" align="center">
+            <Text size="md">Question: </Text>
+            <Text size="md">
               {currentSelectedSurvey?.questions?.[modalPage - 1]?.question}
             </Text>
           </Group>
 
           {/* total responses */}
-          <Group
-            // w="100%"
-            position="left"
-            align="center"
-          >
-            <Text color="dark" size="md">
-              Total responses:{' '}
-            </Text>
-            <Text color="dark" size="md">
+          <Group position="left" align="center">
+            <Text size="md">Total responses: </Text>
+            <Text size="md">
               {totalResponsesMap
                 .get(currentSelectedSurvey?._id ?? '')
                 ?.get(
@@ -385,14 +370,13 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   );
 
   const displayResponsivePieChart = (
-    <Flex
-      w="100%"
-      h="100%"
-      py={padding}
-      style={width < 1192 ? { overflowY: 'scroll' } : {}}
-    >
-      <ResponsivePieChart pieChartData={currentlySelectedPieChartData ?? []} />
-    </Flex>
+    <ScrollArea type="auto" styles={() => scrollBarStyle} offsetScrollbars>
+      <Flex w="100%" h="100%" py={padding}>
+        <ResponsivePieChart
+          pieChartData={currentlySelectedPieChartData ?? []}
+        />
+      </Flex>
+    </ScrollArea>
   );
 
   const createdSurveyStatisticModal = (
