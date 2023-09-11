@@ -31,10 +31,9 @@ const initialDisplaySurveysState: DisplaySurveysState = {
   totalDocuments: 0,
   pages: 0,
 
+  triggerSurveyFetch: true,
   triggerSurveySubmission: false,
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -62,10 +61,9 @@ const displaySurveysAction: DisplaySurveysAction = {
   setTotalDocuments: 'setTotalDocuments',
   setPages: 'setPages',
 
+  setTriggerSurveyFetch: 'setTriggerSurveyFetch',
   setTriggerSurveySubmission: 'setTriggerSurveySubmission',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -280,22 +278,17 @@ function displaySurveysReducer(
         pages: action.payload,
       };
 
+    case displaySurveysAction.setTriggerSurveyFetch:
+      return {
+        ...state,
+        triggerSurveyFetch: action.payload,
+      };
     case displaySurveysAction.setTriggerSurveySubmission:
       return {
         ...state,
         triggerSurveySubmission: action.payload,
       };
 
-    case displaySurveysAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case displaySurveysAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case displaySurveysAction.setIsSubmitting:
       return {
         ...state,

@@ -1,16 +1,9 @@
-import {
-  Card,
-  Flex,
-  Group,
-  Modal,
-  Stack,
-  Text,
-  Title,
-  Tooltip,
-} from '@mantine/core';
+import { Card, Flex, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { Fragment, useEffect, useReducer } from 'react';
 import { TbChartPie3, TbUpload } from 'react-icons/tb';
 
+import { globalAction } from '../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
@@ -26,31 +19,30 @@ import {
   filterFieldsFromObject,
   logState,
   replaceLastCommaWithAnd,
+  returnThemeColors,
   urlBuilder,
 } from '../../../utils';
 import { CustomNotification } from '../../customNotification';
 import { CustomRating } from '../../customRating/CustomRating';
+import { DisplayStatistics } from '../../displayStatistics';
 import { PageBuilder } from '../../pageBuilder';
-import { QueryBuilder } from '../../queryBuilder';
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   StepperWrapper,
   TextWrapper,
 } from '../../wrappers';
-import {
-  SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
-  SURVEY_QUERY_DATA,
-} from '../constants';
+import { SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS } from '../constants';
 import { SurveyBuilderDocument } from '../types';
 import {
   displaySurveysAction,
   displaySurveysReducer,
   initialDisplaySurveysState,
 } from './state';
-import { DisplayStatistics } from '../../displayStatistics';
-import { useDisclosure } from '@mantine/hooks';
-import { globalAction } from '../../../context/globalProvider/state';
+import { InvalidTokenError } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
+import { useErrorBoundary } from 'react-error-boundary';
+import { COLORS_SWATCHES } from '../../../constants/data';
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -77,10 +69,9 @@ function DisplaySurveys() {
     totalDocuments,
     pages,
 
+    triggerSurveyFetch,
     triggerSurveySubmission,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -88,13 +79,19 @@ function DisplaySurveys() {
     isLoading,
     loadingMessage,
   } = displaySurveysState;
+
   const {
     authState: { accessToken, roles },
   } = useAuth();
+
   const {
-    globalState: { padding, rowGap, width, height, userDocument },
+    globalState: { padding, rowGap, userDocument, themeObject },
     globalDispatch,
   } = useGlobalState();
+
+  const navigate = useNavigate();
+
+  const { showBoundary } = useErrorBoundary();
 
   /** ------------- end hooks ------------- */
 
@@ -104,12 +101,7 @@ function DisplaySurveys() {
     let isMounted = true;
     const controller = new AbortController();
 
-    async function fetchSurveys() {
-      displaySurveysDispatch({
-        type: displaySurveysAction.setIsLoading,
-        payload: true,
-      });
-
+    async function fetchSurveys(): Promise<void> {
       const url: URL = urlBuilder({
         path: `actions/outreach/survey-builder${
           roles.includes('Manager') ? '' : '/user'
@@ -138,57 +130,73 @@ function DisplaySurveys() {
         if (!isMounted) {
           return;
         }
-
-        if (response.ok) {
-          displaySurveysDispatch({
-            type: displaySurveysAction.setResponseData,
-            payload: data.resourceData,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setTotalDocuments,
-            payload: data.totalDocuments ?? totalDocuments,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setPages,
-            payload: data.pages ?? pages,
-          });
-        } else {
-          displaySurveysDispatch({
-            type: displaySurveysAction.setIsError,
-            payload: true,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setErrorMessage,
-            payload: data.message,
-          });
+        const { ok } = response;
+        if (!ok) {
+          throw new Error(data.message);
         }
+
+        displaySurveysDispatch({
+          type: displaySurveysAction.setResponseData,
+          payload: data.resourceData,
+        });
+
+        displaySurveysDispatch({
+          type: displaySurveysAction.setTotalDocuments,
+          payload: data.totalDocuments ?? totalDocuments,
+        });
+
+        displaySurveysDispatch({
+          type: displaySurveysAction.setPages,
+          payload: data.pages ?? pages,
+        });
       } catch (error: any) {
-        if (isMounted) {
-          displaySurveysDispatch({
-            type: displaySurveysAction.setIsError,
-            payload: true,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setErrorMessage,
-            payload:
-              error?.message ?? 'Unknown error occurred. Please try again.',
-          });
+        if (!isMounted || error.name === 'AbortError') {
+          return;
         }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
       } finally {
         if (isMounted) {
           displaySurveysDispatch({
             type: displaySurveysAction.setIsLoading,
             payload: false,
           });
+          displaySurveysDispatch({
+            type: displaySurveysAction.setTriggerSurveyFetch,
+            payload: false,
+          });
         }
       }
     }
 
-    if (isMounted) {
+    if (isMounted && triggerSurveyFetch) {
       fetchSurveys();
     }
 
@@ -196,6 +204,15 @@ function DisplaySurveys() {
       isMounted = false;
       controller.abort();
     };
+    // only fetch surveys when the triggerSurveyFetch is true (and initially on mount)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerSurveyFetch]);
+
+  useEffect(() => {
+    displaySurveysDispatch({
+      type: displaySurveysAction.setTriggerSurveyFetch,
+      payload: true,
+    });
   }, [
     accessToken,
     newQueryFlag,
@@ -212,11 +229,6 @@ function DisplaySurveys() {
     const controller = new AbortController();
 
     async function submitSurveyResponse() {
-      displaySurveysDispatch({
-        type: displaySurveysAction.setIsSubmitting,
-        payload: true,
-      });
-
       const { surveyId, surveyResponses, surveyTitle } = surveyToSubmit;
 
       const url: URL = urlBuilder({
@@ -234,8 +246,6 @@ function DisplaySurveys() {
       const body = JSON.stringify({
         surveyResponses: filteredSurveyResponses,
       });
-
-      console.log('body: ', body);
 
       const request: Request = new Request(url, {
         method: 'PATCH',
@@ -257,47 +267,59 @@ function DisplaySurveys() {
         if (!isMounted) {
           return;
         }
-
-        if (response.ok) {
-          const [_, userDocument] = data.resourceData;
-          globalDispatch({
-            type: globalAction.setUserDocument,
-            payload: userDocument,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setIsSuccessful,
-            payload: true,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setSuccessMessage,
-            payload: data.message,
-          });
-        } else {
-          displaySurveysDispatch({
-            type: displaySurveysAction.setIsError,
-            payload: true,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setErrorMessage,
-            payload: data.message,
-          });
+        const { ok } = response;
+        if (!ok) {
+          throw new Error(data.message);
         }
+
+        const [_, userDocument] = data.resourceData;
+        globalDispatch({
+          type: globalAction.setUserDocument,
+          payload: userDocument,
+        });
+
+        displaySurveysDispatch({
+          type: displaySurveysAction.setIsSuccessful,
+          payload: true,
+        });
+
+        displaySurveysDispatch({
+          type: displaySurveysAction.setSuccessMessage,
+          payload: data.message,
+        });
       } catch (error: any) {
-        if (isMounted) {
-          displaySurveysDispatch({
-            type: displaySurveysAction.setIsError,
-            payload: true,
-          });
-
-          displaySurveysDispatch({
-            type: displaySurveysAction.setErrorMessage,
-            payload:
-              error?.message ?? 'Unknown error occurred. Please try again.',
-          });
+        if (!isMounted || error.name === 'AbortError') {
+          return;
         }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
       } finally {
         if (isMounted) {
           displaySurveysDispatch({
@@ -338,7 +360,7 @@ function DisplaySurveys() {
 
   // separate responseData into completed and uncompleted surveys
   useEffect(() => {
-    if (!responseData) {
+    if (!responseData?.length) {
       return;
     }
 
@@ -460,8 +482,6 @@ function DisplaySurveys() {
     );
   }, [currentStepperPositions, surveySubmissions, stepperDescriptionsMap]);
 
-  // TODO: implement filtering based on survey sendTo and user's department
-
   useEffect(() => {
     logState({
       state: displaySurveysState,
@@ -492,12 +512,10 @@ function DisplaySurveys() {
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin component render bypass ------------- */
-  if (isLoading || isError || isSubmitting || isSuccessful) {
+  if (isLoading || isSubmitting || isSuccessful) {
     return (
       <CustomNotification
-        errorMessage={errorMessage}
         isLoading={isLoading}
-        isError={isError}
         isSubmitting={isSubmitting}
         isSuccessful={isSuccessful}
         loadingMessage={loadingMessage}
@@ -505,26 +523,17 @@ function DisplaySurveys() {
         submitMessage={submitMessage}
         parentDispatch={displaySurveysDispatch}
         navigateTo={{
-          errorPath: '/home',
           successPath: '/home/outreach/survey-builder/display',
         }}
       />
     );
   }
 
-  if (!uncompletedSurveys.length) {
+  if (!uncompletedSurveys.length && !isLoading) {
     return (
-      <Stack
-        w="100%"
-        p={padding}
-        style={{ backgroundColor: 'white', borderRadius: '4px' }}
-      >
-        <Title order={4} color="dark">
-          Completed surveys
-        </Title>
-        <TextWrapper creatorInfoObj={{}}>
-          Congragulations! You have completed all available surveys!
-        </TextWrapper>
+      <Stack w="100%" p={padding}>
+        <Title order={4}>Completed surveys</Title>
+        <Text>Congragulations! You have completed all available surveys!</Text>
       </Stack>
     );
   }
@@ -907,11 +916,18 @@ function DisplaySurveys() {
 
   /** ------------- begin surveys display ------------- */
 
+  const {
+    appThemeColors: { backgroundColor, borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
   const displayTotalSurveys = (
     <Group
       position="left"
       p={padding}
-      style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
+      style={{ border: borderColor, borderRadius: '4px' }}
     >
       <Text color="dark">Total surveys</Text>
       <Text color="dark">{totalDocuments}</Text>
@@ -935,7 +951,8 @@ function DisplaySurveys() {
       rowGap={rowGap}
       columnGap={rowGap}
       wrap="wrap"
-      style={{ backgroundColor: 'white', borderBottom: '1px solid #e0e0e0' }}
+      bg={backgroundColor}
+      style={{ borderBottom: borderColor }}
     >
       <Group>{displayPageNavigation}</Group>
       {displayTotalSurveys}

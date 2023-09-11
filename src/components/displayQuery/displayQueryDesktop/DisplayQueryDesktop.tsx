@@ -37,6 +37,7 @@ import {
   formatDate,
   logState,
   replaceLastCommaWithAnd,
+  returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
 import { DisplayQueryDesktopProps } from './types';
@@ -86,64 +87,23 @@ function DisplayQueryDesktop<Doc>({
   );
   const { fieldToSortBy, sortDirection } = displayQueryDesktopState;
   const {
-    globalState: {
-      width,
-      padding,
-      rowGap,
-      themeObject: { colorScheme, primaryColor, primaryShade },
-    },
+    globalState: { width, padding, rowGap, themeObject },
   } = useGlobalState();
   const {
     authState: { roles },
   } = useAuth();
 
-  const { dark, gray } = COLORS_SWATCHES;
-
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
-  const themeColor = Object.entries(COLORS_SWATCHES).find(
-    ([color, _shades]) => color === primaryColor
-  )?.[1];
-  const scrollBarColor = themeColor ? themeColor[colorShade] : gray[5];
-  const tableHeadersBgColor = colorScheme === 'light' ? gray[4] : gray[8];
-  const highlightColor = themeColor
-    ? colorScheme === 'light'
-      ? gray[3]
-      : gray[6]
-    : gray[6];
-
-  const headerBorderColor =
-    colorScheme === 'light' ? `2px solid ${gray[3]}` : `2px solid ${gray[7]}`;
-  const rowsBorderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[7]}`;
-  const backgroundColor =
-    colorScheme === 'light'
-      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-      : dark[6];
-
-  console.log('colorScheme: ', colorScheme);
-  console.log('highlightColor: ', highlightColor);
-
-  const scrollBarStyle = {
-    scrollbar: {
-      '&, &:hover': {
-        background: colorScheme === 'dark' ? dark[6] : gray[0],
-      },
-
-      '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
-        backgroundColor: scrollBarColor,
-      },
-
-      '&[data-orientation="horizontal"] .mantine-ScrollArea-thumb': {
-        backgroundColor: scrollBarColor,
-      },
+  const {
+    appThemeColors: { backgroundColor },
+    generalColors: { grayColorShade, themeColorShade },
+    scrollBarStyle,
+    tablesThemeColors: {
+      tableHeadersBgColor,
+      headerBorderColor,
+      rowsBorderColor,
+      textHighlightColor,
     },
-
-    corner: {
-      opacity: 1,
-      background: colorScheme === 'dark' ? dark[6] : gray[0],
-    },
-  };
+  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const createdUpdateRequestStatusRadioGroup =
     returnAccessibleRadioGroupInputsElements([
@@ -177,7 +137,6 @@ function DisplayQueryDesktop<Doc>({
       buttonLabel: 'Submit',
       leftIcon: <TbUpload />,
       buttonType: 'submit',
-      buttonVariant: colorScheme === 'light' ? 'subtle' : 'outline',
       semanticDescription: 'Submit request status changes',
       semanticName: 'Submit',
     },
@@ -295,18 +254,13 @@ function DisplayQueryDesktop<Doc>({
                   headerValue === '_id'
                     ? 'Document Id'.length * 10 + 50
                     : headerValue.length * 10 + 50, // rough ch plus space for sort arrows
-                backgroundColor:
-                  colorScheme === 'light' ? tableHeadersBgColor : '',
+                backgroundColor,
               };
 
               const ascendingIconColor =
                 headerValue === fieldToSortBy && sortDirection === 'asc'
-                  ? colorScheme === 'light' // on
-                    ? themeColor?.[primaryShade.light]
-                    : themeColor?.[primaryShade.dark]
-                  : colorScheme === 'light' // off
-                  ? gray[6]
-                  : gray[8];
+                  ? themeColorShade // on
+                  : grayColorShade; // off
 
               const ascendingIconWithTooltip = (
                 <Tooltip
@@ -336,12 +290,8 @@ function DisplayQueryDesktop<Doc>({
 
               const descendingIconColor =
                 headerValue === fieldToSortBy && sortDirection === 'desc'
-                  ? colorScheme === 'light' // on
-                    ? themeColor?.[primaryShade.light]
-                    : themeColor?.[primaryShade.dark]
-                  : colorScheme === 'light' // off
-                  ? gray[6]
-                  : gray[8];
+                  ? themeColorShade // on
+                  : grayColorShade; // off
 
               const descendingIconWithTooltip = (
                 <Tooltip
@@ -484,7 +434,7 @@ function DisplayQueryDesktop<Doc>({
                             <Highlight
                               highlight={formattedValue}
                               highlightStyles={{
-                                backgroundColor: highlightColor,
+                                backgroundColor: textHighlightColor,
                               }}
                             >
                               {formattedValueSliced}
@@ -677,11 +627,6 @@ function DisplayQueryDesktop<Doc>({
                                   {/* most relevant info will be read out first */}
                                   <Button
                                     aria-label={`Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`}
-                                    variant={
-                                      colorScheme === 'light'
-                                        ? 'subtle'
-                                        : 'outline'
-                                    }
                                     size="xs"
                                     onClick={() => {
                                       popoversStateDispatch({
@@ -768,8 +713,6 @@ function DisplayQueryDesktop<Doc>({
                               buttonLabel: <TbTrash />,
                               semanticDescription: `Delete form with id: ${queryResponseObjWithAddedFields._id} belonging to username: ${queryResponseObjWithAddedFields.username}`,
                               semanticName: 'Delete',
-                              buttonVariant:
-                                colorScheme === 'light' ? 'subtle' : 'outline',
                               buttonOnClick: () => {
                                 deleteFormIdDispatch({
                                   type: 'setDeleteFormId',
@@ -784,8 +727,6 @@ function DisplayQueryDesktop<Doc>({
                             },
                             {
                               buttonLabel: <IoMdOpen />,
-                              buttonVariant:
-                                colorScheme === 'light' ? 'subtle' : 'outline',
                               buttonDisabled:
                                 !fileUploadsData[objIdx]?.fileUploads.length,
                               semanticDescription: `${

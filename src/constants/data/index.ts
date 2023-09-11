@@ -338,11 +338,27 @@ const PROPERTY_DESCRIPTOR: PropertyDescriptor = {
   configurable: false,
 };
 
+type ColorsSwatches = {
+  dark: string[];
+  gray: string[];
+  red: string[];
+  pink: string[];
+  grape: string[];
+  violet: string[];
+  indigo: string[];
+  blue: string[];
+  cyan: string[];
+  teal: string[];
+  green: string[];
+  lime: string[];
+  yellow: string[];
+  orange: string[];
+};
 /**
- * Mantine uses open-color in default theme with some additions (dark). Each color has 10 shades. 0 is the lightest one and 9 is the darkest one.
- * https://yeun.github.io/open-color/
+ * Mantine uses open-color in default theme with some additions (dark). Each color has 10 shades. 0 is the lightest shade and 9 is the darkest shade.
+ * @see https://yeun.github.io/open-color/
  */
-const COLORS_SWATCHES = {
+const COLORS_SWATCHES: ColorsSwatches = {
   dark: [
     '#C1C2C5',
     '#A6A7AB',
@@ -527,3 +543,5 @@ export {
   TEXT_OVERFLOW,
   URGENCY_DATA,
 };
+
+export type { ColorsSwatches };

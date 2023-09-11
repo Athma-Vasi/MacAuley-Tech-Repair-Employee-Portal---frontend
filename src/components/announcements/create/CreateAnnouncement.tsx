@@ -373,9 +373,7 @@ function CreateAnnouncement() {
   if (isLoading || isError || isSubmitting || isSuccessful) {
     return (
       <CustomNotification
-        errorMessage={errorMessage}
         isLoading={isLoading}
-        isError={isError}
         isSubmitting={isSubmitting}
         isSuccessful={isSuccessful}
         loadingMessage={loadingMessage}
@@ -383,8 +381,7 @@ function CreateAnnouncement() {
         submitMessage={submitMessage}
         parentDispatch={createAnnouncementDispatch}
         navigateTo={{
-          errorPath: '/portal',
-          successPath: '/portal/outreach/announcement/display',
+          successPath: '/home/outreach/announcement/display',
         }}
       />
     );

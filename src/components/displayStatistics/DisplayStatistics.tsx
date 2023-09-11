@@ -14,7 +14,7 @@ import { TbChartPie3, TbChartPie4 } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { logState } from '../../utils';
+import { logState, returnThemeColors } from '../../utils';
 import { PageBuilder } from '../pageBuilder';
 import { TextWrapper } from '../wrappers';
 import { ResponsivePieChart } from './responsivePieChart';
@@ -24,6 +24,7 @@ import {
   initialDisplayStatisticsState,
 } from './state';
 import { ChartKind, DisplayStatisticsProps, PieChartData } from './types';
+import { COLORS_SWATCHES } from '../../constants/data';
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(
@@ -40,7 +41,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     modalPage,
   } = displayStatisticsState;
   const {
-    globalState: { width, height, padding, rowGap },
+    globalState: { width, padding, rowGap, themeObject },
   } = useGlobalState();
 
   const [
@@ -232,49 +233,36 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     });
   }, [displayStatisticsState]);
 
-  /** ------------- begin component render bypass ------------- */
+  const {
+    appThemeColors: { backgroundColor, borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  /** ------------- begin conditional render ------------- */
   if (surveys.length === 0) {
     return (
       <Stack
         w="100%"
         p={padding}
         style={{
-          borderBottom: '1px solid #e0e0e0',
+          borderBottom: borderColor,
         }}
       >
-        <Title order={4} color="dark">
-          Completed surveys
-        </Title>
-        <TextWrapper creatorInfoObj={{}}>
-          Complete surveys to view statistics!
-        </TextWrapper>
+        <Title order={4}>Completed surveys</Title>
+        <Text>Complete surveys to view statistics!</Text>
       </Stack>
     );
   }
 
-  /** ------------- end component render bypass ------------- */
+  /** ------------- end conditional render ------------- */
 
   /** ------------- begin input creators ------------- */
 
   // loop through completed surveys and create cards to display statistics modal
   const completedSurveysCards = surveys.map((survey, idx) => {
     const { surveyTitle, _id } = survey;
-
-    // const createdViewModalButton = returnAccessibleButtonElements([
-    //   {
-    //     buttonLabel: 'View statistics',
-    //     semanticDescription: 'View statistics for this completed survey',
-    //     semanticName: 'View statistics',
-    //     buttonOnClick: () => {
-    //       displayStatisticsDispatch({
-    //         type: displayStatisticsAction.setCurrentSelectedSurvey,
-    //         payload: survey,
-    //       });
-    //       openStatisticsModal();
-    //     },
-    //     leftIcon: <TbChartPie3 />,
-    //   },
-    // ]);
 
     const createdCard = (
       <UnstyledButton
@@ -294,10 +282,6 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
           withBorder
           key={`${_id}-${idx}-${surveyTitle}`}
         >
-          {/* <Group position="apart" w="100%">
-            <TextWrapper creatorInfoObj={{}}>{surveyTitle}</TextWrapper>
-            {createdViewModalButton}
-          </Group> */}
           <Group position="apart" w="100%">
             <TbChartPie4 color="grey" />
             <TextWrapper creatorInfoObj={{}}>{surveyTitle}</TextWrapper>

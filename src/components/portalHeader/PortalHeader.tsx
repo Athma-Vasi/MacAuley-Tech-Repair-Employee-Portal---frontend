@@ -18,6 +18,7 @@ import { TextWrapper } from '../wrappers';
 import { LOGOUT_URL } from './constants';
 import ProfileInfo from './profileInfo/ProfileInfo';
 import { LogoutResponse, PortalHeaderProps } from './types';
+import { useEffect } from 'react';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const {
@@ -27,6 +28,12 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const {
     globalState: { themeObject, width },
   } = useGlobalState();
+
+  useEffect(() => {
+    if (!accessToken) {
+      navigate('/login');
+    }
+  }, [accessToken, navigate]);
 
   async function handleLogoutFormSubmit(
     event: React.FormEvent<HTMLFormElement>

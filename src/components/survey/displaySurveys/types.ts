@@ -46,10 +46,9 @@ type DisplaySurveysState = {
   totalDocuments: number;
   pages: number;
 
+  triggerSurveyFetch: boolean;
   triggerSurveySubmission: boolean;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -77,10 +76,9 @@ type DisplaySurveysAction = {
   setTotalDocuments: 'setTotalDocuments';
   setPages: 'setPages';
 
+  setTriggerSurveyFetch: 'setTriggerSurveyFetch';
   setTriggerSurveySubmission: 'setTriggerSurveySubmission';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -119,7 +117,6 @@ type DisplaySurveysDispatch =
       type:
         | DisplaySurveysAction['setQueryBuilderString']
         | DisplaySurveysAction['setPageQueryString']
-        | DisplaySurveysAction['setErrorMessage']
         | DisplaySurveysAction['setSubmitMessage']
         | DisplaySurveysAction['setSuccessMessage']
         | DisplaySurveysAction['setLoadingMessage'];
@@ -128,8 +125,8 @@ type DisplaySurveysDispatch =
   | {
       type:
         | DisplaySurveysAction['setNewQueryFlag']
+        | DisplaySurveysAction['setTriggerSurveyFetch']
         | DisplaySurveysAction['setTriggerSurveySubmission']
-        | DisplaySurveysAction['setIsError']
         | DisplaySurveysAction['setIsSubmitting']
         | DisplaySurveysAction['setIsSuccessful']
         | DisplaySurveysAction['setIsLoading'];

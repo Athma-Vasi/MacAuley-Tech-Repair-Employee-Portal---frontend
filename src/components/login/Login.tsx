@@ -189,17 +189,14 @@ function Login() {
     return (
       <Flex w="100%" h="100vh" align="center" justify="center" p={padding}>
         <CustomNotification
-          isError={isError}
           isLoading={isLoading}
           isSubmitting={isSubmitting}
           isSuccessful={isSuccessful}
-          errorMessage={errorMessage}
           loadingMessage={loadingMessage}
           submitMessage={submitMessage}
           successMessage={successMessage}
           parentDispatch={loginDispatch}
           navigateTo={{
-            errorPath: '/',
             successPath: '/home',
           }}
         />

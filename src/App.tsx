@@ -75,16 +75,46 @@ function App() {
       <CustomFonts />
       <Routes>
         {/* these are public routes */}
-        <Route path="/" element={<PublicLayout />}>
-          <Route index element={<Login />} />
-          <Route path="login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+              <Suspense fallback={<div>Generic Loading message...</div>}>
+                <PublicLayout />
+              </Suspense>
+            </ErrorBoundary>
+          }
+        >
+          <Route
+            index
+            element={
+              <ErrorBoundary
+                fallback={<ErrorFallback errorState={errorState} />}
+              >
+                <Suspense fallback={<div>Generic Loading message...</div>}>
+                  <Login />
+                </Suspense>
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="login"
+            element={
+              <ErrorBoundary
+                fallback={<ErrorFallback errorState={errorState} />}
+              >
+                <Suspense fallback={<div>Generic Loading message...</div>}>
+                  <Login />
+                </Suspense>
+              </ErrorBoundary>
+            }
+          />
           <Route path="register" element={<PortalLayout />}>
             <Route index element={<Register />} />
           </Route>
           {/* TEST ROUTES */}
-          {/* announcement */}
-          <Route path="announcement" element={<PortalLayout />}>
-            <Route index element={<CreateAnnouncement />} />
+          <Route path="error">
+            <Route index element={<ErrorFallback errorState={errorState} />} />
           </Route>
 
           {/* create leave request */}
@@ -96,24 +126,24 @@ function App() {
         {/* these are protected routes */}
         {/* all roles are allowed to view the protected home page */}
         {/* 
-        <Route
-          element={
-            <RequireAuth allowedRoles={['Employee', 'Admin', 'Manager']} />
-          }
-        >
-          <Route path="portal" element={<PortalLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
+      <Route
+        element={
+          <RequireAuth allowedRoles={['Employee', 'Admin', 'Manager']} />
+        }
+      >
+        <Route path="portal" element={<PortalLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="dashboard" element={<Dashboard />} />
 
-            <Route path="users">
-              <Route index element={<UsersList />} />
-            </Route>
+          <Route path="users">
+            <Route index element={<UsersList />} />
+          </Route>
 
-            <Route path="notes">
-              <Route index element={<NotesList />} />
-            </Route>
-          </Route>          
-        </Route> */}
+          <Route path="notes">
+            <Route index element={<NotesList />} />
+          </Route>
+        </Route>          
+      </Route> */}
 
         {/* DEV TEST ROUTES */}
         <Route path="home" element={<PortalLayout />}>
@@ -244,14 +274,37 @@ function App() {
             <Route path="survey-builder">
               <Route index element={<DisplaySurveys />} />
               <Route path="create" element={<SurveyBuilder />} />
-              <Route path="display" element={<DisplaySurveys />} />
+              <Route
+                path="display"
+                element={
+                  <ErrorBoundary
+                    fallback={<ErrorFallback errorState={errorState} />}
+                  >
+                    <Suspense fallback={<div>Generic Loading message...</div>}>
+                      <DisplaySurveys />
+                    </Suspense>
+                  </ErrorBoundary>
+                }
+              />
             </Route>
 
             {/* announcements */}
             <Route path="announcement">
               <Route index element={<DisplayAnnouncements />} />
               <Route path="create" element={<CreateAnnouncement />} />
-              <Route path="display" element={<DisplayAnnouncements />} />
+              <Route
+                path="display"
+                element={
+                  <ErrorBoundary
+                    fallback={<ErrorFallback errorState={errorState} />}
+                  >
+                    <Suspense fallback={<div>Generic Loading message...</div>}>
+                      <DisplayAnnouncements />
+                    </Suspense>
+                  </ErrorBoundary>
+                }
+              />
+
               <Route
                 path="display/:announcementId"
                 element={<DisplayAnnouncement />}

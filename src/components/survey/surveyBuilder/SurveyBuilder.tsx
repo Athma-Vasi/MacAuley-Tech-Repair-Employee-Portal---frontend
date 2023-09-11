@@ -696,9 +696,7 @@ function SurveyBuilder() {
   if (isLoading || isError || isSubmitting || isSuccessful) {
     return (
       <CustomNotification
-        errorMessage={errorMessage}
         isLoading={isLoading}
-        isError={isError}
         isSubmitting={isSubmitting}
         isSuccessful={isSuccessful}
         loadingMessage={loadingMessage}
@@ -706,8 +704,7 @@ function SurveyBuilder() {
         submitMessage={submitMessage}
         parentDispatch={surveyBuilderDispatch}
         navigateTo={{
-          errorPath: '/portal',
-          successPath: '/portal/outreach/survey-builder/display',
+          successPath: '/home/outreach/survey-builder/display',
         }}
       />
     );

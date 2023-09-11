@@ -31,7 +31,12 @@ import {
   SelectInputData,
   StoreLocation,
 } from '../../types';
-import { groupByField, logState, urlBuilder } from '../../utils';
+import {
+  groupByField,
+  logState,
+  returnThemeColors,
+  urlBuilder,
+} from '../../utils';
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
 import { ChartsGraphsControlsStacker } from '../displayStatistics/responsivePieChart/utils';
 import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
@@ -109,13 +114,9 @@ function Directory() {
 
   const {
     globalDispatch,
-    globalState: {
-      padding,
-      rowGap,
-      width,
-      themeObject: { colorScheme, primaryColor, primaryShade },
-    },
+    globalState: { padding, rowGap, width, themeObject },
   } = useGlobalState();
+  const { colorScheme } = themeObject;
 
   const { showBoundary } = useErrorBoundary();
 
@@ -128,15 +129,6 @@ function Directory() {
     const controller = new AbortController();
 
     async function fetchUsers(): Promise<void> {
-      directoryDispatch({
-        type: directoryAction.setIsLoading,
-        payload: true,
-      });
-      directoryDispatch({
-        type: directoryAction.setLoadingMessage,
-        payload: 'Please wait. Fetching directory ...',
-      });
-
       const url: URL = urlBuilder({
         path: 'user/directory',
       });
@@ -201,7 +193,7 @@ function Directory() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/portal');
+              navigate('/home/directory');
 
               globalDispatch({
                 type: globalAction.setErrorState,
@@ -281,22 +273,21 @@ function Directory() {
   }, []);
 
   // ┏━ begin defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  const { dark, gray } = COLORS_SWATCHES;
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
-  const themeColor = Object.entries(COLORS_SWATCHES).find(
-    ([color, _shades]) => color === primaryColor
-  )?.[1];
-  const color = colorScheme === 'light' ? gray[8] : gray[5];
-  const backgroundColor =
-    colorScheme === 'light'
-      ? // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-        '#f5f5f5'
-      : dark[6];
 
-  const borderColor =
-    colorScheme === 'light' ? `1px solid ${dark[1]}` : `1px solid ${gray[8]}`;
-  const strokeColor = colorScheme === 'light' ? dark[5] : gray[7];
+  const {
+    directoryGraphThemeColors: {
+      nodeBackgroundColor,
+      nodeBorderColor,
+      nodeTextColor,
+      edgeStrokeColor,
+    },
+    generalColors: { lightSchemeGray },
+    scrollBarStyle,
+    tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
 
   const nodePosition = { x: 0, y: 0 };
   const nodeDimensions = { width: 371, height: 267 };
@@ -308,8 +299,8 @@ function Directory() {
     // defaults shared across all nodes
     style: {
       ...nodeDimensions,
-      background: backgroundColor,
-      border: borderColor,
+      backgroundColor: nodeBackgroundColor,
+      border: nodeBorderColor,
     },
   };
   const edgeDefaults: Edge = {
@@ -324,13 +315,13 @@ function Directory() {
     labelBgBorderRadius: 4,
     labelBgStyle: { fill: 'white' },
     labelStyle: { fill: 'black', fontWeight: 700 },
-    style: { stroke: strokeColor },
+    style: { stroke: edgeStrokeColor },
   };
 
   const profileCardStyles: CSSProperties = {
-    backgroundColor: backgroundColor,
-    border: borderColor,
-    color,
+    backgroundColor: nodeBackgroundColor,
+    border: nodeBorderColor,
+    color: nodeTextColor,
   };
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end defaults ━┛
@@ -1937,13 +1928,12 @@ function Directory() {
       : width < 1192
       ? '500px'
       : `${width * 0.15}px`;
-  const sliderLabelColor = gray[2];
 
   const dagreNodeSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'node separation',
     label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+      <Text style={{ color: lightSchemeGray }}>{value} px</Text>
     ),
     max: 300,
     min: 25,
@@ -1963,7 +1953,7 @@ function Directory() {
     kind: 'slider',
     ariaLabel: 'rank separation',
     label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+      <Text style={{ color: lightSchemeGray }}>{value} px</Text>
     ),
     max: 300,
     min: 25,
@@ -1982,7 +1972,7 @@ function Directory() {
   const dagreMinLenSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'min length',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => <Text style={{ color: lightSchemeGray }}>{value}</Text>,
     max: 10,
     min: 1,
     step: 1,
@@ -2074,30 +2064,6 @@ function Directory() {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators ━┛
 
   // ┏━ begin input display ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  const scrollBarColor = themeColor ? themeColor[colorShade] : gray[5];
-  const sectionHeadersBgColor = colorScheme === 'light' ? gray[4] : gray[8];
-
-  const scrollBarStyle = {
-    scrollbar: {
-      '&, &:hover': {
-        background: colorScheme === 'dark' ? dark[6] : gray[0],
-      },
-
-      '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
-        backgroundColor: scrollBarColor,
-      },
-
-      '&[data-orientation="horizontal"] .mantine-ScrollArea-thumb': {
-        backgroundColor: scrollBarColor,
-      },
-    },
-
-    corner: {
-      opacity: 1,
-      background: colorScheme === 'dark' ? dark[6] : gray[0],
-    },
-  };
 
   // filter section
   const displayFilterGraphsText = (

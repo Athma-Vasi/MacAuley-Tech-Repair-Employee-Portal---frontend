@@ -1,6 +1,9 @@
+import { MantineThemeOverride } from '@mantine/core';
 import { constants } from 'zlib';
 
 import { ComponentQueryData } from '../components/queryBuilder';
+import { ColorsSwatches } from '../constants/data';
+import { ThemeObject } from '../context/globalProvider/types';
 import type { Country, PostalCode, QueryResponseData } from '../types';
 
 function returnEmailValidationText(email: string): string {
@@ -1387,6 +1390,126 @@ function groupByField<
   );
 }
 
+/**
+ * @desc Consolidates all the theme colors/strings creation logic used throughout into a single creator function (DRY).
+ * @param {ThemeObject} themeObject - The theme object (from GlobalState)
+ * @param {ColorsSwatches} colorsSwatches - The colors swatches object: implements the Open-Color color scheme. @see https://yeun.github.io/open-color/
+ * @returns An object containing the theme colors.
+ */
+function returnThemeColors({
+  themeObject,
+  colorsSwatches,
+}: {
+  themeObject: ThemeObject;
+  colorsSwatches: ColorsSwatches;
+}) {
+  const { colorScheme, primaryColor, primaryShade } = themeObject;
+  const { dark, gray } = colorsSwatches;
+
+  const lightSchemeGray = gray[3];
+  const darkSchemeGray = gray[8];
+
+  const colorShade =
+    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const themeColorShades = Object.entries(colorsSwatches).find(
+    ([color, _shades]) => color === primaryColor
+  )?.[1];
+  const themeColorShade = themeColorShades
+    ? themeColorShades[colorShade]
+    : gray[5];
+  const grayColorShade = gray[colorShade];
+
+  const generalColors = {
+    lightSchemeGray,
+    darkSchemeGray,
+    themeColorShade,
+    grayColorShade,
+  };
+
+  // app colors
+  const borderColor =
+    colorScheme === 'light'
+      ? `1px solid ${lightSchemeGray}`
+      : `1px solid ${darkSchemeGray}`;
+  const backgroundColor =
+    colorScheme === 'light'
+      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+      : dark[6];
+  const appThemeColors = {
+    borderColor,
+    backgroundColor,
+  };
+
+  // for table display
+  const tableHeadersBgColor =
+    colorScheme === 'light' ? gray[4] : darkSchemeGray;
+  const headerBorderColor =
+    colorScheme === 'light'
+      ? `2px solid ${lightSchemeGray}`
+      : `2px solid ${darkSchemeGray}`;
+  const rowsBorderColor =
+    colorScheme === 'light'
+      ? `1px solid ${lightSchemeGray}`
+      : `1px solid ${darkSchemeGray}`;
+  const textHighlightColor =
+    colorScheme === 'light' ? lightSchemeGray : gray[6];
+  const tablesThemeColors = {
+    tableHeadersBgColor,
+    headerBorderColor,
+    rowsBorderColor,
+    textHighlightColor,
+  };
+
+  // directory graph colors
+  const edgeStrokeColor = colorScheme === 'light' ? dark[5] : darkSchemeGray;
+  const nodeBackgroundColor =
+    colorScheme === 'light'
+      ? // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+        '#f5f5f5'
+      : dark[6];
+  const nodeBorderColor =
+    colorScheme === 'light'
+      ? `1px solid ${dark[1]}`
+      : `1px solid ${darkSchemeGray}`;
+  const nodeTextColor = colorScheme === 'light' ? darkSchemeGray : gray[5];
+  const directoryGraphThemeColors = {
+    edgeStrokeColor,
+    nodeBackgroundColor,
+    nodeBorderColor,
+    nodeTextColor,
+  };
+
+  // for ScrollArea styles
+  const scrollBarStyle = {
+    scrollbar: {
+      '&, &:hover': {
+        background: colorScheme === 'dark' ? dark[6] : gray[0],
+      },
+
+      '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
+        backgroundColor: themeColorShade,
+      },
+
+      '&[data-orientation="horizontal"] .mantine-ScrollArea-thumb': {
+        backgroundColor: themeColorShade,
+      },
+    },
+
+    corner: {
+      opacity: 1,
+      background: colorScheme === 'dark' ? dark[6] : gray[0],
+    },
+  };
+
+  return {
+    appThemeColors,
+    directoryGraphThemeColors,
+    generalColors,
+    scrollBarStyle,
+    tablesThemeColors,
+  };
+}
+
 export {
   addFieldsToObject,
   commentIdsTreeOpsIterative,
@@ -1416,6 +1539,7 @@ export {
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
   returnSerialIdValidationText,
+  returnThemeColors,
   returnTimeRailwayValidationText,
   returnUrlValidationText,
   returnUsernameRegexValidationText,

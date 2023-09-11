@@ -1,8 +1,10 @@
 import {
   ColorInput,
+  Divider,
   Grid,
   Group,
   ScrollArea,
+  Space,
   Stack,
   Switch,
   Text,
@@ -1937,29 +1939,48 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     </Stack>
   );
 
+  const pieChartControlsStack = (
+    <Stack w="100%">
+      {displayBaseSection}
+      {displayStyleSection}
+      {displayArcLabelsSection}
+      {displayArcLinkLabelsSection}
+      {displayInteractivitySection}
+      {displayMotionSection}
+      {displayMarginSection}
+      {displayLegendSection}
+    </Stack>
+  );
+
   /** pie chart controls */
   const displayPieChartControls = (
-    <ScrollArea type="auto" styles={() => scrollBarStyle}>
-      <Grid
-        columns={1}
-        h={width < 1192 ? '38vh' : '70vh'}
-        style={{
-          borderRight: borderColor,
-          borderBottom: width < 1192 ? borderColor : '',
-        }}
-        py={padding}
-      >
-        <Grid.Col span={1}>{displayBaseSection}</Grid.Col>
-        <Grid.Col span={1}>{displayStyleSection}</Grid.Col>
-        <Grid.Col span={1}>{displayArcLabelsSection}</Grid.Col>
-        <Grid.Col span={1}>{displayArcLinkLabelsSection}</Grid.Col>
-        <Grid.Col span={1}>{displayInteractivitySection}</Grid.Col>
-        <Grid.Col span={1}>{displayMotionSection}</Grid.Col>
-        <Grid.Col span={1}>{displayMarginSection}</Grid.Col>
-        <Grid.Col span={1}>{displayLegendSection}</Grid.Col>
+    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
+      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
+        <Grid.Col span={1}>{pieChartControlsStack}</Grid.Col>
       </Grid>
     </ScrollArea>
   );
+
+  const chartPatternDefs = [
+    {
+      id: 'dots',
+      type: 'patternDots',
+      background: 'inherit',
+      color: 'rgba(255, 255, 255, 0.3)',
+      size: 4,
+      padding: 1,
+      stagger: true,
+    },
+    {
+      id: 'lines',
+      type: 'patternLines',
+      background: 'inherit',
+      color: 'rgba(255, 255, 255, 0.3)',
+      rotation: -45,
+      lineWidth: 6,
+      spacing: 10,
+    },
+  ];
 
   const displayResponsivePie = (
     <ResponsivePie
@@ -2002,26 +2023,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       animate={animate}
       motionConfig={motionConfig}
       transitionMode={transitionMode}
-      defs={[
-        {
-          id: 'dots',
-          type: 'patternDots',
-          background: 'inherit',
-          color: 'rgba(255, 255, 255, 0.3)',
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: 'lines',
-          type: 'patternLines',
-          background: 'inherit',
-          color: 'rgba(255, 255, 255, 0.3)',
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
+      defs={chartPatternDefs}
       fill={enableFillPatterns ? fillPatterns : []}
       legends={
         enableLegend
@@ -2056,11 +2058,23 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayResponsivePieChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 12} w="100%" h="70vh">
-      <Grid.Col span={width < 1192 ? 1 : 4} h={width < 1192 ? '38vh' : '70vh'}>
+    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
+      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
         {displayPieChartControls}
       </Grid.Col>
-      <Grid.Col span={width < 1192 ? 1 : 8} h="100%">
+
+      {/* because only column spacing is allowed in grid */}
+      <Grid.Col span={1}>
+        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
+        <Divider
+          orientation={width < 1192 ? 'horizontal' : 'vertical'}
+          size="sm"
+          w="100%"
+          h="100%"
+        />
+      </Grid.Col>
+
+      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
         {displayResponsivePie}
       </Grid.Col>
     </Grid>
