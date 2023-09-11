@@ -139,7 +139,7 @@ function Dashboard() {
 
   return (
     <Group w="100%" position="center">
-      <Text color="dark">{`Access token is ${
+      <Text>{`Access token is ${
         accessToken ? 'present' : 'not present'
       }`}</Text>
     </Group>

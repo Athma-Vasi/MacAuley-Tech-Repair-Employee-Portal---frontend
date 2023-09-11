@@ -1,7 +1,9 @@
-import { Flex, useMantineTheme } from '@mantine/core';
+import { Flex } from '@mantine/core';
 import { CSSProperties, ReactNode } from 'react';
 
+import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
+import { returnThemeColors } from '../../utils';
 
 type FormLayoutWrapperProps = {
   children?: ReactNode;
@@ -11,17 +13,19 @@ type FormLayoutWrapperProps = {
 
 function FormLayoutWrapper({
   children,
-  direction,
+  direction = 'column',
   style = {},
 }: FormLayoutWrapperProps): JSX.Element {
   const {
-    globalState: {
-      themeObject: { colorScheme },
-      rowGap,
-      padding,
-    },
+    globalState: { themeObject, rowGap, padding },
   } = useGlobalState();
-  const { colors } = useMantineTheme();
+
+  const {
+    appThemeColors: { borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   return (
     <Flex
@@ -34,10 +38,7 @@ function FormLayoutWrapper({
       columnGap={rowGap}
       style={{
         ...style,
-        border:
-          colorScheme === 'light'
-            ? `1px solid ${colors.gray[3]}`
-            : `1px solid ${colors.gray[8]}`,
+        border: borderColor,
         borderRadius: 4,
       }}
     >

@@ -6,12 +6,9 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import CustomFonts from './components/customFonts/CustomFonts';
-
 import ErrorFallback from './components/errorFallback/ErrorFallback';
-
 import { useAuth } from './hooks';
 import { useGlobalState } from './hooks/useGlobalState';
-import { createEvent } from '@testing-library/react';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const PublicLayout = lazy(
@@ -133,11 +130,6 @@ function App() {
   const {
     globalState: { themeObject, errorState },
   } = useGlobalState();
-
-  const {
-    authState: { errorMessage },
-  } = useAuth();
-  const navigate = useNavigate();
 
   // @desc   the public facing page
   // @route  /

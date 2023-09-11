@@ -1404,7 +1404,7 @@ function returnThemeColors({
   colorsSwatches: ColorsSwatches;
 }) {
   const { colorScheme, primaryColor, primaryShade } = themeObject;
-  const { dark, gray } = colorsSwatches;
+  const { dark, gray, red, green } = colorsSwatches;
 
   const lightSchemeGray = gray[3];
   const darkSchemeGray = gray[8];
@@ -1417,13 +1417,18 @@ function returnThemeColors({
   const themeColorShade = themeColorShades
     ? themeColorShades[colorShade]
     : gray[5];
+  // all color shades
   const grayColorShade = gray[colorShade];
+  const redColorShade = red[colorShade];
+  const greenColorShade = green[colorShade];
 
   const generalColors = {
     lightSchemeGray,
     darkSchemeGray,
     themeColorShade,
     grayColorShade,
+    redColorShade,
+    greenColorShade,
   };
 
   // app colors
@@ -1441,12 +1446,12 @@ function returnThemeColors({
   };
 
   // for table display
-  const tableHeadersBgColor =
-    colorScheme === 'light' ? gray[4] : darkSchemeGray;
+  const tableHeadersBgColor = colorScheme === 'light' ? gray[4] : gray[8];
+  const headersIconColor = colorScheme === 'light' ? gray[5] : gray[7];
   const headerBorderColor =
     colorScheme === 'light'
       ? `2px solid ${lightSchemeGray}`
-      : `2px solid ${darkSchemeGray}`;
+      : `2px solid ${gray[7]}`;
   const rowsBorderColor =
     colorScheme === 'light'
       ? `1px solid ${lightSchemeGray}`
@@ -1456,6 +1461,7 @@ function returnThemeColors({
   const tablesThemeColors = {
     tableHeadersBgColor,
     headerBorderColor,
+    headersIconColor,
     rowsBorderColor,
     textHighlightColor,
   };

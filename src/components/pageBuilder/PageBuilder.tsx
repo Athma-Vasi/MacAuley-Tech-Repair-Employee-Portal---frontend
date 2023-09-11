@@ -1,8 +1,6 @@
 import { Flex, Pagination } from '@mantine/core';
 import { CSSProperties, useEffect, useState } from 'react';
 
-import { useGlobalState } from '../../hooks';
-
 type PageBuilderProps = {
   style?: CSSProperties;
   setPageQueryString?: 'setPageQueryString';
@@ -66,13 +64,7 @@ function PageBuilder({
   }, [resetPage]);
 
   return (
-    <Flex
-      w="100%"
-      align="center"
-      justify="center"
-      // p={padding}
-      // style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
-    >
+    <Flex w="100%" align="center" justify="center">
       <Pagination
         size="sm"
         value={page}

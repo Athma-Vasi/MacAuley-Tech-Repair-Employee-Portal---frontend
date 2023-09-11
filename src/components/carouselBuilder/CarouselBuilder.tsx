@@ -7,6 +7,7 @@ import { TbArrowLeft, TbArrowRight } from 'react-icons/tb';
 import { returnAccessibleButtonElements } from '../../jsxCreators';
 import { useGlobalState } from '../../hooks';
 import { COLORS_SWATCHES } from '../../constants/data';
+import { returnThemeColors } from '../../utils';
 
 function CarouselBuilder({
   nodeDimensions: { width: slideWidth, height: slideHeight },
@@ -16,10 +17,7 @@ function CarouselBuilder({
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
   const {
-    globalState: {
-      padding,
-      themeObject: { colorScheme },
-    },
+    globalState: { padding, themeObject },
   } = useGlobalState();
 
   const carouselWrapperWidth = slideWidth - 22;
@@ -55,12 +53,12 @@ function CarouselBuilder({
       rightControlIconButtonCreatorInfo,
     ]);
 
-  const { dark } = COLORS_SWATCHES;
-  const backgroundColor =
-    colorScheme === 'light'
-      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-      : // '#f5f5f5'
-        dark[6];
+  const {
+    appThemeColors: { backgroundColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   const displayCarouselWithSlides = (
     <Flex

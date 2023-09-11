@@ -100,6 +100,7 @@ function DisplayQueryDesktop<Doc>({
     tablesThemeColors: {
       tableHeadersBgColor,
       headerBorderColor,
+      headersIconColor,
       rowsBorderColor,
       textHighlightColor,
     },
@@ -254,13 +255,13 @@ function DisplayQueryDesktop<Doc>({
                   headerValue === '_id'
                     ? 'Document Id'.length * 10 + 50
                     : headerValue.length * 10 + 50, // rough ch plus space for sort arrows
-                backgroundColor,
+                backgroundColor: tableHeadersBgColor,
               };
 
               const ascendingIconColor =
                 headerValue === fieldToSortBy && sortDirection === 'asc'
                   ? themeColorShade // on
-                  : grayColorShade; // off
+                  : headersIconColor; // off
 
               const ascendingIconWithTooltip = (
                 <Tooltip
@@ -291,7 +292,7 @@ function DisplayQueryDesktop<Doc>({
               const descendingIconColor =
                 headerValue === fieldToSortBy && sortDirection === 'desc'
                   ? themeColorShade // on
-                  : grayColorShade; // off
+                  : headersIconColor; // off
 
               const descendingIconWithTooltip = (
                 <Tooltip

@@ -14,7 +14,7 @@ import { useGlobalState } from '../../hooks/useGlobalState';
 import { PortalFooter } from '../portalFooter';
 import { PortalHeader } from '../portalHeader';
 import { PortalNavbar } from '../portalNavbar';
-import { splitCamelCase } from '../../utils';
+import { returnThemeColors, splitCamelCase } from '../../utils';
 import { TbArrowRight, TbArrowRightBar } from 'react-icons/tb';
 
 import { useAuth } from '../../hooks';
@@ -24,11 +24,7 @@ import { BreadcrumbsBuilder } from '../breadcrumbsBuilder/BreadcrumbsBuilder';
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);
   const {
-    globalState: {
-      scrollYDirection,
-      padding,
-      themeObject: { colorScheme },
-    },
+    globalState: { scrollYDirection, padding, themeObject },
   } = useGlobalState();
 
   const {
@@ -36,13 +32,13 @@ function PortalLayout() {
   } = useAuth();
 
   const location = useLocation();
-  console.log('location in PortalLayout: ', location);
 
-  const { dark } = COLORS_SWATCHES;
-  const backgroundColor =
-    colorScheme === 'light'
-      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-      : dark[6];
+  const {
+    appThemeColors: { backgroundColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   const displayBreadcrumbs = (
     <Group w="100%" p={padding} bg={backgroundColor}>

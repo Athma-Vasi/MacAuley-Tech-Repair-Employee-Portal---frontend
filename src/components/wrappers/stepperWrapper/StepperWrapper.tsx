@@ -18,11 +18,12 @@ import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
 import { useGlobalState } from '../../../hooks';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
-import { replaceLastCommaWithAnd } from '../../../utils';
+import { replaceLastCommaWithAnd, returnThemeColors } from '../../../utils';
 import { AccessibleButtonCreatorInfo } from '../ButtonWrapper';
 import { TextWrapper } from '../TextWrapper';
 import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
+import { COLORS_SWATCHES } from '../../../constants/data';
 function StepperWrapper({
   allowNextStepsSelect = false,
   children,
@@ -37,16 +38,9 @@ function StepperWrapper({
   customWidth,
 }: StepperWrapperProps) {
   const {
-    globalState: {
-      width,
-      themeObject: { colorScheme },
-      rowGap,
-      padding,
-    },
+    globalState: { width, themeObject, rowGap, padding },
   } = useGlobalState();
   const stepperRef = useRef<HTMLButtonElement>(null);
-
-  const { colors } = useMantineTheme();
 
   // sets focus on current step on each form page, for screen reader accessibility
   useEffect(() => {
@@ -181,6 +175,14 @@ function StepperWrapper({
     ? (width - 300) * 0.85
     : 900 - 40;
 
+  const {
+    appThemeColors: { backgroundColor, borderColor },
+    generalColors: { greenColorShade, redColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
   return (
     <Flex
       direction="column"
@@ -188,11 +190,7 @@ function StepperWrapper({
       justify="flex-start"
       rowGap={rowGap}
       w="100%"
-      bg={
-        colorScheme === 'light'
-          ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-          : colors.dark[6]
-      }
+      bg={backgroundColor}
       p={padding}
       h="100%"
     >
@@ -224,11 +222,7 @@ function StepperWrapper({
         size="sm"
         style={{
           borderRadius: '4px',
-          border:
-            colorScheme === 'light'
-              ? `1px solid ${colors.gray[3]}`
-              : `1px solid ${colors.gray[8]}`, // #303030
-          // border: '1px solid teal',
+          border: borderColor,
         }}
       >
         {descriptionObjectsArray.map((value, index) => {
@@ -272,23 +266,18 @@ function StepperWrapper({
             direction="column"
             align="center"
             justify="center"
-            rowGap={width < 480 ? 'sm' : 'md'}
+            rowGap={rowGap}
             w="100%"
             style={{
-              borderRadius: '5px',
-              border:
-                colorScheme === 'light'
-                  ? `1px solid ${colors.gray[3]}`
-                  : `1px solid ${colors.gray[8]}`,
+              borderRadius: 4,
+              border: borderColor,
             }}
-            bg={
-              colorScheme === 'light'
-                ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-                : colors.dark[6]
-            }
+            bg={backgroundColor}
             p={padding}
           >
-            <Text color={stepsInError.size === 0 ? 'green' : 'red'}>
+            <Text
+              color={stepsInError.size === 0 ? greenColorShade : redColorShade}
+            >
               {stepsInError.size === 0 ? successMessage : errorMessageWithAnd}
             </Text>
           </Flex>
@@ -311,11 +300,8 @@ function StepperWrapper({
           p={padding}
           w="100%"
           style={{
-            borderRadius: '5px',
-            border:
-              colorScheme === 'light'
-                ? `1px solid ${colors.gray[3]}`
-                : `1px solid ${colors.gray[8]}`,
+            borderRadius: 4,
+            border: borderColor,
           }}
         >
           {/* prev button */}
