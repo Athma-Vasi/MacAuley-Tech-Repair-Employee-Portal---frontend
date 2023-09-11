@@ -1,24 +1,10 @@
 import { Flex, Modal, Text, Title } from '@mantine/core';
 import { Group, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import {
-  ChangeEvent,
-  Fragment,
-  MouseEvent,
-  useEffect,
-  useReducer,
-  useRef,
-} from 'react';
-import {
-  TbChartPie,
-  TbChartPie2,
-  TbChartPie3,
-  TbChartPie4,
-  TbEye,
-  TbHelp,
-  TbPlus,
-  TbUpload,
-} from 'react-icons/tb';
+import { InvalidTokenError } from 'jwt-decode';
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
+import { TbChartPie4, TbEye, TbHelp, TbPlus, TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -26,25 +12,20 @@ import {
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
+  AccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleButtonElements,
-  returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleDateTimeElements,
   returnAccessibleDynamicRadioGroupInputsElements,
   returnAccessibleDynamicTextInputElements,
-  AccessibleErrorValidTextElements,
-  AccessibleErrorValidTextElementsForDynamicInputs,
-  returnAccessibleRadioGroupInputsElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import {
-  CheckBoxMultipleData,
-  RadioGroupInputData,
-  ResourceRequestServerResponse,
-} from '../../../types';
+import { ResourceRequestServerResponse } from '../../../types';
 import {
   addFieldsToObject,
   logState,
@@ -53,26 +34,27 @@ import {
   urlBuilder,
 } from '../../../utils';
 import { CustomNotification } from '../../customNotification';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
-  AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-  DescriptionObjectsArray,
   FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
 import {
-  SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
   SURVEY_BUILDER_INPUT_HTML_DATA,
   SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
   SURVEY_BUILDER_RECIPIENT_DATA,
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
   SURVEY_MAX_RESPONSE_DATA_OPTIONS,
 } from '../constants';
+import PreviewSurvey from '../preview/PreviewSurvey';
 import {
   SurveyBuilderDocument,
   SurveyRecipient,
@@ -88,11 +70,6 @@ import {
   surveyBuilderAction,
   surveyBuilderReducer,
 } from './state';
-import { CustomRating } from '../../customRating/CustomRating';
-import PreviewSurvey from '../preview/PreviewSurvey';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
 
 function SurveyBuilder() {
   /** ------------- begin hooks ------------- */
@@ -142,8 +119,6 @@ function SurveyBuilder() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -159,7 +134,11 @@ function SurveyBuilder() {
     globalState: {
       themeObject: { colorScheme, primaryColor, primaryShade },
     },
+    globalDispatch,
   } = useGlobalState();
+
+  const { showBoundary } = useErrorBoundary();
+  const navigate = useNavigate();
 
   const [openedHelpModal, { open: openHelpModal, close: closeHelpModal }] =
     useDisclosure(false);
@@ -189,7 +168,7 @@ function SurveyBuilder() {
       });
 
       const url: URL = urlBuilder({
-        path: '/api/v1/actions/outreach/survey-builder',
+        path: 'actions/outreach/survey-builder',
       });
 
       const body = JSON.stringify({
@@ -221,19 +200,8 @@ function SurveyBuilder() {
         if (!isMounted) {
           return;
         }
-
-        const { ok } = response;
-        if (!ok) {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsError,
-            payload: true,
-          });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setErrorMessage,
-            payload: data.message,
-          });
-
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
         surveyBuilderDispatch({
@@ -244,27 +212,50 @@ function SurveyBuilder() {
           type: surveyBuilderAction.setSuccessMessage,
           payload: data.message,
         });
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setTriggerFormSubmit,
-          payload: false,
-        });
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setIsSubmitting,
-          payload: false,
-        });
       } catch (error: any) {
-        if (!isMounted) {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setIsError,
-          payload: true,
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setErrorMessage,
-          payload:
-            error?.message ?? 'Unknown error occurred. Please try again.',
-        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setTriggerFormSubmit,
+            payload: false,
+          });
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setIsSubmitting,
+            payload: false,
+          });
+        }
       }
     }
 
@@ -693,7 +684,7 @@ function SurveyBuilder() {
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin component render bypass ------------- */
-  if (isLoading || isError || isSubmitting || isSuccessful) {
+  if (isLoading || isSubmitting || isSuccessful) {
     return (
       <CustomNotification
         isLoading={isLoading}

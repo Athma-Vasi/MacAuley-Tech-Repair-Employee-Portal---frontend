@@ -1404,7 +1404,7 @@ function returnThemeColors({
   colorsSwatches: ColorsSwatches;
 }) {
   const { colorScheme, primaryColor, primaryShade } = themeObject;
-  const { dark, gray, red, green } = colorsSwatches;
+  const { dark, gray, red, green, cyan } = colorsSwatches;
 
   const lightSchemeGray = gray[3];
   const darkSchemeGray = gray[8];
@@ -1421,14 +1421,16 @@ function returnThemeColors({
   const grayColorShade = gray[colorShade];
   const redColorShade = red[colorShade];
   const greenColorShade = green[colorShade];
+  const cyanColorShade = cyan[colorShade];
 
   const generalColors = {
-    lightSchemeGray,
+    cyanColorShade,
     darkSchemeGray,
-    themeColorShade,
     grayColorShade,
-    redColorShade,
     greenColorShade,
+    lightSchemeGray,
+    redColorShade,
+    themeColorShade,
   };
 
   // app colors

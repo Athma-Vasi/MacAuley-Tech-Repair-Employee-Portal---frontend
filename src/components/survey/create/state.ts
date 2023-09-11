@@ -67,8 +67,6 @@ const initialSurveyBuilderState: SurveyBuilderState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -125,8 +123,6 @@ const surveyBuilderAction: SurveyBuilderAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -599,16 +595,6 @@ function surveyBuilderReducer(
         surveyRecipients: action.payload,
       };
 
-    case surveyBuilderAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case surveyBuilderAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case surveyBuilderAction.setIsSubmitting:
       return {
         ...state,

@@ -195,7 +195,7 @@ function DisplaySurveys() {
       }
     }
 
-    if (isMounted && triggerSurveyFetch) {
+    if (triggerSurveyFetch) {
       fetchSurveys();
     }
 

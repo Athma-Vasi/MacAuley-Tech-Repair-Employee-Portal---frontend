@@ -58,8 +58,6 @@ type SurveyBuilderState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -115,8 +113,6 @@ type SurveyBuilderAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -131,7 +127,6 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setSurveyTitle']
         | SurveyBuilderAction['setSurveyDescription']
         | SurveyBuilderAction['setExpiryDate']
-        | SurveyBuilderAction['setErrorMessage']
         | SurveyBuilderAction['setSubmitMessage']
         | SurveyBuilderAction['setSuccessMessage']
         | SurveyBuilderAction['setLoadingMessage'];
@@ -150,7 +145,6 @@ type SurveyBuilderDispatch =
         | SurveyBuilderAction['setTriggerFormSubmit']
         | SurveyBuilderAction['setSubmitButtonDisabled']
         | SurveyBuilderAction['setTriggerPreviewSurvey']
-        | SurveyBuilderAction['setIsError']
         | SurveyBuilderAction['setIsSubmitting']
         | SurveyBuilderAction['setIsSuccessful']
         | SurveyBuilderAction['setIsLoading'];

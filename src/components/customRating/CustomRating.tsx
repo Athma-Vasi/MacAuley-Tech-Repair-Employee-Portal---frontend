@@ -20,6 +20,7 @@ import { TbMoodEmpty } from 'react-icons/tb';
 import { useGlobalState } from '../../hooks';
 import { SurveySubmissionPayload } from '../survey/display/types';
 import { COLORS_SWATCHES } from '../../constants/data';
+import { returnThemeColors } from '../../utils';
 
 type CustomRatingProps = {
   key?: string;
@@ -59,16 +60,10 @@ function CustomRating({
 }: CustomRatingProps): React.JSX.Element {
   const theme = useMantineTheme();
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-      rowGap,
-    },
+    globalState: { themeObject, rowGap },
   } = useGlobalState();
 
   const [value, setValue] = useState<number>(controlledValue ?? 0);
-
-  const { gray } = COLORS_SWATCHES;
-  const textColor = colorScheme === 'light' ? gray[8] : gray[5];
 
   useEffect(() => {
     if (dynamicComponentProps) {
@@ -214,7 +209,7 @@ function CustomRating({
       justify="space-between"
       wrap="wrap"
     >
-      <Text color={textColor}>{question}</Text>
+      <Text>{question}</Text>
       <Rating
         key={key}
         value={value}
