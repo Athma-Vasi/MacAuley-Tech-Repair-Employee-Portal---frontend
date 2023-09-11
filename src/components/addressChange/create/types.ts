@@ -1,11 +1,39 @@
 import type {
+  Action,
+  ActionsCompany,
   Country,
   PhoneNumber,
   PostalCode,
   Province,
+  RequestStatus,
   SetStepsInErrorPayload,
   StatesUS,
 } from '../../../types';
+
+type AddressChangeSchema = {
+  userId: string;
+  username: string;
+  action: Action;
+  category: ActionsCompany;
+
+  contactNumber: PhoneNumber;
+  addressLine: string;
+  city: string;
+  province: Province;
+  state: StatesUS;
+  postalCode: PostalCode;
+  country: Country;
+
+  acknowledgement: boolean;
+  requestStatus: RequestStatus;
+};
+
+type AddressChangeDocument = AddressChangeSchema & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+};
 
 type AddressChangeState = {
   contactNumber: PhoneNumber | string;
@@ -33,8 +61,6 @@ type AddressChangeState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -69,8 +95,6 @@ type AddressChangeAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -84,7 +108,6 @@ type AddressChangeDispatch =
       type:
         | AddressChangeAction['setAddressLine']
         | AddressChangeAction['setCity']
-        | AddressChangeAction['setErrorMessage']
         | AddressChangeAction['setLoadingMessage']
         | AddressChangeAction['setSubmitMessage']
         | AddressChangeAction['setSuccessMessage'];
@@ -104,7 +127,6 @@ type AddressChangeDispatch =
         | AddressChangeAction['setTriggerFormSubmit']
         | AddressChangeAction['setIsSuccessful']
         | AddressChangeAction['setIsSubmitting']
-        | AddressChangeAction['setIsError']
         | AddressChangeAction['setIsLoading'];
       payload: boolean;
     }
@@ -145,6 +167,8 @@ type AddressChangeReducer = (
 export type {
   AddressChangeAction,
   AddressChangeDispatch,
+  AddressChangeDocument,
   AddressChangeReducer,
+  AddressChangeSchema,
   AddressChangeState,
 };

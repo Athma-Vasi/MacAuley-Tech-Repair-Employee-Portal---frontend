@@ -26,6 +26,7 @@ import {
   logState,
   returnGrammarValidationText,
   returnNameValidationText,
+  returnThemeColors,
   returnUrlValidationText,
   urlBuilder,
 } from '../../../utils';
@@ -58,6 +59,9 @@ import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
 import { createAnnouncementFormReviewObject } from './utils';
+import { useNavigate } from 'react-router-dom';
+import { useErrorBoundary } from 'react-error-boundary';
+import { globalAction } from '../../../context/globalProvider/state';
 
 function CreateAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -92,8 +96,6 @@ function CreateAnnouncement() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -102,16 +104,15 @@ function CreateAnnouncement() {
     loadingMessage,
   } = createAnnouncementState;
   const {
-    globalState: {
-      padding,
-      rowGap,
-      width,
-      themeObject: { colorScheme, primaryShade },
-    },
+    globalState: { width, themeObject },
+    globalDispatch,
   } = useGlobalState();
   const {
     authState: { accessToken },
   } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -124,9 +125,13 @@ function CreateAnnouncement() {
         type: createAnnouncementAction.setIsSubmitting,
         payload: true,
       });
+      createAnnouncementDispatch({
+        type: createAnnouncementAction.setSubmitMessage,
+        payload: 'Create announcement request is on the way!',
+      });
 
       const url: URL = urlBuilder({
-        path: '/api/v1/actions/outreach/announcement',
+        path: 'actions/outreach/announcement',
       });
 
       const ratingResponse: RatingResponse = {
@@ -171,19 +176,8 @@ function CreateAnnouncement() {
         if (!isMounted) {
           return;
         }
-
-        const { ok } = response;
-        if (!ok) {
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setIsError,
-            payload: true,
-          });
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setErrorMessage,
-            payload: data.message,
-          });
-
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
         createAnnouncementDispatch({
@@ -192,39 +186,52 @@ function CreateAnnouncement() {
         });
         createAnnouncementDispatch({
           type: createAnnouncementAction.setSuccessMessage,
-          payload: data.message,
+          payload: data.message ?? 'Success!',
         });
       } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setIsError,
-          payload: true,
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        error instanceof InvalidTokenError
-          ? createAnnouncementDispatch({
-              type: createAnnouncementAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error.response
-          ? createAnnouncementDispatch({
-              type: createAnnouncementAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : createAnnouncementDispatch({
-              type: createAnnouncementAction.setErrorMessage,
-              payload:
-                error.message ?? 'Unknown error occurred. Please try again.',
-            });
+        showBoundary(error);
       } finally {
         createAnnouncementDispatch({
           type: createAnnouncementAction.setIsSubmitting,
+          payload: false,
+        });
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setSubmitMessage,
+          payload: '',
+        });
+        createAnnouncementDispatch({
+          type: createAnnouncementAction.setTriggerFormSubmit,
           payload: false,
         });
       }
@@ -238,6 +245,9 @@ function CreateAnnouncement() {
       isMounted = false;
       controller.abort();
     };
+
+    // only run on triggerFormSubmit change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
   const newArticleParagraphRef = useRef<HTMLTextAreaElement>(null);
@@ -370,7 +380,7 @@ function CreateAnnouncement() {
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin component render bypass ------------- */
-  if (isLoading || isError || isSubmitting || isSuccessful) {
+  if (isLoading || isSubmitting || isSuccessful) {
     return (
       <CustomNotification
         isLoading={isLoading}
@@ -777,9 +787,12 @@ function CreateAnnouncement() {
     </FormLayoutWrapper>
   );
 
-  const { red } = COLORS_SWATCHES;
-  const textErrorColor =
-    colorScheme === 'light' ? red[primaryShade.light] : red[primaryShade.dark];
+  const {
+    generalColors: { redColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   const displayArticleParagraphsFormPage = (
     <FormLayoutWrapper>
@@ -795,7 +808,7 @@ function CreateAnnouncement() {
       </Group>
       <Text>Current article length: {article.join(' ').length} characters</Text>
       {isArticleLengthExceeded ? (
-        <Text color={textErrorColor}>
+        <Text color={redColorShade}>
           {`Maximum character length of ${MAX_ARTICLE_LENGTH} ${
             article.join(' ').length === MAX_ARTICLE_LENGTH
               ? 'reached'

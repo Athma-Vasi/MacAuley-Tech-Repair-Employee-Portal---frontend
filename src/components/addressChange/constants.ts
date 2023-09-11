@@ -70,9 +70,9 @@ const ADDRESS_CHANGE_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const ADDRESS_CHANGE_PATHS: ResourceRoutePaths = {
-  manager: '/api/v1/actions/company/address-change',
-  admin: '/api/v1/actions/general/address-change',
-  employee: '/api/v1/actions/employee/address-change/user',
+  manager: 'actions/company/address-change',
+  admin: 'actions/general/address-change',
+  employee: 'actions/employee/address-change/user',
 };
 
 export {

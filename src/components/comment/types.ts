@@ -100,8 +100,6 @@ type CommentState = {
   triggerCommentUpdate: boolean;
   triggerCommentSubmit: boolean;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isLoading: boolean;
@@ -138,8 +136,6 @@ type CommentAction = {
   setTriggerCommentUpdate: 'setTriggerCommentUpdate';
   setTriggerCommentSubmit: 'setTriggerCommentSubmit';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsLoading: 'setIsLoading';
@@ -164,7 +160,6 @@ type CommentDispatch =
         | CommentAction['setLimitPerPage']
         | CommentAction['setQueryBuilderString']
         | CommentAction['setPageQueryString']
-        | CommentAction['setErrorMessage']
         | CommentAction['setSuccessMessage']
         | CommentAction['setLoadingMessage']
         | CommentAction['setSubmitMessage'];
@@ -180,7 +175,6 @@ type CommentDispatch =
         | CommentAction['setTriggerCommentFetch']
         | CommentAction['setTriggerCommentUpdate']
         | CommentAction['setTriggerCommentSubmit']
-        | CommentAction['setIsError']
         | CommentAction['setIsSubmitting']
         | CommentAction['setIsLoading']
         | CommentAction['setIsSuccessful'];

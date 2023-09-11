@@ -31,8 +31,6 @@ const initialCreateAnnouncementState: CreateAnnouncementState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -70,8 +68,6 @@ const createAnnouncementAction: CreateAnnouncementAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -250,16 +246,6 @@ function createAnnouncementReducer(
       };
     }
 
-    case createAnnouncementAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createAnnouncementAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case createAnnouncementAction.setIsSubmitting:
       return {
         ...state,

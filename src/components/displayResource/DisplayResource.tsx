@@ -31,6 +31,7 @@ import { InvalidTokenError } from 'jwt-decode';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { globalAction } from '../../context/globalProvider/state';
+import { CustomNotification } from '../customNotification';
 
 function DisplayResource<Doc>({
   style = {},
@@ -337,6 +338,7 @@ function DisplayResource<Doc>({
 
       const urlString: URL = urlBuilder({
         path: `${paths.manager}/${requestStatus.id}`,
+        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&projection=-action&projection=-category`,
       });
 
       const resourceBody = Object.create(null);
@@ -368,7 +370,6 @@ function DisplayResource<Doc>({
         }
 
         const [updatedResource] = data.resourceData;
-
         displayResourceDispatch({
           type: displayResourceAction.updateResourceData,
           payload: {
@@ -419,6 +420,14 @@ function DisplayResource<Doc>({
           displayResourceDispatch({
             type: displayResourceAction.setSubmitMessage,
             payload: '',
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setIsSuccessful,
+            payload: true,
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setSuccessMessage,
+            payload: `Successfully updated request status of id: ${requestStatus.id} to ${requestStatus.status}`,
           });
         }
       }
@@ -673,14 +682,6 @@ function DisplayResource<Doc>({
         }
 
         const [updatedResource] = data.resourceData;
-
-        // // trigger component refresh
-        // displayResourceDispatch({
-        //   type: displayResourceAction.setTriggerRefresh,
-        //   payload: !triggerRefresh,
-        // });
-
-        // update resource data
         displayResourceDispatch({
           type: displayResourceAction.updateResourceData,
           payload: {
@@ -760,6 +761,23 @@ function DisplayResource<Doc>({
       groupLabel: 'displayResourceState',
     });
   }, [displayResourceState]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={displayResourceDispatch}
+        navigateTo={{
+          successPath: '/home/company/leave-request/display',
+        }}
+      />
+    );
+  }
 
   // prevent display of option to groupBy/projection exclusion of username field if the resource is anonymousRequest
   const filteredComponentQueryData =

@@ -253,8 +253,8 @@ function DisplayQueryDesktop<Doc>({
               const headerGroupStyle: CSSProperties = {
                 width:
                   headerValue === '_id'
-                    ? 'Document Id'.length * 10 + 50
-                    : headerValue.length * 10 + 50, // rough ch plus space for sort arrows
+                    ? 'Document Id'.length * 10 + 60
+                    : headerValue.length * 10 + 60, // rough ch plus space for sort arrows
                 backgroundColor: tableHeadersBgColor,
               };
 

@@ -22,13 +22,9 @@ import React, {
   useEffect,
   useReducer,
   useRef,
-  useState,
 } from 'react';
 import { FaRegCommentDots } from 'react-icons/fa';
-import {
-  HiOutlineExclamationCircle,
-  HiExclamationCircle,
-} from 'react-icons/hi';
+
 import {
   TbArrowBigDown,
   TbArrowBigDownFilled,
@@ -74,6 +70,7 @@ import {
   formatDate,
   logState,
   returnGrammarValidationText,
+  returnThemeColors,
   urlBuilder,
 } from '../../utils';
 import { CustomNotification } from '../customNotification';
@@ -89,14 +86,17 @@ import {
   CreatedCommentsSectionObject,
   GetCommentsServerResponse,
 } from './types';
-import { JsxElement } from 'typescript';
-import { VscQuote } from 'react-icons/vsc';
 import { PageBuilder } from '../pageBuilder';
 import {
   COMMENT_LIMIT_PER_PAGE_SELECT_DATA,
   COMMENT_QUERY_DATA,
 } from './constants';
 import { QueryBuilder } from '../queryBuilder';
+import { COLORS_SWATCHES } from '../../constants/data';
+import { useNavigate } from 'react-router-dom';
+import { useErrorBoundary } from 'react-error-boundary';
+import { VscQuote } from 'react-icons/vsc';
+import { globalAction } from '../../context/globalProvider/state';
 
 function Comment({
   parentResourceId = '',
@@ -134,8 +134,6 @@ function Comment({
     triggerCommentUpdate,
     triggerCommentSubmit,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isLoading,
@@ -149,9 +147,13 @@ function Comment({
   } = useAuth();
 
   const {
-    globalState: { padding, rowGap, width, userDocument },
+    globalState: { padding, rowGap, width, userDocument, themeObject },
     globalDispatch,
   } = useGlobalState();
+
+  const navigate = useNavigate();
+
+  const { showBoundary } = useErrorBoundary();
 
   const [
     openedCommentModal,
@@ -173,9 +175,13 @@ function Comment({
         type: commentAction.setIsLoading,
         payload: true,
       });
+      commentDispatch({
+        type: commentAction.setLoadingMessage,
+        payload: 'Fetching comments from server...',
+      });
 
       const url: URL = urlBuilder({
-        path: `/api/v1/comment/parentResource/${parentResourceId}/`,
+        path: `comment/parentResource/${parentResourceId}/`,
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=${limitPerPage}`,
       });
 
@@ -189,35 +195,22 @@ function Comment({
       });
 
       try {
-        const response = await fetch(request);
+        const response: Response = await fetch(request);
         const data: GetCommentsServerResponse = await response.json();
 
         if (!isMounted) {
           return;
         }
-
-        const { ok } = response;
-        if (!ok) {
-          commentDispatch({
-            type: commentAction.setIsError,
-            payload: true,
-          });
-          commentDispatch({
-            type: commentAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
         const { resourceData } = data;
-        const commentsMap = resourceData.reduce(
-          (commentsMapAcc, commentDoc) => {
-            commentsMapAcc.set(commentDoc._id, commentDoc);
 
-            return commentsMapAcc;
-          },
-          new Map<string, CommentDocument>()
-        );
+        const commentsMap = new Map<string, CommentDocument>();
+        resourceData.forEach((commentDoc) => {
+          commentsMap.set(commentDoc._id, commentDoc);
+        });
 
         commentDispatch({
           type: commentAction.setCommentsMap,
@@ -234,46 +227,53 @@ function Comment({
 
         console.log('fetchComments() data', data);
       } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
-        commentDispatch({
-          type: commentAction.setIsError,
-          payload: true,
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        error instanceof InvalidTokenError
-          ? commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error.response
-          ? commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload:
-                error.message ?? 'Unknown error occurred. Please try again.',
-            });
+        showBoundary(error);
       } finally {
-        commentDispatch({
-          type: commentAction.setIsLoading,
-          payload: false,
-        });
-        commentDispatch({
-          type: commentAction.setNewQueryFlag,
-          payload: false,
-        });
-        commentDispatch({
-          type: commentAction.setTriggerCommentFetch,
-          payload: false,
-        });
+        if (isMounted) {
+          commentDispatch({
+            type: commentAction.setIsLoading,
+            payload: false,
+          });
+          commentDispatch({
+            type: commentAction.setNewQueryFlag,
+            payload: false,
+          });
+          commentDispatch({
+            type: commentAction.setTriggerCommentFetch,
+            payload: false,
+          });
+        }
       }
     }
 
@@ -285,15 +285,10 @@ function Comment({
       isMounted = false;
       controller.abort();
     };
-  }, [triggerCommentFetch]);
 
-  // on component mount, set trigger comment fetch to true
-  useEffect(() => {
-    commentDispatch({
-      type: commentAction.setTriggerCommentFetch,
-      payload: true,
-    });
-  }, []);
+    // only fetch comments when triggerCommentFetch is true
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerCommentFetch]);
 
   // whenever the following changes, trigger comment fetch
   useEffect(() => {
@@ -313,9 +308,13 @@ function Comment({
         type: commentAction.setIsSubmitting,
         payload: true,
       });
+      commentDispatch({
+        type: commentAction.setSubmitMessage,
+        payload: 'Sending comment update to server...',
+      });
 
       const url: URL = urlBuilder({
-        path: `/api/v1/comment/${updateCommentId}`,
+        path: `comment/${updateCommentId}`,
       });
 
       const request: Request = new Request(url, {
@@ -329,7 +328,7 @@ function Comment({
       });
 
       try {
-        const response = await fetch(request);
+        const response: Response = await fetch(request);
         const data: {
           message: string;
           resourceData: [CommentDocument];
@@ -338,60 +337,58 @@ function Comment({
         if (!isMounted) {
           return;
         }
-
-        const { ok } = response;
-        if (!ok) {
-          commentDispatch({
-            type: commentAction.setIsError,
-            payload: true,
-          });
-          commentDispatch({
-            type: commentAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
+        const [commentDoc] = data.resourceData;
         commentDispatch({
           type: commentAction.updateCommentsMap,
-          payload: {
-            commentDoc: data.resourceData[0],
-          },
+          payload: { commentDoc },
         });
 
         console.log('updateUserReaction() data', data);
       } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
-        commentDispatch({
-          type: commentAction.setIsError,
-          payload: true,
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        error instanceof InvalidTokenError
-          ? commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error.response
-          ? commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload:
-                error.message ?? 'Unknown error occurred. Please try again.',
-            });
+        showBoundary(error);
       } finally {
         commentDispatch({
           type: commentAction.setIsSubmitting,
           payload: false,
+        });
+        commentDispatch({
+          type: commentAction.setSubmitMessage,
+          payload: '',
         });
         commentDispatch({
           type: commentAction.setTriggerCommentUpdate,
@@ -408,6 +405,9 @@ function Comment({
       isMounted = false;
       controller.abort();
     };
+
+    // only update user reaction when triggerCommentUpdate is true
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerCommentUpdate]);
 
   // submit comment
@@ -424,9 +424,13 @@ function Comment({
         type: commentAction.setIsSubmitting,
         payload: true,
       });
+      commentDispatch({
+        type: commentAction.setSubmitMessage,
+        payload: 'Sending comment to server...',
+      });
 
       const url: URL = urlBuilder({
-        path: '/api/v1/comment/',
+        path: 'comment/',
       });
 
       const comment = {
@@ -460,7 +464,7 @@ function Comment({
       });
 
       try {
-        const response = await fetch(request);
+        const response: Response = await fetch(request);
         const data: {
           message: string;
           resourceData: [CommentDocument];
@@ -469,69 +473,66 @@ function Comment({
         if (!isMounted) {
           return;
         }
-
-        const { ok } = response;
-        if (!ok) {
-          commentDispatch({
-            type: commentAction.setIsError,
-            payload: true,
-          });
-          commentDispatch({
-            type: commentAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
+        const [commentDoc] = data.resourceData;
         commentDispatch({
           type: commentAction.updateCommentsMap,
-          payload: {
-            commentDoc: data.resourceData[0],
-          },
+          payload: { commentDoc },
         });
-
         commentDispatch({
           type: commentAction.setIsSuccessful,
           payload: true,
         });
         commentDispatch({
           type: commentAction.setSuccessMessage,
-          payload: data.message,
+          payload: data.message ?? 'Comment submitted successfully!',
         });
 
         console.log('submitComment() data', data);
       } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
-        commentDispatch({
-          type: commentAction.setIsError,
-          payload: true,
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        error instanceof InvalidTokenError
-          ? commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error.response
-          ? commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : commentDispatch({
-              type: commentAction.setErrorMessage,
-              payload:
-                error.message ?? 'Unknown error occurred. Please try again.',
-            });
+        showBoundary(error);
       } finally {
         commentDispatch({
           type: commentAction.setIsSubmitting,
           payload: false,
+        });
+        commentDispatch({
+          type: commentAction.setSubmitMessage,
+          payload: '',
         });
         commentDispatch({
           type: commentAction.setTriggerCommentSubmit,
@@ -548,6 +549,9 @@ function Comment({
       isMounted = false;
       controller.abort();
     };
+
+    // only submit comment when triggerCommentSubmit is true
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerCommentSubmit]);
 
   // when limit per page changes, trigger reset page
@@ -595,25 +599,22 @@ function Comment({
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin component render bypass ------------- */
-  // if (isLoading || isError || isSubmitting || isSuccessful) {
-  //   return (
-  //     <CustomNotification
-  //       errorMessage={errorMessage}
-  //       isLoading={isLoading}
-  //       isError={isError}
-  //       isSubmitting={isSubmitting}
-  //       isSuccessful={isSuccessful}
-  //       loadingMessage={loadingMessage}
-  //       successMessage={successMessage}
-  //       submitMessage={submitMessage}
-  //       parentDispatch={commentDispatch}
-  //       navigateTo={{
-  //         errorPath: '/portal',
-  //         successPath: `/portal/outreach/announcement/display/${parentResourceId}`,
-  //       }}
-  //     />
-  //   );
-  // }
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={commentDispatch}
+        navigateTo={{
+          successPath: `/home/outreach/announcement/display/${parentResourceTitle}`,
+        }}
+      />
+    );
+  }
   /** ------------- end component render bypass ------------- */
 
   /** ------------- begin accessible texts ------------- */
@@ -637,6 +638,7 @@ function Comment({
   const limitPerPageSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: COMMENT_LIMIT_PER_PAGE_SELECT_DATA,
     description: 'Select number of comments to display per page',
+    disabled: commentsMap.size === 0,
     label: 'Comments per page',
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       commentDispatch({
@@ -720,6 +722,15 @@ function Comment({
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- begin input creators ------------- */
+
+  const {
+    directoryGraphThemeColors: { nodeTextColor },
+    generalColors: { themeColorShades },
+    appThemeColors: { backgroundColor, borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   const createdCommentsSectionObjectsArray = Array.from(commentsMap).map(
     ([commentId, commentDoc]: [string, CommentDocument]) => {
@@ -842,7 +853,6 @@ function Comment({
           ) : (
             <TbFlag2 />
           ),
-          // buttonLabel: <Title order={6}>!</Title>,
           buttonVariant: reportedUserIds.includes(userId)
             ? 'outline'
             : 'subtle',
@@ -872,7 +882,6 @@ function Comment({
         // show more spoiler button
         {
           buttonLabel: 'Show',
-          buttonVariant: 'outline',
           leftIcon: <TbArrowDown />,
           semanticDescription: 'show more comment button',
           semanticName: 'showMoreCommentButton',
@@ -880,7 +889,6 @@ function Comment({
         // show less spoiler button
         {
           buttonLabel: 'Hide',
-          buttonVariant: 'outline',
           leftIcon: <TbArrowUp />,
           semanticDescription: 'hide comment button',
           semanticName: 'hideCommentButton',
@@ -951,7 +959,6 @@ function Comment({
               {
                 buttonLabel: isDeleted ? 'Undelete' : 'Delete',
                 leftIcon: isDeleted ? <TbTrashOff /> : <TbTrash />,
-                buttonVariant: 'outline',
                 semanticDescription: 'delete comment button',
                 semanticName: 'deleteCommentButton',
                 buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
@@ -1033,8 +1040,8 @@ function Comment({
 
       const usernameElementWithTooltip = (
         <Tooltip label={`Filter comments by ${username}`}>
-          <Text
-            color="dark"
+          <Title
+            order={5}
             size="lg"
             style={{ cursor: 'pointer' }}
             onClick={() => {
@@ -1044,15 +1051,13 @@ function Comment({
               });
             }}
           >
-            <strong>{username}</strong>
-          </Text>
+            {username}
+          </Title>
         </Tooltip>
       );
       const jobPositionElementWithTooltip = (
         <Tooltip label={`Filter comments by ${jobPosition}s`}>
           <Text
-            color="dark"
-            size="sm"
             style={{ cursor: 'pointer' }}
             onClick={() => {
               commentDispatch({
@@ -1069,8 +1074,6 @@ function Comment({
       const departmentElementWithTooltip = (
         <Tooltip label={`Filter comments by ${department} members`}>
           <Text
-            color="dark"
-            size="sm"
             style={{ cursor: 'pointer' }}
             onClick={() => {
               commentDispatch({
@@ -1102,7 +1105,7 @@ function Comment({
             <Group>
               <TiSocialGithub
                 size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
+                style={{ cursor: 'pointer', color: nodeTextColor }}
               />
             </Group>
           </Tooltip>
@@ -1111,7 +1114,7 @@ function Comment({
             <Group>
               <TbBrandMastodon
                 size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
+                style={{ cursor: 'pointer', color: nodeTextColor }}
               />
             </Group>
           </Tooltip>
@@ -1120,7 +1123,7 @@ function Comment({
             <Group>
               <TiSocialLinkedin
                 size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
+                style={{ cursor: 'pointer', color: nodeTextColor }}
               />
             </Group>
           </Tooltip>
@@ -1129,7 +1132,7 @@ function Comment({
             <Group>
               <TiSocialFlickr
                 size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
+                style={{ cursor: 'pointer', color: nodeTextColor }}
               />
             </Group>
           </Tooltip>
@@ -1138,7 +1141,7 @@ function Comment({
             <Group>
               <TiSocialDribbble
                 size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: 'dimgray' }}
+                style={{ cursor: 'pointer', color: nodeTextColor }}
               />
             </Group>
           </Tooltip>
@@ -1151,15 +1154,11 @@ function Comment({
           showLabel={showMoreSpoilerButtonElement}
           hideLabel={showLessSpoilerButtonElement}
         >
-          <Text color="dark" size="sm">
-            {isDeleted ? 'Comment has been deleted' : comment}
-          </Text>
+          <Text>{isDeleted ? 'Comment has been deleted' : comment}</Text>
         </Spoiler>
       );
       const quotedUsernameElement = quotedUsername ? (
-        <Text color="teal" size="sm">
-          {quotedUsername} commented:
-        </Text>
+        <Text>{quotedUsername} commented:</Text>
       ) : null;
       const quotedCommentElement = quotedComment ? (
         <Blockquote icon={<VscQuote />}>
@@ -1168,39 +1167,29 @@ function Comment({
             showLabel={showMoreSpoilerButtonElement}
             hideLabel={showLessSpoilerButtonElement}
           >
-            <Text color="dark" size="sm">
-              {quotedComment}
-            </Text>
+            <Text>{quotedComment}</Text>
           </Spoiler>
         </Blockquote>
       ) : null;
 
       const likesCountWithTooltipElement = (
         <Tooltip label={`${likesCount} people have liked this comment`}>
-          <Text color="dark" size="sm">
-            {likesCount}
-          </Text>
+          <Text>{likesCount}</Text>
         </Tooltip>
       );
       const dislikesCountWithTooltipElement = (
         <Tooltip label={`${dislikesCount} people have disliked this comment`}>
-          <Text color="dark" size="sm">
-            {dislikesCount}
-          </Text>
+          <Text>{dislikesCount}</Text>
         </Tooltip>
       );
       const totalLikesDislikesWithTooltipElement = (
         <Tooltip label="Overall feeling towards this comment">
-          <Text color="dark" size="sm">
-            {likesCount + dislikesCount}
-          </Text>
+          <Text>{likesCount + dislikesCount}</Text>
         </Tooltip>
       );
       const reportsCountWithTooltipElement = (
         <Tooltip label={`${reportsCount} people have reported this comment`}>
-          <Text color="dark" size="sm">
-            {reportsCount}
-          </Text>
+          <Text>{reportsCount}</Text>
         </Tooltip>
       );
 
@@ -1219,25 +1208,24 @@ function Comment({
 
       const createdAtElementWithTooltip = (
         <Tooltip label="Comment created">
-          <Text color="dark" size="sm">
-            Created: {createdAtDateTime}
-          </Text>
+          <Text>Created: {createdAtDateTime}</Text>
         </Tooltip>
       );
       const updatedAtElementWithTooltip =
         new Date(createdAt).getTime() ===
         new Date(updatedAt).getTime() ? null : (
           <Tooltip label="Comment last updated">
-            <Text color="dark" size="sm">
-              Updated: {updatedAtDateTime}
-            </Text>
+            <Text>Updated: {updatedAtDateTime}</Text>
           </Tooltip>
         );
+
+      const fromColor = themeColorShades?.[3] ?? 'teal';
+      const toColor = themeColorShades?.[6] ?? 'blue';
 
       const isFeaturedElement = isFeatured ? (
         <Badge
           variant="gradient"
-          gradient={{ from: 'teal', to: 'blue', deg: 60 }}
+          gradient={{ from: fromColor, to: toColor, deg: 60 }}
           style={{ borderRadius: '0px 4px 0px 4px' }}
         >
           Featured
@@ -1373,7 +1361,7 @@ function Comment({
           columnGap={rowGap}
           rowGap="xs"
           style={{
-            borderBottom: '1px solid #e0e0e0',
+            borderBottom: borderColor,
           }}
           py={padding}
           ml={padding}
@@ -1393,7 +1381,7 @@ function Comment({
       // comment section header mobile
       const commentSectionHeaderMobile = (
         <Grid columns={10} py={padding} w="100%">
-          <Grid.Col span={6} style={{ borderRight: '1px solid #e0e0e0' }}>
+          <Grid.Col span={6} style={{ borderRight: borderColor }}>
             {userInfoSectionMobile}
           </Grid.Col>
           <Grid.Col span={4} w="100%">
@@ -1412,11 +1400,7 @@ function Comment({
       );
 
       const quotedSection = (
-        <Stack
-          w="100%"
-          style={{ borderLeft: '2px solid #e0e0e0' }}
-          px={padding}
-        >
+        <Stack w="100%" style={{ borderLeft: borderColor }} px={padding}>
           {quotedUsernameElement}
           {quotedCommentElement}
         </Stack>
@@ -1439,15 +1423,12 @@ function Comment({
           pt={padding}
           ml={width < 640 ? undefined : padding}
           position="right"
-          style={{ borderTop: '1px solid #e0e0e0' }}
+          style={{ borderTop: borderColor }}
         >
-          <Group
-            pr={18}
-            style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}
-          >
+          <Group pr={18} style={{ border: borderColor, borderRadius: 9999 }}>
             {reportButtonElement} {reportsCountElement}
           </Group>
-          <Group style={{ border: '1px solid #e0e0e0', borderRadius: 9999 }}>
+          <Group style={{ border: borderColor, borderRadius: 9999 }}>
             <Group position="left">{likeButtonElement}</Group>
             <Group position="center">
               {totalLikesDislikesElement} ({likesCountElement} /
@@ -1467,7 +1448,7 @@ function Comment({
       // comment section full desktop
       const createdCommentSectionDesktop = (
         <Grid columns={10} w="100%" py={padding}>
-          <Grid.Col span={3} style={{ borderRight: '1px solid #e0e0e0' }}>
+          <Grid.Col span={3} style={{ borderRight: borderColor }}>
             {userInfoSectionDesktop}
           </Grid.Col>
           <Grid.Col span={7}>
@@ -1480,7 +1461,7 @@ function Comment({
       // comment section full mobile
       const createdCommentSectionMobile = (
         <Stack w="100%" py={padding}>
-          <Group pb={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+          <Group pb={padding} style={{ borderBottom: borderColor }}>
             {commentSectionHeaderMobile}
           </Group>
           {commentQuoteSection}
@@ -1494,10 +1475,11 @@ function Comment({
           w="100%"
           px={padding}
           style={{
-            border: '1px solid #e0e0e0',
+            border: borderColor,
             borderRadius: '4px',
             position: 'relative',
           }}
+          bg={backgroundColor}
         >
           {width < 640
             ? createdCommentSectionMobile
@@ -1510,7 +1492,7 @@ function Comment({
   );
 
   const displayCommentAndSubmit = (
-    <Stack w="100%" p={padding} style={{ borderTop: '1px solid #e0e0e0' }}>
+    <Stack w="100%" p={padding} style={{ borderTop: borderColor }}>
       {createdCommentTextAreaInput}
       <Group position="right">{createdSubmitCommentButton}</Group>
     </Stack>
@@ -1518,7 +1500,7 @@ function Comment({
 
   const commentModalTitle = (
     <Group w="100%">
-      <Text color="dark" pr={padding}>
+      <Text pr={padding}>
         {quotedUsername
           ? `You are commenting to: ${quotedUsername}`
           : parentResourceTitle
@@ -1529,12 +1511,9 @@ function Comment({
   );
 
   const commentModalQuotedComment = quotedComment ? (
-    <Group p={padding} style={{ borderTop: '1px solid #e0e0e0' }}>
-      <Blockquote
-        icon={<VscQuote />}
-        style={{ borderLeft: '2px solid #e0e0e0' }}
-      >
-        <Text color="dark" size="sm">
+    <Group p={padding} style={{ borderTop: borderColor }}>
+      <Blockquote icon={<VscQuote />} style={{ borderLeft: borderColor }}>
+        <Text size="sm">
           {quotedComment}
           {quotedComment}
           {quotedComment}
@@ -1564,32 +1543,41 @@ function Comment({
       w={width < 480 ? '85%' : '62%'}
       px={padding}
       pb={padding}
-      style={{
-        borderBottom: '1px solid #e0e0e0',
-        borderLeft: '1px solid #e0e0e0',
-        borderRight: '1px solid #e0e0e0',
-        borderRadius: '0 0 4px 4px ',
-      }}
       position="left"
     >
-      <Text color="dark">Let the MacAuley family know your thoughts!</Text>
-      {createdReplyCommentButton}
+      <Text size="md">Let the MacAuley family know your thoughts!</Text>
+      <Tooltip label="Share your thoughts">
+        <Group>{createdReplyCommentButton}</Group>
+      </Tooltip>
     </Group>
   );
 
+  const commentsWidth =
+    width < 480 // for iPhone 5/SE
+      ? 375 - 20
+      : width < 768 // for iPhone 6/7/8
+      ? width - 40
+      : // at 768vw the navbar appears at width of 200px
+      width < 1024
+      ? (width - 200) * 0.85
+      : // at >= 1200vw the navbar width is 300px
+      width < 1200
+      ? (width - 300) * 0.85
+      : 900 - 40;
+
   const displayCommentsSection = commentsMap.size ? (
-    <Stack w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'} py={padding}>
+    <Stack w={commentsWidth} py={padding}>
       {displayCommentsSectionObjects}
     </Stack>
   ) : (
-    <Group w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'} py={padding}>
-      <Text color="dark" size="sm" pr={padding}>
-        No comments found that match query parameters
+    <Group w={commentsWidth} py={padding}>
+      <Text size="sm" pr={padding}>
+        No comments found
       </Text>
     </Group>
   );
 
-  const displayQueryBuilder = (
+  const displayQueryBuilder = commentsMap.size ? (
     <QueryBuilder
       collectionName="Comments"
       componentQueryData={COMMENT_QUERY_DATA}
@@ -1597,7 +1585,7 @@ function Comment({
       parentComponentDispatch={commentDispatch}
       setQueryBuilderString={commentAction.setQueryBuilderString}
     />
-  );
+  ) : null;
 
   const displayPagination = (
     <PageBuilder
@@ -1610,9 +1598,10 @@ function Comment({
 
   const displayPaginationAndLimitPerPageSelectInput = (
     <Group
-      w={width < 768 ? '100%' : width < 1440 ? '85%' : '62%'}
+      w={commentsWidth}
       py={padding}
       position="apart"
+      style={{ borderTop: borderColor }}
     >
       <Group position="left">{displayPagination}</Group>
       <Group position="right" w="38%">

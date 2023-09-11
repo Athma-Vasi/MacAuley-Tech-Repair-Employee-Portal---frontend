@@ -1,5 +1,4 @@
 import { DEPARTMENT_DATA, JOB_POSITION_DATA } from '../../constants/data';
-import { SelectInputData } from '../../types';
 import { ComponentQueryData } from '../queryBuilder';
 
 const COMMENT_QUERY_DATA: ComponentQueryData[] = [

@@ -5,7 +5,7 @@ import {
   displayAnnouncementsReducer,
   initialDisplayAnnouncementsState,
 } from './state';
-import { logState, urlBuilder } from '../../../../utils';
+import { logState, returnThemeColors, urlBuilder } from '../../../../utils';
 import { useAuth, useGlobalState } from '../../../../hooks';
 import {
   GetQueriedResourceRequestServerResponse,
@@ -16,6 +16,8 @@ import { InvalidTokenError } from 'jwt-decode';
 import { CustomNotification } from '../../../customNotification';
 import { useNavigate } from 'react-router-dom';
 import { globalAction } from '../../../../context/globalProvider/state';
+import { useErrorBoundary } from 'react-error-boundary';
+import { COLORS_SWATCHES } from '../../../../constants/data';
 
 function DisplayAnnouncements() {
   /** ------------- begin hooks ------------- */
@@ -33,8 +35,6 @@ function DisplayAnnouncements() {
 
     triggerRefresh,
 
-    isError,
-    errorMessage,
     isLoading,
     loadingMessage,
     isSuccessful,
@@ -46,11 +46,14 @@ function DisplayAnnouncements() {
   const {
     authState: { accessToken },
   } = useAuth();
+
   const {
-    globalState: { padding, rowGap, width },
+    globalState: { padding, rowGap },
     globalDispatch,
   } = useGlobalState();
+
   const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
 
   /** ------------- end hooks ------------- */
 
@@ -60,8 +63,17 @@ function DisplayAnnouncements() {
     const controller = new AbortController();
 
     async function fetchAnnouncements() {
+      displayAnnouncementsDispatch({
+        type: displayAnnouncementsAction.setIsLoading,
+        payload: true,
+      });
+      displayAnnouncementsDispatch({
+        type: displayAnnouncementsAction.setLoadingMessage,
+        payload: 'Fetching announcements from server...',
+      });
+
       const url: URL = urlBuilder({
-        path: '/api/v1/actions/outreach/announcement',
+        path: 'actions/outreach/announcement',
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
       });
 
@@ -75,34 +87,15 @@ function DisplayAnnouncements() {
       });
 
       try {
-        const response = await fetch(request);
+        const response: Response = await fetch(request);
         const data: GetQueriedResourceRequestServerResponse<AnnouncementDocument> =
           await response.json();
 
         if (!isMounted) {
           return;
         }
-
-        const { ok } = response;
-        if (!ok) {
-          displayAnnouncementsDispatch({
-            type: displayAnnouncementsAction.setIsLoading,
-            payload: false,
-          });
-          displayAnnouncementsDispatch({
-            type: displayAnnouncementsAction.setLoadingMessage,
-            payload: '',
-          });
-
-          displayAnnouncementsDispatch({
-            type: displayAnnouncementsAction.setIsError,
-            payload: true,
-          });
-          displayAnnouncementsDispatch({
-            type: displayAnnouncementsAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
         displayAnnouncementsDispatch({
@@ -117,44 +110,50 @@ function DisplayAnnouncements() {
           type: displayAnnouncementsAction.setTotalDocuments,
           payload: data.totalDocuments ?? totalDocuments,
         });
-        displayAnnouncementsDispatch({
-          type: displayAnnouncementsAction.setIsLoading,
-          payload: false,
-        });
-        displayAnnouncementsDispatch({
-          type: displayAnnouncementsAction.setLoadingMessage,
-          payload: '',
-        });
       } catch (error: any) {
-        if (!isMounted) {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
-        displayAnnouncementsDispatch({
-          type: displayAnnouncementsAction.setIsError,
-          payload: true,
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        error instanceof InvalidTokenError
-          ? displayAnnouncementsDispatch({
-              type: displayAnnouncementsAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error?.response
-          ? displayAnnouncementsDispatch({
-              type: displayAnnouncementsAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : displayAnnouncementsDispatch({
-              type: displayAnnouncementsAction.setErrorMessage,
-              payload:
-                error?.message ?? 'Unknown error occurred. Please try again.',
-            });
-
-        displayAnnouncementsDispatch({
-          type: displayAnnouncementsAction.setIsLoading,
-          payload: false,
-        });
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          displayAnnouncementsDispatch({
+            type: displayAnnouncementsAction.setIsLoading,
+            payload: false,
+          });
+          displayAnnouncementsDispatch({
+            type: displayAnnouncementsAction.setLoadingMessage,
+            payload: '',
+          });
+        }
       }
     }
 
@@ -177,7 +176,7 @@ function DisplayAnnouncements() {
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin component render bypass ------------- */
-  if (isLoading || isError || isSubmitting || isSuccessful) {
+  if (isLoading || isSubmitting || isSuccessful) {
     return (
       <CustomNotification
         isLoading={isLoading}
@@ -201,22 +200,20 @@ function DisplayAnnouncements() {
     (announcement, announcementIdx) => {
       const { _id, bannerImageSrc, bannerImageAlt, title } = announcement;
 
+      // required to avoid breadcrumbs showing '%20' instead of spaces
+      const dynamicPath = title ? title.replace(/ /g, '-') : _id;
       const announcementCard = (
         <UnstyledButton
           key={`${_id}-${announcementIdx}`}
           w={350}
           h={217}
           onClick={() => {
-            // navigate(`/portal/outreach/announcement/display/${_id}`, {
-            //   state: { announcement },
-            //   replace: false,
-            // });
             globalDispatch({
               type: globalAction.setAnnouncementDocument,
               payload: announcement,
             });
 
-            navigate(`/portal/outreach/announcement/display/${_id}`, {
+            navigate(`/home/outreach/announcement/display/${dynamicPath}`, {
               replace: false,
             });
           }}
@@ -229,7 +226,7 @@ function DisplayAnnouncements() {
                 fit="fill"
                 style={{
                   position: 'relative',
-                  opacity: 0.05,
+                  opacity: 0.4,
                   width: '100%',
                   height: '100%',
                 }}
@@ -242,7 +239,6 @@ function DisplayAnnouncements() {
               size="md"
               p={padding}
               weight={700}
-              color="white"
               style={{
                 position: 'absolute',
                 width: '100%',

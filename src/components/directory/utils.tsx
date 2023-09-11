@@ -52,10 +52,6 @@ function returnDirectoryProfileCard({
 }: ReturnDirectoryProfileCardInput) {
   const { backgroundColor = '#f5f5f5', border, color } = style;
 
-  console.log('backgroundColor: ', backgroundColor);
-  // console.log('border: ', border);
-  // console.log('color: ', color);
-
   const createdSocialMediaIcons = (
     <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
       <Tooltip label={`View ${firstName} ${lastName}'s Mastodon profile`}>

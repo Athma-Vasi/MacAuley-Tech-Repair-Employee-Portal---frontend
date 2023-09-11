@@ -14,8 +14,6 @@ const initialDisplayAnnouncementsState: DisplayAnnouncementsState = {
 
   triggerRefresh: false,
 
-  isError: false,
-  errorMessage: '',
   isLoading: true,
   loadingMessage: 'Please wait. Fetching announcements...',
   isSuccessful: false,
@@ -34,8 +32,6 @@ const displayAnnouncementsAction: DisplayAnnouncementsAction = {
 
   setTriggerRefresh: 'setTriggerRefresh',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
   setLoadingMessage: 'setLoadingMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -86,16 +82,6 @@ function displayAnnouncementsReducer(
         triggerRefresh: action.payload,
       };
 
-    case displayAnnouncementsAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case displayAnnouncementsAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case displayAnnouncementsAction.setIsLoading:
       return {
         ...state,

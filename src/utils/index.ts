@@ -1431,6 +1431,7 @@ function returnThemeColors({
     lightSchemeGray,
     redColorShade,
     themeColorShade,
+    themeColorShades,
   };
 
   // app colors

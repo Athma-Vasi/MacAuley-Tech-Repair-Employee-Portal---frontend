@@ -19,7 +19,12 @@ import { globalAction } from '../../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../../hooks';
 import { returnAccessibleButtonElements } from '../../../../jsxCreators';
 import { UserDocument } from '../../../../types';
-import { formatDate, logState, urlBuilder } from '../../../../utils';
+import {
+  formatDate,
+  logState,
+  returnThemeColors,
+  urlBuilder,
+} from '../../../../utils';
 import { Comment } from '../../../comment';
 import { CustomNotification } from '../../../customNotification';
 import { CustomRating } from '../../../customRating/CustomRating';
@@ -30,6 +35,9 @@ import {
   displayAnnouncementReducer,
   initialDisplayAnnouncementState,
 } from './state';
+import { useNavigate } from 'react-router-dom';
+import { useErrorBoundary } from 'react-error-boundary';
+import { COLORS_SWATCHES } from '../../../../constants/data';
 
 function DisplayAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -43,8 +51,6 @@ function DisplayAnnouncement() {
     triggerRatingSubmit,
     ratingPieChartDataArray,
 
-    isError,
-    errorMessage,
     isLoading,
     loadingMessage,
     isSuccessful,
@@ -54,12 +60,22 @@ function DisplayAnnouncement() {
   } = displayAnnouncementState;
 
   const {
-    globalState: { padding, rowGap, width, announcementDocument, userDocument },
+    globalState: {
+      padding,
+      rowGap,
+      width,
+      announcementDocument,
+      userDocument,
+      themeObject,
+    },
     globalDispatch,
   } = useGlobalState();
   const {
     authState: { userId, accessToken },
   } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
 
   const [
     openedRatingModal,
@@ -86,9 +102,13 @@ function DisplayAnnouncement() {
         type: displayAnnouncementAction.setIsSubmitting,
         payload: true,
       });
+      displayAnnouncementDispatch({
+        type: displayAnnouncementAction.setSubmitMessage,
+        payload: `Your rating to ${announcement.title} is on its way!`,
+      });
 
       const url: URL = urlBuilder({
-        path: `/api/v1/actions/outreach/announcement/${announcement._id}/rating`,
+        path: `actions/outreach/announcement/${announcement._id}/rating`,
       });
 
       const body = JSON.stringify({
@@ -109,7 +129,7 @@ function DisplayAnnouncement() {
       });
 
       try {
-        const response = await fetch(request);
+        const response: Response = await fetch(request);
         const data: {
           message: string;
           resourceData: [
@@ -121,21 +141,11 @@ function DisplayAnnouncement() {
         if (!isMounted) {
           return;
         }
-
-        const { ok } = response;
-        if (!ok) {
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setIsError,
-            payload: true,
-          });
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
-        const [updatedAnnouncementDocument, updatedUserDocument] =
+        const [_updatedAnnouncementDocument, updatedUserDocument] =
           data.resourceData;
         globalDispatch({
           type: globalAction.setUserDocument,
@@ -148,45 +158,56 @@ function DisplayAnnouncement() {
         });
         displayAnnouncementDispatch({
           type: displayAnnouncementAction.setSuccessMessage,
-          payload: data.message,
+          payload: data.message ?? 'Success!',
         });
       } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setIsError,
-          payload: true,
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        error instanceof InvalidTokenError
-          ? displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error.response
-          ? displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : displayAnnouncementDispatch({
-              type: displayAnnouncementAction.setErrorMessage,
-              payload:
-                error.message ?? 'Unknown error occurred. Please try again.',
-            });
+        showBoundary(error);
       } finally {
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setIsSubmitting,
-          payload: false,
-        });
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setTriggerRatingSubmit,
-          payload: false,
-        });
+        if (isMounted) {
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setIsSubmitting,
+            payload: false,
+          });
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setSubmitMessage,
+            payload: '',
+          });
+          displayAnnouncementDispatch({
+            type: displayAnnouncementAction.setTriggerRatingSubmit,
+            payload: false,
+          });
+        }
       }
     }
 
@@ -198,6 +219,8 @@ function DisplayAnnouncement() {
       isMounted = false;
       controller.abort();
     };
+    // only run on trigger
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerRatingSubmit]);
 
   useEffect(() => {
@@ -243,32 +266,35 @@ function DisplayAnnouncement() {
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin component render bypass ------------- */
-  // if (isLoading || isError || isSubmitting || isSuccessful) {
-  //   return (
-  //     <CustomNotification
-  //       errorMessage={errorMessage}
-  //       isLoading={isLoading}
-  //       isError={isError}
-  //       isSubmitting={isSubmitting}
-  //       isSuccessful={isSuccessful}
-  //       loadingMessage={loadingMessage}
-  //       successMessage={successMessage}
-  //       submitMessage={submitMessage}
-  //       parentDispatch={displayAnnouncementDispatch}
-  //       navigateTo={{
-  //         errorPath: '/portal',
-  //         successPath: `/portal/outreach/announcement/display/${announcement?._id}`,
-  //       }}
-  //     />
-  //   );
-  // }
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={displayAnnouncementDispatch}
+        navigateTo={{
+          successPath: `/home/outreach/announcement/display/${announcement?.title}`,
+        }}
+      />
+    );
+  }
   /** ------------- end component render bypass ------------- */
+
+  const {
+    appThemeColors: { backgroundColor, borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   /** ------------- begin input creators ------------- */
   const articleTitle = (
     <Title
       order={1}
-      color="dark"
       size={52}
       style={{
         letterSpacing: '0.1rem',
@@ -280,20 +306,16 @@ function DisplayAnnouncement() {
     </Title>
   );
 
-  const spacer = (
-    <Text size="md" color="dark">
-      》
-    </Text>
-  );
+  const spacer = <Text size="md">》</Text>;
 
   const articleAuthor = (
-    <>
-      <Text size="md" color="dark" style={{ letterSpacing: '0.05rem' }}>
+    <Group>
+      <Text size="md" style={{ letterSpacing: '0.05rem' }}>
         {announcement?.author?.toUpperCase() ?? ''}
       </Text>
       <Space w="xs" />
       {spacer}
-    </>
+    </Group>
   );
 
   const formattedDate = formatDate({
@@ -310,24 +332,20 @@ function DisplayAnnouncement() {
   });
 
   const articleCreatedAt = (
-    <>
+    <Group>
       <Space w="xs" />
-      <Text size="md" color="dark">
-        {formattedDate}
-      </Text>
+      <Text size="md">{formattedDate}</Text>
       <Space w="xs" />
       {spacer}
-    </>
+    </Group>
   );
 
   const articleTimeToRead = (
-    <>
+    <Group>
       <Space w="xs" />
-      <Text size="md" color="dark">
-        {announcement?.timeToRead ?? 1} min read
-      </Text>
+      <Text size="md">{announcement?.timeToRead ?? 1} min read</Text>
       <Space w="xs" />
-    </>
+    </Group>
   );
 
   const displayArticleInfo = (
@@ -354,13 +372,7 @@ function DisplayAnnouncement() {
     const restWordsStartingParagraph =
       index === 0 ? paragraph.split(' ').slice(2).join(' ') : paragraph;
     const displayLargeFirstWords = (
-      <Text
-        size={32}
-        color="dark"
-        pr={padding}
-        w="fit-content"
-        style={{ float: 'left' }}
-      >
+      <Text size={32} pr={padding} w="fit-content" style={{ float: 'left' }}>
         <strong>{firstWordsStartingParagraph}</strong>
       </Text>
     );
@@ -370,7 +382,6 @@ function DisplayAnnouncement() {
         <Text
           key={`${index}`}
           size="md"
-          color="dark"
           w="fit-content"
           style={{
             lineHeight: '1.75rem',
@@ -385,7 +396,6 @@ function DisplayAnnouncement() {
       <Text
         key={`${index}`}
         size="md"
-        color="dark"
         style={{
           lineHeight: '1.75rem',
         }}
@@ -473,18 +483,29 @@ function DisplayAnnouncement() {
       spacing={rowGap}
       p={padding}
       w="100%"
-      style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
+      style={{ border: borderColor, borderRadius: '4px' }}
     >
       <Group position="left">{createdRatingComponent}</Group>
       <Space w="lg" />
-      <Group position="right">{createdSubmitRatingButton}</Group>
+      <Group position="right">
+        <Tooltip
+          position="left"
+          label={
+            rating === 0
+              ? 'Please rate before submitting'
+              : 'Submit your rating'
+          }
+        >
+          <Group>{createdSubmitRatingButton}</Group>
+        </Tooltip>
+      </Group>
     </Group>
   );
 
   const showStatisticsCard = (
     <Stack w="100%">
       <Group position="right">
-        <Text size="md" color="dark">
+        <Text size="md">
           {announcement?.ratingResponse?.ratingCount ?? 0} people have rated
           this
         </Text>
@@ -498,11 +519,7 @@ function DisplayAnnouncement() {
     : width < 480
     ? 'calc(100% - 3rem)'
     : '640px';
-  const ratingModalTitle = (
-    <Title order={2} color="dark">
-      {announcement?.title ?? ''}
-    </Title>
-  );
+  const ratingModalTitle = <Title order={4}>{announcement?.title ?? ''}</Title>;
   const displayRatingModal = (
     <Modal
       opened={openedRatingModal}
@@ -516,7 +533,7 @@ function DisplayAnnouncement() {
   );
 
   const statisticsModalTitle = (
-    <Title order={2} color="dark">
+    <Title order={4}>
       MacAuley family responses to {announcement?.title ?? ''}
     </Title>
   );
@@ -539,15 +556,9 @@ function DisplayAnnouncement() {
         w={width < 480 ? '85%' : '62%'}
         p={padding}
         spacing={rowGap}
-        style={{
-          borderTop: '1px solid #e0e0e0',
-          borderLeft: '1px solid #e0e0e0',
-          borderRight: '1px solid #e0e0e0',
-          borderRadius: '4px 4px 0 0',
-        }}
         position="left"
       >
-        <Text color="dark">
+        <Text size="md">
           {announcement?.ratedUserIds?.includes(userId ?? '')
             ? 'View reactions of MacAuley family members!'
             : 'How do you feel about this?'}
@@ -573,7 +584,7 @@ function DisplayAnnouncement() {
   );
 
   const displayAnnouncementComponent = (
-    <Flex direction="column" w="100%" style={{ background: 'white' }}>
+    <Flex direction="column" w="100%" bg={backgroundColor}>
       {displayRatingModal}
       {displayStatisticsModal}
       {articleTitle}

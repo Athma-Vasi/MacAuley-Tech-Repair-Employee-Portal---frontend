@@ -11,8 +11,6 @@ type DisplayAnnouncementsState = {
 
   triggerRefresh: boolean;
 
-  isError: boolean;
-  errorMessage: string;
   isLoading: boolean;
   loadingMessage: string;
   isSuccessful: boolean;
@@ -31,8 +29,6 @@ type DisplayAnnouncementsAction = {
 
   setTriggerRefresh: 'setTriggerRefresh';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -56,7 +52,6 @@ type DisplayAnnouncementsDispatch =
       type:
         | DisplayAnnouncementsAction['setNewQueryFlag']
         | DisplayAnnouncementsAction['setTriggerRefresh']
-        | DisplayAnnouncementsAction['setIsError']
         | DisplayAnnouncementsAction['setIsLoading']
         | DisplayAnnouncementsAction['setIsSuccessful']
         | DisplayAnnouncementsAction['setIsSubmitting'];
@@ -67,7 +62,6 @@ type DisplayAnnouncementsDispatch =
       type:
         | DisplayAnnouncementsAction['setQueryBuilderString']
         | DisplayAnnouncementsAction['setPageQueryString']
-        | DisplayAnnouncementsAction['setErrorMessage']
         | DisplayAnnouncementsAction['setLoadingMessage']
         | DisplayAnnouncementsAction['setSuccessMessage']
         | DisplayAnnouncementsAction['setSubmitMessage'];

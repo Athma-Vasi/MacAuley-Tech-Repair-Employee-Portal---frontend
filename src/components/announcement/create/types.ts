@@ -60,8 +60,6 @@ type CreateAnnouncementState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -99,8 +97,6 @@ type CreateAnnouncementAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -126,7 +122,6 @@ type CreateAnnouncementDispatch =
         | CreateAnnouncementAction['setAuthor']
         | CreateAnnouncementAction['setBannerImageSrc']
         | CreateAnnouncementAction['setBannerImageAlt']
-        | CreateAnnouncementAction['setErrorMessage']
         | CreateAnnouncementAction['setSubmitMessage']
         | CreateAnnouncementAction['setSuccessMessage']
         | CreateAnnouncementAction['setLoadingMessage'];
@@ -144,7 +139,6 @@ type CreateAnnouncementDispatch =
         | CreateAnnouncementAction['setIsBannerImageAltFocused']
         | CreateAnnouncementAction['setIsArticleLengthExceeded']
         | CreateAnnouncementAction['setTriggerFormSubmit']
-        | CreateAnnouncementAction['setIsError']
         | CreateAnnouncementAction['setIsSubmitting']
         | CreateAnnouncementAction['setIsSuccessful']
         | CreateAnnouncementAction['setIsLoading'];

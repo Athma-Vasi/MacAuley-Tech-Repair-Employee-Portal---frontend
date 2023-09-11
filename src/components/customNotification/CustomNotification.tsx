@@ -1,4 +1,4 @@
-import { Flex, Group, Notification, Space, Text } from '@mantine/core';
+import { Center, Flex, Group, Notification, Space, Text } from '@mantine/core';
 import { MdOutlineErrorOutline } from 'react-icons/md';
 import { TbCheck } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
@@ -60,133 +60,11 @@ function CustomNotification({
   const navigate = useNavigate();
 
   const {
-    generalColors: { greenColorShade, cyanColorShade, themeColorShade },
     appThemeColors: { borderColor },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
-
-  let notificationComponent = null;
-  if (isSuccessful) {
-    notificationComponent = (
-      <Notification
-        closeButtonProps={{
-          color: greenColorShade,
-          'aria-label': 'Hide notification',
-        }}
-        color={greenColorShade}
-        icon={<TbCheck size={22} />}
-        onClose={() => {
-          parentDispatch({
-            type: 'setIsSuccessful',
-            payload: false,
-          });
-          parentDispatch({
-            type: 'setSuccessMessage',
-            payload: '',
-          });
-
-          navigate(successPath);
-        }}
-        title={
-          <Group
-            p={padding}
-            style={{
-              borderBottom: borderColor,
-            }}
-          >
-            <Text>٩(^ ᗜ ^ )و ´- </Text>
-            <Space w="xs" />
-            <Text>Success!</Text>
-          </Group>
-        }
-        withBorder
-      >
-        <Group p={padding}>
-          <Text>{successMessage}</Text>
-        </Group>
-      </Notification>
-    );
-  }
-
-  if (isSubmitting) {
-    notificationComponent = (
-      <Notification
-        closeButtonProps={{
-          color: cyanColorShade,
-          'aria-label': 'Hide notification',
-        }}
-        loading
-        onClose={() => {
-          parentDispatch({
-            type: 'setIsSubmitting',
-            payload: false,
-          });
-          parentDispatch({
-            type: 'setSubmitMessage',
-            payload: '',
-          });
-        }}
-        title={
-          <Group
-            p={padding}
-            style={{
-              borderBottom: borderColor,
-            }}
-          >
-            <Text>Submitting... Please wait. </Text>
-          </Group>
-        }
-        withBorder
-        withCloseButton={false}
-      >
-        <Group p={padding}>
-          <Text>{submitMessage}</Text>
-        </Group>
-      </Notification>
-    );
-  }
-
-  if (isLoading) {
-    notificationComponent = (
-      <Notification
-        closeButtonProps={{
-          color: themeColorShade,
-          'aria-label': 'Hide notification',
-        }}
-        loading
-        onClose={() => {
-          parentDispatch({
-            type: 'setIsLoading',
-            payload: false,
-          });
-          parentDispatch({
-            type: 'setLoadingMessage',
-            payload: '',
-          });
-
-          // navigate(successPath);
-        }}
-        title={
-          <Group
-            p={padding}
-            style={{
-              borderBottom: borderColor,
-            }}
-          >
-            <Text size="md">Loading... Please wait. </Text>
-          </Group>
-        }
-        withBorder
-        withCloseButton={false}
-      >
-        <Group p={padding}>
-          <Text>{loadingMessage}</Text>
-        </Group>
-      </Notification>
-    );
-  }
 
   const notificationWidth =
     width < 480 // for iPhone 5/SE
@@ -201,7 +79,106 @@ function CustomNotification({
       ? (width - 300) * 0.85
       : 900 - 40;
 
-  return <Flex w={notificationWidth}>{notificationComponent}</Flex>;
+  let notificationComponent = null;
+  if (isSuccessful) {
+    notificationComponent = (
+      <Notification
+        closeButtonProps={{ 'aria-label': 'Hide notification' }}
+        icon={<TbCheck size={22} />}
+        onClose={() => {
+          parentDispatch({
+            type: 'setIsSuccessful',
+            payload: false,
+          });
+          parentDispatch({
+            type: 'setSuccessMessage',
+            payload: '',
+          });
+
+          navigate(successPath);
+        }}
+        title={
+          <Group p={padding} style={{ borderBottom: borderColor }}>
+            <Text size="md">٩(^ ᗜ ^ )و ´- </Text>
+            {/* <Space w="xs" /> */}
+            <Text size="md">Success!</Text>
+          </Group>
+        }
+        w={notificationWidth}
+        withBorder
+      >
+        <Group p={padding}>
+          <Text>{successMessage}</Text>
+        </Group>
+      </Notification>
+    );
+  }
+
+  if (isSubmitting) {
+    notificationComponent = (
+      <Notification
+        closeButtonProps={{ 'aria-label': 'Hide notification' }}
+        loading
+        onClose={() => {
+          parentDispatch({
+            type: 'setIsSubmitting',
+            payload: false,
+          });
+          parentDispatch({
+            type: 'setSubmitMessage',
+            payload: '',
+          });
+        }}
+        title={
+          <Group p={padding} style={{ borderBottom: borderColor }}>
+            <Text size="md">Submitting... Please wait. </Text>
+          </Group>
+        }
+        w={notificationWidth}
+        withBorder
+        withCloseButton={false}
+      >
+        <Group p={padding}>
+          <Text>{submitMessage}</Text>
+        </Group>
+      </Notification>
+    );
+  }
+
+  if (isLoading) {
+    notificationComponent = (
+      <Notification
+        closeButtonProps={{ 'aria-label': 'Hide notification' }}
+        loading
+        onClose={() => {
+          parentDispatch({
+            type: 'setIsLoading',
+            payload: false,
+          });
+          parentDispatch({
+            type: 'setLoadingMessage',
+            payload: '',
+          });
+
+          // navigate(successPath);
+        }}
+        title={
+          <Group p={padding} style={{ borderBottom: borderColor }}>
+            <Text size="md">Loading... Please wait. </Text>
+          </Group>
+        }
+        w={notificationWidth}
+        withBorder
+        withCloseButton={false}
+      >
+        <Group p={padding}>
+          <Text>{loadingMessage}</Text>
+        </Group>
+      </Notification>
+    );
+  }
+
+  return <Center h="62%">{notificationComponent}</Center>;
 }
 
 export { CustomNotification };

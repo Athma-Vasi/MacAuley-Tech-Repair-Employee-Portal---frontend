@@ -1,3 +1,5 @@
+import { Group, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -5,7 +7,9 @@ import {
   useEffect,
   useReducer,
 } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import { PROVINCES, STATES_US } from '../../../constants/data';
 import {
@@ -15,22 +19,34 @@ import {
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
+  AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
-  AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
-  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { Country, Province, StatesUS } from '../../../types';
+import {
+  Country,
+  Province,
+  ResourceRequestServerResponse,
+  StatesUS,
+} from '../../../types';
 import {
   returnAddressValidationText,
   returnCityValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
+  urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -50,10 +66,7 @@ import {
   addressChangeReducer,
   initialAddressChangeState,
 } from './state';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
-import { Group, Tooltip } from '@mantine/core';
+import { AddressChangeDocument } from './types';
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -86,8 +99,6 @@ function AddressChange() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -95,6 +106,150 @@ function AddressChange() {
     isLoading,
     loadingMessage,
   } = addressChangeState;
+
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const { globalDispatch } = useGlobalState();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function addressChangeFormSubmit() {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsSubmitting,
+        payload: true,
+      });
+      addressChangeDispatch({
+        type: addressChangeAction.setSubmitMessage,
+        payload: 'Address change request is on the way!',
+      });
+
+      const url: URL = urlBuilder({
+        path: 'actions/company/address-change',
+      });
+
+      const body = JSON.stringify({
+        addressChange:
+          country === 'Canada'
+            ? {
+                contactNumber,
+                addressLine,
+                city,
+                province,
+                country,
+                postalCode,
+                acknowledgement: isAcknowledged,
+              }
+            : {
+                contactNumber,
+                addressLine,
+                city,
+                state,
+                country,
+                postalCode,
+                acknowledgement: isAcknowledged,
+              },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<AddressChangeDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        addressChangeDispatch({
+          type: addressChangeAction.setIsSuccessful,
+          payload: true,
+        });
+        addressChangeDispatch({
+          type: addressChangeAction.setSuccessMessage,
+          payload: data.message ?? 'Address change request successfull!',
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          addressChangeDispatch({
+            type: addressChangeAction.setIsSubmitting,
+            payload: false,
+          });
+          addressChangeDispatch({
+            type: addressChangeAction.setSubmitMessage,
+            payload: '',
+          });
+          addressChangeDispatch({
+            type: addressChangeAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      addressChangeFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only run on triggerFormSubmit change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   // used to validate address line on every change
   useEffect(() => {
@@ -231,6 +386,23 @@ function AddressChange() {
     isValidPostalCode,
     isAcknowledged,
   ]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={addressChangeDispatch}
+        navigateTo={{
+          successPath: '/home/company/address-change/display',
+        }}
+      />
+    );
+  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
@@ -625,14 +797,6 @@ function AddressChange() {
     />
   );
 
-  useEffect(() => {
-    async function addressChangeFormSubmit() {}
-
-    if (triggerFormSubmit) {
-      addressChangeFormSubmit();
-    }
-  }, [triggerFormSubmit]);
-
   const [createdSubmitButton] = returnAccessibleButtonElements([
     submitButtonCreatorInfo,
   ]);
@@ -641,7 +805,7 @@ function AddressChange() {
       <Tooltip
         label={
           stepsInError.size > 0
-            ? 'Please fix errors before submitting form form'
+            ? 'Please fix errors before submitting form'
             : 'Submit Address Change form'
         }
       >
@@ -684,7 +848,7 @@ function AddressChange() {
     </StepperWrapper>
   );
 
-  return <>{displayAddressChangeComponent}</>;
+  return displayAddressChangeComponent;
 }
 
 export default AddressChange;

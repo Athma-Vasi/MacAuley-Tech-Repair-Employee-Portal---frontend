@@ -30,8 +30,6 @@ const initialAddressChangeState: AddressChangeState = {
   currentStepperPosition: 0,
   stepsInError: new Set<number>(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -66,8 +64,6 @@ const addressChangeAction: AddressChangeAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -187,16 +183,6 @@ function addressChangeReducer(
       };
     }
 
-    case addressChangeAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case addressChangeAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case addressChangeAction.setIsSubmitting:
       return {
         ...state,

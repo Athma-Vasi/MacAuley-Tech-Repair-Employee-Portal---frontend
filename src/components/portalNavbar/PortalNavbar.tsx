@@ -109,7 +109,26 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/home/company/address-change');
         }}
-      />
+      >
+        {/* create address change */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/company/address-change/create');
+          }}
+        />
+        {/* display address changes */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/company/address-change/display');
+          }}
+        />
+      </NavLink>
       {/* benefit */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Benefits</TextWrapper>}

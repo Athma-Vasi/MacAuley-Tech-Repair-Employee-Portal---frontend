@@ -12,8 +12,6 @@ const initialDisplayAnnouncementState: DisplayAnnouncementState = {
   triggerRatingSubmit: false,
   ratingPieChartDataArray: [],
 
-  isError: false,
-  errorMessage: '',
   isLoading: true,
   loadingMessage: 'Loading announcement...',
   isSuccessful: false,
@@ -29,8 +27,6 @@ const displayAnnouncementAction: DisplayAnnouncementAction = {
   setTriggerRatingSubmit: 'setTriggerRatingSubmit',
   setRatingPieChartDataArray: 'setRatingPieChartDataArray',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
   setLoadingMessage: 'setLoadingMessage',
   setIsSubmitting: 'setIsSubmitting',
@@ -151,16 +147,6 @@ function displayAnnouncementReducer(
       };
     }
 
-    case displayAnnouncementAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case displayAnnouncementAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case displayAnnouncementAction.setIsLoading:
       return {
         ...state,

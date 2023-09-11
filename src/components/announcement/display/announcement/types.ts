@@ -9,8 +9,6 @@ type DisplayAnnouncementState = {
   triggerRatingSubmit: boolean;
   ratingPieChartDataArray: PieChartData[];
 
-  isError: boolean;
-  errorMessage: string;
   isLoading: boolean;
   loadingMessage: string;
   isSubmitting: boolean;
@@ -27,8 +25,6 @@ type DisplayAnnouncementAction = {
   setTriggerRatingSubmit: 'setTriggerRatingSubmit';
   setRatingPieChartDataArray: 'setRatingPieChartDataArray';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
   setIsSubmitting: 'setIsSubmitting';
@@ -60,7 +56,6 @@ type DisplayAnnouncementDispatch =
   | {
       type:
         | DisplayAnnouncementAction['setTriggerRatingSubmit']
-        | DisplayAnnouncementAction['setIsError']
         | DisplayAnnouncementAction['setIsLoading']
         | DisplayAnnouncementAction['setIsSubmitting']
         | DisplayAnnouncementAction['setIsSuccessful'];
@@ -69,7 +64,6 @@ type DisplayAnnouncementDispatch =
     }
   | {
       type:
-        | DisplayAnnouncementAction['setErrorMessage']
         | DisplayAnnouncementAction['setLoadingMessage']
         | DisplayAnnouncementAction['setSubmitMessage']
         | DisplayAnnouncementAction['setSuccessMessage'];

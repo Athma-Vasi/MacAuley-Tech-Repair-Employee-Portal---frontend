@@ -28,7 +28,7 @@ const initialCommentState: CommentState = {
   },
 
   totalDocuments: 0,
-  numberOfPages: 0,
+  numberOfPages: 1,
   limitPerPage: '10',
   resetPage: false,
   newQueryFlag: false,
@@ -39,12 +39,10 @@ const initialCommentState: CommentState = {
   commentIdsToFetch: [],
   commentsMap: new Map(),
 
-  triggerCommentFetch: false,
+  triggerCommentFetch: true,
   triggerCommentUpdate: false,
   triggerCommentSubmit: false,
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isLoading: false,
@@ -81,8 +79,6 @@ const commentAction: CommentAction = {
   setTriggerCommentUpdate: 'setTriggerCommentUpdate',
   setTriggerCommentSubmit: 'setTriggerCommentSubmit',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsLoading: 'setIsLoading',
@@ -352,16 +348,6 @@ function commentReducer(
         triggerCommentSubmit: action.payload,
       };
 
-    case commentAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case commentAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case commentAction.setIsSubmitting:
       return {
         ...state,
