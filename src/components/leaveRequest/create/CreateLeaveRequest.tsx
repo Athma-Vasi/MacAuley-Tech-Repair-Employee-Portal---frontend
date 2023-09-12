@@ -20,6 +20,7 @@ import {
   filterFieldsFromObject,
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
+  urlBuilder,
 } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -31,7 +32,7 @@ import {
   FormLayoutWrapper,
   StepperWrapper,
 } from '../../wrappers';
-import { ReasonForLeave } from '../types';
+import { LeaveRequestDocument, ReasonForLeave } from '../types';
 import {
   LEAVE_REQUEST_DESCRIPTION_OBJECTS,
   LEAVE_REQUEST_MAX_STEPPER_POSITION,
@@ -42,12 +43,16 @@ import {
   createLeaveRequestReducer,
   initialCreateLeaveRequestState,
 } from './state';
-import { Group, Tooltip, useMantineTheme } from '@mantine/core';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Group, Tooltip } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
-import { CreateLeaveRequestState } from './types';
+import { useErrorBoundary } from 'react-error-boundary';
+import { useGlobalState, useAuth } from '../../../hooks';
+import { ResourceRequestServerResponse } from '../../../types';
+import { InvalidTokenError } from 'jwt-decode';
+import { globalAction } from '../../../context/globalProvider/state';
 
 function CreateLeaveRequest() {
   const [leaveRequestState, leaveRequestDispatch] = useReducer(
@@ -84,8 +89,6 @@ function CreateLeaveRequest() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -93,6 +96,142 @@ function CreateLeaveRequest() {
     isLoading,
     loadingMessage,
   } = leaveRequestState;
+
+  const {
+    globalState: { themeObject },
+    globalDispatch,
+  } = useGlobalState();
+
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function handleCreateLeaveRequestFormSubmit() {
+      leaveRequestDispatch({
+        type: createLeaveRequestAction.setIsSubmitting,
+        payload: true,
+      });
+      leaveRequestDispatch({
+        type: createLeaveRequestAction.setSubmitMessage,
+        payload: `Submitting ${reasonForLeave} leave request form`,
+      });
+
+      const url: URL = urlBuilder({ path: 'actions/company/leave-request' });
+
+      const body = JSON.stringify({
+        leaveRequest: {
+          startDate,
+          endDate,
+          reasonForLeave,
+          delegatedToEmployee,
+          delegatedResponsibilities,
+          additionalComments,
+          acknowledgement: isAcknowledged,
+        },
+      });
+
+      const request: Request = new Request(url.toString(), {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<LeaveRequestDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        leaveRequestDispatch({
+          type: createLeaveRequestAction.setIsSuccessful,
+          payload: true,
+        });
+        leaveRequestDispatch({
+          type: createLeaveRequestAction.setSuccessMessage,
+          payload:
+            data.message ??
+            `Successfully created ${reasonForLeave} leave request form`,
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          leaveRequestDispatch({
+            type: createLeaveRequestAction.setIsSubmitting,
+            payload: false,
+          });
+          leaveRequestDispatch({
+            type: createLeaveRequestAction.setSubmitMessage,
+            payload: '',
+          });
+          leaveRequestDispatch({
+            type: createLeaveRequestAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleCreateLeaveRequestFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only run on triggerFormSubmit change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   // validate start date on every change
   useEffect(() => {
@@ -603,16 +742,6 @@ function CreateLeaveRequest() {
       {displayCreateLeaveRequestForm}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    async function handleCreateLeaveRequestFormSubmit() {
-      console.log('leave request form submitted');
-    }
-
-    if (triggerFormSubmit) {
-      handleCreateLeaveRequestFormSubmit();
-    }
-  }, [triggerFormSubmit]);
 
   return displayCreateLeaveRequestComponent;
 }

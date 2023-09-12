@@ -30,8 +30,6 @@ type CreateLeaveRequestState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -69,8 +67,6 @@ type CreateLeaveRequestAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -87,7 +83,6 @@ type CreateLeaveRequestDispatch =
         | CreateLeaveRequestAction['setDelegatedToEmployee']
         | CreateLeaveRequestAction['setDelegatedResponsibilities']
         | CreateLeaveRequestAction['setAdditionalComments']
-        | CreateLeaveRequestAction['setErrorMessage']
         | CreateLeaveRequestAction['setSubmitMessage']
         | CreateLeaveRequestAction['setSuccessMessage']
         | CreateLeaveRequestAction['setLoadingMessage'];
@@ -108,7 +103,6 @@ type CreateLeaveRequestDispatch =
         | CreateLeaveRequestAction['setIsAdditionalCommentsFocused']
         | CreateLeaveRequestAction['setIsAcknowledged']
         | CreateLeaveRequestAction['setTriggerFormSubmit']
-        | CreateLeaveRequestAction['setIsError']
         | CreateLeaveRequestAction['setIsSubmitting']
         | CreateLeaveRequestAction['setIsSuccessful']
         | CreateLeaveRequestAction['setIsLoading'];

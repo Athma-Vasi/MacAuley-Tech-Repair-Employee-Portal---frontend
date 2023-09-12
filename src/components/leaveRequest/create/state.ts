@@ -33,8 +33,6 @@ const initialCreateLeaveRequestState: CreateLeaveRequestState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -73,8 +71,6 @@ const createLeaveRequestAction: CreateLeaveRequestAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -205,16 +201,6 @@ function createLeaveRequestReducer(
       };
     }
 
-    case createLeaveRequestAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createLeaveRequestAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case createLeaveRequestAction.setIsSubmitting:
       return {
         ...state,
