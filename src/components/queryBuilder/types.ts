@@ -61,15 +61,6 @@ type QueryBuilderState = {
   projectedFieldsSet: Set<string>;
 
   queryString: string;
-
-  isError: boolean;
-  errorMessage: string;
-  isLoading: boolean;
-  loadingMessage: string;
-  isSubmitting: boolean;
-  submitMessage: string;
-  isSuccessful: boolean;
-  successMessage: string;
 };
 
 type QueryBuilderAction = {
@@ -97,15 +88,6 @@ type QueryBuilderAction = {
 
   setClearAllQueryData: 'setClearAllQueryData';
   buildQueryString: 'buildQueryString';
-
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
 };
 
 type QueryBuilderDispatch =
@@ -116,21 +98,15 @@ type QueryBuilderDispatch =
         | QueryBuilderAction['setCurrentFilterValue']
         | QueryBuilderAction['setCurrentSortTerm']
         | QueryBuilderAction['setCurrentSortDirection']
-        | QueryBuilderAction['setClearAllQueryData']
-        | QueryBuilderAction['setErrorMessage']
-        | QueryBuilderAction['setSuccessMessage']
-        | QueryBuilderAction['setLoadingMessage']
-        | QueryBuilderAction['setSubmitMessage'];
+        | QueryBuilderAction['setClearAllQueryData'];
+
       payload: string;
     }
   | {
       type:
         | QueryBuilderAction['setIsCurrentFilterValueValid']
-        | QueryBuilderAction['setIsCurrentFilterValueFocused']
-        | QueryBuilderAction['setIsError']
-        | QueryBuilderAction['setIsSubmitting']
-        | QueryBuilderAction['setIsSuccessful']
-        | QueryBuilderAction['setIsLoading'];
+        | QueryBuilderAction['setIsCurrentFilterValueFocused'];
+
       payload: boolean;
     }
   | {

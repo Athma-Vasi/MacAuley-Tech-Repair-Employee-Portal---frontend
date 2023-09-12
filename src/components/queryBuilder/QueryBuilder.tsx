@@ -3,31 +3,26 @@ import {
   Center,
   Divider,
   Flex,
-  Grid,
   Group,
   Modal,
-  NavLink,
   Stack,
   Text,
   Title,
   Tooltip,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, useEffect, useReducer } from 'react';
-
+import { RxLinkBreak2 } from 'react-icons/rx';
 import {
   TbArrowDown,
-  TbArrowsSort,
-  TbChevronRight,
   TbClearAll,
-  TbFilterCog,
-  TbLayersLinked,
   TbPlus,
   TbQuestionMark,
   TbTrash,
   TbUpload,
 } from 'react-icons/tb';
-import { VscExclude } from 'react-icons/vsc';
 
+import { COLORS_SWATCHES } from '../../constants/data';
 import {
   DATE_FULL_RANGE_REGEX,
   MONEY_REGEX,
@@ -49,6 +44,7 @@ import {
   replaceLastCommaWithAnd,
   returnDateFullRangeValidationText,
   returnNumberAmountValidationText,
+  returnThemeColors,
   returnTimeRailwayValidationText,
 } from '../../utils';
 import { TimelineBuilder } from '../timelineBuilder';
@@ -59,29 +55,25 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
-  TextWrapper,
 } from '../wrappers';
 import {
   ORDINAL_TERMS,
   QUERY_BUILDER_FILTER_OPERATORS,
   QUERY_BUILDER_SORT_OPERATORS,
 } from './constants';
-import { RxLinkBreak2 } from 'react-icons/rx';
 import {
   initialQueryBuilderState,
   queryBuilderAction,
   queryBuilderReducer,
 } from './state';
 import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
-import { COLORS_SWATCHES } from '../../constants/data';
 import {
   FILTER_HELP_MODAL_CONTENT,
+  generateFilterChainStatement,
   PROJECTION_HELP_MODAL_CONTENT,
   QUERY_BUILDER_HELP_MODAL_CONTENT,
   SORT_HELP_MODAL_CONTENT,
-  generateFilterChainStatement,
 } from './utils';
-import { useDisclosure } from '@mantine/hooks';
 
 function QueryBuilder({
   componentQueryData,
@@ -118,23 +110,9 @@ function QueryBuilder({
     projectedFieldsSet,
 
     queryString,
-
-    isError,
-    errorMessage,
-    isLoading,
-    loadingMessage,
-    isSubmitting,
-    submitMessage,
-    isSuccessful,
-    successMessage,
   } = queryBuilderState;
   const {
-    globalState: {
-      width,
-      rowGap,
-      padding,
-      themeObject: { colorScheme, primaryShade, primaryColor },
-    },
+    globalState: { width, rowGap, padding, themeObject },
   } = useGlobalState();
 
   const [
@@ -337,16 +315,13 @@ function QueryBuilder({
   });
   // ----------------- //
 
-  const { gray } = COLORS_SWATCHES;
-
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
-  const themeColor = Object.entries(COLORS_SWATCHES).find(
-    ([color, _shades]) => color === primaryColor
-  )?.[1];
-  const themeColorShade = themeColor ? themeColor[colorShade] : gray[5];
-  const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
+  const {
+    generalColors: { themeColorShade },
+    appThemeColors: { borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   // ----------------- filter section -----------------  //
 

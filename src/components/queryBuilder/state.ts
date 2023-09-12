@@ -30,15 +30,6 @@ const initialQueryBuilderState: QueryBuilderState = {
   projectedFieldsSet: new Set(),
 
   queryString: '?',
-
-  isError: false,
-  errorMessage: '',
-  isLoading: false,
-  loadingMessage: '',
-  isSubmitting: false,
-  submitMessage: '',
-  isSuccessful: false,
-  successMessage: '',
 };
 
 const queryBuilderAction: QueryBuilderAction = {
@@ -66,15 +57,6 @@ const queryBuilderAction: QueryBuilderAction = {
 
   setClearAllQueryData: 'setClearAllQueryData',
   buildQueryString: 'buildQueryString',
-
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
-  setIsSubmitting: 'setIsSubmitting',
-  setSubmitMessage: 'setSubmitMessage',
-  setIsSuccessful: 'setIsSuccessful',
-  setSuccessMessage: 'setSuccessMessage',
-  setIsLoading: 'setIsLoading',
-  setLoadingMessage: 'setLoadingMessage',
 };
 
 function queryBuilderReducer(
@@ -302,47 +284,6 @@ function queryBuilderReducer(
         queryString: newQueryString,
       };
     }
-
-    case queryBuilderAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case queryBuilderAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
-    case queryBuilderAction.setIsSubmitting:
-      return {
-        ...state,
-        isSubmitting: action.payload,
-      };
-    case queryBuilderAction.setSubmitMessage:
-      return {
-        ...state,
-        submitMessage: action.payload,
-      };
-    case queryBuilderAction.setIsSuccessful:
-      return {
-        ...state,
-        isSuccessful: action.payload,
-      };
-    case queryBuilderAction.setSuccessMessage:
-      return {
-        ...state,
-        successMessage: action.payload,
-      };
-    case queryBuilderAction.setIsLoading:
-      return {
-        ...state,
-        isLoading: action.payload,
-      };
-    case queryBuilderAction.setLoadingMessage:
-      return {
-        ...state,
-        loadingMessage: action.payload,
-      };
 
     default:
       return state;
