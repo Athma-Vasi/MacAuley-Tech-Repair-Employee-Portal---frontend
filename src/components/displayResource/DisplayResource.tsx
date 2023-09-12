@@ -780,9 +780,10 @@ function DisplayResource<Doc>({
   }
 
   // prevent display of option to groupBy/projection exclusion of username field if the resource is anonymousRequest
+
   const filteredComponentQueryData =
     requestBodyHeading === 'anonymousRequest'
-      ? componentQueryData.filter((obj) => obj.value !== 'username')
+      ? componentQueryData?.filter((obj) => obj.value !== 'username')
       : componentQueryData;
 
   const displayResource = isDisplayFilesOnly ? (

@@ -64,8 +64,6 @@ type CreateAnonymousRequestState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -103,8 +101,6 @@ type CreateAnonymousRequestAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -122,7 +118,6 @@ type CreateAnonymousRequestDispatch =
         | CreateAnonymousRequestAction['setRequestDescription']
         | CreateAnonymousRequestAction['setAdditionalInformation']
         | CreateAnonymousRequestAction['setLoadingMessage']
-        | CreateAnonymousRequestAction['setErrorMessage']
         | CreateAnonymousRequestAction['setSubmitMessage']
         | CreateAnonymousRequestAction['setSuccessMessage'];
       payload: string;
@@ -140,7 +135,6 @@ type CreateAnonymousRequestDispatch =
         | CreateAnonymousRequestAction['setIsValidAdditionalInformation']
         | CreateAnonymousRequestAction['setIsAdditionalInformationFocused']
         | CreateAnonymousRequestAction['setTriggerFormSubmit']
-        | CreateAnonymousRequestAction['setIsError']
         | CreateAnonymousRequestAction['setIsSubmitting']
         | CreateAnonymousRequestAction['setIsSuccessful']
         | CreateAnonymousRequestAction['setIsLoading'];

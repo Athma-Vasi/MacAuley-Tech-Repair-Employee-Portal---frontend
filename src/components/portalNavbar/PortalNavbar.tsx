@@ -129,6 +129,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           }}
         />
       </NavLink>
+
       {/* benefit */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Benefits</TextWrapper>}
@@ -137,7 +138,27 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/home/company/benefit');
         }}
-      />
+      >
+        {/* create benefit */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/company/benefit/create');
+          }}
+        />
+        {/* display benefits */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/company/benefit/display');
+          }}
+        />
+      </NavLink>
+
       {/* expense-claim */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Expense claim</TextWrapper>}
@@ -146,7 +167,27 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/home/company/expense-claim');
         }}
-      />
+      >
+        {/* create expense claim */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/company/expense-claim/create');
+          }}
+        />
+        {/* display expense claims */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/company/expense-claim/display');
+          }}
+        />
+      </NavLink>
+
       {/* leave-request */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Leave request</TextWrapper>}
@@ -175,6 +216,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           }}
         />
       </NavLink>
+
       {/* request-resource */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Request resource</TextWrapper>}
@@ -183,7 +225,26 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/home/company/request-resource');
         }}
-      />
+      >
+        {/* create request resource */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/company/request-resource/create');
+          }}
+        />
+        {/* display request resources */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/company/request-resource/display');
+          }}
+        />
+      </NavLink>
     </NavLink>
   );
 
@@ -202,7 +263,27 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/home/general/endorsement/display');
         }}
-      />
+      >
+        {/* display endorsements */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/general/endorsement/display');
+          }}
+        />
+        {/* create endorsement */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/general/endorsement/create');
+          }}
+        />
+      </NavLink>
+
       {/* printer-issue */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Printer issue</TextWrapper>}
@@ -211,7 +292,27 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/home/general/printer-issue');
         }}
-      />
+      >
+        {/* create printer issue */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/general/printer-issue/create');
+          }}
+        />
+        {/* display printer issues */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/general/printer-issue/display');
+          }}
+        />
+      </NavLink>
+
       {/* anonymous-request */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Anonymous request</TextWrapper>}
@@ -220,7 +321,27 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/home/general/anonymous-request');
         }}
-      />
+      >
+        {/* create anonymous request */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/general/anonymous-request/create');
+          }}
+        />
+        {/* display anonymous requests */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/general/anonymous-request/display');
+          }}
+        />
+      </NavLink>
+
       {/* referment */}
       <NavLink
         label={<TextWrapper creatorInfoObj={{}}>Referment</TextWrapper>}
@@ -229,7 +350,26 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         onClick={() => {
           navigate('/home/general/referment');
         }}
-      />
+      >
+        {/* create referment */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Create</TextWrapper>}
+          icon={<TbPlus />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/general/referment/create');
+          }}
+        />
+        {/* display referments */}
+        <NavLink
+          label={<TextWrapper creatorInfoObj={{}}>Display</TextWrapper>}
+          icon={<TbList />}
+          rightSection={<TbChevronRight />}
+          onClick={() => {
+            navigate('/home/general/referment/display');
+          }}
+        />
+      </NavLink>
     </NavLink>
   );
 

@@ -33,8 +33,6 @@ const initialCreateAnonymousRequestState: CreateAnonymousRequestState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -72,8 +70,6 @@ const createAnonymousRequestAction: CreateAnonymousRequestAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -193,16 +189,7 @@ function createAnonymousRequestReducer(
         stepsInError,
       };
     }
-    case createAnonymousRequestAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createAnonymousRequestAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
+
     case createAnonymousRequestAction.setIsSubmitting:
       return {
         ...state,

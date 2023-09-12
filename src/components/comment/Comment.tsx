@@ -304,15 +304,6 @@ function Comment({
     const controller = new AbortController();
 
     async function updateUserReaction() {
-      commentDispatch({
-        type: commentAction.setIsSubmitting,
-        payload: true,
-      });
-      commentDispatch({
-        type: commentAction.setSubmitMessage,
-        payload: 'Sending comment update to server...',
-      });
-
       const url: URL = urlBuilder({
         path: `comment/${updateCommentId}`,
       });
@@ -382,14 +373,6 @@ function Comment({
 
         showBoundary(error);
       } finally {
-        commentDispatch({
-          type: commentAction.setIsSubmitting,
-          payload: false,
-        });
-        commentDispatch({
-          type: commentAction.setSubmitMessage,
-          payload: '',
-        });
         commentDispatch({
           type: commentAction.setTriggerCommentUpdate,
           payload: false,
@@ -683,6 +666,7 @@ function Comment({
     ref: openedCommentModal ? commentTextAreaRef : null,
     semanticName: 'comment',
     required: true,
+    textAreaWidth: '100%',
   };
 
   const replyButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -787,7 +771,6 @@ function Comment({
           ) : (
             <TbArrowBigUp />
           ),
-          // buttonDisabled: likedUserIds.includes(userId),
           buttonVariant: likedUserIds.includes(userId) ? 'outline' : 'subtle',
           buttonStyle: { borderRadius: '9999px 4px 4px 9999px' },
           semanticDescription: 'like comment button',
@@ -1101,7 +1084,7 @@ function Comment({
 
       const createdSocialMediaIcons = (
         <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
-          <Tooltip label="Github">
+          <Tooltip label={`View ${commentDoc.username}'s Github profile`}>
             <Group>
               <TiSocialGithub
                 size={width < 640 ? 20 : 24}
@@ -1110,7 +1093,7 @@ function Comment({
             </Group>
           </Tooltip>
 
-          <Tooltip label="Mastodon">
+          <Tooltip label={`View ${commentDoc.username}'s Mastodon profile`}>
             <Group>
               <TbBrandMastodon
                 size={width < 640 ? 20 : 24}
@@ -1119,7 +1102,7 @@ function Comment({
             </Group>
           </Tooltip>
 
-          <Tooltip label="LinkedIn">
+          <Tooltip label={`View ${commentDoc.username}'s LinkedIn profile`}>
             <Group>
               <TiSocialLinkedin
                 size={width < 640 ? 20 : 24}
@@ -1128,7 +1111,7 @@ function Comment({
             </Group>
           </Tooltip>
 
-          <Tooltip label="Flickr">
+          <Tooltip label={`View ${commentDoc.username}'s Flickr profile`}>
             <Group>
               <TiSocialFlickr
                 size={width < 640 ? 20 : 24}
@@ -1137,7 +1120,7 @@ function Comment({
             </Group>
           </Tooltip>
 
-          <Tooltip label="Dribbble">
+          <Tooltip label={`View ${commentDoc.username}'s Dribbble profile`}>
             <Group>
               <TiSocialDribbble
                 size={width < 640 ? 20 : 24}
@@ -1400,7 +1383,7 @@ function Comment({
       );
 
       const quotedSection = (
-        <Stack w="100%" style={{ borderLeft: borderColor }} px={padding}>
+        <Stack w="100%" px={padding}>
           {quotedUsernameElement}
           {quotedCommentElement}
         </Stack>

@@ -48,7 +48,7 @@ function DisplayAnnouncements() {
   } = useAuth();
 
   const {
-    globalState: { padding, rowGap },
+    globalState: { padding, rowGap, themeObject },
     globalDispatch,
   } = useGlobalState();
 
@@ -194,6 +194,13 @@ function DisplayAnnouncements() {
   }
   /** ------------- end component render bypass ------------- */
 
+  const {
+    appThemeColors: { backgroundColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
   /** ------------- begin input creators ------------- */
 
   const createdAnnouncementsCards = responseData?.map(
@@ -245,7 +252,7 @@ function DisplayAnnouncements() {
                 top: '75%',
                 left: '0%',
                 zIndex: 1,
-                backgroundColor: 'rgba(0,0,0,0.5)',
+                backgroundColor: 'rgba(0,0,0,0.7)',
               }}
             >
               {title}
@@ -264,16 +271,14 @@ function DisplayAnnouncements() {
   const displayAnnouncementCards = (
     <Flex
       align="center"
+      bg={backgroundColor}
       justify="flex-start"
       w="100%"
       wrap="wrap"
       rowGap={rowGap}
       p={padding}
       columnGap={rowGap}
-      style={{
-        background: 'white',
-        borderRadius: '4px',
-      }}
+      style={{ borderRadius: '4px' }}
     >
       {createdAnnouncementsCards}
     </Flex>

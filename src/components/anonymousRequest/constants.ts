@@ -98,9 +98,9 @@ const ANONYMOUS_REQUEST_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const ANONYMOUS_REQUEST_ROUTES: ResourceRoutePaths = {
-  manager: '/api/v1/actions/general/anonymous-request',
-  admin: '/api/v1/actions/general/anonymous-request',
-  employee: '/api/v1/actions/general/anonymous-request/user',
+  manager: 'actions/general/anonymous-request',
+  admin: 'actions/general/anonymous-request',
+  employee: 'actions/general/anonymous-request/user',
 };
 
 export {

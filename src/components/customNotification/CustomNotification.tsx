@@ -131,7 +131,7 @@ function CustomNotification({
         }}
         title={
           <Group p={padding} style={{ borderBottom: borderColor }}>
-            <Text size="md">Submitting... Please wait. </Text>
+            <Text size="md">Please wait ... </Text>
           </Group>
         }
         w={notificationWidth}

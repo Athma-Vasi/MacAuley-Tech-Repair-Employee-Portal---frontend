@@ -190,6 +190,7 @@ function DisplayQueryDesktop<Doc>({
         )[0]
       : [];
   console.log('tableHeaderValuesArr: ', tableHeaderValuesArr);
+  console.log('groupBySelection: ', groupBySelection);
 
   const headerExclusionSet = new Set([
     '_id',
@@ -445,8 +446,13 @@ function DisplayQueryDesktop<Doc>({
                           );
 
                           // allows for convenient access to username, userId and groupBySelectionField in a large table
+                          console.log(
+                            'queryResponseObjWithAddedFields: ',
+                            queryResponseObjWithAddedFields
+                          );
                           const username =
-                            queryResponseObjWithAddedFields.username;
+                            queryResponseObjWithAddedFields.username ??
+                            'Anonymous';
                           const userId = queryResponseObjWithAddedFields.userId;
                           const groupBySelectionValue =
                             queryResponseObjWithAddedFields[groupBySelection];
@@ -475,6 +481,7 @@ function DisplayQueryDesktop<Doc>({
                               )}
 
                               <Group>
+                                <Space w="xs" />
                                 <Text>Username: </Text>
 
                                 <Text>

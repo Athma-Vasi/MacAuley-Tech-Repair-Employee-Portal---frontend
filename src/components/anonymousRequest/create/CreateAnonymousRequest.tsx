@@ -22,11 +22,16 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { PhoneNumber, Urgency } from '../../../types';
+import {
+  PhoneNumber,
+  ResourceRequestServerResponse,
+  Urgency,
+} from '../../../types';
 import {
   returnEmailValidationText,
   returnGrammarValidationText,
   returnPhoneNumberValidationText,
+  urlBuilder,
 } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -47,11 +52,17 @@ import {
   createAnonymousRequestReducer,
   initialCreateAnonymousRequestState,
 } from './state';
-import { AnonymousRequestKind } from './types';
+import { AnonymousRequestDocument, AnonymousRequestKind } from './types';
 import { Group, Tooltip } from '@mantine/core';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { useAuth, useGlobalState } from '../../../hooks';
+import { useNavigate } from 'react-router-dom';
+import { useErrorBoundary } from 'react-error-boundary';
+import { InvalidTokenError } from 'jwt-decode';
+import { title } from 'process';
+import { globalAction } from '../../../context/globalProvider/state';
 
 function CreateAnonymousRequest() {
   const [createAnonymousRequestState, createAnonymousRequestDispatch] =
@@ -88,8 +99,6 @@ function CreateAnonymousRequest() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -97,6 +106,140 @@ function CreateAnonymousRequest() {
     isLoading,
     loadingMessage,
   } = createAnonymousRequestState;
+
+  const { globalDispatch } = useGlobalState();
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function handleCreateAnonymousRequestFormSubmit() {
+      createAnonymousRequestDispatch({
+        type: createAnonymousRequestAction.setIsSubmitting,
+        payload: true,
+      });
+      createAnonymousRequestDispatch({
+        type: createAnonymousRequestAction.setSubmitMessage,
+        payload: 'Your anonymous request is being submitted...',
+      });
+
+      const url: URL = urlBuilder({
+        path: 'actions/general/anonymous-request',
+      });
+
+      const body = JSON.stringify({
+        anonymousRequest: {
+          title,
+          secureContactNumber,
+          secureContactEmail,
+          requestKind,
+          requestDescription,
+          additionalInformation,
+          urgency,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<AnonymousRequestDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        createAnonymousRequestDispatch({
+          type: createAnonymousRequestAction.setIsSuccessful,
+          payload: true,
+        });
+        createAnonymousRequestDispatch({
+          type: createAnonymousRequestAction.setSuccessMessage,
+          payload:
+            data.message ??
+            'Your anonymous request has been submitted successfully!',
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          createAnonymousRequestDispatch({
+            type: createAnonymousRequestAction.setIsSubmitting,
+            payload: false,
+          });
+          createAnonymousRequestDispatch({
+            type: createAnonymousRequestAction.setSubmitMessage,
+            payload: '',
+          });
+          createAnonymousRequestDispatch({
+            type: createAnonymousRequestAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleCreateAnonymousRequestFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only want to run this effect when triggerFormSubmit changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   // validate title on every input change
   useEffect(() => {
@@ -632,16 +775,6 @@ function CreateAnonymousRequest() {
       : currentStepperPosition === 2
       ? displayReviewFormPage
       : displaySubmitButton;
-
-  useEffect(() => {
-    async function handleCreateAnonymousRequestFormSubmit() {
-      console.log('anonymous form submitted');
-    }
-
-    if (triggerFormSubmit) {
-      handleCreateAnonymousRequestFormSubmit();
-    }
-  }, [triggerFormSubmit]);
 
   const displayCreateAnonymousRequestComponent = (
     <StepperWrapper

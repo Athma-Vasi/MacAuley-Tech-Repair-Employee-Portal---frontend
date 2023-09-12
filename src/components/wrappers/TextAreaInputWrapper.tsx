@@ -50,7 +50,7 @@ type AccessibleTextAreaInputCreatorInfo = {
   autosize?: boolean;
   minRows?: number;
   maxRows?: number;
-  textAreaWidth?: number;
+  textAreaWidth?: number | string;
 };
 
 type TextAreaInputWrapperProps = {
