@@ -93,8 +93,6 @@ type CreatePrinterIssueState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -147,8 +145,6 @@ type CreatePrinterIssueAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -171,7 +167,6 @@ type CreatePrinterIssueDispatch =
         | CreatePrinterIssueAction['setPrinterSerialNumber']
         | CreatePrinterIssueAction['setPrinterIssueDescription']
         | CreatePrinterIssueAction['setAdditionalInformation']
-        | CreatePrinterIssueAction['setErrorMessage']
         | CreatePrinterIssueAction['setSubmitMessage']
         | CreatePrinterIssueAction['setSuccessMessage']
         | CreatePrinterIssueAction['setLoadingMessage']
@@ -200,7 +195,6 @@ type CreatePrinterIssueDispatch =
         | CreatePrinterIssueAction['setIsTimeOfOccurrenceFocused']
         | CreatePrinterIssueAction['setIsValidTimeOfOccurrence']
         | CreatePrinterIssueAction['setTriggerFormSubmit']
-        | CreatePrinterIssueAction['setIsError']
         | CreatePrinterIssueAction['setIsSubmitting']
         | CreatePrinterIssueAction['setIsSuccessful']
         | CreatePrinterIssueAction['setIsLoading'];

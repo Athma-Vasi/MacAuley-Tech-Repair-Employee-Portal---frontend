@@ -48,8 +48,6 @@ const initialCreatePrinterIssueState: CreatePrinterIssueState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -102,8 +100,6 @@ const createPrinterIssueAction: CreatePrinterIssueAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -292,16 +288,6 @@ function createPrinterIssueReducer(
       };
     }
 
-    case createPrinterIssueAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createPrinterIssueAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case createPrinterIssueAction.setIsSubmitting:
       return {
         ...state,

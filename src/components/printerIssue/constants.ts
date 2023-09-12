@@ -120,9 +120,9 @@ const PRINTER_ISSUE_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const PRINTER_ISSUE_ROUTE_PATHS: ResourceRoutePaths = {
-  manager: '/api/v1/actions/general/printer-issue',
-  admin: '/api/v1/actions/general/printer-issue',
-  employee: '/api/v1/actions/general/printer-issue/user',
+  manager: 'actions/general/printer-issue',
+  admin: 'actions/general/printer-issue',
+  employee: 'actions/general/printer-issue/user',
 };
 
 export {

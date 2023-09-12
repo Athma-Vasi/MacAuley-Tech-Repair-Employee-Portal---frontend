@@ -26,7 +26,11 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { PhoneNumber, Urgency } from '../../../types';
+import {
+  PhoneNumber,
+  ResourceRequestServerResponse,
+  Urgency,
+} from '../../../types';
 import {
   returnDateNearPastValidationText,
   returnEmailValidationText,
@@ -35,6 +39,7 @@ import {
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
   returnTimeRailwayValidationText,
+  urlBuilder,
 } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -56,11 +61,17 @@ import {
   createPrinterIssueReducer,
   initialCreatePrinterIssueState,
 } from './state';
-import { PrinterMake } from './types';
+import { PrinterIssueDocument, PrinterMake } from './types';
 import { Group, Tooltip } from '@mantine/core';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { useErrorBoundary } from 'react-error-boundary';
+import { useNavigate } from 'react-router-dom';
+import { useGlobalState, useAuth } from '../../../hooks';
+import { InvalidTokenError } from 'jwt-decode';
+import { globalAction } from '../../../context/globalProvider/state';
+import { CustomNotification } from '../../customNotification';
 
 function CreatePrinterIssue() {
   const [createPrinterIssueState, createPrinterIssueDispatch] = useReducer(
@@ -111,8 +122,6 @@ function CreatePrinterIssue() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -120,6 +129,139 @@ function CreatePrinterIssue() {
     isLoading,
     loadingMessage,
   } = createPrinterIssueState;
+
+  const { globalDispatch } = useGlobalState();
+
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function handleCreatePrinterIssueFormSubmit() {
+      createPrinterIssueDispatch({
+        type: createPrinterIssueAction.setIsSubmitting,
+        payload: true,
+      });
+      createPrinterIssueDispatch({
+        type: createPrinterIssueAction.setSubmitMessage,
+        payload: `Submitting ${title} printer issue form...`,
+      });
+
+      const url: URL = urlBuilder({ path: 'actions/general/printer-issue' });
+
+      const body = JSON.stringify({
+        title,
+        contactNumber,
+        contactEmail,
+        dateOfOccurrence,
+        timeOfOccurrence,
+        printerMake,
+        printerModel,
+        printerSerialNumber,
+        printerIssueDescription,
+        urgency,
+        additionalInformation,
+      });
+
+      const request: Request = new Request(url.toString(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<PrinterIssueDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        createPrinterIssueDispatch({
+          type: createPrinterIssueAction.setIsSuccessful,
+          payload: true,
+        });
+        createPrinterIssueDispatch({
+          type: createPrinterIssueAction.setSuccessMessage,
+          payload: data.message ?? `Successfully submitted: ${title} form`,
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setIsSubmitting,
+            payload: false,
+          });
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setSubmitMessage,
+            payload: '',
+          });
+          createPrinterIssueDispatch({
+            type: createPrinterIssueAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleCreatePrinterIssueFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only run on triggerFormSubmit change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   // validate title input on every change
   useEffect(() => {
@@ -289,6 +431,21 @@ function CreatePrinterIssue() {
     isValidAdditionalInformation,
     additionalInformation,
   ]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={createPrinterIssueDispatch}
+        navigateTo={{ successPath: '/home/general/printer-issue/display' }}
+      />
+    );
+  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
@@ -923,16 +1080,6 @@ function CreatePrinterIssue() {
       {displayCreatePrinterIssueForm}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    async function handleCreatePrinterIssueFormSubmit() {
-      console.log('submitting form');
-    }
-
-    if (triggerFormSubmit) {
-      handleCreatePrinterIssueFormSubmit();
-    }
-  }, [triggerFormSubmit]);
 
   return displayCreatePrinterIssueComponent;
 }
