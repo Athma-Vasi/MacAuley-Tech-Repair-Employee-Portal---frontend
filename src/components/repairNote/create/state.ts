@@ -79,8 +79,6 @@ const initialCreateRepairNoteState: CreateRepairNoteState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -163,8 +161,6 @@ const createRepairNoteAction: CreateRepairNoteAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -465,16 +461,6 @@ function createRepairNoteReducer(
       return { ...state, stepsInError };
     }
 
-    case createRepairNoteAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createRepairNoteAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case createRepairNoteAction.setIsSubmitting:
       return {
         ...state,

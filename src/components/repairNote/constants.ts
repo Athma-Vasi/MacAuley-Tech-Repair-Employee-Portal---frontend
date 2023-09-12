@@ -254,9 +254,9 @@ const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const REPAIR_NOTE_ROUTE_PATHS: ResourceRoutePaths = {
-  manager: '/api/v1/repair-note/',
-  admin: '/api/v1/repair-note/',
-  employee: '/api/v1/repair-note/user',
+  manager: 'repair-note/',
+  admin: 'repair-note/',
+  employee: 'repair-note/user',
 };
 
 export {

@@ -87,8 +87,6 @@ type CreateRepairNoteState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -171,8 +169,6 @@ type CreateRepairNoteAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -197,7 +193,6 @@ type CreateRepairNoteDispatch =
         | CreateRepairNoteAction['setPartsNeededModels']
         | CreateRepairNoteAction['setEstimatedRepairCost']
         | CreateRepairNoteAction['setEstimatedCompletionDate']
-        | CreateRepairNoteAction['setErrorMessage']
         | CreateRepairNoteAction['setSubmitMessage']
         | CreateRepairNoteAction['setSuccessMessage']
         | CreateRepairNoteAction['setLoadingMessage'];
@@ -237,7 +232,6 @@ type CreateRepairNoteDispatch =
         | CreateRepairNoteAction['setIsValidEstimatedCompletionDate']
         | CreateRepairNoteAction['setIsEstimatedCompletionDateFocused']
         | CreateRepairNoteAction['setTriggerFormSubmit']
-        | CreateRepairNoteAction['setIsError']
         | CreateRepairNoteAction['setIsSubmitting']
         | CreateRepairNoteAction['setIsSuccessful']
         | CreateRepairNoteAction['setIsLoading'];

@@ -48,6 +48,7 @@ import {
   returnUrlValidationText,
   urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -71,7 +72,6 @@ import {
   initialCreateRefermentState,
 } from './state';
 import { RefermentDocument } from './types';
-import { CustomNotification } from '../../customNotification';
 
 function CreateReferment() {
   const [createRefermentState, createRefermentDispatch] = useReducer(

@@ -1,4 +1,4 @@
-import { Flex, Group, Text, Title, Tooltip } from '@mantine/core';
+import { Flex, Group, Tooltip } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 import {
   createRepairNoteAction,
@@ -11,24 +11,21 @@ import {
   CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
 } from './constants';
 import { RepairNoteStepCustomer } from './repairNoteStepCustomer/RepairNoteStepCustomer';
-import { logState, replaceLastCommaWithAnd, urlBuilder } from '../../../utils';
+import { replaceLastCommaWithAnd, urlBuilder } from '../../../utils';
 import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
 import { RepairNoteStepDetail } from './repairNoteStepDetails/RepairNoteStepDetails';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
 import { TbNote, TbUpload } from 'react-icons/tb';
-import { create } from 'domain';
-import {
-  RepairNoteDocument,
-  RepairNoteInitialSchema,
-  RepairNoteSchema,
-} from '../types';
+import { RepairNoteDocument, RepairNoteInitialSchema } from '../types';
 import { useAuth, useGlobalState } from '../../../hooks';
 import { ResourceRequestServerResponse } from '../../../types';
 import { InvalidTokenError } from 'jwt-decode';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
-import { Form } from 'react-router-dom';
+import { useErrorBoundary } from 'react-error-boundary';
+import { useNavigate } from 'react-router-dom';
+import { globalAction } from '../../../context/globalProvider/state';
 
 function CreateRepairNote() {
   /** ------------- begin hooks ------------- */
@@ -109,8 +106,6 @@ function CreateRepairNote() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -119,9 +114,14 @@ function CreateRepairNote() {
     loadingMessage,
   } = createRepairNoteState;
 
+  const { globalDispatch } = useGlobalState();
+
   const {
-    authState: { accessToken, userId, username },
+    authState: { accessToken },
   } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -135,10 +135,12 @@ function CreateRepairNote() {
         type: createRepairNoteAction.setIsSubmitting,
         payload: true,
       });
-
-      const url: URL = urlBuilder({
-        path: '/api/v1/repair-note/',
+      createRepairNoteDispatch({
+        type: createRepairNoteAction.setSubmitMessage,
+        payload: `Submitting repair note form for ${customerName}...`,
       });
+
+      const url: URL = urlBuilder({ path: 'repair-note/' });
 
       const repairNote: RepairNoteInitialSchema = {
         // customer info
@@ -187,18 +189,8 @@ function CreateRepairNote() {
         if (!isMounted) {
           return;
         }
-
-        const { ok } = response;
-        if (!ok) {
-          createRepairNoteDispatch({
-            type: createRepairNoteAction.setIsError,
-            payload: true,
-          });
-          createRepairNoteDispatch({
-            type: createRepairNoteAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
         createRepairNoteDispatch({
@@ -210,42 +202,53 @@ function CreateRepairNote() {
           payload: data.message,
         });
       } catch (error: any) {
-        if (!isMounted) {
-          return;
-        }
-        if (error.name === 'AbortError') {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
-        createRepairNoteDispatch({
-          type: createRepairNoteAction.setIsError,
-          payload: true,
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        error instanceof InvalidTokenError
-          ? createRepairNoteDispatch({
-              type: createRepairNoteAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error.response
-          ? createRepairNoteDispatch({
-              type: createRepairNoteAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : createRepairNoteDispatch({
-              type: createRepairNoteAction.setErrorMessage,
-              payload:
-                error.message ?? 'Unknown error occurred. Please try again.',
-            });
+        showBoundary(error);
       } finally {
-        createRepairNoteDispatch({
-          type: createRepairNoteAction.setIsSubmitting,
-          payload: false,
-        });
-        createRepairNoteDispatch({
-          type: createRepairNoteAction.setTriggerFormSubmit,
-          payload: false,
-        });
+        if (isMounted) {
+          createRepairNoteDispatch({
+            type: createRepairNoteAction.setIsSubmitting,
+            payload: false,
+          });
+          createRepairNoteDispatch({
+            type: createRepairNoteAction.setTriggerFormSubmit,
+            payload: false,
+          });
+          createRepairNoteDispatch({
+            type: createRepairNoteAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
       }
     }
 
@@ -257,6 +260,9 @@ function CreateRepairNote() {
       isMounted = false;
       controller.abort();
     };
+
+    // only run when triggerFormSubmit changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
   /** ------------- end useEffects ------------- */
 
@@ -519,7 +525,7 @@ function CreateRepairNote() {
     </Flex>
   );
   /** ------------- end input display ------------- */
-  return <>{displayRepairNoteComponent}</>;
+  return displayRepairNoteComponent;
 }
 
 export default CreateRepairNote;
