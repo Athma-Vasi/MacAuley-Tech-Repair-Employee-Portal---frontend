@@ -87,9 +87,9 @@ const EXPENSE_CLAIM_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const EXPENSE_CLAIM__ROUTE_PATHS: ResourceRoutePaths = {
-  manager: '/api/v1/actions/company/expense-claim',
-  admin: '/api/v1/actions/company/expense-claim',
-  employee: '/api/v1/actions/company/expense-claim/user',
+  manager: 'actions/company/expense-claim',
+  admin: 'actions/company/expense-claim',
+  employee: 'actions/company/expense-claim/user',
 };
 
 const EXPENSE_CLAIMS_EXCLUDED_FIELDS_FROM_DISPLAY = new Set(['fileUploads']);

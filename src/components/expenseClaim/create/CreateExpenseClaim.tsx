@@ -1,11 +1,7 @@
-import {
-  faDollarSign,
-  faEuro,
-  faJpy,
-  faPoundSign,
-  faYen,
-} from '@fortawesome/free-solid-svg-icons';
+import { Group, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import {
   TbCurrencyDollar,
   TbCurrencyEuro,
@@ -14,19 +10,22 @@ import {
   TbCurrencyYen,
   TbUpload,
 } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../../constants/data';
 import {
   DATE_NEAR_PAST_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
+  AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -37,9 +36,14 @@ import {
   returnDateNearPastValidationText,
   returnGrammarValidationText,
   returnNumberAmountValidationText,
+  returnThemeColors,
   urlBuilder,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
+import { CustomNotification } from '../../customNotification';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import { ImageUpload } from '../../imageUpload';
 import {
   AccessibleButtonCreatorInfo,
@@ -64,10 +68,6 @@ import {
   initialCreateExpenseClaimState,
 } from './state';
 import type { ExpenseClaimDocument, ExpenseClaimKind } from './types';
-import { Group, Tooltip, useMantineTheme } from '@mantine/core';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -102,8 +102,6 @@ function CreateExpenseClaim() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -113,16 +111,268 @@ function CreateExpenseClaim() {
   } = createExpenseClaimState;
 
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-    },
+    globalState: { themeObject },
+    globalDispatch,
   } = useGlobalState();
 
   const {
     authState: { accessToken },
   } = useAuth();
 
-  const { colors } = useMantineTheme();
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+    const { signal } = controller;
+
+    async function imagesUploadRequest() {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setIsSubmitting,
+        payload: true,
+      });
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setSubmitMessage,
+        payload: 'File uploads are being processed...',
+      });
+
+      const fileUploadUrl: URL = urlBuilder({
+        path: 'file-upload',
+      });
+
+      if (imgFormDataArray.length === 0) {
+        return;
+      }
+
+      await Promise.all(
+        imgFormDataArray.map(async (formData) => {
+          const imgUploadrequest: Request = new Request(
+            fileUploadUrl.toString(),
+            {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+              signal,
+              body: formData,
+            }
+          );
+
+          try {
+            const imgUploadResponse: Response = await fetch(imgUploadrequest);
+            const imgUploadResponseData: {
+              message: string;
+              documentId: string;
+            } = await imgUploadResponse.json();
+
+            if (!isMounted) {
+              return;
+            }
+            if (!imgUploadResponse.ok) {
+              throw new Error(imgUploadResponseData.message);
+            }
+
+            createExpenseClaimDispatch({
+              type: createExpenseClaimAction.setIsSubmitting,
+              payload: false,
+            });
+            createExpenseClaimDispatch({
+              type: createExpenseClaimAction.setSubmitMessage,
+              payload: '',
+            });
+
+            createExpenseClaimDispatch({
+              type: createExpenseClaimAction.setIsSuccessful,
+              payload: true,
+            });
+            createExpenseClaimDispatch({
+              type: createExpenseClaimAction.setSuccessMessage,
+              payload:
+                imgUploadResponseData.message ?? 'File uploads successful.',
+            });
+
+            return imgUploadResponseData;
+          } catch (error: any) {
+            if (!isMounted || error.name === 'AbortError') {
+              return;
+            }
+
+            const errorMessage =
+              error instanceof InvalidTokenError
+                ? 'Invalid token. Please login again.'
+                : !error.response
+                ? 'Network error. Please try again.'
+                : error?.message ?? 'Unknown error occurred. Please try again.';
+
+            globalDispatch({
+              type: globalAction.setErrorState,
+              payload: {
+                isError: true,
+                errorMessage,
+                errorCallback: () => {
+                  navigate('/home');
+
+                  globalDispatch({
+                    type: globalAction.setErrorState,
+                    payload: {
+                      isError: false,
+                      errorMessage: '',
+                      errorCallback: () => {},
+                    },
+                  });
+                },
+              },
+            });
+
+            showBoundary(error);
+          }
+        })
+      ).then((imgUploadResponseData) => {
+        if (!imgUploadResponseData) {
+          return;
+        }
+
+        async function expenseClaimFormRequest() {
+          createExpenseClaimDispatch({
+            type: createExpenseClaimAction.setIsSubmitting,
+            payload: true,
+          });
+          createExpenseClaimDispatch({
+            type: createExpenseClaimAction.setSubmitMessage,
+            payload: `Expense claim: ${expenseClaimKind} is being processed...`,
+          });
+          const expenseUrl: URL = urlBuilder({
+            path: 'actions/company/expense-claim',
+          });
+
+          const expenseClaimRequest: Request = new Request(
+            expenseUrl.toString(),
+            {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+              },
+              signal,
+              body: JSON.stringify({
+                expenseClaim: {
+                  uploadedFilesIds: imgUploadResponseData
+                    .filter((item) => item !== undefined)
+                    .map((item) => item?.documentId),
+                  expenseClaimKind,
+                  expenseClaimCurrency,
+                  expenseClaimAmount,
+                  expenseClaimDate,
+                  expenseClaimDescription,
+                  additionalComments,
+                  acknowledgement,
+                },
+              }),
+            }
+          );
+
+          try {
+            const expenseClaimResponse = await fetch(expenseClaimRequest);
+            const expenseClaimResponseData: ResourceRequestServerResponse<ExpenseClaimDocument> =
+              await expenseClaimResponse.json();
+
+            if (!isMounted) {
+              return;
+            }
+            if (!expenseClaimResponse.ok) {
+              throw new Error(expenseClaimResponseData.message);
+            }
+
+            createExpenseClaimDispatch({
+              type: createExpenseClaimAction.setIsSuccessful,
+              payload: true,
+            });
+            createExpenseClaimDispatch({
+              type: createExpenseClaimAction.setSuccessMessage,
+              payload:
+                expenseClaimResponseData.message ?? 'Expense claim successful.',
+            });
+          } catch (error: any) {
+            if (!isMounted || error.name === 'AbortError') {
+              return;
+            }
+
+            const errorMessage =
+              error instanceof InvalidTokenError
+                ? 'Invalid token. Please login again.'
+                : !error.response
+                ? 'Network error. Please try again.'
+                : error?.message ?? 'Unknown error occurred. Please try again.';
+
+            globalDispatch({
+              type: globalAction.setErrorState,
+              payload: {
+                isError: true,
+                errorMessage,
+                errorCallback: () => {
+                  navigate('/home');
+
+                  globalDispatch({
+                    type: globalAction.setErrorState,
+                    payload: {
+                      isError: false,
+                      errorMessage: '',
+                      errorCallback: () => {},
+                    },
+                  });
+                },
+              },
+            });
+
+            showBoundary(error);
+          } finally {
+            if (isMounted) {
+              createExpenseClaimDispatch({
+                type: createExpenseClaimAction.setIsSubmitting,
+                payload: false,
+              });
+              createExpenseClaimDispatch({
+                type: createExpenseClaimAction.setSubmitMessage,
+                payload: '',
+              });
+              createExpenseClaimDispatch({
+                type: createExpenseClaimAction.setImgFormDataArray,
+                payload: [],
+              });
+              createExpenseClaimDispatch({
+                type: createExpenseClaimAction.setTriggerFormSubmit,
+                payload: false,
+              });
+            }
+          }
+        }
+
+        if (imgUploadResponseData.every((item) => item !== undefined)) {
+          expenseClaimFormRequest();
+        }
+      });
+    }
+
+    if (triggerFormSubmit && imgFormDataArray.length > 0) {
+      imagesUploadRequest();
+    }
+
+    return () => {
+      controller.abort();
+      isMounted = false;
+    };
+
+    // only run when triggerFormSubmit changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  useEffect(() => {
+    logState({
+      state: createExpenseClaimState,
+      groupLabel: 'create expense claim state',
+    });
+  }, [createExpenseClaimState]);
 
   // validate expenseClaimAmount on every change
   useEffect(() => {
@@ -224,7 +474,7 @@ function CreateExpenseClaim() {
 
   // update stepper wrapper state on every change
   useEffect(() => {
-    const isStepInError = !areImagesValid;
+    const isStepInError = !areImagesValid || imgFormDataArray.length === 0;
 
     createExpenseClaimDispatch({
       type: createExpenseClaimAction.setStepsInError,
@@ -233,7 +483,22 @@ function CreateExpenseClaim() {
         step: 1,
       },
     });
-  }, [areImagesValid]);
+  }, [areImagesValid, imgFormDataArray]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={createExpenseClaimDispatch}
+        navigateTo={{ successPath: '/home/company/expense-claim/display' }}
+      />
+    );
+  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [expenseClaimAmountInputErrorText, expenseClaimAmountInputValidText] =
@@ -301,19 +566,23 @@ function CreateExpenseClaim() {
       deselectedDescription: 'I do not acknowledge',
     });
 
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const {
+    generalColors: { grayColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
   const currencyIcon =
     expenseClaimCurrency === 'CNY' ? (
-      <TbCurrencyRenminbi size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyRenminbi size={14} color={grayColorShade} />
     ) : expenseClaimCurrency === 'GBP' ? (
-      <TbCurrencyPound size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyPound size={14} color={grayColorShade} />
     ) : expenseClaimCurrency === 'EUR' ? (
-      <TbCurrencyEuro size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyEuro size={14} color={grayColorShade} />
     ) : expenseClaimCurrency === 'JPY' ? (
-      <TbCurrencyYen size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyYen size={14} color={grayColorShade} />
     ) : (
-      <TbCurrencyDollar size={14} color={colors.gray[colorShade]} />
+      <TbCurrencyDollar size={14} color={grayColorShade} />
     );
 
   const expenseClaimAmountTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
@@ -655,117 +924,6 @@ function CreateExpenseClaim() {
       {displayExpenseClaimForm}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    const controller = new AbortController();
-    const { signal } = controller;
-
-    async function imagesUploadRequest() {
-      const urlString: URL = urlBuilder({
-        path: '/api/v1/file-upload',
-      });
-
-      if (imgFormDataArray.length === 0) {
-        console.log('no file to upload');
-        return;
-      }
-
-      await Promise.all(
-        imgFormDataArray.map(async (formData) => {
-          const imgUploadrequest: Request = new Request(urlString, {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-            signal,
-            body: formData,
-          });
-
-          try {
-            const imgUploadResponse = await fetch(imgUploadrequest);
-            const data: { message: string; documentId: string } =
-              await imgUploadResponse.json();
-            console.log('data', data);
-
-            if (imgUploadResponse.ok) {
-              return data;
-            }
-          } catch (error: any) {
-            console.log('imgFormDataArray async map', error);
-          }
-        })
-      ).then((data) => {
-        async function expenseClaimFormRequest() {
-          const expenseUrlString = urlBuilder({
-            path: '/api/v1/actions/company/expense-claim',
-          });
-
-          const expenseClaimRequest: Request = new Request(expenseUrlString, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${accessToken}`,
-            },
-            signal,
-            body: JSON.stringify({
-              expenseClaim: {
-                uploadedFilesIds: data
-                  .filter((item) => item !== undefined)
-                  .map((item) => item?.documentId),
-                expenseClaimKind,
-                expenseClaimCurrency,
-                expenseClaimAmount,
-                expenseClaimDate,
-                expenseClaimDescription,
-                additionalComments,
-                acknowledgement,
-              },
-            }),
-          });
-
-          try {
-            const expenseClaimResponse = await fetch(expenseClaimRequest);
-            const expenseClaimData: ResourceRequestServerResponse<ExpenseClaimDocument> =
-              await expenseClaimResponse.json();
-
-            if (expenseClaimResponse.ok) {
-              console.log('expense claim response', expenseClaimData);
-            } else {
-              console.error(expenseClaimData);
-            }
-          } catch (error: any) {
-            console.error('expense claim error', error);
-          }
-        }
-
-        if (data.every((item) => item !== undefined)) {
-          expenseClaimFormRequest();
-        }
-
-        console.log('data from then', data);
-      });
-    }
-
-    if (triggerFormSubmit && imgFormDataArray.length > 0) {
-      imagesUploadRequest();
-    }
-
-    return () => {
-      controller.abort();
-
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setImgFormDataArray,
-        payload: [],
-      });
-    };
-  }, [triggerFormSubmit]);
-
-  useEffect(() => {
-    logState({
-      state: createExpenseClaimState,
-      groupLabel: 'create expense claim state',
-    });
-  }, [createExpenseClaimState]);
 
   return displayExpenseClaimComponent;
 }

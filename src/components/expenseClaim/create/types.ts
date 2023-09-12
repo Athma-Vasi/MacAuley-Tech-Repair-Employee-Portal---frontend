@@ -69,8 +69,6 @@ type CreateExpenseClaimState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -108,8 +106,6 @@ type CreateExpenseClaimAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -129,7 +125,6 @@ type CreateExpenseClaimDispatch =
         | CreateExpenseClaimAction['setExpenseClaimDate']
         | CreateExpenseClaimAction['setExpenseClaimDescription']
         | CreateExpenseClaimAction['setAdditionalComments']
-        | CreateExpenseClaimAction['setErrorMessage']
         | CreateExpenseClaimAction['setSubmitMessage']
         | CreateExpenseClaimAction['setSuccessMessage']
         | CreateExpenseClaimAction['setLoadingMessage'];
@@ -148,7 +143,6 @@ type CreateExpenseClaimDispatch =
         | CreateExpenseClaimAction['setAcknowledgement']
         | CreateExpenseClaimAction['setAreImagesValid']
         | CreateExpenseClaimAction['setTriggerFormSubmit']
-        | CreateExpenseClaimAction['setIsError']
         | CreateExpenseClaimAction['setIsSubmitting']
         | CreateExpenseClaimAction['setIsSuccessful']
         | CreateExpenseClaimAction['setIsLoading'];

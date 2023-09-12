@@ -6,6 +6,7 @@ import {
   HoverCard,
   Image,
   Modal,
+  ScrollArea,
   SegmentedControl,
   Spoiler,
   Stack,
@@ -30,6 +31,7 @@ import {
   groupQueryResponse,
   logState,
   returnAcknowledgementValidationText,
+  returnThemeColors,
 } from '../../utils';
 import {
   AccessibleButtonCreatorInfo,
@@ -58,12 +60,7 @@ function DisplayQuery<Doc>({
   totalDocuments,
 }: DisplayQueryProps<Doc>) {
   const {
-    globalState: {
-      padding,
-      width,
-      rowGap,
-      themeObject: { colorScheme },
-    },
+    globalState: { padding, width, rowGap, themeObject },
   } = useGlobalState();
 
   const [
@@ -177,7 +174,6 @@ function DisplayQuery<Doc>({
             (acc, componentQueryObj) => {
               if (groupBySelection === componentQueryObj.value) {
                 if (componentQueryObj.selectData) {
-                  // rome-ignore lint:
                   acc = componentQueryObj.selectData;
                 }
               }
@@ -365,9 +361,12 @@ function DisplayQuery<Doc>({
       ? (width - 300) * 0.85
       : 900 - 40;
 
-  const { gray } = COLORS_SWATCHES;
-  const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
+  const {
+    appThemeColors: { borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   const displayGroupByRadioGroup = (
     <Flex
@@ -517,18 +516,18 @@ function DisplayQuery<Doc>({
           );
 
           /**
-           * <Spoiler
-                maxHeight={25}
-                showLabel={createdShowMoreButton}
-                hideLabel={createdHideButton}
-              >
-                <Text size="sm" color="dark">
-                    {fileName.length > 11
-                      ? `${fileName.slice(0, 11)}...`
-                      : fileName}
-                  </Text>
-              </Spoiler>
-           */
+         * <Spoiler
+              maxHeight={25}
+              showLabel={createdShowMoreButton}
+              hideLabel={createdHideButton}
+            >
+              <Text size="sm" color="dark">
+                  {fileName.length > 11
+                    ? `${fileName.slice(0, 11)}...`
+                    : fileName}
+                </Text>
+            </Spoiler>
+         */
 
           const displayFileNameMobile = (
             <Flex
@@ -627,7 +626,7 @@ function DisplayQuery<Doc>({
                   justify="space-between"
                   wrap="wrap"
                   w="100%"
-                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                  style={{ borderBottom: borderColor }}
                 >
                   <Text>Created date: </Text>
                   <Text>{formattedCreatedDate}</Text>
@@ -647,7 +646,7 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
               <Text>Created date: </Text>
               <Text size="sm" color="dark" pl={padding}>
@@ -688,7 +687,7 @@ function DisplayQuery<Doc>({
                   justify="space-between"
                   wrap="wrap"
                   w="100%"
-                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                  style={{ borderBottom: borderColor }}
                 >
                   <Text>Updated date: </Text>
                   <Text>{formattedUpdatedDate}</Text>
@@ -708,7 +707,7 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
               <Text>Updated date: </Text>
               <Text size="sm" color="dark" pl={padding}>
@@ -723,7 +722,7 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
               <Text>Creator: </Text>
               <Text>{username}</Text>
@@ -743,19 +742,15 @@ function DisplayQuery<Doc>({
                   justify="space-between"
                   wrap="wrap"
                   w="100%"
-                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                  style={{ borderBottom: borderColor }}
                 >
                   <Text>File ID: </Text>
-                  <Text size="sm" color="dark">
-                    {_id.slice(0, 11)}...
-                  </Text>
+                  <Text>{_id.slice(0, 11)}...</Text>
                 </Flex>
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
-                  <Text size="sm" color="dark">
-                    {_id}
-                  </Text>
+                  <Text>{_id}</Text>
                 </Flex>
               </HoverCard.Dropdown>
             </HoverCard>
@@ -767,12 +762,10 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
               <Text>File ID: </Text>
-              <Text size="sm" color="dark" pl={padding}>
-                {_id}
-              </Text>
+              <Text pl={padding}>{_id}</Text>
             </Flex>
           );
 
@@ -789,19 +782,15 @@ function DisplayQuery<Doc>({
                   justify="space-between"
                   wrap="wrap"
                   w="100%"
-                  style={{ borderBottom: '1px solid #e0e0e0' }}
+                  style={{ borderBottom: borderColor }}
                 >
                   <Text>User ID: </Text>
-                  <Text size="sm" color="dark">
-                    {userId.slice(0, 11)}...
-                  </Text>
+                  <Text>{userId.slice(0, 11)}...</Text>
                 </Flex>
               </HoverCard.Target>
               <HoverCard.Dropdown>
                 <Flex align="center" justify="flex-end" wrap="wrap" w="100%">
-                  <Text size="sm" color="dark">
-                    {userId}
-                  </Text>
+                  <Text>{userId}</Text>
                 </Flex>
               </HoverCard.Dropdown>
             </HoverCard>
@@ -813,12 +802,10 @@ function DisplayQuery<Doc>({
               justify="space-between"
               wrap="wrap"
               w="100%"
-              style={{ borderBottom: '1px solid #e0e0e0' }}
+              style={{ borderBottom: borderColor }}
             >
               <Text>User ID: </Text>
-              <Text size="sm" color="dark" pl={padding}>
-                {userId}
-              </Text>
+              <Text pl={padding}>{userId}</Text>
             </Flex>
           );
 

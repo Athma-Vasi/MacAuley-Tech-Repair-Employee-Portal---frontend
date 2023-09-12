@@ -33,8 +33,6 @@ const initialCreateExpenseClaimState: CreateExpenseClaimState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -72,8 +70,6 @@ const createExpenseClaimAction: CreateExpenseClaimAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -201,16 +197,6 @@ function createExpenseClaimReducer(
       };
     }
 
-    case createExpenseClaimAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createExpenseClaimAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case createExpenseClaimAction.setIsSubmitting:
       return {
         ...state,

@@ -197,6 +197,7 @@ function DisplayQueryDesktop<Doc>({
     '_id',
     'user id',
     'benefit user id',
+    'uploaded files ids',
     'file uploads',
     'delete',
   ]);
