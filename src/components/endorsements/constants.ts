@@ -88,9 +88,9 @@ const ENDORSEMENTS_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const ENDORSEMENTS_PATHS = {
-  manager: '/api/v1/actions/general/endorsement',
-  admin: '/api/v1/actions/general/endorsement',
-  employee: '/api/v1/actions/general/endorsement/user',
+  manager: 'actions/general/endorsement',
+  admin: 'actions/general/endorsement',
+  employee: 'actions/general/endorsement/user',
 };
 
 export {

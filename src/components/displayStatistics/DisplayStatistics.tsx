@@ -11,13 +11,12 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useReducer } from 'react';
-import { TbChartPie3, TbChartPie4 } from 'react-icons/tb';
+import { TbChartPie4 } from 'react-icons/tb';
 
+import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
 import { logState, returnThemeColors } from '../../utils';
 import { PageBuilder } from '../pageBuilder';
-import { TextWrapper } from '../wrappers';
 import { ResponsivePieChart } from './responsivePieChart';
 import {
   displayStatisticsAction,
@@ -25,7 +24,6 @@ import {
   initialDisplayStatisticsState,
 } from './state';
 import { ChartKind, DisplayStatisticsProps, PieChartData } from './types';
-import { COLORS_SWATCHES } from '../../constants/data';
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(

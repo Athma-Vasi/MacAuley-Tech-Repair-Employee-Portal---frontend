@@ -1,11 +1,17 @@
+import { Group, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import {
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -14,11 +20,17 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
+import { ResourceRequestServerResponse } from '../../../types';
 import {
   replaceLastCommaWithAnd,
   returnGrammarValidationText,
   returnNameValidationText,
+  urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
@@ -37,11 +49,7 @@ import {
   createEndorsementReducer,
   initialCreateEndorsementState,
 } from './state';
-import { EmployeeAttributes } from './types';
-import { Group, Tooltip } from '@mantine/core';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
+import { EmployeeAttributes, EndorsementDocument } from './types';
 
 function CreateEndorsement() {
   const [createEndorsementState, createEndorsementDispatch] = useReducer(
@@ -67,8 +75,6 @@ function CreateEndorsement() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -76,6 +82,135 @@ function CreateEndorsement() {
     isLoading,
     loadingMessage,
   } = createEndorsementState;
+
+  const { globalDispatch } = useGlobalState();
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function handleCreateEndorsementFormSubmit() {
+      createEndorsementDispatch({
+        type: createEndorsementAction.setIsSubmitting,
+        payload: true,
+      });
+      createEndorsementDispatch({
+        type: createEndorsementAction.setSubmitMessage,
+        payload: 'Submitting Endorsement form ...',
+      });
+
+      const url: URL = urlBuilder({
+        path: 'actions/general/endorsement',
+      });
+
+      const body = JSON.stringify({
+        endorsement: {
+          title,
+          userToBeEndorsed: employeeToBeEndorsed,
+          summaryOfEndorsement,
+          attributeEndorsed,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<EndorsementDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        createEndorsementDispatch({
+          type: createEndorsementAction.setIsSuccessful,
+          payload: true,
+        });
+        createEndorsementDispatch({
+          type: createEndorsementAction.setSuccessMessage,
+          payload: data.message ?? 'Endorsement form submitted successfully!',
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          createEndorsementDispatch({
+            type: createEndorsementAction.setIsSubmitting,
+            payload: false,
+          });
+          createEndorsementDispatch({
+            type: createEndorsementAction.setSubmitMessage,
+            payload: '',
+          });
+          createEndorsementDispatch({
+            type: createEndorsementAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleCreateEndorsementFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only run on triggerFormSubmit change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   // validate title input on every change
   useEffect(() => {
@@ -134,6 +269,21 @@ function CreateEndorsement() {
       },
     });
   }, [attributeEndorsed]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={createEndorsementDispatch}
+        navigateTo={{ successPath: '/home/general/endorsement/display' }}
+      />
+    );
+  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
@@ -446,16 +596,6 @@ function CreateEndorsement() {
       {displayCreateEndorsementForm}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    async function handleCreateEndorsementFormSubmit() {
-      console.log('handleCreateEndorsementFormSubmit');
-    }
-
-    if (triggerFormSubmit) {
-      handleCreateEndorsementFormSubmit();
-    }
-  }, [triggerFormSubmit]);
 
   return displayEndorsementComponent;
 }

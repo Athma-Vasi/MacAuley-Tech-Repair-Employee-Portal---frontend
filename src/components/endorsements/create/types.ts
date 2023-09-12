@@ -49,8 +49,6 @@ type CreateEndorsementState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -78,8 +76,6 @@ type CreateEndorsementAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -99,7 +95,6 @@ type CreateEndorsementDispatch =
         | CreateEndorsementAction['setTitle']
         | CreateEndorsementAction['setEmployeeToBeEndorsed']
         | CreateEndorsementAction['setSummaryOfEndorsement']
-        | CreateEndorsementAction['setErrorMessage']
         | CreateEndorsementAction['setSubmitMessage']
         | CreateEndorsementAction['setSuccessMessage']
         | CreateEndorsementAction['setLoadingMessage'];
@@ -118,7 +113,6 @@ type CreateEndorsementDispatch =
         | CreateEndorsementAction['setIsValidSummaryOfEndorsement']
         | CreateEndorsementAction['setIsSummaryOfEndorsementFocused']
         | CreateEndorsementAction['setTriggerFormSubmit']
-        | CreateEndorsementAction['setIsError']
         | CreateEndorsementAction['setIsSubmitting']
         | CreateEndorsementAction['setIsSuccessful']
         | CreateEndorsementAction['setIsLoading'];

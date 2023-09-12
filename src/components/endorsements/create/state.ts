@@ -24,8 +24,6 @@ const initialCreateEndorsementState: CreateEndorsementState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -53,8 +51,6 @@ const createEndorsementAction: CreateEndorsementAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -144,16 +140,6 @@ function createEndorsementReducer(
       };
     }
 
-    case createEndorsementAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createEndorsementAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case createEndorsementAction.setIsSubmitting:
       return {
         ...state,

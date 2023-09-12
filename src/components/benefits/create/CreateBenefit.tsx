@@ -1,4 +1,5 @@
 import { Group, Text, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import {
@@ -17,6 +18,7 @@ import {
   MONEY_REGEX,
   USERNAME_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
@@ -28,6 +30,7 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
+import { ResourceRequestServerResponse } from '../../../types';
 import {
   returnDateValidationText,
   returnGrammarValidationText,
@@ -36,6 +39,7 @@ import {
   returnUsernameRegexValidationText,
   urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -63,10 +67,6 @@ import {
   initialCreateBenefitState,
 } from './state';
 import { BenefitsDocument, BenefitsPlanKind, Currency } from './types';
-import { ResourceRequestServerResponse } from '../../../types';
-import { InvalidTokenError } from 'jwt-decode';
-import { globalAction } from '../../../context/globalProvider/state';
-import { CustomNotification } from '../../customNotification';
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
@@ -223,18 +223,20 @@ function CreateBenefit() {
 
         showBoundary(error);
       } finally {
-        createBenefitDispatch({
-          type: createBenefitAction.setIsSubmitting,
-          payload: false,
-        });
-        createBenefitDispatch({
-          type: createBenefitAction.setSubmitMessage,
-          payload: '',
-        });
-        createBenefitDispatch({
-          type: createBenefitAction.setTriggerFormSubmit,
-          payload: false,
-        });
+        if (isMounted) {
+          createBenefitDispatch({
+            type: createBenefitAction.setIsSubmitting,
+            payload: false,
+          });
+          createBenefitDispatch({
+            type: createBenefitAction.setSubmitMessage,
+            payload: '',
+          });
+          createBenefitDispatch({
+            type: createBenefitAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
       }
 
       console.log('create benefit form submit');
@@ -249,7 +251,7 @@ function CreateBenefit() {
       controller.abort();
     };
 
-    // only run when triggerFormSubmit is true
+    // only run when triggerFormSubmit changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
