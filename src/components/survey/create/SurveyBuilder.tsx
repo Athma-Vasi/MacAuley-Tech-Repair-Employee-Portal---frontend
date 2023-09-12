@@ -182,7 +182,7 @@ function SurveyBuilder() {
         },
       });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

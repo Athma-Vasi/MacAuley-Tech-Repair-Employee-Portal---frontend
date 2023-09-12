@@ -77,7 +77,7 @@ function DisplayAnnouncements() {
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
       });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

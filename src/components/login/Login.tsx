@@ -78,7 +78,7 @@ function Login() {
       const url: URL = new URL('http://localhost:3500/auth/login');
       const body = JSON.stringify({ username, password });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

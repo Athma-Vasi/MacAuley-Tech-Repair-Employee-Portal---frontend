@@ -1,6 +1,9 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { Group, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import {
   DATE_NEAR_FUTURE_REGEX,
@@ -8,19 +11,27 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
+  AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
   returnAccessibleDateTimeElements,
-  AccessibleErrorValidTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
+import { ResourceRequestServerResponse } from '../../../types';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
   returnTimeRailwayValidationText,
+  urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -40,11 +51,7 @@ import {
   eventCreatorReducer,
   initialEventCreatorState,
 } from './state';
-import { EventKind } from './types';
-import { Group, Tooltip } from '@mantine/core';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
+import { EventCreatorDocument, EventKind } from './types';
 
 function EventCreator() {
   const [eventCreatorState, eventCreatorDispatch] = useReducer(
@@ -102,8 +109,6 @@ function EventCreator() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -111,6 +116,142 @@ function EventCreator() {
     isLoading,
     loadingMessage,
   } = eventCreatorState;
+
+  const { globalDispatch } = useGlobalState();
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function handleEventCreatorFormSubmit() {
+      eventCreatorDispatch({
+        type: eventCreatorAction.setIsSubmitting,
+        payload: true,
+      });
+      eventCreatorDispatch({
+        type: eventCreatorAction.setSubmitMessage,
+        payload: `Creating event: ${eventTitle}`,
+      });
+
+      const url: URL = urlBuilder({
+        path: 'actions/outreach/event-creator',
+      });
+
+      const body = JSON.stringify({
+        event: {
+          eventTitle,
+          eventDescription,
+          eventKind,
+          eventStartDate,
+          eventEndDate,
+          eventStartTime,
+          eventEndTime,
+          eventLocation,
+          eventAttendees,
+          requiredItems,
+          rsvpDeadline,
+        },
+      });
+
+      const request: Request = new Request(url.toString(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<EventCreatorDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        eventCreatorDispatch({
+          type: eventCreatorAction.setIsSuccessful,
+          payload: true,
+        });
+        eventCreatorDispatch({
+          type: eventCreatorAction.setSuccessMessage,
+          payload: data.message ?? `Successfully created event: ${eventTitle}`,
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          eventCreatorDispatch({
+            type: eventCreatorAction.setIsSubmitting,
+            payload: false,
+          });
+          eventCreatorDispatch({
+            type: eventCreatorAction.setSubmitMessage,
+            payload: '',
+          });
+          eventCreatorDispatch({
+            type: eventCreatorAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleEventCreatorFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only run on triggerFormSubmit change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   // validate title on every change
   useEffect(() => {
@@ -316,6 +457,21 @@ function EventCreator() {
     eventAttendees,
     requiredItems,
   ]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={eventCreatorDispatch}
+        navigateTo={{ successPath: '/home/outreach/event-creator/display' }}
+      />
+    );
+  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [eventTitleErrorText, eventTitleValidText] =
@@ -983,16 +1139,6 @@ function EventCreator() {
       {displayEventCreatorForm}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    async function handleEventCreatorFormSubmit() {
-      console.log('event creator form submitted');
-    }
-
-    if (triggerFormSubmit) {
-      handleEventCreatorFormSubmit();
-    }
-  }, [triggerFormSubmit]);
 
   return displayEventCreatorComponent;
 }

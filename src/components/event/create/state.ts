@@ -55,8 +55,6 @@ const initialEventCreatorState: EventCreatorState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -116,8 +114,6 @@ const eventCreatorAction: EventCreatorAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -331,16 +327,6 @@ function eventCreatorReducer(
       };
     }
 
-    case eventCreatorAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case eventCreatorAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case eventCreatorAction.setIsSubmitting:
       return {
         ...state,

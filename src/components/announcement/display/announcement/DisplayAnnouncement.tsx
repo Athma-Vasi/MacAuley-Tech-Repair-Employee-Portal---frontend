@@ -118,7 +118,7 @@ function DisplayAnnouncement() {
         },
       });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -185,7 +185,7 @@ function Comment({
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=${limitPerPage}`,
       });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -308,7 +308,7 @@ function Comment({
         path: `comment/${updateCommentId}`,
       });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -434,7 +434,7 @@ function Comment({
         reportedUserIds: [],
       };
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

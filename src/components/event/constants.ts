@@ -107,9 +107,9 @@ const EVENT_CREATOR_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const EVENT_CREATOR_ROUTE_PATHS: ResourceRoutePaths = {
-  manager: '/api/v1/actions/outreach/event-creator',
-  admin: '/api/v1/actions/outreach/event-creator',
-  employee: '/api/v1/actions/outreach/event-creator/user',
+  manager: 'actions/outreach/event-creator',
+  admin: 'actions/outreach/event-creator',
+  employee: 'actions/outreach/event-creator/user',
 };
 
 export {

@@ -44,7 +44,7 @@ function Dashboard() {
         path: `user/${userId}`,
       });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

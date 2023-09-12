@@ -109,7 +109,7 @@ function DisplaySurveys() {
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
       });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -246,7 +246,7 @@ function DisplaySurveys() {
         surveyResponses: filteredSurveyResponses,
       });
 
-      const request: Request = new Request(url, {
+      const request: Request = new Request(url.toString(), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

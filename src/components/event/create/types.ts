@@ -95,8 +95,6 @@ type EventCreatorState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -156,8 +154,6 @@ type EventCreatorAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -179,7 +175,6 @@ type EventCreatorDispatch =
         | EventCreatorAction['setEventAttendees']
         | EventCreatorAction['setRequiredItems']
         | EventCreatorAction['setRsvpDeadline']
-        | EventCreatorAction['setErrorMessage']
         | EventCreatorAction['setSubmitMessage']
         | EventCreatorAction['setSuccessMessage']
         | EventCreatorAction['setLoadingMessage'];
@@ -210,7 +205,6 @@ type EventCreatorDispatch =
         | EventCreatorAction['setIsValidRsvpDeadline']
         | EventCreatorAction['setIsRsvpDeadlineFocused']
         | EventCreatorAction['setTriggerFormSubmit']
-        | EventCreatorAction['setIsError']
         | EventCreatorAction['setIsSubmitting']
         | EventCreatorAction['setIsSuccessful']
         | EventCreatorAction['setIsLoading'];
