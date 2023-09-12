@@ -1,3 +1,5 @@
+import { Group, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -5,7 +7,9 @@ import {
   useEffect,
   useReducer,
 } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import { URGENCY_DATA } from '../../../constants/data';
 import {
@@ -17,6 +21,8 @@ import {
   PRINTER_SERIAL_NUMBER_REGEX,
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -41,6 +47,10 @@ import {
   returnTimeRailwayValidationText,
   urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -62,16 +72,6 @@ import {
   initialCreatePrinterIssueState,
 } from './state';
 import { PrinterIssueDocument, PrinterMake } from './types';
-import { Group, Tooltip } from '@mantine/core';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
-import { useErrorBoundary } from 'react-error-boundary';
-import { useNavigate } from 'react-router-dom';
-import { useGlobalState, useAuth } from '../../../hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { globalAction } from '../../../context/globalProvider/state';
-import { CustomNotification } from '../../customNotification';
 
 function CreatePrinterIssue() {
   const [createPrinterIssueState, createPrinterIssueDispatch] = useReducer(

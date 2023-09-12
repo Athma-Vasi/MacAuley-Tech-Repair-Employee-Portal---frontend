@@ -1,3 +1,5 @@
+import { Group, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -5,7 +7,9 @@ import {
   useEffect,
   useReducer,
 } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import {
   DEPARTMENT_DATA,
@@ -19,6 +23,8 @@ import {
   PHONE_NUMBER_REGEX,
   URL_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -29,13 +35,22 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { Department, JobPosition, PhoneNumber } from '../../../types';
+import {
+  Department,
+  JobPosition,
+  PhoneNumber,
+  ResourceRequestServerResponse,
+} from '../../../types';
 import {
   returnEmailValidationText,
   returnGrammarValidationText,
   returnPhoneNumberValidationText,
   returnUrlValidationText,
+  urlBuilder,
 } from '../../../utils';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -55,10 +70,8 @@ import {
   createRefermentReducer,
   initialCreateRefermentState,
 } from './state';
-import { Group, Tooltip } from '@mantine/core';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
+import { RefermentDocument } from './types';
+import { CustomNotification } from '../../customNotification';
 
 function CreateReferment() {
   const [createRefermentState, createRefermentDispatch] = useReducer(
@@ -111,8 +124,6 @@ function CreateReferment() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -120,6 +131,144 @@ function CreateReferment() {
     isLoading,
     loadingMessage,
   } = createRefermentState;
+
+  const { globalDispatch } = useGlobalState();
+
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function handleCreateRefermentFormSubmit() {
+      createRefermentDispatch({
+        type: createRefermentAction.setIsSubmitting,
+        payload: true,
+      });
+      createRefermentDispatch({
+        type: createRefermentAction.setSubmitMessage,
+        payload: `Submitting candidate ${candidateFullName} for referment...`,
+      });
+
+      const url: URL = urlBuilder({ path: 'actions/general/referment' });
+
+      const body = JSON.stringify({
+        referment: {
+          candidateFullName,
+          candidateEmail,
+          candidateContactNumber,
+          candidateCurrentJobTitle,
+          candidateCurrentCompany,
+          candidateProfileUrl,
+          departmentReferredFor,
+          positionReferredFor,
+          positionJobDescription,
+          referralReason,
+          additionalInformation,
+          privacyConsent,
+        },
+      });
+
+      const request: Request = new Request(url.toString(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<RefermentDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        createRefermentDispatch({
+          type: createRefermentAction.setIsSuccessful,
+          payload: true,
+        });
+        createRefermentDispatch({
+          type: createRefermentAction.setSuccessMessage,
+          payload:
+            data.message ??
+            `Successfully submitted candidate ${candidateFullName} for referment.`,
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          createRefermentDispatch({
+            type: createRefermentAction.setIsSubmitting,
+            payload: false,
+          });
+          createRefermentDispatch({
+            type: createRefermentAction.setSubmitMessage,
+            payload: '',
+          });
+          createRefermentDispatch({
+            type: createRefermentAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleCreateRefermentFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only run on triggerFormSubmit change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   // validate candidateFullName on every change
   useEffect(() => {
@@ -299,6 +448,21 @@ function CreateReferment() {
     additionalInformation,
     privacyConsent,
   ]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={createRefermentDispatch}
+        navigateTo={{ successPath: '/home/general/referment/display' }}
+      />
+    );
+  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [candidateFullNameInputErrorText, candidateFullNameInputValidText] =
@@ -985,16 +1149,6 @@ function CreateReferment() {
       {displayCreateRefermentForm}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    async function handleCreateRefermentFormSubmit() {
-      console.log('handleCreateRefermentFormSubmit');
-    }
-
-    if (triggerFormSubmit) {
-      handleCreateRefermentFormSubmit();
-    }
-  }, [triggerFormSubmit]);
 
   return displayCreateRefermentComponent;
 }

@@ -80,8 +80,6 @@ type CreateRefermentState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -136,8 +134,6 @@ type CreateRefermentAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -157,7 +153,6 @@ type CreateRefermentDispatch =
         | CreateRefermentAction['setPositionJobDescription']
         | CreateRefermentAction['setReferralReason']
         | CreateRefermentAction['setAdditionalInformation']
-        | CreateRefermentAction['setErrorMessage']
         | CreateRefermentAction['setSubmitMessage']
         | CreateRefermentAction['setSuccessMessage']
         | CreateRefermentAction['setLoadingMessage'];
@@ -185,7 +180,6 @@ type CreateRefermentDispatch =
         | CreateRefermentAction['setIsAdditionalInformationFocused']
         | CreateRefermentAction['setPrivacyConsent']
         | CreateRefermentAction['setTriggerFormSubmit']
-        | CreateRefermentAction['setIsError']
         | CreateRefermentAction['setIsSubmitting']
         | CreateRefermentAction['setIsSuccessful']
         | CreateRefermentAction['setIsLoading'];

@@ -50,8 +50,6 @@ const initialCreateRefermentState: CreateRefermentState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -106,8 +104,6 @@ const createRefermentAction: CreateRefermentAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -303,16 +299,6 @@ function createRefermentReducer(
       };
     }
 
-    case createRefermentAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createRefermentAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case createRefermentAction.setIsSubmitting:
       return {
         ...state,

@@ -111,9 +111,9 @@ const REFERMENT_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const REFERMENT_ROUTE_PATHS: ResourceRoutePaths = {
-  manager: '/api/v1/actions/general/referment',
-  admin: '/api/v1/actions/general/referment',
-  employee: '/api/v1/actions/general/referment/user',
+  manager: 'actions/general/referment',
+  admin: 'actions/general/referment',
+  employee: 'actions/general/referment/user',
 };
 
 export {
