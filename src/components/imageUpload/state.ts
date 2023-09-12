@@ -18,11 +18,9 @@ const initialImageUploadState: ImageUploadState = {
   qualities: [],
   orientations: [],
 
-  isError: false,
-  errorMessage: '',
   isLoading: false,
   loadingMessage: '',
-  isSuccess: false,
+  isSuccessful: false,
   successMessage: '',
   isSubmitting: false,
   submitMessage: '',
@@ -42,11 +40,9 @@ const imageUploadAction: ImageUploadAction = {
   setOrientations: 'setOrientations',
   resetImageToDefault: 'resetImageToDefault',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
   setLoadingMessage: 'setLoadingMessage',
-  setIsSuccess: 'setIsSuccess',
+  setIsSuccessful: 'setIsSuccessful',
   setSuccessMessage: 'setSuccessMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
@@ -209,16 +205,6 @@ function imageUploadReducer(
       };
     }
 
-    case imageUploadAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case imageUploadAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case imageUploadAction.setIsLoading:
       return {
         ...state,
@@ -229,10 +215,10 @@ function imageUploadReducer(
         ...state,
         loadingMessage: action.payload,
       };
-    case imageUploadAction.setIsSuccess:
+    case imageUploadAction.setIsSuccessful:
       return {
         ...state,
-        isSuccess: action.payload,
+        isSuccessful: action.payload,
       };
     case imageUploadAction.setSuccessMessage:
       return {

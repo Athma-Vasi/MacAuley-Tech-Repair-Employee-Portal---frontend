@@ -1443,9 +1443,11 @@ function returnThemeColors({
     colorScheme === 'light'
       ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
       : dark[6];
+  const redBorderColor = `1px solid ${redColorShade}`;
   const appThemeColors = {
     borderColor,
     backgroundColor,
+    redBorderColor,
   };
 
   // for table display

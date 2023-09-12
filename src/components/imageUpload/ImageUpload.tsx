@@ -9,21 +9,29 @@ import {
   Stack,
   Text,
   Tooltip,
-  useMantineTheme,
 } from '@mantine/core';
 import { compress } from 'image-conversion';
 import localforage from 'localforage';
 import { useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { BiReset } from 'react-icons/bi';
 import { LuRotate3D } from 'react-icons/lu';
 import { TbTrash } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../constants/data';
+import { globalAction } from '../../context/globalProvider/state';
 import { useGlobalState } from '../../hooks';
 import {
   AccessibleErrorValidTextElementsForDynamicImageUploads,
   returnAccessibleButtonElements,
 } from '../../jsxCreators';
-import { logState, returnImageValidationText } from '../../utils';
+import {
+  logState,
+  returnImageValidationText,
+  returnThemeColors,
+} from '../../utils';
+import { CustomNotification } from '../customNotification';
 import { TextWrapper } from '../wrappers';
 import {
   displayOrientationLabel,
@@ -68,33 +76,45 @@ function ImageUpload({
     qualities,
     orientations,
 
-    isError,
-    errorMessage,
     isLoading,
     loadingMessage,
-    isSuccess,
+    isSuccessful,
     successMessage,
     isSubmitting,
     submitMessage,
   } = imageUploadState;
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-      rowGap,
-      padding,
-    },
+    globalState: { themeObject, rowGap, padding },
+    globalDispatch,
   } = useGlobalState();
-  const { colors } = useMantineTheme();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
 
   // set localforage imageupload state to initial state on every mount
   useEffect(() => {
-    async function getImageUploadState() {
-      const imageUploadState =
-        await localforage.getItem<ImageUploadLocalForage>(
-          `${parentComponentName}-imageUploadState`
-        );
+    let isMounted = true;
 
-      if (imageUploadState) {
+    async function getImageUploadState() {
+      imageUploadDispatch({
+        type: imageUploadAction.setIsLoading,
+        payload: true,
+      });
+      imageUploadDispatch({
+        type: imageUploadAction.setLoadingMessage,
+        payload: 'Retrieving images from local storage ...',
+      });
+
+      try {
+        const imageUploadState =
+          await localforage.getItem<ImageUploadLocalForage>(
+            `${parentComponentName}-imageUploadState`
+          );
+
+        if (!isMounted || !imageUploadState) {
+          return;
+        }
+
         const { imageCount, images, imagePreviews, orientations, qualities } =
           imageUploadState;
 
@@ -142,10 +162,55 @@ function ImageUpload({
             },
           });
         });
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+
+        const errorMessage =
+          error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          imageUploadDispatch({
+            type: imageUploadAction.setIsLoading,
+            payload: false,
+          });
+          imageUploadDispatch({
+            type: imageUploadAction.setLoadingMessage,
+            payload: '',
+          });
+        }
       }
     }
 
     getImageUploadState();
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // stored in localforage to persist across component mounts
@@ -172,6 +237,7 @@ function ImageUpload({
       localforage.removeItem(`${parentComponentName}-imageUploadState`);
     });
   }, [parentComponentName]);
+
   // flush local forage when parent component submits form
   useEffect(() => {
     if (isParentComponentFormSubmitted) {
@@ -238,33 +304,74 @@ function ImageUpload({
 
   // compress, orient image on every slider change
   useEffect(() => {
+    let isMounted = true;
+
     async function modifyImage() {
-      await Promise.all(
-        images.map(async (image: File, index) => {
-          if (!qualities[index] && !orientations[index]) {
-            return;
-          }
-          if (!areValidImageKinds[index] || !areValidImageTypes[index]) {
-            return;
-          }
+      try {
+        await Promise.all(
+          images.map(async (image: File, index) => {
+            if (!qualities[index] && !orientations[index]) {
+              return;
+            }
+            if (!areValidImageKinds[index] || !areValidImageTypes[index]) {
+              return;
+            }
 
-          const modifiedImage = await compress(image, {
-            quality: (qualities[index] ?? 10) / 10,
-            orientation: orientations[index] ?? 1,
-          });
+            const modifiedImage = await compress(image, {
+              quality: (qualities[index] ?? 10) / 10,
+              orientation: orientations[index] ?? 1,
+            });
 
-          imageUploadDispatch({
-            type: imageUploadAction.setImagePreviews,
-            payload: {
-              index,
-              imagePreview: modifiedImage,
+            if (!isMounted) {
+              return;
+            }
+
+            imageUploadDispatch({
+              type: imageUploadAction.setImagePreviews,
+              payload: {
+                index,
+                imagePreview: modifiedImage,
+              },
+            });
+          })
+        );
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+
+        const errorMessage =
+          error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
             },
-          });
-        })
-      );
+          },
+        });
+
+        showBoundary(error);
+      }
     }
 
     modifyImage();
+
+    return () => {
+      isMounted = false;
+    };
   }, [qualities, orientations]);
 
   // on every change to image previews or images, set and dispatch formdata
@@ -301,6 +408,28 @@ function ImageUpload({
       payload: formDataArray,
     });
   }, [images, imagePreviews]);
+
+  useEffect(() => {
+    logState({
+      state: imageUploadState,
+      groupLabel: 'ImageUpload',
+    });
+  }, [imageUploadState]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={imageUploadDispatch}
+        navigateTo={{ successPath: '/home/company/expense-claim/display' }}
+      />
+    );
+  }
 
   const [imageFileUploadErrorTexts, imageFileUploadValidTexts] =
     AccessibleErrorValidTextElementsForDynamicImageUploads({
@@ -442,10 +571,12 @@ function ImageUpload({
         </Flex>
       );
 
-      const borderColorGray =
-        colorScheme === 'light'
-          ? `1px solid ${colors.gray[3]}`
-          : `1px solid ${colors.gray[8]}`;
+      const {
+        appThemeColors: { borderColor, redBorderColor },
+      } = returnThemeColors({
+        themeObject,
+        colorsSwatches: COLORS_SWATCHES,
+      });
 
       const imageName = (
         <Flex
@@ -455,7 +586,7 @@ function ImageUpload({
           w="100%"
           rowGap={rowGap}
           style={{
-            borderBottom: borderColorGray,
+            borderBottom: borderColor,
           }}
         >
           <TextWrapper creatorInfoObj={{}}>Name: </TextWrapper>
@@ -471,11 +602,6 @@ function ImageUpload({
         </Flex>
       );
 
-      const borderColorRed =
-        colorScheme === 'light'
-          ? `1px solid ${colors.red[primaryShade.light]}`
-          : `1px solid ${colors.red[primaryShade.dark]}`;
-
       const imageSize = (
         <Flex
           align="center"
@@ -484,8 +610,8 @@ function ImageUpload({
           w="100%"
           style={{
             borderBottom: areValidImageSizes[index]
-              ? borderColorGray
-              : borderColorRed,
+              ? borderColor
+              : redBorderColor,
           }}
         >
           <TextWrapper creatorInfoObj={{}}>Size: </TextWrapper>
@@ -503,8 +629,8 @@ function ImageUpload({
           w="100%"
           style={{
             borderBottom: areValidImageKinds[index]
-              ? borderColorGray
-              : borderColorRed,
+              ? borderColor
+              : redBorderColor,
           }}
         >
           <TextWrapper creatorInfoObj={{}}>Kind: </TextWrapper>
@@ -522,8 +648,8 @@ function ImageUpload({
           w="100%"
           style={{
             borderBottom: areValidImageTypes[index]
-              ? borderColorGray
-              : borderColorRed,
+              ? borderColor
+              : redBorderColor,
           }}
         >
           <TextWrapper creatorInfoObj={{}}>Type: </TextWrapper>
@@ -651,7 +777,7 @@ function ImageUpload({
           w={350}
           p={padding}
           style={{
-            border: borderColorGray,
+            border: borderColor,
             borderRadius: '4px',
           }}
         >
@@ -695,13 +821,6 @@ function ImageUpload({
       {createdImagePreview}
     </Flex>
   );
-
-  useEffect(() => {
-    logState({
-      state: imageUploadState,
-      groupLabel: 'ImageUpload',
-    });
-  }, [imageUploadState]);
 
   const displayImageUploadComponent = (
     <Stack

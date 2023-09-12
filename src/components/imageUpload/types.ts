@@ -30,11 +30,9 @@ type ImageUploadState = {
   qualities: number[];
   orientations: number[];
 
-  isError: boolean;
-  errorMessage: string;
   isLoading: boolean;
   loadingMessage: string;
-  isSuccess: boolean;
+  isSuccessful: boolean;
   successMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
@@ -62,11 +60,9 @@ type ImageUploadAction = {
   setOrientations: 'setOrientations';
   resetImageToDefault: 'resetImageToDefault';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
-  setIsSuccess: 'setIsSuccess';
+  setIsSuccessful: 'setIsSuccessful';
   setSuccessMessage: 'setSuccessMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
@@ -119,15 +115,13 @@ type ImageUploadDispatch =
     }
   | {
       type:
-        | ImageUploadAction['setIsError']
         | ImageUploadAction['setIsLoading']
-        | ImageUploadAction['setIsSuccess']
+        | ImageUploadAction['setIsSuccessful']
         | ImageUploadAction['setIsSubmitting'];
       payload: boolean;
     }
   | {
       type:
-        | ImageUploadAction['setErrorMessage']
         | ImageUploadAction['setLoadingMessage']
         | ImageUploadAction['setSuccessMessage']
         | ImageUploadAction['setSubmitMessage'];
