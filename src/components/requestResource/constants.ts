@@ -92,9 +92,9 @@ const REQUEST_RESOURCE_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const REQUEST_RESOURCE_PATHS: ResourceRoutePaths = {
-  manager: '/api/v1/actions/company/request-resource',
-  admin: '/api/v1/actions/company/request-resource',
-  employee: '/api/v1/actions/company/request-resource/user',
+  manager: 'actions/company/request-resource',
+  admin: 'actions/company/request-resource',
+  employee: 'actions/company/request-resource/user',
 };
 
 export {

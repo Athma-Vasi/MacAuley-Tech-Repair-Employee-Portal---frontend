@@ -26,6 +26,7 @@ import FormReviewPage, {
 import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { globalAction } from '../../../context/globalProvider/state';
+import { CustomNotification } from '../../customNotification';
 
 function CreateRepairNote() {
   /** ------------- begin hooks ------------- */
@@ -140,7 +141,7 @@ function CreateRepairNote() {
         payload: `Submitting repair note form for ${customerName}...`,
       });
 
-      const url: URL = urlBuilder({ path: 'repair-note/' });
+      const url: URL = urlBuilder({ path: 'repair-note' });
 
       const repairNote: RepairNoteInitialSchema = {
         // customer info
@@ -265,6 +266,21 @@ function CreateRepairNote() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
   /** ------------- end useEffects ------------- */
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={createRepairNoteDispatch}
+        navigateTo={{ successPath: '/home/repair-note/display' }}
+      />
+    );
+  }
 
   /** ------------- begin input creators ------------- */
   const [createdSubmitButton] = returnAccessibleButtonElements([

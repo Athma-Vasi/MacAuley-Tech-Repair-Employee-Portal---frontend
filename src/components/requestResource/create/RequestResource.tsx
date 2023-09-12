@@ -1,5 +1,9 @@
+import { Group, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import { DEPARTMENT_DATA, URGENCY_DATA } from '../../../constants/data';
 import {
@@ -8,6 +12,8 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -16,12 +22,21 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { Department, Urgency } from '../../../types';
+import {
+  Department,
+  ResourceRequestServerResponse,
+  Urgency,
+} from '../../../types';
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
   returnNumberAmountValidationText,
+  urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -41,11 +56,7 @@ import {
   requestResourceAction,
   requestResourceReducer,
 } from './state';
-import { RequestResourceKind } from './types';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
-import { Group, Tooltip } from '@mantine/core';
+import { RequestResourceDocument, RequestResourceKind } from './types';
 
 function RequestResource() {
   const [requestResourceState, requestResourceDispatch] = useReducer(
@@ -82,8 +93,6 @@ function RequestResource() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -91,6 +100,140 @@ function RequestResource() {
     isLoading,
     loadingMessage,
   } = requestResourceState;
+
+  const { globalDispatch } = useGlobalState();
+
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function handleRequestResourceFormSubmit() {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsSubmitting,
+        payload: true,
+      });
+      requestResourceDispatch({
+        type: requestResourceAction.setSubmitMessage,
+        payload: `Submitting Request ${resourceType} Resource form ...`,
+      });
+
+      const url: URL = urlBuilder({ path: 'actions/company/request-resource' });
+
+      const body = JSON.stringify({
+        requestResource: {
+          department,
+          resourceType,
+          resourceQuantity,
+          resourceDescription,
+          reasonForRequest,
+          urgency,
+          dateNeededBy,
+          additionalInformation,
+        },
+      });
+
+      const request: Request = new Request(url.toString(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<RequestResourceDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        requestResourceDispatch({
+          type: requestResourceAction.setIsSuccessful,
+          payload: false,
+        });
+        requestResourceDispatch({
+          type: requestResourceAction.setSuccessMessage,
+          payload:
+            data.message ??
+            `New request resource of kind ${resourceType} for ${department} created`,
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          requestResourceDispatch({
+            type: requestResourceAction.setIsSubmitting,
+            payload: false,
+          });
+          requestResourceDispatch({
+            type: requestResourceAction.setSubmitMessage,
+            payload: '',
+          });
+          requestResourceDispatch({
+            type: requestResourceAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (triggerFormSubmit) {
+      handleRequestResourceFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only run on triggerFormSubmit change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   const departmentInputRef = useRef<HTMLSelectElement>(null);
   // sets focus on department input on first render
@@ -198,6 +341,21 @@ function RequestResource() {
     reasonForRequest,
     additionalInformation,
   ]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={requestResourceDispatch}
+        navigateTo={{ successPath: '/home/company/request-resource/display' }}
+      />
+    );
+  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [resourceQuantityInputErrorText, resourceQuantityInputValidText] =
@@ -630,16 +788,6 @@ function RequestResource() {
       {displayRequestResourceForm}
     </StepperWrapper>
   );
-
-  useEffect(() => {
-    async function handleRequestResourceFormSubmit() {
-      console.log('handleRequestResourceFormSubmit');
-    }
-
-    if (triggerFormSubmit) {
-      handleRequestResourceFormSubmit();
-    }
-  }, [triggerFormSubmit]);
 
   return displayRequestResourceComponent;
 }

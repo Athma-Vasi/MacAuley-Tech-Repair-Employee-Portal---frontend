@@ -58,8 +58,6 @@ type RequestResourceState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -98,8 +96,6 @@ type RequestResourceAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -129,7 +125,6 @@ type RequestResourceDispatch =
         | RequestResourceAction['setReasonForRequest']
         | RequestResourceAction['setAdditionalInformation']
         | RequestResourceAction['setDateNeededBy']
-        | RequestResourceAction['setErrorMessage']
         | RequestResourceAction['setSubmitMessage']
         | RequestResourceAction['setSuccessMessage']
         | RequestResourceAction['setLoadingMessage'];
@@ -156,7 +151,6 @@ type RequestResourceDispatch =
         | RequestResourceAction['setIsValidAdditionalInformation']
         | RequestResourceAction['setIsAdditionalInformationFocused']
         | RequestResourceAction['setTriggerFormSubmit']
-        | RequestResourceAction['setIsError']
         | RequestResourceAction['setIsSubmitting']
         | RequestResourceAction['setIsSuccessful']
         | RequestResourceAction['setIsLoading'];

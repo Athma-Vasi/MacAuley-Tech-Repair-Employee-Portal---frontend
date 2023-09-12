@@ -34,8 +34,6 @@ const initialRequestResourceState: RequestResourceState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -74,8 +72,6 @@ const requestResourceAction: RequestResourceAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -200,16 +196,7 @@ function requestResourceReducer(
         stepsInError,
       };
     }
-    case requestResourceAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case requestResourceAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
+
     case requestResourceAction.setIsSubmitting:
       return {
         ...state,
