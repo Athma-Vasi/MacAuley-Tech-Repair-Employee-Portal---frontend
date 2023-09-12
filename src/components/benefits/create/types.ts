@@ -74,8 +74,6 @@ type CreateBenefitState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
@@ -117,8 +115,6 @@ type CreateBenefitAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
@@ -136,7 +132,6 @@ type CreateBenefitDispatch =
         | CreateBenefitAction['setPlanStartDate']
         | CreateBenefitAction['setEmployeeContribution']
         | CreateBenefitAction['setEmployerContribution']
-        | CreateBenefitAction['setErrorMessage']
         | CreateBenefitAction['setSubmitMessage']
         | CreateBenefitAction['setSuccessMessage']
         | CreateBenefitAction['setLoadingMessage'];
@@ -158,7 +153,6 @@ type CreateBenefitDispatch =
         | CreateBenefitAction['setIsEmployerContributionFocused']
         | CreateBenefitAction['setIsPlanActive']
         | CreateBenefitAction['setTriggerFormSubmit']
-        | CreateBenefitAction['setIsError']
         | CreateBenefitAction['setIsSubmitting']
         | CreateBenefitAction['setIsSuccessful']
         | CreateBenefitAction['setIsLoading'];

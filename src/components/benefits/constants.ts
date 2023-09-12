@@ -122,9 +122,9 @@ const BENEFIT_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const BENEFIT_RESOURCE_PATHS: ResourceRoutePaths = {
-  manager: '/api/v1/actions/company/benefit',
-  admin: '/api/v1/actions/company/benefit',
-  employee: '/api/v1/actions/company/benefit/user',
+  manager: 'actions/company/benefit',
+  admin: 'actions/company/benefit',
+  employee: 'actions/company/benefit/user',
 };
 
 export {

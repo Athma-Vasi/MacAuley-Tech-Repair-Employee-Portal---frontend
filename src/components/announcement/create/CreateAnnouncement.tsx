@@ -1,27 +1,31 @@
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Flex, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
+import { Group, Text, Title, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
-import { MdOutlineAdd } from 'react-icons/md';
+import { useErrorBoundary } from 'react-error-boundary';
 import {
-  TbPlus,
   TbRowInsertBottom,
   TbRowInsertTop,
   TbTrash,
   TbUpload,
 } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../../constants/data';
 import {
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   URL_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
-  returnAccessibleButtonElements,
-  returnAccessibleDynamicTextAreaInputElements,
   AccessibleErrorValidTextElements,
   AccessibleErrorValidTextElementsForDynamicInputs,
+  returnAccessibleButtonElements,
+  returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
+import { ResourceRequestServerResponse } from '../../../types';
 import {
   logState,
   returnGrammarValidationText,
@@ -30,13 +34,16 @@ import {
   returnUrlValidationText,
   urlBuilder,
 } from '../../../utils';
+import { CustomNotification } from '../../customNotification';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-  TextWrapper,
 } from '../../wrappers';
 import { ARTICLE_TITLE_REGEX } from '../constants';
 import {
@@ -49,19 +56,8 @@ import {
   createAnnouncementReducer,
   initialCreateAnnouncementState,
 } from './state';
-import { useAuth, useGlobalState } from '../../../hooks';
-import { ResourceRequestServerResponse } from '../../../types';
 import { AnnouncementDocument, RatingResponse } from './types';
-import { CustomNotification } from '../../customNotification';
-import { InvalidTokenError } from 'jwt-decode';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
 import { createAnnouncementFormReviewObject } from './utils';
-import { useNavigate } from 'react-router-dom';
-import { useErrorBoundary } from 'react-error-boundary';
-import { globalAction } from '../../../context/globalProvider/state';
 
 function CreateAnnouncement() {
   /** ------------- begin hooks ------------- */

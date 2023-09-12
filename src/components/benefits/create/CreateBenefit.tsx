@@ -1,14 +1,7 @@
-import {
-  faDollarSign,
-  faEuro,
-  faJpy,
-  faPoundSign,
-  faYen,
-} from '@fortawesome/free-solid-svg-icons';
-import { Flex, Group, Text, Tooltip, useMantineTheme } from '@mantine/core';
+import { Group, Text, Tooltip } from '@mantine/core';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import {
-  TbCurrency,
   TbCurrencyDollar,
   TbCurrencyEuro,
   TbCurrencyPound,
@@ -16,18 +9,21 @@ import {
   TbCurrencyYen,
   TbUpload,
 } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../../constants/data';
 import {
   DATE_REGEX,
   MONEY_REGEX,
   USERNAME_REGEX,
 } from '../../../constants/regex';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
+  AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -36,8 +32,13 @@ import {
   returnDateValidationText,
   returnGrammarValidationText,
   returnNumberAmountValidationText,
+  returnThemeColors,
   returnUsernameRegexValidationText,
+  urlBuilder,
 } from '../../../utils';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -61,12 +62,11 @@ import {
   createBenefitReducer,
   initialCreateBenefitState,
 } from './state';
-import { BenefitsPlanKind, Currency } from './types';
-import { useGlobalState } from '../../../hooks';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
-import { COLORS_SWATCHES } from '../../../constants/data';
+import { BenefitsDocument, BenefitsPlanKind, Currency } from './types';
+import { ResourceRequestServerResponse } from '../../../types';
+import { InvalidTokenError } from 'jwt-decode';
+import { globalAction } from '../../../context/globalProvider/state';
+import { CustomNotification } from '../../customNotification';
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
@@ -106,8 +106,6 @@ function CreateBenefit() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSubmitting,
     submitMessage,
     isSuccessful,
@@ -116,12 +114,144 @@ function CreateBenefit() {
     loadingMessage,
   } = createBenefitState;
 
-  const { gray } = COLORS_SWATCHES;
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-    },
+    globalState: { themeObject },
+    globalDispatch,
   } = useGlobalState();
+
+  const {
+    authState: { accessToken },
+  } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function createBenefitFormSubmit() {
+      createBenefitDispatch({
+        type: createBenefitAction.setIsSubmitting,
+        payload: true,
+      });
+      createBenefitDispatch({
+        type: createBenefitAction.setSubmitMessage,
+        payload: 'Submitting new benefit to be created...',
+      });
+
+      const url: URL = urlBuilder({
+        path: 'actions/company/benefit',
+      });
+
+      const body = JSON.stringify({
+        benefit: {
+          username: benefitUsername,
+          planName,
+          planDescription,
+          planKind,
+          planStartDate,
+          isPlanActive,
+          currency,
+          monthlyPremium: employeeContribution + employerContribution,
+          employeeContribution,
+          employerContribution,
+        },
+      });
+
+      const request: Request = new Request(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<BenefitsDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        createBenefitDispatch({
+          type: createBenefitAction.setIsSuccessful,
+          payload: true,
+        });
+        createBenefitDispatch({
+          type: createBenefitAction.setSuccessMessage,
+          payload: data.message ?? 'Benefit successfully created!',
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        createBenefitDispatch({
+          type: createBenefitAction.setIsSubmitting,
+          payload: false,
+        });
+        createBenefitDispatch({
+          type: createBenefitAction.setSubmitMessage,
+          payload: '',
+        });
+        createBenefitDispatch({
+          type: createBenefitAction.setTriggerFormSubmit,
+          payload: false,
+        });
+      }
+
+      console.log('create benefit form submit');
+    }
+
+    if (triggerFormSubmit) {
+      createBenefitFormSubmit();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+
+    // only run when triggerFormSubmit is true
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
 
   // validate benefitUsername input on every change
   useEffect(() => {
@@ -304,6 +434,21 @@ function CreateBenefit() {
       },
     });
   }, [isValidEmployeeContribution, isValidEmployerContribution]);
+
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={createBenefitDispatch}
+        navigateTo={{ successPath: '/home/company/benefit/display' }}
+      />
+    );
+  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [benefitUsernameInputErrorText, benefitUsernameInputValidText] =
@@ -553,18 +698,23 @@ function CreateBenefit() {
     withAsterisk: true,
   };
 
-  const currencyIconColor = colorScheme === 'light' ? gray[5] : gray[6];
+  const {
+    generalColors: { grayColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
   const currencyIcon =
     currency === 'CNY' ? (
-      <TbCurrencyRenminbi size={14} color={currencyIconColor} />
+      <TbCurrencyRenminbi size={14} color={grayColorShade} />
     ) : currency === 'GBP' ? (
-      <TbCurrencyPound size={14} color={currencyIconColor} />
+      <TbCurrencyPound size={14} color={grayColorShade} />
     ) : currency === 'EUR' ? (
-      <TbCurrencyEuro size={14} color={currencyIconColor} />
+      <TbCurrencyEuro size={14} color={grayColorShade} />
     ) : currency === 'JPY' ? (
-      <TbCurrencyYen size={14} color={currencyIconColor} />
+      <TbCurrencyYen size={14} color={grayColorShade} />
     ) : (
-      <TbCurrencyDollar size={14} color={currencyIconColor} />
+      <TbCurrencyDollar size={14} color={grayColorShade} />
     );
 
   const employeeContributionInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -710,7 +860,7 @@ function CreateBenefit() {
       <Tooltip
         label={
           stepsInError.size > 0
-            ? 'Please fix errors before submitting form form'
+            ? 'Please fix errors before submitting form'
             : 'Submit Benefit form'
         }
       >
@@ -732,7 +882,7 @@ function CreateBenefit() {
 
   const currencySymbol =
     currency === 'CNY'
-      ? '¥'
+      ? '元'
       : currency === 'GBP'
       ? '£'
       : currency === 'EUR'
@@ -786,7 +936,7 @@ function CreateBenefit() {
       {
         inputName: 'Plan Kind',
         inputValue: planKind,
-        isInputValueValid: true,
+        isInputValueValid: planKind.length > 0,
       },
     ],
     'Plan Contributions': [
@@ -843,17 +993,7 @@ function CreateBenefit() {
     </StepperWrapper>
   );
 
-  useEffect(() => {
-    async function createBenefitFormSubmit() {
-      console.log('create benefit form submit');
-    }
-
-    if (triggerFormSubmit) {
-      createBenefitFormSubmit();
-    }
-  }, [triggerFormSubmit]);
-
-  return <>{displayCreateBenefitComponent}</>;
+  return displayCreateBenefitComponent;
 }
 
 export default CreateBenefit;

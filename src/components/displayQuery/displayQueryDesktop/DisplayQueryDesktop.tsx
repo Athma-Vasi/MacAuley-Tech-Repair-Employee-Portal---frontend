@@ -192,9 +192,11 @@ function DisplayQueryDesktop<Doc>({
   console.log('tableHeaderValuesArr: ', tableHeaderValuesArr);
   console.log('groupBySelection: ', groupBySelection);
 
+  // used to prevent display of sort arrows on groupedBy or id fields
   const headerExclusionSet = new Set([
     '_id',
     'user id',
+    'benefit user id',
     'file uploads',
     'delete',
   ]);
@@ -445,17 +447,19 @@ function DisplayQueryDesktop<Doc>({
                             <Text>{formattedValueSliced}</Text>
                           );
 
-                          // allows for convenient access to username, userId and groupBySelectionField in a large table
-                          console.log(
-                            'queryResponseObjWithAddedFields: ',
-                            queryResponseObjWithAddedFields
-                          );
+                          // allows for convenient access to username, userId and groupBySelectionField when viewing a large table
                           const username =
                             queryResponseObjWithAddedFields.username ??
+                            // anonymousRequest documents do not have username field
                             'Anonymous';
-                          const userId = queryResponseObjWithAddedFields.userId;
+
+                          const userId =
+                            queryResponseObjWithAddedFields.userId ??
+                            // benefits document does not have userId field and instead has benefitUserId field
+                            queryResponseObjWithAddedFields.benefitUserId;
                           const groupBySelectionValue =
                             queryResponseObjWithAddedFields[groupBySelection];
+
                           const dropDownFooter = (
                             <Flex wrap="wrap">
                               {groupBySelection === 'username' ? null : (
@@ -477,11 +481,11 @@ function DisplayQueryDesktop<Doc>({
                                           )}`
                                     }`}</strong>
                                   </Text>
+                                  <Space w="xs" />
                                 </Group>
                               )}
 
                               <Group>
-                                <Space w="xs" />
                                 <Text>Username: </Text>
 
                                 <Text>

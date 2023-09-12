@@ -407,7 +407,7 @@ function CreateRepairNote() {
     <Tooltip
       label={
         stepsInError.size > 0
-          ? 'Please fix errors before submitting form form'
+          ? 'Please fix errors before submitting form'
           : 'Submit Repair Note form'
       }
     >

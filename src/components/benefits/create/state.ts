@@ -40,8 +40,6 @@ const initialCreateBenefitState: CreateBenefitState = {
   currentStepperPosition: 0,
   stepsInError: new Set(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
   submitMessage: '',
   isSuccessful: false,
@@ -83,8 +81,6 @@ const createBenefitAction: CreateBenefitAction = {
   setCurrentStepperPosition: 'setCurrentStepperPosition',
   setStepsInError: 'setStepsInError',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
   setIsSuccessful: 'setIsSuccessful',
@@ -231,16 +227,6 @@ function createBenefitReducer(
       };
     }
 
-    case createBenefitAction.setIsError:
-      return {
-        ...state,
-        isError: action.payload,
-      };
-    case createBenefitAction.setErrorMessage:
-      return {
-        ...state,
-        errorMessage: action.payload,
-      };
     case createBenefitAction.setIsSubmitting:
       return {
         ...state,
