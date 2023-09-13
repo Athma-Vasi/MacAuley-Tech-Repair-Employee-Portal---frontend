@@ -905,6 +905,7 @@ function DisplayQuery<Doc>({
         deleteFileUploadIdDispatch={displayQueryDispatch}
         deleteResourceKindDispatch={displayQueryDispatch}
         groupedByQueryResponseData={groupedByQueryResponseData}
+        groupBySelection={groupBySelection}
         openDeleteAcknowledge={openDeleteAcknowledge}
         openFileUploads={openFileUploads}
         setFileUploadsForAFormDispatch={displayQueryDispatch}

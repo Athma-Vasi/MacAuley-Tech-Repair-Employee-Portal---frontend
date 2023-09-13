@@ -61,6 +61,14 @@ type QueryBuilderState = {
   projectedFieldsSet: Set<string>;
 
   queryString: string;
+
+  // accordion chevron states
+  isQueryBuilderOpened: boolean;
+  isFilterOpened: boolean;
+  isFilterChainOpened: boolean;
+  isSortOpened: boolean;
+  isSortChainOpened: boolean;
+  isProjectionOpened: boolean;
 };
 
 type QueryBuilderAction = {
@@ -88,6 +96,14 @@ type QueryBuilderAction = {
 
   setClearAllQueryData: 'setClearAllQueryData';
   buildQueryString: 'buildQueryString';
+
+  // accordion chevron states
+  toggleIsQueryBuilderOpened: 'toggleIsQueryBuilderOpened';
+  toggleIsFilterOpened: 'toggleIsFilterOpened';
+  toggleIsFilterChainOpened: 'toggleIsFilterChainOpened';
+  toggleIsSortOpened: 'toggleIsSortOpened';
+  toggleIsSortChainOpened: 'toggleIsSortChainOpened';
+  toggleIsProjectionOpened: 'toggleIsProjectionOpened';
 };
 
 type QueryBuilderDispatch =
@@ -105,7 +121,13 @@ type QueryBuilderDispatch =
   | {
       type:
         | QueryBuilderAction['setIsCurrentFilterValueValid']
-        | QueryBuilderAction['setIsCurrentFilterValueFocused'];
+        | QueryBuilderAction['setIsCurrentFilterValueFocused']
+        | QueryBuilderAction['toggleIsQueryBuilderOpened']
+        | QueryBuilderAction['toggleIsFilterOpened']
+        | QueryBuilderAction['toggleIsFilterChainOpened']
+        | QueryBuilderAction['toggleIsSortOpened']
+        | QueryBuilderAction['toggleIsSortChainOpened']
+        | QueryBuilderAction['toggleIsProjectionOpened'];
 
       payload: boolean;
     }

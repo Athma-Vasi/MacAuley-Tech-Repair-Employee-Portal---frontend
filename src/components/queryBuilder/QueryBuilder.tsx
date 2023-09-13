@@ -15,6 +15,7 @@ import { ChangeEvent, useEffect, useReducer } from 'react';
 import { RxLinkBreak2 } from 'react-icons/rx';
 import {
   TbArrowDown,
+  TbChevronDown,
   TbClearAll,
   TbLink,
   TbPlus,
@@ -111,6 +112,13 @@ function QueryBuilder({
     projectedFieldsSet,
 
     queryString,
+
+    isQueryBuilderOpened,
+    isFilterOpened,
+    isFilterChainOpened,
+    isSortOpened,
+    isSortChainOpened,
+    isProjectionOpened,
   } = queryBuilderState;
   const {
     globalState: { width, rowGap, padding, themeObject },
@@ -317,7 +325,7 @@ function QueryBuilder({
   // ----------------- //
 
   const {
-    generalColors: { themeColorShade },
+    generalColors: { themeColorShade, grayColorShade },
     appThemeColors: { borderColor },
   } = returnThemeColors({
     themeObject,
@@ -622,7 +630,6 @@ function QueryBuilder({
   const filteredSortSelectData = sortSelectData.filter(
     (term) => !projectedFieldsSet.has(term)
   );
-  console.log('filteredSortSelectData: ', filteredSortSelectData);
   const sortSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: filteredSortSelectData,
     label: 'Field',
@@ -767,7 +774,6 @@ function QueryBuilder({
           payload: queryString,
         });
       },
-      // buttonDisabled: queryString === '?',
       leftIcon: <TbUpload />,
     };
 
@@ -900,7 +906,20 @@ function QueryBuilder({
       {filteredFilterSelectData.length === 0 ? (
         <Text>No fields to filter!</Text>
       ) : (
-        <Accordion w="100%">
+        <Accordion
+          w="100%"
+          chevron={
+            <TbChevronDown
+              color={isFilterOpened ? themeColorShade : grayColorShade}
+            />
+          }
+          onClick={() => {
+            queryBuilderDispatch({
+              type: queryBuilderAction.toggleIsFilterOpened,
+              payload: isFilterOpened,
+            });
+          }}
+        >
           <Accordion.Item value="Filter">
             <Accordion.Control disabled={filteredFilterSelectData.length === 0}>
               <Title order={5}>Filter</Title>

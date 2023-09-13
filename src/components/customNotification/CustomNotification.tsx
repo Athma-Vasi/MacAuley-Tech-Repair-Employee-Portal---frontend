@@ -1,10 +1,9 @@
-import { Center, Flex, Group, Notification, Space, Text } from '@mantine/core';
-import { MdOutlineErrorOutline } from 'react-icons/md';
+import { Center, Group, Notification, Text } from '@mantine/core';
 import { TbCheck } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
-import { useGlobalState } from '../../hooks';
 import { COLORS_SWATCHES } from '../../constants/data';
+import { useGlobalState } from '../../hooks';
 import { returnThemeColors } from '../../utils';
 
 type ParentDispatch = React.Dispatch<
@@ -44,7 +43,7 @@ type CustomNotificationProps = {
  * @param {string} loadingMessage - message to display in loading notification
  * @param {object} navigateTo - object containing success path to navigate to after success notification is closed (automatically or manually)
  * @param {object} parentDispatch - dispatch function from parent component
- * @param {function} modalCallback - callback function to close modal after success notification is closed
+ * @param {function} cleanupCallback - callback function that runs on success notification close
  *
  */
 function CustomNotification({

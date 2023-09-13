@@ -155,13 +155,9 @@ function DisplayQueryDesktop<Doc>({
     }
   );
 
-  console.log({ isRepairNoteSectionInView });
-
-  useEffect(() => {}, []);
-
   const tableHeaderValueExclusionSet = new Set(['_id', 'userId']); // used for expanded / condensed table view
 
-  // because the component query data does not contain values of usernames
+  // the component query data does not contain values of usernames
   const usernames =
     groupBySelection === 'username'
       ? Array.from(groupedByQueryResponseData).map(
@@ -177,7 +173,7 @@ function DisplayQueryDesktop<Doc>({
       ? new Set(usernames)
       : new Set(groupedByFieldValues);
 
-  // because the data received is in a Map grouped by a field, header values are created separately to avoid creating multiple tables
+  // the data received is in a Map grouped by a field, header values are created separately to avoid creating multiple tables
   const tableHeaderValuesArr =
     groupedByQueryResponseData.size > 0
       ? Array.from(groupedByQueryResponseData).map(
@@ -448,7 +444,7 @@ function DisplayQueryDesktop<Doc>({
                               : formattedValue;
 
                           const highlightedText = groupedByFieldValuesSet.has(
-                            `${value}` // because value can be boolean and set contains strings
+                            `${value}` // value can be boolean and set contains strings
                           ) ? (
                             <Highlight
                               highlight={formattedValue}
@@ -482,7 +478,7 @@ function DisplayQueryDesktop<Doc>({
                                   <Text>
                                     {splitCamelCase(groupBySelection)}:
                                   </Text>
-                                  {/* because some values are boolean but are displayed as 'Yes' or 'No' */}
+                                  {/* some values are boolean but are displayed as 'Yes' or 'No' */}
                                   <Text>
                                     <strong>{`${
                                       groupBySelectionValue === true

@@ -1,18 +1,21 @@
 import {
   Accordion,
   Button,
+  Divider,
   Flex,
   Group,
+  Highlight,
   Popover,
   Spoiler,
   Text,
   Title,
 } from '@mantine/core';
-import { FormEvent, useEffect } from 'react';
+import { FormEvent, useEffect, useReducer } from 'react';
 import { IoMdOpen } from 'react-icons/io';
 import {
   TbArrowDown,
   TbArrowUp,
+  TbEdit,
   TbStatusChange,
   TbTrash,
   TbUpload,
@@ -28,8 +31,19 @@ import {
   returnAccessibleRadioGroupInputsElements,
 } from '../../../jsxCreators';
 import { RequestStatus } from '../../../types';
-import { addFieldsToObject, formatDate, splitCamelCase } from '../../../utils';
+import {
+  addFieldsToObject,
+  formatDate,
+  returnThemeColors,
+  splitCamelCase,
+} from '../../../utils';
 import { DisplayQueryMobileProps } from './types';
+import {
+  displayQueryMobileAction,
+  displayQueryMobileReducer,
+  initialDisplayQueryMobileState,
+} from './state';
+import { useDisclosure } from '@mantine/hooks';
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -38,6 +52,7 @@ function DisplayQueryMobile({
   deleteResourceKindDispatch,
   fileUploadsData = [],
   groupedByQueryResponseData,
+  groupBySelection,
   openDeleteAcknowledge,
   openFileUploads,
   setFileUploadsForAFormDispatch,
@@ -48,17 +63,24 @@ function DisplayQueryMobile({
   style = {},
   tableViewSelection,
 }: DisplayQueryMobileProps): JSX.Element {
+  const [displayQueryMobileState, displayQueryMobileDispatch] = useReducer(
+    displayQueryMobileReducer,
+    initialDisplayQueryMobileState
+  );
+  const { editRepairNoteInput } = displayQueryMobileState;
+
   const {
-    globalState: {
-      width,
-      padding,
-      rowGap,
-      themeObject: { colorScheme },
-    },
+    globalState: { width, padding, rowGap, themeObject },
   } = useGlobalState();
   const {
     authState: { roles },
   } = useAuth();
+
+  // for repair note fields update only
+  const [
+    openedEditRepairNotesModal,
+    { open: openEditRepairNotesModal, close: closeEditRepairNotesModal },
+  ] = useDisclosure(false);
 
   const createdUpdateRequestStatusRadioGroup =
     returnAccessibleRadioGroupInputsElements([
@@ -115,13 +137,44 @@ function DisplayQueryMobile({
     },
   ]);
 
-  const { dark, gray } = COLORS_SWATCHES;
-  const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
-  const backgroundColor =
-    colorScheme === 'light'
-      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-      : dark[6];
+  const {
+    appThemeColors: { backgroundColor, borderColor },
+    tablesThemeColors: { textHighlightColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  // determines that the user is viewing repair notes section
+  const isRepairNoteSectionInView = Array.from(groupedByQueryResponseData).some(
+    ([_groupedByFieldKey, queryResponseObjArrays]) => {
+      return queryResponseObjArrays.some((queryResponseObj) => {
+        return (
+          Object.hasOwn(queryResponseObj, 'repairNotes') &&
+          Object.hasOwn(queryResponseObj, 'testingResults') &&
+          Object.hasOwn(queryResponseObj, 'finalRepairCost') &&
+          Object.hasOwn(queryResponseObj, 'finalRepairCostCurrency') &&
+          Object.hasOwn(queryResponseObj, 'repairStatus')
+        );
+      });
+    }
+  );
+
+  // the component query data does not contain values of usernames
+  const usernames =
+    groupBySelection === 'username'
+      ? Array.from(groupedByQueryResponseData).map(
+          ([username, _queryResponseObjArrays]) => username
+        )
+      : [];
+  // used to highlight grouped by field values
+  const groupedByFieldValues =
+    componentQueryData.find((queryData) => queryData.value === groupBySelection)
+      ?.selectData ?? [];
+  const groupedByFieldValuesSet =
+    groupBySelection === 'username'
+      ? new Set(usernames)
+      : new Set(groupedByFieldValues);
 
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
@@ -133,6 +186,14 @@ function DisplayQueryMobile({
               object: queryObj,
               fieldValuesTuples: [
                 ['fileUploads', ''],
+                ['delete', ''],
+              ],
+            })
+          : isRepairNoteSectionInView
+          ? addFieldsToObject({
+              object: queryObj,
+              fieldValuesTuples: [
+                ['edit', ''],
                 ['delete', ''],
               ],
             })
@@ -193,6 +254,51 @@ function DisplayQueryMobile({
             : `${value.toString().charAt(0).toUpperCase()}${value
                 .toString()
                 .slice(1)}`;
+
+        const highlightedText = groupedByFieldValuesSet.has(
+          `${value}` // value can be boolean and set contains strings
+        ) ? (
+          <Highlight
+            highlight={formattedValue}
+            highlightStyles={{
+              backgroundColor: textHighlightColor,
+            }}
+          >
+            {formattedValue}
+          </Highlight>
+        ) : (
+          <Text>{formattedValue}</Text>
+        );
+
+        // only when user views repair notes section
+        const [createdRepairNoteEditButton] = isRepairNoteSectionInView
+          ? returnAccessibleButtonElements([
+              {
+                buttonLabel: <TbEdit />,
+                semanticDescription: `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                semanticName: `Modify ${key}`,
+                buttonOnClick: () => {
+                  displayQueryMobileDispatch({
+                    type: displayQueryMobileAction.setEditRepairNoteInput,
+                    payload: {
+                      repairNoteFormId: queryResponseObjWithAddedFields._id,
+                      repairNotes: queryResponseObjWithAddedFields.repairNotes,
+                      testingResults:
+                        queryResponseObjWithAddedFields.testingResults,
+                      finalRepairCost:
+                        queryResponseObjWithAddedFields.finalRepairCost,
+                      finalRepairCostCurrency:
+                        queryResponseObjWithAddedFields.finalRepairCostCurrency,
+                      repairStatus:
+                        queryResponseObjWithAddedFields.repairStatus,
+                    },
+                  });
+
+                  openEditRepairNotesModal();
+                },
+              },
+            ])
+          : [null];
 
         async function handleRequestStatusChangeFormSubmit(
           event: FormEvent<HTMLFormElement>
@@ -278,11 +384,9 @@ function DisplayQueryMobile({
         const [createdDeleteButton, createdOpenFileUploadsModalButton] =
           returnAccessibleButtonElements([
             {
-              buttonLabel: 'Delete',
+              buttonLabel: <TbTrash />,
               semanticDescription: 'Delete this form',
               semanticName: 'Delete',
-              leftIcon: <TbTrash />,
-              rightIcon: <TbUpload />,
               buttonOnClick: () => {
                 deleteFormIdDispatch({
                   type: 'setDeleteFormId',
@@ -318,13 +422,15 @@ function DisplayQueryMobile({
           ]);
         const displayCreatedDeleteButton =
           key === 'delete' ? createdDeleteButton : null;
+        const displayEditRepairNoteButton =
+          key === 'edit' ? createdRepairNoteEditButton : null;
         const displayCreatedOpenFileUploadsModalButton =
           key === 'fileUploads' ? createdOpenFileUploadsModalButton : null;
 
         const displayFullLabelValueRow = (
-          <>
+          <Flex w="100%">
             <Flex w="100%">
-              <Title order={6}>{sectionKey}</Title>
+              <Text>{sectionKey === '_id' ? 'Document Id' : sectionKey}</Text>
             </Flex>
             <Flex
               align="center"
@@ -336,18 +442,22 @@ function DisplayQueryMobile({
               {displayUpdateRequestStatusButton}
               {displayCreatedOpenFileUploadsModalButton}
               {displayCreatedDeleteButton}
+              {displayEditRepairNoteButton}
               <Spoiler
-                maxHeight={25}
+                maxHeight={70}
                 showLabel={createdShowMoreButton}
                 hideLabel={createdHideButton}
               >
-                <Text>{formattedValue}</Text>
+                <Text>{highlightedText}</Text>
               </Spoiler>
             </Flex>
-          </>
+          </Flex>
         );
 
-        const displayExpandedView = displayFullLabelValueRow;
+        const lastKeyValBorderBottom =
+          Object.keys(queryResponseObjWithAddedFields).length - 1 === keyValIdx
+            ? ''
+            : borderColor;
 
         return (
           <Flex
@@ -356,18 +466,35 @@ function DisplayQueryMobile({
             align={width < 768 ? 'flex-start' : 'center'}
             justify={width < 768 ? 'flex-start' : 'space-between'}
             bg={backgroundColor}
-            style={{
-              borderRadius: 4,
-              borderBottom: borderColor,
-            }}
+            style={{ borderBottom: lastKeyValBorderBottom }}
             rowGap={rowGap}
             w="100%"
             p={padding}
           >
-            {displayExpandedView}
+            {displayFullLabelValueRow}
           </Flex>
         );
       });
+
+      const displayBeginDivider =
+        queryObjIdx === 0 ? null : (
+          <Divider
+            label={<Text>Begin</Text>}
+            labelPosition="center"
+            w="100%"
+            variant="dashed"
+          />
+        );
+
+      const displayEndDivider =
+        queryObjIdx === queryObj.length - 1 ? null : (
+          <Divider
+            label={<Text>End</Text>}
+            labelPosition="center"
+            w="100%"
+            variant="dashed"
+          />
+        );
 
       return (
         <Flex
@@ -377,15 +504,12 @@ function DisplayQueryMobile({
           justify="center"
           w="100%"
           rowGap={rowGap}
-          style={{
-            borderBottom:
-              colorScheme === 'light'
-                ? `4px solid ${gray[3]}`
-                : `4px solid ${gray[8]}`,
-          }}
+          // style={{ border: borderColor }}
           py={padding}
         >
+          {displayBeginDivider}
           {displayKeyValues}
+          {displayEndDivider}
         </Flex>
       );
     });
@@ -401,10 +525,7 @@ function DisplayQueryMobile({
         py={padding}
         align="flex-start"
         justify="center"
-        style={{
-          border: borderColor,
-          borderRadius: 4,
-        }}
+        // style={{ border: borderColor, borderRadius: 4 }}
         w="100%"
         rowGap={rowGap}
       >
@@ -542,8 +663,6 @@ function DisplayQueryMobile({
       </Accordion>
     </Flex>
   );
-
-  console.log('groupedByQueryResponseData', groupedByQueryResponseData);
 
   return (
     <Flex

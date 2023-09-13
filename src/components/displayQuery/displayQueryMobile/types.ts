@@ -1,12 +1,15 @@
+import { type } from 'os';
 import { CSSProperties } from 'react';
 
 import { FileUploadDocument, RequestStatus } from '../../../types';
 import { ComponentQueryData } from '../../queryBuilder';
+import { EditRepairNoteInput } from '../displayQueryDesktop/types';
 
 type DisplayQueryMobileProps = {
   componentQueryData: ComponentQueryData[];
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  groupBySelection: string;
 
   openDeleteAcknowledge: () => void;
   deleteFormIdDispatch: React.Dispatch<{
@@ -52,4 +55,23 @@ type DisplayQueryMobileProps = {
   tableViewSelection: 'expanded' | 'condensed';
 };
 
-export type { DisplayQueryMobileProps };
+type DisplayQueryMobileState = {
+  // for repair notes docs only
+  editRepairNoteInput: EditRepairNoteInput;
+};
+
+type DisplayQueryMobileAction = {
+  setEditRepairNoteInput: 'setEditRepairNoteInput';
+};
+
+type DisplayQueryMobileDispatch = {
+  type: DisplayQueryMobileAction['setEditRepairNoteInput'];
+  payload: EditRepairNoteInput;
+};
+
+export type {
+  DisplayQueryMobileAction,
+  DisplayQueryMobileDispatch,
+  DisplayQueryMobileProps,
+  DisplayQueryMobileState,
+};

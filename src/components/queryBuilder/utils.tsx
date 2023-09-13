@@ -151,7 +151,7 @@ const FILTER_HELP_MODAL_CONTENT = (
     </Text>
     <Text>
       'in' Operator is for fields that have a constrained set of values, the
-      rest 'equal to', etc. are for unconstrained set of values.
+      rest ('equal to', etc.) are for unconstrained set of values.
     </Text>
   </Stack>
 );

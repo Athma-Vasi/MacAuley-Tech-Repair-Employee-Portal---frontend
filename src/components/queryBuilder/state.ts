@@ -30,6 +30,14 @@ const initialQueryBuilderState: QueryBuilderState = {
   projectedFieldsSet: new Set(),
 
   queryString: '?',
+
+  // accordion chevron states
+  isQueryBuilderOpened: false,
+  isFilterOpened: false,
+  isFilterChainOpened: false,
+  isSortOpened: false,
+  isSortChainOpened: false,
+  isProjectionOpened: false,
 };
 
 const queryBuilderAction: QueryBuilderAction = {
@@ -57,6 +65,14 @@ const queryBuilderAction: QueryBuilderAction = {
 
   setClearAllQueryData: 'setClearAllQueryData',
   buildQueryString: 'buildQueryString',
+
+  // accordion chevron states
+  toggleIsQueryBuilderOpened: 'toggleIsQueryBuilderOpened',
+  toggleIsFilterOpened: 'toggleIsFilterOpened',
+  toggleIsFilterChainOpened: 'toggleIsFilterChainOpened',
+  toggleIsSortOpened: 'toggleIsSortOpened',
+  toggleIsSortChainOpened: 'toggleIsSortChainOpened',
+  toggleIsProjectionOpened: 'toggleIsProjectionOpened',
 };
 
 function queryBuilderReducer(
@@ -284,6 +300,38 @@ function queryBuilderReducer(
         queryString: newQueryString,
       };
     }
+
+    // accordion chevron states
+    case queryBuilderAction.toggleIsQueryBuilderOpened:
+      return {
+        ...state,
+        isQueryBuilderOpened: !state.isQueryBuilderOpened,
+      };
+    case queryBuilderAction.toggleIsFilterOpened:
+      return {
+        ...state,
+        isFilterOpened: !state.isFilterOpened,
+      };
+    case queryBuilderAction.toggleIsFilterChainOpened:
+      return {
+        ...state,
+        isFilterChainOpened: !state.isFilterChainOpened,
+      };
+    case queryBuilderAction.toggleIsSortOpened:
+      return {
+        ...state,
+        isSortOpened: !state.isSortOpened,
+      };
+    case queryBuilderAction.toggleIsSortChainOpened:
+      return {
+        ...state,
+        isSortChainOpened: !state.isSortChainOpened,
+      };
+    case queryBuilderAction.toggleIsProjectionOpened:
+      return {
+        ...state,
+        isProjectionOpened: !state.isProjectionOpened,
+      };
 
     default:
       return state;
