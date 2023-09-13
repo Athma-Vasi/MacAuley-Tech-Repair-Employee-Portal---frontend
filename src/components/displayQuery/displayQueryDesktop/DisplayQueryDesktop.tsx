@@ -6,6 +6,7 @@ import {
   Group,
   Highlight,
   HoverCard,
+  Modal,
   Popover,
   ScrollArea,
   Space,
@@ -46,12 +47,7 @@ import {
 import { DisplayQueryDesktopProps } from './types';
 import { sortGroupedByQueryResponseData } from './utils';
 import { useDisclosure } from '@mantine/hooks';
-import {
-  AccessibleRadioGroupInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-} from '../../wrappers';
+import EditRepairNote from './editRepairNote/EditRepairNote';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
@@ -79,7 +75,8 @@ function DisplayQueryDesktop<Doc>({
     displayQueryDesktopReducer,
     initialDisplayQueryDesktopState
   );
-  const { fieldToSortBy, sortDirection } = displayQueryDesktopState;
+  const { fieldToSortBy, sortDirection, editRepairNoteInput } =
+    displayQueryDesktopState;
   const {
     globalState: { width, padding, rowGap, themeObject },
   } = useGlobalState();
@@ -89,20 +86,8 @@ function DisplayQueryDesktop<Doc>({
 
   // for repair note fields update only
   const [
-    openedRepairNotesModal,
-    { open: openRepairNotesModal, close: closeRepairNotesModal },
-  ] = useDisclosure(false);
-  const [
-    openedTestingResults,
-    { open: openTestingResults, close: closeTestingResults },
-  ] = useDisclosure(false);
-  const [
-    openedFinalRepairCost,
-    { open: openFinalRepairCost, close: closeFinalRepairCost },
-  ] = useDisclosure(false);
-  const [
-    openedRepairStatus,
-    { open: openRepairStatus, close: closeRepairStatus },
+    openedEditRepairNotesModal,
+    { open: openEditRepairNotesModal, close: closeEditRepairNotesModal },
   ] = useDisclosure(false);
 
   const {
@@ -154,14 +139,6 @@ function DisplayQueryDesktop<Doc>({
       semanticName: 'Submit',
     },
   ]);
-
-  // for repair note fields update
- 
-
-  let createdRepairNotesModal: JSX.Element | null = null;
-  let createdTestingResultsModal: JSX.Element | null = null;
-  let createdFinalRepairCostModal: JSX.Element | null = null;
-  let createdRepairStatusModal: JSX.Element | null = null;
 
   // determines that the user is viewing repair notes section
   const isRepairNoteSectionInView = Array.from(groupedByQueryResponseData).some(
@@ -216,6 +193,8 @@ function DisplayQueryDesktop<Doc>({
               // allows for modification of file uploads and deletion of documents
               fileUploadsData.length > 0
                 ? [...headerValues, 'fileUploads', 'delete']
+                : isRepairNoteSectionInView
+                ? [...headerValues, 'edit', 'delete']
                 : [...headerValues, 'delete'];
 
             return headerValuesWithFieldsInserted.map((headerValue) =>
@@ -232,6 +211,7 @@ function DisplayQueryDesktop<Doc>({
     'benefit user id',
     'uploaded files ids',
     'file uploads',
+    'edit',
     'delete',
   ]);
   const groupByRadioDataLabels = new Set(
@@ -399,6 +379,14 @@ function DisplayQueryDesktop<Doc>({
                           object: queryResponseObj,
                           fieldValuesTuples: [
                             ['fileUploads', ''],
+                            ['delete', ''],
+                          ],
+                        })
+                      : isRepairNoteSectionInView
+                      ? addFieldsToObject({
+                          object: queryResponseObj,
+                          fieldValuesTuples: [
+                            ['edit', ''],
                             ['delete', ''],
                           ],
                         })
@@ -629,7 +617,25 @@ function DisplayQueryDesktop<Doc>({
                                     semanticDescription: `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
                                     semanticName: `Modify ${key}`,
                                     buttonOnClick: () => {
-                                      console.log(`${key} clicked`);
+                                      displayQueryDesktopDispatch({
+                                        type: displayQueryDesktopAction.setEditRepairNoteInput,
+                                        payload: {
+                                          repairNoteFormId:
+                                            queryResponseObjWithAddedFields._id,
+                                          repairNotes:
+                                            queryResponseObjWithAddedFields.repairNotes,
+                                          testingResults:
+                                            queryResponseObjWithAddedFields.testingResults,
+                                          finalRepairCost:
+                                            queryResponseObjWithAddedFields.finalRepairCost,
+                                          finalRepairCostCurrency:
+                                            queryResponseObjWithAddedFields.finalRepairCostCurrency,
+                                          repairStatus:
+                                            queryResponseObjWithAddedFields.repairStatus,
+                                        },
+                                      });
+
+                                      openEditRepairNotesModal();
                                     },
                                   },
                                 ])
@@ -638,7 +644,7 @@ function DisplayQueryDesktop<Doc>({
                           const displayRepairNoteEditButton =
                             createdRepairNoteEditButton ? (
                               <Tooltip
-                                label={`Modify ${splitCamelCase(key)} for ${
+                                label={`Edit repair note for ${
                                   queryResponseObjWithAddedFields.customerName ??
                                   queryResponseObjWithAddedFields._id
                                 }`}
@@ -646,15 +652,6 @@ function DisplayQueryDesktop<Doc>({
                                 <Group>{createdRepairNoteEditButton}</Group>
                               </Tooltip>
                             ) : null;
-
-                          const isRepairNoteFieldRequireKey =
-                            isRepairNoteSectionInView
-                              ? key === 'repairNotes' ||
-                                key === 'testingResults' ||
-                                key === 'finalRepairCost' ||
-                                key === 'finalRepairCostCurrency' ||
-                                key === 'repairStatus'
-                              : false;
 
                           async function handleRequestStatusChangeFormSubmit(
                             event: FormEvent<HTMLFormElement>
@@ -754,7 +751,7 @@ function DisplayQueryDesktop<Doc>({
                                   <Text>{truncatedValuesWithHoverCards}</Text>
                                   {displayUpdateRequestStatusButton}
                                 </Group>
-                              ) : isRepairNoteFieldRequireKey ? (
+                              ) : key === 'edit' ? (
                                 <Group w="100%" position="right">
                                   <Text>{truncatedValuesWithHoverCards}</Text>
                                   {displayRepairNoteEditButton}
@@ -779,7 +776,7 @@ function DisplayQueryDesktop<Doc>({
                                     <Text>{truncatedValuesWithHoverCards}</Text>
                                     {displayUpdateRequestStatusButton}
                                   </Group>
-                                ) : isRepairNoteFieldRequireKey ? (
+                                ) : key === 'edit' ? (
                                   <Group w="100%" position="right">
                                     <Text>{truncatedValuesWithHoverCards}</Text>
                                     {displayRepairNoteEditButton}
@@ -965,6 +962,25 @@ function DisplayQueryDesktop<Doc>({
     </Accordion>
   );
 
+  // StepperWrapper width plus extra paddingX
+  const modalSize =
+    // this component is only displayed on desktop (>=1024)
+    width < 1200 ? (width - 300) * 0.95 : 920;
+
+  const displayEditRepairNoteModal = (
+    <Modal
+      opened={openedEditRepairNotesModal}
+      onClose={closeEditRepairNotesModal}
+      centered
+      size={modalSize}
+    >
+      <EditRepairNote
+        editRepairNoteInput={editRepairNoteInput}
+        closeModalCallback={closeEditRepairNotesModal}
+      />
+    </Modal>
+  );
+
   useEffect(() => {
     logState({
       state: displayQueryDesktopState,
@@ -974,6 +990,7 @@ function DisplayQueryDesktop<Doc>({
 
   return (
     <Stack w="100%" style={{ ...style }}>
+      {displayEditRepairNoteModal}
       {displayTable}
       {displayRestOfGroupedByData}
     </Stack>

@@ -315,6 +315,9 @@ const STORE_LOCATION_DATA: StoreLocation[] = [
  * the timestamps are formatted differently from the other date values.
  */
 const FIELDNAMES_WITH_DATE_VALUES = new Set([
+  // repair note
+  'dateReceived',
+  'estimatedCompletionDate',
   // company
   'planStartDate',
   'expenseClaimDate',

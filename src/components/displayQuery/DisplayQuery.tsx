@@ -18,11 +18,12 @@ import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
 import { TbArrowDown, TbArrowUp, TbTrash, TbUpload } from 'react-icons/tb';
 
+import { COLORS_SWATCHES } from '../../constants/data';
 import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
 import { useGlobalState } from '../../hooks';
 import {
-  returnAccessibleButtonElements,
   AccessibleErrorValidTextElements,
+  returnAccessibleButtonElements,
   returnAccessibleRadioGroupInputsElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
@@ -47,7 +48,6 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
-import { COLORS_SWATCHES } from '../../constants/data';
 
 function DisplayQuery<Doc>({
   componentQueryData,

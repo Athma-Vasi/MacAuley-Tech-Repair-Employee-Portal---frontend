@@ -1,10 +1,10 @@
-import { Currency } from '../../../../types';
+import { Currency, SetStepsInErrorPayload } from '../../../../types';
 import { RepairStatus } from '../../../repairNote/types';
 
 type EditRepairNoteState = {
-  repairNote: string;
-  isRepairNoteValid: boolean;
-  isRepairNoteFocused: boolean;
+  repairNotes: string;
+  isRepairNotesValid: boolean;
+  isRepairNotesFocused: boolean;
 
   testingResults: string;
   isTestingResultsValid: boolean;
@@ -17,13 +17,23 @@ type EditRepairNoteState = {
   finalRepairCostCurrency: Currency;
   repairStatus: RepairStatus;
 
+  currentStepperPosition: number;
+  stepsInError: Set<number>;
+
   triggerFormSubmit: boolean;
+
+  isLoading: boolean;
+  loadingMessage: string;
+  isSubmitting: boolean;
+  submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
 };
 
 type EditRepairNoteAction = {
-  setRepairNote: 'setRepairNote';
-  setIsRepairNoteValid: 'setIsRepairNoteValid';
-  setIsRepairNoteFocused: 'setIsRepairNoteFocused';
+  setRepairNotes: 'setRepairNotes';
+  setIsRepairNotesValid: 'setIsRepairNotesValid';
+  setIsRepairNotesFocused: 'setIsRepairNotesFocused';
 
   setTestingResults: 'setTestingResults';
   setIsTestingResultsValid: 'setIsTestingResultsValid';
@@ -36,39 +46,61 @@ type EditRepairNoteAction = {
   setFinalRepairCostCurrency: 'setFinalRepairCostCurrency';
   setRepairStatus: 'setRepairStatus';
 
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
   setTriggerFormSubmit: 'setTriggerFormSubmit';
+
+  setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
 };
 
 type EditRepairNoteDispatch =
   | {
       type:
-        | EditRepairNoteAction['setRepairNote']
+        | EditRepairNoteAction['setRepairNotes']
         | EditRepairNoteAction['setTestingResults']
-        | EditRepairNoteAction['setFinalRepairCost'];
+        | EditRepairNoteAction['setFinalRepairCost']
+        | EditRepairNoteAction['setLoadingMessage']
+        | EditRepairNoteAction['setSubmitMessage']
+        | EditRepairNoteAction['setSuccessMessage'];
 
       payload: string;
     }
   | {
       type:
-        | EditRepairNoteAction['setIsRepairNoteValid']
+        | EditRepairNoteAction['setIsRepairNotesValid']
         | EditRepairNoteAction['setIsTestingResultsValid']
         | EditRepairNoteAction['setIsFinalRepairCostValid']
-        | EditRepairNoteAction['setIsRepairNoteFocused']
+        | EditRepairNoteAction['setIsRepairNotesFocused']
         | EditRepairNoteAction['setIsTestingResultsFocused']
         | EditRepairNoteAction['setIsFinalRepairCostFocused']
-        | EditRepairNoteAction['setTriggerFormSubmit'];
+        | EditRepairNoteAction['setTriggerFormSubmit']
+        | EditRepairNoteAction['setIsLoading']
+        | EditRepairNoteAction['setIsSubmitting']
+        | EditRepairNoteAction['setIsSuccessful'];
 
       payload: boolean;
     }
   | {
       type: EditRepairNoteAction['setFinalRepairCostCurrency'];
-
       payload: Currency;
     }
   | {
       type: EditRepairNoteAction['setRepairStatus'];
-
       payload: RepairStatus;
+    }
+  | {
+      type: EditRepairNoteAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: EditRepairNoteAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
     };
 
 export type {

@@ -10,7 +10,7 @@ const initialDisplayQueryDesktopState: DisplayQueryDesktopState = {
 
   // for repair notes docs only
   editRepairNoteInput: {
-    id: '',
+    repairNoteFormId: '',
     repairNotes: '',
     testingResults: '',
     finalRepairCost: '',

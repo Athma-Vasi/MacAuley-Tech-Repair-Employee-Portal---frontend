@@ -60,7 +60,7 @@ type DisplayQueryDesktopProps<Doc> = {
 };
 
 type EditRepairNoteInput = {
-  id: string;
+  repairNoteFormId: string;
   repairNotes: string;
   testingResults: string;
   finalRepairCost: string;

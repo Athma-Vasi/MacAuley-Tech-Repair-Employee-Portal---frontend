@@ -30,6 +30,9 @@ type CustomNotificationProps = {
     successPath: string;
   };
   parentDispatch: ParentDispatch;
+
+  // runs on success notification close
+  cleanupCallback?: () => void;
 };
 /**
  * Used for displaying component states: submitting, loading & successfull (except error, which is handled by fallback component in ErrorBoundary)
@@ -41,6 +44,7 @@ type CustomNotificationProps = {
  * @param {string} loadingMessage - message to display in loading notification
  * @param {object} navigateTo - object containing success path to navigate to after success notification is closed (automatically or manually)
  * @param {object} parentDispatch - dispatch function from parent component
+ * @param {function} modalCallback - callback function to close modal after success notification is closed
  *
  */
 function CustomNotification({
@@ -53,6 +57,8 @@ function CustomNotification({
 
   navigateTo: { successPath },
   parentDispatch,
+
+  cleanupCallback,
 }: CustomNotificationProps) {
   const {
     globalState: { padding, width, themeObject },
@@ -94,6 +100,10 @@ function CustomNotification({
             type: 'setSuccessMessage',
             payload: '',
           });
+
+          if (cleanupCallback) {
+            cleanupCallback();
+          }
 
           navigate(successPath);
         }}
