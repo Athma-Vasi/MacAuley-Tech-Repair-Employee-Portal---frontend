@@ -1,13 +1,5 @@
-import {
-  Accordion,
-  Flex,
-  Group,
-  NavLink,
-  Stack,
-  Timeline,
-  Tooltip,
-} from '@mantine/core';
-import { TbChevronRight, TbLayersLinked, TbLink } from 'react-icons/tb';
+import { Accordion, Group, Stack, Timeline } from '@mantine/core';
+import { TbLink } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 import { TimelineBuilderProps } from './types';

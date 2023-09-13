@@ -74,14 +74,10 @@ function generateFilterChainStatement({
 
   switch (operator) {
     case 'in': {
-      return `Select ${field}${
-        field[field.length - 1] === 's' ? 'es' : 's'
-      } that contain ${value}. `;
+      return `Select ${field} that contain ${value}. `;
     }
     default: {
-      return `Select ${field}${
-        field[field.length - 1] === 's' ? 'es' : 's'
-      } that are ${operator} ${value}. `;
+      return `Select ${field} that are ${operator} ${value}. `;
     }
   }
 }

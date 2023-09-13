@@ -103,6 +103,8 @@ const REPAIR_STATUS_DATA = [
 ];
 
 const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
+  { label: 'Created date', value: 'createdAt', inputKind: 'dateInput' },
+  { label: 'Updated date', value: 'updatedAt', inputKind: 'dateInput' },
   {
     label: 'Customer name',
     value: 'customerName',

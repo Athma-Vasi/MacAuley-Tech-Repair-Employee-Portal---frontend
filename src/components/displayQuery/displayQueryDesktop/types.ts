@@ -1,7 +1,12 @@
 import { CSSProperties } from 'react';
 
-import type { FileUploadDocument, RequestStatus } from '../../../types';
+import type {
+  Currency,
+  FileUploadDocument,
+  RequestStatus,
+} from '../../../types';
 import type { ComponentQueryData } from '../../queryBuilder';
+import { RepairStatus } from '../../repairNote/types';
 
 type DisplayQueryDesktopProps<Doc> = {
   componentQueryData: ComponentQueryData[];
@@ -54,14 +59,29 @@ type DisplayQueryDesktopProps<Doc> = {
   tableViewSelection: 'expanded' | 'condensed';
 };
 
+type EditRepairNoteInput = {
+  id: string;
+  repairNotes: string;
+  testingResults: string;
+  finalRepairCost: string;
+  finalRepairCostCurrency: Currency;
+  repairStatus: RepairStatus;
+};
+
 type DisplayQueryDesktopState = {
   fieldToSortBy: string;
   sortDirection: 'asc' | 'desc';
+
+  // for repair notes docs only
+  editRepairNoteInput: EditRepairNoteInput;
 };
 
 type DisplayQueryDesktopAction = {
   setFieldToSortBy: 'setFieldToSortBy';
   setSortDirection: 'setSortDirection';
+
+  // for repair notes docs only
+  setEditRepairNoteInput: 'setEditRepairNoteInput';
 };
 
 type DisplayQueryDesktopReducer = (
@@ -77,6 +97,10 @@ type DisplayQueryDesktopDispatch =
   | {
       type: DisplayQueryDesktopAction['setSortDirection'];
       payload: 'asc' | 'desc';
+    }
+  | {
+      type: DisplayQueryDesktopAction['setEditRepairNoteInput'];
+      payload: EditRepairNoteInput;
     };
 
 export type {
@@ -85,4 +109,5 @@ export type {
   DisplayQueryDesktopProps,
   DisplayQueryDesktopReducer,
   DisplayQueryDesktopState,
+  EditRepairNoteInput,
 };

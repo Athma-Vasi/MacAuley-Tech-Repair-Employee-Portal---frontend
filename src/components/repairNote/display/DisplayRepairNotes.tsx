@@ -6,7 +6,7 @@ function DisplayRepairNotes() {
     <DisplayResource
       componentQueryData={REPAIR_NOTE_QUERY_DATA}
       paths={REPAIR_NOTE_ROUTE_PATHS}
-      requestBodyHeading="repairNoteFields"
+      requestBodyHeading="repairNote"
     />
   );
 }

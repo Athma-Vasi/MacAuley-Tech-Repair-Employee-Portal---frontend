@@ -16,9 +16,14 @@ import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
 import { RepairNoteStepDetail } from './repairNoteStepDetails/RepairNoteStepDetails';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
 import { TbNote, TbUpload } from 'react-icons/tb';
-import { RepairNoteDocument, RepairNoteInitialSchema } from '../types';
+import {
+  PartsNeeded,
+  RepairNoteDocument,
+  RepairNoteInitialSchema,
+  RequiredRepairs,
+} from '../types';
 import { useAuth, useGlobalState } from '../../../hooks';
-import { ResourceRequestServerResponse } from '../../../types';
+import { Country, ResourceRequestServerResponse } from '../../../types';
 import { InvalidTokenError } from 'jwt-decode';
 import FormReviewPage, {
   FormReviewObject,
@@ -27,6 +32,8 @@ import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { globalAction } from '../../../context/globalProvider/state';
 import { CustomNotification } from '../../customNotification';
+import { PROPERTY_DESCRIPTOR } from '../../../constants/data';
+import { returnPartialRepairNoteRequestObject } from './utils';
 
 function CreateRepairNote() {
   /** ------------- begin hooks ------------- */
@@ -143,7 +150,7 @@ function CreateRepairNote() {
 
       const url: URL = urlBuilder({ path: 'repair-note' });
 
-      const repairNote: RepairNoteInitialSchema = {
+      const initialRepairNote: RepairNoteInitialSchema = {
         // customer info
         customerName,
         customerPhone,
@@ -171,6 +178,12 @@ function CreateRepairNote() {
         repairPriority,
         // rest are fields updated as repair note progresses
       };
+
+      const repairNote: Partial<RepairNoteInitialSchema> =
+        returnPartialRepairNoteRequestObject({
+          customerCountry,
+          initialRepairNote,
+        });
 
       const request: Request = new Request(url.toString(), {
         method: 'POST',

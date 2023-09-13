@@ -7,7 +7,7 @@ type SortGroupedByQueryResponseDataInput = {
   sortDirection?: 'asc' | 'desc';
 };
 /**
- * Pure function. Sorts and preserves the original order of the grouped by query response data ( sort within a sort ).
+ * Pure function. Sorts and preserves the original order of the grouped by query response data ( sort within a sort ) when sort icons in table headers are clicked.
  *
  * @param {SortGroupedByQueryResponseDataInput} options - The options for sorting and grouping data.
  * @returns {Map<string | number, Record<string, any>[]>} A Map containing sorted and grouped data.

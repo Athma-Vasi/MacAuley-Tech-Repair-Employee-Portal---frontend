@@ -16,6 +16,7 @@ import { RxLinkBreak2 } from 'react-icons/rx';
 import {
   TbArrowDown,
   TbClearAll,
+  TbLink,
   TbPlus,
   TbQuestionMark,
   TbTrash,
@@ -366,24 +367,37 @@ function QueryBuilder({
         </Tooltip>
       );
 
+      const dividerLabel = (
+        <Group>
+          <TbLink color={themeColorShade} />
+          <Text>AND</Text>
+          <TbArrowDown color={themeColorShade} />
+        </Group>
+      );
+
       return (
-        <Flex
-          key={`filter-statement-${index}`}
-          align="center"
-          justify="space-between"
-          w="100%"
-          columnGap={rowGap}
-        >
-          <Group w="100%" position="apart">
-            <Divider
-              labelPosition="left"
-              label={displayStatement}
-              w="87%"
-              size="sm"
-            />
-            {displayDeleteFilterButton}
-          </Group>
-        </Flex>
+        <Stack w="100%">
+          <Flex
+            key={`filter-statement-${index}`}
+            align="center"
+            justify="space-between"
+            w="100%"
+            columnGap={rowGap}
+          >
+            <Group w="100%" position="apart">
+              <Divider
+                labelPosition="left"
+                label={displayStatement}
+                w="87%"
+                size="sm"
+              />
+              {displayDeleteFilterButton}
+            </Group>
+          </Flex>
+          {index === filterStatementsQueue.length - 1 ? null : (
+            <Divider size="sm" label={dividerLabel} labelPosition="center" />
+          )}
+        </Stack>
       );
     }
   );

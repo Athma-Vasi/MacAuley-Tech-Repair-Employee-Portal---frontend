@@ -9,7 +9,6 @@ import {
   Popover,
   ScrollArea,
   Space,
-  Spoiler,
   Stack,
   Table,
   Text,
@@ -18,14 +17,13 @@ import {
 } from '@mantine/core';
 import { CSSProperties, FormEvent, useEffect, useReducer } from 'react';
 import { IoMdOpen } from 'react-icons/io';
-import {
-  TbSortAscending,
-  TbSortDescending,
-  TbStatusChange,
-  TbTrash,
-  TbUpload,
-} from 'react-icons/tb';
+import { TbEdit, TbStatusChange, TbTrash, TbUpload } from 'react-icons/tb';
+import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
 
+import {
+  COLORS_SWATCHES,
+  FIELDNAMES_WITH_DATE_VALUES,
+} from '../../../constants/data';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
@@ -40,24 +38,20 @@ import {
   returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
-import { DisplayQueryDesktopProps } from './types';
-import {
-  COLORS_SWATCHES,
-  FIELDNAMES_WITH_DATE_VALUES,
-} from '../../../constants/data';
 import {
   displayQueryDesktopAction,
   displayQueryDesktopReducer,
   initialDisplayQueryDesktopState,
 } from './state';
-import { table } from 'console';
+import { DisplayQueryDesktopProps } from './types';
 import { sortGroupedByQueryResponseData } from './utils';
-import { FaSortDown, FaSortUp } from 'react-icons/fa';
+import { useDisclosure } from '@mantine/hooks';
 import {
-  TiArrowDownThick,
-  TiArrowSortedDown,
-  TiArrowUpThick,
-} from 'react-icons/ti';
+  AccessibleRadioGroupInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+} from '../../wrappers';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
@@ -93,9 +87,27 @@ function DisplayQueryDesktop<Doc>({
     authState: { roles },
   } = useAuth();
 
+  // for repair note fields update only
+  const [
+    openedRepairNotesModal,
+    { open: openRepairNotesModal, close: closeRepairNotesModal },
+  ] = useDisclosure(false);
+  const [
+    openedTestingResults,
+    { open: openTestingResults, close: closeTestingResults },
+  ] = useDisclosure(false);
+  const [
+    openedFinalRepairCost,
+    { open: openFinalRepairCost, close: closeFinalRepairCost },
+  ] = useDisclosure(false);
+  const [
+    openedRepairStatus,
+    { open: openRepairStatus, close: closeRepairStatus },
+  ] = useDisclosure(false);
+
   const {
     appThemeColors: { backgroundColor },
-    generalColors: { grayColorShade, themeColorShade },
+    generalColors: { themeColorShade },
     scrollBarStyle,
     tablesThemeColors: {
       tableHeadersBgColor,
@@ -143,9 +155,34 @@ function DisplayQueryDesktop<Doc>({
     },
   ]);
 
-  const tableHeaderValueExclusionSet = new Set(['_id', 'userId']); // used for expanded / condensed table view
+  // for repair note fields update
+ 
 
-  console.log('componentQueryData: ', componentQueryData);
+  let createdRepairNotesModal: JSX.Element | null = null;
+  let createdTestingResultsModal: JSX.Element | null = null;
+  let createdFinalRepairCostModal: JSX.Element | null = null;
+  let createdRepairStatusModal: JSX.Element | null = null;
+
+  // determines that the user is viewing repair notes section
+  const isRepairNoteSectionInView = Array.from(groupedByQueryResponseData).some(
+    ([_groupedByFieldKey, queryResponseObjArrays]) => {
+      return queryResponseObjArrays.some((queryResponseObj) => {
+        return (
+          Object.hasOwn(queryResponseObj, 'repairNotes') &&
+          Object.hasOwn(queryResponseObj, 'testingResults') &&
+          Object.hasOwn(queryResponseObj, 'finalRepairCost') &&
+          Object.hasOwn(queryResponseObj, 'finalRepairCostCurrency') &&
+          Object.hasOwn(queryResponseObj, 'repairStatus')
+        );
+      });
+    }
+  );
+
+  console.log({ isRepairNoteSectionInView });
+
+  useEffect(() => {}, []);
+
+  const tableHeaderValueExclusionSet = new Set(['_id', 'userId']); // used for expanded / condensed table view
 
   // because the component query data does not contain values of usernames
   const usernames =
@@ -162,8 +199,6 @@ function DisplayQueryDesktop<Doc>({
     groupBySelection === 'username'
       ? new Set(usernames)
       : new Set(groupedByFieldValues);
-
-  console.log('groupedByFieldValuesSet: ', groupedByFieldValuesSet);
 
   // because the data received is in a Map grouped by a field, header values are created separately to avoid creating multiple tables
   const tableHeaderValuesArr =
@@ -189,8 +224,6 @@ function DisplayQueryDesktop<Doc>({
           }
         )[0]
       : [];
-  console.log('tableHeaderValuesArr: ', tableHeaderValuesArr);
-  console.log('groupBySelection: ', groupBySelection);
 
   // used to prevent display of sort arrows on groupedBy or id fields
   const headerExclusionSet = new Set([
@@ -221,19 +254,12 @@ function DisplayQueryDesktop<Doc>({
     []
   );
 
-  console.log('headerValuesToGetSortArrows: ', headerValuesToGetSortArrows);
-
-  console.log('groupedByQueryResponseData: ', groupedByQueryResponseData);
   const sortedGroupedQueryResponseData = sortGroupedByQueryResponseData({
     componentQueryData,
     groupedByQueryResponseData,
     fieldToSortBy,
     sortDirection,
   });
-  console.log(
-    'sortedGroupedQueryResponseData: ',
-    sortedGroupedQueryResponseData
-  );
 
   const displayTable = (
     <ScrollArea styles={() => scrollBarStyle} type="auto">
@@ -594,6 +620,42 @@ function DisplayQueryDesktop<Doc>({
                               </HoverCard>
                             );
 
+                          // only when user views repair notes section
+                          const [createdRepairNoteEditButton] =
+                            isRepairNoteSectionInView
+                              ? returnAccessibleButtonElements([
+                                  {
+                                    buttonLabel: <TbEdit />,
+                                    semanticDescription: `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                                    semanticName: `Modify ${key}`,
+                                    buttonOnClick: () => {
+                                      console.log(`${key} clicked`);
+                                    },
+                                  },
+                                ])
+                              : [null];
+
+                          const displayRepairNoteEditButton =
+                            createdRepairNoteEditButton ? (
+                              <Tooltip
+                                label={`Modify ${splitCamelCase(key)} for ${
+                                  queryResponseObjWithAddedFields.customerName ??
+                                  queryResponseObjWithAddedFields._id
+                                }`}
+                              >
+                                <Group>{createdRepairNoteEditButton}</Group>
+                              </Tooltip>
+                            ) : null;
+
+                          const isRepairNoteFieldRequireKey =
+                            isRepairNoteSectionInView
+                              ? key === 'repairNotes' ||
+                                key === 'testingResults' ||
+                                key === 'finalRepairCost' ||
+                                key === 'finalRepairCostCurrency' ||
+                                key === 'repairStatus'
+                              : false;
+
                           async function handleRequestStatusChangeFormSubmit(
                             event: FormEvent<HTMLFormElement>
                           ) {
@@ -683,12 +745,19 @@ function DisplayQueryDesktop<Doc>({
                                 : null
                               : null;
 
+                          // for both expanded and condensed:  if fieldname is 'requestStatus', display popover with radio group and submit button, else if the document viewed is a repair note, display edit button, else display truncated values with hover cards
+
                           const displayExpandedBodyRows = (
                             <td key={`${objIdx}-${keyValIdx}`}>
                               {key === 'requestStatus' ? (
                                 <Group w="100%" position="right">
                                   <Text>{truncatedValuesWithHoverCards}</Text>
                                   {displayUpdateRequestStatusButton}
+                                </Group>
+                              ) : isRepairNoteFieldRequireKey ? (
+                                <Group w="100%" position="right">
+                                  <Text>{truncatedValuesWithHoverCards}</Text>
+                                  {displayRepairNoteEditButton}
                                 </Group>
                               ) : (
                                 <Group w="100%" position="right">
@@ -709,6 +778,11 @@ function DisplayQueryDesktop<Doc>({
                                   <Group position="right" w="100%">
                                     <Text>{truncatedValuesWithHoverCards}</Text>
                                     {displayUpdateRequestStatusButton}
+                                  </Group>
+                                ) : isRepairNoteFieldRequireKey ? (
+                                  <Group w="100%" position="right">
+                                    <Text>{truncatedValuesWithHoverCards}</Text>
+                                    {displayRepairNoteEditButton}
                                   </Group>
                                 ) : (
                                   <Group w="100%" position="right">
