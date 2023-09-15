@@ -1,0 +1,3 @@
+const QUERY_LIMIT_PER_PAGE_SELECT_DATA = ['10', '20', '30', '40', '50'];
+
+export { QUERY_LIMIT_PER_PAGE_SELECT_DATA };

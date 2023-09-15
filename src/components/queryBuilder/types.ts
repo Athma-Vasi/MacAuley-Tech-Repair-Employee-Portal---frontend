@@ -121,13 +121,7 @@ type QueryBuilderDispatch =
   | {
       type:
         | QueryBuilderAction['setIsCurrentFilterValueValid']
-        | QueryBuilderAction['setIsCurrentFilterValueFocused']
-        | QueryBuilderAction['toggleIsQueryBuilderOpened']
-        | QueryBuilderAction['toggleIsFilterOpened']
-        | QueryBuilderAction['toggleIsFilterChainOpened']
-        | QueryBuilderAction['toggleIsSortOpened']
-        | QueryBuilderAction['toggleIsSortChainOpened']
-        | QueryBuilderAction['toggleIsProjectionOpened'];
+        | QueryBuilderAction['setIsCurrentFilterValueFocused'];
 
       payload: boolean;
     }
@@ -178,6 +172,30 @@ type QueryBuilderDispatch =
   | {
       type: QueryBuilderAction['buildQueryString'];
       payload: GenerateQueryStringInput;
+    }
+  | {
+      type: QueryBuilderAction['toggleIsQueryBuilderOpened'];
+      payload: 'Query Builder' | null;
+    }
+  | {
+      type: QueryBuilderAction['toggleIsFilterOpened'];
+      payload: 'Filter' | null;
+    }
+  | {
+      type: QueryBuilderAction['toggleIsFilterChainOpened'];
+      payload: 'Filter Chain' | null;
+    }
+  | {
+      type: QueryBuilderAction['toggleIsSortOpened'];
+      payload: 'Sort' | null;
+    }
+  | {
+      type: QueryBuilderAction['toggleIsSortChainOpened'];
+      payload: 'Sort Chain' | null;
+    }
+  | {
+      type: QueryBuilderAction['toggleIsProjectionOpened'];
+      payload: 'Projection' | null;
     };
 
 type QueryBuilderReducer = (

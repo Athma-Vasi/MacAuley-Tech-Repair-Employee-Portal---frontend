@@ -305,32 +305,33 @@ function queryBuilderReducer(
     case queryBuilderAction.toggleIsQueryBuilderOpened:
       return {
         ...state,
-        isQueryBuilderOpened: !state.isQueryBuilderOpened,
+        isQueryBuilderOpened: action.payload ? true : false,
       };
+
     case queryBuilderAction.toggleIsFilterOpened:
       return {
         ...state,
-        isFilterOpened: !state.isFilterOpened,
+        isFilterOpened: action.payload ? true : false,
       };
     case queryBuilderAction.toggleIsFilterChainOpened:
       return {
         ...state,
-        isFilterChainOpened: !state.isFilterChainOpened,
+        isFilterChainOpened: action.payload ? true : false,
       };
     case queryBuilderAction.toggleIsSortOpened:
       return {
         ...state,
-        isSortOpened: !state.isSortOpened,
+        isSortOpened: action.payload ? true : false,
       };
     case queryBuilderAction.toggleIsSortChainOpened:
       return {
         ...state,
-        isSortChainOpened: !state.isSortChainOpened,
+        isSortChainOpened: action.payload ? true : false,
       };
     case queryBuilderAction.toggleIsProjectionOpened:
       return {
         ...state,
-        isProjectionOpened: !state.isProjectionOpened,
+        isProjectionOpened: action.payload ? true : false,
       };
 
     default:

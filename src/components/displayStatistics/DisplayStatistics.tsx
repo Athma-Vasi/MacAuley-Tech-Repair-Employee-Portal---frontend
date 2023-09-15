@@ -24,6 +24,7 @@ import {
   initialDisplayStatisticsState,
 } from './state';
 import { ChartKind, DisplayStatisticsProps, PieChartData } from './types';
+import { ScrollAreaComponent } from '@mantine/core/lib/Drawer/Drawer.context';
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(
@@ -383,6 +384,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       onClose={closeStatisticsModal}
       centered
       size="calc(100vw - 2rem)"
+      scrollAreaComponent={ScrollArea.Autosize}
     >
       {createdModalHeadingSection}
       {displayResponsivePieChart}

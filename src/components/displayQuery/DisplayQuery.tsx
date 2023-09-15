@@ -6,9 +6,7 @@ import {
   HoverCard,
   Image,
   Modal,
-  ScrollArea,
   SegmentedControl,
-  Spoiler,
   Stack,
   Text,
   Title,
@@ -16,7 +14,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
-import { TbArrowDown, TbArrowUp, TbTrash, TbUpload } from 'react-icons/tb';
+import { TbTrash, TbUpload } from 'react-icons/tb';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
@@ -25,6 +23,7 @@ import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
   returnAccessibleRadioGroupInputsElements,
+  returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import {
@@ -37,8 +36,8 @@ import {
 import {
   AccessibleButtonCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-  TextWrapper,
 } from '../wrappers';
 import { DisplayQueryDesktop } from './displayQueryDesktop/DisplayQueryDesktop';
 import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
@@ -48,6 +47,8 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
+import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from '../displayResource/constants';
+import { tab } from '@testing-library/user-event/dist/tab';
 
 function DisplayQuery<Doc>({
   componentQueryData,
@@ -91,7 +92,6 @@ function DisplayQuery<Doc>({
     isValidAcknowledgementText,
     deleteFileUploadId,
     deleteFormId,
-
     deleteResourceKind,
   } = displayQueryState;
 
@@ -299,29 +299,7 @@ function DisplayQuery<Doc>({
     buttonOnClick: () => {
       closeDeleteAcknowledge();
     },
-    // buttonOnKeyDown: (event: KeyboardEvent<HTMLButtonElement>) => {
-    //   if (event.key === 'U+000A' || event.key === 'Enter') {
-    //     event.preventDefault();
-    //     return;
-    //   }
-    // },
     buttonDisabled: !isValidAcknowledgementText,
-  };
-
-  const showMoreSpoilerButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Show',
-    leftIcon: <TbArrowDown />,
-    buttonType: 'button',
-    semanticDescription: 'Reveal more information',
-    semanticName: 'Show more',
-  };
-
-  const hideSpoilerButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Hide',
-    leftIcon: <TbArrowUp />,
-    buttonType: 'button',
-    semanticDescription: 'Hide revealed information',
-    semanticName: 'Hide',
   };
 
   /** ------------- end input creator info objects ------------- */
@@ -336,14 +314,8 @@ function DisplayQuery<Doc>({
     acknowledgementTextInputCreatorInfo,
   ]);
 
-  const [
-    createdDeleteButton,
-    createdShowMoreSpoilerButton,
-    createdHideSpoilerButton,
-  ] = returnAccessibleButtonElements([
+  const [createdDeleteButton] = returnAccessibleButtonElements([
     deleteButtonCreatorInfo,
-    showMoreSpoilerButtonCreatorInfo,
-    hideSpoilerButtonCreatorInfo,
   ]);
 
   /** ------------- end created inputs------------- */
@@ -369,36 +341,32 @@ function DisplayQuery<Doc>({
   });
 
   const displayGroupByRadioGroup = (
-    <Flex
-      align="center"
-      justify="flex-start"
+    <Group
       w={sectionWidth}
       style={{
         border: borderColor,
         borderRadius: 4,
       }}
-      columnGap={rowGap}
+      spacing={rowGap}
       p={padding}
     >
       {createdGroupByRadioGroup}
-    </Flex>
+    </Group>
   );
 
   const displayTableViewSegmentControl = (
-    <Flex
-      align="center"
-      justify="flex-start"
+    <Group
       w={sectionWidth}
       style={{
         border: borderColor,
         borderRadius: 4,
       }}
-      columnGap={rowGap}
+      spacing={rowGap}
       p={padding}
     >
       <Title order={5}>Table view</Title>
       {segmentedControl}
-    </Flex>
+    </Group>
   );
 
   const displayAcknowledgementModal = (
@@ -514,20 +482,6 @@ function DisplayQuery<Doc>({
               </HoverCard.Dropdown>
             </HoverCard>
           );
-
-          /**
-         * <Spoiler
-              maxHeight={25}
-              showLabel={createdShowMoreButton}
-              hideLabel={createdHideButton}
-            >
-              <Text size="sm" color="dark">
-                  {fileName.length > 11
-                    ? `${fileName.slice(0, 11)}...`
-                    : fileName}
-                </Text>
-            </Spoiler>
-         */
 
           const displayFileNameMobile = (
             <Flex
@@ -947,12 +901,12 @@ function DisplayQuery<Doc>({
     <Flex
       direction="column"
       rowGap={rowGap}
-      w="100%"
       align="flex-start"
       justify="center"
       style={{
         ...style,
       }}
+      w="100%"
     >
       {displayGroupByRadioGroup}
       {width >= 1024 ? displayTableViewSegmentControl : null}
@@ -968,49 +922,3 @@ function DisplayQuery<Doc>({
 }
 
 export { DisplayQuery };
-
-/**
- *   const groupBySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-      data: groupBySelectData,
-      description: 'Group by fields with constrained values',
-      label: 'Group by',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        displayQueryDispatch({
-          type: displayQueryAction.setGroupBySelection,
-          // find the corresponding label for the value
-          payload:
-            componentQueryData.find(({ label, value }) =>
-              label === event.currentTarget.value ? value : ''
-            )?.value || 'username',
-        });
-      },
-      // assign the label and not the value
-      value:
-        componentQueryData.find(({ label, value }) =>
-          value === groupBySelection ? label : ''
-        )?.label || 'Username',
-    };
- */
-
-/**
-     * componentQueryData.forEach(({ label, inputKind, value, selectData }) => {
-      if (inputKind === 'selectInput') {
-        // only push if it is also present in query response data
-        const isFieldExcluded = queryResponseData.filter((queryResponseObj) => {
-          return Object.entries(queryResponseObj).find(([key, _]) => {
-            if (key === value) {
-              return true;
-            }
-            return false;
-          });
-        });
-
-        if (isFieldExcluded.length > 0) {
-          initialGroupByRadioData.push({
-            label,
-            value,
-          });
-        }
-      }
-    });
-     */

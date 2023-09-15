@@ -166,7 +166,7 @@ function StepperWrapper({
     : width < 480 // for iPhone 5/SE
     ? 375 - 20
     : width < 768 // for iPhone 6/7/8
-    ? width - 40
+    ? width * 0.8
     : // at 768vw the navbar appears at width of 200px
     width < 1024
     ? (width - 200) * 0.85

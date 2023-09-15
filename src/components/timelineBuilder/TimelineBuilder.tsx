@@ -1,20 +1,41 @@
 import { Accordion, Group, Stack, Timeline } from '@mantine/core';
-import { TbLink } from 'react-icons/tb';
+import { TbChevronDown, TbLink } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
 import { TimelineBuilderProps } from './types';
+import { useState } from 'react';
+import { returnThemeColors } from '../../utils';
+import { COLORS_SWATCHES } from '../../constants/data';
 
 function TimelineBuilder({ timelines }: TimelineBuilderProps): JSX.Element {
   const {
-    globalState: { padding },
+    globalState: { padding, themeObject },
   } = useGlobalState();
+  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+
+  const {
+    generalColors: { grayColorShade, themeColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   const createTimelines = Object.entries(timelines).map(
     ([chainKind, statementsArr], index) => {
       return (
         <Stack w="100%" key={`timeline-${index}`}>
           {/* accordion */}
-          <Accordion w="100%">
+          <Accordion
+            w="100%"
+            chevron={
+              <TbChevronDown
+                color={isAccordionOpen ? themeColorShade : grayColorShade}
+              />
+            }
+            onChange={(value) => {
+              value ? setIsAccordionOpen(true) : setIsAccordionOpen(false);
+            }}
+          >
             <Accordion.Item
               value={`${chainKind.charAt(0).toUpperCase()}${chainKind.slice(
                 1

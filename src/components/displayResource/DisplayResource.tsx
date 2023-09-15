@@ -1,5 +1,5 @@
-import { Flex } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import { Flex, Group, Title } from '@mantine/core';
+import { ChangeEvent, useEffect, useReducer } from 'react';
 
 import { useAuth, useGlobalState } from '../../hooks';
 import {
@@ -9,7 +9,6 @@ import {
   ResourceRequestServerResponse,
 } from '../../types';
 import {
-  addFieldsToObject,
   filterFieldsFromObject,
   logState,
   returnThemeColors,
@@ -21,17 +20,16 @@ import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
 import { displayResourceAction, displayResourceReducer } from './state';
-import {
-  DisplayResourceProps,
-  DisplayResourceState,
-  UpdateRequestStatusInput,
-} from './types';
+import { DisplayResourceProps, DisplayResourceState } from './types';
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
 import { InvalidTokenError } from 'jwt-decode';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { globalAction } from '../../context/globalProvider/state';
 import { CustomNotification } from '../customNotification';
+import { AccessibleSelectInputCreatorInfo } from '../wrappers';
+import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from './constants';
+import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 
 function DisplayResource<Doc>({
   style = {},
@@ -51,6 +49,8 @@ function DisplayResource<Doc>({
     newQueryFlag: true,
     queryBuilderString: '?',
     pageQueryString: '',
+    limitPerPage: '10',
+    resetPage: false,
 
     fileUploads: [],
     requestStatus: {
@@ -85,6 +85,8 @@ function DisplayResource<Doc>({
     newQueryFlag,
     queryBuilderString,
     pageQueryString,
+    limitPerPage,
+    resetPage,
 
     fileUploads,
     requestStatus,
@@ -100,7 +102,7 @@ function DisplayResource<Doc>({
   } = displayResourceState;
 
   const {
-    globalState: { padding, rowGap, themeObject },
+    globalState: { padding, rowGap, themeObject, width },
     globalDispatch,
   } = useGlobalState();
   const {
@@ -123,7 +125,7 @@ function DisplayResource<Doc>({
 
       const urlString: URL = urlBuilder({
         path,
-        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&projection=-action&projection=-category`,
+        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=${limitPerPage}&projection=-action&projection=-category`,
       });
 
       const request: Request = new Request(urlString, {
@@ -163,6 +165,7 @@ function DisplayResource<Doc>({
             type: displayResourceAction.setTotalDocuments,
             payload: data.totalDocuments ?? totalDocuments,
           });
+
           return;
         }
 
@@ -276,10 +279,6 @@ function DisplayResource<Doc>({
       } finally {
         if (isMounted) {
           displayResourceDispatch({
-            type: displayResourceAction.setIsLoading,
-            payload: false,
-          });
-          displayResourceDispatch({
             type: displayResourceAction.setTriggerRefresh,
             payload: false,
           });
@@ -304,7 +303,7 @@ function DisplayResource<Doc>({
       type: displayResourceAction.setTriggerRefresh,
       payload: true,
     });
-  }, [newQueryFlag, queryBuilderString, pageQueryString]);
+  }, [newQueryFlag, queryBuilderString, pageQueryString, limitPerPage]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {
@@ -641,8 +640,6 @@ function DisplayResource<Doc>({
         fieldsToFilter: ['delete', 'fileUploads'],
       });
 
-      console.log({ associatedResource, filteredAssociatedResource });
-
       const urlString: URL = urlBuilder({
         path: `${paths.manager}/${_id}`,
       });
@@ -775,9 +772,109 @@ function DisplayResource<Doc>({
         navigateTo={{
           successPath: '/home/company/leave-request/display',
         }}
+        // successCallbacks={[
+        //   () =>
+        //     displayResourceDispatch({
+        //       type: displayResourceAction.setTriggerRefresh,
+        //       payload: true,
+        //     }),
+        // ]}
       />
     );
   }
+
+  const limitPerPageSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: QUERY_LIMIT_PER_PAGE_SELECT_DATA,
+    description: 'Select number of documents to display per page',
+    disabled: resourceData.length === 0,
+    label: '',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      displayResourceDispatch({
+        type: displayResourceAction.setLimitPerPage,
+        payload: event.currentTarget.value,
+      });
+      displayResourceDispatch({
+        type: displayResourceAction.setResetPage,
+        payload: true,
+      });
+    },
+    value: limitPerPage,
+  };
+
+  const createdLimitPerPageSelectInput = returnAccessibleSelectInputElements([
+    limitPerPageSelectInputCreatorInfo,
+  ]);
+
+  const sectionWidth =
+    width < 480 // for iPhone 5/SE
+      ? 375 - 20
+      : width < 768 // for iPhone 6/7/8
+      ? width - 40
+      : // at 768vw the navbar appears at width of 200px
+      width < 1024
+      ? (width - 200) * 0.85
+      : // at >= 1200vw the navbar width is 300px
+      width < 1200
+      ? (width - 300) * 0.85
+      : 900 - 40;
+
+  /**
+ * const displayTableViewSegmentControl = (
+    <Group
+      w={sectionWidth}
+      style={{
+        border: borderColor,
+        borderRadius: 4,
+      }}
+      spacing={rowGap}
+      p={padding}
+    >
+      <Title order={5}>Table view</Title>
+      {segmentedControl}
+    </Group>
+  );
+ */
+
+  const {
+    appThemeColors: { backgroundColor, borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  const displayLimitPerPage = (
+    <Group
+      w={sectionWidth}
+      style={{
+        border: borderColor,
+        borderRadius: 4,
+      }}
+      spacing={rowGap}
+      p={padding}
+    >
+      <Title order={5}>Limit per page</Title>
+      {createdLimitPerPageSelectInput}
+    </Group>
+  );
+
+  const displayPagination = (
+    <Group
+      w={sectionWidth}
+      style={{
+        border: borderColor,
+        borderRadius: 4,
+      }}
+      spacing={rowGap}
+      p={padding}
+    >
+      <PageBuilder
+        total={pages}
+        resetPage={resetPage}
+        setPageQueryString={displayResourceAction.setPageQueryString}
+        parentComponentDispatch={displayResourceDispatch}
+      />
+    </Group>
+  );
 
   // prevent display of option to groupBy/projection exclusion of username field if the resource is anonymousRequest
 
@@ -806,20 +903,12 @@ function DisplayResource<Doc>({
     />
   );
 
-  const {
-    appThemeColors: { backgroundColor },
-  } = returnThemeColors({
-    themeObject,
-    colorsSwatches: COLORS_SWATCHES,
-  });
-
   const displayResourceComponent = (
     <Flex
       direction="column"
       align="flex-start"
       justify="center"
       w="100%"
-      h="100%"
       bg={backgroundColor}
       style={{
         ...style,
@@ -834,14 +923,11 @@ function DisplayResource<Doc>({
         componentQueryData={filteredComponentQueryData}
         collectionName={splitCamelCase(requestBodyHeading)}
       />
+      {displayLimitPerPage}
 
       {displayResource}
 
-      <PageBuilder
-        total={pages}
-        setPageQueryString={displayResourceAction.setPageQueryString}
-        parentComponentDispatch={displayResourceDispatch}
-      />
+      {displayPagination}
     </Flex>
   );
 

@@ -5,6 +5,7 @@ import {
   Flex,
   Group,
   Modal,
+  ScrollArea,
   Stack,
   Text,
   Title,
@@ -326,6 +327,7 @@ function QueryBuilder({
 
   const {
     generalColors: { themeColorShade, grayColorShade },
+    scrollBarStyle,
     appThemeColors: { borderColor },
   } = returnThemeColors({
     themeObject,
@@ -345,7 +347,7 @@ function QueryBuilder({
 
       const deleteFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: <TbTrash />,
-        semanticDescription: `Delete filter statement: ${term} ${operator} ${value}`,
+        semanticDescription: `Delete ${term} ${operator} ${value}`,
         semanticName: 'delete filter',
         buttonOnClick: () => {
           queryBuilderDispatch({
@@ -370,7 +372,13 @@ function QueryBuilder({
       ]);
 
       const displayDeleteFilterButton = (
-        <Tooltip label={`Delete: ${statement}`}>
+        <Tooltip
+          label={`Delete: ${
+            operator === 'in'
+              ? `${term} that contain ${value}.`
+              : `${term} that are ${operator} ${value}.`
+          }`}
+        >
           <Center>{createdDeleteFilterButton}</Center>
         </Tooltip>
       );
@@ -693,14 +701,12 @@ function QueryBuilder({
 
   const createdSortStatementsWithDeleteButton = sortStatementsQueue.map(
     ([term, direction], index) => {
-      const statement = `Sort ${term}${
-        term[term.length - 1] === 's' ? 'es' : 's'
-      } in ${direction} order. `;
+      const statement = `Sort ${term} in ${direction} order. `;
       const displayStatement = <Text>{statement}</Text>;
 
       const deleteSortButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: <TbTrash />,
-        semanticDescription: `Delete sort statement: ${term} ${direction}`,
+        semanticDescription: `Delete ${term} in ${direction} order`,
         semanticName: 'delete sort',
         // leftIcon: <TbTrash />,
         buttonOnClick: (event) => {
@@ -726,16 +732,16 @@ function QueryBuilder({
       ]);
 
       const displayDeleteSortButton = (
-        <Tooltip label={`Delete sort statement: ${term} ${direction}`}>
+        <Tooltip label={`Delete: ${term} in ${direction} order`}>
           <Group>{createdDeleteSortButton}</Group>
         </Tooltip>
       );
 
       const dividerLabel = (
         <Group>
-          <RxLinkBreak2 color={themeColorShade} />
+          <RxLinkBreak2 color={grayColorShade} />
           <Text>{ORDINAL_TERMS[index]} tiebreaker</Text>
-          <TbArrowDown color={themeColorShade} />
+          <TbArrowDown color={grayColorShade} />
         </Group>
       );
 
@@ -913,10 +919,10 @@ function QueryBuilder({
               color={isFilterOpened ? themeColorShade : grayColorShade}
             />
           }
-          onClick={() => {
+          onChange={(value) => {
             queryBuilderDispatch({
               type: queryBuilderAction.toggleIsFilterOpened,
-              payload: isFilterOpened,
+              payload: value as 'Filter' | null,
             });
           }}
         >
@@ -954,7 +960,20 @@ function QueryBuilder({
 
   const displayProjectionSection = (
     <Stack w="100%">
-      <Accordion w="100%">
+      <Accordion
+        w="100%"
+        chevron={
+          <TbChevronDown
+            color={isProjectionOpened ? themeColorShade : grayColorShade}
+          />
+        }
+        onChange={(value) => {
+          queryBuilderDispatch({
+            type: queryBuilderAction.toggleIsProjectionOpened,
+            payload: value as 'Projection' | null,
+          });
+        }}
+      >
         <Accordion.Item value="Projection">
           <Accordion.Control disabled={disableProjection}>
             <Title order={5}>Projection</Title>
@@ -982,7 +1001,20 @@ function QueryBuilder({
       {filteredSortSelectData.length === 0 ? (
         <Text>No fields to sort!</Text>
       ) : (
-        <Accordion w="100%">
+        <Accordion
+          w="100%"
+          chevron={
+            <TbChevronDown
+              color={isSortOpened ? themeColorShade : grayColorShade}
+            />
+          }
+          onChange={(value) => {
+            queryBuilderDispatch({
+              type: queryBuilderAction.toggleIsSortOpened,
+              payload: value as 'Sort' | null,
+            });
+          }}
+        >
           <Accordion.Item value="Sort">
             <Accordion.Control disabled={filteredSortSelectData.length === 0}>
               <Title order={5}>Sort</Title>
@@ -1041,7 +1073,20 @@ function QueryBuilder({
       }}
     >
       <Stack w="100%">
-        <Accordion w="100%">
+        <Accordion
+          w="100%"
+          chevron={
+            <TbChevronDown
+              color={isQueryBuilderOpened ? themeColorShade : grayColorShade}
+            />
+          }
+          onChange={(value) => {
+            queryBuilderDispatch({
+              type: queryBuilderAction.toggleIsQueryBuilderOpened,
+              payload: value as 'Query Builder' | null,
+            });
+          }}
+        >
           <Accordion.Item value="Query Builder">
             <Accordion.Control
               disabled={
@@ -1134,6 +1179,7 @@ function QueryBuilder({
   }, [queryBuilderState]);
 
   return (
+    // <ScrollArea styles={() => scrollBarStyle}>
     <Group>
       {displayQueryBuilderComponent}
       {queryBuilderHelpModal}
@@ -1141,6 +1187,7 @@ function QueryBuilder({
       {projectionHelpModal}
       {sortHelpModal}
     </Group>
+    // </ScrollArea>
   );
 }
 

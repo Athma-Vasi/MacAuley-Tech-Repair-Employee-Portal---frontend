@@ -13,6 +13,8 @@ const displayResourceAction: DisplayResourceAction = {
   setNewQueryFlag: 'setNewQueryFlag',
   setQueryBuilderString: 'setQueryBuilderString',
   setPageQueryString: 'setPageQueryString',
+  setLimitPerPage: 'setLimitPerPage',
+  setResetPage: 'setResetPage',
 
   setFileUploads: 'setFileUploads',
   setRequestStatus: 'setRequestStatus',
@@ -99,6 +101,16 @@ function displayResourceReducer<Doc>(
       return {
         ...state,
         pageQueryString: action.payload,
+      };
+    case displayResourceAction.setLimitPerPage:
+      return {
+        ...state,
+        limitPerPage: action.payload,
+      };
+    case displayResourceAction.setResetPage:
+      return {
+        ...state,
+        resetPage: action.payload,
       };
 
     case displayResourceAction.setFileUploads:

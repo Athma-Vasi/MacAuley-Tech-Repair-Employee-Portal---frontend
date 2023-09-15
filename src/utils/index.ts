@@ -1406,7 +1406,7 @@ function returnThemeColors({
   const { colorScheme, primaryColor, primaryShade } = themeObject;
   const { dark, gray, red, green, cyan } = colorsSwatches;
 
-  const lightSchemeGray = gray[3];
+  const lightSchemeGray = gray[2];
   const darkSchemeGray = gray[8];
 
   const colorShade =

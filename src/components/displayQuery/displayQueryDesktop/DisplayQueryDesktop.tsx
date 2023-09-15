@@ -16,6 +16,7 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { CSSProperties, FormEvent, useEffect, useReducer } from 'react';
 import { IoMdOpen } from 'react-icons/io';
 import { TbEdit, TbStatusChange, TbTrash, TbUpload } from 'react-icons/tb';
@@ -39,6 +40,7 @@ import {
   returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
+import EditRepairNote from './editRepairNote/EditRepairNote';
 import {
   displayQueryDesktopAction,
   displayQueryDesktopReducer,
@@ -46,8 +48,6 @@ import {
 } from './state';
 import { DisplayQueryDesktopProps } from './types';
 import { sortGroupedByQueryResponseData } from './utils';
-import { useDisclosure } from '@mantine/hooks';
-import EditRepairNote from './editRepairNote/EditRepairNote';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
@@ -485,6 +485,19 @@ function DisplayQueryDesktop<Doc>({
                                         ? 'Yes'
                                         : groupBySelectionValue === false
                                         ? 'No'
+                                        : Array.isArray(groupBySelectionValue)
+                                        ? replaceLastCommaWithAnd(
+                                            groupBySelectionValue
+                                              .map(
+                                                (value) =>
+                                                  value
+                                                    .toString()
+                                                    .charAt(0)
+                                                    .toUpperCase() +
+                                                  value.toString().slice(1)
+                                              )
+                                              .join(', ')
+                                          )
                                         : `${groupBySelectionValue
                                             .charAt(0)
                                             .toUpperCase()}${groupBySelectionValue.slice(
@@ -887,7 +900,7 @@ function DisplayQueryDesktop<Doc>({
   );
 
   const displayRestOfGroupedByData = (
-    <Accordion w="100%">
+    <Accordion w={width < 1200 ? (width - 300) * 0.85 : 900 - 40}>
       <Accordion.Item
         value={`${
           groupedByQueryResponseData.size === 0
@@ -920,12 +933,6 @@ function DisplayQueryDesktop<Doc>({
             columnGap={rowGap}
             rowGap={rowGap}
             p={padding}
-            style={{
-              overflowX: 'auto',
-              overflowY: 'hidden',
-              // border: headerBorderColor,
-              // borderRadius: 4,
-            }}
           >
             {restOfGroupedQueryResponseData.map((queryResponseObj, objIdx) => {
               const keyValPairs = Object.entries(queryResponseObj).map(
@@ -972,7 +979,7 @@ function DisplayQueryDesktop<Doc>({
     >
       <EditRepairNote
         editRepairNoteInput={editRepairNoteInput}
-        closeModalCallback={closeEditRepairNotesModal}
+        parentComponentCallbacks={[closeEditRepairNotesModal]}
       />
     </Modal>
   );

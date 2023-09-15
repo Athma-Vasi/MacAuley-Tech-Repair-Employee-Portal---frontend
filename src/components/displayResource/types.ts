@@ -31,6 +31,8 @@ type DisplayResourceState<Doc> = {
   newQueryFlag: boolean;
   queryBuilderString: string;
   pageQueryString: string;
+  limitPerPage: string;
+  resetPage: boolean;
 
   fileUploads: Array<{ [key: string]: FileUploadDocument[] }>;
 
@@ -38,6 +40,12 @@ type DisplayResourceState<Doc> = {
     id: string;
     status: RequestStatus;
   };
+
+  // updateResourceData: {
+  //   id: string;
+  //   kind: 'update' | 'delete';
+  //   data: Partial<Doc>;
+  // };
 
   deleteResource: {
     formId: string;
@@ -76,6 +84,8 @@ type DisplayResourceAction = {
   setNewQueryFlag: 'setNewQueryFlag';
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
+  setLimitPerPage: 'setLimitPerPage';
+  setResetPage: 'setResetPage';
 
   setDeleteResource: 'setDeleteResource';
   setFileUploads: 'setFileUploads';
@@ -112,6 +122,7 @@ type DisplayResourceDispatch<Doc> =
   | {
       type:
         | DisplayResourceAction['setNewQueryFlag']
+        | DisplayResourceAction['setResetPage']
         | DisplayResourceAction['setTriggerRefresh']
         | DisplayResourceAction['setIsSubmitting']
         | DisplayResourceAction['setIsSuccessful']
@@ -122,6 +133,7 @@ type DisplayResourceDispatch<Doc> =
       type:
         | DisplayResourceAction['setQueryBuilderString']
         | DisplayResourceAction['setPageQueryString']
+        | DisplayResourceAction['setLimitPerPage']
         | DisplayResourceAction['setSubmitMessage']
         | DisplayResourceAction['setSuccessMessage']
         | DisplayResourceAction['setLoadingMessage'];

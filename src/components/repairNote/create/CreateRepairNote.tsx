@@ -1,4 +1,4 @@
-import { Flex, Group, Tooltip } from '@mantine/core';
+import { Flex, Group, ScrollArea, Tooltip } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 import {
   createRepairNoteAction,
@@ -11,7 +11,11 @@ import {
   CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
 } from './constants';
 import { RepairNoteStepCustomer } from './repairNoteStepCustomer/RepairNoteStepCustomer';
-import { replaceLastCommaWithAnd, urlBuilder } from '../../../utils';
+import {
+  replaceLastCommaWithAnd,
+  returnThemeColors,
+  urlBuilder,
+} from '../../../utils';
 import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
 import { RepairNoteStepDetail } from './repairNoteStepDetails/RepairNoteStepDetails';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
@@ -32,7 +36,7 @@ import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { globalAction } from '../../../context/globalProvider/state';
 import { CustomNotification } from '../../customNotification';
-import { PROPERTY_DESCRIPTOR } from '../../../constants/data';
+import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../../constants/data';
 import { returnPartialRepairNoteRequestObject } from './utils';
 
 function CreateRepairNote() {
@@ -122,7 +126,10 @@ function CreateRepairNote() {
     loadingMessage,
   } = createRepairNoteState;
 
-  const { globalDispatch } = useGlobalState();
+  const {
+    globalDispatch,
+    globalState: { themeObject, height },
+  } = useGlobalState();
 
   const {
     authState: { accessToken },
@@ -540,14 +547,20 @@ function CreateRepairNote() {
     </StepperWrapper>
   );
 
+  // const { scrollBarStyle } = returnThemeColors({
+  //   themeObject,
+  //   colorsSwatches: COLORS_SWATCHES,
+  // });
+
   const displayRepairNoteComponent = (
     <Flex
       direction="column"
       align="center"
       justify="space-between"
       rowGap="lg"
-      w="100%"
-      h="100%"
+      // w="100%"
+      // h="100%"
+      // h={height < 991 ? height - (50 + 60) : height - (64 + 60)} // header +footer
     >
       {/* display form */}
       {displayRepairNoteForm}

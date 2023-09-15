@@ -5,6 +5,7 @@ import {
   Flex,
   Group,
   Highlight,
+  Modal,
   Popover,
   Spoiler,
   Text,
@@ -44,6 +45,7 @@ import {
   initialDisplayQueryMobileState,
 } from './state';
 import { useDisclosure } from '@mantine/hooks';
+import EditRepairNote from '../displayQueryDesktop/editRepairNote/EditRepairNote';
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -664,6 +666,46 @@ function DisplayQueryMobile({
     </Flex>
   );
 
+  /**
+   * const stepperWidth = customWidth
+    ? customWidth
+    : width < 480 // for iPhone 5/SE
+    ? 375 - 20
+    : width < 768 // for iPhone 6/7/8
+    ? width - 40
+    : // at 768vw the navbar appears at width of 200px
+    width < 1024
+    ? (width - 200) * 0.85
+    : // at >= 1200vw the navbar width is 300px
+    width < 1200
+    ? (width - 300) * 0.85
+    : 900 - 40;
+   */
+
+  // StepperWrapper width plus extra paddingX
+  const modalSize =
+    // this component is only displayed on mobile (<= 1024)
+    width < 480 // for iPhone 5/SE
+      ? 375 - 20
+      : width < 768 // for iPhone 6/7/8
+      ? width * 0.9
+      : // at 768vw the navbar appears at width of 200px
+        (width - 200) * 0.9;
+
+  const displayEditRepairNoteModal = (
+    <Modal
+      opened={openedEditRepairNotesModal}
+      onClose={closeEditRepairNotesModal}
+      centered
+      size={modalSize}
+    >
+      <EditRepairNote
+        editRepairNoteInput={editRepairNoteInput}
+        parentComponentCallbacks={[closeEditRepairNotesModal]}
+      />
+    </Modal>
+  );
+
   return (
     <Flex
       direction="column"
@@ -673,6 +715,7 @@ function DisplayQueryMobile({
       w="100%"
       rowGap={rowGap}
     >
+      {displayEditRepairNoteModal}
       {displayGroupedByQueryResponseData}
       {displayRestData}
     </Flex>

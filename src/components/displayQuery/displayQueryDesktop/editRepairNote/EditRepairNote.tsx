@@ -56,12 +56,12 @@ import { globalAction } from '../../../../context/globalProvider/state';
 
 type EditRepairNoteProps = {
   editRepairNoteInput: EditRepairNoteInput;
-  closeModalCallback: () => void;
+  parentComponentCallbacks?: Array<() => void>;
 };
 
 function EditRepairNote({
   editRepairNoteInput,
-  closeModalCallback,
+  parentComponentCallbacks,
 }: EditRepairNoteProps) {
   const { repairNoteFormId } = editRepairNoteInput;
 
@@ -361,7 +361,7 @@ function EditRepairNote({
         submitMessage={submitMessage}
         parentDispatch={editRepairNoteDispatch}
         navigateTo={{ successPath: '/home/repair-note/display' }}
-        cleanupCallback={closeModalCallback}
+        successCallbacks={parentComponentCallbacks}
       />
     );
   }
