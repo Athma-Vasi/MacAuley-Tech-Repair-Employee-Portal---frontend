@@ -10,6 +10,7 @@ function DisplayExpenseClaims() {
   return (
     <DisplayResource<QueryResponseData<ExpenseClaimDocument>[]>
       componentQueryData={EXPENSE_CLAIM_QUERY_DATA}
+      createResourcePath="/home/company/expense-claim/create"
       isFileUploadsWithResource={true}
       fileUploadFieldName="fileUploads"
       fileUploadIdFieldName="uploadedFilesIds"

@@ -6,6 +6,7 @@ function DisplayEndorsements() {
   return (
     <DisplayResource<EndorsementDocument>
       componentQueryData={ENDORSEMENTS_QUERY_DATA}
+      createResourcePath="/home/general/endorsement/create"
       paths={ENDORSEMENTS_PATHS}
       requestBodyHeading="endorsement"
     />

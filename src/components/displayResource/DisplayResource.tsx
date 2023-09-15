@@ -34,6 +34,7 @@ import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 function DisplayResource<Doc>({
   style = {},
   componentQueryData,
+  createResourcePath,
   isDisplayFilesOnly = false,
   fileUploadFieldName = 'fileUploads',
   fileUploadIdFieldName = 'uploadedFilesIds',
@@ -910,6 +911,7 @@ function DisplayResource<Doc>({
 
   const displayResource = isDisplayFilesOnly ? (
     <DisplayFileUploads
+      createResourcePath={createResourcePath}
       fileUploadsData={fileUploads}
       componentQueryData={filteredComponentQueryData}
       parentComponentName={splitCamelCase(requestBodyHeading)}
@@ -919,6 +921,7 @@ function DisplayResource<Doc>({
   ) : (
     <DisplayQuery
       componentQueryData={filteredComponentQueryData}
+      createResourcePath={createResourcePath}
       fileUploadsData={fileUploads}
       parentComponentName={splitCamelCase(requestBodyHeading)}
       parentRequestStatusDispatch={displayResourceDispatch}

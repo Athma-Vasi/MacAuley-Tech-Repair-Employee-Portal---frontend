@@ -5,6 +5,7 @@ function DisplayRepairNotes() {
   return (
     <DisplayResource
       componentQueryData={REPAIR_NOTE_QUERY_DATA}
+      createResourcePath="/home/repair-note/create"
       paths={REPAIR_NOTE_ROUTE_PATHS}
       requestBodyHeading="repairNote"
     />

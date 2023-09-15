@@ -586,7 +586,6 @@ function App() {
           {/* repair-note */}
           <Route path="repair-note">
             <Route index element={displayRepairNotesElement} />
-            <Route path="display" element={displayRepairNotesElement} />
             <Route path="create" element={createRepairNoteElement} />
           </Route>
 
@@ -598,20 +597,17 @@ function App() {
             <Route path="address-change">
               <Route index element={displayAddressChangesElement} />
               <Route path="create" element={addressChangeElement} />
-              <Route path="display" element={displayAddressChangesElement} />
             </Route>
 
             {/* benefit */}
             <Route path="benefit">
               <Route index element={displayBenefitsElement} />
               <Route path="create" element={createBenefitElement} />
-              <Route path="display" element={displayBenefitsElement} />
             </Route>
 
             {/* leave-request */}
             <Route path="leave-request">
               <Route index element={displayLeaveRequestsElement} />
-              <Route path="display" element={displayLeaveRequestsElement} />
               <Route path="create" element={createLeaveRequestElement} />
             </Route>
 
@@ -619,14 +615,12 @@ function App() {
             <Route path="request-resource">
               <Route index element={displayRequestResourcesElement} />
               <Route path="create" element={requestResourceElement} />
-              <Route path="display" element={displayRequestResourcesElement} />
             </Route>
 
             {/* expense-claim */}
             <Route path="expense-claim">
               <Route index element={displayExpenseClaimsElement} />
               <Route path="create" element={createExpenseClaimElement} />
-              <Route path="display" element={displayExpenseClaimsElement} />
             </Route>
           </Route>
 
@@ -637,54 +631,46 @@ function App() {
             <Route path="anonymous-request">
               <Route index element={displayAnonymousRequestsElement} />
               <Route path="create" element={createAnonymousRequestElement} />
-              <Route path="display" element={displayAnonymousRequestsElement} />
             </Route>
 
             {/* endorsement */}
             <Route path="endorsement">
               <Route index element={displayEndorsementsElement} />
               <Route path="create" element={createEndorsementElement} />
-              <Route path="display" element={displayEndorsementsElement} />
             </Route>
 
             {/* printer-issue */}
             <Route path="printer-issue">
               <Route index element={displayPrinterIssuesElement} />
               <Route path="create" element={createPrinterIssueElement} />
-              <Route path="display" element={displayPrinterIssuesElement} />
             </Route>
 
             {/* referment */}
             <Route path="referment">
               <Route index element={displayRefermentsElement} />
               <Route path="create" element={createRefermentElement} />
-              <Route path="display" element={displayRefermentsElement} />
             </Route>
           </Route>
 
           <Route path="outreach">
             <Route index element={outreachElement} />
 
-            {/* event-creator */}
-            <Route path="event-creator">
+            {/* event */}
+            <Route path="event">
               <Route index element={displayEventsElement} />
               <Route path="create" element={eventCreatorElement} />
-              <Route path="display" element={displayEventsElement} />
             </Route>
 
             {/* survey-builder */}
-            <Route path="survey-builder">
+            <Route path="survey">
               <Route index element={displaySurveysElement} />
               <Route path="create" element={surveyBuilderElement} />
-              <Route path="display" element={displaySurveysElement} />
             </Route>
 
             {/* announcements */}
             <Route path="announcement">
               <Route index element={displayAnnouncementsElement} />
               <Route path="create" element={createAnnouncementElement} />
-              <Route path="display" element={displayAnnouncementsElement} />
-
               <Route
                 path="display/:announcementId"
                 element={displayAnnouncementElement}

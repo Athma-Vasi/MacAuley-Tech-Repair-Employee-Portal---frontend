@@ -6,6 +6,7 @@ function DisplayBenefits() {
   return (
     <DisplayResource<BenefitsDocument>
       componentQueryData={BENEFIT_QUERY_DATA}
+      createResourcePath="/home/company/benefit/create"
       paths={BENEFIT_RESOURCE_PATHS}
       requestBodyHeading="benefit"
     />

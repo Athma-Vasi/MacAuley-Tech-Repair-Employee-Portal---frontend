@@ -107,15 +107,6 @@ const SURVEY_RESPONSE_INPUTS = [
   'stars',
 ];
 
-/**
- * type ComponentQueryData = {
-  label: string;
-  value: string;
-  inputKind: QueryInputKind;
-  selectData?: string[];
-  booleanData?: boolean[];
-};
- */
 const SURVEY_QUERY_DATA: ComponentQueryData[] = [
   {
     label: 'Survey title',

@@ -1,5 +1,4 @@
 import { Card, Flex, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { Fragment, useEffect, useReducer } from 'react';
 import { TbChartPie3, TbUpload } from 'react-icons/tb';
 
@@ -103,7 +102,7 @@ function DisplaySurveys() {
 
     async function fetchSurveys(): Promise<void> {
       const url: URL = urlBuilder({
-        path: `actions/outreach/survey-builder${
+        path: `actions/outreach/survey${
           roles.includes('Manager') ? '' : '/user'
         }`,
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
@@ -231,7 +230,7 @@ function DisplaySurveys() {
       const { surveyId, surveyResponses, surveyTitle } = surveyToSubmit;
 
       const url: URL = urlBuilder({
-        path: `actions/outreach/survey-builder/${surveyId}`,
+        path: `actions/outreach/survey/${surveyId}`,
       });
 
       const filteredSurveyResponses = surveyResponses.map((surveyResponse) => {
@@ -924,6 +923,7 @@ function DisplaySurveys() {
 
   const {
     appThemeColors: { backgroundColor, borderColor },
+    scrollBarStyle,
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,

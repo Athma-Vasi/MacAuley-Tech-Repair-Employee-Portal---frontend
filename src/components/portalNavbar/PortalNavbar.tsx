@@ -65,25 +65,10 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       label={<Text>Notes</Text>}
       icon={<TbNotebook />}
       childrenOffset="md"
-      rightSection={<TbChevronRight />}
-    >
-      {/* create note */}
-      <NavLink
-        label={<Text>Create note</Text>}
-        icon={<TbPlus />}
-        onClick={() => {
-          navigate('/home/repair-note/create');
-        }}
-      />
-      {/* display notes */}
-      <NavLink
-        label={<Text>Display notes</Text>}
-        icon={<TbList />}
-        onClick={() => {
-          navigate('/home/repair-note/display');
-        }}
-      />
-    </NavLink>
+      onClick={() => {
+        navigate('/home/repair-note');
+      }}
+    />
   );
 
   const displayCompanyNavLinks = (
@@ -97,136 +82,46 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       <NavLink
         label={<Text>Address change</Text>}
         icon={<TbAddressBook />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/home/company/address-change');
         }}
-      >
-        {/* create address change */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/company/address-change/create');
-          }}
-        />
-        {/* display address changes */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/company/address-change/display');
-          }}
-        />
-      </NavLink>
+      />
 
       {/* benefit */}
       <NavLink
-        label={<Text>Benefits</Text>}
+        label={<Text>Benefit</Text>}
         icon={<TbGift />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/home/company/benefit');
         }}
-      >
-        {/* create benefit */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/company/benefit/create');
-          }}
-        />
-        {/* display benefits */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/company/benefit/display');
-          }}
-        />
-      </NavLink>
+      />
 
       {/* expense-claim */}
       <NavLink
         label={<Text>Expense claim</Text>}
         icon={<TbReceipt2 />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/home/company/expense-claim');
         }}
-      >
-        {/* create expense claim */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/company/expense-claim/create');
-          }}
-        />
-        {/* display expense claims */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/company/expense-claim/display');
-          }}
-        />
-      </NavLink>
+      />
 
       {/* leave-request */}
       <NavLink
         label={<Text>Leave request</Text>}
         icon={<TbCalendarPin />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/home/company/leave-request');
         }}
-      >
-        {/* create leave request */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/company/leave-request/create');
-          }}
-        />
-        {/* display leave requests */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/company/leave-request/display');
-          }}
-        />
-      </NavLink>
+      />
 
       {/* request-resource */}
       <NavLink
         label={<Text>Request resource</Text>}
         icon={<TbCashBanknote />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/home/company/request-resource');
         }}
-      >
-        {/* create request resource */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/company/request-resource/create');
-          }}
-        />
-        {/* display request resources */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/company/request-resource/display');
-          }}
-        />
-      </NavLink>
+      />
     </NavLink>
   );
 
@@ -241,109 +136,37 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       <NavLink
         label={<Text>Endorsement</Text>}
         icon={<TbUserCheck />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/home/general/endorsement/display');
+          navigate('/home/general/endorsement');
         }}
-      >
-        {/* display endorsements */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/general/endorsement/display');
-          }}
-        />
-        {/* create endorsement */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/general/endorsement/create');
-          }}
-        />
-      </NavLink>
+      />
 
       {/* printer-issue */}
       <NavLink
         label={<Text>Printer issue</Text>}
         icon={<TbPrinterOff />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/home/general/printer-issue');
         }}
-      >
-        {/* create printer issue */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/general/printer-issue/create');
-          }}
-        />
-        {/* display printer issues */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/general/printer-issue/display');
-          }}
-        />
-      </NavLink>
+      />
 
       {/* anonymous-request */}
       <NavLink
         label={<Text>Anonymous request</Text>}
         icon={<MdSafetyDivider />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/home/general/anonymous-request');
         }}
-      >
-        {/* create anonymous request */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/general/anonymous-request/create');
-          }}
-        />
-        {/* display anonymous requests */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/general/anonymous-request/display');
-          }}
-        />
-      </NavLink>
+      />
 
       {/* referment */}
       <NavLink
         label={<Text>Referment</Text>}
         icon={<TiThumbsUp />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
           navigate('/home/general/referment');
         }}
-      >
-        {/* create referment */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/general/referment/create');
-          }}
-        />
-        {/* display referments */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/general/referment/display');
-          }}
-        />
-      </NavLink>
+      />
     </NavLink>
   );
 
@@ -356,76 +179,30 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     >
       {/* announcement */}
       <NavLink
-        label={<Text>Announcements</Text>}
-        rightSection={<TbChevronRight />}
+        label={<Text>Announcement</Text>}
         icon={<TbSpeakerphone />}
-      >
-        {/* create announcement */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/outreach/announcement/create');
-          }}
-        />
-        {/* display announcements */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/outreach/announcement/display');
-          }}
-        />
-      </NavLink>
+        onClick={() => {
+          navigate('/home/outreach/announcement');
+        }}
+      />
+
       {/* survey builder */}
       <NavLink
-        label={<Text>Survey builder</Text>}
+        label={<Text>Survey</Text>}
         icon={<TbChartBar />}
-        rightSection={<TbChevronRight />}
-      >
-        {/* create survey */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/outreach/survey-builder/create');
-          }}
-        />
-        {/* display surveys */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/outreach/survey-builder/display');
-          }}
-        />
-      </NavLink>
+        onClick={() => {
+          navigate('/home/outreach/survey');
+        }}
+      />
+
       {/* event creator */}
       <NavLink
-        label={<Text>Event creator</Text>}
+        label={<Text>Event</Text>}
         icon={<TbTimelineEventPlus />}
-        rightSection={<TbChevronRight />}
         onClick={() => {
-          navigate('/home/outreach/event-creator');
+          navigate('/home/outreach/event');
         }}
-      >
-        {/* create event */}
-        <NavLink
-          label={<Text>Create</Text>}
-          icon={<TbPlus />}
-          onClick={() => {
-            navigate('/home/outreach/event-creator/create');
-          }}
-        />
-        {/* display events */}
-        <NavLink
-          label={<Text>Display</Text>}
-          icon={<TbList />}
-          onClick={() => {
-            navigate('/home/outreach/event-creator/display');
-          }}
-        />
-      </NavLink>
+      />
     </NavLink>
   );
 

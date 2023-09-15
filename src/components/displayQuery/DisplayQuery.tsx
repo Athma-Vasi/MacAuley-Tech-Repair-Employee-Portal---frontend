@@ -14,7 +14,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
-import { TbTrash, TbUpload } from 'react-icons/tb';
+import { TbNewSection, TbTrash, TbUpload } from 'react-icons/tb';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
@@ -45,9 +45,11 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
+import { useNavigate } from 'react-router-dom';
 
 function DisplayQuery<Doc>({
   componentQueryData,
+  createResourcePath,
   fileUploadsData = [],
   parentComponentName,
   parentRequestStatusDispatch,
@@ -56,24 +58,10 @@ function DisplayQuery<Doc>({
   style = {},
   totalDocuments,
 }: DisplayQueryProps<Doc>) {
-  const {
-    globalState: { padding, width, rowGap, themeObject },
-  } = useGlobalState();
-
-  const [
-    openedDeleteAcknowledge,
-    { open: openDeleteAcknowledge, close: closeDeleteAcknowledge },
-  ] = useDisclosure(false);
-  const [
-    openedDisplayFileUploads,
-    { open: openFileUploads, close: closeFileUploads },
-  ] = useDisclosure(false);
-
   const [displayQueryState, displayQueryDispatch] = useReducer(
     displayQueryReducer,
     initialDisplayQueryState
   );
-
   const {
     groupByRadioData,
     currentSelectionData,
@@ -89,6 +77,21 @@ function DisplayQuery<Doc>({
     deleteFormId,
     deleteResourceKind,
   } = displayQueryState;
+
+  const {
+    globalState: { padding, width, rowGap, themeObject },
+  } = useGlobalState();
+
+  const [
+    openedDeleteAcknowledge,
+    { open: openDeleteAcknowledge, close: closeDeleteAcknowledge },
+  ] = useDisclosure(false);
+  const [
+    openedDisplayFileUploads,
+    { open: openFileUploads, close: closeFileUploads },
+  ] = useDisclosure(false);
+
+  const navigate = useNavigate();
 
   async function handleDeleteFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -297,6 +300,16 @@ function DisplayQuery<Doc>({
     buttonDisabled: !isValidAcknowledgementText,
   };
 
+  const createResourceButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: 'Create',
+    semanticDescription: `create ${parentComponentName} form button`,
+    semanticName: `create ${parentComponentName} button`,
+    leftIcon: <TbNewSection />,
+    buttonOnClick: () => {
+      navigate(createResourcePath);
+    },
+  };
+
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- created inputs------------- */
@@ -309,9 +322,11 @@ function DisplayQuery<Doc>({
     acknowledgementTextInputCreatorInfo,
   ]);
 
-  const [createdDeleteButton] = returnAccessibleButtonElements([
-    deleteButtonCreatorInfo,
-  ]);
+  const [createdDeleteButton, createdCreateResourceButton] =
+    returnAccessibleButtonElements([
+      deleteButtonCreatorInfo,
+      createResourceButtonCreatorInfo,
+    ]);
 
   /** ------------- end created inputs------------- */
 
@@ -885,6 +900,12 @@ function DisplayQuery<Doc>({
     });
   }, [displayQueryState]);
 
+  const displayCreateResourceButton = (
+    <Tooltip label={`Create ${parentComponentName}`}>
+      <Group>{createdCreateResourceButton}</Group>
+    </Tooltip>
+  );
+
   return (
     <Flex
       direction="column"
@@ -901,7 +922,10 @@ function DisplayQuery<Doc>({
       {displayAcknowledgementModal}
       {displayFileUploadsModal}
       <Flex align="center" justify="space-between" w="100%">
-        <Title order={3}>{parentComponentName}s</Title>
+        <Group spacing={rowGap}>
+          <Title order={3}>{parentComponentName}s</Title>
+          {displayCreateResourceButton}
+        </Group>
         <Text>Total documents: {totalDocuments}</Text>
       </Flex>
       {displayQueryComponent}

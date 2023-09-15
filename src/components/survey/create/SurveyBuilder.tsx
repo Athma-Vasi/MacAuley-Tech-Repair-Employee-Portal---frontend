@@ -168,7 +168,7 @@ function SurveyBuilder() {
       });
 
       const url: URL = urlBuilder({
-        path: 'actions/outreach/survey-builder',
+        path: 'actions/outreach/survey',
       });
 
       const body = JSON.stringify({

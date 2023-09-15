@@ -5,6 +5,7 @@ import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayFileUploadsProps = {
   componentQueryData: ComponentQueryData[];
+  createResourcePath: string;
   fileUploadsData: Array<{ [key: string]: FileUploadDocument[] }>;
 
   parentComponentName: string;

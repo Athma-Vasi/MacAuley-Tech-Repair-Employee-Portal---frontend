@@ -656,7 +656,7 @@ function DisplayQueryDesktop<Doc>({
                             <Tooltip
                               label={`Modify request status of id: ${queryResponseObjWithAddedFields._id}`}
                             >
-                              {createdUpdateRequestStatusButton}
+                              <Group>{createdUpdateRequestStatusButton}</Group>
                             </Tooltip>
                           );
 

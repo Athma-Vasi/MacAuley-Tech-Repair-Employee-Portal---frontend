@@ -6,6 +6,7 @@ function DisplayLeaveRequests() {
   return (
     <DisplayResource<LeaveRequestDocument>
       componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
+      createResourcePath="/home/company/leave-request/create"
       requestBodyHeading="leaveRequest"
       paths={LEAVE_REQUESTS_PATHS}
     />

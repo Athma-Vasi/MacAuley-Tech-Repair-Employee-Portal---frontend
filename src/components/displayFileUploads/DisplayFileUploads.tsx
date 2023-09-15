@@ -2,6 +2,7 @@ import { DisplayFileUploadsProps } from './types';
 
 function DisplayFileUploads({
   componentQueryData,
+  createResourcePath,
   fileUploadsData,
   parentComponentName,
   parentDeleteResourceDispatch,

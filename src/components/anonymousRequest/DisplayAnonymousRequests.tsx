@@ -10,6 +10,7 @@ function DisplayAnonymousRequests() {
   return (
     <DisplayResource<QueryResponseData<AnonymousRequestDocument>[]>
       componentQueryData={ANONYMOUS_REQUEST_QUERY_DATA}
+      createResourcePath="/home/general/anonymous-request/create"
       paths={ANONYMOUS_REQUEST_ROUTES}
       requestBodyHeading="anonymousRequest"
     />

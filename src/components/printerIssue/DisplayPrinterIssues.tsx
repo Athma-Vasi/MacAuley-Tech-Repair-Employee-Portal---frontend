@@ -9,6 +9,7 @@ function DisplayPrinterIssues() {
   return (
     <DisplayResource<PrinterIssueDocument>
       componentQueryData={PRINTER_ISSUE_QUERY_DATA}
+      createResourcePath="/home/general/printer-issue/create"
       paths={PRINTER_ISSUE_ROUTE_PATHS}
       requestBodyHeading="printerIssue"
     />
