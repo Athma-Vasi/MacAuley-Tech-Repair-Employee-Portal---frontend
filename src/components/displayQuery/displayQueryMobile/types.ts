@@ -16,10 +16,7 @@ type DisplayQueryMobileProps = {
     type: 'setDeleteFormId';
     payload: string;
   }>;
-  deleteFileUploadIdDispatch: React.Dispatch<{
-    type: 'setDeleteFileUploadId';
-    payload: string;
-  }>;
+
   deleteResourceKindDispatch: React.Dispatch<{
     type: 'setDeleteResourceKind';
     payload: 'form' | 'fileUpload' | '';
@@ -31,18 +28,6 @@ type DisplayQueryMobileProps = {
     payload: FileUploadDocument[];
   }>;
 
-  popoversOpenCloseState: Map<string, boolean[]>;
-  popoversStateDispatch: React.Dispatch<{
-    type: 'setPopoversOpenCloseState';
-    payload: {
-      key: string;
-      popoverState: {
-        index: number;
-        value: boolean;
-      };
-    };
-  }>;
-
   requestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';
     payload: {
@@ -52,22 +37,37 @@ type DisplayQueryMobileProps = {
   }>;
   restOfGroupedQueryResponseData: Record<string, any>[];
   style?: CSSProperties;
-  tableViewSelection: 'expanded' | 'condensed';
 };
 
 type DisplayQueryMobileState = {
+  currentDocumentId: string;
+  currentRequestStatus: RequestStatus;
+
   // for repair notes docs only
   editRepairNoteInput: EditRepairNoteInput;
 };
 
 type DisplayQueryMobileAction = {
+  setCurrentDocumentId: 'setCurrentDocumentId';
+  setCurrentRequestStatus: 'setCurrentRequestStatus';
+
+  // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput';
 };
 
-type DisplayQueryMobileDispatch = {
-  type: DisplayQueryMobileAction['setEditRepairNoteInput'];
-  payload: EditRepairNoteInput;
-};
+type DisplayQueryMobileDispatch =
+  | {
+      type: DisplayQueryMobileAction['setCurrentDocumentId'];
+      payload: string;
+    }
+  | {
+      type: DisplayQueryMobileAction['setCurrentRequestStatus'];
+      payload: RequestStatus;
+    }
+  | {
+      type: DisplayQueryMobileAction['setEditRepairNoteInput'];
+      payload: EditRepairNoteInput;
+    };
 
 export type {
   DisplayQueryMobileAction,

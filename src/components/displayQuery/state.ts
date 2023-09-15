@@ -14,7 +14,6 @@ const initialDisplayQueryState: DisplayQueryState = {
   fileUploadsForAForm: [],
 
   currentSegmentedSelection: 'condensed',
-  popoversOpenCloseState: new Map(),
 
   acknowledgementText: '',
   isValidAcknowledgementText: false,
@@ -36,7 +35,6 @@ const displayQueryAction: DisplayQueryAction = {
   setFileUploadsForAForm: 'setFileUploadsForAForm',
 
   setCurrentSegmentedSelection: 'setCurrentSegmentedSelection',
-  setPopoversOpenCloseState: 'setPopoversOpenCloseState',
 
   setAcknowledgementText: 'setAcknowledgementText',
   setIsValidAcknowledgementText: 'setIsValidAcknowledgementText',
@@ -93,23 +91,6 @@ function displayQueryReducer(
         ...state,
         currentSegmentedSelection: action.payload,
       };
-
-    case displayQueryAction.setPopoversOpenCloseState: {
-      const { key, popoverState } = action.payload;
-      const newMap = new Map(state.popoversOpenCloseState);
-
-      const currentPopoverState = newMap.get(key);
-      if (currentPopoverState) {
-        currentPopoverState[popoverState.index] = popoverState.value;
-      } else {
-        newMap.set(key, [popoverState.value]);
-      }
-
-      return {
-        ...state,
-        popoversOpenCloseState: newMap,
-      };
-    }
 
     case displayQueryAction.setAcknowledgementText:
       return {

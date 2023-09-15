@@ -1,4 +1,4 @@
-import { DescriptionObjectsArray } from '../../../wrappers';
+import { DescriptionObjectsArray } from '../../wrappers';
 
 const REPAIR_NOTE_REPAIR_STATUS_DATA = [
   'In progress',

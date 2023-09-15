@@ -41,12 +41,6 @@ type DisplayResourceState<Doc> = {
     status: RequestStatus;
   };
 
-  // updateResourceData: {
-  //   id: string;
-  //   kind: 'update' | 'delete';
-  //   data: Partial<Doc>;
-  // };
-
   deleteResource: {
     formId: string;
     fileUploadId?: string;
@@ -55,6 +49,7 @@ type DisplayResourceState<Doc> = {
   };
 
   triggerRefresh: boolean;
+  triggerUpdateRequestStatus: boolean;
 
   isSubmitting: boolean;
   submitMessage: string;
@@ -91,6 +86,7 @@ type DisplayResourceAction = {
   setFileUploads: 'setFileUploads';
   setRequestStatus: 'setRequestStatus';
   setTriggerRefresh: 'setTriggerRefresh';
+  setTriggerUpdateRequestStatus: 'setTriggerUpdateRequestStatus';
 
   setIsSubmitting: 'setIsSubmitting';
   setSubmitMessage: 'setSubmitMessage';
@@ -124,6 +120,7 @@ type DisplayResourceDispatch<Doc> =
         | DisplayResourceAction['setNewQueryFlag']
         | DisplayResourceAction['setResetPage']
         | DisplayResourceAction['setTriggerRefresh']
+        | DisplayResourceAction['setTriggerUpdateRequestStatus']
         | DisplayResourceAction['setIsSubmitting']
         | DisplayResourceAction['setIsSuccessful']
         | DisplayResourceAction['setIsLoading'];

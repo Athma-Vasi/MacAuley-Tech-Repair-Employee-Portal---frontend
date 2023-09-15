@@ -23,7 +23,6 @@ import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
   returnAccessibleRadioGroupInputsElements,
-  returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../jsxCreators';
 import {
@@ -36,7 +35,6 @@ import {
 import {
   AccessibleButtonCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
 } from '../wrappers';
 import { DisplayQueryDesktop } from './displayQueryDesktop/DisplayQueryDesktop';
@@ -47,8 +45,6 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
-import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from '../displayResource/constants';
-import { tab } from '@testing-library/user-event/dist/tab';
 
 function DisplayQuery<Doc>({
   componentQueryData,
@@ -86,7 +82,6 @@ function DisplayQuery<Doc>({
     restOfGroupedQueryResponseData,
     fileUploadsForAForm,
     currentSegmentedSelection,
-    popoversOpenCloseState,
     acknowledgementText,
     isAcknowledgementTextFocused,
     isValidAcknowledgementText,
@@ -856,24 +851,19 @@ function DisplayQuery<Doc>({
         componentQueryData={componentQueryData}
         deleteFormIdDispatch={displayQueryDispatch}
         fileUploadsData={fileUploadsData}
-        deleteFileUploadIdDispatch={displayQueryDispatch}
         deleteResourceKindDispatch={displayQueryDispatch}
         groupedByQueryResponseData={groupedByQueryResponseData}
         groupBySelection={groupBySelection}
         openDeleteAcknowledge={openDeleteAcknowledge}
         openFileUploads={openFileUploads}
         setFileUploadsForAFormDispatch={displayQueryDispatch}
-        popoversOpenCloseState={popoversOpenCloseState}
-        popoversStateDispatch={displayQueryDispatch}
         requestStatusDispatch={parentRequestStatusDispatch}
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
-        tableViewSelection={currentSegmentedSelection}
       />
     ) : (
       <DisplayQueryDesktop
         componentQueryData={componentQueryData}
         deleteFormIdDispatch={displayQueryDispatch}
-        deleteFileUploadIdDispatch={displayQueryDispatch}
         deleteResourceKindDispatch={displayQueryDispatch}
         fileUploadsData={fileUploadsData}
         groupedByQueryResponseData={groupedByQueryResponseData}
@@ -882,8 +872,6 @@ function DisplayQuery<Doc>({
         openDeleteAcknowledge={openDeleteAcknowledge}
         openFileUploads={openFileUploads}
         setFileUploadsForAFormDispatch={displayQueryDispatch}
-        popoversOpenCloseState={popoversOpenCloseState}
-        popoversStateDispatch={displayQueryDispatch}
         requestStatusDispatch={parentRequestStatusDispatch}
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
         tableViewSelection={currentSegmentedSelection}

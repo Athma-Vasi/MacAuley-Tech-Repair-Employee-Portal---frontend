@@ -65,6 +65,7 @@ function DisplayResource<Doc>({
       value: false,
     },
     triggerRefresh: true,
+    triggerUpdateRequestStatus: false,
 
     isSubmitting: false,
     submitMessage: '',
@@ -92,6 +93,7 @@ function DisplayResource<Doc>({
     requestStatus,
     deleteResource,
     triggerRefresh,
+    triggerUpdateRequestStatus,
 
     isSubmitting,
     submitMessage,
@@ -428,13 +430,24 @@ function DisplayResource<Doc>({
             type: displayResourceAction.setSuccessMessage,
             payload: `Successfully updated request status of id: ${requestStatus.id} to ${requestStatus.status}`,
           });
+          displayResourceDispatch({
+            type: displayResourceAction.setRequestStatus,
+            payload: {
+              id: '',
+              status: 'pending',
+            },
+          });
+          displayResourceDispatch({
+            type: displayResourceAction.setTriggerUpdateRequestStatus,
+            payload: false,
+          });
         }
       }
     }
 
     // only allow Admin and Manager to update request status
     if (roles.includes('Admin') || roles.includes('Manager')) {
-      if (requestStatus.id !== '') {
+      if (triggerUpdateRequestStatus) {
         updateRequestStatus();
       }
     }
@@ -443,6 +456,18 @@ function DisplayResource<Doc>({
       isMounted = false;
       controller.abort();
     };
+
+    // only trigger updateRequestStatus on triggerUpdateRequestStatus change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerUpdateRequestStatus]);
+
+  useEffect(() => {
+    if (requestStatus.id.length > 0) {
+      displayResourceDispatch({
+        type: displayResourceAction.setTriggerUpdateRequestStatus,
+        payload: true,
+      });
+    }
   }, [requestStatus]);
 
   // delete resource on deleteResource status change

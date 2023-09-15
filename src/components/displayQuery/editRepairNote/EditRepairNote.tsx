@@ -6,8 +6,8 @@ import {
   AccessibleButtonCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../../../wrappers';
-import { EditRepairNoteInput } from '../types';
+} from '../../wrappers';
+import { EditRepairNoteInput } from '../displayQueryDesktop/types';
 import { EditRepairNoteState } from './types';
 import { editRepairNoteAction, editRepairNoteReducer } from './state';
 import {
@@ -16,19 +16,19 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
   returnGrammarValidationText,
   returnNumberAmountValidationText,
   returnThemeColors,
   urlBuilder,
-} from '../../../../utils';
+} from '../../../utils';
 import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
-} from '../../../../constants/regex';
-import { useAuth, useGlobalState } from '../../../../hooks';
-import { COLORS_SWATCHES } from '../../../../constants/data';
+} from '../../../constants/regex';
+import { useAuth, useGlobalState } from '../../../hooks';
+import { COLORS_SWATCHES } from '../../../constants/data';
 import {
   TbCurrencyRenminbi,
   TbCurrencyPound,
@@ -36,23 +36,23 @@ import {
   TbCurrencyYen,
   TbCurrencyDollar,
 } from 'react-icons/tb';
-import { CURRENCY_DATA } from '../../../benefits/constants';
-import { Currency, ResourceRequestServerResponse } from '../../../../types';
+import { CURRENCY_DATA } from '../../benefits/constants';
+import { Currency, ResourceRequestServerResponse } from '../../../types';
 import {
   EDIT_REPAIR_NOTE_DESCRIPTION_OBJECTS,
   EDIT_REPAIR_NOTE_MAX_STEPPER_POSITION,
   REPAIR_NOTE_REPAIR_STATUS_DATA,
 } from './constants';
-import { RepairNoteDocument, RepairStatus } from '../../../repairNote/types';
-import { CustomNotification } from '../../../customNotification';
+import { RepairNoteDocument, RepairStatus } from '../../repairNote/types';
+import { CustomNotification } from '../../customNotification';
 import { Group, Tooltip } from '@mantine/core';
 import FormReviewPage, {
   FormReviewObject,
-} from '../../../formReviewPage/FormReviewPage';
+} from '../../formReviewPage/FormReviewPage';
 import { useNavigate } from 'react-router-dom';
 import { useErrorBoundary } from 'react-error-boundary';
 import { InvalidTokenError } from 'jwt-decode';
-import { globalAction } from '../../../../context/globalProvider/state';
+import { globalAction } from '../../../context/globalProvider/state';
 
 type EditRepairNoteProps = {
   editRepairNoteInput: EditRepairNoteInput;

@@ -8,6 +8,9 @@ const initialDisplayQueryDesktopState: DisplayQueryDesktopState = {
   fieldToSortBy: 'username',
   sortDirection: 'asc',
 
+  currentDocumentId: '',
+  currentRequestStatus: 'pending',
+
   // for repair notes docs only
   editRepairNoteInput: {
     repairNoteFormId: '',
@@ -22,6 +25,9 @@ const initialDisplayQueryDesktopState: DisplayQueryDesktopState = {
 const displayQueryDesktopAction: DisplayQueryDesktopAction = {
   setFieldToSortBy: 'setFieldToSortBy',
   setSortDirection: 'setSortDirection',
+
+  setCurrentDocumentId: 'setCurrentDocumentId',
+  setCurrentRequestStatus: 'setCurrentRequestStatus',
 
   // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput',
@@ -41,6 +47,17 @@ function displayQueryDesktopReducer(
       return {
         ...state,
         sortDirection: action.payload,
+      };
+
+    case displayQueryDesktopAction.setCurrentDocumentId:
+      return {
+        ...state,
+        currentDocumentId: action.payload,
+      };
+    case displayQueryDesktopAction.setCurrentRequestStatus:
+      return {
+        ...state,
+        currentRequestStatus: action.payload,
       };
 
     // for repair notes docs only

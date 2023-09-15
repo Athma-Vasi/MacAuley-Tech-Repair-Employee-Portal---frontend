@@ -1,17 +1,15 @@
 import {
   Accordion,
-  Button,
   Divider,
   Flex,
-  Group,
   Highlight,
   Modal,
-  Popover,
   Spoiler,
   Text,
   Title,
 } from '@mantine/core';
-import { FormEvent, useEffect, useReducer } from 'react';
+import { useDisclosure } from '@mantine/hooks';
+import { useReducer } from 'react';
 import { IoMdOpen } from 'react-icons/io';
 import {
   TbArrowDown,
@@ -19,7 +17,6 @@ import {
   TbEdit,
   TbStatusChange,
   TbTrash,
-  TbUpload,
 } from 'react-icons/tb';
 
 import {
@@ -27,29 +24,24 @@ import {
   FIELDNAMES_WITH_DATE_VALUES,
 } from '../../../constants/data';
 import { useAuth, useGlobalState } from '../../../hooks';
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleRadioGroupInputsElements,
-} from '../../../jsxCreators';
-import { RequestStatus } from '../../../types';
+import { returnAccessibleButtonElements } from '../../../jsxCreators';
 import {
   addFieldsToObject,
   formatDate,
   returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
-import { DisplayQueryMobileProps } from './types';
+import EditRepairNote from '../editRepairNote/EditRepairNote';
+import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
 import {
   displayQueryMobileAction,
   displayQueryMobileReducer,
   initialDisplayQueryMobileState,
 } from './state';
-import { useDisclosure } from '@mantine/hooks';
-import EditRepairNote from '../displayQueryDesktop/editRepairNote/EditRepairNote';
+import { DisplayQueryMobileProps } from './types';
 
 function DisplayQueryMobile({
   componentQueryData,
-  deleteFileUploadIdDispatch,
   deleteFormIdDispatch,
   deleteResourceKindDispatch,
   fileUploadsData = [],
@@ -58,18 +50,16 @@ function DisplayQueryMobile({
   openDeleteAcknowledge,
   openFileUploads,
   setFileUploadsForAFormDispatch,
-  popoversStateDispatch,
-  popoversOpenCloseState,
   restOfGroupedQueryResponseData,
   requestStatusDispatch,
   style = {},
-  tableViewSelection,
 }: DisplayQueryMobileProps): JSX.Element {
   const [displayQueryMobileState, displayQueryMobileDispatch] = useReducer(
     displayQueryMobileReducer,
     initialDisplayQueryMobileState
   );
-  const { editRepairNoteInput } = displayQueryMobileState;
+  const { editRepairNoteInput, currentDocumentId, currentRequestStatus } =
+    displayQueryMobileState;
 
   const {
     globalState: { width, padding, rowGap, themeObject },
@@ -78,66 +68,37 @@ function DisplayQueryMobile({
     authState: { roles },
   } = useAuth();
 
+  const [
+    openedUpdateRequestStatusModal,
+    {
+      open: openUpdateRequestStatusModal,
+      close: closeUpdateRequestStatusModal,
+    },
+  ] = useDisclosure(false);
+
   // for repair note fields update only
   const [
     openedEditRepairNotesModal,
     { open: openEditRepairNotesModal, close: closeEditRepairNotesModal },
   ] = useDisclosure(false);
 
-  const createdUpdateRequestStatusRadioGroup =
-    returnAccessibleRadioGroupInputsElements([
+  const [createdShowMoreButton, createdHideButton] =
+    returnAccessibleButtonElements([
       {
-        columns: 1,
-        dataObjectArray: [
-          {
-            label: 'Approved',
-            value: 'approved',
-          },
-          {
-            label: 'Pending',
-            value: 'pending',
-          },
-          {
-            label: 'Rejected',
-            value: 'rejected',
-          },
-        ],
-        description: 'Update request status',
-        label: 'Update',
-        onChange: () => {},
-        name: 'requestStatus',
-        semanticName: 'Update request status',
+        buttonLabel: 'Show',
+        leftIcon: <TbArrowDown />,
+        buttonType: 'button',
+        semanticDescription: 'Reveal more information',
+        semanticName: 'Show more',
+      },
+      {
+        buttonLabel: 'Hide',
+        leftIcon: <TbArrowUp />,
+        buttonType: 'button',
+        semanticDescription: 'Hide revealed information',
+        semanticName: 'Hide',
       },
     ]);
-
-  const [
-    createdShowMoreButton,
-    createdHideButton,
-    createdSubmitRequestStatusButton,
-  ] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Show',
-      leftIcon: <TbArrowDown />,
-      buttonType: 'button',
-      semanticDescription: 'Reveal more information',
-      semanticName: 'Show more',
-    },
-    {
-      buttonLabel: 'Hide',
-      leftIcon: <TbArrowUp />,
-      buttonType: 'button',
-      semanticDescription: 'Hide revealed information',
-      semanticName: 'Hide',
-    },
-
-    {
-      buttonLabel: 'Submit',
-      leftIcon: <TbUpload />,
-      buttonType: 'submit',
-      semanticDescription: 'Submit request status changes',
-      semanticName: 'Submit',
-    },
-  ]);
 
   const {
     appThemeColors: { backgroundColor, borderColor },
@@ -302,84 +263,30 @@ function DisplayQueryMobile({
             ])
           : [null];
 
-        async function handleRequestStatusChangeFormSubmit(
-          event: FormEvent<HTMLFormElement>
-        ) {
-          event.preventDefault();
-          const formData = new FormData(event.currentTarget);
-          const requestStatus = formData.get('requestStatus');
-
-          requestStatusDispatch({
-            type: 'setRequestStatus',
-            payload: {
-              id: queryObj._id,
-              status: requestStatus as RequestStatus,
-            },
-          });
-
-          popoversStateDispatch({
-            type: 'setPopoversOpenCloseState',
-            payload: {
-              key: section.toString(),
-              popoverState: {
-                index: queryObjIdx,
-                value: false,
+        const [createdUpdateRequestStatusButton] =
+          returnAccessibleButtonElements([
+            {
+              buttonLabel: <TbStatusChange />,
+              semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+              semanticName: 'Update request status',
+              buttonOnClick: () => {
+                displayQueryMobileDispatch({
+                  type: displayQueryMobileAction.setCurrentDocumentId,
+                  payload: queryResponseObjWithAddedFields._id,
+                });
+                displayQueryMobileDispatch({
+                  type: displayQueryMobileAction.setCurrentRequestStatus,
+                  payload: queryResponseObjWithAddedFields.requestStatus,
+                });
+                openUpdateRequestStatusModal();
               },
             },
-          });
-        }
-
-        const createdRequestStatusPopover = (
-          <Popover
-            width={200}
-            position={width < 480 ? 'bottom' : 'bottom-end'}
-            withArrow
-            shadow="lg"
-            opened={
-              popoversOpenCloseState?.get(section.toString())?.[queryObjIdx]
-            }
-          >
-            <Popover.Target>
-              <Button
-                size="xs"
-                onClick={() => {
-                  popoversStateDispatch({
-                    type: 'setPopoversOpenCloseState',
-                    payload: {
-                      key: section.toString(),
-                      popoverState: {
-                        index: queryObjIdx,
-                        value: !popoversOpenCloseState?.get(
-                          section.toString()
-                        )?.[queryObjIdx],
-                      },
-                    },
-                  });
-                }}
-              >
-                <TbStatusChange />
-              </Button>
-            </Popover.Target>
-            <Popover.Dropdown p={padding}>
-              <form onSubmit={handleRequestStatusChangeFormSubmit}>
-                <Flex
-                  direction="column"
-                  align="flex-end"
-                  justify="center"
-                  rowGap={rowGap}
-                >
-                  {createdUpdateRequestStatusRadioGroup}
-                  {createdSubmitRequestStatusButton}
-                </Flex>
-              </form>
-            </Popover.Dropdown>
-          </Popover>
-        );
+          ]);
 
         // only managers can update request status
         const displayUpdateRequestStatusButton = roles.includes('Manager')
           ? key === 'requestStatus'
-            ? createdRequestStatusPopover
+            ? createdUpdateRequestStatusButton
             : null
           : null;
 
@@ -666,22 +573,6 @@ function DisplayQueryMobile({
     </Flex>
   );
 
-  /**
-   * const stepperWidth = customWidth
-    ? customWidth
-    : width < 480 // for iPhone 5/SE
-    ? 375 - 20
-    : width < 768 // for iPhone 6/7/8
-    ? width - 40
-    : // at 768vw the navbar appears at width of 200px
-    width < 1024
-    ? (width - 200) * 0.85
-    : // at >= 1200vw the navbar width is 300px
-    width < 1200
-    ? (width - 300) * 0.85
-    : 900 - 40;
-   */
-
   // StepperWrapper width plus extra paddingX
   const modalSize =
     // this component is only displayed on mobile (<= 1024)
@@ -706,6 +597,22 @@ function DisplayQueryMobile({
     </Modal>
   );
 
+  const displayUpdateRequestStatusModal = (
+    <Modal
+      opened={openedUpdateRequestStatusModal}
+      onClose={closeUpdateRequestStatusModal}
+      centered
+      size={modalSize}
+    >
+      <UpdateRequestStatus
+        documentId={currentDocumentId}
+        currentRequestStatus={currentRequestStatus}
+        parentComponentDispatch={requestStatusDispatch}
+        closeUpdateRequestStatusModal={closeUpdateRequestStatusModal}
+      />
+    </Modal>
+  );
+
   return (
     <Flex
       direction="column"
@@ -715,6 +622,7 @@ function DisplayQueryMobile({
       w="100%"
       rowGap={rowGap}
     >
+      {displayUpdateRequestStatusModal}
       {displayEditRepairNoteModal}
       {displayGroupedByQueryResponseData}
       {displayRestData}

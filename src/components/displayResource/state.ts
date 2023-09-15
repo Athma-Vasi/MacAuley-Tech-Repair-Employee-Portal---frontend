@@ -21,6 +21,7 @@ const displayResourceAction: DisplayResourceAction = {
 
   setDeleteResource: 'setDeleteResource',
   setTriggerRefresh: 'setTriggerRefresh',
+  setTriggerUpdateRequestStatus: 'setTriggerUpdateRequestStatus',
 
   setIsSubmitting: 'setIsSubmitting',
   setSubmitMessage: 'setSubmitMessage',
@@ -134,6 +135,11 @@ function displayResourceReducer<Doc>(
       return {
         ...state,
         triggerRefresh: action.payload,
+      };
+    case displayResourceAction.setTriggerUpdateRequestStatus:
+      return {
+        ...state,
+        triggerUpdateRequestStatus: action.payload,
       };
 
     case displayResourceAction.setIsSubmitting:

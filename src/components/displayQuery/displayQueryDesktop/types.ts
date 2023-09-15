@@ -20,10 +20,6 @@ type DisplayQueryDesktopProps<Doc> = {
     type: 'setDeleteFormId';
     payload: string;
   }>;
-  deleteFileUploadIdDispatch: React.Dispatch<{
-    type: 'setDeleteFileUploadId';
-    payload: string;
-  }>;
   deleteResourceKindDispatch: React.Dispatch<{
     type: 'setDeleteResourceKind';
     payload: 'form' | 'fileUpload' | '';
@@ -33,18 +29,6 @@ type DisplayQueryDesktopProps<Doc> = {
   setFileUploadsForAFormDispatch: React.Dispatch<{
     type: 'setFileUploadsForAForm';
     payload: FileUploadDocument[];
-  }>;
-
-  popoversOpenCloseState: Map<string, boolean[]>;
-  popoversStateDispatch: React.Dispatch<{
-    type: 'setPopoversOpenCloseState';
-    payload: {
-      key: string;
-      popoverState: {
-        index: number;
-        value: boolean;
-      };
-    };
   }>;
 
   requestStatusDispatch: React.Dispatch<{
@@ -72,6 +56,9 @@ type DisplayQueryDesktopState = {
   fieldToSortBy: string;
   sortDirection: 'asc' | 'desc';
 
+  currentDocumentId: string;
+  currentRequestStatus: RequestStatus;
+
   // for repair notes docs only
   editRepairNoteInput: EditRepairNoteInput;
 };
@@ -79,6 +66,9 @@ type DisplayQueryDesktopState = {
 type DisplayQueryDesktopAction = {
   setFieldToSortBy: 'setFieldToSortBy';
   setSortDirection: 'setSortDirection';
+
+  setCurrentDocumentId: 'setCurrentDocumentId';
+  setCurrentRequestStatus: 'setCurrentRequestStatus';
 
   // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput';
@@ -91,12 +81,18 @@ type DisplayQueryDesktopReducer = (
 
 type DisplayQueryDesktopDispatch =
   | {
-      type: DisplayQueryDesktopAction['setFieldToSortBy'];
+      type:
+        | DisplayQueryDesktopAction['setFieldToSortBy']
+        | DisplayQueryDesktopAction['setCurrentDocumentId'];
       payload: string;
     }
   | {
       type: DisplayQueryDesktopAction['setSortDirection'];
       payload: 'asc' | 'desc';
+    }
+  | {
+      type: DisplayQueryDesktopAction['setCurrentRequestStatus'];
+      payload: RequestStatus;
     }
   | {
       type: DisplayQueryDesktopAction['setEditRepairNoteInput'];

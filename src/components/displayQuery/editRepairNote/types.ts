@@ -1,5 +1,5 @@
-import { Currency, SetStepsInErrorPayload } from '../../../../types';
-import { RepairStatus } from '../../../repairNote/types';
+import { Currency, SetStepsInErrorPayload } from '../../../types';
+import { RepairStatus } from '../../repairNote/types';
 
 type EditRepairNoteState = {
   repairNotes: string;

@@ -44,7 +44,6 @@ type DisplayQueryState = {
   fileUploadsForAForm: FileUploadDocument[];
 
   currentSegmentedSelection: 'expanded' | 'condensed';
-  popoversOpenCloseState: Map<string, boolean[]>;
 
   acknowledgementText: string;
   isValidAcknowledgementText: boolean;
@@ -66,7 +65,6 @@ type DisplayQueryAction = {
   setFileUploadsForAForm: 'setFileUploadsForAForm';
 
   setCurrentSegmentedSelection: 'setCurrentSegmentedSelection';
-  setPopoversOpenCloseState: 'setPopoversOpenCloseState';
 
   setAcknowledgementText: 'setAcknowledgementText';
   setIsValidAcknowledgementText: 'setIsValidAcknowledgementText';
@@ -111,16 +109,6 @@ type DisplayQueryDispatch =
   | {
       type: DisplayQueryAction['setRestOfGroupedQueryResponseData'];
       payload: Record<string, any>[];
-    }
-  | {
-      type: DisplayQueryAction['setPopoversOpenCloseState'];
-      payload: {
-        key: string;
-        popoverState: {
-          index: number;
-          value: boolean;
-        };
-      };
     }
   | {
       type: DisplayQueryAction['setFileUploadsForAForm'];

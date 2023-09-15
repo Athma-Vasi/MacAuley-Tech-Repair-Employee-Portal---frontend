@@ -5,6 +5,9 @@ import {
 } from './types';
 
 const initialDisplayQueryMobileState: DisplayQueryMobileState = {
+  currentDocumentId: '',
+  currentRequestStatus: 'pending',
+
   // for repair notes docs only
   editRepairNoteInput: {
     repairNoteFormId: '',
@@ -17,6 +20,9 @@ const initialDisplayQueryMobileState: DisplayQueryMobileState = {
 };
 
 const displayQueryMobileAction: DisplayQueryMobileAction = {
+  setCurrentDocumentId: 'setCurrentDocumentId',
+  setCurrentRequestStatus: 'setCurrentRequestStatus',
+
   // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput',
 };
@@ -26,6 +32,17 @@ function displayQueryMobileReducer(
   action: DisplayQueryMobileDispatch
 ): DisplayQueryMobileState {
   switch (action.type) {
+    case displayQueryMobileAction.setCurrentDocumentId:
+      return {
+        ...state,
+        currentDocumentId: action.payload,
+      };
+    case displayQueryMobileAction.setCurrentRequestStatus:
+      return {
+        ...state,
+        currentRequestStatus: action.payload,
+      };
+
     // for repair notes docs only
     case displayQueryMobileAction.setEditRepairNoteInput:
       return {

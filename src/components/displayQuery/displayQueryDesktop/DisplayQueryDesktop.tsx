@@ -7,7 +7,6 @@ import {
   Highlight,
   HoverCard,
   Modal,
-  Popover,
   ScrollArea,
   Space,
   Stack,
@@ -17,7 +16,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { CSSProperties, FormEvent, useEffect, useReducer } from 'react';
+import { CSSProperties, useEffect, useReducer } from 'react';
 import { IoMdOpen } from 'react-icons/io';
 import { TbEdit, TbStatusChange, TbTrash, TbUpload } from 'react-icons/tb';
 import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
@@ -27,11 +26,7 @@ import {
   FIELDNAMES_WITH_DATE_VALUES,
 } from '../../../constants/data';
 import { useAuth, useGlobalState } from '../../../hooks';
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleRadioGroupInputsElements,
-} from '../../../jsxCreators';
-import { RequestStatus } from '../../../types';
+import { returnAccessibleButtonElements } from '../../../jsxCreators';
 import {
   addFieldsToObject,
   formatDate,
@@ -40,7 +35,8 @@ import {
   returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
-import EditRepairNote from './editRepairNote/EditRepairNote';
+import EditRepairNote from '../editRepairNote/EditRepairNote';
+import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
 import {
   displayQueryDesktopAction,
   displayQueryDesktopReducer,
@@ -51,7 +47,6 @@ import { sortGroupedByQueryResponseData } from './utils';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
-  deleteFileUploadIdDispatch,
   deleteFormIdDispatch,
   deleteResourceKindDispatch,
   fileUploadsData = [],
@@ -63,9 +58,6 @@ function DisplayQueryDesktop<Doc>({
   openFileUploads,
   setFileUploadsForAFormDispatch,
 
-  popoversOpenCloseState,
-  popoversStateDispatch,
-
   restOfGroupedQueryResponseData,
   requestStatusDispatch,
   style = {},
@@ -75,14 +67,27 @@ function DisplayQueryDesktop<Doc>({
     displayQueryDesktopReducer,
     initialDisplayQueryDesktopState
   );
-  const { fieldToSortBy, sortDirection, editRepairNoteInput } =
-    displayQueryDesktopState;
+  const {
+    fieldToSortBy,
+    sortDirection,
+    editRepairNoteInput,
+    currentDocumentId,
+    currentRequestStatus,
+  } = displayQueryDesktopState;
   const {
     globalState: { width, padding, rowGap, themeObject },
   } = useGlobalState();
   const {
     authState: { roles },
   } = useAuth();
+
+  const [
+    openedUpdateRequestStatusModal,
+    {
+      open: openUpdateRequestStatusModal,
+      close: closeUpdateRequestStatusModal,
+    },
+  ] = useDisclosure(false);
 
   // for repair note fields update only
   const [
@@ -102,43 +107,6 @@ function DisplayQueryDesktop<Doc>({
       textHighlightColor,
     },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
-
-  const createdUpdateRequestStatusRadioGroup =
-    returnAccessibleRadioGroupInputsElements([
-      {
-        columns: 1,
-        dataObjectArray: [
-          {
-            label: 'Approved',
-            value: 'approved',
-          },
-          {
-            label: 'Pending',
-            value: 'pending',
-          },
-          {
-            label: 'Rejected',
-            value: 'rejected',
-          },
-        ],
-        description: 'Update request status of this form',
-        onChange: () => {},
-        name: 'requestStatus',
-        label: <Title order={5}>Update</Title>,
-        semanticName: 'Update request status',
-        widthRadioGroup: '100%',
-      },
-    ]);
-
-  const [createdSubmitRequestStatusButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Submit',
-      leftIcon: <TbUpload />,
-      buttonType: 'submit',
-      semanticDescription: 'Submit request status changes',
-      semanticName: 'Submit',
-    },
-  ]);
 
   // determines that the user is viewing repair notes section
   const isRepairNoteSectionInView = Array.from(groupedByQueryResponseData).some(
@@ -662,92 +630,41 @@ function DisplayQueryDesktop<Doc>({
                               </Tooltip>
                             ) : null;
 
-                          async function handleRequestStatusChangeFormSubmit(
-                            event: FormEvent<HTMLFormElement>
-                          ) {
-                            event.preventDefault();
-                            const formData = new FormData(event.currentTarget);
-                            const requestStatus = formData.get('requestStatus');
-
-                            requestStatusDispatch({
-                              type: 'setRequestStatus',
-                              payload: {
-                                id: queryResponseObjWithAddedFields._id,
-                                status: requestStatus as RequestStatus,
-                              },
-                            });
-
-                            popoversStateDispatch({
-                              type: 'setPopoversOpenCloseState',
-                              payload: {
-                                key: groupedByFieldKey.toString(),
-                                popoverState: {
-                                  index: objIdx,
-                                  value: false,
+                          const [createdUpdateRequestStatusButton] =
+                            returnAccessibleButtonElements([
+                              {
+                                buttonLabel: <TbStatusChange />,
+                                semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                                semanticName: 'Update request status',
+                                buttonOnClick: () => {
+                                  displayQueryDesktopDispatch({
+                                    type: displayQueryDesktopAction.setCurrentDocumentId,
+                                    payload:
+                                      queryResponseObjWithAddedFields._id,
+                                  });
+                                  displayQueryDesktopDispatch({
+                                    type: displayQueryDesktopAction.setCurrentRequestStatus,
+                                    payload:
+                                      queryResponseObjWithAddedFields.requestStatus,
+                                  });
+                                  openUpdateRequestStatusModal();
                                 },
                               },
-                            });
-                          }
+                            ]);
 
-                          const createdRequestStatusPopover = (
-                            <Popover
-                              width={480}
-                              position="left"
-                              withArrow
-                              shadow="lg"
-                              opened={
-                                popoversOpenCloseState?.get(
-                                  groupedByFieldKey.toString()
-                                )?.[objIdx]
-                              }
+                          const createdUpdateRequestStatusButtonWithTooltip = (
+                            <Tooltip
+                              label={`Modify request status of id: ${queryResponseObjWithAddedFields._id}`}
                             >
-                              <Popover.Target>
-                                <Tooltip
-                                  label={`Modify request status of id: ${queryResponseObjWithAddedFields._id}`}
-                                >
-                                  {/* most relevant info will be read out first */}
-                                  <Button
-                                    aria-label={`Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`}
-                                    size="xs"
-                                    onClick={() => {
-                                      popoversStateDispatch({
-                                        type: 'setPopoversOpenCloseState',
-                                        payload: {
-                                          key: groupedByFieldKey.toString(),
-                                          popoverState: {
-                                            index: objIdx,
-                                            value: !popoversOpenCloseState?.get(
-                                              groupedByFieldKey.toString()
-                                            )?.[objIdx],
-                                          },
-                                        },
-                                      });
-                                    }}
-                                  >
-                                    <TbStatusChange />
-                                  </Button>
-                                </Tooltip>
-                              </Popover.Target>
-                              <Popover.Dropdown p={padding}>
-                                <form
-                                  onSubmit={handleRequestStatusChangeFormSubmit}
-                                >
-                                  <Stack w="100%">
-                                    {createdUpdateRequestStatusRadioGroup}
-                                    <Group w="100%" position="right">
-                                      {createdSubmitRequestStatusButton}
-                                    </Group>
-                                  </Stack>
-                                </form>
-                              </Popover.Dropdown>
-                            </Popover>
+                              {createdUpdateRequestStatusButton}
+                            </Tooltip>
                           );
 
                           // only managers can update request status
                           const displayUpdateRequestStatusButton =
                             roles.includes('Manager')
                               ? key === 'requestStatus'
-                                ? createdRequestStatusPopover
+                                ? createdUpdateRequestStatusButtonWithTooltip
                                 : null
                               : null;
 
@@ -984,6 +901,22 @@ function DisplayQueryDesktop<Doc>({
     </Modal>
   );
 
+  const displayUpdateRequestStatusModal = (
+    <Modal
+      opened={openedUpdateRequestStatusModal}
+      onClose={closeUpdateRequestStatusModal}
+      centered
+      size={modalSize}
+    >
+      <UpdateRequestStatus
+        documentId={currentDocumentId}
+        currentRequestStatus={currentRequestStatus}
+        parentComponentDispatch={requestStatusDispatch}
+        closeUpdateRequestStatusModal={closeUpdateRequestStatusModal}
+      />
+    </Modal>
+  );
+
   useEffect(() => {
     logState({
       state: displayQueryDesktopState,
@@ -993,6 +926,7 @@ function DisplayQueryDesktop<Doc>({
 
   return (
     <Stack w="100%" style={{ ...style }}>
+      {displayUpdateRequestStatusModal}
       {displayEditRepairNoteModal}
       {displayTable}
       {displayRestOfGroupedByData}
