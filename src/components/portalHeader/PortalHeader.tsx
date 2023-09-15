@@ -70,12 +70,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
 
   return (
     <Header height={{ base: 50, md: 70 }} p="md">
-      <Flex
-        justify="space-between"
-        align="center"
-        h="100%"
-        style={{ outline: '1px solid teal' }}
-      >
+      <Flex justify="space-between" align="center" h="100%">
         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
           <Burger
             opened={openedHeader}

@@ -375,7 +375,7 @@ function DisplayQueryMobile({
             align={width < 768 ? 'flex-start' : 'center'}
             justify={width < 768 ? 'flex-start' : 'space-between'}
             bg={backgroundColor}
-            style={{ borderBottom: lastKeyValBorderBottom }}
+            style={{ borderBottom: lastKeyValBorderBottom, borderRadius: 4 }}
             rowGap={rowGap}
             w="100%"
             p={padding}
@@ -413,7 +413,6 @@ function DisplayQueryMobile({
           justify="center"
           w="100%"
           rowGap={rowGap}
-          // style={{ border: borderColor }}
           py={padding}
         >
           {displayBeginDivider}
@@ -580,8 +579,8 @@ function DisplayQueryMobile({
       ? 375 - 20
       : width < 768 // for iPhone 6/7/8
       ? width * 0.9
-      : // at 768vw the navbar appears at width of 200px
-        (width - 200) * 0.9;
+      : // at 768vw the navbar appears at width of 225px
+        (width - 225) * 0.9;
 
   const displayEditRepairNoteModal = (
     <Modal

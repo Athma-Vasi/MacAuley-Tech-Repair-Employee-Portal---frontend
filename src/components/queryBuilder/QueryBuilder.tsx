@@ -69,7 +69,11 @@ import {
   queryBuilderAction,
   queryBuilderReducer,
 } from './state';
-import { QueryBuilderProps, QueryLabelValueTypesMap } from './types';
+import {
+  QueryBuilderProps,
+  QueryLabelValueTypesMap,
+  QueryValueTypes,
+} from './types';
 import {
   FILTER_HELP_MODAL_CONTENT,
   generateFilterChainStatement,
@@ -143,6 +147,9 @@ function QueryBuilder({
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (!componentQueryData.length) {
+      return;
+    }
     // loop through componentQueryData and assign to both filter select data or sort select data, checkbox data, and labelValueTypesMap
     const [
       filterSelectData,
@@ -210,6 +217,10 @@ function QueryBuilder({
 
   // validate filter value on every change
   useEffect(() => {
+    if (!labelValueTypesMap.size) {
+      return;
+    }
+
     const currentInputKind =
       labelValueTypesMap.get(currentFilterTerm)?.inputKind;
     const isValid =
@@ -227,6 +238,10 @@ function QueryBuilder({
 
   // set appropriate filter operators
   useEffect(() => {
+    if (!labelValueTypesMap.size) {
+      return;
+    }
+
     const currentInputKind =
       labelValueTypesMap.get(currentFilterTerm)?.inputKind;
     const filterOperatorData =
@@ -246,8 +261,67 @@ function QueryBuilder({
     });
   }, [currentFilterTerm, currentFilterValue, labelValueTypesMap]);
 
+  // prevents stale state update whenever filter term changes
+  useEffect(() => {
+    if (!labelValueTypesMap.size) {
+      return;
+    }
+
+    const labelValueObject: QueryValueTypes | undefined =
+      labelValueTypesMap.get(currentFilterTerm);
+
+    if (!labelValueObject) {
+      return;
+    }
+
+    const { inputKind, selectData, booleanData } = labelValueObject;
+    switch (inputKind) {
+      case 'selectInput': {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setCurrentFilterValue,
+          payload: selectData?.[0] ?? '',
+        });
+        break;
+      }
+      case 'booleanInput': {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setCurrentFilterValue,
+          payload: `${booleanData?.[0] ?? false}`,
+        });
+        break;
+      }
+      case 'dateInput': {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setCurrentFilterValue,
+          payload: new Date().toISOString().slice(0, 10),
+        });
+        break;
+      }
+      case 'timeInput': {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setCurrentFilterValue,
+          payload: '00:00',
+        });
+        break;
+      }
+      case 'numberInput': {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setCurrentFilterValue,
+          payload: '0.00',
+        });
+        break;
+      }
+      default:
+        break;
+    }
+  }, [currentFilterTerm, labelValueTypesMap]);
+
   // build query string on every filter, sort, or projection arrays change
   useEffect(() => {
+    if (!labelValueTypesMap.size) {
+      return;
+    }
+
     // build the query
     queryBuilderDispatch({
       type: queryBuilderAction.buildQueryString,
@@ -385,9 +459,9 @@ function QueryBuilder({
 
       const dividerLabel = (
         <Group>
-          <TbLink color={themeColorShade} />
-          <Text>AND</Text>
-          <TbArrowDown color={themeColorShade} />
+          <TbLink color={grayColorShade} size={16} />
+          <Text color={grayColorShade}>AND</Text>
+          <TbArrowDown color={grayColorShade} size={16} />
         </Group>
       );
 
@@ -739,9 +813,14 @@ function QueryBuilder({
 
       const dividerLabel = (
         <Group>
-          <RxLinkBreak2 color={grayColorShade} />
-          <Text>{ORDINAL_TERMS[index]} tiebreaker</Text>
-          <TbArrowDown color={grayColorShade} />
+          <RxLinkBreak2 color={grayColorShade} size={16} />
+          <Text color={grayColorShade}>
+            {`${ORDINAL_TERMS[index].charAt(0).toUpperCase()}${ORDINAL_TERMS[
+              index
+            ].slice(1)}`}{' '}
+            tiebreaker
+          </Text>
+          <TbArrowDown color={grayColorShade} size={16} />
         </Group>
       );
 
@@ -1053,9 +1132,9 @@ function QueryBuilder({
       ? 375 - 20
       : width < 768 // for iPhone 6/7/8
       ? width - 40
-      : // at 768vw the navbar appears at width of 200px
+      : // at 768vw the navbar appears at width of 225px
       width < 1024
-      ? (width - 200) * 0.85
+      ? (width - 225) * 0.85
       : // at >= 1200vw the navbar width is 300px
       width < 1200
       ? (width - 300) * 0.85

@@ -1406,8 +1406,10 @@ function returnThemeColors({
   const { colorScheme, primaryColor, primaryShade } = themeObject;
   const { dark, gray, red, green, cyan } = colorsSwatches;
 
-  const lightSchemeGray = gray[2];
-  const darkSchemeGray = gray[8];
+  const lightSchemeGray = gray[8];
+  const darkSchemeGray = gray[5];
+  const textColor = colorScheme === 'light' ? lightSchemeGray : darkSchemeGray;
+  const iconGray = textColor;
 
   const colorShade =
     colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
@@ -1428,17 +1430,17 @@ function returnThemeColors({
     darkSchemeGray,
     grayColorShade,
     greenColorShade,
+    iconGray,
     lightSchemeGray,
     redColorShade,
+    textColor,
     themeColorShade,
     themeColorShades,
   };
 
   // app colors
   const borderColor =
-    colorScheme === 'light'
-      ? `1px solid ${lightSchemeGray}`
-      : `1px solid ${darkSchemeGray}`;
+    colorScheme === 'light' ? `1px solid ${gray[2]}` : `1px solid ${gray[8]}`;
   const backgroundColor =
     colorScheme === 'light'
       ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
@@ -1454,15 +1456,10 @@ function returnThemeColors({
   const tableHeadersBgColor = colorScheme === 'light' ? gray[4] : gray[8];
   const headersIconColor = colorScheme === 'light' ? gray[5] : gray[7];
   const headerBorderColor =
-    colorScheme === 'light'
-      ? `2px solid ${lightSchemeGray}`
-      : `2px solid ${gray[7]}`;
+    colorScheme === 'light' ? `2px solid ${gray[2]}` : `2px solid ${gray[7]}`;
   const rowsBorderColor =
-    colorScheme === 'light'
-      ? `1px solid ${lightSchemeGray}`
-      : `1px solid ${darkSchemeGray}`;
-  const textHighlightColor =
-    colorScheme === 'light' ? lightSchemeGray : gray[6];
+    colorScheme === 'light' ? `1px solid ${gray[2]}` : `1px solid ${gray[8]}`;
+  const textHighlightColor = colorScheme === 'light' ? gray[2] : gray[6];
   const tablesThemeColors = {
     tableHeadersBgColor,
     headerBorderColor,
@@ -1472,17 +1469,15 @@ function returnThemeColors({
   };
 
   // directory graph colors
-  const edgeStrokeColor = colorScheme === 'light' ? dark[5] : darkSchemeGray;
+  const edgeStrokeColor = colorScheme === 'light' ? dark[5] : gray[8];
   const nodeBackgroundColor =
     colorScheme === 'light'
       ? // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
         '#f5f5f5'
       : dark[6];
   const nodeBorderColor =
-    colorScheme === 'light'
-      ? `1px solid ${dark[1]}`
-      : `1px solid ${darkSchemeGray}`;
-  const nodeTextColor = colorScheme === 'light' ? darkSchemeGray : gray[5];
+    colorScheme === 'light' ? `1px solid ${dark[1]}` : `1px solid ${gray[8]}`;
+  const nodeTextColor = colorScheme === 'light' ? gray[8] : gray[5];
   const directoryGraphThemeColors = {
     edgeStrokeColor,
     nodeBackgroundColor,

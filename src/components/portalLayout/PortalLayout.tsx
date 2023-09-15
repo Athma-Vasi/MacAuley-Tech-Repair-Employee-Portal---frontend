@@ -75,7 +75,7 @@ function PortalLayout() {
       }
     >
       {displayBreadcrumbs}
-      <ScrollArea styles={() => scrollBarStyle} type="hover" offsetScrollbars>
+      <ScrollArea styles={() => scrollBarStyle} type="scroll" offsetScrollbars>
         <Flex
           direction="column"
           h={width <= 991 ? height - (50 + 50 + 60) : height - (64 + 50 + 60)} //  vw < 991 ?  vh - (header height = 50px + footer height = 60px) : vh - (header height = 64px + footer height = 60px)
