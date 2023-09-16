@@ -1410,6 +1410,7 @@ function returnThemeColors({
   const darkSchemeGray = gray[5];
   const textColor = colorScheme === 'light' ? lightSchemeGray : darkSchemeGray;
   const iconGray = textColor;
+  const chartTextColor = colorScheme === 'light' ? gray[8] : dark[7];
 
   const colorShade =
     colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
@@ -1426,6 +1427,7 @@ function returnThemeColors({
   const cyanColorShade = cyan[colorShade];
 
   const generalColors = {
+    chartTextColor,
     cyanColorShade,
     darkSchemeGray,
     grayColorShade,

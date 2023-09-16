@@ -6,7 +6,6 @@ import {
   Group,
   Image,
   Modal,
-  Pagination,
   Space,
   Spoiler,
   Stack,
@@ -16,57 +15,47 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
-import React, {
-  ChangeEvent,
-  MouseEvent,
-  useEffect,
-  useReducer,
-  useRef,
-} from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { FaRegCommentDots } from 'react-icons/fa';
-
 import {
   TbArrowBigDown,
   TbArrowBigDownFilled,
   TbArrowBigUp,
   TbArrowBigUpFilled,
-  TbCornerUpLeft,
-  TbPhotoOff,
-  TbUpload,
-  TbUser,
-  TbBrandFacebook,
-  TbBrandMastodon,
-  TbBrandWhatsapp,
-  TbFilter,
-  TbTrash,
-  TbStar,
-  TbFlag2Filled,
-  TbFlag2,
-  TbStarOff,
-  TbTrashOff,
   TbArrowDown,
   TbArrowUp,
+  TbBrandMastodon,
+  TbCornerUpLeft,
+  TbFlag2,
+  TbFlag2Filled,
+  TbPhotoOff,
+  TbStar,
+  TbStarOff,
+  TbTrash,
+  TbTrashOff,
+  TbUpload,
 } from 'react-icons/tb';
-
 import {
   TiSocialDribbble,
   TiSocialFlickr,
   TiSocialGithub,
-  TiSocialInstagram,
   TiSocialLinkedin,
 } from 'react-icons/ti';
+import { VscQuote } from 'react-icons/vsc';
+import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../constants/data';
 import { GRAMMAR_TEXTAREA_INPUT_REGEX } from '../../constants/regex';
+import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
 import {
-  returnAccessibleButtonElements,
   AccessibleErrorValidTextElements,
+  returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
 } from '../../jsxCreators';
-import { ResourceRequestServerResponse } from '../../types';
 import {
-  addFieldsToObject,
   formatDate,
   logState,
   returnGrammarValidationText,
@@ -74,11 +63,17 @@ import {
   urlBuilder,
 } from '../../utils';
 import { CustomNotification } from '../customNotification';
+import { PageBuilder } from '../pageBuilder';
+import { QueryBuilder } from '../queryBuilder';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
 } from '../wrappers';
+import {
+  COMMENT_LIMIT_PER_PAGE_SELECT_DATA,
+  COMMENT_QUERY_DATA,
+} from './constants';
 import { commentAction, commentReducer, initialCommentState } from './state';
 import {
   CommentDocument,
@@ -86,17 +81,6 @@ import {
   CreatedCommentsSectionObject,
   GetCommentsServerResponse,
 } from './types';
-import { PageBuilder } from '../pageBuilder';
-import {
-  COMMENT_LIMIT_PER_PAGE_SELECT_DATA,
-  COMMENT_QUERY_DATA,
-} from './constants';
-import { QueryBuilder } from '../queryBuilder';
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useNavigate } from 'react-router-dom';
-import { useErrorBoundary } from 'react-error-boundary';
-import { VscQuote } from 'react-icons/vsc';
-import { globalAction } from '../../context/globalProvider/state';
 
 function Comment({
   parentResourceId = '',
@@ -1542,10 +1526,10 @@ function Comment({
       ? width - 40
       : // at 768vw the navbar appears at width of 225px
       width < 1024
-      ? (width - 225) * 0.85
+      ? (width - 225) * 0.8
       : // at >= 1200vw the navbar width is 300px
       width < 1200
-      ? (width - 300) * 0.85
+      ? (width - 225) * 0.8
       : 900 - 40;
 
   const displayCommentsSection = commentsMap.size ? (

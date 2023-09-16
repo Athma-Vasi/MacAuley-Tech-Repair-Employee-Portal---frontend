@@ -1,15 +1,15 @@
-import { ReactNode } from 'react';
+import { Card, Group, Image, Stack, Text, Title } from '@mantine/core';
+
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
 import { returnThemeColors } from '../../utils';
-import { Stack, Card, Title, Text, Image, Flex, Group } from '@mantine/core';
 
 type DisplayResourceHeaderProps = {
   imageSrc: string;
   imageAlt: string;
   resourceTitle: string;
   resourceDescription: string;
-  //   resourceTopics: [ReactNode, string][];
+  componentWidth?: number;
 };
 
 function DisplayResourceHeader({
@@ -17,36 +17,44 @@ function DisplayResourceHeader({
   imageSrc,
   resourceTitle,
   resourceDescription,
+  componentWidth,
 }: //   resourceTopics,
 DisplayResourceHeaderProps) {
   const {
-    globalState: { width, padding, themeObject, rowGap },
+    globalState: { width, padding, themeObject },
   } = useGlobalState();
 
   const {
-    generalColors: { darkSchemeGray },
-    appThemeColors: { backgroundColor, borderColor },
+    appThemeColors: { backgroundColor },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const imageWidth =
-    width < 480 // for iPhone 5/SE
-      ? 375 - 20
-      : width < 768 // for iPhone 6/7/8
-      ? width * 0.8
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
-      ? (width - 225) * 0.85
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
-      ? (width - 300) * 0.85
-      : 900 - 40;
-  const imageHeight = imageWidth * 0.75;
+  const imageWidth = componentWidth
+    ? componentWidth
+    : width < 480 // for iPhone 5/SE
+    ? 375 - 20
+    : width < 768 // for iPhone 6/7/8
+    ? width * 0.8
+    : // at 768vw the navbar appears at width of 225px
+    width < 1024
+    ? (width - 225) * 0.8
+    : // at >= 1200vw the navbar width is 300px
+    width < 1200
+    ? (width - 225) * 0.8
+    : 900 - 40;
+  // width < 768
+  //   ? width
+  //   : width < 1024
+  //   ? width - 225 - 11
+  //   : width < 1920
+  //   ? width - 300 - 11
+  //   : 1920 - 300 - 11;
+  const imageHeight = imageWidth * 0.68;
 
   const bannerImage = (
-    <Stack w={imageWidth} h={imageHeight} style={{ outline: '1px solid teal' }}>
+    <Stack w={imageWidth} h={imageHeight}>
       <Card withBorder radius="md">
         <Card.Section>
           <Image
@@ -64,14 +72,7 @@ DisplayResourceHeaderProps) {
             position: 'absolute',
             width: '100%',
             height: '100%',
-            top:
-              width < 480
-                ? '50%'
-                : width < 768
-                ? '75%'
-                : width < 1024
-                ? '75%'
-                : '80%',
+            top: width < 480 ? '62%' : width < 1024 ? '68%' : '73%',
             left: '0%',
             zIndex: 1,
             backgroundColor: 'rgba(0,0,0,0.7)',
@@ -122,9 +123,8 @@ DisplayResourceHeaderProps) {
   //   );
 
   return (
-    <Group w="100%" position="center" bg={backgroundColor}>
+    <Group w="100%" position="center" py={padding} bg={backgroundColor}>
       {bannerImage}
-      {/* {displayResourceKinds} */}
     </Group>
   );
 }

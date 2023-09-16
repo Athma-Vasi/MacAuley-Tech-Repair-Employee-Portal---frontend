@@ -1,7 +1,11 @@
 import { Card, Flex, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { Fragment, useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { TbChartPie3, TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../../constants/data';
 import { globalAction } from '../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
@@ -23,6 +27,7 @@ import {
 } from '../../../utils';
 import { CustomNotification } from '../../customNotification';
 import { CustomRating } from '../../customRating/CustomRating';
+import DisplayResourceHeader from '../../displayResourceHeader/DisplayResourceHeader';
 import { DisplayStatistics } from '../../displayStatistics';
 import { PageBuilder } from '../../pageBuilder';
 import {
@@ -38,10 +43,6 @@ import {
   displaySurveysReducer,
   initialDisplaySurveysState,
 } from './state';
-import { InvalidTokenError } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
-import { useErrorBoundary } from 'react-error-boundary';
-import { COLORS_SWATCHES } from '../../../constants/data';
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -84,7 +85,7 @@ function DisplaySurveys() {
   } = useAuth();
 
   const {
-    globalState: { padding, rowGap, userDocument, themeObject },
+    globalState: { padding, rowGap, userDocument, themeObject, width },
     globalDispatch,
   } = useGlobalState();
 
@@ -921,9 +922,38 @@ function DisplaySurveys() {
 
   /** ------------- begin surveys display ------------- */
 
+  const componentWidth =
+    width < 480 // for iPhone 5/SE
+      ? 375 - 20
+      : width < 768 // for iPhone 6/7/8
+      ? width * 0.9
+      : // at 768vw the navbar appears at width of 225px
+      width < 1024
+      ? (width - 225) * 0.9
+      : // at >= 1200vw the navbar width is 300px
+      width < 1200
+      ? (width - 300) * 0.9
+      : 940;
+
+  const imageSrc =
+    'https://images.pexels.com/photos/3183153/pexels-photo-3183153.jpeg?auto=compress';
+  const imageAlt = 'Colleagues looking at survey results';
+  const resourceDescription =
+    'Help improve our company by completing the following surveys.';
+  const resourceTitle = 'Surveys';
+
+  const displayResourceHeader = (
+    <DisplayResourceHeader
+      imageAlt={imageAlt}
+      imageSrc={imageSrc}
+      resourceDescription={resourceDescription}
+      resourceTitle={resourceTitle}
+      componentWidth={componentWidth}
+    />
+  );
+
   const {
     appThemeColors: { backgroundColor, borderColor },
-    scrollBarStyle,
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -950,7 +980,7 @@ function DisplaySurveys() {
 
   const displayTotalAndPageNavigation = (
     <Flex
-      w="100%"
+      w={componentWidth}
       align="center"
       justify="space-between"
       p={padding}
@@ -965,15 +995,18 @@ function DisplaySurveys() {
     </Flex>
   );
 
-  const displayStatistics = <DisplayStatistics surveys={completedSurveys} />;
+  const displayStatistics = (
+    <Group w={componentWidth}>
+      <DisplayStatistics surveys={completedSurveys} />
+    </Group>
+  );
 
   const displayUncompletedSurveys = (
     <Stack
       bg={backgroundColor}
-      style={{
-        borderBottom: borderColor,
-      }}
+      style={{ borderBottom: borderColor }}
       p={padding}
+      w={componentWidth}
     >
       <Title order={3}>Uncompleted surveys</Title>
       <Flex
@@ -993,10 +1026,12 @@ function DisplaySurveys() {
   const displaySurveyComponent = (
     <Stack
       w="100%"
+      align="center"
       p={padding}
       bg={backgroundColor}
       style={{ borderRadius: '4px' }}
     >
+      {displayResourceHeader}
       {displayTotalAndPageNavigation}
       {displayStatistics}
       {displayUncompletedSurveys}

@@ -1,5 +1,8 @@
+import { Flex } from '@mantine/core';
+
 import { QueryResponseData } from '../../types';
 import { DisplayResource } from '../displayResource';
+import DisplayResourceHeader from '../displayResourceHeader/DisplayResourceHeader';
 import {
   ANONYMOUS_REQUEST_QUERY_DATA,
   ANONYMOUS_REQUEST_ROUTES,
@@ -7,7 +10,23 @@ import {
 import { AnonymousRequestDocument } from './create/types';
 
 function DisplayAnonymousRequests() {
-  return (
+  const imageSrc =
+    'https://images.pexels.com/photos/6457515/pexels-photo-6457515.jpeg?auto=compress';
+  const imageAlt =
+    'Multiethnic cheerful colleagues talking about job and working with documents';
+  const resourceDescription = 'We are here to help';
+  const resourceTitle = 'Anonymous Requests';
+
+  const displayResourceHeader = (
+    <DisplayResourceHeader
+      imageAlt={imageAlt}
+      imageSrc={imageSrc}
+      resourceDescription={resourceDescription}
+      resourceTitle={resourceTitle}
+    />
+  );
+
+  const displayResource = (
     <DisplayResource<QueryResponseData<AnonymousRequestDocument>[]>
       componentQueryData={ANONYMOUS_REQUEST_QUERY_DATA}
       createResourcePath="/home/general/anonymous-request/create"
@@ -15,6 +34,15 @@ function DisplayAnonymousRequests() {
       requestBodyHeading="anonymousRequest"
     />
   );
+
+  const displayAnonymousRequestComponent = (
+    <Flex direction="column" w="100%">
+      {displayResourceHeader}
+      {displayResource}
+    </Flex>
+  );
+
+  return displayAnonymousRequestComponent;
 }
 
 export default DisplayAnonymousRequests;

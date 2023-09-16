@@ -78,10 +78,10 @@ function CustomNotification({
       ? width - 40
       : // at 768vw the navbar appears at width of 225px
       width < 1024
-      ? (width - 225) * 0.85
+      ? (width - 225) * 0.8
       : // at >= 1200vw the navbar width is 300px
       width < 1200
-      ? (width - 300) * 0.85
+      ? (width - 225) * 0.8
       : 900 - 40;
 
   let notificationComponent = null;

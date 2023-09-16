@@ -19,7 +19,7 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
-import { logState } from '../../../utils';
+import { logState, returnThemeColors } from '../../../utils';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
@@ -56,9 +56,29 @@ import { COLORS_SWATCHES } from '../../../constants/data';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
+  const {
+    globalState: { padding, width, themeObject },
+  } = useGlobalState();
+
+  const {
+    tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
+    generalColors: { chartTextColor, textColor },
+    scrollBarStyle,
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  // ensures appropriate colors based on color scheme
+  const modifiedInitialResponsivePieChartState = {
+    ...initialResponsivePieChartState,
+    arcLabelsTextColor: chartTextColor,
+    arcLinkLabelsTextColor: textColor,
+  };
+
   const [responsivePieChartState, responsivePieChartDispatch] = useReducer(
     responsivePieChartReducer,
-    initialResponsivePieChartState
+    modifiedInitialResponsivePieChartState
   );
   const {
     startAngle, // -180 - 360 default: 0 step: 1
@@ -116,13 +136,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     symbolShape, // default: circle
   } = responsivePieChartState;
 
-  const {
-    globalState: {
-      padding,
-      width,
-      themeObject: { colorScheme: appColorScheme, primaryColor, primaryShade },
-    },
-  } = useGlobalState();
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -1308,47 +1321,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- end input creation ------------- */
 
   /** ------------- begin display ------------- */
-  const colorShade =
-    appColorScheme === 'light' ? primaryShade.light : primaryShade.dark;
-  const themeColor = Object.entries(COLORS_SWATCHES).find(
-    ([color, _shades]) => color === primaryColor
-  )?.[1];
-  const scrollBarColor = themeColor ? themeColor[colorShade] : gray[5];
-  const sectionHeadersBgColor = appColorScheme === 'light' ? gray[4] : gray[8];
 
-  const headerBorderColor =
-    appColorScheme === 'light'
-      ? `2px solid ${gray[3]}`
-      : `2px solid ${gray[7]}`;
-  const rowsBorderColor =
-    appColorScheme === 'light'
-      ? `1px solid ${gray[3]}`
-      : `1px solid ${gray[7]}`;
-  const backgroundColor =
-    appColorScheme === 'light'
-      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-      : dark[6];
-
-  const scrollBarStyle = {
-    scrollbar: {
-      '&, &:hover': {
-        background: appColorScheme === 'dark' ? dark[6] : gray[0],
-      },
-
-      '&[data-orientation="vertical"] .mantine-ScrollArea-thumb': {
-        backgroundColor: scrollBarColor,
-      },
-
-      '&[data-orientation="horizontal"] .mantine-ScrollArea-thumb': {
-        backgroundColor: scrollBarColor,
-      },
-    },
-
-    corner: {
-      opacity: 1,
-      background: appColorScheme === 'dark' ? dark[6] : gray[0],
-    },
-  };
   /** base */
 
   /**

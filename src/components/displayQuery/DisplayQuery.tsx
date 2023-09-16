@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   SegmentedControl,
+  Space,
   Stack,
   Text,
   Title,
@@ -14,7 +15,13 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
-import { TbNewSection, TbTrash, TbUpload } from 'react-icons/tb';
+import {
+  TbNewSection,
+  TbQuestionMark,
+  TbTrash,
+  TbUpload,
+} from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
@@ -45,7 +52,7 @@ import {
   initialDisplayQueryState,
 } from './state';
 import { DisplayQueryProps } from './types';
-import { useNavigate } from 'react-router-dom';
+import { GROUP_BY_HELP_MODAL_CONTENT } from './utils';
 
 function DisplayQuery<Doc>({
   componentQueryData,
@@ -89,6 +96,10 @@ function DisplayQuery<Doc>({
   const [
     openedDisplayFileUploads,
     { open: openFileUploads, close: closeFileUploads },
+  ] = useDisclosure(false);
+  const [
+    openedGroupByHelpModal,
+    { open: openGroupByHelpModal, close: closeGroupByHelpModal },
   ] = useDisclosure(false);
 
   const navigate = useNavigate();
@@ -222,6 +233,26 @@ function DisplayQuery<Doc>({
 
   /** ------------- input creator info objects ------------- */
 
+  const [createdGroupByButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: <TbQuestionMark />,
+      semanticDescription: 'Open group by help modal',
+      semanticName: 'group by help',
+      buttonOnClick: () => {
+        openGroupByHelpModal();
+      },
+    },
+  ]);
+
+  const groupByRadioLabel = (
+    <Group spacing={padding} py="xs">
+      <Title order={5}>Group by</Title>
+      <Tooltip label="Group By help">
+        <Group>{createdGroupByButton}</Group>
+      </Tooltip>
+    </Group>
+  );
+
   const groupByRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo = {
     dataObjectArray: groupByRadioData,
     description: 'Group by fields with constrained values',
@@ -233,7 +264,7 @@ function DisplayQuery<Doc>({
     },
     semanticName: 'group by',
     value: groupBySelection,
-    label: <Title order={5}>Group by</Title>,
+    label: groupByRadioLabel,
   };
 
   const segmentedControl = (
@@ -337,10 +368,10 @@ function DisplayQuery<Doc>({
       ? width - 40
       : // at 768vw the navbar appears at width of 225px
       width < 1024
-      ? (width - 225) * 0.85
+      ? (width - 225) * 0.8
       : // at >= 1200vw the navbar width is 300px
       width < 1200
-      ? (width - 300) * 0.85
+      ? (width - 225) * 0.8
       : 900 - 40;
 
   const {
@@ -906,6 +937,18 @@ function DisplayQuery<Doc>({
     </Tooltip>
   );
 
+  const groupByHelpModal = (
+    <Modal
+      opened={openedGroupByHelpModal}
+      onClose={closeGroupByHelpModal}
+      title={<Title order={4}>Group By help</Title>}
+      size={width <= 1024 ? 'auto' : 1024 - 200}
+      centered
+    >
+      {GROUP_BY_HELP_MODAL_CONTENT}
+    </Modal>
+  );
+
   return (
     <Flex
       direction="column"
@@ -917,13 +960,17 @@ function DisplayQuery<Doc>({
       }}
       w="100%"
     >
+      {displayAcknowledgementModal}
+      {groupByHelpModal}
+      {displayFileUploadsModal}
+
       {displayGroupByRadioGroup}
       {width >= 1024 ? displayTableViewSegmentControl : null}
-      {displayAcknowledgementModal}
-      {displayFileUploadsModal}
-      <Flex align="center" justify="space-between" w="100%">
+      <Space h="md" />
+      <Space h="md" />
+      <Flex align="center" justify="space-between" w="100%" py={padding}>
         <Group spacing={rowGap}>
-          <Title order={3}>{parentComponentName}s</Title>
+          <Title order={2}>{parentComponentName}s</Title>
           {displayCreateResourceButton}
         </Group>
         <Text>Total documents: {totalDocuments}</Text>

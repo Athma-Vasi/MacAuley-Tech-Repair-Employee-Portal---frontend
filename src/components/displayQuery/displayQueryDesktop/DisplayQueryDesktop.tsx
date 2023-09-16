@@ -206,7 +206,7 @@ function DisplayQueryDesktop<Doc>({
 
   const displayTable = (
     <ScrollArea styles={() => scrollBarStyle} type="auto" offsetScrollbars>
-      <Group w={width <= 991 ? width - 225 : width - 300}>
+      <Group w={width <= 991 ? width - 225 - 44 : width - 300 - 44}>
         <Table captionSide="top" striped highlightOnHover>
           <thead
             style={{
@@ -835,7 +835,7 @@ function DisplayQueryDesktop<Doc>({
   );
 
   const displayRestOfGroupedByData = (
-    <Accordion w={width < 1200 ? (width - 300) * 0.85 : 900 - 40}>
+    <Accordion w={width < 1200 ? (width - 225) * 0.8 : 900 - 40}>
       <Accordion.Item
         value={`${
           groupedByQueryResponseData.size === 0
@@ -943,11 +943,11 @@ function DisplayQueryDesktop<Doc>({
   }, [displayQueryDesktopState]);
 
   return (
-    <Stack w="100%" style={{ ...style }}>
+    <Stack w="100%" style={{ ...style }} py={padding}>
       {displayUpdateRequestStatusModal}
       {displayEditRepairNoteModal}
       {displayTable}
-      {displayRestOfGroupedByData}
+      <Group position="center">{displayRestOfGroupedByData}</Group>
     </Stack>
   );
 }

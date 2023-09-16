@@ -1,21 +1,16 @@
 import { Flex } from '@mantine/core';
+
 import { DisplayResource } from '../displayResource';
+import DisplayResourceHeader from '../displayResourceHeader/DisplayResourceHeader';
 import { BENEFIT_QUERY_DATA, BENEFIT_RESOURCE_PATHS } from './constants';
 import { BenefitsDocument } from './create/types';
-import DisplayResourceHeader, {
-  DisplayResourceHeaderProps,
-} from '../displayResourceHeader/DisplayResourceHeader';
 
 function DisplayBenefits() {
-  const benefitsHeaderInput: DisplayResourceHeaderProps = {
-    imageSrc:
-      'https://images.pexels.com/photos/13019868/pexels-photo-13019868.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-    imageAlt: 'Benefits Image',
-    resourceDescription: 'Modify your company benefits here',
-    resourceTitle: 'Benefits',
-  };
-  const { imageAlt, imageSrc, resourceDescription, resourceTitle } =
-    benefitsHeaderInput;
+  const imageSrc =
+    'https://images.pexels.com/photos/3856033/pexels-photo-3856033.jpeg?auto=compress';
+  const imageAlt = 'Benefits Image';
+  const resourceDescription = 'Explore and Customize Your Benefits';
+  const resourceTitle = 'Benefits';
 
   const displayResourceHeader = (
     <DisplayResourceHeader

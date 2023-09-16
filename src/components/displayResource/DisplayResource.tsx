@@ -1,7 +1,13 @@
 import { Flex, Group, Title } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
+import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
+import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
+import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 import {
   FileUploadDocument,
   GetQueriedResourceRequestServerResponse,
@@ -15,21 +21,15 @@ import {
   splitCamelCase,
   urlBuilder,
 } from '../../utils';
+import { CustomNotification } from '../customNotification';
 import { DisplayFileUploads } from '../displayFileUploads';
 import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
-import { displayResourceAction, displayResourceReducer } from './state';
-import { DisplayResourceProps, DisplayResourceState } from './types';
-import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
-import { InvalidTokenError } from 'jwt-decode';
-import { useErrorBoundary } from 'react-error-boundary';
-import { useNavigate } from 'react-router-dom';
-import { globalAction } from '../../context/globalProvider/state';
-import { CustomNotification } from '../customNotification';
 import { AccessibleSelectInputCreatorInfo } from '../wrappers';
 import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from './constants';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
+import { displayResourceAction, displayResourceReducer } from './state';
+import { DisplayResourceProps, DisplayResourceState } from './types';
 
 function DisplayResource<Doc>({
   style = {},
@@ -838,28 +838,11 @@ function DisplayResource<Doc>({
       ? width - 40
       : // at 768vw the navbar appears at width of 225px
       width < 1024
-      ? (width - 225) * 0.85
+      ? (width - 225) * 0.8
       : // at >= 1200vw the navbar width is 300px
       width < 1200
-      ? (width - 300) * 0.85
+      ? (width - 225) * 0.8
       : 900 - 40;
-
-  /**
- * const displayTableViewSegmentControl = (
-    <Group
-      w={sectionWidth}
-      style={{
-        border: borderColor,
-        borderRadius: 4,
-      }}
-      spacing={rowGap}
-      p={padding}
-    >
-      <Title order={5}>Table view</Title>
-      {segmentedControl}
-    </Group>
-  );
- */
 
   const {
     appThemeColors: { backgroundColor, borderColor },

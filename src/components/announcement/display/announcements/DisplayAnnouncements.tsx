@@ -1,23 +1,22 @@
-import { Card, Flex, Group, Image, Text, UnstyledButton } from '@mantine/core';
+import { Card, Flex, Image, Text, UnstyledButton } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
+import { useNavigate } from 'react-router-dom';
+
+import { COLORS_SWATCHES } from '../../../../constants/data';
+import { globalAction } from '../../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../../hooks';
+import { GetQueriedResourceRequestServerResponse } from '../../../../types';
+import { logState, returnThemeColors, urlBuilder } from '../../../../utils';
+import { CustomNotification } from '../../../customNotification';
+import DisplayResourceHeader from '../../../displayResourceHeader/DisplayResourceHeader';
+import { AnnouncementDocument } from '../../create/types';
 import {
   displayAnnouncementsAction,
   displayAnnouncementsReducer,
   initialDisplayAnnouncementsState,
 } from './state';
-import { logState, returnThemeColors, urlBuilder } from '../../../../utils';
-import { useAuth, useGlobalState } from '../../../../hooks';
-import {
-  GetQueriedResourceRequestServerResponse,
-  ResourceRequestServerResponse,
-} from '../../../../types';
-import { AnnouncementDocument } from '../../create/types';
-import { InvalidTokenError } from 'jwt-decode';
-import { CustomNotification } from '../../../customNotification';
-import { useNavigate } from 'react-router-dom';
-import { globalAction } from '../../../../context/globalProvider/state';
-import { useErrorBoundary } from 'react-error-boundary';
-import { COLORS_SWATCHES } from '../../../../constants/data';
 
 function DisplayAnnouncements() {
   /** ------------- begin hooks ------------- */
@@ -233,7 +232,7 @@ function DisplayAnnouncements() {
                 fit="fill"
                 style={{
                   position: 'relative',
-                  opacity: 0.4,
+                  // opacity: 0.4,
                   width: '100%',
                   height: '100%',
                 }}
@@ -244,6 +243,7 @@ function DisplayAnnouncements() {
 
             <Text
               size="md"
+              color="white"
               p={padding}
               weight={700}
               style={{
@@ -268,11 +268,27 @@ function DisplayAnnouncements() {
   /** ------------- end input creators ------------- */
 
   /** ------------- begin input display ------------- */
+
+  const imageSrc =
+    'https://images.pexels.com/photos/3761509/pexels-photo-3761509.jpeg?auto=compress';
+  const imageAlt = 'Cheerful young woman holding a megaphone';
+  const resourceDescription = 'Explore MacAuley Company Announcements';
+  const resourceTitle = 'Announcements';
+
+  const displayAnnouncementHeader = (
+    <DisplayResourceHeader
+      imageAlt={imageAlt}
+      imageSrc={imageSrc}
+      resourceDescription={resourceDescription}
+      resourceTitle={resourceTitle}
+    />
+  );
+
   const displayAnnouncementCards = (
     <Flex
-      align="center"
+      align="flex-start"
       bg={backgroundColor}
-      justify="flex-start"
+      justify="center"
       w="100%"
       wrap="wrap"
       rowGap={rowGap}
@@ -284,9 +300,16 @@ function DisplayAnnouncements() {
     </Flex>
   );
 
+  const displayAnnouncementsComponent = (
+    <Flex direction="column" w="100%">
+      {displayAnnouncementHeader}
+      {displayAnnouncementCards}
+    </Flex>
+  );
+
   /** ------------- end input display ------------- */
 
-  return displayAnnouncementCards;
+  return displayAnnouncementsComponent;
 }
 
 export default DisplayAnnouncements;
