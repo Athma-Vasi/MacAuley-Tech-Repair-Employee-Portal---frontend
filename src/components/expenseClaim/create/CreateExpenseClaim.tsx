@@ -847,22 +847,22 @@ function CreateExpenseClaim() {
       {
         inputName: 'Expense Claim Amount',
         inputValue: expenseClaimAmount,
-        isInputValueValid: true,
+        isInputValueValid: isValidExpenseClaimAmount,
       },
       {
         inputName: 'Expense Claim Date',
         inputValue: expenseClaimDate,
-        isInputValueValid: true,
+        isInputValueValid: isValidExpenseClaimDate,
       },
       {
         inputName: 'Expense Claim Description',
         inputValue: expenseClaimDescription,
-        isInputValueValid: true,
+        isInputValueValid: isValidExpenseClaimDescription,
       },
       {
         inputName: 'Additional Comments',
         inputValue: additionalComments,
-        isInputValueValid: true,
+        isInputValueValid: isValidExpenseClaimDescription,
       },
     ],
     'Upload Receipts': [

@@ -32,7 +32,6 @@ import {
   returnThemeColors,
 } from '../../utils';
 import { CustomNotification } from '../customNotification';
-import { TextWrapper } from '../wrappers';
 import {
   displayOrientationLabel,
   IMG_ORIENTATION_SLIDER_DATA,
@@ -573,6 +572,7 @@ function ImageUpload({
 
       const {
         appThemeColors: { borderColor, redBorderColor },
+        generalColors: { redColorShade, textColor },
       } = returnThemeColors({
         themeObject,
         colorsSwatches: COLORS_SWATCHES,
@@ -589,8 +589,8 @@ function ImageUpload({
             borderBottom: borderColor,
           }}
         >
-          <TextWrapper creatorInfoObj={{}}>Name: </TextWrapper>
-          <TextWrapper creatorInfoObj={{}}>
+          <Text>Name: </Text>
+          <Text>
             <Tooltip label={images[index].name}>
               <Group>
                 {images[index].name.length > 17
@@ -598,7 +598,7 @@ function ImageUpload({
                   : images[index].name}
               </Group>
             </Tooltip>
-          </TextWrapper>
+          </Text>
         </Flex>
       );
 
@@ -608,16 +608,12 @@ function ImageUpload({
           justify="space-between"
           wrap="wrap"
           w="100%"
-          style={{
-            borderBottom: areValidImageSizes[index]
-              ? borderColor
-              : redBorderColor,
-          }}
+          style={{ borderBottom: borderColor }}
         >
-          <TextWrapper creatorInfoObj={{}}>Size: </TextWrapper>
-          <TextWrapper creatorInfoObj={{}}>
-            {(imagePreviews[index].size / 1_000).toFixed(2)} KB
-          </TextWrapper>
+          <Text color={areValidImageSizes[index] ? textColor : redColorShade}>
+            Size:{' '}
+          </Text>
+          <Text>{(imagePreviews[index].size / 1_000).toFixed(2)} KB</Text>
         </Flex>
       );
 
@@ -627,16 +623,12 @@ function ImageUpload({
           justify="space-between"
           wrap="wrap"
           w="100%"
-          style={{
-            borderBottom: areValidImageKinds[index]
-              ? borderColor
-              : redBorderColor,
-          }}
+          style={{ borderBottom: borderColor }}
         >
-          <TextWrapper creatorInfoObj={{}}>Kind: </TextWrapper>
-          <TextWrapper creatorInfoObj={{}}>
-            {images[index].type.split('/')[0]}
-          </TextWrapper>
+          <Text color={areValidImageKinds[index] ? textColor : redColorShade}>
+            Kind:{' '}
+          </Text>
+          <Text>{images[index].type.split('/')[0]}</Text>
         </Flex>
       );
 
@@ -646,16 +638,12 @@ function ImageUpload({
           justify="space-between"
           wrap="wrap"
           w="100%"
-          style={{
-            borderBottom: areValidImageTypes[index]
-              ? borderColor
-              : redBorderColor,
-          }}
+          style={{ borderBottom: borderColor }}
         >
-          <TextWrapper creatorInfoObj={{}}>Type: </TextWrapper>
-          <TextWrapper creatorInfoObj={{}}>
-            {images[index].type.split('/')[1]}
-          </TextWrapper>
+          <Text color={areValidImageTypes[index] ? textColor : redColorShade}>
+            Type:{' '}
+          </Text>
+          <Text>{images[index].type.split('/')[1]}</Text>
         </Flex>
       );
 
@@ -678,7 +666,7 @@ function ImageUpload({
 
       const imageQualitySlider = (
         <Stack w="100%">
-          <TextWrapper creatorInfoObj={{}}>Quality: </TextWrapper>
+          <Text>Quality: </Text>
           <Slider
             aria-label={`Quality slider for ${images[index].name}`}
             min={1}
