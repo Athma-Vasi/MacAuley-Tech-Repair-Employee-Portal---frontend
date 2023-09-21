@@ -43,10 +43,8 @@ const initialQueryBuilderState: QueryBuilderState = {
   // accordion chevron states
   isQueryBuilderOpened: false,
   isFilterOpened: false,
-  isFilterChainOpened: false,
   isSearchOpened: false,
   isSortOpened: false,
-  isSortChainOpened: false,
   isProjectionOpened: false,
 };
 
@@ -88,10 +86,8 @@ const queryBuilderAction: QueryBuilderAction = {
   // accordion chevron states
   toggleIsQueryBuilderOpened: 'toggleIsQueryBuilderOpened',
   toggleIsFilterOpened: 'toggleIsFilterOpened',
-  toggleIsFilterChainOpened: 'toggleIsFilterChainOpened',
   toggleIsSearchOpened: 'toggleIsSearchOpened',
   toggleIsSortOpened: 'toggleIsSortOpened',
-  toggleIsSortChainOpened: 'toggleIsSortChainOpened',
   toggleIsProjectionOpened: 'toggleIsProjectionOpened',
 };
 
@@ -323,18 +319,18 @@ function queryBuilderReducer(
       const selectedFieldsSet = new Set<string>(state.selectedFieldsSet);
       if (calledFrom === 'filter') {
         const filterStatementsQueue = [...state.filterStatementsQueue];
-        filterStatementsQueue.forEach((item) => {
-          selectedFieldsSet.add(item[0]);
+        filterStatementsQueue.forEach(([field, _operator, _value]) => {
+          selectedFieldsSet.add(field);
         });
       } else if (calledFrom === 'search') {
         const searchStatementsQueue = [...state.searchStatementsQueue];
-        searchStatementsQueue.forEach((item) => {
-          selectedFieldsSet.add(item[0]);
+        searchStatementsQueue.forEach(([field, _value]) => {
+          selectedFieldsSet.add(field);
         });
       } else if (calledFrom === 'sort') {
         const sortStatementsQueue = [...state.sortStatementsQueue];
-        sortStatementsQueue.forEach((item) => {
-          selectedFieldsSet.add(item[0]);
+        sortStatementsQueue.forEach(([field, _direction]) => {
+          selectedFieldsSet.add(field);
         });
       }
 
@@ -400,11 +396,6 @@ function queryBuilderReducer(
         ...state,
         isFilterOpened: action.payload ? true : false,
       };
-    case queryBuilderAction.toggleIsFilterChainOpened:
-      return {
-        ...state,
-        isFilterChainOpened: action.payload ? true : false,
-      };
     case queryBuilderAction.toggleIsSearchOpened:
       return {
         ...state,
@@ -414,11 +405,6 @@ function queryBuilderReducer(
       return {
         ...state,
         isSortOpened: action.payload ? true : false,
-      };
-    case queryBuilderAction.toggleIsSortChainOpened:
-      return {
-        ...state,
-        isSortChainOpened: action.payload ? true : false,
       };
     case queryBuilderAction.toggleIsProjectionOpened:
       return {

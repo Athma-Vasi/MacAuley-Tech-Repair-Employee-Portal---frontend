@@ -20,17 +20,15 @@ import {
   TbLink,
   TbPlus,
   TbQuestionMark,
-  TbSearch,
-  TbSearchOff,
   TbTrash,
   TbUpload,
 } from 'react-icons/tb';
+
 import { COLORS_SWATCHES } from '../../constants/data';
 import {
   DATE_FULL_RANGE_REGEX,
   MONEY_REGEX,
   NOTE_TEXT_REGEX,
-  SERIAL_ID_REGEX,
   TIME_RAILWAY_REGEX,
 } from '../../constants/regex';
 import { useGlobalState } from '../../hooks';
@@ -48,11 +46,7 @@ import { CheckboxInputData } from '../../types';
 import {
   logState,
   replaceLastCommaWithAnd,
-  returnDateFullRangeValidationText,
-  returnNumberAmountValidationText,
-  returnSerialIdValidationText,
   returnThemeColors,
-  returnTimeRailwayValidationText,
 } from '../../utils';
 import { TimelineBuilder } from '../timelineBuilder';
 import {
@@ -75,6 +69,7 @@ import {
   queryBuilderReducer,
 } from './state';
 import {
+  ComponentQueryData,
   QueryBuilderProps,
   QueryLabelValueTypesMap,
   QueryValueTypes,
@@ -130,10 +125,8 @@ function QueryBuilder({
     labelValueTypesMap,
     isQueryBuilderOpened,
     isFilterOpened,
-    isFilterChainOpened,
     isSearchOpened,
     isSortOpened,
-    isSortChainOpened,
     isProjectionOpened,
   } = queryBuilderState;
   const {
@@ -166,6 +159,8 @@ function QueryBuilder({
       return;
     }
     // loop through componentQueryData and assign to both filter select data or sort select data, checkbox data, and labelValueTypesMap
+    // used to populate and validate values of subsection inputs inside query builder
+
     const [
       filterSelectData,
       searchSelectData,
@@ -173,24 +168,7 @@ function QueryBuilder({
       projectionCheckboxData,
       valueTypeObjects,
     ] = componentQueryData.reduce(
-      (
-        acc: [
-          string[],
-          string[],
-          string[],
-          CheckboxInputData,
-          QueryLabelValueTypesMap
-        ],
-        {
-          label,
-          value,
-          inputKind,
-          selectData,
-          booleanData,
-          regex = NOTE_TEXT_REGEX, // most permissive regex (superset that allows most characters)
-          regexValidationFn,
-        }
-      ) => {
+      (acc, curr: ComponentQueryData) => {
         const [
           filterSelectDataAcc,
           searchSelectDataAcc,
@@ -198,6 +176,16 @@ function QueryBuilder({
           projectionCheckboxDataAcc,
           valueTypeObjectsAcc,
         ] = acc;
+
+        const {
+          label,
+          value,
+          inputKind,
+          selectData,
+          booleanData,
+          regex = NOTE_TEXT_REGEX, // most permissive regex (superset that allows most characters)
+          regexValidationFn,
+        } = curr;
 
         // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
         if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
@@ -232,7 +220,13 @@ function QueryBuilder({
 
         return acc;
       },
-      [[], [], [], [], new Map()]
+      [
+        [] as string[],
+        [] as string[],
+        [] as string[],
+        [] as CheckboxInputData,
+        new Map<string, QueryValueTypes>(),
+      ]
     );
 
     queryBuilderDispatch({
@@ -263,14 +257,11 @@ function QueryBuilder({
       return;
     }
 
-    const currentInputKind =
-      labelValueTypesMap.get(currentFilterField)?.inputKind;
-    const isValid =
-      currentInputKind === 'dateInput'
-        ? DATE_FULL_RANGE_REGEX.test(currentFilterValue)
-        : currentInputKind === 'timeInput'
-        ? TIME_RAILWAY_REGEX.test(currentFilterValue)
-        : MONEY_REGEX.test(currentFilterValue);
+    // find the corresponding regex of the current filter field
+    const currentFilterFieldRegex =
+      labelValueTypesMap.get(currentFilterField)?.regex ?? NOTE_TEXT_REGEX;
+
+    const isValid = currentFilterFieldRegex.test(currentFilterValue);
 
     queryBuilderDispatch({
       type: queryBuilderAction.setIsCurrentFilterValueValid,

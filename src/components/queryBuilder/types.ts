@@ -16,13 +16,13 @@ type ComponentQueryData = {
   inputKind: QueryInputKind;
   selectData?: string[];
   booleanData?: boolean[];
-  regex?: RegExp;
+  regex?: RegExp; // to validate dateInput, timeInput, numberInput, textInput
   regexValidationFn?: ({
     content,
     contentKind,
     maxLength,
     minLength,
-  }: RegexValidationProps) => string;
+  }: RegexValidationProps) => string; // to return precise error texts for dateInput, timeInput, numberInput, textInput
 };
 
 type QueryValueTypes = {
@@ -89,10 +89,8 @@ type QueryBuilderState = {
   // accordion chevron states
   isQueryBuilderOpened: boolean;
   isFilterOpened: boolean;
-  isFilterChainOpened: boolean;
   isSearchOpened: boolean;
   isSortOpened: boolean;
-  isSortChainOpened: boolean;
   isProjectionOpened: boolean;
 };
 
@@ -134,10 +132,8 @@ type QueryBuilderAction = {
   // accordion chevron states
   toggleIsQueryBuilderOpened: 'toggleIsQueryBuilderOpened';
   toggleIsFilterOpened: 'toggleIsFilterOpened';
-  toggleIsFilterChainOpened: 'toggleIsFilterChainOpened';
   toggleIsSearchOpened: 'toggleIsSearchOpened';
   toggleIsSortOpened: 'toggleIsSortOpened';
-  toggleIsSortChainOpened: 'toggleIsSortChainOpened';
   toggleIsProjectionOpened: 'toggleIsProjectionOpened';
 };
 
@@ -226,20 +222,12 @@ type QueryBuilderDispatch =
       payload: 'Filter' | null;
     }
   | {
-      type: QueryBuilderAction['toggleIsFilterChainOpened'];
-      payload: 'Filter Chain' | null;
-    }
-  | {
       type: QueryBuilderAction['toggleIsSearchOpened'];
       payload: 'Search' | null;
     }
   | {
       type: QueryBuilderAction['toggleIsSortOpened'];
       payload: 'Sort' | null;
-    }
-  | {
-      type: QueryBuilderAction['toggleIsSortChainOpened'];
-      payload: 'Sort Chain' | null;
     }
   | {
       type: QueryBuilderAction['toggleIsProjectionOpened'];

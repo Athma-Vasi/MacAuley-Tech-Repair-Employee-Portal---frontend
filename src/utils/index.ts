@@ -714,7 +714,7 @@ function returnNumberAmountValidationText({
 }: RegexValidationProps): string {
   // /^(?=.*[0-9])\d{1,6}(?:[,.]\d{0,2})?$/
   const numberPresentRegex = /^(?=.*[0-9])/;
-  const numberLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  // const numberLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   // only numbers and either comma or decimal regex
   const onlyNumbersAndCommaOrDecimalRegex = /^[0-9,.]+$/;
 
@@ -732,19 +732,17 @@ function returnNumberAmountValidationText({
       'Must only contain numbers, commas, or decimals.',
     ],
     [
-      (beforeSeparatorAmount?.length > 0 &&
-        beforeSeparatorAmount?.length < 7) ??
-        false,
+      beforeSeparatorAmount?.length < 7 ?? false,
       'Must be between 1 and 6 digits before the separator.',
     ],
     [
       afterSeparatorAmount?.length < 3 ?? false,
       'Must be between 0 and 2 digits after the separator.',
     ],
-    [
-      numberLengthRegex.test(content),
-      'Must be between 1 and 6 digits before the separator, and 0 to 2 digits after the separator.',
-    ],
+    // [
+    //   numberLengthRegex.test(content),
+    //   'Must be between 1 and 6 digits before the separator, and 0 to 2 digits after the separator.',
+    // ],
   ];
 
   const validationText = amountRegexTupleArr
