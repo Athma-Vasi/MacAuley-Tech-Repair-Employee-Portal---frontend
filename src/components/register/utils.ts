@@ -1,5 +1,13 @@
-function returnPasswordRegexValidationText(password: string): string {
-  const passwordLengthRegex = /^(?=.{8,32}$)/;
+import { RegexValidationProps } from '../../utils';
+
+function returnPasswordRegexValidationText({
+  content,
+  contentKind,
+  minLength = 8,
+  maxLength = 32,
+}: RegexValidationProps): string {
+  // const passwordLengthRegex = /^(?=.{8,32}$)/;
+  const passwordLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const passwordUppercaseRegex = /^(?=.*[A-Z])/;
   const passwordLowercaseRegex = /^(?=.*[a-z])/;
   const passwordNumberRegex = /^(?=.*[0-9])/;
@@ -8,23 +16,23 @@ function returnPasswordRegexValidationText(password: string): string {
 
   const passwordRegexTupleArr: [boolean, string][] = [
     [
-      passwordLengthRegex.test(password),
-      'Must be between 8 and 32 characters.',
+      passwordLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
     ],
     [
-      passwordUppercaseRegex.test(password),
+      passwordUppercaseRegex.test(content),
       'Must contain at least one uppercase letter.',
     ],
     [
-      passwordLowercaseRegex.test(password),
+      passwordLowercaseRegex.test(content),
       'Must contain at least one lowercase letter.',
     ],
-    [passwordNumberRegex.test(password), 'Must contain at least one number.'],
+    [passwordNumberRegex.test(content), 'Must contain at least one number.'],
     [
-      passwordSpecialCharacterRegex.test(password),
+      passwordSpecialCharacterRegex.test(content),
       'Must contain at least one special character.',
     ],
-    [passwordSpaceRegex.test(password), 'Cannot contain spaces.'],
+    [passwordSpaceRegex.test(content), 'Cannot contain spaces.'],
   ];
 
   const validationText = passwordRegexTupleArr
@@ -32,7 +40,7 @@ function returnPasswordRegexValidationText(password: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid password. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
 
 export { returnPasswordRegexValidationText };

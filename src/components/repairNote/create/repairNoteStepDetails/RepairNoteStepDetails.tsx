@@ -237,8 +237,8 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       isValidInputText: isValidEstimatedRepairCost,
       isInputTextFocused: isEstimatedRepairCostFocused,
       regexValidationText: returnNumberAmountValidationText({
-        kind: 'estimated repair cost',
-        amount: estimatedRepairCost,
+        content: estimatedRepairCost,
+        contentKind: 'estimated repair cost',
       }),
     });
 
@@ -250,9 +250,10 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     inputText: estimatedCompletionDate,
     isValidInputText: isValidEstimatedCompletionDate,
     isInputTextFocused: isEstimatedCompletionDateFocused,
-    regexValidationText: returnDateNearFutureValidationText(
-      estimatedCompletionDate
-    ),
+    regexValidationText: returnDateNearFutureValidationText({
+      content: estimatedCompletionDate,
+      contentKind: 'estimated completion date',
+    }),
   });
   /** ------------- end accessible error and valid texts ------------- */
 

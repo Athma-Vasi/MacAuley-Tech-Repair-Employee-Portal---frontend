@@ -10,6 +10,7 @@ import { QueryLabelValueTypesMap } from './types';
 type GenerateQueryStringInput = {
   labelValueTypesMap: QueryLabelValueTypesMap;
   filterStatementsQueue: [string, string, string][];
+  searchStatementsQueue: [string, string][];
   sortStatementsQueue: [string, string][];
   projectionArray: string[];
 };
@@ -17,6 +18,7 @@ type GenerateQueryStringInput = {
 function generateQueryString({
   labelValueTypesMap,
   filterStatementsQueue,
+  searchStatementsQueue,
   sortStatementsQueue,
   projectionArray,
 }: GenerateQueryStringInput) {
@@ -36,7 +38,16 @@ function generateQueryString({
 
   let queryString = '?';
 
-  if (filterStatementsQueue.length > 0) {
+  if (searchStatementsQueue.length) {
+    queryString += searchStatementsQueue.reduce((acc, curr) => {
+      const [field, value] = curr;
+      return `${acc}&${labelValueTypesMap.get(field)?.value}[${
+        filterOperatorsMap.get('in') ?? filterOperatorsMap.get('equal to')
+      }]=${value ?? ''}`;
+    }, '');
+  }
+
+  if (filterStatementsQueue.length) {
     queryString += filterStatementsQueue.reduce((acc, curr) => {
       const [field, operator, value] = curr;
       return `${acc}&${labelValueTypesMap.get(field)?.value}[${
@@ -45,7 +56,7 @@ function generateQueryString({
     }, '');
   }
 
-  if (sortStatementsQueue.length > 0) {
+  if (sortStatementsQueue.length) {
     queryString += sortStatementsQueue.reduce((acc, curr) => {
       const [field, value] = curr;
       return `${acc}&sort[${labelValueTypesMap.get(field)?.value}]=${
@@ -54,7 +65,7 @@ function generateQueryString({
     }, '');
   }
 
-  if (projectionArray.length > 0) {
+  if (projectionArray.length) {
     queryString += projectionArray.reduce((acc, curr) => {
       return `${acc}&projection=-${curr}`;
     }, '&projection=-action&projection=-category');
@@ -87,8 +98,8 @@ const QUERY_BUILDER_HELP_MODAL_CONTENT = (
     <Title order={6}>How it works:</Title>
     <Text>
       The query builder allows you to build a query to retrieve documents from a
-      collection. The query can be built using the filter, sort, and projection
-      operations.
+      collection. The query can be built using the filter, search, sort, and
+      projection operations.
     </Text>
 
     <Title order={6}>Filter:</Title>
@@ -97,6 +108,14 @@ const QUERY_BUILDER_HELP_MODAL_CONTENT = (
       specified fields, each representing a specific filtering condition. All of
       the conditions within the chain must be met for a document to be included
       in the query result.
+    </Text>
+
+    <Title order={6}>Search:</Title>
+    <Text>
+      The search operation allows you to search for documents whose fields
+      contain unconstrained values (text / textarea inputs). All of the
+      conditions within the chain must be met for a document to be included in
+      the query result.
     </Text>
 
     <Title order={6}>Sort:</Title>
@@ -115,10 +134,11 @@ const QUERY_BUILDER_HELP_MODAL_CONTENT = (
 
     <Title order={6}>Example:</Title>
     <Text>
-      You can use the query builder to retrieve all documents that have a
-      "Created date" that is greater than or equal to 2021-01-01, sort the
-      documents by "Created date" in descending order, and exclude the "Updated
-      date" field from the query result.
+      You can use the query builder (in one query) to filter all documents that
+      have a "Created date" that is greater than or equal to 2021-01-01, search
+      "Customer name" for "John", sort the documents by "Created date" in
+      descending order, and exclude the "Updated date" field from the query
+      result.
     </Text>
   </Stack>
 );
@@ -152,6 +172,34 @@ const FILTER_HELP_MODAL_CONTENT = (
     <Text>
       'in' Operator is for fields that have a constrained set of values, the
       rest ('equal to', etc.) are for unconstrained set of values.
+    </Text>
+  </Stack>
+);
+
+const SEARCH_HELP_MODAL_CONTENT = (
+  <Stack w="100%">
+    <Title order={6}>How it works:</Title>
+    <Text>
+      The search operation allows you to search for documents whose fields
+      contain unconstrained values (text / textarea inputs).
+    </Text>
+    <Text>
+      You can chain multiple search statements together to create logical search
+      chains. Currently, only "AND" is supported, meaning that all conditions
+      within the chain must be met for a document to be included in the query
+      result.
+    </Text>
+    <Text>
+      The search chain is executed in the order that the statements are added
+      (top to bottom).
+    </Text>
+
+    <Title order={6}>Statement structure</Title>
+    <Text>
+      Each search statement consists of two components: a field and a value. The
+      field represents the specific attribute you want to search within a
+      document, while the value is the term used to perform the search within
+      that field.
     </Text>
   </Stack>
 );
@@ -220,6 +268,7 @@ export {
   generateQueryString,
   PROJECTION_HELP_MODAL_CONTENT,
   QUERY_BUILDER_HELP_MODAL_CONTENT,
+  SEARCH_HELP_MODAL_CONTENT,
   SORT_HELP_MODAL_CONTENT,
 };
 

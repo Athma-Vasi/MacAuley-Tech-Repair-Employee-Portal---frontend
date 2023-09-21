@@ -429,7 +429,10 @@ function CreateAnnouncement() {
       inputText: bannerImageSrc,
       isInputTextFocused: isBannerImageSrcFocused,
       isValidInputText: isValidBannerImageSrc,
-      regexValidationText: returnUrlValidationText(bannerImageSrc),
+      regexValidationText: returnUrlValidationText({
+        content: bannerImageSrc,
+        contentKind: 'banner image src',
+      }),
     });
 
   const [bannerImgAltInputErrorText, bannerImgAltInputValidText] =

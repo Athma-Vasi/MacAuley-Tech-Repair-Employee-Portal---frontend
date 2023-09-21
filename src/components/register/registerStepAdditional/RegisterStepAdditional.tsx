@@ -163,7 +163,10 @@ function RegisterStepAdditional({
     inputText: phoneNumber,
     isInputTextFocused: isPhoneNumberFocused,
     isValidInputText: isValidPhoneNumber,
-    regexValidationText: returnPhoneNumberValidationText(phoneNumber),
+    regexValidationText: returnPhoneNumberValidationText({
+      content: phoneNumber,
+      contentKind: 'phone number',
+    }),
   });
 
   const [startDateInputErrorText, startDateInputValidText] =
@@ -172,7 +175,10 @@ function RegisterStepAdditional({
       inputText: startDate,
       isInputTextFocused: isStartDateFocused,
       isValidInputText: isValidStartDate,
-      regexValidationText: returnDateValidationText(startDate),
+      regexValidationText: returnDateValidationText({
+        content: startDate,
+        contentKind: 'start date',
+      }),
     });
 
   const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {

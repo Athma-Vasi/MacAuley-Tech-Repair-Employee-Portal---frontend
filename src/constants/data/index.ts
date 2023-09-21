@@ -358,7 +358,7 @@ type ColorsSwatches = {
   orange: string[];
 };
 /**
- * Mantine uses open-color in default theme with some additions (dark). Each color has 10 shades. 0 is the lightest shade and 9 is the darkest shade.
+ * Mantine uses open-color in default theme with some additions (dark). Each color has an array of 10 shades. shades[0] is the lightest shade and shades[9] is the darkest shade.
  * @see https://yeun.github.io/open-color/
  */
 const COLORS_SWATCHES: ColorsSwatches = {

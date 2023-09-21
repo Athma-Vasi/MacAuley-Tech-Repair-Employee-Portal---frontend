@@ -100,9 +100,9 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     size = 'sm',
     minLength = 2,
     maxLength = 75,
-    withAsterisk = false,
     ref = null,
     required = false,
+    withAsterisk = required,
     autoComplete = 'off',
     customWidth,
   } = creatorInfoObject;

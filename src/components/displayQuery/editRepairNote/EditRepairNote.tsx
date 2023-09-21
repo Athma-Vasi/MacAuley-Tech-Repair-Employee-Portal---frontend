@@ -19,6 +19,7 @@ import {
 } from '../../../jsxCreators';
 import {
   returnGrammarValidationText,
+  returnNoteTextValidationText,
   returnNumberAmountValidationText,
   returnThemeColors,
   urlBuilder,
@@ -26,6 +27,7 @@ import {
 import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
+  NOTE_TEXT_AREA_REGEX,
 } from '../../../constants/regex';
 import { useAuth, useGlobalState } from '../../../hooks';
 import { COLORS_SWATCHES } from '../../../constants/data';
@@ -253,7 +255,7 @@ function EditRepairNote({
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(repairNotes);
+    const isValid = NOTE_TEXT_AREA_REGEX.test(repairNotes);
 
     editRepairNoteDispatch({
       type: editRepairNoteAction.setIsRepairNotesValid,
@@ -262,7 +264,7 @@ function EditRepairNote({
   }, [repairNotes]);
 
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(testingResults);
+    const isValid = NOTE_TEXT_AREA_REGEX.test(testingResults);
 
     editRepairNoteDispatch({
       type: editRepairNoteAction.setIsTestingResultsValid,
@@ -372,7 +374,7 @@ function EditRepairNote({
       inputText: repairNotes,
       isValidInputText: isRepairNotesValid,
       isInputTextFocused: isRepairNotesFocused,
-      regexValidationText: returnGrammarValidationText({
+      regexValidationText: returnNoteTextValidationText({
         content: repairNotes,
         contentKind: 'repair notes',
         minLength: 2,
@@ -386,7 +388,7 @@ function EditRepairNote({
       inputText: testingResults,
       isValidInputText: isTestingResultsValid,
       isInputTextFocused: isTestingResultsFocused,
-      regexValidationText: returnGrammarValidationText({
+      regexValidationText: returnNoteTextValidationText({
         content: testingResults,
         contentKind: 'testing results',
         minLength: 2,
@@ -401,8 +403,8 @@ function EditRepairNote({
       isValidInputText: isFinalRepairCostValid,
       isInputTextFocused: isFinalRepairCostFocused,
       regexValidationText: returnNumberAmountValidationText({
-        amount: finalRepairCost,
-        kind: 'final repair cost',
+        content: finalRepairCost,
+        contentKind: 'final repair cost',
       }),
     });
 

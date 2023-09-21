@@ -7,57 +7,75 @@ import {
 import { generateQueryString } from './utils';
 
 const initialQueryBuilderState: QueryBuilderState = {
-  currentFilterTerm: 'Created date',
+  // filter
+  filterSelectData: [],
+  currentFilterField: 'Created date',
   currentFilterOperator: 'equal to',
   currentFilterValue: '1970-01-01',
   isCurrentFilterValueValid: false,
   isCurrentFilterValueFocused: false,
   filterOperatorSelectData: QUERY_BUILDER_FILTER_OPERATORS,
-
-  currentSortTerm: 'Created date',
-  currentSortDirection: 'ascending',
-
-  filterSelectData: [],
-  sortSelectData: [],
-  labelValueTypesMap: new Map(),
-
   filterStatementsQueue: [],
+
+  // search
+  searchSelectData: [],
+  currentSearchField: '',
+  currentSearchValue: '',
+  isCurrentSearchValueValid: false,
+  isCurrentSearchValueFocused: false,
+  searchStatementsQueue: [],
+
+  // sort
+  sortSelectData: [],
+  currentSortField: 'Created date',
+  currentSortDirection: 'ascending',
   sortStatementsQueue: [],
 
+  //
   projectionArray: [],
   projectionCheckboxData: [],
   selectedFieldsSet: new Set(),
   projectedFieldsSet: new Set(),
 
+  labelValueTypesMap: new Map(),
   queryString: '?',
 
   // accordion chevron states
   isQueryBuilderOpened: false,
   isFilterOpened: false,
   isFilterChainOpened: false,
+  isSearchOpened: false,
   isSortOpened: false,
   isSortChainOpened: false,
   isProjectionOpened: false,
 };
 
 const queryBuilderAction: QueryBuilderAction = {
-  setCurrentFilterTerm: 'setCurrentFilterTerm',
+  // filter
+  setFilterSelectData: 'setFilterSelectData',
+  setCurrentFilterField: 'setCurrentFilterField',
   setCurrentFilterOperator: 'setCurrentFilterOperator',
   setCurrentFilterValue: 'setCurrentFilterValue',
   setIsCurrentFilterValueValid: 'setIsCurrentFilterValueValid',
   setIsCurrentFilterValueFocused: 'setIsCurrentFilterValueFocused',
   setFilterOperatorSelectData: 'setFilterOperatorSelectData',
-
-  setCurrentSortTerm: 'setCurrentSortTerm',
-  setCurrentSortDirection: 'setCurrentSortDirection',
-
-  setFilterSelectData: 'setFilterSelectData',
-  setSortSelectData: 'setSortSelectData',
-  setLabelValueTypesMap: 'setLabelValueTypesMap',
-
   setFilterStatementsQueue: 'setFilterStatementsQueue',
+
+  // search
+  setSearchSelectData: 'setSearchSelectData',
+  setCurrentSearchField: 'setCurrentSearchField',
+  setCurrentSearchValue: 'setCurrentSearchValue',
+  setIsCurrentSearchValueValid: 'setIsCurrentSearchValueValid',
+  setIsCurrentSearchValueFocused: 'setIsCurrentSearchValueFocused',
+  setSearchStatementsQueue: 'setSearchStatementsQueue',
+
+  // sort
+  setSortSelectData: 'setSortSelectData',
+  setCurrentSortField: 'setCurrentSortField',
+  setCurrentSortDirection: 'setCurrentSortDirection',
   setSortStatementsQueue: 'setSortStatementsQueue',
 
+  // projection
   setProjectionArray: 'setProjectionArray',
   setProjectionCheckboxData: 'setProjectionCheckboxData',
   setSelectedFieldsSet: 'setSelectedFieldsSet',
@@ -65,11 +83,13 @@ const queryBuilderAction: QueryBuilderAction = {
 
   setClearAllQueryData: 'setClearAllQueryData',
   buildQueryString: 'buildQueryString',
+  setLabelValueTypesMap: 'setLabelValueTypesMap',
 
   // accordion chevron states
   toggleIsQueryBuilderOpened: 'toggleIsQueryBuilderOpened',
   toggleIsFilterOpened: 'toggleIsFilterOpened',
   toggleIsFilterChainOpened: 'toggleIsFilterChainOpened',
+  toggleIsSearchOpened: 'toggleIsSearchOpened',
   toggleIsSortOpened: 'toggleIsSortOpened',
   toggleIsSortChainOpened: 'toggleIsSortChainOpened',
   toggleIsProjectionOpened: 'toggleIsProjectionOpened',
@@ -80,10 +100,16 @@ function queryBuilderReducer(
   action: QueryBuilderDispatch
 ): QueryBuilderState {
   switch (action.type) {
-    case queryBuilderAction.setCurrentFilterTerm:
+    // filter
+    case queryBuilderAction.setFilterSelectData:
       return {
         ...state,
-        currentFilterTerm: action.payload,
+        filterSelectData: action.payload,
+      };
+    case queryBuilderAction.setCurrentFilterField:
+      return {
+        ...state,
+        currentFilterField: action.payload,
       };
     case queryBuilderAction.setCurrentFilterOperator:
       return {
@@ -110,34 +136,6 @@ function queryBuilderReducer(
         ...state,
         filterOperatorSelectData: action.payload,
       };
-
-    case queryBuilderAction.setCurrentSortTerm:
-      return {
-        ...state,
-        currentSortTerm: action.payload,
-      };
-    case queryBuilderAction.setCurrentSortDirection:
-      return {
-        ...state,
-        currentSortDirection: action.payload,
-      };
-
-    case queryBuilderAction.setFilterSelectData:
-      return {
-        ...state,
-        filterSelectData: action.payload,
-      };
-    case queryBuilderAction.setSortSelectData:
-      return {
-        ...state,
-        sortSelectData: action.payload,
-      };
-    case queryBuilderAction.setLabelValueTypesMap:
-      return {
-        ...state,
-        labelValueTypesMap: action.payload,
-      };
-
     case queryBuilderAction.setFilterStatementsQueue: {
       const { index, value } = action.payload;
       const [newField, newOperator, newValue] = value;
@@ -185,6 +183,88 @@ function queryBuilderReducer(
       };
     }
 
+    // search
+    case queryBuilderAction.setSearchSelectData:
+      return {
+        ...state,
+        searchSelectData: action.payload,
+      };
+    case queryBuilderAction.setCurrentSearchField:
+      return {
+        ...state,
+        currentSearchField: action.payload,
+      };
+    case queryBuilderAction.setCurrentSearchValue:
+      return {
+        ...state,
+        currentSearchValue: action.payload,
+      };
+    case queryBuilderAction.setIsCurrentSearchValueValid:
+      return {
+        ...state,
+        isCurrentSearchValueValid: action.payload,
+      };
+    case queryBuilderAction.setIsCurrentSearchValueFocused:
+      return {
+        ...state,
+        isCurrentSearchValueFocused: action.payload,
+      };
+    case queryBuilderAction.setSearchStatementsQueue: {
+      const { index, value } = action.payload;
+      const searchStatementsQueue = [...state.searchStatementsQueue];
+
+      // if search statement already present return state
+      if (
+        searchStatementsQueue.filter(
+          (item) => item[0] === value[0] && item[1] === value[1]
+        ).length > 0
+      ) {
+        return state;
+      }
+
+      // if there are duplicate search fields, remove the previous one
+      const duplicateSearchFieldIndex = searchStatementsQueue.findIndex(
+        (item) => item[0] === value[0]
+      );
+
+      if (duplicateSearchFieldIndex !== -1) {
+        searchStatementsQueue.splice(duplicateSearchFieldIndex, 1);
+      }
+
+      if (index >= searchStatementsQueue.length) {
+        searchStatementsQueue.push(value);
+      } else {
+        searchStatementsQueue[index] = value;
+      }
+
+      // filter out empty values and return state
+      // done last because initial state is ['','']
+      const filteredSearchStatementsQueue = searchStatementsQueue.filter(
+        (item) => item[0] !== '' && item[1] !== ''
+      );
+
+      return {
+        ...state,
+        searchStatementsQueue: filteredSearchStatementsQueue,
+      };
+    }
+
+    // sort
+    case queryBuilderAction.setSortSelectData:
+      return {
+        ...state,
+        sortSelectData: action.payload,
+      };
+    case queryBuilderAction.setCurrentSortField:
+      return {
+        ...state,
+        currentSortField: action.payload,
+      };
+    case queryBuilderAction.setCurrentSortDirection:
+      return {
+        ...state,
+        currentSortDirection: action.payload,
+      };
     case queryBuilderAction.setSortStatementsQueue: {
       const { index, value } = action.payload;
       const sortStatementsQueue = [...state.sortStatementsQueue];
@@ -224,6 +304,7 @@ function queryBuilderReducer(
       };
     }
 
+    // projection
     case queryBuilderAction.setProjectionArray:
       return {
         ...state,
@@ -239,10 +320,15 @@ function queryBuilderReducer(
     case queryBuilderAction.setSelectedFieldsSet: {
       const { calledFrom } = action.payload;
 
-      const selectedFieldsSet = new Set<string>();
+      const selectedFieldsSet = new Set<string>(state.selectedFieldsSet);
       if (calledFrom === 'filter') {
         const filterStatementsQueue = [...state.filterStatementsQueue];
         filterStatementsQueue.forEach((item) => {
+          selectedFieldsSet.add(item[0]);
+        });
+      } else if (calledFrom === 'search') {
+        const searchStatementsQueue = [...state.searchStatementsQueue];
+        searchStatementsQueue.forEach((item) => {
           selectedFieldsSet.add(item[0]);
         });
       } else if (calledFrom === 'sort') {
@@ -285,6 +371,7 @@ function queryBuilderReducer(
         ...state,
         queryString: '?',
         filterStatementsQueue: [],
+        searchStatementsQueue: [],
         sortStatementsQueue: [],
         projectionArray: [],
         selectedFieldsSet: new Set<string>(),
@@ -318,6 +405,11 @@ function queryBuilderReducer(
         ...state,
         isFilterChainOpened: action.payload ? true : false,
       };
+    case queryBuilderAction.toggleIsSearchOpened:
+      return {
+        ...state,
+        isSearchOpened: action.payload ? true : false,
+      };
     case queryBuilderAction.toggleIsSortOpened:
       return {
         ...state,
@@ -332,6 +424,12 @@ function queryBuilderReducer(
       return {
         ...state,
         isProjectionOpened: action.payload ? true : false,
+      };
+
+    case queryBuilderAction.setLabelValueTypesMap:
+      return {
+        ...state,
+        labelValueTypesMap: action.payload,
       };
 
     default:

@@ -451,7 +451,10 @@ function AddressChange() {
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,
       isInputTextFocused: isContactNumberFocused,
-      regexValidationText: returnPhoneNumberValidationText(contactNumber),
+      regexValidationText: returnPhoneNumberValidationText({
+        content: contactNumber,
+        contentKind: 'contact number',
+      }),
     });
 
   const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =

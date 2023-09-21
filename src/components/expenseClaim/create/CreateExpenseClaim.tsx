@@ -508,8 +508,8 @@ function CreateExpenseClaim() {
       isInputTextFocused: isExpenseClaimAmountFocused,
       isValidInputText: isValidExpenseClaimAmount,
       regexValidationText: returnNumberAmountValidationText({
-        kind: 'expense claim amount',
-        amount: expenseClaimAmount,
+        content: expenseClaimAmount,
+        contentKind: 'expense claim amount',
       }),
     });
 
@@ -524,7 +524,10 @@ function CreateExpenseClaim() {
       isInputTextFocused: isExpenseClaimDateFocused,
       isValidInputText: isValidExpenseClaimDate,
       regexValidationText: `${expenseClaimInvalidText}${returnDateNearPastValidationText(
-        expenseClaimDate
+        {
+          content: expenseClaimDate,
+          contentKind: 'expense claim date',
+        }
       )}`,
     });
 

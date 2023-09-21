@@ -1,22 +1,38 @@
-import { MantineThemeOverride } from '@mantine/core';
-import { constants } from 'zlib';
-
-import { ComponentQueryData } from '../components/queryBuilder';
 import { ColorsSwatches } from '../constants/data';
 import { ThemeObject } from '../context/globalProvider/types';
 import type { Country, PostalCode, QueryResponseData } from '../types';
 
-function returnEmailValidationText(email: string): string {
+/**
+ * contentKind is used to specify the semantic html input label, and is used in the returned validation error string for improved accessibility.
+ */
+type RegexValidationProps = {
+  content: string;
+  contentKind: string;
+  minLength?: number;
+  maxLength?: number;
+};
+
+function returnEmailValidationText({
+  content,
+  contentKind,
+  maxLength = 61,
+  minLength = 0,
+}: RegexValidationProps): string {
   const usernamePartRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
-  const domainPartRegex = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
-  const subdomainPartRegex =
-    /^\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/;
+  // /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/
+  const domainPartRegex = new RegExp(
+    `^[a-zA-Z0-9](?:[a-zA-Z0-9-]{${minLength},${maxLength}}[a-zA-Z0-9])?$`
+  );
+  // /^\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/
+  const subdomainPartRegex = new RegExp(
+    `^\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{${minLength},${maxLength}}[a-zA-Z0-9])?$`
+  );
 
   const emailRegexTupleArr: [boolean, string][] = [
-    [usernamePartRegex.test(email), 'Must contain a valid username part.'],
-    [domainPartRegex.test(email), 'Must contain a valid domain part.'],
+    [usernamePartRegex.test(content), 'Must contain a valid username part.'],
+    [domainPartRegex.test(content), 'Must contain a valid domain part.'],
     [
-      subdomainPartRegex.test(email),
+      subdomainPartRegex.test(content),
       'Must contain a valid (optional) subdomain part.',
     ],
   ];
@@ -26,11 +42,16 @@ function returnEmailValidationText(email: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid email. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
 
-function returnUsernameRegexValidationText(username: string): string {
-  const usernameLengthRegex = /^(?=.{3,20}$)/;
+function returnUsernameRegexValidationText({
+  content,
+  contentKind,
+  minLength = 3,
+  maxLength = 20,
+}: RegexValidationProps): string {
+  const usernameLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const usernameStartRegex = /^(?![-_.])/;
   const usernameConsecutiveRegex = /^(?!.*[-_.]{2})/;
   const usernameCharacterRegex = /^[a-zA-Z0-9-_.]+$/;
@@ -38,23 +59,23 @@ function returnUsernameRegexValidationText(username: string): string {
 
   const usernameRegexTupleArr: [boolean, string][] = [
     [
-      usernameLengthRegex.test(username),
-      'Must be between 3 and 20 characters.',
+      usernameLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
     ],
     [
-      usernameStartRegex.test(username),
+      usernameStartRegex.test(content),
       'Cannot start with a hyphen, underscore, or period.',
     ],
     [
-      usernameConsecutiveRegex.test(username),
+      usernameConsecutiveRegex.test(content),
       'Cannot contain two hyphens, underscores, or periods in a row.',
     ],
     [
-      usernameCharacterRegex.test(username),
+      usernameCharacterRegex.test(content),
       'Can only contain alphanumeric characters, hyphens, underscores, or periods.',
     ],
     [
-      usernameEndRegex.test(username),
+      usernameEndRegex.test(content),
       'Cannot end with a hyphen, underscore, or period.',
     ],
   ];
@@ -64,18 +85,8 @@ function returnUsernameRegexValidationText(username: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid username. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
-
-/**
- * contentKind is used to specify the semantic html input label, and is used in the returned validation error string for improved accessibility.
- */
-type RegexValidationProps = {
-  content: string;
-  contentKind: string;
-  minLength: number;
-  maxLength: number;
-};
 
 /**
  * Performs basic serial id validation [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] on a string of variable length, and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
@@ -83,8 +94,8 @@ type RegexValidationProps = {
 function returnSerialIdValidationText({
   content,
   contentKind,
-  minLength,
-  maxLength,
+  minLength = 1,
+  maxLength = 100,
 }: RegexValidationProps): string {
   const serialIdLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
@@ -122,8 +133,8 @@ function returnSerialIdValidationText({
 function returnNoteTextValidationText({
   content,
   contentKind,
-  minLength,
-  maxLength,
+  minLength = 2,
+  maxLength = 75,
 }: RegexValidationProps): string {
   const contentLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
@@ -162,8 +173,8 @@ function returnNoteTextValidationText({
 function returnGrammarValidationText({
   content,
   contentKind,
-  minLength,
-  maxLength,
+  minLength = 2,
+  maxLength = 100,
 }: RegexValidationProps): string {
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
@@ -253,8 +264,8 @@ function returnAcknowledgementValidationText(content: string) {
 function returnAddressValidationText({
   content,
   contentKind,
-  minLength,
-  maxLength,
+  minLength = 2,
+  maxLength = 75,
 }: RegexValidationProps): string {
   // /^[A-Za-z0-9\s.,#-]{2,75}$/i
   const addressLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
@@ -289,8 +300,8 @@ function returnAddressValidationText({
 function returnCityValidationText({
   content,
   contentKind,
-  maxLength,
-  minLength,
+  maxLength = 75,
+  minLength = 2,
 }: RegexValidationProps): string {
   // /^[A-Za-z\s.\-']{2,75}$/i
   const cityLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
@@ -316,11 +327,14 @@ function returnCityValidationText({
     : '';
 }
 
-function returnPhoneNumberValidationText(phoneNumber: string): string {
+function returnPhoneNumberValidationText({
+  content,
+  contentKind,
+}: RegexValidationProps): string {
   const phoneNumberRegex = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
-  const isValidRegex = phoneNumberRegex.test(phoneNumber);
+  const isValidRegex = phoneNumberRegex.test(content);
   if (!isValidRegex) {
-    return "Invalid phone number. Must be a valid North American phone number of format +(1)(234) 567-8901. Only numbers, parentheses, spaces, '+' and hyphens are allowed.";
+    return `Invalid ${contentKind}. Must be a valid North American phone number of format +(1)(234) 567-8901. Only numbers, parentheses, spaces, '+' and hyphens are allowed.`;
   }
 
   return '';
@@ -370,14 +384,17 @@ function returnPostalCodeValidationText({
   return validationText ? `Invalid postal code. ${validationText}` : '';
 }
 
-function returnDateValidationText(date: string): string {
+function returnDateValidationText({
+  content,
+  contentKind,
+}: RegexValidationProps): string {
   const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
   const monthRegex = /^(0[1-9]|1[0-2])$/;
   const yearRegex = /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])$/;
 
-  const day = date.split('-')[2];
-  const month = date.split('-')[1];
-  const year = date.split('-')[0];
+  const day = content.split('-')[2];
+  const month = content.split('-')[1];
+  const year = content.split('-')[0];
 
   const dateValidationTupleArr: [boolean, string][] = [
     [
@@ -399,17 +416,20 @@ function returnDateValidationText(date: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid date. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
 
-function returnDateNearFutureValidationText(date: string): string {
+function returnDateNearFutureValidationText({
+  content,
+  contentKind,
+}: RegexValidationProps): string {
   const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
   const monthRegex = /^(0[1-9]|1[0-2])$/;
   const yearRegex = /^(?:202[3-6])$/;
 
-  const day = date.split('-')[2];
-  const month = date.split('-')[1];
-  const year = date.split('-')[0];
+  const day = content.split('-')[2];
+  const month = content.split('-')[1];
+  const year = content.split('-')[0];
 
   const isDayInPast = day ? parseInt(day) < new Date().getDate() : false;
   const isMonthInPast = month
@@ -454,7 +474,7 @@ function returnDateNearFutureValidationText(date: string): string {
     ],
     [
       isEnteredYearMonthDayInPast ? false : true,
-      `Date of ${date} must be in the future.`,
+      `Date of ${content} must be in the future.`,
     ],
   ];
 
@@ -463,18 +483,21 @@ function returnDateNearFutureValidationText(date: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid date. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
 
-function returnDateNearPastValidationText(date: string): string {
+function returnDateNearPastValidationText({
+  content,
+  contentKind,
+}: RegexValidationProps): string {
   // /^(?:202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
   const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
   const monthRegex = /^(0[1-9]|1[0-2])$/;
   const yearRegex = /^(?:202[0-3])$/;
 
-  const day = date.split('-')[2];
-  const month = date.split('-')[1];
-  const year = date.split('-')[0];
+  const day = content.split('-')[2];
+  const month = content.split('-')[1];
+  const year = content.split('-')[0];
 
   const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
   const isMonthInFuture = month
@@ -523,7 +546,7 @@ function returnDateNearPastValidationText(date: string): string {
     ],
     [
       isEnteredYearMonthDayInFuture ? false : true,
-      `Date of ${date} must be in the past.`,
+      `Date of ${content} must be in the past.`,
     ],
   ];
 
@@ -532,17 +555,20 @@ function returnDateNearPastValidationText(date: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid date. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
 
-function returnDateFullRangeValidationText(date: string): string {
+function returnDateFullRangeValidationText({
+  content,
+  contentKind,
+}: RegexValidationProps): string {
   const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
   const monthRegex = /^(0[1-9]|1[0-2])$/;
   const yearRegex = /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-6])$/;
 
-  const day = date.split('-')[2];
-  const month = date.split('-')[1];
-  const year = date.split('-')[0];
+  const day = content.split('-')[2];
+  const month = content.split('-')[1];
+  const year = content.split('-')[0];
 
   const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
   const isMonthInFuture = month
@@ -591,7 +617,7 @@ function returnDateFullRangeValidationText(date: string): string {
     ],
     [
       isEnteredYearMonthDayInFuture ? false : true,
-      `Date of ${date} must be in the past.`,
+      `Date of ${content} must be in the past.`,
     ],
   ];
 
@@ -600,17 +626,20 @@ function returnDateFullRangeValidationText(date: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid date. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
 
-function returnDateOfBirthValidationText(date: string): string {
+function returnDateOfBirthValidationText({
+  content,
+  contentKind,
+}: RegexValidationProps): string {
   const dayRegex = /^(0[1-9]|[12][0-9]|3[01])$/;
   const monthRegex = /^(0[1-9]|1[0-2])$/;
   const yearRegex = /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])$/;
 
-  const day = date.split('-')[2];
-  const month = date.split('-')[1];
-  const year = date.split('-')[0];
+  const day = content.split('-')[2];
+  const month = content.split('-')[1];
+  const year = content.split('-')[0];
 
   const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
   const isMonthInFuture = month
@@ -659,7 +688,7 @@ function returnDateOfBirthValidationText(date: string): string {
     ],
     [
       isEnteredYearMonthDayInFuture ? false : true,
-      `Date of ${date} must be in the past.`,
+      `Date of ${content} must be in the past.`,
     ],
   ];
 
@@ -668,7 +697,9 @@ function returnDateOfBirthValidationText(date: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid date of birth. ${validationText}` : '';
+  return validationText
+    ? `Invalid ${contentKind} of birth. ${validationText}`
+    : '';
 }
 
 /**
@@ -676,39 +707,42 @@ function returnDateOfBirthValidationText(date: string): string {
  * kind - semantic html input name
  */
 function returnNumberAmountValidationText({
-  amount,
-  kind,
-}: {
-  amount: string;
-  kind: string;
-}): string {
-  // /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/
+  content,
+  contentKind,
+  minLength = 4,
+  maxLength = 9,
+}: RegexValidationProps): string {
+  // /^(?=.*[0-9])\d{1,6}(?:[,.]\d{0,2})?$/
   const numberPresentRegex = /^(?=.*[0-9])/;
-  const beforeSeperatorRegex = /^\d{0,6}/;
-  const afterSeperatorRegex = /(?:[,.]\d{0,2})?$/;
-  const numberLengthRegex = new RegExp(
-    `^${beforeSeperatorRegex.source}${afterSeperatorRegex.source}$`
-  );
+  const numberLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  // only numbers and either comma or decimal regex
+  const onlyNumbersAndCommaOrDecimalRegex = /^[0-9,.]+$/;
 
-  const beforeSeparatorAmount = amount.includes('.')
-    ? amount.split('.')[0]
-    : amount.split(',')[0];
-  const afterSeparatorAmount = amount.includes('.')
-    ? amount.split('.')[1]
-    : amount.split(',')[1];
+  const beforeSeparatorAmount = content.includes('.')
+    ? content.split('.')[0]
+    : content.split(',')[0];
+  const afterSeparatorAmount = content.includes('.')
+    ? content.split('.')[1]
+    : content.split(',')[1];
 
   const amountRegexTupleArr: [boolean, string][] = [
-    [numberPresentRegex.test(amount), 'Must contain at least one number.'],
+    [numberPresentRegex.test(content), 'Must contain at least one number.'],
     [
-      beforeSeperatorRegex.test(beforeSeparatorAmount),
+      onlyNumbersAndCommaOrDecimalRegex.test(content),
+      'Must only contain numbers, commas, or decimals.',
+    ],
+    [
+      (beforeSeparatorAmount?.length > 0 &&
+        beforeSeparatorAmount?.length < 7) ??
+        false,
       'Must be between 1 and 6 digits before the separator.',
     ],
     [
-      afterSeperatorRegex.test(afterSeparatorAmount),
+      afterSeparatorAmount?.length < 3 ?? false,
       'Must be between 0 and 2 digits after the separator.',
     ],
     [
-      numberLengthRegex.test(amount),
+      numberLengthRegex.test(content),
       'Must be between 1 and 6 digits before the separator, and 0 to 2 digits after the separator.',
     ],
   ];
@@ -719,13 +753,16 @@ function returnNumberAmountValidationText({
     .join(' ');
 
   return validationText
-    ? `Invalid ${kind.charAt(0).toUpperCase()}${kind.slice(
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
     : '';
 }
 
-function returnUrlValidationText(url: string): string {
+function returnUrlValidationText({
+  content,
+  contentKind,
+}: RegexValidationProps): string {
   // /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
   const protocolRegex = /^(https?:\/\/)/;
   const optionalSubdomainRegex = /^(www\.)?/;
@@ -733,10 +770,16 @@ function returnUrlValidationText(url: string): string {
   const topLevelDomainRegex = /\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)$/;
 
   const urlRegexTupleArr: [boolean, string][] = [
-    [protocolRegex.test(url), "Must begin with 'http://' or 'https://'."],
-    [optionalSubdomainRegex.test(url), 'Must begin with www. or no subdomain.'],
-    [domainRegex.test(url), 'Must contain a valid domain name.'],
-    [topLevelDomainRegex.test(url), 'Must contain a valid top-level domain.'],
+    [protocolRegex.test(content), "Must begin with 'http://' or 'https://'."],
+    [
+      optionalSubdomainRegex.test(content),
+      'Must begin with www. or no subdomain.',
+    ],
+    [domainRegex.test(content), 'Must contain a valid domain name.'],
+    [
+      topLevelDomainRegex.test(content),
+      'Must contain a valid top-level domain.',
+    ],
   ];
 
   const validationText = urlRegexTupleArr
@@ -744,7 +787,7 @@ function returnUrlValidationText(url: string): string {
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(' ');
 
-  return validationText ? `Invalid URL. ${validationText}` : '';
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : '';
 }
 
 type FormatDateProps = {
@@ -759,8 +802,8 @@ function formatDate({ date, locale, formatOptions }: FormatDateProps): string {
 function returnNameValidationText({
   content,
   contentKind,
-  maxLength,
-  minLength,
+  maxLength = 100,
+  minLength = 2,
 }: RegexValidationProps): string {
   const nameLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const nameCharacterRegex = /^[a-zA-Z\s.\-']+$/;
@@ -791,8 +834,8 @@ function returnNameValidationText({
 function returnPrinterMakeModelValidationText({
   content,
   contentKind,
-  maxLength,
-  minLength,
+  maxLength = 50,
+  minLength = 1,
 }: RegexValidationProps): string {
   // /^[a-zA-Z0-9\s.,'()-]{1,50}$/i
   const printerMakeModelLengthRegex = new RegExp(
@@ -826,8 +869,8 @@ function returnPrinterMakeModelValidationText({
 function returnPrinterSerialNumberValidationText({
   content,
   contentKind,
-  maxLength,
-  minLength,
+  maxLength = 50,
+  minLength = 1,
 }: RegexValidationProps): string {
   // /^[a-zA-Z0-9]{1,50}$/i
   const printerSerialNumberLengthRegex = new RegExp(
@@ -861,8 +904,8 @@ function returnPrinterSerialNumberValidationText({
 function returnTimeRailwayValidationText({
   content,
   contentKind,
-  maxLength,
-  minLength,
+  maxLength = 5,
+  minLength = 4,
 }: RegexValidationProps): string {
   // /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
   const timeRailwayLengthRegex = new RegExp(

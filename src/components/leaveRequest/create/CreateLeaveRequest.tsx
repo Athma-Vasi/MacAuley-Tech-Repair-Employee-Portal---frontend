@@ -351,7 +351,10 @@ function CreateLeaveRequest() {
       isInputTextFocused: isStartDateFocused,
       isValidInputText: isValidStartDate && areValidLeaveDates,
       regexValidationText: `${leaveDatesInvalidText}${returnDateNearFutureValidationText(
-        startDate
+        {
+          content: startDate,
+          contentKind: 'start date',
+        }
       )}`,
     });
 
@@ -362,7 +365,10 @@ function CreateLeaveRequest() {
       isInputTextFocused: isEndDateFocused,
       isValidInputText: isValidEndDate && areValidLeaveDates,
       regexValidationText: `${leaveDatesInvalidText}${returnDateNearFutureValidationText(
-        endDate
+        {
+          content: endDate,
+          contentKind: 'end date',
+        }
       )}`,
     });
 

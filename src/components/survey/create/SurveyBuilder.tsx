@@ -737,7 +737,10 @@ function SurveyBuilder() {
       inputText: expiryDate,
       isInputTextFocused: isExpiryDateFocused,
       isValidInputText: isValidExpiryDate,
-      regexValidationText: returnDateNearFutureValidationText(expiryDate),
+      regexValidationText: returnDateNearFutureValidationText({
+        content: expiryDate,
+        contentKind: 'expiry date',
+      }),
     });
 
   const [questionInputsErrorText, questionInputsValidText] =

@@ -246,7 +246,10 @@ function RegisterStepPersonal({
       inputText: profilePictureUrl,
       isValidInputText: isValidProfilePictureUrl,
       isInputTextFocused: isProfilePictureUrlFocused,
-      regexValidationText: returnUrlValidationText(profilePictureUrl),
+      regexValidationText: returnUrlValidationText({
+        content: profilePictureUrl,
+        contentKind: 'profile picture url',
+      }),
     });
 
   // useCallback function of isAgeOver18
@@ -261,9 +264,10 @@ function RegisterStepPersonal({
       inputText: dateOfBirth,
       isValidInputText: isValidDateOfBirth,
       isInputTextFocused: isDateOfBirthFocused,
-      regexValidationText: `${isLegalAdultMessage} ${returnDateValidationText(
-        dateOfBirth
-      )}`,
+      regexValidationText: `${isLegalAdultMessage} ${returnDateValidationText({
+        content: dateOfBirth,
+        contentKind: 'date of birth',
+      })}`,
     });
 
   const firstNameTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {

@@ -1,11 +1,14 @@
 import { Accordion, Group, Stack, Timeline } from '@mantine/core';
+import { useState } from 'react';
 import { TbChevronDown, TbLink } from 'react-icons/tb';
 
-import { useGlobalState } from '../../hooks';
-import { TimelineBuilderProps } from './types';
-import { useState } from 'react';
-import { returnThemeColors } from '../../utils';
 import { COLORS_SWATCHES } from '../../constants/data';
+import { useGlobalState } from '../../hooks';
+import { returnThemeColors } from '../../utils';
+
+type TimelineBuilderProps = {
+  timelines: Record<string, JSX.Element[]>;
+};
 
 function TimelineBuilder({ timelines }: TimelineBuilderProps): JSX.Element {
   const {

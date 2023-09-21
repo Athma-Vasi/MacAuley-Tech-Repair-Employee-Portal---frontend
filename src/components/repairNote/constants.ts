@@ -1,5 +1,35 @@
 import { PROVINCES, STATES_US, URGENCY_DATA } from '../../constants/data';
+import {
+  ADDRESS_LINE_REGEX,
+  CITY_REGEX,
+  DATE_FULL_RANGE_REGEX,
+  DATE_NEAR_FUTURE_REGEX,
+  DATE_NEAR_PAST_REGEX,
+  EMAIL_REGEX,
+  FULL_NAME_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  GRAMMAR_TEXT_INPUT_REGEX,
+  MONEY_REGEX,
+  NOTE_TEXT_AREA_REGEX,
+  NOTE_TEXT_REGEX,
+  PHONE_NUMBER_REGEX,
+  SERIAL_ID_REGEX,
+} from '../../constants/regex';
 import { ResourceRoutePaths } from '../../types';
+import {
+  returnAddressValidationText,
+  returnCityValidationText,
+  returnDateFullRangeValidationText,
+  returnDateNearFutureValidationText,
+  returnDateNearPastValidationText,
+  returnEmailValidationText,
+  returnGrammarValidationText,
+  returnNameValidationText,
+  returnNoteTextValidationText,
+  returnNumberAmountValidationText,
+  returnPhoneNumberValidationText,
+  returnSerialIdValidationText,
+} from '../../utils';
 import { COUNTRIES_DATA } from '../addressChange/constants';
 import { CURRENCY_DATA } from '../benefits/constants';
 import { ComponentQueryData } from '../queryBuilder';
@@ -103,32 +133,54 @@ const REPAIR_STATUS_DATA = [
 ];
 
 const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
-  { label: 'Created date', value: 'createdAt', inputKind: 'dateInput' },
-  { label: 'Updated date', value: 'updatedAt', inputKind: 'dateInput' },
+  {
+    label: 'Created date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
   {
     label: 'Customer name',
     value: 'customerName',
     inputKind: 'textInput',
+    regex: FULL_NAME_REGEX,
+    regexValidationFn: returnNameValidationText,
   },
   {
     label: 'Customer phone',
     value: 'customerPhone',
     inputKind: 'textInput',
+    regex: PHONE_NUMBER_REGEX,
+    regexValidationFn: returnPhoneNumberValidationText,
   },
   {
     label: 'Customer email',
     value: 'customerEmail',
     inputKind: 'textInput',
+    regex: EMAIL_REGEX,
+    regexValidationFn: returnEmailValidationText,
   },
   {
     label: 'Customer address line',
     value: 'customerAddressLine',
     inputKind: 'textInput',
+    regex: ADDRESS_LINE_REGEX,
+    regexValidationFn: returnAddressValidationText,
   },
   {
     label: 'Customer city',
     value: 'customerCity',
     inputKind: 'textInput',
+    regex: CITY_REGEX,
+    regexValidationFn: returnCityValidationText,
   },
   {
     label: 'Customer state',
@@ -158,26 +210,36 @@ const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
     label: 'Part name',
     value: 'partName',
     inputKind: 'textInput',
+    regex: NOTE_TEXT_REGEX,
+    regexValidationFn: returnNoteTextValidationText,
   },
   {
     label: 'Part serial id',
     value: 'partSerialId',
     inputKind: 'textInput',
+    regex: SERIAL_ID_REGEX,
+    regexValidationFn: returnSerialIdValidationText,
   },
   {
     label: 'Date received',
     value: 'dateReceived',
     inputKind: 'dateInput',
+    regex: DATE_NEAR_PAST_REGEX,
+    regexValidationFn: returnDateNearPastValidationText,
   },
   {
     label: 'Description of issue',
     value: 'descriptionOfIssue',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Initial inspection notes',
     value: 'initialInspectionNotes',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   // repair information
   {
@@ -196,6 +258,8 @@ const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
     label: 'Parts needed models',
     value: 'partsNeededModels',
     inputKind: 'textInput',
+    regex: NOTE_TEXT_AREA_REGEX,
+    regexValidationFn: returnNoteTextValidationText,
   },
   {
     label: 'Part under warranty',
@@ -207,6 +271,8 @@ const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
     label: 'Estimated repair cost',
     value: 'estimatedRepairCost',
     inputKind: 'numberInput',
+    regex: MONEY_REGEX,
+    regexValidationFn: returnNumberAmountValidationText,
   },
   {
     label: 'Estimated repair cost currency',
@@ -218,6 +284,8 @@ const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
     label: 'Estimated completion date',
     value: 'estimatedCompletionDate',
     inputKind: 'dateInput',
+    regex: DATE_NEAR_FUTURE_REGEX,
+    regexValidationFn: returnDateNearFutureValidationText,
   },
   {
     label: 'Repair priority',
@@ -230,16 +298,22 @@ const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
     label: 'Repair notes',
     value: 'repairNotes',
     inputKind: 'textInput',
+    regex: NOTE_TEXT_AREA_REGEX,
+    regexValidationFn: returnNoteTextValidationText,
   },
   {
     label: 'Testing results',
     value: 'testingResults',
     inputKind: 'textInput',
+    regex: NOTE_TEXT_AREA_REGEX,
+    regexValidationFn: returnNoteTextValidationText,
   },
   {
     label: 'Final repair cost',
     value: 'finalRepairCost',
     inputKind: 'numberInput',
+    regex: MONEY_REGEX,
+    regexValidationFn: returnNumberAmountValidationText,
   },
   {
     label: 'Final repair cost currency',

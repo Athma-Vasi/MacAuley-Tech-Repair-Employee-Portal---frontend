@@ -71,14 +71,14 @@ const NOTE_TEXT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i;
 const NOTE_TEXT_AREA_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
 
 /**
- * - /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/
+ * - /^(?=.*[0-9])\d{1,6}(?:[,.]\d{0,2})?$/
  * - ^ asserts that the string starts with a digit.
  * - (?=.*[0-9]) is a positive lookahead assertion that requires the presence of at least one digit. This ensures that the string contains at least one digit.
- * - \d{0,6} matches between 0 and 6 digits. This represents the whole number part of a number, allowing for a range of digit lengths from 0 to 6.
+ * - \d{1,6} matches between 1 and 6 digits. This represents the whole number part of a number, allowing for a range of digit lengths from 1 to 6.
  * - (?:[,.]\d{0,2})? is a non-capturing group that matches a decimal point or comma followed by between 0 and 2 digits. This represents the decimal part of a number, allowing for a range of digit lengths from 0 to 2. The entire group is optional, allowing for whole numbers.
  * - $ asserts that the string ends with a digit.
  */
-const MONEY_REGEX = /^(?=.*[0-9])\d{0,6}(?:[,.]\d{0,2})?$/;
+const MONEY_REGEX = /^(?=.*[0-9])\d{1,6}(?:[,.]\d{0,2})?$/;
 
 /**
  * - /^[A-Za-z\s.\-']{2,30}$/i

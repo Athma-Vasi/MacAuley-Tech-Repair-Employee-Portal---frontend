@@ -250,7 +250,10 @@ function RegisterStepAddress({
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,
       isInputTextFocused: isContactNumberFocused,
-      regexValidationText: returnPhoneNumberValidationText(contactNumber),
+      regexValidationText: returnPhoneNumberValidationText({
+        content: contactNumber,
+        contentKind: 'contact number',
+      }),
     });
 
   const contactNumberPhoneInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =

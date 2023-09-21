@@ -459,7 +459,10 @@ function CreateBenefit() {
       inputText: benefitUsername,
       isValidInputText: isValidBenefitUsername,
       isInputTextFocused: isBenefitUsernameFocused,
-      regexValidationText: returnUsernameRegexValidationText(benefitUsername),
+      regexValidationText: returnUsernameRegexValidationText({
+        content: benefitUsername,
+        contentKind: 'benefit username input',
+      }),
     });
 
   const [planNameInputErrorText, planNameInputValidText] =
@@ -496,7 +499,10 @@ function CreateBenefit() {
       inputText: planStartDate,
       isValidInputText: isValidPlanStartDate,
       isInputTextFocused: isPlanStartDateFocused,
-      regexValidationText: returnDateValidationText(planStartDate),
+      regexValidationText: returnDateValidationText({
+        content: planStartDate,
+        contentKind: 'plan start date input',
+      }),
     });
 
   const [
@@ -508,8 +514,8 @@ function CreateBenefit() {
     isValidInputText: isValidEmployeeContribution,
     isInputTextFocused: isEmployeeContributionFocused,
     regexValidationText: returnNumberAmountValidationText({
-      amount: employeeContribution,
-      kind: 'employee contribution',
+      content: employeeContribution,
+      contentKind: 'employee contribution input',
     }),
   });
 
@@ -522,8 +528,8 @@ function CreateBenefit() {
     isValidInputText: isValidEmployerContribution,
     isInputTextFocused: isEmployerContributionFocused,
     regexValidationText: returnNumberAmountValidationText({
-      amount: employerContribution,
-      kind: 'employer contribution',
+      content: employerContribution,
+      contentKind: 'employer contribution input',
     }),
   });
 

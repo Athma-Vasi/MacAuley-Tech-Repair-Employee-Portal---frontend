@@ -295,7 +295,10 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
       inputText: customerPhone,
       isValidInputText: isValidCustomerPhone,
       isInputTextFocused: isCustomerPhoneFocused,
-      regexValidationText: returnPhoneNumberValidationText(customerPhone),
+      regexValidationText: returnPhoneNumberValidationText({
+        content: customerPhone,
+        contentKind: 'customer phone',
+      }),
     });
 
   const [customerEmailInputErrorText, customerEmailInputValidText] =
@@ -304,7 +307,10 @@ function RepairNoteStepCustomer(parentState: RepairNoteStepCustomerProps) {
       inputText: customerEmail,
       isValidInputText: isValidCustomerEmail,
       isInputTextFocused: isCustomerEmailFocused,
-      regexValidationText: returnEmailValidationText(customerEmail),
+      regexValidationText: returnEmailValidationText({
+        content: customerEmail,
+        contentKind: 'customer email',
+      }),
     });
 
   const [customerAddressLineInputErrorText, customerAddressLineInputValidText] =

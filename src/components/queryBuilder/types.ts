@@ -1,4 +1,5 @@
 import { CheckboxInputData } from '../../types';
+import { RegexValidationProps } from '../../utils';
 import { GenerateQueryStringInput } from './utils';
 
 type QueryInputKind =
@@ -15,6 +16,13 @@ type ComponentQueryData = {
   inputKind: QueryInputKind;
   selectData?: string[];
   booleanData?: boolean[];
+  regex?: RegExp;
+  regexValidationFn?: ({
+    content,
+    contentKind,
+    maxLength,
+    minLength,
+  }: RegexValidationProps) => string;
 };
 
 type QueryValueTypes = {
@@ -22,6 +30,13 @@ type QueryValueTypes = {
   inputKind: QueryInputKind;
   selectData?: string[];
   booleanData?: boolean[];
+  regex?: RegExp;
+  regexValidationFn?: ({
+    content,
+    contentKind,
+    maxLength,
+    minLength,
+  }: RegexValidationProps) => string;
 };
 
 type QueryLabelValueTypesMap = Map<string, QueryValueTypes>;
@@ -38,23 +53,31 @@ type QueryBuilderProps = {
 };
 
 type QueryBuilderState = {
-  currentFilterTerm: string;
+  // filter
+  filterSelectData: string[];
+  currentFilterField: string;
   currentFilterOperator: string;
   currentFilterValue: string;
   isCurrentFilterValueValid: boolean;
   isCurrentFilterValueFocused: boolean;
   filterOperatorSelectData: string[];
+  filterStatementsQueue: [string, string, string][]; // [field, operator, value][]
 
-  currentSortTerm: string;
-  currentSortDirection: string;
+  // search
+  searchSelectData: string[];
+  currentSearchField: string;
+  currentSearchValue: string;
+  isCurrentSearchValueValid: boolean;
+  isCurrentSearchValueFocused: boolean;
+  searchStatementsQueue: [string, string][]; // [field, value]
 
-  filterSelectData: string[];
+  // sort
   sortSelectData: string[];
-  labelValueTypesMap: QueryLabelValueTypesMap;
+  currentSortField: string;
+  currentSortDirection: string;
+  sortStatementsQueue: [string, string][]; // [field, direction][]
 
-  filterStatementsQueue: [string, string, string][];
-  sortStatementsQueue: [string, string][];
-
+  // projection
   projectionArray: string[];
   projectionCheckboxData: CheckboxInputData;
   selectedFieldsSet: Set<string>;
@@ -62,38 +85,49 @@ type QueryBuilderState = {
 
   queryString: string;
 
+  labelValueTypesMap: QueryLabelValueTypesMap;
   // accordion chevron states
   isQueryBuilderOpened: boolean;
   isFilterOpened: boolean;
   isFilterChainOpened: boolean;
+  isSearchOpened: boolean;
   isSortOpened: boolean;
   isSortChainOpened: boolean;
   isProjectionOpened: boolean;
 };
 
 type QueryBuilderAction = {
-  setCurrentFilterTerm: 'setCurrentFilterTerm';
+  // filter
+  setFilterSelectData: 'setFilterSelectData';
+  setCurrentFilterField: 'setCurrentFilterField';
   setCurrentFilterOperator: 'setCurrentFilterOperator';
   setCurrentFilterValue: 'setCurrentFilterValue';
   setIsCurrentFilterValueValid: 'setIsCurrentFilterValueValid';
   setIsCurrentFilterValueFocused: 'setIsCurrentFilterValueFocused';
   setFilterOperatorSelectData: 'setFilterOperatorSelectData';
-
-  setCurrentSortTerm: 'setCurrentSortTerm';
-  setCurrentSortDirection: 'setCurrentSortDirection';
-
-  setFilterSelectData: 'setFilterSelectData';
-  setSortSelectData: 'setSortSelectData';
-  setLabelValueTypesMap: 'setLabelValueTypesMap';
-
   setFilterStatementsQueue: 'setFilterStatementsQueue';
+
+  // search
+  setSearchSelectData: 'setSearchSelectData';
+  setCurrentSearchField: 'setCurrentSearchField';
+  setCurrentSearchValue: 'setCurrentSearchValue';
+  setIsCurrentSearchValueValid: 'setIsCurrentSearchValueValid';
+  setIsCurrentSearchValueFocused: 'setIsCurrentSearchValueFocused';
+  setSearchStatementsQueue: 'setSearchStatementsQueue';
+
+  // sort
+  setSortSelectData: 'setSortSelectData';
+  setCurrentSortField: 'setCurrentSortField';
+  setCurrentSortDirection: 'setCurrentSortDirection';
   setSortStatementsQueue: 'setSortStatementsQueue';
 
+  // projection
   setProjectionArray: 'setProjectionArray';
   setProjectionCheckboxData: 'setProjectionCheckboxData';
   setSelectedFieldsSet: 'setSelectedFieldsSet';
   setProjectedFieldsSet: 'setProjectedFieldsSet';
 
+  setLabelValueTypesMap: 'setLabelValueTypesMap';
   setClearAllQueryData: 'setClearAllQueryData';
   buildQueryString: 'buildQueryString';
 
@@ -101,6 +135,7 @@ type QueryBuilderAction = {
   toggleIsQueryBuilderOpened: 'toggleIsQueryBuilderOpened';
   toggleIsFilterOpened: 'toggleIsFilterOpened';
   toggleIsFilterChainOpened: 'toggleIsFilterChainOpened';
+  toggleIsSearchOpened: 'toggleIsSearchOpened';
   toggleIsSortOpened: 'toggleIsSortOpened';
   toggleIsSortChainOpened: 'toggleIsSortChainOpened';
   toggleIsProjectionOpened: 'toggleIsProjectionOpened';
@@ -109,10 +144,12 @@ type QueryBuilderAction = {
 type QueryBuilderDispatch =
   | {
       type:
-        | QueryBuilderAction['setCurrentFilterTerm']
+        | QueryBuilderAction['setCurrentFilterField']
         | QueryBuilderAction['setCurrentFilterOperator']
         | QueryBuilderAction['setCurrentFilterValue']
-        | QueryBuilderAction['setCurrentSortTerm']
+        | QueryBuilderAction['setCurrentSearchField']
+        | QueryBuilderAction['setCurrentSearchValue']
+        | QueryBuilderAction['setCurrentSortField']
         | QueryBuilderAction['setCurrentSortDirection']
         | QueryBuilderAction['setClearAllQueryData'];
 
@@ -121,13 +158,16 @@ type QueryBuilderDispatch =
   | {
       type:
         | QueryBuilderAction['setIsCurrentFilterValueValid']
-        | QueryBuilderAction['setIsCurrentFilterValueFocused'];
+        | QueryBuilderAction['setIsCurrentFilterValueFocused']
+        | QueryBuilderAction['setIsCurrentSearchValueValid']
+        | QueryBuilderAction['setIsCurrentSearchValueFocused'];
 
       payload: boolean;
     }
   | {
       type:
         | QueryBuilderAction['setFilterSelectData']
+        | QueryBuilderAction['setSearchSelectData']
         | QueryBuilderAction['setSortSelectData']
         | QueryBuilderAction['setFilterOperatorSelectData'];
 
@@ -145,6 +185,10 @@ type QueryBuilderDispatch =
       };
     }
   | {
+      type: QueryBuilderAction['setSearchStatementsQueue'];
+      payload: { index: number; value: [string, string] };
+    }
+  | {
       type: QueryBuilderAction['setSortStatementsQueue'];
       payload: {
         index: number;
@@ -158,7 +202,7 @@ type QueryBuilderDispatch =
   | {
       type: QueryBuilderAction['setSelectedFieldsSet'];
       payload: {
-        calledFrom: 'filter' | 'sort';
+        calledFrom: 'filter' | 'search' | 'sort';
       };
     }
   | {
@@ -184,6 +228,10 @@ type QueryBuilderDispatch =
   | {
       type: QueryBuilderAction['toggleIsFilterChainOpened'];
       payload: 'Filter Chain' | null;
+    }
+  | {
+      type: QueryBuilderAction['toggleIsSearchOpened'];
+      payload: 'Search' | null;
     }
   | {
       type: QueryBuilderAction['toggleIsSortOpened'];

@@ -185,7 +185,10 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
       isValidInputText: isValidDateReceived,
       isInputTextFocused: isDateReceivedFocused,
       regexValidationText: `${dateReceivedInvalidText}${returnDateNearPastValidationText(
-        dateReceived
+        {
+          content: dateReceived,
+          contentKind: 'date received',
+        }
       )}`,
     });
 

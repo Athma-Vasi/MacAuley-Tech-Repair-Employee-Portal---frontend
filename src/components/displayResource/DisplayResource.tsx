@@ -1,4 +1,4 @@
-import { Flex, Group, Title } from '@mantine/core';
+import { Flex, Grid, Group, Title } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -7,7 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
+import {
+  AccessibleErrorValidTextElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextInputElements,
+} from '../../jsxCreators';
 import {
   FileUploadDocument,
   GetQueriedResourceRequestServerResponse,
@@ -17,6 +21,7 @@ import {
 import {
   filterFieldsFromObject,
   logState,
+  returnSerialIdValidationText,
   returnThemeColors,
   splitCamelCase,
   urlBuilder,
@@ -26,10 +31,15 @@ import { DisplayFileUploads } from '../displayFileUploads';
 import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
-import { AccessibleSelectInputCreatorInfo } from '../wrappers';
+import {
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+} from '../wrappers';
 import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from './constants';
 import { displayResourceAction, displayResourceReducer } from './state';
 import { DisplayResourceProps, DisplayResourceState } from './types';
+import { SERIAL_ID_REGEX } from '../../constants/regex';
+import { TbSearch, TbSearchOff } from 'react-icons/tb';
 
 function DisplayResource<Doc>({
   style = {},
@@ -809,6 +819,14 @@ function DisplayResource<Doc>({
     );
   }
 
+  const {
+    appThemeColors: { backgroundColor, borderColor },
+    generalColors: { grayColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
   const limitPerPageSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: QUERY_LIMIT_PER_PAGE_SELECT_DATA,
     description: 'Select number of documents to display per page',
@@ -843,13 +861,6 @@ function DisplayResource<Doc>({
       width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
-
-  const {
-    appThemeColors: { backgroundColor, borderColor },
-  } = returnThemeColors({
-    themeObject,
-    colorsSwatches: COLORS_SWATCHES,
-  });
 
   const displayLimitPerPage = (
     <Group
@@ -892,6 +903,15 @@ function DisplayResource<Doc>({
       ? componentQueryData?.filter((obj) => obj.value !== 'username')
       : componentQueryData;
 
+  const displayQueryBuilder = (
+    <QueryBuilder
+      setQueryBuilderString={displayResourceAction.setQueryBuilderString}
+      parentComponentDispatch={displayResourceDispatch}
+      componentQueryData={filteredComponentQueryData}
+      collectionName={splitCamelCase(requestBodyHeading)}
+    />
+  );
+
   const displayResource = isDisplayFilesOnly ? (
     <DisplayFileUploads
       createResourcePath={createResourcePath}
@@ -928,12 +948,8 @@ function DisplayResource<Doc>({
       p={padding}
       rowGap={rowGap}
     >
-      <QueryBuilder
-        setQueryBuilderString={displayResourceAction.setQueryBuilderString}
-        parentComponentDispatch={displayResourceDispatch}
-        componentQueryData={filteredComponentQueryData}
-        collectionName={splitCamelCase(requestBodyHeading)}
-      />
+      {displayQueryBuilder}
+
       {displayLimitPerPage}
 
       {displayResource}

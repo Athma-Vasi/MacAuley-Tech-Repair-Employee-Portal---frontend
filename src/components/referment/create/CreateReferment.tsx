@@ -485,7 +485,10 @@ function CreateReferment() {
       inputText: candidateEmail,
       isInputTextFocused: isCandidateEmailFocused,
       isValidInputText: isValidCandidateEmail,
-      regexValidationText: returnEmailValidationText(candidateEmail),
+      regexValidationText: returnEmailValidationText({
+        content: candidateEmail,
+        contentKind: 'candidate email',
+      }),
     });
 
   const [
@@ -496,9 +499,10 @@ function CreateReferment() {
     inputText: candidateContactNumber,
     isInputTextFocused: isCandidateContactNumberFocused,
     isValidInputText: isValidCandidateContactNumber,
-    regexValidationText: returnPhoneNumberValidationText(
-      candidateContactNumber
-    ),
+    regexValidationText: returnPhoneNumberValidationText({
+      content: candidateContactNumber,
+      contentKind: 'candidate contact number',
+    }),
   });
 
   const [
@@ -539,7 +543,10 @@ function CreateReferment() {
       inputText: candidateProfileUrl,
       isInputTextFocused: isCandidateProfileUrlFocused,
       isValidInputText: isValidCandidateProfileUrl,
-      regexValidationText: returnUrlValidationText(candidateProfileUrl),
+      regexValidationText: returnUrlValidationText({
+        content: candidateProfileUrl,
+        contentKind: 'candidate profile url',
+      }),
     });
 
   const [

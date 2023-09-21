@@ -1,3 +1,6 @@
+import { Group, Tooltip } from '@mantine/core';
+import { InvalidTokenError } from 'jwt-decode';
+import { title } from 'process';
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -5,7 +8,9 @@ import {
   useEffect,
   useReducer,
 } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
 import { URGENCY_DATA } from '../../../constants/data';
 import {
@@ -14,6 +19,8 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   PHONE_NUMBER_REGEX,
 } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -33,6 +40,9 @@ import {
   returnPhoneNumberValidationText,
   urlBuilder,
 } from '../../../utils';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
 import {
   AccessibleButtonCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
@@ -53,16 +63,7 @@ import {
   initialCreateAnonymousRequestState,
 } from './state';
 import { AnonymousRequestDocument, AnonymousRequestKind } from './types';
-import { Group, Tooltip } from '@mantine/core';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
-import { useAuth, useGlobalState } from '../../../hooks';
-import { useNavigate } from 'react-router-dom';
-import { useErrorBoundary } from 'react-error-boundary';
-import { InvalidTokenError } from 'jwt-decode';
-import { title } from 'process';
-import { globalAction } from '../../../context/globalProvider/state';
+import { CustomNotification } from '../../customNotification';
 
 function CreateAnonymousRequest() {
   const [createAnonymousRequestState, createAnonymousRequestDispatch] =
@@ -366,6 +367,21 @@ function CreateAnonymousRequest() {
     additionalInformation,
   ]);
 
+  if (isLoading || isSubmitting || isSuccessful) {
+    return (
+      <CustomNotification
+        isLoading={isLoading}
+        isSubmitting={isSubmitting}
+        isSuccessful={isSuccessful}
+        loadingMessage={loadingMessage}
+        successMessage={successMessage}
+        submitMessage={submitMessage}
+        parentDispatch={createAnonymousRequestDispatch}
+        navigateTo={{ successPath: '/home/general/anonymous-request/display' }}
+      />
+    );
+  }
+
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
     AccessibleErrorValidTextElements({
@@ -387,7 +403,10 @@ function CreateAnonymousRequest() {
       inputText: secureContactNumber,
       isInputTextFocused: isSecureContactNumberFocused,
       isValidInputText: isValidSecureContactNumber,
-      regexValidationText: returnPhoneNumberValidationText(secureContactNumber),
+      regexValidationText: returnPhoneNumberValidationText({
+        content: secureContactNumber,
+        contentKind: 'secure contact number',
+      }),
     });
 
   const [secureContactEmailInputErrorText, secureContactEmailInputValidText] =
@@ -396,7 +415,10 @@ function CreateAnonymousRequest() {
       inputText: secureContactEmail,
       isInputTextFocused: isSecureContactEmailFocused,
       isValidInputText: isValidSecureContactEmail,
-      regexValidationText: returnEmailValidationText(secureContactEmail),
+      regexValidationText: returnEmailValidationText({
+        content: secureContactEmail,
+        contentKind: 'secure contact email',
+      }),
     });
 
   const [requestDescriptionInputErrorText, requestDescriptionInputValidText] =

@@ -108,7 +108,10 @@ function RegisterStepAuthentication({
       inputText: email,
       isValidInputText: isValidEmail,
       isInputTextFocused: isEmailFocused,
-      regexValidationText: returnEmailValidationText(email),
+      regexValidationText: returnEmailValidationText({
+        content: email,
+        contentKind: 'email',
+      }),
     });
 
   const [usernameInputErrorText, usernameInputValidText] =
@@ -117,11 +120,16 @@ function RegisterStepAuthentication({
       inputText: username,
       isValidInputText: isValidUsername,
       isInputTextFocused: isUsernameFocused,
-      regexValidationText: returnUsernameRegexValidationText(username),
+      regexValidationText: returnUsernameRegexValidationText({
+        content: username,
+        contentKind: 'username',
+      }),
     });
 
-  const passwordRegexValidationText =
-    returnPasswordRegexValidationText(password);
+  const passwordRegexValidationText = returnPasswordRegexValidationText({
+    content: password,
+    contentKind: 'password',
+  });
 
   const [passwordInputErrorText, passwordInputValidText] =
     AccessibleErrorValidTextElements({

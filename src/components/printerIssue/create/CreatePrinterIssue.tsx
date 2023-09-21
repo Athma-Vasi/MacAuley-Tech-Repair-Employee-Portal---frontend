@@ -468,7 +468,10 @@ function CreatePrinterIssue() {
       inputText: contactNumber,
       isInputTextFocused: isContactNumberFocused,
       isValidInputText: isValidContactNumber,
-      regexValidationText: returnPhoneNumberValidationText(contactNumber),
+      regexValidationText: returnPhoneNumberValidationText({
+        content: contactNumber,
+        contentKind: 'contact number',
+      }),
     });
 
   const [contactEmailInputErrorText, contactEmailInputValidText] =
@@ -477,7 +480,10 @@ function CreatePrinterIssue() {
       inputText: contactEmail,
       isInputTextFocused: isContactEmailFocused,
       isValidInputText: isValidContactEmail,
-      regexValidationText: returnEmailValidationText(contactEmail),
+      regexValidationText: returnEmailValidationText({
+        content: contactEmail,
+        contentKind: 'contact email',
+      }),
     });
 
   const [dateOfOccurrenceInputErrorText, dateOfOccurrenceInputValidText] =
@@ -486,7 +492,10 @@ function CreatePrinterIssue() {
       inputText: dateOfOccurrence,
       isInputTextFocused: isDateOfOccurrenceFocused,
       isValidInputText: isValidDateOfOccurrence,
-      regexValidationText: returnDateNearPastValidationText(dateOfOccurrence),
+      regexValidationText: returnDateNearPastValidationText({
+        content: dateOfOccurrence,
+        contentKind: 'date of occurrence',
+      }),
     });
 
   const [timeOfOccurrenceInputErrorText, timeOfOccurrenceInputValidText] =

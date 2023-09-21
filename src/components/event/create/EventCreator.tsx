@@ -498,7 +498,10 @@ function EventCreator() {
       isInputTextFocused: isEventStartDateFocused,
       isValidInputText: isValidEventStartDate && areValidEventDates,
       regexValidationText: `${eventDatesInvalidText}${returnDateNearFutureValidationText(
-        eventStartDate
+        {
+          content: eventStartDate,
+          contentKind: 'event start date',
+        }
       )}`,
     });
 
@@ -509,7 +512,10 @@ function EventCreator() {
       isInputTextFocused: isEventEndDateFocused,
       isValidInputText: isValidEventEndDate && areValidEventDates,
       regexValidationText: `${eventDatesInvalidText}${returnDateNearFutureValidationText(
-        eventEndDate
+        {
+          content: eventEndDate,
+          contentKind: 'event end date',
+        }
       )}`,
     });
 
@@ -615,7 +621,10 @@ function EventCreator() {
       isInputTextFocused: isRsvpDeadlineFocused,
       isValidInputText: isValidRsvpDeadline,
       regexValidationText: `${rsvpDeadlineInvalidText}${returnDateNearFutureValidationText(
-        rsvpDeadline
+        {
+          content: rsvpDeadline,
+          contentKind: 'rsvp deadline',
+        }
       )}`,
     });
 

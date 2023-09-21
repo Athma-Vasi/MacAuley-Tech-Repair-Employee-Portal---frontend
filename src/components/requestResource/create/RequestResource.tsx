@@ -365,8 +365,8 @@ function RequestResource() {
       isInputTextFocused: isResourceQuantityFocused,
       isValidInputText: isValidResourceQuantity,
       regexValidationText: returnNumberAmountValidationText({
-        kind: 'resource quantity',
-        amount: resourceQuantity,
+        content: resourceQuantity,
+        contentKind: 'resource quantity',
       }),
     });
 
@@ -404,7 +404,10 @@ function RequestResource() {
       inputText: dateNeededBy,
       isInputTextFocused: isDateNeededByFocused,
       isValidInputText: isValidDateNeededBy,
-      regexValidationText: returnDateNearFutureValidationText(dateNeededBy),
+      regexValidationText: returnDateNearFutureValidationText({
+        content: dateNeededBy,
+        contentKind: 'date needed by',
+      }),
     });
 
   const [
