@@ -12,7 +12,7 @@ const initialDisplayAnnouncementsState: DisplayAnnouncementsState = {
   queryBuilderString: '?',
   pageQueryString: '',
 
-  triggerRefresh: false,
+  triggerFetchAnnouncements: true,
 
   isLoading: true,
   loadingMessage: 'Please wait. Fetching announcements...',
@@ -30,7 +30,7 @@ const displayAnnouncementsAction: DisplayAnnouncementsAction = {
   setQueryBuilderString: 'setQueryBuilderString',
   setPageQueryString: 'setPageQueryString',
 
-  setTriggerRefresh: 'setTriggerRefresh',
+  setTriggerFetchAnnouncements: 'setTriggerFetchAnnouncements',
 
   setIsLoading: 'setIsLoading',
   setLoadingMessage: 'setLoadingMessage',
@@ -76,10 +76,10 @@ function displayAnnouncementsReducer(
         pageQueryString: action.payload,
       };
 
-    case displayAnnouncementsAction.setTriggerRefresh:
+    case displayAnnouncementsAction.setTriggerFetchAnnouncements:
       return {
         ...state,
-        triggerRefresh: action.payload,
+        triggerFetchAnnouncements: action.payload,
       };
 
     case displayAnnouncementsAction.setIsLoading:

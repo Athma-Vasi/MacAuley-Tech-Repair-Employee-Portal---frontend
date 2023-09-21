@@ -411,7 +411,7 @@ function QueryBuilder({
       type: queryBuilderAction.setCurrentSearchField,
       payload: searchSelectData[0],
     });
-  }, [labelValueTypesMap]);
+  }, []);
 
   // build query string on every filter, sort, or projection arrays change
   useEffect(() => {

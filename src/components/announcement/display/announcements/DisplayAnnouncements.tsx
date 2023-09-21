@@ -1,4 +1,4 @@
-import { Card, Flex, Image, Text, UnstyledButton } from '@mantine/core';
+import { Card, Flex, Group, Image, Text, UnstyledButton } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -17,6 +17,8 @@ import {
   displayAnnouncementsReducer,
   initialDisplayAnnouncementsState,
 } from './state';
+import { QueryBuilder } from '../../../queryBuilder';
+import { ANNOUNCEMENT_QUERY_DATA } from '../../create/constants';
 
 function DisplayAnnouncements() {
   /** ------------- begin hooks ------------- */
@@ -32,7 +34,7 @@ function DisplayAnnouncements() {
     queryBuilderString,
     pageQueryString,
 
-    triggerRefresh,
+    triggerFetchAnnouncements,
 
     isLoading,
     loadingMessage,
@@ -152,11 +154,17 @@ function DisplayAnnouncements() {
             type: displayAnnouncementsAction.setLoadingMessage,
             payload: '',
           });
+          displayAnnouncementsDispatch({
+            type: displayAnnouncementsAction.setTriggerFetchAnnouncements,
+            payload: false,
+          });
         }
       }
     }
 
-    fetchAnnouncements();
+    if (triggerFetchAnnouncements) {
+      fetchAnnouncements();
+    }
 
     return () => {
       isMounted = false;
@@ -164,7 +172,19 @@ function DisplayAnnouncements() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [triggerFetchAnnouncements]);
+
+  useEffect(() => {
+    displayAnnouncementsDispatch({
+      type: displayAnnouncementsAction.setNewQueryFlag,
+      payload: true,
+    });
+
+    displayAnnouncementsDispatch({
+      type: displayAnnouncementsAction.setTriggerFetchAnnouncements,
+      payload: true,
+    });
+  }, [queryBuilderString]);
 
   useEffect(() => {
     logState({
@@ -300,9 +320,22 @@ function DisplayAnnouncements() {
     </Flex>
   );
 
+  const displayQueryBuilder = (
+    <Group w="100%" bg={backgroundColor} position="center">
+      <QueryBuilder
+        collectionName="announcement"
+        componentQueryData={ANNOUNCEMENT_QUERY_DATA}
+        parentComponentDispatch={displayAnnouncementsDispatch}
+        setQueryBuilderString={displayAnnouncementsAction.setQueryBuilderString}
+        disableProjection={true}
+      />
+    </Group>
+  );
+
   const displayAnnouncementsComponent = (
     <Flex direction="column" w="100%">
       {displayAnnouncementHeader}
+      {displayQueryBuilder}
       {displayAnnouncementCards}
     </Flex>
   );

@@ -9,7 +9,7 @@ type DisplayAnnouncementsState = {
   queryBuilderString: string;
   pageQueryString: string;
 
-  triggerRefresh: boolean;
+  triggerFetchAnnouncements: boolean;
 
   isLoading: boolean;
   loadingMessage: string;
@@ -27,7 +27,7 @@ type DisplayAnnouncementsAction = {
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
 
-  setTriggerRefresh: 'setTriggerRefresh';
+  setTriggerFetchAnnouncements: 'setTriggerFetchAnnouncements';
 
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
@@ -51,7 +51,7 @@ type DisplayAnnouncementsDispatch =
   | {
       type:
         | DisplayAnnouncementsAction['setNewQueryFlag']
-        | DisplayAnnouncementsAction['setTriggerRefresh']
+        | DisplayAnnouncementsAction['setTriggerFetchAnnouncements']
         | DisplayAnnouncementsAction['setIsLoading']
         | DisplayAnnouncementsAction['setIsSuccessful']
         | DisplayAnnouncementsAction['setIsSubmitting'];
