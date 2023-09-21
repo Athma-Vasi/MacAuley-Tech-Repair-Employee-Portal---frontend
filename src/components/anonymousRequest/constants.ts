@@ -1,5 +1,20 @@
 import { REQUEST_STATUS, URGENCY_DATA } from '../../constants/data';
+import {
+  DATE_FULL_RANGE_REGEX,
+  EMAIL_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  GRAMMAR_TEXT_INPUT_REGEX,
+  PHONE_NUMBER_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
 import { ResourceRoutePaths } from '../../types';
+import {
+  returnDateFullRangeValidationText,
+  returnEmailValidationText,
+  returnGrammarValidationText,
+  returnPhoneNumberValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 
@@ -41,47 +56,67 @@ const ANONYMOUS_REQUEST_KINDS = [
 ];
 
 const ANONYMOUS_REQUEST_QUERY_DATA: ComponentQueryData[] = [
-  { label: 'Username', value: 'username', inputKind: 'textInput' },
   {
-    label: 'Created date',
-    value: 'createdAt',
-    inputKind: 'dateInput',
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
   },
   {
-    label: 'Updated date',
+    label: 'Created Date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
     value: 'updatedAt',
     inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
   },
   {
     label: 'Title',
     value: 'title',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
-    label: 'Secure contact number',
+    label: 'Secure Contact Number',
     value: 'secureContactNumber',
     inputKind: 'textInput',
+    regex: PHONE_NUMBER_REGEX,
+    regexValidationFn: returnPhoneNumberValidationText,
   },
   {
-    label: 'Secure contact email',
+    label: 'Secure Contact Email',
     value: 'secureContactEmail',
     inputKind: 'textInput',
+    regex: EMAIL_REGEX,
+    regexValidationFn: returnEmailValidationText,
   },
   {
-    label: 'Request kind',
+    label: 'Request Kind',
     value: 'requestKind',
     inputKind: 'selectInput',
     selectData: ANONYMOUS_REQUEST_KINDS,
   },
   {
-    label: 'Request description',
+    label: 'Request Description',
     value: 'requestDescription',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
-    label: 'Additional information',
+    label: 'Additional Information',
     value: 'additionalInformation',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Urgency',
@@ -90,7 +125,7 @@ const ANONYMOUS_REQUEST_QUERY_DATA: ComponentQueryData[] = [
     selectData: URGENCY_DATA,
   },
   {
-    label: 'Request status',
+    label: 'Request Status',
     value: 'requestStatus',
     inputKind: 'selectInput',
     selectData: REQUEST_STATUS,

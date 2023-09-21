@@ -247,7 +247,7 @@ const ACKNOWLEDGEMENT_TEXT_INPUT_REGEX =
 //  * - ^ and $ ensure that the entire string matches the regex.
 //  * - i makes the regex case-insensitive.
 //  */
-// const PRINTER_MAKE_MODEL_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
+const PRINTER_MAKE_MODEL_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
 
 /**
  * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
@@ -288,6 +288,7 @@ export {
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
+  PRINTER_MAKE_MODEL_REGEX,
   PRINTER_SERIAL_NUMBER_REGEX,
   SERIAL_ID_REGEX,
   TIME_RAILWAY_REGEX,

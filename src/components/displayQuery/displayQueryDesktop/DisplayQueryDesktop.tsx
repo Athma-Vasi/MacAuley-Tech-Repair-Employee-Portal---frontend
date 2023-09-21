@@ -205,7 +205,7 @@ function DisplayQueryDesktop<Doc>({
   });
 
   const displayTable = (
-    <ScrollArea styles={() => scrollBarStyle} type="hover" offsetScrollbars>
+    <ScrollArea styles={() => scrollBarStyle} type="always" offsetScrollbars>
       <Group
         w={width <= 991 ? width - 225 - 44 : width - 300 - 44}
         style={{

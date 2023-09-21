@@ -1,5 +1,17 @@
 import { PROVINCES, REQUEST_STATUS, STATES_US } from '../../constants/data';
+import {
+  ADDRESS_LINE_REGEX,
+  CITY_REGEX,
+  DATE_FULL_RANGE_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
 import { ResourceRoutePaths } from '../../types';
+import {
+  returnAddressValidationText,
+  returnCityValidationText,
+  returnDateFullRangeValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 
@@ -23,14 +35,39 @@ const COUNTRIES_DATA = ['Canada', 'United States'];
 
 const ADDRESS_CHANGE_QUERY_DATA: ComponentQueryData[] = [
   {
-    label: 'Address line',
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Created Date',
+    value: 'createdDate',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
+    value: 'updatedDate',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Address Line',
     value: 'addressLine',
     inputKind: 'textInput',
+    regex: ADDRESS_LINE_REGEX,
+    regexValidationFn: returnAddressValidationText,
   },
   {
     label: 'City',
     value: 'city',
     inputKind: 'textInput',
+    regex: CITY_REGEX,
+    regexValidationFn: returnCityValidationText,
   },
   {
     label: 'Province',
@@ -62,7 +99,7 @@ const ADDRESS_CHANGE_QUERY_DATA: ComponentQueryData[] = [
     selectData: ['true', 'false'],
   },
   {
-    label: 'Request status',
+    label: 'Request Status',
     value: 'requestStatus',
     inputKind: 'selectInput',
     selectData: REQUEST_STATUS,

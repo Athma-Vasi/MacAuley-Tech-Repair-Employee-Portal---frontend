@@ -1,4 +1,4 @@
-import { Flex, Grid, Group, Title } from '@mantine/core';
+import { Flex, Group, Title } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -7,11 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../hooks';
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextInputElements,
-} from '../../jsxCreators';
+import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 import {
   FileUploadDocument,
   GetQueriedResourceRequestServerResponse,
@@ -21,7 +17,6 @@ import {
 import {
   filterFieldsFromObject,
   logState,
-  returnSerialIdValidationText,
   returnThemeColors,
   splitCamelCase,
   urlBuilder,
@@ -31,15 +26,10 @@ import { DisplayFileUploads } from '../displayFileUploads';
 import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-} from '../wrappers';
+import { AccessibleSelectInputCreatorInfo } from '../wrappers';
 import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from './constants';
 import { displayResourceAction, displayResourceReducer } from './state';
 import { DisplayResourceProps, DisplayResourceState } from './types';
-import { SERIAL_ID_REGEX } from '../../constants/regex';
-import { TbSearch, TbSearchOff } from 'react-icons/tb';
 
 function DisplayResource<Doc>({
   style = {},
@@ -821,7 +811,6 @@ function DisplayResource<Doc>({
 
   const {
     appThemeColors: { backgroundColor, borderColor },
-    generalColors: { grayColorShade },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -848,6 +837,30 @@ function DisplayResource<Doc>({
   const createdLimitPerPageSelectInput = returnAccessibleSelectInputElements([
     limitPerPageSelectInputCreatorInfo,
   ]);
+
+  // const limitPerPageRadioGroupInputCreatorInfo: AccessibleRadioGroupInputCreatorInfo =
+  //   {
+  //     dataObjectArray: QUERY_LIMIT_PER_PAGE_RADIO_DATA,
+  //     description: 'Select number of documents to display per page',
+  //     onChange: (value: string) => {
+  //       displayResourceDispatch({
+  //         type: displayResourceAction.setLimitPerPage,
+  //         payload: value,
+  //       });
+  //       displayResourceDispatch({
+  //         type: displayResourceAction.setResetPage,
+  //         payload: true,
+  //       });
+  //     },
+  //     semanticName: 'limit per page',
+  //     value: limitPerPage,
+  //     label: '',
+  //   };
+
+  // const [createdLimitPerPageRadioGroupInput] =
+  //   returnAccessibleRadioGroupInputsElements([
+  //     limitPerPageRadioGroupInputCreatorInfo,
+  //   ]);
 
   const sectionWidth =
     width < 480 // for iPhone 5/SE

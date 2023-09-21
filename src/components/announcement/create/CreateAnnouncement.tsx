@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import {
+  FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   URL_REGEX,
@@ -264,7 +265,7 @@ function CreateAnnouncement() {
 
   // validate author on every change
   useEffect(() => {
-    const isValidAuth = GRAMMAR_TEXT_INPUT_REGEX.test(author);
+    const isValidAuth = FULL_NAME_REGEX.test(author);
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setIsValidAuthor,

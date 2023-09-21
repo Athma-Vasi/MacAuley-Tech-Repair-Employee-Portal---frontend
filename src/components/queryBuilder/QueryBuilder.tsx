@@ -294,6 +294,20 @@ function QueryBuilder({
     });
   }, [currentFilterField, currentFilterValue, labelValueTypesMap]);
 
+  // sets initial filter value
+  useEffect(() => {
+    if (!labelValueTypesMap.size) {
+      return;
+    }
+
+    const initialCreatedDateValue = new Date().toISOString().slice(0, 10);
+
+    queryBuilderDispatch({
+      type: queryBuilderAction.setCurrentFilterValue,
+      payload: initialCreatedDateValue,
+    });
+  }, [labelValueTypesMap]);
+
   // prevents stale state update whenever filter term changes
   useEffect(() => {
     if (!labelValueTypesMap.size) {

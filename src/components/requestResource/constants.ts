@@ -3,7 +3,22 @@ import {
   REQUEST_STATUS,
   URGENCY_DATA,
 } from '../../constants/data';
+import {
+  DATE_FULL_RANGE_REGEX,
+  DATE_NEAR_FUTURE_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  GRAMMAR_TEXT_INPUT_REGEX,
+  MONEY_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
 import { ResourceRoutePaths } from '../../types';
+import {
+  returnDateFullRangeValidationText,
+  returnDateNearFutureValidationText,
+  returnGrammarValidationText,
+  returnNumberAmountValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 
@@ -31,6 +46,27 @@ const REQUEST_RESOURCE_MAX_STEPPER_POSITION = 3;
 
 const REQUEST_RESOURCE_QUERY_DATA: ComponentQueryData[] = [
   {
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Created Date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
     label: 'Department',
     value: 'department',
     inputKind: 'selectInput',
@@ -46,16 +82,22 @@ const REQUEST_RESOURCE_QUERY_DATA: ComponentQueryData[] = [
     label: 'Resource Quantity',
     value: 'resourceQuantity',
     inputKind: 'numberInput',
+    regex: MONEY_REGEX,
+    regexValidationFn: returnNumberAmountValidationText,
   },
   {
     label: 'Resource Description',
     value: 'resourceDescription',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Reason for Request',
     value: 'reasonForRequest',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Urgency',
@@ -67,27 +109,21 @@ const REQUEST_RESOURCE_QUERY_DATA: ComponentQueryData[] = [
     label: 'Date Needed By',
     value: 'dateNeededBy',
     inputKind: 'dateInput',
+    regex: DATE_NEAR_FUTURE_REGEX,
+    regexValidationFn: returnDateNearFutureValidationText,
   },
   {
     label: 'Additional Information',
     value: 'additionalInformation',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Request Status',
     value: 'requestStatus',
     inputKind: 'selectInput',
     selectData: REQUEST_STATUS,
-  },
-  {
-    label: 'Created At',
-    value: 'createdAt',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Updated At',
-    value: 'updatedAt',
-    inputKind: 'dateInput',
   },
 ];
 

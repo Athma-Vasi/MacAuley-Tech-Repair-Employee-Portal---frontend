@@ -968,7 +968,13 @@ function DisplayQuery<Doc>({
       {width >= 1024 ? displayTableViewSegmentControl : null}
       <Space h="md" />
       <Space h="md" />
-      <Flex align="center" justify="space-between" w="100%" py={padding}>
+      <Flex
+        align="center"
+        justify="space-between"
+        w="100%"
+        py={padding}
+        pr={padding}
+      >
         <Group spacing={rowGap}>
           <Title order={2}>{parentComponentName}s</Title>
           {displayCreateResourceButton}

@@ -3,7 +3,26 @@ import {
   JOB_POSITION_DATA,
   REQUEST_STATUS,
 } from '../../constants/data';
+import {
+  DATE_FULL_RANGE_REGEX,
+  EMAIL_REGEX,
+  FULL_NAME_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  GRAMMAR_TEXT_INPUT_REGEX,
+  PHONE_NUMBER_REGEX,
+  URL_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
 import { ResourceRoutePaths } from '../../types';
+import {
+  returnDateFullRangeValidationText,
+  returnEmailValidationText,
+  returnGrammarValidationText,
+  returnNameValidationText,
+  returnPhoneNumberValidationText,
+  returnUrlValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 
@@ -30,34 +49,67 @@ const CREATE_REFERMENT_MAX_STEPPER_POSITION = 3;
 
 const REFERMENT_QUERY_DATA: ComponentQueryData[] = [
   {
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Created Date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
     label: 'Candidate Full Name',
     value: 'candidateFullName',
     inputKind: 'textInput',
+    regex: FULL_NAME_REGEX,
+    regexValidationFn: returnNameValidationText,
   },
   {
     label: 'Candidate Email',
     value: 'candidateEmail',
     inputKind: 'textInput',
+    regex: EMAIL_REGEX,
+    regexValidationFn: returnEmailValidationText,
   },
   {
     label: 'Candidate Contact Number',
     value: 'candidateContactNumber',
     inputKind: 'textInput',
+    regex: PHONE_NUMBER_REGEX,
+    regexValidationFn: returnPhoneNumberValidationText,
   },
   {
     label: 'Candidate Current Job Title',
     value: 'candidateCurrentJobTitle',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Candidate Current Company',
     value: 'candidateCurrentCompany',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Candidate Profile URL',
     value: 'candidateProfileUrl',
     inputKind: 'textInput',
+    regex: URL_REGEX,
+    regexValidationFn: returnUrlValidationText,
   },
   {
     label: 'Department Referred For',
@@ -80,11 +132,15 @@ const REFERMENT_QUERY_DATA: ComponentQueryData[] = [
     label: 'Referral Reason',
     value: 'referralReason',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Additional Information',
     value: 'additionalInformation',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Privacy Consent',
@@ -97,16 +153,6 @@ const REFERMENT_QUERY_DATA: ComponentQueryData[] = [
     value: 'requestStatus',
     inputKind: 'selectInput',
     selectData: REQUEST_STATUS,
-  },
-  {
-    label: 'Created At',
-    value: 'createdAt',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Updated At',
-    value: 'updatedAt',
-    inputKind: 'dateInput',
   },
 ];
 

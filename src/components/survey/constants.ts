@@ -1,4 +1,17 @@
+import {
+  DATE_FULL_RANGE_REGEX,
+  DATE_NEAR_FUTURE_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  GRAMMAR_TEXT_INPUT_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
 import { RadioGroupInputData, SelectInputData } from '../../types';
+import {
+  returnDateFullRangeValidationText,
+  returnDateNearFutureValidationText,
+  returnGrammarValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
 
 const SURVEY_BUILDER_RECIPIENT_DATA = [
@@ -109,33 +122,62 @@ const SURVEY_RESPONSE_INPUTS = [
 
 const SURVEY_QUERY_DATA: ComponentQueryData[] = [
   {
-    label: 'Survey title',
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Created Date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Survey Title',
     value: 'surveyTitle',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
-    label: 'Survey description',
+    label: 'Survey Description',
     value: 'surveyDescription',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
-    label: 'Send to',
+    label: 'Send To',
     value: 'sendTo',
     inputKind: 'selectInput',
     selectData: SURVEY_BUILDER_RECIPIENT_DATA,
   },
   {
-    label: 'Expiry date',
+    label: 'Expiry Date',
     value: 'expiryDate',
     inputKind: 'dateInput',
+    regex: DATE_NEAR_FUTURE_REGEX,
+    regexValidationFn: returnDateNearFutureValidationText,
   },
   {
     label: 'Question',
     value: 'question',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
-    label: 'Response kind',
+    label: 'Response Kind',
     value: 'responseKind',
     inputKind: 'selectInput',
     selectData: SURVEY_BUILDER_RESPONSE_KIND_DATA.map(
@@ -143,25 +185,17 @@ const SURVEY_QUERY_DATA: ComponentQueryData[] = [
     ),
   },
   {
-    label: 'Response input',
+    label: 'Response Input',
     value: 'responseInput',
     inputKind: 'selectInput',
     selectData: SURVEY_RESPONSE_INPUTS,
   },
   {
-    label: 'Response options',
+    label: 'Response Options',
     value: 'responseOptions',
     inputKind: 'textInput',
-  },
-  {
-    label: 'Created at',
-    value: 'createdAt',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Updated at',
-    value: 'updatedAt',
-    inputKind: 'dateInput',
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
 ];
 

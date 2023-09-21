@@ -1,5 +1,18 @@
 import { REQUEST_STATUS } from '../../constants/data';
+import {
+  DATE_FULL_RANGE_REGEX,
+  DATE_REGEX,
+  MONEY_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
 import { ResourceRoutePaths } from '../../types';
+import {
+  returnDateFullRangeValidationText,
+  returnDateValidationText,
+  returnGrammarValidationText,
+  returnNumberAmountValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 
@@ -56,28 +69,55 @@ const CREATE_BENEFIT_MAX_STEPPER_POSITION = 3;
 
 const BENEFIT_QUERY_DATA: ComponentQueryData[] = [
   {
-    label: 'Plan name',
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Created Date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Plan Name',
     value: 'planName',
     inputKind: 'textInput',
+    regex: PLAN_NAME_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
-    label: 'Plan description',
+    label: 'Plan Description',
     value: 'planDescription',
     inputKind: 'textInput',
+    regex: PLAN_DESCRIPTION_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
-    label: 'Plan kind',
+    label: 'Plan Kind',
     value: 'planKind',
     inputKind: 'selectInput',
     selectData: BENEFIT_PLAN_DATA,
   },
   {
-    label: 'Plan start date',
+    label: 'Plan Start Date',
     value: 'planStartDate',
     inputKind: 'dateInput',
+    regex: DATE_REGEX,
+    regexValidationFn: returnDateValidationText,
   },
   {
-    label: 'Is plan active',
+    label: 'Is Plan Active',
     value: 'isPlanActive',
     inputKind: 'booleanInput',
     booleanData: [true, false],
@@ -89,35 +129,31 @@ const BENEFIT_QUERY_DATA: ComponentQueryData[] = [
     selectData: CURRENCY_DATA,
   },
   {
-    label: 'Employer contribution',
+    label: 'Employer Contribution',
     value: 'employerContribution',
     inputKind: 'numberInput',
+    regex: MONEY_REGEX,
+    regexValidationFn: returnNumberAmountValidationText,
   },
   {
-    label: 'Employee contribution',
+    label: 'Employee Contribution',
     value: 'employeeContribution',
     inputKind: 'numberInput',
+    regex: MONEY_REGEX,
+    regexValidationFn: returnNumberAmountValidationText,
   },
   {
-    label: 'Monthly premium',
+    label: 'Monthly Premium',
     value: 'monthlyPremium',
     inputKind: 'numberInput',
+    regex: MONEY_REGEX,
+    regexValidationFn: returnNumberAmountValidationText,
   },
   {
-    label: 'Request status',
+    label: 'Request Status',
     value: 'requestStatus',
     inputKind: 'selectInput',
     selectData: REQUEST_STATUS,
-  },
-  {
-    label: 'Created date',
-    value: 'createdAt',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Updated date',
-    value: 'updatedAt',
-    inputKind: 'dateInput',
   },
 ];
 

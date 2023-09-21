@@ -14,6 +14,7 @@ import {
   NOTE_TEXT_REGEX,
   PHONE_NUMBER_REGEX,
   SERIAL_ID_REGEX,
+  USERNAME_REGEX,
 } from '../../constants/regex';
 import { ResourceRoutePaths } from '../../types';
 import {
@@ -29,6 +30,7 @@ import {
   returnNumberAmountValidationText,
   returnPhoneNumberValidationText,
   returnSerialIdValidationText,
+  returnUsernameRegexValidationText,
 } from '../../utils';
 import { COUNTRIES_DATA } from '../addressChange/constants';
 import { CURRENCY_DATA } from '../benefits/constants';
@@ -133,6 +135,13 @@ const REPAIR_STATUS_DATA = [
 ];
 
 const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
+  {
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
   {
     label: 'Created date',
     value: 'createdAt',

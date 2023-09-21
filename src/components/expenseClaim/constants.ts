@@ -1,5 +1,19 @@
 import { REQUEST_STATUS } from '../../constants/data';
+import {
+  DATE_FULL_RANGE_REGEX,
+  DATE_NEAR_PAST_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  MONEY_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
 import { ResourceRoutePaths } from '../../types';
+import {
+  returnDateFullRangeValidationText,
+  returnDateNearPastValidationText,
+  returnGrammarValidationText,
+  returnNumberAmountValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { CURRENCY_DATA } from '../benefits/constants';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
@@ -41,6 +55,27 @@ const EXPENSE_CLAIM_MAX_IMG_SIZE = 1 * 1024 * 1024;
 
 const EXPENSE_CLAIM_QUERY_DATA: ComponentQueryData[] = [
   {
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Created Date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
     label: 'Expense Claim Kind',
     value: 'expenseClaimKind',
     inputKind: 'selectInput',
@@ -50,6 +85,8 @@ const EXPENSE_CLAIM_QUERY_DATA: ComponentQueryData[] = [
     label: 'Expense Claim Amount',
     value: 'expenseClaimAmount',
     inputKind: 'numberInput',
+    regex: MONEY_REGEX,
+    regexValidationFn: returnNumberAmountValidationText,
   },
   {
     label: 'Expense Claim Currency',
@@ -61,16 +98,22 @@ const EXPENSE_CLAIM_QUERY_DATA: ComponentQueryData[] = [
     label: 'Expense Claim Date',
     value: 'expenseClaimDate',
     inputKind: 'dateInput',
+    regex: DATE_NEAR_PAST_REGEX,
+    regexValidationFn: returnDateNearPastValidationText,
   },
   {
     label: 'Expense Claim Description',
     value: 'expenseClaimDescription',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Additional Comments',
     value: 'additionalComments',
     inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
   {
     label: 'Acknowledgement',

@@ -17,7 +17,9 @@ import {
   EMAIL_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
+  NOTE_TEXT_REGEX,
   PHONE_NUMBER_REGEX,
+  PRINTER_MAKE_MODEL_REGEX,
   PRINTER_SERIAL_NUMBER_REGEX,
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
@@ -354,6 +356,16 @@ function CreatePrinterIssue() {
       payload: isValid,
     });
   }, [printerSerialNumber]);
+
+  // validate printer model input on every change
+  useEffect(() => {
+    const isValid = PRINTER_MAKE_MODEL_REGEX.test(printerModel);
+
+    createPrinterIssueDispatch({
+      type: createPrinterIssueAction.setIsValidPrinterModel,
+      payload: isValid,
+    });
+  }, [printerModel]);
 
   // validate printer issue description input on every change
   useEffect(() => {

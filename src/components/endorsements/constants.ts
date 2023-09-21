@@ -1,5 +1,17 @@
 import { REQUEST_STATUS } from '../../constants/data';
+import {
+  DATE_FULL_RANGE_REGEX,
+  FULL_NAME_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
 import { CheckBoxMultipleData } from '../../types';
+import {
+  returnDateFullRangeValidationText,
+  returnGrammarValidationText,
+  returnNameValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 
@@ -54,36 +66,51 @@ const ATTRIBUTE_ENDORSED_SELECT_OPTIONS = [
 
 const ENDORSEMENTS_QUERY_DATA: ComponentQueryData[] = [
   {
-    label: 'Attribute endorsed',
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Created Date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Attribute Endorsed',
     value: 'attributeEndorsed',
     inputKind: 'selectInput',
     selectData: ATTRIBUTE_ENDORSED_SELECT_OPTIONS,
   },
   {
-    label: 'Request status',
+    label: 'Request Status',
     value: 'requestStatus',
     inputKind: 'selectInput',
     selectData: REQUEST_STATUS,
   },
   {
-    label: 'User to be endorsed',
+    label: 'User to be Endorsed',
     value: 'userToBeEndorsed',
     inputKind: 'textInput',
+    regex: FULL_NAME_REGEX,
+    regexValidationFn: returnNameValidationText,
   },
   {
-    label: 'Summary of endorsement',
+    label: 'Summary of Endorsement',
     value: 'summaryOfEndorsement',
     inputKind: 'textInput',
-  },
-  {
-    label: 'Created date',
-    value: 'createdAt',
-    inputKind: 'dateInput',
-  },
-  {
-    label: 'Updated date',
-    value: 'updatedAt',
-    inputKind: 'dateInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
   },
 ];
 

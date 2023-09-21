@@ -9,7 +9,7 @@ import { generateQueryString } from './utils';
 const initialQueryBuilderState: QueryBuilderState = {
   // filter
   filterSelectData: [],
-  currentFilterField: 'Created date',
+  currentFilterField: 'Created Date',
   currentFilterOperator: 'equal to',
   currentFilterValue: '1970-01-01',
   isCurrentFilterValueValid: false,
