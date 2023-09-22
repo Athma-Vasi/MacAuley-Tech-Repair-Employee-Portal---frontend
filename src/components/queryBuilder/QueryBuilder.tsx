@@ -26,14 +26,7 @@ import {
 } from 'react-icons/tb';
 
 import { COLORS_SWATCHES } from '../../constants/data';
-import {
-  DATE_FULL_RANGE_REGEX,
-  MONEY_REGEX,
-  NOTE_TEXT_AREA_REGEX,
-  NOTE_TEXT_REGEX,
-  SERIAL_ID_REGEX,
-  TIME_RAILWAY_REGEX,
-} from '../../constants/regex';
+import { NOTE_TEXT_REGEX, SERIAL_ID_REGEX } from '../../constants/regex';
 import { useGlobalState } from '../../hooks';
 import {
   AccessibleErrorValidTextElements,
@@ -494,7 +487,7 @@ function QueryBuilder({
     });
   }, [searchStatementsQueue, currentSearchValue]);
 
-  // build query string on every filter, sort, or projection arrays change
+  // build query string on every filter, search, sort, or projection arrays change
   useEffect(() => {
     if (!labelValueTypesMap.size) {
       return;
@@ -581,7 +574,7 @@ function QueryBuilder({
   // ----------------- //
 
   const {
-    generalColors: { themeColorShade, grayColorShade },
+    generalColors: { themeColorShade, grayColorShade, grayBorderShade },
     appThemeColors: { borderColor },
   } = returnThemeColors({
     themeObject,
@@ -1530,8 +1523,11 @@ function QueryBuilder({
                       <Group>{createdAddNewFilterButton}</Group>
                     </Tooltip>
                   </Group>
-                  {createdFilterSelectInput}
-                  {createdFilterOperatorsSelectInput}
+
+                  <Group w="100%" position="apart">
+                    {createdFilterSelectInput}
+                    {createdFilterOperatorsSelectInput}
+                  </Group>
                   {createdFilterValueInput}
                 </FormLayoutWrapper>
               </Stack>
@@ -1629,8 +1625,9 @@ function QueryBuilder({
                   <Divider
                     size="sm"
                     w="100%"
-                    variant="solid"
+                    variant="dashed"
                     labelPosition="center"
+                    color={grayBorderShade}
                   />
 
                   {/* general search section */}
@@ -1701,8 +1698,10 @@ function QueryBuilder({
                       <Group>{createdAddNewSortButton}</Group>
                     </Tooltip>
                   </Group>
-                  {createdSortSelectInput}
-                  {createdSortDirectionSelectInput}
+                  <Group w="100%" position="apart">
+                    {createdSortSelectInput}
+                    {createdSortDirectionSelectInput}
+                  </Group>
                 </FormLayoutWrapper>
               </Stack>
             </Accordion.Panel>

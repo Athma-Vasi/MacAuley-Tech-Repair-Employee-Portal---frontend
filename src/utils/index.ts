@@ -1465,6 +1465,7 @@ function returnThemeColors({
     : gray[5];
   // all color shades
   const grayColorShade = gray[colorShade];
+  const grayBorderShade = colorScheme==='light'?gray[2]:gray[8];
   const redColorShade = red[colorShade];
   const greenColorShade = green[colorShade];
   const cyanColorShade = cyan[colorShade];
@@ -1473,6 +1474,7 @@ function returnThemeColors({
     chartTextColor,
     cyanColorShade,
     darkSchemeGray,
+    grayBorderShade,
     grayColorShade,
     greenColorShade,
     iconGray,

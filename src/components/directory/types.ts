@@ -37,7 +37,6 @@ type DirectoryUserDocument = {
   jobPosition: JobPosition;
   department: Department;
   storeLocation?: StoreLocation;
-  startDate: string;
   active: boolean;
 };
 

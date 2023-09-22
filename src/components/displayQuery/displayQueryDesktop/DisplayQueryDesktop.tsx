@@ -205,11 +205,16 @@ function DisplayQueryDesktop<Doc>({
   });
 
   const displayTable = (
-    <ScrollArea styles={() => scrollBarStyle} type="always" offsetScrollbars>
+    <ScrollArea
+      styles={() => scrollBarStyle}
+      type="always"
+      offsetScrollbars
+      pr={padding}
+    >
       <Group
         w={width <= 991 ? width - 225 - 44 : width - 300 - 44}
         style={{
-          minHeight: '200px', // allows popovers and tooltips to display
+          minHeight: '300px', // allows popovers and tooltips to display
         }}
         align="flex-start"
       >

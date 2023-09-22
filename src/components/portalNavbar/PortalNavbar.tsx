@@ -382,6 +382,17 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     </NavLink>
   );
 
+  // dev testing page
+  const displayDevTestingNavLink = (
+    <NavLink
+      label={<Text>Dev testing</Text>}
+      icon={<TbTimelineEventPlus color={iconGray} />}
+      onClick={() => {
+        navigate('/home/dev-testing');
+      }}
+    />
+  );
+
   return (
     <Navbar
       pl={padding}
@@ -393,6 +404,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     >
       <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
         <Flex direction="column">
+          {/* dev testing */}
+          {displayDevTestingNavLink}
+
           {displayHomeNavLink}
 
           {displayNotesNavLink}

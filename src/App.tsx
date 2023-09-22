@@ -11,6 +11,7 @@ import { useAuth } from './hooks';
 import { useGlobalState } from './hooks/useGlobalState';
 import { returnThemeColors } from './utils';
 import { COLORS_SWATCHES } from './constants/data';
+import DevTesting from './components/devTesting/DevTesting';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const PublicLayout = lazy(
@@ -575,9 +576,10 @@ function App() {
         </Route>          
       </Route> */}
 
-        {/* DEV TEST ROUTES */}
         <Route path="home" element={homeIndexWrapper}>
           <Route index element={dashboardElement} />
+          {/* DEV TEST ROUTES */}
+          <Route path="dev-testing" element={<DevTesting />} />
           {/* <Route path="dashboard" element={dashboardElement} /> */}
 
           {/* directory */}
