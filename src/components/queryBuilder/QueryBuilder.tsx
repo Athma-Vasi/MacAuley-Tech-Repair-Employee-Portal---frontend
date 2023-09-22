@@ -5,6 +5,7 @@ import {
   Flex,
   Group,
   Modal,
+  SegmentedControl,
   Stack,
   Text,
   Title,
@@ -28,7 +29,9 @@ import { COLORS_SWATCHES } from '../../constants/data';
 import {
   DATE_FULL_RANGE_REGEX,
   MONEY_REGEX,
+  NOTE_TEXT_AREA_REGEX,
   NOTE_TEXT_REGEX,
+  SERIAL_ID_REGEX,
   TIME_RAILWAY_REGEX,
 } from '../../constants/regex';
 import { useGlobalState } from '../../hooks';
@@ -46,6 +49,7 @@ import { CheckboxInputData } from '../../types';
 import {
   logState,
   replaceLastCommaWithAnd,
+  returnSerialIdValidationText,
   returnThemeColors,
 } from '../../utils';
 import { TimelineBuilder } from '../timelineBuilder';
@@ -60,6 +64,7 @@ import {
 } from '../wrappers';
 import {
   ORDINAL_TERMS,
+  QUERY_BUILDER_CASE_SENSITIVITY_OPTIONS,
   QUERY_BUILDER_FILTER_OPERATORS,
   QUERY_BUILDER_SORT_OPERATORS,
 } from './constants';
@@ -71,15 +76,15 @@ import {
 import {
   ComponentQueryData,
   QueryBuilderProps,
-  QueryLabelValueTypesMap,
   QueryValueTypes,
 } from './types';
 import {
   FILTER_HELP_MODAL_CONTENT,
+  GENERAL_SEARCH_HELP_MODAL_CONTENT,
   generateFilterChainStatement,
   PROJECTION_HELP_MODAL_CONTENT,
   QUERY_BUILDER_HELP_MODAL_CONTENT,
-  SEARCH_HELP_MODAL_CONTENT,
+  SEARCH_CHAIN_HELP_MODAL_CONTENT,
   SORT_HELP_MODAL_CONTENT,
 } from './utils';
 
@@ -104,6 +109,7 @@ function QueryBuilder({
     isCurrentFilterValueFocused,
     filterOperatorSelectData,
     filterStatementsQueue,
+
     // search section
     searchSelectData,
     currentSearchField,
@@ -111,11 +117,24 @@ function QueryBuilder({
     isCurrentSearchValueValid,
     isCurrentSearchValueFocused,
     searchStatementsQueue,
+
+    // general search section
+    isGeneralSearchCaseSensitive,
+    // inclusion
+    generalSearchInclusionValue,
+    isGeneralSearchInclusionValueValid,
+    isGeneralSearchInclusionValueFocused,
+    // exclusion
+    generalSearchExclusionValue,
+    isGeneralSearchExclusionValueValid,
+    isGeneralSearchExclusionValueFocused,
+
     // sort section
     sortSelectData,
     currentSortField,
     currentSortDirection,
     sortStatementsQueue,
+
     // projection section
     projectionArray,
     projectionCheckboxData,
@@ -142,8 +161,12 @@ function QueryBuilder({
     { open: openFilterHelpModal, close: closeFilterHelpModal },
   ] = useDisclosure(false);
   const [
-    openedSearchHelpModal,
-    { open: openSearchHelpModal, close: closeSearchHelpModal },
+    openedSearchChainHelpModal,
+    { open: openSearchChainHelpModal, close: closeSearchChainHelpModal },
+  ] = useDisclosure(false);
+  const [
+    openedGeneralSearchHelpModal,
+    { open: openGeneralSearchHelpModal, close: closeGeneralSearchHelpModal },
   ] = useDisclosure(false);
   const [
     openedSortHelpModal,
@@ -384,6 +407,26 @@ function QueryBuilder({
     });
   }, [currentSearchField, currentSearchValue, labelValueTypesMap]);
 
+  // validate general search inclusion value on change
+  useEffect(() => {
+    const isValid = SERIAL_ID_REGEX.test(generalSearchInclusionValue);
+
+    queryBuilderDispatch({
+      type: queryBuilderAction.setIsGeneralSearchInclusionValueValid,
+      payload: isValid,
+    });
+  }, [generalSearchInclusionValue]);
+
+  // validate general search exclusion value on change
+  useEffect(() => {
+    const isValid = SERIAL_ID_REGEX.test(generalSearchExclusionValue);
+
+    queryBuilderDispatch({
+      type: queryBuilderAction.setIsGeneralSearchExclusionValueValid,
+      payload: isValid,
+    });
+  }, [generalSearchExclusionValue]);
+
   // set appropriate search field
   useEffect(() => {
     if (!labelValueTypesMap.size) {
@@ -413,11 +456,56 @@ function QueryBuilder({
     });
   }, []);
 
+  // whenever general search values change, clear search statements values, queue
+  useEffect(() => {
+    searchStatementsQueue.forEach((_, index) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setSearchStatementsQueue,
+        payload: {
+          index,
+          value: ['', ''],
+        },
+      });
+    });
+
+    queryBuilderDispatch({
+      type: queryBuilderAction.setCurrentSearchValue,
+      payload: '',
+    });
+
+    // clear projection exclusion set
+    queryBuilderDispatch({
+      type: queryBuilderAction.setSelectedFieldsSet,
+      payload: {
+        calledFrom: 'search',
+      },
+    });
+  }, [generalSearchInclusionValue, generalSearchExclusionValue]);
+
+  // whenever search chain values change, clear general search inclusion, exclusion values
+  useEffect(() => {
+    queryBuilderDispatch({
+      type: queryBuilderAction.setGeneralSearchInclusionValue,
+      payload: '',
+    });
+    queryBuilderDispatch({
+      type: queryBuilderAction.setGeneralSearchExclusionValue,
+      payload: '',
+    });
+  }, [searchStatementsQueue, currentSearchValue]);
+
   // build query string on every filter, sort, or projection arrays change
   useEffect(() => {
     if (!labelValueTypesMap.size) {
       return;
     }
+
+    const generalSearchValue =
+      generalSearchInclusionValue.length || generalSearchExclusionValue.length
+        ? `${generalSearchInclusionValue.trim()}${
+            generalSearchExclusionValue.length ? ' -' : ''
+          }${generalSearchExclusionValue.trim().split(' ').join(' -')}`
+        : '';
 
     // build the query
     queryBuilderDispatch({
@@ -425,6 +513,8 @@ function QueryBuilder({
       payload: {
         labelValueTypesMap,
         filterStatementsQueue,
+        generalSearchValue,
+        isGeneralSearchCaseSensitive,
         searchStatementsQueue,
         sortStatementsQueue,
         projectionArray,
@@ -436,6 +526,9 @@ function QueryBuilder({
     searchStatementsQueue,
     sortStatementsQueue,
     projectionArray,
+    generalSearchInclusionValue,
+    generalSearchExclusionValue,
+    isGeneralSearchCaseSensitive,
   ]);
 
   // ----------------- accessibility texts -----------------  //
@@ -827,6 +920,47 @@ function QueryBuilder({
       regexValidationText: searchInputRegexValidationText,
     });
 
+  const [
+    generalSearchInclusionTextInputErrorText,
+    generalSearchInclusionTextInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'general search inclusion',
+    inputText: generalSearchInclusionValue,
+    isInputTextFocused: isGeneralSearchInclusionValueFocused,
+    isValidInputText: isGeneralSearchInclusionValueValid,
+    regexValidationText: returnSerialIdValidationText({
+      content: generalSearchInclusionValue,
+      contentKind: 'general search',
+    }),
+  });
+
+  const [
+    generalSearchExclusionTextInputErrorText,
+    generalSearchExclusionTextInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'general search exclusion',
+    inputText: generalSearchExclusionValue,
+    isInputTextFocused: isGeneralSearchExclusionValueFocused,
+    isValidInputText: isGeneralSearchExclusionValueValid,
+    regexValidationText: returnSerialIdValidationText({
+      content: generalSearchExclusionValue,
+      contentKind: 'general search',
+    }),
+  });
+
+  const toggleCaseSensitivitySegmentedControl = (
+    <SegmentedControl
+      data={QUERY_BUILDER_CASE_SENSITIVITY_OPTIONS}
+      value={isGeneralSearchCaseSensitive ? 'sensitive' : 'insensitive'}
+      onChange={(value) => {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setIsGeneralSearchCaseSensitive,
+          payload: value === 'sensitive',
+        });
+      }}
+    />
+  );
+
   const searchTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
     description: {
       error: searchTextInputErrorText,
@@ -860,7 +994,75 @@ function QueryBuilder({
     semanticName: currentSearchField,
   };
 
-  const addNewSearchButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+  const generalSearchInclusionTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: generalSearchInclusionTextInputErrorText,
+        valid: generalSearchInclusionTextInputValidText,
+      },
+      inputText: generalSearchInclusionValue,
+      isValidInputText: isGeneralSearchInclusionValueValid,
+      label: 'Include',
+      minLength: 1,
+      maxLength: 100,
+      onBlur: () => {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setIsGeneralSearchInclusionValueFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setGeneralSearchInclusionValue,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setIsGeneralSearchInclusionValueFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter search term',
+      required: false,
+      semanticName: 'general search inclusion',
+    };
+
+  const generalSearchExclusionTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: generalSearchExclusionTextInputErrorText,
+        valid: generalSearchExclusionTextInputValidText,
+      },
+      inputText: generalSearchExclusionValue,
+      isValidInputText: isGeneralSearchExclusionValueValid,
+      label: 'Exclude',
+      minLength: 1,
+      maxLength: 100,
+      onBlur: () => {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setIsGeneralSearchExclusionValueFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setGeneralSearchExclusionValue,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        queryBuilderDispatch({
+          type: queryBuilderAction.setIsGeneralSearchExclusionValueFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter search term',
+      required: false,
+      semanticName: 'general search exclusion',
+    };
+
+  const addNewSearchChainButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: 'Add',
     buttonDisabled: !isCurrentSearchValueValid,
     semanticDescription:
@@ -927,10 +1129,13 @@ function QueryBuilder({
         </Tooltip>
       );
 
+      const nextField = searchStatementsQueue[index + 1]?.[0] ?? '';
+      const logicalOperator = field === nextField ? 'OR' : 'AND';
+
       const dividerLabel = (
         <Group>
           <TbLink color={grayColorShade} size={16} />
-          <Text color={grayColorShade}>AND</Text>
+          <Text color={grayColorShade}>{logicalOperator}</Text>
           <TbArrowDown color={grayColorShade} size={16} />
         </Group>
       );
@@ -1101,6 +1306,9 @@ function QueryBuilder({
   const submitQueryToParentComponentButtonCreatorInfo: AccessibleButtonCreatorInfo =
     {
       buttonLabel: 'Submit',
+      buttonDisabled:
+        !isGeneralSearchInclusionValueValid &&
+        generalSearchInclusionValue.length > 0,
       semanticDescription: `Submit query to ${collectionName}`,
       semanticName: 'submit query',
       buttonOnClick: () => {
@@ -1108,9 +1316,6 @@ function QueryBuilder({
           type: setQueryBuilderString,
           payload: queryString,
         });
-        // queryBuilderDispatch({
-        //   type:queryBuilderAction.setq
-        // })
       },
       leftIcon: <TbUpload />,
     };
@@ -1150,12 +1355,21 @@ function QueryBuilder({
     },
   };
 
-  const searchHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+  const generalSearchHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: <TbQuestionMark />,
+    semanticDescription: 'Open general search help modal',
+    semanticName: 'general search help',
+    buttonOnClick: () => {
+      openGeneralSearchHelpModal();
+    },
+  };
+
+  const searchChainHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: <TbQuestionMark />,
     semanticDescription: 'Open search help modal',
     semanticName: 'search help',
     buttonOnClick: () => {
-      openSearchHelpModal();
+      openSearchChainHelpModal();
     },
   };
 
@@ -1195,30 +1409,40 @@ function QueryBuilder({
 
   const [
     createdAddNewFilterButton,
-    createdAddNewSearchButton,
+    createdAddNewSearchChainButton,
     createdAddNewSortButton,
     createdSubmitButton,
     createdClearButton,
     createdQueryBuilderHelpButton,
     createdFilterHelpButton,
-    createdSearchHelpButton,
+    createdGeneralSearchHelpButton,
+    createdSearchChainHelpButton,
     createdSortHelpButton,
     createdProjectionHelpButton,
   ] = returnAccessibleButtonElements([
     addNewFilterButtonCreatorInfo,
-    addNewSearchButtonCreatorInfo,
+    addNewSearchChainButtonCreatorInfo,
     addNewSortButtonCreatorInfo,
     submitQueryToParentComponentButtonCreatorInfo,
     clearQueryButtonCreatorInfo,
     queryBuilderHelpButtonCreatorInfo,
     filterHelpButtonCreatorInfo,
-    searchHelpButtonCreatorInfo,
+    generalSearchHelpButtonCreatorInfo,
+    searchChainHelpButtonCreatorInfo,
     sortHelpButtonCreatorInfo,
     projectionHelpButtonCreatorInfo,
   ]);
 
   const [createdSearchTextAreaInput] = returnAccessibleTextAreaInputElements([
     searchTextAreaInputCreatorInfo,
+  ]);
+
+  const [
+    createdGeneralSearchInclusionTextInput,
+    createdGeneralSearchExclusionTextInput,
+  ] = returnAccessibleTextInputElements([
+    generalSearchInclusionTextInputCreatorInfo,
+    generalSearchExclusionTextInputCreatorInfo,
   ]);
 
   const [createdProjectionCheckboxGroupInput] =
@@ -1387,16 +1611,48 @@ function QueryBuilder({
                     <Group spacing={rowGap}>
                       <Title order={5}>Build Search Chain</Title>
                       <Tooltip label="Search help">
-                        <Group>{createdSearchHelpButton}</Group>
+                        <Group>{createdSearchChainHelpButton}</Group>
                       </Tooltip>
                     </Group>
                     {/* add new search button */}
                     <Tooltip label="Add a new search chain">
-                      <Group>{createdAddNewSearchButton}</Group>
+                      <Group>{createdAddNewSearchChainButton}</Group>
                     </Tooltip>
                   </Group>
-                  {createdSearchSelectInput}
-                  {createdSearchTextAreaInput}
+                  <Group w="100%" position="apart" align="flex-start">
+                    {createdSearchSelectInput}
+                    {createdSearchTextAreaInput}
+                  </Group>
+
+                  {/* divider */}
+
+                  <Divider
+                    size="sm"
+                    w="100%"
+                    variant="solid"
+                    labelPosition="center"
+                  />
+
+                  {/* general search section */}
+                  <Group w="100%" position="apart">
+                    <Group spacing={rowGap}>
+                      <Title order={5}>General Search</Title>
+                      <Tooltip label="General search help">
+                        <Group>{createdGeneralSearchHelpButton}</Group>
+                      </Tooltip>
+                    </Group>
+                    {/* case sensitivity toggle */}
+                    <Group spacing={rowGap}>
+                      <Title order={6}>Case</Title>
+                      {toggleCaseSensitivitySegmentedControl}
+                    </Group>
+                  </Group>
+
+                  {/* inclusion and exclusion */}
+                  <Group w="100%" position="apart" align="baseline">
+                    {createdGeneralSearchInclusionTextInput}
+                    {createdGeneralSearchExclusionTextInput}
+                  </Group>
                 </FormLayoutWrapper>
               </Stack>
             </Accordion.Panel>
@@ -1557,15 +1813,27 @@ function QueryBuilder({
     </Modal>
   );
 
-  const searchHelpModal = (
+  const generalSearchHelpModal = (
     <Modal
-      opened={openedSearchHelpModal}
-      onClose={closeSearchHelpModal}
-      title={<Title order={4}>Search help</Title>}
+      opened={openedGeneralSearchHelpModal}
+      onClose={closeGeneralSearchHelpModal}
+      title={<Title order={4}>General Search help</Title>}
       size={width <= 1024 ? 'auto' : 1024 - 200}
       centered
     >
-      {SEARCH_HELP_MODAL_CONTENT}
+      {GENERAL_SEARCH_HELP_MODAL_CONTENT}
+    </Modal>
+  );
+
+  const searchChainHelpModal = (
+    <Modal
+      opened={openedSearchChainHelpModal}
+      onClose={closeSearchChainHelpModal}
+      title={<Title order={4}>Search Chain help</Title>}
+      size={width <= 1024 ? 'auto' : 1024 - 200}
+      centered
+    >
+      {SEARCH_CHAIN_HELP_MODAL_CONTENT}
     </Modal>
   );
 
@@ -1605,7 +1873,8 @@ function QueryBuilder({
       {displayQueryBuilderComponent}
       {queryBuilderHelpModal}
       {filterHelpModal}
-      {searchHelpModal}
+      {generalSearchHelpModal}
+      {searchChainHelpModal}
       {sortHelpModal}
       {projectionHelpModal}
     </Group>

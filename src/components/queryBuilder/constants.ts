@@ -31,8 +31,20 @@ const ORDINAL_TERMS = [
   'vigesimal',
 ];
 
+const QUERY_BUILDER_CASE_SENSITIVITY_OPTIONS = [
+  {
+    label: 'Sensitive',
+    value: 'sensitive',
+  },
+  {
+    label: 'Insensitive',
+    value: 'insensitive',
+  },
+];
+
 export {
+  ORDINAL_TERMS,
+  QUERY_BUILDER_CASE_SENSITIVITY_OPTIONS,
   QUERY_BUILDER_FILTER_OPERATORS,
   QUERY_BUILDER_SORT_OPERATORS,
-  ORDINAL_TERMS,
 };

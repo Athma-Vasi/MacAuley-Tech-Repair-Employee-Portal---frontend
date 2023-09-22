@@ -48,7 +48,7 @@ const PASSWORD_REGEX =
  * - ^ and $ ensure that the entire string matches the regex.
  */
 const SERIAL_ID_REGEX =
-  /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{1,100}$/i;
+  /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{1,100}$/i;
 
 /**
  * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,75}$/i

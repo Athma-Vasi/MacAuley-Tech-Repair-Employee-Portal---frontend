@@ -10,6 +10,8 @@ import { QueryLabelValueTypesMap } from './types';
 type GenerateQueryStringInput = {
   labelValueTypesMap: QueryLabelValueTypesMap;
   filterStatementsQueue: [string, string, string][];
+  generalSearchValue: string;
+  isGeneralSearchCaseSensitive: boolean;
   searchStatementsQueue: [string, string][];
   sortStatementsQueue: [string, string][];
   projectionArray: string[];
@@ -18,6 +20,8 @@ type GenerateQueryStringInput = {
 function generateQueryString({
   labelValueTypesMap,
   filterStatementsQueue,
+  generalSearchValue,
+  isGeneralSearchCaseSensitive,
   searchStatementsQueue,
   sortStatementsQueue,
   projectionArray,
@@ -38,15 +42,12 @@ function generateQueryString({
 
   let queryString = '?';
 
-  if (searchStatementsQueue.length) {
-    queryString += searchStatementsQueue.reduce((acc, curr) => {
-      const [field, value] = curr;
-      return `${acc}&${labelValueTypesMap.get(field)?.value}[${
-        filterOperatorsMap.get('in') ?? filterOperatorsMap.get('equal to')
-      }]=${value ?? ''}`;
-    }, '');
+  // General search
+  if (generalSearchValue.length) {
+    queryString += `&text[search]=${generalSearchValue}&text[$caseSensitive]=${isGeneralSearchCaseSensitive}`;
   }
 
+  // Filter
   if (filterStatementsQueue.length) {
     queryString += filterStatementsQueue.reduce((acc, curr) => {
       const [field, operator, value] = curr;
@@ -56,6 +57,18 @@ function generateQueryString({
     }, '');
   }
 
+  // Search Chain
+  if (searchStatementsQueue.length) {
+    queryString += searchStatementsQueue.reduce((acc, curr) => {
+      const [field, value] = curr;
+
+      return `${acc}&${labelValueTypesMap.get(field)?.value}[${
+        filterOperatorsMap.get('in') ?? filterOperatorsMap.get('equal to')
+      }]=${value ?? ''}`;
+    }, '');
+  }
+
+  // Sort
   if (sortStatementsQueue.length) {
     queryString += sortStatementsQueue.reduce((acc, curr) => {
       const [field, value] = curr;
@@ -65,6 +78,7 @@ function generateQueryString({
     }, '');
   }
 
+  // Projection
   if (projectionArray.length) {
     queryString += projectionArray.reduce((acc, curr) => {
       return `${acc}&projection=-${curr}`;
@@ -176,22 +190,70 @@ const FILTER_HELP_MODAL_CONTENT = (
   </Stack>
 );
 
-const SEARCH_HELP_MODAL_CONTENT = (
+const GENERAL_SEARCH_HELP_MODAL_CONTENT = (
+  <Stack w="100%">
+    <Title order={6}>How it works:</Title>
+    <Text>
+      The general search operation allows searching for documents based on
+      unconstrained text values.
+    </Text>
+    <Text>
+      However, it's important to note that due to the broader search scope,
+      general searches may be slower compared to targeted searches using 'Search
+      Chain', as this search method scans multiple fields in your documents.
+    </Text>
+
+    <Text>
+      Each space-delimited phrase is treated as a token, and documents
+      containing any of these tokens will be included or excluded in the search
+      results.
+    </Text>
+
+    <Title order={6}>Example:</Title>
+    <Text>
+      Inclusion string of 'John Doe' will return documents that contain either a
+      "John" or "Doe" token . Exclusion string of '-Jane -Smith' will return
+      documents that do not contain either a "Jane" or "Smith" token.
+    </Text>
+    <Text>
+      Combining both inclusion and exclusion strings will return documents that
+      contain a "John" or "Doe" token (or if case-insensitive: "john" or "doe"),
+      'AND' do not contain a "Jane" or "Smith" (or if case-insensitive: "jane"
+      or "smith") token.
+    </Text>
+  </Stack>
+);
+
+const SEARCH_CHAIN_HELP_MODAL_CONTENT = (
   <Stack w="100%">
     <Title order={6}>How it works:</Title>
     <Text>
       The search operation allows you to search for documents whose fields
-      contain unconstrained values (text / textarea inputs).
+      contain unconstrained values (text / textarea inputs). You can chain
+      multiple search statements together to create logical search chains.
     </Text>
     <Text>
-      You can chain multiple search statements together to create logical search
-      chains. Currently, only "AND" is supported, meaning that all conditions
-      within the chain must be met for a document to be included in the query
-      result.
+      If there are multiple identical fields, search chain will be treated as
+      'OR', meaning that if <i>any</i> of the conditions within the ('OR')chain
+      are met, the document will be included in the query result.
     </Text>
     <Text>
-      The search chain is executed in the order that the statements are added
-      (top to bottom).
+      If there are no identical fields, search chain will be treated as 'AND',
+      meaning that <i>all</i> of the conditions within the ('AND')chain must be
+      met for a document to be included in the query result.
+    </Text>
+    <Text>
+      You can combine 'OR' and 'AND' search chains together to create complex or
+      more specific search chains. For example, you can search for documents
+      that have a "Customer name" that contains "John" <i>OR</i> "Jane" (always
+      case-insensitive) <i>AND</i> a "Created date" that is greater than or
+      equal to 2021-01-01.
+    </Text>
+    <Text>
+      For improved accuracy and user experience, each field has validation rules
+      corresponding to the type of data it stores. For example, a date field
+      will only accept valid dates, a number field will only accept valid
+      numbers, a text field that is 'email' will only accept valid emails, etc.
     </Text>
 
     <Title order={6}>Statement structure</Title>
@@ -264,11 +326,12 @@ const PROJECTION_HELP_MODAL_CONTENT = (
 
 export {
   FILTER_HELP_MODAL_CONTENT,
+  GENERAL_SEARCH_HELP_MODAL_CONTENT,
   generateFilterChainStatement,
   generateQueryString,
   PROJECTION_HELP_MODAL_CONTENT,
   QUERY_BUILDER_HELP_MODAL_CONTENT,
-  SEARCH_HELP_MODAL_CONTENT,
+  SEARCH_CHAIN_HELP_MODAL_CONTENT,
   SORT_HELP_MODAL_CONTENT,
 };
 

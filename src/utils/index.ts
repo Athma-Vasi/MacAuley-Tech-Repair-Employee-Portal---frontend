@@ -100,7 +100,7 @@ function returnSerialIdValidationText({
   const serialIdLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const alphanumericOrSpecialCharacterRegex =
-    /^[A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$/;
+    /^[A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]+$/;
 
   const serialIdRegexTupleArr: [boolean, string][] = [
     [
@@ -140,6 +140,7 @@ function returnNoteTextValidationText({
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
 
+
   const contentRegexTupleArr: [boolean, string][] = [
     [
       atleastOneAlphanumericRegex.test(content),
@@ -154,6 +155,7 @@ function returnNoteTextValidationText({
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
   ];
+
 
   const validationText = contentRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)

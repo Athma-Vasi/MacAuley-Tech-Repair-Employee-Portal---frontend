@@ -71,6 +71,16 @@ type QueryBuilderState = {
   isCurrentSearchValueFocused: boolean;
   searchStatementsQueue: [string, string][]; // [field, value]
 
+  isGeneralSearchCaseSensitive: boolean;
+  // general search inclusion
+  generalSearchInclusionValue: string;
+  isGeneralSearchInclusionValueValid: boolean;
+  isGeneralSearchInclusionValueFocused: boolean;
+  // general search exclusion
+  generalSearchExclusionValue: string;
+  isGeneralSearchExclusionValueValid: boolean;
+  isGeneralSearchExclusionValueFocused: boolean;
+
   // sort
   sortSelectData: string[];
   currentSortField: string;
@@ -113,6 +123,17 @@ type QueryBuilderAction = {
   setIsCurrentSearchValueFocused: 'setIsCurrentSearchValueFocused';
   setSearchStatementsQueue: 'setSearchStatementsQueue';
 
+  setIsGeneralSearchCaseSensitive: 'setIsGeneralSearchCaseSensitive';
+  // general search inclusion
+  setGeneralSearchInclusionValue: 'setGeneralSearchInclusionValue';
+  setIsGeneralSearchInclusionValueValid: 'setIsGeneralSearchInclusionValueValid';
+  setIsGeneralSearchInclusionValueFocused: 'setIsGeneralSearchInclusionValueFocused';
+
+  // general search exclusion
+  setGeneralSearchExclusionValue: 'setGeneralSearchExclusionValue';
+  setIsGeneralSearchExclusionValueValid: 'setIsGeneralSearchExclusionValueValid';
+  setIsGeneralSearchExclusionValueFocused: 'setIsGeneralSearchExclusionValueFocused';
+
   // sort
   setSortSelectData: 'setSortSelectData';
   setCurrentSortField: 'setCurrentSortField';
@@ -145,6 +166,8 @@ type QueryBuilderDispatch =
         | QueryBuilderAction['setCurrentFilterValue']
         | QueryBuilderAction['setCurrentSearchField']
         | QueryBuilderAction['setCurrentSearchValue']
+        | QueryBuilderAction['setGeneralSearchInclusionValue']
+        | QueryBuilderAction['setGeneralSearchExclusionValue']
         | QueryBuilderAction['setCurrentSortField']
         | QueryBuilderAction['setCurrentSortDirection']
         | QueryBuilderAction['setClearAllQueryData'];
@@ -156,7 +179,12 @@ type QueryBuilderDispatch =
         | QueryBuilderAction['setIsCurrentFilterValueValid']
         | QueryBuilderAction['setIsCurrentFilterValueFocused']
         | QueryBuilderAction['setIsCurrentSearchValueValid']
-        | QueryBuilderAction['setIsCurrentSearchValueFocused'];
+        | QueryBuilderAction['setIsCurrentSearchValueFocused']
+        | QueryBuilderAction['setIsGeneralSearchCaseSensitive']
+        | QueryBuilderAction['setIsGeneralSearchInclusionValueValid']
+        | QueryBuilderAction['setIsGeneralSearchInclusionValueFocused']
+        | QueryBuilderAction['setIsGeneralSearchExclusionValueValid']
+        | QueryBuilderAction['setIsGeneralSearchExclusionValueFocused'];
 
       payload: boolean;
     }

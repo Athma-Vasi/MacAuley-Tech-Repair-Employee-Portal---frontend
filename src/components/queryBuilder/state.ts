@@ -25,13 +25,24 @@ const initialQueryBuilderState: QueryBuilderState = {
   isCurrentSearchValueFocused: false,
   searchStatementsQueue: [],
 
+  isGeneralSearchCaseSensitive: false,
+  // general search inclusion
+  generalSearchInclusionValue: '',
+  isGeneralSearchInclusionValueValid: false,
+  isGeneralSearchInclusionValueFocused: false,
+
+  // general search exclusion
+  generalSearchExclusionValue: '',
+  isGeneralSearchExclusionValueValid: false,
+  isGeneralSearchExclusionValueFocused: false,
+
   // sort
   sortSelectData: [],
   currentSortField: 'Created date',
   currentSortDirection: 'ascending',
   sortStatementsQueue: [],
 
-  //
+  // projection
   projectionArray: [],
   projectionCheckboxData: [],
   selectedFieldsSet: new Set(),
@@ -66,6 +77,21 @@ const queryBuilderAction: QueryBuilderAction = {
   setIsCurrentSearchValueValid: 'setIsCurrentSearchValueValid',
   setIsCurrentSearchValueFocused: 'setIsCurrentSearchValueFocused',
   setSearchStatementsQueue: 'setSearchStatementsQueue',
+
+  setIsGeneralSearchCaseSensitive: 'setIsGeneralSearchCaseSensitive',
+  // general search inclusion
+  setGeneralSearchInclusionValue: 'setGeneralSearchInclusionValue',
+  setIsGeneralSearchInclusionValueValid:
+    'setIsGeneralSearchInclusionValueValid',
+  setIsGeneralSearchInclusionValueFocused:
+    'setIsGeneralSearchInclusionValueFocused',
+
+  // general search exclusion
+  setGeneralSearchExclusionValue: 'setGeneralSearchExclusionValue',
+  setIsGeneralSearchExclusionValueValid:
+    'setIsGeneralSearchExclusionValueValid',
+  setIsGeneralSearchExclusionValueFocused:
+    'setIsGeneralSearchExclusionValueFocused',
 
   // sort
   setSortSelectData: 'setSortSelectData',
@@ -207,25 +233,28 @@ function queryBuilderReducer(
       };
     case queryBuilderAction.setSearchStatementsQueue: {
       const { index, value } = action.payload;
+      const [newField, newValue] = value;
+
       const searchStatementsQueue = [...state.searchStatementsQueue];
 
       // if search statement already present return state
       if (
-        searchStatementsQueue.filter(
-          (item) => item[0] === value[0] && item[1] === value[1]
-        ).length > 0
+        searchStatementsQueue.filter((item) => {
+          const [currField, currValue] = item;
+          return currField === newField && currValue === newValue;
+        }).length > 0
       ) {
         return state;
       }
 
-      // if there are duplicate search fields, remove the previous one
-      const duplicateSearchFieldIndex = searchStatementsQueue.findIndex(
-        (item) => item[0] === value[0]
-      );
+      // // if there are duplicate search fields, remove the previous one
+      // const duplicateSearchFieldIndex = searchStatementsQueue.findIndex(
+      //   (item) => item[0] === value[0]
+      // );
 
-      if (duplicateSearchFieldIndex !== -1) {
-        searchStatementsQueue.splice(duplicateSearchFieldIndex, 1);
-      }
+      // if (duplicateSearchFieldIndex !== -1) {
+      //   searchStatementsQueue.splice(duplicateSearchFieldIndex, 1);
+      // }
 
       if (index >= searchStatementsQueue.length) {
         searchStatementsQueue.push(value);
@@ -236,7 +265,10 @@ function queryBuilderReducer(
       // filter out empty values and return state
       // done last because initial state is ['','']
       const filteredSearchStatementsQueue = searchStatementsQueue.filter(
-        (item) => item[0] !== '' && item[1] !== ''
+        (item) => {
+          const [currField, currValue] = item;
+          return currField !== '' && currValue !== '';
+        }
       );
 
       return {
@@ -244,6 +276,68 @@ function queryBuilderReducer(
         searchStatementsQueue: filteredSearchStatementsQueue,
       };
     }
+
+    // general search case sensitivity
+    case queryBuilderAction.setIsGeneralSearchCaseSensitive:
+      return {
+        ...state,
+        isGeneralSearchCaseSensitive: action.payload,
+      };
+
+    // general search inclusion
+    case queryBuilderAction.setGeneralSearchInclusionValue: {
+      const value = action.payload;
+      /**
+       * replaces all occurrences of these symbols with a single space ' '
+       */
+      const cleanedValue = value.replace(
+        /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+| +/g,
+        ' '
+      );
+
+      return {
+        ...state,
+        generalSearchInclusionValue: cleanedValue,
+      };
+    }
+    case queryBuilderAction.setIsGeneralSearchInclusionValueValid:
+      return {
+        ...state,
+        isGeneralSearchInclusionValueValid: action.payload,
+      };
+    case queryBuilderAction.setIsGeneralSearchInclusionValueFocused:
+      return {
+        ...state,
+        isGeneralSearchInclusionValueFocused: action.payload,
+      };
+
+    // general search exclusion
+    case queryBuilderAction.setGeneralSearchExclusionValue: {
+      // same as inclusion but with hyphen in front of each word
+      const value = action.payload;
+      /**
+       * replaces all occurrences of these symbols with a single space ' '
+       */
+      const cleanedValue = value.replace(
+        /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+| +/g,
+        ' '
+      );
+
+      return {
+        ...state,
+        generalSearchExclusionValue: cleanedValue,
+      };
+    }
+    case queryBuilderAction.setIsGeneralSearchExclusionValueValid:
+      return {
+        ...state,
+        isGeneralSearchExclusionValueValid: action.payload,
+      };
+    case queryBuilderAction.setIsGeneralSearchExclusionValueFocused:
+      return {
+        ...state,
+        isGeneralSearchExclusionValueFocused: action.payload,
+      };
 
     // sort
     case queryBuilderAction.setSortSelectData:
@@ -319,16 +413,37 @@ function queryBuilderReducer(
       const selectedFieldsSet = new Set<string>(state.selectedFieldsSet);
       if (calledFrom === 'filter') {
         const filterStatementsQueue = [...state.filterStatementsQueue];
+        if (!filterStatementsQueue.length) {
+          return {
+            ...state,
+            selectedFieldsSet: new Set<string>(),
+          };
+        }
+
         filterStatementsQueue.forEach(([field, _operator, _value]) => {
           selectedFieldsSet.add(field);
         });
       } else if (calledFrom === 'search') {
         const searchStatementsQueue = [...state.searchStatementsQueue];
+        if (!searchStatementsQueue.length) {
+          return {
+            ...state,
+            selectedFieldsSet: new Set<string>(),
+          };
+        }
+
         searchStatementsQueue.forEach(([field, _value]) => {
           selectedFieldsSet.add(field);
         });
       } else if (calledFrom === 'sort') {
         const sortStatementsQueue = [...state.sortStatementsQueue];
+        if (!sortStatementsQueue.length) {
+          return {
+            ...state,
+            selectedFieldsSet: new Set<string>(),
+          };
+        }
+
         sortStatementsQueue.forEach(([field, _direction]) => {
           selectedFieldsSet.add(field);
         });
@@ -367,6 +482,8 @@ function queryBuilderReducer(
         ...state,
         queryString: '?',
         filterStatementsQueue: [],
+        generalSearchInclusionValue: '',
+        generalSearchExclusionValue: '',
         searchStatementsQueue: [],
         sortStatementsQueue: [],
         projectionArray: [],
