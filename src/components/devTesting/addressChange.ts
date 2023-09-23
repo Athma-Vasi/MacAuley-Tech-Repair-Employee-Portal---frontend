@@ -543,6 +543,72 @@ const addressChangesArray = [
   },
 ];
 
+/**
+ * const bodiesArr = addressChangesArray.reduce(
+      (addressChangesAcc, addressChange) => {
+        const randomCanadianCityProvinceObj =
+          CANADA_CITY_PROVINCES_POSTALCODE[
+            Math.floor(Math.random() * CANADA_CITY_PROVINCES_POSTALCODE.length)
+          ];
+        const randomUsCityStateObj =
+          US_CITY_STATES_POSTALCODE[
+            Math.floor(Math.random() * US_CITY_STATES_POSTALCODE.length)
+          ];
+
+        const modifiedRequestStatusArr = ['approved', 'pending'];
+        const randomRequestStatus =
+          modifiedRequestStatusArr[
+            Math.floor(Math.random() * modifiedRequestStatusArr.length)
+          ];
+
+        const randomUserDoc =
+          USERS_DOC_CORRECT[
+            Math.floor(Math.random() * USERS_DOC_CORRECT.length)
+          ];
+        const randomUserId = randomUserDoc._id;
+        const randomUsername = randomUserDoc.username;
+        const randomUserRole = randomUserDoc.roles;
+
+        const addressChangeBody =
+          randomUserDoc.address.country === 'Canada'
+            ? {
+                contactNumber: addressChange.contactNumber,
+                addressLine: addressChange.addressLine,
+                city: randomCanadianCityProvinceObj.city,
+                province: randomCanadianCityProvinceObj.province,
+                postalCode: randomCanadianCityProvinceObj.postalCode,
+                country: randomCanadianCityProvinceObj.country,
+                acknowledgement: addressChange.acknowledgement,
+                requestStatus: randomRequestStatus,
+              }
+            : {
+                contactNumber: addressChange.contactNumber,
+                addressLine: addressChange.addressLine,
+                city: randomUsCityStateObj.city,
+                state: randomUsCityStateObj.state,
+                postalCode: randomUsCityStateObj.postalCode,
+                country: randomUsCityStateObj.country,
+                acknowledgement: addressChange.acknowledgement,
+                requestStatus: randomRequestStatus,
+              };
+
+        const newBody = {
+          userInfo: {
+            userId: randomUserId,
+            username: randomUsername,
+            roles: randomUserRole,
+          },
+          addressChange: addressChangeBody,
+        };
+
+        addressChangesAcc.push(newBody);
+
+        return addressChangesAcc;
+      },
+      [] as any[]
+    );
+ */
+
 export {
   addressChangesArray,
   CANADA_CITY_PROVINCES_POSTALCODE,

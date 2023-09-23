@@ -2,37 +2,16 @@ import { Button, Center } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useAuth } from '../../hooks';
-import { logState, urlBuilder } from '../../utils';
-import {
-  CANADA_CITY_PROVINCES,
-  USERS_DOC,
-  USERS_DOC_CORRECT,
-  US_CITY_STATES,
-} from './constants';
+import { groupByField, logState, urlBuilder } from '../../utils';
+import { benefitsArray, returnBenefitsRequestBodies } from './benefits';
+import { CANADA_CITY_PROVINCES, US_CITY_STATES, USERS_DOC } from './constants';
 import {
   devTestingAction,
   devTestingReducer,
   initialDevTestingState,
 } from './state';
-import {
-  PARTS_NEEDED_CHECKBOX_DATA,
-  REPAIR_STATUS_DATA,
-  REQUIRED_REPAIRS_CHECKBOX_DATA,
-} from '../repairNote/constants';
-import {
-  PROVINCES,
-  REQUEST_STATUS,
-  STATES_US,
-  URGENCY_DATA,
-} from '../../constants/data';
-import { COUNTRIES_DATA } from '../addressChange/constants';
-import { CURRENCY_DATA } from '../benefits/constants';
-import { DevRepairNotes, devRepairNotesArray } from './repairNotes';
-import {
-  CANADA_CITY_PROVINCES_POSTALCODE,
-  US_CITY_STATES_POSTALCODE,
-  addressChangesArray,
-} from './addressChange';
+import jwtDecode from 'jwt-decode';
+import { UserRoles } from '../../types';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -50,9 +29,19 @@ function DevTesting() {
     const controller = new AbortController();
 
     async function submitDevTestingForm() {
-      const url: URL = urlBuilder({ path: 'actions/company/address-change' });
+      const url: URL = urlBuilder({ path: 'actions/company/benefit/dev' });
 
-      const body = JSON.stringify(bodiesArr[bodiesArrCount]);
+      // const body = JSON.stringify(bodiesArr[bodiesArrCount]);
+      const { userInfo } = jwtDecode<{
+        exp: number;
+        iat: number;
+        userInfo: { userId: string; username: string; roles: UserRoles };
+      }>(accessToken);
+
+      const reqBody = {
+        userInfo,
+        benefits: bodiesArr,
+      };
 
       const request: Request = new Request(url.toString(), {
         method: 'POST',
@@ -60,7 +49,7 @@ function DevTesting() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
-        body,
+        body: JSON.stringify(reqBody),
         signal: controller.signal,
       });
 
@@ -103,70 +92,17 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const bodiesArr = addressChangesArray.reduce(
-      (addressChangesAcc, addressChange) => {
-        const randomCanadianCityProvinceObj =
-          CANADA_CITY_PROVINCES_POSTALCODE[
-            Math.floor(Math.random() * CANADA_CITY_PROVINCES_POSTALCODE.length)
-          ];
-        const randomUsCityStateObj =
-          US_CITY_STATES_POSTALCODE[
-            Math.floor(Math.random() * US_CITY_STATES_POSTALCODE.length)
-          ];
+    const groupedByBenefitKind = groupByField({
+      objectArray: benefitsArray,
+      field: 'planKind',
+    });
 
-        const modifiedRequestStatusArr = ['approved', 'pending'];
-        const randomRequestStatus =
-          modifiedRequestStatusArr[
-            Math.floor(Math.random() * modifiedRequestStatusArr.length)
-          ];
+    console.log({ groupedByBenefitKind });
 
-        const randomUserDoc =
-          USERS_DOC_CORRECT[
-            Math.floor(Math.random() * USERS_DOC_CORRECT.length)
-          ];
-        const randomUserId = randomUserDoc._id;
-        const randomUsername = randomUserDoc.username;
-        const randomUserRole = randomUserDoc.roles;
-
-        const addressChangeBody =
-          randomUserDoc.address.country === 'Canada'
-            ? {
-                contactNumber: addressChange.contactNumber,
-                addressLine: addressChange.addressLine,
-                city: randomCanadianCityProvinceObj.city,
-                province: randomCanadianCityProvinceObj.province,
-                postalCode: randomCanadianCityProvinceObj.postalCode,
-                country: randomCanadianCityProvinceObj.country,
-                acknowledgement: addressChange.acknowledgement,
-                requestStatus: randomRequestStatus,
-              }
-            : {
-                contactNumber: addressChange.contactNumber,
-                addressLine: addressChange.addressLine,
-                city: randomUsCityStateObj.city,
-                state: randomUsCityStateObj.state,
-                postalCode: randomUsCityStateObj.postalCode,
-                country: randomUsCityStateObj.country,
-                acknowledgement: addressChange.acknowledgement,
-                requestStatus: randomRequestStatus,
-              };
-
-        const newBody = {
-          userInfo: {
-            userId: randomUserId,
-            username: randomUsername,
-            roles: randomUserRole,
-          },
-          addressChange: addressChangeBody,
-        };
-
-        addressChangesAcc.push(newBody);
-
-        return addressChangesAcc;
-      },
-      [] as any[]
-    );
-
+    const bodiesArr = returnBenefitsRequestBodies({
+      groupedByBenefits: groupedByBenefitKind,
+      userDocs: USERS_DOC,
+    });
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
       payload: bodiesArr,
@@ -183,7 +119,7 @@ function DevTesting() {
   return (
     <Center w="100%">
       <Button
-        disabled={bodiesArrCount === bodiesArr.length}
+        // disabled={bodiesArrCount === bodiesArr.length || triggerFormSubmit}
         onClick={() => {
           devTestingDispatch({
             type: devTestingAction.setTriggerFormSubmit,

@@ -4426,13 +4426,4 @@ const USERS_DOC: DirectoryUserDocument[] = [
   },
 ];
 
-const USERS_DOC_CORRECT = USERS_DOC.filter((userDoc) => {
-  const {
-    address: { country },
-  } = userDoc;
-  return country === 'United States';
-});
-
-console.log({ USERS_DOC_CORRECT });
-
-export { CANADA_CITY_PROVINCES, US_CITY_STATES, USERS_DOC, USERS_DOC_CORRECT };
+export { CANADA_CITY_PROVINCES, US_CITY_STATES, USERS_DOC };

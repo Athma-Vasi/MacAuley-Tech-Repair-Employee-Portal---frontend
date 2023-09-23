@@ -122,7 +122,11 @@ function DisplayQueryDesktop<Doc>({
     }
   );
 
-  const tableHeaderValueExclusionSet = new Set(['_id', 'userId']); // used for expanded / condensed table view
+  const tableHeaderValueExclusionSet = new Set([
+    '_id',
+    'userId',
+    'benefitUserId',
+  ]); // used for expanded / condensed table view
 
   // the component query data does not contain values of usernames
   const usernames =
@@ -180,6 +184,7 @@ function DisplayQueryDesktop<Doc>({
   const groupByRadioDataLabels = new Set(
     groupByRadioData.map(({ label }) => label.toLowerCase())
   );
+
   // filtering out grouped by data fields to allow sorting on non-grouped by fields (the grouped by field is already sorted)
   const headerValuesToGetSortArrows = tableHeaderValuesArr.reduce(
     (filteredHeaderValsAcc: string[], headerVal) => {
