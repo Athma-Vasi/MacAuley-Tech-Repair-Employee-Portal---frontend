@@ -140,7 +140,6 @@ function returnNoteTextValidationText({
   const atleastOneAlphanumericRegex = /^(?=.*[A-Za-z0-9])/;
   const wordCharacterWhitespacePunctuationRegex = /^[\w\s.,!?():;"'-]+$/;
 
-
   const contentRegexTupleArr: [boolean, string][] = [
     [
       atleastOneAlphanumericRegex.test(content),
@@ -155,7 +154,6 @@ function returnNoteTextValidationText({
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
   ];
-
 
   const validationText = contentRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
@@ -1465,7 +1463,7 @@ function returnThemeColors({
     : gray[5];
   // all color shades
   const grayColorShade = gray[colorShade];
-  const grayBorderShade = colorScheme==='light'?gray[2]:gray[8];
+  const grayBorderShade = colorScheme === 'light' ? gray[2] : gray[8];
   const redColorShade = red[colorShade];
   const greenColorShade = green[colorShade];
   const cyanColorShade = cyan[colorShade];

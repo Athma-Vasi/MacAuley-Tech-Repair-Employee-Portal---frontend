@@ -143,7 +143,7 @@ function CheckboxGroupInputsWrapper({
     >
       <Flex
         // direction="column"
-        align="flex-start"
+        align="baseline"
         justify="space-between"
         p={padding}
         rowGap={rowGap}

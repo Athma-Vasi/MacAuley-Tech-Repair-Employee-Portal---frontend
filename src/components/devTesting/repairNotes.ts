@@ -973,6 +973,83 @@ const devRepairNotesArray = [
   },
 ];
 
+/**
+ * const bodiesArr = devRepairNotesArray.reduce(
+      (repairNotesAcc, repairNote) => {
+        const requiredRepairsArr = REQUIRED_REPAIRS_CHECKBOX_DATA.map(
+          (checkbox) => checkbox.value
+        );
+        const randomRequiredRepairsArr = requiredRepairsArr.filter(
+          () => Math.random() < 0.5
+        );
+
+        const partsNeededArr = PARTS_NEEDED_CHECKBOX_DATA.map(
+          (checkbox) => checkbox.value
+        );
+        const randomPartsNeededArr = partsNeededArr.filter(
+          () => Math.random() < 0.5
+        );
+
+        const repairStatusArr = REPAIR_STATUS_DATA;
+        const randomRepairStatus =
+          repairStatusArr[Math.floor(Math.random() * repairStatusArr.length)];
+
+        const randomCanadianCityProvinceObj =
+          CANADA_CITY_PROVINCES[
+            Math.floor(Math.random() * CANADA_CITY_PROVINCES.length)
+          ];
+        const randomUsCityStateObj =
+          US_CITY_STATES[Math.floor(Math.random() * US_CITY_STATES.length)];
+
+        const currenciesArr = CURRENCY_DATA;
+        const randomCurrency =
+          currenciesArr[Math.floor(Math.random() * currenciesArr.length)];
+
+        const repairPriority = URGENCY_DATA;
+        const randomRepairPriority =
+          repairPriority[Math.floor(Math.random() * repairPriority.length)];
+
+        const randomUserDoc =
+          USERS_DOC_CORRECT[
+            Math.floor(Math.random() * USERS_DOC_CORRECT.length)
+          ];
+        const randomUserId = randomUserDoc._id;
+        const randomUsername = randomUserDoc.username;
+        const randomUserRole = randomUserDoc.roles;
+
+        const newRepairNoteDoc = {
+          customerCity: randomCanadianCityProvinceObj.city,
+          customerProvince: randomCanadianCityProvinceObj.province,
+          customerCountry: randomCanadianCityProvinceObj.country,
+          customerPostalCode: randomCanadianCityProvinceObj.postalCode,
+
+          requiredRepairs: randomRequiredRepairsArr,
+          partsNeeded: randomPartsNeededArr,
+          estimatedRepairCostCurrency: randomCurrency,
+          repairPriority: randomRepairPriority,
+
+          finalRepairCostCurrency: randomCurrency,
+          repairStatus: randomRepairStatus,
+          ...repairNote,
+        };
+
+        const newBody = {
+          userInfo: {
+            userId: randomUserId,
+            username: randomUsername,
+            roles: randomUserRole,
+          },
+          repairNote: newRepairNoteDoc,
+        };
+
+        repairNotesAcc.push(newBody);
+
+        return repairNotesAcc;
+      },
+      [] as any[]
+    );
+ */
+
 type DevRepairNotes = typeof devRepairNotesArray;
 
 export { devRepairNotesArray };

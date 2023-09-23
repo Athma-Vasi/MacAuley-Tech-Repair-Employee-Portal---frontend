@@ -4427,15 +4427,10 @@ const USERS_DOC: DirectoryUserDocument[] = [
 ];
 
 const USERS_DOC_CORRECT = USERS_DOC.filter((userDoc) => {
-  const { department } = userDoc;
-  return (
-    department === 'Store Administration' ||
-    department === 'Office Administration' ||
-    department === 'Repair Technicians' ||
-    department === 'Field Service Technicians' ||
-    department === 'Logistics and Inventory' ||
-    department === 'Customer Service'
-  );
+  const {
+    address: { country },
+  } = userDoc;
+  return country === 'United States';
 });
 
 console.log({ USERS_DOC_CORRECT });

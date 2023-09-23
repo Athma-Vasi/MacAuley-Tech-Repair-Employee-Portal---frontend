@@ -19,10 +19,20 @@ import {
   REPAIR_STATUS_DATA,
   REQUIRED_REPAIRS_CHECKBOX_DATA,
 } from '../repairNote/constants';
-import { PROVINCES, STATES_US, URGENCY_DATA } from '../../constants/data';
+import {
+  PROVINCES,
+  REQUEST_STATUS,
+  STATES_US,
+  URGENCY_DATA,
+} from '../../constants/data';
 import { COUNTRIES_DATA } from '../addressChange/constants';
 import { CURRENCY_DATA } from '../benefits/constants';
 import { DevRepairNotes, devRepairNotesArray } from './repairNotes';
+import {
+  CANADA_CITY_PROVINCES_POSTALCODE,
+  US_CITY_STATES_POSTALCODE,
+  addressChangesArray,
+} from './addressChange';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -40,7 +50,7 @@ function DevTesting() {
     const controller = new AbortController();
 
     async function submitDevTestingForm() {
-      const url: URL = urlBuilder({ path: 'repair-note' });
+      const url: URL = urlBuilder({ path: 'actions/company/address-change' });
 
       const body = JSON.stringify(bodiesArr[bodiesArrCount]);
 
@@ -66,6 +76,11 @@ function DevTesting() {
           throw new Error(data.message);
         }
 
+        devTestingDispatch({
+          type: devTestingAction.setBodiesArrCount,
+          payload: bodiesArrCount + 1,
+        });
+
         console.log({ data });
       } catch (error: any) {
         console.error(error);
@@ -73,10 +88,6 @@ function DevTesting() {
         devTestingDispatch({
           type: devTestingAction.setTriggerFormSubmit,
           payload: false,
-        });
-        devTestingDispatch({
-          type: devTestingAction.setBodiesArrCount,
-          payload: bodiesArrCount + 1,
         });
       }
     }
@@ -92,40 +103,22 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const bodiesArr = devRepairNotesArray.reduce(
-      (repairNotesAcc, repairNote) => {
-        const requiredRepairsArr = REQUIRED_REPAIRS_CHECKBOX_DATA.map(
-          (checkbox) => checkbox.value
-        );
-        const randomRequiredRepairsArr = requiredRepairsArr.filter(
-          () => Math.random() < 0.5
-        );
-
-        const partsNeededArr = PARTS_NEEDED_CHECKBOX_DATA.map(
-          (checkbox) => checkbox.value
-        );
-        const randomPartsNeededArr = partsNeededArr.filter(
-          () => Math.random() < 0.5
-        );
-
-        const repairStatusArr = REPAIR_STATUS_DATA;
-        const randomRepairStatus =
-          repairStatusArr[Math.floor(Math.random() * repairStatusArr.length)];
-
+    const bodiesArr = addressChangesArray.reduce(
+      (addressChangesAcc, addressChange) => {
         const randomCanadianCityProvinceObj =
-          CANADA_CITY_PROVINCES[
-            Math.floor(Math.random() * CANADA_CITY_PROVINCES.length)
+          CANADA_CITY_PROVINCES_POSTALCODE[
+            Math.floor(Math.random() * CANADA_CITY_PROVINCES_POSTALCODE.length)
           ];
         const randomUsCityStateObj =
-          US_CITY_STATES[Math.floor(Math.random() * US_CITY_STATES.length)];
+          US_CITY_STATES_POSTALCODE[
+            Math.floor(Math.random() * US_CITY_STATES_POSTALCODE.length)
+          ];
 
-        const currenciesArr = CURRENCY_DATA;
-        const randomCurrency =
-          currenciesArr[Math.floor(Math.random() * currenciesArr.length)];
-
-        const repairPriority = URGENCY_DATA;
-        const randomRepairPriority =
-          repairPriority[Math.floor(Math.random() * repairPriority.length)];
+        const modifiedRequestStatusArr = ['approved', 'pending'];
+        const randomRequestStatus =
+          modifiedRequestStatusArr[
+            Math.floor(Math.random() * modifiedRequestStatusArr.length)
+          ];
 
         const randomUserDoc =
           USERS_DOC_CORRECT[
@@ -135,21 +128,28 @@ function DevTesting() {
         const randomUsername = randomUserDoc.username;
         const randomUserRole = randomUserDoc.roles;
 
-        const newRepairNoteDoc = {
-          customerCity: randomCanadianCityProvinceObj.city,
-          customerProvince: randomCanadianCityProvinceObj.province,
-          customerCountry: randomCanadianCityProvinceObj.country,
-          customerPostalCode: randomCanadianCityProvinceObj.postalCode,
-
-          requiredRepairs: randomRequiredRepairsArr,
-          partsNeeded: randomPartsNeededArr,
-          estimatedRepairCostCurrency: randomCurrency,
-          repairPriority: randomRepairPriority,
-
-          finalRepairCostCurrency: randomCurrency,
-          repairStatus: randomRepairStatus,
-          ...repairNote,
-        };
+        const addressChangeBody =
+          randomUserDoc.address.country === 'Canada'
+            ? {
+                contactNumber: addressChange.contactNumber,
+                addressLine: addressChange.addressLine,
+                city: randomCanadianCityProvinceObj.city,
+                province: randomCanadianCityProvinceObj.province,
+                postalCode: randomCanadianCityProvinceObj.postalCode,
+                country: randomCanadianCityProvinceObj.country,
+                acknowledgement: addressChange.acknowledgement,
+                requestStatus: randomRequestStatus,
+              }
+            : {
+                contactNumber: addressChange.contactNumber,
+                addressLine: addressChange.addressLine,
+                city: randomUsCityStateObj.city,
+                state: randomUsCityStateObj.state,
+                postalCode: randomUsCityStateObj.postalCode,
+                country: randomUsCityStateObj.country,
+                acknowledgement: addressChange.acknowledgement,
+                requestStatus: randomRequestStatus,
+              };
 
         const newBody = {
           userInfo: {
@@ -157,12 +157,12 @@ function DevTesting() {
             username: randomUsername,
             roles: randomUserRole,
           },
-          repairNote: newRepairNoteDoc,
+          addressChange: addressChangeBody,
         };
 
-        repairNotesAcc.push(newBody);
+        addressChangesAcc.push(newBody);
 
-        return repairNotesAcc;
+        return addressChangesAcc;
       },
       [] as any[]
     );

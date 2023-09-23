@@ -7,13 +7,11 @@ import { returnThemeColors } from '../../utils';
 
 type FormLayoutWrapperProps = {
   children?: ReactNode;
-  direction?: 'row' | 'column';
   style?: CSSProperties;
 };
 
 function FormLayoutWrapper({
   children,
-  direction = 'column',
   style = {},
 }: FormLayoutWrapperProps): JSX.Element {
   const {
