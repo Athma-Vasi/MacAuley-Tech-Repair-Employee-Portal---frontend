@@ -58,6 +58,42 @@ function sortGroupedByQueryResponseData({
           const aFieldToSortBy = a[fieldCamelCasedValue];
           const bFieldToSortBy = b[fieldCamelCasedValue];
 
+          // does not work: new Date(aFieldToSortBy) !== 'Invalid Date'
+          // determine if field to sort by is a date and sort accordingly
+          // const isDate =
+          //   new Date(aFieldToSortBy) !== 'Invalid Date' &&
+          //   !Number.isNaN(new Date(aFieldToSortBy));
+          // if (isDate) {
+          //   const aDate = new Date(aFieldToSortBy);
+          //   const bDate = new Date(bFieldToSortBy);
+
+          //   if (aDate < bDate) {
+          //     return sortDirection === 'asc' ? -1 : 1;
+          //   }
+          //   if (aDate > bDate) {
+          //     return sortDirection === 'asc' ? 1 : -1;
+          //   }
+
+          //   return 0;
+          // }
+
+          // determine if field to sort by is a number and sort accordingly
+          const isNumber = Number.isNaN(Number(aFieldToSortBy)) ? false : true;
+          if (isNumber) {
+            const aNumber = Number(aFieldToSortBy);
+            const bNumber = Number(bFieldToSortBy);
+
+            if (aNumber < bNumber) {
+              return sortDirection === 'asc' ? -1 : 1;
+            }
+            if (aNumber > bNumber) {
+              return sortDirection === 'asc' ? 1 : -1;
+            }
+
+            return 0;
+          }
+
+          // sort strings
           if (aFieldToSortBy < bFieldToSortBy) {
             return sortDirection === 'asc' ? -1 : 1;
           }

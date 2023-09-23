@@ -118,7 +118,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     if (estimatedRepairCostCurrency === 'EUR') {
       const estimatedRepairCostWithCommaAndNoLeadingZero = estimatedRepairCost
         .replace('.', ',')
-        .replace(/^0+/, '');
+        .replace(/^0+(?=\d)/, ''); // removes leading zeros if amount !== '0.00'
 
       createRepairNoteDispatch({
         type: createRepairNoteAction.setEstimatedRepairCost,
@@ -129,7 +129,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
     else {
       const estimatedRepairCostWithDecimalAndNoLeadingZero = estimatedRepairCost
         .replace(',', '.')
-        .replace(/^0+/, '');
+        .replace(/^0+(?=\d)/, '');
 
       createRepairNoteDispatch({
         type: createRepairNoteAction.setEstimatedRepairCost,

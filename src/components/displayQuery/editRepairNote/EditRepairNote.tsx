@@ -284,21 +284,23 @@ function EditRepairNote({
   // insert comma if currency is EUR
   useEffect(() => {
     // if currency is EUR, replace decimal with comma and remove leading zeros
+
     if (finalRepairCostCurrency === 'EUR') {
       const finalRepairCostWithCommaAndNoLeadingZero = finalRepairCost
         .replace('.', ',')
-        .replace(/^0+/, '');
+        .replace(/^0+(?=\d)/, ''); // removes leading zeros if amount !== '0.00'
 
       editRepairNoteDispatch({
         type: editRepairNoteAction.setFinalRepairCost,
         payload: finalRepairCostWithCommaAndNoLeadingZero,
       });
     }
+
     // if currency is not EUR, replace comma with decimal and remove leading zeros
     else {
       const finalRepairCostWithDecimalAndNoLeadingZero = finalRepairCost
         .replace(',', '.')
-        .replace(/^0+/, '');
+        .replace(/^0+(?=\d)/, '');
 
       editRepairNoteDispatch({
         type: editRepairNoteAction.setFinalRepairCost,

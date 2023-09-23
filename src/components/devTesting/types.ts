@@ -1,11 +1,13 @@
 type DevTestingState = {
   triggerFormSubmit: boolean;
-  updatedUserDocuments: Record<string | number | symbol, any>[];
+  bodiesArr: any[];
+  bodiesArrCount: number;
 };
 
 type DevTestingAction = {
   setTriggerFormSubmit: 'setTriggerFormSubmit';
-  setUpdatedUserDocuments: 'setUpdatedUserDocuments';
+  setBodiesArr: 'setBodiesArr';
+  setBodiesArrCount: 'setBodiesArrCount';
 };
 
 type DevTestingDispatch =
@@ -14,8 +16,12 @@ type DevTestingDispatch =
       payload: boolean;
     }
   | {
-      type: DevTestingAction['setUpdatedUserDocuments'];
-      payload: Record<string | number | symbol, any>[];
+      type: DevTestingAction['setBodiesArr'];
+      payload: any[];
+    }
+  | {
+      type: DevTestingAction['setBodiesArrCount'];
+      payload: number;
     };
 
 export type { DevTestingAction, DevTestingDispatch, DevTestingState };

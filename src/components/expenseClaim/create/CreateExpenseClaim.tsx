@@ -390,7 +390,7 @@ function CreateExpenseClaim() {
     if (expenseClaimCurrency === 'EUR') {
       const expenseClaimAmountWithCommaAndNoLeadingZero = expenseClaimAmount
         .replace('.', ',')
-        .replace(/^0+/, '');
+        .replace(/^0+(?=\d)/, ''); // removes leading zeros if amount !== '0.00'
 
       createExpenseClaimDispatch({
         type: createExpenseClaimAction.setExpenseClaimAmount,
@@ -401,7 +401,7 @@ function CreateExpenseClaim() {
     else {
       const expenseClaimAmountWithDecimalAndNoLeadingZero = expenseClaimAmount
         .replace(',', '.')
-        .replace(/^0+/, '');
+        .replace(/^0+(?=\d)/, '');
 
       createExpenseClaimDispatch({
         type: createExpenseClaimAction.setExpenseClaimAmount,

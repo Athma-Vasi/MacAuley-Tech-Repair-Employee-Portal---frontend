@@ -2,12 +2,14 @@ import { DevTestingAction, DevTestingDispatch, DevTestingState } from './types';
 
 const initialDevTestingState: DevTestingState = {
   triggerFormSubmit: false,
-  updatedUserDocuments: [],
+  bodiesArr: [],
+  bodiesArrCount: 0,
 };
 
 const devTestingAction: DevTestingAction = {
   setTriggerFormSubmit: 'setTriggerFormSubmit',
-  setUpdatedUserDocuments: 'setUpdatedUserDocuments',
+  setBodiesArr: 'setBodiesArr',
+  setBodiesArrCount: 'setBodiesArrCount',
 };
 
 function devTestingReducer(
@@ -21,10 +23,16 @@ function devTestingReducer(
         triggerFormSubmit: action.payload,
       };
 
-    case devTestingAction.setUpdatedUserDocuments:
+    case devTestingAction.setBodiesArr:
       return {
         ...state,
-        updatedUserDocuments: action.payload,
+        bodiesArr: action.payload,
+      };
+
+    case devTestingAction.setBodiesArrCount:
+      return {
+        ...state,
+        bodiesArrCount: action.payload,
       };
 
     default:

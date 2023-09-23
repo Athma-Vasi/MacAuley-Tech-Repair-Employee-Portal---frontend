@@ -321,10 +321,10 @@ function CreateBenefit() {
     if (currency === 'EUR') {
       const employeeContributionWithCommaAndNoLeadingZero = employeeContribution
         .replace('.', ',')
-        .replace(/^0+/, '');
+        .replace(/^0+(?=\d)/, ''); // removes leading zeros if amount !== '0.00'
       const employerContributionWithCommaAndNoLeadingZero = employerContribution
         .replace('.', ',')
-        .replace(/^0+/, '');
+        .replace(/^0+(?=\d)/, '');
 
       createBenefitDispatch({
         type: createBenefitAction.setEmployeeContribution,
@@ -339,9 +339,9 @@ function CreateBenefit() {
     // if currency is not EUR, replace comma with decimal and remove leading zeros
     else {
       const employeeContributionWithDecimalAndNoLeadingZero =
-        employeeContribution.replace(',', '.').replace(/^0+/, '');
+        employeeContribution.replace(',', '.').replace(/^0+(?=\d)/, '');
       const employerContributionWithDecimalAndNoLeadingZero =
-        employerContribution.replace(',', '.').replace(/^0+/, '');
+        employerContribution.replace(',', '.').replace(/^0+(?=\d)/, '');
 
       createBenefitDispatch({
         type: createBenefitAction.setEmployeeContribution,

@@ -245,9 +245,9 @@ function RequestResource() {
   useEffect(() => {
     // remove leading zeros
     const resourceQuantityWithoutLeadingZeros = resourceQuantity.replace(
-      /^0+/,
+      /^0+(?=\d)/,
       ''
-    );
+    ); // removes leading zeros if amount !== '0.00'
 
     requestResourceDispatch({
       type: requestResourceAction.setResourceQuantity,
