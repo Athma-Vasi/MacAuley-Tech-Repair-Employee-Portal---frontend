@@ -308,7 +308,7 @@ function QueryBuilder({
       type: queryBuilderAction.setCurrentFilterOperator,
       payload: filterOperatorData[0],
     });
-  }, [currentFilterField, currentFilterValue, labelValueTypesMap]);
+  }, [currentFilterField, labelValueTypesMap]);
 
   // sets initial filter value
   useEffect(() => {
