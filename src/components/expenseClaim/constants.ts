@@ -37,7 +37,7 @@ const EXPENSE_CLAIM_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 const EXPENSE_CLAIM_MAX_STEPPER_POSITION = 3;
 
 const EXPENSE_CLAIM_KIND_DATA = [
-  'Travel and Accomodation',
+  'Travel and Accommodation',
   'Equipment and Supplies',
   'Communication and Utilities',
   'Training and Certifications',

@@ -30,6 +30,7 @@ function DisplayExpenseClaims() {
       createResourcePath="/home/company/expense-claim/create"
       paths={EXPENSE_CLAIM__ROUTE_PATHS}
       requestBodyHeading="expenseClaim"
+      isFileUploadsWithResource={true}
     />
   );
 

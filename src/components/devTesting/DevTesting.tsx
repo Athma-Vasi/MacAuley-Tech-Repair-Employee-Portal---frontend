@@ -12,6 +12,10 @@ import {
 } from './state';
 import jwtDecode from 'jwt-decode';
 import { UserRoles } from '../../types';
+import {
+  expenseClaimArray,
+  returnExpenseClaimRequestBodies,
+} from './expenseClaim';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -29,9 +33,18 @@ function DevTesting() {
     const controller = new AbortController();
 
     async function submitDevTestingForm() {
-      const url: URL = urlBuilder({ path: 'actions/company/benefit/dev' });
+      const url: URL = urlBuilder({
+        path: 'actions/company/expense-claim/dev',
+      });
 
-      // const body = JSON.stringify(bodiesArr[bodiesArrCount]);
+      const newBodiesArrCount =
+        bodiesArr.length - bodiesArrCount > 100
+          ? bodiesArrCount + 100
+          : bodiesArr.length;
+      const slicedBodiesArr = bodiesArr.slice(
+        bodiesArrCount,
+        newBodiesArrCount
+      );
       const { userInfo } = jwtDecode<{
         exp: number;
         iat: number;
@@ -40,8 +53,10 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        benefits: bodiesArr,
+        expenseClaims: slicedBodiesArr,
       };
+
+      console.log({ slicedBodiesArr });
 
       const request: Request = new Request(url.toString(), {
         method: 'POST',
@@ -67,7 +82,7 @@ function DevTesting() {
 
         devTestingDispatch({
           type: devTestingAction.setBodiesArrCount,
-          payload: bodiesArrCount + 1,
+          payload: newBodiesArrCount,
         });
 
         console.log({ data });
@@ -92,15 +107,15 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const groupedByBenefitKind = groupByField({
-      objectArray: benefitsArray,
-      field: 'planKind',
+    const groupedByExpenseClaimKind = groupByField({
+      objectArray: expenseClaimArray,
+      field: 'expenseClaimKind',
     });
 
-    console.log({ groupedByBenefitKind });
+    console.log({ groupedByExpenseClaimKind });
 
-    const bodiesArr = returnBenefitsRequestBodies({
-      groupedByBenefits: groupedByBenefitKind,
+    const bodiesArr = returnExpenseClaimRequestBodies({
+      groupedByExpenseClaimKind,
       userDocs: USERS_DOC,
     });
     devTestingDispatch({
@@ -119,7 +134,7 @@ function DevTesting() {
   return (
     <Center w="100%">
       <Button
-        // disabled={bodiesArrCount === bodiesArr.length || triggerFormSubmit}
+        disabled={bodiesArrCount === bodiesArr.length || triggerFormSubmit}
         onClick={() => {
           devTestingDispatch({
             type: devTestingAction.setTriggerFormSubmit,

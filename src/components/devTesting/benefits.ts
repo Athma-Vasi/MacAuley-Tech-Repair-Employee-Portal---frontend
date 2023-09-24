@@ -550,7 +550,6 @@ function returnBenefitsRequestBodies({
     if (department !== 'Maintenance') {
       return benefitsRequestBodiesAcc;
     }
-    // executive branch get all benefits
     const randomPoolBenefits = Object.entries(groupedByBenefits).reduce(
       (benefitsAcc, groupedBenefitTuple) => {
         const [benefitKind, benefitKindArray] = groupedBenefitTuple;

@@ -415,7 +415,7 @@ function DisplayQuery<Doc>({
       opened={openedDeleteAcknowledge}
       onClose={closeDeleteAcknowledge}
       centered
-      size={375}
+      size={350}
     >
       <form onSubmit={handleDeleteFormSubmit}>
         <Flex
@@ -448,12 +448,14 @@ function DisplayQuery<Doc>({
     </Modal>
   );
 
+  const fileUploadUsername = fileUploadsForAForm?.[0]?.username ?? '';
   const displayFileUploadsModal = (
     <Modal
       opened={openedDisplayFileUploads}
       onClose={closeFileUploads}
       centered
-      size={width * 0.85}
+      size={width < 1200 ? width * 0.9 : 1150}
+      title={<Title order={4}>{`${fileUploadUsername}'s receipts`}</Title>}
     >
       <Flex
         w="100%"

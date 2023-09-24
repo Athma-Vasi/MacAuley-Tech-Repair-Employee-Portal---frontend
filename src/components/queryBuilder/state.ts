@@ -38,7 +38,7 @@ const initialQueryBuilderState: QueryBuilderState = {
 
   // sort
   sortSelectData: [],
-  currentSortField: 'Created date',
+  currentSortField: 'Created Date',
   currentSortDirection: 'ascending',
   sortStatementsQueue: [],
 
