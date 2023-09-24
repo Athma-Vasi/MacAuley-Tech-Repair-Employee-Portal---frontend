@@ -31,6 +31,8 @@ type DisplayQueryDesktopProps<Doc> = {
     payload: FileUploadDocument[];
   }>;
 
+  queryValuesArray: string[];
+
   requestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';
     payload: {

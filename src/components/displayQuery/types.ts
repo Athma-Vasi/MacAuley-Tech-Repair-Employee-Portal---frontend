@@ -31,6 +31,7 @@ type DisplayQueryProps<Doc> = {
   }>;
 
   queryResponseData: QueryResponseData<Doc>[];
+  queryValuesArray: string[]; // simply passed down from DisplayResource to DisplayQueryDesktop and DisplayQueryMobile to highlight the query values in the table
   style?: CSSProperties;
   totalDocuments: number;
 };

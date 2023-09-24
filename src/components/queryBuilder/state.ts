@@ -19,7 +19,7 @@ const initialQueryBuilderState: QueryBuilderState = {
 
   // search
   searchSelectData: [],
-  currentSearchField: '',
+  currentSearchField: 'Username',
   currentSearchValue: '',
   isCurrentSearchValueValid: false,
   isCurrentSearchValueFocused: false,

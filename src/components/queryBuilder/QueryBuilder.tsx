@@ -86,7 +86,8 @@ function QueryBuilder({
   collectionName,
   disableProjection = false,
   setQueryBuilderString,
-  parentComponentDispatch,
+  queryBuilderStringDispatch,
+  queryValuesArrayDispatch,
 }: QueryBuilderProps) {
   const [queryBuilderState, queryBuilderDispatch] = useReducer(
     queryBuilderReducer,
@@ -1305,9 +1306,27 @@ function QueryBuilder({
       semanticDescription: `Submit query to ${collectionName}`,
       semanticName: 'submit query',
       buttonOnClick: () => {
-        parentComponentDispatch({
+        queryBuilderStringDispatch({
           type: setQueryBuilderString,
           payload: queryString,
+        });
+
+        // for query values array highlighting
+        if (!queryValuesArrayDispatch) {
+          return;
+        }
+
+        const queryValues = Array.from(
+          new Set([
+            currentFilterValue,
+            currentSearchValue,
+            generalSearchInclusionValue,
+          ])
+        );
+
+        queryValuesArrayDispatch({
+          type: 'setQueryValuesArray',
+          payload: queryValues,
         });
       },
       leftIcon: <TbUpload />,
@@ -1322,7 +1341,7 @@ function QueryBuilder({
         type: queryBuilderAction.setClearAllQueryData,
         payload: '',
       });
-      parentComponentDispatch({
+      queryBuilderStringDispatch({
         type: setQueryBuilderString,
         payload: queryString,
       });

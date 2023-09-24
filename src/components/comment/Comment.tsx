@@ -1549,7 +1549,7 @@ function Comment({
       collectionName="Comments"
       componentQueryData={COMMENT_QUERY_DATA}
       disableProjection={true}
-      parentComponentDispatch={commentDispatch}
+      queryBuilderStringDispatch={commentDispatch}
       setQueryBuilderString={commentAction.setQueryBuilderString}
     />
   ) : null;

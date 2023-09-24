@@ -47,6 +47,7 @@ function DisplayResource<Doc>({
     pages: 0,
     totalDocuments: 0,
 
+    queryValuesArray: [],
     newQueryFlag: true,
     queryBuilderString: '?',
     pageQueryString: '',
@@ -84,6 +85,7 @@ function DisplayResource<Doc>({
     resourceData,
     pages,
     totalDocuments,
+    queryValuesArray,
     newQueryFlag,
     queryBuilderString,
     pageQueryString,
@@ -838,30 +840,6 @@ function DisplayResource<Doc>({
     limitPerPageSelectInputCreatorInfo,
   ]);
 
-  // const limitPerPageRadioGroupInputCreatorInfo: AccessibleRadioGroupInputCreatorInfo =
-  //   {
-  //     dataObjectArray: QUERY_LIMIT_PER_PAGE_RADIO_DATA,
-  //     description: 'Select number of documents to display per page',
-  //     onChange: (value: string) => {
-  //       displayResourceDispatch({
-  //         type: displayResourceAction.setLimitPerPage,
-  //         payload: value,
-  //       });
-  //       displayResourceDispatch({
-  //         type: displayResourceAction.setResetPage,
-  //         payload: true,
-  //       });
-  //     },
-  //     semanticName: 'limit per page',
-  //     value: limitPerPage,
-  //     label: '',
-  //   };
-
-  // const [createdLimitPerPageRadioGroupInput] =
-  //   returnAccessibleRadioGroupInputsElements([
-  //     limitPerPageRadioGroupInputCreatorInfo,
-  //   ]);
-
   const sectionWidth =
     width < 480 // for iPhone 5/SE
       ? 375 - 20
@@ -919,7 +897,8 @@ function DisplayResource<Doc>({
   const displayQueryBuilder = (
     <QueryBuilder
       setQueryBuilderString={displayResourceAction.setQueryBuilderString}
-      parentComponentDispatch={displayResourceDispatch}
+      queryBuilderStringDispatch={displayResourceDispatch}
+      queryValuesArrayDispatch={displayResourceDispatch}
       componentQueryData={filteredComponentQueryData}
       collectionName={splitCamelCase(requestBodyHeading)}
     />
@@ -943,6 +922,7 @@ function DisplayResource<Doc>({
       parentRequestStatusDispatch={displayResourceDispatch}
       parentDeleteResourceDispatch={displayResourceDispatch}
       queryResponseData={resourceData}
+      queryValuesArray={queryValuesArray}
       totalDocuments={totalDocuments}
     />
   );

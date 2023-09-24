@@ -42,7 +42,7 @@ import {
   initialDisplayQueryDesktopState,
 } from './state';
 import { DisplayQueryDesktopProps } from './types';
-import { sortGroupedByQueryResponseData } from './utils';
+import { returnHighlightedText, sortGroupedByQueryResponseData } from './utils';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
@@ -55,10 +55,10 @@ function DisplayQueryDesktop<Doc>({
 
   openDeleteAcknowledge,
   openFileUploads,
-  setFileUploadsForAFormDispatch,
-
+  queryValuesArray,
   restOfGroupedQueryResponseData,
   requestStatusDispatch,
+  setFileUploadsForAFormDispatch,
   style = {},
   tableViewSelection,
 }: DisplayQueryDesktopProps<Doc>) {
@@ -123,12 +123,13 @@ function DisplayQueryDesktop<Doc>({
   );
 
   const tableHeaderValueExclusionSet = new Set([
-    '_id',
-    'userId',
+    'acknowledgement',
     'benefitUserId',
-    'uploadedFilesIds',
     'createdAt',
+    '_id',
+    'uploadedFilesIds',
     'updatedAt',
+    'userId',
   ]); // used for expanded / condensed table view
 
   // the component query data does not contain values of usernames
@@ -205,7 +206,7 @@ function DisplayQueryDesktop<Doc>({
     []
   );
 
-  const sortedGroupedQueryResponseData = sortGroupedByQueryResponseData({
+  const sortedQueryResponseData = sortGroupedByQueryResponseData({
     componentQueryData,
     groupedByQueryResponseData,
     fieldToSortBy,
@@ -349,7 +350,7 @@ function DisplayQueryDesktop<Doc>({
               })}
             </tr>
           </thead>
-          {Array.from(sortedGroupedQueryResponseData).map(
+          {Array.from(sortedQueryResponseData).map(
             ([groupedByFieldKey, queryResponseObjArrays], sectionIdx) => {
               return (
                 <tbody>
@@ -431,13 +432,25 @@ function DisplayQueryDesktop<Doc>({
                                         ? 11
                                         : sliceLength
                                     ) + '...'
-                                : formattedValue;
+                                : (formattedValue as string);
 
-                            const highlightedText = groupedByFieldValuesSet.has(
-                              `${value}` // value can be boolean and set contains strings
+                            // regex to determine if formattedValue has any terms in queryValuesArray
+                            const regex = queryValuesArray.length
+                              ? new RegExp(
+                                  queryValuesArray
+                                    .filter((value) => value) // remove empty strings
+                                    .flatMap((value) => value.split(' ')) // split strings into words
+                                    .join('|'),
+                                  'gi'
+                                )
+                              : null;
+
+                            // highlight text if formattedValue has any terms that were either filtered/searched for (queryValuesArray)
+                            const highlightedText = formattedValue.match(
+                              regex
                             ) ? (
                               <Highlight
-                                highlight={formattedValue}
+                                highlight={formattedValueSliced}
                                 highlightStyles={{
                                   backgroundColor: textHighlightColor,
                                 }}
@@ -461,6 +474,13 @@ function DisplayQueryDesktop<Doc>({
                             const groupBySelectionValue =
                               queryResponseObjWithAddedFields[groupBySelection];
 
+                            const groupedBySelectedValueHighlightedText =
+                              returnHighlightedText({
+                                backgroundColor: textHighlightColor,
+                                queryValuesArray,
+                                groupBySelectionValue,
+                              });
+
                             const dropDownFooter = (
                               <Flex wrap="wrap">
                                 {groupBySelection === 'username' ? null : (
@@ -468,33 +488,12 @@ function DisplayQueryDesktop<Doc>({
                                     <Text>
                                       {splitCamelCase(groupBySelection)}:
                                     </Text>
-                                    {/* some values are boolean but are displayed as 'Yes' or 'No' */}
-                                    <Text>
-                                      <strong>{`${
-                                        groupBySelectionValue === true
-                                          ? 'Yes'
-                                          : groupBySelectionValue === false
-                                          ? 'No'
-                                          : Array.isArray(groupBySelectionValue)
-                                          ? replaceLastCommaWithAnd(
-                                              groupBySelectionValue
-                                                .map(
-                                                  (value) =>
-                                                    value
-                                                      .toString()
-                                                      .charAt(0)
-                                                      .toUpperCase() +
-                                                    value.toString().slice(1)
-                                                )
-                                                .join(', ')
-                                            )
-                                          : `${groupBySelectionValue
-                                              .charAt(0)
-                                              .toUpperCase()}${groupBySelectionValue.slice(
-                                              1
-                                            )}`
-                                      }`}</strong>
-                                    </Text>
+
+                                    <Flex gap={4} wrap="wrap">
+                                      <strong>
+                                        {groupedBySelectedValueHighlightedText}
+                                      </strong>
+                                    </Flex>
                                     <Space w="xs" />
                                   </Group>
                                 )}
@@ -515,6 +514,14 @@ function DisplayQueryDesktop<Doc>({
                                   <Text>{`User Id: ${userId}`}</Text>
                                 </Group>
                               </Flex>
+                            );
+
+                            const footerHighlightedText = returnHighlightedText(
+                              {
+                                backgroundColor: textHighlightColor,
+                                queryValuesArray,
+                                groupBySelectionValue: formattedValue,
+                              }
                             );
 
                             const truncatedValuesWithHoverCards =
@@ -588,18 +595,28 @@ function DisplayQueryDesktop<Doc>({
                                   withArrow
                                 >
                                   <HoverCard.Target>
-                                    {highlightedText}
+                                    <Group>{highlightedText}</Group>
                                   </HoverCard.Target>
                                   <HoverCard.Dropdown>
                                     <Stack>
                                       {/* prevents displaying username twice in dropdown */}
                                       {key === 'username' ? null : (
-                                        <Text>
-                                          {key === '_id'
-                                            ? 'Document Id'
-                                            : splitCamelCase(key)}
-                                          : {formattedValue}
-                                        </Text>
+                                        <Flex w="100%" wrap="wrap" gap="xs">
+                                          {/* replace '_id' else leave as is */}
+                                          {key === '_id' ? (
+                                            <Text>{'Document Id'}: </Text>
+                                          ) : (
+                                            <Text>{splitCamelCase(key)}: </Text>
+                                          )}
+
+                                          <Flex
+                                            gap={4}
+                                            wrap="wrap"
+                                            pl={padding}
+                                          >
+                                            {footerHighlightedText}
+                                          </Flex>
+                                        </Flex>
                                       )}
                                       {dropDownFooter}
                                     </Stack>

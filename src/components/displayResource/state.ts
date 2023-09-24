@@ -10,6 +10,7 @@ const displayResourceAction: DisplayResourceAction = {
   setPages: 'setPages',
   setTotalDocuments: 'setTotalDocuments',
 
+  setQueryValuesArray: 'setQueryValuesArray',
   setNewQueryFlag: 'setNewQueryFlag',
   setQueryBuilderString: 'setQueryBuilderString',
   setPageQueryString: 'setPageQueryString',
@@ -88,6 +89,11 @@ function displayResourceReducer<Doc>(
         totalDocuments: action.payload,
       };
 
+    case displayResourceAction.setQueryValuesArray:
+      return {
+        ...state,
+        queryValuesArray: action.payload,
+      };
     case displayResourceAction.setNewQueryFlag:
       return {
         ...state,

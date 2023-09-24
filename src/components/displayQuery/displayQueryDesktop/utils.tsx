@@ -1,3 +1,7 @@
+import { Highlight, Text } from '@mantine/core';
+import React from 'react';
+
+import { replaceLastCommaWithAnd } from '../../../utils';
 import { ComponentQueryData } from '../../queryBuilder/types';
 
 type SortGroupedByQueryResponseDataInput = {
@@ -27,6 +31,8 @@ function sortGroupedByQueryResponseData({
   if (!componentQueryData.length) {
     return new Map<string | number, Record<string, any>[]>();
   }
+
+  console.log({ componentQueryData });
 
   // find corresponding camel cased field name
   const fieldCamelCasedValue =
@@ -58,26 +64,8 @@ function sortGroupedByQueryResponseData({
           const aFieldToSortBy = a[fieldCamelCasedValue];
           const bFieldToSortBy = b[fieldCamelCasedValue];
 
-          // does not work: new Date(aFieldToSortBy) !== 'Invalid Date'
-          // determine if field to sort by is a date and sort accordingly
-          // const isDate =
-          //   new Date(aFieldToSortBy) !== 'Invalid Date' &&
-          //   !Number.isNaN(new Date(aFieldToSortBy));
-          // if (isDate) {
-          //   const aDate = new Date(aFieldToSortBy);
-          //   const bDate = new Date(bFieldToSortBy);
-
-          //   if (aDate < bDate) {
-          //     return sortDirection === 'asc' ? -1 : 1;
-          //   }
-          //   if (aDate > bDate) {
-          //     return sortDirection === 'asc' ? 1 : -1;
-          //   }
-
-          //   return 0;
-          // }
-
           // determine if field to sort by is a number and sort accordingly
+          // number is first because Date.parse() will parse a number as a date
           const isNumber = Number.isNaN(Number(aFieldToSortBy)) ? false : true;
           if (isNumber) {
             const aNumber = Number(aFieldToSortBy);
@@ -87,6 +75,22 @@ function sortGroupedByQueryResponseData({
               return sortDirection === 'asc' ? -1 : 1;
             }
             if (aNumber > bNumber) {
+              return sortDirection === 'asc' ? 1 : -1;
+            }
+
+            return 0;
+          }
+
+          // determine if field to sort by is a date and sort accordingly
+          const isDate = isNaN(Date.parse(aFieldToSortBy)) ? false : true;
+          if (isDate) {
+            const aDate = new Date(aFieldToSortBy);
+            const bDate = new Date(bFieldToSortBy);
+
+            if (aDate < bDate) {
+              return sortDirection === 'asc' ? -1 : 1;
+            }
+            if (aDate > bDate) {
               return sortDirection === 'asc' ? 1 : -1;
             }
 
@@ -118,4 +122,83 @@ function sortGroupedByQueryResponseData({
   return sortedGroupedQueryResponseData;
 }
 
-export { sortGroupedByQueryResponseData };
+function returnHighlightedText({
+  groupBySelectionValue,
+  queryValuesArray,
+  backgroundColor,
+}: {
+  groupBySelectionValue:
+    | string
+    | boolean
+    | number
+    | string[]
+    | boolean[]
+    | number[];
+  queryValuesArray: string[];
+  backgroundColor: string;
+}) {
+  const stringifiedText =
+    groupBySelectionValue === true
+      ? 'Yes'
+      : groupBySelectionValue === false
+      ? 'No'
+      : Array.isArray(groupBySelectionValue)
+      ? replaceLastCommaWithAnd(
+          groupBySelectionValue
+            .map(
+              (value) =>
+                value.toString().charAt(0).toUpperCase() +
+                value.toString().slice(1)
+            )
+            .join(', ')
+        )
+      : `${groupBySelectionValue
+          .toString()
+          .charAt(0)
+          .toUpperCase()}${groupBySelectionValue.toString().slice(1)}`;
+
+  // regex to determine if formattedValue has any terms in queryValuesArray
+  const regex = queryValuesArray.length
+    ? new RegExp(
+        queryValuesArray
+          .filter((value) => value) // remove empty strings
+          .flatMap((value) => value.split(' ')) // split strings into words
+          .join('|'),
+        'gi'
+      )
+    : null;
+
+  let returnedText: React.JSX.Element | React.JSX.Element[] | null = null;
+  if (regex?.test(stringifiedText)) {
+    returnedText = stringifiedText.split(' ').map((text, index) => {
+      // word that has punctuation alongside is also highlighted
+      const wordWithoutPunctuation = text
+        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
+        .toLowerCase();
+
+      const flattenedQueryValuesArray = queryValuesArray
+        .filter((value) => value) // remove empty strings
+        .flatMap((value) => value.toLowerCase().split(' ')); // split strings into words
+
+      if (flattenedQueryValuesArray.includes(wordWithoutPunctuation)) {
+        return (
+          <Highlight
+            key={`${text}-${index}`}
+            highlightStyles={{ backgroundColor }}
+            highlight={text}
+          >
+            {text}
+          </Highlight>
+        );
+      }
+
+      return <Text key={`${text}-${index}`}>{text}</Text>;
+    });
+  } else {
+    returnedText = <Text>{stringifiedText}</Text>;
+  }
+
+  return returnedText;
+}
+
+export { returnHighlightedText, sortGroupedByQueryResponseData };

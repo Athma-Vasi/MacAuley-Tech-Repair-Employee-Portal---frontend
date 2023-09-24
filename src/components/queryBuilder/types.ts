@@ -46,9 +46,13 @@ type QueryBuilderProps = {
   componentQueryData: ComponentQueryData[];
   disableProjection?: boolean;
   setQueryBuilderString: 'setQueryBuilderString';
-  parentComponentDispatch: React.Dispatch<{
+  queryBuilderStringDispatch: React.Dispatch<{
     type: 'setQueryBuilderString';
     payload: string;
+  }>;
+  queryValuesArrayDispatch?: React.Dispatch<{
+    type: 'setQueryValuesArray';
+    payload: string[];
   }>;
 };
 

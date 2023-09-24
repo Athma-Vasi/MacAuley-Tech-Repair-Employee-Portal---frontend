@@ -62,6 +62,7 @@ function DisplayQuery<Doc>({
   parentRequestStatusDispatch,
   parentDeleteResourceDispatch,
   queryResponseData,
+  queryValuesArray,
   style = {},
   totalDocuments,
 }: DisplayQueryProps<Doc>) {
@@ -919,9 +920,10 @@ function DisplayQuery<Doc>({
         groupBySelection={groupBySelection}
         openDeleteAcknowledge={openDeleteAcknowledge}
         openFileUploads={openFileUploads}
-        setFileUploadsForAFormDispatch={displayQueryDispatch}
+        queryValuesArray={queryValuesArray}
         requestStatusDispatch={parentRequestStatusDispatch}
         restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
+        setFileUploadsForAFormDispatch={displayQueryDispatch}
         tableViewSelection={currentSegmentedSelection}
       />
     );

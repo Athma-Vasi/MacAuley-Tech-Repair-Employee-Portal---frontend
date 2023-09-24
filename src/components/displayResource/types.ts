@@ -29,6 +29,7 @@ type DisplayResourceState<Doc> = {
   pages: number;
   totalDocuments: number;
 
+  queryValuesArray: string[]; // values from queryBuilder are passed down to DisplayQueryDesktop and DisplayQueryMobile to highlight the query values in the table
   newQueryFlag: boolean;
   queryBuilderString: string;
   pageQueryString: string;
@@ -77,6 +78,7 @@ type DisplayResourceAction = {
   setPages: 'setPages';
   setTotalDocuments: 'setTotalDocuments';
 
+  setQueryValuesArray: 'setQueryValuesArray';
   setNewQueryFlag: 'setNewQueryFlag';
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
@@ -136,6 +138,10 @@ type DisplayResourceDispatch<Doc> =
         | DisplayResourceAction['setSuccessMessage']
         | DisplayResourceAction['setLoadingMessage'];
       payload: string;
+    }
+  | {
+      type: DisplayResourceAction['setQueryValuesArray'];
+      payload: string[];
     }
   | {
       type: DisplayResourceAction['setRequestStatus'];

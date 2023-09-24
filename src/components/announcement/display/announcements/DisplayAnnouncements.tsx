@@ -325,7 +325,7 @@ function DisplayAnnouncements() {
       <QueryBuilder
         collectionName="announcement"
         componentQueryData={ANNOUNCEMENT_QUERY_DATA}
-        parentComponentDispatch={displayAnnouncementsDispatch}
+        queryBuilderStringDispatch={displayAnnouncementsDispatch}
         setQueryBuilderString={displayAnnouncementsAction.setQueryBuilderString}
         disableProjection={true}
       />

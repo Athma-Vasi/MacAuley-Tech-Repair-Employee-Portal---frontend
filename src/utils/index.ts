@@ -1504,7 +1504,7 @@ function returnThemeColors({
     colorScheme === 'light' ? `2px solid ${gray[2]}` : `2px solid ${gray[7]}`;
   const rowsBorderColor =
     colorScheme === 'light' ? `1px solid ${gray[2]}` : `1px solid ${gray[8]}`;
-  const textHighlightColor = colorScheme === 'light' ? gray[2] : gray[6];
+  const textHighlightColor = colorScheme === 'light' ? gray[3] : gray[6];
   const tablesThemeColors = {
     tableHeadersBgColor,
     headerBorderColor,
@@ -1562,7 +1562,7 @@ function returnThemeColors({
 }
 
 /**
- * @description Pure function. Shuffles an array using the Fisher-Yates algorithm. @see https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array 
+ * @description Pure function. Shuffles an array using the Fisher-Yates algorithm. @see https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
  */
 function shuffleArray<T>(array: T[]): T[] {
   if (!array.length) {
