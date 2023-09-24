@@ -16,6 +16,7 @@ import {
   expenseClaimArray,
   returnExpenseClaimRequestBodies,
 } from './expenseClaim';
+import { leaveRequestsArray, returnLeaveRequestsBodies } from './leaveRequests';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -34,7 +35,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/company/expense-claim/dev',
+        path: 'actions/company/leave-request/dev',
       });
 
       const newBodiesArrCount =
@@ -53,7 +54,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        expenseClaims: slicedBodiesArr,
+        leaveRequests: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -107,16 +108,9 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const groupedByExpenseClaimKind = groupByField({
-      objectArray: expenseClaimArray,
-      field: 'expenseClaimKind',
-    });
-
-    console.log({ groupedByExpenseClaimKind });
-
-    const bodiesArr = returnExpenseClaimRequestBodies({
-      groupedByExpenseClaimKind,
+    const bodiesArr = returnLeaveRequestsBodies({
       userDocs: USERS_DOC,
+      leaveRequestsArray,
     });
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,

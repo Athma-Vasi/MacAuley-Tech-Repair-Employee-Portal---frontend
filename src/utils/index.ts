@@ -1561,6 +1561,34 @@ function returnThemeColors({
   };
 }
 
+/**
+ * @description Pure function. Shuffles an array using the Fisher-Yates algorithm. @see https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array 
+ */
+function shuffleArray<T>(array: T[]): T[] {
+  if (!array.length) {
+    return array;
+  }
+
+  let currentIndex = array.length;
+  let randomIndex = 0;
+  const clonedArray = structuredClone(array);
+
+  // While there remain elements to shuffle.
+  while (currentIndex > 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    [clonedArray[currentIndex], clonedArray[randomIndex]] = [
+      clonedArray[randomIndex],
+      clonedArray[currentIndex],
+    ];
+  }
+
+  return clonedArray;
+}
+
 export {
   addFieldsToObject,
   commentIdsTreeOpsIterative,
@@ -1594,6 +1622,7 @@ export {
   returnTimeRailwayValidationText,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
+  shuffleArray,
   splitCamelCase,
   urlBuilder,
   wrapPromise,
