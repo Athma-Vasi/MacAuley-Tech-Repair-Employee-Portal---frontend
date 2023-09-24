@@ -127,6 +127,8 @@ function DisplayQueryDesktop<Doc>({
     'userId',
     'benefitUserId',
     'uploadedFilesIds',
+    'createdAt',
+    'updatedAt',
   ]); // used for expanded / condensed table view
 
   // the component query data does not contain values of usernames
