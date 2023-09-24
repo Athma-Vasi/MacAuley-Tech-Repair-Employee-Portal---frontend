@@ -2,6 +2,7 @@ import {
   Accordion,
   Divider,
   Flex,
+  Group,
   Highlight,
   Modal,
   Spoiler,
@@ -39,6 +40,7 @@ import {
   initialDisplayQueryMobileState,
 } from './state';
 import { DisplayQueryMobileProps } from './types';
+import { returnHighlightedText } from '../displayQueryDesktop/utils';
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -49,9 +51,10 @@ function DisplayQueryMobile({
   groupBySelection,
   openDeleteAcknowledge,
   openFileUploads,
-  setFileUploadsForAFormDispatch,
+  queryValuesArray,
   restOfGroupedQueryResponseData,
   requestStatusDispatch,
+  setFileUploadsForAFormDispatch,
   style = {},
 }: DisplayQueryMobileProps): JSX.Element {
   const [displayQueryMobileState, displayQueryMobileDispatch] = useReducer(
@@ -218,20 +221,11 @@ function DisplayQueryMobile({
                 .toString()
                 .slice(1)}`;
 
-        const highlightedText = groupedByFieldValuesSet.has(
-          `${value}` // value can be boolean and set contains strings
-        ) ? (
-          <Highlight
-            highlight={formattedValue}
-            highlightStyles={{
-              backgroundColor: textHighlightColor,
-            }}
-          >
-            {formattedValue}
-          </Highlight>
-        ) : (
-          <Text>{formattedValue}</Text>
-        );
+        const highlightedText = returnHighlightedText({
+          backgroundColor: textHighlightColor,
+          fieldValue: formattedValue,
+          queryValuesArray,
+        });
 
         // only when user views repair notes section
         const [createdRepairNoteEditButton] = isRepairNoteSectionInView
@@ -336,11 +330,28 @@ function DisplayQueryMobile({
         const displayCreatedOpenFileUploadsModalButton =
           key === 'fileUploads' ? createdOpenFileUploadsModalButton : null;
 
+        // regex to determine if formattedValue has any terms in queryValuesArray
+        const regex = queryValuesArray.length
+          ? new RegExp(
+              queryValuesArray
+                .filter((value) => value) // remove empty strings
+                .flatMap((value) => value.split(' ')) // split strings into words
+                .join('|'),
+              'gi'
+            )
+          : null;
+
+        const highlightedSectionKey = regex?.test(formattedValue) ? (
+          <Text weight={600}>
+            {sectionKey === '_id' ? 'Document Id' : sectionKey}
+          </Text>
+        ) : (
+          <Text>{sectionKey === '_id' ? 'Document Id' : sectionKey}</Text>
+        );
+
         const displayFullLabelValueRow = (
           <Flex w="100%">
-            <Flex w="100%">
-              <Text>{sectionKey === '_id' ? 'Document Id' : sectionKey}</Text>
-            </Flex>
+            <Flex w="100%">{highlightedSectionKey}</Flex>
             <Flex
               align="center"
               justify="flex-end"
@@ -357,7 +368,10 @@ function DisplayQueryMobile({
                 showLabel={createdShowMoreButton}
                 hideLabel={createdHideButton}
               >
-                <Text>{highlightedText}</Text>
+                {/* <Text>{highlightedText}</Text> */}
+                <Flex direction="row" wrap="wrap" gap={4}>
+                  {highlightedText}
+                </Flex>
               </Spoiler>
             </Flex>
           </Flex>

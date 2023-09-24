@@ -7,27 +7,20 @@ import { EditRepairNoteInput } from '../displayQueryDesktop/types';
 
 type DisplayQueryMobileProps = {
   componentQueryData: ComponentQueryData[];
-  fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
-  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
-  groupBySelection: string;
-
-  openDeleteAcknowledge: () => void;
   deleteFormIdDispatch: React.Dispatch<{
     type: 'setDeleteFormId';
     payload: string;
   }>;
-
   deleteResourceKindDispatch: React.Dispatch<{
     type: 'setDeleteResourceKind';
     payload: 'form' | 'fileUpload' | '';
   }>;
-
+  fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
+  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  groupBySelection: string;
+  openDeleteAcknowledge: () => void;
   openFileUploads: () => void;
-  setFileUploadsForAFormDispatch: React.Dispatch<{
-    type: 'setFileUploadsForAForm';
-    payload: FileUploadDocument[];
-  }>;
-
+  queryValuesArray: string[];
   requestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';
     payload: {
@@ -36,6 +29,10 @@ type DisplayQueryMobileProps = {
     };
   }>;
   restOfGroupedQueryResponseData: Record<string, any>[];
+  setFileUploadsForAFormDispatch: React.Dispatch<{
+    type: 'setFileUploadsForAForm';
+    payload: FileUploadDocument[];
+  }>;
   style?: CSSProperties;
 };
 

@@ -123,12 +123,9 @@ function DisplayQueryDesktop<Doc>({
   );
 
   const tableHeaderValueExclusionSet = new Set([
-    'acknowledgement',
     'benefitUserId',
-    'createdAt',
     '_id',
     'uploadedFilesIds',
-    'updatedAt',
     'userId',
   ]); // used for expanded / condensed table view
 
@@ -478,7 +475,7 @@ function DisplayQueryDesktop<Doc>({
                               returnHighlightedText({
                                 backgroundColor: textHighlightColor,
                                 queryValuesArray,
-                                groupBySelectionValue,
+                                fieldValue: groupBySelectionValue,
                               });
 
                             const dropDownFooter = (
@@ -520,7 +517,7 @@ function DisplayQueryDesktop<Doc>({
                               {
                                 backgroundColor: textHighlightColor,
                                 queryValuesArray,
-                                groupBySelectionValue: formattedValue,
+                                fieldValue: formattedValue,
                               }
                             );
 

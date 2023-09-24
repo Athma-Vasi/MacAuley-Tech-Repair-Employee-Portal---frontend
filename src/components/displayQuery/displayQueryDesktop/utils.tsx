@@ -123,28 +123,22 @@ function sortGroupedByQueryResponseData({
 }
 
 function returnHighlightedText({
-  groupBySelectionValue,
+  fieldValue,
   queryValuesArray,
   backgroundColor,
 }: {
-  groupBySelectionValue:
-    | string
-    | boolean
-    | number
-    | string[]
-    | boolean[]
-    | number[];
+  fieldValue: string | boolean | number | string[] | boolean[] | number[];
   queryValuesArray: string[];
   backgroundColor: string;
 }) {
   const stringifiedText =
-    groupBySelectionValue === true
+    fieldValue === true
       ? 'Yes'
-      : groupBySelectionValue === false
+      : fieldValue === false
       ? 'No'
-      : Array.isArray(groupBySelectionValue)
+      : Array.isArray(fieldValue)
       ? replaceLastCommaWithAnd(
-          groupBySelectionValue
+          fieldValue
             .map(
               (value) =>
                 value.toString().charAt(0).toUpperCase() +
@@ -152,10 +146,9 @@ function returnHighlightedText({
             )
             .join(', ')
         )
-      : `${groupBySelectionValue
+      : `${fieldValue.toString().charAt(0).toUpperCase()}${fieldValue
           .toString()
-          .charAt(0)
-          .toUpperCase()}${groupBySelectionValue.toString().slice(1)}`;
+          .slice(1)}`;
 
   // regex to determine if formattedValue has any terms in queryValuesArray
   const regex = queryValuesArray.length
