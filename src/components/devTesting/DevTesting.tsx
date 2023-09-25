@@ -30,6 +30,7 @@ import {
   returnPrinterIssuesRequestBodies,
 } from './printerIssue';
 import { anonymousRequestsArray } from './anonymousRequests';
+import { refermentsArray, returnRefermentsRequestBodies } from './referment';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -48,7 +49,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/general/anonymous-request/dev',
+        path: 'actions/general/referment/dev',
       });
 
       const newBodiesArrCount =
@@ -67,7 +68,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        anonymousRequests: slicedBodiesArr,
+        referments: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -121,9 +122,20 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
+    const refermentsGroupedByDepartments = groupByField({
+      objectArray: refermentsArray,
+      field: 'departmentReferredFor',
+    });
+    console.log({ refermentsGroupedByDepartments });
+
+    const bodiesArr = returnRefermentsRequestBodies({
+      refermentsGroupedByDepartments,
+      userDocs: USERS_DOC,
+    });
+
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
-      payload: anonymousRequestsArray,
+      payload: bodiesArr,
     });
   }, []);
 

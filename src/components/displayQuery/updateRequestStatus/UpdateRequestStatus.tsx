@@ -49,7 +49,7 @@ function UpdateRequestStatus({
         description: `Document: ${documentId}`,
         onChange: (value) => setRequestStatus(value as RequestStatus),
         name: 'requestStatus',
-        label: <Title order={5}>Update Request Status</Title>,
+        label: '',
         semanticName: 'Update request status',
         value: requestStatus,
         widthRadioGroup: '100%',
@@ -74,9 +74,7 @@ function UpdateRequestStatus({
   ]);
 
   const displaySubmitRequestStatusButton = (
-    <Tooltip
-      label={`Submit request status change to ${requestStatus} for ${documentId}`}
-    >
+    <Tooltip label={`Change to ${requestStatus} for ${documentId}`}>
       <Group w="100%" position="right">
         {createdSubmitRequestStatusButton}
       </Group>

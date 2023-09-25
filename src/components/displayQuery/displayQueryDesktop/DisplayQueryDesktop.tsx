@@ -172,6 +172,8 @@ function DisplayQueryDesktop<Doc>({
         )[0]
       : [];
 
+  console.log({ tableHeaderValuesArr });
+
   // used to prevent display of sort arrows on groupedBy or id fields
   const headerExclusionSet = new Set([
     '_id',
@@ -418,6 +420,9 @@ function DisplayQueryDesktop<Doc>({
                                     .toString()
                                     .slice(1)}`;
 
+                            // slice based on length of key to prevent overflow
+                            // const sliceLength =
+                            //   tableHeaderValuesArr[keyValIdx]?.length - 3 ?? 23;
                             const sliceLength = 23;
                             const formattedValueSliced =
                               formattedValue.length > sliceLength
@@ -957,7 +962,8 @@ function DisplayQueryDesktop<Doc>({
       opened={openedUpdateRequestStatusModal}
       onClose={closeUpdateRequestStatusModal}
       centered
-      size={modalSize}
+      size={width < 480 ? width * 0.95 : 480}
+      title={<Title order={5}>Update Request Status</Title>}
     >
       <UpdateRequestStatus
         documentId={currentDocumentId}

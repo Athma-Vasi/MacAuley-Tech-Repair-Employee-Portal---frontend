@@ -182,7 +182,7 @@ const JOB_POSITION_DATA: JobPosition[] = [
   'Custodian',
 ];
 
-const DEPARTMENT_JOB_POSITION_MAP = new Map([
+const DEPARTMENT_JOB_POSITION_MAP = new Map<Department, string[]>([
   [
     'Executive Management',
     [
