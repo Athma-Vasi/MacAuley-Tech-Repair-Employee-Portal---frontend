@@ -25,6 +25,10 @@ import {
   endorsementsArray,
   returnEndorsementsRequestBodies,
 } from './endorsement';
+import {
+  printerIssuesArray,
+  returnPrinterIssuesRequestBodies,
+} from './printerIssue';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -43,7 +47,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/general/endorsement/dev',
+        path: 'actions/general/printer-issue/dev',
       });
 
       const newBodiesArrCount =
@@ -62,7 +66,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        endorsements: slicedBodiesArr,
+        printerIssues: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -116,17 +120,10 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const groupedEndorsementsByDepartment = groupByField({
-      objectArray: endorsementsArray,
-      field: 'department',
+    const bodiesArr = returnPrinterIssuesRequestBodies({
+      printerIssuesArray,
+      userDocs: USERS_DOC,
     });
-
-    const bodiesArr = returnEndorsementsRequestBodies({
-      groupedEndorsementsByDepartment,
-      usersDoc: USERS_DOC,
-    });
-
-    console.log({ groupedEndorsementsByDepartment });
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
@@ -143,7 +140,7 @@ function DevTesting() {
 
   return (
     <Center w="100%">
-      <Button
+      {/* <Button
         disabled={bodiesArrCount === bodiesArr.length || triggerFormSubmit}
         onClick={() => {
           devTestingDispatch({
@@ -153,7 +150,7 @@ function DevTesting() {
         }}
       >
         Trigger
-      </Button>
+      </Button> */}
     </Center>
   );
 }

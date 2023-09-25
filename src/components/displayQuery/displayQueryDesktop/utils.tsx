@@ -174,8 +174,15 @@ function returnHighlightedText({
         .filter((value) => value) // remove empty strings
         .flatMap((value) => value.toLowerCase().split(' ')); // split strings into words
 
+      // const isQueryArrayIncludesWord = flattenedQueryValuesArray.some(
+      //   (queryValue) => wordWithoutPunctuation.includes(queryValue)
+      // );
+      // test with regex
       const isQueryArrayIncludesWord = flattenedQueryValuesArray.some(
-        (queryValue) => wordWithoutPunctuation.includes(queryValue)
+        (queryValue) => {
+          const regex = new RegExp(queryValue, 'gi');
+          return regex.test(wordWithoutPunctuation.join(' '));
+        }
       );
 
       if (isQueryArrayIncludesWord) {
