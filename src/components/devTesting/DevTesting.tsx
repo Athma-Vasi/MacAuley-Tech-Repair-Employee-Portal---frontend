@@ -31,6 +31,7 @@ import {
 } from './printerIssue';
 import { anonymousRequestsArray } from './anonymousRequests';
 import { refermentsArray, returnRefermentsRequestBodies } from './referment';
+import { eventsArray, returnEventsRequestBodies } from './event';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -49,7 +50,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/general/referment/dev',
+        path: 'actions/outreach/event/dev',
       });
 
       const newBodiesArrCount =
@@ -68,7 +69,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        referments: slicedBodiesArr,
+        events: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -122,14 +123,8 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const refermentsGroupedByDepartments = groupByField({
-      objectArray: refermentsArray,
-      field: 'departmentReferredFor',
-    });
-    console.log({ refermentsGroupedByDepartments });
-
-    const bodiesArr = returnRefermentsRequestBodies({
-      refermentsGroupedByDepartments,
+    const bodiesArr = returnEventsRequestBodies({
+      eventsArray,
       userDocs: USERS_DOC,
     });
 
