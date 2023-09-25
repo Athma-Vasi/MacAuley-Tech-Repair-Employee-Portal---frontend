@@ -164,16 +164,21 @@ function returnHighlightedText({
   let returnedText: React.JSX.Element | React.JSX.Element[] | null = null;
   if (regex?.test(stringifiedText)) {
     returnedText = stringifiedText.split(' ').map((text, index) => {
-      // word that has punctuation alongside is also highlighted
+      // word that has below symbol is also highlighted
       const wordWithoutPunctuation = text
-        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
-        .toLowerCase();
+        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, ' ')
+        .toLowerCase()
+        .split(' ');
 
       const flattenedQueryValuesArray = queryValuesArray
         .filter((value) => value) // remove empty strings
         .flatMap((value) => value.toLowerCase().split(' ')); // split strings into words
 
-      if (flattenedQueryValuesArray.includes(wordWithoutPunctuation)) {
+      const isQueryArrayIncludesWord = flattenedQueryValuesArray.some(
+        (queryValue) => wordWithoutPunctuation.includes(queryValue)
+      );
+
+      if (isQueryArrayIncludesWord) {
         return (
           <Highlight
             key={`${text}-${index}`}

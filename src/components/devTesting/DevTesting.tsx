@@ -21,6 +21,10 @@ import {
   requestResourcesArray,
   returnRequestResourcesBodies,
 } from './requestResource';
+import {
+  endorsementsArray,
+  returnEndorsementsRequestBodies,
+} from './endorsement';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -39,7 +43,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/company/request-resource/dev',
+        path: 'actions/general/endorsement/dev',
       });
 
       const newBodiesArrCount =
@@ -58,7 +62,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        requestResources: slicedBodiesArr,
+        endorsements: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -112,17 +116,17 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const groupedByRequestResources = groupByField({
-      objectArray: requestResourcesArray,
+    const groupedEndorsementsByDepartment = groupByField({
+      objectArray: endorsementsArray,
       field: 'department',
     });
 
-    const bodiesArr = returnRequestResourcesBodies({
-      groupedByRequestResources,
-      userDocs: USERS_DOC,
+    const bodiesArr = returnEndorsementsRequestBodies({
+      groupedEndorsementsByDepartment,
+      usersDoc: USERS_DOC,
     });
 
-    console.log({ groupedByRequestResources });
+    console.log({ groupedEndorsementsByDepartment });
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
