@@ -139,15 +139,15 @@ function returnHighlightedText({
       : Array.isArray(fieldValue)
       ? replaceLastCommaWithAnd(
           fieldValue
-            .map(
+            ?.map(
               (value) =>
                 value.toString().charAt(0).toUpperCase() +
                 value.toString().slice(1)
             )
             .join(', ')
         )
-      : `${fieldValue.toString().charAt(0).toUpperCase()}${fieldValue
-          .toString()
+      : `${fieldValue?.toString().charAt(0).toUpperCase()}${fieldValue
+          ?.toString()
           .slice(1)}`;
 
   // regex to determine if formattedValue has any terms in queryValuesArray

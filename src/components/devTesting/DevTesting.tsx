@@ -29,6 +29,7 @@ import {
   printerIssuesArray,
   returnPrinterIssuesRequestBodies,
 } from './printerIssue';
+import { anonymousRequestsArray } from './anonymousRequests';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -47,7 +48,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/general/printer-issue/dev',
+        path: 'actions/general/anonymous-request/dev',
       });
 
       const newBodiesArrCount =
@@ -66,7 +67,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        printerIssues: slicedBodiesArr,
+        anonymousRequests: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -120,14 +121,9 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const bodiesArr = returnPrinterIssuesRequestBodies({
-      printerIssuesArray,
-      userDocs: USERS_DOC,
-    });
-
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
-      payload: bodiesArr,
+      payload: anonymousRequestsArray,
     });
   }, []);
 
