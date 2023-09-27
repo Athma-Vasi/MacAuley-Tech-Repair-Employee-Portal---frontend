@@ -19,6 +19,7 @@ import {
 } from './state';
 import { QueryBuilder } from '../../../queryBuilder';
 import { ANNOUNCEMENT_QUERY_DATA } from '../../create/constants';
+import { PageBuilder } from '../../../pageBuilder';
 
 function DisplayAnnouncements() {
   /** ------------- begin hooks ------------- */
@@ -49,7 +50,7 @@ function DisplayAnnouncements() {
   } = useAuth();
 
   const {
-    globalState: { padding, rowGap, themeObject },
+    globalState: { padding, rowGap, themeObject, width },
     globalDispatch,
   } = useGlobalState();
 
@@ -75,7 +76,7 @@ function DisplayAnnouncements() {
 
       const url: URL = urlBuilder({
         path: 'actions/outreach/announcement',
-        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
+        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=50&projection=-action&projection=-category`,
       });
 
       const request: Request = new Request(url.toString(), {
@@ -187,6 +188,13 @@ function DisplayAnnouncements() {
   }, [queryBuilderString]);
 
   useEffect(() => {
+    displayAnnouncementsDispatch({
+      type: displayAnnouncementsAction.setTriggerFetchAnnouncements,
+      payload: true,
+    });
+  }, [pageQueryString]);
+
+  useEffect(() => {
     logState({
       state: displayAnnouncementsState,
       groupLabel: 'displayAnnouncementsState',
@@ -214,7 +222,7 @@ function DisplayAnnouncements() {
   /** ------------- end component render bypass ------------- */
 
   const {
-    appThemeColors: { backgroundColor },
+    appThemeColors: { backgroundColor, borderColor },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -224,7 +232,13 @@ function DisplayAnnouncements() {
 
   const createdAnnouncementsCards = responseData?.map(
     (announcement, announcementIdx) => {
-      const { _id, bannerImageSrc, bannerImageAlt, title } = announcement;
+      const {
+        _id,
+        bannerImageSrc,
+        bannerImageAlt,
+        title,
+        bannerImageSrcCompressed,
+      } = announcement;
 
       // required to avoid breadcrumbs showing '%20' instead of spaces
       const dynamicPath = title ? title.replace(/ /g, '-') : _id;
@@ -247,7 +261,7 @@ function DisplayAnnouncements() {
           <Card shadow="sm" radius="md" withBorder w="100%" h="100%">
             <Card.Section>
               <Image
-                src={bannerImageSrc}
+                src={bannerImageSrcCompressed}
                 alt={bannerImageAlt}
                 fit="fill"
                 style={{
@@ -320,6 +334,37 @@ function DisplayAnnouncements() {
     </Flex>
   );
 
+  // const sectionWidth =
+  //   width < 480 // for iPhone 5/SE
+  //     ? 375 - 20
+  //     : width < 768 // for iPhone 6/7/8
+  //     ? width - 40
+  //     : // at 768vw the navbar appears at width of 225px
+  //     width < 1024
+  //     ? (width - 225) * 0.8
+  //     : // at >= 1200vw the navbar width is 300px
+  //     width < 1200
+  //     ? (width - 225) * 0.8
+  //     : 900 - 40;
+
+  // const displayPagination = (
+  //   <Group
+  //     w={sectionWidth}
+  //     style={{
+  //       border: borderColor,
+  //       borderRadius: 4,
+  //     }}
+  //     spacing={rowGap}
+  //     p={padding}
+  //   >
+  //     <PageBuilder
+  //       total={pages}
+  //       setPageQueryString={displayAnnouncementsAction.setPageQueryString}
+  //       parentComponentDispatch={displayAnnouncementsDispatch}
+  //     />
+  //   </Group>
+  // );
+
   const displayQueryBuilder = (
     <Group w="100%" bg={backgroundColor} position="center">
       <QueryBuilder
@@ -336,6 +381,7 @@ function DisplayAnnouncements() {
     <Flex direction="column" w="100%">
       {displayAnnouncementHeader}
       {displayQueryBuilder}
+      {/* {displayPagination} */}
       {displayAnnouncementCards}
     </Flex>
   );

@@ -12,9 +12,12 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { MdOutlineAddReaction } from 'react-icons/md';
 import { TbMoodHappy, TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../../../constants/data';
 import { globalAction } from '../../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../../hooks';
 import { returnAccessibleButtonElements } from '../../../../jsxCreators';
@@ -29,15 +32,12 @@ import { Comment } from '../../../comment';
 import { CustomNotification } from '../../../customNotification';
 import { CustomRating } from '../../../customRating/CustomRating';
 import { ResponsivePieChart } from '../../../displayStatistics/responsivePieChart';
-import { AnnouncementDocument, RatingResponse } from '../../create/types';
+import { AnnouncementDocument } from '../../create/types';
 import {
   displayAnnouncementAction,
   displayAnnouncementReducer,
   initialDisplayAnnouncementState,
 } from './state';
-import { useNavigate } from 'react-router-dom';
-import { useErrorBoundary } from 'react-error-boundary';
-import { COLORS_SWATCHES } from '../../../../constants/data';
 
 function DisplayAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -48,6 +48,7 @@ function DisplayAnnouncement() {
   const {
     announcement,
     rating,
+
     triggerRatingSubmit,
     ratingPieChartDataArray,
 
@@ -255,7 +256,7 @@ function DisplayAnnouncement() {
       type: displayAnnouncementAction.setRatingPieChartDataArray,
       payload: announcement.ratingResponse,
     });
-  }, [triggerRatingSubmit]);
+  }, [announcement, triggerRatingSubmit]);
 
   useEffect(() => {
     logState({

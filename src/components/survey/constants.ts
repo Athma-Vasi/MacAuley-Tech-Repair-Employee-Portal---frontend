@@ -17,17 +17,18 @@ import { ComponentQueryData } from '../queryBuilder';
 const SURVEY_BUILDER_RECIPIENT_DATA = [
   'All',
   'Executive Management',
-  'Administrative',
-  'Sales and Marketing',
+  'Store Administration',
+  'Office Administration',
+  'Accounting',
+  'Human Resources',
+  'Sales',
+  'Marketing',
   'Information Technology',
   'Repair Technicians',
   'Field Service Technicians',
   'Logistics and Inventory',
   'Customer Service',
-  'Quality Control',
-  'Training and Development',
-  'Janitorial and Maintenance',
-  'Security',
+  'Maintenance',
 ];
 
 const SURVEY_BUILDER_RESPONSE_KIND_DATA: SelectInputData = [
@@ -87,7 +88,7 @@ const SURVEY_BUILDER_INPUT_HTML_DATA = new Map([
 
 const SURVEY_BUILDER_MAX_QUESTION_AMOUNT = 3;
 
-const SURVEY_MAX_RESPONSE_DATA_OPTIONS = 7;
+const SURVEY_MAX_RESPONSE_DATA_OPTIONS = 11;
 
 const SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS: RadioGroupInputData = [
   {

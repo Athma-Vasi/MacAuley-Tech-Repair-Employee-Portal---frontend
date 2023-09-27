@@ -449,14 +449,13 @@ function DisplayQuery<Doc>({
     </Modal>
   );
 
-  const fileUploadUsername = fileUploadsForAForm?.[0]?.username ?? '';
   const displayFileUploadsModal = (
     <Modal
       opened={openedDisplayFileUploads}
       onClose={closeFileUploads}
       centered
       size={width < 1200 ? width * 0.9 : 1150}
-      title={<Title order={4}>{`${fileUploadUsername}'s receipts`}</Title>}
+      title={<Title order={4}>File Uploads</Title>}
     >
       <Flex
         w="100%"

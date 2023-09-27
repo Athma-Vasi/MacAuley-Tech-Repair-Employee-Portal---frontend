@@ -2,7 +2,7 @@ import { Card, Flex, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { Fragment, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
-import { TbChartPie3, TbUpload } from 'react-icons/tb';
+import { TbChartPie3, TbNewSection, TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
@@ -918,6 +918,24 @@ function DisplaySurveys() {
       </Card>
     );
   });
+
+  const createdSurveyButton = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Create',
+      semanticDescription: 'create surveys form button',
+      semanticName: 'create survey button',
+      leftIcon: <TbNewSection />,
+      buttonOnClick: () => {
+        navigate('/home/outreach/survey/create');
+      },
+    },
+  ]);
+
+  const displaySurveyButton = (
+    <Tooltip label="Create survey">
+      <Group>{createdSurveyButton}</Group>
+    </Tooltip>
+  );
   /** ------------- end surveys creation ------------- */
 
   /** ------------- begin surveys display ------------- */
@@ -1032,6 +1050,7 @@ function DisplaySurveys() {
       style={{ borderRadius: '4px' }}
     >
       {displayResourceHeader}
+      {displaySurveyButton}
       {displayTotalAndPageNavigation}
       {displayStatistics}
       {displayUncompletedSurveys}

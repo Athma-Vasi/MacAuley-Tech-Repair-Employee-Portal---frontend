@@ -70,6 +70,7 @@ import {
   surveyBuilderAction,
   surveyBuilderReducer,
 } from './state';
+import { SURVEY_BUILDER_HELP_TEXT } from './utils';
 
 function SurveyBuilder() {
   /** ------------- begin hooks ------------- */
@@ -505,42 +506,42 @@ function SurveyBuilder() {
 
   // ensures 'Add option' button's disabled prop always receives the correct state
   useEffect(() => {
-    responseKinds.forEach((responseKind, index) => {
-      switch (responseKind) {
-        case 'chooseOne': {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setResponseInputHtml,
-            payload: {
-              index,
-              value: 'radio',
-            },
-          });
-          break;
-        }
-        case 'chooseAny': {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setResponseInputHtml,
-            payload: {
-              index,
-              value: 'checkbox',
-            },
-          });
-          break;
-        }
-        case 'rating': {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setResponseInputHtml,
-            payload: {
-              index,
-              value: 'emotion',
-            },
-          });
-          break;
-        }
-        default:
-          break;
-      }
-    });
+    // responseKinds.forEach((responseKind, index) => {
+    //   switch (responseKind) {
+    //     case 'chooseOne': {
+    //       surveyBuilderDispatch({
+    //         type: surveyBuilderAction.setResponseInputHtml,
+    //         payload: {
+    //           index,
+    //           value: 'radio',
+    //         },
+    //       });
+    //       break;
+    //     }
+    //     case 'chooseAny': {
+    //       surveyBuilderDispatch({
+    //         type: surveyBuilderAction.setResponseInputHtml,
+    //         payload: {
+    //           index,
+    //           value: 'checkbox',
+    //         },
+    //       });
+    //       break;
+    //     }
+    //     case 'rating': {
+    //       surveyBuilderDispatch({
+    //         type: surveyBuilderAction.setResponseInputHtml,
+    //         payload: {
+    //           index,
+    //           value: 'emotion',
+    //         },
+    //       });
+    //       break;
+    //     }
+    //     default:
+    //       break;
+    //   }
+    // });
   }, [responseKinds]);
 
   // check submit button disabled state on every change
@@ -553,7 +554,6 @@ function SurveyBuilder() {
       areValidQuestions.includes(false) ||
       responseDataOptionsArray.includes([]) ||
       areResponseDataOptionsValid.flat().includes(false) ||
-      isMaxResponseDataOptionsReached.includes(true) ||
       stepsInError.size > 0;
 
     surveyBuilderDispatch({
@@ -908,7 +908,7 @@ function SurveyBuilder() {
               questions[index].length > 11
                 ? questions[index].slice(0, 11) + '...'
                 : questions[index]
-            } ?`;
+            }`;
 
       const createdDeleteQuestionGroupButton = returnAccessibleButtonElements([
         {
@@ -976,6 +976,7 @@ function SurveyBuilder() {
         placeholder: 'Enter question',
         semanticName: `question ${index + 1}`,
         required: true,
+        withAsterisk: false,
         // dynamicInputProps: {
         //   dynamicIndex: index,
         //   buttonDisabled: questions.length === 1,
@@ -1118,7 +1119,7 @@ function SurveyBuilder() {
             inputText: responseDataOptionsArray?.[questionIdx]?.[optionIdx],
             isValidInputText:
               areResponseDataOptionsValid?.[questionIdx]?.[optionIdx],
-            label: `Response Data Option ${optionIdx + 1} for Question ${
+            label: `Response Option ${optionIdx + 1} for Question ${
               questionIdx + 1
             }`,
             onBlur: () => {
@@ -1162,6 +1163,7 @@ function SurveyBuilder() {
               optionIdx + 1
             }`,
             required: true,
+            withAsterisk: false,
             // dynamicInputProps: {
             //   dynamicIndex: optionIdx,
             //   dynamicLabel: dynamicInputLabel,
@@ -1194,7 +1196,9 @@ function SurveyBuilder() {
     buttonLabel: (
       <Tooltip label="Add new question">
         <Group>
-          <Text color={textColor}>Add question</Text>
+          <Text size="xs" color={isMaxQuestionsReached ? 'gray' : textColor}>
+            Add question
+          </Text>
         </Group>
       </Tooltip>
     ),
@@ -1237,7 +1241,14 @@ function SurveyBuilder() {
             }
           >
             <Group>
-              <Text color={textColor}>Add option</Text>
+              <Text
+                size="xs"
+                color={
+                  isMaxResponseDataOptionsReached?.[index] ? 'gray' : textColor
+                }
+              >
+                Add option
+              </Text>
             </Group>
           </Tooltip>
         ),
@@ -1313,54 +1324,9 @@ function SurveyBuilder() {
       opened={openedHelpModal}
       onClose={closeHelpModal}
       centered
-      title={<Title order={3}>Help</Title>}
+      title={<Title order={3}>Survey Builder Help</Title>}
     >
-      <Flex direction="column" align="center" justify="flex-start" rowGap="xs">
-        <Text>
-          <strong>Question: </strong>Enter a question for your survey. Your
-          survey can have multiple questions (currently a maximum of 3).
-        </Text>
-        <Group w="100%" position="left" pl="sm">
-          <Text>Example: How do you typically commute to work?</Text>
-        </Group>
-
-        <Text>
-          <strong>Response kind:</strong> Select the type of response you want
-          to collect for your question from the entered options. Choose 'Choose
-          one' for a single response, or 'Choose any' for multiple responses, or
-          'Rating' for a rating.
-        </Text>
-        <Group w="100%" position="left" pl="sm">
-          <Text>
-            Example: 'Choose one' or 'Choose any' for answer relating to
-            commute.
-          </Text>
-        </Group>
-
-        <Text>
-          <strong>Input kind</strong>: Select the type of HTML input you want to
-          use for your response. Currently, there are 'Agree/Disagree', 'Radio',
-          'Checkbox', and 'Emotion', 'Stars'.
-        </Text>
-        <Group w="100%" position="left" pl="sm">
-          <Text>
-            Example: 'Radio' to constrain response to single choice. 'Checkbox'
-            to allow multiple choices.
-          </Text>
-        </Group>
-
-        <Text>
-          <strong>Response data options:</strong> Enter the response data
-          options for your question (currently a maximum of 7 options per
-          question).
-        </Text>
-        <Group w="100%" position="left" pl="sm">
-          <Text>
-            Example: 'Personal vehicle', 'Public transport', 'Ride share', etc.
-            Each response data option input corresponds to a choice.
-          </Text>
-        </Group>
-      </Flex>
+      {SURVEY_BUILDER_HELP_TEXT}
     </Modal>
   );
 

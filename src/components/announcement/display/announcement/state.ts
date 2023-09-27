@@ -9,6 +9,7 @@ import {
 const initialDisplayAnnouncementState: DisplayAnnouncementState = {
   announcement: null,
   rating: 0,
+
   triggerRatingSubmit: false,
   ratingPieChartDataArray: [],
 
@@ -24,6 +25,7 @@ const displayAnnouncementAction: DisplayAnnouncementAction = {
   setAnnouncement: 'setAnnouncement',
   setRating: 'setRating',
   updateRatingResponse: 'updateRatingResponse',
+
   setTriggerRatingSubmit: 'setTriggerRatingSubmit',
   setRatingPieChartDataArray: 'setRatingPieChartDataArray',
 
@@ -86,7 +88,7 @@ function displayAnnouncementReducer(
           break;
         }
         case 5: {
-          prevRatingEmotion.ecstatic += 1;
+          prevRatingEmotion.estatic += 1;
           break;
         }
         default:

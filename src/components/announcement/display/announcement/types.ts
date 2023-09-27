@@ -19,9 +19,9 @@ type DisplayAnnouncementState = {
 
 type DisplayAnnouncementAction = {
   setAnnouncement: 'setAnnouncement';
-
   setRating: 'setRating';
   updateRatingResponse: 'updateRatingResponse';
+
   setTriggerRatingSubmit: 'setTriggerRatingSubmit';
   setRatingPieChartDataArray: 'setRatingPieChartDataArray';
 

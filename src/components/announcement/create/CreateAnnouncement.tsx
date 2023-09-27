@@ -133,7 +133,7 @@ function CreateAnnouncement() {
 
       const ratingResponse: RatingResponse = {
         ratingEmotion: {
-          ecstatic: 0,
+          estatic: 0,
           happy: 0,
           neutral: 0,
           annoyed: 0,

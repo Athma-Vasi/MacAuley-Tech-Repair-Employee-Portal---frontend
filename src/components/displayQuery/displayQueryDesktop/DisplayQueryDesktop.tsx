@@ -767,6 +767,7 @@ function DisplayQueryDesktop<Doc>({
                               createdDeleteFormButton,
                               createdOpenFileUploadsModalButton,
                             ] = returnAccessibleButtonElements([
+                              // delete button
                               {
                                 buttonLabel: <TbTrash />,
                                 semanticDescription: `Delete form with id: ${queryResponseObjWithAddedFields._id} belonging to username: ${queryResponseObjWithAddedFields.username}`,
@@ -784,6 +785,7 @@ function DisplayQueryDesktop<Doc>({
                                   openDeleteAcknowledge();
                                 },
                               },
+                              // open file uploads modal button
                               {
                                 buttonLabel: <IoMdOpen />,
                                 buttonDisabled:

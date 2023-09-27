@@ -26,16 +26,18 @@ function mergeSurveyQuestionsGroup({
 }: MergeSurveyQuestionsGroupProps) {
   return createdQuestionsTextInputs.map((createdQuestionsTextInput, index) => (
     <Stack key={`${index}`} w="100%">
-      <Group w="100%" position="apart">
-        {createdHelpButton}
-        {displayAddNewQuestionButton ?? null}
-      </Group>
       {createdQuestionsTextInput}
       {createdResponseKindRadioGroups[index]}
       {createdResponseInputHtmlRadioGroups[index]}
       {createdResponseDataOptionsTextInputs?.[index]}
-      <Group w="100%" position="right">
-        {createdAddNewResponseDataOptionButtons?.[index]}
+
+      <Group w="100%" position="apart">
+        <Group position="left">{createdHelpButton}</Group>
+
+        <Group position={displayAddNewQuestionButton ? 'left' : 'right'}>
+          {createdAddNewResponseDataOptionButtons?.[index]}
+        </Group>
+        <Group position="right">{displayAddNewQuestionButton ?? null}</Group>
       </Group>
     </Stack>
   ));

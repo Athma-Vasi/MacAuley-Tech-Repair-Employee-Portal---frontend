@@ -1,7 +1,7 @@
 import { SetStepsInErrorPayload } from '../../../types';
 
 type RatingEmotion = {
-  ecstatic: number;
+  estatic: number;
   happy: number;
   neutral: number;
   annoyed: number;
@@ -18,6 +18,7 @@ type AnnouncementSchema = {
   username: string;
   title: string;
   author: string;
+  bannerImageSrcCompressed: string;
   bannerImageSrc: string;
   bannerImageAlt: string;
   article: string[];
