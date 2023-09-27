@@ -1,10 +1,4 @@
 import {
-  faCheck,
-  faRefresh,
-  IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
   Group,
   Popover,
   Stack,
@@ -13,10 +7,10 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { ReactNode, useState } from 'react';
+import React from 'react';
+import { TbCheck, TbRefresh } from 'react-icons/tb';
 
 import { useGlobalState } from '../../hooks';
-import React from 'react';
-import { TbCheck, TbRefresh, TbX } from 'react-icons/tb';
 import { splitCamelCase } from '../../utils';
 
 type AccessibleTextInputCreatorInfo = {

@@ -1879,12 +1879,12 @@ function QueryBuilder({
     </Modal>
   );
 
-  useEffect(() => {
-    logState({
-      state: queryBuilderState,
-      groupLabel: 'queryBuilderState',
-    });
-  }, [queryBuilderState]);
+  // useEffect(() => {
+  //   logState({
+  //     state: queryBuilderState,
+  //     groupLabel: 'queryBuilderState',
+  //   });
+  // }, [queryBuilderState]);
 
   return (
     <Group>

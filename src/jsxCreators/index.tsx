@@ -10,12 +10,14 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import React from 'react';
+import { TbCheck, TbExclamationCircle } from 'react-icons/tb';
 
 import type {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
+  AccessibleImageCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
@@ -30,6 +32,7 @@ import {
   CheckboxGroupInputsWrapper,
   CheckboxSingleInputWrapper,
   DateTimeInputWrapper,
+  ImageWrapper,
   NativeSelectWrapper,
   PasswordInputWrapper,
   PhoneTextInputWrapper,
@@ -40,9 +43,8 @@ import {
   TextInputWrapper,
   TextWrapper,
 } from '../components/wrappers';
-import { RegexValidationProps } from '../utils';
-import { TbCheck, TbExclamationCircle } from 'react-icons/tb';
 import { useGlobalState } from '../hooks';
+import { RegexValidationProps } from '../utils';
 
 // The functions : AccessibleErrorValidTextElements and AccessibleErrorValidTextElementsForDynamicInputs return a tuple [error, valid] or tuple[error[], valid[]] of accessible text elements for screen readers to read out based on the state of the controlled input
 
@@ -708,6 +710,17 @@ function returnAccessibleCheckboxGroupInputsElements(
   ));
 }
 
+function returnAccessibleImageElements(
+  creatorInfoObjectArray: AccessibleImageCreatorInfo[]
+) {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
+    <ImageWrapper
+      key={`${index}${creatorInfoObject.alt}`}
+      creatorInfoObject={creatorInfoObject}
+    />
+  ));
+}
+
 function returnAccessibleSliderInputElements(
   creatorInfoObjectArray: AccessibleSliderInputCreatorInfo[]
 ) {
@@ -742,6 +755,10 @@ function returnAccessibleDynamicTextAreaInputElements(
 }
 
 export {
+  AccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElementsForDynamicImageUploads,
+  AccessibleErrorValidTextElementsForDynamicInputs,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleCheckboxSingleInputElements,
@@ -750,14 +767,11 @@ export {
   returnAccessibleDynamicRadioSingleInputElements,
   returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleDynamicTextInputElements,
-  AccessibleErrorValidTextElements,
-  AccessibleErrorValidTextElementsForDynamicImageUploads,
-  AccessibleErrorValidTextElementsForDynamicInputs,
+  returnAccessibleImageElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleRadioGroupInputsElements,
   returnAccessibleRadioSingleInputElements,
-  AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
   returnAccessibleTextAreaInputElements,

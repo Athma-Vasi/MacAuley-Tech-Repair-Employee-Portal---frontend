@@ -20,7 +20,10 @@ import { useNavigate } from 'react-router-dom';
 import { COLORS_SWATCHES } from '../../../../constants/data';
 import { globalAction } from '../../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../../hooks';
-import { returnAccessibleButtonElements } from '../../../../jsxCreators';
+import {
+  returnAccessibleButtonElements,
+  returnAccessibleImageElements,
+} from '../../../../jsxCreators';
 import { UserDocument } from '../../../../types';
 import {
   formatDate,
@@ -357,14 +360,23 @@ function DisplayAnnouncement() {
     </Group>
   );
 
-  const articleImage = (
-    <Image
-      src={announcement?.bannerImageSrc ?? ''}
-      alt={announcement?.bannerImageAlt ?? ''}
-      withPlaceholder
-      w="100%"
-    />
-  );
+  // const articleImage = (
+  //   <Image
+  //     src={announcement?.bannerImageSrc ?? ''}
+  //     alt={announcement?.bannerImageAlt ?? ''}
+  //     withPlaceholder
+  //     w="100%"
+  //   />
+  // );
+  const [articleImage] = returnAccessibleImageElements([
+    {
+      imageSrc: announcement?.bannerImageSrc,
+      imageAlt: announcement?.bannerImageAlt,
+      withPlaceholder: true,
+    },
+  ]);
+
+  const displayArticleImage = <Group w="100%">{articleImage}</Group>;
 
   /** article paragraphs */
   const articleParagraphs = announcement?.article?.map((paragraph, index) => {
@@ -590,7 +602,7 @@ function DisplayAnnouncement() {
       {displayStatisticsModal}
       {articleTitle}
       {displayArticleInfo}
-      {articleImage}
+      {displayArticleImage}
       {displayArticleParagraphs}
       {displayReaderResponseIcons}
       <Comment
