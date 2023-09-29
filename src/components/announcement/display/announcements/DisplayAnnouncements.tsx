@@ -1,12 +1,5 @@
-import {
-  Card,
-  Flex,
-  Group,
-  Image,
-  LoadingOverlay,
-  Text,
-  UnstyledButton,
-} from '@mantine/core';
+import { Flex, Group, LoadingOverlay, UnstyledButton } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -15,12 +8,13 @@ import { useNavigate } from 'react-router-dom';
 import { COLORS_SWATCHES } from '../../../../constants/data';
 import { globalAction } from '../../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../../hooks';
+import { returnAccessibleImageElements } from '../../../../jsxCreators';
 import { GetQueriedResourceRequestServerResponse } from '../../../../types';
 import { logState, returnThemeColors, urlBuilder } from '../../../../utils';
-import { CustomNotification } from '../../../customNotification';
 import DisplayResourceHeader from '../../../displayResourceHeader/DisplayResourceHeader';
 import { PageBuilder } from '../../../pageBuilder';
 import { QueryBuilder } from '../../../queryBuilder';
+import { AccessibleImageCreatorInfo } from '../../../wrappers';
 import { ANNOUNCEMENT_QUERY_DATA } from '../../create/constants';
 import { AnnouncementDocument } from '../../create/types';
 import {
@@ -28,9 +22,6 @@ import {
   displayAnnouncementsReducer,
   initialDisplayAnnouncementsState,
 } from './state';
-import { useDisclosure } from '@mantine/hooks';
-import { AccessibleImageCreatorInfo } from '../../../wrappers';
-import { returnAccessibleImageElements } from '../../../../jsxCreators';
 
 function DisplayAnnouncements() {
   /** ------------- begin hooks ------------- */
@@ -190,7 +181,6 @@ function DisplayAnnouncements() {
 
   // toggle overlay states
   useEffect(() => {
-    console.log({ isLoading, loadingOverlayVisible });
     toggleLoadingOverlay();
   }, [isLoading]);
 
@@ -318,15 +308,15 @@ function DisplayAnnouncements() {
       const { _id, bannerImageAlt, title, bannerImageSrcCompressed } =
         announcement;
 
-      const imageCreatorInfo: AccessibleImageCreatorInfo = {
-        imageSrc: bannerImageSrcCompressed,
-        imageAlt: bannerImageAlt,
-        isCard: true,
-        isOverlay: true,
-        overlayText: title,
-      };
-
-      const [createdImage] = returnAccessibleImageElements([imageCreatorInfo]);
+      const [createdImage] = returnAccessibleImageElements([
+        {
+          imageSrc: bannerImageSrcCompressed,
+          imageAlt: bannerImageAlt,
+          isCard: true,
+          isOverlay: true,
+          overlayText: title,
+        },
+      ]);
 
       // required to avoid breadcrumbs showing '%20' instead of spaces
       const dynamicPath = title ? title.replace(/ /g, '-') : _id;
@@ -341,7 +331,7 @@ function DisplayAnnouncements() {
               payload: announcement,
             });
 
-            navigate(`/home/outreach/announcement/display/${dynamicPath}`, {
+            navigate(`/home/outreach/announcement/${dynamicPath}`, {
               replace: false,
             });
           }}

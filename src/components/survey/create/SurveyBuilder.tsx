@@ -33,7 +33,7 @@ import {
   returnGrammarValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -148,6 +148,14 @@ function SurveyBuilder() {
     { open: openPreviewSurveyModal, close: closePreviewSurveyModal },
   ] = useDisclosure(false);
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -167,6 +175,11 @@ function SurveyBuilder() {
         type: surveyBuilderAction.setIsSubmitting,
         payload: true,
       });
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setSubmitMessage,
+        payload: `Submitting survey: ${surveyTitle}...`,
+      });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: 'actions/outreach/survey',
@@ -684,22 +697,7 @@ function SurveyBuilder() {
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin component render bypass ------------- */
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={surveyBuilderDispatch}
-        navigateTo={{
-          successPath: '/home/outreach/survey-builder/display',
-        }}
-      />
-    );
-  }
+
   /** ------------- end component render bypass ------------- */
 
   /** ------------- begin text inputs validation ------------- */
@@ -1484,6 +1482,25 @@ function SurveyBuilder() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/outreach/survey-builder/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displaySubmitPreviewButtons =
     currentStepperPosition === maxStepperPosition ? (
       <Group w="100%" position="center">
@@ -1555,6 +1572,7 @@ function SurveyBuilder() {
       setCurrentStepperPosition={surveyBuilderAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displaySurveyBuilderForm}
       {previewSurveyModal}
       {displayHelpTextModal}

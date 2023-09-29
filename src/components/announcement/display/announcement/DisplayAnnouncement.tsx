@@ -2,6 +2,8 @@ import {
   Flex,
   Group,
   Image,
+  Loader,
+  LoadingOverlay,
   Modal,
   Space,
   Stack,
@@ -32,7 +34,7 @@ import {
   urlBuilder,
 } from '../../../../utils';
 import { Comment } from '../../../comment';
-import { CustomNotification } from '../../../customNotification';
+
 import { CustomRating } from '../../../customRating/CustomRating';
 import { ResponsivePieChart } from '../../../displayStatistics/responsivePieChart';
 import { AnnouncementDocument } from '../../create/types';
@@ -41,6 +43,7 @@ import {
   displayAnnouncementReducer,
   initialDisplayAnnouncementState,
 } from './state';
+import { NotificationModal } from '../../../notificationModal';
 
 function DisplayAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -85,9 +88,21 @@ function DisplayAnnouncement() {
     openedRatingModal,
     { open: openRatingModal, close: closeRatingModal },
   ] = useDisclosure(false);
+
   const [
     openedStatisticsModal,
     { open: openStatisticsModal, close: closeStatisticsModal },
+  ] = useDisclosure(false);
+
+  const [loadingOverlayVisible, { toggle: toggleLoadingOverlay }] =
+    useDisclosure(false);
+
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
   ] = useDisclosure(false);
 
   /** ------------- end hooks ------------- */
@@ -110,6 +125,7 @@ function DisplayAnnouncement() {
         type: displayAnnouncementAction.setSubmitMessage,
         payload: `Your rating to ${announcement.title} is on its way!`,
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: `actions/outreach/announcement/${announcement._id}/rating`,
@@ -236,15 +252,21 @@ function DisplayAnnouncement() {
       type: displayAnnouncementAction.setAnnouncement,
       payload: announcementDocument,
     });
-    displayAnnouncementDispatch({
-      type: displayAnnouncementAction.setIsLoading,
-      payload: false,
-    });
-    displayAnnouncementDispatch({
-      type: displayAnnouncementAction.setLoadingMessage,
-      payload: '',
-    });
+
+    // displayAnnouncementDispatch({
+    //   type: displayAnnouncementAction.setIsLoading,
+    //   payload: false,
+    // });
+    // displayAnnouncementDispatch({
+    //   type: displayAnnouncementAction.setLoadingMessage,
+    //   payload: '',
+    // });
   }, [announcementDocument]);
+
+  // toggle overlay states
+  // useEffect(() => {
+  //   toggleLoadingOverlay();
+  // }, [isLoading]);
 
   // set rating response to state
   useEffect(() => {
@@ -268,25 +290,6 @@ function DisplayAnnouncement() {
     });
   }, [displayAnnouncementState]);
   /** ------------- end useEffects ------------- */
-
-  /** ------------- begin component render bypass ------------- */
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={displayAnnouncementDispatch}
-        navigateTo={{
-          successPath: `/home/outreach/announcement/display/${announcement?.title}`,
-        }}
-      />
-    );
-  }
-  /** ------------- end component render bypass ------------- */
 
   const {
     appThemeColors: { backgroundColor, borderColor },
@@ -360,23 +363,54 @@ function DisplayAnnouncement() {
     </Group>
   );
 
-  // const articleImage = (
-  //   <Image
-  //     src={announcement?.bannerImageSrc ?? ''}
-  //     alt={announcement?.bannerImageAlt ?? ''}
-  //     withPlaceholder
-  //     w="100%"
-  //   />
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      visible={loadingOverlayVisible}
+      zIndex={1000}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Text>Loading {announcement?.title} ...</Text>
+          <Loader />
+        </Stack>
+      }
+    />
+  );
+
+  // const displayArticleImage = (
+  //   <Group w="100%">
+  //     <Image
+  //       src={announcement?.bannerImageSrc ?? ''}
+  //       alt={announcement?.bannerImageAlt ?? ''}
+  //       onLoad={() => {
+  //         displayAnnouncementDispatch({
+  //           type: displayAnnouncementAction.setIsLoading,
+  //           payload: false,
+  //         });
+  //         displayAnnouncementDispatch({
+  //           type: displayAnnouncementAction.setLoadingMessage,
+  //           payload: '',
+  //         });
+  //       }}
+  //       withPlaceholder
+  //       w="100%"
+  //       style={{ position: 'relative' }}
+  //     />
+  //     {displayLoadingOverlay}
+  //   </Group>
   // );
-  const [articleImage] = returnAccessibleImageElements([
+  const [displayArticleImage] = returnAccessibleImageElements([
     {
       imageSrc: announcement?.bannerImageSrc,
       imageAlt: announcement?.bannerImageAlt,
       withPlaceholder: true,
+      isLoader: true,
+      isCard: false,
+      isOverlay: false,
     },
   ]);
-
-  const displayArticleImage = <Group w="100%">{articleImage}</Group>;
 
   /** article paragraphs */
   const articleParagraphs = announcement?.article?.map((paragraph, index) => {
@@ -596,8 +630,37 @@ function DisplayAnnouncement() {
     </Group>
   );
 
+  const displayComments = announcement ? (
+    <Comment
+      parentResourceId={announcement?._id ?? ''}
+      parentResourceTitle={announcement?.title ?? ''}
+    />
+  ) : null;
+
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate(
+            `/home/outreach/announcement/display/${announcement?.title}`
+          );
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayAnnouncementComponent = (
     <Flex direction="column" w="100%" bg={backgroundColor}>
+      {displaySubmitSuccessNotificationModal}
       {displayRatingModal}
       {displayStatisticsModal}
       {articleTitle}
@@ -605,10 +668,7 @@ function DisplayAnnouncement() {
       {displayArticleImage}
       {displayArticleParagraphs}
       {displayReaderResponseIcons}
-      <Comment
-        parentResourceId={announcement?._id ?? ''}
-        parentResourceTitle={announcement?.title ?? ''}
-      />
+      {displayComments}
     </Flex>
   );
   /** ------------- end input creators ------------- */

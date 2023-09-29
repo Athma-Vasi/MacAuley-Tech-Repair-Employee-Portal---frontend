@@ -9,19 +9,19 @@ import {
 import { ComponentQueryData } from '../queryBuilder';
 
 type DisplayResourceProps<Doc> = {
-  style?: CSSProperties;
   componentQueryData: ComponentQueryData[];
   createResourcePath: string;
-  isDisplayFilesOnly?: boolean;
-  isFileUploadsWithResource?: boolean;
   fileUploadFieldName?: string;
   fileUploadIdFieldName?: string;
-  paths: {
+  isDisplayFilesOnly?: boolean;
+  isFileUploadsWithResource?: boolean;
+  requestBodyHeading: string;
+  resourceUrlPaths: {
     employee: string;
     manager: string;
     admin: string;
   };
-  requestBodyHeading: string;
+  style?: CSSProperties;
 };
 
 type DisplayResourceState<Doc> = {

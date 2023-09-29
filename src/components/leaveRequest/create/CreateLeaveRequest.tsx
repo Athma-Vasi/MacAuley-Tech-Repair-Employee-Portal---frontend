@@ -1,4 +1,4 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -28,7 +28,7 @@ import {
   returnGrammarValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -53,6 +53,7 @@ import {
   createLeaveRequestReducer,
   initialCreateLeaveRequestState,
 } from './state';
+import { useDisclosure } from '@mantine/hooks';
 
 function CreateLeaveRequest() {
   const [leaveRequestState, createLeaveRequestDispatch] = useReducer(
@@ -106,6 +107,14 @@ function CreateLeaveRequest() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -119,6 +128,7 @@ function CreateLeaveRequest() {
         type: createLeaveRequestAction.setSubmitMessage,
         payload: `Submitting ${reasonForLeave} leave request form`,
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({ path: 'actions/company/leave-request' });
 
@@ -323,21 +333,6 @@ function CreateLeaveRequest() {
     additionalComments,
     isValidAdditionalComments,
   ]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createLeaveRequestDispatch}
-        navigateTo={{ successPath: '/home/company/leave-request/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
 
@@ -738,6 +733,25 @@ function CreateLeaveRequest() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/company/leave-request/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayCreateLeaveRequestForm =
     currentStepperPosition === 0
       ? displayCreateLeaveRequestFirstPage
@@ -757,6 +771,7 @@ function CreateLeaveRequest() {
       }
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayCreateLeaveRequestForm}
     </StepperWrapper>
   );

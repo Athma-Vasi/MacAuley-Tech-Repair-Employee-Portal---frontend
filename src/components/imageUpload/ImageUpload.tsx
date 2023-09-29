@@ -8,8 +8,10 @@ import {
   Space,
   Stack,
   Text,
+  Title,
   Tooltip,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { compress } from 'image-conversion';
 import localforage from 'localforage';
 import { useEffect, useReducer } from 'react';
@@ -31,7 +33,7 @@ import {
   returnImageValidationText,
   returnThemeColors,
 } from '../../utils';
-import { CustomNotification } from '../customNotification';
+import { NotificationModal } from '../notificationModal';
 import {
   displayOrientationLabel,
   IMG_ORIENTATION_SLIDER_DATA,
@@ -77,10 +79,6 @@ function ImageUpload({
 
     isLoading,
     loadingMessage,
-    isSuccessful,
-    successMessage,
-    isSubmitting,
-    submitMessage,
   } = imageUploadState;
   const {
     globalState: { themeObject, rowGap, padding },
@@ -89,6 +87,14 @@ function ImageUpload({
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
+
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
 
   // set localforage imageupload state to initial state on every mount
   useEffect(() => {
@@ -101,8 +107,9 @@ function ImageUpload({
       });
       imageUploadDispatch({
         type: imageUploadAction.setLoadingMessage,
-        payload: 'Retrieving images from local storage ...',
+        payload: 'Retrieving images from storage ...',
       });
+      openSubmitSuccessNotificationModal();
 
       try {
         const imageUploadState =
@@ -200,6 +207,7 @@ function ImageUpload({
             type: imageUploadAction.setLoadingMessage,
             payload: '',
           });
+          closeSubmitSuccessNotificationModal();
         }
       }
     }
@@ -414,21 +422,6 @@ function ImageUpload({
       groupLabel: 'ImageUpload',
     });
   }, [imageUploadState]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={imageUploadDispatch}
-        navigateTo={{ successPath: '/home/company/expense-claim/display' }}
-      />
-    );
-  }
 
   const [imageFileUploadErrorTexts, imageFileUploadValidTexts] =
     AccessibleErrorValidTextElementsForDynamicImageUploads({
@@ -796,6 +789,19 @@ function ImageUpload({
     }
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeSubmitSuccessNotificationModal]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isLoading,
+        text: loadingMessage,
+      }}
+      title={<Title order={4}>Loading ...</Title>}
+      withCloseButton={false}
+    />
+  );
+
   const displayImagePreviews = (
     <Flex
       align="flex-start"
@@ -817,6 +823,7 @@ function ImageUpload({
         ...style,
       }}
     >
+      {displaySubmitSuccessNotificationModal}
       {createdImageUploadFileInput}
       {displayImagePreviews}
     </Stack>

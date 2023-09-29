@@ -29,7 +29,7 @@ function DisplayRequestResources() {
     <DisplayResource<QueryResponseData<RequestResourceDocument>[]>
       componentQueryData={REQUEST_RESOURCE_QUERY_DATA}
       createResourcePath="/home/company/request-resource/create"
-      paths={REQUEST_RESOURCE_PATHS}
+      resourceUrlPaths={REQUEST_RESOURCE_PATHS}
       requestBodyHeading="requestResource"
     />
   );

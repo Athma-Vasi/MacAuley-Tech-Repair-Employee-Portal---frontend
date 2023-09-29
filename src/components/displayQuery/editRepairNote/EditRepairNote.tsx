@@ -1,15 +1,21 @@
-import { ChangeEvent, useEffect, useReducer, MouseEvent } from 'react';
+import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { InvalidTokenError } from 'jwt-decode';
+import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import {
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleButtonCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from '../../wrappers';
-import { EditRepairNoteInput } from '../displayQueryDesktop/types';
-import { EditRepairNoteState } from './types';
-import { editRepairNoteAction, editRepairNoteReducer } from './state';
+  TbCurrencyDollar,
+  TbCurrencyEuro,
+  TbCurrencyPound,
+  TbCurrencyRenminbi,
+  TbCurrencyYen,
+} from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
+
+import { COLORS_SWATCHES } from '../../../constants/data';
+import { MONEY_REGEX, NOTE_TEXT_AREA_REGEX } from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -17,44 +23,35 @@ import {
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
+import { Currency, ResourceRequestServerResponse } from '../../../types';
 import {
-  returnGrammarValidationText,
   returnNoteTextValidationText,
   returnNumberAmountValidationText,
   returnThemeColors,
   urlBuilder,
 } from '../../../utils';
-import {
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  MONEY_REGEX,
-  NOTE_TEXT_AREA_REGEX,
-} from '../../../constants/regex';
-import { useAuth, useGlobalState } from '../../../hooks';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import {
-  TbCurrencyRenminbi,
-  TbCurrencyPound,
-  TbCurrencyEuro,
-  TbCurrencyYen,
-  TbCurrencyDollar,
-} from 'react-icons/tb';
 import { CURRENCY_DATA } from '../../benefits/constants';
-import { Currency, ResourceRequestServerResponse } from '../../../types';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
+import { RepairNoteDocument, RepairStatus } from '../../repairNote/types';
+import {
+  AccessibleButtonCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextAreaInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+  FormLayoutWrapper,
+  StepperWrapper,
+} from '../../wrappers';
+import { EditRepairNoteInput } from '../displayQueryDesktop/types';
 import {
   EDIT_REPAIR_NOTE_DESCRIPTION_OBJECTS,
   EDIT_REPAIR_NOTE_MAX_STEPPER_POSITION,
   REPAIR_NOTE_REPAIR_STATUS_DATA,
 } from './constants';
-import { RepairNoteDocument, RepairStatus } from '../../repairNote/types';
-import { CustomNotification } from '../../customNotification';
-import { Group, Tooltip } from '@mantine/core';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
-import { useNavigate } from 'react-router-dom';
-import { useErrorBoundary } from 'react-error-boundary';
-import { InvalidTokenError } from 'jwt-decode';
-import { globalAction } from '../../../context/globalProvider/state';
+import { editRepairNoteAction, editRepairNoteReducer } from './state';
+import { EditRepairNoteState } from './types';
 
 type EditRepairNoteProps = {
   editRepairNoteInput: EditRepairNoteInput;
@@ -136,6 +133,14 @@ function EditRepairNote({
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -149,6 +154,7 @@ function EditRepairNote({
         type: editRepairNoteAction.setSubmitMessage,
         payload: 'Submitting Edit Repair Note form ...',
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({ path: `repair-note/${repairNoteFormId}` });
 
@@ -353,22 +359,6 @@ function EditRepairNote({
     finalRepairCostCurrency,
     repairStatus,
   ]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={editRepairNoteDispatch}
-        navigateTo={{ successPath: '/home/repair-note/display' }}
-        successCallbacks={parentComponentCallbacks}
-      />
-    );
-  }
 
   const [repairNotesInputErrorText, repairNotesInputValidText] =
     AccessibleErrorValidTextElements({
@@ -653,6 +643,25 @@ function EditRepairNote({
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/repair-note/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayEditRepairNoteFirstPage = (
     <FormLayoutWrapper>
       {createdRepairNotesTextAreaInput}
@@ -680,6 +689,7 @@ function EditRepairNote({
       setCurrentStepperPosition={editRepairNoteAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayEditRepairNoteForm}
     </StepperWrapper>
   );

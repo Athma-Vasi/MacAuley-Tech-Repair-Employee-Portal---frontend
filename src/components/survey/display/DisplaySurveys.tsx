@@ -25,7 +25,7 @@ import {
   returnThemeColors,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import { CustomRating } from '../../customRating/CustomRating';
 import DisplayResourceHeader from '../../displayResourceHeader/DisplayResourceHeader';
 import { DisplayStatistics } from '../../displayStatistics';
@@ -43,6 +43,7 @@ import {
   displaySurveysReducer,
   initialDisplaySurveysState,
 } from './state';
+import { useDisclosure } from '@mantine/hooks';
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -90,8 +91,15 @@ function DisplaySurveys() {
   } = useGlobalState();
 
   const navigate = useNavigate();
-
   const { showBoundary } = useErrorBoundary();
+
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
 
   /** ------------- end hooks ------------- */
 
@@ -102,6 +110,16 @@ function DisplaySurveys() {
     const controller = new AbortController();
 
     async function fetchSurveys(): Promise<void> {
+      displaySurveysDispatch({
+        type: displaySurveysAction.setIsLoading,
+        payload: true,
+      });
+      displaySurveysDispatch({
+        type: displaySurveysAction.setLoadingMessage,
+        payload: 'Loading surveys...',
+      });
+      openSubmitSuccessNotificationModal();
+
       const url: URL = urlBuilder({
         path: `actions/outreach/survey${
           roles.includes('Manager') ? '' : '/user'
@@ -191,6 +209,7 @@ function DisplaySurveys() {
             type: displaySurveysAction.setTriggerSurveyFetch,
             payload: false,
           });
+          closeSubmitSuccessNotificationModal();
         }
       }
     }
@@ -228,7 +247,15 @@ function DisplaySurveys() {
     const controller = new AbortController();
 
     async function submitSurveyResponse() {
+      displaySurveysDispatch({
+        type: displaySurveysAction.setIsSubmitting,
+        payload: true,
+      });
       const { surveyId, surveyResponses, surveyTitle } = surveyToSubmit;
+      displaySurveysDispatch({
+        type: displaySurveysAction.setSubmitMessage,
+        payload: `Submitting survey: ${surveyTitle} ...`,
+      });
 
       const url: URL = urlBuilder({
         path: `actions/outreach/survey/${surveyId}`,
@@ -324,7 +351,10 @@ function DisplaySurveys() {
             type: displaySurveysAction.setIsSubmitting,
             payload: false,
           });
-
+          displaySurveysDispatch({
+            type: displaySurveysAction.setSubmitMessage,
+            payload: '',
+          });
           displaySurveysDispatch({
             type: displaySurveysAction.setTriggerSurveySubmission,
             payload: false,
@@ -510,24 +540,6 @@ function DisplaySurveys() {
   // }, [displaySurveysState]);
 
   /** ------------- end useEffects ------------- */
-
-  /** ------------- begin component render bypass ------------- */
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={displaySurveysDispatch}
-        navigateTo={{
-          successPath: '/home/outreach/survey-builder/display',
-        }}
-      />
-    );
-  }
 
   if (!uncompletedSurveys.length && !isLoading) {
     return (
@@ -1041,6 +1053,40 @@ function DisplaySurveys() {
     </Stack>
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        // if loading, do nothing
+        isLoading
+          ? () => {}
+          : // if submitting/successful
+            () => {
+              navigate('/home/outreach/survey-builder/display');
+            },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isLoading || isSubmitting,
+        text: isLoading
+          ? loadingMessage
+          : isSubmitting
+          ? submitMessage
+          : successMessage,
+      }}
+      title={
+        <Title order={4}>
+          {isLoading
+            ? 'Loading ...'
+            : isSuccessful
+            ? 'Success!'
+            : 'Submitting ...'}
+        </Title>
+      }
+      withCloseButton={isLoading ? false : true}
+    />
+  );
+
   const displaySurveyComponent = (
     <Stack
       w="100%"
@@ -1049,6 +1095,7 @@ function DisplaySurveys() {
       bg={backgroundColor}
       style={{ borderRadius: '4px' }}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayResourceHeader}
       {displaySurveyButton}
       {displayTotalAndPageNavigation}

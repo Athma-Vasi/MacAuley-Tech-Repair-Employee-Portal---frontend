@@ -1,7 +1,9 @@
-import { Flex, Group, Title } from '@mantine/core';
+import { Flex, Group, Modal, Notification, Text, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
+import { TbCheck } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
@@ -21,7 +23,6 @@ import {
   splitCamelCase,
   urlBuilder,
 } from '../../utils';
-import { CustomNotification } from '../customNotification';
 import { DisplayFileUploads } from '../displayFileUploads';
 import { DisplayQuery } from '../displayQuery';
 import { PageBuilder } from '../pageBuilder';
@@ -30,6 +31,7 @@ import { AccessibleSelectInputCreatorInfo } from '../wrappers';
 import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from './constants';
 import { displayResourceAction, displayResourceReducer } from './state';
 import { DisplayResourceProps, DisplayResourceState } from './types';
+import { NotificationModal } from '../notificationModal';
 
 function DisplayResource<Doc>({
   style = {},
@@ -40,7 +42,7 @@ function DisplayResource<Doc>({
   fileUploadIdFieldName = 'uploadedFilesIds',
   isFileUploadsWithResource = false,
   requestBodyHeading,
-  paths,
+  resourceUrlPaths,
 }: DisplayResourceProps<Doc>) {
   const initialDisplayResourceState: DisplayResourceState<Doc> = {
     resourceData: [],
@@ -114,6 +116,15 @@ function DisplayResource<Doc>({
     authState: { accessToken, roles },
   } = useAuth();
 
+  // submit success notification modal
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
@@ -122,11 +133,23 @@ function DisplayResource<Doc>({
     const controller = new AbortController();
 
     async function fetchResource() {
+      displayResourceDispatch({
+        type: displayResourceAction.setIsLoading,
+        payload: true,
+      });
+      const pageNumber = pageQueryString.split('=')[1] ?? 1;
+      displayResourceDispatch({
+        type: displayResourceAction.setLoadingMessage,
+        payload: `Loading ${splitCamelCase(
+          requestBodyHeading
+        )} data: page ${pageNumber} ...`,
+      });
+
       // employees can view their own resources only
       const path =
         roles.includes('Admin') || roles.includes('Manager')
-          ? paths.manager
-          : paths.employee;
+          ? resourceUrlPaths.manager
+          : resourceUrlPaths.employee;
 
       const urlString: URL = urlBuilder({
         path,
@@ -325,6 +348,18 @@ function DisplayResource<Doc>({
     });
   }, [pageQueryString]);
 
+  // separate instead of inside finally block to avoid causing flicker by previous page state displaying then updating after overlay disappears
+  useEffect(() => {
+    displayResourceDispatch({
+      type: displayResourceAction.setIsLoading,
+      payload: false,
+    });
+    displayResourceDispatch({
+      type: displayResourceAction.setLoadingMessage,
+      payload: '',
+    });
+  }, [resourceData]);
+
   // submit request status form on change
   useEffect(() => {
     let isMounted = true;
@@ -339,9 +374,10 @@ function DisplayResource<Doc>({
         type: displayResourceAction.setSubmitMessage,
         payload: `Submitting request status update of id: ${requestStatus.id}to ${requestStatus.status} ...`,
       });
+      openSubmitSuccessNotificationModal();
 
       const urlString: URL = urlBuilder({
-        path: `${paths.manager}/${requestStatus.id}`,
+        path: `${resourceUrlPaths.manager}/${requestStatus.id}`,
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&projection=-action&projection=-category`,
       });
 
@@ -490,10 +526,11 @@ function DisplayResource<Doc>({
         type: displayResourceAction.setSubmitMessage,
         payload: `Deleting ${kind} of id: ${formId} ...`,
       });
+      openSubmitSuccessNotificationModal();
 
       const path =
         kind === 'form'
-          ? `${paths.manager}/${formId}`
+          ? `${resourceUrlPaths.manager}/${formId}`
           : `file-upload/${fileUploadId}`;
       const urlString: URL = urlBuilder({ path });
 
@@ -610,6 +647,7 @@ function DisplayResource<Doc>({
         type: displayResourceAction.setSubmitMessage,
         payload: `Deleting file upload of id: ${deleteResource.fileUploadId} ...`,
       });
+      openSubmitSuccessNotificationModal();
 
       // find the associated resource with the fileUploadId
       const associatedResource = resourceData.reduce(
@@ -669,7 +707,7 @@ function DisplayResource<Doc>({
       });
 
       const urlString: URL = urlBuilder({
-        path: `${paths.manager}/${_id}`,
+        path: `${resourceUrlPaths.manager}/${_id}`,
       });
 
       const resourceBody = Object.create(null);
@@ -780,6 +818,12 @@ function DisplayResource<Doc>({
     };
   }, [deleteResource.fileUploadId]);
 
+  // useEffect(() => {
+  //   if (isSubmitting || isSuccessful) {
+  //     openSubmitSuccessNotificationModal();
+  //   }
+  // }, [isSubmitting, isSuccessful, openSubmitSuccessNotificationModal]);
+
   useEffect(() => {
     logState({
       state: displayResourceState,
@@ -787,29 +831,25 @@ function DisplayResource<Doc>({
     });
   }, [displayResourceState]);
 
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={displayResourceDispatch}
-        navigateTo={{
-          successPath: '/home/company/leave-request/display',
-        }}
-        // successCallbacks={[
-        //   () =>
-        //     displayResourceDispatch({
-        //       type: displayResourceAction.setTriggerRefresh,
-        //       payload: true,
-        //     }),
-        // ]}
-      />
-    );
-  }
+  // if (isLoading || isSubmitting || isSuccessful) {
+  //   return (
+  //     <CustomNotification
+  //       isSubmitting={isSubmitting}
+  //       isSuccessful={isSuccessful}
+  //       navigateTo={{ successPath: successNavigationPath }}
+  //       parentDispatch={displayResourceDispatch}
+  //       submitMessage={submitMessage}
+  //       successMessage={successMessage}
+  //       // successCallbacks={[
+  //       //   () =>
+  //       //     displayResourceDispatch({
+  //       //       type: displayResourceAction.setTriggerRefresh,
+  //       //       payload: true,
+  //       //     }),
+  //       // ]}
+  //     />
+  //   );
+  // }
 
   const {
     appThemeColors: { backgroundColor, borderColor },
@@ -904,6 +944,37 @@ function DisplayResource<Doc>({
     />
   );
 
+  // <Modal
+  //   opened={openedSubmitSuccessNotificationModal}
+  //   onClose={closeSubmitSuccessNotificationModal}
+  //   centered
+  //   title={
+  //     <Title order={4}>{isSubmitting ? 'Submitting ...' : 'Success!'}</Title>
+  //   }
+  // >
+  //   <Notification
+  //     icon={<TbCheck size={22} />}
+  //     loading={isSubmitting}
+  //     withCloseButton={false}
+  //   >
+  //     <Text>{isSubmitting ? submitMessage : successMessage}</Text>
+  //   </Notification>
+  // </Modal>
+
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeSubmitSuccessNotificationModal]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayResource = isDisplayFilesOnly ? (
     <DisplayFileUploads
       createResourcePath={createResourcePath}
@@ -918,6 +989,8 @@ function DisplayResource<Doc>({
       componentQueryData={filteredComponentQueryData}
       createResourcePath={createResourcePath}
       fileUploadsData={fileUploads}
+      isLoading={isLoading}
+      loadingMessage={loadingMessage}
       parentComponentName={splitCamelCase(requestBodyHeading)}
       parentRequestStatusDispatch={displayResourceDispatch}
       parentDeleteResourceDispatch={displayResourceDispatch}
@@ -941,6 +1014,8 @@ function DisplayResource<Doc>({
       p={padding}
       rowGap={rowGap}
     >
+      {displaySubmitSuccessNotificationModal}
+
       {displayQueryBuilder}
 
       {displayLimitPerPage}

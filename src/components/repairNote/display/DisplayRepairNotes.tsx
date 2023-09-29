@@ -25,7 +25,7 @@ function DisplayRepairNotes() {
     <DisplayResource<QueryResponseData<RepairNoteDocument>[]>
       componentQueryData={REPAIR_NOTE_QUERY_DATA}
       createResourcePath="/home/repair-note/create"
-      paths={REPAIR_NOTE_ROUTE_PATHS}
+      resourceUrlPaths={REPAIR_NOTE_ROUTE_PATHS}
       requestBodyHeading="repairNote"
     />
   );

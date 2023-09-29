@@ -26,7 +26,7 @@ function DisplayEvents() {
     <DisplayResource
       componentQueryData={EVENT_CREATOR_QUERY_DATA}
       createResourcePath="/home/outreach/event/create"
-      paths={EVENT_CREATOR_ROUTE_PATHS}
+      resourceUrlPaths={EVENT_CREATOR_ROUTE_PATHS}
       requestBodyHeading="event"
     />
   );

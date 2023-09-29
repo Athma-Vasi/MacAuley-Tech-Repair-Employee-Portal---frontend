@@ -1,8 +1,9 @@
-import { Card, Group, Image, Stack, Text, Title } from '@mantine/core';
+import { Card, Flex, Group, Image, Stack, Text, Title } from '@mantine/core';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
 import { returnThemeColors } from '../../utils';
+import { returnAccessibleImageElements } from '../../jsxCreators';
 
 type DisplayResourceHeaderProps = {
   imageSrc: string;
@@ -21,7 +22,7 @@ function DisplayResourceHeader({
 }: //   resourceTopics,
 DisplayResourceHeaderProps) {
   const {
-    globalState: { width, padding, themeObject },
+    globalState: { width, padding, themeObject, rowGap },
   } = useGlobalState();
 
   const {
@@ -53,47 +54,64 @@ DisplayResourceHeaderProps) {
   //   : 1920 - 300 - 11;
   const imageHeight = imageWidth * 0.68;
 
+  const [createdImage] = returnAccessibleImageElements([
+    {
+      imageSrc,
+      imageAlt,
+      isCard: false,
+      isLoader: true,
+      isOverlay: false,
+      withPlaceholder: true,
+    },
+  ]);
+
   const bannerImage = (
     <Stack w={imageWidth} h={imageHeight}>
       <Card withBorder radius="md">
         <Card.Section>
-          <Image
+          {/* <Image
             src={imageSrc}
             alt={imageAlt}
             fit="fill"
             style={{ position: 'relative' }}
             withPlaceholder
-          />
+          /> */}
+          {createdImage}
         </Card.Section>
-        <Stack
-          w={imageWidth}
-          align="flex-start"
-          style={{
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            top: width < 480 ? '62%' : width < 1024 ? '68%' : '73%',
-            left: '0%',
-            zIndex: 1,
-            backgroundColor: 'rgba(0,0,0,0.7)',
-          }}
-        >
-          <Title
-            color="white"
-            px={padding}
-            pt={padding}
-            order={width >= 1200 ? 1 : 2}
+        <Card.Section>
+          <Flex
+            direction="column"
+            w={imageWidth}
+            align="flex-start"
+            gap={rowGap}
+            h="75%"
+            style={{
+              position: 'absolute',
+              // width: '100%',
+              // height: '100%',
+              top: width < 480 ? '62%' : width < 1024 ? '68%' : '73%',
+              left: '0%',
+              zIndex: 1,
+              backgroundColor: 'rgba(0,0,0,0.7)',
+            }}
           >
-            {resourceTitle}
-          </Title>
-          <Text
-            color="white"
-            px={padding}
-            size={width >= 1200 ? 'xl' : width >= 991 ? 'lg' : 'md'}
-          >
-            {resourceDescription}
-          </Text>
-        </Stack>
+            <Title
+              color="white"
+              px={padding}
+              pt={padding}
+              order={width >= 1200 ? 1 : 2}
+            >
+              {resourceTitle}
+            </Title>
+            <Text
+              color="white"
+              px={padding}
+              size={width >= 1200 ? 'xl' : width >= 991 ? 'lg' : 'md'}
+            >
+              {resourceDescription}
+            </Text>
+          </Flex>
+        </Card.Section>
       </Card>
     </Stack>
   );

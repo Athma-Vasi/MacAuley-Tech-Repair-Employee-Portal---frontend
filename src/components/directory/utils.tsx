@@ -26,6 +26,7 @@ import {
   DirectoryUserDocument,
 } from './types';
 import { CSSProperties } from 'react';
+import { returnAccessibleImageElements } from '../../jsxCreators';
 
 type ReturnDirectoryProfileCardInput = {
   userDocument: DirectoryUserDocument;
@@ -80,6 +81,21 @@ function returnDirectoryProfileCard({
     </Flex>
   );
 
+  const [createdImage] = returnAccessibleImageElements([
+    {
+      customWidth: 84,
+      customHeight: 84,
+      customRadius: 9999,
+      fit: 'cover',
+      imageSrc: profilePictureUrl,
+      imageAlt: `Picture of ${firstName} ${lastName}`,
+      isCard: false,
+      isOverlay: false,
+      isLoader: true,
+      withPlaceholder: true,
+    },
+  ]);
+
   const displayProfileCard = (
     <Card
       radius="md"
@@ -102,7 +118,7 @@ function returnDirectoryProfileCard({
             borderRight: border,
           }}
         >
-          <Image
+          {/* <Image
             src={profilePictureUrl}
             alt={`Picture of ${firstName} ${lastName}`}
             width={84}
@@ -110,7 +126,8 @@ function returnDirectoryProfileCard({
             radius={9999}
             withPlaceholder
             placeholder={<TbPhotoOff size={18} />}
-          />
+          /> */}
+          {createdImage}
           <Text>{preferredPronouns}</Text>
           {createdSocialMediaIcons}
         </Flex>

@@ -12,6 +12,8 @@ type DisplayQueryProps<Doc> = {
   componentQueryData: ComponentQueryData[];
   createResourcePath: string;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
+  isLoading: boolean;
+  loadingMessage?: string;
   parentComponentName: string;
   parentRequestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';
@@ -29,7 +31,6 @@ type DisplayQueryProps<Doc> = {
       value: boolean;
     };
   }>;
-
   queryResponseData: QueryResponseData<Doc>[];
   queryValuesArray: string[]; // simply passed down from DisplayResource to DisplayQueryDesktop and DisplayQueryMobile to highlight the query values in the table
   style?: CSSProperties;

@@ -1,4 +1,4 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -27,7 +27,7 @@ import {
   returnNameValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -50,6 +50,7 @@ import {
   initialCreateEndorsementState,
 } from './state';
 import { EmployeeAttributes, EndorsementDocument } from './types';
+import { useDisclosure } from '@mantine/hooks';
 
 function CreateEndorsement() {
   const [createEndorsementState, createEndorsementDispatch] = useReducer(
@@ -91,6 +92,14 @@ function CreateEndorsement() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -104,6 +113,7 @@ function CreateEndorsement() {
         type: createEndorsementAction.setSubmitMessage,
         payload: 'Submitting Endorsement form ...',
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: 'actions/general/endorsement',
@@ -269,21 +279,6 @@ function CreateEndorsement() {
       },
     });
   }, [attributeEndorsed]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createEndorsementDispatch}
-        navigateTo={{ successPath: '/home/general/endorsement/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
@@ -574,6 +569,25 @@ function CreateEndorsement() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/general/endorsement/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayCreateEndorsementForm =
     currentStepperPosition === 0
       ? displayEndorsementFirstPage
@@ -593,6 +607,7 @@ function CreateEndorsement() {
       setCurrentStepperPosition="setCurrentStepperPosition"
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayCreateEndorsementForm}
     </StepperWrapper>
   );

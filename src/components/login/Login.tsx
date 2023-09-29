@@ -11,7 +11,6 @@ import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { axiosInstance } from '../../api/axios';
 import { authAction } from '../../context/authProvider/state';
 import { useAuth } from '../../hooks/useAuth';
 import { LOGIN_URL } from './constants';
@@ -20,9 +19,13 @@ import { DecodedToken, LoginResponse } from './types';
 import { TbPassword, TbUser } from 'react-icons/tb';
 import { AccessibleButtonCreatorInfo } from '../wrappers';
 import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { CustomNotification } from '../customNotification';
+import { NotificationModal } from '../notificationModal';
 import { useGlobalState } from '../../hooks';
-import { logState, urlBuilder } from '../../utils';
+import { logState, returnThemeColors, urlBuilder } from '../../utils';
+import { useDisclosure } from '@mantine/hooks';
+import { globalAction } from '../../context/globalProvider/state';
+import { useErrorBoundary } from 'react-error-boundary';
+import { COLORS_SWATCHES } from '../../constants/data';
 import { log } from 'console';
 
 function Login() {
@@ -46,9 +49,19 @@ function Login() {
 
   const { authDispatch } = useAuth();
   const {
-    globalState: { padding, rowGap, width },
+    globalState: { padding, rowGap, width, themeObject },
+    globalDispatch,
   } = useGlobalState();
   const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
 
   const usernameRef = useRef<HTMLInputElement>(null);
   // sets focus on username input on first render
@@ -75,6 +88,16 @@ function Login() {
     const controller = new AbortController();
 
     async function loginFormSubmit() {
+      loginDispatch({
+        type: loginAction.setIsSubmitting,
+        payload: true,
+      });
+      loginDispatch({
+        type: loginAction.setSubmitMessage,
+        payload: 'Logging in ...',
+      });
+      openSubmitSuccessNotificationModal();
+
       const url: URL = new URL('http://localhost:3500/auth/login');
       const body = JSON.stringify({ username, password });
 
@@ -88,28 +111,14 @@ function Login() {
       });
 
       try {
-        loginDispatch({
-          type: loginAction.setIsSubmitting,
-          payload: true,
-        });
-
         const response = await fetch(request);
         const data: LoginResponse = await response.json();
 
         if (!isMounted) {
           return;
         }
-        const { ok } = response;
-        if (!ok) {
-          loginDispatch({
-            type: loginAction.setIsError,
-            payload: true,
-          });
-          loginDispatch({
-            type: loginAction.setErrorMessage,
-            payload: data.message,
-          });
-          return;
+        if (!response.ok) {
+          throw new Error(data.message);
         }
 
         const { accessToken = '' } = data;
@@ -117,6 +126,15 @@ function Login() {
         const {
           userInfo: { username, userId, roles },
         } = decodedToken;
+
+        loginDispatch({
+          type: loginAction.setIsSuccessful,
+          payload: true,
+        });
+        loginDispatch({
+          type: loginAction.setSuccessMessage,
+          payload: 'Login successful!',
+        });
 
         // set all auth state upon login
         authDispatch({
@@ -131,42 +149,64 @@ function Login() {
             isLoggedIn: true,
           },
         });
-
-        loginDispatch({
-          type: loginAction.setTriggerLoginSubmit,
-          payload: false,
-        });
-        loginDispatch({
-          type: loginAction.setIsSubmitting,
-          payload: false,
-        });
-
         navigate('/home');
       } catch (error: any) {
-        if (!isMounted) {
+        if (!isMounted || error.name === 'AbortError') {
           return;
         }
 
-        loginDispatch({
-          type: loginAction.setIsError,
-          payload: true,
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/login');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        error instanceof InvalidTokenError
-          ? loginDispatch({
-              type: loginAction.setErrorMessage,
-              payload: 'Invalid token',
-            })
-          : !error?.response
-          ? loginDispatch({
-              type: loginAction.setErrorMessage,
-              payload: 'No response from server',
-            })
-          : loginDispatch({
-              type: loginAction.setErrorMessage,
-              payload:
-                error?.message ?? 'Unknown error occurred. Please try again.',
-            });
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          loginDispatch({
+            type: loginAction.setTriggerLoginSubmit,
+            payload: false,
+          });
+          loginDispatch({
+            type: loginAction.setIsSubmitting,
+            payload: false,
+          });
+          loginDispatch({
+            type: loginAction.setSubmitMessage,
+            payload: '',
+          });
+          loginDispatch({
+            type: loginAction.setIsSuccessful,
+            payload: false,
+          });
+          loginDispatch({
+            type: loginAction.setSuccessMessage,
+            payload: '',
+          });
+          closeSubmitSuccessNotificationModal();
+        }
       }
     }
 
@@ -181,27 +221,6 @@ function Login() {
   }, [triggerLoginSubmit]);
 
   /** ------------- end hooks ------------- */
-
-  /** ------------- begin component render bypass */
-  if (isLoading || isSubmitting) {
-    return (
-      <Flex w="100%" h="100vh" align="center" justify="center" p={padding}>
-        <CustomNotification
-          isLoading={isLoading}
-          isSubmitting={isSubmitting}
-          isSuccessful={isSuccessful}
-          loadingMessage={loadingMessage}
-          submitMessage={submitMessage}
-          successMessage={successMessage}
-          parentDispatch={loginDispatch}
-          navigateTo={{
-            successPath: '/home',
-          }}
-        />
-      </Flex>
-    );
-  }
-  /** ------------- end component render bypass */
 
   /** ------------- begin element creation ------------- */
   const usernameTextInput = (
@@ -268,6 +287,13 @@ function Login() {
   /** ------------- end element creation ------------- */
 
   /** ------------- begin component display ------------- */
+  const {
+    generalColors: { themeColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
   const displayTitle = (
     <Stack spacing={rowGap}>
       <Flex align="center" justify="center">
@@ -304,10 +330,23 @@ function Login() {
   const displayLinkToRegister = (
     <Flex align="center" justify="center" columnGap="sm" w="100%">
       <Text color="dark">Don&apos;t have an account?</Text>
-      <Text color="blue">
+      <Text color={themeColorShade}>
         <Link to="/register">Create one!</Link>
       </Text>
     </Flex>
+  );
+
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeSubmitSuccessNotificationModal]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: submitMessage,
+      }}
+      title={<Title order={4}>Submitting ...</Title>}
+      withCloseButton={false}
+    />
   );
 
   const displayLoginComponent = (
@@ -319,6 +358,7 @@ function Login() {
       p={padding}
       gap={rowGap}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayTitle}
       {displayInputs}
       {displayLoginButton}

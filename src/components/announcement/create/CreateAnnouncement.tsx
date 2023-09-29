@@ -1,4 +1,5 @@
 import { Group, Text, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -35,10 +36,10 @@ import {
   returnUrlValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
@@ -110,6 +111,14 @@ function CreateAnnouncement() {
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
+
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -126,6 +135,7 @@ function CreateAnnouncement() {
         type: createAnnouncementAction.setSubmitMessage,
         payload: 'Create announcement request is on the way!',
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: 'actions/outreach/announcement',
@@ -375,25 +385,6 @@ function CreateAnnouncement() {
     });
   }, [createAnnouncementState]);
   /** ------------- end useEffects ------------- */
-
-  /** ------------- begin component render bypass ------------- */
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createAnnouncementDispatch}
-        navigateTo={{
-          successPath: '/home/outreach/announcement/display',
-        }}
-      />
-    );
-  }
-  /** ------------- end component render bypass ------------- */
 
   /** ------------- begin accessible text elements ------------- */
   const [titleInputErrorText, titleInputValidText] =
@@ -858,6 +849,25 @@ function CreateAnnouncement() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/outreach/announcement');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayCreateAnnouncementForm =
     currentStepperPosition === 0
       ? displayAnnouncementDetailsFormPage
@@ -879,6 +889,7 @@ function CreateAnnouncement() {
       parentComponentDispatch={createAnnouncementDispatch}
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayCreateAnnouncementForm}
     </StepperWrapper>
   );

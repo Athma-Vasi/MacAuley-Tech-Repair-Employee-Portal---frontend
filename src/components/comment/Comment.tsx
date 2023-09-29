@@ -5,6 +5,8 @@ import {
   Grid,
   Group,
   Image,
+  Loader,
+  LoadingOverlay,
   Modal,
   Space,
   Spoiler,
@@ -62,7 +64,7 @@ import {
   returnThemeColors,
   urlBuilder,
 } from '../../utils';
-import { CustomNotification } from '../customNotification';
+import { NotificationModal } from '../notificationModal';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
 import {
@@ -136,7 +138,6 @@ function Comment({
   } = useGlobalState();
 
   const navigate = useNavigate();
-
   const { showBoundary } = useErrorBoundary();
 
   const [
@@ -144,7 +145,17 @@ function Comment({
     { open: openCommentModal, close: closeCommentModal },
   ] = useDisclosure(false);
 
-  // const hasFetchedComments = useRef(false);
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
+  const [loadingOverlayVisible, { toggle: toggleLoadingOverlay }] =
+    useDisclosure(false);
+
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -163,6 +174,7 @@ function Comment({
         type: commentAction.setLoadingMessage,
         payload: 'Fetching comments from server...',
       });
+      toggleLoadingOverlay();
 
       const url: URL = urlBuilder({
         path: `comment/parentResource/${parentResourceId}/`,
@@ -257,6 +269,7 @@ function Comment({
             type: commentAction.setTriggerCommentFetch,
             payload: false,
           });
+          toggleLoadingOverlay();
         }
       }
     }
@@ -395,6 +408,7 @@ function Comment({
         type: commentAction.setSubmitMessage,
         payload: 'Sending comment to server...',
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: 'comment/',
@@ -564,25 +578,6 @@ function Comment({
     });
   }, [commentState]);
   /** ------------- end useEffects ------------- */
-
-  /** ------------- begin component render bypass ------------- */
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={commentDispatch}
-        navigateTo={{
-          successPath: `/home/outreach/announcement/display/${parentResourceTitle}`,
-        }}
-      />
-    );
-  }
-  /** ------------- end component render bypass ------------- */
 
   /** ------------- begin accessible texts ------------- */
   const [newCommentInputErrorText, newCommentInputValidText] =
@@ -1577,9 +1572,46 @@ function Comment({
     </Group>
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeSubmitSuccessNotificationModal]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      visible={loadingOverlayVisible}
+      zIndex={1000}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Text>Loading comments for {parentResourceTitle}</Text>
+          <Loader />
+        </Stack>
+      }
+    />
+  );
+
   const displayCommentFormPage = (
-    <Group w="100%" position="center" pb={padding}>
+    <Group
+      w="100%"
+      position="center"
+      pb={padding}
+      style={{ position: 'relative' }}
+    >
+      {displayLoadingOverlay}
       {createdCommentModal}
+      {displaySubmitSuccessNotificationModal}
       {displayReplyCommentSection}
       {displayQueryBuilder}
       {displayPaginationAndLimitPerPageSelectInput}

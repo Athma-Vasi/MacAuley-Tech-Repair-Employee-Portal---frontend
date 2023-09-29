@@ -1,4 +1,4 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import {
   ChangeEvent,
@@ -48,7 +48,7 @@ import {
   returnUrlValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -72,6 +72,7 @@ import {
   initialCreateRefermentState,
 } from './state';
 import { RefermentDocument } from './types';
+import { useDisclosure } from '@mantine/hooks';
 
 function CreateReferment() {
   const [createRefermentState, createRefermentDispatch] = useReducer(
@@ -141,6 +142,14 @@ function CreateReferment() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -154,6 +163,7 @@ function CreateReferment() {
         type: createRefermentAction.setSubmitMessage,
         payload: `Submitting candidate ${candidateFullName} for referment...`,
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({ path: 'actions/general/referment' });
 
@@ -448,21 +458,6 @@ function CreateReferment() {
     additionalInformation,
     privacyConsent,
   ]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createRefermentDispatch}
-        navigateTo={{ successPath: '/home/general/referment/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [candidateFullNameInputErrorText, candidateFullNameInputValidText] =
@@ -1132,6 +1127,25 @@ function CreateReferment() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/general/referment/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayCreateRefermentForm =
     currentStepperPosition === 0
       ? displayCandidateDetailsFormPage
@@ -1153,6 +1167,7 @@ function CreateReferment() {
       }
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayCreateRefermentForm}
     </StepperWrapper>
   );

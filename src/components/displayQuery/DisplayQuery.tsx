@@ -58,6 +58,8 @@ function DisplayQuery<Doc>({
   componentQueryData,
   createResourcePath,
   fileUploadsData = [],
+  isLoading,
+  loadingMessage,
   parentComponentName,
   parentRequestStatusDispatch,
   parentDeleteResourceDispatch,
@@ -902,6 +904,8 @@ function DisplayQuery<Doc>({
         deleteResourceKindDispatch={displayQueryDispatch}
         groupedByQueryResponseData={groupedByQueryResponseData}
         groupBySelection={groupBySelection}
+        isLoading={isLoading}
+        loadingMessage={loadingMessage}
         openDeleteAcknowledge={openDeleteAcknowledge}
         openFileUploads={openFileUploads}
         queryValuesArray={queryValuesArray}
@@ -918,6 +922,8 @@ function DisplayQuery<Doc>({
         groupedByQueryResponseData={groupedByQueryResponseData}
         groupByRadioData={groupByRadioData}
         groupBySelection={groupBySelection}
+        isLoading={isLoading}
+        loadingMessage={loadingMessage}
         openDeleteAcknowledge={openDeleteAcknowledge}
         openFileUploads={openFileUploads}
         queryValuesArray={queryValuesArray}

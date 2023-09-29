@@ -24,7 +24,7 @@ function DisplayAddressChanges() {
     <DisplayResource
       componentQueryData={ADDRESS_CHANGE_QUERY_DATA}
       createResourcePath="/home/company/address-change/create"
-      paths={ADDRESS_CHANGE_PATHS}
+      resourceUrlPaths={ADDRESS_CHANGE_PATHS}
       requestBodyHeading="addressChange"
     />
   );

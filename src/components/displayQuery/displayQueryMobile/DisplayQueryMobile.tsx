@@ -4,8 +4,11 @@ import {
   Flex,
   Group,
   Highlight,
+  Loader,
+  LoadingOverlay,
   Modal,
   Spoiler,
+  Stack,
   Text,
   Title,
 } from '@mantine/core';
@@ -49,6 +52,8 @@ function DisplayQueryMobile({
   fileUploadsData = [],
   groupedByQueryResponseData,
   groupBySelection,
+  isLoading,
+  loadingMessage,
   openDeleteAcknowledge,
   openFileUploads,
   queryValuesArray,
@@ -626,6 +631,22 @@ function DisplayQueryMobile({
     </Modal>
   );
 
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      visible={isLoading}
+      zIndex={1000}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Text>{loadingMessage}</Text>
+          <Loader />
+        </Stack>
+      }
+    />
+  );
+
   return (
     <Flex
       direction="column"
@@ -635,6 +656,7 @@ function DisplayQueryMobile({
       w="100%"
       rowGap={rowGap}
     >
+      {displayLoadingOverlay}
       {displayUpdateRequestStatusModal}
       {displayEditRepairNoteModal}
       {displayGroupedByQueryResponseData}

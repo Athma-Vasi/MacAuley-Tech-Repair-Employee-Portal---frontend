@@ -1,4 +1,4 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import {
   ChangeEvent,
@@ -49,7 +49,7 @@ import {
   returnTimeRailwayValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -74,6 +74,7 @@ import {
   initialCreatePrinterIssueState,
 } from './state';
 import { PrinterIssueDocument, PrinterMake } from './types';
+import { useDisclosure } from '@mantine/hooks';
 
 function CreatePrinterIssue() {
   const [createPrinterIssueState, createPrinterIssueDispatch] = useReducer(
@@ -141,6 +142,14 @@ function CreatePrinterIssue() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -154,6 +163,7 @@ function CreatePrinterIssue() {
         type: createPrinterIssueAction.setSubmitMessage,
         payload: `Submitting ${title} printer issue form...`,
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({ path: 'actions/general/printer-issue' });
 
@@ -443,21 +453,6 @@ function CreatePrinterIssue() {
     isValidAdditionalInformation,
     additionalInformation,
   ]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createPrinterIssueDispatch}
-        navigateTo={{ successPath: '/home/general/printer-issue/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
@@ -1077,6 +1072,25 @@ function CreatePrinterIssue() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/general/printer-issue/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayCreatePrinterIssueForm =
     currentStepperPosition === 0
       ? displayPrinterIssueFormFirstPage
@@ -1098,6 +1112,7 @@ function CreatePrinterIssue() {
       }
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayCreatePrinterIssueForm}
     </StepperWrapper>
   );

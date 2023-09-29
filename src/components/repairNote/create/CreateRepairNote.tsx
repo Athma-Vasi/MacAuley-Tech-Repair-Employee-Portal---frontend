@@ -1,4 +1,4 @@
-import { Flex, Group, ScrollArea, Tooltip } from '@mantine/core';
+import { Flex, Group, ScrollArea, Title, Tooltip } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 import {
   createRepairNoteAction,
@@ -35,9 +35,10 @@ import FormReviewPage, {
 import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 import { globalAction } from '../../../context/globalProvider/state';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../../constants/data';
 import { returnPartialRepairNoteRequestObject } from './utils';
+import { useDisclosure } from '@mantine/hooks';
 
 function CreateRepairNote() {
   /** ------------- begin hooks ------------- */
@@ -137,6 +138,14 @@ function CreateRepairNote() {
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
+
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -154,6 +163,7 @@ function CreateRepairNote() {
         type: createRepairNoteAction.setSubmitMessage,
         payload: `Submitting repair note form for ${customerName}...`,
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({ path: 'repair-note' });
 
@@ -286,21 +296,6 @@ function CreateRepairNote() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
   /** ------------- end useEffects ------------- */
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createRepairNoteDispatch}
-        navigateTo={{ successPath: '/home/repair-note/display' }}
-      />
-    );
-  }
 
   /** ------------- begin input creators ------------- */
   const [createdSubmitButton] = returnAccessibleButtonElements([
@@ -445,6 +440,25 @@ function CreateRepairNote() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/repair-note/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displaySubmitButton = (
     <Tooltip
       label={
@@ -547,22 +561,9 @@ function CreateRepairNote() {
     </StepperWrapper>
   );
 
-  // const { scrollBarStyle } = returnThemeColors({
-  //   themeObject,
-  //   colorsSwatches: COLORS_SWATCHES,
-  // });
-
   const displayRepairNoteComponent = (
-    <Flex
-      direction="column"
-      align="center"
-      justify="space-between"
-      rowGap="lg"
-      // w="100%"
-      // h="100%"
-      // h={height < 991 ? height - (50 + 60) : height - (64 + 60)} // header +footer
-    >
-      {/* display form */}
+    <Flex direction="column" align="center" justify="space-between" rowGap="lg">
+      {displaySubmitSuccessNotificationModal}
       {displayRepairNoteForm}
     </Flex>
   );

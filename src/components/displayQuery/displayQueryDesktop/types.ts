@@ -10,12 +10,6 @@ import { RepairStatus } from '../../repairNote/types';
 
 type DisplayQueryDesktopProps<Doc> = {
   componentQueryData: ComponentQueryData[];
-  fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
-  groupByRadioData: Array<{ label: string; value: string }>;
-  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
-  groupBySelection: string;
-
-  openDeleteAcknowledge: () => void;
   deleteFormIdDispatch: React.Dispatch<{
     type: 'setDeleteFormId';
     payload: string;
@@ -24,15 +18,15 @@ type DisplayQueryDesktopProps<Doc> = {
     type: 'setDeleteResourceKind';
     payload: 'form' | 'fileUpload' | '';
   }>;
-
+  fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
+  groupByRadioData: Array<{ label: string; value: string }>;
+  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  groupBySelection: string;
+  isLoading: boolean;
+  loadingMessage?: string;
+  openDeleteAcknowledge: () => void;
   openFileUploads: () => void;
-  setFileUploadsForAFormDispatch: React.Dispatch<{
-    type: 'setFileUploadsForAForm';
-    payload: FileUploadDocument[];
-  }>;
-
   queryValuesArray: string[];
-
   requestStatusDispatch: React.Dispatch<{
     type: 'setRequestStatus';
     payload: {
@@ -41,6 +35,10 @@ type DisplayQueryDesktopProps<Doc> = {
     };
   }>;
   restOfGroupedQueryResponseData: Record<string, any>[];
+  setFileUploadsForAFormDispatch: React.Dispatch<{
+    type: 'setFileUploadsForAForm';
+    payload: FileUploadDocument[];
+  }>;
   style?: CSSProperties;
   tableViewSelection: 'expanded' | 'condensed';
 };

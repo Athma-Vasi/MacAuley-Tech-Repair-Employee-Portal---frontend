@@ -28,9 +28,9 @@ function DisplayExpenseClaims() {
     <DisplayResource<QueryResponseData<ExpenseClaimDocument>[]>
       componentQueryData={EXPENSE_CLAIM_QUERY_DATA}
       createResourcePath="/home/company/expense-claim/create"
-      paths={EXPENSE_CLAIM__ROUTE_PATHS}
-      requestBodyHeading="expenseClaim"
       isFileUploadsWithResource={true}
+      resourceUrlPaths={EXPENSE_CLAIM__ROUTE_PATHS}
+      requestBodyHeading="expenseClaim"
     />
   );
 

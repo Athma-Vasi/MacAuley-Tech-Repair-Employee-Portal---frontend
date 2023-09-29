@@ -1,4 +1,5 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { title } from 'process';
 import {
@@ -43,6 +44,7 @@ import {
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
@@ -63,7 +65,6 @@ import {
   initialCreateAnonymousRequestState,
 } from './state';
 import { AnonymousRequestDocument, AnonymousRequestKind } from './types';
-import { CustomNotification } from '../../customNotification';
 
 function CreateAnonymousRequest() {
   const [createAnonymousRequestState, createAnonymousRequestDispatch] =
@@ -116,6 +117,14 @@ function CreateAnonymousRequest() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -129,6 +138,7 @@ function CreateAnonymousRequest() {
         type: createAnonymousRequestAction.setSubmitMessage,
         payload: 'Your anonymous request is being submitted...',
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: 'actions/general/anonymous-request',
@@ -366,21 +376,6 @@ function CreateAnonymousRequest() {
     isValidAdditionalInformation,
     additionalInformation,
   ]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createAnonymousRequestDispatch}
-        navigateTo={{ successPath: '/home/general/anonymous-request/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [titleInputErrorText, titleInputValidText] =
@@ -789,6 +784,25 @@ function CreateAnonymousRequest() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/general/anonymous-request/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayCreateAnonymousRequestForm =
     currentStepperPosition === 0
       ? displayAnonRequestFirstPage
@@ -810,6 +824,7 @@ function CreateAnonymousRequest() {
       }
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayCreateAnonymousRequestForm}
     </StepperWrapper>
   );

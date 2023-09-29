@@ -1,4 +1,5 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import {
   ChangeEvent,
@@ -43,10 +44,10 @@ import {
   returnPostalCodeValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -116,6 +117,14 @@ function AddressChange() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -129,6 +138,7 @@ function AddressChange() {
         type: addressChangeAction.setSubmitMessage,
         payload: 'Address change request is on the way!',
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: 'actions/company/address-change',
@@ -386,23 +396,6 @@ function AddressChange() {
     isValidPostalCode,
     isAcknowledged,
   ]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={addressChangeDispatch}
-        navigateTo={{
-          successPath: '/home/company/address-change/display',
-        }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
@@ -818,6 +811,25 @@ function AddressChange() {
       </Tooltip>
     ) : null;
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/company/address-change/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const createdAddressChangeForm = (
     <FormLayoutWrapper>
       {createdContactNumberTextInput}
@@ -847,6 +859,7 @@ function AddressChange() {
       parentComponentDispatch={addressChangeDispatch}
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayAddressChangeForm}
     </StepperWrapper>
   );

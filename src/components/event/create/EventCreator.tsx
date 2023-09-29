@@ -1,4 +1,4 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -28,7 +28,7 @@ import {
   returnTimeRailwayValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -52,6 +52,7 @@ import {
   initialEventCreatorState,
 } from './state';
 import { EventCreatorDocument, EventKind } from './types';
+import { useDisclosure } from '@mantine/hooks';
 
 function EventCreator() {
   const [eventCreatorState, eventCreatorDispatch] = useReducer(
@@ -125,6 +126,14 @@ function EventCreator() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -138,6 +147,7 @@ function EventCreator() {
         type: eventCreatorAction.setSubmitMessage,
         payload: `Creating event: ${eventTitle}`,
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: 'actions/outreach/event-creator',
@@ -457,21 +467,6 @@ function EventCreator() {
     eventAttendees,
     requiredItems,
   ]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={eventCreatorDispatch}
-        navigateTo={{ successPath: '/home/outreach/event-creator/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [eventTitleErrorText, eventTitleValidText] =
@@ -1126,6 +1121,25 @@ function EventCreator() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/outreach/event-creator/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayEventCreatorForm =
     currentStepperPosition === 0
       ? displayEventDatesFormPage
@@ -1145,6 +1159,7 @@ function EventCreator() {
       setCurrentStepperPosition={eventCreatorAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayEventCreatorForm}
     </StepperWrapper>
   );

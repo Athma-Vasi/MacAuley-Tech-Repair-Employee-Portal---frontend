@@ -25,7 +25,7 @@ function DisplayReferments() {
     <DisplayResource<QueryResponseData<RefermentDocument>[]>
       componentQueryData={REFERMENT_QUERY_DATA}
       createResourcePath="/home/general/referment/create"
-      paths={REFERMENT_ROUTE_PATHS}
+      resourceUrlPaths={REFERMENT_ROUTE_PATHS}
       requestBodyHeading="referment"
     />
   );

@@ -24,7 +24,7 @@ function DisplayLeaveRequests() {
     <DisplayResource<LeaveRequestDocument>
       componentQueryData={LEAVE_REQUESTS_QUERY_DATA}
       createResourcePath="/home/company/leave-request/create"
-      paths={LEAVE_REQUESTS_PATHS}
+      resourceUrlPaths={LEAVE_REQUESTS_PATHS}
       requestBodyHeading="leaveRequest"
     />
   );

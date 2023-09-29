@@ -1,4 +1,4 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -40,7 +40,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -68,6 +68,7 @@ import {
   initialCreateExpenseClaimState,
 } from './state';
 import type { ExpenseClaimDocument, ExpenseClaimKind } from './types';
+import { useDisclosure } from '@mantine/hooks';
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -122,6 +123,14 @@ function CreateExpenseClaim() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -136,6 +145,7 @@ function CreateExpenseClaim() {
         type: createExpenseClaimAction.setSubmitMessage,
         payload: 'File uploads are being processed...',
       });
+      openSubmitSuccessNotificationModal();
 
       const fileUploadUrl: URL = urlBuilder({
         path: 'file-upload',
@@ -484,21 +494,6 @@ function CreateExpenseClaim() {
       },
     });
   }, [areImagesValid, imgFormDataArray]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createExpenseClaimDispatch}
-        navigateTo={{ successPath: '/home/company/expense-claim/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [expenseClaimAmountInputErrorText, expenseClaimAmountInputValidText] =
@@ -884,6 +879,25 @@ function CreateExpenseClaim() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/company/expense-claim/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayExpenseClaimForm =
     currentStepperPosition === 0 ? (
       <FormLayoutWrapper>
@@ -924,6 +938,7 @@ function CreateExpenseClaim() {
       }
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayExpenseClaimForm}
     </StepperWrapper>
   );

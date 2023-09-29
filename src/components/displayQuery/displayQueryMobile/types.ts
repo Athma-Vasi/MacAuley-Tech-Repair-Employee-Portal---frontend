@@ -18,6 +18,8 @@ type DisplayQueryMobileProps = {
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
   groupBySelection: string;
+  isLoading: boolean;
+  loadingMessage?: string;
   openDeleteAcknowledge: () => void;
   openFileUploads: () => void;
   queryValuesArray: string[];

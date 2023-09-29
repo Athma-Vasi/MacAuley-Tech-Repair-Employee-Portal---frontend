@@ -1,4 +1,4 @@
-import { Group, Text, Tooltip } from '@mantine/core';
+import { Group, Text, Title, Tooltip } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -39,7 +39,7 @@ import {
   returnUsernameRegexValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
+import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
@@ -67,6 +67,7 @@ import {
   initialCreateBenefitState,
 } from './state';
 import { BenefitsDocument, BenefitsPlanKind, Currency } from './types';
+import { useDisclosure } from '@mantine/hooks';
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
@@ -126,6 +127,14 @@ function CreateBenefit() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -139,6 +148,7 @@ function CreateBenefit() {
         type: createBenefitAction.setSubmitMessage,
         payload: 'Submitting new benefit to be created...',
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: 'actions/company/benefit',
@@ -436,21 +446,6 @@ function CreateBenefit() {
       },
     });
   }, [isValidEmployeeContribution, isValidEmployerContribution]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={createBenefitDispatch}
-        navigateTo={{ successPath: '/home/company/benefit/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [benefitUsernameInputErrorText, benefitUsernameInputValidText] =
@@ -978,6 +973,25 @@ function CreateBenefit() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/company/benefit/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayCreateBenefitForm =
     currentStepperPosition === 0
       ? displayPlanDetailsFormPage
@@ -997,6 +1011,7 @@ function CreateBenefit() {
       setCurrentStepperPosition={createBenefitAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayCreateBenefitForm}
     </StepperWrapper>
   );

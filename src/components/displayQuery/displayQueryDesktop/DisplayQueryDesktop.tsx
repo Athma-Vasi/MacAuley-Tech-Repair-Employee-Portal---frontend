@@ -5,6 +5,8 @@ import {
   Group,
   Highlight,
   HoverCard,
+  Loader,
+  LoadingOverlay,
   Modal,
   ScrollArea,
   Space,
@@ -52,7 +54,8 @@ function DisplayQueryDesktop<Doc>({
   groupedByQueryResponseData,
   groupByRadioData,
   groupBySelection,
-
+  isLoading,
+  loadingMessage = '',
   openDeleteAcknowledge,
   openFileUploads,
   queryValuesArray,
@@ -212,6 +215,22 @@ function DisplayQueryDesktop<Doc>({
     sortDirection,
   });
 
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      visible={isLoading}
+      zIndex={1000}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Text>{loadingMessage}</Text>
+          <Loader />
+        </Stack>
+      }
+    />
+  );
+
   const displayTable = (
     <ScrollArea
       styles={() => scrollBarStyle}
@@ -226,6 +245,7 @@ function DisplayQueryDesktop<Doc>({
         }}
         align="flex-start"
       >
+        {displayLoadingOverlay}
         <Table captionSide="top" striped highlightOnHover>
           <thead
             style={{

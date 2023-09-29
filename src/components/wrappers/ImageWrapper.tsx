@@ -12,6 +12,7 @@ import {
 import { CSSProperties, useEffect, useState } from 'react';
 import { useGlobalState } from '../../hooks';
 import { useDisclosure } from '@mantine/hooks';
+import { TbPhotoOff } from 'react-icons/tb';
 
 // from mantine
 export interface ImageProps
@@ -43,12 +44,16 @@ export interface ImageProps
 }
 
 interface AccessibleImageCreatorInfo extends ImageProps {
+  customWidth?: MantineNumberSize;
+  customHeight?: MantineNumberSize;
+  customRadius?: MantineNumberSize;
   fallbackAlt?: string;
   fallbackSrc?: string;
   imageSrc?: string;
   imageAlt?: string;
   isCard?: boolean;
   isOverlay?: boolean;
+  isLoader?: boolean;
   onClick?: () => void;
   onError?: () => void;
   overlayText?: string;
@@ -73,12 +78,16 @@ function ImageWrapper({ creatorInfoObject }: ImageWrapperProps) {
   }, [isImageLoading, isImageLoadFailed]);
 
   const {
+    customWidth,
+    customHeight,
+    customRadius,
     fallbackAlt = 'Image failed to load. Here is a picture of puppies instead.',
     fallbackSrc = 'https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
     fit = 'fill',
     imageSrc = fallbackSrc,
     imageAlt = fallbackAlt,
     isCard = false,
+    isLoader = false,
     isOverlay = false,
     onClick = () => {},
     onError = () => {
@@ -87,17 +96,19 @@ function ImageWrapper({ creatorInfoObject }: ImageWrapperProps) {
     overlayText = '',
     style = {},
     withPlaceholder = true,
+    placeholder = withPlaceholder ? <TbPhotoOff size={18} /> : <div />,
   } = creatorInfoObject;
 
-  const styles: CSSProperties = isOverlay
-    ? {
-        ...style,
-        position: 'relative',
-        // opacity: 0.4,
-        width: '100%',
-        height: '100%',
-      }
-    : { ...style };
+  // const styles: CSSProperties = isOverlay
+  //   ? {
+  //       ...style,
+  //       position: 'relative',
+  //       // // opacity: 0.4,
+  //       // width: '100%',
+  //       // height: '100%',
+  //     }
+  //   : { ...style, position: 'relative' };
+  const styles: CSSProperties = { ...style, position: 'relative' };
 
   const textOverlay = (
     <Text
@@ -122,31 +133,40 @@ function ImageWrapper({ creatorInfoObject }: ImageWrapperProps) {
     <LoadingOverlay
       visible={loadingOverlayVisible}
       overlayBlur={4}
-      overlayOpacity={0.99}
+      overlayOpacity={isLoader ? 0.99 : 1}
       radius="md"
+      loader={isLoader ? undefined : <div />}
     />
   );
 
   const createdImage = (
     <Image
-      src={isImageLoadFailed ? fallbackSrc : imageSrc}
       alt={isImageLoadFailed ? fallbackAlt : imageAlt}
       fit={fit}
-      width="100%"
-      height="100%"
-      radius={0}
-      style={styles}
+      height={customHeight ? customHeight : '100%'}
       onClick={onClick}
       onError={onError}
       onLoad={() => {
         setIsImageLoading(false);
       }}
+      placeholder={placeholder}
+      radius={customRadius ? customRadius : 0}
+      src={isImageLoadFailed ? fallbackSrc : imageSrc}
+      style={styles}
+      width={customWidth ? customWidth : '100%'}
       withPlaceholder={withPlaceholder}
     />
   );
 
   const displayImage = isCard ? (
-    <Card shadow="sm" radius="md" withBorder w="100%" h="100%">
+    <Card
+      shadow="sm"
+      radius="md"
+      withBorder
+      w="100%"
+      h="100%"
+      style={{ position: 'relative' }}
+    >
       <Card.Section>
         {createdImage} {loadingOverlay}
       </Card.Section>
@@ -154,7 +174,7 @@ function ImageWrapper({ creatorInfoObject }: ImageWrapperProps) {
       {isOverlay && textOverlay ? textOverlay : null}
     </Card>
   ) : (
-    <Group>
+    <Group style={{ position: 'relative' }}>
       {createdImage} {loadingOverlay}
       {isOverlay && textOverlay ? textOverlay : null}
     </Group>

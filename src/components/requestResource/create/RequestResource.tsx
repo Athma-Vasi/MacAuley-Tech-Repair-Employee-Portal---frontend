@@ -1,4 +1,5 @@
-import { Group, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -33,10 +34,10 @@ import {
   returnNumberAmountValidationText,
   urlBuilder,
 } from '../../../utils';
-import { CustomNotification } from '../../customNotification';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -110,6 +111,14 @@ function RequestResource() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -123,6 +132,7 @@ function RequestResource() {
         type: requestResourceAction.setSubmitMessage,
         payload: `Submitting Request ${resourceType} Resource form ...`,
       });
+      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({ path: 'actions/company/request-resource' });
 
@@ -341,21 +351,6 @@ function RequestResource() {
     reasonForRequest,
     additionalInformation,
   ]);
-
-  if (isLoading || isSubmitting || isSuccessful) {
-    return (
-      <CustomNotification
-        isLoading={isLoading}
-        isSubmitting={isSubmitting}
-        isSuccessful={isSuccessful}
-        loadingMessage={loadingMessage}
-        successMessage={successMessage}
-        submitMessage={submitMessage}
-        parentDispatch={requestResourceDispatch}
-        navigateTo={{ successPath: '/home/company/request-resource/display' }}
-      />
-    );
-  }
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [resourceQuantityInputErrorText, resourceQuantityInputValidText] =
@@ -767,6 +762,25 @@ function RequestResource() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/company/request-resource/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
   const displayRequestResourceForm =
     currentStepperPosition === 0
       ? displayRequestResourceFormPageOne
@@ -788,6 +802,7 @@ function RequestResource() {
       }
       stepsInError={stepsInError}
     >
+      {displaySubmitSuccessNotificationModal}
       {displayRequestResourceForm}
     </StepperWrapper>
   );

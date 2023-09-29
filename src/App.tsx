@@ -674,7 +674,7 @@ function App() {
               <Route index element={displayAnnouncementsElement} />
               <Route path="create" element={createAnnouncementElement} />
               <Route
-                path="display/:announcementId"
+                path=":announcementId"
                 element={displayAnnouncementElement}
               />
             </Route>

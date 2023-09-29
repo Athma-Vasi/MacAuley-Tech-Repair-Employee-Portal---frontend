@@ -24,7 +24,7 @@ function DisplayEndorsements() {
     <DisplayResource<EndorsementDocument>
       componentQueryData={ENDORSEMENTS_QUERY_DATA}
       createResourcePath="/home/general/endorsement/create"
-      paths={ENDORSEMENTS_PATHS}
+      resourceUrlPaths={ENDORSEMENTS_PATHS}
       requestBodyHeading="endorsement"
     />
   );

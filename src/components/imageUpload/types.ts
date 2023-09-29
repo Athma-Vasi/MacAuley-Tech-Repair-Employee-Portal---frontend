@@ -1,7 +1,7 @@
 import React, { CSSProperties } from 'react';
 
 type ImageUploadProps = {
-  style?: CSSProperties;
+  isParentComponentFormSubmitted: boolean;
   maxImages: number;
   maxImageSize: number; // in kb
   parentComponentName: string;
@@ -15,7 +15,7 @@ type ImageUploadProps = {
     type: 'setAreImagesValid';
     payload: boolean;
   }>;
-  isParentComponentFormSubmitted: boolean;
+  style?: CSSProperties;
 };
 
 type ImageUploadState = {
@@ -32,10 +32,6 @@ type ImageUploadState = {
 
   isLoading: boolean;
   loadingMessage: string;
-  isSuccessful: boolean;
-  successMessage: string;
-  isSubmitting: boolean;
-  submitMessage: string;
 };
 
 type ImageUploadLocalForage = {
@@ -62,10 +58,6 @@ type ImageUploadAction = {
 
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
 };
 
 type ImageUploadDispatch =
@@ -114,17 +106,11 @@ type ImageUploadDispatch =
       };
     }
   | {
-      type:
-        | ImageUploadAction['setIsLoading']
-        | ImageUploadAction['setIsSuccessful']
-        | ImageUploadAction['setIsSubmitting'];
+      type: ImageUploadAction['setIsLoading'];
       payload: boolean;
     }
   | {
-      type:
-        | ImageUploadAction['setLoadingMessage']
-        | ImageUploadAction['setSuccessMessage']
-        | ImageUploadAction['setSubmitMessage'];
+      type: ImageUploadAction['setLoadingMessage'];
       payload: string;
     };
 
