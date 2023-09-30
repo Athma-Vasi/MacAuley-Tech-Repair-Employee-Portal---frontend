@@ -564,8 +564,17 @@ function returnCommentsWithoutQuotedUsername({
     const randomUser = userDocs[Math.floor(Math.random() * userDocs.length)];
 
     // grab their details
-    const { _id, username, roles, jobPosition, department, profilePictureUrl } =
-      randomUser;
+    const {
+      _id,
+      username,
+      roles,
+      firstName,
+      middleName,
+      lastName,
+      jobPosition,
+      department,
+      profilePictureUrl,
+    } = randomUser;
 
     // shuffle array
     const shuffledUsers = shuffleArray(userDocs);
@@ -592,10 +601,19 @@ function returnCommentsWithoutQuotedUsername({
     );
     const reportedUserIds = reportedUsers.map((user) => user._id);
 
+    // 25 percent chance of being featured
+    const isFeatured = Math.random() < 0.25;
+
+    // 10 percent chance of being deleted
+    const isDeleted = Math.random() < 0.1;
+
     const requestBody = {
       userId: _id,
       username,
       roles,
+      firstName,
+      middleName,
+      lastName,
       jobPosition,
       department,
       profilePictureUrl,
@@ -607,8 +625,8 @@ function returnCommentsWithoutQuotedUsername({
       dislikesCount: comment.dislikesCount,
       reportsCount: comment.reportsCount,
 
-      isFeatured: comment.isFeatured,
-      isDeleted: comment.isDeleted,
+      isFeatured,
+      isDeleted,
 
       likedUserIds,
       dislikedUserIds,
@@ -644,14 +662,7 @@ function returnCommentsRequestBodies({
       const { quotedComment } = comment;
       // if there is no quoted comment, return the comment as is
       if (!quotedComment.length) {
-        // 50 percent change to toggle isFeatured
-        const isFeaturedToggle = Math.random() < 0.5;
-        const commentWithIsFeatured = {
-          ...comment,
-          isFeatured: isFeaturedToggle,
-        };
-
-        bodiesAcc.push(commentWithIsFeatured);
+        bodiesAcc.push(comment);
         return bodiesAcc;
       }
 

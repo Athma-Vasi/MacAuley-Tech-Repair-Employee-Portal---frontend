@@ -29,6 +29,7 @@ import {
   TbArrowDown,
   TbArrowUp,
   TbBrandMastodon,
+  TbClearAll,
   TbCornerUpLeft,
   TbFlag2,
   TbFlag2Filled,
@@ -38,6 +39,7 @@ import {
   TbTrash,
   TbTrashOff,
   TbUpload,
+  TbZoomReset,
 } from 'react-icons/tb';
 import {
   TiSocialDribbble,
@@ -417,6 +419,9 @@ function Comment({
       });
 
       const comment = {
+        firstName: userDocument.firstName,
+        middleName: userDocument.middleName,
+        lastName: userDocument.lastName,
         jobPosition: userDocument.jobPosition,
         department: userDocument.department,
         profilePictureUrl: userDocument.profilePictureUrl,
@@ -711,445 +716,558 @@ function Comment({
 
   console.log('regex', regex);
 
-  const createdCommentsSectionObjectsArray = Array.from(commentsMap).map(
-    ([commentId, commentDoc]: [string, CommentDocument]) => {
-      const {
-        profilePictureUrl,
-        username,
-        jobPosition,
-        department,
-        comment,
-        quotedUsername,
-        quotedComment,
-        likesCount,
-        dislikesCount,
-        reportsCount,
-        isFeatured,
-        isDeleted,
-        likedUserIds,
-        dislikedUserIds,
-        reportedUserIds,
-        createdAt,
-        updatedAt,
-      } = commentDoc;
+  const createdCommentsSectionObjectsArray: CreatedCommentsSectionObject[] =
+    Array.from(commentsMap).map(
+      ([commentId, commentDoc]: [string, CommentDocument]) => {
+        const {
+          profilePictureUrl,
+          username,
+          firstName,
+          middleName,
+          lastName,
+          jobPosition,
+          department,
+          comment,
+          quotedUsername,
+          quotedComment,
+          likesCount,
+          dislikesCount,
+          reportsCount,
+          isFeatured,
+          isDeleted,
+          likedUserIds,
+          dislikedUserIds,
+          reportedUserIds,
+          createdAt,
+          updatedAt,
+        } = commentDoc;
 
-      const [
-        replyButtonElement,
-        likeButtonElement,
-        dislikeButtonElement,
-        reportButtonElement,
-        showMoreSpoilerButtonElement,
-        showLessSpoilerButtonElement,
-      ] = returnAccessibleButtonElements([
-        // reply with quote button
-        {
-          buttonLabel: 'Quote',
-          semanticDescription: 'quote comment button',
-          semanticName: 'quoteCommentButton',
-          buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-            commentDispatch({
-              type: commentAction.setQuotedUsername,
-              payload: username,
-            });
-            commentDispatch({
-              type: commentAction.setQuotedComment,
-              payload: comment,
-            });
-            openCommentModal();
+        const [
+          replyButtonElement,
+          likeButtonElement,
+          dislikeButtonElement,
+          reportButtonElement,
+          showMoreSpoilerButtonElement,
+          showLessSpoilerButtonElement,
+        ] = returnAccessibleButtonElements([
+          // reply with quote button
+          {
+            buttonLabel: 'Quote',
+            semanticDescription: 'quote comment button',
+            semanticName: 'quoteCommentButton',
+            buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+              commentDispatch({
+                type: commentAction.setQuotedUsername,
+                payload: username,
+              });
+              commentDispatch({
+                type: commentAction.setQuotedComment,
+                payload: comment,
+              });
+              openCommentModal();
+            },
+            leftIcon: <TbCornerUpLeft />,
           },
-          leftIcon: <TbCornerUpLeft />,
-        },
-        // like button
-        {
-          buttonLabel: likedUserIds.includes(userId) ? (
-            <TbArrowBigUpFilled />
-          ) : (
-            <TbArrowBigUp />
-          ),
-          buttonVariant: likedUserIds.includes(userId) ? 'outline' : 'subtle',
-          buttonStyle: { borderRadius: '9999px 4px 4px 9999px' },
-          semanticDescription: 'like comment button',
-          semanticName: 'likeCommentButton',
-          buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-            commentDispatch({
-              type: commentAction.setReactedCommentId,
-              payload: commentId,
-            });
-            commentDispatch({
-              type: commentAction.setUpdateCommentRequestBody,
-              payload: {
-                commentId,
-                userId,
-                kind: 'like',
-                value: likedUserIds.includes(userId) ? false : true,
-              },
-            });
-            commentDispatch({
-              type: commentAction.setTriggerCommentUpdate,
-              payload: true,
-            });
-          },
-        },
-        // dislike button
-        {
-          buttonLabel: dislikedUserIds.includes(userId) ? (
-            <TbArrowBigDownFilled />
-          ) : (
-            <TbArrowBigDown />
-          ),
-          // buttonDisabled: dislikedUserIds.includes(userId),
-          buttonVariant: dislikedUserIds.includes(userId)
-            ? 'outline'
-            : 'subtle',
-          buttonStyle: { borderRadius: '4px 9999px 9999px 4px' },
-          semanticDescription: 'dislike comment button',
-          semanticName: 'dislikeCommentButton',
-          buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-            commentDispatch({
-              type: commentAction.setReactedCommentId,
-              payload: commentId,
-            });
-            commentDispatch({
-              type: commentAction.setUpdateCommentRequestBody,
-              payload: {
-                commentId,
-                userId,
-                kind: 'dislike',
-                value: dislikedUserIds.includes(userId) ? false : true,
-              },
-            });
-            commentDispatch({
-              type: commentAction.setTriggerCommentUpdate,
-              payload: true,
-            });
-          },
-        },
-        // report button
-        {
-          buttonLabel: reportedUserIds.includes(userId) ? (
-            <TbFlag2Filled />
-          ) : (
-            <TbFlag2 />
-          ),
-          buttonVariant: reportedUserIds.includes(userId)
-            ? 'outline'
-            : 'subtle',
-          buttonStyle: { borderRadius: '9999px 4px 4px 9999px' },
-          semanticDescription: 'report comment button',
-          semanticName: 'reportCommentButton',
-          buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-            commentDispatch({
-              type: commentAction.setReactedCommentId,
-              payload: commentId,
-            });
-            commentDispatch({
-              type: commentAction.setUpdateCommentRequestBody,
-              payload: {
-                commentId,
-                userId,
-                kind: 'report',
-                value: reportedUserIds.includes(userId) ? false : true,
-              },
-            });
-            commentDispatch({
-              type: commentAction.setTriggerCommentUpdate,
-              payload: true,
-            });
-          },
-        },
-        // show more spoiler button
-        {
-          buttonLabel: 'Show',
-          leftIcon: <TbArrowDown />,
-          semanticDescription: 'show more comment button',
-          semanticName: 'showMoreCommentButton',
-        },
-        // show less spoiler button
-        {
-          buttonLabel: 'Hide',
-          leftIcon: <TbArrowUp />,
-          semanticDescription: 'hide comment button',
-          semanticName: 'hideCommentButton',
-        },
-      ]);
-
-      const replyButtonWithTooltip = (
-        <Tooltip
-          label={
-            userId === commentDoc.userId
-              ? 'Reply to your comment'
-              : `Reply to ${username}'s comment`
-          }
-        >
-          <Group>{replyButtonElement}</Group>
-        </Tooltip>
-      );
-      const likeButtonWithTooltip = (
-        <Tooltip
-          label={
-            likedUserIds.includes(userId)
-              ? `Undo like of ${
-                  userId === commentDoc.userId ? 'your' : `${username}'s`
-                } comment`
-              : `Like ${
-                  userId === commentDoc.userId ? 'your' : `${username}'s`
-                } comment`
-          }
-        >
-          <Group>{likeButtonElement}</Group>
-        </Tooltip>
-      );
-      const dislikeButtonWithTooltip = (
-        <Tooltip
-          label={
-            dislikedUserIds.includes(userId)
-              ? `Undo dislike of ${
-                  userId === commentDoc.userId ? 'your' : `${username}'s`
-                } comment`
-              : `Dislike ${
-                  userId === commentDoc.userId ? 'your' : `${username}'s`
-                } comment`
-          }
-        >
-          <Group>{dislikeButtonElement}</Group>
-        </Tooltip>
-      );
-      const reportButtonWithTooltip = (
-        <Tooltip
-          label={
-            reportedUserIds.includes(userId)
-              ? `Undo report of ${
-                  userId === commentDoc.userId ? 'your' : `${username}'s`
-                } comment`
-              : `Report ${
-                  userId === commentDoc.userId ? 'your' : `${username}'s`
-                } comment`
-          }
-        >
-          <Group>{reportButtonElement}</Group>
-        </Tooltip>
-      );
-
-      // only comment owners are allowed to delete comments
-      const [deleteButtonElement] =
-        userId === commentDoc.userId
-          ? returnAccessibleButtonElements([
-              {
-                buttonLabel: isDeleted ? 'Undelete' : 'Delete',
-                leftIcon: isDeleted ? <TbTrashOff /> : <TbTrash />,
-                semanticDescription: 'delete comment button',
-                semanticName: 'deleteCommentButton',
-                buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-                  commentDispatch({
-                    type: commentAction.setReactedCommentId,
-                    payload: commentId,
-                  });
-                  commentDispatch({
-                    type: commentAction.setUpdateCommentRequestBody,
-                    payload: {
-                      commentId,
-                      userId,
-                      kind: 'delete',
-                      value: true,
-                    },
-                  });
-                  commentDispatch({
-                    type: commentAction.setTriggerCommentUpdate,
-                    payload: true,
-                  });
+          // like button
+          {
+            buttonLabel: likedUserIds.includes(userId) ? (
+              <TbArrowBigUpFilled />
+            ) : (
+              <TbArrowBigUp />
+            ),
+            buttonVariant: likedUserIds.includes(userId) ? 'outline' : 'subtle',
+            buttonStyle: { borderRadius: '9999px 4px 4px 9999px' },
+            semanticDescription: 'like comment button',
+            semanticName: 'likeCommentButton',
+            buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+              commentDispatch({
+                type: commentAction.setReactedCommentId,
+                payload: commentId,
+              });
+              commentDispatch({
+                type: commentAction.setUpdateCommentRequestBody,
+                payload: {
+                  commentId,
+                  userId,
+                  kind: 'like',
+                  value: likedUserIds.includes(userId) ? false : true,
                 },
-              },
-            ])
-          : [null];
-
-      const deleteButtonWithTooltip = deleteButtonElement ? (
-        <Tooltip
-          label={isDeleted ? 'Undelete your comment' : 'Delete your comment'}
-        >
-          <Group>{deleteButtonElement}</Group>
-        </Tooltip>
-      ) : null;
-
-      // only managers/admins are allowed to feature comments
-      const [featureButtonElement] =
-        userDocument?.roles.includes('Manager') ||
-        userDocument?.roles.includes('Admin')
-          ? returnAccessibleButtonElements([
-              {
-                buttonLabel: isFeatured ? 'Unfeature' : 'Feature',
-                leftIcon: isFeatured ? <TbStarOff /> : <TbStar />,
-                semanticDescription: 'feature comment button',
-                semanticName: 'featureCommentButton',
-                buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-                  commentDispatch({
-                    type: commentAction.setReactedCommentId,
-                    payload: commentId,
-                  });
-                  commentDispatch({
-                    type: commentAction.setUpdateCommentRequestBody,
-                    payload: {
-                      commentId,
-                      userId,
-                      kind: 'feature',
-                      value: true,
-                    },
-                  });
-                  commentDispatch({
-                    type: commentAction.setTriggerCommentUpdate,
-                    payload: true,
-                  });
+              });
+              commentDispatch({
+                type: commentAction.setTriggerCommentUpdate,
+                payload: true,
+              });
+            },
+          },
+          // dislike button
+          {
+            buttonLabel: dislikedUserIds.includes(userId) ? (
+              <TbArrowBigDownFilled />
+            ) : (
+              <TbArrowBigDown />
+            ),
+            // buttonDisabled: dislikedUserIds.includes(userId),
+            buttonVariant: dislikedUserIds.includes(userId)
+              ? 'outline'
+              : 'subtle',
+            buttonStyle: { borderRadius: '4px 9999px 9999px 4px' },
+            semanticDescription: 'dislike comment button',
+            semanticName: 'dislikeCommentButton',
+            buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+              commentDispatch({
+                type: commentAction.setReactedCommentId,
+                payload: commentId,
+              });
+              commentDispatch({
+                type: commentAction.setUpdateCommentRequestBody,
+                payload: {
+                  commentId,
+                  userId,
+                  kind: 'dislike',
+                  value: dislikedUserIds.includes(userId) ? false : true,
                 },
-              },
-            ])
-          : [null];
+              });
+              commentDispatch({
+                type: commentAction.setTriggerCommentUpdate,
+                payload: true,
+              });
+            },
+          },
+          // report button
+          {
+            buttonLabel: reportedUserIds.includes(userId) ? (
+              <TbFlag2Filled />
+            ) : (
+              <TbFlag2 />
+            ),
+            buttonVariant: reportedUserIds.includes(userId)
+              ? 'outline'
+              : 'subtle',
+            buttonStyle: { borderRadius: '9999px 4px 4px 9999px' },
+            semanticDescription: 'report comment button',
+            semanticName: 'reportCommentButton',
+            buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+              commentDispatch({
+                type: commentAction.setReactedCommentId,
+                payload: commentId,
+              });
+              commentDispatch({
+                type: commentAction.setUpdateCommentRequestBody,
+                payload: {
+                  commentId,
+                  userId,
+                  kind: 'report',
+                  value: reportedUserIds.includes(userId) ? false : true,
+                },
+              });
+              commentDispatch({
+                type: commentAction.setTriggerCommentUpdate,
+                payload: true,
+              });
+            },
+          },
+          // show more spoiler button
+          {
+            buttonLabel: 'Show',
+            leftIcon: <TbArrowDown />,
+            semanticDescription: 'show more comment button',
+            semanticName: 'showMoreCommentButton',
+          },
+          // show less spoiler button
+          {
+            buttonLabel: 'Hide',
+            leftIcon: <TbArrowUp />,
+            semanticDescription: 'hide comment button',
+            semanticName: 'hideCommentButton',
+          },
+        ]);
 
-      const featureButtonWithTooltip = featureButtonElement ? (
-        <Tooltip
-          label={
-            isFeatured
-              ? `Unfeature ${username}'s comment`
-              : `Feature ${username}'s comment`
-          }
-        >
-          <Group>{featureButtonElement}</Group>
-        </Tooltip>
-      ) : null;
+        const replyButtonWithTooltip = (
+          <Tooltip
+            label={
+              userId === commentDoc.userId
+                ? 'Reply to your comment'
+                : `Reply to ${username}'s comment`
+            }
+          >
+            <Group>{replyButtonElement}</Group>
+          </Tooltip>
+        );
+        const likeButtonWithTooltip = (
+          <Tooltip
+            label={
+              likedUserIds.includes(userId)
+                ? `Undo like of ${
+                    userId === commentDoc.userId ? 'your' : `${username}'s`
+                  } comment`
+                : `Like ${
+                    userId === commentDoc.userId ? 'your' : `${username}'s`
+                  } comment`
+            }
+          >
+            <Group>{likeButtonElement}</Group>
+          </Tooltip>
+        );
+        const dislikeButtonWithTooltip = (
+          <Tooltip
+            label={
+              dislikedUserIds.includes(userId)
+                ? `Undo dislike of ${
+                    userId === commentDoc.userId ? 'your' : `${username}'s`
+                  } comment`
+                : `Dislike ${
+                    userId === commentDoc.userId ? 'your' : `${username}'s`
+                  } comment`
+            }
+          >
+            <Group>{dislikeButtonElement}</Group>
+          </Tooltip>
+        );
+        const reportButtonWithTooltip = (
+          <Tooltip
+            label={
+              reportedUserIds.includes(userId)
+                ? `Undo report of ${
+                    userId === commentDoc.userId ? 'your' : `${username}'s`
+                  } comment`
+                : `Report ${
+                    userId === commentDoc.userId ? 'your' : `${username}'s`
+                  } comment`
+            }
+          >
+            <Group>{reportButtonElement}</Group>
+          </Tooltip>
+        );
 
-      // determine if username is in query values array
-      const isUsernameInQueryValuesArray = regex?.test(username);
-      const highlightedUsername = isUsernameInQueryValuesArray ? (
-        <Highlight
-          highlightStyles={{ backgroundColor: textHighlightColor }}
-          highlight={username}
-        >
-          {username}
-        </Highlight>
-      ) : (
-        <Text weight={600}>{username}</Text>
-      );
+        // only comment owners are allowed to delete comments
+        const [deleteButtonElement] =
+          userId === commentDoc.userId
+            ? returnAccessibleButtonElements([
+                {
+                  buttonLabel: isDeleted ? 'Undelete' : 'Delete',
+                  leftIcon: isDeleted ? <TbTrashOff /> : <TbTrash />,
+                  semanticDescription: 'delete comment button',
+                  semanticName: 'deleteCommentButton',
+                  buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+                    commentDispatch({
+                      type: commentAction.setReactedCommentId,
+                      payload: commentId,
+                    });
+                    commentDispatch({
+                      type: commentAction.setUpdateCommentRequestBody,
+                      payload: {
+                        commentId,
+                        userId,
+                        kind: 'delete',
+                        value: true,
+                      },
+                    });
+                    commentDispatch({
+                      type: commentAction.setTriggerCommentUpdate,
+                      payload: true,
+                    });
+                  },
+                },
+              ])
+            : [null];
 
-      const usernameElement = (
-        <Flex
-          gap={4}
-          wrap="wrap"
-          style={{ cursor: 'pointer' }}
-          onClick={() => {
-            commentDispatch({
-              type: commentAction.setQueryBuilderString,
-              payload: `?&username[in]=${username}`,
-            });
-            commentDispatch({
-              type: commentAction.setQueryValuesArray,
-              payload: [username],
-            });
-          }}
-        >
-          {highlightedUsername}
-        </Flex>
-      );
+        const deleteButtonWithTooltip = deleteButtonElement ? (
+          <Tooltip
+            label={isDeleted ? 'Undelete your comment' : 'Delete your comment'}
+          >
+            <Group>{deleteButtonElement}</Group>
+          </Tooltip>
+        ) : null;
 
-      const usernameElementWithTooltip = (
-        <Tooltip label={`Filter comments by ${username}`}>
-          {usernameElement}
-        </Tooltip>
-      );
+        // only managers/admins are allowed to feature comments
+        const [featureButtonElement] =
+          userDocument?.roles.includes('Manager') ||
+          userDocument?.roles.includes('Admin')
+            ? returnAccessibleButtonElements([
+                {
+                  buttonLabel: isFeatured ? 'Unfeature' : 'Feature',
+                  leftIcon: isFeatured ? <TbStarOff /> : <TbStar />,
+                  semanticDescription: 'feature comment button',
+                  semanticName: 'featureCommentButton',
+                  buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+                    commentDispatch({
+                      type: commentAction.setReactedCommentId,
+                      payload: commentId,
+                    });
+                    commentDispatch({
+                      type: commentAction.setUpdateCommentRequestBody,
+                      payload: {
+                        commentId,
+                        userId,
+                        kind: 'feature',
+                        value: true,
+                      },
+                    });
+                    commentDispatch({
+                      type: commentAction.setTriggerCommentUpdate,
+                      payload: true,
+                    });
+                  },
+                },
+              ])
+            : [null];
 
-      // is job position in query values array
+        const featureButtonWithTooltip = featureButtonElement ? (
+          <Tooltip
+            label={
+              isFeatured
+                ? `Unfeature ${username}'s comment`
+                : `Feature ${username}'s comment`
+            }
+          >
+            <Group>{featureButtonElement}</Group>
+          </Tooltip>
+        ) : null;
 
-      const isJobPositionInQueryValuesArray = jobPosition
-        .split(' ')
-        .some((value) => regex?.test(value));
-      console.log(
-        'isJobPositionInQueryValuesArray',
-        isJobPositionInQueryValuesArray
-      );
-      const highlightedJobPosition = isJobPositionInQueryValuesArray ? (
-        returnHighlightedText({
-          backgroundColor: textHighlightColor,
-          fieldValue: jobPosition,
-          queryValuesArray,
-        })
-      ) : (
-        <Text truncate>{jobPosition}</Text>
-      );
+        const wrappedUsername = (
+          <Flex w="100%" wrap="wrap">
+            {username.split('').map((letter, index) => (
+              <Text weight={600} key={`${index}-${letter}`}>
+                {letter}
+              </Text>
+            ))}
+          </Flex>
+        );
+        const isUsernameInQueryValuesArray = regex?.test(username);
+        const highlightedUsername = isUsernameInQueryValuesArray ? (
+          <Highlight
+            highlightStyles={{ backgroundColor: textHighlightColor }}
+            highlight={username}
+          >
+            {username}
+          </Highlight>
+        ) : (
+          wrappedUsername
+        );
+        const usernameElement = (
+          <Flex
+            gap={4}
+            wrap="wrap"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&username[in]=${username}`,
+              });
+              commentDispatch({
+                type: commentAction.setQueryValuesArray,
+                payload: {
+                  kind: 'add',
+                  value: username,
+                },
+              });
+            }}
+          >
+            {highlightedUsername}
+          </Flex>
+        );
+        const usernameElementWithTooltip = (
+          <Tooltip label={`Filter by ${username}`}>{usernameElement}</Tooltip>
+        );
 
-      const jobPositionElement = (
-        <Flex
-          gap={4}
-          wrap="wrap"
-          style={{ cursor: 'pointer' }}
-          onClick={() => {
-            commentDispatch({
-              type: commentAction.setQueryBuilderString,
-              payload: `?&jobPosition[in]=${jobPosition}`,
-            });
+        // first name
+        const isFirstNameInQueryValuesArray = regex?.test(firstName);
+        console.log({ queryValuesArray });
+        const highlightedFirstName = isFirstNameInQueryValuesArray ? (
+          <Highlight
+            highlightStyles={{ backgroundColor: textHighlightColor }}
+            highlight={firstName}
+          >
+            {firstName}
+          </Highlight>
+        ) : (
+          <Text>{firstName}</Text>
+        );
+        const firstNameElement = (
+          <Flex
+            gap={4}
+            wrap="wrap"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&firstName[eq]=${firstName}`,
+              });
+              commentDispatch({
+                type: commentAction.setQueryValuesArray,
+                payload: {
+                  kind: 'add',
+                  value: firstName,
+                },
+              });
+            }}
+          >
+            {highlightedFirstName}
+          </Flex>
+        );
+        const firstNameElementWithTooltip = (
+          <Tooltip label={`Filter first names by ${firstName}`}>
+            {firstNameElement}
+          </Tooltip>
+        );
 
-            commentDispatch({
-              type: commentAction.setQueryValuesArray,
-              payload: jobPosition.split(' '),
-            });
-          }}
-        >
-          {highlightedJobPosition}
-        </Flex>
-      );
+        // middle name
+        const isMiddleNameInQueryValuesArray = regex?.test(middleName);
+        const highlightedMiddleName = isMiddleNameInQueryValuesArray ? (
+          <Highlight
+            highlightStyles={{ backgroundColor: textHighlightColor }}
+            highlight={middleName}
+          >
+            {middleName}
+          </Highlight>
+        ) : middleName ? (
+          <Text>{middleName}</Text>
+        ) : null;
+        const middleNameElement = (
+          <Flex
+            gap={4}
+            wrap="wrap"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&middleName[eq]=${middleName}`,
+              });
+              commentDispatch({
+                type: commentAction.setQueryValuesArray,
+                payload: {
+                  kind: 'add',
+                  value: middleName,
+                },
+              });
+            }}
+          >
+            {highlightedMiddleName}
+          </Flex>
+        );
+        const middleNameElementWithTooltip = (
+          <Tooltip label={`Filter middle names by ${middleName}`}>
+            {middleNameElement}
+          </Tooltip>
+        );
 
-      const jobPositionElementWithTooltip = (
-        <Tooltip
-          label={`Filter comments containing ${replaceLastCommaWithOr(
-            jobPosition.split(' ').join(', ')
-          )}`}
-        >
-          {jobPositionElement}
-        </Tooltip>
-      );
+        // last name
+        const isLastNameInQueryValuesArray = regex?.test(lastName);
+        const highlightedLastName = isLastNameInQueryValuesArray ? (
+          <Highlight
+            highlightStyles={{ backgroundColor: textHighlightColor }}
+            highlight={lastName}
+          >
+            {lastName}
+          </Highlight>
+        ) : (
+          <Text>{lastName}</Text>
+        );
+        const lastNameElement = (
+          <Flex
+            gap={4}
+            wrap="wrap"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&lastName[eq]=${lastName}`,
+              });
+              commentDispatch({
+                type: commentAction.setQueryValuesArray,
+                payload: {
+                  kind: 'add',
+                  value: lastName,
+                },
+              });
+            }}
+          >
+            {highlightedLastName}
+          </Flex>
+        );
+        const lastNameElementWithTooltip = (
+          <Tooltip label={`Filter last names by ${lastName}`}>
+            {lastNameElement}
+          </Tooltip>
+        );
 
-      // is department in query values array
-      const isDepartmentInQueryValuesArray = department
-        .split(' ')
-        .some((value) => regex?.test(value));
+        const wrappedJobPosition = (
+          <Flex w="100%" wrap="wrap" gap={4} align="center" justify="center">
+            {jobPosition.split(' ').map((word, wordIdx) => (
+              <Text key={`${wordIdx}-${word}`}>{word}</Text>
+            ))}
+          </Flex>
+        );
+        const isJobPositionInQueryValuesArray = jobPosition
+          .split(' ')
+          .some((value) => regex?.test(value));
+        const highlightedJobPosition = isJobPositionInQueryValuesArray
+          ? returnHighlightedText({
+              backgroundColor: textHighlightColor,
+              fieldValue: jobPosition,
+              queryValuesArray,
+            })
+          : wrappedJobPosition;
+        const jobPositionElement = (
+          <Flex
+            gap={4}
+            wrap="wrap"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&jobPosition[eq]=${jobPosition}`,
+              });
+            }}
+          >
+            {highlightedJobPosition}
+          </Flex>
+        );
+        const jobPositionElementWithTooltip = (
+          <Tooltip label={`Filter by ${jobPosition}`}>
+            {jobPositionElement}
+          </Tooltip>
+        );
 
-      const highlightedDepartment = isDepartmentInQueryValuesArray ? (
-        returnHighlightedText({
-          backgroundColor: textHighlightColor,
-          fieldValue: department,
-          queryValuesArray,
-        })
-      ) : (
-        <Text>{department}</Text>
-      );
+        const wrappedDepartment = (
+          <Flex w="100%" wrap="wrap" gap={4} align="center" justify="center">
+            {department.split(' ').map((word, wordIdx) => (
+              <Text key={`${wordIdx}-${word}`}>{word}</Text>
+            ))}
+          </Flex>
+        );
+        const isDepartmentInQueryValuesArray = department
+          .split(' ')
+          .some((value) => regex?.test(value));
+        const highlightedDepartment = isDepartmentInQueryValuesArray
+          ? returnHighlightedText({
+              backgroundColor: textHighlightColor,
+              fieldValue: department,
+              queryValuesArray,
+            })
+          : wrappedDepartment;
+        const departmentElement = (
+          <Flex
+            gap={4}
+            wrap="wrap"
+            style={{ cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&department[eq]=${department}`,
+              });
+            }}
+          >
+            {highlightedDepartment}
+          </Flex>
+        );
+        const departmentElementWithTooltip = (
+          <Tooltip label={`Filter by ${department}`}>
+            {departmentElement}
+          </Tooltip>
+        );
 
-      const departmentElement = (
-        <Flex
-          gap={4}
-          wrap="wrap"
-          style={{ cursor: 'pointer' }}
-          onClick={() => {
-            commentDispatch({
-              type: commentAction.setQueryBuilderString,
-              payload: `?&department[in]=${department}`,
-            });
-            commentDispatch({
-              type: commentAction.setQueryValuesArray,
-              payload: department.split(' '),
-            });
-          }}
-        >
-          {highlightedDepartment}
-        </Flex>
-      );
-
-      const departmentElementWithTooltip = (
-        <Tooltip
-          label={`Filter comments containing ${replaceLastCommaWithOr(
-            department.split(' ').join(', ')
-          )}`}
-        >
-          {departmentElement}
-        </Tooltip>
-      );
-
-      /**
+        /**
  *  const [createdImage] = returnAccessibleImageElements([
     {
       customWidth: 84,
@@ -1166,174 +1284,167 @@ function Comment({
   ]);
  */
 
-      // const profilePicElement = (
-      //   <Image
-      //     width={width < 640 ? 48 : 96}
-      //     height={width < 640 ? 48 : 96}
-      //     radius={9999}
-      //     src={profilePictureUrl}
-      //     // alt={`profile pic of ${username}`}
-      //     withPlaceholder
-      //     placeholder={<TbPhotoOff size={width < 640 ? 16 : 28} />}
-      //   />
-      // );
+        // const profilePicElement = (
+        //   <Image
+        //     width={width < 640 ? 48 : 96}
+        //     height={width < 640 ? 48 : 96}
+        //     radius={9999}
+        //     src={profilePictureUrl}
+        //     // alt={`profile pic of ${username}`}
+        //     withPlaceholder
+        //     placeholder={<TbPhotoOff size={width < 640 ? 16 : 28} />}
+        //   />
+        // );
 
-      const [profilePicElement] = returnAccessibleImageElements([
-        {
-          customWidth: width < 640 ? 48 : 96,
-          customHeight: width < 640 ? 48 : 96,
-          customRadius: 9999,
-          fit: 'cover',
-          imageSrc: profilePictureUrl,
-          imageAlt: `Picture of ${username}`,
-          isCard: false,
-          isOverlay: false,
-          isLoader: true,
-          withPlaceholder: true,
-        },
-      ]);
+        const [profilePicElement] = returnAccessibleImageElements([
+          {
+            customWidth: width < 640 ? 48 : 96,
+            customHeight: width < 640 ? 48 : 96,
+            customRadius: 9999,
+            fit: 'cover',
+            imageSrc: profilePictureUrl,
+            imageAlt: `Picture of ${username}`,
+            isCard: false,
+            isOverlay: false,
+            isLoader: true,
+            withPlaceholder: true,
+          },
+        ]);
 
-      const createdSocialMediaIcons = (
-        <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
-          {/* <Tooltip label={`View ${commentDoc.username}'s Github profile`}>
-            <Group>
-              <TiSocialGithub
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: nodeTextColor }}
-              />
-            </Group>
-          </Tooltip> */}
+        const createdSocialMediaIcons = (
+          <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
+            <Tooltip label={`View ${commentDoc.username}'s Mastodon profile`}>
+              <Group>
+                <TbBrandMastodon
+                  size={width < 640 ? 20 : 24}
+                  style={{ cursor: 'pointer', color: nodeTextColor }}
+                />
+              </Group>
+            </Tooltip>
 
-          <Tooltip label={`View ${commentDoc.username}'s Mastodon profile`}>
-            <Group>
-              <TbBrandMastodon
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: nodeTextColor }}
-              />
-            </Group>
-          </Tooltip>
+            <Tooltip label={`View ${commentDoc.username}'s LinkedIn profile`}>
+              <Group>
+                <TiSocialLinkedin
+                  size={width < 640 ? 20 : 24}
+                  style={{ cursor: 'pointer', color: nodeTextColor }}
+                />
+              </Group>
+            </Tooltip>
 
-          <Tooltip label={`View ${commentDoc.username}'s LinkedIn profile`}>
-            <Group>
-              <TiSocialLinkedin
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: nodeTextColor }}
-              />
-            </Group>
-          </Tooltip>
+            <Tooltip label={`View ${commentDoc.username}'s Flickr profile`}>
+              <Group>
+                <TiSocialFlickr
+                  size={width < 640 ? 20 : 24}
+                  style={{ cursor: 'pointer', color: nodeTextColor }}
+                />
+              </Group>
+            </Tooltip>
 
-          <Tooltip label={`View ${commentDoc.username}'s Flickr profile`}>
-            <Group>
-              <TiSocialFlickr
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: nodeTextColor }}
-              />
-            </Group>
-          </Tooltip>
+            <Tooltip label={`View ${commentDoc.username}'s Dribbble profile`}>
+              <Group>
+                <TiSocialDribbble
+                  size={width < 640 ? 20 : 24}
+                  style={{ cursor: 'pointer', color: nodeTextColor }}
+                />
+              </Group>
+            </Tooltip>
+          </Flex>
+        );
 
-          <Tooltip label={`View ${commentDoc.username}'s Dribbble profile`}>
-            <Group>
-              <TiSocialDribbble
-                size={width < 640 ? 20 : 24}
-                style={{ cursor: 'pointer', color: nodeTextColor }}
-              />
-            </Group>
-          </Tooltip>
-        </Flex>
-      );
-
-      const isCommentInQueryValuesArray = regex?.test(comment);
-      const highlightedComment = isCommentInQueryValuesArray ? (
-        <Flex gap={4} wrap="wrap">
-          {returnHighlightedText({
-            backgroundColor: textHighlightColor,
-            fieldValue: comment,
-            queryValuesArray,
-          })}
-        </Flex>
-      ) : (
-        <Text>{comment}</Text>
-      );
-      const commentElement = (
-        <Spoiler
-          maxHeight={217}
-          showLabel={showMoreSpoilerButtonElement}
-          hideLabel={showLessSpoilerButtonElement}
-        >
-          {isDeleted ? (
-            <Text>Comment has been deleted</Text>
-          ) : (
-            highlightedComment
-          )}
-        </Spoiler>
-      );
-
-      const isQuotedUsernameInQueryValuesArray = regex?.test(quotedUsername);
-      const highlightedQuotedUsername = isQuotedUsernameInQueryValuesArray ? (
-        <Highlight
-          highlightStyles={{ backgroundColor: textHighlightColor }}
-          highlight={quotedUsername}
-        >
-          {quotedUsername}
-        </Highlight>
-      ) : (
-        <Title order={5}>{quotedUsername}</Title>
-      );
-      const quotedUsernameElement = quotedUsername ? (
-        <Group>
-          {highlightedQuotedUsername}
-          <Text>commented: </Text>
-        </Group>
-      ) : null;
-
-      // is quoted comment in query values array
-      const isQuotedCommentInQueryValuesArray = regex?.test(quotedComment);
-      const highlightedQuotedComment = isQuotedCommentInQueryValuesArray ? (
-        <Flex gap={4} wrap="wrap">
-          {returnHighlightedText({
-            backgroundColor: textHighlightColor,
-            fieldValue: quotedComment,
-            queryValuesArray,
-          })}
-        </Flex>
-      ) : (
-        <Text>{quotedComment}</Text>
-      );
-      const quotedCommentElement = quotedComment ? (
-        <Blockquote icon={<VscQuote />}>
+        const isCommentInQueryValuesArray = regex?.test(comment);
+        const highlightedComment = isCommentInQueryValuesArray ? (
+          <Flex gap={4} wrap="wrap">
+            {returnHighlightedText({
+              backgroundColor: textHighlightColor,
+              fieldValue: comment,
+              queryValuesArray,
+            })}
+          </Flex>
+        ) : (
+          <Text>{comment}</Text>
+        );
+        const commentElement = (
           <Spoiler
             maxHeight={217}
             showLabel={showMoreSpoilerButtonElement}
             hideLabel={showLessSpoilerButtonElement}
           >
-            {highlightedQuotedComment}
+            {isDeleted ? (
+              <Text>Comment has been deleted</Text>
+            ) : (
+              highlightedComment
+            )}
           </Spoiler>
-        </Blockquote>
-      ) : null;
+        );
 
-      const likesCountWithTooltipElement = (
-        <Tooltip label={`${likesCount} people have liked this comment`}>
-          <Text>{likesCount}</Text>
-        </Tooltip>
-      );
-      const dislikesCountWithTooltipElement = (
-        <Tooltip label={`${dislikesCount} people have disliked this comment`}>
-          <Text>{dislikesCount}</Text>
-        </Tooltip>
-      );
-      const totalLikesDislikesWithTooltipElement = (
-        <Tooltip label="Overall feeling towards this comment">
-          <Text>{likesCount + dislikesCount}</Text>
-        </Tooltip>
-      );
-      const reportsCountWithTooltipElement = (
-        <Tooltip label={`${reportsCount} people have reported this comment`}>
-          <Text>{reportsCount}</Text>
-        </Tooltip>
-      );
+        const isQuotedUsernameInQueryValuesArray = regex?.test(quotedUsername);
+        const highlightedQuotedUsername = isQuotedUsernameInQueryValuesArray ? (
+          <Highlight
+            highlightStyles={{ backgroundColor: textHighlightColor }}
+            highlight={quotedUsername}
+          >
+            {quotedUsername}
+          </Highlight>
+        ) : (
+          <Text weight={600}>{quotedUsername}</Text>
+        );
+        const quotedUsernameElement = quotedUsername ? (
+          <Group>
+            {highlightedQuotedUsername}
+            <Text>commented: </Text>
+          </Group>
+        ) : null;
 
-      const [createdAtDateTime, updatedAtDateTime] = [createdAt, updatedAt].map(
-        (date: string) =>
+        // is quoted comment in query values array
+        const isQuotedCommentInQueryValuesArray = regex?.test(quotedComment);
+        const highlightedQuotedComment = isQuotedCommentInQueryValuesArray ? (
+          <Flex gap={4} wrap="wrap">
+            {returnHighlightedText({
+              backgroundColor: textHighlightColor,
+              fieldValue: quotedComment,
+              queryValuesArray,
+            })}
+          </Flex>
+        ) : (
+          <Text>{quotedComment}</Text>
+        );
+        const quotedCommentElement = quotedComment ? (
+          <Blockquote icon={<VscQuote />}>
+            <Spoiler
+              maxHeight={217}
+              showLabel={showMoreSpoilerButtonElement}
+              hideLabel={showLessSpoilerButtonElement}
+            >
+              {highlightedQuotedComment}
+            </Spoiler>
+          </Blockquote>
+        ) : null;
+
+        const likesCountWithTooltipElement = (
+          <Tooltip label={`${likesCount} people have liked this comment`}>
+            <Text>{likesCount}</Text>
+          </Tooltip>
+        );
+        const dislikesCountWithTooltipElement = (
+          <Tooltip label={`${dislikesCount} people have disliked this comment`}>
+            <Text>{dislikesCount}</Text>
+          </Tooltip>
+        );
+        const totalLikesDislikesWithTooltipElement = (
+          <Tooltip label="Overall feeling towards this comment">
+            <Text>{likesCount + dislikesCount}</Text>
+          </Tooltip>
+        );
+        const reportsCountWithTooltipElement = (
+          <Tooltip label={`${reportsCount} people have reported this comment`}>
+            <Text>{reportsCount}</Text>
+          </Tooltip>
+        );
+
+        const [createdAtDateTime, updatedAtDateTime] = [
+          createdAt,
+          updatedAt,
+        ].map((date: string) =>
           formatDate({
             date,
             locale: 'en-US',
@@ -1343,65 +1454,80 @@ function Comment({
               hour12: false,
             },
           })
-      );
-
-      const createdAtElementWithTooltip = (
-        <Tooltip label="Comment created">
-          <Text>Created: {createdAtDateTime}</Text>
-        </Tooltip>
-      );
-      const updatedAtElementWithTooltip =
-        new Date(createdAt).getTime() ===
-        new Date(updatedAt).getTime() ? null : (
-          <Tooltip label="Comment last updated">
-            <Text>Updated: {updatedAtDateTime}</Text>
-          </Tooltip>
         );
 
-      const fromColor = themeColorShades?.[3] ?? 'teal';
-      const toColor = themeColorShades?.[6] ?? 'blue';
+        const createdAtElementWithTooltip = (
+          <Tooltip label="Comment created">
+            <Text>Created: {createdAtDateTime}</Text>
+          </Tooltip>
+        );
+        const updatedAtElementWithTooltip =
+          new Date(createdAt).getTime() ===
+          new Date(updatedAt).getTime() ? null : (
+            <Tooltip label="Comment last updated">
+              <Text>Updated: {updatedAtDateTime}</Text>
+            </Tooltip>
+          );
 
-      const isFeaturedElement = isFeatured ? (
-        <Badge
-          variant="gradient"
-          gradient={{ from: fromColor, to: toColor, deg: 60 }}
-          style={{ borderRadius: '0px 4px 0px 4px' }}
-        >
-          Featured
-        </Badge>
-      ) : null;
+        const fromColor = themeColorShades?.[8] ?? 'teal';
+        const toColor = themeColorShades?.[4] ?? 'blue';
 
-      const createdCommentsSectionObject: CreatedCommentsSectionObject = {
-        usernameElement: usernameElementWithTooltip,
-        jobPositionElement: jobPositionElementWithTooltip,
-        departmentElement: departmentElementWithTooltip,
-        profilePicElement: profilePicElement,
-        socialMediaIconsElement: createdSocialMediaIcons,
+        const isFeaturedElement = isFeatured ? (
+          <Badge
+            variant="gradient"
+            gradient={{ from: fromColor, to: toColor, deg: 60 }}
+            style={{ borderRadius: '0px 4px 0px 4px', cursor: 'pointer' }}
+            onClick={() => {
+              commentDispatch({
+                type: commentAction.setQueryBuilderString,
+                payload: `?&isFeatured[eq]=${isFeatured}`,
+              });
+            }}
+          >
+            Featured
+          </Badge>
+        ) : null;
 
-        commentElement,
-        quotedUsernameElement,
-        quotedCommentElement,
+        const isFeaturedWithTooltip = isFeatured ? (
+          <Tooltip label="Filter comments by featured">
+            {isFeaturedElement}
+          </Tooltip>
+        ) : null;
 
-        likesCountElement: likesCountWithTooltipElement,
-        dislikesCountElement: dislikesCountWithTooltipElement,
-        totalLikesDislikesElement: totalLikesDislikesWithTooltipElement,
-        reportsCountElement: reportsCountWithTooltipElement,
+        const createdCommentsSectionObject: CreatedCommentsSectionObject = {
+          usernameElement: usernameElementWithTooltip,
+          firstNameElement: firstNameElementWithTooltip,
+          middleNameElement: middleNameElementWithTooltip,
+          lastNameElement: lastNameElementWithTooltip,
+          jobPositionElement: jobPositionElementWithTooltip,
+          departmentElement: departmentElementWithTooltip,
+          profilePicElement: profilePicElement,
+          socialMediaIconsElement: createdSocialMediaIcons,
 
-        replyButtonElement: replyButtonWithTooltip,
-        likeButtonElement: likeButtonWithTooltip,
-        dislikeButtonElement: dislikeButtonWithTooltip,
-        reportButtonElement: reportButtonWithTooltip,
+          commentElement,
+          quotedUsernameElement,
+          quotedCommentElement,
 
-        isFeaturedElement: isFeaturedElement,
-        createdAtElement: createdAtElementWithTooltip,
-        updatedAtElement: updatedAtElementWithTooltip,
-        deleteButtonElement: deleteButtonWithTooltip,
-        featureButtonElement: featureButtonWithTooltip,
-      };
+          likesCountElement: likesCountWithTooltipElement,
+          dislikesCountElement: dislikesCountWithTooltipElement,
+          totalLikesDislikesElement: totalLikesDislikesWithTooltipElement,
+          reportsCountElement: reportsCountWithTooltipElement,
 
-      return createdCommentsSectionObject;
-    }
-  );
+          replyButtonElement: replyButtonWithTooltip,
+          likeButtonElement: likeButtonWithTooltip,
+          dislikeButtonElement: dislikeButtonWithTooltip,
+          reportButtonElement: reportButtonWithTooltip,
+
+          isFeaturedElement: isFeaturedWithTooltip,
+          createdAtElement: createdAtElementWithTooltip,
+          updatedAtElement: updatedAtElementWithTooltip,
+          deleteButtonElement: deleteButtonWithTooltip,
+          featureButtonElement: featureButtonWithTooltip,
+        };
+
+        return createdCommentsSectionObject;
+      }
+    );
 
   const createdLimitPerPageSelectInput = returnAccessibleSelectInputElements([
     limitPerPageSelectInputCreatorInfo,
@@ -1423,6 +1549,9 @@ function Comment({
     (createdCommentsSectionObject: CreatedCommentsSectionObject, index) => {
       const {
         usernameElement,
+        firstNameElement,
+        middleNameElement,
+        lastNameElement,
         jobPositionElement,
         departmentElement,
         profilePicElement,
@@ -1449,6 +1578,12 @@ function Comment({
         isFeaturedElement,
       } = createdCommentsSectionObject;
 
+      const groupedNameElement = (
+        <Flex gap={4} w="100%" wrap="wrap" align="center" justify="center">
+          {firstNameElement} {middleNameElement} {lastNameElement}
+        </Flex>
+      );
+
       // user info section desktop
       const userInfoSectionDesktop = (
         <Stack
@@ -1461,6 +1596,7 @@ function Comment({
         >
           {profilePicElement}
           {usernameElement}
+          {groupedNameElement}
           {jobPositionElement}
           {departmentElement}
           {socialMediaIconsElement}
@@ -1483,6 +1619,7 @@ function Comment({
             h="100%"
           >
             {usernameElement}
+            {groupedNameElement}
             {jobPositionElement}
             {departmentElement}
             {socialMediaIconsElement}
@@ -1558,10 +1695,12 @@ function Comment({
       const commentSectionFooter = (
         <Group
           w="100%"
+          h="100%"
           spacing={rowGap}
           pt={padding}
           ml={width < 640 ? undefined : padding}
           position="right"
+          align="flex-end"
           style={{ borderTop: borderColor }}
         >
           <Group pr={18} style={{ border: borderColor, borderRadius: 9999 }}>
@@ -1586,14 +1725,16 @@ function Comment({
 
       // comment section full desktop
       const createdCommentSectionDesktop = (
-        <Grid columns={10} w="100%" py={padding}>
+        <Grid columns={11} w="100%" py={padding}>
           <Grid.Col span={3} style={{ borderRight: borderColor }}>
             {userInfoSectionDesktop}
           </Grid.Col>
-          <Grid.Col span={7}>
-            {commentSectionHeaderDesktop}
-            {commentQuoteSection}
-            {commentSectionFooter}
+          <Grid.Col span={8}>
+            <Stack h="25%">{commentSectionHeaderDesktop}</Stack>
+
+            <Stack h="43%">{commentQuoteSection}</Stack>
+
+            <Stack h="32%">{commentSectionFooter}</Stack>
           </Grid.Col>
         </Grid>
       );
@@ -1727,6 +1868,34 @@ function Comment({
     />
   ) : null;
 
+  const [createdClearButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Clear',
+      leftIcon: <TbClearAll />,
+      semanticDescription: 'clear comment filters button to original state',
+      semanticName: 'clear comment filters button',
+      buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+        commentDispatch({
+          type: commentAction.setQueryBuilderString,
+          payload: '?',
+        });
+        commentDispatch({
+          type: commentAction.setQueryValuesArray,
+          payload: {
+            kind: 'clear',
+            value: '',
+          },
+        });
+      },
+    },
+  ]);
+
+  const displayClearButton = (
+    <Tooltip label="Clear comment filters">
+      <Group>{createdClearButton}</Group>
+    </Tooltip>
+  );
+
   const displayPagination = (
     <PageBuilder
       total={numberOfPages}
@@ -1736,17 +1905,16 @@ function Comment({
     />
   );
 
-  const displayPaginationAndLimitPerPageSelectInput = (
+  const displayResetButtonAndLimitPerPageSelectInput = (
     <Group
       w={commentsWidth}
       py={padding}
       position="apart"
       style={{ borderTop: borderColor }}
+      align="flex-end"
     >
-      <Group position="left">{displayPagination}</Group>
-      <Group position="right" w="38%">
-        {createdLimitPerPageSelectInput}
-      </Group>
+      <Group position="left">{createdLimitPerPageSelectInput}</Group>
+      <Group position="right">{displayClearButton}</Group>
     </Group>
   );
 
@@ -1792,9 +1960,10 @@ function Comment({
       {displaySubmitSuccessNotificationModal}
       {displayReplyCommentSection}
       {displayQueryBuilder}
-      {displayPaginationAndLimitPerPageSelectInput}
+      {displayResetButtonAndLimitPerPageSelectInput}
 
       {displayCommentsSection}
+      {displayPagination}
     </Group>
   );
   /** ------------- end input displays ------------- */

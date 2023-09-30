@@ -52,7 +52,10 @@ type QueryBuilderProps = {
   }>;
   queryValuesArrayDispatch?: React.Dispatch<{
     type: 'setQueryValuesArray';
-    payload: string[];
+    payload: {
+      kind: 'add' | 'remove' | 'clear';
+      value: string;
+    };
   }>;
 };
 

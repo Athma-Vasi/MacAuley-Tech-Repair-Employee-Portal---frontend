@@ -2292,7 +2292,7 @@ function Directory() {
 
   const displayGraphControls = (
     <ScrollArea type="hover" styles={() => scrollBarStyle} offsetScrollbars>
-      <Stack h={width < 1600 ? '38vh' : '70vh'} p={padding}>
+      <Stack h={width < 1600 ? '38vh' : '75vh'} p={padding}>
         {displayFilterSelectsSection}
         {displayDagreLayoutSection}
       </Stack>
@@ -2326,12 +2326,12 @@ function Directory() {
     <Grid
       columns={width < 1600 ? 1 : 12}
       w="100%"
-      h="70vh"
+      h="75vh"
       gutter={rowGap}
       style={{ position: 'relative' }}
       py={padding}
     >
-      <Grid.Col span={width < 1600 ? 1 : 4} h={width < 1600 ? '38vh' : '70vh'}>
+      <Grid.Col span={width < 1600 ? 1 : 4} h={width < 1600 ? '38vh' : '75vh'}>
         {displayGraphControls}
       </Grid.Col>
 

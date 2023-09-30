@@ -934,6 +934,36 @@ function returnTimeRailwayValidationText({
     : '';
 }
 
+function returnIntegerValidationText({
+  content,
+  contentKind,
+  maxLength = 6,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^\d{1,6}$/
+  const integerLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const integerCharacterRegex = /^\d+$/;
+
+  const integerRegexTupleArr: [boolean, string][] = [
+    [
+      integerLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [integerCharacterRegex.test(content), 'Must only contain numbers.'],
+  ];
+
+  const validationText = integerRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
 function logState({
   state,
   groupLabel = 'state',
@@ -1620,6 +1650,7 @@ export {
   returnEmailValidationText,
   returnGrammarValidationText,
   returnImageValidationText,
+  returnIntegerValidationText,
   returnNameValidationText,
   returnNoteTextValidationText,
   returnNumberAmountValidationText,

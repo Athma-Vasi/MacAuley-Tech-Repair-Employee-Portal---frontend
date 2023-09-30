@@ -267,6 +267,14 @@ const PRINTER_SERIAL_NUMBER_REGEX = /^[a-zA-Z0-9]{1,50}$/i;
  */
 const TIME_RAILWAY_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
+/**
+ * - /^\d{1,6}$/
+ * - ^ asserts that the string starts with a digit.
+ * - \d{1,6} matches between 1 and 6 digits. This represents the whole number part of a number, allowing for a range of digit lengths from 1 to 6.
+ * - $ asserts that the string ends with a digit.
+ */
+const INTEGER_REGEX = /^\d{1,6}$/;
+
 export {
   ACKNOWLEDGEMENT_TEXT_INPUT_REGEX,
   ADDRESS_LINE_REGEX,
@@ -280,6 +288,7 @@ export {
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
+  INTEGER_REGEX,
   MONEY_REGEX,
   NAME_REGEX,
   NOTE_TEXT_AREA_REGEX,

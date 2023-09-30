@@ -1,8 +1,52 @@
 import { DEPARTMENT_DATA, JOB_POSITION_DATA } from '../../constants/data';
+import {
+  DATE_FULL_RANGE_REGEX,
+  FULL_NAME_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  INTEGER_REGEX,
+  URL_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
+import {
+  returnDateFullRangeValidationText,
+  returnGrammarValidationText,
+  returnIntegerValidationText,
+  returnNameValidationText,
+  returnUrlValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
 
 const COMMENT_QUERY_DATA: ComponentQueryData[] = [
-  { label: 'Username', value: 'username', inputKind: 'textInput' },
+  {
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'First Name',
+    value: 'firstName',
+    inputKind: 'textInput',
+    regex: FULL_NAME_REGEX,
+    regexValidationFn: returnNameValidationText,
+  },
+  {
+    label: 'Middle Name',
+    value: 'middleName',
+    inputKind: 'textInput',
+    regex: FULL_NAME_REGEX,
+    regexValidationFn: returnNameValidationText,
+  },
+  {
+    label: 'Last Name',
+    value: 'lastName',
+    inputKind: 'textInput',
+    regex: FULL_NAME_REGEX,
+    regexValidationFn: returnNameValidationText,
+  },
+
   {
     label: 'Job Position',
     value: 'jobPosition',
@@ -16,19 +60,53 @@ const COMMENT_QUERY_DATA: ComponentQueryData[] = [
     selectData: DEPARTMENT_DATA,
   },
   {
-    label: 'Likes',
+    label: 'Profile Picture URL',
+    value: 'profilePictureUrl',
+    inputKind: 'textInput',
+    regex: URL_REGEX,
+    regexValidationFn: returnUrlValidationText,
+  },
+  {
+    label: 'Comment',
+    value: 'comment',
+    inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
+  },
+  {
+    label: 'Quoted Username',
+    value: 'quotedUsername',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Quoted Comment',
+    value: 'quotedComment',
+    inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
+  },
+  {
+    label: 'Likes Count',
     value: 'likesCount',
     inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
   },
   {
-    label: 'Dislikes',
+    label: 'Dislikes Count',
     value: 'dislikesCount',
     inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
   },
   {
-    label: 'Reports',
+    label: 'Reports Count',
     value: 'reportsCount',
     inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
   },
   {
     label: 'Featured',
@@ -43,14 +121,18 @@ const COMMENT_QUERY_DATA: ComponentQueryData[] = [
     booleanData: [true, false],
   },
   {
-    label: 'Created date',
+    label: 'Created Date',
     value: 'createdAt',
     inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
   },
   {
-    label: 'Updated date',
+    label: 'Updated Date',
     value: 'updatedAt',
     inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
   },
 ];
 

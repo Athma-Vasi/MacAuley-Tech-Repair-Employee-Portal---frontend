@@ -271,6 +271,21 @@ function queryBuilderReducer(
         }
       );
 
+      // sort search statements queue by field so that the fields are grouped together
+      // required for correct logical operators to be displayed in the search chain
+      filteredSearchStatementsQueue.sort((a, b) => {
+        const [fieldA, _valueA] = a;
+        const [fieldB, _valueB] = b;
+
+        if (fieldA < fieldB) {
+          return -1;
+        }
+        if (fieldA > fieldB) {
+          return 1;
+        }
+        return 0;
+      });
+
       return {
         ...state,
         searchStatementsQueue: filteredSearchStatementsQueue,

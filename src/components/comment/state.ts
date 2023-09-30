@@ -332,11 +332,38 @@ function commentReducer(
       };
     }
 
-    case commentAction.setQueryValuesArray:
-      return {
-        ...state,
-        queryValuesArray: action.payload,
-      };
+    case commentAction.setQueryValuesArray: {
+      const { kind, value } = action.payload;
+      const queryValuesArray = [...state.queryValuesArray];
+
+      switch (kind) {
+        case 'add': {
+          queryValuesArray.push(value);
+          return {
+            ...state,
+            queryValuesArray,
+          };
+        }
+        case 'remove': {
+          const index = queryValuesArray.indexOf(value);
+          if (index > -1) {
+            queryValuesArray.splice(index, 1);
+          }
+          return {
+            ...state,
+            queryValuesArray,
+          };
+        }
+        case 'clear': {
+          return {
+            ...state,
+            queryValuesArray: [],
+          };
+        }
+        default:
+          return state;
+      }
+    }
 
     case commentAction.setTriggerCommentFetch:
       return {

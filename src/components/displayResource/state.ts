@@ -89,11 +89,39 @@ function displayResourceReducer<Doc>(
         totalDocuments: action.payload,
       };
 
-    case displayResourceAction.setQueryValuesArray:
-      return {
-        ...state,
-        queryValuesArray: action.payload,
-      };
+    case displayResourceAction.setQueryValuesArray: {
+      const { kind, value } = action.payload;
+      const queryValuesArray = [...state.queryValuesArray];
+
+      switch (kind) {
+        case 'add': {
+          queryValuesArray.push(value);
+          return {
+            ...state,
+            queryValuesArray,
+          };
+        }
+        case 'remove': {
+          const index = queryValuesArray.indexOf(value);
+          if (index > -1) {
+            queryValuesArray.splice(index, 1);
+          }
+          return {
+            ...state,
+            queryValuesArray,
+          };
+        }
+        case 'clear': {
+          return {
+            ...state,
+            queryValuesArray: [],
+          };
+        }
+        default:
+          return state;
+      }
+    }
+
     case displayResourceAction.setNewQueryFlag:
       return {
         ...state,

@@ -1,3 +1,4 @@
+import { type } from 'os';
 import {
   Department,
   JobPosition,
@@ -11,6 +12,9 @@ type CommentSchema = {
   username: string;
   roles: UserRoles;
 
+  firstName: string;
+  middleName: string;
+  lastName: string;
   jobPosition: JobPosition;
   department: Department;
   profilePictureUrl: string;
@@ -183,10 +187,16 @@ type CommentDispatch =
       payload: boolean;
     }
   | {
-      type:
-        | CommentAction['setCommentIdsToFetch']
-        | CommentAction['setQueryValuesArray'];
+      type: CommentAction['setCommentIdsToFetch'];
+
       payload: string[];
+    }
+  | {
+      type: CommentAction['setQueryValuesArray'];
+      payload: {
+        kind: 'add' | 'remove' | 'clear';
+        value: string;
+      };
     }
   | {
       type: CommentAction['setCommentsMap'];
@@ -209,6 +219,9 @@ type CommentReducer = (
 type CreatedCommentsSectionObject = {
   profilePicElement: React.JSX.Element;
   usernameElement: React.JSX.Element;
+  firstNameElement: React.JSX.Element;
+  middleNameElement: React.JSX.Element;
+  lastNameElement: React.JSX.Element;
   jobPositionElement: React.JSX.Element;
   departmentElement: React.JSX.Element;
   socialMediaIconsElement: React.JSX.Element;

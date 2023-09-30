@@ -141,7 +141,10 @@ type DisplayResourceDispatch<Doc> =
     }
   | {
       type: DisplayResourceAction['setQueryValuesArray'];
-      payload: string[];
+      payload: {
+        kind: 'add' | 'remove' | 'clear';
+        value: string;
+      };
     }
   | {
       type: DisplayResourceAction['setRequestStatus'];

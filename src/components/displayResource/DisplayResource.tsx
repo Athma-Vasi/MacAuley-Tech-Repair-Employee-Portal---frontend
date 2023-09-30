@@ -818,19 +818,6 @@ function DisplayResource<Doc>({
     };
   }, [deleteResource.fileUploadId]);
 
-  // useEffect(() => {
-  //   if (isSubmitting || isSuccessful) {
-  //     openSubmitSuccessNotificationModal();
-  //   }
-  // }, [isSubmitting, isSuccessful, openSubmitSuccessNotificationModal]);
-
-  useEffect(() => {
-    logState({
-      state: displayResourceState,
-      groupLabel: 'displayResourceState',
-    });
-  }, [displayResourceState]);
-
   const {
     appThemeColors: { backgroundColor, borderColor },
   } = returnThemeColors({
@@ -988,6 +975,13 @@ function DisplayResource<Doc>({
       {displayPagination}
     </Flex>
   );
+
+  useEffect(() => {
+    logState({
+      state: displayResourceState,
+      groupLabel: 'displayResourceState',
+    });
+  }, [displayResourceState]);
 
   return displayResourceComponent;
 }

@@ -611,6 +611,18 @@ function QueryBuilder({
               calledFrom: 'filter',
             },
           });
+
+          // send query value up to DisplayResource
+          if (!queryValuesArrayDispatch) {
+            return;
+          }
+          queryValuesArrayDispatch({
+            type: 'setQueryValuesArray',
+            payload: {
+              kind: 'remove',
+              value: value,
+            },
+          });
         },
       };
 
@@ -853,6 +865,18 @@ function QueryBuilder({
           calledFrom: 'filter',
         },
       });
+
+      // send filter value up to DisplayResource
+      if (!queryValuesArrayDispatch) {
+        return;
+      }
+      queryValuesArrayDispatch({
+        type: 'setQueryValuesArray',
+        payload: {
+          kind: 'add',
+          value: currentFilterValue,
+        },
+      });
     },
   };
   // ----------------- //
@@ -1082,6 +1106,18 @@ function QueryBuilder({
         type: queryBuilderAction.setIsCurrentSearchValueFocused,
         payload: false,
       });
+
+      // send search value up to DisplayResource
+      if (!queryValuesArrayDispatch) {
+        return;
+      }
+      queryValuesArrayDispatch({
+        type: 'setQueryValuesArray',
+        payload: {
+          kind: 'add',
+          value: currentSearchValue,
+        },
+      });
     },
   };
 
@@ -1108,6 +1144,18 @@ function QueryBuilder({
             type: queryBuilderAction.setSelectedFieldsSet,
             payload: {
               calledFrom: 'search',
+            },
+          });
+
+          // send query value up to DisplayResource
+          if (!queryValuesArrayDispatch) {
+            return;
+          }
+          queryValuesArrayDispatch({
+            type: 'setQueryValuesArray',
+            payload: {
+              kind: 'remove',
+              value: value,
             },
           });
         },
@@ -1316,17 +1364,12 @@ function QueryBuilder({
           return;
         }
 
-        const queryValues = Array.from(
-          new Set([
-            currentFilterValue,
-            currentSearchValue,
-            generalSearchInclusionValue,
-          ])
-        );
-
         queryValuesArrayDispatch({
           type: 'setQueryValuesArray',
-          payload: queryValues,
+          payload: {
+            kind: 'add',
+            value: generalSearchInclusionValue,
+          },
         });
       },
       leftIcon: <TbUpload />,
@@ -1344,6 +1387,17 @@ function QueryBuilder({
       queryBuilderStringDispatch({
         type: setQueryBuilderString,
         payload: queryString,
+      });
+
+      if (!queryValuesArrayDispatch) {
+        return;
+      }
+      queryValuesArrayDispatch({
+        type: 'setQueryValuesArray',
+        payload: {
+          kind: 'clear',
+          value: '',
+        },
       });
     },
     leftIcon: <TbClearAll />,
