@@ -10,7 +10,6 @@ import {
   ResourceRequestServerResponse,
   StatesUS,
   StoreLocation,
-  UserDocument,
   UserRoles,
 } from '../../types';
 

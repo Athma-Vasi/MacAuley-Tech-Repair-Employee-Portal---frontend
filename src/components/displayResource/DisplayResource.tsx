@@ -142,7 +142,7 @@ function DisplayResource<Doc>({
         type: displayResourceAction.setLoadingMessage,
         payload: `Loading ${splitCamelCase(
           requestBodyHeading
-        )} data: page ${pageNumber} ...`,
+        )}s: page ${pageNumber} ...`,
       });
 
       // employees can view their own resources only
@@ -831,26 +831,6 @@ function DisplayResource<Doc>({
     });
   }, [displayResourceState]);
 
-  // if (isLoading || isSubmitting || isSuccessful) {
-  //   return (
-  //     <CustomNotification
-  //       isSubmitting={isSubmitting}
-  //       isSuccessful={isSuccessful}
-  //       navigateTo={{ successPath: successNavigationPath }}
-  //       parentDispatch={displayResourceDispatch}
-  //       submitMessage={submitMessage}
-  //       successMessage={successMessage}
-  //       // successCallbacks={[
-  //       //   () =>
-  //       //     displayResourceDispatch({
-  //       //       type: displayResourceAction.setTriggerRefresh,
-  //       //       payload: true,
-  //       //     }),
-  //       // ]}
-  //     />
-  //   );
-  // }
-
   const {
     appThemeColors: { backgroundColor, borderColor },
   } = returnThemeColors({
@@ -943,23 +923,6 @@ function DisplayResource<Doc>({
       collectionName={splitCamelCase(requestBodyHeading)}
     />
   );
-
-  // <Modal
-  //   opened={openedSubmitSuccessNotificationModal}
-  //   onClose={closeSubmitSuccessNotificationModal}
-  //   centered
-  //   title={
-  //     <Title order={4}>{isSubmitting ? 'Submitting ...' : 'Success!'}</Title>
-  //   }
-  // >
-  //   <Notification
-  //     icon={<TbCheck size={22} />}
-  //     loading={isSubmitting}
-  //     withCloseButton={false}
-  //   >
-  //     <Text>{isSubmitting ? submitMessage : successMessage}</Text>
-  //   </Notification>
-  // </Modal>
 
   const displaySubmitSuccessNotificationModal = (
     <NotificationModal

@@ -12,6 +12,9 @@ import ReactFlow, {
   useReactFlow,
   Viewport,
 } from 'reactflow';
+import { useGlobalState } from '../../hooks';
+import { returnThemeColors } from '../../utils';
+import { COLORS_SWATCHES } from '../../constants/data';
 
 type GraphBuilderProps = {
   layoutedNodes: Node[];
@@ -19,6 +22,9 @@ type GraphBuilderProps = {
 };
 
 function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   const reactFlowInstance = useReactFlow();
@@ -53,16 +59,23 @@ function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
       <Background />
       <Controls />
       <Panel position="top-right">
-        <></>
+        <div />
       </Panel>
     </ReactFlow>
   );
+
+  const {
+    appThemeColors: { borderColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   return (
     <Flex
       w="100%"
       h="100%"
-      style={{ border: '1px solid #e0e0e0', borderRadius: '4px' }}
+      style={{ border: borderColor, borderRadius: '4px' }}
       direction="column"
     >
       {/* {displayButtons} */}

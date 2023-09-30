@@ -1,6 +1,9 @@
 import {
+  Divider,
   Grid,
   Group,
+  Loader,
+  LoadingOverlay,
   ScrollArea,
   Space,
   Stack,
@@ -72,6 +75,7 @@ import {
   returnDagreLayoutedElements,
   returnDirectoryProfileCard,
 } from './utils';
+import { useDisclosure } from '@mantine/hooks';
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -106,6 +110,13 @@ function Directory() {
     dagreRankSep, // default 50
     dagreRanker, // default 'network-simplex'
     dagreMinLen, // minimum edge length default
+
+    isLoading,
+    isSubmitting,
+    isSuccessfull,
+    loadingMessage,
+    submitMessage,
+    successMessage,
   } = directoryState;
 
   const {
@@ -118,9 +129,16 @@ function Directory() {
   } = useGlobalState();
   const { colorScheme } = themeObject;
 
+  const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
-  const navigate = useNavigate();
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end hooks ━┛
 
@@ -129,6 +147,15 @@ function Directory() {
     const controller = new AbortController();
 
     async function fetchUsers(): Promise<void> {
+      directoryDispatch({
+        type: directoryAction.setIsLoading,
+        payload: true,
+      });
+      directoryDispatch({
+        type: directoryAction.setLoadingMessage,
+        payload: 'Fetching users directory ...',
+      });
+
       const url: URL = urlBuilder({
         path: 'user/directory',
       });
@@ -150,8 +177,7 @@ function Directory() {
           return;
         }
 
-        const { ok } = response;
-        if (!ok) {
+        if (!response.ok) {
           throw new Error(data.message);
         }
 
@@ -284,6 +310,7 @@ function Directory() {
     generalColors: { lightSchemeGray },
     scrollBarStyle,
     tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
+    appThemeColors: { backgroundColor, borderColor },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -328,6 +355,8 @@ function Directory() {
 
   // ┏━ begin main node & edges effect ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   useEffect(() => {
+    let isMounted = true;
+
     if (!Object.keys(groupedByDepartment).length) {
       return;
     }
@@ -1555,8 +1584,16 @@ function Directory() {
 
     // utilizes the micro-task queue for performance
     async function triggerDepartmentNodesAndEdgesCreation() {
+      directoryDispatch({
+        type: directoryAction.setIsLoading,
+        payload: true,
+      });
+      directoryDispatch({
+        type: directoryAction.setLoadingMessage,
+        payload: `Creating directed graphs for ${filterByDepartment}...`,
+      });
+
       try {
-        console.log('triggerDepartmentNodesAndEdgesCreation');
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
           setCorporateDepartmentsEdgesAndNodes(),
@@ -1566,8 +1603,34 @@ function Directory() {
           setStoreDepartmentsEdgesAndNodes(),
         ]);
       } catch (error: any) {
-        // TODO: TRIGGER ERROR BOUNDARY HOOK
-        console.error(error);
+        if (!isMounted) {
+          return;
+        }
+
+        const errorMessage =
+          error.message ?? 'Unknown error occured. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/home/directory');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
       } finally {
         // set trigger to false
         directoryDispatch({
@@ -1594,12 +1657,23 @@ function Directory() {
           type: directoryAction.triggerSetLayoutedNodesAndEdges,
           payload: true,
         });
+
+        directoryDispatch({
+          type: directoryAction.setIsLoading,
+          payload: false,
+        });
+        directoryDispatch({
+          type: directoryAction.setLoadingMessage,
+          payload: '',
+        });
       }
     }
 
     triggerDepartmentNodesAndEdgesCreation();
 
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end concurrent fn calls ━┛
+    return () => {
+      isMounted = false;
+    };
   }, [
     triggerSetDepartmentsNodesAndEdges,
     dagreMinLen,
@@ -1610,6 +1684,7 @@ function Directory() {
     dagreRanker,
     colorScheme,
   ]);
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end concurrent fn calls ━┛
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end main nodes & edges effect ━┛
 
@@ -1927,13 +2002,17 @@ function Directory() {
       ? `${width * 0.38}px`
       : width < 1192
       ? '500px'
-      : `${width * 0.15}px`;
+      : width < 1600
+      ? `${width * 0.38}px`
+      : '330px';
+  const { gray } = COLORS_SWATCHES;
+  const sliderLabelColor = gray[3];
 
   const dagreNodeSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'node separation',
     label: (value) => (
-      <Text style={{ color: lightSchemeGray }}>{value} px</Text>
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
     ),
     max: 300,
     min: 25,
@@ -1953,7 +2032,7 @@ function Directory() {
     kind: 'slider',
     ariaLabel: 'rank separation',
     label: (value) => (
-      <Text style={{ color: lightSchemeGray }}>{value} px</Text>
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
     ),
     max: 300,
     min: 25,
@@ -1972,7 +2051,7 @@ function Directory() {
   const dagreMinLenSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',
     ariaLabel: 'min length',
-    label: (value) => <Text style={{ color: lightSchemeGray }}>{value}</Text>,
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
     max: 10,
     min: 1,
     step: 1,
@@ -2212,16 +2291,8 @@ function Directory() {
   );
 
   const displayGraphControls = (
-    <ScrollArea type="auto" styles={() => scrollBarStyle}>
-      <Stack
-        h={width < 1192 ? '38vh' : '70vh'}
-        style={{
-          borderRight: '1px solid #e0e0e0',
-          borderBottom: width < 1192 ? '1px solid #e0e0e0' : '',
-          maskImage: 'linear-gradient(to bottom, black 50%, transparent 100%)',
-        }}
-        p={padding}
-      >
+    <ScrollArea type="hover" styles={() => scrollBarStyle} offsetScrollbars>
+      <Stack h={width < 1600 ? '38vh' : '70vh'} p={padding}>
         {displayFilterSelectsSection}
         {displayDagreLayoutSection}
       </Stack>
@@ -2235,14 +2306,45 @@ function Directory() {
     />
   );
 
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      loader={
+        <Stack align="center">
+          <Text>{loadingMessage}</Text>
+          <Loader />
+        </Stack>
+      }
+      overlayBlur={3}
+      overlayOpacity={1}
+      radius={4}
+      visible={isLoading}
+      zIndex={1000}
+    />
+  );
+
   const displayLayoutAndGraph = (
-    <Grid columns={width < 1192 ? 1 : 12} w="100%" h="70vh" gutter={rowGap}>
-      <Grid.Col span={width < 1192 ? 1 : 4} h={width < 1192 ? '38vh' : '70vh'}>
+    <Grid
+      columns={width < 1600 ? 1 : 12}
+      w="100%"
+      h="70vh"
+      gutter={rowGap}
+      style={{ position: 'relative' }}
+      py={padding}
+    >
+      <Grid.Col span={width < 1600 ? 1 : 4} h={width < 1600 ? '38vh' : '70vh'}>
         {displayGraphControls}
-        {width < 1192 ? <Space h={rowGap} /> : null}
       </Grid.Col>
-      <Grid.Col span={width < 1192 ? 1 : 8} h="100%">
-        {width < 1192 ? <Space h={rowGap} /> : null}
+
+      {width < 1600 ? (
+        <Grid.Col span={1} p={padding}>
+          <Space h={rowGap} />
+          <Divider w="100%" size="md" />
+        </Grid.Col>
+      ) : null}
+
+      <Grid.Col span={width < 1600 ? 1 : 8} h="100%" p={padding}>
+        {width < 1600 ? <Space h={rowGap} /> : null}
+        {displayLoadingOverlay}
         {displayGraphViewport}
       </Grid.Col>
     </Grid>

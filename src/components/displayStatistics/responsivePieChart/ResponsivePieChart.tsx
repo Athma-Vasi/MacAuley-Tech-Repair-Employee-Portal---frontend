@@ -256,7 +256,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- end accessible description texts ------------- */
 
   /** ------------- begin input objects ------------- */
-  const { dark, gray } = COLORS_SWATCHES;
+  const { gray } = COLORS_SWATCHES;
 
   /** ------------- begin base ------------- */
   const sliderWidth =
@@ -267,7 +267,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       : width < 1192
       ? '500px'
       : `${width * 0.15}px`;
-  const sliderLabelColor = gray[2];
+  const sliderLabelColor = gray[3];
 
   const startAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     kind: 'slider',

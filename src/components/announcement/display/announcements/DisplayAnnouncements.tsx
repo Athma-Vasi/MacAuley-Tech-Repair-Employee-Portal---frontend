@@ -1,4 +1,12 @@
-import { Flex, Group, LoadingOverlay, UnstyledButton } from '@mantine/core';
+import {
+  Flex,
+  Group,
+  Loader,
+  LoadingOverlay,
+  Stack,
+  Text,
+  UnstyledButton,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
@@ -313,6 +321,7 @@ function DisplayAnnouncements() {
           imageSrc: bannerImageSrcCompressed,
           imageAlt: bannerImageAlt,
           isCard: true,
+          isLoader: true,
           isOverlay: true,
           overlayText: title,
         },
@@ -363,6 +372,7 @@ function DisplayAnnouncements() {
     />
   );
 
+  const pageNumber = pageQueryString.split('=')[1] ?? 1;
   const displayAnnouncementCards = (
     <Flex
       align="flex-start"
@@ -376,10 +386,17 @@ function DisplayAnnouncements() {
       style={{ borderRadius: '4px', position: 'relative' }}
     >
       <LoadingOverlay
-        visible={loadingOverlayVisible}
+        visible={isLoading}
         zIndex={1000}
-        overlayBlur={2}
+        overlayBlur={3}
+        overlayOpacity={1}
         radius={4}
+        loader={
+          <Stack align="center">
+            <Text>Loading announcements: page {pageNumber}</Text>
+            <Loader />
+          </Stack>
+        }
       />
       {createdAnnouncementsCards}
     </Flex>

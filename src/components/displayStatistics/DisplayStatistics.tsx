@@ -103,7 +103,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
                         break;
                       }
                       case '5': {
-                        response = 'Ecstatic';
+                        response = 'Estatic';
                         break;
                       }
                       default:
@@ -218,13 +218,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       type: 'setCurrentlySelectedPieChartData',
       payload: currentlySelectedPieChartData,
     });
-  }, [
-    chartTitlesMap,
-    currentSelectedSurvey,
-    modalPage,
-    pieChartDataMap,
-    surveys,
-  ]);
+  }, [chartTitlesMap, currentSelectedSurvey, modalPage, pieChartDataMap]);
 
   useEffect(() => {
     logState({
@@ -240,24 +234,6 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
-
-  /** ------------- begin conditional render ------------- */
-  if (surveys.length === 0) {
-    return (
-      <Stack
-        w="100%"
-        p={padding}
-        style={{
-          borderBottom: borderColor,
-        }}
-      >
-        <Title order={4}>Completed surveys</Title>
-        <Text>Complete surveys to view statistics!</Text>
-      </Stack>
-    );
-  }
-
-  /** ------------- end conditional render ------------- */
 
   /** ------------- begin input creators ------------- */
 
@@ -311,7 +287,11 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
         rowGap={rowGap}
         columnGap={rowGap}
       >
-        {completedSurveysCards}
+        {surveys.length === 0 ? (
+          <Text>Complete surveys to view statistics!</Text>
+        ) : (
+          completedSurveysCards
+        )}
       </Flex>
     </Stack>
   );

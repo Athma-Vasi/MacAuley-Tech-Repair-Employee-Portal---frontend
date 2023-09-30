@@ -94,9 +94,6 @@ function DisplayAnnouncement() {
     { open: openStatisticsModal, close: closeStatisticsModal },
   ] = useDisclosure(false);
 
-  const [loadingOverlayVisible, { toggle: toggleLoadingOverlay }] =
-    useDisclosure(false);
-
   const [
     openedSubmitSuccessNotificationModal,
     {
@@ -252,21 +249,7 @@ function DisplayAnnouncement() {
       type: displayAnnouncementAction.setAnnouncement,
       payload: announcementDocument,
     });
-
-    // displayAnnouncementDispatch({
-    //   type: displayAnnouncementAction.setIsLoading,
-    //   payload: false,
-    // });
-    // displayAnnouncementDispatch({
-    //   type: displayAnnouncementAction.setLoadingMessage,
-    //   payload: '',
-    // });
   }, [announcementDocument]);
-
-  // toggle overlay states
-  // useEffect(() => {
-  //   toggleLoadingOverlay();
-  // }, [isLoading]);
 
   // set rating response to state
   useEffect(() => {
@@ -363,44 +346,6 @@ function DisplayAnnouncement() {
     </Group>
   );
 
-  const displayLoadingOverlay = (
-    <LoadingOverlay
-      visible={loadingOverlayVisible}
-      zIndex={1000}
-      overlayBlur={9}
-      overlayOpacity={0.99}
-      radius={4}
-      loader={
-        <Stack align="center">
-          <Text>Loading {announcement?.title} ...</Text>
-          <Loader />
-        </Stack>
-      }
-    />
-  );
-
-  // const displayArticleImage = (
-  //   <Group w="100%">
-  //     <Image
-  //       src={announcement?.bannerImageSrc ?? ''}
-  //       alt={announcement?.bannerImageAlt ?? ''}
-  //       onLoad={() => {
-  //         displayAnnouncementDispatch({
-  //           type: displayAnnouncementAction.setIsLoading,
-  //           payload: false,
-  //         });
-  //         displayAnnouncementDispatch({
-  //           type: displayAnnouncementAction.setLoadingMessage,
-  //           payload: '',
-  //         });
-  //       }}
-  //       withPlaceholder
-  //       w="100%"
-  //       style={{ position: 'relative' }}
-  //     />
-  //     {displayLoadingOverlay}
-  //   </Group>
-  // );
   const [displayArticleImage] = returnAccessibleImageElements([
     {
       imageSrc: announcement?.bannerImageSrc,

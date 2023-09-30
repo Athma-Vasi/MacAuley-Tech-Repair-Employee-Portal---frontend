@@ -1,4 +1,14 @@
-import { Card, Flex, Group, Stack, Text, Title, Tooltip } from '@mantine/core';
+import {
+  Card,
+  Flex,
+  Group,
+  Loader,
+  LoadingOverlay,
+  Stack,
+  Text,
+  Title,
+  Tooltip,
+} from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
 import { Fragment, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -114,11 +124,11 @@ function DisplaySurveys() {
         type: displaySurveysAction.setIsLoading,
         payload: true,
       });
+      const pageNumber = pageQueryString.split('=')[1] ?? 1;
       displaySurveysDispatch({
         type: displaySurveysAction.setLoadingMessage,
-        payload: 'Loading surveys...',
+        payload: `Loading surveys: page ${pageNumber} ...`,
       });
-      openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
         path: `actions/outreach/survey${
@@ -206,10 +216,13 @@ function DisplaySurveys() {
             payload: false,
           });
           displaySurveysDispatch({
+            type: displaySurveysAction.setLoadingMessage,
+            payload: '',
+          });
+          displaySurveysDispatch({
             type: displaySurveysAction.setTriggerSurveyFetch,
             payload: false,
           });
-          closeSubmitSuccessNotificationModal();
         }
       }
     }
@@ -414,14 +427,13 @@ function DisplaySurveys() {
       type: displaySurveysAction.setUncompletedSurveys,
       payload: uncompletedSurveys,
     });
-  }, [responseData, completedSurveyIds]);
 
-  useEffect(() => {
+    // set the stepper descriptions map to the uncompleted surveys
     displaySurveysDispatch({
       type: displaySurveysAction.setStepperDescriptionsMap,
       payload: uncompletedSurveys,
     });
-
+    // set the current stepper positions to the uncompleted surveys
     uncompletedSurveys.forEach((survey: SurveyBuilderDocument) => {
       displaySurveysDispatch({
         type: displaySurveysAction.setCurrentStepperPosition,
@@ -431,7 +443,7 @@ function DisplaySurveys() {
         },
       });
     });
-  }, [uncompletedSurveys, completedSurveys]);
+  }, [responseData, completedSurveyIds]);
 
   // set steps in error for each survey's stepper component
   useEffect(() => {
@@ -541,14 +553,14 @@ function DisplaySurveys() {
 
   /** ------------- end useEffects ------------- */
 
-  if (!uncompletedSurveys.length && !isLoading) {
-    return (
-      <Stack w="100%" p={padding}>
-        <Title order={4}>Completed surveys</Title>
-        <Text>Congragulations! You have completed all available surveys!</Text>
-      </Stack>
-    );
-  }
+  // if (!uncompletedSurveys.length && !isLoading) {
+  //   return (
+  //     <Stack w="100%" p={padding}>
+  //       <Title order={4}>Completed surveys</Title>
+  //       <Text>Congragulations! You have completed all available surveys!</Text>
+  //     </Stack>
+  //   );
+  // }
 
   /** ------------- end component render bypass ------------- */
 
@@ -1048,7 +1060,13 @@ function DisplaySurveys() {
         wrap="wrap"
         style={{ borderRadius: '4px' }}
       >
-        {displayCreatedSurveys}
+        {!uncompletedSurveys.length && !isLoading ? (
+          <Text>
+            Congragulations! You have completed all available surveys!
+          </Text>
+        ) : (
+          displayCreatedSurveys
+        )}
       </Flex>
     </Stack>
   );
@@ -1057,34 +1075,52 @@ function DisplaySurveys() {
     <NotificationModal
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
-        // if loading, do nothing
-        isLoading
-          ? () => {}
-          : // if submitting/successful
-            () => {
-              navigate('/home/outreach/survey-builder/display');
-            },
+        () => {
+          navigate('/home/outreach/survey-builder/display');
+        },
       ]}
       opened={openedSubmitSuccessNotificationModal}
       notificationProps={{
-        loading: isLoading || isSubmitting,
-        text: isLoading
-          ? loadingMessage
-          : isSubmitting
-          ? submitMessage
-          : successMessage,
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
       }}
       title={
-        <Title order={4}>
-          {isLoading
-            ? 'Loading ...'
-            : isSuccessful
-            ? 'Success!'
-            : 'Submitting ...'}
-        </Title>
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
       }
-      withCloseButton={isLoading ? false : true}
     />
+  );
+
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      loader={
+        <Stack align="center">
+          <Text>{loadingMessage}</Text>
+          <Loader />
+        </Stack>
+      }
+      overlayBlur={3}
+      overlayOpacity={1}
+      radius={4}
+      visible={isLoading}
+      zIndex={1000}
+    />
+  );
+
+  const displaySurveysSection = (
+    <Stack
+      w="100%"
+      align="center"
+      p={padding}
+      bg={backgroundColor}
+      style={{ position: 'relative' }}
+    >
+      {displaySubmitSuccessNotificationModal}
+      {displayLoadingOverlay}
+      {displaySurveyButton}
+      {displayTotalAndPageNavigation}
+      {displayStatistics}
+      {displayUncompletedSurveys}
+    </Stack>
   );
 
   const displaySurveyComponent = (
@@ -1093,14 +1129,10 @@ function DisplaySurveys() {
       align="center"
       p={padding}
       bg={backgroundColor}
-      style={{ borderRadius: '4px' }}
+      // style={{ borderRadius: '4px' }}
     >
-      {displaySubmitSuccessNotificationModal}
       {displayResourceHeader}
-      {displaySurveyButton}
-      {displayTotalAndPageNavigation}
-      {displayStatistics}
-      {displayUncompletedSurveys}
+      {displaySurveysSection}
     </Stack>
   );
   /** ------------- end surveys display ------------- */

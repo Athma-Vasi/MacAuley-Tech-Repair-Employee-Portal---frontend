@@ -492,7 +492,9 @@ function DisplayQueryDesktop<Doc>({
                             const userId =
                               queryResponseObjWithAddedFields.userId ??
                               // benefits document does not have userId field and instead has benefitUserId field
-                              queryResponseObjWithAddedFields.benefitUserId;
+                              queryResponseObjWithAddedFields.benefitUserId ??
+                              // anonymousRequest documents do not have userId field
+                              'Anonymous';
                             const groupBySelectionValue =
                               queryResponseObjWithAddedFields[groupBySelection];
 
