@@ -1198,6 +1198,15 @@ function replaceLastCommaWithAnd(str: string): string {
   return strWithAnd;
 }
 
+function replaceLastCommaWithOr(str: string): string {
+  // returns an array of matches of all occurrences of a comma
+  const commaCount = str.match(/,/g)?.length ?? 0;
+  // /(?=[^,]*$)/: matches a comma that is followed by zero or more non-comma characters until the end of the string, using a positive lookahead assertion (?=...).
+  const strWithOr = str.replace(/,(?=[^,]*$)/, commaCount > 0 ? ' or' : '');
+
+  return strWithOr;
+}
+
 type CommentIdsTree = {
   id: string;
   children: CommentIdsTree[];
@@ -1599,6 +1608,7 @@ export {
   groupQueryResponse,
   logState,
   replaceLastCommaWithAnd,
+  replaceLastCommaWithOr,
   returnAcknowledgementValidationText,
   returnAddressValidationText,
   returnCityValidationText,

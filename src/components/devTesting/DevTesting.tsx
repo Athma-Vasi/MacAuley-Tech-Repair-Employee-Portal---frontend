@@ -36,6 +36,11 @@ import {
   announcementsArray,
   returnAnnouncementsRequestBodies,
 } from './announcements';
+import {
+  commentsArray,
+  returnCommentsRequestBodies,
+  returnCommentsWithoutQuotedUsername,
+} from './comments';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -54,7 +59,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/outreach/announcement/dev',
+        path: 'comment/dev',
       });
 
       const newBodiesArrCount =
@@ -73,7 +78,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        announcements: slicedBodiesArr,
+        comments: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -127,9 +132,10 @@ function DevTesting() {
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const bodiesArr = returnAnnouncementsRequestBodies({
-      announcementsArray,
+    const bodiesArr = returnCommentsRequestBodies({
+      commentsArray: commentsArray,
       userDocs: USERS_DOC,
+      returnCommentsWithoutQuotedUsername,
     });
 
     devTestingDispatch({
@@ -147,7 +153,7 @@ function DevTesting() {
 
   return (
     <Center w="100%">
-      <Button
+      {/* <Button
         disabled={bodiesArrCount === bodiesArr.length || triggerFormSubmit}
         onClick={() => {
           devTestingDispatch({
@@ -157,7 +163,7 @@ function DevTesting() {
         }}
       >
         Trigger
-      </Button>
+      </Button> */}
     </Center>
   );
 }

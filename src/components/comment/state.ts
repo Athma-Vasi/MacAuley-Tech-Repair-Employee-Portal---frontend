@@ -38,6 +38,7 @@ const initialCommentState: CommentState = {
 
   commentIdsToFetch: [],
   commentsMap: new Map(),
+  queryValuesArray: [],
 
   triggerCommentFetch: true,
   triggerCommentUpdate: false,
@@ -74,6 +75,7 @@ const commentAction: CommentAction = {
   setCommentIdsToFetch: 'setCommentIdsToFetch',
   setCommentsMap: 'setCommentsMap',
   updateCommentsMap: 'updateCommentsMap',
+  setQueryValuesArray: 'setQueryValuesArray',
 
   setTriggerCommentFetch: 'setTriggerCommentFetch',
   setTriggerCommentUpdate: 'setTriggerCommentUpdate',
@@ -329,6 +331,12 @@ function commentReducer(
         commentsMap,
       };
     }
+
+    case commentAction.setQueryValuesArray:
+      return {
+        ...state,
+        queryValuesArray: action.payload,
+      };
 
     case commentAction.setTriggerCommentFetch:
       return {

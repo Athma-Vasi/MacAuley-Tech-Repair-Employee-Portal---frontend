@@ -95,6 +95,7 @@ type CommentState = {
 
   commentIdsToFetch: string[];
   commentsMap: CommentsMap;
+  queryValuesArray: string[]; // passed up from QueryBuilder to highlight comment phrases == query values
 
   triggerCommentFetch: boolean;
   triggerCommentUpdate: boolean;
@@ -131,6 +132,7 @@ type CommentAction = {
   setCommentIdsToFetch: 'setCommentIdsToFetch';
   setCommentsMap: 'setCommentsMap';
   updateCommentsMap: 'updateCommentsMap';
+  setQueryValuesArray: 'setQueryValuesArray';
 
   setTriggerCommentFetch: 'setTriggerCommentFetch';
   setTriggerCommentUpdate: 'setTriggerCommentUpdate';
@@ -181,7 +183,9 @@ type CommentDispatch =
       payload: boolean;
     }
   | {
-      type: CommentAction['setCommentIdsToFetch'];
+      type:
+        | CommentAction['setCommentIdsToFetch']
+        | CommentAction['setQueryValuesArray'];
       payload: string[];
     }
   | {

@@ -4,6 +4,7 @@ import {
   Flex,
   Grid,
   Group,
+  Highlight,
   Image,
   Loader,
   LoadingOverlay,
@@ -54,12 +55,15 @@ import { useAuth, useGlobalState } from '../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
+  returnAccessibleImageElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
 } from '../../jsxCreators';
 import {
   formatDate,
   logState,
+  replaceLastCommaWithAnd,
+  replaceLastCommaWithOr,
   returnGrammarValidationText,
   returnThemeColors,
   urlBuilder,
@@ -83,6 +87,7 @@ import {
   CreatedCommentsSectionObject,
   GetCommentsServerResponse,
 } from './types';
+import { returnHighlightedText } from '../displayQuery/displayQueryDesktop/utils';
 
 function Comment({
   parentResourceId = '',
@@ -115,6 +120,7 @@ function Comment({
 
     commentIdsToFetch,
     commentsMap,
+    queryValuesArray,
 
     triggerCommentFetch,
     triggerCommentUpdate,
@@ -153,9 +159,6 @@ function Comment({
     },
   ] = useDisclosure(false);
 
-  const [loadingOverlayVisible, { toggle: toggleLoadingOverlay }] =
-    useDisclosure(false);
-
   /** ------------- end hooks ------------- */
 
   /** ------------- begin useEffects ------------- */
@@ -170,11 +173,11 @@ function Comment({
         type: commentAction.setIsLoading,
         payload: true,
       });
+      const pageNumber = pageQueryString.split('=')[1] ?? 1;
       commentDispatch({
         type: commentAction.setLoadingMessage,
-        payload: 'Fetching comments from server...',
+        payload: `Loading comments for ${parentResourceTitle}  page: ${pageNumber} ...`,
       });
-      toggleLoadingOverlay();
 
       const url: URL = urlBuilder({
         path: `comment/parentResource/${parentResourceId}/`,
@@ -269,7 +272,6 @@ function Comment({
             type: commentAction.setTriggerCommentFetch,
             payload: false,
           });
-          toggleLoadingOverlay();
         }
       }
     }
@@ -645,7 +647,8 @@ function Comment({
     ref: openedCommentModal ? commentTextAreaRef : null,
     semanticName: 'comment',
     required: true,
-    textAreaWidth: '100%',
+    textAreaWidth: width < 480 ? 350 - 30 : 640 - 66,
+    dropdownWidth: width < 480 ? 350 - 30 : 640 - 66,
   };
 
   const replyButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -690,10 +693,23 @@ function Comment({
     directoryGraphThemeColors: { nodeTextColor },
     generalColors: { themeColorShades },
     appThemeColors: { backgroundColor, borderColor },
+    tablesThemeColors: { textHighlightColor },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
+
+  const regex = queryValuesArray.length
+    ? new RegExp(
+        queryValuesArray
+          .filter((value) => value) // remove empty strings
+          .flatMap((value) => value.split(' ')) // split strings into words
+          .join('|'),
+        'gi'
+      )
+    : null;
+
+  console.log('regex', regex);
 
   const createdCommentsSectionObjectsArray = Array.from(commentsMap).map(
     ([commentId, commentDoc]: [string, CommentDocument]) => {
@@ -962,7 +978,6 @@ function Comment({
               {
                 buttonLabel: isFeatured ? 'Unfeature' : 'Feature',
                 leftIcon: isFeatured ? <TbStarOff /> : <TbStar />,
-                buttonVariant: 'outline',
                 semanticDescription: 'feature comment button',
                 semanticName: 'featureCommentButton',
                 buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
@@ -1000,77 +1015,194 @@ function Comment({
         </Tooltip>
       ) : null;
 
+      // determine if username is in query values array
+      const isUsernameInQueryValuesArray = regex?.test(username);
+      const highlightedUsername = isUsernameInQueryValuesArray ? (
+        <Highlight
+          highlightStyles={{ backgroundColor: textHighlightColor }}
+          highlight={username}
+        >
+          {username}
+        </Highlight>
+      ) : (
+        <Text weight={600}>{username}</Text>
+      );
+
+      const usernameElement = (
+        <Flex
+          gap={4}
+          wrap="wrap"
+          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            commentDispatch({
+              type: commentAction.setQueryBuilderString,
+              payload: `?&username[in]=${username}`,
+            });
+            commentDispatch({
+              type: commentAction.setQueryValuesArray,
+              payload: [username],
+            });
+          }}
+        >
+          {highlightedUsername}
+        </Flex>
+      );
+
       const usernameElementWithTooltip = (
         <Tooltip label={`Filter comments by ${username}`}>
-          <Title
-            order={5}
-            size="lg"
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              commentDispatch({
-                type: commentAction.setQueryBuilderString,
-                payload: `?&username[in]=${username}`,
-              });
-            }}
-          >
-            {username}
-          </Title>
+          {usernameElement}
         </Tooltip>
       );
+
+      // is job position in query values array
+
+      const isJobPositionInQueryValuesArray = jobPosition
+        .split(' ')
+        .some((value) => regex?.test(value));
+      console.log(
+        'isJobPositionInQueryValuesArray',
+        isJobPositionInQueryValuesArray
+      );
+      const highlightedJobPosition = isJobPositionInQueryValuesArray ? (
+        returnHighlightedText({
+          backgroundColor: textHighlightColor,
+          fieldValue: jobPosition,
+          queryValuesArray,
+        })
+      ) : (
+        <Text truncate>{jobPosition}</Text>
+      );
+
+      const jobPositionElement = (
+        <Flex
+          gap={4}
+          wrap="wrap"
+          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            commentDispatch({
+              type: commentAction.setQueryBuilderString,
+              payload: `?&jobPosition[in]=${jobPosition}`,
+            });
+
+            commentDispatch({
+              type: commentAction.setQueryValuesArray,
+              payload: jobPosition.split(' '),
+            });
+          }}
+        >
+          {highlightedJobPosition}
+        </Flex>
+      );
+
       const jobPositionElementWithTooltip = (
-        <Tooltip label={`Filter comments by ${jobPosition}s`}>
-          <Text
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              commentDispatch({
-                type: commentAction.setQueryBuilderString,
-                payload: `?&jobPosition[in]=${jobPosition}`,
-              });
-            }}
-          >
-            {jobPosition}
-          </Text>
+        <Tooltip
+          label={`Filter comments containing ${replaceLastCommaWithOr(
+            jobPosition.split(' ').join(', ')
+          )}`}
+        >
+          {jobPositionElement}
         </Tooltip>
+      );
+
+      // is department in query values array
+      const isDepartmentInQueryValuesArray = department
+        .split(' ')
+        .some((value) => regex?.test(value));
+
+      const highlightedDepartment = isDepartmentInQueryValuesArray ? (
+        returnHighlightedText({
+          backgroundColor: textHighlightColor,
+          fieldValue: department,
+          queryValuesArray,
+        })
+      ) : (
+        <Text>{department}</Text>
+      );
+
+      const departmentElement = (
+        <Flex
+          gap={4}
+          wrap="wrap"
+          style={{ cursor: 'pointer' }}
+          onClick={() => {
+            commentDispatch({
+              type: commentAction.setQueryBuilderString,
+              payload: `?&department[in]=${department}`,
+            });
+            commentDispatch({
+              type: commentAction.setQueryValuesArray,
+              payload: department.split(' '),
+            });
+          }}
+        >
+          {highlightedDepartment}
+        </Flex>
       );
 
       const departmentElementWithTooltip = (
-        <Tooltip label={`Filter comments by ${department} members`}>
-          <Text
-            style={{ cursor: 'pointer' }}
-            onClick={() => {
-              commentDispatch({
-                type: commentAction.setQueryBuilderString,
-                payload: `?&department[in]=${department}`,
-              });
-            }}
-          >
-            {department}
-          </Text>
+        <Tooltip
+          label={`Filter comments containing ${replaceLastCommaWithOr(
+            department.split(' ').join(', ')
+          )}`}
+        >
+          {departmentElement}
         </Tooltip>
       );
 
-      const profilePicElement = (
-        <Image
-          width={width < 640 ? 48 : 96}
-          height={width < 640 ? 48 : 96}
-          radius={9999}
-          src={profilePictureUrl}
-          // alt={`profile pic of ${username}`}
-          withPlaceholder
-          placeholder={<TbPhotoOff size={width < 640 ? 16 : 28} />}
-        />
-      );
+      /**
+ *  const [createdImage] = returnAccessibleImageElements([
+    {
+      customWidth: 84,
+      customHeight: 84,
+      customRadius: 9999,
+      fit: 'cover',
+      imageSrc: profilePictureUrl,
+      imageAlt: `Picture of ${firstName} ${lastName}`,
+      isCard: false,
+      isOverlay: false,
+      isLoader: true,
+      withPlaceholder: true,
+    },
+  ]);
+ */
+
+      // const profilePicElement = (
+      //   <Image
+      //     width={width < 640 ? 48 : 96}
+      //     height={width < 640 ? 48 : 96}
+      //     radius={9999}
+      //     src={profilePictureUrl}
+      //     // alt={`profile pic of ${username}`}
+      //     withPlaceholder
+      //     placeholder={<TbPhotoOff size={width < 640 ? 16 : 28} />}
+      //   />
+      // );
+
+      const [profilePicElement] = returnAccessibleImageElements([
+        {
+          customWidth: width < 640 ? 48 : 96,
+          customHeight: width < 640 ? 48 : 96,
+          customRadius: 9999,
+          fit: 'cover',
+          imageSrc: profilePictureUrl,
+          imageAlt: `Picture of ${username}`,
+          isCard: false,
+          isOverlay: false,
+          isLoader: true,
+          withPlaceholder: true,
+        },
+      ]);
 
       const createdSocialMediaIcons = (
         <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
-          <Tooltip label={`View ${commentDoc.username}'s Github profile`}>
+          {/* <Tooltip label={`View ${commentDoc.username}'s Github profile`}>
             <Group>
               <TiSocialGithub
                 size={width < 640 ? 20 : 24}
                 style={{ cursor: 'pointer', color: nodeTextColor }}
               />
             </Group>
-          </Tooltip>
+          </Tooltip> */}
 
           <Tooltip label={`View ${commentDoc.username}'s Mastodon profile`}>
             <Group>
@@ -1110,18 +1242,63 @@ function Comment({
         </Flex>
       );
 
+      const isCommentInQueryValuesArray = regex?.test(comment);
+      const highlightedComment = isCommentInQueryValuesArray ? (
+        <Flex gap={4} wrap="wrap">
+          {returnHighlightedText({
+            backgroundColor: textHighlightColor,
+            fieldValue: comment,
+            queryValuesArray,
+          })}
+        </Flex>
+      ) : (
+        <Text>{comment}</Text>
+      );
       const commentElement = (
         <Spoiler
           maxHeight={217}
           showLabel={showMoreSpoilerButtonElement}
           hideLabel={showLessSpoilerButtonElement}
         >
-          <Text>{isDeleted ? 'Comment has been deleted' : comment}</Text>
+          {isDeleted ? (
+            <Text>Comment has been deleted</Text>
+          ) : (
+            highlightedComment
+          )}
         </Spoiler>
       );
+
+      const isQuotedUsernameInQueryValuesArray = regex?.test(quotedUsername);
+      const highlightedQuotedUsername = isQuotedUsernameInQueryValuesArray ? (
+        <Highlight
+          highlightStyles={{ backgroundColor: textHighlightColor }}
+          highlight={quotedUsername}
+        >
+          {quotedUsername}
+        </Highlight>
+      ) : (
+        <Title order={5}>{quotedUsername}</Title>
+      );
       const quotedUsernameElement = quotedUsername ? (
-        <Text>{quotedUsername} commented:</Text>
+        <Group>
+          {highlightedQuotedUsername}
+          <Text>commented: </Text>
+        </Group>
       ) : null;
+
+      // is quoted comment in query values array
+      const isQuotedCommentInQueryValuesArray = regex?.test(quotedComment);
+      const highlightedQuotedComment = isQuotedCommentInQueryValuesArray ? (
+        <Flex gap={4} wrap="wrap">
+          {returnHighlightedText({
+            backgroundColor: textHighlightColor,
+            fieldValue: quotedComment,
+            queryValuesArray,
+          })}
+        </Flex>
+      ) : (
+        <Text>{quotedComment}</Text>
+      );
       const quotedCommentElement = quotedComment ? (
         <Blockquote icon={<VscQuote />}>
           <Spoiler
@@ -1129,7 +1306,7 @@ function Comment({
             showLabel={showMoreSpoilerButtonElement}
             hideLabel={showLessSpoilerButtonElement}
           >
-            <Text>{quotedComment}</Text>
+            {highlightedQuotedComment}
           </Spoiler>
         </Blockquote>
       ) : null;
@@ -1492,7 +1669,7 @@ function Comment({
         closeCommentModal();
       }}
       centered
-      size={width < 480 ? 'calc(100% - 3rem)' : '640px'}
+      size={width < 480 ? 350 : 640}
       title={commentModalTitle}
     >
       {commentModalQuotedComment}
@@ -1546,6 +1723,7 @@ function Comment({
       disableProjection={true}
       queryBuilderStringDispatch={commentDispatch}
       setQueryBuilderString={commentAction.setQueryBuilderString}
+      queryValuesArrayDispatch={commentDispatch}
     />
   ) : null;
 
@@ -1588,14 +1766,14 @@ function Comment({
 
   const displayLoadingOverlay = (
     <LoadingOverlay
-      visible={loadingOverlayVisible}
+      visible={isLoading}
       zIndex={1000}
       overlayBlur={9}
       overlayOpacity={0.99}
       radius={4}
       loader={
         <Stack align="center">
-          <Text>Loading comments for {parentResourceTitle}</Text>
+          <Text>{loadingMessage}</Text>
           <Loader />
         </Stack>
       }

@@ -18,6 +18,7 @@ import { ButtonWrapper } from './ButtonWrapper';
 import { TbCheck } from 'react-icons/tb';
 
 type AccessibleTextAreaInputCreatorInfo = {
+  dropdownWidth?: number;
   semanticName: string;
   inputText: string;
   isValidInputText: boolean;
@@ -71,6 +72,7 @@ function TextAreaInputWrapper({
   } = useGlobalState();
 
   const {
+    dropdownWidth,
     semanticName,
     inputText,
     isValidInputText,
@@ -128,7 +130,7 @@ function TextAreaInputWrapper({
       position="bottom"
       shadow="md"
       transitionProps={{ transition: 'pop' }}
-      width="target"
+      width={dropdownWidth ? dropdownWidth : 'target'}
       withArrow
     >
       <Popover.Target>
