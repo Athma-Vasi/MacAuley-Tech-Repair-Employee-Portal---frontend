@@ -63,8 +63,8 @@ function DevTesting() {
       });
 
       const newBodiesArrCount =
-        bodiesArr.length - bodiesArrCount > 100
-          ? bodiesArrCount + 100
+        bodiesArr.length - bodiesArrCount > 25
+          ? bodiesArrCount + 25
           : bodiesArr.length;
       const slicedBodiesArr = bodiesArr.slice(
         bodiesArrCount,

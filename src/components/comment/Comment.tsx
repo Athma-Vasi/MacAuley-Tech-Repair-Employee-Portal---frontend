@@ -1054,13 +1054,6 @@ function Comment({
                 type: commentAction.setQueryBuilderString,
                 payload: `?&username[in]=${username}`,
               });
-              commentDispatch({
-                type: commentAction.setQueryValuesArray,
-                payload: {
-                  kind: 'add',
-                  value: username,
-                },
-              });
             }}
           >
             {highlightedUsername}
@@ -1093,13 +1086,6 @@ function Comment({
                 type: commentAction.setQueryBuilderString,
                 payload: `?&firstName[eq]=${firstName}`,
               });
-              commentDispatch({
-                type: commentAction.setQueryValuesArray,
-                payload: {
-                  kind: 'add',
-                  value: firstName,
-                },
-              });
             }}
           >
             {highlightedFirstName}
@@ -1123,7 +1109,7 @@ function Comment({
         ) : middleName ? (
           <Text>{middleName}</Text>
         ) : null;
-        const middleNameElement = (
+        const middleNameElement = middleName ? (
           <Flex
             gap={4}
             wrap="wrap"
@@ -1133,23 +1119,16 @@ function Comment({
                 type: commentAction.setQueryBuilderString,
                 payload: `?&middleName[eq]=${middleName}`,
               });
-              commentDispatch({
-                type: commentAction.setQueryValuesArray,
-                payload: {
-                  kind: 'add',
-                  value: middleName,
-                },
-              });
             }}
           >
             {highlightedMiddleName}
           </Flex>
-        );
-        const middleNameElementWithTooltip = (
+        ) : null;
+        const middleNameElementWithTooltip = middleName ? (
           <Tooltip label={`Filter middle names by ${middleName}`}>
             {middleNameElement}
           </Tooltip>
-        );
+        ) : null;
 
         // last name
         const isLastNameInQueryValuesArray = regex?.test(lastName);
@@ -1172,13 +1151,6 @@ function Comment({
               commentDispatch({
                 type: commentAction.setQueryBuilderString,
                 payload: `?&lastName[eq]=${lastName}`,
-              });
-              commentDispatch({
-                type: commentAction.setQueryValuesArray,
-                payload: {
-                  kind: 'add',
-                  value: lastName,
-                },
               });
             }}
           >
@@ -1224,7 +1196,7 @@ function Comment({
           </Flex>
         );
         const jobPositionElementWithTooltip = (
-          <Tooltip label={`Filter by ${jobPosition}`}>
+          <Tooltip label={`Filter job positions by ${jobPosition}`}>
             {jobPositionElement}
           </Tooltip>
         );
@@ -1262,39 +1234,10 @@ function Comment({
           </Flex>
         );
         const departmentElementWithTooltip = (
-          <Tooltip label={`Filter by ${department}`}>
+          <Tooltip label={`Filter departments by ${department}`}>
             {departmentElement}
           </Tooltip>
         );
-
-        /**
- *  const [createdImage] = returnAccessibleImageElements([
-    {
-      customWidth: 84,
-      customHeight: 84,
-      customRadius: 9999,
-      fit: 'cover',
-      imageSrc: profilePictureUrl,
-      imageAlt: `Picture of ${firstName} ${lastName}`,
-      isCard: false,
-      isOverlay: false,
-      isLoader: true,
-      withPlaceholder: true,
-    },
-  ]);
- */
-
-        // const profilePicElement = (
-        //   <Image
-        //     width={width < 640 ? 48 : 96}
-        //     height={width < 640 ? 48 : 96}
-        //     radius={9999}
-        //     src={profilePictureUrl}
-        //     // alt={`profile pic of ${username}`}
-        //     withPlaceholder
-        //     placeholder={<TbPhotoOff size={width < 640 ? 16 : 28} />}
-        //   />
-        // );
 
         const [profilePicElement] = returnAccessibleImageElements([
           {
@@ -1365,7 +1308,7 @@ function Comment({
         );
         const commentElement = (
           <Spoiler
-            maxHeight={217}
+            maxHeight={135}
             showLabel={showMoreSpoilerButtonElement}
             hideLabel={showLessSpoilerButtonElement}
           >
@@ -1411,7 +1354,7 @@ function Comment({
         const quotedCommentElement = quotedComment ? (
           <Blockquote icon={<VscQuote />}>
             <Spoiler
-              maxHeight={217}
+              maxHeight={135}
               showLabel={showMoreSpoilerButtonElement}
               hideLabel={showLessSpoilerButtonElement}
             >
@@ -1684,10 +1627,10 @@ function Comment({
 
       // comment section desktop and mobile
       const commentQuoteSection = (
-        <Stack w="100%" p={padding}>
+        <Stack w="100%" p={padding} h="fit">
           {quotedSection}
           <Space h="xs" />
-          {commentElement}
+          <Group>{commentElement}</Group>
         </Stack>
       );
 
@@ -1695,7 +1638,6 @@ function Comment({
       const commentSectionFooter = (
         <Group
           w="100%"
-          h="100%"
           spacing={rowGap}
           pt={padding}
           ml={width < 640 ? undefined : padding}
@@ -1724,20 +1666,53 @@ function Comment({
       );
 
       // comment section full desktop
+
       const createdCommentSectionDesktop = (
         <Grid columns={11} w="100%" py={padding}>
           <Grid.Col span={3} style={{ borderRight: borderColor }}>
             {userInfoSectionDesktop}
           </Grid.Col>
-          <Grid.Col span={8}>
-            <Stack h="25%">{commentSectionHeaderDesktop}</Stack>
+          <Grid.Col
+            span={8}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr',
+              gridTemplateRows: '125px 1fr 125px',
+            }}
+          >
+            <div
+              style={{
+                gridColumn: '1 / 2',
+                gridRow: '1 / 2',
+              }}
+            >
+              {commentSectionHeaderDesktop}
+            </div>
 
-            <Stack h="43%">{commentQuoteSection}</Stack>
+            <div
+              style={{
+                gridColumn: '1 / 2',
+                gridRow: '2 / 3',
+              }}
+            >
+              {commentQuoteSection}
+            </div>
 
-            <Stack h="32%">{commentSectionFooter}</Stack>
+            <div
+              style={{
+                gridColumn: '1 / 2',
+                gridRow: '3 / 4',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'flex-end',
+              }}
+            >
+              {commentSectionFooter}
+            </div>
           </Grid.Col>
         </Grid>
       );
+
       // comment section full mobile
       const createdCommentSectionMobile = (
         <Stack w="100%" py={padding}>
@@ -1793,12 +1768,7 @@ function Comment({
   const commentModalQuotedComment = quotedComment ? (
     <Group p={padding} style={{ borderTop: borderColor }}>
       <Blockquote icon={<VscQuote />} style={{ borderLeft: borderColor }}>
-        <Text size="sm">
-          {quotedComment}
-          {quotedComment}
-          {quotedComment}
-          {quotedComment}
-        </Text>
+        <Text>{quotedComment}</Text>
       </Blockquote>
     </Group>
   ) : null;
@@ -1892,7 +1862,7 @@ function Comment({
 
   const displayClearButton = (
     <Tooltip label="Clear comment filters">
-      <Group>{createdClearButton}</Group>
+      <Group position="right">{createdClearButton}</Group>
     </Tooltip>
   );
 
@@ -1905,7 +1875,9 @@ function Comment({
     />
   );
 
-  const displayResetButtonAndLimitPerPageSelectInput = (
+  const displayTotalComments = <Text>Total comments: {totalDocuments}</Text>;
+
+  const displayTotalCommentsAndLimitPerPageSelectInput = (
     <Group
       w={commentsWidth}
       py={padding}
@@ -1914,7 +1886,11 @@ function Comment({
       align="flex-end"
     >
       <Group position="left">{createdLimitPerPageSelectInput}</Group>
-      <Group position="right">{displayClearButton}</Group>
+      <Group position="right">
+        {displayTotalComments}
+        <Space w="xl" />
+        {displayClearButton}
+      </Group>
     </Group>
   );
 
@@ -1960,8 +1936,7 @@ function Comment({
       {displaySubmitSuccessNotificationModal}
       {displayReplyCommentSection}
       {displayQueryBuilder}
-      {displayResetButtonAndLimitPerPageSelectInput}
-
+      {displayTotalCommentsAndLimitPerPageSelectInput}
       {displayCommentsSection}
       {displayPagination}
     </Group>

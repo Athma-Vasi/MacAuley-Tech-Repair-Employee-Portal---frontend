@@ -371,7 +371,7 @@ function QueryBuilder({
       case 'numberInput': {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentFilterValue,
-          payload: '0.00',
+          payload: '0',
         });
         break;
       }
@@ -866,8 +866,8 @@ function QueryBuilder({
         },
       });
 
-      // send filter value up to DisplayResource
-      if (!queryValuesArrayDispatch) {
+      // if filter operator is not 'in', then their corresponding fields do not have a text index and are not searchable, as they may be numbers, dates, etc.
+      if (!queryValuesArrayDispatch || currentFilterOperator !== 'in') {
         return;
       }
       queryValuesArrayDispatch({
@@ -1360,7 +1360,7 @@ function QueryBuilder({
         });
 
         // for query values array highlighting
-        if (!queryValuesArrayDispatch) {
+        if (!queryValuesArrayDispatch || !generalSearchInclusionValue) {
           return;
         }
 

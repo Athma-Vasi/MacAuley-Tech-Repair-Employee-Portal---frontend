@@ -220,7 +220,7 @@ type CreatedCommentsSectionObject = {
   profilePicElement: React.JSX.Element;
   usernameElement: React.JSX.Element;
   firstNameElement: React.JSX.Element;
-  middleNameElement: React.JSX.Element;
+  middleNameElement: React.JSX.Element | null;
   lastNameElement: React.JSX.Element;
   jobPositionElement: React.JSX.Element;
   departmentElement: React.JSX.Element;
