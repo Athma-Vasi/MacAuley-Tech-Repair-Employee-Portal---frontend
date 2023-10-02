@@ -137,7 +137,7 @@ function DisplayResource<Doc>({
         type: displayResourceAction.setIsLoading,
         payload: true,
       });
-      const pageNumber = pageQueryString.split('=')[1] ?? 1;
+      const pageNumber = pageQueryString.split('=')[1] ?? '1';
       displayResourceDispatch({
         type: displayResourceAction.setLoadingMessage,
         payload: `Loading ${splitCamelCase(

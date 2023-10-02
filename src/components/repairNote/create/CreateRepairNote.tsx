@@ -562,7 +562,14 @@ function CreateRepairNote() {
   );
 
   const displayRepairNoteComponent = (
-    <Flex direction="column" align="center" justify="space-between" rowGap="lg">
+    <Flex
+      h="100%"
+      w="100%"
+      direction="column"
+      align="center"
+      justify="space-between"
+      rowGap="lg"
+    >
       {displaySubmitSuccessNotificationModal}
       {displayRepairNoteForm}
     </Flex>

@@ -64,17 +64,13 @@ function PageBuilder({
   }, [resetPage]);
 
   return (
-    <Flex w="100%" align="center" justify="center">
-      <Pagination
-        size="sm"
-        value={page}
-        onChange={setPage}
-        total={total}
-        style={{
-          ...style,
-        }}
-      />
-    </Flex>
+    <Pagination
+      size="sm"
+      value={page}
+      onChange={setPage}
+      total={total}
+      style={{ ...style }}
+    />
   );
 }
 

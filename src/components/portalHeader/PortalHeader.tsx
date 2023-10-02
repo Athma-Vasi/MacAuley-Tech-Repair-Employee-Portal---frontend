@@ -1,24 +1,17 @@
-import {
-  Burger,
-  Button,
-  Flex,
-  Header,
-  MediaQuery,
-  Space,
-  Title,
-} from '@mantine/core';
+import { Burger, Flex, Header, MediaQuery, Title } from '@mantine/core';
 import { AxiosRequestConfig } from 'axios';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { axiosInstance } from '../../api/axios';
+import { COLORS_SWATCHES } from '../../constants/data';
 import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { ColorSchemeSwitch } from '../colorSchemeSwitch/ColorSchemeSwitch';
+import { returnThemeColors } from '../../utils';
 import { TextWrapper } from '../wrappers';
 import { LOGOUT_URL } from './constants';
 import ProfileInfo from './profileInfo/ProfileInfo';
 import { LogoutResponse, PortalHeaderProps } from './types';
-import { useEffect } from 'react';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const {
@@ -68,8 +61,15 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     }
   }
 
+  const {
+    appThemeColors: { backgroundColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
   return (
-    <Header height={{ base: 50, md: 70 }} p="md">
+    <Header height={{ base: 50, md: 70 }} p="md" bg={backgroundColor}>
       <Flex justify="space-between" align="center" h="100%">
         <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
           <Burger
@@ -101,18 +101,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
         )}
 
         <Flex align="center" justify="flex-end">
-          {/* theme switch */}
-          <ColorSchemeSwitch />
           <ProfileInfo />
-          {/* logout button */}
-          {/* <form onSubmit={handleLogoutFormSubmit}>
-            <Button
-              variant={colorScheme === 'dark' ? 'outline' : 'filled'}
-              type="submit"
-            >
-              Sign Out
-            </Button>
-          </form> */}
         </Flex>
       </Flex>
     </Header>

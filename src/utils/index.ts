@@ -1,3 +1,4 @@
+import { TbJetpack } from 'react-icons/tb';
 import { ColorsSwatches } from '../constants/data';
 import { ThemeObject } from '../context/globalProvider/types';
 import type { Country, PostalCode, QueryResponseData } from '../types';
@@ -1506,6 +1507,13 @@ function returnThemeColors({
   const redColorShade = red[colorShade];
   const greenColorShade = green[colorShade];
   const cyanColorShade = cyan[colorShade];
+  const sliderLabelColor = gray[3];
+  const navLinkHoverShade = colorScheme === 'light' ? gray[2] : gray[8];
+  const navLinkActiveShade = themeColorShades
+    ? colorScheme === 'light'
+      ? themeColorShades[1]
+      : ''
+    : gray[5];
 
   const generalColors = {
     chartTextColor,
@@ -1516,7 +1524,10 @@ function returnThemeColors({
     greenColorShade,
     iconGray,
     lightSchemeGray,
+    navLinkActiveShade,
+    navLinkHoverShade,
     redColorShade,
+    sliderLabelColor,
     textColor,
     themeColorShade,
     themeColorShades,
@@ -1524,10 +1535,11 @@ function returnThemeColors({
 
   // app colors
   const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[2]}` : `1px solid ${gray[8]}`;
+    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
   const backgroundColor =
     colorScheme === 'light'
-      ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+      ? // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+        '#f5f5f5'
       : dark[6];
   const redBorderColor = `1px solid ${redColorShade}`;
   const appThemeColors = {

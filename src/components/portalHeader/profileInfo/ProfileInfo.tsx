@@ -5,57 +5,92 @@ import {
   Flex,
   Group,
   Modal,
+  NavLink,
   Popover,
   SegmentedControl,
   Stack,
+  Switch,
   Text,
   Title,
   UnstyledButton,
-  useMantineTheme,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Fragment } from 'react';
-import { TbArrowBarDown, TbCheck } from 'react-icons/tb';
+import { useState } from 'react';
+import {
+  TbArrowBarDown,
+  TbCheck,
+  TbColorFilter,
+  TbLogout,
+  TbMoon,
+  TbSun,
+  TbUserCircle,
+} from 'react-icons/tb';
 
+import { COLORS_SWATCHES } from '../../../constants/data';
 import { globalAction } from '../../../context/globalProvider/state';
 import { Shade } from '../../../context/globalProvider/types';
 import { useAuth, useGlobalState } from '../../../hooks';
-import { returnAccessibleSliderInputElements } from '../../../jsxCreators';
-import { ColorSchemeSwitch } from '../../colorSchemeSwitch/ColorSchemeSwitch';
+import {
+  returnAccessibleNavLinkElements,
+  returnAccessibleSliderInputElements,
+} from '../../../jsxCreators';
+import { returnThemeColors, splitCamelCase } from '../../../utils';
 import { ChartsGraphsControlsStacker } from '../../displayStatistics/responsivePieChart/utils';
-import { TextWrapper } from '../../wrappers';
-import { splitCamelCase } from '../../../utils';
+import { AccessibleNavLinkCreatorInfo } from '../../wrappers';
 
 function ProfileInfo() {
   const {
-    globalState: { userDocument, themeObject, rowGap, padding },
+    globalState: { userDocument, themeObject, rowGap, padding, width },
     globalDispatch,
   } = useGlobalState();
   const {
     colorScheme,
     respectReducedMotion,
-    black,
-    components,
-    defaultGradient,
     fontFamily,
     primaryColor,
     primaryShade,
-    white,
   } = themeObject;
 
   const {
     authState: { accessToken, isLoggedIn },
   } = useAuth();
 
-  const { colors } = useMantineTheme();
-
   const [openedThemeModal, { open: openThemeModal, close: closeThemeModal }] =
     useDisclosure(false);
+
+  const [checked, setChecked] = useState<boolean>(colorScheme === 'light');
+
+  const [triggerLogoutSubmit, setTriggerLogoutSubmit] =
+    useState<boolean>(false);
+
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { sliderLabelColor },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
+  const colorSchemeSwitch = (
+    <Switch
+      checked={checked}
+      onChange={() => {
+        setChecked(() => (colorScheme === 'light' ? false : true));
+        globalDispatch({
+          type: globalAction.setColorScheme,
+          payload: colorScheme === 'light' ? 'dark' : 'light',
+        });
+      }}
+      onLabel={<TbSun size={16} />}
+      offLabel={<TbMoon size={16} />}
+      size="lg"
+    />
+  );
 
   // color scheme switch
   const displayColorSchemeSwitch = (
     <ChartsGraphsControlsStacker
-      input={<ColorSchemeSwitch />}
+      input={colorSchemeSwitch}
       label="Color scheme"
       value={colorScheme}
       symbol=""
@@ -63,8 +98,9 @@ function ProfileInfo() {
   );
 
   // color swatches section
-  const colorSwatches = Object.entries(colors).map(
-    ([colorName, colorShades], idx) => {
+  const colorSwatches = Object.entries(COLORS_SWATCHES)
+    .filter(([colorName, colorShades]) => colorName !== 'dark')
+    .map(([colorName, colorShades], idx) => {
       const shade =
         colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
       const colorValue = colorShades[shade];
@@ -113,10 +149,8 @@ function ProfileInfo() {
       );
 
       return displayColorSwatch;
-    }
-  );
+    });
 
-  const borderColor = colorScheme === 'light' ? colors.gray[3] : colors.gray[8];
   const displayColorSwatches = (
     <Stack w="100%">
       <Stack px={padding}>
@@ -125,7 +159,7 @@ function ProfileInfo() {
           aria-live="polite"
           style={{
             padding: '0.5rem 0.75rem',
-            border: `1px solid ${borderColor}`,
+            border: borderColor,
             borderRadius: '4px',
           }}
           w="fit-content"
@@ -141,12 +175,14 @@ function ProfileInfo() {
         rowGap={rowGap}
         columnGap={rowGap}
         py={padding}
-        style={{ borderBottom: `1px solid ${borderColor}` }}
+        style={{ borderBottom: borderColor }}
       >
         {colorSwatches}
       </Flex>
     </Stack>
   );
+
+  const sliderWidth = width < 480 ? '217px' : '350px';
 
   const [lightSchemeShadeSlider, darkSchemeShadeSlider] =
     returnAccessibleSliderInputElements([
@@ -155,11 +191,7 @@ function ProfileInfo() {
         ariaLabel: 'Select light scheme shade',
         disabled: colorScheme === 'dark',
         kind: 'slider',
-        label: (value) => (
-          <Text color={colorScheme === 'light' ? 'gray.2' : 'gray.8'}>
-            {value}
-          </Text>
-        ),
+        label: (value) => <Text color={sliderLabelColor}>{value}</Text>,
         max: 9,
         min: 0,
         onChangeSlider: (value: number) => {
@@ -174,18 +206,14 @@ function ProfileInfo() {
         sliderDefaultValue: primaryShade.light,
         step: 1,
         value: primaryShade.light,
-        width: '217px',
+        width: sliderWidth,
       },
       // dark scheme shade slider
       {
         ariaLabel: 'Select dark scheme shade',
         disabled: colorScheme === 'light',
         kind: 'slider',
-        label: (value) => (
-          <Text color={colorScheme === 'light' ? 'gray.2' : 'gray.4'}>
-            {value}
-          </Text>
-        ),
+        label: (value) => <Text color={sliderLabelColor}>{value}</Text>,
         max: 9,
         min: 0,
         onChangeSlider: (value: number) => {
@@ -200,7 +228,7 @@ function ProfileInfo() {
         sliderDefaultValue: primaryShade.dark,
         step: 1,
         value: primaryShade.dark,
-        width: '217px',
+        width: sliderWidth,
       },
     ]);
 
@@ -259,13 +287,26 @@ function ProfileInfo() {
     />
   );
 
+  const modalSize =
+    width < 480 // for iPhone 5/SE
+      ? 375 - 20
+      : width < 768 // for iPhone 6/7/8
+      ? width * 0.8
+      : // at 768vw the navbar appears at width of 225px
+      width < 1024
+      ? (width - 225) * 0.8
+      : // at >= 1200vw the navbar width is 300px
+      width < 1200
+      ? (width - 300) * 0.8
+      : 900 - 40;
+
   // modal section
   const displayThemeModal = (
     <Modal
       opened={openedThemeModal}
       onClose={closeThemeModal}
-      size="sm"
-      title={<Title order={3}>Theme options</Title>}
+      size={modalSize}
+      title={<Title order={3}>Appearance options</Title>}
     >
       <Stack w="100%">
         {displayColorSchemeSwitch}
@@ -276,8 +317,34 @@ function ProfileInfo() {
     </Modal>
   );
 
-  const displayThemeSelection = <Anchor onClick={openThemeModal}>Theme</Anchor>;
-  const displayProfile = <Text color="dark">Profile</Text>;
+  const appearanceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    ariaLabel: 'Select color scheme, primary color, and font family',
+    label: 'Appearance',
+    onClick: openThemeModal,
+    icon: <TbColorFilter />,
+  };
+
+  const profileNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    ariaLabel: 'View profile',
+    label: 'Profile',
+    icon: <TbUserCircle />,
+  };
+
+  const logoutNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    ariaLabel: 'Sign out',
+    label: 'Sign out',
+    icon: <TbLogout />,
+  };
+
+  const [
+    createdAppearanceNavLink,
+    createdProfileNavLink,
+    createdLogoutNavLink,
+  ] = returnAccessibleNavLinkElements([
+    appearanceNavLinkCreatorInfo,
+    profileNavLinkCreatorInfo,
+    logoutNavLinkCreatorInfo,
+  ]);
 
   const displayAvatar = (
     <Group style={{ cursor: 'pointer' }}>
@@ -288,7 +355,6 @@ function ProfileInfo() {
           radius={9999}
         />
       ) : null}
-      <TbArrowBarDown />
     </Group>
   );
 
@@ -297,17 +363,20 @@ function ProfileInfo() {
       <Popover.Target>{displayAvatar}</Popover.Target>
 
       <Popover.Dropdown>
-        {displayThemeSelection}
-        {displayProfile}
+        <Flex direction="column">
+          {createdAppearanceNavLink}
+          {createdProfileNavLink}
+          {createdLogoutNavLink}
+        </Flex>
       </Popover.Dropdown>
     </Popover>
   );
 
   const displayProfileInfoComponent = (
-    <Fragment>
+    <Stack>
       {profilePopover}
       {displayThemeModal}
-    </Fragment>
+    </Stack>
   );
 
   return displayProfileInfoComponent;

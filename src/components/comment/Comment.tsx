@@ -175,7 +175,7 @@ function Comment({
         type: commentAction.setIsLoading,
         payload: true,
       });
-      const pageNumber = pageQueryString.split('=')[1] ?? 1;
+      const pageNumber = pageQueryString.split('=')[1] ?? '1';
       commentDispatch({
         type: commentAction.setLoadingMessage,
         payload: `Loading comments for ${parentResourceTitle}  page: ${pageNumber} ...`,

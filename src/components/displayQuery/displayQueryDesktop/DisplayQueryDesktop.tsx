@@ -969,6 +969,7 @@ function DisplayQueryDesktop<Doc>({
 
   const displayEditRepairNoteModal = (
     <Modal
+      bg={backgroundColor}
       opened={openedEditRepairNotesModal}
       onClose={closeEditRepairNotesModal}
       centered

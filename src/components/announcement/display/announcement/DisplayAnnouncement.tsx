@@ -299,11 +299,10 @@ function DisplayAnnouncement() {
   const spacer = <Text size="md">》</Text>;
 
   const articleAuthor = (
-    <Group>
+    <Group spacing={rowGap}>
       <Text size="md" style={{ letterSpacing: '0.05rem' }}>
         {announcement?.author?.toUpperCase() ?? ''}
       </Text>
-      <Space w="xs" />
       {spacer}
     </Group>
   );
@@ -322,19 +321,15 @@ function DisplayAnnouncement() {
   });
 
   const articleCreatedAt = (
-    <Group>
-      <Space w="xs" />
+    <Group spacing={rowGap}>
       <Text size="md">{formattedDate}</Text>
-      <Space w="xs" />
       {spacer}
     </Group>
   );
 
   const articleTimeToRead = (
-    <Group>
-      <Space w="xs" />
+    <Group spacing={rowGap}>
       <Text size="md">{announcement?.timeToRead ?? 1} min read</Text>
-      <Space w="xs" />
     </Group>
   );
 

@@ -9,10 +9,11 @@ import {
   MantineNumberSize,
   Text,
 } from '@mantine/core';
-import { CSSProperties, useEffect, useState } from 'react';
-import { useGlobalState } from '../../hooks';
 import { useDisclosure } from '@mantine/hooks';
+import { CSSProperties, useEffect, useState } from 'react';
 import { TbPhotoOff } from 'react-icons/tb';
+
+import { useGlobalState } from '../../hooks';
 
 // from mantine
 export interface ImageProps
@@ -75,6 +76,7 @@ function ImageWrapper({ creatorInfoObject }: ImageWrapperProps) {
 
   useEffect(() => {
     toggleLoadingOverlay();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isImageLoading, isImageLoadFailed]);
 
   const {
@@ -113,7 +115,7 @@ function ImageWrapper({ creatorInfoObject }: ImageWrapperProps) {
   const textOverlay = (
     <Text
       size="md"
-      color="white"
+      color="#f5f5f5"
       p={padding}
       weight={700}
       style={{

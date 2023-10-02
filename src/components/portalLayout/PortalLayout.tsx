@@ -64,19 +64,20 @@ function PortalLayout() {
       header={
         <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
       }
-      footer={
-        accessToken && isLoggedIn ? (
-          scrollYDirection === 'up' ? (
-            <PortalFooter />
-          ) : (
-            <></>
-          )
-        ) : undefined
-      }
+      // footer={
+      //   accessToken && isLoggedIn ? (
+      //     scrollYDirection === 'up' ? (
+      //       <PortalFooter />
+      //     ) : (
+      //       <></>
+      //     )
+      //   ) : undefined
+      // }
     >
       {displayBreadcrumbs}
-      <ScrollArea styles={() => scrollBarStyle} type="scroll" offsetScrollbars>
+      <ScrollArea styles={() => scrollBarStyle} type="scroll">
         <Flex
+          bg={backgroundColor}
           direction="column"
           h={width <= 991 ? height - (50 + 50 + 60) : height - (64 + 50 + 60)} //  vw < 991 ?  vh - (header height = 50px + footer height = 60px) : vh - (header height = 64px + footer height = 60px)
         >

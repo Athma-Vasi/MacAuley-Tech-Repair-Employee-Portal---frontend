@@ -190,7 +190,7 @@ function StepperWrapper({
       justify="flex-start"
       rowGap={rowGap}
       w="100%"
-      bg={backgroundColor}
+      // bg={backgroundColor}
       p={padding}
       h="100%"
     >

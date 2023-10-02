@@ -23,6 +23,8 @@ import type { AccessibleImageCreatorInfo } from './ImageWrapper';
 import { ImageWrapper } from './ImageWrapper';
 import type { AccessibleSelectInputCreatorInfo } from './NativeSelectWrapper';
 import { NativeSelectWrapper } from './NativeSelectWrapper';
+import type { AccessibleNavLinkCreatorInfo } from './NavLinkWrapper';
+import { NavLinkWrapper } from './NavLinkWrapper';
 import type { AccessiblePasswordInputCreatorInfo } from './PasswordInputWrapper';
 import { PasswordInputWrapper } from './PasswordInputWrapper';
 import type { AccessiblePhoneNumberTextInputCreatorInfo } from './PhoneTextInputWrapper';
@@ -54,6 +56,7 @@ export {
   FormLayoutWrapper,
   ImageWrapper,
   NativeSelectWrapper,
+  NavLinkWrapper,
   PasswordInputWrapper,
   PhoneTextInputWrapper,
   RadioGroupInputsWrapper,
@@ -71,6 +74,7 @@ export type {
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleImageCreatorInfo,
+  AccessibleNavLinkCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,

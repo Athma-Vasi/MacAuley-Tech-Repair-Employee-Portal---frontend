@@ -124,7 +124,7 @@ function DisplaySurveys() {
         type: displaySurveysAction.setIsLoading,
         payload: true,
       });
-      const pageNumber = pageQueryString.split('=')[1] ?? 1;
+      const pageNumber = pageQueryString.split('=')[1] ?? '1';
       displaySurveysDispatch({
         type: displaySurveysAction.setLoadingMessage,
         payload: `Loading surveys: page ${pageNumber} ...`,

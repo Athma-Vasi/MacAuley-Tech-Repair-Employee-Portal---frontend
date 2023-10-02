@@ -60,6 +60,7 @@ type PortalNavbarAction = {
 };
 
 type PortalNavbarDispatch = {
+  // navlinks active states
   type:
     | PortalNavbarAction['setIsHomeActive']
     | PortalNavbarAction['setIsNotesActive']

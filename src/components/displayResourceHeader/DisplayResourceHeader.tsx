@@ -1,9 +1,9 @@
-import { Card, Flex, Group, Image, Stack, Text, Title } from '@mantine/core';
+import { Card, Flex, Group, Stack, Text, Title } from '@mantine/core';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
-import { returnThemeColors } from '../../utils';
 import { returnAccessibleImageElements } from '../../jsxCreators';
+import { returnThemeColors } from '../../utils';
 
 type DisplayResourceHeaderProps = {
   imageSrc: string;
@@ -19,8 +19,7 @@ function DisplayResourceHeader({
   resourceTitle,
   resourceDescription,
   componentWidth,
-}: //   resourceTopics,
-DisplayResourceHeaderProps) {
+}: DisplayResourceHeaderProps) {
   const {
     globalState: { width, padding, themeObject, rowGap },
   } = useGlobalState();
@@ -45,13 +44,7 @@ DisplayResourceHeaderProps) {
     width < 1200
     ? (width - 225) * 0.8
     : 900 - 40;
-  // width < 768
-  //   ? width
-  //   : width < 1024
-  //   ? width - 225 - 11
-  //   : width < 1920
-  //   ? width - 300 - 11
-  //   : 1920 - 300 - 11;
+
   const imageHeight = imageWidth * 0.68;
 
   const [createdImage] = returnAccessibleImageElements([
@@ -68,16 +61,7 @@ DisplayResourceHeaderProps) {
   const bannerImage = (
     <Stack w={imageWidth} h={imageHeight}>
       <Card withBorder radius="md">
-        <Card.Section>
-          {/* <Image
-            src={imageSrc}
-            alt={imageAlt}
-            fit="fill"
-            style={{ position: 'relative' }}
-            withPlaceholder
-          /> */}
-          {createdImage}
-        </Card.Section>
+        <Card.Section>{createdImage}</Card.Section>
         <Card.Section>
           <Flex
             direction="column"
@@ -87,8 +71,7 @@ DisplayResourceHeaderProps) {
             h="75%"
             style={{
               position: 'absolute',
-              // width: '100%',
-              // height: '100%',
+
               top: width < 480 ? '62%' : width < 1024 ? '68%' : '73%',
               left: '0%',
               zIndex: 1,
@@ -96,7 +79,7 @@ DisplayResourceHeaderProps) {
             }}
           >
             <Title
-              color="white"
+              color="#f5f5f5"
               px={padding}
               pt={padding}
               order={width >= 1200 ? 1 : 2}
@@ -104,7 +87,7 @@ DisplayResourceHeaderProps) {
               {resourceTitle}
             </Title>
             <Text
-              color="white"
+              color="#f5f5f5"
               px={padding}
               size={width >= 1200 ? 'xl' : width >= 991 ? 'lg' : 'md'}
             >
@@ -115,30 +98,6 @@ DisplayResourceHeaderProps) {
       </Card>
     </Stack>
   );
-
-  //   const displayResourceKinds = (
-  //     <Stack w={imageWidth}>
-  //       <Title order={3}>{resourceTitle} topics</Title>
-  //       <Flex
-  //         wrap="wrap"
-  //         align="center"
-  //         justify="flex-start"
-  //         rowGap={rowGap}
-  //         columnGap={rowGap}
-  //       >
-  //         {resourceTopics.map(([icon, topic]) => {
-  //           const resourceTopic = (
-  //             <Group>
-  //               {icon}
-  //               <Text>{topic}</Text>
-  //             </Group>
-  //           );
-
-  //           return resourceTopic;
-  //         })}
-  //       </Flex>
-  //     </Stack>
-  //   );
 
   return (
     <Group w="100%" position="center" py={padding} bg={backgroundColor}>

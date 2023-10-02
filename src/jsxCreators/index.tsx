@@ -18,6 +18,7 @@ import type {
   AccessibleCheckboxSingleInputCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
   AccessibleImageCreatorInfo,
+  AccessibleNavLinkCreatorInfo,
   AccessiblePasswordInputCreatorInfo,
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
@@ -34,6 +35,7 @@ import {
   DateTimeInputWrapper,
   ImageWrapper,
   NativeSelectWrapper,
+  NavLinkWrapper,
   PasswordInputWrapper,
   PhoneTextInputWrapper,
   RadioGroupInputsWrapper,
@@ -721,6 +723,17 @@ function returnAccessibleImageElements(
   ));
 }
 
+function returnAccessibleNavLinkElements(
+  creatorInfoObjectArray: AccessibleNavLinkCreatorInfo[]
+) {
+  return creatorInfoObjectArray.map((creatorInfoObject, index) => (
+    <NavLinkWrapper
+      key={`${index}${creatorInfoObject.label}`}
+      creatorInfoObject={creatorInfoObject}
+    />
+  ));
+}
+
 function returnAccessibleSliderInputElements(
   creatorInfoObjectArray: AccessibleSliderInputCreatorInfo[]
 ) {
@@ -768,6 +781,7 @@ export {
   returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleDynamicTextInputElements,
   returnAccessibleImageElements,
+  returnAccessibleNavLinkElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleRadioGroupInputsElements,

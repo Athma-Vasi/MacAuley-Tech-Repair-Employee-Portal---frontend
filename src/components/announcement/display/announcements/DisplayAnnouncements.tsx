@@ -22,7 +22,6 @@ import { logState, returnThemeColors, urlBuilder } from '../../../../utils';
 import DisplayResourceHeader from '../../../displayResourceHeader/DisplayResourceHeader';
 import { PageBuilder } from '../../../pageBuilder';
 import { QueryBuilder } from '../../../queryBuilder';
-import { AccessibleImageCreatorInfo } from '../../../wrappers';
 import { ANNOUNCEMENT_QUERY_DATA } from '../../create/constants';
 import { AnnouncementDocument } from '../../create/types';
 import {
@@ -66,8 +65,6 @@ function DisplayAnnouncements() {
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
-  const [loadingOverlayVisible, { toggle: toggleLoadingOverlay }] =
-    useDisclosure(false);
 
   /** ------------- end hooks ------------- */
 
@@ -187,11 +184,6 @@ function DisplayAnnouncements() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFetchAnnouncements]);
 
-  // toggle overlay states
-  useEffect(() => {
-    toggleLoadingOverlay();
-  }, [isLoading]);
-
   useEffect(() => {
     displayAnnouncementsDispatch({
       type: displayAnnouncementsAction.setNewQueryFlag,
@@ -219,25 +211,6 @@ function DisplayAnnouncements() {
   }, [displayAnnouncementsState]);
   /** ------------- end useEffects ------------- */
 
-  /** ------------- begin component render bypass ------------- */
-  // if (isLoading || isSubmitting || isSuccessful) {
-  //   return (
-  //     <CustomNotification
-  //       isLoading={isLoading}
-  //       isSubmitting={isSubmitting}
-  //       isSuccessful={isSuccessful}
-  //       loadingMessage={loadingMessage}
-  //       successMessage={successMessage}
-  //       submitMessage={submitMessage}
-  //       parentDispatch={displayAnnouncementsDispatch}
-  //       navigateTo={{
-  //         successPath: '/home/outreach/announcement/display',
-  //       }}
-  //     />
-  //   );
-  // }
-  /** ------------- end component render bypass ------------- */
-
   const {
     appThemeColors: { backgroundColor, borderColor },
   } = returnThemeColors({
@@ -246,70 +219,6 @@ function DisplayAnnouncements() {
   });
 
   /** ------------- begin input creators ------------- */
-
-  // const createdAnnouncementsCards = responseData?.map(
-  //   (announcement, announcementIdx) => {
-  //     const { _id, bannerImageAlt, title, bannerImageSrcCompressed } =
-  //       announcement;
-
-  //     // required to avoid breadcrumbs showing '%20' instead of spaces
-  //     const dynamicPath = title ? title.replace(/ /g, '-') : _id;
-  //     const announcementCard = (
-  //       <UnstyledButton
-  //         key={`${_id}-${announcementIdx}`}
-  //         w={350}
-  //         h={217}
-  //         onClick={() => {
-  //           globalDispatch({
-  //             type: globalAction.setAnnouncementDocument,
-  //             payload: announcement,
-  //           });
-
-  //           navigate(`/home/outreach/announcement/display/${dynamicPath}`, {
-  //             replace: false,
-  //           });
-  //         }}
-  //       >
-  //         <Card shadow="sm" radius="md" withBorder w="100%" h="100%">
-  //           <Card.Section>
-  //             <Image
-  //               src={bannerImageSrcCompressed}
-  //               alt={bannerImageAlt}
-  //               fit="fill"
-  //               style={{
-  //                 position: 'relative',
-  //                 // opacity: 0.4,
-  //                 width: '100%',
-  //                 height: '100%',
-  //               }}
-  //               radius="md"
-  //               withPlaceholder
-  //             />
-  //           </Card.Section>
-
-  //           <Text
-  //             size="md"
-  //             color="white"
-  //             p={padding}
-  //             weight={700}
-  //             style={{
-  //               position: 'absolute',
-  //               width: '100%',
-  //               top: '75%',
-  //               left: '0%',
-  //               zIndex: 1,
-  //               backgroundColor: 'rgba(0,0,0,0.7)',
-  //             }}
-  //           >
-  //             {title}
-  //           </Text>
-  //         </Card>
-  //       </UnstyledButton>
-  //     );
-
-  //     return announcementCard;
-  //   }
-  // );
 
   const createdAnnouncementsCards = responseData?.map(
     (announcement, announcementIdx) => {
@@ -372,7 +281,7 @@ function DisplayAnnouncements() {
     />
   );
 
-  const pageNumber = pageQueryString.split('=')[1] ?? 1;
+  const pageNumber = pageQueryString.split('=')[1] ?? '1';
   const displayAnnouncementCards = (
     <Flex
       align="flex-start"
@@ -418,12 +327,10 @@ function DisplayAnnouncements() {
   const displayPagination = (
     <Group
       w={sectionWidth}
-      style={{
-        border: borderColor,
-        borderRadius: 4,
-      }}
       spacing={rowGap}
       p={padding}
+      position="center"
+      align="center"
     >
       <PageBuilder
         total={pages}
@@ -446,12 +353,12 @@ function DisplayAnnouncements() {
   );
 
   const displayAnnouncementsComponent = (
-    <Flex direction="column" w="100%">
+    <Stack w="100%" align="center">
       {displayAnnouncementHeader}
       {displayQueryBuilder}
-      {displayPagination}
       {displayAnnouncementCards}
-    </Flex>
+      {displayPagination}
+    </Stack>
   );
 
   /** ------------- end input display ------------- */

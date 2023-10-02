@@ -2,15 +2,14 @@ import {
   Card,
   Flex,
   Group,
-  Image,
   MantineNumberSize,
-  Stack,
   Text,
   Title,
   Tooltip,
 } from '@mantine/core';
 import dagre from 'dagre';
-import { TbBrandMastodon, TbPhotoOff } from 'react-icons/tb';
+import { CSSProperties } from 'react';
+import { TbBrandMastodon } from 'react-icons/tb';
 import {
   TiSocialDribbble,
   TiSocialFlickr,
@@ -18,6 +17,7 @@ import {
 } from 'react-icons/ti';
 import { Edge, Node } from 'reactflow';
 
+import { returnAccessibleImageElements } from '../../jsxCreators';
 import {
   DagreLabelPos,
   DagreRankAlign,
@@ -25,8 +25,6 @@ import {
   DagreRankerAlgorithm,
   DirectoryUserDocument,
 } from './types';
-import { CSSProperties } from 'react';
-import { returnAccessibleImageElements } from '../../jsxCreators';
 
 type ReturnDirectoryProfileCardInput = {
   userDocument: DirectoryUserDocument;
@@ -118,15 +116,6 @@ function returnDirectoryProfileCard({
             borderRight: border,
           }}
         >
-          {/* <Image
-            src={profilePictureUrl}
-            alt={`Picture of ${firstName} ${lastName}`}
-            width={84}
-            height={84}
-            radius={9999}
-            withPlaceholder
-            placeholder={<TbPhotoOff size={18} />}
-          /> */}
           {createdImage}
           <Text>{preferredPronouns}</Text>
           {createdSocialMediaIcons}

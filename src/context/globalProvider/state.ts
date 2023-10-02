@@ -13,8 +13,10 @@ const initialThemeObject: ThemeObject = {
   colorScheme: 'light',
   respectReducedMotion: true,
 
-  white: '#f8f9fa', // gray.0
-  black: '#212529', // gray.9
+  // white: '#f8f9fa', // gray.0
+  // black: '#212529', // gray.9
+  white: '#f5f5f5',
+  black: '#25262b',
 
   primaryColor: 'violet',
   primaryShade: { light: 5, dark: 7 },

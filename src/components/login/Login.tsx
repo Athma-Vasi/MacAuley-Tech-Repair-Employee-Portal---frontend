@@ -7,26 +7,25 @@ import {
   TextInput,
   Title,
 } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import jwtDecode, { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
+import { TbPassword, TbUser } from 'react-icons/tb';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../constants/data';
 import { authAction } from '../../context/authProvider/state';
+import { globalAction } from '../../context/globalProvider/state';
+import { useGlobalState } from '../../hooks';
 import { useAuth } from '../../hooks/useAuth';
+import { returnAccessibleButtonElements } from '../../jsxCreators';
+import { logState, returnThemeColors, urlBuilder } from '../../utils';
+import { NotificationModal } from '../notificationModal';
+import { AccessibleButtonCreatorInfo } from '../wrappers';
 import { LOGIN_URL } from './constants';
 import { initialLoginState, loginAction, loginReducer } from './state';
 import { DecodedToken, LoginResponse } from './types';
-import { TbPassword, TbUser } from 'react-icons/tb';
-import { AccessibleButtonCreatorInfo } from '../wrappers';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { NotificationModal } from '../notificationModal';
-import { useGlobalState } from '../../hooks';
-import { logState, returnThemeColors, urlBuilder } from '../../utils';
-import { useDisclosure } from '@mantine/hooks';
-import { globalAction } from '../../context/globalProvider/state';
-import { useErrorBoundary } from 'react-error-boundary';
-import { COLORS_SWATCHES } from '../../constants/data';
-import { log } from 'console';
 
 function Login() {
   /** ------------- begin hooks ------------- */
@@ -289,6 +288,7 @@ function Login() {
   /** ------------- begin component display ------------- */
   const {
     generalColors: { themeColorShade },
+    appThemeColors: { backgroundColor },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -368,7 +368,14 @@ function Login() {
   /** ------------- end component display ------------- */
 
   return (
-    <Flex w="100%" h="100vh" align="center" justify="center" p={padding}>
+    <Flex
+      bg={backgroundColor}
+      w="100%"
+      h="100vh"
+      align="center"
+      justify="center"
+      p={padding}
+    >
       {displayLoginComponent}
     </Flex>
   );
