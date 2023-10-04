@@ -318,7 +318,7 @@ function DisplayQuery<Doc>({
     required: true,
     withAsterisk: true,
     semanticName: 'acknowledgement',
-    customWidth: 300,
+    textInputWidth: 300,
   };
 
   const deleteButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -366,8 +366,8 @@ function DisplayQuery<Doc>({
 
   const sectionWidth =
     width < 480 // for iPhone 5/SE
-      ? 375 - 20
-      : width < 768 // for iPhone 6/7/8
+      ? width * 0.95
+      : width < 768 // for iPhones 6 - 15
       ? width - 40
       : // at 768vw the navbar appears at width of 225px
       width < 1024

@@ -1,4 +1,4 @@
-import { NativeSelect } from '@mantine/core';
+import { MantineNumberSize, MantineSize, NativeSelect } from '@mantine/core';
 import { ChangeEvent, RefObject } from 'react';
 
 import { useGlobalState } from '../../hooks';
@@ -15,8 +15,8 @@ type AccessibleSelectInputCreatorInfo = {
   withAsterisk?: boolean;
   ref?: RefObject<HTMLSelectElement>;
   required?: boolean;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  width?: string | number;
+  size?: MantineSize;
+  width?: MantineNumberSize;
 };
 
 type NativeSelectWrapperProps = {
@@ -24,10 +24,6 @@ type NativeSelectWrapperProps = {
 };
 
 function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
-  const {
-    globalState: { width: vWidth },
-  } = useGlobalState();
-
   const {
     data,
     label = '',

@@ -1,24 +1,24 @@
 import {
-  Anchor,
   AppShell,
-  Breadcrumbs,
   Flex,
+  Footer,
   Group,
   ScrollArea,
-  useMantineTheme,
+  Space,
+  Text,
 } from '@mantine/core';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../constants/data';
+import { useAuth } from '../../hooks';
 import { useGlobalState } from '../../hooks/useGlobalState';
+import { returnThemeColors } from '../../utils';
+import { BreadcrumbsBuilder } from '../breadcrumbsBuilder/BreadcrumbsBuilder';
 import { PortalFooter } from '../portalFooter';
 import { PortalHeader } from '../portalHeader';
 import { PortalNavbar } from '../portalNavbar';
-import { returnThemeColors, splitCamelCase } from '../../utils';
-
-import { useAuth } from '../../hooks';
-import { COLORS_SWATCHES } from '../../constants/data';
-import { BreadcrumbsBuilder } from '../breadcrumbsBuilder/BreadcrumbsBuilder';
+import { useWindowScroll } from '@mantine/hooks';
 
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);
@@ -30,15 +30,16 @@ function PortalLayout() {
     authState: { accessToken, isLoggedIn },
   } = useAuth();
 
-  const location = useLocation();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
 
   const {
     appThemeColors: { backgroundColor, borderColor },
     scrollBarStyle,
-  } = returnThemeColors({
-    themeObject,
-    colorsSwatches: COLORS_SWATCHES,
-  });
+  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const displayBreadcrumbs = (
     <Group
@@ -48,39 +49,33 @@ function PortalLayout() {
       bg={backgroundColor}
       style={{ borderBottom: borderColor }}
     >
-      {BreadcrumbsBuilder(location.pathname)}
+      {BreadcrumbsBuilder(pathname)}
     </Group>
   );
 
   return (
     <AppShell
+      bg={backgroundColor}
       padding={0}
       navbarOffsetBreakpoint="sm"
-      navbar={
-        accessToken && isLoggedIn ? (
-          <PortalNavbar openedNavbar={opened} />
-        ) : undefined
-      }
+      navbar={<PortalNavbar openedNavbar={opened} />}
       header={
         <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
       }
-      // footer={
-      //   accessToken && isLoggedIn ? (
-      //     scrollYDirection === 'up' ? (
-      //       <PortalFooter />
-      //     ) : (
-      //       <></>
-      //     )
-      //   ) : undefined
-      // }
+      // footer={scrollYDirection === 'up' ? <PortalFooter /> : <></>}
+      footer={<PortalFooter />}
     >
+      {/* breadcrumbs always visible on top of <Outlet /> */}
       {displayBreadcrumbs}
+
       <ScrollArea styles={() => scrollBarStyle} type="scroll">
         <Flex
           bg={backgroundColor}
           direction="column"
-          h={width <= 991 ? height - (50 + 50 + 60) : height - (64 + 50 + 60)} //  vw < 991 ?  vh - (header height = 50px + footer height = 60px) : vh - (header height = 64px + footer height = 60px)
+          h={width <= 991 ? height - (50 + 56 + 75) : height - (64 + 56 + 75)} //  vw < 991 ?  vh - (header height = 50px + padding = 56 + footer height = 75px) : vh - (header height = 64px + padding = 56 + footer height = 75px)
+          w="100%"
         >
+          <Space h="xl" />
           <Outlet />
         </Flex>
       </ScrollArea>

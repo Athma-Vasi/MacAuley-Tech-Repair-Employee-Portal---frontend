@@ -6,7 +6,7 @@ import {
 } from '../../types';
 import { DescriptionObjectsArray } from '../wrappers';
 
-const REGISTER_URL = '/users';
+const REGISTER_URL = '/user';
 
 const REGISTER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {

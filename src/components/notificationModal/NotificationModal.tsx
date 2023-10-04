@@ -58,7 +58,12 @@ function NotificationModal({
       title={title}
       withCloseButton={withCloseButton}
     >
-      <Notification icon={icon} loading={loading} withCloseButton={false}>
+      <Notification
+        icon={icon}
+        loading={loading}
+        withCloseButton={false}
+        style={{ boxShadow: '0 0 0 0' }}
+      >
         <Text>{text}</Text>
       </Notification>
     </Modal>

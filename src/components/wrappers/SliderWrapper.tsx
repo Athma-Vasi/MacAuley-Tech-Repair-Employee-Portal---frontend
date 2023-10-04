@@ -1,29 +1,28 @@
-import { RangeSlider, Slider } from '@mantine/core';
+import { MantineSize, RangeSlider, Slider } from '@mantine/core';
 import { ReactNode } from 'react';
 
 import { SliderInputData } from '../../types';
-import { useGlobalState } from '../../hooks';
 
 type AccessibleSliderInputCreatorInfo = {
-  ariaLabel: string;
   ariaDescribedBy?: string;
-  disabled?: boolean;
-  thumbLabel?: string; // slider
-  thumbFromLabel?: string; // range slider
+  ariaLabel: string;
   color?: string;
+  disabled?: boolean;
   kind?: 'slider' | 'range-slider';
   label?: ReactNode | ((value: number) => ReactNode);
-  min: number;
-  max: number;
   marks?: SliderInputData;
-  onChangeSlider?: (value: number) => void;
+  max: number;
+  min: number;
   onChangeRangeSlider?: (value: [number, number]) => void;
+  onChangeSlider?: (value: number) => void;
   precision?: number;
   rangeSliderDefaultValues?: [number, number];
-  size?: number | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: MantineSize;
   sliderDefaultValue?: number;
   step: number;
   thumbChildren?: ReactNode;
+  thumbFromLabel?: string; // range slider
+  thumbLabel?: string; // slider
   thumbSize?: number;
   value: number;
   width?: number | string;
@@ -35,31 +34,25 @@ type SliderWrapperProps = {
 
 function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
   const {
-    globalState: {
-      themeObject: { colorScheme },
-    },
-  } = useGlobalState();
-
-  const {
-    ariaLabel,
     ariaDescribedBy,
-    disabled = false,
-    thumbLabel,
-    thumbFromLabel,
+    ariaLabel,
     color,
-    label = null,
+    disabled = false,
     kind = 'slider',
-    min,
-    max,
+    label = null,
     marks,
-    onChangeSlider = () => {},
+    max,
+    min,
     onChangeRangeSlider = () => {},
+    onChangeSlider = () => {},
     precision = 1,
     rangeSliderDefaultValues = [min, max],
     size = 'sm',
     sliderDefaultValue = min,
     step,
     thumbChildren,
+    thumbFromLabel,
+    thumbLabel,
     thumbSize,
     value,
     width = '100%',
@@ -67,47 +60,47 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
 
   return kind === 'slider' ? (
     <Slider
-      aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
-      disabled={disabled}
-      thumbLabel={thumbLabel}
+      aria-label={ariaLabel}
       color={color}
+      defaultValue={sliderDefaultValue}
+      disabled={disabled}
       label={label}
+      marks={marks}
       max={max}
       min={min}
-      marks={marks}
       onChange={onChangeSlider}
       precision={precision}
       size={size}
-      defaultValue={sliderDefaultValue}
       step={step}
+      style={{ border: 'none', outline: 'none' }}
       thumbChildren={thumbChildren}
+      thumbLabel={thumbLabel}
       thumbSize={thumbSize}
       value={value}
       w={width}
-      style={{ border: 'none', outline: 'none' }}
     />
   ) : (
     <RangeSlider
-      aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
-      disabled={disabled}
-      thumbFromLabel={thumbFromLabel}
+      aria-label={ariaLabel}
       color={color}
+      defaultValue={rangeSliderDefaultValues}
+      disabled={disabled}
       label={label}
+      marks={marks}
       max={max}
       min={min}
-      marks={marks}
       onChange={onChangeRangeSlider}
       precision={precision}
       size={size}
       step={step}
+      style={{ border: 'none', outline: 'none' }}
       thumbChildren={thumbChildren}
+      thumbFromLabel={thumbFromLabel}
       thumbSize={thumbSize}
-      defaultValue={rangeSliderDefaultValues}
       value={rangeSliderDefaultValues}
       w={width}
-      style={{ border: 'none', outline: 'none' }}
     />
   );
 }

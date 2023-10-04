@@ -1,4 +1,12 @@
-import { Flex, Group, Modal, Notification, Text, Title } from '@mantine/core';
+import {
+  Flex,
+  Group,
+  Modal,
+  Notification,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
@@ -113,7 +121,7 @@ function DisplayResource<Doc>({
     globalDispatch,
   } = useGlobalState();
   const {
-    authState: { accessToken, roles },
+    authState: { accessToken, roles, isAccessTokenExpired },
   } = useAuth();
 
   // submit success notification modal
@@ -129,6 +137,10 @@ function DisplayResource<Doc>({
   const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -324,7 +336,7 @@ function DisplayResource<Doc>({
     };
     // only trigger fetchResource on triggerRefresh change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerRefresh]);
+  }, [triggerRefresh, isAccessTokenExpired]);
 
   useEffect(() => {
     displayResourceDispatch({
@@ -362,6 +374,10 @@ function DisplayResource<Doc>({
 
   // submit request status form on change
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -498,7 +514,7 @@ function DisplayResource<Doc>({
 
     // only trigger updateRequestStatus on triggerUpdateRequestStatus change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerUpdateRequestStatus]);
+  }, [triggerUpdateRequestStatus, isAccessTokenExpired]);
 
   useEffect(() => {
     if (requestStatus.id.length > 0) {
@@ -512,6 +528,10 @@ function DisplayResource<Doc>({
   // delete resource on deleteResource status change
   // ALSO MAKE A PUT REQUEST WITH MODIFIED FORM DATA
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -631,10 +651,14 @@ function DisplayResource<Doc>({
       isMounted = false;
       controller.abort();
     };
-  }, [deleteResource]);
+  }, [deleteResource, isAccessTokenExpired]);
 
   // when an uploaded file is deleted, patch request is made to update the asociated resource
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -816,7 +840,7 @@ function DisplayResource<Doc>({
       isMounted = false;
       controller.abort();
     };
-  }, [deleteResource.fileUploadId]);
+  }, [deleteResource.fileUploadId, isAccessTokenExpired]);
 
   const {
     appThemeColors: { backgroundColor, borderColor },
@@ -849,8 +873,8 @@ function DisplayResource<Doc>({
 
   const sectionWidth =
     width < 480 // for iPhone 5/SE
-      ? 375 - 20
-      : width < 768 // for iPhone 6/7/8
+      ? width * 0.95
+      : width < 768 // for iPhones 6 - 15
       ? width - 40
       : // at 768vw the navbar appears at width of 225px
       width < 1024
@@ -878,12 +902,10 @@ function DisplayResource<Doc>({
   const displayPagination = (
     <Group
       w={sectionWidth}
-      style={{
-        border: borderColor,
-        borderRadius: 4,
-      }}
       spacing={rowGap}
       p={padding}
+      position="center"
+      align="center"
     >
       <PageBuilder
         total={pages}
@@ -951,18 +973,15 @@ function DisplayResource<Doc>({
   );
 
   const displayResourceComponent = (
-    <Flex
-      direction="column"
-      align="center"
-      justify="center"
+    <Stack
       w="100%"
       bg={backgroundColor}
       style={{
         ...style,
         borderRadius: 4,
       }}
+      align="center"
       p={padding}
-      rowGap={rowGap}
     >
       {displaySubmitSuccessNotificationModal}
 
@@ -973,7 +992,7 @@ function DisplayResource<Doc>({
       {displayResource}
 
       {displayPagination}
-    </Flex>
+    </Stack>
   );
 
   useEffect(() => {

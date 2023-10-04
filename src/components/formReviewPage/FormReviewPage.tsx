@@ -7,10 +7,12 @@ import {
   Title,
   useMantineTheme,
 } from '@mantine/core';
-import { useGlobalState } from '../../hooks';
-import { COLORS_SWATCHES } from '../../constants/data';
 import { TbArrowDown, TbArrowUp } from 'react-icons/tb';
+
+import { COLORS_SWATCHES } from '../../constants/data';
+import { useGlobalState } from '../../hooks';
 import { returnAccessibleButtonElements } from '../../jsxCreators';
+import { returnThemeColors, splitCamelCase } from '../../utils';
 
 type FormReviewObject = Record<
   string, // page name
@@ -31,30 +33,22 @@ function FormReviewPage({
   formName = 'Form review',
 }: FormReviewPageProps) {
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-      padding,
-      rowGap,
-    },
+    globalState: { themeObject, padding, rowGap },
   } = useGlobalState();
 
-  const { gray, red } = COLORS_SWATCHES;
-
-  const borderColorGray =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
-  // const borderColorRed =
-  //   colorScheme === 'light'
-  //     ? `1px solid ${red[primaryShade.light]}`
-  //     : `1px solid ${red[primaryShade.dark]}`;
-
-  const textColorRed =
-    colorScheme === 'light' ? red[primaryShade.light] : red[primaryShade.dark];
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { redColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
 
   const displayFormReviewStack = Object.entries(formReviewObject).map(
     ([pageName, pageObjectArr], index) => {
       const displayPageName = (
         <Title order={5} style={{ marginTop: 16 }}>
-          {pageName}
+          {splitCamelCase(pageName)}
         </Title>
       );
 
@@ -63,7 +57,7 @@ function FormReviewPage({
         const { inputValue = isInputValueValid ? 'Yes' : 'No' } = pageObject;
 
         const displayInputName = (
-          <Text color={isInputValueValid ? undefined : textColorRed}>
+          <Text color={isInputValueValid ? void 0 : redColorShade}>
             {inputName}
           </Text>
         );
@@ -98,9 +92,7 @@ function FormReviewPage({
           <Grid
             columns={10}
             key={`form-review-${index}`}
-            style={{
-              borderBottom: borderColorGray,
-            }}
+            style={{ borderBottom: borderColor }}
             gutter={rowGap}
             w="100%"
           >
@@ -125,7 +117,7 @@ function FormReviewPage({
 
   const displayTitle = (
     <Group w="100%" position="center">
-      <Title order={4}>{formName} form</Title>
+      <Title order={4}>{formName}</Title>
     </Group>
   );
 
@@ -133,12 +125,7 @@ function FormReviewPage({
     <Stack
       w="100%"
       p={padding}
-      // h="62vh"
-      style={{
-        // overflowY: 'scroll',
-        border: borderColorGray,
-        borderRadius: 4,
-      }}
+      style={{ border: borderColor, borderRadius: 4 }}
     >
       {displayTitle}
       {displayFormReviewStack}

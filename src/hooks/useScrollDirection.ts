@@ -7,8 +7,8 @@ type ScrollAxesAmount = {
   currentScrollYPosition: number;
 };
 
-type ScrollXDirection = 'left' | 'right' | '';
-type ScrollYDirection = 'up' | 'down' | '';
+type ScrollXDirection = 'left' | 'right' | 'neutral';
+type ScrollYDirection = 'up' | 'down' | 'neutral';
 
 type ScrollAxesDirection = {
   scrollXDirection: ScrollXDirection;
@@ -43,13 +43,13 @@ function useScrollDirection(): ScrollAxesDirection {
         ? 'right'
         : scrollAxes.currentScrollXPosition < scrollAxes.previousScrollXPosition
         ? 'left'
-        : '',
+        : 'neutral',
     scrollYDirection:
       scrollAxes.currentScrollYPosition > scrollAxes.previousScrollYPosition
         ? 'down'
         : scrollAxes.currentScrollYPosition < scrollAxes.previousScrollYPosition
         ? 'up'
-        : '',
+        : 'neutral',
   };
 }
 

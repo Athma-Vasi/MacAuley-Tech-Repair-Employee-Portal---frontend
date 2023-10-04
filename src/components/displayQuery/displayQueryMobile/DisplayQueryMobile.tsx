@@ -32,6 +32,7 @@ import { returnAccessibleButtonElements } from '../../../jsxCreators';
 import {
   addFieldsToObject,
   formatDate,
+  replaceLastCommaWithAnd,
   returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
@@ -188,15 +189,7 @@ function DisplayQueryMobile({
             : value === false
             ? 'No'
             : Array.isArray(value)
-            ? value.map((val, valIdx) => {
-                return (
-                  <Text key={`${valIdx}`}>
-                    {`${val.toString().charAt(0).toUpperCase()}${val
-                      .toString()
-                      .slice(1)}${valIdx === value.length - 1 ? '' : ', '}`}
-                  </Text>
-                );
-              })
+            ? replaceLastCommaWithAnd(value.join(', '))
             : key.toLowerCase().includes('id')
             ? value
             : key === 'createdAt' || key === 'updatedAt'
@@ -394,7 +387,7 @@ function DisplayQueryMobile({
             align={width < 768 ? 'flex-start' : 'center'}
             justify={width < 768 ? 'flex-start' : 'space-between'}
             bg={backgroundColor}
-            style={{ borderBottom: lastKeyValBorderBottom, borderRadius: 4 }}
+            style={{ borderBottom: lastKeyValBorderBottom }}
             rowGap={rowGap}
             w="100%"
             p={padding}
@@ -459,7 +452,7 @@ function DisplayQueryMobile({
         <Accordion w="100%">
           <Accordion.Item value={displaySection}>
             <Accordion.Control>
-              <Title order={5}>{displaySection}</Title>
+              <Text weight={500}>{displaySection}</Text>
             </Accordion.Control>
             <Accordion.Panel>
               <Flex
@@ -634,7 +627,7 @@ function DisplayQueryMobile({
   const displayLoadingOverlay = (
     <LoadingOverlay
       visible={isLoading}
-      zIndex={1000}
+      zIndex={2}
       overlayBlur={9}
       overlayOpacity={0.99}
       radius={4}
@@ -650,7 +643,7 @@ function DisplayQueryMobile({
   return (
     <Flex
       direction="column"
-      style={{ ...style }}
+      style={{ ...style, position: 'relative' }}
       align="flex-start"
       justify="center"
       w="100%"

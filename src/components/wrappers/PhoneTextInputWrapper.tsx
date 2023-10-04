@@ -1,12 +1,7 @@
 import {
-  faCheck,
-  faRefresh,
-  IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
   Group,
+  MantineNumberSize,
+  MantineSize,
   Popover,
   Stack,
   TextInput,
@@ -17,36 +12,34 @@ import {
 import { useGlobalState } from '../../hooks';
 import { ReactNode, useState } from 'react';
 import { TbCheck, TbRefresh } from 'react-icons/tb';
-import { splitCamelCase } from '../../utils';
+import { returnThemeColors, splitCamelCase } from '../../utils';
+import { COLORS_SWATCHES } from '../../constants/data';
 
 type AccessiblePhoneNumberTextInputCreatorInfo = {
-  semanticName: string;
+  ariaRequired?: boolean;
+  autoComplete?: 'on' | 'off';
+  description: { error: JSX.Element; valid: JSX.Element };
+  icon?: ReactNode;
+  initialInputValue?: string;
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaRequired?: boolean;
-  description: {
-    error: JSX.Element;
-    valid: JSX.Element;
-  };
-  placeholder: string;
-  initialInputValue?: string;
-  icon?: ReactNode;
+  maxLength?: number;
+  minLength?: number;
   onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  ref?: React.RefObject<HTMLInputElement>;
+  required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
-
-  minLength?: number;
-  maxLength?: number;
+  semanticName: string;
+  size?: MantineSize;
+  width?: string | number;
   withAsterisk?: boolean;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  ref?: React.RefObject<HTMLInputElement>;
-  required?: boolean;
-  autoComplete?: 'on' | 'off';
 };
 
 type PhoneTextInputWrapperProps = {
@@ -57,48 +50,46 @@ function PhoneTextInputWrapper({
   creatorInfoObject,
 }: PhoneTextInputWrapperProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
-  const { colors } = useMantineTheme();
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-      width,
-    },
+    globalState: { themeObject },
   } = useGlobalState();
 
   const {
-    semanticName,
+    ariaRequired = false,
+    autoComplete = 'off',
+    description,
+    icon = null,
+    initialInputValue = '+(1)',
     inputText,
     isValidInputText,
     label,
-    ariaRequired = false,
-    description,
-    placeholder,
-    initialInputValue = '+(1)',
-    icon = null,
+    maxLength = 18,
+    minLength = 18,
     onBlur,
     onChange,
     onFocus,
     onKeyDown,
+    placeholder,
+    ref = null,
+    required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
-    minLength = 18,
-    maxLength = 18,
-    withAsterisk = false,
-    ref = null,
-    required = false,
+    semanticName,
     size = 'sm',
-    autoComplete = 'off',
+    width = 330,
+    withAsterisk = false,
   } = creatorInfoObject;
 
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const {
+    generalColors: { greenColorShade, iconGray },
+  } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
   const leftIcon = isValidInputText ? (
     icon ? (
       icon
     ) : (
-      <TbCheck color={colors.green[colorShade]} size={18} />
+      <TbCheck color={greenColorShade} size={18} />
     )
   ) : null;
 
@@ -114,7 +105,7 @@ function PhoneTextInputWrapper({
             aria-label={`Reset ${splitCamelCase(
               semanticName
             )} value to ${initialInputValue}`}
-            color={colors.gray[colorScheme === 'light' ? 5 : 3]}
+            color={iconGray}
             size={18}
             onClick={rightSectionOnClick}
           />
@@ -122,8 +113,6 @@ function PhoneTextInputWrapper({
       </Tooltip>
     )
   ) : null;
-
-  const inputWidth = 330;
 
   const inputWithPopover = (
     <Popover
@@ -138,36 +127,35 @@ function PhoneTextInputWrapper({
         <div
           onFocusCapture={() => setPopoverOpened(true)}
           onBlurCapture={() => setPopoverOpened(false)}
+          style={{ width }}
         >
           <TextInput
-            size={size}
-            w={inputWidth}
-            color="dark"
-            label={label}
-            aria-required={ariaRequired}
             aria-describedby={
               isValidInputText
                 ? `${semanticName.split(' ').join('-')}-input-note-valid`
                 : `${semanticName.split(' ').join('-')}-input-note-error`
             }
-            // description={isValidInputText ? description.valid : description.error}
-            placeholder={placeholder}
-            autoComplete={autoComplete}
             aria-invalid={isValidInputText ? false : true}
-            value={inputText}
-            icon={leftIcon}
+            aria-required={ariaRequired}
+            autoComplete={autoComplete}
+            color="dark"
             error={!isValidInputText && inputText !== initialInputValue}
+            icon={leftIcon}
+            label={label}
+            maxLength={maxLength}
+            minLength={minLength}
             name={semanticName.split(' ').join('-')}
+            onBlur={onBlur}
             onChange={onChange}
             onFocus={onFocus}
-            onBlur={onBlur}
             onKeyDown={onKeyDown}
-            rightSection={rightIcon}
-            minLength={minLength}
-            maxLength={maxLength}
+            placeholder={placeholder}
             ref={ref}
-            withAsterisk={withAsterisk}
             required={required}
+            rightSection={rightIcon}
+            size={size}
+            value={inputText}
+            withAsterisk={withAsterisk}
           />
         </div>
       </Popover.Target>

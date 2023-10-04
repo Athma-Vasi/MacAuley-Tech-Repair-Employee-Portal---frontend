@@ -97,7 +97,7 @@ function Login() {
       });
       openSubmitSuccessNotificationModal();
 
-      const url: URL = new URL('http://localhost:3500/auth/login');
+      const url: URL = new URL('http://localhost:5500/auth/login');
       const body = JSON.stringify({ username, password });
 
       const request: Request = new Request(url.toString(), {
@@ -106,6 +106,7 @@ function Login() {
           'Content-Type': 'application/json',
         },
         body,
+        credentials: 'include',
         signal: controller.signal,
       });
 
@@ -139,13 +140,15 @@ function Login() {
         authDispatch({
           type: authAction.setAllAuthState,
           payload: {
-            username,
-            userId,
-            password,
-            roles,
             accessToken,
             errorMessage: '',
+            isAccessTokenExpired: false,
+            isFetchingTokens: false,
             isLoggedIn: true,
+            password,
+            roles,
+            userId,
+            username,
           },
         });
         navigate('/home');

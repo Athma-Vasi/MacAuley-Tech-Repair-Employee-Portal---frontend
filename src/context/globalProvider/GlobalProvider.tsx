@@ -4,6 +4,7 @@ import { useScrollDirection } from '../../hooks/useScrollDirection';
 import { useWindowSize } from '../../hooks/useWindowSize';
 import { globalAction, globalReducer, initialGlobalState } from './state';
 import { GlobalDispatch, GlobalProviderProps, GlobalState } from './types';
+import { useLocation } from 'react-router-dom';
 import { logState } from '../../utils';
 
 const GlobalContext = createContext<{
@@ -69,12 +70,12 @@ function GlobalProvider({ children }: GlobalProviderProps) {
     [globalState, globalDispatch]
   );
 
-  // useEffect(() => {
-  //   logState({
-  //     state: globalState,
-  //     groupLabel: 'globalState in GlobalProvider',
-  //   });
-  // }, [globalState]);
+  useEffect(() => {
+    logState({
+      state: globalState,
+      groupLabel: 'globalState in GlobalProvider',
+    });
+  }, [globalState]);
 
   return (
     <GlobalContext.Provider value={globalContextValue}>

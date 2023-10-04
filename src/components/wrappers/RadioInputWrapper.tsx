@@ -1,20 +1,28 @@
-import { Flex, Grid, Group, MantineNumberSize, Radio } from '@mantine/core';
+import {
+  Flex,
+  Grid,
+  Group,
+  MantineNumberSize,
+  MantineSize,
+  Radio,
+} from '@mantine/core';
 import React, { ReactNode } from 'react';
 
 import { useGlobalState } from '../../hooks';
 
 type AccessibleRadioSingleInputCreatorInfo = {
-  semanticName: string;
-  label?: ReactNode | string;
-  description: string;
-  key?: string;
   ariaRequired?: boolean;
   checked: boolean;
+  description: string;
   disabled?: boolean;
+  key?: string;
+  label?: ReactNode | string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
   ref?: React.RefObject<HTMLInputElement> | null;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  required?: boolean;
+  semanticName: string;
+  size?: MantineSize;
+  width?: MantineNumberSize;
 };
 type RadioSingleInputWrapperProps = {
   creatorInfoObject: AccessibleRadioSingleInputCreatorInfo;
@@ -24,94 +32,57 @@ function RadioSingleInputWrapper({
   creatorInfoObject,
 }: RadioSingleInputWrapperProps) {
   const {
-    globalState: { width },
-  } = useGlobalState();
-
-  const {
+    required = false,
+    ariaRequired = required,
     checked,
     description,
-    onChange,
+    disabled = false,
     semanticName,
     key = semanticName,
     label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
-    disabled = false,
+    onChange,
     ref = null,
-    required = false,
-    ariaRequired = required,
     size = 'sm',
+    width = 330,
   } = creatorInfoObject;
-
-  const inputWidth = 330;
 
   const createdRadioSingleInput = (
     <Radio
-      size={size}
-      label={label}
-      key={key}
-      description={description}
-      aria-required={ariaRequired}
       aria-label={semanticName}
+      aria-required={ariaRequired}
       checked={checked}
+      description={description}
       disabled={disabled}
+      key={key}
+      label={label}
       name={semanticName.split(' ').join('-')}
       onChange={onChange}
-      required={required}
       ref={ref}
-      w={inputWidth}
+      required={required}
+      size={size}
+      w={width}
     />
   );
 
   return createdRadioSingleInput;
 }
 
-/*
-type AccessibleRadioSingleInputCreatorInfo = {
-  semanticName: string;
-  label: string;
-  description: {
-    selected: string;
-    deselected: string;
-  };
-  ariaRequired?: boolean ;
-  checked?: boolean ;
-  dataObjArray?:
-    | Array<{
-        value: string;
-        label: string;
-      }>
-    ;
-  disabled?: boolean ;
-
-  onChange: (event: React.ChangeEvent<HTMLInputElement> | string) => void;
-  onClick: () => void;
-  radioKind: 'single' | 'multiple';
-  value?: string ;
-
-  withAsterisk?: boolean ;
-  ref?: React.RefObject<HTMLInputElement> ;
-  required?: boolean ;
-};
-*/
-
 type AccessibleRadioGroupInputCreatorInfo = {
-  semanticName: string;
-  label?: ReactNode | string;
-  description?: ReactNode | string;
   ariaRequired?: boolean;
-  key?: string;
-  value?: string;
-  onChange: (value: string) => void;
-  name?: string;
-  required?: boolean;
-  ref?: React.RefObject<HTMLInputElement> | null;
-  withAsterisk?: boolean;
-  dataObjectArray: Array<{
-    value: string;
-    label: string;
-  }>;
   columns?: number;
+  dataObjectArray: Array<{ value: string; label: string }>;
+  description?: ReactNode | string;
+  key?: string;
+  label?: ReactNode | string;
+  name?: string;
+  onChange: (value: string) => void;
+  ref?: React.RefObject<HTMLInputElement> | null;
+  required?: boolean;
+  semanticName: string;
+  size?: MantineSize;
+  value?: string;
   widthRadioGroup?: MantineNumberSize;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  withAsterisk?: boolean;
 };
 
 type RadioGroupInputsWrapperProps = {
@@ -122,7 +93,7 @@ function RadioGroupInputsWrapper({
   creatorInfoObject,
 }: RadioGroupInputsWrapperProps) {
   const {
-    globalState: { width, padding, rowGap },
+    globalState: { padding, rowGap },
   } = useGlobalState();
 
   const {
@@ -130,17 +101,17 @@ function RadioGroupInputsWrapper({
     columns,
     dataObjectArray,
     description,
-    onChange,
     semanticName,
     key = semanticName,
     label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
     name = semanticName,
-    required = false,
+    onChange,
     ref = null,
-    value,
-    withAsterisk = required,
-    widthRadioGroup,
+    required = false,
     size = 'sm',
+    value,
+    widthRadioGroup,
+    withAsterisk = required,
   } = creatorInfoObject;
 
   const inputWidth = widthRadioGroup ? widthRadioGroup : 330;
@@ -174,7 +145,11 @@ function RadioGroupInputsWrapper({
       >
         {dataObjectArray?.map(({ value, label }, idx) => {
           return (
-            <Group position="center" key={`${key}-${idx}-${label}-${value}`}>
+            <Group
+              position="center"
+              key={`${key}-${idx}-${label}-${value}`}
+              py="xs"
+            >
               <Radio value={value} label={label} w={inputWidth} />
             </Group>
           );
@@ -192,26 +167,3 @@ export type {
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleRadioSingleInputCreatorInfo,
 };
-
-/**
- *  case 'multiple': {
-      return (
-        <Radio.Group
-          size="sm"
-          label={label}
-          description={checked ? description.selected : description.deselected}
-          aria-required={ariaRequired}
-          value={value}
-          onChange={onChange}
-          name={semanticName}
-          required={required}
-          ref={ref}
-          withAsterisk={withAsterisk}
-        >
-          {dataObjArray?.map(({ value, label }) => {
-            return <Radio key={value} value={value} label={label} />;
-          })}
-        </Radio.Group>
-      );
-    }
- */

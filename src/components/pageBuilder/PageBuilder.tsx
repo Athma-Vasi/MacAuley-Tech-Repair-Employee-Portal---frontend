@@ -1,5 +1,10 @@
-import { Flex, Pagination } from '@mantine/core';
+import { Pagination } from '@mantine/core';
+import jwtDecode from 'jwt-decode';
 import { CSSProperties, useEffect, useState } from 'react';
+
+import { authAction } from '../../context/authProvider';
+import { useAuth } from '../../hooks';
+import { DecodedToken } from '../login/types';
 
 type PageBuilderProps = {
   style?: CSSProperties;
@@ -31,9 +36,27 @@ function PageBuilder({
 }: PageBuilderProps): JSX.Element {
   const [page, setPage] = useState(1);
 
+  const {
+    authDispatch,
+    authState: { accessToken },
+  } = useAuth();
+
+  // check access token validity on every page change
   useEffect(() => {
-    console.log('page', page);
-  }, [page]);
+    const decodedToken: DecodedToken = jwtDecode(accessToken);
+    const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
+      decodedToken;
+    const isAccessTokenExpired = accessTokenExpiration * 1000 < Date.now();
+
+    if (!isAccessTokenExpired) {
+      return;
+    }
+
+    authDispatch({
+      type: authAction.setIsAccessTokenExpired,
+      payload: isAccessTokenExpired,
+    });
+  }, [authDispatch, page]);
 
   useEffect(() => {
     if (parentComponentDispatch) {

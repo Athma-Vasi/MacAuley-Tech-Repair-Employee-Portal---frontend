@@ -28,6 +28,7 @@ import {
   FormLayoutWrapper,
 } from '../../../wrappers';
 import { RepairNoteStepPartProps } from './types';
+import { useGlobalState } from '../../../../hooks';
 
 function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
   const {
@@ -55,6 +56,9 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     createRepairNoteDispatch,
   } = parentState;
 
+  const {
+    globalState: { width },
+  } = useGlobalState();
   /** ------------- input validation ------------- */
 
   // validate part name on every change
@@ -355,6 +359,19 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
     semanticName: 'description of issue',
   };
 
+  const textAreaWidth =
+    width < 480 // for iPhone 5/SE
+      ? 330
+      : width < 768 // for iPhone 6/7/8
+      ? width * 0.8 - 44
+      : // at 768vw the navbar appears at width of 225px
+      width < 1024
+      ? (width - 225 - 44) * 0.8
+      : // at >= 1200vw the navbar width is 300px
+      width < 1200
+      ? (width - 300 - 44) * 0.8
+      : 900 - 74;
+
   const initialInspectionNotesInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
     {
       description: {
@@ -384,8 +401,9 @@ function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
       },
       placeholder: 'Enter initial inspection notes',
       required: true,
-      withAsterisk: true,
       semanticName: 'initial inspection notes',
+      textAreaWidth,
+      withAsterisk: true,
     };
   /** ------------- end input creator info objects ------------- */
 

@@ -1,50 +1,55 @@
 import { AuthAction, AuthDispatch, AuthState } from './types';
 
 const initialAuthState: AuthState = {
-  isLoggedIn: false,
-  username: '',
-  password: '',
-  userId: '',
-  roles: [],
-  errorMessage: '',
   accessToken: '',
+  errorMessage: '',
+  isAccessTokenExpired: false,
+  isFetchingTokens: false,
+  isLoggedIn: false,
+  password: '',
+  roles: [],
+  userId: '',
+  username: '',
 };
 
 const authAction: AuthAction = {
-  setIsLoggedIn: 'setIsLoggedIn',
-  setUsername: 'setUsername',
-  setUserId: 'setUserId',
-  setPassword: 'setPassword',
-  setRoles: 'setRoles',
-  setErrorMessage: 'setErrorMessage',
   setAccessToken: 'setAccessToken',
   setAllAuthState: 'setAllAuthState',
+  setErrorMessage: 'setErrorMessage',
+  setIsAccessTokenExpired: 'setIsAccessTokenExpired',
+  setFetchingTokens: 'setFetchingTokens',
+  setIsLoggedIn: 'setIsLoggedIn',
+  setPassword: 'setPassword',
+  setRoles: 'setRoles',
+  setUserId: 'setUserId',
+  setUsername: 'setUsername',
 };
 
 function authReducer(state: AuthState, action: AuthDispatch): AuthState {
   switch (action.type) {
-    case authAction.setIsLoggedIn:
-      return { ...state, isLoggedIn: action.payload as boolean };
-    case authAction.setUsername:
-      return { ...state, username: action.payload as string };
-    case authAction.setPassword:
-      return { ...state, password: action.payload as string };
-    case authAction.setUserId:
-      return { ...state, userId: action.payload as string };
-    case authAction.setRoles:
-      return {
-        ...state,
-        roles: action.payload as ('Admin' | 'Employee' | 'Manager')[],
-      };
-    case authAction.setErrorMessage:
-      return { ...state, errorMessage: action.payload as string };
     case authAction.setAccessToken:
-      return { ...state, accessToken: action.payload as string };
+      return { ...state, accessToken: action.payload };
     case authAction.setAllAuthState:
-      return { ...state, ...(action.payload as AuthState) };
+      return { ...state, ...action.payload };
+    case authAction.setErrorMessage:
+      return { ...state, errorMessage: action.payload };
+    case authAction.setIsAccessTokenExpired:
+      return { ...state, isAccessTokenExpired: action.payload };
+    case authAction.setFetchingTokens:
+      return { ...state, isFetchingTokens: action.payload };
+    case authAction.setIsLoggedIn:
+      return { ...state, isLoggedIn: action.payload };
+    case authAction.setPassword:
+      return { ...state, password: action.payload };
+    case authAction.setRoles:
+      return { ...state, roles: action.payload };
+    case authAction.setUserId:
+      return { ...state, userId: action.payload };
+    case authAction.setUsername:
+      return { ...state, username: action.payload };
     default:
       return state;
   }
 }
 
-export { authAction, authReducer,initialAuthState };
+export { authAction, authReducer, initialAuthState };

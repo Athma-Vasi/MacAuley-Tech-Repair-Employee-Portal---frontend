@@ -92,7 +92,7 @@ function DisplaySurveys() {
   } = displaySurveysState;
 
   const {
-    authState: { accessToken, roles },
+    authState: { accessToken, roles, isAccessTokenExpired },
   } = useAuth();
 
   const {
@@ -116,6 +116,10 @@ function DisplaySurveys() {
   /** ------------- begin useEffects ------------- */
   // fetch surveys on mount
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -237,7 +241,7 @@ function DisplaySurveys() {
     };
     // only fetch surveys when the triggerSurveyFetch is true (and initially on mount)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerSurveyFetch]);
+  }, [triggerSurveyFetch, isAccessTokenExpired]);
 
   useEffect(() => {
     displaySurveysDispatch({
@@ -256,6 +260,10 @@ function DisplaySurveys() {
 
   // submit survey response
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -386,7 +394,7 @@ function DisplaySurveys() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerSurveySubmission]);
+  }, [triggerSurveySubmission, isAccessTokenExpired]);
 
   // allows discrimination between completed and uncompleted surveys
   useEffect(() => {
@@ -1102,7 +1110,7 @@ function DisplaySurveys() {
       overlayOpacity={1}
       radius={4}
       visible={isLoading}
-      zIndex={1000}
+      zIndex={500}
     />
   );
 

@@ -1,22 +1,28 @@
-import { Checkbox, Flex, Grid, Group, MantineNumberSize } from '@mantine/core';
+import {
+  Checkbox,
+  Flex,
+  Grid,
+  Group,
+  MantineNumberSize,
+  MantineSize,
+  Text,
+} from '@mantine/core';
 import { ChangeEvent, ReactNode, RefObject } from 'react';
 
 import { useGlobalState } from '../../hooks';
 
 type AccessibleCheckboxSingleInputCreatorInfo = {
-  semanticName: string;
-  key?: string;
-  label?: ReactNode | string;
-  description: {
-    selected: JSX.Element;
-    deselected: JSX.Element;
-  };
   ariaRequired?: boolean;
   checked: boolean;
+  description: { selected: JSX.Element; deselected: JSX.Element };
   disabled?: boolean;
+  key?: string;
+  label?: ReactNode | string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  required?: boolean;
   ref?: RefObject<HTMLInputElement> | null;
+  required?: boolean;
+  semanticName: string;
+  size?: MantineSize;
 };
 
 type CheckboxSingleInputWrapperProps = {
@@ -26,10 +32,6 @@ type CheckboxSingleInputWrapperProps = {
 function CheckboxSingleInputWrapper({
   creatorInfoObject,
 }: CheckboxSingleInputWrapperProps) {
-  const {
-    globalState: { width, padding, rowGap },
-  } = useGlobalState();
-
   const {
     checked,
     description,
@@ -41,29 +43,28 @@ function CheckboxSingleInputWrapper({
     ref = null,
     required = false,
     ariaRequired = required,
+    size = 'sm',
   } = creatorInfoObject;
-
-  const checkboxInputSize = 'sm';
 
   const createdCheckboxSingleInput = (
     <Checkbox
-      size={checkboxInputSize}
-      label={label}
-      key={key}
-      description={checked ? description.selected : description.deselected}
       aria-describedby={
         checked
           ? `${semanticName.split(' ').join('-')}-selected`
           : `${semanticName.split(' ').join('-')}-deselected`
       }
-      aria-required={ariaRequired}
       aria-label={semanticName}
+      aria-required={ariaRequired}
       checked={checked}
+      description={checked ? description.selected : description.deselected}
       disabled={disabled}
+      key={key}
+      label={label}
       name={semanticName.split(' ').join('-')}
       onChange={onChange}
-      required={required}
       ref={ref}
+      required={required}
+      size={size}
       w="100%"
     />
   );
@@ -72,27 +73,21 @@ function CheckboxSingleInputWrapper({
 }
 
 type AccessibleCheckboxGroupInputCreatorInfo = {
-  semanticName: string;
+  ariaRequired?: boolean;
+  dataObjectArray: Array<{ value: string; label: string }>;
+  description: { selected: JSX.Element; deselected: JSX.Element };
+  disabledValuesSet?: Set<string>;
   key?: string;
   label?: ReactNode | string;
-  description: {
-    selected: JSX.Element;
-    deselected: JSX.Element;
-  };
-  disabledValuesSet?: Set<string>;
-  ariaRequired?: boolean;
-  value: string[];
-  onChange: (value: string[]) => void;
   name?: string;
-  required?: boolean;
+  onChange: (value: string[]) => void;
   ref?: RefObject<HTMLInputElement> | null;
-  withAsterisk?: boolean;
-  dataObjectArray: Array<{
-    value: string;
-    label: string;
-  }>;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  required?: boolean;
+  semanticName: string;
+  size?: MantineSize;
+  value: string[];
   widthCheckbox?: MantineNumberSize;
+  withAsterisk?: boolean;
 };
 
 type CheckboxGroupInputsWrapperProps = {
@@ -103,7 +98,7 @@ function CheckboxGroupInputsWrapper({
   creatorInfoObject,
 }: CheckboxGroupInputsWrapperProps) {
   const {
-    globalState: { width, padding, rowGap },
+    globalState: { padding, rowGap, width },
   } = useGlobalState();
 
   const {
@@ -142,7 +137,6 @@ function CheckboxGroupInputsWrapper({
       w={widthCheckbox}
     >
       <Flex
-        // direction="column"
         align="baseline"
         justify="space-between"
         p={padding}
@@ -154,15 +148,20 @@ function CheckboxGroupInputsWrapper({
       >
         {dataObjectArray?.map(({ value, label }, idx) => {
           return (
-            <Group position="center" key={`${key}-${idx}${value}-${label}`}>
+            <Group
+              align="center"
+              key={`${key}-${idx}${value}-${label}`}
+              position="center"
+              py="xs"
+            >
               <Checkbox
-                w={inputWidth}
-                name={value}
-                value={value}
-                label={label}
                 disabled={
                   disabledValuesSet.has(value) || disabledValuesSet.has(label)
                 }
+                label={<Text>{label}</Text>}
+                name={value}
+                value={value}
+                w={inputWidth}
               />
             </Group>
           );

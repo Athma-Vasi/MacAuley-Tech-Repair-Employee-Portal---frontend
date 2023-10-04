@@ -120,7 +120,7 @@ function Directory() {
   } = directoryState;
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const {
@@ -132,17 +132,13 @@ function Directory() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
-  const [
-    openedSubmitSuccessNotificationModal,
-    {
-      open: openSubmitSuccessNotificationModal,
-      close: closeSubmitSuccessNotificationModal,
-    },
-  ] = useDisclosure(false);
-
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end hooks ━┛
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 

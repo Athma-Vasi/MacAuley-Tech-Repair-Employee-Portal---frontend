@@ -1,12 +1,8 @@
-import { MantineTheme } from '@mantine/core';
 import {
-  ColorScheme,
   GlobalAction,
   GlobalDispatch,
   GlobalState,
-  ScrollAxesDirection,
   ThemeObject,
-  WindowDimensions,
 } from './types';
 
 const initialThemeObject: ThemeObject = {
@@ -51,8 +47,8 @@ const initialGlobalState: GlobalState = {
   height: 0,
   rowGap: 'xs',
   padding: 'xs',
-  scrollXDirection: '',
-  scrollYDirection: '',
+  scrollXDirection: 'neutral',
+  scrollYDirection: 'neutral',
 
   themeObject: initialThemeObject,
 
@@ -225,96 +221,3 @@ function globalReducer(
 }
 
 export { globalAction, globalReducer, initialGlobalState };
-
-/**
- * // inputs
-    Checkbox: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    ColorInput: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    FileInput: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    NumberInput: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    PasswordInput: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    Radio: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    SegmentedControl: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    Select: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    Slider: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    Switch: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    Textarea: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    TextInput: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    ThemeIcon: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-
-    // navigation
-    NavLink: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    Pagination: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-    Stepper: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
-
-    // data display
-    Accordion: {
-      defaultProps: (theme: MantineTheme) => ({
-        color: theme.primaryColor,
-      }),
-    },
- */

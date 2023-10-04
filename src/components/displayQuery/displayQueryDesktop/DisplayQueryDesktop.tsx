@@ -218,7 +218,7 @@ function DisplayQueryDesktop<Doc>({
   const displayLoadingOverlay = (
     <LoadingOverlay
       visible={isLoading}
-      zIndex={1000}
+      zIndex={500}
       overlayBlur={9}
       overlayOpacity={0.99}
       radius={4}
@@ -255,10 +255,6 @@ function DisplayQueryDesktop<Doc>({
             <tr>
               {tableHeaderValuesArr.map((headerValue, headerIdx) => {
                 const headerStyle: CSSProperties = {
-                  // border:
-                  //   colorScheme === 'light' ? '' : `1px solid ${scrollBarColor}`,
-                  // borderLeft: headerBorderColor,
-                  // borderRight: headerBorderColor,
                   border: headerBorderColor,
                   backgroundColor: tableHeadersBgColor,
                   padding: '4px 4px 4px 8px',

@@ -5,6 +5,7 @@
 /**
  * Imports
  */
+import { MantineSize } from '@mantine/core';
 import type {
   Action,
   ActionsCompany,
@@ -30,7 +31,7 @@ import type {
   USPostalCode,
 } from './user.types';
 
-type BreakPoints = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+type BreakPoints = MantineSize;
 type Urgency = 'low' | 'medium' | 'high';
 type SetStepsInErrorPayload = {
   kind: 'add' | 'delete';

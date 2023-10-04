@@ -137,7 +137,7 @@ function Comment({
   } = commentState;
 
   const {
-    authState: { userId, username, accessToken },
+    authState: { userId, username, accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const {
@@ -167,6 +167,10 @@ function Comment({
 
   // fetch comments
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -289,7 +293,7 @@ function Comment({
 
     // only fetch comments when triggerCommentFetch is true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerCommentFetch]);
+  }, [triggerCommentFetch, isAccessTokenExpired]);
 
   // whenever the following changes, trigger comment fetch
   useEffect(() => {
@@ -301,6 +305,10 @@ function Comment({
 
   // update user reaction: liked, disliked, reported, deleted or featured
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -392,10 +400,14 @@ function Comment({
 
     // only update user reaction when triggerCommentUpdate is true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerCommentUpdate]);
+  }, [triggerCommentUpdate, isAccessTokenExpired]);
 
   // submit comment
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -540,7 +552,7 @@ function Comment({
 
     // only submit comment when triggerCommentSubmit is true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerCommentSubmit]);
+  }, [triggerCommentSubmit, isAccessTokenExpired]);
 
   // when limit per page changes, trigger reset page
   useEffect(() => {
@@ -620,6 +632,7 @@ function Comment({
       });
     },
     value: limitPerPage,
+    width: 150,
   };
 
   const commentTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
@@ -652,8 +665,10 @@ function Comment({
     ref: openedCommentModal ? commentTextAreaRef : null,
     semanticName: 'comment',
     required: true,
-    textAreaWidth: width < 480 ? 350 - 30 : 640 - 66,
-    dropdownWidth: width < 480 ? 350 - 30 : 640 - 66,
+    textAreaWidth:
+      width < 480 ? 350 - 30 : width > 1024 ? 640 - 33 : width * 0.8 - 33,
+    dropdownWidth:
+      width < 480 ? 350 - 30 : width > 1024 ? 640 - 33 : width * 0.8 - 33,
   };
 
   const replyButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -1747,7 +1762,7 @@ function Comment({
   );
 
   const displayCommentAndSubmit = (
-    <Stack w="100%" p={padding} style={{ borderTop: borderColor }}>
+    <Stack w="100%" py={padding} style={{ borderTop: borderColor }}>
       {createdCommentTextAreaInput}
       <Group position="right">{createdSubmitCommentButton}</Group>
     </Stack>
@@ -1780,7 +1795,7 @@ function Comment({
         closeCommentModal();
       }}
       centered
-      size={width < 480 ? 350 : 640}
+      size={width < 480 ? 350 : width > 1024 ? 640 : width * 0.8}
       title={commentModalTitle}
     >
       {commentModalQuotedComment}
@@ -1804,8 +1819,8 @@ function Comment({
 
   const commentsWidth =
     width < 480 // for iPhone 5/SE
-      ? 375 - 20
-      : width < 768 // for iPhone 6/7/8
+      ? width * 0.95
+      : width < 768 // for iPhones 6 - 15
       ? width - 40
       : // at 768vw the navbar appears at width of 225px
       width < 1024
@@ -1911,7 +1926,7 @@ function Comment({
   const displayLoadingOverlay = (
     <LoadingOverlay
       visible={isLoading}
-      zIndex={1000}
+      zIndex={500}
       overlayBlur={9}
       overlayOpacity={0.99}
       radius={4}
@@ -1925,9 +1940,9 @@ function Comment({
   );
 
   const displayCommentFormPage = (
-    <Group
+    <Stack
       w="100%"
-      position="center"
+      align="center"
       pb={padding}
       style={{ position: 'relative' }}
     >
@@ -1939,7 +1954,7 @@ function Comment({
       {displayTotalCommentsAndLimitPerPageSelectInput}
       {displayCommentsSection}
       {displayPagination}
-    </Group>
+    </Stack>
   );
   /** ------------- end input displays ------------- */
 

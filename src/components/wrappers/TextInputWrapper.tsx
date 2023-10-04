@@ -1,5 +1,7 @@
 import {
   Group,
+  MantineNumberSize,
+  MantineSize,
   Popover,
   Stack,
   Text,
@@ -14,48 +16,35 @@ import { useGlobalState } from '../../hooks';
 import { splitCamelCase } from '../../utils';
 
 type AccessibleTextInputCreatorInfo = {
-  semanticName: string;
-  inputText: string;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
+  autoComplete?: 'on' | 'off';
+  description: { error: React.JSX.Element; valid: React.JSX.Element };
   /**
    * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
    */
   dynamicInputs?: ReactNode[];
-  // dynamicInputProps?: {
-  //   semanticAction: string;
-  //   dynamicLabel?: string;
-  //   dynamicIndex: number;
-  //   dynamicIcon?: ReactNode;
-  //   buttonDisabled?: boolean;
-  //   dynamicInputOnClick: () => void;
-  // };
+  icon?: ReactNode;
+  initialInputValue?: string;
+  inputText: string;
   isValidInputText: boolean;
   label?: ReactNode | string;
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
-  description: {
-    error: React.JSX.Element;
-    valid: React.JSX.Element;
-  };
+  maxLength?: number;
+  minLength?: number;
   name?: string;
-  placeholder: string;
-  initialInputValue?: string;
-  icon?: ReactNode;
   onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-
+  placeholder: string;
+  ref?: React.RefObject<HTMLInputElement> | null;
+  required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
-
-  minLength?: number;
-  maxLength?: number;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  semanticName: string;
+  size?: MantineSize;
+  textInputWidth?: string | number;
   withAsterisk?: boolean;
-  ref?: React.RefObject<HTMLInputElement> | null;
-  required?: boolean;
-  autoComplete?: 'on' | 'off';
-  customWidth?: number;
 };
 
 type TextInputWrapperProps = {
@@ -73,32 +62,32 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
   } = useGlobalState();
 
   const {
-    semanticName,
-    inputText,
-    isValidInputText,
-    label = semanticName,
     ariaAutoComplete = 'none',
+    autoComplete = 'off',
     description,
     dynamicInputs = null,
-    placeholder,
-    initialInputValue = '',
     icon = null,
+    initialInputValue = '',
+    inputText,
+    isValidInputText,
+    semanticName,
+    label = semanticName,
+    maxLength = 75,
+    minLength = 2,
     name = semanticName,
     onBlur,
     onChange,
     onFocus,
     onKeyDown = () => {},
+    placeholder,
+    ref = null,
+    required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = 'sm',
-    minLength = 2,
-    maxLength = 75,
-    ref = null,
-    required = false,
+    textInputWidth = 330,
     withAsterisk = required,
-    autoComplete = 'off',
-    customWidth,
   } = creatorInfoObject;
 
   const dynamicInputLabel = dynamicInputs ? (
@@ -138,8 +127,6 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     )
   ) : null;
 
-  const inputWidth = customWidth ? customWidth : 330;
-
   const inputWithPopover = (
     <Popover
       opened={inputText ? popoverOpened : false}
@@ -153,39 +140,36 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
         <div
           onFocusCapture={() => setPopoverOpened(true)}
           onBlurCapture={() => setPopoverOpened(false)}
+          style={{ width: textInputWidth }}
         >
           <TextInput
-            w={inputWidth}
-            color="dark"
-            label={dynamicInputLabel}
-            aria-required={required}
+            aria-autocomplete={ariaAutoComplete}
             aria-describedby={
               isValidInputText
                 ? `${semanticName.split(' ').join('-')}-input-note-valid`
                 : `${semanticName.split(' ').join('-')}-input-note-error`
             }
-            aria-autocomplete={ariaAutoComplete}
-            // description={
-            //   isValidInputText ? description.valid : description.error
-            // }
-            placeholder={placeholder}
-            name={name}
             aria-invalid={isValidInputText ? false : true}
-            value={inputText}
-            icon={leftIcon}
+            aria-required={required}
+            autoComplete={autoComplete}
+            color="dark"
             error={!isValidInputText && inputText !== initialInputValue}
+            icon={leftIcon}
+            label={dynamicInputLabel}
+            maxLength={maxLength}
+            minLength={minLength}
+            name={name}
             onBlur={onBlur}
             onChange={onChange}
             onFocus={onFocus}
             onKeyDown={onKeyDown}
+            placeholder={placeholder}
+            ref={ref}
+            required={required}
             rightSection={rightIcon}
             size={size}
-            minLength={minLength}
-            maxLength={maxLength}
-            autoComplete={autoComplete}
-            ref={ref}
+            value={inputText}
             withAsterisk={withAsterisk}
-            required={required}
           />
         </div>
       </Popover.Target>
@@ -204,88 +188,3 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
 export { TextInputWrapper };
 
 export type { AccessibleTextInputCreatorInfo };
-
-/**
- * dynamicInputProps ? (
-          <Flex align="center" justify="space-between" columnGap="xl">
-            <Text>{`${semanticNameCapitalized}`}</Text>
-            <Tooltip
-              label={
-                dynamicInputProps?.dynamicLabel
-                  ? dynamicInputProps?.dynamicLabel
-                  : `${semanticActionCapitalized} ${semanticName}`
-              }
-            >
-              <Group>
-                <ButtonWrapper
-                  creatorInfoObject={{
-                    buttonVariant: 'outline',
-                    buttonLabel: 'Delete',
-                    buttonDisabled: dynamicInputProps?.buttonDisabled,
-                    buttonOnClick: dynamicInputProps?.dynamicInputOnClick,
-                    semanticDescription: `${
-                      dynamicInputProps?.semanticAction
-                    } ${semanticName} ${dynamicInputProps?.dynamicIndex + 1}`,
-                    semanticName: `${
-                      dynamicInputProps?.semanticAction
-                    } ${semanticName} ${dynamicInputProps?.dynamicIndex + 1}`,
-                    leftIcon: <TbTrash />,
-                  }}
-                />
-              </Group>
-            </Tooltip>
-          </Flex>
-        ) : (
-          label
-        )
- */
-
-/**
- <TextInput
-      size={textInputSize}
-      w={325}
-      color="dark"
-      label={dynamicInputLabel}
-      aria-required={required}
-      aria-describedby={
-        isValidInputText
-          ? `${semanticName.split(' ').join('-')}-input-note-valid`
-          : `${semanticName.split(' ').join('-')}-input-note-error`
-      }
-      aria-autocomplete={ariaAutoComplete}
-      description={isValidInputText ? description.valid : description.error}
-      placeholder={placeholder}
-      name={name}
-      aria-invalid={isValidInputText ? false : true}
-      value={inputText}
-      icon={
-        isValidInputText ? (
-          icon ? (
-            <FontAwesomeIcon icon={icon} color="green" />
-          ) : (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          )
-        ) : null
-      }
-      error={!isValidInputText && inputText !== initialInputValue}
-      onBlur={onBlur}
-      onChange={onChange}
-      onFocus={onFocus}
-      onKeyDown={onKeyDown}
-      rightSection={
-        rightSection ? (
-          <FontAwesomeIcon
-            icon={rightSectionIcon ? rightSectionIcon : faRefresh}
-            cursor="pointer"
-            color="gray"
-            onClick={rightSectionOnClick}
-          />
-        ) : null
-      }
-      minLength={minLength}
-      maxLength={maxLength}
-      autoComplete={autoComplete}
-      ref={ref}
-      withAsterisk={withAsterisk}
-      required={required}
-    /> */

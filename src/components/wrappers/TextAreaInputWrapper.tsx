@@ -1,57 +1,48 @@
-import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  Flex,
   Group,
+  MantineNumberSize,
+  MantineSize,
   Popover,
   Stack,
   Text,
   Textarea,
-  Tooltip,
   useMantineTheme,
 } from '@mantine/core';
 import { ReactNode, useState } from 'react';
-import { BsTrash } from 'react-icons/bs';
-
-import { useGlobalState } from '../../hooks';
-import { ButtonWrapper } from './ButtonWrapper';
 import { TbCheck } from 'react-icons/tb';
 
+import { useGlobalState } from '../../hooks';
+
 type AccessibleTextAreaInputCreatorInfo = {
-  dropdownWidth?: number;
-  semanticName: string;
-  inputText: string;
-  isValidInputText: boolean;
-  label?: string;
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
+  ariaRequired?: boolean;
+  autoComplete?: 'on' | 'off';
+  autosize?: boolean;
+  description: { error: JSX.Element; valid: JSX.Element };
+  dropdownWidth?: MantineNumberSize;
   /**
    * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
    */
   dynamicInputs?: ReactNode[];
-  ariaRequired?: boolean;
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
-  description: {
-    error: JSX.Element;
-    valid: JSX.Element;
-  };
-  placeholder: string;
-  initialInputValue?: string;
   icon?: ReactNode;
+  initialInputValue?: string;
+  inputText: string;
+  isValidInputText: boolean;
+  label?: string;
+  maxLength?: number;
+  maxRows?: number;
+  minLength?: number;
+  minRows?: number;
+  onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus: () => void;
-  onBlur: () => void;
-
-  minLength?: number;
-  maxLength?: number;
-  withAsterisk?: boolean;
+  placeholder: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   required?: boolean;
-  autoComplete?: 'on' | 'off';
-
-  autosize?: boolean;
-  minRows?: number;
-  maxRows?: number;
+  semanticName: string;
+  size?: MantineSize;
   textAreaWidth?: number | string;
+  withAsterisk?: boolean;
 };
 
 type TextAreaInputWrapperProps = {
@@ -67,37 +58,36 @@ function TextAreaInputWrapper({
     globalState: {
       themeObject: { colorScheme, primaryShade },
       padding,
-      width,
     },
   } = useGlobalState();
 
   const {
-    dropdownWidth,
-    semanticName,
-    inputText,
-    isValidInputText,
-    label = semanticName,
-    ariaRequired = false,
     ariaAutoComplete = 'none',
-    description,
-    dynamicInputs = null,
-    placeholder,
-    initialInputValue = '',
-    icon = null,
-    onChange,
-    onFocus,
-    onBlur,
-    minLength = 2,
-    maxLength = 2000,
-    withAsterisk = false,
-    ref = null,
-    required = false,
+    ariaRequired = false,
     autoComplete = 'off',
     autosize = true,
-    size = 'sm',
-    minRows = 3,
+    description,
+    dropdownWidth,
+    dynamicInputs = null,
+    icon = null,
+    initialInputValue = '',
+    inputText,
+    isValidInputText,
+    maxLength = 2000,
     maxRows = 7,
-    textAreaWidth,
+    minLength = 2,
+    minRows = 3,
+    onBlur,
+    onChange,
+    onFocus,
+    placeholder,
+    ref = null,
+    required = false,
+    semanticName,
+    label = semanticName,
+    size = 'sm',
+    textAreaWidth = 330,
+    withAsterisk = false,
   } = creatorInfoObject;
 
   const dynamicInputLabel = dynamicInputs ? (
@@ -122,8 +112,6 @@ function TextAreaInputWrapper({
     )
   ) : null;
 
-  const inputWidth = textAreaWidth ? textAreaWidth : 330;
-
   const inputWithPopover = (
     <Popover
       opened={inputText ? popoverOpened : false}
@@ -137,40 +125,38 @@ function TextAreaInputWrapper({
         <div
           onFocusCapture={() => setPopoverOpened(true)}
           onBlurCapture={() => setPopoverOpened(false)}
+          style={{ width: textAreaWidth }}
         >
           <Textarea
-            size={size}
-            w={inputWidth}
-            color="dark"
-            label={dynamicInputLabel}
-            aria-required={ariaRequired}
+            aria-autocomplete={ariaAutoComplete}
             aria-describedby={
               isValidInputText
                 ? `${semanticName.split(' ').join('-')}-input-note-valid`
                 : `${semanticName.split(' ').join('-')}-input-note-error`
             }
-            aria-autocomplete={ariaAutoComplete}
-            // description={
-            //   isValidInputText ? description.valid : description.error
-            // }
-            placeholder={placeholder}
             aria-invalid={isValidInputText ? false : true}
-            value={inputText}
-            icon={leftIcon}
+            aria-required={ariaRequired}
+            autoComplete={autoComplete}
+            autosize={autosize}
+            color="dark"
             error={!isValidInputText && inputText !== initialInputValue}
+            icon={leftIcon}
+            label={dynamicInputLabel}
+            maxLength={maxLength}
+            maxRows={maxRows}
+            minLength={minLength}
+            minRows={minRows}
             name={semanticName.split(' ').join('-')}
+            onBlur={onBlur}
             onChange={onChange}
             onFocus={onFocus}
-            onBlur={onBlur}
-            minLength={minLength}
-            maxLength={maxLength}
-            autoComplete={autoComplete}
+            placeholder={placeholder}
             ref={ref}
-            withAsterisk={withAsterisk}
             required={required}
-            autosize={autosize}
-            minRows={minRows}
-            maxRows={maxRows}
+            size={size}
+            value={inputText}
+            // w={textAreaWidth}
+            withAsterisk={withAsterisk}
           />
         </div>
       </Popover.Target>
@@ -189,46 +175,3 @@ function TextAreaInputWrapper({
 export { TextAreaInputWrapper };
 
 export type { AccessibleTextAreaInputCreatorInfo };
-
-/**
- * <Textarea
-      size={size}
-      w="100%"
-      color="dark"
-      label={dynamicInputLabel}
-      aria-required={ariaRequired}
-      aria-describedby={
-        isValidInputText
-          ? `${semanticName.split(' ').join('-')}-input-note-valid`
-          : `${semanticName.split(' ').join('-')}-input-note-error`
-      }
-      aria-autocomplete={ariaAutoComplete}
-      description={isValidInputText ? description.valid : description.error}
-      placeholder={placeholder}
-      aria-invalid={isValidInputText ? false : true}
-      value={inputText}
-      icon={
-        isValidInputText ? (
-          icon ? (
-            <FontAwesomeIcon icon={icon} color="green" />
-          ) : (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          )
-        ) : null
-      }
-      error={!isValidInputText && inputText !== initialInputValue}
-      name={semanticName.split(' ').join('-')}
-      onChange={onChange}
-      onFocus={onFocus}
-      onBlur={onBlur}
-      minLength={minLength}
-      maxLength={maxLength}
-      autoComplete={autoComplete}
-      ref={ref}
-      withAsterisk={withAsterisk}
-      required={required}
-      autosize={autosize}
-      minRows={minRows}
-      maxRows={maxRows}
-    />
- */

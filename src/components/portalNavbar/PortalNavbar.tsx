@@ -503,12 +503,12 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     />
   );
 
-  useEffect(() => {
-    logState({
-      state: portalNavbarState,
-      groupLabel: 'PortalNavbar',
-    });
-  }, [portalNavbarState]);
+  // useEffect(() => {
+  //   logState({
+  //     state: portalNavbarState,
+  //     groupLabel: 'PortalNavbar',
+  //   });
+  // }, [portalNavbarState]);
 
   return (
     <Navbar
@@ -519,6 +519,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       hidden={!openedNavbar}
       width={{ sm: 225, lg: 300 }}
       h={width <= 991 ? height - 50 : height - 64} //  vw < 991 ? header height = 50px : header height = 64px
+      style={width <= 1024 ? { zIndex: 750 } : {}}
     >
       <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
         <Flex direction="column">

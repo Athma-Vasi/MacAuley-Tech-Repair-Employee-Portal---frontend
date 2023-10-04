@@ -1,29 +1,26 @@
 type DashboardState = {
-  isError: boolean;
-  errorMessage: string;
   isLoading: boolean;
-  loadingMessage: string;
   isSubmitting: boolean;
-  submitMessage: string;
   isSuccessful: boolean;
+  loadingMessage: string;
+  submitMessage: string;
   successMessage: string;
+  triggerFetchUserData: boolean;
 };
 
 type DashboardAction = {
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
   setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
+  setLoadingMessage: 'setLoadingMessage';
+  setSubmitMessage: 'setSubmitMessage';
   setSuccessMessage: 'setSuccessMessage';
+  setTriggerFetchUserData: 'setTriggerFetchUserData';
 };
 
 type DashboardDispatch =
   | {
       type:
-        | DashboardAction['setErrorMessage']
         | DashboardAction['setLoadingMessage']
         | DashboardAction['setSubmitMessage']
         | DashboardAction['setSuccessMessage'];
@@ -32,10 +29,10 @@ type DashboardDispatch =
     }
   | {
       type:
-        | DashboardAction['setIsError']
         | DashboardAction['setIsLoading']
         | DashboardAction['setIsSubmitting']
-        | DashboardAction['setIsSuccessful'];
+        | DashboardAction['setIsSuccessful']
+        | DashboardAction['setTriggerFetchUserData'];
 
       payload: boolean;
     };

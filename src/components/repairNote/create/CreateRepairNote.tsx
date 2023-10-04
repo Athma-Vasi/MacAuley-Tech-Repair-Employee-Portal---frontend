@@ -567,7 +567,7 @@ function CreateRepairNote() {
       w="100%"
       direction="column"
       align="center"
-      justify="space-between"
+      justify="center"
       rowGap="lg"
     >
       {displaySubmitSuccessNotificationModal}

@@ -1,5 +1,3 @@
-type User = UserDocument;
-
 type UserSchema = {
   username: string;
   password: string;
@@ -42,6 +40,8 @@ type UserDocument = UserSchema & {
   updatedAt: string;
   __v: number;
 };
+
+type User = UserDocument;
 
 type UserRoles = ('Admin' | 'Employee' | 'Manager')[];
 

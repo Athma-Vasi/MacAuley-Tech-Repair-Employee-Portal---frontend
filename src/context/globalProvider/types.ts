@@ -2,14 +2,15 @@ import {
   CSSObject,
   ContextStylesParams,
   MantineColor,
+  MantineSize,
   MantineTheme,
   MantineThemeOverride,
-  Tuple,
 } from '@mantine/core';
 import { ReactNode } from 'react';
 
 import { AnnouncementDocument } from '../../components/announcement/create/types';
 import {
+  ScrollAxesDirection,
   ScrollXDirection,
   ScrollYDirection,
 } from '../../hooks/useScrollDirection';
@@ -85,9 +86,8 @@ type ErrorState = {
 type GlobalState = {
   width: number;
   height: number;
-  rowGap: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  rowGap: MantineSize;
   padding: 'xs' | 'sm' | 'md';
-  // colorScheme: ColorScheme;
   scrollXDirection: ScrollXDirection;
   scrollYDirection: ScrollYDirection;
 
@@ -128,11 +128,6 @@ type WindowDimensions = {
   height: number;
 };
 
-type ScrollAxesDirection = {
-  scrollXDirection: 'left' | 'right' | '';
-  scrollYDirection: 'up' | 'down' | '';
-};
-
 type GlobalDispatch =
   | {
       type: GlobalAction['setWindowSize'];
@@ -148,7 +143,7 @@ type GlobalDispatch =
     }
   | {
       type: GlobalAction['setRowGap'];
-      payload: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+      payload: MantineSize;
     }
   | {
       type: GlobalAction['setPadding'];
@@ -216,73 +211,7 @@ export type {
   GlobalProviderProps,
   GlobalReducer,
   GlobalState,
-  ScrollAxesDirection,
   Shade,
   ThemeObject,
   WindowDimensions,
 };
-
-/**
- * type RenderState = {
-  error: {
-    isError: boolean;
-    errorMessage: string;
-    errorCallback: () => void;
-  };
-
-  loading: {
-    isLoading: boolean;
-    loadingMessage: string;
-    loadingCallback: () => void;
-  };
-
-  submitting: {
-    isSubmitting: boolean;
-    submittingMessage: string;
-    submittingCallback: () => void;
-  };
-
-  successfull: {
-    isSuccessfull: boolean;
-    successfullMessage: string;
-    successfullCallback: () => void;
-  };
-};
-
-type ComponentNames =
-  | 'addressChange'
-  | 'announcement'
-  | 'anonymousRequest'
-  | 'benefit'
-  | 'comment'
-  | 'dashboard'
-  | 'directory'
-  | 'fileUpload'
-  | 'displayQueryDesktop'
-  | 'displayQueryMobile'
-  | 'displayResource'
-  | 'displayStatistic'
-  | 'endorsement'
-  | 'event'
-  | 'expenseClaim'
-  | 'imageUpload'
-  | 'leaveRequest'
-  | 'login'
-  | 'portalFooter'
-  | 'portalNavbar'
-  | 'portalHeader'
-  | 'printerIssue'
-  | 'referment'
-  | 'register'
-  | 'repairNote'
-  | 'requestResource'
-  | 'requireAuth'
-  | 'survey';
-
-type ComponentsRenderStatePayload = {
-  component: ComponentNames;
-  renderState: Partial<RenderState>;
-};
-
-type ComponentsRenderState = Record<ComponentNames, RenderState>;
- */

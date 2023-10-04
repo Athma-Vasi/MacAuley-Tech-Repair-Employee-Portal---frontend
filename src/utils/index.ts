@@ -1077,7 +1077,7 @@ function urlBuilder({
   hash = '',
   host = 'localhost',
   path = '',
-  port = '3500',
+  port = '5500',
   protocol = 'http',
   query = '',
 }: UrlBuilderInput): URL {

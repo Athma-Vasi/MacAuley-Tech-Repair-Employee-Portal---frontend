@@ -64,6 +64,8 @@ type DecodedToken = {
     username: string;
     roles: ('Admin' | 'Employee' | 'Manager')[];
   };
+  iat: number;
+  exp: number;
 };
 
 export type {

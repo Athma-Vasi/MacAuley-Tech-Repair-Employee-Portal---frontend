@@ -1,4 +1,10 @@
-import { PasswordInput, Popover, Stack, useMantineTheme } from '@mantine/core';
+import {
+  MantineSize,
+  PasswordInput,
+  Popover,
+  Stack,
+  useMantineTheme,
+} from '@mantine/core';
 import { ReactNode, useState } from 'react';
 import { TbCheck } from 'react-icons/tb';
 
@@ -25,7 +31,7 @@ type AccessiblePasswordInputCreatorInfo = {
   maxLength?: number;
   withAsterisk?: boolean;
   ref?: React.RefObject<HTMLInputElement>;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: MantineSize;
   required?: boolean;
 };
 

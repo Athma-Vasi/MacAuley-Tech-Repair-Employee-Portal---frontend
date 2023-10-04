@@ -729,7 +729,6 @@ function QueryBuilder({
 
   const filterValueDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     label: 'Value',
-    customWidth: '100%',
     description: {
       error: filterValueErrorText,
       valid: filterValueValidText,
@@ -980,6 +979,7 @@ function QueryBuilder({
   );
 
   const searchTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    // textAreaWidth: 330,
     description: {
       error: searchTextInputErrorText,
       valid: searchTextInputValidText,
@@ -1583,7 +1583,7 @@ function QueryBuilder({
             <Accordion.Panel>
               <Stack w="100%">
                 {displayFilterChains}
-                <FormLayoutWrapper>
+                <Stack w="100%">
                   <Group w="100%" position="apart">
                     <Group spacing={rowGap}>
                       <Title order={5}>Build Filter Chain</Title>
@@ -1602,7 +1602,7 @@ function QueryBuilder({
                     {createdFilterOperatorsSelectInput}
                   </Group>
                   {createdFilterValueInput}
-                </FormLayoutWrapper>
+                </Stack>
               </Stack>
             </Accordion.Panel>
           </Accordion.Item>
@@ -1633,7 +1633,7 @@ function QueryBuilder({
           </Accordion.Control>
           <Accordion.Panel>
             <Stack w="100%">
-              <FormLayoutWrapper>
+              <Stack w="100%">
                 <Group spacing={rowGap}>
                   <Title order={5}>Projection Exclusion</Title>
                   <Tooltip label="Projection help">
@@ -1641,7 +1641,7 @@ function QueryBuilder({
                   </Tooltip>
                 </Group>
                 {createdProjectionCheckboxGroupInput}
-              </FormLayoutWrapper>
+              </Stack>
             </Stack>
           </Accordion.Panel>
         </Accordion.Item>
@@ -1675,7 +1675,7 @@ function QueryBuilder({
             <Accordion.Panel>
               <Stack w="100%">
                 {displaySearchChains}
-                <FormLayoutWrapper>
+                <Stack w="100%">
                   <Group w="100%" position="apart">
                     <Group spacing={rowGap}>
                       <Title order={5}>Build Search Chain</Title>
@@ -1723,7 +1723,7 @@ function QueryBuilder({
                     {createdGeneralSearchInclusionTextInput}
                     {createdGeneralSearchExclusionTextInput}
                   </Group>
-                </FormLayoutWrapper>
+                </Stack>
               </Stack>
             </Accordion.Panel>
           </Accordion.Item>
@@ -1758,7 +1758,7 @@ function QueryBuilder({
             <Accordion.Panel>
               <Stack w="100%">
                 {displaySortChains}
-                <FormLayoutWrapper>
+                <Stack w="100%">
                   <Group w="100%" position="apart">
                     <Group spacing={rowGap}>
                       <Title order={5}>Build Sort Chain</Title>
@@ -1775,7 +1775,7 @@ function QueryBuilder({
                     {createdSortSelectInput}
                     {createdSortDirectionSelectInput}
                   </Group>
-                </FormLayoutWrapper>
+                </Stack>
               </Stack>
             </Accordion.Panel>
           </Accordion.Item>
@@ -1787,8 +1787,8 @@ function QueryBuilder({
   // ----------------- //
   const queryBuilderWidth =
     width < 480 // for iPhone 5/SE
-      ? 375 - 20
-      : width < 768 // for iPhone 6/7/8
+      ? width * 0.95
+      : width < 768 // for iPhones 6 - 15
       ? width - 40
       : // at 768vw the navbar appears at width of 225px
       width < 1024
@@ -1799,15 +1799,10 @@ function QueryBuilder({
       : 900 - 40;
 
   const displayQueryBuilderComponent = (
-    <Flex
+    <Stack
       w={queryBuilderWidth}
-      p={padding}
-      direction="column"
-      rowGap={rowGap}
-      style={{
-        border: borderColor,
-        borderRadius: 4,
-      }}
+      py={padding}
+      style={{ border: borderColor, borderRadius: 4 }}
     >
       <Stack w="100%">
         <Accordion
@@ -1858,7 +1853,7 @@ function QueryBuilder({
           </Accordion.Item>
         </Accordion>
       </Stack>
-    </Flex>
+    </Stack>
   );
 
   const queryBuilderHelpModal = (

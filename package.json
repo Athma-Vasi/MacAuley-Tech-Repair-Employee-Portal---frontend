@@ -1,7 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
-  "private": true,
+  "private": true,  
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@fortawesome/fontawesome-svg-core": "^6.4.0",
@@ -51,7 +51,16 @@
     ],
     "rules": {
       "simple-import-sort/imports": "warn",
-      "simple-import-sort/exports": "warn"
+      "simple-import-sort/exports": "warn",
+      "sort-keys": [
+        "off",
+        "asc",
+        {
+          "caseSensitive": true,
+          "natural": true,
+          "minKeys": 3
+        }
+      ]
     }
   },
   "browserslist": {

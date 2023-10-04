@@ -1,4 +1,4 @@
-import { Group, Text } from '@mantine/core';
+import { Group, Loader, LoadingOverlay, Stack, Text } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { globalAction } from '../../context/globalProvider/state';
@@ -6,7 +6,11 @@ import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
 import { UserDocument } from '../../types';
 import { logState, urlBuilder } from '../../utils';
-import { dashboardReducer, initialDashboardState } from './state';
+import {
+  dashboardAction,
+  dashboardReducer,
+  initialDashboardState,
+} from './state';
 import { InvalidTokenError } from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -16,33 +20,43 @@ function Dashboard() {
     dashboardReducer,
     initialDashboardState
   );
-  // const {
-  //   errorMessage,
-  //   isError,
-  //   isLoading,
-  //   isSubmitting,
-  //   isSuccessful,
-  //   loadingMessage,
-  //   submitMessage,
-  //   successMessage,
-  // } = dashboardState;
+  const {
+    successMessage,
+    submitMessage,
+    loadingMessage,
+    isSuccessful,
+    isSubmitting,
+    isLoading,
+    triggerFetchUserData,
+  } = dashboardState;
+
   const { globalState, globalDispatch } = useGlobalState();
   const {
-    authState: { accessToken, userId },
+    authState: { accessToken, userId, username, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
-
   const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
     async function getUserData() {
-      const url: URL = urlBuilder({
-        path: `user/${userId}`,
+      dashboardDispatch({
+        type: dashboardAction.setIsLoading,
+        payload: true,
       });
+      dashboardDispatch({
+        type: dashboardAction.setLoadingMessage,
+        payload: `Fetching ${username}'s data...`,
+      });
+
+      const url: URL = urlBuilder({ path: `user/${userId}` });
 
       const request: Request = new Request(url.toString(), {
         method: 'GET',
@@ -111,15 +125,18 @@ function Dashboard() {
           type: 'setIsLoading',
           payload: false,
         });
-
         dashboardDispatch({
           type: 'setLoadingMessage',
           payload: '',
         });
+        dashboardDispatch({
+          type: 'setTriggerFetchUserData',
+          payload: false,
+        });
       }
     }
 
-    if (accessToken) {
+    if (triggerFetchUserData) {
       getUserData();
     }
 
@@ -127,18 +144,35 @@ function Dashboard() {
       isMounted = false;
       controller.abort();
     };
-  }, []);
+  }, [isAccessTokenExpired]);
 
   useEffect(() => {
-    console.log('accessToken in dashboard: ', accessToken);
+    console.log({ isAccessTokenExpired });
     logState({
-      state: globalState,
-      groupLabel: 'globalState in Dashboard',
+      state: dashboardState,
+      groupLabel: 'dashboard state in Dashboard',
     });
   }, [accessToken, globalState]);
 
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      visible={isLoading}
+      zIndex={1000}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Text>{loadingMessage}</Text>
+          <Loader />
+        </Stack>
+      }
+    />
+  );
+
   return (
-    <Group w="100%" position="center">
+    <Group w="100%" position="center" style={{ position: 'relative' }}>
+      {displayLoadingOverlay}
       <Text>{`Access token is ${
         accessToken ? 'present' : 'not present'
       }`}</Text>

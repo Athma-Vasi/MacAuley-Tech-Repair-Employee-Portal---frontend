@@ -16,6 +16,7 @@ import { useEffect, useRef } from 'react';
 import { TbCheck, TbX } from 'react-icons/tb';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
 
+import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
 import { replaceLastCommaWithAnd, returnThemeColors } from '../../../utils';
@@ -23,7 +24,7 @@ import { AccessibleButtonCreatorInfo } from '../ButtonWrapper';
 import { TextWrapper } from '../TextWrapper';
 import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
-import { COLORS_SWATCHES } from '../../../constants/data';
+
 function StepperWrapper({
   allowNextStepsSelect = false,
   children,
@@ -164,15 +165,15 @@ function StepperWrapper({
   const stepperWidth = customWidth
     ? customWidth
     : width < 480 // for iPhone 5/SE
-    ? 375 - 20
-    : width < 768 // for iPhone 6/7/8
-    ? width * 0.8
+    ? width * 0.95
+    : width < 768 // for iPhones 6 - 15
+    ? width - 40
     : // at 768vw the navbar appears at width of 225px
     width < 1024
     ? (width - 225) * 0.8
     : // at >= 1200vw the navbar width is 300px
     width < 1200
-    ? (width - 300) * 0.8
+    ? (width - 225) * 0.8
     : 900 - 40;
 
   const {
@@ -185,14 +186,13 @@ function StepperWrapper({
 
   return (
     <Flex
-      direction="column"
       align="center"
+      direction="column"
+      h="100%"
       justify="flex-start"
+      p={padding}
       rowGap={rowGap}
       w="100%"
-      // bg={backgroundColor}
-      p={padding}
-      h="100%"
     >
       <Title order={4}>{childrenTitle}</Title>
       <Stepper

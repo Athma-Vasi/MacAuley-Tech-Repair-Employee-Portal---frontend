@@ -55,7 +55,7 @@ function DisplayAnnouncements() {
   } = displayAnnouncementsState;
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const {
@@ -70,6 +70,10 @@ function DisplayAnnouncements() {
 
   /** ------------- begin useEffects ------------- */
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -182,7 +186,7 @@ function DisplayAnnouncements() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFetchAnnouncements]);
+  }, [triggerFetchAnnouncements, isAccessTokenExpired]);
 
   useEffect(() => {
     displayAnnouncementsDispatch({
@@ -296,7 +300,7 @@ function DisplayAnnouncements() {
     >
       <LoadingOverlay
         visible={isLoading}
-        zIndex={1000}
+        zIndex={500}
         overlayBlur={3}
         overlayOpacity={1}
         radius={4}

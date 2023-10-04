@@ -1,40 +1,44 @@
 import { faCheck, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Popover, Stack, TextInput, useMantineTheme } from '@mantine/core';
+import {
+  MantineSize,
+  Popover,
+  Stack,
+  TextInput,
+  useMantineTheme,
+} from '@mantine/core';
 
 import { useGlobalState } from '../../hooks';
 import { TbCheck } from 'react-icons/tb';
 import { ReactNode, useState } from 'react';
+import { returnThemeColors } from '../../utils';
+import { COLORS_SWATCHES } from '../../constants/data';
 
 type AccessibleDateTimeInputCreatorInfo = {
-  inputKind: 'date' | 'time';
+  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
+  autoComplete?: 'on' | 'off';
+  dateInputWidth?: string | number;
   dateKind?: 'date near future' | 'date near past' | 'full date';
-  semanticName: string;
+  description: { error: JSX.Element; valid: JSX.Element };
+  icon?: ReactNode;
+  initialInputValue?: string;
+  inputKind: 'date' | 'time';
   inputText: string;
   isValidInputText: boolean;
   label: string;
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
-  description: {
-    error: JSX.Element;
-    valid: JSX.Element;
-  };
-  placeholder: string;
-  initialInputValue?: string;
-  icon?: ReactNode;
+  max?: string;
+  maxLength?: number;
+  min?: string;
+  minLength?: number;
+  onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
-  onBlur: () => void;
-
-  min?: string;
-  max?: string;
-  minLength?: number;
-  maxLength?: number;
-  withAsterisk?: boolean;
+  placeholder: string;
   ref?: React.RefObject<HTMLInputElement>;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   required?: boolean;
-  autoComplete?: 'on' | 'off';
-  customWidth?: string | number;
+  semanticName: string;
+  size?: MantineSize;
+  withAsterisk?: boolean;
 };
 
 type DateTimeInputWrapperProps = {
@@ -45,13 +49,13 @@ function DateTimeInputWrapper({
   creatorInfoObject,
 }: DateTimeInputWrapperProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
-  const { colors } = useMantineTheme();
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-      width,
-    },
+    globalState: { themeObject },
   } = useGlobalState();
+
+  const {
+    generalColors: { greenColorShade },
+  } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
   const {
     inputKind,
@@ -77,21 +81,16 @@ function DateTimeInputWrapper({
     required = false,
     size = 'sm',
     autoComplete = 'off',
-    customWidth,
+    dateInputWidth = 330,
   } = creatorInfoObject;
-
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
 
   const leftIcon = isValidInputText ? (
     icon ? (
       icon
     ) : (
-      <TbCheck color={colors.green[colorShade]} size={18} />
+      <TbCheck color={greenColorShade} size={18} />
     )
   ) : null;
-
-  const inputWidth = customWidth ? customWidth : 330;
 
   const inputWithPopover = (
     <Popover
@@ -99,18 +98,18 @@ function DateTimeInputWrapper({
       position="bottom"
       shadow="md"
       transitionProps={{ transition: 'pop' }}
-      width={customWidth === '100%' ? 330 : 'target'}
+      width="target"
       withArrow
     >
       <Popover.Target>
         <div
           onFocusCapture={() => setPopoverOpened(true)}
           onBlurCapture={() => setPopoverOpened(false)}
+          style={{ width: dateInputWidth }}
         >
           <TextInput
             type={inputKind}
             size={size}
-            w={inputWidth}
             color="dark"
             label={label}
             placeholder={placeholder}
@@ -137,9 +136,6 @@ function DateTimeInputWrapper({
             value={inputText}
             icon={leftIcon}
             error={!isValidInputText && inputText !== initialInputValue}
-            // description={
-            //   isValidInputText ? description.valid : description.error
-            // }
             min={
               dateKind === 'full date'
                 ? new Date(1900, 0, 1).toISOString().split('T')[0]

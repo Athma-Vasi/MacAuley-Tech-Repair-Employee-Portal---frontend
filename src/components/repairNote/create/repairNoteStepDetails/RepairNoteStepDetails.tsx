@@ -85,6 +85,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
+      width,
     },
   } = useGlobalState();
 
@@ -299,6 +300,19 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       withAsterisk: true,
     };
 
+  const textAreaWidth =
+    width < 480 // for iPhone 5/SE
+      ? 330
+      : width < 768 // for iPhone 6/7/8
+      ? width * 0.8 - 44
+      : // at 768vw the navbar appears at width of 225px
+      width < 1024
+      ? (width - 225 - 44) * 0.8
+      : // at >= 1200vw the navbar width is 300px
+      width < 1200
+      ? (width - 300 - 44) * 0.8
+      : 900 - 74;
+
   const partsNeededModelsTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
     {
       description: {
@@ -327,8 +341,9 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
         });
       },
       placeholder: 'Enter models of parts needed',
-      semanticName: 'parts needed models',
       required: true,
+      semanticName: 'parts needed models',
+      textAreaWidth,
       withAsterisk: true,
     };
 

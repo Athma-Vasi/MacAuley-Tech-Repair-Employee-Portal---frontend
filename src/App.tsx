@@ -1,17 +1,14 @@
 import './index.css';
 
-import { MantineProvider, ScrollArea, Text } from '@mantine/core';
+import { MantineProvider, Text } from '@mantine/core';
 import { lazy, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import CustomFonts from './components/customFonts/CustomFonts';
-import ErrorFallback from './components/errorFallback/ErrorFallback';
-import { useAuth } from './hooks';
-import { useGlobalState } from './hooks/useGlobalState';
-import { returnThemeColors } from './utils';
-import { COLORS_SWATCHES } from './constants/data';
 import DevTesting from './components/devTesting/DevTesting';
+import ErrorFallback from './components/errorFallback/ErrorFallback';
+import { useGlobalState } from './hooks/useGlobalState';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const PublicLayout = lazy(

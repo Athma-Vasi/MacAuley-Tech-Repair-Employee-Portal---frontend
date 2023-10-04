@@ -1,4 +1,4 @@
-import { Button } from '@mantine/core';
+import { Button, MantineSize } from '@mantine/core';
 import {
   CSSProperties,
   KeyboardEvent,
@@ -34,7 +34,7 @@ type AccessibleButtonCreatorInfo = {
   rightIcon?: ReactNode;
   semanticName: string;
   semanticDescription: string;
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: MantineSize;
 };
 
 type ButtonWrapperProps = {
