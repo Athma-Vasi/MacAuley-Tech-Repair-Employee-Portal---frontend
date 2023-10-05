@@ -6,13 +6,13 @@
  * Imports
  */
 import { MantineSize } from '@mantine/core';
+
 import type {
   Action,
   ActionsCompany,
   ActionsGeneral,
   ActionsOutreach,
 } from './actions.types';
-import type { Note } from './notes.types';
 import type {
   CanadianPostalCode,
   Country,
@@ -169,7 +169,6 @@ export type {
   FileUploadDocument,
   FileUploadSchema,
   GetQueriedResourceRequestServerResponse,
-  Note,
   QueryResponseData,
   RadioGroupInputData,
   RequestStatus,

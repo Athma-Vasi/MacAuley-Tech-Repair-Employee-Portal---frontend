@@ -135,10 +135,6 @@ function Directory() {
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end hooks ━┛
 
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -252,7 +248,9 @@ function Directory() {
       await fetchUsers();
     }
 
-    checkLocalForageBeforeFetch();
+    if (!isAccessTokenExpired) {
+      checkLocalForageBeforeFetch();
+    }
 
     return () => {
       isMounted = false;
@@ -2314,7 +2312,7 @@ function Directory() {
       overlayOpacity={1}
       radius={4}
       visible={isLoading}
-      zIndex={1000}
+      zIndex={500}
     />
   );
 

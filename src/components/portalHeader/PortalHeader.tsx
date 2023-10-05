@@ -1,5 +1,5 @@
 import { Burger, Flex, Header, MediaQuery, Title } from '@mantine/core';
-import jwtDecode, { InvalidTokenError } from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 import { useEffect } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { authAction } from '../../context/authProvider';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { returnThemeColors } from '../../utils';
+import { logState, returnThemeColors } from '../../utils';
 import { DecodedToken } from '../login/types';
 import { TextWrapper } from '../wrappers';
 import { REFRESH_URL } from './constants';
@@ -17,10 +17,8 @@ import { PortalHeaderProps } from './types';
 import { UserAvatar } from './userAvatar/UserAvatar';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
-  const {
-    authState: { accessToken, isAccessTokenExpired },
-    authDispatch,
-  } = useAuth();
+  const { authState, authDispatch } = useAuth();
+  const { accessToken, isAccessTokenExpired, sessionId } = authState;
 
   const {
     globalState: { themeObject, width },
@@ -60,8 +58,13 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
 
       const refreshUrl: URL = new URL(REFRESH_URL);
       const request: Request = new Request(refreshUrl.toString(), {
+        body: JSON.stringify({ sessionId }),
         credentials: 'include',
-        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        method: 'POST',
         mode: 'cors',
         signal: controller.signal,
       });
@@ -74,8 +77,9 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
         if (!isMounted) {
           return;
         }
-        if (!response.ok) {
-          throw new Error(data.message ?? 'Error refreshing tokens');
+        const { status } = response;
+        if (status !== 200) {
+          throw new Error('Your session has expired. Please log in again.');
         }
 
         const { accessToken: newAccessToken } = data;
@@ -99,29 +103,13 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
           return;
         }
 
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
-            : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
-
         globalDispatch({
           type: globalAction.setErrorState,
           payload: {
             isError: true,
-            errorMessage,
+            errorMessage: error?.message,
             errorCallback: () => {
               navigate('/');
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: '',
-                  errorCallback: () => {},
-                },
-              });
             },
           },
         });
@@ -149,7 +137,10 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     const decodedToken: DecodedToken = jwtDecode(accessToken);
     const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
       decodedToken;
-    const isAccessTokenExpired = accessTokenExpiration * 1000 < Date.now();
+    // const isAccessTokenExpired = accessTokenExpiration * 1000 < Date.now();
+    // buffer of 10 seconds to refresh access token
+    const isAccessTokenExpired =
+      accessTokenExpiration * 1000 - 10000 < Date.now();
 
     if (!isAccessTokenExpired) {
       return;
@@ -160,6 +151,13 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
       payload: isAccessTokenExpired,
     });
   }, [authDispatch, pathname]);
+
+  useEffect(() => {
+    logState({
+      state: authState,
+      groupLabel: 'auth state in PortalHeader',
+    });
+  }, [authState]);
 
   const {
     appThemeColors: { backgroundColor },

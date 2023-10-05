@@ -1,3 +1,5 @@
+import { UserDocument } from '../../types';
+
 type LoginState = {
   username: string;
   password: string;
@@ -56,6 +58,7 @@ type LoginReducer = (state: LoginState, action: LoginDispatch) => LoginState;
 type LoginResponse = {
   message: string;
   accessToken?: string | undefined;
+  userDocument?: Omit<UserDocument, 'password' | '__v'>;
 };
 
 type DecodedToken = {
@@ -64,6 +67,7 @@ type DecodedToken = {
     username: string;
     roles: ('Admin' | 'Employee' | 'Manager')[];
   };
+  sessionId: string;
   iat: number;
   exp: number;
 };

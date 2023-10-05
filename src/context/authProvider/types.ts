@@ -8,6 +8,7 @@ type AuthState = {
   isLoggedIn: boolean;
   password: string;
   roles: ('Admin' | 'Employee' | 'Manager')[];
+  sessionId: string;
   userId: string;
   username: string;
 };
@@ -25,6 +26,7 @@ type AuthAction = {
   setIsLoggedIn: 'setIsLoggedIn';
   setPassword: 'setPassword';
   setRoles: 'setRoles';
+  setSessionId: 'setSessionId';
   setUserId: 'setUserId';
   setUsername: 'setUsername';
 };
@@ -61,6 +63,10 @@ type AuthDispatch =
   | {
       type: AuthAction['setRoles'];
       payload: ('Admin' | 'Employee' | 'Manager')[];
+    }
+  | {
+      type: AuthAction['setSessionId'];
+      payload: string;
     }
   | {
       type: AuthAction['setUserId'];

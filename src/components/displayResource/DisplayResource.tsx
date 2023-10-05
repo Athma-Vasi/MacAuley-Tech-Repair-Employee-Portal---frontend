@@ -137,10 +137,6 @@ function DisplayResource<Doc>({
   const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -326,7 +322,7 @@ function DisplayResource<Doc>({
       }
     }
 
-    if (triggerRefresh) {
+    if (triggerRefresh && !isAccessTokenExpired) {
       fetchResource();
     }
 

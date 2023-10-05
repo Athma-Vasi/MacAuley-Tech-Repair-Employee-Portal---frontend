@@ -8,6 +8,7 @@ const initialAuthState: AuthState = {
   isLoggedIn: false,
   password: '',
   roles: [],
+  sessionId: '',
   userId: '',
   username: '',
 };
@@ -21,6 +22,7 @@ const authAction: AuthAction = {
   setIsLoggedIn: 'setIsLoggedIn',
   setPassword: 'setPassword',
   setRoles: 'setRoles',
+  setSessionId: 'setSessionId',
   setUserId: 'setUserId',
   setUsername: 'setUsername',
 };
@@ -43,6 +45,8 @@ function authReducer(state: AuthState, action: AuthDispatch): AuthState {
       return { ...state, password: action.payload };
     case authAction.setRoles:
       return { ...state, roles: action.payload };
+    case authAction.setSessionId:
+      return { ...state, sessionId: action.payload };
     case authAction.setUserId:
       return { ...state, userId: action.payload };
     case authAction.setUsername:

@@ -48,14 +48,12 @@ function PageBuilder({
       decodedToken;
     const isAccessTokenExpired = accessTokenExpiration * 1000 < Date.now();
 
-    if (!isAccessTokenExpired) {
-      return;
+    if (isAccessTokenExpired) {
+      authDispatch({
+        type: authAction.setIsAccessTokenExpired,
+        payload: isAccessTokenExpired,
+      });
     }
-
-    authDispatch({
-      type: authAction.setIsAccessTokenExpired,
-      payload: isAccessTokenExpired,
-    });
   }, [authDispatch, page]);
 
   useEffect(() => {

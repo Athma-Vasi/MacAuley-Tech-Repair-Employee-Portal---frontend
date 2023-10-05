@@ -121,10 +121,15 @@ function Login() {
           throw new Error(data.message);
         }
 
-        const { accessToken = '' } = data;
+        const { accessToken, userDocument } = data;
+        if (!accessToken || !userDocument) {
+          throw new Error('Error logging in');
+        }
+
         const decodedToken: DecodedToken = jwtDecode(accessToken);
         const {
           userInfo: { username, userId, roles },
+          sessionId,
         } = decodedToken;
 
         loginDispatch({
@@ -147,10 +152,18 @@ function Login() {
             isLoggedIn: true,
             password,
             roles,
+            sessionId,
             userId,
             username,
           },
         });
+
+        // set user document
+        globalDispatch({
+          type: globalAction.setUserDocument,
+          payload: userDocument,
+        });
+
         navigate('/home');
       } catch (error: any) {
         if (!isMounted || error.name === 'AbortError') {

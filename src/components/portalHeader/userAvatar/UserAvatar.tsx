@@ -61,7 +61,7 @@ function UserAvatar() {
   } = themeObject;
 
   const {
-    authState: { accessToken, isLoggedIn },
+    authState: { accessToken, isLoggedIn, sessionId },
     authDispatch,
   } = useAuth();
 
@@ -93,7 +93,11 @@ function UserAvatar() {
 
       const url: URL = new URL('http://localhost:5500/auth/logout');
       const request: Request = new Request(url.toString(), {
+        body: JSON.stringify({ sessionId }),
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         method: 'POST',
         mode: 'cors',
         signal: controller.signal,
@@ -107,9 +111,7 @@ function UserAvatar() {
           return;
         }
         if (response.status !== 200) {
-          throw new Error(
-            data.message ?? 'Unable to log out. Please try again.'
-          );
+          throw new Error(data.message);
         }
 
         authDispatch({

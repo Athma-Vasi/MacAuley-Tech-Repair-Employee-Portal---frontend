@@ -16,6 +16,7 @@ import { useGlobalState } from '../../hooks';
 import { ErrorState } from '../../context/globalProvider/types';
 import { COLORS_SWATCHES } from '../../constants/data';
 import { TbExclamationCircle, TbExclamationMark } from 'react-icons/tb';
+import { globalAction } from '../../context/globalProvider/state';
 
 type ErrorFallbackProps = {
   errorState: ErrorState;
@@ -35,6 +36,7 @@ function ErrorFallback({
       width,
       themeObject: { colorScheme },
     },
+    globalDispatch,
   } = useGlobalState();
 
   const { gray } = COLORS_SWATCHES;
@@ -58,7 +60,17 @@ function ErrorFallback({
     <Tooltip label="Will take you to the home page">
       <Group>
         <Button
-          onClick={() => errorCallback()}
+          onClick={() => {
+            errorCallback();
+            globalDispatch({
+              type: globalAction.setErrorState,
+              payload: {
+                isError: false,
+                errorMessage: '',
+                errorCallback: () => {},
+              },
+            });
+          }}
           aria-label="Will take you to the home page"
         >
           Close
@@ -84,7 +96,18 @@ function ErrorFallback({
     <Center py={padding}>
       <Notification
         w={notificationWidth}
-        withCloseButton={false}
+        withCloseButton={true}
+        onClose={() => {
+          errorCallback();
+          globalDispatch({
+            type: globalAction.setErrorState,
+            payload: {
+              isError: false,
+              errorMessage: '',
+              errorCallback: () => {},
+            },
+          });
+        }}
         color="red"
         icon={<TbExclamationCircle size={24} />}
         title={
@@ -101,7 +124,7 @@ function ErrorFallback({
         withBorder
       >
         <Group p={padding} w="100%" position="right" spacing={padding}>
-          {closeButtonWithTooltip}
+          {/* {closeButtonWithTooltip} */}
           {tryAgainButtonWithTooltip}
         </Group>
       </Notification>
