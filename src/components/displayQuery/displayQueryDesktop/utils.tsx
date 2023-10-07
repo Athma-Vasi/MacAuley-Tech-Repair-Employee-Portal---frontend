@@ -6,7 +6,10 @@ import { ComponentQueryData } from '../../queryBuilder/types';
 
 type SortGroupedByQueryResponseDataInput = {
   componentQueryData: ComponentQueryData[];
-  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  groupedByQueryResponseData: Map<
+    string | number | boolean,
+    Record<string, any>[]
+  >;
   fieldToSortBy?: string;
   sortDirection?: 'asc' | 'desc';
 };
@@ -14,7 +17,7 @@ type SortGroupedByQueryResponseDataInput = {
  * Pure function. Sorts and preserves the original order of the grouped by query response data ( sort within a sort ) when sort icons in table headers are clicked.
  *
  * @param {SortGroupedByQueryResponseDataInput} options - The options for sorting and grouping data.
- * @returns {Map<string | number, Record<string, any>[]>} A Map containing sorted and grouped data.
+ * @returns {Map<string | number|boolean, Record<string, any>[]>} A Map containing sorted and grouped data.
  */
 function sortGroupedByQueryResponseData({
   componentQueryData,
@@ -22,17 +25,19 @@ function sortGroupedByQueryResponseData({
   fieldToSortBy = 'createdAt',
   sortDirection = 'desc',
 }: SortGroupedByQueryResponseDataInput): Map<
-  string | number,
+  string | number | boolean,
   Record<string, any>[]
 > {
   if (!groupedByQueryResponseData.size) {
-    return new Map<string | number, Record<string, any>[]>();
+    return new Map<string | number | boolean, Record<string, any>[]>();
   }
   if (!componentQueryData.length) {
-    return new Map<string | number, Record<string, any>[]>();
+    return new Map<string | number | boolean, Record<string, any>[]>();
   }
 
-  console.log({ componentQueryData });
+  if (fieldToSortBy === 'none') {
+    return groupedByQueryResponseData;
+  }
 
   // find corresponding camel cased field name
   const fieldCamelCasedValue =

@@ -163,7 +163,10 @@ function DisplayQuery<Doc>({
 
           return acc;
         },
-        [{ label: 'Username', value: 'username' }]
+        [
+          { label: 'None', value: 'none' },
+          { label: 'Username', value: 'username' },
+        ]
       )
       // username is not displayed when resource is anonymousRequest
       .filter(({ value }) => {
@@ -181,7 +184,7 @@ function DisplayQuery<Doc>({
   // assign current groupBy selection's corresponding options data
   useEffect(() => {
     const currentSelectData =
-      groupBySelection === 'username'
+      groupBySelection === 'username' || groupBySelection === 'none'
         ? ['']
         : componentQueryData.reduce(
             (acc, componentQueryObj) => {
@@ -204,7 +207,7 @@ function DisplayQuery<Doc>({
 
   // group the queries on every selection or query change
   useEffect(() => {
-    const { groupedBy, rest } = groupQueryResponse({
+    const { groupedBy } = groupQueryResponse({
       queryResponseData,
       groupBySelection,
       currentSelectionData,
@@ -213,11 +216,6 @@ function DisplayQuery<Doc>({
     displayQueryDispatch({
       type: displayQueryAction.setGroupedByQueryResponseData,
       payload: groupedBy,
-    });
-
-    displayQueryDispatch({
-      type: displayQueryAction.setRestOfGroupedQueryResponseData,
-      payload: rest,
     });
   }, [queryResponseData, groupBySelection, currentSelectionData]);
 
@@ -915,7 +913,6 @@ function DisplayQuery<Doc>({
         openFileUploads={openFileUploads}
         queryValuesArray={queryValuesArray}
         requestStatusDispatch={parentRequestStatusDispatch}
-        restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
         setFileUploadsForAFormDispatch={displayQueryDispatch}
       />
     ) : (
@@ -933,7 +930,6 @@ function DisplayQuery<Doc>({
         openFileUploads={openFileUploads}
         queryValuesArray={queryValuesArray}
         requestStatusDispatch={parentRequestStatusDispatch}
-        restOfGroupedQueryResponseData={restOfGroupedQueryResponseData}
         setFileUploadsForAFormDispatch={displayQueryDispatch}
         tableViewSelection={currentSegmentedSelection}
       />

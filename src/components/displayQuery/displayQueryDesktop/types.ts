@@ -20,7 +20,10 @@ type DisplayQueryDesktopProps<Doc> = {
   }>;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   groupByRadioData: Array<{ label: string; value: string }>;
-  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  groupedByQueryResponseData: Map<
+    string | number | boolean,
+    Record<string, any>[]
+  >;
   groupBySelection: string;
   isLoading: boolean;
   loadingMessage?: string;
@@ -34,7 +37,6 @@ type DisplayQueryDesktopProps<Doc> = {
       status: RequestStatus;
     };
   }>;
-  restOfGroupedQueryResponseData: Record<string, any>[];
   setFileUploadsForAFormDispatch: React.Dispatch<{
     type: 'setFileUploadsForAForm';
     payload: FileUploadDocument[];

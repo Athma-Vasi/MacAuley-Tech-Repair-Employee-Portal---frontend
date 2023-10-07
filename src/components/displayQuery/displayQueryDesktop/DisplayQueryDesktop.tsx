@@ -59,7 +59,6 @@ function DisplayQueryDesktop<Doc>({
   openDeleteAcknowledge,
   openFileUploads,
   queryValuesArray,
-  restOfGroupedQueryResponseData,
   requestStatusDispatch,
   setFileUploadsForAFormDispatch,
   style = {},
@@ -892,7 +891,65 @@ function DisplayQueryDesktop<Doc>({
     </ScrollArea>
   );
 
-  const displayRestOfGroupedByData = (
+  // StepperWrapper width plus extra paddingX
+  const modalSize =
+    // this component is only displayed on desktop (>=1024)
+    width < 1200 ? (width - 300) * 0.95 : 920;
+
+  const displayEditRepairNoteModal = (
+    <Modal
+      bg={backgroundColor}
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedEditRepairNotesModal}
+      onClose={closeEditRepairNotesModal}
+      size={modalSize}
+    >
+      <EditRepairNote
+        editRepairNoteInput={editRepairNoteInput}
+        parentComponentCallbacks={[closeEditRepairNotesModal]}
+      />
+    </Modal>
+  );
+
+  const displayUpdateRequestStatusModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedUpdateRequestStatusModal}
+      onClose={closeUpdateRequestStatusModal}
+      size={width < 480 ? width * 0.95 : 480}
+      title={<Title order={5}>Update Request Status</Title>}
+    >
+      <UpdateRequestStatus
+        documentId={currentDocumentId}
+        currentRequestStatus={currentRequestStatus}
+        parentComponentDispatch={requestStatusDispatch}
+        closeUpdateRequestStatusModal={closeUpdateRequestStatusModal}
+      />
+    </Modal>
+  );
+
+  useEffect(() => {
+    logState({
+      state: displayQueryDesktopState,
+      groupLabel: 'displayQueryDesktopState',
+    });
+  }, [displayQueryDesktopState]);
+
+  return (
+    <Stack w="100%" style={{ ...style }} py={padding}>
+      {displayUpdateRequestStatusModal}
+      {displayEditRepairNoteModal}
+      {displayTable}
+    </Stack>
+  );
+}
+
+export { DisplayQueryDesktop };
+
+/**
+ * const displayRestOfGroupedByData = (
     <Accordion w={width < 1200 ? (width - 225) * 0.8 : 900 - 40}>
       <Accordion.Item
         value={`${
@@ -957,61 +1014,4 @@ function DisplayQueryDesktop<Doc>({
       </Accordion.Item>
     </Accordion>
   );
-
-  // StepperWrapper width plus extra paddingX
-  const modalSize =
-    // this component is only displayed on desktop (>=1024)
-    width < 1200 ? (width - 300) * 0.95 : 920;
-
-  const displayEditRepairNoteModal = (
-    <Modal
-      bg={backgroundColor}
-      centered
-      closeButtonProps={{ color: themeColorShade }}
-      opened={openedEditRepairNotesModal}
-      onClose={closeEditRepairNotesModal}
-      size={modalSize}
-    >
-      <EditRepairNote
-        editRepairNoteInput={editRepairNoteInput}
-        parentComponentCallbacks={[closeEditRepairNotesModal]}
-      />
-    </Modal>
-  );
-
-  const displayUpdateRequestStatusModal = (
-    <Modal
-      centered
-      closeButtonProps={{ color: themeColorShade }}
-      opened={openedUpdateRequestStatusModal}
-      onClose={closeUpdateRequestStatusModal}
-      size={width < 480 ? width * 0.95 : 480}
-      title={<Title order={5}>Update Request Status</Title>}
-    >
-      <UpdateRequestStatus
-        documentId={currentDocumentId}
-        currentRequestStatus={currentRequestStatus}
-        parentComponentDispatch={requestStatusDispatch}
-        closeUpdateRequestStatusModal={closeUpdateRequestStatusModal}
-      />
-    </Modal>
-  );
-
-  useEffect(() => {
-    logState({
-      state: displayQueryDesktopState,
-      groupLabel: 'displayQueryDesktopState',
-    });
-  }, [displayQueryDesktopState]);
-
-  return (
-    <Stack w="100%" style={{ ...style }} py={padding}>
-      {displayUpdateRequestStatusModal}
-      {displayEditRepairNoteModal}
-      {displayTable}
-      <Group position="center">{displayRestOfGroupedByData}</Group>
-    </Stack>
-  );
-}
-
-export { DisplayQueryDesktop };
+ */

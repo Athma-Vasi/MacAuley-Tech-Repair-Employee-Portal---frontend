@@ -1091,8 +1091,8 @@ type GroupQueryResponseInput<Doc> = {
   currentSelectionData: string[];
 };
 type GroupQueryResponseOutput<Doc> = {
-  groupedBy: Map<string | number, QueryResponseData<Doc>[]>;
-  rest: Record<string, number>[];
+  groupedBy: Map<string | number | boolean, QueryResponseData<Doc>[]>;
+  // rest: Record<string, number>[];
 };
 /**
  * Groups query response data by a specified field and groups omitted fields as "rest".
@@ -1114,9 +1114,28 @@ function groupQueryResponse<Doc>({
   groupBySelection,
   currentSelectionData,
 }: GroupQueryResponseInput<Doc>): GroupQueryResponseOutput<Doc> {
+  if (groupBySelection === 'none') {
+    const groupedBy = queryResponseData.reduce(
+      (
+        acc: Map<string | number, QueryResponseData<Doc>[]>,
+        queryResponseObj: QueryResponseData<Doc>
+      ) => {
+        acc.set('results', [...(acc.get('results') ?? []), queryResponseObj]);
+
+        return acc;
+      },
+      new Map()
+    );
+
+    return {
+      groupedBy,
+      // rest: [],
+    };
+  }
+
   const groupedBy = queryResponseData.reduce(
     (
-      acc: Map<string | number, Array<QueryResponseData<Doc>>>,
+      acc: Map<string | number | boolean, Array<QueryResponseData<Doc>>>,
       queryResponseObj: QueryResponseData<Doc>
     ) => {
       // find the value of the groupBySelection field
@@ -1133,6 +1152,7 @@ function groupQueryResponse<Doc>({
           if (Array.isArray(groupBySelectionValue)) {
             groupBySelectionValue.forEach((value) => {
               // create it with an array as value and push the object to the array
+
               acc.set(value, [queryResponseObj]);
             });
           } else {
@@ -1145,14 +1165,14 @@ function groupQueryResponse<Doc>({
         }
       }
 
-      // if it does not exist, push the object to the array with key 'rest'
-      else {
-        if (!acc.has('results')) {
-          acc.set('results', [queryResponseObj]);
-        } else {
-          acc.get('results')?.push(queryResponseObj);
-        }
-      }
+      // // if it does not exist, push the object to the array with key 'rest'
+      // else {
+      //   if (!acc.has('results')) {
+      //     acc.set('results', [queryResponseObj]);
+      //   } else {
+      //     acc.get('results')?.push(queryResponseObj);
+      //   }
+      // }
 
       return acc;
     },
@@ -1172,26 +1192,26 @@ function groupQueryResponse<Doc>({
     })
   );
 
-  // this allows user to see the rest of the values for groupedBy selection
-  const groupedByKeysSet = new Set(Object.keys(Object.fromEntries(groupedBy)));
-  const rest = currentSelectionData.reduce(
-    (acc: Record<string, number>[], key) => {
-      if (!groupedByKeysSet.has(key) && key.length > 0) {
-        const newObj = addFieldsToObject({
-          object: Object.create(null),
-          fieldValuesTuples: [[key, 0]],
-        });
-        acc.push(newObj);
-      }
+  // // this allows user to see the rest of the values for groupedBy selection
+  // const groupedByKeysSet = new Set(Object.keys(Object.fromEntries(groupedBy)));
+  // const rest = currentSelectionData.reduce(
+  //   (acc: Record<string, number>[], key) => {
+  //     if (!groupedByKeysSet.has(key) && key.length > 0) {
+  //       const newObj = addFieldsToObject({
+  //         object: Object.create(null),
+  //         fieldValuesTuples: [[key, 0]],
+  //       });
+  //       acc.push(newObj);
+  //     }
 
-      return acc;
-    },
-    []
-  );
+  //     return acc;
+  //   },
+  //   []
+  // );
 
   return {
     groupedBy: sortedGroupedBy,
-    rest,
+    // rest,
   };
 }
 

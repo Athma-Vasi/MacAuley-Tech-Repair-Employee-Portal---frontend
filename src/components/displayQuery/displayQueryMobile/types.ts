@@ -16,7 +16,10 @@ type DisplayQueryMobileProps = {
     payload: 'form' | 'fileUpload' | '';
   }>;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
-  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  groupedByQueryResponseData: Map<
+    string | number | boolean,
+    Record<string, any>[]
+  >;
   groupBySelection: string;
   isLoading: boolean;
   loadingMessage?: string;
@@ -30,7 +33,6 @@ type DisplayQueryMobileProps = {
       status: RequestStatus;
     };
   }>;
-  restOfGroupedQueryResponseData: Record<string, any>[];
   setFileUploadsForAFormDispatch: React.Dispatch<{
     type: 'setFileUploadsForAForm';
     payload: FileUploadDocument[];

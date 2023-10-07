@@ -58,7 +58,6 @@ function DisplayQueryMobile({
   openDeleteAcknowledge,
   openFileUploads,
   queryValuesArray,
-  restOfGroupedQueryResponseData,
   requestStatusDispatch,
   setFileUploadsForAFormDispatch,
   style = {},
@@ -434,10 +433,14 @@ function DisplayQueryMobile({
         </Flex>
       );
     });
-    const displaySection = `${section
-      .toString()
-      .charAt(0)
-      .toUpperCase()}${section.toString().slice(1)}`;
+    const displaySection =
+      section === true
+        ? 'Yes'
+        : section === false
+        ? 'No'
+        : `${section.toString().charAt(0).toUpperCase()}${section
+            .toString()
+            .slice(1)}`;
 
     return (
       <Flex
@@ -472,7 +475,85 @@ function DisplayQueryMobile({
     );
   });
 
-  const displayRestOfGroupedQueryResponseData =
+  // StepperWrapper width plus extra paddingX
+  const modalSize =
+    // this component is only displayed on mobile (<= 1024)
+    width < 480 // for iPhone 5/SE
+      ? 375 - 20
+      : width < 768 // for iPhone 6/7/8
+      ? width * 0.9
+      : // at 768vw the navbar appears at width of 225px
+        (width - 225) * 0.9;
+
+  const displayEditRepairNoteModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedEditRepairNotesModal}
+      onClose={closeEditRepairNotesModal}
+      size={modalSize}
+    >
+      <EditRepairNote
+        editRepairNoteInput={editRepairNoteInput}
+        parentComponentCallbacks={[closeEditRepairNotesModal]}
+      />
+    </Modal>
+  );
+
+  const displayUpdateRequestStatusModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedUpdateRequestStatusModal}
+      onClose={closeUpdateRequestStatusModal}
+      size={modalSize}
+    >
+      <UpdateRequestStatus
+        documentId={currentDocumentId}
+        currentRequestStatus={currentRequestStatus}
+        parentComponentDispatch={requestStatusDispatch}
+        closeUpdateRequestStatusModal={closeUpdateRequestStatusModal}
+      />
+    </Modal>
+  );
+
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      visible={isLoading}
+      zIndex={2}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Text>{loadingMessage}</Text>
+          <Loader />
+        </Stack>
+      }
+    />
+  );
+
+  return (
+    <Flex
+      direction="column"
+      style={{ ...style, position: 'relative' }}
+      align="flex-start"
+      justify="center"
+      w="100%"
+      rowGap={rowGap}
+    >
+      {displayLoadingOverlay}
+      {displayUpdateRequestStatusModal}
+      {displayEditRepairNoteModal}
+      {displayGroupedByQueryResponseData}
+    </Flex>
+  );
+}
+
+export { DisplayQueryMobile };
+
+/**
+ * const displayRestOfGroupedQueryResponseData =
     restOfGroupedQueryResponseData.length > 0
       ? restOfGroupedQueryResponseData.map((queryObj, queryObjIdx) => {
           const displayKeyValues = Object.entries(queryObj).map(
@@ -585,80 +666,4 @@ function DisplayQueryMobile({
     </Flex>
   );
 
-  // StepperWrapper width plus extra paddingX
-  const modalSize =
-    // this component is only displayed on mobile (<= 1024)
-    width < 480 // for iPhone 5/SE
-      ? 375 - 20
-      : width < 768 // for iPhone 6/7/8
-      ? width * 0.9
-      : // at 768vw the navbar appears at width of 225px
-        (width - 225) * 0.9;
-
-  const displayEditRepairNoteModal = (
-    <Modal
-      centered
-      closeButtonProps={{ color: themeColorShade }}
-      opened={openedEditRepairNotesModal}
-      onClose={closeEditRepairNotesModal}
-      size={modalSize}
-    >
-      <EditRepairNote
-        editRepairNoteInput={editRepairNoteInput}
-        parentComponentCallbacks={[closeEditRepairNotesModal]}
-      />
-    </Modal>
-  );
-
-  const displayUpdateRequestStatusModal = (
-    <Modal
-      centered
-      closeButtonProps={{ color: themeColorShade }}
-      opened={openedUpdateRequestStatusModal}
-      onClose={closeUpdateRequestStatusModal}
-      size={modalSize}
-    >
-      <UpdateRequestStatus
-        documentId={currentDocumentId}
-        currentRequestStatus={currentRequestStatus}
-        parentComponentDispatch={requestStatusDispatch}
-        closeUpdateRequestStatusModal={closeUpdateRequestStatusModal}
-      />
-    </Modal>
-  );
-
-  const displayLoadingOverlay = (
-    <LoadingOverlay
-      visible={isLoading}
-      zIndex={2}
-      overlayBlur={9}
-      overlayOpacity={0.99}
-      radius={4}
-      loader={
-        <Stack align="center">
-          <Text>{loadingMessage}</Text>
-          <Loader />
-        </Stack>
-      }
-    />
-  );
-
-  return (
-    <Flex
-      direction="column"
-      style={{ ...style, position: 'relative' }}
-      align="flex-start"
-      justify="center"
-      w="100%"
-      rowGap={rowGap}
-    >
-      {displayLoadingOverlay}
-      {displayUpdateRequestStatusModal}
-      {displayEditRepairNoteModal}
-      {displayGroupedByQueryResponseData}
-      {displayRestData}
-    </Flex>
-  );
-}
-
-export { DisplayQueryMobile };
+ */

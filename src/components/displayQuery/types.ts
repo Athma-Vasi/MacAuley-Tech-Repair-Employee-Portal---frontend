@@ -41,7 +41,10 @@ type DisplayQueryState = {
   groupByRadioData: RadioGroupInputData;
   groupBySelection: string;
   currentSelectionData: string[];
-  groupedByQueryResponseData: Map<string | number, Record<string, any>[]>;
+  groupedByQueryResponseData: Map<
+    string | number | boolean,
+    Record<string, any>[]
+  >;
   restOfGroupedQueryResponseData: Record<string, any>[];
 
   fileUploadsForAForm: FileUploadDocument[];
@@ -107,7 +110,7 @@ type DisplayQueryDispatch =
     }
   | {
       type: DisplayQueryAction['setGroupedByQueryResponseData'];
-      payload: Map<string | number, Record<string, any>[]>;
+      payload: Map<string | number | boolean, Record<string, any>[]>;
     }
   | {
       type: DisplayQueryAction['setRestOfGroupedQueryResponseData'];
