@@ -220,7 +220,7 @@ function DisplayQueryDesktop<Doc>({
       visible={isLoading}
       zIndex={500}
       overlayBlur={9}
-      overlayOpacity={0.99}
+      // overlayOpacity={0.99}
       radius={4}
       loader={
         <Stack align="center">
@@ -966,9 +966,10 @@ function DisplayQueryDesktop<Doc>({
   const displayEditRepairNoteModal = (
     <Modal
       bg={backgroundColor}
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedEditRepairNotesModal}
       onClose={closeEditRepairNotesModal}
-      centered
       size={modalSize}
     >
       <EditRepairNote
@@ -980,9 +981,10 @@ function DisplayQueryDesktop<Doc>({
 
   const displayUpdateRequestStatusModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedUpdateRequestStatusModal}
       onClose={closeUpdateRequestStatusModal}
-      centered
       size={width < 480 ? width * 0.95 : 480}
       title={<Title order={5}>Update Request Status</Title>}
     >

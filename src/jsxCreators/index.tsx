@@ -105,13 +105,13 @@ function AccessibleErrorValidTextElements({
                   ? colors.red[primaryShade.light]
                   : colors.red[primaryShade.dark]
               }
-              size={20}
+              size={22}
             />
           </Group>
         </Grid.Col>
         <Grid.Col span={12}>
-          <Group position="left">
-            <Text size="sm">{regexValidationText}</Text>
+          <Group position="right">
+            <Text>{regexValidationText}</Text>
           </Group>
         </Grid.Col>
       </Grid>
@@ -144,7 +144,7 @@ function AccessibleErrorValidTextElements({
                   ? colors.green[primaryShade.light]
                   : colors.green[primaryShade.dark]
               }
-              size={20}
+              size={22}
             />
           </Group>
         </Grid.Col>

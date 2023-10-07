@@ -1,13 +1,13 @@
-import { useReducer, useState } from 'react';
-import { CarouselBuilderProps } from './types';
-
 import { Center, Flex, Group, Title } from '@mantine/core';
-import { AccessibleButtonCreatorInfo } from '../wrappers';
+import { useState } from 'react';
 import { TbArrowLeft, TbArrowRight } from 'react-icons/tb';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { useGlobalState } from '../../hooks';
+
 import { COLORS_SWATCHES } from '../../constants/data';
+import { useGlobalState } from '../../hooks';
+import { returnAccessibleButtonElements } from '../../jsxCreators';
 import { returnThemeColors } from '../../utils';
+import { AccessibleButtonCreatorInfo } from '../wrappers';
+import { CarouselBuilderProps } from './types';
 
 function CarouselBuilder({
   nodeDimensions: { width: slideWidth, height: slideHeight },
@@ -17,7 +17,7 @@ function CarouselBuilder({
   const [currentSlide, setCurrentSlide] = useState<number>(0);
 
   const {
-    globalState: { padding, themeObject },
+    globalState: { padding, themeObject, isPrefersReducedMotion },
   } = useGlobalState();
 
   const carouselWrapperWidth = slideWidth - 22;

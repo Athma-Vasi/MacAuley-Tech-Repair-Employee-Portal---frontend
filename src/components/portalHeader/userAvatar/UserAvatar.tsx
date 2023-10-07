@@ -15,7 +15,10 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import axios, { AxiosRequestConfig } from 'axios';
+import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useState } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import {
   TbCheck,
   TbColorFilter,
@@ -24,8 +27,11 @@ import {
   TbSun,
   TbUserCircle,
 } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
 
+import { axiosInstance } from '../../../api/axios';
 import { COLORS_SWATCHES } from '../../../constants/data';
+import { authAction } from '../../../context/authProvider';
 import { globalAction } from '../../../context/globalProvider/state';
 import { Shade } from '../../../context/globalProvider/types';
 import { useAuth, useGlobalState } from '../../../hooks';
@@ -35,17 +41,11 @@ import {
 } from '../../../jsxCreators';
 import { returnThemeColors, splitCamelCase, urlBuilder } from '../../../utils';
 import { ChartsGraphsControlsStacker } from '../../displayStatistics/responsivePieChart/utils';
-import { AccessibleNavLinkCreatorInfo } from '../../wrappers';
-import { ProfileInfo } from '../profileInfo/ProfileInfo';
-import { authAction } from '../../../context/authProvider';
-import { InvalidTokenError } from 'jwt-decode';
-import { useNavigate } from 'react-router-dom';
-import { useErrorBoundary } from 'react-error-boundary';
-import { LOGOUT_URL, REFRESH_URL } from '../constants';
-import axios, { AxiosRequestConfig } from 'axios';
-import { LogoutResponse } from '../types';
-import { axiosInstance } from '../../../api/axios';
 import { NotificationModal } from '../../notificationModal';
+import { AccessibleNavLinkCreatorInfo } from '../../wrappers';
+import { LOGOUT_URL, REFRESH_URL } from '../constants';
+import { ProfileInfo } from '../profileInfo/ProfileInfo';
+import { LogoutResponse } from '../types';
 
 function UserAvatar() {
   const {
@@ -77,6 +77,10 @@ function UserAvatar() {
 
   const [colorSchemeSwitchChecked, setColorSchemeSwitchChecked] =
     useState<boolean>(colorScheme === 'light');
+  const [
+    prefersReducedMotionSwitchChecked,
+    setPrefersReducedMotionSwitchChecked,
+  ] = useState<boolean>(userDocument?.isPrefersReducedMotion ?? false);
 
   const [triggerLogoutSubmit, setTriggerLogoutSubmit] =
     useState<boolean>(false);
@@ -177,9 +181,93 @@ function UserAvatar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerLogoutSubmit]);
 
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function updatePrefersReducedMotion() {
+      const url: URL = urlBuilder({
+        path: '/user',
+      });
+
+      const body = JSON.stringify({
+        userFields: {
+          isPrefersReducedMotion: prefersReducedMotionSwitchChecked,
+        },
+      });
+
+      const request: Request = new Request(url.toString(), {
+        body,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        method: 'PATCH',
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: { message: string } = await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (response.status !== 200) {
+          throw new Error(data.message);
+        }
+
+        globalDispatch({
+          type: globalAction.setPrefersReducedMotion,
+          payload: prefersReducedMotionSwitchChecked,
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      }
+    }
+
+    updatePrefersReducedMotion();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [prefersReducedMotionSwitchChecked]);
+
   const {
     appThemeColors: { borderColor },
-    generalColors: { sliderLabelColor },
+    generalColors: { sliderLabelColor, grayColorShade },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -372,6 +460,33 @@ function UserAvatar() {
     </Stack>
   );
 
+  const reducedMotionSwitch = (
+    <Switch
+      checked={prefersReducedMotionSwitchChecked}
+      onChange={() => {
+        setPrefersReducedMotionSwitchChecked(
+          () => !prefersReducedMotionSwitchChecked
+        );
+        globalDispatch({
+          type: globalAction.setRespectReducedMotion,
+          payload: !prefersReducedMotionSwitchChecked,
+        });
+      }}
+      onLabel={<Text color="#f5f5f5">On</Text>}
+      offLabel={<Text color={grayColorShade}>Off</Text>}
+      size="lg"
+    />
+  );
+
+  const displayReducedMotionSwitch = (
+    <ChartsGraphsControlsStacker
+      input={reducedMotionSwitch}
+      label="Reduced motion"
+      value={respectReducedMotion ? 'On' : 'Off'}
+      symbol=""
+    />
+  );
+
   // font family section
   const fontFamilySegmentedControl = (
     <SegmentedControl
@@ -460,6 +575,7 @@ function UserAvatar() {
         {displayColorSchemeSwitch}
         {displayColorSwatches}
         {displayShadeSliders}
+        {displayReducedMotionSwitch}
         {displayFontFamilySegmentedControl}
       </Stack>
     </Modal>

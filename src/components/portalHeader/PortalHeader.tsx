@@ -1,4 +1,5 @@
 import { Burger, Flex, Header, MediaQuery, Title } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import jwtDecode from 'jwt-decode';
 import { useEffect } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -24,6 +25,9 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     globalState: { themeObject, width },
     globalDispatch,
   } = useGlobalState();
+  const matchesPrefersReducedMotion = useMediaQuery(
+    '(prefers-reduced-motion: reduce)'
+  );
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -151,6 +155,16 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
       payload: isAccessTokenExpired,
     });
   }, [authDispatch, pathname]);
+
+  useEffect(() => {
+    if (!matchesPrefersReducedMotion) {
+      return;
+    }
+    globalDispatch({
+      type: globalAction.setPrefersReducedMotion,
+      payload: matchesPrefersReducedMotion,
+    });
+  }, [matchesPrefersReducedMotion]);
 
   useEffect(() => {
     logState({

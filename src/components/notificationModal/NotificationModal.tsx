@@ -1,25 +1,8 @@
-import { Center, Group, Modal, Notification, Text, Title } from '@mantine/core';
-import { TbCheck } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
-
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
-import { returnThemeColors } from '../../utils';
+import { Modal, Notification, Text } from '@mantine/core';
 import { ReactNode } from 'react';
+import { TbCheck } from 'react-icons/tb';
 
-// type CustomNotificationProps = {
-//   isSuccessful: boolean;
-//   isSubmitting: boolean;
-//   navigateTo: {
-//     successPath: string;
-//   };
-//   parentDispatch: ParentDispatch;
-//   successMessage?: string;
-//   submitMessage?: string;
-
-//   // runs on success notification close
-//   successCallbacks?: Array<() => void>;
-// };
+import { useGlobalState } from '../../hooks';
 
 type CustomNotificationModalProps = {
   centered?: boolean;
@@ -48,13 +31,20 @@ function NotificationModal({
     loading,
   } = notificationProps;
 
+  const {
+    globalState: {
+      themeObject: { primaryColor },
+    },
+  } = useGlobalState();
+
   const notificationModal = (
     <Modal
+      centered={centered}
+      closeButtonProps={{ color: primaryColor }}
       opened={opened}
       onClose={() => {
         onCloseCallbacks.forEach((callback) => callback());
       }}
-      centered={centered}
       title={title}
       withCloseButton={withCloseButton}
     >
@@ -62,7 +52,7 @@ function NotificationModal({
         icon={icon}
         loading={loading}
         withCloseButton={false}
-        style={{ boxShadow: '0 0 0 0' }}
+        style={{ boxShadow: '0 0 0 0', backgroundColor: 'transparent' }}
       >
         <Text>{text}</Text>
       </Notification>

@@ -1,6 +1,6 @@
 import {
-  CSSObject,
   ContextStylesParams,
+  CSSObject,
   MantineColor,
   MantineSize,
   MantineTheme,
@@ -96,7 +96,7 @@ type GlobalState = {
 
   userDocument: Omit<UserDocument, '__v' | 'password'> | null;
   announcementDocument: QueryResponseData<AnnouncementDocument> | null;
-
+  isPrefersReducedMotion: boolean;
   errorState: ErrorState;
 };
 
@@ -119,6 +119,7 @@ type GlobalAction = {
 
   setUserDocument: 'setUserDocument';
   setAnnouncementDocument: 'setAnnouncementDocument';
+  setPrefersReducedMotion: 'setPrefersReducedMotion';
 
   setErrorState: 'setErrorState';
 };
@@ -151,7 +152,9 @@ type GlobalDispatch =
     }
   // mantine theme object
   | {
-      type: GlobalAction['setRespectReducedMotion'];
+      type:
+        | GlobalAction['setRespectReducedMotion']
+        | GlobalAction['setPrefersReducedMotion'];
       payload: boolean;
     }
   | {

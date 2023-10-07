@@ -6,6 +6,7 @@ import {
   HoverCard,
   Image,
   Modal,
+  ScrollArea,
   SegmentedControl,
   Space,
   Stack,
@@ -379,6 +380,7 @@ function DisplayQuery<Doc>({
 
   const {
     appThemeColors: { borderColor },
+    generalColors: { themeColorShade },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -415,9 +417,10 @@ function DisplayQuery<Doc>({
 
   const displayAcknowledgementModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedDeleteAcknowledge}
       onClose={closeDeleteAcknowledge}
-      centered
       size={350}
     >
       <form onSubmit={handleDeleteFormSubmit}>
@@ -453,11 +456,13 @@ function DisplayQuery<Doc>({
 
   const displayFileUploadsModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedDisplayFileUploads}
       onClose={closeFileUploads}
-      centered
       size={width < 1200 ? width * 0.9 : 1150}
       title={<Title order={4}>File Uploads</Title>}
+      scrollAreaComponent={ScrollArea.Autosize}
     >
       <Flex
         w="100%"
@@ -949,11 +954,12 @@ function DisplayQuery<Doc>({
 
   const groupByHelpModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedGroupByHelpModal}
       onClose={closeGroupByHelpModal}
       title={<Title order={4}>Group By help</Title>}
       size={width <= 1024 ? 'auto' : 1024 - 200}
-      centered
     >
       {GROUP_BY_HELP_MODAL_CONTENT}
     </Modal>

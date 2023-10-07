@@ -1,46 +1,47 @@
 import { Button, Center } from '@mantine/core';
+import jwtDecode from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
 
 import { useAuth } from '../../hooks';
+import { UserRoles } from '../../types';
 import { groupByField, logState, urlBuilder } from '../../utils';
+import {
+  announcementsArray,
+  returnAnnouncementsRequestBodies,
+} from './announcements';
+import { anonymousRequestsArray } from './anonymousRequests';
 import { benefitsArray, returnBenefitsRequestBodies } from './benefits';
+import {
+  commentsArray,
+  returnCommentsRequestBodies,
+  returnCommentsWithoutQuotedUsername,
+} from './comments';
 import { CANADA_CITY_PROVINCES, US_CITY_STATES, USERS_DOC } from './constants';
 import {
-  devTestingAction,
-  devTestingReducer,
-  initialDevTestingState,
-} from './state';
-import jwtDecode from 'jwt-decode';
-import { UserRoles } from '../../types';
+  endorsementsArray,
+  returnEndorsementsRequestBodies,
+} from './endorsement';
+import { eventsArray, returnEventsRequestBodies } from './event';
 import {
   expenseClaimArray,
   returnExpenseClaimRequestBodies,
 } from './expenseClaim';
 import { leaveRequestsArray, returnLeaveRequestsBodies } from './leaveRequests';
 import {
+  printerIssuesArray,
+  returnPrinterIssuesRequestBodies,
+} from './printerIssue';
+import { refermentsArray, returnRefermentsRequestBodies } from './referment';
+import {
   requestResourcesArray,
   returnRequestResourcesBodies,
 } from './requestResource';
 import {
-  endorsementsArray,
-  returnEndorsementsRequestBodies,
-} from './endorsement';
-import {
-  printerIssuesArray,
-  returnPrinterIssuesRequestBodies,
-} from './printerIssue';
-import { anonymousRequestsArray } from './anonymousRequests';
-import { refermentsArray, returnRefermentsRequestBodies } from './referment';
-import { eventsArray, returnEventsRequestBodies } from './event';
-import {
-  announcementsArray,
-  returnAnnouncementsRequestBodies,
-} from './announcements';
-import {
-  commentsArray,
-  returnCommentsRequestBodies,
-  returnCommentsWithoutQuotedUsername,
-} from './comments';
+  devTestingAction,
+  devTestingReducer,
+  initialDevTestingState,
+} from './state';
+import { returnUsersRequestBodies } from './users';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -50,21 +51,28 @@ function DevTesting() {
   const { triggerFormSubmit, bodiesArr, bodiesArrCount } = devTestingState;
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
     async function submitDevTestingForm() {
-      const url: URL = urlBuilder({
-        path: 'comment/dev',
-      });
+      // const url: URL = urlBuilder({
+      //   path: 'user/dev/',
+      // });
+      const url: URL = new URL(
+        'http://localhost:5500/api/v1/user/dev/add-field'
+      );
 
       const newBodiesArrCount =
-        bodiesArr.length - bodiesArrCount > 25
-          ? bodiesArrCount + 25
+        bodiesArr.length - bodiesArrCount > 50
+          ? bodiesArrCount + 50
           : bodiesArr.length;
       const slicedBodiesArr = bodiesArr.slice(
         bodiesArrCount,
@@ -78,7 +86,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        comments: slicedBodiesArr,
+        users: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -129,13 +137,13 @@ function DevTesting() {
       isMounted = false;
       controller.abort();
     };
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   useEffect(() => {
-    const bodiesArr = returnCommentsRequestBodies({
-      commentsArray: commentsArray,
+    const bodiesArr = returnUsersRequestBodies({
+      field: 'isPrefersReducedMotion',
       userDocs: USERS_DOC,
-      returnCommentsWithoutQuotedUsername,
+      value: false,
     });
 
     devTestingDispatch({

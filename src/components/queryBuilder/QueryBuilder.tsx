@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import jwtDecode from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 import { RxLinkBreak2 } from 'react-icons/rx';
 import {
@@ -27,7 +28,8 @@ import {
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { NOTE_TEXT_REGEX, SERIAL_ID_REGEX } from '../../constants/regex';
-import { useGlobalState } from '../../hooks';
+import { authAction } from '../../context/authProvider';
+import { useAuth, useGlobalState } from '../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -40,11 +42,11 @@ import {
 } from '../../jsxCreators';
 import { CheckboxInputData } from '../../types';
 import {
-  logState,
   replaceLastCommaWithAnd,
   returnSerialIdValidationText,
   returnThemeColors,
 } from '../../utils';
+import { DecodedToken } from '../login/types';
 import { TimelineBuilder } from '../timelineBuilder';
 import {
   AccessibleButtonCreatorInfo,
@@ -53,7 +55,6 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
 } from '../wrappers';
 import {
   ORDINAL_TERMS,
@@ -145,6 +146,11 @@ function QueryBuilder({
   const {
     globalState: { width, rowGap, padding, themeObject },
   } = useGlobalState();
+
+  const {
+    authDispatch,
+    authState: { accessToken },
+  } = useAuth();
 
   const [
     openedQueryHelpModal,
@@ -1359,11 +1365,24 @@ function QueryBuilder({
           payload: queryString,
         });
 
+        const decodedToken: DecodedToken = jwtDecode(accessToken);
+        const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
+          decodedToken;
+        // buffer of 10 seconds to refresh access token
+        const isAccessTokenExpired =
+          accessTokenExpiration * 1000 - 10000 < Date.now();
+
+        if (isAccessTokenExpired) {
+          authDispatch({
+            type: authAction.setIsAccessTokenExpired,
+            payload: isAccessTokenExpired,
+          });
+        }
+
         // for query values array highlighting
         if (!queryValuesArrayDispatch || !generalSearchInclusionValue) {
           return;
         }
-
         queryValuesArrayDispatch({
           type: 'setQueryValuesArray',
           payload: {
@@ -1388,6 +1407,20 @@ function QueryBuilder({
         type: setQueryBuilderString,
         payload: queryString,
       });
+
+      const decodedToken: DecodedToken = jwtDecode(accessToken);
+      const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
+        decodedToken;
+      // buffer of 10 seconds to refresh access token
+      const isAccessTokenExpired =
+        accessTokenExpiration * 1000 - 10000 < Date.now();
+
+      if (isAccessTokenExpired) {
+        authDispatch({
+          type: authAction.setIsAccessTokenExpired,
+          payload: isAccessTokenExpired,
+        });
+      }
 
       if (!queryValuesArrayDispatch) {
         return;
@@ -1858,11 +1891,12 @@ function QueryBuilder({
 
   const queryBuilderHelpModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedQueryHelpModal}
       onClose={closeQueryHelpModal}
-      title={<Title order={4}>Query help</Title>}
       size={width <= 1024 ? 'auto' : 1024 - 200}
-      centered
+      title={<Title order={4}>Query help</Title>}
     >
       {QUERY_BUILDER_HELP_MODAL_CONTENT}
     </Modal>
@@ -1870,11 +1904,12 @@ function QueryBuilder({
 
   const filterHelpModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedFilterHelpModal}
       onClose={closeFilterHelpModal}
-      title={<Title order={4}>Filter help</Title>}
       size={width <= 1024 ? 'auto' : 1024 - 200}
-      centered
+      title={<Title order={4}>Filter help</Title>}
     >
       {FILTER_HELP_MODAL_CONTENT}
     </Modal>
@@ -1882,11 +1917,12 @@ function QueryBuilder({
 
   const generalSearchHelpModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedGeneralSearchHelpModal}
       onClose={closeGeneralSearchHelpModal}
-      title={<Title order={4}>General Search help</Title>}
       size={width <= 1024 ? 'auto' : 1024 - 200}
-      centered
+      title={<Title order={4}>General Search help</Title>}
     >
       {GENERAL_SEARCH_HELP_MODAL_CONTENT}
     </Modal>
@@ -1894,11 +1930,12 @@ function QueryBuilder({
 
   const searchChainHelpModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedSearchChainHelpModal}
       onClose={closeSearchChainHelpModal}
-      title={<Title order={4}>Search Chain help</Title>}
       size={width <= 1024 ? 'auto' : 1024 - 200}
-      centered
+      title={<Title order={4}>Search Chain help</Title>}
     >
       {SEARCH_CHAIN_HELP_MODAL_CONTENT}
     </Modal>
@@ -1906,11 +1943,12 @@ function QueryBuilder({
 
   const sortHelpModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedSortHelpModal}
       onClose={closeSortHelpModal}
-      title={<Title order={4}>Sort help</Title>}
       size={width <= 1024 ? 'auto' : 1024 - 200}
-      centered
+      title={<Title order={4}>Sort help</Title>}
     >
       {SORT_HELP_MODAL_CONTENT}
     </Modal>
@@ -1918,11 +1956,12 @@ function QueryBuilder({
 
   const projectionHelpModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedProjectionHelpModal}
       onClose={closeProjectionHelpModal}
-      title={<Title order={4}>Projection help</Title>}
       size={width <= 1024 ? 'auto' : 1024 - 200}
-      centered
+      title={<Title order={4}>Projection help</Title>}
     >
       {PROJECTION_HELP_MODAL_CONTENT}
     </Modal>

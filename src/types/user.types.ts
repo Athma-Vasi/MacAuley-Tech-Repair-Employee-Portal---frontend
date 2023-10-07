@@ -32,6 +32,7 @@ type UserSchema = {
   active: boolean;
 
   completedSurveys: string[];
+  isPrefersReducedMotion: boolean;
 };
 
 type UserDocument = UserSchema & {

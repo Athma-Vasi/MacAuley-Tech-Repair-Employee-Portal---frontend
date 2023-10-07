@@ -1,6 +1,9 @@
 import { Group, Loader, LoadingOverlay, Stack, Text } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../context/globalProvider/state';
+import { useGlobalState } from '../../hooks';
 import { useAuth } from '../../hooks/useAuth';
 import { dashboardReducer, initialDashboardState } from './state';
 
@@ -22,6 +25,10 @@ function Dashboard() {
   const {
     authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
+
+  const { globalDispatch, globalState } = useGlobalState();
+  const { errorState } = globalState;
+  const navigate = useNavigate();
 
   // useEffect(() => {
   //   logState({

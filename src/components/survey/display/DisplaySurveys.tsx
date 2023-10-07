@@ -384,7 +384,7 @@ function DisplaySurveys() {
       }
     }
 
-    if (isMounted && triggerSurveySubmission) {
+    if (triggerSurveySubmission) {
       submitSurveyResponse();
     }
 

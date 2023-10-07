@@ -70,6 +70,7 @@ import {
   returnThemeColors,
   urlBuilder,
 } from '../../utils';
+import { returnHighlightedText } from '../displayQuery/displayQueryDesktop/utils';
 import { NotificationModal } from '../notificationModal';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
@@ -89,7 +90,6 @@ import {
   CreatedCommentsSectionObject,
   GetCommentsServerResponse,
 } from './types';
-import { returnHighlightedText } from '../displayQuery/displayQueryDesktop/utils';
 
 function Comment({
   parentResourceId = '',
@@ -1414,17 +1414,11 @@ function Comment({
           })
         );
 
-        const createdAtElementWithTooltip = (
-          <Tooltip label="Comment created">
-            <Text>Created: {createdAtDateTime}</Text>
-          </Tooltip>
-        );
-        const updatedAtElementWithTooltip =
+        const createdAtElement = <Text>Created: {createdAtDateTime}</Text>;
+        const updatedAtElement =
           new Date(createdAt).getTime() ===
           new Date(updatedAt).getTime() ? null : (
-            <Tooltip label="Comment last updated">
-              <Text>Updated: {updatedAtDateTime}</Text>
-            </Tooltip>
+            <Text>Updated: {updatedAtDateTime}</Text>
           );
 
         const fromColor = themeColorShades?.[8] ?? 'teal';
@@ -1477,8 +1471,8 @@ function Comment({
           reportButtonElement: reportButtonWithTooltip,
 
           isFeaturedElement: isFeaturedWithTooltip,
-          createdAtElement: createdAtElementWithTooltip,
-          updatedAtElement: updatedAtElementWithTooltip,
+          createdAtElement: createdAtElement,
+          updatedAtElement: updatedAtElement,
           deleteButtonElement: deleteButtonWithTooltip,
           featureButtonElement: featureButtonWithTooltip,
         };
@@ -1544,13 +1538,14 @@ function Comment({
 
       // user info section desktop
       const userInfoSectionDesktop = (
-        <Stack
+        <Flex
+          direction="column"
           w="100%"
-          h="100%"
-          px={padding}
-          spacing={rowGap}
+          // h="100%"
+          p={padding}
+          gap="xs"
           align="center"
-          justify="center"
+          // justify="center"
         >
           {profilePicElement}
           {usernameElement}
@@ -1558,7 +1553,7 @@ function Comment({
           {jobPositionElement}
           {departmentElement}
           {socialMediaIconsElement}
-        </Stack>
+        </Flex>
       );
       // user info section mobile
       const userInfoSectionMobile = (
@@ -1634,10 +1629,10 @@ function Comment({
       );
 
       const quotedSection = (
-        <Stack w="100%" px={padding}>
+        <Flex direction="column" w="100%" px={padding}>
           {quotedUsernameElement}
           {quotedCommentElement}
-        </Stack>
+        </Flex>
       );
 
       // comment section desktop and mobile

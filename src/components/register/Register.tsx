@@ -20,6 +20,7 @@ import {
   POSTAL_CODE_REGEX_US,
   USERNAME_REGEX,
 } from '../../constants/regex';
+import { returnAccessibleButtonElements } from '../../jsxCreators';
 import { UserSchema } from '../../types';
 import { Loading } from '../loading';
 import {
@@ -38,7 +39,6 @@ import { RegisterStepAuthentication } from './registerStepAuthentication/Registe
 import { RegisterStepPersonal } from './registerStepPersonal/RegisterStepPersonal';
 import { RegisterStepReview } from './registerStepReview/RegisterStepReview';
 import { initialRegisterState, registerAction, registerReducer } from './state';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
 
 function Register() {
   const [registerState, registerDispatch] = useReducer(
@@ -218,6 +218,7 @@ function Register() {
         roles: ['Employee'],
         active: true,
         completedSurveys: [],
+        isPrefersReducedMotion: false,
       };
 
       const controller = new AbortController();

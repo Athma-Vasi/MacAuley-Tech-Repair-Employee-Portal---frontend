@@ -36,6 +36,7 @@ import {
   returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
+import { returnHighlightedText } from '../displayQueryDesktop/utils';
 import EditRepairNote from '../editRepairNote/EditRepairNote';
 import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
 import {
@@ -44,7 +45,6 @@ import {
   initialDisplayQueryMobileState,
 } from './state';
 import { DisplayQueryMobileProps } from './types';
-import { returnHighlightedText } from '../displayQueryDesktop/utils';
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -112,6 +112,7 @@ function DisplayQueryMobile({
   const {
     appThemeColors: { backgroundColor, borderColor },
     tablesThemeColors: { textHighlightColor },
+    generalColors: { themeColorShade },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -596,9 +597,10 @@ function DisplayQueryMobile({
 
   const displayEditRepairNoteModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedEditRepairNotesModal}
       onClose={closeEditRepairNotesModal}
-      centered
       size={modalSize}
     >
       <EditRepairNote
@@ -610,9 +612,10 @@ function DisplayQueryMobile({
 
   const displayUpdateRequestStatusModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedUpdateRequestStatusModal}
       onClose={closeUpdateRequestStatusModal}
-      centered
       size={modalSize}
     >
       <UpdateRequestStatus

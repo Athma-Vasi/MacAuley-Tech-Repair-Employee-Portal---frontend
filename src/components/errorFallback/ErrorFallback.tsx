@@ -4,6 +4,7 @@ import {
   Group,
   Modal,
   Notification,
+  Stack,
   Text,
   Title,
   Tooltip,
@@ -12,11 +13,14 @@ import { useDisclosure } from '@mantine/hooks';
 import { ReactNode } from 'react';
 import { ErrorBoundary, useErrorBoundary } from 'react-error-boundary';
 import { MdOutlineErrorOutline } from 'react-icons/md';
-import { useGlobalState } from '../../hooks';
-import { ErrorState } from '../../context/globalProvider/types';
-import { COLORS_SWATCHES } from '../../constants/data';
 import { TbExclamationCircle, TbExclamationMark } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
+
+import { COLORS_SWATCHES } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
+import { ErrorState } from '../../context/globalProvider/types';
+import { useGlobalState } from '../../hooks';
+import { returnThemeColors } from '../../utils';
 
 type ErrorFallbackProps = {
   errorState: ErrorState;
@@ -25,38 +29,70 @@ type ErrorFallbackProps = {
 function ErrorFallback({
   errorState: { isError, errorMessage, errorCallback },
 }: ErrorFallbackProps) {
-  // const [
-  //   openedNotificationModal,
-  //   { open: openNotificationModal, close: closeNotificationModal },
-  // ] = useDisclosure(false);
   const { resetBoundary } = useErrorBoundary();
   const {
-    globalState: {
-      padding,
-      width,
-      themeObject: { colorScheme },
-    },
-    globalDispatch,
+    globalState: { padding, themeObject },
   } = useGlobalState();
 
-  const { gray } = COLORS_SWATCHES;
-  const borderColor =
-    colorScheme === 'light' ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
+  const {
+    generalColors: { redColorShade },
+  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  const notificationWidth =
-    width < 480 // for iPhone 5/SE
-      ? 375 - 20
-      : width < 768 // for iPhone 6/7/8
-      ? width - 40
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
-      ? (width - 225) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
-      ? (width - 225) * 0.8
-      : 900 - 40;
+  const tryAgainButtonWithTooltip = (
+    <Tooltip label="Will try the action again">
+      <Group>
+        <Button
+          onClick={() => resetBoundary()}
+          aria-label="Will try the action again"
+        >
+          Try again
+        </Button>
+      </Group>
+    </Tooltip>
+  );
 
-  const closeButtonWithTooltip = (
+  const { colorScheme, primaryShade } = themeObject;
+  const errorColor =
+    colorScheme === 'light'
+      ? `red.${primaryShade.light}`
+      : `red.${primaryShade.dark}`;
+
+  const errorModal = (
+    <Modal
+      opened={isError}
+      closeButtonProps={{ color: errorColor }}
+      onClose={() => {
+        errorCallback();
+      }}
+      title={
+        <Title order={4} color={redColorShade}>
+          ERROR
+        </Title>
+      }
+    >
+      <Notification
+        color={errorColor}
+        icon={<TbExclamationMark size={22} />}
+        style={{ boxShadow: '0 0 0 0', backgroundColor: 'transparent' }}
+        withCloseButton={false}
+      >
+        <Stack w="100%" spacing={padding}>
+          <Text>{errorMessage}</Text>
+          <Group w="100%" position="right">
+            {tryAgainButtonWithTooltip}
+          </Group>
+        </Stack>
+      </Notification>
+    </Modal>
+  );
+
+  return errorModal;
+}
+
+export default ErrorFallback;
+
+/**
+ * const closeButtonWithTooltip = (
     <Tooltip label="Will take you to the home page">
       <Group>
         <Button
@@ -78,21 +114,10 @@ function ErrorFallback({
       </Group>
     </Tooltip>
   );
+ */
 
-  const tryAgainButtonWithTooltip = (
-    <Tooltip label="Will try the action again">
-      <Group>
-        <Button
-          onClick={() => resetBoundary()}
-          aria-label="Will try the action again"
-        >
-          Try again
-        </Button>
-      </Group>
-    </Tooltip>
-  );
-
-  const errorNotification = (
+/**
+ * const errorNotification = (
     <Center py={padding}>
       <Notification
         w={notificationWidth}
@@ -109,7 +134,7 @@ function ErrorFallback({
           });
         }}
         color="red"
-        icon={<TbExclamationCircle size={24} />}
+        icon={<TbExclamationCircle size={22} />}
         title={
           <Group
             p={padding}
@@ -124,14 +149,9 @@ function ErrorFallback({
         withBorder
       >
         <Group p={padding} w="100%" position="right" spacing={padding}>
-          {/* {closeButtonWithTooltip} */}
           {tryAgainButtonWithTooltip}
         </Group>
       </Notification>
     </Center>
   );
-
-  return errorNotification;
-}
-
-export default ErrorFallback;
+ */

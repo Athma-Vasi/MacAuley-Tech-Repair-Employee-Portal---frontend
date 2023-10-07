@@ -54,6 +54,7 @@ const initialGlobalState: GlobalState = {
 
   userDocument: null,
   announcementDocument: null,
+  isPrefersReducedMotion: false,
 
   errorState: {
     isError: false,
@@ -81,6 +82,7 @@ const globalAction: GlobalAction = {
 
   setUserDocument: 'setUserDocument',
   setAnnouncementDocument: 'setAnnouncementDocument',
+  setPrefersReducedMotion: 'setPrefersReducedMotion',
 
   setErrorState: 'setErrorState',
 };
@@ -211,7 +213,10 @@ function globalReducer(
       return { ...state, userDocument: action.payload };
     case globalAction.setAnnouncementDocument:
       return { ...state, announcementDocument: action.payload };
+    case globalAction.setPrefersReducedMotion:
+      return { ...state, isPrefersReducedMotion: action.payload };
 
+    // error state
     case globalAction.setErrorState:
       return { ...state, errorState: action.payload };
 
