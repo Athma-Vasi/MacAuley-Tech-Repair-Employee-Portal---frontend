@@ -105,7 +105,7 @@ function RequestResource() {
   const { globalDispatch } = useGlobalState();
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -120,6 +120,10 @@ function RequestResource() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -241,9 +245,8 @@ function RequestResource() {
       controller.abort();
     };
 
-    // only run on triggerFormSubmit change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   const departmentInputRef = useRef<HTMLSelectElement>(null);
   // sets focus on department input on first render

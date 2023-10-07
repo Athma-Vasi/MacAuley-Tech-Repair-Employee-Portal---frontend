@@ -109,7 +109,7 @@ function AddressChange() {
   } = addressChangeState;
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const { globalDispatch } = useGlobalState();
@@ -126,6 +126,10 @@ function AddressChange() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -257,9 +261,8 @@ function AddressChange() {
       controller.abort();
     };
 
-    // only run on triggerFormSubmit change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // used to validate address line on every change
   useEffect(() => {

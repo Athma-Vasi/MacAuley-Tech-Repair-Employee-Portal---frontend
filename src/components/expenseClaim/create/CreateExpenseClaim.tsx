@@ -1,4 +1,5 @@
 import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -40,11 +41,11 @@ import {
   urlBuilder,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
-import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
 import { ImageUpload } from '../../imageUpload';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -68,7 +69,6 @@ import {
   initialCreateExpenseClaimState,
 } from './state';
 import type { ExpenseClaimDocument, ExpenseClaimKind } from './types';
-import { useDisclosure } from '@mantine/hooks';
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -117,7 +117,7 @@ function CreateExpenseClaim() {
   } = useGlobalState();
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -132,6 +132,10 @@ function CreateExpenseClaim() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
     const { signal } = controller;
@@ -373,9 +377,8 @@ function CreateExpenseClaim() {
       isMounted = false;
     };
 
-    // only run when triggerFormSubmit changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   useEffect(() => {
     logState({

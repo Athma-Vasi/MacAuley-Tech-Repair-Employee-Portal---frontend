@@ -1,4 +1,5 @@
 import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -28,10 +29,10 @@ import {
   returnGrammarValidationText,
   urlBuilder,
 } from '../../../utils';
-import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -53,7 +54,6 @@ import {
   createLeaveRequestReducer,
   initialCreateLeaveRequestState,
 } from './state';
-import { useDisclosure } from '@mantine/hooks';
 
 function CreateLeaveRequest() {
   const [leaveRequestState, createLeaveRequestDispatch] = useReducer(
@@ -101,7 +101,7 @@ function CreateLeaveRequest() {
   const { globalDispatch } = useGlobalState();
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -116,6 +116,10 @@ function CreateLeaveRequest() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -236,9 +240,8 @@ function CreateLeaveRequest() {
       controller.abort();
     };
 
-    // only run on triggerFormSubmit change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // validate start date on every change
   useEffect(() => {

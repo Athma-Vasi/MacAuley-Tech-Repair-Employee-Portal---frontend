@@ -106,7 +106,7 @@ function CreateAnnouncement() {
     globalDispatch,
   } = useGlobalState();
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -123,6 +123,9 @@ function CreateAnnouncement() {
 
   /** ------------- begin useEffects ------------- */
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
     let isMounted = true;
     const controller = new AbortController();
 
@@ -253,9 +256,8 @@ function CreateAnnouncement() {
       controller.abort();
     };
 
-    // only run on triggerFormSubmit change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   const newArticleParagraphRef = useRef<HTMLTextAreaElement>(null);
   // sets focus on paragraph input on render, and on every new paragraph textarea creation

@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { globalAction } from '../../context/globalProvider/state';
 import { useGlobalState } from '../../hooks';
 import { useAuth } from '../../hooks/useAuth';
+import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
 import { dashboardReducer, initialDashboardState } from './state';
 
 function Dashboard() {
@@ -53,12 +54,29 @@ function Dashboard() {
     />
   );
 
+  const slides = [
+    <Text>slide 1</Text>,
+    <Text>slide 2</Text>,
+    <Text>slide 3</Text>,
+    <Text>slide 4</Text>,
+  ];
+  const nodeDimensions = {
+    width: 500,
+    height: 500,
+  };
+
+  const displayCarousel = (
+    <CarouselBuilder slides={slides} nodeDimensions={nodeDimensions} />
+  );
+
   return (
     <Group w="100%" position="center" style={{ position: 'relative' }}>
       {displayLoadingOverlay}
       <Text>{`Access token is ${
         accessToken ? 'present' : 'not present'
       }`}</Text>
+
+      <Group style={{ outline: '1px solid teal' }}>{displayCarousel}</Group>
     </Group>
   );
 }

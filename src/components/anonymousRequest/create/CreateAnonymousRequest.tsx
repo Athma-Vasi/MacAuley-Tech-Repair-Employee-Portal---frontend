@@ -111,7 +111,7 @@ function CreateAnonymousRequest() {
 
   const { globalDispatch } = useGlobalState();
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -126,6 +126,10 @@ function CreateAnonymousRequest() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -248,9 +252,8 @@ function CreateAnonymousRequest() {
       controller.abort();
     };
 
-    // only want to run this effect when triggerFormSubmit changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // validate title on every input change
   useEffect(() => {

@@ -1,44 +1,45 @@
 import { Flex, Group, ScrollArea, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
-import {
-  createRepairNoteAction,
-  createRepairNoteReducer,
-  initialCreateRepairNoteState,
-} from './state';
-import { StepperWrapper } from '../../wrappers';
-import {
-  CREATE_REPAIR_NOTE_DESCRIPTION_OBJECTS,
-  CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
-} from './constants';
-import { RepairNoteStepCustomer } from './repairNoteStepCustomer/RepairNoteStepCustomer';
+import { useErrorBoundary } from 'react-error-boundary';
+import { TbNote, TbUpload } from 'react-icons/tb';
+import { useNavigate } from 'react-router-dom';
+
+import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../../constants/data';
+import { globalAction } from '../../../context/globalProvider/state';
+import { useAuth, useGlobalState } from '../../../hooks';
+import { returnAccessibleButtonElements } from '../../../jsxCreators';
+import { Country, ResourceRequestServerResponse } from '../../../types';
 import {
   replaceLastCommaWithAnd,
   returnThemeColors,
   urlBuilder,
 } from '../../../utils';
-import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
-import { RepairNoteStepDetail } from './repairNoteStepDetails/RepairNoteStepDetails';
-import { returnAccessibleButtonElements } from '../../../jsxCreators';
-import { TbNote, TbUpload } from 'react-icons/tb';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
+import { StepperWrapper } from '../../wrappers';
 import {
   PartsNeeded,
   RepairNoteDocument,
   RepairNoteInitialSchema,
   RequiredRepairs,
 } from '../types';
-import { useAuth, useGlobalState } from '../../../hooks';
-import { Country, ResourceRequestServerResponse } from '../../../types';
-import { InvalidTokenError } from 'jwt-decode';
-import FormReviewPage, {
-  FormReviewObject,
-} from '../../formReviewPage/FormReviewPage';
-import { useErrorBoundary } from 'react-error-boundary';
-import { useNavigate } from 'react-router-dom';
-import { globalAction } from '../../../context/globalProvider/state';
-import { NotificationModal } from '../../notificationModal';
-import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../../constants/data';
+import {
+  CREATE_REPAIR_NOTE_DESCRIPTION_OBJECTS,
+  CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
+} from './constants';
+import { RepairNoteStepCustomer } from './repairNoteStepCustomer/RepairNoteStepCustomer';
+import { RepairNoteStepDetail } from './repairNoteStepDetails/RepairNoteStepDetails';
+import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
+import {
+  createRepairNoteAction,
+  createRepairNoteReducer,
+  initialCreateRepairNoteState,
+} from './state';
 import { returnPartialRepairNoteRequestObject } from './utils';
-import { useDisclosure } from '@mantine/hooks';
 
 function CreateRepairNote() {
   /** ------------- begin hooks ------------- */
@@ -127,13 +128,10 @@ function CreateRepairNote() {
     loadingMessage,
   } = createRepairNoteState;
 
-  const {
-    globalDispatch,
-    globalState: { themeObject, height },
-  } = useGlobalState();
+  const { globalDispatch } = useGlobalState();
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -151,6 +149,10 @@ function CreateRepairNote() {
   /** ------------- begin useEffects ------------- */
   // submit form
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -292,9 +294,8 @@ function CreateRepairNote() {
       controller.abort();
     };
 
-    // only run when triggerFormSubmit changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin input creators ------------- */

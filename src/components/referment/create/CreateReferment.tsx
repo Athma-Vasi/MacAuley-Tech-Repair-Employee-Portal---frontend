@@ -1,4 +1,5 @@
 import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import {
   ChangeEvent,
@@ -48,10 +49,10 @@ import {
   returnUrlValidationText,
   urlBuilder,
 } from '../../../utils';
-import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -72,7 +73,6 @@ import {
   initialCreateRefermentState,
 } from './state';
 import { RefermentDocument } from './types';
-import { useDisclosure } from '@mantine/hooks';
 
 function CreateReferment() {
   const [createRefermentState, createRefermentDispatch] = useReducer(
@@ -136,7 +136,7 @@ function CreateReferment() {
   const { globalDispatch } = useGlobalState();
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -151,6 +151,9 @@ function CreateReferment() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
     let isMounted = true;
     const controller = new AbortController();
 
@@ -276,9 +279,8 @@ function CreateReferment() {
       controller.abort();
     };
 
-    // only run on triggerFormSubmit change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // validate candidateFullName on every change
   useEffect(() => {

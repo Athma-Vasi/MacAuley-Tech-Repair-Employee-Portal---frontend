@@ -1,4 +1,5 @@
 import { Center, Flex, Group, Title } from '@mantine/core';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import { TbArrowLeft, TbArrowRight } from 'react-icons/tb';
 
@@ -60,6 +61,40 @@ function CarouselBuilder({
     colorsSwatches: COLORS_SWATCHES,
   });
 
+  // variants for carousel without slide animation, instead using opacity
+  const variants = {
+    hidden: {
+      opacity: 0,
+    },
+    visible: {
+      opacity: 1,
+      transition: {
+        delay: 0.38,
+      },
+    },
+    exit: {
+      opacity: 0,
+    },
+  };
+
+  const displaySlide = isPrefersReducedMotion ? (
+    <Center w="100%" h="100%">
+      {slides[currentSlide]}
+    </Center>
+  ) : (
+    <AnimatePresence initial={false} custom={currentSlide} mode="wait">
+      <motion.div
+        key={currentSlide}
+        variants={variants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+      >
+        <Center w="100%">{slides[currentSlide]}</Center>
+      </motion.div>
+    </AnimatePresence>
+  );
+
   const displayCarouselWithSlides = (
     <Flex
       direction="column"
@@ -68,6 +103,7 @@ function CarouselBuilder({
       w={carouselWrapperWidth}
       h={carouselWrapperHeight}
       bg={backgroundColor}
+      style={{ zIndex: 2 }}
     >
       <Group
         w="100%"
@@ -78,7 +114,7 @@ function CarouselBuilder({
         {<Title order={4}>{headings[currentSlide]}</Title>}
         {slides.length === 1 ? null : createdRightControlIconButton}
       </Group>
-      <Center w="100%">{slides[currentSlide]}</Center>
+      {displaySlide}
     </Flex>
   );
 

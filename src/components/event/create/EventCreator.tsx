@@ -1,4 +1,5 @@
 import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -28,10 +29,10 @@ import {
   returnTimeRailwayValidationText,
   urlBuilder,
 } from '../../../utils';
-import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -52,7 +53,6 @@ import {
   initialEventCreatorState,
 } from './state';
 import { EventCreatorDocument, EventKind } from './types';
-import { useDisclosure } from '@mantine/hooks';
 
 function EventCreator() {
   const [eventCreatorState, eventCreatorDispatch] = useReducer(
@@ -120,7 +120,7 @@ function EventCreator() {
 
   const { globalDispatch } = useGlobalState();
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -135,6 +135,9 @@ function EventCreator() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
     let isMounted = true;
     const controller = new AbortController();
 
@@ -259,9 +262,8 @@ function EventCreator() {
       controller.abort();
     };
 
-    // only run on triggerFormSubmit change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // validate title on every change
   useEffect(() => {

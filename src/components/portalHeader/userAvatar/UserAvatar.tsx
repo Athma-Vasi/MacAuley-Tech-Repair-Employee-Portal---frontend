@@ -1,5 +1,4 @@
 import {
-  Anchor,
   Avatar,
   ColorSwatch,
   Flex,
@@ -15,9 +14,8 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import axios, { AxiosRequestConfig } from 'axios';
-import { InvalidTokenError } from 'jwt-decode';
-import { useEffect, useState } from 'react';
+import jwtDecode, { InvalidTokenError } from 'jwt-decode';
+import { useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import {
   TbCheck,
@@ -29,7 +27,6 @@ import {
 } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
-import { axiosInstance } from '../../../api/axios';
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { authAction } from '../../../context/authProvider';
 import { globalAction } from '../../../context/globalProvider/state';
@@ -39,29 +36,43 @@ import {
   returnAccessibleNavLinkElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
-import { returnThemeColors, splitCamelCase, urlBuilder } from '../../../utils';
+import {
+  logState,
+  returnThemeColors,
+  splitCamelCase,
+  urlBuilder,
+} from '../../../utils';
 import { ChartsGraphsControlsStacker } from '../../displayStatistics/responsivePieChart/utils';
+import { DecodedToken } from '../../login/types';
 import { NotificationModal } from '../../notificationModal';
 import { AccessibleNavLinkCreatorInfo } from '../../wrappers';
-import { LOGOUT_URL, REFRESH_URL } from '../constants';
 import { ProfileInfo } from '../profileInfo/ProfileInfo';
-import { LogoutResponse } from '../types';
+import {
+  initialUserAvatarState,
+  userAvatarAction,
+  userAvatarReducer,
+} from './state';
 
 function UserAvatar() {
   const {
     globalState: { userDocument, themeObject, rowGap, padding, width },
     globalDispatch,
   } = useGlobalState();
-  const {
-    colorScheme,
-    respectReducedMotion,
-    fontFamily,
-    primaryColor,
-    primaryShade,
-  } = themeObject;
+
+  const modifiedInitialUserAvatarState = userDocument?.isPrefersReducedMotion
+    ? {
+        ...initialUserAvatarState,
+        prefersReducedMotionSwitchChecked:
+          userDocument?.isPrefersReducedMotion ?? false,
+      }
+    : initialUserAvatarState;
+  const [userAvatarState, userAvatarDispatch] = useReducer(
+    userAvatarReducer,
+    modifiedInitialUserAvatarState
+  );
 
   const {
-    authState: { accessToken, isLoggedIn, sessionId },
+    authState: { accessToken, isLoggedIn, sessionId, isAccessTokenExpired },
     authDispatch,
   } = useAuth();
 
@@ -75,25 +86,34 @@ function UserAvatar() {
     { open: openProfileInfoModal, close: closeProfileInfoModal },
   ] = useDisclosure(false);
 
-  const [colorSchemeSwitchChecked, setColorSchemeSwitchChecked] =
-    useState<boolean>(colorScheme === 'light');
-  const [
+  const {
+    colorSchemeSwitchChecked,
+    isAppearanceNavLinkActive,
+    isLogoutNavLinkActive,
+    isProfileNavLinkActive,
+    isSubmitting,
+    isSuccessful,
     prefersReducedMotionSwitchChecked,
-    setPrefersReducedMotionSwitchChecked,
-  ] = useState<boolean>(userDocument?.isPrefersReducedMotion ?? false);
+    submitMessage,
+    successMessage,
+    triggerLogoutSubmit,
+  } = userAvatarState;
 
-  const [triggerLogoutSubmit, setTriggerLogoutSubmit] =
-    useState<boolean>(false);
-
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isSuccessfulLogout, setIsSuccessfulLogout] = useState<boolean>(false);
+  const { colorScheme, fontFamily, primaryColor, primaryShade } = themeObject;
 
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
     async function handleLogoutSubmit() {
-      setIsSubmitting(() => true);
+      userAvatarDispatch({
+        type: userAvatarAction.setIsSubmitting,
+        payload: true,
+      });
+      userAvatarDispatch({
+        type: userAvatarAction.setSubmitMessage,
+        payload: 'Logging out ...',
+      });
 
       const url: URL = new URL('http://localhost:5500/auth/logout');
       const request: Request = new Request(url.toString(), {
@@ -127,8 +147,14 @@ function UserAvatar() {
           payload: false,
         });
 
-        setIsSubmitting(() => false);
-        setIsSuccessfulLogout(() => true);
+        userAvatarDispatch({
+          type: userAvatarAction.setIsSuccessful,
+          payload: true,
+        });
+        userAvatarDispatch({
+          type: userAvatarAction.setSuccessMessage,
+          payload: 'Successfully logged out!',
+        });
       } catch (error: any) {
         if (!isMounted || error.name === 'AbortError') {
           return;
@@ -163,9 +189,18 @@ function UserAvatar() {
 
         showBoundary(error);
       } finally {
-        setIsSubmitting(() => false);
-        setIsSuccessfulLogout(() => false);
-        setTriggerLogoutSubmit(() => false);
+        userAvatarDispatch({
+          type: userAvatarAction.setIsSubmitting,
+          payload: false,
+        });
+        userAvatarDispatch({
+          type: userAvatarAction.setSubmitMessage,
+          payload: '',
+        });
+        userAvatarDispatch({
+          type: userAvatarAction.setTriggerLogoutSubmit,
+          payload: false,
+        });
       }
     }
 
@@ -182,6 +217,10 @@ function UserAvatar() {
   }, [triggerLogoutSubmit]);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -263,11 +302,39 @@ function UserAvatar() {
       isMounted = false;
       controller.abort();
     };
-  }, [prefersReducedMotionSwitchChecked]);
+    // only trigger when isAccessTokenExpired and prefersReducedMotionSwitchChecked changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReducedMotionSwitchChecked, isAccessTokenExpired]);
+
+  useEffect(() => {
+    const decodedToken: DecodedToken = jwtDecode(accessToken);
+    const { exp: accessTokenExpiration } = decodedToken;
+    // buffer of 10 seconds to refresh access token
+    const isAccessTokenExpired =
+      accessTokenExpiration * 1000 - 10000 < Date.now();
+
+    if (!isAccessTokenExpired) {
+      return;
+    }
+
+    authDispatch({
+      type: authAction.setIsAccessTokenExpired,
+      payload: isAccessTokenExpired,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prefersReducedMotionSwitchChecked, authDispatch]);
+
+  useEffect(() => {}, []);
 
   const {
     appThemeColors: { borderColor },
-    generalColors: { sliderLabelColor, grayColorShade },
+    generalColors: {
+      sliderLabelColor,
+      grayColorShade,
+      themeColorShade,
+      iconGray,
+    },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -277,9 +344,11 @@ function UserAvatar() {
     <Switch
       checked={colorSchemeSwitchChecked}
       onChange={() => {
-        setColorSchemeSwitchChecked(() =>
-          colorScheme === 'light' ? false : true
-        );
+        userAvatarDispatch({
+          type: userAvatarAction.setColorSchemeSwitchChecked,
+          payload: colorScheme === 'light' ? false : true,
+        });
+
         globalDispatch({
           type: globalAction.setColorScheme,
           payload: colorScheme === 'light' ? 'dark' : 'light',
@@ -464,9 +533,11 @@ function UserAvatar() {
     <Switch
       checked={prefersReducedMotionSwitchChecked}
       onChange={() => {
-        setPrefersReducedMotionSwitchChecked(
-          () => !prefersReducedMotionSwitchChecked
-        );
+        userAvatarDispatch({
+          type: userAvatarAction.setPrefersReducedMotionSwitchChecked,
+          payload: !prefersReducedMotionSwitchChecked,
+        });
+
         globalDispatch({
           type: globalAction.setRespectReducedMotion,
           payload: !prefersReducedMotionSwitchChecked,
@@ -482,7 +553,7 @@ function UserAvatar() {
     <ChartsGraphsControlsStacker
       input={reducedMotionSwitch}
       label="Reduced motion"
-      value={respectReducedMotion ? 'On' : 'Off'}
+      value={prefersReducedMotionSwitchChecked ? 'On' : 'Off'}
       symbol=""
     />
   );
@@ -518,25 +589,53 @@ function UserAvatar() {
   );
 
   const appearanceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isAppearanceNavLinkActive,
     ariaLabel: 'Select color scheme, primary color, and font family',
-    icon: <TbColorFilter />,
+    icon: (
+      <TbColorFilter
+        color={isAppearanceNavLinkActive ? themeColorShade : iconGray}
+      />
+    ),
     label: 'Appearance',
-    onClick: openThemeModal,
+    onClick: () => {
+      userAvatarDispatch({
+        type: userAvatarAction.setIsAppearanceNavLinkActive,
+        payload: !isAppearanceNavLinkActive,
+      });
+      openThemeModal();
+    },
   };
 
   const profileNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isProfileNavLinkActive,
     ariaLabel: 'View profile',
-    icon: <TbUserCircle />,
+    icon: (
+      <TbUserCircle
+        color={isProfileNavLinkActive ? themeColorShade : iconGray}
+      />
+    ),
     label: 'Profile',
-    onClick: openProfileInfoModal,
+    onClick: () => {
+      userAvatarDispatch({
+        type: userAvatarAction.setIsProfileNavLinkActive,
+        payload: !isProfileNavLinkActive,
+      });
+      openProfileInfoModal();
+    },
   };
 
   const logoutNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isLogoutNavLinkActive,
     ariaLabel: 'Sign out',
-    icon: <TbLogout />,
+    icon: (
+      <TbLogout color={isLogoutNavLinkActive ? themeColorShade : iconGray} />
+    ),
     label: 'Sign out',
     onClick: () => {
-      setTriggerLogoutSubmit(() => true);
+      userAvatarDispatch({
+        type: userAvatarAction.setTriggerLogoutSubmit,
+        payload: true,
+      });
     },
   };
 
@@ -567,7 +666,13 @@ function UserAvatar() {
   const displayThemeModal = (
     <Modal
       opened={openedThemeModal}
-      onClose={closeThemeModal}
+      onClose={() => {
+        userAvatarDispatch({
+          type: userAvatarAction.setIsAppearanceNavLinkActive,
+          payload: false,
+        });
+        closeThemeModal();
+      }}
       size={modalSize}
       title={<Text size="xl">Appearance options</Text>}
     >
@@ -584,7 +689,13 @@ function UserAvatar() {
   const displayProfileInfoModal = (
     <Modal
       opened={openedProfileInfoModal}
-      onClose={closeProfileInfoModal}
+      onClose={() => {
+        userAvatarDispatch({
+          type: userAvatarAction.setIsProfileNavLinkActive,
+          payload: false,
+        });
+        closeProfileInfoModal();
+      }}
       size={modalSize}
       title={<Text size="xl">Profile information</Text>}
       scrollAreaComponent={ScrollArea.Autosize}
@@ -625,12 +736,10 @@ function UserAvatar() {
       opened={isSubmitting}
       notificationProps={{
         loading: isSubmitting,
-        text: isSubmitting ? 'Logging out ...' : 'Successfully logged out.',
+        text: isSubmitting ? submitMessage : successMessage,
       }}
       title={
-        <Title order={4}>
-          {isSuccessfulLogout ? 'Success!' : 'Submitting ...'}
-        </Title>
+        <Title order={4}>{isSuccessful ? successMessage : submitMessage}</Title>
       }
     />
   );
@@ -643,6 +752,13 @@ function UserAvatar() {
       {displayProfileInfoModal}
     </Stack>
   );
+
+  useEffect(() => {
+    logState({
+      state: userAvatarState,
+      groupLabel: 'user avatar state in UserAvatar',
+    });
+  }, [userAvatarState]);
 
   return displayUserAvatarComponent;
 }

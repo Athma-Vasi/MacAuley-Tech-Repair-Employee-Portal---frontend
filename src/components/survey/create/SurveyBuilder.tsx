@@ -128,7 +128,7 @@ function SurveyBuilder() {
     loadingMessage,
   } = surveyBuilderState;
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const {
@@ -161,6 +161,9 @@ function SurveyBuilder() {
   /** ------------- begin useEffects ------------- */
   // submit survey form
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
     let isMounted = true;
     const surveyQuestions = setSurveyQuestions({
       questions,
@@ -282,9 +285,8 @@ function SurveyBuilder() {
       controller.abort();
     };
 
-    // this effect should only run when triggerFormSubmit changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // allows repeated openings of preview modal
   useEffect(() => {

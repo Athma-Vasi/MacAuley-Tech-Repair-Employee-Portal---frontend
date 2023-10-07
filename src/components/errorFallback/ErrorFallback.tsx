@@ -35,7 +35,7 @@ function ErrorFallback({
   } = useGlobalState();
 
   const {
-    generalColors: { redColorShade },
+    generalColors: { redColorShade, themeColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const tryAgainButtonWithTooltip = (
@@ -60,15 +60,11 @@ function ErrorFallback({
   const errorModal = (
     <Modal
       opened={isError}
-      closeButtonProps={{ color: errorColor }}
+      closeButtonProps={{ color: themeColorShade }}
       onClose={() => {
         errorCallback();
       }}
-      title={
-        <Title order={4} color={redColorShade}>
-          ERROR
-        </Title>
-      }
+      title={<Title order={4}>ERROR</Title>}
     >
       <Notification
         color={errorColor}

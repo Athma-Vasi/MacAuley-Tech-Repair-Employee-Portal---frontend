@@ -1,16 +1,18 @@
 import { UserDocument } from '../../../types';
 import {
   formatDate,
-  splitCamelCase,
   replaceLastCommaWithAnd,
+  splitCamelCase,
 } from '../../../utils';
+
+type ProfileInfoField = {
+  inputName: string;
+  inputValue: string;
+};
 
 type ProfileInfoObject = Record<
   string, // page name
-  Array<{
-    inputName: string;
-    inputValue?: string | boolean;
-  }>
+  Array<ProfileInfoField>
 >;
 
 function returnProfileInfoObject(
@@ -21,10 +23,10 @@ function returnProfileInfoObject(
   }
 
   const initialFormReviewObjectAcc = {
-    personal: [],
-    contact: [],
-    address: [],
-    employment: [],
+    personal: [] as Array<ProfileInfoField>,
+    contact: [] as Array<ProfileInfoField>,
+    address: [] as Array<ProfileInfoField>,
+    employment: [] as Array<ProfileInfoField>,
   };
 
   return Object.entries(userDocument).reduce(
@@ -38,7 +40,8 @@ function returnProfileInfoObject(
         key === 'lastName' ||
         key === 'preferredName' ||
         key === 'preferredPronouns' ||
-        key === 'dateOfBirth';
+        key === 'dateOfBirth' ||
+        key === 'isPrefersReducedMotion';
 
       if (isBelongToPersonal) {
         if (key === 'dateOfBirth') {
@@ -55,6 +58,15 @@ function returnProfileInfoObject(
           formReviewObjectAcc.personal.push({
             inputName: splitCamelCase(key),
             inputValue: formattedDate,
+          });
+
+          return formReviewObjectAcc;
+        }
+
+        if (key === 'isPrefersReducedMotion') {
+          formReviewObjectAcc.personal.push({
+            inputName: 'Prefers Reduced Motion',
+            inputValue: (value as boolean) ? 'Yes' : 'No',
           });
 
           return formReviewObjectAcc;
@@ -164,4 +176,4 @@ function returnProfileInfoObject(
 }
 
 export { returnProfileInfoObject };
-export type { ProfileInfoObject };
+export type { ProfileInfoObject, ProfileInfoField };

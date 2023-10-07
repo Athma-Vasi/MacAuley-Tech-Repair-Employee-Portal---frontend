@@ -1,4 +1,5 @@
 import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -27,10 +28,10 @@ import {
   returnNameValidationText,
   urlBuilder,
 } from '../../../utils';
-import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
@@ -50,7 +51,6 @@ import {
   initialCreateEndorsementState,
 } from './state';
 import { EmployeeAttributes, EndorsementDocument } from './types';
-import { useDisclosure } from '@mantine/hooks';
 
 function CreateEndorsement() {
   const [createEndorsementState, createEndorsementDispatch] = useReducer(
@@ -86,7 +86,7 @@ function CreateEndorsement() {
 
   const { globalDispatch } = useGlobalState();
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -101,6 +101,10 @@ function CreateEndorsement() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -218,9 +222,8 @@ function CreateEndorsement() {
       controller.abort();
     };
 
-    // only run on triggerFormSubmit change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // validate title input on every change
   useEffect(() => {

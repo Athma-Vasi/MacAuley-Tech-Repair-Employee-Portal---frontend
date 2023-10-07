@@ -1,4 +1,5 @@
 import { Group, Text, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -39,10 +40,10 @@ import {
   returnUsernameRegexValidationText,
   urlBuilder,
 } from '../../../utils';
-import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -67,7 +68,6 @@ import {
   initialCreateBenefitState,
 } from './state';
 import { BenefitsDocument, BenefitsPlanKind, Currency } from './types';
-import { useDisclosure } from '@mantine/hooks';
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
@@ -121,7 +121,7 @@ function CreateBenefit() {
   } = useGlobalState();
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -136,6 +136,10 @@ function CreateBenefit() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -261,9 +265,8 @@ function CreateBenefit() {
       controller.abort();
     };
 
-    // only run when triggerFormSubmit changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // validate benefitUsername input on every change
   useEffect(() => {

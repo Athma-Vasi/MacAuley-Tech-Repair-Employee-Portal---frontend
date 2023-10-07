@@ -141,7 +141,6 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     const decodedToken: DecodedToken = jwtDecode(accessToken);
     const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
       decodedToken;
-    // const isAccessTokenExpired = accessTokenExpiration * 1000 < Date.now();
     // buffer of 10 seconds to refresh access token
     const isAccessTokenExpired =
       accessTokenExpiration * 1000 - 10000 < Date.now();

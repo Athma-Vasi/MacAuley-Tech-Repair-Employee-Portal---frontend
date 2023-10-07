@@ -13,6 +13,7 @@ import {
 import { ResponsivePie } from '@nivo/pie';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 
+import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
 import {
   AccessibleSelectedDeselectedTextElements,
@@ -52,12 +53,11 @@ import {
   ResponsivePieChartProps,
 } from './types';
 import { ChartsGraphsControlsStacker } from './utils';
-import { COLORS_SWATCHES } from '../../../constants/data';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
   const {
-    globalState: { padding, width, themeObject },
+    globalState: { padding, width, themeObject, isPrefersReducedMotion },
   } = useGlobalState();
 
   const {
@@ -171,6 +171,18 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       payload: fillPatterns,
     });
   }, [enableFillPatterns, pieChartData]);
+
+  // set motion config on enable
+  useEffect(() => {
+    if (!isPrefersReducedMotion) {
+      return;
+    }
+
+    responsivePieChartDispatch({
+      type: responsivePieChartAction.setAnimate,
+      payload: false,
+    });
+  }, [isPrefersReducedMotion]);
 
   /** ------------- end useEffects ------------- */
 
@@ -796,6 +808,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           : animateAccessibleDeselectedText.props.id
       }
       label={<TextWrapper creatorInfoObj={{ size: 'md' }}>Animate</TextWrapper>}
+      disabled={isPrefersReducedMotion}
       checked={animate}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
@@ -1422,7 +1435,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayEnableFillPatternsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableFillPatternsSwitchInput}
     </Group>
   );
@@ -1479,7 +1492,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayEnableArcLabelsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableArcLabelsSwitchInput}
     </Group>
   );
@@ -1534,7 +1547,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayEnableArcLinkLabelsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableArcLinkLabelsSwitchInput}
     </Group>
   );
@@ -1667,7 +1680,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayAnimateMotionSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdAnimateSwitchInput}
     </Group>
   );
@@ -1676,7 +1689,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsGraphsControlsStacker
       input={createdMotionConfigSelectInput}
       label="Motion configuration"
-      value={motionConfig}
+      value={animate ? motionConfig : 'N/A'}
     />
   );
 
@@ -1684,7 +1697,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsGraphsControlsStacker
       input={createdTransitionModeSelectInput}
       label="Transition mode"
-      value={transitionMode}
+      value={animate ? transitionMode : 'N/A'}
     />
   );
 
@@ -1710,7 +1723,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayEnableLegendSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableLegendSwitchInput}
     </Group>
   );
@@ -1736,7 +1749,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   const displayEnableLegendJustifySwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: '1px solid #e0e0e0' }}>
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableLegendJustifySwitchInput}
     </Group>
   );

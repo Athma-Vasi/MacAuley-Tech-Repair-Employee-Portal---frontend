@@ -1,9 +1,9 @@
+import { toggleNavlinksActive } from '../../utils';
 import {
   PortalNavbarAction,
   PortalNavbarDispatch,
   PortalNavbarState,
 } from './types';
-import { toggleNavlinksActive } from './utils';
 
 const initialPortalNavbarState: PortalNavbarState = {
   isHomeActive: true,

@@ -1,4 +1,5 @@
 import { Group, Title, Tooltip } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import {
   ChangeEvent,
@@ -49,10 +50,10 @@ import {
   returnTimeRailwayValidationText,
   urlBuilder,
 } from '../../../utils';
-import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -74,7 +75,6 @@ import {
   initialCreatePrinterIssueState,
 } from './state';
 import { PrinterIssueDocument, PrinterMake } from './types';
-import { useDisclosure } from '@mantine/hooks';
 
 function CreatePrinterIssue() {
   const [createPrinterIssueState, createPrinterIssueDispatch] = useReducer(
@@ -136,7 +136,7 @@ function CreatePrinterIssue() {
   const { globalDispatch } = useGlobalState();
 
   const {
-    authState: { accessToken },
+    authState: { accessToken, isAccessTokenExpired },
   } = useAuth();
 
   const navigate = useNavigate();
@@ -151,6 +151,9 @@ function CreatePrinterIssue() {
   ] = useDisclosure(false);
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
     let isMounted = true;
     const controller = new AbortController();
 
@@ -271,9 +274,8 @@ function CreatePrinterIssue() {
       controller.abort();
     };
 
-    // only run on triggerFormSubmit change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit]);
+  }, [triggerFormSubmit, isAccessTokenExpired]);
 
   // validate title input on every change
   useEffect(() => {
