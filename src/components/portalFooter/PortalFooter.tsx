@@ -1,10 +1,18 @@
-import { Flex, Footer, Group, Notification, Text } from '@mantine/core';
-
-import { useAuth } from '../../hooks/useAuth';
-import { useGlobalState } from '../../hooks';
-import { returnThemeColors } from '../../utils';
-import { COLORS_SWATCHES } from '../../constants/data';
+import {
+  Flex,
+  Footer,
+  Group,
+  Loader,
+  Notification,
+  Text,
+  ThemeIcon,
+} from '@mantine/core';
 import { TbCheck } from 'react-icons/tb';
+
+import { COLORS_SWATCHES } from '../../constants/data';
+import { useGlobalState } from '../../hooks';
+import { useAuth } from '../../hooks/useAuth';
+import { returnThemeColors } from '../../utils';
 
 function PortalFooter() {
   const {
@@ -37,9 +45,17 @@ function PortalFooter() {
     </Flex>
   );
 
+  const {
+    appThemeColors: { backgroundColor },
+    generalColors: { greenColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
   const displayAuthenticationStatus = (
-    <Group spacing={rowGap} h={50}>
-      <Notification
+    <Group h={50}>
+      {/* <Notification
         icon={isFetchingTokens ? void 0 : <TbCheck size={20} />}
         loading={isFetchingTokens}
         // title={isLoggedIn ? <Text>Logged In</Text> : <Text>Logged Out</Text>}
@@ -47,16 +63,15 @@ function PortalFooter() {
         withCloseButton={false}
       >
         <Text>{isFetchingTokens ? 'Authenticating' : 'Authenticated'}</Text>
-      </Notification>
+      </Notification> */}
+      {isFetchingTokens ? (
+        <Loader size="sm" />
+      ) : (
+        <TbCheck color={greenColorShade} size={24} />
+      )}
+      <Text>{isFetchingTokens ? 'Authenticating' : 'Authenticated'}</Text>
     </Group>
   );
-
-  const {
-    appThemeColors: { backgroundColor },
-  } = returnThemeColors({
-    themeObject,
-    colorsSwatches: COLORS_SWATCHES,
-  });
 
   return (
     <Footer bg={backgroundColor} height={75} p="md" w="100%">

@@ -7,6 +7,18 @@
  */
 import { MantineSize } from '@mantine/core';
 
+import { AddressChangeDocument } from '../components/addressChange/create/types';
+import { AnnouncementDocument } from '../components/announcement/create/types';
+import { AnonymousRequestDocument } from '../components/anonymousRequest/create/types';
+import { BenefitsDocument } from '../components/benefits/create/types';
+import { EndorsementDocument } from '../components/endorsements/create/types';
+import { EventCreatorDocument } from '../components/event/create/types';
+import { ExpenseClaimDocument } from '../components/expenseClaim/create/types';
+import { LeaveRequestDocument } from '../components/leaveRequest/types';
+import { PrinterIssueDocument } from '../components/printerIssue/create/types';
+import { RefermentDocument } from '../components/referment/create/types';
+import { RequestResourceDocument } from '../components/requestResource/create/types';
+import { SurveyBuilderDocument } from '../components/survey/types';
 import type {
   Action,
   ActionsCompany,
@@ -127,6 +139,31 @@ type GetQueriedResourceRequestServerResponse<Doc> = {
   resourceData: QueryResponseData<Doc>[];
 };
 
+/**
+ * Default server response type for GET(multiple docs) REST API requests without query parameters (actions/dashboard route)
+ */
+type ActionsResourceRequestServerResponse = {
+  message: string;
+  companyData: {
+    addressChangeData: AddressChangeDocument[];
+    expenseClaimData: ExpenseClaimDocument[];
+    requestResourceData: RequestResourceDocument[];
+    leaveRequestData: LeaveRequestDocument[];
+    benefitData: BenefitsDocument[];
+  };
+  generalData: {
+    endorsementData: EndorsementDocument[];
+    printerIssueData: PrinterIssueDocument[];
+    anonymousRequestData?: AnonymousRequestDocument[];
+    refermentData: RefermentDocument[];
+  };
+  outreachData: {
+    announcementData: AnnouncementDocument[];
+    surveyData: SurveyBuilderDocument[];
+    eventData: EventCreatorDocument[];
+  };
+};
+
 type ResourceRoutePaths = {
   manager: string;
   admin: string;
@@ -161,6 +198,7 @@ export type {
 };
 
 export type {
+  ActionsResourceRequestServerResponse,
   AssociatedResourceKind,
   BreakPoints,
   CheckBoxMultipleData,

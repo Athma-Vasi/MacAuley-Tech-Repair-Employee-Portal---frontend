@@ -1,4 +1,4 @@
-import { Burger, Flex, Header, MediaQuery, Title } from '@mantine/core';
+import { Burger, Flex, Header, MediaQuery, Text, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import jwtDecode from 'jwt-decode';
 import { useEffect } from 'react';
@@ -19,10 +19,10 @@ import { UserAvatar } from './userAvatar/UserAvatar';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const { authState, authDispatch } = useAuth();
-  const { accessToken, isAccessTokenExpired, sessionId } = authState;
+  const { accessToken, isAccessTokenExpired, sessionId, username } = authState;
 
   const {
-    globalState: { themeObject, width },
+    globalState: { themeObject, width, userDocument },
     globalDispatch,
   } = useGlobalState();
   const matchesPrefersReducedMotion = useMediaQuery(
@@ -202,9 +202,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
               </Title>
             </Flex>
 
-            <TextWrapper creatorInfoObj={{ size: 'lg' }}>
-              Employee Portal
-            </TextWrapper>
+            <Text>Welcome {userDocument?.firstName ?? username}</Text>
           </Flex>
         )}
 

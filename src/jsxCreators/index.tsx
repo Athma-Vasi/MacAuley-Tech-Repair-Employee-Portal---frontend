@@ -916,7 +916,7 @@ function returnScrollableDocumentInfo({
 
   const displayScrollableDocument = (
     <Stack w="100%">
-      <Text size="md">Additional Details:</Text>
+      <Text>Document Details:</Text>
       <ScrollArea
         p={rowGap}
         type="hover"

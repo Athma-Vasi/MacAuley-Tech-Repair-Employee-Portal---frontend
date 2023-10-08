@@ -53,6 +53,7 @@ const initialGlobalState: GlobalState = {
   themeObject: initialThemeObject,
 
   userDocument: null,
+  actionsDocuments: null,
   announcementDocument: null,
   isPrefersReducedMotion: false,
 
@@ -81,6 +82,7 @@ const globalAction: GlobalAction = {
   setComponents: 'setComponents',
 
   setUserDocument: 'setUserDocument',
+  setActionsDocuments: 'setActionsDocuments',
   setAnnouncementDocument: 'setAnnouncementDocument',
   setPrefersReducedMotion: 'setPrefersReducedMotion',
 
@@ -211,6 +213,8 @@ function globalReducer(
     // documents
     case globalAction.setUserDocument:
       return { ...state, userDocument: action.payload };
+    case globalAction.setActionsDocuments:
+      return { ...state, actionsDocuments: action.payload };
     case globalAction.setAnnouncementDocument:
       return { ...state, announcementDocument: action.payload };
     case globalAction.setPrefersReducedMotion:

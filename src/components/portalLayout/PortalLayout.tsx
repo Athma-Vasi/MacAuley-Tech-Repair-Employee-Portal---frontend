@@ -7,6 +7,7 @@ import {
   Space,
   Text,
 } from '@mantine/core';
+import { useWindowScroll } from '@mantine/hooks';
 import { useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
@@ -18,17 +19,12 @@ import { BreadcrumbsBuilder } from '../breadcrumbsBuilder/BreadcrumbsBuilder';
 import { PortalFooter } from '../portalFooter';
 import { PortalHeader } from '../portalHeader';
 import { PortalNavbar } from '../portalNavbar';
-import { useWindowScroll } from '@mantine/hooks';
 
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);
   const {
-    globalState: { scrollYDirection, padding, themeObject, height, width },
+    globalState: { padding, themeObject, height, width },
   } = useGlobalState();
-
-  const {
-    authState: { accessToken, isLoggedIn },
-  } = useAuth();
 
   const { pathname } = useLocation();
 

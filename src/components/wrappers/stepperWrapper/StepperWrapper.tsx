@@ -26,7 +26,7 @@ import { numberSpellingMap } from './constants';
 import type { StepperWrapperProps } from './types';
 
 function StepperWrapper({
-  allowNextStepsSelect = false,
+  allowNextStepsSelect = true,
   children,
   childrenTitle = '',
   currentStepperPosition,
@@ -248,13 +248,11 @@ function StepperWrapper({
               label={capsLabel}
               description={description}
               aria-label={ariaLabel}
-              aria-current={
-                currentStepperPosition === index ? 'step' : undefined
-              }
+              aria-current={currentStepperPosition === index ? 'step' : void 0}
               //the mantine stepper uses 0-based indexing
-              ref={currentStepperPosition === index ? stepperRef : undefined}
+              ref={currentStepperPosition === index ? stepperRef : void 0}
               className="hide-outline"
-              color={stepsInError.has(index) ? 'red' : undefined}
+              color={stepsInError.has(index) ? redColorShade : greenColorShade}
               completedIcon={completedIcon}
             />
           );

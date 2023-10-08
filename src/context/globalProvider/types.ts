@@ -8,7 +8,18 @@ import {
 } from '@mantine/core';
 import { ReactNode } from 'react';
 
+import { AddressChangeDocument } from '../../components/addressChange/create/types';
 import { AnnouncementDocument } from '../../components/announcement/create/types';
+import { AnonymousRequestDocument } from '../../components/anonymousRequest/create/types';
+import { BenefitsDocument } from '../../components/benefits/create/types';
+import { EndorsementDocument } from '../../components/endorsements/create/types';
+import { EventCreatorDocument } from '../../components/event/create/types';
+import { ExpenseClaimDocument } from '../../components/expenseClaim/create/types';
+import { LeaveRequestDocument } from '../../components/leaveRequest/types';
+import { PrinterIssueDocument } from '../../components/printerIssue/create/types';
+import { RefermentDocument } from '../../components/referment/create/types';
+import { RequestResourceDocument } from '../../components/requestResource/create/types';
+import { SurveyBuilderDocument } from '../../components/survey/types';
 import {
   ScrollAxesDirection,
   ScrollXDirection,
@@ -83,6 +94,27 @@ type ErrorState = {
   errorCallback: () => void;
 };
 
+type ActionsDocuments = {
+  companyData: {
+    addressChangeData: AddressChangeDocument[];
+    expenseClaimData: ExpenseClaimDocument[];
+    requestResourceData: RequestResourceDocument[];
+    leaveRequestData: LeaveRequestDocument[];
+    benefitData: BenefitsDocument[];
+  };
+  generalData: {
+    endorsementData: EndorsementDocument[];
+    printerIssueData: PrinterIssueDocument[];
+    anonymousRequestData?: AnonymousRequestDocument[];
+    refermentData: RefermentDocument[];
+  };
+  outreachData: {
+    announcementData: AnnouncementDocument[];
+    surveyData: SurveyBuilderDocument[];
+    eventData: EventCreatorDocument[];
+  };
+};
+
 type GlobalState = {
   width: number;
   height: number;
@@ -95,6 +127,7 @@ type GlobalState = {
   themeObject: ThemeObject;
 
   userDocument: Omit<UserDocument, '__v' | 'password'> | null;
+  actionsDocuments: ActionsDocuments | null;
   announcementDocument: QueryResponseData<AnnouncementDocument> | null;
   isPrefersReducedMotion: boolean;
   errorState: ErrorState;
@@ -118,6 +151,7 @@ type GlobalAction = {
   setComponents: 'setComponents';
 
   setUserDocument: 'setUserDocument';
+  setActionsDocuments: 'setActionsDocuments';
   setAnnouncementDocument: 'setAnnouncementDocument';
   setPrefersReducedMotion: 'setPrefersReducedMotion';
 
@@ -185,6 +219,10 @@ type GlobalDispatch =
   | {
       type: GlobalAction['setUserDocument'];
       payload: Omit<UserDocument, '__v' | 'password'>;
+    }
+  | {
+      type: GlobalAction['setActionsDocuments'];
+      payload: ActionsDocuments;
     }
   | {
       type: GlobalAction['setAnnouncementDocument'];

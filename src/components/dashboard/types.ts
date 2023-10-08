@@ -5,7 +5,7 @@ type DashboardState = {
   loadingMessage: string;
   submitMessage: string;
   successMessage: string;
-  triggerFetchUserData: boolean;
+  triggerFetchActionsDocuments: boolean;
 };
 
 type DashboardAction = {
@@ -15,7 +15,7 @@ type DashboardAction = {
   setLoadingMessage: 'setLoadingMessage';
   setSubmitMessage: 'setSubmitMessage';
   setSuccessMessage: 'setSuccessMessage';
-  setTriggerFetchUserData: 'setTriggerFetchUserData';
+  triggerFetchActionsDocuments: 'triggerFetchActionsDocuments';
 };
 
 type DashboardDispatch =
@@ -32,7 +32,7 @@ type DashboardDispatch =
         | DashboardAction['setIsLoading']
         | DashboardAction['setIsSubmitting']
         | DashboardAction['setIsSuccessful']
-        | DashboardAction['setTriggerFetchUserData'];
+        | DashboardAction['triggerFetchActionsDocuments'];
 
       payload: boolean;
     };

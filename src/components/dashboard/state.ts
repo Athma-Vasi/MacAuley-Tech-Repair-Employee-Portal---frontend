@@ -7,7 +7,7 @@ const initialDashboardState: DashboardState = {
   loadingMessage: '',
   submitMessage: '',
   successMessage: '',
-  triggerFetchUserData: true,
+  triggerFetchActionsDocuments: true,
 };
 
 const dashboardAction: DashboardAction = {
@@ -17,7 +17,7 @@ const dashboardAction: DashboardAction = {
   setLoadingMessage: 'setLoadingMessage',
   setSubmitMessage: 'setSubmitMessage',
   setSuccessMessage: 'setSuccessMessage',
-  setTriggerFetchUserData: 'setTriggerFetchUserData',
+  triggerFetchActionsDocuments: 'triggerFetchActionsDocuments',
 };
 
 function dashboardReducer(
@@ -37,8 +37,8 @@ function dashboardReducer(
       return { ...state, submitMessage: action.payload };
     case dashboardAction.setSuccessMessage:
       return { ...state, successMessage: action.payload };
-    case dashboardAction.setTriggerFetchUserData:
-      return { ...state, triggerFetchUserData: action.payload };
+    case dashboardAction.triggerFetchActionsDocuments:
+      return { ...state, triggerFetchActionsDocuments: action.payload };
     default:
       return state;
   }
