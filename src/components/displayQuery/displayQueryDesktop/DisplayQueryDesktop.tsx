@@ -27,7 +27,11 @@ import {
   FIELDNAMES_WITH_DATE_VALUES,
 } from '../../../constants/data';
 import { useAuth, useGlobalState } from '../../../hooks';
-import { returnAccessibleButtonElements } from '../../../jsxCreators';
+import {
+  returnAccessibleButtonElements,
+  returnDocumentInAccordion,
+  returnHighlightedText,
+} from '../../../jsxCreators';
 import {
   addFieldsToObject,
   formatDate,
@@ -44,7 +48,7 @@ import {
   initialDisplayQueryDesktopState,
 } from './state';
 import { DisplayQueryDesktopProps } from './types';
-import { returnHighlightedText, sortGroupedByQueryResponseData } from './utils';
+import { sortGroupedByQueryResponseData } from './utils';
 
 function DisplayQueryDesktop<Doc>({
   componentQueryData,
@@ -97,7 +101,7 @@ function DisplayQueryDesktop<Doc>({
   ] = useDisclosure(false);
 
   const {
-    appThemeColors: { backgroundColor },
+    appThemeColors: { backgroundColor, borderColor },
     generalColors: { themeColorShade },
     scrollBarStyle,
     tablesThemeColors: {
@@ -240,7 +244,7 @@ function DisplayQueryDesktop<Doc>({
       <Group
         w={width <= 991 ? width - 225 - 44 : width - 300 - 44}
         style={{
-          minHeight: '300px', // allows popovers and tooltips to display
+          minHeight: '500px', // allows popovers and tooltips to display
         }}
         align="flex-start"
       >
@@ -495,9 +499,25 @@ function DisplayQueryDesktop<Doc>({
 
                             const groupedBySelectedValueHighlightedText =
                               returnHighlightedText({
-                                backgroundColor: textHighlightColor,
+                                textHighlightColor,
                                 queryValuesArray,
                                 fieldValue: groupBySelectionValue,
+                              });
+
+                            const displayDropdownAccordion =
+                              returnDocumentInAccordion({
+                                borderColor,
+                                document: queryResponseObjWithAddedFields,
+                                excludeKeys: [
+                                  ...Array.from(headerExclusionSet),
+                                  groupBySelection,
+                                ],
+                                fieldNamesWithDateValues:
+                                  FIELDNAMES_WITH_DATE_VALUES,
+                                queryValuesArray,
+                                rowGap,
+                                scrollBarStyle,
+                                textHighlightColor,
                               });
 
                             const dropDownFooter = (
@@ -532,12 +552,13 @@ function DisplayQueryDesktop<Doc>({
 
                                   <Text>{`User Id: ${userId}`}</Text>
                                 </Group>
+                                {displayDropdownAccordion}
                               </Flex>
                             );
 
                             const footerHighlightedText = returnHighlightedText(
                               {
-                                backgroundColor: textHighlightColor,
+                                textHighlightColor,
                                 queryValuesArray,
                                 fieldValue: formattedValue,
                               }

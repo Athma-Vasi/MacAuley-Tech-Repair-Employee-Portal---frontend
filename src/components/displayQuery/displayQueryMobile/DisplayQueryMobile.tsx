@@ -28,7 +28,10 @@ import {
   FIELDNAMES_WITH_DATE_VALUES,
 } from '../../../constants/data';
 import { useAuth, useGlobalState } from '../../../hooks';
-import { returnAccessibleButtonElements } from '../../../jsxCreators';
+import {
+  returnAccessibleButtonElements,
+  returnHighlightedText,
+} from '../../../jsxCreators';
 import {
   addFieldsToObject,
   formatDate,
@@ -36,7 +39,6 @@ import {
   returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
-import { returnHighlightedText } from '../displayQueryDesktop/utils';
 import EditRepairNote from '../editRepairNote/EditRepairNote';
 import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
 import {
@@ -220,7 +222,7 @@ function DisplayQueryMobile({
                 .slice(1)}`;
 
         const highlightedText = returnHighlightedText({
-          backgroundColor: textHighlightColor,
+          textHighlightColor,
           fieldValue: formattedValue,
           queryValuesArray,
         });

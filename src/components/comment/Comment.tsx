@@ -60,6 +60,7 @@ import {
   returnAccessibleImageElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
+  returnHighlightedText,
 } from '../../jsxCreators';
 import {
   formatDate,
@@ -70,7 +71,6 @@ import {
   returnThemeColors,
   urlBuilder,
 } from '../../utils';
-import { returnHighlightedText } from '../displayQuery/displayQueryDesktop/utils';
 import { NotificationModal } from '../notificationModal';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
@@ -1190,7 +1190,7 @@ function Comment({
           .some((value) => regex?.test(value));
         const highlightedJobPosition = isJobPositionInQueryValuesArray
           ? returnHighlightedText({
-              backgroundColor: textHighlightColor,
+              textHighlightColor,
               fieldValue: jobPosition,
               queryValuesArray,
             })
@@ -1228,7 +1228,7 @@ function Comment({
           .some((value) => regex?.test(value));
         const highlightedDepartment = isDepartmentInQueryValuesArray
           ? returnHighlightedText({
-              backgroundColor: textHighlightColor,
+              textHighlightColor,
               fieldValue: department,
               queryValuesArray,
             })
@@ -1313,7 +1313,7 @@ function Comment({
         const highlightedComment = isCommentInQueryValuesArray ? (
           <Flex gap={4} wrap="wrap">
             {returnHighlightedText({
-              backgroundColor: textHighlightColor,
+              textHighlightColor,
               fieldValue: comment,
               queryValuesArray,
             })}
@@ -1358,7 +1358,7 @@ function Comment({
         const highlightedQuotedComment = isQuotedCommentInQueryValuesArray ? (
           <Flex gap={4} wrap="wrap">
             {returnHighlightedText({
-              backgroundColor: textHighlightColor,
+              textHighlightColor,
               fieldValue: quotedComment,
               queryValuesArray,
             })}

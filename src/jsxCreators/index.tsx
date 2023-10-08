@@ -1,15 +1,20 @@
 import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+  Accordion,
   Center,
+  Flex,
   Grid,
   Group,
+  Highlight,
+  MantineNumberSize,
+  ScrollArea,
   Space,
   Stack,
   Text,
   useMantineTheme,
 } from '@mantine/core';
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { TbCheck, TbExclamationCircle } from 'react-icons/tb';
 
 import type {
@@ -45,8 +50,14 @@ import {
   TextInputWrapper,
   TextWrapper,
 } from '../components/wrappers';
+import { PROPERTY_DESCRIPTOR } from '../constants/data';
 import { useGlobalState } from '../hooks';
-import { RegexValidationProps } from '../utils';
+import {
+  formatDate,
+  RegexValidationProps,
+  replaceLastCommaWithAnd,
+  splitCamelCase,
+} from '../utils';
 
 // The functions : AccessibleErrorValidTextElements and AccessibleErrorValidTextElementsForDynamicInputs return a tuple [error, valid] or tuple[error[], valid[]] of accessible text elements for screen readers to read out based on the state of the controlled input
 
@@ -767,6 +778,192 @@ function returnAccessibleDynamicTextAreaInputElements(
   ));
 }
 
+function returnHighlightedText({
+  fieldValue,
+  queryValuesArray,
+  textHighlightColor,
+}: {
+  fieldValue: string | boolean | number | string[] | boolean[] | number[];
+  queryValuesArray: string[];
+  textHighlightColor: string;
+}) {
+  const stringifiedText =
+    fieldValue === true
+      ? 'Yes'
+      : fieldValue === false
+      ? 'No'
+      : Array.isArray(fieldValue)
+      ? replaceLastCommaWithAnd(
+          fieldValue
+            ?.map(
+              (value) =>
+                value.toString().charAt(0).toUpperCase() +
+                value.toString().slice(1)
+            )
+            .join(', ')
+        )
+      : `${fieldValue?.toString().charAt(0).toUpperCase()}${fieldValue
+          ?.toString()
+          .slice(1)}`;
+
+  // regex to determine if formattedValue has any terms in queryValuesArray
+  const regex = queryValuesArray.length
+    ? new RegExp(
+        queryValuesArray
+          .filter((value) => value) // remove empty strings
+          .flatMap((value) => value.split(' ')) // split strings into words
+          .join('|'),
+        'gi'
+      )
+    : null;
+
+  let returnedText: React.JSX.Element | React.JSX.Element[] | null = null;
+  if (regex?.test(stringifiedText)) {
+    returnedText = stringifiedText.split(' ').map((text, index) => {
+      // word that has below symbol is also highlighted
+      const wordWithoutPunctuation = text
+        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, ' ')
+        .toLowerCase()
+        .split(' ');
+
+      const flattenedQueryValuesArray = queryValuesArray
+        .filter((value) => value) // remove empty strings
+        .flatMap((value) => value.toLowerCase().split(' ')); // split strings into words
+
+      // test with regex
+      const isQueryArrayIncludesWord = flattenedQueryValuesArray.some(
+        (queryValue) => {
+          const regex = new RegExp(queryValue, 'gi');
+          return regex.test(wordWithoutPunctuation.join(' '));
+        }
+      );
+
+      if (isQueryArrayIncludesWord) {
+        return (
+          <Highlight
+            key={`${text}-${index}`}
+            highlightStyles={{ backgroundColor: textHighlightColor }}
+            highlight={text}
+          >
+            {text}
+          </Highlight>
+        );
+      }
+
+      return <Text key={`${text}-${index}`}>{text}</Text>;
+    });
+  } else {
+    returnedText = <Text>{stringifiedText}</Text>;
+  }
+
+  return returnedText;
+}
+
+function returnDocumentInAccordion<
+  Doc extends Record<string | symbol | number, any> = Record<
+    string | symbol | number,
+    any
+  >
+>({
+  borderColor,
+  document,
+  excludeKeys = [],
+  fieldNamesWithDateValues,
+  queryValuesArray,
+  rowGap,
+  scrollBarStyle,
+  textHighlightColor,
+}: {
+  borderColor: string;
+  document: Doc;
+  excludeKeys?: string[];
+  fieldNamesWithDateValues: Set<string>;
+  queryValuesArray: string[];
+  rowGap: MantineNumberSize;
+  scrollBarStyle: Record<string, any>;
+  textHighlightColor: string;
+}) {
+  const filteredDocumentTuples = Object.entries(document).filter(
+    ([key]) => !excludeKeys.includes(key)
+  ) as [keyof Doc, Doc[keyof Doc]][];
+
+  const displayAccordion = (
+    <Accordion w="100%" pt={rowGap}>
+      <Accordion.Item value="Additional Details">
+        <Accordion.Control>
+          <Text>Additional Details</Text>
+        </Accordion.Control>
+
+        <Accordion.Panel>
+          <ScrollArea
+            type="hover"
+            offsetScrollbars
+            styles={() => scrollBarStyle}
+          >
+            <Stack w="100%" h={200}>
+              {filteredDocumentTuples.map(([key, value], index) => {
+                const stringifiedKey = String(key);
+                const splitCamelCaseKey = splitCamelCase(stringifiedKey);
+
+                const formattedDateValue = fieldNamesWithDateValues.has(
+                  stringifiedKey
+                )
+                  ? formatDate({
+                      date: value,
+                      formatOptions: {
+                        dateStyle: 'full',
+                        localeMatcher: 'best fit',
+                        formatMatcher: 'best fit',
+                      },
+                      locale: 'en-US',
+                    })
+                  : key === 'createdAt' || key === 'updatedAt'
+                  ? formatDate({
+                      date: value,
+                      formatOptions: {
+                        dateStyle: 'full',
+                        timeStyle: 'long',
+                        hour12: false,
+                      },
+                      locale: 'en-US',
+                    })
+                  : value;
+
+                const highlightedText = returnHighlightedText({
+                  fieldValue: formattedDateValue,
+                  queryValuesArray,
+                  textHighlightColor,
+                });
+
+                const displayFieldValue = (
+                  <Grid
+                    columns={10}
+                    key={`${splitCamelCaseKey}-${value}-${index}`}
+                    style={{ borderBottom: borderColor }}
+                    gutter={rowGap}
+                    w="100%"
+                  >
+                    <Grid.Col span={4}>{splitCamelCaseKey}</Grid.Col>
+                    <Grid.Col span={6}>
+                      <Flex wrap="wrap" gap={4}>
+                        {highlightedText}
+                      </Flex>
+                    </Grid.Col>
+                  </Grid>
+                );
+
+                return displayFieldValue;
+              })}
+            </Stack>
+          </ScrollArea>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+  );
+
+  return displayAccordion;
+}
+
 export {
   AccessibleErrorValidTextElements,
   AccessibleErrorValidTextElementsForDynamicImageUploads,
@@ -790,4 +987,6 @@ export {
   returnAccessibleSliderInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
+  returnDocumentInAccordion,
+  returnHighlightedText,
 };
