@@ -8,7 +8,7 @@ import type {
 import type { ComponentQueryData } from '../../queryBuilder';
 import { RepairStatus } from '../../repairNote/types';
 
-type DisplayQueryDesktopProps<Doc> = {
+type DisplayQueryDesktopProps = {
   componentQueryData: ComponentQueryData[];
   deleteFormIdDispatch: React.Dispatch<{
     type: 'setDeleteFormId';
@@ -21,7 +21,7 @@ type DisplayQueryDesktopProps<Doc> = {
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   groupByRadioData: Array<{ label: string; value: string }>;
   groupedByQueryResponseData: Map<
-    string | number | boolean,
+    string | number | boolean | symbol,
     Record<string, any>[]
   >;
   groupBySelection: string;

@@ -29,8 +29,8 @@ import {
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
-  returnDocumentInAccordion,
   returnHighlightedText,
+  returnScrollableDocumentInfo,
 } from '../../../jsxCreators';
 import {
   addFieldsToObject,
@@ -50,7 +50,7 @@ import {
 import { DisplayQueryDesktopProps } from './types';
 import { sortGroupedByQueryResponseData } from './utils';
 
-function DisplayQueryDesktop<Doc>({
+function DisplayQueryDesktop({
   componentQueryData,
   deleteFormIdDispatch,
   deleteResourceKindDispatch,
@@ -67,7 +67,7 @@ function DisplayQueryDesktop<Doc>({
   setFileUploadsForAFormDispatch,
   style = {},
   tableViewSelection,
-}: DisplayQueryDesktopProps<Doc>) {
+}: DisplayQueryDesktopProps) {
   const [displayQueryDesktopState, displayQueryDesktopDispatch] = useReducer(
     displayQueryDesktopReducer,
     initialDisplayQueryDesktopState
@@ -413,9 +413,9 @@ function DisplayQueryDesktop<Doc>({
                                 : Array.isArray(value)
                                 ? replaceLastCommaWithAnd(value.join(', '))
                                 : key.toLowerCase().includes('id')
-                                ? value
+                                ? (value as string)
                                 : key === 'createdAt' || key === 'updatedAt'
-                                ? formatDate({
+                                ? (formatDate({
                                     date: value,
                                     formatOptions: {
                                       year: 'numeric',
@@ -423,21 +423,21 @@ function DisplayQueryDesktop<Doc>({
                                       day: 'numeric',
                                     },
                                     locale: 'en-US',
-                                  })
+                                  }) as string)
                                 : FIELDNAMES_WITH_DATE_VALUES.has(key)
-                                ? formatDate({
+                                ? (formatDate({
                                     date: value,
                                     formatOptions: {
                                       dateStyle: 'short',
                                     },
                                     locale: 'en-US',
-                                  })
-                                : `${value
+                                  }) as string)
+                                : (`${value
                                     .toString()
                                     .charAt(0)
                                     .toUpperCase()}${value
                                     .toString()
-                                    .slice(1)}`;
+                                    .slice(1)}` as string);
 
                             // slice based on length of key to prevent overflow
                             // const sliceLength =
@@ -467,33 +467,23 @@ function DisplayQueryDesktop<Doc>({
                               : null;
 
                             // highlight text if formattedValue has any terms that were either filtered/searched for (queryValuesArray)
-                            const highlightedText = formattedValue.match(
-                              regex
-                            ) ? (
-                              <Highlight
-                                highlight={formattedValueSliced}
-                                highlightStyles={{
-                                  backgroundColor: textHighlightColor,
-                                }}
-                              >
-                                {formattedValueSliced}
-                              </Highlight>
+                            const highlightedText = regex ? (
+                              formattedValue.match(regex) ? (
+                                <Highlight
+                                  highlight={formattedValueSliced}
+                                  highlightStyles={{
+                                    backgroundColor: textHighlightColor,
+                                  }}
+                                >
+                                  {formattedValueSliced}
+                                </Highlight>
+                              ) : (
+                                <Text>{formattedValueSliced}</Text>
+                              )
                             ) : (
                               <Text>{formattedValueSliced}</Text>
                             );
 
-                            // allows for convenient access to username, userId and groupBySelectionField when viewing a large table
-                            const username =
-                              queryResponseObjWithAddedFields.username ??
-                              // anonymousRequest documents do not have username field
-                              'Anonymous';
-
-                            const userId =
-                              queryResponseObjWithAddedFields.userId ??
-                              // benefits document does not have userId field and instead has benefitUserId field
-                              queryResponseObjWithAddedFields.benefitUserId ??
-                              // anonymousRequest documents do not have userId field
-                              'Anonymous';
                             const groupBySelectionValue =
                               queryResponseObjWithAddedFields[groupBySelection];
 
@@ -505,11 +495,13 @@ function DisplayQueryDesktop<Doc>({
                               });
 
                             const displayDropdownAccordion =
-                              returnDocumentInAccordion({
+                              returnScrollableDocumentInfo({
                                 borderColor,
                                 document: queryResponseObjWithAddedFields,
                                 excludeKeys: [
-                                  ...Array.from(headerExclusionSet),
+                                  'file uploads',
+                                  'edit',
+                                  'delete',
                                   groupBySelection,
                                 ],
                                 fieldNamesWithDateValues:
@@ -522,8 +514,8 @@ function DisplayQueryDesktop<Doc>({
 
                             const dropDownFooter = (
                               <Flex wrap="wrap">
-                                {groupBySelection === 'username' ? null : (
-                                  <Group>
+                                {groupBySelection === 'none' ? null : (
+                                  <Group pb={padding}>
                                     <Text>
                                       {splitCamelCase(groupBySelection)}:
                                     </Text>
@@ -537,22 +529,9 @@ function DisplayQueryDesktop<Doc>({
                                   </Group>
                                 )}
 
-                                <Group>
-                                  <Text>Username: </Text>
+                                <Space h="xs" />
 
-                                  <Text>
-                                    {groupBySelection === 'username' ? (
-                                      <strong>{`${splitCamelCase(
-                                        username
-                                      )}`}</strong>
-                                    ) : (
-                                      `${splitCamelCase(username)}`
-                                    )}
-                                  </Text>
-
-                                  <Text>{`User Id: ${userId}`}</Text>
-                                </Group>
-                                {displayDropdownAccordion}
+                                <Stack>{displayDropdownAccordion}</Stack>
                               </Flex>
                             );
 
@@ -569,8 +548,8 @@ function DisplayQueryDesktop<Doc>({
                                 <HoverCard
                                   width={500}
                                   shadow="lg"
-                                  openDelay={250}
-                                  closeDelay={100}
+                                  openDelay={150}
+                                  closeDelay={50}
                                   withArrow
                                 >
                                   <HoverCard.Target>
@@ -600,8 +579,8 @@ function DisplayQueryDesktop<Doc>({
                                 <HoverCard
                                   width={500}
                                   shadow="lg"
-                                  openDelay={250}
-                                  closeDelay={100}
+                                  openDelay={150}
+                                  closeDelay={50}
                                   withArrow
                                 >
                                   <HoverCard.Target>
@@ -630,8 +609,8 @@ function DisplayQueryDesktop<Doc>({
                                 <HoverCard
                                   width={500}
                                   shadow="lg"
-                                  openDelay={250}
-                                  closeDelay={100}
+                                  openDelay={150}
+                                  closeDelay={50}
                                   withArrow
                                 >
                                   <HoverCard.Target>
@@ -639,8 +618,7 @@ function DisplayQueryDesktop<Doc>({
                                   </HoverCard.Target>
                                   <HoverCard.Dropdown>
                                     <Stack>
-                                      {/* prevents displaying username twice in dropdown */}
-                                      {key === 'username' ? null : (
+                                      {
                                         <Flex w="100%" wrap="wrap" gap="xs">
                                           {/* replace '_id' else leave as is */}
                                           {key === '_id' ? (
@@ -657,7 +635,7 @@ function DisplayQueryDesktop<Doc>({
                                             {footerHighlightedText}
                                           </Flex>
                                         </Flex>
-                                      )}
+                                      }
                                       {dropDownFooter}
                                     </Stack>
                                   </HoverCard.Dropdown>

@@ -421,7 +421,7 @@ function DisplayQueryMobile({
 
       return (
         <Flex
-          key={`${section}-${queryObjIdx}}`}
+          key={`${String(section)}-${queryObjIdx}}`}
           direction="column"
           align="flex-start"
           justify="center"
@@ -446,7 +446,7 @@ function DisplayQueryMobile({
 
     return (
       <Flex
-        key={`${section}-${responseDataIdx}}`}
+        key={`${String(section)}-${responseDataIdx}}`}
         direction="column"
         py={padding}
         align="flex-start"

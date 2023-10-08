@@ -1091,7 +1091,7 @@ type GroupQueryResponseInput<Doc> = {
   currentSelectionData: string[];
 };
 type GroupQueryResponseOutput<Doc> = {
-  groupedBy: Map<string | number | boolean, QueryResponseData<Doc>[]>;
+  groupedBy: Map<string | number, QueryResponseData<Doc>[]>;
   // rest: Record<string, number>[];
 };
 /**
@@ -1135,7 +1135,7 @@ function groupQueryResponse<Doc>({
 
   const groupedBy = queryResponseData.reduce(
     (
-      acc: Map<string | number | boolean, Array<QueryResponseData<Doc>>>,
+      acc: Map<string | number, Array<QueryResponseData<Doc>>>,
       queryResponseObj: QueryResponseData<Doc>
     ) => {
       // find the value of the groupBySelection field

@@ -31,7 +31,11 @@ import {
   printerIssuesArray,
   returnPrinterIssuesRequestBodies,
 } from './printerIssue';
-import { refermentsArray, returnRefermentsRequestBodies } from './referment';
+import {
+  refermentsArray,
+  RefermentsGroupedByDepartments,
+  returnRefermentsRequestBodies,
+} from './referment';
 import {
   requestResourcesArray,
   returnRequestResourcesBodies,
@@ -63,12 +67,12 @@ function DevTesting() {
     const controller = new AbortController();
 
     async function submitDevTestingForm() {
-      // const url: URL = urlBuilder({
-      //   path: 'user/dev/',
-      // });
-      const url: URL = new URL(
-        'http://localhost:5500/api/v1/user/dev/add-field'
-      );
+      const url: URL = urlBuilder({
+        path: 'actions/general/referment/dev',
+      });
+      // const url: URL = new URL(
+      //   'http://localhost:5500/api/v1/user/dev/add-field'
+      // );
 
       const newBodiesArrCount =
         bodiesArr.length - bodiesArrCount > 50
@@ -86,7 +90,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        users: slicedBodiesArr,
+        referments: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -140,10 +144,12 @@ function DevTesting() {
   }, [triggerFormSubmit, isAccessTokenExpired]);
 
   useEffect(() => {
-    const bodiesArr = returnUsersRequestBodies({
-      field: 'isPrefersReducedMotion',
+    const bodiesArr = returnRefermentsRequestBodies({
+      refermentsGroupedByDepartments: groupByField({
+        objectArray: refermentsArray,
+        field: 'departmentReferredFor',
+      }) as RefermentsGroupedByDepartments,
       userDocs: USERS_DOC,
-      value: false,
     });
 
     devTestingDispatch({

@@ -1,11 +1,9 @@
 import { ComponentQueryData } from '../../queryBuilder/types';
+import { GroupedByQueryResponseData } from '../types';
 
 type SortGroupedByQueryResponseDataInput = {
   componentQueryData: ComponentQueryData[];
-  groupedByQueryResponseData: Map<
-    string | number | boolean,
-    Record<string, any>[]
-  >;
+  groupedByQueryResponseData: GroupedByQueryResponseData;
   fieldToSortBy?: string;
   sortDirection?: 'asc' | 'desc';
 };
@@ -20,15 +18,12 @@ function sortGroupedByQueryResponseData({
   groupedByQueryResponseData,
   fieldToSortBy = 'createdAt',
   sortDirection = 'desc',
-}: SortGroupedByQueryResponseDataInput): Map<
-  string | number | boolean,
-  Record<string, any>[]
-> {
+}: SortGroupedByQueryResponseDataInput): GroupedByQueryResponseData {
   if (!groupedByQueryResponseData.size) {
-    return new Map<string | number | boolean, Record<string, any>[]>();
+    return new Map();
   }
   if (!componentQueryData.length) {
-    return new Map<string | number | boolean, Record<string, any>[]>();
+    return new Map();
   }
 
   if (fieldToSortBy === 'none') {
@@ -48,15 +43,12 @@ function sortGroupedByQueryResponseData({
     clonedQueryResponseData
   ).reduce(
     (
-      sortedGroupedQueryResponseDataAcc: Map<
-        string | number,
-        Record<string, any>[]
-      >,
+      sortedGroupedQueryResponseDataAcc: GroupedByQueryResponseData,
       groupedByQueryResponseObjectArrays
     ) => {
       const [groupedByFieldKey, queryResponseObjArrays] =
         groupedByQueryResponseObjectArrays as [
-          string | number,
+          string | number | boolean | symbol,
           Record<string, any>[]
         ];
 
@@ -117,7 +109,7 @@ function sortGroupedByQueryResponseData({
 
       return sortedGroupedQueryResponseDataAcc;
     },
-    new Map<string | number, Record<string, any>[]>()
+    new Map()
   );
 
   return sortedGroupedQueryResponseData;

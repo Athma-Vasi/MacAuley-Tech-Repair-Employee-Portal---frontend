@@ -1,4 +1,5 @@
 import { DEPARTMENT_JOB_POSITION_MAP } from '../../constants/data';
+import { Department, PhoneNumber, RequestStatus } from '../../types';
 import { groupByField } from '../../utils';
 import { DirectoryUserDocument } from '../directory/types';
 
@@ -1092,20 +1093,20 @@ const refermentsArray = [
 ];
 
 type RefermentsGroupedByDepartments = Record<
-  string | number | symbol,
+  Department,
   {
     candidateFullName: string;
     candidateEmail: string;
-    candidateContactNumber: string;
+    candidateContactNumber: PhoneNumber;
     candidateCurrentJobTitle: string;
     candidateCurrentCompany: string;
     candidateProfileUrl: string;
-    departmentReferredFor: string;
+    departmentReferredFor: Department;
     positionJobDescription: string;
     referralReason: string;
     additionalInformation: string;
     privacyConsent: boolean;
-    requestStatus: string;
+    requestStatus: RequestStatus;
   }[]
 >;
 
@@ -1157,3 +1158,4 @@ function returnRefermentsRequestBodies({
 }
 
 export { refermentsArray, returnRefermentsRequestBodies };
+export type { RefermentsGroupedByDepartments };

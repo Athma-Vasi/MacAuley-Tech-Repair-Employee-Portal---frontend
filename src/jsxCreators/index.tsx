@@ -10,12 +10,18 @@ import {
   MantineNumberSize,
   ScrollArea,
   Space,
+  Spoiler,
   Stack,
   Text,
   useMantineTheme,
 } from '@mantine/core';
 import React, { CSSProperties } from 'react';
-import { TbCheck, TbExclamationCircle } from 'react-icons/tb';
+import {
+  TbArrowDown,
+  TbArrowUp,
+  TbCheck,
+  TbExclamationCircle,
+} from 'react-icons/tb';
 
 import type {
   AccessibleButtonCreatorInfo,
@@ -839,14 +845,22 @@ function returnHighlightedText({
       );
 
       if (isQueryArrayIncludesWord) {
+        const textWithoutPunctuation = text.replace(
+          /[.,/#!$%^&*;:{}=\-_`~()]/g,
+          ''
+        );
+        const punctuation = text.replace(/[a-zA-Z0-9]/g, '');
         return (
-          <Highlight
-            key={`${text}-${index}`}
-            highlightStyles={{ backgroundColor: textHighlightColor }}
-            highlight={text}
-          >
-            {text}
-          </Highlight>
+          <Flex>
+            <Highlight
+              key={`${text}-${index}`}
+              highlightStyles={{ backgroundColor: textHighlightColor }}
+              highlight={textWithoutPunctuation}
+            >
+              {textWithoutPunctuation}
+            </Highlight>
+            <Text>{punctuation}</Text>
+          </Flex>
         );
       }
 
@@ -859,12 +873,7 @@ function returnHighlightedText({
   return returnedText;
 }
 
-function returnDocumentInAccordion<
-  Doc extends Record<string | symbol | number, any> = Record<
-    string | symbol | number,
-    any
-  >
->({
+function returnScrollableDocumentInfo({
   borderColor,
   document,
   excludeKeys = [],
@@ -875,7 +884,7 @@ function returnDocumentInAccordion<
   textHighlightColor,
 }: {
   borderColor: string;
-  document: Doc;
+  document: Record<string, any>;
   excludeKeys?: string[];
   fieldNamesWithDateValues: Set<string>;
   queryValuesArray: string[];
@@ -883,85 +892,107 @@ function returnDocumentInAccordion<
   scrollBarStyle: Record<string, any>;
   textHighlightColor: string;
 }) {
+  const [createdShowMoreButton, createdHideButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Show',
+        leftIcon: <TbArrowDown />,
+        buttonType: 'button',
+        semanticDescription: 'Reveal more information',
+        semanticName: 'Show more',
+      },
+      {
+        buttonLabel: 'Hide',
+        leftIcon: <TbArrowUp />,
+        buttonType: 'button',
+        semanticDescription: 'Hide revealed information',
+        semanticName: 'Hide',
+      },
+    ]);
+
   const filteredDocumentTuples = Object.entries(document).filter(
     ([key]) => !excludeKeys.includes(key)
-  ) as [keyof Doc, Doc[keyof Doc]][];
-
-  const displayAccordion = (
-    <Accordion w="100%" pt={rowGap}>
-      <Accordion.Item value="Additional Details">
-        <Accordion.Control>
-          <Text>Additional Details</Text>
-        </Accordion.Control>
-
-        <Accordion.Panel>
-          <ScrollArea
-            type="hover"
-            offsetScrollbars
-            styles={() => scrollBarStyle}
-          >
-            <Stack w="100%" h={200}>
-              {filteredDocumentTuples.map(([key, value], index) => {
-                const stringifiedKey = String(key);
-                const splitCamelCaseKey = splitCamelCase(stringifiedKey);
-
-                const formattedDateValue = fieldNamesWithDateValues.has(
-                  stringifiedKey
-                )
-                  ? formatDate({
-                      date: value,
-                      formatOptions: {
-                        dateStyle: 'full',
-                        localeMatcher: 'best fit',
-                        formatMatcher: 'best fit',
-                      },
-                      locale: 'en-US',
-                    })
-                  : key === 'createdAt' || key === 'updatedAt'
-                  ? formatDate({
-                      date: value,
-                      formatOptions: {
-                        dateStyle: 'full',
-                        timeStyle: 'long',
-                        hour12: false,
-                      },
-                      locale: 'en-US',
-                    })
-                  : value;
-
-                const highlightedText = returnHighlightedText({
-                  fieldValue: formattedDateValue,
-                  queryValuesArray,
-                  textHighlightColor,
-                });
-
-                const displayFieldValue = (
-                  <Grid
-                    columns={10}
-                    key={`${splitCamelCaseKey}-${value}-${index}`}
-                    style={{ borderBottom: borderColor }}
-                    gutter={rowGap}
-                    w="100%"
-                  >
-                    <Grid.Col span={4}>{splitCamelCaseKey}</Grid.Col>
-                    <Grid.Col span={6}>
-                      <Flex wrap="wrap" gap={4}>
-                        {highlightedText}
-                      </Flex>
-                    </Grid.Col>
-                  </Grid>
-                );
-
-                return displayFieldValue;
-              })}
-            </Stack>
-          </ScrollArea>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
   );
 
-  return displayAccordion;
+  const displayScrollableDocument = (
+    <Stack w="100%">
+      <Text size="md">Additional Details:</Text>
+      <ScrollArea
+        p={rowGap}
+        type="hover"
+        offsetScrollbars
+        styles={() => scrollBarStyle}
+        style={{ border: borderColor, borderRadius: 4 }}
+      >
+        <Stack w="100%" h={150}>
+          {filteredDocumentTuples.map(([key, value], index) => {
+            const stringifiedKey = String(key);
+            const splitCamelCaseKey =
+              stringifiedKey === '_id'
+                ? 'Document Id'
+                : splitCamelCase(stringifiedKey);
+
+            const formattedDateValue = fieldNamesWithDateValues.has(
+              stringifiedKey
+            )
+              ? formatDate({
+                  date: value,
+                  formatOptions: {
+                    dateStyle: 'full',
+                    localeMatcher: 'best fit',
+                    formatMatcher: 'best fit',
+                  },
+                  locale: 'en-US',
+                })
+              : key === 'createdAt' || key === 'updatedAt'
+              ? formatDate({
+                  date: value,
+                  formatOptions: {
+                    dateStyle: 'full',
+                    timeStyle: 'long',
+                    hour12: false,
+                  },
+                  locale: 'en-US',
+                })
+              : value;
+
+            const highlightedText = returnHighlightedText({
+              fieldValue: formattedDateValue,
+              queryValuesArray,
+              textHighlightColor,
+            });
+
+            const displayFieldValueRow = (
+              <Grid
+                columns={10}
+                key={`${splitCamelCaseKey}-${value}-${index}`}
+                style={{ borderBottom: borderColor }}
+                gutter={rowGap}
+                w="100%"
+              >
+                <Grid.Col span={4}>{splitCamelCaseKey}</Grid.Col>
+                <Grid.Col span={6}>
+                  <Spoiler
+                    maxHeight={70}
+                    showLabel={createdShowMoreButton}
+                    hideLabel={createdHideButton}
+                  >
+                    <Flex wrap="wrap" gap={4}>
+                      {highlightedText}
+                    </Flex>
+                  </Spoiler>
+                </Grid.Col>
+              </Grid>
+            );
+
+            return displayFieldValueRow;
+          })}
+        </Stack>
+      </ScrollArea>
+    </Stack>
+  );
+
+  return displayScrollableDocument;
 }
 
 export {
@@ -987,6 +1018,6 @@ export {
   returnAccessibleSliderInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-  returnDocumentInAccordion,
   returnHighlightedText,
+  returnScrollableDocumentInfo,
 };

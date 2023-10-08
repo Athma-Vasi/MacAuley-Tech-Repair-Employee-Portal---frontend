@@ -6,7 +6,7 @@ import {
 
 const initialDisplayQueryState: DisplayQueryState = {
   groupByRadioData: [],
-  groupBySelection: 'username',
+  groupBySelection: 'none',
   currentSelectionData: [],
 
   groupedByQueryResponseData: new Map(),

@@ -8,6 +8,11 @@ import {
 } from '../../types';
 import { ComponentQueryData } from '../queryBuilder';
 
+type GroupedByQueryResponseData = Map<
+  string | number | boolean | symbol,
+  Record<string, any>[]
+>;
+
 type DisplayQueryProps<Doc> = {
   componentQueryData: ComponentQueryData[];
   createResourcePath: string;
@@ -41,10 +46,7 @@ type DisplayQueryState = {
   groupByRadioData: RadioGroupInputData;
   groupBySelection: string;
   currentSelectionData: string[];
-  groupedByQueryResponseData: Map<
-    string | number | boolean,
-    Record<string, any>[]
-  >;
+  groupedByQueryResponseData: GroupedByQueryResponseData;
   restOfGroupedQueryResponseData: Record<string, any>[];
 
   fileUploadsForAForm: FileUploadDocument[];
@@ -81,7 +83,12 @@ type DisplayQueryAction = {
   setDeleteResourceKind: 'setDeleteResourceKind';
 };
 
-type DisplayQueryDispatch =
+type DisplayQueryDispatch<
+  Doc extends Record<string | symbol | number, any> = Record<
+    string | symbol | number,
+    any
+  >
+> =
   | {
       type: DisplayQueryAction['setGroupByRadioData'];
       payload: RadioGroupInputData;
@@ -110,7 +117,7 @@ type DisplayQueryDispatch =
     }
   | {
       type: DisplayQueryAction['setGroupedByQueryResponseData'];
-      payload: Map<string | number | boolean, Record<string, any>[]>;
+      payload: Map<keyof Doc, Record<keyof Doc, Doc[keyof Doc]>[]>;
     }
   | {
       type: DisplayQueryAction['setRestOfGroupedQueryResponseData'];
@@ -130,4 +137,5 @@ export type {
   DisplayQueryDispatch,
   DisplayQueryProps,
   DisplayQueryState,
+  GroupedByQueryResponseData,
 };

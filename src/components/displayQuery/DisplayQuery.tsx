@@ -15,7 +15,14 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
+import {
+  ChangeEvent,
+  FormEvent,
+  ReducerWithoutAction,
+  useEffect,
+  useReducer,
+} from 'react';
+import React from 'react';
 import {
   TbNewSection,
   TbQuestionMark,
@@ -55,7 +62,12 @@ import {
 import { DisplayQueryProps } from './types';
 import { GROUP_BY_HELP_MODAL_CONTENT } from './utils';
 
-function DisplayQuery<Doc>({
+function DisplayQuery<
+  Doc extends Record<string | symbol | number, any> = Record<
+    string | symbol | number,
+    any
+  >
+>({
   componentQueryData,
   createResourcePath,
   fileUploadsData = [],

@@ -4,6 +4,7 @@ import { CSSProperties } from 'react';
 import { FileUploadDocument, RequestStatus } from '../../../types';
 import { ComponentQueryData } from '../../queryBuilder';
 import { EditRepairNoteInput } from '../displayQueryDesktop/types';
+import { GroupedByQueryResponseData } from '../types';
 
 type DisplayQueryMobileProps = {
   componentQueryData: ComponentQueryData[];
@@ -16,10 +17,7 @@ type DisplayQueryMobileProps = {
     payload: 'form' | 'fileUpload' | '';
   }>;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
-  groupedByQueryResponseData: Map<
-    string | number | boolean,
-    Record<string, any>[]
-  >;
+  groupedByQueryResponseData: GroupedByQueryResponseData;
   groupBySelection: string;
   isLoading: boolean;
   loadingMessage?: string;

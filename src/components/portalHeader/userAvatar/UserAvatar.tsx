@@ -59,13 +59,12 @@ function UserAvatar() {
     globalDispatch,
   } = useGlobalState();
 
-  const modifiedInitialUserAvatarState = userDocument?.isPrefersReducedMotion
-    ? {
-        ...initialUserAvatarState,
-        prefersReducedMotionSwitchChecked:
-          userDocument?.isPrefersReducedMotion ?? false,
-      }
-    : initialUserAvatarState;
+  const modifiedInitialUserAvatarState = {
+    ...initialUserAvatarState,
+    prefersReducedMotionSwitchChecked:
+      userDocument?.isPrefersReducedMotion ?? false,
+    colorSchemeSwitchChecked: themeObject.colorScheme === 'light',
+  };
   const [userAvatarState, userAvatarDispatch] = useReducer(
     userAvatarReducer,
     modifiedInitialUserAvatarState
@@ -325,8 +324,6 @@ function UserAvatar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefersReducedMotionSwitchChecked, authDispatch]);
 
-  useEffect(() => {}, []);
-
   const {
     appThemeColors: { borderColor },
     generalColors: {
@@ -346,9 +343,8 @@ function UserAvatar() {
       onChange={() => {
         userAvatarDispatch({
           type: userAvatarAction.setColorSchemeSwitchChecked,
-          payload: colorScheme === 'light' ? false : true,
+          payload: colorScheme === 'light' ? true : false,
         });
-
         globalDispatch({
           type: globalAction.setColorScheme,
           payload: colorScheme === 'light' ? 'dark' : 'light',

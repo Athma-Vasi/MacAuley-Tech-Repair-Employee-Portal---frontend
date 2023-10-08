@@ -2,7 +2,7 @@ import { toggleNavlinksActive } from '../../../utils';
 import { UserAvatarAction, UserAvatarDispatch, UserAvatarState } from './types';
 
 const initialUserAvatarState: UserAvatarState = {
-  colorSchemeSwitchChecked: false,
+  colorSchemeSwitchChecked: true,
   prefersReducedMotionSwitchChecked: false,
 
   isAppearanceNavLinkActive: false,
