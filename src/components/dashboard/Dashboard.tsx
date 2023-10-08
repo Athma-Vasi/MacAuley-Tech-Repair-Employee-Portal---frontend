@@ -60,13 +60,13 @@ function Dashboard() {
     <Text>slide 3</Text>,
     <Text>slide 4</Text>,
   ];
-  const nodeDimensions = {
+  const slideDimensions = {
     width: 500,
     height: 500,
   };
 
   const displayCarousel = (
-    <CarouselBuilder slides={slides} nodeDimensions={nodeDimensions} />
+    <CarouselBuilder slides={slides} slideDimensions={slideDimensions} />
   );
 
   return (

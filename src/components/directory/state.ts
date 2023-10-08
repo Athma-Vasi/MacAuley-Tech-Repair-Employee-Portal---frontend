@@ -40,6 +40,7 @@ const initialDirectoryState: DirectoryState = {
   filterByStoreLocation: 'All Store Locations',
   filteredStoreLocationsNodesAndEdges: null,
 
+  triggerFetchUsersDirectory: true,
   triggerSetDepartmentsNodesAndEdges: false,
   departmentsNodesAndEdges: {} as DepartmentsNodesAndEdges,
 
@@ -55,8 +56,6 @@ const initialDirectoryState: DirectoryState = {
   dagreRanker: 'network-simplex', // default 'network-simplex'
   dagreMinLen: 1, // minimum edge length default: 1
 
-  isError: false,
-  errorMessage: '',
   isLoading: false,
   loadingMessage: '',
   isSubmitting: false,
@@ -74,6 +73,7 @@ const directoryAction: DirectoryAction = {
   setFilterByJobPosition: 'setFilterByJobPosition',
   setFilterByStoreLocation: 'setFilterByStoreLocation',
 
+  triggerFetchUsersDirectory: 'triggerFetchUsersDirectory',
   triggerSetDepartmentsNodesAndEdges: 'triggerSetDepartmentsNodesAndEdges',
   setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges',
 
@@ -89,8 +89,6 @@ const directoryAction: DirectoryAction = {
   setDagreRanker: 'setDagreRanker',
   setDagreMinLen: 'setDagreMinLen',
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
   setIsLoading: 'setIsLoading',
   setLoadingMessage: 'setLoadingMessage',
   setIsSubmitting: 'setIsSubmitting',
@@ -400,6 +398,9 @@ function directoryReducer(
       };
     }
 
+    case directoryAction.triggerFetchUsersDirectory:
+      return { ...state, triggerFetchUsersDirectory: action.payload };
+
     case directoryAction.triggerSetDepartmentsNodesAndEdges:
       return { ...state, triggerSetDepartmentsNodesAndEdges: action.payload };
 
@@ -487,10 +488,6 @@ function directoryReducer(
         dagreMinLen: action.payload,
       };
 
-    case directoryAction.setIsError:
-      return { ...state, isError: action.payload };
-    case directoryAction.setErrorMessage:
-      return { ...state, errorMessage: action.payload };
     case directoryAction.setIsLoading:
       return { ...state, isLoading: action.payload };
     case directoryAction.setLoadingMessage:

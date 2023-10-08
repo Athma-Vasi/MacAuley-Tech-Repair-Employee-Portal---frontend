@@ -1,7 +1,14 @@
 import { Center, Flex, Group, Title } from '@mantine/core';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
-import { TbArrowLeft, TbArrowRight } from 'react-icons/tb';
+import { useEffect, useState } from 'react';
+import {
+  TbArrowLeft,
+  TbArrowRight,
+  TbPhoto,
+  TbPhotoPause,
+  TbPlayerPauseFilled,
+  TbPlayerPlayFilled,
+} from 'react-icons/tb';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
@@ -11,15 +18,29 @@ import { AccessibleButtonCreatorInfo } from '../wrappers';
 import { CarouselBuilderProps } from './types';
 
 function CarouselBuilder({
-  nodeDimensions: { width: slideWidth, height: slideHeight },
+  autoPlaySpeed = 5000,
+  slideDimensions: { width: slideWidth, height: slideHeight },
   slides,
   headings = [],
 }: CarouselBuilderProps) {
   const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [isAutoplaying, setIsAutoplaying] = useState<boolean>(
+    headings.length > 1
+  );
 
   const {
     globalState: { padding, themeObject, isPrefersReducedMotion },
   } = useGlobalState();
+
+  // autoplay set interval
+  useEffect(() => {
+    if (isAutoplaying) {
+      const interval = setInterval(() => {
+        setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+      }, autoPlaySpeed);
+      return () => clearInterval(interval);
+    }
+  }, [isAutoplaying, autoPlaySpeed]);
 
   const carouselWrapperWidth = slideWidth - 22;
   const carouselWrapperHeight = slideHeight - 22;
@@ -48,11 +69,28 @@ function CarouselBuilder({
     },
   };
 
-  const [createdLeftControlIconButton, createdRightControlIconButton] =
-    returnAccessibleButtonElements([
-      leftControlIconButtonCreatorInfo,
-      rightControlIconButtonCreatorInfo,
-    ]);
+  const autoPlayPauseIconButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: isAutoplaying ? (
+      <TbPlayerPauseFilled />
+    ) : (
+      <TbPlayerPlayFilled />
+    ),
+    semanticDescription: 'Pause autoplay',
+    semanticName: 'pause autoplay',
+    buttonOnClick: () => {
+      setIsAutoplaying((prev) => !prev);
+    },
+  };
+
+  const [
+    createdLeftControlIconButton,
+    createdRightControlIconButton,
+    createdAutoPlayPauseIconButton,
+  ] = returnAccessibleButtonElements([
+    leftControlIconButtonCreatorInfo,
+    rightControlIconButtonCreatorInfo,
+    autoPlayPauseIconButtonCreatorInfo,
+  ]);
 
   const {
     appThemeColors: { backgroundColor },
@@ -82,7 +120,7 @@ function CarouselBuilder({
       {slides[currentSlide]}
     </Center>
   ) : (
-    <AnimatePresence initial={false} custom={currentSlide} mode="wait">
+    <AnimatePresence initial={true} custom={currentSlide} mode="wait">
       <motion.div
         key={currentSlide}
         variants={variants}
@@ -95,24 +133,27 @@ function CarouselBuilder({
     </AnimatePresence>
   );
 
+  const displayLeftControlIconButton =
+    headings.length > 1 ? createdLeftControlIconButton : null;
+  const displayAutoPlayPauseIconButton =
+    headings.length > 1 ? createdAutoPlayPauseIconButton : null;
+  const displayRightControlIconButton =
+    headings.length > 1 ? createdRightControlIconButton : null;
+
   const displayCarouselWithSlides = (
     <Flex
       direction="column"
       align="center"
-      justify="space-evenly"
+      justify={headings.length > 1 ? 'space-evenly' : 'center'}
       w={carouselWrapperWidth}
       h={carouselWrapperHeight}
       bg={backgroundColor}
       style={{ zIndex: 2 }}
     >
-      <Group
-        w="100%"
-        position={slides.length === 1 ? 'center' : 'apart'}
-        px={padding}
-      >
-        {slides.length === 1 ? null : createdLeftControlIconButton}
-        {<Title order={4}>{headings[currentSlide]}</Title>}
-        {slides.length === 1 ? null : createdRightControlIconButton}
+      <Group w="100%" position="apart" px={padding}>
+        {displayLeftControlIconButton}
+        {displayAutoPlayPauseIconButton}
+        {displayRightControlIconButton}
       </Group>
       {displaySlide}
     </Flex>

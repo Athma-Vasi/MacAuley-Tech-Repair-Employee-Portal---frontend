@@ -76,6 +76,7 @@ type DirectoryState = {
   filterByStoreLocation: StoreLocationsWithDefaultKey;
   filteredStoreLocationsNodesAndEdges: FilteredNodesAndEdges | null;
 
+  triggerFetchUsersDirectory: boolean;
   triggerSetDepartmentsNodesAndEdges: boolean;
   departmentsNodesAndEdges: DepartmentsNodesAndEdges;
 
@@ -91,8 +92,6 @@ type DirectoryState = {
   dagreRanker: DagreRankerAlgorithm; // default 'network-simplex'
   dagreMinLen: number; // minimum edge length default: 1
 
-  isError: boolean;
-  errorMessage: string;
   isLoading: boolean;
   loadingMessage: string;
   isSubmitting: boolean;
@@ -110,6 +109,7 @@ type DirectoryAction = {
   setFilterByJobPosition: 'setFilterByJobPosition';
   setFilterByStoreLocation: 'setFilterByStoreLocation';
 
+  triggerFetchUsersDirectory: 'triggerFetchUsersDirectory';
   triggerSetDepartmentsNodesAndEdges: 'triggerSetDepartmentsNodesAndEdges';
   setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges';
 
@@ -125,8 +125,6 @@ type DirectoryAction = {
   setDagreRanker: 'setDagreRanker';
   setDagreMinLen: 'setDagreMinLen';
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
   setIsSubmitting: 'setIsSubmitting';
@@ -169,9 +167,9 @@ type DirectoryDispatch =
     }
   | {
       type:
+        | DirectoryAction['triggerFetchUsersDirectory']
         | DirectoryAction['triggerSetDepartmentsNodesAndEdges']
         | DirectoryAction['triggerSetLayoutedNodesAndEdges']
-        | DirectoryAction['setIsError']
         | DirectoryAction['setIsLoading']
         | DirectoryAction['setIsSubmitting']
         | DirectoryAction['setIsSuccessfull'];
@@ -180,7 +178,6 @@ type DirectoryDispatch =
     }
   | {
       type:
-        | DirectoryAction['setErrorMessage']
         | DirectoryAction['setLoadingMessage']
         | DirectoryAction['setSubmitMessage']
         | DirectoryAction['setSuccessMessage'];

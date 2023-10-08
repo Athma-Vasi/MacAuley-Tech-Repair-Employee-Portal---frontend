@@ -3,10 +3,10 @@ import { ReactNode } from 'react';
 
 type CarouselBuilderProps = {
   slides: React.JSX.Element[];
-  nodeDimensions: { width: number; height: number };
+  slideDimensions: { width: number; height: number };
   headings?: string[];
-  // autoPlay?:boolean;
-  // autoPlaySpeed?:number;
+  // autoPlay?: boolean;
+  autoPlaySpeed?: number; // in milliseconds
   // showArrows?:boolean;
   // showDots?:boolean;
   // showStatus?:boolean;
