@@ -111,7 +111,7 @@ function UserAvatar() {
       });
       userAvatarDispatch({
         type: userAvatarAction.setSubmitMessage,
-        payload: 'Logging out ...',
+        payload: 'Please wait while we securely log you out.',
       });
 
       const url: URL = new URL('http://localhost:5500/auth/logout');

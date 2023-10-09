@@ -55,26 +55,17 @@ function PortalFooter() {
 
   const displayAuthenticationStatus = (
     <Group h={50}>
-      {/* <Notification
-        icon={isFetchingTokens ? void 0 : <TbCheck size={20} />}
-        loading={isFetchingTokens}
-        // title={isLoggedIn ? <Text>Logged In</Text> : <Text>Logged Out</Text>}
-        style={{ boxShadow: '0 0 0 0' }}
-        withCloseButton={false}
-      >
-        <Text>{isFetchingTokens ? 'Authenticating' : 'Authenticated'}</Text>
-      </Notification> */}
       {isFetchingTokens ? (
         <Loader size="sm" />
       ) : (
-        <TbCheck color={greenColorShade} size={24} />
+        <TbCheck color={greenColorShade} size={22} />
       )}
       <Text>{isFetchingTokens ? 'Authenticating' : 'Authenticated'}</Text>
     </Group>
   );
 
   return (
-    <Footer bg={backgroundColor} height={75} p="md" w="100%">
+    <Footer bg={backgroundColor} height={75} p={padding} w="100%">
       <Group w="100%" position="apart">
         <Group position="left">{displayUsernameWithRoles}</Group>
         <Group position="right">{displayAuthenticationStatus}</Group>
