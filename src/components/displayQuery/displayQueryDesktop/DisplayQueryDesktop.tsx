@@ -8,6 +8,7 @@ import {
   Loader,
   LoadingOverlay,
   Modal,
+  Paper,
   ScrollArea,
   Space,
   Stack,
@@ -19,7 +20,7 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { CSSProperties, useEffect, useReducer } from 'react';
 import { IoMdOpen } from 'react-icons/io';
-import { TbEdit, TbStatusChange, TbTrash } from 'react-icons/tb';
+import { TbEdit, TbStatusChange, TbTrash, TbUserSearch } from 'react-icons/tb';
 import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
 
 import {
@@ -166,10 +167,10 @@ function DisplayQueryDesktop({
             const headerValuesWithFieldsInserted =
               // allows for modification of file uploads and deletion of documents
               fileUploadsData.length > 0
-                ? [...headerValues, 'fileUploads', 'delete']
+                ? [...headerValues, 'viewProfile', 'fileUploads', 'delete']
                 : isRepairNoteSectionInView
-                ? [...headerValues, 'edit', 'delete']
-                : [...headerValues, 'delete'];
+                ? [...headerValues, 'viewProfile', 'edit', 'delete']
+                : [...headerValues, 'viewProfile', 'delete'];
 
             return headerValuesWithFieldsInserted.map((headerValue) =>
               splitCamelCase(headerValue)
@@ -186,6 +187,7 @@ function DisplayQueryDesktop({
     'user id',
     'benefit user id',
     'uploaded files ids',
+    'view profile',
     'file uploads',
     'edit',
     'delete',
@@ -247,8 +249,8 @@ function DisplayQueryDesktop({
       <tr>
         {tableHeaderValuesArr.map((headerValue, headerIdx) => {
           const headerStyle: CSSProperties = {
-            // border: headerBorderColor,
-            borderRight: '1px solid transparent',
+            border: headerBorderColor,
+            // borderRight: '1px solid transparent',
             backgroundColor: tableHeadersBgColor,
             padding: '4px 4px 4px 8px',
           };
@@ -375,6 +377,7 @@ function DisplayQueryDesktop({
                 ? addFieldsToObject({
                     object: queryResponseObj,
                     fieldValuesTuples: [
+                      ['viewProfile', ''],
                       ['fileUploads', ''],
                       ['delete', ''],
                     ],
@@ -383,13 +386,17 @@ function DisplayQueryDesktop({
                 ? addFieldsToObject({
                     object: queryResponseObj,
                     fieldValuesTuples: [
+                      ['viewProfile', ''],
                       ['edit', ''],
                       ['delete', ''],
                     ],
                   })
                 : addFieldsToObject({
                     object: queryResponseObj,
-                    fieldValuesTuples: [['delete', '']],
+                    fieldValuesTuples: [
+                      ['viewProfile', ''],
+                      ['delete', ''],
+                    ],
                   });
 
             const rowWithStringifiedValues = (
@@ -665,93 +672,39 @@ function DisplayQueryDesktop({
                         </Tooltip>
                       ) : null;
 
-                    const [createdUpdateRequestStatusButton] =
-                      returnAccessibleButtonElements([
-                        {
-                          buttonLabel: <TbStatusChange />,
-                          semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
-                          semanticName: 'Update request status',
-                          buttonOnClick: () => {
-                            displayQueryDesktopDispatch({
-                              type: displayQueryDesktopAction.setCurrentDocumentId,
-                              payload: queryResponseObjWithAddedFields._id,
-                            });
-                            displayQueryDesktopDispatch({
-                              type: displayQueryDesktopAction.setCurrentRequestStatus,
-                              payload:
-                                queryResponseObjWithAddedFields.requestStatus,
-                            });
-                            openUpdateRequestStatusModal();
-                          },
-                        },
-                      ]);
-
-                    const createdUpdateRequestStatusButtonWithTooltip = (
-                      <Tooltip
-                        label={`Modify request status of id: ${queryResponseObjWithAddedFields._id}`}
-                      >
-                        <Group>{createdUpdateRequestStatusButton}</Group>
-                      </Tooltip>
-                    );
-
-                    // only managers can update request status
-                    const displayUpdateRequestStatusButton = roles.includes(
-                      'Manager'
-                    )
-                      ? key === 'requestStatus'
-                        ? createdUpdateRequestStatusButtonWithTooltip
-                        : null
-                      : null;
-
-                    // for both expanded and condensed:  if fieldname is 'requestStatus', display popover with radio group and submit button, else if the document viewed is a repair note, display edit button, else display truncated values with hover cards
-
-                    const displayExpandedBodyRows = (
-                      <td key={`${objIdx}-${keyValIdx}`}>
-                        {key === 'requestStatus' ? (
-                          <Group w="100%" position="right">
-                            <Text>{truncatedValuesWithHoverCards}</Text>
-                            {displayUpdateRequestStatusButton}
-                          </Group>
-                        ) : key === 'edit' ? (
-                          <Group w="100%" position="right">
-                            <Text>{truncatedValuesWithHoverCards}</Text>
-                            {displayRepairNoteEditButton}
-                          </Group>
-                        ) : (
-                          <Group w="100%" position="right">
-                            {truncatedValuesWithHoverCards}
-                          </Group>
-                        )}
-                      </td>
-                    );
-
-                    const displayCondensedBodyRows =
-                      !tableHeaderValueExclusionSet.has(
-                        Object.keys(queryResponseObjWithAddedFields)[keyValIdx]
-                      ) ? (
-                        <td key={`${objIdx}-${keyValIdx}`}>
-                          {key === 'requestStatus' ? (
-                            <Group position="right" w="100%">
-                              <Text>{truncatedValuesWithHoverCards}</Text>
-                              {displayUpdateRequestStatusButton}
-                            </Group>
-                          ) : key === 'edit' ? (
-                            <Group w="100%" position="right">
-                              <Text>{truncatedValuesWithHoverCards}</Text>
-                              {displayRepairNoteEditButton}
-                            </Group>
-                          ) : (
-                            <Group w="100%" position="right">
-                              {truncatedValuesWithHoverCards}
-                            </Group>
-                          )}
-                        </td>
-                      ) : null;
-
                     const [
+                      createdUpdateRequestStatusButton,
+                      createdViewProfileButton,
                       createdDeleteFormButton,
                       createdOpenFileUploadsModalButton,
                     ] = returnAccessibleButtonElements([
+                      // update request status button
+                      {
+                        buttonLabel: <TbStatusChange />,
+                        semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                        semanticName: 'Update request status',
+                        buttonOnClick: () => {
+                          displayQueryDesktopDispatch({
+                            type: displayQueryDesktopAction.setCurrentDocumentId,
+                            payload: queryResponseObjWithAddedFields._id,
+                          });
+                          displayQueryDesktopDispatch({
+                            type: displayQueryDesktopAction.setCurrentRequestStatus,
+                            payload:
+                              queryResponseObjWithAddedFields.requestStatus,
+                          });
+                          openUpdateRequestStatusModal();
+                        },
+                      },
+                      // view profile button
+                      {
+                        buttonLabel: <TbUserSearch />,
+                        semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
+                        semanticName: 'View profile',
+                        buttonOnClick: () => {
+                          console.log('view profile');
+                        },
+                      },
                       // delete button
                       {
                         buttonLabel: <TbTrash />,
@@ -794,6 +747,86 @@ function DisplayQueryDesktop({
                       },
                     ]);
 
+                    const createdUpdateRequestStatusButtonWithTooltip = (
+                      <Tooltip
+                        label={`Modify request status of id: ${queryResponseObjWithAddedFields._id}`}
+                      >
+                        <Group>{createdUpdateRequestStatusButton}</Group>
+                      </Tooltip>
+                    );
+
+                    const createdViewProfileButtonWithTooltip = (
+                      <Tooltip
+                        label={`View profile of username: ${queryResponseObjWithAddedFields.username}`}
+                      >
+                        <Group>{createdViewProfileButton}</Group>
+                      </Tooltip>
+                    );
+
+                    // only managers can update request status
+                    const displayUpdateRequestStatusButton = roles.includes(
+                      'Manager'
+                    )
+                      ? key === 'requestStatus'
+                        ? createdUpdateRequestStatusButtonWithTooltip
+                        : null
+                      : null;
+
+                    // for both expanded and condensed:  if fieldname is 'requestStatus', display popover with radio group and submit button, else if the document viewed is a repair note, display edit button, else display truncated values with hover cards
+
+                    const displayExpandedBodyRows = (
+                      <td key={`${objIdx}-${keyValIdx}`}>
+                        {key === 'requestStatus' ? (
+                          <Group w="100%" position="center">
+                            <Text>{truncatedValuesWithHoverCards}</Text>
+                            {displayUpdateRequestStatusButton}
+                          </Group>
+                        ) : key === 'edit' ? (
+                          <Group w="100%" position="center">
+                            <Text>{truncatedValuesWithHoverCards}</Text>
+                            {displayRepairNoteEditButton}
+                          </Group>
+                        ) : key === 'viewProfile' ? (
+                          <Group w="100%" position="center">
+                            {truncatedValuesWithHoverCards}
+                            {createdViewProfileButtonWithTooltip}
+                          </Group>
+                        ) : (
+                          <Group w="100%" position="center">
+                            {truncatedValuesWithHoverCards}
+                          </Group>
+                        )}
+                      </td>
+                    );
+
+                    const displayCondensedBodyRows =
+                      !tableHeaderValueExclusionSet.has(
+                        Object.keys(queryResponseObjWithAddedFields)[keyValIdx]
+                      ) ? (
+                        <td key={`${objIdx}-${keyValIdx}`}>
+                          {key === 'requestStatus' ? (
+                            <Group position="center" w="100%">
+                              <Text>{truncatedValuesWithHoverCards}</Text>
+                              {displayUpdateRequestStatusButton}
+                            </Group>
+                          ) : key === 'edit' ? (
+                            <Group w="100%" position="center">
+                              <Text>{truncatedValuesWithHoverCards}</Text>
+                              {displayRepairNoteEditButton}
+                            </Group>
+                          ) : key === 'viewProfile' ? (
+                            <Group w="100%" position="center">
+                              {truncatedValuesWithHoverCards}
+                              {createdViewProfileButtonWithTooltip}
+                            </Group>
+                          ) : (
+                            <Group w="100%" position="center">
+                              {truncatedValuesWithHoverCards}
+                            </Group>
+                          )}
+                        </td>
+                      ) : null;
+
                     const viewFileUploadsButtonToolTipLabel = !fileUploadsData[
                       objIdx
                     ]?.fileUploads.length
@@ -818,7 +851,7 @@ function DisplayQueryDesktop({
                             <Tooltip
                               label={`Delete form with id: ${queryResponseObjWithAddedFields._id}`}
                             >
-                              <Group w="100%" position="right">
+                              <Group w="100%" position="center">
                                 {createdDeleteFormButton}
                               </Group>
                             </Tooltip>
