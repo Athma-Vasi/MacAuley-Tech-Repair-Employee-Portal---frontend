@@ -1814,7 +1814,7 @@ function Comment({
 
   const commentsWidth =
     width < 480 // for iPhone 5/SE
-      ? width * 0.95
+      ? width * 0.93
       : width < 768 // for iPhones 6 - 15
       ? width - 40
       : // at 768vw the navbar appears at width of 225px

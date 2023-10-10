@@ -1,4 +1,4 @@
-import { Action, ActionsGeneral } from '../../../types';
+import { Action, ActionsGeneral, RequestStatus } from '../../../types';
 
 type EmployeeAttributes = (
   | 'teamwork and collaboration'
@@ -18,9 +18,10 @@ type EndorsementSchema = {
   action: Action;
   category: ActionsGeneral;
   title: string;
-  employeeToBeEndorsed: string;
+  userToBeEndorsed: string;
   summaryOfEndorsement: string;
   attributeEndorsed: EmployeeAttributes;
+  requestStatus: RequestStatus;
 };
 
 type EndorsementDocument = EndorsementSchema & {

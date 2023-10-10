@@ -845,21 +845,15 @@ function returnHighlightedText({
       );
 
       if (isQueryArrayIncludesWord) {
-        const textWithoutPunctuation = text.replace(
-          /[.,/#!$%^&*;:{}=\-_`~()]/g,
-          ''
-        );
-        const punctuation = text.replace(/[a-zA-Z0-9]/g, '');
         return (
           <Flex>
             <Highlight
               key={`${text}-${index}`}
               highlightStyles={{ backgroundColor: textHighlightColor }}
-              highlight={textWithoutPunctuation}
+              highlight={text}
             >
-              {textWithoutPunctuation}
+              {text}
             </Highlight>
-            <Text>{punctuation}</Text>
           </Flex>
         );
       }
@@ -878,18 +872,22 @@ function returnScrollableDocumentInfo({
   document,
   excludeKeys = [],
   fieldNamesWithDateValues,
+  heading = 'Document Details:',
   queryValuesArray,
   rowGap,
   scrollBarStyle,
+  scrollViewportHeight = 150,
   textHighlightColor,
 }: {
   borderColor: string;
   document: Record<string, any>;
   excludeKeys?: string[];
   fieldNamesWithDateValues: Set<string>;
+  heading?: string;
   queryValuesArray: string[];
   rowGap: MantineNumberSize;
   scrollBarStyle: Record<string, any>;
+  scrollViewportHeight?: number;
   textHighlightColor: string;
 }) {
   const [createdShowMoreButton, createdHideButton] =
@@ -916,7 +914,7 @@ function returnScrollableDocumentInfo({
 
   const displayScrollableDocument = (
     <Stack w="100%">
-      <Text>Document Details:</Text>
+      <Text size="md">{heading}</Text>
       <ScrollArea
         p={rowGap}
         type="hover"
@@ -924,7 +922,7 @@ function returnScrollableDocumentInfo({
         styles={() => scrollBarStyle}
         style={{ border: borderColor, borderRadius: 4 }}
       >
-        <Stack w="100%" h={150}>
+        <Stack w="100%" h={scrollViewportHeight}>
           {filteredDocumentTuples.map(([key, value], index) => {
             const stringifiedKey = String(key);
             const splitCamelCaseKey =
@@ -970,7 +968,9 @@ function returnScrollableDocumentInfo({
                 gutter={rowGap}
                 w="100%"
               >
-                <Grid.Col span={4}>{splitCamelCaseKey}</Grid.Col>
+                <Grid.Col span={4}>
+                  <Text>{splitCamelCaseKey}</Text>
+                </Grid.Col>
                 <Grid.Col span={6}>
                   <Spoiler
                     maxHeight={70}

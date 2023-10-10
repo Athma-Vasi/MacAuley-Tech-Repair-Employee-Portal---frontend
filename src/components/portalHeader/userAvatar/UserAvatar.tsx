@@ -96,6 +96,7 @@ function UserAvatar() {
     submitMessage,
     successMessage,
     triggerLogoutSubmit,
+    triggerPrefersReducedMotionFormSubmit,
   } = userAvatarState;
 
   const { colorScheme, fontFamily, primaryColor, primaryShade } = themeObject;
@@ -292,18 +293,24 @@ function UserAvatar() {
         });
 
         showBoundary(error);
+      } finally {
+        userAvatarDispatch({
+          type: userAvatarAction.triggerPrefersReducedMotionFormSubmit,
+          payload: false,
+        });
       }
     }
 
-    updatePrefersReducedMotion();
-
+    if (triggerPrefersReducedMotionFormSubmit) {
+      updatePrefersReducedMotion();
+    }
     return () => {
       isMounted = false;
       controller.abort();
     };
     // only trigger when isAccessTokenExpired and prefersReducedMotionSwitchChecked changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefersReducedMotionSwitchChecked, isAccessTokenExpired]);
+  }, [triggerPrefersReducedMotionFormSubmit, isAccessTokenExpired]);
 
   useEffect(() => {
     const decodedToken: DecodedToken = jwtDecode(accessToken);
@@ -534,9 +541,9 @@ function UserAvatar() {
           payload: !prefersReducedMotionSwitchChecked,
         });
 
-        globalDispatch({
-          type: globalAction.setRespectReducedMotion,
-          payload: !prefersReducedMotionSwitchChecked,
+        userAvatarDispatch({
+          type: userAvatarAction.triggerPrefersReducedMotionFormSubmit,
+          payload: true,
         });
       }}
       onLabel={<Text color="#f5f5f5">On</Text>}
@@ -735,7 +742,7 @@ function UserAvatar() {
         text: isSubmitting ? submitMessage : successMessage,
       }}
       title={
-        <Title order={4}>{isSuccessful ? successMessage : submitMessage}</Title>
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting...'}</Title>
       }
     />
   );

@@ -30,8 +30,8 @@ type AddressChangeSchema = {
 
 type AddressChangeDocument = AddressChangeSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

@@ -68,7 +68,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/general/referment/dev',
+        path: 'actions/outreach/event/dev',
       });
       // const url: URL = new URL(
       //   'http://localhost:5500/api/v1/user/dev/add-field'
@@ -90,7 +90,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        referments: slicedBodiesArr,
+        events: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -144,11 +144,8 @@ function DevTesting() {
   }, [triggerFormSubmit, isAccessTokenExpired]);
 
   useEffect(() => {
-    const bodiesArr = returnRefermentsRequestBodies({
-      refermentsGroupedByDepartments: groupByField({
-        objectArray: refermentsArray,
-        field: 'departmentReferredFor',
-      }) as RefermentsGroupedByDepartments,
+    const bodiesArr = returnEventsRequestBodies({
+      eventsArray,
       userDocs: USERS_DOC,
     });
 

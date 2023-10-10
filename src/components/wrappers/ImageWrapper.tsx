@@ -121,7 +121,7 @@ function ImageWrapper({ creatorInfoObject }: ImageWrapperProps) {
       style={{
         position: 'absolute',
         width: '100%',
-        top: '75%',
+        bottom: '0%',
         left: '0%',
         zIndex: 1,
         backgroundColor: 'rgba(0,0,0,0.7)',

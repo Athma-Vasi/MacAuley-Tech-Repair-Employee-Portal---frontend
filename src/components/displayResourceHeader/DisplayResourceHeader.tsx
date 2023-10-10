@@ -34,7 +34,7 @@ function DisplayResourceHeader({
   const imageWidth = componentWidth
     ? componentWidth
     : width < 480 // for iPhone 5/SE
-    ? width * 0.95
+    ? width * 0.93
     : width < 768 // for iPhones 6 - 15
     ? width - 40
     : // at 768vw the navbar appears at width of 225px
@@ -45,7 +45,7 @@ function DisplayResourceHeader({
     ? (width - 225) * 0.8
     : 900 - 40;
 
-  const imageHeight = imageWidth * 0.68;
+  const imageHeight = imageWidth * 0.62;
 
   const [createdImage] = returnAccessibleImageElements([
     {
@@ -58,6 +58,29 @@ function DisplayResourceHeader({
     },
   ]);
 
+  const displayResourceTitle =
+    resourceTitle.length > 1 ? (
+      <Title
+        color="#f5f5f5"
+        px={padding}
+        pt={padding}
+        order={width >= 1200 ? 1 : 2}
+      >
+        {resourceTitle}
+      </Title>
+    ) : null;
+
+  const displayResourceDescription =
+    resourceDescription.length > 1 ? (
+      <Text
+        color="#f5f5f5"
+        px={padding}
+        size={width >= 1200 ? 'xl' : width >= 991 ? 'lg' : 'md'}
+      >
+        {resourceDescription}
+      </Text>
+    ) : null;
+
   const bannerImage = (
     <Stack w={imageWidth} h={imageHeight}>
       <Card withBorder radius="md">
@@ -65,34 +88,23 @@ function DisplayResourceHeader({
         <Card.Section>
           <Flex
             direction="column"
+            pb={padding}
             w={imageWidth}
             align="flex-start"
             gap={rowGap}
-            h="75%"
+            // h="75%"
             style={{
               position: 'absolute',
 
-              top: width < 480 ? '62%' : width < 1024 ? '68%' : '73%',
+              // top: width < 480 ? '62%' : width < 1024 ? '68%' : '73%',
+              bottom: '0%',
               left: '0%',
               zIndex: 1,
               backgroundColor: 'rgba(0,0,0,0.7)',
             }}
           >
-            <Title
-              color="#f5f5f5"
-              px={padding}
-              pt={padding}
-              order={width >= 1200 ? 1 : 2}
-            >
-              {resourceTitle}
-            </Title>
-            <Text
-              color="#f5f5f5"
-              px={padding}
-              size={width >= 1200 ? 'xl' : width >= 991 ? 'lg' : 'md'}
-            >
-              {resourceDescription}
-            </Text>
+            {displayResourceTitle}
+            {displayResourceDescription}
           </Flex>
         </Card.Section>
       </Card>

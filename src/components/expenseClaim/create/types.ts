@@ -2,6 +2,7 @@ import {
   Action,
   ActionsCompany,
   Currency,
+  RequestStatus,
   SetStepsInErrorPayload,
 } from '../../../types';
 
@@ -31,12 +32,13 @@ type ExpenseClaimSchema = {
   expenseClaimDescription: string;
   additionalComments: string;
   acknowledgement: boolean;
+  requestStatus: RequestStatus;
 };
 
 type ExpenseClaimDocument = ExpenseClaimSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

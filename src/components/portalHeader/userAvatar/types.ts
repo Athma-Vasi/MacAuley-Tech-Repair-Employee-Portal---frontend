@@ -1,6 +1,7 @@
 type UserAvatarState = {
   colorSchemeSwitchChecked: boolean;
   prefersReducedMotionSwitchChecked: boolean;
+  triggerPrefersReducedMotionFormSubmit: boolean;
 
   isAppearanceNavLinkActive: boolean;
   isProfileNavLinkActive: boolean;
@@ -16,6 +17,7 @@ type UserAvatarState = {
 type UserAvatarAction = {
   setColorSchemeSwitchChecked: 'setColorSchemeSwitchChecked';
   setPrefersReducedMotionSwitchChecked: 'setPrefersReducedMotionSwitchChecked';
+  triggerPrefersReducedMotionFormSubmit: 'triggerPrefersReducedMotionFormSubmit';
 
   setIsAppearanceNavLinkActive: 'setIsAppearanceNavLinkActive';
   setIsProfileNavLinkActive: 'setIsProfileNavLinkActive';
@@ -33,6 +35,7 @@ type UserAvatarDispatch =
       type:
         | UserAvatarAction['setColorSchemeSwitchChecked']
         | UserAvatarAction['setPrefersReducedMotionSwitchChecked']
+        | UserAvatarAction['triggerPrefersReducedMotionFormSubmit']
         | UserAvatarAction['setIsAppearanceNavLinkActive']
         | UserAvatarAction['setIsProfileNavLinkActive']
         | UserAvatarAction['setIsLogoutNavLinkActive']

@@ -4,6 +4,7 @@ import { UserAvatarAction, UserAvatarDispatch, UserAvatarState } from './types';
 const initialUserAvatarState: UserAvatarState = {
   colorSchemeSwitchChecked: true,
   prefersReducedMotionSwitchChecked: false,
+  triggerPrefersReducedMotionFormSubmit: false,
 
   isAppearanceNavLinkActive: false,
   isProfileNavLinkActive: false,
@@ -19,6 +20,8 @@ const initialUserAvatarState: UserAvatarState = {
 const userAvatarAction: UserAvatarAction = {
   setColorSchemeSwitchChecked: 'setColorSchemeSwitchChecked',
   setPrefersReducedMotionSwitchChecked: 'setPrefersReducedMotionSwitchChecked',
+  triggerPrefersReducedMotionFormSubmit:
+    'triggerPrefersReducedMotionFormSubmit',
 
   setIsAppearanceNavLinkActive: 'setIsAppearanceNavLinkActive',
   setIsProfileNavLinkActive: 'setIsProfileNavLinkActive',
@@ -46,6 +49,12 @@ function userAvatarReducer(
         ...state,
         prefersReducedMotionSwitchChecked: action.payload,
       };
+    case userAvatarAction.triggerPrefersReducedMotionFormSubmit:
+      return {
+        ...state,
+        triggerPrefersReducedMotionFormSubmit: action.payload,
+      };
+
     case userAvatarAction.setIsAppearanceNavLinkActive: {
       const updatedState = toggleNavlinksActive({
         navlinksState: state,

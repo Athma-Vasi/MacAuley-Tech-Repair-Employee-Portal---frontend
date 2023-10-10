@@ -281,6 +281,7 @@ function CreateExpenseClaim() {
                   expenseClaimDescription,
                   additionalComments,
                   acknowledgement,
+                  requestStatus: 'pending',
                 },
               }),
             }

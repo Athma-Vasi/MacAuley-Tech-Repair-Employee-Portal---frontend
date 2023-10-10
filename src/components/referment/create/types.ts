@@ -4,6 +4,7 @@ import {
   Department,
   JobPosition,
   PhoneNumber,
+  RequestStatus,
   SetStepsInErrorPayload,
 } from '../../../types';
 
@@ -20,17 +21,19 @@ type RefermentSchema = {
   candidateCurrentCompany: string;
   candidateProfileUrl: string;
 
+  departmentReferredFor: Department;
   positionReferredFor: JobPosition;
   positionJobDescription: string;
   referralReason: string;
   additionalInformation: string;
   privacyConsent: boolean;
+  requestStatus: RequestStatus;
 };
 
 type RefermentDocument = RefermentSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

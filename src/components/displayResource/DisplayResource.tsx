@@ -33,13 +33,13 @@ import {
 } from '../../utils';
 import { DisplayFileUploads } from '../displayFileUploads';
 import { DisplayQuery } from '../displayQuery';
+import { NotificationModal } from '../notificationModal';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
 import { AccessibleSelectInputCreatorInfo } from '../wrappers';
 import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from './constants';
 import { displayResourceAction, displayResourceReducer } from './state';
 import { DisplayResourceProps, DisplayResourceState } from './types';
-import { NotificationModal } from '../notificationModal';
 
 function DisplayResource<Doc>({
   style = {},
@@ -137,6 +137,10 @@ function DisplayResource<Doc>({
   const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
     let isMounted = true;
     const controller = new AbortController();
 
@@ -322,7 +326,7 @@ function DisplayResource<Doc>({
       }
     }
 
-    if (triggerRefresh && !isAccessTokenExpired) {
+    if (triggerRefresh) {
       fetchResource();
     }
 
@@ -869,7 +873,7 @@ function DisplayResource<Doc>({
 
   const sectionWidth =
     width < 480 // for iPhone 5/SE
-      ? width * 0.95
+      ? width * 0.93
       : width < 768 // for iPhones 6 - 15
       ? width - 40
       : // at 768vw the navbar appears at width of 225px

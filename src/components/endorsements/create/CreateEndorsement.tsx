@@ -129,6 +129,7 @@ function CreateEndorsement() {
           userToBeEndorsed: employeeToBeEndorsed,
           summaryOfEndorsement,
           attributeEndorsed,
+          requestStatus: 'pending',
         },
       });
 

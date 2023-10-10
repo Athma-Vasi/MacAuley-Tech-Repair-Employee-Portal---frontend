@@ -21,7 +21,7 @@ type BenefitsSchema = {
   category: ActionsCompany;
 
   benefitUserId: string;
-  benefitUsername: string;
+  username: string;
   planName: string;
   planDescription: string;
   planKind: BenefitsPlanKind;
@@ -36,8 +36,8 @@ type BenefitsSchema = {
 
 type BenefitsDocument = BenefitsSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

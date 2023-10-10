@@ -2,6 +2,7 @@ import {
   Action,
   ActionsGeneral,
   PhoneNumber,
+  RequestStatus,
   SetStepsInErrorPayload,
   Urgency,
 } from '../../../types';
@@ -26,12 +27,13 @@ type AnonymousRequestSchema = {
   requestDescription: string;
   additionalInformation: string;
   urgency: Urgency;
+  requestStatus: RequestStatus;
 };
 
 type AnonymousRequestDocument = AnonymousRequestSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

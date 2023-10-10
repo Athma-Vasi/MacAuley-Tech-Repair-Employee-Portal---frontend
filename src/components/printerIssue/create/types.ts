@@ -2,6 +2,7 @@ import type {
   Action,
   ActionsGeneral,
   PhoneNumber,
+  RequestStatus,
   TimeRailway,
   Urgency,
 } from '../../../types';
@@ -40,6 +41,7 @@ type PrinterIssueSchema = {
   printerIssueDescription: string;
   urgency: Urgency;
   additionalInformation: string;
+  requestStatus: RequestStatus;
 };
 
 type PrinterIssueDocument = PrinterIssueSchema & {

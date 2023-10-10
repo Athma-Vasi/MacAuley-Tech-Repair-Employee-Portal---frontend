@@ -25,15 +25,15 @@ import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
+import { returnAccessibleNavLinkElements } from '../../jsxCreators';
 import { logState, returnThemeColors } from '../../utils';
+import { AccessibleNavLinkCreatorInfo } from '../wrappers';
 import {
   initialPortalNavbarState,
   portalNavbarAction,
   portalNavbarReducer,
 } from './state';
 import { PortalNavbarProps } from './types';
-import { AccessibleNavLinkCreatorInfo } from '../wrappers';
-import { returnAccessibleNavLinkElements } from '../../jsxCreators';
 
 function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const [portalNavbarState, portalNavbarDispatch] = useReducer(
@@ -519,7 +519,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       hidden={!openedNavbar}
       width={{ sm: 225, lg: 300 }}
       h={width <= 991 ? height - 50 : height - 64} //  vw < 991 ? header height = 50px : header height = 64px
-      style={width <= 1024 ? { zIndex: 750 } : {}}
+      style={width <= 1024 ? { zIndex: 5 } : {}}
     >
       <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
         <Flex direction="column">

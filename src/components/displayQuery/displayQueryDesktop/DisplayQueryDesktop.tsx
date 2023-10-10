@@ -80,7 +80,7 @@ function DisplayQueryDesktop({
     currentRequestStatus,
   } = displayQueryDesktopState;
   const {
-    globalState: { width, padding, rowGap, themeObject },
+    globalState: { height, width, padding, rowGap, themeObject },
   } = useGlobalState();
   const {
     authState: { roles },
@@ -235,11 +235,20 @@ function DisplayQueryDesktop({
   );
 
   const displayTableHeader = (
-    <thead style={{ borderRadius: 4 }}>
+    <thead
+      style={{
+        borderRadius: 4,
+        position: 'sticky',
+        top: 0,
+        zIndex: 3,
+        height: 35,
+      }}
+    >
       <tr>
         {tableHeaderValuesArr.map((headerValue, headerIdx) => {
           const headerStyle: CSSProperties = {
-            border: headerBorderColor,
+            // border: headerBorderColor,
+            borderRight: '1px solid transparent',
             backgroundColor: tableHeadersBgColor,
             padding: '4px 4px 4px 8px',
           };
@@ -594,7 +603,6 @@ function DisplayQueryDesktop({
                             <Stack>
                               {
                                 <Flex w="100%" wrap="wrap" gap="xs">
-                                  {/* replace '_id' else leave as is */}
                                   {key === '_id' ? (
                                     <Text>{'Document Id'}: </Text>
                                   ) : (
@@ -838,16 +846,12 @@ function DisplayQueryDesktop({
   );
 
   const displayTable = (
-    <ScrollArea
-      styles={() => scrollBarStyle}
-      type="always"
-      offsetScrollbars
-      pr={padding}
-    >
+    <ScrollArea styles={() => scrollBarStyle} type="always" offsetScrollbars>
       <Group
         w={width <= 991 ? width - 225 - 44 : width - 300 - 44}
         style={{
           minHeight: '500px', // allows popovers and tooltips to display
+          maxHeight: '62vh',
         }}
         align="flex-start"
       >
@@ -888,7 +892,7 @@ function DisplayQueryDesktop({
       closeButtonProps={{ color: themeColorShade }}
       opened={openedUpdateRequestStatusModal}
       onClose={closeUpdateRequestStatusModal}
-      size={width < 480 ? width * 0.95 : 480}
+      size={width < 480 ? width * 0.93 : 480}
       title={<Title order={5}>Update Request Status</Title>}
     >
       <UpdateRequestStatus

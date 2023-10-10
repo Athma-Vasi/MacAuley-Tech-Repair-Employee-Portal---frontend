@@ -1,3 +1,5 @@
+import { RequestStatus } from '../../types';
+
 type ReasonForLeave =
   | 'Vacation'
   | 'Medical'
@@ -19,6 +21,7 @@ type LeaveRequestSchema = {
   delegatedResponsibilities: string;
   additionalComments: string;
   acknowledgement: boolean;
+  requestStatus: RequestStatus;
 };
 
 type LeaveRequestDocument = LeaveRequestSchema & {

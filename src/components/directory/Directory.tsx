@@ -393,7 +393,6 @@ function Directory() {
             <CarouselBuilder
               slideDimensions={nodeDimensions}
               slides={[executiveManagementProfileCard]}
-              headings={[preferredName]}
             />
           );
 
@@ -579,24 +578,10 @@ function Directory() {
                   React.JSX.Element[]
                 ];
 
-              // for each job position, find all the documents with that job position and grab the preferred names
-              // so the carousel can display the preferred names as headings
-              const preferredNames =
-                groupedStoreAdministrationByStoreLocationArr
-                  .filter(
-                    (userDocument: DirectoryUserDocument) =>
-                      userDocument.jobPosition === jobPosition
-                  )
-                  .map(
-                    (userDocument: DirectoryUserDocument) =>
-                      userDocument.preferredName
-                  );
-
               const groupedStoreAdministrationByStoreLocationCarousel = (
                 <CarouselBuilder
                   slideDimensions={nodeDimensions}
                   slides={profileCards}
-                  headings={preferredNames}
                 />
               );
 
@@ -837,19 +822,6 @@ function Directory() {
                   React.JSX.Element[]
                 ];
 
-              // for each job position, find all the documents with that job position and grab the preferred names
-              // so the carousel can display the preferred names as headings
-              const preferredNames =
-                groupedOfficeAdministrationByStoreLocationArr
-                  .filter(
-                    (userDocument: DirectoryUserDocument) =>
-                      userDocument.jobPosition === jobPosition
-                  )
-                  .map(
-                    (userDocument: DirectoryUserDocument) =>
-                      userDocument.preferredName
-                  );
-
               const nodeType = jobPosition
                 .toLowerCase()
                 .includes('administrator')
@@ -860,7 +832,6 @@ function Directory() {
                 <CarouselBuilder
                   slideDimensions={nodeDimensions}
                   slides={profileCards}
-                  headings={preferredNames}
                 />
               );
 
@@ -1094,19 +1065,11 @@ function Directory() {
                     return displayProfileCard;
                   }
                 );
-              // for each job position, find all the documents with that job position and grab the preferred names
-              // so the carousel can display the preferred names as headings
-              const preferredNames =
-                groupedCorporateDepartmentByJobPositionArr.map(
-                  (userDocument: DirectoryUserDocument) =>
-                    userDocument.preferredName
-                );
 
               const groupedCorporateDepartmentByJobPositionCarousel = (
                 <CarouselBuilder
                   slideDimensions={nodeDimensions}
                   slides={profileCards}
-                  headings={preferredNames}
                 />
               );
 
@@ -1352,25 +1315,12 @@ function Directory() {
                     React.JSX.Element[]
                   ];
 
-                  // for each job position, find all the documents with that job position and grab the preferred names
-                  // so the carousel can display the preferred names as headings
-                  const preferredNames = groupedDepartmentByStoreLocationsArr
-                    .filter(
-                      (userDocument: DirectoryUserDocument) =>
-                        userDocument.jobPosition === jobPosition
-                    )
-                    .map(
-                      (userDocument: DirectoryUserDocument) =>
-                        userDocument.preferredName
-                    );
-
                   // create a carousel from said profile cards
                   const groupedDepartmentEmployeesForJobPositionProfileCarousel =
                     (
                       <CarouselBuilder
                         slides={groupedDepartmentEmployeesForJobPosition}
                         slideDimensions={nodeDimensions}
-                        headings={preferredNames}
                       />
                     );
 

@@ -1698,6 +1698,55 @@ function toggleNavlinksActive<
   );
 }
 
+// function to display elapsed time from given date
+function returnElapsedTime(date: string) {
+  const now = new Date();
+  const then = new Date(date);
+  const elapsed = now.getTime() - then.getTime();
+  const seconds = Math.floor(elapsed / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  if (hours > 24) {
+    const days = Math.floor(hours / 24);
+    return `${days} days ago`;
+  } else if (hours === 24) {
+    return '1 day ago';
+  } else if (hours >= 1) {
+    return `${hours} hours ago`;
+  } else if (minutes >= 1) {
+    return `${minutes} minutes ago`;
+  } else if (seconds >= 1) {
+    return `${seconds} seconds ago`;
+  } else {
+    return 'just now';
+  }
+}
+
+function returnTimeRemaining(date: string) {
+  const now = new Date();
+  const then = new Date(date);
+  const remaining = then.getTime() - now.getTime();
+  const seconds = Math.floor(remaining / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  if (hours > 24) {
+    const days = Math.floor(hours / 24);
+    return `${days} days left`;
+  } else if (hours === 24) {
+    return '1 day left';
+  } else if (hours >= 1) {
+    return `${hours} hours left`;
+  } else if (minutes >= 1) {
+    return `${minutes} minutes left`;
+  } else if (seconds >= 1) {
+    return `${seconds} seconds left`;
+  } else {
+    return 'just now';
+  }
+}
+
 export {
   addFieldsToObject,
   commentIdsTreeOpsIterative,
@@ -1717,6 +1766,7 @@ export {
   returnDateNearPastValidationText,
   returnDateOfBirthValidationText,
   returnDateValidationText,
+  returnElapsedTime,
   returnEmailValidationText,
   returnGrammarValidationText,
   returnImageValidationText,
@@ -1731,6 +1781,7 @@ export {
   returnSerialIdValidationText,
   returnThemeColors,
   returnTimeRailwayValidationText,
+  returnTimeRemaining,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
   shuffleArray,

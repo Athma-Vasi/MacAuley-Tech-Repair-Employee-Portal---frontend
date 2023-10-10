@@ -184,6 +184,7 @@ function CreateReferment() {
           referralReason,
           additionalInformation,
           privacyConsent,
+          requestStatus: 'pending',
         },
       });
 

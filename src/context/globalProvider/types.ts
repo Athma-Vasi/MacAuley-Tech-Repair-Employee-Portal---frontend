@@ -18,6 +18,7 @@ import { ExpenseClaimDocument } from '../../components/expenseClaim/create/types
 import { LeaveRequestDocument } from '../../components/leaveRequest/types';
 import { PrinterIssueDocument } from '../../components/printerIssue/create/types';
 import { RefermentDocument } from '../../components/referment/create/types';
+import { RepairNoteDocument } from '../../components/repairNote/types';
 import { RequestResourceDocument } from '../../components/requestResource/create/types';
 import { SurveyBuilderDocument } from '../../components/survey/types';
 import {
@@ -95,6 +96,7 @@ type ErrorState = {
 };
 
 type ActionsDocuments = {
+  repairNoteData: RepairNoteDocument[];
   companyData: {
     addressChangeData: AddressChangeDocument[];
     expenseClaimData: ExpenseClaimDocument[];
