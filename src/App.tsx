@@ -545,9 +545,9 @@ function App() {
         {/* these are public routes */}
         <Route path="/" element={rootIndexWrapper}>
           {/* TESTING ONLY REMOVE  */}
-          {/* <Route index element={<Text>testing</Text>} /> */}
+          <Route index element={<Text>testing</Text>} />
 
-          <Route index element={loginElement} />
+          {/* <Route index element={loginElement} /> */}
           <Route path="login" element={loginElement} />
           <Route path="register" element={<PortalLayout />}>
             <Route index element={registerElement} />

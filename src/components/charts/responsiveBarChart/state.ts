@@ -9,7 +9,6 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   layout: 'horizontal',
   valueScale: 'linear',
   reverse: false,
-  toggleIndexScale: true,
   toggleMinValue: false,
   toggleMaxValue: false,
   padding: 0.1,
@@ -46,7 +45,6 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   axisLeftTickSize: 5,
   axisLeftTickPadding: 5,
   axisLeftTickRotation: 0,
-  isInteractive: true,
   enableLegends: false,
   legendsAnchor: 'bottom-right',
   legendsDirection: 'column',
@@ -71,7 +69,6 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setLayout: 'setLayout',
   setValueScale: 'setValueScale',
   setReverse: 'setReverse',
-  setToggleIndexScale: 'setToggleIndexScale',
   setToggleMinValue: 'setToggleMinValue',
   setMinValue: 'setMinValue',
   setToggleMaxValue: 'setToggleMaxValue',
@@ -119,9 +116,6 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setAxisLeftTickPadding: 'setAxisLeftTickPadding',
   setAxisLeftTickRotation: 'setAxisLeftTickRotation',
 
-  /** interactivity */
-  setIsInteractive: 'setIsInteractive',
-
   /** legends */
   setEnableLegends: 'setEnableLegends',
   setLegendsAnchor: 'setLegendsAnchor',
@@ -167,11 +161,6 @@ function responsiveBarChartReducer(
       return {
         ...state,
         reverse: action.payload,
-      };
-    case responsiveBarChartAction.setToggleIndexScale:
-      return {
-        ...state,
-        toggleIndexScale: action.payload,
       };
     case responsiveBarChartAction.setToggleMinValue:
       return {
@@ -361,11 +350,6 @@ function responsiveBarChartReducer(
       return {
         ...state,
         axisLeftTickRotation: action.payload,
-      };
-    case responsiveBarChartAction.setIsInteractive:
-      return {
-        ...state,
-        isInteractive: action.payload,
       };
     case responsiveBarChartAction.setEnableLegends:
       return {

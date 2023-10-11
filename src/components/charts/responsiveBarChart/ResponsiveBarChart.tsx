@@ -1,8 +1,12 @@
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 import {
   initialResponsiveBarChartState,
+  responsiveBarChartAction,
   responsiveBarChartReducer,
 } from './state';
+import { useGlobalState } from '../../../hooks';
+import { AccessibleSelectedDeselectedTextElements } from '../../../jsxCreators';
+import { COLORS_SWATCHES } from '../../../constants/data';
 
 function ResponsiveBarChart() {
   const [responsiveBarChartState, responsiveBarChartDispatch] = useReducer(
@@ -11,12 +15,15 @@ function ResponsiveBarChart() {
   );
 
   const {
+    globalState: { isPrefersReducedMotion, width, themeObject },
+  } = useGlobalState();
+
+  const {
     /** base */
     groupMode, // default: stacked
     layout, // default: horizontal
     valueScale, // default: linear
     reverse, // default: false
-    toggleIndexScale, // default: true
     // scale
     toggleMinValue, // default: false ? minValue is undefined
     minValue, // default: -1000 step: 1
@@ -69,9 +76,6 @@ function ResponsiveBarChart() {
     axisLeftTickPadding, // 0 - 20 default: 5 step: 1
     axisLeftTickRotation, // -90 - 90 default: 0 step: 1
 
-    /** interactivity */
-    isInteractive, // default: true
-
     /** legends */
     enableLegends, // default: false
     legendsAnchor, // default: bottom-right
@@ -93,6 +97,184 @@ function ResponsiveBarChart() {
     animate, // default: true
     motionConfig, // default: default
   } = responsiveBarChartState;
+
+  // set motion config on enable
+  useEffect(() => {
+    if (!isPrefersReducedMotion) {
+      return;
+    }
+
+    responsiveBarChartDispatch({
+      type: responsiveBarChartAction.setAnimate,
+      payload: false,
+    });
+  }, [isPrefersReducedMotion]);
+
+  const [reverseAccessibleSelectedText, reverseAccessibleDeselectedText] =
+    AccessibleSelectedDeselectedTextElements({
+      isSelected: reverse,
+      semanticName: 'reverse',
+      deselectedDescription: 'Bars will be ordered from smallest to largest.',
+      selectedDescription: 'Bars will be ordered from largest to smallest.',
+      theme: 'muted',
+    });
+
+  const [
+    toggleMinValueAccessibleSelectedText,
+    toggleMinValueAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: toggleMinValue,
+    semanticName: 'toggle min value',
+    deselectedDescription: 'Min value will be automatically calculated.',
+    selectedDescription: 'Min value is user defined.',
+    theme: 'muted',
+  });
+
+  const [
+    toggleMaxValueAccessibleSelectedText,
+    toggleMaxValueAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: toggleMaxValue,
+    semanticName: 'toggle max value',
+    deselectedDescription: 'Max value will be automatically calculated.',
+    selectedDescription: 'Max value is user defined.',
+    theme: 'muted',
+  });
+
+  const [
+    enableFillPatternsAccessibleSelectedText,
+    enableFillPatternsAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableFillPatterns,
+    semanticName: 'enable fill patterns',
+    deselectedDescription: 'Bars will be filled with a solid color.',
+    selectedDescription: 'Bars will be filled with a pattern.',
+    theme: 'muted',
+  });
+
+  const [
+    enableLabelsAccessibleSelectedText,
+    enableLabelsAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableLabels,
+    semanticName: 'enable labels',
+    deselectedDescription: 'Bars will not have labels.',
+    selectedDescription: 'Bars will have labels.',
+    theme: 'muted',
+  });
+
+  const [
+    enableGridXAccessibleSelectedText,
+    enableGridXAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableGridX,
+    semanticName: 'enable grid x',
+    deselectedDescription:
+      'Chart display area will not have a grid on the y axis.',
+    selectedDescription: 'Chart display area will have a grid on the y axis.',
+    theme: 'muted',
+  });
+
+  const [
+    enableGridYAccessibleSelectedText,
+    enableGridYAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableGridY,
+    semanticName: 'enable grid y',
+    deselectedDescription:
+      'Chart display area will not have a grid on the x axis.',
+    selectedDescription: 'Chart display area will have a grid on the x axis.',
+    theme: 'muted',
+  });
+
+  const [
+    enableAxisTopAccessibleSelectedText,
+    enableAxisTopAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableAxisTop,
+    semanticName: 'enable axis top',
+    deselectedDescription: 'Chart will not have an axis on top.',
+    selectedDescription: 'Chart will have an axis on top.',
+    theme: 'muted',
+  });
+
+  const [
+    enableAxisRightAccessibleSelectedText,
+    enableAxisRightAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableAxisRight,
+    semanticName: 'enable axis right',
+    deselectedDescription: 'Chart will not have an axis on the right.',
+    selectedDescription: 'Chart will have an axis on the right.',
+    theme: 'muted',
+  });
+
+  const [
+    enableAxisBottomAccessibleSelectedText,
+    enableAxisBottomAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableAxisBottom,
+    semanticName: 'enable axis bottom',
+    deselectedDescription: 'Chart will not have an axis on the bottom.',
+    selectedDescription: 'Chart will have an axis on the bottom.',
+    theme: 'muted',
+  });
+
+  const [
+    enableAxisLeftAccessibleSelectedText,
+    enableAxisLeftAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableAxisLeft,
+    semanticName: 'enable axis left',
+    deselectedDescription: 'Chart will not have an axis on the left.',
+    selectedDescription: 'Chart will have an axis on the left.',
+    theme: 'muted',
+  });
+
+  const [
+    enableLegendsAccessibleSelectedText,
+    enableLegendsAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableLegends,
+    semanticName: 'enable legends',
+    deselectedDescription: 'Chart will not have legends.',
+    selectedDescription: 'Chart will have legends.',
+    theme: 'muted',
+  });
+
+  const [
+    enableLegendsJustifyAccessibleSelectedText,
+    enableLegendsJustifyAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: enableLegendsJustify,
+    semanticName: 'enable legends justify',
+    deselectedDescription: 'Legends will not be justified.',
+    selectedDescription: 'Legends will be justified.',
+    theme: 'muted',
+  });
+
+  const [
+    enableAnimateAccessibleSelectedText,
+    enableAnimateAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: animate,
+    semanticName: 'enable animate',
+    deselectedDescription: 'Chart will not animate.',
+    selectedDescription: 'Chart will animate.',
+    theme: 'muted',
+  });
+
+  //
+  const { gray } = COLORS_SWATCHES;
+  const sliderWidth =
+    width < 480
+      ? '217px'
+      : width < 768
+      ? `${width * 0.38}px`
+      : width < 1192
+      ? '500px'
+      : `${width * 0.15}px`;
+  const sliderLabelColor = gray[3];
 
   return <></>;
 }

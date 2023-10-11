@@ -14,7 +14,6 @@ type ResponsiveBarChartState = {
   layout: 'horizontal' | 'vertical'; // default: horizontal
   valueScale: 'linear' | 'symlog'; // default: linear
   reverse: boolean; // default: false
-  toggleIndexScale: boolean; // default: true
   // base -> value scale
   toggleMinValue: boolean; // default: false ? minValue is undefined
   minValue?: number; // default: -1000 step: 1
@@ -67,9 +66,6 @@ type ResponsiveBarChartState = {
   axisLeftTickPadding: number; // 0 - 20 default: 5 step: 1
   axisLeftTickRotation: number; // -90 - 90 default: 0 step: 1
 
-  /** interactivity */
-  isInteractive: boolean; // default: true
-
   /** legends */
   enableLegends: boolean; // default: false
   legendsAnchor: LegendAnchor; // default: bottom-right
@@ -98,7 +94,6 @@ type ResponsiveBarChartAction = {
   setLayout: 'setLayout';
   setValueScale: 'setValueScale';
   setReverse: 'setReverse';
-  setToggleIndexScale: 'setToggleIndexScale';
   setToggleMinValue: 'setToggleMinValue';
   setMinValue: 'setMinValue';
   setToggleMaxValue: 'setToggleMaxValue';
@@ -146,9 +141,6 @@ type ResponsiveBarChartAction = {
   setAxisLeftTickPadding: 'setAxisLeftTickPadding';
   setAxisLeftTickRotation: 'setAxisLeftTickRotation';
 
-  /** interactivity */
-  setIsInteractive: 'setIsInteractive';
-
   /** legends */
   setEnableLegends: 'setEnableLegends';
   setLegendsAnchor: 'setLegendsAnchor';
@@ -186,7 +178,6 @@ type ResponsiveBarChartDispatch =
   | {
       type:
         | ResponsiveBarChartAction['setReverse']
-        | ResponsiveBarChartAction['setToggleIndexScale']
         | ResponsiveBarChartAction['setToggleMinValue']
         | ResponsiveBarChartAction['setToggleMaxValue']
         | ResponsiveBarChartAction['setEnableLabels']
@@ -196,7 +187,6 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setEnableAxisRight']
         | ResponsiveBarChartAction['setEnableAxisBottom']
         | ResponsiveBarChartAction['setEnableAxisLeft']
-        | ResponsiveBarChartAction['setIsInteractive']
         | ResponsiveBarChartAction['setEnableLegends']
         | ResponsiveBarChartAction['setEnableLegendsJustify']
         | ResponsiveBarChartAction['setEnableFillPatterns']
