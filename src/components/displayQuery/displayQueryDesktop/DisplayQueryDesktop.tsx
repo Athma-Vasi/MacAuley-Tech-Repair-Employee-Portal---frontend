@@ -97,7 +97,14 @@ function DisplayQueryDesktop({
   } = displayQueryDesktopState;
   const {
     globalDispatch,
-    globalState: { height, width, padding, rowGap, themeObject },
+    globalState: {
+      height,
+      width,
+      padding,
+      rowGap,
+      themeObject,
+      isPrefersReducedMotion,
+    },
   } = useGlobalState();
 
   const {
@@ -839,6 +846,16 @@ function DisplayQueryDesktop({
                         </Tooltip>
                       ) : null;
 
+                    const viewProfileButtonLabel = isPrefersReducedMotion ? (
+                      <TbUserSearch />
+                    ) : viewProfileButtonLoadingStates.get(
+                        queryResponseObjWithAddedFields._id
+                      ) ? (
+                      <Loader size={14} />
+                    ) : (
+                      <TbUserSearch />
+                    );
+
                     const [
                       createdUpdateRequestStatusButton,
                       createdViewProfileButton,
@@ -875,13 +892,7 @@ function DisplayQueryDesktop({
                       },
                       // view profile button
                       {
-                        buttonLabel: viewProfileButtonLoadingStates.get(
-                          queryResponseObjWithAddedFields._id
-                        ) ? (
-                          <Loader size={14} />
-                        ) : (
-                          <TbUserSearch />
-                        ),
+                        buttonLabel: viewProfileButtonLabel,
                         semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
                         semanticName: 'View profile',
                         buttonOnClick: () => {
