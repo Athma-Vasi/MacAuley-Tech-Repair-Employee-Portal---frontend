@@ -199,7 +199,8 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setIsInteractive']
         | ResponsiveBarChartAction['setEnableLegends']
         | ResponsiveBarChartAction['setEnableLegendsJustify']
-        | ResponsiveBarChartAction['setEnableFillPatterns'];
+        | ResponsiveBarChartAction['setEnableFillPatterns']
+        | ResponsiveBarChartAction['setAnimate'];
 
       payload: boolean;
     }
@@ -225,6 +226,10 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setMarginRight']
         | ResponsiveBarChartAction['setMarginBottom']
         | ResponsiveBarChartAction['setMarginLeft']
+        | ResponsiveBarChartAction['setLabelSkipWidth']
+        | ResponsiveBarChartAction['setLabelSkipHeight']
+        | ResponsiveBarChartAction['setBorderRadius']
+        | ResponsiveBarChartAction['setBorderWidth']
         | ResponsiveBarChartAction['setLegendsTranslateX']
         | ResponsiveBarChartAction['setLegendsTranslateY']
         | ResponsiveBarChartAction['setLegendsItemWidth']
@@ -237,7 +242,6 @@ type ResponsiveBarChartDispatch =
     }
   | {
       type:
-        | ResponsiveBarChartAction['setColors']
         | ResponsiveBarChartAction['setBorderColor']
         | ResponsiveBarChartAction['setLabelTextColor']
         | ResponsiveBarChartAction['setItemTextColor'];
@@ -249,17 +253,20 @@ type ResponsiveBarChartDispatch =
       payload: FillPatternObject[];
     }
   | {
-      type:
-        | ResponsiveBarChartAction['setLegendsAnchor']
-        | ResponsiveBarChartAction['setLegendsDirection']
-        | ResponsiveBarChartAction['setLegendsItemDirection']
-        | ResponsiveBarChartAction['setSymbolShape'];
-
-      payload:
-        | LegendAnchor
-        | LegendDirection
-        | LegendItemDirection
-        | LegendSymbolShape;
+      type: ResponsiveBarChartAction['setSymbolShape'];
+      payload: LegendSymbolShape;
+    }
+  | {
+      type: ResponsiveBarChartAction['setLegendsAnchor'];
+      payload: LegendAnchor;
+    }
+  | {
+      type: ResponsiveBarChartAction['setLegendsDirection'];
+      payload: LegendDirection;
+    }
+  | {
+      type: ResponsiveBarChartAction['setLegendsItemDirection'];
+      payload: LegendItemDirection;
     }
   | {
       type: ResponsiveBarChartAction['setMotionConfig'];
@@ -270,4 +277,8 @@ type ResponsiveBarChartDispatch =
       payload: NivoColorScheme;
     };
 
-export type { ResponsiveBarChartDispatch, ResponsiveBarChartState };
+export type {
+  ResponsiveBarChartAction,
+  ResponsiveBarChartDispatch,
+  ResponsiveBarChartState,
+};
