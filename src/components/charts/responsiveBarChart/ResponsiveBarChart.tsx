@@ -1,4 +1,99 @@
+import { useReducer } from 'react';
+import {
+  initialResponsiveBarChartState,
+  responsiveBarChartReducer,
+} from './state';
+
 function ResponsiveBarChart() {
+  const [responsiveBarChartState, responsiveBarChartDispatch] = useReducer(
+    responsiveBarChartReducer,
+    initialResponsiveBarChartState
+  );
+
+  const {
+    /** base */
+    groupMode, // default: stacked
+    layout, // default: horizontal
+    valueScale, // default: linear
+    reverse, // default: false
+    toggleIndexScale, // default: true
+    // scale
+    toggleMinValue, // default: false ? minValue is undefined
+    minValue, // default: -1000 step: 1
+    toggleMaxValue, // default: false ? maxValue is undefined
+    maxValue, // default: 1000 step: 1
+    padding, // 0.1 - 0.9 default: 0.1 step: 0.1
+    innerPadding, // 0 - 10 default: 0 step: 1
+
+    // base -> margin
+    marginTop, // 0px - 200px default: 60 step: 1
+    marginRight, // 0px - 200px default: 60 step: 1
+    marginBottom, // 0px - 200px default: 60 step: 1
+    marginLeft, // 0px - 200px default: 60 step: 1
+
+    /** style */
+    colors, // default: nivo
+    borderRadius, // 0px - 36px default: 0 step: 1
+    borderWidth, // 0px - 20px default: 0 step: 1
+    borderColor, // default: #ffffff
+    fillPatterns,
+    enableFillPatterns, // default: false
+
+    /** labels */
+    enableLabels, // default: true
+    labelSkipWidth, // 0 - 36 default: 0 step: 1
+    labelSkipHeight, // 0 - 36 default: 0 step: 1
+    labelTextColor, // default: #ffffff
+
+    /** grid and axes */
+    enableGridX, // default: false
+    enableGridY, // default: true
+    // axisTop
+    enableAxisTop, // default: false ? null
+    axisTopTickSize, // 0 - 20 default: 5 step: 1
+    axisTopTickPadding, // 0 - 20 default: 5 step: 1
+    axisTopTickRotation, // -90 - 90 default: 0 step: 1
+    // axisRight
+    enableAxisRight, // default: false ? null
+    axisRightTickSize, // 0 - 20 default: 5 step: 1
+    axisRightTickPadding, // 0 - 20 default: 5 step: 1
+    axisRightTickRotation, // -90 - 90 default: 0 step: 1
+    // axisBottom
+    enableAxisBottom, // default: true
+    axisBottomTickSize, // 0 - 20 default: 5 step: 1
+    axisBottomTickPadding, // 0 - 20 default: 5 step: 1
+    axisBottomTickRotation, // -90 - 90 default: 0 step: 1
+    // axisLeft
+    enableAxisLeft, // default: false ? null
+    axisLeftTickSize, // 0 - 20 default: 5 step: 1
+    axisLeftTickPadding, // 0 - 20 default: 5 step: 1
+    axisLeftTickRotation, // -90 - 90 default: 0 step: 1
+
+    /** interactivity */
+    isInteractive, // default: true
+
+    /** legends */
+    enableLegends, // default: false
+    legendsAnchor, // default: bottom-right
+    legendsDirection, // default: column
+    enableLegendsJustify, // default: false
+    legendsTranslateX, // -200px - 200px default: 0 step: 1
+    legendsTranslateY, // -200px - 200px default: 0 step: 1
+    legendsItemWidth, // 10px - 200px default: 60 step: 1
+    legendsItemHeight, // 10px - 200px default: 20 step: 1
+    legendsItemsSpacing, // 0px - 60px default: 2 step: 1
+    legendsItemDirection, // default: left-to-right
+
+    itemTextColor, // default: #000000
+    itemOpacity, // 0 - 1 default: 1 step: 0.05
+    symbolSize, // 2px - 60px default: 12 step: 1
+    symbolShape, // default: circle
+
+    /** motion */
+    animate, // default: true
+    motionConfig, // default: default
+  } = responsiveBarChartState;
+
   return <></>;
 }
 

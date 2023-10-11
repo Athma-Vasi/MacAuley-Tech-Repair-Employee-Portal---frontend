@@ -15,11 +15,10 @@ import { returnThemeColors, splitCamelCase } from '../../../utils';
 import { returnProfileInfoObject } from '../../portalHeader/userInfo/utils';
 
 type ProfileInfoProps = {
-  isLoading: boolean;
-  employeeDocument: QueryResponseData<UserDocument> | null;
+  employeeDocument: UserDocument | null;
 };
 
-function ProfileInfo({ employeeDocument, isLoading }: ProfileInfoProps) {
+function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
   const {
     globalState: { themeObject, width, padding, rowGap },
   } = useGlobalState();
@@ -84,6 +83,14 @@ function ProfileInfo({ employeeDocument, isLoading }: ProfileInfoProps) {
         const displayInputName = <Text>{inputName}</Text>;
         const displayValue = <Text>{inputValue}</Text>;
 
+        const rowBackgroundColorLight =
+          index % 2 === 0 ? '#f9f9f9' : 'transparent';
+        const rowBackgroundColorDark = 'transparent';
+        const rowBackgroundColor =
+          themeObject.colorScheme === 'dark'
+            ? rowBackgroundColorDark
+            : rowBackgroundColorLight;
+
         const displayPageSection = (
           <Grid
             columns={10}
@@ -92,8 +99,12 @@ function ProfileInfo({ employeeDocument, isLoading }: ProfileInfoProps) {
             gutter={rowGap}
             w="100%"
           >
-            <Grid.Col span={4}>{displayInputName}</Grid.Col>
-            <Grid.Col span={6}>{displayValue}</Grid.Col>
+            <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
+              {displayInputName}
+            </Grid.Col>
+            <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
+              {displayValue}
+            </Grid.Col>
           </Grid>
         );
 
@@ -111,26 +122,8 @@ function ProfileInfo({ employeeDocument, isLoading }: ProfileInfoProps) {
     }
   );
 
-  const displayLoadingOverlay = (
-    <LoadingOverlay
-      visible={isLoading}
-      zIndex={500}
-      overlayBlur={9}
-      // overlayOpacity={1}
-      //   bg="transparent"
-      radius={4}
-      loader={
-        <Stack align="center">
-          <Text>Fetching employee profile information ...</Text>
-          <Loader />
-        </Stack>
-      }
-    />
-  );
-
   const displayProfileInfoComponent = (
     <Stack w="100%" p={padding} style={{ position: 'relative' }}>
-      {displayLoadingOverlay}
       {displayProfilePic}
       {displayProfileStack}
     </Stack>

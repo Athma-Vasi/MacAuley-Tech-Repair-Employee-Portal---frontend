@@ -66,13 +66,7 @@ type DisplayQueryDesktopState = {
   // for repair notes docs only
   editRepairNoteInput: EditRepairNoteInput;
 
-  employeeIdToViewProfile: string;
-  employeeDocument: QueryResponseData<UserDocument> | null;
-  /** loading states for each view profile button  */
-  viewProfileButtonLoadingStates: Map<string, boolean>;
-
-  isDisplayQueryDesktopLoading: boolean;
-  displayQueryDesktopLoadingMessage: string;
+  employeeDocument: UserDocument | null;
 };
 
 type DisplayQueryDesktopAction = {
@@ -84,12 +78,7 @@ type DisplayQueryDesktopAction = {
 
   setEditRepairNoteInput: 'setEditRepairNoteInput';
 
-  setEmployeeIdToViewProfile: 'setEmployeeIdToViewProfile';
   setEmployeeDocument: 'setEmployeeDocument';
-  setViewProfileButtonLoadingState: 'setViewProfileButtonLoadingState';
-
-  setIsDisplayQueryDesktopLoading: 'setIsDisplayQueryDesktopLoading';
-  setDisplayQueryDesktopLoadingMessage: 'setDisplayQueryDesktopLoadingMessage';
 };
 
 type DisplayQueryDesktopReducer = (
@@ -101,9 +90,8 @@ type DisplayQueryDesktopDispatch =
   | {
       type:
         | DisplayQueryDesktopAction['setFieldToSortBy']
-        | DisplayQueryDesktopAction['setCurrentDocumentId']
-        | DisplayQueryDesktopAction['setEmployeeIdToViewProfile']
-        | DisplayQueryDesktopAction['setDisplayQueryDesktopLoadingMessage'];
+        | DisplayQueryDesktopAction['setCurrentDocumentId'];
+
       payload: string;
     }
   | {
@@ -115,24 +103,12 @@ type DisplayQueryDesktopDispatch =
       payload: RequestStatus;
     }
   | {
-      type: DisplayQueryDesktopAction['setViewProfileButtonLoadingState'];
-      payload: {
-        documentId: string;
-        kind: 'set' | 'delete';
-        value: boolean;
-      };
-    }
-  | {
       type: DisplayQueryDesktopAction['setEditRepairNoteInput'];
       payload: EditRepairNoteInput;
     }
   | {
       type: DisplayQueryDesktopAction['setEmployeeDocument'];
-      payload: QueryResponseData<UserDocument> | null;
-    }
-  | {
-      type: DisplayQueryDesktopAction['setIsDisplayQueryDesktopLoading'];
-      payload: boolean;
+      payload: UserDocument | null;
     };
 
 export type {

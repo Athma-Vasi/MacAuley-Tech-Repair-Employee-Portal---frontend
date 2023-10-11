@@ -21,12 +21,7 @@ const initialDisplayQueryDesktopState: DisplayQueryDesktopState = {
     repairStatus: 'In progress',
   },
 
-  employeeIdToViewProfile: '',
   employeeDocument: null,
-  viewProfileButtonLoadingStates: new Map<string, boolean>(),
-
-  isDisplayQueryDesktopLoading: false,
-  displayQueryDesktopLoadingMessage: '',
 };
 
 const displayQueryDesktopAction: DisplayQueryDesktopAction = {
@@ -39,12 +34,7 @@ const displayQueryDesktopAction: DisplayQueryDesktopAction = {
   // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput',
 
-  setEmployeeIdToViewProfile: 'setEmployeeIdToViewProfile',
   setEmployeeDocument: 'setEmployeeDocument',
-  setViewProfileButtonLoadingState: 'setViewProfileButtonLoadingState',
-
-  setIsDisplayQueryDesktopLoading: 'setIsDisplayQueryDesktopLoading',
-  setDisplayQueryDesktopLoadingMessage: 'setDisplayQueryDesktopLoadingMessage',
 };
 
 function displayQueryDesktopReducer(
@@ -81,52 +71,10 @@ function displayQueryDesktopReducer(
         editRepairNoteInput: action.payload,
       };
 
-    case displayQueryDesktopAction.setEmployeeIdToViewProfile:
-      return {
-        ...state,
-        employeeIdToViewProfile: action.payload,
-      };
     case displayQueryDesktopAction.setEmployeeDocument:
       return {
         ...state,
         employeeDocument: action.payload,
-      };
-    case displayQueryDesktopAction.setViewProfileButtonLoadingState: {
-      const { documentId, kind, value } = action.payload;
-
-      switch (kind) {
-        case 'set': {
-          return {
-            ...state,
-            viewProfileButtonLoadingStates: new Map(
-              state.viewProfileButtonLoadingStates
-            ).set(documentId, value),
-          };
-        }
-        case 'delete': {
-          const newViewProfileButtonLoadingStates = new Map(
-            state.viewProfileButtonLoadingStates
-          );
-          newViewProfileButtonLoadingStates.delete(documentId);
-          return {
-            ...state,
-            viewProfileButtonLoadingStates: newViewProfileButtonLoadingStates,
-          };
-        }
-        default:
-          return state;
-      }
-    }
-
-    case displayQueryDesktopAction.setIsDisplayQueryDesktopLoading:
-      return {
-        ...state,
-        isDisplayQueryDesktopLoading: action.payload,
-      };
-    case displayQueryDesktopAction.setDisplayQueryDesktopLoadingMessage:
-      return {
-        ...state,
-        displayQueryDesktopLoadingMessage: action.payload,
       };
 
     default:

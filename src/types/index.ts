@@ -164,6 +164,7 @@ type ActionsResourceRequestServerResponse = {
     surveyData: SurveyBuilderDocument[];
     eventData: EventCreatorDocument[];
   };
+  employeeData: UserDocument[];
 };
 
 type ResourceRoutePaths = {

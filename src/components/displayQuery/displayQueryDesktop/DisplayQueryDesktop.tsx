@@ -86,14 +86,10 @@ function DisplayQueryDesktop({
   const {
     currentDocumentId,
     currentRequestStatus,
-    displayQueryDesktopLoadingMessage,
     editRepairNoteInput,
     employeeDocument,
-    employeeIdToViewProfile,
     fieldToSortBy,
-    isDisplayQueryDesktopLoading,
     sortDirection,
-    viewProfileButtonLoadingStates,
   } = displayQueryDesktopState;
   const {
     globalDispatch,
@@ -104,6 +100,7 @@ function DisplayQueryDesktop({
       rowGap,
       themeObject,
       isPrefersReducedMotion,
+      actionsDocuments,
     },
   } = useGlobalState();
 
@@ -122,117 +119,6 @@ function DisplayQueryDesktop({
       close: closeUpdateRequestStatusModal,
     },
   ] = useDisclosure(false);
-
-  useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
-    let isMounted = true;
-    const controller = new AbortController();
-
-    async function fetchEmployeeDocument() {
-      displayQueryDesktopDispatch({
-        type: displayQueryDesktopAction.setIsDisplayQueryDesktopLoading,
-        payload: true,
-      });
-      displayQueryDesktopDispatch({
-        type: displayQueryDesktopAction.setDisplayQueryDesktopLoadingMessage,
-        payload: 'Fetching employee document',
-      });
-
-      const url: URL = urlBuilder({ path: `user/${employeeIdToViewProfile}` });
-
-      const request: Request = new Request(url.toString(), {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        signal: controller.signal,
-      });
-
-      try {
-        const response: Response = await fetch(request);
-        const data: ResourceRequestServerResponse<UserDocument> =
-          await response.json();
-
-        if (!isMounted) {
-          return;
-        }
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
-
-        const { resourceData } = data;
-        const [employeeDocument] = resourceData;
-        displayQueryDesktopDispatch({
-          type: displayQueryDesktopAction.setEmployeeDocument,
-          payload: employeeDocument,
-        });
-      } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
-          return;
-        }
-
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
-            : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
-
-        globalDispatch({
-          type: globalAction.setErrorState,
-          payload: {
-            isError: true,
-            errorMessage,
-            errorCallback: () => {
-              navigate('/');
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: '',
-                  errorCallback: () => {},
-                },
-              });
-            },
-          },
-        });
-
-        showBoundary(error);
-      } finally {
-        displayQueryDesktopDispatch({
-          type: displayQueryDesktopAction.setIsDisplayQueryDesktopLoading,
-          payload: false,
-        });
-        displayQueryDesktopDispatch({
-          type: displayQueryDesktopAction.setDisplayQueryDesktopLoadingMessage,
-          payload: '',
-        });
-        displayQueryDesktopDispatch({
-          type: displayQueryDesktopAction.setViewProfileButtonLoadingState,
-          payload: {
-            documentId: currentDocumentId,
-            kind: 'delete',
-            value: true,
-          },
-        });
-      }
-    }
-
-    if (employeeIdToViewProfile) {
-      console.log('fetching employee document');
-      fetchEmployeeDocument();
-    }
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [isAccessTokenExpired, employeeIdToViewProfile]);
 
   // for repair note fields update only
   const [
@@ -846,16 +732,6 @@ function DisplayQueryDesktop({
                         </Tooltip>
                       ) : null;
 
-                    const viewProfileButtonLabel = isPrefersReducedMotion ? (
-                      <TbUserSearch />
-                    ) : viewProfileButtonLoadingStates.get(
-                        queryResponseObjWithAddedFields._id
-                      ) ? (
-                      <Loader size={14} />
-                    ) : (
-                      <TbUserSearch />
-                    );
-
                     const [
                       createdUpdateRequestStatusButton,
                       createdViewProfileButton,
@@ -892,39 +768,18 @@ function DisplayQueryDesktop({
                       },
                       // view profile button
                       {
-                        buttonLabel: viewProfileButtonLabel,
+                        buttonLabel: <TbUserSearch />,
                         semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
                         semanticName: 'View profile',
                         buttonOnClick: () => {
                           displayQueryDesktopDispatch({
-                            type: displayQueryDesktopAction.setEmployeeIdToViewProfile,
+                            type: displayQueryDesktopAction.setEmployeeDocument,
                             payload:
-                              queryResponseObjWithAddedFields.userId ??
-                              queryResponseObjWithAddedFields.benefitUserId,
+                              actionsDocuments?.employeeData?.get(
+                                queryResponseObjWithAddedFields.userId ??
+                                  queryResponseObjWithAddedFields.benefitUserId
+                              ) ?? ({} as UserDocument),
                           });
-
-                          displayQueryDesktopDispatch({
-                            type: displayQueryDesktopAction.setCurrentDocumentId,
-                            payload: queryResponseObjWithAddedFields._id,
-                          });
-
-                          displayQueryDesktopDispatch({
-                            type: displayQueryDesktopAction.setViewProfileButtonLoadingState,
-                            payload: {
-                              documentId: queryResponseObjWithAddedFields._id,
-                              kind: 'set',
-                              value: true,
-                            },
-                          });
-
-                          const { isAccessTokenExpired } =
-                            returnIsAccessTokenExpired(accessToken);
-                          if (isAccessTokenExpired) {
-                            authDispatch({
-                              type: authAction.setIsAccessTokenExpired,
-                              payload: true,
-                            });
-                          }
 
                           openProfileInfoModal();
                         },
@@ -1187,24 +1042,12 @@ function DisplayQueryDesktop({
       opened={openedProfileInfoModal}
       onClose={() => {
         closeProfileInfoModal();
-
-        // displayQueryDesktopDispatch({
-        //   type: displayQueryDesktopAction.setEmployeeIdToViewProfile,
-        //   payload: '',
-        // });
-        // displayQueryDesktopDispatch({
-        //   type: displayQueryDesktopAction.setEmployeeDocument,
-        //   payload: null,
-        // });
       }}
       size={modalSize}
       title={<Text size="xl">Profile information</Text>}
       scrollAreaComponent={ScrollArea.Autosize}
     >
-      <ProfileInfo
-        employeeDocument={employeeDocument}
-        isLoading={isDisplayQueryDesktopLoading}
-      />
+      <ProfileInfo employeeDocument={employeeDocument} />
     </Modal>
   );
 

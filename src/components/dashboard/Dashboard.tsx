@@ -46,7 +46,10 @@ import {
   returnAccessibleImageElements,
   returnScrollableDocumentInfo,
 } from '../../jsxCreators';
-import { ActionsResourceRequestServerResponse } from '../../types';
+import {
+  ActionsResourceRequestServerResponse,
+  UserDocument,
+} from '../../types';
 import {
   formatDate,
   logState,
@@ -159,11 +162,18 @@ function Dashboard() {
         }
 
         const { repairNoteData, companyData, generalData, outreachData } = data;
+
+        const employeeData = new Map<string, UserDocument>();
+        data.employeeData.forEach((employee: UserDocument) => {
+          employeeData.set(employee._id, employee);
+        });
+
         const actionsDocuments = {
           repairNoteData,
           companyData,
           generalData,
           outreachData,
+          employeeData,
         };
         globalDispatch({
           type: globalAction.setActionsDocuments,

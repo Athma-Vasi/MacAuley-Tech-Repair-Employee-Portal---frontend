@@ -115,6 +115,7 @@ type ActionsDocuments = {
     surveyData: SurveyBuilderDocument[];
     eventData: EventCreatorDocument[];
   };
+  employeeData: Map<string, UserDocument>;
 };
 
 type GlobalState = {

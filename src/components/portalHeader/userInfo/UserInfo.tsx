@@ -101,6 +101,14 @@ function UserInfo({ closeUserInfoModal }: UserInfoProps) {
         const displayInputName = <Text>{inputName}</Text>;
         const displayValue = <Text>{inputValue}</Text>;
 
+        const rowBackgroundColorLight =
+          index % 2 === 0 ? '#f9f9f9' : 'transparent';
+        const rowBackgroundColorDark = 'transparent';
+        const rowBackgroundColor =
+          themeObject.colorScheme === 'dark'
+            ? rowBackgroundColorDark
+            : rowBackgroundColorLight;
+
         const displayPageSection = (
           <Grid
             columns={10}
@@ -109,8 +117,12 @@ function UserInfo({ closeUserInfoModal }: UserInfoProps) {
             gutter={rowGap}
             w="100%"
           >
-            <Grid.Col span={4}>{displayInputName}</Grid.Col>
-            <Grid.Col span={6}>{displayValue}</Grid.Col>
+            <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
+              {displayInputName}
+            </Grid.Col>
+            <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
+              {displayValue}
+            </Grid.Col>
           </Grid>
         );
 
