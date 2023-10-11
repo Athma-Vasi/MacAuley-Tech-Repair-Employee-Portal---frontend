@@ -94,10 +94,8 @@ type ResponsiveBarChartState = {
   legendItemsSpacing: number; // 0px - 60px default: 2 step: 1
   legendItemDirection: LegendItemDirection; // default: left-to-right
 
-  legendItemTextColor: string; // default: #000000
   legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
   legendSymbolSize: number; // 2px - 60px default: 12 step: 1
-  legendSymbolShape: LegendSymbolShape; // default: circle
 
   /** motion */
   enableAnimate: boolean; // default: true
@@ -188,10 +186,8 @@ type ResponsiveBarChartAction = {
   setLegendItemHeight: 'setLegendItemHeight';
   setLegendItemsSpacing: 'setLegendItemsSpacing';
   setLegendItemDirection: 'setLegendItemDirection';
-  setLegendItemTextColor: 'setLegendItemTextColor';
   setLegendItemOpacity: 'setLegendItemOpacity';
   setLegendSymbolSize: 'setLegendSymbolSize';
-  setLegendSymbolShape: 'setLegendSymbolShape';
 
   /** motion */
   setEnableAnimate: 'setEnableAnimate';
@@ -285,18 +281,13 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setAxisBottomLegend']
         | ResponsiveBarChartAction['setAxisLeftLegend']
         | ResponsiveBarChartAction['setChartBorderColor']
-        | ResponsiveBarChartAction['setLabelTextColor']
-        | ResponsiveBarChartAction['setLegendItemTextColor'];
+        | ResponsiveBarChartAction['setLabelTextColor'];
 
       payload: string;
     }
   | {
       type: ResponsiveBarChartAction['setFillPatterns'];
       payload: FillPatternObject[];
-    }
-  | {
-      type: ResponsiveBarChartAction['setLegendSymbolShape'];
-      payload: LegendSymbolShape;
     }
   | {
       type: ResponsiveBarChartAction['setLegendAnchor'];

@@ -86,10 +86,8 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   legendItemHeight: 20,
   legendItemsSpacing: 2,
   legendItemDirection: 'left-to-right',
-  legendItemTextColor: '#000000',
   legendItemOpacity: 1,
   legendSymbolSize: 12,
-  legendSymbolShape: 'circle',
 
   /** motion */
   enableAnimate: true,
@@ -180,10 +178,8 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setLegendItemHeight: 'setLegendItemHeight',
   setLegendItemsSpacing: 'setLegendItemsSpacing',
   setLegendItemDirection: 'setLegendItemDirection',
-  setLegendItemTextColor: 'setLegendItemTextColor',
   setLegendItemOpacity: 'setLegendItemOpacity',
   setLegendSymbolSize: 'setLegendSymbolSize',
-  setLegendSymbolShape: 'setLegendSymbolShape',
 
   /** motion */
   setEnableAnimate: 'setEnableAnimate',
@@ -543,11 +539,6 @@ function responsiveBarChartReducer(
         ...state,
         legendItemDirection: action.payload,
       };
-    case responsiveBarChartAction.setLegendItemTextColor:
-      return {
-        ...state,
-        legendItemTextColor: action.payload,
-      };
     case responsiveBarChartAction.setLegendItemOpacity:
       return {
         ...state,
@@ -557,11 +548,6 @@ function responsiveBarChartReducer(
       return {
         ...state,
         legendSymbolSize: action.payload,
-      };
-    case responsiveBarChartAction.setLegendSymbolShape:
-      return {
-        ...state,
-        legendSymbolShape: action.payload,
       };
     case responsiveBarChartAction.setEnableAnimate:
       return {

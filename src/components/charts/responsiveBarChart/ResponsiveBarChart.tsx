@@ -162,10 +162,8 @@ function ResponsiveBarChart() {
     legendItemsSpacing, // 0px - 60px default: 2 step: 1
     legendItemDirection, // default: left-to-right
 
-    legendItemTextColor, // default: #000000
     legendItemOpacity, // 0 - 1 default: 1 step: 0.05
     legendSymbolSize, // 2px - 60px default: 12 step: 1
-    legendSymbolShape, // default: circle
 
     /** motion */
     enableAnimate, // default: true
@@ -1722,22 +1720,6 @@ function ResponsiveBarChart() {
       width: sliderWidth,
     };
 
-  const createdLegendItemTextColorInput = (
-    <ColorInput
-      color={legendItemTextColor}
-      description="Define legend item text color."
-      disabled={!enableLegend}
-      label="Legend item text color"
-      onChange={(color: string) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setLegendItemTextColor,
-          payload: color,
-        });
-      }}
-      width={sliderWidth}
-    />
-  );
-
   const legendItemOpacitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'legend item opacity',
@@ -1779,21 +1761,6 @@ function ResponsiveBarChart() {
       sliderDefaultValue: 16,
       step: 1,
       value: legendSymbolSize,
-      width: sliderWidth,
-    };
-
-  const legendSymbolShapeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_SYMBOL_SHAPE_DATA,
-      description: 'Define legend symbol shape.',
-      disabled: !enableLegend,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setLegendSymbolShape,
-          payload: event.currentTarget.value as LegendSymbolShape,
-        });
-      },
-      value: legendSymbolShape,
       width: sliderWidth,
     };
 
@@ -1971,12 +1938,10 @@ function ResponsiveBarChart() {
     createdLegendAnchorSelectInput,
     createdLegendDirectionSelectInput,
     createdLegendItemDirectionSelectInput,
-    createdLegendSymbolShapeSelectInput,
   ] = returnAccessibleSelectInputElements([
     legendAnchorSelectInputCreatorInfo,
     legendDirectionSelectInputCreatorInfo,
     legendItemDirectionSelectInputCreatorInfo,
-    legendSymbolShapeSelectInputCreatorInfo,
   ]);
 
   /** motion */
@@ -2567,18 +2532,6 @@ function ResponsiveBarChart() {
     </Stack>
   );
 
-  const displayGridAndAxesSection = (
-    <Stack w="100%">
-      {displayGridHeading}
-      {displayToggleGridXSwitchInput}
-      {displayToggleGridYSwitchInput}
-      {displayAxisTopSection}
-      {displayAxisRightSection}
-      {displayAxisBottomSection}
-      {displayAxisLeftSection}
-    </Stack>
-  );
-
   // display legend
   const displayLegendHeading = (
     <Group
@@ -2676,14 +2629,6 @@ function ResponsiveBarChart() {
     />
   );
 
-  const displayLegendItemTextColorInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdLegendItemTextColorInput}
-      label="Legend item text color"
-      value={legendItemTextColor}
-    />
-  );
-
   const displayLegendItemOpacitySliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendItemOpacitySliderInput}
@@ -2700,14 +2645,6 @@ function ResponsiveBarChart() {
     />
   );
 
-  const displayLegendSymbolShapeSelectInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdLegendSymbolShapeSelectInput}
-      label="Legend symbol shape"
-      value={legendSymbolShape}
-    />
-  );
-
   const displayLegendSection = (
     <Stack w="100%">
       {displayLegendHeading}
@@ -2721,10 +2658,8 @@ function ResponsiveBarChart() {
       {displayLegendItemHeightSliderInput}
       {displayLegendItemsSpacingSliderInput}
       {displayLegendItemDirectionSelectInput}
-      {displayLegendItemTextColorInput}
       {displayLegendItemOpacitySliderInput}
       {displayLegendSymbolSizeSliderInput}
-      {displayLegendSymbolShapeSelectInput}
     </Stack>
   );
 
@@ -2768,7 +2703,11 @@ function ResponsiveBarChart() {
       {displayMarginSection}
       {displayStyleSection}
       {displayLabelsSection}
-      {displayGridAndAxesSection}
+      {displayGridSection}
+      {displayAxisTopSection}
+      {displayAxisRightSection}
+      {displayAxisBottomSection}
+      {displayAxisLeftSection}
       {displayLegendSection}
       {displayMotionSection}
     </Stack>
