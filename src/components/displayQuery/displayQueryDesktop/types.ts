@@ -68,6 +68,8 @@ type DisplayQueryDesktopState = {
 
   employeeIdToViewProfile: string;
   employeeDocument: QueryResponseData<UserDocument> | null;
+  /** loading states for each view profile button  */
+  viewProfileButtonLoadingStates: Map<string, boolean>;
 
   isDisplayQueryDesktopLoading: boolean;
   displayQueryDesktopLoadingMessage: string;
@@ -80,11 +82,11 @@ type DisplayQueryDesktopAction = {
   setCurrentDocumentId: 'setCurrentDocumentId';
   setCurrentRequestStatus: 'setCurrentRequestStatus';
 
-  // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput';
 
   setEmployeeIdToViewProfile: 'setEmployeeIdToViewProfile';
   setEmployeeDocument: 'setEmployeeDocument';
+  setViewProfileButtonLoadingState: 'setViewProfileButtonLoadingState';
 
   setIsDisplayQueryDesktopLoading: 'setIsDisplayQueryDesktopLoading';
   setDisplayQueryDesktopLoadingMessage: 'setDisplayQueryDesktopLoadingMessage';
@@ -111,6 +113,14 @@ type DisplayQueryDesktopDispatch =
   | {
       type: DisplayQueryDesktopAction['setCurrentRequestStatus'];
       payload: RequestStatus;
+    }
+  | {
+      type: DisplayQueryDesktopAction['setViewProfileButtonLoadingState'];
+      payload: {
+        documentId: string;
+        kind: 'set' | 'delete';
+        value: boolean;
+      };
     }
   | {
       type: DisplayQueryDesktopAction['setEditRepairNoteInput'];

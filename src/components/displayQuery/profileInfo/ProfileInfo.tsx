@@ -115,8 +115,8 @@ function ProfileInfo({ employeeDocument, isLoading }: ProfileInfoProps) {
     <LoadingOverlay
       visible={isLoading}
       zIndex={500}
-      overlayBlur={9}
-      // overlayOpacity={0.99}
+      //   overlayBlur={9}
+      overlayOpacity={1}
       radius={4}
       loader={
         <Stack align="center">

@@ -93,6 +93,7 @@ function DisplayQueryDesktop({
     fieldToSortBy,
     isDisplayQueryDesktopLoading,
     sortDirection,
+    viewProfileButtonLoadingStates,
   } = displayQueryDesktopState;
   const {
     globalDispatch,
@@ -203,6 +204,14 @@ function DisplayQueryDesktop({
         displayQueryDesktopDispatch({
           type: displayQueryDesktopAction.setDisplayQueryDesktopLoadingMessage,
           payload: '',
+        });
+        displayQueryDesktopDispatch({
+          type: displayQueryDesktopAction.setViewProfileButtonLoadingState,
+          payload: {
+            documentId: currentDocumentId,
+            kind: 'delete',
+            value: true,
+          },
         });
       }
     }
@@ -866,7 +875,13 @@ function DisplayQueryDesktop({
                       },
                       // view profile button
                       {
-                        buttonLabel: <TbUserSearch />,
+                        buttonLabel: viewProfileButtonLoadingStates.get(
+                          queryResponseObjWithAddedFields._id
+                        ) ? (
+                          <Loader size={14} />
+                        ) : (
+                          <TbUserSearch />
+                        ),
                         semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
                         semanticName: 'View profile',
                         buttonOnClick: () => {
@@ -875,6 +890,20 @@ function DisplayQueryDesktop({
                             payload:
                               queryResponseObjWithAddedFields.userId ??
                               queryResponseObjWithAddedFields.benefitUserId,
+                          });
+
+                          displayQueryDesktopDispatch({
+                            type: displayQueryDesktopAction.setCurrentDocumentId,
+                            payload: queryResponseObjWithAddedFields._id,
+                          });
+
+                          displayQueryDesktopDispatch({
+                            type: displayQueryDesktopAction.setViewProfileButtonLoadingState,
+                            payload: {
+                              documentId: queryResponseObjWithAddedFields._id,
+                              kind: 'set',
+                              value: true,
+                            },
                           });
 
                           const { isAccessTokenExpired } =
@@ -1146,15 +1175,6 @@ function DisplayQueryDesktop({
       centered
       opened={openedProfileInfoModal}
       onClose={() => {
-        displayQueryDesktopDispatch({
-          type: displayQueryDesktopAction.setEmployeeIdToViewProfile,
-          payload: '',
-        });
-        displayQueryDesktopDispatch({
-          type: displayQueryDesktopAction.setEmployeeDocument,
-          payload: null,
-        });
-
         closeProfileInfoModal();
       }}
       size={modalSize}
