@@ -81,7 +81,25 @@ function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
         const { inputName, inputValue = '' } = pageObject;
 
         const displayInputName = <Text>{inputName}</Text>;
-        const displayValue = <Text>{inputValue}</Text>;
+        const displayValue =
+          inputName === 'Email' ? (
+            inputValue
+              .toString()
+              .split('@')
+              .map((str, index) => {
+                const displayStr = index === 0 ? str : `@${str}`;
+                return (
+                  <Text
+                    key={`email-${index}`}
+                    style={{ display: 'inline-block' }}
+                  >
+                    {displayStr}
+                  </Text>
+                );
+              })
+          ) : (
+            <Text>{inputValue}</Text>
+          );
 
         const rowBackgroundColorLight =
           index % 2 === 0 ? '#f9f9f9' : 'transparent';

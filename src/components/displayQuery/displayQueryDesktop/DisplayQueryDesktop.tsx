@@ -1039,6 +1039,7 @@ function DisplayQueryDesktop({
   const displayProfileInfoModal = (
     <Modal
       centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedProfileInfoModal}
       onClose={() => {
         closeProfileInfoModal();

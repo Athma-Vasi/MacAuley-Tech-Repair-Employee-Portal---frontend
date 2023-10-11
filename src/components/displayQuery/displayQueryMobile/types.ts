@@ -1,7 +1,11 @@
 import { type } from 'os';
 import { CSSProperties } from 'react';
 
-import { FileUploadDocument, RequestStatus } from '../../../types';
+import {
+  FileUploadDocument,
+  RequestStatus,
+  UserDocument,
+} from '../../../types';
 import { ComponentQueryData } from '../../queryBuilder';
 import { EditRepairNoteInput } from '../displayQueryDesktop/types';
 import { GroupedByQueryResponseData } from '../types';
@@ -44,6 +48,8 @@ type DisplayQueryMobileState = {
 
   // for repair notes docs only
   editRepairNoteInput: EditRepairNoteInput;
+
+  employeeDocument: UserDocument | null;
 };
 
 type DisplayQueryMobileAction = {
@@ -52,6 +58,8 @@ type DisplayQueryMobileAction = {
 
   // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput';
+
+  setEmployeeDocument: 'setEmployeeDocument';
 };
 
 type DisplayQueryMobileDispatch =
@@ -66,6 +74,10 @@ type DisplayQueryMobileDispatch =
   | {
       type: DisplayQueryMobileAction['setEditRepairNoteInput'];
       payload: EditRepairNoteInput;
+    }
+  | {
+      type: DisplayQueryMobileAction['setEmployeeDocument'];
+      payload: UserDocument | null;
     };
 
 export type {

@@ -7,6 +7,7 @@ import {
   Loader,
   LoadingOverlay,
   Modal,
+  ScrollArea,
   Spoiler,
   Stack,
   Text,
@@ -21,6 +22,7 @@ import {
   TbEdit,
   TbStatusChange,
   TbTrash,
+  TbUserSearch,
 } from 'react-icons/tb';
 
 import {
@@ -47,6 +49,8 @@ import {
   initialDisplayQueryMobileState,
 } from './state';
 import { DisplayQueryMobileProps } from './types';
+import { UserDocument } from '../../../types';
+import { ProfileInfo } from '../profileInfo/ProfileInfo';
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -68,11 +72,15 @@ function DisplayQueryMobile({
     displayQueryMobileReducer,
     initialDisplayQueryMobileState
   );
-  const { editRepairNoteInput, currentDocumentId, currentRequestStatus } =
-    displayQueryMobileState;
+  const {
+    editRepairNoteInput,
+    currentDocumentId,
+    currentRequestStatus,
+    employeeDocument,
+  } = displayQueryMobileState;
 
   const {
-    globalState: { width, padding, rowGap, themeObject },
+    globalState: { width, padding, rowGap, themeObject, actionsDocuments },
   } = useGlobalState();
   const {
     authState: { roles },
@@ -90,6 +98,11 @@ function DisplayQueryMobile({
   const [
     openedEditRepairNotesModal,
     { open: openEditRepairNotesModal, close: closeEditRepairNotesModal },
+  ] = useDisclosure(false);
+
+  const [
+    openedProfileInfoModal,
+    { open: openProfileInfoModal, close: closeProfileInfoModal },
   ] = useDisclosure(false);
 
   const [createdShowMoreButton, createdHideButton] =
@@ -134,6 +147,20 @@ function DisplayQueryMobile({
     }
   );
 
+  // determines if user is viewing anonymous requests section
+  const isAnonymousRequestsSectionInView = Array.from(
+    groupedByQueryResponseData
+  ).some(([_groupedByFieldKey, queryResponseObjArrays]) => {
+    return queryResponseObjArrays.some((queryResponseObj) => {
+      return (
+        Object.hasOwn(queryResponseObj, 'secureContactNumber') &&
+        Object.hasOwn(queryResponseObj, 'secureContactEmail') &&
+        Object.hasOwn(queryResponseObj, 'requestKind') &&
+        Object.hasOwn(queryResponseObj, 'requestDescription')
+      );
+    });
+  });
+
   // the component query data does not contain values of usernames
   const usernames =
     groupBySelection === 'username'
@@ -159,6 +186,7 @@ function DisplayQueryMobile({
           ? addFieldsToObject({
               object: queryObj,
               fieldValuesTuples: [
+                ['viewProfile', ''],
                 ['fileUploads', ''],
                 ['delete', ''],
               ],
@@ -167,13 +195,22 @@ function DisplayQueryMobile({
           ? addFieldsToObject({
               object: queryObj,
               fieldValuesTuples: [
+                ['viewProfile', ''],
                 ['edit', ''],
                 ['delete', ''],
               ],
             })
-          : addFieldsToObject({
+          : isAnonymousRequestsSectionInView
+          ? addFieldsToObject({
               object: queryObj,
               fieldValuesTuples: [['delete', '']],
+            })
+          : addFieldsToObject({
+              object: queryObj,
+              fieldValuesTuples: [
+                ['viewProfile', ''],
+                ['delete', ''],
+              ],
             });
 
       const displayKeyValues = Object.entries(
@@ -257,25 +294,86 @@ function DisplayQueryMobile({
             ])
           : [null];
 
-        const [createdUpdateRequestStatusButton] =
-          returnAccessibleButtonElements([
-            {
-              buttonLabel: <TbStatusChange />,
-              semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
-              semanticName: 'Update request status',
-              buttonOnClick: () => {
-                displayQueryMobileDispatch({
-                  type: displayQueryMobileAction.setCurrentDocumentId,
-                  payload: queryResponseObjWithAddedFields._id,
-                });
-                displayQueryMobileDispatch({
-                  type: displayQueryMobileAction.setCurrentRequestStatus,
-                  payload: queryResponseObjWithAddedFields.requestStatus,
-                });
-                openUpdateRequestStatusModal();
-              },
+        const [
+          createdUpdateRequestStatusButton,
+          createdViewProfileButton,
+          createdDeleteButton,
+          createdOpenFileUploadsModalButton,
+        ] = returnAccessibleButtonElements([
+          // update request status button
+          {
+            buttonLabel: <TbStatusChange />,
+            semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+            semanticName: 'Update request status',
+            buttonOnClick: () => {
+              displayQueryMobileDispatch({
+                type: displayQueryMobileAction.setCurrentDocumentId,
+                payload: queryResponseObjWithAddedFields._id,
+              });
+              displayQueryMobileDispatch({
+                type: displayQueryMobileAction.setCurrentRequestStatus,
+                payload: queryResponseObjWithAddedFields.requestStatus,
+              });
+              openUpdateRequestStatusModal();
             },
-          ]);
+          },
+          // view profile button
+          {
+            buttonLabel: <TbUserSearch />,
+            semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
+            semanticName: 'View profile',
+            buttonOnClick: () => {
+              displayQueryMobileDispatch({
+                type: displayQueryMobileAction.setEmployeeDocument,
+                payload:
+                  actionsDocuments?.employeeData?.get(
+                    queryResponseObjWithAddedFields.userId ??
+                      queryResponseObjWithAddedFields.benefitUserId
+                  ) ?? ({} as UserDocument),
+              });
+
+              openProfileInfoModal();
+            },
+          },
+          // delete button
+          {
+            buttonLabel: <TbTrash />,
+            semanticDescription: 'Delete this form',
+            semanticName: 'Delete',
+            buttonOnClick: () => {
+              deleteFormIdDispatch({
+                type: 'setDeleteFormId',
+                payload: queryObj._id,
+              });
+              deleteResourceKindDispatch({
+                type: 'setDeleteResourceKind',
+                payload: 'form',
+              });
+              openDeleteAcknowledge();
+            },
+          },
+          // open file uploads modal button
+          {
+            buttonLabel: 'Open',
+            buttonDisabled:
+              fileUploadsData[queryObjIdx]?.fileUploads.length < 1,
+            leftIcon: <IoMdOpen />,
+            semanticDescription:
+              'Open modal to display file uploads associated with this document',
+            semanticName: 'Open file uploads modal',
+            buttonOnClick: () => {
+              setFileUploadsForAFormDispatch({
+                type: 'setFileUploadsForAForm',
+                payload: fileUploadsData[queryObjIdx]?.fileUploads,
+              });
+              deleteFormIdDispatch({
+                type: 'setDeleteFormId',
+                payload: queryResponseObjWithAddedFields._id,
+              });
+              openFileUploads();
+            },
+          },
+        ]);
 
         // only managers can update request status
         const displayUpdateRequestStatusButton = roles.includes('Manager')
@@ -284,45 +382,8 @@ function DisplayQueryMobile({
             : null
           : null;
 
-        const [createdDeleteButton, createdOpenFileUploadsModalButton] =
-          returnAccessibleButtonElements([
-            {
-              buttonLabel: <TbTrash />,
-              semanticDescription: 'Delete this form',
-              semanticName: 'Delete',
-              buttonOnClick: () => {
-                deleteFormIdDispatch({
-                  type: 'setDeleteFormId',
-                  payload: queryObj._id,
-                });
-                deleteResourceKindDispatch({
-                  type: 'setDeleteResourceKind',
-                  payload: 'form',
-                });
-                openDeleteAcknowledge();
-              },
-            },
-            {
-              buttonLabel: 'Open',
-              buttonDisabled:
-                fileUploadsData[queryObjIdx]?.fileUploads.length < 1,
-              leftIcon: <IoMdOpen />,
-              semanticDescription:
-                'Open modal to display file uploads associated with this document',
-              semanticName: 'Open file uploads modal',
-              buttonOnClick: () => {
-                setFileUploadsForAFormDispatch({
-                  type: 'setFileUploadsForAForm',
-                  payload: fileUploadsData[queryObjIdx]?.fileUploads,
-                });
-                deleteFormIdDispatch({
-                  type: 'setDeleteFormId',
-                  payload: queryResponseObjWithAddedFields._id,
-                });
-                openFileUploads();
-              },
-            },
-          ]);
+        const displayViewProfileButton =
+          key === 'viewProfile' ? createdViewProfileButton : null;
         const displayCreatedDeleteButton =
           key === 'delete' ? createdDeleteButton : null;
         const displayEditRepairNoteButton =
@@ -360,6 +421,7 @@ function DisplayQueryMobile({
               pl={padding}
             >
               {displayUpdateRequestStatusButton}
+              {displayViewProfileButton}
               {displayCreatedOpenFileUploadsModalButton}
               {displayCreatedDeleteButton}
               {displayEditRepairNoteButton}
@@ -519,6 +581,22 @@ function DisplayQueryMobile({
     </Modal>
   );
 
+  const displayProfileInfoModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedProfileInfoModal}
+      onClose={() => {
+        closeProfileInfoModal();
+      }}
+      size={modalSize}
+      title={<Text size="xl">Profile information</Text>}
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
+      <ProfileInfo employeeDocument={employeeDocument} />
+    </Modal>
+  );
+
   const displayLoadingOverlay = (
     <LoadingOverlay
       visible={isLoading}
@@ -547,6 +625,7 @@ function DisplayQueryMobile({
       {displayLoadingOverlay}
       {displayUpdateRequestStatusModal}
       {displayEditRepairNoteModal}
+      {displayProfileInfoModal}
       {displayGroupedByQueryResponseData}
     </Flex>
   );

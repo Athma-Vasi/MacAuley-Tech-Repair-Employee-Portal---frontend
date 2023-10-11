@@ -17,6 +17,8 @@ const initialDisplayQueryMobileState: DisplayQueryMobileState = {
     finalRepairCostCurrency: 'CAD',
     repairStatus: 'In progress',
   },
+
+  employeeDocument: null,
 };
 
 const displayQueryMobileAction: DisplayQueryMobileAction = {
@@ -25,6 +27,8 @@ const displayQueryMobileAction: DisplayQueryMobileAction = {
 
   // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput',
+
+  setEmployeeDocument: 'setEmployeeDocument',
 };
 
 function displayQueryMobileReducer(
@@ -49,6 +53,13 @@ function displayQueryMobileReducer(
         ...state,
         editRepairNoteInput: action.payload,
       };
+
+    case displayQueryMobileAction.setEmployeeDocument:
+      return {
+        ...state,
+        employeeDocument: action.payload,
+      };
+
     default:
       return state;
   }
