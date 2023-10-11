@@ -10,7 +10,11 @@ import { authAction } from '../../context/authProvider';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import { logState, returnThemeColors } from '../../utils';
+import {
+  logState,
+  returnIsAccessTokenExpired,
+  returnThemeColors,
+} from '../../utils';
 import { DecodedToken } from '../login/types';
 import { TextWrapper } from '../wrappers';
 import { REFRESH_URL } from './constants';
@@ -138,12 +142,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   }, [pathname, isAccessTokenExpired]);
 
   useEffect(() => {
-    const decodedToken: DecodedToken = jwtDecode(accessToken);
-    const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
-      decodedToken;
-    // buffer of 10 seconds to refresh access token
-    const isAccessTokenExpired =
-      accessTokenExpiration * 1000 - 10000 < Date.now();
+    const { isAccessTokenExpired } = returnIsAccessTokenExpired(accessToken);
 
     if (!isAccessTokenExpired) {
       return;

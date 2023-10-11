@@ -46,7 +46,7 @@ import { ChartsGraphsControlsStacker } from '../../displayStatistics/responsiveP
 import { DecodedToken } from '../../login/types';
 import { NotificationModal } from '../../notificationModal';
 import { AccessibleNavLinkCreatorInfo } from '../../wrappers';
-import { ProfileInfo } from '../profileInfo/ProfileInfo';
+import { UserInfo } from '../userInfo/UserInfo';
 import {
   initialUserAvatarState,
   userAvatarAction,
@@ -81,8 +81,8 @@ function UserAvatar() {
   const [openedThemeModal, { open: openThemeModal, close: closeThemeModal }] =
     useDisclosure(false);
   const [
-    openedProfileInfoModal,
-    { open: openProfileInfoModal, close: closeProfileInfoModal },
+    openedUserInfoModal,
+    { open: openUserInfoModal, close: closeUserInfoModal },
   ] = useDisclosure(false);
 
   const {
@@ -623,7 +623,7 @@ function UserAvatar() {
         type: userAvatarAction.setIsProfileNavLinkActive,
         payload: !isProfileNavLinkActive,
       });
-      openProfileInfoModal();
+      openUserInfoModal();
     },
   };
 
@@ -668,6 +668,8 @@ function UserAvatar() {
   // modal section
   const displayThemeModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedThemeModal}
       onClose={() => {
         userAvatarDispatch({
@@ -689,21 +691,23 @@ function UserAvatar() {
     </Modal>
   );
 
-  const displayProfileInfoModal = (
+  const displayUserInfoModal = (
     <Modal
-      opened={openedProfileInfoModal}
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedUserInfoModal}
       onClose={() => {
         userAvatarDispatch({
           type: userAvatarAction.setIsProfileNavLinkActive,
           payload: false,
         });
-        closeProfileInfoModal();
+        closeUserInfoModal();
       }}
       size={modalSize}
-      title={<Text size="xl">Profile information</Text>}
       scrollAreaComponent={ScrollArea.Autosize}
+      title={<Text size="xl">Profile information</Text>}
     >
-      <ProfileInfo closeProfileInfoModal={closeProfileInfoModal} />
+      <UserInfo closeUserInfoModal={closeUserInfoModal} />
     </Modal>
   );
 
@@ -735,7 +739,7 @@ function UserAvatar() {
 
   const displaySubmitSuccessNotificationModal = (
     <NotificationModal
-      onCloseCallbacks={[closeProfileInfoModal]}
+      onCloseCallbacks={[closeUserInfoModal]}
       opened={isSubmitting}
       notificationProps={{
         loading: isSubmitting,
@@ -752,7 +756,7 @@ function UserAvatar() {
       {displaySubmitSuccessNotificationModal}
       {profilePopover}
       {displayThemeModal}
-      {displayProfileInfoModal}
+      {displayUserInfoModal}
     </Stack>
   );
 

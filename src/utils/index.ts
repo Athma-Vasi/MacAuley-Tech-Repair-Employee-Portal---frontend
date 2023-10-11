@@ -1,5 +1,7 @@
+import jwtDecode from 'jwt-decode';
 import { TbJetpack } from 'react-icons/tb';
 
+import { DecodedToken } from '../components/login/types';
 import { ColorsSwatches } from '../constants/data';
 import { ThemeObject } from '../context/globalProvider/types';
 import type { Country, PostalCode, QueryResponseData } from '../types';
@@ -1747,6 +1749,18 @@ function returnTimeRemaining(date: string) {
   }
 }
 
+function returnIsAccessTokenExpired(accessToken: string): {
+  isAccessTokenExpired: boolean;
+} {
+  const decodedToken: DecodedToken = jwtDecode(accessToken);
+  const { exp: accessTokenExpiration } = decodedToken;
+  // buffer of 10 seconds to refresh access token
+  const isAccessTokenExpired =
+    accessTokenExpiration * 1000 - 10000 < Date.now();
+
+  return { isAccessTokenExpired };
+}
+
 export {
   addFieldsToObject,
   commentIdsTreeOpsIterative,
@@ -1771,6 +1785,7 @@ export {
   returnGrammarValidationText,
   returnImageValidationText,
   returnIntegerValidationText,
+  returnIsAccessTokenExpired,
   returnNameValidationText,
   returnNoteTextValidationText,
   returnNumberAmountValidationText,

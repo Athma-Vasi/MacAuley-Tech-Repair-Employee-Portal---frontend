@@ -1,4 +1,4 @@
-import { UserDocument } from '../../../types';
+import { QueryResponseData, UserDocument } from '../../../types';
 import {
   formatDate,
   replaceLastCommaWithAnd,
@@ -16,7 +16,10 @@ type ProfileInfoObject = Record<
 >;
 
 function returnProfileInfoObject(
-  userDocument: Omit<UserDocument, '__v' | 'password'> | null
+  userDocument:
+    | Omit<UserDocument, '__v' | 'password'>
+    | QueryResponseData<UserDocument>
+    | null
 ): ProfileInfoObject {
   if (!userDocument) {
     return {};
@@ -176,4 +179,4 @@ function returnProfileInfoObject(
 }
 
 export { returnProfileInfoObject };
-export type { ProfileInfoObject, ProfileInfoField };
+export type { ProfileInfoField, ProfileInfoObject };

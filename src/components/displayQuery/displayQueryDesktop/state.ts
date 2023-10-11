@@ -20,6 +20,12 @@ const initialDisplayQueryDesktopState: DisplayQueryDesktopState = {
     finalRepairCostCurrency: 'CAD',
     repairStatus: 'In progress',
   },
+
+  employeeIdToViewProfile: '',
+  employeeDocument: null,
+
+  isDisplayQueryDesktopLoading: false,
+  displayQueryDesktopLoadingMessage: '',
 };
 
 const displayQueryDesktopAction: DisplayQueryDesktopAction = {
@@ -31,6 +37,12 @@ const displayQueryDesktopAction: DisplayQueryDesktopAction = {
 
   // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput',
+
+  setEmployeeIdToViewProfile: 'setEmployeeIdToViewProfile',
+  setEmployeeDocument: 'setEmployeeDocument',
+
+  setIsDisplayQueryDesktopLoading: 'setIsDisplayQueryDesktopLoading',
+  setDisplayQueryDesktopLoadingMessage: 'setDisplayQueryDesktopLoadingMessage',
 };
 
 function displayQueryDesktopReducer(
@@ -66,6 +78,29 @@ function displayQueryDesktopReducer(
         ...state,
         editRepairNoteInput: action.payload,
       };
+
+    case displayQueryDesktopAction.setEmployeeIdToViewProfile:
+      return {
+        ...state,
+        employeeIdToViewProfile: action.payload,
+      };
+    case displayQueryDesktopAction.setEmployeeDocument:
+      return {
+        ...state,
+        employeeDocument: action.payload,
+      };
+
+    case displayQueryDesktopAction.setIsDisplayQueryDesktopLoading:
+      return {
+        ...state,
+        isDisplayQueryDesktopLoading: action.payload,
+      };
+    case displayQueryDesktopAction.setDisplayQueryDesktopLoadingMessage:
+      return {
+        ...state,
+        displayQueryDesktopLoadingMessage: action.payload,
+      };
+
     default:
       return state;
   }

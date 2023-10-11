@@ -11,11 +11,11 @@ import {
 import { returnThemeColors, splitCamelCase } from '../../../utils';
 import { returnProfileInfoObject } from './utils';
 
-type ProfileInfoProps = {
-  closeProfileInfoModal: () => void;
+type UserInfoProps = {
+  closeUserInfoModal: () => void;
 };
 
-function ProfileInfo({ closeProfileInfoModal }: ProfileInfoProps) {
+function UserInfo({ closeUserInfoModal }: UserInfoProps) {
   const {
     globalState: { userDocument, themeObject, width, padding, rowGap },
   } = useGlobalState();
@@ -58,7 +58,7 @@ function ProfileInfo({ closeProfileInfoModal }: ProfileInfoProps) {
       semanticDescription: 'Click to change address',
       semanticName: 'button to change address',
       buttonOnClick: () => {
-        closeProfileInfoModal();
+        closeUserInfoModal();
         navigate('/home/company/address-change/create');
       },
     },
@@ -128,14 +128,14 @@ function ProfileInfo({ closeProfileInfoModal }: ProfileInfoProps) {
     }
   );
 
-  const displayProfileInfoComponent = (
-    <Stack w="100%" p={padding}>
+  const displayUserInfoComponent = (
+    <Stack w="100%" p={padding} style={{ position: 'relative' }}>
       {displayProfilePic}
       {displayProfileStack}
     </Stack>
   );
 
-  return displayProfileInfoComponent;
+  return displayUserInfoComponent;
 }
 
-export { ProfileInfo };
+export { UserInfo };

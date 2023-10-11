@@ -18,30 +18,40 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { InvalidTokenError } from 'jwt-decode';
 import { CSSProperties, useEffect, useReducer } from 'react';
+import { useErrorBoundary } from 'react-error-boundary';
 import { IoMdOpen } from 'react-icons/io';
 import { TbEdit, TbStatusChange, TbTrash, TbUserSearch } from 'react-icons/tb';
 import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
+import { useNavigate } from 'react-router-dom';
 
 import {
   COLORS_SWATCHES,
   FIELDNAMES_WITH_DATE_VALUES,
 } from '../../../constants/data';
+import { authAction } from '../../../context/authProvider';
+import { globalAction } from '../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnHighlightedText,
   returnScrollableDocumentInfo,
 } from '../../../jsxCreators';
+import { ResourceRequestServerResponse, UserDocument } from '../../../types';
 import {
   addFieldsToObject,
   formatDate,
   logState,
   replaceLastCommaWithAnd,
+  returnIsAccessTokenExpired,
   returnThemeColors,
   splitCamelCase,
+  urlBuilder,
 } from '../../../utils';
+import { UserInfo } from '../../portalHeader/userInfo/UserInfo';
 import EditRepairNote from '../editRepairNote/EditRepairNote';
+import { ProfileInfo } from '../profileInfo/ProfileInfo';
 import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
 import {
   displayQueryDesktopAction,
@@ -56,9 +66,9 @@ function DisplayQueryDesktop({
   deleteFormIdDispatch,
   deleteResourceKindDispatch,
   fileUploadsData = [],
-  groupedByQueryResponseData,
   groupByRadioData,
   groupBySelection,
+  groupedByQueryResponseData,
   isLoading,
   loadingMessage = '',
   openDeleteAcknowledge,
@@ -74,18 +84,28 @@ function DisplayQueryDesktop({
     initialDisplayQueryDesktopState
   );
   const {
-    fieldToSortBy,
-    sortDirection,
-    editRepairNoteInput,
     currentDocumentId,
     currentRequestStatus,
+    displayQueryDesktopLoadingMessage,
+    editRepairNoteInput,
+    employeeDocument,
+    employeeIdToViewProfile,
+    fieldToSortBy,
+    isDisplayQueryDesktopLoading,
+    sortDirection,
   } = displayQueryDesktopState;
   const {
+    globalDispatch,
     globalState: { height, width, padding, rowGap, themeObject },
   } = useGlobalState();
+
   const {
-    authState: { roles },
+    authDispatch,
+    authState: { roles, accessToken, isAccessTokenExpired },
   } = useAuth();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
 
   const [
     openedUpdateRequestStatusModal,
@@ -95,10 +115,118 @@ function DisplayQueryDesktop({
     },
   ] = useDisclosure(false);
 
+  useEffect(() => {
+    if (isAccessTokenExpired) {
+      return;
+    }
+
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function fetchEmployeeDocument() {
+      displayQueryDesktopDispatch({
+        type: displayQueryDesktopAction.setIsDisplayQueryDesktopLoading,
+        payload: true,
+      });
+      displayQueryDesktopDispatch({
+        type: displayQueryDesktopAction.setDisplayQueryDesktopLoadingMessage,
+        payload: 'Fetching employee document',
+      });
+
+      const url: URL = urlBuilder({ path: `user/${employeeIdToViewProfile}` });
+
+      const request: Request = new Request(url.toString(), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        signal: controller.signal,
+      });
+
+      try {
+        const response: Response = await fetch(request);
+        const data: ResourceRequestServerResponse<UserDocument> =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        const { resourceData } = data;
+        const [employeeDocument] = resourceData;
+        displayQueryDesktopDispatch({
+          type: displayQueryDesktopAction.setEmployeeDocument,
+          payload: employeeDocument,
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === 'AbortError') {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? 'Invalid token. Please login again.'
+            : !error.response
+            ? 'Network error. Please try again.'
+            : error?.message ?? 'Unknown error occurred. Please try again.';
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate('/');
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        displayQueryDesktopDispatch({
+          type: displayQueryDesktopAction.setIsDisplayQueryDesktopLoading,
+          payload: false,
+        });
+        displayQueryDesktopDispatch({
+          type: displayQueryDesktopAction.setDisplayQueryDesktopLoadingMessage,
+          payload: '',
+        });
+      }
+    }
+
+    if (employeeIdToViewProfile) {
+      console.log('fetching employee document');
+      fetchEmployeeDocument();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [isAccessTokenExpired, employeeIdToViewProfile]);
+
   // for repair note fields update only
   const [
     openedEditRepairNotesModal,
     { open: openEditRepairNotesModal, close: closeEditRepairNotesModal },
+  ] = useDisclosure(false);
+
+  const [
+    openedProfileInfoModal,
+    { open: openProfileInfoModal, close: closeProfileInfoModal },
   ] = useDisclosure(false);
 
   const {
@@ -106,10 +234,10 @@ function DisplayQueryDesktop({
     generalColors: { themeColorShade },
     scrollBarStyle,
     tablesThemeColors: {
-      tableHeadersBgColor,
       headerBorderColor,
       headersIconColor,
       rowsBorderColor,
+      tableHeadersBgColor,
       textHighlightColor,
     },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
@@ -128,6 +256,20 @@ function DisplayQueryDesktop({
       });
     }
   );
+
+  // determines if user is viewing anonymous requests section
+  const isAnonymousRequestsSectionInView = Array.from(
+    groupedByQueryResponseData
+  ).some(([_groupedByFieldKey, queryResponseObjArrays]) => {
+    return queryResponseObjArrays.some((queryResponseObj) => {
+      return (
+        Object.hasOwn(queryResponseObj, 'secureContactNumber') &&
+        Object.hasOwn(queryResponseObj, 'secureContactEmail') &&
+        Object.hasOwn(queryResponseObj, 'requestKind') &&
+        Object.hasOwn(queryResponseObj, 'requestDescription')
+      );
+    });
+  });
 
   const tableHeaderValueExclusionSet = new Set([
     'benefitUserId',
@@ -170,6 +312,8 @@ function DisplayQueryDesktop({
                 ? [...headerValues, 'viewProfile', 'fileUploads', 'delete']
                 : isRepairNoteSectionInView
                 ? [...headerValues, 'viewProfile', 'edit', 'delete']
+                : isAnonymousRequestsSectionInView
+                ? [...headerValues, 'delete']
                 : [...headerValues, 'viewProfile', 'delete'];
 
             return headerValuesWithFieldsInserted.map((headerValue) =>
@@ -390,6 +534,11 @@ function DisplayQueryDesktop({
                       ['edit', ''],
                       ['delete', ''],
                     ],
+                  })
+                : isAnonymousRequestsSectionInView
+                ? addFieldsToObject({
+                    object: queryResponseObj,
+                    fieldValuesTuples: [['delete', '']],
                   })
                 : addFieldsToObject({
                     object: queryResponseObj,
@@ -654,6 +803,15 @@ function DisplayQueryDesktop({
                                   },
                                 });
 
+                                const { isAccessTokenExpired } =
+                                  returnIsAccessTokenExpired(accessToken);
+                                if (isAccessTokenExpired) {
+                                  authDispatch({
+                                    type: authAction.setIsAccessTokenExpired,
+                                    payload: true,
+                                  });
+                                }
+
                                 openEditRepairNotesModal();
                               },
                             },
@@ -693,6 +851,16 @@ function DisplayQueryDesktop({
                             payload:
                               queryResponseObjWithAddedFields.requestStatus,
                           });
+
+                          const { isAccessTokenExpired } =
+                            returnIsAccessTokenExpired(accessToken);
+                          if (isAccessTokenExpired) {
+                            authDispatch({
+                              type: authAction.setIsAccessTokenExpired,
+                              payload: true,
+                            });
+                          }
+
                           openUpdateRequestStatusModal();
                         },
                       },
@@ -702,7 +870,23 @@ function DisplayQueryDesktop({
                         semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
                         semanticName: 'View profile',
                         buttonOnClick: () => {
-                          console.log('view profile');
+                          displayQueryDesktopDispatch({
+                            type: displayQueryDesktopAction.setEmployeeIdToViewProfile,
+                            payload:
+                              queryResponseObjWithAddedFields.userId ??
+                              queryResponseObjWithAddedFields.benefitUserId,
+                          });
+
+                          const { isAccessTokenExpired } =
+                            returnIsAccessTokenExpired(accessToken);
+                          if (isAccessTokenExpired) {
+                            authDispatch({
+                              type: authAction.setIsAccessTokenExpired,
+                              payload: true,
+                            });
+                          }
+
+                          openProfileInfoModal();
                         },
                       },
                       // delete button
@@ -719,6 +903,16 @@ function DisplayQueryDesktop({
                             type: 'setDeleteResourceKind',
                             payload: 'form',
                           });
+
+                          const { isAccessTokenExpired } =
+                            returnIsAccessTokenExpired(accessToken);
+                          if (isAccessTokenExpired) {
+                            authDispatch({
+                              type: authAction.setIsAccessTokenExpired,
+                              payload: true,
+                            });
+                          }
+
                           openDeleteAcknowledge();
                         },
                       },
@@ -742,6 +936,16 @@ function DisplayQueryDesktop({
                             type: 'setDeleteFormId',
                             payload: queryResponseObjWithAddedFields._id,
                           });
+
+                          const { isAccessTokenExpired } =
+                            returnIsAccessTokenExpired(accessToken);
+                          if (isAccessTokenExpired) {
+                            authDispatch({
+                              type: authAction.setIsAccessTokenExpired,
+                              payload: true,
+                            });
+                          }
+
                           openFileUploads();
                         },
                       },
@@ -937,6 +1141,33 @@ function DisplayQueryDesktop({
     </Modal>
   );
 
+  const displayProfileInfoModal = (
+    <Modal
+      centered
+      opened={openedProfileInfoModal}
+      onClose={() => {
+        displayQueryDesktopDispatch({
+          type: displayQueryDesktopAction.setEmployeeIdToViewProfile,
+          payload: '',
+        });
+        displayQueryDesktopDispatch({
+          type: displayQueryDesktopAction.setEmployeeDocument,
+          payload: null,
+        });
+
+        closeProfileInfoModal();
+      }}
+      size={modalSize}
+      title={<Text size="xl">Profile information</Text>}
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
+      <ProfileInfo
+        employeeDocument={employeeDocument}
+        isLoading={isDisplayQueryDesktopLoading}
+      />
+    </Modal>
+  );
+
   useEffect(() => {
     logState({
       state: displayQueryDesktopState,
@@ -947,6 +1178,7 @@ function DisplayQueryDesktop({
   return (
     <Stack w="100%" style={{ ...style }} py={padding}>
       {displayUpdateRequestStatusModal}
+      {displayProfileInfoModal}
       {displayEditRepairNoteModal}
       {displayTable}
     </Stack>

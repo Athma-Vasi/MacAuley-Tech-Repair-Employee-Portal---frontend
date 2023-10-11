@@ -3,7 +3,9 @@ import { CSSProperties } from 'react';
 import type {
   Currency,
   FileUploadDocument,
+  QueryResponseData,
   RequestStatus,
+  UserDocument,
 } from '../../../types';
 import type { ComponentQueryData } from '../../queryBuilder';
 import { RepairStatus } from '../../repairNote/types';
@@ -63,6 +65,12 @@ type DisplayQueryDesktopState = {
 
   // for repair notes docs only
   editRepairNoteInput: EditRepairNoteInput;
+
+  employeeIdToViewProfile: string;
+  employeeDocument: QueryResponseData<UserDocument> | null;
+
+  isDisplayQueryDesktopLoading: boolean;
+  displayQueryDesktopLoadingMessage: string;
 };
 
 type DisplayQueryDesktopAction = {
@@ -74,6 +82,12 @@ type DisplayQueryDesktopAction = {
 
   // for repair notes docs only
   setEditRepairNoteInput: 'setEditRepairNoteInput';
+
+  setEmployeeIdToViewProfile: 'setEmployeeIdToViewProfile';
+  setEmployeeDocument: 'setEmployeeDocument';
+
+  setIsDisplayQueryDesktopLoading: 'setIsDisplayQueryDesktopLoading';
+  setDisplayQueryDesktopLoadingMessage: 'setDisplayQueryDesktopLoadingMessage';
 };
 
 type DisplayQueryDesktopReducer = (
@@ -85,7 +99,9 @@ type DisplayQueryDesktopDispatch =
   | {
       type:
         | DisplayQueryDesktopAction['setFieldToSortBy']
-        | DisplayQueryDesktopAction['setCurrentDocumentId'];
+        | DisplayQueryDesktopAction['setCurrentDocumentId']
+        | DisplayQueryDesktopAction['setEmployeeIdToViewProfile']
+        | DisplayQueryDesktopAction['setDisplayQueryDesktopLoadingMessage'];
       payload: string;
     }
   | {
@@ -99,6 +115,14 @@ type DisplayQueryDesktopDispatch =
   | {
       type: DisplayQueryDesktopAction['setEditRepairNoteInput'];
       payload: EditRepairNoteInput;
+    }
+  | {
+      type: DisplayQueryDesktopAction['setEmployeeDocument'];
+      payload: QueryResponseData<UserDocument> | null;
+    }
+  | {
+      type: DisplayQueryDesktopAction['setIsDisplayQueryDesktopLoading'];
+      payload: boolean;
     };
 
 export type {
