@@ -15,12 +15,12 @@ type ResponsiveBarChartState = {
   valueScale: 'linear' | 'symlog'; // default: linear
   reverse: boolean; // default: false
   // base -> value scale
-  toggleMinValue: boolean; // default: false ? minValue is undefined
-  minValue?: number; // default: -1000 step: 1
-  toggleMaxValue: boolean; // default: false ? maxValue is undefined
-  maxValue?: number; // default: 1000 step: 1
-  padding: number; // 0.1 - 0.9 default: 0.1 step: 0.1
-  innerPadding: number; // 0 - 10 default: 0 step: 1
+  enableMinValue: boolean; // default: false ? minValue is undefined
+  minValue: number; // default: -1000 step: 1
+  enableMaxValue: boolean; // default: false ? maxValue is undefined
+  maxValue: number; // default: 1000 step: 1
+  paddingBar: number; // 0.1 - 0.9 default: 0.1 step: 0.1
+  innerPaddingBar: number; // 0 - 10 default: 0 step: 1
 
   // base -> margin
   marginTop: number; // 0px - 200px default: 60 step: 1
@@ -29,10 +29,10 @@ type ResponsiveBarChartState = {
   marginLeft: number; // 0px - 200px default: 60 step: 1
 
   /** style */
-  colors: NivoColorScheme; // default: nivo
-  borderRadius: number; // 0px - 36px default: 0 step: 1
-  borderWidth: number; // 0px - 20px default: 0 step: 1
-  borderColor: string; // default: #ffffff
+  chartColors: NivoColorScheme; // default: nivo
+  chartBorderRadius: number; // 0px - 36px default: 0 step: 1
+  chartBorderWidth: number; // 0px - 20px default: 0 step: 1
+  chartBorderColor: string; // default: #ffffff
   fillPatterns: FillPatternObject[];
   enableFillPatterns: boolean; // default: false
 
@@ -50,41 +50,57 @@ type ResponsiveBarChartState = {
   axisTopTickSize: number; // 0 - 20 default: 5 step: 1
   axisTopTickPadding: number; // 0 - 20 default: 5 step: 1
   axisTopTickRotation: number; // -90 - 90 default: 0 step: 1
+  axisTopLegend: string; // default: ''
+  isAxisTopLegendValid: boolean;
+  isAxisTopLegendFocused: boolean;
+  axisTopLegendOffset: number; // -60px - 60px default: 0 step: 1
   // axis -> axisRight
   enableAxisRight: boolean; // default: false ? null
   axisRightTickSize: number; // 0 - 20 default: 5 step: 1
   axisRightTickPadding: number; // 0 - 20 default: 5 step: 1
   axisRightTickRotation: number; // -90 - 90 default: 0 step: 1
+  axisRightLegend: string; // default: ''
+  isAxisRightLegendValid: boolean;
+  isAxisRightLegendFocused: boolean;
+  axisRightLegendOffset: number; // -60px - 60px default: 0 step: 1
   // axis -> axisBottom
   enableAxisBottom: boolean; // default: true
   axisBottomTickSize: number; // 0 - 20 default: 5 step: 1
   axisBottomTickPadding: number; // 0 - 20 default: 5 step: 1
   axisBottomTickRotation: number; // -90 - 90 default: 0 step: 1
+  axisBottomLegend: string; // default: ''
+  isAxisBottomLegendValid: boolean;
+  isAxisBottomLegendFocused: boolean;
+  axisBottomLegendOffset: number; // -60px - 60px default: 0 step: 1
   // axis -> axisLeft
   enableAxisLeft: boolean; // default: false ? null
   axisLeftTickSize: number; // 0 - 20 default: 5 step: 1
   axisLeftTickPadding: number; // 0 - 20 default: 5 step: 1
   axisLeftTickRotation: number; // -90 - 90 default: 0 step: 1
+  axisLeftLegend: string; // default: ''
+  isAxisLeftLegendValid: boolean;
+  isAxisLeftLegendFocused: boolean;
+  axisLeftLegendOffset: number; // -60px - 60px default: 0 step: 1
 
-  /** legends */
-  enableLegends: boolean; // default: false
-  legendsAnchor: LegendAnchor; // default: bottom-right
-  legendsDirection: LegendDirection; // default: column
-  enableLegendsJustify: boolean; // default: false
-  legendsTranslateX: number; // -200px - 200px default: 0 step: 1
-  legendsTranslateY: number; // -200px - 200px default: 0 step: 1
-  legendsItemWidth: number; // 10px - 200px default: 60 step: 1
-  legendsItemHeight: number; // 10px - 200px default: 20 step: 1
-  legendsItemsSpacing: number; // 0px - 60px default: 2 step: 1
-  legendsItemDirection: LegendItemDirection; // default: left-to-right
+  /** legend */
+  enableLegend: boolean; // default: false
+  legendAnchor: LegendAnchor; // default: bottom-right
+  legendDirection: LegendDirection; // default: column
+  enableLegendJustify: boolean; // default: false
+  legendTranslateX: number; // -200px - 200px default: 0 step: 1
+  legendTranslateY: number; // -200px - 200px default: 0 step: 1
+  legendItemWidth: number; // 10px - 200px default: 60 step: 1
+  legendItemHeight: number; // 10px - 200px default: 20 step: 1
+  legendItemsSpacing: number; // 0px - 60px default: 2 step: 1
+  legendItemDirection: LegendItemDirection; // default: left-to-right
 
-  itemTextColor: string; // default: #000000
-  itemOpacity: number; // 0 - 1 default: 1 step: 0.05
-  symbolSize: number; // 2px - 60px default: 12 step: 1
-  symbolShape: LegendSymbolShape; // default: circle
+  legendItemTextColor: string; // default: #000000
+  legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
+  legendSymbolSize: number; // 2px - 60px default: 12 step: 1
+  legendSymbolShape: LegendSymbolShape; // default: circle
 
   /** motion */
-  animate: boolean; // default: true
+  enableAnimate: boolean; // default: true
   motionConfig: NivoMotionConfig; // default: default
 };
 
@@ -94,12 +110,12 @@ type ResponsiveBarChartAction = {
   setLayout: 'setLayout';
   setValueScale: 'setValueScale';
   setReverse: 'setReverse';
-  setToggleMinValue: 'setToggleMinValue';
+  setEnableMinValue: 'setEnableMinValue';
   setMinValue: 'setMinValue';
-  setToggleMaxValue: 'setToggleMaxValue';
+  setEnableMaxValue: 'setEnableMaxValue';
   setMaxValue: 'setMaxValue';
-  setPadding: 'setPadding';
-  setInnerPadding: 'setInnerPadding';
+  setPaddingBar: 'setPaddingBar';
+  setInnerPaddingBar: 'setInnerPaddingBar';
 
   /** margin */
   setMarginTop: 'setMarginTop';
@@ -108,10 +124,10 @@ type ResponsiveBarChartAction = {
   setMarginLeft: 'setMarginLeft';
 
   /** style */
-  setColors: 'setColors';
-  setBorderRadius: 'setBorderRadius';
-  setBorderWidth: 'setBorderWidth';
-  setBorderColor: 'setBorderColor';
+  setChartColors: 'setChartColors';
+  setChartBorderRadius: 'setChartBorderRadius';
+  setChartBorderWidth: 'setChartBorderWidth';
+  setChartBorderColor: 'setChartBorderColor';
   setFillPatterns: 'setFillPatterns';
   setEnableFillPatterns: 'setEnableFillPatterns';
 
@@ -124,41 +140,61 @@ type ResponsiveBarChartAction = {
   /** grid and axes */
   setEnableGridX: 'setEnableGridX';
   setEnableGridY: 'setEnableGridY';
+  // axis -> axisTop
   setEnableAxisTop: 'setEnableAxisTop';
   setAxisTopTickSize: 'setAxisTopTickSize';
   setAxisTopTickPadding: 'setAxisTopTickPadding';
   setAxisTopTickRotation: 'setAxisTopTickRotation';
+  setAxisTopLegend: 'setAxisTopLegend';
+  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid';
+  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused';
+  setAxisTopLegendOffset: 'setAxisTopLegendOffset';
+  // axis -> axisRight
   setEnableAxisRight: 'setEnableAxisRight';
   setAxisRightTickSize: 'setAxisRightTickSize';
   setAxisRightTickPadding: 'setAxisRightTickPadding';
   setAxisRightTickRotation: 'setAxisRightTickRotation';
+  setAxisRightLegend: 'setAxisRightLegend';
+  setIsAxisRightLegendValid: 'setIsAxisRightLegendValid';
+  setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused';
+  setAxisRightLegendOffset: 'setAxisRightLegendOffset';
+  // axis -> axisBottom
   setEnableAxisBottom: 'setEnableAxisBottom';
   setAxisBottomTickSize: 'setAxisBottomTickSize';
   setAxisBottomTickPadding: 'setAxisBottomTickPadding';
   setAxisBottomTickRotation: 'setAxisBottomTickRotation';
+  setAxisBottomLegend: 'setAxisBottomLegend';
+  setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid';
+  setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused';
+  setAxisBottomLegendOffset: 'setAxisBottomLegendOffset';
+  // axis -> axisLeft
   setEnableAxisLeft: 'setEnableAxisLeft';
   setAxisLeftTickSize: 'setAxisLeftTickSize';
   setAxisLeftTickPadding: 'setAxisLeftTickPadding';
   setAxisLeftTickRotation: 'setAxisLeftTickRotation';
+  setAxisLeftLegend: 'setAxisLeftLegend';
+  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid';
+  setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused';
+  setAxisLeftLegendOffset: 'setAxisLeftLegendOffset';
 
-  /** legends */
-  setEnableLegends: 'setEnableLegends';
-  setLegendsAnchor: 'setLegendsAnchor';
-  setLegendsDirection: 'setLegendsDirection';
-  setEnableLegendsJustify: 'setEnableLegendsJustify';
-  setLegendsTranslateX: 'setLegendsTranslateX';
-  setLegendsTranslateY: 'setLegendsTranslateY';
-  setLegendsItemWidth: 'setLegendsItemWidth';
-  setLegendsItemHeight: 'setLegendsItemHeight';
-  setLegendsItemsSpacing: 'setLegendsItemsSpacing';
-  setLegendsItemDirection: 'setLegendsItemDirection';
-  setItemTextColor: 'setItemTextColor';
-  setItemOpacity: 'setItemOpacity';
-  setSymbolSize: 'setSymbolSize';
-  setSymbolShape: 'setSymbolShape';
+  /** legend */
+  setEnableLegend: 'setEnableLegend';
+  setLegendAnchor: 'setLegendAnchor';
+  setLegendDirection: 'setLegendDirection';
+  setEnableLegendJustify: 'setEnableLegendJustify';
+  setLegendTranslateX: 'setLegendTranslateX';
+  setLegendTranslateY: 'setLegendTranslateY';
+  setLegendItemWidth: 'setLegendItemWidth';
+  setLegendItemHeight: 'setLegendItemHeight';
+  setLegendItemsSpacing: 'setLegendItemsSpacing';
+  setLegendItemDirection: 'setLegendItemDirection';
+  setLegendItemTextColor: 'setLegendItemTextColor';
+  setLegendItemOpacity: 'setLegendItemOpacity';
+  setLegendSymbolSize: 'setLegendSymbolSize';
+  setLegendSymbolShape: 'setLegendSymbolShape';
 
   /** motion */
-  setAnimate: 'setAnimate';
+  setEnableAnimate: 'setEnableAnimate';
   setMotionConfig: 'setMotionConfig';
 };
 
@@ -178,8 +214,16 @@ type ResponsiveBarChartDispatch =
   | {
       type:
         | ResponsiveBarChartAction['setReverse']
-        | ResponsiveBarChartAction['setToggleMinValue']
-        | ResponsiveBarChartAction['setToggleMaxValue']
+        | ResponsiveBarChartAction['setEnableMinValue']
+        | ResponsiveBarChartAction['setEnableMaxValue']
+        | ResponsiveBarChartAction['setIsAxisTopLegendValid']
+        | ResponsiveBarChartAction['setIsAxisTopLegendFocused']
+        | ResponsiveBarChartAction['setIsAxisRightLegendValid']
+        | ResponsiveBarChartAction['setIsAxisRightLegendFocused']
+        | ResponsiveBarChartAction['setIsAxisBottomLegendValid']
+        | ResponsiveBarChartAction['setIsAxisBottomLegendFocused']
+        | ResponsiveBarChartAction['setIsAxisLeftLegendValid']
+        | ResponsiveBarChartAction['setIsAxisLeftLegendFocused']
         | ResponsiveBarChartAction['setEnableLabels']
         | ResponsiveBarChartAction['setEnableGridX']
         | ResponsiveBarChartAction['setEnableGridY']
@@ -187,10 +231,10 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setEnableAxisRight']
         | ResponsiveBarChartAction['setEnableAxisBottom']
         | ResponsiveBarChartAction['setEnableAxisLeft']
-        | ResponsiveBarChartAction['setEnableLegends']
-        | ResponsiveBarChartAction['setEnableLegendsJustify']
+        | ResponsiveBarChartAction['setEnableLegend']
+        | ResponsiveBarChartAction['setEnableLegendJustify']
         | ResponsiveBarChartAction['setEnableFillPatterns']
-        | ResponsiveBarChartAction['setAnimate'];
+        | ResponsiveBarChartAction['setEnableAnimate'];
 
       payload: boolean;
     }
@@ -198,43 +242,51 @@ type ResponsiveBarChartDispatch =
       type:
         | ResponsiveBarChartAction['setMinValue']
         | ResponsiveBarChartAction['setMaxValue']
-        | ResponsiveBarChartAction['setPadding']
-        | ResponsiveBarChartAction['setInnerPadding']
+        | ResponsiveBarChartAction['setPaddingBar']
+        | ResponsiveBarChartAction['setInnerPaddingBar']
         | ResponsiveBarChartAction['setAxisTopTickSize']
         | ResponsiveBarChartAction['setAxisTopTickPadding']
         | ResponsiveBarChartAction['setAxisTopTickRotation']
+        | ResponsiveBarChartAction['setAxisTopLegendOffset']
         | ResponsiveBarChartAction['setAxisRightTickSize']
         | ResponsiveBarChartAction['setAxisRightTickPadding']
         | ResponsiveBarChartAction['setAxisRightTickRotation']
+        | ResponsiveBarChartAction['setAxisRightLegendOffset']
         | ResponsiveBarChartAction['setAxisBottomTickSize']
         | ResponsiveBarChartAction['setAxisBottomTickPadding']
         | ResponsiveBarChartAction['setAxisBottomTickRotation']
+        | ResponsiveBarChartAction['setAxisBottomLegendOffset']
         | ResponsiveBarChartAction['setAxisLeftTickSize']
         | ResponsiveBarChartAction['setAxisLeftTickPadding']
         | ResponsiveBarChartAction['setAxisLeftTickRotation']
+        | ResponsiveBarChartAction['setAxisLeftLegendOffset']
         | ResponsiveBarChartAction['setMarginTop']
         | ResponsiveBarChartAction['setMarginRight']
         | ResponsiveBarChartAction['setMarginBottom']
         | ResponsiveBarChartAction['setMarginLeft']
         | ResponsiveBarChartAction['setLabelSkipWidth']
         | ResponsiveBarChartAction['setLabelSkipHeight']
-        | ResponsiveBarChartAction['setBorderRadius']
-        | ResponsiveBarChartAction['setBorderWidth']
-        | ResponsiveBarChartAction['setLegendsTranslateX']
-        | ResponsiveBarChartAction['setLegendsTranslateY']
-        | ResponsiveBarChartAction['setLegendsItemWidth']
-        | ResponsiveBarChartAction['setLegendsItemHeight']
-        | ResponsiveBarChartAction['setLegendsItemsSpacing']
-        | ResponsiveBarChartAction['setItemOpacity']
-        | ResponsiveBarChartAction['setSymbolSize'];
+        | ResponsiveBarChartAction['setChartBorderRadius']
+        | ResponsiveBarChartAction['setChartBorderWidth']
+        | ResponsiveBarChartAction['setLegendTranslateX']
+        | ResponsiveBarChartAction['setLegendTranslateY']
+        | ResponsiveBarChartAction['setLegendItemWidth']
+        | ResponsiveBarChartAction['setLegendItemHeight']
+        | ResponsiveBarChartAction['setLegendItemsSpacing']
+        | ResponsiveBarChartAction['setLegendItemOpacity']
+        | ResponsiveBarChartAction['setLegendSymbolSize'];
 
       payload: number;
     }
   | {
       type:
-        | ResponsiveBarChartAction['setBorderColor']
+        | ResponsiveBarChartAction['setAxisTopLegend']
+        | ResponsiveBarChartAction['setAxisRightLegend']
+        | ResponsiveBarChartAction['setAxisBottomLegend']
+        | ResponsiveBarChartAction['setAxisLeftLegend']
+        | ResponsiveBarChartAction['setChartBorderColor']
         | ResponsiveBarChartAction['setLabelTextColor']
-        | ResponsiveBarChartAction['setItemTextColor'];
+        | ResponsiveBarChartAction['setLegendItemTextColor'];
 
       payload: string;
     }
@@ -243,19 +295,19 @@ type ResponsiveBarChartDispatch =
       payload: FillPatternObject[];
     }
   | {
-      type: ResponsiveBarChartAction['setSymbolShape'];
+      type: ResponsiveBarChartAction['setLegendSymbolShape'];
       payload: LegendSymbolShape;
     }
   | {
-      type: ResponsiveBarChartAction['setLegendsAnchor'];
+      type: ResponsiveBarChartAction['setLegendAnchor'];
       payload: LegendAnchor;
     }
   | {
-      type: ResponsiveBarChartAction['setLegendsDirection'];
+      type: ResponsiveBarChartAction['setLegendDirection'];
       payload: LegendDirection;
     }
   | {
-      type: ResponsiveBarChartAction['setLegendsItemDirection'];
+      type: ResponsiveBarChartAction['setLegendItemDirection'];
       payload: LegendItemDirection;
     }
   | {
@@ -263,7 +315,7 @@ type ResponsiveBarChartDispatch =
       payload: NivoMotionConfig;
     }
   | {
-      type: ResponsiveBarChartAction['setColors'];
+      type: ResponsiveBarChartAction['setChartColors'];
       payload: NivoColorScheme;
     };
 

@@ -42,7 +42,7 @@ import {
   splitCamelCase,
   urlBuilder,
 } from '../../../utils';
-import { ChartsGraphsControlsStacker } from '../../charts/utils';
+import { ChartsAndGraphsControlsStacker } from '../../charts/utils';
 import { DecodedToken } from '../../login/types';
 import { NotificationModal } from '../../notificationModal';
 import { AccessibleNavLinkCreatorInfo } from '../../wrappers';
@@ -365,7 +365,7 @@ function UserAvatar() {
 
   // color scheme switch
   const displayColorSchemeSwitch = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={colorSchemeSwitch}
       label="Color scheme"
       value={colorScheme}
@@ -508,7 +508,7 @@ function UserAvatar() {
     ]);
 
   const displayLightShadeSlider = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={lightSchemeShadeSlider}
       label="Light shade"
       value={primaryShade.light}
@@ -517,7 +517,7 @@ function UserAvatar() {
   );
 
   const displayDarkShadeSlider = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={darkSchemeShadeSlider}
       label="Dark shade"
       value={primaryShade.dark}
@@ -553,7 +553,7 @@ function UserAvatar() {
   );
 
   const displayReducedMotionSwitch = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={reducedMotionSwitch}
       label="Reduced motion"
       value={prefersReducedMotionSwitchChecked ? 'On' : 'Off'}
@@ -581,7 +581,7 @@ function UserAvatar() {
   );
 
   const displayFontFamilySegmentedControl = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={fontFamilySegmentedControl}
       label="Font family"
       value={

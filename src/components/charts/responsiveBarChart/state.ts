@@ -5,61 +5,94 @@ import {
 } from './types';
 
 const initialResponsiveBarChartState: ResponsiveBarChartState = {
+  /** base */
   groupMode: 'stacked',
   layout: 'horizontal',
   valueScale: 'linear',
   reverse: false,
-  toggleMinValue: false,
-  toggleMaxValue: false,
-  padding: 0.1,
-  innerPadding: 0,
+  enableMinValue: false,
+  minValue: 0,
+  enableMaxValue: false,
+  maxValue: 0,
+  paddingBar: 0.1,
+  innerPaddingBar: 0,
   marginTop: 60,
   marginRight: 60,
   marginBottom: 60,
   marginLeft: 60,
-  colors: 'nivo',
-  borderRadius: 0,
-  borderWidth: 0,
-  borderColor: '#ffffff',
+
+  /** style */
+  chartColors: 'nivo',
+  chartBorderRadius: 0,
+  chartBorderWidth: 0,
+  chartBorderColor: '#ffffff',
   fillPatterns: [],
   enableFillPatterns: false,
+
+  /** labels */
   enableLabels: true,
   labelSkipWidth: 0,
   labelSkipHeight: 0,
   labelTextColor: '#ffffff',
+
+  /** grid and axes */
   enableGridX: false,
   enableGridY: true,
+  // axis top
   enableAxisTop: false,
   axisTopTickSize: 5,
   axisTopTickPadding: 5,
   axisTopTickRotation: 0,
+  axisTopLegend: '',
+  isAxisTopLegendValid: false,
+  isAxisTopLegendFocused: false,
+  axisTopLegendOffset: 0,
+  // axis right
   enableAxisRight: false,
   axisRightTickSize: 5,
   axisRightTickPadding: 5,
   axisRightTickRotation: 0,
+  axisRightLegend: '',
+  isAxisRightLegendValid: false,
+  isAxisRightLegendFocused: false,
+  axisRightLegendOffset: 0,
+  // axis bottom
   enableAxisBottom: true,
   axisBottomTickSize: 5,
   axisBottomTickPadding: 5,
   axisBottomTickRotation: 0,
+  axisBottomLegend: '',
+  isAxisBottomLegendValid: false,
+  isAxisBottomLegendFocused: false,
+  axisBottomLegendOffset: 0,
+  // axis left
   enableAxisLeft: false,
   axisLeftTickSize: 5,
   axisLeftTickPadding: 5,
   axisLeftTickRotation: 0,
-  enableLegends: false,
-  legendsAnchor: 'bottom-right',
-  legendsDirection: 'column',
-  enableLegendsJustify: false,
-  legendsTranslateX: 0,
-  legendsTranslateY: 0,
-  legendsItemWidth: 60,
-  legendsItemHeight: 20,
-  legendsItemsSpacing: 2,
-  legendsItemDirection: 'left-to-right',
-  itemTextColor: '#000000',
-  itemOpacity: 1,
-  symbolSize: 12,
-  symbolShape: 'circle',
-  animate: true,
+  axisLeftLegend: '',
+  isAxisLeftLegendValid: false,
+  isAxisLeftLegendFocused: false,
+  axisLeftLegendOffset: 0,
+
+  /** legend */
+  enableLegend: false,
+  legendAnchor: 'bottom-right',
+  legendDirection: 'column',
+  enableLegendJustify: false,
+  legendTranslateX: 0,
+  legendTranslateY: 0,
+  legendItemWidth: 60,
+  legendItemHeight: 20,
+  legendItemsSpacing: 2,
+  legendItemDirection: 'left-to-right',
+  legendItemTextColor: '#000000',
+  legendItemOpacity: 1,
+  legendSymbolSize: 12,
+  legendSymbolShape: 'circle',
+
+  /** motion */
+  enableAnimate: true,
   motionConfig: 'default',
 };
 
@@ -69,12 +102,12 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setLayout: 'setLayout',
   setValueScale: 'setValueScale',
   setReverse: 'setReverse',
-  setToggleMinValue: 'setToggleMinValue',
+  setEnableMinValue: 'setEnableMinValue',
   setMinValue: 'setMinValue',
-  setToggleMaxValue: 'setToggleMaxValue',
+  setEnableMaxValue: 'setEnableMaxValue',
   setMaxValue: 'setMaxValue',
-  setPadding: 'setPadding',
-  setInnerPadding: 'setInnerPadding',
+  setPaddingBar: 'setPaddingBar',
+  setInnerPaddingBar: 'setInnerPaddingBar',
 
   /** margin */
   setMarginTop: 'setMarginTop',
@@ -83,10 +116,10 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setMarginLeft: 'setMarginLeft',
 
   /** style */
-  setColors: 'setColors',
-  setBorderRadius: 'setBorderRadius',
-  setBorderWidth: 'setBorderWidth',
-  setBorderColor: 'setBorderColor',
+  setChartColors: 'setChartColors',
+  setChartBorderRadius: 'setChartBorderRadius',
+  setChartBorderWidth: 'setChartBorderWidth',
+  setChartBorderColor: 'setChartBorderColor',
   setFillPatterns: 'setFillPatterns',
   setEnableFillPatterns: 'setEnableFillPatterns',
 
@@ -99,41 +132,61 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   /** grid and axes */
   setEnableGridX: 'setEnableGridX',
   setEnableGridY: 'setEnableGridY',
+  // axis top
   setEnableAxisTop: 'setEnableAxisTop',
   setAxisTopTickSize: 'setAxisTopTickSize',
   setAxisTopTickPadding: 'setAxisTopTickPadding',
   setAxisTopTickRotation: 'setAxisTopTickRotation',
+  setAxisTopLegend: 'setAxisTopLegend',
+  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid',
+  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused',
+  setAxisTopLegendOffset: 'setAxisTopLegendOffset',
+  // axis right
   setEnableAxisRight: 'setEnableAxisRight',
   setAxisRightTickSize: 'setAxisRightTickSize',
   setAxisRightTickPadding: 'setAxisRightTickPadding',
   setAxisRightTickRotation: 'setAxisRightTickRotation',
+  setAxisRightLegend: 'setAxisRightLegend',
+  setIsAxisRightLegendValid: 'setIsAxisRightLegendValid',
+  setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused',
+  setAxisRightLegendOffset: 'setAxisRightLegendOffset',
+  // axis bottom
   setEnableAxisBottom: 'setEnableAxisBottom',
   setAxisBottomTickSize: 'setAxisBottomTickSize',
   setAxisBottomTickPadding: 'setAxisBottomTickPadding',
   setAxisBottomTickRotation: 'setAxisBottomTickRotation',
+  setAxisBottomLegend: 'setAxisBottomLegend',
+  setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid',
+  setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused',
+  setAxisBottomLegendOffset: 'setAxisBottomLegendOffset',
+  // axis left
   setEnableAxisLeft: 'setEnableAxisLeft',
   setAxisLeftTickSize: 'setAxisLeftTickSize',
   setAxisLeftTickPadding: 'setAxisLeftTickPadding',
   setAxisLeftTickRotation: 'setAxisLeftTickRotation',
+  setAxisLeftLegend: 'setAxisLeftLegend',
+  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid',
+  setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused',
+  setAxisLeftLegendOffset: 'setAxisLeftLegendOffset',
 
-  /** legends */
-  setEnableLegends: 'setEnableLegends',
-  setLegendsAnchor: 'setLegendsAnchor',
-  setLegendsDirection: 'setLegendsDirection',
-  setEnableLegendsJustify: 'setEnableLegendsJustify',
-  setLegendsTranslateX: 'setLegendsTranslateX',
-  setLegendsTranslateY: 'setLegendsTranslateY',
-  setLegendsItemWidth: 'setLegendsItemWidth',
-  setLegendsItemHeight: 'setLegendsItemHeight',
-  setLegendsItemsSpacing: 'setLegendsItemsSpacing',
-  setLegendsItemDirection: 'setLegendsItemDirection',
-  setItemTextColor: 'setItemTextColor',
-  setItemOpacity: 'setItemOpacity',
-  setSymbolSize: 'setSymbolSize',
-  setSymbolShape: 'setSymbolShape',
+  /** legend */
+  setEnableLegend: 'setEnableLegend',
+  setLegendAnchor: 'setLegendAnchor',
+  setLegendDirection: 'setLegendDirection',
+  setEnableLegendJustify: 'setEnableLegendJustify',
+  setLegendTranslateX: 'setLegendTranslateX',
+  setLegendTranslateY: 'setLegendTranslateY',
+  setLegendItemWidth: 'setLegendItemWidth',
+  setLegendItemHeight: 'setLegendItemHeight',
+  setLegendItemsSpacing: 'setLegendItemsSpacing',
+  setLegendItemDirection: 'setLegendItemDirection',
+  setLegendItemTextColor: 'setLegendItemTextColor',
+  setLegendItemOpacity: 'setLegendItemOpacity',
+  setLegendSymbolSize: 'setLegendSymbolSize',
+  setLegendSymbolShape: 'setLegendSymbolShape',
 
   /** motion */
-  setAnimate: 'setAnimate',
+  setEnableAnimate: 'setEnableAnimate',
   setMotionConfig: 'setMotionConfig',
 };
 
@@ -162,35 +215,35 @@ function responsiveBarChartReducer(
         ...state,
         reverse: action.payload,
       };
-    case responsiveBarChartAction.setToggleMinValue:
+    case responsiveBarChartAction.setEnableMinValue:
       return {
         ...state,
-        toggleMinValue: action.payload,
+        enableMinValue: action.payload,
       };
     case responsiveBarChartAction.setMinValue:
       return {
         ...state,
         minValue: action.payload,
       };
-    case responsiveBarChartAction.setToggleMaxValue:
+    case responsiveBarChartAction.setEnableMaxValue:
       return {
         ...state,
-        toggleMaxValue: action.payload,
+        enableMaxValue: action.payload,
       };
     case responsiveBarChartAction.setMaxValue:
       return {
         ...state,
         maxValue: action.payload,
       };
-    case responsiveBarChartAction.setPadding:
+    case responsiveBarChartAction.setPaddingBar:
       return {
         ...state,
-        padding: action.payload,
+        paddingBar: action.payload,
       };
-    case responsiveBarChartAction.setInnerPadding:
+    case responsiveBarChartAction.setInnerPaddingBar:
       return {
         ...state,
-        innerPadding: action.payload,
+        innerPaddingBar: action.payload,
       };
     case responsiveBarChartAction.setMarginTop:
       return {
@@ -212,25 +265,25 @@ function responsiveBarChartReducer(
         ...state,
         marginLeft: action.payload,
       };
-    case responsiveBarChartAction.setColors:
+    case responsiveBarChartAction.setChartColors:
       return {
         ...state,
-        colors: action.payload,
+        chartColors: action.payload,
       };
-    case responsiveBarChartAction.setBorderRadius:
+    case responsiveBarChartAction.setChartBorderRadius:
       return {
         ...state,
-        borderRadius: action.payload,
+        chartBorderRadius: action.payload,
       };
-    case responsiveBarChartAction.setBorderWidth:
+    case responsiveBarChartAction.setChartBorderWidth:
       return {
         ...state,
-        borderWidth: action.payload,
+        chartBorderWidth: action.payload,
       };
-    case responsiveBarChartAction.setBorderColor:
+    case responsiveBarChartAction.setChartBorderColor:
       return {
         ...state,
-        borderColor: action.payload,
+        chartBorderColor: action.payload,
       };
     case responsiveBarChartAction.setFillPatterns:
       return {
@@ -271,6 +324,8 @@ function responsiveBarChartReducer(
         ...state,
         enableGridY: action.payload,
       };
+
+    // axis top
     case responsiveBarChartAction.setEnableAxisTop:
       return {
         ...state,
@@ -291,6 +346,28 @@ function responsiveBarChartReducer(
         ...state,
         axisTopTickRotation: action.payload,
       };
+    case responsiveBarChartAction.setAxisTopLegend:
+      return {
+        ...state,
+        axisTopLegend: action.payload,
+      };
+    case responsiveBarChartAction.setIsAxisTopLegendValid:
+      return {
+        ...state,
+        isAxisTopLegendValid: action.payload,
+      };
+    case responsiveBarChartAction.setIsAxisTopLegendFocused:
+      return {
+        ...state,
+        isAxisTopLegendFocused: action.payload,
+      };
+    case responsiveBarChartAction.setAxisTopLegendOffset:
+      return {
+        ...state,
+        axisTopLegendOffset: action.payload,
+      };
+
+    // axis right
     case responsiveBarChartAction.setEnableAxisRight:
       return {
         ...state,
@@ -311,6 +388,28 @@ function responsiveBarChartReducer(
         ...state,
         axisRightTickRotation: action.payload,
       };
+    case responsiveBarChartAction.setAxisRightLegend:
+      return {
+        ...state,
+        axisRightLegend: action.payload,
+      };
+    case responsiveBarChartAction.setIsAxisRightLegendValid:
+      return {
+        ...state,
+        isAxisRightLegendValid: action.payload,
+      };
+    case responsiveBarChartAction.setIsAxisRightLegendFocused:
+      return {
+        ...state,
+        isAxisRightLegendFocused: action.payload,
+      };
+    case responsiveBarChartAction.setAxisRightLegendOffset:
+      return {
+        ...state,
+        axisRightLegendOffset: action.payload,
+      };
+
+    // axis bottom
     case responsiveBarChartAction.setEnableAxisBottom:
       return {
         ...state,
@@ -331,6 +430,28 @@ function responsiveBarChartReducer(
         ...state,
         axisBottomTickRotation: action.payload,
       };
+    case responsiveBarChartAction.setAxisBottomLegend:
+      return {
+        ...state,
+        axisBottomLegend: action.payload,
+      };
+    case responsiveBarChartAction.setIsAxisBottomLegendValid:
+      return {
+        ...state,
+        isAxisBottomLegendValid: action.payload,
+      };
+    case responsiveBarChartAction.setIsAxisBottomLegendFocused:
+      return {
+        ...state,
+        isAxisBottomLegendFocused: action.payload,
+      };
+    case responsiveBarChartAction.setAxisBottomLegendOffset:
+      return {
+        ...state,
+        axisBottomLegendOffset: action.payload,
+      };
+
+    // axis left
     case responsiveBarChartAction.setEnableAxisLeft:
       return {
         ...state,
@@ -351,80 +472,101 @@ function responsiveBarChartReducer(
         ...state,
         axisLeftTickRotation: action.payload,
       };
-    case responsiveBarChartAction.setEnableLegends:
+    case responsiveBarChartAction.setAxisLeftLegend:
       return {
         ...state,
-        enableLegends: action.payload,
+        axisLeftLegend: action.payload,
       };
-    case responsiveBarChartAction.setLegendsAnchor:
+    case responsiveBarChartAction.setIsAxisLeftLegendValid:
       return {
         ...state,
-        legendsAnchor: action.payload,
+        isAxisLeftLegendValid: action.payload,
       };
-    case responsiveBarChartAction.setLegendsDirection:
+    case responsiveBarChartAction.setIsAxisLeftLegendFocused:
       return {
         ...state,
-        legendsDirection: action.payload,
+        isAxisLeftLegendFocused: action.payload,
       };
-    case responsiveBarChartAction.setEnableLegendsJustify:
+    case responsiveBarChartAction.setAxisLeftLegendOffset:
       return {
         ...state,
-        enableLegendsJustify: action.payload,
+        axisLeftLegendOffset: action.payload,
       };
-    case responsiveBarChartAction.setLegendsTranslateX:
+
+    case responsiveBarChartAction.setEnableLegend:
       return {
         ...state,
-        legendsTranslateX: action.payload,
+        enableLegend: action.payload,
       };
-    case responsiveBarChartAction.setLegendsTranslateY:
+    case responsiveBarChartAction.setLegendAnchor:
       return {
         ...state,
-        legendsTranslateY: action.payload,
+        legendAnchor: action.payload,
       };
-    case responsiveBarChartAction.setLegendsItemWidth:
+    case responsiveBarChartAction.setLegendDirection:
       return {
         ...state,
-        legendsItemWidth: action.payload,
+        legendDirection: action.payload,
       };
-    case responsiveBarChartAction.setLegendsItemHeight:
+    case responsiveBarChartAction.setEnableLegendJustify:
       return {
         ...state,
-        legendsItemHeight: action.payload,
+        enableLegendJustify: action.payload,
       };
-    case responsiveBarChartAction.setLegendsItemsSpacing:
+    case responsiveBarChartAction.setLegendTranslateX:
       return {
         ...state,
-        legendsItemsSpacing: action.payload,
+        legendTranslateX: action.payload,
       };
-    case responsiveBarChartAction.setLegendsItemDirection:
+    case responsiveBarChartAction.setLegendTranslateY:
       return {
         ...state,
-        legendsItemDirection: action.payload,
+        legendTranslateY: action.payload,
       };
-    case responsiveBarChartAction.setItemTextColor:
+    case responsiveBarChartAction.setLegendItemWidth:
       return {
         ...state,
-        itemTextColor: action.payload,
+        legendItemWidth: action.payload,
       };
-    case responsiveBarChartAction.setItemOpacity:
+    case responsiveBarChartAction.setLegendItemHeight:
       return {
         ...state,
-        itemOpacity: action.payload,
+        legendItemHeight: action.payload,
       };
-    case responsiveBarChartAction.setSymbolSize:
+    case responsiveBarChartAction.setLegendItemsSpacing:
       return {
         ...state,
-        symbolSize: action.payload,
+        legendItemsSpacing: action.payload,
       };
-    case responsiveBarChartAction.setSymbolShape:
+    case responsiveBarChartAction.setLegendItemDirection:
       return {
         ...state,
-        symbolShape: action.payload,
+        legendItemDirection: action.payload,
       };
-    case responsiveBarChartAction.setAnimate:
+    case responsiveBarChartAction.setLegendItemTextColor:
       return {
         ...state,
-        animate: action.payload,
+        legendItemTextColor: action.payload,
+      };
+    case responsiveBarChartAction.setLegendItemOpacity:
+      return {
+        ...state,
+        legendItemOpacity: action.payload,
+      };
+    case responsiveBarChartAction.setLegendSymbolSize:
+      return {
+        ...state,
+        legendSymbolSize: action.payload,
+      };
+    case responsiveBarChartAction.setLegendSymbolShape:
+      return {
+        ...state,
+        legendSymbolShape: action.payload,
+      };
+    case responsiveBarChartAction.setEnableAnimate:
+      return {
+        ...state,
+        enableAnimate: action.payload,
       };
     case responsiveBarChartAction.setMotionConfig:
       return {

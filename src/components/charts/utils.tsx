@@ -6,19 +6,19 @@ import { useGlobalState } from '../../hooks';
 import { splitCamelCase } from '../../utils';
 import { TextWrapper } from '../wrappers';
 
-type ChartsGraphsControlsStackerProps = {
+type ChartsAndGraphsControlsStackerProps = {
   label: string | ReactNode;
   value: string | number | boolean;
   input: JSX.Element;
   symbol?: string;
 };
 
-function ChartsGraphsControlsStacker({
+function ChartsAndGraphsControlsStacker({
   label,
   value,
   input,
   symbol = '',
-}: ChartsGraphsControlsStackerProps) {
+}: ChartsAndGraphsControlsStackerProps) {
   const {
     globalState: {
       padding,
@@ -70,4 +70,4 @@ function ChartsGraphsControlsStacker({
   );
 }
 
-export { ChartsGraphsControlsStacker };
+export { ChartsAndGraphsControlsStacker };

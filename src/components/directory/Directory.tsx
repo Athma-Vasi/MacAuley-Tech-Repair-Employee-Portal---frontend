@@ -42,7 +42,7 @@ import {
   urlBuilder,
 } from '../../utils';
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
-import { ChartsGraphsControlsStacker } from '../charts/utils';
+import { ChartsAndGraphsControlsStacker } from '../charts/utils';
 import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
 import {
   AccessibleSelectInputCreatorInfo,
@@ -2110,7 +2110,7 @@ function Directory() {
   );
 
   const displayFilterByDepartmentSelectInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdFilterByDepartmentSelectInputElements}
       label="Filter by department"
       value={filterByDepartment}
@@ -2119,7 +2119,7 @@ function Directory() {
   );
 
   const displayFilterByJobPositionSelectInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdFilterByJobPositionSelectInputElements}
       label="Filter by job position"
       value={
@@ -2132,7 +2132,7 @@ function Directory() {
   );
 
   const displayFilterByStoreLocationSelectInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdFilterByStoreLocationSelectInputElements}
       label="Filter by store location"
       value={
@@ -2166,7 +2166,7 @@ function Directory() {
   );
 
   const displayDagreNodeSepSliderInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdDagreNodeSepSliderInput}
       label="Node Separation"
       value={dagreNodeSep}
@@ -2175,7 +2175,7 @@ function Directory() {
   );
 
   const displayDagreRankSepSliderInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdDagreRankSepSliderInput}
       label="Rank Separation"
       value={dagreRankSep}
@@ -2184,7 +2184,7 @@ function Directory() {
   );
 
   const displayDagreMinLenSliderInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdDagreMinLenSliderInput}
       label="Min Length"
       value={dagreMinLen}
@@ -2193,7 +2193,7 @@ function Directory() {
   );
 
   const displayDagreRankDirSelectInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdDagreRankDirSelectInput}
       label="Rank Direction"
       value={dagreRankDir}
@@ -2202,7 +2202,7 @@ function Directory() {
   );
 
   const displayDagreRankAlignSelectInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdDagreRankAlignSelectInput}
       label="Rank Alignment"
       value={dagreRankAlign === 'undefined' ? 'Default' : dagreRankAlign}
@@ -2211,7 +2211,7 @@ function Directory() {
   );
 
   const displayDagreRankerSelectInput = (
-    <ChartsGraphsControlsStacker
+    <ChartsAndGraphsControlsStacker
       input={createdDagreRankerSelectInput}
       label="Ranker Algorithm"
       value={dagreRanker}

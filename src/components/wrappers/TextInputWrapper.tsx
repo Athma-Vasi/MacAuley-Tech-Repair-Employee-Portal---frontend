@@ -22,6 +22,7 @@ type AccessibleTextInputCreatorInfo = {
   /**
    * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
    */
+  disabled?: boolean;
   dynamicInputs?: ReactNode[];
   icon?: ReactNode;
   initialInputValue?: string;
@@ -65,6 +66,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     ariaAutoComplete = 'none',
     autoComplete = 'off',
     description,
+    disabled = false,
     dynamicInputs = null,
     icon = null,
     initialInputValue = '',
@@ -153,6 +155,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
             aria-required={required}
             autoComplete={autoComplete}
             color="dark"
+            disabled={disabled}
             error={!isValidInputText && inputText !== initialInputValue}
             icon={leftIcon}
             label={dynamicInputLabel}
