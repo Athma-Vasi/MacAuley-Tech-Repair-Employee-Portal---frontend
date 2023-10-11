@@ -430,7 +430,6 @@ function DisplayQueryMobile({
                 showLabel={createdShowMoreButton}
                 hideLabel={createdHideButton}
               >
-                {/* <Text>{highlightedText}</Text> */}
                 <Flex direction="row" wrap="wrap" gap={4}>
                   {highlightedText}
                 </Flex>
@@ -438,6 +437,14 @@ function DisplayQueryMobile({
             </Flex>
           </Flex>
         );
+
+        const rowBackgroundColorLight =
+          keyValIdx % 2 === 0 ? '#f9f9f9' : 'transparent';
+        const rowBackgroundColorDark = 'transparent';
+        const rowBackgroundColor =
+          themeObject.colorScheme === 'dark'
+            ? rowBackgroundColorDark
+            : rowBackgroundColorLight;
 
         const lastKeyValBorderBottom =
           Object.keys(queryResponseObjWithAddedFields).length - 1 === keyValIdx
@@ -450,7 +457,7 @@ function DisplayQueryMobile({
             direction={width < 768 ? 'column' : 'row'}
             align={width < 768 ? 'flex-start' : 'center'}
             justify={width < 768 ? 'flex-start' : 'space-between'}
-            bg={backgroundColor}
+            bg={rowBackgroundColor}
             style={{ borderBottom: lastKeyValBorderBottom }}
             rowGap={rowGap}
             w="100%"
