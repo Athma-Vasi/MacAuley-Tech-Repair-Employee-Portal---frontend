@@ -42,7 +42,7 @@ import {
   splitCamelCase,
   urlBuilder,
 } from '../../../utils';
-import { ChartsGraphsControlsStacker } from '../../displayStatistics/responsivePieChart/utils';
+import { ChartsGraphsControlsStacker } from '../../charts/utils';
 import { DecodedToken } from '../../login/types';
 import { NotificationModal } from '../../notificationModal';
 import { AccessibleNavLinkCreatorInfo } from '../../wrappers';

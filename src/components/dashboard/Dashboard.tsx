@@ -123,7 +123,7 @@ function Dashboard() {
       });
 
       const url: URL = new URL(
-        `http://localhost:5500/api/v1/actions/dashboard${
+        `http://localhost:5500/api/v1/actions/home${
           roles.includes('Employee') ? `${userId}/` : ''
         }?&newQueryFlag=true&limit=5&totalDocuments=0`
       );

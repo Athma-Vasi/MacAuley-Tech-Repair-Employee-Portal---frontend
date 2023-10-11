@@ -9,6 +9,7 @@ import {
   Title,
   UnstyledButton,
 } from '@mantine/core';
+import { ScrollAreaComponent } from '@mantine/core/lib/Drawer/Drawer.context';
 import { useDisclosure } from '@mantine/hooks';
 import { useEffect, useReducer } from 'react';
 import { TbChartPie4 } from 'react-icons/tb';
@@ -16,15 +17,14 @@ import { TbChartPie4 } from 'react-icons/tb';
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
 import { logState, returnThemeColors } from '../../utils';
+import { ResponsivePieChart } from '../charts';
 import { PageBuilder } from '../pageBuilder';
-import { ResponsivePieChart } from './responsivePieChart';
 import {
   displayStatisticsAction,
   displayStatisticsReducer,
   initialDisplayStatisticsState,
 } from './state';
 import { ChartKind, DisplayStatisticsProps, PieChartData } from './types';
-import { ScrollAreaComponent } from '@mantine/core/lib/Drawer/Drawer.context';
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(

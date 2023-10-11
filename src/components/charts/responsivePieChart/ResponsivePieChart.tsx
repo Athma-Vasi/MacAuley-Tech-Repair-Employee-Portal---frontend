@@ -21,12 +21,13 @@ import {
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
 import { logState, returnThemeColors } from '../../../utils';
+import { PieChartData } from '../../displayStatistics/types';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
   TextWrapper,
 } from '../../wrappers';
-import { PieChartData } from '../types';
+import { ChartsGraphsControlsStacker } from '../utils';
 import {
   NIVO_COLOR_SCHEME_DATA,
   NIVO_LEGEND_ANCHOR_DATA,
@@ -52,7 +53,6 @@ import {
   NivoTransitionMode,
   ResponsivePieChartProps,
 } from './types';
-import { ChartsGraphsControlsStacker } from './utils';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */

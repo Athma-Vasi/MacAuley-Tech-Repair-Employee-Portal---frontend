@@ -1,10 +1,10 @@
 import { Flex, Group, Text, useMantineTheme } from '@mantine/core';
-
-import { useGlobalState } from '../../../hooks';
-import { splitCamelCase } from '../../../utils';
-import { TextWrapper } from '../../wrappers';
 import { ReactNode } from 'react';
-import { COLORS_SWATCHES } from '../../../constants/data';
+
+import { COLORS_SWATCHES } from '../../constants/data';
+import { useGlobalState } from '../../hooks';
+import { splitCamelCase } from '../../utils';
+import { TextWrapper } from '../wrappers';
 
 type ChartsGraphsControlsStackerProps = {
   label: string | ReactNode;

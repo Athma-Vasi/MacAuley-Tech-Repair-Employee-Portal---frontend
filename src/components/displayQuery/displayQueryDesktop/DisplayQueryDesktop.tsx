@@ -1187,6 +1187,15 @@ function DisplayQueryDesktop({
       opened={openedProfileInfoModal}
       onClose={() => {
         closeProfileInfoModal();
+
+        // displayQueryDesktopDispatch({
+        //   type: displayQueryDesktopAction.setEmployeeIdToViewProfile,
+        //   payload: '',
+        // });
+        // displayQueryDesktopDispatch({
+        //   type: displayQueryDesktopAction.setEmployeeDocument,
+        //   payload: null,
+        // });
       }}
       size={modalSize}
       title={<Text size="xl">Profile information</Text>}

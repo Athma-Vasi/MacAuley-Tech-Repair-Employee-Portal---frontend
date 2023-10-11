@@ -33,17 +33,16 @@ import {
   returnThemeColors,
   urlBuilder,
 } from '../../../../utils';
+import { ResponsivePieChart } from '../../../charts';
 import { Comment } from '../../../comment';
-
 import { CustomRating } from '../../../customRating/CustomRating';
-import { ResponsivePieChart } from '../../../displayStatistics/responsivePieChart';
+import { NotificationModal } from '../../../notificationModal';
 import { AnnouncementDocument } from '../../create/types';
 import {
   displayAnnouncementAction,
   displayAnnouncementReducer,
   initialDisplayAnnouncementState,
 } from './state';
-import { NotificationModal } from '../../../notificationModal';
 
 function DisplayAnnouncement() {
   /** ------------- begin hooks ------------- */

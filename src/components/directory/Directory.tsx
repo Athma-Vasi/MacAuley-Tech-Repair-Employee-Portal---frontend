@@ -42,7 +42,7 @@ import {
   urlBuilder,
 } from '../../utils';
 import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
-import { ChartsGraphsControlsStacker } from '../displayStatistics/responsivePieChart/utils';
+import { ChartsGraphsControlsStacker } from '../charts/utils';
 import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
 import {
   AccessibleSelectInputCreatorInfo,
