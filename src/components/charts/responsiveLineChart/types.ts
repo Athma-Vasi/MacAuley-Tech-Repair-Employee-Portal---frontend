@@ -113,6 +113,11 @@ type ResponsiveLineChartAction = {
   // base
   setXScale: 'setXScale';
   setYScale: 'setYScale';
+  setEnableYScaleStacked: 'setEnableYScaleStacked';
+  setEnableYScaleMin: 'setEnableYScaleMin';
+  setYScaleMin: 'setYScaleMin';
+  setEnableYScaleMax: 'setEnableYScaleMax';
+  setYScaleMax: 'setYScaleMax';
 
   // margin
   setMarginTop: 'setMarginTop';
@@ -218,10 +223,14 @@ type ResponsiveLineChartDispatch =
     }
   | {
       type:
+        | ResponsiveLineChartAction['setYScaleMin']
+        | ResponsiveLineChartAction['setYScaleMax']
         | ResponsiveLineChartAction['setMarginTop']
         | ResponsiveLineChartAction['setMarginRight']
         | ResponsiveLineChartAction['setMarginBottom']
         | ResponsiveLineChartAction['setMarginLeft']
+        | ResponsiveLineChartAction['setLineWidth']
+        | ResponsiveLineChartAction['setAreaOpacity']
         | ResponsiveLineChartAction['setAxisTopTickSize']
         | ResponsiveLineChartAction['setAxisTopTickPadding']
         | ResponsiveLineChartAction['setAxisTopTickRotation']
@@ -238,7 +247,6 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setAxisLeftTickPadding']
         | ResponsiveLineChartAction['setAxisLeftTickRotation']
         | ResponsiveLineChartAction['setAxisLeftLegendOffset']
-        | ResponsiveLineChartAction['setLineWidth']
         | ResponsiveLineChartAction['setPointSize']
         | ResponsiveLineChartAction['setPointBorderWidth']
         | ResponsiveLineChartAction['setPointLabelYOffset']
@@ -254,15 +262,26 @@ type ResponsiveLineChartDispatch =
     }
   | {
       type:
+        | ResponsiveLineChartAction['setEnableYScaleStacked']
+        | ResponsiveLineChartAction['setEnableYScaleMin']
+        | ResponsiveLineChartAction['setEnableYScaleMax']
         | ResponsiveLineChartAction['setEnableArea']
         | ResponsiveLineChartAction['setEnablePoints']
         | ResponsiveLineChartAction['setEnablePointLabel']
         | ResponsiveLineChartAction['setEnableGridX']
         | ResponsiveLineChartAction['setEnableGridY']
         | ResponsiveLineChartAction['setEnableAxisTop']
+        | ResponsiveLineChartAction['setIsAxisTopLegendValid']
+        | ResponsiveLineChartAction['setIsAxisTopLegendFocused']
         | ResponsiveLineChartAction['setEnableAxisRight']
+        | ResponsiveLineChartAction['setIsAxisRightLegendValid']
+        | ResponsiveLineChartAction['setIsAxisRightLegendFocused']
         | ResponsiveLineChartAction['setEnableAxisBottom']
+        | ResponsiveLineChartAction['setIsAxisBottomLegendValid']
+        | ResponsiveLineChartAction['setIsAxisBottomLegendFocused']
         | ResponsiveLineChartAction['setEnableAxisLeft']
+        | ResponsiveLineChartAction['setIsAxisLeftLegendValid']
+        | ResponsiveLineChartAction['setIsAxisLeftLegendFocused']
         | ResponsiveLineChartAction['setEnableInteractive']
         | ResponsiveLineChartAction['setEnableCrosshair']
         | ResponsiveLineChartAction['setEnableLegend']
@@ -270,10 +289,6 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setEnableAnimate'];
 
       payload: boolean;
-    }
-  | {
-      type: ResponsiveLineChartAction['setChartColors'];
-      payload: string[];
     }
   | {
       type: ResponsiveLineChartAction['setChartColors'];
@@ -313,6 +328,10 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setYScale'];
 
       payload: 'linear' | 'point';
+    }
+  | {
+      type: ResponsiveLineChartAction['setPointLabel'];
+      payload: 'x' | 'y';
     };
 
 export type {
