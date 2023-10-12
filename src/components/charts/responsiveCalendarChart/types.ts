@@ -106,10 +106,8 @@ type ResponsiveCalendarChartDispatch =
         | ResponsiveCalendarChartAction['setYearLegendOffset']
         | ResponsiveCalendarChartAction['setMonthSpacing']
         | ResponsiveCalendarChartAction['setMonthBorderWidth']
-        | ResponsiveCalendarChartAction['setMonthBorderColor']
         | ResponsiveCalendarChartAction['setDaySpacing']
-        | ResponsiveCalendarChartAction['setDayBorderWidth']
-        | ResponsiveCalendarChartAction['setDayBorderColor'];
+        | ResponsiveCalendarChartAction['setDayBorderWidth'];
       payload: number;
     }
   | {
@@ -119,6 +117,7 @@ type ResponsiveCalendarChartDispatch =
   | {
       type:
         | ResponsiveCalendarChartAction['setEmptyColor']
+        | ResponsiveCalendarChartAction['setMonthBorderColor']
         | ResponsiveCalendarChartAction['setDayBorderColor'];
       payload: string;
     }
