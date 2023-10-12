@@ -1959,10 +1959,10 @@ function ResponsiveBarChart() {
   /** display base */
   const displayBaseHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Base</Title>
     </Group>
@@ -2032,6 +2032,7 @@ function ResponsiveBarChart() {
     <ChartsAndGraphsControlsStacker
       input={createdPaddingBarSliderInput}
       label="Padding"
+      symbol="px"
       value={paddingBar}
     />
   );
@@ -2040,6 +2041,7 @@ function ResponsiveBarChart() {
     <ChartsAndGraphsControlsStacker
       input={createdInnerPaddingBarSliderInput}
       label="Inner padding"
+      symbol="px"
       value={innerPaddingBar}
     />
   );
@@ -2063,10 +2065,10 @@ function ResponsiveBarChart() {
   // display margin
   const displayMarginHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Margin</Title>
     </Group>
@@ -2076,6 +2078,7 @@ function ResponsiveBarChart() {
     <ChartsAndGraphsControlsStacker
       input={createdMarginTopSliderInput}
       label="Margin top"
+      symbol="px"
       value={marginTop}
     />
   );
@@ -2084,6 +2087,7 @@ function ResponsiveBarChart() {
     <ChartsAndGraphsControlsStacker
       input={createdMarginRightSliderInput}
       label="Margin right"
+      symbol="px"
       value={marginRight}
     />
   );
@@ -2092,6 +2096,7 @@ function ResponsiveBarChart() {
     <ChartsAndGraphsControlsStacker
       input={createdMarginBottomSliderInput}
       label="Margin bottom"
+      symbol="px"
       value={marginBottom}
     />
   );
@@ -2100,6 +2105,7 @@ function ResponsiveBarChart() {
     <ChartsAndGraphsControlsStacker
       input={createdMarginLeftSliderInput}
       label="Margin left"
+      symbol="px"
       value={marginLeft}
     />
   );
@@ -2117,10 +2123,10 @@ function ResponsiveBarChart() {
   // display style
   const displayStyleHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Style</Title>
     </Group>
@@ -2138,6 +2144,7 @@ function ResponsiveBarChart() {
     <ChartsAndGraphsControlsStacker
       input={createdChartBorderRadiusSliderInput}
       label="Border radius"
+      symbol="px"
       value={chartBorderRadius}
     />
   );
@@ -2146,6 +2153,7 @@ function ResponsiveBarChart() {
     <ChartsAndGraphsControlsStacker
       input={createdChartBorderWidthSliderInput}
       label="Border width"
+      symbol="px"
       value={chartBorderWidth}
     />
   );
@@ -2178,10 +2186,10 @@ function ResponsiveBarChart() {
   // display labels
   const displayLabelsHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Labels</Title>
     </Group>
@@ -2198,6 +2206,7 @@ function ResponsiveBarChart() {
       input={createdLabelSkipWidthSliderInput}
       isInputDisabled={!enableLabels}
       label="Label skip width"
+      symbol="px"
       value={labelSkipWidth}
     />
   );
@@ -2207,6 +2216,7 @@ function ResponsiveBarChart() {
       input={createdLabelSkipHeightSliderInput}
       isInputDisabled={!enableLabels}
       label="Label skip height"
+      symbol="px"
       value={labelSkipHeight}
     />
   );
@@ -2233,10 +2243,10 @@ function ResponsiveBarChart() {
   // display grid
   const displayGridHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Grid</Title>
     </Group>
@@ -2265,10 +2275,10 @@ function ResponsiveBarChart() {
   // axis top
   const displayAxisTopHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Axis Top</Title>
     </Group>
@@ -2285,6 +2295,7 @@ function ResponsiveBarChart() {
       input={createdAxisTopTickSizeSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick size"
+      symbol="px"
       value={axisTopTickSize}
     />
   );
@@ -2294,6 +2305,7 @@ function ResponsiveBarChart() {
       input={createdAxisTopTickPaddingSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick padding"
+      symbol="px"
       value={axisTopTickPadding}
     />
   );
@@ -2303,6 +2315,7 @@ function ResponsiveBarChart() {
       input={createdAxisTopTickRotationSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick rotation"
+      symbol="°"
       value={axisTopTickRotation}
     />
   );
@@ -2321,6 +2334,7 @@ function ResponsiveBarChart() {
       input={createdAxisTopLegendOffsetSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top legend offset"
+      symbol="px"
       value={axisTopLegendOffset}
     />
   );
@@ -2340,10 +2354,10 @@ function ResponsiveBarChart() {
   // axis right
   const displayAxisRightHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Axis Right</Title>
     </Group>
@@ -2360,6 +2374,7 @@ function ResponsiveBarChart() {
       input={createdAxisRightTickSizeSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick size"
+      symbol="px"
       value={axisRightTickSize}
     />
   );
@@ -2369,6 +2384,7 @@ function ResponsiveBarChart() {
       input={createdAxisRightTickPaddingSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick padding"
+      symbol="px"
       value={axisRightTickPadding}
     />
   );
@@ -2378,6 +2394,7 @@ function ResponsiveBarChart() {
       input={createdAxisRightTickRotationSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick rotation"
+      symbol="°"
       value={axisRightTickRotation}
     />
   );
@@ -2396,6 +2413,7 @@ function ResponsiveBarChart() {
       input={createdAxisRightLegendOffsetSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right legend offset"
+      symbol="px"
       value={axisRightLegendOffset}
     />
   );
@@ -2415,10 +2433,10 @@ function ResponsiveBarChart() {
   // axis bottom
   const displayAxisBottomHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Axis Bottom</Title>
     </Group>
@@ -2435,6 +2453,7 @@ function ResponsiveBarChart() {
       input={createdAxisBottomTickSizeSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick size"
+      symbol="px"
       value={axisBottomTickSize}
     />
   );
@@ -2444,6 +2463,7 @@ function ResponsiveBarChart() {
       input={createdAxisBottomTickPaddingSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick padding"
+      symbol="px"
       value={axisBottomTickPadding}
     />
   );
@@ -2453,6 +2473,7 @@ function ResponsiveBarChart() {
       input={createdAxisBottomTickRotationSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick rotation"
+      symbol="°"
       value={axisBottomTickRotation}
     />
   );
@@ -2471,6 +2492,7 @@ function ResponsiveBarChart() {
       input={createdAxisBottomLegendOffsetSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom legend offset"
+      symbol="px"
       value={axisBottomLegendOffset}
     />
   );
@@ -2490,10 +2512,10 @@ function ResponsiveBarChart() {
   // axis left
   const displayAxisLeftHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4, marginBottom: 0 }}
+      w="100%"
     >
       <Title order={5}>Axis Left</Title>
     </Group>
@@ -2510,6 +2532,7 @@ function ResponsiveBarChart() {
       input={createdAxisLeftTickSizeSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick size"
+      symbol="px"
       value={axisLeftTickSize}
     />
   );
@@ -2519,6 +2542,7 @@ function ResponsiveBarChart() {
       input={createdAxisLeftTickPaddingSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick padding"
+      symbol="px"
       value={axisLeftTickPadding}
     />
   );
@@ -2528,6 +2552,7 @@ function ResponsiveBarChart() {
       input={createdAxisLeftTickRotationSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick rotation"
+      symbol="°"
       value={axisLeftTickRotation}
     />
   );
@@ -2546,6 +2571,7 @@ function ResponsiveBarChart() {
       input={createdAxisLeftLegendOffsetSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left legend offset"
+      symbol="px"
       value={axisLeftLegendOffset}
     />
   );
@@ -2565,10 +2591,10 @@ function ResponsiveBarChart() {
   // display legend
   const displayLegendHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Legend</Title>
     </Group>
@@ -2613,6 +2639,7 @@ function ResponsiveBarChart() {
       input={createdLegendTranslateXSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend translate X"
+      symbol="px"
       value={legendTranslateX}
     />
   );
@@ -2622,6 +2649,7 @@ function ResponsiveBarChart() {
       input={createdLegendTranslateYSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend translate Y"
+      symbol="px"
       value={legendTranslateY}
     />
   );
@@ -2631,6 +2659,7 @@ function ResponsiveBarChart() {
       input={createdLegendItemWidthSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item width"
+      symbol="px"
       value={legendItemWidth}
     />
   );
@@ -2640,6 +2669,7 @@ function ResponsiveBarChart() {
       input={createdLegendItemHeightSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item height"
+      symbol="px"
       value={legendItemHeight}
     />
   );
@@ -2649,6 +2679,7 @@ function ResponsiveBarChart() {
       input={createdLegendItemsSpacingSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend items spacing"
+      symbol="px"
       value={legendItemsSpacing}
     />
   );
@@ -2681,6 +2712,7 @@ function ResponsiveBarChart() {
       input={createdLegendSymbolSizeSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol size"
+      symbol="px"
       value={legendSymbolSize}
     />
   );
@@ -2706,10 +2738,10 @@ function ResponsiveBarChart() {
   // display motion
   const displayMotionHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Motion</Title>
     </Group>
@@ -2991,37 +3023,17 @@ function ResponsiveBarChart() {
             ]
           : []
       }
+      // motion
+      animate={enableAnimate}
+      motionConfig={motionConfig}
+      isInteractive={true}
       role="application"
-      ariaLabel="Nivo bar chart demo"
+      ariaLabel="Nivo bar chart"
       barAriaLabel={(e) =>
         e.id + ': ' + e.formattedValue + ' in country: ' + e.indexValue
       }
     />
   );
-
-  /**
-   *  const displayResponsivePieChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
-        {displayPieChartControls}
-      </Grid.Col>
-
-      <Grid.Col span={1}>
-        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
-        <Divider
-          orientation={width < 1192 ? 'horizontal' : 'vertical'}
-          size="sm"
-          w="100%"
-          h="100%"
-        />
-      </Grid.Col>
-
-      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
-        {displayResponsivePie}
-      </Grid.Col>
-    </Grid>
-  );
-   */
 
   const displayResponsiveBarChartComponent = (
     <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
@@ -3049,234 +3061,3 @@ function ResponsiveBarChart() {
 }
 
 export { ResponsiveBarChart };
-
-/**
- * [
-  {
-    "country": "AD",
-    "hot dog": 133,
-    "hot dogColor": "hsl(195, 70%, 50%)",
-    "burger": 66,
-    "burgerColor": "hsl(297, 70%, 50%)",
-    "sandwich": 50,
-    "sandwichColor": "hsl(81, 70%, 50%)",
-    "kebab": 134,
-    "kebabColor": "hsl(114, 70%, 50%)",
-    "fries": 182,
-    "friesColor": "hsl(64, 70%, 50%)",
-    "donut": 9,
-    "donutColor": "hsl(10, 70%, 50%)"
-  },
-  {
-    "country": "AE",
-    "hot dog": 6,
-    "hot dogColor": "hsl(278, 70%, 50%)",
-    "burger": 19,
-    "burgerColor": "hsl(76, 70%, 50%)",
-    "sandwich": 28,
-    "sandwichColor": "hsl(82, 70%, 50%)",
-    "kebab": 91,
-    "kebabColor": "hsl(356, 70%, 50%)",
-    "fries": 159,
-    "friesColor": "hsl(225, 70%, 50%)",
-    "donut": 116,
-    "donutColor": "hsl(325, 70%, 50%)"
-  },
-  {
-    "country": "AF",
-    "hot dog": 11,
-    "hot dogColor": "hsl(8, 70%, 50%)",
-    "burger": 121,
-    "burgerColor": "hsl(290, 70%, 50%)",
-    "sandwich": 175,
-    "sandwichColor": "hsl(297, 70%, 50%)",
-    "kebab": 78,
-    "kebabColor": "hsl(76, 70%, 50%)",
-    "fries": 85,
-    "friesColor": "hsl(99, 70%, 50%)",
-    "donut": 10,
-    "donutColor": "hsl(228, 70%, 50%)"
-  },
-  {
-    "country": "AG",
-    "hot dog": 57,
-    "hot dogColor": "hsl(146, 70%, 50%)",
-    "burger": 84,
-    "burgerColor": "hsl(346, 70%, 50%)",
-    "sandwich": 193,
-    "sandwichColor": "hsl(124, 70%, 50%)",
-    "kebab": 81,
-    "kebabColor": "hsl(287, 70%, 50%)",
-    "fries": 176,
-    "friesColor": "hsl(76, 70%, 50%)",
-    "donut": 86,
-    "donutColor": "hsl(252, 70%, 50%)"
-  },
-  {
-    "country": "AI",
-    "hot dog": 142,
-    "hot dogColor": "hsl(32, 70%, 50%)",
-    "burger": 155,
-    "burgerColor": "hsl(120, 70%, 50%)",
-    "sandwich": 105,
-    "sandwichColor": "hsl(255, 70%, 50%)",
-    "kebab": 16,
-    "kebabColor": "hsl(283, 70%, 50%)",
-    "fries": 163,
-    "friesColor": "hsl(326, 70%, 50%)",
-    "donut": 56,
-    "donutColor": "hsl(182, 70%, 50%)"
-  },
-  {
-    "country": "AL",
-    "hot dog": 29,
-    "hot dogColor": "hsl(84, 70%, 50%)",
-    "burger": 182,
-    "burgerColor": "hsl(228, 70%, 50%)",
-    "sandwich": 184,
-    "sandwichColor": "hsl(285, 70%, 50%)",
-    "kebab": 41,
-    "kebabColor": "hsl(326, 70%, 50%)",
-    "fries": 83,
-    "friesColor": "hsl(307, 70%, 50%)",
-    "donut": 63,
-    "donutColor": "hsl(18, 70%, 50%)"
-  },
-  {
-    "country": "AM",
-    "hot dog": 187,
-    "hot dogColor": "hsl(322, 70%, 50%)",
-    "burger": 114,
-    "burgerColor": "hsl(290, 70%, 50%)",
-    "sandwich": 53,
-    "sandwichColor": "hsl(248, 70%, 50%)",
-    "kebab": 5,
-    "kebabColor": "hsl(279, 70%, 50%)",
-    "fries": 151,
-    "friesColor": "hsl(141, 70%, 50%)",
-    "donut": 137,
-    "donutColor": "hsl(142, 70%, 50%)"
-  }
-]
- */
-
-/**
- * const MyResponsiveBar = ({ data  }) => (
-    <ResponsiveBar
-        data={data}
-        keys={[
-            'hot dog',
-            'burger',
-            'sandwich',
-            'kebab',
-            'fries',
-            'donut'
-        ]}
-        indexBy="country"
-        margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-        padding={0.3}
-        valueScale={{ type: 'linear' }}
-        indexScale={{ type: 'band', round: true }}
-        chartColors={{ scheme: 'nivo' }}
-        defs={[
-            {
-                id: 'dots',
-                type: 'patternDots',
-                background: 'inherit',
-                color: '#38bcb2',
-                size: 4,
-                padding: 1,
-                stagger: true
-            },
-            {
-                id: 'lines',
-                type: 'patternLines',
-                background: 'inherit',
-                color: '#eed312',
-                rotation: -45,
-                lineWidth: 6,
-                spacing: 10
-            }
-        ]}
-        fill={[
-            {
-                match: {
-                    id: 'fries'
-                },
-                id: 'dots'
-            },
-            {
-                match: {
-                    id: 'sandwich'
-                },
-                id: 'lines'
-            }
-        ]}
-        borderColor={{
-            from: 'color',
-            modifiers: [
-                [
-                    'darker',
-                    1.6
-                ]
-            ]
-        }}
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: 'country',
-            legendPosition: 'middle',
-            legendOffset: 32
-        }}
-        axisLeft={{
-            tickSize: 5,
-            tickPadding: 5,
-            tickRotation: 0,
-            legend: 'food',
-            legendPosition: 'middle',
-            legendOffset: -40
-        }}
-        labelSkipWidth={12}
-        labelSkipHeight={12}
-        labelTextColor={{
-            from: 'color',
-            modifiers: [
-                [
-                    'darker',
-                    1.6
-                ]
-            ]
-        }}
-        legend={[
-            {
-                dataFrom: 'keys',
-                anchor: 'bottom-right',
-                direction: 'column',
-                justify: false,
-                translateX: 120,
-                translateY: 0,
-                itemsSpacing: 2,
-                itemWidth: 100,
-                itemHeight: 20,
-                itemDirection: 'left-to-right',
-                legendItemOpacity: 0.85,
-                legendSymbolSize: 20,
-                effects: [
-                    {
-                        on: 'hover',
-                        style: {
-                            legendItemOpacity: 1
-                        }
-                    }
-                ]
-            }
-        ]}
-        role="application"
-        ariaLabel="Nivo bar chart demo"
-        barAriaLabel={e=>e.id+": "+e.formattedValue+" in country: "+e.indexValue}
-    />
-)
- */

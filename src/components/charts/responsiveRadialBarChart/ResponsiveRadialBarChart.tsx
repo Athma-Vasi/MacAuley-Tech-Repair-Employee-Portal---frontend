@@ -5,10 +5,25 @@ import {
   responsiveRadialBarChartReducer,
 } from './state';
 import { useGlobalState } from '../../../hooks';
-import { AccessibleSelectedDeselectedTextElements } from '../../../jsxCreators';
+import {
+  AccessibleSelectedDeselectedTextElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleSliderInputElements,
+} from '../../../jsxCreators';
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { returnThemeColors } from '../../../utils';
-import { ColorInput, Switch, Text } from '@mantine/core';
+import {
+  ColorInput,
+  Divider,
+  Grid,
+  Group,
+  ScrollArea,
+  Space,
+  Stack,
+  Switch,
+  Text,
+  Title,
+} from '@mantine/core';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
@@ -29,6 +44,8 @@ import {
   NivoMotionConfig,
   NivoTransitionMode,
 } from '../types';
+import { ChartsAndGraphsControlsStacker } from '../utils';
+import { ResponsiveRadialBar } from '@nivo/radial-bar';
 
 function ResponsiveRadialBarChart() {
   const [responsiveRadialBarChartState, responsiveRadialBarChartDispatch] =
@@ -38,7 +55,7 @@ function ResponsiveRadialBarChart() {
     );
 
   const {
-    globalState: { isPrefersReducedMotion, themeObject, width },
+    globalState: { isPrefersReducedMotion, themeObject, width, padding },
   } = useGlobalState();
 
   const {
@@ -1164,7 +1181,7 @@ function ResponsiveRadialBarChart() {
       width: sliderWidth,
     };
 
-  const createdToggleLegendJustifySwitchInput = (
+  const createdEnableLegendJustifySwitchInput = (
     <Switch
       aria-describedby={
         enableLegendJustify
@@ -1416,7 +1433,1196 @@ function ResponsiveRadialBarChart() {
       width: sliderWidth,
     };
 
-  return <></>;
+  // input creation
+  // base
+
+  /**
+   * const [
+    createdGroupModeSelectInput,
+    createdLayoutSelectInput,
+    createdValueScaleSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    groupModeSelectInputCreatorInfo,
+    layoutSelectInputCreatorInfo,
+    valueScaleSelectInputCreatorInfo,
+  ]);
+
+  const [
+    createdMinValueSliderInput,
+    createdMaxValueSliderInput,
+    createdPaddingBarSliderInput,
+    createdInnerPaddingBarSliderInput,
+    createdMarginTopSliderInput,
+    createdMarginRightSliderInput,
+    createdMarginBottomSliderInput,
+    createdMarginLeftSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    minValueSliderInputCreatorInfo,
+    maxValueSliderInputCreatorInfo,
+    paddingBarSliderInputCreatorInfo,
+    innerPaddingBarSliderInputCreatorInfo,
+    marginTopSliderInputCreatorInfo,
+    marginRightSliderInputCreatorInfo,
+    marginBottomSliderInputCreatorInfo,
+    marginLeftSliderInputCreatorInfo,
+  ]);
+   */
+
+  const [
+    createdMaxValueSliderInput,
+    createdMarginTopSliderInput,
+    createdMarginRightSliderInput,
+    createdMarginBottomSliderInput,
+    createdMarginLeftSliderInput,
+    createdStartAngleSliderInput,
+    createdEndAngleSliderInput,
+    createdInnerRadiusSliderInput,
+    createdPaddingRingSliderInput,
+    createdPadAngleSliderInput,
+    createdCornerRadiusSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    maxValueSliderInputCreatorInfo,
+    marginTopSliderInputCreatorInfo,
+    marginRightSliderInputCreatorInfo,
+    marginBottomSliderInputCreatorInfo,
+    marginLeftSliderInputCreatorInfo,
+    startAngleSliderInputCreatorInfo,
+    endAngleSliderInputCreatorInfo,
+    innerRadiusSliderInputCreatorInfo,
+    paddingRingSliderInputCreatorInfo,
+    padAngleSliderInputCreatorInfo,
+    cornerRadiusSliderInputCreatorInfo,
+  ]);
+
+  // style
+  const [createdChartColorsSelectInput] = returnAccessibleSelectInputElements([
+    chartColorsSelectInputCreatorInfo,
+  ]);
+
+  const [createdRingBorderWidthSliderInput] =
+    returnAccessibleSliderInputElements([
+      ringBorderWidthSliderInputCreatorInfo,
+    ]);
+
+  // axes
+  const [
+    // radial axis start
+    createdRadialAxisStartTickSizeSliderInput,
+    createdRadialAxisStartTickPaddingSliderInput,
+    createdRadialAxisStartTickRotationSliderInput,
+    // radial axis end
+    createdRadialAxisEndTickSizeSliderInput,
+    createdRadialAxisEndTickPaddingSliderInput,
+    createdRadialAxisEndTickRotationSliderInput,
+    // circular axis inner
+    createdCircularAxisInnerTickSizeSliderInput,
+    createdCircularAxisInnerTickPaddingSliderInput,
+    createdCircularAxisInnerTickRotationSliderInput,
+    // circular axis outer
+    createdCircularAxisOuterTickSizeSliderInput,
+    createdCircularAxisOuterTickPaddingSliderInput,
+    createdCircularAxisOuterTickRotationSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    // radial axis start
+    radialAxisStartTickSizeSliderInputCreatorInfo,
+    radialAxisStartTickPaddingSliderInputCreatorInfo,
+    radialAxisStartTickRotationSliderInputCreatorInfo,
+    // radial axis end
+    radialAxisEndTickSizeSliderInputCreatorInfo,
+    radialAxisEndTickPaddingSliderInputCreatorInfo,
+    radialAxisEndTickRotationSliderInputCreatorInfo,
+    // circular axis inner
+    circularAxisInnerTickSizeSliderInputCreatorInfo,
+    circularAxisInnerTickPaddingSliderInputCreatorInfo,
+    circularAxisInnerTickRotationSliderInputCreatorInfo,
+    // circular axis outer
+    circularAxisOuterTickSizeSliderInputCreatorInfo,
+    circularAxisOuterTickPaddingSliderInputCreatorInfo,
+    circularAxisOuterTickRotationSliderInputCreatorInfo,
+  ]);
+
+  // labels
+  const [
+    createdLabelsSkipAngleSliderInput,
+    createdLabelsRadiusOffsetSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    labelsSkipAngleSliderInputCreatorInfo,
+    labelsRadiusOffsetSliderInputCreatorInfo,
+  ]);
+
+  // legends
+
+  const [
+    createdLegendAnchorSelectInput,
+    createdLegendDirectionSelectInput,
+    createdLegendItemDirectionSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    legendAnchorSelectInputCreatorInfo,
+    legendDirectionSelectInputCreatorInfo,
+    legendItemDirectionSelectInputCreatorInfo,
+  ]);
+
+  const [
+    createdLegendTranslateXSliderInput,
+    createdLegendTranslateYSliderInput,
+    createdLegendItemWidthSliderInput,
+    createdLegendItemHeightSliderInput,
+    createdLegendItemsSpacingSliderInput,
+    createdLegendItemOpacitySliderInput,
+    createdLegendSymbolSizeSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    legendTranslateXSliderInputCreatorInfo,
+    legendTranslateYSliderInputCreatorInfo,
+    legendItemWidthSliderInputCreatorInfo,
+    legendItemHeightSliderInputCreatorInfo,
+    legendItemsSpacingSliderInputCreatorInfo,
+    legendItemOpacitySliderInputCreatorInfo,
+    legendSymbolSizeSliderInputCreatorInfo,
+  ]);
+
+  // motion
+  const [createdMotionConfigSelectInput, createdTransitionModeSelectInput] =
+    returnAccessibleSelectInputElements([
+      motionConfigSelectInputCreatorInfo,
+      transitionModeSelectInputCreatorInfo,
+    ]);
+
+  // input display
+
+  // base
+
+  /**
+   * const displayAxisTopHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Axis Top</Title>
+    </Group>
+  );
+
+  const displayToggleAxisTopSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdToggleAxisTopSwitchInput}
+    </Group>
+  );
+
+  const displayAxisTopTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopTickSizeSliderInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top tick size"
+      symbol="px"
+      value={axisTopTickSize}
+    />
+  );
+
+  const displayAxisTopTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopTickPaddingSliderInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top tick padding"
+      symbol="px"
+      value={axisTopTickPadding}
+    />
+  );
+
+  const displayAxisTopTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopTickRotationSliderInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top tick rotation"
+      symbol="°"
+      value={axisTopTickRotation}
+    />
+  );
+
+  const displayAxisTopLegendTextInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopLegendTextInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top legend"
+      value={axisTopLegend}
+    />
+  );
+
+  const displayAxisTopLegendOffsetSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopLegendOffsetSliderInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top legend offset"
+      symbol="px"
+      value={axisTopLegendOffset}
+    />
+  );
+
+  const displayAxisTopSection = (
+    <Stack w="100%">
+      {displayAxisTopHeading}
+      {displayToggleAxisTopSwitchInput}
+      {displayAxisTopTickSizeSliderInput}
+      {displayAxisTopTickPaddingSliderInput}
+      {displayAxisTopTickRotationSliderInput}
+      {displayAxisTopLegendTextInput}
+      {displayAxisTopLegendOffsetSliderInput}
+    </Stack>
+  );
+
+   */
+
+  const displayBaseHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Base</Title>
+    </Group>
+  );
+
+  const displayEnableMaxValueSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableMaxValueSwitchInput}
+    </Group>
+  );
+
+  const displayMaxValueSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMaxValueSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Max value"
+      symbol="px"
+      value={maxValue}
+    />
+  );
+
+  const displayMarginTopSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginTopSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Margin top"
+      symbol="px"
+      value={marginTop}
+    />
+  );
+
+  const displayMarginRightSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginRightSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Margin right"
+      symbol="px"
+      value={marginRight}
+    />
+  );
+
+  const displayMarginBottomSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginBottomSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Margin bottom"
+      symbol="px"
+      value={marginBottom}
+    />
+  );
+
+  const displayMarginLeftSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginLeftSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Margin left"
+      symbol="px"
+      value={marginLeft}
+    />
+  );
+
+  const displayStartAngleSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdStartAngleSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Start angle"
+      symbol="°"
+      value={startAngle}
+    />
+  );
+
+  const displayEndAngleSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdEndAngleSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="End angle"
+      symbol="°"
+      value={endAngle}
+    />
+  );
+
+  const displayInnerRadiusSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdInnerRadiusSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Inner radius"
+      symbol="px"
+      value={innerRadius}
+    />
+  );
+
+  const displayPaddingRingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdPaddingRingSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Padding ring"
+      symbol="px"
+      value={paddingRing}
+    />
+  );
+
+  const displayPadAngleSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdPadAngleSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Pad angle"
+      symbol="°"
+      value={padAngle}
+    />
+  );
+
+  const displayCornerRadiusSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdCornerRadiusSliderInput}
+      isInputDisabled={!enableMaxValue}
+      label="Corner radius"
+      symbol="px"
+      value={cornerRadius}
+    />
+  );
+
+  const displayBaseSection = (
+    <Stack w="100%">
+      {displayBaseHeading}
+      {displayEnableMaxValueSwitchInput}
+      {displayMaxValueSliderInput}
+      {displayMarginTopSliderInput}
+      {displayMarginRightSliderInput}
+      {displayMarginBottomSliderInput}
+      {displayMarginLeftSliderInput}
+      {displayStartAngleSliderInput}
+      {displayEndAngleSliderInput}
+      {displayInnerRadiusSliderInput}
+      {displayPaddingRingSliderInput}
+      {displayPadAngleSliderInput}
+      {displayCornerRadiusSliderInput}
+    </Stack>
+  );
+
+  // style
+  const displayStyleHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Style</Title>
+    </Group>
+  );
+
+  const displayChartColorsSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdChartColorsSelectInput}
+      isInputDisabled={false}
+      label="Chart colors"
+      value={chartColors}
+    />
+  );
+
+  const displayRingBorderWidthSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdRingBorderWidthSliderInput}
+      isInputDisabled={false}
+      label="Ring border width"
+      symbol="px"
+      value={ringBorderWidth}
+    />
+  );
+
+  const displayStyleSection = (
+    <Stack w="100%">
+      {displayStyleHeading}
+      {displayChartColorsSelectInput}
+      {displayRingBorderWidthSliderInput}
+    </Stack>
+  );
+
+  // tracks
+  const displayTracksHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Tracks</Title>
+    </Group>
+  );
+
+  const displayEnableTracksSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableTracksSwitchInput}
+    </Group>
+  );
+
+  const displayTracksColorInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdTracksColorInput}
+      isInputDisabled={!enableTracks}
+      label="Tracks color"
+      value={tracksColor}
+    />
+  );
+
+  const displayTracksSection = (
+    <Stack w="100%">
+      {displayTracksHeading}
+      {displayEnableTracksSwitchInput}
+    </Stack>
+  );
+
+  // grids
+  const displayGridsHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Grids</Title>
+    </Group>
+  );
+
+  const displayEnableRadialGridSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableRadialGridSwitchInput}
+    </Group>
+  );
+
+  const displayEnableCircularGridSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableCircularGridSwitchInput}
+    </Group>
+  );
+
+  const displayGridsSection = (
+    <Stack w="100%">
+      {displayGridsHeading}
+      {displayEnableRadialGridSwitchInput}
+      {displayEnableCircularGridSwitchInput}
+    </Stack>
+  );
+
+  // axes
+  // radial axis start
+  const displayRadialAxisStartHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Radial axis start</Title>
+    </Group>
+  );
+
+  const displayEnableRadialAxisStartSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableRadialAxisStartSwitchInput}
+    </Group>
+  );
+
+  const displayRadialAxisStartTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdRadialAxisStartTickSizeSliderInput}
+      isInputDisabled={!enableRadialAxisStart}
+      label="Radial axis start tick size"
+      symbol="px"
+      value={radialAxisStartTickSize}
+    />
+  );
+
+  const displayRadialAxisStartTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdRadialAxisStartTickPaddingSliderInput}
+      isInputDisabled={!enableRadialAxisStart}
+      label="Radial axis start tick padding"
+      symbol="px"
+      value={radialAxisStartTickPadding}
+    />
+  );
+
+  const displayRadialAxisStartTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdRadialAxisStartTickRotationSliderInput}
+      isInputDisabled={!enableRadialAxisStart}
+      label="Radial axis start tick rotation"
+      symbol="°"
+      value={radialAxisStartTickRotation}
+    />
+  );
+
+  const displayRadialAxisStartSection = (
+    <Stack w="100%">
+      {displayRadialAxisStartHeading}
+      {displayEnableRadialAxisStartSwitchInput}
+      {displayRadialAxisStartTickSizeSliderInput}
+      {displayRadialAxisStartTickPaddingSliderInput}
+      {displayRadialAxisStartTickRotationSliderInput}
+    </Stack>
+  );
+
+  // radial axis end
+  const displayRadialAxisEndHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Radial axis end</Title>
+    </Group>
+  );
+
+  const displayEnableRadialAxisEndSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableRadialAxisEndSwitchInput}
+    </Group>
+  );
+
+  const displayRadialAxisEndTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdRadialAxisEndTickSizeSliderInput}
+      isInputDisabled={!enableRadialAxisEnd}
+      label="Radial axis end tick size"
+      symbol="px"
+      value={radialAxisEndTickSize}
+    />
+  );
+
+  const displayRadialAxisEndTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdRadialAxisEndTickPaddingSliderInput}
+      isInputDisabled={!enableRadialAxisEnd}
+      label="Radial axis end tick padding"
+      symbol="px"
+      value={radialAxisEndTickPadding}
+    />
+  );
+
+  const displayRadialAxisEndTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdRadialAxisEndTickRotationSliderInput}
+      isInputDisabled={!enableRadialAxisEnd}
+      label="Radial axis end tick rotation"
+      symbol="°"
+      value={radialAxisEndTickRotation}
+    />
+  );
+
+  const displayRadialAxisEndSection = (
+    <Stack w="100%">
+      {displayRadialAxisEndHeading}
+      {displayEnableRadialAxisEndSwitchInput}
+      {displayRadialAxisEndTickSizeSliderInput}
+      {displayRadialAxisEndTickPaddingSliderInput}
+      {displayRadialAxisEndTickRotationSliderInput}
+    </Stack>
+  );
+
+  // circular axis inner
+  const displayCircularAxisInnerHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Circular axis inner</Title>
+    </Group>
+  );
+
+  const displayEnableCircularAxisInnerSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableCircularAxisInnerSwitchInput}
+    </Group>
+  );
+
+  const displayCircularAxisInnerTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdCircularAxisInnerTickSizeSliderInput}
+      isInputDisabled={!enableCircularAxisInner}
+      label="Circular axis inner tick size"
+      symbol="px"
+      value={circularAxisInnerTickSize}
+    />
+  );
+
+  const displayCircularAxisInnerTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdCircularAxisInnerTickPaddingSliderInput}
+      isInputDisabled={!enableCircularAxisInner}
+      label="Circular axis inner tick padding"
+      symbol="px"
+      value={circularAxisInnerTickPadding}
+    />
+  );
+
+  const displayCircularAxisInnerTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdCircularAxisInnerTickRotationSliderInput}
+      isInputDisabled={!enableCircularAxisInner}
+      label="Circular axis inner tick rotation"
+      symbol="°"
+      value={circularAxisInnerTickRotation}
+    />
+  );
+
+  const displayCircularAxisInnerSection = (
+    <Stack w="100%">
+      {displayCircularAxisInnerHeading}
+      {displayEnableCircularAxisInnerSwitchInput}
+      {displayCircularAxisInnerTickSizeSliderInput}
+      {displayCircularAxisInnerTickPaddingSliderInput}
+      {displayCircularAxisInnerTickRotationSliderInput}
+    </Stack>
+  );
+
+  // circular axis outer
+  const displayCircularAxisOuterHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Circular axis outer</Title>
+    </Group>
+  );
+
+  const displayEnableCircularAxisOuterSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableCircularAxisOuterSwitchInput}
+    </Group>
+  );
+
+  const displayCircularAxisOuterTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdCircularAxisOuterTickSizeSliderInput}
+      isInputDisabled={!enableCircularAxisOuter}
+      label="Circular axis outer tick size"
+      symbol="px"
+      value={circularAxisOuterTickSize}
+    />
+  );
+
+  const displayCircularAxisOuterTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdCircularAxisOuterTickPaddingSliderInput}
+      isInputDisabled={!enableCircularAxisOuter}
+      label="Circular axis outer tick padding"
+      symbol="px"
+      value={circularAxisOuterTickPadding}
+    />
+  );
+
+  const displayCircularAxisOuterTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdCircularAxisOuterTickRotationSliderInput}
+      isInputDisabled={!enableCircularAxisOuter}
+      label="Circular axis outer tick rotation"
+      symbol="°"
+      value={circularAxisOuterTickRotation}
+    />
+  );
+
+  const displayCircularAxisOuterSection = (
+    <Stack w="100%">
+      {displayCircularAxisOuterHeading}
+      {displayEnableCircularAxisOuterSwitchInput}
+      {displayCircularAxisOuterTickSizeSliderInput}
+      {displayCircularAxisOuterTickPaddingSliderInput}
+      {displayCircularAxisOuterTickRotationSliderInput}
+    </Stack>
+  );
+
+  // labels
+  const displayLabelsHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5}>Labels</Title>
+    </Group>
+  );
+
+  const displayEnableLabelsSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableLabelsSwitchInput}
+    </Group>
+  );
+
+  const displayLabelsSkipAngleSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLabelsSkipAngleSliderInput}
+      isInputDisabled={!enableLabels}
+      label="Labels skip angle"
+      symbol="°"
+      value={labelsSkipAngle}
+    />
+  );
+
+  const displayLabelsRadiusOffsetSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLabelsRadiusOffsetSliderInput}
+      isInputDisabled={!enableLabels}
+      label="Labels radius offset"
+      symbol="px"
+      value={labelsRadiusOffset}
+    />
+  );
+
+  const displayLabelsTextColorInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLabelsTextColorInput}
+      isInputDisabled={!enableLabels}
+      label="Labels text color"
+      value={labelsTextColor}
+    />
+  );
+
+  const displayLabelsSection = (
+    <Stack w="100%">
+      {displayLabelsHeading}
+      {displayEnableLabelsSwitchInput}
+      {displayLabelsSkipAngleSliderInput}
+      {displayLabelsRadiusOffsetSliderInput}
+      {displayLabelsTextColorInput}
+    </Stack>
+  );
+
+  // legends
+  const displayLegendHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+      mb={padding}
+    >
+      <Title order={5}>Legend</Title>
+    </Group>
+  );
+
+  const displayEnableLegendSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableLegendSwitchInput}
+    </Group>
+  );
+
+  const displayLegendAnchorSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendAnchorSelectInput}
+      isInputDisabled={!enableLegend}
+      label="Legend anchor"
+      value={legendAnchor}
+    />
+  );
+
+  const displayLegendDirectionSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendDirectionSelectInput}
+      isInputDisabled={!enableLegend}
+      label="Legend direction"
+      value={legendDirection}
+    />
+  );
+
+  const displayEnableLegendJustifySwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableLegendJustifySwitchInput}
+    </Group>
+  );
+
+  const displayLegendTranslateXSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendTranslateXSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend translate x"
+      symbol="px"
+      value={legendTranslateX}
+    />
+  );
+
+  const displayLegendTranslateYSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendTranslateYSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend translate y"
+      symbol="px"
+      value={legendTranslateY}
+    />
+  );
+
+  const displayLegendItemWidthSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemWidthSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend item width"
+      symbol="px"
+      value={legendItemWidth}
+    />
+  );
+
+  const displayLegendItemHeightSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemHeightSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend item height"
+      symbol="px"
+      value={legendItemHeight}
+    />
+  );
+
+  const displayLegendItemsSpacingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemsSpacingSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend items spacing"
+      symbol="px"
+      value={legendItemsSpacing}
+    />
+  );
+
+  const displayLegendItemDirectionSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemDirectionSelectInput}
+      isInputDisabled={!enableLegend}
+      label="Legend item direction"
+      value={legendItemDirection}
+    />
+  );
+
+  const displayLegendItemOpacitySliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemOpacitySliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend item opacity"
+      value={legendItemOpacity}
+    />
+  );
+
+  const displayLegendSymbolSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendSymbolSizeSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend symbol size"
+      symbol="px"
+      value={legendSymbolSize}
+    />
+  );
+
+  const displayLegendSection = (
+    <Stack w="100%">
+      {displayLegendHeading}
+      {displayEnableLegendSwitchInput}
+      {displayLegendAnchorSelectInput}
+      {displayLegendDirectionSelectInput}
+      {displayEnableLegendJustifySwitchInput}
+      {displayLegendTranslateXSliderInput}
+      {displayLegendTranslateYSliderInput}
+      {displayLegendItemWidthSliderInput}
+      {displayLegendItemHeightSliderInput}
+      {displayLegendItemsSpacingSliderInput}
+      {displayLegendItemDirectionSelectInput}
+      {displayLegendItemOpacitySliderInput}
+      {displayLegendSymbolSizeSliderInput}
+    </Stack>
+  );
+
+  // motion
+  const displayMotionHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+      mb={padding}
+    >
+      <Title order={5}>Motion</Title>
+    </Group>
+  );
+
+  const displayEnableAnimateSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableAnimateSwitchInput}
+    </Group>
+  );
+
+  const displayMotionConfigSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMotionConfigSelectInput}
+      isInputDisabled={!enableAnimate}
+      label="Motion config"
+      value={motionConfig}
+    />
+  );
+
+  const displayTransitionModeSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdTransitionModeSelectInput}
+      isInputDisabled={!enableAnimate}
+      label="Transition mode"
+      value={transitionMode}
+    />
+  );
+
+  const displayMotionSection = (
+    <Stack w="100%">
+      {displayMotionHeading}
+      {displayEnableAnimateSwitchInput}
+      {displayMotionConfigSelectInput}
+      {displayTransitionModeSelectInput}
+    </Stack>
+  );
+
+  const radialBarChartControlsStack = (
+    <Stack w="100%">
+      {displayBaseSection}
+      {displayStyleSection}
+      {displayTracksSection}
+      {displayGridsSection}
+      {displayRadialAxisStartSection}
+      {displayRadialAxisEndSection}
+      {displayCircularAxisInnerSection}
+      {displayCircularAxisOuterSection}
+      {displayLabelsSection}
+      {displayLegendSection}
+      {displayMotionSection}
+    </Stack>
+  );
+
+  const displayRadialBarChartControls = (
+    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
+      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
+        <Grid.Col span={1}>{radialBarChartControlsStack}</Grid.Col>
+      </Grid>
+    </ScrollArea>
+  );
+
+  const data = [
+    {
+      id: 'Supermarket',
+      data: [
+        {
+          x: 'Vegetables',
+          y: 74,
+        },
+        {
+          x: 'Fruits',
+          y: 98,
+        },
+        {
+          x: 'Meat',
+          y: 38,
+        },
+      ],
+    },
+    {
+      id: 'Combini',
+      data: [
+        {
+          x: 'Vegetables',
+          y: 180,
+        },
+        {
+          x: 'Fruits',
+          y: 29,
+        },
+        {
+          x: 'Meat',
+          y: 235,
+        },
+      ],
+    },
+    {
+      id: 'Online',
+      data: [
+        {
+          x: 'Vegetables',
+          y: 168,
+        },
+        {
+          x: 'Fruits',
+          y: 67,
+        },
+        {
+          x: 'Meat',
+          y: 146,
+        },
+      ],
+    },
+    {
+      id: 'Marché',
+      data: [
+        {
+          x: 'Vegetables',
+          y: 89,
+        },
+        {
+          x: 'Fruits',
+          y: 77,
+        },
+        {
+          x: 'Meat',
+          y: 231,
+        },
+      ],
+    },
+  ];
+
+  const displayResponsiveRadialBar = (
+    <ResponsiveRadialBar
+      data={data}
+      // base
+      maxValue={enableMaxValue ? maxValue : void 0}
+      valueFormat=">-.2f"
+      margin={{
+        top: marginTop,
+        right: marginRight,
+        bottom: marginBottom,
+        left: marginLeft,
+      }}
+      startAngle={startAngle}
+      endAngle={endAngle}
+      innerRadius={innerRadius}
+      padding={paddingRing}
+      padAngle={padAngle}
+      cornerRadius={cornerRadius}
+      // style
+      colors={{ scheme: chartColors }}
+      borderWidth={ringBorderWidth}
+      borderColor={ringBorderColor}
+      // tracks
+      enableTracks={enableTracks}
+      tracksColor={tracksColor}
+      // grids
+      enableRadialGrid={enableRadialGrid}
+      enableCircularGrid={enableCircularGrid}
+      // axes
+      radialAxisStart={
+        enableRadialAxisStart
+          ? {
+              tickSize: radialAxisStartTickSize,
+              tickPadding: radialAxisStartTickPadding,
+              tickRotation: radialAxisStartTickRotation,
+            }
+          : void 0
+      }
+      radialAxisEnd={
+        enableRadialAxisEnd
+          ? {
+              tickSize: radialAxisEndTickSize,
+              tickPadding: radialAxisEndTickPadding,
+              tickRotation: radialAxisEndTickRotation,
+            }
+          : void 0
+      }
+      circularAxisInner={
+        enableCircularAxisInner
+          ? {
+              tickSize: circularAxisInnerTickSize,
+              tickPadding: circularAxisInnerTickPadding,
+              tickRotation: circularAxisInnerTickRotation,
+            }
+          : void 0
+      }
+      circularAxisOuter={
+        enableCircularAxisOuter
+          ? {
+              tickSize: circularAxisOuterTickSize,
+              tickPadding: circularAxisOuterTickPadding,
+              tickRotation: circularAxisOuterTickRotation,
+            }
+          : void 0
+      }
+      // labels
+      enableLabels={enableLabels}
+      labelsSkipAngle={labelsSkipAngle}
+      labelsRadiusOffset={labelsRadiusOffset}
+      labelsTextColor={labelsTextColor}
+      // legends
+      legends={
+        enableLegend
+          ? [
+              {
+                anchor: legendAnchor,
+                direction: legendDirection,
+                justify: enableLegendJustify,
+                translateX: legendTranslateX,
+                translateY: legendTranslateY,
+                itemWidth: legendItemWidth,
+                itemHeight: legendItemHeight,
+                itemsSpacing: legendItemsSpacing,
+                itemOpacity: legendItemOpacity,
+                symbolSize: legendSymbolSize,
+                itemDirection: legendItemDirection,
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []
+      }
+      // motion
+      animate={enableAnimate}
+      motionConfig={motionConfig}
+      transitionMode={transitionMode}
+      isInteractive={true}
+      role="application"
+      ariaLabel="Nivo radial bar chart"
+    />
+  );
+
+  const displayResponsiveRadialBarChartComponent = (
+    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
+      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
+        {displayRadialBarChartControls}
+      </Grid.Col>
+
+      <Grid.Col span={1}>
+        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
+        <Divider
+          orientation={width < 1192 ? 'horizontal' : 'vertical'}
+          size="sm"
+          w="100%"
+          h="100%"
+        />
+      </Grid.Col>
+
+      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
+        {displayResponsiveRadialBar}
+      </Grid.Col>
+    </Grid>
+  );
+
+  return displayResponsiveRadialBarChartComponent;
 }
 
 export { ResponsiveRadialBarChart };
