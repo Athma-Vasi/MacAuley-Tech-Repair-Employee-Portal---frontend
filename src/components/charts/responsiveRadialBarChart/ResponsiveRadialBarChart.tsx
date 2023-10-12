@@ -366,7 +366,9 @@ function ResponsiveRadialBarChart() {
   const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'margin top',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 200,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -384,7 +386,9 @@ function ResponsiveRadialBarChart() {
   const marginRightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'margin right',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 200,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -402,7 +406,9 @@ function ResponsiveRadialBarChart() {
   const marginBottomSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'margin bottom',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 200,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -420,7 +426,9 @@ function ResponsiveRadialBarChart() {
   const marginLeftSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'margin left',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 200,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -479,7 +487,9 @@ function ResponsiveRadialBarChart() {
   const innerRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'inner radius',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 0.95,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -536,7 +546,7 @@ function ResponsiveRadialBarChart() {
     ariaLabel: 'corner radius',
     kind: 'slider',
     label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
     ),
     max: 45,
     min: 0,
@@ -571,7 +581,7 @@ function ResponsiveRadialBarChart() {
       ariaLabel: 'ring border width',
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -709,7 +719,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableRadialAxisStart,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -731,7 +741,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableRadialAxisStart,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -800,7 +810,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableRadialAxisEnd,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -822,7 +832,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableRadialAxisEnd,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -891,7 +901,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableCircularAxisInner,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -913,7 +923,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableCircularAxisInner,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -982,7 +992,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableCircularAxisOuter,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1004,7 +1014,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableCircularAxisOuter,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}px</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1216,7 +1226,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: -200,
@@ -1238,7 +1248,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: -200,
@@ -1260,7 +1270,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: 0,
@@ -1282,7 +1292,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: 0,
@@ -1304,7 +1314,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: 0,
@@ -1341,7 +1351,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 1,
       min: 0,
@@ -1363,7 +1373,7 @@ function ResponsiveRadialBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 100,
       min: 0,
@@ -1591,87 +1601,6 @@ function ResponsiveRadialBarChart() {
 
   // base
 
-  /**
-   * const displayAxisTopHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
-      <Title order={5}>Axis Top</Title>
-    </Group>
-  );
-
-  const displayToggleAxisTopSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleAxisTopSwitchInput}
-    </Group>
-  );
-
-  const displayAxisTopTickSizeSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdAxisTopTickSizeSliderInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top tick size"
-      symbol="px"
-      value={axisTopTickSize}
-    />
-  );
-
-  const displayAxisTopTickPaddingSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdAxisTopTickPaddingSliderInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top tick padding"
-      symbol="px"
-      value={axisTopTickPadding}
-    />
-  );
-
-  const displayAxisTopTickRotationSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdAxisTopTickRotationSliderInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top tick rotation"
-      symbol="°"
-      value={axisTopTickRotation}
-    />
-  );
-
-  const displayAxisTopLegendTextInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdAxisTopLegendTextInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top legend"
-      value={axisTopLegend}
-    />
-  );
-
-  const displayAxisTopLegendOffsetSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdAxisTopLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top legend offset"
-      symbol="px"
-      value={axisTopLegendOffset}
-    />
-  );
-
-  const displayAxisTopSection = (
-    <Stack w="100%">
-      {displayAxisTopHeading}
-      {displayToggleAxisTopSwitchInput}
-      {displayAxisTopTickSizeSliderInput}
-      {displayAxisTopTickPaddingSliderInput}
-      {displayAxisTopTickRotationSliderInput}
-      {displayAxisTopLegendTextInput}
-      {displayAxisTopLegendOffsetSliderInput}
-    </Stack>
-  );
-
-   */
-
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
@@ -1702,7 +1631,6 @@ function ResponsiveRadialBarChart() {
   const displayMarginTopSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdMarginTopSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Margin top"
       symbol="px"
       value={marginTop}
@@ -1712,7 +1640,6 @@ function ResponsiveRadialBarChart() {
   const displayMarginRightSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdMarginRightSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Margin right"
       symbol="px"
       value={marginRight}
@@ -1722,7 +1649,6 @@ function ResponsiveRadialBarChart() {
   const displayMarginBottomSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdMarginBottomSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Margin bottom"
       symbol="px"
       value={marginBottom}
@@ -1732,7 +1658,6 @@ function ResponsiveRadialBarChart() {
   const displayMarginLeftSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdMarginLeftSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Margin left"
       symbol="px"
       value={marginLeft}
@@ -1742,7 +1667,6 @@ function ResponsiveRadialBarChart() {
   const displayStartAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdStartAngleSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Start angle"
       symbol="°"
       value={startAngle}
@@ -1752,7 +1676,6 @@ function ResponsiveRadialBarChart() {
   const displayEndAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdEndAngleSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="End angle"
       symbol="°"
       value={endAngle}
@@ -1762,7 +1685,6 @@ function ResponsiveRadialBarChart() {
   const displayInnerRadiusSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdInnerRadiusSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Inner radius"
       symbol="px"
       value={innerRadius}
@@ -1772,9 +1694,7 @@ function ResponsiveRadialBarChart() {
   const displayPaddingRingSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdPaddingRingSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Padding ring"
-      symbol="px"
       value={paddingRing}
     />
   );
@@ -1782,7 +1702,6 @@ function ResponsiveRadialBarChart() {
   const displayPadAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdPadAngleSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Pad angle"
       symbol="°"
       value={padAngle}
@@ -1792,7 +1711,6 @@ function ResponsiveRadialBarChart() {
   const displayCornerRadiusSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdCornerRadiusSliderInput}
-      isInputDisabled={!enableMaxValue}
       label="Corner radius"
       symbol="px"
       value={cornerRadius}
@@ -1887,6 +1805,7 @@ function ResponsiveRadialBarChart() {
     <Stack w="100%">
       {displayTracksHeading}
       {displayEnableTracksSwitchInput}
+      {displayTracksColorInput}
     </Stack>
   );
 

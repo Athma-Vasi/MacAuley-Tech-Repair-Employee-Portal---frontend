@@ -9,7 +9,11 @@ import CustomFonts from './components/customFonts/CustomFonts';
 import DevTesting from './components/devTesting/DevTesting';
 import ErrorFallback from './components/errorFallback/ErrorFallback';
 import { useGlobalState } from './hooks/useGlobalState';
-import { ResponsiveBarChart, ResponsivePieChart } from './components/charts';
+import {
+  ResponsiveBarChart,
+  ResponsivePieChart,
+  ResponsiveRadialBarChart,
+} from './components/charts';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const PublicLayout = lazy(
@@ -547,6 +551,7 @@ function App() {
         <Route path="/" element={rootIndexWrapper}>
           {/* TESTING ONLY REMOVE  */}
           <Route index element={<ResponsiveBarChart />} />
+          {/* <Route index element={<ResponsiveRadialBarChart />} /> */}
 
           {/* <Route index element={loginElement} /> */}
           <Route path="login" element={loginElement} />

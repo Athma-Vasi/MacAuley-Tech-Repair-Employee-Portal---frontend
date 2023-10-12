@@ -28,7 +28,7 @@ const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
 
   // tracks
   enableTracks: true,
-  tracksColor: '#333333',
+  tracksColor: 'rgba(0, 0, 0, .15)',
 
   // grids
   enableRadialGrid: true,
@@ -56,7 +56,7 @@ const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
   // circular axis outer
   enableCircularAxisOuter: true,
   circularAxisOuterTickSize: 5,
-  circularAxisOuterTickPadding: 5,
+  circularAxisOuterTickPadding: 7,
   circularAxisOuterTickRotation: 0,
 
   // labels

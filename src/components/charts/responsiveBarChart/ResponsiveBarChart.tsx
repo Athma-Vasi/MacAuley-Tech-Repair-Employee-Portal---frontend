@@ -552,7 +552,9 @@ function ResponsiveBarChart() {
   const paddingBarSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'padding bar',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 0.9,
     min: 0.1,
     onChangeSlider: (value: number) => {
@@ -572,7 +574,7 @@ function ResponsiveBarChart() {
       ariaLabel: 'inner padding bar',
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 10,
       min: 0,
@@ -591,7 +593,9 @@ function ResponsiveBarChart() {
   const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'margin top',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 200,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -609,7 +613,9 @@ function ResponsiveBarChart() {
   const marginRightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'margin right',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 200,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -627,7 +633,9 @@ function ResponsiveBarChart() {
   const marginBottomSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'margin bottom',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 200,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -645,7 +653,9 @@ function ResponsiveBarChart() {
   const marginLeftSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'margin left',
     kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    label: (value) => (
+      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+    ),
     max: 200,
     min: 0,
     onChangeSlider: (value: number) => {
@@ -679,7 +689,7 @@ function ResponsiveBarChart() {
       ariaLabel: 'border radius',
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 36,
       min: 0,
@@ -700,7 +710,7 @@ function ResponsiveBarChart() {
       ariaLabel: 'border width',
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -786,7 +796,7 @@ function ResponsiveBarChart() {
       disabled: !enableLabels,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 36,
       min: 0,
@@ -808,7 +818,7 @@ function ResponsiveBarChart() {
       disabled: !enableLabels,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 36,
       min: 0,
@@ -920,7 +930,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisTop,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -942,7 +952,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisTop,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1030,7 +1040,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisTop,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 60,
       min: -60,
@@ -1077,7 +1087,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisRight,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1099,7 +1109,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisRight,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1187,7 +1197,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisRight,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 60,
       min: -60,
@@ -1234,7 +1244,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisBottom,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1256,7 +1266,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisBottom,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1344,7 +1354,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisBottom,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 60,
       min: -60,
@@ -1391,7 +1401,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisLeft,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1413,7 +1423,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisLeft,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 20,
       min: 0,
@@ -1501,7 +1511,7 @@ function ResponsiveBarChart() {
       disabled: !enableAxisLeft,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 60,
       min: -60,
@@ -1606,7 +1616,7 @@ function ResponsiveBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: -200,
@@ -1628,7 +1638,7 @@ function ResponsiveBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: -200,
@@ -1650,7 +1660,7 @@ function ResponsiveBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: 0,
@@ -1672,7 +1682,7 @@ function ResponsiveBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: 0,
@@ -1694,7 +1704,7 @@ function ResponsiveBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 200,
       min: 0,
@@ -1753,7 +1763,7 @@ function ResponsiveBarChart() {
       disabled: !enableLegend,
       kind: 'slider',
       label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
       max: 100,
       min: 0,
