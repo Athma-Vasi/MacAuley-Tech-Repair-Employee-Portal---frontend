@@ -3,13 +3,17 @@ import { ReactNode } from 'react';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
-import { returnThemeColors, splitCamelCase } from '../../utils';
+import {
+  returnThemeColors,
+  returnUppercasedSentence,
+  splitCamelCase,
+} from '../../utils';
 import { TextWrapper } from '../wrappers';
 
 type ChartsAndGraphsControlsStackerProps = {
   input: JSX.Element;
   isInputDisabled?: boolean;
-  label: ReactNode;
+  label: string;
   symbol?: string;
   value: string | number | boolean;
 };
@@ -45,7 +49,7 @@ function ChartsAndGraphsControlsStacker({
       wrap="wrap"
     >
       <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
-        {label}
+        {returnUppercasedSentence(label)}
       </Text>
 
       <Flex

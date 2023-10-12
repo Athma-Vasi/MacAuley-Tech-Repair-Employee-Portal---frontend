@@ -90,7 +90,6 @@ type NivoLineCurve =
   | 'linear'
   | 'monotoneX'
   | 'monotoneY'
-  | 'monotone'
   | 'natural'
   | 'step'
   | 'stepAfter'

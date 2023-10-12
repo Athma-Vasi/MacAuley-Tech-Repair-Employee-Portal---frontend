@@ -6,13 +6,14 @@ import {
 
 const initialResponsiveLineChartState: ResponsiveLineChartState = {
   // base
-  xScale: 'linear',
+  xScale: 'point',
   yScale: 'linear',
-  enableYScaleStacked: false,
+  enableYScaleStacked: true,
   enableYScaleMin: false,
   yScaleMin: 0,
   enableYScaleMax: false,
   yScaleMax: 0,
+  reverseScale: false,
 
   // margin
   marginTop: 60,
@@ -97,6 +98,10 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   legendItemDirection: 'left-to-right',
   legendItemOpacity: 1,
   legendSymbolSize: 12,
+  legendSymbolShape: 'circle',
+  legendSymbolBorderColor: 'rgba(0, 0, 0, .5)',
+  legendSymbolBorderWidth: 0,
+  legendSymbolSpacing: 8,
 
   // motion
   enableAnimate: true,
@@ -112,6 +117,7 @@ const responsiveLineChartAction: ResponsiveLineChartAction = {
   setYScaleMin: 'setYScaleMin',
   setEnableYScaleMax: 'setEnableYScaleMax',
   setYScaleMax: 'setYScaleMax',
+  setReverseScale: 'setReverseScale',
 
   // margin
   setMarginTop: 'setMarginTop',
@@ -196,6 +202,10 @@ const responsiveLineChartAction: ResponsiveLineChartAction = {
   setLegendItemDirection: 'setLegendItemDirection',
   setLegendItemOpacity: 'setLegendItemOpacity',
   setLegendSymbolSize: 'setLegendSymbolSize',
+  setLegendSymbolShape: 'setLegendSymbolShape',
+  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor',
+  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth',
+  setLegendSymbolSpacing: 'setLegendSymbolSpacing',
 
   // motion
   setEnableAnimate: 'setEnableAnimate',
@@ -222,6 +232,8 @@ function responsiveLineChartReducer(
       return { ...state, enableYScaleMax: action.payload };
     case responsiveLineChartAction.setYScaleMax:
       return { ...state, yScaleMax: action.payload };
+    case responsiveLineChartAction.setReverseScale:
+      return { ...state, reverseScale: action.payload };
 
     // margin
     case responsiveLineChartAction.setMarginTop:
@@ -372,6 +384,14 @@ function responsiveLineChartReducer(
       return { ...state, legendItemOpacity: action.payload };
     case responsiveLineChartAction.setLegendSymbolSize:
       return { ...state, legendSymbolSize: action.payload };
+    case responsiveLineChartAction.setLegendSymbolShape:
+      return { ...state, legendSymbolShape: action.payload };
+    case responsiveLineChartAction.setLegendSymbolBorderColor:
+      return { ...state, legendSymbolBorderColor: action.payload };
+    case responsiveLineChartAction.setLegendSymbolBorderWidth:
+      return { ...state, legendSymbolBorderWidth: action.payload };
+    case responsiveLineChartAction.setLegendSymbolSpacing:
+      return { ...state, legendSymbolSpacing: action.payload };
 
     // motion
     case responsiveLineChartAction.setEnableAnimate:

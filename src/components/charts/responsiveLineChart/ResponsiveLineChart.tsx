@@ -1,4 +1,15 @@
-import { ColorInput, Switch, Text } from '@mantine/core';
+import {
+  ColorInput,
+  Divider,
+  Grid,
+  Group,
+  ScrollArea,
+  Space,
+  Stack,
+  Switch,
+  Text,
+  Title,
+} from '@mantine/core';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
@@ -7,6 +18,9 @@ import { useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleSliderInputElements,
+  returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import {
   returnSerialIdValidationText,
@@ -18,10 +32,12 @@ import {
   AccessibleTextInputCreatorInfo,
 } from '../../wrappers';
 import {
+  NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
   NIVO_LEGEND_ANCHOR_DATA,
   NIVO_LEGEND_DIRECTION_DATA,
   NIVO_LEGEND_ITEM_DIRECTION_DATA,
+  NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
 } from '../constants';
 import {
@@ -29,6 +45,7 @@ import {
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
+  NivoLegendSymbolShape,
   NivoLineAreaBlendMode,
   NivoLineAxesScale,
   NivoLineCrosshairType,
@@ -49,6 +66,8 @@ import {
   responsiveLineChartReducer,
 } from './state';
 import { ResponsiveLineChartState } from './types';
+import { ChartsAndGraphsControlsStacker } from '../utils';
+import { ResponsiveLine } from '@nivo/line';
 
 function ResponsiveLineChart() {
   const {
@@ -86,6 +105,7 @@ function ResponsiveLineChart() {
     yScaleMin, // -2000 - 2000 default: 0
     enableYScaleMax, // default: false ? 'auto'
     yScaleMax, // -2000 - 2000 default: 0
+    reverseScale, // default: false
 
     // margin
     marginTop, // 0px - 200px default: 60 step: 1
@@ -170,6 +190,10 @@ function ResponsiveLineChart() {
     legendItemDirection, // default: left-to-right
     legendItemOpacity, // 0 - 1 default: 1 step: 0.05
     legendSymbolSize, // 2px - 60px default: 12 step: 1
+    legendSymbolShape, // default: circle
+    legendSymbolBorderColor, // default: 'rgba(0, 0, 0, .5)'
+    legendSymbolBorderWidth, // 0px - 20px default: 0 step: 1
+    legendSymbolSpacing, // 0px - 60px default: 8 step: 1
 
     // motion
     enableAnimate, // default: true
@@ -248,7 +272,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Lines will be stacked',
     isSelected: enableYScaleStacked,
     selectedDescription: 'Lines will not be stacked',
-    semanticName: 'enableYScaleStacked',
+    semanticName: 'Y Scale Stacked',
     theme: 'muted',
   });
 
@@ -259,7 +283,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Y scale min will be automatically calculated',
     isSelected: enableYScaleMin,
     selectedDescription: 'Y scale min will be manually calculated',
-    semanticName: 'enableYScaleMin',
+    semanticName: 'Y Scale Min',
     theme: 'muted',
   });
 
@@ -270,7 +294,18 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Y scale max will be automatically calculated',
     isSelected: enableYScaleMax,
     selectedDescription: 'Y scale max will be manually calculated',
-    semanticName: 'enableYScaleMax',
+    semanticName: 'Y Scale Max',
+    theme: 'muted',
+  });
+
+  const [
+    enableReverseScaleAccessibleSelectedText,
+    enableReverseScaleAccessibleDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    deselectedDescription: 'Scale will not be reversed',
+    isSelected: reverseScale,
+    selectedDescription: 'Scale will be reversed',
+    semanticName: 'reverse Scale',
     theme: 'muted',
   });
 
@@ -279,7 +314,7 @@ function ResponsiveLineChart() {
       deselectedDescription: 'Area below each line will be disabled',
       isSelected: enableArea,
       selectedDescription: 'Area below each line will be enabled',
-      semanticName: 'enableArea',
+      semanticName: 'Area',
       theme: 'muted',
     });
 
@@ -290,7 +325,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Points will be disabled',
     isSelected: enablePoints,
     selectedDescription: 'Points will be enabled',
-    semanticName: 'enablePoints',
+    semanticName: 'Points',
     theme: 'muted',
   });
 
@@ -301,7 +336,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Point label will be disabled',
     isSelected: enablePointLabel,
     selectedDescription: 'Point label will be enabled',
-    semanticName: 'enablePointLabel',
+    semanticName: 'Point Label',
     theme: 'muted',
   });
 
@@ -313,7 +348,7 @@ function ResponsiveLineChart() {
       'Chart display area will not have a grid on the y axis.',
     isSelected: enableGridX,
     selectedDescription: 'Chart display area will have a grid on the y axis.',
-    semanticName: 'enableGridX',
+    semanticName: 'Grid X',
     theme: 'muted',
   });
 
@@ -325,7 +360,7 @@ function ResponsiveLineChart() {
       'Chart display area will not have a grid on the x axis.',
     isSelected: enableGridY,
     selectedDescription: 'Chart display area will have a grid on the x axis.',
-    semanticName: 'enableGridY',
+    semanticName: 'Grid Y',
     theme: 'muted',
   });
 
@@ -336,7 +371,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Top axis will be disabled',
     isSelected: enableAxisTop,
     selectedDescription: 'Top axis will be enabled',
-    semanticName: 'enableAxisTop',
+    semanticName: 'Axis Top',
     theme: 'muted',
   });
 
@@ -347,7 +382,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Right axis will be disabled',
     isSelected: enableAxisRight,
     selectedDescription: 'Right axis will be enabled',
-    semanticName: 'enableAxisRight',
+    semanticName: 'Axis Right',
     theme: 'muted',
   });
 
@@ -358,7 +393,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Bottom axis will be disabled',
     isSelected: enableAxisBottom,
     selectedDescription: 'Bottom axis will be enabled',
-    semanticName: 'enableAxisBottom',
+    semanticName: 'Axis Bottom',
     theme: 'muted',
   });
 
@@ -369,7 +404,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Left axis will be disabled',
     isSelected: enableAxisLeft,
     selectedDescription: 'Left axis will be enabled',
-    semanticName: 'enableAxisLeft',
+    semanticName: 'Axis Left',
     theme: 'muted',
   });
 
@@ -380,7 +415,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Crosshair will be disabled',
     isSelected: enableCrosshair,
     selectedDescription: 'Crosshair will be enabled',
-    semanticName: 'enableCrosshair',
+    semanticName: 'Crosshair',
     theme: 'muted',
   });
 
@@ -391,7 +426,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Legend will be disabled',
     isSelected: enableLegend,
     selectedDescription: 'Legend will be enabled',
-    semanticName: 'enableLegend',
+    semanticName: 'Legend',
     theme: 'muted',
   });
 
@@ -402,7 +437,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Legend items and symbols will not be justified',
     isSelected: enableLegendJustify,
     selectedDescription: 'Legend items and symbols will be justified',
-    semanticName: 'enableLegendJustify',
+    semanticName: 'Legend Justify',
     theme: 'muted',
   });
 
@@ -413,7 +448,7 @@ function ResponsiveLineChart() {
     deselectedDescription: 'Animation will be disabled',
     isSelected: enableAnimate,
     selectedDescription: 'Animation will be enabled',
-    semanticName: 'enableAnimate',
+    semanticName: 'Animate',
     theme: 'muted',
   });
 
@@ -428,85 +463,6 @@ function ResponsiveLineChart() {
       ? '500px'
       : `${width * 0.15}px`;
   const sliderLabelColor = gray[3];
-
-  /**
-   * const createdEnableMaxValueSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableMaxValue
-          ? enableMaxValueAccessibleAccessibleSelectedText.props.id
-          : enableMaxValueAccessibleAccessibleDeselectedText.props.id
-      }
-      checked={enableMaxValue}
-      description={
-        enableMaxValue
-          ? enableMaxValueAccessibleAccessibleSelectedText
-          : enableMaxValueAccessibleAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle max value
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableMaxValue,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const maxValueSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'max value',
-    disabled: !enableMaxValue,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 1000,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setMaxValue,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 1000,
-    step: 1,
-    value: maxValue,
-    width: sliderWidth,
-  };
-
-  const chartColorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_COLOR_SCHEME_DATA,
-    description: 'Define chart chartColors.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setChartColors,
-        payload: event.currentTarget.value as NivoColorScheme,
-      });
-    },
-    value: chartColors,
-    width: sliderWidth,
-  };
-
-  const createdTracksColorInput = (
-    <ColorInput
-      aria-label="Tracks color"
-      color={tracksColor}
-      disabled={!enableTracks}
-      onChange={(color: string) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setTracksColor,
-          payload: color,
-        });
-      }}
-      value={tracksColor}
-      w={sliderWidth}
-    />
-  );
-
-   */
 
   // base
   const xScaleSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
@@ -550,7 +506,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle y scale stacked
+          Toggle Y Scale Stacked
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -578,7 +534,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle y scale min
+          Toggle Y Scale Min
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -625,7 +581,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle y scale max
+          Toggle Y Scale Max
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -656,6 +612,34 @@ function ResponsiveLineChart() {
     value: yScaleMax,
     width: sliderWidth,
   };
+
+  const createdReverseScaleSwitchInput = (
+    <Switch
+      aria-describedby={
+        reverseScale
+          ? enableReverseScaleAccessibleSelectedText.props.id
+          : enableReverseScaleAccessibleDeselectedText.props.id
+      }
+      checked={reverseScale}
+      description={
+        reverseScale
+          ? enableReverseScaleAccessibleSelectedText
+          : enableReverseScaleAccessibleDeselectedText
+      }
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle Reverse Scale
+        </Text>
+      }
+      onChange={(event: ChangeEvent<HTMLInputElement>) => {
+        responsiveLineChartDispatch({
+          type: responsiveLineChartAction.setReverseScale,
+          payload: event.currentTarget.checked,
+        });
+      }}
+      w="100%"
+    />
+  );
 
   // margin
   const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
@@ -800,7 +784,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle area
+          Toggle Area
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -815,6 +799,7 @@ function ResponsiveLineChart() {
 
   const areaOpacitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'area opacity',
+    disabled: !enableArea,
     kind: 'slider',
     label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
     max: 1,
@@ -835,6 +820,7 @@ function ResponsiveLineChart() {
     {
       data: NIVO_LINE_AREA_BLEND_MODE_DATA,
       description: 'Define line area blend mode.',
+      disabled: !enableArea,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsiveLineChartDispatch({
           type: responsiveLineChartAction.setAreaBlendMode,
@@ -861,7 +847,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle points
+          Toggle Points
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -876,6 +862,7 @@ function ResponsiveLineChart() {
 
   const pointSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'point size',
+    disabled: !enablePoints,
     kind: 'slider',
     label: (value) => (
       <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -962,7 +949,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle point label
+          Toggle Point Label
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -991,6 +978,7 @@ function ResponsiveLineChart() {
   const pointLabelYOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'point label y offset',
+      disabled: !enablePointLabel,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -1025,7 +1013,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle grid x
+          Toggle Grid X
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1053,7 +1041,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle grid y
+          Toggle Grid Y
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1083,7 +1071,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle axis top
+          Toggle Axis Top
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1099,6 +1087,7 @@ function ResponsiveLineChart() {
   const axisTopTickSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis top tick size',
+      disabled: !enableAxisTop,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -1120,6 +1109,7 @@ function ResponsiveLineChart() {
   const axisTopTickPaddingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis top tick padding',
+      disabled: !enableAxisTop,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -1141,6 +1131,7 @@ function ResponsiveLineChart() {
   const axisTopTickRotationSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis top tick rotation',
+      disabled: !enableAxisTop,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} °</Text>
@@ -1241,7 +1232,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle axis right
+          Toggle Axis Right
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1257,6 +1248,7 @@ function ResponsiveLineChart() {
   const axisRightTickSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis right tick size',
+      disabled: !enableAxisRight,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -1278,6 +1270,7 @@ function ResponsiveLineChart() {
   const axisRightTickPaddingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis right tick padding',
+      disabled: !enableAxisRight,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -1299,6 +1292,7 @@ function ResponsiveLineChart() {
   const axisRightTickRotationSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis right tick rotation',
+      disabled: !enableAxisRight,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} °</Text>
@@ -1399,7 +1393,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Axis bottom
+          Axis Bottom
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1560,7 +1554,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Axis left
+          Axis Left
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1721,7 +1715,7 @@ function ResponsiveLineChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle crosshair
+          Toggle Crosshair
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1822,7 +1816,7 @@ function ResponsiveLineChart() {
       disabled={!enableLegend}
       label={
         <Text weight={500} color={enableLegend ? textColor : grayColorShade}>
-          Legend justify
+          Legend Justify
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -2004,6 +1998,81 @@ function ResponsiveLineChart() {
       width: sliderWidth,
     };
 
+  const legendSymbolShapeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: NIVO_LEGEND_SYMBOL_SHAPE_DATA,
+      disabled: !enableLegend,
+      description: 'Define legend symbol shape.',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        responsiveLineChartDispatch({
+          type: responsiveLineChartAction.setLegendSymbolShape,
+          payload: event.currentTarget.value as NivoLegendSymbolShape,
+        });
+      },
+      value: legendSymbolShape,
+      width: sliderWidth,
+    };
+
+  const createdLegendSymbolBorderColorInput = (
+    <ColorInput
+      aria-describedby="legend symbol border color"
+      color={legendSymbolBorderColor}
+      disabled={!enableLegend}
+      label="Legend symbol border color"
+      onChange={(color: string) => {
+        responsiveLineChartDispatch({
+          type: responsiveLineChartAction.setLegendSymbolBorderColor,
+          payload: color,
+        });
+      }}
+      w={sliderWidth}
+    />
+  );
+
+  const legendSymbolBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      ariaLabel: 'legend symbol border width',
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => (
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+      ),
+      max: 12,
+      min: 0,
+      onChangeSlider: (value: number) => {
+        responsiveLineChartDispatch({
+          type: responsiveLineChartAction.setLegendSymbolBorderWidth,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 1,
+      step: 1,
+      value: legendSymbolBorderWidth,
+      width: sliderWidth,
+    };
+
+  const legendSymbolSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
+    {
+      ariaLabel: 'legend symbol spacing',
+      disabled: !enableLegend,
+      kind: 'slider',
+      label: (value) => (
+        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
+      ),
+      max: 12,
+      min: 0,
+      onChangeSlider: (value: number) => {
+        responsiveLineChartDispatch({
+          type: responsiveLineChartAction.setLegendSymbolSpacing,
+          payload: value,
+        });
+      },
+      sliderDefaultValue: 8,
+      step: 1,
+      value: legendSymbolSpacing,
+      width: sliderWidth,
+    };
+
   // motion
   const createdEnableAnimateSwitchInput = (
     <Switch
@@ -2047,7 +2116,1504 @@ function ResponsiveLineChart() {
     width: sliderWidth,
   };
 
-  return <></>;
+  // input creation
+  // base
+
+  // base select inputs
+  const [createdXScaleSelectInput, createdYScaleSelectInput] =
+    returnAccessibleSelectInputElements([
+      xScaleSelectInputCreatorInfo,
+      yScaleSelectInputCreatorInfo,
+    ]);
+
+  // base slider inputs
+  const [createdYScaleMinSliderInput, createdYScaleMaxSliderInput] =
+    returnAccessibleSliderInputElements([
+      yScaleMinSliderInputCreatorInfo,
+      yScaleMaxSliderInputCreatorInfo,
+    ]);
+
+  // margin
+  // margin slider inputs
+  const [
+    createdMarginTopSliderInput,
+    createdMarginRightSliderInput,
+    createdMarginBottomSliderInput,
+    createdMarginLeftSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    marginTopSliderInputCreatorInfo,
+    marginRightSliderInputCreatorInfo,
+    marginBottomSliderInputCreatorInfo,
+    marginLeftSliderInputCreatorInfo,
+  ]);
+
+  // style
+  // style select inputs
+  const [
+    createdLineCurveSelectInput,
+    createdChartColorsSelectInput,
+    createdAreaBlendModeSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    lineCurveSelectInputCreatorInfo,
+    chartColorsSelectInputCreatorInfo,
+    areaBlendModeSelectInputCreatorInfo,
+  ]);
+
+  // style slider inputs
+  const [createdLineWidthSliderInput, createdAreaOpacitySliderInput] =
+    returnAccessibleSliderInputElements([
+      lineWidthSliderInputCreatorInfo,
+      areaOpacitySliderInputCreatorInfo,
+    ]);
+
+  // points
+  // points slider inputs
+  const [
+    createdPointSizeSliderInput,
+    createdPointBorderWidthSliderInput,
+    createdPointLabelYOffsetSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    pointSizeSliderInputCreatorInfo,
+    pointBorderWidthSliderInputCreatorInfo,
+    pointLabelYOffsetSliderInputCreatorInfo,
+  ]);
+
+  // points select inputs
+  const [createdPointLabelSelectInput] = returnAccessibleSelectInputElements([
+    pointLabelSelectInputCreatorInfo,
+  ]);
+
+  // axes
+  // axes slider inputs
+  const [
+    // axis top slider inputs
+    createdAxisTopTickSizeSliderInput,
+    createdAxisTopTickPaddingSliderInput,
+    createdAxisTopTickRotationSliderInput,
+    createdAxisTopLegendOffsetSliderInput,
+    // axis right slider inputs
+    createdAxisRightTickSizeSliderInput,
+    createdAxisRightTickPaddingSliderInput,
+    createdAxisRightTickRotationSliderInput,
+    createdAxisRightLegendOffsetSliderInput,
+    // axis bottom slider inputs
+    createdAxisBottomTickSizeSliderInput,
+    createdAxisBottomTickPaddingSliderInput,
+    createdAxisBottomTickRotationSliderInput,
+    createdAxisBottomLegendOffsetSliderInput,
+    // axis left slider inputs
+    createdAxisLeftTickSizeSliderInput,
+    createdAxisLeftTickPaddingSliderInput,
+    createdAxisLeftTickRotationSliderInput,
+    createdAxisLeftLegendOffsetSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    // axis top slider inputs
+    axisTopTickSizeSliderInputCreatorInfo,
+    axisTopTickPaddingSliderInputCreatorInfo,
+    axisTopTickRotationSliderInputCreatorInfo,
+    axisTopLegendOffsetSliderInputCreatorInfo,
+    // axis right slider inputs
+    axisRightTickSizeSliderInputCreatorInfo,
+    axisRightTickPaddingSliderInputCreatorInfo,
+    axisRightTickRotationSliderInputCreatorInfo,
+    axisRightLegendOffsetSliderInputCreatorInfo,
+    // axis bottom slider inputs
+    axisBottomTickSizeSliderInputCreatorInfo,
+    axisBottomTickPaddingSliderInputCreatorInfo,
+    axisBottomTickRotationSliderInputCreatorInfo,
+    axisBottomLegendOffsetSliderInputCreatorInfo,
+    // axis left slider inputs
+    axisLeftTickSizeSliderInputCreatorInfo,
+    axisLeftTickPaddingSliderInputCreatorInfo,
+    axisLeftTickRotationSliderInputCreatorInfo,
+    axisLeftLegendOffsetSliderInputCreatorInfo,
+  ]);
+
+  // axes text inputs
+  const [
+    createdAxisTopLegendTextInput,
+    createdAxisRightLegendTextInput,
+    createdAxisBottomLegendTextInput,
+    createdAxisLeftLegendTextInput,
+  ] = returnAccessibleTextInputElements([
+    axisTopLegendTextInputCreatorInfo,
+    axisRightLegendTextInputCreatorInfo,
+    axisBottomLegendTextInputCreatorInfo,
+    axisLeftLegendTextInputCreatorInfo,
+  ]);
+
+  // interactivity
+  const [createdCrosshairTypeSelectInput] = returnAccessibleSelectInputElements(
+    [crosshairTypeSelectInputCreatorInfo]
+  );
+
+  // legend
+  // legend slider inputs
+  const [
+    createdLegendTranslateXSliderInput,
+    createdLegendTranslateYSliderInput,
+    createdLegendItemWidthSliderInput,
+    createdLegendItemHeightSliderInput,
+    createdLegendItemsSpacingSliderInput,
+    createdLegendItemOpacitySliderInput,
+    createdLegendSymbolSizeSliderInput,
+    createdLegendSymbolBorderWidthSliderInput,
+    createdLegendSymbolSpacingSliderInput,
+  ] = returnAccessibleSliderInputElements([
+    legendTranslateXSliderInputCreatorInfo,
+    legendTranslateYSliderInputCreatorInfo,
+    legendItemWidthSliderInputCreatorInfo,
+    legendItemHeightSliderInputCreatorInfo,
+    legendItemsSpacingSliderInputCreatorInfo,
+    legendItemOpacitySliderInputCreatorInfo,
+    legendSymbolSizeSliderInputCreatorInfo,
+    legendSymbolBorderWidthSliderInputCreatorInfo,
+    legendSymbolSpacingSliderInputCreatorInfo,
+  ]);
+
+  // legend select inputs
+  const [
+    createdLegendAnchorSelectInput,
+    createdLegendDirectionSelectInput,
+    createdLegendItemDirectionSelectInput,
+    createdLegendSymbolShapeSelectInput,
+  ] = returnAccessibleSelectInputElements([
+    legendAnchorSelectInputCreatorInfo,
+    legendDirectionSelectInputCreatorInfo,
+    legendItemDirectionSelectInputCreatorInfo,
+    legendSymbolShapeSelectInputCreatorInfo,
+  ]);
+
+  // motion
+  const [createdMotionConfigSelectInput] = returnAccessibleSelectInputElements([
+    motionConfigSelectInputCreatorInfo,
+  ]);
+
+  // input display
+
+  // base
+  const displayBaseHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Base
+      </Title>
+    </Group>
+  );
+
+  const displayXScaleSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdXScaleSelectInput}
+      label="X scale"
+      value={xScale}
+    />
+  );
+
+  const displayYScaleSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdYScaleSelectInput}
+      label="Y scale"
+      value={yScale}
+    />
+  );
+
+  const displayEnableYScaleStackedSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableYScaleStackedSwitchInput}
+    </Group>
+  );
+
+  const displayEnableYScaleMinSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableYScaleMinSwitchInput}
+    </Group>
+  );
+
+  const displayYScaleMinSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdYScaleMinSliderInput}
+      isInputDisabled={!enableYScaleMin}
+      label="Y scale min"
+      value={yScaleMin}
+    />
+  );
+
+  const displayEnableYScaleMaxSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableYScaleMaxSwitchInput}
+    </Group>
+  );
+
+  const displayYScaleMaxSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdYScaleMaxSliderInput}
+      isInputDisabled={!enableYScaleMax}
+      label="Y scale max"
+      value={yScaleMax}
+    />
+  );
+
+  const displayReverseScaleSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdReverseScaleSwitchInput}
+    </Group>
+  );
+
+  const displayBaseSection = (
+    <Stack w="100%">
+      {displayBaseHeading}
+      {displayXScaleSelectInput}
+      {displayYScaleSelectInput}
+      {displayEnableYScaleStackedSwitchInput}
+      {displayEnableYScaleMinSwitchInput}
+      {displayYScaleMinSliderInput}
+      {displayEnableYScaleMaxSwitchInput}
+      {displayYScaleMaxSliderInput}
+      {displayReverseScaleSwitchInput}
+    </Stack>
+  );
+
+  // margin
+  const displayMarginHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Margin
+      </Title>
+    </Group>
+  );
+
+  const displayMarginTopSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginTopSliderInput}
+      label="Margin top"
+      symbol="px"
+      value={marginTop}
+    />
+  );
+
+  const displayMarginRightSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginRightSliderInput}
+      label="Margin right"
+      symbol="px"
+      value={marginRight}
+    />
+  );
+
+  const displayMarginBottomSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginBottomSliderInput}
+      label="Margin bottom"
+      symbol="px"
+      value={marginBottom}
+    />
+  );
+
+  const displayMarginLeftSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginLeftSliderInput}
+      label="Margin left"
+      symbol="px"
+      value={marginLeft}
+    />
+  );
+
+  const displayMarginSection = (
+    <Stack w="100%">
+      {displayMarginHeading}
+      {displayMarginTopSliderInput}
+      {displayMarginRightSliderInput}
+      {displayMarginBottomSliderInput}
+      {displayMarginLeftSliderInput}
+    </Stack>
+  );
+
+  // style
+  const displayStyleHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Style
+      </Title>
+    </Group>
+  );
+
+  const displayLineCurveSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLineCurveSelectInput}
+      label="Line curve"
+      value={lineCurve}
+    />
+  );
+
+  const displayChartColorsSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdChartColorsSelectInput}
+      label="Chart colors"
+      value={chartColors}
+    />
+  );
+
+  const displayLineWidthSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLineWidthSliderInput}
+      label="Line width"
+      symbol="px"
+      value={lineWidth}
+    />
+  );
+
+  const displayEnableAreaSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableAreaSwitchInput}
+    </Group>
+  );
+
+  const displayAreaOpacitySliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAreaOpacitySliderInput}
+      isInputDisabled={!enableArea}
+      label="Area opacity"
+      value={areaOpacity}
+    />
+  );
+
+  const displayAreaBlendModeSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAreaBlendModeSelectInput}
+      isInputDisabled={!enableArea}
+      label="Area blend mode"
+      value={areaBlendMode}
+    />
+  );
+
+  const displayStyleSection = (
+    <Stack w="100%">
+      {displayStyleHeading}
+      {displayLineCurveSelectInput}
+      {displayChartColorsSelectInput}
+      {displayLineWidthSliderInput}
+      {displayEnableAreaSwitchInput}
+      {displayAreaOpacitySliderInput}
+      {displayAreaBlendModeSelectInput}
+    </Stack>
+  );
+
+  // points
+  const displayPointsHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Points
+      </Title>
+    </Group>
+  );
+
+  const displayEnablePointsSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnablePointsSwitchInput}
+    </Group>
+  );
+
+  const displayPointSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdPointSizeSliderInput}
+      isInputDisabled={!enablePoints}
+      label="Point size"
+      symbol="px"
+      value={pointSize}
+    />
+  );
+
+  const displayPointColorInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdPointColorInput}
+      isInputDisabled={!enablePoints}
+      label="Point color"
+      value={pointColor}
+    />
+  );
+
+  const displayPointBorderWidthSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdPointBorderWidthSliderInput}
+      isInputDisabled={!enablePoints}
+      label="Point border width"
+      symbol="px"
+      value={pointBorderWidth}
+    />
+  );
+
+  const displayPointBorderColorInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdPointBorderColorInput}
+      isInputDisabled={!enablePoints}
+      label="Point border color"
+      value={pointBorderColor}
+    />
+  );
+
+  const displayEnablePointLabelSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnablePointLabelSwitchInput}
+    </Group>
+  );
+
+  const displayPointLabelSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdPointLabelSelectInput}
+      isInputDisabled={!enablePointLabel}
+      label="Point label"
+      value={pointLabel}
+    />
+  );
+
+  const displayPointLabelYOffsetSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdPointLabelYOffsetSliderInput}
+      isInputDisabled={!enablePointLabel}
+      label="Point label Y offset"
+      symbol="px"
+      value={pointLabelYOffset}
+    />
+  );
+
+  const displayPointsSection = (
+    <Stack w="100%">
+      {displayPointsHeading}
+      {displayEnablePointsSwitchInput}
+      {displayPointSizeSliderInput}
+      {displayPointColorInput}
+      {displayPointBorderWidthSliderInput}
+      {displayPointBorderColorInput}
+      {displayEnablePointLabelSwitchInput}
+      {displayPointLabelSelectInput}
+      {displayPointLabelYOffsetSliderInput}
+    </Stack>
+  );
+
+  // grids
+  const displayGridsHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Grids
+      </Title>
+    </Group>
+  );
+
+  const displayEnableGridXSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableGridXSwitchInput}
+    </Group>
+  );
+
+  const displayEnableGridYSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableGridYSwitchInput}
+    </Group>
+  );
+
+  const displayGridsSection = (
+    <Stack w="100%">
+      {displayGridsHeading}
+      {displayEnableGridXSwitchInput}
+      {displayEnableGridYSwitchInput}
+    </Stack>
+  );
+
+  // axes
+  const displayAxesHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Axes
+      </Title>
+    </Group>
+  );
+
+  // axes top
+  const displayEnableAxisTopSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableAxisTopSwitchInput}
+    </Group>
+  );
+
+  const displayAxisTopTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopTickSizeSliderInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top tick size"
+      symbol="px"
+      value={axisTopTickSize}
+    />
+  );
+
+  const displayAxisTopTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopTickPaddingSliderInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top tick padding"
+      symbol="px"
+      value={axisTopTickPadding}
+    />
+  );
+
+  const displayAxisTopTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopTickRotationSliderInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top tick rotation"
+      symbol="°"
+      value={axisTopTickRotation}
+    />
+  );
+
+  const displayAxisTopLegendTextInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopLegendTextInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top legend"
+      value={axisTopLegend}
+    />
+  );
+
+  const displayAxisTopLegendOffsetSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisTopLegendOffsetSliderInput}
+      isInputDisabled={!enableAxisTop}
+      label="Axis top legend offset"
+      symbol="px"
+      value={axisTopLegendOffset}
+    />
+  );
+
+  // axes right
+  const displayEnableAxisRightSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableAxisRightSwitchInput}
+    </Group>
+  );
+
+  const displayAxisRightTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisRightTickSizeSliderInput}
+      isInputDisabled={!enableAxisRight}
+      label="Axis right tick size"
+      symbol="px"
+      value={axisRightTickSize}
+    />
+  );
+
+  const displayAxisRightTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisRightTickPaddingSliderInput}
+      isInputDisabled={!enableAxisRight}
+      label="Axis right tick padding"
+      symbol="px"
+      value={axisRightTickPadding}
+    />
+  );
+
+  const displayAxisRightTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisRightTickRotationSliderInput}
+      isInputDisabled={!enableAxisRight}
+      label="Axis right tick rotation"
+      symbol="°"
+      value={axisRightTickRotation}
+    />
+  );
+
+  const displayAxisRightLegendTextInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisRightLegendTextInput}
+      isInputDisabled={!enableAxisRight}
+      label="Axis right legend"
+      value={axisRightLegend}
+    />
+  );
+
+  const displayAxisRightLegendOffsetSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisRightLegendOffsetSliderInput}
+      isInputDisabled={!enableAxisRight}
+      label="Axis right legend offset"
+      symbol="px"
+      value={axisRightLegendOffset}
+    />
+  );
+
+  // axes bottom
+  const displayEnableAxisBottomSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableAxisBottomSwitchInput}
+    </Group>
+  );
+
+  const displayAxisBottomTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisBottomTickSizeSliderInput}
+      isInputDisabled={!enableAxisBottom}
+      label="Axis bottom tick size"
+      symbol="px"
+      value={axisBottomTickSize}
+    />
+  );
+
+  const displayAxisBottomTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisBottomTickPaddingSliderInput}
+      isInputDisabled={!enableAxisBottom}
+      label="Axis bottom tick padding"
+      symbol="px"
+      value={axisBottomTickPadding}
+    />
+  );
+
+  const displayAxisBottomTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisBottomTickRotationSliderInput}
+      isInputDisabled={!enableAxisBottom}
+      label="Axis bottom tick rotation"
+      symbol="°"
+      value={axisBottomTickRotation}
+    />
+  );
+
+  const displayAxisBottomLegendTextInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisBottomLegendTextInput}
+      isInputDisabled={!enableAxisBottom}
+      label="Axis bottom legend"
+      value={axisBottomLegend}
+    />
+  );
+
+  const displayAxisBottomLegendOffsetSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisBottomLegendOffsetSliderInput}
+      isInputDisabled={!enableAxisBottom}
+      label="Axis bottom legend offset"
+      symbol="px"
+      value={axisBottomLegendOffset}
+    />
+  );
+
+  // axes left
+  const displayEnableAxisLeftSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableAxisLeftSwitchInput}
+    </Group>
+  );
+
+  const displayAxisLeftTickSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisLeftTickSizeSliderInput}
+      isInputDisabled={!enableAxisLeft}
+      label="Axis left tick size"
+      symbol="px"
+      value={axisLeftTickSize}
+    />
+  );
+
+  const displayAxisLeftTickPaddingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisLeftTickPaddingSliderInput}
+      isInputDisabled={!enableAxisLeft}
+      label="Axis left tick padding"
+      symbol="px"
+      value={axisLeftTickPadding}
+    />
+  );
+
+  const displayAxisLeftTickRotationSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisLeftTickRotationSliderInput}
+      isInputDisabled={!enableAxisLeft}
+      label="Axis left tick rotation"
+      symbol="°"
+      value={axisLeftTickRotation}
+    />
+  );
+
+  const displayAxisLeftLegendTextInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisLeftLegendTextInput}
+      isInputDisabled={!enableAxisLeft}
+      label="Axis left legend"
+      value={axisLeftLegend}
+    />
+  );
+
+  const displayAxisLeftLegendOffsetSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdAxisLeftLegendOffsetSliderInput}
+      isInputDisabled={!enableAxisLeft}
+      label="Axis left legend offset"
+      symbol="px"
+      value={axisLeftLegendOffset}
+    />
+  );
+
+  const displayAxesSection = (
+    <Stack w="100%">
+      {displayAxesHeading}
+      {displayEnableAxisTopSwitchInput}
+      {displayAxisTopTickSizeSliderInput}
+      {displayAxisTopTickPaddingSliderInput}
+      {displayAxisTopTickRotationSliderInput}
+      {displayAxisTopLegendTextInput}
+      {displayAxisTopLegendOffsetSliderInput}
+      {displayEnableAxisRightSwitchInput}
+      {displayAxisRightTickSizeSliderInput}
+      {displayAxisRightTickPaddingSliderInput}
+      {displayAxisRightTickRotationSliderInput}
+      {displayAxisRightLegendTextInput}
+      {displayAxisRightLegendOffsetSliderInput}
+      {displayEnableAxisBottomSwitchInput}
+      {displayAxisBottomTickSizeSliderInput}
+      {displayAxisBottomTickPaddingSliderInput}
+      {displayAxisBottomTickRotationSliderInput}
+      {displayAxisBottomLegendTextInput}
+      {displayAxisBottomLegendOffsetSliderInput}
+      {displayEnableAxisLeftSwitchInput}
+      {displayAxisLeftTickSizeSliderInput}
+      {displayAxisLeftTickPaddingSliderInput}
+      {displayAxisLeftTickRotationSliderInput}
+      {displayAxisLeftLegendTextInput}
+      {displayAxisLeftLegendOffsetSliderInput}
+    </Stack>
+  );
+
+  // interactivity
+  const displayInteractivityHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Interactivity
+      </Title>
+    </Group>
+  );
+
+  const displayEnableCrosshairSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableCrosshairSwitchInput}
+    </Group>
+  );
+
+  const displayCrosshairTypeSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdCrosshairTypeSelectInput}
+      isInputDisabled={!enableCrosshair}
+      label="Crosshair type"
+      value={crosshairType}
+    />
+  );
+
+  const displayInteractivitySection = (
+    <Stack w="100%">
+      {displayInteractivityHeading}
+      {displayEnableCrosshairSwitchInput}
+      {displayCrosshairTypeSelectInput}
+    </Stack>
+  );
+
+  // legends
+  const displayLegendsHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Legends
+      </Title>
+    </Group>
+  );
+
+  const displayEnableLegendSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableLegendSwitchInput}
+    </Group>
+  );
+
+  const displayLegendAnchorSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendAnchorSelectInput}
+      isInputDisabled={!enableLegend}
+      label="Legend anchor"
+      value={legendAnchor}
+    />
+  );
+
+  const displayLegendDirectionSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendDirectionSelectInput}
+      isInputDisabled={!enableLegend}
+      label="Legend direction"
+      value={legendDirection}
+    />
+  );
+
+  const displayEnableLegendJustifySwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableLegendJustifySwitchInput}
+    </Group>
+  );
+
+  const displayLegendTranslateXSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendTranslateXSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend translate X"
+      symbol="px"
+      value={legendTranslateX}
+    />
+  );
+
+  const displayLegendTranslateYSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendTranslateYSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend translate Y"
+      symbol="px"
+      value={legendTranslateY}
+    />
+  );
+
+  const displayLegendItemWidthSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemWidthSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend item width"
+      symbol="px"
+      value={legendItemWidth}
+    />
+  );
+
+  const displayLegendItemHeightSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemHeightSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend item height"
+      symbol="px"
+      value={legendItemHeight}
+    />
+  );
+
+  const displayLegendItemsSpacingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemsSpacingSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend items spacing"
+      symbol="px"
+      value={legendItemsSpacing}
+    />
+  );
+
+  const displayLegendItemDirectionSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemDirectionSelectInput}
+      isInputDisabled={!enableLegend}
+      label="Legend item direction"
+      value={legendItemDirection}
+    />
+  );
+
+  const displayLegendItemOpacitySliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendItemOpacitySliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend item opacity"
+      value={legendItemOpacity}
+    />
+  );
+
+  const displayLegendSymbolSizeSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendSymbolSizeSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend symbol size"
+      symbol="px"
+      value={legendSymbolSize}
+    />
+  );
+
+  const displayLegendSymbolShapeSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendSymbolShapeSelectInput}
+      isInputDisabled={!enableLegend}
+      label="Legend symbol shape"
+      value={legendSymbolShape}
+    />
+  );
+
+  const displayLegendSymbolBorderColorInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendSymbolBorderColorInput}
+      isInputDisabled={!enableLegend}
+      label="Legend symbol border color"
+      value={legendSymbolBorderColor}
+    />
+  );
+
+  const displayLegendSymbolBorderWidthSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendSymbolBorderWidthSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend symbol border width"
+      symbol="px"
+      value={legendSymbolBorderWidth}
+    />
+  );
+
+  const displayLegendSymbolSpacingSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdLegendSymbolSpacingSliderInput}
+      isInputDisabled={!enableLegend}
+      label="Legend symbol spacing"
+      symbol="px"
+      value={legendSymbolSpacing}
+    />
+  );
+
+  const displayLegendsSection = (
+    <Stack w="100%">
+      {displayLegendsHeading}
+      {displayEnableLegendSwitchInput}
+      {displayLegendAnchorSelectInput}
+      {displayLegendDirectionSelectInput}
+      {displayEnableLegendJustifySwitchInput}
+      {displayLegendTranslateXSliderInput}
+      {displayLegendTranslateYSliderInput}
+      {displayLegendItemWidthSliderInput}
+      {displayLegendItemHeightSliderInput}
+      {displayLegendItemsSpacingSliderInput}
+      {displayLegendItemDirectionSelectInput}
+      {displayLegendItemOpacitySliderInput}
+      {displayLegendSymbolSizeSliderInput}
+      {displayLegendSymbolShapeSelectInput}
+      {displayLegendSymbolBorderColorInput}
+      {displayLegendSymbolBorderWidthSliderInput}
+      {displayLegendSymbolSpacingSliderInput}
+    </Stack>
+  );
+
+  // motion
+  const displayMotionHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Motion
+      </Title>
+    </Group>
+  );
+
+  const displayEnableAnimateSwitchInput = (
+    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
+      {createdEnableAnimateSwitchInput}
+    </Group>
+  );
+
+  const displayMotionConfigSelectInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMotionConfigSelectInput}
+      isInputDisabled={!enableAnimate}
+      label="Motion config"
+      value={motionConfig}
+    />
+  );
+
+  const displayMotionSection = (
+    <Stack w="100%">
+      {displayMotionHeading}
+      {displayEnableAnimateSwitchInput}
+      {displayMotionConfigSelectInput}
+    </Stack>
+  );
+
+  const lineChartControlsStack = (
+    <Stack w="100%">
+      {displayBaseSection}
+      {displayMarginSection}
+      {displayStyleSection}
+      {displayPointsSection}
+      {displayGridsSection}
+      {displayAxesSection}
+      {displayInteractivitySection}
+      {displayLegendsSection}
+      {displayMotionSection}
+    </Stack>
+  );
+
+  const displayLineChartControls = (
+    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
+      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
+        <Grid.Col span={1}>{lineChartControlsStack}</Grid.Col>
+      </Grid>
+    </ScrollArea>
+  );
+
+  const data = [
+    {
+      id: 'japan',
+      color: 'hsl(210, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 230,
+        },
+        {
+          x: 'helicopter',
+          y: 82,
+        },
+        {
+          x: 'boat',
+          y: 112,
+        },
+        {
+          x: 'train',
+          y: 185,
+        },
+        {
+          x: 'subway',
+          y: 129,
+        },
+        {
+          x: 'bus',
+          y: 75,
+        },
+        {
+          x: 'car',
+          y: 33,
+        },
+        {
+          x: 'moto',
+          y: 264,
+        },
+        {
+          x: 'bicycle',
+          y: 297,
+        },
+        {
+          x: 'horse',
+          y: 255,
+        },
+        {
+          x: 'skateboard',
+          y: 197,
+        },
+        {
+          x: 'others',
+          y: 238,
+        },
+      ],
+    },
+    {
+      id: 'france',
+      color: 'hsl(184, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 32,
+        },
+        {
+          x: 'helicopter',
+          y: 200,
+        },
+        {
+          x: 'boat',
+          y: 284,
+        },
+        {
+          x: 'train',
+          y: 74,
+        },
+        {
+          x: 'subway',
+          y: 114,
+        },
+        {
+          x: 'bus',
+          y: 263,
+        },
+        {
+          x: 'car',
+          y: 120,
+        },
+        {
+          x: 'moto',
+          y: 285,
+        },
+        {
+          x: 'bicycle',
+          y: 35,
+        },
+        {
+          x: 'horse',
+          y: 291,
+        },
+        {
+          x: 'skateboard',
+          y: 12,
+        },
+        {
+          x: 'others',
+          y: 39,
+        },
+      ],
+    },
+    {
+      id: 'us',
+      color: 'hsl(7, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 236,
+        },
+        {
+          x: 'helicopter',
+          y: 133,
+        },
+        {
+          x: 'boat',
+          y: 195,
+        },
+        {
+          x: 'train',
+          y: 194,
+        },
+        {
+          x: 'subway',
+          y: 297,
+        },
+        {
+          x: 'bus',
+          y: 86,
+        },
+        {
+          x: 'car',
+          y: 280,
+        },
+        {
+          x: 'moto',
+          y: 60,
+        },
+        {
+          x: 'bicycle',
+          y: 61,
+        },
+        {
+          x: 'horse',
+          y: 135,
+        },
+        {
+          x: 'skateboard',
+          y: 92,
+        },
+        {
+          x: 'others',
+          y: 44,
+        },
+      ],
+    },
+    {
+      id: 'germany',
+      color: 'hsl(167, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 287,
+        },
+        {
+          x: 'helicopter',
+          y: 67,
+        },
+        {
+          x: 'boat',
+          y: 9,
+        },
+        {
+          x: 'train',
+          y: 55,
+        },
+        {
+          x: 'subway',
+          y: 187,
+        },
+        {
+          x: 'bus',
+          y: 30,
+        },
+        {
+          x: 'car',
+          y: 241,
+        },
+        {
+          x: 'moto',
+          y: 200,
+        },
+        {
+          x: 'bicycle',
+          y: 22,
+        },
+        {
+          x: 'horse',
+          y: 98,
+        },
+        {
+          x: 'skateboard',
+          y: 8,
+        },
+        {
+          x: 'others',
+          y: 69,
+        },
+      ],
+    },
+    {
+      id: 'norway',
+      color: 'hsl(87, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 250,
+        },
+        {
+          x: 'helicopter',
+          y: 237,
+        },
+        {
+          x: 'boat',
+          y: 135,
+        },
+        {
+          x: 'train',
+          y: 95,
+        },
+        {
+          x: 'subway',
+          y: 181,
+        },
+        {
+          x: 'bus',
+          y: 285,
+        },
+        {
+          x: 'car',
+          y: 251,
+        },
+        {
+          x: 'moto',
+          y: 111,
+        },
+        {
+          x: 'bicycle',
+          y: 115,
+        },
+        {
+          x: 'horse',
+          y: 37,
+        },
+        {
+          x: 'skateboard',
+          y: 43,
+        },
+        {
+          x: 'others',
+          y: 259,
+        },
+      ],
+    },
+  ];
+
+  const displayResponsieLine = (
+    <ResponsiveLine
+      data={data}
+      // base
+      xScale={{ type: xScale }}
+      yScale={{
+        type: yScale,
+        min: enableYScaleMin ? yScaleMin : 'auto',
+        max: enableYScaleMax ? yScaleMax : 'auto',
+        stacked: enableYScaleStacked,
+        reverse: reverseScale,
+      }}
+      yFormat=" >-.2f"
+      // margin
+      margin={{
+        top: marginTop,
+        right: marginRight,
+        bottom: marginBottom,
+        left: marginLeft,
+      }}
+      // style
+      curve={lineCurve}
+      colors={{ scheme: chartColors }}
+      lineWidth={lineWidth}
+      enableArea={enableArea}
+      areaOpacity={areaOpacity}
+      areaBlendMode={areaBlendMode}
+      defs={NIVO_CHART_PATTERN_DEFS}
+      // points
+      enablePoints={enablePoints}
+      pointSize={pointSize}
+      pointColor={pointColor}
+      pointBorderWidth={pointBorderWidth}
+      pointBorderColor={pointBorderColor}
+      enablePointLabel={enablePointLabel}
+      pointLabel={pointLabel}
+      pointLabelYOffset={pointLabelYOffset}
+      // grids
+      enableGridX={enableGridX}
+      enableGridY={enableGridY}
+      // axes
+      axisTop={
+        enableAxisTop
+          ? {
+              tickSize: axisTopTickSize,
+              tickPadding: axisTopTickPadding,
+              tickRotation: axisTopTickRotation,
+              legend: axisTopLegend,
+              legendOffset: axisTopLegendOffset,
+            }
+          : null
+      }
+      axisRight={
+        enableAxisRight
+          ? {
+              tickSize: axisRightTickSize,
+              tickPadding: axisRightTickPadding,
+              tickRotation: axisRightTickRotation,
+              legend: axisRightLegend,
+              legendOffset: axisRightLegendOffset,
+            }
+          : null
+      }
+      axisBottom={
+        enableAxisBottom
+          ? {
+              tickSize: axisBottomTickSize,
+              tickPadding: axisBottomTickPadding,
+              tickRotation: axisBottomTickRotation,
+              legend: axisBottomLegend,
+              legendOffset: axisBottomLegendOffset,
+            }
+          : null
+      }
+      axisLeft={
+        enableAxisLeft
+          ? {
+              tickSize: axisLeftTickSize,
+              tickPadding: axisLeftTickPadding,
+              tickRotation: axisLeftTickRotation,
+              legend: axisLeftLegend,
+              legendOffset: axisLeftLegendOffset,
+            }
+          : null
+      }
+      // interactivity
+      isInteractive={true}
+      enableCrosshair={enableCrosshair}
+      crosshairType={crosshairType}
+      useMesh={true}
+      // legends
+      legends={
+        enableLegend
+          ? [
+              {
+                anchor: legendAnchor,
+                direction: legendDirection,
+                justify: enableLegendJustify,
+                translateX: legendTranslateX,
+                translateY: legendTranslateY,
+                itemsSpacing: legendItemsSpacing,
+                itemDirection: legendItemDirection,
+                itemWidth: legendItemWidth,
+                itemHeight: legendItemHeight,
+                itemOpacity: legendItemOpacity,
+                symbolSize: legendSymbolSize,
+                symbolShape: legendSymbolShape,
+                symbolBorderColor: legendSymbolBorderColor,
+                symbolBorderWidth: legendSymbolBorderWidth,
+                symbolSpacing: legendSymbolSpacing,
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemBackground: 'rgba(0, 0, 0, .03)',
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []
+      }
+      // motion
+      animate={enableAnimate}
+      motionConfig={motionConfig}
+    />
+  );
+
+  const displayResponsiveLineChartComponent = (
+    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
+      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
+        {displayLineChartControls}
+      </Grid.Col>
+
+      <Grid.Col span={1}>
+        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
+        <Divider
+          orientation={width < 1192 ? 'horizontal' : 'vertical'}
+          size="sm"
+          w="100%"
+          h="100%"
+        />
+      </Grid.Col>
+
+      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
+        {displayResponsieLine}
+      </Grid.Col>
+    </Grid>
+  );
+
+  return displayResponsiveLineChartComponent;
 }
 
 export { ResponsiveLineChart };

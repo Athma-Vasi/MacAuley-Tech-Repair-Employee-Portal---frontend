@@ -3,6 +3,7 @@ import {
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
+  NivoLegendSymbolShape,
   NivoLineAreaBlendMode,
   NivoLineAxesScale,
   NivoLineCrosshairType,
@@ -13,13 +14,14 @@ import {
 
 type ResponsiveLineChartState = {
   // base
-  xScale: NivoLineAxesScale; // default: linear
+  xScale: NivoLineAxesScale; // default: point
   yScale: NivoLineAxesScale; // default: linear
   enableYScaleStacked: boolean; // default: false
   enableYScaleMin: boolean; // default: false ? 'auto'
   yScaleMin: number; // -2000 - 2000 default: 0
   enableYScaleMax: boolean; // default: false ? 'auto'
   yScaleMax: number; // -2000 - 2000 default: 0
+  reverseScale: boolean; // default: false
 
   // margin
   marginTop: number; // 0px - 200px default: 60 step: 1
@@ -104,6 +106,10 @@ type ResponsiveLineChartState = {
   legendItemDirection: NivoLegendItemDirection; // default: left-to-right
   legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
   legendSymbolSize: number; // 2px - 60px default: 12 step: 1
+  legendSymbolShape: NivoLegendSymbolShape; // default: circle
+  legendSymbolBorderColor: string; // default: gray
+  legendSymbolBorderWidth: number; // 0px - 20px default: 0 step: 1
+  legendSymbolSpacing: number; // 0px - 20px default: 8 step: 1
 
   // motion
   enableAnimate: boolean; // default: true
@@ -119,6 +125,7 @@ type ResponsiveLineChartAction = {
   setYScaleMin: 'setYScaleMin';
   setEnableYScaleMax: 'setEnableYScaleMax';
   setYScaleMax: 'setYScaleMax';
+  setReverseScale: 'setReverseScale';
 
   // margin
   setMarginTop: 'setMarginTop';
@@ -203,6 +210,10 @@ type ResponsiveLineChartAction = {
   setLegendItemDirection: 'setLegendItemDirection';
   setLegendItemOpacity: 'setLegendItemOpacity';
   setLegendSymbolSize: 'setLegendSymbolSize';
+  setLegendSymbolShape: 'setLegendSymbolShape';
+  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor';
+  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth';
+  setLegendSymbolSpacing: 'setLegendSymbolSpacing';
 
   // motion
   setEnableAnimate: 'setEnableAnimate';
@@ -217,7 +228,8 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setAxisBottomLegend']
         | ResponsiveLineChartAction['setAxisLeftLegend']
         | ResponsiveLineChartAction['setPointColor']
-        | ResponsiveLineChartAction['setPointBorderColor'];
+        | ResponsiveLineChartAction['setPointBorderColor']
+        | ResponsiveLineChartAction['setLegendSymbolBorderColor'];
 
       payload: string;
     }
@@ -256,7 +268,9 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setLegendItemHeight']
         | ResponsiveLineChartAction['setLegendItemsSpacing']
         | ResponsiveLineChartAction['setLegendItemOpacity']
-        | ResponsiveLineChartAction['setLegendSymbolSize'];
+        | ResponsiveLineChartAction['setLegendSymbolSize']
+        | ResponsiveLineChartAction['setLegendSymbolBorderWidth']
+        | ResponsiveLineChartAction['setLegendSymbolSpacing'];
 
       payload: number;
     }
@@ -265,6 +279,7 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setEnableYScaleStacked']
         | ResponsiveLineChartAction['setEnableYScaleMin']
         | ResponsiveLineChartAction['setEnableYScaleMax']
+        | ResponsiveLineChartAction['setReverseScale']
         | ResponsiveLineChartAction['setEnableArea']
         | ResponsiveLineChartAction['setEnablePoints']
         | ResponsiveLineChartAction['setEnablePointLabel']
@@ -312,6 +327,10 @@ type ResponsiveLineChartDispatch =
   | {
       type: ResponsiveLineChartAction['setLegendItemDirection'];
       payload: NivoLegendItemDirection;
+    }
+  | {
+      type: ResponsiveLineChartAction['setLegendSymbolShape'];
+      payload: NivoLegendSymbolShape;
     }
   | {
       type: ResponsiveLineChartAction['setMotionConfig'];

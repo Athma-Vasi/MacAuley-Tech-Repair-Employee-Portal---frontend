@@ -12,7 +12,6 @@ const NIVO_LINE_CURVE_DATA: SelectInputData = [
   { label: 'linear', value: 'linear' },
   { label: 'monotoneX', value: 'monotoneX' },
   { label: 'monotoneY', value: 'monotoneY' },
-  { label: 'monotone', value: 'monotone' },
   { label: 'natural', value: 'natural' },
   { label: 'step', value: 'step' },
   { label: 'stepAfter', value: 'stepAfter' },

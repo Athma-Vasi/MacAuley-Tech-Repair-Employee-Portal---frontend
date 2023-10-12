@@ -27,7 +27,7 @@ import {
   AccessibleSliderInputCreatorInfo,
 } from '../../wrappers';
 import {
-  CHART_PATTERN_DEFS,
+  NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
   NIVO_LEGEND_ANCHOR_DATA,
   NIVO_LEGEND_DIRECTION_DATA,
@@ -2033,7 +2033,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       animate={enableAnimate}
       motionConfig={motionConfig}
       transitionMode={transitionMode}
-      defs={CHART_PATTERN_DEFS}
+      defs={NIVO_CHART_PATTERN_DEFS}
       fill={enableFillPatterns ? fillPatterns : []}
       legends={
         enableLegend

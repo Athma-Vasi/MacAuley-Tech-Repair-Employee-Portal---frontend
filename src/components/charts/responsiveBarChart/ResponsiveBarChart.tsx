@@ -33,7 +33,7 @@ import {
   AccessibleTextInputCreatorInfo,
 } from '../../wrappers';
 import {
-  CHART_PATTERN_DEFS,
+  NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
   NIVO_LEGEND_ANCHOR_DATA,
   NIVO_LEGEND_DIRECTION_DATA,
@@ -3015,7 +3015,7 @@ function ResponsiveBarChart() {
       borderRadius={chartBorderRadius}
       borderWidth={chartBorderWidth}
       borderColor={chartBorderColor}
-      defs={CHART_PATTERN_DEFS}
+      defs={NIVO_CHART_PATTERN_DEFS}
       fill={[
         {
           match: {

@@ -91,7 +91,7 @@ const NIVO_TRANSITION_MODE_DATA: SelectInputData = [
   { label: 'Push Out', value: 'pushOut' },
 ];
 
-const CHART_PATTERN_DEFS = [
+const NIVO_CHART_PATTERN_DEFS = [
   {
     id: 'dots',
     type: 'patternDots',
@@ -113,7 +113,7 @@ const CHART_PATTERN_DEFS = [
 ];
 
 export {
-  CHART_PATTERN_DEFS,
+  NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
   NIVO_LEGEND_ANCHOR_DATA,
   NIVO_LEGEND_DIRECTION_DATA,
