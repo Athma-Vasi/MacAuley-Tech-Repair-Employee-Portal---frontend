@@ -33,7 +33,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   enableLabels: true,
   labelSkipWidth: 0,
   labelSkipHeight: 0,
-  labelTextColor: '#ffffff',
+  labelTextColor: 'gray',
 
   /** grid and axes */
   enableGridX: false,

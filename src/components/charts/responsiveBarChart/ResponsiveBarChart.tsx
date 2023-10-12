@@ -392,7 +392,7 @@ function ResponsiveBarChart() {
 
   const {
     tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
-    generalColors: { grayColorShade },
+    generalColors: { grayColorShade, textColor },
     appThemeColors: { borderColor },
     scrollBarStyle,
   } = returnThemeColors({
@@ -452,7 +452,11 @@ function ResponsiveBarChart() {
           ? reverseAccessibleSelectedText
           : reverseAccessibleDeselectedText
       }
-      label={<Text weight={500}>Reverse</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Reverse
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setReverse,
@@ -476,7 +480,11 @@ function ResponsiveBarChart() {
           ? enableMinValueAccessibleSelectedText
           : enableMinValueAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle min value</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle min value
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableMinValue,
@@ -519,7 +527,11 @@ function ResponsiveBarChart() {
           ? enableMaxValueAccessibleSelectedText
           : enableMaxValueAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle max value</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle max value
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableMaxValue,
@@ -754,7 +766,11 @@ function ResponsiveBarChart() {
           ? enableFillPatternsAccessibleSelectedText
           : enableFillPatternsAccessibleDeselectedText
       }
-      label={<Text weight={500}>Fill patterns</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Fill patterns
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableFillPatterns,
@@ -779,7 +795,11 @@ function ResponsiveBarChart() {
           ? enableLabelsAccessibleSelectedText
           : enableLabelsAccessibleDeselectedText
       }
-      label={<Text weight={500}>Labels</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Labels
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableLabels,
@@ -864,7 +884,11 @@ function ResponsiveBarChart() {
           ? enableGridXAccessibleSelectedText
           : enableGridXAccessibleDeselectedText
       }
-      label={<Text weight={500}>Grid X</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Grid X
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableGridX,
@@ -888,7 +912,11 @@ function ResponsiveBarChart() {
           ? enableGridYAccessibleSelectedText
           : enableGridYAccessibleDeselectedText
       }
-      label={<Text weight={500}>Grid Y</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Grid Y
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableGridY,
@@ -913,7 +941,11 @@ function ResponsiveBarChart() {
           ? enableAxisTopAccessibleSelectedText
           : enableAxisTopAccessibleDeselectedText
       }
-      label={<Text weight={500}>Axis top</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Axis top
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableAxisTop,
@@ -1070,7 +1102,11 @@ function ResponsiveBarChart() {
           ? enableAxisRightAccessibleSelectedText
           : enableAxisRightAccessibleDeselectedText
       }
-      label={<Text weight={500}>Axis right</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Axis right
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableAxisRight,
@@ -1227,7 +1263,11 @@ function ResponsiveBarChart() {
           ? enableAxisBottomAccessibleSelectedText
           : enableAxisBottomAccessibleDeselectedText
       }
-      label={<Text weight={500}>Axis bottom</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Axis bottom
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableAxisBottom,
@@ -1384,7 +1424,11 @@ function ResponsiveBarChart() {
           ? enableAxisLeftAccessibleSelectedText
           : enableAxisLeftAccessibleDeselectedText
       }
-      label={<Text weight={500}>Axis left</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Axis left
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableAxisLeft,
@@ -1541,7 +1585,11 @@ function ResponsiveBarChart() {
           ? enableLegendAccessibleSelectedText
           : enableLegendAccessibleDeselectedText
       }
-      label={<Text weight={500}>Legend</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Legend
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableLegend,
@@ -1596,7 +1644,7 @@ function ResponsiveBarChart() {
       }
       disabled={!enableLegend}
       label={
-        <Text weight={500} color={enableLegend ? void 0 : grayColorShade}>
+        <Text weight={500} color={enableLegend ? textColor : grayColorShade}>
           Legend justify
         </Text>
       }
@@ -1793,7 +1841,11 @@ function ResponsiveBarChart() {
           ? enableAnimateAccessibleSelectedText
           : enableAnimateAccessibleDeselectedText
       }
-      label={<Text weight={500}>Animate</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Animate
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setEnableAnimate,
@@ -1974,7 +2026,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Base</Title>
+      <Title order={5} color={textColor}>
+        Base
+      </Title>
     </Group>
   );
 
@@ -2080,7 +2134,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Margin</Title>
+      <Title order={5} color={textColor}>
+        Margin
+      </Title>
     </Group>
   );
 
@@ -2138,7 +2194,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Style</Title>
+      <Title order={5} color={textColor}>
+        Style
+      </Title>
     </Group>
   );
 
@@ -2201,7 +2259,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Labels</Title>
+      <Title order={5} color={textColor}>
+        Labels
+      </Title>
     </Group>
   );
 
@@ -2258,7 +2318,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Grid</Title>
+      <Title order={5} color={textColor}>
+        Grid
+      </Title>
     </Group>
   );
 
@@ -2290,7 +2352,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Axis Top</Title>
+      <Title order={5} color={textColor}>
+        Axis Top
+      </Title>
     </Group>
   );
 
@@ -2369,7 +2433,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Axis Right</Title>
+      <Title order={5} color={textColor}>
+        Axis Right
+      </Title>
     </Group>
   );
 
@@ -2448,7 +2514,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Axis Bottom</Title>
+      <Title order={5} color={textColor}>
+        Axis Bottom
+      </Title>
     </Group>
   );
 
@@ -2527,7 +2595,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4, marginBottom: 0 }}
       w="100%"
     >
-      <Title order={5}>Axis Left</Title>
+      <Title order={5} color={textColor}>
+        Axis Left
+      </Title>
     </Group>
   );
 
@@ -2606,7 +2676,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Legend</Title>
+      <Title order={5} color={textColor}>
+        Legend
+      </Title>
     </Group>
   );
 
@@ -2753,7 +2825,9 @@ function ResponsiveBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Motion</Title>
+      <Title order={5} color={textColor}>
+        Motion
+      </Title>
     </Group>
   );
 

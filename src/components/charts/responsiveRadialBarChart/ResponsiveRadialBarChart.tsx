@@ -310,7 +310,7 @@ function ResponsiveRadialBarChart() {
 
   const {
     tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
-    generalColors: { grayColorShade },
+    generalColors: { grayColorShade, textColor },
     appThemeColors: { borderColor },
     scrollBarStyle,
   } = returnThemeColors({
@@ -332,7 +332,11 @@ function ResponsiveRadialBarChart() {
           ? enableMaxValueAccessibleSelectedText
           : enableMaxValueAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle max value</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle max value
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableMaxValue,
@@ -611,7 +615,11 @@ function ResponsiveRadialBarChart() {
           ? enableTracksAccessibleSelectedText
           : enableTracksAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle tracks</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle tracks
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableTracks,
@@ -652,7 +660,11 @@ function ResponsiveRadialBarChart() {
           ? enableRadialGridAccessibleSelectedText
           : enableRadialGridAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle radial grid</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle radial grid
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableRadialGrid,
@@ -676,7 +688,11 @@ function ResponsiveRadialBarChart() {
           ? enableCircularGridAccessibleSelectedText
           : enableCircularGridAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle circular grid</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle circular grid
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableCircularGrid,
@@ -702,7 +718,11 @@ function ResponsiveRadialBarChart() {
           ? enableRadialAxisStartAccessibleSelectedText
           : enableRadialAxisStartAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle radial axis start</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle radial axis start
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableRadialAxisStart,
@@ -793,7 +813,11 @@ function ResponsiveRadialBarChart() {
           ? enableRadialAxisEndAccessibleSelectedText
           : enableRadialAxisEndAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle radial axis end</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle radial axis end
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableRadialAxisEnd,
@@ -884,7 +908,11 @@ function ResponsiveRadialBarChart() {
           ? enableCircularAxisInnerAccessibleSelectedText
           : enableCircularAxisInnerAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle circular axis inner</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle circular axis inner
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableCircularAxisInner,
@@ -975,7 +1003,11 @@ function ResponsiveRadialBarChart() {
           ? enableCircularAxisOuterAccessibleSelectedText
           : enableCircularAxisOuterAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle circular axis outer</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle circular axis outer
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableCircularAxisOuter,
@@ -1066,7 +1098,11 @@ function ResponsiveRadialBarChart() {
           ? enableLabelsAccessibleSelectedText
           : enableLabelsAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle labels</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle labels
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableLabels,
@@ -1151,7 +1187,11 @@ function ResponsiveRadialBarChart() {
           ? enableLegendAccessibleSelectedText
           : enableLegendAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle legend</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle legend
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableLegend,
@@ -1206,7 +1246,7 @@ function ResponsiveRadialBarChart() {
       }
       disabled={!enableLegend}
       label={
-        <Text weight={500} color={enableLegend ? void 0 : grayColorShade}>
+        <Text weight={500} color={enableLegend ? textColor : grayColorShade}>
           Legend justify
         </Text>
       }
@@ -1403,7 +1443,11 @@ function ResponsiveRadialBarChart() {
           ? enableAnimateAccessibleSelectedText
           : enableAnimateAccessibleDeselectedText
       }
-      label={<Text weight={500}>Toggle animate</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Toggle animate
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setEnableAnimate,
@@ -1608,7 +1652,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Base</Title>
+      <Title order={5} color={textColor}>
+        Base
+      </Title>
     </Group>
   );
 
@@ -1625,42 +1671,6 @@ function ResponsiveRadialBarChart() {
       label="Max value"
       symbol="px"
       value={maxValue}
-    />
-  );
-
-  const displayMarginTopSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdMarginTopSliderInput}
-      label="Margin top"
-      symbol="px"
-      value={marginTop}
-    />
-  );
-
-  const displayMarginRightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdMarginRightSliderInput}
-      label="Margin right"
-      symbol="px"
-      value={marginRight}
-    />
-  );
-
-  const displayMarginBottomSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdMarginBottomSliderInput}
-      label="Margin bottom"
-      symbol="px"
-      value={marginBottom}
-    />
-  );
-
-  const displayMarginLeftSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      input={createdMarginLeftSliderInput}
-      label="Margin left"
-      symbol="px"
-      value={marginLeft}
     />
   );
 
@@ -1722,16 +1732,72 @@ function ResponsiveRadialBarChart() {
       {displayBaseHeading}
       {displayEnableMaxValueSwitchInput}
       {displayMaxValueSliderInput}
-      {displayMarginTopSliderInput}
-      {displayMarginRightSliderInput}
-      {displayMarginBottomSliderInput}
-      {displayMarginLeftSliderInput}
       {displayStartAngleSliderInput}
       {displayEndAngleSliderInput}
       {displayInnerRadiusSliderInput}
       {displayPaddingRingSliderInput}
       {displayPadAngleSliderInput}
       {displayCornerRadiusSliderInput}
+    </Stack>
+  );
+
+  // margin
+  const displayMarginHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Margin
+      </Title>
+    </Group>
+  );
+
+  const displayMarginTopSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginTopSliderInput}
+      label="Margin top"
+      symbol="px"
+      value={marginTop}
+    />
+  );
+
+  const displayMarginRightSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginRightSliderInput}
+      label="Margin right"
+      symbol="px"
+      value={marginRight}
+    />
+  );
+
+  const displayMarginBottomSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginBottomSliderInput}
+      label="Margin bottom"
+      symbol="px"
+      value={marginBottom}
+    />
+  );
+
+  const displayMarginLeftSliderInput = (
+    <ChartsAndGraphsControlsStacker
+      input={createdMarginLeftSliderInput}
+      label="Margin left"
+      symbol="px"
+      value={marginLeft}
+    />
+  );
+
+  const displayMarginSection = (
+    <Stack w="100%">
+      {displayMarginHeading}
+      {displayMarginTopSliderInput}
+      {displayMarginRightSliderInput}
+      {displayMarginBottomSliderInput}
+      {displayMarginLeftSliderInput}
     </Stack>
   );
 
@@ -1743,7 +1809,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Style</Title>
+      <Title order={5} color={textColor}>
+        Style
+      </Title>
     </Group>
   );
 
@@ -1782,7 +1850,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Tracks</Title>
+      <Title order={5} color={textColor}>
+        Tracks
+      </Title>
     </Group>
   );
 
@@ -1817,7 +1887,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Grids</Title>
+      <Title order={5} color={textColor}>
+        Grids
+      </Title>
     </Group>
   );
 
@@ -1850,7 +1922,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Radial axis start</Title>
+      <Title order={5} color={textColor}>
+        Radial axis start
+      </Title>
     </Group>
   );
 
@@ -1908,7 +1982,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Radial axis end</Title>
+      <Title order={5} color={textColor}>
+        Radial axis end
+      </Title>
     </Group>
   );
 
@@ -1966,7 +2042,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Circular axis inner</Title>
+      <Title order={5} color={textColor}>
+        Circular axis inner
+      </Title>
     </Group>
   );
 
@@ -2024,7 +2102,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Circular axis outer</Title>
+      <Title order={5} color={textColor}>
+        Circular axis outer
+      </Title>
     </Group>
   );
 
@@ -2082,7 +2162,9 @@ function ResponsiveRadialBarChart() {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Labels</Title>
+      <Title order={5} color={textColor}>
+        Labels
+      </Title>
     </Group>
   );
 
@@ -2140,7 +2222,9 @@ function ResponsiveRadialBarChart() {
       w="100%"
       mb={padding}
     >
-      <Title order={5}>Legend</Title>
+      <Title order={5} color={textColor}>
+        Legend
+      </Title>
     </Group>
   );
 
@@ -2279,7 +2363,9 @@ function ResponsiveRadialBarChart() {
       w="100%"
       mb={padding}
     >
-      <Title order={5}>Motion</Title>
+      <Title order={5} color={textColor}>
+        Motion
+      </Title>
     </Group>
   );
 
@@ -2319,6 +2405,7 @@ function ResponsiveRadialBarChart() {
   const radialBarChartControlsStack = (
     <Stack w="100%">
       {displayBaseSection}
+      {displayMarginSection}
       {displayStyleSection}
       {displayTracksSection}
       {displayGridsSection}

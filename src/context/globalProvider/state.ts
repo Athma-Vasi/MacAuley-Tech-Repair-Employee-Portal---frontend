@@ -6,7 +6,7 @@ import {
 } from './types';
 
 const initialThemeObject: ThemeObject = {
-  colorScheme: 'light',
+  colorScheme: 'dark',
   respectReducedMotion: true,
 
   // white: '#f8f9fa', // gray.0

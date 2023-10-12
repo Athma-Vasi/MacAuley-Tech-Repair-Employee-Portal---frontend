@@ -397,7 +397,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? sortByValueAccessibleSelectedText
           : sortByValueAccessibleDeselectedText
       }
-      label={<Text weight={500}>Sort by value</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Sort by value
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setSortByValue,
@@ -451,7 +455,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableFillPatternsAccessibleSelectedText
           : enableFillPatternsAccessibleDeselectedText
       }
-      label={<Text weight={500}>Fill patterns</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Fill patterns
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setEnableFillPatterns,
@@ -498,7 +506,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableArcLabelsAccessibleSelectedText
           : enableArcLabelsAccessibleDeselectedText
       }
-      label={<Text weight={500}>Arc labels</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Arc labels
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setEnableArcLabels,
@@ -584,7 +596,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableArcLinkLabelsAccessibleSelectedText
           : enableArcLinkLabelsAccessibleDeselectedText
       }
-      label={<Text weight={500}>Arc link labels</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Arc link labels
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setEnableArcLinkLabels,
@@ -801,7 +817,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableAnimateAccessibleSelectedText
           : enableAnimateAccessibleDeselectedText
       }
-      label={<Text weight={500}>Animate</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Animate
+        </Text>
+      }
       disabled={isPrefersReducedMotion}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
@@ -939,7 +959,11 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableLegendAccessibleSelectedText
           : enableLegendAccessibleDeselectedText
       }
-      label={<Text weight={500}>Legend</Text>}
+      label={
+        <Text weight={500} color={textColor}>
+          Legend
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setEnableLegend,
@@ -994,7 +1018,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           : enableLegendJustifyAccessibleDeselectedText
       }
       label={
-        <Text weight={500} color={enableLegend ? void 0 : grayColorShade}>
+        <Text weight={500} color={enableLegend ? textColor : grayColorShade}>
           Justify
         </Text>
       }
@@ -1337,7 +1361,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Base</Title>
+      <Title order={5} color={textColor}>
+        Base
+      </Title>
     </Group>
   );
 
@@ -1412,7 +1438,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       p={padding}
       bg={sectionHeadersBgColor}
     >
-      <Title order={5}>Style</Title>
+      <Title order={5} color={textColor}>
+        Style
+      </Title>
     </Group>
   );
 
@@ -1469,7 +1497,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Arc labels</Title>
+      <Title order={5} color={textColor}>
+        Arc labels
+      </Title>
     </Group>
   );
 
@@ -1527,7 +1557,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Arc link labels</Title>
+      <Title order={5} color={textColor}>
+        Arc link labels
+      </Title>
     </Group>
   );
 
@@ -1628,7 +1660,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       p={padding}
       style={{ borderRadius: 4 }}
     >
-      <Title order={5}>Interactivity</Title>
+      <Title order={5} color={textColor}>
+        Interactivity
+      </Title>
     </Group>
   );
 
@@ -1666,7 +1700,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Motion</Title>
+      <Title order={5} color={textColor}>
+        Motion
+      </Title>
     </Group>
   );
 
@@ -1711,7 +1747,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Legend</Title>
+      <Title order={5} color={textColor}>
+        Legend
+      </Title>
     </Group>
   );
 
@@ -1880,7 +1918,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       style={{ borderRadius: 4 }}
       w="100%"
     >
-      <Title order={5}>Margin</Title>
+      <Title order={5} color={textColor}>
+        Margin
+      </Title>
     </Group>
   );
 

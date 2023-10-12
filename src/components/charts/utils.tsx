@@ -44,7 +44,7 @@ function ChartsAndGraphsControlsStacker({
       pb={padding}
       rowGap="xs"
     >
-      <Text weight={500} color={isInputDisabled ? grayColorShade : void 0}>
+      <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
         {label}
       </Text>
 
@@ -58,7 +58,7 @@ function ChartsAndGraphsControlsStacker({
       >
         <Text
           aria-live="polite"
-          color={isInputDisabled ? grayColorShade : void 0}
+          color={isInputDisabled ? grayColorShade : ''}
           style={{
             border: borderColor,
             borderRadius: 4,

@@ -56,12 +56,13 @@ import {
   TextInputWrapper,
   TextWrapper,
 } from '../components/wrappers';
-import { PROPERTY_DESCRIPTOR } from '../constants/data';
+import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../constants/data';
 import { useGlobalState } from '../hooks';
 import {
   formatDate,
   RegexValidationProps,
   replaceLastCommaWithAnd,
+  returnThemeColors,
   splitCamelCase,
 } from '../utils';
 
@@ -476,43 +477,33 @@ function AccessibleSelectedDeselectedTextElements({
   React.JSX.Element,
   React.JSX.Element
 ] {
-  const { colors } = useMantineTheme();
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-    },
+    globalState: { themeObject },
   } = useGlobalState();
 
-  const themeColor =
-    theme === 'default'
-      ? colorScheme === 'light'
-        ? colors.green[primaryShade.light]
-        : colors.green[primaryShade.dark]
-      : colorScheme === 'light'
-      ? colors.gray[primaryShade.light]
-      : colors.gray[primaryShade.dark];
+  const {
+    generalColors: {
+      greenColorShade,
+      textColor,
+      grayColorShade,
+      redColorShade,
+    },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   return [
     // selected text elem
     <Text
       id={`${semanticName.split(' ').join('-')}-selected`}
-      style={{
-        display: isSelected ? 'block' : 'none',
-      }}
-      color={themeColor}
+      style={{ display: isSelected ? 'block' : 'none' }}
+      color={theme === 'muted' ? textColor : greenColorShade}
       w="100%"
       aria-live="polite"
-      size="xs"
     >
       {theme === 'default' ? (
-        <FontAwesomeIcon
-          icon={faCheck}
-          color={
-            colorScheme === 'light'
-              ? colors.green[primaryShade.light]
-              : colors.green[primaryShade.dark]
-          }
-        />
+        <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
       ) : null}{' '}
       {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} selected${
         selectedDescription.length > 0 ? ` - ${selectedDescription}` : ''
@@ -521,35 +512,19 @@ function AccessibleSelectedDeselectedTextElements({
     // deselected text elem
     <Text
       id={`${semanticName.split(' ').join('-')}-deselected`}
-      style={{
-        display: !isSelected ? 'block' : 'none',
-      }}
+      style={{ display: !isSelected ? 'block' : 'none' }}
       color={
         theme === 'default'
           ? deselectedDescription.length > 0
-            ? colors.red[
-                colorScheme === 'light' ? primaryShade.light : primaryShade.dark
-              ]
-            : colors.gray[
-                colorScheme === 'light' ? primaryShade.light : primaryShade.dark
-              ]
-          : colors.gray[
-              colorScheme === 'light' ? primaryShade.light : primaryShade.dark
-            ]
+            ? redColorShade
+            : textColor
+          : grayColorShade
       }
       w="100%"
       aria-live="polite"
-      size="xs"
     >
       {theme === 'default' ? (
-        <FontAwesomeIcon
-          icon={faInfoCircle}
-          color={
-            colorScheme === 'light'
-              ? colors.red[primaryShade.light]
-              : colors.red[primaryShade.dark]
-          }
-        />
+        <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
       ) : null}{' '}
       {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} deselected${
         deselectedDescription.length > 0 ? ` - ${deselectedDescription}` : ''
