@@ -173,7 +173,6 @@ type ResponsiveRadialBarChartDispatch =
   | {
       // string payloads
       type:
-        | ResponsiveRadialBarChartAction['setChartColors']
         | ResponsiveRadialBarChartAction['setRingBorderColor']
         | ResponsiveRadialBarChartAction['setTracksColor']
         | ResponsiveRadialBarChartAction['setLabelsTextColor'];
@@ -236,6 +235,10 @@ type ResponsiveRadialBarChartDispatch =
         | ResponsiveRadialBarChartAction['setEnableAnimate'];
 
       payload: boolean;
+    }
+  | {
+      type: ResponsiveRadialBarChartAction['setChartColors'];
+      payload: NivoColorScheme;
     }
   | {
       type: ResponsiveRadialBarChartAction['setLegendAnchor'];
