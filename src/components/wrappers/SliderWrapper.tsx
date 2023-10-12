@@ -1,7 +1,13 @@
-import { MantineSize, RangeSlider, Slider } from '@mantine/core';
+import {
+  MantineSize,
+  MantineTransition,
+  RangeSlider,
+  Slider,
+} from '@mantine/core';
 import { ReactNode } from 'react';
 
 import { SliderInputData } from '../../types';
+import { returnSliderMarks } from '../../utils';
 
 type AccessibleSliderInputCreatorInfo = {
   ariaDescribedBy?: string;
@@ -10,6 +16,9 @@ type AccessibleSliderInputCreatorInfo = {
   disabled?: boolean;
   kind?: 'slider' | 'range-slider';
   label?: ReactNode | ((value: number) => ReactNode);
+  labelTransition?: MantineTransition;
+  labelTransitionDuration?: number;
+  labelTransitionTimingFunction?: string;
   marks?: SliderInputData;
   max: number;
   min: number;
@@ -40,6 +49,9 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     disabled = false,
     kind = 'slider',
     label = null,
+    labelTransition = 'skew-down',
+    labelTransitionDuration = 100,
+    labelTransitionTimingFunction = 'ease',
     marks,
     max,
     min,
@@ -58,6 +70,15 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     width = '100%',
   } = creatorInfoObject;
 
+  const sliderMarks = marks
+    ? marks
+    : disabled
+    ? void 0
+    : returnSliderMarks({
+        max: creatorInfoObject.max,
+        min: creatorInfoObject.min,
+      });
+
   return kind === 'slider' ? (
     <Slider
       aria-describedby={ariaDescribedBy}
@@ -66,7 +87,10 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
       defaultValue={sliderDefaultValue}
       disabled={disabled}
       label={label}
-      marks={marks}
+      labelTransition={labelTransition}
+      labelTransitionDuration={labelTransitionDuration}
+      labelTransitionTimingFunction={labelTransitionTimingFunction}
+      marks={sliderMarks}
       max={max}
       min={min}
       onChange={onChangeSlider}

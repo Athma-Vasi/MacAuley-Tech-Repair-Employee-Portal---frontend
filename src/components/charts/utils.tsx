@@ -53,7 +53,7 @@ function ChartsAndGraphsControlsStacker({
       </Text>
 
       <Flex
-        align="flex-end"
+        align="center"
         columnGap={rowGap}
         justify="space-between"
         rowGap={rowGap}

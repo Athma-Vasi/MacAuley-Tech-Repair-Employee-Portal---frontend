@@ -2644,7 +2644,8 @@ function ResponsiveLineChart() {
   );
 
   // axes
-  const displayAxesHeading = (
+  // axes top
+  const displayAxisTopHeading = (
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
@@ -2652,12 +2653,11 @@ function ResponsiveLineChart() {
       w="100%"
     >
       <Title order={5} color={textColor}>
-        Axes
+        Axis Top
       </Title>
     </Group>
   );
 
-  // axes top
   const displayEnableAxisTopSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableAxisTopSwitchInput}
@@ -2713,7 +2713,32 @@ function ResponsiveLineChart() {
     />
   );
 
+  const displayAxisTopSection = (
+    <Stack w="100%">
+      {displayAxisTopHeading}
+      {displayEnableAxisTopSwitchInput}
+      {displayAxisTopTickSizeSliderInput}
+      {displayAxisTopTickPaddingSliderInput}
+      {displayAxisTopTickRotationSliderInput}
+      {displayAxisTopLegendTextInput}
+      {displayAxisTopLegendOffsetSliderInput}
+    </Stack>
+  );
+
   // axes right
+  const displayAxisRightHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Axis Right
+      </Title>
+    </Group>
+  );
+
   const displayEnableAxisRightSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableAxisRightSwitchInput}
@@ -2769,7 +2794,32 @@ function ResponsiveLineChart() {
     />
   );
 
+  const displayAxisRightSection = (
+    <Stack w="100%">
+      {displayAxisRightHeading}
+      {displayEnableAxisRightSwitchInput}
+      {displayAxisRightTickSizeSliderInput}
+      {displayAxisRightTickPaddingSliderInput}
+      {displayAxisRightTickRotationSliderInput}
+      {displayAxisRightLegendTextInput}
+      {displayAxisRightLegendOffsetSliderInput}
+    </Stack>
+  );
+
   // axes bottom
+  const displayAxisBottomHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Axis Bottom
+      </Title>
+    </Group>
+  );
+
   const displayEnableAxisBottomSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableAxisBottomSwitchInput}
@@ -2825,7 +2875,32 @@ function ResponsiveLineChart() {
     />
   );
 
+  const displayAxisBottomSection = (
+    <Stack w="100%">
+      {displayAxisBottomHeading}
+      {displayEnableAxisBottomSwitchInput}
+      {displayAxisBottomTickSizeSliderInput}
+      {displayAxisBottomTickPaddingSliderInput}
+      {displayAxisBottomTickRotationSliderInput}
+      {displayAxisBottomLegendTextInput}
+      {displayAxisBottomLegendOffsetSliderInput}
+    </Stack>
+  );
+
   // axes left
+  const displayAxisLeftHeading = (
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ borderRadius: 4 }}
+      w="100%"
+    >
+      <Title order={5} color={textColor}>
+        Axis Left
+      </Title>
+    </Group>
+  );
+
   const displayEnableAxisLeftSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnableAxisLeftSwitchInput}
@@ -2881,33 +2956,24 @@ function ResponsiveLineChart() {
     />
   );
 
-  const displayAxesSection = (
+  const displayAxisLeftSection = (
     <Stack w="100%">
-      {displayAxesHeading}
-      {displayEnableAxisTopSwitchInput}
-      {displayAxisTopTickSizeSliderInput}
-      {displayAxisTopTickPaddingSliderInput}
-      {displayAxisTopTickRotationSliderInput}
-      {displayAxisTopLegendTextInput}
-      {displayAxisTopLegendOffsetSliderInput}
-      {displayEnableAxisRightSwitchInput}
-      {displayAxisRightTickSizeSliderInput}
-      {displayAxisRightTickPaddingSliderInput}
-      {displayAxisRightTickRotationSliderInput}
-      {displayAxisRightLegendTextInput}
-      {displayAxisRightLegendOffsetSliderInput}
-      {displayEnableAxisBottomSwitchInput}
-      {displayAxisBottomTickSizeSliderInput}
-      {displayAxisBottomTickPaddingSliderInput}
-      {displayAxisBottomTickRotationSliderInput}
-      {displayAxisBottomLegendTextInput}
-      {displayAxisBottomLegendOffsetSliderInput}
+      {displayAxisLeftHeading}
       {displayEnableAxisLeftSwitchInput}
       {displayAxisLeftTickSizeSliderInput}
       {displayAxisLeftTickPaddingSliderInput}
       {displayAxisLeftTickRotationSliderInput}
       {displayAxisLeftLegendTextInput}
       {displayAxisLeftLegendOffsetSliderInput}
+    </Stack>
+  );
+
+  const displayAxesSection = (
+    <Stack w="100%">
+      {displayAxisTopSection}
+      {displayAxisRightSection}
+      {displayAxisBottomSection}
+      {displayAxisLeftSection}
     </Stack>
   );
 
