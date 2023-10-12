@@ -81,7 +81,6 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   axisLeftLegendOffset: 0,
 
   // interactivity
-  enableInteractive: true,
   enableCrosshair: true,
   crosshairType: 'bottom-left',
 
@@ -181,7 +180,6 @@ const responsiveLineChartAction: ResponsiveLineChartAction = {
   setAxisLeftLegendOffset: 'setAxisLeftLegendOffset',
 
   // interactivity
-  setEnableInteractive: 'setIsInteractive',
   setEnableCrosshair: 'setEnableCrosshair',
   setCrosshairType: 'setCrosshairType',
 
@@ -344,8 +342,6 @@ function responsiveLineChartReducer(
       return { ...state, axisLeftLegendOffset: action.payload };
 
     // interactivity
-    case responsiveLineChartAction.setEnableInteractive:
-      return { ...state, enableInteractive: action.payload };
     case responsiveLineChartAction.setEnableCrosshair:
       return { ...state, enableCrosshair: action.payload };
     case responsiveLineChartAction.setCrosshairType:

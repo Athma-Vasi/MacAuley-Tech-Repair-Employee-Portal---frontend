@@ -77,7 +77,7 @@ function ResponsiveBarChart() {
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  // ensures correct colors
+  // sets initial colors based on app theme
   const modifiedInitialResponsiveBarChartState: ResponsiveBarChartState = {
     ...initialResponsiveBarChartState,
     chartBorderColor: chartTextColor,
@@ -470,7 +470,7 @@ function ResponsiveBarChart() {
     />
   );
 
-  const createdToggleMinValueSwitchInput = (
+  const createdEnableMinValueSwitchInput = (
     <Switch
       aria-describedby={
         enableMinValue
@@ -517,7 +517,7 @@ function ResponsiveBarChart() {
     width: sliderWidth,
   };
 
-  const createdToggleMaxValueSwitchInput = (
+  const createdEnableMaxValueSwitchInput = (
     <Switch
       aria-describedby={
         enableMaxValue
@@ -756,7 +756,7 @@ function ResponsiveBarChart() {
     />
   );
 
-  const createdToggleFillPatternsSwitchInput = (
+  const createdEnableFillPatternsSwitchInput = (
     <Switch
       aria-describedby={
         enableFillPatterns
@@ -785,7 +785,7 @@ function ResponsiveBarChart() {
   );
 
   /** labels */
-  const createdToggleLabelsSwitchInput = (
+  const createdEnableLabelsSwitchInput = (
     <Switch
       aria-describedby={
         enableLabels
@@ -874,7 +874,7 @@ function ResponsiveBarChart() {
   );
 
   /** grid and axes */
-  const createdToggleGridXSwitchInput = (
+  const createdEnableGridXSwitchInput = (
     <Switch
       aria-describedby={
         enableGridX
@@ -902,7 +902,7 @@ function ResponsiveBarChart() {
     />
   );
 
-  const createdToggleGridYSwitchInput = (
+  const createdEnableGridYSwitchInput = (
     <Switch
       aria-describedby={
         enableGridY
@@ -931,7 +931,7 @@ function ResponsiveBarChart() {
   );
 
   /** axis top */
-  const createdToggleAxisTopSwitchInput = (
+  const createdEnableAxisTopSwitchInput = (
     <Switch
       aria-describedby={
         enableAxisTop
@@ -1092,7 +1092,7 @@ function ResponsiveBarChart() {
     };
 
   // axis right
-  const createdToggleAxisRightSwitchInput = (
+  const createdEnableAxisRightSwitchInput = (
     <Switch
       aria-describedby={
         enableAxisRight
@@ -1253,7 +1253,7 @@ function ResponsiveBarChart() {
     };
 
   // axis bottom
-  const createdToggleAxisBottomSwitchInput = (
+  const createdEnableAxisBottomSwitchInput = (
     <Switch
       aria-describedby={
         enableAxisBottom
@@ -1414,7 +1414,7 @@ function ResponsiveBarChart() {
     };
 
   // axis left
-  const createdToggleAxisLeftSwitchInput = (
+  const createdEnableAxisLeftSwitchInput = (
     <Switch
       aria-describedby={
         enableAxisLeft
@@ -1575,7 +1575,7 @@ function ResponsiveBarChart() {
     };
 
   /** legend */
-  const createdToggleLegendSwitchInput = (
+  const createdEnableLegendSwitchInput = (
     <Switch
       aria-describedby={
         enableLegend
@@ -1632,7 +1632,7 @@ function ResponsiveBarChart() {
       width: sliderWidth,
     };
 
-  const createdToggleLegendJustifySwitchInput = (
+  const createdEnableLegendJustifySwitchInput = (
     <Switch
       aria-describedby={
         enableLegendJustify
@@ -1831,7 +1831,7 @@ function ResponsiveBarChart() {
     };
 
   /** motion */
-  const createdToggleAnimateSwitchInput = (
+  const createdEnableAnimateSwitchInput = (
     <Switch
       aria-describedby={
         enableAnimate
@@ -2067,7 +2067,7 @@ function ResponsiveBarChart() {
 
   const displayToggleMinValueSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleMinValueSwitchInput}
+      {createdEnableMinValueSwitchInput}
     </Group>
   );
 
@@ -2082,7 +2082,7 @@ function ResponsiveBarChart() {
 
   const displayToggleMaxValueSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleMaxValueSwitchInput}
+      {createdEnableMaxValueSwitchInput}
     </Group>
   );
 
@@ -2239,7 +2239,7 @@ function ResponsiveBarChart() {
 
   const displayToggleFillPatternsSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleFillPatternsSwitchInput}
+      {createdEnableFillPatternsSwitchInput}
     </Group>
   );
 
@@ -2270,7 +2270,7 @@ function ResponsiveBarChart() {
 
   const displayToggleLabelsSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleLabelsSwitchInput}
+      {createdEnableLabelsSwitchInput}
     </Group>
   );
 
@@ -2329,13 +2329,13 @@ function ResponsiveBarChart() {
 
   const displayToggleGridXSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleGridXSwitchInput}
+      {createdEnableGridXSwitchInput}
     </Group>
   );
 
   const displayToggleGridYSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleGridYSwitchInput}
+      {createdEnableGridYSwitchInput}
     </Group>
   );
 
@@ -2363,7 +2363,7 @@ function ResponsiveBarChart() {
 
   const displayToggleAxisTopSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleAxisTopSwitchInput}
+      {createdEnableAxisTopSwitchInput}
     </Group>
   );
 
@@ -2444,7 +2444,7 @@ function ResponsiveBarChart() {
 
   const displayToggleAxisRightSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleAxisRightSwitchInput}
+      {createdEnableAxisRightSwitchInput}
     </Group>
   );
 
@@ -2525,7 +2525,7 @@ function ResponsiveBarChart() {
 
   const displayToggleAxisBottomSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleAxisBottomSwitchInput}
+      {createdEnableAxisBottomSwitchInput}
     </Group>
   );
 
@@ -2606,7 +2606,7 @@ function ResponsiveBarChart() {
 
   const displayToggleAxisLeftSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleAxisLeftSwitchInput}
+      {createdEnableAxisLeftSwitchInput}
     </Group>
   );
 
@@ -2687,7 +2687,7 @@ function ResponsiveBarChart() {
 
   const displayToggleLegendSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleLegendSwitchInput}
+      {createdEnableLegendSwitchInput}
     </Group>
   );
 
@@ -2715,7 +2715,7 @@ function ResponsiveBarChart() {
 
   const displayToggleLegendJustifySwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleLegendJustifySwitchInput}
+      {createdEnableLegendJustifySwitchInput}
     </Group>
   );
 
@@ -2836,7 +2836,7 @@ function ResponsiveBarChart() {
 
   const displayToggleAnimateSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdToggleAnimateSwitchInput}
+      {createdEnableAnimateSwitchInput}
     </Group>
   );
 

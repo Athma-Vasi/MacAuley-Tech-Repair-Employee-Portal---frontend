@@ -127,6 +127,10 @@ type NivoLineCrosshairType =
   | 'left'
   | 'cross';
 
+type NivoLineAxesScale = 'linear' | 'point';
+
+type NivoLinePointLabel = 'x' | 'y';
+
 export type {
   FillPatternObject,
   NivoColorScheme,
@@ -135,8 +139,10 @@ export type {
   NivoLegendItemDirection,
   NivoLegendSymbolShape,
   NivoLineAreaBlendMode,
+  NivoLineAxesScale,
   NivoLineCrosshairType,
   NivoLineCurve,
+  NivoLinePointLabel,
   NivoMotionConfig,
   NivoTransitionMode,
 };

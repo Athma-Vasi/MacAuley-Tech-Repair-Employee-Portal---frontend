@@ -4,15 +4,17 @@ import {
   NivoLegendDirection,
   NivoLegendItemDirection,
   NivoLineAreaBlendMode,
+  NivoLineAxesScale,
   NivoLineCrosshairType,
   NivoLineCurve,
+  NivoLinePointLabel,
   NivoMotionConfig,
 } from '../types';
 
 type ResponsiveLineChartState = {
   // base
-  xScale: 'linear' | 'point'; // default: linear
-  yScale: 'linear' | 'point'; // default: linear
+  xScale: NivoLineAxesScale; // default: linear
+  yScale: NivoLineAxesScale; // default: linear
   enableYScaleStacked: boolean; // default: false
   enableYScaleMin: boolean; // default: false ? 'auto'
   yScaleMin: number; // -2000 - 2000 default: 0
@@ -40,7 +42,7 @@ type ResponsiveLineChartState = {
   pointBorderWidth: number; // 0px - 20px default: 0 step: 1
   pointBorderColor: string; // default: gray
   enablePointLabel: boolean; // default: false
-  pointLabel: 'x' | 'y'; // default: 'y'
+  pointLabel: NivoLinePointLabel; // default: 'y'
   pointLabelYOffset: number; // -22px - 24px default: -12 step: 1
 
   // grids
@@ -86,7 +88,6 @@ type ResponsiveLineChartState = {
   axisLeftLegendOffset: number; // -60px - 60px default: 0 step: 1
 
   // interactivity
-  enableInteractive: boolean; // default: true
   enableCrosshair: boolean; // default: true
   crosshairType: NivoLineCrosshairType; // default: 'bottom-left'
 
@@ -186,7 +187,6 @@ type ResponsiveLineChartAction = {
   setAxisLeftLegendOffset: 'setAxisLeftLegendOffset';
 
   // interactivity
-  setEnableInteractive: 'setIsInteractive';
   setEnableCrosshair: 'setEnableCrosshair';
   setCrosshairType: 'setCrosshairType';
 
@@ -282,7 +282,6 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setEnableAxisLeft']
         | ResponsiveLineChartAction['setIsAxisLeftLegendValid']
         | ResponsiveLineChartAction['setIsAxisLeftLegendFocused']
-        | ResponsiveLineChartAction['setEnableInteractive']
         | ResponsiveLineChartAction['setEnableCrosshair']
         | ResponsiveLineChartAction['setEnableLegend']
         | ResponsiveLineChartAction['setEnableLegendJustify']
@@ -327,11 +326,11 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setXScale']
         | ResponsiveLineChartAction['setYScale'];
 
-      payload: 'linear' | 'point';
+      payload: NivoLineAxesScale;
     }
   | {
       type: ResponsiveLineChartAction['setPointLabel'];
-      payload: 'x' | 'y';
+      payload: NivoLinePointLabel;
     };
 
 export type {
