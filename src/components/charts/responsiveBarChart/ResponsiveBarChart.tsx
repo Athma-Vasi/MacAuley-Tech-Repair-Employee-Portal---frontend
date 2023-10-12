@@ -1072,7 +1072,7 @@ function ResponsiveBarChart() {
   const axisTopLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis top legend offset',
-      disabled: !enableAxisTop,
+      disabled: !enableAxisTop || !axisTopLegend,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -1233,7 +1233,7 @@ function ResponsiveBarChart() {
   const axisRightLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis right legend offset',
-      disabled: !enableAxisRight,
+      disabled: !enableAxisRight || !axisRightLegend,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -1394,7 +1394,7 @@ function ResponsiveBarChart() {
   const axisBottomLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis bottom legend offset',
-      disabled: !enableAxisBottom,
+      disabled: !enableAxisBottom || !axisBottomLegend,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -1555,7 +1555,7 @@ function ResponsiveBarChart() {
   const axisLeftLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'axis left legend offset',
-      disabled: !enableAxisLeft,
+      disabled: !enableAxisLeft || !axisLeftLegend,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -2409,7 +2409,7 @@ function ResponsiveBarChart() {
   const displayAxisTopLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdAxisTopLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisTop}
+      isInputDisabled={!enableAxisTop || !axisTopLegend}
       label="Axis top legend offset"
       symbol="px"
       value={axisTopLegendOffset}
@@ -2490,7 +2490,7 @@ function ResponsiveBarChart() {
   const displayAxisRightLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdAxisRightLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisRight}
+      isInputDisabled={!enableAxisRight || !axisRightLegend}
       label="Axis right legend offset"
       symbol="px"
       value={axisRightLegendOffset}
@@ -2571,7 +2571,7 @@ function ResponsiveBarChart() {
   const displayAxisBottomLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdAxisBottomLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisBottom}
+      isInputDisabled={!enableAxisBottom || !axisBottomLegend}
       label="Axis bottom legend offset"
       symbol="px"
       value={axisBottomLegendOffset}
@@ -2652,7 +2652,7 @@ function ResponsiveBarChart() {
   const displayAxisLeftLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdAxisLeftLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisLeft}
+      isInputDisabled={!enableAxisLeft || !axisLeftLegend}
       label="Axis left legend offset"
       symbol="px"
       value={axisLeftLegendOffset}

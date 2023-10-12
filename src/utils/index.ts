@@ -1764,7 +1764,7 @@ function returnIsAccessTokenExpired(accessToken: string): {
 function returnUppercasedSentence(sentence: string): string {
   return sentence
     .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word, idx) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
 
