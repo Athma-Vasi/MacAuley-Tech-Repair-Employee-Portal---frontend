@@ -127,11 +127,8 @@ type NivoLineCrosshairType =
   | 'left'
   | 'cross';
 
-type NivoColor = string | { from: 'color'; modifiers: string[] };
-
 export type {
   FillPatternObject,
-  NivoColor,
   NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,

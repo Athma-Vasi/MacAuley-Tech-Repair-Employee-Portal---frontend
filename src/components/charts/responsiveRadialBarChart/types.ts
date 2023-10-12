@@ -27,11 +27,11 @@ type ResponsiveRadialBarChartState = {
   // style
   chartColors: NivoColorScheme; // default: 'nivo'
   ringBorderWidth: number; // 0px - 20px default: 0 step: 1
-  ringBorderColor: string; // default: #ffffff
+  ringBorderColor: string; // default: 'inherit'
 
   // tracks
   enableTracks: boolean; // default: true
-  tracksColor: string; // default: #333333
+  tracksColor: string; // default: '#ccc'
 
   // grids
   enableRadialGrid: boolean; // default: true
@@ -66,7 +66,7 @@ type ResponsiveRadialBarChartState = {
   enableLabels: boolean; // default: false
   labelsSkipAngle: number; // 0 - 45 default: 10 step: 1
   labelsRadiusOffset: number; // 0 - 2 default: 0.5 step: 0.05
-  labelsTextColor: string; // default: #333333
+  labelsTextColor: string; // default: 'inherit'
 
   // legend
   enableLegend: boolean; // default: false

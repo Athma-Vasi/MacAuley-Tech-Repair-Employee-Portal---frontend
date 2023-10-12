@@ -550,8 +550,8 @@ function App() {
         {/* these are public routes */}
         <Route path="/" element={rootIndexWrapper}>
           {/* TESTING ONLY REMOVE  */}
-          <Route index element={<ResponsiveBarChart />} />
-          {/* <Route index element={<ResponsiveRadialBarChart />} /> */}
+          {/* <Route index element={<ResponsiveBarChart />} /> */}
+          <Route index element={<ResponsiveRadialBarChart />} />
           <Route
             index
             element={

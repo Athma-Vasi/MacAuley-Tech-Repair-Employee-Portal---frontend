@@ -1,5 +1,4 @@
 import {
-  NivoColor,
   NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
@@ -37,9 +36,9 @@ type ResponsiveLineChartState = {
   // points
   enablePoints: boolean; // default: false
   pointSize: number; // 0px - 20px default: 6 step: 1
-  pointColor: NivoColor; // default: {from: 'color', modifiers: []}
+  pointColor: string; // default: gray
   pointBorderWidth: number; // 0px - 20px default: 0 step: 1
-  pointBorderColor: NivoColor; // default: {from: 'color', modifiers: []}
+  pointBorderColor: string; // default: gray
   enablePointLabel: boolean; // default: false
   pointLabel: 'x' | 'y'; // default: 'y'
   pointLabelYOffset: number; // -22px - 24px default: -12 step: 1
@@ -211,7 +210,9 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setAxisTopLegend']
         | ResponsiveLineChartAction['setAxisRightLegend']
         | ResponsiveLineChartAction['setAxisBottomLegend']
-        | ResponsiveLineChartAction['setAxisLeftLegend'];
+        | ResponsiveLineChartAction['setAxisLeftLegend']
+        | ResponsiveLineChartAction['setPointColor']
+        | ResponsiveLineChartAction['setPointBorderColor'];
 
       payload: string;
     }
@@ -275,13 +276,6 @@ type ResponsiveLineChartDispatch =
       payload: string[];
     }
   | {
-      type:
-        | ResponsiveLineChartAction['setPointColor']
-        | ResponsiveLineChartAction['setPointBorderColor'];
-
-      payload: NivoColor;
-    }
-  | {
       type: ResponsiveLineChartAction['setChartColors'];
       payload: NivoColorScheme;
     }
@@ -322,7 +316,7 @@ type ResponsiveLineChartDispatch =
     };
 
 export type {
-  ResponsiveLineChartState,
-  ResponsiveLineChartDispatch,
   ResponsiveLineChartAction,
+  ResponsiveLineChartDispatch,
+  ResponsiveLineChartState,
 };

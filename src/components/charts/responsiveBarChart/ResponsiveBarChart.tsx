@@ -60,22 +60,34 @@ import {
   responsiveBarChartAction,
   responsiveBarChartReducer,
 } from './state';
+import { ResponsiveBarChartState } from './types';
 
 function ResponsiveBarChart() {
-  const [responsiveBarChartState, responsiveBarChartDispatch] = useReducer(
-    responsiveBarChartReducer,
-    initialResponsiveBarChartState
-  );
+  const {
+    globalState: { isPrefersReducedMotion, width, themeObject, padding },
+  } = useGlobalState();
 
   const {
-    globalState: {
-      isPrefersReducedMotion,
-      width,
-      themeObject,
-      padding,
-      rowGap,
-    },
-  } = useGlobalState();
+    tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
+    generalColors: { chartTextColor, grayColorShade, textColor },
+    appThemeColors: { borderColor },
+    scrollBarStyle,
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  // ensures correct colors
+  const modifiedInitialResponsiveBarChartState: ResponsiveBarChartState = {
+    ...initialResponsiveBarChartState,
+    chartBorderColor: chartTextColor,
+    labelTextColor: chartTextColor,
+  };
+
+  const [responsiveBarChartState, responsiveBarChartDispatch] = useReducer(
+    responsiveBarChartReducer,
+    modifiedInitialResponsiveBarChartState
+  );
 
   const {
     /** base */
@@ -390,16 +402,6 @@ function ResponsiveBarChart() {
       ? '500px'
       : `${width * 0.15}px`;
   const sliderLabelColor = gray[3];
-
-  const {
-    tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
-    generalColors: { grayColorShade, textColor },
-    appThemeColors: { borderColor },
-    scrollBarStyle,
-  } = returnThemeColors({
-    themeObject,
-    colorsSwatches: COLORS_SWATCHES,
-  });
 
   const groupModeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: BAR_CHART_GROUP_MODE_SELECT_DATA,

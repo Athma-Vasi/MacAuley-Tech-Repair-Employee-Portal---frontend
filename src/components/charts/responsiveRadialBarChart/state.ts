@@ -24,11 +24,11 @@ const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
   // style
   chartColors: 'nivo',
   ringBorderWidth: 0,
-  ringBorderColor: '#ffffff',
+  ringBorderColor: 'gray',
 
   // tracks
   enableTracks: true,
-  tracksColor: 'rgba(0, 0, 0, .15)',
+  tracksColor: 'gray',
 
   // grids
   enableRadialGrid: true,
@@ -63,7 +63,7 @@ const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
   enableLabels: false,
   labelsSkipAngle: 10,
   labelsRadiusOffset: 0.5,
-  labelsTextColor: '#333333',
+  labelsTextColor: 'gray',
 
   // legend
   enableLegend: false,

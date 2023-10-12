@@ -34,10 +34,10 @@ import {
   NIVO_TRANSITION_MODE_DATA,
 } from '../constants';
 import {
+  NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
-  NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
 } from '../types';
@@ -47,17 +47,36 @@ import {
   responsiveRadialBarChartAction,
   responsiveRadialBarChartReducer,
 } from './state';
+import { ResponsiveRadialBarChartState } from './types';
 
 function ResponsiveRadialBarChart() {
-  const [responsiveRadialBarChartState, responsiveRadialBarChartDispatch] =
-    useReducer(
-      responsiveRadialBarChartReducer,
-      initialResponsiveRadialBarChartState
-    );
-
   const {
     globalState: { isPrefersReducedMotion, themeObject, width, padding },
   } = useGlobalState();
+
+  const {
+    tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
+    generalColors: { chartTextColor, grayColorShade, textColor },
+    appThemeColors: { borderColor },
+    scrollBarStyle,
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  // sets initial colors based on color scheme
+  const modifiedResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
+    ...initialResponsiveRadialBarChartState,
+    ringBorderColor: chartTextColor,
+    tracksColor: grayColorShade,
+    labelsTextColor: chartTextColor,
+  };
+
+  const [responsiveRadialBarChartState, responsiveRadialBarChartDispatch] =
+    useReducer(
+      responsiveRadialBarChartReducer,
+      modifiedResponsiveRadialBarChartState
+    );
 
   const {
     // base
@@ -295,16 +314,6 @@ function ResponsiveRadialBarChart() {
       ? '500px'
       : `${width * 0.15}px`;
   const sliderLabelColor = gray[3];
-
-  const {
-    tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
-    generalColors: { grayColorShade, textColor },
-    appThemeColors: { borderColor },
-    scrollBarStyle,
-  } = returnThemeColors({
-    themeObject,
-    colorsSwatches: COLORS_SWATCHES,
-  });
 
   // base
   const createdEnableMaxValueSwitchInput = (
