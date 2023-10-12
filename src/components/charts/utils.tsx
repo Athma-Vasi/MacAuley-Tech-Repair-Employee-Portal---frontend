@@ -3,33 +3,35 @@ import { ReactNode } from 'react';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
-import { splitCamelCase } from '../../utils';
+import { returnThemeColors, splitCamelCase } from '../../utils';
 import { TextWrapper } from '../wrappers';
 
 type ChartsAndGraphsControlsStackerProps = {
-  label: string | ReactNode;
-  value: string | number | boolean;
   input: JSX.Element;
+  isInputDisabled?: boolean;
+  label: ReactNode;
   symbol?: string;
+  value: string | number | boolean;
 };
 
 function ChartsAndGraphsControlsStacker({
-  label,
-  value,
   input,
+  isInputDisabled = false,
+  label,
   symbol = '',
+  value,
 }: ChartsAndGraphsControlsStackerProps) {
   const {
-    globalState: {
-      padding,
-      rowGap,
-      themeObject: { colorScheme },
-    },
+    globalState: { padding, rowGap, themeObject },
   } = useGlobalState();
 
-  const { gray } = COLORS_SWATCHES;
-
-  const borderColor = colorScheme === 'light' ? gray[3] : gray[8];
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { grayColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   return (
     <Flex
@@ -37,30 +39,31 @@ function ChartsAndGraphsControlsStacker({
       justify="space-between"
       wrap="wrap"
       w="100%"
-      style={{ borderBottom: `1px solid ${borderColor}` }}
+      style={{ borderBottom: borderColor }}
       px={padding}
       pb={padding}
       rowGap="xs"
     >
-      <Text size="md" weight={500}>
+      <Text weight={500} color={isInputDisabled ? grayColorShade : void 0}>
         {label}
       </Text>
 
       <Flex
         align="flex-end"
-        justify="space-between"
-        wrap="wrap"
         columnGap={rowGap}
+        justify="space-between"
         rowGap={rowGap}
         w="100%"
+        wrap="wrap"
       >
         <Text
-          style={{
-            padding: '0.5rem 0.75rem',
-            border: `1px solid ${borderColor}`,
-            borderRadius: '4px',
-          }}
           aria-live="polite"
+          color={isInputDisabled ? grayColorShade : void 0}
+          style={{
+            border: borderColor,
+            borderRadius: 4,
+            padding: '0.5rem 0.75rem',
+          }}
         >
           {splitCamelCase(value.toString())} {symbol}
         </Text>
