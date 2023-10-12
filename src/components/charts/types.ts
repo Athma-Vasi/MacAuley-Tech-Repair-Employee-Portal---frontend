@@ -130,8 +130,25 @@ type NivoLineAxesScale = 'linear' | 'point';
 
 type NivoLinePointLabel = 'x' | 'y';
 
+type NivoCalendarAlign =
+  | 'top'
+  | 'top-right'
+  | 'right'
+  | 'bottom-right'
+  | 'bottom'
+  | 'bottom-left'
+  | 'left'
+  | 'top-left'
+  | 'center';
+
+type NivoCalendarDirection = 'horizontal' | 'vertical';
+type NivoCalendarLegendPosition = 'before' | 'after';
+
 export type {
   FillPatternObject,
+  NivoCalendarAlign,
+  NivoCalendarDirection,
+  NivoCalendarLegendPosition,
   NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
