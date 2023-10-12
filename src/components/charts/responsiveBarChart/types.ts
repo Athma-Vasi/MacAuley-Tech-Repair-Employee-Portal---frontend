@@ -93,7 +93,6 @@ type ResponsiveBarChartState = {
   legendItemHeight: number; // 10px - 200px default: 20 step: 1
   legendItemsSpacing: number; // 0px - 60px default: 2 step: 1
   legendItemDirection: LegendItemDirection; // default: left-to-right
-
   legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
   legendSymbolSize: number; // 2px - 60px default: 12 step: 1
 
