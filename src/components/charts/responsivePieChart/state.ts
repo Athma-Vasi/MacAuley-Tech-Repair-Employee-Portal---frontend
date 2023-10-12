@@ -14,11 +14,11 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   sortByValue: false,
 
   /** style */
-  colorScheme: 'set2',
+  chartColors: 'set2',
   fillPatterns: [],
   enableFillPatterns: false,
-  borderColor: '#ffffff',
-  borderWidth: 0,
+  chartBorderColor: '#ffffff',
+  chartBorderWidth: 0,
 
   /** arc labels */
   enableArcLabels: true,
@@ -41,7 +41,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   activeOuterRadiusOffset: 6,
 
   /** motion */
-  animate: true,
+  enableAnimate: true,
   motionConfig: 'gentle',
   transitionMode: 'innerRadius',
 
@@ -53,19 +53,19 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
 
   /** legend */
   enableLegend: false,
-  anchor: 'top-left',
-  direction: 'column',
-  justify: false,
-  translateX: 0,
-  translateY: 0,
-  itemsSpacing: 10,
-  itemWidth: 60,
-  itemHeight: 20,
-  itemDirection: 'left-to-right',
-  itemTextColor: '#999',
-  itemOpacity: 1,
-  symbolSize: 20,
-  symbolShape: 'circle',
+  legendAnchor: 'top-left',
+  legendDirection: 'column',
+  legendJustify: false,
+  legendTranslateX: 0,
+  legendTranslateY: 0,
+  legendItemsSpacing: 10,
+  legendItemWidth: 60,
+  legendItemHeight: 20,
+  legendItemDirection: 'left-to-right',
+  legendItemTextColor: '#999',
+  legendItemOpacity: 1,
+  legendSymbolSize: 20,
+  legendSymbolShape: 'circle',
 };
 
 const responsivePieChartAction: ResponsivePieChartAction = {
@@ -81,8 +81,8 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setColorScheme: 'setColorScheme',
   setFillPatterns: 'setFillPatterns',
   setEnableFillPatterns: 'setEnableFillPatterns',
-  setBorderColor: 'setBorderColor',
-  setBorderWidth: 'setBorderWidth',
+  setChartBorderColor: 'setChartBorderColor',
+  setChartBorderWidth: 'setChartBorderWidth',
 
   /** arc labels */
   setEnableArcLabels: 'setEnableArcLabels',
@@ -105,7 +105,7 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setActiveOuterRadiusOffset: 'setActiveOuterRadiusOffset',
 
   /** motion */
-  setAnimate: 'setAnimate',
+  setEnableAnimate: 'setEnableAnimate',
   setMotionConfig: 'setMotionConfig',
   setTransitionMode: 'setTransitionMode',
 
@@ -117,19 +117,19 @@ const responsivePieChartAction: ResponsivePieChartAction = {
 
   /** legend */
   setEnableLegend: 'setEnableLegend',
-  setAnchor: 'setAnchor',
-  setDirection: 'setDirection',
-  setJustify: 'setJustify',
-  setTranslateX: 'setTranslateX',
-  setTranslateY: 'setTranslateY',
-  setItemsSpacing: 'setItemsSpacing',
-  setItemWidth: 'setItemWidth',
-  setItemHeight: 'setItemHeight',
-  setItemDirection: 'setItemDirection',
-  setItemTextColor: 'setItemTextColor',
-  setItemOpacity: 'setItemOpacity',
-  setSymbolSize: 'setSymbolSize',
-  setSymbolShape: 'setSymbolShape',
+  setLegendAnchor: 'setLegendAnchor',
+  setLegendDirection: 'setLegendDirection',
+  setLegendJustify: 'setLegendJustify',
+  setLegendTranslateX: 'setLegendTranslateX',
+  setLegendTranslateY: 'setLegendTranslateY',
+  setLegendItemsSpacing: 'setLegendItemsSpacing',
+  setLegendItemWidth: 'setLegendItemWidth',
+  setLegendItemHeight: 'setLegendItemHeight',
+  setLegendItemDirection: 'setLegendItemDirection',
+  setLegendItemTextColor: 'setLegendItemTextColor',
+  setLegendItemOpacity: 'setLegendItemOpacity',
+  setLegendSymbolSize: 'setLegendSymbolSize',
+  setLegendSymbolShape: 'setLegendSymbolShape',
 };
 
 function responsivePieChartReducer(
@@ -173,7 +173,7 @@ function responsivePieChartReducer(
     case responsivePieChartAction.setColorScheme:
       return {
         ...state,
-        colorScheme: action.payload,
+        chartColors: action.payload,
       };
     case responsivePieChartAction.setFillPatterns:
       return {
@@ -185,15 +185,15 @@ function responsivePieChartReducer(
         ...state,
         enableFillPatterns: action.payload,
       };
-    case responsivePieChartAction.setBorderColor:
+    case responsivePieChartAction.setChartBorderColor:
       return {
         ...state,
-        borderColor: action.payload,
+        chartBorderColor: action.payload,
       };
-    case responsivePieChartAction.setBorderWidth:
+    case responsivePieChartAction.setChartBorderWidth:
       return {
         ...state,
-        borderWidth: action.payload,
+        chartBorderWidth: action.payload,
       };
 
     /** arc labels */
@@ -273,10 +273,10 @@ function responsivePieChartReducer(
       };
 
     /** motion */
-    case responsivePieChartAction.setAnimate:
+    case responsivePieChartAction.setEnableAnimate:
       return {
         ...state,
-        animate: action.payload,
+        enableAnimate: action.payload,
       };
     case responsivePieChartAction.setMotionConfig:
       return {
@@ -317,70 +317,70 @@ function responsivePieChartReducer(
         ...state,
         enableLegend: action.payload,
       };
-    case responsivePieChartAction.setAnchor:
+    case responsivePieChartAction.setLegendAnchor:
       return {
         ...state,
-        anchor: action.payload,
+        legendAnchor: action.payload,
       };
-    case responsivePieChartAction.setDirection:
+    case responsivePieChartAction.setLegendDirection:
       return {
         ...state,
-        direction: action.payload,
+        legendDirection: action.payload,
       };
-    case responsivePieChartAction.setJustify:
+    case responsivePieChartAction.setLegendJustify:
       return {
         ...state,
-        justify: action.payload,
+        legendJustify: action.payload,
       };
-    case responsivePieChartAction.setTranslateX:
+    case responsivePieChartAction.setLegendTranslateX:
       return {
         ...state,
-        translateX: action.payload,
+        legendTranslateX: action.payload,
       };
-    case responsivePieChartAction.setTranslateY:
+    case responsivePieChartAction.setLegendTranslateY:
       return {
         ...state,
-        translateY: action.payload,
+        legendTranslateY: action.payload,
       };
-    case responsivePieChartAction.setItemsSpacing:
+    case responsivePieChartAction.setLegendItemsSpacing:
       return {
         ...state,
-        itemsSpacing: action.payload,
+        legendItemsSpacing: action.payload,
       };
-    case responsivePieChartAction.setItemWidth:
+    case responsivePieChartAction.setLegendItemWidth:
       return {
         ...state,
-        itemWidth: action.payload,
+        legendItemWidth: action.payload,
       };
-    case responsivePieChartAction.setItemHeight:
+    case responsivePieChartAction.setLegendItemHeight:
       return {
         ...state,
-        itemHeight: action.payload,
+        legendItemHeight: action.payload,
       };
-    case responsivePieChartAction.setItemDirection:
+    case responsivePieChartAction.setLegendItemDirection:
       return {
         ...state,
-        itemDirection: action.payload,
+        legendItemDirection: action.payload,
       };
-    case responsivePieChartAction.setItemTextColor:
+    case responsivePieChartAction.setLegendItemTextColor:
       return {
         ...state,
-        itemTextColor: action.payload,
+        legendItemTextColor: action.payload,
       };
-    case responsivePieChartAction.setItemOpacity:
+    case responsivePieChartAction.setLegendItemOpacity:
       return {
         ...state,
-        itemOpacity: action.payload,
+        legendItemOpacity: action.payload,
       };
-    case responsivePieChartAction.setSymbolSize:
+    case responsivePieChartAction.setLegendSymbolSize:
       return {
         ...state,
-        symbolSize: action.payload,
+        legendSymbolSize: action.payload,
       };
-    case responsivePieChartAction.setSymbolShape:
+    case responsivePieChartAction.setLegendSymbolShape:
       return {
         ...state,
-        symbolShape: action.payload,
+        legendSymbolShape: action.payload,
       };
 
     default:

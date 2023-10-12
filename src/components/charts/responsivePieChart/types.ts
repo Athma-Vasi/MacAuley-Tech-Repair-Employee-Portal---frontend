@@ -24,11 +24,11 @@ type ResponsivePieChartState = {
   sortByValue: boolean; // default: false
 
   /** style */
-  colorScheme: NivoColorScheme;
+  chartColors: NivoColorScheme;
   fillPatterns: FillPatternObject[];
   enableFillPatterns: boolean; // default: false
-  borderColor: string; // default: #ffffff
-  borderWidth: number; // 0px - 20px default: 0 step: 1
+  chartBorderColor: string; // default: #ffffff
+  chartBorderWidth: number; // 0px - 20px default: 0 step: 1
 
   /** arc labels */
   enableArcLabels: boolean; // default: true
@@ -51,7 +51,7 @@ type ResponsivePieChartState = {
   activeOuterRadiusOffset: number; // 0px - 50px default: 0 step: 1
 
   /** motion */
-  animate: boolean; // default: true
+  enableAnimate: boolean; // default: true
   motionConfig: NivoMotionConfig;
   transitionMode: NivoTransitionMode;
 
@@ -63,19 +63,19 @@ type ResponsivePieChartState = {
 
   /** legend */
   enableLegend: boolean; // default: true
-  anchor: LegendAnchor; // default: bottom
-  direction: LegendDirection; // default: row
-  justify: boolean; // default: false
-  translateX: number; // -200px - 200px default: 0 step: 1
-  translateY: number; // -200px - 200px default: 0 step: 1
-  itemsSpacing: number; // 0px - 60px default: 0 step: 1
-  itemWidth: number; // 10px - 200px default: 60 step: 1
-  itemHeight: number; // 10px - 200px default: 20 step: 1
-  itemDirection: LegendItemDirection; // default: left-to-right
-  itemTextColor: string; // default: #000000
-  itemOpacity: number; // 0 - 1 default: 1 step: 0.05
-  symbolSize: number; // 2px - 60px default: 12 step: 1
-  symbolShape: LegendSymbolShape; // default: circle
+  legendAnchor: LegendAnchor; // default: bottom
+  legendDirection: LegendDirection; // default: row
+  legendJustify: boolean; // default: false
+  legendTranslateX: number; // -200px - 200px default: 0 step: 1
+  legendTranslateY: number; // -200px - 200px default: 0 step: 1
+  legendItemsSpacing: number; // 0px - 60px default: 0 step: 1
+  legendItemWidth: number; // 10px - 200px default: 60 step: 1
+  legendItemHeight: number; // 10px - 200px default: 20 step: 1
+  legendItemDirection: LegendItemDirection; // default: left-to-right
+  legendItemTextColor: string; // default: #000000
+  legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
+  legendSymbolSize: number; // 2px - 60px default: 12 step: 1
+  legendSymbolShape: LegendSymbolShape; // default: circle
 };
 
 type ResponsivePieChartAction = {
@@ -91,8 +91,8 @@ type ResponsivePieChartAction = {
   setColorScheme: 'setColorScheme';
   setFillPatterns: 'setFillPatterns';
   setEnableFillPatterns: 'setEnableFillPatterns';
-  setBorderColor: 'setBorderColor';
-  setBorderWidth: 'setBorderWidth';
+  setChartBorderColor: 'setChartBorderColor';
+  setChartBorderWidth: 'setChartBorderWidth';
 
   /** arc labels */
   setEnableArcLabels: 'setEnableArcLabels';
@@ -115,7 +115,7 @@ type ResponsivePieChartAction = {
   setActiveOuterRadiusOffset: 'setActiveOuterRadiusOffset';
 
   /** motion */
-  setAnimate: 'setAnimate';
+  setEnableAnimate: 'setEnableAnimate';
   setMotionConfig: 'setMotionConfig';
   setTransitionMode: 'setTransitionMode';
 
@@ -127,19 +127,19 @@ type ResponsivePieChartAction = {
 
   /** legend */
   setEnableLegend: 'setEnableLegend';
-  setAnchor: 'setAnchor';
-  setDirection: 'setDirection';
-  setJustify: 'setJustify';
-  setTranslateX: 'setTranslateX';
-  setTranslateY: 'setTranslateY';
-  setItemsSpacing: 'setItemsSpacing';
-  setItemWidth: 'setItemWidth';
-  setItemHeight: 'setItemHeight';
-  setItemDirection: 'setItemDirection';
-  setItemTextColor: 'setItemTextColor';
-  setItemOpacity: 'setItemOpacity';
-  setSymbolSize: 'setSymbolSize';
-  setSymbolShape: 'setSymbolShape';
+  setLegendAnchor: 'setLegendAnchor';
+  setLegendDirection: 'setLegendDirection';
+  setLegendJustify: 'setLegendJustify';
+  setLegendTranslateX: 'setLegendTranslateX';
+  setLegendTranslateY: 'setLegendTranslateY';
+  setLegendItemsSpacing: 'setLegendItemsSpacing';
+  setLegendItemWidth: 'setLegendItemWidth';
+  setLegendItemHeight: 'setLegendItemHeight';
+  setLegendItemDirection: 'setLegendItemDirection';
+  setLegendItemTextColor: 'setLegendItemTextColor';
+  setLegendItemOpacity: 'setLegendItemOpacity';
+  setLegendSymbolSize: 'setLegendSymbolSize';
+  setLegendSymbolShape: 'setLegendSymbolShape';
 };
 
 type ResponsivePieChartDispatch =
@@ -151,7 +151,7 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setInnerRadius']
         | ResponsivePieChartAction['setPadAngle']
         | ResponsivePieChartAction['setCornerRadius']
-        | ResponsivePieChartAction['setBorderWidth']
+        | ResponsivePieChartAction['setChartBorderWidth']
         | ResponsivePieChartAction['setArcLabelsSkipAngle']
         | ResponsivePieChartAction['setArcLabelsRadiusOffset']
         | ResponsivePieChartAction['setArcLinkLabelsSkipAngle']
@@ -166,13 +166,13 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setMarginRight']
         | ResponsivePieChartAction['setMarginBottom']
         | ResponsivePieChartAction['setMarginLeft']
-        | ResponsivePieChartAction['setTranslateX']
-        | ResponsivePieChartAction['setTranslateY']
-        | ResponsivePieChartAction['setItemsSpacing']
-        | ResponsivePieChartAction['setItemWidth']
-        | ResponsivePieChartAction['setItemHeight']
-        | ResponsivePieChartAction['setItemOpacity']
-        | ResponsivePieChartAction['setSymbolSize'];
+        | ResponsivePieChartAction['setLegendTranslateX']
+        | ResponsivePieChartAction['setLegendTranslateY']
+        | ResponsivePieChartAction['setLegendItemsSpacing']
+        | ResponsivePieChartAction['setLegendItemWidth']
+        | ResponsivePieChartAction['setLegendItemHeight']
+        | ResponsivePieChartAction['setLegendItemOpacity']
+        | ResponsivePieChartAction['setLegendSymbolSize'];
 
       payload: number;
     }
@@ -183,9 +183,9 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setEnableFillPatterns']
         | ResponsivePieChartAction['setEnableArcLabels']
         | ResponsivePieChartAction['setEnableArcLinkLabels']
-        | ResponsivePieChartAction['setAnimate']
+        | ResponsivePieChartAction['setEnableAnimate']
         | ResponsivePieChartAction['setEnableLegend']
-        | ResponsivePieChartAction['setJustify'];
+        | ResponsivePieChartAction['setLegendJustify'];
 
       payload: boolean;
     }
@@ -200,9 +200,9 @@ type ResponsivePieChartDispatch =
   | {
       type:
         | ResponsivePieChartAction['setArcLabelsTextColor']
-        | ResponsivePieChartAction['setBorderColor']
+        | ResponsivePieChartAction['setChartBorderColor']
         | ResponsivePieChartAction['setArcLinkLabelsTextColor']
-        | ResponsivePieChartAction['setItemTextColor'];
+        | ResponsivePieChartAction['setLegendItemTextColor'];
 
       payload: string;
     }
@@ -215,19 +215,19 @@ type ResponsivePieChartDispatch =
       payload: NivoTransitionMode;
     }
   | {
-      type: ResponsivePieChartAction['setAnchor'];
+      type: ResponsivePieChartAction['setLegendAnchor'];
       payload: LegendAnchor;
     }
   | {
-      type: ResponsivePieChartAction['setDirection'];
+      type: ResponsivePieChartAction['setLegendDirection'];
       payload: LegendDirection;
     }
   | {
-      type: ResponsivePieChartAction['setItemDirection'];
+      type: ResponsivePieChartAction['setLegendItemDirection'];
       payload: LegendItemDirection;
     }
   | {
-      type: ResponsivePieChartAction['setSymbolShape'];
+      type: ResponsivePieChartAction['setLegendSymbolShape'];
       payload: LegendSymbolShape;
     };
 
