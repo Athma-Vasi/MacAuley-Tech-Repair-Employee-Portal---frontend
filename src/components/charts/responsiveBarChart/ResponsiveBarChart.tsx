@@ -1,28 +1,3 @@
-import { ChangeEvent, useEffect, useReducer } from 'react';
-import {
-  initialResponsiveBarChartState,
-  responsiveBarChartAction,
-  responsiveBarChartReducer,
-} from './state';
-import { useGlobalState } from '../../../hooks';
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-  returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-} from '../../wrappers';
-import {
-  BAR_CHART_GROUP_MODE_SELECT_DATA,
-  BAR_CHART_LAYOUT_SELECT_DATA,
-  BAR_CHART_VALUE_SCALE_SELECT_DATA,
-} from './constants';
 import {
   ColorInput,
   Divider,
@@ -35,19 +10,28 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import {
-  LegendAnchor,
-  LegendDirection,
-  LegendItemDirection,
-  LegendSymbolShape,
-  NivoColorScheme,
-  NivoMotionConfig,
-} from '../types';
+import { ResponsiveBar } from '@nivo/bar';
+import { ChangeEvent, useEffect, useReducer } from 'react';
+
+import { COLORS_SWATCHES } from '../../../constants/data';
 import { SERIAL_ID_REGEX } from '../../../constants/regex';
+import { useGlobalState } from '../../../hooks';
+import {
+  AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleSliderInputElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
 import {
   returnSerialIdValidationText,
   returnThemeColors,
 } from '../../../utils';
+import {
+  AccessibleSelectInputCreatorInfo,
+  AccessibleSliderInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+} from '../../wrappers';
 import {
   CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
@@ -57,8 +41,25 @@ import {
   NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
 } from '../constants';
+import {
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
+  NivoLegendSymbolShape,
+  NivoColorScheme,
+  NivoMotionConfig,
+} from '../types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
-import { ResponsiveBar } from '@nivo/bar';
+import {
+  BAR_CHART_GROUP_MODE_SELECT_DATA,
+  BAR_CHART_LAYOUT_SELECT_DATA,
+  BAR_CHART_VALUE_SCALE_SELECT_DATA,
+} from './constants';
+import {
+  initialResponsiveBarChartState,
+  responsiveBarChartAction,
+  responsiveBarChartReducer,
+} from './state';
 
 function ResponsiveBarChart() {
   const [responsiveBarChartState, responsiveBarChartDispatch] = useReducer(
@@ -1607,7 +1608,7 @@ function ResponsiveBarChart() {
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveBarChartDispatch({
         type: responsiveBarChartAction.setLegendAnchor,
-        payload: event.currentTarget.value as LegendAnchor,
+        payload: event.currentTarget.value as NivoLegendAnchor,
       });
     },
     value: legendAnchor,
@@ -1622,7 +1623,7 @@ function ResponsiveBarChart() {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setLegendDirection,
-          payload: event.currentTarget.value as LegendDirection,
+          payload: event.currentTarget.value as NivoLegendDirection,
         });
       },
       value: legendDirection,
@@ -1776,7 +1777,7 @@ function ResponsiveBarChart() {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsiveBarChartDispatch({
           type: responsiveBarChartAction.setLegendItemDirection,
-          payload: event.currentTarget.value as LegendItemDirection,
+          payload: event.currentTarget.value as NivoLegendItemDirection,
         });
       },
       value: legendItemDirection,

@@ -62,7 +62,7 @@ type FillPatternObject = {
   id: string;
 };
 
-type LegendAnchor =
+type NivoLegendAnchor =
   | 'top'
   | 'top-right'
   | 'right'
@@ -73,23 +73,73 @@ type LegendAnchor =
   | 'top-left'
   | 'center';
 
-type LegendDirection = 'row' | 'column';
+type NivoLegendDirection = 'row' | 'column';
 
-type LegendItemDirection =
+type NivoLegendItemDirection =
   | 'left-to-right'
   | 'right-to-left'
   | 'top-to-bottom'
   | 'bottom-to-top';
 
-type LegendSymbolShape = 'circle' | 'diamond' | 'square' | 'triangle';
+type NivoLegendSymbolShape = 'circle' | 'diamond' | 'square' | 'triangle';
+
+type NivoLineCurve =
+  | 'basis'
+  | 'cardinal'
+  | 'catmullRom'
+  | 'linear'
+  | 'monotoneX'
+  | 'monotoneY'
+  | 'monotone'
+  | 'natural'
+  | 'step'
+  | 'stepAfter'
+  | 'stepBefore';
+
+type NivoLineAreaBlendMode =
+  | 'normal'
+  | 'multiply'
+  | 'screen'
+  | 'overlay'
+  | 'darken'
+  | 'lighten'
+  | 'color-dodge'
+  | 'color-burn'
+  | 'hard-light'
+  | 'soft-light'
+  | 'difference'
+  | 'exclusion'
+  | 'hue'
+  | 'saturation'
+  | 'color'
+  | 'luminosity';
+
+type NivoLineCrosshairType =
+  | 'x'
+  | 'y'
+  | 'top-left'
+  | 'top'
+  | 'top-right'
+  | 'right'
+  | 'bottom-right'
+  | 'bottom'
+  | 'bottom-left'
+  | 'left'
+  | 'cross';
+
+type NivoColor = string | { from: 'color'; modifiers: string[] };
 
 export type {
   FillPatternObject,
-  LegendAnchor,
-  LegendDirection,
-  LegendItemDirection,
-  LegendSymbolShape,
+  NivoColor,
   NivoColorScheme,
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
+  NivoLegendSymbolShape,
+  NivoLineAreaBlendMode,
+  NivoLineCrosshairType,
+  NivoLineCurve,
   NivoMotionConfig,
   NivoTransitionMode,
 };

@@ -1,10 +1,10 @@
 import { PieChartData } from '../../displayStatistics/types';
 import {
   FillPatternObject,
-  LegendAnchor,
-  LegendDirection,
-  LegendItemDirection,
-  LegendSymbolShape,
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
+  NivoLegendSymbolShape,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
@@ -63,19 +63,19 @@ type ResponsivePieChartState = {
 
   /** legend */
   enableLegend: boolean; // default: true
-  legendAnchor: LegendAnchor; // default: bottom
-  legendDirection: LegendDirection; // default: row
+  legendAnchor: NivoLegendAnchor; // default: bottom
+  legendDirection: NivoLegendDirection; // default: row
   legendJustify: boolean; // default: false
   legendTranslateX: number; // -200px - 200px default: 0 step: 1
   legendTranslateY: number; // -200px - 200px default: 0 step: 1
   legendItemsSpacing: number; // 0px - 60px default: 0 step: 1
   legendItemWidth: number; // 10px - 200px default: 60 step: 1
   legendItemHeight: number; // 10px - 200px default: 20 step: 1
-  legendItemDirection: LegendItemDirection; // default: left-to-right
+  legendItemDirection: NivoLegendItemDirection; // default: left-to-right
   legendItemTextColor: string; // default: #000000
   legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
   legendSymbolSize: number; // 2px - 60px default: 12 step: 1
-  legendSymbolShape: LegendSymbolShape; // default: circle
+  legendSymbolShape: NivoLegendSymbolShape; // default: circle
 };
 
 type ResponsivePieChartAction = {
@@ -127,7 +127,7 @@ type ResponsivePieChartAction = {
 
   /** legend */
   setEnableLegend: 'setEnableLegend';
-  setLegendAnchor: 'setLegendAnchor';
+  setNivoLegendAnchor: 'setNivoLegendAnchor';
   setLegendDirection: 'setLegendDirection';
   setLegendJustify: 'setLegendJustify';
   setLegendTranslateX: 'setLegendTranslateX';
@@ -215,20 +215,20 @@ type ResponsivePieChartDispatch =
       payload: NivoTransitionMode;
     }
   | {
-      type: ResponsivePieChartAction['setLegendAnchor'];
-      payload: LegendAnchor;
+      type: ResponsivePieChartAction['setNivoLegendAnchor'];
+      payload: NivoLegendAnchor;
     }
   | {
       type: ResponsivePieChartAction['setLegendDirection'];
-      payload: LegendDirection;
+      payload: NivoLegendDirection;
     }
   | {
       type: ResponsivePieChartAction['setLegendItemDirection'];
-      payload: LegendItemDirection;
+      payload: NivoLegendItemDirection;
     }
   | {
       type: ResponsivePieChartAction['setLegendSymbolShape'];
-      payload: LegendSymbolShape;
+      payload: NivoLegendSymbolShape;
     };
 
 type ResponsivePieChartReducer = (
@@ -238,10 +238,10 @@ type ResponsivePieChartReducer = (
 
 export type {
   FillPatternObject,
-  LegendAnchor,
-  LegendDirection,
-  LegendItemDirection,
-  LegendSymbolShape,
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
+  NivoLegendSymbolShape,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,

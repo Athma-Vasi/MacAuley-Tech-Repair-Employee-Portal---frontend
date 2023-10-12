@@ -1,7 +1,7 @@
 import {
-  LegendAnchor,
-  LegendDirection,
-  LegendItemDirection,
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
@@ -70,15 +70,15 @@ type ResponsiveRadialBarChartState = {
 
   // legend
   enableLegend: boolean; // default: false
-  legendAnchor: LegendAnchor; // default: bottom-right
-  legendDirection: LegendDirection; // default: column
+  legendAnchor: NivoLegendAnchor; // default: bottom-right
+  legendDirection: NivoLegendDirection; // default: column
   enableLegendJustify: boolean; // default: false
   legendTranslateX: number; // -200px - 200px default: 0 step: 1
   legendTranslateY: number; // -200px - 200px default: 0 step: 1
   legendItemWidth: number; // 10px - 200px default: 60 step: 1
   legendItemHeight: number; // 10px - 200px default: 20 step: 1
   legendItemsSpacing: number; // 0px - 60px default: 2 step: 1
-  legendItemDirection: LegendItemDirection; // default: left-to-right
+  legendItemDirection: NivoLegendItemDirection; // default: left-to-right
   legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
   legendSymbolSize: number; // 2px - 60px default: 12 step: 1
 
@@ -242,15 +242,15 @@ type ResponsiveRadialBarChartDispatch =
     }
   | {
       type: ResponsiveRadialBarChartAction['setLegendAnchor'];
-      payload: LegendAnchor;
+      payload: NivoLegendAnchor;
     }
   | {
       type: ResponsiveRadialBarChartAction['setLegendDirection'];
-      payload: LegendDirection;
+      payload: NivoLegendDirection;
     }
   | {
       type: ResponsiveRadialBarChartAction['setLegendItemDirection'];
-      payload: LegendItemDirection;
+      payload: NivoLegendItemDirection;
     }
   | {
       type: ResponsiveRadialBarChartAction['setMotionConfig'];

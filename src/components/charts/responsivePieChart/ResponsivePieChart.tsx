@@ -26,6 +26,16 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
 } from '../../wrappers';
+import {
+  CHART_PATTERN_DEFS,
+  NIVO_COLOR_SCHEME_DATA,
+  NIVO_LEGEND_ANCHOR_DATA,
+  NIVO_LEGEND_DIRECTION_DATA,
+  NIVO_LEGEND_ITEM_DIRECTION_DATA,
+  NIVO_LEGEND_SYMBOL_SHAPE_DATA,
+  NIVO_MOTION_CONFIG_DATA,
+  NIVO_TRANSITION_MODE_DATA,
+} from '../constants';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 import {
   initialResponsivePieChartState,
@@ -34,25 +44,15 @@ import {
 } from './state';
 import {
   FillPatternObject,
-  LegendAnchor,
-  LegendDirection,
-  LegendItemDirection,
-  LegendSymbolShape,
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
+  NivoLegendSymbolShape,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
   ResponsivePieChartProps,
 } from './types';
-import {
-  NIVO_COLOR_SCHEME_DATA,
-  NIVO_MOTION_CONFIG_DATA,
-  NIVO_LEGEND_ANCHOR_DATA,
-  NIVO_LEGEND_DIRECTION_DATA,
-  NIVO_LEGEND_ITEM_DIRECTION_DATA,
-  NIVO_LEGEND_SYMBOL_SHAPE_DATA,
-  CHART_PATTERN_DEFS,
-  NIVO_TRANSITION_MODE_DATA,
-} from '../constants';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
@@ -980,8 +980,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     disabled: !enableLegend,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsivePieChartDispatch({
-        type: responsivePieChartAction.setLegendAnchor,
-        payload: event.currentTarget.value as LegendAnchor,
+        type: responsivePieChartAction.setNivoLegendAnchor,
+        payload: event.currentTarget.value as NivoLegendAnchor,
       });
     },
     value: legendAnchor,
@@ -996,7 +996,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setLegendDirection,
-          payload: event.currentTarget.value as LegendDirection,
+          payload: event.currentTarget.value as NivoLegendDirection,
         });
       },
       value: legendDirection,
@@ -1150,7 +1150,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setLegendItemDirection,
-          payload: event.currentTarget.value as LegendItemDirection,
+          payload: event.currentTarget.value as NivoLegendItemDirection,
         });
       },
       value: legendItemDirection,
@@ -1227,7 +1227,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setLegendSymbolShape,
-          payload: event.currentTarget.value as LegendSymbolShape,
+          payload: event.currentTarget.value as NivoLegendSymbolShape,
         });
       },
       value: legendSymbolShape,
@@ -1338,7 +1338,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   ]);
 
   const [
-    createdLegendAnchorSelectInput,
+    createdNivoLegendAnchorSelectInput,
     createdLegendDirectionSelectInput,
     createdLegendItemDirectionSelectInput,
     createdLegendSymbolShapeSelectInput,
@@ -1759,9 +1759,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     </Group>
   );
 
-  const displayLegendAnchorSelectInput = (
+  const displayNivoLegendAnchorSelectInput = (
     <ChartsAndGraphsControlsStacker
-      input={createdLegendAnchorSelectInput}
+      input={createdNivoLegendAnchorSelectInput}
       isInputDisabled={!enableLegend}
       label="Anchor"
       // prevents display of camelCased or snake_cased value
@@ -1894,7 +1894,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Stack w="100%">
       {displayLegendHeading}
       {displayEnableLegendSwitchInput}
-      {displayLegendAnchorSelectInput}
+      {displayNivoLegendAnchorSelectInput}
       {displayLegendDirectionSelectInput}
       {displayEnableLegendJustifySwitchInput}
       {displayLegendTranslateXSliderInput}

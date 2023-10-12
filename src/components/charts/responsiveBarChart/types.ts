@@ -1,9 +1,9 @@
 import {
   FillPatternObject,
-  LegendAnchor,
-  LegendDirection,
-  LegendItemDirection,
-  LegendSymbolShape,
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
+  NivoLegendSymbolShape,
   NivoColorScheme,
   NivoMotionConfig,
 } from '../types';
@@ -47,52 +47,52 @@ type ResponsiveBarChartState = {
   enableGridY: boolean; // default: true
   // axis -> axisTop
   enableAxisTop: boolean; // default: false ? null
-  axisTopTickSize: number; // 0 - 20 default: 5 step: 1
-  axisTopTickPadding: number; // 0 - 20 default: 5 step: 1
-  axisTopTickRotation: number; // -90 - 90 default: 0 step: 1
+  axisTopTickSize: number; // 0px - 20px default: 5 step: 1
+  axisTopTickPadding: number; // 0px - 20px default: 5 step: 1
+  axisTopTickRotation: number; // -90° - 90° default: 0 step: 1
   axisTopLegend: string; // default: ''
-  isAxisTopLegendValid: boolean;
-  isAxisTopLegendFocused: boolean;
+  isAxisTopLegendValid: boolean; // default: false
+  isAxisTopLegendFocused: boolean; // default: false
   axisTopLegendOffset: number; // -60px - 60px default: 0 step: 1
   // axis -> axisRight
   enableAxisRight: boolean; // default: false ? null
-  axisRightTickSize: number; // 0 - 20 default: 5 step: 1
-  axisRightTickPadding: number; // 0 - 20 default: 5 step: 1
-  axisRightTickRotation: number; // -90 - 90 default: 0 step: 1
+  axisRightTickSize: number; // 0px - 20px default: 5 step: 1
+  axisRightTickPadding: number; // 0px - 20px default: 5 step: 1
+  axisRightTickRotation: number; // -90° - 90° default: 0 step: 1
   axisRightLegend: string; // default: ''
-  isAxisRightLegendValid: boolean;
-  isAxisRightLegendFocused: boolean;
+  isAxisRightLegendValid: boolean; // default: false
+  isAxisRightLegendFocused: boolean; // default: false
   axisRightLegendOffset: number; // -60px - 60px default: 0 step: 1
   // axis -> axisBottom
   enableAxisBottom: boolean; // default: true
-  axisBottomTickSize: number; // 0 - 20 default: 5 step: 1
-  axisBottomTickPadding: number; // 0 - 20 default: 5 step: 1
-  axisBottomTickRotation: number; // -90 - 90 default: 0 step: 1
+  axisBottomTickSize: number; // 0px - 20px default: 5 step: 1
+  axisBottomTickPadding: number; // 0px - 20px default: 5 step: 1
+  axisBottomTickRotation: number; // -90° - 90° default: 0 step: 1
   axisBottomLegend: string; // default: ''
-  isAxisBottomLegendValid: boolean;
-  isAxisBottomLegendFocused: boolean;
+  isAxisBottomLegendValid: boolean; // default: false
+  isAxisBottomLegendFocused: boolean; // default: false
   axisBottomLegendOffset: number; // -60px - 60px default: 0 step: 1
   // axis -> axisLeft
   enableAxisLeft: boolean; // default: false ? null
-  axisLeftTickSize: number; // 0 - 20 default: 5 step: 1
-  axisLeftTickPadding: number; // 0 - 20 default: 5 step: 1
-  axisLeftTickRotation: number; // -90 - 90 default: 0 step: 1
+  axisLeftTickSize: number; // 0px - 20px default: 5 step: 1
+  axisLeftTickPadding: number; // 0px - 20px default: 5 step: 1
+  axisLeftTickRotation: number; // -90° - 90° default: 0 step: 1
   axisLeftLegend: string; // default: ''
-  isAxisLeftLegendValid: boolean;
-  isAxisLeftLegendFocused: boolean;
+  isAxisLeftLegendValid: boolean; // default: false
+  isAxisLeftLegendFocused: boolean; // default: false
   axisLeftLegendOffset: number; // -60px - 60px default: 0 step: 1
 
   /** legend */
   enableLegend: boolean; // default: false
-  legendAnchor: LegendAnchor; // default: bottom-right
-  legendDirection: LegendDirection; // default: column
+  legendAnchor: NivoLegendAnchor; // default: bottom-right
+  legendDirection: NivoLegendDirection; // default: column
   enableLegendJustify: boolean; // default: false
   legendTranslateX: number; // -200px - 200px default: 0 step: 1
   legendTranslateY: number; // -200px - 200px default: 0 step: 1
   legendItemWidth: number; // 10px - 200px default: 60 step: 1
   legendItemHeight: number; // 10px - 200px default: 20 step: 1
   legendItemsSpacing: number; // 0px - 60px default: 2 step: 1
-  legendItemDirection: LegendItemDirection; // default: left-to-right
+  legendItemDirection: NivoLegendItemDirection; // default: left-to-right
   legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
   legendSymbolSize: number; // 2px - 60px default: 12 step: 1
 
@@ -290,15 +290,15 @@ type ResponsiveBarChartDispatch =
     }
   | {
       type: ResponsiveBarChartAction['setLegendAnchor'];
-      payload: LegendAnchor;
+      payload: NivoLegendAnchor;
     }
   | {
       type: ResponsiveBarChartAction['setLegendDirection'];
-      payload: LegendDirection;
+      payload: NivoLegendDirection;
     }
   | {
       type: ResponsiveBarChartAction['setLegendItemDirection'];
-      payload: LegendItemDirection;
+      payload: NivoLegendItemDirection;
     }
   | {
       type: ResponsiveBarChartAction['setMotionConfig'];

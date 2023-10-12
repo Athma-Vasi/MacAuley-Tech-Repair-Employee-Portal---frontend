@@ -37,12 +37,12 @@ function ChartsAndGraphsControlsStacker({
     <Flex
       align="center"
       justify="space-between"
-      wrap="wrap"
-      w="100%"
-      style={{ borderBottom: borderColor }}
-      px={padding}
       pb={padding}
+      px={padding}
       rowGap="xs"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+      wrap="wrap"
     >
       <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
         {label}

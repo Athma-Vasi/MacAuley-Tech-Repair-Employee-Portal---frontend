@@ -117,7 +117,7 @@ const responsivePieChartAction: ResponsivePieChartAction = {
 
   /** legend */
   setEnableLegend: 'setEnableLegend',
-  setLegendAnchor: 'setLegendAnchor',
+  setNivoLegendAnchor: 'setNivoLegendAnchor',
   setLegendDirection: 'setLegendDirection',
   setLegendJustify: 'setLegendJustify',
   setLegendTranslateX: 'setLegendTranslateX',
@@ -317,7 +317,7 @@ function responsivePieChartReducer(
         ...state,
         enableLegend: action.payload,
       };
-    case responsivePieChartAction.setLegendAnchor:
+    case responsivePieChartAction.setNivoLegendAnchor:
       return {
         ...state,
         legendAnchor: action.payload,

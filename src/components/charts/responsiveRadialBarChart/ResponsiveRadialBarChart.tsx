@@ -1,17 +1,3 @@
-import { ChangeEvent, useEffect, useReducer } from 'react';
-import {
-  initialResponsiveRadialBarChartState,
-  responsiveRadialBarChartAction,
-  responsiveRadialBarChartReducer,
-} from './state';
-import { useGlobalState } from '../../../hooks';
-import {
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { returnThemeColors } from '../../../utils';
 import {
   ColorInput,
   Divider,
@@ -24,6 +10,17 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { ResponsiveRadialBar } from '@nivo/radial-bar';
+import { ChangeEvent, useEffect, useReducer } from 'react';
+
+import { COLORS_SWATCHES } from '../../../constants/data';
+import { useGlobalState } from '../../../hooks';
+import {
+  AccessibleSelectedDeselectedTextElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleSliderInputElements,
+} from '../../../jsxCreators';
+import { returnThemeColors } from '../../../utils';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
@@ -37,15 +34,19 @@ import {
   NIVO_TRANSITION_MODE_DATA,
 } from '../constants';
 import {
-  LegendAnchor,
-  LegendDirection,
-  LegendItemDirection,
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
 } from '../types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
-import { ResponsiveRadialBar } from '@nivo/radial-bar';
+import {
+  initialResponsiveRadialBarChartState,
+  responsiveRadialBarChartAction,
+  responsiveRadialBarChartReducer,
+} from './state';
 
 function ResponsiveRadialBarChart() {
   const [responsiveRadialBarChartState, responsiveRadialBarChartDispatch] =
@@ -150,19 +151,6 @@ function ResponsiveRadialBarChart() {
       payload: false,
     });
   }, [isPrefersReducedMotion]);
-
-  /**
-   * const [reverseAccessibleSelectedText, reverseAccessibleDeselectedText] =
-    AccessibleSelectedDeselectedTextElements({
-      deselectedDescription:
-        'Bars will start on bottom instead of top for vertical layout and left instead of right for horizontal one',
-      isSelected: reverse,
-      selectedDescription:
-        'Bars will start on top instead of bottom for vertical layout and right instead of left for horizontal one',
-      semanticName: 'reverse',
-      theme: 'muted',
-    });
-   */
 
   const [
     enableMaxValueAccessibleSelectedText,
@@ -1209,7 +1197,7 @@ function ResponsiveRadialBarChart() {
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveRadialBarChartDispatch({
         type: responsiveRadialBarChartAction.setLegendAnchor,
-        payload: event.currentTarget.value as LegendAnchor,
+        payload: event.currentTarget.value as NivoLegendAnchor,
       });
     },
     value: legendAnchor,
@@ -1224,7 +1212,7 @@ function ResponsiveRadialBarChart() {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setLegendDirection,
-          payload: event.currentTarget.value as LegendDirection,
+          payload: event.currentTarget.value as NivoLegendDirection,
         });
       },
       value: legendDirection,
@@ -1378,7 +1366,7 @@ function ResponsiveRadialBarChart() {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         responsiveRadialBarChartDispatch({
           type: responsiveRadialBarChartAction.setLegendItemDirection,
-          payload: event.currentTarget.value as LegendItemDirection,
+          payload: event.currentTarget.value as NivoLegendItemDirection,
         });
       },
       value: legendItemDirection,
@@ -1488,40 +1476,8 @@ function ResponsiveRadialBarChart() {
     };
 
   // input creation
+
   // base
-
-  /**
-   * const [
-    createdGroupModeSelectInput,
-    createdLayoutSelectInput,
-    createdValueScaleSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    groupModeSelectInputCreatorInfo,
-    layoutSelectInputCreatorInfo,
-    valueScaleSelectInputCreatorInfo,
-  ]);
-
-  const [
-    createdMinValueSliderInput,
-    createdMaxValueSliderInput,
-    createdPaddingBarSliderInput,
-    createdInnerPaddingBarSliderInput,
-    createdMarginTopSliderInput,
-    createdMarginRightSliderInput,
-    createdMarginBottomSliderInput,
-    createdMarginLeftSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    minValueSliderInputCreatorInfo,
-    maxValueSliderInputCreatorInfo,
-    paddingBarSliderInputCreatorInfo,
-    innerPaddingBarSliderInputCreatorInfo,
-    marginTopSliderInputCreatorInfo,
-    marginRightSliderInputCreatorInfo,
-    marginBottomSliderInputCreatorInfo,
-    marginLeftSliderInputCreatorInfo,
-  ]);
-   */
-
   const [
     createdMaxValueSliderInput,
     createdMarginTopSliderInput,
