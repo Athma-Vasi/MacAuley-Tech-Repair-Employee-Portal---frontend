@@ -663,7 +663,7 @@ function ResponsiveBarChart() {
   /** style */
   const chartColorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: NIVO_COLOR_SCHEME_DATA,
-    description: 'Define chart chartColors.',
+    description: 'Define chart colors.',
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveBarChartDispatch({
         type: responsiveBarChartAction.setChartColors,

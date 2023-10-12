@@ -27,7 +27,6 @@ import {
   AccessibleSliderInputCreatorInfo,
 } from '../../wrappers';
 import { ChartsAndGraphsControlsStacker } from '../utils';
-import { NIVO_TRANSITION_MODE_DATA } from './constants';
 import {
   initialResponsivePieChartState,
   responsivePieChartAction,
@@ -52,6 +51,7 @@ import {
   NIVO_LEGEND_ITEM_DIRECTION_DATA,
   NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   CHART_PATTERN_DEFS,
+  NIVO_TRANSITION_MODE_DATA,
 } from '../constants';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {

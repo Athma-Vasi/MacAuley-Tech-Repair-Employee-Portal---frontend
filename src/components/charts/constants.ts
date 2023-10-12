@@ -80,6 +80,17 @@ const NIVO_COLOR_SCHEME_DATA: SelectInputData = [
   { label: 'Yellow Orange Red', value: 'yellow_orange_red' },
 ];
 
+const NIVO_TRANSITION_MODE_DATA: SelectInputData = [
+  { label: 'Start Angle', value: 'startAngle' },
+  { label: 'Middle Angle', value: 'middleAngle' },
+  { label: 'End Angle', value: 'endAngle' },
+  { label: 'Inner Radius', value: 'innerRadius' },
+  { label: 'Center Radius', value: 'centerRadius' },
+  { label: 'Outer Radius', value: 'outerRadius' },
+  { label: 'Push In', value: 'pushIn' },
+  { label: 'Push Out', value: 'pushOut' },
+];
+
 const CHART_PATTERN_DEFS = [
   {
     id: 'dots',
@@ -109,4 +120,5 @@ export {
   NIVO_LEGEND_ITEM_DIRECTION_DATA,
   NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
+  NIVO_TRANSITION_MODE_DATA,
 };
