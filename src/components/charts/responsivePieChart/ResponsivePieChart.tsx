@@ -62,7 +62,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const {
     tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
-    generalColors: { chartTextColor, textColor },
+    generalColors: { chartTextColor, textColor, grayColorShade },
     scrollBarStyle,
   } = returnThemeColors({
     themeObject,
@@ -397,7 +397,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? sortByValueAccessibleSelectedText
           : sortByValueAccessibleDeselectedText
       }
-      label={<Text size="md">Sort by value</Text>}
+      label={<Text weight={500}>Sort by value</Text>}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setSortByValue,
@@ -451,7 +451,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableFillPatternsAccessibleSelectedText
           : enableFillPatternsAccessibleDeselectedText
       }
-      label={<Text size="md">Fill patterns</Text>}
+      label={<Text weight={500}>Fill patterns</Text>}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setEnableFillPatterns,
@@ -498,7 +498,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableArcLabelsAccessibleSelectedText
           : enableArcLabelsAccessibleDeselectedText
       }
-      label={<Text size="md">Arc labels</Text>}
+      label={<Text weight={500}>Arc labels</Text>}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setEnableArcLabels,
@@ -584,7 +584,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableArcLinkLabelsAccessibleSelectedText
           : enableArcLinkLabelsAccessibleDeselectedText
       }
-      label={<Text size="md">Arc link labels</Text>}
+      label={<Text weight={500}>Arc link labels</Text>}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setEnableArcLinkLabels,
@@ -801,7 +801,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableAnimateAccessibleSelectedText
           : enableAnimateAccessibleDeselectedText
       }
-      label={<Text size="md">Animate</Text>}
+      label={<Text weight={500}>Animate</Text>}
       disabled={isPrefersReducedMotion}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
@@ -939,7 +939,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
           ? enableLegendAccessibleSelectedText
           : enableLegendAccessibleDeselectedText
       }
-      label={<Text size="md">Legend</Text>}
+      label={<Text weight={500}>Legend</Text>}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setEnableLegend,
@@ -989,17 +989,15 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       checked={legendJustify}
       disabled={!enableLegend}
       description={
-        enableLegend ? (
-          legendJustify ? (
-            enableLegendJustifyAccessibleSelectedText
-          ) : (
-            enableLegendJustifyAccessibleDeselectedText
-          )
-        ) : (
-          <Text>Enable legend to modify legendJustify.</Text>
-        )
+        legendJustify
+          ? enableLegendJustifyAccessibleSelectedText
+          : enableLegendJustifyAccessibleDeselectedText
       }
-      label={<Text size="md">Justify</Text>}
+      label={
+        <Text weight={500} color={enableLegend ? void 0 : grayColorShade}>
+          Justify
+        </Text>
+      }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         responsivePieChartDispatch({
           type: responsivePieChartAction.setLegendJustify,
@@ -1334,10 +1332,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const displayBaseHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Base</Title>
     </Group>
@@ -1347,8 +1345,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdStartAngleSliderInput}
       label="Start angle"
-      value={startAngle}
       symbol="°"
+      value={startAngle}
     />
   );
 
@@ -1356,8 +1354,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdEndAngleSliderInput}
       label="End angle"
-      value={endAngle}
       symbol="°"
+      value={endAngle}
     />
   );
 
@@ -1365,8 +1363,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdInnerRadiusSliderInput}
       label="Inner radius"
-      value={innerRadius}
       symbol="px"
+      value={innerRadius}
     />
   );
 
@@ -1374,8 +1372,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdPadAngleSliderInput}
       label="Pad angle"
-      value={padAngle}
       symbol="°"
+      value={padAngle}
     />
   );
 
@@ -1383,8 +1381,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdCornerRadiusSliderInput}
       label="Corner radius"
-      value={cornerRadius}
       symbol="px"
+      value={cornerRadius}
     />
   );
 
@@ -1410,9 +1408,9 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayStyleHeading = (
     <Group
       w="100%"
-      bg={sectionHeadersBgColor}
-      p={padding}
       style={{ borderRadius: 4 }}
+      p={padding}
+      bg={sectionHeadersBgColor}
     >
       <Title order={5}>Style</Title>
     </Group>
@@ -1448,8 +1446,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdArcBorderWidthSliderInput}
       label="Arc border width"
-      value={chartBorderWidth}
       symbol="px"
+      value={chartBorderWidth}
     />
   );
 
@@ -1466,10 +1464,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** arc labels */
   const displayArcLabelsHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Arc labels</Title>
     </Group>
@@ -1484,27 +1482,30 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayArcLabelsRadiusOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLabelsRadiusOffsetSliderInput}
+      isInputDisabled={!enableArcLabels}
       label="Radius offset"
-      value={arcLabelsRadiusOffset}
       symbol="px"
+      value={arcLabelsRadiusOffset}
     />
   );
 
   const displayArcLabelsSkipAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLabelsSkipAngleSliderInput}
+      isInputDisabled={!enableArcLabels}
       label="Skip angle"
-      value={arcLabelsSkipAngle}
       symbol="°"
+      value={arcLabelsSkipAngle}
     />
   );
 
   const displayArcLabelsHeadingColorInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLabelsTextColorInput}
+      isInputDisabled={!enableArcLabels}
       label="Arc labels text color"
-      value={arcLabelsTextColor}
       symbol=""
+      value={arcLabelsTextColor}
     />
   );
 
@@ -1521,10 +1522,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** arc link labels */
   const displayArcLinkLabelsHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Arc link labels</Title>
     </Group>
@@ -1539,63 +1540,69 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayArcLinkLabelsSkipAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLinkLabelsSkipAngleSliderInput}
+      isInputDisabled={!enableArcLinkLabels}
       label="Skip angle"
-      value={arcLinkLabelsSkipAngle}
       symbol="°"
+      value={arcLinkLabelsSkipAngle}
     />
   );
 
   const displayArcLinkLabelsOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLinkLabelsOffsetSliderInput}
+      isInputDisabled={!enableArcLinkLabels}
       label="Offset"
-      value={arcLinkLabelsOffset}
       symbol="px"
+      value={arcLinkLabelsOffset}
     />
   );
 
   const displayArcLinkLabelsDiagonalLengthSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLinkLabelsDiagonalLengthSliderInput}
+      isInputDisabled={!enableArcLinkLabels}
       label="Diagonal length"
-      value={arcLinkLabelsDiagonalLength}
       symbol="px"
+      value={arcLinkLabelsDiagonalLength}
     />
   );
 
   const displayArcLinkLabelsStraightLengthSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLinkLabelsStraightLengthSliderInput}
+      isInputDisabled={!enableArcLinkLabels}
       label="Straight length"
-      value={arcLinkLabelsStraightLength}
       symbol="px"
+      value={arcLinkLabelsStraightLength}
     />
   );
 
   const displayArcLinkLabelsHeadingOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLinkLabelsTextOffsetSliderInput}
+      isInputDisabled={!enableArcLinkLabels}
       label="Text offset"
-      value={arcLinkLabelsTextOffset}
       symbol="px"
+      value={arcLinkLabelsTextOffset}
     />
   );
 
   const displayArcLinkLabelsThicknessSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLinkLabelsThicknessSliderInput}
+      isInputDisabled={!enableArcLinkLabels}
       label="Thickness"
-      value={arcLinkLabelsThickness}
       symbol="px"
+      value={arcLinkLabelsThickness}
     />
   );
 
   const displayArcLinkLabelsHeadingColorInput = (
     <ChartsAndGraphsControlsStacker
       input={createdArcLinkLabelsTextColorInput}
+      isInputDisabled={!enableArcLinkLabels}
       label="Arc link labels text color"
       value={arcLinkLabelsTextColor}
-      symbol=""
     />
   );
 
@@ -1654,10 +1661,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** motion */
   const displayMotionHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Motion</Title>
     </Group>
@@ -1672,16 +1679,18 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayMotionConfigSelectInput = (
     <ChartsAndGraphsControlsStacker
       input={createdMotionConfigSelectInput}
+      isInputDisabled={!enableAnimate}
       label="Motion configuration"
-      value={enableAnimate ? motionConfig : 'N/A'}
+      value={motionConfig}
     />
   );
 
   const displayTransitionModeSelectInput = (
     <ChartsAndGraphsControlsStacker
       input={createdTransitionModeSelectInput}
+      isInputDisabled={!enableAnimate}
       label="Transition mode"
-      value={enableAnimate ? transitionMode : 'N/A'}
+      value={transitionMode}
     />
   );
 
@@ -1697,10 +1706,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** legend */
   const displayLegendHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Legend</Title>
     </Group>
@@ -1715,6 +1724,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayLegendAnchorSelectInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendAnchorSelectInput}
+      isInputDisabled={!enableLegend}
       label="Anchor"
       // prevents display of camelCased or snake_cased value
       value={
@@ -1727,6 +1737,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayLegendDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendDirectionSelectInput}
+      isInputDisabled={!enableLegend}
       label="Direction"
       value={legendDirection}
     />
@@ -1741,6 +1752,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayLegendTranslateXSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendTranslateXSliderInput}
+      isInputDisabled={!enableLegend}
       label="Translate in x-axis"
       value={legendTranslateX}
       symbol="px"
@@ -1750,43 +1762,48 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayLegendTranslateYSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendTranslateYSliderInput}
+      isInputDisabled={!enableLegend}
       label="Translate in y-axis"
-      value={legendTranslateY}
       symbol="px"
+      value={legendTranslateY}
     />
   );
 
   const displayLegendItemsSpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendItemsSpacingSliderInput}
+      isInputDisabled={!enableLegend}
       label="Items spacing"
-      value={legendItemsSpacing}
       symbol="px"
+      value={legendItemsSpacing}
     />
   );
 
   const displayLegendItemWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendItemWidthSliderInput}
+      isInputDisabled={!enableLegend}
       label="Item width"
-      value={legendItemWidth}
       symbol="px"
+      value={legendItemWidth}
     />
   );
 
   const displayLegendItemHeightSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendItemHeightSliderInput}
+      isInputDisabled={!enableLegend}
       label="Item height"
-      value={legendItemHeight}
       symbol="px"
+      value={legendItemHeight}
     />
   );
 
   const displayLegendItemDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendItemDirectionSelectInput}
-      label="Item legendDirection"
+      isInputDisabled={!enableLegend}
+      label="Item Direction"
       // prevents display of camelCased or snake_cased value
       value={
         NIVO_LEGEND_ITEM_DIRECTION_DATA.find(
@@ -1799,33 +1816,37 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayLegendItemTextColorInput = (
     <ChartsAndGraphsControlsStacker
       input={legendItemTextColorInput}
+      isInputDisabled={!enableLegend}
       label="Item text color"
-      value={legendItemTextColor}
       symbol=""
+      value={legendItemTextColor}
     />
   );
 
   const displayLegendItemOpacitySliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendItemOpacitySliderInput}
+      isInputDisabled={!enableLegend}
       label="Item opacity"
-      value={(legendItemOpacity * 100).toFixed(0)}
       symbol="%"
+      value={(legendItemOpacity * 100).toFixed(0)}
     />
   );
 
   const displayLegendSymbolSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendSymbolSizeSliderInput}
+      isInputDisabled={!enableLegend}
       label="Symbol size"
-      value={legendSymbolSize}
       symbol="px"
+      value={legendSymbolSize}
     />
   );
 
   const displayLegendSymbolShapeSelectInput = (
     <ChartsAndGraphsControlsStacker
       input={createdLegendSymbolShapeSelectInput}
+      isInputDisabled={!enableLegend}
       label="Symbol shape"
       value={legendSymbolShape}
     />
@@ -1854,10 +1875,10 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** margin */
   const displayMarginHeading = (
     <Group
-      w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
       style={{ borderRadius: 4 }}
+      w="100%"
     >
       <Title order={5}>Margin</Title>
     </Group>
@@ -1867,8 +1888,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdMarginBottomSliderInput}
       label="Bottom"
-      value={marginBottom}
       symbol="px"
+      value={marginBottom}
     />
   );
 
@@ -1876,8 +1897,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdMarginLeftSliderInput}
       label="Left"
-      value={marginLeft}
       symbol="px"
+      value={marginLeft}
     />
   );
 
@@ -1885,8 +1906,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdMarginRightSliderInput}
       label="Right"
-      value={marginRight}
       symbol="px"
+      value={marginRight}
     />
   );
 
@@ -1894,8 +1915,8 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <ChartsAndGraphsControlsStacker
       input={createdMarginTopSliderInput}
       label="Top"
-      value={marginTop}
       symbol="px"
+      value={marginTop}
     />
   );
 
