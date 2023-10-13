@@ -7,6 +7,7 @@ import {
 } from './state';
 import {
   AccessibleSelectedDeselectedTextElements,
+  returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
@@ -39,10 +40,12 @@ import {
   Switch,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { returnThemeColors } from '../../../utils';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 import { ResponsiveCalendar } from '@nivo/calendar';
+import { BiReset } from 'react-icons/bi';
 
 function ResponsiveCalendarChart() {
   const [responsiveCalendarChartState, responsiveCalendarChartDispatch] =
@@ -601,6 +604,25 @@ function ResponsiveCalendarChart() {
   );
 
   // input creation
+
+  // reset all button
+  const [createdResetAllButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Reset',
+      leftIcon: <BiReset />,
+      semanticDescription: 'Reset all inputs to their default values',
+      semanticName: 'Reset All',
+      buttonDisabled:
+        initialResponsiveCalendarChartState === responsiveCalendarChartState,
+      buttonOnClick: () => {
+        responsiveCalendarChartDispatch({
+          type: responsiveCalendarChartAction.resetChartToDefault,
+          payload: initialResponsiveCalendarChartState,
+        });
+      },
+    },
+  ]);
+
   // base
   const [createdCalendarDirectionSelectInput, createdCalendarAlignSelectInput] =
     returnAccessibleSelectInputElements([
@@ -665,11 +687,31 @@ function ResponsiveCalendarChart() {
   ]);
 
   // input display
+  // title
+  const displayResetButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayControlsHeading = (
+    <Group p={padding} w="100%" position="apart">
+      <Title order={3} color={textColor}>
+        Calendar Controls
+      </Title>
+      {displayResetButton}
+    </Group>
+  );
 
   // base
   const displayBaseHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
-      <Title order={5} color={textColor}>
+    <Group
+      p={padding}
+      w="100%"
+      bg={sectionHeadersBgColor}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+    >
+      <Title order={4} color={textColor}>
         Base
       </Title>
     </Group>
@@ -726,7 +768,7 @@ function ResponsiveCalendarChart() {
   );
 
   const displayBaseSection = (
-    <Stack w="100%">
+    <Stack w="100%" style={{ borderTop: borderColor }}>
       {displayBaseHeading}
       {displayCalendarDirectionSelectInput}
       {displayCalendarAlignSelectInput}
@@ -739,8 +781,13 @@ function ResponsiveCalendarChart() {
 
   // margin
   const displayMarginHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
-      <Title order={5} color={textColor}>
+    <Group
+      p={padding}
+      w="100%"
+      bg={sectionHeadersBgColor}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+    >
+      <Title order={4} color={textColor}>
         Margin
       </Title>
     </Group>
@@ -787,7 +834,7 @@ function ResponsiveCalendarChart() {
   );
 
   const displayMarginSection = (
-    <Stack w="100%">
+    <Stack w="100%" style={{ borderTop: borderColor }}>
       {displayMarginHeading}
       {displayMarginTopSliderInput}
       {displayMarginRightSliderInput}
@@ -798,8 +845,13 @@ function ResponsiveCalendarChart() {
 
   // style
   const displayStyleHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
-      <Title order={5} color={textColor}>
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      w="100%"
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+    >
+      <Title order={4} color={textColor}>
         Style
       </Title>
     </Group>
@@ -830,8 +882,13 @@ function ResponsiveCalendarChart() {
 
   // years
   const displayYearsHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
-      <Title order={5} color={textColor}>
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      w="100%"
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+    >
+      <Title order={4} color={textColor}>
         Years
       </Title>
     </Group>
@@ -877,8 +934,13 @@ function ResponsiveCalendarChart() {
 
   // months
   const displayMonthsHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
-      <Title order={5} color={textColor}>
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      w="100%"
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+    >
+      <Title order={4} color={textColor}>
         Months
       </Title>
     </Group>
@@ -945,8 +1007,13 @@ function ResponsiveCalendarChart() {
 
   // days
   const displayDaysHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
-      <Title order={5} color={textColor}>
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      w="100%"
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+    >
+      <Title order={4} color={textColor}>
         Days
       </Title>
     </Group>
@@ -993,6 +1060,7 @@ function ResponsiveCalendarChart() {
   // display
   const calendarChartControlsStack = (
     <Flex w="100%" direction="column">
+      {displayControlsHeading}
       {displayBaseSection}
       {displayMarginSection}
       {displayStyleSection}

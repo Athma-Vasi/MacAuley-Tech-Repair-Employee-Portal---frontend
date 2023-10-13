@@ -76,6 +76,9 @@ const responsiveCalendarChartAction: ResponsiveCalendarChartAction = {
   setDaySpacing: 'setDaySpacing',
   setDayBorderWidth: 'setDayBorderWidth',
   setDayBorderColor: 'setDayBorderColor',
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault',
 };
 
 function responsiveCalendarChartReducer(
@@ -209,6 +212,10 @@ function responsiveCalendarChartReducer(
         ...state,
         dayBorderColor: action.payload,
       };
+
+    // reset all
+    case responsiveCalendarChartAction.resetChartToDefault:
+      return initialResponsiveCalendarChartState;
 
     default:
       return state;

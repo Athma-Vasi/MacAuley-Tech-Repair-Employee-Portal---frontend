@@ -76,6 +76,9 @@ type ResponsiveCalendarChartAction = {
   setDaySpacing: 'setDaySpacing';
   setDayBorderWidth: 'setDayBorderWidth';
   setDayBorderColor: 'setDayBorderColor';
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault';
 };
 
 type ResponsiveCalendarChartDispatch =
@@ -126,6 +129,10 @@ type ResponsiveCalendarChartDispatch =
         | ResponsiveCalendarChartAction['setYearLegendPosition']
         | ResponsiveCalendarChartAction['setMonthLegendPosition'];
       payload: NivoCalendarLegendPosition;
+    }
+  | {
+      type: ResponsiveCalendarChartAction['resetChartToDefault'];
+      payload: ResponsiveCalendarChartState;
     };
 
 export type {

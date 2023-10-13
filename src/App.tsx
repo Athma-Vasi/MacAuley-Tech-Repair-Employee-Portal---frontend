@@ -555,7 +555,7 @@ function App() {
           {/* <Route index element={<ResponsiveBarChart />} /> */}
           {/* <Route index element={<ResponsiveRadialBarChart />} /> */}
           {/* <Route index element={<ResponsiveLineChart />} /> */}
-          {/* <Route index element={<ResponsiveCalendarChart />} /> */}
+          <Route index element={<ResponsiveCalendarChart />} />
           <Route
             index
             element={
