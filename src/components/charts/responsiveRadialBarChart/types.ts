@@ -167,6 +167,9 @@ type ResponsiveRadialBarChartAction = {
   setEnableAnimate: 'setEnableAnimate';
   setMotionConfig: 'setMotionConfig';
   setTransitionMode: 'setTransitionMode';
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault';
 };
 
 type ResponsiveRadialBarChartDispatch =
@@ -259,6 +262,10 @@ type ResponsiveRadialBarChartDispatch =
   | {
       type: ResponsiveRadialBarChartAction['setTransitionMode'];
       payload: NivoTransitionMode;
+    }
+  | {
+      type: ResponsiveRadialBarChartAction['resetChartToDefault'];
+      payload: ResponsiveRadialBarChartState;
     };
 
 export type {

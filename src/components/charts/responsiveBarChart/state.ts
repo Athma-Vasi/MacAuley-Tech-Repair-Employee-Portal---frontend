@@ -184,6 +184,9 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   /** motion */
   setEnableAnimate: 'setEnableAnimate',
   setMotionConfig: 'setMotionConfig',
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault',
 };
 
 function responsiveBarChartReducer(
@@ -559,6 +562,11 @@ function responsiveBarChartReducer(
         ...state,
         motionConfig: action.payload,
       };
+
+    // reset all
+    case responsiveBarChartAction.resetChartToDefault:
+      return { ...action.payload };
+
     default:
       return state;
   }

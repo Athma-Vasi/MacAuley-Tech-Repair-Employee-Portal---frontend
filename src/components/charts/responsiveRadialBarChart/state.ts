@@ -22,7 +22,7 @@ const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
   cornerRadius: 0,
 
   // style
-  chartColors: 'set2',
+  chartColors: 'nivo',
   ringBorderWidth: 0,
   ringBorderColor: 'gray',
 
@@ -164,6 +164,9 @@ const responsiveRadialBarChartAction: ResponsiveRadialBarChartAction = {
   setEnableAnimate: 'setEnableAnimate',
   setMotionConfig: 'setMotionConfig',
   setTransitionMode: 'setTransitionMode',
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault',
 };
 
 function responsiveRadialBarChartReducer(
@@ -455,6 +458,11 @@ function responsiveRadialBarChartReducer(
         ...state,
         transitionMode: action.payload,
       };
+
+    // reset all
+    case responsiveRadialBarChartAction.resetChartToDefault:
+      return { ...action.payload };
+
     default:
       return state;
   }

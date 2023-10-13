@@ -1,33 +1,3 @@
-import { useEffect, useReducer } from 'react';
-import { useGlobalState } from '../../../hooks';
-import {
-  initialResponsiveCalendarChartState,
-  responsiveCalendarChartAction,
-  responsiveCalendarChartReducer,
-} from './state';
-import {
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-} from '../../wrappers';
-import {
-  NIVO_CALENDAR_ALIGN_DATA,
-  NIVO_CALENDAR_CHART_COLORS,
-  NIVO_CALENDAR_DIRECTION_DATA,
-  NIVO_CALENDAR_LEGEND_POSITION_DATA,
-  data,
-} from './constants';
-import {
-  NivoCalendarAlign,
-  NivoCalendarDirection,
-  NivoCalendarLegendPosition,
-} from '../types';
 import {
   ColorInput,
   Divider,
@@ -42,10 +12,41 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import { returnThemeColors } from '../../../utils';
-import { ChartsAndGraphsControlsStacker } from '../utils';
 import { ResponsiveCalendar } from '@nivo/calendar';
+import { useEffect, useReducer } from 'react';
 import { BiReset } from 'react-icons/bi';
+
+import { COLORS_SWATCHES } from '../../../constants/data';
+import { useGlobalState } from '../../../hooks';
+import {
+  AccessibleSelectedDeselectedTextElements,
+  returnAccessibleButtonElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleSliderInputElements,
+} from '../../../jsxCreators';
+import { returnThemeColors } from '../../../utils';
+import {
+  AccessibleSelectInputCreatorInfo,
+  AccessibleSliderInputCreatorInfo,
+} from '../../wrappers';
+import {
+  NivoCalendarAlign,
+  NivoCalendarDirection,
+  NivoCalendarLegendPosition,
+} from '../types';
+import { ChartsAndGraphsControlsStacker } from '../utils';
+import {
+  data,
+  NIVO_CALENDAR_ALIGN_DATA,
+  NIVO_CALENDAR_CHART_COLORS,
+  NIVO_CALENDAR_DIRECTION_DATA,
+  NIVO_CALENDAR_LEGEND_POSITION_DATA,
+} from './constants';
+import {
+  initialResponsiveCalendarChartState,
+  responsiveCalendarChartAction,
+  responsiveCalendarChartReducer,
+} from './state';
 
 function ResponsiveCalendarChart() {
   const [responsiveCalendarChartState, responsiveCalendarChartDispatch] =
@@ -55,12 +56,12 @@ function ResponsiveCalendarChart() {
     );
 
   const {
-    globalState: { isPrefersReducedMotion, width, themeObject, padding },
+    globalState: { width, themeObject, padding },
   } = useGlobalState();
 
   const {
     tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
-    generalColors: { chartTextColor, grayColorShade, textColor },
+    generalColors: { textColor },
     appThemeColors: { borderColor },
     scrollBarStyle,
   } = returnThemeColors({
@@ -612,8 +613,6 @@ function ResponsiveCalendarChart() {
       leftIcon: <BiReset />,
       semanticDescription: 'Reset all inputs to their default values',
       semanticName: 'Reset All',
-      buttonDisabled:
-        initialResponsiveCalendarChartState === responsiveCalendarChartState,
       buttonOnClick: () => {
         responsiveCalendarChartDispatch({
           type: responsiveCalendarChartAction.resetChartToDefault,
@@ -706,10 +705,10 @@ function ResponsiveCalendarChart() {
   // base
   const displayBaseHeading = (
     <Group
-      p={padding}
-      w="100%"
       bg={sectionHeadersBgColor}
+      p={padding}
       style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
     >
       <Title order={4} color={textColor}>
         Base
@@ -782,10 +781,10 @@ function ResponsiveCalendarChart() {
   // margin
   const displayMarginHeading = (
     <Group
-      p={padding}
-      w="100%"
       bg={sectionHeadersBgColor}
+      p={padding}
       style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
     >
       <Title order={4} color={textColor}>
         Margin
@@ -848,8 +847,8 @@ function ResponsiveCalendarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      w="100%"
       style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
     >
       <Title order={4} color={textColor}>
         Style
@@ -885,8 +884,8 @@ function ResponsiveCalendarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      w="100%"
       style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
     >
       <Title order={4} color={textColor}>
         Years
@@ -937,8 +936,8 @@ function ResponsiveCalendarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      w="100%"
       style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
     >
       <Title order={4} color={textColor}>
         Months
@@ -1010,8 +1009,8 @@ function ResponsiveCalendarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      w="100%"
       style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
     >
       <Title order={4} color={textColor}>
         Days

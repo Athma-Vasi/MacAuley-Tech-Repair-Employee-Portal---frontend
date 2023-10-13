@@ -218,6 +218,9 @@ type ResponsiveLineChartAction = {
   // motion
   setEnableAnimate: 'setEnableAnimate';
   setMotionConfig: 'setMotionConfig';
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault';
 };
 
 type ResponsiveLineChartDispatch =
@@ -350,6 +353,10 @@ type ResponsiveLineChartDispatch =
   | {
       type: ResponsiveLineChartAction['setPointLabel'];
       payload: NivoLinePointLabel;
+    }
+  | {
+      type: ResponsiveLineChartAction['resetChartToDefault'];
+      payload: ResponsiveLineChartState;
     };
 
 export type {

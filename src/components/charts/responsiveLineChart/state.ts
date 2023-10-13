@@ -210,6 +210,9 @@ const responsiveLineChartAction: ResponsiveLineChartAction = {
   // motion
   setEnableAnimate: 'setEnableAnimate',
   setMotionConfig: 'setMotionConfig',
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault',
 };
 
 function responsiveLineChartReducer(
@@ -398,6 +401,10 @@ function responsiveLineChartReducer(
       return { ...state, enableAnimate: action.payload };
     case responsiveLineChartAction.setMotionConfig:
       return { ...state, motionConfig: action.payload };
+
+    // reset all
+    case responsiveLineChartAction.resetChartToDefault:
+      return { ...action.payload };
 
     default:
       return state;

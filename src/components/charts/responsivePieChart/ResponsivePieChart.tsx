@@ -10,6 +10,7 @@ import {
   Switch,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { ResponsivePie } from '@nivo/pie';
 import { ChangeEvent, useEffect, useReducer } from 'react';
@@ -18,6 +19,7 @@ import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
 import {
   AccessibleSelectedDeselectedTextElements,
+  returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
@@ -54,6 +56,7 @@ import {
   NivoTransitionMode,
   ResponsivePieChartProps,
 } from './types';
+import { BiReset } from 'react-icons/bi';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
@@ -1236,6 +1239,23 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     };
 
   /** ------------- end legend ------------- */
+
+  // reset all button
+  const [createdResetAllButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Reset',
+      leftIcon: <BiReset />,
+      semanticDescription: 'Reset all inputs to their default values',
+      semanticName: 'Reset All',
+      buttonOnClick: () => {
+        responsivePieChartDispatch({
+          type: responsivePieChartAction.resetChartToDefault,
+          payload: modifiedInitialResponsivePieChartState,
+        });
+      },
+    },
+  ]);
+
   /** ------------- end input objects ------------- */
 
   /** ------------- begin input creation ------------- */
@@ -1353,13 +1373,29 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   /** ------------- begin display ------------- */
 
+  // title
+  const displayResetButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayControlsHeading = (
+    <Group p={padding} w="100%" position="apart">
+      <Title order={3} color={textColor}>
+        Calendar Controls
+      </Title>
+      {displayResetButton}
+    </Group>
+  );
+
   /** base */
 
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1440,7 +1476,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayStyleHeading = (
     <Group
       w="100%"
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       p={padding}
       bg={sectionHeadersBgColor}
     >
@@ -1503,7 +1539,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1566,7 +1602,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1677,7 +1713,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
     >
       <Title order={5} color={textColor}>
         Interactivity
@@ -1718,7 +1754,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1767,7 +1803,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1831,7 +1867,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2011,6 +2047,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
 
   const pieChartControlsStack = (
     <Flex w="100%" direction="column">
+      {displayControlsHeading}
       {displayBaseSection}
       {displayStyleSection}
       {displayArcLabelsSection}

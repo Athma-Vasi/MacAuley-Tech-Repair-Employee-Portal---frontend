@@ -1,11 +1,11 @@
 import { PieChartData } from '../../displayStatistics/types';
 import {
   FillPatternObject,
+  NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
   NivoLegendSymbolShape,
-  NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
 } from '../types';
@@ -140,6 +140,9 @@ type ResponsivePieChartAction = {
   setLegendItemOpacity: 'setLegendItemOpacity';
   setLegendSymbolSize: 'setLegendSymbolSize';
   setLegendSymbolShape: 'setLegendSymbolShape';
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault';
 };
 
 type ResponsivePieChartDispatch =
@@ -229,6 +232,10 @@ type ResponsivePieChartDispatch =
   | {
       type: ResponsivePieChartAction['setLegendSymbolShape'];
       payload: NivoLegendSymbolShape;
+    }
+  | {
+      type: ResponsivePieChartAction['resetChartToDefault'];
+      payload: ResponsivePieChartState;
     };
 
 type ResponsivePieChartReducer = (
@@ -238,11 +245,11 @@ type ResponsivePieChartReducer = (
 
 export type {
   FillPatternObject,
+  NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
   NivoLegendSymbolShape,
-  NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
   ResponsivePieChartAction,

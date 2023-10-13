@@ -191,6 +191,9 @@ type ResponsiveBarChartAction = {
   /** motion */
   setEnableAnimate: 'setEnableAnimate';
   setMotionConfig: 'setMotionConfig';
+
+  // reset all
+  resetChartToDefault: 'resetChartToDefault';
 };
 
 type ResponsiveBarChartDispatch =
@@ -307,6 +310,10 @@ type ResponsiveBarChartDispatch =
   | {
       type: ResponsiveBarChartAction['setChartColors'];
       payload: NivoColorScheme;
+    }
+  | {
+      type: ResponsiveBarChartAction['resetChartToDefault'];
+      payload: ResponsiveBarChartState;
     };
 
 export type {

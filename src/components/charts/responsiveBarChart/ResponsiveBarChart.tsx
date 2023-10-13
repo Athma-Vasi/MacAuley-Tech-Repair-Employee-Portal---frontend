@@ -10,6 +10,7 @@ import {
   Switch,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { ResponsiveBar } from '@nivo/bar';
 import { ChangeEvent, useEffect, useReducer } from 'react';
@@ -20,6 +21,7 @@ import { useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
+  returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
   returnAccessibleTextInputElements,
@@ -62,6 +64,7 @@ import {
   responsiveBarChartReducer,
 } from './state';
 import { ResponsiveBarChartState } from './types';
+import { BiReset } from 'react-icons/bi';
 
 function ResponsiveBarChart() {
   const {
@@ -1872,7 +1875,24 @@ function ResponsiveBarChart() {
     width: sliderWidth,
   };
 
+  // reset all button
+  const [createdResetAllButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Reset',
+      leftIcon: <BiReset />,
+      semanticDescription: 'Reset all inputs to their default values',
+      semanticName: 'Reset All',
+      buttonOnClick: () => {
+        responsiveBarChartDispatch({
+          type: responsiveBarChartAction.resetChartToDefault,
+          payload: modifiedInitialResponsiveBarChartState,
+        });
+      },
+    },
+  ]);
+
   // input creation
+
   /** base */
   const [
     createdGroupModeSelectInput,
@@ -2020,12 +2040,28 @@ function ResponsiveBarChart() {
 
   // input display
 
+  // title
+  const displayResetButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayControlsHeading = (
+    <Group p={padding} w="100%" position="apart">
+      <Title order={3} color={textColor}>
+        Calendar Controls
+      </Title>
+      {displayResetButton}
+    </Group>
+  );
+
   /** display base */
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2139,7 +2175,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2203,7 +2239,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2272,7 +2308,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2334,7 +2370,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2368,7 +2404,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2454,7 +2490,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2540,7 +2576,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2712,7 +2748,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2871,7 +2907,7 @@ function ResponsiveBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2906,6 +2942,7 @@ function ResponsiveBarChart() {
 
   const barChartControlsStack = (
     <Flex w="100%" direction="column">
+      {displayControlsHeading}
       {displayBaseSection}
       {displayMarginSection}
       {displayStyleSection}

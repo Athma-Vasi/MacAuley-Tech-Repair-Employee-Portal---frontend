@@ -215,7 +215,7 @@ function responsiveCalendarChartReducer(
 
     // reset all
     case responsiveCalendarChartAction.resetChartToDefault:
-      return initialResponsiveCalendarChartState;
+      return { ...action.payload };
 
     default:
       return state;

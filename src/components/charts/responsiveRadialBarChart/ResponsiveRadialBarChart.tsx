@@ -10,6 +10,7 @@ import {
   Switch,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { ResponsiveRadialBar } from '@nivo/radial-bar';
 import { ChangeEvent, useEffect, useReducer } from 'react';
@@ -18,6 +19,7 @@ import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
 import {
   AccessibleSelectedDeselectedTextElements,
+  returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
@@ -49,6 +51,7 @@ import {
   responsiveRadialBarChartReducer,
 } from './state';
 import { ResponsiveRadialBarChartState } from './types';
+import { BiReset } from 'react-icons/bi';
 
 function ResponsiveRadialBarChart() {
   const {
@@ -577,6 +580,21 @@ function ResponsiveRadialBarChart() {
     value: chartColors,
     width: sliderWidth,
   };
+
+  const createdRingBorderColorsInput = (
+    <ColorInput
+      aria-label="Ring border color"
+      color={ringBorderColor}
+      onChange={(color: string) => {
+        responsiveRadialBarChartDispatch({
+          type: responsiveRadialBarChartAction.setRingBorderColor,
+          payload: color,
+        });
+      }}
+      value={ringBorderColor}
+      w={sliderWidth}
+    />
+  );
 
   const ringBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
@@ -1485,6 +1503,22 @@ function ResponsiveRadialBarChart() {
       width: sliderWidth,
     };
 
+  // reset all button
+  const [createdResetAllButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Reset',
+      leftIcon: <BiReset />,
+      semanticDescription: 'Reset all inputs to their default values',
+      semanticName: 'Reset All',
+      buttonOnClick: () => {
+        responsiveRadialBarChartDispatch({
+          type: responsiveRadialBarChartAction.resetChartToDefault,
+          payload: modifiedResponsiveRadialBarChartState,
+        });
+      },
+    },
+  ]);
+
   // input creation
 
   // base
@@ -1609,13 +1643,29 @@ function ResponsiveRadialBarChart() {
 
   // input display
 
+  // title
+  const displayResetButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayControlsHeading = (
+    <Group p={padding} w="100%" position="apart">
+      <Title order={3} color={textColor}>
+        Calendar Controls
+      </Title>
+      {displayResetButton}
+    </Group>
+  );
+
   // base
 
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1718,7 +1768,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1782,7 +1832,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1801,6 +1851,16 @@ function ResponsiveRadialBarChart() {
     />
   );
 
+  const displayRingBorderColorsInput = (
+    <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveRadialBarChartState}
+      input={createdRingBorderColorsInput}
+      isInputDisabled={false}
+      label="Ring border color"
+      value={ringBorderColor}
+    />
+  );
+
   const displayRingBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveRadialBarChartState}
@@ -1816,6 +1876,7 @@ function ResponsiveRadialBarChart() {
     <Stack w="100%">
       {displayStyleHeading}
       {displayChartColorsSelectInput}
+      {displayRingBorderColorsInput}
       {displayRingBorderWidthSliderInput}
     </Stack>
   );
@@ -1825,7 +1886,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1863,7 +1924,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1898,7 +1959,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1961,7 +2022,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2024,7 +2085,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2087,7 +2148,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2150,7 +2211,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -2212,7 +2273,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
       mb={padding}
     >
@@ -2363,7 +2424,7 @@ function ResponsiveRadialBarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ borderRadius: 4 }}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
       w="100%"
       mb={padding}
     >
@@ -2410,6 +2471,7 @@ function ResponsiveRadialBarChart() {
 
   const radialBarChartControlsStack = (
     <Flex w="100%" direction="column">
+      {displayControlsHeading}
       {displayBaseSection}
       {displayMarginSection}
       {displayStyleSection}

@@ -130,6 +130,9 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setLegendItemOpacity: 'setLegendItemOpacity',
   setLegendSymbolSize: 'setLegendSymbolSize',
   setLegendSymbolShape: 'setLegendSymbolShape',
+
+  /** reset all */
+  resetChartToDefault: 'resetChartToDefault',
 };
 
 function responsivePieChartReducer(
@@ -381,6 +384,12 @@ function responsivePieChartReducer(
       return {
         ...state,
         legendSymbolShape: action.payload,
+      };
+
+    /** reset all */
+    case responsivePieChartAction.resetChartToDefault:
+      return {
+        ...action.payload,
       };
 
     default:

@@ -10,6 +10,7 @@ import {
   Switch,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 
@@ -19,6 +20,7 @@ import { useGlobalState } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
+  returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
   returnAccessibleTextInputElements,
@@ -69,6 +71,7 @@ import {
 import { ResponsiveLineChartState } from './types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 import { ResponsiveLine } from '@nivo/line';
+import { BiReset } from 'react-icons/bi';
 
 function ResponsiveLineChart() {
   const {
@@ -888,6 +891,7 @@ function ResponsiveLineChart() {
   const pointBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
     {
       ariaLabel: 'point border width',
+      disabled: !enablePoints,
       kind: 'slider',
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
@@ -2106,6 +2110,23 @@ function ResponsiveLineChart() {
   };
 
   // input creation
+
+  // reset all button
+  const [createdResetAllButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Reset',
+      leftIcon: <BiReset />,
+      semanticDescription: 'Reset all inputs to their default values',
+      semanticName: 'Reset All',
+      buttonOnClick: () => {
+        responsiveLineChartDispatch({
+          type: responsiveLineChartAction.resetChartToDefault,
+          payload: modifiedResponsiveLineChartState,
+        });
+      },
+    },
+  ]);
+
   // base
 
   // base select inputs
@@ -2280,9 +2301,30 @@ function ResponsiveLineChart() {
 
   // input display
 
+  // title
+  const displayResetButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayControlsHeading = (
+    <Group p={padding} w="100%" position="apart">
+      <Title order={3} color={textColor}>
+        Calendar Controls
+      </Title>
+      {displayResetButton}
+    </Group>
+  );
+
   // base
   const displayBaseHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Base
       </Title>
@@ -2367,7 +2409,12 @@ function ResponsiveLineChart() {
 
   // margin
   const displayMarginHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Margin
       </Title>
@@ -2426,7 +2473,12 @@ function ResponsiveLineChart() {
 
   // style
   const displayStyleHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Style
       </Title>
@@ -2501,7 +2553,12 @@ function ResponsiveLineChart() {
 
   // points
   const displayPointsHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Points
       </Title>
@@ -2599,7 +2656,12 @@ function ResponsiveLineChart() {
 
   // grids
   const displayGridsHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Grids
       </Title>
@@ -2629,7 +2691,12 @@ function ResponsiveLineChart() {
   // axes
   // axes top
   const displayAxisTopHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Axis Top
       </Title>
@@ -2710,7 +2777,12 @@ function ResponsiveLineChart() {
 
   // axes right
   const displayAxisRightHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Axis Right
       </Title>
@@ -2791,7 +2863,12 @@ function ResponsiveLineChart() {
 
   // axes bottom
   const displayAxisBottomHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Axis Bottom
       </Title>
@@ -2872,7 +2949,12 @@ function ResponsiveLineChart() {
 
   // axes left
   const displayAxisLeftHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Axis Left
       </Title>
@@ -2962,7 +3044,12 @@ function ResponsiveLineChart() {
 
   // interactivity
   const displayInteractivityHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Interactivity
       </Title>
@@ -2995,7 +3082,12 @@ function ResponsiveLineChart() {
 
   // legends
   const displayLegendsHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Legends
       </Title>
@@ -3186,7 +3278,12 @@ function ResponsiveLineChart() {
 
   // motion
   const displayMotionHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
+    <Group
+      bg={sectionHeadersBgColor}
+      p={padding}
+      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      w="100%"
+    >
       <Title order={5} color={textColor}>
         Motion
       </Title>
@@ -3219,6 +3316,7 @@ function ResponsiveLineChart() {
 
   const lineChartControlsStack = (
     <Flex w="100%" direction="column">
+      {displayControlsHeading}
       {displayBaseSection}
       {displayMarginSection}
       {displayStyleSection}
