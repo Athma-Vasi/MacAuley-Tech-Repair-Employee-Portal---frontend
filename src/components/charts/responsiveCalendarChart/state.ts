@@ -4,52 +4,13 @@ import {
   ResponsiveCalendarChartState,
 } from './types';
 
-/**
- * type ResponsiveCalendarChartState = {
-  // base
-  direction: NivoCalendarDirection; // default: 'horizontal'
-  align: NivoCalendarAlign; // default: 'center'
-  enableMinValue: boolean; // default: false ? minValue = 'auto'
-  minValue: number; // number default: 0
-  enableMaxValue: boolean; // default: true ? maxValue : maxValue = 'auto'
-  maxValue: number; // number default: 100
-
-  // margin
-  marginTop: number; // 0px - 200px default: 60 step: 1
-  marginRight: number; // 0px - 200px default: 60 step: 1
-  marginBottom: number; // 0px - 200px default: 60 step: 1
-  marginLeft: number; // 0px - 200px default: 60 step: 1
-
-  // style
-  chartColors: string[]; // color array, default: emptyColor
-  emptyColor: string; // default: '#fff'
-
-  // years
-  yearSpacing: number; // 0px - 160px default: 30 step: 1
-  yearLegendPosition: NivoCalendarLegendPosition; // default: 'before'
-  yearLegendOffset: number; // 0px - 60px default: 10
-
-  // months
-  monthSpacing: number; // 0px - 160px default: 0 step: 1
-  monthBorderWidth: number; // 0px - 20px default: 2 step: 1
-  monthBorderColor: string; // default: '#000'
-  monthLegendPosition: NivoCalendarLegendPosition; // default: 'before'
-  monthLegendOffset: number; // 0px - 36px default: 10
-
-  // days
-  daySpacing: number; // 0px - 20px default: 0 step: 1
-  dayBorderWidth: number; // 0px - 20px default: 1 step: 1
-  dayBorderColor: string; // default: '#000'
-};
- */
-
 const initialResponsiveCalendarChartState: ResponsiveCalendarChartState = {
   // base
-  direction: 'horizontal',
-  align: 'center',
+  calendarDirection: 'horizontal',
+  calendarAlign: 'center',
   enableMinValue: false,
   minValue: 0,
-  enableMaxValue: true,
+  enableMaxValue: false,
   maxValue: 100,
 
   // margin
@@ -59,8 +20,8 @@ const initialResponsiveCalendarChartState: ResponsiveCalendarChartState = {
   marginLeft: 60,
 
   // style
-  chartColors: [],
   emptyColor: '#fff',
+  enableDefaultColors: true,
 
   // years
   yearSpacing: 30,
@@ -82,8 +43,8 @@ const initialResponsiveCalendarChartState: ResponsiveCalendarChartState = {
 
 const responsiveCalendarChartAction: ResponsiveCalendarChartAction = {
   // base
-  setDirection: 'setDirection',
-  setAlign: 'setAlign',
+  setCalendarDirection: 'setCalendarDirection',
+  setCalendarAlign: 'setCalendarAlign',
   setEnableMinValue: 'setEnableMinValue',
   setMinValue: 'setMinValue',
   setEnableMaxValue: 'setEnableMaxValue',
@@ -96,8 +57,8 @@ const responsiveCalendarChartAction: ResponsiveCalendarChartAction = {
   setMarginLeft: 'setMarginLeft',
 
   // style
-  setChartColors: 'setChartColors',
   setEmptyColor: 'setEmptyColor',
+  setEnableDefaultColors: 'setEnableDefaultColors',
 
   // years
   setYearSpacing: 'setYearSpacing',
@@ -108,6 +69,8 @@ const responsiveCalendarChartAction: ResponsiveCalendarChartAction = {
   setMonthSpacing: 'setMonthSpacing',
   setMonthBorderWidth: 'setMonthBorderWidth',
   setMonthBorderColor: 'setMonthBorderColor',
+  setMonthLegendPosition: 'setMonthLegendPosition',
+  setMonthLegendOffset: 'setMonthLegendOffset',
 
   // days
   setDaySpacing: 'setDaySpacing',
@@ -121,15 +84,15 @@ function responsiveCalendarChartReducer(
 ): ResponsiveCalendarChartState {
   switch (action.type) {
     // base
-    case responsiveCalendarChartAction.setDirection:
+    case responsiveCalendarChartAction.setCalendarDirection:
       return {
         ...state,
-        direction: action.payload,
+        calendarDirection: action.payload,
       };
-    case responsiveCalendarChartAction.setAlign:
+    case responsiveCalendarChartAction.setCalendarAlign:
       return {
         ...state,
-        align: action.payload,
+        calendarAlign: action.payload,
       };
     case responsiveCalendarChartAction.setEnableMinValue:
       return {
@@ -175,15 +138,15 @@ function responsiveCalendarChartReducer(
       };
 
     // style
-    case responsiveCalendarChartAction.setChartColors:
-      return {
-        ...state,
-        chartColors: action.payload,
-      };
     case responsiveCalendarChartAction.setEmptyColor:
       return {
         ...state,
         emptyColor: action.payload,
+      };
+    case responsiveCalendarChartAction.setEnableDefaultColors:
+      return {
+        ...state,
+        enableDefaultColors: action.payload,
       };
 
     // years
@@ -218,6 +181,16 @@ function responsiveCalendarChartReducer(
       return {
         ...state,
         monthBorderColor: action.payload,
+      };
+    case responsiveCalendarChartAction.setMonthLegendPosition:
+      return {
+        ...state,
+        monthLegendPosition: action.payload,
+      };
+    case responsiveCalendarChartAction.setMonthLegendOffset:
+      return {
+        ...state,
+        monthLegendOffset: action.payload,
       };
 
     // days

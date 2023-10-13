@@ -11,6 +11,7 @@ import ErrorFallback from './components/errorFallback/ErrorFallback';
 import { useGlobalState } from './hooks/useGlobalState';
 import {
   ResponsiveBarChart,
+  ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
   ResponsiveRadialBarChart,
@@ -553,7 +554,8 @@ function App() {
           {/* TESTING ONLY REMOVE  */}
           {/* <Route index element={<ResponsiveBarChart />} /> */}
           {/* <Route index element={<ResponsiveRadialBarChart />} /> */}
-          <Route index element={<ResponsiveLineChart />} />
+          {/* <Route index element={<ResponsiveLineChart />} /> */}
+          {/* <Route index element={<ResponsiveCalendarChart />} /> */}
           <Route
             index
             element={

@@ -1,40 +1,40 @@
 import { SelectInputData } from '../../../types';
 
 const NIVO_LINE_AXES_SCALE: SelectInputData = [
-  { label: 'linear', value: 'linear' },
-  { label: 'point', value: 'point' },
+  { label: 'Linear', value: 'linear' },
+  { label: 'Point', value: 'point' },
 ];
 
 const NIVO_LINE_CURVE_DATA: SelectInputData = [
-  { label: 'basis', value: 'basis' },
-  { label: 'cardinal', value: 'cardinal' },
-  { label: 'catmullRom', value: 'catmullRom' },
-  { label: 'linear', value: 'linear' },
-  { label: 'monotoneX', value: 'monotoneX' },
-  { label: 'monotoneY', value: 'monotoneY' },
-  { label: 'natural', value: 'natural' },
-  { label: 'step', value: 'step' },
-  { label: 'stepAfter', value: 'stepAfter' },
-  { label: 'stepBefore', value: 'stepBefore' },
+  { label: 'Basis', value: 'basis' },
+  { label: 'Cardinal', value: 'cardinal' },
+  { label: 'Catmull Rom', value: 'catmullRom' },
+  { label: 'Linear', value: 'linear' },
+  { label: 'Monotone X', value: 'monotoneX' },
+  { label: 'Monotone Y', value: 'monotoneY' },
+  { label: 'Natural', value: 'natural' },
+  { label: 'Step', value: 'step' },
+  { label: 'Step After', value: 'stepAfter' },
+  { label: 'Step Before', value: 'stepBefore' },
 ];
 
 const NIVO_LINE_AREA_BLEND_MODE_DATA: SelectInputData = [
-  { label: 'normal', value: 'normal' },
-  { label: 'multiply', value: 'multiply' },
-  { label: 'screen', value: 'screen' },
-  { label: 'overlay', value: 'overlay' },
-  { label: 'darken', value: 'darken' },
-  { label: 'lighten', value: 'lighten' },
-  { label: 'color-dodge', value: 'color-dodge' },
-  { label: 'color-burn', value: 'color-burn' },
-  { label: 'hard-light', value: 'hard-light' },
-  { label: 'soft-light', value: 'soft-light' },
-  { label: 'difference', value: 'difference' },
-  { label: 'exclusion', value: 'exclusion' },
-  { label: 'hue', value: 'hue' },
-  { label: 'saturation', value: 'saturation' },
-  { label: 'color', value: 'color' },
-  { label: 'luminosity', value: 'luminosity' },
+  { label: 'Normal', value: 'normal' },
+  { label: 'Multiply', value: 'multiply' },
+  { label: 'Screen', value: 'screen' },
+  { label: 'Overlay', value: 'overlay' },
+  { label: 'Darken', value: 'darken' },
+  { label: 'Lighten', value: 'lighten' },
+  { label: 'Color Dodge', value: 'color-dodge' },
+  { label: 'Color Burn', value: 'color-burn' },
+  { label: 'Hard Light', value: 'hard-light' },
+  { label: 'Soft Light', value: 'soft-light' },
+  { label: 'Difference', value: 'difference' },
+  { label: 'Exclusion', value: 'exclusion' },
+  { label: 'Hue', value: 'hue' },
+  { label: 'Saturation', value: 'saturation' },
+  { label: 'Color', value: 'color' },
+  { label: 'Luminosity', value: 'luminosity' },
 ];
 
 const NIVO_LINE_POINT_LABEL_DATA: SelectInputData = [
@@ -43,17 +43,17 @@ const NIVO_LINE_POINT_LABEL_DATA: SelectInputData = [
 ];
 
 const NIVO_LINE_CROSSHAIR_TYPE_DATA: SelectInputData = [
-  { label: 'x', value: 'x' },
-  { label: 'y', value: 'y' },
-  { label: 'top-left', value: 'top-left' },
-  { label: 'top', value: 'top' },
-  { label: 'top-right', value: 'top-right' },
-  { label: 'right', value: 'right' },
-  { label: 'bottom-right', value: 'bottom-right' },
-  { label: 'bottom', value: 'bottom' },
-  { label: 'bottom-left', value: 'bottom-left' },
-  { label: 'left', value: 'left' },
-  { label: 'cross', value: 'cross' },
+  { label: 'X', value: 'x' },
+  { label: 'Y', value: 'y' },
+  { label: 'Top Left', value: 'top-left' },
+  { label: 'Top', value: 'top' },
+  { label: 'Top Right', value: 'top-right' },
+  { label: 'Right', value: 'right' },
+  { label: 'Bottom Right', value: 'bottom-right' },
+  { label: 'Bottom', value: 'bottom' },
+  { label: 'Bottom Left', value: 'bottom-left' },
+  { label: 'Left', value: 'left' },
+  { label: 'Cross', value: 'cross' },
 ];
 
 export {

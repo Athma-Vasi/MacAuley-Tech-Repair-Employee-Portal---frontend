@@ -1,17 +1,16 @@
-import { Flex, Group, Text, useMantineTheme } from '@mantine/core';
-import { ReactNode } from 'react';
+import { Flex, Group, Text } from '@mantine/core';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
 import {
   returnThemeColors,
-  returnUppercasedSentence,
+  splitWordIntoUpperCasedSentence,
   splitCamelCase,
 } from '../../utils';
-import { TextWrapper } from '../wrappers';
 
 type ChartsAndGraphsControlsStackerProps = {
-  input: JSX.Element;
+  initialChartState?: Record<string, any>;
+  input: React.JSX.Element;
   isInputDisabled?: boolean;
   label: string;
   symbol?: string;
@@ -19,12 +18,13 @@ type ChartsAndGraphsControlsStackerProps = {
 };
 
 function ChartsAndGraphsControlsStacker({
+  initialChartState = {},
   input,
   isInputDisabled = false,
   label,
   symbol = '',
   value,
-}: ChartsAndGraphsControlsStackerProps) {
+}: ChartsAndGraphsControlsStackerProps): React.JSX.Element {
   const {
     globalState: { padding, rowGap, themeObject },
   } = useGlobalState();
@@ -37,6 +37,35 @@ function ChartsAndGraphsControlsStacker({
     colorsSwatches: COLORS_SWATCHES,
   });
 
+  const defaultValue =
+    Object.entries(initialChartState).find(
+      ([key]) =>
+        splitCamelCase(key).toLowerCase() ===
+        splitCamelCase(label).toLowerCase()
+    )?.[1] ?? '';
+
+  // console.log({ label, initialChartState, defaultValue, value });
+
+  const displayDefaultValue =
+    defaultValue === '' ? null : (
+      <Text
+        weight={300}
+        color={
+          isInputDisabled
+            ? grayColorShade
+            : defaultValue === value
+            ? grayColorShade
+            : ''
+        }
+      >
+        Default:{' '}
+        {splitWordIntoUpperCasedSentence(
+          splitCamelCase(defaultValue.toString())
+        )}{' '}
+        {symbol}
+      </Text>
+    );
+
   return (
     <Flex
       align="center"
@@ -48,9 +77,13 @@ function ChartsAndGraphsControlsStacker({
       w="100%"
       wrap="wrap"
     >
-      <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
-        {returnUppercasedSentence(label)}
-      </Text>
+      <Group w="100%" position="apart">
+        <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
+          {splitWordIntoUpperCasedSentence(label)}
+        </Text>
+
+        {displayDefaultValue}
+      </Group>
 
       <Flex
         align="center"
@@ -69,7 +102,8 @@ function ChartsAndGraphsControlsStacker({
             padding: '0.5rem 0.75rem',
           }}
         >
-          {splitCamelCase(value.toString())} {symbol}
+          {splitWordIntoUpperCasedSentence(splitCamelCase(value.toString()))}{' '}
+          {symbol}
         </Text>
         <Group>{input}</Group>
       </Flex>

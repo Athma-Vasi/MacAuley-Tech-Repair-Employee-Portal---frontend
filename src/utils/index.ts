@@ -1761,10 +1761,14 @@ function returnIsAccessTokenExpired(accessToken: string): {
   return { isAccessTokenExpired };
 }
 
-function returnUppercasedSentence(sentence: string): string {
+/**
+ * @description replaces hyphens & underscores with spaces and capitalizes the first letter of each word
+ */
+function splitWordIntoUpperCasedSentence(sentence: string): string {
   return sentence
+    .replace(/[-_]/g, ' ')
     .split(' ')
-    .map((word, idx) => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 }
 
@@ -1800,7 +1804,6 @@ function returnSliderMarks({
 export {
   addFieldsToObject,
   commentIdsTreeOpsIterative,
-  returnSliderMarks,
   fetchData,
   filterFieldsFromObject,
   formatDate,
@@ -1831,10 +1834,11 @@ export {
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
   returnSerialIdValidationText,
+  returnSliderMarks,
   returnThemeColors,
   returnTimeRailwayValidationText,
   returnTimeRemaining,
-  returnUppercasedSentence,
+  splitWordIntoUpperCasedSentence,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
   shuffleArray,

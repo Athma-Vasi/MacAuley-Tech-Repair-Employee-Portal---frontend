@@ -1,6 +1,7 @@
 import {
   ColorInput,
   Divider,
+  Flex,
   Grid,
   Group,
   ScrollArea,
@@ -253,7 +254,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Min value will be automatically calculated.',
     isSelected: enableMinValue,
     selectedDescription: 'Min value is user defined.',
-    semanticName: 'enable min value',
+    semanticName: 'min value',
     theme: 'muted',
   });
 
@@ -264,7 +265,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Max value will be automatically calculated.',
     isSelected: enableMaxValue,
     selectedDescription: 'Max value is user defined.',
-    semanticName: 'enable max value',
+    semanticName: 'max value',
     theme: 'muted',
   });
 
@@ -275,7 +276,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Bars will be filled with a solid color.',
     isSelected: enableFillPatterns,
     selectedDescription: 'Bars will be filled with a pattern.',
-    semanticName: 'enable fill patterns',
+    semanticName: 'fill patterns',
     theme: 'muted',
   });
 
@@ -286,7 +287,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Bars will not have labels.',
     isSelected: enableLabels,
     selectedDescription: 'Bars will have labels.',
-    semanticName: 'enable labels',
+    semanticName: 'labels',
     theme: 'muted',
   });
 
@@ -298,7 +299,7 @@ function ResponsiveBarChart() {
       'Chart display area will not have a grid on the y axis.',
     isSelected: enableGridX,
     selectedDescription: 'Chart display area will have a grid on the y axis.',
-    semanticName: 'enable grid x',
+    semanticName: 'grid x',
     theme: 'muted',
   });
 
@@ -310,7 +311,7 @@ function ResponsiveBarChart() {
       'Chart display area will not have a grid on the x axis.',
     isSelected: enableGridY,
     selectedDescription: 'Chart display area will have a grid on the x axis.',
-    semanticName: 'enable grid y',
+    semanticName: 'grid y',
     theme: 'muted',
   });
 
@@ -321,7 +322,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Chart will not have an axis on top.',
     isSelected: enableAxisTop,
     selectedDescription: 'Chart will have an axis on top.',
-    semanticName: 'enable axis top',
+    semanticName: 'axis top',
     theme: 'muted',
   });
 
@@ -332,7 +333,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Chart will not have an axis on the right.',
     isSelected: enableAxisRight,
     selectedDescription: 'Chart will have an axis on the right.',
-    semanticName: 'enable axis right',
+    semanticName: 'axis right',
     theme: 'muted',
   });
 
@@ -343,7 +344,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Chart will not have an axis on the bottom.',
     isSelected: enableAxisBottom,
     selectedDescription: 'Chart will have an axis on the bottom.',
-    semanticName: 'enable axis bottom',
+    semanticName: 'axis bottom',
     theme: 'muted',
   });
 
@@ -354,7 +355,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Chart will not have an axis on the left.',
     isSelected: enableAxisLeft,
     selectedDescription: 'Chart will have an axis on the left.',
-    semanticName: 'enable axis left',
+    semanticName: 'axis left',
     theme: 'muted',
   });
 
@@ -365,7 +366,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Chart will not have legend.',
     isSelected: enableLegend,
     selectedDescription: 'Chart will have legend.',
-    semanticName: 'enable legend',
+    semanticName: 'legend',
     theme: 'muted',
   });
 
@@ -376,7 +377,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Legend will not be justified.',
     isSelected: enableLegendJustify,
     selectedDescription: 'Legend will be justified.',
-    semanticName: 'enable legend justify',
+    semanticName: 'legend justify',
     theme: 'muted',
   });
 
@@ -387,7 +388,7 @@ function ResponsiveBarChart() {
     deselectedDescription: 'Chart will not animate.',
     isSelected: enableAnimate,
     selectedDescription: 'Chart will animate.',
-    semanticName: 'enable animate',
+    semanticName: 'animate',
     theme: 'muted',
   });
 
@@ -567,9 +568,7 @@ function ResponsiveBarChart() {
   const paddingBarSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'padding bar',
     kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
     max: 0.9,
     min: 0.1,
     onChangeSlider: (value: number) => {
@@ -2037,6 +2036,7 @@ function ResponsiveBarChart() {
 
   const displayGroupModeSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdGroupModeSelectInput}
       label="Group mode"
       value={groupMode}
@@ -2045,6 +2045,7 @@ function ResponsiveBarChart() {
 
   const displayLayoutSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLayoutSelectInput}
       label="Layout"
       value={layout}
@@ -2053,6 +2054,7 @@ function ResponsiveBarChart() {
 
   const displayValueScaleSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdValueScaleSelectInput}
       label="Value scale"
       value={valueScale}
@@ -2073,6 +2075,7 @@ function ResponsiveBarChart() {
 
   const displayMinValueSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdMinValueSliderInput}
       isInputDisabled={!enableMinValue}
       label="Min value"
@@ -2088,6 +2091,7 @@ function ResponsiveBarChart() {
 
   const displayMaxValueSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdMaxValueSliderInput}
       isInputDisabled={!enableMaxValue}
       label="Max value"
@@ -2097,17 +2101,18 @@ function ResponsiveBarChart() {
 
   const displayPaddingBarSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdPaddingBarSliderInput}
-      label="Padding"
-      symbol="px"
+      label="Padding bar"
       value={paddingBar}
     />
   );
 
   const displayInnerPaddingBarSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdInnerPaddingBarSliderInput}
-      label="Inner padding"
+      label="Inner padding bar"
       symbol="px"
       value={innerPaddingBar}
     />
@@ -2145,6 +2150,7 @@ function ResponsiveBarChart() {
 
   const displayMarginTopSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdMarginTopSliderInput}
       label="Margin top"
       symbol="px"
@@ -2154,6 +2160,7 @@ function ResponsiveBarChart() {
 
   const displayMarginRightSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdMarginRightSliderInput}
       label="Margin right"
       symbol="px"
@@ -2163,6 +2170,7 @@ function ResponsiveBarChart() {
 
   const displayMarginBottomSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdMarginBottomSliderInput}
       label="Margin bottom"
       symbol="px"
@@ -2172,6 +2180,7 @@ function ResponsiveBarChart() {
 
   const displayMarginLeftSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdMarginLeftSliderInput}
       label="Margin left"
       symbol="px"
@@ -2205,6 +2214,7 @@ function ResponsiveBarChart() {
 
   const displayColorsSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdColorsSelectInput}
       label="Colors"
       value={chartColors}
@@ -2213,8 +2223,9 @@ function ResponsiveBarChart() {
 
   const displayBorderRadiusSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdChartBorderRadiusSliderInput}
-      label="Border radius"
+      label="Chart border radius"
       symbol="px"
       value={chartBorderRadius}
     />
@@ -2222,8 +2233,9 @@ function ResponsiveBarChart() {
 
   const displayBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdChartBorderWidthSliderInput}
-      label="Border width"
+      label="Chart border width"
       symbol="px"
       value={chartBorderWidth}
     />
@@ -2231,8 +2243,9 @@ function ResponsiveBarChart() {
 
   const displayBorderColorInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdChartBorderColorInput}
-      label="Border color"
+      label="Chart border color"
       value={chartBorderColor}
     />
   );
@@ -2276,6 +2289,7 @@ function ResponsiveBarChart() {
 
   const displayLabelSkipWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLabelSkipWidthSliderInput}
       isInputDisabled={!enableLabels}
       label="Label skip width"
@@ -2286,6 +2300,7 @@ function ResponsiveBarChart() {
 
   const displayLabelSkipHeightSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLabelSkipHeightSliderInput}
       isInputDisabled={!enableLabels}
       label="Label skip height"
@@ -2296,6 +2311,7 @@ function ResponsiveBarChart() {
 
   const displayLabelTextColorInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLabelTextColorInput}
       isInputDisabled={!enableLabels}
       label="Label text color"
@@ -2369,6 +2385,7 @@ function ResponsiveBarChart() {
 
   const displayAxisTopTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisTopTickSizeSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick size"
@@ -2379,6 +2396,7 @@ function ResponsiveBarChart() {
 
   const displayAxisTopTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisTopTickPaddingSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick padding"
@@ -2389,6 +2407,7 @@ function ResponsiveBarChart() {
 
   const displayAxisTopTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisTopTickRotationSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick rotation"
@@ -2399,6 +2418,7 @@ function ResponsiveBarChart() {
 
   const displayAxisTopLegendTextInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisTopLegendTextInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top legend"
@@ -2408,6 +2428,7 @@ function ResponsiveBarChart() {
 
   const displayAxisTopLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisTopLegendOffsetSliderInput}
       isInputDisabled={!enableAxisTop || !axisTopLegend}
       label="Axis top legend offset"
@@ -2450,6 +2471,7 @@ function ResponsiveBarChart() {
 
   const displayAxisRightTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisRightTickSizeSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick size"
@@ -2460,6 +2482,7 @@ function ResponsiveBarChart() {
 
   const displayAxisRightTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisRightTickPaddingSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick padding"
@@ -2470,6 +2493,7 @@ function ResponsiveBarChart() {
 
   const displayAxisRightTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisRightTickRotationSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick rotation"
@@ -2480,6 +2504,7 @@ function ResponsiveBarChart() {
 
   const displayAxisRightLegendTextInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisRightLegendTextInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right legend"
@@ -2489,6 +2514,7 @@ function ResponsiveBarChart() {
 
   const displayAxisRightLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisRightLegendOffsetSliderInput}
       isInputDisabled={!enableAxisRight || !axisRightLegend}
       label="Axis right legend offset"
@@ -2531,6 +2557,7 @@ function ResponsiveBarChart() {
 
   const displayAxisBottomTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisBottomTickSizeSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick size"
@@ -2541,6 +2568,7 @@ function ResponsiveBarChart() {
 
   const displayAxisBottomTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisBottomTickPaddingSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick padding"
@@ -2551,6 +2579,7 @@ function ResponsiveBarChart() {
 
   const displayAxisBottomTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisBottomTickRotationSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick rotation"
@@ -2561,6 +2590,7 @@ function ResponsiveBarChart() {
 
   const displayAxisBottomLegendTextInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisBottomLegendTextInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom legend"
@@ -2570,6 +2600,7 @@ function ResponsiveBarChart() {
 
   const displayAxisBottomLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisBottomLegendOffsetSliderInput}
       isInputDisabled={!enableAxisBottom || !axisBottomLegend}
       label="Axis bottom legend offset"
@@ -2612,6 +2643,7 @@ function ResponsiveBarChart() {
 
   const displayAxisLeftTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisLeftTickSizeSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick size"
@@ -2622,6 +2654,7 @@ function ResponsiveBarChart() {
 
   const displayAxisLeftTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisLeftTickPaddingSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick padding"
@@ -2632,6 +2665,7 @@ function ResponsiveBarChart() {
 
   const displayAxisLeftTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisLeftTickRotationSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick rotation"
@@ -2642,6 +2676,7 @@ function ResponsiveBarChart() {
 
   const displayAxisLeftLegendTextInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisLeftLegendTextInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left legend"
@@ -2651,6 +2686,7 @@ function ResponsiveBarChart() {
 
   const displayAxisLeftLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdAxisLeftLegendOffsetSliderInput}
       isInputDisabled={!enableAxisLeft || !axisLeftLegend}
       label="Axis left legend offset"
@@ -2693,6 +2729,7 @@ function ResponsiveBarChart() {
 
   const displayLegendAnchorSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendAnchorSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend anchor"
@@ -2706,6 +2743,7 @@ function ResponsiveBarChart() {
 
   const displayLegendDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendDirectionSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend direction"
@@ -2721,6 +2759,7 @@ function ResponsiveBarChart() {
 
   const displayLegendTranslateXSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendTranslateXSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend translate X"
@@ -2731,6 +2770,7 @@ function ResponsiveBarChart() {
 
   const displayLegendTranslateYSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendTranslateYSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend translate Y"
@@ -2741,6 +2781,7 @@ function ResponsiveBarChart() {
 
   const displayLegendItemWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendItemWidthSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item width"
@@ -2751,6 +2792,7 @@ function ResponsiveBarChart() {
 
   const displayLegendItemHeightSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendItemHeightSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item height"
@@ -2761,6 +2803,7 @@ function ResponsiveBarChart() {
 
   const displayLegendItemsSpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendItemsSpacingSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend items spacing"
@@ -2771,6 +2814,7 @@ function ResponsiveBarChart() {
 
   const displayLegendItemDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendItemDirectionSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend item direction"
@@ -2785,6 +2829,7 @@ function ResponsiveBarChart() {
 
   const displayLegendItemOpacitySliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendItemOpacitySliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item opacity"
@@ -2794,6 +2839,7 @@ function ResponsiveBarChart() {
 
   const displayLegendSymbolSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdLegendSymbolSizeSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol size"
@@ -2842,6 +2888,7 @@ function ResponsiveBarChart() {
 
   const displayMotionConfigSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedInitialResponsiveBarChartState}
       input={createdMotionConfigSelectInput}
       isInputDisabled={!enableAnimate}
       label="Motion config"
@@ -2858,7 +2905,7 @@ function ResponsiveBarChart() {
   );
 
   const barChartControlsStack = (
-    <Stack w="100%">
+    <Flex w="100%" direction="column">
       {displayBaseSection}
       {displayMarginSection}
       {displayStyleSection}
@@ -2870,7 +2917,7 @@ function ResponsiveBarChart() {
       {displayAxisLeftSection}
       {displayLegendSection}
       {displayMotionSection}
-    </Stack>
+    </Flex>
   );
 
   const displayBarChartControls = (

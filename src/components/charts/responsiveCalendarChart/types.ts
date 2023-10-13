@@ -6,12 +6,12 @@ import {
 
 type ResponsiveCalendarChartState = {
   // base
-  direction: NivoCalendarDirection; // default: 'horizontal'
-  align: NivoCalendarAlign; // default: 'center'
+  calendarDirection: NivoCalendarDirection; // default: 'horizontal'
+  calendarAlign: NivoCalendarAlign; // default: 'center'
   enableMinValue: boolean; // default: false ? minValue = 'auto'
-  minValue: number; // number default: 0
+  minValue: number; // -300 - 300 default: 0
   enableMaxValue: boolean; // default: true ? maxValue : maxValue = 'auto'
-  maxValue: number; // number default: 100
+  maxValue: number; // 0 - 600 default: 100
 
   // margin
   marginTop: number; // 0px - 200px default: 60 step: 1
@@ -20,8 +20,8 @@ type ResponsiveCalendarChartState = {
   marginLeft: number; // 0px - 200px default: 60 step: 1
 
   // style
-  chartColors: string[]; // color array, default: emptyColor
   emptyColor: string; // default: '#fff'
+  enableDefaultColors: boolean; // default: true
 
   // years
   yearSpacing: number; // 0px - 160px default: 30 step: 1
@@ -43,8 +43,8 @@ type ResponsiveCalendarChartState = {
 
 type ResponsiveCalendarChartAction = {
   // base
-  setDirection: 'setDirection';
-  setAlign: 'setAlign';
+  setCalendarDirection: 'setCalendarDirection';
+  setCalendarAlign: 'setCalendarAlign';
   setEnableMinValue: 'setEnableMinValue';
   setMinValue: 'setMinValue';
   setEnableMaxValue: 'setEnableMaxValue';
@@ -57,8 +57,8 @@ type ResponsiveCalendarChartAction = {
   setMarginLeft: 'setMarginLeft';
 
   // style
-  setChartColors: 'setChartColors';
   setEmptyColor: 'setEmptyColor';
+  setEnableDefaultColors: 'setEnableDefaultColors';
 
   // years
   setYearSpacing: 'setYearSpacing';
@@ -69,6 +69,8 @@ type ResponsiveCalendarChartAction = {
   setMonthSpacing: 'setMonthSpacing';
   setMonthBorderWidth: 'setMonthBorderWidth';
   setMonthBorderColor: 'setMonthBorderColor';
+  setMonthLegendPosition: 'setMonthLegendPosition';
+  setMonthLegendOffset: 'setMonthLegendOffset';
 
   // days
   setDaySpacing: 'setDaySpacing';
@@ -78,17 +80,18 @@ type ResponsiveCalendarChartAction = {
 
 type ResponsiveCalendarChartDispatch =
   | {
-      type: ResponsiveCalendarChartAction['setDirection'];
+      type: ResponsiveCalendarChartAction['setCalendarDirection'];
       payload: NivoCalendarDirection;
     }
   | {
-      type: ResponsiveCalendarChartAction['setAlign'];
+      type: ResponsiveCalendarChartAction['setCalendarAlign'];
       payload: NivoCalendarAlign;
     }
   | {
       type:
         | ResponsiveCalendarChartAction['setEnableMinValue']
-        | ResponsiveCalendarChartAction['setEnableMaxValue'];
+        | ResponsiveCalendarChartAction['setEnableMaxValue']
+        | ResponsiveCalendarChartAction['setEnableDefaultColors'];
       payload: boolean;
     }
   | {
@@ -106,13 +109,10 @@ type ResponsiveCalendarChartDispatch =
         | ResponsiveCalendarChartAction['setYearLegendOffset']
         | ResponsiveCalendarChartAction['setMonthSpacing']
         | ResponsiveCalendarChartAction['setMonthBorderWidth']
+        | ResponsiveCalendarChartAction['setMonthLegendOffset']
         | ResponsiveCalendarChartAction['setDaySpacing']
         | ResponsiveCalendarChartAction['setDayBorderWidth'];
       payload: number;
-    }
-  | {
-      type: ResponsiveCalendarChartAction['setChartColors'];
-      payload: string[];
     }
   | {
       type:
@@ -122,7 +122,9 @@ type ResponsiveCalendarChartDispatch =
       payload: string;
     }
   | {
-      type: ResponsiveCalendarChartAction['setYearLegendPosition'];
+      type:
+        | ResponsiveCalendarChartAction['setYearLegendPosition']
+        | ResponsiveCalendarChartAction['setMonthLegendPosition'];
       payload: NivoCalendarLegendPosition;
     };
 

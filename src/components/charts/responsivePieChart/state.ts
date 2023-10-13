@@ -14,11 +14,11 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   sortByValue: false,
 
   /** style */
-  chartColors: 'set2',
+  chartColors: 'nivo',
   fillPatterns: [],
   enableFillPatterns: false,
-  chartBorderColor: '#ffffff',
-  chartBorderWidth: 0,
+  arcBorderColor: '#ffffff',
+  arcBorderWidth: 0,
 
   /** arc labels */
   enableArcLabels: true,
@@ -81,8 +81,8 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setColorScheme: 'setColorScheme',
   setFillPatterns: 'setFillPatterns',
   setEnableFillPatterns: 'setEnableFillPatterns',
-  setChartBorderColor: 'setChartBorderColor',
-  setChartBorderWidth: 'setChartBorderWidth',
+  setArcBorderColor: 'setArcBorderColor',
+  setArcBorderWidth: 'setArcBorderWidth',
 
   /** arc labels */
   setEnableArcLabels: 'setEnableArcLabels',
@@ -185,15 +185,15 @@ function responsivePieChartReducer(
         ...state,
         enableFillPatterns: action.payload,
       };
-    case responsivePieChartAction.setChartBorderColor:
+    case responsivePieChartAction.setArcBorderColor:
       return {
         ...state,
-        chartBorderColor: action.payload,
+        arcBorderColor: action.payload,
       };
-    case responsivePieChartAction.setChartBorderWidth:
+    case responsivePieChartAction.setArcBorderWidth:
       return {
         ...state,
-        chartBorderWidth: action.payload,
+        arcBorderWidth: action.payload,
       };
 
     /** arc labels */

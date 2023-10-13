@@ -22,7 +22,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   marginLeft: 60,
 
   /** style */
-  chartColors: 'nivo',
+  chartColors: 'set2',
   chartBorderRadius: 0,
   chartBorderWidth: 0,
   chartBorderColor: '#ffffff',

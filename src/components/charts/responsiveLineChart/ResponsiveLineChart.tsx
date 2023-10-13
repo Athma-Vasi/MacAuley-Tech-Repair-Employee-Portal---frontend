@@ -1,6 +1,7 @@
 import {
   ColorInput,
   Divider,
+  Flex,
   Grid,
   Group,
   ScrollArea,
@@ -251,19 +252,6 @@ function ResponsiveLineChart() {
       payload: isValid,
     });
   }, [axisLeftLegend]);
-
-  /**
-   *  const [reverseAccessibleAccessibleSelectedText, reverseAccessibleAccessibleDeselectedText] =
-    AccessibleSelectedDeselectedTextElements({
-      deselectedDescription:
-        'Bars will start on bottom instead of top for vertical layout and left instead of right for horizontal one',
-      isSelected: reverse,
-      selectedDescription:
-        'Bars will start on top instead of bottom for vertical layout and right instead of left for horizontal one',
-      semanticName: 'reverse',
-      theme: 'muted',
-    });
-   */
 
   const [
     enableYScaleStackedAccessibleSelectedText,
@@ -965,6 +953,7 @@ function ResponsiveLineChart() {
   const pointLabelSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: NIVO_LINE_POINT_LABEL_DATA,
     description: 'Define point label.',
+    disabled: !enablePointLabel,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveLineChartDispatch({
         type: responsiveLineChartAction.setPointLabel,
@@ -2293,12 +2282,7 @@ function ResponsiveLineChart() {
 
   // base
   const displayBaseHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Base
       </Title>
@@ -2307,6 +2291,7 @@ function ResponsiveLineChart() {
 
   const displayXScaleSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdXScaleSelectInput}
       label="X scale"
       value={xScale}
@@ -2315,6 +2300,7 @@ function ResponsiveLineChart() {
 
   const displayYScaleSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdYScaleSelectInput}
       label="Y scale"
       value={yScale}
@@ -2335,6 +2321,7 @@ function ResponsiveLineChart() {
 
   const displayYScaleMinSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdYScaleMinSliderInput}
       isInputDisabled={!enableYScaleMin}
       label="Y scale min"
@@ -2350,6 +2337,7 @@ function ResponsiveLineChart() {
 
   const displayYScaleMaxSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdYScaleMaxSliderInput}
       isInputDisabled={!enableYScaleMax}
       label="Y scale max"
@@ -2379,12 +2367,7 @@ function ResponsiveLineChart() {
 
   // margin
   const displayMarginHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Margin
       </Title>
@@ -2393,6 +2376,7 @@ function ResponsiveLineChart() {
 
   const displayMarginTopSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdMarginTopSliderInput}
       label="Margin top"
       symbol="px"
@@ -2402,6 +2386,7 @@ function ResponsiveLineChart() {
 
   const displayMarginRightSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdMarginRightSliderInput}
       label="Margin right"
       symbol="px"
@@ -2411,6 +2396,7 @@ function ResponsiveLineChart() {
 
   const displayMarginBottomSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdMarginBottomSliderInput}
       label="Margin bottom"
       symbol="px"
@@ -2420,6 +2406,7 @@ function ResponsiveLineChart() {
 
   const displayMarginLeftSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdMarginLeftSliderInput}
       label="Margin left"
       symbol="px"
@@ -2439,12 +2426,7 @@ function ResponsiveLineChart() {
 
   // style
   const displayStyleHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Style
       </Title>
@@ -2453,6 +2435,7 @@ function ResponsiveLineChart() {
 
   const displayLineCurveSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLineCurveSelectInput}
       label="Line curve"
       value={lineCurve}
@@ -2461,6 +2444,7 @@ function ResponsiveLineChart() {
 
   const displayChartColorsSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdChartColorsSelectInput}
       label="Chart colors"
       value={chartColors}
@@ -2469,6 +2453,7 @@ function ResponsiveLineChart() {
 
   const displayLineWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLineWidthSliderInput}
       label="Line width"
       symbol="px"
@@ -2484,6 +2469,7 @@ function ResponsiveLineChart() {
 
   const displayAreaOpacitySliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAreaOpacitySliderInput}
       isInputDisabled={!enableArea}
       label="Area opacity"
@@ -2493,6 +2479,7 @@ function ResponsiveLineChart() {
 
   const displayAreaBlendModeSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAreaBlendModeSelectInput}
       isInputDisabled={!enableArea}
       label="Area blend mode"
@@ -2514,12 +2501,7 @@ function ResponsiveLineChart() {
 
   // points
   const displayPointsHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Points
       </Title>
@@ -2534,6 +2516,7 @@ function ResponsiveLineChart() {
 
   const displayPointSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdPointSizeSliderInput}
       isInputDisabled={!enablePoints}
       label="Point size"
@@ -2544,6 +2527,7 @@ function ResponsiveLineChart() {
 
   const displayPointColorInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdPointColorInput}
       isInputDisabled={!enablePoints}
       label="Point color"
@@ -2553,6 +2537,7 @@ function ResponsiveLineChart() {
 
   const displayPointBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdPointBorderWidthSliderInput}
       isInputDisabled={!enablePoints}
       label="Point border width"
@@ -2563,6 +2548,7 @@ function ResponsiveLineChart() {
 
   const displayPointBorderColorInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdPointBorderColorInput}
       isInputDisabled={!enablePoints}
       label="Point border color"
@@ -2578,6 +2564,7 @@ function ResponsiveLineChart() {
 
   const displayPointLabelSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdPointLabelSelectInput}
       isInputDisabled={!enablePointLabel}
       label="Point label"
@@ -2587,6 +2574,7 @@ function ResponsiveLineChart() {
 
   const displayPointLabelYOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdPointLabelYOffsetSliderInput}
       isInputDisabled={!enablePointLabel}
       label="Point label Y offset"
@@ -2611,12 +2599,7 @@ function ResponsiveLineChart() {
 
   // grids
   const displayGridsHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Grids
       </Title>
@@ -2646,12 +2629,7 @@ function ResponsiveLineChart() {
   // axes
   // axes top
   const displayAxisTopHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Axis Top
       </Title>
@@ -2666,6 +2644,7 @@ function ResponsiveLineChart() {
 
   const displayAxisTopTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisTopTickSizeSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick size"
@@ -2676,6 +2655,7 @@ function ResponsiveLineChart() {
 
   const displayAxisTopTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisTopTickPaddingSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick padding"
@@ -2686,6 +2666,7 @@ function ResponsiveLineChart() {
 
   const displayAxisTopTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisTopTickRotationSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick rotation"
@@ -2696,6 +2677,7 @@ function ResponsiveLineChart() {
 
   const displayAxisTopLegendTextInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisTopLegendTextInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top legend"
@@ -2705,6 +2687,7 @@ function ResponsiveLineChart() {
 
   const displayAxisTopLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisTopLegendOffsetSliderInput}
       isInputDisabled={!enableAxisTop || !axisTopLegend}
       label="Axis top legend offset"
@@ -2727,12 +2710,7 @@ function ResponsiveLineChart() {
 
   // axes right
   const displayAxisRightHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Axis Right
       </Title>
@@ -2747,6 +2725,7 @@ function ResponsiveLineChart() {
 
   const displayAxisRightTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisRightTickSizeSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick size"
@@ -2757,6 +2736,7 @@ function ResponsiveLineChart() {
 
   const displayAxisRightTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisRightTickPaddingSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick padding"
@@ -2767,6 +2747,7 @@ function ResponsiveLineChart() {
 
   const displayAxisRightTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisRightTickRotationSliderInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right tick rotation"
@@ -2777,6 +2758,7 @@ function ResponsiveLineChart() {
 
   const displayAxisRightLegendTextInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisRightLegendTextInput}
       isInputDisabled={!enableAxisRight}
       label="Axis right legend"
@@ -2786,6 +2768,7 @@ function ResponsiveLineChart() {
 
   const displayAxisRightLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisRightLegendOffsetSliderInput}
       isInputDisabled={!enableAxisRight || !axisRightLegend}
       label="Axis right legend offset"
@@ -2808,12 +2791,7 @@ function ResponsiveLineChart() {
 
   // axes bottom
   const displayAxisBottomHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Axis Bottom
       </Title>
@@ -2828,6 +2806,7 @@ function ResponsiveLineChart() {
 
   const displayAxisBottomTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisBottomTickSizeSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick size"
@@ -2838,6 +2817,7 @@ function ResponsiveLineChart() {
 
   const displayAxisBottomTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisBottomTickPaddingSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick padding"
@@ -2848,6 +2828,7 @@ function ResponsiveLineChart() {
 
   const displayAxisBottomTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisBottomTickRotationSliderInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom tick rotation"
@@ -2858,6 +2839,7 @@ function ResponsiveLineChart() {
 
   const displayAxisBottomLegendTextInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisBottomLegendTextInput}
       isInputDisabled={!enableAxisBottom}
       label="Axis bottom legend"
@@ -2867,6 +2849,7 @@ function ResponsiveLineChart() {
 
   const displayAxisBottomLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisBottomLegendOffsetSliderInput}
       isInputDisabled={!enableAxisBottom || !axisBottomLegend}
       label="Axis bottom legend offset"
@@ -2889,12 +2872,7 @@ function ResponsiveLineChart() {
 
   // axes left
   const displayAxisLeftHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Axis Left
       </Title>
@@ -2909,6 +2887,7 @@ function ResponsiveLineChart() {
 
   const displayAxisLeftTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisLeftTickSizeSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick size"
@@ -2919,6 +2898,7 @@ function ResponsiveLineChart() {
 
   const displayAxisLeftTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisLeftTickPaddingSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick padding"
@@ -2929,6 +2909,7 @@ function ResponsiveLineChart() {
 
   const displayAxisLeftTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisLeftTickRotationSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick rotation"
@@ -2939,6 +2920,7 @@ function ResponsiveLineChart() {
 
   const displayAxisLeftLegendTextInput = (
     <ChartsAndGraphsControlsStacker
+      // initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisLeftLegendTextInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left legend"
@@ -2948,6 +2930,7 @@ function ResponsiveLineChart() {
 
   const displayAxisLeftLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdAxisLeftLegendOffsetSliderInput}
       isInputDisabled={!enableAxisLeft || !axisLeftLegend}
       label="Axis left legend offset"
@@ -2979,12 +2962,7 @@ function ResponsiveLineChart() {
 
   // interactivity
   const displayInteractivityHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Interactivity
       </Title>
@@ -2999,6 +2977,7 @@ function ResponsiveLineChart() {
 
   const displayCrosshairTypeSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdCrosshairTypeSelectInput}
       isInputDisabled={!enableCrosshair}
       label="Crosshair type"
@@ -3016,12 +2995,7 @@ function ResponsiveLineChart() {
 
   // legends
   const displayLegendsHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Legends
       </Title>
@@ -3036,6 +3010,7 @@ function ResponsiveLineChart() {
 
   const displayLegendAnchorSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendAnchorSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend anchor"
@@ -3045,6 +3020,7 @@ function ResponsiveLineChart() {
 
   const displayLegendDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendDirectionSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend direction"
@@ -3060,6 +3036,7 @@ function ResponsiveLineChart() {
 
   const displayLegendTranslateXSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendTranslateXSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend translate X"
@@ -3070,6 +3047,7 @@ function ResponsiveLineChart() {
 
   const displayLegendTranslateYSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendTranslateYSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend translate Y"
@@ -3080,6 +3058,7 @@ function ResponsiveLineChart() {
 
   const displayLegendItemWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendItemWidthSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item width"
@@ -3090,6 +3069,7 @@ function ResponsiveLineChart() {
 
   const displayLegendItemHeightSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendItemHeightSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item height"
@@ -3100,6 +3080,7 @@ function ResponsiveLineChart() {
 
   const displayLegendItemsSpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendItemsSpacingSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend items spacing"
@@ -3110,6 +3091,7 @@ function ResponsiveLineChart() {
 
   const displayLegendItemDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendItemDirectionSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend item direction"
@@ -3119,6 +3101,7 @@ function ResponsiveLineChart() {
 
   const displayLegendItemOpacitySliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendItemOpacitySliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item opacity"
@@ -3128,6 +3111,7 @@ function ResponsiveLineChart() {
 
   const displayLegendSymbolSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendSymbolSizeSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol size"
@@ -3138,6 +3122,7 @@ function ResponsiveLineChart() {
 
   const displayLegendSymbolShapeSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendSymbolShapeSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol shape"
@@ -3147,6 +3132,7 @@ function ResponsiveLineChart() {
 
   const displayLegendSymbolBorderColorInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendSymbolBorderColorInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol border color"
@@ -3156,6 +3142,7 @@ function ResponsiveLineChart() {
 
   const displayLegendSymbolBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendSymbolBorderWidthSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol border width"
@@ -3166,6 +3153,7 @@ function ResponsiveLineChart() {
 
   const displayLegendSymbolSpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdLegendSymbolSpacingSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol spacing"
@@ -3198,12 +3186,7 @@ function ResponsiveLineChart() {
 
   // motion
   const displayMotionHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-      w="100%"
-    >
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%">
       <Title order={5} color={textColor}>
         Motion
       </Title>
@@ -3218,6 +3201,7 @@ function ResponsiveLineChart() {
 
   const displayMotionConfigSelectInput = (
     <ChartsAndGraphsControlsStacker
+      initialChartState={modifiedResponsiveLineChartState}
       input={createdMotionConfigSelectInput}
       isInputDisabled={!enableAnimate}
       label="Motion config"
@@ -3234,7 +3218,7 @@ function ResponsiveLineChart() {
   );
 
   const lineChartControlsStack = (
-    <Stack w="100%">
+    <Flex w="100%" direction="column">
       {displayBaseSection}
       {displayMarginSection}
       {displayStyleSection}
@@ -3244,7 +3228,7 @@ function ResponsiveLineChart() {
       {displayInteractivitySection}
       {displayLegendsSection}
       {displayMotionSection}
-    </Stack>
+    </Flex>
   );
 
   const displayLineChartControls = (
@@ -3528,7 +3512,7 @@ function ResponsiveLineChart() {
     },
   ];
 
-  const displayResponsieLine = (
+  const displayResponsiveLine = (
     <ResponsiveLine
       data={data}
       // base
@@ -3674,7 +3658,7 @@ function ResponsiveLineChart() {
       </Grid.Col>
 
       <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
-        {displayResponsieLine}
+        {displayResponsiveLine}
       </Grid.Col>
     </Grid>
   );

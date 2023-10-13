@@ -27,8 +27,8 @@ type ResponsivePieChartState = {
   chartColors: NivoColorScheme;
   fillPatterns: FillPatternObject[];
   enableFillPatterns: boolean; // default: false
-  chartBorderColor: string; // default: #ffffff
-  chartBorderWidth: number; // 0px - 20px default: 0 step: 1
+  arcBorderColor: string; // default: #ffffff
+  arcBorderWidth: number; // 0px - 20px default: 0 step: 1
 
   /** arc labels */
   enableArcLabels: boolean; // default: true
@@ -91,8 +91,8 @@ type ResponsivePieChartAction = {
   setColorScheme: 'setColorScheme';
   setFillPatterns: 'setFillPatterns';
   setEnableFillPatterns: 'setEnableFillPatterns';
-  setChartBorderColor: 'setChartBorderColor';
-  setChartBorderWidth: 'setChartBorderWidth';
+  setArcBorderColor: 'setArcBorderColor';
+  setArcBorderWidth: 'setArcBorderWidth';
 
   /** arc labels */
   setEnableArcLabels: 'setEnableArcLabels';
@@ -151,7 +151,7 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setInnerRadius']
         | ResponsivePieChartAction['setPadAngle']
         | ResponsivePieChartAction['setCornerRadius']
-        | ResponsivePieChartAction['setChartBorderWidth']
+        | ResponsivePieChartAction['setArcBorderWidth']
         | ResponsivePieChartAction['setArcLabelsSkipAngle']
         | ResponsivePieChartAction['setArcLabelsRadiusOffset']
         | ResponsivePieChartAction['setArcLinkLabelsSkipAngle']
@@ -200,7 +200,7 @@ type ResponsivePieChartDispatch =
   | {
       type:
         | ResponsivePieChartAction['setArcLabelsTextColor']
-        | ResponsivePieChartAction['setChartBorderColor']
+        | ResponsivePieChartAction['setArcBorderColor']
         | ResponsivePieChartAction['setArcLinkLabelsTextColor']
         | ResponsivePieChartAction['setLegendItemTextColor'];
 

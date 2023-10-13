@@ -22,7 +22,7 @@ const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
   cornerRadius: 0,
 
   // style
-  chartColors: 'nivo',
+  chartColors: 'set2',
   ringBorderWidth: 0,
   ringBorderColor: 'gray',
 
