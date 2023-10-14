@@ -35,9 +35,6 @@ type ResponsiveSunburstChartState = {
   enableAnimate: boolean; // default: true
   motionConfig: NivoMotionConfig; // default: 'gentle'
   transitionMode: NivoTransitionMode; // default: 'innerRadius'
-
-  // reset all
-  resetChartToDefault: boolean;
 };
 
 type ResponsiveSunburstChartAction = {
@@ -90,7 +87,6 @@ type ResponsiveSunburstChartDispatch =
     }
   | {
       type:
-        | ResponsiveSunburstChartAction['setChartColors']
         | ResponsiveSunburstChartAction['setChartBorderColor']
         | ResponsiveSunburstChartAction['setArcLabelsTextColor'];
 
@@ -104,6 +100,10 @@ type ResponsiveSunburstChartDispatch =
         | ResponsiveSunburstChartAction['setEnableAnimate'];
 
       payload: boolean;
+    }
+  | {
+      type: ResponsiveSunburstChartAction['setChartColors'];
+      payload: NivoColorScheme;
     }
   | {
       type: ResponsiveSunburstChartAction['setArcLabel'];
