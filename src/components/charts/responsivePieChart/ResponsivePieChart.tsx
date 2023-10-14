@@ -1383,7 +1383,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayControlsHeading = (
     <Group p={padding} w="100%" position="apart">
       <Title order={3} color={textColor}>
-        Calendar Controls
+        Pie Chart Controls
       </Title>
       {displayResetButton}
     </Group>

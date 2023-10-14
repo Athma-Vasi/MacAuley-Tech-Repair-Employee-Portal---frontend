@@ -27,7 +27,7 @@ type ResponsiveSunburstChartState = {
   // arc labels
   enableArcLabels: boolean; // default: false
   arcLabel: NivoSunburstArcLabel; // default: 'formattedValue'
-  arcLabelsRadiusOffset: number; // 0 - 2px default: 0.5 step: 0.05
+  arcLabelsRadiusOffset: number; // 0 - 2 default: 0.5 step: 0.05
   arcLabelsSkipAngle: number; // 0 - 45 default: 0 step: 1
   arcLabelsTextColor: string; // default: 'gray'
 

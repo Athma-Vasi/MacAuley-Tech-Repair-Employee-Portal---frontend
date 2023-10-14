@@ -2311,7 +2311,7 @@ function ResponsiveLineChart() {
   const displayControlsHeading = (
     <Group p={padding} w="100%" position="apart">
       <Title order={3} color={textColor}>
-        Calendar Controls
+        Line Chart Controls
       </Title>
       {displayResetButton}
     </Group>

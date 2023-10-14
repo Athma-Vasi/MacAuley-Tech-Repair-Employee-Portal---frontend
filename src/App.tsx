@@ -15,6 +15,7 @@ import {
   ResponsiveLineChart,
   ResponsivePieChart,
   ResponsiveRadialBarChart,
+  ResponsiveSunburstChart,
 } from './components/charts';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -554,8 +555,9 @@ function App() {
           {/* TESTING ONLY REMOVE  */}
           {/* <Route index element={<ResponsiveBarChart />} /> */}
           {/* <Route index element={<ResponsiveRadialBarChart />} /> */}
-          <Route index element={<ResponsiveLineChart />} />
+          {/* <Route index element={<ResponsiveLineChart />} /> */}
           {/* <Route index element={<ResponsiveCalendarChart />} /> */}
+          <Route index element={<ResponsiveSunburstChart />} />
           <Route
             index
             element={

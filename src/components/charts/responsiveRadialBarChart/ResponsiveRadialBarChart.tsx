@@ -1653,7 +1653,7 @@ function ResponsiveRadialBarChart() {
   const displayControlsHeading = (
     <Group p={padding} w="100%" position="apart">
       <Title order={3} color={textColor}>
-        Calendar Controls
+        Radial Bar Chart Controls
       </Title>
       {displayResetButton}
     </Group>
