@@ -27,7 +27,7 @@ const Register = lazy(() => import('./components/register/Register'));
 const PortalLayout = lazy(
   () => import('./components/portalLayout/PortalLayout')
 );
-const Dashboard = lazy(() => import('./components/dashboard/Dashboard'));
+const Home = lazy(() => import('./components/home/Home'));
 const Directory = lazy(() => import('./components/directory/Directory'));
 const CreateRepairNote = lazy(
   () => import('./components/repairNote/create/CreateRepairNote')
@@ -185,10 +185,10 @@ function App() {
   // @desc   the home page (welcome page for logged in users)
   // @route  /home
   // @access private
-  const dashboardElement = (
+  const homeElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Dashboard />
+        <Home />
       </Suspense>
     </ErrorBoundary>
   );
@@ -554,8 +554,8 @@ function App() {
           {/* TESTING ONLY REMOVE  */}
           {/* <Route index element={<ResponsiveBarChart />} /> */}
           {/* <Route index element={<ResponsiveRadialBarChart />} /> */}
-          {/* <Route index element={<ResponsiveLineChart />} /> */}
-          <Route index element={<ResponsiveCalendarChart />} />
+          <Route index element={<ResponsiveLineChart />} />
+          {/* <Route index element={<ResponsiveCalendarChart />} /> */}
           <Route
             index
             element={
@@ -607,8 +607,8 @@ function App() {
         }
       >
         <Route path="portal" element={<PortalLayout />}>
-          <Route index element={<Dashboard />} />
-          <Route path="dashboard" element={<Dashboard />} />
+          <Route index element={<Home />} />
+          <Route path="home" element={<Home />} />
 
           <Route path="users">
             <Route index element={<UsersList />} />
@@ -621,10 +621,10 @@ function App() {
       </Route> */}
 
         <Route path="home" element={homeIndexWrapper}>
-          <Route index element={dashboardElement} />
+          <Route index element={homeElement} />
           {/* DEV TEST ROUTES */}
           <Route path="dev-testing" element={<DevTesting />} />
-          {/* <Route path="dashboard" element={dashboardElement} /> */}
+          {/* <Route path="home" element={homeElement} /> */}
 
           {/* directory */}
           <Route path="directory" element={directoryElement} />

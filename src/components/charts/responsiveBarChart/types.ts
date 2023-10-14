@@ -1,5 +1,5 @@
 import {
-  FillPatternObject,
+  NivoFillPatternObject,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
@@ -33,7 +33,7 @@ type ResponsiveBarChartState = {
   chartBorderRadius: number; // 0px - 36px default: 0 step: 1
   chartBorderWidth: number; // 0px - 20px default: 0 step: 1
   chartBorderColor: string; // default: #ffffff
-  fillPatterns: FillPatternObject[];
+  fillPatterns: NivoFillPatternObject[];
   enableFillPatterns: boolean; // default: false
 
   /** labels */
@@ -289,7 +289,7 @@ type ResponsiveBarChartDispatch =
     }
   | {
       type: ResponsiveBarChartAction['setFillPatterns'];
-      payload: FillPatternObject[];
+      payload: NivoFillPatternObject[];
     }
   | {
       type: ResponsiveBarChartAction['setLegendAnchor'];

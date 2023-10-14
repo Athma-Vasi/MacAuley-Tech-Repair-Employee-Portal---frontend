@@ -1,6 +1,6 @@
 import { PieChartData } from '../../displayStatistics/types';
 import {
-  FillPatternObject,
+  NivoFillPatternObject,
   NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
@@ -25,7 +25,7 @@ type ResponsivePieChartState = {
 
   /** style */
   chartColors: NivoColorScheme;
-  fillPatterns: FillPatternObject[];
+  fillPatterns: NivoFillPatternObject[];
   enableFillPatterns: boolean; // default: false
   arcBorderColor: string; // default: #ffffff
   arcBorderWidth: number; // 0px - 20px default: 0 step: 1
@@ -194,7 +194,7 @@ type ResponsivePieChartDispatch =
     }
   | {
       type: ResponsivePieChartAction['setFillPatterns'];
-      payload: FillPatternObject[];
+      payload: NivoFillPatternObject[];
     }
   | {
       type: ResponsivePieChartAction['setColorScheme'];
@@ -244,7 +244,7 @@ type ResponsivePieChartReducer = (
 ) => ResponsivePieChartState;
 
 export type {
-  FillPatternObject,
+  NivoFillPatternObject,
   NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,

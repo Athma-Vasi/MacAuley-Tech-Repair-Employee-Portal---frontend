@@ -694,7 +694,7 @@ function ResponsiveCalendarChart() {
   );
 
   const displayControlsHeading = (
-    <Group p={padding} w="100%" position="apart">
+    <Group bg={sectionHeadersBgColor} p={padding} w="100%" position="apart">
       <Title order={3} color={textColor}>
         Calendar Controls
       </Title>

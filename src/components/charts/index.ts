@@ -3,6 +3,7 @@ import { ResponsiveCalendarChart } from './responsiveCalendarChart/ResponsiveCal
 import { ResponsiveLineChart } from './responsiveLineChart/ResponsiveLineChart';
 import { ResponsivePieChart } from './responsivePieChart/ResponsivePieChart';
 import { ResponsiveRadialBarChart } from './responsiveRadialBarChart/ResponsiveRadialBarChart';
+import { ResponsiveSunburstChart } from './responsiveSunburstChart/ResponsiveSunburstChart';
 
 export {
   ResponsiveBarChart,
@@ -10,4 +11,5 @@ export {
   ResponsiveLineChart,
   ResponsivePieChart,
   ResponsiveRadialBarChart,
+  ResponsiveSunburstChart,
 };

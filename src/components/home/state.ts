@@ -1,6 +1,6 @@
-import { DashboardAction, DashboardDispatch, DashboardState } from './types';
+import { HomeAction, HomeDispatch, HomeState } from './types';
 
-const initialDashboardState: DashboardState = {
+const initialHomeState: HomeState = {
   isLoading: false,
   isSubmitting: false,
   isSuccessful: false,
@@ -10,7 +10,7 @@ const initialDashboardState: DashboardState = {
   triggerFetchActionsDocuments: true,
 };
 
-const dashboardAction: DashboardAction = {
+const homeAction: HomeAction = {
   setIsLoading: 'setIsLoading',
   setIsSubmitting: 'setIsSubmitting',
   setIsSuccessful: 'setIsSuccessful',
@@ -20,28 +20,25 @@ const dashboardAction: DashboardAction = {
   triggerFetchActionsDocuments: 'triggerFetchActionsDocuments',
 };
 
-function dashboardReducer(
-  state: DashboardState,
-  action: DashboardDispatch
-): DashboardState {
+function homeReducer(state: HomeState, action: HomeDispatch): HomeState {
   switch (action.type) {
-    case dashboardAction.setIsLoading:
+    case homeAction.setIsLoading:
       return { ...state, isLoading: action.payload };
-    case dashboardAction.setIsSubmitting:
+    case homeAction.setIsSubmitting:
       return { ...state, isSubmitting: action.payload };
-    case dashboardAction.setIsSuccessful:
+    case homeAction.setIsSuccessful:
       return { ...state, isSuccessful: action.payload };
-    case dashboardAction.setLoadingMessage:
+    case homeAction.setLoadingMessage:
       return { ...state, loadingMessage: action.payload };
-    case dashboardAction.setSubmitMessage:
+    case homeAction.setSubmitMessage:
       return { ...state, submitMessage: action.payload };
-    case dashboardAction.setSuccessMessage:
+    case homeAction.setSuccessMessage:
       return { ...state, successMessage: action.payload };
-    case dashboardAction.triggerFetchActionsDocuments:
+    case homeAction.triggerFetchActionsDocuments:
       return { ...state, triggerFetchActionsDocuments: action.payload };
     default:
       return state;
   }
 }
 
-export { dashboardAction, dashboardReducer, initialDashboardState };
+export { homeAction, homeReducer, initialHomeState };

@@ -2011,7 +2011,7 @@ function ResponsiveLineChart() {
       aria-describedby="legend symbol border color"
       color={legendSymbolBorderColor}
       disabled={!enableLegend}
-      label="Legend symbol border color"
+      label=""
       onChange={(color: string) => {
         responsiveLineChartDispatch({
           type: responsiveLineChartAction.setLegendSymbolBorderColor,

@@ -46,7 +46,7 @@ import {
   responsivePieChartReducer,
 } from './state';
 import {
-  FillPatternObject,
+  NivoFillPatternObject,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
@@ -159,7 +159,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     const fillPatterns = pieChartData.map(
       (pieChartData: PieChartData, chartIdx) => {
         const { id } = pieChartData;
-        const fillPattern: FillPatternObject = {
+        const fillPattern: NivoFillPatternObject = {
           match: {
             id,
           },

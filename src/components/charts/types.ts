@@ -55,7 +55,7 @@ type NivoTransitionMode =
   | 'pushIn'
   | 'pushOut';
 
-type FillPatternObject = {
+type NivoFillPatternObject = {
   match: {
     id: string;
   };
@@ -144,8 +144,10 @@ type NivoCalendarAlign =
 type NivoCalendarDirection = 'horizontal' | 'vertical';
 type NivoCalendarLegendPosition = 'before' | 'after';
 
+type NivoSunburstArcLabel = 'id' | 'value' | 'formattedValue';
+
 export type {
-  FillPatternObject,
+  NivoFillPatternObject,
   NivoCalendarAlign,
   NivoCalendarDirection,
   NivoCalendarLegendPosition,
@@ -161,4 +163,5 @@ export type {
   NivoLinePointLabel,
   NivoMotionConfig,
   NivoTransitionMode,
+  NivoSunburstArcLabel,
 };
