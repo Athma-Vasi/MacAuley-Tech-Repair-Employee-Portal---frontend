@@ -275,6 +275,15 @@ const TIME_RAILWAY_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
  */
 const INTEGER_REGEX = /^\d{1,6}$/;
 
+/**
+ * - /^[a-zA-Z0-9\s.,'()-]{1,50}$/i
+ * - [a-zA-Z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
+ * - {1,50} ensures that the text is between 1 and 50 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const FILENAME_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
+
 export {
   ACKNOWLEDGEMENT_TEXT_INPUT_REGEX,
   ADDRESS_LINE_REGEX,
@@ -285,6 +294,7 @@ export {
   DATE_OF_BIRTH_REGEX,
   DATE_REGEX,
   EMAIL_REGEX,
+  FILENAME_REGEX,
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,

@@ -29,6 +29,7 @@ const PortalLayout = lazy(
   () => import('./components/portalLayout/PortalLayout')
 );
 const Home = lazy(() => import('./components/home/Home'));
+const Dashboard = lazy(() => import('./components/dashboard/Dashboard'));
 const Directory = lazy(() => import('./components/directory/Directory'));
 const CreateRepairNote = lazy(
   () => import('./components/repairNote/create/CreateRepairNote')
@@ -190,6 +191,17 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <Home />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   the dashboard page
+  // @route  /home/dashboard
+  // @access private
+  const dashboardElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Dashboard />
       </Suspense>
     </ErrorBoundary>
   );
@@ -557,8 +569,8 @@ function App() {
           {/* <Route index element={<ResponsiveRadialBarChart />} /> */}
           {/* <Route index element={<ResponsiveLineChart />} /> */}
           {/* <Route index element={<ResponsiveCalendarChart />} /> */}
-          <Route index element={<ResponsiveSunburstChart />} />
-          <Route
+          {/* <Route index element={<ResponsiveSunburstChart />} /> */}
+          {/* <Route
             index
             element={
               <ResponsivePieChart
@@ -591,9 +603,9 @@ function App() {
                 ]}
               />
             }
-          />
+          /> */}
 
-          {/* <Route index element={loginElement} /> */}
+          <Route index element={loginElement} />
           <Route path="login" element={loginElement} />
           <Route path="register" element={<PortalLayout />}>
             <Route index element={registerElement} />
@@ -627,6 +639,9 @@ function App() {
           {/* DEV TEST ROUTES */}
           <Route path="dev-testing" element={<DevTesting />} />
           {/* <Route path="home" element={homeElement} /> */}
+
+          {/* dashboard */}
+          <Route path="dashboard" element={dashboardElement} />
 
           {/* directory */}
           <Route path="directory" element={directoryElement} />

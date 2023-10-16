@@ -112,8 +112,15 @@ const NIVO_CHART_PATTERN_DEFS = [
   },
 ];
 
+const NIVO_CHART_TITLE_POSITION_DATA: SelectInputData = [
+  { value: 'left', label: 'Left' },
+  { value: 'center', label: 'Center' },
+  { value: 'right', label: 'Right' },
+];
+
 export {
   NIVO_CHART_PATTERN_DEFS,
+  NIVO_CHART_TITLE_POSITION_DATA,
   NIVO_COLOR_SCHEME_DATA,
   NIVO_LEGEND_ANCHOR_DATA,
   NIVO_LEGEND_DIRECTION_DATA,

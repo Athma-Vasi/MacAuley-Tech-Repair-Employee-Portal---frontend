@@ -5,6 +5,7 @@ type PortalNavbarProps = {
 type PortalNavbarState = {
   // navlinks active states
   isHomeActive: boolean;
+  isDashboardActive: boolean;
   isNotesActive: boolean;
 
   // company
@@ -33,6 +34,7 @@ type PortalNavbarState = {
 
 type PortalNavbarAction = {
   setIsHomeActive: 'setIsHomeActive';
+  setIsDashboardActive: 'setIsDashboardActive';
   setIsNotesActive: 'setIsNotesActive';
 
   // company
@@ -63,6 +65,7 @@ type PortalNavbarDispatch = {
   // navlinks active states
   type:
     | PortalNavbarAction['setIsHomeActive']
+    | PortalNavbarAction['setIsDashboardActive']
     | PortalNavbarAction['setIsNotesActive']
     | PortalNavbarAction['setIsCompanyActive']
     | PortalNavbarAction['setIsAddressChangeActive']

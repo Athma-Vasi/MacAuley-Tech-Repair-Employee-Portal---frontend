@@ -229,6 +229,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
   const {
     appThemeColors: { backgroundColor, borderColor },
+    generalColors: { themeColorShade },
     scrollBarStyle,
   } = returnThemeColors({
     themeObject,
@@ -360,11 +361,12 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
   const createdSurveyStatisticModal = (
     <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
       opened={openedStatisticsModal}
       onClose={closeStatisticsModal}
-      centered
-      size="calc(100vw - 2rem)"
       scrollAreaComponent={ScrollArea.Autosize}
+      size="calc(100vw - 2rem)"
     >
       {createdModalHeadingSection}
       {displayResponsivePieChart}

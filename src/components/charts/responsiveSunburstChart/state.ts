@@ -23,7 +23,7 @@ const initialResponsiveSunburstChartState: ResponsiveSunburstChartState = {
   fillPatterns: [],
 
   // arc labels
-  enableArcLabels: false,
+  enableArcLabels: true,
   arcLabel: 'formattedValue',
   arcLabelsRadiusOffset: 0.5,
   arcLabelsSkipAngle: 0,
@@ -33,6 +33,9 @@ const initialResponsiveSunburstChartState: ResponsiveSunburstChartState = {
   enableAnimate: true,
   motionConfig: 'gentle',
   transitionMode: 'innerRadius',
+
+  // trigger screenshot download
+  triggerScreenshotDownload: false,
 };
 
 const responsiveSunburstChartAction: ResponsiveSunburstChartAction = {
@@ -67,6 +70,9 @@ const responsiveSunburstChartAction: ResponsiveSunburstChartAction = {
 
   // reset all
   resetChartToDefault: 'resetChartToDefault',
+
+  // trigger screenshot download
+  setTriggerScreenshotDownload: 'setTriggerScreenshotDownload',
 };
 
 function responsiveSunburstChartReducer(
@@ -182,6 +188,13 @@ function responsiveSunburstChartReducer(
     // reset all
     case responsiveSunburstChartAction.resetChartToDefault:
       return { ...action.payload };
+
+    // trigger screenshot download
+    case responsiveSunburstChartAction.setTriggerScreenshotDownload:
+      return {
+        ...state,
+        triggerScreenshotDownload: action.payload,
+      };
 
     default:
       return state;

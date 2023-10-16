@@ -35,6 +35,9 @@ type ResponsiveSunburstChartState = {
   enableAnimate: boolean; // default: true
   motionConfig: NivoMotionConfig; // default: 'gentle'
   transitionMode: NivoTransitionMode; // default: 'innerRadius'
+
+  // trigger screenshot download
+  triggerScreenshotDownload: boolean;
 };
 
 type ResponsiveSunburstChartAction = {
@@ -69,6 +72,9 @@ type ResponsiveSunburstChartAction = {
 
   // reset all
   resetChartToDefault: 'resetChartToDefault';
+
+  // trigger screenshot download
+  setTriggerScreenshotDownload: 'setTriggerScreenshotDownload';
 };
 
 type ResponsiveSunburstChartDispatch =
@@ -97,7 +103,8 @@ type ResponsiveSunburstChartDispatch =
         | ResponsiveSunburstChartAction['setInheritColorFromParent']
         | ResponsiveSunburstChartAction['setEnableFillPatterns']
         | ResponsiveSunburstChartAction['setEnableArcLabels']
-        | ResponsiveSunburstChartAction['setEnableAnimate'];
+        | ResponsiveSunburstChartAction['setEnableAnimate']
+        | ResponsiveSunburstChartAction['setTriggerScreenshotDownload'];
 
       payload: boolean;
     }

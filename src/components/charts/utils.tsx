@@ -66,6 +66,61 @@ function ChartsAndGraphsControlsStacker({
       </Text>
     );
 
+  const displayTopSection = (
+    <Group w="100%" position="apart">
+      <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
+        {splitWordIntoUpperCasedSentence(label)}
+      </Text>
+
+      {displayDefaultValue}
+    </Group>
+  );
+
+  const displayBottomSection = (
+    <Flex
+      align="center"
+      columnGap={rowGap}
+      justify="space-between"
+      rowGap={rowGap}
+      w="100%"
+      wrap="wrap"
+    >
+      <Text
+        aria-live="polite"
+        color={isInputDisabled ? grayColorShade : ''}
+        style={
+          value === ''
+            ? {}
+            : {
+                border: borderColor,
+                borderRadius: 4,
+                padding: '0.5rem 0.75rem',
+              }
+        }
+      >
+        {splitWordIntoUpperCasedSentence(splitCamelCase(value.toString()))}{' '}
+        {symbol}
+      </Text>
+      <Group>{input}</Group>
+    </Flex>
+  );
+
+  const displayComponentStack =
+    value === '' ? (
+      <>
+        <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
+          {splitWordIntoUpperCasedSentence(label)}
+        </Text>
+        <Group>{input}</Group>
+      </>
+    ) : (
+      <>
+        {displayTopSection}
+
+        {displayBottomSection}
+      </>
+    );
+
   return (
     <Flex
       align="center"
@@ -73,40 +128,12 @@ function ChartsAndGraphsControlsStacker({
       pb={padding}
       px={padding}
       rowGap="xs"
+      columnGap={rowGap}
       style={{ borderBottom: borderColor }}
       w="100%"
       wrap="wrap"
     >
-      <Group w="100%" position="apart">
-        <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
-          {splitWordIntoUpperCasedSentence(label)}
-        </Text>
-
-        {displayDefaultValue}
-      </Group>
-
-      <Flex
-        align="center"
-        columnGap={rowGap}
-        justify="space-between"
-        rowGap={rowGap}
-        w="100%"
-        wrap="wrap"
-      >
-        <Text
-          aria-live="polite"
-          color={isInputDisabled ? grayColorShade : ''}
-          style={{
-            border: borderColor,
-            borderRadius: 4,
-            padding: '0.5rem 0.75rem',
-          }}
-        >
-          {splitWordIntoUpperCasedSentence(splitCamelCase(value.toString()))}{' '}
-          {symbol}
-        </Text>
-        <Group>{input}</Group>
-      </Flex>
+      {displayComponentStack}
     </Flex>
   );
 }

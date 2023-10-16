@@ -1,6 +1,11 @@
 import { CSSProperties } from 'react';
 
-import { Department, JobPosition, StoreLocation } from '../../types';
+import {
+  Department,
+  JobPosition,
+  SelectInputData,
+  StoreLocation,
+} from '../../types';
 
 const PROVINCES = [
   'Alberta',
@@ -532,6 +537,12 @@ const COLORS_SWATCHES: ColorsSwatches = {
   ],
 };
 
+const SCREENSHOT_IMAGE_TYPE_DATA: SelectInputData = [
+  { value: 'image/png', label: 'Image/png' },
+  { value: 'image/jpeg', label: 'Image/jpeg' },
+  { value: 'image/webp', label: 'Image/webp' },
+];
+
 export {
   COLORS_SWATCHES,
   DEPARTMENT_DATA,
@@ -541,6 +552,7 @@ export {
   PROPERTY_DESCRIPTOR,
   PROVINCES,
   REQUEST_STATUS,
+  SCREENSHOT_IMAGE_TYPE_DATA,
   STATES_US,
   STORE_LOCATION_DATA,
   TEXT_OVERFLOW,

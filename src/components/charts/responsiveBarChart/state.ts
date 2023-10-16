@@ -47,6 +47,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   isAxisTopLegendValid: false,
   isAxisTopLegendFocused: false,
   axisTopLegendOffset: 0,
+  axisTopLegendPosition: 'middle',
   // axis right
   enableAxisRight: false,
   axisRightTickSize: 5,
@@ -56,6 +57,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   isAxisRightLegendValid: false,
   isAxisRightLegendFocused: false,
   axisRightLegendOffset: 0,
+  axisRightLegendPosition: 'middle',
   // axis bottom
   enableAxisBottom: true,
   axisBottomTickSize: 5,
@@ -65,6 +67,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   isAxisBottomLegendValid: false,
   isAxisBottomLegendFocused: false,
   axisBottomLegendOffset: 0,
+  axisBottomLegendPosition: 'middle',
   // axis left
   enableAxisLeft: false,
   axisLeftTickSize: 5,
@@ -74,6 +77,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   isAxisLeftLegendValid: false,
   isAxisLeftLegendFocused: false,
   axisLeftLegendOffset: 0,
+  axisLeftLegendPosition: 'middle',
 
   /** legend */
   enableLegend: false,
@@ -92,6 +96,21 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   /** motion */
   enableAnimate: true,
   motionConfig: 'default',
+
+  /** options */
+  chartTitle: '',
+  isChartTitleValid: false,
+  isChartTitleFocused: false,
+  chartTitleColor: 'dark',
+  chartTitleSize: 3,
+  chartTitlePosition: 'center',
+
+  /** screenshot */
+  screenshotFilename: '',
+  isScreenshotFilenameValid: false,
+  isScreenshotFilenameFocused: false,
+  screenshotImageType: 'image/png',
+  screenshotImageQuality: 1.0,
 };
 
 const responsiveBarChartAction: ResponsiveBarChartAction = {
@@ -139,6 +158,7 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setIsAxisTopLegendValid: 'setIsAxisTopLegendValid',
   setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused',
   setAxisTopLegendOffset: 'setAxisTopLegendOffset',
+  setAxisTopLegendPosition: 'setAxisTopLegendPosition',
   // axis right
   setEnableAxisRight: 'setEnableAxisRight',
   setAxisRightTickSize: 'setAxisRightTickSize',
@@ -148,6 +168,7 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setIsAxisRightLegendValid: 'setIsAxisRightLegendValid',
   setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused',
   setAxisRightLegendOffset: 'setAxisRightLegendOffset',
+  setAxisRightLegendPosition: 'setAxisRightLegendPosition',
   // axis bottom
   setEnableAxisBottom: 'setEnableAxisBottom',
   setAxisBottomTickSize: 'setAxisBottomTickSize',
@@ -157,6 +178,7 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid',
   setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused',
   setAxisBottomLegendOffset: 'setAxisBottomLegendOffset',
+  setAxisBottomLegendPosition: 'setAxisBottomLegendPosition',
   // axis left
   setEnableAxisLeft: 'setEnableAxisLeft',
   setAxisLeftTickSize: 'setAxisLeftTickSize',
@@ -166,6 +188,7 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid',
   setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused',
   setAxisLeftLegendOffset: 'setAxisLeftLegendOffset',
+  setAxisLeftLegendPosition: 'setAxisLeftLegendPosition',
 
   /** legend */
   setEnableLegend: 'setEnableLegend',
@@ -185,7 +208,22 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setEnableAnimate: 'setEnableAnimate',
   setMotionConfig: 'setMotionConfig',
 
-  // reset all
+  /** options */
+  setChartTitle: 'setChartTitle',
+  setIsChartTitleValid: 'setIsChartTitleValid',
+  setIsChartTitleFocused: 'setIsChartTitleFocused',
+  setChartTitleColor: 'setChartTitleColor',
+  setChartTitleSize: 'setChartTitleSize',
+  setChartTitlePosition: 'setChartTitlePosition',
+
+  /** screenshot */
+  setScreenshotFilename: 'setScreenshotFilename',
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid',
+  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused',
+  setScreenshotImageType: 'setScreenshotImageType',
+  setScreenshotImageQuality: 'setScreenshotImageQuality',
+
+  /** reset all */
   resetChartToDefault: 'resetChartToDefault',
 };
 
@@ -365,6 +403,11 @@ function responsiveBarChartReducer(
         ...state,
         axisTopLegendOffset: action.payload,
       };
+    case responsiveBarChartAction.setAxisTopLegendPosition:
+      return {
+        ...state,
+        axisTopLegendPosition: action.payload,
+      };
 
     // axis right
     case responsiveBarChartAction.setEnableAxisRight:
@@ -406,6 +449,11 @@ function responsiveBarChartReducer(
       return {
         ...state,
         axisRightLegendOffset: action.payload,
+      };
+    case responsiveBarChartAction.setAxisRightLegendPosition:
+      return {
+        ...state,
+        axisRightLegendPosition: action.payload,
       };
 
     // axis bottom
@@ -449,6 +497,11 @@ function responsiveBarChartReducer(
         ...state,
         axisBottomLegendOffset: action.payload,
       };
+    case responsiveBarChartAction.setAxisBottomLegendPosition:
+      return {
+        ...state,
+        axisBottomLegendPosition: action.payload,
+      };
 
     // axis left
     case responsiveBarChartAction.setEnableAxisLeft:
@@ -490,6 +543,11 @@ function responsiveBarChartReducer(
       return {
         ...state,
         axisLeftLegendOffset: action.payload,
+      };
+    case responsiveBarChartAction.setAxisLeftLegendPosition:
+      return {
+        ...state,
+        axisLeftLegendPosition: action.payload,
       };
 
     case responsiveBarChartAction.setEnableLegend:
@@ -561,6 +619,65 @@ function responsiveBarChartReducer(
       return {
         ...state,
         motionConfig: action.payload,
+      };
+
+    // options
+    case responsiveBarChartAction.setChartTitle:
+      return {
+        ...state,
+        chartTitle: action.payload,
+      };
+    case responsiveBarChartAction.setIsChartTitleValid:
+      return {
+        ...state,
+        isChartTitleValid: action.payload,
+      };
+    case responsiveBarChartAction.setIsChartTitleFocused:
+      return {
+        ...state,
+        isChartTitleFocused: action.payload,
+      };
+    case responsiveBarChartAction.setChartTitleColor:
+      return {
+        ...state,
+        chartTitleColor: action.payload,
+      };
+    case responsiveBarChartAction.setChartTitleSize:
+      return {
+        ...state,
+        chartTitleSize: action.payload,
+      };
+    case responsiveBarChartAction.setChartTitlePosition:
+      return {
+        ...state,
+        chartTitlePosition: action.payload,
+      };
+
+    // screenshot
+    case responsiveBarChartAction.setScreenshotFilename:
+      return {
+        ...state,
+        screenshotFilename: action.payload,
+      };
+    case responsiveBarChartAction.setIsScreenshotFilenameValid:
+      return {
+        ...state,
+        isScreenshotFilenameValid: action.payload,
+      };
+    case responsiveBarChartAction.setIsScreenshotFilenameFocused:
+      return {
+        ...state,
+        isScreenshotFilenameFocused: action.payload,
+      };
+    case responsiveBarChartAction.setScreenshotImageType:
+      return {
+        ...state,
+        screenshotImageType: action.payload,
+      };
+    case responsiveBarChartAction.setScreenshotImageQuality:
+      return {
+        ...state,
+        screenshotImageQuality: action.payload,
       };
 
     // reset all

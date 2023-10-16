@@ -1,5 +1,6 @@
+import html2canvas from 'html2canvas';
 import jwtDecode from 'jwt-decode';
-import { TbJetpack } from 'react-icons/tb';
+import { v4 as uuidv4 } from 'uuid';
 
 import { DecodedToken } from '../components/login/types';
 import { ColorsSwatches } from '../constants/data';
@@ -968,6 +969,39 @@ function returnIntegerValidationText({
     : '';
 }
 
+function returnFilenameValidationText({
+  content,
+  contentKind,
+  maxLength = 50,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^[a-zA-Z0-9\s.,'()-]{1,50}$/i
+  const filenameLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const filenameCharacterRegex = /^[a-zA-Z0-9\s.,'()-]+$/;
+
+  const filenameRegexTupleArr: [boolean, string][] = [
+    [
+      filenameLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      filenameCharacterRegex.test(content),
+      'Must only contain letters, numbers, spaces, periods, commas, apostrophes, hyphens, and parentheses.',
+    ],
+  ];
+
+  const validationText = filenameRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
 function logState({
   state,
   groupLabel = 'state',
@@ -1801,8 +1835,52 @@ function returnSliderMarks({
   });
 }
 
+async function captureScreenshot({
+  chartRef,
+  screenshotFilename,
+  screenshotImageQuality,
+  screenshotImageType,
+}: {
+  chartRef: any;
+  screenshotFilename: string;
+  screenshotImageQuality: number;
+  screenshotImageType: string;
+}) {
+  const canvasPromise = html2canvas(chartRef.current, {
+    useCORS: true,
+  });
+  canvasPromise.then((canvas) => {
+    const dataURL = canvas.toDataURL(
+      screenshotImageType,
+      screenshotImageQuality
+    );
+    // Create an image element from the data URL
+    const img = new Image();
+    img.src = dataURL;
+    // Create a link element
+    const a = document.createElement('a');
+    a.innerHTML = 'DOWNLOAD';
+    a.target = '_blank';
+    // Set the href of the link to the data URL of the image
+    a.href = img.src;
+
+    const filename = screenshotFilename ? screenshotFilename : uuidv4();
+    const extension = screenshotImageType.split('/')[1];
+
+    // Set the download attribute of the link
+    a.download = `${filename}.${extension}`;
+    // Append the link to the page
+    document.body.appendChild(a);
+    // Click the link to trigger the download
+    a.click();
+    // Remove the link from the page
+    document.body.removeChild(a);
+  });
+}
+
 export {
   addFieldsToObject,
+  captureScreenshot,
   commentIdsTreeOpsIterative,
   fetchData,
   filterFieldsFromObject,
@@ -1822,6 +1900,7 @@ export {
   returnDateValidationText,
   returnElapsedTime,
   returnEmailValidationText,
+  returnFilenameValidationText,
   returnGrammarValidationText,
   returnImageValidationText,
   returnIntegerValidationText,
@@ -1838,11 +1917,11 @@ export {
   returnThemeColors,
   returnTimeRailwayValidationText,
   returnTimeRemaining,
-  splitWordIntoUpperCasedSentence,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
   shuffleArray,
   splitCamelCase,
+  splitWordIntoUpperCasedSentence,
   toggleNavlinksActive,
   urlBuilder,
   wrapPromise,

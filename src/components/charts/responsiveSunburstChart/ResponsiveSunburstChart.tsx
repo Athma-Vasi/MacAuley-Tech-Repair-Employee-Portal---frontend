@@ -1,4 +1,11 @@
-import React, { ChangeEvent, useEffect, useReducer } from 'react';
+import React, {
+  ChangeEvent,
+  Fragment,
+  LegacyRef,
+  useEffect,
+  useReducer,
+  useRef,
+} from 'react';
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
 import { returnThemeColors } from '../../../utils';
@@ -19,6 +26,7 @@ import {
   AccessibleSliderInputCreatorInfo,
 } from '../../wrappers';
 import {
+  Button,
   ColorInput,
   Divider,
   Flex,
@@ -45,13 +53,21 @@ import {
   NivoTransitionMode,
 } from '../types';
 import { NIVO_SUNBURST_ARC_LABEL_DATA } from './constants';
-import { BiReset } from 'react-icons/bi';
+import { BiDownload, BiReset } from 'react-icons/bi';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 import { ResponsiveSunburst } from '@nivo/sunburst';
+import { useScreenshot } from '../../../hooks/useScreenshot';
+import { TbDownload } from 'react-icons/tb';
 
 function ResponsiveSunburstChart() {
   const {
-    globalState: { isPrefersReducedMotion, width, themeObject, padding },
+    globalState: {
+      isPrefersReducedMotion,
+      width,
+      themeObject,
+      padding,
+      height,
+    },
   } = useGlobalState();
 
   const {
@@ -76,6 +92,14 @@ function ResponsiveSunburstChart() {
       responsiveSunburstChartReducer,
       initialResponsiveSunburstChartState
     );
+
+  const chartRef = useRef(null);
+  const { takeScreenshot, errorMessage, image } = useScreenshot({
+    type: 'image/jpeg',
+    quality: 1,
+    // cropPositionLeft: width <= 768 ? 0 : width <= 1200 ? 225 : 0,
+    // cropPositionTop: width < 480 ? 50 : width <= 1200 ? 250 : 64,
+  });
 
   const {
     // base
@@ -106,6 +130,8 @@ function ResponsiveSunburstChart() {
     enableAnimate, // default: true
     motionConfig, // default: 'gentle'
     transitionMode, // default: 'innerRadius'
+
+    triggerScreenshotDownload,
   } = responsiveSunburstChartState;
 
   // set motion config on enable
@@ -175,85 +201,6 @@ function ResponsiveSunburstChart() {
       ? '500px'
       : `${width * 0.15}px`;
   const sliderLabelColor = gray[3];
-
-  /**
-   * const yScaleSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LINE_AXES_SCALE,
-    description: 'Define y scale.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveSunburstChartDispatch({
-        type: responsiveSunburstChartAction.setYScale,
-        payload: event.currentTarget.value as NivoLineAxesScale,
-      });
-    },
-    value: yScale,
-    width: sliderWidth,
-  };
-
-  const yScaleMinSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'y scale min',
-    disabled: !enableYScaleMin,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 2000,
-    min: -2000,
-    onChangeSlider: (value: number) => {
-      responsiveSunburstChartDispatch({
-        type: responsiveSunburstChartAction.setYScaleMin,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: yScaleMin,
-    width: sliderWidth,
-  };
-
-  const createdEnableYScaleStackedSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableYScaleStacked
-          ? enableYScaleStackedAccessibleSelectedText.props.id
-          : enableYScaleStackedAccessibleDeselectedText.props.id
-      }
-      checked={enableYScaleStacked}
-      description={
-        enableYScaleStacked
-          ? enableYScaleStackedAccessibleSelectedText
-          : enableYScaleStackedAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Y Scale Stacked
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveSunburstChartDispatch({
-          type: responsiveSunburstChartAction.setEnableYScaleStacked,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const createdPointColorInput = (
-    <ColorInput
-      aria-label="point color"
-      color={pointColor}
-      disabled={!enablePoints}
-      onChange={(color: string) => {
-        responsiveSunburstChartDispatch({
-          type: responsiveSunburstChartAction.setPointColor,
-          payload: color,
-        });
-      }}
-      value={pointColor}
-      w={sliderWidth}
-    />
-  );
-
-   */
 
   // base
   const cornerRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
@@ -1466,7 +1413,58 @@ function ResponsiveSunburstChart() {
       animate={enableAnimate}
       motionConfig={motionConfig}
       transitionMode={transitionMode}
+      //   effects: [
+      //     {
+      //         on: 'hover',
+      //         style: {
+      //             itemTextColor: '#000'
+      //         }
+      //     }
+      // ]
     />
+  );
+
+  useEffect(() => {
+    function download({
+      image,
+      filename,
+      extension,
+    }: {
+      image: string;
+      filename: string;
+      extension: string;
+    }): void {
+      const a = document.createElement('a');
+      a.href = image;
+      a.download = `${filename}.${extension}`;
+      a.click();
+    }
+
+    if (triggerScreenshotDownload) {
+      takeScreenshot(chartRef?.current)?.then(() =>
+        download({ extension: 'jpeg', filename: 'sunburst-chart', image })
+      );
+
+      responsiveSunburstChartDispatch({
+        type: responsiveSunburstChartAction.setTriggerScreenshotDownload,
+        payload: false,
+      });
+    }
+  }, [triggerScreenshotDownload]);
+
+  const displayDownloadButton = (
+    <Button
+      aria-label="download"
+      leftIcon={<TbDownload />}
+      onClick={() => {
+        responsiveSunburstChartDispatch({
+          type: responsiveSunburstChartAction.setTriggerScreenshotDownload,
+          payload: true,
+        });
+      }}
+    >
+      Download
+    </Button>
   );
 
   const displayResponsiveSunburstChartComponent = (
@@ -1486,7 +1484,10 @@ function ResponsiveSunburstChart() {
       </Grid.Col>
 
       <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
-        {displayResponsiveSunburst}
+        {displayDownloadButton}
+        <Flex w="100%" h="100%" ref={chartRef}>
+          {displayResponsiveSunburst}
+        </Flex>
       </Grid.Col>
     </Grid>
   );

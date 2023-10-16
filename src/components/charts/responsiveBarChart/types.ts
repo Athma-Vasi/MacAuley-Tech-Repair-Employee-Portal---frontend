@@ -1,3 +1,5 @@
+import { TitleOrder } from '@mantine/core';
+import { ScreenshotImageType } from '../../../types';
 import {
   NivoFillPatternObject,
   NivoLegendAnchor,
@@ -6,13 +8,17 @@ import {
   NivoLegendSymbolShape,
   NivoColorScheme,
   NivoMotionConfig,
+  NivoAxisLegendPosition,
+  NivoBarGroupMode,
+  NivoBarLayout,
+  NivoBarValueScale,
 } from '../types';
 
 type ResponsiveBarChartState = {
   /** base */
-  groupMode: 'stacked' | 'grouped'; // default: stacked
-  layout: 'horizontal' | 'vertical'; // default: horizontal
-  valueScale: 'linear' | 'symlog'; // default: linear
+  groupMode: NivoBarGroupMode; // default: stacked
+  layout: NivoBarLayout; // default: horizontal
+  valueScale: NivoBarValueScale; // default: linear
   reverse: boolean; // default: false
   // base -> value scale
   enableMinValue: boolean; // default: false ? minValue is undefined
@@ -54,6 +60,7 @@ type ResponsiveBarChartState = {
   isAxisTopLegendValid: boolean; // default: false
   isAxisTopLegendFocused: boolean; // default: false
   axisTopLegendOffset: number; // -60px - 60px default: 0 step: 1
+  axisTopLegendPosition: NivoAxisLegendPosition; // default: middle
   // axis -> axisRight
   enableAxisRight: boolean; // default: false ? null
   axisRightTickSize: number; // 0px - 20px default: 5 step: 1
@@ -63,6 +70,7 @@ type ResponsiveBarChartState = {
   isAxisRightLegendValid: boolean; // default: false
   isAxisRightLegendFocused: boolean; // default: false
   axisRightLegendOffset: number; // -60px - 60px default: 0 step: 1
+  axisRightLegendPosition: NivoAxisLegendPosition; // default: middle
   // axis -> axisBottom
   enableAxisBottom: boolean; // default: true
   axisBottomTickSize: number; // 0px - 20px default: 5 step: 1
@@ -72,6 +80,7 @@ type ResponsiveBarChartState = {
   isAxisBottomLegendValid: boolean; // default: false
   isAxisBottomLegendFocused: boolean; // default: false
   axisBottomLegendOffset: number; // -60px - 60px default: 0 step: 1
+  axisBottomLegendPosition: NivoAxisLegendPosition; // default: middle
   // axis -> axisLeft
   enableAxisLeft: boolean; // default: false ? null
   axisLeftTickSize: number; // 0px - 20px default: 5 step: 1
@@ -81,6 +90,7 @@ type ResponsiveBarChartState = {
   isAxisLeftLegendValid: boolean; // default: false
   isAxisLeftLegendFocused: boolean; // default: false
   axisLeftLegendOffset: number; // -60px - 60px default: 0 step: 1
+  axisLeftLegendPosition: NivoAxisLegendPosition; // default: middle
 
   /** legend */
   enableLegend: boolean; // default: false
@@ -99,6 +109,21 @@ type ResponsiveBarChartState = {
   /** motion */
   enableAnimate: boolean; // default: true
   motionConfig: NivoMotionConfig; // default: default
+
+  /** options */
+  chartTitle: string;
+  isChartTitleValid: boolean;
+  isChartTitleFocused: boolean;
+  chartTitleSize: TitleOrder; // 1 - 6 px default: 3 step: 1
+  chartTitleColor: string; // default: #ffffff
+  chartTitlePosition: 'left' | 'center' | 'right'; // default: center
+
+  /** screenshot */
+  screenshotFilename: string;
+  isScreenshotFilenameValid: boolean;
+  isScreenshotFilenameFocused: boolean;
+  screenshotImageType: ScreenshotImageType;
+  screenshotImageQuality: number; // 0 - 1 default: 1 step: 0.05
 };
 
 type ResponsiveBarChartAction = {
@@ -146,6 +171,7 @@ type ResponsiveBarChartAction = {
   setIsAxisTopLegendValid: 'setIsAxisTopLegendValid';
   setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused';
   setAxisTopLegendOffset: 'setAxisTopLegendOffset';
+  setAxisTopLegendPosition: 'setAxisTopLegendPosition';
   // axis -> axisRight
   setEnableAxisRight: 'setEnableAxisRight';
   setAxisRightTickSize: 'setAxisRightTickSize';
@@ -155,6 +181,7 @@ type ResponsiveBarChartAction = {
   setIsAxisRightLegendValid: 'setIsAxisRightLegendValid';
   setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused';
   setAxisRightLegendOffset: 'setAxisRightLegendOffset';
+  setAxisRightLegendPosition: 'setAxisRightLegendPosition';
   // axis -> axisBottom
   setEnableAxisBottom: 'setEnableAxisBottom';
   setAxisBottomTickSize: 'setAxisBottomTickSize';
@@ -164,6 +191,7 @@ type ResponsiveBarChartAction = {
   setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid';
   setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused';
   setAxisBottomLegendOffset: 'setAxisBottomLegendOffset';
+  setAxisBottomLegendPosition: 'setAxisBottomLegendPosition';
   // axis -> axisLeft
   setEnableAxisLeft: 'setEnableAxisLeft';
   setAxisLeftTickSize: 'setAxisLeftTickSize';
@@ -173,6 +201,7 @@ type ResponsiveBarChartAction = {
   setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid';
   setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused';
   setAxisLeftLegendOffset: 'setAxisLeftLegendOffset';
+  setAxisLeftLegendPosition: 'setAxisLeftLegendPosition';
 
   /** legend */
   setEnableLegend: 'setEnableLegend';
@@ -192,6 +221,22 @@ type ResponsiveBarChartAction = {
   setEnableAnimate: 'setEnableAnimate';
   setMotionConfig: 'setMotionConfig';
 
+  // options
+  setChartTitle: 'setChartTitle';
+  setIsChartTitleValid: 'setIsChartTitleValid';
+  setIsChartTitleFocused: 'setIsChartTitleFocused';
+  setChartTitleSize: 'setChartTitleSize';
+  setChartTitleColor: 'setChartTitleColor';
+  setChartTitlePosition: 'setChartTitlePosition';
+
+  // screenshot
+
+  setScreenshotFilename: 'setScreenshotFilename';
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
+  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
+  setScreenshotImageType: 'setScreenshotImageType';
+  setScreenshotImageQuality: 'setScreenshotImageQuality';
+
   // reset all
   resetChartToDefault: 'resetChartToDefault';
 };
@@ -199,15 +244,15 @@ type ResponsiveBarChartAction = {
 type ResponsiveBarChartDispatch =
   | {
       type: ResponsiveBarChartAction['setGroupMode'];
-      payload: 'stacked' | 'grouped';
+      payload: NivoBarGroupMode;
     }
   | {
       type: ResponsiveBarChartAction['setLayout'];
-      payload: 'horizontal' | 'vertical';
+      payload: NivoBarLayout;
     }
   | {
       type: ResponsiveBarChartAction['setValueScale'];
-      payload: 'linear' | 'symlog';
+      payload: NivoBarValueScale;
     }
   | {
       type:
@@ -232,7 +277,11 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setEnableLegend']
         | ResponsiveBarChartAction['setEnableLegendJustify']
         | ResponsiveBarChartAction['setEnableFillPatterns']
-        | ResponsiveBarChartAction['setEnableAnimate'];
+        | ResponsiveBarChartAction['setEnableAnimate']
+        | ResponsiveBarChartAction['setIsScreenshotFilenameValid']
+        | ResponsiveBarChartAction['setIsScreenshotFilenameFocused']
+        | ResponsiveBarChartAction['setIsChartTitleValid']
+        | ResponsiveBarChartAction['setIsChartTitleFocused'];
 
       payload: boolean;
     }
@@ -272,7 +321,8 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setLegendItemHeight']
         | ResponsiveBarChartAction['setLegendItemsSpacing']
         | ResponsiveBarChartAction['setLegendItemOpacity']
-        | ResponsiveBarChartAction['setLegendSymbolSize'];
+        | ResponsiveBarChartAction['setLegendSymbolSize']
+        | ResponsiveBarChartAction['setScreenshotImageQuality'];
 
       payload: number;
     }
@@ -283,13 +333,24 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setAxisBottomLegend']
         | ResponsiveBarChartAction['setAxisLeftLegend']
         | ResponsiveBarChartAction['setChartBorderColor']
-        | ResponsiveBarChartAction['setLabelTextColor'];
+        | ResponsiveBarChartAction['setLabelTextColor']
+        | ResponsiveBarChartAction['setScreenshotFilename']
+        | ResponsiveBarChartAction['setChartTitle']
+        | ResponsiveBarChartAction['setChartTitleColor'];
 
       payload: string;
     }
   | {
       type: ResponsiveBarChartAction['setFillPatterns'];
       payload: NivoFillPatternObject[];
+    }
+  | {
+      type:
+        | ResponsiveBarChartAction['setAxisTopLegendPosition']
+        | ResponsiveBarChartAction['setAxisRightLegendPosition']
+        | ResponsiveBarChartAction['setAxisBottomLegendPosition']
+        | ResponsiveBarChartAction['setAxisLeftLegendPosition'];
+      payload: NivoAxisLegendPosition;
     }
   | {
       type: ResponsiveBarChartAction['setLegendAnchor'];
@@ -310,6 +371,18 @@ type ResponsiveBarChartDispatch =
   | {
       type: ResponsiveBarChartAction['setChartColors'];
       payload: NivoColorScheme;
+    }
+  | {
+      type: ResponsiveBarChartAction['setChartTitleSize'];
+      payload: TitleOrder;
+    }
+  | {
+      type: ResponsiveBarChartAction['setScreenshotImageType'];
+      payload: ScreenshotImageType;
+    }
+  | {
+      type: ResponsiveBarChartAction['setChartTitlePosition'];
+      payload: 'left' | 'center' | 'right';
     }
   | {
       type: ResponsiveBarChartAction['resetChartToDefault'];

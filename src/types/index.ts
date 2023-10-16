@@ -175,6 +175,8 @@ type ResourceRoutePaths = {
 
 type TimeRailway = `${number}${number}:${number}${number}`;
 
+type ScreenshotImageType = 'image/png' | 'image/jpeg' | 'image/webp';
+
 export type {
   Action,
   ActionsCompany,
@@ -190,6 +192,7 @@ export type {
   PreferredPronouns,
   Province,
   ResourceRoutePaths,
+  ScreenshotImageType,
   StatesUS,
   StoreLocation,
   Urgency,

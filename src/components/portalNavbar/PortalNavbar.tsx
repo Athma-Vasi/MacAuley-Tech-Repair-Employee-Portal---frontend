@@ -11,6 +11,7 @@ import {
   TbChartPie3,
   TbChevronRight,
   TbCircleTriangle,
+  TbDashboard,
   TbGift,
   TbHome2,
   TbNotebook,
@@ -43,6 +44,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const {
     // active states
     isHomeActive,
+    isDashboardActive,
     isNotesActive,
 
     // company
@@ -97,6 +99,22 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
+  const dashboardNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isDashboardActive,
+    ariaLabel: 'Will navigate to dashboard page',
+    icon: (
+      <TbDashboard color={isDashboardActive ? themeColorShade : iconGray} />
+    ),
+    label: 'Dashboard',
+    onClick: () => {
+      portalNavbarDispatch({
+        type: 'setIsDashboardActive',
+        payload: !isDashboardActive,
+      });
+      navigate('/home/dashboard');
+    },
+  };
+
   const directoryNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isDirectoryActive,
     ariaLabel: 'Will navigate to directory page',
@@ -125,12 +143,17 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  const [createdHomeNavLink, createdDirectoryNavLink, createdNotesNavLink] =
-    returnAccessibleNavLinkElements([
-      homeNavLinkCreatorInfo,
-      directoryNavLinkCreatorInfo,
-      notesNavLinkCreatorInfo,
-    ]);
+  const [
+    createdHomeNavLink,
+    createdDashboardNavLink,
+    createdDirectoryNavLink,
+    createdNotesNavLink,
+  ] = returnAccessibleNavLinkElements([
+    homeNavLinkCreatorInfo,
+    dashboardNavLinkCreatorInfo,
+    directoryNavLinkCreatorInfo,
+    notesNavLinkCreatorInfo,
+  ]);
 
   // company
   const addressChangeNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
@@ -519,7 +542,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       hidden={!openedNavbar}
       width={{ sm: 225, lg: 300 }}
       h={width <= 991 ? height - 50 : height - 64} //  vw < 991 ? header height = 50px : header height = 64px
-      style={width <= 1024 ? { zIndex: 5 } : {}}
+      style={width <= 1024 ? { zIndex: 0 } : {}}
     >
       <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
         <Flex direction="column">
@@ -528,6 +551,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
           {/* {displayHomeNavLink} */}
           {createdHomeNavLink}
+
+          {/* {displayDashboardNavLink} */}
+          {createdDashboardNavLink}
 
           {/* {displayNotesNavLink} */}
           {createdNotesNavLink}

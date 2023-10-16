@@ -146,12 +146,24 @@ type NivoCalendarLegendPosition = 'before' | 'after';
 
 type NivoSunburstArcLabel = 'id' | 'value' | 'formattedValue';
 
+type NivoAxisLegendPosition = 'start' | 'middle' | 'end';
+
+type NivoBarGroupMode = 'grouped' | 'stacked';
+type NivoBarLayout = 'horizontal' | 'vertical';
+type NivoBarValueScale = 'linear' | 'symlog';
+type NivoChartTitlePosition = 'left' | 'center' | 'right';
+
 export type {
-  NivoFillPatternObject,
+  NivoAxisLegendPosition,
+  NivoBarGroupMode,
+  NivoBarLayout,
+  NivoBarValueScale,
   NivoCalendarAlign,
   NivoCalendarDirection,
   NivoCalendarLegendPosition,
+  NivoChartTitlePosition,
   NivoColorScheme,
+  NivoFillPatternObject,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
@@ -162,6 +174,6 @@ export type {
   NivoLineCurve,
   NivoLinePointLabel,
   NivoMotionConfig,
-  NivoTransitionMode,
   NivoSunburstArcLabel,
+  NivoTransitionMode,
 };
