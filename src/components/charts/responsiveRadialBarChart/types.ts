@@ -1,3 +1,5 @@
+import { TitleOrder } from '@mantine/core';
+import { ScreenshotImageType } from '../../../types';
 import {
   NivoLegendAnchor,
   NivoLegendDirection,
@@ -5,6 +7,8 @@ import {
   NivoColorScheme,
   NivoMotionConfig,
   NivoTransitionMode,
+  NivoLegendSymbolShape,
+  NivoChartTitlePosition,
 } from '../types';
 
 type ResponsiveRadialBarChartState = {
@@ -70,22 +74,43 @@ type ResponsiveRadialBarChartState = {
 
   // legend
   enableLegend: boolean; // default: false
+  enableLegendJustify: boolean; // default: false
   legendAnchor: NivoLegendAnchor; // default: bottom-right
   legendDirection: NivoLegendDirection; // default: column
-  enableLegendJustify: boolean; // default: false
+  legendItemBackground: string; // default: 'rgba(255, 255, 255, 0)'
+  legendItemDirection: NivoLegendItemDirection; // default: left-to-right
+  legendItemHeight: number; // 10px - 200px default: 20 step: 1
+  legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
+  legendItemTextColor: string; // default: '#ffffff'
+  legendItemWidth: number; // 10px - 200px default: 60 step: 1
+  legendItemsSpacing: number; // 0px - 60px default: 2 step: 1
+  legendSymbolBorderColor: string; // default: 'rgba(0, 0, 0, .5)'
+  legendSymbolBorderWidth: number; // 0px - 20px default: 0 step: 1
+  legendSymbolShape: NivoLegendSymbolShape; // default: circle
+  legendSymbolSize: number; // 2px - 60px default: 12 step: 1
+  legendSymbolSpacing: number; // 0px - 20px default: 8 step: 1
   legendTranslateX: number; // -200px - 200px default: 0 step: 1
   legendTranslateY: number; // -200px - 200px default: 0 step: 1
-  legendItemWidth: number; // 10px - 200px default: 60 step: 1
-  legendItemHeight: number; // 10px - 200px default: 20 step: 1
-  legendItemsSpacing: number; // 0px - 60px default: 2 step: 1
-  legendItemDirection: NivoLegendItemDirection; // default: left-to-right
-  legendItemOpacity: number; // 0 - 1 default: 1 step: 0.05
-  legendSymbolSize: number; // 2px - 60px default: 12 step: 1
 
   // motion
   enableAnimate: boolean; // default: true
   motionConfig: NivoMotionConfig; // default: 'gentle'
   transitionMode: NivoTransitionMode; // default: 'centerRadius'
+
+  /** options */
+  chartTitle: string;
+  chartTitleColor: string; // default: #ffffff
+  chartTitlePosition: NivoChartTitlePosition; // default: center
+  chartTitleSize: TitleOrder; // 1 - 6 px default: 3 step: 1
+  isChartTitleFocused: boolean;
+  isChartTitleValid: boolean;
+
+  /** screenshot */
+  isScreenshotFilenameFocused: boolean;
+  isScreenshotFilenameValid: boolean;
+  screenshotFilename: string;
+  screenshotImageQuality: number; // 0 - 1 default: 1 step: 0.05
+  screenshotImageType: ScreenshotImageType;
 };
 
 type ResponsiveRadialBarChartAction = {
@@ -151,22 +176,43 @@ type ResponsiveRadialBarChartAction = {
 
   // legend
   setEnableLegend: 'setEnableLegend';
+  setEnableLegendJustify: 'setEnableLegendJustify';
   setLegendAnchor: 'setLegendAnchor';
   setLegendDirection: 'setLegendDirection';
-  setEnableLegendJustify: 'setEnableLegendJustify';
+  setLegendItemBackground: 'setLegendItemBackground';
+  setLegendItemDirection: 'setLegendItemDirection';
+  setLegendItemHeight: 'setLegendItemHeight';
+  setLegendItemOpacity: 'setLegendItemOpacity';
+  setLegendItemTextColor: 'setLegendItemTextColor';
+  setLegendItemWidth: 'setLegendItemWidth';
+  setLegendItemsSpacing: 'setLegendItemsSpacing';
+  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor';
+  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth';
+  setLegendSymbolShape: 'setLegendSymbolShape';
+  setLegendSymbolSize: 'setLegendSymbolSize';
+  setLegendSymbolSpacing: 'setLegendSymbolSpacing';
   setLegendTranslateX: 'setLegendTranslateX';
   setLegendTranslateY: 'setLegendTranslateY';
-  setLegendItemWidth: 'setLegendItemWidth';
-  setLegendItemHeight: 'setLegendItemHeight';
-  setLegendItemsSpacing: 'setLegendItemsSpacing';
-  setLegendItemDirection: 'setLegendItemDirection';
-  setLegendItemOpacity: 'setLegendItemOpacity';
-  setLegendSymbolSize: 'setLegendSymbolSize';
 
   // motion
   setEnableAnimate: 'setEnableAnimate';
   setMotionConfig: 'setMotionConfig';
   setTransitionMode: 'setTransitionMode';
+
+  // options
+  setChartTitle: 'setChartTitle';
+  setChartTitleColor: 'setChartTitleColor';
+  setChartTitlePosition: 'setChartTitlePosition';
+  setChartTitleSize: 'setChartTitleSize';
+  setIsChartTitleFocused: 'setIsChartTitleFocused';
+  setIsChartTitleValid: 'setIsChartTitleValid';
+
+  // screenshot
+  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
+  setScreenshotFilename: 'setScreenshotFilename';
+  setScreenshotImageQuality: 'setScreenshotImageQuality';
+  setScreenshotImageType: 'setScreenshotImageType';
 
   // reset all
   resetChartToDefault: 'resetChartToDefault';
@@ -176,66 +222,79 @@ type ResponsiveRadialBarChartDispatch =
   | {
       // string payloads
       type:
+        | ResponsiveRadialBarChartAction['setChartTitle']
+        | ResponsiveRadialBarChartAction['setChartTitleColor']
+        | ResponsiveRadialBarChartAction['setLabelsTextColor']
+        | ResponsiveRadialBarChartAction['setLegendItemBackground']
+        | ResponsiveRadialBarChartAction['setLegendItemTextColor']
+        | ResponsiveRadialBarChartAction['setLegendSymbolBorderColor']
         | ResponsiveRadialBarChartAction['setRingBorderColor']
-        | ResponsiveRadialBarChartAction['setTracksColor']
-        | ResponsiveRadialBarChartAction['setLabelsTextColor'];
+        | ResponsiveRadialBarChartAction['setScreenshotFilename']
+        | ResponsiveRadialBarChartAction['setTracksColor'];
 
       payload: string;
     }
   | {
       // number payloads
       type:
-        | ResponsiveRadialBarChartAction['setMaxValue']
-        | ResponsiveRadialBarChartAction['setMarginTop']
-        | ResponsiveRadialBarChartAction['setMarginRight']
-        | ResponsiveRadialBarChartAction['setMarginBottom']
-        | ResponsiveRadialBarChartAction['setMarginLeft']
-        | ResponsiveRadialBarChartAction['setStartAngle']
-        | ResponsiveRadialBarChartAction['setEndAngle']
-        | ResponsiveRadialBarChartAction['setInnerRadius']
-        | ResponsiveRadialBarChartAction['setPaddingRing']
-        | ResponsiveRadialBarChartAction['setPadAngle']
-        | ResponsiveRadialBarChartAction['setCornerRadius']
-        | ResponsiveRadialBarChartAction['setRingBorderWidth']
-        | ResponsiveRadialBarChartAction['setRadialAxisStartTickSize']
-        | ResponsiveRadialBarChartAction['setRadialAxisStartTickPadding']
-        | ResponsiveRadialBarChartAction['setRadialAxisStartTickRotation']
-        | ResponsiveRadialBarChartAction['setRadialAxisEndTickSize']
-        | ResponsiveRadialBarChartAction['setRadialAxisEndTickPadding']
-        | ResponsiveRadialBarChartAction['setRadialAxisEndTickRotation']
-        | ResponsiveRadialBarChartAction['setCircularAxisInnerTickSize']
+        | ResponsiveRadialBarChartAction['setScreenshotImageQuality']
         | ResponsiveRadialBarChartAction['setCircularAxisInnerTickPadding']
         | ResponsiveRadialBarChartAction['setCircularAxisInnerTickRotation']
-        | ResponsiveRadialBarChartAction['setCircularAxisOuterTickSize']
+        | ResponsiveRadialBarChartAction['setCircularAxisInnerTickSize']
         | ResponsiveRadialBarChartAction['setCircularAxisOuterTickPadding']
         | ResponsiveRadialBarChartAction['setCircularAxisOuterTickRotation']
-        | ResponsiveRadialBarChartAction['setLabelsSkipAngle']
+        | ResponsiveRadialBarChartAction['setCircularAxisOuterTickSize']
+        | ResponsiveRadialBarChartAction['setCornerRadius']
+        | ResponsiveRadialBarChartAction['setEndAngle']
+        | ResponsiveRadialBarChartAction['setInnerRadius']
         | ResponsiveRadialBarChartAction['setLabelsRadiusOffset']
-        | ResponsiveRadialBarChartAction['setLegendTranslateX']
-        | ResponsiveRadialBarChartAction['setLegendTranslateY']
-        | ResponsiveRadialBarChartAction['setLegendItemsSpacing']
-        | ResponsiveRadialBarChartAction['setLegendItemWidth']
+        | ResponsiveRadialBarChartAction['setLabelsSkipAngle']
         | ResponsiveRadialBarChartAction['setLegendItemHeight']
         | ResponsiveRadialBarChartAction['setLegendItemOpacity']
-        | ResponsiveRadialBarChartAction['setLegendSymbolSize'];
+        | ResponsiveRadialBarChartAction['setLegendItemWidth']
+        | ResponsiveRadialBarChartAction['setLegendItemsSpacing']
+        | ResponsiveRadialBarChartAction['setLegendSymbolBorderWidth']
+        | ResponsiveRadialBarChartAction['setLegendSymbolSize']
+        | ResponsiveRadialBarChartAction['setLegendSymbolSpacing']
+        | ResponsiveRadialBarChartAction['setLegendTranslateX']
+        | ResponsiveRadialBarChartAction['setLegendTranslateY']
+        | ResponsiveRadialBarChartAction['setMarginBottom']
+        | ResponsiveRadialBarChartAction['setMarginLeft']
+        | ResponsiveRadialBarChartAction['setMarginRight']
+        | ResponsiveRadialBarChartAction['setMarginTop']
+        | ResponsiveRadialBarChartAction['setMaxValue']
+        | ResponsiveRadialBarChartAction['setPadAngle']
+        | ResponsiveRadialBarChartAction['setPaddingRing']
+        | ResponsiveRadialBarChartAction['setRadialAxisEndTickPadding']
+        | ResponsiveRadialBarChartAction['setRadialAxisEndTickRotation']
+        | ResponsiveRadialBarChartAction['setRadialAxisEndTickSize']
+        | ResponsiveRadialBarChartAction['setRadialAxisStartTickPadding']
+        | ResponsiveRadialBarChartAction['setRadialAxisStartTickRotation']
+        | ResponsiveRadialBarChartAction['setRadialAxisStartTickSize']
+        | ResponsiveRadialBarChartAction['setRingBorderWidth']
+        | ResponsiveRadialBarChartAction['setStartAngle'];
 
       payload: number;
     }
   | {
       // boolean payloads
       type:
-        | ResponsiveRadialBarChartAction['setEnableMaxValue']
-        | ResponsiveRadialBarChartAction['setEnableTracks']
-        | ResponsiveRadialBarChartAction['setEnableRadialGrid']
-        | ResponsiveRadialBarChartAction['setEnableCircularGrid']
-        | ResponsiveRadialBarChartAction['setEnableRadialAxisStart']
-        | ResponsiveRadialBarChartAction['setEnableRadialAxisEnd']
+        | ResponsiveRadialBarChartAction['setEnableAnimate']
         | ResponsiveRadialBarChartAction['setEnableCircularAxisInner']
         | ResponsiveRadialBarChartAction['setEnableCircularAxisOuter']
+        | ResponsiveRadialBarChartAction['setEnableCircularGrid']
         | ResponsiveRadialBarChartAction['setEnableLabels']
         | ResponsiveRadialBarChartAction['setEnableLegend']
         | ResponsiveRadialBarChartAction['setEnableLegendJustify']
-        | ResponsiveRadialBarChartAction['setEnableAnimate'];
+        | ResponsiveRadialBarChartAction['setEnableMaxValue']
+        | ResponsiveRadialBarChartAction['setEnableRadialAxisEnd']
+        | ResponsiveRadialBarChartAction['setEnableRadialAxisStart']
+        | ResponsiveRadialBarChartAction['setEnableRadialGrid']
+        | ResponsiveRadialBarChartAction['setEnableTracks']
+        | ResponsiveRadialBarChartAction['setIsChartTitleFocused']
+        | ResponsiveRadialBarChartAction['setIsChartTitleValid']
+        | ResponsiveRadialBarChartAction['setIsScreenshotFilenameFocused']
+        | ResponsiveRadialBarChartAction['setIsScreenshotFilenameValid'];
 
       payload: boolean;
     }
@@ -256,12 +315,28 @@ type ResponsiveRadialBarChartDispatch =
       payload: NivoLegendItemDirection;
     }
   | {
+      type: ResponsiveRadialBarChartAction['setLegendSymbolShape'];
+      payload: NivoLegendSymbolShape;
+    }
+  | {
       type: ResponsiveRadialBarChartAction['setMotionConfig'];
       payload: NivoMotionConfig;
     }
   | {
       type: ResponsiveRadialBarChartAction['setTransitionMode'];
       payload: NivoTransitionMode;
+    }
+  | {
+      type: ResponsiveRadialBarChartAction['setChartTitlePosition'];
+      payload: NivoChartTitlePosition;
+    }
+  | {
+      type: ResponsiveRadialBarChartAction['setChartTitleSize'];
+      payload: TitleOrder;
+    }
+  | {
+      type: ResponsiveRadialBarChartAction['setScreenshotImageType'];
+      payload: ScreenshotImageType;
     }
   | {
       type: ResponsiveRadialBarChartAction['resetChartToDefault'];

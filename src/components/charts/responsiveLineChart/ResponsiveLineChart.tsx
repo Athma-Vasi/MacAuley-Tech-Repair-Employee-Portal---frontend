@@ -3720,6 +3720,7 @@ function ResponsiveLineChart() {
                 symbolBorderColor: legendSymbolBorderColor,
                 symbolBorderWidth: legendSymbolBorderWidth,
                 symbolSpacing: legendSymbolSpacing,
+
                 effects: [
                   {
                     on: 'hover',

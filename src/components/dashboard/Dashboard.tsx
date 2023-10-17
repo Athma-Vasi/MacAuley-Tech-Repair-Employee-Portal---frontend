@@ -71,10 +71,10 @@ function Dashboard() {
     <Stack>
       {/* {displayPieChart} */}
       {/* {displayBarChart} */}
-      {/* {displayRadialBarChart} */}
+      {displayRadialBarChart}
       {/* {displayLineChart} */}
       <Button onClick={openChartModal}>Open Modal</Button>
-      {displayBarChart}
+      {/* {displayBarChart} */}
       {displayModal}
     </Stack>
   );

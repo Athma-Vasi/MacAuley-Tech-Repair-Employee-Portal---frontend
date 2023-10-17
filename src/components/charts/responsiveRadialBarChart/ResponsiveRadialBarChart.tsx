@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { ResponsiveRadialBar } from '@nivo/radial-bar';
-import { ChangeEvent, useEffect, useReducer } from 'react';
+import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
@@ -52,6 +52,9 @@ import {
 } from './state';
 import { ResponsiveRadialBarChartState } from './types';
 import { BiReset } from 'react-icons/bi';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartLegend } from '../chartControls/ChartLegend';
+import { ChartOptions } from '../chartControls/ChartOptions';
 
 function ResponsiveRadialBarChart() {
   const {
@@ -81,6 +84,8 @@ function ResponsiveRadialBarChart() {
       responsiveRadialBarChartReducer,
       modifiedResponsiveRadialBarChartState
     );
+
+  const chartRef = useRef(null);
 
   const {
     // base
@@ -145,22 +150,43 @@ function ResponsiveRadialBarChart() {
 
     // legend
     enableLegend, // default: false
+    enableLegendJustify, // default: false
     legendAnchor, // default: bottom-right
     legendDirection, // default: column
-    enableLegendJustify, // default: false
+    legendItemBackground, // default: rgba(0, 0, 0, 0)
+    legendItemDirection, // default: left-to-right
+    legendItemHeight, // 10px - 200px default: 20 step: 1
+    legendItemOpacity, // 0 - 1 default: 1 step: 0.05
+    legendItemTextColor, // default: #ffffff
+    legendItemWidth, // 10px - 200px default: 60 step: 1
+    legendItemsSpacing, // 0px - 60px default: 2 step: 1
+    legendSymbolBorderColor, // default: #ffffff
+    legendSymbolBorderWidth, // 0px - 20px default: 0 step: 1
+    legendSymbolShape, // default: square
+    legendSymbolSize, // 2px - 60px default: 12 step: 1
+    legendSymbolSpacing, // 0px - 60px default: 8 step: 1
     legendTranslateX, // -200px - 200px default: 0 step: 1
     legendTranslateY, // -200px - 200px default: 0 step: 1
-    legendItemWidth, // 10px - 200px default: 60 step: 1
-    legendItemHeight, // 10px - 200px default: 20 step: 1
-    legendItemsSpacing, // 0px - 60px default: 2 step: 1
-    legendItemDirection, // default: left-to-right
-    legendItemOpacity, // 0 - 1 default: 1 step: 0.05
-    legendSymbolSize, // 2px - 60px default: 12 step: 1
 
     // motion
     enableAnimate, // default: true
     motionConfig, // default: 'gentle'
     transitionMode, // default: 'centerRadius'
+
+    // options
+    chartTitle,
+    chartTitleColor,
+    chartTitlePosition,
+    chartTitleSize,
+    isChartTitleFocused,
+    isChartTitleValid,
+
+    // screenshot
+    isScreenshotFilenameFocused,
+    isScreenshotFilenameValid,
+    screenshotFilename,
+    screenshotImageQuality,
+    screenshotImageType,
   } = responsiveRadialBarChartState;
 
   // set motion config on enable
@@ -275,28 +301,6 @@ function ResponsiveRadialBarChart() {
   });
 
   const [
-    enableLegendAccessibleSelectedText,
-    enableLegendAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Legend will be hidden.',
-    isSelected: enableLegend,
-    selectedDescription: 'Legend will be shown.',
-    semanticName: 'legend',
-    theme: 'muted',
-  });
-
-  const [
-    enableLegendJustifyAccessibleSelectedText,
-    enableLegendJustifyAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Legend will be left aligned.',
-    isSelected: enableLegendJustify,
-    selectedDescription: 'Legend will be justified.',
-    semanticName: 'legend justify',
-    theme: 'muted',
-  });
-
-  const [
     enableAnimateAccessibleSelectedText,
     enableAnimateAccessibleDeselectedText,
   ] = AccessibleSelectedDeselectedTextElements({
@@ -335,7 +339,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle max value
+          Toggle Max Value
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -364,87 +368,6 @@ function ResponsiveRadialBarChart() {
     sliderDefaultValue: 1000,
     step: 1,
     value: maxValue,
-    width: sliderWidth,
-  };
-
-  // base -> margin
-  const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin top',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveRadialBarChartDispatch({
-        type: responsiveRadialBarChartAction.setMarginTop,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginTop,
-    width: sliderWidth,
-  };
-
-  const marginRightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin right',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveRadialBarChartDispatch({
-        type: responsiveRadialBarChartAction.setMarginRight,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginRight,
-    width: sliderWidth,
-  };
-
-  const marginBottomSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin bottom',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveRadialBarChartDispatch({
-        type: responsiveRadialBarChartAction.setMarginBottom,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginBottom,
-    width: sliderWidth,
-  };
-
-  const marginLeftSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin left',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveRadialBarChartDispatch({
-        type: responsiveRadialBarChartAction.setMarginLeft,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginLeft,
     width: sliderWidth,
   };
 
@@ -633,7 +556,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle tracks
+          Toggle Tracks
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -678,7 +601,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle radial grid
+          Toggle Radial Grid
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -706,7 +629,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle circular grid
+          Toggle Circular Grid
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -736,7 +659,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle radial axis start
+          Toggle Radial Axis Start
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -831,7 +754,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle radial axis end
+          Toggle Radial Axis End
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -926,7 +849,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle circular axis inner
+          Toggle Circular Axis Inner
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1021,7 +944,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle circular axis outer
+          Toggle Circular Axis Outer
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1116,7 +1039,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle labels
+          Toggle Labels
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1189,262 +1112,6 @@ function ResponsiveRadialBarChart() {
     />
   );
 
-  // legends
-  const createdEnableLegendSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableLegend
-          ? enableLegendAccessibleSelectedText.props.id
-          : enableLegendAccessibleDeselectedText.props.id
-      }
-      checked={enableLegend}
-      description={
-        enableLegend
-          ? enableLegendAccessibleSelectedText
-          : enableLegendAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle legend
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setEnableLegend,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const legendAnchorSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LEGEND_ANCHOR_DATA,
-    disabled: !enableLegend,
-    description: 'Define legend anchor.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveRadialBarChartDispatch({
-        type: responsiveRadialBarChartAction.setLegendAnchor,
-        payload: event.currentTarget.value as NivoLegendAnchor,
-      });
-    },
-    value: legendAnchor,
-    width: sliderWidth,
-  };
-
-  const legendDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_DIRECTION_DATA,
-      disabled: !enableLegend,
-      description: 'Define legend direction.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendDirection,
-          payload: event.currentTarget.value as NivoLegendDirection,
-        });
-      },
-      value: legendDirection,
-      width: sliderWidth,
-    };
-
-  const createdEnableLegendJustifySwitchInput = (
-    <Switch
-      aria-describedby={
-        enableLegendJustify
-          ? enableLegendJustifyAccessibleSelectedText.props.id
-          : enableLegendJustifyAccessibleDeselectedText.props.id
-      }
-      checked={enableLegendJustify}
-      description={
-        enableLegendJustify
-          ? enableLegendJustifyAccessibleSelectedText
-          : enableLegendJustifyAccessibleDeselectedText
-      }
-      disabled={!enableLegend}
-      label={
-        <Text weight={500} color={enableLegend ? textColor : grayColorShade}>
-          Legend justify
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setEnableLegendJustify,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const legendTranslateXSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend translate x',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: -200,
-      onChangeSlider: (value: number) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendTranslateX,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendTranslateX,
-      width: sliderWidth,
-    };
-
-  const legendTranslateYSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend translate y',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: -200,
-      onChangeSlider: (value: number) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendTranslateY,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendTranslateY,
-      width: sliderWidth,
-    };
-
-  const legendItemWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item width',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendItemWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 100,
-      step: 1,
-      value: legendItemWidth,
-      width: sliderWidth,
-    };
-
-  const legendItemHeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item height',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendItemHeight,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 12,
-      step: 1,
-      value: legendItemHeight,
-      width: sliderWidth,
-    };
-
-  const legendItemsSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend items spacing',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendItemsSpacing,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 10,
-      step: 1,
-      value: legendItemsSpacing,
-      width: sliderWidth,
-    };
-
-  const legendItemDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_ITEM_DIRECTION_DATA,
-      disabled: !enableLegend,
-      description: 'Define legend item direction.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendItemDirection,
-          payload: event.currentTarget.value as NivoLegendItemDirection,
-        });
-      },
-      value: legendItemDirection,
-      width: sliderWidth,
-    };
-
-  const legendItemOpacitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item opacity',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 1,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendItemOpacity,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 0.1,
-      value: legendItemOpacity,
-      width: sliderWidth,
-    };
-
-  const legendSymbolSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend symbol size',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 100,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setLegendSymbolSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 16,
-      step: 1,
-      value: legendSymbolSize,
-      width: sliderWidth,
-    };
-
   // motion
   const createdEnableAnimateSwitchInput = (
     <Switch
@@ -1461,7 +1128,7 @@ function ResponsiveRadialBarChart() {
       }
       label={
         <Text weight={500} color={textColor}>
-          Toggle animate
+          Toggle Animate
         </Text>
       }
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
@@ -1524,10 +1191,6 @@ function ResponsiveRadialBarChart() {
   // base
   const [
     createdMaxValueSliderInput,
-    createdMarginTopSliderInput,
-    createdMarginRightSliderInput,
-    createdMarginBottomSliderInput,
-    createdMarginLeftSliderInput,
     createdStartAngleSliderInput,
     createdEndAngleSliderInput,
     createdInnerRadiusSliderInput,
@@ -1536,10 +1199,6 @@ function ResponsiveRadialBarChart() {
     createdCornerRadiusSliderInput,
   ] = returnAccessibleSliderInputElements([
     maxValueSliderInputCreatorInfo,
-    marginTopSliderInputCreatorInfo,
-    marginRightSliderInputCreatorInfo,
-    marginBottomSliderInputCreatorInfo,
-    marginLeftSliderInputCreatorInfo,
     startAngleSliderInputCreatorInfo,
     endAngleSliderInputCreatorInfo,
     innerRadiusSliderInputCreatorInfo,
@@ -1604,60 +1263,12 @@ function ResponsiveRadialBarChart() {
     labelsRadiusOffsetSliderInputCreatorInfo,
   ]);
 
-  // legends
-
-  const [
-    createdLegendAnchorSelectInput,
-    createdLegendDirectionSelectInput,
-    createdLegendItemDirectionSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    legendAnchorSelectInputCreatorInfo,
-    legendDirectionSelectInputCreatorInfo,
-    legendItemDirectionSelectInputCreatorInfo,
-  ]);
-
-  const [
-    createdLegendTranslateXSliderInput,
-    createdLegendTranslateYSliderInput,
-    createdLegendItemWidthSliderInput,
-    createdLegendItemHeightSliderInput,
-    createdLegendItemsSpacingSliderInput,
-    createdLegendItemOpacitySliderInput,
-    createdLegendSymbolSizeSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    legendTranslateXSliderInputCreatorInfo,
-    legendTranslateYSliderInputCreatorInfo,
-    legendItemWidthSliderInputCreatorInfo,
-    legendItemHeightSliderInputCreatorInfo,
-    legendItemsSpacingSliderInputCreatorInfo,
-    legendItemOpacitySliderInputCreatorInfo,
-    legendSymbolSizeSliderInputCreatorInfo,
-  ]);
-
   // motion
   const [createdMotionConfigSelectInput, createdTransitionModeSelectInput] =
     returnAccessibleSelectInputElements([
       motionConfigSelectInputCreatorInfo,
       transitionModeSelectInputCreatorInfo,
     ]);
-
-  // input display
-
-  // title
-  const displayResetButton = (
-    <Tooltip label="Reset all inputs to their default values">
-      <Group>{createdResetAllButton}</Group>
-    </Tooltip>
-  );
-
-  const displayControlsHeading = (
-    <Group p={padding} w="100%" position="apart">
-      <Title order={3} color={textColor}>
-        Radial Bar Chart Controls
-      </Title>
-      {displayResetButton}
-    </Group>
-  );
 
   // base
 
@@ -1763,68 +1374,20 @@ function ResponsiveRadialBarChart() {
     </Stack>
   );
 
-  // margin
-  const displayMarginHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Margin
-      </Title>
-    </Group>
-  );
-
-  const displayMarginTopSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartMargin = (
+    <ChartMargin
       initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdMarginTopSliderInput}
-      label="Margin top"
-      symbol="px"
-      value={marginTop}
+      marginBottom={marginBottom}
+      marginLeft={marginLeft}
+      marginRight={marginRight}
+      marginTop={marginTop}
+      padding={padding}
+      parentChartAction={responsiveRadialBarChartAction}
+      parentChartDispatch={responsiveRadialBarChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayMarginRightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdMarginRightSliderInput}
-      label="Margin right"
-      symbol="px"
-      value={marginRight}
-    />
-  );
-
-  const displayMarginBottomSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdMarginBottomSliderInput}
-      label="Margin bottom"
-      symbol="px"
-      value={marginBottom}
-    />
-  );
-
-  const displayMarginLeftSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdMarginLeftSliderInput}
-      label="Margin left"
-      symbol="px"
-      value={marginLeft}
-    />
-  );
-
-  const displayMarginSection = (
-    <Stack w="100%">
-      {displayMarginHeading}
-      {displayMarginTopSliderInput}
-      {displayMarginRightSliderInput}
-      {displayMarginBottomSliderInput}
-      {displayMarginLeftSliderInput}
-    </Stack>
   );
 
   // style
@@ -2268,155 +1831,36 @@ function ResponsiveRadialBarChart() {
     </Stack>
   );
 
-  // legends
-  const displayLegendHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-      mb={padding}
-    >
-      <Title order={5} color={textColor}>
-        Legend
-      </Title>
-    </Group>
-  );
-
-  const displayEnableLegendSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableLegendSwitchInput}
-    </Group>
-  );
-
-  const displayLegendAnchorSelectInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartLegend = (
+    <ChartLegend
+      borderColor={borderColor}
+      enableLegend={enableLegend}
+      enableLegendJustify={enableLegendJustify}
+      grayColorShade={grayColorShade}
       initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendAnchorSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend anchor"
-      value={legendAnchor}
+      legendAnchor={legendAnchor}
+      legendDirection={legendDirection}
+      legendItemBackground={legendItemBackground}
+      legendItemDirection={legendItemDirection}
+      legendItemHeight={legendItemHeight}
+      legendItemOpacity={legendItemOpacity}
+      legendItemTextColor={legendItemTextColor}
+      legendItemWidth={legendItemWidth}
+      legendItemsSpacing={legendItemsSpacing}
+      legendSymbolBorderColor={legendSymbolBorderColor}
+      legendSymbolBorderWidth={legendSymbolBorderWidth}
+      legendSymbolShape={legendSymbolShape}
+      legendSymbolSize={legendSymbolSize}
+      legendSymbolSpacing={legendSymbolSpacing}
+      legendTranslateX={legendTranslateX}
+      legendTranslateY={legendTranslateY}
+      padding={padding}
+      parentChartAction={responsiveRadialBarChartAction}
+      parentChartDispatch={responsiveRadialBarChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayLegendDirectionSelectInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendDirectionSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend direction"
-      value={legendDirection}
-    />
-  );
-
-  const displayEnableLegendJustifySwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableLegendJustifySwitchInput}
-    </Group>
-  );
-
-  const displayLegendTranslateXSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendTranslateXSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend translate x"
-      symbol="px"
-      value={legendTranslateX}
-    />
-  );
-
-  const displayLegendTranslateYSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendTranslateYSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend translate y"
-      symbol="px"
-      value={legendTranslateY}
-    />
-  );
-
-  const displayLegendItemWidthSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendItemWidthSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item width"
-      symbol="px"
-      value={legendItemWidth}
-    />
-  );
-
-  const displayLegendItemHeightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendItemHeightSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item height"
-      symbol="px"
-      value={legendItemHeight}
-    />
-  );
-
-  const displayLegendItemsSpacingSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendItemsSpacingSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend items spacing"
-      symbol="px"
-      value={legendItemsSpacing}
-    />
-  );
-
-  const displayLegendItemDirectionSelectInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendItemDirectionSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item direction"
-      value={legendItemDirection}
-    />
-  );
-
-  const displayLegendItemOpacitySliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendItemOpacitySliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item opacity"
-      value={legendItemOpacity}
-    />
-  );
-
-  const displayLegendSymbolSizeSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdLegendSymbolSizeSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend symbol size"
-      symbol="px"
-      value={legendSymbolSize}
-    />
-  );
-
-  const displayLegendSection = (
-    <Stack w="100%">
-      {displayLegendHeading}
-      {displayEnableLegendSwitchInput}
-      {displayLegendAnchorSelectInput}
-      {displayLegendDirectionSelectInput}
-      {displayEnableLegendJustifySwitchInput}
-      {displayLegendTranslateXSliderInput}
-      {displayLegendTranslateYSliderInput}
-      {displayLegendItemWidthSliderInput}
-      {displayLegendItemHeightSliderInput}
-      {displayLegendItemsSpacingSliderInput}
-      {displayLegendItemDirectionSelectInput}
-      {displayLegendItemOpacitySliderInput}
-      {displayLegendSymbolSizeSliderInput}
-    </Stack>
   );
 
   // motion
@@ -2469,11 +1913,52 @@ function ResponsiveRadialBarChart() {
     </Stack>
   );
 
+  // options
+  const displayChartOptions = (
+    <ChartOptions
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      initialChartState={modifiedResponsiveRadialBarChartState}
+      isChartTitleFocused={isChartTitleFocused}
+      isChartTitleValid={isChartTitleValid}
+      isScreenshotFilenameFocused={isScreenshotFilenameFocused}
+      isScreenshotFilenameValid={isScreenshotFilenameValid}
+      padding={padding}
+      parentChartAction={responsiveRadialBarChartAction}
+      parentChartDispatch={responsiveRadialBarChartDispatch}
+      screenshotFilename={screenshotFilename}
+      screenshotImageQuality={screenshotImageQuality}
+      screenshotImageType={screenshotImageType}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
+    />
+  );
+
+  const displayResetAllButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayResetAll = (
+    <Stack w="100%" py={padding}>
+      <ChartsAndGraphsControlsStacker
+        initialChartState={modifiedResponsiveRadialBarChartState}
+        input={displayResetAllButton}
+        label="Reset all values"
+        value=""
+      />
+    </Stack>
+  );
+
   const radialBarChartControlsStack = (
     <Flex w="100%" direction="column">
-      {displayControlsHeading}
       {displayBaseSection}
-      {displayMarginSection}
+      {displayChartMargin}
       {displayStyleSection}
       {displayTracksSection}
       {displayGridsSection}
@@ -2482,8 +1967,10 @@ function ResponsiveRadialBarChart() {
       {displayCircularAxisInnerSection}
       {displayCircularAxisOuterSection}
       {displayLabelsSection}
-      {displayLegendSection}
+      {displayChartLegend}
       {displayMotionSection}
+      {displayChartOptions}
+      {displayResetAll}
     </Flex>
   );
 
@@ -2652,6 +2139,13 @@ function ResponsiveRadialBarChart() {
                 itemOpacity: legendItemOpacity,
                 symbolSize: legendSymbolSize,
                 itemDirection: legendItemDirection,
+                itemBackground: legendItemBackground,
+                itemTextColor: legendItemTextColor,
+                symbolShape: legendSymbolShape,
+                symbolBorderColor: legendSymbolBorderColor,
+                symbolBorderWidth: legendSymbolBorderWidth,
+                symbolSpacing: legendSymbolSpacing,
+                // padding: 20,
                 effects: [
                   {
                     on: 'hover',
@@ -2674,6 +2168,14 @@ function ResponsiveRadialBarChart() {
     />
   );
 
+  const displayChartTitle = (
+    <Group w="100%" position={chartTitlePosition} px={padding}>
+      <Title order={chartTitleSize} color={chartTitleColor}>
+        {chartTitle}
+      </Title>
+    </Group>
+  );
+
   const displayResponsiveRadialBarChartComponent = (
     <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
       <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
@@ -2690,7 +2192,8 @@ function ResponsiveRadialBarChart() {
         />
       </Grid.Col>
 
-      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
+      <Grid.Col span={width < 1192 ? 1 : 9} h="100%" ref={chartRef}>
+        {displayChartTitle}
         {displayResponsiveRadialBar}
       </Grid.Col>
     </Grid>

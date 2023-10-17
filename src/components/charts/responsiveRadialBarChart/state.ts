@@ -67,22 +67,43 @@ const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
 
   // legend
   enableLegend: false,
+  enableLegendJustify: false,
   legendAnchor: 'bottom-right',
   legendDirection: 'column',
-  enableLegendJustify: false,
+  legendItemBackground: 'rgba(255, 255, 255, 0)',
+  legendItemDirection: 'left-to-right',
+  legendItemHeight: 20,
+  legendItemOpacity: 1,
+  legendItemTextColor: 'gray',
+  legendItemWidth: 60,
+  legendItemsSpacing: 2,
+  legendSymbolBorderColor: 'rgba(0, 0, 0, 0)',
+  legendSymbolBorderWidth: 0,
+  legendSymbolShape: 'circle',
+  legendSymbolSize: 12,
+  legendSymbolSpacing: 8,
   legendTranslateX: 0,
   legendTranslateY: 0,
-  legendItemWidth: 60,
-  legendItemHeight: 20,
-  legendItemsSpacing: 2,
-  legendItemDirection: 'left-to-right',
-  legendItemOpacity: 1,
-  legendSymbolSize: 12,
 
   // motion
   enableAnimate: true,
   motionConfig: 'gentle',
   transitionMode: 'centerRadius',
+
+  // options
+  chartTitle: '',
+  chartTitleColor: 'dark',
+  chartTitlePosition: 'center',
+  chartTitleSize: 3,
+  isChartTitleFocused: false,
+  isChartTitleValid: false,
+
+  // screenshot
+  isScreenshotFilenameFocused: false,
+  isScreenshotFilenameValid: false,
+  screenshotFilename: '',
+  screenshotImageQuality: 1.0,
+  screenshotImageType: 'image/png',
 };
 
 const responsiveRadialBarChartAction: ResponsiveRadialBarChartAction = {
@@ -148,22 +169,43 @@ const responsiveRadialBarChartAction: ResponsiveRadialBarChartAction = {
 
   // legend
   setEnableLegend: 'setEnableLegend',
+  setEnableLegendJustify: 'setEnableLegendJustify',
   setLegendAnchor: 'setLegendAnchor',
   setLegendDirection: 'setLegendDirection',
-  setEnableLegendJustify: 'setEnableLegendJustify',
+  setLegendItemBackground: 'setLegendItemBackground',
+  setLegendItemDirection: 'setLegendItemDirection',
+  setLegendItemHeight: 'setLegendItemHeight',
+  setLegendItemOpacity: 'setLegendItemOpacity',
+  setLegendItemTextColor: 'setLegendItemTextColor',
+  setLegendItemWidth: 'setLegendItemWidth',
+  setLegendItemsSpacing: 'setLegendItemsSpacing',
+  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor',
+  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth',
+  setLegendSymbolShape: 'setLegendSymbolShape',
+  setLegendSymbolSize: 'setLegendSymbolSize',
+  setLegendSymbolSpacing: 'setLegendSymbolSpacing',
   setLegendTranslateX: 'setLegendTranslateX',
   setLegendTranslateY: 'setLegendTranslateY',
-  setLegendItemWidth: 'setLegendItemWidth',
-  setLegendItemHeight: 'setLegendItemHeight',
-  setLegendItemsSpacing: 'setLegendItemsSpacing',
-  setLegendItemDirection: 'setLegendItemDirection',
-  setLegendItemOpacity: 'setLegendItemOpacity',
-  setLegendSymbolSize: 'setLegendSymbolSize',
 
   // motion
   setEnableAnimate: 'setEnableAnimate',
   setMotionConfig: 'setMotionConfig',
   setTransitionMode: 'setTransitionMode',
+
+  // options
+  setChartTitle: 'setChartTitle',
+  setChartTitleColor: 'setChartTitleColor',
+  setChartTitlePosition: 'setChartTitlePosition',
+  setChartTitleSize: 'setChartTitleSize',
+  setIsChartTitleFocused: 'setIsChartTitleFocused',
+  setIsChartTitleValid: 'setIsChartTitleValid',
+
+  // screenshot
+  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused',
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid',
+  setScreenshotFilename: 'setScreenshotFilename',
+  setScreenshotImageQuality: 'setScreenshotImageQuality',
+  setScreenshotImageType: 'setScreenshotImageType',
 
   // reset all
   resetChartToDefault: 'resetChartToDefault',
@@ -432,16 +474,106 @@ function responsiveRadialBarChartReducer(
         ...state,
         legendItemDirection: action.payload,
       };
+    case responsiveRadialBarChartAction.setLegendItemTextColor:
+      return {
+        ...state,
+        legendItemTextColor: action.payload,
+      };
+    case responsiveRadialBarChartAction.setLegendItemBackground:
+      return {
+        ...state,
+        legendItemBackground: action.payload,
+      };
     case responsiveRadialBarChartAction.setLegendItemOpacity:
       return {
         ...state,
         legendItemOpacity: action.payload,
+      };
+    case responsiveRadialBarChartAction.setLegendSymbolShape:
+      return {
+        ...state,
+        legendSymbolShape: action.payload,
+      };
+    case responsiveRadialBarChartAction.setLegendSymbolBorderColor:
+      return {
+        ...state,
+        legendSymbolBorderColor: action.payload,
+      };
+    case responsiveRadialBarChartAction.setLegendSymbolBorderWidth:
+      return {
+        ...state,
+        legendSymbolBorderWidth: action.payload,
+      };
+    case responsiveRadialBarChartAction.setLegendSymbolSpacing:
+      return {
+        ...state,
+        legendSymbolSpacing: action.payload,
       };
     case responsiveRadialBarChartAction.setLegendSymbolSize:
       return {
         ...state,
         legendSymbolSize: action.payload,
       };
+
+    // options
+    case responsiveRadialBarChartAction.setChartTitle:
+      return {
+        ...state,
+        chartTitle: action.payload,
+      };
+    case responsiveRadialBarChartAction.setChartTitleColor:
+      return {
+        ...state,
+        chartTitleColor: action.payload,
+      };
+    case responsiveRadialBarChartAction.setChartTitlePosition:
+      return {
+        ...state,
+        chartTitlePosition: action.payload,
+      };
+    case responsiveRadialBarChartAction.setChartTitleSize:
+      return {
+        ...state,
+        chartTitleSize: action.payload,
+      };
+    case responsiveRadialBarChartAction.setIsChartTitleFocused:
+      return {
+        ...state,
+        isChartTitleFocused: action.payload,
+      };
+    case responsiveRadialBarChartAction.setIsChartTitleValid:
+      return {
+        ...state,
+        isChartTitleValid: action.payload,
+      };
+
+    // screenshot
+    case responsiveRadialBarChartAction.setIsScreenshotFilenameFocused:
+      return {
+        ...state,
+        isScreenshotFilenameFocused: action.payload,
+      };
+    case responsiveRadialBarChartAction.setIsScreenshotFilenameValid:
+      return {
+        ...state,
+        isScreenshotFilenameValid: action.payload,
+      };
+    case responsiveRadialBarChartAction.setScreenshotFilename:
+      return {
+        ...state,
+        screenshotFilename: action.payload,
+      };
+    case responsiveRadialBarChartAction.setScreenshotImageQuality:
+      return {
+        ...state,
+        screenshotImageQuality: action.payload,
+      };
+    case responsiveRadialBarChartAction.setScreenshotImageType:
+      return {
+        ...state,
+        screenshotImageType: action.payload,
+      };
+
     // motion
     case responsiveRadialBarChartAction.setEnableAnimate:
       return {

@@ -6,28 +6,30 @@ import {
 
 const initialResponsiveBarChartState: ResponsiveBarChartState = {
   /** base */
-  groupMode: 'stacked',
-  layout: 'horizontal',
-  valueScale: 'linear',
-  reverse: false,
-  enableMinValue: false,
-  minValue: 0,
   enableMaxValue: false,
-  maxValue: 0,
-  paddingBar: 0.1,
+  enableMinValue: false,
+  groupMode: 'stacked',
   innerPaddingBar: 0,
+  layout: 'horizontal',
+  maxValue: 0,
+  minValue: 0,
+  paddingBar: 0.1,
+  reverse: false,
+  valueScale: 'linear',
+
+  /** margin */
   marginTop: 60,
   marginRight: 60,
   marginBottom: 60,
   marginLeft: 60,
 
   /** style */
-  chartColors: 'set2',
+  chartBorderColor: '#ffffff',
   chartBorderRadius: 0,
   chartBorderWidth: 0,
-  chartBorderColor: '#ffffff',
-  fillPatterns: [],
+  chartColors: 'set2',
   enableFillPatterns: false,
+  fillPatterns: [],
 
   /** labels */
   enableLabels: true,
@@ -39,59 +41,65 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   enableGridX: false,
   enableGridY: true,
   // axis top
-  enableAxisTop: false,
-  axisTopTickSize: 5,
-  axisTopTickPadding: 5,
-  axisTopTickRotation: 0,
   axisTopLegend: '',
-  isAxisTopLegendValid: false,
-  isAxisTopLegendFocused: false,
   axisTopLegendOffset: 0,
   axisTopLegendPosition: 'middle',
+  axisTopTickPadding: 5,
+  axisTopTickRotation: 0,
+  axisTopTickSize: 5,
+  enableAxisTop: false,
+  isAxisTopLegendFocused: false,
+  isAxisTopLegendValid: false,
   // axis right
-  enableAxisRight: false,
-  axisRightTickSize: 5,
-  axisRightTickPadding: 5,
-  axisRightTickRotation: 0,
   axisRightLegend: '',
-  isAxisRightLegendValid: false,
-  isAxisRightLegendFocused: false,
   axisRightLegendOffset: 0,
   axisRightLegendPosition: 'middle',
+  axisRightTickPadding: 5,
+  axisRightTickRotation: 0,
+  axisRightTickSize: 5,
+  enableAxisRight: false,
+  isAxisRightLegendFocused: false,
+  isAxisRightLegendValid: false,
   // axis bottom
-  enableAxisBottom: true,
-  axisBottomTickSize: 5,
-  axisBottomTickPadding: 5,
-  axisBottomTickRotation: 0,
   axisBottomLegend: '',
-  isAxisBottomLegendValid: false,
-  isAxisBottomLegendFocused: false,
   axisBottomLegendOffset: 0,
   axisBottomLegendPosition: 'middle',
+  axisBottomTickPadding: 5,
+  axisBottomTickRotation: 0,
+  axisBottomTickSize: 5,
+  enableAxisBottom: true,
+  isAxisBottomLegendFocused: false,
+  isAxisBottomLegendValid: false,
   // axis left
-  enableAxisLeft: false,
-  axisLeftTickSize: 5,
-  axisLeftTickPadding: 5,
-  axisLeftTickRotation: 0,
   axisLeftLegend: '',
-  isAxisLeftLegendValid: false,
-  isAxisLeftLegendFocused: false,
   axisLeftLegendOffset: 0,
   axisLeftLegendPosition: 'middle',
+  axisLeftTickPadding: 5,
+  axisLeftTickRotation: 0,
+  axisLeftTickSize: 5,
+  enableAxisLeft: false,
+  isAxisLeftLegendFocused: false,
+  isAxisLeftLegendValid: false,
 
   /** legend */
   enableLegend: false,
+  enableLegendJustify: false,
   legendAnchor: 'bottom-right',
   legendDirection: 'column',
-  enableLegendJustify: false,
+  legendItemBackground: 'rgba(255, 255, 255, 0)',
+  legendItemDirection: 'left-to-right',
+  legendItemHeight: 20,
+  legendItemOpacity: 1,
+  legendItemTextColor: 'gray',
+  legendItemWidth: 60,
+  legendItemsSpacing: 2,
+  legendSymbolBorderColor: 'rgba(0, 0, 0, 0)',
+  legendSymbolBorderWidth: 0,
+  legendSymbolShape: 'circle',
+  legendSymbolSize: 12,
+  legendSymbolSpacing: 8,
   legendTranslateX: 0,
   legendTranslateY: 0,
-  legendItemWidth: 60,
-  legendItemHeight: 20,
-  legendItemsSpacing: 2,
-  legendItemDirection: 'left-to-right',
-  legendItemOpacity: 1,
-  legendSymbolSize: 12,
 
   /** motion */
   enableAnimate: true,
@@ -99,32 +107,32 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
 
   /** options */
   chartTitle: '',
-  isChartTitleValid: false,
-  isChartTitleFocused: false,
   chartTitleColor: 'dark',
-  chartTitleSize: 3,
   chartTitlePosition: 'center',
+  chartTitleSize: 3,
+  isChartTitleFocused: false,
+  isChartTitleValid: false,
 
   /** screenshot */
-  screenshotFilename: '',
-  isScreenshotFilenameValid: false,
   isScreenshotFilenameFocused: false,
-  screenshotImageType: 'image/png',
+  isScreenshotFilenameValid: false,
+  screenshotFilename: '',
   screenshotImageQuality: 1.0,
+  screenshotImageType: 'image/png',
 };
 
 const responsiveBarChartAction: ResponsiveBarChartAction = {
   /** base */
-  setGroupMode: 'setGroupMode',
-  setLayout: 'setLayout',
-  setValueScale: 'setValueScale',
-  setReverse: 'setReverse',
-  setEnableMinValue: 'setEnableMinValue',
-  setMinValue: 'setMinValue',
   setEnableMaxValue: 'setEnableMaxValue',
-  setMaxValue: 'setMaxValue',
-  setPaddingBar: 'setPaddingBar',
+  setEnableMinValue: 'setEnableMinValue',
+  setGroupMode: 'setGroupMode',
   setInnerPaddingBar: 'setInnerPaddingBar',
+  setLayout: 'setLayout',
+  setMaxValue: 'setMaxValue',
+  setMinValue: 'setMinValue',
+  setPaddingBar: 'setPaddingBar',
+  setReverse: 'setReverse',
+  setValueScale: 'setValueScale',
 
   /** margin */
   setMarginTop: 'setMarginTop',
@@ -133,76 +141,82 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setMarginLeft: 'setMarginLeft',
 
   /** style */
-  setChartColors: 'setChartColors',
+  setChartBorderColor: 'setChartBorderColor',
   setChartBorderRadius: 'setChartBorderRadius',
   setChartBorderWidth: 'setChartBorderWidth',
-  setChartBorderColor: 'setChartBorderColor',
-  setFillPatterns: 'setFillPatterns',
+  setChartColors: 'setChartColors',
   setEnableFillPatterns: 'setEnableFillPatterns',
+  setFillPatterns: 'setFillPatterns',
 
   /** labels */
   setEnableLabels: 'setEnableLabels',
-  setLabelSkipWidth: 'setLabelSkipWidth',
   setLabelSkipHeight: 'setLabelSkipHeight',
+  setLabelSkipWidth: 'setLabelSkipWidth',
   setLabelTextColor: 'setLabelTextColor',
 
   /** grid and axes */
   setEnableGridX: 'setEnableGridX',
   setEnableGridY: 'setEnableGridY',
   // axis top
-  setEnableAxisTop: 'setEnableAxisTop',
-  setAxisTopTickSize: 'setAxisTopTickSize',
-  setAxisTopTickPadding: 'setAxisTopTickPadding',
-  setAxisTopTickRotation: 'setAxisTopTickRotation',
   setAxisTopLegend: 'setAxisTopLegend',
-  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid',
-  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused',
   setAxisTopLegendOffset: 'setAxisTopLegendOffset',
   setAxisTopLegendPosition: 'setAxisTopLegendPosition',
+  setAxisTopTickPadding: 'setAxisTopTickPadding',
+  setAxisTopTickRotation: 'setAxisTopTickRotation',
+  setAxisTopTickSize: 'setAxisTopTickSize',
+  setEnableAxisTop: 'setEnableAxisTop',
+  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused',
+  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid',
   // axis right
-  setEnableAxisRight: 'setEnableAxisRight',
-  setAxisRightTickSize: 'setAxisRightTickSize',
-  setAxisRightTickPadding: 'setAxisRightTickPadding',
-  setAxisRightTickRotation: 'setAxisRightTickRotation',
   setAxisRightLegend: 'setAxisRightLegend',
-  setIsAxisRightLegendValid: 'setIsAxisRightLegendValid',
-  setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused',
   setAxisRightLegendOffset: 'setAxisRightLegendOffset',
   setAxisRightLegendPosition: 'setAxisRightLegendPosition',
+  setAxisRightTickPadding: 'setAxisRightTickPadding',
+  setAxisRightTickRotation: 'setAxisRightTickRotation',
+  setAxisRightTickSize: 'setAxisRightTickSize',
+  setEnableAxisRight: 'setEnableAxisRight',
+  setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused',
+  setIsAxisRightLegendValid: 'setIsAxisRightLegendValid',
   // axis bottom
-  setEnableAxisBottom: 'setEnableAxisBottom',
-  setAxisBottomTickSize: 'setAxisBottomTickSize',
-  setAxisBottomTickPadding: 'setAxisBottomTickPadding',
-  setAxisBottomTickRotation: 'setAxisBottomTickRotation',
   setAxisBottomLegend: 'setAxisBottomLegend',
-  setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid',
-  setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused',
   setAxisBottomLegendOffset: 'setAxisBottomLegendOffset',
   setAxisBottomLegendPosition: 'setAxisBottomLegendPosition',
+  setAxisBottomTickPadding: 'setAxisBottomTickPadding',
+  setAxisBottomTickRotation: 'setAxisBottomTickRotation',
+  setAxisBottomTickSize: 'setAxisBottomTickSize',
+  setEnableAxisBottom: 'setEnableAxisBottom',
+  setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused',
+  setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid',
   // axis left
-  setEnableAxisLeft: 'setEnableAxisLeft',
-  setAxisLeftTickSize: 'setAxisLeftTickSize',
-  setAxisLeftTickPadding: 'setAxisLeftTickPadding',
-  setAxisLeftTickRotation: 'setAxisLeftTickRotation',
   setAxisLeftLegend: 'setAxisLeftLegend',
-  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid',
-  setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused',
   setAxisLeftLegendOffset: 'setAxisLeftLegendOffset',
   setAxisLeftLegendPosition: 'setAxisLeftLegendPosition',
+  setAxisLeftTickPadding: 'setAxisLeftTickPadding',
+  setAxisLeftTickRotation: 'setAxisLeftTickRotation',
+  setAxisLeftTickSize: 'setAxisLeftTickSize',
+  setEnableAxisLeft: 'setEnableAxisLeft',
+  setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused',
+  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid',
 
   /** legend */
   setEnableLegend: 'setEnableLegend',
+  setEnableLegendJustify: 'setEnableLegendJustify',
   setLegendAnchor: 'setLegendAnchor',
   setLegendDirection: 'setLegendDirection',
-  setEnableLegendJustify: 'setEnableLegendJustify',
+  setLegendItemBackground: 'setLegendItemBackground',
+  setLegendItemDirection: 'setLegendItemDirection',
+  setLegendItemHeight: 'setLegendItemHeight',
+  setLegendItemOpacity: 'setLegendItemOpacity',
+  setLegendItemTextColor: 'setLegendItemTextColor',
+  setLegendItemWidth: 'setLegendItemWidth',
+  setLegendItemsSpacing: 'setLegendItemsSpacing',
+  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor',
+  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth',
+  setLegendSymbolShape: 'setLegendSymbolShape',
+  setLegendSymbolSize: 'setLegendSymbolSize',
+  setLegendSymbolSpacing: 'setLegendSymbolSpacing',
   setLegendTranslateX: 'setLegendTranslateX',
   setLegendTranslateY: 'setLegendTranslateY',
-  setLegendItemWidth: 'setLegendItemWidth',
-  setLegendItemHeight: 'setLegendItemHeight',
-  setLegendItemsSpacing: 'setLegendItemsSpacing',
-  setLegendItemDirection: 'setLegendItemDirection',
-  setLegendItemOpacity: 'setLegendItemOpacity',
-  setLegendSymbolSize: 'setLegendSymbolSize',
 
   /** motion */
   setEnableAnimate: 'setEnableAnimate',
@@ -210,18 +224,18 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
 
   /** options */
   setChartTitle: 'setChartTitle',
-  setIsChartTitleValid: 'setIsChartTitleValid',
-  setIsChartTitleFocused: 'setIsChartTitleFocused',
   setChartTitleColor: 'setChartTitleColor',
-  setChartTitleSize: 'setChartTitleSize',
   setChartTitlePosition: 'setChartTitlePosition',
+  setChartTitleSize: 'setChartTitleSize',
+  setIsChartTitleFocused: 'setIsChartTitleFocused',
+  setIsChartTitleValid: 'setIsChartTitleValid',
 
   /** screenshot */
-  setScreenshotFilename: 'setScreenshotFilename',
-  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid',
   setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused',
-  setScreenshotImageType: 'setScreenshotImageType',
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid',
+  setScreenshotFilename: 'setScreenshotFilename',
   setScreenshotImageQuality: 'setScreenshotImageQuality',
+  setScreenshotImageType: 'setScreenshotImageType',
 
   /** reset all */
   resetChartToDefault: 'resetChartToDefault',
@@ -550,6 +564,7 @@ function responsiveBarChartReducer(
         axisLeftLegendPosition: action.payload,
       };
 
+    // legend
     case responsiveBarChartAction.setEnableLegend:
       return {
         ...state,
@@ -600,16 +615,48 @@ function responsiveBarChartReducer(
         ...state,
         legendItemDirection: action.payload,
       };
+    case responsiveBarChartAction.setLegendItemTextColor:
+      return {
+        ...state,
+        legendItemTextColor: action.payload,
+      };
+    case responsiveBarChartAction.setLegendItemBackground:
+      return {
+        ...state,
+        legendItemBackground: action.payload,
+      };
     case responsiveBarChartAction.setLegendItemOpacity:
       return {
         ...state,
         legendItemOpacity: action.payload,
+      };
+    case responsiveBarChartAction.setLegendSymbolShape:
+      return {
+        ...state,
+        legendSymbolShape: action.payload,
+      };
+    case responsiveBarChartAction.setLegendSymbolBorderColor:
+      return {
+        ...state,
+        legendSymbolBorderColor: action.payload,
+      };
+    case responsiveBarChartAction.setLegendSymbolBorderWidth:
+      return {
+        ...state,
+        legendSymbolBorderWidth: action.payload,
+      };
+    case responsiveBarChartAction.setLegendSymbolSpacing:
+      return {
+        ...state,
+        legendSymbolSpacing: action.payload,
       };
     case responsiveBarChartAction.setLegendSymbolSize:
       return {
         ...state,
         legendSymbolSize: action.payload,
       };
+
+    // motion
     case responsiveBarChartAction.setEnableAnimate:
       return {
         ...state,
