@@ -200,9 +200,9 @@ function ResponsiveLineChart() {
 
     // options
     chartTitle,
-    chartTitleColor,
-    chartTitlePosition,
-    chartTitleSize,
+    chartTitleColor, // default: 'gray'
+    chartTitlePosition, // default: 'center'
+    chartTitleSize, // 1 - 6 default: 3
     isChartTitleFocused,
     isChartTitleValid,
 
@@ -210,8 +210,8 @@ function ResponsiveLineChart() {
     isScreenshotFilenameFocused,
     isScreenshotFilenameValid,
     screenshotFilename,
-    screenshotImageQuality,
-    screenshotImageType,
+    screenshotImageQuality, // 0 - 1 default: 1 step: 0.1
+    screenshotImageType, // default: 'image/png'
   } = responsiveLineChartState;
 
   const chartRef = useRef(null);
@@ -1044,7 +1044,12 @@ function ResponsiveLineChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1151,7 +1156,12 @@ function ResponsiveLineChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1231,7 +1241,12 @@ function ResponsiveLineChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1334,7 +1349,12 @@ function ResponsiveLineChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1457,7 +1477,12 @@ function ResponsiveLineChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1528,7 +1553,12 @@ function ResponsiveLineChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>

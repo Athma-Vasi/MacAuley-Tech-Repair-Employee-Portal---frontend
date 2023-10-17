@@ -39,6 +39,21 @@ const initialResponsiveCalendarChartState: ResponsiveCalendarChartState = {
   daySpacing: 0,
   dayBorderWidth: 1,
   dayBorderColor: '#000',
+
+  // options
+  chartTitle: '',
+  chartTitleColor: 'dark',
+  chartTitlePosition: 'center',
+  chartTitleSize: 3,
+  isChartTitleFocused: false,
+  isChartTitleValid: false,
+
+  // screenshot
+  isScreenshotFilenameFocused: false,
+  isScreenshotFilenameValid: false,
+  screenshotFilename: '',
+  screenshotImageQuality: 1,
+  screenshotImageType: 'image/png',
 };
 
 const responsiveCalendarChartAction: ResponsiveCalendarChartAction = {
@@ -76,6 +91,21 @@ const responsiveCalendarChartAction: ResponsiveCalendarChartAction = {
   setDaySpacing: 'setDaySpacing',
   setDayBorderWidth: 'setDayBorderWidth',
   setDayBorderColor: 'setDayBorderColor',
+
+  // options
+  setChartTitle: 'setChartTitle',
+  setChartTitleColor: 'setChartTitleColor',
+  setChartTitlePosition: 'setChartTitlePosition',
+  setChartTitleSize: 'setChartTitleSize',
+  setIsChartTitleFocused: 'setIsChartTitleFocused',
+  setIsChartTitleValid: 'setIsChartTitleValid',
+
+  // screenshot
+  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused',
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid',
+  setScreenshotFilename: 'setScreenshotFilename',
+  setScreenshotImageQuality: 'setScreenshotImageQuality',
+  setScreenshotImageType: 'setScreenshotImageType',
 
   // reset all
   resetChartToDefault: 'resetChartToDefault',
@@ -211,6 +241,65 @@ function responsiveCalendarChartReducer(
       return {
         ...state,
         dayBorderColor: action.payload,
+      };
+
+    // options
+    case responsiveCalendarChartAction.setChartTitle:
+      return {
+        ...state,
+        chartTitle: action.payload,
+      };
+    case responsiveCalendarChartAction.setChartTitleColor:
+      return {
+        ...state,
+        chartTitleColor: action.payload,
+      };
+    case responsiveCalendarChartAction.setChartTitlePosition:
+      return {
+        ...state,
+        chartTitlePosition: action.payload,
+      };
+    case responsiveCalendarChartAction.setChartTitleSize:
+      return {
+        ...state,
+        chartTitleSize: action.payload,
+      };
+    case responsiveCalendarChartAction.setIsChartTitleFocused:
+      return {
+        ...state,
+        isChartTitleFocused: action.payload,
+      };
+    case responsiveCalendarChartAction.setIsChartTitleValid:
+      return {
+        ...state,
+        isChartTitleValid: action.payload,
+      };
+
+    // screenshot
+    case responsiveCalendarChartAction.setIsScreenshotFilenameFocused:
+      return {
+        ...state,
+        isScreenshotFilenameFocused: action.payload,
+      };
+    case responsiveCalendarChartAction.setIsScreenshotFilenameValid:
+      return {
+        ...state,
+        isScreenshotFilenameValid: action.payload,
+      };
+    case responsiveCalendarChartAction.setScreenshotFilename:
+      return {
+        ...state,
+        screenshotFilename: action.payload,
+      };
+    case responsiveCalendarChartAction.setScreenshotImageQuality:
+      return {
+        ...state,
+        screenshotImageQuality: action.payload,
+      };
+    case responsiveCalendarChartAction.setScreenshotImageType:
+      return {
+        ...state,
+        screenshotImageType: action.payload,
       };
 
     // reset all

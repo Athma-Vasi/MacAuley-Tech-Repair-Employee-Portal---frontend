@@ -853,7 +853,12 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -934,7 +939,12 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   const displayStyleHeading = (
     <Group
       w="100%"
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       p={padding}
       bg={sectionHeadersBgColor}
     >
@@ -1016,7 +1026,12 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1127,7 +1142,12 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       w="100%"
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
     >
       <Title order={5} color={textColor}>
         Interactivity
@@ -1168,7 +1188,12 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>

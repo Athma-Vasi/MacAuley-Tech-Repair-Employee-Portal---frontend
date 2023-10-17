@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { ResponsiveCalendar } from '@nivo/calendar';
-import { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { BiReset } from 'react-icons/bi';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
@@ -47,6 +47,9 @@ import {
   responsiveCalendarChartAction,
   responsiveCalendarChartReducer,
 } from './state';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartOptions } from '../chartControls/ChartOptions';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
 function ResponsiveCalendarChart() {
   const [responsiveCalendarChartState, responsiveCalendarChartDispatch] =
@@ -59,15 +62,7 @@ function ResponsiveCalendarChart() {
     globalState: { width, themeObject, padding },
   } = useGlobalState();
 
-  const {
-    tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
-    generalColors: { textColor },
-    appThemeColors: { borderColor },
-    scrollBarStyle,
-  } = returnThemeColors({
-    themeObject,
-    colorsSwatches: COLORS_SWATCHES,
-  });
+  const chartRef = useRef(null);
 
   const {
     // base
@@ -104,7 +99,32 @@ function ResponsiveCalendarChart() {
     daySpacing, // 0px - 20px default: 0 step: 1
     dayBorderWidth, // 0px - 20px default: 1 step: 1
     dayBorderColor, // default: '#000'
+
+    // options
+    chartTitle,
+    chartTitleColor, // default: 'gray'
+    chartTitlePosition, // default: 'center'
+    chartTitleSize, // 1 - 6 default: 3
+    isChartTitleFocused,
+    isChartTitleValid,
+
+    // screenshot
+    isScreenshotFilenameFocused,
+    isScreenshotFilenameValid,
+    screenshotFilename,
+    screenshotImageQuality, // 0 - 1 default: 1 step: 0.1
+    screenshotImageType, // default: 'image/png'
   } = responsiveCalendarChartState;
+
+  const {
+    tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
+    generalColors: { textColor },
+    appThemeColors: { borderColor },
+    scrollBarStyle,
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
 
   const [
     enableMinValueAccessibleSelectedText,
@@ -271,87 +291,6 @@ function ResponsiveCalendarChart() {
     sliderDefaultValue: 100,
     step: 1,
     value: maxValue,
-    width: sliderWidth,
-  };
-
-  // margin
-  const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin top',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setMarginTop,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginTop,
-    width: sliderWidth,
-  };
-
-  const marginRightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin right',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setMarginRight,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginRight,
-    width: sliderWidth,
-  };
-
-  const marginBottomSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin bottom',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setMarginBottom,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginBottom,
-    width: sliderWidth,
-  };
-
-  const marginLeftSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin left',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setMarginLeft,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginLeft,
     width: sliderWidth,
   };
 
@@ -635,19 +574,6 @@ function ResponsiveCalendarChart() {
       maxValueSliderInputCreatorInfo,
     ]);
 
-  // margin
-  const [
-    createdMarginTopSliderInput,
-    createdMarginRightSliderInput,
-    createdMarginBottomSliderInput,
-    createdMarginLeftSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    marginTopSliderInputCreatorInfo,
-    marginRightSliderInputCreatorInfo,
-    marginBottomSliderInputCreatorInfo,
-    marginLeftSliderInputCreatorInfo,
-  ]);
-
   // years months days
   const [
     // years
@@ -686,28 +612,18 @@ function ResponsiveCalendarChart() {
   ]);
 
   // input display
-  // title
-  const displayResetButton = (
-    <Tooltip label="Reset all inputs to their default values">
-      <Group>{createdResetAllButton}</Group>
-    </Tooltip>
-  );
-
-  const displayControlsHeading = (
-    <Group bg={sectionHeadersBgColor} p={padding} w="100%" position="apart">
-      <Title order={3} color={textColor}>
-        Calendar Chart Controls
-      </Title>
-      {displayResetButton}
-    </Group>
-  );
 
   // base
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -779,67 +695,20 @@ function ResponsiveCalendarChart() {
   );
 
   // margin
-  const displayMarginHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={4} color={textColor}>
-        Margin
-      </Title>
-    </Group>
-  );
-
-  const displayMarginTopSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartMargin = (
+    <ChartMargin
       initialChartState={initialResponsiveCalendarChartState}
-      input={createdMarginTopSliderInput}
-      label="Margin Top"
-      symbol="px"
-      value={marginTop}
+      marginBottom={marginBottom}
+      marginLeft={marginLeft}
+      marginRight={marginRight}
+      marginTop={marginTop}
+      padding={padding}
+      parentChartAction={responsiveCalendarChartAction}
+      parentChartDispatch={responsiveCalendarChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayMarginRightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={initialResponsiveCalendarChartState}
-      input={createdMarginRightSliderInput}
-      label="Margin Right"
-      symbol="px"
-      value={marginRight}
-    />
-  );
-
-  const displayMarginBottomSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={initialResponsiveCalendarChartState}
-      input={createdMarginBottomSliderInput}
-      label="Margin Bottom"
-      symbol="px"
-      value={marginBottom}
-    />
-  );
-
-  const displayMarginLeftSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={initialResponsiveCalendarChartState}
-      input={createdMarginLeftSliderInput}
-      label="Margin Left"
-      symbol="px"
-      value={marginLeft}
-    />
-  );
-
-  const displayMarginSection = (
-    <Stack w="100%" style={{ borderTop: borderColor }}>
-      {displayMarginHeading}
-      {displayMarginTopSliderInput}
-      {displayMarginRightSliderInput}
-      {displayMarginBottomSliderInput}
-      {displayMarginLeftSliderInput}
-    </Stack>
   );
 
   // style
@@ -847,7 +716,12 @@ function ResponsiveCalendarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -884,7 +758,12 @@ function ResponsiveCalendarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -936,7 +815,12 @@ function ResponsiveCalendarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -1009,7 +893,12 @@ function ResponsiveCalendarChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -1056,25 +945,60 @@ function ResponsiveCalendarChart() {
     </Stack>
   );
 
+  // options
+  const displayChartOptions = (
+    <ChartOptions
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      initialChartState={initialResponsiveCalendarChartState}
+      isChartTitleFocused={isChartTitleFocused}
+      isChartTitleValid={isChartTitleValid}
+      isScreenshotFilenameFocused={isScreenshotFilenameFocused}
+      isScreenshotFilenameValid={isScreenshotFilenameValid}
+      padding={padding}
+      parentChartAction={responsiveCalendarChartAction}
+      parentChartDispatch={responsiveCalendarChartDispatch}
+      screenshotFilename={screenshotFilename}
+      screenshotImageQuality={screenshotImageQuality}
+      screenshotImageType={screenshotImageType}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
+    />
+  );
+
+  const displayResetAllButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayResetAll = (
+    <Stack w="100%" py={padding}>
+      <ChartsAndGraphsControlsStacker
+        initialChartState={initialResponsiveCalendarChartState}
+        input={displayResetAllButton}
+        label="Reset all values"
+        value=""
+      />
+    </Stack>
+  );
+
   // display
   const calendarChartControlsStack = (
     <Flex w="100%" direction="column">
-      {displayControlsHeading}
       {displayBaseSection}
-      {displayMarginSection}
+      {displayChartMargin}
       {displayStyleSection}
       {displayYearsSection}
       {displayMonthsSection}
       {displayDaysSection}
+      {displayChartOptions}
+      {displayResetAll}
     </Flex>
-  );
-
-  const displayCalendarChartControls = (
-    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-      <Grid columns={1} h="70vh" py={padding}>
-        <Grid.Col span={1}>{calendarChartControlsStack}</Grid.Col>
-      </Grid>
-    </ScrollArea>
   );
 
   const { primaryColor } = themeObject;
@@ -1121,29 +1045,22 @@ function ResponsiveCalendarChart() {
     />
   );
 
-  const displayResponsiveCalendarChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
-        {displayCalendarChartControls}
-      </Grid.Col>
-
-      <Grid.Col span={1}>
-        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
-        <Divider
-          orientation={width < 1192 ? 'horizontal' : 'vertical'}
-          size="sm"
-          w="100%"
-          h="100%"
-        />
-      </Grid.Col>
-
-      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
-        {displayCalendarChart}
-      </Grid.Col>
-    </Grid>
+  const displayChartAndControls = (
+    <ChartAndControlsDisplay
+      chartControlsStack={calendarChartControlsStack}
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      padding={padding}
+      responsiveChart={displayCalendarChart}
+      scrollBarStyle={scrollBarStyle}
+      width={width}
+    />
   );
 
-  return displayResponsiveCalendarChartComponent;
+  return displayChartAndControls;
 }
 
 export { ResponsiveCalendarChart };

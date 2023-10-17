@@ -341,7 +341,12 @@ function ChartAxisBottom(props: ChartAxisBottomProps) {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>

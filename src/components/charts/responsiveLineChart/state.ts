@@ -115,7 +115,7 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
 
   // options
   chartTitle: '',
-  chartTitleColor: 'gray',
+  chartTitleColor: 'dark',
   chartTitlePosition: 'center',
   chartTitleSize: 3,
   isChartTitleFocused: false,

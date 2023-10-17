@@ -1,6 +1,7 @@
 import { Button, Modal, ScrollArea, Stack } from '@mantine/core';
 import {
   ResponsiveBarChart,
+  ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
   ResponsiveRadialBarChart,
@@ -47,6 +48,7 @@ function Dashboard() {
   const displayBarChart = <ResponsiveBarChart />;
   const displayRadialBarChart = <ResponsiveRadialBarChart />;
   const displayLineChart = <ResponsiveLineChart />;
+  const displayCalendarChart = <ResponsiveCalendarChart />;
   const displaySunburstChart = <ResponsiveSunburstChart />;
 
   const displayModal = (
@@ -73,7 +75,8 @@ function Dashboard() {
       {/* {displayBarChart} */}
       {/* {displayRadialBarChart} */}
       {/* {displayLineChart} */}
-      {displaySunburstChart}
+      {/* {displaySunburstChart} */}
+      {displayCalendarChart}
       <Button onClick={openChartModal}>Open Modal</Button>
       {/* {displayBarChart} */}
       {displayModal}
