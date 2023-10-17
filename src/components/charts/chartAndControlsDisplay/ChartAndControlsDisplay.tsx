@@ -3,6 +3,7 @@ import {
   Grid,
   Group,
   MantineNumberSize,
+  ScrollArea,
   Space,
   Title,
   TitleOrder,
@@ -19,10 +20,13 @@ type ChartAndControlsDisplayProps = {
   height?: number;
   padding: MantineNumberSize;
   responsiveChart: React.JSX.Element;
+  scrollBarStyle: Record<string, any>;
   width: number;
 };
 
-function ChartAndControlsDisplay(props: ChartAndControlsDisplayProps) {
+function ChartAndControlsDisplay(
+  props: ChartAndControlsDisplayProps
+): React.JSX.Element {
   const {
     chartControlsStack,
     chartRef,
@@ -33,8 +37,17 @@ function ChartAndControlsDisplay(props: ChartAndControlsDisplayProps) {
     height,
     padding,
     responsiveChart,
+    scrollBarStyle,
     width,
   } = props;
+
+  const displayChartControls = (
+    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
+      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
+        <Grid.Col span={1}>{chartControlsStack}</Grid.Col>
+      </Grid>
+    </ScrollArea>
+  );
 
   const displayChartTitle = (
     <Group w="100%" position={chartTitlePosition} px={padding}>
@@ -47,7 +60,7 @@ function ChartAndControlsDisplay(props: ChartAndControlsDisplayProps) {
   const displayChartAndControls = (
     <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
       <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
-        {chartControlsStack}
+        {displayChartControls}
       </Grid.Col>
 
       <Grid.Col span={1}>

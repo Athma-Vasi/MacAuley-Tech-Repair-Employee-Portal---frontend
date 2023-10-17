@@ -234,7 +234,7 @@ type ResponsiveBarChartAction = {
   setEnableAnimate: 'setEnableAnimate';
   setMotionConfig: 'setMotionConfig';
 
-  // options
+  /** options */
   setChartTitle: 'setChartTitle';
   setChartTitleColor: 'setChartTitleColor';
   setChartTitlePosition: 'setChartTitlePosition';
@@ -242,7 +242,7 @@ type ResponsiveBarChartAction = {
   setIsChartTitleFocused: 'setIsChartTitleFocused';
   setIsChartTitleValid: 'setIsChartTitleValid';
 
-  // screenshot
+  /** screenshot */
   setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
   setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
   setScreenshotFilename: 'setScreenshotFilename';

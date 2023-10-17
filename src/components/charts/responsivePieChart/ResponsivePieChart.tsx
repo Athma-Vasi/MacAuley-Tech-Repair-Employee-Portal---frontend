@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { ResponsivePie } from '@nivo/pie';
-import { ChangeEvent, useEffect, useReducer } from 'react';
+import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
@@ -57,6 +57,10 @@ import {
   ResponsivePieChartProps,
 } from './types';
 import { BiReset } from 'react-icons/bi';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartLegend } from '../chartControls/ChartLegend';
+import { ChartOptions } from '../chartControls/ChartOptions';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
@@ -65,6 +69,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   } = useGlobalState();
 
   const {
+    appThemeColors: { borderColor },
     tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
     generalColors: { chartTextColor, textColor, grayColorShade },
     scrollBarStyle,
@@ -124,31 +129,46 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     marginRight, // 0px - 60px default: 60 step: 1
     marginTop, // 0px - 60px default: 60 step: 1
 
-    enableLegend, // default: true
-    legendAnchor, // default: bottom
-    legendDirection, // default: row
-    legendJustify, // default: false
+    enableLegend, // default: false
+    enableLegendJustify, // default: false
+    legendAnchor, // default: bottom-right
+    legendDirection, // default: column
+    legendItemBackground, // default: rgba(0, 0, 0, 0)
+    legendItemDirection, // default: left-to-right
+    legendItemHeight, // 10px - 200px default: 20 step: 1
+    legendItemOpacity, // 0 - 1 default: 1 step: 0.05
+    legendItemTextColor, // default: #ffffff
+    legendItemWidth, // 10px - 200px default: 60 step: 1
+    legendItemsSpacing, // 0px - 60px default: 2 step: 1
+    legendSymbolBorderColor, // default: #ffffff
+    legendSymbolBorderWidth, // 0px - 20px default: 0 step: 1
+    legendSymbolShape, // default: square
+    legendSymbolSize, // 2px - 60px default: 12 step: 1
+    legendSymbolSpacing, // 0px - 60px default: 8 step: 1
     legendTranslateX, // -200px - 200px default: 0 step: 1
     legendTranslateY, // -200px - 200px default: 0 step: 1
-    legendItemsSpacing, // 0px - 60px default: 0 step: 1
-    legendItemWidth, // 10px - 200px default: 60 step: 1
-    legendItemHeight, // 10px - 200px default: 20 step: 1
-    legendItemDirection, // default: left-to-right
-    legendItemTextColor, // default: #000000
-    legendItemOpacity, // 0 - 1 default: 1 step: 0.05
-    legendSymbolSize, // 2px - 60px default: 12 step: 1
-    legendSymbolShape, // default: circle
+
+    // options
+    chartTitle,
+    chartTitleColor,
+    chartTitlePosition,
+    chartTitleSize,
+    isChartTitleFocused,
+    isChartTitleValid,
+
+    // screenshot
+    isScreenshotFilenameFocused,
+    isScreenshotFilenameValid,
+    screenshotFilename,
+    screenshotImageQuality,
+    screenshotImageType,
   } = responsivePieChartState;
 
   /** ------------- end hooks ------------- */
 
+  const chartRef = useRef(null);
+
   /** ------------- begin useEffects ------------- */
-  useEffect(() => {
-    logState({
-      state: responsivePieChartState,
-      groupLabel: 'ResponsivePieChart',
-    });
-  }, [responsivePieChartState]);
 
   // set fill patterns on enable
   useEffect(() => {
@@ -249,28 +269,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     theme: 'muted',
   });
 
-  const [
-    enableLegendAccessibleSelectedText,
-    enableLegendAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Legend will not be displayed.',
-    isSelected: enableLegend,
-    selectedDescription: 'Legend will be displayed.',
-    semanticName: 'legend',
-    theme: 'muted',
-  });
-
-  // legend justify description texts
-  const [
-    enableLegendJustifyAccessibleSelectedText,
-    enableLegendJustifyAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Legend symbol and label will not be justified.',
-    isSelected: legendJustify,
-    selectedDescription: 'Legend symbol and label will be justified.',
-    semanticName: 'legendJustify',
-    theme: 'muted',
-  });
   /** ------------- end accessible description texts ------------- */
 
   /** ------------- begin input objects ------------- */
@@ -867,379 +865,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     };
   /** ------------- end motion ------------- */
 
-  /** ------------- begin margin ------------- */
-  const marginBottomSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin bottom',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 300,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setMarginBottom,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 80,
-    step: 1,
-    value: marginBottom,
-    width: sliderWidth,
-  };
-
-  const marginLeftSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin left',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 300,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setMarginLeft,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 150,
-    step: 1,
-    value: marginLeft,
-    width: sliderWidth,
-  };
-
-  const marginRightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin right',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 300,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setMarginRight,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 150,
-    step: 1,
-    value: marginRight,
-    width: sliderWidth,
-  };
-
-  const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin top',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 300,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setMarginTop,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 80,
-    step: 1,
-    value: marginTop,
-    width: sliderWidth,
-  };
-  /** ------------- end margin ------------- */
-
-  /** ------------- begin legend ------------- */
-  const createdEnableLegendSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableLegend
-          ? enableLegendAccessibleSelectedText.props.id
-          : enableLegendAccessibleDeselectedText.props.id
-      }
-      checked={enableLegend}
-      description={
-        enableLegend
-          ? enableLegendAccessibleSelectedText
-          : enableLegendAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Legend
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setEnableLegend,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const legendAnchorSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LEGEND_ANCHOR_DATA,
-    description: "Defines legend legendAnchor relative to chart's viewport.",
-    disabled: !enableLegend,
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setNivoLegendAnchor,
-        payload: event.currentTarget.value as NivoLegendAnchor,
-      });
-    },
-    value: legendAnchor,
-    width: sliderWidth,
-  };
-
-  const legendDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_DIRECTION_DATA,
-      description: 'Defines legend legendDirection.',
-      disabled: !enableLegend,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendDirection,
-          payload: event.currentTarget.value as NivoLegendDirection,
-        });
-      },
-      value: legendDirection,
-      width: sliderWidth,
-    };
-
-  const createdEnableLegendJustifySwitchInput = (
-    <Switch
-      aria-describedby={
-        legendJustify
-          ? enableLegendJustifyAccessibleSelectedText.props.id
-          : enableLegendJustifyAccessibleDeselectedText.props.id
-      }
-      checked={legendJustify}
-      disabled={!enableLegend}
-      description={
-        legendJustify
-          ? enableLegendJustifyAccessibleSelectedText
-          : enableLegendJustifyAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={enableLegend ? textColor : grayColorShade}>
-          Justify
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendJustify,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const legendTranslateXSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'Translate legend in x-axis: horizontal legendDirection',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: -200,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendTranslateX,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendTranslateX,
-      width: sliderWidth,
-    };
-
-  const legendTranslateYSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'Translate legend in y-axis: vertical legendDirection',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: -200,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendTranslateY,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendTranslateY,
-      width: sliderWidth,
-    };
-
-  const legendItemsSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'Legend items spacing',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 60,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendItemsSpacing,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendItemsSpacing,
-      width: sliderWidth,
-    };
-
-  const legendItemWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'Legend item width',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 10,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendItemWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 60,
-      step: 1,
-      value: legendItemWidth,
-      width: sliderWidth,
-    };
-
-  const legendItemHeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'Legend item height',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 10,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendItemHeight,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 20,
-      step: 1,
-      value: legendItemHeight,
-      width: sliderWidth,
-    };
-
-  const legendItemDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_ITEM_DIRECTION_DATA,
-      description: 'Defines legend item legendDirection.',
-      disabled: !enableLegend,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendItemDirection,
-          payload: event.currentTarget.value as NivoLegendItemDirection,
-        });
-      },
-      value: legendItemDirection,
-      width: sliderWidth,
-    };
-
-  const legendItemTextColorInput = (
-    <ColorInput
-      aria-label="Legend item text color"
-      disabled={!enableLegend}
-      onChange={(color: string) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendItemTextColor,
-          payload: color,
-        });
-      }}
-      value={legendItemTextColor}
-      w={sliderWidth}
-    />
-  );
-
-  const legendItemOpacitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'Legend item opacity',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>
-          {(value * 100).toFixed(0)} %
-        </Text>
-      ),
-      max: 1,
-      min: 0,
-      precision: 2,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendItemOpacity,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 0.05,
-      value: legendItemOpacity,
-      width: sliderWidth,
-    };
-
-  const legendSymbolSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'Legend symbol size',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 60,
-      min: 2,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendSymbolSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 12,
-      step: 1,
-      value: legendSymbolSize,
-      width: sliderWidth,
-    };
-
-  const legendSymbolShapeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_SYMBOL_SHAPE_DATA,
-      description: 'Defines legend symbol shape.',
-      disabled: !enableLegend,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setLegendSymbolShape,
-          payload: event.currentTarget.value as NivoLegendSymbolShape,
-        });
-      },
-      value: legendSymbolShape,
-      width: sliderWidth,
-    };
-
-  /** ------------- end legend ------------- */
-
   // reset all button
   const [createdResetAllButton] = returnAccessibleButtonElements([
     {
@@ -1326,49 +951,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       transitionModeSelectInputCreatorInfo,
     ]);
 
-  /** margin */
-  const [
-    createdMarginBottomSliderInput,
-    createdMarginLeftSliderInput,
-    createdMarginRightSliderInput,
-    createdMarginTopSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    marginBottomSliderInputCreatorInfo,
-    marginLeftSliderInputCreatorInfo,
-    marginRightSliderInputCreatorInfo,
-    marginTopSliderInputCreatorInfo,
-  ]);
-
-  /** legend */
-  const [
-    createdLegendTranslateXSliderInput,
-    createdLegendTranslateYSliderInput,
-    createdLegendItemsSpacingSliderInput,
-    createdLegendItemWidthSliderInput,
-    createdLegendItemHeightSliderInput,
-    createdLegendItemOpacitySliderInput,
-    createdLegendSymbolSizeSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    legendTranslateXSliderInputCreatorInfo,
-    legendTranslateYSliderInputCreatorInfo,
-    legendItemsSpacingSliderInputCreatorInfo,
-    legendItemWidthSliderInputCreatorInfo,
-    legendItemHeightSliderInputCreatorInfo,
-    legendItemOpacitySliderInputCreatorInfo,
-    legendSymbolSizeSliderInputCreatorInfo,
-  ]);
-
-  const [
-    createdNivoLegendAnchorSelectInput,
-    createdLegendDirectionSelectInput,
-    createdLegendItemDirectionSelectInput,
-    createdLegendSymbolShapeSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    legendAnchorSelectInputCreatorInfo,
-    legendDirectionSelectInputCreatorInfo,
-    legendItemDirectionSelectInputCreatorInfo,
-    legendSymbolShapeSelectInputCreatorInfo,
-  ]);
   /** ------------- end input creation ------------- */
 
   /** ------------- begin display ------------- */
@@ -1799,274 +1381,103 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   /** margin */
-  const displayMarginHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Margin
-      </Title>
-    </Group>
-  );
-
-  const displayMarginBottomSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartMargin = (
+    <ChartMargin
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdMarginBottomSliderInput}
-      label="Margin bottom"
-      symbol="px"
-      value={marginBottom}
+      marginBottom={marginBottom}
+      marginLeft={marginLeft}
+      marginRight={marginRight}
+      marginTop={marginTop}
+      padding={padding}
+      parentChartAction={responsivePieChartAction}
+      parentChartDispatch={responsivePieChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayMarginLeftSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdMarginLeftSliderInput}
-      label="Margin left"
-      symbol="px"
-      value={marginLeft}
-    />
-  );
-
-  const displayMarginRightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdMarginRightSliderInput}
-      label="Margin right"
-      symbol="px"
-      value={marginRight}
-    />
-  );
-
-  const displayMarginTopSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdMarginTopSliderInput}
-      label="Margin top"
-      symbol="px"
-      value={marginTop}
-    />
-  );
-
-  const displayMarginSection = (
-    <Stack w="100%">
-      {displayMarginHeading}
-      {displayMarginRightSliderInput}
-      {displayMarginTopSliderInput}
-      {displayMarginLeftSliderInput}
-      {displayMarginBottomSliderInput}
-    </Stack>
   );
 
   /** legend */
-  const displayLegendHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Legend
-      </Title>
-    </Group>
-  );
-
-  const displayEnableLegendSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: arcBorderColor }}>
-      {createdEnableLegendSwitchInput}
-    </Group>
-  );
-
-  const displayNivoLegendAnchorSelectInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartLegend = (
+    <ChartLegend
+      borderColor={borderColor}
+      enableLegend={enableLegend}
+      enableLegendJustify={enableLegendJustify}
+      grayColorShade={grayColorShade}
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdNivoLegendAnchorSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend anchor"
-      // prevents display of camelCased or snake_cased value
-      value={
-        NIVO_LEGEND_ANCHOR_DATA.find(({ value }) => value === legendAnchor)
-          ?.label ?? legendAnchor
-      }
+      legendAnchor={legendAnchor}
+      legendDirection={legendDirection}
+      legendItemBackground={legendItemBackground}
+      legendItemDirection={legendItemDirection}
+      legendItemHeight={legendItemHeight}
+      legendItemOpacity={legendItemOpacity}
+      legendItemTextColor={legendItemTextColor}
+      legendItemWidth={legendItemWidth}
+      legendItemsSpacing={legendItemsSpacing}
+      legendSymbolBorderColor={legendSymbolBorderColor}
+      legendSymbolBorderWidth={legendSymbolBorderWidth}
+      legendSymbolShape={legendSymbolShape}
+      legendSymbolSize={legendSymbolSize}
+      legendSymbolSpacing={legendSymbolSpacing}
+      legendTranslateX={legendTranslateX}
+      legendTranslateY={legendTranslateY}
+      padding={padding}
+      parentChartAction={responsivePieChartAction}
+      parentChartDispatch={responsivePieChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
   );
 
-  const displayLegendDirectionSelectInput = (
-    <ChartsAndGraphsControlsStacker
+  // options
+  const displayChartOptions = (
+    <ChartOptions
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendDirectionSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend direction"
-      value={legendDirection}
+      isChartTitleFocused={isChartTitleFocused}
+      isChartTitleValid={isChartTitleValid}
+      isScreenshotFilenameFocused={isScreenshotFilenameFocused}
+      isScreenshotFilenameValid={isScreenshotFilenameValid}
+      padding={padding}
+      parentChartAction={responsivePieChartAction}
+      parentChartDispatch={responsivePieChartDispatch}
+      screenshotFilename={screenshotFilename}
+      screenshotImageQuality={screenshotImageQuality}
+      screenshotImageType={screenshotImageType}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayEnableLegendJustifySwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: arcBorderColor }}>
-      {createdEnableLegendJustifySwitchInput}
-    </Group>
-  );
-
-  const displayLegendTranslateXSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendTranslateXSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend translate x"
-      value={legendTranslateX}
-      symbol="px"
-    />
-  );
-
-  const displayLegendTranslateYSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendTranslateYSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend translate y"
-      symbol="px"
-      value={legendTranslateY}
-    />
-  );
-
-  const displayLegendItemsSpacingSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendItemsSpacingSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend items spacing"
-      symbol="px"
-      value={legendItemsSpacing}
-    />
-  );
-
-  const displayLegendItemWidthSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendItemWidthSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item width"
-      symbol="px"
-      value={legendItemWidth}
-    />
-  );
-
-  const displayLegendItemHeightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendItemHeightSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item height"
-      symbol="px"
-      value={legendItemHeight}
-    />
-  );
-
-  const displayLegendItemDirectionSelectInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendItemDirectionSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item direction"
-      // prevents display of camelCased or snake_cased value
-      value={
-        NIVO_LEGEND_ITEM_DIRECTION_DATA.find(
-          ({ value }) => value === legendItemDirection
-        )?.label ?? legendItemDirection
-      }
-    />
-  );
-
-  const displayLegendItemTextColorInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={legendItemTextColorInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item text color"
-      symbol=""
-      value={legendItemTextColor}
-    />
-  );
-
-  const displayLegendItemOpacitySliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendItemOpacitySliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item opacity"
-      symbol="%"
-      value={(legendItemOpacity * 100).toFixed(0)}
-    />
-  );
-
-  const displayLegendSymbolSizeSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendSymbolSizeSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend symbol size"
-      symbol="px"
-      value={legendSymbolSize}
-    />
-  );
-
-  const displayLegendSymbolShapeSelectInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdLegendSymbolShapeSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend symbol shape"
-      value={legendSymbolShape}
-    />
-  );
-
-  const displayLegendSection = (
-    <Stack w="100%">
-      {displayLegendHeading}
-      {displayEnableLegendSwitchInput}
-      {displayNivoLegendAnchorSelectInput}
-      {displayLegendDirectionSelectInput}
-      {displayEnableLegendJustifySwitchInput}
-      {displayLegendTranslateXSliderInput}
-      {displayLegendTranslateYSliderInput}
-      {displayLegendItemsSpacingSliderInput}
-      {displayLegendItemWidthSliderInput}
-      {displayLegendItemHeightSliderInput}
-      {displayLegendItemDirectionSelectInput}
-      {displayLegendItemTextColorInput}
-      {displayLegendItemOpacitySliderInput}
-      {displayLegendSymbolSizeSliderInput}
-      {displayLegendSymbolShapeSelectInput}
-    </Stack>
   );
 
   const pieChartControlsStack = (
     <Flex w="100%" direction="column">
       {displayControlsHeading}
       {displayBaseSection}
+      {displayChartMargin}
       {displayStyleSection}
       {displayArcLabelsSection}
       {displayArcLinkLabelsSection}
       {displayInteractivitySection}
       {displayMotionSection}
-      {displayMarginSection}
-      {displayLegendSection}
+      {displayChartLegend}
+      {displayChartOptions}
     </Flex>
   );
 
-  /** pie chart controls */
-  const displayPieChartControls = (
-    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
-        <Grid.Col span={1}>{pieChartControlsStack}</Grid.Col>
-      </Grid>
-    </ScrollArea>
-  );
+  // /** pie chart controls */
+  // const displayPieChartControls = (
+  //   <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
+  //     <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
+  //       <Grid.Col span={1}>{pieChartControlsStack}</Grid.Col>
+  //     </Grid>
+  //   </ScrollArea>
+  // );
 
   const displayResponsivePie = (
     <ResponsivePie
@@ -2117,7 +1528,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
               {
                 anchor: legendAnchor,
                 direction: legendDirection,
-                justify: legendJustify,
+                justify: enableLegendJustify,
                 translateX: legendTranslateX,
                 translateY: legendTranslateY,
                 itemsSpacing: legendItemsSpacing,
@@ -2143,32 +1554,47 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     />
   );
 
-  const displayResponsivePieChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
-        {displayPieChartControls}
-      </Grid.Col>
+  // const displayResponsivePieChartComponent = (
+  //   <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
+  //     <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
+  //       {displayPieChartControls}
+  //     </Grid.Col>
 
-      {/* because only column spacing is allowed in grid */}
-      <Grid.Col span={1}>
-        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
-        <Divider
-          orientation={width < 1192 ? 'horizontal' : 'vertical'}
-          size="sm"
-          w="100%"
-          h="100%"
-        />
-      </Grid.Col>
+  //     {/* because only column spacing is allowed in grid */}
+  //     <Grid.Col span={1}>
+  //       {width < 1192 ? <Space h="md" /> : <Space w="md" />}
+  //       <Divider
+  //         orientation={width < 1192 ? 'horizontal' : 'vertical'}
+  //         size="sm"
+  //         w="100%"
+  //         h="100%"
+  //       />
+  //     </Grid.Col>
 
-      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
-        {displayResponsivePie}
-      </Grid.Col>
-    </Grid>
+  //     <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
+  //       {displayResponsivePie}
+  //     </Grid.Col>
+  //   </Grid>
+  // );
+
+  const displayChartAndControls = (
+    <ChartAndControlsDisplay
+      chartControlsStack={pieChartControlsStack}
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      padding={padding}
+      responsiveChart={displayResponsivePie}
+      scrollBarStyle={scrollBarStyle}
+      width={width}
+    />
   );
 
   /** ------------- end display ------------- */
 
-  return displayResponsivePieChartComponent;
+  return displayChartAndControls;
 }
 
 export { ResponsivePieChart };

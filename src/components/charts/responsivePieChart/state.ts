@@ -53,19 +53,38 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
 
   /** legend */
   enableLegend: false,
-  legendAnchor: 'top-left',
+  enableLegendJustify: false,
+  legendAnchor: 'bottom-right',
   legendDirection: 'column',
-  legendJustify: false,
+  legendItemBackground: 'rgba(255, 255, 255, 0)',
+  legendItemDirection: 'left-to-right',
+  legendItemHeight: 20,
+  legendItemOpacity: 1,
+  legendItemTextColor: 'gray',
+  legendItemWidth: 60,
+  legendItemsSpacing: 2,
+  legendSymbolBorderColor: 'rgba(0, 0, 0, .5)',
+  legendSymbolBorderWidth: 0,
+  legendSymbolShape: 'circle',
+  legendSymbolSize: 12,
+  legendSymbolSpacing: 8,
   legendTranslateX: 0,
   legendTranslateY: 0,
-  legendItemsSpacing: 10,
-  legendItemWidth: 60,
-  legendItemHeight: 20,
-  legendItemDirection: 'left-to-right',
-  legendItemTextColor: '#999',
-  legendItemOpacity: 1,
-  legendSymbolSize: 20,
-  legendSymbolShape: 'circle',
+
+  /** options */
+  chartTitle: '',
+  chartTitleColor: 'gray',
+  chartTitlePosition: 'center',
+  chartTitleSize: 3,
+  isChartTitleFocused: false,
+  isChartTitleValid: false,
+
+  /** screenshot */
+  isScreenshotFilenameFocused: false,
+  isScreenshotFilenameValid: false,
+  screenshotFilename: '',
+  screenshotImageQuality: 1,
+  screenshotImageType: 'image/png',
 };
 
 const responsivePieChartAction: ResponsivePieChartAction = {
@@ -117,19 +136,38 @@ const responsivePieChartAction: ResponsivePieChartAction = {
 
   /** legend */
   setEnableLegend: 'setEnableLegend',
-  setNivoLegendAnchor: 'setNivoLegendAnchor',
+  setEnableLegendJustify: 'setEnableLegendJustify',
+  setLegendAnchor: 'setLegendAnchor',
   setLegendDirection: 'setLegendDirection',
-  setLegendJustify: 'setLegendJustify',
+  setLegendItemBackground: 'setLegendItemBackground',
+  setLegendItemDirection: 'setLegendItemDirection',
+  setLegendItemHeight: 'setLegendItemHeight',
+  setLegendItemOpacity: 'setLegendItemOpacity',
+  setLegendItemTextColor: 'setLegendItemTextColor',
+  setLegendItemWidth: 'setLegendItemWidth',
+  setLegendItemsSpacing: 'setLegendItemsSpacing',
+  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor',
+  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth',
+  setLegendSymbolShape: 'setLegendSymbolShape',
+  setLegendSymbolSize: 'setLegendSymbolSize',
+  setLegendSymbolSpacing: 'setLegendSymbolSpacing',
   setLegendTranslateX: 'setLegendTranslateX',
   setLegendTranslateY: 'setLegendTranslateY',
-  setLegendItemsSpacing: 'setLegendItemsSpacing',
-  setLegendItemWidth: 'setLegendItemWidth',
-  setLegendItemHeight: 'setLegendItemHeight',
-  setLegendItemDirection: 'setLegendItemDirection',
-  setLegendItemTextColor: 'setLegendItemTextColor',
-  setLegendItemOpacity: 'setLegendItemOpacity',
-  setLegendSymbolSize: 'setLegendSymbolSize',
-  setLegendSymbolShape: 'setLegendSymbolShape',
+
+  /** options */
+  setChartTitle: 'setChartTitle',
+  setChartTitleColor: 'setChartTitleColor',
+  setChartTitlePosition: 'setChartTitlePosition',
+  setChartTitleSize: 'setChartTitleSize',
+  setIsChartTitleFocused: 'setIsChartTitleFocused',
+  setIsChartTitleValid: 'setIsChartTitleValid',
+
+  /** screenshot */
+  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused',
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid',
+  setScreenshotFilename: 'setScreenshotFilename',
+  setScreenshotImageQuality: 'setScreenshotImageQuality',
+  setScreenshotImageType: 'setScreenshotImageType',
 
   /** reset all */
   resetChartToDefault: 'resetChartToDefault',
@@ -320,7 +358,7 @@ function responsivePieChartReducer(
         ...state,
         enableLegend: action.payload,
       };
-    case responsivePieChartAction.setNivoLegendAnchor:
+    case responsivePieChartAction.setLegendAnchor:
       return {
         ...state,
         legendAnchor: action.payload,
@@ -330,10 +368,10 @@ function responsivePieChartReducer(
         ...state,
         legendDirection: action.payload,
       };
-    case responsivePieChartAction.setLegendJustify:
+    case responsivePieChartAction.setEnableLegendJustify:
       return {
         ...state,
-        legendJustify: action.payload,
+        enableLegendJustify: action.payload,
       };
     case responsivePieChartAction.setLegendTranslateX:
       return {
@@ -384,6 +422,85 @@ function responsivePieChartReducer(
       return {
         ...state,
         legendSymbolShape: action.payload,
+      };
+    case responsivePieChartAction.setLegendSymbolBorderColor:
+      return {
+        ...state,
+        legendSymbolBorderColor: action.payload,
+      };
+    case responsivePieChartAction.setLegendSymbolBorderWidth:
+      return {
+        ...state,
+        legendSymbolBorderWidth: action.payload,
+      };
+    case responsivePieChartAction.setLegendSymbolSpacing:
+      return {
+        ...state,
+        legendSymbolSpacing: action.payload,
+      };
+    case responsivePieChartAction.setLegendItemBackground:
+      return {
+        ...state,
+        legendItemBackground: action.payload,
+      };
+
+    /** options */
+    case responsivePieChartAction.setChartTitle:
+      return {
+        ...state,
+        chartTitle: action.payload,
+      };
+    case responsivePieChartAction.setChartTitleColor:
+      return {
+        ...state,
+        chartTitleColor: action.payload,
+      };
+    case responsivePieChartAction.setChartTitlePosition:
+      return {
+        ...state,
+        chartTitlePosition: action.payload,
+      };
+    case responsivePieChartAction.setChartTitleSize:
+      return {
+        ...state,
+        chartTitleSize: action.payload,
+      };
+    case responsivePieChartAction.setIsChartTitleFocused:
+      return {
+        ...state,
+        isChartTitleFocused: action.payload,
+      };
+    case responsivePieChartAction.setIsChartTitleValid:
+      return {
+        ...state,
+        isChartTitleValid: action.payload,
+      };
+
+    /** screenshot */
+    case responsivePieChartAction.setIsScreenshotFilenameFocused:
+      return {
+        ...state,
+        isScreenshotFilenameFocused: action.payload,
+      };
+    case responsivePieChartAction.setIsScreenshotFilenameValid:
+      return {
+        ...state,
+        isScreenshotFilenameValid: action.payload,
+      };
+    case responsivePieChartAction.setScreenshotFilename:
+      return {
+        ...state,
+        screenshotFilename: action.payload,
+      };
+    case responsivePieChartAction.setScreenshotImageQuality:
+      return {
+        ...state,
+        screenshotImageQuality: action.payload,
+      };
+    case responsivePieChartAction.setScreenshotImageType:
+      return {
+        ...state,
+        screenshotImageType: action.payload,
       };
 
     /** reset all */
