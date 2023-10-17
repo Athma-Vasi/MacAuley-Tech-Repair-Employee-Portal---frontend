@@ -55,6 +55,7 @@ import { BiReset } from 'react-icons/bi';
 import { ChartMargin } from '../chartControls/ChartMargin';
 import { ChartLegend } from '../chartControls/ChartLegend';
 import { ChartOptions } from '../chartControls/ChartOptions';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
 function ResponsiveRadialBarChart() {
   const {
@@ -2168,38 +2169,21 @@ function ResponsiveRadialBarChart() {
     />
   );
 
-  const displayChartTitle = (
-    <Group w="100%" position={chartTitlePosition} px={padding}>
-      <Title order={chartTitleSize} color={chartTitleColor}>
-        {chartTitle}
-      </Title>
-    </Group>
+  const displayChartAndControls = (
+    <ChartAndControlsDisplay
+      chartControlsStack={displayRadialBarChartControls}
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      padding={padding}
+      responsiveChart={displayResponsiveRadialBar}
+      width={width}
+    />
   );
 
-  const displayResponsiveRadialBarChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
-        {displayRadialBarChartControls}
-      </Grid.Col>
-
-      <Grid.Col span={1}>
-        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
-        <Divider
-          orientation={width < 1192 ? 'horizontal' : 'vertical'}
-          size="sm"
-          w="100%"
-          h="100%"
-        />
-      </Grid.Col>
-
-      <Grid.Col span={width < 1192 ? 1 : 9} h="100%" ref={chartRef}>
-        {displayChartTitle}
-        {displayResponsiveRadialBar}
-      </Grid.Col>
-    </Grid>
-  );
-
-  return displayResponsiveRadialBarChartComponent;
+  return displayChartAndControls;
 }
 
 export { ResponsiveRadialBarChart };

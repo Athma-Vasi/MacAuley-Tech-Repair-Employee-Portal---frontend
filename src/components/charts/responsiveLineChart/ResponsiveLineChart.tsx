@@ -79,6 +79,7 @@ import { ChartAxisRight } from '../chartControls/ChartAxisRight';
 import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
 import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
 import { ChartOptions } from '../chartControls/ChartOptions';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
 function ResponsiveLineChart() {
   const {
@@ -2056,38 +2057,21 @@ function ResponsiveLineChart() {
     />
   );
 
-  const displayChartTitle = (
-    <Group w="100%" position={chartTitlePosition} px={padding}>
-      <Title order={chartTitleSize} color={chartTitleColor}>
-        {chartTitle}
-      </Title>
-    </Group>
+  const displayChartAndControls = (
+    <ChartAndControlsDisplay
+      chartControlsStack={displayLineChartControls}
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      padding={padding}
+      responsiveChart={displayResponsiveLine}
+      width={width}
+    />
   );
 
-  const displayResponsiveLineChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
-        {displayLineChartControls}
-      </Grid.Col>
-
-      <Grid.Col span={1}>
-        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
-        <Divider
-          orientation={width < 1192 ? 'horizontal' : 'vertical'}
-          size="sm"
-          w="100%"
-          h="100%"
-        />
-      </Grid.Col>
-
-      <Grid.Col span={width < 1192 ? 1 : 9} h="70vh" ref={chartRef} p="xl">
-        {displayChartTitle}
-        {displayResponsiveLine}
-      </Grid.Col>
-    </Grid>
-  );
-
-  return displayResponsiveLineChartComponent;
+  return displayChartAndControls;
 }
 
 export { ResponsiveLineChart };

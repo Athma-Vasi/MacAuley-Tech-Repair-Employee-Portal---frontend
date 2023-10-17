@@ -90,6 +90,7 @@ import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
 import { ChartOptions } from '../chartControls/ChartOptions';
 import { ChartLegend } from '../chartControls/ChartLegend';
 import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
 function ResponsiveBarChart() {
   const {
@@ -1684,49 +1685,21 @@ function ResponsiveBarChart() {
     />
   );
 
-  const displayChartTitle = (
-    <Group w="100%" position={chartTitlePosition} px={padding}>
-      <Title order={chartTitleSize} color={chartTitleColor}>
-        {chartTitle}
-      </Title>
-    </Group>
+  const displayChartAndControls = (
+    <ChartAndControlsDisplay
+      chartControlsStack={displayBarChartControls}
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      padding={padding}
+      responsiveChart={displayResponsiveBar}
+      width={width}
+    />
   );
 
-  const displayResponsiveBarChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-      <Grid.Col
-        span={width < 1192 ? 1 : 5}
-        h={width < 1192 ? '38vh' : '70vh'}
-        style={{ position: 'relative' }}
-      >
-        {displayBarChartControls}
-      </Grid.Col>
-
-      <Grid.Col span={1}>
-        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
-        <Divider
-          orientation={width < 1192 ? 'horizontal' : 'vertical'}
-          size="sm"
-          w="100%"
-          h="100%"
-        />
-      </Grid.Col>
-
-      <Grid.Col span={width < 1192 ? 1 : 9} h="100%" ref={chartRef}>
-        {displayChartTitle}
-        {displayResponsiveBar}
-      </Grid.Col>
-    </Grid>
-  );
-
-  useEffect(() => {
-    logState({
-      state: responsiveBarChartState,
-      groupLabel: 'ResponsiveBarChart',
-    });
-  }, [responsiveBarChartState]);
-
-  return displayResponsiveBarChartComponent;
+  return displayChartAndControls;
 }
 
 export { ResponsiveBarChart };

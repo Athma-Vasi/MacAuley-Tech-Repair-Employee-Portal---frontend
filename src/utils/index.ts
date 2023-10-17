@@ -1835,17 +1835,28 @@ function returnSliderMarks({
   });
 }
 
+type CaptureScreenshotInput = {
+  chartRef: any;
+  screenshotFilename: string;
+  screenshotImageQuality: number;
+  screenshotImageType: string;
+};
+/**
+ * Captures a screenshot of a chart rendered in the browser and triggers a download.
+ * @see https://medium.com/@pro.grb.studio/how-to-screencapture-in-reactjs-step-by-step-guide-b435e8b53e11
+ * @param {CaptureScreenshotInput} options - Options for capturing the screenshot.
+ * @param {any} options.chartRef - A reference to the chart element to capture.
+ * @param {string} options.screenshotFilename - The desired filename for the screenshot.
+ * @param {number} options.screenshotImageQuality - The quality of the screenshot image (0-1).
+ * @param {string} options.screenshotImageType - The type of the image (image/webp, 'image/png', 'image/jpeg').
+ * @returns {Promise<void>}
+ */
 async function captureScreenshot({
   chartRef,
   screenshotFilename,
   screenshotImageQuality,
   screenshotImageType,
-}: {
-  chartRef: any;
-  screenshotFilename: string;
-  screenshotImageQuality: number;
-  screenshotImageType: string;
-}) {
+}: CaptureScreenshotInput): Promise<void> {
   const canvasPromise = html2canvas(chartRef.current, {
     useCORS: true,
   });
@@ -1859,8 +1870,8 @@ async function captureScreenshot({
     img.src = dataURL;
     // Create a link element
     const a = document.createElement('a');
-    a.innerHTML = 'DOWNLOAD';
-    a.target = '_blank';
+    // a.innerHTML = 'DOWNLOAD';
+    // a.target = '_blank';
     // Set the href of the link to the data URL of the image
     a.href = img.src;
 
