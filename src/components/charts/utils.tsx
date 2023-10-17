@@ -105,21 +105,21 @@ function ChartsAndGraphsControlsStacker({
     </Flex>
   );
 
-  const displayComponentStack =
-    value === '' ? (
-      <>
-        <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
-          {splitWordIntoUpperCasedSentence(label)}
-        </Text>
-        <Group>{input}</Group>
-      </>
-    ) : (
-      <>
-        {displayTopSection}
+  // const displayComponentStack =
+  //   value === '' ? (
+  //     <>
+  //       <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
+  //         {splitWordIntoUpperCasedSentence(label)}
+  //       </Text>
+  //       <Group>{input}</Group>
+  //     </>
+  //   ) : (
+  //     <>
+  //       {displayTopSection}
 
-        {displayBottomSection}
-      </>
-    );
+  //       {displayBottomSection}
+  //     </>
+  //   );
 
   return (
     <Flex
@@ -133,7 +133,9 @@ function ChartsAndGraphsControlsStacker({
       w="100%"
       wrap="wrap"
     >
-      {displayComponentStack}
+      {displayTopSection}
+
+      {displayBottomSection}
     </Flex>
   );
 }

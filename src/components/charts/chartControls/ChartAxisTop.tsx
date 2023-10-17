@@ -28,15 +28,15 @@ import { NivoAxisLegendPosition } from '../types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 
 type ChartAxisAction = {
-  setEnableAxisTop: 'setEnableAxisTop';
-  setAxisTopTickSize: 'setAxisTopTickSize';
-  setAxisTopTickPadding: 'setAxisTopTickPadding';
-  setAxisTopTickRotation: 'setAxisTopTickRotation';
   setAxisTopLegend: 'setAxisTopLegend';
-  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid';
-  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused';
   setAxisTopLegendOffset: 'setAxisTopLegendOffset';
   setAxisTopLegendPosition: 'setAxisTopLegendPosition';
+  setAxisTopTickPadding: 'setAxisTopTickPadding';
+  setAxisTopTickRotation: 'setAxisTopTickRotation';
+  setAxisTopTickSize: 'setAxisTopTickSize';
+  setEnableAxisTop: 'setEnableAxisTop';
+  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused';
+  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid';
 };
 
 type ChartAxisDispatch =
@@ -65,19 +65,20 @@ type ChartAxisDispatch =
     };
 
 type ChartAxisTopProps = {
-  enableAxisTop: boolean; // default: false ? null
-  axisTopTickSize: number; // 0px - 20px default: 5 step: 1
-  axisTopTickPadding: number; // 0px - 20px default: 5 step: 1
-  axisTopTickRotation: number; // -90° - 90° default: 0 step: 1
   axisTopLegend: string; // default: ''
-  isAxisTopLegendValid: boolean; // default: false
-  isAxisTopLegendFocused: boolean; // default: false
   axisTopLegendOffset: number; // -60px - 60px default: 0 step: 1
   axisTopLegendPosition: NivoAxisLegendPosition; // default: middle
+  axisTopTickPadding: number; // 0px - 20px default: 5 step: 1
+  axisTopTickRotation: number; // -90° - 90° default: 0 step: 1
+  axisTopTickSize: number; // 0px - 20px default: 5 step: 1
   borderColor: string;
+  enableAxisTop: boolean; // default: false ? null
+  initialChartState: Record<string, any>;
+  isAxisTopLegendFocused: boolean; // default: false
+  isAxisTopLegendValid: boolean; // default: false
+  padding: MantineNumberSize;
   parentChartAction: ChartAxisAction;
   parentChartDispatch: React.Dispatch<ChartAxisDispatch>;
-  padding: MantineNumberSize;
   sectionHeadersBgColor: string;
   textColor: string;
   width: number;
@@ -85,19 +86,20 @@ type ChartAxisTopProps = {
 
 function ChartAxisTop(props: ChartAxisTopProps) {
   const {
-    enableAxisTop,
-    axisTopTickSize,
-    axisTopTickPadding,
-    axisTopTickRotation,
     axisTopLegend,
-    isAxisTopLegendValid,
-    isAxisTopLegendFocused,
     axisTopLegendOffset,
     axisTopLegendPosition,
+    axisTopTickPadding,
+    axisTopTickRotation,
+    axisTopTickSize,
     borderColor,
+    enableAxisTop,
+    initialChartState,
+    isAxisTopLegendFocused,
+    isAxisTopLegendValid,
+    padding,
     parentChartAction,
     parentChartDispatch,
-    padding,
     sectionHeadersBgColor,
     textColor,
     width,
@@ -359,7 +361,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
 
   const displayAxisTopTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
-      initialChartState={props}
+      initialChartState={initialChartState}
       input={createdAxisTopTickSizeSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick size"
@@ -370,7 +372,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
 
   const displayAxisTopTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
-      initialChartState={props}
+      initialChartState={initialChartState}
       input={createdAxisTopTickPaddingSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick padding"
@@ -381,7 +383,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
 
   const displayAxisTopTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
-      initialChartState={props}
+      initialChartState={initialChartState}
       input={createdAxisTopTickRotationSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick rotation"
@@ -392,7 +394,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
 
   const displayAxisTopLegendTextInput = (
     <ChartsAndGraphsControlsStacker
-      initialChartState={props}
+      initialChartState={initialChartState}
       input={createdAxisTopLegendTextInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top legend"
@@ -402,7 +404,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
 
   const displayAxisTopLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
-      initialChartState={props}
+      initialChartState={initialChartState}
       input={createdAxisTopLegendOffsetSliderInput}
       isInputDisabled={!enableAxisTop || !axisTopLegend}
       label="Axis top legend offset"
@@ -413,7 +415,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
 
   const displayAxisTopLegendPositionSelectInput = (
     <ChartsAndGraphsControlsStacker
-      initialChartState={props}
+      initialChartState={initialChartState}
       input={createdAxisTopLegendPositionSelectInput}
       isInputDisabled={!enableAxisTop || !axisTopLegend}
       label="Axis top legend position"

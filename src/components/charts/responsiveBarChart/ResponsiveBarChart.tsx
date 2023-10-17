@@ -84,6 +84,7 @@ import {
 } from './state';
 import { ResponsiveBarChartState } from './types';
 import { ChartAxisTop } from '../chartControls/ChartAxisTop';
+import { ChartAxisRight } from '../chartControls/ChartAxisRight';
 
 function ResponsiveBarChart() {
   const {
@@ -3448,16 +3449,39 @@ function ResponsiveBarChart() {
       axisTopLegend={axisTopLegend}
       axisTopLegendOffset={axisTopLegendOffset}
       axisTopLegendPosition={axisTopLegendPosition}
-      axisTopTickRotation={axisTopTickRotation}
       axisTopTickPadding={axisTopTickPadding}
+      axisTopTickRotation={axisTopTickRotation}
       axisTopTickSize={axisTopTickSize}
-      enableAxisTop={enableAxisTop}
       borderColor={borderColor}
-      parentChartAction={responsiveBarChartAction}
-      parentChartDispatch={responsiveBarChartDispatch}
+      enableAxisTop={enableAxisTop}
+      initialChartState={modifiedInitialResponsiveBarChartState}
       isAxisTopLegendFocused={isAxisTopLegendFocused}
       isAxisTopLegendValid={isAxisTopLegendValid}
       padding={padding}
+      parentChartAction={responsiveBarChartAction}
+      parentChartDispatch={responsiveBarChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
+    />
+  );
+
+  const displayChartAxisRight = (
+    <ChartAxisRight
+      axisRightLegend={axisRightLegend}
+      axisRightLegendOffset={axisRightLegendOffset}
+      axisRightLegendPosition={axisRightLegendPosition}
+      axisRightTickPadding={axisRightTickPadding}
+      axisRightTickRotation={axisRightTickRotation}
+      axisRightTickSize={axisRightTickSize}
+      borderColor={borderColor}
+      enableAxisRight={enableAxisRight}
+      initialChartState={modifiedInitialResponsiveBarChartState}
+      isAxisRightLegendFocused={isAxisRightLegendFocused}
+      isAxisRightLegendValid={isAxisRightLegendValid}
+      padding={padding}
+      parentChartAction={responsiveBarChartAction}
+      parentChartDispatch={responsiveBarChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
       textColor={textColor}
       width={width}
@@ -3473,7 +3497,8 @@ function ResponsiveBarChart() {
       {displayGridSection}
       {/* {displayAxisTopSection} */}
       {displayChartAxisTop}
-      {displayAxisRightSection}
+      {/* {displayAxisRightSection} */}
+      {displayChartAxisRight}
       {displayAxisBottomSection}
       {displayAxisLeftSection}
       {displayLegendSection}
