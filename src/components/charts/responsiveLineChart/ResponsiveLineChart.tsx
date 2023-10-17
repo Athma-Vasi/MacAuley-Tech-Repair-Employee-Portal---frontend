@@ -12,7 +12,7 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import { ChangeEvent, useEffect, useReducer } from 'react';
+import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { SERIAL_ID_REGEX } from '../../../constants/regex';
@@ -72,6 +72,13 @@ import { ResponsiveLineChartState } from './types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 import { ResponsiveLine } from '@nivo/line';
 import { BiReset } from 'react-icons/bi';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartLegend } from '../chartControls/ChartLegend';
+import { ChartAxisTop } from '../chartControls/ChartAxisTop';
+import { ChartAxisRight } from '../chartControls/ChartAxisRight';
+import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
+import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
+import { ChartOptions } from '../chartControls/ChartOptions';
 
 function ResponsiveLineChart() {
   const {
@@ -102,14 +109,14 @@ function ResponsiveLineChart() {
 
   const {
     // base
+    enableYScaleMax, // default: false ? 'auto'
+    enableYScaleMin, // default: false ? 'auto'
+    enableYScaleStacked, // default: false
+    reverseScale, // default: false
     xScale, // default: linear
     yScale, // default: linear
-    enableYScaleStacked, // default: false
-    enableYScaleMin, // default: false ? 'auto'
-    yScaleMin, // -2000 - 2000 default: 0
-    enableYScaleMax, // default: false ? 'auto'
     yScaleMax, // -2000 - 2000 default: 0
-    reverseScale, // default: false
+    yScaleMin, // -2000 - 2000 default: 0
 
     // margin
     marginTop, // 0px - 200px default: 60 step: 1
@@ -118,22 +125,22 @@ function ResponsiveLineChart() {
     marginLeft, // 0px - 200px default: 60 step: 1
 
     // style
-    lineCurve, // default: 'linear'
-    chartColors, // default: 'nivo'
-    lineWidth, // 0px - 20px default: 2 step: 1
-    enableArea, // default: false
-    areaOpacity, // 0 - 1 default: 0.2 step: 0.1
     areaBlendMode, // default: 'normal'
+    areaOpacity, // 0 - 1 default: 0.2 step: 0.1
+    chartColors, // default: 'nivo'
+    enableArea, // default: false
+    lineCurve, // default: 'linear'
+    lineWidth, // 0px - 20px default: 2 step: 1
 
     // points
-    enablePoints, // default: false
-    pointSize, // 0px - 20px default: 6 step: 1
-    pointColor, // default: gray
-    pointBorderWidth, // 0px - 20px default: 0 step: 1
-    pointBorderColor, // default: gray
     enablePointLabel, // default: false
+    enablePoints, // default: false
+    pointBorderColor, // default: gray
+    pointBorderWidth, // 0px - 20px default: 0 step: 1
+    pointColor, // default: gray
     pointLabel, // default: 'y'
     pointLabelYOffset, // -22px - 24px default: -12 step: 1
+    pointSize, // 0px - 20px default: 6 step: 1
 
     // grids
     enableGridX, // default: true
@@ -141,41 +148,45 @@ function ResponsiveLineChart() {
 
     // axes
     // axisTop
-    enableAxisTop, // default: false ? null
-    axisTopTickSize, // 0px - 20px default: 5 step: 1
+    axisTopLegend, // default: ''
+    axisTopLegendOffset, // -60px - 60px default: 0 step: 1
+    axisTopLegendPosition, // 'start' | 'middle' | 'end' default: 'middle'
     axisTopTickPadding, // 0px - 20px default: 5 step: 1
     axisTopTickRotation, // -90° - 90° default: 0 step: 1
-    axisTopLegend, // default: ''
-    isAxisTopLegendValid, // default: false
+    axisTopTickSize, // 0px - 20px default: 5 step: 1
+    enableAxisTop, // default: false ? null
     isAxisTopLegendFocused, // default: false
-    axisTopLegendOffset, // -60px - 60px default: 0 step: 1
+    isAxisTopLegendValid, // default: false
     // axisRight
-    enableAxisRight, // default: false ? null
-    axisRightTickSize, // 0px - 20px default: 5 step: 1
+    axisRightLegend, // default: ''
+    axisRightLegendOffset, // -60px - 60px default: 0 step: 1
+    axisRightLegendPosition, // 'start' | 'middle' | 'end' default: 'middle'
     axisRightTickPadding, // 0px - 20px default: 5 step: 1
     axisRightTickRotation, // -90° - 90° default: 0 step: 1
-    axisRightLegend, // default: ''
-    isAxisRightLegendValid, // default: false
+    axisRightTickSize, // 0px - 20px default: 5 step: 1
+    enableAxisRight, // default: false ? null
     isAxisRightLegendFocused, // default: false
-    axisRightLegendOffset, // -60px - 60px default: 0 step: 1
+    isAxisRightLegendValid, // default: false
     // axisBottom
-    enableAxisBottom, // default: true ? {...} : null
-    axisBottomTickSize, // 0px - 20px default: 5 step: 1
+    axisBottomLegend, // default: ''
+    axisBottomLegendOffset, // -60px - 60px default: 0 step: 1
+    axisBottomLegendPosition, // 'start' | 'middle' | 'end' default: 'middle'
     axisBottomTickPadding, // 0px - 20px default: 5 step: 1
     axisBottomTickRotation, // -90° - 90° default: 0 step: 1
-    axisBottomLegend, // default: ''
-    isAxisBottomLegendValid, // default: false
+    axisBottomTickSize, // 0px - 20px default: 5 step: 1
+    enableAxisBottom, // default: true ? {...} : null
     isAxisBottomLegendFocused, // default: false
-    axisBottomLegendOffset, // -60px - 60px default: 0 step: 1
+    isAxisBottomLegendValid, // default: false
     // axisLeft
-    enableAxisLeft, // default: true ? {...} : null
-    axisLeftTickSize, // 0px - 20px default: 5 step: 1
+    axisLeftLegend, // default: ''
+    axisLeftLegendOffset, // -60px - 60px default: 0 step: 1
+    axisLeftLegendPosition, // 'start' | 'middle' | 'end' default: 'middle'
     axisLeftTickPadding, // 0px - 20px default: 5 step: 1
     axisLeftTickRotation, // -90° - 90° default: 0 step: 1
-    axisLeftLegend, // default: ''
-    isAxisLeftLegendValid, // default: false
+    axisLeftTickSize, // 0px - 20px default: 5 step: 1
+    enableAxisLeft, // default: true ? {...} : null
     isAxisLeftLegendFocused, // default: false
-    axisLeftLegendOffset, // -60px - 60px default: 0 step: 1
+    isAxisLeftLegendValid, // default: false
 
     // interactivity
     enableCrosshair, // default: true
@@ -183,26 +194,45 @@ function ResponsiveLineChart() {
 
     // legends
     enableLegend, // default: false
+    enableLegendJustify, // default: false
     legendAnchor, // default: bottom-right
     legendDirection, // default: column
-    enableLegendJustify, // default: false
-    legendTranslateX, // -200px - 200px default: 0 step: 1
-    legendTranslateY, // -200px - 200px default: 0 step: 1
-    legendItemWidth, // 10px - 200px default: 60 step: 1
-    legendItemHeight, // 10px - 200px default: 20 step: 1
-    legendItemsSpacing, // 0px - 60px default: 2 step: 1
+    legendItemBackground, // default: 'rgba(0, 0, 0, 0)'
     legendItemDirection, // default: left-to-right
+    legendItemHeight, // 10px - 200px default: 20 step: 1
     legendItemOpacity, // 0 - 1 default: 1 step: 0.05
-    legendSymbolSize, // 2px - 60px default: 12 step: 1
-    legendSymbolShape, // default: circle
+    legendItemTextColor, // default: 'gray'
+    legendItemWidth, // 10px - 200px default: 60 step: 1
+    legendItemsSpacing, // 0px - 60px default: 2 step: 1
     legendSymbolBorderColor, // default: 'rgba(0, 0, 0, .5)'
     legendSymbolBorderWidth, // 0px - 20px default: 0 step: 1
+    legendSymbolShape, // default: circle
+    legendSymbolSize, // 2px - 60px default: 12 step: 1
     legendSymbolSpacing, // 0px - 60px default: 8 step: 1
+    legendTranslateX, // -200px - 200px default: 0 step: 1
+    legendTranslateY, // -200px - 200px default: 0 step: 1
 
     // motion
     enableAnimate, // default: true
     motionConfig, // default: 'gentle'
+
+    // options
+    chartTitle,
+    chartTitleColor,
+    chartTitlePosition,
+    chartTitleSize,
+    isChartTitleFocused,
+    isChartTitleValid,
+
+    // screenshot
+    isScreenshotFilenameFocused,
+    isScreenshotFilenameValid,
+    screenshotFilename,
+    screenshotImageQuality,
+    screenshotImageType,
   } = responsiveLineChartState;
+
+  const chartRef = useRef(null);
 
   // set motion config on enable
   useEffect(() => {
@@ -215,46 +245,6 @@ function ResponsiveLineChart() {
       payload: false,
     });
   }, [isPrefersReducedMotion]);
-
-  // validate axisTopLegend on every change
-  useEffect(() => {
-    const isValid = SERIAL_ID_REGEX.test(axisTopLegend);
-
-    responsiveLineChartDispatch({
-      type: responsiveLineChartAction.setIsAxisTopLegendValid,
-      payload: isValid,
-    });
-  }, [axisTopLegend]);
-
-  // validate axisRightLegend on every change
-  useEffect(() => {
-    const isValid = SERIAL_ID_REGEX.test(axisRightLegend);
-
-    responsiveLineChartDispatch({
-      type: responsiveLineChartAction.setIsAxisRightLegendValid,
-      payload: isValid,
-    });
-  }, [axisRightLegend]);
-
-  // validate axisBottomLegend on every change
-  useEffect(() => {
-    const isValid = SERIAL_ID_REGEX.test(axisBottomLegend);
-
-    responsiveLineChartDispatch({
-      type: responsiveLineChartAction.setIsAxisBottomLegendValid,
-      payload: isValid,
-    });
-  }, [axisBottomLegend]);
-
-  // validate axisLeftLegend on every change
-  useEffect(() => {
-    const isValid = SERIAL_ID_REGEX.test(axisLeftLegend);
-
-    responsiveLineChartDispatch({
-      type: responsiveLineChartAction.setIsAxisLeftLegendValid,
-      payload: isValid,
-    });
-  }, [axisLeftLegend]);
 
   const [
     enableYScaleStackedAccessibleSelectedText,
@@ -356,50 +346,6 @@ function ResponsiveLineChart() {
   });
 
   const [
-    enableAxisTopAccessibleSelectedText,
-    enableAxisTopAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Top axis will be disabled',
-    isSelected: enableAxisTop,
-    selectedDescription: 'Top axis will be enabled',
-    semanticName: 'Axis Top',
-    theme: 'muted',
-  });
-
-  const [
-    enableAxisRightAccessibleSelectedText,
-    enableAxisRightAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Right axis will be disabled',
-    isSelected: enableAxisRight,
-    selectedDescription: 'Right axis will be enabled',
-    semanticName: 'Axis Right',
-    theme: 'muted',
-  });
-
-  const [
-    enableAxisBottomAccessibleSelectedText,
-    enableAxisBottomAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Bottom axis will be disabled',
-    isSelected: enableAxisBottom,
-    selectedDescription: 'Bottom axis will be enabled',
-    semanticName: 'Axis Bottom',
-    theme: 'muted',
-  });
-
-  const [
-    enableAxisLeftAccessibleSelectedText,
-    enableAxisLeftAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Left axis will be disabled',
-    isSelected: enableAxisLeft,
-    selectedDescription: 'Left axis will be enabled',
-    semanticName: 'Axis Left',
-    theme: 'muted',
-  });
-
-  const [
     enableCrosshairAccessibleSelectedText,
     enableCrosshairAccessibleDeselectedText,
   ] = AccessibleSelectedDeselectedTextElements({
@@ -407,28 +353,6 @@ function ResponsiveLineChart() {
     isSelected: enableCrosshair,
     selectedDescription: 'Crosshair will be enabled',
     semanticName: 'Crosshair',
-    theme: 'muted',
-  });
-
-  const [
-    enableLegendAccessibleSelectedText,
-    enableLegendAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Legend will be disabled',
-    isSelected: enableLegend,
-    selectedDescription: 'Legend will be enabled',
-    semanticName: 'Legend',
-    theme: 'muted',
-  });
-
-  const [
-    enableLegendJustifyAccessibleSelectedText,
-    enableLegendJustifyAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Legend items and symbols will not be justified',
-    isSelected: enableLegendJustify,
-    selectedDescription: 'Legend items and symbols will be justified',
-    semanticName: 'Legend Justify',
     theme: 'muted',
   });
 
@@ -631,87 +555,6 @@ function ResponsiveLineChart() {
       w="100%"
     />
   );
-
-  // margin
-  const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin top',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setMarginTop,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginTop,
-    width: sliderWidth,
-  };
-
-  const marginRightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin right',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setMarginRight,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginRight,
-    width: sliderWidth,
-  };
-
-  const marginBottomSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin bottom',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setMarginBottom,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginBottom,
-    width: sliderWidth,
-  };
-
-  const marginLeftSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin left',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setMarginLeft,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginLeft,
-    width: sliderWidth,
-  };
 
   // style
   const lineCurveSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
@@ -1047,651 +890,6 @@ function ResponsiveLineChart() {
     />
   );
 
-  // axes
-  // axisTop
-  const createdEnableAxisTopSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableAxisTop
-          ? enableAxisTopAccessibleSelectedText.props.id
-          : enableAxisTopAccessibleDeselectedText.props.id
-      }
-      checked={enableAxisTop}
-      description={
-        enableAxisTop
-          ? enableAxisTopAccessibleSelectedText
-          : enableAxisTopAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Axis Top
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableAxisTop,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const axisTopTickSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis top tick size',
-      disabled: !enableAxisTop,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisTopTickSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisTopTickSize,
-      width: sliderWidth,
-    };
-
-  const axisTopTickPaddingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis top tick padding',
-      disabled: !enableAxisTop,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisTopTickPadding,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisTopTickPadding,
-      width: sliderWidth,
-    };
-
-  const axisTopTickRotationSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis top tick rotation',
-      disabled: !enableAxisTop,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 90,
-      min: -90,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisTopTickRotation,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisTopTickRotation,
-      width: sliderWidth,
-    };
-
-  const [axisTopLegendErrorText, axisTopLegendValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'axis top legend',
-      inputText: axisTopLegend,
-      isInputTextFocused: isAxisTopLegendFocused,
-      isValidInputText: isAxisTopLegendValid,
-      regexValidationText: returnSerialIdValidationText({
-        content: axisTopLegend,
-        contentKind: 'axis top legend',
-      }),
-    });
-
-  const axisTopLegendTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: axisTopLegendErrorText,
-      valid: axisTopLegendValidText,
-    },
-    disabled: !enableAxisTop,
-    inputText: axisTopLegend,
-    isValidInputText: isAxisTopLegendValid,
-    label: '',
-    onBlur: () => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setIsAxisTopLegendFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setAxisTopLegend,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setIsAxisTopLegendFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter axis top legend text',
-    required: false,
-    semanticName: 'axis top legend',
-  };
-
-  const axisTopLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis top legend offset',
-      disabled: !enableAxisTop || !axisTopLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 60,
-      min: -60,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisTopLegendOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisTopLegendOffset,
-      width: sliderWidth,
-    };
-
-  // axisRight
-  const createdEnableAxisRightSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableAxisRight
-          ? enableAxisRightAccessibleSelectedText.props.id
-          : enableAxisRightAccessibleDeselectedText.props.id
-      }
-      checked={enableAxisRight}
-      description={
-        enableAxisRight
-          ? enableAxisRightAccessibleSelectedText
-          : enableAxisRightAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Axis Right
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableAxisRight,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const axisRightTickSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis right tick size',
-      disabled: !enableAxisRight,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisRightTickSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisRightTickSize,
-      width: sliderWidth,
-    };
-
-  const axisRightTickPaddingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis right tick padding',
-      disabled: !enableAxisRight,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisRightTickPadding,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisRightTickPadding,
-      width: sliderWidth,
-    };
-
-  const axisRightTickRotationSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis right tick rotation',
-      disabled: !enableAxisRight,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 90,
-      min: -90,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisRightTickRotation,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisRightTickRotation,
-      width: sliderWidth,
-    };
-
-  const [axisRightLegendErrorText, axisRightLegendValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'axis right legend',
-      inputText: axisRightLegend,
-      isInputTextFocused: isAxisRightLegendFocused,
-      isValidInputText: isAxisRightLegendValid,
-      regexValidationText: returnSerialIdValidationText({
-        content: axisRightLegend,
-        contentKind: 'axis right legend',
-      }),
-    });
-
-  const axisRightLegendTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: axisRightLegendErrorText,
-      valid: axisRightLegendValidText,
-    },
-    disabled: !enableAxisRight,
-    inputText: axisRightLegend,
-    isValidInputText: isAxisRightLegendValid,
-    label: '',
-    onBlur: () => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setIsAxisRightLegendFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setAxisRightLegend,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setIsAxisRightLegendFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter axis right legend text',
-    required: false,
-    semanticName: 'axis right legend',
-  };
-
-  const axisRightLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis right legend offset',
-      disabled: !enableAxisRight || !axisRightLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 60,
-      min: -60,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisRightLegendOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisRightLegendOffset,
-      width: sliderWidth,
-    };
-
-  // axisBottom
-  const createdEnableAxisBottomSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableAxisBottom
-          ? enableAxisBottomAccessibleSelectedText.props.id
-          : enableAxisBottomAccessibleDeselectedText.props.id
-      }
-      checked={enableAxisBottom}
-      description={
-        enableAxisBottom
-          ? enableAxisBottomAccessibleSelectedText
-          : enableAxisBottomAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Axis Bottom
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableAxisBottom,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const axisBottomTickSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis bottom tick size',
-      disabled: !enableAxisBottom,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisBottomTickSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisBottomTickSize,
-      width: sliderWidth,
-    };
-
-  const axisBottomTickPaddingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis bottom tick padding',
-      disabled: !enableAxisBottom,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisBottomTickPadding,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisBottomTickPadding,
-      width: sliderWidth,
-    };
-
-  const axisBottomTickRotationSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis bottom tick rotation',
-      disabled: !enableAxisBottom,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 90,
-      min: -90,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisBottomTickRotation,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisBottomTickRotation,
-      width: sliderWidth,
-    };
-
-  const [axisBottomLegendErrorText, axisBottomLegendValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'axis bottom legend',
-      inputText: axisBottomLegend,
-      isValidInputText: isAxisBottomLegendValid,
-      isInputTextFocused: isAxisBottomLegendFocused,
-      regexValidationText: returnSerialIdValidationText({
-        content: axisBottomLegend,
-        contentKind: 'axis bottom legend',
-      }),
-    });
-
-  const axisBottomLegendTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: axisBottomLegendErrorText,
-      valid: axisBottomLegendValidText,
-    },
-    disabled: !enableAxisBottom,
-    inputText: axisBottomLegend,
-    isValidInputText: isAxisBottomLegendValid,
-    label: '',
-    onBlur: () => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setIsAxisBottomLegendFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setAxisBottomLegend,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setIsAxisBottomLegendFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter axis bottom legend text',
-    required: false,
-    semanticName: 'axis bottom legend',
-  };
-
-  const axisBottomLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis bottom legend offset',
-      disabled: !enableAxisBottom || !axisBottomLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 60,
-      min: -60,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisBottomLegendOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisBottomLegendOffset,
-      width: sliderWidth,
-    };
-
-  // axis left
-  const createdEnableAxisLeftSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableAxisLeft
-          ? enableAxisLeftAccessibleSelectedText.props.id
-          : enableAxisLeftAccessibleDeselectedText.props.id
-      }
-      checked={enableAxisLeft}
-      description={
-        enableAxisLeft
-          ? enableAxisLeftAccessibleSelectedText
-          : enableAxisLeftAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Axis Left
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableAxisLeft,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const axisLeftTickSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis left tick size',
-      disabled: !enableAxisLeft,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisLeftTickSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisLeftTickSize,
-      width: sliderWidth,
-    };
-
-  const axisLeftTickPaddingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis left tick padding',
-      disabled: !enableAxisLeft,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisLeftTickPadding,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisLeftTickPadding,
-      width: sliderWidth,
-    };
-
-  const axisLeftTickRotationSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis left tick rotation',
-      disabled: !enableAxisLeft,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 90,
-      min: -90,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisLeftTickRotation,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisLeftTickRotation,
-      width: sliderWidth,
-    };
-
-  const [axisLeftLegendErrorText, axisLeftLegendValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'axis left legend',
-      inputText: axisLeftLegend,
-      isValidInputText: isAxisLeftLegendValid,
-      isInputTextFocused: isAxisLeftLegendFocused,
-      regexValidationText: returnSerialIdValidationText({
-        content: axisLeftLegend,
-        contentKind: 'axis left legend',
-      }),
-    });
-
-  const axisLeftLegendTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: axisLeftLegendErrorText,
-      valid: axisLeftLegendValidText,
-    },
-    disabled: !enableAxisLeft,
-    inputText: axisLeftLegend,
-    isValidInputText: isAxisLeftLegendValid,
-    label: '',
-    onBlur: () => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setIsAxisLeftLegendFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setAxisLeftLegend,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setIsAxisLeftLegendFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter axis left legend text',
-    required: false,
-    semanticName: 'axis left legend',
-  };
-
-  const axisLeftLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis left legend offset',
-      disabled: !enableAxisLeft || !axisLeftLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 60,
-      min: -60,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAxisLeftLegendOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisLeftLegendOffset,
-      width: sliderWidth,
-    };
-
   // interactivity
   const createdEnableCrosshairSwitchInput = (
     <Switch
@@ -1732,337 +930,6 @@ function ResponsiveLineChart() {
         });
       },
       value: crosshairType,
-      width: sliderWidth,
-    };
-
-  // legends
-  const createdEnableLegendSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableLegend
-          ? enableLegendAccessibleSelectedText.props.id
-          : enableLegendAccessibleDeselectedText.props.id
-      }
-      checked={enableLegend}
-      description={
-        enableLegend
-          ? enableLegendAccessibleSelectedText
-          : enableLegendAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Legend
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableLegend,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const legendAnchorSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LEGEND_ANCHOR_DATA,
-    disabled: !enableLegend,
-    description: 'Define legend anchor.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setLegendAnchor,
-        payload: event.currentTarget.value as NivoLegendAnchor,
-      });
-    },
-    value: legendAnchor,
-    width: sliderWidth,
-  };
-
-  const legendDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_DIRECTION_DATA,
-      disabled: !enableLegend,
-      description: 'Define legend direction.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendDirection,
-          payload: event.currentTarget.value as NivoLegendDirection,
-        });
-      },
-      value: legendDirection,
-      width: sliderWidth,
-    };
-
-  const createdEnableLegendJustifySwitchInput = (
-    <Switch
-      aria-describedby={
-        enableLegendJustify
-          ? enableLegendJustifyAccessibleSelectedText.props.id
-          : enableLegendJustifyAccessibleDeselectedText.props.id
-      }
-      checked={enableLegendJustify}
-      description={
-        enableLegendJustify
-          ? enableLegendJustifyAccessibleSelectedText
-          : enableLegendJustifyAccessibleDeselectedText
-      }
-      disabled={!enableLegend}
-      label={
-        <Text weight={500} color={enableLegend ? textColor : grayColorShade}>
-          Legend Justify
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableLegendJustify,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const legendTranslateXSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend translate x',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: -200,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendTranslateX,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendTranslateX,
-      width: sliderWidth,
-    };
-
-  const legendTranslateYSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend translate y',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: -200,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendTranslateY,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendTranslateY,
-      width: sliderWidth,
-    };
-
-  const legendItemWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item width',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendItemWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 100,
-      step: 1,
-      value: legendItemWidth,
-      width: sliderWidth,
-    };
-
-  const legendItemHeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item height',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendItemHeight,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 12,
-      step: 1,
-      value: legendItemHeight,
-      width: sliderWidth,
-    };
-
-  const legendItemsSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend items spacing',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendItemsSpacing,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 10,
-      step: 1,
-      value: legendItemsSpacing,
-      width: sliderWidth,
-    };
-
-  const legendItemDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_ITEM_DIRECTION_DATA,
-      disabled: !enableLegend,
-      description: 'Define legend item direction.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendItemDirection,
-          payload: event.currentTarget.value as NivoLegendItemDirection,
-        });
-      },
-      value: legendItemDirection,
-      width: sliderWidth,
-    };
-
-  const legendItemOpacitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item opacity',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
-      ),
-      max: 1,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendItemOpacity,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 0.1,
-      value: legendItemOpacity,
-      width: sliderWidth,
-    };
-
-  const legendSymbolSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend symbol size',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 100,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendSymbolSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 16,
-      step: 1,
-      value: legendSymbolSize,
-      width: sliderWidth,
-    };
-
-  const legendSymbolShapeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_SYMBOL_SHAPE_DATA,
-      disabled: !enableLegend,
-      description: 'Define legend symbol shape.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendSymbolShape,
-          payload: event.currentTarget.value as NivoLegendSymbolShape,
-        });
-      },
-      value: legendSymbolShape,
-      width: sliderWidth,
-    };
-
-  const createdLegendSymbolBorderColorInput = (
-    <ColorInput
-      aria-describedby="legend symbol border color"
-      color={legendSymbolBorderColor}
-      disabled={!enableLegend}
-      label=""
-      onChange={(color: string) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendSymbolBorderColor,
-          payload: color,
-        });
-      }}
-      w={sliderWidth}
-    />
-  );
-
-  const legendSymbolBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend symbol border width',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 12,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendSymbolBorderWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 1,
-      value: legendSymbolBorderWidth,
-      width: sliderWidth,
-    };
-
-  const legendSymbolSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend symbol spacing',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 12,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setLegendSymbolSpacing,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 8,
-      step: 1,
-      value: legendSymbolSpacing,
       width: sliderWidth,
     };
 
@@ -2143,20 +1010,6 @@ function ResponsiveLineChart() {
       yScaleMaxSliderInputCreatorInfo,
     ]);
 
-  // margin
-  // margin slider inputs
-  const [
-    createdMarginTopSliderInput,
-    createdMarginRightSliderInput,
-    createdMarginBottomSliderInput,
-    createdMarginLeftSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    marginTopSliderInputCreatorInfo,
-    marginRightSliderInputCreatorInfo,
-    marginBottomSliderInputCreatorInfo,
-    marginLeftSliderInputCreatorInfo,
-  ]);
-
   // style
   // style select inputs
   const [
@@ -2193,106 +1046,10 @@ function ResponsiveLineChart() {
     pointLabelSelectInputCreatorInfo,
   ]);
 
-  // axes
-  // axes slider inputs
-  const [
-    // axis top slider inputs
-    createdAxisTopTickSizeSliderInput,
-    createdAxisTopTickPaddingSliderInput,
-    createdAxisTopTickRotationSliderInput,
-    createdAxisTopLegendOffsetSliderInput,
-    // axis right slider inputs
-    createdAxisRightTickSizeSliderInput,
-    createdAxisRightTickPaddingSliderInput,
-    createdAxisRightTickRotationSliderInput,
-    createdAxisRightLegendOffsetSliderInput,
-    // axis bottom slider inputs
-    createdAxisBottomTickSizeSliderInput,
-    createdAxisBottomTickPaddingSliderInput,
-    createdAxisBottomTickRotationSliderInput,
-    createdAxisBottomLegendOffsetSliderInput,
-    // axis left slider inputs
-    createdAxisLeftTickSizeSliderInput,
-    createdAxisLeftTickPaddingSliderInput,
-    createdAxisLeftTickRotationSliderInput,
-    createdAxisLeftLegendOffsetSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    // axis top slider inputs
-    axisTopTickSizeSliderInputCreatorInfo,
-    axisTopTickPaddingSliderInputCreatorInfo,
-    axisTopTickRotationSliderInputCreatorInfo,
-    axisTopLegendOffsetSliderInputCreatorInfo,
-    // axis right slider inputs
-    axisRightTickSizeSliderInputCreatorInfo,
-    axisRightTickPaddingSliderInputCreatorInfo,
-    axisRightTickRotationSliderInputCreatorInfo,
-    axisRightLegendOffsetSliderInputCreatorInfo,
-    // axis bottom slider inputs
-    axisBottomTickSizeSliderInputCreatorInfo,
-    axisBottomTickPaddingSliderInputCreatorInfo,
-    axisBottomTickRotationSliderInputCreatorInfo,
-    axisBottomLegendOffsetSliderInputCreatorInfo,
-    // axis left slider inputs
-    axisLeftTickSizeSliderInputCreatorInfo,
-    axisLeftTickPaddingSliderInputCreatorInfo,
-    axisLeftTickRotationSliderInputCreatorInfo,
-    axisLeftLegendOffsetSliderInputCreatorInfo,
-  ]);
-
-  // axes text inputs
-  const [
-    createdAxisTopLegendTextInput,
-    createdAxisRightLegendTextInput,
-    createdAxisBottomLegendTextInput,
-    createdAxisLeftLegendTextInput,
-  ] = returnAccessibleTextInputElements([
-    axisTopLegendTextInputCreatorInfo,
-    axisRightLegendTextInputCreatorInfo,
-    axisBottomLegendTextInputCreatorInfo,
-    axisLeftLegendTextInputCreatorInfo,
-  ]);
-
   // interactivity
   const [createdCrosshairTypeSelectInput] = returnAccessibleSelectInputElements(
     [crosshairTypeSelectInputCreatorInfo]
   );
-
-  // legend
-  // legend slider inputs
-  const [
-    createdLegendTranslateXSliderInput,
-    createdLegendTranslateYSliderInput,
-    createdLegendItemWidthSliderInput,
-    createdLegendItemHeightSliderInput,
-    createdLegendItemsSpacingSliderInput,
-    createdLegendItemOpacitySliderInput,
-    createdLegendSymbolSizeSliderInput,
-    createdLegendSymbolBorderWidthSliderInput,
-    createdLegendSymbolSpacingSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    legendTranslateXSliderInputCreatorInfo,
-    legendTranslateYSliderInputCreatorInfo,
-    legendItemWidthSliderInputCreatorInfo,
-    legendItemHeightSliderInputCreatorInfo,
-    legendItemsSpacingSliderInputCreatorInfo,
-    legendItemOpacitySliderInputCreatorInfo,
-    legendSymbolSizeSliderInputCreatorInfo,
-    legendSymbolBorderWidthSliderInputCreatorInfo,
-    legendSymbolSpacingSliderInputCreatorInfo,
-  ]);
-
-  // legend select inputs
-  const [
-    createdLegendAnchorSelectInput,
-    createdLegendDirectionSelectInput,
-    createdLegendItemDirectionSelectInput,
-    createdLegendSymbolShapeSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    legendAnchorSelectInputCreatorInfo,
-    legendDirectionSelectInputCreatorInfo,
-    legendItemDirectionSelectInputCreatorInfo,
-    legendSymbolShapeSelectInputCreatorInfo,
-  ]);
 
   // motion
   const [createdMotionConfigSelectInput] = returnAccessibleSelectInputElements([
@@ -2300,22 +1057,6 @@ function ResponsiveLineChart() {
   ]);
 
   // input display
-
-  // title
-  const displayResetButton = (
-    <Tooltip label="Reset all inputs to their default values">
-      <Group>{createdResetAllButton}</Group>
-    </Tooltip>
-  );
-
-  const displayControlsHeading = (
-    <Group p={padding} w="100%" position="apart">
-      <Title order={3} color={textColor}>
-        Line Chart Controls
-      </Title>
-      {displayResetButton}
-    </Group>
-  );
 
   // base
   const displayBaseHeading = (
@@ -2408,67 +1149,20 @@ function ResponsiveLineChart() {
   );
 
   // margin
-  const displayMarginHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Margin
-      </Title>
-    </Group>
-  );
-
-  const displayMarginTopSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartMargin = (
+    <ChartMargin
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdMarginTopSliderInput}
-      label="Margin top"
-      symbol="px"
-      value={marginTop}
+      marginBottom={marginBottom}
+      marginLeft={marginLeft}
+      marginRight={marginRight}
+      marginTop={marginTop}
+      padding={padding}
+      parentChartAction={responsiveLineChartAction}
+      parentChartDispatch={responsiveLineChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayMarginRightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdMarginRightSliderInput}
-      label="Margin right"
-      symbol="px"
-      value={marginRight}
-    />
-  );
-
-  const displayMarginBottomSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdMarginBottomSliderInput}
-      label="Margin bottom"
-      symbol="px"
-      value={marginBottom}
-    />
-  );
-
-  const displayMarginLeftSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdMarginLeftSliderInput}
-      label="Margin left"
-      symbol="px"
-      value={marginLeft}
-    />
-  );
-
-  const displayMarginSection = (
-    <Stack w="100%">
-      {displayMarginHeading}
-      {displayMarginTopSliderInput}
-      {displayMarginRightSliderInput}
-      {displayMarginBottomSliderInput}
-      {displayMarginLeftSliderInput}
-    </Stack>
   );
 
   // style
@@ -2689,357 +1383,92 @@ function ResponsiveLineChart() {
   );
 
   // axes
-  // axes top
-  const displayAxisTopHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Axis Top
-      </Title>
-    </Group>
-  );
-
-  const displayEnableAxisTopSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableAxisTopSwitchInput}
-    </Group>
-  );
-
-  const displayAxisTopTickSizeSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartAxisTop = (
+    <ChartAxisTop
+      axisTopLegend={axisTopLegend}
+      axisTopLegendOffset={axisTopLegendOffset}
+      axisTopLegendPosition={axisTopLegendPosition}
+      axisTopTickPadding={axisTopTickPadding}
+      axisTopTickRotation={axisTopTickRotation}
+      axisTopTickSize={axisTopTickSize}
+      borderColor={borderColor}
+      enableAxisTop={enableAxisTop}
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisTopTickSizeSliderInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top tick size"
-      symbol="px"
-      value={axisTopTickSize}
+      isAxisTopLegendFocused={isAxisTopLegendFocused}
+      isAxisTopLegendValid={isAxisTopLegendValid}
+      padding={padding}
+      parentChartAction={responsiveLineChartAction}
+      parentChartDispatch={responsiveLineChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
   );
 
-  const displayAxisTopTickPaddingSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartAxisRight = (
+    <ChartAxisRight
+      axisRightLegend={axisRightLegend}
+      axisRightLegendOffset={axisRightLegendOffset}
+      axisRightLegendPosition={axisRightLegendPosition}
+      axisRightTickPadding={axisRightTickPadding}
+      axisRightTickRotation={axisRightTickRotation}
+      axisRightTickSize={axisRightTickSize}
+      borderColor={borderColor}
+      enableAxisRight={enableAxisRight}
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisTopTickPaddingSliderInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top tick padding"
-      symbol="px"
-      value={axisTopTickPadding}
+      isAxisRightLegendFocused={isAxisRightLegendFocused}
+      isAxisRightLegendValid={isAxisRightLegendValid}
+      padding={padding}
+      parentChartAction={responsiveLineChartAction}
+      parentChartDispatch={responsiveLineChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
   );
 
-  const displayAxisTopTickRotationSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartAxisBottom = (
+    <ChartAxisBottom
+      axisBottomLegend={axisBottomLegend}
+      axisBottomLegendOffset={axisBottomLegendOffset}
+      axisBottomLegendPosition={axisBottomLegendPosition}
+      axisBottomTickPadding={axisBottomTickPadding}
+      axisBottomTickRotation={axisBottomTickRotation}
+      axisBottomTickSize={axisBottomTickSize}
+      borderColor={borderColor}
+      enableAxisBottom={enableAxisBottom}
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisTopTickRotationSliderInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top tick rotation"
-      symbol="°"
-      value={axisTopTickRotation}
+      isAxisBottomLegendFocused={isAxisBottomLegendFocused}
+      isAxisBottomLegendValid={isAxisBottomLegendValid}
+      padding={padding}
+      parentChartAction={responsiveLineChartAction}
+      parentChartDispatch={responsiveLineChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
   );
 
-  const displayAxisTopLegendTextInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartAxisLeft = (
+    <ChartAxisLeft
+      axisLeftLegend={axisLeftLegend}
+      axisLeftLegendOffset={axisLeftLegendOffset}
+      axisLeftLegendPosition={axisLeftLegendPosition}
+      axisLeftTickPadding={axisLeftTickPadding}
+      axisLeftTickRotation={axisLeftTickRotation}
+      axisLeftTickSize={axisLeftTickSize}
+      borderColor={borderColor}
+      enableAxisLeft={enableAxisLeft}
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisTopLegendTextInput}
-      isInputDisabled={!enableAxisTop}
-      label="Axis top legend"
-      value={axisTopLegend}
+      isAxisLeftLegendFocused={isAxisLeftLegendFocused}
+      isAxisLeftLegendValid={isAxisLeftLegendValid}
+      padding={padding}
+      parentChartAction={responsiveLineChartAction}
+      parentChartDispatch={responsiveLineChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayAxisTopLegendOffsetSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisTopLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisTop || !axisTopLegend}
-      label="Axis top legend offset"
-      symbol="px"
-      value={axisTopLegendOffset}
-    />
-  );
-
-  const displayAxisTopSection = (
-    <Stack w="100%">
-      {displayAxisTopHeading}
-      {displayEnableAxisTopSwitchInput}
-      {displayAxisTopTickSizeSliderInput}
-      {displayAxisTopTickPaddingSliderInput}
-      {displayAxisTopTickRotationSliderInput}
-      {displayAxisTopLegendTextInput}
-      {displayAxisTopLegendOffsetSliderInput}
-    </Stack>
-  );
-
-  // axes right
-  const displayAxisRightHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Axis Right
-      </Title>
-    </Group>
-  );
-
-  const displayEnableAxisRightSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableAxisRightSwitchInput}
-    </Group>
-  );
-
-  const displayAxisRightTickSizeSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisRightTickSizeSliderInput}
-      isInputDisabled={!enableAxisRight}
-      label="Axis right tick size"
-      symbol="px"
-      value={axisRightTickSize}
-    />
-  );
-
-  const displayAxisRightTickPaddingSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisRightTickPaddingSliderInput}
-      isInputDisabled={!enableAxisRight}
-      label="Axis right tick padding"
-      symbol="px"
-      value={axisRightTickPadding}
-    />
-  );
-
-  const displayAxisRightTickRotationSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisRightTickRotationSliderInput}
-      isInputDisabled={!enableAxisRight}
-      label="Axis right tick rotation"
-      symbol="°"
-      value={axisRightTickRotation}
-    />
-  );
-
-  const displayAxisRightLegendTextInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisRightLegendTextInput}
-      isInputDisabled={!enableAxisRight}
-      label="Axis right legend"
-      value={axisRightLegend}
-    />
-  );
-
-  const displayAxisRightLegendOffsetSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisRightLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisRight || !axisRightLegend}
-      label="Axis right legend offset"
-      symbol="px"
-      value={axisRightLegendOffset}
-    />
-  );
-
-  const displayAxisRightSection = (
-    <Stack w="100%">
-      {displayAxisRightHeading}
-      {displayEnableAxisRightSwitchInput}
-      {displayAxisRightTickSizeSliderInput}
-      {displayAxisRightTickPaddingSliderInput}
-      {displayAxisRightTickRotationSliderInput}
-      {displayAxisRightLegendTextInput}
-      {displayAxisRightLegendOffsetSliderInput}
-    </Stack>
-  );
-
-  // axes bottom
-  const displayAxisBottomHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Axis Bottom
-      </Title>
-    </Group>
-  );
-
-  const displayEnableAxisBottomSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableAxisBottomSwitchInput}
-    </Group>
-  );
-
-  const displayAxisBottomTickSizeSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisBottomTickSizeSliderInput}
-      isInputDisabled={!enableAxisBottom}
-      label="Axis bottom tick size"
-      symbol="px"
-      value={axisBottomTickSize}
-    />
-  );
-
-  const displayAxisBottomTickPaddingSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisBottomTickPaddingSliderInput}
-      isInputDisabled={!enableAxisBottom}
-      label="Axis bottom tick padding"
-      symbol="px"
-      value={axisBottomTickPadding}
-    />
-  );
-
-  const displayAxisBottomTickRotationSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisBottomTickRotationSliderInput}
-      isInputDisabled={!enableAxisBottom}
-      label="Axis bottom tick rotation"
-      symbol="°"
-      value={axisBottomTickRotation}
-    />
-  );
-
-  const displayAxisBottomLegendTextInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisBottomLegendTextInput}
-      isInputDisabled={!enableAxisBottom}
-      label="Axis bottom legend"
-      value={axisBottomLegend}
-    />
-  );
-
-  const displayAxisBottomLegendOffsetSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisBottomLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisBottom || !axisBottomLegend}
-      label="Axis bottom legend offset"
-      symbol="px"
-      value={axisBottomLegendOffset}
-    />
-  );
-
-  const displayAxisBottomSection = (
-    <Stack w="100%">
-      {displayAxisBottomHeading}
-      {displayEnableAxisBottomSwitchInput}
-      {displayAxisBottomTickSizeSliderInput}
-      {displayAxisBottomTickPaddingSliderInput}
-      {displayAxisBottomTickRotationSliderInput}
-      {displayAxisBottomLegendTextInput}
-      {displayAxisBottomLegendOffsetSliderInput}
-    </Stack>
-  );
-
-  // axes left
-  const displayAxisLeftHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Axis Left
-      </Title>
-    </Group>
-  );
-
-  const displayEnableAxisLeftSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableAxisLeftSwitchInput}
-    </Group>
-  );
-
-  const displayAxisLeftTickSizeSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisLeftTickSizeSliderInput}
-      isInputDisabled={!enableAxisLeft}
-      label="Axis left tick size"
-      symbol="px"
-      value={axisLeftTickSize}
-    />
-  );
-
-  const displayAxisLeftTickPaddingSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisLeftTickPaddingSliderInput}
-      isInputDisabled={!enableAxisLeft}
-      label="Axis left tick padding"
-      symbol="px"
-      value={axisLeftTickPadding}
-    />
-  );
-
-  const displayAxisLeftTickRotationSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisLeftTickRotationSliderInput}
-      isInputDisabled={!enableAxisLeft}
-      label="Axis left tick rotation"
-      symbol="°"
-      value={axisLeftTickRotation}
-    />
-  );
-
-  const displayAxisLeftLegendTextInput = (
-    <ChartsAndGraphsControlsStacker
-      // initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisLeftLegendTextInput}
-      isInputDisabled={!enableAxisLeft}
-      label="Axis left legend"
-      value={axisLeftLegend}
-    />
-  );
-
-  const displayAxisLeftLegendOffsetSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdAxisLeftLegendOffsetSliderInput}
-      isInputDisabled={!enableAxisLeft || !axisLeftLegend}
-      label="Axis left legend offset"
-      symbol="px"
-      value={axisLeftLegendOffset}
-    />
-  );
-
-  const displayAxisLeftSection = (
-    <Stack w="100%">
-      {displayAxisLeftHeading}
-      {displayEnableAxisLeftSwitchInput}
-      {displayAxisLeftTickSizeSliderInput}
-      {displayAxisLeftTickPaddingSliderInput}
-      {displayAxisLeftTickRotationSliderInput}
-      {displayAxisLeftLegendTextInput}
-      {displayAxisLeftLegendOffsetSliderInput}
-    </Stack>
-  );
-
-  const displayAxesSection = (
-    <Stack w="100%">
-      {displayAxisTopSection}
-      {displayAxisRightSection}
-      {displayAxisBottomSection}
-      {displayAxisLeftSection}
-    </Stack>
   );
 
   // interactivity
@@ -3081,199 +1510,36 @@ function ResponsiveLineChart() {
   );
 
   // legends
-  const displayLegendsHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Legends
-      </Title>
-    </Group>
-  );
-
-  const displayEnableLegendSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableLegendSwitchInput}
-    </Group>
-  );
-
-  const displayLegendAnchorSelectInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartLegend = (
+    <ChartLegend
+      borderColor={borderColor}
+      enableLegend={enableLegend}
+      enableLegendJustify={enableLegendJustify}
+      grayColorShade={grayColorShade}
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendAnchorSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend anchor"
-      value={legendAnchor}
+      legendAnchor={legendAnchor}
+      legendDirection={legendDirection}
+      legendItemBackground={legendItemBackground}
+      legendItemDirection={legendItemDirection}
+      legendItemHeight={legendItemHeight}
+      legendItemOpacity={legendItemOpacity}
+      legendItemTextColor={legendItemTextColor}
+      legendItemWidth={legendItemWidth}
+      legendItemsSpacing={legendItemsSpacing}
+      legendSymbolBorderColor={legendSymbolBorderColor}
+      legendSymbolBorderWidth={legendSymbolBorderWidth}
+      legendSymbolShape={legendSymbolShape}
+      legendSymbolSize={legendSymbolSize}
+      legendSymbolSpacing={legendSymbolSpacing}
+      legendTranslateX={legendTranslateX}
+      legendTranslateY={legendTranslateY}
+      padding={padding}
+      parentChartAction={responsiveLineChartAction}
+      parentChartDispatch={responsiveLineChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayLegendDirectionSelectInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendDirectionSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend direction"
-      value={legendDirection}
-    />
-  );
-
-  const displayEnableLegendJustifySwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableLegendJustifySwitchInput}
-    </Group>
-  );
-
-  const displayLegendTranslateXSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendTranslateXSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend translate X"
-      symbol="px"
-      value={legendTranslateX}
-    />
-  );
-
-  const displayLegendTranslateYSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendTranslateYSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend translate Y"
-      symbol="px"
-      value={legendTranslateY}
-    />
-  );
-
-  const displayLegendItemWidthSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendItemWidthSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item width"
-      symbol="px"
-      value={legendItemWidth}
-    />
-  );
-
-  const displayLegendItemHeightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendItemHeightSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item height"
-      symbol="px"
-      value={legendItemHeight}
-    />
-  );
-
-  const displayLegendItemsSpacingSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendItemsSpacingSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend items spacing"
-      symbol="px"
-      value={legendItemsSpacing}
-    />
-  );
-
-  const displayLegendItemDirectionSelectInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendItemDirectionSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item direction"
-      value={legendItemDirection}
-    />
-  );
-
-  const displayLegendItemOpacitySliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendItemOpacitySliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend item opacity"
-      value={legendItemOpacity}
-    />
-  );
-
-  const displayLegendSymbolSizeSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendSymbolSizeSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend symbol size"
-      symbol="px"
-      value={legendSymbolSize}
-    />
-  );
-
-  const displayLegendSymbolShapeSelectInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendSymbolShapeSelectInput}
-      isInputDisabled={!enableLegend}
-      label="Legend symbol shape"
-      value={legendSymbolShape}
-    />
-  );
-
-  const displayLegendSymbolBorderColorInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendSymbolBorderColorInput}
-      isInputDisabled={!enableLegend}
-      label="Legend symbol border color"
-      value={legendSymbolBorderColor}
-    />
-  );
-
-  const displayLegendSymbolBorderWidthSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendSymbolBorderWidthSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend symbol border width"
-      symbol="px"
-      value={legendSymbolBorderWidth}
-    />
-  );
-
-  const displayLegendSymbolSpacingSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdLegendSymbolSpacingSliderInput}
-      isInputDisabled={!enableLegend}
-      label="Legend symbol spacing"
-      symbol="px"
-      value={legendSymbolSpacing}
-    />
-  );
-
-  const displayLegendsSection = (
-    <Stack w="100%">
-      {displayLegendsHeading}
-      {displayEnableLegendSwitchInput}
-      {displayLegendAnchorSelectInput}
-      {displayLegendDirectionSelectInput}
-      {displayEnableLegendJustifySwitchInput}
-      {displayLegendTranslateXSliderInput}
-      {displayLegendTranslateYSliderInput}
-      {displayLegendItemWidthSliderInput}
-      {displayLegendItemHeightSliderInput}
-      {displayLegendItemsSpacingSliderInput}
-      {displayLegendItemDirectionSelectInput}
-      {displayLegendItemOpacitySliderInput}
-      {displayLegendSymbolSizeSliderInput}
-      {displayLegendSymbolShapeSelectInput}
-      {displayLegendSymbolBorderColorInput}
-      {displayLegendSymbolBorderWidthSliderInput}
-      {displayLegendSymbolSpacingSliderInput}
-    </Stack>
   );
 
   // motion
@@ -3314,18 +1580,64 @@ function ResponsiveLineChart() {
     </Stack>
   );
 
+  // options
+  const displayChartOptions = (
+    <ChartOptions
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      initialChartState={modifiedResponsiveLineChartState}
+      isChartTitleFocused={isChartTitleFocused}
+      isChartTitleValid={isChartTitleValid}
+      isScreenshotFilenameFocused={isScreenshotFilenameFocused}
+      isScreenshotFilenameValid={isScreenshotFilenameValid}
+      padding={padding}
+      parentChartAction={responsiveLineChartAction}
+      parentChartDispatch={responsiveLineChartDispatch}
+      screenshotFilename={screenshotFilename}
+      screenshotImageQuality={screenshotImageQuality}
+      screenshotImageType={screenshotImageType}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
+    />
+  );
+
+  const displayResetAllButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayResetAll = (
+    <Stack w="100%" py={padding}>
+      <ChartsAndGraphsControlsStacker
+        initialChartState={modifiedResponsiveLineChartState}
+        input={displayResetAllButton}
+        label="Reset all values"
+        value=""
+      />
+    </Stack>
+  );
+
   const lineChartControlsStack = (
     <Flex w="100%" direction="column">
-      {displayControlsHeading}
       {displayBaseSection}
-      {displayMarginSection}
+      {displayChartMargin}
       {displayStyleSection}
       {displayPointsSection}
       {displayGridsSection}
-      {displayAxesSection}
+      {displayChartAxisTop}
+      {displayChartAxisRight}
+      {displayChartAxisBottom}
+      {displayChartAxisLeft}
       {displayInteractivitySection}
-      {displayLegendsSection}
+      {displayChartLegend}
       {displayMotionSection}
+      {displayChartOptions}
+      {displayResetAll}
     </Flex>
   );
 
@@ -3659,6 +1971,7 @@ function ResponsiveLineChart() {
               tickRotation: axisTopTickRotation,
               legend: axisTopLegend,
               legendOffset: axisTopLegendOffset,
+              legendPosition: axisTopLegendPosition,
             }
           : null
       }
@@ -3670,6 +1983,7 @@ function ResponsiveLineChart() {
               tickRotation: axisRightTickRotation,
               legend: axisRightLegend,
               legendOffset: axisRightLegendOffset,
+              legendPosition: axisRightLegendPosition,
             }
           : null
       }
@@ -3681,6 +1995,7 @@ function ResponsiveLineChart() {
               tickRotation: axisBottomTickRotation,
               legend: axisBottomLegend,
               legendOffset: axisBottomLegendOffset,
+              legendPosition: axisBottomLegendPosition,
             }
           : null
       }
@@ -3692,6 +2007,7 @@ function ResponsiveLineChart() {
               tickRotation: axisLeftTickRotation,
               legend: axisLeftLegend,
               legendOffset: axisLeftLegendOffset,
+              legendPosition: axisLeftLegendPosition,
             }
           : null
       }
@@ -3740,6 +2056,14 @@ function ResponsiveLineChart() {
     />
   );
 
+  const displayChartTitle = (
+    <Group w="100%" position={chartTitlePosition} px={padding}>
+      <Title order={chartTitleSize} color={chartTitleColor}>
+        {chartTitle}
+      </Title>
+    </Group>
+  );
+
   const displayResponsiveLineChartComponent = (
     <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
       <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
@@ -3756,7 +2080,8 @@ function ResponsiveLineChart() {
         />
       </Grid.Col>
 
-      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
+      <Grid.Col span={width < 1192 ? 1 : 9} h="70vh" ref={chartRef} p="xl">
+        {displayChartTitle}
         {displayResponsiveLine}
       </Grid.Col>
     </Grid>

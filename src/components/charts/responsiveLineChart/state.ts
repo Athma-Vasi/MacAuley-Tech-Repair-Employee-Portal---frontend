@@ -6,14 +6,14 @@ import {
 
 const initialResponsiveLineChartState: ResponsiveLineChartState = {
   // base
+  enableYScaleMax: false,
+  enableYScaleMin: false,
+  enableYScaleStacked: true,
+  reverseScale: false,
   xScale: 'point',
   yScale: 'linear',
-  enableYScaleStacked: true,
-  enableYScaleMin: false,
-  yScaleMin: 0,
-  enableYScaleMax: false,
   yScaleMax: 0,
-  reverseScale: false,
+  yScaleMin: 0,
 
   // margin
   marginTop: 60,
@@ -22,12 +22,12 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   marginLeft: 60,
 
   // style
-  lineCurve: 'linear',
-  chartColors: 'nivo',
-  lineWidth: 2,
-  enableArea: false,
-  areaOpacity: 0.2,
   areaBlendMode: 'normal',
+  areaOpacity: 0.2,
+  chartColors: 'nivo',
+  enableArea: false,
+  lineCurve: 'linear',
+  lineWidth: 2,
 
   // points
   enablePoints: false,
@@ -45,41 +45,45 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
 
   // axes
   // axisTop
-  enableAxisTop: false,
-  axisTopTickSize: 5,
+  axisTopLegend: '',
+  axisTopLegendOffset: 0,
+  axisTopLegendPosition: 'middle',
   axisTopTickPadding: 5,
   axisTopTickRotation: 0,
-  axisTopLegend: '',
-  isAxisTopLegendValid: false,
+  axisTopTickSize: 5,
+  enableAxisTop: false,
   isAxisTopLegendFocused: false,
-  axisTopLegendOffset: 0,
+  isAxisTopLegendValid: false,
   // axisRight
-  enableAxisRight: false,
-  axisRightTickSize: 5,
+  axisRightLegend: '',
+  axisRightLegendOffset: 0,
+  axisRightLegendPosition: 'middle',
   axisRightTickPadding: 5,
   axisRightTickRotation: 0,
-  axisRightLegend: '',
-  isAxisRightLegendValid: false,
+  axisRightTickSize: 5,
+  enableAxisRight: false,
   isAxisRightLegendFocused: false,
-  axisRightLegendOffset: 0,
+  isAxisRightLegendValid: false,
   // axisBottom
-  enableAxisBottom: true,
-  axisBottomTickSize: 5,
+  axisBottomLegend: '',
+  axisBottomLegendOffset: 0,
+  axisBottomLegendPosition: 'middle',
   axisBottomTickPadding: 5,
   axisBottomTickRotation: 0,
-  axisBottomLegend: '',
-  isAxisBottomLegendValid: false,
+  axisBottomTickSize: 5,
+  enableAxisBottom: true,
   isAxisBottomLegendFocused: false,
-  axisBottomLegendOffset: 0,
+  isAxisBottomLegendValid: false,
   // axisLeft
-  enableAxisLeft: true,
-  axisLeftTickSize: 5,
+  axisLeftLegend: '',
+  axisLeftLegendOffset: 0,
+  axisLeftLegendPosition: 'middle',
   axisLeftTickPadding: 5,
   axisLeftTickRotation: 0,
-  axisLeftLegend: '',
-  isAxisLeftLegendValid: false,
+  axisLeftTickSize: 5,
+  enableAxisLeft: true,
   isAxisLeftLegendFocused: false,
-  axisLeftLegendOffset: 0,
+  isAxisLeftLegendValid: false,
 
   // interactivity
   enableCrosshair: true,
@@ -87,21 +91,38 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
 
   // legends
   enableLegend: false,
+  enableLegendJustify: false,
   legendAnchor: 'bottom-right',
   legendDirection: 'column',
-  enableLegendJustify: false,
-  legendTranslateX: 0,
-  legendTranslateY: 0,
-  legendItemWidth: 60,
-  legendItemHeight: 20,
-  legendItemsSpacing: 2,
+  legendItemBackground: 'rgba(255, 255, 255, 0)',
   legendItemDirection: 'left-to-right',
+  legendItemHeight: 20,
   legendItemOpacity: 1,
-  legendSymbolSize: 12,
-  legendSymbolShape: 'circle',
+  legendItemTextColor: 'gray',
+  legendItemWidth: 60,
+  legendItemsSpacing: 2,
   legendSymbolBorderColor: 'rgba(0, 0, 0, .5)',
   legendSymbolBorderWidth: 0,
+  legendSymbolShape: 'circle',
+  legendSymbolSize: 12,
   legendSymbolSpacing: 8,
+  legendTranslateX: 0,
+  legendTranslateY: 0,
+
+  // options
+  chartTitle: '',
+  chartTitleColor: 'gray',
+  chartTitlePosition: 'center',
+  chartTitleSize: 3,
+  isChartTitleFocused: false,
+  isChartTitleValid: false,
+
+  // screenshot
+  isScreenshotFilenameFocused: false,
+  isScreenshotFilenameValid: false,
+  screenshotFilename: '',
+  screenshotImageQuality: 1,
+  screenshotImageType: 'image/png',
 
   // motion
   enableAnimate: true,
@@ -110,14 +131,14 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
 
 const responsiveLineChartAction: ResponsiveLineChartAction = {
   // base
+  setEnableYScaleMax: 'setEnableYScaleMax',
+  setEnableYScaleMin: 'setEnableYScaleMin',
+  setEnableYScaleStacked: 'setEnableYScaleStacked',
+  setReverseScale: 'setReverseScale',
   setXScale: 'setXScale',
   setYScale: 'setYScale',
-  setEnableYScaleStacked: 'setEnableYScaleStacked',
-  setEnableYScaleMin: 'setEnableYScaleMin',
-  setYScaleMin: 'setYScaleMin',
-  setEnableYScaleMax: 'setEnableYScaleMax',
   setYScaleMax: 'setYScaleMax',
-  setReverseScale: 'setReverseScale',
+  setYScaleMin: 'setYScaleMin',
 
   // margin
   setMarginTop: 'setMarginTop',
@@ -126,22 +147,22 @@ const responsiveLineChartAction: ResponsiveLineChartAction = {
   setMarginLeft: 'setMarginLeft',
 
   // style
-  setLineCurve: 'setLineCurve',
-  setChartColors: 'setChartColors',
-  setLineWidth: 'setLineWidth',
-  setEnableArea: 'setEnableArea',
-  setAreaOpacity: 'setAreaOpacity',
   setAreaBlendMode: 'setAreaBlendMode',
+  setAreaOpacity: 'setAreaOpacity',
+  setChartColors: 'setChartColors',
+  setEnableArea: 'setEnableArea',
+  setLineCurve: 'setLineCurve',
+  setLineWidth: 'setLineWidth',
 
   // points
-  setEnablePoints: 'setEnablePoints',
-  setPointSize: 'setPointSize',
-  setPointColor: 'setPointColor',
-  setPointBorderWidth: 'setPointBorderWidth',
-  setPointBorderColor: 'setPointBorderColor',
   setEnablePointLabel: 'setEnablePointLabel',
+  setEnablePoints: 'setEnablePoints',
+  setPointBorderColor: 'setPointBorderColor',
+  setPointBorderWidth: 'setPointBorderWidth',
+  setPointColor: 'setPointColor',
   setPointLabel: 'setPointLabel',
   setPointLabelYOffset: 'setPointLabelYOffset',
+  setPointSize: 'setPointSize',
 
   // grids
   setEnableGridX: 'setEnableGridX',
@@ -149,41 +170,45 @@ const responsiveLineChartAction: ResponsiveLineChartAction = {
 
   // axes
   // axisTop
-  setEnableAxisTop: 'setEnableAxisTop',
-  setAxisTopTickSize: 'setAxisTopTickSize',
+  setAxisTopLegend: 'setAxisTopLegend',
+  setAxisTopLegendOffset: 'setAxisTopLegendOffset',
+  setAxisTopLegendPosition: 'setAxisTopLegendPosition',
   setAxisTopTickPadding: 'setAxisTopTickPadding',
   setAxisTopTickRotation: 'setAxisTopTickRotation',
-  setAxisTopLegend: 'setAxisTopLegend',
-  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid',
+  setAxisTopTickSize: 'setAxisTopTickSize',
+  setEnableAxisTop: 'setEnableAxisTop',
   setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused',
-  setAxisTopLegendOffset: 'setAxisTopLegendOffset',
+  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid',
   // axisRight
-  setEnableAxisRight: 'setEnableAxisRight',
-  setAxisRightTickSize: 'setAxisRightTickSize',
+  setAxisRightLegend: 'setAxisRightLegend',
+  setAxisRightLegendOffset: 'setAxisRightLegendOffset',
+  setAxisRightLegendPosition: 'setAxisRightLegendPosition',
   setAxisRightTickPadding: 'setAxisRightTickPadding',
   setAxisRightTickRotation: 'setAxisRightTickRotation',
-  setAxisRightLegend: 'setAxisRightLegend',
-  setIsAxisRightLegendValid: 'setIsAxisRightLegendValid',
+  setAxisRightTickSize: 'setAxisRightTickSize',
+  setEnableAxisRight: 'setEnableAxisRight',
   setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused',
-  setAxisRightLegendOffset: 'setAxisRightLegendOffset',
+  setIsAxisRightLegendValid: 'setIsAxisRightLegendValid',
   // axisBottom
-  setEnableAxisBottom: 'setEnableAxisBottom',
-  setAxisBottomTickSize: 'setAxisBottomTickSize',
+  setAxisBottomLegend: 'setAxisBottomLegend',
+  setAxisBottomLegendOffset: 'setAxisBottomLegendOffset',
+  setAxisBottomLegendPosition: 'setAxisBottomLegendPosition',
   setAxisBottomTickPadding: 'setAxisBottomTickPadding',
   setAxisBottomTickRotation: 'setAxisBottomTickRotation',
-  setAxisBottomLegend: 'setAxisBottomLegend',
-  setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid',
+  setAxisBottomTickSize: 'setAxisBottomTickSize',
+  setEnableAxisBottom: 'setEnableAxisBottom',
   setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused',
-  setAxisBottomLegendOffset: 'setAxisBottomLegendOffset',
+  setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid',
   // axisLeft
-  setEnableAxisLeft: 'setEnableAxisLeft',
-  setAxisLeftTickSize: 'setAxisLeftTickSize',
+  setAxisLeftLegend: 'setAxisLeftLegend',
+  setAxisLeftLegendOffset: 'setAxisLeftLegendOffset',
+  setAxisLeftLegendPosition: 'setAxisLeftLegendPosition',
   setAxisLeftTickPadding: 'setAxisLeftTickPadding',
   setAxisLeftTickRotation: 'setAxisLeftTickRotation',
-  setAxisLeftLegend: 'setAxisLeftLegend',
-  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid',
+  setAxisLeftTickSize: 'setAxisLeftTickSize',
+  setEnableAxisLeft: 'setEnableAxisLeft',
   setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused',
-  setAxisLeftLegendOffset: 'setAxisLeftLegendOffset',
+  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid',
 
   // interactivity
   setEnableCrosshair: 'setEnableCrosshair',
@@ -191,25 +216,42 @@ const responsiveLineChartAction: ResponsiveLineChartAction = {
 
   // legends
   setEnableLegend: 'setEnableLegend',
+  setEnableLegendJustify: 'setEnableLegendJustify',
   setLegendAnchor: 'setLegendAnchor',
   setLegendDirection: 'setLegendDirection',
-  setEnableLegendJustify: 'setEnableLegendJustify',
-  setLegendTranslateX: 'setLegendTranslateX',
-  setLegendTranslateY: 'setLegendTranslateY',
-  setLegendItemWidth: 'setLegendItemWidth',
-  setLegendItemHeight: 'setLegendItemHeight',
-  setLegendItemsSpacing: 'setLegendItemsSpacing',
+  setLegendItemBackground: 'setLegendItemBackground',
   setLegendItemDirection: 'setLegendItemDirection',
+  setLegendItemHeight: 'setLegendItemHeight',
   setLegendItemOpacity: 'setLegendItemOpacity',
-  setLegendSymbolSize: 'setLegendSymbolSize',
-  setLegendSymbolShape: 'setLegendSymbolShape',
+  setLegendItemTextColor: 'setLegendItemTextColor',
+  setLegendItemWidth: 'setLegendItemWidth',
+  setLegendItemsSpacing: 'setLegendItemsSpacing',
   setLegendSymbolBorderColor: 'setLegendSymbolBorderColor',
   setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth',
+  setLegendSymbolShape: 'setLegendSymbolShape',
+  setLegendSymbolSize: 'setLegendSymbolSize',
   setLegendSymbolSpacing: 'setLegendSymbolSpacing',
+  setLegendTranslateX: 'setLegendTranslateX',
+  setLegendTranslateY: 'setLegendTranslateY',
 
   // motion
   setEnableAnimate: 'setEnableAnimate',
   setMotionConfig: 'setMotionConfig',
+
+  // options
+  setChartTitle: 'setChartTitle',
+  setChartTitleColor: 'setChartTitleColor',
+  setChartTitlePosition: 'setChartTitlePosition',
+  setChartTitleSize: 'setChartTitleSize',
+  setIsChartTitleFocused: 'setIsChartTitleFocused',
+  setIsChartTitleValid: 'setIsChartTitleValid',
+
+  // screenshot
+  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused',
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid',
+  setScreenshotFilename: 'setScreenshotFilename',
+  setScreenshotImageQuality: 'setScreenshotImageQuality',
+  setScreenshotImageType: 'setScreenshotImageType',
 
   // reset all
   resetChartToDefault: 'resetChartToDefault',
@@ -304,6 +346,9 @@ function responsiveLineChartReducer(
       return { ...state, isAxisTopLegendFocused: action.payload };
     case responsiveLineChartAction.setAxisTopLegendOffset:
       return { ...state, axisTopLegendOffset: action.payload };
+    case responsiveLineChartAction.setAxisTopLegendPosition:
+      return { ...state, axisTopLegendPosition: action.payload };
+
     // axisRight
     case responsiveLineChartAction.setEnableAxisRight:
       return { ...state, enableAxisRight: action.payload };
@@ -321,6 +366,9 @@ function responsiveLineChartReducer(
       return { ...state, isAxisRightLegendFocused: action.payload };
     case responsiveLineChartAction.setAxisRightLegendOffset:
       return { ...state, axisRightLegendOffset: action.payload };
+    case responsiveLineChartAction.setAxisRightLegendPosition:
+      return { ...state, axisRightLegendPosition: action.payload };
+
     // axisBottom
     case responsiveLineChartAction.setEnableAxisBottom:
       return { ...state, enableAxisBottom: action.payload };
@@ -338,6 +386,9 @@ function responsiveLineChartReducer(
       return { ...state, isAxisBottomLegendFocused: action.payload };
     case responsiveLineChartAction.setAxisBottomLegendOffset:
       return { ...state, axisBottomLegendOffset: action.payload };
+    case responsiveLineChartAction.setAxisBottomLegendPosition:
+      return { ...state, axisBottomLegendPosition: action.payload };
+
     // axisLeft
     case responsiveLineChartAction.setEnableAxisLeft:
       return { ...state, enableAxisLeft: action.payload };
@@ -355,6 +406,8 @@ function responsiveLineChartReducer(
       return { ...state, isAxisLeftLegendFocused: action.payload };
     case responsiveLineChartAction.setAxisLeftLegendOffset:
       return { ...state, axisLeftLegendOffset: action.payload };
+    case responsiveLineChartAction.setAxisLeftLegendPosition:
+      return { ...state, axisLeftLegendPosition: action.payload };
 
     // interactivity
     case responsiveLineChartAction.setEnableCrosshair:
@@ -379,6 +432,10 @@ function responsiveLineChartReducer(
       return { ...state, legendItemWidth: action.payload };
     case responsiveLineChartAction.setLegendItemHeight:
       return { ...state, legendItemHeight: action.payload };
+    case responsiveLineChartAction.setLegendItemTextColor:
+      return { ...state, legendItemTextColor: action.payload };
+    case responsiveLineChartAction.setLegendItemBackground:
+      return { ...state, legendItemBackground: action.payload };
     case responsiveLineChartAction.setLegendItemsSpacing:
       return { ...state, legendItemsSpacing: action.payload };
     case responsiveLineChartAction.setLegendItemDirection:
@@ -401,6 +458,32 @@ function responsiveLineChartReducer(
       return { ...state, enableAnimate: action.payload };
     case responsiveLineChartAction.setMotionConfig:
       return { ...state, motionConfig: action.payload };
+
+    // options
+    case responsiveLineChartAction.setChartTitle:
+      return { ...state, chartTitle: action.payload };
+    case responsiveLineChartAction.setChartTitleColor:
+      return { ...state, chartTitleColor: action.payload };
+    case responsiveLineChartAction.setChartTitlePosition:
+      return { ...state, chartTitlePosition: action.payload };
+    case responsiveLineChartAction.setChartTitleSize:
+      return { ...state, chartTitleSize: action.payload };
+    case responsiveLineChartAction.setIsChartTitleFocused:
+      return { ...state, isChartTitleFocused: action.payload };
+    case responsiveLineChartAction.setIsChartTitleValid:
+      return { ...state, isChartTitleValid: action.payload };
+
+    // screenshot
+    case responsiveLineChartAction.setIsScreenshotFilenameFocused:
+      return { ...state, isScreenshotFilenameFocused: action.payload };
+    case responsiveLineChartAction.setIsScreenshotFilenameValid:
+      return { ...state, isScreenshotFilenameValid: action.payload };
+    case responsiveLineChartAction.setScreenshotFilename:
+      return { ...state, screenshotFilename: action.payload };
+    case responsiveLineChartAction.setScreenshotImageQuality:
+      return { ...state, screenshotImageQuality: action.payload };
+    case responsiveLineChartAction.setScreenshotImageType:
+      return { ...state, screenshotImageType: action.payload };
 
     // reset all
     case responsiveLineChartAction.resetChartToDefault:

@@ -71,8 +71,8 @@ function Dashboard() {
     <Stack>
       {/* {displayPieChart} */}
       {/* {displayBarChart} */}
-      {displayRadialBarChart}
-      {/* {displayLineChart} */}
+      {/* {displayRadialBarChart} */}
+      {displayLineChart}
       <Button onClick={openChartModal}>Open Modal</Button>
       {/* {displayBarChart} */}
       {displayModal}
