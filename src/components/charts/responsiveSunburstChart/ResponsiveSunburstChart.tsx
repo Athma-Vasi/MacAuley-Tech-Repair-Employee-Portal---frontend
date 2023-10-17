@@ -1,30 +1,3 @@
-import React, {
-  ChangeEvent,
-  Fragment,
-  LegacyRef,
-  useEffect,
-  useReducer,
-  useRef,
-} from 'react';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import { returnThemeColors } from '../../../utils';
-import {
-  initialResponsiveSunburstChartState,
-  responsiveSunburstChartAction,
-  responsiveSunburstChartReducer,
-} from './state';
-import { ResponsiveSunburstChartState } from './types';
-import {
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-} from '../../wrappers';
 import {
   Button,
   ColorInput,
@@ -40,6 +13,33 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
+import { ResponsiveSunburst } from '@nivo/sunburst';
+import React, {
+  ChangeEvent,
+  Fragment,
+  LegacyRef,
+  useEffect,
+  useReducer,
+  useRef,
+} from 'react';
+import { BiDownload, BiReset } from 'react-icons/bi';
+import { TbDownload } from 'react-icons/tb';
+
+import { COLORS_SWATCHES } from '../../../constants/data';
+import { useGlobalState } from '../../../hooks';
+import { useScreenshot } from '../../../hooks/useScreenshot';
+import {
+  AccessibleSelectedDeselectedTextElements,
+  returnAccessibleButtonElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleSliderInputElements,
+} from '../../../jsxCreators';
+import { returnThemeColors } from '../../../utils';
+import {
+  AccessibleSelectInputCreatorInfo,
+  AccessibleSliderInputCreatorInfo,
+} from '../../wrappers';
+import { ChartArcLabel } from '../chartControls/ChartArcLabel';
 import {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
@@ -47,17 +47,22 @@ import {
   NIVO_TRANSITION_MODE_DATA,
 } from '../constants';
 import {
+  NivoArcLabel,
   NivoColorScheme,
   NivoMotionConfig,
-  NivoSunburstArcLabel,
   NivoTransitionMode,
 } from '../types';
-import { NIVO_SUNBURST_ARC_LABEL_DATA } from './constants';
-import { BiDownload, BiReset } from 'react-icons/bi';
 import { ChartsAndGraphsControlsStacker } from '../utils';
-import { ResponsiveSunburst } from '@nivo/sunburst';
-import { useScreenshot } from '../../../hooks/useScreenshot';
-import { TbDownload } from 'react-icons/tb';
+import { NIVO_SUNBURST_ARC_LABEL_DATA } from './constants';
+import {
+  initialResponsiveSunburstChartState,
+  responsiveSunburstChartAction,
+  responsiveSunburstChartReducer,
+} from './state';
+import { ResponsiveSunburstChartState } from './types';
+import { ChartOptions } from '../chartControls/ChartOptions';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
 function ResponsiveSunburstChart() {
   const {
@@ -94,12 +99,6 @@ function ResponsiveSunburstChart() {
     );
 
   const chartRef = useRef(null);
-  const { takeScreenshot, errorMessage, image } = useScreenshot({
-    type: 'image/jpeg',
-    quality: 1,
-    // cropPositionLeft: width <= 768 ? 0 : width <= 1200 ? 225 : 0,
-    // cropPositionTop: width < 480 ? 50 : width <= 1200 ? 250 : 64,
-  });
 
   const {
     // base
@@ -131,7 +130,20 @@ function ResponsiveSunburstChart() {
     motionConfig, // default: 'gentle'
     transitionMode, // default: 'innerRadius'
 
-    triggerScreenshotDownload,
+    // options
+    chartTitle,
+    chartTitleColor,
+    chartTitlePosition,
+    chartTitleSize,
+    isChartTitleFocused,
+    isChartTitleValid,
+
+    // screenshot
+    isScreenshotFilenameFocused,
+    isScreenshotFilenameValid,
+    screenshotFilename,
+    screenshotImageQuality,
+    screenshotImageType,
   } = responsiveSunburstChartState;
 
   // set motion config on enable
@@ -165,17 +177,6 @@ function ResponsiveSunburstChart() {
     isSelected: enableFillPatterns,
     selectedDescription: 'Fill patterns will be displayed',
     semanticName: 'Enable Fill Patterns',
-    theme: 'muted',
-  });
-
-  const [
-    enableArcLabelsAccessibleSelectedText,
-    enableArcLabelsAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Arc labels will not be displayed',
-    isSelected: enableArcLabels,
-    selectedDescription: 'Arc labels will be displayed',
-    semanticName: 'Enable Arc Labels',
     theme: 'muted',
   });
 
@@ -220,87 +221,6 @@ function ResponsiveSunburstChart() {
     sliderDefaultValue: 0,
     step: 1,
     value: cornerRadius,
-    width: sliderWidth,
-  };
-
-  // margin
-  const marginTopSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin top',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveSunburstChartDispatch({
-        type: responsiveSunburstChartAction.setMarginTop,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginTop,
-    width: sliderWidth,
-  };
-
-  const marginRightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin right',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveSunburstChartDispatch({
-        type: responsiveSunburstChartAction.setMarginRight,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginRight,
-    width: sliderWidth,
-  };
-
-  const marginBottomSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin bottom',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveSunburstChartDispatch({
-        type: responsiveSunburstChartAction.setMarginBottom,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginBottom,
-    width: sliderWidth,
-  };
-
-  const marginLeftSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'margin left',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 200,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveSunburstChartDispatch({
-        type: responsiveSunburstChartAction.setMarginLeft,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 60,
-    step: 1,
-    value: marginLeft,
     width: sliderWidth,
   };
 
@@ -410,109 +330,6 @@ function ResponsiveSunburstChart() {
     />
   );
 
-  // arc labels
-  const createdEnableArcLabelsSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableArcLabels
-          ? enableArcLabelsAccessibleSelectedText.props.id
-          : enableArcLabelsAccessibleDeselectedText.props.id
-      }
-      checked={enableArcLabels}
-      description={
-        enableArcLabels
-          ? enableArcLabelsAccessibleSelectedText
-          : enableArcLabelsAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Enable Arc Labels
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveSunburstChartDispatch({
-          type: responsiveSunburstChartAction.setEnableArcLabels,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const arcLabelSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_SUNBURST_ARC_LABEL_DATA,
-    description: 'Define arc label.',
-    disabled: !enableArcLabels,
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveSunburstChartDispatch({
-        type: responsiveSunburstChartAction.setArcLabel,
-        payload: event.currentTarget.value as NivoSunburstArcLabel,
-      });
-    },
-    value: arcLabel,
-    width: sliderWidth,
-  };
-
-  const arcLabelsRadiusOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc labels radius offset',
-      disabled: !enableArcLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
-      ),
-      max: 2,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveSunburstChartDispatch({
-          type: responsiveSunburstChartAction.setArcLabelsRadiusOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0.5,
-      step: 0.05,
-      value: arcLabelsRadiusOffset,
-      width: sliderWidth,
-    };
-
-  const arcLabelsSkipAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc labels skip angle',
-      disabled: !enableArcLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 45,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveSunburstChartDispatch({
-          type: responsiveSunburstChartAction.setArcLabelsSkipAngle,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: arcLabelsSkipAngle,
-      width: sliderWidth,
-    };
-
-  const createdArcLabelsTextColorInput = (
-    <ColorInput
-      aria-label="arc labels text color"
-      color={arcLabelsTextColor}
-      disabled={!enableArcLabels}
-      onChange={(color: string) => {
-        responsiveSunburstChartDispatch({
-          type: responsiveSunburstChartAction.setArcLabelsTextColor,
-          payload: color,
-        });
-      }}
-      value={arcLabelsTextColor}
-      w={sliderWidth}
-    />
-  );
-
   // motion
   const createdEnableAnimateSwitchInput = (
     <Switch
@@ -591,42 +408,23 @@ function ResponsiveSunburstChart() {
 
   const [
     createdCornerRadiusSliderInput,
-    createdMarginTopSliderInput,
-    createdMarginRightSliderInput,
-    createdMarginBottomSliderInput,
-    createdMarginLeftSliderInput,
     // style
     createdChartBorderWidthSliderInput,
-    //
-    createdArcLabelsRadiusOffsetSliderInput,
-    createdArcLabelsSkipAngleSliderInput,
   ] = returnAccessibleSliderInputElements([
     cornerRadiusSliderInputCreatorInfo,
-    // margin
-    marginTopSliderInputCreatorInfo,
-    marginRightSliderInputCreatorInfo,
-    marginBottomSliderInputCreatorInfo,
-    marginLeftSliderInputCreatorInfo,
     // style
     chartBorderWidthSliderInputCreatorInfo,
-    // arc labels
-    arcLabelsRadiusOffsetSliderInputCreatorInfo,
-    arcLabelsSkipAngleSliderInputCreatorInfo,
   ]);
 
   const [
     // style
     createdChartColorsSelectInput,
-    // arc labels
-    createdArcLabelSelectInput,
     // motion
     createdMotionConfigSelectInput,
     createdTransitionModeSelectInput,
   ] = returnAccessibleSelectInputElements([
     // style
     chartColorsSelectInputCreatorInfo,
-    // arc labels
-    arcLabelSelectInputCreatorInfo,
     // motion
     motionConfigSelectInputCreatorInfo,
     transitionModeSelectInputCreatorInfo,
@@ -634,28 +432,17 @@ function ResponsiveSunburstChart() {
 
   // input display
 
-  // title
-  const displayResetButton = (
-    <Tooltip label="Reset all inputs to their default values">
-      <Group>{createdResetAllButton}</Group>
-    </Tooltip>
-  );
-
-  const displayControlsHeading = (
-    <Group p={padding} w="100%" position="apart">
-      <Title order={3} color={textColor}>
-        Sunburst Chart Controls
-      </Title>
-      {displayResetButton}
-    </Group>
-  );
-
   // base
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -682,67 +469,20 @@ function ResponsiveSunburstChart() {
   );
 
   // margin
-  const displayMarginHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Margin
-      </Title>
-    </Group>
-  );
-
-  const displayMarginTopSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartMargin = (
+    <ChartMargin
       initialChartState={modifiedResponsiveSunburstChartState}
-      input={createdMarginTopSliderInput}
-      label="Margin Top"
-      symbol="px"
-      value={marginTop}
+      marginBottom={marginBottom}
+      marginLeft={marginLeft}
+      marginRight={marginRight}
+      marginTop={marginTop}
+      padding={padding}
+      parentChartAction={responsiveSunburstChartAction}
+      parentChartDispatch={responsiveSunburstChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayMarginRightSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveSunburstChartState}
-      input={createdMarginRightSliderInput}
-      label="Margin Right"
-      symbol="px"
-      value={marginRight}
-    />
-  );
-
-  const displayMarginBottomSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveSunburstChartState}
-      input={createdMarginBottomSliderInput}
-      label="Margin Bottom"
-      symbol="px"
-      value={marginBottom}
-    />
-  );
-
-  const displayMarginLeftSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveSunburstChartState}
-      input={createdMarginLeftSliderInput}
-      label="Margin Left"
-      symbol="px"
-      value={marginLeft}
-    />
-  );
-
-  const displayMarginSection = (
-    <Stack w="100%">
-      {displayMarginHeading}
-      {displayMarginTopSliderInput}
-      {displayMarginRightSliderInput}
-      {displayMarginBottomSliderInput}
-      {displayMarginLeftSliderInput}
-    </Stack>
   );
 
   // style
@@ -750,7 +490,12 @@ function ResponsiveSunburstChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -811,75 +556,22 @@ function ResponsiveSunburstChart() {
   );
 
   // arc labels
-  const displayArcLabelsHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Arc Labels
-      </Title>
-    </Group>
-  );
-
-  const displayEnableArcLabelsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableArcLabelsSwitchInput}
-    </Group>
-  );
-
-  const displayArcLabelSelectInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartArcLabel = (
+    <ChartArcLabel
+      arcLabel={arcLabel}
+      arcLabelsRadiusOffset={arcLabelsRadiusOffset}
+      arcLabelsSkipAngle={arcLabelsSkipAngle}
+      arcLabelsTextColor={arcLabelsTextColor}
+      borderColor={borderColor}
+      enableArcLabels={enableArcLabels}
       initialChartState={modifiedResponsiveSunburstChartState}
-      input={createdArcLabelSelectInput}
-      isInputDisabled={!enableArcLabels}
-      label="Arc Label"
-      value={arcLabel}
+      padding={padding}
+      parentChartAction={responsiveSunburstChartAction}
+      parentChartDispatch={responsiveSunburstChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayArcLabelsRadiusOffsetSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveSunburstChartState}
-      input={createdArcLabelsRadiusOffsetSliderInput}
-      isInputDisabled={!enableArcLabels}
-      label="Arc Labels Radius Offset"
-      value={arcLabelsRadiusOffset}
-    />
-  );
-
-  const displayArcLabelsSkipAngleSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveSunburstChartState}
-      input={createdArcLabelsSkipAngleSliderInput}
-      isInputDisabled={!enableArcLabels}
-      label="Arc Labels Skip Angle"
-      symbol="°"
-      value={arcLabelsSkipAngle}
-    />
-  );
-
-  const displayArcLabelsTextColorInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveSunburstChartState}
-      input={createdArcLabelsTextColorInput}
-      isInputDisabled={!enableArcLabels}
-      label="Arc Labels Text Color"
-      value={arcLabelsTextColor}
-    />
-  );
-
-  const displayArcLabelsSection = (
-    <Stack w="100%">
-      {displayArcLabelsHeading}
-      {displayEnableArcLabelsSwitchInput}
-      {displayArcLabelSelectInput}
-      {displayArcLabelsRadiusOffsetSliderInput}
-      {displayArcLabelsSkipAngleSliderInput}
-      {displayArcLabelsTextColorInput}
-    </Stack>
   );
 
   // motion
@@ -887,7 +579,12 @@ function ResponsiveSunburstChart() {
     <Group
       bg={sectionHeadersBgColor}
       p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -931,23 +628,58 @@ function ResponsiveSunburstChart() {
     </Stack>
   );
 
-  const sunburstControlsStack = (
-    <Flex direction="column" w="100%">
-      {displayControlsHeading}
-      {displayBaseSection}
-      {displayMarginSection}
-      {displayStyleSection}
-      {displayArcLabelsSection}
-      {displayMotionSection}
-    </Flex>
+  // options
+  const displayChartOptions = (
+    <ChartOptions
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      initialChartState={modifiedResponsiveSunburstChartState}
+      isChartTitleFocused={isChartTitleFocused}
+      isChartTitleValid={isChartTitleValid}
+      isScreenshotFilenameFocused={isScreenshotFilenameFocused}
+      isScreenshotFilenameValid={isScreenshotFilenameValid}
+      padding={padding}
+      parentChartAction={responsiveSunburstChartAction}
+      parentChartDispatch={responsiveSunburstChartDispatch}
+      screenshotFilename={screenshotFilename}
+      screenshotImageQuality={screenshotImageQuality}
+      screenshotImageType={screenshotImageType}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
+    />
   );
 
-  const displaySunburstChartControls = (
-    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
-        <Grid.Col span={1}>{sunburstControlsStack}</Grid.Col>
-      </Grid>
-    </ScrollArea>
+  const displayResetAllButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayResetAll = (
+    <Stack w="100%" py={padding}>
+      <ChartsAndGraphsControlsStacker
+        initialChartState={modifiedResponsiveSunburstChartState}
+        input={displayResetAllButton}
+        label="Reset all values"
+        value=""
+      />
+    </Stack>
+  );
+
+  const sunburstControlsStack = (
+    <Flex direction="column" w="100%">
+      {displayBaseSection}
+      {displayChartMargin}
+      {displayStyleSection}
+      {displayChartArcLabel}
+      {displayMotionSection}
+      {displayChartOptions}
+      {displayResetAll}
+    </Flex>
   );
 
   const data = {
@@ -1389,11 +1121,6 @@ function ResponsiveSunburstChart() {
       // style
       colors={{ scheme: chartColors }}
       inheritColorFromParent={inheritColorFromParent}
-      //   childColor={{
-      //     from: 'color',
-      //     modifiers: [['brighter', 0.1]],
-      //   }}
-      //   colorBy="id"
       borderColor={chartBorderColor}
       borderWidth={chartBorderWidth}
       defs={NIVO_CHART_PATTERN_DEFS}
@@ -1413,6 +1140,7 @@ function ResponsiveSunburstChart() {
       animate={enableAnimate}
       motionConfig={motionConfig}
       transitionMode={transitionMode}
+
       //   effects: [
       //     {
       //         on: 'hover',
@@ -1424,75 +1152,22 @@ function ResponsiveSunburstChart() {
     />
   );
 
-  useEffect(() => {
-    function download({
-      image,
-      filename,
-      extension,
-    }: {
-      image: string;
-      filename: string;
-      extension: string;
-    }): void {
-      const a = document.createElement('a');
-      a.href = image;
-      a.download = `${filename}.${extension}`;
-      a.click();
-    }
-
-    if (triggerScreenshotDownload) {
-      takeScreenshot(chartRef?.current)?.then(() =>
-        download({ extension: 'jpeg', filename: 'sunburst-chart', image })
-      );
-
-      responsiveSunburstChartDispatch({
-        type: responsiveSunburstChartAction.setTriggerScreenshotDownload,
-        payload: false,
-      });
-    }
-  }, [triggerScreenshotDownload]);
-
-  const displayDownloadButton = (
-    <Button
-      aria-label="download"
-      leftIcon={<TbDownload />}
-      onClick={() => {
-        responsiveSunburstChartDispatch({
-          type: responsiveSunburstChartAction.setTriggerScreenshotDownload,
-          payload: true,
-        });
-      }}
-    >
-      Download
-    </Button>
+  const displayChartAndControls = (
+    <ChartAndControlsDisplay
+      chartControlsStack={sunburstControlsStack}
+      chartRef={chartRef}
+      chartTitle={chartTitle}
+      chartTitleColor={chartTitleColor}
+      chartTitlePosition={chartTitlePosition}
+      chartTitleSize={chartTitleSize}
+      padding={padding}
+      responsiveChart={displayResponsiveSunburst}
+      scrollBarStyle={scrollBarStyle}
+      width={width}
+    />
   );
 
-  const displayResponsiveSunburstChartComponent = (
-    <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
-        {displaySunburstChartControls}
-      </Grid.Col>
-
-      <Grid.Col span={1}>
-        {width < 1192 ? <Space h="md" /> : <Space w="md" />}
-        <Divider
-          orientation={width < 1192 ? 'horizontal' : 'vertical'}
-          size="sm"
-          w="100%"
-          h="100%"
-        />
-      </Grid.Col>
-
-      <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
-        {displayDownloadButton}
-        <Flex w="100%" h="100%" ref={chartRef}>
-          {displayResponsiveSunburst}
-        </Flex>
-      </Grid.Col>
-    </Grid>
-  );
-
-  return displayResponsiveSunburstChartComponent;
+  return displayChartAndControls;
 }
 
 export { ResponsiveSunburstChart };

@@ -1424,14 +1424,6 @@ function ResponsiveBarChart() {
     </Flex>
   );
 
-  const displayBarChartControls = (
-    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'}>
-        <Grid.Col span={1}>{barChartControlsStack}</Grid.Col>
-      </Grid>
-    </ScrollArea>
-  );
-
   const data = [
     {
       country: 'AD',
@@ -1687,7 +1679,7 @@ function ResponsiveBarChart() {
 
   const displayChartAndControls = (
     <ChartAndControlsDisplay
-      chartControlsStack={displayBarChartControls}
+      chartControlsStack={barChartControlsStack}
       chartRef={chartRef}
       chartTitle={chartTitle}
       chartTitleColor={chartTitleColor}
@@ -1695,6 +1687,7 @@ function ResponsiveBarChart() {
       chartTitleSize={chartTitleSize}
       padding={padding}
       responsiveChart={displayResponsiveBar}
+      scrollBarStyle={scrollBarStyle}
       width={width}
     />
   );

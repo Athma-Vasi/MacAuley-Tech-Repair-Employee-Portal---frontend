@@ -61,6 +61,7 @@ import { ChartMargin } from '../chartControls/ChartMargin';
 import { ChartLegend } from '../chartControls/ChartLegend';
 import { ChartOptions } from '../chartControls/ChartOptions';
 import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
+import { ChartArcLabel } from '../chartControls/ChartArcLabel';
 
 function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
@@ -103,6 +104,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     arcBorderColor, // default: #ffffff
     arcBorderWidth, // 0px - 20px default: 0 step: 1
 
+    arcLabel, // default: formattedValue
     enableArcLabels, // default: true
     arcLabelsRadiusOffset, // 0 - 2 default: 0.5 step: 0.05
     arcLabelsSkipAngle, // 0 - 45 default: 0 step: 1
@@ -233,17 +235,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     isSelected: enableFillPatterns,
     selectedDescription: 'Fill patterns will be displayed.',
     semanticName: 'fill patterns',
-    theme: 'muted',
-  });
-
-  const [
-    enableArcLabelsAccessibleSelectedText,
-    enableArcLabelsAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Arc labels will not be displayed.',
-    isSelected: enableArcLabels,
-    selectedDescription: 'Arc labels will be displayed.',
-    semanticName: 'arc labels',
     theme: 'muted',
   });
 
@@ -493,96 +484,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       width: sliderWidth,
     };
   /** ------------- end style ------------- */
-
-  /** ------------- begin arc labels ------------- */
-  const createdEnableArcLabelsSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableArcLabels
-          ? enableArcLabelsAccessibleSelectedText.props.id
-          : enableArcLabelsAccessibleDeselectedText.props.id
-      }
-      checked={enableArcLabels}
-      description={
-        enableArcLabels
-          ? enableArcLabelsAccessibleSelectedText
-          : enableArcLabelsAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Arc labels
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setEnableArcLabels,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const arcLabelsRadiusOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc labels radius offset',
-      disabled: !enableArcLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 2,
-      min: 0,
-      precision: 2,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLabelsRadiusOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0.5,
-      step: 0.05,
-      value: arcLabelsRadiusOffset,
-      width: sliderWidth,
-    };
-
-  const arcLabelsSkipAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc labels skip angle',
-      disabled: !enableArcLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 45,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLabelsSkipAngle,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: arcLabelsSkipAngle,
-      width: sliderWidth,
-    };
-
-  const createdArcLabelsTextColorInput = (
-    <ColorInput
-      aria-label="Arc labels text color"
-      disabled={!enableArcLabels}
-      onChange={(color: string) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLabelsTextColor,
-          payload: color,
-        });
-      }}
-      value={arcLabelsTextColor}
-      w={sliderWidth}
-    />
-  );
-  /** ------------- end arc labels ------------- */
 
   /** ------------- begin arc link labels ------------- */
   const createdEnableArcLinkLabelsSwitchInput = (
@@ -909,15 +810,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       chartBorderWidthSliderInputCreatorInfo,
     ]);
 
-  /** arc labels */
-  const [
-    createdArcLabelsRadiusOffsetSliderInput,
-    createdArcLabelsSkipAngleSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    arcLabelsRadiusOffsetSliderInputCreatorInfo,
-    arcLabelsSkipAngleSliderInputCreatorInfo,
-  ]);
-
   /** arc link labels */
   const [
     createdArcLinkLabelsSkipAngleSliderInput,
@@ -954,22 +846,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   /** ------------- end input creation ------------- */
 
   /** ------------- begin display ------------- */
-
-  // title
-  const displayResetButton = (
-    <Tooltip label="Reset all inputs to their default values">
-      <Group>{createdResetAllButton}</Group>
-    </Tooltip>
-  );
-
-  const displayControlsHeading = (
-    <Group p={padding} w="100%" position="apart">
-      <Title order={3} color={textColor}>
-        Pie Chart Controls
-      </Title>
-      {displayResetButton}
-    </Group>
-  );
 
   /** base */
 
@@ -1117,66 +993,22 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   );
 
   /** arc labels */
-  const displayArcLabelsHeading = (
-    <Group
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ position: 'sticky', top: 0, zIndex: 4 }}
-      w="100%"
-    >
-      <Title order={5} color={textColor}>
-        Arc labels
-      </Title>
-    </Group>
-  );
-
-  const displayEnableArcLabelsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: arcBorderColor }}>
-      {createdEnableArcLabelsSwitchInput}
-    </Group>
-  );
-
-  const displayArcLabelsRadiusOffsetSliderInput = (
-    <ChartsAndGraphsControlsStacker
+  const displayChartArcLabel = (
+    <ChartArcLabel
+      arcLabel={arcLabel}
+      arcLabelsRadiusOffset={arcLabelsRadiusOffset}
+      arcLabelsSkipAngle={arcLabelsSkipAngle}
+      arcLabelsTextColor={arcLabelsTextColor}
+      borderColor={borderColor}
+      enableArcLabels={enableArcLabels}
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLabelsRadiusOffsetSliderInput}
-      isInputDisabled={!enableArcLabels}
-      label="Arc labels radius offset"
-      symbol="px"
-      value={arcLabelsRadiusOffset}
+      padding={padding}
+      parentChartAction={responsivePieChartAction}
+      parentChartDispatch={responsivePieChartDispatch}
+      sectionHeadersBgColor={sectionHeadersBgColor}
+      textColor={textColor}
+      width={width}
     />
-  );
-
-  const displayArcLabelsSkipAngleSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLabelsSkipAngleSliderInput}
-      isInputDisabled={!enableArcLabels}
-      label="Arc labels skip angle"
-      symbol="°"
-      value={arcLabelsSkipAngle}
-    />
-  );
-
-  const displayArcLabelsHeadingColorInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLabelsTextColorInput}
-      isInputDisabled={!enableArcLabels}
-      label="Arc labels text color"
-      symbol=""
-      value={arcLabelsTextColor}
-    />
-  );
-
-  const displayArcLabelsSection = (
-    <Stack w="100%">
-      {displayArcLabelsHeading}
-      {displayEnableArcLabelsSwitchInput}
-      {displayArcLabelsRadiusOffsetSliderInput}
-      {displayArcLabelsSkipAngleSliderInput}
-      {displayArcLabelsHeadingColorInput}
-    </Stack>
   );
 
   /** arc link labels */
@@ -1455,29 +1287,37 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     />
   );
 
+  const displayResetAllButton = (
+    <Tooltip label="Reset all inputs to their default values">
+      <Group>{createdResetAllButton}</Group>
+    </Tooltip>
+  );
+
+  const displayResetAll = (
+    <Stack w="100%" py={padding}>
+      <ChartsAndGraphsControlsStacker
+        initialChartState={modifiedInitialResponsivePieChartState}
+        input={displayResetAllButton}
+        label="Reset all values"
+        value=""
+      />
+    </Stack>
+  );
+
   const pieChartControlsStack = (
     <Flex w="100%" direction="column">
-      {displayControlsHeading}
       {displayBaseSection}
       {displayChartMargin}
       {displayStyleSection}
-      {displayArcLabelsSection}
+      {displayChartArcLabel}
       {displayArcLinkLabelsSection}
       {displayInteractivitySection}
       {displayMotionSection}
       {displayChartLegend}
       {displayChartOptions}
+      {displayResetAll}
     </Flex>
   );
-
-  // /** pie chart controls */
-  // const displayPieChartControls = (
-  //   <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-  //     <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
-  //       <Grid.Col span={1}>{pieChartControlsStack}</Grid.Col>
-  //     </Grid>
-  //   </ScrollArea>
-  // );
 
   const displayResponsivePie = (
     <ResponsivePie
@@ -1500,6 +1340,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       borderColor={arcBorderColor}
       borderWidth={arcBorderWidth}
       // arc labels
+      arcLabel={arcLabel}
       enableArcLabels={enableArcLabels}
       arcLabelsRadiusOffset={arcLabelsRadiusOffset}
       arcLabelsSkipAngle={arcLabelsSkipAngle}
@@ -1553,29 +1394,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       }
     />
   );
-
-  // const displayResponsivePieChartComponent = (
-  //   <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-  //     <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
-  //       {displayPieChartControls}
-  //     </Grid.Col>
-
-  //     {/* because only column spacing is allowed in grid */}
-  //     <Grid.Col span={1}>
-  //       {width < 1192 ? <Space h="md" /> : <Space w="md" />}
-  //       <Divider
-  //         orientation={width < 1192 ? 'horizontal' : 'vertical'}
-  //         size="sm"
-  //         w="100%"
-  //         h="100%"
-  //       />
-  //     </Grid.Col>
-
-  //     <Grid.Col span={width < 1192 ? 1 : 9} h="100%">
-  //       {displayResponsivePie}
-  //     </Grid.Col>
-  //   </Grid>
-  // );
 
   const displayChartAndControls = (
     <ChartAndControlsDisplay

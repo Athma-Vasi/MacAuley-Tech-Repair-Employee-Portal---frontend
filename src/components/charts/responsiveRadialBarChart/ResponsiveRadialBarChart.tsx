@@ -1975,14 +1975,6 @@ function ResponsiveRadialBarChart() {
     </Flex>
   );
 
-  const displayRadialBarChartControls = (
-    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
-        <Grid.Col span={1}>{radialBarChartControlsStack}</Grid.Col>
-      </Grid>
-    </ScrollArea>
-  );
-
   const data = [
     {
       id: 'Supermarket',
@@ -2171,7 +2163,7 @@ function ResponsiveRadialBarChart() {
 
   const displayChartAndControls = (
     <ChartAndControlsDisplay
-      chartControlsStack={displayRadialBarChartControls}
+      chartControlsStack={radialBarChartControlsStack}
       chartRef={chartRef}
       chartTitle={chartTitle}
       chartTitleColor={chartTitleColor}
@@ -2179,6 +2171,7 @@ function ResponsiveRadialBarChart() {
       chartTitleSize={chartTitleSize}
       padding={padding}
       responsiveChart={displayResponsiveRadialBar}
+      scrollBarStyle={scrollBarStyle}
       width={width}
     />
   );

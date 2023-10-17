@@ -2,6 +2,7 @@ import { TitleOrder } from '@mantine/core';
 import { ScreenshotImageType } from '../../../types';
 import { PieChartData } from '../../displayStatistics/types';
 import {
+  NivoArcLabel,
   NivoChartTitlePosition,
   NivoColorScheme,
   NivoFillPatternObject,
@@ -34,6 +35,7 @@ type ResponsivePieChartState = {
   fillPatterns: NivoFillPatternObject[];
 
   /** arc labels */
+  arcLabel: NivoArcLabel; // default: 'value'
   arcLabelsRadiusOffset: number; // 0 - 2 default:0.5 step: 0.05
   arcLabelsSkipAngle: number; // 0 - 45 default: 0 step: 1
   arcLabelsTextColor: string; // default: #333333
@@ -117,6 +119,7 @@ type ResponsivePieChartAction = {
   setFillPatterns: 'setFillPatterns';
 
   /** arc labels */
+  setArcLabel: 'setArcLabel';
   setArcLabelsRadiusOffset: 'setArcLabelsRadiusOffset';
   setArcLabelsSkipAngle: 'setArcLabelsSkipAngle';
   setArcLabelsTextColor: 'setArcLabelsTextColor';
@@ -261,6 +264,10 @@ type ResponsivePieChartDispatch =
         | ResponsivePieChartAction['setScreenshotFilename'];
 
       payload: string;
+    }
+  | {
+      type: ResponsivePieChartAction['setArcLabel'];
+      payload: NivoArcLabel;
     }
   | {
       type: ResponsivePieChartAction['setMotionConfig'];

@@ -21,6 +21,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   arcBorderWidth: 0,
 
   /** arc labels */
+  arcLabel: 'formattedValue',
   enableArcLabels: true,
   arcLabelsRadiusOffset: 0.5,
   arcLabelsSkipAngle: 0,
@@ -104,6 +105,7 @@ const responsivePieChartAction: ResponsivePieChartAction = {
   setArcBorderWidth: 'setArcBorderWidth',
 
   /** arc labels */
+  setArcLabel: 'setArcLabel',
   setEnableArcLabels: 'setEnableArcLabels',
   setArcLabelsRadiusOffset: 'setArcLabelsRadiusOffset',
   setArcLabelsSkipAngle: 'setArcLabelsSkipAngle',
@@ -238,6 +240,11 @@ function responsivePieChartReducer(
       };
 
     /** arc labels */
+    case responsivePieChartAction.setArcLabel:
+      return {
+        ...state,
+        arcLabel: action.payload,
+      };
     case responsivePieChartAction.setEnableArcLabels:
       return {
         ...state,

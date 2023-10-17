@@ -34,8 +34,20 @@ const initialResponsiveSunburstChartState: ResponsiveSunburstChartState = {
   motionConfig: 'gentle',
   transitionMode: 'innerRadius',
 
-  // trigger screenshot download
-  triggerScreenshotDownload: false,
+  // options
+  chartTitle: '',
+  chartTitleColor: 'gray',
+  chartTitlePosition: 'center',
+  chartTitleSize: 3,
+  isChartTitleFocused: false,
+  isChartTitleValid: false,
+
+  // screenshot
+  isScreenshotFilenameFocused: false,
+  isScreenshotFilenameValid: false,
+  screenshotFilename: '',
+  screenshotImageQuality: 1,
+  screenshotImageType: 'image/png',
 };
 
 const responsiveSunburstChartAction: ResponsiveSunburstChartAction = {
@@ -68,11 +80,23 @@ const responsiveSunburstChartAction: ResponsiveSunburstChartAction = {
   setMotionConfig: 'setMotionConfig',
   setTransitionMode: 'setTransitionMode',
 
+  // options
+  setChartTitle: 'setChartTitle',
+  setChartTitleColor: 'setChartTitleColor',
+  setChartTitlePosition: 'setChartTitlePosition',
+  setChartTitleSize: 'setChartTitleSize',
+  setIsChartTitleFocused: 'setIsChartTitleFocused',
+  setIsChartTitleValid: 'setIsChartTitleValid',
+
+  // screenshot
+  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused',
+  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid',
+  setScreenshotFilename: 'setScreenshotFilename',
+  setScreenshotImageQuality: 'setScreenshotImageQuality',
+  setScreenshotImageType: 'setScreenshotImageType',
+
   // reset all
   resetChartToDefault: 'resetChartToDefault',
-
-  // trigger screenshot download
-  setTriggerScreenshotDownload: 'setTriggerScreenshotDownload',
 };
 
 function responsiveSunburstChartReducer(
@@ -185,16 +209,68 @@ function responsiveSunburstChartReducer(
         transitionMode: action.payload,
       };
 
+    // options
+    case responsiveSunburstChartAction.setChartTitle:
+      return {
+        ...state,
+        chartTitle: action.payload,
+      };
+    case responsiveSunburstChartAction.setChartTitleColor:
+      return {
+        ...state,
+        chartTitleColor: action.payload,
+      };
+    case responsiveSunburstChartAction.setChartTitlePosition:
+      return {
+        ...state,
+        chartTitlePosition: action.payload,
+      };
+    case responsiveSunburstChartAction.setChartTitleSize:
+      return {
+        ...state,
+        chartTitleSize: action.payload,
+      };
+    case responsiveSunburstChartAction.setIsChartTitleFocused:
+      return {
+        ...state,
+        isChartTitleFocused: action.payload,
+      };
+    case responsiveSunburstChartAction.setIsChartTitleValid:
+      return {
+        ...state,
+        isChartTitleValid: action.payload,
+      };
+
+    // screenshot
+    case responsiveSunburstChartAction.setIsScreenshotFilenameFocused:
+      return {
+        ...state,
+        isScreenshotFilenameFocused: action.payload,
+      };
+    case responsiveSunburstChartAction.setIsScreenshotFilenameValid:
+      return {
+        ...state,
+        isScreenshotFilenameValid: action.payload,
+      };
+    case responsiveSunburstChartAction.setScreenshotFilename:
+      return {
+        ...state,
+        screenshotFilename: action.payload,
+      };
+    case responsiveSunburstChartAction.setScreenshotImageQuality:
+      return {
+        ...state,
+        screenshotImageQuality: action.payload,
+      };
+    case responsiveSunburstChartAction.setScreenshotImageType:
+      return {
+        ...state,
+        screenshotImageType: action.payload,
+      };
+
     // reset all
     case responsiveSunburstChartAction.resetChartToDefault:
       return { ...action.payload };
-
-    // trigger screenshot download
-    case responsiveSunburstChartAction.setTriggerScreenshotDownload:
-      return {
-        ...state,
-        triggerScreenshotDownload: action.payload,
-      };
 
     default:
       return state;

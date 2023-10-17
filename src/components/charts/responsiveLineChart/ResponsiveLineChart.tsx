@@ -1,54 +1,45 @@
 import {
   ColorInput,
-  Divider,
   Flex,
-  Grid,
   Group,
-  ScrollArea,
-  Space,
   Stack,
   Switch,
   Text,
   Title,
   Tooltip,
 } from '@mantine/core';
+import { ResponsiveLine } from '@nivo/line';
 import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
+import { BiReset } from 'react-icons/bi';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
-import { SERIAL_ID_REGEX } from '../../../constants/regex';
 import { useGlobalState } from '../../../hooks';
 import {
-  AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
-  returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import {
-  returnSerialIdValidationText,
-  returnThemeColors,
-} from '../../../utils';
+import { returnThemeColors } from '../../../utils';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
 } from '../../wrappers';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
+import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
+import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
+import { ChartAxisRight } from '../chartControls/ChartAxisRight';
+import { ChartAxisTop } from '../chartControls/ChartAxisTop';
+import { ChartLegend } from '../chartControls/ChartLegend';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartOptions } from '../chartControls/ChartOptions';
 import {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
-  NIVO_LEGEND_ANCHOR_DATA,
-  NIVO_LEGEND_DIRECTION_DATA,
-  NIVO_LEGEND_ITEM_DIRECTION_DATA,
-  NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
 } from '../constants';
 import {
   NivoColorScheme,
-  NivoLegendAnchor,
-  NivoLegendDirection,
-  NivoLegendItemDirection,
-  NivoLegendSymbolShape,
   NivoLineAreaBlendMode,
   NivoLineAxesScale,
   NivoLineCrosshairType,
@@ -56,6 +47,7 @@ import {
   NivoLinePointLabel,
   NivoMotionConfig,
 } from '../types';
+import { ChartsAndGraphsControlsStacker } from '../utils';
 import {
   NIVO_LINE_AREA_BLEND_MODE_DATA,
   NIVO_LINE_AXES_SCALE,
@@ -69,17 +61,6 @@ import {
   responsiveLineChartReducer,
 } from './state';
 import { ResponsiveLineChartState } from './types';
-import { ChartsAndGraphsControlsStacker } from '../utils';
-import { ResponsiveLine } from '@nivo/line';
-import { BiReset } from 'react-icons/bi';
-import { ChartMargin } from '../chartControls/ChartMargin';
-import { ChartLegend } from '../chartControls/ChartLegend';
-import { ChartAxisTop } from '../chartControls/ChartAxisTop';
-import { ChartAxisRight } from '../chartControls/ChartAxisRight';
-import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
-import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
-import { ChartOptions } from '../chartControls/ChartOptions';
-import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
 function ResponsiveLineChart() {
   const {
@@ -977,8 +958,6 @@ function ResponsiveLineChart() {
     width: sliderWidth,
   };
 
-  // input creation
-
   // reset all button
   const [createdResetAllButton] = returnAccessibleButtonElements([
     {
@@ -995,8 +974,9 @@ function ResponsiveLineChart() {
     },
   ]);
 
-  // base
+  // input creation
 
+  // base
   // base select inputs
   const [createdXScaleSelectInput, createdYScaleSelectInput] =
     returnAccessibleSelectInputElements([
@@ -1642,14 +1622,6 @@ function ResponsiveLineChart() {
     </Flex>
   );
 
-  const displayLineChartControls = (
-    <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
-        <Grid.Col span={1}>{lineChartControlsStack}</Grid.Col>
-      </Grid>
-    </ScrollArea>
-  );
-
   const data = [
     {
       id: 'japan',
@@ -2059,7 +2031,7 @@ function ResponsiveLineChart() {
 
   const displayChartAndControls = (
     <ChartAndControlsDisplay
-      chartControlsStack={displayLineChartControls}
+      chartControlsStack={lineChartControlsStack}
       chartRef={chartRef}
       chartTitle={chartTitle}
       chartTitleColor={chartTitleColor}
@@ -2067,6 +2039,7 @@ function ResponsiveLineChart() {
       chartTitleSize={chartTitleSize}
       padding={padding}
       responsiveChart={displayResponsiveLine}
+      scrollBarStyle={scrollBarStyle}
       width={width}
     />
   );

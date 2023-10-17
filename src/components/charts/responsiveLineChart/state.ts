@@ -109,6 +109,10 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   legendTranslateX: 0,
   legendTranslateY: 0,
 
+  // motion
+  enableAnimate: true,
+  motionConfig: 'gentle',
+
   // options
   chartTitle: '',
   chartTitleColor: 'gray',
@@ -123,10 +127,6 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   screenshotFilename: '',
   screenshotImageQuality: 1,
   screenshotImageType: 'image/png',
-
-  // motion
-  enableAnimate: true,
-  motionConfig: 'gentle',
 };
 
 const responsiveLineChartAction: ResponsiveLineChartAction = {

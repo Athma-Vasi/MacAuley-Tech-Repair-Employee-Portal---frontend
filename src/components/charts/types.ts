@@ -144,7 +144,7 @@ type NivoCalendarAlign =
 type NivoCalendarDirection = 'horizontal' | 'vertical';
 type NivoCalendarLegendPosition = 'before' | 'after';
 
-type NivoSunburstArcLabel = 'id' | 'value' | 'formattedValue';
+type NivoArcLabel = 'id' | 'value' | 'formattedValue';
 
 type NivoAxisLegendPosition = 'start' | 'middle' | 'end';
 
@@ -174,6 +174,6 @@ export type {
   NivoLineCurve,
   NivoLinePointLabel,
   NivoMotionConfig,
-  NivoSunburstArcLabel,
+  NivoArcLabel,
   NivoTransitionMode,
 };
