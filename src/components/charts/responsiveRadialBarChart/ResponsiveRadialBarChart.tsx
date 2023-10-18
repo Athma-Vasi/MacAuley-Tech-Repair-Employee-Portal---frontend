@@ -78,6 +78,7 @@ function ResponsiveRadialBarChart() {
     ringBorderColor: chartTextColor,
     tracksColor: grayColorShade,
     labelsTextColor: chartTextColor,
+    chartTitleColor: chartTextColor,
   };
 
   const [responsiveRadialBarChartState, responsiveRadialBarChartDispatch] =

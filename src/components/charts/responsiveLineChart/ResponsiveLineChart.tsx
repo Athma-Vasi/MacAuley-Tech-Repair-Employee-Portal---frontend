@@ -82,6 +82,7 @@ function ResponsiveLineChart() {
     ...initialResponsiveLineChartState,
     pointColor: chartTextColor,
     pointBorderColor: chartTextColor,
+    chartTitleColor: chartTextColor,
   };
 
   const [responsiveLineChartState, responsiveLineChartDispatch] = useReducer(

@@ -84,6 +84,7 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
     ...initialResponsivePieChartState,
     arcLabelsTextColor: chartTextColor,
     arcLinkLabelsTextColor: textColor,
+    chartTitleColor: chartTextColor,
   };
 
   const [responsivePieChartState, responsivePieChartDispatch] = useReducer(

@@ -90,6 +90,7 @@ function ResponsiveSunburstChart() {
     ...initialResponsiveSunburstChartState,
     chartBorderColor: grayColorShade,
     arcLabelsTextColor: chartTextColor,
+    chartTitleColor: chartTextColor,
   };
 
   const [responsiveSunburstChartState, responsiveSunburstChartDispatch] =

@@ -112,6 +112,7 @@ function ResponsiveBarChart() {
     ...initialResponsiveBarChartState,
     chartBorderColor: chartTextColor,
     labelTextColor: chartTextColor,
+    chartTitleColor: chartTextColor,
   };
 
   const [responsiveBarChartState, responsiveBarChartDispatch] = useReducer(
