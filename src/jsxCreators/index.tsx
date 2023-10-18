@@ -842,6 +842,19 @@ function returnHighlightedText({
   return returnedText;
 }
 
+type ReturnScrollableDocumentInfoInput = {
+  borderColor: string;
+  document: Record<string, any>;
+  excludeKeys?: string[];
+  fieldNamesWithDateValues: Set<string>;
+  heading?: string;
+  queryValuesArray: string[];
+  rowGap: MantineNumberSize;
+  scrollBarStyle: Record<string, any>;
+  scrollViewportHeight?: number;
+  textHighlightColor: string;
+};
+
 function returnScrollableDocumentInfo({
   borderColor,
   document,
@@ -853,18 +866,7 @@ function returnScrollableDocumentInfo({
   scrollBarStyle,
   scrollViewportHeight = 150,
   textHighlightColor,
-}: {
-  borderColor: string;
-  document: Record<string, any>;
-  excludeKeys?: string[];
-  fieldNamesWithDateValues: Set<string>;
-  heading?: string;
-  queryValuesArray: string[];
-  rowGap: MantineNumberSize;
-  scrollBarStyle: Record<string, any>;
-  scrollViewportHeight?: number;
-  textHighlightColor: string;
-}) {
+}: ReturnScrollableDocumentInfoInput):React.JSX.Element {
   const [createdShowMoreButton, createdHideButton] =
     returnAccessibleButtonElements([
       {
@@ -882,6 +884,8 @@ function returnScrollableDocumentInfo({
         semanticName: 'Hide',
       },
     ]);
+
+  
 
   const filteredDocumentTuples = Object.entries(document).filter(
     ([key]) => !excludeKeys.includes(key)

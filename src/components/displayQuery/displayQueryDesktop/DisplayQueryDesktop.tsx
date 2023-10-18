@@ -545,9 +545,10 @@ function DisplayQueryDesktop({
                         borderColor,
                         document: queryResponseObjWithAddedFields,
                         excludeKeys: [
-                          'file uploads',
+                          'fileUploads',
                           'edit',
                           'delete',
+                          'viewProfile',
                           groupBySelection,
                         ],
                         fieldNamesWithDateValues: FIELDNAMES_WITH_DATE_VALUES,
