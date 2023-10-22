@@ -64,8 +64,8 @@ import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndCont
 import { ChartArcLabel } from '../chartControls/ChartArcLabel';
 
 function ResponsivePieChart({
-  chartHeight = 500,
-  chartWidth = 500,
+  chartHeight = 350,
+  chartWidth = 350,
   hideControls = false,
   pieChartData,
 }: ResponsivePieChartProps) {

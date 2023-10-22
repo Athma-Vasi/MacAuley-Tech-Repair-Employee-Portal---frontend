@@ -94,8 +94,8 @@ import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndCont
 
 function ResponsiveBarChart({
   barChartData,
-  chartHeight = 500,
-  chartWidth = 500,
+  chartHeight = 350,
+  chartWidth = 350,
   hideControls = false,
 }: ResponsiveBarChartProps) {
   const {

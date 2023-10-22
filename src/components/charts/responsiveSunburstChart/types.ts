@@ -1,13 +1,26 @@
 import { TitleOrder } from '@mantine/core';
+
 import { ScreenshotImageType } from '../../../types';
 import {
+  NivoArcLabel,
+  NivoChartTitlePosition,
   NivoColorScheme,
   NivoFillPatternObject,
   NivoMotionConfig,
-  NivoArcLabel,
   NivoTransitionMode,
-  NivoChartTitlePosition,
 } from '../types';
+
+type SunburstChartData = {
+  name: string;
+  children?: SunburstChartData[];
+};
+
+type ResponsiveSunburstChartProps = {
+  chartHeight?: number;
+  chartWidth?: number;
+  hideControls?: boolean;
+  sunburstChartData: SunburstChartData;
+};
 
 type ResponsiveSunburstChartState = {
   // base
@@ -182,5 +195,7 @@ type ResponsiveSunburstChartDispatch =
 export type {
   ResponsiveSunburstChartAction,
   ResponsiveSunburstChartDispatch,
+  ResponsiveSunburstChartProps,
   ResponsiveSunburstChartState,
+  SunburstChartData,
 };

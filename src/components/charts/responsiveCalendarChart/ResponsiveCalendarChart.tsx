@@ -50,9 +50,17 @@ import {
 import { ChartMargin } from '../chartControls/ChartMargin';
 import { ChartOptions } from '../chartControls/ChartOptions';
 import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
-import { ResponsiveCalendarChartState } from './types';
+import {
+  ResponsiveCalendarChartProps,
+  ResponsiveCalendarChartState,
+} from './types';
 
-function ResponsiveCalendarChart() {
+function ResponsiveCalendarChart({
+  calendarChartData,
+  chartHeight = 350,
+  chartWidth = 350,
+  hideControls = false,
+}: ResponsiveCalendarChartProps) {
   const {
     globalState: { width, themeObject, padding },
   } = useGlobalState();
@@ -131,6 +139,58 @@ function ResponsiveCalendarChart() {
     screenshotImageQuality, // 0 - 1 default: 1 step: 0.1
     screenshotImageType, // default: 'image/png'
   } = responsiveCalendarChartState;
+
+  const { primaryColor } = themeObject;
+  const colorsArray = Object.entries(COLORS_SWATCHES).find(
+    ([key, _value]) => key === primaryColor
+  )?.[1];
+
+  const displayCalendarChart = (
+    <ResponsiveCalendar
+      data={data}
+      from="2015-03-01"
+      to="2016-07-12"
+      // base
+      direction={calendarDirection}
+      align={calendarAlign}
+      minValue="auto"
+      maxValue="auto"
+      // margin
+      margin={{
+        top: marginTop,
+        right: marginRight,
+        bottom: marginBottom,
+        left: marginLeft,
+      }}
+      // style
+      emptyColor="#eeeeee"
+      colors={enableDefaultColors ? NIVO_CALENDAR_CHART_COLORS : colorsArray}
+      // years
+      yearSpacing={yearSpacing}
+      yearLegendPosition={yearLegendPosition}
+      yearLegendOffset={yearLegendOffset}
+      // months
+      monthSpacing={monthSpacing}
+      monthBorderWidth={monthBorderWidth}
+      monthBorderColor={monthBorderColor}
+      monthLegendPosition={monthLegendPosition}
+      monthLegendOffset={monthLegendOffset}
+      // days
+      daySpacing={daySpacing}
+      dayBorderWidth={dayBorderWidth}
+      dayBorderColor={dayBorderColor}
+      // interactivity
+      isInteractive={true}
+    />
+  );
+
+  if (hideControls) {
+    return (
+      <Group w={chartWidth} h={chartHeight}>
+        {displayCalendarChart}
+      </Group>
+    );
+  }
 
   const [
     enableDefaultColorsAccessibleSelectedText,
@@ -847,50 +907,6 @@ function ResponsiveCalendarChart() {
       {displayChartOptions}
       {displayResetAll}
     </Flex>
-  );
-
-  const { primaryColor } = themeObject;
-  const colorsArray = Object.entries(COLORS_SWATCHES).find(
-    ([key, value]) => key === primaryColor
-  )?.[1];
-
-  const displayCalendarChart = (
-    <ResponsiveCalendar
-      data={data}
-      from="2015-03-01"
-      to="2016-07-12"
-      // base
-      direction={calendarDirection}
-      align={calendarAlign}
-      minValue="auto"
-      maxValue="auto"
-      // margin
-      margin={{
-        top: marginTop,
-        right: marginRight,
-        bottom: marginBottom,
-        left: marginLeft,
-      }}
-      // style
-      emptyColor="#eeeeee"
-      colors={enableDefaultColors ? NIVO_CALENDAR_CHART_COLORS : colorsArray}
-      // years
-      yearSpacing={yearSpacing}
-      yearLegendPosition={yearLegendPosition}
-      yearLegendOffset={yearLegendOffset}
-      // months
-      monthSpacing={monthSpacing}
-      monthBorderWidth={monthBorderWidth}
-      monthBorderColor={monthBorderColor}
-      monthLegendPosition={monthLegendPosition}
-      monthLegendOffset={monthLegendOffset}
-      // days
-      daySpacing={daySpacing}
-      dayBorderWidth={dayBorderWidth}
-      dayBorderColor={dayBorderColor}
-      // interactivity
-      isInteractive={true}
-    />
   );
 
   const displayChartAndControls = (

@@ -1,4 +1,5 @@
 import { TitleOrder } from '@mantine/core';
+
 import { ScreenshotImageType } from '../../../types';
 import {
   NivoAxisLegendPosition,
@@ -15,6 +16,21 @@ import {
   NivoLinePointLabel,
   NivoMotionConfig,
 } from '../types';
+
+type LineChartData = {
+  id: string;
+  data: {
+    x: string;
+    y: number;
+  }[];
+};
+
+type ResponsiveLineChartProps = {
+  chartHeight?: number;
+  chartWidth?: number;
+  hideControls?: boolean;
+  lineChartData: LineChartData[];
+};
 
 type ResponsiveLineChartState = {
   // base
@@ -425,7 +441,9 @@ type ResponsiveLineChartDispatch =
     };
 
 export type {
+  LineChartData,
   ResponsiveLineChartAction,
   ResponsiveLineChartDispatch,
+  ResponsiveLineChartProps,
   ResponsiveLineChartState,
 };

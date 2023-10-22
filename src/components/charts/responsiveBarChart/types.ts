@@ -413,4 +413,5 @@ export type {
   ResponsiveBarChartDispatch,
   ResponsiveBarChartProps,
   ResponsiveBarChartState,
+  BarChartData,
 };

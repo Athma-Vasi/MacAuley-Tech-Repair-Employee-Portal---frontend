@@ -65,7 +65,7 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   axisBottomLegendOffset: 0,
   axisBottomLegendPosition: 'middle',
   axisBottomTickPadding: 5,
-  axisBottomTickRotation: 0,
+  axisBottomTickRotation: 45,
   axisBottomTickSize: 5,
   enableAxisBottom: true,
   isAxisBottomLegendFocused: false,

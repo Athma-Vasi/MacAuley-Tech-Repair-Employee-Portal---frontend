@@ -54,10 +54,18 @@ function Dashboard() {
   );
 
   const displayBarChart = <ResponsiveBarChart barChartData={[]} />;
-  const displayRadialBarChart = <ResponsiveRadialBarChart />;
-  const displayLineChart = <ResponsiveLineChart />;
-  const displayCalendarChart = <ResponsiveCalendarChart />;
-  const displaySunburstChart = <ResponsiveSunburstChart />;
+  const displayRadialBarChart = (
+    <ResponsiveRadialBarChart radialBarChartData={[]} hideControls />
+  );
+  const displayLineChart = (
+    <ResponsiveLineChart lineChartData={[]} hideControls />
+  );
+  const displayCalendarChart = (
+    <ResponsiveCalendarChart calendarChartData={[]} hideControls />
+  );
+  const displaySunburstChart = (
+    <ResponsiveSunburstChart sunburstChartData={{ name: '' }} hideControls />
+  );
 
   useEffect(() => {
     const salesDataWithFields = addFieldsToSalesData({
@@ -78,7 +86,7 @@ function Dashboard() {
     // );
   });
 
-  return displayCalendarChart;
+  return displaySunburstChart;
 }
 
 export default Dashboard;

@@ -1,4 +1,5 @@
 import { TitleOrder } from '@mantine/core';
+
 import { ScreenshotImageType } from '../../../types';
 import {
   NivoCalendarAlign,
@@ -6,6 +7,18 @@ import {
   NivoCalendarLegendPosition,
   NivoChartTitlePosition,
 } from '../types';
+
+type CalendarChartData = {
+  day: string; // YYYY-MM-DD
+  value: number;
+};
+
+type ResponsiveCalendarChartProps = {
+  calendarChartData: CalendarChartData[];
+  chartHeight?: number;
+  chartWidth?: number;
+  hideControls?: boolean;
+};
 
 type ResponsiveCalendarChartState = {
   // base
@@ -177,7 +190,9 @@ type ResponsiveCalendarChartDispatch =
     };
 
 export type {
+  CalendarChartData,
   ResponsiveCalendarChartAction,
   ResponsiveCalendarChartDispatch,
+  ResponsiveCalendarChartProps,
   ResponsiveCalendarChartState,
 };

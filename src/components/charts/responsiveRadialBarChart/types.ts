@@ -1,15 +1,31 @@
 import { TitleOrder } from '@mantine/core';
+
 import { ScreenshotImageType } from '../../../types';
 import {
+  NivoChartTitlePosition,
+  NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
-  NivoColorScheme,
+  NivoLegendSymbolShape,
   NivoMotionConfig,
   NivoTransitionMode,
-  NivoLegendSymbolShape,
-  NivoChartTitlePosition,
 } from '../types';
+
+type RadialBarChartData = {
+  id: string;
+  data: {
+    x: string;
+    y: number;
+  }[];
+};
+
+type ResponsiveRadialBarChartProps = {
+  chartHeight?: number;
+  chartWidth?: number;
+  hideControls?: boolean;
+  radialBarChartData: RadialBarChartData[];
+};
 
 type ResponsiveRadialBarChartState = {
   // base
@@ -338,7 +354,9 @@ type ResponsiveRadialBarChartDispatch =
     };
 
 export type {
+  RadialBarChartData,
   ResponsiveRadialBarChartAction,
   ResponsiveRadialBarChartDispatch,
+  ResponsiveRadialBarChartProps,
   ResponsiveRadialBarChartState,
 };

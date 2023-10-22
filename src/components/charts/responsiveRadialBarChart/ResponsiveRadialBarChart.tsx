@@ -50,14 +50,22 @@ import {
   responsiveRadialBarChartAction,
   responsiveRadialBarChartReducer,
 } from './state';
-import { ResponsiveRadialBarChartState } from './types';
+import {
+  ResponsiveRadialBarChartProps,
+  ResponsiveRadialBarChartState,
+} from './types';
 import { BiReset } from 'react-icons/bi';
 import { ChartMargin } from '../chartControls/ChartMargin';
 import { ChartLegend } from '../chartControls/ChartLegend';
 import { ChartOptions } from '../chartControls/ChartOptions';
 import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
-function ResponsiveRadialBarChart() {
+function ResponsiveRadialBarChart({
+  radialBarChartData,
+  chartHeight = 350,
+  chartWidth = 350,
+  hideControls = false,
+}: ResponsiveRadialBarChartProps) {
   const {
     globalState: { isPrefersReducedMotion, themeObject, width, padding },
   } = useGlobalState();
@@ -200,6 +208,200 @@ function ResponsiveRadialBarChart() {
       payload: false,
     });
   }, [isPrefersReducedMotion]);
+
+  const data = [
+    {
+      id: 'Supermarket',
+      data: [
+        {
+          x: 'Vegetables',
+          y: 74,
+        },
+        {
+          x: 'Fruits',
+          y: 98,
+        },
+        {
+          x: 'Meat',
+          y: 38,
+        },
+      ],
+    },
+    {
+      id: 'Combini',
+      data: [
+        {
+          x: 'Vegetables',
+          y: 180,
+        },
+        {
+          x: 'Fruits',
+          y: 29,
+        },
+        {
+          x: 'Meat',
+          y: 235,
+        },
+      ],
+    },
+    {
+      id: 'Online',
+      data: [
+        {
+          x: 'Vegetables',
+          y: 168,
+        },
+        {
+          x: 'Fruits',
+          y: 67,
+        },
+        {
+          x: 'Meat',
+          y: 146,
+        },
+      ],
+    },
+    {
+      id: 'Marché',
+      data: [
+        {
+          x: 'Vegetables',
+          y: 89,
+        },
+        {
+          x: 'Fruits',
+          y: 77,
+        },
+        {
+          x: 'Meat',
+          y: 231,
+        },
+      ],
+    },
+  ];
+
+  const displayResponsiveRadialBar = (
+    <ResponsiveRadialBar
+      data={data}
+      // base
+      maxValue="auto"
+      valueFormat=">-.2f"
+      margin={{
+        top: marginTop,
+        right: marginRight,
+        bottom: marginBottom,
+        left: marginLeft,
+      }}
+      startAngle={startAngle}
+      endAngle={endAngle}
+      innerRadius={innerRadius}
+      padding={paddingRing}
+      padAngle={padAngle}
+      cornerRadius={cornerRadius}
+      // style
+      colors={{ scheme: chartColors }}
+      borderWidth={ringBorderWidth}
+      borderColor={ringBorderColor}
+      // tracks
+      enableTracks={enableTracks}
+      tracksColor={tracksColor}
+      // grids
+      enableRadialGrid={enableRadialGrid}
+      enableCircularGrid={enableCircularGrid}
+      // axes
+      radialAxisStart={
+        enableRadialAxisStart
+          ? {
+              tickSize: radialAxisStartTickSize,
+              tickPadding: radialAxisStartTickPadding,
+              tickRotation: radialAxisStartTickRotation,
+            }
+          : void 0
+      }
+      radialAxisEnd={
+        enableRadialAxisEnd
+          ? {
+              tickSize: radialAxisEndTickSize,
+              tickPadding: radialAxisEndTickPadding,
+              tickRotation: radialAxisEndTickRotation,
+            }
+          : void 0
+      }
+      circularAxisInner={
+        enableCircularAxisInner
+          ? {
+              tickSize: circularAxisInnerTickSize,
+              tickPadding: circularAxisInnerTickPadding,
+              tickRotation: circularAxisInnerTickRotation,
+            }
+          : void 0
+      }
+      circularAxisOuter={
+        enableCircularAxisOuter
+          ? {
+              tickSize: circularAxisOuterTickSize,
+              tickPadding: circularAxisOuterTickPadding,
+              tickRotation: circularAxisOuterTickRotation,
+            }
+          : void 0
+      }
+      // labels
+      enableLabels={enableLabels}
+      labelsSkipAngle={labelsSkipAngle}
+      labelsRadiusOffset={labelsRadiusOffset}
+      labelsTextColor={labelsTextColor}
+      // legends
+      legends={
+        enableLegend
+          ? [
+              {
+                anchor: legendAnchor,
+                direction: legendDirection,
+                justify: enableLegendJustify,
+                translateX: legendTranslateX,
+                translateY: legendTranslateY,
+                itemWidth: legendItemWidth,
+                itemHeight: legendItemHeight,
+                itemsSpacing: legendItemsSpacing,
+                itemOpacity: legendItemOpacity,
+                symbolSize: legendSymbolSize,
+                itemDirection: legendItemDirection,
+                itemBackground: legendItemBackground,
+                itemTextColor: legendItemTextColor,
+                symbolShape: legendSymbolShape,
+                symbolBorderColor: legendSymbolBorderColor,
+                symbolBorderWidth: legendSymbolBorderWidth,
+                symbolSpacing: legendSymbolSpacing,
+                // padding: 20,
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []
+      }
+      // motion
+      animate={enableAnimate}
+      motionConfig={motionConfig}
+      transitionMode={transitionMode}
+      isInteractive={true}
+      role="application"
+      ariaLabel="Nivo radial bar chart"
+    />
+  );
+
+  if (hideControls) {
+    return (
+      <Group w={chartWidth} h={chartHeight}>
+        {displayResponsiveRadialBar}
+      </Group>
+    );
+  }
 
   const [
     enableTracksAccessibleSelectedText,
@@ -1945,192 +2147,6 @@ function ResponsiveRadialBarChart() {
       {displayChartOptions}
       {displayResetAll}
     </Flex>
-  );
-
-  const data = [
-    {
-      id: 'Supermarket',
-      data: [
-        {
-          x: 'Vegetables',
-          y: 74,
-        },
-        {
-          x: 'Fruits',
-          y: 98,
-        },
-        {
-          x: 'Meat',
-          y: 38,
-        },
-      ],
-    },
-    {
-      id: 'Combini',
-      data: [
-        {
-          x: 'Vegetables',
-          y: 180,
-        },
-        {
-          x: 'Fruits',
-          y: 29,
-        },
-        {
-          x: 'Meat',
-          y: 235,
-        },
-      ],
-    },
-    {
-      id: 'Online',
-      data: [
-        {
-          x: 'Vegetables',
-          y: 168,
-        },
-        {
-          x: 'Fruits',
-          y: 67,
-        },
-        {
-          x: 'Meat',
-          y: 146,
-        },
-      ],
-    },
-    {
-      id: 'Marché',
-      data: [
-        {
-          x: 'Vegetables',
-          y: 89,
-        },
-        {
-          x: 'Fruits',
-          y: 77,
-        },
-        {
-          x: 'Meat',
-          y: 231,
-        },
-      ],
-    },
-  ];
-
-  const displayResponsiveRadialBar = (
-    <ResponsiveRadialBar
-      data={data}
-      // base
-      maxValue="auto"
-      valueFormat=">-.2f"
-      margin={{
-        top: marginTop,
-        right: marginRight,
-        bottom: marginBottom,
-        left: marginLeft,
-      }}
-      startAngle={startAngle}
-      endAngle={endAngle}
-      innerRadius={innerRadius}
-      padding={paddingRing}
-      padAngle={padAngle}
-      cornerRadius={cornerRadius}
-      // style
-      colors={{ scheme: chartColors }}
-      borderWidth={ringBorderWidth}
-      borderColor={ringBorderColor}
-      // tracks
-      enableTracks={enableTracks}
-      tracksColor={tracksColor}
-      // grids
-      enableRadialGrid={enableRadialGrid}
-      enableCircularGrid={enableCircularGrid}
-      // axes
-      radialAxisStart={
-        enableRadialAxisStart
-          ? {
-              tickSize: radialAxisStartTickSize,
-              tickPadding: radialAxisStartTickPadding,
-              tickRotation: radialAxisStartTickRotation,
-            }
-          : void 0
-      }
-      radialAxisEnd={
-        enableRadialAxisEnd
-          ? {
-              tickSize: radialAxisEndTickSize,
-              tickPadding: radialAxisEndTickPadding,
-              tickRotation: radialAxisEndTickRotation,
-            }
-          : void 0
-      }
-      circularAxisInner={
-        enableCircularAxisInner
-          ? {
-              tickSize: circularAxisInnerTickSize,
-              tickPadding: circularAxisInnerTickPadding,
-              tickRotation: circularAxisInnerTickRotation,
-            }
-          : void 0
-      }
-      circularAxisOuter={
-        enableCircularAxisOuter
-          ? {
-              tickSize: circularAxisOuterTickSize,
-              tickPadding: circularAxisOuterTickPadding,
-              tickRotation: circularAxisOuterTickRotation,
-            }
-          : void 0
-      }
-      // labels
-      enableLabels={enableLabels}
-      labelsSkipAngle={labelsSkipAngle}
-      labelsRadiusOffset={labelsRadiusOffset}
-      labelsTextColor={labelsTextColor}
-      // legends
-      legends={
-        enableLegend
-          ? [
-              {
-                anchor: legendAnchor,
-                direction: legendDirection,
-                justify: enableLegendJustify,
-                translateX: legendTranslateX,
-                translateY: legendTranslateY,
-                itemWidth: legendItemWidth,
-                itemHeight: legendItemHeight,
-                itemsSpacing: legendItemsSpacing,
-                itemOpacity: legendItemOpacity,
-                symbolSize: legendSymbolSize,
-                itemDirection: legendItemDirection,
-                itemBackground: legendItemBackground,
-                itemTextColor: legendItemTextColor,
-                symbolShape: legendSymbolShape,
-                symbolBorderColor: legendSymbolBorderColor,
-                symbolBorderWidth: legendSymbolBorderWidth,
-                symbolSpacing: legendSymbolSpacing,
-                // padding: 20,
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemOpacity: 1,
-                    },
-                  },
-                ],
-              },
-            ]
-          : []
-      }
-      // motion
-      animate={enableAnimate}
-      motionConfig={motionConfig}
-      transitionMode={transitionMode}
-      isInteractive={true}
-      role="application"
-      ariaLabel="Nivo radial bar chart"
-    />
   );
 
   const displayChartAndControls = (

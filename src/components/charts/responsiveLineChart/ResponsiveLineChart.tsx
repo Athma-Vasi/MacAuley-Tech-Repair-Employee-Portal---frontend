@@ -60,9 +60,14 @@ import {
   responsiveLineChartAction,
   responsiveLineChartReducer,
 } from './state';
-import { ResponsiveLineChartState } from './types';
+import { ResponsiveLineChartProps, ResponsiveLineChartState } from './types';
 
-function ResponsiveLineChart() {
+function ResponsiveLineChart({
+  lineChartData,
+  chartHeight = 350,
+  chartWidth = 350,
+  hideControls = false,
+}: ResponsiveLineChartProps) {
   const {
     globalState: { isPrefersReducedMotion, width, themeObject, padding },
   } = useGlobalState();
@@ -224,6 +229,421 @@ function ResponsiveLineChart() {
       payload: false,
     });
   }, [isPrefersReducedMotion]);
+
+  const data = [
+    {
+      id: 'japan',
+      color: 'hsl(210, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 230,
+        },
+        {
+          x: 'helicopter',
+          y: 82,
+        },
+        {
+          x: 'boat',
+          y: 112,
+        },
+        {
+          x: 'train',
+          y: 185,
+        },
+        {
+          x: 'subway',
+          y: 129,
+        },
+        {
+          x: 'bus',
+          y: 75,
+        },
+        {
+          x: 'car',
+          y: 33,
+        },
+        {
+          x: 'moto',
+          y: 264,
+        },
+        {
+          x: 'bicycle',
+          y: 297,
+        },
+        {
+          x: 'horse',
+          y: 255,
+        },
+        {
+          x: 'skateboard',
+          y: 197,
+        },
+        {
+          x: 'others',
+          y: 238,
+        },
+      ],
+    },
+    {
+      id: 'france',
+      color: 'hsl(184, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 32,
+        },
+        {
+          x: 'helicopter',
+          y: 200,
+        },
+        {
+          x: 'boat',
+          y: 284,
+        },
+        {
+          x: 'train',
+          y: 74,
+        },
+        {
+          x: 'subway',
+          y: 114,
+        },
+        {
+          x: 'bus',
+          y: 263,
+        },
+        {
+          x: 'car',
+          y: 120,
+        },
+        {
+          x: 'moto',
+          y: 285,
+        },
+        {
+          x: 'bicycle',
+          y: 35,
+        },
+        {
+          x: 'horse',
+          y: 291,
+        },
+        {
+          x: 'skateboard',
+          y: 12,
+        },
+        {
+          x: 'others',
+          y: 39,
+        },
+      ],
+    },
+    {
+      id: 'us',
+      color: 'hsl(7, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 236,
+        },
+        {
+          x: 'helicopter',
+          y: 133,
+        },
+        {
+          x: 'boat',
+          y: 195,
+        },
+        {
+          x: 'train',
+          y: 194,
+        },
+        {
+          x: 'subway',
+          y: 297,
+        },
+        {
+          x: 'bus',
+          y: 86,
+        },
+        {
+          x: 'car',
+          y: 280,
+        },
+        {
+          x: 'moto',
+          y: 60,
+        },
+        {
+          x: 'bicycle',
+          y: 61,
+        },
+        {
+          x: 'horse',
+          y: 135,
+        },
+        {
+          x: 'skateboard',
+          y: 92,
+        },
+        {
+          x: 'others',
+          y: 44,
+        },
+      ],
+    },
+    {
+      id: 'germany',
+      color: 'hsl(167, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 287,
+        },
+        {
+          x: 'helicopter',
+          y: 67,
+        },
+        {
+          x: 'boat',
+          y: 9,
+        },
+        {
+          x: 'train',
+          y: 55,
+        },
+        {
+          x: 'subway',
+          y: 187,
+        },
+        {
+          x: 'bus',
+          y: 30,
+        },
+        {
+          x: 'car',
+          y: 241,
+        },
+        {
+          x: 'moto',
+          y: 200,
+        },
+        {
+          x: 'bicycle',
+          y: 22,
+        },
+        {
+          x: 'horse',
+          y: 98,
+        },
+        {
+          x: 'skateboard',
+          y: 8,
+        },
+        {
+          x: 'others',
+          y: 69,
+        },
+      ],
+    },
+    {
+      id: 'norway',
+      color: 'hsl(87, 70%, 50%)',
+      data: [
+        {
+          x: 'plane',
+          y: 250,
+        },
+        {
+          x: 'helicopter',
+          y: 237,
+        },
+        {
+          x: 'boat',
+          y: 135,
+        },
+        {
+          x: 'train',
+          y: 95,
+        },
+        {
+          x: 'subway',
+          y: 181,
+        },
+        {
+          x: 'bus',
+          y: 285,
+        },
+        {
+          x: 'car',
+          y: 251,
+        },
+        {
+          x: 'moto',
+          y: 111,
+        },
+        {
+          x: 'bicycle',
+          y: 115,
+        },
+        {
+          x: 'horse',
+          y: 37,
+        },
+        {
+          x: 'skateboard',
+          y: 43,
+        },
+        {
+          x: 'others',
+          y: 259,
+        },
+      ],
+    },
+  ];
+
+  const displayResponsiveLine = (
+    <ResponsiveLine
+      data={data}
+      // base
+      xScale={{ type: xScale }}
+      yScale={{
+        type: yScale,
+        min: 'auto',
+        max: 'auto',
+        stacked: enableYScaleStacked,
+        reverse: reverseScale,
+      }}
+      yFormat=" >-.2f"
+      // margin
+      margin={{
+        top: marginTop,
+        right: marginRight,
+        bottom: marginBottom,
+        left: marginLeft,
+      }}
+      // style
+      curve={lineCurve}
+      colors={{ scheme: chartColors }}
+      lineWidth={lineWidth}
+      enableArea={enableArea}
+      areaOpacity={areaOpacity}
+      areaBlendMode={areaBlendMode}
+      defs={NIVO_CHART_PATTERN_DEFS}
+      // points
+      enablePoints={enablePoints}
+      pointSize={pointSize}
+      pointColor={pointColor}
+      pointBorderWidth={pointBorderWidth}
+      pointBorderColor={pointBorderColor}
+      enablePointLabel={enablePointLabel}
+      pointLabel={pointLabel}
+      pointLabelYOffset={pointLabelYOffset}
+      // grids
+      enableGridX={enableGridX}
+      enableGridY={enableGridY}
+      // axes
+      axisTop={
+        enableAxisTop
+          ? {
+              tickSize: axisTopTickSize,
+              tickPadding: axisTopTickPadding,
+              tickRotation: axisTopTickRotation,
+              legend: axisTopLegend,
+              legendOffset: axisTopLegendOffset,
+              legendPosition: axisTopLegendPosition,
+            }
+          : null
+      }
+      axisRight={
+        enableAxisRight
+          ? {
+              tickSize: axisRightTickSize,
+              tickPadding: axisRightTickPadding,
+              tickRotation: axisRightTickRotation,
+              legend: axisRightLegend,
+              legendOffset: axisRightLegendOffset,
+              legendPosition: axisRightLegendPosition,
+            }
+          : null
+      }
+      axisBottom={
+        enableAxisBottom
+          ? {
+              tickSize: axisBottomTickSize,
+              tickPadding: axisBottomTickPadding,
+              tickRotation: axisBottomTickRotation,
+              legend: axisBottomLegend,
+              legendOffset: axisBottomLegendOffset,
+              legendPosition: axisBottomLegendPosition,
+            }
+          : null
+      }
+      axisLeft={
+        enableAxisLeft
+          ? {
+              tickSize: axisLeftTickSize,
+              tickPadding: axisLeftTickPadding,
+              tickRotation: axisLeftTickRotation,
+              legend: axisLeftLegend,
+              legendOffset: axisLeftLegendOffset,
+              legendPosition: axisLeftLegendPosition,
+            }
+          : null
+      }
+      // interactivity
+      isInteractive={true}
+      enableCrosshair={enableCrosshair}
+      crosshairType={crosshairType}
+      useMesh={true}
+      // legends
+      legends={
+        enableLegend
+          ? [
+              {
+                anchor: legendAnchor,
+                direction: legendDirection,
+                justify: enableLegendJustify,
+                translateX: legendTranslateX,
+                translateY: legendTranslateY,
+                itemsSpacing: legendItemsSpacing,
+                itemDirection: legendItemDirection,
+                itemWidth: legendItemWidth,
+                itemHeight: legendItemHeight,
+                itemOpacity: legendItemOpacity,
+                symbolSize: legendSymbolSize,
+                symbolShape: legendSymbolShape,
+                symbolBorderColor: legendSymbolBorderColor,
+                symbolBorderWidth: legendSymbolBorderWidth,
+                symbolSpacing: legendSymbolSpacing,
+
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemBackground: 'rgba(0, 0, 0, .03)',
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []
+      }
+      // motion
+      animate={enableAnimate}
+      motionConfig={motionConfig}
+    />
+  );
+
+  if (hideControls) {
+    return (
+      <Group w={chartWidth} h={chartHeight}>
+        {displayResponsiveLine}
+      </Group>
+    );
+  }
 
   const [
     enableYScaleStackedAccessibleSelectedText,
@@ -1488,413 +1908,6 @@ function ResponsiveLineChart() {
       {displayChartOptions}
       {displayResetAll}
     </Flex>
-  );
-
-  const data = [
-    {
-      id: 'japan',
-      color: 'hsl(210, 70%, 50%)',
-      data: [
-        {
-          x: 'plane',
-          y: 230,
-        },
-        {
-          x: 'helicopter',
-          y: 82,
-        },
-        {
-          x: 'boat',
-          y: 112,
-        },
-        {
-          x: 'train',
-          y: 185,
-        },
-        {
-          x: 'subway',
-          y: 129,
-        },
-        {
-          x: 'bus',
-          y: 75,
-        },
-        {
-          x: 'car',
-          y: 33,
-        },
-        {
-          x: 'moto',
-          y: 264,
-        },
-        {
-          x: 'bicycle',
-          y: 297,
-        },
-        {
-          x: 'horse',
-          y: 255,
-        },
-        {
-          x: 'skateboard',
-          y: 197,
-        },
-        {
-          x: 'others',
-          y: 238,
-        },
-      ],
-    },
-    {
-      id: 'france',
-      color: 'hsl(184, 70%, 50%)',
-      data: [
-        {
-          x: 'plane',
-          y: 32,
-        },
-        {
-          x: 'helicopter',
-          y: 200,
-        },
-        {
-          x: 'boat',
-          y: 284,
-        },
-        {
-          x: 'train',
-          y: 74,
-        },
-        {
-          x: 'subway',
-          y: 114,
-        },
-        {
-          x: 'bus',
-          y: 263,
-        },
-        {
-          x: 'car',
-          y: 120,
-        },
-        {
-          x: 'moto',
-          y: 285,
-        },
-        {
-          x: 'bicycle',
-          y: 35,
-        },
-        {
-          x: 'horse',
-          y: 291,
-        },
-        {
-          x: 'skateboard',
-          y: 12,
-        },
-        {
-          x: 'others',
-          y: 39,
-        },
-      ],
-    },
-    {
-      id: 'us',
-      color: 'hsl(7, 70%, 50%)',
-      data: [
-        {
-          x: 'plane',
-          y: 236,
-        },
-        {
-          x: 'helicopter',
-          y: 133,
-        },
-        {
-          x: 'boat',
-          y: 195,
-        },
-        {
-          x: 'train',
-          y: 194,
-        },
-        {
-          x: 'subway',
-          y: 297,
-        },
-        {
-          x: 'bus',
-          y: 86,
-        },
-        {
-          x: 'car',
-          y: 280,
-        },
-        {
-          x: 'moto',
-          y: 60,
-        },
-        {
-          x: 'bicycle',
-          y: 61,
-        },
-        {
-          x: 'horse',
-          y: 135,
-        },
-        {
-          x: 'skateboard',
-          y: 92,
-        },
-        {
-          x: 'others',
-          y: 44,
-        },
-      ],
-    },
-    {
-      id: 'germany',
-      color: 'hsl(167, 70%, 50%)',
-      data: [
-        {
-          x: 'plane',
-          y: 287,
-        },
-        {
-          x: 'helicopter',
-          y: 67,
-        },
-        {
-          x: 'boat',
-          y: 9,
-        },
-        {
-          x: 'train',
-          y: 55,
-        },
-        {
-          x: 'subway',
-          y: 187,
-        },
-        {
-          x: 'bus',
-          y: 30,
-        },
-        {
-          x: 'car',
-          y: 241,
-        },
-        {
-          x: 'moto',
-          y: 200,
-        },
-        {
-          x: 'bicycle',
-          y: 22,
-        },
-        {
-          x: 'horse',
-          y: 98,
-        },
-        {
-          x: 'skateboard',
-          y: 8,
-        },
-        {
-          x: 'others',
-          y: 69,
-        },
-      ],
-    },
-    {
-      id: 'norway',
-      color: 'hsl(87, 70%, 50%)',
-      data: [
-        {
-          x: 'plane',
-          y: 250,
-        },
-        {
-          x: 'helicopter',
-          y: 237,
-        },
-        {
-          x: 'boat',
-          y: 135,
-        },
-        {
-          x: 'train',
-          y: 95,
-        },
-        {
-          x: 'subway',
-          y: 181,
-        },
-        {
-          x: 'bus',
-          y: 285,
-        },
-        {
-          x: 'car',
-          y: 251,
-        },
-        {
-          x: 'moto',
-          y: 111,
-        },
-        {
-          x: 'bicycle',
-          y: 115,
-        },
-        {
-          x: 'horse',
-          y: 37,
-        },
-        {
-          x: 'skateboard',
-          y: 43,
-        },
-        {
-          x: 'others',
-          y: 259,
-        },
-      ],
-    },
-  ];
-
-  const displayResponsiveLine = (
-    <ResponsiveLine
-      data={data}
-      // base
-      xScale={{ type: xScale }}
-      yScale={{
-        type: yScale,
-        min: 'auto',
-        max: 'auto',
-        stacked: enableYScaleStacked,
-        reverse: reverseScale,
-      }}
-      yFormat=" >-.2f"
-      // margin
-      margin={{
-        top: marginTop,
-        right: marginRight,
-        bottom: marginBottom,
-        left: marginLeft,
-      }}
-      // style
-      curve={lineCurve}
-      colors={{ scheme: chartColors }}
-      lineWidth={lineWidth}
-      enableArea={enableArea}
-      areaOpacity={areaOpacity}
-      areaBlendMode={areaBlendMode}
-      defs={NIVO_CHART_PATTERN_DEFS}
-      // points
-      enablePoints={enablePoints}
-      pointSize={pointSize}
-      pointColor={pointColor}
-      pointBorderWidth={pointBorderWidth}
-      pointBorderColor={pointBorderColor}
-      enablePointLabel={enablePointLabel}
-      pointLabel={pointLabel}
-      pointLabelYOffset={pointLabelYOffset}
-      // grids
-      enableGridX={enableGridX}
-      enableGridY={enableGridY}
-      // axes
-      axisTop={
-        enableAxisTop
-          ? {
-              tickSize: axisTopTickSize,
-              tickPadding: axisTopTickPadding,
-              tickRotation: axisTopTickRotation,
-              legend: axisTopLegend,
-              legendOffset: axisTopLegendOffset,
-              legendPosition: axisTopLegendPosition,
-            }
-          : null
-      }
-      axisRight={
-        enableAxisRight
-          ? {
-              tickSize: axisRightTickSize,
-              tickPadding: axisRightTickPadding,
-              tickRotation: axisRightTickRotation,
-              legend: axisRightLegend,
-              legendOffset: axisRightLegendOffset,
-              legendPosition: axisRightLegendPosition,
-            }
-          : null
-      }
-      axisBottom={
-        enableAxisBottom
-          ? {
-              tickSize: axisBottomTickSize,
-              tickPadding: axisBottomTickPadding,
-              tickRotation: axisBottomTickRotation,
-              legend: axisBottomLegend,
-              legendOffset: axisBottomLegendOffset,
-              legendPosition: axisBottomLegendPosition,
-            }
-          : null
-      }
-      axisLeft={
-        enableAxisLeft
-          ? {
-              tickSize: axisLeftTickSize,
-              tickPadding: axisLeftTickPadding,
-              tickRotation: axisLeftTickRotation,
-              legend: axisLeftLegend,
-              legendOffset: axisLeftLegendOffset,
-              legendPosition: axisLeftLegendPosition,
-            }
-          : null
-      }
-      // interactivity
-      isInteractive={true}
-      enableCrosshair={enableCrosshair}
-      crosshairType={crosshairType}
-      useMesh={true}
-      // legends
-      legends={
-        enableLegend
-          ? [
-              {
-                anchor: legendAnchor,
-                direction: legendDirection,
-                justify: enableLegendJustify,
-                translateX: legendTranslateX,
-                translateY: legendTranslateY,
-                itemsSpacing: legendItemsSpacing,
-                itemDirection: legendItemDirection,
-                itemWidth: legendItemWidth,
-                itemHeight: legendItemHeight,
-                itemOpacity: legendItemOpacity,
-                symbolSize: legendSymbolSize,
-                symbolShape: legendSymbolShape,
-                symbolBorderColor: legendSymbolBorderColor,
-                symbolBorderWidth: legendSymbolBorderWidth,
-                symbolSpacing: legendSymbolSpacing,
-
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemBackground: 'rgba(0, 0, 0, .03)',
-                      itemOpacity: 1,
-                    },
-                  },
-                ],
-              },
-            ]
-          : []
-      }
-      // motion
-      animate={enableAnimate}
-      motionConfig={motionConfig}
-    />
   );
 
   const displayChartAndControls = (
