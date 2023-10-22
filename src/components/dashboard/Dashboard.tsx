@@ -78,7 +78,7 @@ function Dashboard() {
     // );
   });
 
-  return displayBarChart;
+  return displayCalendarChart;
 }
 
 export default Dashboard;

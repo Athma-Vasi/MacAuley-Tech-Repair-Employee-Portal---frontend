@@ -11,10 +11,6 @@ type ResponsiveCalendarChartState = {
   // base
   calendarAlign: NivoCalendarAlign; // default: 'center'
   calendarDirection: NivoCalendarDirection; // default: 'horizontal'
-  enableMaxValue: boolean; // default: true ? maxValue : maxValue = 'auto'
-  enableMinValue: boolean; // default: false ? minValue = 'auto'
-  maxValue: number; // 0 - 600 default: 100
-  minValue: number; // -300 - 300 default: 0
 
   // margin
   marginTop: number; // 0px - 200px default: 60 step: 1
@@ -63,10 +59,6 @@ type ResponsiveCalendarChartAction = {
   // base
   setCalendarAlign: 'setCalendarAlign';
   setCalendarDirection: 'setCalendarDirection';
-  setEnableMaxValue: 'setEnableMaxValue';
-  setEnableMinValue: 'setEnableMinValue';
-  setMaxValue: 'setMaxValue';
-  setMinValue: 'setMinValue';
 
   // margin
   setMarginTop: 'setMarginTop';
@@ -126,18 +118,12 @@ type ResponsiveCalendarChartDispatch =
   | {
       type:
         | ResponsiveCalendarChartAction['setEnableDefaultColors']
-        | ResponsiveCalendarChartAction['setEnableMaxValue']
-        | ResponsiveCalendarChartAction['setEnableMinValue']
         | ResponsiveCalendarChartAction['setIsChartTitleFocused']
         | ResponsiveCalendarChartAction['setIsChartTitleValid']
         | ResponsiveCalendarChartAction['setIsScreenshotFilenameFocused']
         | ResponsiveCalendarChartAction['setIsScreenshotFilenameValid'];
 
       payload: boolean;
-    }
-  | {
-      type: ResponsiveCalendarChartAction['setMinValue'];
-      payload: number;
     }
   | {
       type:
@@ -147,7 +133,6 @@ type ResponsiveCalendarChartDispatch =
         | ResponsiveCalendarChartAction['setMarginLeft']
         | ResponsiveCalendarChartAction['setMarginRight']
         | ResponsiveCalendarChartAction['setMarginTop']
-        | ResponsiveCalendarChartAction['setMaxValue']
         | ResponsiveCalendarChartAction['setMonthBorderWidth']
         | ResponsiveCalendarChartAction['setMonthLegendOffset']
         | ResponsiveCalendarChartAction['setMonthSpacing']

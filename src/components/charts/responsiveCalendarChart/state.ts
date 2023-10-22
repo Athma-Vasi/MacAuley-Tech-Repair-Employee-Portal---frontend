@@ -8,10 +8,6 @@ const initialResponsiveCalendarChartState: ResponsiveCalendarChartState = {
   // base
   calendarDirection: 'horizontal',
   calendarAlign: 'center',
-  enableMinValue: false,
-  minValue: 0,
-  enableMaxValue: false,
-  maxValue: 100,
 
   // margin
   marginTop: 60,
@@ -60,10 +56,6 @@ const responsiveCalendarChartAction: ResponsiveCalendarChartAction = {
   // base
   setCalendarDirection: 'setCalendarDirection',
   setCalendarAlign: 'setCalendarAlign',
-  setEnableMinValue: 'setEnableMinValue',
-  setMinValue: 'setMinValue',
-  setEnableMaxValue: 'setEnableMaxValue',
-  setMaxValue: 'setMaxValue',
 
   // margin
   setMarginTop: 'setMarginTop',
@@ -126,26 +118,6 @@ function responsiveCalendarChartReducer(
       return {
         ...state,
         calendarAlign: action.payload,
-      };
-    case responsiveCalendarChartAction.setEnableMinValue:
-      return {
-        ...state,
-        enableMinValue: action.payload,
-      };
-    case responsiveCalendarChartAction.setMinValue:
-      return {
-        ...state,
-        minValue: action.payload,
-      };
-    case responsiveCalendarChartAction.setEnableMaxValue:
-      return {
-        ...state,
-        enableMaxValue: action.payload,
-      };
-    case responsiveCalendarChartAction.setMaxValue:
-      return {
-        ...state,
-        maxValue: action.payload,
       };
 
     // margin

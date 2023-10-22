@@ -88,10 +88,6 @@ function ResponsiveCalendarChart() {
     // base
     calendarDirection, // default: 'horizontal'
     calendarAlign, // default: 'center'
-    enableMinValue, // default: false ? minValue = 'auto'
-    minValue, // -300 - 300 default: 0
-    enableMaxValue, // default: true ? maxValue : maxValue = 'auto'
-    maxValue, // 0 - 600 default: 100
 
     // margin
     marginTop, // 0px - 200px default: 60 step: 1
@@ -135,28 +131,6 @@ function ResponsiveCalendarChart() {
     screenshotImageQuality, // 0 - 1 default: 1 step: 0.1
     screenshotImageType, // default: 'image/png'
   } = responsiveCalendarChartState;
-
-  const [
-    enableMinValueAccessibleSelectedText,
-    enableMinValueAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Min value will be automatically calculated',
-    isSelected: enableMinValue,
-    selectedDescription: 'Please provide a min value',
-    semanticName: 'Min Value',
-    theme: 'muted',
-  });
-
-  const [
-    enableMaxValueAccessibleSelectedText,
-    enableMaxValueAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Max value will be automatically calculated',
-    isSelected: enableMaxValue,
-    selectedDescription: 'Please provide a max value',
-    semanticName: 'Max Value',
-    theme: 'muted',
-  });
 
   const [
     enableDefaultColorsAccessibleSelectedText,
@@ -209,100 +183,6 @@ function ResponsiveCalendarChart() {
       value: calendarAlign,
       width: sliderWidth,
     };
-
-  const createdEnableMinValueSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableMinValue
-          ? enableMinValueAccessibleSelectedText.props.id
-          : enableMinValueAccessibleDeselectedText.props.id
-      }
-      checked={enableMinValue}
-      description={
-        enableMinValue
-          ? enableMinValueAccessibleSelectedText
-          : enableMinValueAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Min Value
-        </Text>
-      }
-      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setEnableMinValue,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const minValueSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'min value',
-    disabled: !enableMinValue,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 300,
-    min: -300,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setMinValue,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: minValue,
-    width: sliderWidth,
-  };
-
-  const createdEnableMaxValueSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableMaxValue
-          ? enableMaxValueAccessibleSelectedText.props.id
-          : enableMaxValueAccessibleDeselectedText.props.id
-      }
-      checked={enableMaxValue}
-      description={
-        enableMaxValue
-          ? enableMaxValueAccessibleSelectedText
-          : enableMaxValueAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Max Value
-        </Text>
-      }
-      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setEnableMaxValue,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const maxValueSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'max value',
-    disabled: !enableMaxValue,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 600,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setMaxValue,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 100,
-    step: 1,
-    value: maxValue,
-    width: sliderWidth,
-  };
 
   // style
   const createdEmptyColorInput = (
@@ -578,12 +458,6 @@ function ResponsiveCalendarChart() {
       calendarAlignSelectInputCreatorInfo,
     ]);
 
-  const [createdMinValueSliderInput, createdMaxValueSliderInput] =
-    returnAccessibleSliderInputElements([
-      minValueSliderInputCreatorInfo,
-      maxValueSliderInputCreatorInfo,
-    ]);
-
   // years months days
   const [
     // years
@@ -660,47 +534,11 @@ function ResponsiveCalendarChart() {
     />
   );
 
-  const displayEnableMinValueSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableMinValueSwitchInput}
-    </Group>
-  );
-
-  const displayMinValueSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdMinValueSliderInput}
-      isInputDisabled={!enableMinValue}
-      label="Min Value"
-      value={minValue}
-    />
-  );
-
-  const displayEnableMaxValueSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableMaxValueSwitchInput}
-    </Group>
-  );
-
-  const displayMaxValueSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdMaxValueSliderInput}
-      isInputDisabled={!enableMaxValue}
-      label="Max Value"
-      value={maxValue}
-    />
-  );
-
   const displayBaseSection = (
     <Stack w="100%" style={{ borderTop: borderColor }}>
       {displayBaseHeading}
       {displayCalendarDirectionSelectInput}
       {displayCalendarAlignSelectInput}
-      {displayEnableMinValueSwitchInput}
-      {displayMinValueSliderInput}
-      {displayEnableMaxValueSwitchInput}
-      {displayMaxValueSliderInput}
     </Stack>
   );
 
@@ -1024,8 +862,8 @@ function ResponsiveCalendarChart() {
       // base
       direction={calendarDirection}
       align={calendarAlign}
-      minValue={enableMinValue ? minValue : void 0}
-      maxValue={enableMaxValue ? maxValue : void 0}
+      minValue="auto"
+      maxValue="auto"
       // margin
       margin={{
         top: marginTop,
