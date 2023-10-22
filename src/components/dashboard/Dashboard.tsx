@@ -14,8 +14,11 @@ import {
 } from '../charts';
 import {
   addFieldsToSalesData,
+  DAYS_PER_MONTH,
+  MONTHS,
   PRODUCT_CATEGORIES,
   REPAIR_CATEGORIES,
+  YEAR_TRANSACTIONS_SPREAD,
 } from './constants';
 
 function Dashboard() {
@@ -60,9 +63,12 @@ function Dashboard() {
 
   useEffect(() => {
     const salesDataWithFields = addFieldsToSalesData({
+      daysPerMonth: DAYS_PER_MONTH,
+      months: MONTHS,
       productCategories: PRODUCT_CATEGORIES,
       repairCategories: REPAIR_CATEGORIES,
       storeLocations: STORE_LOCATION_DATA,
+      yearTransactionsSpread: YEAR_TRANSACTIONS_SPREAD,
     });
     console.log(salesDataWithFields);
     //
