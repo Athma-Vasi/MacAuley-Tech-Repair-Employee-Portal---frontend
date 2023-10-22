@@ -6,8 +6,6 @@ import {
 
 const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
   // base
-  enableMaxValue: false,
-  maxValue: 1000,
   // base -> margin
   marginTop: 60,
   marginRight: 60,
@@ -108,8 +106,6 @@ const initialResponsiveRadialBarChartState: ResponsiveRadialBarChartState = {
 
 const responsiveRadialBarChartAction: ResponsiveRadialBarChartAction = {
   // base
-  setEnableMaxValue: 'setEnableMaxValue',
-  setMaxValue: 'setMaxValue',
   // base -> margin
   setMarginTop: 'setMarginTop',
   setMarginRight: 'setMarginRight',
@@ -217,16 +213,6 @@ function responsiveRadialBarChartReducer(
 ): ResponsiveRadialBarChartState {
   switch (action.type) {
     // base
-    case responsiveRadialBarChartAction.setEnableMaxValue:
-      return {
-        ...state,
-        enableMaxValue: action.payload,
-      };
-    case responsiveRadialBarChartAction.setMaxValue:
-      return {
-        ...state,
-        maxValue: action.payload,
-      };
     // base -> margin
     case responsiveRadialBarChartAction.setMarginTop:
       return {

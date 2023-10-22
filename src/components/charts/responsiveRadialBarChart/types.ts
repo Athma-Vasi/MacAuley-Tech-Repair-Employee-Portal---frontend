@@ -13,8 +13,6 @@ import {
 
 type ResponsiveRadialBarChartState = {
   // base
-  enableMaxValue: boolean; // default: false ? 'auto'
-  maxValue: number; // 0 - 1000 default: 1000 step: 1
   // base -> margin
   marginTop: number; // 0px - 200px default: 60 step: 1
   marginRight: number; // 0px - 200px default: 60 step: 1
@@ -115,8 +113,6 @@ type ResponsiveRadialBarChartState = {
 
 type ResponsiveRadialBarChartAction = {
   // base
-  setEnableMaxValue: 'setEnableMaxValue';
-  setMaxValue: 'setMaxValue';
   // base -> margin
   setMarginTop: 'setMarginTop';
   setMarginRight: 'setMarginRight';
@@ -262,7 +258,6 @@ type ResponsiveRadialBarChartDispatch =
         | ResponsiveRadialBarChartAction['setMarginLeft']
         | ResponsiveRadialBarChartAction['setMarginRight']
         | ResponsiveRadialBarChartAction['setMarginTop']
-        | ResponsiveRadialBarChartAction['setMaxValue']
         | ResponsiveRadialBarChartAction['setPadAngle']
         | ResponsiveRadialBarChartAction['setPaddingRing']
         | ResponsiveRadialBarChartAction['setRadialAxisEndTickPadding']
@@ -286,7 +281,6 @@ type ResponsiveRadialBarChartDispatch =
         | ResponsiveRadialBarChartAction['setEnableLabels']
         | ResponsiveRadialBarChartAction['setEnableLegend']
         | ResponsiveRadialBarChartAction['setEnableLegendJustify']
-        | ResponsiveRadialBarChartAction['setEnableMaxValue']
         | ResponsiveRadialBarChartAction['setEnableRadialAxisEnd']
         | ResponsiveRadialBarChartAction['setEnableRadialAxisStart']
         | ResponsiveRadialBarChartAction['setEnableRadialGrid']

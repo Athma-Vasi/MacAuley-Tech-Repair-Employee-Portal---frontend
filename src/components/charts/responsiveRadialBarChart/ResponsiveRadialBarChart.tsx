@@ -91,8 +91,6 @@ function ResponsiveRadialBarChart() {
 
   const {
     // base
-    enableMaxValue, // default: false ? 'auto'
-    maxValue, // 0 - 1000 default: 1000 step: 1
     // base -> margin
     marginTop, // 0px - 200px default: 60 step: 1
     marginRight, // 0px - 200px default: 60 step: 1
@@ -202,17 +200,6 @@ function ResponsiveRadialBarChart() {
       payload: false,
     });
   }, [isPrefersReducedMotion]);
-
-  const [
-    enableMaxValueAccessibleSelectedText,
-    enableMaxValueAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Max value will be automatically calculated.',
-    isSelected: enableMaxValue,
-    selectedDescription: 'Max value is user defined.',
-    semanticName: 'max value',
-    theme: 'muted',
-  });
 
   const [
     enableTracksAccessibleSelectedText,
@@ -326,52 +313,6 @@ function ResponsiveRadialBarChart() {
   const sliderLabelColor = gray[3];
 
   // base
-  const createdEnableMaxValueSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableMaxValue
-          ? enableMaxValueAccessibleSelectedText.props.id
-          : enableMaxValueAccessibleDeselectedText.props.id
-      }
-      checked={enableMaxValue}
-      description={
-        enableMaxValue
-          ? enableMaxValueAccessibleSelectedText
-          : enableMaxValueAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Max Value
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveRadialBarChartDispatch({
-          type: responsiveRadialBarChartAction.setEnableMaxValue,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const maxValueSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'max value',
-    disabled: !enableMaxValue,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 1000,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveRadialBarChartDispatch({
-        type: responsiveRadialBarChartAction.setMaxValue,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 1000,
-    step: 1,
-    value: maxValue,
-    width: sliderWidth,
-  };
 
   // base -> angles
   const startAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
@@ -1192,7 +1133,6 @@ function ResponsiveRadialBarChart() {
 
   // base
   const [
-    createdMaxValueSliderInput,
     createdStartAngleSliderInput,
     createdEndAngleSliderInput,
     createdInnerRadiusSliderInput,
@@ -1200,7 +1140,6 @@ function ResponsiveRadialBarChart() {
     createdPadAngleSliderInput,
     createdCornerRadiusSliderInput,
   ] = returnAccessibleSliderInputElements([
-    maxValueSliderInputCreatorInfo,
     startAngleSliderInputCreatorInfo,
     endAngleSliderInputCreatorInfo,
     innerRadiusSliderInputCreatorInfo,
@@ -1292,22 +1231,6 @@ function ResponsiveRadialBarChart() {
     </Group>
   );
 
-  const displayEnableMaxValueSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableMaxValueSwitchInput}
-    </Group>
-  );
-
-  const displayMaxValueSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveRadialBarChartState}
-      input={createdMaxValueSliderInput}
-      isInputDisabled={!enableMaxValue}
-      label="Max value"
-      value={maxValue}
-    />
-  );
-
   const displayStartAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveRadialBarChartState}
@@ -1370,8 +1293,6 @@ function ResponsiveRadialBarChart() {
   const displayBaseSection = (
     <Stack w="100%">
       {displayBaseHeading}
-      {displayEnableMaxValueSwitchInput}
-      {displayMaxValueSliderInput}
       {displayStartAngleSliderInput}
       {displayEndAngleSliderInput}
       {displayInnerRadiusSliderInput}
@@ -2101,7 +2022,7 @@ function ResponsiveRadialBarChart() {
     <ResponsiveRadialBar
       data={data}
       // base
-      maxValue={enableMaxValue ? maxValue : void 0}
+      maxValue="auto"
       valueFormat=">-.2f"
       margin={{
         top: marginTop,
