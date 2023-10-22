@@ -92,14 +92,10 @@ function ResponsiveLineChart() {
 
   const {
     // base
-    enableYScaleMax, // default: false ? 'auto'
-    enableYScaleMin, // default: false ? 'auto'
     enableYScaleStacked, // default: false
     reverseScale, // default: false
     xScale, // default: linear
     yScale, // default: linear
-    yScaleMax, // -2000 - 2000 default: 0
-    yScaleMin, // -2000 - 2000 default: 0
 
     // margin
     marginTop, // 0px - 200px default: 60 step: 1
@@ -237,28 +233,6 @@ function ResponsiveLineChart() {
     isSelected: enableYScaleStacked,
     selectedDescription: 'Lines will not be stacked',
     semanticName: 'Y Scale Stacked',
-    theme: 'muted',
-  });
-
-  const [
-    enableYScaleMinAccessibleSelectedText,
-    enableYScaleMinAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Y scale min will be automatically calculated',
-    isSelected: enableYScaleMin,
-    selectedDescription: 'Y scale min will be manually calculated',
-    semanticName: 'Y Scale Min',
-    theme: 'muted',
-  });
-
-  const [
-    enableYScaleMaxAccessibleSelectedText,
-    enableYScaleMaxAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Y scale max will be automatically calculated',
-    isSelected: enableYScaleMax,
-    selectedDescription: 'Y scale max will be manually calculated',
-    semanticName: 'Y Scale Max',
     theme: 'muted',
   });
 
@@ -416,100 +390,6 @@ function ResponsiveLineChart() {
       w="100%"
     />
   );
-
-  const createdEnableYScaleMinSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableYScaleMin
-          ? enableYScaleMinAccessibleSelectedText.props.id
-          : enableYScaleMinAccessibleDeselectedText.props.id
-      }
-      checked={enableYScaleMin}
-      description={
-        enableYScaleMin
-          ? enableYScaleMinAccessibleSelectedText
-          : enableYScaleMinAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Y Scale Min
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableYScaleMin,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const yScaleMinSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'y scale min',
-    disabled: !enableYScaleMin,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 2000,
-    min: -2000,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setYScaleMin,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: yScaleMin,
-    width: sliderWidth,
-  };
-
-  const createdEnableYScaleMaxSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableYScaleMax
-          ? enableYScaleMaxAccessibleSelectedText.props.id
-          : enableYScaleMaxAccessibleDeselectedText.props.id
-      }
-      checked={enableYScaleMax}
-      description={
-        enableYScaleMax
-          ? enableYScaleMaxAccessibleSelectedText
-          : enableYScaleMaxAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Y Scale Max
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableYScaleMax,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const yScaleMaxSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'y scale max',
-    disabled: !enableYScaleMax,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 2000,
-    min: -2000,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setYScaleMax,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: yScaleMax,
-    width: sliderWidth,
-  };
 
   const createdReverseScaleSwitchInput = (
     <Switch
@@ -985,13 +865,6 @@ function ResponsiveLineChart() {
       yScaleSelectInputCreatorInfo,
     ]);
 
-  // base slider inputs
-  const [createdYScaleMinSliderInput, createdYScaleMaxSliderInput] =
-    returnAccessibleSliderInputElements([
-      yScaleMinSliderInputCreatorInfo,
-      yScaleMaxSliderInputCreatorInfo,
-    ]);
-
   // style
   // style select inputs
   const [
@@ -1083,38 +956,6 @@ function ResponsiveLineChart() {
     </Group>
   );
 
-  const displayEnableYScaleMinSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableYScaleMinSwitchInput}
-    </Group>
-  );
-
-  const displayYScaleMinSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdYScaleMinSliderInput}
-      isInputDisabled={!enableYScaleMin}
-      label="Y scale min"
-      value={yScaleMin}
-    />
-  );
-
-  const displayEnableYScaleMaxSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableYScaleMaxSwitchInput}
-    </Group>
-  );
-
-  const displayYScaleMaxSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdYScaleMaxSliderInput}
-      isInputDisabled={!enableYScaleMax}
-      label="Y scale max"
-      value={yScaleMax}
-    />
-  );
-
   const displayReverseScaleSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdReverseScaleSwitchInput}
@@ -1127,10 +968,6 @@ function ResponsiveLineChart() {
       {displayXScaleSelectInput}
       {displayYScaleSelectInput}
       {displayEnableYScaleStackedSwitchInput}
-      {displayEnableYScaleMinSwitchInput}
-      {displayYScaleMinSliderInput}
-      {displayEnableYScaleMaxSwitchInput}
-      {displayYScaleMaxSliderInput}
       {displayReverseScaleSwitchInput}
     </Stack>
   );
@@ -1933,8 +1770,8 @@ function ResponsiveLineChart() {
       xScale={{ type: xScale }}
       yScale={{
         type: yScale,
-        min: enableYScaleMin ? yScaleMin : 'auto',
-        max: enableYScaleMax ? yScaleMax : 'auto',
+        min: 'auto',
+        max: 'auto',
         stacked: enableYScaleStacked,
         reverse: reverseScale,
       }}

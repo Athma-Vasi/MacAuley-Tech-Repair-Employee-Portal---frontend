@@ -18,14 +18,10 @@ import {
 
 type ResponsiveLineChartState = {
   // base
-  enableYScaleMax: boolean; // default: false ? 'auto'
-  enableYScaleMin: boolean; // default: false ? 'auto'
   enableYScaleStacked: boolean; // default: false
   reverseScale: boolean; // default: false
   xScale: NivoLineAxesScale; // default: point
   yScale: NivoLineAxesScale; // default: linear
-  yScaleMax: number; // -2000 - 2000 default: 0
-  yScaleMin: number; // -2000 - 2000 default: 0
 
   // margin
   marginTop: number; // 0px - 200px default: 60 step: 1
@@ -143,14 +139,10 @@ type ResponsiveLineChartState = {
 
 type ResponsiveLineChartAction = {
   // base
-  setEnableYScaleMax: 'setEnableYScaleMax';
-  setEnableYScaleMin: 'setEnableYScaleMin';
   setEnableYScaleStacked: 'setEnableYScaleStacked';
   setReverseScale: 'setReverseScale';
   setXScale: 'setXScale';
   setYScale: 'setYScale';
-  setYScaleMax: 'setYScaleMax';
-  setYScaleMin: 'setYScaleMin';
 
   // margin
   setMarginTop: 'setMarginTop';
@@ -323,9 +315,7 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setPointBorderWidth']
         | ResponsiveLineChartAction['setPointLabelYOffset']
         | ResponsiveLineChartAction['setPointSize']
-        | ResponsiveLineChartAction['setScreenshotImageQuality']
-        | ResponsiveLineChartAction['setYScaleMax']
-        | ResponsiveLineChartAction['setYScaleMin'];
+        | ResponsiveLineChartAction['setScreenshotImageQuality'];
 
       payload: number;
     }
@@ -344,8 +334,6 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setEnableLegendJustify']
         | ResponsiveLineChartAction['setEnablePointLabel']
         | ResponsiveLineChartAction['setEnablePoints']
-        | ResponsiveLineChartAction['setEnableYScaleMax']
-        | ResponsiveLineChartAction['setEnableYScaleMin']
         | ResponsiveLineChartAction['setEnableYScaleStacked']
         | ResponsiveLineChartAction['setIsAxisBottomLegendFocused']
         | ResponsiveLineChartAction['setIsAxisBottomLegendValid']

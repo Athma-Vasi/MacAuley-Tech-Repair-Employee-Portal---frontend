@@ -6,14 +6,10 @@ import {
 
 const initialResponsiveLineChartState: ResponsiveLineChartState = {
   // base
-  enableYScaleMax: false,
-  enableYScaleMin: false,
   enableYScaleStacked: true,
   reverseScale: false,
   xScale: 'point',
   yScale: 'linear',
-  yScaleMax: 0,
-  yScaleMin: 0,
 
   // margin
   marginTop: 60,
@@ -131,14 +127,10 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
 
 const responsiveLineChartAction: ResponsiveLineChartAction = {
   // base
-  setEnableYScaleMax: 'setEnableYScaleMax',
-  setEnableYScaleMin: 'setEnableYScaleMin',
   setEnableYScaleStacked: 'setEnableYScaleStacked',
   setReverseScale: 'setReverseScale',
   setXScale: 'setXScale',
   setYScale: 'setYScale',
-  setYScaleMax: 'setYScaleMax',
-  setYScaleMin: 'setYScaleMin',
 
   // margin
   setMarginTop: 'setMarginTop',
@@ -269,14 +261,6 @@ function responsiveLineChartReducer(
       return { ...state, yScale: action.payload };
     case responsiveLineChartAction.setEnableYScaleStacked:
       return { ...state, enableYScaleStacked: action.payload };
-    case responsiveLineChartAction.setEnableYScaleMin:
-      return { ...state, enableYScaleMin: action.payload };
-    case responsiveLineChartAction.setYScaleMin:
-      return { ...state, yScaleMin: action.payload };
-    case responsiveLineChartAction.setEnableYScaleMax:
-      return { ...state, enableYScaleMax: action.payload };
-    case responsiveLineChartAction.setYScaleMax:
-      return { ...state, yScaleMax: action.payload };
     case responsiveLineChartAction.setReverseScale:
       return { ...state, reverseScale: action.payload };
 
