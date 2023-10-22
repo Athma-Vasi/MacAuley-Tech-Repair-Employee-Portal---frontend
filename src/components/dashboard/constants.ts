@@ -10,7 +10,8 @@
     Average Order Value (AOV):
         AOV calculates the average amount spent per orderIt is computed as total revenue divided by the number of orders during a specific period
     Conversion Rate:
-        This metric measures the percentage of website visitors who make a purchase, indicating how effectively your website turns visitors into customers */
+        This metric measures the percentage of website visitors who make a purchase, indicating how effectively your website turns visitors into customers 
+*/
 
 import { STORE_LOCATION_DATA } from '../../constants/data';
 import { StoreLocation } from '../../types';
@@ -264,7 +265,8 @@ function returnTransactionsRevenueTuple({
         : categoryType === 'Accessories'
         ? returnRandomTransactions() + 30
         : returnRandomTransactions() + 7
-      : returnRandomTransactions();
+      : // repair category
+        returnRandomTransactions();
 
   const revenue =
     category === 'product'
@@ -1190,34 +1192,6 @@ function addFieldsToSalesData({
       yearlyTrends: storeLocationSalesData.yearlyTrends,
     });
     storeLocationSalesData.yearlyTrends = createdYearlyTrends;
-
-    const yearlyRevenueFromMonthlyTotals = createdProductCategories.reduce(
-      (acc, productCategory) => {
-        const { productCategoryYearlyTrends } = productCategory;
-
-        const yearlyRevenueFromMonthlyTotals =
-          productCategoryYearlyTrends.reduce((acc, yearlyTrend) => {
-            const { productCategoryMonthlyTrends } = yearlyTrend;
-
-            const yearlyRevenueFromMonthlyTotals =
-              productCategoryMonthlyTrends.reduce((acc, monthlyTrend) => {
-                const { productCategoryMonthlySalesRevenue } = monthlyTrend;
-
-                return acc + productCategoryMonthlySalesRevenue;
-              }, 0);
-
-            return acc + yearlyRevenueFromMonthlyTotals;
-          }, 0);
-
-        return acc + yearlyRevenueFromMonthlyTotals;
-      },
-      0
-    );
-
-    console.log(
-      'yearlyRevenueFromMonthlyTotals',
-      yearlyRevenueFromMonthlyTotals
-    );
 
     return storeLocationSalesData;
   });

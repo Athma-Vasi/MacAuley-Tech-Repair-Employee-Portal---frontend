@@ -1,9 +1,7 @@
 import { Button, Modal, ScrollArea, Stack, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { useEffect } from 'react';
 
 import { STORE_LOCATION_DATA } from '../../constants/data';
-import { returnDaysInMonthsInYears } from '../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -80,7 +78,7 @@ function Dashboard() {
     // );
   });
 
-  return displayPieChart;
+  return displayBarChart;
 }
 
 export default Dashboard;

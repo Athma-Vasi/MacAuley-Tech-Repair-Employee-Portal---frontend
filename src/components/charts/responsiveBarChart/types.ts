@@ -16,6 +16,8 @@ import {
   NivoMotionConfig,
 } from '../types';
 
+type BarChartData = {};
+
 type ResponsiveBarChartProps = {
   barChartData: any[];
   chartHeight?: number;
@@ -30,11 +32,7 @@ type ResponsiveBarChartState = {
   valueScale: NivoBarValueScale; // default: linear
   reverse: boolean; // default: false
   // base -> value scale
-  enableMaxValue: boolean; // default: false ? maxValue is undefined
-  enableMinValue: boolean; // default: false ? minValue is undefined
   innerPaddingBar: number; // 0 - 10 default: 0 step: 1
-  maxValue: number; // default: 1000 step: 1
-  minValue: number; // default: -1000 step: 1
   paddingBar: number; // 0.1 - 0.9 default: 0.1 step: 0.1
 
   // base -> margin
@@ -143,13 +141,9 @@ type ResponsiveBarChartState = {
 
 type ResponsiveBarChartAction = {
   /** base */
-  setEnableMaxValue: 'setEnableMaxValue';
-  setEnableMinValue: 'setEnableMinValue';
   setGroupMode: 'setGroupMode';
   setInnerPaddingBar: 'setInnerPaddingBar';
   setLayout: 'setLayout';
-  setMaxValue: 'setMaxValue';
-  setMinValue: 'setMinValue';
   setPaddingBar: 'setPaddingBar';
   setReverse: 'setReverse';
   setValueScale: 'setValueScale';
@@ -287,8 +281,6 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setEnableLabels']
         | ResponsiveBarChartAction['setEnableLegend']
         | ResponsiveBarChartAction['setEnableLegendJustify']
-        | ResponsiveBarChartAction['setEnableMaxValue']
-        | ResponsiveBarChartAction['setEnableMinValue']
         | ResponsiveBarChartAction['setIsAxisBottomLegendFocused']
         | ResponsiveBarChartAction['setIsAxisBottomLegendValid']
         | ResponsiveBarChartAction['setIsAxisLeftLegendFocused']
@@ -341,8 +333,6 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setMarginLeft']
         | ResponsiveBarChartAction['setMarginRight']
         | ResponsiveBarChartAction['setMarginTop']
-        | ResponsiveBarChartAction['setMaxValue']
-        | ResponsiveBarChartAction['setMinValue']
         | ResponsiveBarChartAction['setPaddingBar']
         | ResponsiveBarChartAction['setScreenshotImageQuality'];
 

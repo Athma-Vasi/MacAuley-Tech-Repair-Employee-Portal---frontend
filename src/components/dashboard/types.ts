@@ -1,12 +1,16 @@
 import { ProductCategory, RepairCategory, SalesData } from './constants';
 
+type CurrentStoreSelection = 'all' | 'edmonton' | 'calgary' | 'vancouver';
+type CurrentCategorySelection = 'trends' | 'products' | 'repairs';
+type CurrentTrendSelection = 'yearly' | 'monthly' | 'daily';
+
 type DashboardState = {
   salesData: SalesData[];
-  currentStoreSelection: 'all' | 'edmonton' | 'calgary' | 'vancouver';
-  currentCategorySelection: 'trends' | 'products' | 'repairs';
+  currentStoreSelection: CurrentStoreSelection;
+  currentCategorySelection: CurrentCategorySelection;
   currentProductSelection: ProductCategory;
   currentRepairSelection: RepairCategory;
-  currentTrendSelection: 'yearly' | 'monthly' | 'daily';
+  currentTrendSelection: CurrentTrendSelection;
 };
 
 export type { DashboardState };

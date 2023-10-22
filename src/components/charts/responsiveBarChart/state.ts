@@ -6,13 +6,9 @@ import {
 
 const initialResponsiveBarChartState: ResponsiveBarChartState = {
   /** base */
-  enableMaxValue: false,
-  enableMinValue: false,
   groupMode: 'stacked',
   innerPaddingBar: 0,
   layout: 'horizontal',
-  maxValue: 0,
-  minValue: 0,
   paddingBar: 0.1,
   reverse: false,
   valueScale: 'linear',
@@ -123,13 +119,9 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
 
 const responsiveBarChartAction: ResponsiveBarChartAction = {
   /** base */
-  setEnableMaxValue: 'setEnableMaxValue',
-  setEnableMinValue: 'setEnableMinValue',
   setGroupMode: 'setGroupMode',
   setInnerPaddingBar: 'setInnerPaddingBar',
   setLayout: 'setLayout',
-  setMaxValue: 'setMaxValue',
-  setMinValue: 'setMinValue',
   setPaddingBar: 'setPaddingBar',
   setReverse: 'setReverse',
   setValueScale: 'setValueScale',
@@ -265,26 +257,6 @@ function responsiveBarChartReducer(
       return {
         ...state,
         reverse: action.payload,
-      };
-    case responsiveBarChartAction.setEnableMinValue:
-      return {
-        ...state,
-        enableMinValue: action.payload,
-      };
-    case responsiveBarChartAction.setMinValue:
-      return {
-        ...state,
-        minValue: action.payload,
-      };
-    case responsiveBarChartAction.setEnableMaxValue:
-      return {
-        ...state,
-        enableMaxValue: action.payload,
-      };
-    case responsiveBarChartAction.setMaxValue:
-      return {
-        ...state,
-        maxValue: action.payload,
       };
     case responsiveBarChartAction.setPaddingBar:
       return {

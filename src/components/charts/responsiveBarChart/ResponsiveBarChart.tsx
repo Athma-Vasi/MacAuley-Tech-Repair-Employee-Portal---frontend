@@ -134,11 +134,7 @@ function ResponsiveBarChart({
     reverse, // default: false
     valueScale, // default: linear
     // scale
-    enableMaxValue, // default: false ? maxValue is undefined
-    enableMinValue, // default: false ? minValue is undefined
     innerPaddingBar, // 0 - 10 default: 0 step: 1
-    maxValue, // default: 1000 step: 1
-    minValue, // default: -1000 step: 1
     paddingBar, // 0.1 - 0.9 default: 0.1 step: 0.1
 
     // base -> margin
@@ -267,28 +263,6 @@ function ResponsiveBarChart({
       semanticName: 'reverse',
       theme: 'muted',
     });
-
-  const [
-    enableMinValueAccessibleSelectedText,
-    enableMinValueAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Min value will be automatically calculated.',
-    isSelected: enableMinValue,
-    selectedDescription: 'Min value is user defined.',
-    semanticName: 'min value',
-    theme: 'muted',
-  });
-
-  const [
-    enableMaxValueAccessibleSelectedText,
-    enableMaxValueAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Max value will be automatically calculated.',
-    isSelected: enableMaxValue,
-    selectedDescription: 'Max value is user defined.',
-    semanticName: 'max value',
-    theme: 'muted',
-  });
 
   const [
     enableFillPatternsAccessibleSelectedText,
@@ -425,100 +399,6 @@ function ResponsiveBarChart({
       w="100%"
     />
   );
-
-  const createdEnableMinValueSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableMinValue
-          ? enableMinValueAccessibleSelectedText.props.id
-          : enableMinValueAccessibleDeselectedText.props.id
-      }
-      checked={enableMinValue}
-      description={
-        enableMinValue
-          ? enableMinValueAccessibleSelectedText
-          : enableMinValueAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle min value
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setEnableMinValue,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const minValueSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'min value',
-    disabled: !enableMinValue,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 0,
-    min: -1000,
-    onChangeSlider: (value: number) => {
-      responsiveBarChartDispatch({
-        type: responsiveBarChartAction.setMinValue,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: minValue,
-    width: sliderWidth,
-  };
-
-  const createdEnableMaxValueSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableMaxValue
-          ? enableMaxValueAccessibleSelectedText.props.id
-          : enableMaxValueAccessibleDeselectedText.props.id
-      }
-      checked={enableMaxValue}
-      description={
-        enableMaxValue
-          ? enableMaxValueAccessibleSelectedText
-          : enableMaxValueAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle max value
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setEnableMaxValue,
-          payload: event.currentTarget.checked,
-        });
-      }}
-      w="100%"
-    />
-  );
-
-  const maxValueSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'max value',
-    disabled: !enableMaxValue,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 1000,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveBarChartDispatch({
-        type: responsiveBarChartAction.setMaxValue,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 1000,
-    step: 1,
-    value: maxValue,
-    width: sliderWidth,
-  };
 
   const paddingBarSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
     ariaLabel: 'padding bar',
@@ -873,17 +753,11 @@ function ResponsiveBarChart({
     valueScaleSelectInputCreatorInfo,
   ]);
 
-  const [
-    createdMinValueSliderInput,
-    createdMaxValueSliderInput,
-    createdPaddingBarSliderInput,
-    createdInnerPaddingBarSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    minValueSliderInputCreatorInfo,
-    maxValueSliderInputCreatorInfo,
-    paddingBarSliderInputCreatorInfo,
-    innerPaddingBarSliderInputCreatorInfo,
-  ]);
+  const [createdPaddingBarSliderInput, createdInnerPaddingBarSliderInput] =
+    returnAccessibleSliderInputElements([
+      paddingBarSliderInputCreatorInfo,
+      innerPaddingBarSliderInputCreatorInfo,
+    ]);
 
   /** style */
   const [createdColorsSelectInput] = returnAccessibleSelectInputElements([
@@ -968,38 +842,6 @@ function ResponsiveBarChart({
     </Group>
   );
 
-  const displayToggleMinValueSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableMinValueSwitchInput}
-    </Group>
-  );
-
-  const displayMinValueSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsiveBarChartState}
-      input={createdMinValueSliderInput}
-      isInputDisabled={!enableMinValue}
-      label="Min value"
-      value={minValue}
-    />
-  );
-
-  const displayToggleMaxValueSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableMaxValueSwitchInput}
-    </Group>
-  );
-
-  const displayMaxValueSliderInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedInitialResponsiveBarChartState}
-      input={createdMaxValueSliderInput}
-      isInputDisabled={!enableMaxValue}
-      label="Max value"
-      value={maxValue}
-    />
-  );
-
   const displayPaddingBarSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsiveBarChartState}
@@ -1026,10 +868,6 @@ function ResponsiveBarChart({
       {displayLayoutSelectInput}
       {displayValueScaleSelectInput}
       {displayReverseSwitchInput}
-      {displayToggleMinValueSwitchInput}
-      {displayMinValueSliderInput}
-      {displayToggleMaxValueSwitchInput}
-      {displayMaxValueSliderInput}
       {displayPaddingBarSliderInput}
       {displayInnerPaddingBarSliderInput}
     </Stack>
@@ -1574,8 +1412,8 @@ function ResponsiveBarChart({
       valueScale={{ type: valueScale }}
       indexScale={{ type: 'band', round: true }}
       reverse={reverse}
-      minValue={enableMinValue ? minValue : void 0}
-      maxValue={enableMaxValue ? maxValue : void 0}
+      minValue="auto"
+      maxValue="auto"
       padding={paddingBar}
       innerPadding={innerPaddingBar}
       margin={{
