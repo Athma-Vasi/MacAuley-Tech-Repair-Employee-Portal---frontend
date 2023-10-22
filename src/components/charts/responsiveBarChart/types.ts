@@ -16,10 +16,10 @@ import {
   NivoMotionConfig,
 } from '../types';
 
-type BarChartData = {};
+type BarChartData = Record<string, string | number>;
 
 type ResponsiveBarChartProps = {
-  barChartData: any[];
+  barChartData: BarChartData[];
   chartHeight?: number;
   chartWidth?: number;
   hideControls?: boolean;
