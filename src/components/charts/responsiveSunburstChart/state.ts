@@ -18,7 +18,7 @@ const initialResponsiveSunburstChartState: ResponsiveSunburstChartState = {
   chartColors: 'nivo',
   inheritColorFromParent: true,
   chartBorderWidth: 1,
-  chartBorderColor: 'white',
+  chartBorderColor: '#adb5bd',
   enableFillPatterns: false,
   fillPatterns: [],
 
@@ -27,7 +27,7 @@ const initialResponsiveSunburstChartState: ResponsiveSunburstChartState = {
   arcLabel: 'formattedValue',
   arcLabelsRadiusOffset: 0.5,
   arcLabelsSkipAngle: 0,
-  arcLabelsTextColor: 'gray',
+  arcLabelsTextColor: '#343a40',
 
   // motion
   enableAnimate: true,
@@ -36,7 +36,7 @@ const initialResponsiveSunburstChartState: ResponsiveSunburstChartState = {
 
   // options
   chartTitle: '',
-  chartTitleColor: 'dark',
+  chartTitleColor: '#343a40',
   chartTitlePosition: 'center',
   chartTitleSize: 3,
   isChartTitleFocused: false,

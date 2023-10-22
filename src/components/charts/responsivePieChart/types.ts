@@ -15,6 +15,9 @@ import {
 } from '../types';
 
 type ResponsivePieChartProps = {
+  chartHeight?: number;
+  chartWidth?: number;
+  hideControls?: boolean;
   pieChartData: PieChartData[];
 };
 

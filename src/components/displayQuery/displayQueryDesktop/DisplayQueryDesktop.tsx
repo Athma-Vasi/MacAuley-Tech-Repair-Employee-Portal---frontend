@@ -290,6 +290,7 @@ function DisplayQueryDesktop({
         top: 0,
         zIndex: 3,
         height: 35,
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
       }}
     >
       <tr>

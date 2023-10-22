@@ -63,7 +63,12 @@ import { ChartOptions } from '../chartControls/ChartOptions';
 import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 import { ChartArcLabel } from '../chartControls/ChartArcLabel';
 
-function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
+function ResponsivePieChart({
+  chartHeight = 500,
+  chartWidth = 500,
+  hideControls = false,
+  pieChartData,
+}: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
   const {
     globalState: { padding, width, themeObject, isPrefersReducedMotion },
@@ -212,6 +217,90 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
   }, [isPrefersReducedMotion]);
 
   /** ------------- end useEffects ------------- */
+
+  const displayResponsivePie = (
+    <ResponsivePie
+      data={pieChartData}
+      // base
+      margin={{
+        top: marginTop,
+        right: marginRight,
+        bottom: marginBottom,
+        left: marginLeft,
+      }}
+      startAngle={startAngle}
+      endAngle={endAngle}
+      innerRadius={innerRadius}
+      padAngle={padAngle}
+      cornerRadius={cornerRadius}
+      sortByValue={sortByValue}
+      // style
+      colors={{ scheme: chartColors }}
+      borderColor={arcBorderColor}
+      borderWidth={arcBorderWidth}
+      // arc labels
+      arcLabel={arcLabel}
+      enableArcLabels={enableArcLabels}
+      arcLabelsRadiusOffset={arcLabelsRadiusOffset}
+      arcLabelsSkipAngle={arcLabelsSkipAngle}
+      arcLabelsTextColor={arcLabelsTextColor}
+      // arc link labels
+      enableArcLinkLabels={enableArcLinkLabels}
+      arcLinkLabelsSkipAngle={arcLinkLabelsSkipAngle}
+      arcLinkLabelsOffset={arcLinkLabelsOffset}
+      arcLinkLabelsDiagonalLength={arcLinkLabelsDiagonalLength}
+      arcLinkLabelsStraightLength={arcLinkLabelsStraightLength}
+      arcLinkLabelsTextOffset={arcLinkLabelsTextOffset}
+      arcLinkLabelsThickness={arcLinkLabelsThickness}
+      arcLinkLabelsTextColor={arcLinkLabelsTextColor}
+      // interactivity
+      activeInnerRadiusOffset={activeInnerRadiusOffset}
+      activeOuterRadiusOffset={activeOuterRadiusOffset}
+      // motion
+      animate={enableAnimate}
+      motionConfig={motionConfig}
+      transitionMode={transitionMode}
+      defs={NIVO_CHART_PATTERN_DEFS}
+      fill={enableFillPatterns ? fillPatterns : []}
+      legends={
+        enableLegend
+          ? [
+              {
+                anchor: legendAnchor,
+                direction: legendDirection,
+                justify: enableLegendJustify,
+                translateX: legendTranslateX,
+                translateY: legendTranslateY,
+                itemsSpacing: legendItemsSpacing,
+                itemWidth: legendItemWidth,
+                itemHeight: legendItemHeight,
+                itemTextColor: legendItemTextColor,
+                itemDirection: legendItemDirection,
+                itemOpacity: legendItemOpacity,
+                symbolSize: legendSymbolSize,
+                symbolShape: legendSymbolShape,
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemTextColor: '#000',
+                    },
+                  },
+                ],
+              },
+            ]
+          : []
+      }
+    />
+  );
+
+  if (hideControls) {
+    return (
+      <Group w={chartWidth} h={chartHeight}>
+        {displayResponsivePie}
+      </Group>
+    );
+  }
 
   /** ------------- begin accessible description texts ------------- */
 
@@ -1343,82 +1432,6 @@ function ResponsivePieChart({ pieChartData }: ResponsivePieChartProps) {
       {displayChartOptions}
       {displayResetAll}
     </Flex>
-  );
-
-  const displayResponsivePie = (
-    <ResponsivePie
-      data={pieChartData}
-      // base
-      margin={{
-        top: marginTop,
-        right: marginRight,
-        bottom: marginBottom,
-        left: marginLeft,
-      }}
-      startAngle={startAngle}
-      endAngle={endAngle}
-      innerRadius={innerRadius}
-      padAngle={padAngle}
-      cornerRadius={cornerRadius}
-      sortByValue={sortByValue}
-      // style
-      colors={{ scheme: chartColors }}
-      borderColor={arcBorderColor}
-      borderWidth={arcBorderWidth}
-      // arc labels
-      arcLabel={arcLabel}
-      enableArcLabels={enableArcLabels}
-      arcLabelsRadiusOffset={arcLabelsRadiusOffset}
-      arcLabelsSkipAngle={arcLabelsSkipAngle}
-      arcLabelsTextColor={arcLabelsTextColor}
-      // arc link labels
-      enableArcLinkLabels={enableArcLinkLabels}
-      arcLinkLabelsSkipAngle={arcLinkLabelsSkipAngle}
-      arcLinkLabelsOffset={arcLinkLabelsOffset}
-      arcLinkLabelsDiagonalLength={arcLinkLabelsDiagonalLength}
-      arcLinkLabelsStraightLength={arcLinkLabelsStraightLength}
-      arcLinkLabelsTextOffset={arcLinkLabelsTextOffset}
-      arcLinkLabelsThickness={arcLinkLabelsThickness}
-      arcLinkLabelsTextColor={arcLinkLabelsTextColor}
-      // interactivity
-      activeInnerRadiusOffset={activeInnerRadiusOffset}
-      activeOuterRadiusOffset={activeOuterRadiusOffset}
-      // motion
-      animate={enableAnimate}
-      motionConfig={motionConfig}
-      transitionMode={transitionMode}
-      defs={NIVO_CHART_PATTERN_DEFS}
-      fill={enableFillPatterns ? fillPatterns : []}
-      legends={
-        enableLegend
-          ? [
-              {
-                anchor: legendAnchor,
-                direction: legendDirection,
-                justify: enableLegendJustify,
-                translateX: legendTranslateX,
-                translateY: legendTranslateY,
-                itemsSpacing: legendItemsSpacing,
-                itemWidth: legendItemWidth,
-                itemHeight: legendItemHeight,
-                itemTextColor: legendItemTextColor,
-                itemDirection: legendItemDirection,
-                itemOpacity: legendItemOpacity,
-                symbolSize: legendSymbolSize,
-                symbolShape: legendSymbolShape,
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemTextColor: '#000',
-                    },
-                  },
-                ],
-              },
-            ]
-          : []
-      }
-    />
   );
 
   const displayChartAndControls = (

@@ -32,7 +32,7 @@ function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
 
   const [profilePicElement] = returnAccessibleImageElements([
     {
-      customWidth: width < 640 ? 128 : width < 1024 ? 256 : 512,
+      customWidth: width < 640 ? 128 : width < 1024 ? 256 : 384,
       customRadius: 4,
       fit: 'cover',
       imageSrc: employeeDocument?.profilePictureUrl,

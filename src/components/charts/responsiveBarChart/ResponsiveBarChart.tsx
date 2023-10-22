@@ -82,7 +82,7 @@ import {
   responsiveBarChartAction,
   responsiveBarChartReducer,
 } from './state';
-import { ResponsiveBarChartState } from './types';
+import { ResponsiveBarChartProps, ResponsiveBarChartState } from './types';
 import { ChartAxisTop } from '../chartControls/ChartAxisTop';
 import { ChartAxisRight } from '../chartControls/ChartAxisRight';
 import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
@@ -92,7 +92,12 @@ import { ChartLegend } from '../chartControls/ChartLegend';
 import { ChartMargin } from '../chartControls/ChartMargin';
 import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
-function ResponsiveBarChart() {
+function ResponsiveBarChart({
+  barChartData,
+  chartHeight = 500,
+  chartWidth = 500,
+  hideControls = false,
+}: ResponsiveBarChartProps) {
   const {
     globalState: { isPrefersReducedMotion, width, themeObject, padding },
   } = useGlobalState();

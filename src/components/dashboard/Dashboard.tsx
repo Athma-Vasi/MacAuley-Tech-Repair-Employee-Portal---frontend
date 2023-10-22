@@ -1,4 +1,9 @@
-import { Button, Modal, ScrollArea, Stack } from '@mantine/core';
+import { Button, Modal, ScrollArea, Stack, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { useEffect } from 'react';
+
+import { STORE_LOCATION_DATA } from '../../constants/data';
+import { returnDaysInMonthsInYears } from '../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -7,12 +12,13 @@ import {
   ResponsiveRadialBarChart,
   ResponsiveSunburstChart,
 } from '../charts';
-import { useDisclosure } from '@mantine/hooks';
+import {
+  addFieldsToSalesData,
+  PRODUCT_CATEGORIES,
+  REPAIR_CATEGORIES,
+} from './constants';
 
 function Dashboard() {
-  const [openedChartModal, { open: openChartModal, close: closeChartModal }] =
-    useDisclosure(false);
-
   const displayPieChart = (
     <ResponsivePieChart
       pieChartData={[
@@ -42,46 +48,33 @@ function Dashboard() {
           value: 219,
         },
       ]}
+      hideControls={true}
     />
   );
 
-  const displayBarChart = <ResponsiveBarChart />;
+  const displayBarChart = <ResponsiveBarChart barChartData={[]} />;
   const displayRadialBarChart = <ResponsiveRadialBarChart />;
   const displayLineChart = <ResponsiveLineChart />;
   const displayCalendarChart = <ResponsiveCalendarChart />;
   const displaySunburstChart = <ResponsiveSunburstChart />;
 
-  const displayModal = (
-    <Modal
-      centered
-      opened={openedChartModal}
-      onClose={closeChartModal}
-      scrollAreaComponent={ScrollArea.Autosize}
-      size="calc(100vw - 1rem)"
-    >
-      <Stack w="100%">
-        {/* {displayPieChart} */}
-        {displayBarChart}
-        {/* {displayRadialBarChart} */}
-        {/* {displayLineChart} */}
-        {/* {displaySunburstChart} */}
-      </Stack>
-    </Modal>
-  );
+  useEffect(() => {
+    const salesDataWithFields = addFieldsToSalesData({
+      productCategories: PRODUCT_CATEGORIES,
+      repairCategories: REPAIR_CATEGORIES,
+      storeLocations: STORE_LOCATION_DATA,
+    });
+    console.log(salesDataWithFields);
+    //
+    // console.log(
+    //   returnDaysInMonthsInYears({
+    //     yearEnd: 2021,
+    //     yearStart: 2015,
+    //   })
+    // );
+  });
 
-  return (
-    <Stack>
-      {/* {displayPieChart} */}
-      {/* {displayBarChart} */}
-      {/* {displayRadialBarChart} */}
-      {/* {displayLineChart} */}
-      {/* {displaySunburstChart} */}
-      {displayCalendarChart}
-      <Button onClick={openChartModal}>Open Modal</Button>
-      {/* {displayBarChart} */}
-      {displayModal}
-    </Stack>
-  );
+  return displayPieChart;
 }
 
 export default Dashboard;

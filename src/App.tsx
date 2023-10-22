@@ -564,48 +564,10 @@ function App() {
       <Routes>
         {/* these are public routes */}
         <Route path="/" element={rootIndexWrapper}>
-          {/* TESTING ONLY REMOVE  */}
-          {/* <Route index element={<ResponsiveBarChart />} /> */}
-          {/* <Route index element={<ResponsiveRadialBarChart />} /> */}
-          {/* <Route index element={<ResponsiveLineChart />} /> */}
-          {/* <Route index element={<ResponsiveCalendarChart />} /> */}
-          {/* <Route index element={<ResponsiveSunburstChart />} /> */}
-          {/* <Route
-            index
-            element={
-              <ResponsivePieChart
-                pieChartData={[
-                  {
-                    id: 'php',
-                    label: 'php',
-                    value: 561,
-                  },
-                  {
-                    id: 'stylus',
-                    label: 'stylus',
-                    value: 124,
-                  },
-                  {
-                    id: 'sass',
-                    label: 'sass',
-                    value: 385,
-                  },
-                  {
-                    id: 'make',
-                    label: 'make',
-                    value: 239,
-                  },
-                  {
-                    id: 'python',
-                    label: 'python',
-                    value: 219,
-                  },
-                ]}
-              />
-            }
-          /> */}
+          {/* TESTING ONLY REMOVE */}
+          <Route index element={<Dashboard />} />
 
-          <Route index element={loginElement} />
+          {/* <Route index element={loginElement} /> */}
           <Route path="login" element={loginElement} />
           <Route path="register" element={<PortalLayout />}>
             <Route index element={registerElement} />

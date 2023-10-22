@@ -117,6 +117,15 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
             isError: true,
             errorMessage: error?.message,
             errorCallback: () => {
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: '',
+                  errorCallback: () => {},
+                },
+              });
+
               navigate('/');
             },
           },

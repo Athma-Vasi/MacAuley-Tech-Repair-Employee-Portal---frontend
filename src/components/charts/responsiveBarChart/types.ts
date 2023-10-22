@@ -1,19 +1,27 @@
 import { TitleOrder } from '@mantine/core';
+
 import { ScreenshotImageType } from '../../../types';
 import {
-  NivoFillPatternObject,
-  NivoLegendAnchor,
-  NivoLegendDirection,
-  NivoLegendItemDirection,
-  NivoLegendSymbolShape,
-  NivoColorScheme,
-  NivoMotionConfig,
   NivoAxisLegendPosition,
   NivoBarGroupMode,
   NivoBarLayout,
   NivoBarValueScale,
   NivoChartTitlePosition,
+  NivoColorScheme,
+  NivoFillPatternObject,
+  NivoLegendAnchor,
+  NivoLegendDirection,
+  NivoLegendItemDirection,
+  NivoLegendSymbolShape,
+  NivoMotionConfig,
 } from '../types';
+
+type ResponsiveBarChartProps = {
+  barChartData: any[];
+  chartHeight?: number;
+  chartWidth?: number;
+  hideControls?: boolean;
+};
 
 type ResponsiveBarChartState = {
   /** base */
@@ -413,5 +421,6 @@ type ResponsiveBarChartDispatch =
 export type {
   ResponsiveBarChartAction,
   ResponsiveBarChartDispatch,
+  ResponsiveBarChartProps,
   ResponsiveBarChartState,
 };

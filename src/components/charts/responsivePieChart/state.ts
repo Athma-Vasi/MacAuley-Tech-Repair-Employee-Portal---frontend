@@ -8,7 +8,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   /** base */
   startAngle: 0,
   endAngle: 360,
-  innerRadius: 0.25,
+  innerRadius: 0.5,
   padAngle: 4,
   cornerRadius: 4,
   sortByValue: false,
@@ -28,7 +28,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   arcLabelsTextColor: 'gray',
 
   /** arc link labels */
-  enableArcLinkLabels: true,
+  enableArcLinkLabels: false,
   arcLinkLabelsSkipAngle: 0,
   arcLinkLabelsOffset: 0,
   arcLinkLabelsDiagonalLength: 16,
