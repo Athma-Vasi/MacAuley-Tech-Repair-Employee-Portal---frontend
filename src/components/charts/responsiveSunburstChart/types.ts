@@ -9,9 +9,11 @@ import {
   NivoMotionConfig,
   NivoTransitionMode,
 } from '../types';
+import { ComputedDatum } from '@nivo/sunburst';
 
 type SunburstChartData = {
   name: string;
+  value?: number;
   children?: SunburstChartData[];
 };
 

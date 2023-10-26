@@ -5,6 +5,7 @@ import {
   MantineNumberSize,
   ScrollArea,
   Space,
+  Text,
   Title,
   TitleOrder,
 } from '@mantine/core';

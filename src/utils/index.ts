@@ -1889,63 +1889,6 @@ async function captureScreenshot({
   });
 }
 
-type ReturnDaysInMonthsInYearsInput = {
-  daysPerMonth:number[];
-  months:string[];
-  monthEnd?: number;
-  monthStart?: number;
-  yearEnd: number;
-  yearStart: number;
-};
-/**
- * Generate a map of days in months for a range of years.
- * @param {ReturnDaysInMonthsInYearsInput} options - The options for generating the map.
- * @returns {Map<string, Map<string, string[]>} - A map of days in months for each year.
- *
- * @param {number[]} options.daysPerMonth - The number of days in each month.
- * @param {string[]} options.months - The months in a year.
- * @param {number} options.monthEnd - The end month (0-11) of the range (default: 11, December).
- * @param {number} options.monthStart - The start month (0-11) of the range (default: 0, January).
- * @param {number} options.yearEnd - The end year of the range.
- * @param {number} options.yearStart - The start year of the range.
- *
- * @throws {RangeError} When `yearStart` is greater than `yearEnd`.
- */
-function returnDaysInMonthsInYears({daysPerMonth,months,
-  monthEnd = 11,
-  monthStart = 0,
-  yearEnd,
-  yearStart,
-}: ReturnDaysInMonthsInYearsInput): Map<string, Map<string, string[]>> {
-  const slicedMonths = months.slice(monthStart, monthEnd + 1);
-  const yearsRange = Array.from(
-    { length: yearEnd - yearStart + 1 },
-    (_, idx) => idx + yearStart
-  );
-
-  return yearsRange.reduce((yearsAcc, year) => {
-    const months = slicedMonths.reduce((monthsAcc, month, monthIdx) => {
-      const days = daysPerMonth[monthIdx];
-      const isLeapYear =
-        (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-      const daysWithLeapYear = monthIdx === 1 && isLeapYear ? days + 1 : days;
-
-      const daysRange = Array.from(
-        { length: daysWithLeapYear },
-        (_, idx) => idx + 1
-      ).map((day) => day.toString().padStart(2, '0'));
-
-      monthsAcc.set(month, daysRange);
-
-      return monthsAcc;
-    }, new Map<string, string[]>());
-
-    yearsAcc.set(year.toString(), months);
-
-    return yearsAcc;
-  }, new Map<string, Map<string, string[]>>());
-}
-
 export {
   addFieldsToObject,
   captureScreenshot,
@@ -1966,7 +1909,6 @@ export {
   returnDateNearPastValidationText,
   returnDateOfBirthValidationText,
   returnDateValidationText,
-  returnDaysInMonthsInYears,
   returnElapsedTime,
   returnEmailValidationText,
   returnFilenameValidationText,

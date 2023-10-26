@@ -68,10 +68,10 @@ import { ChartMargin } from '../chartControls/ChartMargin';
 import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 
 function ResponsiveSunburstChart({
-  sunburstChartData,
   chartHeight = 350,
   chartWidth = 350,
   hideControls = false,
+  sunburstChartData,
 }: ResponsiveSunburstChartProps) {
   const {
     globalState: {
@@ -619,7 +619,8 @@ function ResponsiveSunburstChart({
       // interactivity
       isInteractive={true}
       onClick={(node, event) => {
-        console.log({ node, event });
+        console.log('node', node);
+        console.log('event', event);
       }}
       // motion
       animate={enableAnimate}
