@@ -1,17 +1,10 @@
 import {
-  DailyFinancialMetric,
+  LocationYearSpread,
   Month,
-  MonthlyFinancialMetric,
   ProductCategory,
   RepairCategory,
   SalesCategorySelection,
   SalesDataEntryType,
-  YearCustomersSpread,
-  FinancialMetric,
-  YearTransactionsSpread,
-  YearProfitMarginSpread,
-  YearConversionRateSpread,
-  YearChurnRateSpread,
 } from './types';
 
 const DAYS_PER_MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -64,7 +57,7 @@ const REPAIR_CATEGORIES: RepairCategory[] = [
 /**
  * - random daily transactions spread between [min, max] per year
  */
-const YEAR_TRANSACTIONS_SPREAD: YearTransactionsSpread = {
+const YEAR_TRANSACTIONS_SPREAD: LocationYearSpread = {
   Edmonton: {
     '2013': [1, 2],
     '2014': [2, 3],
@@ -96,42 +89,7 @@ const YEAR_TRANSACTIONS_SPREAD: YearTransactionsSpread = {
   },
 };
 
-/**
- * - random daily customers spread between [min, max] per year
- */
-const YEAR_CUSTOMERS_SPREAD: YearCustomersSpread = {
-  Edmonton: {
-    '2013': [30, 130],
-    '2014': [40, 140],
-    '2015': [50, 150],
-    '2016': [60, 160],
-    '2017': [110, 210],
-    '2018': [130, 230],
-    '2019': [150, 250],
-    '2020': [250, 350],
-    '2021': [270, 370],
-    '2022': [270, 370],
-    '2023': [230, 330],
-  },
-  Calgary: {
-    '2017': [30, 130],
-    '2018': [40, 140],
-    '2019': [50, 150],
-    '2020': [60, 160],
-    '2021': [110, 210],
-    '2022': [130, 230],
-    '2023': [150, 250],
-  },
-  Vancouver: {
-    '2019': [40, 140],
-    '2020': [90, 190],
-    '2021': [130, 230],
-    '2022': [130, 230],
-    '2023': [110, 210],
-  },
-};
-
-const YEAR_PROFIT_MARGIN_SPREAD: YearProfitMarginSpread = {
+const YEAR_PROFIT_MARGIN_SPREAD: LocationYearSpread = {
   Edmonton: {
     '2013': [0.03, 0.13],
     '2014': [0.04, 0.14],
@@ -165,7 +123,7 @@ const YEAR_PROFIT_MARGIN_SPREAD: YearProfitMarginSpread = {
 /**
  * @see https://www.ruleranalytics.com/blog/insight/conversion-rate-by-industry/
  */
-const YEAR_CONVERSION_RATE_SPREAD: YearConversionRateSpread = {
+const YEAR_CONVERSION_RATE_SPREAD: LocationYearSpread = {
   Edmonton: {
     '2013': [0.01, 0.011],
     '2014': [0.011, 0.012],
@@ -200,7 +158,77 @@ const YEAR_CONVERSION_RATE_SPREAD: YearConversionRateSpread = {
 /**
  * @see https://customergauge.com/blog/average-churn-rate-by-industry
  */
-const YEAR_CHURN_RATE_SPREAD: YearChurnRateSpread = {
+const YEAR_CHURN_RATE_SPREAD: LocationYearSpread = {
+  Edmonton: {
+    '2013': [0.3, 0.4],
+    '2014': [0.25, 0.3],
+    '2015': [0.2, 0.25],
+    '2016': [0.18, 0.22],
+    '2017': [0.16, 0.2],
+    '2018': [0.15, 0.18],
+    '2019': [0.13, 0.16],
+    '2020': [0.1, 0.12],
+    '2021': [0.09, 0.11],
+    '2022': [0.09, 0.11],
+    '2023': [0.1, 0.12],
+  },
+  Calgary: {
+    '2017': [0.18, 0.22],
+    '2018': [0.15, 0.18],
+    '2019': [0.13, 0.16],
+    '2020': [0.1, 0.12],
+    '2021': [0.09, 0.11],
+    '2022': [0.09, 0.11],
+    '2023': [0.1, 0.12],
+  },
+  Vancouver: {
+    '2019': [0.13, 0.16],
+    '2020': [0.1, 0.12],
+    '2021': [0.09, 0.11],
+    '2022': [0.09, 0.11],
+    '2023': [0.1, 0.12],
+  },
+};
+
+/**
+ * - random daily customers spread between [min, max] per year
+ */
+const YEAR_CUSTOMERS_SPREAD: LocationYearSpread = {
+  Edmonton: {
+    '2013': [60, 260],
+    '2014': [80, 280],
+    '2015': [100, 300],
+    '2016': [120, 320],
+    '2017': [220, 420],
+    '2018': [260, 460],
+    '2019': [300, 500],
+    '2020': [500, 700],
+    '2021': [540, 740],
+    '2022': [540, 740],
+    '2023': [460, 660],
+  },
+  Calgary: {
+    '2017': [60, 260],
+    '2018': [80, 280],
+    '2019': [100, 300],
+    '2020': [120, 320],
+    '2021': [220, 420],
+    '2022': [260, 460],
+    '2023': [300, 500],
+  },
+  Vancouver: {
+    '2019': [80, 280],
+    '2020': [180, 380],
+    '2021': [340, 460],
+    '2022': [460, 540],
+    '2023': [300, 460],
+  },
+};
+
+/**
+ * - random daily new customers fraction spread between [min, max] per year
+ */
+const YEAR_NEW_CUSTOMERS_SPREAD: LocationYearSpread = {
   Edmonton: {
     '2013': [0.3, 0.4],
     '2014': [0.25, 0.3],
@@ -250,6 +278,7 @@ export {
   YEAR_CHURN_RATE_SPREAD,
   YEAR_CONVERSION_RATE_SPREAD,
   YEAR_CUSTOMERS_SPREAD,
+  YEAR_NEW_CUSTOMERS_SPREAD,
   YEAR_PROFIT_MARGIN_SPREAD,
   YEAR_TRANSACTIONS_SPREAD,
 };

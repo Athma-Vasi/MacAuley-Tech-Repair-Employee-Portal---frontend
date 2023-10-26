@@ -1,31 +1,28 @@
-import { StoreLocation } from '../../types';
+import { v4 as uuidv4 } from 'uuid';
 
+import { StoreLocation } from '../../types';
 import {
-  RepairCategory,
+  BusinessMetrics,
+  CustomerDailyMetric,
+  CustomerMetrics,
+  CustomerMonthlyMetric,
+  CustomerYearlyMetric,
+  DailyFinancialMetric,
+  DaysInMonthsInYears,
+  FinancialMetric,
+  LocationYearSpread,
+  Month,
+  MonthlyFinancialMetric,
   ProductCategory,
-  YearTransactionsSpread,
+  ProductCategoryDailyMetric,
+  ProductCategoryMetric,
+  ProductCategoryMonthlyMetric,
+  ProductCategoryYearlyMetric,
+  RepairCategory,
   RepairCategoryMetric,
   RepairCategoryMonthlyMetric,
   RepairCategoryYearlyMetric,
-  ProductCategoryMetric,
-  ProductCategoryDailyMetric,
-  ProductCategoryMonthlyMetric,
-  ProductCategoryYearlyMetric,
-  FinancialMetric,
-  DailyFinancialMetric,
-  BusinessMetrics,
-  Month,
   Year,
-  DaysInMonthsInYears,
-  MonthlyFinancialMetric,
-  YearCustomersSpread,
-  CustomerMetrics,
-  YearProfitMarginSpread,
-  YearConversionRateSpread,
-  CustomerDailyMetric,
-  CustomerMonthlyMetric,
-  YearChurnRateSpread,
-  CustomerYearlyMetric,
 } from './types';
 
 type ReturnDaysInMonthsInYearsInput = {
@@ -111,7 +108,7 @@ type ReturnTransactionsRevenueTupleInput = {
   categoryType: RepairCategory | ProductCategory;
   storeLocation: StoreLocation;
   year: string;
-  yearTransactionsSpread: YearTransactionsSpread;
+  yearTransactionsSpread: LocationYearSpread;
 };
 /**
  * - calculates the number of transactions and revenue for a specific category and location based on predefined rules and randomization within specified ranges.
@@ -123,7 +120,7 @@ type ReturnTransactionsRevenueTupleInput = {
  * @param {RepairCategory | ProductCategory} options.categoryType - The specific type within the category.
  * @param {StoreLocation} options.storeLocation - The location or store where the calculations are done.
  * @param {string} options.year - The year for which the calculations are performed.
- * @param {YearTransactionsSpread} options.yearTransactionsSpread - The spread of transaction data for the year and location.
+ * @param {LocationYearSpread} options.yearTransactionsSpread - The spread of transaction data for the year and location.
  */
 function returnTransactionsRevenueTuple({
   category,
@@ -201,42 +198,136 @@ function returnTransactionsRevenueTuple({
 
   customerMetrics: {
     totalCustomers: number;
-    customerLifetimeValue: number;
+    lifetimeValue: number;
 
     yearlyMetrics: {
-      year: string;
-      yearlyCustomers: number;
-      yearlyNewCustomers: number;
-      yearlyReturningCustomers: number;
-      yearlyCustomerChurnRate: number;
-      yearlyCustomerRetentionRate: number;
+      // year: Year;
+      // yearlyCustomers: number;
+      // yearlyNewCustomers: number;
+      // yearlyReturningCustomers: number;
+      // yearlyCustomerChurnRate: number;
+      // yearlyCustomerRetentionRate: number;
 
-      yearlySalesCustomers: number;
-      yearlyInStoreCustomers: number;
-      yearlyOnlineCustomers: number;
-      yearlyRepairCustomers: number;
+      // yearlySalesCustomers: number;
+      // yearlyInStoreCustomers: number;
+      // yearlyOnlineCustomers: number;
+      // yearlyRepairCustomers: number;
+
+      id: string;
+      year: Year;
+      customers: {
+        id: string;
+        total: number;
+        new: {
+          id: string;
+          total: number;
+          sales: {
+            id: string;
+            total: number;
+            online: number;
+            inStore: number;
+          };
+          repair: number;
+        };
+        returning: {
+          id: string;
+          total: number;
+          sales: {
+            id: string;
+            total: number;
+            online: number;
+            inStore: number;
+          };
+          repair: number;
+        };
+        churnRate: number;
+        retentionRate: number;
+      };
+  
 
       monthlyMetrics: {
-        monthlyCustomers: number;
-        monthlyNewCustomers: number;
-        monthlyReturningCustomers: number;
-        monthlyCustomerChurnRate: number;
-        monthlyCustomerRetentionRate: number; 
+        // month: Month;
+        // monthlyCustomers: number;
+        // monthlyNewCustomers: number;
+        // monthlyReturningCustomers: number;
+        // monthlyCustomerChurnRate: number;
+        // monthlyCustomerRetentionRate: number; 
 
-        monthlySalesCustomers: number;
-        monthlyInStoreCustomers: number;
-        monthlyOnlineCustomers: number;
-        monthlyRepairCustomers: number;
+        // monthlySalesCustomers: number;
+        // monthlyInStoreCustomers: number;
+        // monthlyOnlineCustomers: number;
+        // monthlyRepairCustomers: number;
+
+        id: string;
+        month: Month;
+        customers: {
+          id: string;
+          total: number;
+          new: {
+            id: string;
+            total: number;
+            sales: {
+              id: string;
+              total: number;
+              online: number;
+              inStore: number;
+            };
+            repair: number;
+          };
+          returning: {
+            id: string;
+            total: number;
+            sales: {
+              id: string;
+              total: number;
+              online: number;
+              inStore: number;
+            };
+            repair: number;
+          };
+          churnRate: number;
+          retentionRate: number;
+        };
 
         dailyMetrics: {
-          dailyCustomers: number;
-          dailyNewCustomers: number;
-          dailyReturningCustomers: number;
+          // day: string;
+          // dailyCustomers: number;
+          // dailyNewCustomers: number;
+          // dailyReturningCustomers: number;
 
-          dailySalesCustomers: number;
-          dailyInStoreCustomers: number;
-          dailyOnlineCustomers: number;
-          dailyRepairCustomers: number;
+          // dailySalesCustomers: number;
+          // dailyInStoreCustomers: number;
+          // dailyOnlineCustomers: number;
+          // dailyRepairCustomers: number;
+
+          id: string;
+          day: string;
+          customers: {
+            id: string;
+            total: number;
+            new: {
+              id: string;
+              total: number;
+              sales: {
+                id: string;
+                total: number;
+                online: number;
+                inStore: number;
+              };
+              repair: number;
+            };
+            returning: {
+              id: string;
+              total: number;
+              sales: {
+                id: string;
+                total: number;
+                online: number;
+                inStore: number;
+              };
+              repair: number;
+            };
+          };
         }
       }
     }
@@ -348,7 +439,7 @@ type ReturnRepairCategoriesInput = {
   daysInMonthsInYears: DaysInMonthsInYears;
   repairCategories: RepairCategory[];
   storeLocation: StoreLocation;
-  yearTransactionsSpread: YearTransactionsSpread;
+  yearTransactionsSpread: LocationYearSpread;
 };
 /**
  * - Calculates randomly generated repair transactions and revenue for a given year and store location.
@@ -361,7 +452,7 @@ type ReturnRepairCategoriesInput = {
  * @param {DaysInMonthsInYears} options.daysInMonthsInYears - Data containing days and months in multiple years.
  * @param {RepairCategory[]} options.repairCategories - An array of repair category types to calculate trends for.
  * @param {StoreLocation} options.storeLocation - The store location for which trends are calculated.
- * @param {YearTransactionsSpread} options.yearTransactionsSpread - The spread of transaction data for multiple years and the location.
+ * @param {LocationYearSpread} options.yearTransactionsSpread - The spread of transaction data for multiple years and the location.
  */
 function returnRepairCategories({
   daysInMonthsInYears,
@@ -463,7 +554,7 @@ type ReturnProductCategoriesInput = {
   daysInMonthsInYears: DaysInMonthsInYears;
   productCategories: ProductCategory[];
   storeLocation: StoreLocation;
-  yearTransactionsSpread: YearTransactionsSpread;
+  yearTransactionsSpread: LocationYearSpread;
 };
 /**
  * - Calculates randomly generated product transactions and revenue for a given year and store location.
@@ -475,7 +566,7 @@ type ReturnProductCategoriesInput = {
  * @param {DaysInMonthsInYears} options.daysInMonthsInYears - Data containing days and months in multiple years.
  * @param {ProductCategory[]} options.productCategories - An array of product category types to calculate trends for.
  * @param {StoreLocation} options.storeLocation - The store location for which trends are calculated.
- * @param {YearTransactionsSpread} options.yearTransactionsSpread - The spread of transaction data for multiple years and the location.
+ * @param {LocationYearSpread} options.yearTransactionsSpread - The spread of transaction data for multiple years and the location.
  */
 function returnProductCategories({
   daysInMonthsInYears,
@@ -947,7 +1038,7 @@ function returnRandomProfitMargin({
 }: {
   storeLocation: StoreLocation;
   year: Year;
-  yearProfitMarginSpread: YearProfitMarginSpread;
+  yearProfitMarginSpread: LocationYearSpread;
 }) {
   const store = yearProfitMarginSpread[storeLocation];
   const yearSpread = Object.entries(store).find(
@@ -965,7 +1056,7 @@ function returnRandomConversionRate({
 }: {
   storeLocation: StoreLocation;
   year: Year;
-  yearConversionRateSpread: YearConversionRateSpread;
+  yearConversionRateSpread: LocationYearSpread;
 }) {
   const store = yearConversionRateSpread[storeLocation];
   const yearSpread = Object.entries(store).find(
@@ -979,8 +1070,8 @@ function returnRandomConversionRate({
 type ReturnFinancialMetricsInput = {
   financialMetrics: FinancialMetric[];
   storeLocation: StoreLocation;
-  yearConversionRateSpread: YearConversionRateSpread;
-  yearProfitMarginSpread: YearProfitMarginSpread;
+  yearConversionRateSpread: LocationYearSpread;
+  yearProfitMarginSpread: LocationYearSpread;
 };
 /**
  * - Calculates daily financial metrics from randomly generated transactions and revenue and aggregates them into monthly and yearly metrics.
@@ -990,8 +1081,8 @@ type ReturnFinancialMetricsInput = {
  *
  * @param {FinancialMetric[]} options.financialMetrics - The financial metrics to calculate.
  * @param {StoreLocation} options.storeLocation - The store location for which to calculate financial metrics.
- * @param {YearConversionRateSpread} options.yearConversionRateSpread - The spread of conversion rates for multiple years and the location.
- * @param {YearProfitMarginSpread} options.yearProfitMarginSpread - The spread of profit margins for multiple years and the location.
+ * @param {LocationYearSpread} options.yearConversionRateSpread - The spread of conversion rates for multiple years and the location.
+ * @param {LocationYearSpread} options.yearProfitMarginSpread - The spread of profit margins for multiple years and the location.
  */
 function returnFinancialMetrics({
   financialMetrics,
@@ -1010,23 +1101,18 @@ function returnFinancialMetrics({
           (dailyFinancialMetric) => {
             const { dailyRevenue, dailyOrders } = dailyFinancialMetric;
 
-            // random daily average order value
             const dailyAverageOrderValue = dailyRevenue / dailyOrders;
-            // random daily conversion rate
             const dailyConversionRate = returnRandomConversionRate({
               storeLocation,
               year,
               yearConversionRateSpread,
             });
-            // random profit margin
             const dailyNetProfitMargin = returnRandomProfitMargin({
               storeLocation,
               year,
               yearProfitMarginSpread,
             });
-            // random profit
             const dailyProfit = dailyRevenue * dailyNetProfitMargin;
-            // random expenses
             const dailyExpenses = dailyRevenue - dailyProfit;
 
             const newDailyFinancialMetric: DailyFinancialMetric = {
@@ -1042,7 +1128,6 @@ function returnFinancialMetrics({
           }
         );
 
-        // average of all daily average order values
         const dailyAverageOrderValues = newDailyFinancialMetrics.map(
           (dailyFinancialMetric) => dailyFinancialMetric.dailyAverageOrderValue
         );
@@ -1052,7 +1137,6 @@ function returnFinancialMetrics({
             0
           ) / dailyAverageOrderValues.length;
 
-        // average of all daily conversion rates
         const dailyConversionRates = newDailyFinancialMetrics.map(
           (dailyFinancialMetric) => dailyFinancialMetric.dailyConversionRate
         );
@@ -1088,7 +1172,6 @@ function returnFinancialMetrics({
       }
     );
 
-    // average of all monthly average order values
     const monthlyAverageOrderValues = newMonthlyFinancialMetrics.map(
       (monthlyFinancialMetric) =>
         monthlyFinancialMetric.monthlyAverageOrderValue
@@ -1099,7 +1182,6 @@ function returnFinancialMetrics({
         0
       ) / monthlyAverageOrderValues.length;
 
-    // average of all monthly conversion rates
     const monthlyConversionRates = newMonthlyFinancialMetrics.map(
       (monthlyFinancialMetric) => monthlyFinancialMetric.monthlyConversionRate
     );
@@ -1141,7 +1223,7 @@ function returnRandomCustomers({
 }: {
   year: Year;
   storeLocation: StoreLocation;
-  yearCustomersSpread: YearCustomersSpread;
+  yearCustomersSpread: LocationYearSpread;
 }) {
   const store = yearCustomersSpread[storeLocation];
   const yearSpread = Object.entries(store).find(
@@ -1159,7 +1241,7 @@ function returnRandomChurnRate({
 }: {
   year: Year;
   storeLocation: StoreLocation;
-  yearChurnRateSpread: YearChurnRateSpread;
+  yearChurnRateSpread: LocationYearSpread;
 }) {
   const store = yearChurnRateSpread[storeLocation];
   const yearSpread = Object.entries(store).find(
@@ -1170,11 +1252,30 @@ function returnRandomChurnRate({
   return Math.random() * (max - min) + min; // spread between max and min
 }
 
+function returnRandomNewCustomers({
+  year,
+  storeLocation,
+  yearNewCustomersSpread,
+}: {
+  year: Year;
+  storeLocation: StoreLocation;
+  yearNewCustomersSpread: LocationYearSpread;
+}) {
+  const store = yearNewCustomersSpread[storeLocation];
+  const yearSpread = Object.entries(store).find(
+    ([yearKey]) => yearKey === year
+  )?.[1] ?? [0.2, 0.1];
+  const [min, max] = yearSpread;
+
+  return Math.random() * (max - min) + min; // spread between max and min
+}
+
 type ReturnCustomerMetricsInput = {
   daysInMonthsInYears: DaysInMonthsInYears;
   storeLocation: StoreLocation;
-  yearChurnRateSpread: YearChurnRateSpread;
-  yearCustomersSpread: YearCustomersSpread;
+  yearChurnRateSpread: LocationYearSpread;
+  yearCustomersSpread: LocationYearSpread;
+  yearNewCustomersSpread: LocationYearSpread;
 };
 /**
  * - Calculates randomly generated customer metrics for a given year and store location.
@@ -1185,84 +1286,219 @@ type ReturnCustomerMetricsInput = {
  *
  * @param {DaysInMonthsInYears} options.daysInMonthsInYears - Data containing days and months in multiple years.
  * @param {StoreLocation} options.storeLocation - The store location for which trends are calculated.
- * @param {YearChurnRateSpread} options.yearChurnRateSpread - The spread of churn rates for multiple years and the location.
- * @param {YearCustomersSpread} options.yearCustomersSpread - The spread of customer data for multiple years and the location.
+ * @param {LocationYearSpread} options.yearChurnRateSpread - The spread of churn rates for multiple years and the location.
+ * @param {LocationYearSpread} options.yearCustomersSpread - The spread of customer data for multiple years and the location.
+ * @param {LocationYearSpread} options.yearNewCustomersSpread - The spread of new customer data for multiple years and the location.
  */
 function returnCustomerMetrics({
   daysInMonthsInYears,
   storeLocation,
   yearChurnRateSpread,
   yearCustomersSpread,
+  yearNewCustomersSpread,
 }: ReturnCustomerMetricsInput): CustomerMetrics {
   const yearlyCustomerMetrics = Array.from(daysInMonthsInYears).map(
-    (yearTuple) => {
+    (yearTuple: [Year, Map<Month, string[]>]) => {
       const [year, daysInMonthsMap] = yearTuple;
 
       const monthlyCustomerMetrics = Array.from(daysInMonthsMap).map(
-        (monthTuple) => {
+        (monthTuple: [Month, string[]]) => {
           const [month, daysRange] = monthTuple;
 
-          const dailyCustomerMetrics = daysRange.map((date) => {
-            const dailyInStoreCustomers = returnRandomCustomers({
+          const dailyCustomerMetrics = daysRange.map((date: string) => {
+            /**
+             * id: string;
+               day: string;
+               customers: {
+                 id: string;
+                 total: number;
+                 new: {
+                   id: string;
+                   total: number;
+                   sales: {
+                     id: string;
+                     total: number;
+                     online: number;
+                     inStore: number;
+                   };
+                   repair: number;
+                 };
+                 returning: {
+                   id: string;
+                   total: number;
+                   sales: {
+                     id: string;
+                     total: number;
+                     online: number;
+                     inStore: number;
+                   };
+                   repair: number;
+                 };
+               };
+             */
+            const dailyCustomersTotal = returnRandomCustomers({
               storeLocation,
               year,
               yearCustomersSpread,
             });
-            const dailyOnlineCustomers =
-              dailyInStoreCustomers * (Math.random() * (15 - 5) + 5);
-            const dailySalesCustomers =
-              dailyInStoreCustomers + dailyOnlineCustomers;
-            const dailyRepairCustomers =
-              dailyInStoreCustomers * (Math.random() * (0.15 - 0.05) + 0.05);
-            const dailyCustomers = dailySalesCustomers + dailyRepairCustomers;
-
+            // new
+            const dailyNewCustomersFraction = returnRandomNewCustomers({
+              storeLocation,
+              year,
+              yearNewCustomersSpread,
+            });
             const dailyNewCustomers = Math.round(
-              dailyCustomers * Math.random() * (0.1 - 0.02) + 0.02
-            ); // spread between 0.02 and 0.10
-            const dailyReturningCustomers = dailyCustomers - dailyNewCustomers;
+              dailyCustomersTotal * dailyNewCustomersFraction
+            );
+            // new -> repair
+            const dailyNewRepairCustomersFraction =
+              Math.random() * (0.15 - 0.05) + 0.05; // spread between 0.05 and 0.15
+            const dailyNewRepairCustomers = Math.round(
+              dailyNewCustomers * dailyNewRepairCustomersFraction
+            );
+            // new -> sales
+            const dailyNewSalesCustomers =
+              dailyNewCustomers - dailyNewRepairCustomers;
+            // new -> sales -> online
+            const dailyNewSalesOnlineCustomersFraction =
+              Math.random() * (0.9 - 0.7) + 0.7; // spread between 0.7 and 0.9
+            const dailyNewSalesOnlineCustomers = Math.round(
+              dailyNewSalesCustomers * dailyNewSalesOnlineCustomersFraction
+            );
+            // new -> sales -> in store
+            const dailyNewSalesInStoreCustomers =
+              dailyNewSalesCustomers - dailyNewSalesOnlineCustomers;
+
+            // returning
+            const dailyReturningCustomers =
+              dailyCustomersTotal - dailyNewCustomers;
+            // returning -> repair
+            const dailyReturningRepairCustomersFraction =
+              Math.random() * (0.15 - 0.05) + 0.05; // spread between 0.05 and 0.15
+            const dailyReturningRepairCustomers = Math.round(
+              dailyReturningCustomers * dailyReturningRepairCustomersFraction
+            );
+            // returning -> sales
+            const dailyReturningSalesCustomers =
+              dailyReturningCustomers - dailyReturningRepairCustomers;
+            // returning -> sales -> online
+            const dailyReturningSalesOnlineCustomersFraction =
+              Math.random() * (0.9 - 0.7) + 0.7; // spread between 0.7 and 0.9
+            const dailyReturningSalesOnlineCustomers = Math.round(
+              dailyReturningSalesCustomers *
+                dailyReturningSalesOnlineCustomersFraction
+            );
+            // returning -> sales -> in store
+            const dailyReturningSalesInStoreCustomers =
+              dailyReturningSalesCustomers - dailyReturningSalesOnlineCustomers;
 
             const dailyCustomerMetric: CustomerDailyMetric = {
-              dailyCustomers,
-              dailyNewCustomers,
-              dailyReturningCustomers,
-              dailySalesCustomers,
-              dailyInStoreCustomers,
-              dailyOnlineCustomers,
-              dailyRepairCustomers,
+              id: uuidv4(),
               day: date,
+              customers: {
+                id: uuidv4(),
+                total: dailyCustomersTotal,
+                new: {
+                  id: uuidv4(),
+                  repair: dailyNewRepairCustomers,
+                  sales: {
+                    id: uuidv4(),
+                    total: dailyNewSalesCustomers,
+                    inStore: dailyNewSalesInStoreCustomers,
+                    online: dailyNewSalesOnlineCustomers,
+                  },
+                  total: dailyNewCustomers,
+                },
+                returning: {
+                  id: uuidv4(),
+                  repair: dailyReturningRepairCustomers,
+                  sales: {
+                    id: uuidv4(),
+                    inStore: dailyReturningSalesInStoreCustomers,
+                    online: dailyReturningSalesOnlineCustomers,
+                    total: dailyReturningSalesCustomers,
+                  },
+                  total: dailyReturningCustomers,
+                },
+              },
             };
 
             return dailyCustomerMetric;
           });
 
-          const [
-            monthlyCustomers,
-            monthlyNewCustomers,
-            monthlyReturningCustomers,
-            monthlySalesCustomers,
-            monthlyInStoreCustomers,
-            monthlyOnlineCustomers,
-            monthlyRepairCustomers,
-          ] = dailyCustomerMetrics.reduce(
+          const monthlyCustomerMetricTemplate: CustomerMonthlyMetric = {
+            id: uuidv4(),
+            month,
+            customers: {
+              id: uuidv4(),
+              new: {
+                id: uuidv4(),
+                repair: 0,
+                sales: {
+                  id: uuidv4(),
+                  inStore: 0,
+                  online: 0,
+                  total: 0,
+                },
+                total: 0,
+              },
+              returning: {
+                id: uuidv4(),
+                repair: 0,
+                sales: {
+                  id: uuidv4(),
+                  inStore: 0,
+                  online: 0,
+                  total: 0,
+                },
+                total: 0,
+              },
+              total: 0,
+              churnRate: 0,
+              retentionRate: 0,
+            },
+            dailyMetrics: dailyCustomerMetrics,
+          };
+
+          const monthlyCustomerMetric = dailyCustomerMetrics.reduce(
             (monthlyCustomerMetricsAcc, dailyCustomerMetric) => {
-              monthlyCustomerMetricsAcc[0] +=
-                dailyCustomerMetric.dailyCustomers;
-              monthlyCustomerMetricsAcc[1] +=
-                dailyCustomerMetric.dailyNewCustomers;
-              monthlyCustomerMetricsAcc[2] +=
-                dailyCustomerMetric.dailyReturningCustomers;
-              monthlyCustomerMetricsAcc[3] +=
-                dailyCustomerMetric.dailySalesCustomers;
-              monthlyCustomerMetricsAcc[4] +=
-                dailyCustomerMetric.dailyInStoreCustomers;
-              monthlyCustomerMetricsAcc[5] +=
-                dailyCustomerMetric.dailyOnlineCustomers;
-              monthlyCustomerMetricsAcc[6] +=
-                dailyCustomerMetric.dailyRepairCustomers;
+              const { customers } = dailyCustomerMetric;
+              monthlyCustomerMetricsAcc.customers.total += customers.total;
+              // new
+              monthlyCustomerMetricsAcc.customers.new.total +=
+                customers.new.total;
+              // new -> sales
+              monthlyCustomerMetricsAcc.customers.new.sales.total +=
+                customers.new.sales.total;
+              // new -> sales -> online
+              monthlyCustomerMetricsAcc.customers.new.sales.online +=
+                customers.new.sales.online;
+              // new -> sales -> in store
+              monthlyCustomerMetricsAcc.customers.new.sales.inStore +=
+                customers.new.sales.inStore;
+              // new -> repair
+              monthlyCustomerMetricsAcc.customers.new.repair +=
+                customers.new.repair;
+
+              // returning
+              monthlyCustomerMetricsAcc.customers.returning.total +=
+                customers.returning.total;
+              // returning -> sales
+              monthlyCustomerMetricsAcc.customers.returning.sales.total +=
+                customers.returning.sales.total;
+              // returning -> sales -> online
+              monthlyCustomerMetricsAcc.customers.returning.sales.online +=
+                customers.returning.sales.online;
+              // returning -> sales -> in store
+              monthlyCustomerMetricsAcc.customers.returning.sales.inStore +=
+                customers.returning.sales.inStore;
+              // returning -> repair
+              monthlyCustomerMetricsAcc.customers.returning.repair +=
+                customers.returning.repair;
 
               return monthlyCustomerMetricsAcc;
             },
-            [0, 0, 0, 0, 0, 0, 0]
+            monthlyCustomerMetricTemplate
           );
 
           const monthlyCustomerChurnRate = returnRandomChurnRate({
@@ -1270,99 +1506,119 @@ function returnCustomerMetrics({
             year,
             yearChurnRateSpread,
           });
-          const monthlyCustomerRetentionRate = 1 - monthlyCustomerChurnRate;
+          monthlyCustomerMetric.customers.churnRate = monthlyCustomerChurnRate;
 
-          const monthlyCustomerMetric: CustomerMonthlyMetric = {
-            monthlyCustomers,
-            monthlyNewCustomers,
-            monthlyReturningCustomers,
-            monthlySalesCustomers,
-            monthlyInStoreCustomers,
-            monthlyOnlineCustomers,
-            monthlyRepairCustomers,
-            monthlyCustomerChurnRate,
-            monthlyCustomerRetentionRate,
-            month,
-            dailyCustomerMetrics,
-          };
+          const monthlyCustomerRetentionRate = 1 - monthlyCustomerChurnRate;
+          monthlyCustomerMetric.customers.retentionRate =
+            monthlyCustomerRetentionRate;
 
           return monthlyCustomerMetric;
         }
       );
 
-      const [
-        yearlyCustomers,
-        yearlyNewCustomers,
-        yearlyReturningCustomers,
-        yearlySalesCustomers,
-        yearlyInStoreCustomers,
-        yearlyOnlineCustomers,
-        yearlyRepairCustomers,
-      ] = monthlyCustomerMetrics.reduce(
+      const yearlyCustomerMetricTemplate: CustomerYearlyMetric = {
+        id: uuidv4(),
+        year,
+        customers: {
+          id: uuidv4(),
+          total: 0,
+          new: {
+            id: uuidv4(),
+            repair: 0,
+            sales: {
+              id: uuidv4(),
+              inStore: 0,
+              online: 0,
+              total: 0,
+            },
+            total: 0,
+          },
+          returning: {
+            id: uuidv4(),
+            repair: 0,
+            sales: {
+              id: uuidv4(),
+              inStore: 0,
+              online: 0,
+              total: 0,
+            },
+            total: 0,
+          },
+          churnRate: 0,
+          retentionRate: 0,
+        },
+        monthlyMetrics: monthlyCustomerMetrics,
+      };
+
+      const yearlyCustomerMetric = monthlyCustomerMetrics.reduce(
         (yearlyCustomerMetricsAcc, monthlyCustomerMetric) => {
-          yearlyCustomerMetricsAcc[0] += monthlyCustomerMetric.monthlyCustomers;
-          yearlyCustomerMetricsAcc[1] +=
-            monthlyCustomerMetric.monthlyNewCustomers;
-          yearlyCustomerMetricsAcc[2] +=
-            monthlyCustomerMetric.monthlyReturningCustomers;
-          yearlyCustomerMetricsAcc[3] +=
-            monthlyCustomerMetric.monthlySalesCustomers;
-          yearlyCustomerMetricsAcc[4] +=
-            monthlyCustomerMetric.monthlyInStoreCustomers;
-          yearlyCustomerMetricsAcc[5] +=
-            monthlyCustomerMetric.monthlyOnlineCustomers;
-          yearlyCustomerMetricsAcc[6] +=
-            monthlyCustomerMetric.monthlyRepairCustomers;
+          const { customers } = monthlyCustomerMetric;
+          yearlyCustomerMetricsAcc.customers.total += customers.total;
+          // new
+          yearlyCustomerMetricsAcc.customers.new.total += customers.new.total;
+          // new -> sales
+          yearlyCustomerMetricsAcc.customers.new.sales.total +=
+            customers.new.sales.total;
+          // new -> sales -> online
+          yearlyCustomerMetricsAcc.customers.new.sales.online +=
+            customers.new.sales.online;
+          // new -> sales -> in store
+          yearlyCustomerMetricsAcc.customers.new.sales.inStore +=
+            customers.new.sales.inStore;
+          // new -> repair
+          yearlyCustomerMetricsAcc.customers.new.repair += customers.new.repair;
+
+          // returning
+          yearlyCustomerMetricsAcc.customers.returning.total +=
+            customers.returning.total;
+          // returning -> sales
+          yearlyCustomerMetricsAcc.customers.returning.sales.total +=
+            customers.returning.sales.total;
+          // returning -> sales -> online
+          yearlyCustomerMetricsAcc.customers.returning.sales.online +=
+            customers.returning.sales.online;
+          // returning -> sales -> in store
+          yearlyCustomerMetricsAcc.customers.returning.sales.inStore +=
+            customers.returning.sales.inStore;
+          // returning -> repair
+          yearlyCustomerMetricsAcc.customers.returning.repair +=
+            customers.returning.repair;
 
           return yearlyCustomerMetricsAcc;
         },
-        [0, 0, 0, 0, 0, 0, 0]
+        yearlyCustomerMetricTemplate
       );
 
       // average of all monthly churn rates
       const monthlyCustomerChurnRates = monthlyCustomerMetrics.map(
-        (monthlyCustomerMetric) =>
-          monthlyCustomerMetric.monthlyCustomerChurnRate
+        (monthlyCustomerMetric) => monthlyCustomerMetric.customers.churnRate
       );
       const yearlyCustomerChurnRate =
         monthlyCustomerChurnRates.reduce(
           (acc, monthlyCustomerChurnRate) => acc + monthlyCustomerChurnRate,
           0
         ) / monthlyCustomerChurnRates.length;
+      yearlyCustomerMetric.customers.churnRate = yearlyCustomerChurnRate;
 
       const yearlyCustomerRetentionRate = 1 - yearlyCustomerChurnRate;
-
-      const yearlyCustomerMetric: CustomerYearlyMetric = {
-        yearlyCustomers,
-        yearlyNewCustomers,
-        yearlyReturningCustomers,
-        yearlySalesCustomers,
-        yearlyInStoreCustomers,
-        yearlyOnlineCustomers,
-        yearlyRepairCustomers,
-        yearlyCustomerChurnRate,
-        yearlyCustomerRetentionRate,
-        year,
-        monthlyCustomerMetrics,
-      };
+      yearlyCustomerMetric.customers.retentionRate =
+        yearlyCustomerRetentionRate;
 
       return yearlyCustomerMetric;
     }
   );
 
   // random customer lifetime value
-  const customerLifetimeValue = Math.round(
-    Math.random() * (2000 - 1000) + 1000
-  ); // spread between 1000 and 2000
+  const lifetimeValue = Math.round(Math.random() * (2000 - 1000) + 1000); // spread between 1000 and 2000
   const totalCustomers = yearlyCustomerMetrics.reduce(
-    (acc, yearlyCustomerMetric) => acc + yearlyCustomerMetric.yearlyCustomers,
+    (acc, yearlyCustomerMetric) => acc + yearlyCustomerMetric.customers.total,
     0
   );
 
   const customerMetrics: CustomerMetrics = {
-    customerLifetimeValue,
+    lifetimeValue,
     totalCustomers,
-    yearlyCustomerMetrics,
+    yearlyMetrics: yearlyCustomerMetrics,
   };
 
   return customerMetrics;
@@ -1374,11 +1630,12 @@ type CreateRandomBusinessMetricsInput = {
   productCategories: ProductCategory[];
   repairCategories: RepairCategory[];
   storeLocations: StoreLocation[];
-  yearChurnRateSpread: YearChurnRateSpread;
-  yearConversionRateSpread: YearConversionRateSpread;
-  yearCustomersSpread: YearCustomersSpread;
-  yearProfitMarginSpread: YearProfitMarginSpread;
-  yearTransactionsSpread: YearTransactionsSpread;
+  yearChurnRateSpread: LocationYearSpread;
+  yearConversionRateSpread: LocationYearSpread;
+  yearCustomersSpread: LocationYearSpread;
+  yearNewCustomersSpread: LocationYearSpread;
+  yearProfitMarginSpread: LocationYearSpread;
+  yearTransactionsSpread: LocationYearSpread;
 };
 
 function createRandomBusinessMetrics({
@@ -1390,6 +1647,7 @@ function createRandomBusinessMetrics({
   yearChurnRateSpread,
   yearConversionRateSpread,
   yearCustomersSpread,
+  yearNewCustomersSpread,
   yearProfitMarginSpread,
   yearTransactionsSpread,
 }: CreateRandomBusinessMetricsInput): BusinessMetrics[] {
@@ -1452,8 +1710,8 @@ function createRandomBusinessMetrics({
       storeLocation,
       customerMetrics: {
         totalCustomers: 0,
-        customerLifetimeValue: 0,
-        yearlyCustomerMetrics: [],
+        lifetimeValue: 0,
+        yearlyMetrics: [],
       },
       financialMetrics: [],
       productCategories: [],
@@ -1523,6 +1781,7 @@ function createRandomBusinessMetrics({
       storeLocation,
       yearChurnRateSpread,
       yearCustomersSpread,
+      yearNewCustomersSpread,
     });
     storeLocationSalesData.customerMetrics = createdCustomerMetrics;
 
