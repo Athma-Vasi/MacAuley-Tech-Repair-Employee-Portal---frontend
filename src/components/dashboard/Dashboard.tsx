@@ -1,35 +1,14 @@
-import {
-  Button,
-  Group,
-  Modal,
-  ScrollArea,
-  SegmentedControl,
-  Stack,
-  Text,
-} from '@mantine/core';
-import { ChangeEvent, useEffect, useReducer } from 'react';
+import { Group, Stack, Text, Title } from '@mantine/core';
+import { useEffect, useReducer } from 'react';
 
 import { STORE_LOCATION_DATA } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
-import { StoreLocation } from '../../types';
 import { logState } from '../../utils';
-import {
-  ResponsiveBarChart,
-  ResponsiveCalendarChart,
-  ResponsiveLineChart,
-  ResponsivePieChart,
-  ResponsiveRadialBarChart,
-  ResponsiveSunburstChart,
-} from '../charts';
-import { SunburstChartData } from '../charts/responsiveSunburstChart/types';
 import {
   DAYS_PER_MONTH,
   MONTHS,
   PRODUCT_CATEGORIES,
   REPAIR_CATEGORIES,
-  SALES_CATEGORY_SELECTION,
-  SALES_DATA_ENTRY_TYPE,
   YEAR_CHURN_RATE_SPREAD,
   YEAR_CONVERSION_RATE_SPREAD,
   YEAR_CUSTOMERS_SPREAD,
@@ -37,21 +16,23 @@ import {
   YEAR_PROFIT_MARGIN_SPREAD,
   YEAR_TRANSACTIONS_SPREAD,
 } from './constants';
-import { DashboardChartCard } from './DashboardChartCard';
 import {
   dashboardAction,
   dashboardReducer,
   initialDashboardState,
 } from './state';
 import {
-  FinancialMetric,
-  ProductCategoryMetric,
-  RepairCategoryMetric,
-  SalesCategorySelection,
-  BusinessMetrics,
-  SalesDataEntryType,
-} from './types';
-import { createRandomBusinessMetrics } from './utils';
+  SelectedCustomerMetrics,
+  createRandomBusinessMetrics,
+  returnCustomerSunburstChartData,
+  returnSelectedCustomerMetrics,
+} from './utils';
+import {
+  returnDashboardChartCardInfo,
+  returnDashboardChartCard,
+} from '../../jsxCreators';
+import { SunburstChartData } from '../charts/responsiveSunburstChart/types';
+import { ResponsiveSunburstChart } from '../charts';
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -63,7 +44,7 @@ function Dashboard() {
     globalState: { padding, rowGap, width, themeObject },
   } = useGlobalState();
 
-  const { businessMetrics } = dashboardState;
+  const { businessMetrics, selectedCustomerMetrics } = dashboardState;
 
   useEffect(() => {
     const businessMetrics = createRandomBusinessMetrics({
@@ -80,9 +61,23 @@ function Dashboard() {
       yearTransactionsSpread: YEAR_TRANSACTIONS_SPREAD,
     });
 
+    const customerMetrics = returnSelectedCustomerMetrics({
+      businessMetrics,
+      day: new Date().getDate().toString().padStart(2, '0'),
+      month: MONTHS[new Date().getMonth()],
+      months: MONTHS,
+      storeLocation: 'Edmonton',
+      year: '2023',
+    });
+
     dashboardDispatch({
       type: dashboardAction.setBusinessMetrics,
       payload: businessMetrics,
+    });
+
+    dashboardDispatch({
+      type: dashboardAction.setSelectedCustomerMetrics,
+      payload: customerMetrics,
     });
   }, []);
 
@@ -93,10 +88,100 @@ function Dashboard() {
     });
   }, [dashboardState]);
 
-  const displayDashboardComponent = (
-    <Group w="100%">
-      <Text>Dashboard</Text>
+  if (!businessMetrics.length || !Object.keys(selectedCustomerMetrics).length) {
+    return null;
+  }
+
+  const { dailyChartCards, monthlyChartCards, yearlyChartCards } =
+    returnDashboardChartCardInfo({
+      customerMetrics: selectedCustomerMetrics,
+      padding,
+      width,
+    });
+
+  const {
+    dailyCustomersSunburstChartData,
+    monthlyCustomersSunburstChartData,
+    yearlyCustomersSunburstChartData,
+  } = returnCustomerSunburstChartData(selectedCustomerMetrics);
+
+  // DAILY OVERVIEW
+  const dailyTitle = <Title order={4}>Daily Overview</Title>;
+  const dailyChartCardsDisplay = dailyChartCards.map((chartCardInfo, idx) => (
+    <Group key={`${chartCardInfo.value}-${idx}`}>
+      {returnDashboardChartCard(chartCardInfo)}
     </Group>
+  ));
+  const dailyCustomersSunburstChartDisplay = (
+    <ResponsiveSunburstChart
+      sunburstChartData={dailyCustomersSunburstChartData}
+      hideControls
+      valueFormat={(value) => `${value} customers`}
+    />
+  );
+  const displayDailyOverviewSection = (
+    <Stack w="100%">
+      {dailyTitle}
+      {dailyChartCardsDisplay}
+      {dailyCustomersSunburstChartDisplay}
+    </Stack>
+  );
+
+  // MONTHLY OVERVIEW
+  const monthlyTitle = <Title order={4}>Monthly Overview</Title>;
+  const monthlyChartCardsDisplay = monthlyChartCards.map(
+    (chartCardInfo, idx) => (
+      <Group key={`${chartCardInfo.value}-${idx}`}>
+        {returnDashboardChartCard(chartCardInfo)}
+      </Group>
+    )
+  );
+  const monthlyCustomersSunburstChartDisplay = (
+    <ResponsiveSunburstChart
+      sunburstChartData={monthlyCustomersSunburstChartData}
+      hideControls
+      valueFormat={(value) => `${value} customers`}
+    />
+  );
+  const displayMonthlyOverviewSection = (
+    <Stack w="100%">
+      {monthlyTitle}
+      {monthlyChartCardsDisplay}
+      {monthlyCustomersSunburstChartDisplay}
+    </Stack>
+  );
+
+  // YEARLY OVERVIEW
+  const yearlyTitle = <Title order={4}>Yearly Overview</Title>;
+  const yearlyChartCardsDisplay = yearlyChartCards.map((chartCardInfo, idx) => (
+    <Group key={`${chartCardInfo.value}-${idx}`}>
+      {returnDashboardChartCard(chartCardInfo)}
+    </Group>
+  ));
+  const yearlyCustomersSunburstChartDisplay = (
+    <ResponsiveSunburstChart
+      sunburstChartData={yearlyCustomersSunburstChartData}
+      hideControls
+      valueFormat={(value) => `${value} customers`}
+    />
+  );
+  const displayYearlyOverviewSection = (
+    <Stack w="100%">
+      {yearlyTitle}
+      {yearlyChartCardsDisplay}
+      {yearlyCustomersSunburstChartDisplay}
+    </Stack>
+  );
+
+  const displayDashboardComponent = (
+    <Stack w="100%">
+      <Title order={2}>Dashboard</Title>
+      <Text size="sm">Welcome to your dashboard</Text>
+
+      {displayDailyOverviewSection}
+      {displayMonthlyOverviewSection}
+      {displayYearlyOverviewSection}
+    </Stack>
   );
 
   return displayDashboardComponent;

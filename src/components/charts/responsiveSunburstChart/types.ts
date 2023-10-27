@@ -10,6 +10,7 @@ import {
   NivoTransitionMode,
 } from '../types';
 import { ComputedDatum } from '@nivo/sunburst';
+import { ValueFormat } from '@nivo/core';
 
 type SunburstChartData = {
   name: string;
@@ -22,6 +23,7 @@ type ResponsiveSunburstChartProps = {
   chartWidth?: number;
   hideControls?: boolean;
   sunburstChartData: SunburstChartData;
+  valueFormat?: ValueFormat<number> | undefined;
 };
 
 type ResponsiveSunburstChartState = {

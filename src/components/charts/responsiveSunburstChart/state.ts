@@ -24,7 +24,7 @@ const initialResponsiveSunburstChartState: ResponsiveSunburstChartState = {
 
   // arc labels
   enableArcLabels: true,
-  arcLabel: 'formattedValue',
+  arcLabel: 'value',
   arcLabelsRadiusOffset: 0.5,
   arcLabelsSkipAngle: 0,
   arcLabelsTextColor: '#343a40',

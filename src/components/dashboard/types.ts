@@ -1,7 +1,10 @@
+import { MantineNumberSize } from '@mantine/core';
 import { ComputedDatum } from '@nivo/sunburst';
+import { ReactNode } from 'react';
 
 import { StoreLocation } from '../../types';
 import { SunburstChartData } from '../charts/responsiveSunburstChart/types';
+import { SelectedCustomerMetrics } from './utils';
 
 type SalesCategorySelection = 'Financial Metrics' | 'Products' | 'Repairs';
 type SalesMetricSelection = 'Yearly' | 'Monthly' | 'Daily';
@@ -9,16 +12,23 @@ type SalesDataEntryType = 'Transactions' | 'Revenue';
 
 type DashboardState = {
   businessMetrics: BusinessMetrics[];
+  selectedCustomerMetrics: SelectedCustomerMetrics;
 };
 
 type DashboardAction = {
   setBusinessMetrics: 'setBusinessMetrics';
+  setSelectedCustomerMetrics: 'setSelectedCustomerMetrics';
 };
 
-type DashboardDispatch = {
-  type: DashboardAction['setBusinessMetrics'];
-  payload: BusinessMetrics[];
-};
+type DashboardDispatch =
+  | {
+      type: DashboardAction['setBusinessMetrics'];
+      payload: BusinessMetrics[];
+    }
+  | {
+      type: DashboardAction['setSelectedCustomerMetrics'];
+      payload: SelectedCustomerMetrics;
+    };
 
 type Month =
   | 'January'
@@ -44,7 +54,8 @@ type Year =
   | '2019'
   | '2020'
   | '2021'
-  | '2022';
+  | '2022'
+  | '2023';
 
 type DaysInMonthsInYears = Map<Year, Map<Month, string[]>>;
 
@@ -156,34 +167,26 @@ type CustomerMetrics = {
 
 //   monthlyCustomerMetrics: CustomerMonthlyMetric[];
 // };
+type CustomersNewReturningMetric = {
+  id: string;
+  total: number;
+  sales: {
+    id: string;
+    total: number;
+    online: number;
+    inStore: number;
+  };
+  repair: number;
+};
+
 type CustomerYearlyMetric = {
   id: string;
   year: Year;
   customers: {
     id: string;
     total: number;
-    new: {
-      id: string;
-      total: number;
-      sales: {
-        id: string;
-        total: number;
-        online: number;
-        inStore: number;
-      };
-      repair: number;
-    };
-    returning: {
-      id: string;
-      total: number;
-      sales: {
-        id: string;
-        total: number;
-        online: number;
-        inStore: number;
-      };
-      repair: number;
-    };
+    new: CustomersNewReturningMetric;
+    returning: CustomersNewReturningMetric;
     churnRate: number;
     retentionRate: number;
   };
@@ -210,28 +213,8 @@ type CustomerMonthlyMetric = {
   customers: {
     id: string;
     total: number;
-    new: {
-      id: string;
-      total: number;
-      sales: {
-        id: string;
-        total: number;
-        online: number;
-        inStore: number;
-      };
-      repair: number;
-    };
-    returning: {
-      id: string;
-      total: number;
-      sales: {
-        id: string;
-        total: number;
-        online: number;
-        inStore: number;
-      };
-      repair: number;
-    };
+    new: CustomersNewReturningMetric;
+    returning: CustomersNewReturningMetric;
     churnRate: number;
     retentionRate: number;
   };
@@ -254,28 +237,8 @@ type CustomerDailyMetric = {
   customers: {
     id: string;
     total: number;
-    new: {
-      id: string;
-      total: number;
-      sales: {
-        id: string;
-        total: number;
-        online: number;
-        inStore: number;
-      };
-      repair: number;
-    };
-    returning: {
-      id: string;
-      total: number;
-      sales: {
-        id: string;
-        total: number;
-        online: number;
-        inStore: number;
-      };
-      repair: number;
-    };
+    new: CustomersNewReturningMetric;
+    returning: CustomersNewReturningMetric;
   };
 };
 

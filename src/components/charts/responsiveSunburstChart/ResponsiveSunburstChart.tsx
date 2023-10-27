@@ -72,6 +72,7 @@ function ResponsiveSunburstChart({
   chartWidth = 350,
   hideControls = false,
   sunburstChartData,
+  valueFormat,
 }: ResponsiveSunburstChartProps) {
   const {
     globalState: {
@@ -591,9 +592,10 @@ function ResponsiveSunburstChart({
 
   const displayResponsiveSunburst = (
     <ResponsiveSunburst
-      data={data}
+      data={sunburstChartData}
       id="name"
-      value="loc"
+      value="value"
+      valueFormat={valueFormat}
       // base
       cornerRadius={cornerRadius}
       // margin
