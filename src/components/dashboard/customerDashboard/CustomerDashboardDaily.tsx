@@ -108,7 +108,7 @@ function CustomerDashboardDaily({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.overview.barChartMap.get('Returning') ?? []}
+      barChartData={dailyCharts.overview.barChartMap.get('Overview') ?? []}
       hideControls
       indexBy="Days"
       keys={['New', 'Returning']}
@@ -119,7 +119,7 @@ function CustomerDashboardDaily({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.overview.lineChartMap.get('Returning') ?? []}
+      lineChartData={dailyCharts.overview.lineChartMap.get('Overview') ?? []}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${y} Customers`}
@@ -201,7 +201,7 @@ function CustomerDashboardDaily({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.new.barChartData}
+      barChartData={dailyCharts.new.barChartMap.get('Overview') ?? []}
       hideControls
       indexBy="Days"
       keys={['New Online', 'New In-Store', 'New Repair']}
@@ -212,7 +212,7 @@ function CustomerDashboardDaily({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.new.lineChartData}
+      lineChartData={dailyCharts.new.lineChartMap.get('Overview') ?? []}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${y} Customers`}
@@ -275,7 +275,7 @@ function CustomerDashboardDaily({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.returning.barChartData}
+      barChartData={dailyCharts.returning.barChartMap.get('Overview') ?? []}
       hideControls
       indexBy="Days"
       keys={['Returning Online', 'Returning In-Store', 'Returning Repair']}
@@ -286,7 +286,7 @@ function CustomerDashboardDaily({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.returning.lineChartData}
+      lineChartData={dailyCharts.returning.lineChartMap.get('Overview') ?? []}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${y} Customers`}

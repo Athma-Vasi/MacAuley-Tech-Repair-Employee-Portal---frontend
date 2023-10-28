@@ -10,7 +10,6 @@ type DashboardCardInfo = {
   icon: ReactNode;
   padding?: MantineNumberSize;
   percentage?: string;
-  sign?: string;
   value?: number;
   width: number;
 };
@@ -20,7 +19,6 @@ function returnDashboardCard({
   icon,
   padding,
   percentage,
-  sign,
   value,
   width,
 }: DashboardCardInfo): React.JSX.Element {
@@ -43,7 +41,7 @@ function returnDashboardCard({
 
   const displayPercentage = (
     <Text size="sm" italic>
-      {sign} {percentage} %
+      {percentage}
     </Text>
   );
 
@@ -101,201 +99,287 @@ function returnDashboardCustomerCardInfo({
   // customer metrics data
   const { dayCustomerMetrics } = customerMetrics;
 
-  // overview
-  // daily total customers
+  // daily
+  // daily -> overview
+  // daily -> overview -> total customers
   const selectedDayTotalCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.total ?? 1;
   const prevDayTotalCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.total ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.total ?? 0;
   const dayTotalCustomersDeltaPercentage =
     ((selectedDayTotalCustomers - prevDayTotalCustomers) /
       prevDayTotalCustomers) *
     100;
+  const dayTotalCustomersDeltaFormatted = Number.isFinite(
+    dayTotalCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalCustomersDate =
+    dayTotalCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since yesterday';
 
-  // daily total new customers
+  // daily -> overview -> new customers
   const selectedDayNewCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.new.total ?? 1;
   const prevDayNewCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.new.total ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.new.total ?? 0;
   const dayTotalNewCustomersDeltaPercentage =
     ((selectedDayNewCustomers - prevDayNewCustomers) / prevDayNewCustomers) *
     100;
+  const dayTotalNewCustomersDeltaFormatted = Number.isFinite(
+    dayTotalNewCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalNewCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalNewCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalNewCustomersDate =
+    dayTotalNewCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since yesterday';
 
-  // daily total returning customers
+  // daily -> overview -> returning customers
   const selectedDayReturningCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.returning.total ?? 1;
   const prevDayReturningCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.returning.total ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.returning.total ?? 0;
   const dayTotalReturningCustomersDeltaPercentage =
     ((selectedDayReturningCustomers - prevDayReturningCustomers) /
       prevDayReturningCustomers) *
     100;
+  const dayTotalReturningCustomersDeltaFormatted = Number.isFinite(
+    dayTotalReturningCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalReturningCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalReturningCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalReturningCustomersDate =
+    dayTotalReturningCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since yesterday';
 
-  // new
-  // daily new total online customers
+  // daily -> new
+  // daily -> new -> total online customers
   const selectedDayNewSalesOnlineCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.new.sales.online ?? 1;
   const prevDayNewSalesOnlineCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.new.sales.online ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.new.sales.online ?? 0;
   const dayTotalNewSalesOnlineCustomersDeltaPercentage =
     ((selectedDayNewSalesOnlineCustomers - prevDayNewSalesOnlineCustomers) /
       prevDayNewSalesOnlineCustomers) *
     100;
+  const dayTotalNewSalesOnlineCustomersDeltaFormatted = Number.isFinite(
+    dayTotalNewSalesOnlineCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalNewSalesOnlineCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalNewSalesOnlineCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalNewSalesOnlineCustomersDate =
+    dayTotalNewSalesOnlineCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since yesterday';
 
-  // daily new total in-store customers
+  // daily -> new -> total in-store customers
   const selectedDayNewSalesInStoreCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.new.sales.inStore ?? 1;
   const prevDayNewSalesInStoreCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.new.sales.inStore ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.new.sales.inStore ?? 0;
   const dayTotalNewSalesInStoreCustomersDeltaPercentage =
     ((selectedDayNewSalesInStoreCustomers - prevDayNewSalesInStoreCustomers) /
       prevDayNewSalesInStoreCustomers) *
     100;
+  const dayTotalNewSalesInStoreCustomersDeltaFormatted = Number.isFinite(
+    dayTotalNewSalesInStoreCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalNewSalesInStoreCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalNewSalesInStoreCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalNewSalesInStoreCustomersDate =
+    dayTotalNewSalesInStoreCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since yesterday';
 
-  // daily new total repair customers
+  // daily -> new -> total repair customers
   const selectedDayNewRepairCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.new.repair ?? 1;
   const prevDayNewRepairCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.new.repair ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.new.repair ?? 0;
   const dayTotalNewRepairCustomersDeltaPercentage =
     ((selectedDayNewRepairCustomers - prevDayNewRepairCustomers) /
       prevDayNewRepairCustomers) *
     100;
+  const dayTotalNewRepairCustomersDeltaFormatted = Number.isFinite(
+    dayTotalNewRepairCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalNewRepairCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalNewRepairCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalNewRepairCustomersDate =
+    dayTotalNewRepairCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since yesterday';
 
-  // returning
-  // daily returning total online customers
+  // daily -> returning
+  // daily -> returning -> total online customers
   const selectedDayReturningSalesOnlineCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.returning.sales.online ??
     1;
   const prevDayReturningSalesOnlineCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.returning.sales.online ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.returning.sales.online ?? 0;
   const dayTotalReturningSalesOnlineCustomersDeltaPercentage =
     ((selectedDayReturningSalesOnlineCustomers -
       prevDayReturningSalesOnlineCustomers) /
       prevDayReturningSalesOnlineCustomers) *
     100;
+  const dayTotalReturningSalesOnlineCustomersDeltaFormatted = Number.isFinite(
+    dayTotalReturningSalesOnlineCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalReturningSalesOnlineCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalReturningSalesOnlineCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalReturningSalesOnlineCustomersDate =
+    dayTotalReturningSalesOnlineCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since yesterday';
 
-  // daily returning total in-store customers
+  // daily -> returning -> total in-store customers
   const selectedDayReturningSalesInStoreCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.returning.sales.inStore ??
     1;
   const prevDayReturningSalesInStoreCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.returning.sales.inStore ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.returning.sales.inStore ?? 0;
   const dayTotalReturningSalesInStoreCustomersDeltaPercentage =
     ((selectedDayReturningSalesInStoreCustomers -
       prevDayReturningSalesInStoreCustomers) /
       prevDayReturningSalesInStoreCustomers) *
     100;
+  const dayTotalReturningSalesInStoreCustomersDeltaFormatted = Number.isFinite(
+    dayTotalReturningSalesInStoreCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalReturningSalesInStoreCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalReturningSalesInStoreCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalReturningSalesInStoreCustomersDate =
+    dayTotalReturningSalesInStoreCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since yesterday';
 
-  // daily returning total repair customers
+  // daily -> returning -> total repair customers
   const selectedDayReturningRepairCustomers =
     dayCustomerMetrics?.selectedDayMetrics?.customers.returning.repair ?? 1;
   const prevDayReturningRepairCustomers =
-    dayCustomerMetrics?.prevDayMetrics?.customers.returning.repair ?? 1;
+    dayCustomerMetrics?.prevDayMetrics?.customers.returning.repair ?? 0;
   const dayTotalReturningRepairCustomersDeltaPercentage =
     ((selectedDayReturningRepairCustomers - prevDayReturningRepairCustomers) /
       prevDayReturningRepairCustomers) *
     100;
+  const dayTotalReturningRepairCustomersDeltaFormatted = Number.isFinite(
+    dayTotalReturningRepairCustomersDeltaPercentage
+  )
+    ? `${
+        dayTotalReturningRepairCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${dayTotalReturningRepairCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const dayTotalReturningRepairCustomersDate =
+    dayTotalReturningRepairCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since yesterday';
 
-  // daily overview
-  const dayTotalCustomersCardInfo = {
-    date: 'Since yesterday',
+  // daily -> overview
+  const dayTotalCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalCustomersDate,
     heading: 'Total',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage: dayTotalCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalCustomersDeltaFormatted,
     value: selectedDayTotalCustomers,
     width,
   };
 
-  const dayTotalNewCustomersCardInfo = {
-    date: 'Since yesterday',
+  const dayTotalNewCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalNewCustomersDate,
     heading: 'New Customers',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage: dayTotalNewCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalNewCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalNewCustomersDeltaFormatted,
     value: selectedDayNewCustomers,
     width,
   };
 
-  const dayTotalReturningCustomersCardInfo = {
-    date: 'Since yesterday',
+  const dayTotalReturningCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalReturningCustomersDate,
     heading: 'Returning Customers',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage: dayTotalReturningCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalReturningCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalReturningCustomersDeltaFormatted,
     value: selectedDayReturningCustomers,
     width,
   };
 
-  // daily new
-  const dayTotalNewSalesOnlineCustomersCardInfo = {
-    date: 'Since yesterday',
+  // daily -> new
+  const dayTotalNewSalesOnlineCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalNewSalesOnlineCustomersDate,
     heading: 'New Online Customers',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage: dayTotalNewSalesOnlineCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalNewSalesOnlineCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalNewSalesOnlineCustomersDeltaFormatted,
     value: selectedDayNewSalesOnlineCustomers,
     width,
   };
 
-  const dayTotalNewSalesInStoreCustomersCardInfo = {
-    date: 'Since yesterday',
+  const dayTotalNewSalesInStoreCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalNewSalesInStoreCustomersDate,
     heading: 'New In-Store Customers',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage: dayTotalNewSalesInStoreCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalNewSalesInStoreCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalNewSalesInStoreCustomersDeltaFormatted,
     value: selectedDayNewSalesInStoreCustomers,
     width,
   };
 
-  const dayTotalNewRepairCustomersCardInfo = {
-    date: 'Since yesterday',
+  const dayTotalNewRepairCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalNewRepairCustomersDate,
     heading: 'New Repair Customers',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage: dayTotalNewRepairCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalNewRepairCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalNewRepairCustomersDeltaFormatted,
     value: selectedDayNewRepairCustomers,
     width,
   };
 
-  // daily returning
-  const dayTotalReturningSalesOnlineCustomersCardInfo = {
-    date: 'Since yesterday',
+  // daily -> returning
+  const dayTotalReturningSalesOnlineCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalReturningSalesOnlineCustomersDate,
     heading: 'Returning Online Customers',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage: dayTotalReturningSalesOnlineCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalReturningSalesOnlineCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalReturningSalesOnlineCustomersDeltaFormatted,
     value: selectedDayReturningSalesOnlineCustomers,
     width,
   };
 
-  const dayTotalReturningSalesInStoreCustomersCardInfo = {
-    date: 'Since yesterday',
+  const dayTotalReturningSalesInStoreCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalReturningSalesInStoreCustomersDate,
     heading: 'Returning In-Store Customers',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage:
-      dayTotalReturningSalesInStoreCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalReturningSalesInStoreCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalReturningSalesInStoreCustomersDeltaFormatted,
     value: selectedDayReturningSalesInStoreCustomers,
     width,
   };
 
-  const dayTotalReturningRepairCustomersCardInfo = {
-    date: 'Since yesterday',
+  const dayTotalReturningRepairCustomersCardInfo: DashboardCardInfo = {
+    date: dayTotalReturningRepairCustomersDate,
     heading: 'Returning Repair Customers',
     icon: <MdDateRange size={20} />,
     padding,
-    percentage: dayTotalReturningRepairCustomersDeltaPercentage.toFixed(2),
-    sign: dayTotalReturningRepairCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: dayTotalReturningRepairCustomersDeltaFormatted,
     value: selectedDayReturningRepairCustomers,
     width,
   };
@@ -303,83 +387,157 @@ function returnDashboardCustomerCardInfo({
   // month customer metrics data
   const { monthCustomerMetrics } = customerMetrics;
 
-  // overview
-  // monthly total customers
+  // monthly
+  // monthly -> overview
+  // monthly -> overview -> total customers
   const selectedMonthTotalCustomers =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.total ?? 1;
   const prevMonthTotalCustomers =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.total ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.total ?? 0;
   const monthTotalCustomersDeltaPercentage =
     ((selectedMonthTotalCustomers - prevMonthTotalCustomers) /
       prevMonthTotalCustomers) *
     100;
+  const monthTotalCustomersDeltaFormatted = Number.isFinite(
+    monthTotalCustomersDeltaPercentage
+  )
+    ? `${
+        monthTotalCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${monthTotalCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthTotalCustomersDate =
+    monthTotalCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since last month';
 
-  // monthly total new customers
+  // monthly -> overview -> new customers
   const selectedMonthNewCustomers =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.new.total ?? 1;
   const prevMonthNewCustomers =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.new.total ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.new.total ?? 0;
   const monthTotalNewCustomersDeltaPercentage =
     ((selectedMonthNewCustomers - prevMonthNewCustomers) /
       prevMonthNewCustomers) *
     100;
+  const monthTotalNewCustomersDeltaFormatted = Number.isFinite(
+    monthTotalNewCustomersDeltaPercentage
+  )
+    ? `${
+        monthTotalNewCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${monthTotalNewCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthTotalNewCustomersDate =
+    monthTotalNewCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since last month';
 
-  // monthly total returning customers
+  // monthly -> overview -> returning customers
   const selectedMonthReturningCustomers =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.returning.total ?? 1;
   const prevMonthReturningCustomers =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.returning.total ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.returning.total ?? 0;
   const monthTotalReturningCustomersDeltaPercentage =
     ((selectedMonthReturningCustomers - prevMonthReturningCustomers) /
       prevMonthReturningCustomers) *
     100;
+  const monthTotalReturningCustomersDeltaFormatted = Number.isFinite(
+    monthTotalReturningCustomersDeltaPercentage
+  )
+    ? `${
+        monthTotalReturningCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${monthTotalReturningCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthTotalReturningCustomersDate =
+    monthTotalReturningCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last month';
 
-  // new
-  // monthly new total online customers
+  // monthly -> new
+  // monthly -> new -> total online customers
   const selectedMonthNewSalesOnlineCustomers =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.new.sales.online ?? 1;
   const prevMonthNewSalesOnlineCustomers =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.new.sales.online ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.new.sales.online ?? 0;
   const monthTotalNewSalesOnlineCustomersDeltaPercentage =
     ((selectedMonthNewSalesOnlineCustomers - prevMonthNewSalesOnlineCustomers) /
       prevMonthNewSalesOnlineCustomers) *
     100;
+  const monthTotalNewSalesOnlineCustomersDeltaFormatted = Number.isFinite(
+    monthTotalNewSalesOnlineCustomersDeltaPercentage
+  )
+    ? `${
+        monthTotalNewSalesOnlineCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${monthTotalNewSalesOnlineCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthTotalNewSalesOnlineCustomersDate =
+    monthTotalNewSalesOnlineCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last month';
 
-  // monthly new total in-store customers
+  // monthly -> new -> total in-store customers
   const selectedMonthNewSalesInStoreCustomers =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.new.sales.inStore ??
     1;
   const prevMonthNewSalesInStoreCustomers =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.new.sales.inStore ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.new.sales.inStore ?? 0;
   const monthTotalNewSalesInStoreCustomersDeltaPercentage =
     ((selectedMonthNewSalesInStoreCustomers -
       prevMonthNewSalesInStoreCustomers) /
       prevMonthNewSalesInStoreCustomers) *
     100;
+  const monthTotalNewSalesInStoreCustomersDeltaFormatted = Number.isFinite(
+    monthTotalNewSalesInStoreCustomersDeltaPercentage
+  )
+    ? `${
+        monthTotalNewSalesInStoreCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${monthTotalNewSalesInStoreCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthTotalNewSalesInStoreCustomersDate =
+    monthTotalNewSalesInStoreCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last month';
 
-  // monthly new total repair customers
+  // monthly -> new -> total repair customers
   const selectedMonthNewRepairCustomers =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.new.repair ?? 1;
   const prevMonthNewRepairCustomers =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.new.repair ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.new.repair ?? 0;
   const monthTotalNewRepairCustomersDeltaPercentage =
     ((selectedMonthNewRepairCustomers - prevMonthNewRepairCustomers) /
       prevMonthNewRepairCustomers) *
     100;
+  const monthTotalNewRepairCustomersDeltaFormatted = Number.isFinite(
+    monthTotalNewRepairCustomersDeltaPercentage
+  )
+    ? `${
+        monthTotalNewRepairCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${monthTotalNewRepairCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthTotalNewRepairCustomersDate =
+    monthTotalNewRepairCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last month';
 
-  // returning
-  // monthly returning total online customers
+  // monthly -> returning
+  // monthly -> returning -> total online customers
   const selectedMonthReturningSalesOnlineCustomers =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.returning.sales
       .online ?? 1;
   const prevMonthReturningSalesOnlineCustomers =
     monthCustomerMetrics?.prevMonthMetrics?.customers.returning.sales.online ??
-    1;
+    0;
   const monthTotalReturningSalesOnlineCustomersDeltaPercentage =
     ((selectedMonthReturningSalesOnlineCustomers -
       prevMonthReturningSalesOnlineCustomers) /
       prevMonthReturningSalesOnlineCustomers) *
     100;
+  const monthTotalReturningSalesOnlineCustomersDeltaFormatted = Number.isFinite(
+    monthTotalReturningSalesOnlineCustomersDeltaPercentage
+  )
+    ? `${
+        monthTotalReturningSalesOnlineCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${monthTotalReturningSalesOnlineCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthTotalReturningSalesOnlineCustomersDate =
+    monthTotalReturningSalesOnlineCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last month';
 
   // monthly returning total in-store customers
   const selectedMonthReturningSalesInStoreCustomers =
@@ -387,167 +545,194 @@ function returnDashboardCustomerCardInfo({
       .inStore ?? 1;
   const prevMonthReturningSalesInStoreCustomers =
     monthCustomerMetrics?.prevMonthMetrics?.customers.returning.sales.inStore ??
-    1;
+    0;
   const monthTotalReturningSalesInStoreCustomersDeltaPercentage =
     ((selectedMonthReturningSalesInStoreCustomers -
       prevMonthReturningSalesInStoreCustomers) /
       prevMonthReturningSalesInStoreCustomers) *
     100;
+  const monthTotalReturningSalesInStoreCustomersDeltaFormatted =
+    Number.isFinite(monthTotalReturningSalesInStoreCustomersDeltaPercentage)
+      ? `${
+          monthTotalReturningSalesInStoreCustomersDeltaPercentage > 0 ? '+' : ''
+        } ${monthTotalReturningSalesInStoreCustomersDeltaPercentage.toFixed(
+          2
+        )} %`
+      : 'N/A';
+  const monthTotalReturningSalesInStoreCustomersDate =
+    monthTotalReturningSalesInStoreCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last month';
 
-  // monthly returning total repair customers
+  // monthly -> returning -> total repair customers
   const selectedMonthReturningRepairCustomers =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.returning.repair ?? 1;
   const prevMonthReturningRepairCustomers =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.returning.repair ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.returning.repair ?? 0;
   const monthTotalReturningRepairCustomersDeltaPercentage =
     ((selectedMonthReturningRepairCustomers -
       prevMonthReturningRepairCustomers) /
       prevMonthReturningRepairCustomers) *
     100;
+  const monthTotalReturningRepairCustomersDeltaFormatted = Number.isFinite(
+    monthTotalReturningRepairCustomersDeltaPercentage
+  )
+    ? `${
+        monthTotalReturningRepairCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${monthTotalReturningRepairCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthTotalReturningRepairCustomersDate =
+    monthTotalReturningRepairCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last month';
 
-  // monthly churn rate
+  // monthly -> churn rate
   const selectedMonthChurnRate =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.churnRate ?? 1;
   const prevMonthChurnRate =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.churnRate ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.churnRate ?? 0;
   const monthChurnRateDeltaPercentage =
     ((selectedMonthChurnRate - prevMonthChurnRate) / prevMonthChurnRate) * 100;
+  const monthChurnRateDeltaFormatted = Number.isFinite(
+    monthChurnRateDeltaPercentage
+  )
+    ? `${
+        monthChurnRateDeltaPercentage > 0 ? '+' : ''
+      } ${monthChurnRateDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthChurnRateDate =
+    monthChurnRateDeltaFormatted === 'N/A' ? 'N/A' : 'Since last month';
 
-  // monthly retention rate
+  // monthly -> retention rate
   const selectedMonthRetentionRate =
     monthCustomerMetrics?.selectedMonthMetrics?.customers.retentionRate ?? 1;
   const prevMonthRetentionRate =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.retentionRate ?? 1;
+    monthCustomerMetrics?.prevMonthMetrics?.customers.retentionRate ?? 0;
   const monthRetentionRateDeltaPercentage =
     ((selectedMonthRetentionRate - prevMonthRetentionRate) /
       prevMonthRetentionRate) *
     100;
+  const monthRetentionRateDeltaFormatted = Number.isFinite(
+    monthRetentionRateDeltaPercentage
+  )
+    ? `${
+        monthRetentionRateDeltaPercentage > 0 ? '+' : ''
+      } ${monthRetentionRateDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const monthRetentionRateDate =
+    monthRetentionRateDeltaFormatted === 'N/A' ? 'N/A' : 'Since last month';
 
-  // monthly overview
-  const monthTotalCustomersCardInfo = {
-    date: 'Since last month',
+  // monthly -> overview
+  const monthTotalCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalCustomersDate,
     heading: 'Total',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage: monthTotalCustomersDeltaPercentage.toFixed(2),
-    sign: monthTotalCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: monthTotalCustomersDeltaFormatted,
     value: selectedMonthTotalCustomers,
     width,
   };
 
-  const monthTotalNewCustomersCardInfo = {
-    date: 'Since last month',
+  const monthTotalNewCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalNewCustomersDate,
     heading: 'New Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage: monthTotalNewCustomersDeltaPercentage.toFixed(2),
-    sign: monthTotalNewCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: monthTotalNewCustomersDeltaFormatted,
     value: selectedMonthNewCustomers,
     width,
   };
 
-  const monthTotalReturningCustomersCardInfo = {
-    date: 'Since last month',
+  const monthTotalReturningCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalReturningCustomersDate,
     heading: 'Returning Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage: monthTotalReturningCustomersDeltaPercentage.toFixed(2),
-    sign: monthTotalReturningCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: monthTotalReturningCustomersDeltaFormatted,
     value: selectedMonthReturningCustomers,
     width,
   };
 
-  // monthly new
-  const monthTotalNewSalesOnlineCustomersCardInfo = {
-    date: 'Since last month',
+  // monthly -> new
+  const monthTotalNewSalesOnlineCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalNewSalesOnlineCustomersDate,
     heading: 'New Online Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage: monthTotalNewSalesOnlineCustomersDeltaPercentage.toFixed(2),
-    sign: monthTotalNewSalesOnlineCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: monthTotalNewSalesOnlineCustomersDeltaFormatted,
     value: selectedMonthNewSalesOnlineCustomers,
     width,
   };
 
-  const monthTotalNewSalesInStoreCustomersCardInfo = {
-    date: 'Since last month',
+  const monthTotalNewSalesInStoreCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalNewSalesInStoreCustomersDate,
     heading: 'New In-Store Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage: monthTotalNewSalesInStoreCustomersDeltaPercentage.toFixed(2),
-    sign: monthTotalNewSalesInStoreCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: monthTotalNewSalesInStoreCustomersDeltaFormatted,
     value: selectedMonthNewSalesInStoreCustomers,
     width,
   };
 
-  const monthTotalNewRepairCustomersCardInfo = {
-    date: 'Since last month',
+  const monthTotalNewRepairCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalNewRepairCustomersDate,
     heading: 'New Repair Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage: monthTotalNewRepairCustomersDeltaPercentage.toFixed(2),
-    sign: monthTotalNewRepairCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: monthTotalNewRepairCustomersDeltaFormatted,
     value: selectedMonthNewRepairCustomers,
     width,
   };
 
-  // monthly returning
-  const monthTotalReturningSalesOnlineCustomersCardInfo = {
-    date: 'Since last month',
+  // monthly -> returning
+  const monthTotalReturningSalesOnlineCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalReturningSalesOnlineCustomersDate,
     heading: 'Returning Online Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage:
-      monthTotalReturningSalesOnlineCustomersDeltaPercentage.toFixed(2),
-    sign: monthTotalReturningSalesOnlineCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: monthTotalReturningSalesOnlineCustomersDeltaFormatted,
     value: selectedMonthReturningSalesOnlineCustomers,
     width,
   };
 
-  const monthTotalReturningSalesInStoreCustomersCardInfo = {
-    date: 'Since last month',
+  const monthTotalReturningSalesInStoreCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalReturningSalesInStoreCustomersDate,
     heading: 'Returning In-Store Customers',
     icon: <MdCalendarMonth size={20} />,
-    padding: monthTotalReturningSalesInStoreCustomersDeltaPercentage.toFixed(2),
-    percentage:
-      monthTotalReturningSalesInStoreCustomersDeltaPercentage.toFixed(2),
-    sign:
-      monthTotalReturningSalesInStoreCustomersDeltaPercentage > 0 ? '+' : '',
+    padding,
+    percentage: monthTotalReturningSalesInStoreCustomersDeltaFormatted,
     value: selectedMonthReturningSalesInStoreCustomers,
     width,
   };
 
-  const monthTotalReturningRepairCustomersCardInfo = {
-    date: 'Since last month',
+  const monthTotalReturningRepairCustomersCardInfo: DashboardCardInfo = {
+    date: monthTotalReturningRepairCustomersDate,
     heading: 'Returning Repair Customers',
     icon: <MdCalendarMonth size={20} />,
-    padding: monthTotalReturningRepairCustomersDeltaPercentage.toFixed(2),
-    percentage: monthTotalReturningRepairCustomersDeltaPercentage.toFixed(2),
-    sign: monthTotalReturningRepairCustomersDeltaPercentage > 0 ? '+' : '',
+    padding,
+    percentage: monthTotalReturningRepairCustomersDeltaFormatted,
     value: selectedMonthReturningRepairCustomers,
     width,
   };
 
-  // monthly churn rate
-  const monthChurnRateCardInfo = {
-    date: 'Since last month',
-    heading: 'Monthly Churn Rate',
+  // monthly -> churn rate
+  const monthChurnRateCardInfo: DashboardCardInfo = {
+    date: monthChurnRateDate,
+    heading: 'Churn Rate',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage: monthChurnRateDeltaPercentage.toFixed(2),
-    sign: monthChurnRateDeltaPercentage > 0 ? '+' : '',
+    percentage: monthChurnRateDeltaFormatted,
     value: selectedMonthChurnRate,
     width,
   };
 
-  // monthly retention rate
-  const monthRetentionRateCardInfo = {
-    date: 'Since last month',
-    heading: 'Monthly Retention Rate',
+  // monthly -> retention rate
+  const monthRetentionRateCardInfo: DashboardCardInfo = {
+    date: monthRetentionRateDate,
+    heading: 'Retention Rate',
     icon: <MdCalendarMonth size={20} />,
     padding,
-    percentage: monthRetentionRateDeltaPercentage.toFixed(2),
-    sign: monthRetentionRateDeltaPercentage > 0 ? '+' : '',
+    percentage: monthRetentionRateDeltaFormatted,
     value: selectedMonthRetentionRate,
     width,
   };
@@ -555,79 +740,153 @@ function returnDashboardCustomerCardInfo({
   // year customer metrics data
   const { yearCustomerMetrics } = customerMetrics;
 
-  // yearly overview
-  // yearly total customers
+  // yearly
+  // yearly -> overview
+  // yearly -> overview -> total customers
   const selectedYearTotalCustomers =
     yearCustomerMetrics?.selectedYearMetrics?.customers.total ?? 1;
   const prevYearTotalCustomers =
-    yearCustomerMetrics?.prevYearMetrics?.customers.total ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.total ?? 0;
   const yearTotalCustomersDeltaPercentage =
     ((selectedYearTotalCustomers - prevYearTotalCustomers) /
       prevYearTotalCustomers) *
     100;
+  const yearTotalCustomersDeltaFormatted = Number.isFinite(
+    yearTotalCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalCustomersDate =
+    yearTotalCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since last year';
 
-  // yearly total new customers
+  // yearly -> overview -> new customers
   const selectedYearNewCustomers =
     yearCustomerMetrics?.selectedYearMetrics?.customers.new.total ?? 1;
   const prevYearNewCustomers =
-    yearCustomerMetrics?.prevYearMetrics?.customers.new.total ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.new.total ?? 0;
   const yearTotalNewCustomersDeltaPercentage =
     ((selectedYearNewCustomers - prevYearNewCustomers) / prevYearNewCustomers) *
     100;
+  const yearTotalNewCustomersDeltaFormatted = Number.isFinite(
+    yearTotalNewCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalNewCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalNewCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalNewCustomersDate =
+    yearTotalNewCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since last year';
 
-  // yearly total returning customers
+  // yearly -> overview -> returning customers
   const selectedYearReturningCustomers =
     yearCustomerMetrics?.selectedYearMetrics?.customers.returning.total ?? 1;
   const prevYearReturningCustomers =
-    yearCustomerMetrics?.prevYearMetrics?.customers.returning.total ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.returning.total ?? 0;
   const yearTotalReturningCustomersDeltaPercentage =
     ((selectedYearReturningCustomers - prevYearReturningCustomers) /
       prevYearReturningCustomers) *
     100;
+  const yearTotalReturningCustomersDeltaFormatted = Number.isFinite(
+    yearTotalReturningCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalReturningCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalReturningCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalReturningCustomersDate =
+    yearTotalReturningCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last year';
 
-  // yearly new
-  // yearly new total online customers
+  // yearly -> new
+  // yearly -> new -> total online customers
   const selectedYearNewSalesOnlineCustomers =
     yearCustomerMetrics?.selectedYearMetrics?.customers.new.sales.online ?? 1;
   const prevYearNewSalesOnlineCustomers =
-    yearCustomerMetrics?.prevYearMetrics?.customers.new.sales.online ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.new.sales.online ?? 0;
   const yearTotalNewSalesOnlineCustomersDeltaPercentage =
     ((selectedYearNewSalesOnlineCustomers - prevYearNewSalesOnlineCustomers) /
       prevYearNewSalesOnlineCustomers) *
     100;
+  const yearTotalNewSalesOnlineCustomersDeltaFormatted = Number.isFinite(
+    yearTotalNewSalesOnlineCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalNewSalesOnlineCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalNewSalesOnlineCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalNewSalesOnlineCustomersDate =
+    yearTotalNewSalesOnlineCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last year';
 
-  // yearly new total in-store customers
+  // yearly -> new -> total in-store customers
   const selectedYearNewSalesInStoreCustomers =
     yearCustomerMetrics?.selectedYearMetrics?.customers.new.sales.inStore ?? 1;
   const prevYearNewSalesInStoreCustomers =
-    yearCustomerMetrics?.prevYearMetrics?.customers.new.sales.inStore ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.new.sales.inStore ?? 0;
   const yearTotalNewSalesInStoreCustomersDeltaPercentage =
     ((selectedYearNewSalesInStoreCustomers - prevYearNewSalesInStoreCustomers) /
       prevYearNewSalesInStoreCustomers) *
     100;
+  const yearTotalNewSalesInStoreCustomersDeltaFormatted = Number.isFinite(
+    yearTotalNewSalesInStoreCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalNewSalesInStoreCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalNewSalesInStoreCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalNewSalesInStoreCustomersDate =
+    yearTotalNewSalesInStoreCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last year';
 
-  // yearly new total repair customers
+  // yearly -> new -> total repair customers
   const selectedYearNewRepairCustomers =
     yearCustomerMetrics?.selectedYearMetrics?.customers.new.repair ?? 1;
   const prevYearNewRepairCustomers =
-    yearCustomerMetrics?.prevYearMetrics?.customers.new.repair ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.new.repair ?? 0;
   const yearTotalNewRepairCustomersDeltaPercentage =
     ((selectedYearNewRepairCustomers - prevYearNewRepairCustomers) /
       prevYearNewRepairCustomers) *
     100;
+  const yearTotalNewRepairCustomersDeltaFormatted = Number.isFinite(
+    yearTotalNewRepairCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalNewRepairCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalNewRepairCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalNewRepairCustomersDate =
+    yearTotalNewRepairCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last year';
 
-  // yearly returning
-  // yearly returning total online customers
+  // yearly -> returning
+  // yearly -> returning -> total online customers
   const selectedYearReturningSalesOnlineCustomers =
     yearCustomerMetrics?.selectedYearMetrics?.customers.returning.sales
       .online ?? 1;
   const prevYearReturningSalesOnlineCustomers =
-    yearCustomerMetrics?.prevYearMetrics?.customers.returning.sales.online ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.returning.sales.online ?? 0;
   const yearTotalReturningSalesOnlineCustomersDeltaPercentage =
     ((selectedYearReturningSalesOnlineCustomers -
       prevYearReturningSalesOnlineCustomers) /
       prevYearReturningSalesOnlineCustomers) *
     100;
+  const yearTotalReturningSalesOnlineCustomersDeltaFormatted = Number.isFinite(
+    yearTotalReturningSalesOnlineCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalReturningSalesOnlineCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalReturningSalesOnlineCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalReturningSalesOnlineCustomersDate =
+    yearTotalReturningSalesOnlineCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last year';
 
   // yearly returning total in-store customers
   const selectedYearReturningSalesInStoreCustomers =
@@ -635,165 +894,192 @@ function returnDashboardCustomerCardInfo({
       .inStore ?? 1;
   const prevYearReturningSalesInStoreCustomers =
     yearCustomerMetrics?.prevYearMetrics?.customers.returning.sales.inStore ??
-    1;
+    0;
   const yearTotalReturningSalesInStoreCustomersDeltaPercentage =
     ((selectedYearReturningSalesInStoreCustomers -
       prevYearReturningSalesInStoreCustomers) /
       prevYearReturningSalesInStoreCustomers) *
     100;
+  const yearTotalReturningSalesInStoreCustomersDeltaFormatted = Number.isFinite(
+    yearTotalReturningSalesInStoreCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalReturningSalesInStoreCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalReturningSalesInStoreCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalReturningSalesInStoreCustomersDate =
+    yearTotalReturningSalesInStoreCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last year';
 
-  // yearly returning total repair customers
+  // yearly -> returning -> total repair customers
   const selectedYearReturningRepairCustomers =
     yearCustomerMetrics?.selectedYearMetrics?.customers.returning.repair ?? 1;
   const prevYearReturningRepairCustomers =
-    yearCustomerMetrics?.prevYearMetrics?.customers.returning.repair ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.returning.repair ?? 0;
   const yearTotalReturningRepairCustomersDeltaPercentage =
     ((selectedYearReturningRepairCustomers - prevYearReturningRepairCustomers) /
       prevYearReturningRepairCustomers) *
     100;
+  const yearTotalReturningRepairCustomersDeltaFormatted = Number.isFinite(
+    yearTotalReturningRepairCustomersDeltaPercentage
+  )
+    ? `${
+        yearTotalReturningRepairCustomersDeltaPercentage > 0 ? '+' : ''
+      } ${yearTotalReturningRepairCustomersDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearTotalReturningRepairCustomersDate =
+    yearTotalReturningRepairCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : 'Since last year';
 
-  // yearly churn rate
+  // yearly -> churn rate
   const selectedYearChurnRate =
     yearCustomerMetrics?.selectedYearMetrics?.customers.churnRate ?? 1;
   const prevYearChurnRate =
-    yearCustomerMetrics?.prevYearMetrics?.customers.churnRate ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.churnRate ?? 0;
   const yearChurnRateDeltaPercentage =
     ((selectedYearChurnRate - prevYearChurnRate) / prevYearChurnRate) * 100;
+  const yearChurnRateDeltaFormatted = Number.isFinite(
+    yearChurnRateDeltaPercentage
+  )
+    ? `${
+        yearChurnRateDeltaPercentage > 0 ? '+' : ''
+      } ${yearChurnRateDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearChurnRateDate =
+    yearChurnRateDeltaFormatted === 'N/A' ? 'N/A' : 'Since last year';
 
-  // yearly retention rate
+  // yearly -> retention rate
   const selectedYearRetentionRate =
     yearCustomerMetrics?.selectedYearMetrics?.customers.retentionRate ?? 1;
   const prevYearRetentionRate =
-    yearCustomerMetrics?.prevYearMetrics?.customers.retentionRate ?? 1;
+    yearCustomerMetrics?.prevYearMetrics?.customers.retentionRate ?? 0;
   const yearRetentionRateDeltaPercentage =
     ((selectedYearRetentionRate - prevYearRetentionRate) /
       prevYearRetentionRate) *
     100;
+  const yearRetentionRateDeltaFormatted = Number.isFinite(
+    yearRetentionRateDeltaPercentage
+  )
+    ? `${
+        yearRetentionRateDeltaPercentage > 0 ? '+' : ''
+      } ${yearRetentionRateDeltaPercentage.toFixed(2)} %`
+    : 'N/A';
+  const yearRetentionRateDate =
+    yearRetentionRateDeltaFormatted === 'N/A' ? 'N/A' : 'Since last year';
 
-  // yearly overview
-  const yearTotalCustomersCardInfo = {
-    date: 'Since last year',
+  // yearly -> overview
+  const yearTotalCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalCustomersDate,
     heading: 'Total',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage: yearTotalCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: yearTotalCustomersDeltaFormatted,
     value: selectedYearTotalCustomers,
     width,
   };
 
-  const yearTotalNewCustomersCardInfo = {
-    date: 'Since last year',
+  const yearTotalNewCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalNewCustomersDate,
     heading: 'New Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage: yearTotalNewCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalNewCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: yearTotalNewCustomersDeltaFormatted,
     value: selectedYearNewCustomers,
     width,
   };
 
-  const yearTotalReturningCustomersCardInfo = {
-    date: 'Since last year',
+  const yearTotalReturningCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalReturningCustomersDate,
     heading: 'Returning Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage: yearTotalReturningCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalReturningCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: yearTotalReturningCustomersDeltaFormatted,
     value: selectedYearReturningCustomers,
     width,
   };
 
-  // yearly new
-  const yearTotalNewSalesOnlineCustomersCardInfo = {
-    date: 'Since last year',
+  // yearly -> new
+  const yearTotalNewSalesOnlineCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalNewSalesOnlineCustomersDate,
     heading: 'New Online Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage: yearTotalNewSalesOnlineCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalNewSalesOnlineCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: yearTotalNewSalesOnlineCustomersDeltaFormatted,
     value: selectedYearNewSalesOnlineCustomers,
     width,
   };
 
-  const yearTotalNewSalesInStoreCustomersCardInfo = {
-    date: 'Since last year',
+  const yearTotalNewSalesInStoreCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalNewSalesInStoreCustomersDate,
     heading: 'New In-Store Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage: yearTotalNewSalesInStoreCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalNewSalesInStoreCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: yearTotalNewSalesInStoreCustomersDeltaFormatted,
     value: selectedYearNewSalesInStoreCustomers,
     width,
   };
 
-  const yearTotalNewRepairCustomersCardInfo = {
-    date: 'Since last year',
+  const yearTotalNewRepairCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalNewRepairCustomersDate,
     heading: 'New Repair Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage: yearTotalNewRepairCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalNewRepairCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: yearTotalNewRepairCustomersDeltaFormatted,
     value: selectedYearNewRepairCustomers,
     width,
   };
 
-  // yearly returning
-  const yearTotalReturningSalesOnlineCustomersCardInfo = {
-    date: 'Since last year',
+  // yearly -> returning
+  const yearTotalReturningSalesOnlineCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalReturningSalesOnlineCustomersDate,
     heading: 'Returning Online Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage:
-      yearTotalReturningSalesOnlineCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalReturningSalesOnlineCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: yearTotalReturningSalesOnlineCustomersDeltaFormatted,
     value: selectedYearReturningSalesOnlineCustomers,
     width,
   };
 
-  const yearTotalReturningSalesInStoreCustomersCardInfo = {
-    date: 'Since last year',
+  const yearTotalReturningSalesInStoreCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalReturningSalesInStoreCustomersDate,
     heading: 'Returning In-Store Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage:
-      yearTotalReturningSalesInStoreCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalReturningSalesInStoreCustomersDeltaPercentage > 0 ? '+' : '',
+    percentage: yearTotalReturningSalesInStoreCustomersDeltaFormatted,
     value: selectedYearReturningSalesInStoreCustomers,
     width,
   };
 
-  const yearTotalReturningRepairCustomersCardInfo = {
-    date: 'Since last year',
+  const yearTotalReturningRepairCustomersCardInfo: DashboardCardInfo = {
+    date: yearTotalReturningRepairCustomersDate,
     heading: 'Returning Repair Customers',
     icon: <RiCalendarLine size={20} />,
-    padding: yearTotalReturningRepairCustomersDeltaPercentage.toFixed(2),
-    percentage: yearTotalReturningRepairCustomersDeltaPercentage.toFixed(2),
-    sign: yearTotalReturningRepairCustomersDeltaPercentage > 0 ? '+' : '',
+    padding,
+    percentage: yearTotalReturningRepairCustomersDeltaFormatted,
     value: selectedYearReturningRepairCustomers,
     width,
   };
 
-  // yearly churn rate
-  const yearChurnRateCardInfo = {
-    date: 'Since last year',
-    heading: 'Yearly Churn Rate',
+  // yearly -> churn rate
+  const yearChurnRateCardInfo: DashboardCardInfo = {
+    date: yearChurnRateDate,
+    heading: 'Churn Rate',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage: yearChurnRateDeltaPercentage.toFixed(2),
-    sign: yearChurnRateDeltaPercentage > 0 ? '+' : '',
+    percentage: yearChurnRateDeltaFormatted,
     value: selectedYearChurnRate,
     width,
   };
 
-  // yearly retention rate
-  const yearRetentionRateCardInfo = {
-    date: 'Since last year',
-    heading: 'Yearly Retention Rate',
+  // yearly -> retention rate
+  const yearRetentionRateCardInfo: DashboardCardInfo = {
+    date: yearRetentionRateDate,
+    heading: 'Retention Rate',
     icon: <RiCalendarLine size={20} />,
     padding,
-    percentage: yearRetentionRateDeltaPercentage.toFixed(2),
-    sign: yearRetentionRateDeltaPercentage > 0 ? '+' : '',
+    percentage: yearRetentionRateDeltaFormatted,
     value: selectedYearRetentionRate,
     width,
   };

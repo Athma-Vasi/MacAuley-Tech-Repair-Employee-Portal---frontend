@@ -44,7 +44,7 @@ function CustomerDashboard({
       month: MONTHS[new Date().getMonth()],
       months: MONTHS,
       storeLocation: 'Edmonton',
-      year: '2023',
+      year: '2013',
     });
 
     customerDashboardDispatch({

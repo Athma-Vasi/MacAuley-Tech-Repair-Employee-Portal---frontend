@@ -113,7 +113,7 @@ function CustomerDashboardMonthly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={monthlyCharts.overview.barChartData}
+      barChartData={monthlyCharts.overview.barChartMap.get('Overview') ?? []}
       hideControls
       indexBy="Months"
       keys={['New', 'Returning']}
@@ -124,7 +124,7 @@ function CustomerDashboardMonthly({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={monthlyCharts.overview.lineChartData}
+      lineChartData={monthlyCharts.overview.lineChartMap.get('Overview') ?? []}
       hideControls
       xFormat={(x) => `Month - ${x}`}
       yFormat={(y) => `${y} Customers`}
@@ -192,7 +192,7 @@ function CustomerDashboardMonthly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={monthlyCharts.new.barChartData}
+      barChartData={monthlyCharts.new.barChartMap.get('Overview') ?? []}
       hideControls
       indexBy="Months"
       keys={['New Online', 'New In-Store', 'New Repair']}
@@ -203,7 +203,7 @@ function CustomerDashboardMonthly({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={monthlyCharts.new.lineChartData}
+      lineChartData={monthlyCharts.new.lineChartMap.get('Overview') ?? []}
       hideControls
       xFormat={(x) => `Month - ${x}`}
       yFormat={(y) => `${y} Customers`}
@@ -268,7 +268,7 @@ function CustomerDashboardMonthly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={monthlyCharts.returning.barChartData}
+      barChartData={monthlyCharts.returning.barChartMap.get('Overview') ?? []}
       hideControls
       indexBy="Months"
       keys={['Returning Online', 'Returning In-Store', 'Returning Repair']}
@@ -279,7 +279,7 @@ function CustomerDashboardMonthly({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={monthlyCharts.returning.lineChartData}
+      lineChartData={monthlyCharts.returning.lineChartMap.get('Overview') ?? []}
       hideControls
       xFormat={(x) => `Month - ${x}`}
       yFormat={(y) => `${y} Customers`}
@@ -364,7 +364,9 @@ function CustomerDashboardMonthly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={monthlyCharts.churnRetention.barChartData}
+      barChartData={
+        monthlyCharts.churnRetention.barChartMap.get('Overview') ?? []
+      }
       hideControls
       indexBy="Months"
       keys={['Churn Rate', 'Retention Rate']}
@@ -375,7 +377,9 @@ function CustomerDashboardMonthly({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={monthlyCharts.churnRetention.lineChartData}
+      lineChartData={
+        monthlyCharts.churnRetention.lineChartMap.get('Overview') ?? []
+      }
       hideControls
       xFormat={(x) => `Month - ${x}`}
       yFormat={(y) => `${y} Customers`}
