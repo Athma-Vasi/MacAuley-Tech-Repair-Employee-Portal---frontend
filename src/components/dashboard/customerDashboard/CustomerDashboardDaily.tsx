@@ -12,6 +12,7 @@ import {
 } from '../jsxHelpers';
 import {
   ResponsiveBarChart,
+  ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
 } from '../../charts';
@@ -107,7 +108,7 @@ function CustomerDashboardDaily({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.overview.barChartData}
+      barChartData={dailyCharts.overview.barChartMap.get('Returning') ?? []}
       hideControls
       indexBy="Days"
       keys={['New', 'Returning']}
@@ -118,7 +119,7 @@ function CustomerDashboardDaily({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.overview.lineChartData}
+      lineChartData={dailyCharts.overview.lineChartMap.get('Returning') ?? []}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${y} Customers`}
@@ -133,11 +134,25 @@ function CustomerDashboardDaily({
     />
   );
 
+  const displayDailyOverviewCalendarChart = (
+    <ResponsiveCalendarChart
+      calendarChartData={
+        dailyCharts.overview.calendarChartMap.get('Overview') ?? []
+      }
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      from="2023-10-01"
+      to="2023-10-27"
+      hideControls
+    />
+  );
+
   const displayOverviewSection = (
     <Stack w="100%">
       {overviewHeading}
       {displayCardsAndPieChart}
       {displayOverviewCarousel}
+      {displayDailyOverviewCalendarChart}
     </Stack>
   );
 

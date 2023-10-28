@@ -90,6 +90,7 @@ function CustomerDashboard({
   const { dailyCharts, monthlyCharts, yearlyCharts } = returnCustomerChartsData(
     {
       businessMetrics,
+      months: MONTHS,
       selectedCustomerMetrics,
       storeLocation: 'Edmonton',
     }

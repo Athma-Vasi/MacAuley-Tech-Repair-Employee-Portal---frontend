@@ -59,6 +59,8 @@ function ResponsiveCalendarChart({
   calendarChartData,
   chartHeight = 350,
   chartWidth = 350,
+  from,
+  to,
   hideControls = false,
 }: ResponsiveCalendarChartProps) {
   const {
@@ -147,9 +149,9 @@ function ResponsiveCalendarChart({
 
   const displayCalendarChart = (
     <ResponsiveCalendar
-      data={data}
-      from="2015-03-01"
-      to="2016-07-12"
+      data={calendarChartData}
+      from={from}
+      to={to}
       // base
       direction={calendarDirection}
       align={calendarAlign}

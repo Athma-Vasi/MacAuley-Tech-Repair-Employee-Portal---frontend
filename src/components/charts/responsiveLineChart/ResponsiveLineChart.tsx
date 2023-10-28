@@ -87,8 +87,7 @@ function ResponsiveLineChart({
   // sets initial colors based on app theme
   const modifiedResponsiveLineChartState: ResponsiveLineChartState = {
     ...initialResponsiveLineChartState,
-    pointColor: chartTextColor,
-    pointBorderColor: chartTextColor,
+    pointColor: 'rgba(0, 0, 0, 0)',
     chartTitleColor: chartTextColor,
   };
 
@@ -121,7 +120,6 @@ function ResponsiveLineChart({
     // points
     enablePointLabel, // default: false
     enablePoints, // default: false
-    pointBorderColor, // default: gray
     pointBorderWidth, // 0px - 20px default: 0 step: 1
     pointColor, // default: gray
     pointLabel, // default: 'y'
@@ -266,7 +264,7 @@ function ResponsiveLineChart({
       pointSize={pointSize}
       pointColor={pointColor}
       pointBorderWidth={pointBorderWidth}
-      pointBorderColor={pointBorderColor}
+      pointBorderColor={{ from: 'serieColor' }}
       enablePointLabel={enablePointLabel}
       pointLabel={pointLabel}
       pointLabelYOffset={pointLabelYOffset}
@@ -765,22 +763,6 @@ function ResponsiveLineChart({
       value: pointBorderWidth,
       width: sliderWidth,
     };
-
-  const createdPointBorderColorInput = (
-    <ColorInput
-      aria-label="point border color"
-      color={pointBorderColor}
-      disabled={!enablePoints}
-      onChange={(color: string) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setPointBorderColor,
-          payload: color,
-        });
-      }}
-      value={pointBorderColor}
-      w={sliderWidth}
-    />
-  );
 
   const createdEnablePointLabelSwitchInput = (
     <Switch
@@ -1281,16 +1263,6 @@ function ResponsiveLineChart({
     />
   );
 
-  const displayPointBorderColorInput = (
-    <ChartsAndGraphsControlsStacker
-      initialChartState={modifiedResponsiveLineChartState}
-      input={createdPointBorderColorInput}
-      isInputDisabled={!enablePoints}
-      label="Point border color"
-      value={pointBorderColor}
-    />
-  );
-
   const displayEnablePointLabelSwitchInput = (
     <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
       {createdEnablePointLabelSwitchInput}
@@ -1325,7 +1297,6 @@ function ResponsiveLineChart({
       {displayPointSizeSliderInput}
       {displayPointColorInput}
       {displayPointBorderWidthSliderInput}
-      {displayPointBorderColorInput}
       {displayEnablePointLabelSwitchInput}
       {displayPointLabelSelectInput}
       {displayPointLabelYOffsetSliderInput}

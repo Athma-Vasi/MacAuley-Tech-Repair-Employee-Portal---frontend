@@ -199,7 +199,7 @@ function returnDashboardCustomerCardInfo({
 
   // daily overview
   const dayTotalCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'Total',
     icon: <MdDateRange size={20} />,
     padding,
@@ -210,7 +210,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const dayTotalNewCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'New Customers',
     icon: <MdDateRange size={20} />,
     padding,
@@ -221,7 +221,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const dayTotalReturningCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'Returning Customers',
     icon: <MdDateRange size={20} />,
     padding,
@@ -233,7 +233,7 @@ function returnDashboardCustomerCardInfo({
 
   // daily new
   const dayTotalNewSalesOnlineCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'New Online Customers',
     icon: <MdDateRange size={20} />,
     padding,
@@ -244,7 +244,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const dayTotalNewSalesInStoreCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'New In-Store Customers',
     icon: <MdDateRange size={20} />,
     padding,
@@ -255,7 +255,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const dayTotalNewRepairCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'New Repair Customers',
     icon: <MdDateRange size={20} />,
     padding,
@@ -267,7 +267,7 @@ function returnDashboardCustomerCardInfo({
 
   // daily returning
   const dayTotalReturningSalesOnlineCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'Returning Online Customers',
     icon: <MdDateRange size={20} />,
     padding,
@@ -278,7 +278,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const dayTotalReturningSalesInStoreCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'Returning In-Store Customers',
     icon: <MdDateRange size={20} />,
     padding,
@@ -290,7 +290,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const dayTotalReturningRepairCustomersCardInfo = {
-    date: 'Today',
+    date: 'Since yesterday',
     heading: 'Returning Repair Customers',
     icon: <MdDateRange size={20} />,
     padding,
@@ -425,7 +425,7 @@ function returnDashboardCustomerCardInfo({
 
   // monthly overview
   const monthTotalCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'Total',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -436,7 +436,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const monthTotalNewCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'New Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -447,7 +447,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const monthTotalReturningCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'Returning Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -459,7 +459,7 @@ function returnDashboardCustomerCardInfo({
 
   // monthly new
   const monthTotalNewSalesOnlineCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'New Online Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -470,7 +470,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const monthTotalNewSalesInStoreCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'New In-Store Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -481,7 +481,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const monthTotalNewRepairCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'New Repair Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -493,7 +493,7 @@ function returnDashboardCustomerCardInfo({
 
   // monthly returning
   const monthTotalReturningSalesOnlineCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'Returning Online Customers',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -505,7 +505,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const monthTotalReturningSalesInStoreCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'Returning In-Store Customers',
     icon: <MdCalendarMonth size={20} />,
     padding: monthTotalReturningSalesInStoreCustomersDeltaPercentage.toFixed(2),
@@ -518,7 +518,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const monthTotalReturningRepairCustomersCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'Returning Repair Customers',
     icon: <MdCalendarMonth size={20} />,
     padding: monthTotalReturningRepairCustomersDeltaPercentage.toFixed(2),
@@ -530,7 +530,7 @@ function returnDashboardCustomerCardInfo({
 
   // monthly churn rate
   const monthChurnRateCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'Monthly Churn Rate',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -542,7 +542,7 @@ function returnDashboardCustomerCardInfo({
 
   // monthly retention rate
   const monthRetentionRateCardInfo = {
-    date: 'This Month',
+    date: 'Since last month',
     heading: 'Monthly Retention Rate',
     icon: <MdCalendarMonth size={20} />,
     padding,
@@ -672,7 +672,7 @@ function returnDashboardCustomerCardInfo({
 
   // yearly overview
   const yearTotalCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'Total',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -683,7 +683,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const yearTotalNewCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'New Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -694,7 +694,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const yearTotalReturningCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'Returning Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -706,7 +706,7 @@ function returnDashboardCustomerCardInfo({
 
   // yearly new
   const yearTotalNewSalesOnlineCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'New Online Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -717,7 +717,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const yearTotalNewSalesInStoreCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'New In-Store Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -728,7 +728,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const yearTotalNewRepairCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'New Repair Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -740,7 +740,7 @@ function returnDashboardCustomerCardInfo({
 
   // yearly returning
   const yearTotalReturningSalesOnlineCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'Returning Online Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -752,7 +752,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const yearTotalReturningSalesInStoreCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'Returning In-Store Customers',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -764,7 +764,7 @@ function returnDashboardCustomerCardInfo({
   };
 
   const yearTotalReturningRepairCustomersCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'Returning Repair Customers',
     icon: <RiCalendarLine size={20} />,
     padding: yearTotalReturningRepairCustomersDeltaPercentage.toFixed(2),
@@ -776,7 +776,7 @@ function returnDashboardCustomerCardInfo({
 
   // yearly churn rate
   const yearChurnRateCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'Yearly Churn Rate',
     icon: <RiCalendarLine size={20} />,
     padding,
@@ -788,7 +788,7 @@ function returnDashboardCustomerCardInfo({
 
   // yearly retention rate
   const yearRetentionRateCardInfo = {
-    date: 'This Year',
+    date: 'Since last year',
     heading: 'Yearly Retention Rate',
     icon: <RiCalendarLine size={20} />,
     padding,

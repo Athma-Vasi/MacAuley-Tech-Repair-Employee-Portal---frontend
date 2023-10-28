@@ -26,11 +26,10 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   lineWidth: 2,
 
   // points
-  enablePoints: false,
+  enablePoints: true,
   pointSize: 6,
-  pointColor: 'gray',
-  pointBorderWidth: 0,
-  pointBorderColor: 'gray',
+  pointColor: 'rgba(0, 0, 0, .25)',
+  pointBorderWidth: 1,
   enablePointLabel: false,
   pointLabel: 'y',
   pointLabelYOffset: -12,
@@ -149,7 +148,6 @@ const responsiveLineChartAction: ResponsiveLineChartAction = {
   // points
   setEnablePointLabel: 'setEnablePointLabel',
   setEnablePoints: 'setEnablePoints',
-  setPointBorderColor: 'setPointBorderColor',
   setPointBorderWidth: 'setPointBorderWidth',
   setPointColor: 'setPointColor',
   setPointLabel: 'setPointLabel',
@@ -297,8 +295,6 @@ function responsiveLineChartReducer(
       return { ...state, pointColor: action.payload };
     case responsiveLineChartAction.setPointBorderWidth:
       return { ...state, pointBorderWidth: action.payload };
-    case responsiveLineChartAction.setPointBorderColor:
-      return { ...state, pointBorderColor: action.payload };
     case responsiveLineChartAction.setEnablePointLabel:
       return { ...state, enablePointLabel: action.payload };
     case responsiveLineChartAction.setPointLabel:

@@ -59,9 +59,9 @@ type ResponsiveLineChartState = {
   // points
   enablePointLabel: boolean; // default: false
   enablePoints: boolean; // default: false
-  pointBorderColor: string; // default: gray
+
   pointBorderWidth: number; // 0px - 20px default: 0 step: 1
-  pointColor: string; // default: gray
+  pointColor: string; // default: rgba(0, 0, 0, 0)
   pointLabel: NivoLinePointLabel; // default: 'y'
   pointLabelYOffset: number; // -22px - 24px default: -12 step: 1
   pointSize: number; // 0px - 20px default: 6 step: 1
@@ -180,7 +180,6 @@ type ResponsiveLineChartAction = {
   // points
   setEnablePointLabel: 'setEnablePointLabel';
   setEnablePoints: 'setEnablePoints';
-  setPointBorderColor: 'setPointBorderColor';
   setPointBorderWidth: 'setPointBorderWidth';
   setPointColor: 'setPointColor';
   setPointLabel: 'setPointLabel';
@@ -292,7 +291,6 @@ type ResponsiveLineChartDispatch =
         | ResponsiveLineChartAction['setLegendItemBackground']
         | ResponsiveLineChartAction['setLegendItemTextColor']
         | ResponsiveLineChartAction['setLegendSymbolBorderColor']
-        | ResponsiveLineChartAction['setPointBorderColor']
         | ResponsiveLineChartAction['setPointColor']
         | ResponsiveLineChartAction['setScreenshotFilename'];
 

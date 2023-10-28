@@ -28,7 +28,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   arcLabelsTextColor: 'gray',
 
   /** arc link labels */
-  enableArcLinkLabels: false,
+  enableArcLinkLabels: true,
   arcLinkLabelsSkipAngle: 0,
   arcLinkLabelsOffset: 0,
   arcLinkLabelsDiagonalLength: 16,
@@ -47,10 +47,10 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   transitionMode: 'innerRadius',
 
   /** margin */
-  marginTop: 30,
-  marginRight: 30,
-  marginBottom: 30,
-  marginLeft: 30,
+  marginTop: 60,
+  marginRight: 60,
+  marginBottom: 60,
+  marginLeft: 60,
 
   /** legend */
   enableLegend: false,
