@@ -97,6 +97,8 @@ function ResponsiveBarChart({
   chartHeight = 350,
   chartWidth = 350,
   hideControls = false,
+  indexBy,
+  keys,
 }: ResponsiveBarChartProps) {
   const {
     globalState: { isPrefersReducedMotion, width, themeObject, padding },
@@ -252,6 +254,161 @@ function ResponsiveBarChart({
       payload: false,
     });
   }, [isPrefersReducedMotion]);
+
+  const displayResponsiveBar = (
+    <ResponsiveBar
+      // base
+      data={barChartData}
+      // keys={['hot dog', 'burger', 'sandwich', 'kebab', 'fries', 'donut']}
+      keys={keys}
+      // indexBy="country"
+      indexBy={indexBy}
+      groupMode={groupMode}
+      layout={layout}
+      valueScale={{ type: valueScale }}
+      indexScale={{ type: 'band', round: true }}
+      reverse={reverse}
+      minValue="auto"
+      maxValue="auto"
+      padding={paddingBar}
+      innerPadding={innerPaddingBar}
+      margin={{
+        top: marginTop,
+        right: marginRight,
+        bottom: marginBottom,
+        left: marginLeft,
+      }}
+      // style
+      colors={{ scheme: chartColors }}
+      borderRadius={chartBorderRadius}
+      borderWidth={chartBorderWidth}
+      borderColor={chartBorderColor}
+      defs={NIVO_CHART_PATTERN_DEFS}
+      fill={[
+        {
+          match: {
+            id: 'fries',
+          },
+          id: 'dots',
+        },
+        {
+          match: {
+            id: 'sandwich',
+          },
+          id: 'lines',
+        },
+      ]}
+      // labels
+      enableLabel={enableLabels}
+      labelSkipWidth={labelSkipWidth}
+      labelSkipHeight={labelSkipHeight}
+      labelTextColor={labelTextColor}
+      // grid and axes
+      enableGridX={enableGridX}
+      enableGridY={enableGridY}
+      axisTop={
+        enableAxisTop
+          ? {
+              tickSize: axisTopTickSize,
+              tickPadding: axisTopTickPadding,
+              tickRotation: axisTopTickRotation,
+              legend: axisTopLegend,
+              legendOffset: axisTopLegendOffset,
+              legendPosition: axisTopLegendPosition,
+            }
+          : void 0
+      }
+      axisRight={
+        enableAxisRight
+          ? {
+              tickSize: axisRightTickSize,
+              tickPadding: axisRightTickPadding,
+              tickRotation: axisRightTickRotation,
+              legend: axisRightLegend,
+              legendOffset: axisRightLegendOffset,
+              legendPosition: axisRightLegendPosition,
+            }
+          : void 0
+      }
+      axisBottom={
+        enableAxisBottom
+          ? {
+              tickSize: axisBottomTickSize,
+              tickPadding: axisBottomTickPadding,
+              tickRotation: axisBottomTickRotation,
+              legend: axisBottomLegend,
+              legendOffset: axisBottomLegendOffset,
+              legendPosition: axisBottomLegendPosition,
+            }
+          : void 0
+      }
+      axisLeft={
+        enableAxisLeft
+          ? {
+              tickSize: axisLeftTickSize,
+              tickPadding: axisLeftTickPadding,
+              tickRotation: axisLeftTickRotation,
+              legend: axisLeftLegend,
+              legendOffset: axisLeftLegendOffset,
+              legendPosition: axisLeftLegendPosition,
+            }
+          : void 0
+      }
+      legends={
+        enableLegend
+          ? [
+              {
+                dataFrom: 'keys',
+                anchor: legendAnchor,
+                direction: legendDirection,
+                justify: enableLegendJustify,
+                translateX: legendTranslateX,
+                translateY: legendTranslateY,
+                itemsSpacing: legendItemsSpacing,
+                itemWidth: legendItemWidth,
+                itemHeight: legendItemHeight,
+                itemBackground: legendItemBackground,
+                itemTextColor: legendItemTextColor,
+                itemDirection: legendItemDirection,
+                itemOpacity: legendItemOpacity,
+                // padding:'',
+                symbolBorderColor: legendSymbolBorderColor,
+                symbolBorderWidth: legendSymbolBorderWidth,
+                symbolShape: legendSymbolShape,
+                symbolSpacing: legendSymbolSpacing,
+                symbolSize: legendSymbolSize,
+
+                effects: [
+                  {
+                    on: 'hover',
+                    style: {
+                      itemOpacity: 1,
+                    },
+                  },
+                ],
+              },
+            ]
+          : []
+      }
+      // motion
+      animate={enableAnimate}
+      motionConfig={motionConfig}
+      isInteractive={true}
+      role="application"
+      ariaLabel="Nivo bar chart"
+      barAriaLabel={(e) =>
+        e.id + ': ' + e.formattedValue + ' in country: ' + e.indexValue
+      }
+    />
+  );
+
+  if (hideControls) {
+    return (
+      <Group w={chartWidth} h={chartHeight}>
+        {displayResponsiveBar}
+      </Group>
+    );
+  }
 
   const [reverseAccessibleSelectedText, reverseAccessibleDeselectedText] =
     AccessibleSelectedDeselectedTextElements({
@@ -1291,259 +1448,6 @@ function ResponsiveBarChart({
       {displayChartOptions}
       {displayResetAll}
     </Flex>
-  );
-
-  const data = [
-    {
-      country: 'AD',
-      'hot dog': 189,
-      'hot dogColor': 'hsl(165, 70%, 50%)',
-      burger: 28,
-      burgerColor: 'hsl(7, 70%, 50%)',
-      sandwich: 184,
-      sandwichColor: 'hsl(279, 70%, 50%)',
-      kebab: 134,
-      kebabColor: 'hsl(152, 70%, 50%)',
-      fries: 51,
-      friesColor: 'hsl(2, 70%, 50%)',
-      donut: 174,
-      donutColor: 'hsl(81, 70%, 50%)',
-    },
-    {
-      country: 'AE',
-      'hot dog': 200,
-      'hot dogColor': 'hsl(34, 70%, 50%)',
-      burger: 117,
-      burgerColor: 'hsl(209, 70%, 50%)',
-      sandwich: 173,
-      sandwichColor: 'hsl(131, 70%, 50%)',
-      kebab: 119,
-      kebabColor: 'hsl(10, 70%, 50%)',
-      fries: 105,
-      friesColor: 'hsl(191, 70%, 50%)',
-      donut: 200,
-      donutColor: 'hsl(131, 70%, 50%)',
-    },
-    {
-      country: 'AF',
-      'hot dog': 178,
-      'hot dogColor': 'hsl(204, 70%, 50%)',
-      burger: 194,
-      burgerColor: 'hsl(172, 70%, 50%)',
-      sandwich: 71,
-      sandwichColor: 'hsl(104, 70%, 50%)',
-      kebab: 45,
-      kebabColor: 'hsl(277, 70%, 50%)',
-      fries: 28,
-      friesColor: 'hsl(331, 70%, 50%)',
-      donut: 39,
-      donutColor: 'hsl(129, 70%, 50%)',
-    },
-    {
-      country: 'AG',
-      'hot dog': 74,
-      'hot dogColor': 'hsl(272, 70%, 50%)',
-      burger: 113,
-      burgerColor: 'hsl(255, 70%, 50%)',
-      sandwich: 3,
-      sandwichColor: 'hsl(264, 70%, 50%)',
-      kebab: 61,
-      kebabColor: 'hsl(101, 70%, 50%)',
-      fries: 1,
-      friesColor: 'hsl(263, 70%, 50%)',
-      donut: 192,
-      donutColor: 'hsl(292, 70%, 50%)',
-    },
-    {
-      country: 'AI',
-      'hot dog': 91,
-      'hot dogColor': 'hsl(272, 70%, 50%)',
-      burger: 105,
-      burgerColor: 'hsl(263, 70%, 50%)',
-      sandwich: 143,
-      sandwichColor: 'hsl(309, 70%, 50%)',
-      kebab: 6,
-      kebabColor: 'hsl(345, 70%, 50%)',
-      fries: 4,
-      friesColor: 'hsl(144, 70%, 50%)',
-      donut: 195,
-      donutColor: 'hsl(66, 70%, 50%)',
-    },
-    {
-      country: 'AL',
-      'hot dog': 171,
-      'hot dogColor': 'hsl(310, 70%, 50%)',
-      burger: 101,
-      burgerColor: 'hsl(195, 70%, 50%)',
-      sandwich: 18,
-      sandwichColor: 'hsl(43, 70%, 50%)',
-      kebab: 152,
-      kebabColor: 'hsl(20, 70%, 50%)',
-      fries: 176,
-      friesColor: 'hsl(233, 70%, 50%)',
-      donut: 70,
-      donutColor: 'hsl(357, 70%, 50%)',
-    },
-    {
-      country: 'AM',
-      'hot dog': 125,
-      'hot dogColor': 'hsl(152, 70%, 50%)',
-      burger: 179,
-      burgerColor: 'hsl(78, 70%, 50%)',
-      sandwich: 68,
-      sandwichColor: 'hsl(96, 70%, 50%)',
-      kebab: 50,
-      kebabColor: 'hsl(311, 70%, 50%)',
-      fries: 175,
-      friesColor: 'hsl(303, 70%, 50%)',
-      donut: 77,
-      donutColor: 'hsl(202, 70%, 50%)',
-    },
-  ];
-
-  const displayResponsiveBar = (
-    <ResponsiveBar
-      // base
-      data={data}
-      keys={['hot dog', 'burger', 'sandwich', 'kebab', 'fries', 'donut']}
-      indexBy="country"
-      groupMode={groupMode}
-      layout={layout}
-      valueScale={{ type: valueScale }}
-      indexScale={{ type: 'band', round: true }}
-      reverse={reverse}
-      minValue="auto"
-      maxValue="auto"
-      padding={paddingBar}
-      innerPadding={innerPaddingBar}
-      margin={{
-        top: marginTop,
-        right: marginRight,
-        bottom: marginBottom,
-        left: marginLeft,
-      }}
-      // style
-      colors={{ scheme: chartColors }}
-      borderRadius={chartBorderRadius}
-      borderWidth={chartBorderWidth}
-      borderColor={chartBorderColor}
-      defs={NIVO_CHART_PATTERN_DEFS}
-      fill={[
-        {
-          match: {
-            id: 'fries',
-          },
-          id: 'dots',
-        },
-        {
-          match: {
-            id: 'sandwich',
-          },
-          id: 'lines',
-        },
-      ]}
-      // labels
-      enableLabel={enableLabels}
-      labelSkipWidth={labelSkipWidth}
-      labelSkipHeight={labelSkipHeight}
-      labelTextColor={labelTextColor}
-      // grid and axes
-      enableGridX={enableGridX}
-      enableGridY={enableGridY}
-      axisTop={
-        enableAxisTop
-          ? {
-              tickSize: axisTopTickSize,
-              tickPadding: axisTopTickPadding,
-              tickRotation: axisTopTickRotation,
-              legend: axisTopLegend,
-              legendOffset: axisTopLegendOffset,
-              legendPosition: axisTopLegendPosition,
-            }
-          : void 0
-      }
-      axisRight={
-        enableAxisRight
-          ? {
-              tickSize: axisRightTickSize,
-              tickPadding: axisRightTickPadding,
-              tickRotation: axisRightTickRotation,
-              legend: axisRightLegend,
-              legendOffset: axisRightLegendOffset,
-              legendPosition: axisRightLegendPosition,
-            }
-          : void 0
-      }
-      axisBottom={
-        enableAxisBottom
-          ? {
-              tickSize: axisBottomTickSize,
-              tickPadding: axisBottomTickPadding,
-              tickRotation: axisBottomTickRotation,
-              legend: axisBottomLegend,
-              legendOffset: axisBottomLegendOffset,
-              legendPosition: axisBottomLegendPosition,
-            }
-          : void 0
-      }
-      axisLeft={
-        enableAxisLeft
-          ? {
-              tickSize: axisLeftTickSize,
-              tickPadding: axisLeftTickPadding,
-              tickRotation: axisLeftTickRotation,
-              legend: axisLeftLegend,
-              legendOffset: axisLeftLegendOffset,
-              legendPosition: axisLeftLegendPosition,
-            }
-          : void 0
-      }
-      legends={
-        enableLegend
-          ? [
-              {
-                dataFrom: 'keys',
-                anchor: legendAnchor,
-                direction: legendDirection,
-                justify: enableLegendJustify,
-                translateX: legendTranslateX,
-                translateY: legendTranslateY,
-                itemsSpacing: legendItemsSpacing,
-                itemWidth: legendItemWidth,
-                itemHeight: legendItemHeight,
-                itemBackground: legendItemBackground,
-                itemTextColor: legendItemTextColor,
-                itemDirection: legendItemDirection,
-                itemOpacity: legendItemOpacity,
-                // padding:'',
-                symbolBorderColor: legendSymbolBorderColor,
-                symbolBorderWidth: legendSymbolBorderWidth,
-                symbolShape: legendSymbolShape,
-                symbolSpacing: legendSymbolSpacing,
-                symbolSize: legendSymbolSize,
-
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemOpacity: 1,
-                    },
-                  },
-                ],
-              },
-            ]
-          : []
-      }
-      // motion
-      animate={enableAnimate}
-      motionConfig={motionConfig}
-      isInteractive={true}
-      role="application"
-      ariaLabel="Nivo bar chart"
-      barAriaLabel={(e) =>
-        e.id + ': ' + e.formattedValue + ' in country: ' + e.indexValue
-      }
-    />
   );
 
   const displayChartAndControls = (

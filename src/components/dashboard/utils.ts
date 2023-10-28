@@ -1,11 +1,8 @@
-import { Card, Group, MantineNumberSize, Text, Title } from '@mantine/core';
-import { MdDateRange } from 'react-icons/md';
 import { v4 as uuidv4 } from 'uuid';
 
 import { StoreLocation } from '../../types';
-import { SunburstChartData } from '../charts/responsiveSunburstChart/types';
 import {
-  BusinessMetrics,
+  BusinessMetric,
   CustomerDailyMetric,
   CustomerMetrics,
   CustomerMonthlyMetric,
@@ -194,7 +191,7 @@ function returnTransactionsRevenueTuple({
 }
 
 /**
- * type BusinessMetrics = {
+ * type BusinessMetric = {
   storeLocation: StoreLocation;
 
   customerMetrics: {
@@ -435,109 +432,6 @@ function returnTransactionsRevenueTuple({
   }[];
 };
 */
-type SelectedCustomerMetrics = {
-  dayCustomerMetrics: {
-    selectedDayMetrics?: CustomerDailyMetric;
-    prevDayMetrics?: CustomerDailyMetric;
-  };
-  monthCustomerMetrics: {
-    selectedMonthMetrics?: CustomerMonthlyMetric;
-    prevMonthMetrics?: CustomerMonthlyMetric;
-  };
-  yearCustomerMetrics: {
-    selectedYearMetrics?: CustomerYearlyMetric;
-    prevYearMetrics?: CustomerYearlyMetric;
-  };
-};
-
-function returnSelectedCustomerMetrics({
-  businessMetrics,
-  day,
-  month,
-  months,
-  storeLocation,
-  year,
-}: {
-  businessMetrics: BusinessMetrics[];
-  day: string;
-  month: Month;
-  months: Month[];
-  storeLocation: StoreLocation;
-  year: Year;
-}): SelectedCustomerMetrics {
-  // selected store's business metrics
-  const currentStoreMetrics = businessMetrics.find(
-    (businessMetric) => businessMetric.storeLocation === storeLocation
-  );
-
-  // selected year's metrics
-  const selectedYearMetrics =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
-      (yearlyMetric) => yearlyMetric.year === year
-    );
-  const prevYearMetrics =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
-      (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 1).toString()
-    );
-
-  const yearCustomerMetrics = {
-    selectedYearMetrics,
-    prevYearMetrics,
-  };
-
-  // selected month's metrics
-  const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
-    (monthlyMetric) => monthlyMetric.month === month
-  );
-  const prevMonthMetrics =
-    month === 'January'
-      ? prevYearMetrics?.monthlyMetrics.find(
-          (monthlyMetric) => monthlyMetric.month === 'December'
-        )
-      : selectedYearMetrics?.monthlyMetrics.find(
-          (monthlyMetric) =>
-            monthlyMetric.month === months[months.indexOf(month) - 1]
-        );
-
-  const monthCustomerMetrics = {
-    selectedMonthMetrics,
-    prevMonthMetrics,
-  };
-
-  // selected day's metrics
-  const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
-    (dailyMetric) => dailyMetric.day === day
-  );
-  const prevDayMetrics =
-    day === '01'
-      ? monthCustomerMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '31'
-        ) ??
-        monthCustomerMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '30'
-        ) ??
-        monthCustomerMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '29'
-        ) ??
-        monthCustomerMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '28'
-        )
-      : selectedMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) =>
-            dailyMetric.day === (parseInt(day) - 1).toString().padStart(2, '0')
-        );
-
-  const dayCustomerMetrics = {
-    selectedDayMetrics,
-    prevDayMetrics,
-  };
-
-  return {
-    dayCustomerMetrics,
-    monthCustomerMetrics,
-    yearCustomerMetrics,
-  };
-}
 
 type ReturnRepairCategoriesInput = {
   daysInMonthsInYears: DaysInMonthsInYears;
@@ -1754,7 +1648,7 @@ function createRandomBusinessMetrics({
   yearNewCustomersSpread,
   yearProfitMarginSpread,
   yearTransactionsSpread,
-}: CreateRandomBusinessMetricsInput): BusinessMetrics[] {
+}: CreateRandomBusinessMetricsInput): BusinessMetric[] {
   const FINANCIAL_METRICS_TEMPLATE: FinancialMetric = {
     year: '2022',
     yearlyAverageOrderValue: 0,
@@ -1810,7 +1704,7 @@ function createRandomBusinessMetrics({
   };
 
   return storeLocations.map((storeLocation) => {
-    const storeLocationSalesData: BusinessMetrics = {
+    const storeLocationSalesData: BusinessMetric = {
       storeLocation,
       customerMetrics: {
         totalCustomers: 0,
@@ -1893,185 +1787,4 @@ function createRandomBusinessMetrics({
   });
 }
 
-function returnCustomerSunburstChartData(
-  selectedCustomerMetrics: SelectedCustomerMetrics
-): {
-  dailyCustomersSunburstChartData: SunburstChartData;
-  monthlyCustomersSunburstChartData: SunburstChartData;
-  yearlyCustomersSunburstChartData: SunburstChartData;
-} {
-  const {
-    dayCustomerMetrics: { selectedDayMetrics },
-  } = selectedCustomerMetrics;
-
-  const dailyCustomersSunburstChartData: SunburstChartData = {
-    name: 'Daily Customers',
-    children: [
-      {
-        name: 'New',
-        children: [
-          {
-            name: 'Sales',
-            children: [
-              {
-                name: 'Online',
-                value: selectedDayMetrics?.customers.new.sales.online,
-              },
-              {
-                name: 'In Store',
-                value: selectedDayMetrics?.customers.new.sales.inStore,
-              },
-            ],
-          },
-          {
-            name: 'Repair',
-            value: selectedDayMetrics?.customers.new.repair,
-          },
-        ],
-      },
-      {
-        name: 'Returning',
-        children: [
-          {
-            name: 'Sales',
-            children: [
-              {
-                name: 'Online',
-                value: selectedDayMetrics?.customers.returning.sales.online,
-              },
-              {
-                name: 'In Store',
-                value: selectedDayMetrics?.customers.returning.sales.inStore,
-              },
-            ],
-          },
-          {
-            name: 'Repair',
-            value: selectedDayMetrics?.customers.returning.repair,
-          },
-        ],
-      },
-    ],
-  };
-
-  const {
-    monthCustomerMetrics: { selectedMonthMetrics },
-  } = selectedCustomerMetrics;
-
-  const monthlyCustomersSunburstChartData: SunburstChartData = {
-    name: 'Monthly Customers',
-    children: [
-      {
-        name: 'New',
-        children: [
-          {
-            name: 'Sales',
-            children: [
-              {
-                name: 'Online',
-                value: selectedMonthMetrics?.customers.new.sales.online,
-              },
-              {
-                name: 'In Store',
-                value: selectedMonthMetrics?.customers.new.sales.inStore,
-              },
-            ],
-          },
-          {
-            name: 'Repair',
-            value: selectedMonthMetrics?.customers.new.repair,
-          },
-        ],
-      },
-      {
-        name: 'Returning',
-        children: [
-          {
-            name: 'Sales',
-            children: [
-              {
-                name: 'Online',
-                value: selectedMonthMetrics?.customers.returning.sales.online,
-              },
-              {
-                name: 'In Store',
-                value: selectedMonthMetrics?.customers.returning.sales.inStore,
-              },
-            ],
-          },
-          {
-            name: 'Repair',
-            value: selectedMonthMetrics?.customers.returning.repair,
-          },
-        ],
-      },
-    ],
-  };
-
-  const {
-    yearCustomerMetrics: { selectedYearMetrics },
-  } = selectedCustomerMetrics;
-
-  const yearlyCustomersSunburstChartData: SunburstChartData = {
-    name: 'Yearly Customers',
-    children: [
-      {
-        name: 'New',
-        children: [
-          {
-            name: 'Sales',
-            children: [
-              {
-                name: 'Online',
-                value: selectedYearMetrics?.customers.new.sales.online,
-              },
-              {
-                name: 'In Store',
-                value: selectedYearMetrics?.customers.new.sales.inStore,
-              },
-            ],
-          },
-          {
-            name: 'Repair',
-            value: selectedYearMetrics?.customers.new.repair,
-          },
-        ],
-      },
-      {
-        name: 'Returning',
-        children: [
-          {
-            name: 'Sales',
-            children: [
-              {
-                name: 'Online',
-                value: selectedYearMetrics?.customers.returning.sales.online,
-              },
-              {
-                name: 'In Store',
-                value: selectedYearMetrics?.customers.returning.sales.inStore,
-              },
-            ],
-          },
-          {
-            name: 'Repair',
-            value: selectedYearMetrics?.customers.returning.repair,
-          },
-        ],
-      },
-    ],
-  };
-
-  return {
-    dailyCustomersSunburstChartData,
-    monthlyCustomersSunburstChartData,
-    yearlyCustomersSunburstChartData,
-  };
-}
-
-export {
-  createRandomBusinessMetrics,
-  returnCustomerSunburstChartData,
-  returnSelectedCustomerMetrics,
-};
-export type { SelectedCustomerMetrics };
+export { createRandomBusinessMetrics };

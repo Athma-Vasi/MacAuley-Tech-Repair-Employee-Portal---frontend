@@ -19,6 +19,7 @@ import { CarouselBuilderProps } from './types';
 
 function CarouselBuilder({
   autoPlaySpeed = 5000,
+  headings,
   slideDimensions: { width: slideWidth, height: slideHeight },
   slides,
   withBorder = false,
@@ -143,14 +144,16 @@ function CarouselBuilder({
       direction="column"
       h={carouselWrapperHeight}
       justify={slides.length > 1 ? 'space-evenly' : 'center'}
-      // rowGap={padding}
       style={{ zIndex: 2, border: withBorder ? borderColor : 'none' }}
       w={carouselWrapperWidth}
     >
       <Group w="100%" position="apart" px={padding}>
-        {createdLeftControlIconButton}
-        {createdAutoPlayPauseIconButton}
-        {createdRightControlIconButton}
+        <Title order={4}>{headings?.[currentSlide]}</Title>
+        <Group spacing={padding}>
+          {createdLeftControlIconButton}
+          {createdAutoPlayPauseIconButton}
+          {createdRightControlIconButton}
+        </Group>
       </Group>
       {displaySlide}
     </Flex>

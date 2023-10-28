@@ -47,15 +47,15 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   transitionMode: 'innerRadius',
 
   /** margin */
-  marginTop: 60,
-  marginRight: 60,
-  marginBottom: 60,
-  marginLeft: 60,
+  marginTop: 30,
+  marginRight: 30,
+  marginBottom: 30,
+  marginLeft: 30,
 
   /** legend */
   enableLegend: false,
   enableLegendJustify: false,
-  legendAnchor: 'bottom-right',
+  legendAnchor: 'bottom',
   legendDirection: 'column',
   legendItemBackground: 'rgba(255, 255, 255, 0)',
   legendItemDirection: 'left-to-right',
@@ -63,14 +63,14 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   legendItemOpacity: 1,
   legendItemTextColor: 'gray',
   legendItemWidth: 60,
-  legendItemsSpacing: 2,
+  legendItemsSpacing: 10,
   legendSymbolBorderColor: 'rgba(0, 0, 0, .5)',
   legendSymbolBorderWidth: 0,
   legendSymbolShape: 'circle',
   legendSymbolSize: 12,
   legendSymbolSpacing: 8,
-  legendTranslateX: 0,
-  legendTranslateY: 0,
+  legendTranslateX: 40,
+  legendTranslateY: 60,
 
   /** options */
   chartTitle: '',

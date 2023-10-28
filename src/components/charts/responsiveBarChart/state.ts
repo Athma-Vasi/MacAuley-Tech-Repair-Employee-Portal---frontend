@@ -8,16 +8,16 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   /** base */
   groupMode: 'stacked',
   innerPaddingBar: 0,
-  layout: 'horizontal',
+  layout: 'vertical',
   paddingBar: 0.1,
   reverse: false,
   valueScale: 'linear',
 
   /** margin */
-  marginTop: 60,
-  marginRight: 60,
+  marginTop: 30,
+  marginRight: 30,
   marginBottom: 60,
-  marginLeft: 60,
+  marginLeft: 30,
 
   /** style */
   chartBorderColor: '#ffffff',
@@ -61,7 +61,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   axisBottomLegendOffset: 0,
   axisBottomLegendPosition: 'middle',
   axisBottomTickPadding: 5,
-  axisBottomTickRotation: 0,
+  axisBottomTickRotation: 45,
   axisBottomTickSize: 5,
   enableAxisBottom: true,
   isAxisBottomLegendFocused: false,
@@ -80,7 +80,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   /** legend */
   enableLegend: false,
   enableLegendJustify: false,
-  legendAnchor: 'bottom-right',
+  legendAnchor: 'bottom',
   legendDirection: 'column',
   legendItemBackground: 'rgba(255, 255, 255, 0)',
   legendItemDirection: 'left-to-right',
@@ -91,11 +91,11 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   legendItemsSpacing: 2,
   legendSymbolBorderColor: 'rgba(0, 0, 0, 0)',
   legendSymbolBorderWidth: 0,
-  legendSymbolShape: 'circle',
+  legendSymbolShape: 'square',
   legendSymbolSize: 12,
   legendSymbolSpacing: 8,
   legendTranslateX: 0,
-  legendTranslateY: 0,
+  legendTranslateY: 60,
 
   /** motion */
   enableAnimate: true,

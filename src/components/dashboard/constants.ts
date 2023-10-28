@@ -266,9 +266,25 @@ const SALES_CATEGORY_SELECTION: SalesCategorySelection[] = [
   'Repairs',
 ];
 
+const CALENDAR_TABS_DATA = [
+  {
+    label: 'Daily',
+    message: 'Daily Customer Data',
+  },
+  {
+    label: 'Monthly',
+    message: 'Monthly Customer Data',
+  },
+  {
+    label: 'Yearly',
+    message: 'Yearly Customer Data',
+  },
+];
+
 const SALES_DATA_ENTRY_TYPE: SalesDataEntryType[] = ['Transactions', 'Revenue'];
 
 export {
+  CALENDAR_TABS_DATA,
   DAYS_PER_MONTH,
   MONTHS,
   PRODUCT_CATEGORIES,

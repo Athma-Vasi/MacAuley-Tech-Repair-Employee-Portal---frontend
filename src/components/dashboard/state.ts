@@ -1,19 +1,11 @@
-import {
-  DashboardAction,
-  DashboardDispatch,
-  DashboardState,
-  FinancialMetric,
-} from './types';
-import { SelectedCustomerMetrics } from './utils';
+import { DashboardAction, DashboardDispatch, DashboardState } from './types';
 
 const initialDashboardState: DashboardState = {
   businessMetrics: [],
-  selectedCustomerMetrics: {} as SelectedCustomerMetrics,
 };
 
 const dashboardAction: DashboardAction = {
   setBusinessMetrics: 'setBusinessMetrics',
-  setSelectedCustomerMetrics: 'setSelectedCustomerMetrics',
 };
 
 function dashboardReducer(
@@ -25,12 +17,6 @@ function dashboardReducer(
       return {
         ...state,
         businessMetrics: action.payload,
-      };
-
-    case dashboardAction.setSelectedCustomerMetrics:
-      return {
-        ...state,
-        selectedCustomerMetrics: action.payload,
       };
 
     default:

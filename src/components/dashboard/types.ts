@@ -1,34 +1,21 @@
-import { MantineNumberSize } from '@mantine/core';
-import { ComputedDatum } from '@nivo/sunburst';
-import { ReactNode } from 'react';
-
 import { StoreLocation } from '../../types';
-import { SunburstChartData } from '../charts/responsiveSunburstChart/types';
-import { SelectedCustomerMetrics } from './utils';
 
 type SalesCategorySelection = 'Financial Metrics' | 'Products' | 'Repairs';
 type SalesMetricSelection = 'Yearly' | 'Monthly' | 'Daily';
 type SalesDataEntryType = 'Transactions' | 'Revenue';
 
 type DashboardState = {
-  businessMetrics: BusinessMetrics[];
-  selectedCustomerMetrics: SelectedCustomerMetrics;
+  businessMetrics: BusinessMetric[];
 };
 
 type DashboardAction = {
   setBusinessMetrics: 'setBusinessMetrics';
-  setSelectedCustomerMetrics: 'setSelectedCustomerMetrics';
 };
 
-type DashboardDispatch =
-  | {
-      type: DashboardAction['setBusinessMetrics'];
-      payload: BusinessMetrics[];
-    }
-  | {
-      type: DashboardAction['setSelectedCustomerMetrics'];
-      payload: SelectedCustomerMetrics;
-    };
+type DashboardDispatch = {
+  type: DashboardAction['setBusinessMetrics'];
+  payload: BusinessMetric[];
+};
 
 type Month =
   | 'January'
@@ -304,7 +291,7 @@ type RepairCategoryMetric = {
   repairCategoryYearlyMetrics: RepairCategoryYearlyMetric[];
 };
 
-type BusinessMetrics = {
+type BusinessMetric = {
   storeLocation: StoreLocation;
   customerMetrics: CustomerMetrics;
   financialMetrics: FinancialMetric[];
@@ -313,7 +300,7 @@ type BusinessMetrics = {
 };
 
 export type {
-  BusinessMetrics,
+  BusinessMetric,
   CustomerDailyMetric,
   CustomerMetrics,
   CustomerMonthlyMetric,

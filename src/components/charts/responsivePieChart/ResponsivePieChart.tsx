@@ -64,7 +64,7 @@ import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndCont
 import { ChartArcLabel } from '../chartControls/ChartArcLabel';
 
 function ResponsivePieChart({
-  chartHeight = 350,
+  chartHeight = 500,
   chartWidth = 350,
   hideControls = false,
   pieChartData,
@@ -296,7 +296,11 @@ function ResponsivePieChart({
 
   if (hideControls) {
     return (
-      <Group w={chartWidth} h={chartHeight}>
+      <Group
+        w={chartWidth}
+        h={chartHeight}
+        style={{ outline: '1px solid teal' }}
+      >
         {displayResponsivePie}
       </Group>
     );

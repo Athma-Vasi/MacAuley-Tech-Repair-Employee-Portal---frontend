@@ -12,10 +12,10 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   yScale: 'linear',
 
   // margin
-  marginTop: 60,
-  marginRight: 60,
+  marginTop: 30,
+  marginRight: 30,
   marginBottom: 60,
-  marginLeft: 60,
+  marginLeft: 30,
 
   // style
   areaBlendMode: 'normal',
@@ -88,7 +88,7 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   // legends
   enableLegend: false,
   enableLegendJustify: false,
-  legendAnchor: 'bottom-right',
+  legendAnchor: 'bottom',
   legendDirection: 'column',
   legendItemBackground: 'rgba(255, 255, 255, 0)',
   legendItemDirection: 'left-to-right',
@@ -103,7 +103,7 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   legendSymbolSize: 12,
   legendSymbolSpacing: 8,
   legendTranslateX: 0,
-  legendTranslateY: 0,
+  legendTranslateY: 60,
 
   // motion
   enableAnimate: true,

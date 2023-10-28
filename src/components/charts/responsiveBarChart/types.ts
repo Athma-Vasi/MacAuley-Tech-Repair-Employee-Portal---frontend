@@ -23,6 +23,8 @@ type ResponsiveBarChartProps = {
   chartHeight?: number;
   chartWidth?: number;
   hideControls?: boolean;
+  indexBy: string;
+  keys: string[];
 };
 
 type ResponsiveBarChartState = {

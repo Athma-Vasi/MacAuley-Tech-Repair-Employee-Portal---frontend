@@ -1,8 +1,7 @@
-import { Group, Stack, Text, Title } from '@mantine/core';
+import { Stack, Text, Title } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { STORE_LOCATION_DATA } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
 import { logState } from '../../utils';
 import {
   DAYS_PER_MONTH,
@@ -16,23 +15,13 @@ import {
   YEAR_PROFIT_MARGIN_SPREAD,
   YEAR_TRANSACTIONS_SPREAD,
 } from './constants';
+import CustomerDashboard from './customerDashboard/CustomerDashboard';
 import {
   dashboardAction,
   dashboardReducer,
   initialDashboardState,
 } from './state';
-import {
-  SelectedCustomerMetrics,
-  createRandomBusinessMetrics,
-  returnCustomerSunburstChartData,
-  returnSelectedCustomerMetrics,
-} from './utils';
-import {
-  returnDashboardChartCardInfo,
-  returnDashboardChartCard,
-} from '../../jsxCreators';
-import { SunburstChartData } from '../charts/responsiveSunburstChart/types';
-import { ResponsiveSunburstChart } from '../charts';
+import { createRandomBusinessMetrics } from './utils';
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -40,11 +29,7 @@ function Dashboard() {
     initialDashboardState
   );
 
-  const {
-    globalState: { padding, rowGap, width, themeObject },
-  } = useGlobalState();
-
-  const { businessMetrics, selectedCustomerMetrics } = dashboardState;
+  const { businessMetrics } = dashboardState;
 
   useEffect(() => {
     const businessMetrics = createRandomBusinessMetrics({
@@ -61,23 +46,9 @@ function Dashboard() {
       yearTransactionsSpread: YEAR_TRANSACTIONS_SPREAD,
     });
 
-    const customerMetrics = returnSelectedCustomerMetrics({
-      businessMetrics,
-      day: new Date().getDate().toString().padStart(2, '0'),
-      month: MONTHS[new Date().getMonth()],
-      months: MONTHS,
-      storeLocation: 'Edmonton',
-      year: '2023',
-    });
-
     dashboardDispatch({
       type: dashboardAction.setBusinessMetrics,
       payload: businessMetrics,
-    });
-
-    dashboardDispatch({
-      type: dashboardAction.setSelectedCustomerMetrics,
-      payload: customerMetrics,
     });
   }, []);
 
@@ -88,99 +59,19 @@ function Dashboard() {
     });
   }, [dashboardState]);
 
-  if (!businessMetrics.length || !Object.keys(selectedCustomerMetrics).length) {
+  if (!businessMetrics.length) {
     return null;
   }
 
-  const { dailyChartCards, monthlyChartCards, yearlyChartCards } =
-    returnDashboardChartCardInfo({
-      customerMetrics: selectedCustomerMetrics,
-      padding,
-      width,
-    });
-
-  const {
-    dailyCustomersSunburstChartData,
-    monthlyCustomersSunburstChartData,
-    yearlyCustomersSunburstChartData,
-  } = returnCustomerSunburstChartData(selectedCustomerMetrics);
-
-  // DAILY OVERVIEW
-  const dailyTitle = <Title order={4}>Daily Overview</Title>;
-  const dailyChartCardsDisplay = dailyChartCards.map((chartCardInfo, idx) => (
-    <Group key={`${chartCardInfo.value}-${idx}`}>
-      {returnDashboardChartCard(chartCardInfo)}
-    </Group>
-  ));
-  const dailyCustomersSunburstChartDisplay = (
-    <ResponsiveSunburstChart
-      sunburstChartData={dailyCustomersSunburstChartData}
-      hideControls
-      valueFormat={(value) => `${value} customers`}
-    />
-  );
-  const displayDailyOverviewSection = (
-    <Stack w="100%">
-      {dailyTitle}
-      {dailyChartCardsDisplay}
-      {dailyCustomersSunburstChartDisplay}
-    </Stack>
-  );
-
-  // MONTHLY OVERVIEW
-  const monthlyTitle = <Title order={4}>Monthly Overview</Title>;
-  const monthlyChartCardsDisplay = monthlyChartCards.map(
-    (chartCardInfo, idx) => (
-      <Group key={`${chartCardInfo.value}-${idx}`}>
-        {returnDashboardChartCard(chartCardInfo)}
-      </Group>
-    )
-  );
-  const monthlyCustomersSunburstChartDisplay = (
-    <ResponsiveSunburstChart
-      sunburstChartData={monthlyCustomersSunburstChartData}
-      hideControls
-      valueFormat={(value) => `${value} customers`}
-    />
-  );
-  const displayMonthlyOverviewSection = (
-    <Stack w="100%">
-      {monthlyTitle}
-      {monthlyChartCardsDisplay}
-      {monthlyCustomersSunburstChartDisplay}
-    </Stack>
-  );
-
-  // YEARLY OVERVIEW
-  const yearlyTitle = <Title order={4}>Yearly Overview</Title>;
-  const yearlyChartCardsDisplay = yearlyChartCards.map((chartCardInfo, idx) => (
-    <Group key={`${chartCardInfo.value}-${idx}`}>
-      {returnDashboardChartCard(chartCardInfo)}
-    </Group>
-  ));
-  const yearlyCustomersSunburstChartDisplay = (
-    <ResponsiveSunburstChart
-      sunburstChartData={yearlyCustomersSunburstChartData}
-      hideControls
-      valueFormat={(value) => `${value} customers`}
-    />
-  );
-  const displayYearlyOverviewSection = (
-    <Stack w="100%">
-      {yearlyTitle}
-      {yearlyChartCardsDisplay}
-      {yearlyCustomersSunburstChartDisplay}
-    </Stack>
+  const displayCustomerDashboard = (
+    <CustomerDashboard businessMetrics={businessMetrics} />
   );
 
   const displayDashboardComponent = (
     <Stack w="100%">
       <Title order={2}>Dashboard</Title>
       <Text size="sm">Welcome to your dashboard</Text>
-
-      {displayDailyOverviewSection}
-      {displayMonthlyOverviewSection}
-      {displayYearlyOverviewSection}
+      {displayCustomerDashboard}
     </Stack>
   );
 

@@ -16,6 +16,7 @@ import {
   NivoLinePointLabel,
   NivoMotionConfig,
 } from '../types';
+import { ValueFormat } from '@nivo/core';
 
 type LineChartData = {
   id: string;
@@ -30,6 +31,8 @@ type ResponsiveLineChartProps = {
   chartWidth?: number;
   hideControls?: boolean;
   lineChartData: LineChartData[];
+  xFormat?: ValueFormat<any>;
+  yFormat?: ValueFormat<any>;
 };
 
 type ResponsiveLineChartState = {
