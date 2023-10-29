@@ -303,7 +303,7 @@ type BusinessMetric = {
   storeLocation: BusinessMetricStoreLocation;
   customerMetrics: CustomerMetrics;
   financialMetrics: FinancialMetric[];
-  productCategories: ProductMetric[];
+  productMetrics: ProductMetric[];
   repairMetrics: RepairMetric[];
 };
 

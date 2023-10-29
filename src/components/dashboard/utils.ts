@@ -434,7 +434,7 @@ function returnTransactionsRevenueTuple({
         }[];
       }[];
     }[];    
-  }
+  }[]
 };
 */
 
@@ -533,19 +533,19 @@ function returnRepairMetrics({
   });
 }
 
-type ReturnProductCategoriesInput = {
+type ReturnProductMetricsInput = {
   daysInMonthsInYears: DaysInMonthsInYears;
   productCategories: ProductCategory[];
   storeLocation: StoreLocation;
   yearTransactionsSpread: LocationYearSpread;
 };
 
-function returnProductCategories({
+function returnProductMetrics({
   daysInMonthsInYears,
   productCategories,
   storeLocation,
   yearTransactionsSpread,
-}: ReturnProductCategoriesInput): ProductMetric[] {
+}: ReturnProductMetricsInput): ProductMetric[] {
   return productCategories.map((productCategory) => {
     const productYearlyMetrics = Array.from(daysInMonthsInYears).map(
       (yearTuple) => {
@@ -685,22 +685,22 @@ function returnProductCategories({
   });
 }
 
-type ReturnAggregatedProductMetricsInput = {
+type ReturnAggregatedProductIntoFinancialMetricsInput = {
   dailyFinancialMetricsTemplate: DailyFinancialMetric;
   financialMetrics: FinancialMetric[];
   financialMetricsTemplate: FinancialMetric;
   monthlyFinancialMetricsTemplate: MonthlyFinancialMetric;
-  productCategories: ProductMetric[];
+  productMetrics: ProductMetric[];
 };
 
-function returnAggregatedProductMetrics({
+function returnAggregatedProductIntoFinancialMetrics({
   dailyFinancialMetricsTemplate,
   financialMetrics,
   financialMetricsTemplate,
   monthlyFinancialMetricsTemplate,
-  productCategories,
-}: ReturnAggregatedProductMetricsInput): FinancialMetric[] {
-  return productCategories.reduce(
+  productMetrics,
+}: ReturnAggregatedProductIntoFinancialMetricsInput): FinancialMetric[] {
+  return productMetrics.reduce(
     (aggregatedYearlyMetricsAcc, productCategory) => {
       const { yearlyMetrics } = productCategory;
 
@@ -827,7 +827,7 @@ function returnAggregatedProductMetrics({
   );
 }
 
-type ReturnAggregatedRepairMetricsInput = {
+type ReturnAggregatedRepairIntoFinancialMetricsInput = {
   dailyFinancialMetricsTemplate: DailyFinancialMetric;
   financialMetrics: FinancialMetric[];
   monthlyFinancialMetricsTemplate: MonthlyFinancialMetric;
@@ -835,13 +835,13 @@ type ReturnAggregatedRepairMetricsInput = {
   financialMetricsTemplate: FinancialMetric;
 };
 
-function returnAggregatedRepairMetrics({
+function returnAggregatedRepairIntoFinancialMetrics({
   dailyFinancialMetricsTemplate,
   financialMetrics,
   monthlyFinancialMetricsTemplate,
   repairMetrics,
   financialMetricsTemplate,
-}: ReturnAggregatedRepairMetricsInput): FinancialMetric[] {
+}: ReturnAggregatedRepairIntoFinancialMetricsInput): FinancialMetric[] {
   return repairMetrics.reduce((aggregatedYearlyMetricsAcc, repairMetric) => {
     const { yearlyMetrics } = repairMetric;
 
@@ -1165,19 +1165,7 @@ type ReturnCustomerMetricsInput = {
   yearCustomersSpread: LocationYearSpread;
   yearNewCustomersSpread: LocationYearSpread;
 };
-/**
- * - Calculates randomly generated customer metrics for a given year and store location.
- * - Daily customers are generated then aggregated into monthly and yearly trends.
- *
- * @param {ReturnCustomerMetricsInput} options - The options for generating customer metrics.
- * @returns {CustomerMetrics} - An object containing customer metrics.
- *
- * @param {DaysInMonthsInYears} options.daysInMonthsInYears - Data containing days and months in multiple years.
- * @param {StoreLocation} options.storeLocation - The store location for which trends are calculated.
- * @param {LocationYearSpread} options.yearChurnRateSpread - The spread of churn rates for multiple years and the location.
- * @param {LocationYearSpread} options.yearCustomersSpread - The spread of customer data for multiple years and the location.
- * @param {LocationYearSpread} options.yearNewCustomersSpread - The spread of new customer data for multiple years and the location.
- */
+
 function returnCustomerMetrics({
   daysInMonthsInYears,
   storeLocation,
@@ -1464,24 +1452,438 @@ function returnCustomerMetrics({
   return customerMetrics;
 }
 
-function returnAllStoreLocationsAggregatedMetrics({
-  storeLocationsBusinessMetrics,
-}: {
-  storeLocationsBusinessMetrics: BusinessMetric[];
-}) {
-  const businessMetricsTemplate: BusinessMetric = {
-    storeLocation: 'All Locations',
-    customerMetrics: {
-      totalCustomers: 0,
-      lifetimeValue: 0,
-      yearlyMetrics: [],
-    },
-    financialMetrics: [],
-    productCategories: [],
-    repairMetrics: [],
-  };
+function returnAllLocationsAggregatedCustomerMetrics(
+  storeLocationsBusinessMetrics: BusinessMetric[]
+) {
+  // find edmonton store
+  const edmontonStore = storeLocationsBusinessMetrics.find(
+    (storeLocationBusinessMetrics) =>
+      storeLocationBusinessMetrics.storeLocation === 'Edmonton'
+  );
+  // clone edmonton store customer metrics
+  const clonedEdmontonCustomerMetrics = structuredClone(
+    edmontonStore?.customerMetrics
+  ) as CustomerMetrics; // Edmonton store is guaranteed to exist and all customer fields overlap with other stores
 
-  return [];
+  const allLocationsCustomerMetrics = storeLocationsBusinessMetrics.reduce(
+    (allLocationsCustomerMetricsAcc, storeLocationBusinessMetrics) => {
+      // ignore edmonton store as it is the template
+      if (storeLocationBusinessMetrics.storeLocation === 'Edmonton') {
+        return allLocationsCustomerMetricsAcc;
+      }
+
+      const { customerMetrics } = storeLocationBusinessMetrics;
+      const { totalCustomers, yearlyMetrics: yearlyCustomerMetrics } =
+        customerMetrics;
+
+      /**
+         * yearlyMetrics: {
+            year: Year;
+            customers: {
+              total: number;
+              new: {
+                total: number;
+                sales: {
+                  total: number;
+                  online: number;
+                  inStore: number;
+                };
+                repair: number;
+              };
+              returning: {
+                total: number;
+                sales: {
+                  total: number;
+                  online: number;
+                  inStore: number;
+                };
+                repair: number;
+              };
+              churnRate: number;
+              retentionRate: number;
+            };
+
+            monthlyMetrics: {
+              month: Month;
+              customers: {
+                total: number;
+                new: {
+                  total: number;
+                  sales: {
+                    total: number;
+                    online: number;
+                    inStore: number;
+                  };
+                  repair: number;
+                };
+                returning: {
+                  total: number;
+                  sales: {
+                    total: number;
+                    online: number;
+                    inStore: number;
+                  };
+                  repair: number;
+                };
+                churnRate: number;
+                retentionRate: number;
+            };
+
+            dailyMetrics: {
+              day: string;
+              customers: {
+                total: number;
+                new: {
+                  total: number;
+                  sales: {
+                    total: number;
+                    online: number;
+                    inStore: number;
+                  };
+                  repair: number;
+                };
+                returning: {
+                  total: number;
+                  sales: {
+                    total: number;
+                    online: number;
+                    inStore: number;
+                  };
+                  repair: number;
+                };
+              };
+            }
+          }          
+         */
+
+      yearlyCustomerMetrics.forEach(
+        (yearlyCustomerMetric, yearlyCustomerMetricIdx) => {
+          const {
+            customers: yearlyCustomers,
+            monthlyMetrics: monthlyCustomerMetrics,
+            year,
+          } = yearlyCustomerMetric;
+
+          // find existing yearly customer metric
+          const existingYearlyCustomerMetric =
+            clonedEdmontonCustomerMetrics?.yearlyMetrics.find(
+              (existingYearlyCustomerMetric) =>
+                existingYearlyCustomerMetric.year === year
+            ) as CustomerYearlyMetric; // year is guaranteed to exist (edmonton store overlaps all years of other stores)
+
+          // update it with the new store's yearly customer metric
+          existingYearlyCustomerMetric.customers.total += yearlyCustomers.total;
+          // new
+          existingYearlyCustomerMetric.customers.new.total +=
+            yearlyCustomers.new.total;
+          // new -> sales
+          existingYearlyCustomerMetric.customers.new.sales.total +=
+            yearlyCustomers.new.sales.total;
+          // new -> sales -> online
+          existingYearlyCustomerMetric.customers.new.sales.online +=
+            yearlyCustomers.new.sales.online;
+          // new -> sales -> in store
+          existingYearlyCustomerMetric.customers.new.sales.inStore +=
+            yearlyCustomers.new.sales.inStore;
+          // new -> repair
+          existingYearlyCustomerMetric.customers.new.repair +=
+            yearlyCustomers.new.repair;
+
+          // returning
+          existingYearlyCustomerMetric.customers.returning.total +=
+            yearlyCustomers.returning.total;
+          // returning -> sales
+          existingYearlyCustomerMetric.customers.returning.sales.total +=
+            yearlyCustomers.returning.sales.total;
+          // returning -> sales -> online
+          existingYearlyCustomerMetric.customers.returning.sales.online +=
+            yearlyCustomers.returning.sales.online;
+          // returning -> sales -> in store
+          existingYearlyCustomerMetric.customers.returning.sales.inStore +=
+            yearlyCustomers.returning.sales.inStore;
+          // returning -> repair
+          existingYearlyCustomerMetric.customers.returning.repair +=
+            yearlyCustomers.returning.repair;
+
+          // average the churn rates
+          const existingYearlyCustomerChurnRate =
+            existingYearlyCustomerMetric.customers.churnRate;
+          const averageYearlyChurnRate =
+            (yearlyCustomers.churnRate + existingYearlyCustomerChurnRate) / 2;
+          existingYearlyCustomerMetric.customers.churnRate =
+            averageYearlyChurnRate;
+
+          // average the retention rates
+          const existingYearlyCustomerRetentionRate =
+            existingYearlyCustomerMetric.customers.retentionRate;
+          const averageYearlyRetentionRate =
+            yearlyCustomers.retentionRate / 2 +
+            existingYearlyCustomerRetentionRate / 2;
+          existingYearlyCustomerMetric.customers.retentionRate =
+            averageYearlyRetentionRate;
+
+          // update monthly metrics
+          monthlyCustomerMetrics.forEach(
+            (monthlyCustomerMetric, monthlyCustomerMetricIdx) => {
+              const {
+                customers: monthlyCustomers,
+                dailyMetrics: dailyCustomerMetrics,
+                month,
+              } = monthlyCustomerMetric;
+
+              // find existing monthly customer metric
+              const existingMonthlyCustomerMetric =
+                existingYearlyCustomerMetric.monthlyMetrics.find(
+                  (existingMonthlyCustomerMetric) =>
+                    existingMonthlyCustomerMetric.month === month
+                ) as CustomerMonthlyMetric; // month is guaranteed to exist (all stores start on Jan)
+
+              // update it with the new store's monthly customer metric
+              existingMonthlyCustomerMetric.customers.total +=
+                monthlyCustomers.total;
+              // new
+              existingMonthlyCustomerMetric.customers.new.total +=
+                monthlyCustomers.new.total;
+              // new -> sales
+              existingMonthlyCustomerMetric.customers.new.sales.total +=
+                monthlyCustomers.new.sales.total;
+              // new -> sales -> online
+              existingMonthlyCustomerMetric.customers.new.sales.online +=
+                monthlyCustomers.new.sales.online;
+              // new -> sales -> in store
+              existingMonthlyCustomerMetric.customers.new.sales.inStore +=
+                monthlyCustomers.new.sales.inStore;
+              // new -> repair
+              existingMonthlyCustomerMetric.customers.new.repair +=
+                monthlyCustomers.new.repair;
+
+              // returning
+              existingMonthlyCustomerMetric.customers.returning.total +=
+                monthlyCustomers.returning.total;
+              // returning -> sales
+              existingMonthlyCustomerMetric.customers.returning.sales.total +=
+                monthlyCustomers.returning.sales.total;
+              // returning -> sales -> online
+              existingMonthlyCustomerMetric.customers.returning.sales.online +=
+                monthlyCustomers.returning.sales.online;
+              // returning -> sales -> in store
+              existingMonthlyCustomerMetric.customers.returning.sales.inStore +=
+                monthlyCustomers.returning.sales.inStore;
+              // returning -> repair
+              existingMonthlyCustomerMetric.customers.returning.repair +=
+                monthlyCustomers.returning.repair;
+
+              // average the churn rates
+              const existingMonthlyCustomerChurnRate =
+                existingMonthlyCustomerMetric.customers.churnRate;
+              const averageMonthlyChurnRate =
+                (monthlyCustomers.churnRate +
+                  existingMonthlyCustomerChurnRate) /
+                2;
+              existingMonthlyCustomerMetric.customers.churnRate =
+                averageMonthlyChurnRate;
+
+              // average the retention rates
+              const existingMonthlyCustomerRetentionRate =
+                existingMonthlyCustomerMetric.customers.retentionRate;
+              const averageMonthlyRetentionRate =
+                (monthlyCustomers.retentionRate +
+                  existingMonthlyCustomerRetentionRate) /
+                2;
+              existingMonthlyCustomerMetric.customers.retentionRate =
+                averageMonthlyRetentionRate;
+
+              // update daily metrics
+              dailyCustomerMetrics.forEach((dailyCustomerMetric) => {
+                const { customers } = dailyCustomerMetric;
+
+                // find existing daily customer metric
+                const existingDailyCustomerMetric =
+                  existingMonthlyCustomerMetric.dailyMetrics.find(
+                    (existingDailyCustomerMetric) =>
+                      existingDailyCustomerMetric.day ===
+                      dailyCustomerMetric.day
+                  ) as CustomerDailyMetric; // day is guaranteed to exist (all stores start on Jan. 01)
+
+                // update it with the new store's daily customer metric
+                existingDailyCustomerMetric.customers.total += customers.total;
+                // new
+                existingDailyCustomerMetric.customers.new.total +=
+                  customers.new.total;
+                // new -> sales
+                existingDailyCustomerMetric.customers.new.sales.total +=
+                  customers.new.sales.total;
+                // new -> sales -> online
+                existingDailyCustomerMetric.customers.new.sales.online +=
+                  customers.new.sales.online;
+                // new -> sales -> in store
+                existingDailyCustomerMetric.customers.new.sales.inStore +=
+                  customers.new.sales.inStore;
+                // new -> repair
+                existingDailyCustomerMetric.customers.new.repair +=
+                  customers.new.repair;
+
+                // returning
+                existingDailyCustomerMetric.customers.returning.total +=
+                  customers.returning.total;
+                // returning -> sales
+                existingDailyCustomerMetric.customers.returning.sales.total +=
+                  customers.returning.sales.total;
+                // returning -> sales -> online
+                existingDailyCustomerMetric.customers.returning.sales.online +=
+                  customers.returning.sales.online;
+                // returning -> sales -> in store
+                existingDailyCustomerMetric.customers.returning.sales.inStore +=
+                  customers.returning.sales.inStore;
+                // returning -> repair
+                existingDailyCustomerMetric.customers.returning.repair +=
+                  customers.returning.repair;
+              });
+            }
+          );
+        }
+      );
+
+      // update total customers
+      clonedEdmontonCustomerMetrics.totalCustomers += totalCustomers;
+
+      // update lifetime value
+      // find average of all store's lifetime values
+      const lifetimeValues = storeLocationsBusinessMetrics.map(
+        (storeLocationBusinessMetrics) =>
+          storeLocationBusinessMetrics.customerMetrics.lifetimeValue
+      );
+      const averageLifetimeValue =
+        lifetimeValues.reduce((acc, lifetimeValue) => acc + lifetimeValue, 0) /
+        lifetimeValues.length;
+      clonedEdmontonCustomerMetrics.lifetimeValue = averageLifetimeValue;
+
+      return allLocationsCustomerMetricsAcc;
+    },
+    clonedEdmontonCustomerMetrics
+  );
+
+  return allLocationsCustomerMetrics;
+}
+
+function returnAllLocationsAggregatedRepairMetrics(
+  storeLocationBusinessMetrics: BusinessMetric[]
+) {
+  // find edmonton store
+  const edmontonStore = storeLocationBusinessMetrics.find(
+    (storeLocationBusinessMetrics) =>
+      storeLocationBusinessMetrics.storeLocation === 'Edmonton'
+  ) as BusinessMetric; // edmonton store is guaranteed to exist
+
+  // clone edmonton store repair metrics
+  const clonedEdmontonRepairMetrics = structuredClone(
+    edmontonStore.repairMetrics
+  ) as RepairMetric[]; // all edmonton store repair fields overlap with other stores
+
+  const allLocationsRepairMetrics = storeLocationBusinessMetrics.reduce(
+    (allLocationsRepairMetricsAcc, storeLocationBusinessMetrics) => {
+      // ignore edmonton store as it is the template
+      if (storeLocationBusinessMetrics.storeLocation === 'Edmonton') {
+        return allLocationsRepairMetricsAcc;
+      }
+
+      const { repairMetrics } = storeLocationBusinessMetrics;
+
+      /**
+       * repairMetrics: {
+         name: RepairCategory;
+         yearlyMetrics: {
+           year: string;
+           revenue: number;
+           orders: number;
+         
+           monthlyMetrics: {
+             month: string;
+             revenue: number;
+             orders: number;
+           
+             dailyMetrics: {
+               day: string;
+               revenue: number;
+               orders: number;
+             }[];
+           }[];
+         }[];    
+       }[]
+       */
+
+      repairMetrics.forEach((repairMetric) => {
+        const { name, yearlyMetrics } = repairMetric;
+
+        // find existing repair metric
+        const existingRepairCategoryMetric = clonedEdmontonRepairMetrics.find(
+          (existingRepairMetric) => existingRepairMetric.name === name
+        ) as RepairMetric; // repair category is guaranteed to exist (edmonton store overlaps all repair categories of other stores)
+
+        yearlyMetrics.forEach((yearlyRepairMetric) => {
+          const {
+            monthlyMetrics: monthlyRepairMetrics,
+            orders,
+            revenue,
+            year,
+          } = yearlyRepairMetric;
+
+          // find existing yearly repair metric
+          const existingYearlyRepairMetric =
+            existingRepairCategoryMetric.yearlyMetrics.find(
+              (existingYearlyRepairMetric) =>
+                existingYearlyRepairMetric.year === year
+            ) as RepairYearlyMetric; // year is guaranteed to exist (edmonton store overlaps all years of other stores)
+
+          // update existing yearly repair metric
+          existingYearlyRepairMetric.orders += orders;
+          existingYearlyRepairMetric.revenue += revenue;
+
+          // update monthly repair metrics
+          monthlyRepairMetrics.forEach((monthlyRepairMetric) => {
+            const {
+              dailyMetrics: dailyRepairMetrics,
+              month,
+              orders,
+              revenue,
+            } = monthlyRepairMetric;
+
+            // find existing monthly repair metric
+            const existingMonthlyRepairMetric =
+              existingYearlyRepairMetric.monthlyMetrics.find(
+                (existingMonthlyRepairMetric) =>
+                  existingMonthlyRepairMetric.month === month
+              ) as RepairMonthlyMetric; // month is guaranteed to exist (all stores start on Jan)
+
+            // update existing monthly repair metric
+            existingMonthlyRepairMetric.orders += orders;
+            existingMonthlyRepairMetric.revenue += revenue;
+
+            // update daily repair metrics
+            dailyRepairMetrics.forEach((dailyRepairMetric) => {
+              const { day, orders, revenue } = dailyRepairMetric;
+
+              // find existing daily repair metric
+              const existingDailyRepairMetric =
+                existingMonthlyRepairMetric.dailyMetrics.find(
+                  (existingDailyRepairMetric) =>
+                    existingDailyRepairMetric.day === day
+                ) as RepairDailyMetric; // day is guaranteed to exist (all stores start on Jan. 01)
+
+              // update existing daily repair metric
+              existingDailyRepairMetric.orders += orders;
+              existingDailyRepairMetric.revenue += revenue;
+            });
+          });
+        });
+      });
+
+      return allLocationsRepairMetricsAcc;
+    },
+    clonedEdmontonRepairMetrics
+  );
+
+  return allLocationsRepairMetrics;
 }
 
 type CreateRandomBusinessMetricsInput = {
@@ -1611,7 +2013,7 @@ function createRandomBusinessMetrics({
         yearlyMetrics: [],
       },
       financialMetrics: [],
-      productCategories: [],
+      productMetrics: [],
       repairMetrics: [],
     };
 
@@ -1629,41 +2031,43 @@ function createRandomBusinessMetrics({
       // yearEnd: 2013,
     });
 
-    const createdProductCategories = returnProductCategories({
+    const createdProductMetrics = returnProductMetrics({
       daysInMonthsInYears,
       productCategories,
       storeLocation,
       yearTransactionsSpread,
     });
-    storeLocationBusinessMetrics.productCategories = createdProductCategories;
+    storeLocationBusinessMetrics.productMetrics = createdProductMetrics;
 
-    const createdRepairCategories = returnRepairMetrics({
+    const createdRepairMetrics = returnRepairMetrics({
       daysInMonthsInYears,
       repairCategories,
       storeLocation,
       yearTransactionsSpread,
     });
-    storeLocationBusinessMetrics.repairMetrics = createdRepairCategories;
+    storeLocationBusinessMetrics.repairMetrics = createdRepairMetrics;
 
-    const aggregatedProductCategoryMetrics = returnAggregatedProductMetrics({
-      productCategories: createdProductCategories,
-      financialMetrics: storeLocationBusinessMetrics.financialMetrics,
-      dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
-      financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
-      monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
-    });
+    const aggregatedProductIntoFinancialMetrics =
+      returnAggregatedProductIntoFinancialMetrics({
+        productMetrics: createdProductMetrics,
+        financialMetrics: storeLocationBusinessMetrics.financialMetrics,
+        dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
+        financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
+        monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
+      });
     storeLocationBusinessMetrics.financialMetrics =
-      aggregatedProductCategoryMetrics;
+      aggregatedProductIntoFinancialMetrics;
 
-    const aggregatedRepairCategoryMetrics = returnAggregatedRepairMetrics({
-      repairMetrics: createdRepairCategories,
-      financialMetrics: storeLocationBusinessMetrics.financialMetrics,
-      dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
-      financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
-      monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
-    });
+    const aggregatedRepairIntoFinancialMetrics =
+      returnAggregatedRepairIntoFinancialMetrics({
+        repairMetrics: createdRepairMetrics,
+        financialMetrics: storeLocationBusinessMetrics.financialMetrics,
+        dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
+        financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
+        monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
+      });
     storeLocationBusinessMetrics.financialMetrics =
-      aggregatedRepairCategoryMetrics;
+      aggregatedRepairIntoFinancialMetrics;
 
     const createdFinancialMetrics = returnFinancialMetrics({
       financialMetrics: storeLocationBusinessMetrics.financialMetrics,
@@ -1684,6 +2088,33 @@ function createRandomBusinessMetrics({
 
     return storeLocationBusinessMetrics;
   });
+
+  // aggregate all locations
+  const allLocationBusinessMetrics: BusinessMetric = {
+    storeLocation: 'All Locations',
+    customerMetrics: {
+      totalCustomers: 0,
+      lifetimeValue: 0,
+      yearlyMetrics: [],
+    },
+    financialMetrics: [],
+    productMetrics: [],
+    repairMetrics: [],
+  };
+
+  // aggregate all locations customer metrics
+  const allLocationsAggregatedCustomerMetrics =
+    returnAllLocationsAggregatedCustomerMetrics(storeLocationsBusinessMetrics);
+  allLocationBusinessMetrics.customerMetrics =
+    allLocationsAggregatedCustomerMetrics;
+
+  // aggregate all locations repair metrics
+  const allLocationsAggregatedRepairMetrics =
+    returnAllLocationsAggregatedRepairMetrics(storeLocationsBusinessMetrics);
+  allLocationBusinessMetrics.repairMetrics =
+    allLocationsAggregatedRepairMetrics;
+
+  storeLocationsBusinessMetrics.push(allLocationBusinessMetrics);
 
   return storeLocationsBusinessMetrics;
 }
