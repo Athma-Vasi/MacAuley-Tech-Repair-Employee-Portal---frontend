@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { StoreLocation } from '../../types';
 import {
   BusinessMetric,
-  BusinessMetricStoreLocation,
   CustomerDailyMetric,
   CustomerMetrics,
   CustomerMonthlyMetric,
@@ -769,14 +768,19 @@ function returnAggregatedProductIntoFinancialMetrics({
                 month,
               };
 
+              // aggregate monthly metrics
+              // revenue
               existingMonthlyFinancialMetric.revenue += revenue.total;
+              // revenue -> sales
               existingMonthlyFinancialMetric.sales.revenue.total +=
                 revenue.total;
               existingMonthlyFinancialMetric.sales.revenue.online +=
                 revenue.online;
               existingMonthlyFinancialMetric.sales.revenue.inStore +=
                 revenue.inStore;
+              // orders
               existingMonthlyFinancialMetric.orders += orders.total;
+              // orders -> sales
               existingMonthlyFinancialMetric.sales.orders.total += orders.total;
               existingMonthlyFinancialMetric.sales.orders.online +=
                 orders.online;
@@ -802,12 +806,17 @@ function returnAggregatedProductIntoFinancialMetrics({
             }),
           };
 
+          // aggregate yearly metrics
+          // revenue
           existingYearlyFinancialMetric.revenue += revenue.total;
+          // revenue -> sales
           existingYearlyFinancialMetric.sales.revenue.total += revenue.total;
           existingYearlyFinancialMetric.sales.revenue.online += revenue.online;
           existingYearlyFinancialMetric.sales.revenue.inStore +=
             revenue.inStore;
+          // orders
           existingYearlyFinancialMetric.orders += orders.total;
+          // orders -> sales
           existingYearlyFinancialMetric.sales.orders.total += orders.total;
           existingYearlyFinancialMetric.sales.orders.online += orders.online;
           existingYearlyFinancialMetric.sales.orders.inStore += orders.inStore;
@@ -891,10 +900,15 @@ function returnAggregatedRepairIntoFinancialMetrics({
               month,
             };
 
+            // aggregate monthly metrics
+            // revenue
             existingMonthlyFinancialMetric.revenue += revenue;
+            // revenue -> repairs
             existingMonthlyFinancialMetric.repairs.revenue += revenue;
-            existingMonthlyFinancialMetric.repairs.orders += orders;
+            // orders
             existingMonthlyFinancialMetric.orders += orders;
+            // orders -> repairs
+            existingMonthlyFinancialMetric.repairs.orders += orders;
 
             existingMonthlyFinancialMetric.dailyMetrics =
               newDailyFinancialMetrics;
@@ -912,10 +926,14 @@ function returnAggregatedRepairIntoFinancialMetrics({
           year,
         };
 
+        // aggregate yearly metrics
         existingYearlyFinancialMetric.revenue += revenue;
+        // revenue -> repairs
         existingYearlyFinancialMetric.repairs.revenue += revenue;
-        existingYearlyFinancialMetric.repairs.orders += orders;
+        // orders
         existingYearlyFinancialMetric.orders += orders;
+        // orders -> repairs
+        existingYearlyFinancialMetric.repairs.orders += orders;
 
         existingYearlyFinancialMetric.monthlyMetrics =
           newMonthlyFinancialMetrics;
@@ -1886,6 +1904,534 @@ function returnAllLocationsAggregatedRepairMetrics(
   return allLocationsRepairMetrics;
 }
 
+function returnAllLocationsAggregatedFinancialMetrics(
+  storeLocationBusinessMetrics: BusinessMetric[]
+) {
+  // find edmonton store
+  const edmontonStore = storeLocationBusinessMetrics.find(
+    (storeLocationBusinessMetrics) =>
+      storeLocationBusinessMetrics.storeLocation === 'Edmonton'
+  ) as BusinessMetric; // edmonton store is guaranteed to exist
+
+  // clone edmonton store financial metrics
+  const clonedEdmontonFinancialMetrics = structuredClone(
+    edmontonStore.financialMetrics
+  ) as FinancialMetric[]; // all edmonton store financial fields overlap with other stores
+
+  const allLocationsFinancialMetrics = storeLocationBusinessMetrics.reduce(
+    (allLocationsFinancialMetricsAcc, storeLocationBusinessMetrics) => {
+      // ignore edmonton store as it is the template
+      if (storeLocationBusinessMetrics.storeLocation === 'Edmonton') {
+        return allLocationsFinancialMetricsAcc;
+      }
+
+      const { financialMetrics } = storeLocationBusinessMetrics;
+
+      /**
+       * financialMetrics: {
+         year: Year;
+         averageOrderValue: number;
+         conversionRate: number;
+         expenses: number;
+         profit: number;
+         netProfitMargin: number;
+         orders: number;
+         revenue: number;
+       
+         repairs: {
+           orders: number;
+           revenue: number;
+         };
+       
+         sales: {
+           orders: {
+             total: number;
+             online: number;
+             inStore: number;
+           };
+           revenue: {
+             total: number;
+             online: number;
+             inStore: number;
+           };
+         };
+       
+         monthlyMetrics: {
+           month: Month;
+           averageOrderValue: number;
+           conversionRate: number;
+           expenses: number;
+           profit: number;
+           netProfitMargin: number;
+           orders: number;
+           revenue: number;
+       
+           repairs: {
+             orders: number;
+             revenue: number;
+           };
+       
+           sales: {
+             orders: {
+               total: number;
+               online: number;
+               inStore: number;
+             };
+             revenue: {
+               total: number;
+               online: number;
+               inStore: number;
+             };
+           };
+       
+           dailyMetrics: {
+             day: string;
+             averageOrderValue: number;
+             conversionRate: number;
+             expenses: number;
+             profit: number;
+             netProfitMargin: number;
+             orders: number;
+             revenue: number;
+       
+             repairs: {
+               orders: number;
+               revenue: number;
+             };
+       
+             sales: {
+               orders: {
+                 total: number;
+                 online: number;
+                 inStore: number;
+               };
+               revenue: {
+                 total: number;
+                 online: number;
+                 inStore: number;
+               };
+             };
+           }[];
+         }[];
+       }[]
+       */
+
+      financialMetrics.forEach((financialMetric) => {
+        const { monthlyMetrics: monthlyFinancialMetrics, year } =
+          financialMetric;
+
+        // find existing financial metric
+        const existingFinancialMetric = clonedEdmontonFinancialMetrics.find(
+          (existingFinancialMetric) => existingFinancialMetric.year === year
+        ) as FinancialMetric; // year is guaranteed to exist (edmonton store overlaps all years of other stores)
+
+        // aggregate existing financial metric
+        existingFinancialMetric.expenses += financialMetric.expenses;
+        existingFinancialMetric.profit += financialMetric.profit;
+        existingFinancialMetric.orders += financialMetric.orders;
+        existingFinancialMetric.revenue += financialMetric.revenue;
+
+        // aggregate repairs
+        existingFinancialMetric.repairs.orders +=
+          financialMetric.repairs.orders;
+        existingFinancialMetric.repairs.revenue +=
+          financialMetric.repairs.revenue;
+
+        // aggregate sales
+        // sales -> orders
+        existingFinancialMetric.sales.orders.total +=
+          financialMetric.sales.orders.total;
+        existingFinancialMetric.sales.orders.online +=
+          financialMetric.sales.orders.online;
+        existingFinancialMetric.sales.orders.inStore +=
+          financialMetric.sales.orders.inStore;
+        // sales -> revenue
+        existingFinancialMetric.sales.revenue.total +=
+          financialMetric.sales.revenue.total;
+        existingFinancialMetric.sales.revenue.online +=
+          financialMetric.sales.revenue.online;
+        existingFinancialMetric.sales.revenue.inStore +=
+          financialMetric.sales.revenue.inStore;
+
+        // average the average order values
+        const averageOrderValues = financialMetrics.map(
+          (yearlyFinancialMetric) => yearlyFinancialMetric.averageOrderValue
+        );
+        const averageAverageOrderValue =
+          averageOrderValues.reduce(
+            (acc, averageOrderValue) => acc + averageOrderValue,
+            0
+          ) / averageOrderValues.length;
+        existingFinancialMetric.averageOrderValue =
+          (existingFinancialMetric.averageOrderValue +
+            averageAverageOrderValue) /
+          2;
+
+        // average the conversion rates
+        const conversionRates = financialMetrics.map(
+          (yearlyFinancialMetric) => yearlyFinancialMetric.conversionRate
+        );
+        const averageConversionRate =
+          conversionRates.reduce(
+            (acc, conversionRate) => acc + conversionRate,
+            0
+          ) / conversionRates.length;
+        existingFinancialMetric.conversionRate =
+          (existingFinancialMetric.conversionRate + averageConversionRate) / 2;
+
+        // average the net profit margins
+        const netProfitMargins = financialMetrics.map(
+          (yearlyFinancialMetric) => yearlyFinancialMetric.netProfitMargin
+        );
+        const averageNetProfitMargin =
+          netProfitMargins.reduce(
+            (acc, netProfitMargin) => acc + netProfitMargin,
+            0
+          ) / netProfitMargins.length;
+        existingFinancialMetric.netProfitMargin =
+          (existingFinancialMetric.netProfitMargin + averageNetProfitMargin) /
+          2;
+
+        // aggregate monthly financial metrics
+        monthlyFinancialMetrics.forEach((monthlyFinancialMetric) => {
+          const {
+            dailyMetrics: dailyFinancialMetrics,
+            month,
+            expenses,
+            profit,
+            orders,
+            revenue,
+            repairs,
+            sales,
+          } = monthlyFinancialMetric;
+
+          // find existing monthly financial metric
+          const existingMonthlyFinancialMetric =
+            existingFinancialMetric.monthlyMetrics.find(
+              (existingMonthlyFinancialMetric) =>
+                existingMonthlyFinancialMetric.month === month
+            ) as MonthlyFinancialMetric; // month is guaranteed to exist (all stores start on Jan)
+
+          // aggregate existing monthly financial metric
+          existingMonthlyFinancialMetric.expenses += expenses;
+          existingMonthlyFinancialMetric.profit += profit;
+          existingMonthlyFinancialMetric.orders += orders;
+          existingMonthlyFinancialMetric.revenue += revenue;
+
+          // aggregate repairs
+          existingMonthlyFinancialMetric.repairs.orders += repairs.orders;
+          existingMonthlyFinancialMetric.repairs.revenue += repairs.revenue;
+
+          // aggregate sales
+          // sales -> orders
+          existingMonthlyFinancialMetric.sales.orders.total +=
+            sales.orders.total;
+          existingMonthlyFinancialMetric.sales.orders.online +=
+            sales.orders.online;
+          existingMonthlyFinancialMetric.sales.orders.inStore +=
+            sales.orders.inStore;
+          // sales -> revenue
+          existingMonthlyFinancialMetric.sales.revenue.total +=
+            sales.revenue.total;
+          existingMonthlyFinancialMetric.sales.revenue.online +=
+            sales.revenue.online;
+          existingMonthlyFinancialMetric.sales.revenue.inStore +=
+            sales.revenue.inStore;
+
+          // average the average order values
+          const averageOrderValues = monthlyFinancialMetrics.map(
+            (monthlyFinancialMetric) => monthlyFinancialMetric.averageOrderValue
+          );
+          const averageMonthlyAverageOrderValue =
+            averageOrderValues.reduce(
+              (acc, averageOrderValue) => acc + averageOrderValue,
+              0
+            ) / averageOrderValues.length;
+          existingMonthlyFinancialMetric.averageOrderValue =
+            (existingMonthlyFinancialMetric.averageOrderValue +
+              averageMonthlyAverageOrderValue) /
+            2;
+
+          // average the conversion rates
+          const conversionRates = monthlyFinancialMetrics.map(
+            (monthlyFinancialMetric) => monthlyFinancialMetric.conversionRate
+          );
+          const averageMonthlyConversionRate =
+            conversionRates.reduce(
+              (acc, conversionRate) => acc + conversionRate,
+              0
+            ) / conversionRates.length;
+          existingMonthlyFinancialMetric.conversionRate =
+            (existingMonthlyFinancialMetric.conversionRate +
+              averageMonthlyConversionRate) /
+            2;
+
+          // average the net profit margins
+          const averageNetProfitMargins = monthlyFinancialMetrics.map(
+            (monthlyFinancialMetric) => monthlyFinancialMetric.netProfitMargin
+          );
+          const averageMonthlyNetProfitMargin =
+            averageNetProfitMargins.reduce(
+              (acc, netProfitMargin) => acc + netProfitMargin,
+              0
+            ) / averageNetProfitMargins.length;
+          existingMonthlyFinancialMetric.netProfitMargin =
+            (existingMonthlyFinancialMetric.netProfitMargin +
+              averageMonthlyNetProfitMargin) /
+            2;
+
+          // aggregate daily financial metrics
+          dailyFinancialMetrics.forEach((dailyFinancialMetric) => {
+            const { day, expenses, profit, orders, revenue, repairs, sales } =
+              dailyFinancialMetric;
+
+            // find existing daily financial metric
+            const existingDailyFinancialMetric =
+              existingMonthlyFinancialMetric.dailyMetrics.find(
+                (existingDailyFinancialMetric) =>
+                  existingDailyFinancialMetric.day === day
+              ) as DailyFinancialMetric; // day is guaranteed to exist (all stores start on Jan. 01)
+
+            // aggregate existing daily financial metric
+            existingDailyFinancialMetric.expenses += expenses;
+            existingDailyFinancialMetric.profit += profit;
+            existingDailyFinancialMetric.orders += orders;
+            existingDailyFinancialMetric.revenue += revenue;
+
+            // aggregate repairs
+            existingDailyFinancialMetric.repairs.orders += repairs.orders;
+            existingDailyFinancialMetric.repairs.revenue += repairs.revenue;
+
+            // aggregate sales
+            // sales -> orders
+            existingDailyFinancialMetric.sales.orders.total +=
+              sales.orders.total;
+            existingDailyFinancialMetric.sales.orders.online +=
+              sales.orders.online;
+            existingDailyFinancialMetric.sales.orders.inStore +=
+              sales.orders.inStore;
+            // sales -> revenue
+            existingDailyFinancialMetric.sales.revenue.total +=
+              sales.revenue.total;
+            existingDailyFinancialMetric.sales.revenue.online +=
+              sales.revenue.online;
+            existingDailyFinancialMetric.sales.revenue.inStore +=
+              sales.revenue.inStore;
+
+            // average the average order values
+            const averageOrderValues = dailyFinancialMetrics.map(
+              (dailyFinancialMetric) => dailyFinancialMetric.averageOrderValue
+            );
+            const averageDailyAverageOrderValue =
+              averageOrderValues.reduce(
+                (acc, averageOrderValue) => acc + averageOrderValue,
+                0
+              ) / averageOrderValues.length;
+            existingDailyFinancialMetric.averageOrderValue =
+              existingDailyFinancialMetric.averageOrderValue +
+              averageDailyAverageOrderValue / 2;
+
+            // average the conversion rates
+            const conversionRates = dailyFinancialMetrics.map(
+              (dailyFinancialMetric) => dailyFinancialMetric.conversionRate
+            );
+            const averageDailyConversionRate =
+              conversionRates.reduce(
+                (acc, conversionRate) => acc + conversionRate,
+                0
+              ) / conversionRates.length;
+            existingDailyFinancialMetric.conversionRate =
+              (existingDailyFinancialMetric.conversionRate +
+                averageDailyConversionRate) /
+              2;
+
+            // average the net profit margins
+            const averageNetProfitMargins = dailyFinancialMetrics.map(
+              (dailyFinancialMetric) => dailyFinancialMetric.netProfitMargin
+            );
+            const averageDailyNetProfitMargin =
+              averageNetProfitMargins.reduce(
+                (acc, netProfitMargin) => acc + netProfitMargin,
+                0
+              ) / averageNetProfitMargins.length;
+            existingDailyFinancialMetric.netProfitMargin =
+              existingDailyFinancialMetric.netProfitMargin +
+              averageDailyNetProfitMargin / 2;
+          });
+        });
+      });
+
+      return allLocationsFinancialMetricsAcc;
+    },
+    clonedEdmontonFinancialMetrics
+  );
+
+  return allLocationsFinancialMetrics;
+}
+
+function returnAllLocationsAggregatedProductMetrics(
+  storeLocationBusinessMetrics: BusinessMetric[]
+) {
+  // find edmonton store
+  const edmontonStore = storeLocationBusinessMetrics.find(
+    (storeLocationBusinessMetrics) =>
+      storeLocationBusinessMetrics.storeLocation === 'Edmonton'
+  ) as BusinessMetric; // edmonton store is guaranteed to exist
+
+  // clone edmonton store product metrics
+  const clonedEdmontonProductMetrics = structuredClone(
+    edmontonStore.productMetrics
+  ) as ProductMetric[]; // all edmonton store product fields overlap with other stores
+
+  const allLocationsProductMetrics = storeLocationBusinessMetrics.reduce(
+    (allLocationsProductMetricsAcc, storeLocationBusinessMetrics) => {
+      // ignore edmonton store as it is the template
+      if (storeLocationBusinessMetrics.storeLocation === 'Edmonton') {
+        return allLocationsProductMetricsAcc;
+      }
+
+      const { productMetrics } = storeLocationBusinessMetrics;
+
+      /**
+       * productMetrics: {
+         name: ProductCategory;
+           
+         yearlyMetrics: {
+           year: string;
+           orders: {
+             total: number;
+             online: number;
+             inStore: number;
+           };
+           revenue: {
+             total: number;
+             online: number;
+             inStore: number;
+           };
+         
+           monthlyMetrics: {
+             month: string;
+             orders: {
+               total: number;
+               online: number;
+               inStore: number;
+             };
+             revenue: {
+               total: number;
+               online: number;
+               inStore: number;
+             };
+           
+             dailyMetrics: {
+               day: string;
+               orders: {
+                 total: number;
+                 online: number;
+                 inStore: number;
+               };
+               revenue: {
+                 total: number;
+                 online: number;
+                 inStore: number;
+               };
+             }[];
+           }[];
+         }[];    
+        }[]
+        */
+
+      productMetrics.forEach((productMetric) => {
+        const { name, yearlyMetrics } = productMetric;
+
+        // find existing product metric
+        const existingProductCategoryMetric = clonedEdmontonProductMetrics.find(
+          (existingProductMetric) => existingProductMetric.name === name
+        ) as ProductMetric; // product category is guaranteed to exist (edmonton store overlaps all product categories of other stores)
+
+        yearlyMetrics.forEach((yearlyProductMetric) => {
+          const {
+            monthlyMetrics: monthlyProductMetrics,
+            orders,
+            revenue,
+            year,
+          } = yearlyProductMetric;
+
+          // find existing yearly product metric
+          const existingYearlyProductMetric =
+            existingProductCategoryMetric.yearlyMetrics.find(
+              (existingYearlyProductMetric) =>
+                existingYearlyProductMetric.year === year
+            ) as ProductYearlyMetric; // year is guaranteed to exist (edmonton store overlaps all years of other stores)
+
+          // aggregate existing yearly product metric
+          // yearly -> orders
+          existingYearlyProductMetric.orders.total += orders.total;
+          existingYearlyProductMetric.orders.online += orders.online;
+          existingYearlyProductMetric.orders.inStore += orders.inStore;
+          // yearly -> revenue
+          existingYearlyProductMetric.revenue.total += revenue.total;
+          existingYearlyProductMetric.revenue.online += revenue.online;
+          existingYearlyProductMetric.revenue.inStore += revenue.inStore;
+
+          // aggregate monthly product metrics
+          monthlyProductMetrics.forEach((monthlyProductMetric) => {
+            const {
+              dailyMetrics: dailyProductMetrics,
+              month,
+              orders,
+              revenue,
+            } = monthlyProductMetric;
+
+            // find existing monthly product metric
+            const existingMonthlyProductMetric =
+              existingYearlyProductMetric.monthlyMetrics.find(
+                (existingMonthlyProductMetric) =>
+                  existingMonthlyProductMetric.month === month
+              ) as ProductMonthlyMetric; // month is guaranteed to exist (all stores start on Jan)
+
+            // aggregate existing monthly product metric
+            // monthly -> orders
+            existingMonthlyProductMetric.orders.total += orders.total;
+            existingMonthlyProductMetric.orders.online += orders.online;
+            existingMonthlyProductMetric.orders.inStore += orders.inStore;
+            // monthly -> revenue
+            existingMonthlyProductMetric.revenue.total += revenue.total;
+            existingMonthlyProductMetric.revenue.online += revenue.online;
+            existingMonthlyProductMetric.revenue.inStore += revenue.inStore;
+
+            // aggregate daily product metrics
+            dailyProductMetrics.forEach((dailyProductMetric) => {
+              const { day, orders, revenue } = dailyProductMetric;
+
+              // find existing daily product metric
+              const existingDailyProductMetric =
+                existingMonthlyProductMetric.dailyMetrics.find(
+                  (existingDailyProductMetric) =>
+                    existingDailyProductMetric.day === day
+                ) as ProductDailyMetric; // day is guaranteed to exist (all stores start on Jan. 01)
+
+              // aggregate existing daily product metric
+              // daily -> orders
+              existingDailyProductMetric.orders.total += orders.total;
+              existingDailyProductMetric.orders.online += orders.online;
+              existingDailyProductMetric.orders.inStore += orders.inStore;
+              // daily -> revenue
+              existingDailyProductMetric.revenue.total += revenue.total;
+              existingDailyProductMetric.revenue.online += revenue.online;
+              existingDailyProductMetric.revenue.inStore += revenue.inStore;
+            });
+          });
+        });
+      });
+
+      return allLocationsProductMetricsAcc;
+    },
+    clonedEdmontonProductMetrics
+  );
+
+  return allLocationsProductMetrics;
+}
+
 type CreateRandomBusinessMetricsInput = {
   daysPerMonth: number[];
   months: Month[];
@@ -2107,6 +2653,18 @@ function createRandomBusinessMetrics({
     returnAllLocationsAggregatedCustomerMetrics(storeLocationsBusinessMetrics);
   allLocationBusinessMetrics.customerMetrics =
     allLocationsAggregatedCustomerMetrics;
+
+  // aggregate all locations financial metrics
+  const allLocationsAggregatedFinancialMetrics =
+    returnAllLocationsAggregatedFinancialMetrics(storeLocationsBusinessMetrics);
+  allLocationBusinessMetrics.financialMetrics =
+    allLocationsAggregatedFinancialMetrics;
+
+  // aggregate all locations product metrics
+  const allLocationsAggregatedProductMetrics =
+    returnAllLocationsAggregatedProductMetrics(storeLocationsBusinessMetrics);
+  allLocationBusinessMetrics.productMetrics =
+    allLocationsAggregatedProductMetrics;
 
   // aggregate all locations repair metrics
   const allLocationsAggregatedRepairMetrics =
