@@ -1,4 +1,5 @@
 import {
+  BusinessMetricStoreLocation,
   LocationYearSpread,
   Month,
   ProductCategory,
@@ -283,7 +284,15 @@ const CALENDAR_TABS_DATA = [
 
 const SALES_DATA_ENTRY_TYPE: SalesDataEntryType[] = ['Transactions', 'Revenue'];
 
+const BUSINESS_METRIC_STORE_LOCATIONS: BusinessMetricStoreLocation[] = [
+  'All Locations',
+  'Edmonton',
+  'Calgary',
+  'Vancouver',
+];
+
 export {
+  BUSINESS_METRIC_STORE_LOCATIONS,
   CALENDAR_TABS_DATA,
   DAYS_PER_MONTH,
   MONTHS,

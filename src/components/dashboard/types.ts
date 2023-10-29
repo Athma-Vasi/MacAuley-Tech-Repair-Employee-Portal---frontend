@@ -81,56 +81,93 @@ type LocationYearSpread = Record<
 
 type FinancialMetric = {
   year: Year;
-  yearlyAverageOrderValue: number;
-  yearlyConversionRate: number;
-  yearlyExpenses: number;
-  yearlyInStoreSalesRevenue: number;
-  yearlyNetProfitMargin: number;
-  yearlyOnlineSalesRevenue: number;
-  yearlyProfit: number;
-  yearlyRepairOrders: number;
-  yearlyRepairRevenue: number;
-  yearlyRevenue: number;
-  yearlySalesOrders: number;
-  yearlySalesRevenue: number;
+  averageOrderValue: number;
+  conversionRate: number;
+  expenses: number;
+  netProfitMargin: number;
+  orders: number;
+  profit: number;
+  revenue: number;
 
-  monthlyFinancialMetrics: MonthlyFinancialMetric[];
+  repairs: {
+    revenue: number;
+    orders: number;
+  };
+
+  sales: {
+    orders: {
+      total: number;
+      online: number;
+      inStore: number;
+    };
+    revenue: {
+      total: number;
+      online: number;
+      inStore: number;
+    };
+  };
+
+  monthlyMetrics: MonthlyFinancialMetric[];
 };
 
 type MonthlyFinancialMetric = {
   month: Month;
-  monthlyAverageOrderValue: number;
-  monthlyConversionRate: number;
-  monthlyExpenses: number;
-  monthlyInStoreSalesRevenue: number;
-  monthlyNetProfitMargin: number;
-  monthlyOnlineSalesRevenue: number;
-  monthlyProfit: number;
-  monthlyRepairOrders: number;
-  monthlyRepairRevenue: number;
-  monthlySalesOrders: number;
-  monthlySalesRevenue: number;
-  totalMonthlyOrders: number;
-  totalMonthlyRevenue: number;
+  averageOrderValue: number;
+  conversionRate: number;
+  expenses: number;
+  netProfitMargin: number;
+  orders: number;
+  profit: number;
+  revenue: number;
 
-  dailyFinancialMetrics: DailyFinancialMetric[];
+  repairs: {
+    revenue: number;
+    orders: number;
+  };
+
+  sales: {
+    orders: {
+      total: number;
+      online: number;
+      inStore: number;
+    };
+    revenue: {
+      total: number;
+      online: number;
+      inStore: number;
+    };
+  };
+
+  dailyMetrics: DailyFinancialMetric[];
 };
 
 type DailyFinancialMetric = {
-  dailyAverageOrderValue: number;
-  dailyConversionRate: number;
-  dailyExpenses: number;
-  dailyInStoreSalesRevenue: number;
-  dailyNetProfitMargin: number;
-  dailyOnlineSalesRevenue: number;
-  dailyOrders: number;
-  dailyProfit: number;
-  dailyRepairOrders: number;
-  dailyRepairRevenue: number;
-  dailyRevenue: number;
-  dailySalesOrders: number;
-  dailySalesRevenue: number;
   day: string;
+  averageOrderValue: number;
+  conversionRate: number;
+  expenses: number;
+  netProfitMargin: number;
+  orders: number;
+  profit: number;
+  revenue: number;
+
+  repairs: {
+    orders: number;
+    revenue: number;
+  };
+
+  sales: {
+    orders: {
+      inStore: number;
+      online: number;
+      total: number;
+    };
+    revenue: {
+      inStore: number;
+      online: number;
+      total: number;
+    };
+  };
 };
 
 type CustomerMetrics = {
@@ -140,25 +177,9 @@ type CustomerMetrics = {
   yearlyMetrics: CustomerYearlyMetric[];
 };
 
-// type CustomerYearlyMetric = {
-//   year: Year;
-//   yearlyCustomerChurnRate: number;
-//   yearlyCustomerRetentionRate: number;
-//   yearlyCustomers: number;
-//   yearlyInStoreCustomers: number;
-//   yearlyNewCustomers: number;
-//   yearlyOnlineCustomers: number;
-//   yearlyRepairCustomers: number;
-//   yearlyReturningCustomers: number;
-//   yearlySalesCustomers: number;
-
-//   monthlyCustomerMetrics: CustomerMonthlyMetric[];
-// };
 type CustomersNewReturningMetric = {
-  id: string;
   total: number;
   sales: {
-    id: string;
     total: number;
     online: number;
     inStore: number;
@@ -167,10 +188,8 @@ type CustomersNewReturningMetric = {
 };
 
 type CustomerYearlyMetric = {
-  id: string;
   year: Year;
   customers: {
-    id: string;
     total: number;
     new: CustomersNewReturningMetric;
     returning: CustomersNewReturningMetric;
@@ -180,25 +199,9 @@ type CustomerYearlyMetric = {
   monthlyMetrics: CustomerMonthlyMetric[];
 };
 
-// type CustomerMonthlyMetric = {
-//   month: Month;
-//   monthlyCustomerChurnRate: number;
-//   monthlyCustomerRetentionRate: number;
-//   monthlyCustomers: number;
-//   monthlyInStoreCustomers: number;
-//   monthlyNewCustomers: number;
-//   monthlyOnlineCustomers: number;
-//   monthlyRepairCustomers: number;
-//   monthlyReturningCustomers: number;
-//   monthlySalesCustomers: number;
-
-//   dailyCustomerMetrics: CustomerDailyMetric[];
-// };
 type CustomerMonthlyMetric = {
-  id: string;
   month: Month;
   customers: {
-    id: string;
     total: number;
     new: CustomersNewReturningMetric;
     returning: CustomersNewReturningMetric;
@@ -208,99 +211,105 @@ type CustomerMonthlyMetric = {
   dailyMetrics: CustomerDailyMetric[];
 };
 
-// type CustomerDailyMetric = {
-//   dailyCustomers: number;
-//   dailyInStoreCustomers: number;
-//   dailyNewCustomers: number;
-//   dailyOnlineCustomers: number;
-//   dailyRepairCustomers: number;
-//   dailyReturningCustomers: number;
-//   dailySalesCustomers: number;
-//   day: string;
-// };
 type CustomerDailyMetric = {
-  id: string;
   day: string;
   customers: {
-    id: string;
     total: number;
     new: CustomersNewReturningMetric;
     returning: CustomersNewReturningMetric;
   };
 };
 
-type ProductCategoryDailyMetric = {
-  productCategoryDay: string;
-  productCategoryDailySalesRevenue: number;
-  productCategoryDailyOnlineSalesRevenue: number;
-  productCategoryDailyInStoreSalesRevenue: number;
-  productCategoryDailyUnitsSold: number;
+type ProductMetric = {
+  name: ProductCategory;
+  yearlyMetrics: ProductYearlyMetric[];
 };
 
-type ProductCategoryMonthlyMetric = {
-  productCategoryMonth: Month;
-  productCategoryMonthlySalesRevenue: number;
-  productCategoryMonthlyOnlineSalesRevenue: number;
-  productCategoryMonthlyInStoreSalesRevenue: number;
-  productCategoryMonthlyUnitsSold: number;
-
-  productCategoryDailyMetrics: ProductCategoryDailyMetric[];
+type ProductYearlyMetric = {
+  year: Year;
+  orders: {
+    total: number;
+    online: number;
+    inStore: number;
+  };
+  revenue: {
+    total: number;
+    online: number;
+    inStore: number;
+  };
+  monthlyMetrics: ProductMonthlyMetric[];
 };
 
-type ProductCategoryYearlyMetric = {
-  productCategoryYear: Year;
-  productCategoryYearlySalesRevenue: number;
-  productCategoryYearlyOnlineSalesRevenue: number;
-  productCategoryYearlyInStoreSalesRevenue: number;
-  productCategoryYearlyUnitsSold: number;
+type ProductMonthlyMetric = {
+  month: Month;
+  orders: {
+    total: number;
+    online: number;
+    inStore: number;
+  };
+  revenue: {
+    total: number;
+    online: number;
+    inStore: number;
+  };
 
-  productCategoryMonthlyMetrics: ProductCategoryMonthlyMetric[];
+  dailyMetrics: ProductDailyMetric[];
 };
 
-type ProductCategoryMetric = {
-  productCategoryName: ProductCategory;
-
-  productCategoryYearlyMetrics: ProductCategoryYearlyMetric[];
+type ProductDailyMetric = {
+  day: string;
+  orders: {
+    total: number;
+    online: number;
+    inStore: number;
+  };
+  revenue: {
+    total: number;
+    online: number;
+    inStore: number;
+  };
 };
 
-type RepairCategoryDailyMetric = {
-  repairCategoryDay: string;
-  repairCategoryDailyRevenue: number;
-  repairCategoryDailyUnitsRepaired: number;
+type RepairMetric = {
+  name: RepairCategory;
+  yearlyMetrics: RepairYearlyMetric[];
 };
 
-type RepairCategoryMonthlyMetric = {
-  repairCategoryMonth: Month;
-  repairCategoryMonthlyRevenue: number;
-  repairCategoryMonthlyUnitsRepaired: number;
+type RepairYearlyMetric = {
+  year: Year;
+  revenue: number;
+  orders: number;
 
-  repairCategoryDailyMetrics: RepairCategoryDailyMetric[];
+  monthlyMetrics: RepairMonthlyMetric[];
 };
 
-type RepairCategoryYearlyMetric = {
-  repairCategoryYear: Year;
-  repairCategoryYearlyRevenue: number;
-  repairCategoryYearlyUnitsRepaired: number;
+type RepairMonthlyMetric = {
+  month: Month;
+  revenue: number;
+  orders: number;
 
-  repairCategoryMonthlyMetrics: RepairCategoryMonthlyMetric[];
+  dailyMetrics: RepairDailyMetric[];
 };
 
-type RepairCategoryMetric = {
-  repairCategoryName: RepairCategory;
-
-  repairCategoryYearlyMetrics: RepairCategoryYearlyMetric[];
+type RepairDailyMetric = {
+  day: string;
+  revenue: number;
+  orders: number;
 };
+
+type BusinessMetricStoreLocation = 'All Locations' | StoreLocation;
 
 type BusinessMetric = {
-  storeLocation: StoreLocation;
+  storeLocation: BusinessMetricStoreLocation;
   customerMetrics: CustomerMetrics;
   financialMetrics: FinancialMetric[];
-  productCategories: ProductCategoryMetric[];
-  repairCategories: RepairCategoryMetric[];
+  productCategories: ProductMetric[];
+  repairMetrics: RepairMetric[];
 };
 
 export type {
   BusinessMetric,
+  BusinessMetricStoreLocation,
   CustomerDailyMetric,
   CustomerMetrics,
   CustomerMonthlyMetric,
@@ -315,15 +324,15 @@ export type {
   Month,
   MonthlyFinancialMetric,
   ProductCategory,
-  ProductCategoryDailyMetric,
-  ProductCategoryMetric,
-  ProductCategoryMonthlyMetric,
-  ProductCategoryYearlyMetric,
+  ProductDailyMetric,
+  ProductMetric,
+  ProductMonthlyMetric,
+  ProductYearlyMetric,
   RepairCategory,
-  RepairCategoryDailyMetric,
-  RepairCategoryMetric,
-  RepairCategoryMonthlyMetric,
-  RepairCategoryYearlyMetric,
+  RepairDailyMetric,
+  RepairMetric,
+  RepairMonthlyMetric,
+  RepairYearlyMetric,
   SalesCategorySelection,
   SalesDataEntryType,
   SalesMetricSelection,

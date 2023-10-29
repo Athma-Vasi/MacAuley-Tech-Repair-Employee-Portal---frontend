@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { StoreLocation } from '../../types';
 import {
   BusinessMetric,
+  BusinessMetricStoreLocation,
   CustomerDailyMetric,
   CustomerMetrics,
   CustomerMonthlyMetric,
@@ -14,14 +15,15 @@ import {
   Month,
   MonthlyFinancialMetric,
   ProductCategory,
-  ProductCategoryDailyMetric,
-  ProductCategoryMetric,
-  ProductCategoryMonthlyMetric,
-  ProductCategoryYearlyMetric,
+  ProductDailyMetric,
+  ProductMetric,
+  ProductMonthlyMetric,
+  ProductYearlyMetric,
   RepairCategory,
-  RepairCategoryMetric,
-  RepairCategoryMonthlyMetric,
-  RepairCategoryYearlyMetric,
+  RepairDailyMetric,
+  RepairMetric,
+  RepairMonthlyMetric,
+  RepairYearlyMetric,
   Year,
 } from './types';
 
@@ -199,28 +201,12 @@ function returnTransactionsRevenueTuple({
     lifetimeValue: number;
 
     yearlyMetrics: {
-      // year: Year;
-      // yearlyCustomers: number;
-      // yearlyNewCustomers: number;
-      // yearlyReturningCustomers: number;
-      // yearlyCustomerChurnRate: number;
-      // yearlyCustomerRetentionRate: number;
-
-      // yearlySalesCustomers: number;
-      // yearlyInStoreCustomers: number;
-      // yearlyOnlineCustomers: number;
-      // yearlyRepairCustomers: number;
-
-      id: string;
       year: Year;
       customers: {
-        id: string;
         total: number;
         new: {
-          id: string;
           total: number;
           sales: {
-            id: string;
             total: number;
             online: number;
             inStore: number;
@@ -228,10 +214,8 @@ function returnTransactionsRevenueTuple({
           repair: number;
         };
         returning: {
-          id: string;
           total: number;
           sales: {
-            id: string;
             total: number;
             online: number;
             inStore: number;
@@ -244,28 +228,12 @@ function returnTransactionsRevenueTuple({
   
 
       monthlyMetrics: {
-        // month: Month;
-        // monthlyCustomers: number;
-        // monthlyNewCustomers: number;
-        // monthlyReturningCustomers: number;
-        // monthlyCustomerChurnRate: number;
-        // monthlyCustomerRetentionRate: number; 
-
-        // monthlySalesCustomers: number;
-        // monthlyInStoreCustomers: number;
-        // monthlyOnlineCustomers: number;
-        // monthlyRepairCustomers: number;
-
-        id: string;
         month: Month;
         customers: {
-          id: string;
           total: number;
           new: {
-            id: string;
             total: number;
             sales: {
-              id: string;
               total: number;
               online: number;
               inStore: number;
@@ -273,10 +241,8 @@ function returnTransactionsRevenueTuple({
             repair: number;
           };
           returning: {
-            id: string;
             total: number;
             sales: {
-              id: string;
               total: number;
               online: number;
               inStore: number;
@@ -288,26 +254,12 @@ function returnTransactionsRevenueTuple({
         };
 
         dailyMetrics: {
-          // day: string;
-          // dailyCustomers: number;
-          // dailyNewCustomers: number;
-          // dailyReturningCustomers: number;
-
-          // dailySalesCustomers: number;
-          // dailyInStoreCustomers: number;
-          // dailyOnlineCustomers: number;
-          // dailyRepairCustomers: number;
-
-          id: string;
           day: string;
           customers: {
-            id: string;
             total: number;
             new: {
-              id: string;
               total: number;
               sales: {
-                id: string;
                 total: number;
                 online: number;
                 inStore: number;
@@ -315,10 +267,8 @@ function returnTransactionsRevenueTuple({
               repair: number;
             };
             returning: {
-              id: string;
               total: number;
               sales: {
-                id: string;
                 total: number;
                 online: number;
                 inStore: number;
@@ -332,216 +282,251 @@ function returnTransactionsRevenueTuple({
   }
 
   financialMetrics: {
-    year: string;
-    yearlyAverageOrderValue: number;
-    yearlyConversionRate: number;    
-    yearlyExpenses: number; 
-    yearlyInStoreSalesRevenue: number;
-    yearlyNetProfitMargin: number; 
-    yearlyOnlineSalesRevenue: number;
-    yearlyProfit: number; 
-    yearlyRepairOrders: number;
-    yearlyRepairRevenue: number;
-    yearlyRevenue: number;
-    yearlySalesOrders: number;
-    yearlySalesRevenue: number;    
+    year: Year;
+    averageOrderValue: number;
+    conversionRate: number;
+    expenses: number;
+    netProfitMargin: number;
+    orders: number;
+    profit: number;
+    revenue: number;
+  
+    repairs: {
+      revenue: number;
+      orders: number;
+    };
+  
+    sales: {
+      orders: {
+        total: number;
+        online: number;
+        inStore: number;
+      };
+      revenue: {
+        total: number;
+        online: number;
+        inStore: number;
+      };
+    };
 
     monthlyMetrics: {
-      month: string;
-      monthlyAverageOrderValue: number;
-      monthlyConversionRate: number;      
-      monthlyExpenses: number; 
-      monthlyInStoreSalesRevenue: number;
-      monthlyNetProfitMargin: number; 
-      monthlyOnlineSalesRevenue: number;
-      monthlyProfit: number; 
-      monthlyRepairOrders: number;
-      monthlyRepairRevenue: number;
-      monthlySalesOrders: number;
-      monthlySalesRevenue: number;
-      totalMonthlyOrders: number;
-      totalMonthlyRevenue: number;           
+      month: Month;
+      averageOrderValue: number;
+      conversionRate: number;
+      expenses: number;
+      netProfitMargin: number;
+      orders: number;
+      profit: number;
+      revenue: number;
+
+      repairs: {
+        revenue: number;
+        orders: number;
+      };
+    
+      sales: {
+        orders: {
+          total: number;
+          online: number;
+          inStore: number;
+        };
+        revenue: {
+          total: number;
+          online: number;
+          inStore: number;
+        };
+      };           
 
       dailyMetrics: {
-        dailyAverageOrderValue: number;
-        dailyConversionRate: number;
-        dailyExpenses: number; 
-        dailyInStoreSalesRevenue: number;
-        dailyNetProfitMargin: number; 
-        dailyOnlineSalesRevenue: number;
-        dailyOrders: number;
-        dailyProfit: number; 
-        dailyRepairOrders: number;
-        dailyRepairRevenue: number;
-        dailyRevenue: number;
-        dailySalesOrders: number;
-        dailySalesRevenue: number;
-        day: string;        
-                
+        day: string;
+        averageOrderValue: number;
+        conversionRate: number;
+        expenses: number;
+        netProfitMargin: number;
+        orders: number;
+        profit: number;
+        revenue: number;
+
+        repairs: {
+          orders: number;
+          revenue: number;
+        };
+      
+        sales: {
+          orders: {
+            inStore: number;
+            online: number;
+            total: number;
+          };
+          revenue: {
+            inStore: number;
+            online: number;
+            total: number;
+          };
+        };                     
       }[];
     }[];
-  }[];
+  }[];  
 
-  productCategories: {
-    productCategoryName: ProductCategory;
+  productMetrics: {
+    name: ProductCategory;
 
-    productCategoryYearlyMetrics: {
-      productCategoryYear: string;
-      productCategoryYearlySalesRevenue: number;
-      productCategoryYearlyOnlineSalesRevenue: number;
-      productCategoryYearlyInStoreSalesRevenue: number;
-      productCategoryYearlyUnitsSold: number;
+    yearlyMetrics: {
+      year: string;
+      orders: {
+        total: number;
+        online: number;
+        inStore: number;
+      };
+      revenue: {
+        total: number;
+        online: number;
+        inStore: number;
+      };
 
-      productCategoryMonthlyMetrics: {
-        productCategoryMonth: string;
-        productCategoryMonthlySalesRevenue: number;
-        productCategoryMonthlyOnlineSalesRevenue: number;
-        productCategoryMonthlyInStoreSalesRevenue: number;
-        productCategoryMonthlyUnitsSold: number;
+      monthlyMetrics: {
+        month: string;
+        orders: {
+          total: number;
+          online: number;
+          inStore: number;
+        };
+        revenue: {
+          total: number;
+          online: number;
+          inStore: number;
+        };
 
-        productCategoryDailyMetrics: {
-          productCategoryDay: string;
-          productCategoryDailySalesRevenue: number;
-          productCategoryDailyOnlineSalesRevenue: number;
-          productCategoryDailyInStoreSalesRevenue: number;
-          productCategoryDailyUnitsSold: number;
+        dailyMetrics: {
+          day: string;
+          orders: {
+            total: number;
+            online: number;
+            inStore: number;
+          };
+          revenue: {
+            total: number;
+            online: number;
+            inStore: number;
+          };
         }[];
       }[];
-    }[];
-  }[];
-  repairCategories: {
-    repairCategoryName: RepairCategory;
+    }[];    
+  }
 
-    repairCategoryYearlyMetrics: {
-      repairCategoryYear: string;
-      repairCategoryYearlyRevenue: number;
-      repairCategoryYearlyUnitsRepaired: number;
 
-      repairCategoryMonthlyMetrics: {
-        repairCategoryMonth: string;
-        repairCategoryMonthlyRevenue: number;
-        repairCategoryMonthlyUnitsRepaired: number;
+  repairMetrics: {
+    name: RepairCategory;
+    yearlyMetrics: {
+      year: string;
+      revenue: number;
+      orders: number;
 
-        repairCategoryDailyMetrics: {
-          repairCategoryDay: string;
-          repairCategoryDailyRevenue: number;
-          repairCategoryDailyUnitsRepaired: number;
+      monthlyMetrics: {
+        month: string;
+        revenue: number;
+        orders: number;
+
+        dailyMetrics: {
+          day: string;
+          revenue: number;
+          orders: number;
         }[];
       }[];
-    }[];
-  }[];
+    }[];    
+  }
 };
 */
 
-type ReturnRepairCategoriesInput = {
+type ReturnRepairMetricsInput = {
   daysInMonthsInYears: DaysInMonthsInYears;
   repairCategories: RepairCategory[];
   storeLocation: StoreLocation;
   yearTransactionsSpread: LocationYearSpread;
 };
-/**
- * - Calculates randomly generated repair transactions and revenue for a given year and store location.
- *
- * - Daily transactions are generated then aggregated into monthly and yearly trends.
- *
- * @param {ReturnRepairCategoriesInput} options - The options for generating repair category trends.
- * @returns {RepairCategoryMetric[]} - An array of repair category trends for the specified years and location.
- *
- * @param {DaysInMonthsInYears} options.daysInMonthsInYears - Data containing days and months in multiple years.
- * @param {RepairCategory[]} options.repairCategories - An array of repair category types to calculate trends for.
- * @param {StoreLocation} options.storeLocation - The store location for which trends are calculated.
- * @param {LocationYearSpread} options.yearTransactionsSpread - The spread of transaction data for multiple years and the location.
- */
-function returnRepairCategories({
+
+function returnRepairMetrics({
   daysInMonthsInYears,
   repairCategories,
   storeLocation,
   yearTransactionsSpread,
-}: ReturnRepairCategoriesInput): RepairCategoryMetric[] {
+}: ReturnRepairMetricsInput): RepairMetric[] {
   return repairCategories.map((repairCategory) => {
-    const repairCategoryYearlyMetrics = Array.from(daysInMonthsInYears).map(
+    const repairYearlyMetrics = Array.from(daysInMonthsInYears).map(
       (yearTuple) => {
         const [year, daysInMonthsMap] = yearTuple;
 
-        const repairCategoryMonthlyMetrics = Array.from(daysInMonthsMap).map(
+        const repairMonthlyMetrics = Array.from(daysInMonthsMap).map(
           (monthTuple) => {
             const [month, daysRange] = monthTuple;
 
             // daily repair trends
-            const repairCategoryDailyMetrics = daysRange.map((date) => {
-              const [
-                repairCategoryDailyUnitsRepaired,
-                repairCategoryDailyRevenue,
-              ] = returnTransactionsRevenueTuple({
-                category: 'repair',
-                categoryType: repairCategory,
-                storeLocation,
-                year,
-                yearTransactionsSpread,
-              });
+            const repairDailyMetrics = daysRange.map((date) => {
+              const [dailyUnitsRepaired, dailyRevenue] =
+                returnTransactionsRevenueTuple({
+                  category: 'repair',
+                  categoryType: repairCategory,
+                  storeLocation,
+                  year,
+                  yearTransactionsSpread,
+                });
 
-              const repairCategoryDailyMetric = {
-                repairCategoryDay: date,
-                repairCategoryDailyRevenue,
-                repairCategoryDailyUnitsRepaired,
+              const repairDailyMetric: RepairDailyMetric = {
+                day: date,
+                orders: dailyUnitsRepaired,
+                revenue: dailyRevenue,
               };
 
-              return repairCategoryDailyMetric;
+              return repairDailyMetric;
             });
 
-            const [
-              repairCategoryMonthlyRevenue,
-              repairCategoryMonthlyUnitsRepaired,
-            ] = repairCategoryDailyMetrics.reduce(
-              (monthlyRepairMetricsAcc, dailyRepairMetric) => {
-                monthlyRepairMetricsAcc[0] +=
-                  dailyRepairMetric.repairCategoryDailyRevenue;
-                monthlyRepairMetricsAcc[1] +=
-                  dailyRepairMetric.repairCategoryDailyUnitsRepaired;
+            const [repairMonthlyRevenue, repairMonthlyUnitsRepaired] =
+              repairDailyMetrics.reduce(
+                (monthlyRepairMetricsAcc, dailyRepairMetric) => {
+                  monthlyRepairMetricsAcc[0] += dailyRepairMetric.revenue;
+                  monthlyRepairMetricsAcc[1] += dailyRepairMetric.orders;
 
-                return monthlyRepairMetricsAcc;
-              },
-              [0, 0]
-            );
+                  return monthlyRepairMetricsAcc;
+                },
+                [0, 0]
+              );
 
-            const monthlyRepairMetric: RepairCategoryMonthlyMetric = {
-              repairCategoryMonth: month,
-              repairCategoryMonthlyRevenue,
-              repairCategoryMonthlyUnitsRepaired,
-              repairCategoryDailyMetrics,
+            const monthlyRepairMetric: RepairMonthlyMetric = {
+              month,
+              revenue: repairMonthlyRevenue,
+              orders: repairMonthlyUnitsRepaired,
+              dailyMetrics: repairDailyMetrics,
             };
 
             return monthlyRepairMetric;
           }
         );
 
-        const [repairCategoryYearlyRevenue, repairCategoryYearlyUnitsRepaired] =
-          repairCategoryMonthlyMetrics.reduce(
+        const [repairYearlyRevenue, repairYearlyUnitsRepaired] =
+          repairMonthlyMetrics.reduce(
             (yearlyRepairMetricsAcc, monthlyRepairMetric) => {
-              yearlyRepairMetricsAcc[0] +=
-                monthlyRepairMetric.repairCategoryMonthlyRevenue;
-              yearlyRepairMetricsAcc[1] +=
-                monthlyRepairMetric.repairCategoryMonthlyUnitsRepaired;
+              yearlyRepairMetricsAcc[0] += monthlyRepairMetric.revenue;
+              yearlyRepairMetricsAcc[1] += monthlyRepairMetric.orders;
 
               return yearlyRepairMetricsAcc;
             },
             [0, 0]
           );
 
-        const yearlyRepairMetric: RepairCategoryYearlyMetric = {
-          repairCategoryYear: year.toString() as Year,
-          repairCategoryYearlyRevenue,
-          repairCategoryYearlyUnitsRepaired,
-          repairCategoryMonthlyMetrics,
+        const yearlyRepairMetric: RepairYearlyMetric = {
+          year: year.toString() as Year,
+          revenue: repairYearlyRevenue,
+          orders: repairYearlyUnitsRepaired,
+          monthlyMetrics: repairMonthlyMetrics,
         };
 
         return yearlyRepairMetric;
       }
     );
 
-    const repairCategoryObj: RepairCategoryMetric = {
-      repairCategoryName: repairCategory,
-      repairCategoryYearlyMetrics,
+    const repairCategoryObj: RepairMetric = {
+      name: repairCategory,
+      yearlyMetrics: repairYearlyMetrics,
     };
 
     return repairCategoryObj;
@@ -554,311 +539,281 @@ type ReturnProductCategoriesInput = {
   storeLocation: StoreLocation;
   yearTransactionsSpread: LocationYearSpread;
 };
-/**
- * - Calculates randomly generated product transactions and revenue for a given year and store location.
- * - Daily transactions are generated then aggregated into monthly and yearly trends.
- *
- * @param {ReturnProductCategoriesInput} options - The options for generating product category trends.
- * @returns {ProductCategoryMetric[]} - An array of product category trends for the specified years and location.
- *
- * @param {DaysInMonthsInYears} options.daysInMonthsInYears - Data containing days and months in multiple years.
- * @param {ProductCategory[]} options.productCategories - An array of product category types to calculate trends for.
- * @param {StoreLocation} options.storeLocation - The store location for which trends are calculated.
- * @param {LocationYearSpread} options.yearTransactionsSpread - The spread of transaction data for multiple years and the location.
- */
+
 function returnProductCategories({
   daysInMonthsInYears,
   productCategories,
   storeLocation,
   yearTransactionsSpread,
-}: ReturnProductCategoriesInput): ProductCategoryMetric[] {
+}: ReturnProductCategoriesInput): ProductMetric[] {
   return productCategories.map((productCategory) => {
-    const productCategoryYearlyMetrics = Array.from(daysInMonthsInYears).map(
+    const productYearlyMetrics = Array.from(daysInMonthsInYears).map(
       (yearTuple) => {
         const [year, daysInMonthsMap] = yearTuple;
 
-        const productCategoryMonthlyMetrics = Array.from(daysInMonthsMap).map(
+        const productMonthlyMetrics = Array.from(daysInMonthsMap).map(
           (monthTuple) => {
             const [month, daysRange] = monthTuple;
 
             // daily repair trends
-            const productCategoryDailyMetrics = daysRange.map((date) => {
-              const [
-                productCategoryDailyUnitsSold,
-                productCategoryDailySalesRevenue,
-              ] = returnTransactionsRevenueTuple({
-                category: 'product',
-                categoryType: productCategory,
-                storeLocation,
-                year,
-                yearTransactionsSpread,
-              });
+            const productDailyMetrics = daysRange.map((date) => {
+              const [productDailyUnitsSold, productDailySalesRevenue] =
+                returnTransactionsRevenueTuple({
+                  category: 'product',
+                  categoryType: productCategory,
+                  storeLocation,
+                  year,
+                  yearTransactionsSpread,
+                });
 
-              const productCategoryOnlineFraction =
-                Math.random() * (0.8 - 0.5) + 0.5; // spread between 0.5 and 0.8
-              const productCategoryDailyOnlineSalesRevenue = Math.round(
-                productCategoryOnlineFraction * productCategoryDailySalesRevenue
-              );
-              const productCategoryInStoreFraction =
-                1 - productCategoryOnlineFraction;
-              const productCategoryDailyInStoreSalesRevenue = Math.round(
-                productCategoryInStoreFraction *
-                  productCategoryDailySalesRevenue
-              );
+              const productOnlineFraction = Math.random() * (0.8 - 0.5) + 0.5; // spread between 0.5 and 0.8
 
-              const productCategoryDailyMetric: ProductCategoryDailyMetric = {
-                productCategoryDay: date,
-                productCategoryDailySalesRevenue,
-                productCategoryDailyOnlineSalesRevenue,
-                productCategoryDailyInStoreSalesRevenue,
-                productCategoryDailyUnitsSold,
+              const productDailyOnlineOrders = Math.round(
+                productDailyUnitsSold * productOnlineFraction
+              );
+              const productDailyInStoreOrders =
+                productDailyUnitsSold - productDailyOnlineOrders;
+
+              const productDailyOnlineSalesRevenue =
+                productOnlineFraction * productDailySalesRevenue;
+              const productDailyInStoreSalesRevenue =
+                productDailySalesRevenue - productDailyOnlineSalesRevenue;
+
+              const productDailyMetric: ProductDailyMetric = {
+                day: date,
+                orders: {
+                  inStore: productDailyInStoreOrders,
+                  online: productDailyOnlineOrders,
+                  total: productDailyUnitsSold,
+                },
+                revenue: {
+                  inStore: productDailyInStoreSalesRevenue,
+                  online: productDailyOnlineSalesRevenue,
+                  total: productDailySalesRevenue,
+                },
               };
 
-              return productCategoryDailyMetric;
+              return productDailyMetric;
             });
 
             const [
-              productCategoryMonthlySalesRevenue,
-              productCategoryMonthlyOnlineSalesRevenue,
-              productCategoryMonthlyInStoreSalesRevenue,
-              productCategoryMonthlyUnitsSold,
-            ] = productCategoryDailyMetrics.reduce(
+              productMonthlySalesRevenue,
+              productMonthlyOnlineSalesRevenue,
+              productMonthlyInStoreSalesRevenue,
+              productMonthlyOrders,
+              productMonthlyOnlineOrders,
+              productMonthlyInStoreOrders,
+            ] = productDailyMetrics.reduce(
               (monthlyRepairMetricsAcc, dailyRepairMetric) => {
-                monthlyRepairMetricsAcc[0] +=
-                  dailyRepairMetric.productCategoryDailySalesRevenue;
-                monthlyRepairMetricsAcc[1] +=
-                  dailyRepairMetric.productCategoryDailyOnlineSalesRevenue;
-                monthlyRepairMetricsAcc[2] +=
-                  dailyRepairMetric.productCategoryDailyInStoreSalesRevenue;
-                monthlyRepairMetricsAcc[3] +=
-                  dailyRepairMetric.productCategoryDailyUnitsSold;
+                monthlyRepairMetricsAcc[0] += dailyRepairMetric.revenue.total;
+                monthlyRepairMetricsAcc[1] += dailyRepairMetric.revenue.online;
+                monthlyRepairMetricsAcc[2] += dailyRepairMetric.revenue.inStore;
+                monthlyRepairMetricsAcc[3] += dailyRepairMetric.orders.total;
+                monthlyRepairMetricsAcc[4] += dailyRepairMetric.orders.online;
+                monthlyRepairMetricsAcc[5] += dailyRepairMetric.orders.inStore;
 
                 return monthlyRepairMetricsAcc;
               },
-              [0, 0, 0, 0]
+              [0, 0, 0, 0, 0, 0]
             );
 
-            const productCategoryMonthlyMetric: ProductCategoryMonthlyMetric = {
-              productCategoryMonth: month,
-              productCategoryMonthlySalesRevenue,
-              productCategoryMonthlyOnlineSalesRevenue,
-              productCategoryMonthlyInStoreSalesRevenue,
-              productCategoryMonthlyUnitsSold,
-              productCategoryDailyMetrics,
+            const productMonthlyMetric: ProductMonthlyMetric = {
+              month,
+              orders: {
+                inStore: productMonthlyInStoreOrders,
+                online: productMonthlyOnlineOrders,
+                total: productMonthlyOrders,
+              },
+              revenue: {
+                inStore: productMonthlyInStoreSalesRevenue,
+                online: productMonthlyOnlineSalesRevenue,
+                total: productMonthlySalesRevenue,
+              },
+              dailyMetrics: productDailyMetrics,
             };
 
-            return productCategoryMonthlyMetric;
+            return productMonthlyMetric;
           }
         );
 
         const [
-          productCategoryYearlySalesRevenue,
-          productCategoryYearlyOnlineSalesRevenue,
-          productCategoryYearlyInStoreSalesRevenue,
-          productCategoryYearlyUnitsSold,
-        ] = productCategoryMonthlyMetrics.reduce(
+          productYearlySalesRevenue,
+          productYearlyOnlineSalesRevenue,
+          productYearlyInStoreSalesRevenue,
+          productYearlyOrders,
+          productYearlyOnlineOrders,
+          productYearlyInStoreOrders,
+        ] = productMonthlyMetrics.reduce(
           (yearlyProductMetricsAcc, monthlyRepairMetric) => {
-            yearlyProductMetricsAcc[0] +=
-              monthlyRepairMetric.productCategoryMonthlySalesRevenue;
-            yearlyProductMetricsAcc[1] +=
-              monthlyRepairMetric.productCategoryMonthlyOnlineSalesRevenue;
-            yearlyProductMetricsAcc[2] +=
-              monthlyRepairMetric.productCategoryMonthlyInStoreSalesRevenue;
-            yearlyProductMetricsAcc[3] +=
-              monthlyRepairMetric.productCategoryMonthlyUnitsSold;
+            yearlyProductMetricsAcc[0] += monthlyRepairMetric.revenue.total;
+            yearlyProductMetricsAcc[1] += monthlyRepairMetric.revenue.online;
+            yearlyProductMetricsAcc[2] += monthlyRepairMetric.revenue.inStore;
+            yearlyProductMetricsAcc[3] += monthlyRepairMetric.orders.total;
+            yearlyProductMetricsAcc[4] += monthlyRepairMetric.orders.online;
+            yearlyProductMetricsAcc[5] += monthlyRepairMetric.orders.inStore;
 
             return yearlyProductMetricsAcc;
           },
-          [0, 0, 0, 0]
+          [0, 0, 0, 0, 0, 0]
         );
 
-        const productCategoryYearlyMetric: ProductCategoryYearlyMetric = {
-          productCategoryYear: year.toString() as Year,
-          productCategoryYearlySalesRevenue,
-          productCategoryYearlyOnlineSalesRevenue,
-          productCategoryYearlyInStoreSalesRevenue,
-          productCategoryYearlyUnitsSold,
-          productCategoryMonthlyMetrics,
+        const productYearlyMetric: ProductYearlyMetric = {
+          year: year.toString() as Year,
+          orders: {
+            inStore: productYearlyInStoreOrders,
+            online: productYearlyOnlineOrders,
+            total: productYearlyOrders,
+          },
+          revenue: {
+            inStore: productYearlyInStoreSalesRevenue,
+            online: productYearlyOnlineSalesRevenue,
+            total: productYearlySalesRevenue,
+          },
+          monthlyMetrics: productMonthlyMetrics,
         };
 
-        return productCategoryYearlyMetric;
+        return productYearlyMetric;
       }
     );
 
-    const productCategoryObj: ProductCategoryMetric = {
-      productCategoryName: productCategory,
-      productCategoryYearlyMetrics,
+    const productMetric: ProductMetric = {
+      name: productCategory,
+      yearlyMetrics: productYearlyMetrics,
     };
 
-    return productCategoryObj;
+    return productMetric;
   });
 }
 
-type ReturnAggregatedProductCategoryMetricsInput = {
+type ReturnAggregatedProductMetricsInput = {
   dailyFinancialMetricsTemplate: DailyFinancialMetric;
   financialMetrics: FinancialMetric[];
   financialMetricsTemplate: FinancialMetric;
   monthlyFinancialMetricsTemplate: MonthlyFinancialMetric;
-  productCategories: ProductCategoryMetric[];
+  productCategories: ProductMetric[];
 };
-/**
- * - Aggregates product category metrics into existing yearly, monthly, and daily financial metrics.
- *
- * @param {ReturnAggregatedProductCategoryMetricsInput} options - The options for aggregating product category metrics.
- * @returns {FinancialMetric[]} - An array of aggregated financial metrics.
- *
- * @param {DailyFinancialMetric} options.dailyFinancialMetricsTemplate - The template for daily financial metrics.
- * @param {FinancialMetric[]} options.financialMetrics - The existing financial metrics to aggregate into.
- * @param {FinancialMetric} options.financialMetricsTemplate - The template for financial metrics.
- * @param {MonthlyFinancialMetric} options.monthlyFinancialMetricsTemplate - The template for monthly financial metrics.
- * @param {ProductCategoryMetric[]} options.productCategories - The product category metrics to aggregate.
- *
- */
-function returnAggregatedProductCategoryMetrics({
+
+function returnAggregatedProductMetrics({
   dailyFinancialMetricsTemplate,
   financialMetrics,
   financialMetricsTemplate,
   monthlyFinancialMetricsTemplate,
   productCategories,
-}: ReturnAggregatedProductCategoryMetricsInput): FinancialMetric[] {
+}: ReturnAggregatedProductMetricsInput): FinancialMetric[] {
   return productCategories.reduce(
     (aggregatedYearlyMetricsAcc, productCategory) => {
-      const { productCategoryYearlyMetrics } = productCategory;
+      const { yearlyMetrics } = productCategory;
 
-      const newYearlyFinancialMetrics = productCategoryYearlyMetrics.map(
-        (productCategoryYearlyMetric, productCategoryYearlyMetricIdx) => {
-          const { productCategoryMonthlyMetrics, productCategoryYear } =
-            productCategoryYearlyMetric;
+      const newYearlyFinancialMetrics = yearlyMetrics.map(
+        (productYearlyMetric, productYearlyMetricIdx) => {
+          const { monthlyMetrics } = productYearlyMetric;
 
-          const newMonthlyFinancialMetrics = productCategoryMonthlyMetrics.map(
-            (productCategoryMonthlyMetric, productCategoryMonthlyMetricIdx) => {
-              const { productCategoryDailyMetrics } =
-                productCategoryMonthlyMetric;
+          const newMonthlyFinancialMetrics = monthlyMetrics.map(
+            (productMonthlyMetric, productMonthlyMetricIdx) => {
+              const { dailyMetrics } = productMonthlyMetric;
 
-              const newDailyFinancialMetrics = productCategoryDailyMetrics.map(
-                (productCategoryDailyMetric, productCategoryDailyMetricIdx) => {
-                  const {
-                    productCategoryDailyInStoreSalesRevenue,
-                    productCategoryDailyOnlineSalesRevenue,
-                    productCategoryDailySalesRevenue,
-                    productCategoryDailyUnitsSold,
-                    productCategoryDay,
-                  } = productCategoryDailyMetric;
+              const newDailyFinancialMetrics = dailyMetrics.map(
+                (productDailyMetric, productDailyMetricIdx) => {
+                  const { day, orders, revenue } = productDailyMetric;
 
                   const existingDailyFinancialMetric =
-                    aggregatedYearlyMetricsAcc[productCategoryYearlyMetricIdx]
-                      ?.monthlyFinancialMetrics[productCategoryMonthlyMetricIdx]
-                      ?.dailyFinancialMetrics[
-                      productCategoryDailyMetricIdx
+                    aggregatedYearlyMetricsAcc[productYearlyMetricIdx]
+                      ?.monthlyMetrics[productMonthlyMetricIdx]?.dailyMetrics[
+                      productDailyMetricIdx
                     ] ?? {
                       ...dailyFinancialMetricsTemplate,
-                      day: productCategoryDay,
+                      day,
                     };
 
                   const newDailyFinancialMetric: DailyFinancialMetric = {
                     ...existingDailyFinancialMetric,
-                    dailyRevenue:
-                      existingDailyFinancialMetric.dailyRevenue +
-                      productCategoryDailySalesRevenue,
-                    dailySalesRevenue:
-                      existingDailyFinancialMetric.dailySalesRevenue +
-                      productCategoryDailySalesRevenue,
-                    dailyOnlineSalesRevenue:
-                      existingDailyFinancialMetric.dailyOnlineSalesRevenue +
-                      productCategoryDailyOnlineSalesRevenue,
-                    dailyInStoreSalesRevenue:
-                      existingDailyFinancialMetric.dailyInStoreSalesRevenue +
-                      productCategoryDailyInStoreSalesRevenue,
-                    dailyOrders:
-                      existingDailyFinancialMetric.dailyOrders +
-                      productCategoryDailyUnitsSold,
-                    dailySalesOrders:
-                      existingDailyFinancialMetric.dailySalesOrders +
-                      productCategoryDailyUnitsSold,
+                    orders: existingDailyFinancialMetric.orders + orders.total,
+                    revenue:
+                      existingDailyFinancialMetric.revenue + revenue.total,
+                    sales: {
+                      orders: {
+                        total:
+                          existingDailyFinancialMetric.sales.orders.total +
+                          orders.total,
+                        online:
+                          existingDailyFinancialMetric.sales.orders.online +
+                          orders.online,
+                        inStore:
+                          existingDailyFinancialMetric.sales.orders.inStore +
+                          orders.inStore,
+                      },
+                      revenue: {
+                        total:
+                          existingDailyFinancialMetric.sales.revenue.total +
+                          revenue.total,
+                        online:
+                          existingDailyFinancialMetric.sales.revenue.online +
+                          revenue.online,
+                        inStore:
+                          existingDailyFinancialMetric.sales.revenue.inStore +
+                          revenue.total,
+                      },
+                    },
                   };
 
                   return newDailyFinancialMetric;
                 }
               );
 
-              const {
-                productCategoryMonth,
-                productCategoryMonthlyInStoreSalesRevenue,
-                productCategoryMonthlyOnlineSalesRevenue,
-                productCategoryMonthlySalesRevenue,
-                productCategoryMonthlyUnitsSold,
-              } = productCategoryMonthlyMetric;
+              const { month, orders, revenue } = productMonthlyMetric;
 
               const existingMonthlyFinancialMetric = aggregatedYearlyMetricsAcc[
-                productCategoryYearlyMetricIdx
-              ]?.monthlyFinancialMetrics[productCategoryMonthlyMetricIdx] ?? {
+                productYearlyMetricIdx
+              ]?.monthlyMetrics[productMonthlyMetricIdx] ?? {
                 ...monthlyFinancialMetricsTemplate,
-                month: productCategoryMonth,
-                dailyFinancialMetrics: Array.from({
-                  length: newDailyFinancialMetrics.length,
-                }),
+                month,
               };
 
-              existingMonthlyFinancialMetric.totalMonthlyRevenue +=
-                productCategoryMonthlySalesRevenue;
-              existingMonthlyFinancialMetric.monthlySalesRevenue +=
-                productCategoryMonthlySalesRevenue;
-              existingMonthlyFinancialMetric.monthlyOnlineSalesRevenue +=
-                productCategoryMonthlyOnlineSalesRevenue;
-              existingMonthlyFinancialMetric.monthlyInStoreSalesRevenue +=
-                productCategoryMonthlyInStoreSalesRevenue;
-              existingMonthlyFinancialMetric.totalMonthlyOrders +=
-                productCategoryMonthlyUnitsSold;
-              existingMonthlyFinancialMetric.monthlySalesOrders +=
-                productCategoryMonthlyUnitsSold;
+              existingMonthlyFinancialMetric.revenue += revenue.total;
+              existingMonthlyFinancialMetric.sales.revenue.total +=
+                revenue.total;
+              existingMonthlyFinancialMetric.sales.revenue.online +=
+                revenue.online;
+              existingMonthlyFinancialMetric.sales.revenue.inStore +=
+                revenue.inStore;
+              existingMonthlyFinancialMetric.orders += orders.total;
+              existingMonthlyFinancialMetric.sales.orders.total += orders.total;
+              existingMonthlyFinancialMetric.sales.orders.online +=
+                orders.online;
+              existingMonthlyFinancialMetric.sales.orders.inStore +=
+                orders.inStore;
 
-              newDailyFinancialMetrics.forEach(
-                (dailyFinancialMetric, dailyFinancialMetricIdx) => {
-                  existingMonthlyFinancialMetric.dailyFinancialMetrics[
-                    dailyFinancialMetricIdx
-                  ] = dailyFinancialMetric;
-                }
-              );
+              existingMonthlyFinancialMetric.dailyMetrics =
+                newDailyFinancialMetrics;
 
               return existingMonthlyFinancialMetric;
             }
           );
 
-          const {
-            productCategoryYearlyInStoreSalesRevenue,
-            productCategoryYearlyOnlineSalesRevenue,
-            productCategoryYearlySalesRevenue,
-            productCategoryYearlyUnitsSold,
-          } = productCategoryYearlyMetric;
+          const { orders, revenue, year } = productYearlyMetric;
 
           const existingYearlyFinancialMetric = aggregatedYearlyMetricsAcc[
-            productCategoryYearlyMetricIdx
+            productYearlyMetricIdx
           ] ?? {
             ...financialMetricsTemplate,
-            year: productCategoryYear,
-            monthlyFinancialMetrics: Array.from({
+            year,
+            monthlyMetrics: Array.from({
               length: newMonthlyFinancialMetrics.length,
             }),
           };
 
-          existingYearlyFinancialMetric.yearlyRevenue +=
-            productCategoryYearlySalesRevenue;
-          existingYearlyFinancialMetric.yearlySalesRevenue +=
-            productCategoryYearlySalesRevenue;
-          existingYearlyFinancialMetric.yearlyOnlineSalesRevenue +=
-            productCategoryYearlyOnlineSalesRevenue;
-          existingYearlyFinancialMetric.yearlyInStoreSalesRevenue +=
-            productCategoryYearlyInStoreSalesRevenue;
-          existingYearlyFinancialMetric.yearlySalesOrders +=
-            productCategoryYearlyUnitsSold;
+          existingYearlyFinancialMetric.revenue += revenue.total;
+          existingYearlyFinancialMetric.sales.revenue.total += revenue.total;
+          existingYearlyFinancialMetric.sales.revenue.online += revenue.online;
+          existingYearlyFinancialMetric.sales.revenue.inStore +=
+            revenue.inStore;
+          existingYearlyFinancialMetric.orders += orders.total;
+          existingYearlyFinancialMetric.sales.orders.total += orders.total;
+          existingYearlyFinancialMetric.sales.orders.online += orders.online;
+          existingYearlyFinancialMetric.sales.orders.inStore += orders.inStore;
 
-          newMonthlyFinancialMetrics.forEach(
-            (monthlyFinancialMetric, monthlyFinancialMetricIdx) => {
-              existingYearlyFinancialMetric.monthlyFinancialMetrics[
-                monthlyFinancialMetricIdx
-              ] = monthlyFinancialMetric;
-            }
-          );
+          existingYearlyFinancialMetric.monthlyMetrics =
+            newMonthlyFinancialMetrics;
 
           return existingYearlyFinancialMetric;
         }
@@ -872,161 +827,107 @@ function returnAggregatedProductCategoryMetrics({
   );
 }
 
-type ReturnAggregatedRepairCategoryMetricsInput = {
+type ReturnAggregatedRepairMetricsInput = {
   dailyFinancialMetricsTemplate: DailyFinancialMetric;
   financialMetrics: FinancialMetric[];
   monthlyFinancialMetricsTemplate: MonthlyFinancialMetric;
-  repairCategories: RepairCategoryMetric[];
+  repairMetrics: RepairMetric[];
   financialMetricsTemplate: FinancialMetric;
 };
-/**
- * - Aggregates repair category metrics into existing yearly, monthly, and daily financial metrics.
- *
- * @param {ReturnAggregatedRepairCategoryMetricsInput} options - The options for aggregating repair category metrics.
- * @returns {FinancialMetric[]} - An array of aggregated financial metrics.
- *
- * @param {DailyFinancialMetric} options.dailyFinancialMetricsTemplate - The template for daily financial metrics.
- * @param {FinancialMetric[]} options.financialMetrics - The existing financial metrics to aggregate into.
- * @param {FinancialMetric} options.financialMetricsTemplate - The template for financial metrics.
- * @param {MonthlyFinancialMetric} options.monthlyFinancialMetricsTemplate - The template for monthly financial metrics.
- * @param {RepairCategoryMetric[]} options.repairCategories - The repair category metrics to aggregate.
- */
-function returnAggregatedRepairCategoryMetrics({
+
+function returnAggregatedRepairMetrics({
   dailyFinancialMetricsTemplate,
   financialMetrics,
   monthlyFinancialMetricsTemplate,
-  repairCategories,
+  repairMetrics,
   financialMetricsTemplate,
-}: ReturnAggregatedRepairCategoryMetricsInput): FinancialMetric[] {
-  return repairCategories.reduce(
-    (aggregatedYearlyMetricsAcc, repairCategory) => {
-      const { repairCategoryYearlyMetrics } = repairCategory;
+}: ReturnAggregatedRepairMetricsInput): FinancialMetric[] {
+  return repairMetrics.reduce((aggregatedYearlyMetricsAcc, repairMetric) => {
+    const { yearlyMetrics } = repairMetric;
 
-      const newYearlyFinancialMetrics = repairCategoryYearlyMetrics.map(
-        (repairCategoryYearlyMetric, repairCategoryYearlyMetricIdx) => {
-          const { repairCategoryMonthlyMetrics, repairCategoryYear } =
-            repairCategoryYearlyMetric;
+    const newYearlyFinancialMetrics = yearlyMetrics.map(
+      (repairYearlyMetric, repairYearlyMetricIdx) => {
+        const { monthlyMetrics, year } = repairYearlyMetric;
 
-          const newMonthlyFinancialMetrics = repairCategoryMonthlyMetrics.map(
-            (repairCategoryMonthlyMetric, repairCategoryMonthlyMetricIdx) => {
-              const { repairCategoryDailyMetrics } =
-                repairCategoryMonthlyMetric;
+        const newMonthlyFinancialMetrics = monthlyMetrics.map(
+          (repairMonthlyMetric, repairMonthlyMetricIdx) => {
+            const { dailyMetrics } = repairMonthlyMetric;
 
-              const newDailyFinancialMetrics = repairCategoryDailyMetrics.map(
-                (repairCategoryDailyMetric, repairCategoryDailyMetricIdx) => {
-                  const {
-                    repairCategoryDailyRevenue,
-                    repairCategoryDailyUnitsRepaired,
-                    repairCategoryDay,
-                  } = repairCategoryDailyMetric;
+            const newDailyFinancialMetrics = dailyMetrics.map(
+              (repairDailyMetric, repairDailyMetricIdx) => {
+                const { day, orders, revenue } = repairDailyMetric;
 
-                  const existingDailyFinancialMetric =
-                    aggregatedYearlyMetricsAcc[repairCategoryYearlyMetricIdx]
-                      ?.monthlyFinancialMetrics[repairCategoryMonthlyMetricIdx]
-                      ?.dailyFinancialMetrics[repairCategoryDailyMetricIdx] ?? {
-                      ...dailyFinancialMetricsTemplate,
-                      day: repairCategoryDay,
-                    };
+                const existingDailyFinancialMetric = aggregatedYearlyMetricsAcc[
+                  repairYearlyMetricIdx
+                ]?.monthlyMetrics[repairMonthlyMetricIdx]?.dailyMetrics[
+                  repairDailyMetricIdx
+                ] ?? {
+                  ...dailyFinancialMetricsTemplate,
+                  day,
+                };
 
-                  const newDailyFinancialMetric: DailyFinancialMetric = {
-                    ...existingDailyFinancialMetric,
-                    dailyRevenue:
-                      existingDailyFinancialMetric.dailyRevenue +
-                      repairCategoryDailyRevenue,
-                    dailyRepairRevenue:
-                      existingDailyFinancialMetric.dailyRepairRevenue +
-                      repairCategoryDailyRevenue,
-                    dailyRepairOrders:
-                      existingDailyFinancialMetric.dailyRepairOrders +
-                      repairCategoryDailyUnitsRepaired,
-                    dailyOrders:
-                      existingDailyFinancialMetric.dailyOrders +
-                      repairCategoryDailyUnitsRepaired,
-                  };
+                const newDailyFinancialMetric: DailyFinancialMetric = {
+                  ...existingDailyFinancialMetric,
+                  revenue: existingDailyFinancialMetric.revenue + revenue,
+                  repairs: {
+                    revenue:
+                      existingDailyFinancialMetric.repairs.revenue + revenue,
+                    orders:
+                      existingDailyFinancialMetric.repairs.orders + orders,
+                  },
+                  orders: existingDailyFinancialMetric.orders + orders,
+                };
 
-                  return newDailyFinancialMetric;
-                }
-              );
+                return newDailyFinancialMetric;
+              }
+            );
 
-              const {
-                repairCategoryMonth,
-                repairCategoryMonthlyRevenue,
-                repairCategoryMonthlyUnitsRepaired,
-              } = repairCategoryMonthlyMetric;
+            const { month, orders, revenue } = repairMonthlyMetric;
 
-              const existingMonthlyFinancialMetric = aggregatedYearlyMetricsAcc[
-                repairCategoryYearlyMetricIdx
-              ]?.monthlyFinancialMetrics[repairCategoryMonthlyMetricIdx] ?? {
-                ...monthlyFinancialMetricsTemplate,
-                month: repairCategoryMonth,
-                dailyFinancialMetrics: Array.from({
-                  length: newDailyFinancialMetrics.length,
-                }),
-              };
+            const existingMonthlyFinancialMetric = aggregatedYearlyMetricsAcc[
+              repairYearlyMetricIdx
+            ]?.monthlyMetrics[repairMonthlyMetricIdx] ?? {
+              ...monthlyFinancialMetricsTemplate,
+              month,
+            };
 
-              existingMonthlyFinancialMetric.totalMonthlyRevenue +=
-                repairCategoryMonthlyRevenue;
-              existingMonthlyFinancialMetric.monthlyRepairRevenue +=
-                repairCategoryMonthlyRevenue;
-              existingMonthlyFinancialMetric.monthlyRepairOrders +=
-                repairCategoryMonthlyUnitsRepaired;
-              existingMonthlyFinancialMetric.totalMonthlyOrders +=
-                repairCategoryMonthlyUnitsRepaired;
+            existingMonthlyFinancialMetric.revenue += revenue;
+            existingMonthlyFinancialMetric.repairs.revenue += revenue;
+            existingMonthlyFinancialMetric.repairs.orders += orders;
+            existingMonthlyFinancialMetric.orders += orders;
 
-              newDailyFinancialMetrics.forEach(
-                (dailyFinancialMetric, dailyFinancialMetricIdx) => {
-                  existingMonthlyFinancialMetric.dailyFinancialMetrics[
-                    dailyFinancialMetricIdx
-                  ] = dailyFinancialMetric;
-                }
-              );
+            existingMonthlyFinancialMetric.dailyMetrics =
+              newDailyFinancialMetrics;
 
-              return existingMonthlyFinancialMetric;
-            }
-          );
+            return existingMonthlyFinancialMetric;
+          }
+        );
 
-          const {
-            repairCategoryYearlyRevenue,
-            repairCategoryYearlyUnitsRepaired,
-          } = repairCategoryYearlyMetric;
+        const { orders, revenue } = repairYearlyMetric;
 
-          const existingYearlyFinancialMetric = aggregatedYearlyMetricsAcc[
-            repairCategoryYearlyMetricIdx
-          ] ?? {
-            ...financialMetricsTemplate,
-            year: repairCategoryYear,
-            monthlyFinancialMetrics: Array.from({
-              length: newMonthlyFinancialMetrics.length,
-            }),
-          };
+        const existingYearlyFinancialMetric = aggregatedYearlyMetricsAcc[
+          repairYearlyMetricIdx
+        ] ?? {
+          ...financialMetricsTemplate,
+          year,
+        };
 
-          existingYearlyFinancialMetric.yearlyRevenue +=
-            repairCategoryYearlyRevenue;
-          existingYearlyFinancialMetric.yearlyRepairRevenue +=
-            repairCategoryYearlyRevenue;
-          existingYearlyFinancialMetric.yearlyRepairOrders +=
-            repairCategoryYearlyUnitsRepaired;
-          existingYearlyFinancialMetric.yearlyRepairOrders +=
-            repairCategoryYearlyUnitsRepaired;
+        existingYearlyFinancialMetric.revenue += revenue;
+        existingYearlyFinancialMetric.repairs.revenue += revenue;
+        existingYearlyFinancialMetric.repairs.orders += orders;
+        existingYearlyFinancialMetric.orders += orders;
 
-          newMonthlyFinancialMetrics.forEach(
-            (monthlyFinancialMetric, monthlyFinancialMetricIdx) => {
-              existingYearlyFinancialMetric.monthlyFinancialMetrics[
-                monthlyFinancialMetricIdx
-              ] = monthlyFinancialMetric;
-            }
-          );
+        existingYearlyFinancialMetric.monthlyMetrics =
+          newMonthlyFinancialMetrics;
 
-          return existingYearlyFinancialMetric;
-        }
-      );
+        return existingYearlyFinancialMetric;
+      }
+    );
 
-      aggregatedYearlyMetricsAcc = newYearlyFinancialMetrics;
+    aggregatedYearlyMetricsAcc = newYearlyFinancialMetrics;
 
-      return aggregatedYearlyMetricsAcc;
-    },
-    financialMetrics
-  );
+    return aggregatedYearlyMetricsAcc;
+  }, financialMetrics);
 }
 
 function returnRandomProfitMargin({
@@ -1071,17 +972,7 @@ type ReturnFinancialMetricsInput = {
   yearConversionRateSpread: LocationYearSpread;
   yearProfitMarginSpread: LocationYearSpread;
 };
-/**
- * - Calculates daily financial metrics from randomly generated transactions and revenue and aggregates them into monthly and yearly metrics.
- *
- * @param {ReturnFinancialMetricsInput} options - The options for generating financial metrics.
- * @returns {FinancialMetric[]} - An array of financial metrics.
- *
- * @param {FinancialMetric[]} options.financialMetrics - The financial metrics to calculate.
- * @param {StoreLocation} options.storeLocation - The store location for which to calculate financial metrics.
- * @param {LocationYearSpread} options.yearConversionRateSpread - The spread of conversion rates for multiple years and the location.
- * @param {LocationYearSpread} options.yearProfitMarginSpread - The spread of profit margins for multiple years and the location.
- */
+
 function returnFinancialMetrics({
   financialMetrics,
   storeLocation,
@@ -1089,17 +980,17 @@ function returnFinancialMetrics({
   yearProfitMarginSpread,
 }: ReturnFinancialMetricsInput): FinancialMetric[] {
   return financialMetrics.map((financialMetric) => {
-    const { monthlyFinancialMetrics, year } = financialMetric;
+    const { monthlyMetrics, year } = financialMetric;
 
-    const newMonthlyFinancialMetrics = monthlyFinancialMetrics.map(
+    const newMonthlyFinancialMetrics = monthlyMetrics.map(
       (monthlyFinancialMetric) => {
-        const { dailyFinancialMetrics } = monthlyFinancialMetric;
+        const { dailyMetrics } = monthlyFinancialMetric;
 
-        const newDailyFinancialMetrics = dailyFinancialMetrics.map(
+        const newDailyFinancialMetrics = dailyMetrics.map(
           (dailyFinancialMetric) => {
-            const { dailyRevenue, dailyOrders } = dailyFinancialMetric;
+            const { revenue, orders } = dailyFinancialMetric;
 
-            const dailyAverageOrderValue = dailyRevenue / dailyOrders;
+            const dailyAverageOrderValue = revenue / orders;
             const dailyConversionRate = returnRandomConversionRate({
               storeLocation,
               year,
@@ -1110,16 +1001,16 @@ function returnFinancialMetrics({
               year,
               yearProfitMarginSpread,
             });
-            const dailyProfit = dailyRevenue * dailyNetProfitMargin;
-            const dailyExpenses = dailyRevenue - dailyProfit;
+            const dailyProfit = revenue * dailyNetProfitMargin;
+            const dailyExpenses = revenue - dailyProfit;
 
             const newDailyFinancialMetric: DailyFinancialMetric = {
               ...dailyFinancialMetric,
-              dailyAverageOrderValue,
-              dailyConversionRate,
-              dailyExpenses,
-              dailyNetProfitMargin,
-              dailyProfit,
+              averageOrderValue: dailyAverageOrderValue,
+              conversionRate: dailyConversionRate,
+              expenses: dailyExpenses,
+              netProfitMargin: dailyNetProfitMargin,
+              profit: dailyProfit,
             };
 
             return newDailyFinancialMetric;
@@ -1127,7 +1018,7 @@ function returnFinancialMetrics({
         );
 
         const dailyAverageOrderValues = newDailyFinancialMetrics.map(
-          (dailyFinancialMetric) => dailyFinancialMetric.dailyAverageOrderValue
+          (dailyFinancialMetric) => dailyFinancialMetric.averageOrderValue
         );
         const monthlyAverageOrderValue =
           dailyAverageOrderValues.reduce(
@@ -1136,7 +1027,7 @@ function returnFinancialMetrics({
           ) / dailyAverageOrderValues.length;
 
         const dailyConversionRates = newDailyFinancialMetrics.map(
-          (dailyFinancialMetric) => dailyFinancialMetric.dailyConversionRate
+          (dailyFinancialMetric) => dailyFinancialMetric.conversionRate
         );
         const monthlyConversionRate =
           dailyConversionRates.reduce(
@@ -1147,8 +1038,8 @@ function returnFinancialMetrics({
         const [monthlyExpenses, monthlyProfit] =
           newDailyFinancialMetrics.reduce(
             (monthlyFinancialMetricsAcc, dailyMetric) => {
-              monthlyFinancialMetricsAcc[0] += dailyMetric.dailyExpenses;
-              monthlyFinancialMetricsAcc[1] += dailyMetric.dailyProfit;
+              monthlyFinancialMetricsAcc[0] += dailyMetric.expenses;
+              monthlyFinancialMetricsAcc[1] += dailyMetric.profit;
 
               return monthlyFinancialMetricsAcc;
             },
@@ -1158,12 +1049,12 @@ function returnFinancialMetrics({
 
         const newMonthlyFinancialMetric: MonthlyFinancialMetric = {
           ...monthlyFinancialMetric,
-          monthlyAverageOrderValue,
-          monthlyConversionRate,
-          monthlyExpenses,
-          monthlyProfit,
-          monthlyNetProfitMargin,
-          dailyFinancialMetrics: newDailyFinancialMetrics,
+          averageOrderValue: monthlyAverageOrderValue,
+          conversionRate: monthlyConversionRate,
+          expenses: monthlyExpenses,
+          profit: monthlyProfit,
+          netProfitMargin: monthlyNetProfitMargin,
+          dailyMetrics: newDailyFinancialMetrics,
         };
 
         return newMonthlyFinancialMetric;
@@ -1171,8 +1062,7 @@ function returnFinancialMetrics({
     );
 
     const monthlyAverageOrderValues = newMonthlyFinancialMetrics.map(
-      (monthlyFinancialMetric) =>
-        monthlyFinancialMetric.monthlyAverageOrderValue
+      (monthlyFinancialMetric) => monthlyFinancialMetric.averageOrderValue
     );
     const yearlyAverageOrderValue =
       monthlyAverageOrderValues.reduce(
@@ -1181,7 +1071,7 @@ function returnFinancialMetrics({
       ) / monthlyAverageOrderValues.length;
 
     const monthlyConversionRates = newMonthlyFinancialMetrics.map(
-      (monthlyFinancialMetric) => monthlyFinancialMetric.monthlyConversionRate
+      (monthlyFinancialMetric) => monthlyFinancialMetric.conversionRate
     );
     const yearlyConversionRate =
       monthlyConversionRates.reduce(
@@ -1191,8 +1081,8 @@ function returnFinancialMetrics({
 
     const [yearlyExpenses, yearlyProfit] = newMonthlyFinancialMetrics.reduce(
       (yearlyFinancialMetricsAcc, monthlyFinancialMetric) => {
-        yearlyFinancialMetricsAcc[0] += monthlyFinancialMetric.monthlyExpenses;
-        yearlyFinancialMetricsAcc[1] += monthlyFinancialMetric.monthlyProfit;
+        yearlyFinancialMetricsAcc[0] += monthlyFinancialMetric.expenses;
+        yearlyFinancialMetricsAcc[1] += monthlyFinancialMetric.profit;
 
         return yearlyFinancialMetricsAcc;
       },
@@ -1202,12 +1092,12 @@ function returnFinancialMetrics({
 
     const newFinancialMetric: FinancialMetric = {
       ...financialMetric,
-      yearlyAverageOrderValue,
-      yearlyConversionRate,
-      yearlyExpenses,
-      yearlyProfit,
-      yearlyNetProfitMargin,
-      monthlyFinancialMetrics: newMonthlyFinancialMetrics,
+      averageOrderValue: yearlyAverageOrderValue,
+      conversionRate: yearlyConversionRate,
+      expenses: yearlyExpenses,
+      profit: yearlyProfit,
+      netProfitMargin: yearlyNetProfitMargin,
+      monthlyMetrics: newMonthlyFinancialMetrics,
     };
 
     return newFinancialMetric;
@@ -1304,36 +1194,6 @@ function returnCustomerMetrics({
           const [month, daysRange] = monthTuple;
 
           const dailyCustomerMetrics = daysRange.map((date: string) => {
-            /**
-             * id: string;
-               day: string;
-               customers: {
-                 id: string;
-                 total: number;
-                 new: {
-                   id: string;
-                   total: number;
-                   sales: {
-                     id: string;
-                     total: number;
-                     online: number;
-                     inStore: number;
-                   };
-                   repair: number;
-                 };
-                 returning: {
-                   id: string;
-                   total: number;
-                   sales: {
-                     id: string;
-                     total: number;
-                     online: number;
-                     inStore: number;
-                   };
-                   repair: number;
-                 };
-               };
-             */
             const dailyCustomersTotal = returnRandomCustomers({
               storeLocation,
               year,
@@ -1391,16 +1251,12 @@ function returnCustomerMetrics({
               dailyReturningSalesCustomers - dailyReturningSalesOnlineCustomers;
 
             const dailyCustomerMetric: CustomerDailyMetric = {
-              id: uuidv4(),
               day: date,
               customers: {
-                id: uuidv4(),
                 total: dailyCustomersTotal,
                 new: {
-                  id: uuidv4(),
                   repair: dailyNewRepairCustomers,
                   sales: {
-                    id: uuidv4(),
                     total: dailyNewSalesCustomers,
                     inStore: dailyNewSalesInStoreCustomers,
                     online: dailyNewSalesOnlineCustomers,
@@ -1408,10 +1264,8 @@ function returnCustomerMetrics({
                   total: dailyNewCustomers,
                 },
                 returning: {
-                  id: uuidv4(),
                   repair: dailyReturningRepairCustomers,
                   sales: {
-                    id: uuidv4(),
                     inStore: dailyReturningSalesInStoreCustomers,
                     online: dailyReturningSalesOnlineCustomers,
                     total: dailyReturningSalesCustomers,
@@ -1425,15 +1279,11 @@ function returnCustomerMetrics({
           });
 
           const monthlyCustomerMetricTemplate: CustomerMonthlyMetric = {
-            id: uuidv4(),
             month,
             customers: {
-              id: uuidv4(),
               new: {
-                id: uuidv4(),
                 repair: 0,
                 sales: {
-                  id: uuidv4(),
                   inStore: 0,
                   online: 0,
                   total: 0,
@@ -1441,10 +1291,8 @@ function returnCustomerMetrics({
                 total: 0,
               },
               returning: {
-                id: uuidv4(),
                 repair: 0,
                 sales: {
-                  id: uuidv4(),
                   inStore: 0,
                   online: 0,
                   total: 0,
@@ -1515,16 +1363,12 @@ function returnCustomerMetrics({
       );
 
       const yearlyCustomerMetricTemplate: CustomerYearlyMetric = {
-        id: uuidv4(),
         year,
         customers: {
-          id: uuidv4(),
           total: 0,
           new: {
-            id: uuidv4(),
             repair: 0,
             sales: {
-              id: uuidv4(),
               inStore: 0,
               online: 0,
               total: 0,
@@ -1532,10 +1376,8 @@ function returnCustomerMetrics({
             total: 0,
           },
           returning: {
-            id: uuidv4(),
             repair: 0,
             sales: {
-              id: uuidv4(),
               inStore: 0,
               online: 0,
               total: 0,
@@ -1622,6 +1464,26 @@ function returnCustomerMetrics({
   return customerMetrics;
 }
 
+function returnAllStoreLocationsAggregatedMetrics({
+  storeLocationsBusinessMetrics,
+}: {
+  storeLocationsBusinessMetrics: BusinessMetric[];
+}) {
+  const businessMetricsTemplate: BusinessMetric = {
+    storeLocation: 'All Locations',
+    customerMetrics: {
+      totalCustomers: 0,
+      lifetimeValue: 0,
+      yearlyMetrics: [],
+    },
+    financialMetrics: [],
+    productCategories: [],
+    repairMetrics: [],
+  };
+
+  return [];
+}
+
 type CreateRandomBusinessMetricsInput = {
   daysPerMonth: number[];
   months: Month[];
@@ -1650,61 +1512,98 @@ function createRandomBusinessMetrics({
   yearTransactionsSpread,
 }: CreateRandomBusinessMetricsInput): BusinessMetric[] {
   const FINANCIAL_METRICS_TEMPLATE: FinancialMetric = {
-    year: '2022',
-    yearlyAverageOrderValue: 0,
-    yearlyConversionRate: 0,
-    yearlyExpenses: 0,
-    yearlyInStoreSalesRevenue: 0,
-    yearlyNetProfitMargin: 0,
-    yearlyOnlineSalesRevenue: 0,
-    yearlyProfit: 0,
-    yearlyRepairOrders: 0,
-    yearlyRepairRevenue: 0,
-    yearlyRevenue: 0,
-    yearlySalesOrders: 0,
-    yearlySalesRevenue: 0,
+    year: '2013',
+    averageOrderValue: 0,
+    conversionRate: 0,
+    expenses: 0,
+    profit: 0,
+    netProfitMargin: 0,
+    orders: 0,
+    revenue: 0,
 
-    monthlyFinancialMetrics: [],
+    repairs: {
+      orders: 0,
+      revenue: 0,
+    },
+
+    sales: {
+      orders: {
+        total: 0,
+        online: 0,
+        inStore: 0,
+      },
+      revenue: {
+        total: 0,
+        online: 0,
+        inStore: 0,
+      },
+    },
+
+    monthlyMetrics: [],
   };
 
   const MONTHLY_METRICS_TEMPLATE: MonthlyFinancialMetric = {
     month: 'January',
-    totalMonthlyRevenue: 0,
-    monthlySalesRevenue: 0,
-    monthlyRepairRevenue: 0,
-    monthlyExpenses: 0,
-    monthlyAverageOrderValue: 0,
-    monthlyConversionRate: 0,
-    monthlyInStoreSalesRevenue: 0,
-    monthlyNetProfitMargin: 0,
-    monthlyOnlineSalesRevenue: 0,
-    monthlyProfit: 0,
-    monthlyRepairOrders: 0,
-    monthlySalesOrders: 0,
-    totalMonthlyOrders: 0,
+    averageOrderValue: 0,
+    conversionRate: 0,
+    expenses: 0,
+    profit: 0,
+    netProfitMargin: 0,
+    orders: 0,
+    revenue: 0,
 
-    dailyFinancialMetrics: [],
+    repairs: {
+      orders: 0,
+      revenue: 0,
+    },
+
+    sales: {
+      orders: {
+        total: 0,
+        online: 0,
+        inStore: 0,
+      },
+      revenue: {
+        total: 0,
+        online: 0,
+        inStore: 0,
+      },
+    },
+
+    dailyMetrics: [],
   };
 
   const DAILY_METRICS_TEMPLATE: DailyFinancialMetric = {
-    dailyRevenue: 0,
-    dailyExpenses: 0,
-    dailySalesRevenue: 0,
-    dailyInStoreSalesRevenue: 0,
-    dailyOnlineSalesRevenue: 0,
-    dailyRepairRevenue: 0,
-    dailyProfit: 0,
-    dailyNetProfitMargin: 0,
-    dailyAverageOrderValue: 0,
-    dailyConversionRate: 0,
-    dailyOrders: 0,
-    dailyRepairOrders: 0,
-    dailySalesOrders: 0,
-    day: '',
+    day: '2021-01-01',
+    averageOrderValue: 0,
+    conversionRate: 0,
+    expenses: 0,
+    profit: 0,
+    netProfitMargin: 0,
+    orders: 0,
+    revenue: 0,
+
+    repairs: {
+      orders: 0,
+      revenue: 0,
+    },
+
+    sales: {
+      orders: {
+        total: 0,
+        online: 0,
+        inStore: 0,
+      },
+      revenue: {
+        total: 0,
+        online: 0,
+        inStore: 0,
+      },
+    },
   };
 
-  return storeLocations.map((storeLocation) => {
-    const storeLocationSalesData: BusinessMetric = {
+  const storeLocationsBusinessMetrics = storeLocations.map((storeLocation) => {
+    const storeLocationBusinessMetrics: BusinessMetric = {
       storeLocation,
       customerMetrics: {
         totalCustomers: 0,
@@ -1713,7 +1612,7 @@ function createRandomBusinessMetrics({
       },
       financialMetrics: [],
       productCategories: [],
-      repairCategories: [],
+      repairMetrics: [],
     };
 
     const daysInMonthsInYears = returnDaysInMonthsInYears({
@@ -1736,43 +1635,43 @@ function createRandomBusinessMetrics({
       storeLocation,
       yearTransactionsSpread,
     });
-    storeLocationSalesData.productCategories = createdProductCategories;
+    storeLocationBusinessMetrics.productCategories = createdProductCategories;
 
-    const createdRepairCategories = returnRepairCategories({
+    const createdRepairCategories = returnRepairMetrics({
       daysInMonthsInYears,
       repairCategories,
       storeLocation,
       yearTransactionsSpread,
     });
-    storeLocationSalesData.repairCategories = createdRepairCategories;
+    storeLocationBusinessMetrics.repairMetrics = createdRepairCategories;
 
-    const aggregatedProductCategoryMetrics =
-      returnAggregatedProductCategoryMetrics({
-        productCategories: createdProductCategories,
-        financialMetrics: storeLocationSalesData.financialMetrics,
-        dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
-        financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
-        monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
-      });
-    storeLocationSalesData.financialMetrics = aggregatedProductCategoryMetrics;
+    const aggregatedProductCategoryMetrics = returnAggregatedProductMetrics({
+      productCategories: createdProductCategories,
+      financialMetrics: storeLocationBusinessMetrics.financialMetrics,
+      dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
+      financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
+      monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
+    });
+    storeLocationBusinessMetrics.financialMetrics =
+      aggregatedProductCategoryMetrics;
 
-    const aggregatedRepairCategoryMetrics =
-      returnAggregatedRepairCategoryMetrics({
-        repairCategories: createdRepairCategories,
-        financialMetrics: storeLocationSalesData.financialMetrics,
-        dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
-        financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
-        monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
-      });
-    storeLocationSalesData.financialMetrics = aggregatedRepairCategoryMetrics;
+    const aggregatedRepairCategoryMetrics = returnAggregatedRepairMetrics({
+      repairMetrics: createdRepairCategories,
+      financialMetrics: storeLocationBusinessMetrics.financialMetrics,
+      dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
+      financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
+      monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
+    });
+    storeLocationBusinessMetrics.financialMetrics =
+      aggregatedRepairCategoryMetrics;
 
     const createdFinancialMetrics = returnFinancialMetrics({
-      financialMetrics: storeLocationSalesData.financialMetrics,
+      financialMetrics: storeLocationBusinessMetrics.financialMetrics,
       storeLocation,
       yearConversionRateSpread,
       yearProfitMarginSpread,
     });
-    storeLocationSalesData.financialMetrics = createdFinancialMetrics;
+    storeLocationBusinessMetrics.financialMetrics = createdFinancialMetrics;
 
     const createdCustomerMetrics = returnCustomerMetrics({
       daysInMonthsInYears,
@@ -1781,10 +1680,12 @@ function createRandomBusinessMetrics({
       yearCustomersSpread,
       yearNewCustomersSpread,
     });
-    storeLocationSalesData.customerMetrics = createdCustomerMetrics;
+    storeLocationBusinessMetrics.customerMetrics = createdCustomerMetrics;
 
-    return storeLocationSalesData;
+    return storeLocationBusinessMetrics;
   });
+
+  return storeLocationsBusinessMetrics;
 }
 
 export { createRandomBusinessMetrics };
