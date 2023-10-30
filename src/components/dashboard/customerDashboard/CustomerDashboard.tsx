@@ -16,9 +16,9 @@ import {
 } from './state';
 import { DashboardCalendarView } from './types';
 import { logState, returnThemeColors } from '../../../utils';
-import CustomerDashboardDaily from './CustomerDashboardDaily';
-import CustomerDashboardMonthly from './CustomerDashboardMonthly';
-import CustomerDashboardYearly from './CustomerDashboardYearly';
+import CustomerDashboardDaily from './customerDashboardDaily/CustomerDashboardDaily';
+import CustomerDashboardMonthly from './customerDashboardMonthly/CustomerDashboardMonthly';
+import CustomerDashboardYearly from './customerDashboardYearly/CustomerDashboardYearly';
 import {
   returnCustomerChartsData,
   returnSelectedDateCustomerMetrics,
@@ -275,19 +275,27 @@ function CustomerDashboard({
       />
     ) : selectedCalendarView === 'Monthly' ? (
       <CustomerDashboardMonthly
+        borderColor={borderColor}
         businessMetrics={businessMetrics}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split('-')[1]}
         monthlyCards={customerCardsInfo.monthlyCards}
         monthlyCharts={customerChartsData.monthlyCharts}
         padding={padding}
         storeLocation={selectedStoreLocationView}
         width={width}
+        year={selectedYear}
       />
     ) : (
       <CustomerDashboardYearly
+        borderColor={borderColor}
         businessMetrics={businessMetrics}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split('-')[1]}
         padding={padding}
         storeLocation={selectedStoreLocationView}
         width={width}
+        year={selectedYear}
         yearlyCards={customerCardsInfo.yearlyCards}
         yearlyCharts={customerChartsData.yearlyCharts}
       />

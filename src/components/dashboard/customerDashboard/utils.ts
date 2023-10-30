@@ -193,25 +193,21 @@ type ReturnCustomerChartsDataOutput = {
   yearlyCharts: {
     overview: {
       barChartMap: Map<CustomerOverviewMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerOverviewMapKey, CalendarChartData[]>;
       lineChartMap: Map<CustomerOverviewMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     new: {
       barChartMap: Map<CustomerNewMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerNewMapKey, CalendarChartData[]>;
       lineChartMap: Map<CustomerNewMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     returning: {
       barChartMap: Map<CustomerReturningMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerReturningMapKey, CalendarChartData[]>;
       lineChartMap: Map<CustomerReturningMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     churnRetention: {
       barChartMap: Map<CustomerChurnRetentionMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerChurnRetentionMapKey, CalendarChartData[]>;
       lineChartMap: Map<CustomerChurnRetentionMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
@@ -241,7 +237,9 @@ function returnCustomerChartsData({
   const { monthCustomerMetrics } = selectedCustomerMetrics;
   const selectedMonth =
     monthCustomerMetrics?.selectedMonthMetrics?.month ?? 'January';
-  const monthNumber = months.indexOf(selectedMonth) + 1;
+  const monthNumber = (months.indexOf(selectedMonth) + 1)
+    .toString()
+    .padStart(2, '0');
 
   // selected day's metrics
   const { dayCustomerMetrics } = selectedCustomerMetrics;
@@ -829,7 +827,7 @@ function returnCustomerChartsData({
     ) ?? initialMonthlyOverviewBarChartsMap;
 
   // monthly -> overview -> calendar chart map
-  const initialMonthlyOverviewCalendarChartsMap = new Map<
+  const initialMonthlyOverviewCalendarChartData = new Map<
     CustomerOverviewMapKey,
     CalendarChartData[]
   >([
@@ -840,39 +838,42 @@ function returnCustomerChartsData({
 
   const monthlyOverviewCalendarChartMap =
     yearCustomerMetrics?.selectedYearMetrics?.monthlyMetrics.reduce(
-      (monthlyOverviewCalendarChartsAcc, monthlyMetric) => {
-        const { dailyMetrics } = monthlyMetric;
+      (monthlyOverviewCalendarChartAcc, monthlyMetric) => {
+        const { month, dailyMetrics } = monthlyMetric;
+        const monthNumberStr = (months.indexOf(month) + 1)
+          .toString()
+          .padStart(2, '0');
 
         dailyMetrics.forEach((dailyMetric) => {
           const { day, customers } = dailyMetric;
 
           const monthlyOverviewTotal = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.total,
           };
-          monthlyOverviewCalendarChartsAcc
+          monthlyOverviewCalendarChartAcc
             .get('Overview')
             ?.push(monthlyOverviewTotal);
 
           const monthlyOverviewNew = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.new.total,
           };
-          monthlyOverviewCalendarChartsAcc.get('New')?.push(monthlyOverviewNew);
+          monthlyOverviewCalendarChartAcc.get('New')?.push(monthlyOverviewNew);
 
           const monthlyOverviewReturning = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.returning.total,
           };
-          monthlyOverviewCalendarChartsAcc
+          monthlyOverviewCalendarChartAcc
             .get('Returning')
             ?.push(monthlyOverviewReturning);
         });
 
-        return monthlyOverviewCalendarChartsAcc;
+        return monthlyOverviewCalendarChartAcc;
       },
-      initialMonthlyOverviewCalendarChartsMap
-    ) ?? initialMonthlyOverviewCalendarChartsMap;
+      initialMonthlyOverviewCalendarChartData
+    ) ?? initialMonthlyOverviewCalendarChartData;
 
   // monthly -> overview -> line chart map
   const initialMonthlyOverviewLineChartData = new Map<
@@ -1006,19 +1007,22 @@ function returnCustomerChartsData({
   const monthlyNewCalendarChartMap =
     yearCustomerMetrics?.selectedYearMetrics?.monthlyMetrics.reduce(
       (monthlyNewCalendarChartAcc, monthlyMetric) => {
-        const { dailyMetrics } = monthlyMetric;
+        const { dailyMetrics, month } = monthlyMetric;
+        const monthNumberStr = (months.indexOf(month) + 1)
+          .toString()
+          .padStart(2, '0');
 
         dailyMetrics.forEach((dailyMetric) => {
           const { day, customers } = dailyMetric;
 
           const monthlyNewOnline = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.new.sales.online,
           };
           monthlyNewCalendarChartAcc.get('New Online')?.push(monthlyNewOnline);
 
           const monthlyNewInStore = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.new.sales.inStore,
           };
           monthlyNewCalendarChartAcc
@@ -1026,13 +1030,13 @@ function returnCustomerChartsData({
             ?.push(monthlyNewInStore);
 
           const monthlyNewRepair = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.new.repair,
           };
           monthlyNewCalendarChartAcc.get('New Repair')?.push(monthlyNewRepair);
 
           const monthlyNewTotal = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.new.total,
           };
           monthlyNewCalendarChartAcc.get('Overview')?.push(monthlyNewTotal);
@@ -1205,13 +1209,16 @@ function returnCustomerChartsData({
   const monthlyReturningCalendarChartMap =
     yearCustomerMetrics?.selectedYearMetrics?.monthlyMetrics.reduce(
       (monthlyReturningCalendarChartAcc, monthlyMetric) => {
-        const { dailyMetrics } = monthlyMetric;
+        const { dailyMetrics, month } = monthlyMetric;
+        const monthNumberStr = (months.indexOf(month) + 1)
+          .toString()
+          .padStart(2, '0');
 
         dailyMetrics.forEach((dailyMetric) => {
           const { day, customers } = dailyMetric;
 
           const monthlyReturningOnline = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.returning.sales.online,
           };
           monthlyReturningCalendarChartAcc
@@ -1219,7 +1226,7 @@ function returnCustomerChartsData({
             ?.push(monthlyReturningOnline);
 
           const monthlyReturningInStore = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.returning.sales.inStore,
           };
           monthlyReturningCalendarChartAcc
@@ -1227,7 +1234,7 @@ function returnCustomerChartsData({
             ?.push(monthlyReturningInStore);
 
           const monthlyReturningRepair = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.returning.repair,
           };
           monthlyReturningCalendarChartAcc
@@ -1235,7 +1242,7 @@ function returnCustomerChartsData({
             ?.push(monthlyReturningRepair);
 
           const monthlyReturningTotal = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthNumberStr}-${day}`,
             value: customers.returning.total,
           };
           monthlyReturningCalendarChartAcc
@@ -1505,52 +1512,6 @@ function returnCustomerChartsData({
       initialYearlyOverviewBarChartData
     ) ?? initialYearlyOverviewBarChartData;
 
-  // yearly -> overview -> calendar chart map
-  const initialYearlyOverviewCalendarChartData = new Map<
-    CustomerOverviewMapKey,
-    CalendarChartData[]
-  >([
-    ['Overview', []],
-    ['New', []],
-    ['Returning', []],
-  ]);
-
-  const yearlyOverviewCalendarChartMap =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.reduce(
-      (yearlyOverviewCalendarChartAcc, yearlyMetric) => {
-        const { monthlyMetrics } = yearlyMetric;
-
-        monthlyMetrics.forEach((monthlyMetric) => {
-          const { month, customers } = monthlyMetric;
-
-          const yearlyOverviewTotal = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.total,
-          };
-          yearlyOverviewCalendarChartAcc
-            .get('Overview')
-            ?.push(yearlyOverviewTotal);
-
-          const yearlyOverviewNew = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.new.total,
-          };
-          yearlyOverviewCalendarChartAcc.get('New')?.push(yearlyOverviewNew);
-
-          const yearlyOverviewReturning = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.returning.total,
-          };
-          yearlyOverviewCalendarChartAcc
-            .get('Returning')
-            ?.push(yearlyOverviewReturning);
-        });
-
-        return yearlyOverviewCalendarChartAcc;
-      },
-      initialYearlyOverviewCalendarChartData
-    ) ?? initialYearlyOverviewCalendarChartData;
-
   // yearly -> overview -> line chart map
   const initialYearlyOverviewLineChartData = new Map<
     CustomerOverviewMapKey,
@@ -1685,31 +1646,37 @@ function returnCustomerChartsData({
         const { monthlyMetrics } = yearlyMetric;
 
         monthlyMetrics.forEach((monthlyMetric) => {
-          const { month, customers } = monthlyMetric;
+          const { dailyMetrics } = monthlyMetric;
 
-          const yearlyNewOnline = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.new.sales.online,
-          };
-          yearlyNewCalendarChartAcc.get('New Online')?.push(yearlyNewOnline);
+          dailyMetrics.forEach((dailyMetric) => {
+            const { day, customers } = dailyMetric;
 
-          const yearlyNewInStore = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.new.sales.inStore,
-          };
-          yearlyNewCalendarChartAcc.get('New In-Store')?.push(yearlyNewInStore);
+            const yearlyNewOnline = {
+              day: `${selectedYear}-${monthNumber}-${day}`,
+              value: customers.new.sales.online,
+            };
+            yearlyNewCalendarChartAcc.get('New Online')?.push(yearlyNewOnline);
 
-          const yearlyNewRepair = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.new.repair,
-          };
-          yearlyNewCalendarChartAcc.get('New Repair')?.push(yearlyNewRepair);
+            const yearlyNewInStore = {
+              day: `${selectedYear}-${monthNumber}-${day}`,
+              value: customers.new.sales.inStore,
+            };
+            yearlyNewCalendarChartAcc
+              .get('New In-Store')
+              ?.push(yearlyNewInStore);
 
-          const yearlyNewTotal = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.new.total,
-          };
-          yearlyNewCalendarChartAcc.get('Overview')?.push(yearlyNewTotal);
+            const yearlyNewRepair = {
+              day: `${selectedYear}-${monthNumber}-${day}`,
+              value: customers.new.repair,
+            };
+            yearlyNewCalendarChartAcc.get('New Repair')?.push(yearlyNewRepair);
+
+            const yearlyNewTotal = {
+              day: `${selectedYear}-${monthNumber}-${day}`,
+              value: customers.new.total,
+            };
+            yearlyNewCalendarChartAcc.get('Overview')?.push(yearlyNewTotal);
+          });
         });
 
         return yearlyNewCalendarChartAcc;
@@ -1880,39 +1847,43 @@ function returnCustomerChartsData({
         const { monthlyMetrics } = yearlyMetric;
 
         monthlyMetrics.forEach((monthlyMetric) => {
-          const { month, customers } = monthlyMetric;
+          const { dailyMetrics } = monthlyMetric;
 
-          const yearlyReturningOnline = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.returning.sales.online,
-          };
-          yearlyReturningCalendarChartAcc
-            .get('Returning Online')
-            ?.push(yearlyReturningOnline);
+          dailyMetrics.forEach((dailyMetric) => {
+            const { day, customers } = dailyMetric;
 
-          const yearlyReturningInStore = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.returning.sales.inStore,
-          };
-          yearlyReturningCalendarChartAcc
-            .get('Returning In-Store')
-            ?.push(yearlyReturningInStore);
+            const yearlyReturningOnline = {
+              day: `${selectedYear}-${monthNumber}-${day}`,
+              value: customers.returning.sales.online,
+            };
+            yearlyReturningCalendarChartAcc
+              .get('Returning Online')
+              ?.push(yearlyReturningOnline);
 
-          const yearlyReturningRepair = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.returning.repair,
-          };
-          yearlyReturningCalendarChartAcc
-            .get('Returning Repair')
-            ?.push(yearlyReturningRepair);
+            const yearlyReturningInStore = {
+              day: `${selectedYear}-${monthNumber}-${day}`,
+              value: customers.returning.sales.inStore,
+            };
+            yearlyReturningCalendarChartAcc
+              .get('Returning In-Store')
+              ?.push(yearlyReturningInStore);
 
-          const yearlyReturningTotal = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: customers.returning.total,
-          };
-          yearlyReturningCalendarChartAcc
-            .get('Overview')
-            ?.push(yearlyReturningTotal);
+            const yearlyReturningRepair = {
+              day: `${selectedYear}-${monthNumber}-${day}`,
+              value: customers.returning.repair,
+            };
+            yearlyReturningCalendarChartAcc
+              .get('Returning Repair')
+              ?.push(yearlyReturningRepair);
+
+            const yearlyReturningTotal = {
+              day: `${selectedYear}-${monthNumber}-${day}`,
+              value: customers.returning.total,
+            };
+            yearlyReturningCalendarChartAcc
+              .get('Overview')
+              ?.push(yearlyReturningTotal);
+          });
         });
 
         return yearlyReturningCalendarChartAcc;
@@ -2059,54 +2030,6 @@ function returnCustomerChartsData({
       initialYearlyChurnRetentionBarChartData
     ) ?? initialYearlyChurnRetentionBarChartData;
 
-  // yearly -> churn rate and retention rate -> calendar chart map
-  const initialYearlyChurnRetentionCalendarChartData = new Map<
-    CustomerChurnRetentionMapKey,
-    CalendarChartData[]
-  >([
-    ['Overview', []],
-    ['Churn Rate', []],
-    ['Retention Rate', []],
-  ]);
-
-  const yearlyChurnRetentionCalendarChartMap =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.reduce(
-      (yearlyChurnRetentionCalendarChartAcc, yearlyMetric) => {
-        const { monthlyMetrics } = yearlyMetric;
-
-        monthlyMetrics.forEach((monthlyMetric) => {
-          const { month, customers } = monthlyMetric;
-
-          const yearlyChurnRate = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: Number(customers.churnRate.toPrecision(3)),
-          };
-          yearlyChurnRetentionCalendarChartAcc
-            .get('Churn Rate')
-            ?.push(yearlyChurnRate);
-
-          const yearlyRetentionRate = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: Number(customers.retentionRate.toPrecision(3)),
-          };
-          yearlyChurnRetentionCalendarChartAcc
-            .get('Retention Rate')
-            ?.push(yearlyRetentionRate);
-
-          const yearlyChurnRetentionTotal = {
-            day: `${selectedYear}-${monthNumber}-${month}`,
-            value: Number(customers.churnRate.toPrecision(3)),
-          };
-          yearlyChurnRetentionCalendarChartAcc
-            .get('Overview')
-            ?.push(yearlyChurnRetentionTotal);
-        });
-
-        return yearlyChurnRetentionCalendarChartAcc;
-      },
-      initialYearlyChurnRetentionCalendarChartData
-    ) ?? initialYearlyChurnRetentionCalendarChartData;
-
   // yearly -> churn rate and retention rate -> line chart map
   const initialYearlyChurnRetentionLineChartData = new Map<
     CustomerChurnRetentionMapKey,
@@ -2233,25 +2156,21 @@ function returnCustomerChartsData({
         barChartMap: yearlyOverviewBarChartMap,
         lineChartMap: yearlyOverviewLineChartMap,
         pieChartData: yearlyOverviewPieChartData,
-        calendarChartMap: yearlyOverviewCalendarChartMap,
       },
       new: {
         barChartMap: yearlyNewBarChartMap,
         lineChartMap: yearlyNewLineChartMap,
         pieChartData: yearlyNewPieChartData,
-        calendarChartMap: yearlyNewCalendarChartMap,
       },
       returning: {
         barChartMap: yearlyReturningBarChartMap,
         lineChartMap: yearlyReturningLineChartMap,
         pieChartData: yearlyReturningPieChartData,
-        calendarChartMap: yearlyReturningCalendarChartMap,
       },
       churnRetention: {
         barChartMap: yearlyChurnRetentionBarChartMap,
         lineChartMap: yearlyChurnRetentionLineChartMap,
         pieChartData: yearlyChurnRetentionPieChartData,
-        calendarChartMap: yearlyChurnRetentionCalendarChartMap,
       },
     },
   };

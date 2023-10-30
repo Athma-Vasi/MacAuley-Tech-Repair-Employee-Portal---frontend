@@ -32,7 +32,7 @@ function returnDashboardCard({
   );
 
   const cardBody = (
-    <Group w="100%">
+    <Group w="100%" position="apart">
       <Text size="xl" weight={600}>
         {value ? (value < 1 ? value?.toFixed(2) : value) : null}
       </Text>
@@ -71,23 +71,23 @@ type ReturnDashboardCustomerCardInfoInput = {
 
 type ReturnDashboardCustomerCardInfoOutput = {
   dailyCards: {
-    dailyOverview: DashboardCardInfo[];
-    dailyNew: DashboardCardInfo[];
-    dailyReturning: DashboardCardInfo[];
+    overview: DashboardCardInfo[];
+    new: DashboardCardInfo[];
+    returning: DashboardCardInfo[];
   };
   monthlyCards: {
-    monthlyOverview: DashboardCardInfo[];
-    monthlyNew: DashboardCardInfo[];
-    monthlyReturning: DashboardCardInfo[];
-    monthlyChurnRate: DashboardCardInfo[];
-    monthlyRetentionRate: DashboardCardInfo[];
+    overview: DashboardCardInfo[];
+    new: DashboardCardInfo[];
+    returning: DashboardCardInfo[];
+    churnRate: DashboardCardInfo[];
+    retentionRate: DashboardCardInfo[];
   };
   yearlyCards: {
-    yearlyOverview: DashboardCardInfo[];
-    yearlyNew: DashboardCardInfo[];
-    yearlyReturning: DashboardCardInfo[];
-    yearlyChurnRate: DashboardCardInfo[];
-    yearlyRetentionRate: DashboardCardInfo[];
+    overview: DashboardCardInfo[];
+    new: DashboardCardInfo[];
+    returning: DashboardCardInfo[];
+    churnRate: DashboardCardInfo[];
+    retentionRate: DashboardCardInfo[];
   };
 };
 
@@ -1099,18 +1099,18 @@ function returnDashboardCustomerCardInfo({
 
   return {
     dailyCards: {
-      dailyOverview: [
+      overview: [
         dayTotalCustomersCardInfo,
         dayTotalNewCustomersCardInfo,
         dayTotalReturningCustomersCardInfo,
       ],
-      dailyNew: [
+      new: [
         dayTotalNewCustomersCardInfo,
         dayTotalNewSalesOnlineCustomersCardInfo,
         dayTotalNewSalesInStoreCustomersCardInfo,
         dayTotalNewRepairCustomersCardInfo,
       ],
-      dailyReturning: [
+      returning: [
         dayTotalReturningCustomersCardInfo,
         dayTotalReturningSalesOnlineCustomersCardInfo,
         dayTotalReturningSalesInStoreCustomersCardInfo,
@@ -1118,46 +1118,46 @@ function returnDashboardCustomerCardInfo({
       ],
     },
     monthlyCards: {
-      monthlyOverview: [
+      overview: [
         monthTotalCustomersCardInfo,
         monthTotalNewCustomersCardInfo,
         monthTotalReturningCustomersCardInfo,
       ],
-      monthlyNew: [
+      new: [
         monthTotalNewCustomersCardInfo,
         monthTotalNewSalesOnlineCustomersCardInfo,
         monthTotalNewSalesInStoreCustomersCardInfo,
         monthTotalNewRepairCustomersCardInfo,
       ],
-      monthlyReturning: [
+      returning: [
         monthTotalReturningCustomersCardInfo,
         monthTotalReturningSalesOnlineCustomersCardInfo,
         monthTotalReturningSalesInStoreCustomersCardInfo,
         monthTotalReturningRepairCustomersCardInfo,
       ],
-      monthlyChurnRate: [monthChurnRateCardInfo],
-      monthlyRetentionRate: [monthRetentionRateCardInfo],
+      churnRate: [monthChurnRateCardInfo],
+      retentionRate: [monthRetentionRateCardInfo],
     },
     yearlyCards: {
-      yearlyOverview: [
+      overview: [
         yearTotalCustomersCardInfo,
         yearTotalNewCustomersCardInfo,
         yearTotalReturningCustomersCardInfo,
       ],
-      yearlyNew: [
+      new: [
         yearTotalNewCustomersCardInfo,
         yearTotalNewSalesOnlineCustomersCardInfo,
         yearTotalNewSalesInStoreCustomersCardInfo,
         yearTotalNewRepairCustomersCardInfo,
       ],
-      yearlyReturning: [
+      returning: [
         yearTotalReturningCustomersCardInfo,
         yearTotalReturningSalesOnlineCustomersCardInfo,
         yearTotalReturningSalesInStoreCustomersCardInfo,
         yearTotalReturningRepairCustomersCardInfo,
       ],
-      yearlyChurnRate: [yearChurnRateCardInfo],
-      yearlyRetentionRate: [yearRetentionRateCardInfo],
+      churnRate: [yearChurnRateCardInfo],
+      retentionRate: [yearRetentionRateCardInfo],
     },
   };
 }

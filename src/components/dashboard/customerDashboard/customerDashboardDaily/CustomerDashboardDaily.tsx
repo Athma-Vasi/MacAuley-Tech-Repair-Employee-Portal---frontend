@@ -6,41 +6,54 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import { useState } from 'react';
+import { ChangeEvent, useReducer, useState } from 'react';
 
-import { StoreLocation } from '../../../types';
-import CarouselBuilder from '../../carouselBuilder/CarouselBuilder';
+import { StoreLocation } from '../../../../types';
+import CarouselBuilder from '../../../carouselBuilder/CarouselBuilder';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from '../../charts';
+} from '../../../charts';
 import {
   returnDashboardCard,
   ReturnDashboardCustomerCardInfoOutput,
-} from '../jsxHelpers';
+} from '../../jsxHelpers';
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   Month,
   Year,
-} from '../types';
-import { YAxisCustomerChartSelection } from './types';
+} from '../../types';
+import { YAxisCustomerChartSelection } from '../types';
 import {
+  CustomerNewMapKey,
+  CustomerOverviewMapKey,
+  CustomerReturningMapKey,
   ReturnCustomerChartsDataOutput,
   SelectedDateCustomerMetrics,
-} from './utils';
-import { AccessibleSelectInputCreatorInfo } from '../../wrappers';
+} from '../utils';
+import { AccessibleSelectInputCreatorInfo } from '../../../wrappers';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../jsxCreators';
-import { OVERVIEW_Y_AXIS_DATA } from './constants';
+} from '../../../../jsxCreators';
+import {
+  NEW_Y_AXIS_DATA,
+  OVERVIEW_Y_AXIS_DATA,
+  RETURNING_Y_AXIS_DATA,
+} from '../constants';
 import { TbArrowUpRight } from 'react-icons/tb';
-import DashboardSection from '../DashboardSection';
+import DashboardSection from '../../DashboardSection';
 import { BiExpandAlt } from 'react-icons/bi';
 import { LuExpand } from 'react-icons/lu';
+import {
+  customerDashboardDailyAction,
+  customerDashboardDailyReducer,
+  initialCustomerDashboardDailyState,
+} from './state';
+import { MONTHS } from '../../constants';
 
 function CustomerDashboardDaily({
   borderColor,
@@ -65,17 +78,19 @@ function CustomerDashboardDaily({
   width: number;
   year: string;
 }) {
-  const [yAxisKey, setYAxisKey] = useState<YAxisCustomerChartSelection>({
-    newYAxis: 'Overview',
-    overviewYAxis: 'Overview',
-    returningYAxis: 'Overview',
-  });
+  const [customerDashboardDailyState, customerDashboardDailyDispatch] =
+    useReducer(
+      customerDashboardDailyReducer,
+      initialCustomerDashboardDailyState
+    );
+
+  const { newYAxisSelection, overviewYAxisSelection, returningYAxisSelection } =
+    customerDashboardDailyState;
 
   if (!businessMetrics.length) {
     return null;
   }
 
-  const { dailyNew, dailyOverview, dailyReturning } = dailyCards;
   const componentWidth =
     width < 480 // for iPhone 5/SE
       ? width * 0.93
@@ -120,13 +135,13 @@ function CustomerDashboardDaily({
         data: OVERVIEW_Y_AXIS_DATA,
         label: 'Y-Axis',
         description: 'Select the Y Axis for the Overview Charts',
-        onChange: (event) => {
-          setYAxisKey((prev) => ({
-            ...prev,
-            overviewYAxis: event.currentTarget
-              .value as YAxisCustomerChartSelection['overviewYAxis'],
-          }));
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setOverviewYAxisSelection,
+            payload: event.currentTarget.value as CustomerOverviewMapKey,
+          });
         },
+        value: overviewYAxisSelection,
       },
     ]
   );
@@ -136,7 +151,7 @@ function CustomerDashboardDaily({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        dailyCharts.overview.barChartMap.get(yAxisKey.overviewYAxis) ?? []
+        dailyCharts.overview.barChartMap.get(overviewYAxisSelection) ?? []
       }
       hideControls
       indexBy="Days"
@@ -149,7 +164,7 @@ function CustomerDashboardDaily({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        dailyCharts.overview.lineChartMap.get(yAxisKey.overviewYAxis) ?? []
+        dailyCharts.overview.lineChartMap.get(overviewYAxisSelection) ?? []
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
@@ -160,7 +175,7 @@ function CustomerDashboardDaily({
   const displayOverviewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyCharts.overview.calendarChartMap.get(yAxisKey.overviewYAxis) ?? []
+        dailyCharts.overview.calendarChartMap.get(overviewYAxisSelection) ?? []
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -200,62 +215,48 @@ function CustomerDashboardDaily({
     <DashboardSection
       chartCarousel={displayOverviewCarouselWithHeading}
       heading="Daily Overview"
-      overviewCards={dailyOverview}
+      overviewCards={dailyCards.overview}
       pieChart={displayOverviewPieChart}
-      pieChartHeading=""
+      pieChartHeading={`New and returning customers for ${year}-${
+        MONTHS[parseInt(month) - 1]
+      }-${day}`}
       width={width}
     />
   );
 
   // new section
-  const newHeading = <Title order={4}>Daily New</Title>;
-  const createdNewCards = dailyNew.map((newCard, idx) => (
-    <Group
-      key={`${idx}-${newCard.value}`}
-      w={cardWidth}
-      style={{ outline: '1px solid brown' }}
-    >
-      {returnDashboardCard(newCard)}
-    </Group>
-  ));
-  const displayNewCards = <Stack>{createdNewCards}</Stack>;
-
-  const newPieChartHeading = (
-    <Group w="100%" position="center">
-      <Text size="lg">SELECTED DATE new</Text>
-    </Group>
-  );
   const displayNewPieChart = (
-    <Card shadow="sm" radius="md" withBorder w={chartWidth}>
-      <Card.Section>
-        <ResponsivePieChart
-          chartHeight={chartHeight}
-          chartWidth={chartWidth}
-          pieChartData={dailyCharts.new.pieChartData}
-          hideControls
-        />
-      </Card.Section>
-    </Card>
+    <ResponsivePieChart
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      pieChartData={dailyCharts.new.pieChartData}
+      hideControls
+    />
   );
 
-  const displayCardsAndPieChartNew = (
-    <Group w="100%" style={{ outline: '1px solid blue' }} align="center">
-      {displayNewCards}
-      <Stack>
-        {newPieChartHeading}
-        {displayNewPieChart}
-      </Stack>
-    </Group>
-  );
+  const [createdNewYAxisSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: NEW_Y_AXIS_DATA,
+      label: 'Y-Axis',
+      description: 'Select the Y Axis for the New Charts',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        customerDashboardDailyDispatch({
+          type: customerDashboardDailyAction.setNewYAxisSelection,
+          payload: event.currentTarget.value as CustomerNewMapKey,
+        });
+      },
+      value: newYAxisSelection,
+    },
+  ]);
 
   const displayNewBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.new.barChartMap.get('Overview') ?? []}
+      barChartData={dailyCharts.new.barChartMap.get(newYAxisSelection) ?? []}
       hideControls
       indexBy="Days"
-      keys={['New Online', 'New In-Store', 'New Repair']}
+      keys={NEW_Y_AXIS_DATA}
     />
   );
 
@@ -263,47 +264,82 @@ function CustomerDashboardDaily({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.new.lineChartMap.get('Overview') ?? []}
+      lineChartData={dailyCharts.new.lineChartMap.get(newYAxisSelection) ?? []}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${y} Customers`}
     />
   );
 
-  const displayNewCarousel = (
-    <CarouselBuilder
-      slideDimensions={{ width: chartWidth, height: chartHeight }}
-      slides={[displayNewBarChart, displayNewLineChart]}
-      headings={['New Customers Bar Chart', 'New Customers Line Chart']}
+  const displayNewCalendarChart = (
+    <ResponsiveCalendarChart
+      calendarChartData={
+        dailyCharts.new.calendarChartMap.get(newYAxisSelection) ?? []
+      }
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      from={`${year}-${month}-01`}
+      to={`${year}-${month}-${day}`}
+      hideControls
     />
   );
 
-  const displayNewSection = (
-    <Stack w="100%">
-      {newHeading}
-      {displayCardsAndPieChartNew}
+  const displayNewCarousel = (
+    <CarouselBuilder
+      slideDimensions={{ width: chartWidth, height: chartHeight }}
+      slides={[
+        displayNewBarChart,
+        displayNewLineChart,
+        displayNewCalendarChart,
+      ]}
+      headings={[
+        'New Customers Bar Chart',
+        'New Customers Line Chart',
+        'New Customers Calendar Chart',
+      ]}
+    />
+  );
+
+  const displayNewCarouselWithHeading = (
+    <Group w="100%" spacing={padding}>
+      <Stack>
+        {createdNewYAxisSelectInput}
+        {createdExpandChartButton}
+      </Stack>
       {displayNewCarousel}
-    </Stack>
+    </Group>
+  );
+
+  const displayNewSection = (
+    <DashboardSection
+      chartCarousel={displayNewCarouselWithHeading}
+      heading="Daily New"
+      overviewCards={dailyCards.new}
+      pieChart={displayNewPieChart}
+      pieChartHeading={`New customers for ${year}-${
+        MONTHS[parseInt(month) - 1]
+      }-${day}`}
+      width={width}
+    />
   );
 
   // returning section
-  const returningHeading = <Title order={4}>Daily Returning</Title>;
-  const createdReturningCards = dailyReturning.map((returningCard, idx) => (
-    <Group
-      key={`${idx}-${returningCard.value}`}
-      w={cardWidth}
-      style={{ outline: '1px solid brown' }}
-    >
-      {returnDashboardCard(returningCard)}
-    </Group>
-  ));
-  const displayReturningCards = <Stack>{createdReturningCards}</Stack>;
+  const [createdReturningYAxisSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: RETURNING_Y_AXIS_DATA,
+        label: 'Y-Axis',
+        description: 'Select the Y Axis for the Returning Charts',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setReturningYAxisSelection,
+            payload: event.currentTarget.value as CustomerReturningMapKey,
+          });
+        },
+        value: returningYAxisSelection,
+      },
+    ]);
 
-  const returningPieChartHeading = (
-    <Group w="100%" position="center">
-      <Text size="lg">SELECTED DATE returning</Text>
-    </Group>
-  );
   const displayReturningPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
@@ -312,24 +348,17 @@ function CustomerDashboardDaily({
       hideControls
     />
   );
-  const displayCardsAndPieChartReturning = (
-    <Group w="100%" style={{ outline: '1px solid blue' }} align="center">
-      {displayReturningCards}
-      <Stack>
-        {returningPieChartHeading}
-        {displayReturningPieChart}
-      </Stack>
-    </Group>
-  );
 
   const displayReturningBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.returning.barChartMap.get('Overview') ?? []}
+      barChartData={
+        dailyCharts.returning.barChartMap.get(returningYAxisSelection) ?? []
+      }
       hideControls
       indexBy="Days"
-      keys={['Returning Online', 'Returning In-Store', 'Returning Repair']}
+      keys={RETURNING_Y_AXIS_DATA}
     />
   );
 
@@ -337,30 +366,66 @@ function CustomerDashboardDaily({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.returning.lineChartMap.get('Overview') ?? []}
+      lineChartData={
+        dailyCharts.returning.lineChartMap.get(returningYAxisSelection) ?? []
+      }
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${y} Customers`}
     />
   );
 
+  const displayReturningCalendarChart = (
+    <ResponsiveCalendarChart
+      calendarChartData={
+        dailyCharts.returning.calendarChartMap.get(returningYAxisSelection) ??
+        []
+      }
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      from={`${year}-${month}-01`}
+      to={`${year}-${month}-${day}`}
+      hideControls
+    />
+  );
+
   const displayReturningCarousel = (
     <CarouselBuilder
       slideDimensions={{ width: chartWidth, height: chartHeight }}
-      slides={[displayReturningBarChart, displayReturningLineChart]}
+      slides={[
+        displayReturningBarChart,
+        displayReturningLineChart,
+        displayReturningCalendarChart,
+      ]}
       headings={[
         'Returning Customers Bar Chart',
         'Returning Customers Line Chart',
+        'Returning Customers Calendar Chart',
       ]}
     />
   );
 
-  const displayReturningSection = (
-    <Stack w="100%">
-      {returningHeading}
-      {displayCardsAndPieChartReturning}
+  const displayReturningCarouselWithHeading = (
+    <Group w="100%" spacing={padding}>
+      <Stack>
+        {createdReturningYAxisSelectInput}
+        {createdExpandChartButton}
+      </Stack>
       {displayReturningCarousel}
-    </Stack>
+    </Group>
+  );
+
+  const displayReturningSection = (
+    <DashboardSection
+      chartCarousel={displayReturningCarouselWithHeading}
+      heading="Daily Returning"
+      overviewCards={dailyCards.returning}
+      pieChart={displayReturningPieChart}
+      pieChartHeading={`Returning customers for ${year}-${
+        MONTHS[parseInt(month) - 1]
+      }-${day}`}
+      width={width}
+    />
   );
 
   const displayCustomerDashboardDaily = (
