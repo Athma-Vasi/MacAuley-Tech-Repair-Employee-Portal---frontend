@@ -44,7 +44,7 @@ function CustomerDashboard({
   } = useGlobalState();
 
   const {
-    appThemeColors: { borderColor },
+    appThemeColors: { borderColor, backgroundColor },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -148,36 +148,11 @@ function CustomerDashboard({
     return null;
   }
 
-  // store location tabs
-  const createdStoreLocationTabs = (
-    <Tabs
-      value={selectedStoreLocationView}
-      onTabChange={(value) => {
-        customerDashboardDispatch({
-          type: customerDashboardAction.setSelectedStoreLocationView,
-          payload: value as BusinessMetricStoreLocation,
-        });
-      }}
-    >
-      <Tabs.List>
-        {STORE_LOCATION_TABS_DATA.map((tabData) => (
-          <Tabs.Tab key={tabData.label} value={tabData.label}>
-            {tabData.label}
-          </Tabs.Tab>
-        ))}
-      </Tabs.List>
-
-      {STORE_LOCATION_TABS_DATA.map((tabData) => (
-        <Tabs.Panel key={tabData.label} value={tabData.label}>
-          <Text>{tabData.message}</Text>
-        </Tabs.Panel>
-      ))}
-    </Tabs>
-  );
-
   const createdYYYYMMDDInput = (
     <TextInput
-      type="date"
+      aria-label='Please enter date in format "year-year-year-year-month-month-date-date"'
+      description="View metrics for selected calendar date."
+      label="Calendar Date"
       max={new Date().toISOString().split('T')[0]}
       min={
         selectedStoreLocationView === 'Vancouver'
@@ -211,6 +186,7 @@ function CustomerDashboard({
           payload: year as Year,
         });
       }}
+      type="date"
       value={selectedYYYYMMDD}
     />
   );
@@ -243,21 +219,47 @@ function CustomerDashboard({
     </Tabs>
   );
 
-  // const { dailyCards, monthlyCards, yearlyCards } =
-  //   returnDashboardCustomerCardInfo({
-  //     customerMetrics: selectedCustomerMetrics,
-  //     padding,
-  //     width,
-  //   });
+  // store location tabs
+  const createdStoreLocationTabs = (
+    <Stack
+      bg={backgroundColor}
+      w="100%"
+      style={{
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        position: 'sticky',
+        top: 0,
+        zIndex: 4,
+      }}
+    >
+      <Group position="apart">
+        <Tabs
+          value={selectedStoreLocationView}
+          onTabChange={(value) => {
+            customerDashboardDispatch({
+              type: customerDashboardAction.setSelectedStoreLocationView,
+              payload: value as BusinessMetricStoreLocation,
+            });
+          }}
+        >
+          <Tabs.List>
+            {STORE_LOCATION_TABS_DATA.map((tabData) => (
+              <Tabs.Tab key={tabData.label} value={tabData.label}>
+                {tabData.label}
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
 
-  // const { dailyCharts, monthlyCharts, yearlyCharts } = returnCustomerChartsData(
-  //   {
-  //     businessMetrics,
-  //     months: MONTHS,
-  //     selectedCustomerMetrics,
-  //     storeLocation: selectedStoreLocationView,
-  //   }
-  // );
+          {STORE_LOCATION_TABS_DATA.map((tabData) => (
+            <Tabs.Panel key={tabData.label} value={tabData.label}>
+              <Text>{tabData.message}</Text>
+            </Tabs.Panel>
+          ))}
+        </Tabs>
+        {displayYYYYMMDDInput}
+      </Group>
+      {createdCalendarTabs}
+    </Stack>
+  );
 
   const displayCustomerCalendarInfo =
     selectedCalendarView === 'Daily' ? (
@@ -304,8 +306,6 @@ function CustomerDashboard({
   const displayCustomerDashboardComponent = (
     <Stack w="100%" p={padding}>
       {createdStoreLocationTabs}
-      {displayYYYYMMDDInput}
-      {createdCalendarTabs}
       {displayCustomerCalendarInfo}
     </Stack>
   );
