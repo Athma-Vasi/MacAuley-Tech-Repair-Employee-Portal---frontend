@@ -6,10 +6,10 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import {
-  ReturnDashboardCustomerCardInfoOutput,
-  returnDashboardCard,
-} from '../jsxHelpers';
+import { useState } from 'react';
+
+import { StoreLocation } from '../../../types';
+import CarouselBuilder from '../../carouselBuilder/CarouselBuilder';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -17,32 +17,61 @@ import {
   ResponsivePieChart,
 } from '../../charts';
 import {
+  returnDashboardCard,
+  ReturnDashboardCustomerCardInfoOutput,
+} from '../jsxHelpers';
+import {
+  BusinessMetric,
+  BusinessMetricStoreLocation,
+  Month,
+  Year,
+} from '../types';
+import { YAxisCustomerChartSelection } from './types';
+import {
   ReturnCustomerChartsDataOutput,
-  SelectedCustomerMetrics,
-  returnCustomerChartsData,
+  SelectedDateCustomerMetrics,
 } from './utils';
-import { BusinessMetric } from '../types';
-import { StoreLocation } from '../../../types';
-import CarouselBuilder from '../../carouselBuilder/CarouselBuilder';
+import { AccessibleSelectInputCreatorInfo } from '../../wrappers';
+import {
+  returnAccessibleButtonElements,
+  returnAccessibleSelectInputElements,
+} from '../../../jsxCreators';
+import { OVERVIEW_Y_AXIS_DATA } from './constants';
+import { TbArrowUpRight } from 'react-icons/tb';
+import DashboardSection from '../DashboardSection';
+import { BiExpandAlt } from 'react-icons/bi';
+import { LuExpand } from 'react-icons/lu';
 
 function CustomerDashboardDaily({
+  borderColor,
   businessMetrics,
   dailyCards,
   dailyCharts,
+  day,
+  month,
   padding,
-  selectedCustomerMetrics,
   storeLocation,
   width,
+  year,
 }: {
+  borderColor: string;
   businessMetrics: BusinessMetric[];
   dailyCards: ReturnDashboardCustomerCardInfoOutput['dailyCards'];
   dailyCharts: ReturnCustomerChartsDataOutput['dailyCharts'];
+  day: string;
+  month: string;
   padding: MantineNumberSize;
-  selectedCustomerMetrics: SelectedCustomerMetrics;
-  storeLocation: StoreLocation;
+  storeLocation: BusinessMetricStoreLocation;
   width: number;
+  year: string;
 }) {
-  if (!businessMetrics.length || !Object.keys(selectedCustomerMetrics).length) {
+  const [yAxisKey, setYAxisKey] = useState<YAxisCustomerChartSelection>({
+    newYAxis: 'Overview',
+    overviewYAxis: 'Overview',
+    returningYAxis: 'Overview',
+  });
+
+  if (!businessMetrics.length) {
     return null;
   }
 
@@ -64,54 +93,54 @@ function CustomerDashboardDaily({
   const chartWidth = width < 1024 ? componentWidth : componentWidth * 0.75;
   const cardWidth = chartWidth / 2;
 
-  // OVERVIEW SECTION
-  const overviewHeading = <Title order={4}>Daily Overview</Title>;
-  const createdOverviewCards = dailyOverview.map((overviewCard, idx) => (
-    <Group
-      key={`${idx}-${overviewCard.value}`}
-      w={cardWidth}
-      style={{ outline: '1px solid brown' }}
-    >
-      {returnDashboardCard(overviewCard)}
-    </Group>
-  ));
-  const displayOverviewCards = <Stack>{createdOverviewCards}</Stack>;
+  const [createdExpandChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: 'Expand and customize currently selected chart',
+      semanticName: 'Expand Chart',
+      buttonOnClick: () => {},
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
-  const overviewPieChartHeading = (
-    <Group w="100%" position="center">
-      <Text size="lg">SELECTED DATE overview</Text>
-    </Group>
-  );
+  // overview section
+
   const displayOverviewPieChart = (
-    <Card shadow="sm" radius="md" withBorder w={chartWidth}>
-      <Card.Section>
-        <ResponsivePieChart
-          chartHeight={chartHeight}
-          chartWidth={chartWidth}
-          pieChartData={dailyCharts.overview.pieChartData}
-          hideControls
-        />
-      </Card.Section>
-    </Card>
+    <ResponsivePieChart
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      pieChartData={dailyCharts.overview.pieChartData}
+      hideControls
+    />
   );
-  const displayCardsAndPieChart = (
-    <Group w="100%" style={{ outline: '1px solid blue' }} align="center">
-      {displayOverviewCards}
-      <Stack>
-        {overviewPieChartHeading}
-        {displayOverviewPieChart}
-      </Stack>
-    </Group>
+
+  const [createdOverviewYAxisSelectInput] = returnAccessibleSelectInputElements(
+    [
+      {
+        data: OVERVIEW_Y_AXIS_DATA,
+        label: 'Y-Axis',
+        description: 'Select the Y Axis for the Overview Charts',
+        onChange: (event) => {
+          setYAxisKey((prev) => ({
+            ...prev,
+            overviewYAxis: event.currentTarget
+              .value as YAxisCustomerChartSelection['overviewYAxis'],
+          }));
+        },
+      },
+    ]
   );
 
   const displayOverviewBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.overview.barChartMap.get('Overview') ?? []}
+      barChartData={
+        dailyCharts.overview.barChartMap.get(yAxisKey.overviewYAxis) ?? []
+      }
       hideControls
       indexBy="Days"
-      keys={['New', 'Returning']}
+      keys={OVERVIEW_Y_AXIS_DATA}
     />
   );
 
@@ -119,44 +148,66 @@ function CustomerDashboardDaily({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.overview.lineChartMap.get('Overview') ?? []}
+      lineChartData={
+        dailyCharts.overview.lineChartMap.get(yAxisKey.overviewYAxis) ?? []
+      }
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${y} Customers`}
     />
   );
 
-  const displayOverviewCarousel = (
-    <CarouselBuilder
-      slideDimensions={{ width: chartWidth, height: chartHeight }}
-      slides={[displayOverviewBarChart, displayOverviewLineChart]}
-      headings={['Overview Days Bar Chart', 'Overview Days Line Chart']}
-    />
-  );
-
-  const displayDailyOverviewCalendarChart = (
+  const displayOverviewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyCharts.overview.calendarChartMap.get('Overview') ?? []
+        dailyCharts.overview.calendarChartMap.get(yAxisKey.overviewYAxis) ?? []
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      from="2023-10-01"
-      to="2023-10-27"
+      from={`${year}-${month}-01`}
+      to={`${year}-${month}-${day}`}
       hideControls
     />
   );
 
-  const displayOverviewSection = (
-    <Stack w="100%">
-      {overviewHeading}
-      {displayCardsAndPieChart}
-      {displayOverviewCarousel}
-      {displayDailyOverviewCalendarChart}
-    </Stack>
+  const displayOverviewCarousel = (
+    <CarouselBuilder
+      slideDimensions={{ width: chartWidth, height: chartHeight }}
+      slides={[
+        displayOverviewBarChart,
+        displayOverviewLineChart,
+        displayOverviewCalendarChart,
+      ]}
+      headings={[
+        'Overview Bar Chart',
+        'Overview Line Chart',
+        'Overview Calendar Chart',
+      ]}
+    />
   );
 
-  // NEW SECTION
+  const displayOverviewCarouselWithHeading = (
+    <Group w="100%" spacing={padding}>
+      <Stack>
+        {createdOverviewYAxisSelectInput}
+        {createdExpandChartButton}
+      </Stack>
+      {displayOverviewCarousel}
+    </Group>
+  );
+
+  const displayOverviewSection = (
+    <DashboardSection
+      chartCarousel={displayOverviewCarouselWithHeading}
+      heading="Daily Overview"
+      overviewCards={dailyOverview}
+      pieChart={displayOverviewPieChart}
+      pieChartHeading=""
+      width={width}
+    />
+  );
+
+  // new section
   const newHeading = <Title order={4}>Daily New</Title>;
   const createdNewCards = dailyNew.map((newCard, idx) => (
     <Group
@@ -235,7 +286,7 @@ function CustomerDashboardDaily({
     </Stack>
   );
 
-  // RETURNING SECTION
+  // returning section
   const returningHeading = <Title order={4}>Daily Returning</Title>;
   const createdReturningCards = dailyReturning.map((returningCard, idx) => (
     <Group

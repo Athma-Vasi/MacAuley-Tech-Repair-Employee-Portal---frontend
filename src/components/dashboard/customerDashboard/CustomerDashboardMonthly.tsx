@@ -10,11 +10,11 @@ import {
   ReturnDashboardCustomerCardInfoOutput,
   returnDashboardCard,
 } from '../jsxHelpers';
-import { BusinessMetric } from '../types';
+import { BusinessMetric, BusinessMetricStoreLocation } from '../types';
 import { StoreLocation } from '../../../types';
 import {
   ReturnCustomerChartsDataOutput,
-  SelectedCustomerMetrics,
+  SelectedDateCustomerMetrics,
 } from './utils';
 import {
   ResponsiveBarChart,
@@ -28,7 +28,6 @@ function CustomerDashboardMonthly({
   monthlyCards,
   monthlyCharts,
   padding,
-  selectedCustomerMetrics,
   storeLocation,
   width,
 }: {
@@ -36,11 +35,10 @@ function CustomerDashboardMonthly({
   monthlyCards: ReturnDashboardCustomerCardInfoOutput['monthlyCards'];
   monthlyCharts: ReturnCustomerChartsDataOutput['monthlyCharts'];
   padding: MantineNumberSize;
-  selectedCustomerMetrics: SelectedCustomerMetrics;
-  storeLocation: StoreLocation;
+  storeLocation: BusinessMetricStoreLocation;
   width: number;
 }) {
-  if (!businessMetrics.length || !Object.keys(selectedCustomerMetrics).length) {
+  if (!businessMetrics.length) {
     return null;
   }
 

@@ -24,7 +24,8 @@ import {
   displayStatisticsReducer,
   initialDisplayStatisticsState,
 } from './state';
-import { ChartKind, DisplayStatisticsProps, PieChartData } from './types';
+import { ChartKind, DisplayStatisticsProps } from './types';
+import { PieChartData } from '../charts/responsivePieChart/types';
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(

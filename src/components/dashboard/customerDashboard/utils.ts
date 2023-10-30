@@ -2,9 +2,10 @@ import { StoreLocation } from '../../../types';
 import { BarChartData } from '../../charts/responsiveBarChart/types';
 import { CalendarChartData } from '../../charts/responsiveCalendarChart/types';
 import { LineChartData } from '../../charts/responsiveLineChart/types';
-import { PieChartData } from '../../displayStatistics/types';
+import { PieChartData } from '../../charts/responsivePieChart/types';
 import {
   BusinessMetric,
+  BusinessMetricStoreLocation,
   CustomerDailyMetric,
   CustomerMonthlyMetric,
   CustomerYearlyMetric,
@@ -12,7 +13,7 @@ import {
   Year,
 } from '../types';
 
-type SelectedCustomerMetrics = {
+type SelectedDateCustomerMetrics = {
   dayCustomerMetrics: {
     selectedDayMetrics?: CustomerDailyMetric;
     prevDayMetrics?: CustomerDailyMetric;
@@ -27,7 +28,7 @@ type SelectedCustomerMetrics = {
   };
 };
 
-function returnSelectedCustomerMetrics({
+function returnSelectedDateCustomerMetrics({
   businessMetrics,
   day,
   month,
@@ -39,15 +40,15 @@ function returnSelectedCustomerMetrics({
   day: string;
   month: Month;
   months: Month[];
-  storeLocation: StoreLocation;
+  storeLocation: BusinessMetricStoreLocation;
   year: Year;
-}): SelectedCustomerMetrics {
+}): SelectedDateCustomerMetrics {
   // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected year's metrics
+  // selected year's customer metrics
   const selectedYearMetrics =
     currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
       (yearlyMetric) => yearlyMetric.year === year
@@ -62,7 +63,7 @@ function returnSelectedCustomerMetrics({
     prevYearMetrics,
   };
 
-  // selected month's metrics
+  // selected month's customer metrics
   const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
     (monthlyMetric) => monthlyMetric.month === month
   );
@@ -85,7 +86,7 @@ function returnSelectedCustomerMetrics({
     prevMonthMetrics,
   };
 
-  // selected day's metrics
+  // selected day's customer metrics
   const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
     (dailyMetric) => dailyMetric.day === day
   );
@@ -123,8 +124,8 @@ function returnSelectedCustomerMetrics({
 type ReturnCustomerChartsDataInput = {
   businessMetrics: BusinessMetric[];
   months: Month[];
-  selectedCustomerMetrics: SelectedCustomerMetrics;
-  storeLocation: StoreLocation;
+  selectedCustomerMetrics: SelectedDateCustomerMetrics;
+  storeLocation: BusinessMetricStoreLocation;
 };
 
 type CustomerOverviewMapKey = 'Overview' | 'New' | 'Returning';
@@ -223,6 +224,10 @@ function returnCustomerChartsData({
   selectedCustomerMetrics,
   storeLocation,
 }: ReturnCustomerChartsDataInput): ReturnCustomerChartsDataOutput {
+  if (!selectedCustomerMetrics) {
+    return {} as ReturnCustomerChartsDataOutput;
+  }
+
   // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
@@ -2252,5 +2257,12 @@ function returnCustomerChartsData({
   };
 }
 
-export { returnCustomerChartsData, returnSelectedCustomerMetrics };
-export type { ReturnCustomerChartsDataOutput, SelectedCustomerMetrics };
+export { returnCustomerChartsData, returnSelectedDateCustomerMetrics };
+export type {
+  CustomerChurnRetentionMapKey,
+  CustomerNewMapKey,
+  CustomerOverviewMapKey,
+  CustomerReturningMapKey,
+  ReturnCustomerChartsDataOutput,
+  SelectedDateCustomerMetrics,
+};

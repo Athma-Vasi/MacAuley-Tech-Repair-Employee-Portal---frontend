@@ -1,24 +1,33 @@
-import { Stack, Tabs, Text } from '@mantine/core';
+import { Group, Stack, Tabs, Text, TextInput } from '@mantine/core';
 import { useEffect, useReducer } from 'react';
 
 import { useGlobalState } from '../../../hooks';
-import { CALENDAR_TABS_DATA, MONTHS } from '../constants';
+import {
+  CALENDAR_TABS_DATA,
+  MONTHS,
+  STORE_LOCATION_TABS_DATA,
+} from '../constants';
 import { returnDashboardCustomerCardInfo } from '../jsxHelpers';
-import { BusinessMetric } from '../types';
+import { BusinessMetric, BusinessMetricStoreLocation, Year } from '../types';
 import {
   customerDashboardAction,
   customerDashboardReducer,
   initialCustomerDashboardState,
 } from './state';
 import { DashboardCalendarView } from './types';
-import { logState } from '../../../utils';
+import { logState, returnThemeColors } from '../../../utils';
 import CustomerDashboardDaily from './CustomerDashboardDaily';
 import CustomerDashboardMonthly from './CustomerDashboardMonthly';
 import CustomerDashboardYearly from './CustomerDashboardYearly';
 import {
   returnCustomerChartsData,
-  returnSelectedCustomerMetrics,
+  returnSelectedDateCustomerMetrics,
 } from './utils';
+import { COLORS_SWATCHES } from '../../../constants/data';
+import {
+  AccessibleErrorValidTextElements,
+  returnAccessibleDateTimeElements,
+} from '../../../jsxCreators';
 
 function CustomerDashboard({
   businessMetrics,
@@ -31,29 +40,183 @@ function CustomerDashboard({
   );
 
   const {
-    globalState: { padding, width },
+    globalState: { padding, width, themeObject },
   } = useGlobalState();
 
-  const { selectedCalendarView, selectedCustomerMetrics } =
-    customerDashboardState;
+  const {
+    appThemeColors: { borderColor },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
+  const {
+    customerChartsData,
+    customerCardsInfo,
+    selectedCalendarView,
+    selectedDate,
+    selectedMonth,
+    selectedStoreLocationView,
+    selectedYear,
+    selectedYYYYMMDD,
+  } = customerDashboardState;
 
   useEffect(() => {
-    const customerMetrics = returnSelectedCustomerMetrics({
+    const selectedCustomerMetrics = returnSelectedDateCustomerMetrics({
       businessMetrics,
-      day: new Date().getDate().toString().padStart(2, '0'),
-      month: MONTHS[new Date().getMonth()],
+      day: selectedDate,
+      month: selectedMonth,
       months: MONTHS,
-      storeLocation: 'Edmonton',
-      year: '2013',
+      storeLocation: selectedStoreLocationView,
+      year: selectedYear,
+    });
+
+    const customerChartsData = returnCustomerChartsData({
+      businessMetrics,
+      months: MONTHS,
+      selectedCustomerMetrics,
+      storeLocation: selectedStoreLocationView,
     });
 
     customerDashboardDispatch({
-      type: customerDashboardAction.setSelectedCustomerMetrics,
-      payload: customerMetrics,
+      type: customerDashboardAction.setCustomerChartsData,
+      payload: customerChartsData,
+    });
+
+    const customerCardsInfo = returnDashboardCustomerCardInfo({
+      customerMetrics: selectedCustomerMetrics,
+      padding,
+      width,
+    });
+
+    customerDashboardDispatch({
+      type: customerDashboardAction.setCustomerCardsInfo,
+      payload: customerCardsInfo,
     });
   }, []);
 
-  // tabs component
+  useEffect(() => {
+    const selectedCustomerMetrics = returnSelectedDateCustomerMetrics({
+      businessMetrics,
+      day: selectedDate,
+      month: selectedMonth,
+      months: MONTHS,
+      storeLocation: selectedStoreLocationView,
+      year: selectedYear,
+    });
+
+    const customerChartsData = returnCustomerChartsData({
+      businessMetrics,
+      months: MONTHS,
+      selectedCustomerMetrics,
+      storeLocation: selectedStoreLocationView,
+    });
+
+    customerDashboardDispatch({
+      type: customerDashboardAction.setCustomerChartsData,
+      payload: customerChartsData,
+    });
+
+    const customerCardsInfo = returnDashboardCustomerCardInfo({
+      customerMetrics: selectedCustomerMetrics,
+      padding,
+      width,
+    });
+
+    customerDashboardDispatch({
+      type: customerDashboardAction.setCustomerCardsInfo,
+      payload: customerCardsInfo,
+    });
+  }, [
+    selectedStoreLocationView,
+    selectedDate,
+    selectedMonth,
+    selectedYear,
+    selectedCalendarView,
+    selectedYYYYMMDD,
+    businessMetrics,
+  ]);
+
+  useEffect(() => {
+    logState({
+      state: customerDashboardState,
+      groupLabel: 'Customer Dashboard State',
+    });
+  }, [customerDashboardState]);
+
+  if (!customerCardsInfo || !customerChartsData) {
+    return null;
+  }
+
+  // store location tabs
+  const createdStoreLocationTabs = (
+    <Tabs
+      value={selectedStoreLocationView}
+      onTabChange={(value) => {
+        customerDashboardDispatch({
+          type: customerDashboardAction.setSelectedStoreLocationView,
+          payload: value as BusinessMetricStoreLocation,
+        });
+      }}
+    >
+      <Tabs.List>
+        {STORE_LOCATION_TABS_DATA.map((tabData) => (
+          <Tabs.Tab key={tabData.label} value={tabData.label}>
+            {tabData.label}
+          </Tabs.Tab>
+        ))}
+      </Tabs.List>
+
+      {STORE_LOCATION_TABS_DATA.map((tabData) => (
+        <Tabs.Panel key={tabData.label} value={tabData.label}>
+          <Text>{tabData.message}</Text>
+        </Tabs.Panel>
+      ))}
+    </Tabs>
+  );
+
+  const createdYYYYMMDDInput = (
+    <TextInput
+      type="date"
+      max={new Date().toISOString().split('T')[0]}
+      min={
+        selectedStoreLocationView === 'Vancouver'
+          ? new Date(2019, 0, 1).toISOString().split('T')[0]
+          : selectedStoreLocationView === 'Calgary'
+          ? new Date(2017, 0, 1).toISOString().split('T')[0]
+          : new Date(2013, 0, 1).toISOString().split('T')[0]
+      }
+      onChange={(event) => {
+        const { value } = event.currentTarget;
+        const [year, month, date] = value.split('-');
+        const YYYYMMDD = `${year}-${month}-${date}`;
+
+        customerDashboardDispatch({
+          type: customerDashboardAction.setSelectedYYYYMMDD,
+          payload: YYYYMMDD,
+        });
+
+        customerDashboardDispatch({
+          type: customerDashboardAction.setSelectedDate,
+          payload: date.toString().padStart(2, '0'),
+        });
+
+        customerDashboardDispatch({
+          type: customerDashboardAction.setSelectedMonth,
+          payload: MONTHS[parseInt(month) - 1],
+        });
+
+        customerDashboardDispatch({
+          type: customerDashboardAction.setSelectedYear,
+          payload: year as Year,
+        });
+      }}
+      value={selectedYYYYMMDD}
+    />
+  );
+  const displayYYYYMMDDInput = <Group w={330}>{createdYYYYMMDDInput}</Group>;
+
+  // calendar tabs
   const createdCalendarTabs = (
     <Tabs
       value={selectedCalendarView}
@@ -80,68 +243,64 @@ function CustomerDashboard({
     </Tabs>
   );
 
-  const { dailyCards, monthlyCards, yearlyCards } =
-    returnDashboardCustomerCardInfo({
-      customerMetrics: selectedCustomerMetrics,
-      padding,
-      width,
-    });
+  // const { dailyCards, monthlyCards, yearlyCards } =
+  //   returnDashboardCustomerCardInfo({
+  //     customerMetrics: selectedCustomerMetrics,
+  //     padding,
+  //     width,
+  //   });
 
-  const { dailyCharts, monthlyCharts, yearlyCharts } = returnCustomerChartsData(
-    {
-      businessMetrics,
-      months: MONTHS,
-      selectedCustomerMetrics,
-      storeLocation: 'Edmonton',
-    }
-  );
+  // const { dailyCharts, monthlyCharts, yearlyCharts } = returnCustomerChartsData(
+  //   {
+  //     businessMetrics,
+  //     months: MONTHS,
+  //     selectedCustomerMetrics,
+  //     storeLocation: selectedStoreLocationView,
+  //   }
+  // );
 
   const displayCustomerCalendarInfo =
     selectedCalendarView === 'Daily' ? (
       <CustomerDashboardDaily
+        borderColor={borderColor}
         businessMetrics={businessMetrics}
-        dailyCards={dailyCards}
-        dailyCharts={dailyCharts}
+        dailyCards={customerCardsInfo.dailyCards}
+        dailyCharts={customerChartsData.dailyCharts}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split('-')[1]}
         padding={padding}
-        selectedCustomerMetrics={selectedCustomerMetrics}
-        storeLocation="Edmonton"
+        storeLocation={selectedStoreLocationView}
         width={width}
+        year={selectedYear}
       />
     ) : selectedCalendarView === 'Monthly' ? (
       <CustomerDashboardMonthly
         businessMetrics={businessMetrics}
-        monthlyCards={monthlyCards}
-        monthlyCharts={monthlyCharts}
+        monthlyCards={customerCardsInfo.monthlyCards}
+        monthlyCharts={customerChartsData.monthlyCharts}
         padding={padding}
-        selectedCustomerMetrics={selectedCustomerMetrics}
-        storeLocation="Edmonton"
+        storeLocation={selectedStoreLocationView}
         width={width}
       />
     ) : (
       <CustomerDashboardYearly
         businessMetrics={businessMetrics}
         padding={padding}
-        selectedCustomerMetrics={selectedCustomerMetrics}
-        storeLocation="Edmonton"
+        storeLocation={selectedStoreLocationView}
         width={width}
-        yearlyCards={yearlyCards}
-        yearlyCharts={yearlyCharts}
+        yearlyCards={customerCardsInfo.yearlyCards}
+        yearlyCharts={customerChartsData.yearlyCharts}
       />
     );
 
   const displayCustomerDashboardComponent = (
-    <Stack w="100%">
+    <Stack w="100%" p={padding}>
+      {createdStoreLocationTabs}
+      {displayYYYYMMDDInput}
       {createdCalendarTabs}
       {displayCustomerCalendarInfo}
     </Stack>
   );
-
-  useEffect(() => {
-    logState({
-      state: customerDashboardState,
-      groupLabel: 'Customer Dashboard State',
-    });
-  }, [customerDashboardState]);
 
   return displayCustomerDashboardComponent;
 }

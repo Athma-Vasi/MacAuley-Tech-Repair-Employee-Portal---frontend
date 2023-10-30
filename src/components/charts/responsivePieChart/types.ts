@@ -1,6 +1,5 @@
 import { TitleOrder } from '@mantine/core';
 import { ScreenshotImageType } from '../../../types';
-import { PieChartData } from '../../displayStatistics/types';
 import {
   NivoArcLabel,
   NivoChartTitlePosition,
@@ -13,6 +12,12 @@ import {
   NivoMotionConfig,
   NivoTransitionMode,
 } from '../types';
+
+type PieChartData = {
+  id: string;
+  label: string;
+  value: number;
+};
 
 type ResponsivePieChartProps = {
   chartHeight?: number;
@@ -332,4 +337,5 @@ export type {
   ResponsivePieChartProps,
   ResponsivePieChartReducer,
   ResponsivePieChartState,
+  PieChartData,
 };

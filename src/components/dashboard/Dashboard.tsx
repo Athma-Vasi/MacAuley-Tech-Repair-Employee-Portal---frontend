@@ -8,12 +8,6 @@ import {
   MONTHS,
   PRODUCT_CATEGORIES,
   REPAIR_CATEGORIES,
-  YEAR_CHURN_RATE_SPREAD,
-  YEAR_CONVERSION_RATE_SPREAD,
-  YEAR_CUSTOMERS_SPREAD,
-  YEAR_NEW_CUSTOMERS_SPREAD,
-  YEAR_PROFIT_MARGIN_SPREAD,
-  YEAR_TRANSACTIONS_SPREAD,
 } from './constants';
 import CustomerDashboard from './customerDashboard/CustomerDashboard';
 import {
@@ -38,12 +32,6 @@ function Dashboard() {
       productCategories: PRODUCT_CATEGORIES,
       repairCategories: REPAIR_CATEGORIES,
       storeLocations: STORE_LOCATION_DATA,
-      yearChurnRateSpread: YEAR_CHURN_RATE_SPREAD,
-      yearConversionRateSpread: YEAR_CONVERSION_RATE_SPREAD,
-      yearCustomersSpread: YEAR_CUSTOMERS_SPREAD,
-      yearNewCustomersSpread: YEAR_NEW_CUSTOMERS_SPREAD,
-      yearProfitMarginSpread: YEAR_PROFIT_MARGIN_SPREAD,
-      yearTransactionsSpread: YEAR_TRANSACTIONS_SPREAD,
     });
 
     dashboardDispatch({

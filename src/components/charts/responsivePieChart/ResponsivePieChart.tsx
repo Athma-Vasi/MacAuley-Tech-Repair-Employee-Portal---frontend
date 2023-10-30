@@ -24,7 +24,6 @@ import {
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
 import { logState, returnThemeColors } from '../../../utils';
-import { PieChartData } from '../../displayStatistics/types';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
@@ -55,6 +54,7 @@ import {
   NivoMotionConfig,
   NivoTransitionMode,
   ResponsivePieChartProps,
+  PieChartData,
 } from './types';
 import { BiReset } from 'react-icons/bi';
 import { ChartMargin } from '../chartControls/ChartMargin';

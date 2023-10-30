@@ -1,15 +1,11 @@
-import { SurveyBuilderDocument, SurveyStatistics } from '../survey/types';
+import { BarChartData } from '../charts/responsiveBarChart/types';
+import { PieChartData } from '../charts/responsivePieChart/types';
+import { SurveyBuilderDocument } from '../survey/types';
 
 type DisplayStatisticsProps = {
   surveys: SurveyBuilderDocument[];
 };
 
-type PieChartData = {
-  id: string;
-  label: string;
-  value: number;
-};
-type BarChartData = Record<string, string | number>;
 type ChartData = PieChartData[] | BarChartData[];
 type ChartKind = 'bar' | 'pie';
 
@@ -71,7 +67,6 @@ type DisplayStatisticsReducer = (
 ) => DisplayStatisticsState;
 
 export type {
-  BarChartData,
   ChartData,
   ChartKind,
   DisplayStatisticsAction,
@@ -79,5 +74,4 @@ export type {
   DisplayStatisticsProps,
   DisplayStatisticsReducer,
   DisplayStatisticsState,
-  PieChartData,
 };

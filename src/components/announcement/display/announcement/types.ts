@@ -1,5 +1,5 @@
 import { QueryResponseData } from '../../../../types';
-import { PieChartData } from '../../../displayStatistics/types';
+import { PieChartData } from '../../../charts/responsivePieChart/types';
 import { AnnouncementDocument, RatingResponse } from '../../create/types';
 
 type DisplayAnnouncementState = {

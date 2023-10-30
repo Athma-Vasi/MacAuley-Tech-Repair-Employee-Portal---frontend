@@ -2,7 +2,7 @@ import { Card, Group, MantineNumberSize, Text } from '@mantine/core';
 import { ReactNode } from 'react';
 import { MdCalendarMonth, MdDateRange } from 'react-icons/md';
 import { RiCalendarLine } from 'react-icons/ri';
-import { SelectedCustomerMetrics } from './customerDashboard/utils';
+import { SelectedDateCustomerMetrics } from './customerDashboard/utils';
 
 type DashboardCardInfo = {
   date?: string;
@@ -64,7 +64,7 @@ function returnDashboardCard({
 }
 
 type ReturnDashboardCustomerCardInfoInput = {
-  customerMetrics: SelectedCustomerMetrics;
+  customerMetrics: SelectedDateCustomerMetrics;
   padding: MantineNumberSize;
   width: number;
 };
@@ -97,7 +97,14 @@ function returnDashboardCustomerCardInfo({
   width,
 }: ReturnDashboardCustomerCardInfoInput): ReturnDashboardCustomerCardInfoOutput {
   // customer metrics data
-  const { dayCustomerMetrics } = customerMetrics;
+  const { dayCustomerMetrics, monthCustomerMetrics, yearCustomerMetrics } =
+    customerMetrics;
+
+  const currentYear = yearCustomerMetrics?.selectedYearMetrics?.year ?? 0;
+  const prevYear = yearCustomerMetrics?.prevYearMetrics?.year ?? 0;
+  const currentMonth = monthCustomerMetrics?.selectedMonthMetrics?.month ?? 0;
+  const prevMonth = monthCustomerMetrics?.prevMonthMetrics?.month ?? 0;
+  const prevDay = dayCustomerMetrics?.prevDayMetrics?.day ?? 0;
 
   // daily
   // daily -> overview
@@ -118,7 +125,9 @@ function returnDashboardCustomerCardInfo({
       } ${dayTotalCustomersDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const dayTotalCustomersDate =
-    dayTotalCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since yesterday';
+    dayTotalCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> overview -> new customers
   const selectedDayNewCustomers =
@@ -136,7 +145,9 @@ function returnDashboardCustomerCardInfo({
       } ${dayTotalNewCustomersDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const dayTotalNewCustomersDate =
-    dayTotalNewCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since yesterday';
+    dayTotalNewCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> overview -> returning customers
   const selectedDayReturningCustomers =
@@ -157,7 +168,7 @@ function returnDashboardCustomerCardInfo({
   const dayTotalReturningCustomersDate =
     dayTotalReturningCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since yesterday';
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> new
   // daily -> new -> total online customers
@@ -179,7 +190,7 @@ function returnDashboardCustomerCardInfo({
   const dayTotalNewSalesOnlineCustomersDate =
     dayTotalNewSalesOnlineCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since yesterday';
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> new -> total in-store customers
   const selectedDayNewSalesInStoreCustomers =
@@ -200,7 +211,7 @@ function returnDashboardCustomerCardInfo({
   const dayTotalNewSalesInStoreCustomersDate =
     dayTotalNewSalesInStoreCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since yesterday';
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> new -> total repair customers
   const selectedDayNewRepairCustomers =
@@ -221,7 +232,7 @@ function returnDashboardCustomerCardInfo({
   const dayTotalNewRepairCustomersDate =
     dayTotalNewRepairCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since yesterday';
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> returning
   // daily -> returning -> total online customers
@@ -245,7 +256,7 @@ function returnDashboardCustomerCardInfo({
   const dayTotalReturningSalesOnlineCustomersDate =
     dayTotalReturningSalesOnlineCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since yesterday';
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> returning -> total in-store customers
   const selectedDayReturningSalesInStoreCustomers =
@@ -268,7 +279,7 @@ function returnDashboardCustomerCardInfo({
   const dayTotalReturningSalesInStoreCustomersDate =
     dayTotalReturningSalesInStoreCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since yesterday';
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> returning -> total repair customers
   const selectedDayReturningRepairCustomers =
@@ -289,7 +300,7 @@ function returnDashboardCustomerCardInfo({
   const dayTotalReturningRepairCustomersDate =
     dayTotalReturningRepairCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since yesterday';
+      : `Since ${currentYear}-${currentMonth}-${prevDay}`;
 
   // daily -> overview
   const dayTotalCustomersCardInfo: DashboardCardInfo = {
@@ -384,9 +395,6 @@ function returnDashboardCustomerCardInfo({
     width,
   };
 
-  // month customer metrics data
-  const { monthCustomerMetrics } = customerMetrics;
-
   // monthly
   // monthly -> overview
   // monthly -> overview -> total customers
@@ -406,7 +414,9 @@ function returnDashboardCustomerCardInfo({
       } ${monthTotalCustomersDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const monthTotalCustomersDate =
-    monthTotalCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since last month';
+    monthTotalCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> overview -> new customers
   const selectedMonthNewCustomers =
@@ -425,7 +435,9 @@ function returnDashboardCustomerCardInfo({
       } ${monthTotalNewCustomersDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const monthTotalNewCustomersDate =
-    monthTotalNewCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since last month';
+    monthTotalNewCustomersDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> overview -> returning customers
   const selectedMonthReturningCustomers =
@@ -446,7 +458,7 @@ function returnDashboardCustomerCardInfo({
   const monthTotalReturningCustomersDate =
     monthTotalReturningCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last month';
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> new
   // monthly -> new -> total online customers
@@ -468,7 +480,7 @@ function returnDashboardCustomerCardInfo({
   const monthTotalNewSalesOnlineCustomersDate =
     monthTotalNewSalesOnlineCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last month';
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> new -> total in-store customers
   const selectedMonthNewSalesInStoreCustomers =
@@ -491,7 +503,7 @@ function returnDashboardCustomerCardInfo({
   const monthTotalNewSalesInStoreCustomersDate =
     monthTotalNewSalesInStoreCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last month';
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> new -> total repair customers
   const selectedMonthNewRepairCustomers =
@@ -512,7 +524,7 @@ function returnDashboardCustomerCardInfo({
   const monthTotalNewRepairCustomersDate =
     monthTotalNewRepairCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last month';
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> returning
   // monthly -> returning -> total online customers
@@ -537,7 +549,7 @@ function returnDashboardCustomerCardInfo({
   const monthTotalReturningSalesOnlineCustomersDate =
     monthTotalReturningSalesOnlineCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last month';
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly returning total in-store customers
   const selectedMonthReturningSalesInStoreCustomers =
@@ -562,7 +574,7 @@ function returnDashboardCustomerCardInfo({
   const monthTotalReturningSalesInStoreCustomersDate =
     monthTotalReturningSalesInStoreCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last month';
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> returning -> total repair customers
   const selectedMonthReturningRepairCustomers =
@@ -584,7 +596,7 @@ function returnDashboardCustomerCardInfo({
   const monthTotalReturningRepairCustomersDate =
     monthTotalReturningRepairCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last month';
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> churn rate
   const selectedMonthChurnRate =
@@ -601,7 +613,9 @@ function returnDashboardCustomerCardInfo({
       } ${monthChurnRateDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const monthChurnRateDate =
-    monthChurnRateDeltaFormatted === 'N/A' ? 'N/A' : 'Since last month';
+    monthChurnRateDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> retention rate
   const selectedMonthRetentionRate =
@@ -620,7 +634,9 @@ function returnDashboardCustomerCardInfo({
       } ${monthRetentionRateDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const monthRetentionRateDate =
-    monthRetentionRateDeltaFormatted === 'N/A' ? 'N/A' : 'Since last month';
+    monthRetentionRateDeltaFormatted === 'N/A'
+      ? 'N/A'
+      : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> overview
   const monthTotalCustomersCardInfo: DashboardCardInfo = {
@@ -737,9 +753,6 @@ function returnDashboardCustomerCardInfo({
     width,
   };
 
-  // year customer metrics data
-  const { yearCustomerMetrics } = customerMetrics;
-
   // yearly
   // yearly -> overview
   // yearly -> overview -> total customers
@@ -759,7 +772,7 @@ function returnDashboardCustomerCardInfo({
       } ${yearTotalCustomersDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const yearTotalCustomersDate =
-    yearTotalCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since last year';
+    yearTotalCustomersDeltaFormatted === 'N/A' ? 'N/A' : `Since ${prevYear}`;
 
   // yearly -> overview -> new customers
   const selectedYearNewCustomers =
@@ -777,7 +790,7 @@ function returnDashboardCustomerCardInfo({
       } ${yearTotalNewCustomersDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const yearTotalNewCustomersDate =
-    yearTotalNewCustomersDeltaFormatted === 'N/A' ? 'N/A' : 'Since last year';
+    yearTotalNewCustomersDeltaFormatted === 'N/A' ? 'N/A' : `Since ${prevYear}`;
 
   // yearly -> overview -> returning customers
   const selectedYearReturningCustomers =
@@ -798,7 +811,7 @@ function returnDashboardCustomerCardInfo({
   const yearTotalReturningCustomersDate =
     yearTotalReturningCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last year';
+      : `Since ${prevYear}`;
 
   // yearly -> new
   // yearly -> new -> total online customers
@@ -820,7 +833,7 @@ function returnDashboardCustomerCardInfo({
   const yearTotalNewSalesOnlineCustomersDate =
     yearTotalNewSalesOnlineCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last year';
+      : `Since ${prevYear}`;
 
   // yearly -> new -> total in-store customers
   const selectedYearNewSalesInStoreCustomers =
@@ -841,7 +854,7 @@ function returnDashboardCustomerCardInfo({
   const yearTotalNewSalesInStoreCustomersDate =
     yearTotalNewSalesInStoreCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last year';
+      : `Since ${prevYear}`;
 
   // yearly -> new -> total repair customers
   const selectedYearNewRepairCustomers =
@@ -862,7 +875,7 @@ function returnDashboardCustomerCardInfo({
   const yearTotalNewRepairCustomersDate =
     yearTotalNewRepairCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last year';
+      : `Since ${prevYear}`;
 
   // yearly -> returning
   // yearly -> returning -> total online customers
@@ -886,7 +899,7 @@ function returnDashboardCustomerCardInfo({
   const yearTotalReturningSalesOnlineCustomersDate =
     yearTotalReturningSalesOnlineCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last year';
+      : `Since ${prevYear}`;
 
   // yearly returning total in-store customers
   const selectedYearReturningSalesInStoreCustomers =
@@ -910,7 +923,7 @@ function returnDashboardCustomerCardInfo({
   const yearTotalReturningSalesInStoreCustomersDate =
     yearTotalReturningSalesInStoreCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last year';
+      : `Since ${prevYear}`;
 
   // yearly -> returning -> total repair customers
   const selectedYearReturningRepairCustomers =
@@ -931,7 +944,7 @@ function returnDashboardCustomerCardInfo({
   const yearTotalReturningRepairCustomersDate =
     yearTotalReturningRepairCustomersDeltaFormatted === 'N/A'
       ? 'N/A'
-      : 'Since last year';
+      : `Since ${prevYear}`;
 
   // yearly -> churn rate
   const selectedYearChurnRate =
@@ -948,7 +961,7 @@ function returnDashboardCustomerCardInfo({
       } ${yearChurnRateDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const yearChurnRateDate =
-    yearChurnRateDeltaFormatted === 'N/A' ? 'N/A' : 'Since last year';
+    yearChurnRateDeltaFormatted === 'N/A' ? 'N/A' : `Since ${prevYear}`;
 
   // yearly -> retention rate
   const selectedYearRetentionRate =
@@ -967,7 +980,7 @@ function returnDashboardCustomerCardInfo({
       } ${yearRetentionRateDeltaPercentage.toFixed(2)} %`
     : 'N/A';
   const yearRetentionRateDate =
-    yearRetentionRateDeltaFormatted === 'N/A' ? 'N/A' : 'Since last year';
+    yearRetentionRateDeltaFormatted === 'N/A' ? 'N/A' : `Since ${prevYear}`;
 
   // yearly -> overview
   const yearTotalCustomersCardInfo: DashboardCardInfo = {

@@ -1,4 +1,4 @@
-import { PieChartData } from '../../../displayStatistics/types';
+import { PieChartData } from '../../../charts/responsivePieChart/types';
 import { RatingResponse } from '../../create/types';
 import {
   DisplayAnnouncementAction,
