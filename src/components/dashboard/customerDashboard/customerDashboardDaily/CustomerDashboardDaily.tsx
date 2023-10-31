@@ -151,7 +151,7 @@ function CustomerDashboardDaily({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        dailyCharts.overview.barChartMap.get(overviewYAxisSelection) ?? []
+        dailyCharts.overview.barChartsMap.get(overviewYAxisSelection) ?? []
       }
       hideControls
       indexBy="Days"
@@ -164,7 +164,7 @@ function CustomerDashboardDaily({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        dailyCharts.overview.lineChartMap.get(overviewYAxisSelection) ?? []
+        dailyCharts.overview.lineChartsMap.get(overviewYAxisSelection) ?? []
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
@@ -175,7 +175,7 @@ function CustomerDashboardDaily({
   const displayOverviewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyCharts.overview.calendarChartMap.get(overviewYAxisSelection) ?? []
+        dailyCharts.overview.calendarChartsMap.get(overviewYAxisSelection) ?? []
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -253,7 +253,7 @@ function CustomerDashboardDaily({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.new.barChartMap.get(newYAxisSelection) ?? []}
+      barChartData={dailyCharts.new.barChartsMap.get(newYAxisSelection) ?? []}
       hideControls
       indexBy="Days"
       keys={NEW_Y_AXIS_DATA}
@@ -264,7 +264,7 @@ function CustomerDashboardDaily({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.new.lineChartMap.get(newYAxisSelection) ?? []}
+      lineChartData={dailyCharts.new.lineChartsMap.get(newYAxisSelection) ?? []}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${y} Customers`}
@@ -274,7 +274,7 @@ function CustomerDashboardDaily({
   const displayNewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyCharts.new.calendarChartMap.get(newYAxisSelection) ?? []
+        dailyCharts.new.calendarChartsMap.get(newYAxisSelection) ?? []
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -354,7 +354,7 @@ function CustomerDashboardDaily({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        dailyCharts.returning.barChartMap.get(returningYAxisSelection) ?? []
+        dailyCharts.returning.barChartsMap.get(returningYAxisSelection) ?? []
       }
       hideControls
       indexBy="Days"
@@ -367,7 +367,7 @@ function CustomerDashboardDaily({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        dailyCharts.returning.lineChartMap.get(returningYAxisSelection) ?? []
+        dailyCharts.returning.lineChartsMap.get(returningYAxisSelection) ?? []
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
@@ -378,7 +378,7 @@ function CustomerDashboardDaily({
   const displayReturningCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyCharts.returning.calendarChartMap.get(returningYAxisSelection) ??
+        dailyCharts.returning.calendarChartsMap.get(returningYAxisSelection) ??
         []
       }
       chartHeight={chartHeight}

@@ -147,68 +147,68 @@ type CustomerChurnRetentionMapKey =
 type ReturnCustomerChartsDataOutput = {
   dailyCharts: {
     overview: {
-      barChartMap: Map<CustomerOverviewMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerOverviewMapKey, CalendarChartData[]>;
-      lineChartMap: Map<CustomerOverviewMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerOverviewMapKey, BarChartData[]>;
+      calendarChartsMap: Map<CustomerOverviewMapKey, CalendarChartData[]>;
+      lineChartsMap: Map<CustomerOverviewMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     new: {
-      barChartMap: Map<CustomerNewMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerNewMapKey, CalendarChartData[]>;
-      lineChartMap: Map<CustomerNewMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerNewMapKey, BarChartData[]>;
+      calendarChartsMap: Map<CustomerNewMapKey, CalendarChartData[]>;
+      lineChartsMap: Map<CustomerNewMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     returning: {
-      barChartMap: Map<CustomerReturningMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerReturningMapKey, CalendarChartData[]>;
-      lineChartMap: Map<CustomerReturningMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerReturningMapKey, BarChartData[]>;
+      calendarChartsMap: Map<CustomerReturningMapKey, CalendarChartData[]>;
+      lineChartsMap: Map<CustomerReturningMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
   };
   monthlyCharts: {
     overview: {
-      barChartMap: Map<CustomerOverviewMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerOverviewMapKey, CalendarChartData[]>;
-      lineChartMap: Map<CustomerOverviewMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerOverviewMapKey, BarChartData[]>;
+      calendarChartsMap: Map<CustomerOverviewMapKey, CalendarChartData[]>;
+      lineChartsMap: Map<CustomerOverviewMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     new: {
-      barChartMap: Map<CustomerNewMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerNewMapKey, CalendarChartData[]>;
-      lineChartMap: Map<CustomerNewMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerNewMapKey, BarChartData[]>;
+      calendarChartsMap: Map<CustomerNewMapKey, CalendarChartData[]>;
+      lineChartsMap: Map<CustomerNewMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     returning: {
-      barChartMap: Map<CustomerReturningMapKey, BarChartData[]>;
-      calendarChartMap: Map<CustomerReturningMapKey, CalendarChartData[]>;
-      lineChartMap: Map<CustomerReturningMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerReturningMapKey, BarChartData[]>;
+      calendarChartsMap: Map<CustomerReturningMapKey, CalendarChartData[]>;
+      lineChartsMap: Map<CustomerReturningMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     churnRetention: {
-      barChartMap: Map<CustomerChurnRetentionMapKey, BarChartData[]>;
-      lineChartMap: Map<CustomerChurnRetentionMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerChurnRetentionMapKey, BarChartData[]>;
+      lineChartsMap: Map<CustomerChurnRetentionMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
   };
   yearlyCharts: {
     overview: {
-      barChartMap: Map<CustomerOverviewMapKey, BarChartData[]>;
-      lineChartMap: Map<CustomerOverviewMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerOverviewMapKey, BarChartData[]>;
+      lineChartsMap: Map<CustomerOverviewMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     new: {
-      barChartMap: Map<CustomerNewMapKey, BarChartData[]>;
-      lineChartMap: Map<CustomerNewMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerNewMapKey, BarChartData[]>;
+      lineChartsMap: Map<CustomerNewMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     returning: {
-      barChartMap: Map<CustomerReturningMapKey, BarChartData[]>;
-      lineChartMap: Map<CustomerReturningMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerReturningMapKey, BarChartData[]>;
+      lineChartsMap: Map<CustomerReturningMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
     churnRetention: {
-      barChartMap: Map<CustomerChurnRetentionMapKey, BarChartData[]>;
-      lineChartMap: Map<CustomerChurnRetentionMapKey, LineChartData[]>;
+      barChartsMap: Map<CustomerChurnRetentionMapKey, BarChartData[]>;
+      lineChartsMap: Map<CustomerChurnRetentionMapKey, LineChartData[]>;
       pieChartData: PieChartData[];
     };
   };
@@ -220,10 +220,6 @@ function returnCustomerChartsData({
   selectedCustomerMetrics,
   storeLocation,
 }: ReturnCustomerChartsDataInput): ReturnCustomerChartsDataOutput {
-  if (!selectedCustomerMetrics) {
-    return {} as ReturnCustomerChartsDataOutput;
-  }
-
   // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
@@ -2108,68 +2104,68 @@ function returnCustomerChartsData({
   return {
     dailyCharts: {
       overview: {
-        barChartMap: dailyOverviewBarChartsMap,
-        lineChartMap: dailyOverviewLineChartMap,
+        barChartsMap: dailyOverviewBarChartsMap,
+        lineChartsMap: dailyOverviewLineChartMap,
         pieChartData: dailyOverviewPieChartData,
-        calendarChartMap: dailyOverviewCalendarChartsMap,
+        calendarChartsMap: dailyOverviewCalendarChartsMap,
       },
       new: {
-        barChartMap: dailyNewBarChartMap,
-        lineChartMap: dailyNewLineChartMap,
+        barChartsMap: dailyNewBarChartMap,
+        lineChartsMap: dailyNewLineChartMap,
         pieChartData: dailyNewPieChartData,
-        calendarChartMap: dailyNewCalendarChartMap,
+        calendarChartsMap: dailyNewCalendarChartMap,
       },
       returning: {
-        barChartMap: dailyReturningBarChartMap,
-        lineChartMap: dailyReturningLineChartMap,
+        barChartsMap: dailyReturningBarChartMap,
+        lineChartsMap: dailyReturningLineChartMap,
         pieChartData: dailyReturningPieChartData,
-        calendarChartMap: dailyReturningCalendarChartMap,
+        calendarChartsMap: dailyReturningCalendarChartMap,
       },
     },
     monthlyCharts: {
       overview: {
-        barChartMap: monthlyOverviewBarChartMap,
-        lineChartMap: monthlyOverviewLineChartMap,
+        barChartsMap: monthlyOverviewBarChartMap,
+        lineChartsMap: monthlyOverviewLineChartMap,
         pieChartData: monthlyOverviewPieChartData,
-        calendarChartMap: monthlyOverviewCalendarChartMap,
+        calendarChartsMap: monthlyOverviewCalendarChartMap,
       },
       new: {
-        barChartMap: monthlyNewBarChartMap,
-        lineChartMap: monthlyNewLineChartMap,
+        barChartsMap: monthlyNewBarChartMap,
+        lineChartsMap: monthlyNewLineChartMap,
         pieChartData: monthlyNewPieChartData,
-        calendarChartMap: monthlyNewCalendarChartMap,
+        calendarChartsMap: monthlyNewCalendarChartMap,
       },
       returning: {
-        barChartMap: monthlyReturningBarChartMap,
-        lineChartMap: monthlyReturningLineChartMap,
+        barChartsMap: monthlyReturningBarChartMap,
+        lineChartsMap: monthlyReturningLineChartMap,
         pieChartData: monthlyReturningPieChartData,
-        calendarChartMap: monthlyReturningCalendarChartMap,
+        calendarChartsMap: monthlyReturningCalendarChartMap,
       },
       churnRetention: {
-        barChartMap: monthlyChurnRetentionBarChartMap,
-        lineChartMap: monthlyChurnRetentionLineChartMap,
+        barChartsMap: monthlyChurnRetentionBarChartMap,
+        lineChartsMap: monthlyChurnRetentionLineChartMap,
         pieChartData: monthlyChurnRetentionPieChartData,
       },
     },
     yearlyCharts: {
       overview: {
-        barChartMap: yearlyOverviewBarChartMap,
-        lineChartMap: yearlyOverviewLineChartMap,
+        barChartsMap: yearlyOverviewBarChartMap,
+        lineChartsMap: yearlyOverviewLineChartMap,
         pieChartData: yearlyOverviewPieChartData,
       },
       new: {
-        barChartMap: yearlyNewBarChartMap,
-        lineChartMap: yearlyNewLineChartMap,
+        barChartsMap: yearlyNewBarChartMap,
+        lineChartsMap: yearlyNewLineChartMap,
         pieChartData: yearlyNewPieChartData,
       },
       returning: {
-        barChartMap: yearlyReturningBarChartMap,
-        lineChartMap: yearlyReturningLineChartMap,
+        barChartsMap: yearlyReturningBarChartMap,
+        lineChartsMap: yearlyReturningLineChartMap,
         pieChartData: yearlyReturningPieChartData,
       },
       churnRetention: {
-        barChartMap: yearlyChurnRetentionBarChartMap,
-        lineChartMap: yearlyChurnRetentionLineChartMap,
+        barChartsMap: yearlyChurnRetentionBarChartMap,
+        lineChartsMap: yearlyChurnRetentionLineChartMap,
         pieChartData: yearlyChurnRetentionPieChartData,
       },
     },

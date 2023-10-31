@@ -150,7 +150,7 @@ function CustomerDashboardYearly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        yearlyCharts.overview.barChartMap.get(overviewYAxisSelection) ?? []
+        yearlyCharts.overview.barChartsMap.get(overviewYAxisSelection) ?? []
       }
       hideControls
       indexBy="Years"
@@ -163,7 +163,7 @@ function CustomerDashboardYearly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        yearlyCharts.overview.lineChartMap.get(overviewYAxisSelection) ?? []
+        yearlyCharts.overview.lineChartsMap.get(overviewYAxisSelection) ?? []
       }
       hideControls
       xFormat={(x) => `Year - ${x}`}
@@ -229,7 +229,7 @@ function CustomerDashboardYearly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={yearlyCharts.new.barChartMap.get(newYAxisSelection) ?? []}
+      barChartData={yearlyCharts.new.barChartsMap.get(newYAxisSelection) ?? []}
       hideControls
       indexBy="Years"
       keys={NEW_Y_AXIS_DATA}
@@ -240,7 +240,9 @@ function CustomerDashboardYearly({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={yearlyCharts.new.lineChartMap.get(newYAxisSelection) ?? []}
+      lineChartData={
+        yearlyCharts.new.lineChartsMap.get(newYAxisSelection) ?? []
+      }
       hideControls
       xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `${y} Customers`}
@@ -307,7 +309,7 @@ function CustomerDashboardYearly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        yearlyCharts.returning.barChartMap.get(returningYAxisSelection) ?? []
+        yearlyCharts.returning.barChartsMap.get(returningYAxisSelection) ?? []
       }
       hideControls
       indexBy="Years"
@@ -320,7 +322,7 @@ function CustomerDashboardYearly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        yearlyCharts.returning.lineChartMap.get(returningYAxisSelection) ?? []
+        yearlyCharts.returning.lineChartsMap.get(returningYAxisSelection) ?? []
       }
       hideControls
       xFormat={(x) => `Year - ${x}`}
@@ -392,7 +394,7 @@ function CustomerDashboardYearly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        yearlyCharts.churnRetention.barChartMap.get(
+        yearlyCharts.churnRetention.barChartsMap.get(
           churnRetentionYAxisSelection
         ) ?? []
       }
@@ -407,7 +409,7 @@ function CustomerDashboardYearly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        yearlyCharts.churnRetention.lineChartMap.get(
+        yearlyCharts.churnRetention.lineChartsMap.get(
           churnRetentionYAxisSelection
         ) ?? []
       }

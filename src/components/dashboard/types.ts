@@ -249,7 +249,7 @@ type BusinessMetric = {
   repairMetrics: RepairMetric[];
 };
 
-type DashboardCalendarView = 'Yearly' | 'Monthly' | 'Daily';
+type DashboardCalendarView = 'Daily' | 'Monthly' | 'Yearly';
 
 export type {
   BusinessMetric,

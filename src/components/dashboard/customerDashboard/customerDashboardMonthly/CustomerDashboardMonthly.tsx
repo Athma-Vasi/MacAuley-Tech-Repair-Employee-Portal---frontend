@@ -150,7 +150,7 @@ function CustomerDashboardMonthly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        monthlyCharts.overview.barChartMap.get(overviewYAxisSelection) ?? []
+        monthlyCharts.overview.barChartsMap.get(overviewYAxisSelection) ?? []
       }
       hideControls
       indexBy="Months"
@@ -163,7 +163,7 @@ function CustomerDashboardMonthly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        monthlyCharts.overview.lineChartMap.get(overviewYAxisSelection) ?? []
+        monthlyCharts.overview.lineChartsMap.get(overviewYAxisSelection) ?? []
       }
       hideControls
       xFormat={(x) => `Month - ${x}`}
@@ -172,14 +172,14 @@ function CustomerDashboardMonthly({
   );
 
   console.log(
-    'monthlyCharts.overview.calendarChartMap.get(overviewYAxisSelection): ',
-    monthlyCharts.overview.calendarChartMap.get(overviewYAxisSelection)
+    'monthlyCharts.overview.calendarChartsMap.get(overviewYAxisSelection): ',
+    monthlyCharts.overview.calendarChartsMap.get(overviewYAxisSelection)
   );
 
   const displayOverviewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        monthlyCharts.overview.calendarChartMap.get(overviewYAxisSelection) ??
+        monthlyCharts.overview.calendarChartsMap.get(overviewYAxisSelection) ??
         []
       }
       chartHeight={chartHeight}
@@ -258,7 +258,7 @@ function CustomerDashboardMonthly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={monthlyCharts.new.barChartMap.get(newYAxisSelection) ?? []}
+      barChartData={monthlyCharts.new.barChartsMap.get(newYAxisSelection) ?? []}
       hideControls
       indexBy="Months"
       keys={NEW_Y_AXIS_DATA}
@@ -270,7 +270,7 @@ function CustomerDashboardMonthly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        monthlyCharts.new.lineChartMap.get(newYAxisSelection) ?? []
+        monthlyCharts.new.lineChartsMap.get(newYAxisSelection) ?? []
       }
       hideControls
       xFormat={(x) => `Month - ${x}`}
@@ -279,14 +279,14 @@ function CustomerDashboardMonthly({
   );
 
   console.log(
-    'monthlyCharts.new.calendarChartMap.get(newYAxisSelection)',
-    monthlyCharts.new.calendarChartMap.get(newYAxisSelection)
+    'monthlyCharts.new.calendarChartsMap.get(newYAxisSelection)',
+    monthlyCharts.new.calendarChartsMap.get(newYAxisSelection)
   );
 
   const displayNewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        monthlyCharts.new.calendarChartMap.get(newYAxisSelection) ?? []
+        monthlyCharts.new.calendarChartsMap.get(newYAxisSelection) ?? []
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -366,7 +366,7 @@ function CustomerDashboardMonthly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        monthlyCharts.returning.barChartMap.get(returningYAxisSelection) ?? []
+        monthlyCharts.returning.barChartsMap.get(returningYAxisSelection) ?? []
       }
       hideControls
       indexBy="Months"
@@ -379,7 +379,7 @@ function CustomerDashboardMonthly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        monthlyCharts.returning.lineChartMap.get(returningYAxisSelection) ?? []
+        monthlyCharts.returning.lineChartsMap.get(returningYAxisSelection) ?? []
       }
       hideControls
       xFormat={(x) => `Month - ${x}`}
@@ -390,8 +390,9 @@ function CustomerDashboardMonthly({
   const displayReturningCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        monthlyCharts.returning.calendarChartMap.get(returningYAxisSelection) ??
-        []
+        monthlyCharts.returning.calendarChartsMap.get(
+          returningYAxisSelection
+        ) ?? []
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -472,7 +473,7 @@ function CustomerDashboardMonthly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        monthlyCharts.churnRetention.barChartMap.get(
+        monthlyCharts.churnRetention.barChartsMap.get(
           churnRetentionYAxisSelection
         ) ?? []
       }
@@ -487,7 +488,7 @@ function CustomerDashboardMonthly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        monthlyCharts.churnRetention.lineChartMap.get(
+        monthlyCharts.churnRetention.lineChartsMap.get(
           churnRetentionYAxisSelection
         ) ?? []
       }
