@@ -1,4 +1,3 @@
-import { StoreLocation } from '../../../types';
 import { BarChartData } from '../../charts/responsiveBarChart/types';
 import { CalendarChartData } from '../../charts/responsiveCalendarChart/types';
 import { LineChartData } from '../../charts/responsiveLineChart/types';
@@ -1625,61 +1624,6 @@ function returnCustomerChartsData({
       initialYearlyNewBarChartData
     ) ?? initialYearlyNewBarChartData;
 
-  // yearly -> new -> calendar chart map
-  const initialYearlyNewCalendarChartData = new Map<
-    CustomerNewMapKey,
-    CalendarChartData[]
-  >([
-    ['Overview', []],
-    ['New Online', []],
-    ['New In-Store', []],
-    ['New Repair', []],
-  ]);
-
-  const yearlyNewCalendarChartMap =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.reduce(
-      (yearlyNewCalendarChartAcc, yearlyMetric) => {
-        const { monthlyMetrics } = yearlyMetric;
-
-        monthlyMetrics.forEach((monthlyMetric) => {
-          const { dailyMetrics } = monthlyMetric;
-
-          dailyMetrics.forEach((dailyMetric) => {
-            const { day, customers } = dailyMetric;
-
-            const yearlyNewOnline = {
-              day: `${selectedYear}-${monthNumber}-${day}`,
-              value: customers.new.sales.online,
-            };
-            yearlyNewCalendarChartAcc.get('New Online')?.push(yearlyNewOnline);
-
-            const yearlyNewInStore = {
-              day: `${selectedYear}-${monthNumber}-${day}`,
-              value: customers.new.sales.inStore,
-            };
-            yearlyNewCalendarChartAcc
-              .get('New In-Store')
-              ?.push(yearlyNewInStore);
-
-            const yearlyNewRepair = {
-              day: `${selectedYear}-${monthNumber}-${day}`,
-              value: customers.new.repair,
-            };
-            yearlyNewCalendarChartAcc.get('New Repair')?.push(yearlyNewRepair);
-
-            const yearlyNewTotal = {
-              day: `${selectedYear}-${monthNumber}-${day}`,
-              value: customers.new.total,
-            };
-            yearlyNewCalendarChartAcc.get('Overview')?.push(yearlyNewTotal);
-          });
-        });
-
-        return yearlyNewCalendarChartAcc;
-      },
-      initialYearlyNewCalendarChartData
-    ) ?? initialYearlyNewCalendarChartData;
-
   // yearly -> new -> line chart map
   const initialYearlyNewLineChartData = new Map<
     CustomerNewMapKey,
@@ -1825,67 +1769,6 @@ function returnCustomerChartsData({
       },
       initialYearlyReturningBarChartData
     ) ?? initialYearlyReturningBarChartData;
-
-  // yearly -> returning -> calendar chart map
-  const initialYearlyReturningCalendarChartData = new Map<
-    CustomerReturningMapKey,
-    CalendarChartData[]
-  >([
-    ['Overview', []],
-    ['Returning Online', []],
-    ['Returning In-Store', []],
-    ['Returning Repair', []],
-  ]);
-
-  const yearlyReturningCalendarChartMap =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.reduce(
-      (yearlyReturningCalendarChartAcc, yearlyMetric) => {
-        const { monthlyMetrics } = yearlyMetric;
-
-        monthlyMetrics.forEach((monthlyMetric) => {
-          const { dailyMetrics } = monthlyMetric;
-
-          dailyMetrics.forEach((dailyMetric) => {
-            const { day, customers } = dailyMetric;
-
-            const yearlyReturningOnline = {
-              day: `${selectedYear}-${monthNumber}-${day}`,
-              value: customers.returning.sales.online,
-            };
-            yearlyReturningCalendarChartAcc
-              .get('Returning Online')
-              ?.push(yearlyReturningOnline);
-
-            const yearlyReturningInStore = {
-              day: `${selectedYear}-${monthNumber}-${day}`,
-              value: customers.returning.sales.inStore,
-            };
-            yearlyReturningCalendarChartAcc
-              .get('Returning In-Store')
-              ?.push(yearlyReturningInStore);
-
-            const yearlyReturningRepair = {
-              day: `${selectedYear}-${monthNumber}-${day}`,
-              value: customers.returning.repair,
-            };
-            yearlyReturningCalendarChartAcc
-              .get('Returning Repair')
-              ?.push(yearlyReturningRepair);
-
-            const yearlyReturningTotal = {
-              day: `${selectedYear}-${monthNumber}-${day}`,
-              value: customers.returning.total,
-            };
-            yearlyReturningCalendarChartAcc
-              .get('Overview')
-              ?.push(yearlyReturningTotal);
-          });
-        });
-
-        return yearlyReturningCalendarChartAcc;
-      },
-      initialYearlyReturningCalendarChartData
-    ) ?? initialYearlyReturningCalendarChartData;
 
   // yearly -> returning -> line chart map
   const initialYearlyReturningLineChartData = new Map<
