@@ -79,33 +79,26 @@ type LocationYearSpread = Record<
   Record<string, [number, number]>
 >;
 
-type FinancialMetric = {
+type FinancialMetricCategory = {
+  total: number;
+  repair: number;
+  sales: {
+    total: number;
+    inStore: number;
+    online: number;
+  };
+};
+
+type YearlyFinancialMetric = {
   year: Year;
   averageOrderValue: number;
   conversionRate: number;
-  expenses: number;
   netProfitMargin: number;
-  orders: number;
-  profit: number;
-  revenue: number;
 
-  repairs: {
-    revenue: number;
-    orders: number;
-  };
-
-  sales: {
-    orders: {
-      total: number;
-      online: number;
-      inStore: number;
-    };
-    revenue: {
-      total: number;
-      online: number;
-      inStore: number;
-    };
-  };
+  expenses: FinancialMetricCategory;
+  profit: FinancialMetricCategory;
+  revenue: FinancialMetricCategory;
+  transactions: FinancialMetricCategory;
 
   monthlyMetrics: MonthlyFinancialMetric[];
 };
@@ -114,29 +107,12 @@ type MonthlyFinancialMetric = {
   month: Month;
   averageOrderValue: number;
   conversionRate: number;
-  expenses: number;
   netProfitMargin: number;
-  orders: number;
-  profit: number;
-  revenue: number;
 
-  repairs: {
-    revenue: number;
-    orders: number;
-  };
-
-  sales: {
-    orders: {
-      total: number;
-      online: number;
-      inStore: number;
-    };
-    revenue: {
-      total: number;
-      online: number;
-      inStore: number;
-    };
-  };
+  expenses: FinancialMetricCategory;
+  profit: FinancialMetricCategory;
+  revenue: FinancialMetricCategory;
+  transactions: FinancialMetricCategory;
 
   dailyMetrics: DailyFinancialMetric[];
 };
@@ -145,29 +121,12 @@ type DailyFinancialMetric = {
   day: string;
   averageOrderValue: number;
   conversionRate: number;
-  expenses: number;
   netProfitMargin: number;
-  orders: number;
-  profit: number;
-  revenue: number;
 
-  repairs: {
-    orders: number;
-    revenue: number;
-  };
-
-  sales: {
-    orders: {
-      inStore: number;
-      online: number;
-      total: number;
-    };
-    revenue: {
-      inStore: number;
-      online: number;
-      total: number;
-    };
-  };
+  expenses: FinancialMetricCategory;
+  profit: FinancialMetricCategory;
+  revenue: FinancialMetricCategory;
+  transactions: FinancialMetricCategory;
 };
 
 type CustomerMetrics = {
@@ -220,6 +179,12 @@ type CustomerDailyMetric = {
   };
 };
 
+type ProductMetricCategory = {
+  total: number;
+  online: number;
+  inStore: number;
+};
+
 type ProductMetric = {
   name: ProductCategory;
   yearlyMetrics: ProductYearlyMetric[];
@@ -227,47 +192,24 @@ type ProductMetric = {
 
 type ProductYearlyMetric = {
   year: Year;
-  orders: {
-    total: number;
-    online: number;
-    inStore: number;
-  };
-  revenue: {
-    total: number;
-    online: number;
-    inStore: number;
-  };
+  transactions: ProductMetricCategory;
+  revenue: ProductMetricCategory;
+
   monthlyMetrics: ProductMonthlyMetric[];
 };
 
 type ProductMonthlyMetric = {
   month: Month;
-  orders: {
-    total: number;
-    online: number;
-    inStore: number;
-  };
-  revenue: {
-    total: number;
-    online: number;
-    inStore: number;
-  };
+  transactions: ProductMetricCategory;
+  revenue: ProductMetricCategory;
 
   dailyMetrics: ProductDailyMetric[];
 };
 
 type ProductDailyMetric = {
   day: string;
-  orders: {
-    total: number;
-    online: number;
-    inStore: number;
-  };
-  revenue: {
-    total: number;
-    online: number;
-    inStore: number;
-  };
+  transactions: ProductMetricCategory;
+  revenue: ProductMetricCategory;
 };
 
 type RepairMetric = {
@@ -278,7 +220,7 @@ type RepairMetric = {
 type RepairYearlyMetric = {
   year: Year;
   revenue: number;
-  orders: number;
+  transactions: number;
 
   monthlyMetrics: RepairMonthlyMetric[];
 };
@@ -286,7 +228,7 @@ type RepairYearlyMetric = {
 type RepairMonthlyMetric = {
   month: Month;
   revenue: number;
-  orders: number;
+  transactions: number;
 
   dailyMetrics: RepairDailyMetric[];
 };
@@ -294,7 +236,7 @@ type RepairMonthlyMetric = {
 type RepairDailyMetric = {
   day: string;
   revenue: number;
-  orders: number;
+  transactions: number;
 };
 
 type BusinessMetricStoreLocation = 'All Locations' | StoreLocation;
@@ -302,10 +244,12 @@ type BusinessMetricStoreLocation = 'All Locations' | StoreLocation;
 type BusinessMetric = {
   storeLocation: BusinessMetricStoreLocation;
   customerMetrics: CustomerMetrics;
-  financialMetrics: FinancialMetric[];
+  financialMetrics: YearlyFinancialMetric[];
   productMetrics: ProductMetric[];
   repairMetrics: RepairMetric[];
 };
+
+type DashboardCalendarView = 'Yearly' | 'Monthly' | 'Daily';
 
 export type {
   BusinessMetric,
@@ -316,10 +260,10 @@ export type {
   CustomerYearlyMetric,
   DailyFinancialMetric,
   DashboardAction,
+  DashboardCalendarView,
   DashboardDispatch,
   DashboardState,
   DaysInMonthsInYears,
-  FinancialMetric,
   LocationYearSpread,
   Month,
   MonthlyFinancialMetric,
@@ -337,4 +281,5 @@ export type {
   SalesDataEntryType,
   SalesMetricSelection,
   Year,
+  YearlyFinancialMetric,
 };

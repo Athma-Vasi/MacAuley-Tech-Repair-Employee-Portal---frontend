@@ -16,6 +16,7 @@ import {
   initialDashboardState,
 } from './state';
 import { createRandomBusinessMetrics } from './utils';
+import FinancialDashboard from './financialDashboard/FinancialDashboard';
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -51,15 +52,20 @@ function Dashboard() {
     return null;
   }
 
-  const displayCustomerDashboard = (
-    <CustomerDashboard businessMetrics={businessMetrics} />
+  // const displayCustomerDashboard = (
+  //   <CustomerDashboard businessMetrics={businessMetrics} />
+  // );
+
+  const displayFinancialDashboard = (
+    <FinancialDashboard businessMetrics={businessMetrics} />
   );
 
   const displayDashboardComponent = (
     <Stack w="100%">
       <Title order={2}>Dashboard</Title>
       <Text size="sm">Welcome to your dashboard</Text>
-      {displayCustomerDashboard}
+      {/* {displayCustomerDashboard} */}
+      {displayFinancialDashboard}
     </Stack>
   );
 

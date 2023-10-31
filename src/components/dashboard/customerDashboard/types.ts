@@ -1,15 +1,16 @@
-import { StoreLocation } from '../../../types';
 import { ReturnDashboardCustomerCardInfoOutput } from '../jsxHelpers';
-import { BusinessMetricStoreLocation, Month, Year } from '../types';
+import {
+  BusinessMetricStoreLocation,
+  DashboardCalendarView,
+  Month,
+  Year,
+} from '../types';
 import {
   CustomerNewMapKey,
   CustomerOverviewMapKey,
   CustomerReturningMapKey,
   ReturnCustomerChartsDataOutput,
-  SelectedDateCustomerMetrics,
 } from './utils';
-
-type DashboardCalendarView = 'Yearly' | 'Monthly' | 'Daily';
 
 type YAxisCustomerChartSelection = {
   newYAxis: CustomerNewMapKey;
