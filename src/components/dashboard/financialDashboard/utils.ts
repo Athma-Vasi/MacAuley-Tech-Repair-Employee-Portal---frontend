@@ -142,9 +142,9 @@ type FinancialMetricCalendarMapKey =
   | 'Online'; // y-axis variables: online
 
 type FinancialOtherMetricsMapkey =
-  | 'Average Order Value'
-  | 'Conversion Rate'
-  | 'Net Profit Margin';
+  | 'Average Order Value' // y-axis variables: average order value
+  | 'Conversion Rate' // y-axis variables: conversion rate
+  | 'Net Profit Margin'; // y-axis variables: net profit margin
 
 type FinancialMetricsPieChartsObj = {
   Overview: PieChartData[];
@@ -240,10 +240,7 @@ type ReturnFinancialChartsDataOutput = {
     };
     otherMetrics: {
       barChartsMap: Map<FinancialOtherMetricsMapkey, BarChartData[]>;
-      calendarChartsMap: Map<
-        FinancialMetricCalendarMapKey,
-        CalendarChartData[]
-      >;
+      calendarChartsMap: Map<FinancialOtherMetricsMapkey, CalendarChartData[]>;
       lineChartsMap: Map<FinancialOtherMetricsMapkey, LineChartData[]>;
     };
   };
@@ -286,10 +283,7 @@ type ReturnFinancialChartsDataOutput = {
     };
     otherMetrics: {
       barChartsMap: Map<FinancialOtherMetricsMapkey, BarChartData[]>;
-      calendarChartsMap: Map<
-        FinancialMetricCalendarMapKey,
-        CalendarChartData[]
-      >;
+      calendarChartsMap: Map<FinancialOtherMetricsMapkey, CalendarChartData[]>;
       lineChartsMap: Map<FinancialOtherMetricsMapkey, LineChartData[]>;
     };
   };
@@ -326,12 +320,7 @@ function returnFinancialChartsData({
   months,
   selectedFinancialMetrics,
   storeLocation,
-}: ReturnFinancialChartsDataInput) {
-  // selected store's business metrics
-  const currentStoreMetrics = businessMetrics.find(
-    (businessMetric) => businessMetric.storeLocation === storeLocation
-  );
-
+}: ReturnFinancialChartsDataInput): ReturnFinancialChartsDataOutput {
   // selected year's metrics
   const {
     yearFinancialMetrics: { selectedYearMetrics },
@@ -370,7 +359,7 @@ function returnFinancialChartsData({
 
   // templates -> calendar chart map
   const CALENDAR_CHART_MAP_TEMPLATE = new Map<
-    FinancialMetricBarLineMapKey,
+    FinancialMetricCalendarMapKey,
     CalendarChartData[]
   >([
     ['Total', []],
@@ -3217,6 +3206,1118 @@ function returnFinancialChartsData({
     initialMonthlyOtherMetricsLineChartsMap,
   ];
 
+  // yearly
+
+  // yearly -> templates
+
+  // yearly -> templates ->  profit
+
+  // yearly -> templates -> profit -> bar chart data
+  const initialYearlyProfitBarChartsMap = structuredClone(
+    BAR_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> profit -> line chart data
+  const initialYearlyProfitLineChartsMap = structuredClone(
+    LINE_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> profit -> pie chart data
+  const yearlyProfitPieChartsObj: FinancialMetricsPieChartsObj = {
+    Overview: [
+      {
+        id: 'Repair',
+        label: 'Repair',
+        value: selectedYearMetrics?.profit.repair ?? 0,
+      },
+      {
+        id: 'Sales',
+        label: 'Sales',
+        value: selectedYearMetrics?.profit.sales.total ?? 0,
+      },
+    ],
+    Sales: [
+      {
+        id: 'In-Store',
+        label: 'In-Store',
+        value: selectedYearMetrics?.profit.sales.inStore ?? 0,
+      },
+      {
+        id: 'Online',
+        label: 'Online',
+        value: selectedYearMetrics?.profit.sales.online ?? 0,
+      },
+    ],
+  };
+
+  // yearly -> templates -> expenses
+
+  // yearly -> templates -> expenses -> bar chart data
+  const initialYearlyExpensesBarChartsMap = structuredClone(
+    BAR_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> expenses -> line chart data
+  const initialYearlyExpensesLineChartsMap = structuredClone(
+    LINE_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> expenses -> pie chart data
+  const yearlyExpensesPieChartsObj: FinancialMetricsPieChartsObj = {
+    Overview: [
+      {
+        id: 'Repair',
+        label: 'Repair',
+        value: selectedYearMetrics?.expenses.repair ?? 0,
+      },
+      {
+        id: 'Sales',
+        label: 'Sales',
+        value: selectedYearMetrics?.expenses.sales.total ?? 0,
+      },
+    ],
+    Sales: [
+      {
+        id: 'In-Store',
+        label: 'In-Store',
+        value: selectedYearMetrics?.expenses.sales.inStore ?? 0,
+      },
+      {
+        id: 'Online',
+        label: 'Online',
+        value: selectedYearMetrics?.expenses.sales.online ?? 0,
+      },
+    ],
+  };
+
+  // yearly -> templates -> revenue
+
+  // yearly -> templates -> revenue -> bar chart data
+  const initialYearlyRevenueBarChartsMap = structuredClone(
+    BAR_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> revenue -> line chart data
+  const initialYearlyRevenueLineChartsMap = structuredClone(
+    LINE_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> revenue -> pie chart data
+  const yearlyRevenuePieChartsObj: FinancialMetricsPieChartsObj = {
+    Overview: [
+      {
+        id: 'Repair',
+        label: 'Repair',
+        value: selectedYearMetrics?.revenue.repair ?? 0,
+      },
+      {
+        id: 'Sales',
+        label: 'Sales',
+        value: selectedYearMetrics?.revenue.sales.total ?? 0,
+      },
+    ],
+    Sales: [
+      {
+        id: 'In-Store',
+        label: 'In-Store',
+        value: selectedYearMetrics?.revenue.sales.inStore ?? 0,
+      },
+      {
+        id: 'Online',
+        label: 'Online',
+        value: selectedYearMetrics?.revenue.sales.online ?? 0,
+      },
+    ],
+  };
+
+  // yearly -> templates -> transactions
+
+  // yearly -> templates -> transactions -> bar chart data
+  const initialYearlyTransactionsBarChartsMap = structuredClone(
+    BAR_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> transactions -> line chart data
+  const initialYearlyTransactionsLineChartsMap = structuredClone(
+    LINE_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> transactions -> pie chart data
+  const yearlyTransactionsPieChartsObj: FinancialMetricsPieChartsObj = {
+    Overview: [
+      {
+        id: 'Repair',
+        label: 'Repair',
+        value: selectedYearMetrics?.transactions.repair ?? 0,
+      },
+      {
+        id: 'Sales',
+        label: 'Sales',
+        value: selectedYearMetrics?.transactions.sales.total ?? 0,
+      },
+    ],
+    Sales: [
+      {
+        id: 'In-Store',
+        label: 'In-Store',
+        value: selectedYearMetrics?.transactions.sales.inStore ?? 0,
+      },
+      {
+        id: 'Online',
+        label: 'Online',
+        value: selectedYearMetrics?.transactions.sales.online ?? 0,
+      },
+    ],
+  };
+
+  // yearly -> templates -> other metrics
+
+  // yearly -> templates -> other metrics -> bar chart data
+  const initialYearlyOtherMetricsBarChartsMap = structuredClone(
+    OTHER_METRICS_BAR_CHART_MAP_TEMPLATE
+  );
+  // yearly -> templates -> other metrics -> line chart data
+  const initialYearlyOtherMetricsLineChartsMap = structuredClone(
+    OTHER_METRICS_LINE_CHART_MAP_TEMPLATE
+  );
+
+  // selected store's business metrics
+  const currentStoreMetrics = businessMetrics.find(
+    (businessMetric) => businessMetric.storeLocation === storeLocation
+  );
+
+  // yearly -> metrics
+
+  const [
+    // profit
+    yearlyProfitBarChartsMap,
+    yearlyProfitLineChartsMap,
+    // expenses
+    yearlyExpensesBarChartsMap,
+    yearlyExpensesLineChartsMap,
+    // revenue
+    yearlyRevenueBarChartsMap,
+    yearlyRevenueLineChartsMap,
+    // transactions
+    yearlyTransactionsBarChartsMap,
+    yearlyTransactionsLineChartsMap,
+    // other metrics
+    yearlyOtherMetricsBarChartsMap,
+    yearlyOtherMetricsLineChartsMap,
+  ] = currentStoreMetrics?.financialMetrics.reduce(
+    (yearlyMetricsChartsMapAcc, yearlyMetric) => {
+      const [
+        // profit
+        yearlyProfitBarChartsMapAcc,
+        yearlyProfitLineChartsMapAcc,
+        // expenses
+        yearlyExpensesBarChartsMapAcc,
+        yearlyExpensesLineChartsMapAcc,
+        // revenue
+        yearlyRevenueBarChartsMapAcc,
+        yearlyRevenueLineChartsMapAcc,
+        // transactions
+        yearlyTransactionsBarChartsMapAcc,
+        yearlyTransactionsLineChartsMapAcc,
+        // other metrics
+        yearlyOtherMetricsBarChartsMapAcc,
+        yearlyOtherMetricsLineChartsMapAcc,
+      ] = yearlyMetricsChartsMapAcc;
+
+      // profit
+
+      const {
+        year,
+        profit: {
+          total: yearlyTotalProfit,
+          repair: yearlyRepairProfit,
+          sales: yearlySalesProfit,
+        },
+      } = yearlyMetric;
+
+      // profit -> bar chart data
+
+      // profit -> bar chart data -> total
+      const yearlyProfitTotalBarChartData: BarChartData = {
+        Years: year,
+        Total: yearlyTotalProfit,
+      };
+      yearlyProfitBarChartsMapAcc
+        .get('Total')
+        ?.push(yearlyProfitTotalBarChartData);
+
+      // profit -> bar chart data -> all
+      const yearlyProfitAllBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairProfit,
+        'In-Store': yearlySalesProfit.inStore,
+        Online: yearlySalesProfit.online,
+      };
+      yearlyProfitBarChartsMapAcc.get('All')?.push(yearlyProfitAllBarChartData);
+
+      // profit -> bar chart data -> overview
+      const yearlyProfitOverviewBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairProfit,
+        Sales: yearlySalesProfit.total,
+      };
+      yearlyProfitBarChartsMapAcc
+        .get('Overview')
+        ?.push(yearlyProfitOverviewBarChartData);
+
+      // profit -> bar chart data -> repair
+      const yearlyProfitRepairBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairProfit,
+      };
+      yearlyProfitBarChartsMapAcc
+        .get('Repair')
+        ?.push(yearlyProfitRepairBarChartData);
+
+      // profit -> bar chart data -> sales
+      const yearlyProfitSalesBarChartData: BarChartData = {
+        Years: year,
+        'In-Store': yearlySalesProfit.inStore,
+        Online: yearlySalesProfit.online,
+      };
+      yearlyProfitBarChartsMapAcc
+        .get('Sales')
+        ?.push(yearlyProfitSalesBarChartData);
+
+      // profit -> bar chart data -> in-store
+      const yearlyProfitInStoreBarChartData: BarChartData = {
+        Years: year,
+        'In-Store': yearlySalesProfit.inStore,
+      };
+      yearlyProfitBarChartsMapAcc
+        .get('In-Store')
+        ?.push(yearlyProfitInStoreBarChartData);
+
+      // profit -> bar chart data -> online
+      const yearlyProfitOnlineBarChartData: BarChartData = {
+        Years: year,
+        Online: yearlySalesProfit.online,
+      };
+      yearlyProfitBarChartsMapAcc
+        .get('Online')
+        ?.push(yearlyProfitOnlineBarChartData);
+
+      // profit -> line chart data
+
+      // profit -> line chart data -> total
+      const yearlyProfitTotalLineChartData = {
+        x: year,
+        y: yearlyTotalProfit,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('Total')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Total')
+        ?.data.push(yearlyProfitTotalLineChartData);
+
+      // profit -> line chart data -> all -> repair
+      const yearlyProfitAllRepairLineChartData = {
+        x: year,
+        y: yearlyRepairProfit,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('All')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyProfitAllRepairLineChartData);
+
+      // profit -> line chart data -> all -> in-store
+      const yearlyProfitAllInStoreLineChartData = {
+        x: year,
+        y: yearlySalesProfit.inStore,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('All')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyProfitAllInStoreLineChartData);
+
+      // profit -> line chart data -> all -> online
+      const yearlyProfitAllOnlineLineChartData = {
+        x: year,
+        y: yearlySalesProfit.online,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('All')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyProfitAllOnlineLineChartData);
+
+      // profit -> line chart data -> overview -> repair
+      const yearlyProfitOverviewRepairLineChartData = {
+        x: year,
+        y: yearlyRepairProfit,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('Overview')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyProfitOverviewRepairLineChartData);
+
+      // profit -> line chart data -> overview -> sales
+      const yearlyProfitOverviewSalesLineChartData = {
+        x: year,
+        y: yearlySalesProfit.total,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('Overview')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
+        ?.data.push(yearlyProfitOverviewSalesLineChartData);
+
+      // profit -> line chart data -> repair
+      const yearlyProfitRepairLineChartData = {
+        x: year,
+        y: yearlyRepairProfit,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('Repair')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyProfitRepairLineChartData);
+
+      // profit -> line chart data -> sales -> in-store
+      const yearlyProfitSalesInStoreLineChartData = {
+        x: year,
+        y: yearlySalesProfit.inStore,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('Sales')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyProfitSalesInStoreLineChartData);
+
+      // profit -> line chart data -> sales -> online
+      const yearlyProfitSalesOnlineLineChartData = {
+        x: year,
+        y: yearlySalesProfit.online,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('Sales')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyProfitSalesOnlineLineChartData);
+
+      // profit -> line chart data -> in-store
+      const yearlyProfitInStoreLineChartData = {
+        x: year,
+        y: yearlySalesProfit.inStore,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('In-Store')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyProfitInStoreLineChartData);
+
+      // profit -> line chart data -> online
+      const yearlyProfitOnlineLineChartData = {
+        x: year,
+        y: yearlySalesProfit.online,
+      };
+      yearlyProfitLineChartsMapAcc
+        .get('Online')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyProfitOnlineLineChartData);
+
+      // expenses
+
+      const {
+        expenses: {
+          total: yearlyTotalExpenses,
+          repair: yearlyRepairExpenses,
+          sales: yearlySalesExpenses,
+        },
+      } = yearlyMetric;
+
+      // expenses -> bar chart data
+
+      // expenses -> bar chart data -> total
+      const yearlyExpensesTotalBarChartData: BarChartData = {
+        Years: year,
+        Total: yearlyTotalExpenses,
+      };
+      yearlyExpensesBarChartsMapAcc
+        .get('Total')
+        ?.push(yearlyExpensesTotalBarChartData);
+
+      // expenses -> bar chart data -> all
+      const yearlyExpensesAllBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairExpenses,
+        'In-Store': yearlySalesExpenses.inStore,
+        Online: yearlySalesExpenses.online,
+      };
+      yearlyExpensesBarChartsMapAcc
+        .get('All')
+        ?.push(yearlyExpensesAllBarChartData);
+
+      // expenses -> bar chart data -> overview
+      const yearlyExpensesOverviewBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairExpenses,
+        Sales: yearlySalesExpenses.total,
+      };
+      yearlyExpensesBarChartsMapAcc
+        .get('Overview')
+        ?.push(yearlyExpensesOverviewBarChartData);
+
+      // expenses -> bar chart data -> repair
+      const yearlyExpensesRepairBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairExpenses,
+      };
+      yearlyExpensesBarChartsMapAcc
+        .get('Repair')
+        ?.push(yearlyExpensesRepairBarChartData);
+
+      // expenses -> bar chart data -> sales
+      const yearlyExpensesSalesBarChartData: BarChartData = {
+        Years: year,
+        'In-Store': yearlySalesExpenses.inStore,
+        Online: yearlySalesExpenses.online,
+      };
+      yearlyExpensesBarChartsMapAcc
+        .get('Sales')
+        ?.push(yearlyExpensesSalesBarChartData);
+
+      // expenses -> bar chart data -> in-store
+      const yearlyExpensesInStoreBarChartData: BarChartData = {
+        Years: year,
+        'In-Store': yearlySalesExpenses.inStore,
+      };
+      yearlyExpensesBarChartsMapAcc
+        .get('In-Store')
+        ?.push(yearlyExpensesInStoreBarChartData);
+
+      // expenses -> bar chart data -> online
+      const yearlyExpensesOnlineBarChartData: BarChartData = {
+        Years: year,
+        Online: yearlySalesExpenses.online,
+      };
+      yearlyExpensesBarChartsMapAcc
+        .get('Online')
+        ?.push(yearlyExpensesOnlineBarChartData);
+
+      // expenses -> line chart data
+
+      // expenses -> line chart data -> total
+      const yearlyExpensesTotalLineChartData = {
+        x: year,
+        y: yearlyTotalExpenses,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('Total')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Total')
+        ?.data.push(yearlyExpensesTotalLineChartData);
+
+      // expenses -> line chart data -> all -> repair
+      const yearlyExpensesAllRepairLineChartData = {
+        x: year,
+        y: yearlyRepairExpenses,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('All')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyExpensesAllRepairLineChartData);
+
+      // expenses -> line chart data -> all -> in-store
+      const yearlyExpensesAllInStoreLineChartData = {
+        x: year,
+        y: yearlySalesExpenses.inStore,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('All')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyExpensesAllInStoreLineChartData);
+
+      // expenses -> line chart data -> all -> online
+      const yearlyExpensesAllOnlineLineChartData = {
+        x: year,
+        y: yearlySalesExpenses.online,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('All')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyExpensesAllOnlineLineChartData);
+
+      // expenses -> line chart data -> overview -> repair
+      const yearlyExpensesOverviewRepairLineChartData = {
+        x: year,
+        y: yearlyRepairExpenses,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('Overview')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyExpensesOverviewRepairLineChartData);
+
+      // expenses -> line chart data -> overview -> sales
+      const yearlyExpensesOverviewSalesLineChartData = {
+        x: year,
+        y: yearlySalesExpenses.total,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('Overview')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
+        ?.data.push(yearlyExpensesOverviewSalesLineChartData);
+
+      // expenses -> line chart data -> repair
+      const yearlyExpensesRepairLineChartData = {
+        x: year,
+        y: yearlyRepairExpenses,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('Repair')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyExpensesRepairLineChartData);
+
+      // expenses -> line chart data -> sales -> in-store
+      const yearlyExpensesSalesInStoreLineChartData = {
+        x: year,
+        y: yearlySalesExpenses.inStore,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('Sales')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyExpensesSalesInStoreLineChartData);
+
+      // expenses -> line chart data -> sales -> online
+      const yearlyExpensesSalesOnlineLineChartData = {
+        x: year,
+        y: yearlySalesExpenses.online,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('Sales')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyExpensesSalesOnlineLineChartData);
+
+      // expenses -> line chart data -> in-store
+      const yearlyExpensesInStoreLineChartData = {
+        x: year,
+        y: yearlySalesExpenses.inStore,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('In-Store')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyExpensesInStoreLineChartData);
+
+      // expenses -> line chart data -> online
+      const yearlyExpensesOnlineLineChartData = {
+        x: year,
+        y: yearlySalesExpenses.online,
+      };
+      yearlyExpensesLineChartsMapAcc
+        .get('Online')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyExpensesOnlineLineChartData);
+
+      // revenue
+
+      const {
+        revenue: {
+          total: yearlyTotalRevenue,
+          repair: yearlyRepairRevenue,
+          sales: yearlySalesRevenue,
+        },
+      } = yearlyMetric;
+
+      // revenue -> bar chart data
+
+      // revenue -> bar chart data -> total
+      const yearlyRevenueTotalBarChartData: BarChartData = {
+        Years: year,
+        Total: yearlyTotalRevenue,
+      };
+      yearlyRevenueBarChartsMapAcc
+        .get('Total')
+        ?.push(yearlyRevenueTotalBarChartData);
+
+      // revenue -> bar chart data -> all
+      const yearlyRevenueAllBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairRevenue,
+        'In-Store': yearlySalesRevenue.inStore,
+        Online: yearlySalesRevenue.online,
+      };
+      yearlyRevenueBarChartsMapAcc
+        .get('All')
+        ?.push(yearlyRevenueAllBarChartData);
+
+      // revenue -> bar chart data -> overview
+      const yearlyRevenueOverviewBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairRevenue,
+        Sales: yearlySalesRevenue.total,
+      };
+      yearlyRevenueBarChartsMapAcc
+        .get('Overview')
+        ?.push(yearlyRevenueOverviewBarChartData);
+
+      // revenue -> bar chart data -> repair
+      const yearlyRevenueRepairBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairRevenue,
+      };
+      yearlyRevenueBarChartsMapAcc
+        .get('Repair')
+        ?.push(yearlyRevenueRepairBarChartData);
+
+      // revenue -> bar chart data -> sales
+      const yearlyRevenueSalesBarChartData: BarChartData = {
+        Years: year,
+        'In-Store': yearlySalesRevenue.inStore,
+        Online: yearlySalesRevenue.online,
+      };
+      yearlyRevenueBarChartsMapAcc
+        .get('Sales')
+        ?.push(yearlyRevenueSalesBarChartData);
+
+      // revenue -> bar chart data -> in-store
+      const yearlyRevenueInStoreBarChartData: BarChartData = {
+        Years: year,
+        'In-Store': yearlySalesRevenue.inStore,
+      };
+      yearlyRevenueBarChartsMapAcc
+        .get('In-Store')
+        ?.push(yearlyRevenueInStoreBarChartData);
+
+      // revenue -> bar chart data -> online
+      const yearlyRevenueOnlineBarChartData: BarChartData = {
+        Years: year,
+        Online: yearlySalesRevenue.online,
+      };
+      yearlyRevenueBarChartsMapAcc
+        .get('Online')
+        ?.push(yearlyRevenueOnlineBarChartData);
+
+      // revenue -> line chart data
+
+      // revenue -> line chart data -> total
+      const yearlyRevenueTotalLineChartData = {
+        x: year,
+        y: yearlyTotalRevenue,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('Total')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Total')
+        ?.data.push(yearlyRevenueTotalLineChartData);
+
+      // revenue -> line chart data -> all -> repair
+      const yearlyRevenueAllRepairLineChartData = {
+        x: year,
+        y: yearlyRepairRevenue,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('All')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyRevenueAllRepairLineChartData);
+
+      // revenue -> line chart data -> all -> in-store
+      const yearlyRevenueAllInStoreLineChartData = {
+        x: year,
+        y: yearlySalesRevenue.inStore,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('All')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyRevenueAllInStoreLineChartData);
+
+      // revenue -> line chart data -> all -> online
+      const yearlyRevenueAllOnlineLineChartData = {
+        x: year,
+        y: yearlySalesRevenue.online,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('All')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyRevenueAllOnlineLineChartData);
+
+      // revenue -> line chart data -> overview -> repair
+      const yearlyRevenueOverviewRepairLineChartData = {
+        x: year,
+        y: yearlyRepairRevenue,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('Overview')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyRevenueOverviewRepairLineChartData);
+
+      // revenue -> line chart data -> overview -> sales
+      const yearlyRevenueOverviewSalesLineChartData = {
+        x: year,
+        y: yearlySalesRevenue.total,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('Overview')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
+        ?.data.push(yearlyRevenueOverviewSalesLineChartData);
+
+      // revenue -> line chart data -> repair
+      const yearlyRevenueRepairLineChartData = {
+        x: year,
+        y: yearlyRepairRevenue,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('Repair')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyRevenueRepairLineChartData);
+
+      // revenue -> line chart data -> sales -> in-store
+      const yearlyRevenueSalesInStoreLineChartData = {
+        x: year,
+        y: yearlySalesRevenue.inStore,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('Sales')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyRevenueSalesInStoreLineChartData);
+
+      // revenue -> line chart data -> sales -> online
+      const yearlyRevenueSalesOnlineLineChartData = {
+        x: year,
+        y: yearlySalesRevenue.online,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('Sales')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyRevenueSalesOnlineLineChartData);
+
+      // revenue -> line chart data -> in-store
+      const yearlyRevenueInStoreLineChartData = {
+        x: year,
+        y: yearlySalesRevenue.inStore,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('In-Store')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyRevenueInStoreLineChartData);
+
+      // revenue -> line chart data -> online
+      const yearlyRevenueOnlineLineChartData = {
+        x: year,
+        y: yearlySalesRevenue.online,
+      };
+      yearlyRevenueLineChartsMapAcc
+        .get('Online')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyRevenueOnlineLineChartData);
+
+      // transactions
+
+      const {
+        transactions: {
+          total: yearlyTotalTransactions,
+          repair: yearlyRepairTransactions,
+          sales: yearlySalesTransactions,
+        },
+      } = yearlyMetric;
+
+      // transactions -> bar chart data
+
+      // transactions -> bar chart data -> total
+      const yearlyTransactionsTotalBarChartData: BarChartData = {
+        Years: year,
+        Total: yearlyTotalTransactions,
+      };
+      yearlyTransactionsBarChartsMapAcc
+        .get('Total')
+        ?.push(yearlyTransactionsTotalBarChartData);
+
+      // transactions -> bar chart data -> all
+      const yearlyTransactionsAllBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairTransactions,
+        'In-Store': yearlySalesTransactions.inStore,
+        Online: yearlySalesTransactions.online,
+      };
+      yearlyTransactionsBarChartsMapAcc
+        .get('All')
+        ?.push(yearlyTransactionsAllBarChartData);
+
+      // transactions -> bar chart data -> overview
+      const yearlyTransactionsOverviewBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairTransactions,
+        Sales: yearlySalesTransactions.total,
+      };
+      yearlyTransactionsBarChartsMapAcc
+        .get('Overview')
+        ?.push(yearlyTransactionsOverviewBarChartData);
+
+      // transactions -> bar chart data -> repair
+      const yearlyTransactionsRepairBarChartData: BarChartData = {
+        Years: year,
+        Repair: yearlyRepairTransactions,
+      };
+      yearlyTransactionsBarChartsMapAcc
+        .get('Repair')
+        ?.push(yearlyTransactionsRepairBarChartData);
+
+      // transactions -> bar chart data -> sales
+      const yearlyTransactionsSalesBarChartData: BarChartData = {
+        Years: year,
+        'In-Store': yearlySalesTransactions.inStore,
+        Online: yearlySalesTransactions.online,
+      };
+      yearlyTransactionsBarChartsMapAcc
+        .get('Sales')
+        ?.push(yearlyTransactionsSalesBarChartData);
+
+      // transactions -> bar chart data -> in-store
+      const yearlyTransactionsInStoreBarChartData: BarChartData = {
+        Years: year,
+        'In-Store': yearlySalesTransactions.inStore,
+      };
+      yearlyTransactionsBarChartsMapAcc
+        .get('In-Store')
+        ?.push(yearlyTransactionsInStoreBarChartData);
+
+      // transactions -> bar chart data -> online
+      const yearlyTransactionsOnlineBarChartData: BarChartData = {
+        Years: year,
+        Online: yearlySalesTransactions.online,
+      };
+      yearlyTransactionsBarChartsMapAcc
+        .get('Online')
+        ?.push(yearlyTransactionsOnlineBarChartData);
+
+      // transactions -> line chart data
+
+      // transactions -> line chart data -> total
+      const yearlyTransactionsTotalLineChartData = {
+        x: year,
+        y: yearlyTotalTransactions,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('Total')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Total')
+        ?.data.push(yearlyTransactionsTotalLineChartData);
+
+      // transactions -> line chart data -> all -> repair
+      const yearlyTransactionsAllRepairLineChartData = {
+        x: year,
+        y: yearlyRepairTransactions,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('All')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyTransactionsAllRepairLineChartData);
+
+      // transactions -> line chart data -> all -> in-store
+      const yearlyTransactionsAllInStoreLineChartData = {
+        x: year,
+        y: yearlySalesTransactions.inStore,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('All')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyTransactionsAllInStoreLineChartData);
+
+      // transactions -> line chart data -> all -> online
+      const yearlyTransactionsAllOnlineLineChartData = {
+        x: year,
+        y: yearlySalesTransactions.online,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('All')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyTransactionsAllOnlineLineChartData);
+
+      // transactions -> line chart data -> overview -> repair
+      const yearlyTransactionsOverviewRepairLineChartData = {
+        x: year,
+        y: yearlyRepairTransactions,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('Overview')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyTransactionsOverviewRepairLineChartData);
+
+      // transactions -> line chart data -> overview -> sales
+      const yearlyTransactionsOverviewSalesLineChartData = {
+        x: year,
+        y: yearlySalesTransactions.total,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('Overview')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
+        ?.data.push(yearlyTransactionsOverviewSalesLineChartData);
+
+      // transactions -> line chart data -> repair
+      const yearlyTransactionsRepairLineChartData = {
+        x: year,
+        y: yearlyRepairTransactions,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('Repair')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
+        ?.data.push(yearlyTransactionsRepairLineChartData);
+
+      // transactions -> line chart data -> sales -> in-store
+      const yearlyTransactionsSalesInStoreLineChartData = {
+        x: year,
+        y: yearlySalesTransactions.inStore,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('Sales')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyTransactionsSalesInStoreLineChartData);
+
+      // transactions -> line chart data -> sales -> online
+      const yearlyTransactionsSalesOnlineLineChartData = {
+        x: year,
+        y: yearlySalesTransactions.online,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('Sales')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyTransactionsSalesOnlineLineChartData);
+
+      // transactions -> line chart data -> in-store
+      const yearlyTransactionsInStoreLineChartData = {
+        x: year,
+        y: yearlySalesTransactions.inStore,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('In-Store')
+        ?.find(
+          (lineChartData: LineChartData) => lineChartData.id === 'In-Store'
+        )
+        ?.data.push(yearlyTransactionsInStoreLineChartData);
+
+      // transactions -> line chart data -> online
+      const yearlyTransactionsOnlineLineChartData = {
+        x: year,
+        y: yearlySalesTransactions.online,
+      };
+      yearlyTransactionsLineChartsMapAcc
+        .get('Online')
+        ?.find((lineChartData: LineChartData) => lineChartData.id === 'Online')
+        ?.data.push(yearlyTransactionsOnlineLineChartData);
+
+      // other metrics
+
+      const {
+        averageOrderValue: yearlyAverageOrderValue,
+        conversionRate: yearlyConversionRate,
+        netProfitMargin: yearlyNetProfitMargin,
+      } = yearlyMetric;
+
+      // other metrics -> bar chart data
+
+      // other metrics -> bar chart data -> average order value
+      const yearlyAverageOrderValueBarChartData: BarChartData = {
+        Years: year,
+        'Average Order Value': yearlyAverageOrderValue,
+      };
+      yearlyOtherMetricsBarChartsMapAcc
+        .get('Average Order Value')
+        ?.push(yearlyAverageOrderValueBarChartData);
+
+      // other metrics -> bar chart data -> conversion rate
+      const yearlyConversionRateBarChartData: BarChartData = {
+        Years: year,
+        'Conversion Rate': yearlyConversionRate,
+      };
+      yearlyOtherMetricsBarChartsMapAcc
+        .get('Conversion Rate')
+        ?.push(yearlyConversionRateBarChartData);
+
+      // other metrics -> bar chart data -> net profit margin
+      const yearlyNetProfitMarginBarChartData: BarChartData = {
+        Years: year,
+        'Net Profit Margin': yearlyNetProfitMargin,
+      };
+      yearlyOtherMetricsBarChartsMapAcc
+        .get('Net Profit Margin')
+        ?.push(yearlyNetProfitMarginBarChartData);
+
+      // other metrics -> line chart data
+
+      // other metrics -> line chart data -> average order value
+      const yearlyAverageOrderValueLineChartData = {
+        x: year,
+        y: yearlyAverageOrderValue,
+      };
+      yearlyOtherMetricsLineChartsMapAcc
+        .get('Average Order Value')
+        ?.find(
+          (lineChartData: LineChartData) =>
+            lineChartData.id === 'Average Order Value'
+        )
+        ?.data.push(yearlyAverageOrderValueLineChartData);
+
+      // other metrics -> line chart data -> conversion rate
+      const yearlyConversionRateLineChartData = {
+        x: year,
+        y: yearlyConversionRate,
+      };
+      yearlyOtherMetricsLineChartsMapAcc
+        .get('Conversion Rate')
+        ?.find(
+          (lineChartData: LineChartData) =>
+            lineChartData.id === 'Conversion Rate'
+        )
+        ?.data.push(yearlyConversionRateLineChartData);
+
+      // other metrics -> line chart data -> net profit margin
+      const yearlyNetProfitMarginLineChartData = {
+        x: year,
+        y: yearlyNetProfitMargin,
+      };
+      yearlyOtherMetricsLineChartsMapAcc
+        .get('Net Profit Margin')
+        ?.find(
+          (lineChartData: LineChartData) =>
+            lineChartData.id === 'Net Profit Margin'
+        )
+        ?.data.push(yearlyNetProfitMarginLineChartData);
+
+      return yearlyMetricsChartsMapAcc;
+    },
+    [
+      // profit
+      initialYearlyProfitBarChartsMap, // 0
+      initialYearlyProfitLineChartsMap, // 1
+      // expenses
+      initialYearlyExpensesBarChartsMap, // 2
+      initialYearlyExpensesLineChartsMap, // 3
+      // revenue
+      initialYearlyRevenueBarChartsMap, // 4
+      initialYearlyRevenueLineChartsMap, // 5
+      // transactions
+      initialYearlyTransactionsBarChartsMap, // 6
+      initialYearlyTransactionsLineChartsMap, // 7
+      // other metrics
+      initialYearlyOtherMetricsBarChartsMap, // 8
+      initialYearlyOtherMetricsLineChartsMap, // 9
+    ]
+  ) ?? [
+    // profit
+    initialYearlyProfitBarChartsMap,
+    initialYearlyProfitLineChartsMap,
+    // expenses
+    initialYearlyExpensesBarChartsMap,
+    initialYearlyExpensesLineChartsMap,
+    // revenue
+    initialYearlyRevenueBarChartsMap,
+    initialYearlyRevenueLineChartsMap,
+    // transactions
+    initialYearlyTransactionsBarChartsMap,
+    initialYearlyTransactionsLineChartsMap,
+    // other metrics
+    initialYearlyOtherMetricsBarChartsMap,
+    initialYearlyOtherMetricsLineChartsMap,
+  ];
+
   return {
     dailyCharts: {
       profit: {
@@ -3278,6 +4379,32 @@ function returnFinancialChartsData({
         barChartsMap: monthlyOtherMetricsBarChartsMap,
         calendarChartsMap: monthlyOtherMetricsCalendarChartsMap,
         lineChartsMap: monthlyOtherMetricsLineChartsMap,
+      },
+    },
+    yearlyCharts: {
+      profit: {
+        barChartsMap: yearlyProfitBarChartsMap,
+        lineChartsMap: yearlyProfitLineChartsMap,
+        pieChartsObj: yearlyProfitPieChartsObj,
+      },
+      expenses: {
+        barChartsMap: yearlyExpensesBarChartsMap,
+        lineChartsMap: yearlyExpensesLineChartsMap,
+        pieChartsObj: yearlyExpensesPieChartsObj,
+      },
+      revenue: {
+        barChartsMap: yearlyRevenueBarChartsMap,
+        lineChartsMap: yearlyRevenueLineChartsMap,
+        pieChartsObj: yearlyRevenuePieChartsObj,
+      },
+      transactions: {
+        barChartsMap: yearlyTransactionsBarChartsMap,
+        lineChartsMap: yearlyTransactionsLineChartsMap,
+        pieChartsObj: yearlyTransactionsPieChartsObj,
+      },
+      otherMetrics: {
+        barChartsMap: yearlyOtherMetricsBarChartsMap,
+        lineChartsMap: yearlyOtherMetricsLineChartsMap,
       },
     },
   };
