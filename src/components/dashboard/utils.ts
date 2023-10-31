@@ -928,8 +928,7 @@ function returnFinancialMetrics({
 
         const aggregatedDailyFinancialMetrics = dailyMetrics.map(
           (dailyFinancialMetric) => {
-            const { expenses, profit, revenue, transactions } =
-              dailyFinancialMetric;
+            const { revenue, transactions } = dailyFinancialMetric;
 
             // daily -> net profit margin
             const dailyNetProfitMargin = returnRandomProfitMargin({
@@ -1001,11 +1000,9 @@ function returnFinancialMetrics({
               netProfitMargin: dailyNetProfitMargin,
 
               expenses: {
-                ...expenses,
                 total: dailyExpenses,
                 repair: dailyRepairExpenses,
                 sales: {
-                  ...expenses.sales,
                   total: dailySalesExpenses,
                   online: dailyOnlineExpenses,
                   inStore: dailyInStoreExpenses,
@@ -1013,11 +1010,9 @@ function returnFinancialMetrics({
               },
 
               profit: {
-                ...profit,
                 total: dailyProfit,
                 repair: dailyRepairProfit,
                 sales: {
-                  ...profit.sales,
                   total: dailySalesProfit,
                   online: dailyOnlineProfit,
                   inStore: dailyInStoreProfit,
@@ -1105,6 +1100,8 @@ function returnFinancialMetrics({
               inStore: monthlyInStoreProfit,
             },
           },
+
+          dailyMetrics: aggregatedDailyFinancialMetrics,
         };
 
         return aggregatedMonthlyFinancialMetric;
@@ -1193,6 +1190,8 @@ function returnFinancialMetrics({
           inStore: yearlyInStoreProfit,
         },
       },
+
+      monthlyMetrics: aggregatedMonthlyFinancialMetrics,
     };
 
     return newFinancialMetric;
@@ -2970,8 +2969,8 @@ function createRandomBusinessMetrics({
           ? 2017
           : 2019,
       yearEnd: 2023,
-      // yearStart: 2013,
-      // yearEnd: 2013,
+      // yearStart: 2019,
+      // yearEnd: 2019,
     });
 
     const createdProductMetrics = returnProductMetrics({
@@ -2994,9 +2993,9 @@ function createRandomBusinessMetrics({
       returnAggregatedProductIntoFinancialMetrics({
         productMetrics: createdProductMetrics,
         financialMetrics: storeLocationBusinessMetrics.financialMetrics,
-        dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
-        financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
-        monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
+        dailyFinancialMetricsTemplate: { ...DAILY_METRICS_TEMPLATE },
+        financialMetricsTemplate: { ...FINANCIAL_METRICS_TEMPLATE },
+        monthlyFinancialMetricsTemplate: { ...MONTHLY_METRICS_TEMPLATE },
       });
     storeLocationBusinessMetrics.financialMetrics =
       aggregatedProductIntoFinancialMetrics;
@@ -3005,9 +3004,9 @@ function createRandomBusinessMetrics({
       returnAggregatedRepairIntoFinancialMetrics({
         repairMetrics: createdRepairMetrics,
         financialMetrics: storeLocationBusinessMetrics.financialMetrics,
-        dailyFinancialMetricsTemplate: DAILY_METRICS_TEMPLATE,
-        financialMetricsTemplate: FINANCIAL_METRICS_TEMPLATE,
-        monthlyFinancialMetricsTemplate: MONTHLY_METRICS_TEMPLATE,
+        dailyFinancialMetricsTemplate: { ...DAILY_METRICS_TEMPLATE },
+        financialMetricsTemplate: { ...FINANCIAL_METRICS_TEMPLATE },
+        monthlyFinancialMetricsTemplate: { ...MONTHLY_METRICS_TEMPLATE },
       });
     storeLocationBusinessMetrics.financialMetrics =
       aggregatedRepairIntoFinancialMetrics;
