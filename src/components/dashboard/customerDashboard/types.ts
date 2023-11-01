@@ -6,16 +6,15 @@ import {
   Year,
 } from '../types';
 import {
-  CustomerNewMapKey,
-  CustomerOverviewMapKey,
-  CustomerReturningMapKey,
+  CustomerNewReturningObjKey,
+  CustomerOverviewObjKey,
   ReturnCustomerChartsDataOutput,
 } from './utils';
 
 type YAxisCustomerChartSelection = {
-  newYAxis: CustomerNewMapKey;
-  overviewYAxis: CustomerOverviewMapKey;
-  returningYAxis: CustomerReturningMapKey;
+  newYAxis: CustomerNewReturningObjKey;
+  overviewYAxis: CustomerOverviewObjKey;
+  returningYAxis: CustomerNewReturningObjKey;
 };
 
 type CustomerDashboardState = {

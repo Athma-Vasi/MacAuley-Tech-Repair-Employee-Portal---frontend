@@ -208,37 +208,37 @@ function returnRepairChartsData({
 
   // templates
 
-  // templates -> bar charts map
-  const BAR_CHART_MAP_TEMPLATE: BarChartsObj = {
+  // templates -> bar charts obj
+  const BAR_CHART_OBJ_TEMPLATE: BarChartsObj = {
     revenue: [],
     transactions: [],
   };
 
-  // templates -> calendar charts map
-  const CALENDAR_CHART_MAP_TEMPLATE: CalendarChartsObj = {
+  // templates -> calendar charts obj
+  const CALENDAR_CHART_OBJ_TEMPLATE: CalendarChartsObj = {
     revenue: [],
     transactions: [],
   };
 
-  // templates -> line charts map
-  const LINE_CHART_MAP_TEMPLATE: LineChartsObj = {
+  // templates -> line charts obj
+  const LINE_CHART_OBJ_TEMPLATE: LineChartsObj = {
     revenue: [{ id: 'Revenue', data: [] }],
     transactions: [{ id: 'Transactions', data: [] }],
   };
 
   // daily charts
 
-  // daily charts -> bar charts map
+  // daily charts -> bar charts obj
   const initialDailyRepairBarChartsObj = structuredClone(
-    BAR_CHART_MAP_TEMPLATE
+    BAR_CHART_OBJ_TEMPLATE
   );
-  // daily charts -> calendar charts map
+  // daily charts -> calendar charts obj
   const initialDailyRepairCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_MAP_TEMPLATE
+    CALENDAR_CHART_OBJ_TEMPLATE
   );
-  // daily charts -> line charts map
+  // daily charts -> line charts obj
   const initialDailyRepairLineChartsObj = structuredClone(
-    LINE_CHART_MAP_TEMPLATE
+    LINE_CHART_OBJ_TEMPLATE
   );
 
   const [
@@ -330,17 +330,17 @@ function returnRepairChartsData({
 
   // monthly
 
-  // monthly -> bar charts map
+  // monthly -> bar charts obj
   const initialMonthlyRepairBarChartsObj = structuredClone(
-    BAR_CHART_MAP_TEMPLATE
+    BAR_CHART_OBJ_TEMPLATE
   );
-  // monthly -> calendar charts map
+  // monthly -> calendar charts obj
   const initialMonthlyRepairCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_MAP_TEMPLATE
+    CALENDAR_CHART_OBJ_TEMPLATE
   );
-  // monthly -> line charts map
+  // monthly -> line charts obj
   const initialMonthlyRepairLineChartsObj = structuredClone(
-    LINE_CHART_MAP_TEMPLATE
+    LINE_CHART_OBJ_TEMPLATE
   );
 
   const [
@@ -442,13 +442,13 @@ function returnRepairChartsData({
 
   // yearly
 
-  // yearly -> bar charts map
+  // yearly -> bar charts obj
   const initialYearlyRepairBarChartsObj = structuredClone(
-    BAR_CHART_MAP_TEMPLATE
+    BAR_CHART_OBJ_TEMPLATE
   );
-  // yearly -> line charts map
+  // yearly -> line charts obj
   const initialYearlyRepairLineChartsObj = structuredClone(
-    LINE_CHART_MAP_TEMPLATE
+    LINE_CHART_OBJ_TEMPLATE
   );
 
   // selected store's business metrics

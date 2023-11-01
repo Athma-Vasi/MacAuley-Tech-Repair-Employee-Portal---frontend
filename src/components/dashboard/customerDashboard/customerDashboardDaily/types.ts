@@ -1,13 +1,9 @@
-import {
-  CustomerNewMapKey,
-  CustomerOverviewMapKey,
-  CustomerReturningMapKey,
-} from '../utils';
+import { CustomerNewReturningObjKey, CustomerOverviewObjKey } from '../utils';
 
 type CustomerDashboardDailyState = {
-  newYAxisSelection: CustomerNewMapKey;
-  overviewYAxisSelection: CustomerOverviewMapKey;
-  returningYAxisSelection: CustomerReturningMapKey;
+  newYAxisSelection: CustomerNewReturningObjKey;
+  overviewYAxisSelection: CustomerOverviewObjKey;
+  returningYAxisSelection: CustomerNewReturningObjKey;
 };
 
 type CustomerDashboardDailyAction = {
@@ -19,15 +15,15 @@ type CustomerDashboardDailyAction = {
 type CustomerDashboardDailyDispatch =
   | {
       type: CustomerDashboardDailyAction['setNewYAxisSelection'];
-      payload: CustomerNewMapKey;
+      payload: CustomerNewReturningObjKey;
     }
   | {
       type: CustomerDashboardDailyAction['setOverviewYAxisSelection'];
-      payload: CustomerOverviewMapKey;
+      payload: CustomerOverviewObjKey;
     }
   | {
       type: CustomerDashboardDailyAction['setReturningYAxisSelection'];
-      payload: CustomerReturningMapKey;
+      payload: CustomerNewReturningObjKey;
     };
 
 export type {

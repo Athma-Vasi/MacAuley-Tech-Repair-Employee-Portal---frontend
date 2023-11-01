@@ -1,0 +1,3 @@
+function ProductDashboard() {
+  return <></>;
+}

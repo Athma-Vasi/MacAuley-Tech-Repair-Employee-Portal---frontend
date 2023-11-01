@@ -1,15 +1,14 @@
 import {
-  CustomerChurnRetentionMapKey,
-  CustomerNewMapKey,
-  CustomerOverviewMapKey,
-  CustomerReturningMapKey,
+  CustomerChurnRetentionObjKey,
+  CustomerNewReturningObjKey,
+  CustomerOverviewObjKey,
 } from '../utils';
 
 type CustomerDashboardMonthlyState = {
-  newYAxisSelection: CustomerNewMapKey;
-  overviewYAxisSelection: CustomerOverviewMapKey;
-  returningYAxisSelection: CustomerReturningMapKey;
-  churnRetentionYAxisSelection: CustomerChurnRetentionMapKey;
+  newYAxisSelection: CustomerNewReturningObjKey;
+  overviewYAxisSelection: CustomerOverviewObjKey;
+  returningYAxisSelection: CustomerNewReturningObjKey;
+  churnRetentionYAxisSelection: CustomerChurnRetentionObjKey;
 };
 
 type CustomerDashboardMonthlyAction = {
@@ -22,19 +21,19 @@ type CustomerDashboardMonthlyAction = {
 type CustomerDashboardMonthlyDispatch =
   | {
       type: CustomerDashboardMonthlyAction['setNewYAxisSelection'];
-      payload: CustomerNewMapKey;
+      payload: CustomerNewReturningObjKey;
     }
   | {
       type: CustomerDashboardMonthlyAction['setOverviewYAxisSelection'];
-      payload: CustomerOverviewMapKey;
+      payload: CustomerOverviewObjKey;
     }
   | {
       type: CustomerDashboardMonthlyAction['setReturningYAxisSelection'];
-      payload: CustomerReturningMapKey;
+      payload: CustomerNewReturningObjKey;
     }
   | {
       type: CustomerDashboardMonthlyAction['setChurnRetentionYAxisSelection'];
-      payload: CustomerChurnRetentionMapKey;
+      payload: CustomerChurnRetentionObjKey;
     };
 
 export type {

@@ -5,9 +5,9 @@ import {
 } from './types';
 
 const initialCustomerDashboardDailyState: CustomerDashboardDailyState = {
-  newYAxisSelection: 'Overview',
-  overviewYAxisSelection: 'Overview',
-  returningYAxisSelection: 'Overview',
+  newYAxisSelection: 'overview',
+  overviewYAxisSelection: 'overview',
+  returningYAxisSelection: 'overview',
 };
 
 const customerDashboardDailyAction: CustomerDashboardDailyAction = {

@@ -415,7 +415,7 @@ function returnProductMetrics({
         );
 
         const productYearlyMetric: ProductYearlyMetric = {
-          year: year.toString() as Year,
+          year,
           transactions: {
             inStore: productYearlyInStoreOrders,
             online: productYearlyOnlineOrders,

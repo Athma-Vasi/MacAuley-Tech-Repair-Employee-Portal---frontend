@@ -5,10 +5,10 @@ import {
 } from './types';
 
 const initialCustomerDashboardYearlyState: CustomerDashboardYearlyState = {
-  newYAxisSelection: 'Overview',
-  overviewYAxisSelection: 'Overview',
-  returningYAxisSelection: 'Overview',
-  churnRetentionYAxisSelection: 'Overview',
+  newYAxisSelection: 'overview',
+  overviewYAxisSelection: 'overview',
+  returningYAxisSelection: 'overview',
+  churnRetentionYAxisSelection: 'overview',
 };
 
 const customerDashboardYearlyAction: CustomerDashboardYearlyAction = {
