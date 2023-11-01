@@ -3156,7 +3156,7 @@ export { createRandomBusinessMetrics };
               repair: number;
             };
           };
-        }
+        }[]
       }
     }
   }

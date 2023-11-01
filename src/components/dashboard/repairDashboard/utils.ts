@@ -209,19 +209,19 @@ function returnRepairChartsData({
   // templates
 
   // templates -> bar charts map
-  const BAR_CHART_OBJ_TEMPLATE: BarChartsObj = {
+  const BAR_CHART_MAP_TEMPLATE: BarChartsObj = {
     revenue: [],
     transactions: [],
   };
 
   // templates -> calendar charts map
-  const CALENDAR_CHART_OBJ_TEMPLATE: CalendarChartsObj = {
+  const CALENDAR_CHART_MAP_TEMPLATE: CalendarChartsObj = {
     revenue: [],
     transactions: [],
   };
 
   // templates -> line charts map
-  const LINE_CHART_OBJ_TEMPLATE: LineChartsObj = {
+  const LINE_CHART_MAP_TEMPLATE: LineChartsObj = {
     revenue: [{ id: 'Revenue', data: [] }],
     transactions: [{ id: 'Transactions', data: [] }],
   };
@@ -230,15 +230,15 @@ function returnRepairChartsData({
 
   // daily charts -> bar charts map
   const initialDailyRepairBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
+    BAR_CHART_MAP_TEMPLATE
   );
   // daily charts -> calendar charts map
   const initialDailyRepairCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_OBJ_TEMPLATE
+    CALENDAR_CHART_MAP_TEMPLATE
   );
   // daily charts -> line charts map
   const initialDailyRepairLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
+    LINE_CHART_MAP_TEMPLATE
   );
 
   const [
@@ -301,7 +301,9 @@ function returnRepairChartsData({
         y: transactions,
       };
       dailyRepairLineChartsObjAcc.transactions
-        .find((lineChartData) => lineChartData.id === 'Transactions')
+        .find(
+          (lineChartData: LineChartData) => lineChartData.id === 'Transactions'
+        )
         ?.data.push(dailyRepairTransactionsLineChart);
 
       // line charts -> revenue
@@ -310,7 +312,7 @@ function returnRepairChartsData({
         y: revenue,
       };
       dailyRepairLineChartsObjAcc.revenue
-        .find((lineChartData) => lineChartData.id === 'Revenue')
+        .find((lineChartData: LineChartData) => lineChartData.id === 'Revenue')
         ?.data.push(dailyRepairRevenueLineChart);
 
       return dailyRepairChartsAcc;
@@ -330,15 +332,15 @@ function returnRepairChartsData({
 
   // monthly -> bar charts map
   const initialMonthlyRepairBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
+    BAR_CHART_MAP_TEMPLATE
   );
   // monthly -> calendar charts map
   const initialMonthlyRepairCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_OBJ_TEMPLATE
+    CALENDAR_CHART_MAP_TEMPLATE
   );
   // monthly -> line charts map
   const initialMonthlyRepairLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
+    LINE_CHART_MAP_TEMPLATE
   );
 
   const [
@@ -442,11 +444,11 @@ function returnRepairChartsData({
 
   // yearly -> bar charts map
   const initialYearlyRepairBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
+    BAR_CHART_MAP_TEMPLATE
   );
   // yearly -> line charts map
   const initialYearlyRepairLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
+    LINE_CHART_MAP_TEMPLATE
   );
 
   // selected store's business metrics
