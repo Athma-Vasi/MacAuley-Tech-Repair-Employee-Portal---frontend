@@ -21,15 +21,15 @@ const initialCustomerDashboardState: CustomerDashboardState = {
   selectedStoreLocationView: 'All Locations',
   selectedDate: initialSelectedDate,
   selectedMonth: initialSelectedMonth,
-  // selectedYear: 'initialSelectedYear',
+  selectedYear: initialSelectedYear,
 
-  // selectedYYYYMMDD: `${initialSelectedYear}-${
-  //   new Date().getMonth() + 1
-  // }-${initialSelectedDate}`,
-  selectedYear: '2019',
-  selectedYYYYMMDD: `${2019}-${
+  selectedYYYYMMDD: `${initialSelectedYear}-${
     new Date().getMonth() + 1
   }-${initialSelectedDate}`,
+  // selectedYear: '2019',
+  // selectedYYYYMMDD: `${2019}-${
+  //   new Date().getMonth() + 1
+  // }-${initialSelectedDate}`,
 };
 
 const customerDashboardAction: CustomerDashboardAction = {

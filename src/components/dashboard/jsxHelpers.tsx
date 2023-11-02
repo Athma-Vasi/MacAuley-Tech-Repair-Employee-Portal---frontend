@@ -599,10 +599,17 @@ function returnDashboardCustomerCardInfo({
       : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> churn rate
-  const selectedMonthChurnRate =
-    monthCustomerMetrics?.selectedMonthMetrics?.customers.churnRate ?? 1;
-  const prevMonthChurnRate =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.churnRate ?? 0;
+  const selectedMonthChurnRate = Number(
+    (
+      (monthCustomerMetrics?.selectedMonthMetrics?.customers.churnRate ?? 1) *
+      100
+    ).toPrecision(4)
+  );
+  const prevMonthChurnRate = Number(
+    (
+      (monthCustomerMetrics?.prevMonthMetrics?.customers.churnRate ?? 0) * 100
+    ).toPrecision(4)
+  );
   const monthChurnRateDeltaPercentage =
     ((selectedMonthChurnRate - prevMonthChurnRate) / prevMonthChurnRate) * 100;
   const monthChurnRateDeltaFormatted = Number.isFinite(
@@ -618,10 +625,18 @@ function returnDashboardCustomerCardInfo({
       : `Since ${currentYear}-${prevMonth}`;
 
   // monthly -> retention rate
-  const selectedMonthRetentionRate =
-    monthCustomerMetrics?.selectedMonthMetrics?.customers.retentionRate ?? 1;
-  const prevMonthRetentionRate =
-    monthCustomerMetrics?.prevMonthMetrics?.customers.retentionRate ?? 0;
+  const selectedMonthRetentionRate = Number(
+    (
+      (monthCustomerMetrics?.selectedMonthMetrics?.customers.retentionRate ??
+        1) * 100
+    ).toPrecision(4)
+  );
+  const prevMonthRetentionRate = Number(
+    (
+      (monthCustomerMetrics?.prevMonthMetrics?.customers.retentionRate ?? 0) *
+      100
+    ).toPrecision(4)
+  );
   const monthRetentionRateDeltaPercentage =
     ((selectedMonthRetentionRate - prevMonthRetentionRate) /
       prevMonthRetentionRate) *
@@ -947,12 +962,22 @@ function returnDashboardCustomerCardInfo({
       : `Since ${prevYear}`;
 
   // yearly -> churn rate
-  const selectedYearChurnRate =
-    yearCustomerMetrics?.selectedYearMetrics?.customers.churnRate ?? 1;
-  const prevYearChurnRate =
-    yearCustomerMetrics?.prevYearMetrics?.customers.churnRate ?? 0;
-  const yearChurnRateDeltaPercentage =
-    ((selectedYearChurnRate - prevYearChurnRate) / prevYearChurnRate) * 100;
+
+  const selectedYearChurnRate = Number(
+    (
+      (yearCustomerMetrics?.selectedYearMetrics?.customers.churnRate ?? 1) * 100
+    ).toPrecision(4)
+  );
+  const prevYearChurnRate = Number(
+    (
+      (yearCustomerMetrics?.prevYearMetrics?.customers.churnRate ?? 0) * 100
+    ).toPrecision(4)
+  );
+  const yearChurnRateDeltaPercentage = Number(
+    Number(
+      ((selectedYearChurnRate - prevYearChurnRate) / prevYearChurnRate) * 100
+    ).toPrecision(4)
+  );
   const yearChurnRateDeltaFormatted = Number.isFinite(
     yearChurnRateDeltaPercentage
   )
@@ -964,10 +989,17 @@ function returnDashboardCustomerCardInfo({
     yearChurnRateDeltaFormatted === 'N/A' ? 'N/A' : `Since ${prevYear}`;
 
   // yearly -> retention rate
-  const selectedYearRetentionRate =
-    yearCustomerMetrics?.selectedYearMetrics?.customers.retentionRate ?? 1;
-  const prevYearRetentionRate =
-    yearCustomerMetrics?.prevYearMetrics?.customers.retentionRate ?? 0;
+  const selectedYearRetentionRate = Number(
+    (
+      (yearCustomerMetrics?.selectedYearMetrics?.customers.retentionRate ?? 1) *
+      100
+    ).toPrecision(4)
+  );
+  const prevYearRetentionRate = Number(
+    (
+      (yearCustomerMetrics?.prevYearMetrics?.customers.retentionRate ?? 0) * 100
+    ).toPrecision(4)
+  );
   const yearRetentionRateDeltaPercentage =
     ((selectedYearRetentionRate - prevYearRetentionRate) /
       prevYearRetentionRate) *

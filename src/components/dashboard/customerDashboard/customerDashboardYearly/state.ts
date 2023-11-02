@@ -5,17 +5,55 @@ import {
 } from './types';
 
 const initialCustomerDashboardYearlyState: CustomerDashboardYearlyState = {
-  newYAxisBarVariablesSelection: 'overview',
+  // overview
+  // overview -> bar
   overviewBarChartYAxisVariable: 'overview',
-  returningYAxisLineBarVariablesSelection: 'overview',
-  churnRetentionYAxisSelection: 'overview',
+  // overview -> line
+  overviewLineChartYAxisVariable: 'overview',
+
+  // new
+  // new -> bar
+  newBarChartYAxisVariable: 'total',
+  // new -> line
+  newLineChartYAxisVariable: 'total',
+  // new -> pie
+  newPieChartYAxisVariable: 'overview',
+
+  // returning
+  // returning -> bar
+  returningBarChartYAxisVariable: 'total',
+  // returning -> line
+  returningLineChartYAxisVariable: 'total',
+  // returning -> pie
+  returningPieChartYAxisVariable: 'overview',
+
+  // churn retention
+  // churn retention -> bar
+  churnRetentionBarChartYAxisVariable: 'overview',
+  // churn retention -> line
+  churnRetentionLineChartYAxisVariable: 'overview',
 };
 
 const customerDashboardYearlyAction: CustomerDashboardYearlyAction = {
-  setNewYAxisLineBarVariablesSelection: 'setNewYAxisLineBarVariablesSelection',
-  setOverviewYAxisVariablesSelection: 'setOverviewYAxisVariablesSelection',
-  setReturningYAxisLineBarSelection: 'setReturningYAxisLineBarSelection',
-  setChurnRetentionYAxisSelection: 'setChurnRetentionYAxisSelection',
+  // overview
+  setOverviewBarChartYAxisVariable: 'setOverviewBarChartYAxisVariable',
+  setOverviewLineChartYAxisVariable: 'setOverviewLineChartYAxisVariable',
+
+  // new
+  setNewBarChartYAxisVariable: 'setNewBarChartYAxisVariable',
+  setNewLineChartYAxisVariable: 'setNewLineChartYAxisVariable',
+  setNewPieChartYAxisVariable: 'setNewPieChartYAxisVariable',
+
+  // returning
+  setReturningBarChartYAxisVariable: 'setReturningBarChartYAxisVariable',
+  setReturningLineChartYAxisVariable: 'setReturningLineChartYAxisVariable',
+  setReturningPieChartYAxisVariable: 'setReturningPieChartYAxisVariable',
+
+  // churn retention
+  setChurnRetentionBarChartYAxisVariable:
+    'setChurnRetentionBarChartYAxisVariable',
+  setChurnRetentionLineChartYAxisVariable:
+    'setChurnRetentionLineChartYAxisVariable',
 };
 
 function customerDashboardYearlyReducer(
@@ -23,28 +61,82 @@ function customerDashboardYearlyReducer(
   action: CustomerDashboardYearlyDispatch
 ): CustomerDashboardYearlyState {
   switch (action.type) {
-    case customerDashboardYearlyAction.setNewYAxisLineBarVariablesSelection:
-      return {
-        ...state,
-        newYAxisBarVariablesSelection: action.payload,
-      };
+    // overview
 
-    case customerDashboardYearlyAction.setOverviewYAxisVariablesSelection:
+    // overview -> bar
+    case customerDashboardYearlyAction.setOverviewBarChartYAxisVariable:
       return {
         ...state,
         overviewBarChartYAxisVariable: action.payload,
       };
 
-    case customerDashboardYearlyAction.setReturningYAxisLineBarSelection:
+    // overview -> line
+    case customerDashboardYearlyAction.setOverviewLineChartYAxisVariable:
       return {
         ...state,
-        returningYAxisLineBarVariablesSelection: action.payload,
+        overviewLineChartYAxisVariable: action.payload,
       };
 
-    case customerDashboardYearlyAction.setChurnRetentionYAxisSelection:
+    // new
+
+    // new -> bar
+    case customerDashboardYearlyAction.setNewBarChartYAxisVariable:
       return {
         ...state,
-        churnRetentionYAxisSelection: action.payload,
+        newBarChartYAxisVariable: action.payload,
+      };
+
+    // new -> line
+    case customerDashboardYearlyAction.setNewLineChartYAxisVariable:
+      return {
+        ...state,
+        newLineChartYAxisVariable: action.payload,
+      };
+
+    // new -> pie
+    case customerDashboardYearlyAction.setNewPieChartYAxisVariable:
+      return {
+        ...state,
+        newPieChartYAxisVariable: action.payload,
+      };
+
+    // returning
+
+    // returning -> bar
+    case customerDashboardYearlyAction.setReturningBarChartYAxisVariable:
+      return {
+        ...state,
+        returningBarChartYAxisVariable: action.payload,
+      };
+
+    // returning -> line
+    case customerDashboardYearlyAction.setReturningLineChartYAxisVariable:
+      return {
+        ...state,
+        returningLineChartYAxisVariable: action.payload,
+      };
+
+    // returning -> pie
+    case customerDashboardYearlyAction.setReturningPieChartYAxisVariable:
+      return {
+        ...state,
+        returningPieChartYAxisVariable: action.payload,
+      };
+
+    // churn retention
+
+    // churn retention -> bar
+    case customerDashboardYearlyAction.setChurnRetentionBarChartYAxisVariable:
+      return {
+        ...state,
+        churnRetentionBarChartYAxisVariable: action.payload,
+      };
+
+    // churn retention -> line
+    case customerDashboardYearlyAction.setChurnRetentionLineChartYAxisVariable:
+      return {
+        ...state,
+        churnRetentionLineChartYAxisVariable: action.payload,
       };
 
     default:

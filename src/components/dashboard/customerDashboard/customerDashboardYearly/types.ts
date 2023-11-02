@@ -1,38 +1,90 @@
 import {
   CustomerChurnRetentionObjKey,
+  CustomerNewReturningCalendarObjKey,
   CustomerNewReturningObjKey,
+  CustomerNewReturningPieObjKey,
   CustomerOverviewObjKey,
 } from '../utils';
 
 type CustomerDashboardYearlyState = {
-  newYAxisBarVariablesSelection: CustomerNewReturningObjKey;
+  // overview
+  // overview -> bar
   overviewBarChartYAxisVariable: CustomerOverviewObjKey;
-  returningYAxisLineBarVariablesSelection: CustomerNewReturningObjKey;
-  churnRetentionYAxisSelection: CustomerChurnRetentionObjKey;
+  // overview -> line
+  overviewLineChartYAxisVariable: CustomerOverviewObjKey;
+
+  // new
+  // new -> bar
+  newBarChartYAxisVariable: CustomerNewReturningObjKey;
+  // new -> line
+  newLineChartYAxisVariable: CustomerNewReturningObjKey;
+  // new -> pie
+  newPieChartYAxisVariable: CustomerNewReturningPieObjKey;
+
+  // returning
+  // returning -> bar
+  returningBarChartYAxisVariable: CustomerNewReturningObjKey;
+  // returning -> line
+  returningLineChartYAxisVariable: CustomerNewReturningObjKey;
+  // returning -> pie
+  returningPieChartYAxisVariable: CustomerNewReturningPieObjKey;
+
+  // churn retention
+  // churn retention -> bar
+  churnRetentionBarChartYAxisVariable: CustomerChurnRetentionObjKey;
+  // churn retention -> line
+  churnRetentionLineChartYAxisVariable: CustomerChurnRetentionObjKey;
 };
 
 type CustomerDashboardYearlyAction = {
-  setNewYAxisLineBarVariablesSelection: 'setNewYAxisLineBarVariablesSelection';
-  setOverviewYAxisVariablesSelection: 'setOverviewYAxisVariablesSelection';
-  setReturningYAxisLineBarSelection: 'setReturningYAxisLineBarSelection';
-  setChurnRetentionYAxisSelection: 'setChurnRetentionYAxisSelection';
+  // overview
+  setOverviewBarChartYAxisVariable: 'setOverviewBarChartYAxisVariable';
+  setOverviewLineChartYAxisVariable: 'setOverviewLineChartYAxisVariable';
+
+  // new
+  setNewBarChartYAxisVariable: 'setNewBarChartYAxisVariable';
+  setNewLineChartYAxisVariable: 'setNewLineChartYAxisVariable';
+  setNewPieChartYAxisVariable: 'setNewPieChartYAxisVariable';
+
+  // returning
+  setReturningBarChartYAxisVariable: 'setReturningBarChartYAxisVariable';
+  setReturningLineChartYAxisVariable: 'setReturningLineChartYAxisVariable';
+  setReturningPieChartYAxisVariable: 'setReturningPieChartYAxisVariable';
+
+  // churn retention
+  setChurnRetentionBarChartYAxisVariable: 'setChurnRetentionBarChartYAxisVariable';
+  setChurnRetentionLineChartYAxisVariable: 'setChurnRetentionLineChartYAxisVariable';
 };
 
 type CustomerDashboardYearlyDispatch =
   | {
-      type: CustomerDashboardYearlyAction['setNewYAxisLineBarVariablesSelection'];
-      payload: CustomerNewReturningObjKey;
-    }
-  | {
-      type: CustomerDashboardYearlyAction['setOverviewYAxisVariablesSelection'];
+      type:
+        | CustomerDashboardYearlyAction['setOverviewBarChartYAxisVariable']
+        | CustomerDashboardYearlyAction['setOverviewLineChartYAxisVariable'];
+
       payload: CustomerOverviewObjKey;
     }
   | {
-      type: CustomerDashboardYearlyAction['setReturningYAxisLineBarSelection'];
+      type:
+        | CustomerDashboardYearlyAction['setNewBarChartYAxisVariable']
+        | CustomerDashboardYearlyAction['setNewLineChartYAxisVariable']
+        | CustomerDashboardYearlyAction['setReturningBarChartYAxisVariable']
+        | CustomerDashboardYearlyAction['setReturningLineChartYAxisVariable'];
+
       payload: CustomerNewReturningObjKey;
     }
   | {
-      type: CustomerDashboardYearlyAction['setChurnRetentionYAxisSelection'];
+      type:
+        | CustomerDashboardYearlyAction['setNewPieChartYAxisVariable']
+        | CustomerDashboardYearlyAction['setReturningPieChartYAxisVariable'];
+
+      payload: CustomerNewReturningPieObjKey;
+    }
+  | {
+      type:
+        | CustomerDashboardYearlyAction['setChurnRetentionBarChartYAxisVariable']
+        | CustomerDashboardYearlyAction['setChurnRetentionLineChartYAxisVariable'];
+
       payload: CustomerChurnRetentionObjKey;
     };
 

@@ -417,7 +417,10 @@ function returnCustomerChartsData({
 
   // templates -> churn & retention -> line chart obj
   const CHURN_RETENTION_LINE_CHART_TEMPLATE: CustomerChurnRetentionLineObj = {
-    overview: [{ id: 'Churn Rate', data: [] }],
+    overview: [
+      { id: 'Churn Rate', data: [] },
+      { id: 'Retention Rate', data: [] },
+    ],
     churnRate: [{ id: 'Churn Rate', data: [] }],
     retentionRate: [{ id: 'Retention Rate', data: [] }],
   };
@@ -1262,12 +1265,18 @@ function returnCustomerChartsData({
     {
       id: 'Churn Rate',
       label: 'Churn Rate',
-      value: selectedMonthMetrics?.customers.churnRate ?? 0,
+      value:
+        Number(
+          (selectedMonthMetrics?.customers.churnRate ?? 0).toPrecision(4)
+        ) * 100,
     },
     {
       id: 'Retention Rate',
       label: 'Retention Rate',
-      value: selectedMonthMetrics?.customers.retentionRate ?? 0,
+      value:
+        Number(
+          (selectedMonthMetrics?.customers.retentionRate ?? 0).toPrecision(4)
+        ) * 100,
     },
   ];
 
@@ -1851,19 +1860,33 @@ function returnCustomerChartsData({
 
       // churn & retention rate -> bar chart obj
 
-      // churn & retention rate -> bar chart obj -> churn rate
-      const monthlyChurnRateBarChartObj = {
+      // churn & retention rate -> bar chart obj -> overview
+      const monthlyOverviewChurnRetentionRateBarChartObj = {
         Months: month,
-        'Churn Rate': customers.churnRate,
+        'Churn Rate': Number((customers.churnRate * 100).toPrecision(4)),
+        'Retention Rate': Number(
+          (customers.retentionRate * 100).toPrecision(4)
+        ),
+      };
+      monthlyChurnRetentionRateBarChartsObjAcc.overview.push(
+        monthlyOverviewChurnRetentionRateBarChartObj
+      );
+
+      // churn & retention rate -> bar chart obj -> churn rate
+      const monthlyOverviewChurnRateBarChartObj = {
+        Months: month,
+        'Churn Rate': Number((customers.churnRate * 100).toPrecision(4)),
       };
       monthlyChurnRetentionRateBarChartsObjAcc.churnRate.push(
-        monthlyChurnRateBarChartObj
+        monthlyOverviewChurnRateBarChartObj
       );
 
       // churn & retention rate -> bar chart obj -> retention rate
       const monthlyRetentionRateBarChartObj = {
         Months: month,
-        'Retention Rate': customers.retentionRate,
+        'Retention Rate': Number(
+          (customers.retentionRate * 100).toPrecision(4)
+        ),
       };
       monthlyChurnRetentionRateBarChartsObjAcc.retentionRate.push(
         monthlyRetentionRateBarChartObj
@@ -1871,10 +1894,33 @@ function returnCustomerChartsData({
 
       // churn & retention rate -> line chart obj
 
+      // churn & retention rate -> line chart obj -> overview -> churn rate
+      const monthlyOverviewChurnRetentionRateLineChartObj = {
+        x: month,
+        y: Number((customers.churnRate * 100).toPrecision(4)),
+      };
+      monthlyChurnRetentionRateLineChartsObjAcc.overview
+        .find(
+          (lineChartData: LineChartData) => lineChartData.id === 'Churn Rate'
+        )
+        ?.data.push(monthlyOverviewChurnRetentionRateLineChartObj);
+
+      // churn & retention rate -> line chart obj -> overview -> retention rate
+      const monthlyOverviewRetentionRateLineChartObj = {
+        x: month,
+        y: Number((customers.retentionRate * 100).toPrecision(4)),
+      };
+      monthlyChurnRetentionRateLineChartsObjAcc.overview
+        .find(
+          (lineChartData: LineChartData) =>
+            lineChartData.id === 'Retention Rate'
+        )
+        ?.data.push(monthlyOverviewRetentionRateLineChartObj);
+
       // churn & retention rate -> line chart obj -> churn rate
       const monthlyChurnRateLineChartObj = {
         x: month,
-        y: customers.churnRate,
+        y: Number((customers.churnRate * 100).toPrecision(4)),
       };
       monthlyChurnRetentionRateLineChartsObjAcc.churnRate
         .find(
@@ -1885,7 +1931,7 @@ function returnCustomerChartsData({
       // churn & retention rate -> line chart obj -> retention rate
       const monthlyRetentionRateLineChartObj = {
         x: month,
-        y: customers.retentionRate,
+        y: Number((customers.retentionRate * 100).toPrecision(4)),
       };
       monthlyChurnRetentionRateLineChartsObjAcc.retentionRate
         .find(
@@ -2067,12 +2113,17 @@ function returnCustomerChartsData({
     {
       id: 'Churn Rate',
       label: 'Churn Rate',
-      value: selectedYearMetrics?.customers.churnRate ?? 0,
+      value: Number(
+        (selectedYearMetrics?.customers.churnRate ?? 0).toPrecision(4)
+      ),
     },
     {
       id: 'Retention Rate',
       label: 'Retention Rate',
-      value: selectedYearMetrics?.customers.retentionRate ?? 0,
+      value:
+        Number(
+          (selectedYearMetrics?.customers.retentionRate ?? 0).toPrecision(4)
+        ) * 100,
     },
   ];
 
@@ -2519,10 +2570,22 @@ function returnCustomerChartsData({
 
       // churn & retention rate -> bar chart obj
 
+      // churn & retention rate -> bar chart obj -> overview
+      const yearlyOverviewChurnRetentionRateBarChartObj = {
+        Years: year,
+        'Churn Rate': Number((customers.churnRate * 100).toPrecision(4)),
+        'Retention Rate': Number(
+          (customers.retentionRate * 100).toPrecision(4)
+        ),
+      };
+      yearlyChurnRetentionRateBarChartsObjAcc.overview.push(
+        yearlyOverviewChurnRetentionRateBarChartObj
+      );
+
       // churn & retention rate -> bar chart obj -> churn rate
       const yearlyChurnRateBarChartObj = {
         Years: year,
-        'Churn Rate': customers.churnRate,
+        'Churn Rate': Number((customers.churnRate * 100).toPrecision(4)),
       };
       yearlyChurnRetentionRateBarChartsObjAcc.churnRate.push(
         yearlyChurnRateBarChartObj
@@ -2531,7 +2594,9 @@ function returnCustomerChartsData({
       // churn & retention rate -> bar chart obj -> retention rate
       const yearlyRetentionRateBarChartObj = {
         Years: year,
-        'Retention Rate': customers.retentionRate,
+        'Retention Rate': Number(
+          (customers.retentionRate * 100).toPrecision(4)
+        ),
       };
       yearlyChurnRetentionRateBarChartsObjAcc.retentionRate.push(
         yearlyRetentionRateBarChartObj
@@ -2539,10 +2604,33 @@ function returnCustomerChartsData({
 
       // churn & retention rate -> line chart obj
 
+      // churn & retention rate -> line chart obj -> overview -> churn rate
+      const yearlyOverviewChurnRetentionRateLineChartObj = {
+        x: year,
+        y: Number((customers.churnRate * 100).toPrecision(4)),
+      };
+      yearlyChurnRetentionRateLineChartsObjAcc.overview
+        .find(
+          (lineChartData: LineChartData) => lineChartData.id === 'Churn Rate'
+        )
+        ?.data.push(yearlyOverviewChurnRetentionRateLineChartObj);
+
+      // churn & retention rate -> line chart obj -> overview -> retention rate
+      const yearlyOverviewRetentionRateLineChartObj = {
+        x: year,
+        y: Number((customers.retentionRate * 100).toPrecision(4)),
+      };
+      yearlyChurnRetentionRateLineChartsObjAcc.overview
+        .find(
+          (lineChartData: LineChartData) =>
+            lineChartData.id === 'Retention Rate'
+        )
+        ?.data.push(yearlyOverviewRetentionRateLineChartObj);
+
       // churn & retention rate -> line chart obj -> churn rate
       const yearlyChurnRateLineChartObj = {
         x: year,
-        y: customers.churnRate,
+        y: Number((customers.churnRate * 100).toPrecision(4)),
       };
       yearlyChurnRetentionRateLineChartsObjAcc.churnRate
         .find(
@@ -2553,7 +2641,7 @@ function returnCustomerChartsData({
       // churn & retention rate -> line chart obj -> retention rate
       const yearlyRetentionRateLineChartObj = {
         x: year,
-        y: customers.retentionRate,
+        y: Number((customers.retentionRate * 100).toPrecision(4)),
       };
       yearlyChurnRetentionRateLineChartsObjAcc.retentionRate
         .find(

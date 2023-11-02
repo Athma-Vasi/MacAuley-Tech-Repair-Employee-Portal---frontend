@@ -105,7 +105,7 @@ function CustomerDashboardDaily({
       : 900 - 40;
   const chartHeight =
     width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
-  const chartWidth = width < 1024 ? componentWidth : componentWidth * 0.75;
+  const chartWidth = componentWidth;
 
   const [createdExpandChartButton] = returnAccessibleButtonElements([
     {

@@ -515,8 +515,6 @@ function returnDaysInMonthsInYears({
   return yearsRange.reduce((yearsAcc, year) => {
     const isCurrentYear = year === new Date().getFullYear();
     const currentMonth = new Date().getMonth();
-    const isCurrentMonth =
-      isCurrentYear && currentMonth === new Date().getMonth();
     const slicedMonths = isCurrentYear
       ? months.slice(0, currentMonth + 1)
       : months.slice(monthStart, monthEnd + 1);
@@ -524,6 +522,7 @@ function returnDaysInMonthsInYears({
     const daysInMonthsMap = slicedMonths.reduce(
       (monthsAcc, month, monthIdx) => {
         const days = daysPerMonth[monthIdx];
+        const isCurrentMonth = isCurrentYear && monthIdx === currentMonth;
         const currentDay = isCurrentYear
           ? isCurrentMonth
             ? new Date().getDate()
@@ -3415,15 +3414,15 @@ function createRandomBusinessMetrics({
     const daysInMonthsInYears = returnDaysInMonthsInYears({
       daysPerMonth,
       months,
-      // yearStart:
-      //   storeLocation === 'Edmonton'
-      //     ? 2013
-      //     : storeLocation === 'Calgary'
-      //     ? 2017
-      //     : 2019,
-      // yearEnd: 2023,
-      yearStart: 2019,
-      yearEnd: 2019,
+      yearStart:
+        storeLocation === 'Edmonton'
+          ? 2013
+          : storeLocation === 'Calgary'
+          ? 2017
+          : 2019,
+      yearEnd: 2023,
+      // yearStart: 2019,
+      // yearEnd: 2019,
     });
 
     const createdProductMetrics = returnProductMetrics({
