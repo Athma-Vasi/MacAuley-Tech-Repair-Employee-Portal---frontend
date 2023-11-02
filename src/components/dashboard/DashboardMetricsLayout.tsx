@@ -104,7 +104,7 @@ function DashboardMetricsLayout({
 
   // bar chart section
   const displayBarChartSection = (
-    <Stack pb={padding} style={{ borderBottom: borderColor }}>
+    <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Bar Chart</Title>
       <Group w="100%" position="apart">
         {barChartYAxisSelectInput}
@@ -115,7 +115,7 @@ function DashboardMetricsLayout({
           {barChartHeading}
         </Text>
       </Group>
-      <Group w={chartWidth} h={chartHeight}>
+      <Group w="100%" position="center">
         {barChart}
       </Group>
     </Stack>
@@ -123,7 +123,7 @@ function DashboardMetricsLayout({
 
   // calendar chart section
   const displayCalendarChartSection = calendarChart ? (
-    <Stack pb={padding} style={{ borderBottom: borderColor }}>
+    <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Calendar Chart</Title>
       <Group w="100%" position="apart">
         {calendarChartYAxisSelectInput}
@@ -134,7 +134,7 @@ function DashboardMetricsLayout({
           {calendarChartHeading}
         </Text>
       </Group>
-      <Group w={chartWidth} h={chartHeight}>
+      <Group w="100%" position="center">
         {calendarChart}
       </Group>
     </Stack>
@@ -142,7 +142,7 @@ function DashboardMetricsLayout({
 
   // line chart section
   const displayLineChartSection = (
-    <Stack pb={padding} style={{ borderBottom: borderColor }}>
+    <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Line Chart</Title>
       <Group w="100%" position="apart">
         {lineChartYAxisSelectInput}
@@ -153,7 +153,7 @@ function DashboardMetricsLayout({
           {lineChartHeading}
         </Text>
       </Group>
-      <Group w={chartWidth} h={chartHeight}>
+      <Group w="100%" position="center">
         {lineChart}
       </Group>
     </Stack>
@@ -184,10 +184,10 @@ function DashboardMetricsLayout({
   );
 
   const displayPieChartSection = (
-    <Stack pb={padding} style={{ borderBottom: borderColor }}>
+    <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Pie Chart</Title>
       {pieChartHeadingSection}
-      <Group w={chartWidth} h={chartHeight}>
+      <Group w="100%" position="center">
         {pieChart}
       </Group>
     </Stack>

@@ -17,7 +17,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   marginTop: 30,
   marginRight: 30,
   marginBottom: 60,
-  marginLeft: 30,
+  marginLeft: 90,
 
   /** style */
   chartBorderColor: '#ffffff',
@@ -73,7 +73,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   axisLeftTickPadding: 5,
   axisLeftTickRotation: 0,
   axisLeftTickSize: 5,
-  enableAxisLeft: false,
+  enableAxisLeft: true,
   isAxisLeftLegendFocused: false,
   isAxisLeftLegendValid: false,
 

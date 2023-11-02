@@ -132,7 +132,8 @@ function CustomerDashboardDaily({
   const pieChartHeading = `New and returning customers for ${
     MONTHS[parseInt(month) - 1]
   }, ${year}`;
-  // overview -> charts -> pie -> y axis variables
+
+  // overview -> charts -> pie -> display
   const displayOverviewPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}

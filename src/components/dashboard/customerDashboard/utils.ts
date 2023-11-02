@@ -1321,7 +1321,8 @@ function returnCustomerChartsData({
       // overview -> bar chart obj -> overview
       const monthlyOverviewBarChartObj = {
         Months: month,
-        Total: customers.total,
+        New: customers.new.total,
+        Returning: customers.returning.total,
       };
       monthlyOverviewBarChartsObjAcc.overview.push(monthlyOverviewBarChartObj);
 
@@ -2121,7 +2122,8 @@ function returnCustomerChartsData({
       // overview -> bar chart obj -> total
       const yearlyOverviewTotalBarChartObj = {
         Years: year,
-        Total: customers.total,
+        New: customers.new.total,
+        Returning: customers.returning.total,
       };
       yearlyOverviewBarChartsObjAcc.overview.push(
         yearlyOverviewTotalBarChartObj

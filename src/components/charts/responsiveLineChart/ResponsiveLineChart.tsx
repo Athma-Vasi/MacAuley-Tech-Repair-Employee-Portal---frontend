@@ -69,6 +69,8 @@ function ResponsiveLineChart({
   hideControls = false,
   xFormat,
   yFormat,
+  yScaleMin = 'auto',
+  yScaleMax = 'auto',
 }: ResponsiveLineChartProps) {
   const {
     globalState: { isPrefersReducedMotion, width, themeObject, padding },
@@ -238,8 +240,8 @@ function ResponsiveLineChart({
       xFormat={xFormat}
       yScale={{
         type: yScale,
-        min: 'auto',
-        max: 'auto',
+        min: yScaleMin,
+        max: yScaleMax,
         stacked: enableYScaleStacked,
         reverse: reverseScale,
       }}

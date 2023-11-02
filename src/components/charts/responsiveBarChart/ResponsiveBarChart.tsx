@@ -316,7 +316,7 @@ function ResponsiveBarChart({
               legendOffset: axisTopLegendOffset,
               legendPosition: axisTopLegendPosition,
             }
-          : void 0
+          : null
       }
       axisRight={
         enableAxisRight
@@ -328,7 +328,7 @@ function ResponsiveBarChart({
               legendOffset: axisRightLegendOffset,
               legendPosition: axisRightLegendPosition,
             }
-          : void 0
+          : null
       }
       axisBottom={
         enableAxisBottom
@@ -340,7 +340,7 @@ function ResponsiveBarChart({
               legendOffset: axisBottomLegendOffset,
               legendPosition: axisBottomLegendPosition,
             }
-          : void 0
+          : null
       }
       axisLeft={
         enableAxisLeft
@@ -352,7 +352,7 @@ function ResponsiveBarChart({
               legendOffset: axisLeftLegendOffset,
               legendPosition: axisLeftLegendPosition,
             }
-          : void 0
+          : null
       }
       legends={
         enableLegend

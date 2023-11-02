@@ -33,6 +33,8 @@ type ResponsiveLineChartProps = {
   lineChartData: LineChartData[];
   xFormat?: ValueFormat<any>;
   yFormat?: ValueFormat<any>;
+  yScaleMin?: number | 'auto';
+  yScaleMax?: number | 'auto';
 };
 
 type ResponsiveLineChartState = {
