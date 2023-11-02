@@ -347,7 +347,6 @@ type StatisticsObject = {
   arithmeticMean: number;
   mode: number;
   median: number;
-  variance: number;
   standardDeviation: number;
   interquartileRange: number;
 };
@@ -378,7 +377,7 @@ function returnStatistics<
 ): Map<BarObjKeys, StatisticsObject> {
   return Object.entries(barChartsObj).reduce(
     (statisticsAcc, [_barObjKey, barObjsArr]) => {
-      // barObjsArr is an array of BarChartsArr objects
+      // barObjsArr is an array of BarChartObj
       if (Array.isArray(barObjsArr)) {
         // returns an map without the 'Days', 'Months', and 'Years' keyVals
         const filteredBarObjsArr = barObjsArr.reduce(
@@ -389,13 +388,16 @@ function returnStatistics<
               }
 
               filteredBarObjAcc.has(key)
-                ? filteredBarObjAcc.get(key)?.push(value)
+                ? filteredBarObjAcc.get(key).push(value)
                 : filteredBarObjAcc.set(key, [value]);
             });
 
             return filteredBarObjAcc;
           },
-          new Map() as Map<string, number[]>
+          new Map<
+            Omit<[keyof BarChartObj], 'Days' | 'Months' | 'Years'>,
+            number[]
+          >()
         );
 
         Array.from(filteredBarObjsArr).forEach((filteredBarObj) => {
@@ -443,8 +445,7 @@ function returnStatistics<
           const modeVal = mode(value);
           // median
           const medianVal = median(value);
-          // variance
-          const varianceVal = variance(value);
+
           // standard deviation
           const standardDeviationVal = standardDeviation(value);
           // interquartile range
@@ -462,7 +463,6 @@ function returnStatistics<
             arithmeticMean: meanVal,
             mode: modeVal,
             median: medianVal,
-            variance: varianceVal,
             standardDeviation: standardDeviationVal,
             interquartileRange: interquartileRangeVal,
           };
@@ -3524,3 +3524,4 @@ function createRandomBusinessMetrics({
 }
 
 export { createRandomBusinessMetrics, returnStatistics };
+export type { StatisticsObject };

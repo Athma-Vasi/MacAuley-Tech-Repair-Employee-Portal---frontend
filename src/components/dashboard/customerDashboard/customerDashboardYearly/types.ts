@@ -6,7 +6,7 @@ import {
 
 type CustomerDashboardYearlyState = {
   newYAxisBarVariablesSelection: CustomerNewReturningObjKey;
-  overviewBarChartYAxisVariables: CustomerOverviewObjKey;
+  overviewBarChartYAxisVariable: CustomerOverviewObjKey;
   returningYAxisLineBarVariablesSelection: CustomerNewReturningObjKey;
   churnRetentionYAxisSelection: CustomerChurnRetentionObjKey;
 };

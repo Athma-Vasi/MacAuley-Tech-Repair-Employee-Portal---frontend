@@ -39,7 +39,7 @@ import {
   customerDashboardMonthlyReducer,
   initialCustomerDashboardMonthlyState,
 } from './state';
-import DashboardSection from '../../DashboardSection';
+import DashboardMetricsLayout from '../../DashboardMetricsLayout';
 import { MONTHS } from '../../constants';
 
 function CustomerDashboardMonthly({
@@ -73,7 +73,7 @@ function CustomerDashboardMonthly({
 
   const {
     newYAxisBarVariablesSelection,
-    overviewBarChartYAxisVariables,
+    overviewBarChartYAxisVariable,
     returningYAxisLineBarVariablesSelection,
     churnRetentionYAxisSelection,
   } = customerDashboardMonthlyState;
@@ -122,7 +122,7 @@ function CustomerDashboardMonthly({
   //           payload: event.currentTarget.value as CustomerOverviewMapKey,
   //         });
   //       },
-  //       value: overviewBarChartYAxisVariables,
+  //       value: overviewBarChartYAxisVariable,
   //     },
   //   ]
   // );
@@ -145,7 +145,7 @@ function CustomerDashboardMonthly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     barChartData={
-  //       monthlyCharts.overview.barChartsMap.get(overviewBarChartYAxisVariables) ?? []
+  //       monthlyCharts.overview.barChartsMap.get(overviewBarChartYAxisVariable) ?? []
   //     }
   //     hideControls
   //     indexBy="Months"
@@ -158,7 +158,7 @@ function CustomerDashboardMonthly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     lineChartData={
-  //       monthlyCharts.overview.lineChartsMap.get(overviewBarChartYAxisVariables) ?? []
+  //       monthlyCharts.overview.lineChartsMap.get(overviewBarChartYAxisVariable) ?? []
   //     }
   //     hideControls
   //     xFormat={(x) => `Month - ${x}`}
@@ -167,14 +167,14 @@ function CustomerDashboardMonthly({
   // );
 
   // console.log(
-  //   'monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariables): ',
-  //   monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariables)
+  //   'monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariable): ',
+  //   monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariable)
   // );
 
   // const displayOverviewCalendarChart = (
   //   <ResponsiveCalendarChart
   //     calendarChartData={
-  //       monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariables) ??
+  //       monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariable) ??
   //       []
   //     }
   //     chartHeight={chartHeight}
@@ -212,7 +212,7 @@ function CustomerDashboardMonthly({
   // );
 
   // const displayOverviewSection = (
-  //   <DashboardSection
+  //   <DashboardMetricsLayout
   //     chartCarousel={displayOverviewCarouselWithHeading}
   //     heading="Monthly Overview"
   //     overviewCards={monthlyCards.overview}
@@ -318,7 +318,7 @@ function CustomerDashboardMonthly({
   // );
 
   // const displayNewSection = (
-  //   <DashboardSection
+  //   <DashboardMetricsLayout
   //     chartCarousel={displayNewCarouselWithHeading}
   //     heading="Monthly New"
   //     overviewCards={monthlyCards.new}
@@ -424,7 +424,7 @@ function CustomerDashboardMonthly({
   // );
 
   // const displayReturningSection = (
-  //   <DashboardSection
+  //   <DashboardMetricsLayout
   //     chartCarousel={displayReturningCarouselWithHeading}
   //     heading="Monthly Returning"
   //     overviewCards={monthlyCards.returning}
@@ -512,7 +512,7 @@ function CustomerDashboardMonthly({
   // );
 
   // const displayChurnRetentionSection = (
-  //   <DashboardSection
+  //   <DashboardMetricsLayout
   //     chartCarousel={displayChurnRetentionCarouselWithHeading}
   //     heading="Monthly Churn & Retention"
   //     overviewCards={[...monthlyCards.churnRate, ...monthlyCards.retentionRate]}

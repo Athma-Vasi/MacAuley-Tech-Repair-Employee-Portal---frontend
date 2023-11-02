@@ -8,81 +8,81 @@ import {
 type CustomerDashboardDailyState = {
   // overview
   // overview -> bar
-  overviewBarChartYAxisVariables: CustomerOverviewObjKey;
+  overviewBarChartYAxisVariable: CustomerOverviewObjKey;
   // overview -> calendar
-  overviewCalendarChartYAxisVariables: CustomerOverviewObjKey;
+  overviewCalendarChartYAxisVariable: CustomerOverviewObjKey;
   // overview -> line
-  overviewLineChartYAxisVariables: CustomerOverviewObjKey;
+  overviewLineChartYAxisVariable: CustomerOverviewObjKey;
 
   // new
   // new -> bar
-  newBarChartYAxisVariables: CustomerNewReturningObjKey;
+  newBarChartYAxisVariable: CustomerNewReturningObjKey;
   // new -> calendar
-  newCalendarChartYAxisVariables: CustomerNewReturningCalendarObjKey;
+  newCalendarChartYAxisVariable: CustomerNewReturningCalendarObjKey;
   // new -> line
-  newLineChartYAxisVariables: CustomerNewReturningObjKey;
+  newLineChartYAxisVariable: CustomerNewReturningObjKey;
   // new -> pie
-  newPieChartYAxisVariables: CustomerNewReturningPieObjKey;
+  newPieChartYAxisVariable: CustomerNewReturningPieObjKey;
 
   // returning
   // returning -> bar
-  returningBarChartYAxisVariables: CustomerNewReturningObjKey;
+  returningBarChartYAxisVariable: CustomerNewReturningObjKey;
   // returning -> calendar
-  returningCalendarChartYAxisVariables: CustomerNewReturningCalendarObjKey;
+  returningCalendarChartYAxisVariable: CustomerNewReturningCalendarObjKey;
   // returning -> line
-  returningLineChartYAxisVariables: CustomerNewReturningObjKey;
+  returningLineChartYAxisVariable: CustomerNewReturningObjKey;
   // returning -> pie
-  returningPieChartYAxisVariables: CustomerNewReturningPieObjKey;
+  returningPieChartYAxisVariable: CustomerNewReturningPieObjKey;
 };
 
 type CustomerDashboardDailyAction = {
   // overview
-  setOverviewBarChartYAxisVariables: 'setOverviewBarChartYAxisVariables';
-  setOverviewCalendarChartYAxisVariables: 'setOverviewCalendarChartYAxisVariables';
-  setOverviewLineChartYAxisVariables: 'setOverviewLineChartYAxisVariables';
+  setOverviewBarChartYAxisVariable: 'setOverviewBarChartYAxisVariable';
+  setOverviewCalendarChartYAxisVariable: 'setOverviewCalendarChartYAxisVariable';
+  setOverviewLineChartYAxisVariable: 'setOverviewLineChartYAxisVariable';
 
   // new
-  setNewBarChartYAxisVariables: 'setNewBarChartYAxisVariables';
-  setNewCalendarChartYAxisVariables: 'setNewCalendarChartYAxisVariables';
-  setNewLineChartYAxisVariables: 'setNewLineChartYAxisVariables';
-  setNewPieChartYAxisVariables: 'setNewPieChartYAxisVariables';
+  setNewBarChartYAxisVariable: 'setNewBarChartYAxisVariable';
+  setNewCalendarChartYAxisVariable: 'setNewCalendarChartYAxisVariable';
+  setNewLineChartYAxisVariable: 'setNewLineChartYAxisVariable';
+  setNewPieChartYAxisVariable: 'setNewPieChartYAxisVariable';
 
   // returning
-  setReturningBarChartYAxisVariables: 'setReturningBarChartYAxisVariables';
-  setReturningCalendarChartYAxisVariables: 'setReturningCalendarChartYAxisVariables';
-  setReturningLineChartYAxisVariables: 'setReturningLineChartYAxisVariables';
-  setReturningPieChartYAxisVariables: 'setReturningPieChartYAxisVariables';
+  setReturningBarChartYAxisVariable: 'setReturningBarChartYAxisVariable';
+  setReturningCalendarChartYAxisVariable: 'setReturningCalendarChartYAxisVariable';
+  setReturningLineChartYAxisVariable: 'setReturningLineChartYAxisVariable';
+  setReturningPieChartYAxisVariable: 'setReturningPieChartYAxisVariable';
 };
 
 type CustomerDashboardDailyDispatch =
   | {
       type:
-        | CustomerDashboardDailyAction['setOverviewBarChartYAxisVariables']
-        | CustomerDashboardDailyAction['setOverviewCalendarChartYAxisVariables']
-        | CustomerDashboardDailyAction['setOverviewLineChartYAxisVariables'];
+        | CustomerDashboardDailyAction['setOverviewBarChartYAxisVariable']
+        | CustomerDashboardDailyAction['setOverviewCalendarChartYAxisVariable']
+        | CustomerDashboardDailyAction['setOverviewLineChartYAxisVariable'];
 
       payload: CustomerOverviewObjKey;
     }
   | {
       type:
-        | CustomerDashboardDailyAction['setNewBarChartYAxisVariables']
-        | CustomerDashboardDailyAction['setNewLineChartYAxisVariables']
-        | CustomerDashboardDailyAction['setReturningBarChartYAxisVariables']
-        | CustomerDashboardDailyAction['setReturningLineChartYAxisVariables'];
+        | CustomerDashboardDailyAction['setNewBarChartYAxisVariable']
+        | CustomerDashboardDailyAction['setNewLineChartYAxisVariable']
+        | CustomerDashboardDailyAction['setReturningBarChartYAxisVariable']
+        | CustomerDashboardDailyAction['setReturningLineChartYAxisVariable'];
 
       payload: CustomerNewReturningObjKey;
     }
   | {
       type:
-        | CustomerDashboardDailyAction['setNewCalendarChartYAxisVariables']
-        | CustomerDashboardDailyAction['setReturningCalendarChartYAxisVariables'];
+        | CustomerDashboardDailyAction['setNewCalendarChartYAxisVariable']
+        | CustomerDashboardDailyAction['setReturningCalendarChartYAxisVariable'];
 
       payload: CustomerNewReturningCalendarObjKey;
     }
   | {
       type:
-        | CustomerDashboardDailyAction['setNewPieChartYAxisVariables']
-        | CustomerDashboardDailyAction['setReturningPieChartYAxisVariables'];
+        | CustomerDashboardDailyAction['setNewPieChartYAxisVariable']
+        | CustomerDashboardDailyAction['setReturningPieChartYAxisVariable'];
 
       payload: CustomerNewReturningPieObjKey;
     };

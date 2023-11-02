@@ -496,11 +496,7 @@ function returnCustomerChartsData({
       newSalesInStorePieChartData,
       newRepairPieChartData,
     ],
-    sales: [
-      newSalesOnlinePieChartData,
-      newSalesInStorePieChartData,
-      newRepairPieChartData,
-    ],
+    sales: [newSalesOnlinePieChartData, newSalesInStorePieChartData],
   };
 
   // daily -> returning
@@ -550,7 +546,6 @@ function returnCustomerChartsData({
     sales: [
       returningSalesOnlinePieChartData,
       returningSalesInStorePieChartData,
-      returningRepairPieChartData,
     ],
   };
 
@@ -1197,7 +1192,6 @@ function returnCustomerChartsData({
     sales: [
       monthlyNewSalesOnlinePieChartData,
       monthlyNewSalesInStorePieChartData,
-      monthlyNewRepairPieChartData,
     ],
   };
 
@@ -1251,7 +1245,6 @@ function returnCustomerChartsData({
     sales: [
       monthlyReturningSalesOnlinePieChartData,
       monthlyReturningSalesInStorePieChartData,
-      monthlyReturningRepairPieChartData,
     ],
   };
 
@@ -2006,7 +1999,6 @@ function returnCustomerChartsData({
     sales: [
       yearlyNewSalesOnlinePieChartData,
       yearlyNewSalesInStorePieChartData,
-      yearlyNewRepairPieChartData,
     ],
   };
 
@@ -2056,7 +2048,6 @@ function returnCustomerChartsData({
     sales: [
       yearlyReturningSalesOnlinePieChartData,
       yearlyReturningSalesInStorePieChartData,
-      yearlyReturningRepairPieChartData,
     ],
   };
 

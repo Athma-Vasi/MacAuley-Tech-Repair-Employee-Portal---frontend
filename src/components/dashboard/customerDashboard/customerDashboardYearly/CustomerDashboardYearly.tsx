@@ -20,7 +20,7 @@ import {
   ResponsivePieChart,
 } from '../../../charts';
 import CarouselBuilder from '../../../carouselBuilder/CarouselBuilder';
-import DashboardSection from '../../DashboardSection';
+import DashboardMetricsLayout from '../../DashboardMetricsLayout';
 import { ChangeEvent, useReducer } from 'react';
 import {
   customerDashboardYearlyAction,
@@ -71,7 +71,7 @@ function CustomerDashboardYearly({
 
   const {
     newYAxisBarVariablesSelection,
-    overviewBarChartYAxisVariables,
+    overviewBarChartYAxisVariable,
     returningYAxisLineBarVariablesSelection,
     churnRetentionYAxisSelection,
   } = customerDashboardYearlyState;
@@ -120,7 +120,7 @@ function CustomerDashboardYearly({
   //           payload: event.currentTarget.value as CustomerOverviewMapKey,
   //         });
   //       },
-  //       value: overviewBarChartYAxisVariables,
+  //       value: overviewBarChartYAxisVariable,
   //     },
   //   ]
   // );
@@ -143,7 +143,7 @@ function CustomerDashboardYearly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     barChartData={
-  //       yearlyCharts.overview.barChartsMap.get(overviewBarChartYAxisVariables) ?? []
+  //       yearlyCharts.overview.barChartsMap.get(overviewBarChartYAxisVariable) ?? []
   //     }
   //     hideControls
   //     indexBy="Years"
@@ -156,7 +156,7 @@ function CustomerDashboardYearly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     lineChartData={
-  //       yearlyCharts.overview.lineChartsMap.get(overviewBarChartYAxisVariables) ?? []
+  //       yearlyCharts.overview.lineChartsMap.get(overviewBarChartYAxisVariable) ?? []
   //     }
   //     hideControls
   //     xFormat={(x) => `Year - ${x}`}
@@ -183,7 +183,7 @@ function CustomerDashboardYearly({
   // );
 
   // const displayOverviewSection = (
-  //   <DashboardSection
+  //   <DashboardMetricsLayout
   //     chartCarousel={displayOverviewCarouselWithHeading}
   //     heading="Yearly Overview"
   //     overviewCards={yearlyCards.overview}
@@ -261,7 +261,7 @@ function CustomerDashboardYearly({
   // );
 
   // const displayNewSection = (
-  //   <DashboardSection
+  //   <DashboardMetricsLayout
   //     chartCarousel={displayNewCarouselWithHeading}
   //     heading="Yearly New"
   //     overviewCards={yearlyCards.new}
@@ -345,7 +345,7 @@ function CustomerDashboardYearly({
   // );
 
   // const displayReturningSection = (
-  //   <DashboardSection
+  //   <DashboardMetricsLayout
   //     chartCarousel={displayReturningCarouselWithHeading}
   //     heading="Yearly Returning"
   //     overviewCards={yearlyCards.returning}
@@ -431,7 +431,7 @@ function CustomerDashboardYearly({
   // );
 
   // const displayChurnRetentionSection = (
-  //   <DashboardSection
+  //   <DashboardMetricsLayout
   //     chartCarousel={displayChurnRetentionCarouselWithHeading}
   //     heading="Yearly Churn & Retention"
   //     overviewCards={[...yearlyCards.churnRate, ...yearlyCards.retentionRate]}

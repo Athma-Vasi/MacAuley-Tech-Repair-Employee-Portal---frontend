@@ -1,60 +1,41 @@
-import {
-  Card,
-  Group,
-  MantineNumberSize,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
-import { ChangeEvent, useEffect, useReducer, useState } from 'react';
+import { MantineNumberSize, Stack } from '@mantine/core';
+import { ChangeEvent, useEffect, useReducer } from 'react';
+import { LuExpand } from 'react-icons/lu';
 
-import { StoreLocation } from '../../../../types';
-import CarouselBuilder from '../../../carouselBuilder/CarouselBuilder';
+import {
+  returnAccessibleButtonElements,
+  returnAccessibleSelectInputElements,
+} from '../../../../jsxCreators';
+import { logState, splitCamelCase } from '../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
 } from '../../../charts';
+import { MONTHS } from '../../constants';
+import DashboardMetricsLayout from '../../DashboardMetricsLayout';
+import { ReturnDashboardCustomerCardInfoOutput } from '../../jsxHelpers';
+import { BusinessMetric, BusinessMetricStoreLocation } from '../../types';
+import { returnStatistics } from '../../utils';
 import {
-  returnDashboardCard,
-  ReturnDashboardCustomerCardInfoOutput,
-} from '../../jsxHelpers';
-import {
-  BusinessMetric,
-  BusinessMetricStoreLocation,
-  Month,
-  Year,
-} from '../../types';
-import { YAxisCustomerChartSelection } from '../types';
-import {
-  CustomerNewReturningObjKey,
-  CustomerOverviewObjKey,
-  ReturnCustomerChartsDataOutput,
-  SelectedDateCustomerMetrics,
-} from '../utils';
-import { AccessibleSelectInputCreatorInfo } from '../../../wrappers';
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleRadioGroupInputsElements,
-  returnAccessibleSelectInputElements,
-} from '../../../../jsxCreators';
-import {
+  CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
   CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+  CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
   CUSTOMER_OVERVIEW_Y_AXIS_DATA,
 } from '../constants';
-import { TbArrowUpRight } from 'react-icons/tb';
-import DashboardSection from '../../DashboardSection';
-import { BiExpandAlt } from 'react-icons/bi';
-import { LuExpand } from 'react-icons/lu';
+import {
+  CustomerNewReturningCalendarObjKey,
+  CustomerNewReturningObjKey,
+  CustomerNewReturningPieObjKey,
+  CustomerOverviewObjKey,
+  ReturnCustomerChartsDataOutput,
+} from '../utils';
 import {
   customerDashboardDailyAction,
   customerDashboardDailyReducer,
   initialCustomerDashboardDailyState,
 } from './state';
-import { MONTHS } from '../../constants';
-import { logState } from '../../../../utils';
-import { returnStatistics } from '../../utils';
 
 function CustomerDashboardDaily({
   borderColor,
@@ -86,17 +67,17 @@ function CustomerDashboardDaily({
     );
 
   const {
-    newBarChartYAxisVariables,
-    newCalendarChartYAxisVariables,
-    newLineChartYAxisVariables,
-    newPieChartYAxisVariables,
-    overviewBarChartYAxisVariables,
-    overviewCalendarChartYAxisVariables,
-    overviewLineChartYAxisVariables,
-    returningBarChartYAxisVariables,
-    returningCalendarChartYAxisVariables,
-    returningLineChartYAxisVariables,
-    returningPieChartYAxisVariables,
+    newBarChartYAxisVariable,
+    newCalendarChartYAxisVariable,
+    newLineChartYAxisVariable,
+    newPieChartYAxisVariable,
+    overviewBarChartYAxisVariable,
+    overviewCalendarChartYAxisVariable,
+    overviewLineChartYAxisVariable,
+    returningBarChartYAxisVariable,
+    returningCalendarChartYAxisVariable,
+    returningLineChartYAxisVariable,
+    returningPieChartYAxisVariable,
   } = customerDashboardDailyState;
 
   useEffect(() => {
@@ -125,7 +106,6 @@ function CustomerDashboardDaily({
   const chartHeight =
     width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = width < 1024 ? componentWidth : componentWidth * 0.75;
-  const cardWidth = chartWidth / 2;
 
   const [createdExpandChartButton] = returnAccessibleButtonElements([
     {
@@ -146,7 +126,13 @@ function CustomerDashboardDaily({
 
   console.log('statisticsDailyOverview', statisticsDailyOverview);
 
-  // overview -> pie chart
+  // overview -> charts -> pie
+
+  // overview -> charts -> pie -> heading
+  const pieChartHeading = `New and returning customers for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year}`;
+  // overview -> charts -> pie -> y axis variables
   const displayOverviewPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
@@ -156,6 +142,13 @@ function CustomerDashboardDaily({
     />
   );
 
+  // overview -> charts -> bar -> heading
+  const barChartHeading = `${splitCamelCase(
+    overviewBarChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
+
   // overview -> charts -> bar -> y axis variables
   const [createdOverviewBarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
@@ -164,27 +157,34 @@ function CustomerDashboardDaily({
         label: 'Y-Axis Bar',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardDailyDispatch({
-            type: customerDashboardDailyAction.setOverviewBarChartYAxisVariables,
+            type: customerDashboardDailyAction.setOverviewBarChartYAxisVariable,
             payload: event.currentTarget.value as CustomerOverviewObjKey,
           });
         },
-        value: overviewBarChartYAxisVariables,
+        value: overviewBarChartYAxisVariable,
       },
     ]);
 
-  // overview -> charts -> bar
+  // overview -> charts -> bar -> display
   const displayOverviewBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       barChartData={
-        dailyCharts.overview.barChartsObj[overviewBarChartYAxisVariables]
+        dailyCharts.overview.barChartsObj[overviewBarChartYAxisVariable]
       }
       hideControls
       indexBy="Days"
       keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA.map((obj) => obj.label)}
     />
   );
+
+  // overview -> charts -> line -> heading
+  const lineChartHeading = `${splitCamelCase(
+    overviewLineChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
 
   // overview -> charts -> line -> y axis variables
   const [createdOverviewLineChartYAxisVariablesSelectInput] =
@@ -194,20 +194,21 @@ function CustomerDashboardDaily({
         label: 'Y-Axis Line',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardDailyDispatch({
-            type: customerDashboardDailyAction.setOverviewLineChartYAxisVariables,
+            type: customerDashboardDailyAction.setOverviewLineChartYAxisVariable,
             payload: event.currentTarget.value as CustomerOverviewObjKey,
           });
         },
-        value: overviewLineChartYAxisVariables,
+        value: overviewLineChartYAxisVariable,
       },
     ]);
 
+  // overview -> charts -> line -> display
   const displayOverviewLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        dailyCharts.overview.lineChartsObj[overviewLineChartYAxisVariables]
+        dailyCharts.overview.lineChartsObj[overviewLineChartYAxisVariable]
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
@@ -215,7 +216,14 @@ function CustomerDashboardDaily({
     />
   );
 
-  // // overview -> charts -> calendar -> y axis variables
+  // overview -> charts -> calendar -> heading
+  const calendarChartHeading = `${splitCamelCase(
+    overviewCalendarChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
+
+  // overview -> charts -> calendar -> y axis variables
   const [createdOverviewCalendarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -223,19 +231,20 @@ function CustomerDashboardDaily({
         label: 'Y-Axis Calendar',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardDailyDispatch({
-            type: customerDashboardDailyAction.setOverviewCalendarChartYAxisVariables,
+            type: customerDashboardDailyAction.setOverviewCalendarChartYAxisVariable,
             payload: event.currentTarget.value as CustomerOverviewObjKey,
           });
         },
-        value: overviewCalendarChartYAxisVariables,
+        value: overviewCalendarChartYAxisVariable,
       },
     ]);
 
+  // overview -> charts -> calendar -> display
   const displayOverviewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
         dailyCharts.overview.calendarChartsObj[
-          overviewCalendarChartYAxisVariables
+          overviewCalendarChartYAxisVariable
         ]
       }
       chartHeight={chartHeight}
@@ -246,326 +255,416 @@ function CustomerDashboardDaily({
     />
   );
 
+  const displayOverviewSection = (
+    <DashboardMetricsLayout
+      barChart={displayOverviewBarChart}
+      barChartHeading={barChartHeading}
+      barChartYAxisSelectInput={
+        createdOverviewBarChartYAxisVariablesSelectInput
+      }
+      borderColor={borderColor}
+      expandChartButton={createdExpandChartButton}
+      lineChart={displayOverviewLineChart}
+      lineChartHeading={lineChartHeading}
+      lineChartYAxisSelectInput={
+        createdOverviewLineChartYAxisVariablesSelectInput
+      }
+      overviewCards={dailyCards.overview}
+      padding={padding}
+      pieChart={displayOverviewPieChart}
+      pieChartHeading={pieChartHeading}
+      sectionHeading="Daily Overview"
+      statisticsMap={statisticsDailyOverview}
+      width={width}
+      calendarChart={displayOverviewCalendarChart}
+      calendarChartHeading={calendarChartHeading}
+      calendarChartYAxisSelectInput={
+        createdOverviewCalendarChartYAxisVariablesSelectInput
+      }
+    />
+  );
+
+  // new
+
+  // new -> statistics
+  const statisticsDailyNew = returnStatistics<CustomerNewReturningObjKey>(
+    dailyCharts.new.barChartsObj
+  );
+
+  // new -> charts -> pie
+
+  // new -> charts -> pie -> heading
+  const newPieChartHeading = `New customers for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year}`;
+
+  // new -> charts -> pie -> y axis variables
+  const [createdNewPieChartYAxisVariablesSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
+        label: 'Y-Axis Pie',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setNewPieChartYAxisVariable,
+            payload: event.currentTarget.value as CustomerNewReturningPieObjKey,
+          });
+        },
+        value: newPieChartYAxisVariable,
+      },
+    ]);
+
+  // new -> charts -> pie -> display
+  const displayNewPieChart = (
+    <ResponsivePieChart
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      pieChartData={dailyCharts.new.pieChartObj[newPieChartYAxisVariable]}
+      hideControls
+    />
+  );
+
+  // new -> charts -> bar
+
+  // new -> charts -> bar -> heading
+  const newBarChartHeading = `${splitCamelCase(
+    newBarChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
+
+  // new -> charts -> bar -> y axis variables
+  const [createdNewBarChartYAxisVariablesSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+        label: 'Y-Axis Bar',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setNewBarChartYAxisVariable,
+            payload: event.currentTarget.value as CustomerNewReturningObjKey,
+          });
+        },
+        value: newBarChartYAxisVariable,
+      },
+    ]);
+
+  // new -> charts -> bar -> display
+  const displayNewBarChart = (
+    <ResponsiveBarChart
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      barChartData={dailyCharts.new.barChartsObj[newBarChartYAxisVariable]}
+      hideControls
+      indexBy="Days"
+      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+    />
+  );
+
+  // new -> charts -> line
+
+  // new -> charts -> line -> heading
+  const newLineChartHeading = `${splitCamelCase(
+    newLineChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
+
+  // new -> charts -> line -> y axis variables
+  const [createdNewLineChartYAxisVariablesSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+        label: 'Y-Axis Line',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setNewLineChartYAxisVariable,
+            payload: event.currentTarget.value as CustomerNewReturningObjKey,
+          });
+        },
+        value: newLineChartYAxisVariable,
+      },
+    ]);
+
+  // new -> charts -> line -> display
+  const displayNewLineChart = (
+    <ResponsiveLineChart
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      lineChartData={dailyCharts.new.lineChartsObj[newLineChartYAxisVariable]}
+      hideControls
+      xFormat={(x) => `Day - ${x}`}
+      yFormat={(y) => `${y} Customers`}
+    />
+  );
+
+  // new -> charts -> calendar
+
+  // new -> charts -> calendar -> heading
+  const newCalendarChartHeading = `${splitCamelCase(
+    newCalendarChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
+
+  // new -> charts -> calendar -> y axis variables
+  const [createdNewCalendarChartYAxisVariablesSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
+        label: 'Y-Axis Calendar',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setNewCalendarChartYAxisVariable,
+            payload: event.currentTarget
+              .value as CustomerNewReturningCalendarObjKey,
+          });
+        },
+        value: newCalendarChartYAxisVariable,
+      },
+    ]);
+
+  // new -> charts -> calendar -> display
+  const displayNewCalendarChart = (
+    <ResponsiveCalendarChart
+      calendarChartData={
+        dailyCharts.new.calendarChartsObj[newCalendarChartYAxisVariable]
+      }
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      from={`${year}-${month}-01`}
+      to={`${year}-${month}-${day}`}
+      hideControls
+    />
+  );
+
+  const displayNewSection = (
+    <DashboardMetricsLayout
+      barChart={displayNewBarChart}
+      barChartHeading={newBarChartHeading}
+      barChartYAxisSelectInput={createdNewBarChartYAxisVariablesSelectInput}
+      borderColor={borderColor}
+      expandChartButton={createdExpandChartButton}
+      lineChart={displayNewLineChart}
+      lineChartHeading={newLineChartHeading}
+      lineChartYAxisSelectInput={createdNewLineChartYAxisVariablesSelectInput}
+      overviewCards={dailyCards.new}
+      padding={padding}
+      pieChart={displayNewPieChart}
+      pieChartHeading={newPieChartHeading}
+      pieChartYAxisSelectInput={createdNewPieChartYAxisVariablesSelectInput}
+      sectionHeading="Daily New"
+      statisticsMap={statisticsDailyNew}
+      width={width}
+      calendarChart={displayNewCalendarChart}
+      calendarChartHeading={newCalendarChartHeading}
+      calendarChartYAxisSelectInput={
+        createdNewCalendarChartYAxisVariablesSelectInput
+      }
+    />
+  );
+
+  // returning
+
+  // returning -> statistics
+  const statisticsDailyReturning = returnStatistics<CustomerNewReturningObjKey>(
+    dailyCharts.returning.barChartsObj
+  );
+
+  // returning -> charts -> pie
+
+  // returning -> charts -> pie -> heading
+  const returningPieChartHeading = `Returning customers for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year}`;
+
+  // returning -> charts -> pie -> y axis variables
+  const [createdReturningPieChartYAxisVariablesSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
+        label: 'Y-Axis Pie',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setReturningPieChartYAxisVariable,
+            payload: event.currentTarget.value as CustomerNewReturningPieObjKey,
+          });
+        },
+        value: returningPieChartYAxisVariable,
+      },
+    ]);
+
+  // returning -> charts -> pie -> display
+  const displayReturningPieChart = (
+    <ResponsivePieChart
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      pieChartData={
+        dailyCharts.returning.pieChartObj[returningPieChartYAxisVariable]
+      }
+      hideControls
+    />
+  );
+
+  // returning -> charts -> bar
+
+  // returning -> charts -> bar -> heading
+  const returningBarChartHeading = `${splitCamelCase(
+    returningBarChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
+
+  // returning -> charts -> bar -> y axis variables
+  const [createdReturningBarChartYAxisVariablesSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+        label: 'Y-Axis Bar',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setReturningBarChartYAxisVariable,
+            payload: event.currentTarget.value as CustomerNewReturningObjKey,
+          });
+        },
+        value: returningBarChartYAxisVariable,
+      },
+    ]);
+
+  // returning -> charts -> bar -> display
+  const displayReturningBarChart = (
+    <ResponsiveBarChart
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      barChartData={
+        dailyCharts.returning.barChartsObj[returningBarChartYAxisVariable]
+      }
+      hideControls
+      indexBy="Days"
+      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+    />
+  );
+
+  // returning -> charts -> line
+
+  // returning -> charts -> line -> heading
+  const returningLineChartHeading = `${splitCamelCase(
+    returningLineChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
+
+  // returning -> charts -> line -> y axis variables
+  const [createdReturningLineChartYAxisVariablesSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+        label: 'Y-Axis Line',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setReturningLineChartYAxisVariable,
+            payload: event.currentTarget.value as CustomerNewReturningObjKey,
+          });
+        },
+        value: returningLineChartYAxisVariable,
+      },
+    ]);
+
+  // returning -> charts -> line -> display
+  const displayReturningLineChart = (
+    <ResponsiveLineChart
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      lineChartData={
+        dailyCharts.returning.lineChartsObj[returningLineChartYAxisVariable]
+      }
+      hideControls
+      xFormat={(x) => `Day - ${x}`}
+      yFormat={(y) => `${y} Customers`}
+    />
+  );
+
+  // returning -> charts -> calendar
+
+  // returning -> charts -> calendar -> heading
+  const returningCalendarChartHeading = `${splitCamelCase(
+    returningCalendarChartYAxisVariable
+  )} Customers vs. Days for ${
+    MONTHS[parseInt(month) - 1]
+  }, ${year} at ${storeLocation}`;
+
+  // returning -> charts -> calendar -> y axis variables
+  const [createdReturningCalendarChartYAxisVariablesSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
+        label: 'Y-Axis Calendar',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          customerDashboardDailyDispatch({
+            type: customerDashboardDailyAction.setReturningCalendarChartYAxisVariable,
+            payload: event.currentTarget
+              .value as CustomerNewReturningCalendarObjKey,
+          });
+        },
+        value: returningCalendarChartYAxisVariable,
+      },
+    ]);
+
+  // returning -> charts -> calendar -> display
+  const displayReturningCalendarChart = (
+    <ResponsiveCalendarChart
+      calendarChartData={
+        dailyCharts.returning.calendarChartsObj[
+          returningCalendarChartYAxisVariable
+        ]
+      }
+      chartHeight={chartHeight}
+      chartWidth={chartWidth}
+      from={`${year}-${month}-01`}
+      to={`${year}-${month}-${day}`}
+      hideControls
+    />
+  );
+
+  const displayReturningSection = (
+    <DashboardMetricsLayout
+      barChart={displayReturningBarChart}
+      barChartHeading={returningBarChartHeading}
+      barChartYAxisSelectInput={
+        createdReturningBarChartYAxisVariablesSelectInput
+      }
+      borderColor={borderColor}
+      expandChartButton={createdExpandChartButton}
+      lineChart={displayReturningLineChart}
+      lineChartHeading={returningLineChartHeading}
+      lineChartYAxisSelectInput={
+        createdReturningLineChartYAxisVariablesSelectInput
+      }
+      overviewCards={dailyCards.returning}
+      padding={padding}
+      pieChart={displayReturningPieChart}
+      pieChartHeading={returningPieChartHeading}
+      pieChartYAxisSelectInput={
+        createdReturningPieChartYAxisVariablesSelectInput
+      }
+      sectionHeading="Daily Returning"
+      statisticsMap={statisticsDailyReturning}
+      width={width}
+      calendarChart={displayReturningCalendarChart}
+      calendarChartHeading={returningCalendarChartHeading}
+      calendarChartYAxisSelectInput={
+        createdReturningCalendarChartYAxisVariablesSelectInput
+      }
+    />
+  );
+
   return (
     <Stack>
-      {displayOverviewPieChart}
-      {createdOverviewBarChartYAxisVariablesSelectInput}
-      {displayOverviewBarChart}
-      {createdOverviewLineChartYAxisVariablesSelectInput}
-      {displayOverviewLineChart}
-      {createdOverviewCalendarChartYAxisVariablesSelectInput}
-      {displayOverviewCalendarChart}
+      {displayOverviewSection}
+      {displayNewSection}
+      {displayReturningSection}
     </Stack>
   );
 }
-
-// const [createdOverviewYAxisSelectInput] = returnAccessibleSelectInputElements(
-//   [
-//     {
-//       data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
-//       label: 'Y-Axis',
-//       description: 'Select the Y Axis for the Overview Charts',
-//       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-//         customerDashboardDailyDispatch({
-//           type: customerDashboardDailyAction.setOverviewYAxisVariablesSelection,
-//           payload: event.currentTarget.value as CustomerOverviewMapKey,
-//         });
-//       },
-//       value: overviewBarChartYAxisVariables,
-//     },
-//   ]
-// );
-
-// const displayOverviewBarChart = (
-//   <ResponsiveBarChart
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     barChartData={
-//       dailyCharts.overview.barChartsMap.get(overviewBarChartYAxisVariables) ?? []
-//     }
-//     hideControls
-//     indexBy="Days"
-//     keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA}
-//   />
-// );
-
-// const displayOverviewLineChart = (
-//   <ResponsiveLineChart
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     lineChartData={
-//       dailyCharts.overview.lineChartsMap.get(overviewBarChartYAxisVariables) ?? []
-//     }
-//     hideControls
-//     xFormat={(x) => `Day - ${x}`}
-//     yFormat={(y) => `${y} Customers`}
-//   />
-// );
-
-// const displayOverviewCalendarChart = (
-//   <ResponsiveCalendarChart
-//     calendarChartData={
-//       dailyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariables) ?? []
-//     }
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     from={`${year}-${month}-01`}
-//     to={`${year}-${month}-${day}`}
-//     hideControls
-//   />
-// );
-
-// const displayOverviewCarousel = (
-//   <CarouselBuilder
-//     slideDimensions={{ width: chartWidth, height: chartHeight }}
-//     slides={[
-//       displayOverviewBarChart,
-//       displayOverviewLineChart,
-//       displayOverviewCalendarChart,
-//     ]}
-//     headings={[
-//       'Overview Bar Chart',
-//       'Overview Line Chart',
-//       'Overview Calendar Chart',
-//     ]}
-//   />
-// );
-
-// const displayOverviewCarouselWithHeading = (
-//   <Group w="100%" spacing={padding}>
-//     <Stack>
-//       {createdOverviewYAxisSelectInput}
-//       {createdExpandChartButton}
-//     </Stack>
-//     {displayOverviewCarousel}
-//   </Group>
-// );
-
-// const displayOverviewSection = (
-//   <DashboardSection
-//     chartCarousel={displayOverviewCarouselWithHeading}
-//     heading="Daily Overview"
-//     overviewCards={dailyCards.overview}
-//     pieChart={displayOverviewPieChart}
-//     pieChartHeading={`New and returning customers for ${year}-${
-//       MONTHS[parseInt(month) - 1]
-//     }-${day}`}
-//     width={width}
-//   />
-// );
-
-// // new section
-// const displayNewPieChart = (
-//   <ResponsivePieChart
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     pieChartData={dailyCharts.new.pieChartData}
-//     hideControls
-//   />
-// );
-
-// const [createdNewYAxisSelectInput] = returnAccessibleSelectInputElements([
-//   {
-//     data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-//     label: 'Y-Axis',
-//     description: 'Select the Y Axis for the New Charts',
-//     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-//       customerDashboardDailyDispatch({
-//         type: customerDashboardDailyAction.setNewYAxisLineBarVariablesSelection,
-//         payload: event.currentTarget.value as CustomerNewMapKey,
-//       });
-//     },
-//     value: newYAxisBarVariablesSelection,
-//   },
-// ]);
-
-// const displayNewBarChart = (
-//   <ResponsiveBarChart
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     barChartData={dailyCharts.new.barChartsMap.get(newYAxisBarVariablesSelection) ?? []}
-//     hideControls
-//     indexBy="Days"
-//     keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA}
-//   />
-// );
-
-// const displayNewLineChart = (
-//   <ResponsiveLineChart
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     lineChartData={dailyCharts.new.lineChartsMap.get(newYAxisBarVariablesSelection) ?? []}
-//     hideControls
-//     xFormat={(x) => `Day - ${x}`}
-//     yFormat={(y) => `${y} Customers`}
-//   />
-// );
-
-// const displayNewCalendarChart = (
-//   <ResponsiveCalendarChart
-//     calendarChartData={
-//       dailyCharts.new.calendarChartsMap.get(newYAxisBarVariablesSelection) ?? []
-//     }
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     from={`${year}-${month}-01`}
-//     to={`${year}-${month}-${day}`}
-//     hideControls
-//   />
-// );
-
-// const displayNewCarousel = (
-//   <CarouselBuilder
-//     slideDimensions={{ width: chartWidth, height: chartHeight }}
-//     slides={[
-//       displayNewBarChart,
-//       displayNewLineChart,
-//       displayNewCalendarChart,
-//     ]}
-//     headings={[
-//       'New Customers Bar Chart',
-//       'New Customers Line Chart',
-//       'New Customers Calendar Chart',
-//     ]}
-//   />
-// );
-
-// const displayNewCarouselWithHeading = (
-//   <Group w="100%" spacing={padding}>
-//     <Stack>
-//       {createdNewYAxisSelectInput}
-//       {createdExpandChartButton}
-//     </Stack>
-//     {displayNewCarousel}
-//   </Group>
-// );
-
-// const displayNewSection = (
-//   <DashboardSection
-//     chartCarousel={displayNewCarouselWithHeading}
-//     heading="Daily New"
-//     overviewCards={dailyCards.new}
-//     pieChart={displayNewPieChart}
-//     pieChartHeading={`New customers for ${year}-${
-//       MONTHS[parseInt(month) - 1]
-//     }-${day}`}
-//     width={width}
-//   />
-// );
-
-// // returning section
-// const [createdReturningYAxisSelectInput] =
-//   returnAccessibleSelectInputElements([
-//     {
-//       data: RETURNING_Y_AXIS_DATA,
-//       label: 'Y-Axis',
-//       description: 'Select the Y Axis for the Returning Charts',
-//       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-//         customerDashboardDailyDispatch({
-//           type: customerDashboardDailyAction.setReturningYAxisLineBarSelection,
-//           payload: event.currentTarget.value as CustomerReturningMapKey,
-//         });
-//       },
-//       value: returningYAxisLineBarVariablesSelection,
-//     },
-//   ]);
-
-// const displayReturningPieChart = (
-//   <ResponsivePieChart
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     pieChartData={dailyCharts.returning.pieChartData}
-//     hideControls
-//   />
-// );
-
-// const displayReturningBarChart = (
-//   <ResponsiveBarChart
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     barChartData={
-//       dailyCharts.returning.barChartsMap.get(returningYAxisLineBarVariablesSelection) ?? []
-//     }
-//     hideControls
-//     indexBy="Days"
-//     keys={RETURNING_Y_AXIS_DATA}
-//   />
-// );
-
-// const displayReturningLineChart = (
-//   <ResponsiveLineChart
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     lineChartData={
-//       dailyCharts.returning.lineChartsMap.get(returningYAxisLineBarVariablesSelection) ?? []
-//     }
-//     hideControls
-//     xFormat={(x) => `Day - ${x}`}
-//     yFormat={(y) => `${y} Customers`}
-//   />
-// );
-
-// const displayReturningCalendarChart = (
-//   <ResponsiveCalendarChart
-//     calendarChartData={
-//       dailyCharts.returning.calendarChartsMap.get(returningYAxisLineBarVariablesSelection) ??
-//       []
-//     }
-//     chartHeight={chartHeight}
-//     chartWidth={chartWidth}
-//     from={`${year}-${month}-01`}
-//     to={`${year}-${month}-${day}`}
-//     hideControls
-//   />
-// );
-
-// const displayReturningCarousel = (
-//   <CarouselBuilder
-//     slideDimensions={{ width: chartWidth, height: chartHeight }}
-//     slides={[
-//       displayReturningBarChart,
-//       displayReturningLineChart,
-//       displayReturningCalendarChart,
-//     ]}
-//     headings={[
-//       'Returning Customers Bar Chart',
-//       'Returning Customers Line Chart',
-//       'Returning Customers Calendar Chart',
-//     ]}
-//   />
-// );
-
-// const displayReturningCarouselWithHeading = (
-//   <Group w="100%" spacing={padding}>
-//     <Stack>
-//       {createdReturningYAxisSelectInput}
-//       {createdExpandChartButton}
-//     </Stack>
-//     {displayReturningCarousel}
-//   </Group>
-// );
-
-// const displayReturningSection = (
-//   <DashboardSection
-//     chartCarousel={displayReturningCarouselWithHeading}
-//     heading="Daily Returning"
-//     overviewCards={dailyCards.returning}
-//     pieChart={displayReturningPieChart}
-//     pieChartHeading={`Returning customers for ${year}-${
-//       MONTHS[parseInt(month) - 1]
-//     }-${day}`}
-//     width={width}
-//   />
-// );
-
-// const displayCustomerDashboardDaily = (
-//   <Stack w="100%">
-//     {displayOverviewSection}
-//     {displayNewSection}
-//     {displayReturningSection}
-//   </Stack>
-// );
-
-// return displayCustomerDashboardDaily;
 
 export default CustomerDashboardDaily;

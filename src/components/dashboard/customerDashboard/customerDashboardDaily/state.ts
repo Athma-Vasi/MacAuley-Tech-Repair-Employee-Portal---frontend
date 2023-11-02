@@ -7,52 +7,52 @@ import {
 const initialCustomerDashboardDailyState: CustomerDashboardDailyState = {
   // overview
   // overview -> bar
-  overviewBarChartYAxisVariables: 'overview',
+  overviewBarChartYAxisVariable: 'overview',
   // overview -> calendar
-  overviewCalendarChartYAxisVariables: 'overview',
+  overviewCalendarChartYAxisVariable: 'overview',
   // overview -> line
-  overviewLineChartYAxisVariables: 'overview',
+  overviewLineChartYAxisVariable: 'overview',
 
   // new
   // new -> bar
-  newBarChartYAxisVariables: 'total',
+  newBarChartYAxisVariable: 'total',
   // new -> calendar
-  newCalendarChartYAxisVariables: 'total',
+  newCalendarChartYAxisVariable: 'total',
   // new -> line
-  newLineChartYAxisVariables: 'total',
+  newLineChartYAxisVariable: 'total',
   // new -> pie
-  newPieChartYAxisVariables: 'overview',
+  newPieChartYAxisVariable: 'overview',
 
   // returning
   // returning -> bar
-  returningBarChartYAxisVariables: 'total',
+  returningBarChartYAxisVariable: 'total',
   // returning -> calendar
-  returningCalendarChartYAxisVariables: 'total',
+  returningCalendarChartYAxisVariable: 'total',
   // returning -> line
-  returningLineChartYAxisVariables: 'total',
+  returningLineChartYAxisVariable: 'total',
   // returning -> pie
-  returningPieChartYAxisVariables: 'overview',
+  returningPieChartYAxisVariable: 'overview',
 };
 
 const customerDashboardDailyAction: CustomerDashboardDailyAction = {
   // overview
-  setOverviewBarChartYAxisVariables: 'setOverviewBarChartYAxisVariables',
-  setOverviewCalendarChartYAxisVariables:
-    'setOverviewCalendarChartYAxisVariables',
-  setOverviewLineChartYAxisVariables: 'setOverviewLineChartYAxisVariables',
+  setOverviewBarChartYAxisVariable: 'setOverviewBarChartYAxisVariable',
+  setOverviewCalendarChartYAxisVariable:
+    'setOverviewCalendarChartYAxisVariable',
+  setOverviewLineChartYAxisVariable: 'setOverviewLineChartYAxisVariable',
 
   // new
-  setNewBarChartYAxisVariables: 'setNewBarChartYAxisVariables',
-  setNewCalendarChartYAxisVariables: 'setNewCalendarChartYAxisVariables',
-  setNewLineChartYAxisVariables: 'setNewLineChartYAxisVariables',
-  setNewPieChartYAxisVariables: 'setNewPieChartYAxisVariables',
+  setNewBarChartYAxisVariable: 'setNewBarChartYAxisVariable',
+  setNewCalendarChartYAxisVariable: 'setNewCalendarChartYAxisVariable',
+  setNewLineChartYAxisVariable: 'setNewLineChartYAxisVariable',
+  setNewPieChartYAxisVariable: 'setNewPieChartYAxisVariable',
 
   // returning
-  setReturningBarChartYAxisVariables: 'setReturningBarChartYAxisVariables',
-  setReturningCalendarChartYAxisVariables:
-    'setReturningCalendarChartYAxisVariables',
-  setReturningLineChartYAxisVariables: 'setReturningLineChartYAxisVariables',
-  setReturningPieChartYAxisVariables: 'setReturningPieChartYAxisVariables',
+  setReturningBarChartYAxisVariable: 'setReturningBarChartYAxisVariable',
+  setReturningCalendarChartYAxisVariable:
+    'setReturningCalendarChartYAxisVariable',
+  setReturningLineChartYAxisVariable: 'setReturningLineChartYAxisVariable',
+  setReturningPieChartYAxisVariable: 'setReturningPieChartYAxisVariable',
 };
 
 function customerDashboardDailyReducer(
@@ -63,84 +63,84 @@ function customerDashboardDailyReducer(
     // overview
 
     // overview -> bar
-    case customerDashboardDailyAction.setOverviewBarChartYAxisVariables:
+    case customerDashboardDailyAction.setOverviewBarChartYAxisVariable:
       return {
         ...state,
-        overviewBarChartYAxisVariables: action.payload,
+        overviewBarChartYAxisVariable: action.payload,
       };
 
     // overview -> calendar
-    case customerDashboardDailyAction.setOverviewCalendarChartYAxisVariables:
+    case customerDashboardDailyAction.setOverviewCalendarChartYAxisVariable:
       return {
         ...state,
-        overviewCalendarChartYAxisVariables: action.payload,
+        overviewCalendarChartYAxisVariable: action.payload,
       };
 
     // overview -> line
-    case customerDashboardDailyAction.setOverviewLineChartYAxisVariables:
+    case customerDashboardDailyAction.setOverviewLineChartYAxisVariable:
       return {
         ...state,
-        overviewLineChartYAxisVariables: action.payload,
+        overviewLineChartYAxisVariable: action.payload,
       };
 
     // new
 
     // new -> bar
-    case customerDashboardDailyAction.setNewBarChartYAxisVariables:
+    case customerDashboardDailyAction.setNewBarChartYAxisVariable:
       return {
         ...state,
-        newBarChartYAxisVariables: action.payload,
+        newBarChartYAxisVariable: action.payload,
       };
 
     // new -> calendar
-    case customerDashboardDailyAction.setNewCalendarChartYAxisVariables:
+    case customerDashboardDailyAction.setNewCalendarChartYAxisVariable:
       return {
         ...state,
-        newCalendarChartYAxisVariables: action.payload,
+        newCalendarChartYAxisVariable: action.payload,
       };
 
     // new -> line
-    case customerDashboardDailyAction.setNewLineChartYAxisVariables:
+    case customerDashboardDailyAction.setNewLineChartYAxisVariable:
       return {
         ...state,
-        newLineChartYAxisVariables: action.payload,
+        newLineChartYAxisVariable: action.payload,
       };
 
     // new -> pie
-    case customerDashboardDailyAction.setNewPieChartYAxisVariables:
+    case customerDashboardDailyAction.setNewPieChartYAxisVariable:
       return {
         ...state,
-        newPieChartYAxisVariables: action.payload,
+        newPieChartYAxisVariable: action.payload,
       };
 
     // returning
 
     // returning -> bar
-    case customerDashboardDailyAction.setReturningBarChartYAxisVariables:
+    case customerDashboardDailyAction.setReturningBarChartYAxisVariable:
       return {
         ...state,
-        returningBarChartYAxisVariables: action.payload,
+        returningBarChartYAxisVariable: action.payload,
       };
 
     // returning -> calendar
-    case customerDashboardDailyAction.setReturningCalendarChartYAxisVariables:
+    case customerDashboardDailyAction.setReturningCalendarChartYAxisVariable:
       return {
         ...state,
-        returningCalendarChartYAxisVariables: action.payload,
+        returningCalendarChartYAxisVariable: action.payload,
       };
 
     // returning -> line
-    case customerDashboardDailyAction.setReturningLineChartYAxisVariables:
+    case customerDashboardDailyAction.setReturningLineChartYAxisVariable:
       return {
         ...state,
-        returningLineChartYAxisVariables: action.payload,
+        returningLineChartYAxisVariable: action.payload,
       };
 
     // returning -> pie
-    case customerDashboardDailyAction.setReturningPieChartYAxisVariables:
+    case customerDashboardDailyAction.setReturningPieChartYAxisVariable:
       return {
         ...state,
-        returningPieChartYAxisVariables: action.payload,
+        returningPieChartYAxisVariable: action.payload,
       };
 
     default:

@@ -6,7 +6,7 @@ import {
 
 const initialCustomerDashboardMonthlyState: CustomerDashboardMonthlyState = {
   newYAxisBarVariablesSelection: 'overview',
-  overviewBarChartYAxisVariables: 'overview',
+  overviewBarChartYAxisVariable: 'overview',
   returningYAxisLineBarVariablesSelection: 'overview',
   churnRetentionYAxisSelection: 'overview',
 };
@@ -32,7 +32,7 @@ function customerDashboardMonthlyReducer(
     case customerDashboardMonthlyAction.setOverviewYAxisVariablesSelection:
       return {
         ...state,
-        overviewBarChartYAxisVariables: action.payload,
+        overviewBarChartYAxisVariable: action.payload,
       };
 
     case customerDashboardMonthlyAction.setReturningYAxisLineBarSelection:
