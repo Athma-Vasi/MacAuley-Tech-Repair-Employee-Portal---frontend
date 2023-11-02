@@ -1,38 +1,22 @@
+import { MantineNumberSize, Stack } from '@mantine/core';
+import { ChangeEvent, useEffect, useReducer } from 'react';
+import { LuExpand } from 'react-icons/lu';
+
 import {
-  Card,
-  Group,
-  MantineNumberSize,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
-import {
-  ReturnDashboardCustomerCardInfoOutput,
-  returnDashboardCard,
-} from '../../jsxHelpers';
-import { BusinessMetric, BusinessMetricStoreLocation } from '../../types';
-import { StoreLocation } from '../../../../types';
-import {
-  CustomerChurnRetentionObjKey,
-  CustomerNewReturningCalendarObjKey,
-  CustomerNewReturningObjKey,
-  CustomerNewReturningPieObjKey,
-  CustomerOverviewObjKey,
-  ReturnCustomerChartsDataOutput,
-  SelectedDateCustomerMetrics,
-} from '../utils';
+  returnAccessibleButtonElements,
+  returnAccessibleSelectInputElements,
+} from '../../../../jsxCreators';
+import { logState, splitCamelCase } from '../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
 } from '../../../charts';
-import CarouselBuilder from '../../../carouselBuilder/CarouselBuilder';
-import { LuExpand } from 'react-icons/lu';
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-} from '../../../../jsxCreators';
+import DashboardMetricsLayout from '../../DashboardMetricsLayout';
+import { ReturnDashboardCustomerCardInfoOutput } from '../../jsxHelpers';
+import { BusinessMetric, BusinessMetricStoreLocation } from '../../types';
+import { returnStatistics } from '../../utils';
 import {
   CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
   CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
@@ -40,16 +24,19 @@ import {
   CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
   CUSTOMER_OVERVIEW_Y_AXIS_DATA,
 } from '../constants';
-import { ChangeEvent, useEffect, useReducer } from 'react';
+import {
+  CustomerChurnRetentionObjKey,
+  CustomerNewReturningCalendarObjKey,
+  CustomerNewReturningObjKey,
+  CustomerNewReturningPieObjKey,
+  CustomerOverviewObjKey,
+  ReturnCustomerChartsDataOutput,
+} from '../utils';
 import {
   customerDashboardMonthlyAction,
   customerDashboardMonthlyReducer,
   initialCustomerDashboardMonthlyState,
 } from './state';
-import DashboardMetricsLayout from '../../DashboardMetricsLayout';
-import { MONTHS } from '../../constants';
-import { logState, splitCamelCase } from '../../../../utils';
-import { returnStatistics } from '../../utils';
 
 function CustomerDashboardMonthly({
   borderColor,

@@ -1,6 +1,5 @@
 import {
   CustomerChurnRetentionObjKey,
-  CustomerNewReturningCalendarObjKey,
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
   CustomerOverviewObjKey,
