@@ -29,10 +29,9 @@ import {
   returnAccessibleSelectInputElements,
 } from '../../../../jsxCreators';
 import {
-  CHURN_RETENTION_Y_AXIS_DATA,
-  NEW_Y_AXIS_DATA,
-  OVERVIEW_Y_AXIS_DATA,
-  RETURNING_Y_AXIS_DATA,
+  CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
+  CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+  CUSTOMER_OVERVIEW_Y_AXIS_DATA,
 } from '../constants';
 import { ChangeEvent, useReducer } from 'react';
 import {
@@ -73,9 +72,9 @@ function CustomerDashboardMonthly({
     );
 
   const {
-    newYAxisSelection,
-    overviewYAxisSelection,
-    returningYAxisSelection,
+    newYAxisBarVariablesSelection,
+    overviewBarChartYAxisVariables,
+    returningYAxisLineBarVariablesSelection,
     churnRetentionYAxisSelection,
   } = customerDashboardMonthlyState;
 
@@ -114,16 +113,16 @@ function CustomerDashboardMonthly({
   // const [createdOverviewYAxisSelectInput] = returnAccessibleSelectInputElements(
   //   [
   //     {
-  //       data: OVERVIEW_Y_AXIS_DATA,
+  //       data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
   //       label: 'Y-Axis',
   //       description: 'Select the Y Axis for the Overview Charts',
   //       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
   //         customerDashboardMonthlyDispatch({
-  //           type: customerDashboardMonthlyAction.setOverviewYAxisSelection,
+  //           type: customerDashboardMonthlyAction.setOverviewYAxisVariablesSelection,
   //           payload: event.currentTarget.value as CustomerOverviewMapKey,
   //         });
   //       },
-  //       value: overviewYAxisSelection,
+  //       value: overviewBarChartYAxisVariables,
   //     },
   //   ]
   // );
@@ -146,11 +145,11 @@ function CustomerDashboardMonthly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     barChartData={
-  //       monthlyCharts.overview.barChartsMap.get(overviewYAxisSelection) ?? []
+  //       monthlyCharts.overview.barChartsMap.get(overviewBarChartYAxisVariables) ?? []
   //     }
   //     hideControls
   //     indexBy="Months"
-  //     keys={OVERVIEW_Y_AXIS_DATA}
+  //     keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA}
   //   />
   // );
 
@@ -159,7 +158,7 @@ function CustomerDashboardMonthly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     lineChartData={
-  //       monthlyCharts.overview.lineChartsMap.get(overviewYAxisSelection) ?? []
+  //       monthlyCharts.overview.lineChartsMap.get(overviewBarChartYAxisVariables) ?? []
   //     }
   //     hideControls
   //     xFormat={(x) => `Month - ${x}`}
@@ -168,14 +167,14 @@ function CustomerDashboardMonthly({
   // );
 
   // console.log(
-  //   'monthlyCharts.overview.calendarChartsMap.get(overviewYAxisSelection): ',
-  //   monthlyCharts.overview.calendarChartsMap.get(overviewYAxisSelection)
+  //   'monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariables): ',
+  //   monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariables)
   // );
 
   // const displayOverviewCalendarChart = (
   //   <ResponsiveCalendarChart
   //     calendarChartData={
-  //       monthlyCharts.overview.calendarChartsMap.get(overviewYAxisSelection) ??
+  //       monthlyCharts.overview.calendarChartsMap.get(overviewBarChartYAxisVariables) ??
   //       []
   //     }
   //     chartHeight={chartHeight}
@@ -237,16 +236,16 @@ function CustomerDashboardMonthly({
 
   // const [createdNewYAxisSelectInput] = returnAccessibleSelectInputElements([
   //   {
-  //     data: NEW_Y_AXIS_DATA,
+  //     data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
   //     label: 'Y-Axis',
   //     description: 'Select the Y Axis for the New Charts',
   //     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
   //       customerDashboardMonthlyDispatch({
-  //         type: customerDashboardMonthlyAction.setNewYAxisSelection,
+  //         type: customerDashboardMonthlyAction.setNewYAxisLineBarVariablesSelection,
   //         payload: event.currentTarget.value as CustomerNewMapKey,
   //       });
   //     },
-  //     value: newYAxisSelection,
+  //     value: newYAxisBarVariablesSelection,
   //   },
   // ]);
 
@@ -254,10 +253,10 @@ function CustomerDashboardMonthly({
   //   <ResponsiveBarChart
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
-  //     barChartData={monthlyCharts.new.barChartsMap.get(newYAxisSelection) ?? []}
+  //     barChartData={monthlyCharts.new.barChartsMap.get(newYAxisBarVariablesSelection) ?? []}
   //     hideControls
   //     indexBy="Months"
-  //     keys={NEW_Y_AXIS_DATA}
+  //     keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA}
   //   />
   // );
 
@@ -266,7 +265,7 @@ function CustomerDashboardMonthly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     lineChartData={
-  //       monthlyCharts.new.lineChartsMap.get(newYAxisSelection) ?? []
+  //       monthlyCharts.new.lineChartsMap.get(newYAxisBarVariablesSelection) ?? []
   //     }
   //     hideControls
   //     xFormat={(x) => `Month - ${x}`}
@@ -275,14 +274,14 @@ function CustomerDashboardMonthly({
   // );
 
   // console.log(
-  //   'monthlyCharts.new.calendarChartsMap.get(newYAxisSelection)',
-  //   monthlyCharts.new.calendarChartsMap.get(newYAxisSelection)
+  //   'monthlyCharts.new.calendarChartsMap.get(newYAxisBarVariablesSelection)',
+  //   monthlyCharts.new.calendarChartsMap.get(newYAxisBarVariablesSelection)
   // );
 
   // const displayNewCalendarChart = (
   //   <ResponsiveCalendarChart
   //     calendarChartData={
-  //       monthlyCharts.new.calendarChartsMap.get(newYAxisSelection) ?? []
+  //       monthlyCharts.new.calendarChartsMap.get(newYAxisBarVariablesSelection) ?? []
   //     }
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
@@ -340,11 +339,11 @@ function CustomerDashboardMonthly({
   //       description: 'Select the Y Axis for the Returning Charts',
   //       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
   //         customerDashboardMonthlyDispatch({
-  //           type: customerDashboardMonthlyAction.setReturningYAxisSelection,
+  //           type: customerDashboardMonthlyAction.setReturningYAxisLineBarSelection,
   //           payload: event.currentTarget.value as CustomerReturningMapKey,
   //         });
   //       },
-  //       value: returningYAxisSelection,
+  //       value: returningYAxisLineBarVariablesSelection,
   //     },
   //   ]);
 
@@ -362,7 +361,7 @@ function CustomerDashboardMonthly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     barChartData={
-  //       monthlyCharts.returning.barChartsMap.get(returningYAxisSelection) ?? []
+  //       monthlyCharts.returning.barChartsMap.get(returningYAxisLineBarVariablesSelection) ?? []
   //     }
   //     hideControls
   //     indexBy="Months"
@@ -375,7 +374,7 @@ function CustomerDashboardMonthly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     lineChartData={
-  //       monthlyCharts.returning.lineChartsMap.get(returningYAxisSelection) ?? []
+  //       monthlyCharts.returning.lineChartsMap.get(returningYAxisLineBarVariablesSelection) ?? []
   //     }
   //     hideControls
   //     xFormat={(x) => `Month - ${x}`}
@@ -387,7 +386,7 @@ function CustomerDashboardMonthly({
   //   <ResponsiveCalendarChart
   //     calendarChartData={
   //       monthlyCharts.returning.calendarChartsMap.get(
-  //         returningYAxisSelection
+  //         returningYAxisLineBarVariablesSelection
   //       ) ?? []
   //     }
   //     chartHeight={chartHeight}
@@ -451,7 +450,7 @@ function CustomerDashboardMonthly({
   // const [createdChurnRetentionYAxisSelectInput] =
   //   returnAccessibleSelectInputElements([
   //     {
-  //       data: CHURN_RETENTION_Y_AXIS_DATA,
+  //       data: CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
   //       label: 'Y-Axis',
   //       description: 'Select the Y Axis for the Churn & Retention Charts',
   //       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -475,7 +474,7 @@ function CustomerDashboardMonthly({
   //     }
   //     hideControls
   //     indexBy="Months"
-  //     keys={CHURN_RETENTION_Y_AXIS_DATA}
+  //     keys={CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA}
   //   />
   // );
 

@@ -53,13 +53,13 @@ function Dashboard() {
     return null;
   }
 
-  // const displayCustomerDashboard = (
-  //   <CustomerDashboard businessMetrics={businessMetrics} />
-  // );
-
-  const displayFinancialDashboard = (
-    <FinancialDashboard businessMetrics={businessMetrics} />
+  const displayCustomerDashboard = (
+    <CustomerDashboard businessMetrics={businessMetrics} />
   );
+
+  // const displayFinancialDashboard = (
+  //   <FinancialDashboard businessMetrics={businessMetrics} />
+  // );
 
   // const displayRepairDashboard = (
   //   <RepairDashboard businessMetrics={businessMetrics} />
@@ -69,8 +69,8 @@ function Dashboard() {
     <Stack w="100%">
       <Title order={2}>Dashboard</Title>
       <Text size="sm">Welcome to your dashboard</Text>
-      {/* {displayCustomerDashboard} */}
-      {displayFinancialDashboard}
+      {displayCustomerDashboard}
+      {/* {displayFinancialDashboard} */}
       {/* {displayRepairDashboard} */}
     </Stack>
   );

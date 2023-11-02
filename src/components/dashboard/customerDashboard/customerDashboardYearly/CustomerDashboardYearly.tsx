@@ -34,10 +34,9 @@ import {
 } from '../../../../jsxCreators';
 import { MONTHS } from '../../constants';
 import {
-  OVERVIEW_Y_AXIS_DATA,
-  NEW_Y_AXIS_DATA,
-  RETURNING_Y_AXIS_DATA,
-  CHURN_RETENTION_Y_AXIS_DATA,
+  CUSTOMER_OVERVIEW_Y_AXIS_DATA,
+  CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+  CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
 } from '../constants';
 import { ReturnCustomerChartsDataOutput } from '../utils';
 
@@ -71,9 +70,9 @@ function CustomerDashboardYearly({
     );
 
   const {
-    newYAxisSelection,
-    overviewYAxisSelection,
-    returningYAxisSelection,
+    newYAxisBarVariablesSelection,
+    overviewBarChartYAxisVariables,
+    returningYAxisLineBarVariablesSelection,
     churnRetentionYAxisSelection,
   } = customerDashboardYearlyState;
 
@@ -112,16 +111,16 @@ function CustomerDashboardYearly({
   // const [createdOverviewYAxisSelectInput] = returnAccessibleSelectInputElements(
   //   [
   //     {
-  //       data: OVERVIEW_Y_AXIS_DATA,
+  //       data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
   //       label: 'Y-Axis',
   //       description: 'Select the Y Axis for the Overview Charts',
   //       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
   //         customerDashboardYearlyDispatch({
-  //           type: customerDashboardYearlyAction.setOverviewYAxisSelection,
+  //           type: customerDashboardYearlyAction.setOverviewYAxisVariablesSelection,
   //           payload: event.currentTarget.value as CustomerOverviewMapKey,
   //         });
   //       },
-  //       value: overviewYAxisSelection,
+  //       value: overviewBarChartYAxisVariables,
   //     },
   //   ]
   // );
@@ -144,11 +143,11 @@ function CustomerDashboardYearly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     barChartData={
-  //       yearlyCharts.overview.barChartsMap.get(overviewYAxisSelection) ?? []
+  //       yearlyCharts.overview.barChartsMap.get(overviewBarChartYAxisVariables) ?? []
   //     }
   //     hideControls
   //     indexBy="Years"
-  //     keys={OVERVIEW_Y_AXIS_DATA}
+  //     keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA}
   //   />
   // );
 
@@ -157,7 +156,7 @@ function CustomerDashboardYearly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     lineChartData={
-  //       yearlyCharts.overview.lineChartsMap.get(overviewYAxisSelection) ?? []
+  //       yearlyCharts.overview.lineChartsMap.get(overviewBarChartYAxisVariables) ?? []
   //     }
   //     hideControls
   //     xFormat={(x) => `Year - ${x}`}
@@ -206,16 +205,16 @@ function CustomerDashboardYearly({
 
   // const [createdNewYAxisSelectInput] = returnAccessibleSelectInputElements([
   //   {
-  //     data: NEW_Y_AXIS_DATA,
+  //     data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
   //     label: 'Y-Axis',
   //     description: 'Select the Y Axis for the New Charts',
   //     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
   //       customerDashboardYearlyDispatch({
-  //         type: customerDashboardYearlyAction.setNewYAxisSelection,
+  //         type: customerDashboardYearlyAction.setNewYAxisLineBarVariablesSelection,
   //         payload: event.currentTarget.value as CustomerNewMapKey,
   //       });
   //     },
-  //     value: newYAxisSelection,
+  //     value: newYAxisBarVariablesSelection,
   //   },
   // ]);
 
@@ -223,10 +222,10 @@ function CustomerDashboardYearly({
   //   <ResponsiveBarChart
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
-  //     barChartData={yearlyCharts.new.barChartsMap.get(newYAxisSelection) ?? []}
+  //     barChartData={yearlyCharts.new.barChartsMap.get(newYAxisBarVariablesSelection) ?? []}
   //     hideControls
   //     indexBy="Years"
-  //     keys={NEW_Y_AXIS_DATA}
+  //     keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA}
   //   />
   // );
 
@@ -235,7 +234,7 @@ function CustomerDashboardYearly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     lineChartData={
-  //       yearlyCharts.new.lineChartsMap.get(newYAxisSelection) ?? []
+  //       yearlyCharts.new.lineChartsMap.get(newYAxisBarVariablesSelection) ?? []
   //     }
   //     hideControls
   //     xFormat={(x) => `Year - ${x}`}
@@ -281,11 +280,11 @@ function CustomerDashboardYearly({
   //       description: 'Select the Y Axis for the Returning Charts',
   //       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
   //         customerDashboardYearlyDispatch({
-  //           type: customerDashboardYearlyAction.setReturningYAxisSelection,
+  //           type: customerDashboardYearlyAction.setReturningYAxisLineBarSelection,
   //           payload: event.currentTarget.value as CustomerReturningMapKey,
   //         });
   //       },
-  //       value: returningYAxisSelection,
+  //       value: returningYAxisLineBarVariablesSelection,
   //     },
   //   ]);
 
@@ -303,7 +302,7 @@ function CustomerDashboardYearly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     barChartData={
-  //       yearlyCharts.returning.barChartsMap.get(returningYAxisSelection) ?? []
+  //       yearlyCharts.returning.barChartsMap.get(returningYAxisLineBarVariablesSelection) ?? []
   //     }
   //     hideControls
   //     indexBy="Years"
@@ -316,7 +315,7 @@ function CustomerDashboardYearly({
   //     chartHeight={chartHeight}
   //     chartWidth={chartWidth}
   //     lineChartData={
-  //       yearlyCharts.returning.lineChartsMap.get(returningYAxisSelection) ?? []
+  //       yearlyCharts.returning.lineChartsMap.get(returningYAxisLineBarVariablesSelection) ?? []
   //     }
   //     hideControls
   //     xFormat={(x) => `Year - ${x}`}
@@ -370,7 +369,7 @@ function CustomerDashboardYearly({
   // const [createdChurnRetentionYAxisSelectInput] =
   //   returnAccessibleSelectInputElements([
   //     {
-  //       data: CHURN_RETENTION_Y_AXIS_DATA,
+  //       data: CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
   //       label: 'Y-Axis',
   //       description: 'Select the Y Axis for the Churn & Retention Charts',
   //       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -394,7 +393,7 @@ function CustomerDashboardYearly({
   //     }
   //     hideControls
   //     indexBy="Years"
-  //     keys={CHURN_RETENTION_Y_AXIS_DATA}
+  //     keys={CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA}
   //   />
   // );
 

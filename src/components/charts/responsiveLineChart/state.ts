@@ -22,7 +22,7 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   areaOpacity: 0.2,
   chartColors: 'nivo',
   enableArea: false,
-  lineCurve: 'linear',
+  lineCurve: 'catmullRom',
   lineWidth: 2,
 
   // points

@@ -5,30 +5,30 @@ import {
 } from '../utils';
 
 type CustomerDashboardYearlyState = {
-  newYAxisSelection: CustomerNewReturningObjKey;
-  overviewYAxisSelection: CustomerOverviewObjKey;
-  returningYAxisSelection: CustomerNewReturningObjKey;
+  newYAxisBarVariablesSelection: CustomerNewReturningObjKey;
+  overviewBarChartYAxisVariables: CustomerOverviewObjKey;
+  returningYAxisLineBarVariablesSelection: CustomerNewReturningObjKey;
   churnRetentionYAxisSelection: CustomerChurnRetentionObjKey;
 };
 
 type CustomerDashboardYearlyAction = {
-  setNewYAxisSelection: 'setNewYAxisSelection';
-  setOverviewYAxisSelection: 'setOverviewYAxisSelection';
-  setReturningYAxisSelection: 'setReturningYAxisSelection';
+  setNewYAxisLineBarVariablesSelection: 'setNewYAxisLineBarVariablesSelection';
+  setOverviewYAxisVariablesSelection: 'setOverviewYAxisVariablesSelection';
+  setReturningYAxisLineBarSelection: 'setReturningYAxisLineBarSelection';
   setChurnRetentionYAxisSelection: 'setChurnRetentionYAxisSelection';
 };
 
 type CustomerDashboardYearlyDispatch =
   | {
-      type: CustomerDashboardYearlyAction['setNewYAxisSelection'];
+      type: CustomerDashboardYearlyAction['setNewYAxisLineBarVariablesSelection'];
       payload: CustomerNewReturningObjKey;
     }
   | {
-      type: CustomerDashboardYearlyAction['setOverviewYAxisSelection'];
+      type: CustomerDashboardYearlyAction['setOverviewYAxisVariablesSelection'];
       payload: CustomerOverviewObjKey;
     }
   | {
-      type: CustomerDashboardYearlyAction['setReturningYAxisSelection'];
+      type: CustomerDashboardYearlyAction['setReturningYAxisLineBarSelection'];
       payload: CustomerNewReturningObjKey;
     }
   | {

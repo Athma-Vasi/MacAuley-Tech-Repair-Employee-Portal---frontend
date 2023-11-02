@@ -7,7 +7,7 @@ import { SelectInputData } from '../../types';
 type AccessibleSelectInputCreatorInfo = {
   data: string[] | SelectInputData;
   label?: string;
-  description: string;
+  description?: string;
   describedBy?: string;
   disabled?: boolean;
   value?: string;

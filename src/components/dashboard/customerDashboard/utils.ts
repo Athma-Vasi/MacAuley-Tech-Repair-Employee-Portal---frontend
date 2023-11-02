@@ -154,20 +154,30 @@ type ReturnCustomerChartsDataInput = {
   }[];  
  */
 
+// overview
+
+// overview -> keys
 type CustomerOverviewObjKey =
   | 'overview' // y-axis variables: new, returning
   | 'new' // y-axis variables: new
   | 'returning'; // y-axis variables: returning
 
+// overview -> bar chart -> obj
+
 type CustomerOverviewBarObj = Record<CustomerOverviewObjKey, BarChartData[]>; // y-axis variables: new, returning
 
+// overview -> calendar chart -> obj
 type CustomerOverviewCalendarObj = Record<
   CustomerOverviewObjKey,
   CalendarChartData[]
 >; // y-axis variables: new, returning
 
+// overview -> line chart -> obj
 type CustomerOverviewLineObj = Record<CustomerOverviewObjKey, LineChartData[]>; // y-axis variables: new, returning
 
+// new & returning
+
+// new & returning -> keys
 type CustomerNewReturningObjKey =
   | 'total' // y-axis variables: total
   | 'all' // y-axis variables: sales, in-store, repair
@@ -177,11 +187,13 @@ type CustomerNewReturningObjKey =
   | 'inStore' // y-axis variables: in-store
   | 'repair'; // y-axis variables: repair
 
+// new & returning -> bar chart -> obj
 type CustomerNewReturningBarObj = Record<
   CustomerNewReturningObjKey,
   BarChartData[]
 >; // y-axis variables: total, online, in-store, repair, all
 
+// new & returning -> calendar chart -> keys
 type CustomerNewReturningCalendarObjKey =
   | 'total' // y-axis variables: total
   | 'sales' // y-axis variables: sales
@@ -189,32 +201,44 @@ type CustomerNewReturningCalendarObjKey =
   | 'inStore' // y-axis variables: in-store
   | 'repair'; // y-axis variables: repair
 
+// new & returning -> calendar chart -> obj
 type CustomerNewReturningCalendarObj = Record<
   CustomerNewReturningCalendarObjKey,
   CalendarChartData[]
 >; // y-axis variables: total, online, in-store, repair, all
 
+// new & returning -> line chart obj
 type CustomerNewReturningLineObj = Record<
   CustomerNewReturningObjKey,
   LineChartData[]
 >; // y-axis variables: total, online, in-store, repair, all
 
-type CustomerNewReturningPieObj = {
-  overview: PieChartData[]; // y-axis variables: sales, repair
-  all: PieChartData[]; // y-axis variables: sales, in-store, repair
-  sales: PieChartData[]; // y-axis variables: online, in-store
-};
+// new & returning -> pie chart obj -> keys
+type CustomerNewReturningPieObjKey =
+  | 'overview' // y-axis variables: sales, repair
+  | 'all' // y-axis variables: sales, in-store, repair
+  | 'sales'; // y-axis variables: online, in-store
 
+type CustomerNewReturningPieObj = Record<
+  CustomerNewReturningPieObjKey,
+  PieChartData[]
+>; // y-axis variables: sales, repair, online, in-store, all
+
+// churn & retention
+
+// churn & retention -> keys
 type CustomerChurnRetentionObjKey =
   | 'overview' // y-axis variables: churn rate, retention rate
   | 'churnRate' // y-axis variables: churn rate
   | 'retentionRate'; // y-axis variables: retention rate
 
+// churn & retention -> bar chart obj
 type CustomerChurnRetentionBarObj = Record<
   CustomerChurnRetentionObjKey,
   BarChartData[]
 >; // y-axis variables: churn rate, retention rate
 
+// churn & retention -> line chart obj
 type CustomerChurnRetentionLineObj = Record<
   CustomerChurnRetentionObjKey,
   LineChartData[]
@@ -566,7 +590,7 @@ function returnCustomerChartsData({
 
       // overview
 
-      // overview -> bar chart obj
+      // overview -> bar chart obj -> overview
       const dailyOverviewBarChartObj = {
         Days: day,
         New: customers.new.total,
@@ -574,7 +598,21 @@ function returnCustomerChartsData({
       };
       dailyOverviewBarChartsObjAcc.overview.push(dailyOverviewBarChartObj);
 
-      // overview -> calendar chart obj
+      // overview -> bar chart obj -> new
+      const dailyNewBarChartObj = {
+        Days: day,
+        New: customers.new.total,
+      };
+      dailyOverviewBarChartsObjAcc.new.push(dailyNewBarChartObj);
+
+      // overview -> bar chart obj -> returning
+      const dailyReturningBarChartObj = {
+        Days: day,
+        Returning: customers.returning.total,
+      };
+      dailyOverviewBarChartsObjAcc.returning.push(dailyReturningBarChartObj);
+
+      // overview -> calendar chart obj -> overview
       const dailyOverviewCalendarChartObj = {
         day: `${selectedYear}-${monthNumber}-${day}`,
         value: customers.total,
@@ -583,7 +621,25 @@ function returnCustomerChartsData({
         dailyOverviewCalendarChartObj
       );
 
-      // overview -> line chart obj -> overview -> new
+      // overview -> calendar chart obj -> new
+      const dailyNewCalendarChartObj = {
+        day: `${selectedYear}-${monthNumber}-${day}`,
+        value: customers.new.total,
+      };
+      dailyOverviewCalendarChartsObjAcc.new.push(dailyNewCalendarChartObj);
+
+      // overview -> calendar chart obj -> returning
+      const dailyReturningCalendarChartObj = {
+        day: `${selectedYear}-${monthNumber}-${day}`,
+        value: customers.returning.total,
+      };
+      dailyOverviewCalendarChartsObjAcc.returning.push(
+        dailyReturningCalendarChartObj
+      );
+
+      // overview -> line chart obj
+
+      // overview -> line chart obj -> new
       const dailyOverviewNewLineChartObj = {
         x: day,
         y: customers.new.total,
@@ -592,7 +648,7 @@ function returnCustomerChartsData({
         .find((lineChartData: LineChartData) => lineChartData.id === 'New')
         ?.data.push(dailyOverviewNewLineChartObj);
 
-      // overview -> line chart obj -> overview -> returning
+      // overview -> line chart obj -> returning
       const dailyOverviewReturningLineChartObj = {
         x: day,
         y: customers.returning.total,
@@ -603,7 +659,7 @@ function returnCustomerChartsData({
         )
         ?.data.push(dailyOverviewReturningLineChartObj);
 
-      // overview -> line chart obj -> new -> new
+      // overview -> line chart obj -> new
       const dailyNewNewLineChartObj = {
         x: day,
         y: customers.new.total,
@@ -612,7 +668,7 @@ function returnCustomerChartsData({
         .find((lineChartData: LineChartData) => lineChartData.id === 'New')
         ?.data.push(dailyNewNewLineChartObj);
 
-      // overview -> line chart obj -> returning -> returning
+      // overview -> line chart obj -> returning
       const dailyReturningReturningLineChartObj = {
         x: day,
         y: customers.returning.total,
@@ -1269,14 +1325,12 @@ function returnCustomerChartsData({
 
       // overview -> bar chart obj
 
-      // overview -> bar chart obj -> total
-      const monthlyOverviewTotalBarChartObj = {
+      // overview -> bar chart obj -> overview
+      const monthlyOverviewBarChartObj = {
         Months: month,
         Total: customers.total,
       };
-      monthlyOverviewBarChartsObjAcc.overview.push(
-        monthlyOverviewTotalBarChartObj
-      );
+      monthlyOverviewBarChartsObjAcc.overview.push(monthlyOverviewBarChartObj);
 
       // overview -> bar chart obj -> new
       const monthlyOverviewNewBarChartObj = {
@@ -2622,6 +2676,7 @@ export type {
   CustomerChurnRetentionObjKey,
   CustomerNewReturningCalendarObjKey,
   CustomerNewReturningObjKey,
+  CustomerNewReturningPieObjKey,
   CustomerOverviewObjKey,
   ReturnCustomerChartsDataOutput,
   SelectedDateCustomerMetrics,

@@ -105,6 +105,8 @@ function CustomerDashboard({
       year: selectedYear,
     });
 
+    console.log('selectedCustomerMetrics', selectedCustomerMetrics);
+
     const customerChartsData = returnCustomerChartsData({
       businessMetrics,
       months: MONTHS,
@@ -150,7 +152,7 @@ function CustomerDashboard({
 
   const createdYYYYMMDDInput = (
     <TextInput
-      aria-label='Please enter date in format "year-year-year-year-month-month-date-date"'
+      aria-label='Please enter date in format "date-date-month-month-year-year-year-year"'
       description="View metrics for selected calendar date."
       label="Calendar Date"
       max={new Date().toISOString().split('T')[0]}
@@ -213,7 +215,7 @@ function CustomerDashboard({
 
       {CALENDAR_TABS_DATA.map((tabData) => (
         <Tabs.Panel key={tabData.label} value={tabData.label}>
-          <Text>{tabData.message}</Text>
+          <Text>{`${tabData.message} for ${selectedStoreLocationView}`}</Text>
         </Tabs.Panel>
       ))}
     </Tabs>

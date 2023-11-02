@@ -5,16 +5,16 @@ import {
 } from './types';
 
 const initialCustomerDashboardMonthlyState: CustomerDashboardMonthlyState = {
-  newYAxisSelection: 'overview',
-  overviewYAxisSelection: 'overview',
-  returningYAxisSelection: 'overview',
+  newYAxisBarVariablesSelection: 'overview',
+  overviewBarChartYAxisVariables: 'overview',
+  returningYAxisLineBarVariablesSelection: 'overview',
   churnRetentionYAxisSelection: 'overview',
 };
 
 const customerDashboardMonthlyAction: CustomerDashboardMonthlyAction = {
-  setNewYAxisSelection: 'setNewYAxisSelection',
-  setOverviewYAxisSelection: 'setOverviewYAxisSelection',
-  setReturningYAxisSelection: 'setReturningYAxisSelection',
+  setNewYAxisLineBarVariablesSelection: 'setNewYAxisLineBarVariablesSelection',
+  setOverviewYAxisVariablesSelection: 'setOverviewYAxisVariablesSelection',
+  setReturningYAxisLineBarSelection: 'setReturningYAxisLineBarSelection',
   setChurnRetentionYAxisSelection: 'setChurnRetentionYAxisSelection',
 };
 
@@ -23,22 +23,22 @@ function customerDashboardMonthlyReducer(
   action: CustomerDashboardMonthlyDispatch
 ): CustomerDashboardMonthlyState {
   switch (action.type) {
-    case customerDashboardMonthlyAction.setNewYAxisSelection:
+    case customerDashboardMonthlyAction.setNewYAxisLineBarVariablesSelection:
       return {
         ...state,
-        newYAxisSelection: action.payload,
+        newYAxisBarVariablesSelection: action.payload,
       };
 
-    case customerDashboardMonthlyAction.setOverviewYAxisSelection:
+    case customerDashboardMonthlyAction.setOverviewYAxisVariablesSelection:
       return {
         ...state,
-        overviewYAxisSelection: action.payload,
+        overviewBarChartYAxisVariables: action.payload,
       };
 
-    case customerDashboardMonthlyAction.setReturningYAxisSelection:
+    case customerDashboardMonthlyAction.setReturningYAxisLineBarSelection:
       return {
         ...state,
-        returningYAxisSelection: action.payload,
+        returningYAxisLineBarVariablesSelection: action.payload,
       };
 
     case customerDashboardMonthlyAction.setChurnRetentionYAxisSelection:

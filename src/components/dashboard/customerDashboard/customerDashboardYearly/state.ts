@@ -5,16 +5,16 @@ import {
 } from './types';
 
 const initialCustomerDashboardYearlyState: CustomerDashboardYearlyState = {
-  newYAxisSelection: 'overview',
-  overviewYAxisSelection: 'overview',
-  returningYAxisSelection: 'overview',
+  newYAxisBarVariablesSelection: 'overview',
+  overviewBarChartYAxisVariables: 'overview',
+  returningYAxisLineBarVariablesSelection: 'overview',
   churnRetentionYAxisSelection: 'overview',
 };
 
 const customerDashboardYearlyAction: CustomerDashboardYearlyAction = {
-  setNewYAxisSelection: 'setNewYAxisSelection',
-  setOverviewYAxisSelection: 'setOverviewYAxisSelection',
-  setReturningYAxisSelection: 'setReturningYAxisSelection',
+  setNewYAxisLineBarVariablesSelection: 'setNewYAxisLineBarVariablesSelection',
+  setOverviewYAxisVariablesSelection: 'setOverviewYAxisVariablesSelection',
+  setReturningYAxisLineBarSelection: 'setReturningYAxisLineBarSelection',
   setChurnRetentionYAxisSelection: 'setChurnRetentionYAxisSelection',
 };
 
@@ -23,22 +23,22 @@ function customerDashboardYearlyReducer(
   action: CustomerDashboardYearlyDispatch
 ): CustomerDashboardYearlyState {
   switch (action.type) {
-    case customerDashboardYearlyAction.setNewYAxisSelection:
+    case customerDashboardYearlyAction.setNewYAxisLineBarVariablesSelection:
       return {
         ...state,
-        newYAxisSelection: action.payload,
+        newYAxisBarVariablesSelection: action.payload,
       };
 
-    case customerDashboardYearlyAction.setOverviewYAxisSelection:
+    case customerDashboardYearlyAction.setOverviewYAxisVariablesSelection:
       return {
         ...state,
-        overviewYAxisSelection: action.payload,
+        overviewBarChartYAxisVariables: action.payload,
       };
 
-    case customerDashboardYearlyAction.setReturningYAxisSelection:
+    case customerDashboardYearlyAction.setReturningYAxisLineBarSelection:
       return {
         ...state,
-        returningYAxisSelection: action.payload,
+        returningYAxisLineBarVariablesSelection: action.payload,
       };
 
     case customerDashboardYearlyAction.setChurnRetentionYAxisSelection:

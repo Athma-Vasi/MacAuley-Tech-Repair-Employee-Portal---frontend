@@ -1,4 +1,5 @@
 import { StoreLocation } from '../../types';
+import { BarChartData } from '../charts/responsiveBarChart/types';
 import {
   BusinessMetric,
   CustomerDailyMetric,
@@ -23,6 +24,458 @@ import {
   Year,
   YearlyFinancialMetric,
 } from './types';
+import {
+  min,
+  max,
+  mean,
+  mode,
+  median,
+  variance,
+  standardDeviation,
+  interquartileRange,
+} from 'simple-statistics';
+
+/**
+ * type BusinessMetric = {
+  storeLocation: StoreLocation;
+
+  customerMetrics: {
+    totalCustomers: number;
+    lifetimeValue: number;
+
+    yearlyMetrics: {
+      year: Year;
+      customers: {
+        total: number;
+        new: {
+          total: number;
+          sales: {
+            total: number;
+            online: number;
+            inStore: number;
+          };
+          repair: number;
+        };
+        returning: {
+          total: number;
+          sales: {
+            total: number;
+            online: number;
+            inStore: number;
+          };
+          repair: number;
+        };
+        churnRate: number;
+        retentionRate: number;
+      };
+  
+
+      monthlyMetrics: {
+        month: Month;
+        customers: {
+          total: number;
+          new: {
+            total: number;
+            sales: {
+              total: number;
+              online: number;
+              inStore: number;
+            };
+            repair: number;
+          };
+          returning: {
+            total: number;
+            sales: {
+              total: number;
+              online: number;
+              inStore: number;
+            };
+            repair: number;
+          };
+          churnRate: number;
+          retentionRate: number;
+        };
+
+        dailyMetrics: {
+          day: string;
+          customers: {
+            total: number;
+            new: {
+              total: number;
+              sales: {
+                total: number;
+                online: number;
+                inStore: number;
+              };
+              repair: number;
+            };
+            returning: {
+              total: number;
+              sales: {
+                total: number;
+                online: number;
+                inStore: number;
+              };
+              repair: number;
+            };
+          };
+        }[]
+      }
+    }
+  }
+
+  financialMetrics: {
+    year: Year;
+    averageOrderValue: number;
+    conversionRate: number;
+    netProfitMargin: number;
+
+    expenses: {
+      total: number;
+      repair: number;
+      sales: {
+        total: number;
+        inStore: number;
+        online: number;
+      };
+    };
+
+    profit: {
+      total: number;
+      repair: number;
+      sales: {
+        total: number;
+        inStore: number;
+        online: number;
+      };
+    };
+
+    revenue: {
+      total: number;
+      repair: number;
+      sales: {
+        total: number;
+        inStore: number;
+        online: number;
+      };
+    };
+
+    transactions: {
+      total: number;
+      repair: number;
+      sales: {
+        total: number;
+        inStore: number;
+        online: number;
+      };
+    };
+
+    monthlyMetrics: {
+      month: Month;
+      averageOrderValue: number;
+      conversionRate: number;
+      netProfitMargin: number;
+
+      expenses: {
+        total: number;
+        repair: number;
+        sales: {
+          total: number;
+          inStore: number;
+          online: number;
+        };
+      };
+    
+      profit: {
+        total: number;
+        repair: number;
+        sales: {
+          total: number;
+          inStore: number;
+          online: number;
+        };
+      };
+    
+      revenue: {
+        total: number;
+        repair: number;
+        sales: {
+          total: number;
+          inStore: number;
+          online: number;
+        };
+      };
+    
+      transactions: {
+        total: number;
+        repair: number;
+        sales: {
+          total: number;
+          inStore: number;
+          online: number;
+        };
+      };          
+
+      dailyMetrics: {
+        day: string;
+        averageOrderValue: number;
+        conversionRate: number;
+        netProfitMargin: number;
+      
+        expenses: {
+          total: number;
+          repair: number;
+          sales: {
+            total: number;
+            inStore: number;
+            online: number;
+          };
+        };
+      
+        profit: {
+          total: number;
+          repair: number;
+          sales: {
+            total: number;
+            inStore: number;
+            online: number;
+          };
+        };
+      
+        revenue: {
+          total: number;
+          repair: number;
+          sales: {
+            total: number;
+            inStore: number;
+            online: number;
+          };
+        };
+      
+        transactions: {
+          total: number;
+          repair: number;
+          sales: {
+            total: number;
+            inStore: number;
+            online: number;
+          };
+        };                     
+      }[];
+    }[];
+  }[];  
+
+  productMetrics: {
+    name: ProductCategory;
+
+    yearlyMetrics: {
+      year: string;
+      transactions: {
+        total: number;
+        online: number;
+        inStore: number;
+      };
+      revenue: {
+        total: number;
+        online: number;
+        inStore: number;
+      };
+
+      monthlyMetrics: {
+        month: string;
+        transactions: {
+          total: number;
+          online: number;
+          inStore: number;
+        };
+        revenue: {
+          total: number;
+          online: number;
+          inStore: number;
+        };
+
+        dailyMetrics: {
+          day: string;
+          transactions: {
+            total: number;
+            online: number;
+            inStore: number;
+          };
+          revenue: {
+            total: number;
+            online: number;
+            inStore: number;
+          };
+        }[];
+      }[];
+    }[];    
+  }
+
+
+  repairMetrics: {
+    name: RepairCategory;
+    yearlyMetrics: {
+      year: string;
+      revenue: number;
+      transactions: number;
+
+      monthlyMetrics: {
+        month: string;
+        revenue: number;
+        transactions: number;
+
+        dailyMetrics: {
+          day: string;
+          revenue: number;
+          transactions: number;
+        }[];
+      }[];
+    }[];    
+  }[]
+};
+*/
+
+type StatisticsObject = {
+  min: {
+    value: number;
+    occurred: string;
+  };
+  max: {
+    value: number;
+    occurred: string;
+  };
+  arithmeticMean: number;
+  mode: number;
+  median: number;
+  variance: number;
+  standardDeviation: number;
+  interquartileRange: number;
+};
+/**
+ * Return statistics for each key in the barChartsObj of the dailyChartsObj returned by the `return${metric}ChartData` functions
+ * - where metric = Customer | Financial | Product | Repair
+ * - example input from CustomerMetrics' overview section: type ReturnCustomerChartsDataOutput = {
+    dailyCharts: {
+      overview: {
+        barChartsObj: Record<'overview' | 'new' | 'returning', BarChartData[]>;
+        ...
+      };
+      ...
+    };
+    ...
+  };
+ * - barChartsObj is the input for this function
+ * - barChartsObj is used as it is generated (along with lineChartsObj) for all metrics and sub-metrics, and has a reasonably simple structure (when compared to lineChartsObj)
+ */
+function returnStatistics<
+  BarObjKeys extends string = string,
+  BarChartObj extends Record<string, string | number> = Record<
+    string,
+    string | number
+  >
+>(
+  barChartsObj: Record<BarObjKeys, BarChartData<BarChartObj>[]>
+): Map<BarObjKeys, StatisticsObject> {
+  return Object.entries(barChartsObj).reduce(
+    (statisticsAcc, [_barObjKey, barObjsArr]) => {
+      // barObjsArr is an array of BarChartsArr objects
+      if (Array.isArray(barObjsArr)) {
+        // returns an map without the 'Days', 'Months', and 'Years' keyVals
+        const filteredBarObjsArr = barObjsArr.reduce(
+          (filteredBarObjAcc, barObj: BarChartObj) => {
+            Object.entries(barObj).forEach(([key, value]) => {
+              if (key === 'Days' || key === 'Months' || key === 'Years') {
+                return;
+              }
+
+              filteredBarObjAcc.has(key)
+                ? filteredBarObjAcc.get(key)?.push(value)
+                : filteredBarObjAcc.set(key, [value]);
+            });
+
+            return filteredBarObjAcc;
+          },
+          new Map() as Map<string, number[]>
+        );
+
+        Array.from(filteredBarObjsArr).forEach((filteredBarObj) => {
+          const [key, value] = filteredBarObj as [BarObjKeys, number[]];
+          // create statistics object
+          // min
+          const minVal = min(value);
+
+          // min occurence date
+          // find the first barObj that has the minVal
+          const minOccurenceBarObj = barObjsArr.find((barObj) =>
+            Object.entries(barObj).find(([_, val]) => val === minVal)
+          );
+          // return the keyVal that has the minVal
+          const [minOccurenceKey, minOccurenceVal] = Object.entries(
+            minOccurenceBarObj
+          ).filter(([_, val]) => val !== minVal)[0];
+          // format the date (key will be either 'Days', 'Months', or 'Years')
+          const minOccurenceDate = `${minOccurenceKey.slice(
+            0,
+            minOccurenceKey.length - 1
+          )} - ${minOccurenceVal}`;
+
+          // max
+          const maxVal = max(value);
+
+          // max occurence date
+          // find the first barObj that has the maxVal
+          const maxOccurenceBarObj = barObjsArr.find((barObj) =>
+            Object.entries(barObj).find(([_, val]) => val === maxVal)
+          );
+          // return the keyVal that has the maxVal
+          const [maxOccurenceKey, maxOccurenceVal] = Object.entries(
+            maxOccurenceBarObj
+          ).filter(([_, val]) => val !== maxVal)[0];
+          // format the date (key will be either 'Days', 'Months', or 'Years')
+          const maxOccurenceDate = `${maxOccurenceKey.slice(
+            0,
+            maxOccurenceKey.length - 1
+          )} - ${maxOccurenceVal}`;
+
+          // mean
+          const meanVal = mean(value);
+          // mode
+          const modeVal = mode(value);
+          // median
+          const medianVal = median(value);
+          // variance
+          const varianceVal = variance(value);
+          // standard deviation
+          const standardDeviationVal = standardDeviation(value);
+          // interquartile range
+          const interquartileRangeVal = interquartileRange(value);
+
+          const statisticsObj: StatisticsObject = {
+            min: {
+              value: minVal,
+              occurred: minOccurenceDate ?? '',
+            },
+            max: {
+              value: maxVal,
+              occurred: maxOccurenceDate ?? '',
+            },
+            arithmeticMean: meanVal,
+            mode: modeVal,
+            median: medianVal,
+            variance: varianceVal,
+            standardDeviation: standardDeviationVal,
+            interquartileRange: interquartileRangeVal,
+          };
+
+          statisticsAcc.set(key, statisticsObj);
+        });
+      }
+
+      return statisticsAcc;
+    },
+    new Map<BarObjKeys, StatisticsObject>()
+  );
+}
 
 type ReturnDaysInMonthsInYearsInput = {
   daysPerMonth: number[];
@@ -2767,32 +3220,32 @@ function createRandomBusinessMetrics({
   const YEAR_NEW_CUSTOMERS_SPREAD: LocationYearSpread = {
     Edmonton: {
       '2013': [0.6, 0.7],
-      '2014': [0.5, 0.6],
-      '2015': [0.4, 0.5],
-      '2016': [0.35, 0.45],
-      '2017': [0.3, 0.4],
-      '2018': [0.25, 0.35],
-      '2019': [0.25, 0.3],
-      '2020': [0.2, 0.25],
-      '2021': [0.2, 0.25],
-      '2022': [0.2, 0.25],
-      '2023': [0.15, 0.2],
+      '2014': [0.5, 0.7],
+      '2015': [0.4, 0.6],
+      '2016': [0.35, 0.55],
+      '2017': [0.3, 0.5],
+      '2018': [0.25, 0.45],
+      '2019': [0.25, 0.4],
+      '2020': [0.2, 0.35],
+      '2021': [0.2, 0.35],
+      '2022': [0.2, 0.35],
+      '2023': [0.15, 0.3],
     },
     Calgary: {
       '2017': [0.6, 0.7],
-      '2018': [0.5, 0.6],
-      '2019': [0.4, 0.5],
-      '2020': [0.35, 0.45],
-      '2021': [0.3, 0.4],
-      '2022': [0.25, 0.35],
-      '2023': [0.25, 0.3],
+      '2018': [0.5, 0.7],
+      '2019': [0.4, 0.6],
+      '2020': [0.35, 0.55],
+      '2021': [0.3, 0.5],
+      '2022': [0.25, 0.45],
+      '2023': [0.25, 0.4],
     },
     Vancouver: {
       '2019': [0.6, 0.7],
-      '2020': [0.5, 0.6],
-      '2021': [0.4, 0.5],
-      '2022': [0.35, 0.45],
-      '2023': [0.3, 0.4],
+      '2020': [0.5, 0.7],
+      '2021': [0.4, 0.6],
+      '2022': [0.35, 0.55],
+      '2023': [0.3, 0.5],
     },
   };
 
@@ -2962,15 +3415,15 @@ function createRandomBusinessMetrics({
     const daysInMonthsInYears = returnDaysInMonthsInYears({
       daysPerMonth,
       months,
-      yearStart:
-        storeLocation === 'Edmonton'
-          ? 2013
-          : storeLocation === 'Calgary'
-          ? 2017
-          : 2019,
-      yearEnd: 2023,
-      // yearStart: 2019,
-      // yearEnd: 2019,
+      // yearStart:
+      //   storeLocation === 'Edmonton'
+      //     ? 2013
+      //     : storeLocation === 'Calgary'
+      //     ? 2017
+      //     : 2019,
+      // yearEnd: 2023,
+      yearStart: 2019,
+      yearEnd: 2019,
     });
 
     const createdProductMetrics = returnProductMetrics({
@@ -3070,304 +3523,4 @@ function createRandomBusinessMetrics({
   return storeLocationsBusinessMetrics;
 }
 
-export { createRandomBusinessMetrics };
-
-/**
- * type BusinessMetric = {
-  storeLocation: StoreLocation;
-
-  customerMetrics: {
-    totalCustomers: number;
-    lifetimeValue: number;
-
-    yearlyMetrics: {
-      year: Year;
-      customers: {
-        total: number;
-        new: {
-          total: number;
-          sales: {
-            total: number;
-            online: number;
-            inStore: number;
-          };
-          repair: number;
-        };
-        returning: {
-          total: number;
-          sales: {
-            total: number;
-            online: number;
-            inStore: number;
-          };
-          repair: number;
-        };
-        churnRate: number;
-        retentionRate: number;
-      };
-  
-
-      monthlyMetrics: {
-        month: Month;
-        customers: {
-          total: number;
-          new: {
-            total: number;
-            sales: {
-              total: number;
-              online: number;
-              inStore: number;
-            };
-            repair: number;
-          };
-          returning: {
-            total: number;
-            sales: {
-              total: number;
-              online: number;
-              inStore: number;
-            };
-            repair: number;
-          };
-          churnRate: number;
-          retentionRate: number;
-        };
-
-        dailyMetrics: {
-          day: string;
-          customers: {
-            total: number;
-            new: {
-              total: number;
-              sales: {
-                total: number;
-                online: number;
-                inStore: number;
-              };
-              repair: number;
-            };
-            returning: {
-              total: number;
-              sales: {
-                total: number;
-                online: number;
-                inStore: number;
-              };
-              repair: number;
-            };
-          };
-        }[]
-      }
-    }
-  }
-
-  financialMetrics: {
-    year: Year;
-    averageOrderValue: number;
-    conversionRate: number;
-    netProfitMargin: number;
-
-    expenses: {
-      total: number;
-      repair: number;
-      sales: {
-        total: number;
-        inStore: number;
-        online: number;
-      };
-    };
-
-    profit: {
-      total: number;
-      repair: number;
-      sales: {
-        total: number;
-        inStore: number;
-        online: number;
-      };
-    };
-
-    revenue: {
-      total: number;
-      repair: number;
-      sales: {
-        total: number;
-        inStore: number;
-        online: number;
-      };
-    };
-
-    transactions: {
-      total: number;
-      repair: number;
-      sales: {
-        total: number;
-        inStore: number;
-        online: number;
-      };
-    };
-
-    monthlyMetrics: {
-      month: Month;
-      averageOrderValue: number;
-      conversionRate: number;
-      netProfitMargin: number;
-
-      expenses: {
-        total: number;
-        repair: number;
-        sales: {
-          total: number;
-          inStore: number;
-          online: number;
-        };
-      };
-    
-      profit: {
-        total: number;
-        repair: number;
-        sales: {
-          total: number;
-          inStore: number;
-          online: number;
-        };
-      };
-    
-      revenue: {
-        total: number;
-        repair: number;
-        sales: {
-          total: number;
-          inStore: number;
-          online: number;
-        };
-      };
-    
-      transactions: {
-        total: number;
-        repair: number;
-        sales: {
-          total: number;
-          inStore: number;
-          online: number;
-        };
-      };          
-
-      dailyMetrics: {
-        day: string;
-        averageOrderValue: number;
-        conversionRate: number;
-        netProfitMargin: number;
-      
-        expenses: {
-          total: number;
-          repair: number;
-          sales: {
-            total: number;
-            inStore: number;
-            online: number;
-          };
-        };
-      
-        profit: {
-          total: number;
-          repair: number;
-          sales: {
-            total: number;
-            inStore: number;
-            online: number;
-          };
-        };
-      
-        revenue: {
-          total: number;
-          repair: number;
-          sales: {
-            total: number;
-            inStore: number;
-            online: number;
-          };
-        };
-      
-        transactions: {
-          total: number;
-          repair: number;
-          sales: {
-            total: number;
-            inStore: number;
-            online: number;
-          };
-        };                     
-      }[];
-    }[];
-  }[];  
-
-  productMetrics: {
-    name: ProductCategory;
-
-    yearlyMetrics: {
-      year: string;
-      transactions: {
-        total: number;
-        online: number;
-        inStore: number;
-      };
-      revenue: {
-        total: number;
-        online: number;
-        inStore: number;
-      };
-
-      monthlyMetrics: {
-        month: string;
-        transactions: {
-          total: number;
-          online: number;
-          inStore: number;
-        };
-        revenue: {
-          total: number;
-          online: number;
-          inStore: number;
-        };
-
-        dailyMetrics: {
-          day: string;
-          transactions: {
-            total: number;
-            online: number;
-            inStore: number;
-          };
-          revenue: {
-            total: number;
-            online: number;
-            inStore: number;
-          };
-        }[];
-      }[];
-    }[];    
-  }
-
-
-  repairMetrics: {
-    name: RepairCategory;
-    yearlyMetrics: {
-      year: string;
-      revenue: number;
-      transactions: number;
-
-      monthlyMetrics: {
-        month: string;
-        revenue: number;
-        transactions: number;
-
-        dailyMetrics: {
-          day: string;
-          revenue: number;
-          transactions: number;
-        }[];
-      }[];
-    }[];    
-  }[]
-};
-*/
+export { createRandomBusinessMetrics, returnStatistics };

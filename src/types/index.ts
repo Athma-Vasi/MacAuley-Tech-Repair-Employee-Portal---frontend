@@ -61,14 +61,14 @@ type SelectInputData = Array<{
   value: string;
 }>;
 
-type RadioGroupInputData = Array<{
-  label: string;
-  value: string;
+type RadioGroupInputData<Value extends string = string> = Array<{
+  label: Capitalize<Value> | string;
+  value: Value;
 }>;
 
-type CheckboxInputData<T extends string = string> = Array<{
-  label: T;
-  value: T;
+type CheckboxInputData<Value extends string = string> = Array<{
+  label: Capitalize<Value> | string;
+  value: Value;
 }>;
 
 type SliderInputData = Array<{

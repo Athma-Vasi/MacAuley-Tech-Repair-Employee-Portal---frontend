@@ -64,34 +64,34 @@ const SALES_CATEGORY_SELECTION: SalesCategorySelection[] = [
 const CALENDAR_TABS_DATA = [
   {
     label: 'Daily',
-    message: 'Daily Customer Data',
+    message: 'Daily customer metrics',
   },
   {
     label: 'Monthly',
-    message: 'Monthly Customer Data',
+    message: 'Monthly customer metrics',
   },
   {
     label: 'Yearly',
-    message: 'Yearly Customer Data',
+    message: 'Yearly customer metrics',
   },
 ];
 
 const STORE_LOCATION_TABS_DATA = [
   {
     label: 'All Locations',
-    message: 'View all store locations data ',
+    message: "View all store locations' metrics ",
   },
   {
     label: 'Edmonton',
-    message: 'View Edmonton store location data',
+    message: 'View Edmonton store location metrics',
   },
   {
     label: 'Calgary',
-    message: 'View Calgary store location data',
+    message: 'View Calgary store location metrics',
   },
   {
     label: 'Vancouver',
-    message: 'View Vancouver store location data',
+    message: 'View Vancouver store location metrics',
   },
 ];
 
