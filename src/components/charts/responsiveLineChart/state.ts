@@ -13,7 +13,7 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
 
   // margin
   marginTop: 30,
-  marginRight: 30,
+  marginRight: 60,
   marginBottom: 60,
   marginLeft: 90,
 

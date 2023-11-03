@@ -124,7 +124,7 @@ function CustomerDashboardYearly({
   // overview -> charts -> pie
 
   // overview -> charts -> pie -> heading
-  const pieChartHeading = `New and returning customers for ${year}`;
+  const pieChartHeading = `New and returning customers for ${year} at ${storeLocation}`;
 
   // overview -> charts -> pie -> display
   const displayOverviewPieChart = (
@@ -244,7 +244,7 @@ function CustomerDashboardYearly({
   // new -> charts -> pie
 
   // new -> charts -> pie -> heading
-  const newPieChartHeading = `New customers for ${year}`;
+  const newPieChartHeading = `New customers for ${year} at ${storeLocation}`;
 
   // new -> charts -> pie -> y axis variables
   const [createdNewPieChartYAxisVariablesSelectInput] =
@@ -374,7 +374,7 @@ function CustomerDashboardYearly({
   // returning -> charts -> pie
 
   // returning -> charts -> pie -> heading
-  const returningPieChartHeading = `Returning customers for ${year}`;
+  const returningPieChartHeading = `Returning customers for ${year} at ${storeLocation}`;
 
   // returning -> charts -> pie -> y axis variables
   const [createdReturningPieChartYAxisVariablesSelectInput] =
@@ -516,7 +516,7 @@ function CustomerDashboardYearly({
   // churn & retention rate -> charts -> pie
 
   // churn & retention rate -> charts -> pie -> heading
-  const churnRetentionPieChartHeading = `Churn and retention rates for ${year}`;
+  const churnRetentionPieChartHeading = `Churn and retention rates for ${year}  at ${storeLocation}`;
 
   // churn & retention rate -> charts -> pie -> display
   const displayChurnRetentionPieChart = (

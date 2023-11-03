@@ -1927,6 +1927,14 @@ function returnFinancialChartsData({
         .toString()
         .padStart(2, '0');
 
+      // prevents current month from being added to charts
+      const currentMonth = new Date().toLocaleString('default', {
+        month: 'long',
+      });
+      if (month === currentMonth) {
+        return monthlyMetricsChartsObjAcc;
+      }
+
       // profit
 
       const {
@@ -3251,6 +3259,12 @@ function returnFinancialChartsData({
           sales: yearlySalesProfit,
         },
       } = yearlyMetric;
+
+      // prevents current year from being added to charts
+      const currentYear = new Date().getFullYear();
+      if (year === currentYear.toString()) {
+        return yearlyMetricsChartsObjAcc;
+      }
 
       // profit -> bar chart data
 

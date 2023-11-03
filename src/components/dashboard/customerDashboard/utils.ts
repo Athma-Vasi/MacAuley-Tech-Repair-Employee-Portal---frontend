@@ -1319,6 +1319,15 @@ function returnCustomerChartsData({
       ] = monthlyCustomerChartsAcc;
 
       const { month, customers, dailyMetrics } = monthlyMetric;
+
+      // prevents current month from being added to charts
+      const currentMonth = new Date().toLocaleString('default', {
+        month: 'long',
+      });
+      if (month === currentMonth) {
+        return monthlyCustomerChartsAcc;
+      }
+
       const monthNumberStr = (months.indexOf(month) + 1)
         .toString()
         .padStart(2, '0');
@@ -2165,6 +2174,12 @@ function returnCustomerChartsData({
       ] = yearlyCustomerChartsAcc;
 
       const { year, customers } = yearlyMetric;
+
+      // prevents current year from being added to charts
+      const currentYear = new Date().getFullYear();
+      if (year === currentYear.toString()) {
+        return yearlyCustomerChartsAcc;
+      }
 
       // overview
 

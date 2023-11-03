@@ -37,6 +37,7 @@ import {
   customerDashboardMonthlyReducer,
   initialCustomerDashboardMonthlyState,
 } from './state';
+import { MONTHS } from '../../constants';
 
 function CustomerDashboardMonthly({
   borderColor,
@@ -132,7 +133,9 @@ function CustomerDashboardMonthly({
   // overview -> charts -> pie
 
   // overview -> charts -> pie -> heading
-  const pieChartHeading = `New and returning customers for ${year}`;
+  const pieChartHeading = `New and returning customers for ${
+    MONTHS[parseInt(month) - 1]
+  } at ${storeLocation}`;
 
   // overview -> charts -> pie -> display
   const displayOverviewPieChart = (
@@ -296,7 +299,9 @@ function CustomerDashboardMonthly({
   // new -> charts -> pie
 
   // new -> charts -> pie -> heading
-  const newPieChartHeading = `New customers for ${year}`;
+  const newPieChartHeading = `New customers for ${
+    MONTHS[parseInt(month) - 1]
+  } at ${storeLocation}`;
 
   // new -> charts -> pie -> y axis variables
   const [createdNewPieChartYAxisVariablesSelectInput] =
@@ -469,7 +474,9 @@ function CustomerDashboardMonthly({
   // returning -> charts -> pie
 
   // returning -> charts -> pie -> heading
-  const returningPieChartHeading = `Returning customers for ${year}`;
+  const returningPieChartHeading = `Returning customers for ${
+    MONTHS[parseInt(month) - 1]
+  } at ${storeLocation}`;
 
   // returning -> charts -> pie -> y axis variables
   const [createdReturningPieChartYAxisVariablesSelectInput] =
@@ -656,7 +663,9 @@ function CustomerDashboardMonthly({
   // churn & retention rate -> charts -> pie
 
   // churn & retention rate -> charts -> pie -> heading
-  const churnRetentionPieChartHeading = `Churn and retention rates for ${year}`;
+  const churnRetentionPieChartHeading = `Churn and retention rates for ${
+    MONTHS[parseInt(month) - 1]
+  } at ${storeLocation}`;
 
   // churn & retention rate -> charts -> pie -> display
   const displayChurnRetentionPieChart = (

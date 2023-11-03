@@ -726,6 +726,14 @@ function returnProductChartsData({
         .toString()
         .padStart(2, '0');
 
+      // prevents current month from being added to charts
+      const currentMonth = new Date().toLocaleString('default', {
+        month: 'long',
+      });
+      if (month === currentMonth) {
+        return monthlyProductChartsAcc;
+      }
+
       // transactions
 
       // transactions -> bar chart obj
@@ -1088,6 +1096,12 @@ function returnProductChartsData({
       ] = yearlyProductChartsAcc;
 
       const { year, transactions, revenue } = yearlyProductMetrics;
+
+      // prevents current year from being added to charts
+      const currentYear = new Date().getFullYear();
+      if (year === currentYear.toString()) {
+        return yearlyProductChartsAcc;
+      }
 
       // transactions
 

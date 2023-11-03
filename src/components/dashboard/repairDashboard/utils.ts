@@ -356,10 +356,17 @@ function returnRepairChartsData({
       ] = monthlyRepairChartsAcc;
 
       const { month, revenue, transactions } = monthlyRepairMetric;
-
       const monthNumberStr = (months.indexOf(month) + 1)
         .toString()
         .padStart(2, '0');
+
+      // prevents current month from being added to charts
+      const currentMonth = new Date().toLocaleString('default', {
+        month: 'long',
+      });
+      if (month === currentMonth) {
+        return monthlyRepairChartsAcc;
+      }
 
       // bar charts
 
@@ -468,6 +475,12 @@ function returnRepairChartsData({
           yearlyRepairChartsAcc;
 
         const { year, revenue, transactions } = yearlyRepairMetric;
+
+        // prevents current year from being added to charts
+        const currentYear = new Date().getFullYear();
+        if (year === currentYear.toString()) {
+          return yearlyRepairChartsAcc;
+        }
 
         // bar charts
 
