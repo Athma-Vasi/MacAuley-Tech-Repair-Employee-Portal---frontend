@@ -6,16 +6,35 @@ type SalesDataEntryType = 'Transactions' | 'Revenue';
 
 type DashboardState = {
   businessMetrics: BusinessMetric[];
+  selectedCalendarView: DashboardCalendarView;
+  selectedStoreLocationView: BusinessMetricStoreLocation;
+  selectedYYYYMMDD: string;
 };
 
 type DashboardAction = {
   setBusinessMetrics: 'setBusinessMetrics';
+  setSelectedCalendarView: 'setSelectedCalendarView';
+  setSelectedStoreLocationView: 'setSelectedStoreLocationView';
+  setSelectedYYYYMMDD: 'setSelectedYYYYMMDD';
 };
 
-type DashboardDispatch = {
-  type: DashboardAction['setBusinessMetrics'];
-  payload: BusinessMetric[];
-};
+type DashboardDispatch =
+  | {
+      type: DashboardAction['setBusinessMetrics'];
+      payload: BusinessMetric[];
+    }
+  | {
+      type: DashboardAction['setSelectedCalendarView'];
+      payload: DashboardCalendarView;
+    }
+  | {
+      type: DashboardAction['setSelectedStoreLocationView'];
+      payload: BusinessMetricStoreLocation;
+    }
+  | {
+      type: DashboardAction['setSelectedYYYYMMDD'];
+      payload: string;
+    };
 
 type Month =
   | 'January'
@@ -136,7 +155,7 @@ type CustomerMetrics = {
   yearlyMetrics: CustomerYearlyMetric[];
 };
 
-type CustomersNewReturningMetric = {
+type CustomerMetricCategory = {
   total: number;
   sales: {
     total: number;
@@ -150,8 +169,8 @@ type CustomerYearlyMetric = {
   year: Year;
   customers: {
     total: number;
-    new: CustomersNewReturningMetric;
-    returning: CustomersNewReturningMetric;
+    new: CustomerMetricCategory;
+    returning: CustomerMetricCategory;
     churnRate: number;
     retentionRate: number;
   };
@@ -162,8 +181,8 @@ type CustomerMonthlyMetric = {
   month: Month;
   customers: {
     total: number;
-    new: CustomersNewReturningMetric;
-    returning: CustomersNewReturningMetric;
+    new: CustomerMetricCategory;
+    returning: CustomerMetricCategory;
     churnRate: number;
     retentionRate: number;
   };
@@ -174,8 +193,8 @@ type CustomerDailyMetric = {
   day: string;
   customers: {
     total: number;
-    new: CustomersNewReturningMetric;
-    returning: CustomersNewReturningMetric;
+    new: CustomerMetricCategory;
+    returning: CustomerMetricCategory;
   };
 };
 

@@ -15,7 +15,7 @@ import {
 } from '../../../charts';
 import { MONTHS } from '../../constants';
 import DashboardMetricsLayout from '../../DashboardMetricsLayout';
-import { ReturnDashboardCustomerCardInfoOutput } from '../../jsxHelpers';
+import { CustomerMetricsCards } from '../../jsxHelpers';
 import { BusinessMetric, BusinessMetricStoreLocation } from '../../types';
 import { returnStatistics } from '../../utils';
 import {
@@ -29,7 +29,7 @@ import {
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
   CustomerOverviewObjKey,
-  ReturnCustomerChartsDataOutput,
+  CustomerMetricsCharts,
 } from '../utils';
 import {
   customerDashboardDailyAction,
@@ -51,8 +51,8 @@ function CustomerDashboardDaily({
 }: {
   borderColor: string;
   businessMetrics: BusinessMetric[];
-  dailyCards: ReturnDashboardCustomerCardInfoOutput['dailyCards'];
-  dailyCharts: ReturnCustomerChartsDataOutput['dailyCharts'];
+  dailyCards: CustomerMetricsCards['dailyCards'];
+  dailyCharts: CustomerMetricsCharts['dailyCharts'];
   day: string;
   month: string;
   padding: MantineNumberSize;

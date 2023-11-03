@@ -726,11 +726,15 @@ function returnProductChartsData({
         .toString()
         .padStart(2, '0');
 
-      // prevents current month from being added to charts
+      // prevents current month of current year from being added to charts
+      const currentYear = new Date().getFullYear().toString();
+      const isCurrentYear = selectedYear === currentYear;
       const currentMonth = new Date().toLocaleString('default', {
         month: 'long',
       });
-      if (month === currentMonth) {
+      const isCurrentMonth = month === currentMonth;
+
+      if (isCurrentYear && isCurrentMonth) {
         return monthlyProductChartsAcc;
       }
 

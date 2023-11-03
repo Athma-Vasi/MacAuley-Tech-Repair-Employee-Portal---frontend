@@ -63,13 +63,13 @@ function returnDashboardCard({
   return createdChartCard;
 }
 
-type ReturnDashboardCustomerCardInfoInput = {
-  customerMetrics: SelectedDateCustomerMetrics;
+type ReturnCustomerMetricsCardsInput = {
+  selectedDateCustomerMetrics: SelectedDateCustomerMetrics;
   padding: MantineNumberSize;
   width: number;
 };
 
-type ReturnDashboardCustomerCardInfoOutput = {
+type CustomerMetricsCards = {
   dailyCards: {
     overview: DashboardCardInfo[];
     new: DashboardCardInfo[];
@@ -91,14 +91,14 @@ type ReturnDashboardCustomerCardInfoOutput = {
   };
 };
 
-function returnDashboardCustomerCardInfo({
-  customerMetrics,
+function returnCustomerMetricsCards({
+  selectedDateCustomerMetrics,
   padding,
   width,
-}: ReturnDashboardCustomerCardInfoInput): ReturnDashboardCustomerCardInfoOutput {
+}: ReturnCustomerMetricsCardsInput): CustomerMetricsCards {
   // customer metrics data
   const { dayCustomerMetrics, monthCustomerMetrics, yearCustomerMetrics } =
-    customerMetrics;
+    selectedDateCustomerMetrics;
 
   const currentYear = yearCustomerMetrics?.selectedYearMetrics?.year ?? 0;
   const prevYear = yearCustomerMetrics?.prevYearMetrics?.year ?? 0;
@@ -1194,5 +1194,5 @@ function returnDashboardCustomerCardInfo({
   };
 }
 
-export { returnDashboardCard, returnDashboardCustomerCardInfo };
-export type { DashboardCardInfo, ReturnDashboardCustomerCardInfoOutput };
+export { returnDashboardCard, returnCustomerMetricsCards };
+export type { DashboardCardInfo, CustomerMetricsCards };

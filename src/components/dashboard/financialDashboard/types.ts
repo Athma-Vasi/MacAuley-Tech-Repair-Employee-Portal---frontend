@@ -9,7 +9,7 @@ import {
 //   FinancialNewMapKey,
 //   FinancialOverviewMapKey,
 //   FinancialReturningMapKey,
-//   ReturnFinancialChartsDataOutput,
+//   FinancialChartsObj,
 // } from './utils';
 
 type YAxisFinancialChartSelection = {};
@@ -19,7 +19,7 @@ type YAxisFinancialChartSelection = {};
 // };
 
 type FinancialDashboardState = {
-  //   customerChartsData: ReturnFinancialChartsDataOutput | null;
+  //   customerChartsData: FinancialChartsObj | null;
   //   customerCardsInfo: ReturnDashboardFinancialCardInfoOutput | null;
   //   selectedCalendarView: DashboardCalendarView;
   //   selectedDate: string;
@@ -43,7 +43,7 @@ type FinancialDashboardAction = {
 type FinancialDashboardDispatch = {};
 //   | {
 //       type: FinancialDashboardAction['setFinancialChartsData'];
-//       payload: ReturnFinancialChartsDataOutput;
+//       payload: FinancialChartsObj;
 //     }
 //   | {
 //       type: FinancialDashboardAction['setFinancialCardsInfo'];

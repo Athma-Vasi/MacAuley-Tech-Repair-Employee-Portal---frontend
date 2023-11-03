@@ -353,7 +353,7 @@ type StatisticsObject = {
 /**
  * Return statistics for each key in the barChartsObj of the dailyChartsObj returned by the `return${metric}ChartData` functions
  * - where metric = Customer | Financial | Product | Repair
- * - example input from CustomerMetrics' overview section: type ReturnCustomerChartsDataOutput = {
+ * - example input from CustomerMetrics' overview section: type CustomerMetricsCharts = {
     dailyCharts: {
       overview: {
         barChartsObj: Record<'overview' | 'new' | 'returning', BarChartData[]>;
@@ -550,6 +550,26 @@ function returnDaysInMonthsInYears({
 
     return yearsAcc;
   }, new Map<Year, Map<Month, string[]>>());
+}
+
+function splitSelectedCalendarDate({
+  calendarDate,
+  months,
+}: {
+  calendarDate: string;
+  months: Month[];
+}): {
+  selectedDate: string;
+  selectedMonth: Month;
+  selectedYear: Year;
+} {
+  const [year, month, date] = calendarDate.split('-') as [Year, string, string];
+
+  return {
+    selectedDate: date.toString().padStart(2, '0'),
+    selectedMonth: months[parseInt(month) - 1],
+    selectedYear: year,
+  };
 }
 
 type ReturnTransactionsRevenueTupleInput = {
@@ -3522,5 +3542,9 @@ function createRandomBusinessMetrics({
   return storeLocationsBusinessMetrics;
 }
 
-export { createRandomBusinessMetrics, returnStatistics };
+export {
+  createRandomBusinessMetrics,
+  returnStatistics,
+  splitSelectedCalendarDate,
+};
 export type { StatisticsObject };

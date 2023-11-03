@@ -120,10 +120,10 @@ function returnSelectedDateCustomerMetrics({
   };
 }
 
-type ReturnCustomerChartsDataInput = {
+type ReturnCustomerMetricsChartsInput = {
   businessMetrics: BusinessMetric[];
   months: Month[];
-  selectedCustomerMetrics: SelectedDateCustomerMetrics;
+  selectedDateCustomerMetrics: SelectedDateCustomerMetrics;
   storeLocation: BusinessMetricStoreLocation;
 };
 
@@ -244,7 +244,7 @@ type CustomerChurnRetentionLineObj = Record<
   LineChartData[]
 >; // y-axis variables: churn rate, retention rate
 
-type ReturnCustomerChartsDataOutput = {
+type CustomerMetricsCharts = {
   dailyCharts: {
     overview: {
       barChartsObj: CustomerOverviewBarObj;
@@ -314,22 +314,22 @@ type ReturnCustomerChartsDataOutput = {
   };
 };
 
-function returnCustomerChartsData({
+function returnCustomerMetricsCharts({
   businessMetrics,
   months,
-  selectedCustomerMetrics,
+  selectedDateCustomerMetrics,
   storeLocation,
-}: ReturnCustomerChartsDataInput): ReturnCustomerChartsDataOutput {
+}: ReturnCustomerMetricsChartsInput): CustomerMetricsCharts {
   // selected year's metrics
   const {
     yearCustomerMetrics: { selectedYearMetrics },
-  } = selectedCustomerMetrics;
+  } = selectedDateCustomerMetrics;
   const selectedYear = selectedYearMetrics?.year ?? '2023';
 
   // selected month's metrics
   const {
     monthCustomerMetrics: { selectedMonthMetrics },
-  } = selectedCustomerMetrics;
+  } = selectedDateCustomerMetrics;
   const selectedMonth = selectedMonthMetrics?.month ?? 'January';
   const monthNumber = (months.indexOf(selectedMonth) + 1)
     .toString()
@@ -338,7 +338,7 @@ function returnCustomerChartsData({
   // selected day's metrics
   const {
     dayCustomerMetrics: { selectedDayMetrics },
-  } = selectedCustomerMetrics;
+  } = selectedDateCustomerMetrics;
 
   // templates
 
@@ -1320,11 +1320,15 @@ function returnCustomerChartsData({
 
       const { month, customers, dailyMetrics } = monthlyMetric;
 
-      // prevents current month from being added to charts
+      // prevents current month of current year from being added to charts
+      const currentYear = new Date().getFullYear().toString();
+      const isCurrentYear = selectedYear === currentYear;
       const currentMonth = new Date().toLocaleString('default', {
         month: 'long',
       });
-      if (month === currentMonth) {
+      const isCurrentMonth = month === currentMonth;
+
+      if (isCurrentYear && isCurrentMonth) {
         return monthlyCustomerChartsAcc;
       }
 
@@ -2767,13 +2771,13 @@ function returnCustomerChartsData({
   };
 }
 
-export { returnCustomerChartsData, returnSelectedDateCustomerMetrics };
+export { returnCustomerMetricsCharts, returnSelectedDateCustomerMetrics };
 export type {
   CustomerChurnRetentionObjKey,
   CustomerNewReturningCalendarObjKey,
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
   CustomerOverviewObjKey,
-  ReturnCustomerChartsDataOutput,
+  CustomerMetricsCharts,
   SelectedDateCustomerMetrics,
 };

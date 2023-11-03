@@ -14,7 +14,7 @@ import {
   ResponsivePieChart,
 } from '../../../charts';
 import DashboardMetricsLayout from '../../DashboardMetricsLayout';
-import { ReturnDashboardCustomerCardInfoOutput } from '../../jsxHelpers';
+import { CustomerMetricsCards } from '../../jsxHelpers';
 import { BusinessMetric, BusinessMetricStoreLocation } from '../../types';
 import { returnStatistics } from '../../utils';
 import {
@@ -30,7 +30,7 @@ import {
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
   CustomerOverviewObjKey,
-  ReturnCustomerChartsDataOutput,
+  CustomerMetricsCharts,
 } from '../utils';
 import {
   customerDashboardMonthlyAction,
@@ -53,8 +53,8 @@ function CustomerDashboardMonthly({
 }: {
   borderColor: string;
   businessMetrics: BusinessMetric[];
-  monthlyCards: ReturnDashboardCustomerCardInfoOutput['monthlyCards'];
-  monthlyCharts: ReturnCustomerChartsDataOutput['monthlyCharts'];
+  monthlyCards: CustomerMetricsCards['monthlyCards'];
+  monthlyCharts: CustomerMetricsCharts['monthlyCharts'];
   day: string;
   month: string;
   padding: MantineNumberSize;

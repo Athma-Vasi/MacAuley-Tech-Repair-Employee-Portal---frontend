@@ -251,7 +251,7 @@ type FinancialMetricsPieChartsObj = {
   sales: PieChartData[];
 };
 
-type ReturnFinancialChartsDataOutput = {
+type FinancialChartsObj = {
   dailyCharts: {
     profit: {
       barChartsObj: FinancialMetricBarObj;
@@ -347,7 +347,7 @@ function returnFinancialChartsData({
   months,
   selectedFinancialMetrics,
   storeLocation,
-}: ReturnFinancialChartsDataInput): ReturnFinancialChartsDataOutput {
+}: ReturnFinancialChartsDataInput): FinancialChartsObj {
   // selected year's metrics
   const {
     yearFinancialMetrics: { selectedYearMetrics },
@@ -1927,11 +1927,15 @@ function returnFinancialChartsData({
         .toString()
         .padStart(2, '0');
 
-      // prevents current month from being added to charts
+      // prevents current month of current year from being added to charts
+      const currentYear = new Date().getFullYear().toString();
+      const isCurrentYear = selectedYear === currentYear;
       const currentMonth = new Date().toLocaleString('default', {
         month: 'long',
       });
-      if (month === currentMonth) {
+      const isCurrentMonth = month === currentMonth;
+
+      if (isCurrentYear && isCurrentMonth) {
         return monthlyMetricsChartsObjAcc;
       }
 
@@ -4164,5 +4168,5 @@ export { returnFinancialChartsData, returnSelectedDateFinancialMetrics };
 export type {
   FinancialMetricsPieChartsObj,
   ReturnFinancialChartsDataInput,
-  ReturnFinancialChartsDataOutput,
+  FinancialChartsObj,
 };

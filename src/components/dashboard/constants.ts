@@ -61,38 +61,13 @@ const SALES_CATEGORY_SELECTION: SalesCategorySelection[] = [
   'Repairs',
 ];
 
-const CALENDAR_TABS_DATA = [
-  {
-    label: 'Daily',
-    message: 'Daily customer metrics',
-  },
-  {
-    label: 'Monthly',
-    message: 'Monthly customer metrics',
-  },
-  {
-    label: 'Yearly',
-    message: 'Yearly customer metrics',
-  },
-];
+const CALENDAR_VIEW_TABS_DATA = ['Daily', 'Monthly', 'Yearly'];
 
-const STORE_LOCATION_TABS_DATA = [
-  {
-    label: 'All Locations',
-    message: "View all store locations' metrics ",
-  },
-  {
-    label: 'Edmonton',
-    message: 'View Edmonton store location metrics',
-  },
-  {
-    label: 'Calgary',
-    message: 'View Calgary store location metrics',
-  },
-  {
-    label: 'Vancouver',
-    message: 'View Vancouver store location metrics',
-  },
+const STORE_LOCATION_VIEW_TABS_DATA = [
+  'All Locations',
+  'Edmonton',
+  'Calgary',
+  'Vancouver',
 ];
 
 const SALES_DATA_ENTRY_TYPE: SalesDataEntryType[] = ['Transactions', 'Revenue'];
@@ -106,12 +81,12 @@ const BUSINESS_METRIC_STORE_LOCATIONS: BusinessMetricStoreLocation[] = [
 
 export {
   BUSINESS_METRIC_STORE_LOCATIONS,
-  CALENDAR_TABS_DATA,
+  CALENDAR_VIEW_TABS_DATA,
   DAYS_PER_MONTH,
   MONTHS,
   PRODUCT_CATEGORIES,
   REPAIR_CATEGORIES,
   SALES_CATEGORY_SELECTION,
   SALES_DATA_ENTRY_TYPE,
-  STORE_LOCATION_TABS_DATA,
+  STORE_LOCATION_VIEW_TABS_DATA,
 };

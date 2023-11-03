@@ -217,19 +217,21 @@ function DashboardMetricsLayout({
             </Accordion.Control>
             <Accordion.Panel>
               <Flex direction="column" rowGap="xs">
-                <Text>{`Min: ${min.value}`}</Text>
+                <Text>{`Min: ${min.value.toFixed(2)}`}</Text>
                 <Text pl={padding}>{`Occurred: ${min.occurred}`}</Text>
 
-                <Text>{`Max: ${max.value}`}</Text>
+                <Text>{`Max: ${max.value.toFixed(2)}`}</Text>
                 <Text pl={padding}>{`Occurred: ${max.occurred}`}</Text>
 
-                <Text>{`Median: ${median}`}</Text>
+                <Text>{`Median: ${median.toFixed(2)}`}</Text>
 
-                <Text>{`Mode: ${mode}`}</Text>
+                <Text>{`Mode: ${mode.toFixed(2)}`}</Text>
 
                 <Text>{`Arithmetic Mean: ${arithmeticMean.toFixed(2)}`}</Text>
 
-                <Text>{`Interquartile Range: ${interquartileRange}`}</Text>
+                <Text>{`Interquartile Range: ${interquartileRange.toFixed(
+                  2
+                )}`}</Text>
 
                 <Text>{`Standard Deviation: ${standardDeviation.toFixed(
                   2

@@ -1,6 +1,12 @@
 import { Text } from '@mantine/core';
 
-import { BusinessMetric } from '../types';
+import {
+  BusinessMetric,
+  BusinessMetricStoreLocation,
+  DashboardCalendarView,
+  Month,
+  Year,
+} from '../types';
 import { useEffect } from 'react';
 import {
   returnFinancialChartsData,
@@ -10,8 +16,20 @@ import { MONTHS } from '../constants';
 
 function FinancialDashboard({
   businessMetrics,
+  selectedCalendarView,
+  selectedDate,
+  selectedMonth,
+  selectedStoreLocationView,
+  selectedYear,
+  selectedYYYYMMDD,
 }: {
   businessMetrics: BusinessMetric[];
+  selectedCalendarView: DashboardCalendarView;
+  selectedDate: string;
+  selectedMonth: Month;
+  selectedStoreLocationView: BusinessMetricStoreLocation;
+  selectedYear: Year;
+  selectedYYYYMMDD: string;
 }) {
   // useEffect(() => {
   //   const selectedFinancialMetrics = returnSelectedDateFinancialMetrics({

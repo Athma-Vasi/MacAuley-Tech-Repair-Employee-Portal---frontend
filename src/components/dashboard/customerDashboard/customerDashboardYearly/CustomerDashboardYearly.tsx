@@ -13,7 +13,7 @@ import {
   ResponsivePieChart,
 } from '../../../charts';
 import DashboardMetricsLayout from '../../DashboardMetricsLayout';
-import { ReturnDashboardCustomerCardInfoOutput } from '../../jsxHelpers';
+import { CustomerMetricsCards } from '../../jsxHelpers';
 import { BusinessMetric, BusinessMetricStoreLocation } from '../../types';
 import { returnStatistics } from '../../utils';
 import {
@@ -27,7 +27,7 @@ import {
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
   CustomerOverviewObjKey,
-  ReturnCustomerChartsDataOutput,
+  CustomerMetricsCharts,
 } from '../utils';
 import {
   customerDashboardYearlyAction,
@@ -49,8 +49,8 @@ function CustomerDashboardYearly({
 }: {
   borderColor: string;
   businessMetrics: BusinessMetric[];
-  yearlyCards: ReturnDashboardCustomerCardInfoOutput['yearlyCards'];
-  yearlyCharts: ReturnCustomerChartsDataOutput['yearlyCharts'];
+  yearlyCards: CustomerMetricsCards['yearlyCards'];
+  yearlyCharts: CustomerMetricsCharts['yearlyCharts'];
   day: string;
   month: string;
   padding: MantineNumberSize;
