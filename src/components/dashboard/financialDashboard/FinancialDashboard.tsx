@@ -1,44 +1,39 @@
-import { Text } from '@mantine/core';
-
+import { COLORS_SWATCHES } from '../../../constants/data';
+import { useGlobalState } from '../../../hooks';
+import { returnThemeColors } from '../../../utils';
+import { MONTHS } from '../constants';
+import { returnFinancialMetricsCards } from '../jsxHelpers';
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
-  DashboardFinancialsView,
+  DashboardFinancialMetric,
   Month,
   Year,
 } from '../types';
-import { useEffect } from 'react';
+import FinancialDashboardDaily from './financialDashboardDaily/FinancialDashboardDaily';
+import FinancialDashboardMonthly from './financialDashboardMonthly/FinancialDashboardMonthly';
 import {
   returnFinancialMetricsCharts,
   returnSelectedDateFinancialMetrics,
 } from './utils';
-import { MONTHS } from '../constants';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import { returnThemeColors } from '../../../utils';
-import {
-  returnFinancialMetricsCards,
-  returnFlattenedObject,
-} from '../jsxHelpers';
-import FinancialDashboardDaily from './financialDashboardDaily/FinancialDashboardDaily';
 
 function FinancialDashboard({
   businessMetrics,
-  selectedCalendarView,
+  calendarView,
   selectedDate,
-  selectedFinancialsView,
+  financialMetric,
   selectedMonth,
-  selectedStoreLocationView,
+  storeLocationView,
   selectedYear,
   selectedYYYYMMDD,
 }: {
   businessMetrics: BusinessMetric[];
-  selectedCalendarView: DashboardCalendarView;
+  calendarView: DashboardCalendarView;
   selectedDate: string;
-  selectedFinancialsView: DashboardFinancialsView;
+  financialMetric: DashboardFinancialMetric;
   selectedMonth: Month;
-  selectedStoreLocationView: BusinessMetricStoreLocation;
+  storeLocationView: BusinessMetricStoreLocation;
   selectedYear: Year;
   selectedYYYYMMDD: string;
 }) {
@@ -59,7 +54,7 @@ function FinancialDashboard({
     day: selectedDate,
     month: selectedMonth,
     months: MONTHS,
-    storeLocation: selectedStoreLocationView,
+    storeLocation: storeLocationView,
     year: selectedYear,
   });
 
@@ -69,7 +64,7 @@ function FinancialDashboard({
     businessMetrics,
     months: MONTHS,
     selectedDateFinancialMetrics,
-    storeLocation: selectedStoreLocationView,
+    storeLocation: storeLocationView,
   });
 
   console.log('financialChartsData', financialChartsData);
@@ -88,16 +83,31 @@ function FinancialDashboard({
   const { dailyCharts, monthlyCharts, yearlyCharts } = financialChartsData;
 
   const displayFinancialCalendarInfo =
-    selectedCalendarView === 'Daily' ? (
+    calendarView === 'Daily' ? (
       <FinancialDashboardDaily
         borderColor={borderColor}
         businessMetrics={businessMetrics}
         dailyCards={dailyCards}
         dailyCharts={dailyCharts}
         day={selectedDate}
+        financialMetric={financialMetric}
         month={selectedYYYYMMDD.split('-')[1]}
         padding={padding}
-        storeLocation={selectedStoreLocationView}
+        storeLocation={storeLocationView}
+        width={width}
+        year={selectedYear}
+      />
+    ) : calendarView === 'Monthly' ? (
+      <FinancialDashboardMonthly
+        borderColor={borderColor}
+        businessMetrics={businessMetrics}
+        day={selectedDate}
+        financialMetric={financialMetric}
+        month={selectedYYYYMMDD.split('-')[1]}
+        monthlyCards={monthlyCards}
+        monthlyCharts={monthlyCharts}
+        padding={padding}
+        storeLocation={storeLocationView}
         width={width}
         year={selectedYear}
       />

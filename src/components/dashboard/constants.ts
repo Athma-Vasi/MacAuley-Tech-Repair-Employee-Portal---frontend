@@ -1,8 +1,11 @@
 import {
   BusinessMetricStoreLocation,
   DashboardCalendarView,
-  DashboardFinancialsView,
+  DashboardCustomerMetrics,
+  DashboardFinancialMetric,
   DashboardMetricsView,
+  DashboardProductMetrics,
+  DashboardRepairMetrics,
   Month,
   ProductCategory,
   RepairCategory,
@@ -61,13 +64,25 @@ const CALENDAR_VIEW_TABS_DATA: DashboardCalendarView[] = [
   'Yearly',
 ];
 
-const FINANCIALS_VIEW_TABS_DATA: DashboardFinancialsView[] = [
+const FINANCIALS_METRICS_SELECT_INPUT_DATA: DashboardFinancialMetric[] = [
   'Profit',
   'Revenue',
   'Expenses',
   'Transactions',
   'Other Metrics',
 ];
+
+const CUSTOMER_METRICS_SELECT_INPUT_DATA: DashboardCustomerMetrics[] = [
+  'Overview',
+  'New',
+  'Returning',
+];
+
+const PRODUCT_METRICS_SELECT_INPUT_DATA: DashboardProductMetrics[] =
+  PRODUCT_CATEGORIES;
+
+const REPAIR_METRICS_SELECT_INPUT_DATA: DashboardRepairMetrics[] =
+  REPAIR_CATEGORIES;
 
 const METRICS_VIEW_TABS_DATA: DashboardMetricsView[] = [
   'Financials',
@@ -93,11 +108,14 @@ const BUSINESS_METRIC_STORE_LOCATIONS: BusinessMetricStoreLocation[] = [
 export {
   BUSINESS_METRIC_STORE_LOCATIONS,
   CALENDAR_VIEW_TABS_DATA,
+  CUSTOMER_METRICS_SELECT_INPUT_DATA,
   DAYS_PER_MONTH,
-  FINANCIALS_VIEW_TABS_DATA,
+  FINANCIALS_METRICS_SELECT_INPUT_DATA,
   METRICS_VIEW_TABS_DATA,
   MONTHS,
   PRODUCT_CATEGORIES,
+  PRODUCT_METRICS_SELECT_INPUT_DATA,
   REPAIR_CATEGORIES,
+  REPAIR_METRICS_SELECT_INPUT_DATA,
   STORE_LOCATION_VIEW_TABS_DATA,
 };

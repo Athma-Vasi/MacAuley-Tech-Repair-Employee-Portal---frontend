@@ -14,7 +14,7 @@ type DashboardCardInfo = {
   padding: MantineNumberSize;
   percentage?: string;
   deltaTextColor?: string;
-  value?: number;
+  value: string | number;
   width: number;
 };
 function returnDashboardCardElement({
@@ -39,7 +39,7 @@ function returnDashboardCardElement({
   const cardBody = (
     <Group w="100%" position="apart">
       <Text size="xl" weight={600}>
-        {value ? (value < 1 ? value?.toFixed(2) : value) : null}
+        {value}
       </Text>
     </Group>
   );
@@ -73,6 +73,8 @@ type ReturnDashboardCardInfoInput = {
   currentYear: string;
   greenColorShade: string;
   heading: string;
+  isDisplayValueAsCurrency?: boolean;
+  isDisplayValueAsPercentage?: boolean;
   isFlipColor?: boolean;
   kind: 'day' | 'month' | 'year';
   padding: MantineNumberSize;
@@ -90,7 +92,9 @@ function returnDashboardCardInfo({
   currentYear,
   greenColorShade,
   heading,
-  isFlipColor,
+  isDisplayValueAsCurrency = false,
+  isDisplayValueAsPercentage = false,
+  isFlipColor = false,
   kind,
   padding,
   prevDay,
@@ -134,13 +138,23 @@ function returnDashboardCardInfo({
           kind === 'day' ? currentMonth : kind === 'month' ? currentYear : ''
         }`;
 
+  const displayValue = isDisplayValueAsPercentage
+    ? `${isDisplayValueAsCurrency ? 'CAD' : ''} ${(selectedValue * 100).toFixed(
+        2
+      )} %`
+    : `${isDisplayValueAsCurrency ? 'CAD' : ''} ${
+        selectedValue.toString().includes('.')
+          ? selectedValue.toFixed(2)
+          : selectedValue
+      }`;
+
   return {
     date,
     heading,
     icon,
     padding,
     percentage: deltaFormatted,
-    value: selectedValue,
+    value: displayValue,
     width,
     deltaTextColor,
   };
@@ -976,39 +990,7 @@ function returnCustomerMetricsCards({
   };
 }
 
-function returnFlattenedObject(object?: Record<string | symbol | number, any>) {
-  const flattenedObj = Object.create(null);
 
-  const stack = Object.entries(object ?? {});
-  const keyStack = [] as string[];
-
-  while (stack.length > 0) {
-    const tuple = stack.shift();
-    const key = tuple?.[0];
-    const value = tuple?.[1];
-
-    if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-      keyStack.push(key ?? '');
-      Object.entries(value).forEach(([k, v]) => {
-        stack.unshift([k, v]);
-        if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
-          keyStack.push(k);
-        }
-      });
-    } else {
-      Object.defineProperty(flattenedObj, `${keyStack.join('.')}-${key}`, {
-        value,
-        enumerable: true,
-        writable: true,
-        configurable: true,
-      });
-
-      keyStack.pop();
-    }
-  }
-
-  return flattenedObj;
-}
 
 type ReturnFinancialMetricsCardsInput = {
   selectedDateFinancialMetrics: SelectedDateFinancialMetrics;
@@ -1072,6 +1054,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1089,6 +1072,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1108,6 +1092,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1125,6 +1110,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1142,6 +1128,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1161,6 +1148,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1178,6 +1166,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1197,6 +1186,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1214,6 +1204,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1231,6 +1222,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1339,6 +1331,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1356,6 +1349,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1375,6 +1369,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1392,6 +1387,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1409,6 +1405,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1426,6 +1423,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Average Order Value',
+    isDisplayValueAsCurrency: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1443,6 +1441,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Conversion Rate',
+    isDisplayValueAsPercentage: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1460,6 +1459,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Net Profit Margin',
+    isDisplayValueAsPercentage: true,
     kind: 'day',
     padding,
     prevDay,
@@ -1481,6 +1481,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1498,6 +1499,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1517,6 +1519,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1534,6 +1537,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1551,6 +1555,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1570,6 +1575,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1587,6 +1593,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1606,6 +1613,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1623,6 +1631,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1640,6 +1649,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1748,6 +1758,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1765,6 +1776,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1784,6 +1796,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1801,6 +1814,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1818,6 +1832,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1835,6 +1850,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Average Order Value',
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1852,6 +1868,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Conversion Rate',
+    isDisplayValueAsPercentage: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1869,6 +1886,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Net Profit Margin',
+    isDisplayValueAsPercentage: true,
     kind: 'month',
     padding,
     prevDay,
@@ -1890,6 +1908,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -1907,6 +1926,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -1926,6 +1946,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -1943,6 +1964,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -1960,6 +1982,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -1979,6 +2002,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -1996,6 +2020,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2015,6 +2040,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2032,6 +2058,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2049,6 +2076,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2157,6 +2185,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Total',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2174,6 +2203,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Repair',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2193,6 +2223,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Total',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2210,6 +2241,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales Online',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2227,6 +2259,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Sales In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2244,6 +2277,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Average Order Value',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2261,6 +2295,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Conversion Rate',
+    isDisplayValueAsPercentage: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2278,6 +2313,7 @@ function returnFinancialMetricsCards({
     currentYear,
     greenColorShade,
     heading: 'Net Profit Margin',
+    isDisplayValueAsPercentage: true,
     kind: 'year',
     padding,
     prevDay,
@@ -2402,6 +2438,5 @@ export {
   returnCustomerMetricsCards,
   returnDashboardCardElement,
   returnFinancialMetricsCards,
-  returnFlattenedObject,
 };
 export type { CustomerMetricsCards, DashboardCardInfo, FinancialMetricsCards };

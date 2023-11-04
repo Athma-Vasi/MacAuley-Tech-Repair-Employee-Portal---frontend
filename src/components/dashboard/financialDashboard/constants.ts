@@ -25,9 +25,17 @@ const FINANCIAL_PIE_Y_AXIS_DATA: SelectInputData = [
 ];
 
 const FINANCIAL_OTHER_METRICS_Y_AXIS_DATA: SelectInputData = [
+  { label: 'Net Profit Margin', value: 'netProfitMargin' },
   { label: 'Average Order Value', value: 'averageOrderValue' },
   { label: 'Conversion Rate', value: 'conversionRate' },
-  { label: 'Net Profit Margin', value: 'netProfitMargin' },
+];
+
+const FINANCIALS_VIEW_SEGMENTED_CONTROL_DATA = [
+  'Profit',
+  'Revenue',
+  'Expenses',
+  'Transactions',
+  'Other Metrics',
 ];
 
 export {
@@ -35,4 +43,5 @@ export {
   FINANCIAL_LINE_BAR_Y_AXIS_DATA,
   FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
   FINANCIAL_PIE_Y_AXIS_DATA,
+  FINANCIALS_VIEW_SEGMENTED_CONTROL_DATA,
 };

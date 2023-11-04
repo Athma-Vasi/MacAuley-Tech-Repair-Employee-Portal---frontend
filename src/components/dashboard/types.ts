@@ -2,29 +2,38 @@ import { StoreLocation } from '../../types';
 
 type DashboardCalendarView = 'Daily' | 'Monthly' | 'Yearly';
 type DashboardMetricsView = 'Financials' | 'Customers' | 'Products' | 'Repairs';
-type DashboardFinancialsView =
+type DashboardFinancialMetric =
   | 'Expenses'
   | 'Profit'
   | 'Revenue'
   | 'Transactions'
   | 'Other Metrics';
+type DashboardCustomerMetrics = 'Overview' | 'New' | 'Returning';
+type DashboardProductMetrics = ProductCategory;
+type DashboardRepairMetrics = RepairCategory;
 
 type DashboardState = {
   businessMetrics: BusinessMetric[];
-  selectedCalendarView: DashboardCalendarView;
-  selectedFinancialsView: DashboardFinancialsView;
-  selectedMetricsView: DashboardMetricsView;
-  selectedStoreLocationView: BusinessMetricStoreLocation;
+  calendarView: DashboardCalendarView;
+  customerMetric: DashboardCustomerMetrics;
+  financialMetric: DashboardFinancialMetric;
+  metricsView: DashboardMetricsView;
+  productMetric: DashboardProductMetrics;
+  repairMetric: DashboardRepairMetrics;
   selectedYYYYMMDD: string;
+  storeLocationView: BusinessMetricStoreLocation;
 };
 
 type DashboardAction = {
   setBusinessMetrics: 'setBusinessMetrics';
-  setSelectedCalendarView: 'setSelectedCalendarView';
-  setSelectedFinancialsView: 'setSelectedFinancialsView';
-  setSelectedMetricsView: 'setSelectedMetricsView';
-  setSelectedStoreLocationView: 'setSelectedStoreLocationView';
+  setCalendarView: 'setCalendarView';
+  setCustomerMetric: 'setCustomerMetric';
+  setFinancialMetric: 'setFinancialMetric';
+  setMetricsView: 'setMetricsView';
+  setProductMetric: 'setProductMetric';
+  setRepairMetric: 'setRepairMetric';
   setSelectedYYYYMMDD: 'setSelectedYYYYMMDD';
+  setStoreLocationView: 'setStoreLocationView';
 };
 
 type DashboardDispatch =
@@ -33,19 +42,31 @@ type DashboardDispatch =
       payload: BusinessMetric[];
     }
   | {
-      type: DashboardAction['setSelectedCalendarView'];
+      type: DashboardAction['setCalendarView'];
       payload: DashboardCalendarView;
     }
   | {
-      type: DashboardAction['setSelectedFinancialsView'];
-      payload: DashboardFinancialsView;
+      type: DashboardAction['setCustomerMetric'];
+      payload: DashboardCustomerMetrics;
     }
   | {
-      type: DashboardAction['setSelectedMetricsView'];
+      type: DashboardAction['setFinancialMetric'];
+      payload: DashboardFinancialMetric;
+    }
+  | {
+      type: DashboardAction['setMetricsView'];
       payload: DashboardMetricsView;
     }
   | {
-      type: DashboardAction['setSelectedStoreLocationView'];
+      type: DashboardAction['setProductMetric'];
+      payload: DashboardProductMetrics;
+    }
+  | {
+      type: DashboardAction['setRepairMetric'];
+      payload: DashboardRepairMetrics;
+    }
+  | {
+      type: DashboardAction['setStoreLocationView'];
       payload: BusinessMetricStoreLocation;
     }
   | {
@@ -295,9 +316,12 @@ export type {
   DailyFinancialMetric,
   DashboardAction,
   DashboardCalendarView,
+  DashboardCustomerMetrics,
   DashboardDispatch,
-  DashboardFinancialsView,
+  DashboardFinancialMetric,
   DashboardMetricsView,
+  DashboardProductMetrics,
+  DashboardRepairMetrics,
   DashboardState,
   DaysInMonthsInYears,
   LocationYearSpread,

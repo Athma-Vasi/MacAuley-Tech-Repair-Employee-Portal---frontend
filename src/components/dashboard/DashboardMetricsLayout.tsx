@@ -28,10 +28,11 @@ type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
   lineChartHeading: string;
   overviewCards: DashboardCardInfo[];
   padding: MantineNumberSize;
-  pieChart: React.JSX.Element;
+  pieChart?: React.JSX.Element;
   pieChartYAxisSelectInput?: React.JSX.Element;
-  pieChartHeading: string;
+  pieChartHeading?: string;
   sectionHeading: string;
+  semanticLabel?: string;
   statisticsMap: Map<MetricObjKey, StatisticsObject>;
   width: number;
 };
@@ -42,7 +43,7 @@ function DashboardMetricsLayout({
   barChartHeading,
   borderColor,
   expandChartButton,
-  isMoney,
+  isMoney = false,
   lineChart,
   lineChartYAxisSelectInput,
   lineChartHeading,
@@ -52,6 +53,7 @@ function DashboardMetricsLayout({
   pieChartYAxisSelectInput,
   pieChartHeading,
   sectionHeading,
+  semanticLabel = 'customers',
   statisticsMap,
   width,
   calendarChart,
@@ -185,7 +187,7 @@ function DashboardMetricsLayout({
     </Flex>
   );
 
-  const displayPieChartSection = (
+  const displayPieChartSection = pieChart ? (
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Pie Chart</Title>
       {pieChartHeadingSection}
@@ -193,7 +195,7 @@ function DashboardMetricsLayout({
         {pieChart}
       </Group>
     </Stack>
-  );
+  ) : null;
 
   // statistics section
   const createdStatisticsAccordions = Array.from(statisticsMap).map(
@@ -215,7 +217,7 @@ function DashboardMetricsLayout({
         >
           <Accordion.Item value={key}>
             <Accordion.Control>
-              <Text weight={500} size="md">{`${key} customers`}</Text>
+              <Text weight={500} size="md">{`${key} ${semanticLabel}`}</Text>
             </Accordion.Control>
             <Accordion.Panel>
               <Flex direction="column" rowGap="xs">

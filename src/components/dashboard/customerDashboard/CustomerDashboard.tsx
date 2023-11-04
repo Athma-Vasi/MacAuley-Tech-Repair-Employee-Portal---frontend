@@ -22,18 +22,18 @@ import {
 
 function CustomerDashboard({
   businessMetrics,
-  selectedCalendarView,
+  calendarView,
   selectedDate,
   selectedMonth,
-  selectedStoreLocationView,
+  storeLocationView,
   selectedYear,
   selectedYYYYMMDD,
 }: {
   businessMetrics: BusinessMetric[];
-  selectedCalendarView: DashboardCalendarView;
+  calendarView: DashboardCalendarView;
   selectedDate: string;
   selectedMonth: Month;
-  selectedStoreLocationView: BusinessMetricStoreLocation;
+  storeLocationView: BusinessMetricStoreLocation;
   selectedYear: Year;
   selectedYYYYMMDD: string;
 }) {
@@ -54,7 +54,7 @@ function CustomerDashboard({
     day: selectedDate,
     month: selectedMonth,
     months: MONTHS,
-    storeLocation: selectedStoreLocationView,
+    storeLocation: storeLocationView,
     year: selectedYear,
   });
 
@@ -62,7 +62,7 @@ function CustomerDashboard({
     businessMetrics,
     months: MONTHS,
     selectedDateCustomerMetrics,
-    storeLocation: selectedStoreLocationView,
+    storeLocation: storeLocationView,
   });
 
   const customerCardsInfo = returnCustomerMetricsCards({
@@ -74,7 +74,7 @@ function CustomerDashboard({
   });
 
   const displayCustomerCalendarInfo =
-    selectedCalendarView === 'Daily' ? (
+    calendarView === 'Daily' ? (
       <CustomerDashboardDaily
         borderColor={borderColor}
         businessMetrics={businessMetrics}
@@ -83,11 +83,11 @@ function CustomerDashboard({
         day={selectedDate}
         month={selectedYYYYMMDD.split('-')[1]}
         padding={padding}
-        storeLocation={selectedStoreLocationView}
+        storeLocation={storeLocationView}
         width={width}
         year={selectedYear}
       />
-    ) : selectedCalendarView === 'Monthly' ? (
+    ) : calendarView === 'Monthly' ? (
       <CustomerDashboardMonthly
         borderColor={borderColor}
         businessMetrics={businessMetrics}
@@ -96,7 +96,7 @@ function CustomerDashboard({
         monthlyCards={customerCardsInfo.monthlyCards}
         monthlyCharts={customerChartsData.monthlyCharts}
         padding={padding}
-        storeLocation={selectedStoreLocationView}
+        storeLocation={storeLocationView}
         width={width}
         year={selectedYear}
       />
@@ -107,7 +107,7 @@ function CustomerDashboard({
         day={selectedDate}
         month={selectedYYYYMMDD.split('-')[1]}
         padding={padding}
-        storeLocation={selectedStoreLocationView}
+        storeLocation={storeLocationView}
         width={width}
         year={selectedYear}
         yearlyCards={customerCardsInfo.yearlyCards}

@@ -14,18 +14,18 @@ import { MONTHS } from '../constants';
 
 function RepairDashboard({
   businessMetrics,
-  selectedCalendarView,
+  calendarView,
   selectedDate,
   selectedMonth,
-  selectedStoreLocationView,
+  storeLocationView,
   selectedYear,
   selectedYYYYMMDD,
 }: {
   businessMetrics: BusinessMetric[];
-  selectedCalendarView: DashboardCalendarView;
+  calendarView: DashboardCalendarView;
   selectedDate: string;
   selectedMonth: Month;
-  selectedStoreLocationView: BusinessMetricStoreLocation;
+  storeLocationView: BusinessMetricStoreLocation;
   selectedYear: Year;
   selectedYYYYMMDD: string;
 }) {

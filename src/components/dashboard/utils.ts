@@ -1,3 +1,14 @@
+import {
+  interquartileRange,
+  max,
+  mean,
+  median,
+  min,
+  mode,
+  standardDeviation,
+  variance,
+} from 'simple-statistics';
+
 import { StoreLocation } from '../../types';
 import { BarChartData } from '../charts/responsiveBarChart/types';
 import {
@@ -24,16 +35,6 @@ import {
   Year,
   YearlyFinancialMetric,
 } from './types';
-import {
-  min,
-  max,
-  mean,
-  mode,
-  median,
-  variance,
-  standardDeviation,
-  interquartileRange,
-} from 'simple-statistics';
 
 /**
  * type BusinessMetric = {

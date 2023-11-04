@@ -8,17 +8,17 @@ import {
   Year,
 } from '../../types';
 import { FinancialMetricsCharts } from '../utils';
-import FinancialDashboardDailyOtherMetrics from './financialDashboardDailyOtherMetrics/FinancialDashboardDailyOtherMetrics';
-import FinancialDashboardDailyProfit from './financialDashboardDailyProfit/FinancialDashboardDailyProfit';
-import FinancialDashboardDailyRevenue from './financialDashboardDailyRevenue/FinancialDashboardDailyRevenue';
-import FinancialDashboardDailyTransactions from './financialDashboardDailyTransactions/FinancialDashboardDailyTransactions';
-import FinancialDashboardDailyExpenses from './financialDashboardDailyExpenses/FinancialDashboardDailyExpenses';
+import FinancialDashboardMonthlyExpenses from './financialDashboardMonthlyExpenses/FinancialDashboardMonthlyExpenses';
+import FinancialDashboardMonthlyOtherMetrics from './financialDashboardMonthlyOtherMetrics/FinancialDashboardMonthlyOtherMetrics';
+import FinancialDashboardMonthlyProfit from './financialDashboardMonthlyProfit/FinancialDashboardMonthlyProfit';
+import FinancialDashboardMonthlyRevenue from './financialDashboardMonthlyRevenue/FinancialDashboardMonthlyRevenue';
+import FinancialDashboardMonthlyTransactions from './financialDashboardMonthlyTransactions/FinancialDashboardMonthlyTransactions';
 
-function FinancialDashboardDaily({
+function FinancialDashboardMonthly({
   borderColor,
   businessMetrics,
-  dailyCards,
-  dailyCharts,
+  monthlyCards,
+  monthlyCharts,
   day,
   financialMetric,
   month,
@@ -29,8 +29,8 @@ function FinancialDashboardDaily({
 }: {
   borderColor: string;
   businessMetrics: BusinessMetric[];
-  dailyCards: FinancialMetricsCards['dailyCards'];
-  dailyCharts: FinancialMetricsCharts['dailyCharts'];
+  monthlyCards: FinancialMetricsCards['monthlyCards'];
+  monthlyCharts: FinancialMetricsCharts['monthlyCharts'];
   day: string;
   financialMetric: DashboardFinancialMetric;
   month: string;
@@ -61,12 +61,12 @@ function FinancialDashboardDaily({
 
   const displayFinancialMetricCategory =
     financialMetric === 'Profit' ? (
-      <FinancialDashboardDailyProfit
+      <FinancialDashboardMonthlyProfit
         borderColor={borderColor}
         chartHeight={chartHeight}
         chartWidth={chartWidth}
-        dailyCardsProfit={dailyCards.profit}
-        dailyChartsProfit={dailyCharts.profit}
+        monthlyCardsProfit={monthlyCards.profit}
+        monthlyChartsProfit={monthlyCharts.profit}
         day={day}
         month={month}
         padding={padding}
@@ -74,12 +74,12 @@ function FinancialDashboardDaily({
         year={year}
       />
     ) : financialMetric === 'Revenue' ? (
-      <FinancialDashboardDailyRevenue
+      <FinancialDashboardMonthlyRevenue
         borderColor={borderColor}
         chartHeight={chartHeight}
         chartWidth={chartWidth}
-        dailyCardsRevenue={dailyCards.revenue}
-        dailyChartsRevenue={dailyCharts.revenue}
+        monthlyCardsRevenue={monthlyCards.revenue}
+        monthlyChartsRevenue={monthlyCharts.revenue}
         day={day}
         month={month}
         padding={padding}
@@ -87,12 +87,12 @@ function FinancialDashboardDaily({
         year={year}
       />
     ) : financialMetric === 'Expenses' ? (
-      <FinancialDashboardDailyExpenses
+      <FinancialDashboardMonthlyExpenses
         borderColor={borderColor}
         chartHeight={chartHeight}
         chartWidth={chartWidth}
-        dailyCardsExpenses={dailyCards.expenses}
-        dailyChartsExpenses={dailyCharts.expenses}
+        monthlyCardsExpenses={monthlyCards.expenses}
+        monthlyChartsExpenses={monthlyCharts.expenses}
         day={day}
         month={month}
         padding={padding}
@@ -100,12 +100,12 @@ function FinancialDashboardDaily({
         year={year}
       />
     ) : financialMetric === 'Transactions' ? (
-      <FinancialDashboardDailyTransactions
+      <FinancialDashboardMonthlyTransactions
         borderColor={borderColor}
         chartHeight={chartHeight}
         chartWidth={chartWidth}
-        dailyCardsTransactions={dailyCards.transactions}
-        dailyChartsTransactions={dailyCharts.transactions}
+        monthlyCardsTransactions={monthlyCards.transactions}
+        monthlyChartsTransactions={monthlyCharts.transactions}
         day={day}
         month={month}
         padding={padding}
@@ -113,12 +113,12 @@ function FinancialDashboardDaily({
         year={year}
       />
     ) : (
-      <FinancialDashboardDailyOtherMetrics
+      <FinancialDashboardMonthlyOtherMetrics
         borderColor={borderColor}
         chartHeight={chartHeight}
         chartWidth={chartWidth}
-        dailyCardsOtherMetrics={dailyCards.otherMetrics}
-        dailyChartsOtherMetrics={dailyCharts.otherMetrics}
+        monthlyCardsOtherMetrics={monthlyCards.otherMetrics}
+        monthlyChartsOtherMetrics={monthlyCharts.otherMetrics}
         day={day}
         month={month}
         padding={padding}
@@ -127,11 +127,11 @@ function FinancialDashboardDaily({
       />
     );
 
-  const displayFinancialDashboardDaily = (
+  const displayFinancialDashboardMonthly = (
     <Stack w="100%">{displayFinancialMetricCategory}</Stack>
   );
 
-  return displayFinancialDashboardDaily;
+  return displayFinancialDashboardMonthly;
 }
 
-export default FinancialDashboardDaily;
+export default FinancialDashboardMonthly;

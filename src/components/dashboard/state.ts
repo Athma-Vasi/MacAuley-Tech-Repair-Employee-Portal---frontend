@@ -11,10 +11,13 @@ const initialSelectedYear = new Date().getFullYear().toString() as Year;
 
 const initialDashboardState: DashboardState = {
   businessMetrics: [],
-  selectedCalendarView: 'Daily',
-  selectedFinancialsView: 'Profit',
-  selectedMetricsView: 'Financials',
-  selectedStoreLocationView: 'All Locations',
+  calendarView: 'Daily',
+  customerMetric: 'Overview',
+  financialMetric: 'Profit',
+  metricsView: 'Financials',
+  productMetric: 'Tablets',
+  repairMetric: 'Computer Components',
+  storeLocationView: 'All Locations',
   selectedYYYYMMDD: `${initialSelectedYear}-${initialSelectedMonth}-${initialSelectedDate}`,
   // selectedYear: '2019',
   // selectedYYYYMMDD: `${2019}-${
@@ -24,10 +27,13 @@ const initialDashboardState: DashboardState = {
 
 const dashboardAction: DashboardAction = {
   setBusinessMetrics: 'setBusinessMetrics',
-  setSelectedCalendarView: 'setSelectedCalendarView',
-  setSelectedFinancialsView: 'setSelectedFinancialsView',
-  setSelectedMetricsView: 'setSelectedMetricsView',
-  setSelectedStoreLocationView: 'setSelectedStoreLocationView',
+  setCalendarView: 'setCalendarView',
+  setCustomerMetric: 'setCustomerMetric',
+  setFinancialMetric: 'setFinancialMetric',
+  setMetricsView: 'setMetricsView',
+  setProductMetric: 'setProductMetric',
+  setRepairMetric: 'setRepairMetric',
+  setStoreLocationView: 'setStoreLocationView',
   setSelectedYYYYMMDD: 'setSelectedYYYYMMDD',
 };
 
@@ -42,28 +48,46 @@ function dashboardReducer(
         businessMetrics: action.payload,
       };
 
-    case dashboardAction.setSelectedCalendarView:
+    case dashboardAction.setCalendarView:
       return {
         ...state,
-        selectedCalendarView: action.payload,
+        calendarView: action.payload,
       };
 
-    case dashboardAction.setSelectedFinancialsView:
+    case dashboardAction.setCustomerMetric:
       return {
         ...state,
-        selectedFinancialsView: action.payload,
+        customerMetric: action.payload,
       };
 
-    case dashboardAction.setSelectedMetricsView:
+    case dashboardAction.setFinancialMetric:
       return {
         ...state,
-        selectedMetricsView: action.payload,
+        financialMetric: action.payload,
       };
 
-    case dashboardAction.setSelectedStoreLocationView:
+    case dashboardAction.setMetricsView:
       return {
         ...state,
-        selectedStoreLocationView: action.payload,
+        metricsView: action.payload,
+      };
+
+    case dashboardAction.setProductMetric:
+      return {
+        ...state,
+        productMetric: action.payload,
+      };
+
+    case dashboardAction.setRepairMetric:
+      return {
+        ...state,
+        repairMetric: action.payload,
+      };
+
+    case dashboardAction.setStoreLocationView:
+      return {
+        ...state,
+        storeLocationView: action.payload,
       };
 
     case dashboardAction.setSelectedYYYYMMDD:
