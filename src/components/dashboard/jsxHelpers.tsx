@@ -134,7 +134,7 @@ function returnDashboardCardInfo({
       ? 'N/A'
       : `Since ${
           kind === 'day' ? prevDay : kind === 'month' ? prevMonth : prevYear
-        }-${
+        } ${
           kind === 'day' ? currentMonth : kind === 'month' ? currentYear : ''
         }`;
 
@@ -989,8 +989,6 @@ function returnCustomerMetricsCards({
     },
   };
 }
-
-
 
 type ReturnFinancialMetricsCardsInput = {
   selectedDateFinancialMetrics: SelectedDateFinancialMetrics;

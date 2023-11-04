@@ -11,15 +11,11 @@ import {
   ResponsiveCalendarChart,
   ResponsiveLineChart,
 } from '../../../../charts';
-import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { FinancialMetricsCards } from '../../../jsxHelpers';
 import { Year } from '../../../types';
 import { returnStatistics } from '../../../utils';
-import {
-  FINANCIAL_CALENDAR_Y_AXIS_DATA,
-  FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
-} from '../../constants';
+import { FINANCIAL_OTHER_METRICS_Y_AXIS_DATA } from '../../constants';
 import {
   FinancialMetricsCharts,
   FinancialOtherMetricsObjKey,

@@ -13,6 +13,7 @@ import {
 } from '../types';
 import FinancialDashboardDaily from './financialDashboardDaily/FinancialDashboardDaily';
 import FinancialDashboardMonthly from './financialDashboardMonthly/FinancialDashboardMonthly';
+import FinancialDashboardYearly from './financialDashboardYearly/FinancialDashboardYearly';
 import {
   returnFinancialMetricsCharts,
   returnSelectedDateFinancialMetrics,
@@ -111,7 +112,21 @@ function FinancialDashboard({
         width={width}
         year={selectedYear}
       />
-    ) : null;
+    ) : (
+      <FinancialDashboardYearly
+        borderColor={borderColor}
+        businessMetrics={businessMetrics}
+        day={selectedDate}
+        financialMetric={financialMetric}
+        month={selectedYYYYMMDD.split('-')[1]}
+        padding={padding}
+        storeLocation={storeLocationView}
+        width={width}
+        year={selectedYear}
+        yearlyCards={yearlyCards}
+        yearlyCharts={yearlyCharts}
+      />
+    );
 
   return displayFinancialCalendarInfo;
 }

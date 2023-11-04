@@ -6,7 +6,6 @@ import {
   min,
   mode,
   standardDeviation,
-  variance,
 } from 'simple-statistics';
 
 import { StoreLocation } from '../../types';
