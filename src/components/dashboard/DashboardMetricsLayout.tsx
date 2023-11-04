@@ -10,7 +10,7 @@ import {
   Title,
 } from '@mantine/core';
 
-import { DashboardCardInfo, returnDashboardCard } from './jsxHelpers';
+import { DashboardCardInfo, returnDashboardCardElement } from './jsxHelpers';
 import { StatisticsObject } from './utils';
 
 type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
@@ -22,6 +22,7 @@ type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
   calendarChartYAxisSelectInput?: React.JSX.Element;
   calendarChartHeading?: string;
   expandChartButton: React.JSX.Element;
+  isMoney?: boolean;
   lineChart: React.JSX.Element;
   lineChartYAxisSelectInput: React.JSX.Element;
   lineChartHeading: string;
@@ -41,6 +42,7 @@ function DashboardMetricsLayout({
   barChartHeading,
   borderColor,
   expandChartButton,
+  isMoney,
   lineChart,
   lineChartYAxisSelectInput,
   lineChartHeading,
@@ -89,7 +91,7 @@ function DashboardMetricsLayout({
       w={cardWidth}
       style={{ outline: '1px solid brown' }}
     >
-      {returnDashboardCard(overviewCard)}
+      {returnDashboardCardElement(overviewCard)}
     </Group>
   ));
 
@@ -217,25 +219,33 @@ function DashboardMetricsLayout({
             </Accordion.Control>
             <Accordion.Panel>
               <Flex direction="column" rowGap="xs">
-                <Text>{`Min: ${min.value.toFixed(2)}`}</Text>
+                <Text>{`Min: ${isMoney ? '$' : ''} ${min.value.toFixed(
+                  2
+                )}`}</Text>
                 <Text pl={padding}>{`Occurred: ${min.occurred}`}</Text>
 
-                <Text>{`Max: ${max.value.toFixed(2)}`}</Text>
+                <Text>{`Max: ${isMoney ? '$' : ''} ${max.value.toFixed(
+                  2
+                )}`}</Text>
                 <Text pl={padding}>{`Occurred: ${max.occurred}`}</Text>
 
-                <Text>{`Median: ${median.toFixed(2)}`}</Text>
-
-                <Text>{`Mode: ${mode.toFixed(2)}`}</Text>
-
-                <Text>{`Arithmetic Mean: ${arithmeticMean.toFixed(2)}`}</Text>
-
-                <Text>{`Interquartile Range: ${interquartileRange.toFixed(
+                <Text>{`Median: ${isMoney ? '$' : ''} ${median.toFixed(
                   2
                 )}`}</Text>
 
-                <Text>{`Standard Deviation: ${standardDeviation.toFixed(
-                  2
-                )}`}</Text>
+                <Text>{`Mode: ${isMoney ? '$' : ''} ${mode.toFixed(2)}`}</Text>
+
+                <Text>{`Arithmetic Mean: ${
+                  isMoney ? '$' : ''
+                } ${arithmeticMean.toFixed(2)}`}</Text>
+
+                <Text>{`Interquartile Range: ${
+                  isMoney ? '$' : ''
+                } ${interquartileRange.toFixed(2)}`}</Text>
+
+                <Text>{`Standard Deviation: ${
+                  isMoney ? '$' : ''
+                } ${standardDeviation.toFixed(2)}`}</Text>
               </Flex>
             </Accordion.Panel>
           </Accordion.Item>

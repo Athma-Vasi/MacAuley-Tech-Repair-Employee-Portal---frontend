@@ -1,12 +1,19 @@
 import { StoreLocation } from '../../types';
 
-type SalesCategorySelection = 'Financial Metrics' | 'Products' | 'Repairs';
-type SalesMetricSelection = 'Yearly' | 'Monthly' | 'Daily';
-type SalesDataEntryType = 'Transactions' | 'Revenue';
+type DashboardCalendarView = 'Daily' | 'Monthly' | 'Yearly';
+type DashboardMetricsView = 'Financials' | 'Customers' | 'Products' | 'Repairs';
+type DashboardFinancialsView =
+  | 'Expenses'
+  | 'Profit'
+  | 'Revenue'
+  | 'Transactions'
+  | 'Other Metrics';
 
 type DashboardState = {
   businessMetrics: BusinessMetric[];
   selectedCalendarView: DashboardCalendarView;
+  selectedFinancialsView: DashboardFinancialsView;
+  selectedMetricsView: DashboardMetricsView;
   selectedStoreLocationView: BusinessMetricStoreLocation;
   selectedYYYYMMDD: string;
 };
@@ -14,6 +21,8 @@ type DashboardState = {
 type DashboardAction = {
   setBusinessMetrics: 'setBusinessMetrics';
   setSelectedCalendarView: 'setSelectedCalendarView';
+  setSelectedFinancialsView: 'setSelectedFinancialsView';
+  setSelectedMetricsView: 'setSelectedMetricsView';
   setSelectedStoreLocationView: 'setSelectedStoreLocationView';
   setSelectedYYYYMMDD: 'setSelectedYYYYMMDD';
 };
@@ -26,6 +35,14 @@ type DashboardDispatch =
   | {
       type: DashboardAction['setSelectedCalendarView'];
       payload: DashboardCalendarView;
+    }
+  | {
+      type: DashboardAction['setSelectedFinancialsView'];
+      payload: DashboardFinancialsView;
+    }
+  | {
+      type: DashboardAction['setSelectedMetricsView'];
+      payload: DashboardMetricsView;
     }
   | {
       type: DashboardAction['setSelectedStoreLocationView'];
@@ -268,8 +285,6 @@ type BusinessMetric = {
   repairMetrics: RepairMetric[];
 };
 
-type DashboardCalendarView = 'Daily' | 'Monthly' | 'Yearly';
-
 export type {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -281,6 +296,8 @@ export type {
   DashboardAction,
   DashboardCalendarView,
   DashboardDispatch,
+  DashboardFinancialsView,
+  DashboardMetricsView,
   DashboardState,
   DaysInMonthsInYears,
   LocationYearSpread,
@@ -296,9 +313,6 @@ export type {
   RepairMetric,
   RepairMonthlyMetric,
   RepairYearlyMetric,
-  SalesCategorySelection,
-  SalesDataEntryType,
-  SalesMetricSelection,
   Year,
   YearlyFinancialMetric,
 };

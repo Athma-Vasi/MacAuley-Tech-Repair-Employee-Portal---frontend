@@ -43,6 +43,7 @@ function CustomerDashboard({
 
   const {
     appThemeColors: { borderColor },
+    generalColors: { redColorShade, greenColorShade },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -65,8 +66,10 @@ function CustomerDashboard({
   });
 
   const customerCardsInfo = returnCustomerMetricsCards({
-    selectedDateCustomerMetrics,
+    greenColorShade,
     padding,
+    redColorShade,
+    selectedDateCustomerMetrics,
     width,
   });
 

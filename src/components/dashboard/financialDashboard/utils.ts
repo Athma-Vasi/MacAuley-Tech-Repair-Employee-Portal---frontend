@@ -118,10 +118,10 @@ function returnSelectedDateFinancialMetrics({
   };
 }
 
-type ReturnFinancialChartsDataInput = {
+type ReturnFinancialMetricsChartsInput = {
   businessMetrics: BusinessMetric[];
   months: Month[];
-  selectedFinancialMetrics: SelectedDateFinancialMetrics;
+  selectedDateFinancialMetrics: SelectedDateFinancialMetrics;
   storeLocation: BusinessMetricStoreLocation;
 };
 
@@ -246,12 +246,17 @@ type FinancialOtherMetricsCalendarObj = Record<
   CalendarChartData[]
 >; // y-axis variables: average order value, conversion rate, net profit margin
 
-type FinancialMetricsPieChartsObj = {
-  overview: PieChartData[];
-  sales: PieChartData[];
-};
+type FinancialMetricPieObjKey =
+  | 'overview' // y-axis variables: repair, sales
+  | 'all' // y-axis variables: repair, in-store, online
+  | 'sales'; // y-axis variables: in-store, online
 
-type FinancialChartsObj = {
+type FinancialMetricsPieChartsObj = Record<
+  FinancialMetricPieObjKey,
+  PieChartData[]
+>; // y-axis variables: repair, sales, in-store, online
+
+type FinancialMetricsCharts = {
   dailyCharts: {
     profit: {
       barChartsObj: FinancialMetricBarObj;
@@ -342,22 +347,22 @@ type FinancialChartsObj = {
   };
 };
 
-function returnFinancialChartsData({
+function returnFinancialMetricsCharts({
   businessMetrics,
   months,
-  selectedFinancialMetrics,
+  selectedDateFinancialMetrics,
   storeLocation,
-}: ReturnFinancialChartsDataInput): FinancialChartsObj {
+}: ReturnFinancialMetricsChartsInput): FinancialMetricsCharts {
   // selected year's metrics
   const {
     yearFinancialMetrics: { selectedYearMetrics },
-  } = selectedFinancialMetrics;
+  } = selectedDateFinancialMetrics;
   const selectedYear = selectedYearMetrics?.year ?? '2023';
 
   // selected month's metrics
   const {
     monthFinancialMetrics: { selectedMonthMetrics },
-  } = selectedFinancialMetrics;
+  } = selectedDateFinancialMetrics;
   const selectedMonth = selectedMonthMetrics?.month ?? 'January';
   const monthNumber = (months.indexOf(selectedMonth) + 1)
     .toString()
@@ -366,7 +371,7 @@ function returnFinancialChartsData({
   // selected day's metrics
   const {
     dayFinancialMetrics: { selectedDayMetrics },
-  } = selectedFinancialMetrics;
+  } = selectedDateFinancialMetrics;
 
   // templates
 
@@ -449,31 +454,39 @@ function returnFinancialChartsData({
   const initialDailyProfitLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // daily -> profit -> pie charts
+  const dailyProfitRepairPieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedDayMetrics?.profit.repair ?? 0,
+  };
+  const dailyProfitSalesPieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedDayMetrics?.profit.sales.total ?? 0,
+  };
+  const dailyProfitSalesInStorePieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedDayMetrics?.profit.sales.inStore ?? 0,
+  };
+  const dailyProfitSalesOnlinePieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedDayMetrics?.profit.sales.online ?? 0,
+  };
+
   const dailyProfitPieChartsObj = {
-    overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedDayMetrics?.profit.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedDayMetrics?.profit.sales.total ?? 0,
-      },
+    overview: [dailyProfitRepairPieChartData, dailyProfitSalesPieChartData],
+    all: [
+      dailyProfitRepairPieChartData,
+      dailyProfitSalesInStorePieChartData,
+      dailyProfitSalesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedDayMetrics?.profit.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedDayMetrics?.profit.sales.online ?? 0,
-      },
+      dailyProfitSalesInStorePieChartData,
+      dailyProfitSalesOnlinePieChartData,
     ],
   };
 
@@ -491,31 +504,39 @@ function returnFinancialChartsData({
   const initialDailyExpensesLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // daily -> expenses -> pie charts
+  const dailyExpensesRepairPieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedDayMetrics?.expenses.repair ?? 0,
+  };
+  const dailyExpensesSalesPieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedDayMetrics?.expenses.sales.total ?? 0,
+  };
+  const dailyExpensesSalesInStorePieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedDayMetrics?.expenses.sales.inStore ?? 0,
+  };
+  const dailyExpensesSalesOnlinePieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedDayMetrics?.expenses.sales.online ?? 0,
+  };
+
   const dailyExpensesPieChartsObj = {
-    overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedDayMetrics?.expenses.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedDayMetrics?.expenses.sales.total ?? 0,
-      },
+    overview: [dailyExpensesRepairPieChartData, dailyExpensesSalesPieChartData],
+    all: [
+      dailyExpensesRepairPieChartData,
+      dailyExpensesSalesInStorePieChartData,
+      dailyExpensesSalesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedDayMetrics?.expenses.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedDayMetrics?.expenses.sales.online ?? 0,
-      },
+      dailyExpensesSalesInStorePieChartData,
+      dailyExpensesSalesOnlinePieChartData,
     ],
   };
 
@@ -533,31 +554,39 @@ function returnFinancialChartsData({
   const initialDailyRevenueLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // daily -> revenue -> pie charts
+  const dailyRevenueRepairPieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedDayMetrics?.revenue.repair ?? 0,
+  };
+  const dailyRevenueSalesPieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedDayMetrics?.revenue.sales.total ?? 0,
+  };
+  const dailyRevenueSalesInStorePieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedDayMetrics?.revenue.sales.inStore ?? 0,
+  };
+  const dailyRevenueSalesOnlinePieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedDayMetrics?.revenue.sales.online ?? 0,
+  };
+
   const dailyRevenuePieChartsObj = {
-    overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedDayMetrics?.revenue.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedDayMetrics?.revenue.sales.total ?? 0,
-      },
+    overview: [dailyRevenueRepairPieChartData, dailyRevenueSalesPieChartData],
+    all: [
+      dailyRevenueRepairPieChartData,
+      dailyRevenueSalesInStorePieChartData,
+      dailyRevenueSalesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedDayMetrics?.revenue.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedDayMetrics?.revenue.sales.online ?? 0,
-      },
+      dailyRevenueSalesInStorePieChartData,
+      dailyRevenueSalesOnlinePieChartData,
     ],
   };
 
@@ -575,31 +604,42 @@ function returnFinancialChartsData({
   const initialDailyTransactionsLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // daily -> transactions -> pie charts
+  const dailyTransactionsRepairPieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedDayMetrics?.transactions.repair ?? 0,
+  };
+  const dailyTransactionsSalesPieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedDayMetrics?.transactions.sales.total ?? 0,
+  };
+  const dailyTransactionsSalesInStorePieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedDayMetrics?.transactions.sales.inStore ?? 0,
+  };
+  const dailyTransactionsSalesOnlinePieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedDayMetrics?.transactions.sales.online ?? 0,
+  };
+
   const dailyTransactionsPieChartsObj = {
     overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedDayMetrics?.transactions.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedDayMetrics?.transactions.sales.total ?? 0,
-      },
+      dailyTransactionsRepairPieChartData,
+      dailyTransactionsSalesPieChartData,
+    ],
+    all: [
+      dailyTransactionsRepairPieChartData,
+      dailyTransactionsSalesInStorePieChartData,
+      dailyTransactionsSalesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedDayMetrics?.transactions.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedDayMetrics?.transactions.sales.online ?? 0,
-      },
+      dailyTransactionsSalesInStorePieChartData,
+      dailyTransactionsSalesOnlinePieChartData,
     ],
   };
 
@@ -1707,32 +1747,37 @@ function returnFinancialChartsData({
   const initialMonthlyProfitLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // monthly -> profit -> pie chart data
+  const monthlyProfitRepairPieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedMonthMetrics?.profit.repair ?? 0,
+  };
+  const monthlyProfitSalesPieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedMonthMetrics?.profit.sales.total ?? 0,
+  };
+  const monthlyProfitInStorePieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedMonthMetrics?.profit.sales.inStore ?? 0,
+  };
+  const monthlyProfitOnlinePieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedMonthMetrics?.profit.sales.online ?? 0,
+  };
+
   const monthlyProfitPieChartsObj = {
-    overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedMonthMetrics?.profit.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedMonthMetrics?.profit.sales.total ?? 0,
-      },
+    overview: [monthlyProfitRepairPieChartData, monthlyProfitSalesPieChartData],
+    all: [
+      monthlyProfitRepairPieChartData,
+      monthlyProfitInStorePieChartData,
+      monthlyProfitOnlinePieChartData,
     ],
-    sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedMonthMetrics?.profit.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedMonthMetrics?.profit.sales.online ?? 0,
-      },
-    ],
+    sales: [monthlyProfitInStorePieChartData, monthlyProfitOnlinePieChartData],
   };
 
   // monthly -> expenses
@@ -1749,31 +1794,41 @@ function returnFinancialChartsData({
   const initialMonthlyExpensesLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // monthly -> expenses -> pie chart data
+  const monthlyExpensesRepairPieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedMonthMetrics?.expenses.repair ?? 0,
+  };
+  const monthlyExpensesSalesPieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedMonthMetrics?.expenses.sales.total ?? 0,
+  };
+  const monthlyExpensesInStorePieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedMonthMetrics?.expenses.sales.inStore ?? 0,
+  };
+  const monthlyExpensesOnlinePieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedMonthMetrics?.expenses.sales.online ?? 0,
+  };
   const monthlyExpensesPieChartsObj = {
     overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedMonthMetrics?.expenses.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedMonthMetrics?.expenses.sales.total ?? 0,
-      },
+      monthlyExpensesRepairPieChartData,
+      monthlyExpensesSalesPieChartData,
+    ],
+    all: [
+      monthlyExpensesRepairPieChartData,
+      monthlyExpensesInStorePieChartData,
+      monthlyExpensesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedMonthMetrics?.expenses.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedMonthMetrics?.expenses.sales.online ?? 0,
-      },
+      monthlyExpensesInStorePieChartData,
+      monthlyExpensesOnlinePieChartData,
     ],
   };
 
@@ -1791,31 +1846,42 @@ function returnFinancialChartsData({
   const initialMonthlyRevenueLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // monthly -> revenue -> pie chart data
+  const monthlyRevenueRepairPieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedMonthMetrics?.revenue.repair ?? 0,
+  };
+  const monthlyRevenueSalesPieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedMonthMetrics?.revenue.sales.total ?? 0,
+  };
+  const monthlyRevenueInStorePieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedMonthMetrics?.revenue.sales.inStore ?? 0,
+  };
+  const monthlyRevenueOnlinePieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedMonthMetrics?.revenue.sales.online ?? 0,
+  };
+
   const monthlyRevenuePieChartsObj = {
     overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedMonthMetrics?.revenue.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedMonthMetrics?.revenue.sales.total ?? 0,
-      },
+      monthlyRevenueRepairPieChartData,
+      monthlyRevenueSalesPieChartData,
+    ],
+    all: [
+      monthlyRevenueRepairPieChartData,
+      monthlyRevenueInStorePieChartData,
+      monthlyRevenueOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedMonthMetrics?.revenue.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedMonthMetrics?.revenue.sales.online ?? 0,
-      },
+      monthlyRevenueInStorePieChartData,
+      monthlyRevenueOnlinePieChartData,
     ],
   };
 
@@ -1833,31 +1899,42 @@ function returnFinancialChartsData({
   const initialMonthlyTransactionsLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // monthly -> transactions -> pie chart data
+  const monthlyTransactionsRepairPieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedMonthMetrics?.transactions.repair ?? 0,
+  };
+  const monthlyTransactionsSalesPieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedMonthMetrics?.transactions.sales.total ?? 0,
+  };
+  const monthlyTransactionsInStorePieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedMonthMetrics?.transactions.sales.inStore ?? 0,
+  };
+  const monthlyTransactionsOnlinePieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedMonthMetrics?.transactions.sales.online ?? 0,
+  };
+
   const monthlyTransactionsPieChartsObj = {
     overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedMonthMetrics?.transactions.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedMonthMetrics?.transactions.sales.total ?? 0,
-      },
+      monthlyTransactionsRepairPieChartData,
+      monthlyTransactionsSalesPieChartData,
+    ],
+    all: [
+      monthlyTransactionsRepairPieChartData,
+      monthlyTransactionsInStorePieChartData,
+      monthlyTransactionsOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedMonthMetrics?.transactions.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedMonthMetrics?.transactions.sales.online ?? 0,
-      },
+      monthlyTransactionsInStorePieChartData,
+      monthlyTransactionsOnlinePieChartData,
     ],
   };
 
@@ -3057,31 +3134,39 @@ function returnFinancialChartsData({
   const initialYearlyProfitLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // yearly -> templates -> profit -> pie chart data
+  const yearlyProfitRepairPieChartData: PieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedYearMetrics?.profit.repair ?? 0,
+  };
+  const yearlyProfitSalesPieChartData: PieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedYearMetrics?.profit.sales.total ?? 0,
+  };
+  const yearlyProfitSalesInStorePieChartData: PieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedYearMetrics?.profit.sales.inStore ?? 0,
+  };
+  const yearlyProfitSalesOnlinePieChartData: PieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedYearMetrics?.profit.sales.online ?? 0,
+  };
+
   const yearlyProfitPieChartsObj: FinancialMetricsPieChartsObj = {
-    overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedYearMetrics?.profit.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedYearMetrics?.profit.sales.total ?? 0,
-      },
+    overview: [yearlyProfitRepairPieChartData, yearlyProfitSalesPieChartData],
+    all: [
+      yearlyProfitRepairPieChartData,
+      yearlyProfitSalesInStorePieChartData,
+      yearlyProfitSalesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedYearMetrics?.profit.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedYearMetrics?.profit.sales.online ?? 0,
-      },
+      yearlyProfitSalesInStorePieChartData,
+      yearlyProfitSalesOnlinePieChartData,
     ],
   };
 
@@ -3095,31 +3180,42 @@ function returnFinancialChartsData({
   const initialYearlyExpensesLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // yearly -> templates -> expenses -> pie chart data
+  const yearlyExpensesRepairPieChartData: PieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedYearMetrics?.expenses.repair ?? 0,
+  };
+  const yearlyExpensesSalesPieChartData: PieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedYearMetrics?.expenses.sales.total ?? 0,
+  };
+  const yearlyExpensesSalesInStorePieChartData: PieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedYearMetrics?.expenses.sales.inStore ?? 0,
+  };
+  const yearlyExpensesSalesOnlinePieChartData: PieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedYearMetrics?.expenses.sales.online ?? 0,
+  };
+
   const yearlyExpensesPieChartsObj: FinancialMetricsPieChartsObj = {
     overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedYearMetrics?.expenses.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedYearMetrics?.expenses.sales.total ?? 0,
-      },
+      yearlyExpensesRepairPieChartData,
+      yearlyExpensesSalesPieChartData,
+    ],
+    all: [
+      yearlyExpensesRepairPieChartData,
+      yearlyExpensesSalesInStorePieChartData,
+      yearlyExpensesSalesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedYearMetrics?.expenses.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedYearMetrics?.expenses.sales.online ?? 0,
-      },
+      yearlyExpensesSalesInStorePieChartData,
+      yearlyExpensesSalesOnlinePieChartData,
     ],
   };
 
@@ -3133,31 +3229,39 @@ function returnFinancialChartsData({
   const initialYearlyRevenueLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // yearly -> templates -> revenue -> pie chart data
+  const yearlyRevenueRepairPieChartData: PieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedYearMetrics?.revenue.repair ?? 0,
+  };
+  const yearlyRevenueSalesPieChartData: PieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedYearMetrics?.revenue.sales.total ?? 0,
+  };
+  const yearlyRevenueSalesInStorePieChartData: PieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedYearMetrics?.revenue.sales.inStore ?? 0,
+  };
+  const yearlyRevenueSalesOnlinePieChartData: PieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedYearMetrics?.revenue.sales.online ?? 0,
+  };
+
   const yearlyRevenuePieChartsObj: FinancialMetricsPieChartsObj = {
-    overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedYearMetrics?.revenue.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedYearMetrics?.revenue.sales.total ?? 0,
-      },
+    overview: [yearlyRevenueRepairPieChartData, yearlyRevenueSalesPieChartData],
+    all: [
+      yearlyRevenueRepairPieChartData,
+      yearlyRevenueSalesInStorePieChartData,
+      yearlyRevenueSalesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedYearMetrics?.revenue.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedYearMetrics?.revenue.sales.online ?? 0,
-      },
+      yearlyRevenueSalesInStorePieChartData,
+      yearlyRevenueSalesOnlinePieChartData,
     ],
   };
 
@@ -3171,31 +3275,42 @@ function returnFinancialChartsData({
   const initialYearlyTransactionsLineChartsObj = structuredClone(
     LINE_CHART_OBJ_TEMPLATE
   );
+
   // yearly -> templates -> transactions -> pie chart data
+  const yearlyTransactionsRepairPieChartData: PieChartData = {
+    id: 'Repair',
+    label: 'Repair',
+    value: selectedYearMetrics?.transactions.repair ?? 0,
+  };
+  const yearlyTransactionsSalesPieChartData: PieChartData = {
+    id: 'Sales',
+    label: 'Sales',
+    value: selectedYearMetrics?.transactions.sales.total ?? 0,
+  };
+  const yearlyTransactionsSalesInStorePieChartData: PieChartData = {
+    id: 'In-Store',
+    label: 'In-Store',
+    value: selectedYearMetrics?.transactions.sales.inStore ?? 0,
+  };
+  const yearlyTransactionsSalesOnlinePieChartData: PieChartData = {
+    id: 'Online',
+    label: 'Online',
+    value: selectedYearMetrics?.transactions.sales.online ?? 0,
+  };
+
   const yearlyTransactionsPieChartsObj: FinancialMetricsPieChartsObj = {
     overview: [
-      {
-        id: 'Repair',
-        label: 'Repair',
-        value: selectedYearMetrics?.transactions.repair ?? 0,
-      },
-      {
-        id: 'Sales',
-        label: 'Sales',
-        value: selectedYearMetrics?.transactions.sales.total ?? 0,
-      },
+      yearlyTransactionsRepairPieChartData,
+      yearlyTransactionsSalesPieChartData,
+    ],
+    all: [
+      yearlyTransactionsRepairPieChartData,
+      yearlyTransactionsSalesInStorePieChartData,
+      yearlyTransactionsSalesOnlinePieChartData,
     ],
     sales: [
-      {
-        id: 'In-Store',
-        label: 'In-Store',
-        value: selectedYearMetrics?.transactions.sales.inStore ?? 0,
-      },
-      {
-        id: 'Online',
-        label: 'Online',
-        value: selectedYearMetrics?.transactions.sales.online ?? 0,
-      },
+      yearlyTransactionsSalesInStorePieChartData,
+      yearlyTransactionsSalesOnlinePieChartData,
     ],
   };
 
@@ -4164,9 +4279,15 @@ function returnFinancialChartsData({
   };
 }
 
-export { returnFinancialChartsData, returnSelectedDateFinancialMetrics };
+export { returnFinancialMetricsCharts, returnSelectedDateFinancialMetrics };
 export type {
+  FinancialMetricBarLineObjKey,
+  FinancialMetricBarObj,
+  FinancialMetricCalendarObjKey,
+  FinancialMetricPieObjKey,
+  FinancialMetricsCharts,
   FinancialMetricsPieChartsObj,
-  ReturnFinancialChartsDataInput,
-  FinancialChartsObj,
+  FinancialOtherMetricsObjKey,
+  ReturnFinancialMetricsChartsInput,
+  SelectedDateFinancialMetrics,
 };

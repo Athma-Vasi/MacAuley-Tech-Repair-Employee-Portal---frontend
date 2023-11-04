@@ -129,7 +129,7 @@ function CustomerDashboardDaily({
   // overview -> charts -> pie
 
   // overview -> charts -> pie -> heading
-  const pieChartHeading = `New and returning customers for ${
+  const pieChartHeading = `New and returning customers for ${day} ${
     MONTHS[parseInt(month) - 1]
   }, ${year}`;
 
@@ -295,7 +295,7 @@ function CustomerDashboardDaily({
   // new -> charts -> pie
 
   // new -> charts -> pie -> heading
-  const newPieChartHeading = `New customers for ${
+  const newPieChartHeading = `New customers for ${day} ${
     MONTHS[parseInt(month) - 1]
   }, ${year}`;
 
@@ -475,7 +475,7 @@ function CustomerDashboardDaily({
   // returning -> charts -> pie
 
   // returning -> charts -> pie -> heading
-  const returningPieChartHeading = `Returning customers for ${
+  const returningPieChartHeading = `Returning customers for ${day} ${
     MONTHS[parseInt(month) - 1]
   }, ${year}`;
 
