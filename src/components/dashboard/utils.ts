@@ -34,6 +34,7 @@ import {
   Year,
   YearlyFinancialMetric,
 } from './types';
+import { returnToFixedFloat } from '../../utils';
 
 /**
  * type BusinessMetric = {
@@ -696,8 +697,8 @@ function returnRepairMetrics({
 
               const repairDailyMetric: RepairDailyMetric = {
                 day: date,
-                transactions: dailyUnitsRepaired,
-                revenue: dailyRevenue,
+                transactions: Math.round(dailyUnitsRepaired),
+                revenue: Math.round(dailyRevenue),
               };
 
               return repairDailyMetric;
@@ -716,8 +717,8 @@ function returnRepairMetrics({
 
             const monthlyRepairMetric: RepairMonthlyMetric = {
               month,
-              revenue: repairMonthlyRevenue,
-              transactions: repairMonthlyUnitsRepaired,
+              revenue: Math.round(repairMonthlyRevenue),
+              transactions: Math.round(repairMonthlyUnitsRepaired),
               dailyMetrics: repairDailyMetrics,
             };
 
@@ -737,9 +738,9 @@ function returnRepairMetrics({
           );
 
         const yearlyRepairMetric: RepairYearlyMetric = {
-          year: year.toString() as Year,
-          revenue: repairYearlyRevenue,
-          transactions: repairYearlyUnitsRepaired,
+          year: year,
+          revenue: Math.round(repairYearlyRevenue),
+          transactions: Math.round(repairYearlyUnitsRepaired),
           monthlyMetrics: repairMonthlyMetrics,
         };
 
@@ -794,13 +795,16 @@ function returnProductMetrics({
               const productDailyOnlineOrders = Math.round(
                 productDailyUnitsSold * productOnlineFraction
               );
-              const productDailyInStoreOrders =
-                productDailyUnitsSold - productDailyOnlineOrders;
+              const productDailyInStoreOrders = Math.round(
+                productDailyUnitsSold - productDailyOnlineOrders
+              );
 
-              const productDailyOnlineSalesRevenue =
-                productOnlineFraction * productDailySalesRevenue;
-              const productDailyInStoreSalesRevenue =
-                productDailySalesRevenue - productDailyOnlineSalesRevenue;
+              const productDailyOnlineSalesRevenue = Math.round(
+                productOnlineFraction * productDailySalesRevenue
+              );
+              const productDailyInStoreSalesRevenue = Math.round(
+                productDailySalesRevenue - productDailyOnlineSalesRevenue
+              );
 
               const productDailyMetric: ProductDailyMetric = {
                 day: date,
@@ -1410,54 +1414,70 @@ function returnFinancialMetrics({
             });
             // daily -> profit
             // daily -> profit -> total
-            const dailyProfit = revenue.total * dailyNetProfitMargin;
+            const dailyProfit = Math.round(
+              revenue.total * dailyNetProfitMargin
+            );
             // daily -> profit -> repair
             const dailyRepairProfitFraction = returnRandomRepairProfit({
               storeLocation,
               year,
               yearRepairProfitSpread,
             });
-            const dailyRepairProfit = dailyProfit * dailyRepairProfitFraction;
+            const dailyRepairProfit = Math.round(
+              dailyProfit * dailyRepairProfitFraction
+            );
             // daily -> profit -> sales -> total
-            const dailySalesProfit = dailyProfit - dailyRepairProfit;
+            const dailySalesProfit = Math.round(
+              dailyProfit - dailyRepairProfit
+            );
             // daily -> profit -> sales -> online
             const dailyOnlineProfitFraction = returnRandomOnlineProfit({
               storeLocation,
               year,
               yearOnlineProfitSpread,
             });
-            const dailyOnlineProfit =
-              dailySalesProfit * dailyOnlineProfitFraction;
+            const dailyOnlineProfit = Math.round(
+              dailySalesProfit * dailyOnlineProfitFraction
+            );
             // daily -> profit -> sales -> inStore
-            const dailyInStoreProfit = dailySalesProfit - dailyOnlineProfit;
+            const dailyInStoreProfit = Math.round(
+              dailySalesProfit - dailyOnlineProfit
+            );
 
             // daily -> expenses
             // daily -> expenses -> total
-            const dailyExpenses = revenue.total - dailyProfit;
+            const dailyExpenses = Math.round(revenue.total - dailyProfit);
             // daily -> expenses -> repair
             const dailyRepairExpenseFraction = returnRandomRepairExpenses({
               storeLocation,
               year,
               yearRepairExpensesSpread,
             });
-            const dailyRepairExpenses =
-              dailyExpenses * dailyRepairExpenseFraction;
+            const dailyRepairExpenses = Math.round(
+              dailyExpenses * dailyRepairExpenseFraction
+            );
             // daily -> expenses -> sales -> total
-            const dailySalesExpenses = dailyExpenses - dailyRepairExpenses;
+            const dailySalesExpenses = Math.round(
+              dailyExpenses - dailyRepairExpenses
+            );
             // daily -> expenses -> sales -> online
             const dailyOnlineExpenseFraction = returnRandomOnlineExpenses({
               storeLocation,
               year,
               yearOnlineExpensesSpread,
             });
-            const dailyOnlineExpenses =
-              dailySalesExpenses * dailyOnlineExpenseFraction;
+            const dailyOnlineExpenses = Math.round(
+              dailySalesExpenses * dailyOnlineExpenseFraction
+            );
             // daily -> expenses -> sales -> inStore
-            const dailyInStoreExpenses =
-              dailySalesExpenses - dailyOnlineExpenses;
+            const dailyInStoreExpenses = Math.round(
+              dailySalesExpenses - dailyOnlineExpenses
+            );
 
             // daily -> average order value
-            const dailyAverageOrderValue = revenue.total / transactions.total;
+            const dailyAverageOrderValue = returnToFixedFloat(
+              revenue.total / transactions.total
+            );
             // daily -> conversion rate
             const dailyConversionRate = returnRandomConversionRate({
               storeLocation,
@@ -1501,20 +1521,22 @@ function returnFinancialMetrics({
         const dailyAverageOrderValues = aggregatedDailyFinancialMetrics.map(
           (dailyFinancialMetric) => dailyFinancialMetric.averageOrderValue
         );
-        const monthlyAverageOrderValue =
+        let monthlyAverageOrderValue =
           dailyAverageOrderValues.reduce(
             (acc, dailyAverageOrderValue) => acc + dailyAverageOrderValue,
             0
           ) / dailyAverageOrderValues.length;
+        monthlyAverageOrderValue = returnToFixedFloat(monthlyAverageOrderValue);
 
         const dailyConversionRates = aggregatedDailyFinancialMetrics.map(
           (dailyFinancialMetric) => dailyFinancialMetric.conversionRate
         );
-        const monthlyConversionRate =
+        let monthlyConversionRate =
           dailyConversionRates.reduce(
             (acc, dailyConversionRate) => acc + dailyConversionRate,
             0
           ) / dailyConversionRates.length;
+        monthlyConversionRate = returnToFixedFloat(monthlyConversionRate);
 
         const [
           monthlyExpenses,
@@ -1545,7 +1567,9 @@ function returnFinancialMetrics({
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         );
 
-        const monthlyNetProfitMargin = monthlyProfit / monthlyExpenses;
+        const monthlyNetProfitMargin = returnToFixedFloat(
+          monthlyProfit / monthlyExpenses
+        );
 
         const aggregatedMonthlyFinancialMetric: MonthlyFinancialMetric = {
           ...monthlyFinancialMetric,
@@ -1585,20 +1609,22 @@ function returnFinancialMetrics({
     const monthlyAverageOrderValues = aggregatedMonthlyFinancialMetrics.map(
       (monthlyFinancialMetric) => monthlyFinancialMetric.averageOrderValue
     );
-    const yearlyAverageOrderValue =
+    let yearlyAverageOrderValue =
       monthlyAverageOrderValues.reduce(
         (acc, monthlyAverageOrderValue) => acc + monthlyAverageOrderValue,
         0
       ) / monthlyAverageOrderValues.length;
+    yearlyAverageOrderValue = returnToFixedFloat(yearlyAverageOrderValue);
 
     const monthlyConversionRates = aggregatedMonthlyFinancialMetrics.map(
       (monthlyFinancialMetric) => monthlyFinancialMetric.conversionRate
     );
-    const yearlyConversionRate =
+    let yearlyConversionRate =
       monthlyConversionRates.reduce(
         (acc, monthlyConversionRate) => acc + monthlyConversionRate,
         0
       ) / monthlyConversionRates.length;
+    yearlyConversionRate = returnToFixedFloat(yearlyConversionRate);
 
     const [
       yearlyExpenses,
@@ -1635,7 +1661,9 @@ function returnFinancialMetrics({
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     );
 
-    const yearlyNetProfitMargin = yearlyProfit / yearlyExpenses;
+    const yearlyNetProfitMargin = returnToFixedFloat(
+      yearlyProfit / yearlyExpenses
+    );
 
     const newFinancialMetric: YearlyFinancialMetric = {
       ...financialMetric,
@@ -2406,10 +2434,11 @@ function returnAllLocationsAggregatedFinancialMetrics(
             (acc, averageOrderValue) => acc + averageOrderValue,
             0
           ) / averageOrderValues.length;
-        existingFinancialMetric.averageOrderValue =
+        existingFinancialMetric.averageOrderValue = returnToFixedFloat(
           (existingFinancialMetric.averageOrderValue +
             averageAverageOrderValue) /
-          2;
+            2
+        );
 
         // yearly -> conversion rate
         const conversionRates = financialMetrics.map(
@@ -2420,8 +2449,9 @@ function returnAllLocationsAggregatedFinancialMetrics(
             (acc, conversionRate) => acc + conversionRate,
             0
           ) / conversionRates.length;
-        existingFinancialMetric.conversionRate =
-          (existingFinancialMetric.conversionRate + averageConversionRate) / 2;
+        existingFinancialMetric.conversionRate = returnToFixedFloat(
+          (existingFinancialMetric.conversionRate + averageConversionRate) / 2
+        );
 
         // yearly -> net profit margin
         const netProfitMargins = financialMetrics.map(
@@ -2432,9 +2462,9 @@ function returnAllLocationsAggregatedFinancialMetrics(
             (acc, netProfitMargin) => acc + netProfitMargin,
             0
           ) / netProfitMargins.length;
-        existingFinancialMetric.netProfitMargin =
-          (existingFinancialMetric.netProfitMargin + averageNetProfitMargin) /
-          2;
+        existingFinancialMetric.netProfitMargin = returnToFixedFloat(
+          (existingFinancialMetric.netProfitMargin + averageNetProfitMargin) / 2
+        );
 
         // yearly -> expenses
         // yearly -> expenses -> total
@@ -2523,10 +2553,11 @@ function returnAllLocationsAggregatedFinancialMetrics(
               (acc, averageOrderValue) => acc + averageOrderValue,
               0
             ) / averageOrderValues.length;
-          existingMonthlyFinancialMetric.averageOrderValue =
+          existingMonthlyFinancialMetric.averageOrderValue = returnToFixedFloat(
             (existingMonthlyFinancialMetric.averageOrderValue +
               averageMonthlyAverageOrderValue) /
-            2;
+              2
+          );
 
           // monthly -> conversion rate
           const conversionRates = monthlyFinancialMetrics.map(
@@ -2537,10 +2568,11 @@ function returnAllLocationsAggregatedFinancialMetrics(
               (acc, conversionRate) => acc + conversionRate,
               0
             ) / conversionRates.length;
-          existingMonthlyFinancialMetric.conversionRate =
+          existingMonthlyFinancialMetric.conversionRate = returnToFixedFloat(
             (existingMonthlyFinancialMetric.conversionRate +
               averageMonthlyConversionRate) /
-            2;
+              2
+          );
 
           // monthly -> net profit margin
           const averageNetProfitMargins = monthlyFinancialMetrics.map(
@@ -2551,10 +2583,11 @@ function returnAllLocationsAggregatedFinancialMetrics(
               (acc, netProfitMargin) => acc + netProfitMargin,
               0
             ) / averageNetProfitMargins.length;
-          existingMonthlyFinancialMetric.netProfitMargin =
+          existingMonthlyFinancialMetric.netProfitMargin = returnToFixedFloat(
             (existingMonthlyFinancialMetric.netProfitMargin +
               averageMonthlyNetProfitMargin) /
-            2;
+              2
+          );
 
           // monthly -> expenses
           // monthly -> expenses -> total
@@ -2646,9 +2679,10 @@ function returnAllLocationsAggregatedFinancialMetrics(
                 (acc, averageOrderValue) => acc + averageOrderValue,
                 0
               ) / averageOrderValues.length;
-            existingDailyFinancialMetric.averageOrderValue =
+            existingDailyFinancialMetric.averageOrderValue = returnToFixedFloat(
               existingDailyFinancialMetric.averageOrderValue +
-              averageDailyAverageOrderValue / 2;
+                averageDailyAverageOrderValue / 2
+            );
 
             // average the conversion rates
             const conversionRates = dailyFinancialMetrics.map(
@@ -2659,10 +2693,11 @@ function returnAllLocationsAggregatedFinancialMetrics(
                 (acc, conversionRate) => acc + conversionRate,
                 0
               ) / conversionRates.length;
-            existingDailyFinancialMetric.conversionRate =
+            existingDailyFinancialMetric.conversionRate = returnToFixedFloat(
               (existingDailyFinancialMetric.conversionRate +
                 averageDailyConversionRate) /
-              2;
+                2
+            );
 
             // average the net profit margins
             const averageNetProfitMargins = dailyFinancialMetrics.map(
@@ -2673,9 +2708,10 @@ function returnAllLocationsAggregatedFinancialMetrics(
                 (acc, netProfitMargin) => acc + netProfitMargin,
                 0
               ) / averageNetProfitMargins.length;
-            existingDailyFinancialMetric.netProfitMargin =
+            existingDailyFinancialMetric.netProfitMargin = returnToFixedFloat(
               existingDailyFinancialMetric.netProfitMargin +
-              averageDailyNetProfitMargin / 2;
+                averageDailyNetProfitMargin / 2
+            );
 
             // daily -> expenses
             // daily -> expenses -> total

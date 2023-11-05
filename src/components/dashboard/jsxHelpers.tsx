@@ -6,6 +6,7 @@ import { RiCalendarLine } from 'react-icons/ri';
 
 import { SelectedDateCustomerMetrics } from './customerDashboard/utils';
 import { SelectedDateFinancialMetrics } from './financialDashboard/utils';
+import { addCommaSeparator } from '../../utils';
 
 type DashboardCardInfo = {
   date?: string;
@@ -139,13 +140,13 @@ function returnDashboardCardInfo({
         }`;
 
   const displayValue = isDisplayValueAsPercentage
-    ? `${isDisplayValueAsCurrency ? 'CAD' : ''} ${(selectedValue * 100).toFixed(
-        2
+    ? `${isDisplayValueAsCurrency ? 'CAD' : ''} ${addCommaSeparator(
+        (selectedValue * 100).toFixed(2)
       )} %`
     : `${isDisplayValueAsCurrency ? 'CAD' : ''} ${
         selectedValue.toString().includes('.')
-          ? selectedValue.toFixed(2)
-          : selectedValue
+          ? addCommaSeparator(selectedValue.toFixed(0))
+          : addCommaSeparator(selectedValue.toString())
       }`;
 
   return {

@@ -12,6 +12,7 @@ import {
 
 import { DashboardCardInfo, returnDashboardCardElement } from './jsxHelpers';
 import { StatisticsObject } from './utils';
+import { addCommaSeparator } from '../../utils';
 
 type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
   barChart: React.JSX.Element;
@@ -221,33 +222,35 @@ function DashboardMetricsLayout({
             </Accordion.Control>
             <Accordion.Panel>
               <Flex direction="column" rowGap="xs">
-                <Text>{`Min: ${isMoney ? '$' : ''} ${min.value.toFixed(
-                  2
+                <Text>{`Min: ${isMoney ? '$' : ''} ${addCommaSeparator(
+                  min.value.toFixed(2)
                 )}`}</Text>
                 <Text pl={padding}>{`Occurred: ${min.occurred}`}</Text>
 
-                <Text>{`Max: ${isMoney ? '$' : ''} ${max.value.toFixed(
-                  2
+                <Text>{`Max: ${isMoney ? '$' : ''} ${addCommaSeparator(
+                  max.value.toFixed(2)
                 )}`}</Text>
                 <Text pl={padding}>{`Occurred: ${max.occurred}`}</Text>
 
-                <Text>{`Median: ${isMoney ? '$' : ''} ${median.toFixed(
-                  2
+                <Text>{`Median: ${isMoney ? '$' : ''} ${addCommaSeparator(
+                  median.toFixed(2)
                 )}`}</Text>
 
-                <Text>{`Mode: ${isMoney ? '$' : ''} ${mode.toFixed(2)}`}</Text>
+                <Text>{`Mode: ${isMoney ? '$' : ''} ${addCommaSeparator(
+                  mode.toFixed(2)
+                )}`}</Text>
 
                 <Text>{`Arithmetic Mean: ${
                   isMoney ? '$' : ''
-                } ${arithmeticMean.toFixed(2)}`}</Text>
+                } ${addCommaSeparator(arithmeticMean.toFixed(2))}`}</Text>
 
                 <Text>{`Interquartile Range: ${
                   isMoney ? '$' : ''
-                } ${interquartileRange.toFixed(2)}`}</Text>
+                } ${addCommaSeparator(interquartileRange.toFixed(2))}`}</Text>
 
                 <Text>{`Standard Deviation: ${
                   isMoney ? '$' : ''
-                } ${standardDeviation.toFixed(2)}`}</Text>
+                } ${addCommaSeparator(standardDeviation.toFixed(2))}`}</Text>
               </Flex>
             </Accordion.Panel>
           </Accordion.Item>
