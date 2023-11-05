@@ -1600,7 +1600,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> bar chart data -> conversion rate
       const dailyOtherMetricsAllBarChartData: BarChartData = {
         Days: day,
-        'Conversion Rate': conversionRate,
+        'Conversion Rate': Number((conversionRate * 100).toFixed(2)),
       };
       dailyOtherMetricsBarChartsObjAcc.conversionRate?.push(
         dailyOtherMetricsAllBarChartData
@@ -1609,7 +1609,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> bar chart data -> net profit margin
       const dailyOtherMetricsOverviewBarChartData: BarChartData = {
         Days: day,
-        'Net Profit Margin': netProfitMargin,
+        'Net Profit Margin': Number((netProfitMargin * 100).toFixed(2)),
       };
       dailyOtherMetricsBarChartsObjAcc.netProfitMargin?.push(
         dailyOtherMetricsOverviewBarChartData
@@ -1630,7 +1630,7 @@ function returnFinancialMetricsCharts({
       const dailyOtherMetricsConversionRateCalendarChartData: CalendarChartData =
         {
           day: `${selectedYear}-${monthNumber}-${day}`,
-          value: conversionRate,
+          value: Number((conversionRate * 100).toFixed(2)),
         };
       dailyOtherMetricsCalendarChartsObjAcc.conversionRate?.push(
         dailyOtherMetricsConversionRateCalendarChartData
@@ -1640,7 +1640,7 @@ function returnFinancialMetricsCharts({
       const dailyOtherMetricsNetProfitMarginCalendarChartData: CalendarChartData =
         {
           day: `${selectedYear}-${monthNumber}-${day}`,
-          value: netProfitMargin,
+          value: Number((netProfitMargin * 100).toFixed(2)),
         };
       dailyOtherMetricsCalendarChartsObjAcc.netProfitMargin?.push(
         dailyOtherMetricsNetProfitMarginCalendarChartData
@@ -1663,7 +1663,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> line chart data -> conversion rate
       const dailyOtherMetricsConversionRateLineChartData = {
         x: day,
-        y: conversionRate,
+        y: Number((conversionRate * 100).toFixed(2)),
       };
       dailyOtherMetricsLineChartsObjAcc.conversionRate
         ?.find(
@@ -1675,7 +1675,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> line chart data -> net profit margin
       const dailyOtherMetricsNetProfitMarginLineChartData = {
         x: day,
-        y: netProfitMargin,
+        y: Number((netProfitMargin * 100).toFixed(2)),
       };
       dailyOtherMetricsLineChartsObjAcc.netProfitMargin
         ?.find(
@@ -2982,7 +2982,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> bar chart data -> conversion rate
       const monthlyConversionRateBarChartData: BarChartData = {
         Months: month,
-        'Conversion Rate': monthlyConversionRate,
+        'Conversion Rate': Number((monthlyConversionRate * 100).toFixed(2)),
       };
       monthlyOtherMetricsBarChartsObjAcc.conversionRate?.push(
         monthlyConversionRateBarChartData
@@ -2991,7 +2991,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> bar chart data -> net profit margin
       const monthlyNetProfitMarginBarChartData: BarChartData = {
         Months: month,
-        'Net Profit Margin': monthlyNetProfitMargin,
+        'Net Profit Margin': Number((monthlyNetProfitMargin * 100).toFixed(2)),
       };
       monthlyOtherMetricsBarChartsObjAcc.netProfitMargin?.push(
         monthlyNetProfitMarginBarChartData
@@ -3019,7 +3019,7 @@ function returnFinancialMetricsCharts({
         // other metrics -> calendar chart data -> conversion rate
         const monthlyConversionRateCalendarChartData: CalendarChartData = {
           day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: dailyConversionRate,
+          value: Number((dailyConversionRate * 100).toFixed(2)),
         };
         monthlyOtherMetricsCalendarChartsObjAcc.conversionRate?.push(
           monthlyConversionRateCalendarChartData
@@ -3028,7 +3028,7 @@ function returnFinancialMetricsCharts({
         // other metrics -> calendar chart data -> net profit margin
         const monthlyNetProfitMarginCalendarChartData: CalendarChartData = {
           day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: dailyNetProfitMargin,
+          value: Number((dailyNetProfitMargin * 100).toFixed(2)),
         };
         monthlyOtherMetricsCalendarChartsObjAcc.netProfitMargin?.push(
           monthlyNetProfitMarginCalendarChartData
@@ -3052,7 +3052,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> line chart data -> conversion rate
       const monthlyConversionRateLineChartData = {
         x: month,
-        y: monthlyConversionRate,
+        y: Number((monthlyConversionRate * 100).toFixed(2)),
       };
       monthlyOtherMetricsLineChartsObjAcc.conversionRate
         ?.find(
@@ -3064,7 +3064,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> line chart data -> net profit margin
       const monthlyNetProfitMarginLineChartData = {
         x: month,
-        y: monthlyNetProfitMargin,
+        y: Number((monthlyNetProfitMargin * 100).toFixed(2)),
       };
       monthlyOtherMetricsLineChartsObjAcc.netProfitMargin
         ?.find(
@@ -4097,7 +4097,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> bar chart data -> conversion rate
       const yearlyConversionRateBarChartData: BarChartData = {
         Years: year,
-        'Conversion Rate': yearlyConversionRate,
+        'Conversion Rate': Number((yearlyConversionRate * 100).toFixed(2)),
       };
       yearlyOtherMetricsBarChartsObjAcc.conversionRate?.push(
         yearlyConversionRateBarChartData
@@ -4106,7 +4106,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> bar chart data -> net profit margin
       const yearlyNetProfitMarginBarChartData: BarChartData = {
         Years: year,
-        'Net Profit Margin': yearlyNetProfitMargin,
+        'Net Profit Margin': Number((yearlyNetProfitMargin * 100).toFixed(2)),
       };
       yearlyOtherMetricsBarChartsObjAcc.netProfitMargin?.push(
         yearlyNetProfitMarginBarChartData
@@ -4129,7 +4129,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> line chart data -> conversion rate
       const yearlyConversionRateLineChartData = {
         x: year,
-        y: yearlyConversionRate,
+        y: Number((yearlyConversionRate * 100).toFixed(2)),
       };
       yearlyOtherMetricsLineChartsObjAcc.conversionRate
         ?.find(
@@ -4141,7 +4141,7 @@ function returnFinancialMetricsCharts({
       // other metrics -> line chart data -> net profit margin
       const yearlyNetProfitMarginLineChartData = {
         x: year,
-        y: yearlyNetProfitMargin,
+        y: Number((yearlyNetProfitMargin * 100).toFixed(2)),
       };
       yearlyOtherMetricsLineChartsObjAcc.netProfitMargin
         ?.find(

@@ -25,11 +25,11 @@ import {
   CUSTOMER_OVERVIEW_Y_AXIS_DATA,
 } from '../constants';
 import {
+  CustomerMetricsCharts,
   CustomerNewReturningCalendarObjKey,
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
   CustomerOverviewObjKey,
-  CustomerMetricsCharts,
 } from '../utils';
 import {
   customerDashboardDailyAction,

@@ -35,6 +35,7 @@ const FINANCIALS_VIEW_SEGMENTED_CONTROL_DATA = [
   'Revenue',
   'Expenses',
   'Transactions',
+  'Units Sold',
   'Other Metrics',
 ];
 

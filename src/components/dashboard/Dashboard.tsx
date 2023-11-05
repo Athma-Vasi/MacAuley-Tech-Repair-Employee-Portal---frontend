@@ -40,7 +40,7 @@ import {
   DashboardCustomerMetrics,
   DashboardFinancialMetric,
   DashboardMetricsView,
-  DashboardProductMetrics,
+  DashboardProductMetric,
   DashboardRepairMetrics,
 } from './types';
 import {
@@ -49,6 +49,7 @@ import {
 } from './utils';
 import { AccessibleSelectInputCreatorInfo } from '../wrappers';
 import { returnAccessibleSelectInputElements } from '../../jsxCreators';
+import ProductDashboard from './productDashboard/ProductDashboard';
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -100,6 +101,30 @@ function Dashboard() {
       state: dashboardState,
       groupLabel: 'Dashboard State',
     });
+
+    // businessMetrics?.forEach((businessMetric) => {
+    //   businessMetric.productMetrics.forEach((productMetric) => {
+    //     const total = productMetric.yearlyMetrics.reduce(
+    //       (acc, yearlyMetric) => {
+    //         if (yearlyMetric.year === '2013') {
+    //           console.group(businessMetric.storeLocation, productMetric.name);
+    //           console.log(
+    //             'yearlyMetric.revenue.total',
+    //             yearlyMetric.revenue.total
+    //           );
+    //           console.groupEnd();
+
+    //           acc += yearlyMetric.revenue.total;
+    //         }
+
+    //         return acc;
+    //       },
+    //       0
+    //     );
+
+    //     console.log('total', total);
+    //   });
+    // });
   }, [dashboardState]);
 
   if (!businessMetrics.length) {
@@ -213,7 +238,7 @@ function Dashboard() {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         dashboardDispatch({
           type: dashboardAction.setProductMetric,
-          payload: event.currentTarget.value as DashboardProductMetrics,
+          payload: event.currentTarget.value as DashboardProductMetric,
         });
       },
       value: productMetric,
@@ -287,8 +312,8 @@ function Dashboard() {
           {createdCalendarTabs}
         </Stack>
         <Stack w={330}>
-          {displayYYYYMMDDInput}
           {createdMetricCategorySelectInput}
+          {displayYYYYMMDDInput}
         </Stack>
       </Group>
     </Flex>
@@ -323,14 +348,15 @@ function Dashboard() {
         selectedYear={selectedYear}
       />
     ) : metricsView === 'Products' ? (
-      <RepairDashboard
+      <ProductDashboard
         businessMetrics={businessMetrics}
         calendarView={calendarView}
+        productMetric={productMetric}
         selectedDate={selectedDate}
         selectedMonth={selectedMonth}
-        storeLocationView={storeLocationView}
         selectedYYYYMMDD={selectedYYYYMMDD}
         selectedYear={selectedYear}
+        storeLocationView={storeLocationView}
       />
     ) : (
       <RepairDashboard

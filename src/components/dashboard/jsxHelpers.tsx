@@ -1,12 +1,12 @@
 import { Card, Group, MantineNumberSize, Text } from '@mantine/core';
-import { type } from 'os';
 import { ReactNode } from 'react';
 import { MdCalendarMonth, MdDateRange } from 'react-icons/md';
 import { RiCalendarLine } from 'react-icons/ri';
 
+import { addCommaSeparator } from '../../utils';
 import { SelectedDateCustomerMetrics } from './customerDashboard/utils';
 import { SelectedDateFinancialMetrics } from './financialDashboard/utils';
-import { addCommaSeparator } from '../../utils';
+import { SelectedDateProductMetrics } from './productDashboard/utils';
 
 type DashboardCardInfo = {
   date?: string;
@@ -211,12 +211,7 @@ function returnCustomerMetricsCards({
   const prevMonth = prevMonthMetrics?.month ?? 'January';
   const prevDay = prevDayMetrics?.day ?? '01';
 
-  // day
-
-  // day -> overview
-
-  // day -> overview -> total
-  const dayTotalCustomersCardInfo = returnDashboardCardInfo({
+  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: ReturnDashboardCardInfoInput = {
     currentMonth,
     currentYear,
     greenColorShade,
@@ -225,49 +220,46 @@ function returnCustomerMetricsCards({
     padding,
     prevDay,
     prevMonth,
-    prevValue: prevDayMetrics?.customers.total ?? 0,
+    prevValue: 1,
     prevYear,
     redColorShade,
-    selectedValue: selectedDayMetrics?.customers.total ?? 1,
+    selectedValue: 1,
     width,
+  };
+
+  // day
+
+  // day -> overview
+
+  // day -> overview -> total
+  const dayTotalCustomersCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Total',
+    kind: 'day',
+    prevValue: prevDayMetrics?.customers.total ?? 0,
+    selectedValue: selectedDayMetrics?.customers.total ?? 1,
   });
 
   // day -> overview -> new
 
   // day -> overview -> new -> total
   const dayTotalNewCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total New',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.customers.new.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.customers.new.total ?? 1,
-    width,
   });
 
   // day -> overview -> returning
 
   // day -> overview -> returning -> total
   const dayTotalReturningCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total Returning',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.customers.returning.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.customers.returning.total ?? 1,
-    width,
   });
 
   // day -> new
@@ -277,72 +269,40 @@ function returnCustomerMetricsCards({
 
   // day -> new -> repair
   const dayTotalNewRepairCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.customers.new.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.customers.new.repair ?? 1,
-    width,
   });
 
   // day -> new -> sales
 
   // day -> new -> sales -> total
   const dayTotalNewSalesCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.customers.new.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.customers.new.sales.total ?? 1,
-    width,
   });
 
   // day -> new -> sales -> online
   const dayTotalNewSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.customers.new.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.customers.new.sales.online ?? 1,
-    width,
   });
 
   // day -> new -> sales -> in-store
   const dayTotalNewSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.customers.new.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.customers.new.sales.inStore ?? 1,
-    width,
   });
 
   // day -> returning
@@ -352,75 +312,43 @@ function returnCustomerMetricsCards({
 
   // day -> returning -> repair
   const dayTotalReturningRepairCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.customers.returning.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.customers.returning.repair ?? 1,
-    width,
   });
 
   // day -> returning -> sales
 
   // day -> returning -> sales -> total
   const dayTotalReturningSalesCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.customers.returning.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.customers.returning.sales.total ?? 1,
-    width,
   });
 
   // day -> returning -> sales -> online
   const dayTotalReturningSalesOnlineCustomersCardInfo = returnDashboardCardInfo(
     {
-      currentMonth,
-      currentYear,
-      greenColorShade,
+      ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
       heading: 'Sales Online',
       kind: 'day',
-      padding,
-      prevDay,
-      prevMonth,
       prevValue: prevDayMetrics?.customers.returning.sales.online ?? 0,
-      prevYear,
-      redColorShade,
       selectedValue: selectedDayMetrics?.customers.returning.sales.online ?? 1,
-      width,
     }
   );
 
   // day -> returning -> sales -> in-store
   const dayTotalReturningSalesInStoreCustomersCardInfo =
     returnDashboardCardInfo({
-      currentMonth,
-      currentYear,
-      greenColorShade,
+      ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
       heading: 'Sales In-Store',
       kind: 'day',
-      padding,
-      prevDay,
-      prevMonth,
       prevValue: prevDayMetrics?.customers.returning.sales.inStore ?? 0,
-      prevYear,
-      redColorShade,
       selectedValue: selectedDayMetrics?.customers.returning.sales.inStore ?? 1,
-      width,
     });
 
   // month
@@ -429,57 +357,33 @@ function returnCustomerMetricsCards({
 
   // month -> overview -> total
   const monthTotalCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.total ?? 1,
-    width,
   });
 
   // month -> overview -> new
 
   // month -> overview -> new -> total
   const monthTotalNewCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total New',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.new.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.new.total ?? 1,
-    width,
   });
 
   // month -> overview -> returning
 
   // month -> overview -> returning -> total
   const monthTotalReturningCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total Returning',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.returning.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.returning.total ?? 1,
-    width,
   });
 
   // month -> new
@@ -489,72 +393,40 @@ function returnCustomerMetricsCards({
 
   // month -> new -> repair
   const monthTotalNewRepairCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.new.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.new.repair ?? 1,
-    width,
   });
 
   // month -> new -> sales
 
   // month -> new -> sales -> total
   const monthTotalNewSalesCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.new.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.new.sales.total ?? 1,
-    width,
   });
 
   // month -> new -> sales -> online
   const monthTotalNewSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.new.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.new.sales.online ?? 1,
-    width,
   });
 
   // month -> new -> sales -> in-store
   const monthTotalNewSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.new.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.new.sales.inStore ?? 1,
-    width,
   });
 
   // month -> returning
@@ -564,111 +436,63 @@ function returnCustomerMetricsCards({
 
   // month -> returning -> repair
   const monthTotalReturningRepairCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.returning.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.returning.repair ?? 1,
-    width,
   });
 
   // month -> returning -> sales
 
   // month -> returning -> sales -> total
   const monthTotalReturningSalesCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.returning.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.returning.sales.total ?? 1,
-    width,
   });
 
   // month -> returning -> sales -> online
   const monthTotalReturningSalesOnlineCustomersCardInfo =
     returnDashboardCardInfo({
-      currentMonth,
-      currentYear,
-      greenColorShade,
+      ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
       heading: 'Sales Online',
       kind: 'month',
-      padding,
-      prevDay,
-      prevMonth,
       prevValue: prevMonthMetrics?.customers.returning.sales.online ?? 0,
-      prevYear,
-      redColorShade,
       selectedValue:
         selectedMonthMetrics?.customers.returning.sales.online ?? 1,
-      width,
     });
 
   // month -> returning -> sales -> in-store
   const monthTotalReturningSalesInStoreCustomersCardInfo =
     returnDashboardCardInfo({
-      currentMonth,
-      currentYear,
-      greenColorShade,
+      ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
       heading: 'Sales In-Store',
       kind: 'month',
-      padding,
-      prevDay,
-      prevMonth,
       prevValue: prevMonthMetrics?.customers.returning.sales.inStore ?? 0,
-      prevYear,
-      redColorShade,
       selectedValue:
         selectedMonthMetrics?.customers.returning.sales.inStore ?? 1,
-      width,
     });
 
   // month -> churn rate
   const monthChurnRateCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Churn Rate',
     isFlipColor: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.churnRate ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.churnRate ?? 1,
-    width,
   });
 
   // month -> retention rate
   const monthRetentionRateCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Retention Rate',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.customers.retentionRate ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.customers.retentionRate ?? 1,
-    width,
   });
 
   // year
@@ -677,57 +501,33 @@ function returnCustomerMetricsCards({
 
   // year -> overview -> total
   const yearTotalCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.total ?? 1,
-    width,
   });
 
   // year -> overview -> new
 
   // year -> overview -> new -> total
   const yearTotalNewCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total New',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.new.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.new.total ?? 1,
-    width,
   });
 
   // year -> overview -> returning
 
   // year -> overview -> returning -> total
   const yearTotalReturningCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total Returning',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.returning.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.returning.total ?? 1,
-    width,
   });
 
   // year -> new
@@ -739,72 +539,40 @@ function returnCustomerMetricsCards({
 
   // year -> new -> repair -> total
   const yearTotalNewRepairCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.new.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.new.repair ?? 1,
-    width,
   });
 
   // year -> new -> sales
 
   // year -> new -> sales -> total
   const yearTotalNewSalesCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.new.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.new.sales.total ?? 1,
-    width,
   });
 
   // year -> new -> sales -> online
   const yearTotalNewSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.new.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.new.sales.online ?? 1,
-    width,
   });
 
   // year -> new -> sales -> in-store
   const yearTotalNewSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.new.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.new.sales.inStore ?? 1,
-    width,
   });
 
   // year -> returning
@@ -814,110 +582,62 @@ function returnCustomerMetricsCards({
 
   // year -> returning -> repair
   const yearTotalReturningRepairCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.returning.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.returning.repair ?? 1,
-    width,
   });
 
   // year -> returning -> sales
 
   // year -> returning -> sales -> total
   const yearTotalReturningSalesCustomersCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.returning.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.returning.sales.total ?? 1,
-    width,
   });
 
   // year -> returning -> sales -> online
   const yearTotalReturningSalesOnlineCustomersCardInfo =
     returnDashboardCardInfo({
-      currentMonth,
-      currentYear,
-      greenColorShade,
+      ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
       heading: 'Sales Online',
       kind: 'year',
-      padding,
-      prevDay,
-      prevMonth,
       prevValue: prevYearMetrics?.customers.returning.sales.online ?? 0,
-      prevYear,
-      redColorShade,
       selectedValue: selectedYearMetrics?.customers.returning.sales.online ?? 1,
-      width,
     });
 
   // year -> returning -> sales -> in-store
   const yearTotalReturningSalesInStoreCustomersCardInfo =
     returnDashboardCardInfo({
-      currentMonth,
-      currentYear,
-      greenColorShade,
+      ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
       heading: 'Sales In-Store',
       kind: 'year',
-      padding,
-      prevDay,
-      prevMonth,
       prevValue: prevYearMetrics?.customers.returning.sales.inStore ?? 0,
-      prevYear,
-      redColorShade,
       selectedValue:
         selectedYearMetrics?.customers.returning.sales.inStore ?? 1,
-      width,
     });
 
   // year -> churn rate
   const yearChurnRateCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Churn Rate',
     isFlipColor: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.churnRate ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.churnRate ?? 1,
-    width,
   });
 
   // year -> retention rate
   const yearRetentionRateCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Retention Rate',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.customers.retentionRate ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.customers.retentionRate ?? 1,
-    width,
   });
 
   return {
@@ -1043,431 +763,268 @@ function returnFinancialMetricsCards({
   const prevMonth = prevMonthMetrics?.month ?? 'January';
   const prevDay = prevDayMetrics?.day ?? '01';
 
+  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: ReturnDashboardCardInfoInput = {
+    currentMonth,
+    currentYear,
+    greenColorShade,
+    heading: 'Total',
+    kind: 'day',
+    padding,
+    prevDay,
+    prevMonth,
+    prevValue: 1,
+    prevYear,
+    redColorShade,
+    selectedValue: 1,
+    width,
+  };
+
   // day
 
   // day -> profit
 
   // day -> profit -> total
   const dayProfitTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.profit.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.profit.total ?? 1,
-    width,
   });
 
   // day -> profit -> repair
   const dayProfitRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.profit.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.profit.repair ?? 1,
-    width,
   });
 
   // day -> profit -> sales
 
   // day -> profit -> sales -> total
   const dayProfitSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.profit.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.profit.sales.total ?? 1,
-    width,
   });
 
   // day -> profit -> sales -> online
   const dayProfitSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.profit.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.profit.sales.online ?? 1,
-    width,
   });
 
   // day -> profit -> sales -> in-store
   const dayProfitSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.profit.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.profit.sales.inStore ?? 1,
-    width,
   });
 
   // day -> expenses
 
   // day -> expenses -> total
   const dayExpensesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.expenses.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.expenses.total ?? 1,
-    width,
   });
 
   // day -> expenses -> repair
   const dayExpensesRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.expenses.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.expenses.repair ?? 1,
-    width,
   });
 
   // day -> expenses -> sales
 
   // day -> expenses -> sales -> total
   const dayExpensesSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.expenses.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.expenses.sales.total ?? 1,
-    width,
   });
 
   // day -> expenses -> sales -> online
   const dayExpensesSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.expenses.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.expenses.sales.online ?? 1,
-    width,
   });
 
   // day -> expenses -> sales -> in-store
   const dayExpensesSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.expenses.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.expenses.sales.inStore ?? 1,
-    width,
   });
 
   // day -> transactions
 
   // day -> transactions -> total
-  const dayTransactionsTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const dayUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.transactions.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.transactions.total ?? 1,
-    width,
   });
 
   // day -> transactions -> repair
-  const dayTransactionsRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const dayUnitsSoldRepairCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.transactions.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.transactions.repair ?? 1,
-    width,
   });
 
   // day -> transactions -> sales
 
   // day -> transactions -> sales -> total
-  const dayTransactionsSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const dayUnitsSoldSalesTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.transactions.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.transactions.sales.total ?? 1,
-    width,
   });
 
   // day -> transactions -> sales -> online
-  const dayTransactionsSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const dayUnitsSoldSalesOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.transactions.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.transactions.sales.online ?? 1,
-    width,
   });
 
   // day -> transactions -> sales -> in-store
-  const dayTransactionsSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const dayUnitsSoldSalesInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.transactions.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.transactions.sales.inStore ?? 1,
-    width,
   });
 
   // day -> revenue
 
   // day -> revenue -> total
   const dayRevenueTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.revenue.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.revenue.total ?? 1,
-    width,
   });
 
   // day -> revenue -> repair
   const dayRevenueRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.revenue.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.revenue.repair ?? 1,
-    width,
   });
 
   // day -> revenue -> sales
 
   // day -> revenue -> sales -> total
   const dayRevenueSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.revenue.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.revenue.sales.total ?? 1,
-    width,
   });
 
   // day -> revenue -> sales -> online
   const dayRevenueSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.revenue.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.revenue.sales.online ?? 1,
-    width,
   });
 
   // day -> revenue -> sales -> in-store
   const dayRevenueSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.revenue.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.revenue.sales.inStore ?? 1,
-    width,
   });
 
   // day -> average order value
   const dayAverageOrderValueCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Average Order Value',
     isDisplayValueAsCurrency: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.averageOrderValue ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.averageOrderValue ?? 1,
-    width,
   });
 
   // day -> conversion rate
   const dayConversionRateCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Conversion Rate',
     isDisplayValueAsPercentage: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.conversionRate ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.conversionRate ?? 1,
-    width,
   });
 
   // day -> net profit margin
   const dayNetProfitMarginCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Net Profit Margin',
     isDisplayValueAsPercentage: true,
     kind: 'day',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevDayMetrics?.netProfitMargin ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedDayMetrics?.netProfitMargin ?? 1,
-    width,
   });
 
   // month
@@ -1476,425 +1033,246 @@ function returnFinancialMetricsCards({
 
   // month -> profit -> total
   const monthProfitTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.profit.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.profit.total ?? 1,
-    width,
   });
 
   // month -> profit -> repair
   const monthProfitRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.profit.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.profit.repair ?? 1,
-    width,
   });
 
   // month -> profit -> sales
 
   // month -> profit -> sales -> total
   const monthProfitSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.profit.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.profit.sales.total ?? 1,
-    width,
   });
 
   // month -> profit -> sales -> online
   const monthProfitSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.profit.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.profit.sales.online ?? 1,
-    width,
   });
 
   // month -> profit -> sales -> in-store
   const monthProfitSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.profit.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.profit.sales.inStore ?? 1,
-    width,
   });
 
   // month -> expenses
 
   // month -> expenses -> total
   const monthExpensesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.expenses.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.expenses.total ?? 1,
-    width,
   });
 
   // month -> expenses -> repair
   const monthExpensesRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.expenses.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.expenses.repair ?? 1,
-    width,
   });
 
   // month -> expenses -> sales
 
   // month -> expenses -> sales -> total
   const monthExpensesSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.expenses.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.expenses.sales.total ?? 1,
-    width,
   });
 
   // month -> expenses -> sales -> online
   const monthExpensesSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.expenses.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.expenses.sales.online ?? 1,
-    width,
   });
 
   // month -> expenses -> sales -> in-store
   const monthExpensesSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.expenses.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.expenses.sales.inStore ?? 1,
-    width,
   });
 
   // month -> transactions
 
   // month -> transactions -> total
-  const monthTransactionsTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const monthUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.transactions.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.transactions.total ?? 1,
-    width,
   });
 
   // month -> transactions -> repair
-  const monthTransactionsRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const monthUnitsSoldRepairCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.transactions.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.transactions.repair ?? 1,
-    width,
   });
 
   // month -> transactions -> sales
 
   // month -> transactions -> sales -> total
-  const monthTransactionsSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const monthUnitsSoldSalesTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.transactions.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.transactions.sales.total ?? 1,
-    width,
   });
 
   // month -> transactions -> sales -> online
-  const monthTransactionsSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const monthUnitsSoldSalesOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.transactions.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.transactions.sales.online ?? 1,
-    width,
   });
 
   // month -> transactions -> sales -> in-store
-  const monthTransactionsSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const monthUnitsSoldSalesInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.transactions.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.transactions.sales.inStore ?? 1,
-    width,
   });
 
   // month -> revenue
 
   // month -> revenue -> total
   const monthRevenueTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.revenue.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.revenue.total ?? 1,
-    width,
   });
 
   // month -> revenue -> repair
   const monthRevenueRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.revenue.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.revenue.repair ?? 1,
-    width,
   });
 
   // month -> revenue -> sales
 
   // month -> revenue -> sales -> total
   const monthRevenueSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.revenue.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.revenue.sales.total ?? 1,
-    width,
   });
 
   // month -> revenue -> sales -> online
   const monthRevenueSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.revenue.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.revenue.sales.online ?? 1,
-    width,
   });
 
   // month -> revenue -> sales -> in-store
   const monthRevenueSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.revenue.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.revenue.sales.inStore ?? 1,
-    width,
   });
 
   // month -> average order value
   const monthAverageOrderValueCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Average Order Value',
     isDisplayValueAsCurrency: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.averageOrderValue ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.averageOrderValue ?? 1,
-    width,
   });
 
   // month -> conversion rate
   const monthConversionRateCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Conversion Rate',
     isDisplayValueAsPercentage: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.conversionRate ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.conversionRate ?? 1,
-    width,
   });
 
   // month -> net profit margin
   const monthNetProfitMarginCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Net Profit Margin',
     isDisplayValueAsPercentage: true,
     kind: 'month',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevMonthMetrics?.netProfitMargin ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedMonthMetrics?.netProfitMargin ?? 1,
-    width,
   });
 
   // year
@@ -1903,425 +1281,246 @@ function returnFinancialMetricsCards({
 
   // year -> profit -> total
   const yearProfitTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.profit.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.profit.total ?? 1,
-    width,
   });
 
   // year -> profit -> repair
   const yearProfitRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.profit.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.profit.repair ?? 1,
-    width,
   });
 
   // year -> profit -> sales
 
   // year -> profit -> sales -> total
   const yearProfitSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.profit.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.profit.sales.total ?? 1,
-    width,
   });
 
   // year -> profit -> sales -> online
   const yearProfitSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.profit.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.profit.sales.online ?? 1,
-    width,
   });
 
   // year -> profit -> sales -> in-store
   const yearProfitSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.profit.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.profit.sales.inStore ?? 1,
-    width,
   });
 
   // year -> expenses
 
   // year -> expenses -> total
   const yearExpensesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.expenses.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.expenses.total ?? 1,
-    width,
   });
 
   // year -> expenses -> repair
   const yearExpensesRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.expenses.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.expenses.repair ?? 1,
-    width,
   });
 
   // year -> expenses -> sales
 
   // year -> expenses -> sales -> total
   const yearExpensesSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.expenses.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.expenses.sales.total ?? 1,
-    width,
   });
 
   // year -> expenses -> sales -> online
   const yearExpensesSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.expenses.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.expenses.sales.online ?? 1,
-    width,
   });
 
   // year -> expenses -> sales -> in-store
   const yearExpensesSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
+    isFlipColor: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.expenses.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.expenses.sales.inStore ?? 1,
-    width,
   });
 
   // year -> transactions
 
   // year -> transactions -> total
-  const yearTransactionsTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const yearUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.transactions.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.transactions.total ?? 1,
-    width,
   });
 
   // year -> transactions -> repair
-  const yearTransactionsRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const yearUnitsSoldRepairCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.transactions.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.transactions.repair ?? 1,
-    width,
   });
 
   // year -> transactions -> sales
 
   // year -> transactions -> sales -> total
-  const yearTransactionsSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const yearUnitsSoldSalesTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.transactions.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.transactions.sales.total ?? 1,
-    width,
   });
 
   // year -> transactions -> sales -> online
-  const yearTransactionsSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const yearUnitsSoldSalesOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.transactions.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.transactions.sales.online ?? 1,
-    width,
   });
 
   // year -> transactions -> sales -> in-store
-  const yearTransactionsSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+  const yearUnitsSoldSalesInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.transactions.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.transactions.sales.inStore ?? 1,
-    width,
   });
 
   // year -> revenue
 
   // year -> revenue -> total
   const yearRevenueTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Total',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.revenue.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.revenue.total ?? 1,
-    width,
   });
 
   // year -> revenue -> repair
   const yearRevenueRepairCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Repair',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.revenue.repair ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.revenue.repair ?? 1,
-    width,
   });
 
   // year -> revenue -> sales
 
   // year -> revenue -> sales -> total
   const yearRevenueSalesTotalCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Total',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.revenue.sales.total ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.revenue.sales.total ?? 1,
-    width,
   });
 
   // year -> revenue -> sales -> online
   const yearRevenueSalesOnlineCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales Online',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.revenue.sales.online ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.revenue.sales.online ?? 1,
-    width,
   });
 
   // year -> revenue -> sales -> in-store
   const yearRevenueSalesInStoreCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Sales In-Store',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.revenue.sales.inStore ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.revenue.sales.inStore ?? 1,
-    width,
   });
 
   // year -> average order value
   const yearAverageOrderValueCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Average Order Value',
     isDisplayValueAsCurrency: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.averageOrderValue ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.averageOrderValue ?? 1,
-    width,
   });
 
   // year -> conversion rate
   const yearConversionRateCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Conversion Rate',
     isDisplayValueAsPercentage: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.conversionRate ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.conversionRate ?? 1,
-    width,
   });
 
   // year -> net profit margin
   const yearNetProfitMarginCardInfo = returnDashboardCardInfo({
-    currentMonth,
-    currentYear,
-    greenColorShade,
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Net Profit Margin',
     isDisplayValueAsPercentage: true,
     kind: 'year',
-    padding,
-    prevDay,
-    prevMonth,
     prevValue: prevYearMetrics?.netProfitMargin ?? 0,
-    prevYear,
-    redColorShade,
     selectedValue: selectedYearMetrics?.netProfitMargin ?? 1,
-    width,
   });
 
   return {
@@ -2348,11 +1547,11 @@ function returnFinancialMetricsCards({
         dayExpensesSalesInStoreCardInfo,
       ],
       transactions: [
-        dayTransactionsTotalCardInfo,
-        dayTransactionsRepairCardInfo,
-        dayTransactionsSalesTotalCardInfo,
-        dayTransactionsSalesOnlineCardInfo,
-        dayTransactionsSalesInStoreCardInfo,
+        dayUnitsSoldTotalCardInfo,
+        dayUnitsSoldRepairCardInfo,
+        dayUnitsSoldSalesTotalCardInfo,
+        dayUnitsSoldSalesOnlineCardInfo,
+        dayUnitsSoldSalesInStoreCardInfo,
       ],
       otherMetrics: [
         dayAverageOrderValueCardInfo,
@@ -2383,11 +1582,11 @@ function returnFinancialMetricsCards({
         monthExpensesSalesInStoreCardInfo,
       ],
       transactions: [
-        monthTransactionsTotalCardInfo,
-        monthTransactionsRepairCardInfo,
-        monthTransactionsSalesTotalCardInfo,
-        monthTransactionsSalesOnlineCardInfo,
-        monthTransactionsSalesInStoreCardInfo,
+        monthUnitsSoldTotalCardInfo,
+        monthUnitsSoldRepairCardInfo,
+        monthUnitsSoldSalesTotalCardInfo,
+        monthUnitsSoldSalesOnlineCardInfo,
+        monthUnitsSoldSalesInStoreCardInfo,
       ],
       otherMetrics: [
         monthAverageOrderValueCardInfo,
@@ -2418,11 +1617,11 @@ function returnFinancialMetricsCards({
         yearExpensesSalesInStoreCardInfo,
       ],
       transactions: [
-        yearTransactionsTotalCardInfo,
-        yearTransactionsRepairCardInfo,
-        yearTransactionsSalesTotalCardInfo,
-        yearTransactionsSalesOnlineCardInfo,
-        yearTransactionsSalesInStoreCardInfo,
+        yearUnitsSoldTotalCardInfo,
+        yearUnitsSoldRepairCardInfo,
+        yearUnitsSoldSalesTotalCardInfo,
+        yearUnitsSoldSalesOnlineCardInfo,
+        yearUnitsSoldSalesInStoreCardInfo,
       ],
       otherMetrics: [
         yearAverageOrderValueCardInfo,
@@ -2433,9 +1632,282 @@ function returnFinancialMetricsCards({
   };
 }
 
+type ReturnProductMetricsCardsInput = {
+  greenColorShade: string;
+  padding: MantineNumberSize;
+  redColorShade: string;
+  selectedDateProductMetrics: SelectedDateProductMetrics;
+  width: number;
+};
+
+type ProductMetricsCards = {
+  dailyCards: {
+    revenue: DashboardCardInfo[];
+    unitsSold: DashboardCardInfo[];
+  };
+  monthlyCards: {
+    revenue: DashboardCardInfo[];
+    unitsSold: DashboardCardInfo[];
+  };
+  yearlyCards: {
+    revenue: DashboardCardInfo[];
+    unitsSold: DashboardCardInfo[];
+  };
+};
+
+function returnProductMetricsCards({
+  greenColorShade,
+  padding,
+  redColorShade,
+  selectedDateProductMetrics,
+  width,
+}: ReturnProductMetricsCardsInput): ProductMetricsCards {
+  // customer metrics data
+  const {
+    dayProductMetrics: { prevDayMetrics, selectedDayMetrics },
+    monthProductMetrics: { prevMonthMetrics, selectedMonthMetrics },
+    yearProductMetrics: { prevYearMetrics, selectedYearMetrics },
+  } = selectedDateProductMetrics;
+
+  const currentYear = selectedYearMetrics?.year ?? '2023';
+  const prevYear = prevYearMetrics?.year ?? '2022';
+  const currentMonth = selectedMonthMetrics?.month ?? 'January';
+  const prevMonth = prevMonthMetrics?.month ?? 'January';
+  const prevDay = prevDayMetrics?.day ?? '01';
+
+  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: ReturnDashboardCardInfoInput = {
+    currentMonth,
+    currentYear,
+    greenColorShade,
+    heading: 'Total',
+    kind: 'day',
+    padding,
+    prevDay,
+    prevMonth,
+    prevValue: 1,
+    prevYear,
+    redColorShade,
+    selectedValue: 1,
+    width,
+  };
+
+  // daily
+
+  // daily -> revenue
+
+  // daily -> revenue -> total
+  const dayRevenueTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    isDisplayValueAsCurrency: true,
+    prevValue: prevDayMetrics?.revenue.total ?? 0,
+    selectedValue: selectedDayMetrics?.revenue.total ?? 1,
+  });
+
+  // daily -> revenue -> inStore
+  const dayRevenueInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'In-Store',
+    isDisplayValueAsCurrency: true,
+    prevValue: prevDayMetrics?.revenue.inStore ?? 0,
+    selectedValue: selectedDayMetrics?.revenue.inStore ?? 1,
+  });
+
+  // daily -> revenue -> online
+  const dayRevenueOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Online',
+    isDisplayValueAsCurrency: true,
+    prevValue: prevDayMetrics?.revenue.online ?? 0,
+    selectedValue: selectedDayMetrics?.revenue.online ?? 1,
+  });
+
+  // daily -> unitsSold
+
+  // daily -> unitsSold -> total
+  const dayUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Total',
+    prevValue: prevDayMetrics?.unitsSold.total ?? 0,
+    selectedValue: selectedDayMetrics?.unitsSold.total ?? 1,
+  });
+
+  // daily -> unitsSold -> inStore
+  const dayUnitsSoldInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'In-Store',
+    prevValue: prevDayMetrics?.unitsSold.inStore ?? 0,
+    selectedValue: selectedDayMetrics?.unitsSold.inStore ?? 1,
+  });
+
+  // daily -> unitsSold -> online
+  const dayUnitsSoldOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Online',
+    prevValue: prevDayMetrics?.unitsSold.online ?? 0,
+    selectedValue: selectedDayMetrics?.unitsSold.online ?? 1,
+  });
+
+  // monthly
+
+  // monthly -> revenue
+
+  // monthly -> revenue -> total
+  const monthRevenueTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    kind: 'month',
+    prevValue: prevMonthMetrics?.revenue.total ?? 0,
+    selectedValue: selectedMonthMetrics?.revenue.total ?? 1,
+  });
+
+  // monthly -> revenue -> inStore
+  const monthRevenueInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'In-Store',
+    kind: 'month',
+    prevValue: prevMonthMetrics?.revenue.inStore ?? 0,
+    selectedValue: selectedMonthMetrics?.revenue.inStore ?? 1,
+  });
+
+  // monthly -> revenue -> online
+  const monthRevenueOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Online',
+    kind: 'month',
+    prevValue: prevMonthMetrics?.revenue.online ?? 0,
+    selectedValue: selectedMonthMetrics?.revenue.online ?? 1,
+  });
+
+  // monthly -> unitsSold
+
+  // monthly -> unitsSold -> total
+  const monthUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Total',
+    kind: 'month',
+    prevValue: prevMonthMetrics?.unitsSold.total ?? 0,
+    selectedValue: selectedMonthMetrics?.unitsSold.total ?? 1,
+  });
+
+  // monthly -> unitsSold -> inStore
+  const monthUnitsSoldInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'In-Store',
+    kind: 'month',
+    prevValue: prevMonthMetrics?.unitsSold.inStore ?? 0,
+    selectedValue: selectedMonthMetrics?.unitsSold.inStore ?? 1,
+  });
+
+  // monthly -> unitsSold -> online
+  const monthUnitsSoldOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Online',
+    kind: 'month',
+    prevValue: prevMonthMetrics?.unitsSold.online ?? 0,
+    selectedValue: selectedMonthMetrics?.unitsSold.online ?? 1,
+  });
+
+  // yearly
+
+  // yearly -> revenue
+
+  // yearly -> revenue -> total
+  const yearRevenueTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    kind: 'year',
+    prevValue: prevYearMetrics?.revenue.total ?? 0,
+    selectedValue: selectedYearMetrics?.revenue.total ?? 1,
+  });
+
+  // yearly -> revenue -> inStore
+  const yearRevenueInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'In-Store',
+    kind: 'year',
+    prevValue: prevYearMetrics?.revenue.inStore ?? 0,
+    selectedValue: selectedYearMetrics?.revenue.inStore ?? 1,
+  });
+
+  // yearly -> revenue -> online
+  const yearRevenueOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Online',
+    kind: 'year',
+    prevValue: prevYearMetrics?.revenue.online ?? 0,
+    selectedValue: selectedYearMetrics?.revenue.online ?? 1,
+  });
+
+  // yearly -> unitsSold
+
+  // yearly -> unitsSold -> total
+  const yearUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Total',
+    kind: 'year',
+    prevValue: prevYearMetrics?.unitsSold.total ?? 0,
+    selectedValue: selectedYearMetrics?.unitsSold.total ?? 1,
+  });
+
+  // yearly -> unitsSold -> inStore
+  const yearUnitsSoldInStoreCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'In-Store',
+    kind: 'year',
+    prevValue: prevYearMetrics?.unitsSold.inStore ?? 0,
+    selectedValue: selectedYearMetrics?.unitsSold.inStore ?? 1,
+  });
+
+  // yearly -> unitsSold -> online
+  const yearUnitsSoldOnlineCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Online',
+    kind: 'year',
+    prevValue: prevYearMetrics?.unitsSold.online ?? 0,
+    selectedValue: selectedYearMetrics?.unitsSold.online ?? 1,
+  });
+
+  return {
+    dailyCards: {
+      revenue: [
+        dayRevenueTotalCardInfo,
+        dayRevenueInStoreCardInfo,
+        dayRevenueOnlineCardInfo,
+      ],
+      unitsSold: [
+        dayUnitsSoldTotalCardInfo,
+        dayUnitsSoldInStoreCardInfo,
+        dayUnitsSoldOnlineCardInfo,
+      ],
+    },
+    monthlyCards: {
+      revenue: [
+        monthRevenueTotalCardInfo,
+        monthRevenueInStoreCardInfo,
+        monthRevenueOnlineCardInfo,
+      ],
+      unitsSold: [
+        monthUnitsSoldTotalCardInfo,
+        monthUnitsSoldInStoreCardInfo,
+        monthUnitsSoldOnlineCardInfo,
+      ],
+    },
+    yearlyCards: {
+      revenue: [
+        yearRevenueTotalCardInfo,
+        yearRevenueInStoreCardInfo,
+        yearRevenueOnlineCardInfo,
+      ],
+      unitsSold: [
+        yearUnitsSoldTotalCardInfo,
+        yearUnitsSoldInStoreCardInfo,
+        yearUnitsSoldOnlineCardInfo,
+      ],
+    },
+  };
+}
 export {
   returnCustomerMetricsCards,
   returnDashboardCardElement,
   returnFinancialMetricsCards,
+  returnProductMetricsCards,
 };
-export type { CustomerMetricsCards, DashboardCardInfo, FinancialMetricsCards };
+export type { CustomerMetricsCards, DashboardCardInfo, FinancialMetricsCards,ProductMetricsCards };

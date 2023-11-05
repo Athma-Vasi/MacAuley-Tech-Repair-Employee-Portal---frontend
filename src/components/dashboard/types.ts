@@ -9,8 +9,8 @@ type DashboardFinancialMetric =
   | 'Transactions'
   | 'Other Metrics';
 type DashboardCustomerMetrics = 'Overview' | 'New' | 'Returning';
-type DashboardProductMetrics = ProductCategory;
-type DashboardRepairMetrics = RepairCategory;
+type DashboardProductMetric = ProductCategory | 'All Products';
+type DashboardRepairMetrics = RepairCategory | 'All Repairs';
 
 type DashboardState = {
   businessMetrics: BusinessMetric[];
@@ -18,7 +18,7 @@ type DashboardState = {
   customerMetric: DashboardCustomerMetrics;
   financialMetric: DashboardFinancialMetric;
   metricsView: DashboardMetricsView;
-  productMetric: DashboardProductMetrics;
+  productMetric: DashboardProductMetric;
   repairMetric: DashboardRepairMetrics;
   selectedYYYYMMDD: string;
   storeLocationView: BusinessMetricStoreLocation;
@@ -59,7 +59,7 @@ type DashboardDispatch =
     }
   | {
       type: DashboardAction['setProductMetric'];
-      payload: DashboardProductMetrics;
+      payload: DashboardProductMetric;
     }
   | {
       type: DashboardAction['setRepairMetric'];
@@ -236,48 +236,48 @@ type CustomerDailyMetric = {
   };
 };
 
+type ProductMetric = {
+  name: ProductCategory | 'All Products';
+  yearlyMetrics: ProductYearlyMetric[];
+};
+
 type ProductMetricCategory = {
   total: number;
   online: number;
   inStore: number;
 };
 
-type ProductMetric = {
-  name: ProductCategory;
-  yearlyMetrics: ProductYearlyMetric[];
-};
-
 type ProductYearlyMetric = {
   year: Year;
-  transactions: ProductMetricCategory;
   revenue: ProductMetricCategory;
+  unitsSold: ProductMetricCategory;
 
   monthlyMetrics: ProductMonthlyMetric[];
 };
 
 type ProductMonthlyMetric = {
   month: Month;
-  transactions: ProductMetricCategory;
   revenue: ProductMetricCategory;
+  unitsSold: ProductMetricCategory;
 
   dailyMetrics: ProductDailyMetric[];
 };
 
 type ProductDailyMetric = {
   day: string;
-  transactions: ProductMetricCategory;
   revenue: ProductMetricCategory;
+  unitsSold: ProductMetricCategory;
 };
 
 type RepairMetric = {
-  name: RepairCategory;
+  name: RepairCategory | 'All Repairs';
   yearlyMetrics: RepairYearlyMetric[];
 };
 
 type RepairYearlyMetric = {
   year: Year;
   revenue: number;
-  transactions: number;
+  unitsRepaired: number;
 
   monthlyMetrics: RepairMonthlyMetric[];
 };
@@ -285,7 +285,7 @@ type RepairYearlyMetric = {
 type RepairMonthlyMetric = {
   month: Month;
   revenue: number;
-  transactions: number;
+  unitsRepaired: number;
 
   dailyMetrics: RepairDailyMetric[];
 };
@@ -293,7 +293,7 @@ type RepairMonthlyMetric = {
 type RepairDailyMetric = {
   day: string;
   revenue: number;
-  transactions: number;
+  unitsRepaired: number;
 };
 
 type BusinessMetricStoreLocation = 'All Locations' | StoreLocation;
@@ -320,7 +320,7 @@ export type {
   DashboardDispatch,
   DashboardFinancialMetric,
   DashboardMetricsView,
-  DashboardProductMetrics,
+  DashboardProductMetric,
   DashboardRepairMetrics,
   DashboardState,
   DaysInMonthsInYears,

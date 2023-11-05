@@ -4,7 +4,7 @@ import {
   DashboardCustomerMetrics,
   DashboardFinancialMetric,
   DashboardMetricsView,
-  DashboardProductMetrics,
+  DashboardProductMetric,
   DashboardRepairMetrics,
   Month,
   ProductCategory,
@@ -78,11 +78,15 @@ const CUSTOMER_METRICS_SELECT_INPUT_DATA: DashboardCustomerMetrics[] = [
   'Returning',
 ];
 
-const PRODUCT_METRICS_SELECT_INPUT_DATA: DashboardProductMetrics[] =
-  PRODUCT_CATEGORIES;
+const PRODUCT_METRICS_SELECT_INPUT_DATA: DashboardProductMetric[] = [
+  'All Products',
+  ...PRODUCT_CATEGORIES,
+];
 
-const REPAIR_METRICS_SELECT_INPUT_DATA: DashboardRepairMetrics[] =
-  REPAIR_CATEGORIES;
+const REPAIR_METRICS_SELECT_INPUT_DATA: DashboardRepairMetrics[] = [
+  'All Repairs',
+  ...REPAIR_CATEGORIES,
+];
 
 const METRICS_VIEW_TABS_DATA: DashboardMetricsView[] = [
   'Financials',

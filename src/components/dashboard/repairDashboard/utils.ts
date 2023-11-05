@@ -133,16 +133,13 @@ type ReturnRepairChartsDataInput = {
   storeLocation: BusinessMetricStoreLocation;
 };
 
-type RepairMetricChartsObjKey = 'transactions' | 'revenue';
+type RepairMetricChartsObjKey = 'unitsRepaired' | 'revenue';
 type BarChartsObj = Record<RepairMetricChartsObjKey, BarChartData[]>;
 type CalendarChartsObj = Record<RepairMetricChartsObjKey, CalendarChartData[]>;
-type LineChartsObj = Record<
-  RepairMetricChartsObjKey,
-  {
-    id: Capitalize<RepairMetricChartsObjKey>;
-    data: { x: string; y: number }[];
-  }[]
->;
+type LineChartsObj = {
+  revenue: { id: 'Revenue'; data: { x: string; y: number }[] }[];
+  unitsRepaired: { id: 'Units Repaired'; data: { x: string; y: number }[] }[];
+};
 
 /**
  * repairMetrics: {
@@ -150,17 +147,17 @@ type LineChartsObj = Record<
     yearlyMetrics: {
       year: string;
       revenue: number;
-      transactions: number;
+      unitsRepaired: number;
 
       monthlyMetrics: {
         month: string;
         revenue: number;
-        transactions: number;
+        unitsRepaired: number;
 
         dailyMetrics: {
           day: string;
           revenue: number;
-          transactions: number;
+          unitsRepaired: number;
         }[];
       }[];
     }[];    
@@ -211,19 +208,19 @@ function returnRepairChartsData({
   // templates -> bar charts obj
   const BAR_CHART_OBJ_TEMPLATE: BarChartsObj = {
     revenue: [],
-    transactions: [],
+    unitsRepaired: [],
   };
 
   // templates -> calendar charts obj
   const CALENDAR_CHART_OBJ_TEMPLATE: CalendarChartsObj = {
     revenue: [],
-    transactions: [],
+    unitsRepaired: [],
   };
 
   // templates -> line charts obj
   const LINE_CHART_OBJ_TEMPLATE: LineChartsObj = {
     revenue: [{ id: 'Revenue', data: [] }],
-    transactions: [{ id: 'Transactions', data: [] }],
+    unitsRepaired: [{ id: 'Units Repaired', data: [] }],
   };
 
   // daily charts
@@ -253,16 +250,16 @@ function returnRepairChartsData({
         dailyRepairLineChartsObjAcc,
       ] = dailyRepairChartsAcc;
 
-      const { day, revenue, transactions } = dailyRepairMetric;
+      const { day, revenue, unitsRepaired } = dailyRepairMetric;
 
       // bar charts
 
-      // bar charts -> transactions
+      // bar charts -> unitsRepaired
       const dailyRepairTransactionsBarChart: BarChartData = {
         Days: day,
-        Transactions: transactions,
+        Transactions: unitsRepaired,
       };
-      dailyRepairBarChartsObjAcc.transactions.push(
+      dailyRepairBarChartsObjAcc.unitsRepaired.push(
         dailyRepairTransactionsBarChart
       );
 
@@ -275,12 +272,12 @@ function returnRepairChartsData({
 
       // calendar charts
 
-      // calendar charts -> transactions
+      // calendar charts -> unitsRepaired
       const dailyRepairTransactionsCalendarChart: CalendarChartData = {
         day: `${selectedYear}-${monthNumber}-${day}`,
-        value: transactions,
+        value: unitsRepaired,
       };
-      dailyRepairCalendarChartsObjAcc.transactions.push(
+      dailyRepairCalendarChartsObjAcc.unitsRepaired.push(
         dailyRepairTransactionsCalendarChart
       );
 
@@ -295,12 +292,12 @@ function returnRepairChartsData({
 
       // line charts
 
-      // line charts -> transactions
+      // line charts -> unitsRepaired
       const dailyRepairTransactionsLineChart = {
         x: day,
-        y: transactions,
+        y: unitsRepaired,
       };
-      dailyRepairLineChartsObjAcc.transactions
+      dailyRepairLineChartsObjAcc.unitsRepaired
         .find(
           (lineChartData: LineChartData) => lineChartData.id === 'Transactions'
         )
@@ -355,7 +352,7 @@ function returnRepairChartsData({
         monthlyRepairLineChartsObjAcc,
       ] = monthlyRepairChartsAcc;
 
-      const { month, revenue, transactions } = monthlyRepairMetric;
+      const { month, revenue, unitsRepaired } = monthlyRepairMetric;
       const monthNumberStr = (months.indexOf(month) + 1)
         .toString()
         .padStart(2, '0');
@@ -374,12 +371,12 @@ function returnRepairChartsData({
 
       // bar charts
 
-      // bar charts -> transactions
+      // bar charts -> unitsRepaired
       const monthlyRepairTransactionsBarChart: BarChartData = {
         Months: month,
-        Transactions: transactions,
+        'Units Repaired': unitsRepaired,
       };
-      monthlyRepairBarChartsObjAcc.transactions.push(
+      monthlyRepairBarChartsObjAcc.unitsRepaired.push(
         monthlyRepairTransactionsBarChart
       );
 
@@ -395,14 +392,14 @@ function returnRepairChartsData({
       const { dailyMetrics } = monthlyRepairMetric;
 
       dailyMetrics.forEach((dailyRepairMetric) => {
-        const { day, revenue, transactions } = dailyRepairMetric;
+        const { day, revenue, unitsRepaired } = dailyRepairMetric;
 
-        // calendar charts -> transactions
+        // calendar charts -> unitsRepaired
         const monthlyRepairTransactionsCalendarChart: CalendarChartData = {
           day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: transactions,
+          value: unitsRepaired,
         };
-        monthlyRepairCalendarChartsObjAcc.transactions.push(
+        monthlyRepairCalendarChartsObjAcc.unitsRepaired.push(
           monthlyRepairTransactionsCalendarChart
         );
 
@@ -418,12 +415,12 @@ function returnRepairChartsData({
 
       // line charts
 
-      // line charts -> transactions
+      // line charts -> unitsRepaired
       const monthlyRepairTransactionsLineChart = {
         x: month,
-        y: transactions,
+        y: unitsRepaired,
       };
-      monthlyRepairLineChartsObjAcc.transactions
+      monthlyRepairLineChartsObjAcc.unitsRepaired
         ?.find(
           (lineChartData: LineChartData) => lineChartData.id === 'Transactions'
         )
@@ -478,7 +475,7 @@ function returnRepairChartsData({
         const [yearlyRepairBarChartsObjAcc, yearlyRepairLineChartsObjAcc] =
           yearlyRepairChartsAcc;
 
-        const { year, revenue, transactions } = yearlyRepairMetric;
+        const { year, revenue, unitsRepaired } = yearlyRepairMetric;
 
         // prevents current year from being added to charts
         const currentYear = new Date().getFullYear();
@@ -488,12 +485,12 @@ function returnRepairChartsData({
 
         // bar charts
 
-        // bar charts -> transactions
+        // bar charts -> unitsRepaired
         const yearlyRepairTransactionsBarChart: BarChartData = {
           Years: year,
-          Transactions: transactions,
+          Transactions: unitsRepaired,
         };
-        yearlyRepairBarChartsObjAcc.transactions.push(
+        yearlyRepairBarChartsObjAcc.unitsRepaired.push(
           yearlyRepairTransactionsBarChart
         );
 
@@ -506,12 +503,12 @@ function returnRepairChartsData({
 
         // line charts
 
-        // line charts -> transactions
+        // line charts -> unitsRepaired
         const yearlyRepairTransactionsLineChart = {
           x: year,
-          y: transactions,
+          y: unitsRepaired,
         };
-        yearlyRepairLineChartsObjAcc.transactions
+        yearlyRepairLineChartsObjAcc.unitsRepaired
           ?.find(
             (lineChartData: LineChartData) =>
               lineChartData.id === 'Transactions'
