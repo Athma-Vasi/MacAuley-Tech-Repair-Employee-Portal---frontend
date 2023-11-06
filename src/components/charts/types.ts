@@ -59,7 +59,7 @@ type NivoFillPatternObject = {
   match: {
     id: string;
   };
-  id: string;
+  id: 'dots' | 'lines';
 };
 
 type NivoLegendAnchor =

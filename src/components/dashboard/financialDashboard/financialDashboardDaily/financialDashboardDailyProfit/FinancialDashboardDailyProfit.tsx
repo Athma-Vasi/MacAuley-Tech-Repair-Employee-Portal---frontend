@@ -33,6 +33,7 @@ import {
   financialDashboardDailyProfitReducer,
   initialFinancialDashboardDailyProfitState,
 } from './state';
+import { createBarFillPatterns } from '../../../../charts/responsiveBarChart/utils';
 
 function FinancialDashboardDailyProfit({
   borderColor,

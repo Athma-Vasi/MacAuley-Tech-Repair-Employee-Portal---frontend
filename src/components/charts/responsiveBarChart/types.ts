@@ -418,9 +418,9 @@ type ResponsiveBarChartDispatch =
     };
 
 export type {
+  BarChartData,
   ResponsiveBarChartAction,
   ResponsiveBarChartDispatch,
   ResponsiveBarChartProps,
   ResponsiveBarChartState,
-  BarChartData,
 };

@@ -1,78 +1,47 @@
 import {
-  Button,
   ColorInput,
-  Divider,
   Flex,
-  Grid,
   Group,
-  Loader,
-  ScrollArea,
-  Space,
   Stack,
   Switch,
   Text,
   Title,
-  TitleOrder,
   Tooltip,
 } from '@mantine/core';
 import { ResponsiveBar } from '@nivo/bar';
 import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
 import { BiReset } from 'react-icons/bi';
-import { TbDownload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
 
-import {
-  COLORS_SWATCHES,
-  SCREENSHOT_IMAGE_TYPE_DATA,
-} from '../../../constants/data';
-import { FILENAME_REGEX, SERIAL_ID_REGEX } from '../../../constants/regex';
+import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
-import { useAsyncReference } from '../../../hooks/useAsyncReference';
-import { useScreenshot } from '../../../hooks/useScreenshot';
 import {
-  AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
-  returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
-import { ScreenshotImageType } from '../../../types';
-import {
-  captureScreenshot,
-  logState,
-  returnFilenameValidationText,
-  returnSerialIdValidationText,
-  returnThemeColors,
-} from '../../../utils';
+import { returnThemeColors } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
 } from '../../wrappers';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
+import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
+import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
+import { ChartAxisRight } from '../chartControls/ChartAxisRight';
+import { ChartAxisTop } from '../chartControls/ChartAxisTop';
+import { ChartLegend } from '../chartControls/ChartLegend';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartOptions } from '../chartControls/ChartOptions';
 import {
   NIVO_CHART_PATTERN_DEFS,
-  NIVO_CHART_TITLE_POSITION_DATA,
   NIVO_COLOR_SCHEME_DATA,
-  NIVO_LEGEND_ANCHOR_DATA,
-  NIVO_LEGEND_DIRECTION_DATA,
-  NIVO_LEGEND_ITEM_DIRECTION_DATA,
   NIVO_MOTION_CONFIG_DATA,
 } from '../constants';
-import {
-  NivoAxisLegendPosition,
-  NivoChartTitlePosition,
-  NivoColorScheme,
-  NivoLegendAnchor,
-  NivoLegendDirection,
-  NivoLegendItemDirection,
-  NivoMotionConfig,
-} from '../types';
+import { NivoColorScheme, NivoMotionConfig } from '../types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 import {
-  BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA,
   BAR_CHART_GROUP_MODE_SELECT_DATA,
   BAR_CHART_LAYOUT_SELECT_DATA,
   BAR_CHART_VALUE_SCALE_SELECT_DATA,
@@ -83,14 +52,7 @@ import {
   responsiveBarChartReducer,
 } from './state';
 import { ResponsiveBarChartProps, ResponsiveBarChartState } from './types';
-import { ChartAxisTop } from '../chartControls/ChartAxisTop';
-import { ChartAxisRight } from '../chartControls/ChartAxisRight';
-import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
-import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
-import { ChartOptions } from '../chartControls/ChartOptions';
-import { ChartLegend } from '../chartControls/ChartLegend';
-import { ChartMargin } from '../chartControls/ChartMargin';
-import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
+import { createBarFillPatterns } from './utils';
 
 function ResponsiveBarChart({
   barChartData,
@@ -243,6 +205,20 @@ function ResponsiveBarChart({
     screenshotImageType,
   } = responsiveBarChartState;
 
+  // set fill patterns on enable
+  useEffect(() => {
+    if (!barChartData || !barChartData.length) {
+      return;
+    }
+
+    const { barFillPatterns } = createBarFillPatterns(barChartData);
+
+    responsiveBarChartDispatch({
+      type: responsiveBarChartAction.setFillPatterns,
+      payload: barFillPatterns,
+    });
+  }, [enableFillPatterns, barChartData]);
+
   // set motion config on enable
   useEffect(() => {
     if (!isPrefersReducedMotion) {
@@ -284,20 +260,7 @@ function ResponsiveBarChart({
       borderWidth={chartBorderWidth}
       borderColor={chartBorderColor}
       defs={NIVO_CHART_PATTERN_DEFS}
-      fill={[
-        {
-          match: {
-            id: 'fries',
-          },
-          id: 'dots',
-        },
-        {
-          match: {
-            id: 'sandwich',
-          },
-          id: 'lines',
-        },
-      ]}
+      fill={enableFillPatterns ? fillPatterns : []}
       // labels
       enableLabel={enableLabels}
       labelSkipWidth={labelSkipWidth}
