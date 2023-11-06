@@ -1,4 +1,19 @@
 import { MantineNumberSize, Stack } from '@mantine/core';
+import { ChangeEvent, useReducer } from 'react';
+import { LuExpand } from 'react-icons/lu';
+
+import {
+  returnAccessibleButtonElements,
+  returnAccessibleSelectInputElements,
+} from '../../../../jsxCreators';
+import {
+  ResponsiveBarChart,
+  ResponsiveCalendarChart,
+  ResponsiveLineChart,
+  ResponsivePieChart,
+} from '../../../charts';
+import { MONTHS } from '../../constants';
+import DashboardMetricsLayout from '../../DashboardMetricsLayout';
 import { ProductMetricsCards } from '../../jsxHelpers';
 import {
   BusinessMetric,
@@ -6,35 +21,21 @@ import {
   DashboardProductMetric,
   Year,
 } from '../../types';
+import { returnStatistics } from '../../utils';
+import {
+  PRODUCT_METRIC_CALENDAR_Y_AXIS_DATA,
+  PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
+} from '../constants';
 import {
   ProductMetricBarLineChartObjKey,
   ProductMetricCalendarObjKey,
   ProductMetricsCharts,
 } from '../utils';
-import { ChangeEvent, useReducer } from 'react';
 import {
   initialProductDashboardDailyState,
   productDashboardDailyAction,
   productDashboardDailyReducer,
 } from './state';
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-} from '../../../../jsxCreators';
-import { LuExpand } from 'react-icons/lu';
-import { returnStatistics } from '../../utils';
-import { MONTHS } from '../../constants';
-import {
-  ResponsiveBarChart,
-  ResponsiveCalendarChart,
-  ResponsiveLineChart,
-  ResponsivePieChart,
-} from '../../../charts';
-import {
-  PRODUCT_METRIC_CALENDAR_Y_AXIS_DATA,
-  PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
-} from '../constants';
-import DashboardMetricsLayout from '../../DashboardMetricsLayout';
 
 function ProductDashboardDaily({
   borderColor,
@@ -65,7 +66,7 @@ function ProductDashboardDaily({
     useReducer(productDashboardDailyReducer, initialProductDashboardDailyState);
 
   const {
-    revenueBarChartYAxisVariable,
+    barChartYAxisVariable,
     revenueCalendarChartYAxisVariable,
     revenueLineChartYAxisVariable,
     unitsSoldBarChartYAxisVariable,
@@ -166,7 +167,7 @@ function ProductDashboardDaily({
               .value as ProductMetricBarLineChartObjKey,
           });
         },
-        value: revenueBarChartYAxisVariable,
+        value: barChartYAxisVariable,
       },
     ]);
 
@@ -175,9 +176,7 @@ function ProductDashboardDaily({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={
-        dailyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable]
-      }
+      barChartData={dailyCharts.revenue.barChartsObj[barChartYAxisVariable]}
       hideControls
       indexBy="Days"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}

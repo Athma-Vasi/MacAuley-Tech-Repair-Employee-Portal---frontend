@@ -69,7 +69,7 @@ function ProductDashboardMonthly({
     );
 
   const {
-    revenueBarChartYAxisVariable,
+    barChartYAxisVariable,
     revenueCalendarChartYAxisVariable,
     revenueLineChartYAxisVariable,
     unitsSoldBarChartYAxisVariable,
@@ -166,7 +166,7 @@ function ProductDashboardMonthly({
               .value as ProductMetricBarLineChartObjKey,
           });
         },
-        value: revenueBarChartYAxisVariable,
+        value: barChartYAxisVariable,
       },
     ]);
 
@@ -175,9 +175,7 @@ function ProductDashboardMonthly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={
-        monthlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable]
-      }
+      barChartData={monthlyCharts.revenue.barChartsObj[barChartYAxisVariable]}
       hideControls
       indexBy="Months"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}

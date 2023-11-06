@@ -6,7 +6,7 @@ import {
 
 const initialFinancialDashboardMonthlyRevenueState: FinancialDashboardMonthlyRevenueState =
   {
-    revenueBarChartYAxisVariable: 'total',
+    barChartYAxisVariable: 'total',
     revenueCalendarChartYAxisVariable: 'total',
     revenueLineChartYAxisVariable: 'total',
     revenuePieChartYAxisVariable: 'overview',
@@ -29,7 +29,7 @@ function financialDashboardMonthlyRevenueReducer(
     case financialDashboardMonthlyRevenueAction.setRevenueBarChartYAxisVariable:
       return {
         ...state,
-        revenueBarChartYAxisVariable: action.payload,
+        barChartYAxisVariable: action.payload,
       };
     case financialDashboardMonthlyRevenueAction.setRevenueCalendarChartYAxisVariable:
       return {

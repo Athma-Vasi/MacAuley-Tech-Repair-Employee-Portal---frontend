@@ -3,19 +3,28 @@ import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
+  DashboardRepairMetric,
   Month,
   Year,
 } from '../types';
 import {
-  returnRepairChartsData,
+  returnRepairMetricsCharts,
   returnSelectedDateRepairMetrics,
 } from './utils';
 import { MONTHS } from '../constants';
+import { useGlobalState } from '../../../hooks';
+import { returnThemeColors } from '../../../utils';
+import { COLORS_SWATCHES } from '../../../constants/data';
+import { returnRepairMetricsCards } from '../jsxHelpers';
+import RepairDashboardDaily from './repairDashboardDaily/RepairDashboardDaily';
+import RepairDashboardMonthly from './repairDashboardMonthly/RepairDashboardMonthly';
+import RepairDashboardYearly from './repairDashboardYearly/RepairDashboardYearly';
 
 function RepairDashboard({
   businessMetrics,
   calendarView,
   selectedDate,
+  repairMetric,
   selectedMonth,
   storeLocationView,
   selectedYear,
@@ -24,33 +33,102 @@ function RepairDashboard({
   businessMetrics: BusinessMetric[];
   calendarView: DashboardCalendarView;
   selectedDate: string;
+  repairMetric: DashboardRepairMetric;
   selectedMonth: Month;
   storeLocationView: BusinessMetricStoreLocation;
   selectedYear: Year;
   selectedYYYYMMDD: string;
 }) {
-  // useEffect(() => {
-  //   const selectedRepairMetrics = returnSelectedDateRepairMetrics({
-  //     businessMetrics,
-  //     day: '01',
-  //     month: 'January',
-  //     months: MONTHS,
-  //     selectedRepairCategory: 'Computer Components',
-  //     storeLocation: 'All Locations',
-  //     year: '2021',
-  //   });
-  //   console.log('selectedRepairMetrics', selectedRepairMetrics);
-  //   const repairChartsData = returnRepairChartsData({
-  //     businessMetrics,
-  //     months: MONTHS,
-  //     selectedRepairCategory: 'Computer Components',
-  //     selectedRepairMetrics,
-  //     storeLocation: 'All Locations',
-  //   });
-  //   console.log('repairChartsData', repairChartsData);
-  // }, []);
+  const {
+    globalState: { padding, width, themeObject },
+  } = useGlobalState();
 
-  return <></>;
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
+  const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
+    businessMetrics,
+    day: selectedDate,
+    month: selectedMonth,
+    months: MONTHS,
+    selectedRepairCategory: repairMetric,
+    storeLocation: storeLocationView,
+    year: selectedYear,
+  });
+  console.log('selectedDateRepairMetrics', selectedDateRepairMetrics);
+
+  const repairChartsData = returnRepairMetricsCharts({
+    businessMetrics,
+    months: MONTHS,
+    selectedDateRepairMetrics,
+    storeLocation: storeLocationView,
+    selectedRepairCategory: repairMetric,
+  });
+  console.log('repairChartsData', repairChartsData);
+
+  const repairCardsInfo = returnRepairMetricsCards({
+    greenColorShade,
+    padding,
+    redColorShade,
+    selectedDateRepairMetrics,
+    width,
+  });
+  console.log('repairCardsInfo', repairCardsInfo);
+
+  const { dailyCharts, monthlyCharts, yearlyCharts } = repairChartsData;
+  const { dailyCards, monthlyCards, yearlyCards } = repairCardsInfo;
+
+  const displayRepairDashboard =
+    calendarView === 'Daily' ? (
+      <RepairDashboardDaily
+        borderColor={borderColor}
+        businessMetrics={businessMetrics}
+        dailyCards={dailyCards}
+        dailyCharts={dailyCharts}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split('-')[1]}
+        padding={padding}
+        repairMetric={repairMetric}
+        storeLocation={storeLocationView}
+        width={width}
+        year={selectedYear}
+      />
+    ) : calendarView === 'Monthly' ? (
+      <RepairDashboardMonthly
+        borderColor={borderColor}
+        businessMetrics={businessMetrics}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split('-')[1]}
+        monthlyCards={monthlyCards}
+        monthlyCharts={monthlyCharts}
+        padding={padding}
+        repairMetric={repairMetric}
+        storeLocation={storeLocationView}
+        width={width}
+        year={selectedYear}
+      />
+    ) : (
+      <RepairDashboardYearly
+        borderColor={borderColor}
+        businessMetrics={businessMetrics}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split('-')[1]}
+        padding={padding}
+        repairMetric={repairMetric}
+        storeLocation={storeLocationView}
+        width={width}
+        year={selectedYear}
+        yearlyCards={yearlyCards}
+        yearlyCharts={yearlyCharts}
+      />
+    );
+
+  return displayRepairDashboard;
 }
 
 export default RepairDashboard;

@@ -1309,10 +1309,10 @@ function returnProductMetricsCharts({
 
 export { returnProductMetricsCharts, returnSelectedDateProductMetrics };
 export type {
+  ProductMetricBarLineChartObjKey,
   ProductMetricBarObj,
   ProductMetricCalendarObj,
   ProductMetricCalendarObjKey,
-  ProductMetricBarLineChartObjKey,
   ProductMetricLineObj,
   ProductMetricsCharts,
   SelectedDateProductMetrics,

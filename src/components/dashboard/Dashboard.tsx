@@ -41,7 +41,7 @@ import {
   DashboardFinancialMetric,
   DashboardMetricsView,
   DashboardProductMetric,
-  DashboardRepairMetrics,
+  DashboardRepairMetric,
 } from './types';
 import {
   createRandomBusinessMetrics,
@@ -253,7 +253,7 @@ function Dashboard() {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         dashboardDispatch({
           type: dashboardAction.setRepairMetric,
-          payload: event.currentTarget.value as DashboardRepairMetrics,
+          payload: event.currentTarget.value as DashboardRepairMetric,
         });
       },
       value: repairMetric,
@@ -362,11 +362,12 @@ function Dashboard() {
       <RepairDashboard
         businessMetrics={businessMetrics}
         calendarView={calendarView}
+        repairMetric={repairMetric}
         selectedDate={selectedDate}
         selectedMonth={selectedMonth}
-        storeLocationView={storeLocationView}
         selectedYYYYMMDD={selectedYYYYMMDD}
         selectedYear={selectedYear}
+        storeLocationView={storeLocationView}
       />
     );
 

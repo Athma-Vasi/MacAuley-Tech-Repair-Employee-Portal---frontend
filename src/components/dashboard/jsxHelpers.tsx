@@ -7,6 +7,7 @@ import { addCommaSeparator } from '../../utils';
 import { SelectedDateCustomerMetrics } from './customerDashboard/utils';
 import { SelectedDateFinancialMetrics } from './financialDashboard/utils';
 import { SelectedDateProductMetrics } from './productDashboard/utils';
+import { SelectedDateRepairMetrics } from './repairDashboard/utils';
 
 type DashboardCardInfo = {
   date?: string;
@@ -126,9 +127,11 @@ function returnDashboardCardInfo({
       ? isFlipColor
         ? redColorShade
         : greenColorShade
-      : isFlipColor
-      ? greenColorShade
-      : redColorShade;
+      : deltaPercentage < 0
+      ? isFlipColor
+        ? greenColorShade
+        : redColorShade
+      : 'inherit';
 
   const date =
     deltaFormatted === 'N/A'
@@ -1904,10 +1907,133 @@ function returnProductMetricsCards({
     },
   };
 }
+
+type ReturnRepairMetricsCardsInput = {
+  greenColorShade: string;
+  padding: MantineNumberSize;
+  redColorShade: string;
+  selectedDateRepairMetrics: SelectedDateRepairMetrics;
+  width: number;
+};
+
+type RepairMetricsCards = {
+  dailyCards: DashboardCardInfo[];
+  monthlyCards: DashboardCardInfo[];
+  yearlyCards: DashboardCardInfo[];
+};
+
+function returnRepairMetricsCards({
+  greenColorShade,
+  padding,
+  redColorShade,
+  selectedDateRepairMetrics,
+  width,
+}: ReturnRepairMetricsCardsInput) {
+  // repair metrics data
+  const {
+    dayRepairMetrics: { prevDayMetrics, selectedDayMetrics },
+    monthRepairMetrics: { prevMonthMetrics, selectedMonthMetrics },
+    yearRepairMetrics: { prevYearMetrics, selectedYearMetrics },
+  } = selectedDateRepairMetrics;
+
+  const currentYear = selectedYearMetrics?.year ?? '2023';
+  const prevYear = prevYearMetrics?.year ?? '2022';
+  const currentMonth = selectedMonthMetrics?.month ?? 'January';
+  const prevMonth = prevMonthMetrics?.month ?? 'January';
+  const prevDay = prevDayMetrics?.day ?? '01';
+
+  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: ReturnDashboardCardInfoInput = {
+    currentMonth,
+    currentYear,
+    greenColorShade,
+    heading: 'Revenue',
+    kind: 'day',
+    padding,
+    prevDay,
+    prevMonth,
+    prevValue: 1,
+    prevYear,
+    redColorShade,
+    selectedValue: 1,
+    width,
+  };
+
+  // daily
+
+  // daily -> revenue
+  const dayRevenueCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    isDisplayValueAsCurrency: true,
+    prevValue: prevDayMetrics?.revenue ?? 0,
+    selectedValue: selectedDayMetrics?.revenue ?? 1,
+  });
+
+  // daily -> units repaired
+  const dayUnitsRepairedCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Units Repaired',
+    prevValue: prevDayMetrics?.unitsRepaired ?? 0,
+    selectedValue: selectedDayMetrics?.unitsRepaired ?? 1,
+  });
+
+  // monthly
+
+  // monthly -> revenue
+  const monthRevenueCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    kind: 'month',
+    isDisplayValueAsCurrency: true,
+    prevValue: prevMonthMetrics?.revenue ?? 0,
+    selectedValue: selectedMonthMetrics?.revenue ?? 1,
+  });
+
+  // monthly -> units repaired
+  const monthUnitsRepairedCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Units Repaired',
+    kind: 'month',
+    prevValue: prevMonthMetrics?.unitsRepaired ?? 0,
+    selectedValue: selectedMonthMetrics?.unitsRepaired ?? 1,
+  });
+
+  // yearly
+
+  // yearly -> revenue
+  const yearRevenueCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    kind: 'year',
+    isDisplayValueAsCurrency: true,
+    prevValue: prevYearMetrics?.revenue ?? 0,
+    selectedValue: selectedYearMetrics?.revenue ?? 1,
+  });
+
+  // yearly -> units repaired
+  const yearUnitsRepairedCardInfo = returnDashboardCardInfo({
+    ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    heading: 'Units Repaired',
+    kind: 'year',
+    prevValue: prevYearMetrics?.unitsRepaired ?? 0,
+    selectedValue: selectedYearMetrics?.unitsRepaired ?? 1,
+  });
+
+  return {
+    dailyCards: [dayRevenueCardInfo, dayUnitsRepairedCardInfo],
+    monthlyCards: [monthRevenueCardInfo, monthUnitsRepairedCardInfo],
+    yearlyCards: [yearRevenueCardInfo, yearUnitsRepairedCardInfo],
+  };
+}
+
 export {
   returnCustomerMetricsCards,
   returnDashboardCardElement,
   returnFinancialMetricsCards,
   returnProductMetricsCards,
+  returnRepairMetricsCards,
 };
-export type { CustomerMetricsCards, DashboardCardInfo, FinancialMetricsCards,ProductMetricsCards };
+export type {
+  CustomerMetricsCards,
+  DashboardCardInfo,
+  FinancialMetricsCards,
+  ProductMetricsCards,
+  RepairMetricsCards,
+};

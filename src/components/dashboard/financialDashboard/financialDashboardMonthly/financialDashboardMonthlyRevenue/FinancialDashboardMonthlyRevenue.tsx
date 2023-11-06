@@ -66,7 +66,7 @@ function FinancialDashboardMonthlyRevenue({
   );
 
   const {
-    revenueBarChartYAxisVariable,
+    barChartYAxisVariable,
     revenueCalendarChartYAxisVariable,
     revenueLineChartYAxisVariable,
     revenuePieChartYAxisVariable,
@@ -143,16 +143,14 @@ function FinancialDashboardMonthlyRevenue({
             payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
           });
         },
-        value: revenueBarChartYAxisVariable,
+        value: barChartYAxisVariable,
       },
     ]);
 
   // revenue -> charts -> bar -> display
   const displayRevenueBarChart = (
     <ResponsiveBarChart
-      barChartData={
-        monthlyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable]
-      }
+      barChartData={monthlyChartsRevenue.barChartsObj[barChartYAxisVariable]}
       indexBy="Months"
       keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}

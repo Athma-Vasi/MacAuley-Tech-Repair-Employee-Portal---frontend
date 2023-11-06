@@ -34,7 +34,7 @@ type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
   pieChartHeading?: string;
   sectionHeading: string;
   semanticLabel?: string;
-  statisticsMap: Map<MetricObjKey, StatisticsObject>;
+  statisticsMap?: Map<MetricObjKey, StatisticsObject>;
   width: number;
 };
 
@@ -61,21 +61,6 @@ function DashboardMetricsLayout({
   calendarChartYAxisSelectInput,
   calendarChartHeading,
 }: DashboardMetricsLayoutProps) {
-  const componentWidth =
-    width < 480 // for iPhone 5/SE
-      ? width * 0.93
-      : width < 768 // for iPhones 6 - 15
-      ? width - 40
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
-      ? (width - 225) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
-      ? (width - 225) * 0.8
-      : 900 - 40;
-  const chartHeight =
-    width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
-  const chartWidth = width < 1024 ? componentWidth : componentWidth * 0.75;
   const cardWidth = 350;
 
   const displayHeading = (
@@ -199,67 +184,72 @@ function DashboardMetricsLayout({
   ) : null;
 
   // statistics section
-  const createdStatisticsAccordions = Array.from(statisticsMap).map(
-    ([key, statisticsObject], idx) => {
-      const {
-        arithmeticMean,
-        interquartileRange,
-        max,
-        median,
-        min,
-        mode,
-        standardDeviation,
-      } = statisticsObject;
+  const createdStatisticsAccordions = statisticsMap
+    ? Array.from(statisticsMap).map(([key, statisticsObject], idx) => {
+        const {
+          arithmeticMean,
+          interquartileRange,
+          max,
+          median,
+          min,
+          mode,
+          standardDeviation,
+        } = statisticsObject;
 
-      const statisticsAccordion = (
-        <Accordion
-          w={350}
-          key={`${idx}-${min}-${max}-${median}-${mode}-${arithmeticMean}-${interquartileRange}-${standardDeviation}`}
-        >
-          <Accordion.Item value={key}>
-            <Accordion.Control>
-              <Text weight={500} size="md">{`${key} ${semanticLabel}`}</Text>
-            </Accordion.Control>
-            <Accordion.Panel>
-              <Flex direction="column" rowGap="xs">
-                <Text>{`Min: ${isMoney ? '$' : ''} ${addCommaSeparator(
-                  min.value.toFixed(2)
-                )}`}</Text>
-                <Text pl={padding}>{`Occurred: ${min.occurred}`}</Text>
+        const unitSymbol =
+          isMoney || key === 'Revenue' || key === 'Average Order Value'
+            ? '$'
+            : '';
 
-                <Text>{`Max: ${isMoney ? '$' : ''} ${addCommaSeparator(
-                  max.value.toFixed(2)
-                )}`}</Text>
-                <Text pl={padding}>{`Occurred: ${max.occurred}`}</Text>
+        const statisticsAccordion = (
+          <Accordion
+            w={350}
+            key={`${idx}-${min}-${max}-${median}-${mode}-${arithmeticMean}-${interquartileRange}-${standardDeviation}`}
+          >
+            <Accordion.Item value={key}>
+              <Accordion.Control>
+                <Text weight={500} size="md">{`${key} ${semanticLabel}`}</Text>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <Flex direction="column" rowGap="xs">
+                  <Text>{`Min: ${unitSymbol} ${addCommaSeparator(
+                    min.value.toFixed(2)
+                  )}`}</Text>
+                  <Text pl={padding}>{`Occurred: ${min.occurred}`}</Text>
 
-                <Text>{`Median: ${isMoney ? '$' : ''} ${addCommaSeparator(
-                  median.toFixed(2)
-                )}`}</Text>
+                  <Text>{`Max: ${unitSymbol} ${addCommaSeparator(
+                    max.value.toFixed(2)
+                  )}`}</Text>
+                  <Text pl={padding}>{`Occurred: ${max.occurred}`}</Text>
 
-                <Text>{`Mode: ${isMoney ? '$' : ''} ${addCommaSeparator(
-                  mode.toFixed(2)
-                )}`}</Text>
+                  <Text>{`Median: ${unitSymbol} ${addCommaSeparator(
+                    median.toFixed(2)
+                  )}`}</Text>
 
-                <Text>{`Arithmetic Mean: ${
-                  isMoney ? '$' : ''
-                } ${addCommaSeparator(arithmeticMean.toFixed(2))}`}</Text>
+                  <Text>{`Mode: ${unitSymbol} ${addCommaSeparator(
+                    mode.toFixed(2)
+                  )}`}</Text>
 
-                <Text>{`Interquartile Range: ${
-                  isMoney ? '$' : ''
-                } ${addCommaSeparator(interquartileRange.toFixed(2))}`}</Text>
+                  <Text>{`Arithmetic Mean: ${unitSymbol} ${addCommaSeparator(
+                    arithmeticMean.toFixed(2)
+                  )}`}</Text>
 
-                <Text>{`Standard Deviation: ${
-                  isMoney ? '$' : ''
-                } ${addCommaSeparator(standardDeviation.toFixed(2))}`}</Text>
-              </Flex>
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-      );
+                  <Text>{`Interquartile Range: ${unitSymbol} ${addCommaSeparator(
+                    interquartileRange.toFixed(2)
+                  )}`}</Text>
 
-      return statisticsAccordion;
-    }
-  );
+                  <Text>{`Standard Deviation: ${unitSymbol} ${addCommaSeparator(
+                    standardDeviation.toFixed(2)
+                  )}`}</Text>
+                </Flex>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
+        );
+
+        return statisticsAccordion;
+      })
+    : null;
 
   const displayStatisticsSection = (
     <Stack w="100%" pb={padding} style={{ borderBottom: borderColor }}>

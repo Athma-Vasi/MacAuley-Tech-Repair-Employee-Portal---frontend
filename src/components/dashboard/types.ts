@@ -10,7 +10,7 @@ type DashboardFinancialMetric =
   | 'Other Metrics';
 type DashboardCustomerMetrics = 'Overview' | 'New' | 'Returning';
 type DashboardProductMetric = ProductCategory | 'All Products';
-type DashboardRepairMetrics = RepairCategory | 'All Repairs';
+type DashboardRepairMetric = RepairCategory | 'All Repairs';
 
 type DashboardState = {
   businessMetrics: BusinessMetric[];
@@ -19,7 +19,7 @@ type DashboardState = {
   financialMetric: DashboardFinancialMetric;
   metricsView: DashboardMetricsView;
   productMetric: DashboardProductMetric;
-  repairMetric: DashboardRepairMetrics;
+  repairMetric: DashboardRepairMetric;
   selectedYYYYMMDD: string;
   storeLocationView: BusinessMetricStoreLocation;
 };
@@ -63,7 +63,7 @@ type DashboardDispatch =
     }
   | {
       type: DashboardAction['setRepairMetric'];
-      payload: DashboardRepairMetrics;
+      payload: DashboardRepairMetric;
     }
   | {
       type: DashboardAction['setStoreLocationView'];
@@ -321,7 +321,7 @@ export type {
   DashboardFinancialMetric,
   DashboardMetricsView,
   DashboardProductMetric,
-  DashboardRepairMetrics,
+  DashboardRepairMetric,
   DashboardState,
   DaysInMonthsInYears,
   LocationYearSpread,

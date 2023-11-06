@@ -66,7 +66,7 @@ function FinancialDashboardDailyRevenue({
   );
 
   const {
-    revenueBarChartYAxisVariable,
+    barChartYAxisVariable,
     revenueCalendarChartYAxisVariable,
     revenueLineChartYAxisVariable,
     revenuePieChartYAxisVariable,
@@ -145,16 +145,14 @@ function FinancialDashboardDailyRevenue({
             payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
           });
         },
-        value: revenueBarChartYAxisVariable,
+        value: barChartYAxisVariable,
       },
     ]);
 
   // revenue -> charts -> bar -> display
   const displayRevenueBarChart = (
     <ResponsiveBarChart
-      barChartData={
-        dailyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable]
-      }
+      barChartData={dailyChartsRevenue.barChartsObj[barChartYAxisVariable]}
       indexBy="Days"
       keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}

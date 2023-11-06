@@ -4,7 +4,7 @@ import {
 } from '../../utils';
 
 type FinancialDashboardYearlyRevenueState = {
-  revenueBarChartYAxisVariable: FinancialMetricBarLineObjKey;
+  barChartYAxisVariable: FinancialMetricBarLineObjKey;
   revenueLineChartYAxisVariable: FinancialMetricBarLineObjKey;
   revenuePieChartYAxisVariable: FinancialMetricPieObjKey;
 };

@@ -205,7 +205,6 @@ function FinancialDashboardMonthlyOtherMetrics({
       }
       borderColor={borderColor}
       expandChartButton={createdExpandChartButton}
-      isMoney
       lineChart={displayOtherMetricsLineChart}
       lineChartHeading={otherMetricsLineChartHeading}
       lineChartYAxisSelectInput={

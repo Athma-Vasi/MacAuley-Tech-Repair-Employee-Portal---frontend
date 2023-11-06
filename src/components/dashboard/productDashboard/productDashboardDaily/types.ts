@@ -1,11 +1,11 @@
 import {
-  ProductMetricCalendarObjKey,
   ProductMetricBarLineChartObjKey,
+  ProductMetricCalendarObjKey,
 } from '../utils';
 
 type ProductDashboardDailyState = {
   // revenue
-  revenueBarChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  barChartYAxisVariable: ProductMetricBarLineChartObjKey;
   revenueCalendarChartYAxisVariable: ProductMetricCalendarObjKey;
   revenueLineChartYAxisVariable: ProductMetricBarLineChartObjKey;
 
