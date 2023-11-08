@@ -241,11 +241,15 @@ function globalReducer(
         state.customizeChartsPageData?.selectedYYYYMMDD ??
         new Date().toISOString().slice(0, 10);
 
+      let [existingYYYY, existingMM, existingDD] = existingYYYYMMDD.split('-');
+      existingMM = existingMM.padStart(2, '0');
+      existingDD = existingDD.padStart(2, '0');
+
       return {
         ...state,
         customizeChartsPageData: {
           ...customizeChartsPageData,
-          selectedYYYYMMDD: existingYYYYMMDD,
+          selectedYYYYMMDD: `${existingYYYY}-${existingMM}-${existingDD}`,
         },
       };
     }

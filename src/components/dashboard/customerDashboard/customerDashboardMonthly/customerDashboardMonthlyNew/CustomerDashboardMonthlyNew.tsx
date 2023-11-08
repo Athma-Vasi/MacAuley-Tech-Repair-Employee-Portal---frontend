@@ -39,6 +39,7 @@ import {
   customerDashboardMonthlyNewReducer,
   initialCustomerDashboardMonthlyNewState,
 } from './state';
+import { addCommaSeparator } from '../../../../../utils';
 
 function CustomerDashboardMonthlyNew({
   borderColor,
@@ -268,7 +269,7 @@ function CustomerDashboardMonthlyNew({
       chartWidth={chartWidth}
       lineChartData={monthlyChartsNew.lineChartsObj[newLineChartYAxisVariable]}
       hideControls
-      yFormat={(y) => `${y} Customers`}
+      yFormat={(y) => `${addCommaSeparator(y)} Customers`}
     />
   );
 

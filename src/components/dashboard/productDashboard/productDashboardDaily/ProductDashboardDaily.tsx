@@ -9,7 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../jsxCreators';
-import { splitCamelCase } from '../../../../utils';
+import { addCommaSeparator, splitCamelCase } from '../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -125,6 +125,7 @@ function ProductDashboardDaily({
     calendarView: 'Daily',
     metricCategory: 'Revenue',
     metricsView: 'Products',
+    productMetric,
     storeLocation,
     yAxisBarChartVariable: revenueBarChartYAxisVariable,
     yAxisCalendarChartVariable: revenueCalendarChartYAxisVariable,
@@ -277,7 +278,7 @@ function ProductDashboardDaily({
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
-      yFormat={(y) => `$${y}`}
+      yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
   );
 
@@ -398,6 +399,7 @@ function ProductDashboardDaily({
     calendarView: 'Daily',
     metricCategory: 'Units Sold',
     metricsView: 'Products',
+    productMetric,
     storeLocation,
     yAxisBarChartVariable: unitsSoldBarChartYAxisVariable,
     yAxisCalendarChartVariable: unitsSoldCalendarChartYAxisVariable,
@@ -559,7 +561,7 @@ function ProductDashboardDaily({
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
-      yFormat={(y) => `${y} Units Sold`}
+      yFormat={(y) => `${addCommaSeparator(y)} Units Sold`}
     />
   );
 

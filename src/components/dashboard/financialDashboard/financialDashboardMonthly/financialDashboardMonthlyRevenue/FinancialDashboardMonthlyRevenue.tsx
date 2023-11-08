@@ -9,7 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
-import { splitCamelCase } from '../../../../../utils';
+import { addCommaSeparator, splitCamelCase } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -276,7 +276,7 @@ function FinancialDashboardMonthlyRevenue({
         monthlyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable]
       }
       hideControls
-      yFormat={(y) => `$${y}`}
+      yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
   );
 

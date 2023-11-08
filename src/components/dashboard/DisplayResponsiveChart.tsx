@@ -1,4 +1,4 @@
-import { Stack, Text } from '@mantine/core';
+import { Group, Stack, Text } from '@mantine/core';
 
 import { useGlobalState } from '../../hooks';
 import {
@@ -7,11 +7,26 @@ import {
   ResponsiveLineChart,
   ResponsivePieChart,
 } from '../charts';
+import {
+  MONTHS,
+  PERCENTAGE_METRICS_SET,
+  UNITLESS_METRICS_SET,
+  YEARS_SET,
+} from './constants';
+import { addCommaSeparator, returnThemeColors } from '../../utils';
+import { COLORS_SWATCHES } from '../../constants/data';
 
 function DisplayResponsiveChart() {
   const {
-    globalState: { customizeChartsPageData, width, padding },
+    globalState: { customizeChartsPageData, width, padding, themeObject },
   } = useGlobalState();
+
+  const {
+    appThemeColors: { borderColor },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
 
   if (!customizeChartsPageData) {
     return null;
@@ -39,39 +54,31 @@ function DisplayResponsiveChart() {
   const barChartIndexBy =
     chartKind === 'bar'
       ? Object.keys(chartData[0]).filter(
-          (key) => key === 'Days' || key === 'Month' || key === 'Years'
+          (key) => key === 'Days' || key === 'Months' || key === 'Years'
         )[0]
       : '';
 
   const barChartKeys = Object.keys(chartData[0]).filter(
-    (key) => key !== 'Days' && key !== 'Month' && key !== 'Years'
+    (key) => key !== 'Days' && key !== 'Months' && key !== 'Years'
   );
 
   let [year, month, day] = selectedYYYYMMDD?.split('-') ?? ['2021', '01', '01'];
   month = month.padStart(2, '0');
   day = day.padStart(2, '0');
 
-  console.log('selectedYYYYMMDD', selectedYYYYMMDD);
+  const xValueLine = chartKind === 'line' ? chartData[0].data[0].x : '';
+  const xFormatLineChart = MONTHS.includes(xValueLine as any)
+    ? () => ''
+    : YEARS_SET.has(xValueLine)
+    ? (x: string) => `Year - ${x}`
+    : (x: string) => `Day - ${x}`;
 
-  const xFormatLineChart =
-    barChartIndexBy === 'Days'
-      ? (x: string) => `Day - ${x}`
-      : barChartIndexBy === 'Months'
-      ? () => ''
-      : (x: string) => `Year - ${x}`;
-
-  const lineChartKey = Object.keys(chartData[0])[0];
-  const percentageSets = new Set([
-    'netProfitMargin',
-    'churnRate',
-    'retentionRate',
-  ]);
-  const unitlessSets = new Set(['unitsSold', 'unitsRepaired']);
-  const yFormatLineChart = percentageSets.has(lineChartKey)
+  const lineChartKey = chartKind === 'line' ? chartData[0].id : '';
+  const yFormatLineChart = PERCENTAGE_METRICS_SET.has(lineChartKey)
     ? (y: number) => `${y}%`
-    : unitlessSets.has(lineChartKey)
-    ? (y: number) => `${y}`
-    : (y: number) => `$${y}`;
+    : UNITLESS_METRICS_SET.has(lineChartKey)
+    ? (y: number) => `${addCommaSeparator(y)}`
+    : (y: number) => `$${addCommaSeparator(y)}`;
 
   const displayResponsiveChart =
     chartKind === 'bar' ? (
@@ -112,8 +119,12 @@ function DisplayResponsiveChart() {
 
   return (
     <Stack w="100%" p={padding}>
-      <Text>{chartTitle}</Text>
-      {displayResponsiveChart}
+      <Text size="lg" weight={500}>
+        {chartTitle}
+      </Text>
+      <Group w="100%" style={{ borderTop: borderColor }} pt={padding}>
+        {displayResponsiveChart}
+      </Group>
     </Stack>
   );
 }

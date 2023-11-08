@@ -9,7 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
-import { splitCamelCase } from '../../../../../utils';
+import { addCommaSeparator, splitCamelCase } from '../../../../../utils';
 import { ResponsiveBarChart, ResponsiveLineChart } from '../../../../charts';
 import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
@@ -212,8 +212,8 @@ function FinancialDashboardYearlyOtherMetrics({
       hideControls
       yFormat={(y) =>
         otherMetricsLineChartYAxisVariable === 'averageOrderValue'
-          ? `$${y}`
-          : `${y} %`
+          ? `$${addCommaSeparator(y)}`
+          : `${addCommaSeparator(y)} %`
       }
     />
   );

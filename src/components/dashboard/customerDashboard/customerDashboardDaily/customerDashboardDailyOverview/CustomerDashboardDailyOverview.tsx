@@ -30,6 +30,7 @@ import {
   customerDashboardDailyOverviewReducer,
   initialCustomerDashboardDailyOverviewState,
 } from './state';
+import { addCommaSeparator } from '../../../../../utils';
 
 function CustomerDashboardDailyOverview({
   borderColor,
@@ -244,7 +245,7 @@ function CustomerDashboardDailyOverview({
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
-      yFormat={(y) => `${y} Customers`}
+      yFormat={(y) => `${addCommaSeparator(y)} Customers`}
     />
   );
 

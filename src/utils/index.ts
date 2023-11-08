@@ -1889,8 +1889,8 @@ async function captureScreenshot({
   });
 }
 
-function addCommaSeparator(numStr: string): string {
-  return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+function addCommaSeparator(numStr: string | number): string {
+  return numStr.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 function returnToFixedFloat(num: number, precision = 4): number {

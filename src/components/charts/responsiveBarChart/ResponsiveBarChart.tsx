@@ -207,20 +207,6 @@ function ResponsiveBarChart({
     screenshotImageType,
   } = responsiveBarChartState;
 
-  // set fill patterns on enable
-  useEffect(() => {
-    if (!barChartData || !barChartData.length) {
-      return;
-    }
-
-    const { barFillPatterns } = createBarFillPatterns(barChartData);
-
-    responsiveBarChartDispatch({
-      type: responsiveBarChartAction.setFillPatterns,
-      payload: barFillPatterns,
-    });
-  }, [enableFillPatterns, barChartData]);
-
   // set motion config on enable
   useEffect(() => {
     if (!isPrefersReducedMotion) {
@@ -233,13 +219,13 @@ function ResponsiveBarChart({
     });
   }, [isPrefersReducedMotion]);
 
+  const { barFillPatterns } = createBarFillPatterns(barChartData);
+
   const displayResponsiveBar = (
     <ResponsiveBar
       // base
       data={barChartData}
-      // keys={['hot dog', 'burger', 'sandwich', 'kebab', 'fries', 'donut']}
       keys={keys}
-      // indexBy="country"
       indexBy={indexBy}
       groupMode={groupMode}
       layout={layout}
@@ -262,7 +248,7 @@ function ResponsiveBarChart({
       borderWidth={chartBorderWidth}
       borderColor={chartBorderColor}
       defs={NIVO_CHART_PATTERN_DEFS}
-      fill={enableFillPatterns ? fillPatterns : []}
+      fill={enableFillPatterns ? barFillPatterns : []}
       // labels
       enableLabel={enableLabels}
       labelSkipWidth={labelSkipWidth}
@@ -361,9 +347,7 @@ function ResponsiveBarChart({
       isInteractive={true}
       role="application"
       ariaLabel="Nivo bar chart"
-      barAriaLabel={(e) =>
-        e.id + ': ' + e.formattedValue + ' in country: ' + e.indexValue
-      }
+      barAriaLabel={(e) => e.id + ': ' + e.formattedValue + e.indexValue}
     />
   );
 
@@ -1291,7 +1275,7 @@ function ResponsiveBarChart({
         top: 0,
         zIndex: 4,
       }}
-      w="100%"
+      w={width < 1192 ? '100%' : '95%'}
     >
       <Title order={5} color={textColor}>
         Motion

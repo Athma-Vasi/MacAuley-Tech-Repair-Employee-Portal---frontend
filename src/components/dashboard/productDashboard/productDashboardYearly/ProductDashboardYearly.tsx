@@ -9,7 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../jsxCreators';
-import { splitCamelCase } from '../../../../utils';
+import { addCommaSeparator, splitCamelCase } from '../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
@@ -119,6 +119,7 @@ function ProductDashboardYearly({
     calendarView: 'Yearly',
     metricCategory: 'Revenue',
     metricsView: 'Products',
+    productMetric,
     storeLocation,
     yAxisBarChartVariable: revenueBarChartYAxisVariable,
     yAxisLineChartVariable: revenueLineChartYAxisVariable,
@@ -325,6 +326,7 @@ function ProductDashboardYearly({
     calendarView: 'Yearly',
     metricCategory: 'Units Sold',
     metricsView: 'Products',
+    productMetric,
     storeLocation,
     yAxisBarChartVariable: unitsSoldBarChartYAxisVariable,
     yAxisLineChartVariable: unitsSoldLineChartYAxisVariable,
@@ -485,7 +487,7 @@ function ProductDashboardYearly({
       }
       hideControls
       xFormat={(x) => `Year - ${x}`}
-      yFormat={(y) => `${y} Units Sold`}
+      yFormat={(y) => `${addCommaSeparator(y)} Units Sold`}
     />
   );
 

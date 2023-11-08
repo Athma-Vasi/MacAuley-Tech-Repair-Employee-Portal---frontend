@@ -1,18 +1,8 @@
-import {
-  AppShell,
-  Flex,
-  Footer,
-  Group,
-  ScrollArea,
-  Space,
-  Text,
-} from '@mantine/core';
-import { useWindowScroll } from '@mantine/hooks';
-import { useEffect, useRef, useState } from 'react';
+import { AppShell, Flex, Group, ScrollArea, Space } from '@mantine/core';
+import { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../constants/data';
-import { useAuth } from '../../hooks';
 import { useGlobalState } from '../../hooks/useGlobalState';
 import { returnThemeColors } from '../../utils';
 import { BreadcrumbsBuilder } from '../breadcrumbsBuilder/BreadcrumbsBuilder';

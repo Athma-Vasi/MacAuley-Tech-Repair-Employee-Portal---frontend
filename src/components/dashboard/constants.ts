@@ -110,6 +110,28 @@ const BUSINESS_METRIC_STORE_LOCATIONS: BusinessMetricStoreLocation[] = [
   'Vancouver',
 ];
 
+const YEARS_SET = new Set([
+  '2013',
+  '2014',
+  '2015',
+  '2016',
+  '2017',
+  '2018',
+  '2019',
+  '2020',
+  '2021',
+  '2022',
+  '2023',
+]);
+
+const PERCENTAGE_METRICS_SET = new Set([
+  'Net Profit Margin',
+  'Conversion Rate',
+  'Churn Rate',
+  'Retention Rate',
+]);
+const UNITLESS_METRICS_SET = new Set(['Units Sold', 'Units Repaired']);
+
 export {
   BUSINESS_METRIC_STORE_LOCATIONS,
   CALENDAR_VIEW_TABS_DATA,
@@ -118,9 +140,12 @@ export {
   FINANCIALS_METRICS_SELECT_INPUT_DATA,
   METRICS_VIEW_TABS_DATA,
   MONTHS,
+  PERCENTAGE_METRICS_SET,
   PRODUCT_CATEGORIES,
   PRODUCT_METRICS_SELECT_INPUT_DATA,
   REPAIR_CATEGORIES,
   REPAIR_METRICS_SELECT_INPUT_DATA,
   STORE_LOCATION_VIEW_TABS_DATA,
+  UNITLESS_METRICS_SET,
+  YEARS_SET,
 };

@@ -9,7 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../jsxCreators';
-import { splitCamelCase } from '../../../../utils';
+import { addCommaSeparator, splitCamelCase } from '../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -220,7 +220,11 @@ function RepairDashboardMonthly({
       chartWidth={chartWidth}
       lineChartData={monthlyCharts.lineChartsObj[lineChartYAxisVariable]}
       hideControls
-      yFormat={(y) => `$${y}`}
+      yFormat={(y) =>
+        `${lineChartYAxisVariable === 'revenue' ? '$' : ''}${addCommaSeparator(
+          y
+        )}`
+      }
     />
   );
 

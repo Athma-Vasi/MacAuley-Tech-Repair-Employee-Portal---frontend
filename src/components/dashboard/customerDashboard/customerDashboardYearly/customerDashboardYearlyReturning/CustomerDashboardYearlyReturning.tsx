@@ -9,7 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
-import { splitCamelCase } from '../../../../../utils';
+import { addCommaSeparator, splitCamelCase } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
@@ -267,7 +267,7 @@ function CustomerDashboardYearlyReturning({
       }
       hideControls
       xFormat={(x) => `Year - ${x}`}
-      yFormat={(y) => `${y} Customers`}
+      yFormat={(y) => `${addCommaSeparator(y)} Customers`}
     />
   );
 

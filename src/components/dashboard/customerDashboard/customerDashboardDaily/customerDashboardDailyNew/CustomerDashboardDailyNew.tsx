@@ -39,6 +39,7 @@ import {
   customerDashboardDailyNewReducer,
   initialCustomerDashboardDailyNewState,
 } from './state';
+import { addCommaSeparator } from '../../../../../utils';
 
 function CustomerDashboardDailyNew({
   borderColor,
@@ -265,7 +266,7 @@ function CustomerDashboardDailyNew({
       lineChartData={dailyChartsNew.lineChartsObj[newLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
-      yFormat={(y) => `${y} Customers`}
+      yFormat={(y) => `${addCommaSeparator(y)} Customers`}
     />
   );
 

@@ -9,7 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../jsxCreators';
-import { splitCamelCase } from '../../../../utils';
+import { addCommaSeparator, splitCamelCase } from '../../../../utils';
 import { ResponsiveBarChart, ResponsiveLineChart } from '../../../charts';
 import DashboardMetricsLayout from '../../DashboardMetricsLayout';
 import { RepairMetricsCards } from '../../jsxHelpers';
@@ -200,7 +200,11 @@ function RepairDashboardYearly({
       lineChartData={yearlyCharts.lineChartsObj[lineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Year - ${x}`}
-      yFormat={(y) => `$${y}`}
+      yFormat={(y) =>
+        `${lineChartYAxisVariable === 'revenue' ? '$' : ''}${addCommaSeparator(
+          y
+        )}`
+      }
     />
   );
 

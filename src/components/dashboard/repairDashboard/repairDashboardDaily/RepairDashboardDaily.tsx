@@ -9,7 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../jsxCreators';
-import { splitCamelCase } from '../../../../utils';
+import { addCommaSeparator, splitCamelCase } from '../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -108,6 +108,7 @@ function RepairDashboardDaily({
     calendarView: 'Daily',
     metricCategory: splitCamelCase(repairMetric),
     metricsView: 'Repairs',
+    // repairMetric,
     storeLocation,
     yAxisBarChartVariable: barChartYAxisVariable,
     yAxisCalendarChartVariable: calendarChartYAxisVariable,
@@ -218,7 +219,11 @@ function RepairDashboardDaily({
       lineChartData={dailyCharts.lineChartsObj[lineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
-      yFormat={(y) => `$${y}`}
+      yFormat={(y) =>
+        `${lineChartYAxisVariable === 'revenue' ? '$' : ''}${addCommaSeparator(
+          y
+        )}`
+      }
     />
   );
 

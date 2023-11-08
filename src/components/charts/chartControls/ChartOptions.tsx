@@ -8,15 +8,14 @@ import {
   TitleOrder,
   Tooltip,
 } from '@mantine/core';
-import { ScreenshotImageType } from '../../../types';
-import { NivoChartTitlePosition } from '../types';
-import { ChangeEvent, useEffect, useRef } from 'react';
-import { BiReset } from 'react-icons/bi';
+import { ChangeEvent, useEffect } from 'react';
 import { TbDownload } from 'react-icons/tb';
+
 import {
   COLORS_SWATCHES,
   SCREENSHOT_IMAGE_TYPE_DATA,
 } from '../../../constants/data';
+import { FILENAME_REGEX, SERIAL_ID_REGEX } from '../../../constants/regex';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -24,20 +23,21 @@ import {
   returnAccessibleSliderInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
+import { ScreenshotImageType } from '../../../types';
 import {
-  returnSerialIdValidationText,
-  returnFilenameValidationText,
   captureScreenshot,
+  returnFilenameValidationText,
+  returnSerialIdValidationText,
 } from '../../../utils';
 import {
-  AccessibleTextInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
   AccessibleButtonCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleSliderInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
 } from '../../wrappers';
 import { NIVO_CHART_TITLE_POSITION_DATA } from '../constants';
+import { NivoChartTitlePosition } from '../types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
-import { FILENAME_REGEX, SERIAL_ID_REGEX } from '../../../constants/regex';
 
 type ChartOptionsAction = {
   setChartTitle: 'setChartTitle';

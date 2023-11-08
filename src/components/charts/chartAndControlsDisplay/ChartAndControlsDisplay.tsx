@@ -9,6 +9,7 @@ import {
   Title,
   TitleOrder,
 } from '@mantine/core';
+
 import { NivoChartTitlePosition } from '../types';
 
 type ChartAndControlsDisplayProps = {

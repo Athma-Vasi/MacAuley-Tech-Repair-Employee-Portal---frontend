@@ -39,6 +39,7 @@ import {
   customerDashboardDailyReturningReducer,
   initialCustomerDashboardDailyReturningState,
 } from './state';
+import { addCommaSeparator } from '../../../../../utils';
 
 function CustomerDashboardDailyReturning({
   borderColor,
@@ -278,7 +279,7 @@ function CustomerDashboardDailyReturning({
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
-      yFormat={(y) => `${y} Customers`}
+      yFormat={(y) => `${addCommaSeparator(y)} Customers`}
     />
   );
 

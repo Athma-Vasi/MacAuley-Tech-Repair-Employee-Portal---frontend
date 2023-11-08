@@ -8,10 +8,12 @@ function createBarFillPatterns(barChartData: BarChartData[]) {
   );
 
   const barFillPatterns = barDataObjKeys.map((barDataObjKey, idx) => {
+    /**
+     * { match: { id: 'Repair' }, id: 'dots' },
+        { match: { id: 'In-Store' }, id: 'lines' },
+     */
     const barFillPattern: NivoFillPatternObject = {
-      match: {
-        id: barDataObjKey,
-      },
+      match: { id: barDataObjKey },
       id: idx % 2 === 0 ? 'dots' : 'lines',
     };
 

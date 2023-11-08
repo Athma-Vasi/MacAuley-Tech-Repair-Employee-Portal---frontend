@@ -22,7 +22,10 @@ function BreadcrumbsBuilder(pathname: string) {
         pathNameCapitalizedWithNoHyphens.replace(/([A-Z])/g, ' $1');
 
       const location = pathArray.slice(0, index + 1).join('/');
-      const label = pathNameCapitalizedWithSpacesAndNoHyphens;
+      const label = pathNameCapitalizedWithSpacesAndNoHyphens
+        .split(' ')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ');
 
       acc.push({
         label,

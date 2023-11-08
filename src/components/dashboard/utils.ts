@@ -341,29 +341,31 @@ import {
 
 function returnChartTitleNavigateLinks({
   calendarView,
+  day = '01',
+  metricCategory,
+  metricsView,
+  month = '01',
+  months,
+  productMetric,
   storeLocation,
   yAxisBarChartVariable,
   yAxisCalendarChartVariable,
   yAxisLineChartVariable,
   yAxisPieChartVariable,
   year,
-  day = '01',
-  month = '01',
-  metricCategory,
-  months,
-  metricsView,
 }: {
   calendarView: DashboardCalendarView;
-  metricsView: DashboardMetricsView; // 'customers' | 'financials' | 'products' | 'repairs'
-  metricCategory: string; // 'overview' | 'all' | 'new' | 'returning' | 'total' ...
   day?: string;
+  metricCategory: string; // 'overview' | 'all' | 'new' | 'returning' | 'total' ...
+  metricsView: DashboardMetricsView; // 'customers' | 'financials' | 'products' | 'repairs'
   month?: string;
   months?: Month[];
+  productMetric?: ProductCategory | 'All Products';
   storeLocation: BusinessMetricStoreLocation;
-  yAxisPieChartVariable?: string;
-  yAxisCalendarChartVariable?: string;
   yAxisBarChartVariable: string;
+  yAxisCalendarChartVariable?: string;
   yAxisLineChartVariable: string;
+  yAxisPieChartVariable?: string;
   year: Year;
 }) {
   const xAxisVariable =
@@ -375,28 +377,31 @@ function returnChartTitleNavigateLinks({
 
   const yAxisBarChartPrefix =
     yAxisBarChartVariable.toLowerCase() === metricCategory.toLowerCase()
-      ? `${metricCategory} `
-      : `${splitCamelCase(yAxisBarChartVariable)} ${
-          metricCategory === 'Other Metrics' ? '' : metricCategory
-        } `;
+      ? `${productMetric ? productMetric : ''} ${metricCategory} `
+      : `${productMetric ? productMetric : ''} ${splitCamelCase(
+          yAxisBarChartVariable
+        )} ${metricCategory === 'Other Metrics' ? '' : metricCategory} ` ?? '';
+
   const yAxisCalendarChartPrefix =
     yAxisCalendarChartVariable?.toLowerCase() === metricCategory.toLowerCase()
-      ? `${metricCategory} `
-      : `${splitCamelCase(yAxisCalendarChartVariable ?? '')} ${
-          metricCategory === 'Other Metrics' ? '' : metricCategory
-        } ` ?? '';
+      ? `${productMetric ? productMetric : ''} ${metricCategory} `
+      : `${productMetric ? productMetric : ''} ${splitCamelCase(
+          yAxisCalendarChartVariable ?? ''
+        )} ${metricCategory === 'Other Metrics' ? '' : metricCategory} ` ?? '';
+
   const yAxisLineChartPrefix =
     yAxisLineChartVariable.toLowerCase() === metricCategory.toLowerCase()
-      ? `${metricCategory} `
-      : `${splitCamelCase(yAxisLineChartVariable)} ${
-          metricCategory === 'Other Metrics' ? '' : metricCategory
-        } `;
+      ? `${productMetric ? productMetric : ''} ${metricCategory} `
+      : `${productMetric ? productMetric : ''} ${splitCamelCase(
+          yAxisLineChartVariable
+        )} ${metricCategory === 'Other Metrics' ? '' : metricCategory} ` ?? '';
+
   const yAxisPieChartPrefix =
     yAxisPieChartVariable?.toLowerCase() === metricCategory.toLowerCase()
-      ? `${metricCategory} `
-      : `${splitCamelCase(yAxisPieChartVariable ?? '')} ${
-          metricCategory === 'Other Metrics' ? '' : metricCategory
-        } ` ?? '';
+      ? `${productMetric ? productMetric : ''} ${metricCategory} `
+      : `${productMetric ? productMetric : ''} ${splitCamelCase(
+          yAxisPieChartVariable ?? ''
+        )} ${metricCategory === 'Other Metrics' ? '' : metricCategory} ` ?? '';
 
   const barChartHeading =
     calendarView === 'Daily'
@@ -436,57 +441,29 @@ function returnChartTitleNavigateLinks({
         }, ${year} at ${storeLocation}`
       : `${yAxisPieChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`;
 
-  const expandBarChartNavigateLink =
-    calendarView === 'Daily'
-      ? `/home/dashboard/${metricsView}-daily-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-bar-chart`
-      : calendarView === 'Monthly'
-      ? `/home/dashboard/${metricsView}-monthly-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-bar-chart`
-      : `/home/dashboard/${metricsView}-yearly-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-bar-chart`;
+  const expandBarChartNavigateLink = `/home/dashboard/${metricsView}-${calendarView}-${splitCamelCase(
+    metricCategory
+  )
+    .split(' ')
+    .join('-')}-bar-chart`;
 
-  const expandCalendarChartNavigateLink =
-    calendarView === 'Daily'
-      ? `/home/dashboard/${metricsView}-daily-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-calendar-chart`
-      : calendarView === 'Monthly'
-      ? `/home/dashboard/${metricsView}-monthly-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-calendar-chart`
-      : `/home/dashboard/${metricsView}-yearly-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-calendar-chart`;
+  const expandCalendarChartNavigateLink = `/home/dashboard/${metricsView}-${calendarView}-${splitCamelCase(
+    metricCategory
+  )
+    .split(' ')
+    .join('-')}-calendar-chart`;
 
-  const expandLineChartNavigateLink =
-    calendarView === 'Daily'
-      ? `/home/dashboard/${metricsView}-daily-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-line-chart`
-      : calendarView === 'Monthly'
-      ? `/home/dashboard/${metricsView}-monthly-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-line-chart`
-      : `/home/dashboard/${metricsView}-yearly-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-line-chart`;
+  const expandLineChartNavigateLink = `/home/dashboard/${metricsView}-${calendarView}-${splitCamelCase(
+    metricCategory
+  )
+    .split(' ')
+    .join('-')}-line-chart`;
 
-  const expandPieChartNavigateLink =
-    calendarView === 'Daily'
-      ? `/home/dashboard/${metricsView}-daily-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-pie-chart`
-      : calendarView === 'Monthly'
-      ? `/home/dashboard/${metricsView}-monthly-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-pie-chart`
-      : `/home/dashboard/${metricsView}-yearly-${splitCamelCase(metricCategory)
-          .split(' ')
-          .join('-')}-pie-chart`;
+  const expandPieChartNavigateLink = `/home/dashboard/${metricsView}-${calendarView}-${splitCamelCase(
+    metricCategory
+  )
+    .split(' ')
+    .join('-')}-pie-chart`;
 
   return {
     barChartHeading,

@@ -105,22 +105,6 @@ function ChartsAndGraphsControlsStacker({
     </Flex>
   );
 
-  // const displayComponentStack =
-  //   value === '' ? (
-  //     <>
-  //       <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
-  //         {splitWordIntoUpperCasedSentence(label)}
-  //       </Text>
-  //       <Group>{input}</Group>
-  //     </>
-  //   ) : (
-  //     <>
-  //       {displayTopSection}
-
-  //       {displayBottomSection}
-  //     </>
-  //   );
-
   return (
     <Flex
       align="center"
