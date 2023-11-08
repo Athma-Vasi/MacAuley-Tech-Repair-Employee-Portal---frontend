@@ -70,6 +70,7 @@ function FinancialDashboardDaily({
         day={day}
         month={month}
         padding={padding}
+        storeLocation={storeLocation}
         width={width}
         year={year}
       />
@@ -83,6 +84,7 @@ function FinancialDashboardDaily({
         day={day}
         month={month}
         padding={padding}
+        storeLocation={storeLocation}
         width={width}
         year={year}
       />
@@ -96,6 +98,7 @@ function FinancialDashboardDaily({
         day={day}
         month={month}
         padding={padding}
+        storeLocation={storeLocation}
         width={width}
         year={year}
       />
@@ -109,6 +112,7 @@ function FinancialDashboardDaily({
         day={day}
         month={month}
         padding={padding}
+        storeLocation={storeLocation}
         width={width}
         year={year}
       />
@@ -122,6 +126,7 @@ function FinancialDashboardDaily({
         day={day}
         month={month}
         padding={padding}
+        storeLocation={storeLocation}
         width={width}
         year={year}
       />
