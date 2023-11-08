@@ -5,7 +5,7 @@ import {
 
 type ProductDashboardMonthlyState = {
   // revenue
-  barChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  revenueBarChartYAxisVariable: ProductMetricBarLineChartObjKey;
   revenueCalendarChartYAxisVariable: ProductMetricCalendarObjKey;
   revenueLineChartYAxisVariable: ProductMetricBarLineChartObjKey;
 

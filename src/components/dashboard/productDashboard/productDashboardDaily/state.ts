@@ -6,7 +6,7 @@ import {
 
 const initialProductDashboardDailyState: ProductDashboardDailyState = {
   // revenue
-  barChartYAxisVariable: 'total',
+  revenueBarChartYAxisVariable: 'total',
   revenueCalendarChartYAxisVariable: 'total',
   revenueLineChartYAxisVariable: 'total',
 
@@ -36,7 +36,7 @@ function productDashboardDailyReducer(
     case productDashboardDailyAction.setRevenueBarChartYAxisVariable:
       return {
         ...state,
-        barChartYAxisVariable: action.payload,
+        revenueBarChartYAxisVariable: action.payload,
       };
     case productDashboardDailyAction.setRevenueCalendarChartYAxisVariable:
       return {

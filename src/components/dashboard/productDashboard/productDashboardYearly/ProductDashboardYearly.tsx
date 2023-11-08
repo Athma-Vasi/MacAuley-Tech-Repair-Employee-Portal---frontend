@@ -1,11 +1,15 @@
 import { MantineNumberSize, Stack } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../jsxCreators';
+import { splitCamelCase } from '../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
@@ -20,7 +24,7 @@ import {
   DashboardProductMetric,
   Year,
 } from '../../types';
-import { returnStatistics } from '../../utils';
+import { returnChartTitleNavigateLinks, returnStatistics } from '../../utils';
 import { PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA } from '../constants';
 import {
   ProductMetricBarLineChartObjKey,
@@ -57,6 +61,9 @@ function ProductDashboardYearly({
   width: number;
   year: Year;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [productDashboardYearlyState, productDashboardYearlyDispatch] =
     useReducer(
       productDashboardYearlyReducer,
@@ -64,7 +71,7 @@ function ProductDashboardYearly({
     );
 
   const {
-    barChartYAxisVariable,
+    revenueBarChartYAxisVariable,
     revenueLineChartYAxisVariable,
     unitsSoldBarChartYAxisVariable,
     unitsSoldLineChartYAxisVariable,
@@ -90,38 +97,6 @@ function ProductDashboardYearly({
     width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  // heading
-
-  // heading -> revenue
-
-  // heading -> revenue -> pie
-  const pieChartRevenueHeading = `${productMetric} Revenue for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
-
-  // heading -> revenue -> bar, line
-  const barLineChartRevenueHeading = `${productMetric} Revenue for ${year} at ${storeLocation}`;
-
-  // heading -> units sold
-
-  // heading -> units sold -> pie
-  const pieChartUnitsSoldHeading = `${productMetric} Units Sold for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
-
-  // heading -> units sold -> bar, line
-  const barLineChartUnitsSoldHeading = `${productMetric} Units Sold for ${year} at ${storeLocation}`;
-
   // revenue
 
   // revenue -> statistics
@@ -132,7 +107,50 @@ function ProductDashboardYearly({
 
   // revenue -> charts
 
+  // revenue -> charts -> titles & navlinks
+  const {
+    barChartHeading: revenueBarChartHeading,
+    expandBarChartNavigateLink: expandBarChartNavigateLinkRevenue,
+    expandLineChartNavigateLink: expandLineChartNavigateLinkRevenue,
+    lineChartHeading: revenueLineChartHeading,
+    pieChartHeading: pieChartRevenueHeading,
+    expandPieChartNavigateLink: expandPieChartNavigateLinkRevenue,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Yearly',
+    metricCategory: 'Revenue',
+    metricsView: 'Products',
+    storeLocation,
+    yAxisBarChartVariable: revenueBarChartYAxisVariable,
+    yAxisLineChartVariable: revenueLineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // revenue -> charts -> pie
+
+  // revenue -> charts -> pie -> expand chart button
+  const [createdExpandRevenuePieChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${pieChartRevenueHeading}`,
+      semanticName: 'Expand Pie Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: yearlyCharts.revenue.pieChartObj,
+            chartTitle: pieChartRevenueHeading,
+            chartKind: 'pie',
+          },
+        });
+
+        navigate(expandPieChartNavigateLinkRevenue);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // revenue -> charts -> pie -> display
   const displayPieChart = (
@@ -145,6 +163,29 @@ function ProductDashboardYearly({
   );
 
   // revenue -> charts -> bar
+
+  // revenue -> charts -> bar -> expand chart button
+  const [createdExpandRevenueBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${revenueBarChartHeading}`,
+      semanticName: 'Expand Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable],
+            chartTitle: revenueBarChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLinkRevenue);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // revenue -> charts -> bar -> y-axis select input
   const [createdRevenueBarChartYAxisVariablesSelectInput] =
@@ -159,7 +200,7 @@ function ProductDashboardYearly({
               .value as ProductMetricBarLineChartObjKey,
           });
         },
-        value: barChartYAxisVariable,
+        value: revenueBarChartYAxisVariable,
       },
     ]);
 
@@ -168,7 +209,9 @@ function ProductDashboardYearly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={yearlyCharts.revenue.barChartsObj[barChartYAxisVariable]}
+      barChartData={
+        yearlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable]
+      }
       hideControls
       indexBy="Years"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -176,6 +219,29 @@ function ProductDashboardYearly({
   );
 
   // revenue -> charts -> line
+
+  // revenue -> charts -> line -> expand chart button
+  const [createdExpandRevenueLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${revenueLineChartHeading}`,
+      semanticName: 'Expand Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable],
+            chartTitle: revenueLineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLinkRevenue);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // revenue -> charts -> line -> y-axis select input
   const [createdRevenueLineChartYAxisVariablesSelectInput] =
@@ -203,6 +269,7 @@ function ProductDashboardYearly({
         yearlyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable]
       }
       hideControls
+      xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `$${y}`}
     />
   );
@@ -211,13 +278,15 @@ function ProductDashboardYearly({
   const displayRevenueSection = (
     <DashboardMetricsLayout
       barChart={displayRevenueBarChart}
-      barChartHeading={barLineChartRevenueHeading}
+      barChartHeading={revenueBarChartHeading}
       barChartYAxisSelectInput={createdRevenueBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandRevenueBarChartButton}
+      expandLineChartButton={createdExpandRevenueLineChartButton}
+      expandPieChartButton={createdExpandRevenuePieChartButton}
       isMoney
       lineChart={displayRevenueLineChart}
-      lineChartHeading={barLineChartRevenueHeading}
+      lineChartHeading={revenueLineChartHeading}
       lineChartYAxisSelectInput={
         createdRevenueLineChartYAxisVariablesSelectInput
       }
@@ -225,7 +294,9 @@ function ProductDashboardYearly({
       padding={padding}
       pieChart={displayPieChart}
       pieChartHeading={pieChartRevenueHeading}
-      sectionHeading={`Yearly ${productMetric} Revenue`}
+      sectionHeading={`${splitCamelCase(
+        storeLocation
+      )} Yearly ${productMetric} Revenue`}
       semanticLabel={`${productMetric} Revenue`}
       statisticsMap={yearlyRevenueStatistics}
       width={width}
@@ -242,7 +313,52 @@ function ProductDashboardYearly({
 
   // units sold -> charts
 
+  // units sold -> charts -> titles & navlinks
+  const {
+    barChartHeading: barChartUnitsSoldHeading,
+    expandBarChartNavigateLink: expandBarChartNavigateLinkUnitsSold,
+    expandLineChartNavigateLink: expandLineChartNavigateLinkUnitsSold,
+    lineChartHeading: lineChartUnitsSoldHeading,
+    pieChartHeading: pieChartUnitsSoldHeading,
+    expandPieChartNavigateLink: expandPieChartNavigateLinkUnitsSold,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Yearly',
+    metricCategory: 'Units Sold',
+    metricsView: 'Products',
+    storeLocation,
+    yAxisBarChartVariable: unitsSoldBarChartYAxisVariable,
+    yAxisLineChartVariable: unitsSoldLineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // units sold -> charts -> pie
+
+  // units sold -> charts -> pie -> expand chart button
+  const [createdExpandUnitsSoldPieChartButton] = returnAccessibleButtonElements(
+    [
+      {
+        buttonLabel: 'Expand',
+        semanticDescription: `Expand and customize ${pieChartUnitsSoldHeading}`,
+        semanticName: 'Expand Pie Chart',
+        buttonOnClick: () => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartData: yearlyCharts.unitsSold.pieChartObj,
+              chartTitle: pieChartUnitsSoldHeading,
+              chartKind: 'pie',
+            },
+          });
+
+          navigate(expandPieChartNavigateLinkUnitsSold);
+        },
+        leftIcon: <LuExpand />,
+      },
+    ]
+  );
 
   // units sold -> charts -> pie -> display
   const displayUnitsSoldPieChart = (
@@ -255,6 +371,33 @@ function ProductDashboardYearly({
   );
 
   // units sold -> charts -> bar
+
+  // units sold -> charts -> bar -> expand chart button
+  const [createdExpandUnitsSoldBarChartButton] = returnAccessibleButtonElements(
+    [
+      {
+        buttonLabel: 'Expand',
+        semanticDescription: `Expand and customize ${barChartUnitsSoldHeading}`,
+        semanticName: 'Expand Bar Chart',
+        buttonOnClick: () => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartData:
+                yearlyCharts.unitsSold.barChartsObj[
+                  unitsSoldBarChartYAxisVariable
+                ],
+              chartTitle: barChartUnitsSoldHeading,
+              chartKind: 'bar',
+            },
+          });
+
+          navigate(expandBarChartNavigateLinkUnitsSold);
+        },
+        leftIcon: <LuExpand />,
+      },
+    ]
+  );
 
   // units sold -> charts -> bar -> y-axis select input
   const [createdUnitsSoldBarChartYAxisVariablesSelectInput] =
@@ -289,6 +432,32 @@ function ProductDashboardYearly({
 
   // units sold -> charts -> line
 
+  // units sold -> charts -> line -> expand chart button
+  const [createdExpandUnitsSoldLineChartButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Expand',
+        semanticDescription: `Expand and customize ${lineChartUnitsSoldHeading}`,
+        semanticName: 'Expand Line Chart',
+        buttonOnClick: () => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartData:
+                yearlyCharts.unitsSold.lineChartsObj[
+                  unitsSoldLineChartYAxisVariable
+                ],
+              chartTitle: lineChartUnitsSoldHeading,
+              chartKind: 'line',
+            },
+          });
+
+          navigate(expandLineChartNavigateLinkUnitsSold);
+        },
+        leftIcon: <LuExpand />,
+      },
+    ]);
+
   // units sold -> charts -> line -> y-axis select input
   const [createdUnitsSoldLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
@@ -315,6 +484,7 @@ function ProductDashboardYearly({
         yearlyCharts.unitsSold.lineChartsObj[unitsSoldLineChartYAxisVariable]
       }
       hideControls
+      xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `${y} Units Sold`}
     />
   );
@@ -323,14 +493,16 @@ function ProductDashboardYearly({
   const displayUnitsSoldSection = (
     <DashboardMetricsLayout
       barChart={displayUnitsSoldBarChart}
-      barChartHeading={barLineChartUnitsSoldHeading}
+      barChartHeading={barChartUnitsSoldHeading}
       barChartYAxisSelectInput={
         createdUnitsSoldBarChartYAxisVariablesSelectInput
       }
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandUnitsSoldBarChartButton}
+      expandLineChartButton={createdExpandUnitsSoldLineChartButton}
+      expandPieChartButton={createdExpandUnitsSoldPieChartButton}
       lineChart={displayUnitsSoldLineChart}
-      lineChartHeading={barLineChartUnitsSoldHeading}
+      lineChartHeading={lineChartUnitsSoldHeading}
       lineChartYAxisSelectInput={
         createdUnitsSoldLineChartYAxisVariablesSelectInput
       }
@@ -338,7 +510,9 @@ function ProductDashboardYearly({
       padding={padding}
       pieChart={displayUnitsSoldPieChart}
       pieChartHeading={pieChartUnitsSoldHeading}
-      sectionHeading={`Yearly ${productMetric} Units Sold`}
+      sectionHeading={`${splitCamelCase(
+        storeLocation
+      )} Yearly ${productMetric} Units Sold`}
       semanticLabel={`${productMetric} Units Sold`}
       statisticsMap={yearlyUnitsSoldStatistics}
       width={width}

@@ -1,11 +1,15 @@
 import { MantineNumberSize, Stack } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../jsxCreators';
+import { splitCamelCase } from '../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -21,7 +25,7 @@ import {
   DashboardProductMetric,
   Year,
 } from '../../types';
-import { returnStatistics } from '../../utils';
+import { returnChartTitleNavigateLinks, returnStatistics } from '../../utils';
 import {
   PRODUCT_METRIC_CALENDAR_Y_AXIS_DATA,
   PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
@@ -62,6 +66,9 @@ function ProductDashboardMonthly({
   width: number;
   year: Year;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [productDashboardMonthlyState, productDashboardMonthlyDispatch] =
     useReducer(
       productDashboardMonthlyReducer,
@@ -69,7 +76,7 @@ function ProductDashboardMonthly({
     );
 
   const {
-    barChartYAxisVariable,
+    revenueBarChartYAxisVariable,
     revenueCalendarChartYAxisVariable,
     revenueLineChartYAxisVariable,
     unitsSoldBarChartYAxisVariable,
@@ -97,38 +104,6 @@ function ProductDashboardMonthly({
     width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  // heading
-
-  // heading -> revenue
-
-  // heading -> revenue -> pie
-  const pieChartRevenueHeading = `${productMetric} Revenue for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
-
-  // heading -> revenue -> bar, line, calendar
-  const barCalendarLineChartRevenueHeading = `${productMetric} Revenue for ${year} at ${storeLocation}`;
-
-  // heading -> units sold
-
-  // heading -> units sold -> pie
-  const pieChartUnitsSoldHeading = `${productMetric} Units Sold for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
-
-  // heading -> units sold -> bar, line, calendar
-  const barCalendarLineChartUnitsSoldHeading = `${productMetric} Units Sold for ${year} at ${storeLocation}`;
-
   // revenue
 
   // revenue -> statistics
@@ -139,7 +114,53 @@ function ProductDashboardMonthly({
 
   // revenue -> charts
 
+  // revenue -> charts -> titles & navlinks
+  const {
+    barChartHeading: revenueBarChartHeading,
+    calendarChartHeading: revenueCalendarChartHeading,
+    expandBarChartNavigateLink: expandBarChartNavigateLinkRevenue,
+    expandCalendarChartNavigateLink: expandCalendarChartNavigateLinkRevenue,
+    expandLineChartNavigateLink: expandLineChartNavigateLinkRevenue,
+    lineChartHeading: revenueLineChartHeading,
+    pieChartHeading: pieChartRevenueHeading,
+    expandPieChartNavigateLink: expandPieChartNavigateLinkRevenue,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Monthly',
+    metricCategory: 'Revenue',
+    metricsView: 'Products',
+    storeLocation,
+    yAxisBarChartVariable: revenueBarChartYAxisVariable,
+    yAxisCalendarChartVariable: revenueCalendarChartYAxisVariable,
+    yAxisLineChartVariable: revenueLineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // revenue -> charts -> pie
+
+  // revenue -> charts -> pie -> expand chart button
+  const [createdExpandRevenuePieChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${pieChartRevenueHeading}`,
+      semanticName: 'Expand Pie Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: monthlyCharts.revenue.pieChartObj,
+            chartTitle: pieChartRevenueHeading,
+            chartKind: 'pie',
+          },
+        });
+
+        navigate(expandPieChartNavigateLinkRevenue);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // revenue -> charts -> pie -> display
   const displayPieChart = (
@@ -152,6 +173,29 @@ function ProductDashboardMonthly({
   );
 
   // revenue -> charts -> bar
+
+  // revenue -> charts -> bar -> expand chart button
+  const [createdExpandRevenueBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${revenueBarChartHeading}`,
+      semanticName: 'Expand Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable],
+            chartTitle: revenueBarChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLinkRevenue);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // revenue -> charts -> bar -> y-axis select input
   const [createdRevenueBarChartYAxisVariablesSelectInput] =
@@ -166,7 +210,7 @@ function ProductDashboardMonthly({
               .value as ProductMetricBarLineChartObjKey,
           });
         },
-        value: barChartYAxisVariable,
+        value: revenueBarChartYAxisVariable,
       },
     ]);
 
@@ -175,7 +219,9 @@ function ProductDashboardMonthly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={monthlyCharts.revenue.barChartsObj[barChartYAxisVariable]}
+      barChartData={
+        monthlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable]
+      }
       hideControls
       indexBy="Months"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -183,6 +229,31 @@ function ProductDashboardMonthly({
   );
 
   // revenue -> charts -> line
+
+  // revenue -> charts -> line -> expand chart button
+  const [createdExpandRevenueLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${revenueLineChartHeading}`,
+      semanticName: 'Expand Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyCharts.revenue.lineChartsObj[
+                revenueLineChartYAxisVariable
+              ],
+            chartTitle: revenueLineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLinkRevenue);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // revenue -> charts -> line -> y-axis select input
   const [createdRevenueLineChartYAxisVariablesSelectInput] =
@@ -215,6 +286,32 @@ function ProductDashboardMonthly({
   );
 
   // revenue -> charts -> calendar
+
+  // revenue -> charts -> calendar -> expand chart button
+  const [createdExpandRevenueCalendarChartButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Expand',
+        semanticDescription: `Expand and customize ${revenueCalendarChartHeading}`,
+        semanticName: 'Expand Calendar Chart',
+        buttonOnClick: () => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartData:
+                monthlyCharts.revenue.calendarChartsObj[
+                  revenueCalendarChartYAxisVariable
+                ],
+              chartTitle: revenueCalendarChartHeading,
+              chartKind: 'calendar',
+            },
+          });
+
+          navigate(expandCalendarChartNavigateLinkRevenue);
+        },
+        leftIcon: <LuExpand />,
+      },
+    ]);
 
   // revenue -> charts -> calendar -> y-axis select input
   const [createdRevenueCalendarChartYAxisVariablesSelectInput] =
@@ -252,13 +349,16 @@ function ProductDashboardMonthly({
   const displayRevenueSection = (
     <DashboardMetricsLayout
       barChart={displayRevenueBarChart}
-      barChartHeading={barCalendarLineChartRevenueHeading}
+      barChartHeading={revenueBarChartHeading}
       barChartYAxisSelectInput={createdRevenueBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandRevenueBarChartButton}
+      expandLineChartButton={createdExpandRevenueLineChartButton}
+      expandCalendarChartButton={createdExpandRevenueCalendarChartButton}
+      expandPieChartButton={createdExpandRevenuePieChartButton}
       isMoney
       lineChart={displayRevenueLineChart}
-      lineChartHeading={barCalendarLineChartRevenueHeading}
+      lineChartHeading={revenueLineChartHeading}
       lineChartYAxisSelectInput={
         createdRevenueLineChartYAxisVariablesSelectInput
       }
@@ -266,12 +366,14 @@ function ProductDashboardMonthly({
       padding={padding}
       pieChart={displayPieChart}
       pieChartHeading={pieChartRevenueHeading}
-      sectionHeading={`Monthly ${productMetric} Revenue`}
+      sectionHeading={`${splitCamelCase(
+        storeLocation
+      )} Monthly ${productMetric} Revenue`}
       semanticLabel={`${productMetric} Revenue`}
       statisticsMap={monthlyRevenueStatistics}
       width={width}
       calendarChart={displayRevenueCalendarChart}
-      calendarChartHeading={barCalendarLineChartRevenueHeading}
+      calendarChartHeading={revenueCalendarChartHeading}
       calendarChartYAxisSelectInput={
         createdRevenueCalendarChartYAxisVariablesSelectInput
       }
@@ -288,7 +390,55 @@ function ProductDashboardMonthly({
 
   // units sold -> charts
 
+  // units sold -> charts -> titles & navlinks
+  const {
+    barChartHeading: barChartUnitsSoldHeading,
+    calendarChartHeading: calendarChartUnitsSoldHeading,
+    expandBarChartNavigateLink: expandBarChartNavigateLinkUnitsSold,
+    expandCalendarChartNavigateLink: expandCalendarChartNavigateLinkUnitsSold,
+    expandLineChartNavigateLink: expandLineChartNavigateLinkUnitsSold,
+    lineChartHeading: lineChartUnitsSoldHeading,
+    pieChartHeading: pieChartUnitsSoldHeading,
+    expandPieChartNavigateLink: expandPieChartNavigateLinkUnitsSold,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Monthly',
+    metricCategory: 'Units Sold',
+    metricsView: 'Products',
+    storeLocation,
+    yAxisBarChartVariable: unitsSoldBarChartYAxisVariable,
+    yAxisCalendarChartVariable: unitsSoldCalendarChartYAxisVariable,
+    yAxisLineChartVariable: unitsSoldLineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // units sold -> charts -> pie
+
+  // units sold -> charts -> pie -> expand chart button
+  const [createdExpandUnitsSoldPieChartButton] = returnAccessibleButtonElements(
+    [
+      {
+        buttonLabel: 'Expand',
+        semanticDescription: `Expand and customize ${pieChartUnitsSoldHeading}`,
+        semanticName: 'Expand Pie Chart',
+        buttonOnClick: () => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartData: monthlyCharts.unitsSold.pieChartObj,
+              chartTitle: pieChartUnitsSoldHeading,
+              chartKind: 'pie',
+            },
+          });
+
+          navigate(expandPieChartNavigateLinkUnitsSold);
+        },
+        leftIcon: <LuExpand />,
+      },
+    ]
+  );
 
   // units sold -> charts -> pie -> display
   const displayUnitsSoldPieChart = (
@@ -301,6 +451,33 @@ function ProductDashboardMonthly({
   );
 
   // units sold -> charts -> bar
+
+  // units sold -> charts -> bar -> expand chart button
+  const [createdExpandUnitsSoldBarChartButton] = returnAccessibleButtonElements(
+    [
+      {
+        buttonLabel: 'Expand',
+        semanticDescription: `Expand and customize ${barChartUnitsSoldHeading}`,
+        semanticName: 'Expand Bar Chart',
+        buttonOnClick: () => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartData:
+                monthlyCharts.unitsSold.barChartsObj[
+                  unitsSoldBarChartYAxisVariable
+                ],
+              chartTitle: barChartUnitsSoldHeading,
+              chartKind: 'bar',
+            },
+          });
+
+          navigate(expandBarChartNavigateLinkUnitsSold);
+        },
+        leftIcon: <LuExpand />,
+      },
+    ]
+  );
 
   // units sold -> charts -> bar -> y-axis select input
   const [createdUnitsSoldBarChartYAxisVariablesSelectInput] =
@@ -335,6 +512,32 @@ function ProductDashboardMonthly({
 
   // units sold -> charts -> line
 
+  // units sold -> charts -> line -> expand chart button
+  const [createdExpandUnitsSoldLineChartButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Expand',
+        semanticDescription: `Expand and customize ${lineChartUnitsSoldHeading}`,
+        semanticName: 'Expand Line Chart',
+        buttonOnClick: () => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartData:
+                monthlyCharts.unitsSold.lineChartsObj[
+                  unitsSoldLineChartYAxisVariable
+                ],
+              chartTitle: lineChartUnitsSoldHeading,
+              chartKind: 'line',
+            },
+          });
+
+          navigate(expandLineChartNavigateLinkUnitsSold);
+        },
+        leftIcon: <LuExpand />,
+      },
+    ]);
+
   // units sold -> charts -> line -> y-axis select input
   const [createdUnitsSoldLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
@@ -366,6 +569,32 @@ function ProductDashboardMonthly({
   );
 
   // units sold -> charts -> calendar
+
+  // units sold -> charts -> calendar -> expand chart button
+  const [createdExpandUnitsSoldCalendarChartButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Expand',
+        semanticDescription: `Expand and customize ${calendarChartUnitsSoldHeading}`,
+        semanticName: 'Expand Calendar Chart',
+        buttonOnClick: () => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartData:
+                monthlyCharts.unitsSold.calendarChartsObj[
+                  unitsSoldCalendarChartYAxisVariable
+                ],
+              chartTitle: calendarChartUnitsSoldHeading,
+              chartKind: 'calendar',
+            },
+          });
+
+          navigate(expandCalendarChartNavigateLinkUnitsSold);
+        },
+        leftIcon: <LuExpand />,
+      },
+    ]);
 
   // units sold -> charts -> calendar -> y-axis select input
   const [createdUnitsSoldCalendarChartYAxisVariablesSelectInput] =
@@ -403,14 +632,17 @@ function ProductDashboardMonthly({
   const displayUnitsSoldSection = (
     <DashboardMetricsLayout
       barChart={displayUnitsSoldBarChart}
-      barChartHeading={barCalendarLineChartUnitsSoldHeading}
+      barChartHeading={barChartUnitsSoldHeading}
       barChartYAxisSelectInput={
         createdUnitsSoldBarChartYAxisVariablesSelectInput
       }
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandUnitsSoldBarChartButton}
+      expandLineChartButton={createdExpandUnitsSoldLineChartButton}
+      expandCalendarChartButton={createdExpandUnitsSoldCalendarChartButton}
+      expandPieChartButton={createdExpandUnitsSoldPieChartButton}
       lineChart={displayUnitsSoldLineChart}
-      lineChartHeading={barCalendarLineChartUnitsSoldHeading}
+      lineChartHeading={lineChartUnitsSoldHeading}
       lineChartYAxisSelectInput={
         createdUnitsSoldLineChartYAxisVariablesSelectInput
       }
@@ -418,12 +650,14 @@ function ProductDashboardMonthly({
       padding={padding}
       pieChart={displayUnitsSoldPieChart}
       pieChartHeading={pieChartUnitsSoldHeading}
-      sectionHeading={`Monthly ${productMetric} Units Sold`}
+      sectionHeading={`${splitCamelCase(
+        storeLocation
+      )} Monthly ${productMetric} Units Sold`}
       semanticLabel={`${productMetric} Units Sold`}
       statisticsMap={monthlyUnitsSoldStatistics}
       width={width}
       calendarChart={displayUnitsSoldCalendarChart}
-      calendarChartHeading={barCalendarLineChartUnitsSoldHeading}
+      calendarChartHeading={calendarChartUnitsSoldHeading}
       calendarChartYAxisSelectInput={
         createdUnitsSoldCalendarChartYAxisVariablesSelectInput
       }

@@ -2,7 +2,7 @@ import { ProductMetricBarLineChartObjKey } from '../utils';
 
 type ProductDashboardYearlyState = {
   // revenue
-  barChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  revenueBarChartYAxisVariable: ProductMetricBarLineChartObjKey;
   revenueLineChartYAxisVariable: ProductMetricBarLineChartObjKey;
 
   // units sold
