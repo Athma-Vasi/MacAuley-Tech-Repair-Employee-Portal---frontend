@@ -1,20 +1,28 @@
 import { MantineNumberSize } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
+import { splitCamelCase } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
 } from '../../../../charts';
+import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { FinancialMetricsCards } from '../../../jsxHelpers';
-import { Year } from '../../../types';
-import { returnStatistics } from '../../../utils';
+import { BusinessMetricStoreLocation, Year } from '../../../types';
+import {
+  returnChartTitleNavigateLinks,
+  returnStatistics,
+} from '../../../utils';
 import { FINANCIAL_OTHER_METRICS_Y_AXIS_DATA } from '../../constants';
 import {
   FinancialMetricsCharts,
@@ -35,6 +43,7 @@ function FinancialDashboardMonthlyOtherMetrics({
   day,
   month,
   padding,
+  storeLocation,
   year,
   width,
 }: {
@@ -46,9 +55,13 @@ function FinancialDashboardMonthlyOtherMetrics({
   day: string;
   month: string;
   padding: MantineNumberSize;
+  storeLocation: BusinessMetricStoreLocation;
   year: Year;
   width: number;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [
     financialDashboardMonthlyOtherMetricsState,
     financialDashboardMonthlyOtherMetricsDispatch,
@@ -63,16 +76,6 @@ function FinancialDashboardMonthlyOtherMetrics({
     otherMetricsLineChartYAxisVariable,
   } = financialDashboardMonthlyOtherMetricsState;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
   // otherMetrics
 
   // otherMetrics -> statistics
@@ -82,10 +85,54 @@ function FinancialDashboardMonthlyOtherMetrics({
 
   // otherMetrics -> charts
 
+  // otherMetrics  -> charts -> titles & navlinks
+  const {
+    barChartHeading,
+    calendarChartHeading,
+    expandBarChartNavigateLink,
+    expandCalendarChartNavigateLink,
+    expandLineChartNavigateLink,
+    lineChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Monthly',
+    metricCategory: 'Other Metrics',
+    metricsView: 'Financials',
+    storeLocation,
+    yAxisBarChartVariable: otherMetricsBarChartYAxisVariable,
+    yAxisCalendarChartVariable: otherMetricsCalendarChartYAxisVariable,
+    yAxisLineChartVariable: otherMetricsLineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // otherMetrics -> charts -> bar
 
-  // otherMetrics -> charts -> bar -> heading
-  const otherMetricsBarChartHeading = `Other Metrics for ${year}`;
+  // otherMetrics -> charts -> bar -> expand chart button
+  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand Other Metrics Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyChartsOtherMetrics.barChartsObj[
+                otherMetricsBarChartYAxisVariable
+              ],
+            chartTitle: barChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // otherMetrics -> charts -> bar -> y-axis select input
   const [createdOtherMetricsBarChartYAxisVariablesSelectInput] =
@@ -121,8 +168,30 @@ function FinancialDashboardMonthlyOtherMetrics({
 
   // otherMetrics -> charts -> line
 
-  // otherMetrics -> charts -> line -> heading
-  const otherMetricsLineChartHeading = `Other Metrics for ${year}`;
+  // otherMetrics -> charts -> line -> expand chart button
+  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand Other Metrics Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyChartsOtherMetrics.lineChartsObj[
+                otherMetricsLineChartYAxisVariable
+              ],
+            chartTitle: lineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // otherMetrics -> charts -> line -> y-axis select input
   const [createdOtherMetricsLineChartYAxisVariablesSelectInput] =
@@ -161,8 +230,30 @@ function FinancialDashboardMonthlyOtherMetrics({
 
   // otherMetrics -> charts -> calendar
 
-  // otherMetrics -> charts -> calendar -> heading
-  const otherMetricsCalendarChartHeading = `Other Metrics for ${year}`;
+  // otherMetrics -> charts -> calendar -> expand chart button
+  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${calendarChartHeading}`,
+      semanticName: 'Expand Other Metrics Calendar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyChartsOtherMetrics.calendarChartsObj[
+                otherMetricsCalendarChartYAxisVariable
+              ],
+            chartTitle: calendarChartHeading,
+            chartKind: 'calendar',
+          },
+        });
+
+        navigate(expandCalendarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // otherMetrics -> charts -> calendar -> y-axis select input
   const [createdOtherMetricsCalendarChartYAxisVariablesSelectInput] =
@@ -199,25 +290,27 @@ function FinancialDashboardMonthlyOtherMetrics({
   const displayOtherMetricsSection = (
     <DashboardMetricsLayout
       barChart={displayOtherMetricsBarChart}
-      barChartHeading={otherMetricsBarChartHeading}
+      barChartHeading={barChartHeading}
       barChartYAxisSelectInput={
         createdOtherMetricsBarChartYAxisVariablesSelectInput
       }
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandBarChartButton}
+      expandLineChartButton={createdExpandLineChartButton}
+      expandCalendarChartButton={createdExpandCalendarChartButton}
       lineChart={displayOtherMetricsLineChart}
-      lineChartHeading={otherMetricsLineChartHeading}
+      lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={
         createdOtherMetricsLineChartYAxisVariablesSelectInput
       }
       overviewCards={monthlyCardsOtherMetrics}
       padding={padding}
-      sectionHeading="Monthly Other Metrics"
+      sectionHeading={`${splitCamelCase(storeLocation)} Monthly Other Metrics`}
       semanticLabel=""
       statisticsMap={statisticsOtherMetrics}
       width={width}
       calendarChart={displayOtherMetricsCalendarChart}
-      calendarChartHeading={otherMetricsCalendarChartHeading}
+      calendarChartHeading={calendarChartHeading}
       calendarChartYAxisSelectInput={
         createdOtherMetricsCalendarChartYAxisVariablesSelectInput
       }
