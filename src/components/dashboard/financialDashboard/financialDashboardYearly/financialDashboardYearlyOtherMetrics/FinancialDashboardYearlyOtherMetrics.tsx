@@ -1,16 +1,24 @@
 import { MantineNumberSize } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
+import { splitCamelCase } from '../../../../../utils';
 import { ResponsiveBarChart, ResponsiveLineChart } from '../../../../charts';
+import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { FinancialMetricsCards } from '../../../jsxHelpers';
-import { Year } from '../../../types';
-import { returnStatistics } from '../../../utils';
+import { BusinessMetricStoreLocation, Year } from '../../../types';
+import {
+  returnChartTitleNavigateLinks,
+  returnStatistics,
+} from '../../../utils';
 import { FINANCIAL_OTHER_METRICS_Y_AXIS_DATA } from '../../constants';
 import {
   FinancialMetricsCharts,
@@ -31,6 +39,7 @@ function FinancialDashboardYearlyOtherMetrics({
   day,
   month,
   padding,
+  storeLocation,
   year,
   width,
 }: {
@@ -42,9 +51,13 @@ function FinancialDashboardYearlyOtherMetrics({
   day: string;
   month: string;
   padding: MantineNumberSize;
+  storeLocation: BusinessMetricStoreLocation;
   year: Year;
   width: number;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [
     financialDashboardYearlyOtherMetricsState,
     financialDashboardYearlyOtherMetricsDispatch,
@@ -58,16 +71,6 @@ function FinancialDashboardYearlyOtherMetrics({
     otherMetricsLineChartYAxisVariable,
   } = financialDashboardYearlyOtherMetricsState;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
   // otherMetrics
 
   // otherMetrics -> statistics
@@ -77,10 +80,51 @@ function FinancialDashboardYearlyOtherMetrics({
 
   // otherMetrics -> charts
 
+  // otherMetrics  -> charts -> titles & navlinks
+  const {
+    barChartHeading,
+    expandBarChartNavigateLink,
+    expandLineChartNavigateLink,
+    lineChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Yearly',
+    metricCategory: 'Other Metrics',
+    metricsView: 'Financials',
+    storeLocation,
+    yAxisBarChartVariable: otherMetricsBarChartYAxisVariable,
+    yAxisLineChartVariable: otherMetricsLineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // otherMetrics -> charts -> bar
 
-  // otherMetrics -> charts -> bar -> heading
-  const otherMetricsBarChartHeading = 'Other Metrics for all operating years';
+  // otherMetrics -> charts -> bar -> expand chart button
+  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand Other Metrics Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyChartsOtherMetrics.barChartsObj[
+                otherMetricsBarChartYAxisVariable
+              ],
+            chartTitle: barChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // otherMetrics -> charts -> bar -> y-axis select input
   const [createdOtherMetricsBarChartYAxisVariablesSelectInput] =
@@ -114,8 +158,30 @@ function FinancialDashboardYearlyOtherMetrics({
 
   // otherMetrics -> charts -> line
 
-  // otherMetrics -> charts -> line -> heading
-  const otherMetricsLineChartHeading = 'Other Metrics for all operating years';
+  // otherMetrics -> charts -> line -> expand chart button
+  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand Other Metrics Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyChartsOtherMetrics.lineChartsObj[
+                otherMetricsLineChartYAxisVariable
+              ],
+            chartTitle: lineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // otherMetrics -> charts -> line -> y-axis select input
   const [createdOtherMetricsLineChartYAxisVariablesSelectInput] =
@@ -155,20 +221,21 @@ function FinancialDashboardYearlyOtherMetrics({
   const displayOtherMetricsSection = (
     <DashboardMetricsLayout
       barChart={displayOtherMetricsBarChart}
-      barChartHeading={otherMetricsBarChartHeading}
+      barChartHeading={barChartHeading}
       barChartYAxisSelectInput={
         createdOtherMetricsBarChartYAxisVariablesSelectInput
       }
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandBarChartButton}
+      expandLineChartButton={createdExpandLineChartButton}
       lineChart={displayOtherMetricsLineChart}
-      lineChartHeading={otherMetricsLineChartHeading}
+      lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={
         createdOtherMetricsLineChartYAxisVariablesSelectInput
       }
       overviewCards={yearlyCardsOtherMetrics}
       padding={padding}
-      sectionHeading="Yearly Other Metrics"
+      sectionHeading={`${splitCamelCase(storeLocation)} Yearly Other Metrics`}
       semanticLabel=""
       statisticsMap={statisticsOtherMetrics}
       width={width}

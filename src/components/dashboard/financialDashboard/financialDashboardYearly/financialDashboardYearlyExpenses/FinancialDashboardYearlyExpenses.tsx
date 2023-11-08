@@ -1,20 +1,28 @@
 import { MantineNumberSize } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
+import { splitCamelCase } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
 } from '../../../../charts';
+import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { FinancialMetricsCards } from '../../../jsxHelpers';
-import { Year } from '../../../types';
-import { returnStatistics } from '../../../utils';
+import { BusinessMetricStoreLocation, Year } from '../../../types';
+import {
+  returnChartTitleNavigateLinks,
+  returnStatistics,
+} from '../../../utils';
 import {
   FINANCIAL_LINE_BAR_Y_AXIS_DATA,
   FINANCIAL_PIE_Y_AXIS_DATA,
@@ -39,6 +47,7 @@ function FinancialDashboardYearlyExpenses({
   day,
   month,
   padding,
+  storeLocation,
   year,
   width,
 }: {
@@ -50,9 +59,13 @@ function FinancialDashboardYearlyExpenses({
   day: string;
   month: string;
   padding: MantineNumberSize;
+  storeLocation: BusinessMetricStoreLocation;
   year: Year;
   width: number;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [
     financialDashboardYearlyExpensesState,
     financialDashboardYearlyExpensesDispatch,
@@ -67,16 +80,6 @@ function FinancialDashboardYearlyExpenses({
     expensesPieChartYAxisVariable,
   } = financialDashboardYearlyExpensesState;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
   // expenses
 
   // expenses -> statistics
@@ -86,10 +89,52 @@ function FinancialDashboardYearlyExpenses({
 
   // expenses -> charts
 
+  // expenses  -> charts -> titles & navlinks
+  const {
+    barChartHeading,
+    expandBarChartNavigateLink,
+    expandLineChartNavigateLink,
+    expandPieChartNavigateLink,
+    lineChartHeading,
+    pieChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Yearly',
+    metricCategory: 'Expenses',
+    metricsView: 'Financials',
+    storeLocation,
+    yAxisBarChartVariable: expensesBarChartYAxisVariable,
+    yAxisLineChartVariable: expensesLineChartYAxisVariable,
+    yAxisPieChartVariable: expensesPieChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // expenses -> charts -> pie
 
-  // expenses -> charts -> pie -> heading
-  const expensesPieChartHeading = `Expenses for ${year}`;
+  // expenses -> charts -> pie -> expand chart button
+  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${pieChartHeading}`,
+      semanticName: 'Expand Expenses Pie Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyChartsExpenses.pieChartsObj[expensesPieChartYAxisVariable],
+            chartTitle: pieChartHeading,
+            chartKind: 'pie',
+          },
+        });
+
+        navigate(expandPieChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   //  expenses -> charts -> pie -> y-axis select input
   const [createdExpensesPieChartYAxisVariablesSelectInput] =
@@ -121,8 +166,28 @@ function FinancialDashboardYearlyExpenses({
 
   // expenses -> charts -> bar
 
-  // expenses -> charts -> bar -> heading
-  const expensesBarChartHeading = 'Expenses for all operating years';
+  // expenses -> charts -> bar -> expand chart button
+  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand Expenses Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyChartsExpenses.barChartsObj[expensesBarChartYAxisVariable],
+            chartTitle: barChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // expenses -> charts -> bar -> y-axis select input
   const [createdExpensesBarChartYAxisVariablesSelectInput] =
@@ -156,8 +221,30 @@ function FinancialDashboardYearlyExpenses({
 
   // expenses -> charts -> line
 
-  // expenses -> charts -> line -> heading
-  const expensesLineChartHeading = 'Expenses for all operating years';
+  // expenses -> charts -> line -> expand chart button
+  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand Expenses Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyChartsExpenses.lineChartsObj[
+                expensesLineChartYAxisVariable
+              ],
+            chartTitle: lineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // expenses -> charts -> line -> y-axis select input
   const [createdExpensesLineChartYAxisVariablesSelectInput] =
@@ -184,7 +271,6 @@ function FinancialDashboardYearlyExpenses({
         yearlyChartsExpenses.lineChartsObj[expensesLineChartYAxisVariable]
       }
       hideControls
-      xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `$${y}`}
     />
   );
@@ -192,26 +278,28 @@ function FinancialDashboardYearlyExpenses({
   const displayExpensesSection = (
     <DashboardMetricsLayout
       barChart={displayExpensesBarChart}
-      barChartHeading={expensesBarChartHeading}
+      barChartHeading={barChartHeading}
       barChartYAxisSelectInput={
         createdExpensesBarChartYAxisVariablesSelectInput
       }
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandBarChartButton}
+      expandLineChartButton={createdExpandLineChartButton}
+      expandPieChartButton={createdExpandPieChartButton}
       isMoney
       lineChart={displayExpensesLineChart}
-      lineChartHeading={expensesLineChartHeading}
+      lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={
         createdExpensesLineChartYAxisVariablesSelectInput
       }
       overviewCards={yearlyCardsExpenses}
       padding={padding}
       pieChart={displayExpensesPieChart}
-      pieChartHeading={expensesPieChartHeading}
+      pieChartHeading={pieChartHeading}
       pieChartYAxisSelectInput={
         createdExpensesPieChartYAxisVariablesSelectInput
       }
-      sectionHeading="Yearly Expenses"
+      sectionHeading={`${splitCamelCase(storeLocation)} Yearly Expenses`}
       semanticLabel="expenses"
       statisticsMap={statisticsExpenses}
       width={width}

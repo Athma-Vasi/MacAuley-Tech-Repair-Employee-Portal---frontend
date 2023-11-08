@@ -1,20 +1,28 @@
 import { MantineNumberSize } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
+import { splitCamelCase } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
 } from '../../../../charts';
+import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { FinancialMetricsCards } from '../../../jsxHelpers';
-import { Year } from '../../../types';
-import { returnStatistics } from '../../../utils';
+import { BusinessMetricStoreLocation, Year } from '../../../types';
+import {
+  returnChartTitleNavigateLinks,
+  returnStatistics,
+} from '../../../utils';
 import {
   FINANCIAL_LINE_BAR_Y_AXIS_DATA,
   FINANCIAL_PIE_Y_AXIS_DATA,
@@ -39,6 +47,7 @@ function FinancialDashboardYearlyRevenue({
   day,
   month,
   padding,
+  storeLocation,
   year,
   width,
 }: {
@@ -50,9 +59,13 @@ function FinancialDashboardYearlyRevenue({
   day: string;
   month: string;
   padding: MantineNumberSize;
+  storeLocation: BusinessMetricStoreLocation;
   year: Year;
   width: number;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [
     financialDashboardYearlyRevenueState,
     financialDashboardYearlyRevenueDispatch,
@@ -62,20 +75,10 @@ function FinancialDashboardYearlyRevenue({
   );
 
   const {
-    barChartYAxisVariable,
+    revenueBarChartYAxisVariable,
     revenueLineChartYAxisVariable,
     revenuePieChartYAxisVariable,
   } = financialDashboardYearlyRevenueState;
-
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
 
   // revenue
 
@@ -86,10 +89,52 @@ function FinancialDashboardYearlyRevenue({
 
   // revenue -> charts
 
+  // revenue  -> charts -> titles & navlinks
+  const {
+    barChartHeading,
+    expandBarChartNavigateLink,
+    expandLineChartNavigateLink,
+    expandPieChartNavigateLink,
+    lineChartHeading,
+    pieChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Yearly',
+    metricCategory: 'Revenue',
+    metricsView: 'Financials',
+    storeLocation,
+    yAxisBarChartVariable: revenueBarChartYAxisVariable,
+    yAxisLineChartVariable: revenueLineChartYAxisVariable,
+    yAxisPieChartVariable: revenuePieChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // revenue -> charts -> pie
 
-  // revenue -> charts -> pie -> heading
-  const revenuePieChartHeading = `Revenue for ${year}`;
+  // revenue -> charts -> pie -> expand chart button
+  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${pieChartHeading}`,
+      semanticName: 'Expand Revenue Pie Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyChartsRevenue.pieChartsObj[revenuePieChartYAxisVariable],
+            chartTitle: pieChartHeading,
+            chartKind: 'pie',
+          },
+        });
+
+        navigate(expandPieChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   //  revenue -> charts -> pie -> y-axis select input
   const [createdRevenuePieChartYAxisVariablesSelectInput] =
@@ -121,8 +166,28 @@ function FinancialDashboardYearlyRevenue({
 
   // revenue -> charts -> bar
 
-  // revenue -> charts -> bar -> heading
-  const revenueBarChartHeading = 'Revenue for all operating years';
+  // revenue -> charts -> bar -> expand chart button
+  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand Revenue Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable],
+            chartTitle: barChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // revenue -> charts -> bar -> y-axis select input
   const [createdRevenueBarChartYAxisVariablesSelectInput] =
@@ -136,14 +201,16 @@ function FinancialDashboardYearlyRevenue({
             payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
           });
         },
-        value: barChartYAxisVariable,
+        value: revenueBarChartYAxisVariable,
       },
     ]);
 
   // revenue -> charts -> bar -> display
   const displayRevenueBarChart = (
     <ResponsiveBarChart
-      barChartData={yearlyChartsRevenue.barChartsObj[barChartYAxisVariable]}
+      barChartData={
+        yearlyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable]
+      }
       indexBy="Years"
       keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
@@ -154,8 +221,28 @@ function FinancialDashboardYearlyRevenue({
 
   // revenue -> charts -> line
 
-  // revenue -> charts -> line -> heading
-  const revenueLineChartHeading = 'Revenue for all operating years';
+  // revenue -> charts -> line -> expand chart button
+  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand Revenue Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable],
+            chartTitle: lineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // revenue -> charts -> line -> y-axis select input
   const [createdRevenueLineChartYAxisVariablesSelectInput] =
@@ -182,32 +269,31 @@ function FinancialDashboardYearlyRevenue({
         yearlyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable]
       }
       hideControls
-      xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `$${y}`}
     />
   );
 
-  // revenue -> charts -> calendar
-
   const displayRevenueSection = (
     <DashboardMetricsLayout
       barChart={displayRevenueBarChart}
-      barChartHeading={revenueBarChartHeading}
+      barChartHeading={barChartHeading}
       barChartYAxisSelectInput={createdRevenueBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandBarChartButton}
+      expandLineChartButton={createdExpandLineChartButton}
+      expandPieChartButton={createdExpandPieChartButton}
       isMoney
       lineChart={displayRevenueLineChart}
-      lineChartHeading={revenueLineChartHeading}
+      lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={
         createdRevenueLineChartYAxisVariablesSelectInput
       }
       overviewCards={yearlyCardsRevenue}
       padding={padding}
       pieChart={displayRevenuePieChart}
-      pieChartHeading={revenuePieChartHeading}
+      pieChartHeading={pieChartHeading}
       pieChartYAxisSelectInput={createdRevenuePieChartYAxisVariablesSelectInput}
-      sectionHeading="Yearly Revenue"
+      sectionHeading={`${splitCamelCase(storeLocation)} Yearly Revenue`}
       semanticLabel="revenue"
       statisticsMap={statisticsRevenue}
       width={width}
