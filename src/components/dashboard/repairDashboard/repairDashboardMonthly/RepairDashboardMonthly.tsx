@@ -203,7 +203,7 @@ function RepairDashboardMonthly({
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      from={`${year}-01-01`}
+      from={`${year}-${month}-01`}
       to={`${year}-${month}-${day}`}
       hideControls
     />

@@ -12,6 +12,17 @@ import { AddressChangeDocument } from '../../components/addressChange/create/typ
 import { AnnouncementDocument } from '../../components/announcement/create/types';
 import { AnonymousRequestDocument } from '../../components/anonymousRequest/create/types';
 import { BenefitsDocument } from '../../components/benefits/create/types';
+import { BarChartData } from '../../components/charts/responsiveBarChart/types';
+import { CalendarChartData } from '../../components/charts/responsiveCalendarChart/types';
+import { LineChartData } from '../../components/charts/responsiveLineChart/types';
+import { PieChartData } from '../../components/charts/responsivePieChart/types';
+import { RadialBarChartData } from '../../components/charts/responsiveRadialBarChart/types';
+import { SunburstChartData } from '../../components/charts/responsiveSunburstChart/types';
+import {
+  BusinessMetricStoreLocation,
+  DashboardCalendarView,
+  DashboardMetricsView,
+} from '../../components/dashboard/types';
 import { EndorsementDocument } from '../../components/endorsements/create/types';
 import { EventCreatorDocument } from '../../components/event/create/types';
 import { ExpenseClaimDocument } from '../../components/expenseClaim/create/types';
@@ -118,6 +129,33 @@ type ActionsDocuments = {
   employeeData: Map<string, UserDocument>;
 };
 
+type CustomizeChartsPageData = { chartTitle: string } & (
+  | {
+      chartKind: 'bar';
+      chartData: BarChartData[];
+    }
+  | {
+      chartKind: 'calendar';
+      chartData: CalendarChartData[];
+    }
+  | {
+      chartKind: 'line';
+      chartData: LineChartData[];
+    }
+  | {
+      chartKind: 'pie';
+      chartData: PieChartData[];
+    }
+  | {
+      chartKind: 'radialBar';
+      chartData: RadialBarChartData[];
+    }
+  | {
+      chartKind: 'sunburst';
+      chartData: SunburstChartData[];
+    }
+);
+
 type GlobalState = {
   width: number;
   height: number;
@@ -134,6 +172,8 @@ type GlobalState = {
   announcementDocument: QueryResponseData<AnnouncementDocument> | null;
   isPrefersReducedMotion: boolean;
   errorState: ErrorState;
+
+  customizeChartsPageData: CustomizeChartsPageData | null;
 };
 
 type GlobalAction = {
@@ -159,6 +199,7 @@ type GlobalAction = {
   setPrefersReducedMotion: 'setPrefersReducedMotion';
 
   setErrorState: 'setErrorState';
+  setCustomizeChartsPageData: 'setCustomizeChartsPageData';
 };
 
 type WindowDimensions = {
@@ -236,6 +277,11 @@ type GlobalDispatch =
   | {
       type: GlobalAction['setErrorState'];
       payload: ErrorState;
+    }
+  // customize charts page data
+  | {
+      type: GlobalAction['setCustomizeChartsPageData'];
+      payload: CustomizeChartsPageData;
     };
 
 type GlobalReducer = (

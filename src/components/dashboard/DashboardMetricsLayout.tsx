@@ -1,6 +1,5 @@
 import {
   Accordion,
-  Card,
   Divider,
   Flex,
   Group,
@@ -10,28 +9,31 @@ import {
   Title,
 } from '@mantine/core';
 
+import { addCommaSeparator } from '../../utils';
 import { DashboardCardInfo, returnDashboardCardElement } from './jsxHelpers';
 import { StatisticsObject } from './utils';
-import { addCommaSeparator } from '../../utils';
 
 type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
   barChart: React.JSX.Element;
-  barChartYAxisSelectInput: React.JSX.Element;
   barChartHeading: string;
+  barChartYAxisSelectInput: React.JSX.Element;
   borderColor: string;
   calendarChart?: React.JSX.Element;
-  calendarChartYAxisSelectInput?: React.JSX.Element;
   calendarChartHeading?: string;
-  expandChartButton: React.JSX.Element;
+  calendarChartYAxisSelectInput?: React.JSX.Element;
+  expandBarChartButton: React.JSX.Element;
+  expandCalendarChartButton?: React.JSX.Element;
+  expandLineChartButton: React.JSX.Element;
+  expandPieChartButton?: React.JSX.Element;
   isMoney?: boolean;
   lineChart: React.JSX.Element;
-  lineChartYAxisSelectInput: React.JSX.Element;
   lineChartHeading: string;
+  lineChartYAxisSelectInput: React.JSX.Element;
   overviewCards: DashboardCardInfo[];
   padding: MantineNumberSize;
   pieChart?: React.JSX.Element;
-  pieChartYAxisSelectInput?: React.JSX.Element;
   pieChartHeading?: string;
+  pieChartYAxisSelectInput?: React.JSX.Element;
   sectionHeading: string;
   semanticLabel?: string;
   statisticsMap?: Map<MetricObjKey, StatisticsObject>;
@@ -40,26 +42,29 @@ type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
 
 function DashboardMetricsLayout({
   barChart,
-  barChartYAxisSelectInput,
   barChartHeading,
+  barChartYAxisSelectInput,
   borderColor,
-  expandChartButton,
+  calendarChart,
+  calendarChartHeading,
+  calendarChartYAxisSelectInput,
+  expandBarChartButton,
+  expandCalendarChartButton,
+  expandLineChartButton,
+  expandPieChartButton,
   isMoney = false,
   lineChart,
-  lineChartYAxisSelectInput,
   lineChartHeading,
+  lineChartYAxisSelectInput,
   overviewCards,
   padding,
   pieChart,
-  pieChartYAxisSelectInput,
   pieChartHeading,
+  pieChartYAxisSelectInput,
   sectionHeading,
   semanticLabel = 'customers',
   statisticsMap,
   width,
-  calendarChart,
-  calendarChartYAxisSelectInput,
-  calendarChartHeading,
 }: DashboardMetricsLayoutProps) {
   const cardWidth = 350;
 
@@ -74,11 +79,7 @@ function DashboardMetricsLayout({
 
   // info cards section
   const createdCards = overviewCards.map((overviewCard, idx) => (
-    <Group
-      key={`${idx}-${overviewCard.value}`}
-      w={cardWidth}
-      style={{ outline: '1px solid brown' }}
-    >
+    <Group key={`${idx}-${overviewCard.value}`} w={cardWidth}>
       {returnDashboardCardElement(overviewCard)}
     </Group>
   ));
@@ -98,7 +99,7 @@ function DashboardMetricsLayout({
       <Title order={4}>Bar Chart</Title>
       <Group w="100%" position="apart">
         {barChartYAxisSelectInput}
-        {expandChartButton}
+        {expandBarChartButton}
       </Group>
       <Group w="100%" position="center">
         <Text size="lg" weight={500}>
@@ -117,7 +118,7 @@ function DashboardMetricsLayout({
       <Title order={4}>Calendar Chart</Title>
       <Group w="100%" position="apart">
         {calendarChartYAxisSelectInput}
-        {expandChartButton}
+        {expandCalendarChartButton}
       </Group>
       <Group w="100%" position="center">
         <Text size="lg" weight={500}>
@@ -136,7 +137,7 @@ function DashboardMetricsLayout({
       <Title order={4}>Line Chart</Title>
       <Group w="100%" position="apart">
         {lineChartYAxisSelectInput}
-        {expandChartButton}
+        {expandLineChartButton}
       </Group>
       <Group w="100%" position="center">
         <Text size="lg" weight={500}>
@@ -154,7 +155,7 @@ function DashboardMetricsLayout({
     <Flex direction="column">
       <Group w="100%" position="apart">
         {pieChartYAxisSelectInput}
-        {expandChartButton}
+        {expandPieChartButton}
       </Group>
       <Group w="100%" position="center">
         <Text size="lg" weight={500}>
@@ -168,7 +169,7 @@ function DashboardMetricsLayout({
         <Text size="lg" weight={500}>
           {pieChartHeading}
         </Text>
-        {expandChartButton}
+        {expandPieChartButton}
       </Group>
     </Flex>
   );

@@ -98,7 +98,7 @@ const NIVO_CHART_PATTERN_DEFS = [
     background: 'inherit',
     color: 'rgba(255, 255, 255, 0.3)',
     size: 4,
-    padding: 1,
+    padding: 2,
     stagger: true,
   },
   {

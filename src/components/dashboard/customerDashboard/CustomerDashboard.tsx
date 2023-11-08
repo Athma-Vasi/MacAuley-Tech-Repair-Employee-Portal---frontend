@@ -9,6 +9,7 @@ import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
+  DashboardCustomerMetric,
   Month,
   Year,
 } from '../types';
@@ -23,6 +24,7 @@ import {
 function CustomerDashboard({
   businessMetrics,
   calendarView,
+  customerMetric,
   selectedDate,
   selectedMonth,
   storeLocationView,
@@ -31,6 +33,7 @@ function CustomerDashboard({
 }: {
   businessMetrics: BusinessMetric[];
   calendarView: DashboardCalendarView;
+  customerMetric: DashboardCustomerMetric;
   selectedDate: string;
   selectedMonth: Month;
   storeLocationView: BusinessMetricStoreLocation;
@@ -77,7 +80,7 @@ function CustomerDashboard({
     calendarView === 'Daily' ? (
       <CustomerDashboardDaily
         borderColor={borderColor}
-        businessMetrics={businessMetrics}
+        customerMetric={customerMetric}
         dailyCards={customerCardsInfo.dailyCards}
         dailyCharts={customerChartsData.dailyCharts}
         day={selectedDate}
@@ -90,7 +93,7 @@ function CustomerDashboard({
     ) : calendarView === 'Monthly' ? (
       <CustomerDashboardMonthly
         borderColor={borderColor}
-        businessMetrics={businessMetrics}
+        customerMetric={customerMetric}
         day={selectedDate}
         month={selectedYYYYMMDD.split('-')[1]}
         monthlyCards={customerCardsInfo.monthlyCards}
@@ -103,9 +106,7 @@ function CustomerDashboard({
     ) : (
       <CustomerDashboardYearly
         borderColor={borderColor}
-        businessMetrics={businessMetrics}
-        day={selectedDate}
-        month={selectedYYYYMMDD.split('-')[1]}
+        customerMetric={customerMetric}
         padding={padding}
         storeLocation={storeLocationView}
         width={width}

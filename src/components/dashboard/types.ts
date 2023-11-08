@@ -8,14 +8,18 @@ type DashboardFinancialMetric =
   | 'Revenue'
   | 'Transactions'
   | 'Other Metrics';
-type DashboardCustomerMetrics = 'Overview' | 'New' | 'Returning';
+type DashboardCustomerMetric =
+  | 'Overview'
+  | 'New'
+  | 'Returning'
+  | 'Other Metrics';
 type DashboardProductMetric = ProductCategory | 'All Products';
 type DashboardRepairMetric = RepairCategory | 'All Repairs';
 
 type DashboardState = {
   businessMetrics: BusinessMetric[];
   calendarView: DashboardCalendarView;
-  customerMetric: DashboardCustomerMetrics;
+  customerMetric: DashboardCustomerMetric;
   financialMetric: DashboardFinancialMetric;
   metricsView: DashboardMetricsView;
   productMetric: DashboardProductMetric;
@@ -47,7 +51,7 @@ type DashboardDispatch =
     }
   | {
       type: DashboardAction['setCustomerMetric'];
-      payload: DashboardCustomerMetrics;
+      payload: DashboardCustomerMetric;
     }
   | {
       type: DashboardAction['setFinancialMetric'];
@@ -316,7 +320,7 @@ export type {
   DailyFinancialMetric,
   DashboardAction,
   DashboardCalendarView,
-  DashboardCustomerMetrics,
+  DashboardCustomerMetric,
   DashboardDispatch,
   DashboardFinancialMetric,
   DashboardMetricsView,

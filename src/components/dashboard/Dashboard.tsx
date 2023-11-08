@@ -37,7 +37,7 @@ import {
 import {
   BusinessMetricStoreLocation,
   DashboardCalendarView,
-  DashboardCustomerMetrics,
+  DashboardCustomerMetric,
   DashboardFinancialMetric,
   DashboardMetricsView,
   DashboardProductMetric,
@@ -215,15 +215,20 @@ function Dashboard() {
     };
 
   // customer metric select input
+  const filteredCustomerMetricsSelectInputData =
+    CUSTOMER_METRICS_SELECT_INPUT_DATA.filter((data) =>
+      calendarView === 'Daily' ? data !== 'Other Metrics' : data
+    );
+
   const customerMetricCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
-      data: CUSTOMER_METRICS_SELECT_INPUT_DATA,
+      data: filteredCustomerMetricsSelectInputData,
       description: 'Select customer metric category to view.',
       label: 'Category',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         dashboardDispatch({
           type: dashboardAction.setCustomerMetric,
-          payload: event.currentTarget.value as DashboardCustomerMetrics,
+          payload: event.currentTarget.value as DashboardCustomerMetric,
         });
       },
       value: customerMetric,
@@ -341,6 +346,7 @@ function Dashboard() {
       <CustomerDashboard
         businessMetrics={businessMetrics}
         calendarView={calendarView}
+        customerMetric={customerMetric}
         selectedDate={selectedDate}
         selectedMonth={selectedMonth}
         storeLocationView={storeLocationView}

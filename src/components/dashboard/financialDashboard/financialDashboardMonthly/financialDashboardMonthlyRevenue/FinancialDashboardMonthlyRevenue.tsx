@@ -222,7 +222,7 @@ function FinancialDashboardMonthlyRevenue({
           revenueCalendarChartYAxisVariable
         ]
       }
-      from={`${year}-01-01`}
+      from={`${year}-${month}-01`}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls

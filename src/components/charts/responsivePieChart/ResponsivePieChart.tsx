@@ -1,11 +1,7 @@
 import {
   ColorInput,
-  Divider,
   Flex,
-  Grid,
   Group,
-  ScrollArea,
-  Space,
   Stack,
   Switch,
   Text,
@@ -14,6 +10,7 @@ import {
 } from '@mantine/core';
 import { ResponsivePie } from '@nivo/pie';
 import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
+import { BiReset } from 'react-icons/bi';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
@@ -23,18 +20,19 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
-import { logState, returnThemeColors } from '../../../utils';
+import { returnThemeColors } from '../../../utils';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
 } from '../../wrappers';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
+import { ChartArcLabel } from '../chartControls/ChartArcLabel';
+import { ChartLegend } from '../chartControls/ChartLegend';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartOptions } from '../chartControls/ChartOptions';
 import {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
-  NIVO_LEGEND_ANCHOR_DATA,
-  NIVO_LEGEND_DIRECTION_DATA,
-  NIVO_LEGEND_ITEM_DIRECTION_DATA,
-  NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
   NIVO_TRANSITION_MODE_DATA,
 } from '../constants';
@@ -45,23 +43,13 @@ import {
   responsivePieChartReducer,
 } from './state';
 import {
-  NivoFillPatternObject,
-  NivoLegendAnchor,
-  NivoLegendDirection,
-  NivoLegendItemDirection,
-  NivoLegendSymbolShape,
   NivoColorScheme,
+  NivoFillPatternObject,
   NivoMotionConfig,
   NivoTransitionMode,
-  ResponsivePieChartProps,
   PieChartData,
+  ResponsivePieChartProps,
 } from './types';
-import { BiReset } from 'react-icons/bi';
-import { ChartMargin } from '../chartControls/ChartMargin';
-import { ChartLegend } from '../chartControls/ChartLegend';
-import { ChartOptions } from '../chartControls/ChartOptions';
-import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
-import { ChartArcLabel } from '../chartControls/ChartArcLabel';
 
 function ResponsivePieChart({
   chartHeight = 500,

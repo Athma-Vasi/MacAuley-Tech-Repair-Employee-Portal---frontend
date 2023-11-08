@@ -62,6 +62,8 @@ const initialGlobalState: GlobalState = {
     errorMessage: '',
     errorCallback: () => {},
   },
+
+  customizeChartsPageData: null,
 };
 
 const globalAction: GlobalAction = {
@@ -87,6 +89,7 @@ const globalAction: GlobalAction = {
   setPrefersReducedMotion: 'setPrefersReducedMotion',
 
   setErrorState: 'setErrorState',
+  setCustomizeChartsPageData: 'setCustomizeChartsPageData',
 };
 
 function globalReducer(
@@ -223,6 +226,10 @@ function globalReducer(
     // error state
     case globalAction.setErrorState:
       return { ...state, errorState: action.payload };
+
+    // customize charts page data
+    case globalAction.setCustomizeChartsPageData:
+      return { ...state, customizeChartsPageData: action.payload };
 
     default:
       return state;

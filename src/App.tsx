@@ -29,8 +29,19 @@ const PortalLayout = lazy(
   () => import('./components/portalLayout/PortalLayout')
 );
 const Home = lazy(() => import('./components/home/Home'));
+
+// dashboard
 const Dashboard = lazy(() => import('./components/dashboard/Dashboard'));
+
+// dashboard -> display responsive chart
+const DisplayResponsiveChart = lazy(
+  () => import('./components/dashboard/DisplayResponsiveChart')
+);
+
+// directory
 const Directory = lazy(() => import('./components/directory/Directory'));
+
+// repair note
 const CreateRepairNote = lazy(
   () => import('./components/repairNote/create/CreateRepairNote')
 );
@@ -137,7 +148,7 @@ const NotFound = lazy(() => import('./components/notFound/NotFound'));
 
 function App() {
   const {
-    globalState: { themeObject, errorState },
+    globalState: { themeObject, errorState, customizeChartsPageData },
   } = useGlobalState();
 
   // @desc   the public facing page
@@ -202,6 +213,17 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <Dashboard />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   the bar chart page
+  // @route  /home/dashboard/responsive-chart
+  // @access private
+  const displayResponsiveChartElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayResponsiveChart />
       </Suspense>
     </ErrorBoundary>
   );
@@ -564,10 +586,7 @@ function App() {
       <Routes>
         {/* these are public routes */}
         <Route path="/" element={rootIndexWrapper}>
-          {/* TESTING ONLY REMOVE */}
-          <Route index element={<Dashboard />} />
-
-          {/* <Route index element={loginElement} /> */}
+          <Route index element={loginElement} />
           <Route path="login" element={loginElement} />
           <Route path="register" element={<PortalLayout />}>
             <Route index element={registerElement} />
@@ -603,7 +622,11 @@ function App() {
           {/* <Route path="home" element={homeElement} /> */}
 
           {/* dashboard */}
-          <Route path="dashboard" element={dashboardElement} />
+          {/* <Route path="dashboard" element={dashboardElement} /> */}
+          <Route path="dashboard">
+            <Route index element={dashboardElement} />
+            <Route path=":chartKind" element={displayResponsiveChartElement} />
+          </Route>
 
           {/* directory */}
           <Route path="directory" element={directoryElement} />

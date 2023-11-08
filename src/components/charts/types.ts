@@ -154,6 +154,7 @@ type NivoBarValueScale = 'linear' | 'symlog';
 type NivoChartTitlePosition = 'left' | 'center' | 'right';
 
 export type {
+  NivoArcLabel,
   NivoAxisLegendPosition,
   NivoBarGroupMode,
   NivoBarLayout,
@@ -174,6 +175,5 @@ export type {
   NivoLineCurve,
   NivoLinePointLabel,
   NivoMotionConfig,
-  NivoArcLabel,
   NivoTransitionMode,
 };

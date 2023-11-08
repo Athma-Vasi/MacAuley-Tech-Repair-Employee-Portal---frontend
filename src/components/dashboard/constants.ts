@@ -1,7 +1,7 @@
 import {
   BusinessMetricStoreLocation,
   DashboardCalendarView,
-  DashboardCustomerMetrics,
+  DashboardCustomerMetric,
   DashboardFinancialMetric,
   DashboardMetricsView,
   DashboardProductMetric,
@@ -72,10 +72,11 @@ const FINANCIALS_METRICS_SELECT_INPUT_DATA: DashboardFinancialMetric[] = [
   'Other Metrics',
 ];
 
-const CUSTOMER_METRICS_SELECT_INPUT_DATA: DashboardCustomerMetrics[] = [
+const CUSTOMER_METRICS_SELECT_INPUT_DATA: DashboardCustomerMetric[] = [
   'Overview',
   'New',
   'Returning',
+  'Other Metrics',
 ];
 
 const PRODUCT_METRICS_SELECT_INPUT_DATA: DashboardProductMetric[] = [
