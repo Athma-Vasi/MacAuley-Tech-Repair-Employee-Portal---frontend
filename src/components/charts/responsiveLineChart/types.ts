@@ -29,6 +29,7 @@ type LineChartData = {
 type ResponsiveLineChartProps = {
   chartHeight?: number;
   chartWidth?: number;
+  dashboardChartTitle?: string;
   hideControls?: boolean;
   lineChartData: LineChartData[];
   xFormat?: ValueFormat<any>;

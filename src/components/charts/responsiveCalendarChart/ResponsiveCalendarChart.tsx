@@ -59,6 +59,7 @@ function ResponsiveCalendarChart({
   calendarChartData,
   chartHeight = 350,
   chartWidth = 350,
+  dashboardChartTitle,
   from,
   to,
   hideControls = false,
@@ -80,6 +81,7 @@ function ResponsiveCalendarChart({
   // sets initial colors based on app theme
   const modifiedResponsiveCalendarChartState: ResponsiveCalendarChartState = {
     ...initialResponsiveCalendarChartState,
+    chartTitle: dashboardChartTitle ?? 'Calendar Chart',
     emptyColor: grayColorShade,
     monthBorderColor: textColor,
     chartTitleColor: chartTextColor,

@@ -18,11 +18,6 @@ import { LineChartData } from '../../components/charts/responsiveLineChart/types
 import { PieChartData } from '../../components/charts/responsivePieChart/types';
 import { RadialBarChartData } from '../../components/charts/responsiveRadialBarChart/types';
 import { SunburstChartData } from '../../components/charts/responsiveSunburstChart/types';
-import {
-  BusinessMetricStoreLocation,
-  DashboardCalendarView,
-  DashboardMetricsView,
-} from '../../components/dashboard/types';
 import { EndorsementDocument } from '../../components/endorsements/create/types';
 import { EventCreatorDocument } from '../../components/event/create/types';
 import { ExpenseClaimDocument } from '../../components/expenseClaim/create/types';
@@ -129,7 +124,10 @@ type ActionsDocuments = {
   employeeData: Map<string, UserDocument>;
 };
 
-type CustomizeChartsPageData = { chartTitle: string } & (
+type CustomizeChartsPageData = {
+  chartTitle: string;
+  selectedYYYYMMDD?: string;
+} & (
   | {
       chartKind: 'bar';
       chartData: BarChartData[];
@@ -200,6 +198,7 @@ type GlobalAction = {
 
   setErrorState: 'setErrorState';
   setCustomizeChartsPageData: 'setCustomizeChartsPageData';
+  setCustomizeChartsPageDataSelectedYYYYMMDD: 'setCustomizeChartsPageDataSelectedYYYYMMDD';
 };
 
 type WindowDimensions = {
@@ -282,6 +281,10 @@ type GlobalDispatch =
   | {
       type: GlobalAction['setCustomizeChartsPageData'];
       payload: CustomizeChartsPageData;
+    }
+  | {
+      type: GlobalAction['setCustomizeChartsPageDataSelectedYYYYMMDD'];
+      payload: string;
     };
 
 type GlobalReducer = (

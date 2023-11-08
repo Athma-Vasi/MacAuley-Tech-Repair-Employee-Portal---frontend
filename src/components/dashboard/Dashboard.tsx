@@ -50,6 +50,7 @@ import {
 import { AccessibleSelectInputCreatorInfo } from '../wrappers';
 import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 import ProductDashboard from './productDashboard/ProductDashboard';
+import { globalAction } from '../../context/globalProvider/state';
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -59,6 +60,7 @@ function Dashboard() {
 
   const {
     globalState: { padding, width, themeObject },
+    globalDispatch,
   } = useGlobalState();
 
   const {
@@ -93,6 +95,11 @@ function Dashboard() {
     dashboardDispatch({
       type: dashboardAction.setBusinessMetrics,
       payload: businessMetrics,
+    });
+
+    globalDispatch({
+      type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
+      payload: initialDashboardState.selectedYYYYMMDD,
     });
   }, []);
 
@@ -190,6 +197,11 @@ function Dashboard() {
         const { value } = event.currentTarget;
         dashboardDispatch({
           type: dashboardAction.setSelectedYYYYMMDD,
+          payload: value,
+        });
+
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
           payload: value,
         });
       }}

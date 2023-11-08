@@ -54,6 +54,7 @@ import {
 function ResponsivePieChart({
   chartHeight = 500,
   chartWidth = 350,
+  dashboardChartTitle,
   hideControls = false,
   pieChartData,
 }: ResponsivePieChartProps) {
@@ -75,6 +76,7 @@ function ResponsivePieChart({
   // ensures appropriate colors based on color scheme
   const modifiedInitialResponsivePieChartState = {
     ...initialResponsivePieChartState,
+    chartTitle: dashboardChartTitle ?? 'Pie Chart',
     arcLabelsTextColor: chartTextColor,
     arcLinkLabelsTextColor: textColor,
     chartTitleColor: chartTextColor,

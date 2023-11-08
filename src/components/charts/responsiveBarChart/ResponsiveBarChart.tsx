@@ -58,6 +58,7 @@ function ResponsiveBarChart({
   barChartData,
   chartHeight = 350,
   chartWidth = 350,
+  dashboardChartTitle,
   hideControls = false,
   indexBy,
   keys,
@@ -80,6 +81,7 @@ function ResponsiveBarChart({
   const modifiedInitialResponsiveBarChartState: ResponsiveBarChartState = {
     ...initialResponsiveBarChartState,
     chartBorderColor: chartTextColor,
+    chartTitle: dashboardChartTitle ?? 'Bar Chart',
     labelTextColor: chartTextColor,
     chartTitleColor: chartTextColor,
   };

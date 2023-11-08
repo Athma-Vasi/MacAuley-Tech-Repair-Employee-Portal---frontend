@@ -405,7 +405,7 @@ function returnChartTitleNavigateLinks({
         }, ${year} at ${storeLocation}`
       : calendarView === 'Monthly'
       ? `${yAxisBarChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
-      : `${yAxisBarChartPrefix} vs. ${xAxisVariable} for all business years at ${storeLocation}`;
+      : `${yAxisBarChartPrefix} vs. ${xAxisVariable} for All Business Years at ${storeLocation}`;
 
   const calendarChartHeading =
     calendarView === 'Daily'
@@ -414,7 +414,7 @@ function returnChartTitleNavigateLinks({
         }, ${year} at ${storeLocation}`
       : calendarView === 'Monthly'
       ? `${yAxisCalendarChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
-      : `${yAxisCalendarChartPrefix} vs. ${xAxisVariable} for all business years at ${storeLocation}`;
+      : `${yAxisCalendarChartPrefix} vs. ${xAxisVariable} for All Business Years at ${storeLocation}`;
 
   const lineChartHeading =
     calendarView === 'Daily'
@@ -423,7 +423,7 @@ function returnChartTitleNavigateLinks({
         }, ${year} at ${storeLocation}`
       : calendarView === 'Monthly'
       ? `${yAxisLineChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
-      : `${yAxisLineChartPrefix} vs. ${xAxisVariable} for all business years at ${storeLocation}`;
+      : `${yAxisLineChartPrefix} vs. ${xAxisVariable} for All Business Years at ${storeLocation}`;
 
   const pieChartHeading =
     calendarView === 'Daily'

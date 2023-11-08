@@ -66,6 +66,7 @@ function ResponsiveLineChart({
   lineChartData,
   chartHeight = 350,
   chartWidth = 350,
+  dashboardChartTitle,
   hideControls = false,
   xFormat,
   yFormat,
@@ -89,6 +90,7 @@ function ResponsiveLineChart({
   // sets initial colors based on app theme
   const modifiedResponsiveLineChartState: ResponsiveLineChartState = {
     ...initialResponsiveLineChartState,
+    chartTitle: dashboardChartTitle ?? 'Line Chart',
     pointColor: 'rgba(0, 0, 0, 0)',
     chartTitleColor: chartTextColor,
   };

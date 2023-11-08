@@ -63,7 +63,12 @@ const initialGlobalState: GlobalState = {
     errorCallback: () => {},
   },
 
-  customizeChartsPageData: null,
+  customizeChartsPageData: {
+    chartData: [],
+    chartKind: 'bar',
+    chartTitle: '',
+    selectedYYYYMMDD: new Date().toISOString().slice(0, 10),
+  },
 };
 
 const globalAction: GlobalAction = {
@@ -90,6 +95,8 @@ const globalAction: GlobalAction = {
 
   setErrorState: 'setErrorState',
   setCustomizeChartsPageData: 'setCustomizeChartsPageData',
+  setCustomizeChartsPageDataSelectedYYYYMMDD:
+    'setCustomizeChartsPageDataSelectedYYYYMMDD',
 };
 
 function globalReducer(
@@ -228,8 +235,35 @@ function globalReducer(
       return { ...state, errorState: action.payload };
 
     // customize charts page data
-    case globalAction.setCustomizeChartsPageData:
-      return { ...state, customizeChartsPageData: action.payload };
+    case globalAction.setCustomizeChartsPageData: {
+      const customizeChartsPageData = action.payload;
+      const existingYYYYMMDD =
+        state.customizeChartsPageData?.selectedYYYYMMDD ??
+        new Date().toISOString().slice(0, 10);
+
+      return {
+        ...state,
+        customizeChartsPageData: {
+          ...customizeChartsPageData,
+          selectedYYYYMMDD: existingYYYYMMDD,
+        },
+      };
+    }
+
+    case globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD: {
+      const { customizeChartsPageData } = state;
+      if (!customizeChartsPageData) return state;
+
+      const clonedCustomizeChartsPageData = structuredClone(
+        customizeChartsPageData
+      );
+      clonedCustomizeChartsPageData.selectedYYYYMMDD = action.payload;
+
+      return {
+        ...state,
+        customizeChartsPageData: clonedCustomizeChartsPageData,
+      };
+    }
 
     default:
       return state;

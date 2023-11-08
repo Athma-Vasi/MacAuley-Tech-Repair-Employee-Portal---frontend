@@ -17,6 +17,7 @@ type ResponsiveCalendarChartProps = {
   calendarChartData: CalendarChartData[];
   chartHeight?: number;
   chartWidth?: number;
+  dashboardChartTitle?: string;
   from: string; // YYYY-MM-DD
   to: string; // YYYY-MM-DD
   hideControls?: boolean;
