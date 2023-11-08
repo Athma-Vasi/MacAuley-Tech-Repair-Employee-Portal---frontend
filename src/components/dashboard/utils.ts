@@ -376,19 +376,27 @@ function returnChartTitleNavigateLinks({
   const yAxisBarChartPrefix =
     yAxisBarChartVariable.toLowerCase() === metricCategory.toLowerCase()
       ? `${metricCategory} `
-      : `${yAxisBarChartVariable} ${metricCategory} `;
+      : `${splitCamelCase(yAxisBarChartVariable)} ${
+          metricCategory === 'Other Metrics' ? '' : metricCategory
+        } `;
   const yAxisCalendarChartPrefix =
     yAxisCalendarChartVariable?.toLowerCase() === metricCategory.toLowerCase()
       ? `${metricCategory} `
-      : `${yAxisCalendarChartVariable} ${metricCategory} ` ?? '';
+      : `${splitCamelCase(yAxisCalendarChartVariable ?? '')} ${
+          metricCategory === 'Other Metrics' ? '' : metricCategory
+        } ` ?? '';
   const yAxisLineChartPrefix =
     yAxisLineChartVariable.toLowerCase() === metricCategory.toLowerCase()
       ? `${metricCategory} `
-      : `${yAxisLineChartVariable} ${metricCategory} `;
+      : `${splitCamelCase(yAxisLineChartVariable)} ${
+          metricCategory === 'Other Metrics' ? '' : metricCategory
+        } `;
   const yAxisPieChartPrefix =
     yAxisPieChartVariable?.toLowerCase() === metricCategory.toLowerCase()
       ? `${metricCategory} `
-      : `${yAxisPieChartVariable} ${metricCategory} ` ?? '';
+      : `${splitCamelCase(yAxisPieChartVariable ?? '')} ${
+          metricCategory === 'Other Metrics' ? '' : metricCategory
+        } ` ?? '';
 
   const barChartHeading =
     calendarView === 'Daily'
@@ -419,14 +427,14 @@ function returnChartTitleNavigateLinks({
 
   const pieChartHeading =
     calendarView === 'Daily'
-      ? `${yAxisPieChartPrefix} ${metricsView} vs. ${xAxisVariable} for ${day}, ${
+      ? `${yAxisPieChartPrefix} vs. ${xAxisVariable} for ${day}, ${
           months?.[parseInt(month) - 1] ?? ''
         }, ${year} at ${storeLocation}`
       : calendarView === 'Monthly'
-      ? `${yAxisPieChartPrefix} ${metricsView} vs. ${xAxisVariable} for ${
+      ? `${yAxisPieChartPrefix} vs. ${xAxisVariable} for ${
           months?.[parseInt(month) - 1] ?? ''
         }, ${year} at ${storeLocation}`
-      : `${yAxisPieChartPrefix} ${metricsView} vs. ${xAxisVariable} for ${year} at ${storeLocation}`;
+      : `${yAxisPieChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`;
 
   const expandBarChartNavigateLink =
     calendarView === 'Daily'

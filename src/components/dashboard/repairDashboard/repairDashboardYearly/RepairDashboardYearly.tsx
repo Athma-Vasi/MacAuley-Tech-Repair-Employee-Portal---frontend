@@ -1,4 +1,17 @@
 import { MantineNumberSize, Stack } from '@mantine/core';
+import { ChangeEvent, useReducer } from 'react';
+import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
+
+import { globalAction } from '../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../hooks';
+import {
+  returnAccessibleButtonElements,
+  returnAccessibleSelectInputElements,
+} from '../../../../jsxCreators';
+import { splitCamelCase } from '../../../../utils';
+import { ResponsiveBarChart, ResponsiveLineChart } from '../../../charts';
+import DashboardMetricsLayout from '../../DashboardMetricsLayout';
 import { RepairMetricsCards } from '../../jsxHelpers';
 import {
   BusinessMetric,
@@ -6,37 +19,20 @@ import {
   DashboardRepairMetric,
   Year,
 } from '../../types';
+import { returnChartTitleNavigateLinks, returnStatistics } from '../../utils';
+import { REPAIR_METRIC_Y_AXIS_DATA } from '../constants';
 import { RepairMetricChartsObjKey, RepairMetricsCharts } from '../utils';
-import { ChangeEvent, useReducer } from 'react';
 import {
   initialRepairDashboardYearlyState,
   repairDashboardYearlyReducer,
 } from './state';
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-} from '../../../../jsxCreators';
-import { LuExpand } from 'react-icons/lu';
-import { MONTHS } from '../../constants';
-import { returnStatistics } from '../../utils';
-import {
-  ResponsiveBarChart,
-  ResponsiveCalendarChart,
-  ResponsiveLineChart,
-  ResponsivePieChart,
-} from '../../../charts';
-import { REPAIR_METRIC_Y_AXIS_DATA } from '../constants';
-import DashboardMetricsLayout from '../../DashboardMetricsLayout';
-import { splitCamelCase } from '../../../../utils';
 
 function RepairDashboardYearly({
   borderColor,
   businessMetrics,
   yearlyCards,
   yearlyCharts,
-  day,
   repairMetric,
-  month,
   padding,
   storeLocation,
   width,
@@ -46,14 +42,15 @@ function RepairDashboardYearly({
   businessMetrics: BusinessMetric[];
   yearlyCards: RepairMetricsCards['yearlyCards'];
   yearlyCharts: RepairMetricsCharts['yearlyCharts'];
-  day: string;
   repairMetric: DashboardRepairMetric;
-  month: string;
   padding: MantineNumberSize;
   storeLocation: BusinessMetricStoreLocation;
   width: number;
   year: Year;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [repairDashboardYearlyState, dispatchRepairDashboardYearlyState] =
     useReducer(repairDashboardYearlyReducer, initialRepairDashboardYearlyState);
 
@@ -80,16 +77,6 @@ function RepairDashboardYearly({
     width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
   // statistics
   const yearlyStatistics = returnStatistics<RepairMetricChartsObjKey>(
     yearlyCharts.barChartsObj
@@ -97,12 +84,45 @@ function RepairDashboardYearly({
 
   // charts
 
+  // charts -> titles & navlinks
+  const {
+    barChartHeading,
+    expandBarChartNavigateLink,
+    expandLineChartNavigateLink,
+    lineChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Yearly',
+    metricCategory: splitCamelCase(repairMetric),
+    metricsView: 'Repairs',
+    storeLocation,
+    yAxisBarChartVariable: barChartYAxisVariable,
+    yAxisLineChartVariable: lineChartYAxisVariable,
+    year,
+  });
+
   // charts -> bar
 
-  // charts -> bar -> heading
-  const barChartHeading = `${repairMetric} ${splitCamelCase(
-    barChartYAxisVariable
-  )} at ${storeLocation} for all operating years`;
+  // charts -> bar -> expand chart button
+  const [createdExpandChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: yearlyCharts.barChartsObj[barChartYAxisVariable],
+            chartTitle: barChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // charts -> bar -> y-axis select input
   const [createdBarChartYAxisVariablesSelectInput] =
@@ -134,10 +154,27 @@ function RepairDashboardYearly({
 
   // charts -> line
 
-  // charts -> line -> heading
-  const lineChartHeading = `${repairMetric} ${splitCamelCase(
-    lineChartYAxisVariable
-  )} at ${storeLocation} for all operating years`;
+  // charts -> line -> expand chart button
+  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: yearlyCharts.lineChartsObj[lineChartYAxisVariable],
+            chartTitle: lineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // charts -> line -> y-axis select input
   const [createdLineChartYAxisVariablesSelectInput] =
@@ -162,6 +199,7 @@ function RepairDashboardYearly({
       chartWidth={chartWidth}
       lineChartData={yearlyCharts.lineChartsObj[lineChartYAxisVariable]}
       hideControls
+      xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `$${y}`}
     />
   );
@@ -173,7 +211,8 @@ function RepairDashboardYearly({
       barChartHeading={barChartHeading}
       barChartYAxisSelectInput={createdBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandChartButton}
+      expandLineChartButton={createdExpandLineChartButton}
       lineChart={displayLineChart}
       lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={createdLineChartYAxisVariablesSelectInput}

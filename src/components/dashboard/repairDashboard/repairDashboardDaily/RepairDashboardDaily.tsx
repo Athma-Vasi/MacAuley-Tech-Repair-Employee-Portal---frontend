@@ -1,7 +1,10 @@
 import { MantineNumberSize, Stack } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
@@ -11,7 +14,6 @@ import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
-  ResponsivePieChart,
 } from '../../../charts';
 import { MONTHS } from '../../constants';
 import DashboardMetricsLayout from '../../DashboardMetricsLayout';
@@ -22,7 +24,7 @@ import {
   DashboardRepairMetric,
   Year,
 } from '../../types';
-import { returnStatistics } from '../../utils';
+import { returnChartTitleNavigateLinks, returnStatistics } from '../../utils';
 import { REPAIR_METRIC_Y_AXIS_DATA } from '../constants';
 import { RepairMetricChartsObjKey, RepairMetricsCharts } from '../utils';
 import {
@@ -55,6 +57,9 @@ function RepairDashboardDaily({
   width: number;
   year: Year;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [repairDashboardDailyState, dispatchRepairDashboardDailyState] =
     useReducer(repairDashboardDailyReducer, initialRepairDashboardDailyState);
 
@@ -84,16 +89,6 @@ function RepairDashboardDaily({
     width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
   // statistics
   const dailyStatistics = returnStatistics<RepairMetricChartsObjKey>(
     dailyCharts.barChartsObj
@@ -101,12 +96,51 @@ function RepairDashboardDaily({
 
   // charts
 
+  // charts -> titles & navlinks
+  const {
+    barChartHeading,
+    calendarChartHeading,
+    expandBarChartNavigateLink,
+    expandCalendarChartNavigateLink,
+    expandLineChartNavigateLink,
+    lineChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Daily',
+    metricCategory: splitCamelCase(repairMetric),
+    metricsView: 'Repairs',
+    storeLocation,
+    yAxisBarChartVariable: barChartYAxisVariable,
+    yAxisCalendarChartVariable: calendarChartYAxisVariable,
+    yAxisLineChartVariable: lineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // charts -> bar
 
-  // charts -> bar -> heading
-  const barChartHeading = `${repairMetric} ${splitCamelCase(
-    barChartYAxisVariable
-  )} for ${MONTHS[parseInt(month) - 1]}, ${year} at ${storeLocation}`;
+  // charts -> bar -> expand chart button
+  const [createdExpandChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: dailyCharts.barChartsObj[barChartYAxisVariable],
+            chartTitle: barChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // charts -> bar -> y-axis select input
   const [createdBarChartYAxisVariablesSelectInput] =
@@ -138,10 +172,27 @@ function RepairDashboardDaily({
 
   // charts -> line
 
-  // charts -> line -> heading
-  const lineChartHeading = `${repairMetric} ${splitCamelCase(
-    lineChartYAxisVariable
-  )} for ${MONTHS[parseInt(month) - 1]}, ${year} at ${storeLocation}`;
+  // charts -> line -> expand chart button
+  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: dailyCharts.lineChartsObj[lineChartYAxisVariable],
+            chartTitle: lineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // charts -> line -> y-axis select input
   const [createdLineChartYAxisVariablesSelectInput] =
@@ -173,10 +224,28 @@ function RepairDashboardDaily({
 
   // charts -> calendar
 
-  // charts -> calendar -> heading
-  const calendarChartHeading = `${repairMetric} ${splitCamelCase(
-    calendarChartYAxisVariable
-  )} for ${MONTHS[parseInt(month) - 1]}, ${year} at ${storeLocation}`;
+  // charts -> calendar -> expand chart button
+  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${calendarChartHeading}`,
+      semanticName: 'Expand Calendar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              dailyCharts.calendarChartsObj[calendarChartYAxisVariable],
+            chartTitle: calendarChartHeading,
+            chartKind: 'calendar',
+          },
+        });
+
+        navigate(expandCalendarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // charts -> calendar -> y-axis select input
   const [createdCalendarChartYAxisVariablesSelectInput] =
@@ -215,7 +284,9 @@ function RepairDashboardDaily({
       barChartHeading={barChartHeading}
       barChartYAxisSelectInput={createdBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandChartButton}
+      expandLineChartButton={createdExpandLineChartButton}
+      expandCalendarChartButton={createdExpandCalendarChartButton}
       lineChart={displayLineChart}
       lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={createdLineChartYAxisVariablesSelectInput}

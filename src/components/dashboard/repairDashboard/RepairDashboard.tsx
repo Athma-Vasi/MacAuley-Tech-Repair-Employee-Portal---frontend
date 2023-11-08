@@ -1,4 +1,10 @@
 import { useEffect } from 'react';
+
+import { COLORS_SWATCHES } from '../../../constants/data';
+import { useGlobalState } from '../../../hooks';
+import { returnThemeColors } from '../../../utils';
+import { MONTHS } from '../constants';
+import { returnRepairMetricsCards } from '../jsxHelpers';
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -7,18 +13,13 @@ import {
   Month,
   Year,
 } from '../types';
+import RepairDashboardDaily from './repairDashboardDaily/RepairDashboardDaily';
+import RepairDashboardMonthly from './repairDashboardMonthly/RepairDashboardMonthly';
+import RepairDashboardYearly from './repairDashboardYearly/RepairDashboardYearly';
 import {
   returnRepairMetricsCharts,
   returnSelectedDateRepairMetrics,
 } from './utils';
-import { MONTHS } from '../constants';
-import { useGlobalState } from '../../../hooks';
-import { returnThemeColors } from '../../../utils';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { returnRepairMetricsCards } from '../jsxHelpers';
-import RepairDashboardDaily from './repairDashboardDaily/RepairDashboardDaily';
-import RepairDashboardMonthly from './repairDashboardMonthly/RepairDashboardMonthly';
-import RepairDashboardYearly from './repairDashboardYearly/RepairDashboardYearly';
 
 function RepairDashboard({
   businessMetrics,
@@ -116,8 +117,6 @@ function RepairDashboard({
       <RepairDashboardYearly
         borderColor={borderColor}
         businessMetrics={businessMetrics}
-        day={selectedDate}
-        month={selectedYYYYMMDD.split('-')[1]}
         padding={padding}
         repairMetric={repairMetric}
         storeLocation={storeLocationView}
