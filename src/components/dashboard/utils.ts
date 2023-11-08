@@ -9,15 +9,18 @@ import {
 } from 'simple-statistics';
 
 import { StoreLocation } from '../../types';
-import { returnToFixedFloat } from '../../utils';
+import { returnToFixedFloat, splitCamelCase } from '../../utils';
 import { BarChartData } from '../charts/responsiveBarChart/types';
 import {
   BusinessMetric,
+  BusinessMetricStoreLocation,
   CustomerDailyMetric,
   CustomerMetrics,
   CustomerMonthlyMetric,
   CustomerYearlyMetric,
   DailyFinancialMetric,
+  DashboardCalendarView,
+  DashboardMetricsView,
   DaysInMonthsInYears,
   LocationYearSpread,
   Month,
@@ -335,6 +338,159 @@ import {
   }[]
 };
 */
+
+function returnChartTitleNavigateLinks({
+  calendarView,
+  storeLocation,
+  yAxisBarChartVariable,
+  yAxisCalendarChartVariable,
+  yAxisLineChartVariable,
+  yAxisPieChartVariable,
+  year,
+  day = '01',
+  month = '01',
+  metricCategory,
+  months,
+  metricsView,
+}: {
+  calendarView: DashboardCalendarView;
+  metricsView: DashboardMetricsView; // 'customers' | 'financials' | 'products' | 'repairs'
+  metricCategory: string; // 'overview' | 'all' | 'new' | 'returning' | 'total' ...
+  day?: string;
+  month?: string;
+  months?: Month[];
+  storeLocation: BusinessMetricStoreLocation;
+  yAxisPieChartVariable?: string;
+  yAxisCalendarChartVariable?: string;
+  yAxisBarChartVariable: string;
+  yAxisLineChartVariable: string;
+  year: Year;
+}) {
+  const xAxisVariable =
+    calendarView === 'Daily'
+      ? 'Days'
+      : calendarView === 'Monthly'
+      ? 'Months'
+      : 'Years';
+
+  const yAxisBarChartPrefix =
+    yAxisBarChartVariable.toLowerCase() === metricCategory.toLowerCase()
+      ? `${metricCategory} `
+      : `${yAxisBarChartVariable} ${metricCategory} `;
+  const yAxisCalendarChartPrefix =
+    yAxisCalendarChartVariable?.toLowerCase() === metricCategory.toLowerCase()
+      ? `${metricCategory} `
+      : `${yAxisCalendarChartVariable} ${metricCategory} ` ?? '';
+  const yAxisLineChartPrefix =
+    yAxisLineChartVariable.toLowerCase() === metricCategory.toLowerCase()
+      ? `${metricCategory} `
+      : `${yAxisLineChartVariable} ${metricCategory} `;
+  const yAxisPieChartPrefix =
+    yAxisPieChartVariable?.toLowerCase() === metricCategory.toLowerCase()
+      ? `${metricCategory} `
+      : `${yAxisPieChartVariable} ${metricCategory} ` ?? '';
+
+  const barChartHeading =
+    calendarView === 'Daily'
+      ? `${yAxisBarChartPrefix} vs. ${xAxisVariable} for ${
+          months?.[parseInt(month) - 1] ?? ''
+        }, ${year} at ${storeLocation}`
+      : calendarView === 'Monthly'
+      ? `${yAxisBarChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
+      : `${yAxisBarChartPrefix} vs. ${xAxisVariable} for all business years at ${storeLocation}`;
+
+  const calendarChartHeading =
+    calendarView === 'Daily'
+      ? `${yAxisCalendarChartPrefix} vs. ${xAxisVariable} for ${
+          months?.[parseInt(month) - 1] ?? ''
+        }, ${year} at ${storeLocation}`
+      : calendarView === 'Monthly'
+      ? `${yAxisCalendarChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
+      : `${yAxisCalendarChartPrefix} vs. ${xAxisVariable} for all business years at ${storeLocation}`;
+
+  const lineChartHeading =
+    calendarView === 'Daily'
+      ? `${yAxisLineChartPrefix} vs. ${xAxisVariable} for ${
+          months?.[parseInt(month) - 1] ?? ''
+        }, ${year} at ${storeLocation}`
+      : calendarView === 'Monthly'
+      ? `${yAxisLineChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
+      : `${yAxisLineChartPrefix} vs. ${xAxisVariable} for all business years at ${storeLocation}`;
+
+  const pieChartHeading =
+    calendarView === 'Daily'
+      ? `${yAxisPieChartPrefix} ${metricsView} vs. ${xAxisVariable} for ${day}, ${
+          months?.[parseInt(month) - 1] ?? ''
+        }, ${year} at ${storeLocation}`
+      : calendarView === 'Monthly'
+      ? `${yAxisPieChartPrefix} ${metricsView} vs. ${xAxisVariable} for ${
+          months?.[parseInt(month) - 1] ?? ''
+        }, ${year} at ${storeLocation}`
+      : `${yAxisPieChartPrefix} ${metricsView} vs. ${xAxisVariable} for ${year} at ${storeLocation}`;
+
+  const expandBarChartNavigateLink =
+    calendarView === 'Daily'
+      ? `/home/dashboard/${metricsView}-daily-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-bar-chart`
+      : calendarView === 'Monthly'
+      ? `/home/dashboard/${metricsView}-monthly-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-bar-chart`
+      : `/home/dashboard/${metricsView}-yearly-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-bar-chart`;
+
+  const expandCalendarChartNavigateLink =
+    calendarView === 'Daily'
+      ? `/home/dashboard/${metricsView}-daily-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-calendar-chart`
+      : calendarView === 'Monthly'
+      ? `/home/dashboard/${metricsView}-monthly-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-calendar-chart`
+      : `/home/dashboard/${metricsView}-yearly-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-calendar-chart`;
+
+  const expandLineChartNavigateLink =
+    calendarView === 'Daily'
+      ? `/home/dashboard/${metricsView}-daily-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-line-chart`
+      : calendarView === 'Monthly'
+      ? `/home/dashboard/${metricsView}-monthly-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-line-chart`
+      : `/home/dashboard/${metricsView}-yearly-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-line-chart`;
+
+  const expandPieChartNavigateLink =
+    calendarView === 'Daily'
+      ? `/home/dashboard/${metricsView}-daily-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-pie-chart`
+      : calendarView === 'Monthly'
+      ? `/home/dashboard/${metricsView}-monthly-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-pie-chart`
+      : `/home/dashboard/${metricsView}-yearly-${splitCamelCase(metricCategory)
+          .split(' ')
+          .join('-')}-pie-chart`;
+
+  return {
+    barChartHeading,
+    calendarChartHeading,
+    expandBarChartNavigateLink,
+    expandCalendarChartNavigateLink,
+    expandLineChartNavigateLink,
+    expandPieChartNavigateLink,
+    lineChartHeading,
+    pieChartHeading,
+  };
+}
 
 type StatisticsObject = {
   min: {
@@ -4029,6 +4185,7 @@ function createRandomBusinessMetrics({
 
 export {
   createRandomBusinessMetrics,
+  returnChartTitleNavigateLinks,
   returnStatistics,
   splitSelectedCalendarDate,
 };

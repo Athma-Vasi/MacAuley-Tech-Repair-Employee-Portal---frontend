@@ -9,7 +9,6 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
-import { splitCamelCase } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -20,7 +19,10 @@ import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { CustomerMetricsCards } from '../../../jsxHelpers';
 import { BusinessMetricStoreLocation, Year } from '../../../types';
-import { returnStatistics } from '../../../utils';
+import {
+  returnChartTitleNavigateLinks,
+  returnStatistics,
+} from '../../../utils';
 import {
   CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
   CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
@@ -64,6 +66,7 @@ function CustomerDashboardDailyReturning({
   year: Year;
 }) {
   const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
 
   const [
     customerDashboardDailyReturningState,
@@ -72,8 +75,6 @@ function CustomerDashboardDailyReturning({
     customerDashboardDailyReturningReducer,
     initialCustomerDashboardDailyReturningState
   );
-
-  const navigate = useNavigate();
 
   const {
     returningBarChartYAxisVariable,
@@ -89,16 +90,41 @@ function CustomerDashboardDailyReturning({
     dailyChartsReturning.barChartsObj
   );
 
+  // returning -> charts
+
+  // returning  -> charts -> titles & navlinks
+  const {
+    barChartHeading,
+    calendarChartHeading,
+    expandBarChartNavigateLink,
+    expandCalendarChartNavigateLink,
+    expandLineChartNavigateLink,
+    expandPieChartNavigateLink,
+    lineChartHeading,
+    pieChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Daily',
+    metricCategory: 'Returning',
+    metricsView: 'Customers',
+    storeLocation,
+    yAxisBarChartVariable: returningBarChartYAxisVariable,
+    yAxisCalendarChartVariable: returningCalendarChartYAxisVariable,
+    yAxisLineChartVariable: returningLineChartYAxisVariable,
+    yAxisPieChartVariable: returningPieChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // returning -> charts -> pie
 
   // returning -> charts -> pie -> expand chart button
   const [createdExpandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Expand',
-      semanticDescription: `Expand and customize returning charts for ${day} ${
-        MONTHS[parseInt(month) - 1]
-      }, ${year}`,
-      semanticName: 'Expand Returning Customers Charts',
+      semanticDescription: `Expand and customize ${pieChartHeading}`,
+      semanticName: 'Expand Returning Pie Chart',
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
@@ -106,22 +132,15 @@ function CustomerDashboardDailyReturning({
             chartKind: 'pie',
             chartData:
               dailyChartsReturning.pieChartObj[returningPieChartYAxisVariable],
-            chartTitle: `Returning customers for ${day} ${
-              MONTHS[parseInt(month) - 1]
-            }, ${year}`,
+            chartTitle: pieChartHeading,
           },
         });
 
-        navigate('/home/dashboard/daily-customers-returning-pie-chart');
+        navigate(expandPieChartNavigateLink);
       },
       leftIcon: <LuExpand />,
     },
   ]);
-
-  // returning -> charts -> pie -> heading
-  const returningPieChartHeading = `Returning customers for ${day} ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year}`;
 
   // returning -> charts -> pie -> y axis variables
   const [createdReturningPieChartYAxisVariablesSelectInput] =
@@ -157,10 +176,8 @@ function CustomerDashboardDailyReturning({
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Expand',
-      semanticDescription: `Expand and customize returning charts for ${day} ${
-        MONTHS[parseInt(month) - 1]
-      }, ${year}`,
-      semanticName: 'Expand Returning Customers Charts',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand Returning Bar Chart',
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
@@ -168,24 +185,15 @@ function CustomerDashboardDailyReturning({
             chartKind: 'bar',
             chartData:
               dailyChartsReturning.barChartsObj[returningBarChartYAxisVariable],
-            chartTitle: `Returning customers for ${day} ${
-              MONTHS[parseInt(month) - 1]
-            }, ${year}`,
+            chartTitle: barChartHeading,
           },
         });
 
-        navigate('/home/dashboard/daily-customers-returning-bar-chart');
+        navigate(expandBarChartNavigateLink);
       },
       leftIcon: <LuExpand />,
     },
   ]);
-
-  // returning -> charts -> bar -> heading
-  const returningBarChartHeading = `${splitCamelCase(
-    returningBarChartYAxisVariable
-  )} Customers vs. Days for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
 
   // returning -> charts -> bar -> y axis variables
   const [createdReturningBarChartYAxisVariablesSelectInput] =
@@ -223,10 +231,8 @@ function CustomerDashboardDailyReturning({
   const [createdExpandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Expand',
-      semanticDescription: `Expand and customize returning charts for ${day} ${
-        MONTHS[parseInt(month) - 1]
-      }, ${year}`,
-      semanticName: 'Expand Returning Customers Charts',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand Returning Line Chart',
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
@@ -236,24 +242,15 @@ function CustomerDashboardDailyReturning({
               dailyChartsReturning.lineChartsObj[
                 returningLineChartYAxisVariable
               ],
-            chartTitle: `Returning customers for ${day} ${
-              MONTHS[parseInt(month) - 1]
-            }, ${year}`,
+            chartTitle: lineChartHeading,
           },
         });
 
-        navigate('/home/dashboard/daily-customers-returning-line-chart');
+        navigate(expandLineChartNavigateLink);
       },
       leftIcon: <LuExpand />,
     },
   ]);
-
-  // returning -> charts -> line -> heading
-  const returningLineChartHeading = `${splitCamelCase(
-    returningLineChartYAxisVariable
-  )} Customers vs. Days for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
 
   // returning -> charts -> line -> y axis variables
   const [createdReturningLineChartYAxisVariablesSelectInput] =
@@ -291,10 +288,8 @@ function CustomerDashboardDailyReturning({
   const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Expand',
-      semanticDescription: `Expand and customize returning charts for ${day} ${
-        MONTHS[parseInt(month) - 1]
-      }, ${year}`,
-      semanticName: 'Expand Returning Customers Charts',
+      semanticDescription: `Expand and customize ${calendarChartHeading}`,
+      semanticName: 'Expand Returning Calendar Chart',
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
@@ -304,24 +299,15 @@ function CustomerDashboardDailyReturning({
               dailyChartsReturning.calendarChartsObj[
                 returningCalendarChartYAxisVariable
               ],
-            chartTitle: `Returning customers for ${day} ${
-              MONTHS[parseInt(month) - 1]
-            }, ${year}`,
+            chartTitle: calendarChartHeading,
           },
         });
 
-        navigate('/home/dashboard/daily-customers-returning-calendar-chart');
+        navigate(expandCalendarChartNavigateLink);
       },
       leftIcon: <LuExpand />,
     },
   ]);
-
-  // returning -> charts -> calendar -> heading
-  const returningCalendarChartHeading = `${splitCamelCase(
-    returningCalendarChartYAxisVariable
-  )} Customers vs. Days for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
 
   // returning -> charts -> calendar -> y axis variables
   const [createdReturningCalendarChartYAxisVariablesSelectInput] =
@@ -359,7 +345,7 @@ function CustomerDashboardDailyReturning({
   const displayReturningSection = (
     <DashboardMetricsLayout
       barChart={displayReturningBarChart}
-      barChartHeading={returningBarChartHeading}
+      barChartHeading={barChartHeading}
       barChartYAxisSelectInput={
         createdReturningBarChartYAxisVariablesSelectInput
       }
@@ -369,14 +355,14 @@ function CustomerDashboardDailyReturning({
       expandCalendarChartButton={createdExpandCalendarChartButton}
       expandPieChartButton={createdExpandPieChartButton}
       lineChart={displayReturningLineChart}
-      lineChartHeading={returningLineChartHeading}
+      lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={
         createdReturningLineChartYAxisVariablesSelectInput
       }
       overviewCards={dailyCardsReturning}
       padding={padding}
       pieChart={displayReturningPieChart}
-      pieChartHeading={returningPieChartHeading}
+      pieChartHeading={pieChartHeading}
       pieChartYAxisSelectInput={
         createdReturningPieChartYAxisVariablesSelectInput
       }
@@ -384,7 +370,7 @@ function CustomerDashboardDailyReturning({
       statisticsMap={statisticsDailyReturning}
       width={width}
       calendarChart={displayReturningCalendarChart}
-      calendarChartHeading={returningCalendarChartHeading}
+      calendarChartHeading={calendarChartHeading}
       calendarChartYAxisSelectInput={
         createdReturningCalendarChartYAxisVariablesSelectInput
       }

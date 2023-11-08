@@ -9,7 +9,6 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
-import { splitCamelCase } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -20,7 +19,10 @@ import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { CustomerMetricsCards } from '../../../jsxHelpers';
 import { BusinessMetricStoreLocation, Year } from '../../../types';
-import { returnStatistics } from '../../../utils';
+import {
+  returnChartTitleNavigateLinks,
+  returnStatistics,
+} from '../../../utils';
 import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from '../../constants';
 import { CustomerMetricsCharts, CustomerOverviewObjKey } from '../../utils';
 import {
@@ -55,6 +57,7 @@ function CustomerDashboardDailyOverview({
   year: Year;
 }) {
   const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
 
   const [
     customerDashboardDailyOverviewState,
@@ -63,8 +66,6 @@ function CustomerDashboardDailyOverview({
     customerDashboardDailyOverviewReducer,
     initialCustomerDashboardDailyOverviewState
   );
-
-  const navigate = useNavigate();
 
   const {
     overviewBarChartYAxisVariable,
@@ -79,15 +80,37 @@ function CustomerDashboardDailyOverview({
     dailyChartsOverview.barChartsObj
   );
 
+  // overview  -> charts -> titles & navlinks
+  const {
+    barChartHeading,
+    calendarChartHeading,
+    expandBarChartNavigateLink,
+    expandCalendarChartNavigateLink,
+    expandLineChartNavigateLink,
+    expandPieChartNavigateLink,
+    lineChartHeading,
+    pieChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Daily',
+    metricCategory: 'Overview',
+    metricsView: 'Customers',
+    storeLocation,
+    yAxisBarChartVariable: overviewBarChartYAxisVariable,
+    yAxisCalendarChartVariable: overviewCalendarChartYAxisVariable,
+    yAxisLineChartVariable: overviewLineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // overview -> charts -> pie
 
   // overview -> charts -> pie -> expand chart button
   const [createdExpandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Expand',
-      semanticDescription: `Expand and customize pie chart for ${day} ${
-        MONTHS[parseInt(month) - 1]
-      }, ${year}`,
+      semanticDescription: `Expand and customize ${pieChartHeading}`,
       semanticName: 'Expand Pie Chart',
       buttonOnClick: () => {
         globalDispatch({
@@ -95,21 +118,15 @@ function CustomerDashboardDailyOverview({
           payload: {
             chartKind: 'pie',
             chartData: dailyChartsOverview.pieChartObj,
-            chartTitle: `New and returning customers for ${day} ${
-              MONTHS[parseInt(month) - 1]
-            }, ${year}`,
+            chartTitle: pieChartHeading,
           },
         });
 
-        navigate('/home/dashboard/daily-customers-overview-pie-chart');
+        navigate(expandPieChartNavigateLink);
       },
       leftIcon: <LuExpand />,
     },
   ]);
-  // overview -> charts -> pie -> heading
-  const pieChartHeading = `New and returning customers for ${day} ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year}`;
 
   // overview -> charts -> pie -> display
   const displayOverviewPieChart = (
@@ -127,9 +144,7 @@ function CustomerDashboardDailyOverview({
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Expand',
-      semanticDescription: `Expand and customize bar chart for ${day} ${
-        MONTHS[parseInt(month) - 1]
-      }, ${year}`,
+      semanticDescription: `Expand and customize ${barChartHeading}`,
       semanticName: 'Expand Bar Chart',
       buttonOnClick: () => {
         globalDispatch({
@@ -138,24 +153,15 @@ function CustomerDashboardDailyOverview({
             chartKind: 'bar',
             chartData:
               dailyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
-            chartTitle: `New and returning customers for ${day} ${
-              MONTHS[parseInt(month) - 1]
-            }, ${year}`,
+            chartTitle: barChartHeading,
           },
         });
 
-        navigate('/home/dashboard/daily-customers-overview-bar-chart');
+        navigate(expandBarChartNavigateLink);
       },
       leftIcon: <LuExpand />,
     },
   ]);
-
-  // overview -> charts -> bar -> heading
-  const barChartHeading = `${splitCamelCase(
-    overviewBarChartYAxisVariable
-  )} Customers vs. Days for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
 
   // overview -> charts -> bar -> y axis variables
   const [createdOverviewBarChartYAxisVariablesSelectInput] =
@@ -193,9 +199,7 @@ function CustomerDashboardDailyOverview({
   const [createdExpandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Expand',
-      semanticDescription: `Expand and customize line chart for ${day} ${
-        MONTHS[parseInt(month) - 1]
-      }, ${year}`,
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
       semanticName: 'Expand Line Chart',
       buttonOnClick: () => {
         globalDispatch({
@@ -204,24 +208,15 @@ function CustomerDashboardDailyOverview({
             chartKind: 'line',
             chartData:
               dailyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable],
-            chartTitle: `New and returning customers for ${day} ${
-              MONTHS[parseInt(month) - 1]
-            }, ${year}`,
+            chartTitle: lineChartHeading,
           },
         });
 
-        navigate('/home/dashboard/daily-customers-overview-line-chart');
+        navigate(expandLineChartNavigateLink);
       },
       leftIcon: <LuExpand />,
     },
   ]);
-
-  // overview -> charts -> line -> heading
-  const lineChartHeading = `${splitCamelCase(
-    overviewLineChartYAxisVariable
-  )} Customers vs. Days for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
 
   // overview -> charts -> line -> y axis variables
   const [createdOverviewLineChartYAxisVariablesSelectInput] =
@@ -259,9 +254,7 @@ function CustomerDashboardDailyOverview({
   const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Expand',
-      semanticDescription: `Expand and customize calendar chart for ${day} ${
-        MONTHS[parseInt(month) - 1]
-      }, ${year}`,
+      semanticDescription: `Expand and customize ${calendarChartHeading}`,
       semanticName: 'Expand Calendar Chart',
       buttonOnClick: () => {
         globalDispatch({
@@ -272,24 +265,15 @@ function CustomerDashboardDailyOverview({
               dailyChartsOverview.calendarChartsObj[
                 overviewCalendarChartYAxisVariable
               ],
-            chartTitle: `New and returning customers for ${day} ${
-              MONTHS[parseInt(month) - 1]
-            }, ${year}`,
+            chartTitle: calendarChartHeading,
           },
         });
 
-        navigate('/home/dashboard/daily-customers-overview-calendar-chart');
+        navigate(expandCalendarChartNavigateLink);
       },
       leftIcon: <LuExpand />,
     },
   ]);
-
-  // overview -> charts -> calendar -> heading
-  const calendarChartHeading = `${splitCamelCase(
-    overviewCalendarChartYAxisVariable
-  )} Customers vs. Days for ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year} at ${storeLocation}`;
 
   // overview -> charts -> calendar -> y axis variables
   const [createdOverviewCalendarChartYAxisVariablesSelectInput] =

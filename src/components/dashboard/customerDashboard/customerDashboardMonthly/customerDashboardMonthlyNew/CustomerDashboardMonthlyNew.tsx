@@ -1,12 +1,14 @@
 import { MantineNumberSize } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
-import { splitCamelCase } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -17,7 +19,10 @@ import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { CustomerMetricsCards } from '../../../jsxHelpers';
 import { BusinessMetricStoreLocation, Year } from '../../../types';
-import { returnStatistics } from '../../../utils';
+import {
+  returnChartTitleNavigateLinks,
+  returnStatistics,
+} from '../../../utils';
 import {
   CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
   CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
@@ -60,6 +65,10 @@ function CustomerDashboardMonthlyNew({
   width: number;
   year: Year;
 }) {
+  const { globalDispatch } = useGlobalState();
+
+  const navigate = useNavigate();
+
   const [
     customerDashboardMonthlyNewState,
     customerDashboardMonthlyNewDispatch,
@@ -75,16 +84,6 @@ function CustomerDashboardMonthlyNew({
     newPieChartYAxisVariable,
   } = customerDashboardMonthlyNewState;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
   // new
 
   // new -> statistics
@@ -92,12 +91,56 @@ function CustomerDashboardMonthlyNew({
     monthlyChartsNew.barChartsObj
   );
 
+  // new -> charts
+
+  // new  -> charts -> titles & navlinks
+  const {
+    barChartHeading,
+    calendarChartHeading,
+    expandBarChartNavigateLink,
+    expandCalendarChartNavigateLink,
+    expandLineChartNavigateLink,
+    expandPieChartNavigateLink,
+    lineChartHeading,
+    pieChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Monthly',
+    metricCategory: 'New',
+    metricsView: 'Customers',
+    storeLocation,
+    yAxisBarChartVariable: newBarChartYAxisVariable,
+    yAxisCalendarChartVariable: newCalendarChartYAxisVariable,
+    yAxisLineChartVariable: newLineChartYAxisVariable,
+    yAxisPieChartVariable: newPieChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // new -> charts -> pie
 
-  // new -> charts -> pie -> heading
-  const newPieChartHeading = `New customers for ${day} ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year}`;
+  // new -> charts -> pie -> expand chart button
+  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${pieChartHeading}`,
+      semanticName: 'Expand New Pie Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: monthlyChartsNew.pieChartObj[newPieChartYAxisVariable],
+            chartTitle: pieChartHeading,
+            chartKind: 'pie',
+          },
+        });
+
+        navigate(expandPieChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // new -> charts -> pie -> y axis variables
   const [createdNewPieChartYAxisVariablesSelectInput] =
@@ -127,10 +170,27 @@ function CustomerDashboardMonthlyNew({
 
   // new -> charts -> bar
 
-  // new -> charts -> bar -> heading
-  const newBarChartHeading = `${splitCamelCase(
-    newBarChartYAxisVariable
-  )} Customers vs. Months for ${year} at ${storeLocation}`;
+  // new -> charts -> bar -> expand chart button
+  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand New Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: monthlyChartsNew.barChartsObj[newBarChartYAxisVariable],
+            chartTitle: barChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // new -> charts -> bar -> y axis variables
   const [createdNewBarChartYAxisVariablesSelectInput] =
@@ -162,10 +222,28 @@ function CustomerDashboardMonthlyNew({
 
   // new -> charts -> line
 
-  // new -> charts -> line -> heading
-  const newLineChartHeading = `${splitCamelCase(
-    newLineChartYAxisVariable
-  )} Customers vs. Months for ${year} at ${storeLocation}`;
+  // new -> charts -> line -> expand chart button
+  const [createdExpandChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand New Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyChartsNew.lineChartsObj[newLineChartYAxisVariable],
+            chartTitle: lineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // new -> charts -> line -> y axis variables
   const [createdNewLineChartYAxisVariablesSelectInput] =
@@ -196,10 +274,28 @@ function CustomerDashboardMonthlyNew({
 
   // new -> charts -> calendar
 
-  // new -> charts -> calendar -> heading
-  const newCalendarChartHeading = `${splitCamelCase(
-    newCalendarChartYAxisVariable
-  )} Customers vs. Months for ${year} at ${storeLocation}`;
+  // new -> charts -> calendar -> expand chart button
+  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${calendarChartHeading}`,
+      semanticName: 'Expand New Calendar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyChartsNew.calendarChartsObj[newCalendarChartYAxisVariable],
+            chartTitle: calendarChartHeading,
+            chartKind: 'calendar',
+          },
+        });
+
+        navigate(expandCalendarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // new -> charts -> calendar -> y axis variables
   const [createdNewCalendarChartYAxisVariablesSelectInput] =
@@ -235,23 +331,26 @@ function CustomerDashboardMonthlyNew({
   const displayNewSection = (
     <DashboardMetricsLayout
       barChart={displayNewBarChart}
-      barChartHeading={newBarChartHeading}
+      barChartHeading={barChartHeading}
       barChartYAxisSelectInput={createdNewBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandBarChartButton}
+      expandLineChartButton={createdExpandChartButton}
+      expandCalendarChartButton={createdExpandCalendarChartButton}
+      expandPieChartButton={createdExpandPieChartButton}
       lineChart={displayNewLineChart}
-      lineChartHeading={newLineChartHeading}
+      lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={createdNewLineChartYAxisVariablesSelectInput}
       overviewCards={monthlyCardsNew}
       padding={padding}
       pieChart={displayNewPieChart}
-      pieChartHeading={newPieChartHeading}
+      pieChartHeading={pieChartHeading}
       pieChartYAxisSelectInput={createdNewPieChartYAxisVariablesSelectInput}
-      sectionHeading="Monthly New"
+      sectionHeading={`${storeLocation} Monthly New Customers`}
       statisticsMap={statisticsMonthlyNew}
       width={width}
       calendarChart={displayNewCalendarChart}
-      calendarChartHeading={newCalendarChartHeading}
+      calendarChartHeading={calendarChartHeading}
       calendarChartYAxisSelectInput={
         createdNewCalendarChartYAxisVariablesSelectInput
       }

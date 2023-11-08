@@ -1,7 +1,10 @@
 import { MantineNumberSize } from '@mantine/core';
 import { ChangeEvent, useReducer } from 'react';
 import { LuExpand } from 'react-icons/lu';
+import { useNavigate } from 'react-router-dom';
 
+import { globalAction } from '../../../../../context/globalProvider/state';
+import { useGlobalState } from '../../../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
@@ -17,7 +20,10 @@ import { MONTHS } from '../../../constants';
 import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
 import { CustomerMetricsCards } from '../../../jsxHelpers';
 import { BusinessMetricStoreLocation, Year } from '../../../types';
-import { returnStatistics } from '../../../utils';
+import {
+  returnChartTitleNavigateLinks,
+  returnStatistics,
+} from '../../../utils';
 import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from '../../constants';
 import { CustomerMetricsCharts, CustomerOverviewObjKey } from '../../utils';
 import {
@@ -51,6 +57,9 @@ function CustomerDashboardMonthlyOverview({
   width: number;
   year: Year;
 }) {
+  const { globalDispatch } = useGlobalState();
+  const navigate = useNavigate();
+
   const [
     customerDashboardMonthlyOverviewState,
     customerDashboardMonthlyOverviewDispatch,
@@ -65,16 +74,6 @@ function CustomerDashboardMonthlyOverview({
     overviewLineChartYAxisVariable,
   } = customerDashboardMonthlyOverviewState;
 
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Expand',
-      semanticDescription: 'Expand and customize currently selected chart',
-      semanticName: 'Expand Chart',
-      buttonOnClick: () => {},
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
   // overview
 
   // overview -> statistics
@@ -82,12 +81,55 @@ function CustomerDashboardMonthlyOverview({
     monthlyChartsOverview.barChartsObj
   );
 
+  // overview -> charts
+
+  // overview  -> charts -> titles & navlinks
+  const {
+    barChartHeading,
+    calendarChartHeading,
+    expandBarChartNavigateLink,
+    expandCalendarChartNavigateLink,
+    expandLineChartNavigateLink,
+    expandPieChartNavigateLink,
+    lineChartHeading,
+    pieChartHeading,
+  } = returnChartTitleNavigateLinks({
+    calendarView: 'Monthly',
+    metricCategory: 'Overview',
+    metricsView: 'Customers',
+    storeLocation,
+    yAxisBarChartVariable: overviewBarChartYAxisVariable,
+    yAxisCalendarChartVariable: overviewCalendarChartYAxisVariable,
+    yAxisLineChartVariable: overviewLineChartYAxisVariable,
+    year,
+    day,
+    month,
+    months: MONTHS,
+  });
+
   // overview -> charts -> pie
 
-  // overview -> charts -> pie -> heading
-  const pieChartHeading = `New and returning customers for ${day} ${
-    MONTHS[parseInt(month) - 1]
-  }, ${year}`;
+  // overview -> charts -> pie -> expand chart button
+  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${pieChartHeading}`,
+      semanticName: 'Expand Overview Pie Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: monthlyChartsOverview.pieChartObj,
+            chartTitle: pieChartHeading,
+            chartKind: 'pie',
+          },
+        });
+
+        navigate(expandPieChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // overview -> charts -> pie -> display
   const displayOverviewPieChart = (
@@ -99,10 +141,30 @@ function CustomerDashboardMonthlyOverview({
     />
   );
 
-  // overview -> charts -> bar -> heading
-  const barChartHeading = `${splitCamelCase(
-    overviewBarChartYAxisVariable
-  )} Customers vs. Months for ${year} at ${storeLocation}`;
+  // overview -> charts -> bar
+
+  // overview -> charts -> bar -> expand chart button
+  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${barChartHeading}`,
+      semanticName: 'Expand Overview Bar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
+            chartTitle: barChartHeading,
+            chartKind: 'bar',
+          },
+        });
+
+        navigate(expandBarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // overview -> charts -> bar -> y axis variables
   const [createdOverviewBarChartYAxisVariablesSelectInput] =
@@ -134,10 +196,32 @@ function CustomerDashboardMonthlyOverview({
     />
   );
 
-  // overview -> charts -> line -> heading
-  const lineChartHeading = `${splitCamelCase(
-    overviewLineChartYAxisVariable
-  )} Customers vs. Months for ${year} at ${storeLocation}`;
+  // overview -> charts -> line
+
+  // overview -> charts -> line -> expand chart button
+  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${lineChartHeading}`,
+      semanticName: 'Expand Overview Line Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyChartsOverview.lineChartsObj[
+                overviewLineChartYAxisVariable
+              ],
+            chartTitle: lineChartHeading,
+            chartKind: 'line',
+          },
+        });
+
+        navigate(expandLineChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // overview -> charts -> line -> y axis variables
   const [createdOverviewLineChartYAxisVariablesSelectInput] =
@@ -168,10 +252,32 @@ function CustomerDashboardMonthlyOverview({
     />
   );
 
-  // overview -> charts -> calendar -> heading
-  const calendarChartHeading = `${splitCamelCase(
-    overviewCalendarChartYAxisVariable
-  )} Customers vs. Months for ${year} at ${storeLocation}`;
+  // overview -> charts -> calendar
+
+  // overview -> charts -> calendar -> expand chart button
+  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Expand',
+      semanticDescription: `Expand and customize ${calendarChartHeading}`,
+      semanticName: 'Expand Overview Calendar Chart',
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              monthlyChartsOverview.calendarChartsObj[
+                overviewCalendarChartYAxisVariable
+              ],
+            chartTitle: calendarChartHeading,
+            chartKind: 'calendar',
+          },
+        });
+
+        navigate(expandCalendarChartNavigateLink);
+      },
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // overview -> charts -> calendar -> y axis variables
   const [createdOverviewCalendarChartYAxisVariablesSelectInput] =
@@ -213,7 +319,10 @@ function CustomerDashboardMonthlyOverview({
         createdOverviewBarChartYAxisVariablesSelectInput
       }
       borderColor={borderColor}
-      expandChartButton={createdExpandChartButton}
+      expandBarChartButton={createdExpandBarChartButton}
+      expandLineChartButton={createdExpandLineChartButton}
+      expandCalendarChartButton={createdExpandCalendarChartButton}
+      expandPieChartButton={createdExpandPieChartButton}
       lineChart={displayOverviewLineChart}
       lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={
@@ -223,7 +332,7 @@ function CustomerDashboardMonthlyOverview({
       padding={padding}
       pieChart={displayOverviewPieChart}
       pieChartHeading={pieChartHeading}
-      sectionHeading="Monthly Overview"
+      sectionHeading={`${splitCamelCase(storeLocation)} Monthly Overview`}
       statisticsMap={statisticsMonthlyOverview}
       width={width}
       calendarChart={displayOverviewCalendarChart}

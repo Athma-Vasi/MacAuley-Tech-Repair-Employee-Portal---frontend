@@ -6,16 +6,16 @@ import {
 
 const initialCustomerDashboardMonthlyOtherMetricsState: CustomerDashboardMonthlyOtherMetricsState =
   {
-    churnRetentionBarChartYAxisVariable: 'overview',
-    churnRetentionLineChartYAxisVariable: 'overview',
+    otherMetricsBarChartYAxisVariable: 'overview',
+    otherMetricsLineChartYAxisVariable: 'overview',
   };
 
 const customerDashboardMonthlyOtherMetricsAction: CustomerDashboardMonthlyOtherMetricsAction =
   {
-    setChurnRetentionBarChartYAxisVariable:
-      'setChurnRetentionBarChartYAxisVariable',
-    setChurnRetentionLineChartYAxisVariable:
-      'setChurnRetentionLineChartYAxisVariable',
+    setOtherMetricsBarChartYAxisVariable:
+      'setOtherMetricsBarChartYAxisVariable',
+    setOtherMetricsLineChartYAxisVariable:
+      'setOtherMetricsLineChartYAxisVariable',
   };
 
 function customerDashboardMonthlyOtherMetricsReducer(
@@ -23,15 +23,15 @@ function customerDashboardMonthlyOtherMetricsReducer(
   action: CustomerDashboardMonthlyOtherMetricsDispatch
 ): CustomerDashboardMonthlyOtherMetricsState {
   switch (action.type) {
-    case customerDashboardMonthlyOtherMetricsAction.setChurnRetentionBarChartYAxisVariable:
+    case customerDashboardMonthlyOtherMetricsAction.setOtherMetricsBarChartYAxisVariable:
       return {
         ...state,
-        churnRetentionBarChartYAxisVariable: action.payload,
+        otherMetricsBarChartYAxisVariable: action.payload,
       };
-    case customerDashboardMonthlyOtherMetricsAction.setChurnRetentionLineChartYAxisVariable:
+    case customerDashboardMonthlyOtherMetricsAction.setOtherMetricsLineChartYAxisVariable:
       return {
         ...state,
-        churnRetentionLineChartYAxisVariable: action.payload,
+        otherMetricsLineChartYAxisVariable: action.payload,
       };
     default:
       return state;

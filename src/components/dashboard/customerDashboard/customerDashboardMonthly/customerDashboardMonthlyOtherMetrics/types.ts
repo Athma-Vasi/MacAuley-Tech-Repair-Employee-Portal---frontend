@@ -1,22 +1,22 @@
 import { CustomerChurnRetentionObjKey } from '../../utils';
 
 type CustomerDashboardMonthlyOtherMetricsState = {
-  churnRetentionBarChartYAxisVariable: CustomerChurnRetentionObjKey;
-  churnRetentionLineChartYAxisVariable: CustomerChurnRetentionObjKey;
+  otherMetricsBarChartYAxisVariable: CustomerChurnRetentionObjKey;
+  otherMetricsLineChartYAxisVariable: CustomerChurnRetentionObjKey;
 };
 
 type CustomerDashboardMonthlyOtherMetricsAction = {
-  setChurnRetentionBarChartYAxisVariable: 'setChurnRetentionBarChartYAxisVariable';
-  setChurnRetentionLineChartYAxisVariable: 'setChurnRetentionLineChartYAxisVariable';
+  setOtherMetricsBarChartYAxisVariable: 'setOtherMetricsBarChartYAxisVariable';
+  setOtherMetricsLineChartYAxisVariable: 'setOtherMetricsLineChartYAxisVariable';
 };
 
 type CustomerDashboardMonthlyOtherMetricsDispatch =
   | {
-      type: CustomerDashboardMonthlyOtherMetricsAction['setChurnRetentionBarChartYAxisVariable'];
+      type: CustomerDashboardMonthlyOtherMetricsAction['setOtherMetricsBarChartYAxisVariable'];
       payload: CustomerChurnRetentionObjKey;
     }
   | {
-      type: CustomerDashboardMonthlyOtherMetricsAction['setChurnRetentionLineChartYAxisVariable'];
+      type: CustomerDashboardMonthlyOtherMetricsAction['setOtherMetricsLineChartYAxisVariable'];
       payload: CustomerChurnRetentionObjKey;
     };
 
