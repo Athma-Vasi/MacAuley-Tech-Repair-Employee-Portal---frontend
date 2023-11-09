@@ -282,7 +282,7 @@ function ProductDashboardMonthly({
         monthlyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable]
       }
       hideControls
-      yFormat={(y) => `$${y}`}
+      yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
   );
 

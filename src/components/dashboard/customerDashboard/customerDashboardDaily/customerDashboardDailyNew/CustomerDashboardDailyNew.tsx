@@ -9,6 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
+import { addCommaSeparator } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -39,7 +40,6 @@ import {
   customerDashboardDailyNewReducer,
   initialCustomerDashboardDailyNewState,
 } from './state';
-import { addCommaSeparator } from '../../../../../utils';
 
 function CustomerDashboardDailyNew({
   borderColor,
@@ -131,6 +131,7 @@ function CustomerDashboardDailyNew({
             chartKind: 'pie',
             chartData: dailyChartsNew.pieChartObj[newPieChartYAxisVariable],
             chartTitle: pieChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -163,6 +164,7 @@ function CustomerDashboardDailyNew({
       chartWidth={chartWidth}
       pieChartData={dailyChartsNew.pieChartObj[newPieChartYAxisVariable]}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -181,6 +183,7 @@ function CustomerDashboardDailyNew({
             chartKind: 'bar',
             chartData: dailyChartsNew.barChartsObj[newBarChartYAxisVariable],
             chartTitle: barChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -215,6 +218,7 @@ function CustomerDashboardDailyNew({
       hideControls
       indexBy="Days"
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -233,6 +237,7 @@ function CustomerDashboardDailyNew({
             chartKind: 'line',
             chartData: dailyChartsNew.lineChartsObj[newLineChartYAxisVariable],
             chartTitle: lineChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -286,6 +291,7 @@ function CustomerDashboardDailyNew({
             chartData:
               dailyChartsNew.calendarChartsObj[newCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
+            chartUnitKind: 'number',
           },
         });
 

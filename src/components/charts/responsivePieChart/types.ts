@@ -1,8 +1,10 @@
 import { TitleOrder } from '@mantine/core';
+
 import { ScreenshotImageType } from '../../../types';
 import {
   NivoArcLabel,
   NivoChartTitlePosition,
+  NivoChartUnitKind,
   NivoColorScheme,
   NivoFillPatternObject,
   NivoLegendAnchor,
@@ -25,6 +27,7 @@ type ResponsivePieChartProps = {
   dashboardChartTitle?: string;
   hideControls?: boolean;
   pieChartData: PieChartData[];
+  unitKind?: NivoChartUnitKind;
 };
 
 type ResponsivePieChartState = {
@@ -333,10 +336,10 @@ export type {
   NivoLegendSymbolShape,
   NivoMotionConfig,
   NivoTransitionMode,
+  PieChartData,
   ResponsivePieChartAction,
   ResponsivePieChartDispatch,
   ResponsivePieChartProps,
   ResponsivePieChartReducer,
   ResponsivePieChartState,
-  PieChartData,
 };

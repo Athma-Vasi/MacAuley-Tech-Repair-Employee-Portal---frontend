@@ -91,11 +91,12 @@ function CustomerDashboardYearlyOtherMetrics({
     pieChartHeading,
   } = returnChartTitleNavigateLinks({
     calendarView: 'Yearly',
-    metricCategory: 'Churn and Retention Rates',
+    metricCategory: '',
     metricsView: 'Customers',
     storeLocation,
     yAxisBarChartVariable: otherMetricsBarChartYAxisVariable,
     yAxisLineChartVariable: otherMetricsLineChartYAxisVariable,
+    yAxisPieChartVariable: 'Churn and Retention Rates',
     year,
   });
 
@@ -112,6 +113,7 @@ function CustomerDashboardYearlyOtherMetrics({
             chartData: yearlyChartsOtherMetrics.pieChartObj,
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'percent',
           },
         });
 
@@ -128,6 +130,7 @@ function CustomerDashboardYearlyOtherMetrics({
       chartWidth={chartWidth}
       pieChartData={yearlyChartsOtherMetrics.pieChartObj}
       hideControls
+      unitKind="percent"
     />
   );
 
@@ -149,6 +152,7 @@ function CustomerDashboardYearlyOtherMetrics({
               ],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'percent',
           },
         });
 
@@ -185,6 +189,7 @@ function CustomerDashboardYearlyOtherMetrics({
       hideControls
       indexBy="Years"
       keys={CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="percent"
     />
   );
 
@@ -206,6 +211,7 @@ function CustomerDashboardYearlyOtherMetrics({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'percent',
           },
         });
 

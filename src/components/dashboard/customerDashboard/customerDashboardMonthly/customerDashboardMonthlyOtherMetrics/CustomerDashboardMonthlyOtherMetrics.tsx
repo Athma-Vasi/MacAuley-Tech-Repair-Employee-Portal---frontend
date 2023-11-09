@@ -93,11 +93,12 @@ function CustomerDashboardMonthlyOtherMetrics({
     pieChartHeading,
   } = returnChartTitleNavigateLinks({
     calendarView: 'Monthly',
-    metricCategory: 'Churn and Retention Rates',
+    metricCategory: '',
     metricsView: 'Customers',
     storeLocation,
     yAxisBarChartVariable: otherMetricsBarChartYAxisVariable,
     yAxisLineChartVariable: otherMetricsLineChartYAxisVariable,
+    yAxisPieChartVariable: 'Churn and Retention Rates',
     year,
     month,
     months: MONTHS,
@@ -118,6 +119,7 @@ function CustomerDashboardMonthlyOtherMetrics({
             chartData: monthlyChartsOtherMetrics.pieChartObj,
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'percent',
           },
         });
 
@@ -134,6 +136,7 @@ function CustomerDashboardMonthlyOtherMetrics({
       chartWidth={chartWidth}
       pieChartData={monthlyChartsOtherMetrics.pieChartObj}
       hideControls
+      unitKind="percent"
     />
   );
 
@@ -155,6 +158,7 @@ function CustomerDashboardMonthlyOtherMetrics({
               ],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'percent',
           },
         });
 
@@ -193,6 +197,7 @@ function CustomerDashboardMonthlyOtherMetrics({
       hideControls
       indexBy="Months"
       keys={CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="percent"
     />
   );
 
@@ -214,6 +219,7 @@ function CustomerDashboardMonthlyOtherMetrics({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'percent',
           },
         });
 

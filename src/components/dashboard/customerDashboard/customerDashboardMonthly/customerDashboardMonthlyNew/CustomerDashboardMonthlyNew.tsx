@@ -9,6 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
+import { addCommaSeparator } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -39,7 +40,6 @@ import {
   customerDashboardMonthlyNewReducer,
   initialCustomerDashboardMonthlyNewState,
 } from './state';
-import { addCommaSeparator } from '../../../../../utils';
 
 function CustomerDashboardMonthlyNew({
   borderColor,
@@ -134,6 +134,7 @@ function CustomerDashboardMonthlyNew({
             chartData: monthlyChartsNew.pieChartObj[newPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'number',
           },
         });
 
@@ -166,6 +167,7 @@ function CustomerDashboardMonthlyNew({
       chartWidth={chartWidth}
       pieChartData={monthlyChartsNew.pieChartObj[newPieChartYAxisVariable]}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -184,6 +186,7 @@ function CustomerDashboardMonthlyNew({
             chartData: monthlyChartsNew.barChartsObj[newBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'number',
           },
         });
 
@@ -218,6 +221,7 @@ function CustomerDashboardMonthlyNew({
       hideControls
       indexBy="Months"
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -237,6 +241,7 @@ function CustomerDashboardMonthlyNew({
               monthlyChartsNew.lineChartsObj[newLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'number',
           },
         });
 
@@ -289,6 +294,7 @@ function CustomerDashboardMonthlyNew({
               monthlyChartsNew.calendarChartsObj[newCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind: 'number',
           },
         });
 

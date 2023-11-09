@@ -7,6 +7,7 @@ import {
   Stack,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 
 import { addCommaSeparator } from '../../utils';
@@ -94,12 +95,19 @@ function DashboardMetricsLayout({
   );
 
   // bar chart section
+
+  const expandBarChartButtonWithTooltip = (
+    <Tooltip label="Expand and Customize Bar Chart">
+      <Group>{expandBarChartButton}</Group>
+    </Tooltip>
+  );
+
   const displayBarChartSection = (
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Bar Chart</Title>
-      <Group w="100%" position="apart">
-        {barChartYAxisSelectInput}
-        {expandBarChartButton}
+      <Group w="100%" position="center" align="flex-end">
+        <Group w={200}>{barChartYAxisSelectInput}</Group>
+        {expandBarChartButtonWithTooltip}
       </Group>
       <Group w="100%" position="center">
         <Text size="lg" weight={500}>
@@ -113,12 +121,19 @@ function DashboardMetricsLayout({
   );
 
   // calendar chart section
+
+  const expandCalendarChartButtonWithTooltip = (
+    <Tooltip label="Expand and Customize Calendar Chart">
+      <Group>{expandCalendarChartButton}</Group>
+    </Tooltip>
+  );
+
   const displayCalendarChartSection = calendarChart ? (
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Calendar Chart</Title>
-      <Group w="100%" position="apart">
-        {calendarChartYAxisSelectInput}
-        {expandCalendarChartButton}
+      <Group w="100%" position="center" align="flex-end">
+        <Group w={200}>{calendarChartYAxisSelectInput}</Group>
+        {expandCalendarChartButtonWithTooltip}
       </Group>
       <Group w="100%" position="center">
         <Text size="lg" weight={500}>
@@ -132,12 +147,19 @@ function DashboardMetricsLayout({
   ) : null;
 
   // line chart section
+
+  const expandLineChartButtonWithTooltip = (
+    <Tooltip label="Expand and Customize Line Chart">
+      <Group>{expandLineChartButton}</Group>
+    </Tooltip>
+  );
+
   const displayLineChartSection = (
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Line Chart</Title>
-      <Group w="100%" position="apart">
-        {lineChartYAxisSelectInput}
-        {expandLineChartButton}
+      <Group w="100%" position="center" align="flex-end">
+        <Group w={200}>{lineChartYAxisSelectInput}</Group>
+        {expandLineChartButtonWithTooltip}
       </Group>
       <Group w="100%" position="center">
         <Text size="lg" weight={500}>
@@ -151,11 +173,18 @@ function DashboardMetricsLayout({
   );
 
   // pie chart section
+
+  const expandPieChartButtonWithTooltip = (
+    <Tooltip label="Expand and Customize Pie Chart">
+      <Group>{expandPieChartButton}</Group>
+    </Tooltip>
+  );
+
   const pieChartHeadingSection = pieChartYAxisSelectInput ? (
     <Flex direction="column">
       <Group w="100%" position="apart">
-        {pieChartYAxisSelectInput}
-        {expandPieChartButton}
+        <Group w={200}>{pieChartYAxisSelectInput}</Group>
+        {expandPieChartButtonWithTooltip}
       </Group>
       <Group w="100%" position="center">
         <Text size="lg" weight={500}>
@@ -178,9 +207,7 @@ function DashboardMetricsLayout({
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Pie Chart</Title>
       {pieChartHeadingSection}
-      <Group w="100%" position="center">
-        {pieChart}
-      </Group>
+      <Group position="center">{pieChart}</Group>
     </Stack>
   ) : null;
 
@@ -264,7 +291,7 @@ function DashboardMetricsLayout({
   );
 
   const displayDashboardMetricsLayout = (
-    <Stack w="100%" spacing="xl">
+    <Stack w="100%" spacing="xl" p={padding}>
       {displayHeading}
       {displayCards}
       {displayStatisticsSection}

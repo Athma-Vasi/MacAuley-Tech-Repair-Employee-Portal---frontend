@@ -1,4 +1,5 @@
 import {
+  Accordion,
   Flex,
   Group,
   Stack,
@@ -8,11 +9,13 @@ import {
   Title,
 } from '@mantine/core';
 import { ChangeEvent, useEffect, useReducer } from 'react';
-import { TbCornerDownRight } from 'react-icons/tb';
 
 import { COLORS_SWATCHES, STORE_LOCATION_DATA } from '../../constants/data';
+import { globalAction } from '../../context/globalProvider/state';
 import { useGlobalState } from '../../hooks';
+import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 import { logState, returnThemeColors } from '../../utils';
+import { AccessibleSelectInputCreatorInfo } from '../wrappers';
 import {
   CALENDAR_VIEW_TABS_DATA,
   CUSTOMER_METRICS_SELECT_INPUT_DATA,
@@ -28,6 +31,7 @@ import {
 } from './constants';
 import CustomerDashboard from './customerDashboard/CustomerDashboard';
 import FinancialDashboard from './financialDashboard/FinancialDashboard';
+import ProductDashboard from './productDashboard/ProductDashboard';
 import RepairDashboard from './repairDashboard/RepairDashboard';
 import {
   dashboardAction,
@@ -47,10 +51,6 @@ import {
   createRandomBusinessMetrics,
   splitSelectedCalendarDate,
 } from './utils';
-import { AccessibleSelectInputCreatorInfo } from '../wrappers';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
-import ProductDashboard from './productDashboard/ProductDashboard';
-import { globalAction } from '../../context/globalProvider/state';
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -59,13 +59,12 @@ function Dashboard() {
   );
 
   const {
-    globalState: { padding, width, themeObject },
+    globalState: { padding, themeObject },
     globalDispatch,
   } = useGlobalState();
 
   const {
-    appThemeColors: { borderColor, backgroundColor },
-    generalColors: { iconGray },
+    appThemeColors: { backgroundColor },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -288,52 +287,108 @@ function Dashboard() {
     ]);
 
   // store location tabs
+  // const createdStoreLocationTabs = (
+  //   <Flex
+  //     direction="column"
+  //     bg={backgroundColor}
+  //     pb={padding}
+  //     style={{
+  //       boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+  //       position: 'sticky',
+  //       top: 0,
+  //       zIndex: 4,
+  //     }}
+  //     w="100%"
+  //   >
+  //     <Group position="apart">
+  //       <Stack w={500}>
+  //         <Tabs
+  //           value={storeLocationView}
+  //           onTabChange={(value) => {
+  //             dashboardDispatch({
+  //               type: dashboardAction.setStoreLocationView,
+  //               payload: value as BusinessMetricStoreLocation,
+  //             });
+  //           }}
+  //         >
+  //           <Tabs.List>
+  //             {STORE_LOCATION_VIEW_TABS_DATA.map((storeLocationView, idx) => (
+  //               <Tabs.Tab
+  //                 key={`${idx}-${storeLocationView}`}
+  //                 value={storeLocationView}
+  //               >
+  //                 {storeLocationView}
+  //               </Tabs.Tab>
+  //             ))}
+  //           </Tabs.List>
+  //         </Tabs>
+
+  //         {createdMetricsTabs}
+
+  //         {createdCalendarTabs}
+  //       </Stack>
+  //       <Group w={400} align="flex-end">
+  //         {createdMetricCategorySelectInput}
+  //         {displayYYYYMMDDInput}
+  //       </Group>
+  //     </Group>
+  //   </Flex>
+  // );
+
   const createdStoreLocationTabs = (
-    <Flex
-      direction="column"
+    <Accordion
+      w="100%"
       bg={backgroundColor}
-      pb={padding}
       style={{
         boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
         position: 'sticky',
         top: 0,
         zIndex: 4,
       }}
-      w="100%"
     >
-      <Group position="apart">
-        <Stack>
-          <Tabs
-            value={storeLocationView}
-            onTabChange={(value) => {
-              dashboardDispatch({
-                type: dashboardAction.setStoreLocationView,
-                payload: value as BusinessMetricStoreLocation,
-              });
-            }}
-          >
-            <Tabs.List>
-              {STORE_LOCATION_VIEW_TABS_DATA.map((storeLocationView, idx) => (
-                <Tabs.Tab
-                  key={`${idx}-${storeLocationView}`}
-                  value={storeLocationView}
-                >
-                  {storeLocationView}
-                </Tabs.Tab>
-              ))}
-            </Tabs.List>
-          </Tabs>
+      <Accordion.Item value="Refine Metrics View">
+        <Accordion.Control>
+          <Title order={5}>Refine Metrics View</Title>
+        </Accordion.Control>
 
-          {createdMetricsTabs}
+        <Accordion.Panel>
+          <Group position="apart">
+            <Stack w={500}>
+              <Tabs
+                value={storeLocationView}
+                onTabChange={(value) => {
+                  dashboardDispatch({
+                    type: dashboardAction.setStoreLocationView,
+                    payload: value as BusinessMetricStoreLocation,
+                  });
+                }}
+              >
+                <Tabs.List>
+                  {STORE_LOCATION_VIEW_TABS_DATA.map(
+                    (storeLocationView, idx) => (
+                      <Tabs.Tab
+                        key={`${idx}-${storeLocationView}`}
+                        value={storeLocationView}
+                      >
+                        {storeLocationView}
+                      </Tabs.Tab>
+                    )
+                  )}
+                </Tabs.List>
+              </Tabs>
 
-          {createdCalendarTabs}
-        </Stack>
-        <Stack w={330}>
-          {createdMetricCategorySelectInput}
-          {displayYYYYMMDDInput}
-        </Stack>
-      </Group>
-    </Flex>
+              {createdMetricsTabs}
+
+              {createdCalendarTabs}
+            </Stack>
+            <Group w={400} align="flex-end">
+              {createdMetricCategorySelectInput}
+              {displayYYYYMMDDInput}
+            </Group>
+          </Group>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
   );
 
   const { selectedDate, selectedMonth, selectedYear } =

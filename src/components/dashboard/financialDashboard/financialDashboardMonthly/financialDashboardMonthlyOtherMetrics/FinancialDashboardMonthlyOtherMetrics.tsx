@@ -95,7 +95,7 @@ function FinancialDashboardMonthlyOtherMetrics({
     lineChartHeading,
   } = returnChartTitleNavigateLinks({
     calendarView: 'Monthly',
-    metricCategory: 'Other Metrics',
+    metricCategory: '',
     metricsView: 'Financials',
     storeLocation,
     yAxisBarChartVariable: otherMetricsBarChartYAxisVariable,

@@ -271,7 +271,7 @@ function ProductDashboardYearly({
       }
       hideControls
       xFormat={(x) => `Year - ${x}`}
-      yFormat={(y) => `$${y}`}
+      yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
   );
 

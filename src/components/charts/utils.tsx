@@ -44,8 +44,6 @@ function ChartsAndGraphsControlsStacker({
         splitCamelCase(label).toLowerCase()
     )?.[1] ?? '';
 
-  // console.log({ label, initialChartState, defaultValue, value });
-
   const displayDefaultValue =
     defaultValue === '' ? null : (
       <Text

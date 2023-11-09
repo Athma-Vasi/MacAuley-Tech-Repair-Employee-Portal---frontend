@@ -116,6 +116,7 @@ function CustomerDashboardYearlyNew({
             chartData: yearlyChartsNew.pieChartObj[newPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'number',
           },
         });
 
@@ -148,6 +149,7 @@ function CustomerDashboardYearlyNew({
       chartWidth={chartWidth}
       pieChartData={yearlyChartsNew.pieChartObj[newPieChartYAxisVariable]}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -166,6 +168,7 @@ function CustomerDashboardYearlyNew({
             chartData: yearlyChartsNew.barChartsObj[newBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'number',
           },
         });
 
@@ -200,6 +203,7 @@ function CustomerDashboardYearlyNew({
       hideControls
       indexBy="Years"
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -218,6 +222,7 @@ function CustomerDashboardYearlyNew({
             chartData: yearlyChartsNew.lineChartsObj[newLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'number',
           },
         });
 

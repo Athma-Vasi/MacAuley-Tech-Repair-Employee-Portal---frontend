@@ -20,7 +20,7 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
-import { returnThemeColors } from '../../../utils';
+import { addCommaSeparator, returnThemeColors } from '../../../utils';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -62,6 +62,7 @@ function ResponsiveBarChart({
   hideControls = false,
   indexBy,
   keys,
+  unitKind = 'currency',
 }: ResponsiveBarChartProps) {
   const {
     globalState: { isPrefersReducedMotion, width, themeObject, padding },
@@ -115,7 +116,6 @@ function ResponsiveBarChart({
     chartBorderWidth, // 0px - 20px default: 0 step: 1
     chartColors, // default: nivo
     enableFillPatterns, // default: false
-    fillPatterns,
 
     /** labels */
     enableLabels, // default: true
@@ -346,8 +346,13 @@ function ResponsiveBarChart({
       motionConfig={motionConfig}
       isInteractive={true}
       role="application"
-      ariaLabel="Nivo bar chart"
+      ariaLabel={chartTitle}
       barAriaLabel={(e) => e.id + ': ' + e.formattedValue + e.indexValue}
+      valueFormat={(value) =>
+        `${
+          unitKind === 'currency' ? '$' : unitKind === 'percent' ? '%' : ''
+        }${addCommaSeparator(value)}`
+      }
     />
   );
 

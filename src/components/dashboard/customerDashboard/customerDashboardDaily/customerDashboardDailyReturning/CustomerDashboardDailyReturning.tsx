@@ -9,6 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
+import { addCommaSeparator } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -39,7 +40,6 @@ import {
   customerDashboardDailyReturningReducer,
   initialCustomerDashboardDailyReturningState,
 } from './state';
-import { addCommaSeparator } from '../../../../../utils';
 
 function CustomerDashboardDailyReturning({
   borderColor,
@@ -134,6 +134,7 @@ function CustomerDashboardDailyReturning({
             chartData:
               dailyChartsReturning.pieChartObj[returningPieChartYAxisVariable],
             chartTitle: pieChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -168,6 +169,7 @@ function CustomerDashboardDailyReturning({
         dailyChartsReturning.pieChartObj[returningPieChartYAxisVariable]
       }
       hideControls
+      unitKind="number"
     />
   );
 
@@ -187,6 +189,7 @@ function CustomerDashboardDailyReturning({
             chartData:
               dailyChartsReturning.barChartsObj[returningBarChartYAxisVariable],
             chartTitle: barChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -223,6 +226,7 @@ function CustomerDashboardDailyReturning({
       hideControls
       indexBy="Days"
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -244,6 +248,7 @@ function CustomerDashboardDailyReturning({
                 returningLineChartYAxisVariable
               ],
             chartTitle: lineChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -301,6 +306,7 @@ function CustomerDashboardDailyReturning({
                 returningCalendarChartYAxisVariable
               ],
             chartTitle: calendarChartHeading,
+            chartUnitKind: 'number',
           },
         });
 

@@ -9,6 +9,7 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
 } from '../../../../../jsxCreators';
+import { addCommaSeparator } from '../../../../../utils';
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -30,7 +31,6 @@ import {
   customerDashboardDailyOverviewReducer,
   initialCustomerDashboardDailyOverviewState,
 } from './state';
-import { addCommaSeparator } from '../../../../../utils';
 
 function CustomerDashboardDailyOverview({
   borderColor,
@@ -120,6 +120,7 @@ function CustomerDashboardDailyOverview({
             chartKind: 'pie',
             chartData: dailyChartsOverview.pieChartObj,
             chartTitle: pieChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -136,6 +137,7 @@ function CustomerDashboardDailyOverview({
       chartWidth={chartWidth}
       pieChartData={dailyChartsOverview.pieChartObj}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -155,6 +157,7 @@ function CustomerDashboardDailyOverview({
             chartData:
               dailyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
             chartTitle: barChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -191,6 +194,7 @@ function CustomerDashboardDailyOverview({
       hideControls
       indexBy="Days"
       keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -210,6 +214,7 @@ function CustomerDashboardDailyOverview({
             chartData:
               dailyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable],
             chartTitle: lineChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -267,6 +272,7 @@ function CustomerDashboardDailyOverview({
                 overviewCalendarChartYAxisVariable
               ],
             chartTitle: calendarChartHeading,
+            chartUnitKind: 'number',
           },
         });
 

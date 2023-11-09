@@ -1757,6 +1757,7 @@ function returnProductMetricsCards({
   // monthly -> revenue -> total
   const monthRevenueTotalCardInfo = returnDashboardCardInfo({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    isDisplayValueAsCurrency: true,
     kind: 'month',
     prevValue: prevMonthMetrics?.revenue.total ?? 0,
     selectedValue: selectedMonthMetrics?.revenue.total ?? 1,
@@ -1765,6 +1766,7 @@ function returnProductMetricsCards({
   // monthly -> revenue -> inStore
   const monthRevenueInStoreCardInfo = returnDashboardCardInfo({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    isDisplayValueAsCurrency: true,
     heading: 'In-Store',
     kind: 'month',
     prevValue: prevMonthMetrics?.revenue.inStore ?? 0,
@@ -1774,6 +1776,7 @@ function returnProductMetricsCards({
   // monthly -> revenue -> online
   const monthRevenueOnlineCardInfo = returnDashboardCardInfo({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    isDisplayValueAsCurrency: true,
     heading: 'Online',
     kind: 'month',
     prevValue: prevMonthMetrics?.revenue.online ?? 0,
@@ -1816,6 +1819,7 @@ function returnProductMetricsCards({
   // yearly -> revenue -> total
   const yearRevenueTotalCardInfo = returnDashboardCardInfo({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     prevValue: prevYearMetrics?.revenue.total ?? 0,
     selectedValue: selectedYearMetrics?.revenue.total ?? 1,
@@ -1825,6 +1829,7 @@ function returnProductMetricsCards({
   const yearRevenueInStoreCardInfo = returnDashboardCardInfo({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'In-Store',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     prevValue: prevYearMetrics?.revenue.inStore ?? 0,
     selectedValue: selectedYearMetrics?.revenue.inStore ?? 1,
@@ -1834,6 +1839,7 @@ function returnProductMetricsCards({
   const yearRevenueOnlineCardInfo = returnDashboardCardInfo({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: 'Online',
+    isDisplayValueAsCurrency: true,
     kind: 'year',
     prevValue: prevYearMetrics?.revenue.online ?? 0,
     selectedValue: selectedYearMetrics?.revenue.online ?? 1,

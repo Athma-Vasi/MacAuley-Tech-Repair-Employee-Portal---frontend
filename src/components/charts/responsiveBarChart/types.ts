@@ -7,8 +7,8 @@ import {
   NivoBarLayout,
   NivoBarValueScale,
   NivoChartTitlePosition,
+  NivoChartUnitKind,
   NivoColorScheme,
-  NivoFillPatternObject,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
@@ -33,6 +33,7 @@ type ResponsiveBarChartProps = {
   hideControls?: boolean;
   indexBy: string;
   keys: string[];
+  unitKind?: NivoChartUnitKind;
 };
 
 type ResponsiveBarChartState = {
@@ -57,7 +58,6 @@ type ResponsiveBarChartState = {
   chartBorderWidth: number; // 0px - 20px default: 0 step: 1
   chartColors: NivoColorScheme; // default: nivo
   enableFillPatterns: boolean; // default: false
-  fillPatterns: NivoFillPatternObject[];
 
   /** labels */
   enableLabels: boolean; // default: true
@@ -170,7 +170,6 @@ type ResponsiveBarChartAction = {
   setChartBorderWidth: 'setChartBorderWidth';
   setChartColors: 'setChartColors';
   setEnableFillPatterns: 'setEnableFillPatterns';
-  setFillPatterns: 'setFillPatterns';
 
   /** labels */
   setEnableLabels: 'setEnableLabels';
@@ -364,10 +363,6 @@ type ResponsiveBarChartDispatch =
         | ResponsiveBarChartAction['setScreenshotFilename'];
 
       payload: string;
-    }
-  | {
-      type: ResponsiveBarChartAction['setFillPatterns'];
-      payload: NivoFillPatternObject[];
     }
   | {
       type:

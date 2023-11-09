@@ -1,5 +1,4 @@
 import {
-  Accordion,
   Center,
   Flex,
   Group,
@@ -8,7 +7,6 @@ import {
   Loader,
   LoadingOverlay,
   Modal,
-  Paper,
   ScrollArea,
   Space,
   Stack,
@@ -18,7 +16,6 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
 import { CSSProperties, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import { IoMdOpen } from 'react-icons/io';
@@ -31,14 +28,13 @@ import {
   FIELDNAMES_WITH_DATE_VALUES,
 } from '../../../constants/data';
 import { authAction } from '../../../context/authProvider';
-import { globalAction } from '../../../context/globalProvider/state';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnHighlightedText,
   returnScrollableDocumentInfo,
 } from '../../../jsxCreators';
-import { ResourceRequestServerResponse, UserDocument } from '../../../types';
+import { UserDocument } from '../../../types';
 import {
   addFieldsToObject,
   formatDate,
@@ -47,9 +43,7 @@ import {
   returnIsAccessTokenExpired,
   returnThemeColors,
   splitCamelCase,
-  urlBuilder,
 } from '../../../utils';
-import { UserInfo } from '../../portalHeader/userInfo/UserInfo';
 import EditRepairNote from '../editRepairNote/EditRepairNote';
 import { ProfileInfo } from '../profileInfo/ProfileInfo';
 import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
@@ -92,25 +86,13 @@ function DisplayQueryDesktop({
     sortDirection,
   } = displayQueryDesktopState;
   const {
-    globalDispatch,
-    globalState: {
-      height,
-      width,
-      padding,
-      rowGap,
-      themeObject,
-      isPrefersReducedMotion,
-      actionsDocuments,
-    },
+    globalState: { width, padding, rowGap, themeObject, actionsDocuments },
   } = useGlobalState();
 
   const {
     authDispatch,
-    authState: { roles, accessToken, isAccessTokenExpired },
+    authState: { roles, accessToken },
   } = useAuth();
-
-  const navigate = useNavigate();
-  const { showBoundary } = useErrorBoundary();
 
   const [
     openedUpdateRequestStatusModal,

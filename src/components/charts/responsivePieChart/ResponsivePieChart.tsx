@@ -20,7 +20,7 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
-import { returnThemeColors } from '../../../utils';
+import { addCommaSeparator, returnThemeColors } from '../../../utils';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
@@ -57,6 +57,7 @@ function ResponsivePieChart({
   dashboardChartTitle,
   hideControls = false,
   pieChartData,
+  unitKind = 'currency',
 }: ResponsivePieChartProps) {
   /** ------------- begin hooks ------------- */
   const {
@@ -280,6 +281,11 @@ function ResponsivePieChart({
               },
             ]
           : []
+      }
+      valueFormat={(value) =>
+        `${
+          unitKind === 'currency' ? '$' : unitKind === 'percent' ? '%' : ''
+        }${addCommaSeparator(value)}`
       }
     />
   );

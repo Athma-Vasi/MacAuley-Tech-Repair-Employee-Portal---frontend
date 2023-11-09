@@ -122,6 +122,7 @@ function CustomerDashboardMonthlyOverview({
             chartData: monthlyChartsOverview.pieChartObj,
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'number',
           },
         });
 
@@ -138,6 +139,7 @@ function CustomerDashboardMonthlyOverview({
       chartWidth={chartWidth}
       pieChartData={monthlyChartsOverview.pieChartObj}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -157,6 +159,7 @@ function CustomerDashboardMonthlyOverview({
               monthlyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'number',
           },
         });
 
@@ -193,6 +196,7 @@ function CustomerDashboardMonthlyOverview({
       hideControls
       indexBy="Months"
       keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -214,6 +218,7 @@ function CustomerDashboardMonthlyOverview({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'number',
           },
         });
 
@@ -270,6 +275,7 @@ function CustomerDashboardMonthlyOverview({
               ],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind: 'number',
           },
         });
 

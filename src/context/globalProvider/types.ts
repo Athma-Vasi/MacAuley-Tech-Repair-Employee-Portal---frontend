@@ -18,6 +18,7 @@ import { LineChartData } from '../../components/charts/responsiveLineChart/types
 import { PieChartData } from '../../components/charts/responsivePieChart/types';
 import { RadialBarChartData } from '../../components/charts/responsiveRadialBarChart/types';
 import { SunburstChartData } from '../../components/charts/responsiveSunburstChart/types';
+import { NivoChartUnitKind } from '../../components/charts/types';
 import { EndorsementDocument } from '../../components/endorsements/create/types';
 import { EventCreatorDocument } from '../../components/event/create/types';
 import { ExpenseClaimDocument } from '../../components/expenseClaim/create/types';
@@ -127,6 +128,7 @@ type ActionsDocuments = {
 type CustomizeChartsPageData = {
   chartTitle: string;
   selectedYYYYMMDD?: string;
+  chartUnitKind: NivoChartUnitKind;
 } & (
   | {
       chartKind: 'bar';

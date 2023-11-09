@@ -375,33 +375,50 @@ function returnChartTitleNavigateLinks({
       ? 'Months'
       : 'Years';
 
+  console.group('returnChartTitleNavigateLinks');
+  console.log('metricCategory: ', metricCategory);
+  console.log('metricsView: ', metricsView);
+  console.log('yAxisBarChartVariable: ', yAxisBarChartVariable);
+  console.log('yAxisCalendarChartVariable: ', yAxisCalendarChartVariable);
+  console.log('yAxisLineChartVariable: ', yAxisLineChartVariable);
+  console.log('yAxisPieChartVariable: ', yAxisPieChartVariable);
+  console.log('productMetric: ', productMetric);
+  console.log('calendarView: ', calendarView);
+  console.log('xAxisVariable: ', xAxisVariable);
+  console.log('months: ', months);
+  console.log('month: ', month);
+  console.log('year: ', year);
+  console.log('day: ', day);
+  console.log('storeLocation: ', storeLocation);
+  console.groupEnd();
+
   const yAxisBarChartPrefix =
     yAxisBarChartVariable.toLowerCase() === metricCategory.toLowerCase()
       ? `${productMetric ? productMetric : ''} ${metricCategory} `
       : `${productMetric ? productMetric : ''} ${splitCamelCase(
           yAxisBarChartVariable
-        )} ${metricCategory === 'Other Metrics' ? '' : metricCategory} ` ?? '';
+        )} ${metricCategory} ` ?? '';
 
   const yAxisCalendarChartPrefix =
     yAxisCalendarChartVariable?.toLowerCase() === metricCategory.toLowerCase()
       ? `${productMetric ? productMetric : ''} ${metricCategory} `
       : `${productMetric ? productMetric : ''} ${splitCamelCase(
           yAxisCalendarChartVariable ?? ''
-        )} ${metricCategory === 'Other Metrics' ? '' : metricCategory} ` ?? '';
+        )} ${metricCategory} ` ?? '';
 
   const yAxisLineChartPrefix =
     yAxisLineChartVariable.toLowerCase() === metricCategory.toLowerCase()
       ? `${productMetric ? productMetric : ''} ${metricCategory} `
       : `${productMetric ? productMetric : ''} ${splitCamelCase(
           yAxisLineChartVariable
-        )} ${metricCategory === 'Other Metrics' ? '' : metricCategory} ` ?? '';
+        )} ${metricCategory} ` ?? '';
 
   const yAxisPieChartPrefix =
     yAxisPieChartVariable?.toLowerCase() === metricCategory.toLowerCase()
       ? `${productMetric ? productMetric : ''} ${metricCategory} `
       : `${productMetric ? productMetric : ''} ${splitCamelCase(
           yAxisPieChartVariable ?? ''
-        )} ${metricCategory === 'Other Metrics' ? '' : metricCategory} ` ?? '';
+        )} ${metricCategory} ` ?? '';
 
   const barChartHeading =
     calendarView === 'Daily'
@@ -432,14 +449,14 @@ function returnChartTitleNavigateLinks({
 
   const pieChartHeading =
     calendarView === 'Daily'
-      ? `${yAxisPieChartPrefix} vs. ${xAxisVariable} for ${day}, ${
+      ? `${yAxisPieChartPrefix} for ${day}, ${
           months?.[parseInt(month) - 1] ?? ''
         }, ${year} at ${storeLocation}`
       : calendarView === 'Monthly'
-      ? `${yAxisPieChartPrefix} vs. ${xAxisVariable} for ${
+      ? `${yAxisPieChartPrefix} for ${
           months?.[parseInt(month) - 1] ?? ''
         }, ${year} at ${storeLocation}`
-      : `${yAxisPieChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`;
+      : `${yAxisPieChartPrefix} for ${year} at ${storeLocation}`;
 
   const expandBarChartNavigateLink = `/home/dashboard/${metricsView}-${calendarView}-${splitCamelCase(
     metricCategory

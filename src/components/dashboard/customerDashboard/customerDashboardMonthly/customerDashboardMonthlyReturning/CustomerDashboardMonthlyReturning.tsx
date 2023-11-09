@@ -137,6 +137,7 @@ function CustomerDashboardMonthlyReturning({
                 returningPieChartYAxisVariable
               ],
             chartTitle: pieChartHeading,
+            chartUnitKind: 'number',
           },
         });
 
@@ -171,6 +172,7 @@ function CustomerDashboardMonthlyReturning({
         monthlyChartsReturning.pieChartObj[returningPieChartYAxisVariable]
       }
       hideControls
+      unitKind="number"
     />
   );
 
@@ -193,6 +195,7 @@ function CustomerDashboardMonthlyReturning({
                 returningBarChartYAxisVariable
               ],
             chartTitle: barChartHeading,
+            chartUnitKind: 'number',
             chartKind: 'bar',
           },
         });
@@ -230,6 +233,7 @@ function CustomerDashboardMonthlyReturning({
       hideControls
       indexBy="Months"
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -252,6 +256,7 @@ function CustomerDashboardMonthlyReturning({
                 returningLineChartYAxisVariable
               ],
             chartTitle: lineChartHeading,
+            chartUnitKind: 'number',
             chartKind: 'line',
           },
         });
@@ -308,6 +313,7 @@ function CustomerDashboardMonthlyReturning({
                 returningCalendarChartYAxisVariable
               ],
             chartTitle: calendarChartHeading,
+            chartUnitKind: 'number',
             chartKind: 'calendar',
           },
         });

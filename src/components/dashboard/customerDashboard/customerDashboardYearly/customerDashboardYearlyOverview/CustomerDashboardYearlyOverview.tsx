@@ -107,6 +107,7 @@ function CustomerDashboardYearlyOverview({
             chartData: yearlyChartsOverview.pieChartObj,
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'number',
           },
         });
 
@@ -123,6 +124,7 @@ function CustomerDashboardYearlyOverview({
       chartWidth={chartWidth}
       pieChartData={yearlyChartsOverview.pieChartObj}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -140,6 +142,7 @@ function CustomerDashboardYearlyOverview({
               yearlyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'number',
           },
         });
 
@@ -176,6 +179,7 @@ function CustomerDashboardYearlyOverview({
       hideControls
       indexBy="Years"
       keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -195,6 +199,7 @@ function CustomerDashboardYearlyOverview({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'number',
           },
         });
 

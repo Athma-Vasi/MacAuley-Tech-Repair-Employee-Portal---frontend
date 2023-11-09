@@ -23,9 +23,8 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   chartBorderColor: '#ffffff',
   chartBorderRadius: 0,
   chartBorderWidth: 0,
-  chartColors: 'set2',
+  chartColors: 'nivo',
   enableFillPatterns: false,
-  fillPatterns: [],
 
   /** labels */
   enableLabels: true,
@@ -138,7 +137,6 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
   setChartBorderWidth: 'setChartBorderWidth',
   setChartColors: 'setChartColors',
   setEnableFillPatterns: 'setEnableFillPatterns',
-  setFillPatterns: 'setFillPatterns',
 
   /** labels */
   setEnableLabels: 'setEnableLabels',
@@ -307,10 +305,6 @@ function responsiveBarChartReducer(
       return {
         ...state,
         chartBorderColor: action.payload,
-      };
-    case responsiveBarChartAction.setFillPatterns:
-      return {
-        ...state,
       };
     case responsiveBarChartAction.setEnableFillPatterns:
       return {
