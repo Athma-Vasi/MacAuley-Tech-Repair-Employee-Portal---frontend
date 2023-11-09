@@ -49,7 +49,7 @@ const initialResponsivePieChartState: ResponsivePieChartState = {
   /** margin */
   marginTop: 60,
   marginRight: 240,
-  marginBottom: 60,
+  marginBottom: 90,
   marginLeft: 60,
 
   /** legend */

@@ -257,6 +257,7 @@ function CustomerDashboardMonthlyOtherMetrics({
       }
       hideControls
       yFormat={(y) => `${y} %`}
+      unitKind="percent"
     />
   );
 

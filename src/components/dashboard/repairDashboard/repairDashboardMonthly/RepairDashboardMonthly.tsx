@@ -136,6 +136,8 @@ function RepairDashboardMonthly({
             chartData: monthlyCharts.barChartsObj[barChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind:
+              barChartYAxisVariable === 'revenue' ? 'currency' : 'number',
           },
         });
 
@@ -170,6 +172,7 @@ function RepairDashboardMonthly({
       hideControls
       indexBy="Months"
       keys={REPAIR_METRIC_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind={barChartYAxisVariable === 'revenue' ? 'currency' : 'number'}
     />
   );
 
@@ -188,6 +191,8 @@ function RepairDashboardMonthly({
             chartData: monthlyCharts.lineChartsObj[lineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind:
+              lineChartYAxisVariable === 'revenue' ? 'currency' : 'number',
           },
         });
 
@@ -225,6 +230,7 @@ function RepairDashboardMonthly({
           y
         )}`
       }
+      unitKind={lineChartYAxisVariable === 'revenue' ? 'currency' : 'number'}
     />
   );
 
@@ -244,6 +250,8 @@ function RepairDashboardMonthly({
               monthlyCharts.calendarChartsObj[calendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind:
+              calendarChartYAxisVariable === 'revenue' ? 'currency' : 'number',
           },
         });
 

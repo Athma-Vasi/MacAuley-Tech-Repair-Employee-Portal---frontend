@@ -285,6 +285,7 @@ function CustomerDashboardDailyReturning({
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
+      unitKind="number"
     />
   );
 

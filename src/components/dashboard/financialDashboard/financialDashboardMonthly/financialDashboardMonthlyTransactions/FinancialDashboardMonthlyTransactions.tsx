@@ -136,6 +136,7 @@ function FinancialDashboardMonthlyTransactions({
               ],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'number',
           },
         });
 
@@ -172,6 +173,7 @@ function FinancialDashboardMonthlyTransactions({
         ]
       }
       hideControls
+      unitKind="number"
     />
   );
 
@@ -193,6 +195,7 @@ function FinancialDashboardMonthlyTransactions({
               ],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'number',
           },
         });
 
@@ -226,11 +229,12 @@ function FinancialDashboardMonthlyTransactions({
           transactionsBarChartYAxisVariable
         ]
       }
-      indexBy="Months"
-      keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
+      indexBy="Months"
+      keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -252,6 +256,7 @@ function FinancialDashboardMonthlyTransactions({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'number',
           },
         });
 
@@ -289,6 +294,7 @@ function FinancialDashboardMonthlyTransactions({
       }
       hideControls
       yFormat={(y) => `${addCommaSeparator(y)}`}
+      unitKind="number"
     />
   );
 
@@ -310,6 +316,7 @@ function FinancialDashboardMonthlyTransactions({
               ],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind: 'number',
           },
         });
 

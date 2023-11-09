@@ -257,6 +257,7 @@ function CustomerDashboardYearlyNew({
       hideControls
       xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
+      unitKind="number"
     />
   );
 

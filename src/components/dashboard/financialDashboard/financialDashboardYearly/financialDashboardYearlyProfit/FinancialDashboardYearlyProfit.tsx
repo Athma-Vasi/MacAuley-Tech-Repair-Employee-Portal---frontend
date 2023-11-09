@@ -127,6 +127,7 @@ function FinancialDashboardYearlyProfit({
               yearlyChartsProfit.pieChartsObj[profitPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -180,6 +181,7 @@ function FinancialDashboardYearlyProfit({
               yearlyChartsProfit.barChartsObj[profitBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -235,6 +237,7 @@ function FinancialDashboardYearlyProfit({
               yearlyChartsProfit.lineChartsObj[profitLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'currency',
           },
         });
 

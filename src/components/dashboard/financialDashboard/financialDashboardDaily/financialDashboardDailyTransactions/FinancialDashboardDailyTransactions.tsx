@@ -136,6 +136,7 @@ function FinancialDashboardDailyTransactions({
               ],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'number',
           },
         });
 
@@ -170,6 +171,7 @@ function FinancialDashboardDailyTransactions({
         dailyChartsTransactions.pieChartsObj[transactionsPieChartYAxisVariable]
       }
       hideControls
+      unitKind="number"
     />
   );
 
@@ -191,6 +193,7 @@ function FinancialDashboardDailyTransactions({
               ],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'number',
           },
         });
 
@@ -227,6 +230,7 @@ function FinancialDashboardDailyTransactions({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -248,6 +252,7 @@ function FinancialDashboardDailyTransactions({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'number',
           },
         });
 
@@ -286,6 +291,7 @@ function FinancialDashboardDailyTransactions({
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)}`}
+      unitKind="number"
     />
   );
 
@@ -307,6 +313,7 @@ function FinancialDashboardDailyTransactions({
               ],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind: 'number',
           },
         });
 

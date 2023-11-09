@@ -14,9 +14,9 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   valueScale: 'linear',
 
   /** margin */
-  marginTop: 30,
-  marginRight: 30,
-  marginBottom: 60,
+  marginTop: 60,
+  marginRight: 60,
+  marginBottom: 90,
   marginLeft: 90,
 
   /** style */
@@ -40,7 +40,7 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   axisTopLegendOffset: 0,
   axisTopLegendPosition: 'middle',
   axisTopTickPadding: 5,
-  axisTopTickRotation: 0,
+  axisTopTickRotation: 45,
   axisTopTickSize: 5,
   enableAxisTop: false,
   isAxisTopLegendFocused: false,

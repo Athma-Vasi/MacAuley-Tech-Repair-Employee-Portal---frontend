@@ -275,6 +275,7 @@ function CustomerDashboardMonthlyNew({
       lineChartData={monthlyChartsNew.lineChartsObj[newLineChartYAxisVariable]}
       hideControls
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
+      unitKind="number"
     />
   );
 

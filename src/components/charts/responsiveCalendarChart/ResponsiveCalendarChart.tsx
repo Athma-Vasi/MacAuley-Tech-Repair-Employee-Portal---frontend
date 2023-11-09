@@ -1,11 +1,7 @@
 import {
   ColorInput,
-  Divider,
   Flex,
-  Grid,
   Group,
-  ScrollArea,
-  Space,
   Stack,
   Switch,
   Text,
@@ -13,7 +9,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { ResponsiveCalendar } from '@nivo/calendar';
-import { useEffect, useReducer, useRef } from 'react';
+import { useReducer, useRef } from 'react';
 import { BiReset } from 'react-icons/bi';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
@@ -29,6 +25,9 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
 } from '../../wrappers';
+import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
+import { ChartMargin } from '../chartControls/ChartMargin';
+import { ChartOptions } from '../chartControls/ChartOptions';
 import {
   NivoCalendarAlign,
   NivoCalendarDirection,
@@ -36,7 +35,6 @@ import {
 } from '../types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 import {
-  data,
   NIVO_CALENDAR_ALIGN_DATA,
   NIVO_CALENDAR_CHART_COLORS,
   NIVO_CALENDAR_DIRECTION_DATA,
@@ -47,9 +45,6 @@ import {
   responsiveCalendarChartAction,
   responsiveCalendarChartReducer,
 } from './state';
-import { ChartMargin } from '../chartControls/ChartMargin';
-import { ChartOptions } from '../chartControls/ChartOptions';
-import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
 import {
   ResponsiveCalendarChartProps,
   ResponsiveCalendarChartState,
@@ -185,6 +180,11 @@ function ResponsiveCalendarChart({
       dayBorderColor={dayBorderColor}
       // interactivity
       isInteractive={true}
+      // valueFormat={(value) =>
+      //   `${
+      //     unitKind === 'currency' ? '$' : unitKind === 'percent' ? '%' : ''
+      //   }${addCommaSeparator(value)}`
+      // }
     />
   );
 

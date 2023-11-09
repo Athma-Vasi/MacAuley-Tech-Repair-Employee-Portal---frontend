@@ -117,6 +117,10 @@ function FinancialDashboardYearlyOtherMetrics({
               ],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind:
+              otherMetricsBarChartYAxisVariable === 'averageOrderValue'
+                ? 'currency'
+                : 'percent',
           },
         });
 
@@ -153,6 +157,11 @@ function FinancialDashboardYearlyOtherMetrics({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
+      unitKind={
+        otherMetricsBarChartYAxisVariable === 'averageOrderValue'
+          ? 'currency'
+          : 'percent'
+      }
     />
   );
 
@@ -174,6 +183,10 @@ function FinancialDashboardYearlyOtherMetrics({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind:
+              otherMetricsLineChartYAxisVariable === 'averageOrderValue'
+                ? 'currency'
+                : 'percent',
           },
         });
 
@@ -214,6 +227,11 @@ function FinancialDashboardYearlyOtherMetrics({
         otherMetricsLineChartYAxisVariable === 'averageOrderValue'
           ? `$${addCommaSeparator(y)}`
           : `${addCommaSeparator(y)} %`
+      }
+      unitKind={
+        otherMetricsLineChartYAxisVariable === 'averageOrderValue'
+          ? 'currency'
+          : 'percent'
       }
     />
   );

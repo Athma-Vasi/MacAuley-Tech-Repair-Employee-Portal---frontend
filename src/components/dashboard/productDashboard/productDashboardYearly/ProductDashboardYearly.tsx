@@ -144,6 +144,7 @@ function ProductDashboardYearly({
             chartData: yearlyCharts.revenue.pieChartObj,
             chartTitle: pieChartRevenueHeading,
             chartKind: 'pie',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -179,6 +180,7 @@ function ProductDashboardYearly({
               yearlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable],
             chartTitle: revenueBarChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -235,6 +237,7 @@ function ProductDashboardYearly({
               yearlyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable],
             chartTitle: revenueLineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -352,6 +355,7 @@ function ProductDashboardYearly({
               chartData: yearlyCharts.unitsSold.pieChartObj,
               chartTitle: pieChartUnitsSoldHeading,
               chartKind: 'pie',
+              chartUnitKind: 'number',
             },
           });
 
@@ -369,6 +373,7 @@ function ProductDashboardYearly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -391,6 +396,7 @@ function ProductDashboardYearly({
                 ],
               chartTitle: barChartUnitsSoldHeading,
               chartKind: 'bar',
+              chartUnitKind: 'number',
             },
           });
 
@@ -429,6 +435,7 @@ function ProductDashboardYearly({
       hideControls
       indexBy="Years"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -451,6 +458,7 @@ function ProductDashboardYearly({
                 ],
               chartTitle: lineChartUnitsSoldHeading,
               chartKind: 'line',
+              chartUnitKind: 'number',
             },
           });
 
@@ -488,6 +496,7 @@ function ProductDashboardYearly({
       hideControls
       xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Units Sold`}
+      unitKind="number"
     />
   );
 

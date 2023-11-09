@@ -134,6 +134,7 @@ function FinancialDashboardMonthlyExpenses({
               monthlyChartsExpenses.pieChartsObj[expensesPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -187,6 +188,7 @@ function FinancialDashboardMonthlyExpenses({
               monthlyChartsExpenses.barChartsObj[expensesBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -244,6 +246,7 @@ function FinancialDashboardMonthlyExpenses({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -300,6 +303,7 @@ function FinancialDashboardMonthlyExpenses({
               ],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind: 'currency',
           },
         });
 

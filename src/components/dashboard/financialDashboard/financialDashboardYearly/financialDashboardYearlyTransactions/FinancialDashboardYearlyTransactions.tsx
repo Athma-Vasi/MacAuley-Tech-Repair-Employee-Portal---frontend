@@ -129,6 +129,7 @@ function FinancialDashboardYearlyTransactions({
               ],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'number',
           },
         });
 
@@ -163,6 +164,7 @@ function FinancialDashboardYearlyTransactions({
         yearlyChartsTransactions.pieChartsObj[transactionsPieChartYAxisVariable]
       }
       hideControls
+      unitKind="number"
     />
   );
 
@@ -184,6 +186,7 @@ function FinancialDashboardYearlyTransactions({
               ],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'number',
           },
         });
 
@@ -215,11 +218,12 @@ function FinancialDashboardYearlyTransactions({
       barChartData={
         yearlyChartsTransactions.barChartsObj[transactionsBarChartYAxisVariable]
       }
-      indexBy="Years"
-      keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
+      indexBy="Years"
+      keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -241,6 +245,7 @@ function FinancialDashboardYearlyTransactions({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'number',
           },
         });
 
@@ -278,6 +283,7 @@ function FinancialDashboardYearlyTransactions({
       }
       hideControls
       yFormat={(y) => `${addCommaSeparator(y)}`}
+      unitKind="number"
     />
   );
 

@@ -20,7 +20,7 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
-import { returnThemeColors } from '../../../utils';
+import { addCommaSeparator, returnThemeColors } from '../../../utils';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
@@ -72,6 +72,7 @@ function ResponsiveLineChart({
   yFormat,
   yScaleMin = 'auto',
   yScaleMax = 'auto',
+  unitKind = 'currency',
 }: ResponsiveLineChartProps) {
   const {
     globalState: { isPrefersReducedMotion, width, themeObject, padding },
@@ -297,6 +298,10 @@ function ResponsiveLineChart({
               legend: axisRightLegend,
               legendOffset: axisRightLegendOffset,
               legendPosition: axisRightLegendPosition,
+              format: (value) =>
+                `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
+                  value
+                )}${unitKind === 'percent' ? '%' : ''}`,
             }
           : null
       }
@@ -321,6 +326,10 @@ function ResponsiveLineChart({
               legend: axisLeftLegend,
               legendOffset: axisLeftLegendOffset,
               legendPosition: axisLeftLegendPosition,
+              format: (value) =>
+                `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
+                  value
+                )}${unitKind === 'percent' ? '%' : ''}`,
             }
           : null
       }

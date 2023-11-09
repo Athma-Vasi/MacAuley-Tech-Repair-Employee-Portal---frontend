@@ -134,6 +134,7 @@ function FinancialDashboardMonthlyRevenue({
               monthlyChartsRevenue.pieChartsObj[revenuePieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -187,6 +188,7 @@ function FinancialDashboardMonthlyRevenue({
               monthlyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -242,6 +244,7 @@ function FinancialDashboardMonthlyRevenue({
               monthlyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -298,6 +301,7 @@ function FinancialDashboardMonthlyRevenue({
               ],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind: 'currency',
           },
         });
 

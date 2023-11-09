@@ -48,7 +48,7 @@ function DisplayResponsiveChart() {
     width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
-  const { chartData, chartKind, chartTitle, selectedYYYYMMDD } =
+  const { chartData, chartKind, chartTitle, selectedYYYYMMDD, chartUnitKind } =
     customizeChartsPageData;
 
   const barChartIndexBy =
@@ -89,6 +89,7 @@ function DisplayResponsiveChart() {
         keys={barChartKeys}
         chartHeight={chartHeight}
         chartWidth={chartWidth}
+        unitKind={chartUnitKind}
       />
     ) : chartKind === 'calendar' ? (
       <ResponsiveCalendarChart
@@ -107,6 +108,7 @@ function DisplayResponsiveChart() {
         lineChartData={chartData}
         xFormat={xFormatLineChart}
         yFormat={yFormatLineChart}
+        unitKind={chartUnitKind}
       />
     ) : chartKind === 'pie' ? (
       <ResponsivePieChart
@@ -114,6 +116,7 @@ function DisplayResponsiveChart() {
         chartWidth={chartWidth}
         dashboardChartTitle={chartTitle}
         pieChartData={chartData}
+        unitKind={chartUnitKind}
       />
     ) : null;
 

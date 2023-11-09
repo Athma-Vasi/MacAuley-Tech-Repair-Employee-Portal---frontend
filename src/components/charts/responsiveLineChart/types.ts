@@ -1,9 +1,11 @@
 import { TitleOrder } from '@mantine/core';
+import { ValueFormat } from '@nivo/core';
 
 import { ScreenshotImageType } from '../../../types';
 import {
   NivoAxisLegendPosition,
   NivoChartTitlePosition,
+  NivoChartUnitKind,
   NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
@@ -16,7 +18,6 @@ import {
   NivoLinePointLabel,
   NivoMotionConfig,
 } from '../types';
-import { ValueFormat } from '@nivo/core';
 
 type LineChartData = {
   id: string;
@@ -36,6 +37,7 @@ type ResponsiveLineChartProps = {
   yFormat?: ValueFormat<any>;
   yScaleMin?: number | 'auto';
   yScaleMax?: number | 'auto';
+  unitKind?: NivoChartUnitKind;
 };
 
 type ResponsiveLineChartState = {

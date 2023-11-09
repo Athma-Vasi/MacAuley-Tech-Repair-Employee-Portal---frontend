@@ -250,6 +250,7 @@ function CustomerDashboardYearlyOtherMetrics({
       hideControls
       xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `${y} %`}
+      unitKind="percent"
     />
   );
 

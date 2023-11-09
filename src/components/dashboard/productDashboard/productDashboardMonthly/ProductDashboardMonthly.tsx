@@ -154,6 +154,7 @@ function ProductDashboardMonthly({
             chartData: monthlyCharts.revenue.pieChartObj,
             chartTitle: pieChartRevenueHeading,
             chartKind: 'pie',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -189,6 +190,7 @@ function ProductDashboardMonthly({
               monthlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable],
             chartTitle: revenueBarChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -247,6 +249,7 @@ function ProductDashboardMonthly({
               ],
             chartTitle: revenueLineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -305,6 +308,7 @@ function ProductDashboardMonthly({
                 ],
               chartTitle: revenueCalendarChartHeading,
               chartKind: 'calendar',
+              chartUnitKind: 'currency',
             },
           });
 
@@ -432,6 +436,7 @@ function ProductDashboardMonthly({
               chartData: monthlyCharts.unitsSold.pieChartObj,
               chartTitle: pieChartUnitsSoldHeading,
               chartKind: 'pie',
+              chartUnitKind: 'number',
             },
           });
 
@@ -449,6 +454,7 @@ function ProductDashboardMonthly({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -471,6 +477,7 @@ function ProductDashboardMonthly({
                 ],
               chartTitle: barChartUnitsSoldHeading,
               chartKind: 'bar',
+              chartUnitKind: 'number',
             },
           });
 
@@ -509,6 +516,7 @@ function ProductDashboardMonthly({
       hideControls
       indexBy="Months"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -531,6 +539,7 @@ function ProductDashboardMonthly({
                 ],
               chartTitle: lineChartUnitsSoldHeading,
               chartKind: 'line',
+              chartUnitKind: 'number',
             },
           });
 
@@ -567,6 +576,7 @@ function ProductDashboardMonthly({
       }
       hideControls
       yFormat={(y) => `${addCommaSeparator(y)} Units Sold`}
+      unitKind="number"
     />
   );
 
@@ -589,6 +599,7 @@ function ProductDashboardMonthly({
                 ],
               chartTitle: calendarChartUnitsSoldHeading,
               chartKind: 'calendar',
+              chartUnitKind: 'number',
             },
           });
 

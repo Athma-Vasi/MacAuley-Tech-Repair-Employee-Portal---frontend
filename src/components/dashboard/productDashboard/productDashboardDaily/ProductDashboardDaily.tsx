@@ -151,6 +151,7 @@ function ProductDashboardDaily({
             chartData: dailyCharts.revenue.pieChartObj,
             chartTitle: pieChartRevenueHeading,
             chartKind: 'pie',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -186,6 +187,7 @@ function ProductDashboardDaily({
               dailyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable],
             chartTitle: revenueBarChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -242,6 +244,7 @@ function ProductDashboardDaily({
               dailyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable],
             chartTitle: revenueLineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -301,6 +304,7 @@ function ProductDashboardDaily({
                 ],
               chartTitle: revenueCalendarChartHeading,
               chartKind: 'calendar',
+              chartUnitKind: 'currency',
             },
           });
 
@@ -426,6 +430,7 @@ function ProductDashboardDaily({
               chartData: dailyCharts.unitsSold.pieChartObj,
               chartTitle: pieChartUnitsSoldHeading,
               chartKind: 'pie',
+              chartUnitKind: 'number',
             },
           });
 
@@ -443,6 +448,7 @@ function ProductDashboardDaily({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
+      unitKind="number"
     />
   );
 
@@ -465,6 +471,7 @@ function ProductDashboardDaily({
                 ],
               chartTitle: barChartUnitsSoldHeading,
               chartKind: 'bar',
+              chartUnitKind: 'number',
             },
           });
 
@@ -503,6 +510,7 @@ function ProductDashboardDaily({
       hideControls
       indexBy="Days"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind="number"
     />
   );
 
@@ -525,6 +533,7 @@ function ProductDashboardDaily({
                 ],
               chartTitle: lineChartUnitsSoldHeading,
               chartKind: 'line',
+              chartUnitKind: 'number',
             },
           });
 
@@ -562,6 +571,7 @@ function ProductDashboardDaily({
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Units Sold`}
+      unitKind="number"
     />
   );
 
@@ -584,6 +594,7 @@ function ProductDashboardDaily({
                 ],
               chartTitle: calendarChartUnitsSoldHeading,
               chartKind: 'calendar',
+              chartUnitKind: 'number',
             },
           });
 

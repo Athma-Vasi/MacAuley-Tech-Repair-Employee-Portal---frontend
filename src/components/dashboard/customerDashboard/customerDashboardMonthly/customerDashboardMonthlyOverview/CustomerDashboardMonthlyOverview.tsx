@@ -254,6 +254,7 @@ function CustomerDashboardMonthlyOverview({
       }
       hideControls
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
+      unitKind="number"
     />
   );
 

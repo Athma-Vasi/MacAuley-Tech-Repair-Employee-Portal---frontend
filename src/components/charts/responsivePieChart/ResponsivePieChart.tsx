@@ -283,10 +283,11 @@ function ResponsivePieChart({
           : []
       }
       valueFormat={(value) =>
-        `${
-          unitKind === 'currency' ? '$' : unitKind === 'percent' ? '%' : ''
-        }${addCommaSeparator(value)}`
+        `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(value)}${
+          unitKind === 'percent' ? '%' : ''
+        }`
       }
+      
     />
   );
 

@@ -12,7 +12,7 @@ const initialResponsiveLineChartState: ResponsiveLineChartState = {
   yScale: 'linear',
 
   // margin
-  marginTop: 30,
+  marginTop: 60,
   marginRight: 60,
   marginBottom: 90,
   marginLeft: 90,

@@ -125,6 +125,10 @@ function FinancialDashboardDailyOtherMetrics({
               ],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind:
+              otherMetricsBarChartYAxisVariable === 'averageOrderValue'
+                ? 'currency'
+                : 'percent',
           },
         });
 
@@ -161,6 +165,11 @@ function FinancialDashboardDailyOtherMetrics({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
+      unitKind={
+        otherMetricsBarChartYAxisVariable === 'averageOrderValue'
+          ? 'currency'
+          : 'percent'
+      }
     />
   );
 
@@ -182,6 +191,10 @@ function FinancialDashboardDailyOtherMetrics({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind:
+              otherMetricsLineChartYAxisVariable === 'averageOrderValue'
+                ? 'currency'
+                : 'percent',
           },
         });
 
@@ -224,6 +237,11 @@ function FinancialDashboardDailyOtherMetrics({
           ? `$${addCommaSeparator(y)}`
           : `${addCommaSeparator(y)} %`
       }
+      unitKind={
+        otherMetricsLineChartYAxisVariable === 'averageOrderValue'
+          ? 'currency'
+          : 'percent'
+      }
     />
   );
 
@@ -245,6 +263,10 @@ function FinancialDashboardDailyOtherMetrics({
               ],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind:
+              otherMetricsCalendarChartYAxisVariable === 'averageOrderValue'
+                ? 'currency'
+                : 'percent',
           },
         });
 

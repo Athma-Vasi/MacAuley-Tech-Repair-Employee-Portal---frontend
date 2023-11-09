@@ -134,6 +134,7 @@ function FinancialDashboardDailyExpenses({
               dailyChartsExpenses.pieChartsObj[expensesPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -187,6 +188,7 @@ function FinancialDashboardDailyExpenses({
               dailyChartsExpenses.barChartsObj[expensesBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -242,6 +244,7 @@ function FinancialDashboardDailyExpenses({
               dailyChartsExpenses.lineChartsObj[expensesLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -299,6 +302,7 @@ function FinancialDashboardDailyExpenses({
               ],
             chartTitle: calendarChartHeading,
             chartKind: 'calendar',
+            chartUnitKind: 'currency',
           },
         });
 

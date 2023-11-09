@@ -127,6 +127,7 @@ function FinancialDashboardYearlyExpenses({
               yearlyChartsExpenses.pieChartsObj[expensesPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: 'pie',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -180,6 +181,7 @@ function FinancialDashboardYearlyExpenses({
               yearlyChartsExpenses.barChartsObj[expensesBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind: 'currency',
           },
         });
 
@@ -237,6 +239,7 @@ function FinancialDashboardYearlyExpenses({
               ],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind: 'currency',
           },
         });
 

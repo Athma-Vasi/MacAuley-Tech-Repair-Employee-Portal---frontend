@@ -266,6 +266,12 @@ function ResponsiveBarChart({
               legend: axisTopLegend,
               legendOffset: axisTopLegendOffset,
               legendPosition: axisTopLegendPosition,
+              format: (value) =>
+                layout === 'horizontal'
+                  ? `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
+                      value
+                    )}${unitKind === 'percent' ? '%' : ''}`
+                  : null,
             }
           : null
       }
@@ -278,6 +284,12 @@ function ResponsiveBarChart({
               legend: axisRightLegend,
               legendOffset: axisRightLegendOffset,
               legendPosition: axisRightLegendPosition,
+              format: (value) =>
+                layout === 'vertical'
+                  ? `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
+                      value
+                    )}${unitKind === 'percent' ? '%' : ''}`
+                  : null,
             }
           : null
       }
@@ -290,6 +302,12 @@ function ResponsiveBarChart({
               legend: axisBottomLegend,
               legendOffset: axisBottomLegendOffset,
               legendPosition: axisBottomLegendPosition,
+              format: (value) =>
+                layout === 'horizontal'
+                  ? `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
+                      value
+                    )}${unitKind === 'percent' ? '%' : ''}`
+                  : null,
             }
           : null
       }
@@ -302,6 +320,12 @@ function ResponsiveBarChart({
               legend: axisLeftLegend,
               legendOffset: axisLeftLegendOffset,
               legendPosition: axisLeftLegendPosition,
+              format: (value) =>
+                layout === 'vertical'
+                  ? `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
+                      value
+                    )}${unitKind === 'percent' ? '%' : ''}`
+                  : null,
             }
           : null
       }
@@ -349,9 +373,9 @@ function ResponsiveBarChart({
       ariaLabel={chartTitle}
       barAriaLabel={(e) => e.id + ': ' + e.formattedValue + e.indexValue}
       valueFormat={(value) =>
-        `${
-          unitKind === 'currency' ? '$' : unitKind === 'percent' ? '%' : ''
-        }${addCommaSeparator(value)}`
+        `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(value)}${
+          unitKind === 'percent' ? '%' : ''
+        }`
       }
     />
   );

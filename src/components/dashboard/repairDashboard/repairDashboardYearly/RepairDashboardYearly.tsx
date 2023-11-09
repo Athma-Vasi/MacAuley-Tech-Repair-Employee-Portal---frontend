@@ -115,6 +115,8 @@ function RepairDashboardYearly({
             chartData: yearlyCharts.barChartsObj[barChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: 'bar',
+            chartUnitKind:
+              barChartYAxisVariable === 'revenue' ? 'currency' : 'number',
           },
         });
 
@@ -149,6 +151,7 @@ function RepairDashboardYearly({
       hideControls
       indexBy="Years"
       keys={REPAIR_METRIC_Y_AXIS_DATA.map((obj) => obj.label)}
+      unitKind={barChartYAxisVariable === 'revenue' ? 'currency' : 'number'}
     />
   );
 
@@ -167,6 +170,8 @@ function RepairDashboardYearly({
             chartData: yearlyCharts.lineChartsObj[lineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: 'line',
+            chartUnitKind:
+              lineChartYAxisVariable === 'revenue' ? 'currency' : 'number',
           },
         });
 
@@ -205,6 +210,7 @@ function RepairDashboardYearly({
           y
         )}`
       }
+      unitKind={lineChartYAxisVariable === 'revenue' ? 'currency' : 'number'}
     />
   );
 

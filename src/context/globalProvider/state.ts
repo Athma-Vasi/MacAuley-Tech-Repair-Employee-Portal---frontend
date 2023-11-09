@@ -67,6 +67,7 @@ const initialGlobalState: GlobalState = {
     chartData: [],
     chartKind: 'bar',
     chartTitle: '',
+    chartUnitKind: 'currency',
     selectedYYYYMMDD: new Date().toISOString().slice(0, 10),
   },
 };
