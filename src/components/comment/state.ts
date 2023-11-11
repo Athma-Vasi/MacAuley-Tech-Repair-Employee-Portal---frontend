@@ -1,4 +1,3 @@
-import { QueryResponseData } from '../../types';
 import {
   CommentAction,
   CommentDispatch,
@@ -34,9 +33,7 @@ const initialCommentState: CommentState = {
   newQueryFlag: false,
   queryBuilderString: '?',
   pageQueryString: '',
-  areCommentsVisible: false,
 
-  commentIdsToFetch: [],
   commentsMap: new Map(),
   queryValuesArray: [],
 
@@ -70,9 +67,7 @@ const commentAction: CommentAction = {
   setNewQueryFlag: 'setNewQueryFlag',
   setQueryBuilderString: 'setQueryBuilderString',
   setPageQueryString: 'setPageQueryString',
-  setAreCommentsVisible: 'setAreCommentsVisible',
 
-  setCommentIdsToFetch: 'setCommentIdsToFetch',
   setCommentsMap: 'setCommentsMap',
   updateCommentsMap: 'updateCommentsMap',
   setQueryValuesArray: 'setQueryValuesArray',
@@ -296,18 +291,6 @@ function commentReducer(
       return {
         ...state,
         pageQueryString: action.payload,
-      };
-
-    case commentAction.setAreCommentsVisible:
-      return {
-        ...state,
-        areCommentsVisible: action.payload,
-      };
-
-    case commentAction.setCommentIdsToFetch:
-      return {
-        ...state,
-        commentIdsToFetch: action.payload,
       };
 
     case commentAction.setCommentsMap: {

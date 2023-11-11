@@ -1,29 +1,19 @@
 import { Burger, Flex, Header, MediaQuery, Text, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import jwtDecode from 'jwt-decode';
 import { useEffect } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../constants/data';
-import { authAction } from '../../context/authProvider';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth } from '../../hooks/useAuth';
 import { useGlobalState } from '../../hooks/useGlobalState';
-import {
-  logState,
-  returnIsAccessTokenExpired,
-  returnThemeColors,
-} from '../../utils';
-import { DecodedToken } from '../login/types';
-import { TextWrapper } from '../wrappers';
-import { REFRESH_URL } from './constants';
+import { logState, returnThemeColors } from '../../utils';
 import { PortalHeaderProps } from './types';
 import { UserAvatar } from './userAvatar/UserAvatar';
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
-  const { authState, authDispatch } = useAuth();
-  const { accessToken, isAccessTokenExpired, sessionId, username } = authState;
+  const { authState } = useAuth();
+  const { accessToken, username } = authState;
 
   const {
     globalState: { themeObject, width, userDocument },
@@ -34,8 +24,17 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   );
 
   const navigate = useNavigate();
-  const { pathname } = useLocation();
-  const { showBoundary } = useErrorBoundary();
+
+  // useEffect(() => {
+  //   const { isAccessTokenExpired } = returnIsAccessTokenExpired(accessToken);
+
+  //   if (isAccessTokenExpired) {
+  //     authDispatch({
+  //       type: authAction.setIsAccessTokenExpired,
+  //       payload: isAccessTokenExpired,
+  //     });
+  //   }
+  // }, [authDispatch, pathname]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -43,125 +42,112 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     }
   }, [accessToken, navigate]);
 
-  // every time location changes, check access token is valid and if expired, fetch new access & refresh tokens
-  useEffect(() => {
-    if (!accessToken) {
-      return;
-    }
-    const decodedToken = jwtDecode<DecodedToken>(accessToken);
-    const isAccessTokenExpired = decodedToken.exp * 1000 < Date.now();
-    if (!isAccessTokenExpired) {
-      return;
-    }
+  // // every time location changes, check access token is valid and if expired, fetch new access & refresh tokens
+  // useEffect(() => {
+  //   if (!accessToken) {
+  //     return;
+  //   }
+  //   const decodedToken = jwtDecode<DecodedToken>(accessToken);
+  //   // check if access token is expired with buffer of 5 seconds
+  //   const isAccessTokenExpired = decodedToken.exp * 1000 < Date.now() + 5000;
 
-    // if access token is expired, call refresh endpoint
-    let isMounted = true;
-    const controller = new AbortController();
+  //   // if access token is expired, call refresh endpoint
+  //   let isMounted = true;
+  //   const controller = new AbortController();
 
-    async function fetchAccessAndRefreshTokens() {
-      authDispatch({
-        type: authAction.setFetchingTokens,
-        payload: true,
-      });
+  //   async function fetchAccessAndRefreshTokens() {
+  //     authDispatch({
+  //       type: authAction.setFetchingTokens,
+  //       payload: true,
+  //     });
 
-      const refreshUrl: URL = new URL(REFRESH_URL);
-      const request: Request = new Request(refreshUrl.toString(), {
-        body: JSON.stringify({ sessionId }),
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        method: 'POST',
-        mode: 'cors',
-        signal: controller.signal,
-      });
+  //     const refreshUrl: URL = new URL(REFRESH_URL);
+  //     const request: Request = new Request(refreshUrl.toString(), {
+  //       body: JSON.stringify({ sessionId }),
+  //       credentials: 'include',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //       method: 'POST',
+  //       mode: 'cors',
+  //       signal: controller.signal,
+  //     });
 
-      try {
-        const response: Response = await fetch(request);
-        const data: { message?: string; accessToken?: string } =
-          await response.json();
+  //     try {
+  //       const response: Response = await fetch(request);
+  //       const data: { message?: string; accessToken?: string } =
+  //         await response.json();
 
-        if (!isMounted) {
-          return;
-        }
-        const { status } = response;
-        if (status !== 200) {
-          throw new Error('Your session has expired. Please log in again.');
-        }
+  //       if (!isMounted) {
+  //         return;
+  //       }
+  //       const { status } = response;
+  //       if (status !== 200) {
+  //         throw new Error('Your session has expired. Please log in again.');
+  //       }
 
-        const { accessToken: newAccessToken } = data;
-        if (!newAccessToken) {
-          throw new Error('Error refreshing tokens');
-        }
-        authDispatch({
-          type: authAction.setAccessToken,
-          payload: newAccessToken,
-        });
-        authDispatch({
-          type: authAction.setIsAccessTokenExpired,
-          payload: false,
-        });
-        authDispatch({
-          type: authAction.setIsLoggedIn,
-          payload: true,
-        });
-      } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
-          return;
-        }
+  //       const { accessToken: newAccessToken } = data;
+  //       if (!newAccessToken) {
+  //         throw new Error('Error refreshing tokens');
+  //       }
+  //       authDispatch({
+  //         type: authAction.setAccessToken,
+  //         payload: newAccessToken,
+  //       });
+  //       authDispatch({
+  //         type: authAction.setIsAccessTokenExpired,
+  //         payload: false,
+  //       });
+  //       authDispatch({
+  //         type: authAction.setIsLoggedIn,
+  //         payload: true,
+  //       });
+  //     } catch (error: any) {
+  //       if (!isMounted || error.name === 'AbortError') {
+  //         return;
+  //       }
 
-        globalDispatch({
-          type: globalAction.setErrorState,
-          payload: {
-            isError: true,
-            errorMessage: error?.message,
-            errorCallback: () => {
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: '',
-                  errorCallback: () => {},
-                },
-              });
+  //       globalDispatch({
+  //         type: globalAction.setErrorState,
+  //         payload: {
+  //           isError: true,
+  //           errorMessage: error?.message,
+  //           errorCallback: () => {
+  //             globalDispatch({
+  //               type: globalAction.setErrorState,
+  //               payload: {
+  //                 isError: false,
+  //                 errorMessage: '',
+  //                 errorCallback: () => {},
+  //               },
+  //             });
 
-              navigate('/');
-            },
-          },
-        });
+  //             navigate('/');
+  //           },
+  //         },
+  //       });
 
-        showBoundary(error);
-      } finally {
-        if (isMounted) {
-          authDispatch({
-            type: authAction.setFetchingTokens,
-            payload: false,
-          });
-        }
-      }
-    }
+  //       showBoundary(error);
+  //     } finally {
+  //       if (isMounted) {
+  //         authDispatch({
+  //           type: authAction.setFetchingTokens,
+  //           payload: false,
+  //         });
+  //       }
+  //     }
+  //   }
 
-    fetchAccessAndRefreshTokens();
+  //   if (isAccessTokenExpired) {
+  //     fetchAccessAndRefreshTokens();
+  //   }
 
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [pathname, isAccessTokenExpired]);
-
-  useEffect(() => {
-    const { isAccessTokenExpired } = returnIsAccessTokenExpired(accessToken);
-
-    if (!isAccessTokenExpired) {
-      return;
-    }
-
-    authDispatch({
-      type: authAction.setIsAccessTokenExpired,
-      payload: isAccessTokenExpired,
-    });
-  }, [authDispatch, pathname]);
+  //   return () => {
+  //     isMounted = false;
+  //     controller.abort();
+  //   };
+  // }, [pathname, isAccessTokenExpired]);
 
   useEffect(() => {
     if (!matchesPrefersReducedMotion) {
@@ -171,7 +157,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
       type: globalAction.setPrefersReducedMotion,
       payload: matchesPrefersReducedMotion,
     });
-  }, [matchesPrefersReducedMotion]);
+  }, [globalDispatch, matchesPrefersReducedMotion]);
 
   useEffect(() => {
     logState({

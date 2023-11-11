@@ -1,8 +1,8 @@
-import { Button, Center } from '@mantine/core';
+import { Button, Center, Text } from '@mantine/core';
 import jwtDecode from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
 
-import { useAuth } from '../../hooks';
+import { useAuth, useWrapFetch } from '../../hooks';
 import { UserRoles } from '../../types';
 import { groupByField, logState, urlBuilder } from '../../utils';
 import {
@@ -55,14 +55,12 @@ function DevTesting() {
   const { triggerFormSubmit, bodiesArr, bodiesArrCount } = devTestingState;
 
   const {
-    authState: { accessToken, isAccessTokenExpired },
+    authState: { accessToken },
   } = useAuth();
 
-  useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
+  const { wrappedFetch } = useWrapFetch();
 
+  useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
@@ -95,18 +93,21 @@ function DevTesting() {
 
       console.log({ slicedBodiesArr });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(reqBody),
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
         const data = await response.json();
 
         if (!isMounted) {
@@ -141,7 +142,7 @@ function DevTesting() {
       isMounted = false;
       controller.abort();
     };
-  }, [triggerFormSubmit, isAccessTokenExpired]);
+  }, [triggerFormSubmit]);
 
   useEffect(() => {
     const bodiesArr = returnEventsRequestBodies({
@@ -164,6 +165,7 @@ function DevTesting() {
 
   return (
     <Center w="100%">
+      <Text>DEV TESTING</Text>
       {/* <Button
         disabled={bodiesArrCount === bodiesArr.length || triggerFormSubmit}
         onClick={() => {

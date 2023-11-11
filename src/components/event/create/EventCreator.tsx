@@ -13,7 +13,7 @@ import {
   TIME_RAILWAY_REGEX,
 } from '../../../constants/regex';
 import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { useAuth, useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -119,9 +119,7 @@ function EventCreator() {
   } = eventCreatorState;
 
   const { globalDispatch } = useGlobalState();
-  const {
-    authState: { accessToken, isAccessTokenExpired },
-  } = useAuth();
+  const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -135,9 +133,6 @@ function EventCreator() {
   ] = useDisclosure(false);
 
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
     let isMounted = true;
     const controller = new AbortController();
 
@@ -172,18 +167,22 @@ function EventCreator() {
         },
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body,
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: ResourceRequestServerResponse<EventCreatorDocument> =
           await response.json();
 
@@ -263,7 +262,7 @@ function EventCreator() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit, isAccessTokenExpired]);
+  }, [triggerFormSubmit]);
 
   // validate title on every change
   useEffect(() => {

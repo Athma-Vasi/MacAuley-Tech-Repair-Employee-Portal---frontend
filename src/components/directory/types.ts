@@ -66,8 +66,6 @@ type FilteredNodesAndEdges = {
 
 type DirectoryState = {
   groupedByDepartment: Record<Department, DirectoryUserDocument[]>;
-  groupedByJobPositon: Record<JobPosition, DirectoryUserDocument[]>;
-  groupedByStoreLocation: Record<StoreLocation, DirectoryUserDocument[]>;
 
   filterByDepartment: DepartmentsWithDefaultKey;
   filteredDepartmentsNodesAndEdges: FilteredNodesAndEdges | null;
@@ -94,16 +92,10 @@ type DirectoryState = {
 
   isLoading: boolean;
   loadingMessage: string;
-  isSubmitting: boolean;
-  submitMessage: string;
-  isSuccessfull: boolean;
-  successMessage: string;
 };
 
 type DirectoryAction = {
   setGroupedByDepartment: 'setGroupedByDepartment';
-  setGroupedByJobPositon: 'setGroupedByJobPositon';
-  setGroupedByStoreLocation: 'setGroupedByStoreLocation';
 
   setFilterByDepartment: 'setFilterByDepartment';
   setFilterByJobPosition: 'setFilterByJobPosition';
@@ -127,10 +119,6 @@ type DirectoryAction = {
 
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessfull: 'setIsSuccessfull';
-  setSuccessMessage: 'setSuccessMessage';
 };
 
 type SetDepartmentNodesAndEdgesPayload =
@@ -158,10 +146,7 @@ type DirectoryDispatch =
       payload: StoreLocationsWithDefaultKey;
     }
   | {
-      type:
-        | DirectoryAction['setGroupedByDepartment']
-        | DirectoryAction['setGroupedByJobPositon']
-        | DirectoryAction['setGroupedByStoreLocation'];
+      type: DirectoryAction['setGroupedByDepartment'];
 
       payload: DirectoryUserDocument[];
     }
@@ -170,17 +155,12 @@ type DirectoryDispatch =
         | DirectoryAction['triggerFetchUsersDirectory']
         | DirectoryAction['triggerSetDepartmentsNodesAndEdges']
         | DirectoryAction['triggerSetLayoutedNodesAndEdges']
-        | DirectoryAction['setIsLoading']
-        | DirectoryAction['setIsSubmitting']
-        | DirectoryAction['setIsSuccessfull'];
+        | DirectoryAction['setIsLoading'];
 
       payload: boolean;
     }
   | {
-      type:
-        | DirectoryAction['setLoadingMessage']
-        | DirectoryAction['setSubmitMessage']
-        | DirectoryAction['setSuccessMessage'];
+      type: DirectoryAction['setLoadingMessage'];
 
       payload: string;
     }

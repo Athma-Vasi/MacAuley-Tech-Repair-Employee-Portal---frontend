@@ -14,7 +14,7 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import jwtDecode, { InvalidTokenError } from 'jwt-decode';
+import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import {
@@ -31,7 +31,7 @@ import { COLORS_SWATCHES } from '../../../constants/data';
 import { authAction } from '../../../context/authProvider';
 import { globalAction } from '../../../context/globalProvider/state';
 import { Shade } from '../../../context/globalProvider/types';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { useAuth, useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   returnAccessibleNavLinkElements,
   returnAccessibleSliderInputElements,
@@ -43,7 +43,6 @@ import {
   urlBuilder,
 } from '../../../utils';
 import { ChartsAndGraphsControlsStacker } from '../../charts/utils';
-import { DecodedToken } from '../../login/types';
 import { NotificationModal } from '../../notificationModal';
 import { AccessibleNavLinkCreatorInfo } from '../../wrappers';
 import { UserInfo } from '../userInfo/UserInfo';
@@ -71,12 +70,14 @@ function UserAvatar() {
   );
 
   const {
-    authState: { accessToken, isLoggedIn, sessionId, isAccessTokenExpired },
+    authState: { accessToken, isLoggedIn, sessionId },
     authDispatch,
   } = useAuth();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
+
+  const { wrappedFetch } = useWrapFetch();
 
   const [openedThemeModal, { open: openThemeModal, close: closeThemeModal }] =
     useDisclosure(false);
@@ -116,7 +117,8 @@ function UserAvatar() {
       });
 
       const url: URL = new URL('http://localhost:5500/auth/logout');
-      const request: Request = new Request(url.toString(), {
+
+      const requestInit: RequestInit = {
         body: JSON.stringify({ sessionId }),
         credentials: 'include',
         headers: {
@@ -124,11 +126,16 @@ function UserAvatar() {
         },
         method: 'POST',
         mode: 'cors',
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: { message: string } = await response.json();
 
         if (!isMounted) {
@@ -217,10 +224,6 @@ function UserAvatar() {
   }, [triggerLogoutSubmit]);
 
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -235,18 +238,22 @@ function UserAvatar() {
         },
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         body,
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         method: 'PATCH',
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: { message: string } = await response.json();
 
         if (!isMounted) {
@@ -310,26 +317,7 @@ function UserAvatar() {
     };
     // only trigger when isAccessTokenExpired and prefersReducedMotionSwitchChecked changes
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerPrefersReducedMotionFormSubmit, isAccessTokenExpired]);
-
-  useEffect(() => {
-    const decodedToken: DecodedToken = jwtDecode(accessToken);
-    const { exp: accessTokenExpiration } = decodedToken;
-    // buffer of 10 seconds to refresh access token
-    const isAccessTokenExpired =
-      accessTokenExpiration * 1000 - 10000 < Date.now();
-
-    if (!isAccessTokenExpired) {
-      return;
-    }
-
-    authDispatch({
-      type: authAction.setIsAccessTokenExpired,
-      payload: isAccessTokenExpired,
-    });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prefersReducedMotionSwitchChecked, authDispatch]);
+  }, [triggerPrefersReducedMotionFormSubmit]);
 
   const {
     appThemeColors: { borderColor },

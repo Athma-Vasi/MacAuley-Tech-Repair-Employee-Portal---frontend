@@ -20,7 +20,7 @@ import {
   MONEY_REGEX,
 } from '../../../constants/regex';
 import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -116,9 +116,7 @@ function CreateExpenseClaim() {
     globalDispatch,
   } = useGlobalState();
 
-  const {
-    authState: { accessToken, isAccessTokenExpired },
-  } = useAuth();
+  const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -132,13 +130,8 @@ function CreateExpenseClaim() {
   ] = useDisclosure(false);
 
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
-    const { signal } = controller;
 
     async function imagesUploadRequest() {
       createExpenseClaimDispatch({
@@ -151,30 +144,32 @@ function CreateExpenseClaim() {
       });
       openSubmitSuccessNotificationModal();
 
-      const fileUploadUrl: URL = urlBuilder({
-        path: 'file-upload',
-      });
-
       if (imgFormDataArray.length === 0) {
         return;
       }
 
       await Promise.all(
         imgFormDataArray.map(async (formData) => {
-          const imgUploadrequest: Request = new Request(
-            fileUploadUrl.toString(),
-            {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-              signal,
-              body: formData,
-            }
-          );
+          const fileUploadUrl: URL = urlBuilder({
+            path: 'file-upload',
+          });
+
+          const imgUpLoadRequestInit: RequestInit = {
+            method: 'POST',
+            headers: {
+              Authorization: '',
+            },
+            body: formData,
+          };
 
           try {
-            const imgUploadResponse: Response = await fetch(imgUploadrequest);
+            const imgUploadResponse: Response = await wrappedFetch({
+              isMounted,
+              requestInit: imgUpLoadRequestInit,
+              signal: controller.signal,
+              url: fileUploadUrl,
+            });
+
             const imgUploadResponseData: {
               message: string;
               documentId: string;
@@ -256,39 +251,43 @@ function CreateExpenseClaim() {
             type: createExpenseClaimAction.setSubmitMessage,
             payload: `Expense claim: ${expenseClaimKind} is being processed...`,
           });
+
           const expenseUrl: URL = urlBuilder({
             path: 'actions/company/expense-claim',
           });
 
-          const expenseClaimRequest: Request = new Request(
-            expenseUrl.toString(),
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessToken}`,
-              },
-              signal,
-              body: JSON.stringify({
-                expenseClaim: {
-                  uploadedFilesIds: imgUploadResponseData
-                    .filter((item) => item !== undefined)
-                    .map((item) => item?.documentId),
-                  expenseClaimKind,
-                  expenseClaimCurrency,
-                  expenseClaimAmount,
-                  expenseClaimDate,
-                  expenseClaimDescription,
-                  additionalComments,
-                  acknowledgement,
-                  requestStatus: 'pending',
-                },
-              }),
-            }
-          );
+          const expenseClaimRequestBody = JSON.stringify({
+            expenseClaim: {
+              uploadedFilesIds: imgUploadResponseData
+                .filter((item) => item !== undefined)
+                .map((item) => item?.documentId),
+              expenseClaimKind,
+              expenseClaimCurrency,
+              expenseClaimAmount,
+              expenseClaimDate,
+              expenseClaimDescription,
+              additionalComments,
+              acknowledgement,
+              requestStatus: 'pending',
+            },
+          });
+
+          const expenseClaimRequestInit: RequestInit = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: expenseClaimRequestBody,
+          };
 
           try {
-            const expenseClaimResponse = await fetch(expenseClaimRequest);
+            const expenseClaimResponse = await wrappedFetch({
+              isMounted,
+              requestInit: expenseClaimRequestInit,
+              signal: controller.signal,
+              url: expenseUrl,
+            });
+
             const expenseClaimResponseData: ResourceRequestServerResponse<ExpenseClaimDocument> =
               await expenseClaimResponse.json();
 
@@ -379,7 +378,7 @@ function CreateExpenseClaim() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit, isAccessTokenExpired]);
+  }, [triggerFormSubmit]);
 
   useEffect(() => {
     logState({

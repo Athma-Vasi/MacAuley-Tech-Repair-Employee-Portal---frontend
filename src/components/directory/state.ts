@@ -1,10 +1,5 @@
 import { PROPERTY_DESCRIPTOR } from '../../constants/data';
-import {
-  Department,
-  UserDocument,
-  JobPosition,
-  StoreLocation,
-} from '../../types';
+
 import { groupByField } from '../../utils';
 import {
   DepartmentsNodesAndEdges,
@@ -17,19 +12,10 @@ import {
   DirectoryUserDocument,
   FilteredNodesAndEdges,
 } from './types';
-import type { Node, Edge } from 'reactflow';
 
 const initialDirectoryState: DirectoryState = {
   groupedByDepartment: {} as Record<
     DepartmentsWithDefaultKey,
-    DirectoryUserDocument[]
-  >,
-  groupedByJobPositon: {} as Record<
-    JobPositionsWithDefaultKey,
-    DirectoryUserDocument[]
-  >,
-  groupedByStoreLocation: {} as Record<
-    StoreLocationsWithDefaultKey,
     DirectoryUserDocument[]
   >,
 
@@ -58,16 +44,10 @@ const initialDirectoryState: DirectoryState = {
 
   isLoading: false,
   loadingMessage: '',
-  isSubmitting: false,
-  submitMessage: '',
-  isSuccessfull: false,
-  successMessage: '',
 };
 
 const directoryAction: DirectoryAction = {
   setGroupedByDepartment: 'setGroupedByDepartment',
-  setGroupedByJobPositon: 'setGroupedByJobPositon',
-  setGroupedByStoreLocation: 'setGroupedByStoreLocation',
 
   setFilterByDepartment: 'setFilterByDepartment',
   setFilterByJobPosition: 'setFilterByJobPosition',
@@ -91,10 +71,6 @@ const directoryAction: DirectoryAction = {
 
   setIsLoading: 'setIsLoading',
   setLoadingMessage: 'setLoadingMessage',
-  setIsSubmitting: 'setIsSubmitting',
-  setSubmitMessage: 'setSubmitMessage',
-  setIsSuccessfull: 'setIsSuccessfull',
-  setSuccessMessage: 'setSuccessMessage',
 };
 
 function directoryReducer(
@@ -117,32 +93,6 @@ function directoryReducer(
         groupedByDepartment,
         triggerSetDepartmentsNodesAndEdges,
       };
-    }
-
-    case directoryAction.setGroupedByJobPositon: {
-      const users = action.payload;
-      const groupedByJobPositon = groupByField<DirectoryUserDocument>({
-        objectArray: users,
-        field: 'jobPosition',
-      });
-
-      // set trigger to true
-      // const triggerSetDepartmentsNodesAndEdges = true;
-
-      return { ...state, groupedByJobPositon };
-    }
-
-    case directoryAction.setGroupedByStoreLocation: {
-      const users = action.payload;
-      const groupedByStoreLocation = groupByField<DirectoryUserDocument>({
-        objectArray: users,
-        field: 'storeLocation',
-      });
-
-      // set trigger to true
-      // const triggerSetDepartmentsNodesAndEdges = true;
-
-      return { ...state, groupedByStoreLocation };
     }
 
     case directoryAction.setFilterByDepartment: {
@@ -492,14 +442,7 @@ function directoryReducer(
       return { ...state, isLoading: action.payload };
     case directoryAction.setLoadingMessage:
       return { ...state, loadingMessage: action.payload };
-    case directoryAction.setIsSubmitting:
-      return { ...state, isSubmitting: action.payload };
-    case directoryAction.setSubmitMessage:
-      return { ...state, submitMessage: action.payload };
-    case directoryAction.setIsSuccessfull:
-      return { ...state, isSuccessfull: action.payload };
-    case directoryAction.setSuccessMessage:
-      return { ...state, successMessage: action.payload };
+
     default:
       return state;
   }

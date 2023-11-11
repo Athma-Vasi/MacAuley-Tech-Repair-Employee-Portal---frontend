@@ -14,7 +14,7 @@ import {
   MONEY_REGEX,
 } from '../../../constants/regex';
 import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -104,9 +104,7 @@ function RequestResource() {
 
   const { globalDispatch } = useGlobalState();
 
-  const {
-    authState: { accessToken, isAccessTokenExpired },
-  } = useAuth();
+  const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -120,10 +118,6 @@ function RequestResource() {
   ] = useDisclosure(false);
 
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -153,18 +147,22 @@ function RequestResource() {
         },
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body,
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: ResourceRequestServerResponse<RequestResourceDocument> =
           await response.json();
 
@@ -246,7 +244,7 @@ function RequestResource() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit, isAccessTokenExpired]);
+  }, [triggerFormSubmit]);
 
   const departmentInputRef = useRef<HTMLSelectElement>(null);
   // sets focus on department input on first render

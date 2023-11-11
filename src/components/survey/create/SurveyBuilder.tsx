@@ -13,7 +13,7 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
 } from '../../../constants/regex';
 import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleErrorValidTextElementsForDynamicInputs,
@@ -33,10 +33,10 @@ import {
   returnGrammarValidationText,
   urlBuilder,
 } from '../../../utils';
-import { NotificationModal } from '../../notificationModal';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
+import { NotificationModal } from '../../notificationModal';
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -127,9 +127,8 @@ function SurveyBuilder() {
     isLoading,
     loadingMessage,
   } = surveyBuilderState;
-  const {
-    authState: { accessToken, isAccessTokenExpired },
-  } = useAuth();
+
+  const { wrappedFetch } = useWrapFetch();
 
   const {
     globalState: {
@@ -161,9 +160,6 @@ function SurveyBuilder() {
   /** ------------- begin useEffects ------------- */
   // submit survey form
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
     let isMounted = true;
     const surveyQuestions = setSurveyQuestions({
       questions,
@@ -199,18 +195,22 @@ function SurveyBuilder() {
         },
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body,
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response = await fetch(request);
+        const response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: ResourceRequestServerResponse<SurveyBuilderDocument> =
           await response.json();
 
@@ -286,7 +286,7 @@ function SurveyBuilder() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit, isAccessTokenExpired]);
+  }, [triggerFormSubmit]);
 
   // allows repeated openings of preview modal
   useEffect(() => {

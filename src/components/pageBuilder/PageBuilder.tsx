@@ -1,11 +1,6 @@
 import { Pagination } from '@mantine/core';
-import jwtDecode from 'jwt-decode';
 import { CSSProperties, Dispatch, useEffect, useState } from 'react';
 import React from 'react';
-
-import { authAction } from '../../context/authProvider';
-import { useAuth } from '../../hooks';
-import { DecodedToken } from '../login/types';
 
 type PageBuilderProps = {
   style?: CSSProperties;
@@ -36,31 +31,6 @@ function PageBuilder({
   modalPageDispatch,
 }: PageBuilderProps): React.JSX.Element {
   const [page, setPage] = useState(1);
-
-  const {
-    authDispatch,
-    authState: { accessToken },
-  } = useAuth();
-
-  // check access token validity on every page change
-  useEffect(() => {
-    const decodedToken: DecodedToken = jwtDecode(accessToken);
-    const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
-      decodedToken;
-    // buffer of 10 seconds
-    const isAccessTokenExpired =
-      accessTokenExpiration * 1000 - 10000 < Date.now();
-
-    if (isAccessTokenExpired) {
-      authDispatch({
-        type: authAction.setIsAccessTokenExpired,
-        payload: isAccessTokenExpired,
-      });
-    }
-
-    // should not trigger every time access token changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authDispatch, page]);
 
   useEffect(() => {
     if (parentComponentDispatch) {

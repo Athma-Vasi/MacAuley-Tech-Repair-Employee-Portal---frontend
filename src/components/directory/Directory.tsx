@@ -10,7 +10,6 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import localforage from 'localforage';
 import { ChangeEvent, CSSProperties, useEffect, useReducer } from 'react';
@@ -24,7 +23,7 @@ import {
   PROPERTY_DESCRIPTOR,
 } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../hooks';
+import { useAuth, useGlobalState, useWrapFetch } from '../../hooks';
 import {
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
@@ -86,8 +85,6 @@ function Directory() {
   );
   const {
     groupedByDepartment,
-    groupedByJobPositon,
-    groupedByStoreLocation,
 
     filterByDepartment,
     filteredDepartmentsNodesAndEdges,
@@ -113,33 +110,24 @@ function Directory() {
     dagreMinLen, // minimum edge length default
 
     isLoading,
-    isSubmitting,
-    isSuccessfull,
     loadingMessage,
-    submitMessage,
-    successMessage,
   } = directoryState;
 
   const {
-    authState: { accessToken, isAccessTokenExpired },
-  } = useAuth();
-
-  const {
     globalDispatch,
-    globalState: { padding, rowGap, width, themeObject },
+    globalState: { padding, rowGap, width, themeObject, actionsDocuments },
   } = useGlobalState();
-  const { colorScheme } = themeObject;
+
+  const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end hooks ━┛
 
-  useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
+  const { colorScheme } = themeObject;
 
+  useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
@@ -157,17 +145,20 @@ function Directory() {
         path: 'user/directory',
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response = await fetch(request);
+        const response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
         const data: { message: string; resourceData: DirectoryUserDocument[] } =
           await response.json();
         if (!isMounted) {
@@ -188,16 +179,6 @@ function Directory() {
           type: directoryAction.setGroupedByDepartment,
           payload: data.resourceData,
         });
-        directoryDispatch({
-          type: directoryAction.setGroupedByJobPositon,
-          payload: data.resourceData,
-        });
-        directoryDispatch({
-          type: directoryAction.setGroupedByStoreLocation,
-          payload: data.resourceData,
-        });
-
-        console.log('data from fetchUsers()', data);
       } catch (error: any) {
         if (!isMounted || error.name === 'AbortError') {
           return;
@@ -250,11 +231,9 @@ function Directory() {
     // only fetch if there is no directory in local forage
     async function checkLocalForageBeforeFetch(): Promise<void> {
       const directory = await localforage.getItem('directory');
-      if (directory) {
-        return;
+      if (!directory) {
+        await fetchUsers();
       }
-
-      await fetchUsers();
     }
 
     if (triggerFetchUsersDirectory) {
@@ -265,7 +244,7 @@ function Directory() {
       isMounted = false;
       controller.abort();
     };
-  }, [triggerFetchUsersDirectory, isAccessTokenExpired]);
+  }, [triggerFetchUsersDirectory]);
 
   // on every mount, check if there are directory docs in local forage
   useEffect(() => {
@@ -284,14 +263,6 @@ function Directory() {
         type: directoryAction.setGroupedByDepartment,
         payload: directory,
       });
-      directoryDispatch({
-        type: directoryAction.setGroupedByJobPositon,
-        payload: directory,
-      });
-      directoryDispatch({
-        type: directoryAction.setGroupedByStoreLocation,
-        payload: directory,
-      });
     }
 
     checkLocalForageForDirectoryDocs();
@@ -300,6 +271,13 @@ function Directory() {
       isMounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    logState({
+      state: directoryState,
+      groupLabel: 'directoryState in Directory',
+    });
+  }, [directoryState]);
 
   // ┏━ begin defaults ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -310,10 +288,8 @@ function Directory() {
       nodeTextColor,
       edgeStrokeColor,
     },
-    generalColors: { lightSchemeGray },
     scrollBarStyle,
     tablesThemeColors: { tableHeadersBgColor: sectionHeadersBgColor },
-    appThemeColors: { backgroundColor, borderColor },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -377,7 +353,7 @@ function Directory() {
           executiveManagementNodesAcc: Node[],
           userDocument: DirectoryUserDocument
         ) => {
-          const { jobPosition, preferredName } = userDocument;
+          const { jobPosition } = userDocument;
 
           const executiveManagementProfileCard = returnDirectoryProfileCard({
             userDocument,
@@ -1535,7 +1511,6 @@ function Directory() {
 
     // ┏━ begin concurrent fn calls ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-    // utilizes the micro-task queue for performance
     async function triggerDepartmentNodesAndEdgesCreation() {
       directoryDispatch({
         type: directoryAction.setIsLoading,
@@ -1866,13 +1841,6 @@ function Directory() {
     filteredStoreLocationsNodesAndEdges,
     triggerSetLayoutedNodesAndEdges,
   ]);
-
-  useEffect(() => {
-    logState({
-      state: directoryState,
-      groupLabel: 'directoryState in Directory',
-    });
-  }, [directoryState]);
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end useEffect ━┛
 

@@ -17,17 +17,14 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { CSSProperties, useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
 import { IoMdOpen } from 'react-icons/io';
 import { TbEdit, TbStatusChange, TbTrash, TbUserSearch } from 'react-icons/tb';
 import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
-import { useNavigate } from 'react-router-dom';
 
 import {
   COLORS_SWATCHES,
   FIELDNAMES_WITH_DATE_VALUES,
 } from '../../../constants/data';
-import { authAction } from '../../../context/authProvider';
 import { useAuth, useGlobalState } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
@@ -40,7 +37,6 @@ import {
   formatDate,
   logState,
   replaceLastCommaWithAnd,
-  returnIsAccessTokenExpired,
   returnThemeColors,
   splitCamelCase,
 } from '../../../utils';
@@ -90,8 +86,7 @@ function DisplayQueryDesktop({
   } = useGlobalState();
 
   const {
-    authDispatch,
-    authState: { roles, accessToken },
+    authState: { roles },
   } = useAuth();
 
   const [
@@ -689,15 +684,6 @@ function DisplayQueryDesktop({
                                   },
                                 });
 
-                                const { isAccessTokenExpired } =
-                                  returnIsAccessTokenExpired(accessToken);
-                                if (isAccessTokenExpired) {
-                                  authDispatch({
-                                    type: authAction.setIsAccessTokenExpired,
-                                    payload: true,
-                                  });
-                                }
-
                                 openEditRepairNotesModal();
                               },
                             },
@@ -738,15 +724,6 @@ function DisplayQueryDesktop({
                               queryResponseObjWithAddedFields.requestStatus,
                           });
 
-                          const { isAccessTokenExpired } =
-                            returnIsAccessTokenExpired(accessToken);
-                          if (isAccessTokenExpired) {
-                            authDispatch({
-                              type: authAction.setIsAccessTokenExpired,
-                              payload: true,
-                            });
-                          }
-
                           openUpdateRequestStatusModal();
                         },
                       },
@@ -783,15 +760,6 @@ function DisplayQueryDesktop({
                             payload: 'form',
                           });
 
-                          const { isAccessTokenExpired } =
-                            returnIsAccessTokenExpired(accessToken);
-                          if (isAccessTokenExpired) {
-                            authDispatch({
-                              type: authAction.setIsAccessTokenExpired,
-                              payload: true,
-                            });
-                          }
-
                           openDeleteAcknowledge();
                         },
                       },
@@ -815,15 +783,6 @@ function DisplayQueryDesktop({
                             type: 'setDeleteFormId',
                             payload: queryResponseObjWithAddedFields._id,
                           });
-
-                          const { isAccessTokenExpired } =
-                            returnIsAccessTokenExpired(accessToken);
-                          if (isAccessTokenExpired) {
-                            authDispatch({
-                              type: authAction.setIsAccessTokenExpired,
-                              payload: true,
-                            });
-                          }
 
                           openFileUploads();
                         },

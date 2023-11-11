@@ -1,22 +1,13 @@
-import {
-  Flex,
-  Group,
-  Modal,
-  Notification,
-  Stack,
-  Text,
-  Title,
-} from '@mantine/core';
+import { Group, Stack, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
-import { TbCheck } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../hooks';
+import { useAuth, useGlobalState, useWrapFetch } from '../../hooks';
 import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 import {
   FileUploadDocument,
@@ -121,8 +112,10 @@ function DisplayResource<Doc>({
     globalDispatch,
   } = useGlobalState();
   const {
-    authState: { accessToken, roles, isAccessTokenExpired },
+    authState: { roles },
   } = useAuth();
+
+  const { wrappedFetch } = useWrapFetch();
 
   // submit success notification modal
   const [
@@ -137,10 +130,6 @@ function DisplayResource<Doc>({
   const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -163,22 +152,26 @@ function DisplayResource<Doc>({
           ? resourceUrlPaths.manager
           : resourceUrlPaths.employee;
 
-      const urlString: URL = urlBuilder({
+      const url: URL = urlBuilder({
         path,
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=${limitPerPage}&projection=-action&projection=-category`,
       });
 
-      const request: Request = new Request(urlString, {
+      const requestInit: RequestInit = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response = await fetch(request);
+        const response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: GetQueriedResourceRequestServerResponse<Doc> =
           await response.json();
         console.log('response json data', data);
@@ -336,7 +329,7 @@ function DisplayResource<Doc>({
     };
     // only trigger fetchResource on triggerRefresh change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerRefresh, isAccessTokenExpired]);
+  }, [triggerRefresh]);
 
   useEffect(() => {
     displayResourceDispatch({
@@ -374,10 +367,6 @@ function DisplayResource<Doc>({
 
   // submit request status form on change
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -392,7 +381,7 @@ function DisplayResource<Doc>({
       });
       openSubmitSuccessNotificationModal();
 
-      const urlString: URL = urlBuilder({
+      const url: URL = urlBuilder({
         path: `${resourceUrlPaths.manager}/${requestStatus.id}`,
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&projection=-action&projection=-category`,
       });
@@ -404,18 +393,22 @@ function DisplayResource<Doc>({
       });
       const body = JSON.stringify(resourceBody);
 
-      const request: Request = new Request(urlString, {
+      const requestInit: RequestInit = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
         body,
-      });
+      };
 
       try {
-        const response = await fetch(request);
+        const response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: ResourceRequestServerResponse<Doc> = await response.json();
         console.log('request status update response', data);
         if (!isMounted) {
@@ -514,7 +507,7 @@ function DisplayResource<Doc>({
 
     // only trigger updateRequestStatus on triggerUpdateRequestStatus change
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerUpdateRequestStatus, isAccessTokenExpired]);
+  }, [triggerUpdateRequestStatus]);
 
   useEffect(() => {
     if (requestStatus.id.length > 0) {
@@ -528,10 +521,6 @@ function DisplayResource<Doc>({
   // delete resource on deleteResource status change
   // ALSO MAKE A PUT REQUEST WITH MODIFIED FORM DATA
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -552,19 +541,23 @@ function DisplayResource<Doc>({
         kind === 'form'
           ? `${resourceUrlPaths.manager}/${formId}`
           : `file-upload/${fileUploadId}`;
-      const urlString: URL = urlBuilder({ path });
+      const url: URL = urlBuilder({ path });
 
-      const request: Request = new Request(urlString, {
+      const requestInit: RequestInit = {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response = await fetch(request);
+        const response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: { message: string; resourceData?: [] } =
           await response.json();
 
@@ -651,14 +644,12 @@ function DisplayResource<Doc>({
       isMounted = false;
       controller.abort();
     };
-  }, [deleteResource, isAccessTokenExpired]);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteResource]);
 
   // when an uploaded file is deleted, patch request is made to update the asociated resource
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -730,36 +721,35 @@ function DisplayResource<Doc>({
         fieldsToFilter: ['delete', 'fileUploads'],
       });
 
-      const urlString: URL = urlBuilder({
+      const url: URL = urlBuilder({
         path: `${resourceUrlPaths.manager}/${_id}`,
       });
 
       const resourceBody = Object.create(null);
-      // addFieldsToObject({
-      //   object: resourceBody,
-      //   fieldValuesTuples: [[requestBodyHeading, filteredAssociatedResource]],
-      // });
+
       Object.defineProperty(resourceBody, requestBodyHeading, {
         ...PROPERTY_DESCRIPTOR,
         value: filteredAssociatedResource,
       });
       const body = JSON.stringify(resourceBody);
 
-      const request: Request = new Request(urlString, {
+      const requestInit: RequestInit = {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
         body,
-      });
+      };
 
       try {
-        const response = await fetch(request);
-        const data: ResourceRequestServerResponse<Doc> = await response.json();
+        const response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
 
-        console.log('update associated resource response', data);
+        const data: ResourceRequestServerResponse<Doc> = await response.json();
 
         if (!isMounted) {
           return;
@@ -840,7 +830,8 @@ function DisplayResource<Doc>({
       isMounted = false;
       controller.abort();
     };
-  }, [deleteResource.fileUploadId, isAccessTokenExpired]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deleteResource.fileUploadId]);
 
   const {
     appThemeColors: { backgroundColor, borderColor },

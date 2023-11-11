@@ -13,7 +13,7 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { InvalidTokenError } from 'jwt-decode';
-import React, { ReactNode, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import { MdSafetyDivider } from 'react-icons/md';
 import {
@@ -21,25 +21,21 @@ import {
   TbCalendarEvent,
   TbCalendarPin,
   TbCashBanknote,
-  TbChartArcs,
-  TbChartArcs3,
   TbChartBar,
   TbChartPie4,
-  TbCircleArrowUp,
   TbCircleArrowUpRight,
   TbGift,
-  TbPrinter,
   TbPrinterOff,
   TbReceipt2,
   TbTimelineEventPlus,
   TbUserCheck,
 } from 'react-icons/tb';
 import { TiThumbsUp } from 'react-icons/ti';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
-import { useGlobalState } from '../../hooks';
+import { useGlobalState, useWrapFetch } from '../../hooks';
 import { useAuth } from '../../hooks/useAuth';
 import {
   returnAccessibleButtonElements,
@@ -75,14 +71,7 @@ function Home() {
   } = homeState;
 
   const {
-    authState: {
-      accessToken,
-      isAccessTokenExpired,
-      roles,
-      userId,
-      username,
-      isLoggedIn,
-    },
+    authState: { accessToken, roles, userId, username },
   } = useAuth();
 
   const {
@@ -97,14 +86,145 @@ function Home() {
     },
   } = useGlobalState();
 
+  const { wrappedFetch } = useWrapFetch();
+
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
-  useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (isAccessTokenExpired) {
+  //     return;
+  //   }
 
+  //   let isMounted = true;
+  //   const controller = new AbortController();
+
+  //   async function fetchActionsDocuments() {
+  //     homeDispatch({
+  //       type: homeAction.setIsLoading,
+  //       payload: true,
+  //     });
+  //     homeDispatch({
+  //       type: homeAction.setLoadingMessage,
+  //       payload: 'Fetching recent company, general and outreach documents...',
+  //     });
+
+  //     const url: URL = new URL(
+  //       `http://localhost:5500/api/v1/actions/home${
+  //         roles.includes('Employee') ? `${userId}/` : ''
+  //       }?&newQueryFlag=true&limit=5&totalDocuments=0`
+  //     );
+
+  //     const request: Request = new Request(url.toString(), {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //       signal: controller.signal,
+  //     });
+
+  //     try {
+  //       const response: Response = await fetch(request);
+  //       const data: ActionsResourceRequestServerResponse =
+  //         await response.json();
+
+  //       console.log('data', data);
+
+  //       if (!isMounted) {
+  //         return;
+  //       }
+  //       if (!response.ok) {
+  //         throw new Error(data.message);
+  //       }
+
+  //       const { repairNoteData, companyData, generalData, outreachData } = data;
+
+  //       const employeeData = new Map<string, UserDocument>();
+  //       data.employeeData.forEach((employee: UserDocument) => {
+  //         employeeData.set(employee._id, employee);
+  //       });
+
+  //       const actionsDocuments = {
+  //         repairNoteData,
+  //         companyData,
+  //         generalData,
+  //         outreachData,
+  //         employeeData,
+  //       };
+  //       globalDispatch({
+  //         type: globalAction.setActionsDocuments,
+  //         payload: actionsDocuments,
+  //       });
+  //       homeDispatch({
+  //         type: homeAction.setIsSuccessful,
+  //         payload: true,
+  //       });
+  //       homeDispatch({
+  //         type: homeAction.setSuccessMessage,
+  //         payload:
+  //           'Successfully fetched recent company, general and outreach documents',
+  //       });
+  //     } catch (error: any) {
+  //       if (!isMounted || error.name === 'AbortError') {
+  //         return;
+  //       }
+
+  //       const errorMessage =
+  //         error instanceof InvalidTokenError
+  //           ? 'Invalid token. Please login again.'
+  //           : !error.response
+  //           ? 'Network error. Please try again.'
+  //           : error?.message ?? 'Unknown error occurred. Please try again.';
+
+  //       globalDispatch({
+  //         type: globalAction.setErrorState,
+  //         payload: {
+  //           isError: true,
+  //           errorMessage,
+  //           errorCallback: () => {
+  //             navigate('/');
+
+  //             globalDispatch({
+  //               type: globalAction.setErrorState,
+  //               payload: {
+  //                 isError: false,
+  //                 errorMessage: '',
+  //                 errorCallback: () => {},
+  //               },
+  //             });
+  //           },
+  //         },
+  //       });
+
+  //       showBoundary(error);
+  //     } finally {
+  //       homeDispatch({
+  //         type: homeAction.setIsLoading,
+  //         payload: false,
+  //       });
+  //       homeDispatch({
+  //         type: homeAction.setLoadingMessage,
+  //         payload: '',
+  //       });
+  //       homeDispatch({
+  //         type: homeAction.triggerFetchActionsDocuments,
+  //         payload: false,
+  //       });
+  //     }
+  //   }
+
+  //   if (triggerFetchActionsDocuments) {
+  //     fetchActionsDocuments();
+  //   }
+
+  //   return () => {
+  //     isMounted = false;
+  //     controller.abort();
+  //   };
+  // }, []);
+
+  useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
@@ -123,29 +243,24 @@ function Home() {
           roles.includes('Employee') ? `${userId}/` : ''
         }?&newQueryFlag=true&limit=5&totalDocuments=0`
       );
-      // const url: URL = roles.includes('Employee')
-      //   ? new URL(
-      //       `http://localhost:5500/api/v1/actions/home/${userId}/?&newQueryFlag=true&limit=5&totalDocuments=0`
-      //     )
-      //   : new URL(
-      //       'http://localhost:5500/api/v1/actions/home?&limit=5&totalDocuments=0'
-      //     );
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        // const response: Response = await fetch(request);
+        const response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
         const data: ActionsResourceRequestServerResponse =
           await response.json();
-
-        console.log('data', data);
 
         if (!isMounted) {
           return;
@@ -239,13 +354,6 @@ function Home() {
       controller.abort();
     };
   }, []);
-
-  // useEffect(() => {
-  //   homeDispatch({
-  //     type: homeAction.triggerFetchActionsDocuments,
-  //     payload: true,
-  //   });
-  // }, []);
 
   const {
     appThemeColors: { borderColor, backgroundColor },

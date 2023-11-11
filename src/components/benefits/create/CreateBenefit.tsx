@@ -20,7 +20,7 @@ import {
   USERNAME_REGEX,
 } from '../../../constants/regex';
 import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -120,9 +120,7 @@ function CreateBenefit() {
     globalDispatch,
   } = useGlobalState();
 
-  const {
-    authState: { accessToken, isAccessTokenExpired },
-  } = useAuth();
+  const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -136,10 +134,6 @@ function CreateBenefit() {
   ] = useDisclosure(false);
 
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -173,18 +167,22 @@ function CreateBenefit() {
         },
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body,
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: ResourceRequestServerResponse<BenefitsDocument> =
           await response.json();
 
@@ -266,7 +264,7 @@ function CreateBenefit() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit, isAccessTokenExpired]);
+  }, [triggerFormSubmit]);
 
   // validate benefitUsername input on every change
   useEffect(() => {

@@ -3,8 +3,6 @@ import { ReactNode } from 'react';
 type AuthState = {
   accessToken: string;
   errorMessage: string;
-  isAccessTokenExpired: boolean;
-  isFetchingTokens: boolean;
   isLoggedIn: boolean;
   password: string;
   roles: ('Admin' | 'Employee' | 'Manager')[];
@@ -21,8 +19,6 @@ type AuthAction = {
   setAccessToken: 'setAccessToken';
   setAllAuthState: 'setAllAuthState';
   setErrorMessage: 'setErrorMessage';
-  setIsAccessTokenExpired: 'setIsAccessTokenExpired';
-  setFetchingTokens: 'setFetchingTokens';
   setIsLoggedIn: 'setIsLoggedIn';
   setPassword: 'setPassword';
   setRoles: 'setRoles';
@@ -43,14 +39,6 @@ type AuthDispatch =
   | {
       type: AuthAction['setErrorMessage'];
       payload: string;
-    }
-  | {
-      type: AuthAction['setIsAccessTokenExpired'];
-      payload: boolean;
-    }
-  | {
-      type: AuthAction['setFetchingTokens'];
-      payload: boolean;
     }
   | {
       type: AuthAction['setIsLoggedIn'];

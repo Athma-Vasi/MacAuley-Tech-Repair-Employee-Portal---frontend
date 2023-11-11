@@ -3,8 +3,6 @@ import { AuthAction, AuthDispatch, AuthState } from './types';
 const initialAuthState: AuthState = {
   accessToken: '',
   errorMessage: '',
-  isAccessTokenExpired: false,
-  isFetchingTokens: false,
   isLoggedIn: false,
   password: '',
   roles: [],
@@ -17,8 +15,6 @@ const authAction: AuthAction = {
   setAccessToken: 'setAccessToken',
   setAllAuthState: 'setAllAuthState',
   setErrorMessage: 'setErrorMessage',
-  setIsAccessTokenExpired: 'setIsAccessTokenExpired',
-  setFetchingTokens: 'setFetchingTokens',
   setIsLoggedIn: 'setIsLoggedIn',
   setPassword: 'setPassword',
   setRoles: 'setRoles',
@@ -35,10 +31,6 @@ function authReducer(state: AuthState, action: AuthDispatch): AuthState {
       return { ...state, ...action.payload };
     case authAction.setErrorMessage:
       return { ...state, errorMessage: action.payload };
-    case authAction.setIsAccessTokenExpired:
-      return { ...state, isAccessTokenExpired: action.payload };
-    case authAction.setFetchingTokens:
-      return { ...state, isFetchingTokens: action.payload };
     case authAction.setIsLoggedIn:
       return { ...state, isLoggedIn: action.payload };
     case authAction.setPassword:

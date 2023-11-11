@@ -28,8 +28,7 @@ import {
 
 import { COLORS_SWATCHES } from '../../constants/data';
 import { NOTE_TEXT_REGEX, SERIAL_ID_REGEX } from '../../constants/regex';
-import { authAction } from '../../context/authProvider';
-import { useAuth, useGlobalState } from '../../hooks';
+import { useGlobalState } from '../../hooks';
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -46,7 +45,6 @@ import {
   returnSerialIdValidationText,
   returnThemeColors,
 } from '../../utils';
-import { DecodedToken } from '../login/types';
 import { TimelineBuilder } from '../timelineBuilder';
 import {
   AccessibleButtonCreatorInfo,
@@ -146,11 +144,6 @@ function QueryBuilder({
   const {
     globalState: { width, rowGap, padding, themeObject },
   } = useGlobalState();
-
-  const {
-    authDispatch,
-    authState: { accessToken },
-  } = useAuth();
 
   const [
     openedQueryHelpModal,
@@ -1365,20 +1358,6 @@ function QueryBuilder({
           payload: queryString,
         });
 
-        const decodedToken: DecodedToken = jwtDecode(accessToken);
-        const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
-          decodedToken;
-        // buffer of 10 seconds to refresh access token
-        const isAccessTokenExpired =
-          accessTokenExpiration * 1000 - 10000 < Date.now();
-
-        if (isAccessTokenExpired) {
-          authDispatch({
-            type: authAction.setIsAccessTokenExpired,
-            payload: isAccessTokenExpired,
-          });
-        }
-
         // for query values array highlighting
         if (!queryValuesArrayDispatch || !generalSearchInclusionValue) {
           return;
@@ -1407,20 +1386,6 @@ function QueryBuilder({
         type: setQueryBuilderString,
         payload: queryString,
       });
-
-      const decodedToken: DecodedToken = jwtDecode(accessToken);
-      const { exp: accessTokenExpiration, iat: accessTokenIssuedAt } =
-        decodedToken;
-      // buffer of 10 seconds to refresh access token
-      const isAccessTokenExpired =
-        accessTokenExpiration * 1000 - 10000 < Date.now();
-
-      if (isAccessTokenExpired) {
-        authDispatch({
-          type: authAction.setIsAccessTokenExpired,
-          payload: isAccessTokenExpired,
-        });
-      }
 
       if (!queryValuesArrayDispatch) {
         return;

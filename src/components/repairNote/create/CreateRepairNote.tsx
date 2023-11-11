@@ -1,4 +1,4 @@
-import { Flex, Group, ScrollArea, Title, Tooltip } from '@mantine/core';
+import { Flex, Group, Title, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
@@ -6,27 +6,17 @@ import { useErrorBoundary } from 'react-error-boundary';
 import { TbNote, TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
-import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../../constants/data';
 import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { useGlobalState, useWrapFetch } from '../../../hooks';
 import { returnAccessibleButtonElements } from '../../../jsxCreators';
-import { Country, ResourceRequestServerResponse } from '../../../types';
-import {
-  replaceLastCommaWithAnd,
-  returnThemeColors,
-  urlBuilder,
-} from '../../../utils';
+import { ResourceRequestServerResponse } from '../../../types';
+import { replaceLastCommaWithAnd, urlBuilder } from '../../../utils';
 import FormReviewPage, {
   FormReviewObject,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import { StepperWrapper } from '../../wrappers';
-import {
-  PartsNeeded,
-  RepairNoteDocument,
-  RepairNoteInitialSchema,
-  RequiredRepairs,
-} from '../types';
+import { RepairNoteDocument, RepairNoteInitialSchema } from '../types';
 import {
   CREATE_REPAIR_NOTE_DESCRIPTION_OBJECTS,
   CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
@@ -130,9 +120,7 @@ function CreateRepairNote() {
 
   const { globalDispatch } = useGlobalState();
 
-  const {
-    authState: { accessToken, isAccessTokenExpired },
-  } = useAuth();
+  const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -149,10 +137,6 @@ function CreateRepairNote() {
   /** ------------- begin useEffects ------------- */
   // submit form
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -204,18 +188,22 @@ function CreateRepairNote() {
           initialRepairNote,
         });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({ repairNote }),
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: ResourceRequestServerResponse<RepairNoteDocument> =
           await response.json();
 
@@ -295,7 +283,7 @@ function CreateRepairNote() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFormSubmit, isAccessTokenExpired]);
+  }, [triggerFormSubmit]);
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin input creators ------------- */

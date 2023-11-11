@@ -7,7 +7,6 @@ import {
   Text,
   UnstyledButton,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
@@ -15,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../../../constants/data';
 import { globalAction } from '../../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../../hooks';
+import { useGlobalState, useWrapFetch } from '../../../../hooks';
 import { returnAccessibleImageElements } from '../../../../jsxCreators';
 import { GetQueriedResourceRequestServerResponse } from '../../../../types';
 import { logState, returnThemeColors, urlBuilder } from '../../../../utils';
@@ -54,9 +53,7 @@ function DisplayAnnouncements() {
     submitMessage,
   } = displayAnnouncementsState;
 
-  const {
-    authState: { accessToken, isAccessTokenExpired },
-  } = useAuth();
+  const { wrappedFetch } = useWrapFetch();
 
   const {
     globalState: { padding, rowGap, themeObject, width },
@@ -70,10 +67,6 @@ function DisplayAnnouncements() {
 
   /** ------------- begin useEffects ------------- */
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -92,17 +85,21 @@ function DisplayAnnouncements() {
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=10&projection=-action&projection=-category`,
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: GetQueriedResourceRequestServerResponse<AnnouncementDocument> =
           await response.json();
 
@@ -186,7 +183,7 @@ function DisplayAnnouncements() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFetchAnnouncements, isAccessTokenExpired]);
+  }, [triggerFetchAnnouncements]);
 
   useEffect(() => {
     displayAnnouncementsDispatch({

@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { useAuth, useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
@@ -92,8 +92,10 @@ function DisplaySurveys() {
   } = displaySurveysState;
 
   const {
-    authState: { accessToken, roles, isAccessTokenExpired },
+    authState: { accessToken, roles },
   } = useAuth();
+
+  const { wrappedFetch } = useWrapFetch();
 
   const {
     globalState: { padding, rowGap, userDocument, themeObject, width },
@@ -116,10 +118,6 @@ function DisplaySurveys() {
   /** ------------- begin useEffects ------------- */
   // fetch surveys on mount
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -141,17 +139,21 @@ function DisplaySurveys() {
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: {
           message: string;
           resourceData: SurveyBuilderDocument[];
@@ -241,7 +243,7 @@ function DisplaySurveys() {
     };
     // only fetch surveys when the triggerSurveyFetch is true (and initially on mount)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerSurveyFetch, isAccessTokenExpired]);
+  }, [triggerSurveyFetch]);
 
   useEffect(() => {
     displaySurveysDispatch({
@@ -260,10 +262,6 @@ function DisplaySurveys() {
 
   // submit survey response
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -290,22 +288,27 @@ function DisplaySurveys() {
 
         return filteredSurveyResponse;
       });
+
       const body = JSON.stringify({
         surveyResponses: filteredSurveyResponses,
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body,
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: {
           message: string;
           resourceData: [SurveyBuilderDocument, UserDocument];
@@ -394,7 +397,7 @@ function DisplaySurveys() {
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerSurveySubmission, isAccessTokenExpired]);
+  }, [triggerSurveySubmission]);
 
   // allows discrimination between completed and uncompleted surveys
   useEffect(() => {

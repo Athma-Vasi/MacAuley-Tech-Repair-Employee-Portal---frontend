@@ -16,16 +16,11 @@ import { returnThemeColors } from '../../utils';
 
 function PortalFooter() {
   const {
-    authState: {
-      roles,
-      username: loggedInUsername,
-      isLoggedIn,
-      isFetchingTokens,
-    },
+    authState: { roles, username: loggedInUsername, isLoggedIn },
   } = useAuth();
 
   const {
-    globalState: { padding, themeObject, rowGap, width },
+    globalState: { padding, themeObject },
   } = useGlobalState();
 
   const displayRole = roles.includes('Manager') ? (
@@ -47,28 +42,27 @@ function PortalFooter() {
 
   const {
     appThemeColors: { backgroundColor },
-    generalColors: { greenColorShade },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const displayAuthenticationStatus = (
-    <Group h={50}>
-      {isFetchingTokens ? (
-        <Loader size="sm" />
-      ) : (
-        <TbCheck color={greenColorShade} size={22} />
-      )}
-      <Text>{isFetchingTokens ? 'Authenticating' : 'Authenticated'}</Text>
-    </Group>
-  );
+  // const displayAuthenticationStatus = (
+  //   <Group h={50}>
+  //     {isFetchingTokens ? (
+  //       <Loader size="sm" />
+  //     ) : (
+  //       <TbCheck color={greenColorShade} size={22} />
+  //     )}
+  //     <Text>{isFetchingTokens ? 'Authenticating' : 'Authenticated'}</Text>
+  //   </Group>
+  // );
 
   return (
     <Footer bg={backgroundColor} height={75} p={padding} w="100%">
       <Group w="100%" position="apart">
         <Group position="left">{displayUsernameWithRoles}</Group>
-        <Group position="right">{displayAuthenticationStatus}</Group>
+        {/* <Group position="right">{displayAuthenticationStatus}</Group> */}
       </Group>
     </Footer>
   );

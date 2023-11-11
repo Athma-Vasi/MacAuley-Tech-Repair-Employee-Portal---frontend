@@ -95,9 +95,7 @@ type CommentState = {
   newQueryFlag: boolean;
   queryBuilderString: string;
   pageQueryString: string;
-  areCommentsVisible: boolean;
 
-  commentIdsToFetch: string[];
   commentsMap: CommentsMap;
   queryValuesArray: string[]; // passed up from QueryBuilder to highlight comment phrases == query values
 
@@ -131,9 +129,7 @@ type CommentAction = {
   setNewQueryFlag: 'setNewQueryFlag';
   setQueryBuilderString: 'setQueryBuilderString';
   setPageQueryString: 'setPageQueryString';
-  setAreCommentsVisible: 'setAreCommentsVisible';
 
-  setCommentIdsToFetch: 'setCommentIdsToFetch';
   setCommentsMap: 'setCommentsMap';
   updateCommentsMap: 'updateCommentsMap';
   setQueryValuesArray: 'setQueryValuesArray';
@@ -177,7 +173,6 @@ type CommentDispatch =
         | CommentAction['setIsNewCommentFocused']
         | CommentAction['setResetPage']
         | CommentAction['setNewQueryFlag']
-        | CommentAction['setAreCommentsVisible']
         | CommentAction['setTriggerCommentFetch']
         | CommentAction['setTriggerCommentUpdate']
         | CommentAction['setTriggerCommentSubmit']
@@ -185,11 +180,6 @@ type CommentDispatch =
         | CommentAction['setIsLoading']
         | CommentAction['setIsSuccessful'];
       payload: boolean;
-    }
-  | {
-      type: CommentAction['setCommentIdsToFetch'];
-
-      payload: string[];
     }
   | {
       type: CommentAction['setQueryValuesArray'];

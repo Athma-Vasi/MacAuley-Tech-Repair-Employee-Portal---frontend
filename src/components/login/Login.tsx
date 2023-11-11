@@ -147,8 +147,6 @@ function Login() {
           payload: {
             accessToken,
             errorMessage: '',
-            isAccessTokenExpired: false,
-            isFetchingTokens: false,
             isLoggedIn: true,
             password,
             roles,

@@ -5,7 +5,6 @@ import {
   Grid,
   Group,
   Highlight,
-  Image,
   Loader,
   LoadingOverlay,
   Modal,
@@ -33,18 +32,15 @@ import {
   TbCornerUpLeft,
   TbFlag2,
   TbFlag2Filled,
-  TbPhotoOff,
   TbStar,
   TbStarOff,
   TbTrash,
   TbTrashOff,
   TbUpload,
-  TbZoomReset,
 } from 'react-icons/tb';
 import {
   TiSocialDribbble,
   TiSocialFlickr,
-  TiSocialGithub,
   TiSocialLinkedin,
 } from 'react-icons/ti';
 import { VscQuote } from 'react-icons/vsc';
@@ -53,7 +49,7 @@ import { useNavigate } from 'react-router-dom';
 import { COLORS_SWATCHES } from '../../constants/data';
 import { GRAMMAR_TEXTAREA_INPUT_REGEX } from '../../constants/regex';
 import { globalAction } from '../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../hooks';
+import { useAuth, useGlobalState, useWrapFetch } from '../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -65,8 +61,6 @@ import {
 import {
   formatDate,
   logState,
-  replaceLastCommaWithAnd,
-  replaceLastCommaWithOr,
   returnGrammarValidationText,
   returnThemeColors,
   urlBuilder,
@@ -118,9 +112,7 @@ function Comment({
     newQueryFlag,
     queryBuilderString,
     pageQueryString,
-    areCommentsVisible,
 
-    commentIdsToFetch,
     commentsMap,
     queryValuesArray,
 
@@ -136,14 +128,16 @@ function Comment({
     successMessage,
   } = commentState;
 
-  const {
-    authState: { userId, username, accessToken, isAccessTokenExpired },
-  } = useAuth();
+  const { wrappedFetch } = useWrapFetch();
 
   const {
     globalState: { padding, rowGap, width, userDocument, themeObject },
     globalDispatch,
   } = useGlobalState();
+
+  const {
+    authState: { username, userId },
+  } = useAuth();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -167,10 +161,6 @@ function Comment({
 
   // fetch comments
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -190,17 +180,21 @@ function Comment({
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=${limitPerPage}`,
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: GetCommentsServerResponse = await response.json();
 
         if (!isMounted) {
@@ -293,7 +287,7 @@ function Comment({
 
     // only fetch comments when triggerCommentFetch is true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerCommentFetch, isAccessTokenExpired]);
+  }, [triggerCommentFetch]);
 
   // whenever the following changes, trigger comment fetch
   useEffect(() => {
@@ -305,10 +299,6 @@ function Comment({
 
   // update user reaction: liked, disliked, reported, deleted or featured
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -317,18 +307,22 @@ function Comment({
         path: `comment/${updateCommentId}`,
       });
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(updateCommentRequestBody),
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: {
           message: string;
           resourceData: [CommentDocument];
@@ -400,14 +394,10 @@ function Comment({
 
     // only update user reaction when triggerCommentUpdate is true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerCommentUpdate, isAccessTokenExpired]);
+  }, [triggerCommentUpdate]);
 
   // submit comment
   useEffect(() => {
-    if (isAccessTokenExpired) {
-      return;
-    }
-
     let isMounted = true;
     const controller = new AbortController();
 
@@ -451,20 +441,24 @@ function Comment({
         reportedUserIds: [],
       };
 
-      const request: Request = new Request(url.toString(), {
+      const requestInit: RequestInit = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify({
           comment,
         }),
-        signal: controller.signal,
-      });
+      };
 
       try {
-        const response: Response = await fetch(request);
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+
         const data: {
           message: string;
           resourceData: [CommentDocument];
@@ -552,7 +546,7 @@ function Comment({
 
     // only submit comment when triggerCommentSubmit is true
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerCommentSubmit, isAccessTokenExpired]);
+  }, [triggerCommentSubmit]);
 
   // when limit per page changes, trigger reset page
   useEffect(() => {

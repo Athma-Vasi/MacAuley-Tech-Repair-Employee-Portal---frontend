@@ -3,9 +3,15 @@
  */
 
 import { useAuth } from './useAuth';
-import { useFetch } from './useFetch/useFetch';
 import { useGlobalState } from './useGlobalState';
 import { useScrollDirection } from './useScrollDirection';
 import { useWindowSize } from './useWindowSize';
+import { useWrapFetch } from './useWrapFetch';
 
-export { useAuth, useFetch, useGlobalState, useScrollDirection, useWindowSize };
+export {
+  useAuth,
+  useGlobalState,
+  useScrollDirection,
+  useWindowSize,
+  useWrapFetch,
+};
