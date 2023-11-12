@@ -117,7 +117,6 @@ type ProductCategory =
   | 'Storage'
   | 'Power Supplies'
   | 'Computer Cases'
-  | 'Computer Peripherals'
   | 'Monitors'
   | 'Keyboards'
   | 'Mice'

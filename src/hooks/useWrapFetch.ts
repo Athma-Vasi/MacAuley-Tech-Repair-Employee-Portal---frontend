@@ -10,7 +10,6 @@ import { useAuth } from './useAuth';
 import { useGlobalState } from './useGlobalState';
 
 /**
- * - dissimilar to popular implementations of useFetch, this hook returns a wrapped fetch function
  * - inspired by axios interceptors, the wrappedFetch fn will check access token expiration before calling fetch
  * - if the access token is expired, it will attempt to retrieve new access & refresh tokens
  * - else it will call fetch with the unexpired access token
@@ -76,6 +75,7 @@ function useWrapFetch() {
     signal: AbortSignal;
   }) {
     const refreshUrl: URL = new URL(REFRESH_URL);
+
     const tokensRequest: Request = new Request(refreshUrl.toString(), {
       body: JSON.stringify({ sessionId }),
       credentials: 'include',
