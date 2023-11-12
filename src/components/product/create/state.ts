@@ -41,37 +41,85 @@ const initialProductState: CreateProductState = {
   cpuSocket: '',
   isCpuSocketFocused: false,
   isCpuSocketValid: false,
-  cpuSpeed: 0,
+  cpuSpeed: '3.5 GHz',
+  isCpuSpeedFocused: false,
+  isCpuSpeedValid: false,
   cpuCores: 2,
-  cpuL1Cache: 0,
-  cpuL1CacheUnits: 'KB',
-  cpuL2Cache: 0,
-  cpuL2CacheUnits: 'KB',
-  cpuL3Cache: 0,
-  cpuL3CacheUnits: 'KB',
-  cpuWattage: 0,
+  cpuL1Cache: '256 KB',
+  isCpuL1CacheFocused: false,
+  isCpuL1CacheValid: false,
+  cpuL2Cache: '1 MB',
+  isCpuL2CacheFocused: false,
+  isCpuL2CacheValid: false,
+  cpuL3Cache: '4 MB',
+  isCpuL3CacheFocused: false,
+  isCpuL3CacheValid: false,
+  cpuWattage: '65 W',
+  isCpuWattageFocused: false,
+  isCpuWattageValid: false,
 
   // specifications -> gpu
   gpuChipset: '',
   isGpuChipsetFocused: false,
   isGpuChipsetValid: false,
-  gpuMemory: 0,
-  gpuMemoryUnits: 'GB',
-  gpuCoreClock: 0,
-  gpuCoreClockUnits: 'MHz',
-  gpuBoostClock: 0,
-  gpuBoostClockUnits: 'MHz',
-  gpuTdp: 0,
+  gpuMemory: '8 GB',
+  isGpuMemoryFocused: false,
+  isGpuMemoryValid: false,
+  gpuCoreClock: '1500 MHz',
+  isGpuCoreClockFocused: false,
+  isGpuCoreClockValid: false,
+  gpuBoostClock: '1800 MHz',
+  isGpuBoostClockFocused: false,
+  isGpuBoostClockValid: false,
+  gpuTdp: '150 W',
+  isGpuTdpFocused: false,
+  isGpuTdpValid: false,
 
   // specifications -> motherboard
+  motherboardSocket: '',
+  isMotherboardSocketFocused: false,
+  isMotherboardSocketValid: false,
+  motherboardChipset: '',
+  isMotherboardChipsetFocused: false,
+  isMotherboardChipsetValid: false,
+  motherboardFormFactor: 'ATX',
+  motherboardMemoryMax: '128 GB',
+  isMotherboardMemoryMaxFocused: false,
+  isMotherboardMemoryMaxValid: false,
+  motherboardMemorySlots: 0,
+  motherboardMemoryType: 'DDR4',
+  motherboardSataPorts: 0,
+  motherboardM2Slots: 0,
+  motherboardPcie3Slots: 0,
+  motherboardPcie4Slots: 0,
+  motherboardPcie5Slots: 0,
 
-  // specifications -> memory
+  // specifications -> ram
+  ramSpeed: '3200 MHz',
+  isRamSpeedFocused: false,
+  isRamSpeedValid: false,
+  ramModules: '2x 8 GB',
+  isRamModulesFocused: false,
+  isRamModulesValid: false,
+  ramType: 'DDR4',
+  ramColor: 'Black',
+  ramVoltage: '1.35 V',
+  isRamVoltageFocused: false,
+  isRamVoltageValid: false,
+  ramTiming: '16-18-18-38',
+  isRamTimingFocused: false,
+  isRamTimingValid: false,
 
   // specifications -> storage
-
-  // specifications -> case
-
-  // specifications -> power supply
+  storageType: 'SSD',
+  storageCapacity: '1 TB',
+  isStorageCapacityFocused: false,
+  isStorageCapacityValid: false,
+  storageCache: '32 MB',
+  isStorageCacheFocused: false,
+  isStorageCacheValid: false,
+  storageFormFactor: 'M.2 2280',
+  storageInterface: 'PCIe 3.0 x4',
 
   // page 3
   imgFormDataArray: [],
@@ -112,31 +160,87 @@ const createProductAction: CreateProductAction = {
   // specifications
   // specifications -> cpu
   setCpuSocket: 'setCpuSocket',
-  setIsCpuSocketFocused: 'setIsCpuSocketFocused',
   setIsCpuSocketValid: 'setIsCpuSocketValid',
+  setIsCpuSocketFocused: 'setIsCpuSocketFocused',
   setCpuSpeed: 'setCpuSpeed',
+  setIsCpuSpeedValid: 'setIsCpuSpeedValid',
+  setIsCpuSpeedFocused: 'setIsCpuSpeedFocused',
   setCpuCores: 'setCpuCores',
   setCpuL1Cache: 'setCpuL1Cache',
-  setCpuL1CacheUnits: 'setCpuL1CacheUnits',
+  setIsCpuL1CacheValid: 'setIsCpuL1CacheValid',
+  setIsCpuL1CacheFocused: 'setIsCpuL1CacheFocused',
   setCpuL2Cache: 'setCpuL2Cache',
-  setCpuL2CacheUnits: 'setCpuL2CacheUnits',
+  setIsCpuL2CacheValid: 'setIsCpuL2CacheValid',
+  setIsCpuL2CacheFocused: 'setIsCpuL2CacheFocused',
   setCpuL3Cache: 'setCpuL3Cache',
-  setCpuL3CacheUnits: 'setCpuL3CacheUnits',
+  setIsCpuL3CacheValid: 'setIsCpuL3CacheValid',
+  setIsCpuL3CacheFocused: 'setIsCpuL3CacheFocused',
   setCpuWattage: 'setCpuWattage',
+  setIsCpuWattageValid: 'setIsCpuWattageValid',
+  setIsCpuWattageFocused: 'setIsCpuWattageFocused',
 
   // specifications -> gpu
   setGpuChipset: 'setGpuChipset',
-  setIsGpuChipsetFocused: 'setIsGpuChipsetFocused',
   setIsGpuChipsetValid: 'setIsGpuChipsetValid',
+  setIsGpuChipsetFocused: 'setIsGpuChipsetFocused',
   setGpuMemory: 'setGpuMemory',
-  setGpuMemoryUnits: 'setGpuMemoryUnits',
+  setIsGpuMemoryValid: 'setIsGpuMemoryValid',
+  setIsGpuMemoryFocused: 'setIsGpuMemoryFocused',
   setGpuCoreClock: 'setGpuCoreClock',
-  setGpuCoreClockUnits: 'setGpuCoreClockUnits',
+  setIsGpuCoreClockValid: 'setIsGpuCoreClockValid',
+  setIsGpuCoreClockFocused: 'setIsGpuCoreClockFocused',
   setGpuBoostClock: 'setGpuBoostClock',
-  setGpuBoostClockUnits: 'setGpuBoostClockUnits',
+  setIsGpuBoostClockValid: 'setIsGpuBoostClockValid',
+  setIsGpuBoostClockFocused: 'setIsGpuBoostClockFocused',
   setGpuTdp: 'setGpuTdp',
+  setIsGpuTdpValid: 'setIsGpuTdpValid',
+  setIsGpuTdpFocused: 'setIsGpuTdpFocused',
 
   // specifications -> motherboard
+  setMotherboardSocket: 'setMotherboardSocket',
+  setIsMotherboardSocketFocused: 'setIsMotherboardSocketFocused',
+  setIsMotherboardSocketValid: 'setIsMotherboardSocketValid',
+  setMotherboardChipset: 'setMotherboardChipset',
+  setIsMotherboardChipsetFocused: 'setIsMotherboardChipsetFocused',
+  setIsMotherboardChipsetValid: 'setIsMotherboardChipsetValid',
+  setMotherboardFormFactor: 'setMotherboardFormFactor',
+  setMotherboardMemoryMax: 'setMotherboardMemoryMax',
+  setIsMotherboardMemoryMaxFocused: 'setIsMotherboardMemoryMaxFocused',
+  setIsMotherboardMemoryMaxValid: 'setIsMotherboardMemoryMaxValid',
+  setMotherboardMemorySlots: 'setMotherboardMemorySlots',
+  setMotherboardMemoryType: 'setMotherboardMemoryType',
+  setMotherboardSataPorts: 'setMotherboardSataPorts',
+  setMotherboardM2Slots: 'setMotherboardM2Slots',
+  setMotherboardPcie3Slots: 'setMotherboardPcie3Slots',
+  setMotherboardPcie4Slots: 'setMotherboardPcie4Slots',
+  setMotherboardPcie5Slots: 'setMotherboardPcie5Slots',
+
+  // specifications -> ram
+  setRamSpeed: 'setRamSpeed',
+  setIsRamSpeedValid: 'setIsRamSpeedValid',
+  setIsRamSpeedFocused: 'setIsRamSpeedFocused',
+  setRamModules: 'setRamModules',
+  setIsRamModulesValid: 'setIsRamModulesValid',
+  setIsRamModulesFocused: 'setIsRamModulesFocused',
+  setRamType: 'setRamType',
+  setRamColor: 'setRamColor',
+  setRamVoltage: 'setRamVoltage',
+  setIsRamVoltageValid: 'setIsRamVoltageValid',
+  setIsRamVoltageFocused: 'setIsRamVoltageFocused',
+  setRamTiming: 'setRamTiming',
+  setIsRamTimingValid: 'setIsRamTimingValid',
+  setIsRamTimingFocused: 'setIsRamTimingFocused',
+
+  // specifications -> storage
+  setStorageType: 'setStorageType',
+  setStorageCapacity: 'setStorageCapacity',
+  setIsStorageCapacityValid: 'setIsStorageCapacityValid',
+  setIsStorageCapacityFocused: 'setIsStorageCapacityFocused',
+  setStorageCache: 'setStorageCache',
+  setIsStorageCacheValid: 'setIsStorageCacheValid',
+  setIsStorageCacheFocused: 'setIsStorageCacheFocused',
+  setStorageFormFactor: 'setStorageFormFactor',
+  setStorageInterface: 'setStorageInterface',
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray',
@@ -330,6 +434,16 @@ function createProductReducer(
         ...state,
         cpuSpeed: action.payload,
       };
+    case createProductAction.setIsCpuSpeedFocused:
+      return {
+        ...state,
+        isCpuSpeedFocused: action.payload,
+      };
+    case createProductAction.setIsCpuSpeedValid:
+      return {
+        ...state,
+        isCpuSpeedValid: action.payload,
+      };
     case createProductAction.setCpuCores:
       return {
         ...state,
@@ -340,35 +454,60 @@ function createProductReducer(
         ...state,
         cpuL1Cache: action.payload,
       };
-    case createProductAction.setCpuL1CacheUnits:
+    case createProductAction.setIsCpuL1CacheFocused:
       return {
         ...state,
-        cpuL1CacheUnits: action.payload,
+        isCpuL1CacheFocused: action.payload,
+      };
+    case createProductAction.setIsCpuL1CacheValid:
+      return {
+        ...state,
+        isCpuL1CacheValid: action.payload,
       };
     case createProductAction.setCpuL2Cache:
       return {
         ...state,
         cpuL2Cache: action.payload,
       };
-    case createProductAction.setCpuL2CacheUnits:
+    case createProductAction.setIsCpuL2CacheFocused:
       return {
         ...state,
-        cpuL2CacheUnits: action.payload,
+        isCpuL2CacheFocused: action.payload,
+      };
+    case createProductAction.setIsCpuL2CacheValid:
+      return {
+        ...state,
+        isCpuL2CacheValid: action.payload,
       };
     case createProductAction.setCpuL3Cache:
       return {
         ...state,
         cpuL3Cache: action.payload,
       };
-    case createProductAction.setCpuL3CacheUnits:
+    case createProductAction.setIsCpuL3CacheFocused:
       return {
         ...state,
-        cpuL3CacheUnits: action.payload,
+        isCpuL3CacheFocused: action.payload,
+      };
+    case createProductAction.setIsCpuL3CacheValid:
+      return {
+        ...state,
+        isCpuL3CacheValid: action.payload,
       };
     case createProductAction.setCpuWattage:
       return {
         ...state,
         cpuWattage: action.payload,
+      };
+    case createProductAction.setIsCpuWattageFocused:
+      return {
+        ...state,
+        isCpuWattageFocused: action.payload,
+      };
+    case createProductAction.setIsCpuWattageValid:
+      return {
+        ...state,
+        isCpuWattageValid: action.payload,
       };
 
     // specifications -> gpu
@@ -392,35 +531,261 @@ function createProductReducer(
         ...state,
         gpuMemory: action.payload,
       };
-    case createProductAction.setGpuMemoryUnits:
+    case createProductAction.setIsGpuMemoryFocused:
       return {
         ...state,
-        gpuMemoryUnits: action.payload,
+        isGpuMemoryFocused: action.payload,
+      };
+    case createProductAction.setIsGpuMemoryValid:
+      return {
+        ...state,
+        isGpuMemoryValid: action.payload,
       };
     case createProductAction.setGpuCoreClock:
       return {
         ...state,
         gpuCoreClock: action.payload,
       };
-    case createProductAction.setGpuCoreClockUnits:
+    case createProductAction.setIsGpuCoreClockFocused:
       return {
         ...state,
-        gpuCoreClockUnits: action.payload,
+        isGpuCoreClockFocused: action.payload,
+      };
+    case createProductAction.setIsGpuCoreClockValid:
+      return {
+        ...state,
+        isGpuCoreClockValid: action.payload,
       };
     case createProductAction.setGpuBoostClock:
       return {
         ...state,
         gpuBoostClock: action.payload,
       };
-    case createProductAction.setGpuBoostClockUnits:
+    case createProductAction.setIsGpuBoostClockFocused:
       return {
         ...state,
-        gpuBoostClockUnits: action.payload,
+        isGpuBoostClockFocused: action.payload,
+      };
+    case createProductAction.setIsGpuBoostClockValid:
+      return {
+        ...state,
+        isGpuBoostClockValid: action.payload,
       };
     case createProductAction.setGpuTdp:
       return {
         ...state,
         gpuTdp: action.payload,
+      };
+    case createProductAction.setIsGpuTdpFocused:
+      return {
+        ...state,
+        isGpuTdpFocused: action.payload,
+      };
+    case createProductAction.setIsGpuTdpValid:
+      return {
+        ...state,
+        isGpuTdpValid: action.payload,
+      };
+
+    // specifications -> motherboard
+    case createProductAction.setMotherboardSocket:
+      return {
+        ...state,
+        motherboardSocket: action.payload,
+      };
+    case createProductAction.setIsMotherboardSocketFocused:
+      return {
+        ...state,
+        isMotherboardSocketFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardSocketValid:
+      return {
+        ...state,
+        isMotherboardSocketValid: action.payload,
+      };
+    case createProductAction.setMotherboardChipset:
+      return {
+        ...state,
+        motherboardChipset: action.payload,
+      };
+    case createProductAction.setIsMotherboardChipsetFocused:
+      return {
+        ...state,
+        isMotherboardChipsetFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardChipsetValid:
+      return {
+        ...state,
+        isMotherboardChipsetValid: action.payload,
+      };
+    case createProductAction.setMotherboardFormFactor:
+      return {
+        ...state,
+        motherboardFormFactor: action.payload,
+      };
+    case createProductAction.setMotherboardMemoryMax:
+      return {
+        ...state,
+        motherboardMemoryMax: action.payload,
+      };
+    case createProductAction.setIsMotherboardMemoryMaxFocused:
+      return {
+        ...state,
+        isMotherboardMemoryMaxFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardMemoryMaxValid:
+      return {
+        ...state,
+        isMotherboardMemoryMaxValid: action.payload,
+      };
+    case createProductAction.setMotherboardMemorySlots:
+      return {
+        ...state,
+        motherboardMemorySlots: action.payload,
+      };
+    case createProductAction.setMotherboardMemoryType:
+      return {
+        ...state,
+        motherboardMemoryType: action.payload,
+      };
+    case createProductAction.setMotherboardSataPorts:
+      return {
+        ...state,
+        motherboardSataPorts: action.payload,
+      };
+    case createProductAction.setMotherboardM2Slots:
+      return {
+        ...state,
+        motherboardM2Slots: action.payload,
+      };
+    case createProductAction.setMotherboardPcie3Slots:
+      return {
+        ...state,
+        motherboardPcie3Slots: action.payload,
+      };
+    case createProductAction.setMotherboardPcie4Slots:
+      return {
+        ...state,
+        motherboardPcie4Slots: action.payload,
+      };
+    case createProductAction.setMotherboardPcie5Slots:
+      return {
+        ...state,
+        motherboardPcie5Slots: action.payload,
+      };
+
+    // specifications -> ram
+    case createProductAction.setRamSpeed:
+      return {
+        ...state,
+        ramSpeed: action.payload,
+      };
+    case createProductAction.setIsRamSpeedFocused:
+      return {
+        ...state,
+        isRamSpeedFocused: action.payload,
+      };
+    case createProductAction.setIsRamSpeedValid:
+      return {
+        ...state,
+        isRamSpeedValid: action.payload,
+      };
+    case createProductAction.setRamModules:
+      return {
+        ...state,
+        ramModules: action.payload,
+      };
+    case createProductAction.setIsRamModulesFocused:
+      return {
+        ...state,
+        isRamModulesFocused: action.payload,
+      };
+    case createProductAction.setIsRamModulesValid:
+      return {
+        ...state,
+        isRamModulesValid: action.payload,
+      };
+    case createProductAction.setRamType:
+      return {
+        ...state,
+        ramType: action.payload,
+      };
+    case createProductAction.setRamColor:
+      return {
+        ...state,
+        ramColor: action.payload,
+      };
+    case createProductAction.setRamVoltage:
+      return {
+        ...state,
+        ramVoltage: action.payload,
+      };
+    case createProductAction.setIsRamVoltageFocused:
+      return {
+        ...state,
+        isRamVoltageFocused: action.payload,
+      };
+    case createProductAction.setIsRamVoltageValid:
+      return {
+        ...state,
+        isRamVoltageValid: action.payload,
+      };
+    case createProductAction.setRamTiming:
+      return {
+        ...state,
+        ramTiming: action.payload,
+      };
+    case createProductAction.setIsRamTimingFocused:
+      return {
+        ...state,
+        isRamTimingFocused: action.payload,
+      };
+    case createProductAction.setIsRamTimingValid:
+      return {
+        ...state,
+        isRamTimingValid: action.payload,
+      };
+
+    // specifications -> storage
+    case createProductAction.setStorageType:
+      return {
+        ...state,
+        storageType: action.payload,
+      };
+    case createProductAction.setStorageCapacity:
+      return {
+        ...state,
+        storageCapacity: action.payload,
+      };
+    case createProductAction.setIsStorageCapacityFocused:
+      return {
+        ...state,
+        isStorageCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsStorageCapacityValid:
+      return {
+        ...state,
+        isStorageCapacityValid: action.payload,
+      };
+    case createProductAction.setStorageCache:
+      return {
+        ...state,
+        storageCache: action.payload,
+      };
+    case createProductAction.setIsStorageCacheFocused:
+      return {
+        ...state,
+        isStorageCacheFocused: action.payload,
+      };
+    case createProductAction.setStorageFormFactor:
+      return {
+        ...state,
+        storageFormFactor: action.payload,
+      };
+    case createProductAction.setStorageInterface:
+      return {
+        ...state,
+        storageInterface: action.payload,
       };
 
     // page 3
