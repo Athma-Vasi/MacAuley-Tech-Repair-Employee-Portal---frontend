@@ -38,7 +38,6 @@ type LaptopSpecifications = {
 };
 
 type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';
-type ClockFrequencyUnit = 'MHz' | 'GHz';
 
 type CpuSpecifications = {
   socket: string; // LGA 1200, AM4, etc.
@@ -114,11 +113,13 @@ type PsuEfficiency =
   | '80+ Gold'
   | '80+ Platinum'
   | '80+ Titanium';
-type PsuModular = 'Full' | 'Semi' | 'None';
+type PsuModularity = 'Full' | 'Semi' | 'None';
+type PsuFormFactor = 'ATX' | 'SFX' | 'SFX-L';
 type PsuSpecifications = {
   wattage: string; // 650 W, 750 W, etc.
   efficiency: PsuEfficiency; // 80+ Gold, 80+ Platinum, etc.
-  modular: PsuModular; // Full, Semi, etc.
+  formFactor: PsuFormFactor; // ATX, SFX, etc.
+  modularity: PsuModularity; // Full, Semi, etc.
 };
 
 type CaseType =
@@ -136,9 +137,13 @@ type CaseSpecifications = {
 };
 
 type MonitorPanelType = 'IPS' | 'TN' | 'VA';
+type DisplayResolution = {
+  horizontal: number;
+  vertical: number;
+};
 type MonitorSpecifications = {
   size: string; // 24", 27", etc.
-  resolution: string; // 1920 x 1080, 2560 x 1440, etc.
+  resolution: DisplayResolution; // 1920 x 1080, 2560 x 1440, etc.
   refreshRate: string; // 144 Hz, 165 Hz, etc.
   panelType: MonitorPanelType; // IPS, TN, etc.
   responseTime: string; // 1 ms, 4 ms, etc.
@@ -165,8 +170,8 @@ type KeyboardSpecifications = {
 type MouseSensor = 'Optical' | 'Laser' | 'Infrared';
 type MouseSpecifications = {
   sensor: MouseSensor; // Optical, Laser, etc.
-  dpi: string; // 800, 1600, etc.
-  buttons: string; // 6, 8, etc.
+  dpi: number; // 800, 1600, etc.
+  buttons: number; // 6, 8, etc.
   color: ColorVariant; // Black, White, etc.
   interface: PeripheralsInterface; // USB, Bluetooth, etc.
 };
@@ -192,8 +197,9 @@ type SpeakerSpecifications = {
   interface: SpeakerInterface; // USB, Bluetooth, etc.
 };
 
+type MobileOs = 'Android' | 'iOS' | 'Windows' | 'Linux';
 type SmartphoneSpecifications = {
-  os: string; // Android, iOS, etc.
+  os: MobileOs; // Android, iOS, etc.
   chipset: string; // Snapdragon 888, Apple A14 Bionic, etc.
   display: string; // 6.7", 6.9", etc.
   resolution: string; // 1440 x 3200, 1170 x 2532, etc.
@@ -329,7 +335,6 @@ type CreateProductState = {
   isCpuSocketValid: boolean;
   isCpuSocketFocused: boolean;
   cpuFrequency: number;
-  cpuFrequencyUnit: ClockFrequencyUnit;
   cpuCores: number;
   cpuL1CacheCapacity: number;
   cpuL1CacheCapacityUnit: MemoryUnit;
@@ -346,9 +351,7 @@ type CreateProductState = {
   gpuMemoryCapacity: number;
   gpuMemoryCapacityUnit: MemoryUnit;
   gpuCoreClock: number;
-  gpuCoreClockUnit: ClockFrequencyUnit;
   gpuBoostClock: number;
-  gpuBoostClockUnit: ClockFrequencyUnit;
   gpuTdp: number;
 
   // page 2 -> specifications -> motherboard
@@ -371,7 +374,6 @@ type CreateProductState = {
 
   // page 2 -> specifications -> ram
   ramFrequency: number;
-  ramFrequencyUnit: ClockFrequencyUnit;
   ramModulesQuantity: number;
   ramModulesCapacity: number;
   ramModulesCapacityUnit: MemoryUnit;
@@ -390,6 +392,97 @@ type CreateProductState = {
   storageCacheCapacityUnit: MemoryUnit;
   storageFormFactor: StorageFormFactor;
   storageInterface: StorageInterface;
+
+  // page 2 -> specifications -> psu
+  psuWattage: number;
+  psuEfficiency: PsuEfficiency;
+  psuFormFactor: PsuFormFactor;
+  psuModularity: PsuModularity;
+
+  // page 2 -> specifications -> case
+  caseType: CaseType;
+  caseColor: ColorVariant;
+  caseSidePanel: CaseSidePanel;
+
+  // page 2 -> specifications -> monitor
+  monitorSize: number; // inches
+  monitorResolutionHorizontal: number;
+  monitorResolutionVertical: number;
+  monitorRefreshRate: number;
+  monitorPanelType: MonitorPanelType;
+  monitorResponseTime: number;
+  monitorAspectRatio: string;
+  isMonitorAspectRatioValid: boolean;
+  isMonitorAspectRatioFocused: boolean;
+
+  // page 2 -> specifications -> keyboard
+  keyboardSwitch: KeyboardSwitch;
+  keyboardLayout: KeyboardLayout;
+  keyboardBacklight: KeyboardBacklight;
+  keyboardInterface: PeripheralsInterface;
+
+  // page 2 -> specifications -> mouse
+  mouseSensor: MouseSensor;
+  mouseDpi: number;
+  mouseButtons: number;
+  mouseColor: ColorVariant;
+  mouseInterface: PeripheralsInterface;
+
+  // page 2 -> specifications -> headphone
+  headphoneType: HeadphoneType;
+  headphoneDriver: number;
+  headphoneFrequencyResponse: string;
+  isHeadphoneFrequencyResponseValid: boolean;
+  isHeadphoneFrequencyResponseFocused: boolean;
+  headphoneImpedance: number;
+  headphoneColor: ColorVariant;
+  headphoneInterface: HeadphoneInterface;
+
+  // page 2 -> specifications -> speaker
+  speakerType: SpeakerType;
+  speakerTotalWattage: number;
+  speakerFrequencyResponse: string;
+  isSpeakerFrequencyResponseValid: boolean;
+  isSpeakerFrequencyResponseFocused: boolean;
+  speakerColor: ColorVariant;
+  speakerInterface: SpeakerInterface;
+
+  // page 2 -> specifications -> smartphone
+  smartphoneOs: MobileOs;
+  smartphoneChipset: string;
+  isSmartphoneChipsetValid: boolean;
+  isSmartphoneChipsetFocused: boolean;
+  smartphoneDisplay: number;
+  smartphoneResolutionHorizontal: number;
+  smartphoneResolutionVertical: number;
+  smartphoneRamCapacity: number;
+  smartphoneRamCapacityUnit: MemoryUnit;
+  smartphoneStorageCapacity: number; // GB
+  smartphoneBatteryCapacity: number; // mAh
+  smartphoneCamera: string; // 108 MP, 64 MP, etc.
+  smartphoneColor: ColorVariant;
+
+  // page 2 -> specifications -> tablet
+  tabletOs: MobileOs;
+  tabletChipset: string;
+  isTabletChipsetValid: boolean;
+  isTabletChipsetFocused: boolean;
+  tabletDisplay: number;
+  tabletResolutionHorizontal: number;
+  tabletResolutionVertical: number;
+  tabletRamCapacity: number;
+  tabletRamCapacityUnit: MemoryUnit;
+  tabletStorageCapacity: number; // GB
+  tabletBatteryCapacity: number; // mAh
+  tabletCamera: string; // 108 MP, 64 MP, etc.
+  tabletColor: ColorVariant;
+
+  // page 2 -> specifications -> accessory
+  accessoryType: string;
+  isAccessoryTypeValid: boolean;
+  isAccessoryTypeFocused: boolean;
+  accessoryColor: ColorVariant;
+  accessoryInterface: PeripheralsInterface;
 
   // page 3
   imgFormDataArray: FormData[];
@@ -442,7 +535,6 @@ type CreateProductAction = {
   setIsCpuSocketValid: 'setIsCpuSocketValid';
   setIsCpuSocketFocused: 'setIsCpuSocketFocused';
   setCpuFrequency: 'setCpuFrequency';
-  setCpuFrequencyUnit: 'setCpuFrequencyUnit';
   setCpuCores: 'setCpuCores';
   setCpuL1CacheCapacity: 'setCpuL1CacheCapacity';
   setCpuL1CacheCapacityUnit: 'setCpuL1CacheCapacityUnit';
@@ -459,9 +551,7 @@ type CreateProductAction = {
   setGpuMemoryCapacity: 'setGpuMemoryCapacity';
   setGpuMemoryCapacityUnit: 'setGpuMemoryCapacityUnit';
   setGpuCoreClock: 'setGpuCoreClock';
-  setGpuCoreClockUnit: 'setGpuCoreClockUnit';
   setGpuBoostClock: 'setGpuBoostClock';
-  setGpuBoostClockUnit: 'setGpuBoostClockUnit';
   setGpuTdp: 'setGpuTdp';
 
   // page 2 -> specifications -> motherboard
@@ -484,7 +574,6 @@ type CreateProductAction = {
 
   // page 2 -> specifications -> ram
   setRamFrequency: 'setRamFrequency';
-  setRamFrequencyUnit: 'setRamFrequencyUnit';
   setRamModulesQuantity: 'setRamModulesQuantity';
   setRamModulesCapacity: 'setRamModulesCapacity';
   setRamModulesCapacityUnit: 'setRamModulesCapacityUnit';
@@ -503,6 +592,97 @@ type CreateProductAction = {
   setStorageCacheCapacityUnit: 'setStorageCacheCapacityUnit';
   setStorageFormFactor: 'setStorageFormFactor';
   setStorageInterface: 'setStorageInterface';
+
+  // page 2 -> specifications -> psu
+  setPsuWattage: 'setPsuWattage';
+  setPsuEfficiency: 'setPsuEfficiency';
+  setPsuFormFactor: 'setPsuFormFactor';
+  setPsuModularity: 'setPsuModularity';
+
+  // page 2 -> specifications -> case
+  setCaseType: 'setCaseType';
+  setCaseColor: 'setCaseColor';
+  setCaseSidePanel: 'setCaseSidePanel';
+
+  // page 2 -> specifications -> monitor
+  setMonitorSize: 'setMonitorSize';
+  setMonitorResolutionHorizontal: 'setMonitorResolutionHorizontal';
+  setMonitorResolutionVertical: 'setMonitorResolutionVertical';
+  setMonitorRefreshRate: 'setMonitorRefreshRate';
+  setMonitorPanelType: 'setMonitorPanelType';
+  setMonitorResponseTime: 'setMonitorResponseTime';
+  setMonitorAspectRatio: 'setMonitorAspectRatio';
+  setIsMonitorAspectRatioValid: 'setIsMonitorAspectRatioValid';
+  setIsMonitorAspectRatioFocused: 'setIsMonitorAspectRatioFocused';
+
+  // page 2 -> specifications -> keyboard
+  setKeyboardSwitch: 'setKeyboardSwitch';
+  setKeyboardLayout: 'setKeyboardLayout';
+  setKeyboardBacklight: 'setKeyboardBacklight';
+  setKeyboardInterface: 'setKeyboardInterface';
+
+  // page 2 -> specifications -> mouse
+  setMouseSensor: 'setMouseSensor';
+  setMouseDpi: 'setMouseDpi';
+  setMouseButtons: 'setMouseButtons';
+  setMouseColor: 'setMouseColor';
+  setMouseInterface: 'setMouseInterface';
+
+  // page 2 -> specifications -> headphone
+  setHeadphoneType: 'setHeadphoneType';
+  setHeadphoneDriver: 'setHeadphoneDriver';
+  setHeadphoneFrequencyResponse: 'setHeadphoneFrequencyResponse';
+  setIsHeadphoneFrequencyResponseValid: 'setIsHeadphoneFrequencyResponseValid';
+  setIsHeadphoneFrequencyResponseFocused: 'setIsHeadphoneFrequencyResponseFocused';
+  setHeadphoneImpedance: 'setHeadphoneImpedance';
+  setHeadphoneColor: 'setHeadphoneColor';
+  setHeadphoneInterface: 'setHeadphoneInterface';
+
+  // page 2 -> specifications -> speaker
+  setSpeakerType: 'setSpeakerType';
+  setSpeakerTotalWattage: 'setSpeakerTotalWattage';
+  setSpeakerFrequencyResponse: 'setSpeakerFrequencyResponse';
+  setIsSpeakerFrequencyResponseValid: 'setIsSpeakerFrequencyResponseValid';
+  setIsSpeakerFrequencyResponseFocused: 'setIsSpeakerFrequencyResponseFocused';
+  setSpeakerColor: 'setSpeakerColor';
+  setSpeakerInterface: 'setSpeakerInterface';
+
+  // page 2 -> specifications -> smartphone
+  setSmartphoneOs: 'setSmartphoneOs';
+  setSmartphoneChipset: 'setSmartphoneChipset';
+  setIsSmartphoneChipsetValid: 'setIsSmartphoneChipsetValid';
+  setIsSmartphoneChipsetFocused: 'setIsSmartphoneChipsetFocused';
+  setSmartphoneDisplay: 'setSmartphoneDisplay';
+  setSmartphoneResolutionHorizontal: 'setSmartphoneResolutionHorizontal';
+  setSmartphoneResolutionVertical: 'setSmartphoneResolutionVertical';
+  setSmartphoneRamCapacity: 'setSmartphoneRamCapacity';
+  setSmartphoneRamCapacityUnit: 'setSmartphoneRamCapacityUnit';
+  setSmartphoneStorageCapacity: 'setSmartphoneStorageCapacity';
+  setSmartphoneBatteryCapacity: 'setSmartphoneBatteryCapacity';
+  setSmartphoneCamera: 'setSmartphoneCamera';
+  setSmartphoneColor: 'setSmartphoneColor';
+
+  // page 2 -> specifications -> tablet
+  setTabletOs: 'setTabletOs';
+  setTabletChipset: 'setTabletChipset';
+  setIsTabletChipsetValid: 'setIsTabletChipsetValid';
+  setIsTabletChipsetFocused: 'setIsTabletChipsetFocused';
+  setTabletDisplay: 'setTabletDisplay';
+  setTabletResolutionHorizontal: 'setTabletResolutionHorizontal';
+  setTabletResolutionVertical: 'setTabletResolutionVertical';
+  setTabletRamCapacity: 'setTabletRamCapacity';
+  setTabletRamCapacityUnit: 'setTabletRamCapacityUnit';
+  setTabletStorageCapacity: 'setTabletStorageCapacity';
+  setTabletBatteryCapacity: 'setTabletBatteryCapacity';
+  setTabletCamera: 'setTabletCamera';
+  setTabletColor: 'setTabletColor';
+
+  // page 2 -> specifications -> accessory
+  setAccessoryType: 'setAccessoryType';
+  setIsAccessoryTypeValid: 'setIsAccessoryTypeValid';
+  setIsAccessoryTypeFocused: 'setIsAccessoryTypeFocused';
+  setAccessoryColor: 'setAccessoryColor';
+  setAccessoryInterface: 'setAccessoryInterface';
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray';
@@ -626,10 +806,6 @@ type CreateProductDispatch =
       payload: number;
     }
   | {
-      type: CreateProductAction['setCpuFrequencyUnit'];
-      payload: ClockFrequencyUnit;
-    }
-  | {
       type: CreateProductAction['setCpuCores'];
       payload: number;
     }
@@ -675,16 +851,8 @@ type CreateProductDispatch =
       payload: number;
     }
   | {
-      type: CreateProductAction['setGpuCoreClockUnit'];
-      payload: ClockFrequencyUnit;
-    }
-  | {
       type: CreateProductAction['setGpuBoostClock'];
       payload: number;
-    }
-  | {
-      type: CreateProductAction['setGpuBoostClockUnit'];
-      payload: ClockFrequencyUnit;
     }
   | {
       type: CreateProductAction['setGpuTdp'];
@@ -757,10 +925,6 @@ type CreateProductDispatch =
       payload: number;
     }
   | {
-      type: CreateProductAction['setRamFrequencyUnit'];
-      payload: ClockFrequencyUnit;
-    }
-  | {
       type: CreateProductAction['setRamModulesQuantity'];
       payload: number;
     }
@@ -823,6 +987,288 @@ type CreateProductDispatch =
       type: CreateProductAction['setStorageInterface'];
       payload: StorageInterface;
     }
+  // specifications -> psu
+  | {
+      type: CreateProductAction['setPsuWattage'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setPsuEfficiency'];
+      payload: PsuEfficiency;
+    }
+  | {
+      type: CreateProductAction['setPsuFormFactor'];
+      payload: PsuFormFactor;
+    }
+  | {
+      type: CreateProductAction['setPsuModularity'];
+      payload: PsuModularity;
+    }
+  // specifications -> case
+  | {
+      type: CreateProductAction['setCaseType'];
+      payload: CaseType;
+    }
+  | {
+      type: CreateProductAction['setCaseColor'];
+      payload: ColorVariant;
+    }
+  | {
+      type: CreateProductAction['setCaseSidePanel'];
+      payload: CaseSidePanel;
+    }
+  // specifications -> monitor
+  | {
+      type: CreateProductAction['setMonitorSize'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setMonitorResolutionHorizontal'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setMonitorResolutionVertical'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setMonitorRefreshRate'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setMonitorPanelType'];
+      payload: MonitorPanelType;
+    }
+  | {
+      type: CreateProductAction['setMonitorResponseTime'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setMonitorAspectRatio'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMonitorAspectRatioValid']
+        | CreateProductAction['setIsMonitorAspectRatioFocused'];
+      payload: boolean;
+    }
+  // specifications -> keyboard
+  | {
+      type: CreateProductAction['setKeyboardSwitch'];
+      payload: KeyboardSwitch;
+    }
+  | {
+      type: CreateProductAction['setKeyboardLayout'];
+      payload: KeyboardLayout;
+    }
+  | {
+      type: CreateProductAction['setKeyboardBacklight'];
+      payload: KeyboardBacklight;
+    }
+  | {
+      type: CreateProductAction['setKeyboardInterface'];
+      payload: PeripheralsInterface;
+    }
+  // specifications -> mouse
+  | {
+      type: CreateProductAction['setMouseSensor'];
+      payload: MouseSensor;
+    }
+  | {
+      type: CreateProductAction['setMouseDpi'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setMouseButtons'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setMouseColor'];
+      payload: ColorVariant;
+    }
+  | {
+      type: CreateProductAction['setMouseInterface'];
+      payload: PeripheralsInterface;
+    }
+  // specifications -> headphone
+  | {
+      type: CreateProductAction['setHeadphoneType'];
+      payload: HeadphoneType;
+    }
+  | {
+      type: CreateProductAction['setHeadphoneDriver'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setHeadphoneFrequencyResponse'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsHeadphoneFrequencyResponseValid']
+        | CreateProductAction['setIsHeadphoneFrequencyResponseFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setHeadphoneImpedance'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setHeadphoneColor'];
+      payload: ColorVariant;
+    }
+  | {
+      type: CreateProductAction['setHeadphoneInterface'];
+      payload: HeadphoneInterface;
+    }
+  // specifications -> speaker
+  | {
+      type: CreateProductAction['setSpeakerType'];
+      payload: SpeakerType;
+    }
+  | {
+      type: CreateProductAction['setSpeakerTotalWattage'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setSpeakerFrequencyResponse'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSpeakerFrequencyResponseValid']
+        | CreateProductAction['setIsSpeakerFrequencyResponseFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setSpeakerColor'];
+      payload: ColorVariant;
+    }
+  | {
+      type: CreateProductAction['setSpeakerInterface'];
+      payload: SpeakerInterface;
+    }
+  // specifications -> smartphone
+  | {
+      type: CreateProductAction['setSmartphoneOs'];
+      payload: MobileOs;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneChipset'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSmartphoneChipsetValid']
+        | CreateProductAction['setIsSmartphoneChipsetFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneDisplay'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneResolutionHorizontal'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneResolutionVertical'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneRamCapacity'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneRamCapacityUnit'];
+      payload: MemoryUnit;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneStorageCapacity'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneBatteryCapacity'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneCamera'];
+      payload: string;
+    }
+  | {
+      type: CreateProductAction['setSmartphoneColor'];
+      payload: ColorVariant;
+    }
+  // specifications -> tablet
+  | {
+      type: CreateProductAction['setTabletOs'];
+      payload: MobileOs;
+    }
+  | {
+      type: CreateProductAction['setTabletChipset'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletChipsetValid']
+        | CreateProductAction['setIsTabletChipsetFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setTabletDisplay'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setTabletResolutionHorizontal'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setTabletResolutionVertical'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setTabletRamCapacity'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setTabletRamCapacityUnit'];
+      payload: MemoryUnit;
+    }
+  | {
+      type: CreateProductAction['setTabletStorageCapacity'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setTabletBatteryCapacity'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setTabletCamera'];
+      payload: string;
+    }
+  | {
+      type: CreateProductAction['setTabletColor'];
+      payload: ColorVariant;
+    }
+  // specifications -> accessory
+  | {
+      type: CreateProductAction['setAccessoryType'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsAccessoryTypeValid']
+        | CreateProductAction['setIsAccessoryTypeFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setAccessoryColor'];
+      payload: ColorVariant;
+    }
+  | {
+      type: CreateProductAction['setAccessoryInterface'];
+      payload: PeripheralsInterface;
+    }
   // page 3
   | {
       type: CreateProductAction['setImgFormDataArray'];
@@ -844,15 +1290,21 @@ export type {
   CreateProductDispatch,
   CreateProductState,
   DesktopComputerSpecifications,
+  DimensionUnit,
+  DisplayResolution,
   GpuSpecifications,
   HeadphoneInterface,
   HeadphoneSpecifications,
+  HeadphoneType,
   KeyboardBacklight,
   KeyboardLayout,
   KeyboardSpecifications,
   KeyboardSwitch,
   LaptopSpecifications,
   MemoryType,
+  MemoryUnit,
+  MobileOs,
+  MonitorPanelType,
   MonitorSpecifications,
   MotherboardFormFactor,
   MotherboardSpecifications,
@@ -864,7 +1316,8 @@ export type {
   ProductReview,
   ProductSchema,
   PsuEfficiency,
-  PsuModular,
+  PsuFormFactor,
+  PsuModularity,
   PsuSpecifications,
   RamSpecifications,
   SmartphoneSpecifications,

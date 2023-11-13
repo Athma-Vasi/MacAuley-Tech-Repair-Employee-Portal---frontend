@@ -49,8 +49,7 @@ const initialProductState: CreateProductState = {
   cpuSocket: '',
   isCpuSocketFocused: false,
   isCpuSocketValid: false,
-  cpuFrequency: 0,
-  cpuFrequencyUnit: 'GHz',
+  cpuFrequency: 0, // GHz
   cpuCores: 2,
   cpuL1CacheCapacity: 0,
   cpuL1CacheCapacityUnit: 'KB',
@@ -66,10 +65,8 @@ const initialProductState: CreateProductState = {
   isGpuChipsetValid: false,
   gpuMemoryCapacity: 0,
   gpuMemoryCapacityUnit: 'GB',
-  gpuCoreClock: 0,
-  gpuCoreClockUnit: 'MHz',
-  gpuBoostClock: 0,
-  gpuBoostClockUnit: 'MHz',
+  gpuCoreClock: 0, // MHz
+  gpuBoostClock: 0, // MHz
   gpuTdp: 0,
 
   // page 2 -> specifications -> motherboard
@@ -91,8 +88,7 @@ const initialProductState: CreateProductState = {
   motherboardPcie5Slots: 0,
 
   // page 2 -> specifications -> ram
-  ramFrequency: 0,
-  ramFrequencyUnit: 'MHz',
+  ramFrequency: 0, // MHz
   ramModulesQuantity: 0,
   ramModulesCapacity: 0,
   ramModulesCapacityUnit: 'GB',
@@ -111,6 +107,97 @@ const initialProductState: CreateProductState = {
   storageCacheCapacityUnit: 'MB',
   storageFormFactor: 'M.2 2280',
   storageInterface: 'PCIe 3.0 x4',
+
+  // page 2 -> specifications -> psu
+  psuWattage: 0,
+  psuEfficiency: '80+ Bronze',
+  psuModularity: 'Full',
+  psuFormFactor: 'ATX',
+
+  // page 2 -> specifications -> case
+  caseColor: 'Black',
+  caseType: 'Mid Tower',
+  caseSidePanel: 'Solid',
+
+  // page 2 -> specifications -> monitor
+  monitorSize: 0,
+  monitorResolutionHorizontal: 0,
+  monitorResolutionVertical: 0,
+  monitorRefreshRate: 0,
+  monitorPanelType: 'IPS',
+  monitorResponseTime: 0,
+  monitorAspectRatio: '16:9',
+  isMonitorAspectRatioFocused: false,
+  isMonitorAspectRatioValid: false,
+
+  // page 2 -> specifications -> keyboard
+  keyboardBacklight: 'RGB',
+  keyboardInterface: 'USB',
+  keyboardLayout: 'ISO',
+  keyboardSwitch: 'Cherry MX Red',
+
+  // page 2 -> specifications -> mouse
+  mouseDpi: 0,
+  mouseButtons: 0,
+  mouseInterface: 'USB',
+  mouseColor: 'Black',
+  mouseSensor: 'Optical',
+
+  // page 2 -> specifications -> headphone
+  headphoneType: 'Over-ear',
+  headphoneColor: 'Black',
+  headphoneInterface: 'USB',
+  headphoneDriver: 0,
+  headphoneFrequencyResponse: '',
+  isHeadphoneFrequencyResponseFocused: false,
+  isHeadphoneFrequencyResponseValid: false,
+  headphoneImpedance: 0,
+
+  // page 2 -> specifications -> speaker
+  speakerType: '2.0',
+  speakerColor: 'Black',
+  speakerInterface: 'USB',
+  speakerFrequencyResponse: '',
+  isSpeakerFrequencyResponseFocused: false,
+  isSpeakerFrequencyResponseValid: false,
+  speakerTotalWattage: 0,
+
+  // page 2 -> specifications -> smartphone
+  smartphoneBatteryCapacity: 0,
+  smartphoneCamera: '',
+  smartphoneChipset: '',
+  isSmartphoneChipsetFocused: false,
+  isSmartphoneChipsetValid: false,
+  smartphoneColor: 'Black',
+  smartphoneDisplay: 0,
+  smartphoneResolutionHorizontal: 0,
+  smartphoneResolutionVertical: 0,
+  smartphoneOs: 'iOS',
+  smartphoneRamCapacity: 0,
+  smartphoneRamCapacityUnit: 'GB',
+  smartphoneStorageCapacity: 0,
+
+  // page 2 -> specifications -> tablet
+  tabletBatteryCapacity: 0,
+  tabletCamera: '',
+  tabletChipset: '',
+  isTabletChipsetFocused: false,
+  isTabletChipsetValid: false,
+  tabletColor: 'Black',
+  tabletDisplay: 0,
+  tabletResolutionHorizontal: 0,
+  tabletResolutionVertical: 0,
+  tabletOs: 'iOS',
+  tabletRamCapacity: 0,
+  tabletRamCapacityUnit: 'GB',
+  tabletStorageCapacity: 0,
+
+  // page 2 -> specifications -> accessories
+  accessoryColor: 'Black',
+  accessoryInterface: 'USB',
+  accessoryType: '',
+  isAccessoryTypeFocused: false,
+  isAccessoryTypeValid: false,
 
   // page 3
   imgFormDataArray: [],
@@ -164,7 +251,6 @@ const createProductAction: CreateProductAction = {
   setIsCpuSocketValid: 'setIsCpuSocketValid',
   setIsCpuSocketFocused: 'setIsCpuSocketFocused',
   setCpuFrequency: 'setCpuFrequency',
-  setCpuFrequencyUnit: 'setCpuFrequencyUnit',
   setCpuCores: 'setCpuCores',
   setCpuL1CacheCapacity: 'setCpuL1CacheCapacity',
   setCpuL1CacheCapacityUnit: 'setCpuL1CacheCapacityUnit',
@@ -181,9 +267,7 @@ const createProductAction: CreateProductAction = {
   setGpuMemoryCapacity: 'setGpuMemoryCapacity',
   setGpuMemoryCapacityUnit: 'setGpuMemoryCapacityUnit',
   setGpuCoreClock: 'setGpuCoreClock',
-  setGpuCoreClockUnit: 'setGpuCoreClockUnit',
   setGpuBoostClock: 'setGpuBoostClock',
-  setGpuBoostClockUnit: 'setGpuBoostClockUnit',
   setGpuTdp: 'setGpuTdp',
 
   // page 2 -> specifications -> motherboard
@@ -206,7 +290,6 @@ const createProductAction: CreateProductAction = {
 
   // page 2 -> specifications -> ram
   setRamFrequency: 'setRamFrequency',
-  setRamFrequencyUnit: 'setRamFrequencyUnit',
   setRamModulesQuantity: 'setRamModulesQuantity',
   setRamModulesCapacity: 'setRamModulesCapacity',
   setRamModulesCapacityUnit: 'setRamModulesCapacityUnit',
@@ -225,6 +308,98 @@ const createProductAction: CreateProductAction = {
   setStorageCacheCapacityUnit: 'setStorageCacheCapacityUnit',
   setStorageFormFactor: 'setStorageFormFactor',
   setStorageInterface: 'setStorageInterface',
+
+  // page 2 -> specifications -> psu
+  setPsuWattage: 'setPsuWattage',
+  setPsuEfficiency: 'setPsuEfficiency',
+  setPsuFormFactor: 'setPsuFormFactor',
+  setPsuModularity: 'setPsuModularity',
+
+  // page 2 -> specifications -> case
+  setCaseColor: 'setCaseColor',
+  setCaseType: 'setCaseType',
+  setCaseSidePanel: 'setCaseSidePanel',
+
+  // page 2 -> specifications -> monitor
+  setMonitorSize: 'setMonitorSize',
+  setMonitorResolutionHorizontal: 'setMonitorResolutionHorizontal',
+  setMonitorResolutionVertical: 'setMonitorResolutionVertical',
+  setMonitorRefreshRate: 'setMonitorRefreshRate',
+  setMonitorPanelType: 'setMonitorPanelType',
+  setMonitorResponseTime: 'setMonitorResponseTime',
+  setMonitorAspectRatio: 'setMonitorAspectRatio',
+  setIsMonitorAspectRatioValid: 'setIsMonitorAspectRatioValid',
+  setIsMonitorAspectRatioFocused: 'setIsMonitorAspectRatioFocused',
+
+  // page 2 -> specifications -> keyboard
+  setKeyboardSwitch: 'setKeyboardSwitch',
+  setKeyboardLayout: 'setKeyboardLayout',
+  setKeyboardBacklight: 'setKeyboardBacklight',
+  setKeyboardInterface: 'setKeyboardInterface',
+
+  // page 2 -> specifications -> mouse
+  setMouseSensor: 'setMouseSensor',
+  setMouseDpi: 'setMouseDpi',
+  setMouseButtons: 'setMouseButtons',
+  setMouseColor: 'setMouseColor',
+  setMouseInterface: 'setMouseInterface',
+
+  // page 2 -> specifications -> headphone
+  setHeadphoneType: 'setHeadphoneType',
+  setHeadphoneDriver: 'setHeadphoneDriver',
+  setHeadphoneFrequencyResponse: 'setHeadphoneFrequencyResponse',
+  setIsHeadphoneFrequencyResponseValid: 'setIsHeadphoneFrequencyResponseValid',
+  setIsHeadphoneFrequencyResponseFocused:
+    'setIsHeadphoneFrequencyResponseFocused',
+  setHeadphoneImpedance: 'setHeadphoneImpedance',
+  setHeadphoneColor: 'setHeadphoneColor',
+  setHeadphoneInterface: 'setHeadphoneInterface',
+
+  // page 2 -> specifications -> speaker
+  setSpeakerType: 'setSpeakerType',
+  setSpeakerTotalWattage: 'setSpeakerTotalWattage',
+  setSpeakerFrequencyResponse: 'setSpeakerFrequencyResponse',
+  setIsSpeakerFrequencyResponseValid: 'setIsSpeakerFrequencyResponseValid',
+  setIsSpeakerFrequencyResponseFocused: 'setIsSpeakerFrequencyResponseFocused',
+  setSpeakerColor: 'setSpeakerColor',
+  setSpeakerInterface: 'setSpeakerInterface',
+
+  // page 2 -> specifications -> smartphone
+  setSmartphoneOs: 'setSmartphoneOs',
+  setSmartphoneChipset: 'setSmartphoneChipset',
+  setIsSmartphoneChipsetValid: 'setIsSmartphoneChipsetValid',
+  setIsSmartphoneChipsetFocused: 'setIsSmartphoneChipsetFocused',
+  setSmartphoneDisplay: 'setSmartphoneDisplay',
+  setSmartphoneResolutionHorizontal: 'setSmartphoneResolutionHorizontal',
+  setSmartphoneResolutionVertical: 'setSmartphoneResolutionVertical',
+  setSmartphoneRamCapacity: 'setSmartphoneRamCapacity',
+  setSmartphoneRamCapacityUnit: 'setSmartphoneRamCapacityUnit',
+  setSmartphoneStorageCapacity: 'setSmartphoneStorageCapacity',
+  setSmartphoneBatteryCapacity: 'setSmartphoneBatteryCapacity',
+  setSmartphoneCamera: 'setSmartphoneCamera',
+  setSmartphoneColor: 'setSmartphoneColor',
+
+  // page 2 -> specifications -> tablet
+  setTabletOs: 'setTabletOs',
+  setTabletChipset: 'setTabletChipset',
+  setIsTabletChipsetValid: 'setIsTabletChipsetValid',
+  setIsTabletChipsetFocused: 'setIsTabletChipsetFocused',
+  setTabletDisplay: 'setTabletDisplay',
+  setTabletResolutionHorizontal: 'setTabletResolutionHorizontal',
+  setTabletResolutionVertical: 'setTabletResolutionVertical',
+  setTabletRamCapacity: 'setTabletRamCapacity',
+  setTabletRamCapacityUnit: 'setTabletRamCapacityUnit',
+  setTabletStorageCapacity: 'setTabletStorageCapacity',
+  setTabletBatteryCapacity: 'setTabletBatteryCapacity',
+  setTabletCamera: 'setTabletCamera',
+  setTabletColor: 'setTabletColor',
+
+  // page 2 -> specifications -> accessory
+  setAccessoryType: 'setAccessoryType',
+  setIsAccessoryTypeValid: 'setIsAccessoryTypeValid',
+  setIsAccessoryTypeFocused: 'setIsAccessoryTypeFocused',
+  setAccessoryColor: 'setAccessoryColor',
+  setAccessoryInterface: 'setAccessoryInterface',
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray',
@@ -415,11 +590,6 @@ function createProductReducer(
         ...state,
         cpuFrequency: action.payload,
       };
-    case createProductAction.setCpuFrequencyUnit:
-      return {
-        ...state,
-        cpuFrequencyUnit: action.payload,
-      };
     case createProductAction.setCpuCores:
       return {
         ...state,
@@ -492,20 +662,10 @@ function createProductReducer(
         ...state,
         gpuCoreClock: action.payload,
       };
-    case createProductAction.setGpuCoreClockUnit:
-      return {
-        ...state,
-        gpuCoreClockUnit: action.payload,
-      };
     case createProductAction.setGpuBoostClock:
       return {
         ...state,
         gpuBoostClock: action.payload,
-      };
-    case createProductAction.setGpuBoostClockUnit:
-      return {
-        ...state,
-        gpuBoostClockUnit: action.payload,
       };
     case createProductAction.setGpuTdp:
       return {
@@ -601,11 +761,6 @@ function createProductReducer(
         ...state,
         ramFrequency: action.payload,
       };
-    case createProductAction.setRamFrequencyUnit:
-      return {
-        ...state,
-        ramFrequencyUnit: action.payload,
-      };
     case createProductAction.setRamModulesQuantity:
       return {
         ...state,
@@ -687,6 +842,371 @@ function createProductReducer(
       return {
         ...state,
         storageInterface: action.payload,
+      };
+
+    // page 2 -> specifications -> psu
+    case createProductAction.setPsuWattage:
+      return {
+        ...state,
+        psuWattage: action.payload,
+      };
+    case createProductAction.setPsuEfficiency:
+      return {
+        ...state,
+        psuEfficiency: action.payload,
+      };
+    case createProductAction.setPsuFormFactor:
+      return {
+        ...state,
+        psuFormFactor: action.payload,
+      };
+    case createProductAction.setPsuModularity:
+      return {
+        ...state,
+        psuModularity: action.payload,
+      };
+
+    // page 2 -> specifications -> case
+    case createProductAction.setCaseColor:
+      return {
+        ...state,
+        caseColor: action.payload,
+      };
+    case createProductAction.setCaseType:
+      return {
+        ...state,
+        caseType: action.payload,
+      };
+    case createProductAction.setCaseSidePanel:
+      return {
+        ...state,
+        caseSidePanel: action.payload,
+      };
+
+    // page 2 -> specifications -> monitor
+    case createProductAction.setMonitorSize:
+      return {
+        ...state,
+        monitorSize: action.payload,
+      };
+    case createProductAction.setMonitorResolutionHorizontal:
+      return {
+        ...state,
+        monitorResolutionHorizontal: action.payload,
+      };
+    case createProductAction.setMonitorResolutionVertical:
+      return {
+        ...state,
+        monitorResolutionVertical: action.payload,
+      };
+    case createProductAction.setMonitorRefreshRate:
+      return {
+        ...state,
+        monitorRefreshRate: action.payload,
+      };
+    case createProductAction.setMonitorPanelType:
+      return {
+        ...state,
+        monitorPanelType: action.payload,
+      };
+    case createProductAction.setMonitorResponseTime:
+      return {
+        ...state,
+        monitorResponseTime: action.payload,
+      };
+    case createProductAction.setMonitorAspectRatio:
+      return {
+        ...state,
+        monitorAspectRatio: action.payload,
+      };
+    case createProductAction.setIsMonitorAspectRatioFocused:
+      return {
+        ...state,
+        isMonitorAspectRatioFocused: action.payload,
+      };
+    case createProductAction.setIsMonitorAspectRatioValid:
+      return {
+        ...state,
+        isMonitorAspectRatioValid: action.payload,
+      };
+
+    // page 2 -> specifications -> keyboard
+    case createProductAction.setKeyboardSwitch:
+      return {
+        ...state,
+        keyboardSwitch: action.payload,
+      };
+    case createProductAction.setKeyboardLayout:
+      return {
+        ...state,
+        keyboardLayout: action.payload,
+      };
+    case createProductAction.setKeyboardBacklight:
+      return {
+        ...state,
+        keyboardBacklight: action.payload,
+      };
+    case createProductAction.setKeyboardInterface:
+      return {
+        ...state,
+        keyboardInterface: action.payload,
+      };
+
+    // page 2 -> specifications -> mouse
+    case createProductAction.setMouseSensor:
+      return {
+        ...state,
+        mouseSensor: action.payload,
+      };
+    case createProductAction.setMouseDpi:
+      return {
+        ...state,
+        mouseDpi: action.payload,
+      };
+    case createProductAction.setMouseButtons:
+      return {
+        ...state,
+        mouseButtons: action.payload,
+      };
+    case createProductAction.setMouseColor:
+      return {
+        ...state,
+        mouseColor: action.payload,
+      };
+    case createProductAction.setMouseInterface:
+      return {
+        ...state,
+        mouseInterface: action.payload,
+      };
+
+    // page 2 -> specifications -> headphone
+    case createProductAction.setHeadphoneType:
+      return {
+        ...state,
+        headphoneType: action.payload,
+      };
+    case createProductAction.setHeadphoneDriver:
+      return {
+        ...state,
+        headphoneDriver: action.payload,
+      };
+    case createProductAction.setHeadphoneFrequencyResponse:
+      return {
+        ...state,
+        headphoneFrequencyResponse: action.payload,
+      };
+    case createProductAction.setIsHeadphoneFrequencyResponseFocused:
+      return {
+        ...state,
+        isHeadphoneFrequencyResponseFocused: action.payload,
+      };
+    case createProductAction.setIsHeadphoneFrequencyResponseValid:
+      return {
+        ...state,
+        isHeadphoneFrequencyResponseValid: action.payload,
+      };
+    case createProductAction.setHeadphoneImpedance:
+      return {
+        ...state,
+        headphoneImpedance: action.payload,
+      };
+    case createProductAction.setHeadphoneColor:
+      return {
+        ...state,
+        headphoneColor: action.payload,
+      };
+    case createProductAction.setHeadphoneInterface:
+      return {
+        ...state,
+        headphoneInterface: action.payload,
+      };
+
+    // page 2 -> specifications -> speaker
+    case createProductAction.setSpeakerType:
+      return {
+        ...state,
+        speakerType: action.payload,
+      };
+    case createProductAction.setSpeakerTotalWattage:
+      return {
+        ...state,
+        speakerTotalWattage: action.payload,
+      };
+    case createProductAction.setSpeakerFrequencyResponse:
+      return {
+        ...state,
+        speakerFrequencyResponse: action.payload,
+      };
+    case createProductAction.setIsSpeakerFrequencyResponseFocused:
+      return {
+        ...state,
+        isSpeakerFrequencyResponseFocused: action.payload,
+      };
+    case createProductAction.setIsSpeakerFrequencyResponseValid:
+      return {
+        ...state,
+        isSpeakerFrequencyResponseValid: action.payload,
+      };
+    case createProductAction.setSpeakerColor:
+      return {
+        ...state,
+        speakerColor: action.payload,
+      };
+    case createProductAction.setSpeakerInterface:
+      return {
+        ...state,
+        speakerInterface: action.payload,
+      };
+
+    // page 2 -> specifications -> smartphone
+    case createProductAction.setSmartphoneOs:
+      return {
+        ...state,
+        smartphoneOs: action.payload,
+      };
+    case createProductAction.setSmartphoneChipset:
+      return {
+        ...state,
+        smartphoneChipset: action.payload,
+      };
+    case createProductAction.setIsSmartphoneChipsetFocused:
+      return {
+        ...state,
+        isSmartphoneChipsetFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneChipsetValid:
+      return {
+        ...state,
+        isSmartphoneChipsetValid: action.payload,
+      };
+    case createProductAction.setSmartphoneDisplay:
+      return {
+        ...state,
+        smartphoneDisplay: action.payload,
+      };
+    case createProductAction.setSmartphoneResolutionHorizontal:
+      return {
+        ...state,
+        smartphoneResolutionHorizontal: action.payload,
+      };
+    case createProductAction.setSmartphoneResolutionVertical:
+      return {
+        ...state,
+        smartphoneResolutionVertical: action.payload,
+      };
+    case createProductAction.setSmartphoneRamCapacity:
+      return {
+        ...state,
+        smartphoneRamCapacity: action.payload,
+      };
+    case createProductAction.setSmartphoneRamCapacityUnit:
+      return {
+        ...state,
+        smartphoneRamCapacityUnit: action.payload,
+      };
+    case createProductAction.setSmartphoneStorageCapacity:
+      return {
+        ...state,
+        smartphoneStorageCapacity: action.payload,
+      };
+    case createProductAction.setSmartphoneBatteryCapacity:
+      return {
+        ...state,
+        smartphoneBatteryCapacity: action.payload,
+      };
+    case createProductAction.setSmartphoneCamera:
+      return {
+        ...state,
+        smartphoneCamera: action.payload,
+      };
+    case createProductAction.setSmartphoneColor:
+      return {
+        ...state,
+        smartphoneColor: action.payload,
+      };
+
+    // page 2 -> specifications -> tablet
+    case createProductAction.setTabletOs:
+      return {
+        ...state,
+        tabletOs: action.payload,
+      };
+    case createProductAction.setTabletChipset:
+      return {
+        ...state,
+        tabletChipset: action.payload,
+      };
+    case createProductAction.setIsTabletChipsetFocused:
+      return {
+        ...state,
+        isTabletChipsetFocused: action.payload,
+      };
+    case createProductAction.setIsTabletChipsetValid:
+      return {
+        ...state,
+        isTabletChipsetValid: action.payload,
+      };
+    case createProductAction.setTabletDisplay:
+      return {
+        ...state,
+        tabletDisplay: action.payload,
+      };
+    case createProductAction.setTabletResolutionHorizontal:
+      return {
+        ...state,
+        tabletResolutionHorizontal: action.payload,
+      };
+    case createProductAction.setTabletResolutionVertical:
+      return {
+        ...state,
+        tabletResolutionVertical: action.payload,
+      };
+    case createProductAction.setTabletRamCapacity:
+      return {
+        ...state,
+        tabletRamCapacity: action.payload,
+      };
+    case createProductAction.setTabletRamCapacityUnit:
+      return {
+        ...state,
+        tabletRamCapacityUnit: action.payload,
+      };
+    case createProductAction.setTabletStorageCapacity:
+      return {
+        ...state,
+        tabletStorageCapacity: action.payload,
+      };
+    case createProductAction.setTabletBatteryCapacity:
+      return {
+        ...state,
+        tabletBatteryCapacity: action.payload,
+      };
+
+    // page 2 -> specifications -> accessory
+    case createProductAction.setAccessoryType:
+      return {
+        ...state,
+        accessoryType: action.payload,
+      };
+    case createProductAction.setIsAccessoryTypeFocused:
+      return {
+        ...state,
+        isAccessoryTypeFocused: action.payload,
+      };
+    case createProductAction.setIsAccessoryTypeValid:
+      return {
+        ...state,
+        isAccessoryTypeValid: action.payload,
+      };
+    case createProductAction.setAccessoryColor:
+      return {
+        ...state,
+        accessoryColor: action.payload,
+      };
+    case createProductAction.setAccessoryInterface:
+      return {
+        ...state,
+        accessoryInterface: action.payload,
       };
 
     // page 3
