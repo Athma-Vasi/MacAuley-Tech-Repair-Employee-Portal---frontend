@@ -4,7 +4,7 @@ import {
   CreateProductState,
 } from './types';
 
-const initialProductState: CreateProductState = {
+const initialCreateProductState: CreateProductState = {
   // page 1
 
   // page 1 -> brand
@@ -202,6 +202,17 @@ const initialProductState: CreateProductState = {
   // page 3
   imgFormDataArray: [],
   areImagesValid: false,
+
+  triggerFormSubmit: false,
+  currentStepperPosition: 0,
+  stepsInError: new Set(),
+
+  isSubmitting: false,
+  submitMessage: '',
+  isSuccessful: false,
+  successMessage: '',
+  isLoading: false,
+  loadingMessage: '',
 };
 
 const createProductAction: CreateProductAction = {
@@ -404,6 +415,17 @@ const createProductAction: CreateProductAction = {
   // page 3
   setImgFormDataArray: 'setImgFormDataArray',
   setAreImagesValid: 'setAreImagesValid',
+
+  setTriggerFormSubmit: 'setTriggerFormSubmit',
+  setCurrentStepperPosition: 'setCurrentStepperPosition',
+  setStepsInError: 'setStepsInError',
+
+  setIsSubmitting: 'setIsSubmitting',
+  setSubmitMessage: 'setSubmitMessage',
+  setIsSuccessful: 'setIsSuccessful',
+  setSuccessMessage: 'setSuccessMessage',
+  setIsLoading: 'setIsLoading',
+  setLoadingMessage: 'setLoadingMessage',
 };
 
 function createProductReducer(
@@ -1221,9 +1243,62 @@ function createProductReducer(
         areImagesValid: action.payload,
       };
 
+    //
+    case createProductAction.setTriggerFormSubmit:
+      return {
+        ...state,
+        triggerFormSubmit: action.payload,
+      };
+    case createProductAction.setCurrentStepperPosition:
+      return {
+        ...state,
+        currentStepperPosition: action.payload,
+      };
+    case createProductAction.setStepsInError: {
+      const { kind, step } = action.payload;
+      const stepsInError = new Set(state.stepsInError);
+      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+
+      return {
+        ...state,
+        stepsInError,
+      };
+    }
+
+    case createProductAction.setIsSubmitting:
+      return {
+        ...state,
+        isSubmitting: action.payload,
+      };
+    case createProductAction.setSubmitMessage:
+      return {
+        ...state,
+        submitMessage: action.payload,
+      };
+    case createProductAction.setIsSuccessful:
+      return {
+        ...state,
+        isSuccessful: action.payload,
+      };
+    case createProductAction.setSuccessMessage:
+      return {
+        ...state,
+        successMessage: action.payload,
+      };
+    case createProductAction.setIsLoading:
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+    case createProductAction.setLoadingMessage:
+      return {
+        ...state,
+        loadingMessage: action.payload,
+      };
+
     default:
       return state;
   }
 }
 
-export { createProductAction, createProductReducer, initialProductState };
+export { createProductAction, createProductReducer, initialCreateProductState };

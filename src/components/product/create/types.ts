@@ -1,4 +1,4 @@
-import { Action, Currency } from '../../../types';
+import { Action, Currency, SetStepsInErrorPayload } from '../../../types';
 import { ActionsDashboard } from '../../../types/actions.types';
 import { ProductCategory } from '../../dashboard/types';
 
@@ -487,6 +487,17 @@ type CreateProductState = {
   // page 3
   imgFormDataArray: FormData[];
   areImagesValid: boolean;
+
+  triggerFormSubmit: boolean;
+  currentStepperPosition: number;
+  stepsInError: Set<number>;
+
+  isSubmitting: boolean;
+  submitMessage: string;
+  isSuccessful: boolean;
+  successMessage: string;
+  isLoading: boolean;
+  loadingMessage: string;
 };
 
 type CreateProductAction = {
@@ -687,6 +698,17 @@ type CreateProductAction = {
   // page 3
   setImgFormDataArray: 'setImgFormDataArray';
   setAreImagesValid: 'setAreImagesValid';
+
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
+  setIsLoading: 'setIsLoading';
+  setLoadingMessage: 'setLoadingMessage';
 };
 
 type CreateProductDispatch =
@@ -1277,6 +1299,33 @@ type CreateProductDispatch =
   | {
       type: CreateProductAction['setAreImagesValid'];
       payload: boolean;
+    }
+  //
+  | {
+      type: CreateProductAction['setTriggerFormSubmit'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: CreateProductAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSubmitting']
+        | CreateProductAction['setIsSuccessful']
+        | CreateProductAction['setIsLoading'];
+      payload: boolean;
+    }
+  | {
+      type:
+        | CreateProductAction['setSubmitMessage']
+        | CreateProductAction['setSuccessMessage']
+        | CreateProductAction['setLoadingMessage'];
+      payload: string;
     };
 
 export type {
