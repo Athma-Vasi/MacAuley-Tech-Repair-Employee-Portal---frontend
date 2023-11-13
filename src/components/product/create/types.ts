@@ -12,12 +12,37 @@ type ColorVariant =
   | 'Green'
   | 'Red';
 
+type DesktopComputerSpecifications = {
+  cpu: CpuSpecifications;
+  gpu: GpuSpecifications;
+  motherboard: MotherboardSpecifications;
+  ram: RamSpecifications;
+  storage: StorageSpecifications;
+  psu: PsuSpecifications;
+  case: CaseSpecifications;
+  monitor: MonitorSpecifications;
+  keyboard: KeyboardSpecifications;
+  mouse: MouseSpecifications;
+  speaker: SpeakerSpecifications;
+};
+
+type LaptopSpecifications = {
+  cpu: CpuSpecifications;
+  gpu: GpuSpecifications;
+  ram: RamSpecifications;
+  storage: StorageSpecifications;
+  monitor: MonitorSpecifications;
+  keyboard: KeyboardSpecifications;
+  mouse: MouseSpecifications;
+  speaker: SpeakerSpecifications;
+};
+
 type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';
 type ClockFrequencyUnit = 'MHz' | 'GHz';
 
 type CpuSpecifications = {
   socket: string; // LGA 1200, AM4, etc.
-  speed: string; // 3.6 GHz, 4.2 GHz, etc.
+  frequency: string; // 3.6 GHz, 4.2 GHz, etc.
   cores: number; // 6 cores, 8 cores, etc.
   l1Cache: string; // 384 KB, 512 KB, etc.
   l2Cache: string; // 3 MB, 4 MB, etc.
@@ -55,7 +80,7 @@ type MotherboardSpecifications = {
 };
 
 type RamSpecifications = {
-  speed: string; // 3200 MHz, 3600 MHz, etc.
+  frequency: string; // 3200 MHz, 3600 MHz, etc.
   modules: string; // 2 x 8 GB, 4 x 8 GB, etc.
   ramType: MemoryType; // DDR4, etc.
   color: ColorVariant; // Black, White, etc.
@@ -188,6 +213,8 @@ type AccessorySpecifications = {
 };
 
 type Specifications = {
+  desktop?: DesktopComputerSpecifications;
+  laptop?: LaptopSpecifications;
   cpu?: CpuSpecifications;
   gpu?: GpuSpecifications;
   motherboard?: MotherboardSpecifications;
@@ -218,6 +245,8 @@ type ProductReview = {
   rating: number;
   review: string;
 };
+
+type WeightUnit = 'g' | 'kg' | 'lb';
 
 type ProductSchema = {
   userId: string;
@@ -255,11 +284,12 @@ type ProductDocument = ProductSchema & {
 
 type CreateProductState = {
   // page 1
+
   // page 1 -> brand
   brand: string;
   isBrandValid: boolean;
   isBrandFocused: boolean;
-  // page 1 -> model
+  // page 1 -> model, product category
   model: string;
   isModelValid: boolean;
   isModelFocused: boolean;
@@ -268,7 +298,7 @@ type CreateProductState = {
   description: string;
   isDescriptionValid: boolean;
   isDescriptionFocused: boolean;
-  // page 1 -> price
+  // page 1 -> price, currency, availability, quantity
   price: string;
   isPriceValid: boolean;
   isPriceFocused: boolean;
@@ -276,9 +306,8 @@ type CreateProductState = {
   availability: boolean;
   quantity: number;
   // page 1 -> weight
-  weight: string;
-  isWeightValid: boolean;
-  isWeightFocused: boolean;
+  weight: number;
+  weightUnit: WeightUnit;
   // page 1 -> dimensions
   dimensionLength: number;
   dimensionLengthUnit: DimensionUnit;
@@ -293,47 +322,36 @@ type CreateProductState = {
 
   // page 2
 
-  // specifications
+  // page 2 -> specifications
 
-  // specifications -> cpu
+  // page 2 -> specifications -> cpu
   cpuSocket: string;
   isCpuSocketValid: boolean;
   isCpuSocketFocused: boolean;
-  cpuSpeed: string;
-  isCpuSpeedValid: boolean;
-  isCpuSpeedFocused: boolean;
+  cpuFrequency: number;
+  cpuFrequencyUnit: ClockFrequencyUnit;
   cpuCores: number;
-  cpuL1Cache: string;
-  isCpuL1CacheValid: boolean;
-  isCpuL1CacheFocused: boolean;
-  cpuL2Cache: string;
-  isCpuL2CacheValid: boolean;
-  isCpuL2CacheFocused: boolean;
-  cpuL3Cache: string;
-  isCpuL3CacheValid: boolean;
-  isCpuL3CacheFocused: boolean;
-  cpuWattage: string;
-  isCpuWattageValid: boolean;
-  isCpuWattageFocused: boolean;
+  cpuL1CacheCapacity: number;
+  cpuL1CacheCapacityUnit: MemoryUnit;
+  cpuL2CacheCapacity: number;
+  cpuL2CacheCapacityUnit: MemoryUnit;
+  cpuL3CacheCapacity: number;
+  cpuL3CacheCapacityUnit: MemoryUnit;
+  cpuWattage: number;
 
-  // specifications -> gpu
+  // page 2 -> specifications -> gpu
   gpuChipset: string;
   isGpuChipsetValid: boolean;
   isGpuChipsetFocused: boolean;
-  gpuMemory: string;
-  isGpuMemoryValid: boolean;
-  isGpuMemoryFocused: boolean;
-  gpuCoreClock: string;
-  isGpuCoreClockValid: boolean;
-  isGpuCoreClockFocused: boolean;
-  gpuBoostClock: string;
-  isGpuBoostClockValid: boolean;
-  isGpuBoostClockFocused: boolean;
-  gpuTdp: string;
-  isGpuTdpValid: boolean;
-  isGpuTdpFocused: boolean;
+  gpuMemoryCapacity: number;
+  gpuMemoryCapacityUnit: MemoryUnit;
+  gpuCoreClock: number;
+  gpuCoreClockUnit: ClockFrequencyUnit;
+  gpuBoostClock: number;
+  gpuBoostClockUnit: ClockFrequencyUnit;
+  gpuTdp: number;
 
-  // specifications -> motherboard
+  // page 2 -> specifications -> motherboard
   motherboardSocket: string;
   isMotherboardSocketValid: boolean;
   isMotherboardSocketFocused: boolean;
@@ -341,9 +359,8 @@ type CreateProductState = {
   isMotherboardChipsetValid: boolean;
   isMotherboardChipsetFocused: boolean;
   motherboardFormFactor: MotherboardFormFactor;
-  motherboardMemoryMax: string;
-  isMotherboardMemoryMaxValid: boolean;
-  isMotherboardMemoryMaxFocused: boolean;
+  motherboardMemoryMaxCapacity: number;
+  motherboardMemoryMaxCapacityUnit: MemoryUnit;
   motherboardMemorySlots: number;
   motherboardMemoryType: MemoryType;
   motherboardSataPorts: number;
@@ -352,30 +369,25 @@ type CreateProductState = {
   motherboardPcie4Slots: number;
   motherboardPcie5Slots: number;
 
-  // specifications -> ram
-  ramSpeed: string;
-  isRamSpeedValid: boolean;
-  isRamSpeedFocused: boolean;
-  ramModules: string; // 2 x 8 GB, 4 x 8 GB, etc.
-  isRamModulesValid: boolean;
-  isRamModulesFocused: boolean;
+  // page 2 -> specifications -> ram
+  ramFrequency: number;
+  ramFrequencyUnit: ClockFrequencyUnit;
+  ramModulesQuantity: number;
+  ramModulesCapacity: number;
+  ramModulesCapacityUnit: MemoryUnit;
   ramType: MemoryType;
   ramColor: ColorVariant;
-  ramVoltage: string;
-  isRamVoltageValid: boolean;
-  isRamVoltageFocused: boolean;
+  ramVoltage: number;
   ramTiming: string;
   isRamTimingValid: boolean;
   isRamTimingFocused: boolean;
 
-  // specifications -> storage
+  // page 2 -> specifications -> storage
   storageType: StorageType;
-  storageCapacity: string;
-  isStorageCapacityValid: boolean;
-  isStorageCapacityFocused: boolean;
-  storageCache: string;
-  isStorageCacheValid: boolean;
-  isStorageCacheFocused: boolean;
+  storageCapacity: number;
+  storageCapacityUnit: MemoryUnit;
+  storageCacheCapacity: number;
+  storageCacheCapacityUnit: MemoryUnit;
   storageFormFactor: StorageFormFactor;
   storageInterface: StorageInterface;
 
@@ -386,78 +398,73 @@ type CreateProductState = {
 
 type CreateProductAction = {
   // page 1
+  // page 1 -> brand
   setBrand: 'setBrand';
   setIsBrandValid: 'setIsBrandValid';
   setIsBrandFocused: 'setIsBrandFocused';
+  // page 1 -> model, product category
   setModel: 'setModel';
   setIsModelValid: 'setIsModelValid';
   setIsModelFocused: 'setIsModelFocused';
   setProductCategory: 'setProductCategory';
+  // page 1 -> description
   setDescription: 'setDescription';
   setIsDescriptionValid: 'setIsDescriptionValid';
   setIsDescriptionFocused: 'setIsDescriptionFocused';
+  // page 1 -> price, currency, availability, quantity
   setPrice: 'setPrice';
   setIsPriceValid: 'setIsPriceValid';
   setIsPriceFocused: 'setIsPriceFocused';
   setCurrency: 'setCurrency';
   setAvailability: 'setAvailability';
   setQuantity: 'setQuantity';
+  // page 1 -> weight
   setWeight: 'setWeight';
-  setIsWeightValid: 'setIsWeightValid';
-  setIsWeightFocused: 'setIsWeightFocused';
+  setWeightUnit: 'setWeightUnit';
+  // page 1 -> dimensions
   setDimensionLength: 'setDimensionLength';
   setDimensionLengthUnit: 'setDimensionLengthUnit';
   setDimensionWidth: 'setDimensionWidth';
   setDimensionWidthUnit: 'setDimensionWidthUnit';
   setDimensionHeight: 'setDimensionHeight';
   setDimensionHeightUnit: 'setDimensionHeightUnit';
+  // page 1 -> additional comments
   setAdditionalComments: 'setAdditionalComments';
   setIsAdditionalCommentsValid: 'setIsAdditionalCommentsValid';
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused';
 
   // page 2
 
-  // specifications
+  // page 2 -> specifications
 
-  // specifications -> cpu
+  // page 2 -> specifications -> cpu
   setCpuSocket: 'setCpuSocket';
   setIsCpuSocketValid: 'setIsCpuSocketValid';
   setIsCpuSocketFocused: 'setIsCpuSocketFocused';
-  setCpuSpeed: 'setCpuSpeed';
-  setIsCpuSpeedValid: 'setIsCpuSpeedValid';
-  setIsCpuSpeedFocused: 'setIsCpuSpeedFocused';
+  setCpuFrequency: 'setCpuFrequency';
+  setCpuFrequencyUnit: 'setCpuFrequencyUnit';
   setCpuCores: 'setCpuCores';
-  setCpuL1Cache: 'setCpuL1Cache';
-  setIsCpuL1CacheValid: 'setIsCpuL1CacheValid';
-  setIsCpuL1CacheFocused: 'setIsCpuL1CacheFocused';
-  setCpuL2Cache: 'setCpuL2Cache';
-  setIsCpuL2CacheValid: 'setIsCpuL2CacheValid';
-  setIsCpuL2CacheFocused: 'setIsCpuL2CacheFocused';
-  setCpuL3Cache: 'setCpuL3Cache';
-  setIsCpuL3CacheValid: 'setIsCpuL3CacheValid';
-  setIsCpuL3CacheFocused: 'setIsCpuL3CacheFocused';
+  setCpuL1CacheCapacity: 'setCpuL1CacheCapacity';
+  setCpuL1CacheCapacityUnit: 'setCpuL1CacheCapacityUnit';
+  setCpuL2CacheCapacity: 'setCpuL2CacheCapacity';
+  setCpuL2CacheCapacityUnit: 'setCpuL2CacheCapacityUnit';
+  setCpuL3CacheCapacity: 'setCpuL3CacheCapacity';
+  setCpuL3CacheCapacityUnit: 'setCpuL3CacheCapacityUnit';
   setCpuWattage: 'setCpuWattage';
-  setIsCpuWattageValid: 'setIsCpuWattageValid';
-  setIsCpuWattageFocused: 'setIsCpuWattageFocused';
 
-  // specifications -> gpu
+  // page 2 -> specifications -> gpu
   setGpuChipset: 'setGpuChipset';
   setIsGpuChipsetValid: 'setIsGpuChipsetValid';
   setIsGpuChipsetFocused: 'setIsGpuChipsetFocused';
-  setGpuMemory: 'setGpuMemory';
-  setIsGpuMemoryValid: 'setIsGpuMemoryValid';
-  setIsGpuMemoryFocused: 'setIsGpuMemoryFocused';
+  setGpuMemoryCapacity: 'setGpuMemoryCapacity';
+  setGpuMemoryCapacityUnit: 'setGpuMemoryCapacityUnit';
   setGpuCoreClock: 'setGpuCoreClock';
-  setIsGpuCoreClockValid: 'setIsGpuCoreClockValid';
-  setIsGpuCoreClockFocused: 'setIsGpuCoreClockFocused';
+  setGpuCoreClockUnit: 'setGpuCoreClockUnit';
   setGpuBoostClock: 'setGpuBoostClock';
-  setIsGpuBoostClockValid: 'setIsGpuBoostClockValid';
-  setIsGpuBoostClockFocused: 'setIsGpuBoostClockFocused';
+  setGpuBoostClockUnit: 'setGpuBoostClockUnit';
   setGpuTdp: 'setGpuTdp';
-  setIsGpuTdpValid: 'setIsGpuTdpValid';
-  setIsGpuTdpFocused: 'setIsGpuTdpFocused';
 
-  // specifications -> motherboard
+  // page 2 -> specifications -> motherboard
   setMotherboardSocket: 'setMotherboardSocket';
   setIsMotherboardSocketValid: 'setIsMotherboardSocketValid';
   setIsMotherboardSocketFocused: 'setIsMotherboardSocketFocused';
@@ -465,9 +472,8 @@ type CreateProductAction = {
   setIsMotherboardChipsetValid: 'setIsMotherboardChipsetValid';
   setIsMotherboardChipsetFocused: 'setIsMotherboardChipsetFocused';
   setMotherboardFormFactor: 'setMotherboardFormFactor';
-  setMotherboardMemoryMax: 'setMotherboardMemoryMax';
-  setIsMotherboardMemoryMaxValid: 'setIsMotherboardMemoryMaxValid';
-  setIsMotherboardMemoryMaxFocused: 'setIsMotherboardMemoryMaxFocused';
+  setMotherboardMemoryMaxCapacity: 'setMotherboardMemoryMaxCapacity';
+  setMotherboardMemoryMaxCapacityUnit: 'setMotherboardMemoryMaxCapacityUnit';
   setMotherboardMemorySlots: 'setMotherboardMemorySlots';
   setMotherboardMemoryType: 'setMotherboardMemoryType';
   setMotherboardSataPorts: 'setMotherboardSataPorts';
@@ -476,30 +482,25 @@ type CreateProductAction = {
   setMotherboardPcie4Slots: 'setMotherboardPcie4Slots';
   setMotherboardPcie5Slots: 'setMotherboardPcie5Slots';
 
-  // specifications -> ram
-  setRamSpeed: 'setRamSpeed';
-  setIsRamSpeedValid: 'setIsRamSpeedValid';
-  setIsRamSpeedFocused: 'setIsRamSpeedFocused';
-  setRamModules: 'setRamModules';
-  setIsRamModulesValid: 'setIsRamModulesValid';
-  setIsRamModulesFocused: 'setIsRamModulesFocused';
+  // page 2 -> specifications -> ram
+  setRamFrequency: 'setRamFrequency';
+  setRamFrequencyUnit: 'setRamFrequencyUnit';
+  setRamModulesQuantity: 'setRamModulesQuantity';
+  setRamModulesCapacity: 'setRamModulesCapacity';
+  setRamModulesCapacityUnit: 'setRamModulesCapacityUnit';
   setRamType: 'setRamType';
   setRamColor: 'setRamColor';
   setRamVoltage: 'setRamVoltage';
-  setIsRamVoltageValid: 'setIsRamVoltageValid';
-  setIsRamVoltageFocused: 'setIsRamVoltageFocused';
   setRamTiming: 'setRamTiming';
   setIsRamTimingValid: 'setIsRamTimingValid';
   setIsRamTimingFocused: 'setIsRamTimingFocused';
 
-  // specifications -> storage
+  // page 2 -> specifications -> storage
   setStorageType: 'setStorageType';
   setStorageCapacity: 'setStorageCapacity';
-  setIsStorageCapacityValid: 'setIsStorageCapacityValid';
-  setIsStorageCapacityFocused: 'setIsStorageCapacityFocused';
-  setStorageCache: 'setStorageCache';
-  setIsStorageCacheValid: 'setIsStorageCacheValid';
-  setIsStorageCacheFocused: 'setIsStorageCacheFocused';
+  setStorageCapacityUnit: 'setStorageCapacityUnit';
+  setStorageCacheCapacity: 'setStorageCacheCapacity';
+  setStorageCacheCapacityUnit: 'setStorageCacheCapacityUnit';
   setStorageFormFactor: 'setStorageFormFactor';
   setStorageInterface: 'setStorageInterface';
 
@@ -514,11 +515,9 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsBrandValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsBrandFocused'];
+      type:
+        | CreateProductAction['setIsBrandValid']
+        | CreateProductAction['setIsBrandFocused'];
       payload: boolean;
     }
   | {
@@ -526,11 +525,9 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsModelValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsModelFocused'];
+      type:
+        | CreateProductAction['setIsModelValid']
+        | CreateProductAction['setIsModelFocused'];
       payload: boolean;
     }
   | {
@@ -542,11 +539,9 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsDescriptionValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsDescriptionFocused'];
+      type:
+        | CreateProductAction['setIsDescriptionValid']
+        | CreateProductAction['setIsDescriptionFocused'];
       payload: boolean;
     }
   | {
@@ -554,11 +549,9 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsPriceValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsPriceFocused'];
+      type:
+        | CreateProductAction['setIsPriceValid']
+        | CreateProductAction['setIsPriceFocused'];
       payload: boolean;
     }
   | {
@@ -575,15 +568,11 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setWeight'];
-      payload: string;
+      payload: number;
     }
   | {
-      type: CreateProductAction['setIsWeightValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsWeightFocused'];
-      payload: boolean;
+      type: CreateProductAction['setWeightUnit'];
+      payload: WeightUnit;
     }
   | {
       type: CreateProductAction['setDimensionLength'];
@@ -614,11 +603,9 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsAdditionalCommentsValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsAdditionalCommentsFocused'];
+      type:
+        | CreateProductAction['setIsAdditionalCommentsValid']
+        | CreateProductAction['setIsAdditionalCommentsFocused'];
       payload: boolean;
     }
   // page 2
@@ -629,76 +616,40 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsCpuSocketValid'];
+      type:
+        | CreateProductAction['setIsCpuSocketValid']
+        | CreateProductAction['setIsCpuSocketFocused'];
       payload: boolean;
     }
   | {
-      type: CreateProductAction['setIsCpuSocketFocused'];
-      payload: boolean;
+      type: CreateProductAction['setCpuFrequency'];
+      payload: number;
     }
   | {
-      type: CreateProductAction['setCpuSpeed'];
-      payload: string;
-    }
-  | {
-      type: CreateProductAction['setIsCpuSpeedValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsCpuSpeedFocused'];
-      payload: boolean;
+      type: CreateProductAction['setCpuFrequencyUnit'];
+      payload: ClockFrequencyUnit;
     }
   | {
       type: CreateProductAction['setCpuCores'];
       payload: number;
     }
   | {
-      type: CreateProductAction['setCpuL1Cache'];
-      payload: string;
+      type:
+        | CreateProductAction['setCpuL1CacheCapacity']
+        | CreateProductAction['setCpuL2CacheCapacity']
+        | CreateProductAction['setCpuL3CacheCapacity'];
+      payload: number;
     }
   | {
-      type: CreateProductAction['setIsCpuL1CacheValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsCpuL1CacheFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setCpuL2Cache'];
-      payload: string;
-    }
-  | {
-      type: CreateProductAction['setIsCpuL2CacheValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsCpuL2CacheFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setCpuL3Cache'];
-      payload: string;
-    }
-  | {
-      type: CreateProductAction['setIsCpuL3CacheValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsCpuL3CacheFocused'];
-      payload: boolean;
+      type:
+        | CreateProductAction['setCpuL1CacheCapacityUnit']
+        | CreateProductAction['setCpuL2CacheCapacityUnit']
+        | CreateProductAction['setCpuL3CacheCapacityUnit'];
+      payload: MemoryUnit;
     }
   | {
       type: CreateProductAction['setCpuWattage'];
-      payload: string;
-    }
-  | {
-      type: CreateProductAction['setIsCpuWattageValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsCpuWattageFocused'];
-      payload: boolean;
+      payload: number;
     }
   // specifications -> gpu
   | {
@@ -706,60 +657,38 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsGpuChipsetValid'];
+      type:
+        | CreateProductAction['setIsGpuChipsetValid']
+        | CreateProductAction['setIsGpuChipsetFocused'];
       payload: boolean;
     }
   | {
-      type: CreateProductAction['setIsGpuChipsetFocused'];
-      payload: boolean;
+      type: CreateProductAction['setGpuMemoryCapacity'];
+      payload: number;
     }
   | {
-      type: CreateProductAction['setGpuMemory'];
-      payload: string;
-    }
-  | {
-      type: CreateProductAction['setIsGpuMemoryValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsGpuMemoryFocused'];
-      payload: boolean;
+      type: CreateProductAction['setGpuMemoryCapacityUnit'];
+      payload: MemoryUnit;
     }
   | {
       type: CreateProductAction['setGpuCoreClock'];
-      payload: string;
+      payload: number;
     }
   | {
-      type: CreateProductAction['setIsGpuCoreClockValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsGpuCoreClockFocused'];
-      payload: boolean;
+      type: CreateProductAction['setGpuCoreClockUnit'];
+      payload: ClockFrequencyUnit;
     }
   | {
       type: CreateProductAction['setGpuBoostClock'];
-      payload: string;
+      payload: number;
     }
   | {
-      type: CreateProductAction['setIsGpuBoostClockValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsGpuBoostClockFocused'];
-      payload: boolean;
+      type: CreateProductAction['setGpuBoostClockUnit'];
+      payload: ClockFrequencyUnit;
     }
   | {
       type: CreateProductAction['setGpuTdp'];
-      payload: string;
-    }
-  | {
-      type: CreateProductAction['setIsGpuTdpValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsGpuTdpFocused'];
-      payload: boolean;
+      payload: number;
     }
   // specifications -> motherboard
   | {
@@ -767,11 +696,9 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsMotherboardSocketValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsMotherboardSocketFocused'];
+      type:
+        | CreateProductAction['setIsMotherboardSocketValid']
+        | CreateProductAction['setIsMotherboardSocketFocused'];
       payload: boolean;
     }
   | {
@@ -779,11 +706,9 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsMotherboardChipsetValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsMotherboardChipsetFocused'];
+      type:
+        | CreateProductAction['setIsMotherboardChipsetValid']
+        | CreateProductAction['setIsMotherboardChipsetFocused'];
       payload: boolean;
     }
   | {
@@ -791,16 +716,12 @@ type CreateProductDispatch =
       payload: MotherboardFormFactor;
     }
   | {
-      type: CreateProductAction['setMotherboardMemoryMax'];
-      payload: string;
+      type: CreateProductAction['setMotherboardMemoryMaxCapacity'];
+      payload: number;
     }
   | {
-      type: CreateProductAction['setIsMotherboardMemoryMaxValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsMotherboardMemoryMaxFocused'];
-      payload: boolean;
+      type: CreateProductAction['setMotherboardMemoryMaxCapacityUnit'];
+      payload: MemoryUnit;
     }
   | {
       type: CreateProductAction['setMotherboardMemorySlots'];
@@ -832,28 +753,24 @@ type CreateProductDispatch =
     }
   // specifications -> ram
   | {
-      type: CreateProductAction['setRamSpeed'];
-      payload: string;
+      type: CreateProductAction['setRamFrequency'];
+      payload: number;
     }
   | {
-      type: CreateProductAction['setIsRamSpeedValid'];
-      payload: boolean;
+      type: CreateProductAction['setRamFrequencyUnit'];
+      payload: ClockFrequencyUnit;
     }
   | {
-      type: CreateProductAction['setIsRamSpeedFocused'];
-      payload: boolean;
+      type: CreateProductAction['setRamModulesQuantity'];
+      payload: number;
     }
   | {
-      type: CreateProductAction['setRamModules'];
-      payload: string;
+      type: CreateProductAction['setRamModulesCapacity'];
+      payload: number;
     }
   | {
-      type: CreateProductAction['setIsRamModulesValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsRamModulesFocused'];
-      payload: boolean;
+      type: CreateProductAction['setRamModulesCapacityUnit'];
+      payload: MemoryUnit;
     }
   | {
       type: CreateProductAction['setRamType'];
@@ -865,26 +782,16 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setRamVoltage'];
-      payload: string;
-    }
-  | {
-      type: CreateProductAction['setIsRamVoltageValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsRamVoltageFocused'];
-      payload: boolean;
+      payload: number;
     }
   | {
       type: CreateProductAction['setRamTiming'];
       payload: string;
     }
   | {
-      type: CreateProductAction['setIsRamTimingValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsRamTimingFocused'];
+      type:
+        | CreateProductAction['setIsRamTimingValid']
+        | CreateProductAction['setIsRamTimingFocused'];
       payload: boolean;
     }
   // specifications -> storage
@@ -894,27 +801,19 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setStorageCapacity'];
-      payload: string;
+      payload: number;
     }
   | {
-      type: CreateProductAction['setIsStorageCapacityValid'];
-      payload: boolean;
+      type: CreateProductAction['setStorageCapacityUnit'];
+      payload: MemoryUnit;
     }
   | {
-      type: CreateProductAction['setIsStorageCapacityFocused'];
-      payload: boolean;
+      type: CreateProductAction['setStorageCacheCapacity'];
+      payload: number;
     }
   | {
-      type: CreateProductAction['setStorageCache'];
-      payload: string;
-    }
-  | {
-      type: CreateProductAction['setIsStorageCacheValid'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setIsStorageCacheFocused'];
-      payload: boolean;
+      type: CreateProductAction['setStorageCacheCapacityUnit'];
+      payload: MemoryUnit;
     }
   | {
       type: CreateProductAction['setStorageFormFactor'];
@@ -944,6 +843,7 @@ export type {
   CreateProductAction,
   CreateProductDispatch,
   CreateProductState,
+  DesktopComputerSpecifications,
   GpuSpecifications,
   HeadphoneInterface,
   HeadphoneSpecifications,
@@ -951,6 +851,7 @@ export type {
   KeyboardLayout,
   KeyboardSpecifications,
   KeyboardSwitch,
+  LaptopSpecifications,
   MemoryType,
   MonitorSpecifications,
   MotherboardFormFactor,
