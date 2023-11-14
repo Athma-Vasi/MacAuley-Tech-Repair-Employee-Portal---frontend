@@ -1,7 +1,6 @@
 import { MantineNumberSize, MantineSize, NativeSelect } from '@mantine/core';
 import { ChangeEvent, RefObject } from 'react';
 
-import { useGlobalState } from '../../hooks';
 import { SelectInputData } from '../../types';
 
 type AccessibleSelectInputCreatorInfo = {
@@ -32,11 +31,11 @@ function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
     disabled = false,
     value,
     onChange,
-    withAsterisk = false,
     ref = null,
     required = false,
     size = 'sm',
     width = 330,
+    withAsterisk = required,
   } = creatorInfoObject;
 
   return (

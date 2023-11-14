@@ -9,14 +9,7 @@ import CustomFonts from './components/customFonts/CustomFonts';
 import DevTesting from './components/devTesting/DevTesting';
 import ErrorFallback from './components/errorFallback/ErrorFallback';
 import { useGlobalState } from './hooks/useGlobalState';
-import {
-  ResponsiveBarChart,
-  ResponsiveCalendarChart,
-  ResponsiveLineChart,
-  ResponsivePieChart,
-  ResponsiveRadialBarChart,
-  ResponsiveSunburstChart,
-} from './components/charts';
+import CreateProduct from './components/product/create/CreateProduct';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const PublicLayout = lazy(
@@ -148,7 +141,7 @@ const NotFound = lazy(() => import('./components/notFound/NotFound'));
 
 function App() {
   const {
-    globalState: { themeObject, errorState, customizeChartsPageData },
+    globalState: { themeObject, errorState },
   } = useGlobalState();
 
   // @desc   the public facing page
@@ -213,6 +206,17 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <Dashboard />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   products page
+  // @route  /home/product/create
+  // @access private
+  const createProductElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateProduct />
       </Suspense>
     </ErrorBoundary>
   );
@@ -625,6 +629,10 @@ function App() {
           {/* <Route path="dashboard" element={dashboardElement} /> */}
           <Route path="dashboard">
             <Route index element={dashboardElement} />
+            <Route path="product">
+              <Route index element={<CreateProduct />} />
+              <Route path="create" element={<CreateProduct />} />
+            </Route>
             <Route path=":chartKind" element={displayResponsiveChartElement} />
           </Route>
 

@@ -1,5 +1,5 @@
 import { Flex, Navbar, NavLink, ScrollArea, Text } from '@mantine/core';
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 import { CgDatabase } from 'react-icons/cg';
 import { MdSafetyDivider } from 'react-icons/md';
 import { RiSignalTowerFill } from 'react-icons/ri';
@@ -27,7 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
 import { returnAccessibleNavLinkElements } from '../../jsxCreators';
-import { logState, returnThemeColors } from '../../utils';
+import { returnThemeColors } from '../../utils';
 import { AccessibleNavLinkCreatorInfo } from '../wrappers';
 import {
   initialPortalNavbarState,
@@ -45,6 +45,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     // active states
     isHomeActive,
     isDashboardActive,
+    isProductActive,
     isNotesActive,
 
     // company
@@ -78,7 +79,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const {
     scrollBarStyle,
-    generalColors: { iconGray, themeColorShade, navLinkHoverShade },
+    generalColors: { iconGray, themeColorShade },
     appThemeColors: { backgroundColor },
   } = returnThemeColors({
     themeObject,
@@ -115,6 +116,20 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
+  const productNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isProductActive,
+    ariaLabel: 'Will navigate to product page',
+    icon: <TbDashboard color={isProductActive ? themeColorShade : iconGray} />,
+    label: 'Product',
+    onClick: () => {
+      portalNavbarDispatch({
+        type: 'setIsProductActive',
+        payload: !isProductActive,
+      });
+      navigate('/home/dashboard/product');
+    },
+  };
+
   const directoryNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isDirectoryActive,
     ariaLabel: 'Will navigate to directory page',
@@ -146,11 +161,13 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const [
     createdHomeNavLink,
     createdDashboardNavLink,
+    createdProductNavLink,
     createdDirectoryNavLink,
     createdNotesNavLink,
   ] = returnAccessibleNavLinkElements([
     homeNavLinkCreatorInfo,
     dashboardNavLinkCreatorInfo,
+    productNavLinkCreatorInfo,
     directoryNavLinkCreatorInfo,
     notesNavLinkCreatorInfo,
   ]);
@@ -554,6 +571,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
           {/* {displayDashboardNavLink} */}
           {createdDashboardNavLink}
+
+          {/* {displayProductNavLink} */}
+          {createdProductNavLink}
 
           {/* {displayNotesNavLink} */}
           {createdNotesNavLink}

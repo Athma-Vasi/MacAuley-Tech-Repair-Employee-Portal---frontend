@@ -6,6 +6,7 @@ type PortalNavbarState = {
   // navlinks active states
   isHomeActive: boolean;
   isDashboardActive: boolean;
+  isProductActive: boolean;
   isNotesActive: boolean;
 
   // company
@@ -35,6 +36,7 @@ type PortalNavbarState = {
 type PortalNavbarAction = {
   setIsHomeActive: 'setIsHomeActive';
   setIsDashboardActive: 'setIsDashboardActive';
+  setIsProductActive: 'setIsProductActive';
   setIsNotesActive: 'setIsNotesActive';
 
   // company
@@ -64,25 +66,26 @@ type PortalNavbarAction = {
 type PortalNavbarDispatch = {
   // navlinks active states
   type:
-    | PortalNavbarAction['setIsHomeActive']
-    | PortalNavbarAction['setIsDashboardActive']
-    | PortalNavbarAction['setIsNotesActive']
-    | PortalNavbarAction['setIsCompanyActive']
     | PortalNavbarAction['setIsAddressChangeActive']
-    | PortalNavbarAction['setIsBenefitActive']
-    | PortalNavbarAction['setIsExpenseClaimActive']
-    | PortalNavbarAction['setIsLeaveRequestActive']
-    | PortalNavbarAction['setIsRequestResourceActive']
-    | PortalNavbarAction['setIsGeneralActive']
-    | PortalNavbarAction['setIsEndorsementActive']
-    | PortalNavbarAction['setIsPrinterIssueActive']
-    | PortalNavbarAction['setIsAnonymousRequestActive']
-    | PortalNavbarAction['setIsRefermentActive']
-    | PortalNavbarAction['setIsOutreachActive']
     | PortalNavbarAction['setIsAnnouncementActive']
-    | PortalNavbarAction['setIsSurveyActive']
+    | PortalNavbarAction['setIsAnonymousRequestActive']
+    | PortalNavbarAction['setIsBenefitActive']
+    | PortalNavbarAction['setIsCompanyActive']
+    | PortalNavbarAction['setIsDashboardActive']
+    | PortalNavbarAction['setIsDirectoryActive']
+    | PortalNavbarAction['setIsEndorsementActive']
     | PortalNavbarAction['setIsEventActive']
-    | PortalNavbarAction['setIsDirectoryActive'];
+    | PortalNavbarAction['setIsExpenseClaimActive']
+    | PortalNavbarAction['setIsGeneralActive']
+    | PortalNavbarAction['setIsHomeActive']
+    | PortalNavbarAction['setIsLeaveRequestActive']
+    | PortalNavbarAction['setIsNotesActive']
+    | PortalNavbarAction['setIsOutreachActive']
+    | PortalNavbarAction['setIsPrinterIssueActive']
+    | PortalNavbarAction['setIsProductActive']
+    | PortalNavbarAction['setIsRefermentActive']
+    | PortalNavbarAction['setIsRequestResourceActive']
+    | PortalNavbarAction['setIsSurveyActive'];
 
   payload: boolean;
 };

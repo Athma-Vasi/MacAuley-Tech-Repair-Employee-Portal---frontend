@@ -1002,6 +1002,74 @@ function returnFilenameValidationText({
     : '';
 }
 
+function returnBrandNameValidationText({
+  content,
+  contentKind,
+  maxLength = 50,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^[a-zA-Z0-9\s-]{2,30}$/
+  const brandNameLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const brandNameCharacterRegex = /^[a-zA-Z0-9\s-]+$/;
+
+  const brandNameRegexTupleArr: [boolean, string][] = [
+    [
+      brandNameLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      brandNameCharacterRegex.test(content),
+      'Must only contain letters, numbers, spaces, and hyphens.',
+    ],
+  ];
+
+  const validationText = brandNameRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnSocketChipsetValidationText({
+  content,
+  contentKind,
+  maxLength = 50,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^[a-zA-Z0-9\s.,'()-]{2,30}$/
+  const socketChipsetNameLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const socketChipsetNameCharacterRegex = /^[a-zA-Z0-9\s.,'()-]+$/;
+
+  const socketChipsetNameRegexTupleArr: [boolean, string][] = [
+    [
+      socketChipsetNameLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      socketChipsetNameCharacterRegex.test(content),
+      'Must only contain letters, numbers, spaces, periods, commas, apostrophes, hyphens, and parentheses.',
+    ],
+  ];
+
+  const validationText = socketChipsetNameRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
 function logState({
   state,
   groupLabel = 'state',
@@ -1912,6 +1980,7 @@ export {
   replaceLastCommaWithOr,
   returnAcknowledgementValidationText,
   returnAddressValidationText,
+  returnBrandNameValidationText,
   returnCityValidationText,
   returnDateFullRangeValidationText,
   returnDateNearFutureValidationText,
@@ -1934,6 +2003,7 @@ export {
   returnPrinterSerialNumberValidationText,
   returnSerialIdValidationText,
   returnSliderMarks,
+  returnSocketChipsetValidationText,
   returnThemeColors,
   returnTimeRailwayValidationText,
   returnTimeRemaining,

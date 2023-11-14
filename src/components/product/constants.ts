@@ -1,15 +1,23 @@
+import { SelectInputData } from '../../types';
+
 /**
- * - /^[a-zA-Z0-9\d- ]{2,30}$/;
- * - [a-zA-Z0-9\d- ] matches a single character in the list a-z (case sensitive), A-Z (case sensitive), 0-9, \d (same as 0-9), - (case sensitive),  (case sensitive).
+ * - /^[a-zA-Z0-9- ]{2,30}$/;
+ * - [a-zA-Z0-9\s-] matches any character between a-z, A-Z, 0-9, whitespace and -.
  * - {2,30} matches between 2 and 30 of the preceding token.
  * - ^ and $ ensure that the entire string matches the regex.
  */
-const BRAND_REGEX = /^[a-zA-Z0-9\d- ]{2,30}$/;
+const BRAND_REGEX = /^[a-zA-Z0-9\s-]{2,30}$/;
 
-const CPU_SOCKET_REGEX = BRAND_REGEX;
-const GPU_CHIPSET_REGEX = BRAND_REGEX;
-const MOTHERBOARD_SOCKET_REGEX = BRAND_REGEX;
-const MOTHERBOARD_CHIPSET_REGEX = BRAND_REGEX;
+/**
+ * - /^[a-zA-Z0-9\s.,'()-]{2,30}$/i;
+ * - [a-zA-Z0-9\s.,'()-] matches any character between a-z, A-Z, 0-9, whitespace, ., ,, ', (, ), -.
+ * - {2,30} matches between 2 and 30 of the preceding token.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const CPU_SOCKET_REGEX = /^[a-zA-Z0-9\s.,'()-]{2,30}$/;
+const GPU_CHIPSET_REGEX = CPU_SOCKET_REGEX;
+const MOTHERBOARD_SOCKET_REGEX = CPU_SOCKET_REGEX;
+const MOTHERBOARD_CHIPSET_REGEX = CPU_SOCKET_REGEX;
 
 /**
  * - /^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/
@@ -46,15 +54,30 @@ const HEADPHONE_FREQUENCY_RESPONSE_REGEX = /^[0-9]{2} hz - [0-9]{2} kHz$/;
 
 const SPEAKER_FREQUENCY_RESPONSE_REGEX = HEADPHONE_FREQUENCY_RESPONSE_REGEX;
 
-const SMARTPHONE_CHIPSET_REGEX = BRAND_REGEX;
-const TABLET_CHIPSET_REGEX = BRAND_REGEX;
+const SMARTPHONE_CHIPSET_REGEX = CPU_SOCKET_REGEX;
+const TABLET_CHIPSET_REGEX = CPU_SOCKET_REGEX;
 
 const ACCESSORY_TYPE_REGEX = BRAND_REGEX;
+
+const WEIGHT_UNIT_DATA: SelectInputData = [
+  { value: 'g', label: 'gram' },
+  { value: 'kg', label: 'kilogram' },
+  { value: 'lb', label: 'pound' },
+];
+
+const DIMENSION_UNIT_DATA: SelectInputData = [
+  { value: 'mm', label: 'millimetre' },
+  { value: 'cm', label: 'centimetre' },
+  { value: 'm', label: 'metre' },
+  { value: 'in', label: 'inch' },
+  { value: 'ft', label: 'feet' },
+];
 
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
   CPU_SOCKET_REGEX,
+  DIMENSION_UNIT_DATA,
   GPU_CHIPSET_REGEX,
   HEADPHONE_FREQUENCY_RESPONSE_REGEX,
   MONITOR_ASPECT_RATIO_REGEX,
@@ -64,4 +87,5 @@ export {
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_FREQUENCY_RESPONSE_REGEX,
   TABLET_CHIPSET_REGEX,
+  WEIGHT_UNIT_DATA,
 };

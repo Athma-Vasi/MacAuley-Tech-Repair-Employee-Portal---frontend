@@ -12,7 +12,6 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import jwtDecode from 'jwt-decode';
 import { ChangeEvent, useEffect, useReducer } from 'react';
 import { RxLinkBreak2 } from 'react-icons/rx';
 import {

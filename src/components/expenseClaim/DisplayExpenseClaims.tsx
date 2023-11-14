@@ -1,4 +1,5 @@
 import { Flex } from '@mantine/core';
+
 import { QueryResponseData } from '../../types';
 import { DisplayResource } from '../displayResource';
 import DisplayResourceHeader from '../displayResourceHeader/DisplayResourceHeader';

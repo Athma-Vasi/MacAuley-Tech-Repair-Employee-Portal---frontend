@@ -1,5 +1,5 @@
 import { useDisclosure } from '@mantine/hooks';
-import { useEffect, useReducer } from 'react';
+import { ChangeEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,15 +9,23 @@ import {
   createProductReducer,
   initialCreateProductState,
 } from './state';
-import { logState, urlBuilder } from '../../../utils';
+import {
+  logState,
+  returnBrandNameValidationText,
+  returnGrammarValidationText,
+  returnNumberAmountValidationText,
+  returnSerialIdValidationText,
+  urlBuilder,
+} from '../../../utils';
 import { InvalidTokenError } from 'jwt-decode';
 import { globalAction } from '../../../context/globalProvider/state';
-import { ResourceRequestServerResponse } from '../../../types';
-import { ProductDocument } from './types';
+import { Currency, ResourceRequestServerResponse } from '../../../types';
+import { DimensionUnit, ProductDocument, WeightUnit } from './types';
 import {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
   CPU_SOCKET_REGEX,
+  DIMENSION_UNIT_DATA,
   GPU_CHIPSET_REGEX,
   HEADPHONE_FREQUENCY_RESPONSE_REGEX,
   MONITOR_ASPECT_RATIO_REGEX,
@@ -27,12 +35,23 @@ import {
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_FREQUENCY_RESPONSE_REGEX,
   TABLET_CHIPSET_REGEX,
+  WEIGHT_UNIT_DATA,
 } from '../constants';
 import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
   SERIAL_ID_REGEX,
 } from '../../../constants/regex';
+import { AccessibleErrorValidTextElements } from '../../../jsxCreators';
+import {
+  AccessibleRadioSingleInputCreatorInfo,
+  AccessibleSelectInputCreatorInfo,
+  AccessibleTextInputCreatorInfo,
+} from '../../wrappers';
+import { ProductCategory } from '../../dashboard/types';
+import { PRODUCT_CATEGORIES } from '../../dashboard/constants';
+import { CURRENCY_DATA } from '../../benefits/constants';
+import { Group, NumberInput } from '@mantine/core';
 
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
@@ -706,7 +725,579 @@ function CreateProduct() {
     });
   }, [accessoryType]);
 
-  return <></>;
+  // update stepper wrapper state on every page 1 input validation change
+  useEffect(() => {
+    const arePage1InputsInError =
+      !isBrandValid ||
+      !isModelValid ||
+      !isPriceValid ||
+      !isDescriptionValid ||
+      !isAdditionalCommentsValid;
+
+    createProductDispatch({
+      type: createProductAction.setStepsInError,
+      payload: {
+        kind: arePage1InputsInError ? 'add' : 'delete',
+        step: 0,
+      },
+    });
+  }, [
+    isAdditionalCommentsValid,
+    isBrandValid,
+    isDescriptionValid,
+    isModelValid,
+    isPriceValid,
+  ]);
+
+  // update stepper wrapper state on every page 2 input validation change
+  useEffect(() => {
+    const arePage2InputsInError =
+      !isCpuSocketValid ||
+      !isGpuChipsetValid ||
+      !isMotherboardSocketValid ||
+      !isMotherboardChipsetValid ||
+      !isRamTimingValid ||
+      !isMonitorAspectRatioValid ||
+      !isHeadphoneFrequencyResponseValid ||
+      !isSpeakerFrequencyResponseValid ||
+      !isSmartphoneChipsetValid ||
+      !isTabletChipsetValid ||
+      !isAccessoryTypeValid;
+
+    createProductDispatch({
+      type: createProductAction.setStepsInError,
+      payload: {
+        kind: arePage2InputsInError ? 'add' : 'delete',
+        step: 1,
+      },
+    });
+  }, [
+    isAccessoryTypeValid,
+    isCpuSocketValid,
+    isGpuChipsetValid,
+    isHeadphoneFrequencyResponseValid,
+    isMonitorAspectRatioValid,
+    isMotherboardChipsetValid,
+    isMotherboardSocketValid,
+    isRamTimingValid,
+    isSmartphoneChipsetValid,
+    isSpeakerFrequencyResponseValid,
+    isTabletChipsetValid,
+  ]);
+
+  // update stepper wrapper state on every page 3 input validation change
+  useEffect(() => {
+    const arePage3InputsInError =
+      !areImagesValid || imgFormDataArray.length === 0;
+
+    createProductDispatch({
+      type: createProductAction.setStepsInError,
+      payload: {
+        kind: arePage3InputsInError ? 'add' : 'delete',
+        step: 2,
+      },
+    });
+  }, [areImagesValid, imgFormDataArray.length]);
+
+  // ╭────────────────╮
+  // │ Input Creators │
+  // ╰────────────────╯
+
+  // page 1
+
+  // page 1 -> brand
+
+  // page 1 -> brand -> accessible screen reader text elements
+  const [brandInputErrorText, brandInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'brand',
+      inputText: brand,
+      isInputTextFocused: isBrandFocused,
+      isValidInputText: isBrandValid,
+      regexValidationText: returnBrandNameValidationText({
+        content: brand,
+        contentKind: 'brand',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 1 -> brand -> text input element creator
+  const brandTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: brandInputErrorText,
+      valid: brandInputValidText,
+    },
+    inputText: brand,
+    isValidInputText: isBrandValid,
+    label: 'Brand',
+    maxLength: 30,
+    minLength: 2,
+    onBlur: () => {
+      createProductDispatch({
+        type: createProductAction.setIsBrandFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createProductDispatch({
+        type: createProductAction.setBrand,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createProductDispatch({
+        type: createProductAction.setIsBrandFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter brand name',
+    required: true,
+    semanticName: 'brand',
+  };
+
+  // page 1 -> model
+
+  // page 1 -> model -> accessible screen reader text elements
+  const [modelInputErrorText, modelInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'model',
+      inputText: model,
+      isInputTextFocused: isModelFocused,
+      isValidInputText: isModelValid,
+      regexValidationText: returnSerialIdValidationText({
+        content: model,
+        contentKind: 'model',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 1 -> model -> text input element creator
+  const modelTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: modelInputErrorText,
+      valid: modelInputValidText,
+    },
+    inputText: model,
+    isValidInputText: isModelValid,
+    label: 'Model',
+    maxLength: 30,
+    minLength: 2,
+    onBlur: () => {
+      createProductDispatch({
+        type: createProductAction.setIsModelFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createProductDispatch({
+        type: createProductAction.setModel,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createProductDispatch({
+        type: createProductAction.setIsModelFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter model name',
+    required: true,
+    semanticName: 'model',
+  };
+
+  // page 1 -> product category
+
+  // page 1 -> product category -> select element creator
+  const productCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: PRODUCT_CATEGORIES,
+      description: 'Select a product category',
+      label: 'Product Category',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setProductCategory,
+          payload: event.currentTarget.value as ProductCategory,
+        });
+      },
+      value: productCategory,
+      required: true,
+    };
+
+  // page 1 -> description
+
+  // page 1 -> description -> accessible screen reader text elements
+  const [descriptionInputErrorText, descriptionInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'description',
+      inputText: description,
+      isInputTextFocused: isDescriptionFocused,
+      isValidInputText: isDescriptionValid,
+      regexValidationText: returnGrammarValidationText({
+        content: description,
+        contentKind: 'description',
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+  // page 1 -> description -> text input element creator
+  const descriptionTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: descriptionInputErrorText,
+      valid: descriptionInputValidText,
+    },
+    inputText: description,
+    isValidInputText: isDescriptionValid,
+    label: 'Product Description',
+    maxLength: 2000,
+    minLength: 2,
+    onBlur: () => {
+      createProductDispatch({
+        type: createProductAction.setIsDescriptionFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createProductDispatch({
+        type: createProductAction.setDescription,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createProductDispatch({
+        type: createProductAction.setIsDescriptionFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter product description',
+    required: true,
+    semanticName: 'description',
+  };
+
+  // page 1 -> price
+
+  // page 1 -> price -> accessible screen reader text elements
+  const [priceInputErrorText, priceInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'price',
+      inputText: price,
+      isInputTextFocused: isPriceFocused,
+      isValidInputText: isPriceValid,
+      regexValidationText: returnNumberAmountValidationText({
+        content: price,
+        contentKind: 'price',
+      }),
+    });
+
+  // page 1 -> price -> text input element creator
+  const priceTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: priceInputErrorText,
+      valid: priceInputValidText,
+    },
+    inputText: price,
+    isValidInputText: isPriceValid,
+    label: 'Price',
+    onBlur: () => {
+      createProductDispatch({
+        type: createProductAction.setIsPriceFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createProductDispatch({
+        type: createProductAction.setPrice,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createProductDispatch({
+        type: createProductAction.setIsPriceFocused,
+        payload: true,
+      });
+    },
+    placeholder: 'Enter product price',
+    required: true,
+    semanticName: 'price',
+  };
+
+  // page 1 -> currency
+
+  // page 1 -> currency -> select element creator
+  const currencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: CURRENCY_DATA,
+    description: 'Select a currency',
+    label: 'Currency',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      createProductDispatch({
+        type: createProductAction.setCurrency,
+        payload: event.currentTarget.value as Currency,
+      });
+    },
+    value: currency,
+    required: true,
+  };
+
+  // page 1 -> availability
+
+  // page 1 -> availability -> radio element creator
+  const availabilityRadioInputCreatorInfo: AccessibleRadioSingleInputCreatorInfo =
+    {
+      checked: availability,
+      description: 'Select availability',
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setAvailability,
+          payload: event.currentTarget.value === 'true',
+        });
+      },
+      semanticName: 'availability',
+      required: true,
+    };
+
+  // page 1 -> quantity
+
+  // page 1 -> quantity -> number input element
+  const createdQuantityNumberInput = (
+    <NumberInput
+      description="Enter product quantity"
+      label="Quantity"
+      max={99999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setQuantity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={quantity}
+      withAsterisk
+    />
+  );
+
+  // page 1 -> weight
+
+  // page 1 -> weight -> number input element
+  const createdWeightNumberInput = (
+    <NumberInput
+      description="Enter product weight"
+      label="Weight"
+      max={99999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setWeight,
+          payload: value,
+        });
+      }}
+      precision={2}
+      required
+      startValue={0}
+      step={0.01}
+      type="number"
+      value={weight}
+      withAsterisk
+    />
+  );
+
+  // page 1 -> weight -> weight unit select input
+  const weightUnitSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: WEIGHT_UNIT_DATA,
+    description: 'Select a weight unit',
+    label: 'Weight Unit',
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      createProductDispatch({
+        type: createProductAction.setWeightUnit,
+        payload: event.currentTarget.value as WeightUnit,
+      });
+    },
+    value: weightUnit,
+    required: true,
+  };
+
+  // page 1 -> dimensions
+
+  // page 1 -> dimensions -> length number input element
+  const createdDimensionLengthNumberInput = (
+    <NumberInput
+      description="Enter product length"
+      label="Length"
+      max={99999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setDimensionLength,
+          payload: value,
+        });
+      }}
+      precision={2}
+      required
+      startValue={0}
+      step={0.01}
+      type="number"
+      value={dimensionLength}
+      withAsterisk
+    />
+  );
+
+  // page 1 -> dimensions -> length unit select input
+  const dimensionLengthUnitSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: DIMENSION_UNIT_DATA,
+      description: 'Select a length unit',
+      label: 'Length Unit',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setDimensionLengthUnit,
+          payload: event.currentTarget.value as DimensionUnit,
+        });
+      },
+      value: dimensionLengthUnit,
+      required: true,
+    };
+
+  // page 1 -> dimensions -> width number input element
+  const createdDimensionWidthNumberInput = (
+    <NumberInput
+      description="Enter product width"
+      label="Width"
+      max={99999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setDimensionWidth,
+          payload: value,
+        });
+      }}
+      precision={2}
+      required
+      startValue={0}
+      step={0.01}
+      type="number"
+      value={dimensionWidth}
+      withAsterisk
+    />
+  );
+
+  // page 1 -> dimensions -> width unit select input
+  const dimensionWidthUnitSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: DIMENSION_UNIT_DATA,
+      description: 'Select a width unit',
+      label: 'Width Unit',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setDimensionWidthUnit,
+          payload: event.currentTarget.value as DimensionUnit,
+        });
+      },
+      value: dimensionWidthUnit,
+      required: true,
+    };
+
+  // page 1 -> dimensions -> height number input element
+  const createdDimensionHeightNumberInput = (
+    <NumberInput
+      description="Enter product height"
+      label="Height"
+      max={99999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setDimensionHeight,
+          payload: value,
+        });
+      }}
+      precision={2}
+      required
+      startValue={0}
+      step={0.01}
+      type="number"
+      value={dimensionHeight}
+      withAsterisk
+    />
+  );
+
+  // page 1 -> dimensions -> height unit select input
+  const dimensionHeightUnitSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
+    {
+      data: DIMENSION_UNIT_DATA,
+      description: 'Select a height unit',
+      label: 'Height Unit',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setDimensionHeightUnit,
+          payload: event.currentTarget.value as DimensionUnit,
+        });
+      },
+      value: dimensionHeightUnit,
+      required: true,
+    };
+
+  // page 1 -> additional comments
+
+  // page 1 -> additional comments -> accessible screen reader text elements
+  const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'additional comments',
+      inputText: additionalComments,
+      isInputTextFocused: isAdditionalCommentsFocused,
+      isValidInputText: isAdditionalCommentsValid,
+      regexValidationText: returnGrammarValidationText({
+        content: additionalComments,
+        contentKind: 'additional comments',
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+  // page 1 -> additional comments -> text input element creator
+  const additionalCommentsTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+    {
+      description: {
+        error: additionalCommentsInputErrorText,
+        valid: additionalCommentsInputValidText,
+      },
+      inputText: additionalComments,
+      isValidInputText: isAdditionalCommentsValid,
+      label: 'Additional Comments',
+      maxLength: 2000,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsAdditionalCommentsFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setAdditionalComments,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsAdditionalCommentsFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter additional comments',
+      required: true,
+      semanticName: 'additional comments',
+    };
+
+  // page 2
+
+  //
+  //
+  //
+  return <Group w={330}>{createdQuantityNumberInput}</Group>;
 }
 
 export default CreateProduct;

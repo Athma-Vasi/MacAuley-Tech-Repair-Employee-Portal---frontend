@@ -8,6 +8,7 @@ import {
 const initialPortalNavbarState: PortalNavbarState = {
   isHomeActive: true,
   isDashboardActive: false,
+  isProductActive: false,
   isNotesActive: false,
 
   // company
@@ -37,6 +38,7 @@ const initialPortalNavbarState: PortalNavbarState = {
 const portalNavbarAction: PortalNavbarAction = {
   setIsHomeActive: 'setIsHomeActive',
   setIsDashboardActive: 'setIsDashboardActive',
+  setIsProductActive: 'setIsProductActive',
   setIsNotesActive: 'setIsNotesActive',
 
   // company
@@ -83,6 +85,16 @@ function portalNavbarReducer(
         navlinksState: state,
         payload: action.payload,
         toggledNavlink: 'isDashboardActive',
+      });
+
+      return updatedState;
+    }
+
+    case portalNavbarAction.setIsProductActive: {
+      const updatedState = toggleNavlinksActive({
+        navlinksState: state,
+        payload: action.payload,
+        toggledNavlink: 'isProductActive',
       });
 
       return updatedState;

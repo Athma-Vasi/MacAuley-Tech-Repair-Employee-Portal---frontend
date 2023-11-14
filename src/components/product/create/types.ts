@@ -1377,4 +1377,5 @@ export type {
   StorageSpecifications,
   StorageType,
   TabletSpecifications,
+  WeightUnit,
 };
