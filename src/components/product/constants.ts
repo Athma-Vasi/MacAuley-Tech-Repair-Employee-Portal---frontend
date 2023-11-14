@@ -30,6 +30,14 @@ const MOTHERBOARD_CHIPSET_REGEX = CPU_SOCKET_REGEX;
 const RAM_TIMING_REGEX = /^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/;
 
 /**
+ * - /^[a-zA-Z0-9\s-]{2,30}$/;
+ * - [a-zA-Z0-9\s-] matches any character between a-z, A-Z, 0-9, whitespace and -.
+ * - {2,30} matches between 2 and 30 of the preceding token.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const COLOR_VARIANT_REGEX = /^[a-zA-Z0-9\s-]{2,30}$/;
+
+/**
  * - /^[0-9]{2}:[0-9]{2}$/
  * - [0-9] matches any digit between 0 and 9.
  * - {2} matches the preceding token exactly 2 times.
@@ -37,7 +45,7 @@ const RAM_TIMING_REGEX = /^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/;
  * - ^ and $ ensure that the entire string matches the regex.
  * - ex: 16:9
  */
-const MONITOR_ASPECT_RATIO_REGEX = /^[0-9]{2}:[0-9]{2}$/;
+const DISPLAY_ASPECT_RATIO_REGEX = /^[0-9]{2}:[0-9]{2}$/;
 
 /**
  * - /^[0-9]{2} hz - [0-9]{2} kHz$/
@@ -96,6 +104,14 @@ const MOTHERBOARD_MEMORY_TYPE_DATA: SelectInputData = [
   { value: 'DDR5', label: 'DDR5' },
 ];
 
+const RAM_MEMORY_TYPE_DATA: SelectInputData = [
+  { value: 'DDR', label: 'DDR' },
+  { value: 'DDR2', label: 'DDR2' },
+  { value: 'DDR3', label: 'DDR3' },
+  { value: 'DDR4', label: 'DDR4' },
+  { value: 'DDR5', label: 'DDR5' },
+];
+
 const STORAGE_TYPE_DATA: SelectInputData = [
   { value: 'HDD', label: 'HDD' },
   { value: 'SSD', label: 'SSD' },
@@ -144,9 +160,6 @@ const PSU_FORM_FACTOR_DATA: SelectInputData = [
   { value: 'Other', label: 'Other' },
 ];
 
-/**
- * type PsuModularity = 'Full' | 'Semi' | 'None' | 'Other';
- */
 const PSU_MODULARITY_DATA: SelectInputData = [
   { value: 'Full', label: 'Full' },
   { value: 'Semi', label: 'Semi' },
@@ -154,15 +167,43 @@ const PSU_MODULARITY_DATA: SelectInputData = [
   { value: 'Other', label: 'Other' },
 ];
 
+const CASE_TYPE_DATA: SelectInputData = [
+  { value: 'Mid Tower', label: 'Mid Tower' },
+  { value: 'Full Tower', label: 'Full Tower' },
+  { value: 'Mini Tower', label: 'Mini Tower' },
+  { value: 'Cube', label: 'Cube' },
+  { value: 'Slim', label: 'Slim' },
+  { value: 'Desktop', label: 'Desktop' },
+  { value: 'Other', label: 'Other' },
+];
+
+const CASE_SIDE_PANEL_DATA: SelectInputData = [
+  { label: 'Windowed', value: 'Windowed' },
+  { label: 'Solid', value: 'Solid' },
+];
+
+const MONITOR_PANEL_TYPE_DATA: SelectInputData = [
+  { value: 'IPS', label: 'IPS' },
+  { value: 'TN', label: 'TN' },
+  { value: 'VA', label: 'VA' },
+  { value: 'OLED', label: 'OLED' },
+  { value: 'QLED', label: 'QLED' },
+  { value: 'Other', label: 'Other' },
+];
+
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
+  CASE_SIDE_PANEL_DATA,
+  CASE_TYPE_DATA,
+  COLOR_VARIANT_REGEX,
   CPU_SOCKET_REGEX,
   DIMENSION_UNIT_DATA,
   GPU_CHIPSET_REGEX,
   HEADPHONE_FREQUENCY_RESPONSE_REGEX,
   MEMORY_UNIT_DATA,
-  MONITOR_ASPECT_RATIO_REGEX,
+  DISPLAY_ASPECT_RATIO_REGEX,
+  MONITOR_PANEL_TYPE_DATA,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_FORM_FACTOR_DATA,
   MOTHERBOARD_MEMORY_TYPE_DATA,
@@ -170,6 +211,7 @@ export {
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
+  RAM_MEMORY_TYPE_DATA,
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_FREQUENCY_RESPONSE_REGEX,

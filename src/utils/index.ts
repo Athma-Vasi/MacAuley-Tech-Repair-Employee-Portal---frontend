@@ -1005,8 +1005,8 @@ function returnFilenameValidationText({
 function returnBrandNameValidationText({
   content,
   contentKind,
-  maxLength = 50,
-  minLength = 1,
+  maxLength = 30,
+  minLength = 2,
 }: RegexValidationProps): string {
   // /^[a-zA-Z0-9\s-]{2,30}$/
   const brandNameLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
@@ -1038,8 +1038,8 @@ function returnBrandNameValidationText({
 function returnSocketChipsetValidationText({
   content,
   contentKind,
-  maxLength = 50,
-  minLength = 1,
+  maxLength = 30,
+  minLength = 2,
 }: RegexValidationProps): string {
   // /^[a-zA-Z0-9\s.,'()-]{2,30}$/
   const socketChipsetNameLengthRegex = new RegExp(
@@ -1067,6 +1067,110 @@ function returnSocketChipsetValidationText({
     ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
         1
       )}. ${validationText}`
+    : '';
+}
+
+function returnColorVariantValidationText({
+  content,
+  contentKind,
+  maxLength = 30,
+  minLength = 2,
+}: RegexValidationProps): string {
+  // /^[a-zA-Z0-9\s-]{2,30}$/
+
+  const colorVariantLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const colorVariantCharacterRegex = /^[a-zA-Z0-9\s-]+$/;
+
+  const colorVariantRegexTupleArr: [boolean, string][] = [
+    [
+      colorVariantLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      colorVariantCharacterRegex.test(content),
+      'Must only contain letters, numbers, spaces, and hyphens.',
+    ],
+  ];
+
+  const validationText = colorVariantRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnRamTimingValidationText({
+  content,
+  contentKind,
+  maxLength = 11,
+  minLength = 11,
+}: RegexValidationProps): string {
+  // /^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/;
+  const ramTimingLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const ramTimingCharacterRegex = /^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/;
+
+  const ramTimingRegexTupleArr: [boolean, string][] = [
+    [
+      ramTimingLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      ramTimingCharacterRegex.test(content),
+      'Must be a valid RAM timing in the format 00-00-00-00.',
+    ],
+  ];
+
+  const validationText = ramTimingRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}: ${validationText}`
+    : '';
+}
+
+function returnDisplayAspectRatioValidationText({
+  content,
+  contentKind,
+  maxLength = 5,
+  minLength = 5,
+}: RegexValidationProps): string {
+  // /^[0-9]{2}:[0-9]{2}$/
+  const monitorAspectRatioLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const monitorAspectRatioCharacterRegex = /^[0-9]{2}:[0-9]{2}$/;
+
+  const monitorAspectRatioRegexTupleArr: [boolean, string][] = [
+    [
+      monitorAspectRatioLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      monitorAspectRatioCharacterRegex.test(content),
+      'Must be a valid monitor aspect ratio in the format 00:00.',
+    ],
+  ];
+
+  const validationText = monitorAspectRatioRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}: ${validationText}`
     : '';
 }
 
@@ -1982,11 +2086,13 @@ export {
   returnAddressValidationText,
   returnBrandNameValidationText,
   returnCityValidationText,
+  returnColorVariantValidationText,
   returnDateFullRangeValidationText,
   returnDateNearFutureValidationText,
   returnDateNearPastValidationText,
   returnDateOfBirthValidationText,
   returnDateValidationText,
+  returnDisplayAspectRatioValidationText,
   returnElapsedTime,
   returnEmailValidationText,
   returnFilenameValidationText,
@@ -2001,6 +2107,7 @@ export {
   returnPostalCodeValidationText,
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
+  returnRamTimingValidationText,
   returnSerialIdValidationText,
   returnSliderMarks,
   returnSocketChipsetValidationText,

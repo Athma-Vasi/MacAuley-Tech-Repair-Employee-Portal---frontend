@@ -93,7 +93,9 @@ const initialCreateProductState: CreateProductState = {
   ramModulesCapacity: 0,
   ramModulesCapacityUnit: 'GB',
   ramType: 'DDR4',
-  ramColor: 'Black',
+  ramColor: 'Gold',
+  isRamColorFocused: false,
+  isRamColorValid: false,
   ramVoltage: 0,
   ramTiming: '00-00-00-00',
   isRamTimingFocused: false,
@@ -116,6 +118,8 @@ const initialCreateProductState: CreateProductState = {
 
   // page 2 -> specifications -> case
   caseColor: 'Black',
+  isCaseColorFocused: false,
+  isCaseColorValid: false,
   caseType: 'Mid Tower',
   caseSidePanel: 'Solid',
 
@@ -141,11 +145,15 @@ const initialCreateProductState: CreateProductState = {
   mouseButtons: 0,
   mouseInterface: 'USB',
   mouseColor: 'Black',
+  isMouseColorFocused: false,
+  isMouseColorValid: false,
   mouseSensor: 'Optical',
 
   // page 2 -> specifications -> headphone
   headphoneType: 'Over-ear',
   headphoneColor: 'Black',
+  isHeadphoneColorFocused: false,
+  isHeadphoneColorValid: false,
   headphoneInterface: 'USB',
   headphoneDriver: 0,
   headphoneFrequencyResponse: '',
@@ -156,6 +164,8 @@ const initialCreateProductState: CreateProductState = {
   // page 2 -> specifications -> speaker
   speakerType: '2.0',
   speakerColor: 'Black',
+  isSpeakerColorFocused: false,
+  isSpeakerColorValid: false,
   speakerInterface: 'USB',
   speakerFrequencyResponse: '',
   isSpeakerFrequencyResponseFocused: false,
@@ -169,6 +179,8 @@ const initialCreateProductState: CreateProductState = {
   isSmartphoneChipsetFocused: false,
   isSmartphoneChipsetValid: false,
   smartphoneColor: 'Black',
+  isSmartphoneColorFocused: false,
+  isSmartphoneColorValid: false,
   smartphoneDisplay: 0,
   smartphoneResolutionHorizontal: 0,
   smartphoneResolutionVertical: 0,
@@ -184,6 +196,8 @@ const initialCreateProductState: CreateProductState = {
   isTabletChipsetFocused: false,
   isTabletChipsetValid: false,
   tabletColor: 'Black',
+  isTabletColorFocused: false,
+  isTabletColorValid: false,
   tabletDisplay: 0,
   tabletResolutionHorizontal: 0,
   tabletResolutionVertical: 0,
@@ -194,6 +208,8 @@ const initialCreateProductState: CreateProductState = {
 
   // page 2 -> specifications -> accessories
   accessoryColor: 'Black',
+  isAccessoryColorFocused: false,
+  isAccessoryColorValid: false,
   accessoryInterface: 'USB',
   accessoryType: '',
   isAccessoryTypeFocused: false,
@@ -306,6 +322,8 @@ const createProductAction: CreateProductAction = {
   setRamModulesCapacityUnit: 'setRamModulesCapacityUnit',
   setRamType: 'setRamType',
   setRamColor: 'setRamColor',
+  setIsRamColorValid: 'setIsRamColorValid',
+  setIsRamColorFocused: 'setIsRamColorFocused',
   setRamVoltage: 'setRamVoltage',
   setRamTiming: 'setRamTiming',
   setIsRamTimingValid: 'setIsRamTimingValid',
@@ -328,6 +346,8 @@ const createProductAction: CreateProductAction = {
 
   // page 2 -> specifications -> case
   setCaseColor: 'setCaseColor',
+  setIsCaseColorValid: 'setIsCaseColorValid',
+  setIsCaseColorFocused: 'setIsCaseColorFocused',
   setCaseType: 'setCaseType',
   setCaseSidePanel: 'setCaseSidePanel',
 
@@ -353,6 +373,8 @@ const createProductAction: CreateProductAction = {
   setMouseDpi: 'setMouseDpi',
   setMouseButtons: 'setMouseButtons',
   setMouseColor: 'setMouseColor',
+  setIsMouseColorValid: 'setIsMouseColorValid',
+  setIsMouseColorFocused: 'setIsMouseColorFocused',
   setMouseInterface: 'setMouseInterface',
 
   // page 2 -> specifications -> headphone
@@ -364,6 +386,8 @@ const createProductAction: CreateProductAction = {
     'setIsHeadphoneFrequencyResponseFocused',
   setHeadphoneImpedance: 'setHeadphoneImpedance',
   setHeadphoneColor: 'setHeadphoneColor',
+  setIsHeadphoneColorValid: 'setIsHeadphoneColorValid',
+  setIsHeadphoneColorFocused: 'setIsHeadphoneColorFocused',
   setHeadphoneInterface: 'setHeadphoneInterface',
 
   // page 2 -> specifications -> speaker
@@ -373,6 +397,8 @@ const createProductAction: CreateProductAction = {
   setIsSpeakerFrequencyResponseValid: 'setIsSpeakerFrequencyResponseValid',
   setIsSpeakerFrequencyResponseFocused: 'setIsSpeakerFrequencyResponseFocused',
   setSpeakerColor: 'setSpeakerColor',
+  setIsSpeakerColorValid: 'setIsSpeakerColorValid',
+  setIsSpeakerColorFocused: 'setIsSpeakerColorFocused',
   setSpeakerInterface: 'setSpeakerInterface',
 
   // page 2 -> specifications -> smartphone
@@ -389,6 +415,8 @@ const createProductAction: CreateProductAction = {
   setSmartphoneBatteryCapacity: 'setSmartphoneBatteryCapacity',
   setSmartphoneCamera: 'setSmartphoneCamera',
   setSmartphoneColor: 'setSmartphoneColor',
+  setIsSmartphoneColorValid: 'setIsSmartphoneColorValid',
+  setIsSmartphoneColorFocused: 'setIsSmartphoneColorFocused',
 
   // page 2 -> specifications -> tablet
   setTabletOs: 'setTabletOs',
@@ -404,12 +432,16 @@ const createProductAction: CreateProductAction = {
   setTabletBatteryCapacity: 'setTabletBatteryCapacity',
   setTabletCamera: 'setTabletCamera',
   setTabletColor: 'setTabletColor',
+  setIsTabletColorValid: 'setIsTabletColorValid',
+  setIsTabletColorFocused: 'setIsTabletColorFocused',
 
   // page 2 -> specifications -> accessory
   setAccessoryType: 'setAccessoryType',
   setIsAccessoryTypeValid: 'setIsAccessoryTypeValid',
   setIsAccessoryTypeFocused: 'setIsAccessoryTypeFocused',
   setAccessoryColor: 'setAccessoryColor',
+  setIsAccessoryColorValid: 'setIsAccessoryColorValid',
+  setIsAccessoryColorFocused: 'setIsAccessoryColorFocused',
   setAccessoryInterface: 'setAccessoryInterface',
 
   // page 3
@@ -808,6 +840,16 @@ function createProductReducer(
         ...state,
         ramColor: action.payload,
       };
+    case createProductAction.setIsRamColorFocused:
+      return {
+        ...state,
+        isRamColorFocused: action.payload,
+      };
+    case createProductAction.setIsRamColorValid:
+      return {
+        ...state,
+        isRamColorValid: action.payload,
+      };
     case createProductAction.setRamVoltage:
       return {
         ...state,
@@ -893,6 +935,16 @@ function createProductReducer(
       return {
         ...state,
         caseColor: action.payload,
+      };
+    case createProductAction.setIsCaseColorFocused:
+      return {
+        ...state,
+        isCaseColorFocused: action.payload,
+      };
+    case createProductAction.setIsCaseColorValid:
+      return {
+        ...state,
+        isCaseColorValid: action.payload,
       };
     case createProductAction.setCaseType:
       return {
@@ -995,6 +1047,16 @@ function createProductReducer(
         ...state,
         mouseColor: action.payload,
       };
+    case createProductAction.setIsMouseColorFocused:
+      return {
+        ...state,
+        isMouseColorFocused: action.payload,
+      };
+    case createProductAction.setIsMouseColorValid:
+      return {
+        ...state,
+        isMouseColorValid: action.payload,
+      };
     case createProductAction.setMouseInterface:
       return {
         ...state,
@@ -1037,6 +1099,16 @@ function createProductReducer(
         ...state,
         headphoneColor: action.payload,
       };
+    case createProductAction.setIsHeadphoneColorFocused:
+      return {
+        ...state,
+        isHeadphoneColorFocused: action.payload,
+      };
+    case createProductAction.setIsHeadphoneColorValid:
+      return {
+        ...state,
+        isHeadphoneColorValid: action.payload,
+      };
     case createProductAction.setHeadphoneInterface:
       return {
         ...state,
@@ -1073,6 +1145,16 @@ function createProductReducer(
       return {
         ...state,
         speakerColor: action.payload,
+      };
+    case createProductAction.setIsSpeakerColorFocused:
+      return {
+        ...state,
+        isSpeakerColorFocused: action.payload,
+      };
+    case createProductAction.setIsSpeakerColorValid:
+      return {
+        ...state,
+        isSpeakerColorValid: action.payload,
       };
     case createProductAction.setSpeakerInterface:
       return {
@@ -1146,6 +1228,16 @@ function createProductReducer(
         ...state,
         smartphoneColor: action.payload,
       };
+    case createProductAction.setIsSmartphoneColorFocused:
+      return {
+        ...state,
+        isSmartphoneColorFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneColorValid:
+      return {
+        ...state,
+        isSmartphoneColorValid: action.payload,
+      };
 
     // page 2 -> specifications -> tablet
     case createProductAction.setTabletOs:
@@ -1203,6 +1295,21 @@ function createProductReducer(
         ...state,
         tabletBatteryCapacity: action.payload,
       };
+    case createProductAction.setTabletCamera:
+      return {
+        ...state,
+        tabletCamera: action.payload,
+      };
+    case createProductAction.setTabletColor:
+      return {
+        ...state,
+        tabletColor: action.payload,
+      };
+    case createProductAction.setIsTabletColorFocused:
+      return {
+        ...state,
+        isTabletColorFocused: action.payload,
+      };
 
     // page 2 -> specifications -> accessory
     case createProductAction.setAccessoryType:
@@ -1224,6 +1331,16 @@ function createProductReducer(
       return {
         ...state,
         accessoryColor: action.payload,
+      };
+    case createProductAction.setIsAccessoryColorFocused:
+      return {
+        ...state,
+        isAccessoryColorFocused: action.payload,
+      };
+    case createProductAction.setIsAccessoryColorValid:
+      return {
+        ...state,
+        isAccessoryColorValid: action.payload,
       };
     case createProductAction.setAccessoryInterface:
       return {

@@ -2,16 +2,6 @@ import { Action, Currency, SetStepsInErrorPayload } from '../../../types';
 import { ActionsDashboard } from '../../../types/actions.types';
 import { ProductCategory } from '../../dashboard/types';
 
-type ColorVariant =
-  | 'Black'
-  | 'White'
-  | 'Silver'
-  | 'Gold'
-  | 'Space Gray'
-  | 'Blue'
-  | 'Green'
-  | 'Red';
-
 type DesktopComputerSpecifications = {
   cpu: CpuSpecifications;
   gpu: GpuSpecifications;
@@ -82,7 +72,7 @@ type RamSpecifications = {
   frequency: string; // 3200 MHz, 3600 MHz, etc.
   modules: string; // 2 x 8 GB, 4 x 8 GB, etc.
   ramType: MemoryType; // DDR4, etc.
-  color: ColorVariant; // Black, White, etc.
+  color: string; // Black, White, etc.
   voltage: string; // 1.35 V, etc.
   timing: string; // 16-18-18-38, etc.
 };
@@ -141,15 +131,16 @@ type CaseType =
   | 'Mini Tower'
   | 'Cube'
   | 'Slim'
-  | 'Desktop';
+  | 'Desktop'
+  | 'Other';
 type CaseSidePanel = 'Windowed' | 'Solid';
 type CaseSpecifications = {
   caseType: CaseType; // Mid Tower, Full Tower, etc.
-  color: ColorVariant; // Black, White, etc.
+  color: string; // Black, White, etc.
   sidePanel: CaseSidePanel; // windowed or not
 };
 
-type MonitorPanelType = 'IPS' | 'TN' | 'VA';
+type MonitorPanelType = 'IPS' | 'TN' | 'VA' | 'OLED' | 'QLED' | 'Other';
 type DisplayResolution = {
   horizontal: number;
   vertical: number;
@@ -185,7 +176,7 @@ type MouseSpecifications = {
   sensor: MouseSensor; // Optical, Laser, etc.
   dpi: number; // 800, 1600, etc.
   buttons: number; // 6, 8, etc.
-  color: ColorVariant; // Black, White, etc.
+  color: string; // Black, White, etc.
   interface: PeripheralsInterface; // USB, Bluetooth, etc.
 };
 
@@ -196,7 +187,7 @@ type HeadphoneSpecifications = {
   driver: string; // 50 mm, 53 mm, etc.
   frequencyResponse: string; // 20 Hz - 20 kHz, etc.
   impedance: string; // 32 Ohm, 64 Ohm, etc.
-  color: ColorVariant; // Black, White, etc.
+  color: string; // Black, White, etc.
   interface: HeadphoneInterface; // USB, Bluetooth, etc.
 };
 
@@ -206,7 +197,7 @@ type SpeakerSpecifications = {
   speakerType: SpeakerType; // 2.0, 2.1, etc.
   totalWattage: string; // 10 W, 20 W, etc.
   frequencyResponse: string; // 20 Hz - 20 kHz, etc.
-  color: ColorVariant; // Black, White, etc.
+  color: string; // Black, White, etc.
   interface: SpeakerInterface; // USB, Bluetooth, etc.
 };
 
@@ -220,14 +211,14 @@ type SmartphoneSpecifications = {
   storage: string; // 128 GB, 256 GB, etc.
   battery: string; // 5000 mAh, 6000 mAh, etc.
   camera: string; // 108 MP, 64 MP, etc.
-  color: ColorVariant; // Black, White, etc.
+  color: string; // Black, White, etc.
 };
 
 type TabletSpecifications = SmartphoneSpecifications;
 
 type AccessorySpecifications = {
   accessoryType: string; // Headphones, Speakers, etc.
-  color: ColorVariant; // Black, White, etc.
+  color: string; // Black, White, etc.
   interface: PeripheralsInterface; // USB, Bluetooth, etc.
 };
 
@@ -391,7 +382,9 @@ type CreateProductState = {
   ramModulesCapacity: number;
   ramModulesCapacityUnit: MemoryUnit;
   ramType: MemoryType;
-  ramColor: ColorVariant;
+  ramColor: string;
+  isRamColorValid: boolean;
+  isRamColorFocused: boolean;
   ramVoltage: number;
   ramTiming: string;
   isRamTimingValid: boolean;
@@ -414,7 +407,9 @@ type CreateProductState = {
 
   // page 2 -> specifications -> case
   caseType: CaseType;
-  caseColor: ColorVariant;
+  caseColor: string;
+  isCaseColorValid: boolean;
+  isCaseColorFocused: boolean;
   caseSidePanel: CaseSidePanel;
 
   // page 2 -> specifications -> monitor
@@ -438,7 +433,9 @@ type CreateProductState = {
   mouseSensor: MouseSensor;
   mouseDpi: number;
   mouseButtons: number;
-  mouseColor: ColorVariant;
+  mouseColor: string;
+  isMouseColorValid: boolean;
+  isMouseColorFocused: boolean;
   mouseInterface: PeripheralsInterface;
 
   // page 2 -> specifications -> headphone
@@ -448,7 +445,9 @@ type CreateProductState = {
   isHeadphoneFrequencyResponseValid: boolean;
   isHeadphoneFrequencyResponseFocused: boolean;
   headphoneImpedance: number;
-  headphoneColor: ColorVariant;
+  headphoneColor: string;
+  isHeadphoneColorValid: boolean;
+  isHeadphoneColorFocused: boolean;
   headphoneInterface: HeadphoneInterface;
 
   // page 2 -> specifications -> speaker
@@ -457,7 +456,9 @@ type CreateProductState = {
   speakerFrequencyResponse: string;
   isSpeakerFrequencyResponseValid: boolean;
   isSpeakerFrequencyResponseFocused: boolean;
-  speakerColor: ColorVariant;
+  speakerColor: string;
+  isSpeakerColorValid: boolean;
+  isSpeakerColorFocused: boolean;
   speakerInterface: SpeakerInterface;
 
   // page 2 -> specifications -> smartphone
@@ -473,7 +474,9 @@ type CreateProductState = {
   smartphoneStorageCapacity: number; // GB
   smartphoneBatteryCapacity: number; // mAh
   smartphoneCamera: string; // 108 MP, 64 MP, etc.
-  smartphoneColor: ColorVariant;
+  smartphoneColor: string;
+  isSmartphoneColorValid: boolean;
+  isSmartphoneColorFocused: boolean;
 
   // page 2 -> specifications -> tablet
   tabletOs: MobileOs;
@@ -488,13 +491,17 @@ type CreateProductState = {
   tabletStorageCapacity: number; // GB
   tabletBatteryCapacity: number; // mAh
   tabletCamera: string; // 108 MP, 64 MP, etc.
-  tabletColor: ColorVariant;
+  tabletColor: string;
+  isTabletColorValid: boolean;
+  isTabletColorFocused: boolean;
 
   // page 2 -> specifications -> accessory
   accessoryType: string;
   isAccessoryTypeValid: boolean;
   isAccessoryTypeFocused: boolean;
-  accessoryColor: ColorVariant;
+  accessoryColor: string;
+  isAccessoryColorValid: boolean;
+  isAccessoryColorFocused: boolean;
   accessoryInterface: PeripheralsInterface;
 
   // page 3
@@ -603,6 +610,8 @@ type CreateProductAction = {
   setRamModulesCapacityUnit: 'setRamModulesCapacityUnit';
   setRamType: 'setRamType';
   setRamColor: 'setRamColor';
+  setIsRamColorValid: 'setIsRamColorValid';
+  setIsRamColorFocused: 'setIsRamColorFocused';
   setRamVoltage: 'setRamVoltage';
   setRamTiming: 'setRamTiming';
   setIsRamTimingValid: 'setIsRamTimingValid';
@@ -626,6 +635,8 @@ type CreateProductAction = {
   // page 2 -> specifications -> case
   setCaseType: 'setCaseType';
   setCaseColor: 'setCaseColor';
+  setIsCaseColorValid: 'setIsCaseColorValid';
+  setIsCaseColorFocused: 'setIsCaseColorFocused';
   setCaseSidePanel: 'setCaseSidePanel';
 
   // page 2 -> specifications -> monitor
@@ -650,6 +661,8 @@ type CreateProductAction = {
   setMouseDpi: 'setMouseDpi';
   setMouseButtons: 'setMouseButtons';
   setMouseColor: 'setMouseColor';
+  setIsMouseColorValid: 'setIsMouseColorValid';
+  setIsMouseColorFocused: 'setIsMouseColorFocused';
   setMouseInterface: 'setMouseInterface';
 
   // page 2 -> specifications -> headphone
@@ -660,6 +673,8 @@ type CreateProductAction = {
   setIsHeadphoneFrequencyResponseFocused: 'setIsHeadphoneFrequencyResponseFocused';
   setHeadphoneImpedance: 'setHeadphoneImpedance';
   setHeadphoneColor: 'setHeadphoneColor';
+  setIsHeadphoneColorValid: 'setIsHeadphoneColorValid';
+  setIsHeadphoneColorFocused: 'setIsHeadphoneColorFocused';
   setHeadphoneInterface: 'setHeadphoneInterface';
 
   // page 2 -> specifications -> speaker
@@ -669,6 +684,8 @@ type CreateProductAction = {
   setIsSpeakerFrequencyResponseValid: 'setIsSpeakerFrequencyResponseValid';
   setIsSpeakerFrequencyResponseFocused: 'setIsSpeakerFrequencyResponseFocused';
   setSpeakerColor: 'setSpeakerColor';
+  setIsSpeakerColorValid: 'setIsSpeakerColorValid';
+  setIsSpeakerColorFocused: 'setIsSpeakerColorFocused';
   setSpeakerInterface: 'setSpeakerInterface';
 
   // page 2 -> specifications -> smartphone
@@ -685,6 +702,8 @@ type CreateProductAction = {
   setSmartphoneBatteryCapacity: 'setSmartphoneBatteryCapacity';
   setSmartphoneCamera: 'setSmartphoneCamera';
   setSmartphoneColor: 'setSmartphoneColor';
+  setIsSmartphoneColorValid: 'setIsSmartphoneColorValid';
+  setIsSmartphoneColorFocused: 'setIsSmartphoneColorFocused';
 
   // page 2 -> specifications -> tablet
   setTabletOs: 'setTabletOs';
@@ -700,12 +719,16 @@ type CreateProductAction = {
   setTabletBatteryCapacity: 'setTabletBatteryCapacity';
   setTabletCamera: 'setTabletCamera';
   setTabletColor: 'setTabletColor';
+  setIsTabletColorValid: 'setIsTabletColorValid';
+  setIsTabletColorFocused: 'setIsTabletColorFocused';
 
   // page 2 -> specifications -> accessory
   setAccessoryType: 'setAccessoryType';
   setIsAccessoryTypeValid: 'setIsAccessoryTypeValid';
   setIsAccessoryTypeFocused: 'setIsAccessoryTypeFocused';
   setAccessoryColor: 'setAccessoryColor';
+  setIsAccessoryColorValid: 'setIsAccessoryColorValid';
+  setIsAccessoryColorFocused: 'setIsAccessoryColorFocused';
   setAccessoryInterface: 'setAccessoryInterface';
 
   // page 3
@@ -977,7 +1000,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setRamColor'];
-      payload: ColorVariant;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsRamColorValid']
+        | CreateProductAction['setIsRamColorFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setRamVoltage'];
@@ -1046,7 +1075,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setCaseColor'];
-      payload: ColorVariant;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsCaseColorValid']
+        | CreateProductAction['setIsCaseColorFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setCaseSidePanel'];
@@ -1119,7 +1154,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setMouseColor'];
-      payload: ColorVariant;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMouseColorValid']
+        | CreateProductAction['setIsMouseColorFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMouseInterface'];
@@ -1150,7 +1191,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setHeadphoneColor'];
-      payload: ColorVariant;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsHeadphoneColorValid']
+        | CreateProductAction['setIsHeadphoneColorFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setHeadphoneInterface'];
@@ -1177,7 +1224,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setSpeakerColor'];
-      payload: ColorVariant;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSpeakerColorValid']
+        | CreateProductAction['setIsSpeakerColorFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setSpeakerInterface'];
@@ -1232,7 +1285,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setSmartphoneColor'];
-      payload: ColorVariant;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSmartphoneColorValid']
+        | CreateProductAction['setIsSmartphoneColorFocused'];
+      payload: boolean;
     }
   // specifications -> tablet
   | {
@@ -1283,7 +1342,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setTabletColor'];
-      payload: ColorVariant;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletColorValid']
+        | CreateProductAction['setIsTabletColorFocused'];
+      payload: boolean;
     }
   // specifications -> accessory
   | {
@@ -1298,7 +1363,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setAccessoryColor'];
-      payload: ColorVariant;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsAccessoryColorValid']
+        | CreateProductAction['setIsAccessoryColorFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setAccessoryInterface'];
@@ -1346,7 +1417,6 @@ export type {
   CaseSidePanel,
   CaseSpecifications,
   CaseType,
-  ColorVariant,
   CpuSpecifications,
   CreateProductAction,
   CreateProductDispatch,

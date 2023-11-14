@@ -12,8 +12,11 @@ import {
 import {
   logState,
   returnBrandNameValidationText,
+  returnColorVariantValidationText,
+  returnDisplayAspectRatioValidationText,
   returnGrammarValidationText,
   returnNumberAmountValidationText,
+  returnRamTimingValidationText,
   returnSerialIdValidationText,
   returnSocketChipsetValidationText,
   urlBuilder,
@@ -22,9 +25,12 @@ import { InvalidTokenError } from 'jwt-decode';
 import { globalAction } from '../../../context/globalProvider/state';
 import { Currency, ResourceRequestServerResponse } from '../../../types';
 import {
+  CaseSidePanel,
+  CaseType,
   DimensionUnit,
   MemoryType,
   MemoryUnit,
+  MonitorPanelType,
   MotherboardFormFactor,
   ProductDocument,
   PsuEfficiency,
@@ -38,12 +44,16 @@ import {
 import {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
+  CASE_SIDE_PANEL_DATA,
+  CASE_TYPE_DATA,
+  COLOR_VARIANT_REGEX,
   CPU_SOCKET_REGEX,
   DIMENSION_UNIT_DATA,
   GPU_CHIPSET_REGEX,
   HEADPHONE_FREQUENCY_RESPONSE_REGEX,
   MEMORY_UNIT_DATA,
-  MONITOR_ASPECT_RATIO_REGEX,
+  DISPLAY_ASPECT_RATIO_REGEX,
+  MONITOR_PANEL_TYPE_DATA,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_FORM_FACTOR_DATA,
   MOTHERBOARD_MEMORY_TYPE_DATA,
@@ -51,6 +61,7 @@ import {
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
+  RAM_MEMORY_TYPE_DATA,
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_FREQUENCY_RESPONSE_REGEX,
@@ -196,6 +207,8 @@ function CreateProduct() {
     ramModulesCapacityUnit,
     ramType,
     ramColor,
+    isRamColorFocused,
+    isRamColorValid,
     ramVoltage,
     ramTiming,
     isRamTimingValid,
@@ -219,6 +232,8 @@ function CreateProduct() {
     // page 2 -> specifications -> case
     caseType,
     caseColor,
+    isCaseColorFocused,
+    isCaseColorValid,
     caseSidePanel,
 
     // page 2 -> specifications -> monitor
@@ -243,6 +258,8 @@ function CreateProduct() {
     mouseDpi,
     mouseButtons,
     mouseColor,
+    isMouseColorFocused,
+    isMouseColorValid,
     mouseInterface,
 
     // page 2 -> specifications -> headphone
@@ -253,6 +270,8 @@ function CreateProduct() {
     isHeadphoneFrequencyResponseFocused,
     headphoneImpedance,
     headphoneColor,
+    isHeadphoneColorFocused,
+    isHeadphoneColorValid,
     headphoneInterface,
 
     // page 2 -> specifications -> speaker
@@ -262,6 +281,8 @@ function CreateProduct() {
     isSpeakerFrequencyResponseValid,
     isSpeakerFrequencyResponseFocused,
     speakerColor,
+    isSpeakerColorFocused,
+    isSpeakerColorValid,
     speakerInterface,
 
     // page 2 -> specifications -> smartphone
@@ -278,6 +299,8 @@ function CreateProduct() {
     smartphoneBatteryCapacity,
     smartphoneCamera,
     smartphoneColor,
+    isSmartphoneColorFocused,
+    isSmartphoneColorValid,
 
     // page 2 -> specifications -> tablet
     tabletOs,
@@ -293,12 +316,16 @@ function CreateProduct() {
     tabletBatteryCapacity,
     tabletCamera,
     tabletColor,
+    isTabletColorFocused,
+    isTabletColorValid,
 
     // page 2 -> specifications -> accessory
     accessoryType,
     isAccessoryTypeValid,
     isAccessoryTypeFocused,
     accessoryColor,
+    isAccessoryColorFocused,
+    isAccessoryColorValid,
     accessoryInterface,
 
     // page 3
@@ -679,6 +706,16 @@ function CreateProduct() {
     });
   }, [motherboardChipset]);
 
+  // validate ram color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(ramTiming);
+
+    createProductDispatch({
+      type: createProductAction.setIsRamTimingValid,
+      payload: isValid,
+    });
+  }, []);
+
   // validate RAM timing on every change
   useEffect(() => {
     const isValid = RAM_TIMING_REGEX.test(ramTiming);
@@ -689,9 +726,19 @@ function CreateProduct() {
     });
   }, [ramTiming]);
 
+  // validate case color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(caseColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsCaseColorValid,
+      payload: isValid,
+    });
+  }, [caseColor]);
+
   // validate monitor aspect ratio on every change
   useEffect(() => {
-    const isValid = MONITOR_ASPECT_RATIO_REGEX.test(monitorAspectRatio);
+    const isValid = DISPLAY_ASPECT_RATIO_REGEX.test(monitorAspectRatio);
 
     createProductDispatch({
       type: createProductAction.setIsMonitorAspectRatioValid,
@@ -2118,6 +2165,250 @@ function CreateProduct() {
     />
   );
 
+  // page 2 -> specifications -> ram
+
+  // page 2 -> specifications -> ram -> ram frequency
+
+  // page 2 -> specifications -> ram -> ram frequency -> number input element
+  const createdRamFrequencyNumberInput = (
+    <NumberInput
+      description="Enter RAM frequency in MHz"
+      label="RAM Frequency"
+      max={9999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setRamFrequency,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={ramFrequency}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> ram -> ram modules quantity
+
+  // page 2 -> specifications -> ram -> ram modules quantity -> number input element
+  const createdRamModulesQuantityNumberInput = (
+    <NumberInput
+      description="Enter RAM modules quantity"
+      label="RAM Modules Quantity"
+      max={96}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setRamModulesQuantity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={ramModulesQuantity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> ram -> ram modules capacity
+
+  // page 2 -> specifications -> ram -> ram modules capacity -> number input element
+  const createdRamModulesCapacityNumberInput = (
+    <NumberInput
+      description="Enter RAM modules capacity"
+      label="RAM Modules Capacity"
+      max={8192}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setRamModulesCapacity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={ramModulesCapacity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> ram -> ram modules capacity unit
+
+  // page 2 -> specifications -> ram -> ram modules capacity unit -> select input element
+  const [createdRamModulesCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_DATA,
+        description: 'Select RAM modules capacity unit',
+        label: 'RAM Modules Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamModulesCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: ramModulesCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> ram -> ram modules type
+
+  // page 2 -> specifications -> ram -> ram modules type -> select input element
+  const [createdRamTypeSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: RAM_MEMORY_TYPE_DATA,
+      description: 'Select RAM modules type',
+      label: 'RAM Type',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setRamType,
+          payload: event.currentTarget.value as MemoryType,
+        });
+      },
+      value: ramType,
+      required: true,
+    },
+  ]);
+
+  // page 2 -> specifications -> ram -> ram color
+
+  // page 2 -> specifications -> ram -> ram color -> accessible screen reader text elements
+  const [ramColorInputErrorText, ramColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram color',
+      inputText: ramColor,
+      isInputTextFocused: isRamColorFocused,
+      isValidInputText: isRamColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: ramColor,
+        contentKind: 'ram color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> ram -> ram color -> text input element creator
+  const [createdRamColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: ramColorInputErrorText,
+        valid: ramColorInputValidText,
+      },
+      inputText: ramColor,
+      isValidInputText: isRamColorValid,
+      label: 'RAM Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setRamColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter RAM color',
+      required: true,
+      semanticName: 'ram color',
+    },
+  ]);
+
+  // page 2 -> specifications -> ram -> ram voltage
+
+  // page 2 -> specifications -> ram -> ram voltage -> number input element
+  const createdRamVoltageNumberInput = (
+    <NumberInput
+      description="Enter RAM voltage in Volts(V)"
+      label="RAM Voltage"
+      max={9.99}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setRamVoltage,
+          payload: value,
+        });
+      }}
+      precision={2}
+      required
+      startValue={1}
+      step={0.01}
+      type="number"
+      value={ramVoltage}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> ram -> ram timing
+
+  // page 2 -> specifications -> ram -> ram timing -> accessible screen reader text elements
+  const [ramTimingInputErrorText, ramTimingInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram timing',
+      inputText: ramTiming,
+      isInputTextFocused: isRamTimingFocused,
+      isValidInputText: isRamTimingValid,
+      regexValidationText: returnRamTimingValidationText({
+        content: ramTiming,
+        contentKind: 'ram timing',
+        maxLength: 11,
+        minLength: 11,
+      }),
+    });
+
+  // page 2 -> specifications -> ram -> ram timing -> text input element creator
+  const [createdRamTimingTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: ramTimingInputErrorText,
+        valid: ramTimingInputValidText,
+      },
+      inputText: ramTiming,
+      isValidInputText: isRamTimingValid,
+      label: 'RAM Timing',
+      maxLength: 11,
+      minLength: 11,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamTimingFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setRamTiming,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamTimingFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter RAM timing',
+      required: true,
+      semanticName: 'ram timing',
+    },
+  ]);
+
   // page 2 -> specifications -> storage
 
   // page 2 -> specifications -> storage -> storage type
@@ -2354,6 +2645,299 @@ function CreateProduct() {
       },
     ]
   );
+
+  // page 2 -> specifications -> case
+
+  // page 2 -> specifications -> case -> case type
+
+  // page 2 -> specifications -> case -> case type -> select input element
+  const [createdCaseTypeSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: CASE_TYPE_DATA,
+      description: 'Select case type',
+      label: 'Case Type',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setCaseType,
+          payload: event.currentTarget.value as CaseType,
+        });
+      },
+      value: caseType,
+      required: true,
+    },
+  ]);
+
+  // page 2 -> specifications -> case -> case color
+
+  // page 2 -> specifications -> case -> case color -> accessible screen reader text elements
+  const [caseColorInputErrorText, caseColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'case color',
+      inputText: caseColor,
+      isInputTextFocused: isCaseColorFocused,
+      isValidInputText: isCaseColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: caseColor,
+        contentKind: 'case color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> case -> case color -> text input element creator
+  const [createdCaseColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: caseColorInputErrorText,
+        valid: caseColorInputValidText,
+      },
+      inputText: caseColor,
+      isValidInputText: isCaseColorValid,
+      label: 'Case Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCaseColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setCaseColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCaseColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter case color',
+      required: true,
+      semanticName: 'case color',
+    },
+  ]);
+
+  // page 2 -> specifications -> case -> case side panel
+
+  // page 2 -> specifications -> case -> case side panel -> select input element
+  const [createdCaseSidePanelSelectInput] = returnAccessibleSelectInputElements(
+    [
+      {
+        data: CASE_SIDE_PANEL_DATA,
+        description: 'Select case side panel',
+        label: 'Case Side Panel',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCaseSidePanel,
+            payload: event.currentTarget.value as CaseSidePanel,
+          });
+        },
+        value: caseSidePanel,
+        required: true,
+      },
+    ]
+  );
+
+  // page 2 -> specifications -> monitor
+
+  // page 2 -> specifications -> monitor -> monitor size
+
+  // page 2 -> specifications -> monitor -> monitor size -> number input element
+  const createdMonitorSizeNumberInput = (
+    <NumberInput
+      description="Enter monitor size in inches"
+      label="Monitor Size"
+      max={99}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMonitorSize,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={monitorSize}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> monitor -> monitor resolution
+
+  // page 2 -> specifications -> monitor -> monitor resolution -> horizontal
+
+  // page 2 -> specifications -> monitor -> monitor resolution -> horizontal -> number input element
+  const createdMonitorResolutionHorizontalNumberInput = (
+    <NumberInput
+      description="Enter monitor horizontal resolution"
+      label="Monitor Resolution Horizontal"
+      max={99999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMonitorResolutionHorizontal,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={monitorResolutionHorizontal}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> monitor -> monitor resolution -> vertical
+
+  // page 2 -> specifications -> monitor -> monitor resolution -> vertical -> number input element
+  const createdMonitorResolutionVerticalNumberInput = (
+    <NumberInput
+      description="Enter monitor vertical resolution"
+      label="Monitor Resolution Vertical"
+      max={99999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMonitorResolutionVertical,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={monitorResolutionVertical}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> monitor -> monitor refresh rate
+
+  // page 2 -> specifications -> monitor -> monitor refresh rate -> number input element
+  const createdMonitorRefreshRateNumberInput = (
+    <NumberInput
+      description="Enter monitor refresh rate in Hz"
+      label="Monitor Refresh Rate"
+      max={999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMonitorRefreshRate,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={monitorRefreshRate}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> monitor -> monitor panel type
+
+  // page 2 -> specifications -> monitor -> monitor panel type -> select input element
+  const [createdMonitorPanelTypeSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MONITOR_PANEL_TYPE_DATA,
+        description: 'Select monitor panel type',
+        label: 'Monitor Panel Type',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMonitorPanelType,
+            payload: event.currentTarget.value as MonitorPanelType,
+          });
+        },
+        value: monitorPanelType,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> monitor -> monitor response time
+
+  // page 2 -> specifications -> monitor -> monitor response time -> number input element
+  const createdMonitorResponseTimeNumberInput = (
+    <NumberInput
+      description="Enter monitor response time in ms"
+      label="Monitor Response Time"
+      max={99}
+      min={0.1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMonitorResponseTime,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={0.01}
+      type="number"
+      value={monitorResponseTime}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> monitor -> monitor aspect ratio
+
+  // page 2 -> specifications -> monitor -> monitor aspect ratio -> accessible screen reader text elements
+  const [monitorAspectRatioInputErrorText, monitorAspectRatioInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'monitor aspect ratio',
+      inputText: monitorAspectRatio,
+      isInputTextFocused: isMonitorAspectRatioFocused,
+      isValidInputText: isMonitorAspectRatioValid,
+      regexValidationText: returnDisplayAspectRatioValidationText({
+        content: monitorAspectRatio,
+        contentKind: 'monitor aspect ratio',
+        maxLength: 5,
+        minLength: 5,
+      }),
+    });
+
+  // page 2 -> specifications -> monitor -> monitor aspect ratio -> text input element creator
+  const [createdMonitorAspectRatioTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: monitorAspectRatioInputErrorText,
+          valid: monitorAspectRatioInputValidText,
+        },
+        inputText: monitorAspectRatio,
+        isValidInputText: isMonitorAspectRatioValid,
+        label: 'Monitor Aspect Ratio',
+        maxLength: 5,
+        minLength: 5,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsMonitorAspectRatioFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMonitorAspectRatio,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsMonitorAspectRatioFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter monitor aspect ratio',
+        required: true,
+        semanticName: 'monitor aspect ratio',
+      },
+    ]);
 
   //
   //
