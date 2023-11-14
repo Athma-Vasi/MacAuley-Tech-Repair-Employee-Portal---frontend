@@ -15,12 +15,18 @@ import {
   returnGrammarValidationText,
   returnNumberAmountValidationText,
   returnSerialIdValidationText,
+  returnSocketChipsetValidationText,
   urlBuilder,
 } from '../../../utils';
 import { InvalidTokenError } from 'jwt-decode';
 import { globalAction } from '../../../context/globalProvider/state';
 import { Currency, ResourceRequestServerResponse } from '../../../types';
-import { DimensionUnit, ProductDocument, WeightUnit } from './types';
+import {
+  DimensionUnit,
+  MemoryUnit,
+  ProductDocument,
+  WeightUnit,
+} from './types';
 import {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -28,6 +34,7 @@ import {
   DIMENSION_UNIT_DATA,
   GPU_CHIPSET_REGEX,
   HEADPHONE_FREQUENCY_RESPONSE_REGEX,
+  MEMORY_UNIT_DATA,
   MONITOR_ASPECT_RATIO_REGEX,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_SOCKET_REGEX,
@@ -42,7 +49,12 @@ import {
   MONEY_REGEX,
   SERIAL_ID_REGEX,
 } from '../../../constants/regex';
-import { AccessibleErrorValidTextElements } from '../../../jsxCreators';
+import {
+  AccessibleErrorValidTextElements,
+  returnAccessibleRadioSingleInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
 import {
   AccessibleRadioSingleInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -800,7 +812,7 @@ function CreateProduct() {
   }, [areImagesValid, imgFormDataArray.length]);
 
   // ╭────────────────╮
-  // │ Input Creators │
+  // │ Created Inputs │
   // ╰────────────────╯
 
   // page 1
@@ -823,38 +835,40 @@ function CreateProduct() {
     });
 
   // page 1 -> brand -> text input element creator
-  const brandTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: brandInputErrorText,
-      valid: brandInputValidText,
+  const [createdBrandTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: brandInputErrorText,
+        valid: brandInputValidText,
+      },
+      inputText: brand,
+      isValidInputText: isBrandValid,
+      label: 'Brand',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsBrandFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setBrand,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsBrandFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter brand name',
+      required: true,
+      semanticName: 'brand',
     },
-    inputText: brand,
-    isValidInputText: isBrandValid,
-    label: 'Brand',
-    maxLength: 30,
-    minLength: 2,
-    onBlur: () => {
-      createProductDispatch({
-        type: createProductAction.setIsBrandFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createProductDispatch({
-        type: createProductAction.setBrand,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      createProductDispatch({
-        type: createProductAction.setIsBrandFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter brand name',
-    required: true,
-    semanticName: 'brand',
-  };
+  ]);
 
   // page 1 -> model
 
@@ -874,56 +888,60 @@ function CreateProduct() {
     });
 
   // page 1 -> model -> text input element creator
-  const modelTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: modelInputErrorText,
-      valid: modelInputValidText,
+  const [createdModelTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: modelInputErrorText,
+        valid: modelInputValidText,
+      },
+      inputText: model,
+      isValidInputText: isModelValid,
+      label: 'Model',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsModelFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setModel,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsModelFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter model name',
+      required: true,
+      semanticName: 'model',
     },
-    inputText: model,
-    isValidInputText: isModelValid,
-    label: 'Model',
-    maxLength: 30,
-    minLength: 2,
-    onBlur: () => {
-      createProductDispatch({
-        type: createProductAction.setIsModelFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createProductDispatch({
-        type: createProductAction.setModel,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      createProductDispatch({
-        type: createProductAction.setIsModelFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter model name',
-    required: true,
-    semanticName: 'model',
-  };
+  ]);
 
   // page 1 -> product category
 
   // page 1 -> product category -> select element creator
-  const productCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: PRODUCT_CATEGORIES,
-      description: 'Select a product category',
-      label: 'Product Category',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setProductCategory,
-          payload: event.currentTarget.value as ProductCategory,
-        });
+  const [createdProductCategorySelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: PRODUCT_CATEGORIES,
+        description: 'Select a product category',
+        label: 'Product Category',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setProductCategory,
+            payload: event.currentTarget.value as ProductCategory,
+          });
+        },
+        value: productCategory,
+        required: true,
       },
-      value: productCategory,
-      required: true,
-    };
+    ]);
 
   // page 1 -> description
 
@@ -943,38 +961,40 @@ function CreateProduct() {
     });
 
   // page 1 -> description -> text input element creator
-  const descriptionTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: descriptionInputErrorText,
-      valid: descriptionInputValidText,
+  const [createdDescriptionTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: descriptionInputErrorText,
+        valid: descriptionInputValidText,
+      },
+      inputText: description,
+      isValidInputText: isDescriptionValid,
+      label: 'Product Description',
+      maxLength: 2000,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDescriptionFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setDescription,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDescriptionFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter product description',
+      required: true,
+      semanticName: 'description',
     },
-    inputText: description,
-    isValidInputText: isDescriptionValid,
-    label: 'Product Description',
-    maxLength: 2000,
-    minLength: 2,
-    onBlur: () => {
-      createProductDispatch({
-        type: createProductAction.setIsDescriptionFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createProductDispatch({
-        type: createProductAction.setDescription,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      createProductDispatch({
-        type: createProductAction.setIsDescriptionFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter product description',
-    required: true,
-    semanticName: 'description',
-  };
+  ]);
 
   // page 1 -> price
 
@@ -992,70 +1012,76 @@ function CreateProduct() {
     });
 
   // page 1 -> price -> text input element creator
-  const priceTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: priceInputErrorText,
-      valid: priceInputValidText,
+  const [createdPriceTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: priceInputErrorText,
+        valid: priceInputValidText,
+      },
+      inputText: price,
+      isValidInputText: isPriceValid,
+      label: 'Price',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsPriceFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setPrice,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsPriceFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter product price',
+      required: true,
+      semanticName: 'price',
     },
-    inputText: price,
-    isValidInputText: isPriceValid,
-    label: 'Price',
-    onBlur: () => {
-      createProductDispatch({
-        type: createProductAction.setIsPriceFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createProductDispatch({
-        type: createProductAction.setPrice,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      createProductDispatch({
-        type: createProductAction.setIsPriceFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter product price',
-    required: true,
-    semanticName: 'price',
-  };
+  ]);
 
   // page 1 -> currency
 
   // page 1 -> currency -> select element creator
-  const currencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: CURRENCY_DATA,
-    description: 'Select a currency',
-    label: 'Currency',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createProductDispatch({
-        type: createProductAction.setCurrency,
-        payload: event.currentTarget.value as Currency,
-      });
+  const [createdCurrencySelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: CURRENCY_DATA,
+      description: 'Select a currency',
+      label: 'Currency',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setCurrency,
+          payload: event.currentTarget.value as Currency,
+        });
+      },
+      value: currency,
+      required: true,
     },
-    value: currency,
-    required: true,
-  };
+  ]);
 
   // page 1 -> availability
 
   // page 1 -> availability -> radio element creator
-  const availabilityRadioInputCreatorInfo: AccessibleRadioSingleInputCreatorInfo =
-    {
-      checked: availability,
-      description: 'Select availability',
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setAvailability,
-          payload: event.currentTarget.value === 'true',
-        });
+  const [createdAvailabilityRadioInput] =
+    returnAccessibleRadioSingleInputElements([
+      {
+        checked: availability,
+        description: 'Select availability',
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setAvailability,
+            payload: event.currentTarget.value === 'true',
+          });
+        },
+        semanticName: 'availability',
+        required: true,
       },
-      semanticName: 'availability',
-      required: true,
-    };
+    ]);
 
   // page 1 -> quantity
 
@@ -1107,19 +1133,21 @@ function CreateProduct() {
   );
 
   // page 1 -> weight -> weight unit select input
-  const weightUnitSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: WEIGHT_UNIT_DATA,
-    description: 'Select a weight unit',
-    label: 'Weight Unit',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createProductDispatch({
-        type: createProductAction.setWeightUnit,
-        payload: event.currentTarget.value as WeightUnit,
-      });
+  const [createdWeightUnitSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: WEIGHT_UNIT_DATA,
+      description: 'Select a weight unit',
+      label: 'Weight Unit',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setWeightUnit,
+          payload: event.currentTarget.value as WeightUnit,
+        });
+      },
+      value: weightUnit,
+      required: true,
     },
-    value: weightUnit,
-    required: true,
-  };
+  ]);
 
   // page 1 -> dimensions
 
@@ -1147,20 +1175,22 @@ function CreateProduct() {
   );
 
   // page 1 -> dimensions -> length unit select input
-  const dimensionLengthUnitSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: DIMENSION_UNIT_DATA,
-      description: 'Select a length unit',
-      label: 'Length Unit',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setDimensionLengthUnit,
-          payload: event.currentTarget.value as DimensionUnit,
-        });
+  const [createdDimensionLengthUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: DIMENSION_UNIT_DATA,
+        description: 'Select a length unit',
+        label: 'Length Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDimensionLengthUnit,
+            payload: event.currentTarget.value as DimensionUnit,
+          });
+        },
+        value: dimensionLengthUnit,
+        required: true,
       },
-      value: dimensionLengthUnit,
-      required: true,
-    };
+    ]);
 
   // page 1 -> dimensions -> width number input element
   const createdDimensionWidthNumberInput = (
@@ -1186,20 +1216,22 @@ function CreateProduct() {
   );
 
   // page 1 -> dimensions -> width unit select input
-  const dimensionWidthUnitSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: DIMENSION_UNIT_DATA,
-      description: 'Select a width unit',
-      label: 'Width Unit',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setDimensionWidthUnit,
-          payload: event.currentTarget.value as DimensionUnit,
-        });
+  const [createdDimensionWidthUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: DIMENSION_UNIT_DATA,
+        description: 'Select a width unit',
+        label: 'Width Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDimensionWidthUnit,
+            payload: event.currentTarget.value as DimensionUnit,
+          });
+        },
+        value: dimensionWidthUnit,
+        required: true,
       },
-      value: dimensionWidthUnit,
-      required: true,
-    };
+    ]);
 
   // page 1 -> dimensions -> height number input element
   const createdDimensionHeightNumberInput = (
@@ -1225,20 +1257,22 @@ function CreateProduct() {
   );
 
   // page 1 -> dimensions -> height unit select input
-  const dimensionHeightUnitSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: DIMENSION_UNIT_DATA,
-      description: 'Select a height unit',
-      label: 'Height Unit',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setDimensionHeightUnit,
-          payload: event.currentTarget.value as DimensionUnit,
-        });
+  const [createdDimensionHeightUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: DIMENSION_UNIT_DATA,
+        description: 'Select a height unit',
+        label: 'Height Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDimensionHeightUnit,
+            payload: event.currentTarget.value as DimensionUnit,
+          });
+        },
+        value: dimensionHeightUnit,
+        required: true,
       },
-      value: dimensionHeightUnit,
-      required: true,
-    };
+    ]);
 
   // page 1 -> additional comments
 
@@ -1258,41 +1292,305 @@ function CreateProduct() {
     });
 
   // page 1 -> additional comments -> text input element creator
-  const additionalCommentsTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
+  const [createdAdditionalCommentsTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: additionalCommentsInputErrorText,
+          valid: additionalCommentsInputValidText,
+        },
+        inputText: additionalComments,
+        isValidInputText: isAdditionalCommentsValid,
+        label: 'Additional Comments',
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsAdditionalCommentsFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setAdditionalComments,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsAdditionalCommentsFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter additional comments',
+        required: true,
+        semanticName: 'additional comments',
+      },
+    ]);
+
+  // page 2
+
+  // page 2 -> specifications
+
+  // page 2 -> specifications -> cpu
+
+  // page 2 -> specifications -> cpu -> cpu socket
+
+  // page 2 -> specifications -> cpu -> cpu socket -> accessible screen reader text elements
+  const [cpuSocketInputErrorText, cpuSocketInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu socket',
+      inputText: cpuSocket,
+      isInputTextFocused: isCpuSocketFocused,
+      isValidInputText: isCpuSocketValid,
+      regexValidationText: returnSocketChipsetValidationText({
+        content: cpuSocket,
+        contentKind: 'cpu socket',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> cpu -> cpu socket -> text input element creator
+  const [createdCpuSocketTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: additionalCommentsInputErrorText,
-        valid: additionalCommentsInputValidText,
+        error: cpuSocketInputErrorText,
+        valid: cpuSocketInputValidText,
       },
-      inputText: additionalComments,
-      isValidInputText: isAdditionalCommentsValid,
-      label: 'Additional Comments',
-      maxLength: 2000,
+      inputText: cpuSocket,
+      isValidInputText: isCpuSocketValid,
+      label: 'CPU Socket',
+      maxLength: 30,
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsAdditionalCommentsFocused,
+          type: createProductAction.setIsCpuSocketFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setAdditionalComments,
+          type: createProductAction.setCpuSocket,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsAdditionalCommentsFocused,
+          type: createProductAction.setIsCpuSocketFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter additional comments',
+      placeholder: 'Enter CPU socket',
       required: true,
-      semanticName: 'additional comments',
-    };
+      semanticName: 'cpu socket',
+    },
+  ]);
 
-  // page 2
+  // page 2 -> specifications -> cpu -> cpu frequency
+
+  // page 2 -> specifications -> cpu -> cpu frequency -> number input element
+  const createdCpuFrequencyNumberInput = (
+    <NumberInput
+      description="Enter CPU frequency in GHz"
+      label="CPU Frequency"
+      max={7}
+      min={0.01}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setCpuFrequency,
+          payload: value,
+        });
+      }}
+      precision={2}
+      required
+      startValue={0}
+      step={0.01}
+      type="number"
+      value={cpuFrequency}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> cpu -> cpu cores
+
+  // page 2 -> specifications -> cpu -> cpu cores -> number input element
+  const createdCpuCoresNumberInput = (
+    <NumberInput
+      description="Enter CPU cores"
+      label="CPU Cores"
+      max={4096}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setCpuCores,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={cpuCores}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> cpu -> cpu L1 cache capacity
+
+  // page 2 -> specifications -> cpu -> cpu L1 cache capacity -> number input element
+  const createdCpuL1CacheCapacityNumberInput = (
+    <NumberInput
+      description="Enter CPU L1 cache capacity"
+      label="CPU L1 Cache Capacity"
+      max={1024}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setCpuL1CacheCapacity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={cpuL1CacheCapacity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> cpu -> cpu L1 cache capacity unit
+
+  // page 2 -> specifications -> cpu -> cpu L1 cache capacity unit -> select input element
+  const [createdCpuL1CacheCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_DATA,
+        description: 'Select CPU L1 cache capacity unit',
+        label: 'CPU L1 Cache Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL1CacheCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: cpuL1CacheCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> cpu -> cpu L2 cache capacity
+
+  // page 2 -> specifications -> cpu -> cpu L2 cache capacity -> number input element
+  const createdCpuL2CacheCapacityNumberInput = (
+    <NumberInput
+      description="Enter CPU L2 cache capacity"
+      label="CPU L2 Cache Capacity"
+      max={1024}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setCpuL2CacheCapacity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={cpuL2CacheCapacity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> cpu -> cpu L2 cache capacity unit
+
+  // page 2 -> specifications -> cpu -> cpu L2 cache capacity unit -> select input element
+  const [createdCpuL2CacheCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_DATA,
+        description: 'Select CPU L2 cache capacity unit',
+        label: 'CPU L2 Cache Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL2CacheCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: cpuL2CacheCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> cpu -> cpu L3 cache capacity
+
+  // page 2 -> specifications -> cpu -> cpu L3 cache capacity -> number input element
+  const createdCpuL3CacheCapacityNumberInput = (
+    <NumberInput
+      description="Enter CPU L3 cache capacity"
+      label="CPU L3 Cache Capacity"
+      max={1024}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setCpuL3CacheCapacity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={cpuL3CacheCapacity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> cpu -> cpu L3 cache capacity unit
+
+  // page 2 -> specifications -> cpu -> cpu L3 cache capacity unit -> select input element
+  const [createdCpuL3CacheCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_DATA,
+        description: 'Select CPU L3 cache capacity unit',
+        label: 'CPU L3 Cache Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL3CacheCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: cpuL3CacheCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> cpu -> cpu wattage
+
+  // page 2 -> specifications -> cpu -> cpu wattage -> number input element
+  const createdCpuWattageNumberInput = (
+    <NumberInput
+      description="Enter CPU wattage in Watts(W)"
+      label="CPU Wattage"
+      max={999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setCpuWattage,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={cpuWattage}
+      withAsterisk
+    />
+  );
 
   //
   //

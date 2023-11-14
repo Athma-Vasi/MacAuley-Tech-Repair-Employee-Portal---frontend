@@ -73,6 +73,13 @@ const DIMENSION_UNIT_DATA: SelectInputData = [
   { value: 'ft', label: 'feet' },
 ];
 
+const MEMORY_UNIT_DATA: SelectInputData = [
+  { value: 'KB', label: 'kilobyte' },
+  { value: 'MB', label: 'megabyte' },
+  { value: 'GB', label: 'gigabyte' },
+  { value: 'TB', label: 'terabyte' },
+];
+
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -80,6 +87,7 @@ export {
   DIMENSION_UNIT_DATA,
   GPU_CHIPSET_REGEX,
   HEADPHONE_FREQUENCY_RESPONSE_REGEX,
+  MEMORY_UNIT_DATA,
   MONITOR_ASPECT_RATIO_REGEX,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_SOCKET_REGEX,
