@@ -96,6 +96,37 @@ const MOTHERBOARD_MEMORY_TYPE_DATA: SelectInputData = [
   { value: 'DDR5', label: 'DDR5' },
 ];
 
+const STORAGE_TYPE_DATA: SelectInputData = [
+  { value: 'HDD', label: 'HDD' },
+  { value: 'SSD', label: 'SSD' },
+  { value: 'SSHD', label: 'SSHD' },
+  { value: 'NVMe SSD', label: 'NVMe SSD' },
+  { value: 'SATA SSD', label: 'SATA SSD' },
+  { value: 'M.2 SSD', label: 'M.2 SSD' },
+  { value: 'Other', label: 'Other' },
+];
+
+const STORAGE_FORM_FACTOR_DATA: SelectInputData = [
+  { value: '2.5"', label: '2.5"' },
+  { value: 'M.2 2280', label: 'M.2 2280' },
+  { value: 'M.2 22110', label: 'M.2 22110' },
+  { value: 'M.2 2242', label: 'M.2 2242' },
+  { value: 'M.2 2230', label: 'M.2 2230' },
+  { value: 'Other', label: 'Other' },
+];
+
+/**
+ * type StorageInterface = "SATA III" | "PCIe 3.0 x4" | "PCIe 4.0 x4" | "PCIe 3.0 x2" | "PCIe 3.0 x1" | "Other";
+ */
+const STORAGE_INTERFACE_DATA: SelectInputData = [
+  { value: 'SATA III', label: 'SATA III' },
+  { value: 'PCIe 3.0 x4', label: 'PCIe 3.0 x4' },
+  { value: 'PCIe 4.0 x4', label: 'PCIe 4.0 x4' },
+  { value: 'PCIe 3.0 x2', label: 'PCIe 3.0 x2' },
+  { value: 'PCIe 3.0 x1', label: 'PCIe 3.0 x1' },
+  { value: 'Other', label: 'Other' },
+];
+
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -112,6 +143,9 @@ export {
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_FREQUENCY_RESPONSE_REGEX,
+  STORAGE_FORM_FACTOR_DATA,
+  STORAGE_INTERFACE_DATA,
+  STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
   WEIGHT_UNIT_DATA,
 };

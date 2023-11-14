@@ -87,19 +87,28 @@ type RamSpecifications = {
   timing: string; // 16-18-18-38, etc.
 };
 
-type StorageType = 'SSD' | 'HDD' | 'SSHD' | 'NVMe SSD' | 'SATA SSD' | 'M.2 SSD';
+type StorageType =
+  | 'SSD'
+  | 'HDD'
+  | 'SSHD'
+  | 'NVMe SSD'
+  | 'SATA SSD'
+  | 'M.2 SSD'
+  | 'Other';
 type StorageFormFactor =
   | '2.5"'
   | 'M.2 2280'
   | 'M.2 22110'
   | 'M.2 2242'
-  | 'M.2 2230';
+  | 'M.2 2230'
+  | 'Other';
 type StorageInterface =
   | 'SATA III'
   | 'PCIe 3.0 x4'
   | 'PCIe 4.0 x4'
   | 'PCIe 3.0 x2'
-  | 'PCIe 3.0 x1';
+  | 'PCIe 3.0 x1'
+  | 'Other';
 type StorageSpecifications = {
   storageType: StorageType; // SSD, HDD, etc.
   capacity: string; // 1 TB, 2 TB, etc.

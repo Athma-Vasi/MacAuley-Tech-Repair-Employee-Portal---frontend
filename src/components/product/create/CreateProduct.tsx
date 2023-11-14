@@ -27,6 +27,9 @@ import {
   MemoryUnit,
   MotherboardFormFactor,
   ProductDocument,
+  StorageFormFactor,
+  StorageInterface,
+  StorageType,
   WeightUnit,
 } from './types';
 import {
@@ -45,6 +48,9 @@ import {
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_FREQUENCY_RESPONSE_REGEX,
+  STORAGE_FORM_FACTOR_DATA,
+  STORAGE_INTERFACE_DATA,
+  STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
   WEIGHT_UNIT_DATA,
 } from '../constants';
@@ -1447,7 +1453,7 @@ function CreateProduct() {
     <NumberInput
       description="Enter CPU L1 cache capacity"
       label="CPU L1 Cache Capacity"
-      max={1024}
+      max={8192}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
@@ -1491,7 +1497,7 @@ function CreateProduct() {
     <NumberInput
       description="Enter CPU L2 cache capacity"
       label="CPU L2 Cache Capacity"
-      max={1024}
+      max={8192}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
@@ -1535,7 +1541,7 @@ function CreateProduct() {
     <NumberInput
       description="Enter CPU L3 cache capacity"
       label="CPU L3 Cache Capacity"
-      max={1024}
+      max={8192}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
@@ -2105,6 +2111,155 @@ function CreateProduct() {
       withAsterisk
     />
   );
+
+  // page 2 -> specifications -> storage
+
+  // page 2 -> specifications -> storage -> storage type
+
+  // page 2 -> specifications -> storage -> storage type -> select input element
+  const [createdStorageTypeSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: STORAGE_TYPE_DATA,
+      description: 'Select storage type',
+      label: 'Storage Type',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setStorageType,
+          payload: event.currentTarget.value as StorageType,
+        });
+      },
+      value: storageType,
+      required: true,
+    },
+  ]);
+
+  // page 2 -> specifications -> storage -> storage capacity
+
+  // page 2 -> specifications -> storage -> storage capacity -> number input element
+  const createdStorageCapacityNumberInput = (
+    <NumberInput
+      description="Enter storage capacity"
+      label="Storage Capacity"
+      max={8192}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setStorageCapacity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={storageCapacity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> storage -> storage capacity unit
+
+  // page 2 -> specifications -> storage -> storage capacity unit -> select input element
+  const [createdStorageCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_DATA,
+        description: 'Select storage capacity unit',
+        label: 'Storage Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: storageCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> storage -> storage cache capacity
+
+  // page 2 -> specifications -> storage -> storage cache capacity -> number input element
+  const createdStorageCacheCapacityNumberInput = (
+    <NumberInput
+      description="Enter storage cache capacity"
+      label="Storage Cache Capacity"
+      max={8192}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setStorageCacheCapacity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={storageCacheCapacity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> storage -> storage cache capacity unit
+
+  // page 2 -> specifications -> storage -> storage cache capacity unit -> select input element
+  const [createdStorageCacheCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_DATA,
+        description: 'Select storage cache capacity unit',
+        label: 'Storage Cache Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageCacheCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: storageCacheCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> storage -> storage form factor
+
+  // page 2 -> specifications -> storage -> storage form factor -> select input element
+  const [createdStorageFormFactorSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: STORAGE_FORM_FACTOR_DATA,
+        description: 'Select storage form factor',
+        label: 'Storage Form Factor',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageFormFactor,
+            payload: event.currentTarget.value as StorageFormFactor,
+          });
+        },
+        value: storageFormFactor,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> storage -> storage interface
+
+  // page 2 -> specifications -> storage -> storage interface -> select input element
+  const [createdStorageInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: STORAGE_INTERFACE_DATA,
+        description: 'Select storage interface',
+        label: 'Storage Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageInterface,
+            payload: event.currentTarget.value as StorageInterface,
+          });
+        },
+        value: storageInterface,
+        required: true,
+      },
+    ]);
 
   //
   //
