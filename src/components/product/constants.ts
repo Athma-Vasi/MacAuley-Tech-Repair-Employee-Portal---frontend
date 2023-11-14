@@ -60,6 +60,18 @@ const FREQUENCY_RESPONSE_REGEX = /^[0-9]{1,2} hz - [0-9]{1,2} kHz$/;
 const SMARTPHONE_CHIPSET_REGEX = CPU_SOCKET_REGEX;
 const TABLET_CHIPSET_REGEX = CPU_SOCKET_REGEX;
 
+/**
+ * - /^([0-9]{1,3} MP[,]{0,1}){1,12}$/
+ * - [0-9] matches any digit between 0 and 9.
+ * - {1,3} matches the preceding token between 1 and 3 times.
+ * - matches the character MP literally.
+ * - [,]{0,1} matches the character , literally between 0 and 1 times.
+ * - {1,12} matches the preceding token between 1 and 12 times.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: '8 MP, 12 MP, 16 MP'
+ */
+const MOBILE_CAMERA_REGEX = /^([0-9]{1,3} MP[,]{0,1}){1,12}$/;
+
 const ACCESSORY_TYPE_REGEX = BRAND_REGEX;
 
 const WEIGHT_UNIT_DATA: SelectInputData = [
@@ -255,6 +267,14 @@ const SPEAKER_INTERFACE_DATA: SelectInputData = [
   { value: 'Other', label: 'Other' },
 ];
 
+const MOBILE_OS_DATA: SelectInputData = [
+  { value: 'Android', label: 'Android' },
+  { value: 'iOS', label: 'iOS' },
+  { value: 'Windows', label: 'Windows' },
+  { value: 'Linux', label: 'Linux' },
+  { value: 'Other', label: 'Other' },
+];
+
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -272,6 +292,8 @@ export {
   KEYBOARD_LAYOUT_DATA,
   KEYBOARD_SWITCH_DATA,
   MEMORY_UNIT_DATA,
+  MOBILE_CAMERA_REGEX,
+  MOBILE_OS_DATA,
   MONITOR_PANEL_TYPE_DATA,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_FORM_FACTOR_DATA,

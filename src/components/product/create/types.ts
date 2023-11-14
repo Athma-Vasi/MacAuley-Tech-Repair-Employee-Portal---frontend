@@ -203,7 +203,7 @@ type SpeakerSpecifications = {
   interface: SpeakerInterface; // USB, Bluetooth, etc.
 };
 
-type MobileOs = 'Android' | 'iOS' | 'Windows' | 'Linux';
+type MobileOs = 'Android' | 'iOS' | 'Windows' | 'Linux' | 'Other';
 type SmartphoneSpecifications = {
   os: MobileOs; // Android, iOS, etc.
   chipset: string; // Snapdragon 888, Apple A14 Bionic, etc.
@@ -476,6 +476,8 @@ type CreateProductState = {
   smartphoneStorageCapacity: number; // GB
   smartphoneBatteryCapacity: number; // mAh
   smartphoneCamera: string; // 108 MP, 64 MP, etc.
+  isSmartphoneCameraValid: boolean;
+  isSmartphoneCameraFocused: boolean;
   smartphoneColor: string;
   isSmartphoneColorValid: boolean;
   isSmartphoneColorFocused: boolean;
@@ -493,6 +495,8 @@ type CreateProductState = {
   tabletStorageCapacity: number; // GB
   tabletBatteryCapacity: number; // mAh
   tabletCamera: string; // 108 MP, 64 MP, etc.
+  isTabletCameraValid: boolean;
+  isTabletCameraFocused: boolean;
   tabletColor: string;
   isTabletColorValid: boolean;
   isTabletColorFocused: boolean;
@@ -703,6 +707,8 @@ type CreateProductAction = {
   setSmartphoneStorageCapacity: 'setSmartphoneStorageCapacity';
   setSmartphoneBatteryCapacity: 'setSmartphoneBatteryCapacity';
   setSmartphoneCamera: 'setSmartphoneCamera';
+  setIsSmartphoneCameraValid: 'setIsSmartphoneCameraValid';
+  setIsSmartphoneCameraFocused: 'setIsSmartphoneCameraFocused';
   setSmartphoneColor: 'setSmartphoneColor';
   setIsSmartphoneColorValid: 'setIsSmartphoneColorValid';
   setIsSmartphoneColorFocused: 'setIsSmartphoneColorFocused';
@@ -720,6 +726,8 @@ type CreateProductAction = {
   setTabletStorageCapacity: 'setTabletStorageCapacity';
   setTabletBatteryCapacity: 'setTabletBatteryCapacity';
   setTabletCamera: 'setTabletCamera';
+  setIsTabletCameraValid: 'setIsTabletCameraValid';
+  setIsTabletCameraFocused: 'setIsTabletCameraFocused';
   setTabletColor: 'setTabletColor';
   setIsTabletColorValid: 'setIsTabletColorValid';
   setIsTabletColorFocused: 'setIsTabletColorFocused';
@@ -1286,6 +1294,12 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
+      type:
+        | CreateProductAction['setIsSmartphoneCameraValid']
+        | CreateProductAction['setIsSmartphoneCameraFocused'];
+      payload: boolean;
+    }
+  | {
       type: CreateProductAction['setSmartphoneColor'];
       payload: string;
     }
@@ -1341,6 +1355,12 @@ type CreateProductDispatch =
   | {
       type: CreateProductAction['setTabletCamera'];
       payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletCameraValid']
+        | CreateProductAction['setIsTabletCameraFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setTabletColor'];

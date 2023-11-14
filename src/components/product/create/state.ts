@@ -175,6 +175,8 @@ const initialCreateProductState: CreateProductState = {
   // page 2 -> specifications -> smartphone
   smartphoneBatteryCapacity: 0,
   smartphoneCamera: '',
+  isSmartphoneCameraFocused: false,
+  isSmartphoneCameraValid: false,
   smartphoneChipset: '',
   isSmartphoneChipsetFocused: false,
   isSmartphoneChipsetValid: false,
@@ -192,6 +194,8 @@ const initialCreateProductState: CreateProductState = {
   // page 2 -> specifications -> tablet
   tabletBatteryCapacity: 0,
   tabletCamera: '',
+  isTabletCameraFocused: false,
+  isTabletCameraValid: false,
   tabletChipset: '',
   isTabletChipsetFocused: false,
   isTabletChipsetValid: false,
@@ -414,6 +418,8 @@ const createProductAction: CreateProductAction = {
   setSmartphoneStorageCapacity: 'setSmartphoneStorageCapacity',
   setSmartphoneBatteryCapacity: 'setSmartphoneBatteryCapacity',
   setSmartphoneCamera: 'setSmartphoneCamera',
+  setIsSmartphoneCameraValid: 'setIsSmartphoneCameraValid',
+  setIsSmartphoneCameraFocused: 'setIsSmartphoneCameraFocused',
   setSmartphoneColor: 'setSmartphoneColor',
   setIsSmartphoneColorValid: 'setIsSmartphoneColorValid',
   setIsSmartphoneColorFocused: 'setIsSmartphoneColorFocused',
@@ -431,6 +437,8 @@ const createProductAction: CreateProductAction = {
   setTabletStorageCapacity: 'setTabletStorageCapacity',
   setTabletBatteryCapacity: 'setTabletBatteryCapacity',
   setTabletCamera: 'setTabletCamera',
+  setIsTabletCameraValid: 'setIsTabletCameraValid',
+  setIsTabletCameraFocused: 'setIsTabletCameraFocused',
   setTabletColor: 'setTabletColor',
   setIsTabletColorValid: 'setIsTabletColorValid',
   setIsTabletColorFocused: 'setIsTabletColorFocused',
@@ -1223,6 +1231,16 @@ function createProductReducer(
         ...state,
         smartphoneCamera: action.payload,
       };
+    case createProductAction.setIsSmartphoneCameraFocused:
+      return {
+        ...state,
+        isSmartphoneCameraFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneCameraValid:
+      return {
+        ...state,
+        isSmartphoneCameraValid: action.payload,
+      };
     case createProductAction.setSmartphoneColor:
       return {
         ...state,
@@ -1299,6 +1317,16 @@ function createProductReducer(
       return {
         ...state,
         tabletCamera: action.payload,
+      };
+    case createProductAction.setIsTabletCameraFocused:
+      return {
+        ...state,
+        isTabletCameraFocused: action.payload,
+      };
+    case createProductAction.setIsTabletCameraValid:
+      return {
+        ...state,
+        isTabletCameraValid: action.payload,
       };
     case createProductAction.setTabletColor:
       return {

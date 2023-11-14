@@ -1210,6 +1210,42 @@ function returnFrequencyResponseValidationText({
     : '';
 }
 
+function returnMobileCameraResolutionValidationText({
+  content,
+  contentKind,
+  maxLength = 72,
+  minLength = 4,
+}: RegexValidationProps): string {
+  // /^([0-9]{1,3} MP[,]{0,1}){1,12}$/
+  const mobileCameraResolutionLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const mobileCameraResolutionCharacterRegex =
+    /^([0-9]{1,3} MP[,]{0,1}){1,12}$/;
+
+  const mobileCameraResolutionRegexTupleArr: [boolean, string][] = [
+    [
+      mobileCameraResolutionLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      mobileCameraResolutionCharacterRegex.test(content),
+      'Must be a valid mobile camera resolution in the format 0 MP or 00 MP or 000 MP.',
+    ],
+  ];
+
+  const validationText = mobileCameraResolutionRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}: ${validationText}`
+    : '';
+}
+
 function logState({
   state,
   groupLabel = 'state',
@@ -2132,10 +2168,12 @@ export {
   returnElapsedTime,
   returnEmailValidationText,
   returnFilenameValidationText,
+  returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnImageValidationText,
   returnIntegerValidationText,
   returnIsAccessTokenExpired,
+  returnMobileCameraResolutionValidationText,
   returnNameValidationText,
   returnNoteTextValidationText,
   returnNumberAmountValidationText,
@@ -2147,7 +2185,6 @@ export {
   returnSerialIdValidationText,
   returnSliderMarks,
   returnSocketChipsetValidationText,
-  returnFrequencyResponseValidationText,
   returnThemeColors,
   returnTimeRailwayValidationText,
   returnTimeRemaining,
