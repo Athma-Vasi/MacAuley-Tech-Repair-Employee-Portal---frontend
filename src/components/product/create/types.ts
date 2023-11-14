@@ -158,12 +158,14 @@ type KeyboardSwitch =
   | 'Cherry MX Red'
   | 'Cherry MX Blue'
   | 'Cherry MX Brown'
-  | 'Cherry MX Speed'
+  | 'Cherry MX Silent Red'
   | 'Cherry MX Black'
-  | 'Membrane';
-type KeyboardLayout = 'ANSI' | 'ISO';
-type KeyboardBacklight = 'RGB' | 'Single Color';
-type PeripheralsInterface = 'USB' | 'Bluetooth';
+  | 'Cherry MX Clear'
+  | 'Membrane'
+  | 'Other';
+type KeyboardLayout = 'ANSI' | 'ISO' | 'Other';
+type KeyboardBacklight = 'RGB' | 'Single Color' | 'None';
+type PeripheralsInterface = 'USB' | 'Bluetooth' | 'Other';
 type KeyboardSpecifications = {
   switch: KeyboardSwitch; // Cherry MX Red, Cherry MX Blue, etc.
   layout: KeyboardLayout; // ANSI, ISO, etc.
@@ -171,7 +173,7 @@ type KeyboardSpecifications = {
   interface: PeripheralsInterface; // USB, Bluetooth, etc.
 };
 
-type MouseSensor = 'Optical' | 'Laser' | 'Infrared';
+type MouseSensor = 'Optical' | 'Laser' | 'Infrared' | 'Other';
 type MouseSpecifications = {
   sensor: MouseSensor; // Optical, Laser, etc.
   dpi: number; // 800, 1600, etc.

@@ -191,6 +191,42 @@ const MONITOR_PANEL_TYPE_DATA: SelectInputData = [
   { value: 'Other', label: 'Other' },
 ];
 
+const KEYBOARD_SWITCH_DATA: SelectInputData = [
+  { value: 'Cherry MX Red', label: 'Cherry MX Red' },
+  { value: 'Cherry MX Blue', label: 'Cherry MX Blue' },
+  { value: 'Cherry MX Brown', label: 'Cherry MX Brown' },
+  { value: 'Cherry MX Silent Red', label: 'Cherry MX Silent Red' },
+  { value: 'Cherry MX Black', label: 'Cherry MX Black' },
+  { value: 'Cherry MX Clear', label: 'Cherry MX Clear' },
+  { value: 'Membrane', label: 'Membrane' },
+  { value: 'Other', label: 'Other' },
+];
+
+const KEYBOARD_LAYOUT_DATA: SelectInputData = [
+  { value: 'ANSI', label: 'ANSI' },
+  { value: 'ISO', label: 'ISO' },
+  { value: 'Other', label: 'Other' },
+];
+
+const KEYBOARD_BACKLIGHT_DATA: SelectInputData = [
+  { value: 'RGB', label: 'RGB' },
+  { value: 'Single Color', label: 'Single Color' },
+  { value: 'None', label: 'None' },
+];
+
+const PERIPHERALS_INTERFACE_DATA: SelectInputData = [
+  { value: 'USB', label: 'USB' },
+  { value: 'Bluetooth', label: 'Bluetooth' },
+  { value: 'Other', label: 'Other' },
+];
+
+const MOUSE_SENSOR_DATA: SelectInputData = [
+  { value: 'Optical', label: 'Optical' },
+  { value: 'Laser', label: 'Laser' },
+  { value: 'Infrared', label: 'Infrared' },
+  { value: 'Other', label: 'Other' },
+];
+
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -199,15 +235,20 @@ export {
   COLOR_VARIANT_REGEX,
   CPU_SOCKET_REGEX,
   DIMENSION_UNIT_DATA,
+  DISPLAY_ASPECT_RATIO_REGEX,
   GPU_CHIPSET_REGEX,
   HEADPHONE_FREQUENCY_RESPONSE_REGEX,
+  KEYBOARD_BACKLIGHT_DATA,
+  KEYBOARD_LAYOUT_DATA,
+  KEYBOARD_SWITCH_DATA,
   MEMORY_UNIT_DATA,
-  DISPLAY_ASPECT_RATIO_REGEX,
   MONITOR_PANEL_TYPE_DATA,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_FORM_FACTOR_DATA,
   MOTHERBOARD_MEMORY_TYPE_DATA,
   MOTHERBOARD_SOCKET_REGEX,
+  MOUSE_SENSOR_DATA,
+  PERIPHERALS_INTERFACE_DATA,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,

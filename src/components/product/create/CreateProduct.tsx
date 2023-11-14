@@ -28,10 +28,15 @@ import {
   CaseSidePanel,
   CaseType,
   DimensionUnit,
+  KeyboardBacklight,
+  KeyboardLayout,
+  KeyboardSwitch,
   MemoryType,
   MemoryUnit,
   MonitorPanelType,
   MotherboardFormFactor,
+  MouseSensor,
+  PeripheralsInterface,
   ProductDocument,
   PsuEfficiency,
   PsuFormFactor,
@@ -70,6 +75,11 @@ import {
   STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
   WEIGHT_UNIT_DATA,
+  KEYBOARD_SWITCH_DATA,
+  KEYBOARD_LAYOUT_DATA,
+  KEYBOARD_BACKLIGHT_DATA,
+  PERIPHERALS_INTERFACE_DATA,
+  MOUSE_SENSOR_DATA,
 } from '../constants';
 import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
@@ -745,6 +755,16 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [monitorAspectRatio]);
+
+  // validate mouse color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(mouseColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsMouseColorValid,
+      payload: isValid,
+    });
+  }, [mouseColor]);
 
   // validate headphone frequency response on every change
   useEffect(() => {
@@ -2936,6 +2956,230 @@ function CreateProduct() {
         placeholder: 'Enter monitor aspect ratio',
         required: true,
         semanticName: 'monitor aspect ratio',
+      },
+    ]);
+
+  // page 2 -> specifications -> keyboard
+
+  // page 2 -> specifications -> keyboard -> keyboard switch
+
+  // page 2 -> specifications -> keyboard -> keyboard switch -> select input element
+  const [createdKeyboardSwitchSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: KEYBOARD_SWITCH_DATA,
+        description: 'Select keyboard switch',
+        label: 'Keyboard Switch',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardSwitch,
+            payload: event.currentTarget.value as KeyboardSwitch,
+          });
+        },
+        value: keyboardSwitch,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> keyboard -> keyboard layout
+
+  // page 2 -> specifications -> keyboard -> keyboard layout -> select input element
+  const [createdKeyboardLayoutSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: KEYBOARD_LAYOUT_DATA,
+        description: 'Select keyboard layout',
+        label: 'Keyboard Layout',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardLayout,
+            payload: event.currentTarget.value as KeyboardLayout,
+          });
+        },
+        value: keyboardLayout,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> keyboard -> keyboard backlight
+
+  // page 2 -> specifications -> keyboard -> keyboard backlight -> select input element
+  const [createdKeyboardBacklightSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: KEYBOARD_BACKLIGHT_DATA,
+        description: 'Select keyboard backlight',
+        label: 'Keyboard Backlight',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardBacklight,
+            payload: event.currentTarget.value as KeyboardBacklight,
+          });
+        },
+        value: keyboardBacklight,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> keyboard -> keyboard interface
+
+  // page 2 -> specifications -> keyboard -> keyboard interface -> select input element
+  const [createdKeyboardInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: PERIPHERALS_INTERFACE_DATA,
+        description: 'Select keyboard interface',
+        label: 'Keyboard Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardInterface,
+            payload: event.currentTarget.value as PeripheralsInterface,
+          });
+        },
+        value: keyboardInterface,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> mouse
+
+  // page 2 -> specifications -> mouse -> mouse sensor
+
+  // page 2 -> specifications -> mouse -> mouse sensor -> select input element
+  const [createdMouseSensorSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: MOUSE_SENSOR_DATA,
+      description: 'Select mouse sensor',
+      label: 'Mouse Sensor',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setMouseSensor,
+          payload: event.currentTarget.value as MouseSensor,
+        });
+      },
+      value: mouseSensor,
+      required: true,
+    },
+  ]);
+
+  // page 2 -> specifications -> mouse -> mouse dpi
+
+  // page 2 -> specifications -> mouse -> mouse dpi -> number input element
+  const createdMouseDpiNumberInput = (
+    <NumberInput
+      description="Enter mouse DPI"
+      label="Mouse DPI"
+      max={9999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMouseDpi,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={mouseDpi}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> mouse -> mouse buttons quantity
+
+  // page 2 -> specifications -> mouse -> mouse buttons quantity -> number input element
+  const createdMouseButtonsNumberInput = (
+    <NumberInput
+      description="Enter mouse buttons quantity"
+      label="Mouse Buttons "
+      max={99}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMouseButtons,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={mouseButtons}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> mouse -> mouse color
+
+  // page 2 -> specifications -> mouse -> mouse color -> accessible screen reader text elements
+  const [mouseColorInputErrorText, mouseColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'mouse color',
+      inputText: mouseColor,
+      isInputTextFocused: isMouseColorFocused,
+      isValidInputText: isMouseColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: mouseColor,
+        contentKind: 'mouse color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> mouse -> mouse color -> text input element creator
+  const [createdMouseColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: mouseColorInputErrorText,
+        valid: mouseColorInputValidText,
+      },
+      inputText: mouseColor,
+      isValidInputText: isMouseColorValid,
+      label: 'Mouse Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setMouseColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter mouse color',
+      required: true,
+      semanticName: 'mouse color',
+    },
+  ]);
+
+  // page 2 -> specifications -> mouse -> mouse interface
+
+  // page 2 -> specifications -> mouse -> mouse interface -> select input element
+  const [createdMouseInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: PERIPHERALS_INTERFACE_DATA,
+        description: 'Select mouse interface',
+        label: 'Mouse Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMouseInterface,
+            payload: event.currentTarget.value as PeripheralsInterface,
+          });
+        },
+        value: mouseInterface,
+        required: true,
       },
     ]);
 
