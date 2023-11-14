@@ -1592,6 +1592,177 @@ function CreateProduct() {
     />
   );
 
+  // page 2 -> specifications -> gpu
+
+  // page 2 -> specifications -> gpu -> gpu chipset
+
+  // page 2 -> specifications -> gpu -> gpu chipset -> accessible screen reader text elements
+  const [gpuChipsetInputErrorText, gpuChipsetInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu chipset',
+      inputText: gpuChipset,
+      isInputTextFocused: isGpuChipsetFocused,
+      isValidInputText: isGpuChipsetValid,
+      regexValidationText: returnSocketChipsetValidationText({
+        content: gpuChipset,
+        contentKind: 'gpu chipset',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> gpu -> gpu chipset -> text input element creator
+  const [createdGpuChipsetTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: gpuChipsetInputErrorText,
+        valid: gpuChipsetInputValidText,
+      },
+      inputText: gpuChipset,
+      isValidInputText: isGpuChipsetValid,
+      label: 'GPU Chipset',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuChipsetFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setGpuChipset,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuChipsetFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter GPU chipset',
+      required: true,
+      semanticName: 'gpu chipset',
+    },
+  ]);
+
+  // page 2 -> specifications -> gpu -> gpu memory capacity
+
+  // page 2 -> specifications -> gpu -> gpu memory capacity -> number input element
+  const createdGpuMemoryCapacityNumberInput = (
+    <NumberInput
+      description="Enter GPU memory capacity"
+      label="GPU Memory Capacity"
+      max={4096}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setGpuMemoryCapacity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={gpuMemoryCapacity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> gpu -> gpu memory capacity unit
+
+  // page 2 -> specifications -> gpu -> gpu memory capacity unit -> select input element
+  const [createdGpuMemoryCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_DATA,
+        description: 'Select GPU memory capacity unit',
+        label: 'GPU Memory Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setGpuMemoryCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: gpuMemoryCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> gpu -> gpu core clock
+
+  // page 2 -> specifications -> gpu -> gpu core clock -> number input element
+  const createdGpuCoreClockNumberInput = (
+    <NumberInput
+      description="Enter GPU core clock in MHz"
+      label="GPU Core Clock"
+      max={9999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setGpuCoreClock,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={gpuCoreClock}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> gpu -> gpu boost clock
+
+  // page 2 -> specifications -> gpu -> gpu boost clock -> number input element
+  const createdGpuBoostClockNumberInput = (
+    <NumberInput
+      description="Enter GPU boost clock in MHz"
+      label="GPU Boost Clock"
+      max={9999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setGpuBoostClock,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={gpuBoostClock}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> gpu -> gpu wattage
+
+  // page 2 -> specifications -> gpu -> gpu wattage -> number input element
+  const createdGpuWattageNumberInput = (
+    <NumberInput
+      description="Enter GPU wattage in Watts(W)"
+      label="GPU Wattage"
+      max={999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setGpuTdp,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={gpuTdp}
+      withAsterisk
+    />
+  );
+
   //
   //
   //
