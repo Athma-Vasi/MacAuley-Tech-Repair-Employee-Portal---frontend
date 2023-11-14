@@ -23,7 +23,9 @@ import { globalAction } from '../../../context/globalProvider/state';
 import { Currency, ResourceRequestServerResponse } from '../../../types';
 import {
   DimensionUnit,
+  MemoryType,
   MemoryUnit,
+  MotherboardFormFactor,
   ProductDocument,
   WeightUnit,
 } from './types';
@@ -37,6 +39,8 @@ import {
   MEMORY_UNIT_DATA,
   MONITOR_ASPECT_RATIO_REGEX,
   MOTHERBOARD_CHIPSET_REGEX,
+  MOTHERBOARD_FORM_FACTOR_DATA,
+  MOTHERBOARD_MEMORY_TYPE_DATA,
   MOTHERBOARD_SOCKET_REGEX,
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
@@ -1419,7 +1423,7 @@ function CreateProduct() {
     <NumberInput
       description="Enter CPU cores"
       label="CPU Cores"
-      max={4096}
+      max={8192}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
@@ -1654,7 +1658,7 @@ function CreateProduct() {
     <NumberInput
       description="Enter GPU memory capacity"
       label="GPU Memory Capacity"
-      max={4096}
+      max={8192}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
@@ -1759,6 +1763,345 @@ function CreateProduct() {
       step={1}
       type="number"
       value={gpuTdp}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> motherboard
+
+  // page 2 -> specifications -> motherboard -> motherboard socket
+
+  // page 2 -> specifications -> motherboard -> motherboard socket -> accessible screen reader text elements
+  const [motherboardSocketInputErrorText, motherboardSocketInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'motherboard socket',
+      inputText: motherboardSocket,
+      isInputTextFocused: isMotherboardSocketFocused,
+      isValidInputText: isMotherboardSocketValid,
+      regexValidationText: returnSocketChipsetValidationText({
+        content: motherboardSocket,
+        contentKind: 'motherboard socket',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> motherboard -> motherboard socket -> text input element creator
+  const [createdMotherboardSocketTextInput] = returnAccessibleTextInputElements(
+    [
+      {
+        description: {
+          error: motherboardSocketInputErrorText,
+          valid: motherboardSocketInputValidText,
+        },
+        inputText: motherboardSocket,
+        isValidInputText: isMotherboardSocketValid,
+        label: 'Motherboard Socket',
+        maxLength: 30,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsMotherboardSocketFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardSocket,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsMotherboardSocketFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter motherboard socket',
+        required: true,
+        semanticName: 'motherboard socket',
+      },
+    ]
+  );
+
+  // page 2 -> specifications -> motherboard -> motherboard chipset
+
+  // page 2 -> specifications -> motherboard -> motherboard chipset -> accessible screen reader text elements
+  const [motherboardChipsetInputErrorText, motherboardChipsetInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'motherboard chipset',
+      inputText: motherboardChipset,
+      isInputTextFocused: isMotherboardChipsetFocused,
+      isValidInputText: isMotherboardChipsetValid,
+      regexValidationText: returnSocketChipsetValidationText({
+        content: motherboardChipset,
+        contentKind: 'motherboard chipset',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> motherboard -> motherboard chipset -> text input element creator
+  const [createdMotherboardChipsetTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: motherboardChipsetInputErrorText,
+          valid: motherboardChipsetInputValidText,
+        },
+        inputText: motherboardChipset,
+        isValidInputText: isMotherboardChipsetValid,
+        label: 'Motherboard Chipset',
+        maxLength: 30,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsMotherboardChipsetFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardChipset,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsMotherboardChipsetFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter motherboard chipset',
+        required: true,
+        semanticName: 'motherboard chipset',
+      },
+    ]);
+
+  // page 2 -> specifications -> motherboard -> motherboard form factor
+
+  // page 2 -> specifications -> motherboard -> motherboard form factor -> select input element
+  const [createdMotherboardFormFactorSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MOTHERBOARD_FORM_FACTOR_DATA,
+        description: 'Select motherboard form factor',
+        label: 'Motherboard Form Factor',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardFormFactor,
+            payload: event.currentTarget.value as MotherboardFormFactor,
+          });
+        },
+        value: motherboardFormFactor,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> motherboard -> motherboard memory max capacity
+
+  // page 2 -> specifications -> motherboard -> motherboard memory max capacity -> number input element
+  const createdMotherboardMemoryMaxCapacityNumberInput = (
+    <NumberInput
+      description="Enter motherboard memory max capacity"
+      label="Motherboard Memory Max Capacity"
+      max={8192}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMotherboardMemoryMaxCapacity,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={motherboardMemoryMaxCapacity}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> motherboard -> motherboard memory max capacity unit
+
+  // page 2 -> specifications -> motherboard -> motherboard memory max capacity unit -> select input element
+  const [createdMotherboardMemoryMaxCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_DATA,
+        description: 'Select motherboard memory max capacity unit',
+        label: 'Motherboard Memory Max Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardMemoryMaxCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: motherboardMemoryMaxCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> motherboard -> motherboard memory slots
+
+  // page 2 -> specifications -> motherboard -> motherboard memory slots -> number input element
+  const createdMotherboardMemorySlotsNumberInput = (
+    <NumberInput
+      description="Enter motherboard memory slots"
+      label="Motherboard Memory Slots"
+      max={96}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMotherboardMemorySlots,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={motherboardMemorySlots}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> motherboard -> motherboard memory type
+
+  // page 2 -> specifications -> motherboard -> motherboard memory type -> select input element
+  const [createdMotherboardMemoryTypeSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MOTHERBOARD_MEMORY_TYPE_DATA,
+        description: 'Select motherboard memory type',
+        label: 'Motherboard Memory Type',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardMemoryType,
+            payload: event.currentTarget.value as MemoryType,
+          });
+        },
+        value: motherboardMemoryType,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> motherboard -> motherboard sata ports
+
+  // page 2 -> specifications -> motherboard -> motherboard sata ports -> number input element
+  const createdMotherboardSataPortsNumberInput = (
+    <NumberInput
+      description="Enter motherboard SATA ports"
+      label="Motherboard SATA Ports"
+      max={48}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMotherboardSataPorts,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={motherboardSataPorts}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> motherboard -> motherboard m2 slots
+
+  // page 2 -> specifications -> motherboard -> motherboard m2 slots -> number input element
+  const createdMotherboardM2SlotsNumberInput = (
+    <NumberInput
+      description="Enter motherboard M.2 slots"
+      label="Motherboard M.2 Slots"
+      max={24}
+      min={0}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMotherboardM2Slots,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={motherboardM2Slots}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> motherboard -> motherboard pcie3 slots
+
+  // page 2 -> specifications -> motherboard -> motherboard pcie3 slots -> number input element
+  const createdMotherboardPcie3SlotsNumberInput = (
+    <NumberInput
+      description="Enter motherboard PCIe3 slots"
+      label="Motherboard PCIe3 Slots"
+      max={24}
+      min={0}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMotherboardPcie3Slots,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={motherboardPcie3Slots}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> motherboard -> motherboard pcie4 slots
+
+  // page 2 -> specifications -> motherboard -> motherboard pcie4 slots -> number input element
+  const createdMotherboardPcie4SlotsNumberInput = (
+    <NumberInput
+      description="Enter motherboard PCIe4 slots"
+      label="Motherboard PCIe4 Slots"
+      max={24}
+      min={0}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMotherboardPcie4Slots,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={motherboardPcie4Slots}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> motherboard -> motherboard pcie5 slots
+
+  // page 2 -> specifications -> motherboard -> motherboard pcie5 slots -> number input element
+  const createdMotherboardPcie5SlotsNumberInput = (
+    <NumberInput
+      description="Enter motherboard PCIe5 slots"
+      label="Motherboard PCIe5 Slots"
+      max={24}
+      min={0}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setMotherboardPcie5Slots,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={motherboardPcie5Slots}
       withAsterisk
     />
   );

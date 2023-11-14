@@ -80,6 +80,22 @@ const MEMORY_UNIT_DATA: SelectInputData = [
   { value: 'TB', label: 'terabyte' },
 ];
 
+const MOTHERBOARD_FORM_FACTOR_DATA: SelectInputData = [
+  { value: 'Micro ATX', label: 'Micro ATX' },
+  { value: 'Mini ITX', label: 'Mini ITX' },
+  { value: 'E-ATX', label: 'E-ATX' },
+  { value: 'ATX', label: 'ATX' },
+  { value: 'XL-ATX', label: 'XL-ATX' },
+];
+
+const MOTHERBOARD_MEMORY_TYPE_DATA: SelectInputData = [
+  { value: 'DDR', label: 'DDR' },
+  { value: 'DDR2', label: 'DDR2' },
+  { value: 'DDR3', label: 'DDR3' },
+  { value: 'DDR4', label: 'DDR4' },
+  { value: 'DDR5', label: 'DDR5' },
+];
+
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -90,6 +106,8 @@ export {
   MEMORY_UNIT_DATA,
   MONITOR_ASPECT_RATIO_REGEX,
   MOTHERBOARD_CHIPSET_REGEX,
+  MOTHERBOARD_FORM_FACTOR_DATA,
+  MOTHERBOARD_MEMORY_TYPE_DATA,
   MOTHERBOARD_SOCKET_REGEX,
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
