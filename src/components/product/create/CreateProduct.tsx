@@ -14,6 +14,7 @@ import {
   returnBrandNameValidationText,
   returnColorVariantValidationText,
   returnDisplayAspectRatioValidationText,
+  returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnNumberAmountValidationText,
   returnRamTimingValidationText,
@@ -28,6 +29,8 @@ import {
   CaseSidePanel,
   CaseType,
   DimensionUnit,
+  HeadphoneInterface,
+  HeadphoneType,
   KeyboardBacklight,
   KeyboardLayout,
   KeyboardSwitch,
@@ -41,6 +44,8 @@ import {
   PsuEfficiency,
   PsuFormFactor,
   PsuModularity,
+  SpeakerInterface,
+  SpeakerType,
   StorageFormFactor,
   StorageInterface,
   StorageType,
@@ -55,7 +60,7 @@ import {
   CPU_SOCKET_REGEX,
   DIMENSION_UNIT_DATA,
   GPU_CHIPSET_REGEX,
-  HEADPHONE_FREQUENCY_RESPONSE_REGEX,
+  FREQUENCY_RESPONSE_REGEX,
   MEMORY_UNIT_DATA,
   DISPLAY_ASPECT_RATIO_REGEX,
   MONITOR_PANEL_TYPE_DATA,
@@ -80,6 +85,10 @@ import {
   KEYBOARD_BACKLIGHT_DATA,
   PERIPHERALS_INTERFACE_DATA,
   MOUSE_SENSOR_DATA,
+  HEADPHONE_TYPE_DATA,
+  HEADPHONE_INTERFACE_DATA,
+  SPEAKER_TYPE_DATA,
+  SPEAKER_INTERFACE_DATA,
 } from '../constants';
 import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
@@ -768,15 +777,23 @@ function CreateProduct() {
 
   // validate headphone frequency response on every change
   useEffect(() => {
-    const isValid = HEADPHONE_FREQUENCY_RESPONSE_REGEX.test(
-      headphoneFrequencyResponse
-    );
+    const isValid = FREQUENCY_RESPONSE_REGEX.test(headphoneFrequencyResponse);
 
     createProductDispatch({
       type: createProductAction.setIsHeadphoneFrequencyResponseValid,
       payload: isValid,
     });
   }, [headphoneFrequencyResponse]);
+
+  // validate headphone color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(headphoneColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsHeadphoneColorValid,
+      payload: isValid,
+    });
+  }, [headphoneColor]);
 
   // validate speaker frequency response on every change
   useEffect(() => {
@@ -789,6 +806,16 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [speakerFrequencyResponse]);
+
+  // validate speaker color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(speakerColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsSpeakerColorValid,
+      payload: isValid,
+    });
+  }, [speakerColor]);
 
   // validate smartphone chipset on every change
   useEffect(() => {
@@ -3179,6 +3206,380 @@ function CreateProduct() {
           });
         },
         value: mouseInterface,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> headphone
+
+  // page 2 -> specifications -> headphone -> headphone type
+
+  // page 2 -> specifications -> headphone -> headphone type -> select input element
+  const [createdHeadphoneTypeSelectInput] = returnAccessibleSelectInputElements(
+    [
+      {
+        data: HEADPHONE_TYPE_DATA,
+        description: 'Select headphone type',
+        label: 'Headphone Type',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneType,
+            payload: event.currentTarget.value as HeadphoneType,
+          });
+        },
+        value: headphoneType,
+        required: true,
+      },
+    ]
+  );
+
+  // page 2 -> specifications -> headphone -> headphone driver
+
+  // page 2 -> specifications -> headphone -> headphone driver -> number input element
+  const createdHeadphoneDriverNumberInput = (
+    <NumberInput
+      description="Enter headphone driver in mm"
+      label="Headphone Driver"
+      max={99}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setHeadphoneDriver,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={headphoneDriver}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> headphone -> headphone frequency response
+
+  // page 2 -> specifications -> headphone -> headphone frequency response -> accessible screen reader text elements
+  const [
+    headphoneFrequencyResponseInputErrorText,
+    headphoneFrequencyResponseInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'headphone frequency response',
+    inputText: headphoneFrequencyResponse,
+    isInputTextFocused: isHeadphoneFrequencyResponseFocused,
+    isValidInputText: isHeadphoneFrequencyResponseValid,
+    regexValidationText: returnFrequencyResponseValidationText({
+      content: headphoneFrequencyResponse,
+      contentKind: 'headphone frequency response',
+      maxLength: 14,
+      minLength: 12,
+    }),
+  });
+
+  // page 2 -> specifications -> headphone -> headphone frequency response -> text input element creator
+  const [createdHeadphoneFrequencyResponseTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: headphoneFrequencyResponseInputErrorText,
+          valid: headphoneFrequencyResponseInputValidText,
+        },
+        inputText: headphoneFrequencyResponse,
+        isValidInputText: isHeadphoneFrequencyResponseValid,
+        label: 'Headphone Frequency Response',
+        maxLength: 14,
+        minLength: 12,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsHeadphoneFrequencyResponseFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneFrequencyResponse,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsHeadphoneFrequencyResponseFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter headphone frequency response',
+        required: true,
+        semanticName: 'headphone frequency response',
+      },
+    ]);
+
+  // page 2 -> specifications -> headphone -> headphone impedance
+
+  // page 2 -> specifications -> headphone -> headphone impedance -> number input element
+  const createdHeadphoneImpedanceNumberInput = (
+    <NumberInput
+      description="Enter headphone impedance in Ohms(Ω)"
+      label="Headphone Impedance"
+      max={999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setHeadphoneImpedance,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={headphoneImpedance}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> headphone -> headphone color
+
+  // page 2 -> specifications -> headphone -> headphone color -> accessible screen reader text elements
+  const [headphoneColorInputErrorText, headphoneColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'headphone color',
+      inputText: headphoneColor,
+      isInputTextFocused: isHeadphoneColorFocused,
+      isValidInputText: isHeadphoneColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: headphoneColor,
+        contentKind: 'headphone color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> headphone -> headphone color -> text input element creator
+  const [createdHeadphoneColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: headphoneColorInputErrorText,
+        valid: headphoneColorInputValidText,
+      },
+      inputText: headphoneColor,
+      isValidInputText: isHeadphoneColorValid,
+      label: 'Headphone Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsHeadphoneColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setHeadphoneColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsHeadphoneColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter headphone color',
+      required: true,
+      semanticName: 'headphone color',
+    },
+  ]);
+
+  // page 2 -> specifications -> headphone -> headphone interface
+
+  // page 2 -> specifications -> headphone -> headphone interface -> select input element
+  const [createdHeadphoneInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: HEADPHONE_INTERFACE_DATA,
+        description: 'Select headphone interface',
+        label: 'Headphone Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneInterface,
+            payload: event.currentTarget.value as HeadphoneInterface,
+          });
+        },
+        value: headphoneInterface,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> speaker
+
+  // page 2 -> specifications -> speaker -> speaker type
+
+  // page 2 -> specifications -> speaker -> speaker type -> select input element
+  const [createdSpeakerTypeSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: SPEAKER_TYPE_DATA,
+      description: 'Select speaker type',
+      label: 'Speaker Type',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setSpeakerType,
+          payload: event.currentTarget.value as SpeakerType,
+        });
+      },
+      value: speakerType,
+      required: true,
+    },
+  ]);
+
+  // page 2 -> specifications -> speaker -> speaker total wattage
+
+  // page 2 -> specifications -> speaker -> speaker total wattage -> number input element
+  const createdSpeakerTotalWattageNumberInput = (
+    <NumberInput
+      description="Enter speaker total wattage in Watts(W)"
+      label="Speaker Total Wattage"
+      max={999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setSpeakerTotalWattage,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={speakerTotalWattage}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> speaker -> speaker frequency response
+
+  // page 2 -> specifications -> speaker -> speaker frequency response -> accessible screen reader text elements
+  const [
+    speakerFrequencyResponseInputErrorText,
+    speakerFrequencyResponseInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'speaker frequency response',
+    inputText: speakerFrequencyResponse,
+    isInputTextFocused: isSpeakerFrequencyResponseFocused,
+    isValidInputText: isSpeakerFrequencyResponseValid,
+    regexValidationText: returnFrequencyResponseValidationText({
+      content: speakerFrequencyResponse,
+      contentKind: 'speaker frequency response',
+      maxLength: 14,
+      minLength: 12,
+    }),
+  });
+
+  // page 2 -> specifications -> speaker -> speaker frequency response -> text input element creator
+  const [createdSpeakerFrequencyResponseTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: speakerFrequencyResponseInputErrorText,
+          valid: speakerFrequencyResponseInputValidText,
+        },
+        inputText: speakerFrequencyResponse,
+        isValidInputText: isSpeakerFrequencyResponseValid,
+        label: 'Speaker Frequency Response',
+        maxLength: 14,
+        minLength: 12,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSpeakerFrequencyResponseFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerFrequencyResponse,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSpeakerFrequencyResponseFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter speaker frequency response',
+        required: true,
+        semanticName: 'speaker frequency response',
+      },
+    ]);
+
+  // page 2 -> specifications -> speaker -> speaker color
+
+  // page 2 -> specifications -> speaker -> speaker color -> accessible screen reader text elements
+  const [speakerColorInputErrorText, speakerColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'speaker color',
+      inputText: speakerColor,
+      isInputTextFocused: isSpeakerColorFocused,
+      isValidInputText: isSpeakerColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: speakerColor,
+        contentKind: 'speaker color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> speaker -> speaker color -> text input element creator
+  const [createdSpeakerColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: speakerColorInputErrorText,
+        valid: speakerColorInputValidText,
+      },
+      inputText: speakerColor,
+      isValidInputText: isSpeakerColorValid,
+      label: 'Speaker Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsSpeakerColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setSpeakerColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsSpeakerColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter speaker color',
+      required: true,
+      semanticName: 'speaker color',
+    },
+  ]);
+
+  // page 2 -> specifications -> speaker -> speaker interface
+
+  // page 2 -> specifications -> speaker -> speaker interface -> select input element
+  const [createdSpeakerInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: SPEAKER_INTERFACE_DATA,
+        description: 'Select speaker interface',
+        label: 'Speaker Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerInterface,
+            payload: event.currentTarget.value as SpeakerInterface,
+          });
+        },
+        value: speakerInterface,
         required: true,
       },
     ]);

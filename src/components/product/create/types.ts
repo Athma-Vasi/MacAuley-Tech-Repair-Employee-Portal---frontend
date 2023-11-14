@@ -182,8 +182,8 @@ type MouseSpecifications = {
   interface: PeripheralsInterface; // USB, Bluetooth, etc.
 };
 
-type HeadphoneType = 'Over-ear' | 'On-ear' | 'In-ear';
-type HeadphoneInterface = 'USB' | 'Bluetooth' | '3.5 mm' | '2.5 mm';
+type HeadphoneType = 'Over-ear' | 'On-ear' | 'In-ear' | 'Other';
+type HeadphoneInterface = 'USB' | 'Bluetooth' | '3.5 mm' | '2.5 mm' | 'Other';
 type HeadphoneSpecifications = {
   headphoneType: HeadphoneType; // Over-ear, On-ear, etc.
   driver: string; // 50 mm, 53 mm, etc.
@@ -193,7 +193,7 @@ type HeadphoneSpecifications = {
   interface: HeadphoneInterface; // USB, Bluetooth, etc.
 };
 
-type SpeakerType = '2.0' | '2.1' | '5.1' | '7.1';
+type SpeakerType = '2.0' | '2.1' | '3.1' | '4.1' | '5.1' | '7.1' | 'Other';
 type SpeakerInterface = HeadphoneInterface;
 type SpeakerSpecifications = {
   speakerType: SpeakerType; // 2.0, 2.1, etc.
@@ -1455,7 +1455,9 @@ export type {
   PsuSpecifications,
   RamSpecifications,
   SmartphoneSpecifications,
+  SpeakerInterface,
   SpeakerSpecifications,
+  SpeakerType,
   Specifications,
   StorageFormFactor,
   StorageInterface,

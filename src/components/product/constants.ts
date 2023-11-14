@@ -48,19 +48,14 @@ const COLOR_VARIANT_REGEX = /^[a-zA-Z0-9\s-]{2,30}$/;
 const DISPLAY_ASPECT_RATIO_REGEX = /^[0-9]{2}:[0-9]{2}$/;
 
 /**
- * - /^[0-9]{2} hz - [0-9]{2} kHz$/
+ * - /^[0-9]{1,2} hz - [0-9]{1,2} kHz$/;
  * - [0-9] matches any digit between 0 and 9.
- * - {2} matches the preceding token exactly 2 times.
- * - matches the character hz -  literally.
- * - [0-9] matches any digit between 0 and 9.
- * - {2} matches the preceding token exactly 2 times.
+ * - {1,2} matches the preceding token between 1 and 2 times.
+ * - matches the character hz - literally.
  * - matches the character kHz literally.
  * - ^ and $ ensure that the entire string matches the regex.
- * - ex: 20 hz - 20 kHz
  */
-const HEADPHONE_FREQUENCY_RESPONSE_REGEX = /^[0-9]{2} hz - [0-9]{2} kHz$/;
-
-const SPEAKER_FREQUENCY_RESPONSE_REGEX = HEADPHONE_FREQUENCY_RESPONSE_REGEX;
+const FREQUENCY_RESPONSE_REGEX = /^[0-9]{1,2} hz - [0-9]{1,2} kHz$/;
 
 const SMARTPHONE_CHIPSET_REGEX = CPU_SOCKET_REGEX;
 const TABLET_CHIPSET_REGEX = CPU_SOCKET_REGEX;
@@ -227,6 +222,39 @@ const MOUSE_SENSOR_DATA: SelectInputData = [
   { value: 'Other', label: 'Other' },
 ];
 
+const HEADPHONE_TYPE_DATA: SelectInputData = [
+  { value: 'Over-ear', label: 'Over-ear' },
+  { value: 'On-ear', label: 'On-ear' },
+  { value: 'In-ear', label: 'In-ear' },
+  { value: 'Other', label: 'Other' },
+];
+
+const HEADPHONE_INTERFACE_DATA: SelectInputData = [
+  { value: 'USB', label: 'USB' },
+  { value: 'Bluetooth', label: 'Bluetooth' },
+  { value: '3.5 mm', label: '3.5 mm' },
+  { value: '2.5 mm', label: '2.5 mm' },
+  { value: 'Other', label: 'Other' },
+];
+
+const SPEAKER_TYPE_DATA: SelectInputData = [
+  { value: '2.0', label: '2.0' },
+  { value: '2.1', label: '2.1' },
+  { value: '3.1', label: '3.1' },
+  { value: '4.1', label: '4.1' },
+  { value: '5.1', label: '5.1' },
+  { value: '7.1', label: '7.1' },
+  { value: 'Other', label: 'Other' },
+];
+
+const SPEAKER_INTERFACE_DATA: SelectInputData = [
+  { value: 'USB', label: 'USB' },
+  { value: 'Bluetooth', label: 'Bluetooth' },
+  { value: '3.5 mm', label: '3.5 mm' },
+  { value: '2.5 mm', label: '2.5 mm' },
+  { value: 'Other', label: 'Other' },
+];
+
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -236,8 +264,10 @@ export {
   CPU_SOCKET_REGEX,
   DIMENSION_UNIT_DATA,
   DISPLAY_ASPECT_RATIO_REGEX,
+  FREQUENCY_RESPONSE_REGEX,
   GPU_CHIPSET_REGEX,
-  HEADPHONE_FREQUENCY_RESPONSE_REGEX,
+  HEADPHONE_INTERFACE_DATA,
+  HEADPHONE_TYPE_DATA,
   KEYBOARD_BACKLIGHT_DATA,
   KEYBOARD_LAYOUT_DATA,
   KEYBOARD_SWITCH_DATA,
@@ -255,7 +285,8 @@ export {
   RAM_MEMORY_TYPE_DATA,
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
-  SPEAKER_FREQUENCY_RESPONSE_REGEX,
+  SPEAKER_INTERFACE_DATA,
+  SPEAKER_TYPE_DATA,
   STORAGE_FORM_FACTOR_DATA,
   STORAGE_INTERFACE_DATA,
   STORAGE_TYPE_DATA,

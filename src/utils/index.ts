@@ -1174,6 +1174,42 @@ function returnDisplayAspectRatioValidationText({
     : '';
 }
 
+function returnFrequencyResponseValidationText({
+  content,
+  contentKind,
+  maxLength = 14,
+  minLength = 12,
+}: RegexValidationProps): string {
+  // /^[0-9]{1,2} hz - [0-9]{1,2} kHz$/;
+  const speakerFrequencyResponseLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const speakerFrequencyResponseCharacterRegex =
+    /^[0-9]{1,2} hz - [0-9]{1,2} kHz$/;
+
+  const speakerFrequencyResponseRegexTupleArr: [boolean, string][] = [
+    [
+      speakerFrequencyResponseLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      speakerFrequencyResponseCharacterRegex.test(content),
+      'Must be a valid speaker frequency response in the format 00 hz - 00 kHz.',
+    ],
+  ];
+
+  const validationText = speakerFrequencyResponseRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}: ${validationText}`
+    : '';
+}
+
 function logState({
   state,
   groupLabel = 'state',
@@ -2111,6 +2147,7 @@ export {
   returnSerialIdValidationText,
   returnSliderMarks,
   returnSocketChipsetValidationText,
+  returnFrequencyResponseValidationText,
   returnThemeColors,
   returnTimeRailwayValidationText,
   returnTimeRemaining,
