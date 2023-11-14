@@ -895,6 +895,16 @@ function CreateProduct() {
     });
   }, [accessoryType]);
 
+  // validate accessory color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(accessoryColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsAccessoryColorValid,
+      payload: isValid,
+    });
+  }, [accessoryColor]);
+
   // update stepper wrapper state on every page 1 input validation change
   useEffect(() => {
     const arePage1InputsInError =
@@ -4325,6 +4335,134 @@ function CreateProduct() {
       semanticName: 'tablet color',
     },
   ]);
+
+  // page 2 -> specifications -> accessory
+
+  // page 2 -> specifications -> accessory -> accessory type
+
+  // page 2 -> specifications -> accessory -> accessory type -> accessible screen reader text elements
+  const [accessoryTypeInputErrorText, accessoryTypeInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'accessory type',
+      inputText: accessoryType,
+      isInputTextFocused: isAccessoryTypeFocused,
+      isValidInputText: isAccessoryTypeValid,
+      regexValidationText: returnBrandNameValidationText({
+        content: accessoryType,
+        contentKind: 'accessory type',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> accessory -> accessory type -> text input element creator
+  const [createdAccessoryTypeTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: accessoryTypeInputErrorText,
+        valid: accessoryTypeInputValidText,
+      },
+      inputText: accessoryType,
+      isValidInputText: isAccessoryTypeValid,
+      label: 'Accessory Type',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsAccessoryTypeFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setAccessoryType,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsAccessoryTypeFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter accessory type',
+      required: true,
+      semanticName: 'accessory type',
+    },
+  ]);
+
+  // page 2 -> specifications -> accessory -> accessory color
+
+  // page 2 -> specifications -> accessory -> accessory color -> accessible screen reader text elements
+  const [accessoryColorInputErrorText, accessoryColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'accessory color',
+      inputText: accessoryColor,
+      isInputTextFocused: isAccessoryColorFocused,
+      isValidInputText: isAccessoryColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: accessoryColor,
+        contentKind: 'accessory color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // page 2 -> specifications -> accessory -> accessory color -> text input element creator
+  const [createdAccessoryColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: accessoryColorInputErrorText,
+        valid: accessoryColorInputValidText,
+      },
+      inputText: accessoryColor,
+      isValidInputText: isAccessoryColorValid,
+      label: 'Accessory Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsAccessoryColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setAccessoryColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsAccessoryColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter accessory color',
+      required: true,
+      semanticName: 'accessory color',
+    },
+  ]);
+
+  // page 2 -> specifications -> accessory -> accessory interface
+
+  // page 2 -> specifications -> accessory -> accessory interface -> select input element
+  const [createdAccessoryInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: PERIPHERALS_INTERFACE_DATA,
+        description: 'Select accessory interface',
+        label: 'Accessory Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setAccessoryInterface,
+            payload: event.currentTarget.value as PeripheralsInterface,
+          });
+        },
+        value: accessoryInterface,
+        required: true,
+      },
+    ]);
 
   //
   //
