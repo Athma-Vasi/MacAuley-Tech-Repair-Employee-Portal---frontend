@@ -243,6 +243,10 @@ function ImageUpload({
     window.addEventListener('beforeunload', () => {
       localforage.removeItem(`${parentComponentName}-imageUploadState`);
     });
+
+    return () => {
+      window.removeEventListener('beforeunload', () => {});
+    };
   }, [parentComponentName]);
 
   // flush local forage when parent component submits form
@@ -255,7 +259,7 @@ function ImageUpload({
 
   // validate image kinds, types, sizes on every image upload
   useEffect(() => {
-    const validImageTypes = new Set(['jpeg', 'png', 'gif']);
+    const validImageTypes = new Set(['jpeg', 'png']);
 
     imagePreviews.forEach((image, index) => {
       // validate image sizes

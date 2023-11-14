@@ -21,10 +21,7 @@ type LaptopSpecifications = {
   gpu: GpuSpecifications;
   ram: RamSpecifications;
   storage: StorageSpecifications;
-  monitor: MonitorSpecifications;
-  keyboard: KeyboardSpecifications;
-  mouse: MouseSpecifications;
-  speaker: SpeakerSpecifications;
+  display: MonitorSpecifications;
 };
 
 type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';
@@ -69,7 +66,7 @@ type MotherboardSpecifications = {
 };
 
 type RamSpecifications = {
-  frequency: string; // 3200 MHz, 3600 MHz, etc.
+  dataRate: string; // 3200 MT/s, 3600 MT/s, etc.
   modules: string; // 2 x 8 GB, 4 x 8 GB, etc.
   ramType: MemoryType; // DDR4, etc.
   color: string; // Black, White, etc.
@@ -301,11 +298,10 @@ type CreateProductState = {
   brand: string;
   isBrandValid: boolean;
   isBrandFocused: boolean;
-  // page 1 -> model, product category
+  // page 1 -> model
   model: string;
   isModelValid: boolean;
   isModelFocused: boolean;
-  productCategory: ProductCategory;
   // page 1 -> description
   description: string;
   isDescriptionValid: boolean;
@@ -333,6 +329,9 @@ type CreateProductState = {
   isAdditionalCommentsFocused: boolean;
 
   // page 2
+
+  // page 2 -> product category
+  productCategory: ProductCategory;
 
   // page 2 -> specifications
 
@@ -379,7 +378,7 @@ type CreateProductState = {
   motherboardPcie5Slots: number;
 
   // page 2 -> specifications -> ram
-  ramFrequency: number;
+  ramDataRate: number;
   ramModulesQuantity: number;
   ramModulesCapacity: number;
   ramModulesCapacityUnit: MemoryUnit;
@@ -610,7 +609,7 @@ type CreateProductAction = {
   setMotherboardPcie5Slots: 'setMotherboardPcie5Slots';
 
   // page 2 -> specifications -> ram
-  setRamFrequency: 'setRamFrequency';
+  setRamDataRate: 'setRamDataRate';
   setRamModulesQuantity: 'setRamModulesQuantity';
   setRamModulesCapacity: 'setRamModulesCapacity';
   setRamModulesCapacityUnit: 'setRamModulesCapacityUnit';
@@ -989,7 +988,7 @@ type CreateProductDispatch =
     }
   // specifications -> ram
   | {
-      type: CreateProductAction['setRamFrequency'];
+      type: CreateProductAction['setRamDataRate'];
       payload: number;
     }
   | {

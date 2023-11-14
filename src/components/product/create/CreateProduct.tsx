@@ -1,14 +1,26 @@
+import { Group, NumberInput, Title, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { ChangeEvent, useEffect, useReducer } from 'react';
+import { InvalidTokenError } from 'jwt-decode';
+import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
+import { TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
+import {
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  MONEY_REGEX,
+  SERIAL_ID_REGEX,
+} from '../../../constants/regex';
+import { globalAction } from '../../../context/globalProvider/state';
 import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
-  createProductAction,
-  createProductReducer,
-  initialCreateProductState,
-} from './state';
+  AccessibleErrorValidTextElements,
+  returnAccessibleButtonElements,
+  returnAccessibleRadioSingleInputElements,
+  returnAccessibleSelectInputElements,
+  returnAccessibleTextInputElements,
+} from '../../../jsxCreators';
+import { Currency, ResourceRequestServerResponse } from '../../../types';
 import {
   logState,
   returnBrandNameValidationText,
@@ -23,9 +35,64 @@ import {
   returnSocketChipsetValidationText,
   urlBuilder,
 } from '../../../utils';
-import { InvalidTokenError } from 'jwt-decode';
-import { globalAction } from '../../../context/globalProvider/state';
-import { Currency, ResourceRequestServerResponse } from '../../../types';
+import { CURRENCY_DATA } from '../../benefits/constants';
+import { PRODUCT_CATEGORIES } from '../../dashboard/constants';
+import { ProductCategory } from '../../dashboard/types';
+import FormReviewPage, {
+  FormReviewObject,
+} from '../../formReviewPage/FormReviewPage';
+import { ImageUpload } from '../../imageUpload';
+import { NotificationModal } from '../../notificationModal';
+import { FormLayoutWrapper, StepperWrapper } from '../../wrappers';
+import {
+  ACCESSORY_TYPE_REGEX,
+  BRAND_REGEX,
+  CASE_SIDE_PANEL_DATA,
+  CASE_TYPE_DATA,
+  COLOR_VARIANT_REGEX,
+  CPU_SOCKET_REGEX,
+  CREATE_PRODUCT_DESCRIPTION_OBJECTS,
+  CREATE_PRODUCT_MAX_IMG_AMOUNT,
+  CREATE_PRODUCT_MAX_IMG_SIZE,
+  CREATE_PRODUCT_MAX_STEPPER_POSITION,
+  DIMENSION_UNIT_DATA,
+  DISPLAY_ASPECT_RATIO_REGEX,
+  FREQUENCY_RESPONSE_REGEX,
+  GPU_CHIPSET_REGEX,
+  HEADPHONE_INTERFACE_DATA,
+  HEADPHONE_TYPE_DATA,
+  KEYBOARD_BACKLIGHT_DATA,
+  KEYBOARD_LAYOUT_DATA,
+  KEYBOARD_SWITCH_DATA,
+  MEMORY_UNIT_DATA,
+  MOBILE_CAMERA_REGEX,
+  MOBILE_OS_DATA,
+  MONITOR_PANEL_TYPE_DATA,
+  MOTHERBOARD_CHIPSET_REGEX,
+  MOTHERBOARD_FORM_FACTOR_DATA,
+  MOTHERBOARD_MEMORY_TYPE_DATA,
+  MOTHERBOARD_SOCKET_REGEX,
+  MOUSE_SENSOR_DATA,
+  PERIPHERALS_INTERFACE_DATA,
+  PSU_EFFICIENCY_RATING_DATA,
+  PSU_FORM_FACTOR_DATA,
+  PSU_MODULARITY_DATA,
+  RAM_MEMORY_TYPE_DATA,
+  RAM_TIMING_REGEX,
+  SMARTPHONE_CHIPSET_REGEX,
+  SPEAKER_INTERFACE_DATA,
+  SPEAKER_TYPE_DATA,
+  STORAGE_FORM_FACTOR_DATA,
+  STORAGE_INTERFACE_DATA,
+  STORAGE_TYPE_DATA,
+  TABLET_CHIPSET_REGEX,
+  WEIGHT_UNIT_DATA,
+} from '../constants';
+import {
+  createProductAction,
+  createProductReducer,
+  initialCreateProductState,
+} from './state';
 import {
   CaseSidePanel,
   CaseType,
@@ -53,67 +120,6 @@ import {
   StorageType,
   WeightUnit,
 } from './types';
-import {
-  ACCESSORY_TYPE_REGEX,
-  BRAND_REGEX,
-  CASE_SIDE_PANEL_DATA,
-  CASE_TYPE_DATA,
-  COLOR_VARIANT_REGEX,
-  CPU_SOCKET_REGEX,
-  DIMENSION_UNIT_DATA,
-  GPU_CHIPSET_REGEX,
-  FREQUENCY_RESPONSE_REGEX,
-  MEMORY_UNIT_DATA,
-  DISPLAY_ASPECT_RATIO_REGEX,
-  MONITOR_PANEL_TYPE_DATA,
-  MOTHERBOARD_CHIPSET_REGEX,
-  MOTHERBOARD_FORM_FACTOR_DATA,
-  MOTHERBOARD_MEMORY_TYPE_DATA,
-  MOTHERBOARD_SOCKET_REGEX,
-  PSU_EFFICIENCY_RATING_DATA,
-  PSU_FORM_FACTOR_DATA,
-  PSU_MODULARITY_DATA,
-  RAM_MEMORY_TYPE_DATA,
-  RAM_TIMING_REGEX,
-  SMARTPHONE_CHIPSET_REGEX,
-  SPEAKER_FREQUENCY_RESPONSE_REGEX,
-  STORAGE_FORM_FACTOR_DATA,
-  STORAGE_INTERFACE_DATA,
-  STORAGE_TYPE_DATA,
-  TABLET_CHIPSET_REGEX,
-  WEIGHT_UNIT_DATA,
-  KEYBOARD_SWITCH_DATA,
-  KEYBOARD_LAYOUT_DATA,
-  KEYBOARD_BACKLIGHT_DATA,
-  PERIPHERALS_INTERFACE_DATA,
-  MOUSE_SENSOR_DATA,
-  HEADPHONE_TYPE_DATA,
-  HEADPHONE_INTERFACE_DATA,
-  SPEAKER_TYPE_DATA,
-  SPEAKER_INTERFACE_DATA,
-  MOBILE_OS_DATA,
-  MOBILE_CAMERA_REGEX,
-} from '../constants';
-import {
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  MONEY_REGEX,
-  SERIAL_ID_REGEX,
-} from '../../../constants/regex';
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleRadioSingleInputElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import {
-  AccessibleRadioSingleInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-} from '../../wrappers';
-import { ProductCategory } from '../../dashboard/types';
-import { PRODUCT_CATEGORIES } from '../../dashboard/constants';
-import { CURRENCY_DATA } from '../../benefits/constants';
-import { Group, NumberInput } from '@mantine/core';
 
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
@@ -121,10 +127,7 @@ function CreateProduct() {
     initialCreateProductState
   );
 
-  const {
-    globalState: { themeObject },
-    globalDispatch,
-  } = useGlobalState();
+  const { globalDispatch } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
 
@@ -224,7 +227,7 @@ function CreateProduct() {
     motherboardPcie5Slots,
 
     // page 2 -> specifications -> ram
-    ramFrequency,
+    ramDataRate,
     ramModulesQuantity,
     ramModulesCapacity,
     ramModulesCapacityUnit,
@@ -735,13 +738,13 @@ function CreateProduct() {
 
   // validate ram color variant on every change
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(ramTiming);
+    const isValid = COLOR_VARIANT_REGEX.test(ramColor);
 
     createProductDispatch({
       type: createProductAction.setIsRamTimingValid,
       payload: isValid,
     });
-  }, []);
+  }, [ramColor]);
 
   // validate RAM timing on every change
   useEffect(() => {
@@ -805,9 +808,7 @@ function CreateProduct() {
 
   // validate speaker frequency response on every change
   useEffect(() => {
-    const isValid = SPEAKER_FREQUENCY_RESPONSE_REGEX.test(
-      speakerFrequencyResponse
-    );
+    const isValid = FREQUENCY_RESPONSE_REGEX.test(speakerFrequencyResponse);
 
     createProductDispatch({
       type: createProductAction.setIsSpeakerFrequencyResponseValid,
@@ -931,18 +932,148 @@ function CreateProduct() {
 
   // update stepper wrapper state on every page 2 input validation change
   useEffect(() => {
-    const arePage2InputsInError =
+    const areCpuSpecificationsInError =
       !isCpuSocketValid ||
+      !cpuFrequency ||
+      !cpuCores ||
+      !cpuL1CacheCapacity ||
+      !cpuL2CacheCapacity ||
+      !cpuL3CacheCapacity ||
+      !cpuWattage;
+
+    const areGpuSpecificationsInError =
       !isGpuChipsetValid ||
+      !gpuMemoryCapacity ||
+      !gpuCoreClock ||
+      !gpuBoostClock ||
+      !gpuTdp;
+
+    const areMotherboardSpecificationsInError =
       !isMotherboardSocketValid ||
       !isMotherboardChipsetValid ||
+      !motherboardMemoryMaxCapacity ||
+      !motherboardMemorySlots ||
+      !motherboardSataPorts ||
+      !motherboardM2Slots ||
+      !motherboardPcie3Slots ||
+      !motherboardPcie4Slots ||
+      !motherboardPcie5Slots;
+
+    const areRamSpecificationsInError =
+      !ramDataRate ||
+      !ramModulesQuantity ||
+      !ramModulesCapacity ||
       !isRamTimingValid ||
-      !isMonitorAspectRatioValid ||
+      !isRamColorValid ||
+      !ramVoltage;
+
+    const areStorageSpecificationsInError =
+      !storageCapacity || !storageCacheCapacity;
+
+    const isPsuSpecificationInError = !psuWattage;
+
+    const isCaseSpecificationInError = !caseColor;
+
+    const areMonitorSpecificationsInError =
+      !monitorSize ||
+      !monitorResolutionHorizontal ||
+      !monitorResolutionVertical ||
+      !monitorRefreshRate ||
+      !monitorResponseTime ||
+      !isMonitorAspectRatioValid;
+
+    const areMouseSpecificationsInError =
+      !mouseDpi || !mouseButtons || !isMouseColorValid;
+
+    const areHeadphoneSpecificationsInError =
+      !headphoneDriver ||
       !isHeadphoneFrequencyResponseValid ||
+      !headphoneImpedance ||
+      !isHeadphoneColorValid;
+
+    const areSpeakerSpecificationsInError =
+      !speakerTotalWattage ||
       !isSpeakerFrequencyResponseValid ||
+      !isSpeakerColorValid;
+
+    const areSmartphoneSpecificationsInError =
       !isSmartphoneChipsetValid ||
+      !smartphoneDisplay ||
+      !smartphoneResolutionHorizontal ||
+      !smartphoneResolutionVertical ||
+      !smartphoneRamCapacity ||
+      !smartphoneStorageCapacity ||
+      !smartphoneBatteryCapacity ||
+      !isSmartphoneCameraValid ||
+      !isSmartphoneColorValid;
+
+    const areTabletSpecificationsInError =
       !isTabletChipsetValid ||
-      !isAccessoryTypeValid;
+      !tabletDisplay ||
+      !tabletResolutionHorizontal ||
+      !tabletResolutionVertical ||
+      !tabletRamCapacity ||
+      !tabletStorageCapacity ||
+      !tabletBatteryCapacity ||
+      !isTabletCameraValid ||
+      !isTabletColorValid;
+
+    const areAccessorySpecificationsInError =
+      !isAccessoryTypeValid || !isAccessoryColorValid;
+
+    const areDesktopComputerSpecificationsInError =
+      areCpuSpecificationsInError ||
+      areGpuSpecificationsInError ||
+      areMotherboardSpecificationsInError ||
+      areRamSpecificationsInError ||
+      areStorageSpecificationsInError ||
+      isPsuSpecificationInError ||
+      isCaseSpecificationInError ||
+      areMonitorSpecificationsInError ||
+      areMouseSpecificationsInError ||
+      areSpeakerSpecificationsInError;
+
+    const areLaptopSpecificationsInError =
+      areCpuSpecificationsInError ||
+      areGpuSpecificationsInError ||
+      areRamSpecificationsInError ||
+      areStorageSpecificationsInError ||
+      areMonitorSpecificationsInError;
+
+    const arePage2InputsInError =
+      productCategory === 'Accessories'
+        ? areAccessorySpecificationsInError
+        : productCategory === 'Desktop Computers'
+        ? areDesktopComputerSpecificationsInError
+        : productCategory === 'Central Processing Units (CPUs)'
+        ? areCpuSpecificationsInError
+        : productCategory === 'Computer Cases'
+        ? isCaseSpecificationInError
+        : productCategory === 'Graphics Processing Units (GPUs)'
+        ? areGpuSpecificationsInError
+        : productCategory === 'Headphones'
+        ? areHeadphoneSpecificationsInError
+        : productCategory === 'Keyboards'
+        ? false
+        : productCategory === 'Laptops'
+        ? areLaptopSpecificationsInError
+        : productCategory === 'Memory (RAM)'
+        ? areRamSpecificationsInError
+        : productCategory === 'Mice'
+        ? areMouseSpecificationsInError
+        : productCategory === 'Monitors'
+        ? areMonitorSpecificationsInError
+        : productCategory === 'Motherboards'
+        ? areMotherboardSpecificationsInError
+        : productCategory === 'Power Supplies'
+        ? isPsuSpecificationInError
+        : productCategory === 'Smartphones'
+        ? areSmartphoneSpecificationsInError
+        : productCategory === 'Speakers'
+        ? areSpeakerSpecificationsInError
+        : productCategory === 'Storage'
+        ? areStorageSpecificationsInError
+        : areTabletSpecificationsInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
@@ -952,17 +1083,74 @@ function CreateProduct() {
       },
     });
   }, [
+    caseColor,
+    cpuCores,
+    cpuFrequency,
+    cpuL1CacheCapacity,
+    cpuL2CacheCapacity,
+    cpuL3CacheCapacity,
+    cpuWattage,
+    gpuBoostClock,
+    gpuCoreClock,
+    gpuMemoryCapacity,
+    gpuTdp,
+    headphoneDriver,
+    headphoneImpedance,
+    isAccessoryColorValid,
     isAccessoryTypeValid,
     isCpuSocketValid,
     isGpuChipsetValid,
+    isHeadphoneColorValid,
     isHeadphoneFrequencyResponseValid,
     isMonitorAspectRatioValid,
     isMotherboardChipsetValid,
     isMotherboardSocketValid,
+    isMouseColorValid,
+    isRamColorValid,
     isRamTimingValid,
+    isSmartphoneCameraValid,
     isSmartphoneChipsetValid,
+    isSmartphoneColorValid,
+    isSpeakerColorValid,
     isSpeakerFrequencyResponseValid,
+    isTabletCameraValid,
     isTabletChipsetValid,
+    isTabletColorValid,
+    monitorRefreshRate,
+    monitorResolutionHorizontal,
+    monitorResolutionVertical,
+    monitorResponseTime,
+    monitorSize,
+    motherboardM2Slots,
+    motherboardMemoryMaxCapacity,
+    motherboardMemorySlots,
+    motherboardPcie3Slots,
+    motherboardPcie4Slots,
+    motherboardPcie5Slots,
+    motherboardSataPorts,
+    mouseButtons,
+    mouseDpi,
+    productCategory,
+    psuWattage,
+    ramDataRate,
+    ramModulesCapacity,
+    ramModulesQuantity,
+    ramVoltage,
+    smartphoneBatteryCapacity,
+    smartphoneDisplay,
+    smartphoneRamCapacity,
+    smartphoneResolutionHorizontal,
+    smartphoneResolutionVertical,
+    smartphoneStorageCapacity,
+    speakerTotalWattage,
+    storageCacheCapacity,
+    storageCapacity,
+    tabletBatteryCapacity,
+    tabletDisplay,
+    tabletRamCapacity,
+    tabletResolutionHorizontal,
+    tabletResolutionVertical,
+    tabletStorageCapacity,
   ]);
 
   // update stepper wrapper state on every page 3 input validation change
@@ -979,9 +1167,9 @@ function CreateProduct() {
     });
   }, [areImagesValid, imgFormDataArray.length]);
 
-  // ╭────────────────╮
-  // │ Created Inputs │
-  // ╰────────────────╯
+  // ╭──────────────────────────────────────────────────────────────╮
+  // │ Created Inputs                                               │
+  // ╰──────────────────────────────────────────────────────────────╯
 
   // page 1
 
@@ -1091,26 +1279,6 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> product category
-
-  // page 1 -> product category -> select element creator
-  const [createdProductCategorySelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: PRODUCT_CATEGORIES,
-        description: 'Select a product category',
-        label: 'Product Category',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setProductCategory,
-            payload: event.currentTarget.value as ProductCategory,
-          });
-        },
-        value: productCategory,
-        required: true,
-      },
-    ]);
-
   // page 1 -> description
 
   // page 1 -> description -> accessible screen reader text elements
@@ -1219,7 +1387,7 @@ function CreateProduct() {
   const [createdCurrencySelectInput] = returnAccessibleSelectInputElements([
     {
       data: CURRENCY_DATA,
-      description: 'Select a currency',
+      description: '',
       label: 'Currency',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -1256,7 +1424,6 @@ function CreateProduct() {
   // page 1 -> quantity -> number input element
   const createdQuantityNumberInput = (
     <NumberInput
-      description="Enter product quantity"
       label="Quantity"
       max={99999}
       min={1}
@@ -1271,6 +1438,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={quantity}
+      w={330}
       withAsterisk
     />
   );
@@ -1280,7 +1448,6 @@ function CreateProduct() {
   // page 1 -> weight -> number input element
   const createdWeightNumberInput = (
     <NumberInput
-      description="Enter product weight"
       label="Weight"
       max={99999}
       min={1}
@@ -1296,6 +1463,7 @@ function CreateProduct() {
       step={0.01}
       type="number"
       value={weight}
+      w={330}
       withAsterisk
     />
   );
@@ -1304,7 +1472,7 @@ function CreateProduct() {
   const [createdWeightUnitSelectInput] = returnAccessibleSelectInputElements([
     {
       data: WEIGHT_UNIT_DATA,
-      description: 'Select a weight unit',
+      description: '',
       label: 'Weight Unit',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -1322,7 +1490,6 @@ function CreateProduct() {
   // page 1 -> dimensions -> length number input element
   const createdDimensionLengthNumberInput = (
     <NumberInput
-      description="Enter product length"
       label="Length"
       max={99999}
       min={1}
@@ -1338,6 +1505,7 @@ function CreateProduct() {
       step={0.01}
       type="number"
       value={dimensionLength}
+      w={330}
       withAsterisk
     />
   );
@@ -1347,7 +1515,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: DIMENSION_UNIT_DATA,
-        description: 'Select a length unit',
+        description: '',
         label: 'Length Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -1363,7 +1531,6 @@ function CreateProduct() {
   // page 1 -> dimensions -> width number input element
   const createdDimensionWidthNumberInput = (
     <NumberInput
-      description="Enter product width"
       label="Width"
       max={99999}
       min={1}
@@ -1379,6 +1546,7 @@ function CreateProduct() {
       step={0.01}
       type="number"
       value={dimensionWidth}
+      w={330}
       withAsterisk
     />
   );
@@ -1388,7 +1556,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: DIMENSION_UNIT_DATA,
-        description: 'Select a width unit',
+        description: '',
         label: 'Width Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -1404,7 +1572,6 @@ function CreateProduct() {
   // page 1 -> dimensions -> height number input element
   const createdDimensionHeightNumberInput = (
     <NumberInput
-      description="Enter product height"
       label="Height"
       max={99999}
       min={1}
@@ -1420,6 +1587,7 @@ function CreateProduct() {
       step={0.01}
       type="number"
       value={dimensionHeight}
+      w={330}
       withAsterisk
     />
   );
@@ -1429,7 +1597,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: DIMENSION_UNIT_DATA,
-        description: 'Select a height unit',
+        description: '',
         label: 'Height Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -1498,6 +1666,26 @@ function CreateProduct() {
 
   // page 2
 
+  // page 2 -> product category
+
+  // page 2 -> product category -> select element creator
+  const [createdProductCategorySelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: PRODUCT_CATEGORIES,
+        description: '',
+        label: 'Product Category',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setProductCategory,
+            payload: event.currentTarget.value as ProductCategory,
+          });
+        },
+        value: productCategory,
+        required: true,
+      },
+    ]);
+
   // page 2 -> specifications
 
   // page 2 -> specifications -> cpu
@@ -1560,8 +1748,7 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu -> cpu frequency -> number input element
   const createdCpuFrequencyNumberInput = (
     <NumberInput
-      description="Enter CPU frequency in GHz"
-      label="CPU Frequency"
+      label="CPU Frequency (GHz)"
       max={7}
       min={0.01}
       onChange={(value: number) => {
@@ -1576,6 +1763,7 @@ function CreateProduct() {
       step={0.01}
       type="number"
       value={cpuFrequency}
+      w={330}
       withAsterisk
     />
   );
@@ -1585,7 +1773,6 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu -> cpu cores -> number input element
   const createdCpuCoresNumberInput = (
     <NumberInput
-      description="Enter CPU cores"
       label="CPU Cores"
       max={8192}
       min={1}
@@ -1600,6 +1787,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={cpuCores}
+      w={330}
       withAsterisk
     />
   );
@@ -1609,7 +1797,6 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu -> cpu L1 cache capacity -> number input element
   const createdCpuL1CacheCapacityNumberInput = (
     <NumberInput
-      description="Enter CPU L1 cache capacity"
       label="CPU L1 Cache Capacity"
       max={8192}
       min={1}
@@ -1624,6 +1811,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={cpuL1CacheCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -1635,7 +1823,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select CPU L1 cache capacity unit',
+        description: '',
         label: 'CPU L1 Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -1653,7 +1841,6 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu -> cpu L2 cache capacity -> number input element
   const createdCpuL2CacheCapacityNumberInput = (
     <NumberInput
-      description="Enter CPU L2 cache capacity"
       label="CPU L2 Cache Capacity"
       max={8192}
       min={1}
@@ -1668,6 +1855,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={cpuL2CacheCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -1679,7 +1867,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select CPU L2 cache capacity unit',
+        description: '',
         label: 'CPU L2 Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -1697,7 +1885,6 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu -> cpu L3 cache capacity -> number input element
   const createdCpuL3CacheCapacityNumberInput = (
     <NumberInput
-      description="Enter CPU L3 cache capacity"
       label="CPU L3 Cache Capacity"
       max={8192}
       min={1}
@@ -1712,6 +1899,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={cpuL3CacheCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -1723,7 +1911,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select CPU L3 cache capacity unit',
+        description: '',
         label: 'CPU L3 Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -1741,8 +1929,7 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu -> cpu wattage -> number input element
   const createdCpuWattageNumberInput = (
     <NumberInput
-      description="Enter CPU wattage in Watts(W)"
-      label="CPU Wattage"
+      label="CPU Wattage (W)"
       max={999}
       min={1}
       onChange={(value: number) => {
@@ -1756,6 +1943,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={cpuWattage}
+      w={330}
       withAsterisk
     />
   );
@@ -1820,7 +2008,6 @@ function CreateProduct() {
   // page 2 -> specifications -> gpu -> gpu memory capacity -> number input element
   const createdGpuMemoryCapacityNumberInput = (
     <NumberInput
-      description="Enter GPU memory capacity"
       label="GPU Memory Capacity"
       max={8192}
       min={1}
@@ -1835,6 +2022,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={gpuMemoryCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -1846,7 +2034,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select GPU memory capacity unit',
+        description: '',
         label: 'GPU Memory Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -1864,8 +2052,7 @@ function CreateProduct() {
   // page 2 -> specifications -> gpu -> gpu core clock -> number input element
   const createdGpuCoreClockNumberInput = (
     <NumberInput
-      description="Enter GPU core clock in MHz"
-      label="GPU Core Clock"
+      label="GPU Core Clock (MHz)"
       max={9999}
       min={1}
       onChange={(value: number) => {
@@ -1879,6 +2066,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={gpuCoreClock}
+      w={330}
       withAsterisk
     />
   );
@@ -1888,8 +2076,7 @@ function CreateProduct() {
   // page 2 -> specifications -> gpu -> gpu boost clock -> number input element
   const createdGpuBoostClockNumberInput = (
     <NumberInput
-      description="Enter GPU boost clock in MHz"
-      label="GPU Boost Clock"
+      label="GPU Boost Clock (MHz)"
       max={9999}
       min={1}
       onChange={(value: number) => {
@@ -1903,6 +2090,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={gpuBoostClock}
+      w={330}
       withAsterisk
     />
   );
@@ -1912,8 +2100,7 @@ function CreateProduct() {
   // page 2 -> specifications -> gpu -> gpu wattage -> number input element
   const createdGpuWattageNumberInput = (
     <NumberInput
-      description="Enter GPU wattage in Watts(W)"
-      label="GPU Wattage"
+      label="GPU Wattage (W)"
       max={999}
       min={1}
       onChange={(value: number) => {
@@ -1927,6 +2114,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={gpuTdp}
+      w={330}
       withAsterisk
     />
   );
@@ -2049,7 +2237,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MOTHERBOARD_FORM_FACTOR_DATA,
-        description: 'Select motherboard form factor',
+        description: '',
         label: 'Motherboard Form Factor',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2067,7 +2255,6 @@ function CreateProduct() {
   // page 2 -> specifications -> motherboard -> motherboard memory max capacity -> number input element
   const createdMotherboardMemoryMaxCapacityNumberInput = (
     <NumberInput
-      description="Enter motherboard memory max capacity"
       label="Motherboard Memory Max Capacity"
       max={8192}
       min={1}
@@ -2082,6 +2269,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={motherboardMemoryMaxCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -2093,7 +2281,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select motherboard memory max capacity unit',
+        description: '',
         label: 'Motherboard Memory Max Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2111,7 +2299,6 @@ function CreateProduct() {
   // page 2 -> specifications -> motherboard -> motherboard memory slots -> number input element
   const createdMotherboardMemorySlotsNumberInput = (
     <NumberInput
-      description="Enter motherboard memory slots"
       label="Motherboard Memory Slots"
       max={96}
       min={1}
@@ -2126,6 +2313,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={motherboardMemorySlots}
+      w={330}
       withAsterisk
     />
   );
@@ -2137,7 +2325,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MOTHERBOARD_MEMORY_TYPE_DATA,
-        description: 'Select motherboard memory type',
+        description: '',
         label: 'Motherboard Memory Type',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2155,7 +2343,6 @@ function CreateProduct() {
   // page 2 -> specifications -> motherboard -> motherboard sata ports -> number input element
   const createdMotherboardSataPortsNumberInput = (
     <NumberInput
-      description="Enter motherboard SATA ports"
       label="Motherboard SATA Ports"
       max={48}
       min={1}
@@ -2170,6 +2357,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={motherboardSataPorts}
+      w={330}
       withAsterisk
     />
   );
@@ -2179,7 +2367,6 @@ function CreateProduct() {
   // page 2 -> specifications -> motherboard -> motherboard m2 slots -> number input element
   const createdMotherboardM2SlotsNumberInput = (
     <NumberInput
-      description="Enter motherboard M.2 slots"
       label="Motherboard M.2 Slots"
       max={24}
       min={0}
@@ -2194,6 +2381,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={motherboardM2Slots}
+      w={330}
       withAsterisk
     />
   );
@@ -2203,7 +2391,6 @@ function CreateProduct() {
   // page 2 -> specifications -> motherboard -> motherboard pcie3 slots -> number input element
   const createdMotherboardPcie3SlotsNumberInput = (
     <NumberInput
-      description="Enter motherboard PCIe3 slots"
       label="Motherboard PCIe3 Slots"
       max={24}
       min={0}
@@ -2218,6 +2405,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={motherboardPcie3Slots}
+      w={330}
       withAsterisk
     />
   );
@@ -2227,7 +2415,6 @@ function CreateProduct() {
   // page 2 -> specifications -> motherboard -> motherboard pcie4 slots -> number input element
   const createdMotherboardPcie4SlotsNumberInput = (
     <NumberInput
-      description="Enter motherboard PCIe4 slots"
       label="Motherboard PCIe4 Slots"
       max={24}
       min={0}
@@ -2242,6 +2429,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={motherboardPcie4Slots}
+      w={330}
       withAsterisk
     />
   );
@@ -2251,7 +2439,6 @@ function CreateProduct() {
   // page 2 -> specifications -> motherboard -> motherboard pcie5 slots -> number input element
   const createdMotherboardPcie5SlotsNumberInput = (
     <NumberInput
-      description="Enter motherboard PCIe5 slots"
       label="Motherboard PCIe5 Slots"
       max={24}
       min={0}
@@ -2266,24 +2453,24 @@ function CreateProduct() {
       step={1}
       type="number"
       value={motherboardPcie5Slots}
+      w={330}
       withAsterisk
     />
   );
 
   // page 2 -> specifications -> ram
 
-  // page 2 -> specifications -> ram -> ram frequency
+  // page 2 -> specifications -> ram -> ram data rate
 
-  // page 2 -> specifications -> ram -> ram frequency -> number input element
-  const createdRamFrequencyNumberInput = (
+  // page 2 -> specifications -> ram -> ram data rate -> number input element
+  const createdRamDataRateNumberInput = (
     <NumberInput
-      description="Enter RAM frequency in MHz"
-      label="RAM Frequency"
+      label="RAM Data Rate (MT/s)"
       max={9999}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
-          type: createProductAction.setRamFrequency,
+          type: createProductAction.setRamDataRate,
           payload: value,
         });
       }}
@@ -2291,7 +2478,8 @@ function CreateProduct() {
       startValue={1}
       step={1}
       type="number"
-      value={ramFrequency}
+      value={ramDataRate}
+      w={330}
       withAsterisk
     />
   );
@@ -2301,7 +2489,6 @@ function CreateProduct() {
   // page 2 -> specifications -> ram -> ram modules quantity -> number input element
   const createdRamModulesQuantityNumberInput = (
     <NumberInput
-      description="Enter RAM modules quantity"
       label="RAM Modules Quantity"
       max={96}
       min={1}
@@ -2316,6 +2503,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={ramModulesQuantity}
+      w={330}
       withAsterisk
     />
   );
@@ -2325,7 +2513,6 @@ function CreateProduct() {
   // page 2 -> specifications -> ram -> ram modules capacity -> number input element
   const createdRamModulesCapacityNumberInput = (
     <NumberInput
-      description="Enter RAM modules capacity"
       label="RAM Modules Capacity"
       max={8192}
       min={1}
@@ -2340,6 +2527,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={ramModulesCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -2351,7 +2539,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select RAM modules capacity unit',
+        description: '',
         label: 'RAM Modules Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2370,7 +2558,7 @@ function CreateProduct() {
   const [createdRamTypeSelectInput] = returnAccessibleSelectInputElements([
     {
       data: RAM_MEMORY_TYPE_DATA,
-      description: 'Select RAM modules type',
+      description: '',
       label: 'RAM Type',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -2441,8 +2629,7 @@ function CreateProduct() {
   // page 2 -> specifications -> ram -> ram voltage -> number input element
   const createdRamVoltageNumberInput = (
     <NumberInput
-      description="Enter RAM voltage in Volts(V)"
-      label="RAM Voltage"
+      label="RAM Voltage (V)"
       max={9.99}
       min={1}
       onChange={(value: number) => {
@@ -2457,6 +2644,7 @@ function CreateProduct() {
       step={0.01}
       type="number"
       value={ramVoltage}
+      w={330}
       withAsterisk
     />
   );
@@ -2473,8 +2661,8 @@ function CreateProduct() {
       regexValidationText: returnRamTimingValidationText({
         content: ramTiming,
         contentKind: 'ram timing',
-        maxLength: 11,
-        minLength: 11,
+        maxLength: 14,
+        minLength: 7,
       }),
     });
 
@@ -2488,8 +2676,8 @@ function CreateProduct() {
       inputText: ramTiming,
       isValidInputText: isRamTimingValid,
       label: 'RAM Timing',
-      maxLength: 11,
-      minLength: 11,
+      maxLength: 14,
+      minLength: 7,
       onBlur: () => {
         createProductDispatch({
           type: createProductAction.setIsRamTimingFocused,
@@ -2522,7 +2710,7 @@ function CreateProduct() {
   const [createdStorageTypeSelectInput] = returnAccessibleSelectInputElements([
     {
       data: STORAGE_TYPE_DATA,
-      description: 'Select storage type',
+      description: '',
       label: 'Storage Type',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -2540,7 +2728,6 @@ function CreateProduct() {
   // page 2 -> specifications -> storage -> storage capacity -> number input element
   const createdStorageCapacityNumberInput = (
     <NumberInput
-      description="Enter storage capacity"
       label="Storage Capacity"
       max={8192}
       min={1}
@@ -2555,6 +2742,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={storageCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -2566,7 +2754,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select storage capacity unit',
+        description: '',
         label: 'Storage Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2584,7 +2772,6 @@ function CreateProduct() {
   // page 2 -> specifications -> storage -> storage cache capacity -> number input element
   const createdStorageCacheCapacityNumberInput = (
     <NumberInput
-      description="Enter storage cache capacity"
       label="Storage Cache Capacity"
       max={8192}
       min={1}
@@ -2599,6 +2786,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={storageCacheCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -2610,7 +2798,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select storage cache capacity unit',
+        description: '',
         label: 'Storage Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2630,7 +2818,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: STORAGE_FORM_FACTOR_DATA,
-        description: 'Select storage form factor',
+        description: '',
         label: 'Storage Form Factor',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2650,7 +2838,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: STORAGE_INTERFACE_DATA,
-        description: 'Select storage interface',
+        description: '',
         label: 'Storage Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2670,8 +2858,7 @@ function CreateProduct() {
   // page 2 -> specifications -> psu -> psu wattage -> number input element
   const createdPsuWattageNumberInput = (
     <NumberInput
-      description="Enter PSU wattage in Watts(W)"
-      label="PSU Wattage"
+      label="PSU Wattage (W)"
       max={9999}
       min={1}
       onChange={(value: number) => {
@@ -2685,6 +2872,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={psuWattage}
+      w={330}
       withAsterisk
     />
   );
@@ -2696,7 +2884,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: PSU_EFFICIENCY_RATING_DATA,
-        description: 'Select PSU efficiency rating',
+        description: '',
         label: 'PSU Efficiency Rating',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2759,7 +2947,7 @@ function CreateProduct() {
   const [createdCaseTypeSelectInput] = returnAccessibleSelectInputElements([
     {
       data: CASE_TYPE_DATA,
-      description: 'Select case type',
+      description: '',
       label: 'Case Type',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -2853,8 +3041,7 @@ function CreateProduct() {
   // page 2 -> specifications -> monitor -> monitor size -> number input element
   const createdMonitorSizeNumberInput = (
     <NumberInput
-      description="Enter monitor size in inches"
-      label="Monitor Size"
+      label="Monitor Size (inches)"
       max={99}
       min={1}
       onChange={(value: number) => {
@@ -2868,6 +3055,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={monitorSize}
+      w={330}
       withAsterisk
     />
   );
@@ -2879,7 +3067,6 @@ function CreateProduct() {
   // page 2 -> specifications -> monitor -> monitor resolution -> horizontal -> number input element
   const createdMonitorResolutionHorizontalNumberInput = (
     <NumberInput
-      description="Enter monitor horizontal resolution"
       label="Monitor Resolution Horizontal"
       max={99999}
       min={1}
@@ -2894,6 +3081,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={monitorResolutionHorizontal}
+      w={330}
       withAsterisk
     />
   );
@@ -2903,7 +3091,6 @@ function CreateProduct() {
   // page 2 -> specifications -> monitor -> monitor resolution -> vertical -> number input element
   const createdMonitorResolutionVerticalNumberInput = (
     <NumberInput
-      description="Enter monitor vertical resolution"
       label="Monitor Resolution Vertical"
       max={99999}
       min={1}
@@ -2918,6 +3105,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={monitorResolutionVertical}
+      w={330}
       withAsterisk
     />
   );
@@ -2927,8 +3115,7 @@ function CreateProduct() {
   // page 2 -> specifications -> monitor -> monitor refresh rate -> number input element
   const createdMonitorRefreshRateNumberInput = (
     <NumberInput
-      description="Enter monitor refresh rate in Hz"
-      label="Monitor Refresh Rate"
+      label="Monitor Refresh Rate (Hz)"
       max={999}
       min={1}
       onChange={(value: number) => {
@@ -2942,6 +3129,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={monitorRefreshRate}
+      w={330}
       withAsterisk
     />
   );
@@ -2953,7 +3141,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MONITOR_PANEL_TYPE_DATA,
-        description: 'Select monitor panel type',
+        description: '',
         label: 'Monitor Panel Type',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -2971,8 +3159,7 @@ function CreateProduct() {
   // page 2 -> specifications -> monitor -> monitor response time -> number input element
   const createdMonitorResponseTimeNumberInput = (
     <NumberInput
-      description="Enter monitor response time in ms"
-      label="Monitor Response Time"
+      label="Monitor Response Time (ms)"
       max={99}
       min={0.1}
       onChange={(value: number) => {
@@ -2986,6 +3173,7 @@ function CreateProduct() {
       step={0.01}
       type="number"
       value={monitorResponseTime}
+      w={330}
       withAsterisk
     />
   );
@@ -3003,7 +3191,7 @@ function CreateProduct() {
         content: monitorAspectRatio,
         contentKind: 'monitor aspect ratio',
         maxLength: 5,
-        minLength: 5,
+        minLength: 3,
       }),
     });
 
@@ -3019,7 +3207,7 @@ function CreateProduct() {
         isValidInputText: isMonitorAspectRatioValid,
         label: 'Monitor Aspect Ratio',
         maxLength: 5,
-        minLength: 5,
+        minLength: 3,
         onBlur: () => {
           createProductDispatch({
             type: createProductAction.setIsMonitorAspectRatioFocused,
@@ -3053,7 +3241,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: KEYBOARD_SWITCH_DATA,
-        description: 'Select keyboard switch',
+        description: '',
         label: 'Keyboard Switch',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -3073,7 +3261,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: KEYBOARD_LAYOUT_DATA,
-        description: 'Select keyboard layout',
+        description: '',
         label: 'Keyboard Layout',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -3093,7 +3281,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: KEYBOARD_BACKLIGHT_DATA,
-        description: 'Select keyboard backlight',
+        description: '',
         label: 'Keyboard Backlight',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -3113,7 +3301,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: PERIPHERALS_INTERFACE_DATA,
-        description: 'Select keyboard interface',
+        description: '',
         label: 'Keyboard Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -3134,7 +3322,7 @@ function CreateProduct() {
   const [createdMouseSensorSelectInput] = returnAccessibleSelectInputElements([
     {
       data: MOUSE_SENSOR_DATA,
-      description: 'Select mouse sensor',
+      description: '',
       label: 'Mouse Sensor',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -3152,8 +3340,7 @@ function CreateProduct() {
   // page 2 -> specifications -> mouse -> mouse dpi -> number input element
   const createdMouseDpiNumberInput = (
     <NumberInput
-      description="Enter mouse DPI"
-      label="Mouse DPI"
+      label="Mouse DPI (Dots Per Inch)"
       max={9999}
       min={1}
       onChange={(value: number) => {
@@ -3167,6 +3354,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={mouseDpi}
+      w={330}
       withAsterisk
     />
   );
@@ -3176,8 +3364,7 @@ function CreateProduct() {
   // page 2 -> specifications -> mouse -> mouse buttons quantity -> number input element
   const createdMouseButtonsNumberInput = (
     <NumberInput
-      description="Enter mouse buttons quantity"
-      label="Mouse Buttons "
+      label="Mouse Buttons"
       max={99}
       min={1}
       onChange={(value: number) => {
@@ -3191,6 +3378,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={mouseButtons}
+      w={330}
       withAsterisk
     />
   );
@@ -3255,7 +3443,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: PERIPHERALS_INTERFACE_DATA,
-        description: 'Select mouse interface',
+        description: '',
         label: 'Mouse Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -3296,8 +3484,7 @@ function CreateProduct() {
   // page 2 -> specifications -> headphone -> headphone driver -> number input element
   const createdHeadphoneDriverNumberInput = (
     <NumberInput
-      description="Enter headphone driver in mm"
-      label="Headphone Driver"
+      label="Headphone Driver (mm)"
       max={99}
       min={1}
       onChange={(value: number) => {
@@ -3311,6 +3498,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={headphoneDriver}
+      w={330}
       withAsterisk
     />
   );
@@ -3376,8 +3564,7 @@ function CreateProduct() {
   // page 2 -> specifications -> headphone -> headphone impedance -> number input element
   const createdHeadphoneImpedanceNumberInput = (
     <NumberInput
-      description="Enter headphone impedance in Ohms(Ω)"
-      label="Headphone Impedance"
+      label="Headphone Impedance ohms(Ω)"
       max={999}
       min={1}
       onChange={(value: number) => {
@@ -3391,6 +3578,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={headphoneImpedance}
+      w={330}
       withAsterisk
     />
   );
@@ -3455,7 +3643,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: HEADPHONE_INTERFACE_DATA,
-        description: 'Select headphone interface',
+        description: '',
         label: 'Headphone Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -3476,7 +3664,7 @@ function CreateProduct() {
   const [createdSpeakerTypeSelectInput] = returnAccessibleSelectInputElements([
     {
       data: SPEAKER_TYPE_DATA,
-      description: 'Select speaker type',
+      description: '',
       label: 'Speaker Type',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -3494,8 +3682,7 @@ function CreateProduct() {
   // page 2 -> specifications -> speaker -> speaker total wattage -> number input element
   const createdSpeakerTotalWattageNumberInput = (
     <NumberInput
-      description="Enter speaker total wattage in Watts(W)"
-      label="Speaker Total Wattage"
+      label="Speaker Total Wattage (W)"
       max={999}
       min={1}
       onChange={(value: number) => {
@@ -3509,6 +3696,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={speakerTotalWattage}
+      w={330}
       withAsterisk
     />
   );
@@ -3528,7 +3716,7 @@ function CreateProduct() {
       content: speakerFrequencyResponse,
       contentKind: 'speaker frequency response',
       maxLength: 14,
-      minLength: 12,
+      minLength: 8,
     }),
   });
 
@@ -3544,7 +3732,7 @@ function CreateProduct() {
         isValidInputText: isSpeakerFrequencyResponseValid,
         label: 'Speaker Frequency Response',
         maxLength: 14,
-        minLength: 12,
+        minLength: 8,
         onBlur: () => {
           createProductDispatch({
             type: createProductAction.setIsSpeakerFrequencyResponseFocused,
@@ -3629,7 +3817,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: SPEAKER_INTERFACE_DATA,
-        description: 'Select speaker interface',
+        description: '',
         label: 'Speaker Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -3650,7 +3838,7 @@ function CreateProduct() {
   const [createdSmartphoneOsSelectInput] = returnAccessibleSelectInputElements([
     {
       data: MOBILE_OS_DATA,
-      description: 'Select smartphone OS',
+      description: '',
       label: 'Smartphone OS',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -3723,8 +3911,7 @@ function CreateProduct() {
   // page 2 -> specifications -> smartphone -> smartphone display -> number input element
   const createdSmartphoneDisplayNumberInput = (
     <NumberInput
-      description="Enter smartphone display in inches"
-      label="Smartphone Display"
+      label="Smartphone Display (inches)"
       max={99}
       min={1}
       onChange={(value: number) => {
@@ -3738,6 +3925,7 @@ function CreateProduct() {
       step={0.1}
       type="number"
       value={smartphoneDisplay}
+      w={330}
       withAsterisk
     />
   );
@@ -3749,7 +3937,6 @@ function CreateProduct() {
   // page 2 -> specifications -> smartphone -> smartphone resolution -> horizontal -> number input element
   const createdSmartphoneResolutionHorizontalNumberInput = (
     <NumberInput
-      description="Enter smartphone horizontal resolution"
       label="Smartphone Resolution Horizontal"
       max={9999}
       min={1}
@@ -3764,6 +3951,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={smartphoneResolutionHorizontal}
+      w={330}
       withAsterisk
     />
   );
@@ -3773,7 +3961,6 @@ function CreateProduct() {
   // page 2 -> specifications -> smartphone -> smartphone resolution -> vertical -> number input element
   const createdSmartphoneResolutionVerticalNumberInput = (
     <NumberInput
-      description="Enter smartphone vertical resolution"
       label="Smartphone Resolution Vertical"
       max={9999}
       min={1}
@@ -3788,6 +3975,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={smartphoneResolutionVertical}
+      w={330}
       withAsterisk
     />
   );
@@ -3797,7 +3985,6 @@ function CreateProduct() {
   // page 2 -> specifications -> smartphone -> smartphone ram capacity -> number input element
   const createdSmartphoneRamCapacityNumberInput = (
     <NumberInput
-      description="Enter smartphone RAM capacity"
       label="Smartphone RAM Capacity"
       max={1024}
       min={1}
@@ -3812,6 +3999,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={smartphoneRamCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -3823,7 +4011,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select smartphone RAM capacity unit',
+        description: '',
         label: 'Smartphone RAM Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -3841,8 +4029,7 @@ function CreateProduct() {
   // page 2 -> specifications -> smartphone -> smartphone storage capacity -> number input element
   const createdSmartphoneStorageCapacityNumberInput = (
     <NumberInput
-      description="Enter smartphone storage capacity in GB"
-      label="Smartphone Storage Capacity"
+      label="Smartphone Storage Capacity (GB)"
       max={8192}
       min={1}
       onChange={(value: number) => {
@@ -3856,6 +4043,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={smartphoneStorageCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -3865,8 +4053,7 @@ function CreateProduct() {
   // page 2 -> specifications -> smartphone -> smartphone battery capacity -> number input element
   const createdSmartphoneBatteryCapacityNumberInput = (
     <NumberInput
-      description="Enter smartphone battery capacity in mAh"
-      label="Smartphone Battery Capacity"
+      label="Smartphone Battery Capacity (mAh)"
       max={99999}
       min={1}
       onChange={(value: number) => {
@@ -3880,6 +4067,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={smartphoneBatteryCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -3998,7 +4186,7 @@ function CreateProduct() {
   const [createdTabletOsSelectInput] = returnAccessibleSelectInputElements([
     {
       data: MOBILE_OS_DATA,
-      description: 'Select tablet OS',
+      description: '',
       label: 'Tablet OS',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
@@ -4069,8 +4257,7 @@ function CreateProduct() {
   // page 2 -> specifications -> tablet -> tablet display -> number input element
   const createdTabletDisplayNumberInput = (
     <NumberInput
-      description="Enter tablet display in inches"
-      label="Tablet Display"
+      label="Tablet Display (inches)"
       max={99}
       min={1}
       onChange={(value: number) => {
@@ -4084,6 +4271,7 @@ function CreateProduct() {
       step={0.1}
       type="number"
       value={tabletDisplay}
+      w={330}
       withAsterisk
     />
   );
@@ -4095,7 +4283,6 @@ function CreateProduct() {
   // page 2 -> specifications -> tablet -> tablet resolution -> horizontal -> number input element
   const createdTabletResolutionHorizontalNumberInput = (
     <NumberInput
-      description="Enter tablet horizontal resolution"
       label="Tablet Resolution Horizontal"
       max={9999}
       min={1}
@@ -4110,6 +4297,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={tabletResolutionHorizontal}
+      w={330}
       withAsterisk
     />
   );
@@ -4119,7 +4307,6 @@ function CreateProduct() {
   // page 2 -> specifications -> tablet -> tablet resolution -> vertical -> number input element
   const createdTabletResolutionVerticalNumberInput = (
     <NumberInput
-      description="Enter tablet vertical resolution"
       label="Tablet Resolution Vertical"
       max={9999}
       min={1}
@@ -4134,6 +4321,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={tabletResolutionVertical}
+      w={330}
       withAsterisk
     />
   );
@@ -4143,7 +4331,6 @@ function CreateProduct() {
   // page 2 -> specifications -> tablet -> tablet ram capacity -> number input element
   const createdTabletRamCapacityNumberInput = (
     <NumberInput
-      description="Enter tablet RAM capacity"
       label="Tablet RAM Capacity"
       max={1024}
       min={1}
@@ -4158,6 +4345,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={tabletRamCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -4169,7 +4357,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_DATA,
-        description: 'Select tablet RAM capacity unit',
+        description: '',
         label: 'Tablet RAM Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -4187,8 +4375,7 @@ function CreateProduct() {
   // page 2 -> specifications -> tablet -> tablet storage capacity -> number input element
   const createdTabletStorageCapacityNumberInput = (
     <NumberInput
-      description="Enter tablet storage capacity in GB"
-      label="Tablet Storage Capacity"
+      label="Tablet Storage Capacity (GB)"
       max={8192}
       min={1}
       onChange={(value: number) => {
@@ -4202,6 +4389,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={tabletStorageCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -4211,8 +4399,7 @@ function CreateProduct() {
   // page 2 -> specifications -> tablet -> tablet battery capacity -> number input element
   const createdTabletBatteryCapacityNumberInput = (
     <NumberInput
-      description="Enter tablet battery capacity in mAh"
-      label="Tablet Battery Capacity"
+      label="Tablet Battery Capacity (mAh)"
       max={99999}
       min={1}
       onChange={(value: number) => {
@@ -4226,6 +4413,7 @@ function CreateProduct() {
       step={1}
       type="number"
       value={tabletBatteryCapacity}
+      w={330}
       withAsterisk
     />
   );
@@ -4451,7 +4639,7 @@ function CreateProduct() {
     returnAccessibleSelectInputElements([
       {
         data: PERIPHERALS_INTERFACE_DATA,
-        description: 'Select accessory interface',
+        description: '',
         label: 'Accessory Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -4464,10 +4652,1118 @@ function CreateProduct() {
       },
     ]);
 
-  //
-  //
-  //
-  return <Group w={330}>{createdQuantityNumberInput}</Group>;
+  // page 4
+
+  // page 4 -> submit button
+
+  // page 4 -> submit button -> accessible button element
+  const [createdSubmitButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Submit',
+      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+        createProductDispatch({
+          type: createProductAction.setTriggerFormSubmit,
+          payload: true,
+        });
+      },
+      buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+      leftIcon: <TbUpload />,
+      semanticDescription: 'create product form submit button',
+      semanticName: 'submit button',
+    },
+  ]);
+
+  // page 4 -> submit button -> display
+  const displaySubmitButton =
+    currentStepperPosition === CREATE_PRODUCT_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? 'Please fix errors before submitting form.'
+            : 'Submit create product form'
+        }
+      >
+        <Group w="100%" position="center">
+          {createdSubmitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
+
+  // ╭──────────────────────────────────────────────────────────────╮
+  // │ Input Display                                                │
+  // ╰──────────────────────────────────────────────────────────────╯
+
+  // input display -> page 1
+
+  const displayCreateProductFormPage1 = (
+    <FormLayoutWrapper>
+      {createdBrandTextInput}
+      {createdModelTextInput}
+      {createdDescriptionTextInput}
+      {createdPriceTextInput}
+      {createdCurrencySelectInput}
+      {createdQuantityNumberInput}
+      {createdWeightNumberInput}
+      {createdWeightUnitSelectInput}
+      {createdDimensionLengthNumberInput}
+      {createdDimensionLengthUnitSelectInput}
+      {createdDimensionHeightNumberInput}
+      {createdDimensionHeightUnitSelectInput}
+      {createdDimensionWidthNumberInput}
+      {createdDimensionWidthUnitSelectInput}
+      {createdAdditionalCommentsTextInput}
+      {createdAvailabilityRadioInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2
+
+  // input display -> page 2 -> specifications
+
+  // input display -> page 2 -> specifications -> central processing unit
+  const displayCpuSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>CPU Specifications</Title>
+      </Group>
+      {createdCpuSocketTextInput}
+      {createdCpuFrequencyNumberInput}
+      {createdCpuCoresNumberInput}
+      {createdCpuL1CacheCapacityNumberInput}
+      {createdCpuL1CacheCapacityUnitSelectInput}
+      {createdCpuL2CacheCapacityNumberInput}
+      {createdCpuL2CacheCapacityUnitSelectInput}
+      {createdCpuL3CacheCapacityNumberInput}
+      {createdCpuL3CacheCapacityUnitSelectInput}
+      {createdCpuWattageNumberInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> gpu chipset
+  const displayGpuSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>GPU Specifications</Title>
+      </Group>
+      {createdGpuChipsetTextInput}
+      {createdGpuMemoryCapacityNumberInput}
+      {createdGpuMemoryCapacityUnitSelectInput}
+      {createdGpuCoreClockNumberInput}
+      {createdGpuBoostClockNumberInput}
+      {createdGpuWattageNumberInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> motherboard
+  const displayMotherboardSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Motherboard Specifications</Title>
+      </Group>
+      {createdMotherboardSocketTextInput}
+      {createdMotherboardChipsetTextInput}
+      {createdMotherboardFormFactorSelectInput}
+      {createdMotherboardMemoryMaxCapacityNumberInput}
+      {createdMotherboardMemoryMaxCapacityUnitSelectInput}
+      {createdMotherboardMemorySlotsNumberInput}
+      {createdMotherboardMemoryTypeSelectInput}
+      {createdMotherboardSataPortsNumberInput}
+      {createdMotherboardM2SlotsNumberInput}
+      {createdMotherboardPcie3SlotsNumberInput}
+      {createdMotherboardPcie4SlotsNumberInput}
+      {createdMotherboardPcie5SlotsNumberInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> ram
+  const displayRamSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Memory (RAM) Specifications</Title>
+      </Group>
+      {createdRamDataRateNumberInput}
+      {createdRamModulesQuantityNumberInput}
+      {createdRamModulesCapacityNumberInput}
+      {createdRamModulesCapacityUnitSelectInput}
+      {createdRamTypeSelectInput}
+      {createdRamColorTextInput}
+      {createdRamVoltageNumberInput}
+      {createdRamTimingTextInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> storage
+  const displayStorageSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Storage Specifications</Title>
+      </Group>
+      {createdStorageTypeSelectInput}
+      {createdStorageCapacityNumberInput}
+      {createdStorageCapacityUnitSelectInput}
+      {createdStorageCacheCapacityNumberInput}
+      {createdStorageCacheCapacityUnitSelectInput}
+      {createdStorageFormFactorSelectInput}
+      {createdStorageInterfaceSelectInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> power supply
+  const displayPowerSupplySpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Power Supply Unit (PSU) Specifications</Title>
+      </Group>
+      {createdPsuWattageNumberInput}
+      {createdPsuEfficiencyRatingSelectInput}
+      {createdPsuFormFactorSelectInput}
+      {createdPsuModularitySelectInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> computer case
+  const displayComputerCaseSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Case Specifications</Title>
+      </Group>
+      {createdCaseTypeSelectInput}
+      {createdCaseColorTextInput}
+      {createdCaseSidePanelSelectInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> monitor
+  const displayMonitorSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Monitor Specifications</Title>
+      </Group>
+      {createdMonitorSizeNumberInput}
+      {createdMonitorResolutionHorizontalNumberInput}
+      {createdMonitorResolutionVerticalNumberInput}
+      {createdMonitorRefreshRateNumberInput}
+      {createdMonitorPanelTypeSelectInput}
+      {createdMonitorResponseTimeNumberInput}
+      {createdMonitorAspectRatioTextInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> keyboard
+  const displayKeyboardSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Keyboard Specifications</Title>
+      </Group>
+      {createdKeyboardSwitchSelectInput}
+      {createdKeyboardLayoutSelectInput}
+      {createdKeyboardBacklightSelectInput}
+      {createdKeyboardInterfaceSelectInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> mouse
+  const displayMouseSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Mouse Specifications</Title>
+      </Group>
+      {createdMouseSensorSelectInput}
+      {createdMouseDpiNumberInput}
+      {createdMouseButtonsNumberInput}
+      {createdMouseColorTextInput}
+      {createdMouseInterfaceSelectInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> headphone
+  const displayHeadphoneSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Headphone Specifications</Title>
+      </Group>
+      {createdHeadphoneTypeSelectInput}
+      {createdHeadphoneDriverNumberInput}
+      {createdHeadphoneFrequencyResponseTextInput}
+      {createdHeadphoneImpedanceNumberInput}
+      {createdHeadphoneColorTextInput}
+      {createdHeadphoneInterfaceSelectInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> speaker
+  const displaySpeakerSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Speaker Specifications</Title>
+      </Group>
+      {createdSpeakerTypeSelectInput}
+      {createdSpeakerTotalWattageNumberInput}
+      {createdSpeakerFrequencyResponseTextInput}
+      {createdSpeakerColorTextInput}
+      {createdSpeakerInterfaceSelectInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> smartphone
+  const displaySmartphoneSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Smartphone Specifications</Title>
+      </Group>
+      {createdSmartphoneOsSelectInput}
+      {createdSmartphoneChipsetTextInput}
+      {createdSmartphoneDisplayNumberInput}
+      {createdSmartphoneResolutionHorizontalNumberInput}
+      {createdSmartphoneResolutionVerticalNumberInput}
+      {createdSmartphoneRamCapacityNumberInput}
+      {createdSmartphoneRamCapacityUnitSelectInput}
+      {createdSmartphoneStorageCapacityNumberInput}
+      {createdSmartphoneBatteryCapacityNumberInput}
+      {createdSmartphoneCameraTextInput}
+      {createdSmartphoneColorTextInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> tablet
+  const displayTabletSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Tablet Specifications</Title>
+      </Group>
+      {createdTabletOsSelectInput}
+      {createdTabletChipsetTextInput}
+      {createdTabletDisplayNumberInput}
+      {createdTabletResolutionHorizontalNumberInput}
+      {createdTabletResolutionVerticalNumberInput}
+      {createdTabletRamCapacityNumberInput}
+      {createdTabletRamCapacityUnitSelectInput}
+      {createdTabletStorageCapacityNumberInput}
+      {createdTabletBatteryCapacityNumberInput}
+      {createdTabletCameraTextInput}
+      {createdTabletColorTextInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> accessory
+  const displayAccessorySpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Accessory Specifications</Title>
+      </Group>
+      {createdAccessoryTypeTextInput}
+      {createdAccessoryColorTextInput}
+      {createdAccessoryInterfaceSelectInput}
+    </FormLayoutWrapper>
+  );
+
+  // input display -> page 2 -> specifications -> desktop computers
+  const displayDesktopComputersSpecificationsInputs = (
+    <>
+      {displayCpuSpecificationsInputs}
+      {displayGpuSpecificationsInputs}
+      {displayMotherboardSpecificationsInputs}
+      {displayRamSpecificationsInputs}
+      {displayStorageSpecificationsInputs}
+      {displayPowerSupplySpecificationsInputs}
+      {displayComputerCaseSpecificationsInputs}
+      {displayMonitorSpecificationsInputs}
+      {displayKeyboardSpecificationsInputs}
+      {displayMouseSpecificationsInputs}
+      {displaySpeakerSpecificationsInputs}
+    </>
+  );
+
+  // input display -> page 2 -> specifications -> laptop computers
+  const displayLaptopComputersSpecificationsInputs = (
+    <>
+      {displayCpuSpecificationsInputs}
+      {displayGpuSpecificationsInputs}
+      {displayRamSpecificationsInputs}
+      {displayStorageSpecificationsInputs}
+    </>
+  );
+
+  const displayCreateProductFormPage2 = (
+    <FormLayoutWrapper>
+      {createdProductCategorySelectInput}
+      {productCategory === 'Accessories'
+        ? displayAccessorySpecificationsInputs
+        : productCategory === 'Central Processing Units (CPUs)'
+        ? displayCpuSpecificationsInputs
+        : productCategory === 'Computer Cases'
+        ? displayComputerCaseSpecificationsInputs
+        : productCategory === 'Desktop Computers'
+        ? displayDesktopComputersSpecificationsInputs
+        : productCategory === 'Graphics Processing Units (GPUs)'
+        ? displayGpuSpecificationsInputs
+        : productCategory === 'Headphones'
+        ? displayHeadphoneSpecificationsInputs
+        : productCategory === 'Keyboards'
+        ? displayKeyboardSpecificationsInputs
+        : productCategory === 'Laptops'
+        ? displayLaptopComputersSpecificationsInputs
+        : productCategory === 'Memory (RAM)'
+        ? displayRamSpecificationsInputs
+        : productCategory === 'Mice'
+        ? displayMouseSpecificationsInputs
+        : productCategory === 'Monitors'
+        ? displayMonitorSpecificationsInputs
+        : productCategory === 'Motherboards'
+        ? displayMotherboardSpecificationsInputs
+        : productCategory === 'Power Supplies'
+        ? displayPowerSupplySpecificationsInputs
+        : productCategory === 'Smartphones'
+        ? displaySmartphoneSpecificationsInputs
+        : productCategory === 'Speakers'
+        ? displaySpeakerSpecificationsInputs
+        : productCategory === 'Storage'
+        ? displayStorageSpecificationsInputs
+        : productCategory === 'Tablets'
+        ? displayTabletSpecificationsInputs
+        : null}
+    </FormLayoutWrapper>
+  );
+
+  // ╭──────────────────────────────────────────────────────────────╮
+  // │ Form Review Objects                                          │
+  // ╰──────────────────────────────────────────────────────────────╯
+
+  // form review object -> page 1
+  const page1FormReviewObject: FormReviewObject = {
+    'Product Details': [
+      {
+        inputName: 'Brand',
+        inputValue: brand,
+        isInputValueValid: isBrandValid,
+      },
+      {
+        inputName: 'Model',
+        inputValue: model,
+        isInputValueValid: isModelValid,
+      },
+      {
+        inputName: 'Description',
+        inputValue: description,
+        isInputValueValid: isDescriptionValid,
+      },
+      {
+        inputName: 'Price',
+        inputValue: price,
+        isInputValueValid: isPriceValid,
+      },
+      {
+        inputName: 'Currency',
+        inputValue: currency,
+      },
+      {
+        inputName: 'Availability',
+        inputValue: availability,
+      },
+      {
+        inputName: 'Quantity',
+        inputValue: quantity,
+      },
+      {
+        inputName: 'Weight',
+        inputValue: weight,
+      },
+      {
+        inputName: 'Dimension Length',
+        inputValue: dimensionLength,
+      },
+      {
+        inputName: 'Dimension Length Unit',
+        inputValue: dimensionLengthUnit,
+      },
+      {
+        inputName: 'Dimension Height',
+        inputValue: dimensionHeight,
+      },
+      {
+        inputName: 'Dimension Height Unit',
+        inputValue: dimensionHeightUnit,
+      },
+      {
+        inputName: 'Dimension Width',
+        inputValue: dimensionWidth,
+      },
+      {
+        inputName: 'Dimension Width Unit',
+        inputValue: dimensionWidthUnit,
+      },
+      {
+        inputName: 'Additional Comments',
+        inputValue: additionalComments,
+        isInputValueValid: isAdditionalCommentsValid,
+      },
+    ],
+  };
+
+  // form review object -> page 2
+
+  // form review object -> page 2 -> specifications
+
+  // form review object -> page 2 -> specifications -> central processing unit
+  const page2CpuFormReviewObject: FormReviewObject = {
+    'CPU Specifications': [
+      {
+        inputName: 'CPU Socket',
+        inputValue: cpuSocket,
+        isInputValueValid: isCpuSocketValid,
+      },
+      {
+        inputName: 'CPU Frequency',
+        inputValue: cpuFrequency,
+      },
+      {
+        inputName: 'CPU Cores',
+        inputValue: cpuCores,
+      },
+      {
+        inputName: 'CPU L1 Cache Capacity',
+        inputValue: cpuL1CacheCapacity,
+      },
+      {
+        inputName: 'CPU L1 Cache Capacity Unit',
+        inputValue: cpuL1CacheCapacityUnit,
+      },
+      {
+        inputName: 'CPU L2 Cache Capacity',
+        inputValue: cpuL2CacheCapacity,
+      },
+      {
+        inputName: 'CPU L2 Cache Capacity Unit',
+        inputValue: cpuL2CacheCapacityUnit,
+      },
+      {
+        inputName: 'CPU L3 Cache Capacity',
+        inputValue: cpuL3CacheCapacity,
+      },
+      {
+        inputName: 'CPU L3 Cache Capacity Unit',
+        inputValue: cpuL3CacheCapacityUnit,
+      },
+      {
+        inputName: 'CPU Wattage',
+        inputValue: cpuWattage,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> gpu chipset
+  const page2GpuFormReviewObject: FormReviewObject = {
+    'GPU Specifications': [
+      {
+        inputName: 'GPU Chipset',
+        inputValue: gpuChipset,
+        isInputValueValid: isGpuChipsetValid,
+      },
+      {
+        inputName: 'GPU Memory Capacity',
+        inputValue: gpuMemoryCapacity,
+      },
+      {
+        inputName: 'GPU Memory Capacity Unit',
+        inputValue: gpuMemoryCapacityUnit,
+      },
+      {
+        inputName: 'GPU Core Clock',
+        inputValue: gpuCoreClock,
+      },
+      {
+        inputName: 'GPU Boost Clock',
+        inputValue: gpuBoostClock,
+      },
+      {
+        inputName: 'GPU Wattage',
+        inputValue: gpuTdp,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> motherboard
+  const page2MotherboardFormReviewObject: FormReviewObject = {
+    'Motherboard Specifications': [
+      {
+        inputName: 'Motherboard Socket',
+        inputValue: motherboardSocket,
+        isInputValueValid: isMotherboardSocketValid,
+      },
+      {
+        inputName: 'Motherboard Chipset',
+        inputValue: motherboardChipset,
+        isInputValueValid: isMotherboardChipsetValid,
+      },
+      {
+        inputName: 'Motherboard Form Factor',
+        inputValue: motherboardFormFactor,
+      },
+      {
+        inputName: 'Motherboard Memory Max Capacity',
+        inputValue: motherboardMemoryMaxCapacity,
+      },
+      {
+        inputName: 'Motherboard Memory Max Capacity Unit',
+        inputValue: motherboardMemoryMaxCapacityUnit,
+      },
+      {
+        inputName: 'Motherboard Memory Slots',
+        inputValue: motherboardMemorySlots,
+      },
+      {
+        inputName: 'Motherboard Memory Type',
+        inputValue: motherboardMemoryType,
+      },
+      {
+        inputName: 'Motherboard SATA Ports',
+        inputValue: motherboardSataPorts,
+      },
+      {
+        inputName: 'Motherboard M.2 Slots',
+        inputValue: motherboardM2Slots,
+      },
+      {
+        inputName: 'Motherboard PCIe 3.0 Slots',
+        inputValue: motherboardPcie3Slots,
+      },
+      {
+        inputName: 'Motherboard PCIe 4.0 Slots',
+        inputValue: motherboardPcie4Slots,
+      },
+      {
+        inputName: 'Motherboard PCIe 5.0 Slots',
+        inputValue: motherboardPcie5Slots,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> ram
+  const page2RamFormReviewObject: FormReviewObject = {
+    'Memory (RAM) Specifications': [
+      {
+        inputName: 'RAM Data Rate',
+        inputValue: ramDataRate,
+      },
+      {
+        inputName: 'RAM Modules Quantity',
+        inputValue: ramModulesQuantity,
+      },
+      {
+        inputName: 'RAM Modules Capacity',
+        inputValue: ramModulesCapacity,
+      },
+      {
+        inputName: 'RAM Modules Capacity Unit',
+        inputValue: ramModulesCapacityUnit,
+      },
+      {
+        inputName: 'RAM Type',
+        inputValue: ramType,
+      },
+      {
+        inputName: 'RAM Color',
+        inputValue: ramColor,
+        isInputValueValid: isRamColorValid,
+      },
+      {
+        inputName: 'RAM Voltage',
+        inputValue: ramVoltage,
+      },
+      {
+        inputName: 'RAM Timing',
+        inputValue: ramTiming,
+        isInputValueValid: isRamTimingValid,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> storage
+  const page2StorageFormReviewObject: FormReviewObject = {
+    'Storage Specifications': [
+      {
+        inputName: 'Storage Type',
+        inputValue: storageType,
+      },
+      {
+        inputName: 'Storage Capacity',
+        inputValue: storageCapacity,
+      },
+      {
+        inputName: 'Storage Capacity Unit',
+        inputValue: storageCapacityUnit,
+      },
+      {
+        inputName: 'Storage Cache Capacity',
+        inputValue: storageCacheCapacity,
+      },
+      {
+        inputName: 'Storage Cache Capacity Unit',
+        inputValue: storageCacheCapacityUnit,
+      },
+      {
+        inputName: 'Storage Form Factor',
+        inputValue: storageFormFactor,
+      },
+      {
+        inputName: 'Storage Interface',
+        inputValue: storageInterface,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> power supply
+  const page2PowerSupplyFormReviewObject: FormReviewObject = {
+    'Power Supply Unit (PSU) Specifications': [
+      {
+        inputName: 'PSU Wattage',
+        inputValue: psuWattage,
+      },
+      {
+        inputName: 'PSU Efficiency Rating',
+        inputValue: psuEfficiency,
+      },
+      {
+        inputName: 'PSU Form Factor',
+        inputValue: psuFormFactor,
+      },
+      {
+        inputName: 'PSU Modularity',
+        inputValue: psuModularity,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> computer case
+  const page2ComputerCaseFormReviewObject: FormReviewObject = {
+    'Case Specifications': [
+      {
+        inputName: 'Case Type',
+        inputValue: caseType,
+      },
+      {
+        inputName: 'Case Color',
+        inputValue: caseColor,
+        isInputValueValid: isCaseColorValid,
+      },
+      {
+        inputName: 'Case Side Panel',
+        inputValue: caseSidePanel,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> monitor
+  const page2MonitorFormReviewObject: FormReviewObject = {
+    'Monitor Specifications': [
+      {
+        inputName: 'Monitor Size',
+        inputValue: monitorSize,
+      },
+      {
+        inputName: 'Monitor Resolution Horizontal',
+        inputValue: monitorResolutionHorizontal,
+      },
+      {
+        inputName: 'Monitor Resolution Vertical',
+        inputValue: monitorResolutionVertical,
+      },
+      {
+        inputName: 'Monitor Refresh Rate',
+        inputValue: monitorRefreshRate,
+      },
+      {
+        inputName: 'Monitor Panel Type',
+        inputValue: monitorPanelType,
+      },
+      {
+        inputName: 'Monitor Response Time',
+        inputValue: monitorResponseTime,
+      },
+      {
+        inputName: 'Monitor Aspect Ratio',
+        inputValue: monitorAspectRatio,
+        isInputValueValid: isMonitorAspectRatioValid,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> keyboard
+  const page2KeyboardFormReviewObject: FormReviewObject = {
+    'Keyboard Specifications': [
+      {
+        inputName: 'Keyboard Switch',
+        inputValue: keyboardSwitch,
+      },
+      {
+        inputName: 'Keyboard Layout',
+        inputValue: keyboardLayout,
+      },
+      {
+        inputName: 'Keyboard Backlight',
+        inputValue: keyboardBacklight,
+      },
+      {
+        inputName: 'Keyboard Interface',
+        inputValue: keyboardInterface,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> mouse
+  const page2MouseFormReviewObject: FormReviewObject = {
+    'Mouse Specifications': [
+      {
+        inputName: 'Mouse Sensor',
+        inputValue: mouseSensor,
+      },
+      {
+        inputName: 'Mouse DPI',
+        inputValue: mouseDpi,
+      },
+      {
+        inputName: 'Mouse Buttons',
+        inputValue: mouseButtons,
+      },
+      {
+        inputName: 'Mouse Color',
+        inputValue: mouseColor,
+        isInputValueValid: isMouseColorValid,
+      },
+      {
+        inputName: 'Mouse Interface',
+        inputValue: mouseInterface,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> headphone
+  const page2HeadphoneFormReviewObject: FormReviewObject = {
+    'Headphone Specifications': [
+      {
+        inputName: 'Headphone Type',
+        inputValue: headphoneType,
+      },
+      {
+        inputName: 'Headphone Driver',
+        inputValue: headphoneDriver,
+      },
+      {
+        inputName: 'Headphone Frequency Response',
+        inputValue: headphoneFrequencyResponse,
+        isInputValueValid: isHeadphoneFrequencyResponseValid,
+      },
+      {
+        inputName: 'Headphone Impedance',
+        inputValue: headphoneImpedance,
+      },
+      {
+        inputName: 'Headphone Color',
+        inputValue: headphoneColor,
+        isInputValueValid: isHeadphoneColorValid,
+      },
+      {
+        inputName: 'Headphone Interface',
+        inputValue: headphoneInterface,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> speaker
+  const page2SpeakerFormReviewObject: FormReviewObject = {
+    'Speaker Specifications': [
+      {
+        inputName: 'Speaker Type',
+        inputValue: speakerType,
+      },
+      {
+        inputName: 'Speaker Total Wattage',
+        inputValue: speakerTotalWattage,
+      },
+      {
+        inputName: 'Speaker Frequency Response',
+        inputValue: speakerFrequencyResponse,
+        isInputValueValid: isSpeakerFrequencyResponseValid,
+      },
+      {
+        inputName: 'Speaker Color',
+        inputValue: speakerColor,
+        isInputValueValid: isSpeakerColorValid,
+      },
+      {
+        inputName: 'Speaker Interface',
+        inputValue: speakerInterface,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> smartphone
+  const page2SmartphoneFormReviewObject: FormReviewObject = {
+    'Smartphone Specifications': [
+      {
+        inputName: 'Smartphone OS',
+        inputValue: smartphoneOs,
+      },
+      {
+        inputName: 'Smartphone Chipset',
+        inputValue: smartphoneChipset,
+        isInputValueValid: isSmartphoneChipsetValid,
+      },
+      {
+        inputName: 'Smartphone Display',
+        inputValue: smartphoneDisplay,
+      },
+      {
+        inputName: 'Smartphone Resolution Horizontal',
+        inputValue: smartphoneResolutionHorizontal,
+      },
+      {
+        inputName: 'Smartphone Resolution Vertical',
+        inputValue: smartphoneResolutionVertical,
+      },
+      {
+        inputName: 'Smartphone RAM Capacity',
+        inputValue: smartphoneRamCapacity,
+      },
+      {
+        inputName: 'Smartphone RAM Capacity Unit',
+        inputValue: smartphoneRamCapacityUnit,
+      },
+      {
+        inputName: 'Smartphone Storage Capacity',
+        inputValue: smartphoneStorageCapacity,
+      },
+      {
+        inputName: 'Smartphone Battery Capacity',
+        inputValue: smartphoneBatteryCapacity,
+      },
+      {
+        inputName: 'Smartphone Camera',
+        inputValue: smartphoneCamera,
+        isInputValueValid: isSmartphoneCameraValid,
+      },
+      {
+        inputName: 'Smartphone Color',
+        inputValue: smartphoneColor,
+        isInputValueValid: isSmartphoneColorValid,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> tablet
+  const page2TabletFormReviewObject: FormReviewObject = {
+    'Tablet Specifications': [
+      {
+        inputName: 'Tablet OS',
+        inputValue: tabletOs,
+      },
+      {
+        inputName: 'Tablet Chipset',
+        inputValue: tabletChipset,
+        isInputValueValid: isTabletChipsetValid,
+      },
+      {
+        inputName: 'Tablet Display',
+        inputValue: tabletDisplay,
+      },
+      {
+        inputName: 'Tablet Resolution Horizontal',
+        inputValue: tabletResolutionHorizontal,
+      },
+      {
+        inputName: 'Tablet Resolution Vertical',
+        inputValue: tabletResolutionVertical,
+      },
+      {
+        inputName: 'Tablet RAM Capacity',
+        inputValue: tabletRamCapacity,
+      },
+      {
+        inputName: 'Tablet RAM Capacity Unit',
+        inputValue: tabletRamCapacityUnit,
+      },
+      {
+        inputName: 'Tablet Storage Capacity',
+        inputValue: tabletStorageCapacity,
+      },
+      {
+        inputName: 'Tablet Battery Capacity',
+        inputValue: tabletBatteryCapacity,
+      },
+      {
+        inputName: 'Tablet Camera',
+        inputValue: tabletCamera,
+        isInputValueValid: isTabletCameraValid,
+      },
+      {
+        inputName: 'Tablet Color',
+        inputValue: tabletColor,
+        isInputValueValid: isTabletColorValid,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> accessory
+  const page2AccessoryFormReviewObject: FormReviewObject = {
+    'Accessory Specifications': [
+      {
+        inputName: 'Accessory Type',
+        inputValue: accessoryType,
+        isInputValueValid: isAccessoryTypeValid,
+      },
+      {
+        inputName: 'Accessory Color',
+        inputValue: accessoryColor,
+        isInputValueValid: isAccessoryColorValid,
+      },
+      {
+        inputName: 'Accessory Interface',
+        inputValue: accessoryInterface,
+      },
+    ],
+  };
+
+  // form review object -> page 2 -> specifications -> desktop computers
+  const page2DesktopComputerFormReviewObject: FormReviewObject = {
+    ...page2CpuFormReviewObject,
+    ...page2GpuFormReviewObject,
+    ...page2MotherboardFormReviewObject,
+    ...page2RamFormReviewObject,
+    ...page2StorageFormReviewObject,
+    ...page2PowerSupplyFormReviewObject,
+    ...page2ComputerCaseFormReviewObject,
+    ...page2MonitorFormReviewObject,
+    ...page2KeyboardFormReviewObject,
+    ...page2MouseFormReviewObject,
+    ...page2SpeakerFormReviewObject,
+  };
+
+  // form review object -> page 2 -> specifications -> laptop computers
+  const page2LaptopComputerFormReviewObject: FormReviewObject = {
+    ...page2CpuFormReviewObject,
+    ...page2GpuFormReviewObject,
+    ...page2RamFormReviewObject,
+    ...page2StorageFormReviewObject,
+  };
+
+  const page3ImageUploadsFormReviewObject: FormReviewObject = {
+    'Upload Images': [
+      {
+        inputName: 'Images',
+        inputValue: stepsInError.has(2) ? 'Error' : 'Valid',
+        isInputValueValid: !stepsInError.has(2),
+      },
+    ],
+  };
+
+  const CREATE_PRODUCT_FORM_REVIEW_OBJECTS: FormReviewObject = {
+    ...page1FormReviewObject,
+    ...(productCategory === 'Accessories'
+      ? page2AccessoryFormReviewObject
+      : productCategory === 'Central Processing Units (CPUs)'
+      ? page2CpuFormReviewObject
+      : productCategory === 'Computer Cases'
+      ? page2ComputerCaseFormReviewObject
+      : productCategory === 'Desktop Computers'
+      ? page2DesktopComputerFormReviewObject
+      : productCategory === 'Graphics Processing Units (GPUs)'
+      ? page2GpuFormReviewObject
+      : productCategory === 'Headphones'
+      ? page2HeadphoneFormReviewObject
+      : productCategory === 'Keyboards'
+      ? page2KeyboardFormReviewObject
+      : productCategory === 'Laptops'
+      ? page2LaptopComputerFormReviewObject
+      : productCategory === 'Memory (RAM)'
+      ? page2RamFormReviewObject
+      : productCategory === 'Mice'
+      ? page2MouseFormReviewObject
+      : productCategory === 'Monitors'
+      ? page2MonitorFormReviewObject
+      : productCategory === 'Motherboards'
+      ? page2MotherboardFormReviewObject
+      : productCategory === 'Power Supplies'
+      ? page2PowerSupplyFormReviewObject
+      : productCategory === 'Smartphones'
+      ? page2SmartphoneFormReviewObject
+      : productCategory === 'Speakers'
+      ? page2SpeakerFormReviewObject
+      : productCategory === 'Storage'
+      ? page2StorageFormReviewObject
+      : page2TabletFormReviewObject),
+    ...page3ImageUploadsFormReviewObject,
+  };
+
+  // ╭──────────────────────────────────────────────────────────────╮
+  // │ Display Create Product Component                             │
+  // ╰──────────────────────────────────────────────────────────────╯
+
+  const displayCreateProductReviewPage = (
+    <FormReviewPage
+      formReviewObject={CREATE_PRODUCT_FORM_REVIEW_OBJECTS}
+      formName="Create Product"
+    />
+  );
+
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate('/home/dashboard/product/display');
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={
+        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
+      }
+    />
+  );
+
+  const displayImageUploadPage = (
+    <ImageUpload
+      isParentComponentFormSubmitted={triggerFormSubmit}
+      maxImageSize={CREATE_PRODUCT_MAX_IMG_SIZE}
+      maxImages={CREATE_PRODUCT_MAX_IMG_AMOUNT}
+      parentComponentName="create product form"
+      setAreImagesValid={createProductAction.setAreImagesValid}
+      setAreImagesValidDispatch={createProductDispatch}
+      setImgFormDataArray={createProductAction.setImgFormDataArray}
+      setImgFormDataArrayDispatch={createProductDispatch}
+    />
+  );
+
+  const displayCreateProductForm =
+    currentStepperPosition === 0
+      ? displayCreateProductFormPage1
+      : currentStepperPosition === 1
+      ? displayCreateProductFormPage2
+      : currentStepperPosition === 2
+      ? displayImageUploadPage
+      : currentStepperPosition === 3
+      ? displayCreateProductReviewPage
+      : displaySubmitButton;
+
+  const displayCreateProductComponent = (
+    <StepperWrapper
+      currentStepperPosition={currentStepperPosition}
+      descriptionObjectsArray={CREATE_PRODUCT_DESCRIPTION_OBJECTS}
+      maxStepperPosition={CREATE_PRODUCT_MAX_STEPPER_POSITION}
+      setCurrentStepperPosition={createProductAction.setCurrentStepperPosition}
+      stepsInError={stepsInError}
+      parentComponentDispatch={createProductDispatch}
+      childrenTitle="Create Product"
+    >
+      {displaySubmitSuccessNotificationModal}
+      {displayCreateProductForm}
+    </StepperWrapper>
+  );
+
+  return displayCreateProductComponent;
 }
 
 export default CreateProduct;

@@ -227,15 +227,12 @@ function returnImageValidationText(image: File | Blob) {
   const imageSize = image.size;
 
   const imageKindValidationRegex = /^image$/;
-  const imageTypeValidationRegex = /^jpeg|png|gif$/;
+  const imageTypeValidationRegex = /^jpeg|png$/;
   // const imageSizeValidationRegex = /^.{0,1000000}$/;
 
   const imageRegexTupleArr: [boolean, string][] = [
     [imageKindValidationRegex.test(imageKind), 'Must be an image kind.'],
-    [
-      imageTypeValidationRegex.test(imageType),
-      'Must be a jpeg, png, or gif type.',
-    ],
+    [imageTypeValidationRegex.test(imageType), 'Must be a jpeg or png.'],
     [imageSize < 1000000, 'Must be less than 1 MB.'],
   ];
 
@@ -1109,12 +1106,13 @@ function returnColorVariantValidationText({
 function returnRamTimingValidationText({
   content,
   contentKind,
-  maxLength = 11,
-  minLength = 11,
+  maxLength = 14,
+  minLength = 7,
 }: RegexValidationProps): string {
-  // /^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/;
+  // /^[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}$/
   const ramTimingLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
-  const ramTimingCharacterRegex = /^[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$/;
+  const ramTimingCharacterRegex =
+    /^[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}$/;
 
   const ramTimingRegexTupleArr: [boolean, string][] = [
     [
@@ -1145,11 +1143,11 @@ function returnDisplayAspectRatioValidationText({
   maxLength = 5,
   minLength = 5,
 }: RegexValidationProps): string {
-  // /^[0-9]{2}:[0-9]{2}$/
+  // /^[0-9]{1,2}:[0-9]{1,2}$/
   const monitorAspectRatioLengthRegex = new RegExp(
     `^(?=.{${minLength},${maxLength}}$)`
   );
-  const monitorAspectRatioCharacterRegex = /^[0-9]{2}:[0-9]{2}$/;
+  const monitorAspectRatioCharacterRegex = /^[0-9]{1,2}:[0-9]{1,2}$/;
 
   const monitorAspectRatioRegexTupleArr: [boolean, string][] = [
     [
@@ -1178,14 +1176,14 @@ function returnFrequencyResponseValidationText({
   content,
   contentKind,
   maxLength = 14,
-  minLength = 12,
+  minLength = 8,
 }: RegexValidationProps): string {
-  // /^[0-9]{1,2} hz - [0-9]{1,2} kHz$/;
+  // /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/
   const speakerFrequencyResponseLengthRegex = new RegExp(
     `^(?=.{${minLength},${maxLength}}$)`
   );
   const speakerFrequencyResponseCharacterRegex =
-    /^[0-9]{1,2} hz - [0-9]{1,2} kHz$/;
+    /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/;
 
   const speakerFrequencyResponseRegexTupleArr: [boolean, string][] = [
     [
@@ -1194,7 +1192,7 @@ function returnFrequencyResponseValidationText({
     ],
     [
       speakerFrequencyResponseCharacterRegex.test(content),
-      'Must be a valid speaker frequency response in the format 00 hz - 00 kHz.',
+      'Must be a valid speaker frequency response in the format 00Hz-00kHz with optional single spaces.',
     ],
   ];
 
@@ -1216,12 +1214,12 @@ function returnMobileCameraResolutionValidationText({
   maxLength = 72,
   minLength = 4,
 }: RegexValidationProps): string {
-  // /^([0-9]{1,3} MP[,]{0,1}){1,12}$/
+  // /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/
   const mobileCameraResolutionLengthRegex = new RegExp(
     `^(?=.{${minLength},${maxLength}}$)`
   );
   const mobileCameraResolutionCharacterRegex =
-    /^([0-9]{1,3} MP[,]{0,1}){1,12}$/;
+    /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/;
 
   const mobileCameraResolutionRegexTupleArr: [boolean, string][] = [
     [
@@ -1230,7 +1228,7 @@ function returnMobileCameraResolutionValidationText({
     ],
     [
       mobileCameraResolutionCharacterRegex.test(content),
-      'Must be a valid mobile camera resolution in the format 0 MP or 00 MP or 000 MP.',
+      'Must be a valid mobile camera resolution in the format 0 MP, 00 MP, 000 MP',
     ],
   ];
 

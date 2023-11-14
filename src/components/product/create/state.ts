@@ -88,16 +88,16 @@ const initialCreateProductState: CreateProductState = {
   motherboardPcie5Slots: 0,
 
   // page 2 -> specifications -> ram
-  ramFrequency: 0, // MHz
+  ramDataRate: 0, // MHz
   ramModulesQuantity: 0,
   ramModulesCapacity: 0,
   ramModulesCapacityUnit: 'GB',
   ramType: 'DDR4',
-  ramColor: 'Gold',
+  ramColor: '',
   isRamColorFocused: false,
   isRamColorValid: false,
   ramVoltage: 0,
-  ramTiming: '00-00-00-00',
+  ramTiming: '',
   isRamTimingFocused: false,
   isRamTimingValid: false,
 
@@ -117,7 +117,7 @@ const initialCreateProductState: CreateProductState = {
   psuFormFactor: 'ATX',
 
   // page 2 -> specifications -> case
-  caseColor: 'Black',
+  caseColor: '',
   isCaseColorFocused: false,
   isCaseColorValid: false,
   caseType: 'Mid Tower',
@@ -130,7 +130,7 @@ const initialCreateProductState: CreateProductState = {
   monitorRefreshRate: 0,
   monitorPanelType: 'IPS',
   monitorResponseTime: 0,
-  monitorAspectRatio: '16:9',
+  monitorAspectRatio: '',
   isMonitorAspectRatioFocused: false,
   isMonitorAspectRatioValid: false,
 
@@ -144,14 +144,14 @@ const initialCreateProductState: CreateProductState = {
   mouseDpi: 0,
   mouseButtons: 0,
   mouseInterface: 'USB',
-  mouseColor: 'Black',
+  mouseColor: '',
   isMouseColorFocused: false,
   isMouseColorValid: false,
   mouseSensor: 'Optical',
 
   // page 2 -> specifications -> headphone
   headphoneType: 'Over-ear',
-  headphoneColor: 'Black',
+  headphoneColor: '',
   isHeadphoneColorFocused: false,
   isHeadphoneColorValid: false,
   headphoneInterface: 'USB',
@@ -163,7 +163,7 @@ const initialCreateProductState: CreateProductState = {
 
   // page 2 -> specifications -> speaker
   speakerType: '2.0',
-  speakerColor: 'Black',
+  speakerColor: '',
   isSpeakerColorFocused: false,
   isSpeakerColorValid: false,
   speakerInterface: 'USB',
@@ -180,7 +180,7 @@ const initialCreateProductState: CreateProductState = {
   smartphoneChipset: '',
   isSmartphoneChipsetFocused: false,
   isSmartphoneChipsetValid: false,
-  smartphoneColor: 'Black',
+  smartphoneColor: '',
   isSmartphoneColorFocused: false,
   isSmartphoneColorValid: false,
   smartphoneDisplay: 0,
@@ -199,7 +199,7 @@ const initialCreateProductState: CreateProductState = {
   tabletChipset: '',
   isTabletChipsetFocused: false,
   isTabletChipsetValid: false,
-  tabletColor: 'Black',
+  tabletColor: '',
   isTabletColorFocused: false,
   isTabletColorValid: false,
   tabletDisplay: 0,
@@ -211,7 +211,7 @@ const initialCreateProductState: CreateProductState = {
   tabletStorageCapacity: 0,
 
   // page 2 -> specifications -> accessories
-  accessoryColor: 'Black',
+  accessoryColor: '',
   isAccessoryColorFocused: false,
   isAccessoryColorValid: false,
   accessoryInterface: 'USB',
@@ -320,7 +320,7 @@ const createProductAction: CreateProductAction = {
   setMotherboardPcie5Slots: 'setMotherboardPcie5Slots',
 
   // page 2 -> specifications -> ram
-  setRamFrequency: 'setRamFrequency',
+  setRamDataRate: 'setRamDataRate',
   setRamModulesQuantity: 'setRamModulesQuantity',
   setRamModulesCapacity: 'setRamModulesCapacity',
   setRamModulesCapacityUnit: 'setRamModulesCapacityUnit',
@@ -818,10 +818,10 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> ram
-    case createProductAction.setRamFrequency:
+    case createProductAction.setRamDataRate:
       return {
         ...state,
-        ramFrequency: action.payload,
+        ramDataRate: action.payload,
       };
     case createProductAction.setRamModulesQuantity:
       return {

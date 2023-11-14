@@ -1,12 +1,4 @@
-import {
-  Grid,
-  Group,
-  Spoiler,
-  Stack,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { Grid, Group, Spoiler, Stack, Text, Title } from '@mantine/core';
 import { TbArrowDown, TbArrowUp } from 'react-icons/tb';
 
 import { COLORS_SWATCHES } from '../../constants/data';
@@ -18,7 +10,7 @@ type FormReviewObject = Record<
   string, // page name
   Array<{
     inputName: string;
-    inputValue?: string;
+    inputValue?: string | number | boolean;
     isInputValueValid?: boolean;
   }>
 >;
@@ -84,7 +76,7 @@ function FormReviewPage({
             showLabel={showLabelButton}
             hideLabel={hideLabelButton}
           >
-            <Text>{inputValue}</Text>
+            <Text>{inputValue.toString()}</Text>
           </Spoiler>
         );
 
