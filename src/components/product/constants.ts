@@ -115,15 +115,42 @@ const STORAGE_FORM_FACTOR_DATA: SelectInputData = [
   { value: 'Other', label: 'Other' },
 ];
 
-/**
- * type StorageInterface = "SATA III" | "PCIe 3.0 x4" | "PCIe 4.0 x4" | "PCIe 3.0 x2" | "PCIe 3.0 x1" | "Other";
- */
 const STORAGE_INTERFACE_DATA: SelectInputData = [
   { value: 'SATA III', label: 'SATA III' },
   { value: 'PCIe 3.0 x4', label: 'PCIe 3.0 x4' },
   { value: 'PCIe 4.0 x4', label: 'PCIe 4.0 x4' },
   { value: 'PCIe 3.0 x2', label: 'PCIe 3.0 x2' },
   { value: 'PCIe 3.0 x1', label: 'PCIe 3.0 x1' },
+  { value: 'Other', label: 'Other' },
+];
+
+const PSU_EFFICIENCY_RATING_DATA: SelectInputData = [
+  { value: '80+ Bronze', label: '80+ Bronze' },
+  { value: '80+ Gold', label: '80+ Gold' },
+  { value: '80+ Platinum', label: '80+ Platinum' },
+  { value: '80+ Titanium', label: '80+ Titanium' },
+  { value: '80+ Silver', label: '80+ Silver' },
+  { value: '80+', label: '80+' },
+  { value: '80+ White', label: '80+ White' },
+  { value: '80+ Standard', label: '80+ Standard' },
+];
+
+const PSU_FORM_FACTOR_DATA: SelectInputData = [
+  { value: 'ATX', label: 'ATX' },
+  { value: 'SFX', label: 'SFX' },
+  { value: 'SFX-L', label: 'SFX-L' },
+  { value: 'TFX', label: 'TFX' },
+  { value: 'Flex ATX', label: 'Flex ATX' },
+  { value: 'Other', label: 'Other' },
+];
+
+/**
+ * type PsuModularity = 'Full' | 'Semi' | 'None' | 'Other';
+ */
+const PSU_MODULARITY_DATA: SelectInputData = [
+  { value: 'Full', label: 'Full' },
+  { value: 'Semi', label: 'Semi' },
+  { value: 'None', label: 'None' },
   { value: 'Other', label: 'Other' },
 ];
 
@@ -140,6 +167,9 @@ export {
   MOTHERBOARD_FORM_FACTOR_DATA,
   MOTHERBOARD_MEMORY_TYPE_DATA,
   MOTHERBOARD_SOCKET_REGEX,
+  PSU_EFFICIENCY_RATING_DATA,
+  PSU_FORM_FACTOR_DATA,
+  PSU_MODULARITY_DATA,
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_FREQUENCY_RESPONSE_REGEX,

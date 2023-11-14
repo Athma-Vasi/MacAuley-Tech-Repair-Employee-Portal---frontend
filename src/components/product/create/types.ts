@@ -121,9 +121,13 @@ type PsuEfficiency =
   | '80+ Bronze'
   | '80+ Gold'
   | '80+ Platinum'
-  | '80+ Titanium';
-type PsuModularity = 'Full' | 'Semi' | 'None';
-type PsuFormFactor = 'ATX' | 'SFX' | 'SFX-L';
+  | '80+ Titanium'
+  | '80+ Silver'
+  | '80+'
+  | '80+ White'
+  | '80+ Standard';
+type PsuModularity = 'Full' | 'Semi' | 'None' | 'Other';
+type PsuFormFactor = 'ATX' | 'SFX' | 'SFX-L' | 'TFX' | 'Flex ATX' | 'Other';
 type PsuSpecifications = {
   wattage: string; // 650 W, 750 W, etc.
   efficiency: PsuEfficiency; // 80+ Gold, 80+ Platinum, etc.

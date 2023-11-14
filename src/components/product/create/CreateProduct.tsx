@@ -27,6 +27,9 @@ import {
   MemoryUnit,
   MotherboardFormFactor,
   ProductDocument,
+  PsuEfficiency,
+  PsuFormFactor,
+  PsuModularity,
   StorageFormFactor,
   StorageInterface,
   StorageType,
@@ -45,6 +48,9 @@ import {
   MOTHERBOARD_FORM_FACTOR_DATA,
   MOTHERBOARD_MEMORY_TYPE_DATA,
   MOTHERBOARD_SOCKET_REGEX,
+  PSU_EFFICIENCY_RATING_DATA,
+  PSU_FORM_FACTOR_DATA,
+  PSU_MODULARITY_DATA,
   RAM_TIMING_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_FREQUENCY_RESPONSE_REGEX,
@@ -2260,6 +2266,94 @@ function CreateProduct() {
         required: true,
       },
     ]);
+
+  // page 2 -> specifications -> psu
+
+  // page 2 -> specifications -> psu -> psu wattage
+
+  // page 2 -> specifications -> psu -> psu wattage -> number input element
+  const createdPsuWattageNumberInput = (
+    <NumberInput
+      description="Enter PSU wattage in Watts(W)"
+      label="PSU Wattage"
+      max={9999}
+      min={1}
+      onChange={(value: number) => {
+        createProductDispatch({
+          type: createProductAction.setPsuWattage,
+          payload: value,
+        });
+      }}
+      required
+      startValue={1}
+      step={1}
+      type="number"
+      value={psuWattage}
+      withAsterisk
+    />
+  );
+
+  // page 2 -> specifications -> psu -> psu efficiency rating
+
+  // page 2 -> specifications -> psu -> psu efficiency rating -> select input element
+  const [createdPsuEfficiencyRatingSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: PSU_EFFICIENCY_RATING_DATA,
+        description: 'Select PSU efficiency rating',
+        label: 'PSU Efficiency Rating',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setPsuEfficiency,
+            payload: event.currentTarget.value as PsuEfficiency,
+          });
+        },
+        value: psuEfficiency,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> psu -> psu modularity
+
+  // page 2 -> specifications -> psu -> psu modularity -> select input element
+  const [createdPsuModularitySelectInput] = returnAccessibleSelectInputElements(
+    [
+      {
+        data: PSU_MODULARITY_DATA,
+        description: 'Select PSU modularity',
+        label: 'PSU Modularity',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setPsuModularity,
+            payload: event.currentTarget.value as PsuModularity,
+          });
+        },
+        value: psuModularity,
+        required: true,
+      },
+    ]
+  );
+
+  // page 2 -> specifications -> psu -> psu form factor
+
+  // page 2 -> specifications -> psu -> psu form factor -> select input element
+  const [createdPsuFormFactorSelectInput] = returnAccessibleSelectInputElements(
+    [
+      {
+        data: PSU_FORM_FACTOR_DATA,
+        description: 'Select PSU form factor',
+        label: 'PSU Form Factor',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setPsuFormFactor,
+            payload: event.currentTarget.value as PsuFormFactor,
+          });
+        },
+        value: psuFormFactor,
+        required: true,
+      },
+    ]
+  );
 
   //
   //
