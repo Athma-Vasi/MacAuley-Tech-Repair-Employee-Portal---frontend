@@ -16,8 +16,10 @@ import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
+  returnAccessibleRadioGroupInputsElements,
   returnAccessibleRadioSingleInputElements,
   returnAccessibleSelectInputElements,
+  returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
 import { Currency, ResourceRequestServerResponse } from '../../../types';
@@ -74,6 +76,7 @@ import {
   MOTHERBOARD_SOCKET_REGEX,
   MOUSE_SENSOR_DATA,
   PERIPHERALS_INTERFACE_DATA,
+  PRODUCT_AVAILABILITY_DATA,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
@@ -109,6 +112,7 @@ import {
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
+  ProductAvailability,
   ProductDocument,
   PsuEfficiency,
   PsuFormFactor,
@@ -127,7 +131,10 @@ function CreateProduct() {
     initialCreateProductState
   );
 
-  const { globalDispatch } = useGlobalState();
+  const {
+    globalDispatch,
+    globalState: { padding },
+  } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
 
@@ -932,6 +939,9 @@ function CreateProduct() {
 
   // update stepper wrapper state on every page 2 input validation change
   useEffect(() => {
+    // select inputs are not included as they always have a default value
+    // inputs with value: 0 count as error
+
     const areCpuSpecificationsInError =
       !isCpuSocketValid ||
       !cpuFrequency ||
@@ -1054,7 +1064,7 @@ function CreateProduct() {
         : productCategory === 'Headphones'
         ? areHeadphoneSpecificationsInError
         : productCategory === 'Keyboards'
-        ? false
+        ? false // all select inputs
         : productCategory === 'Laptops'
         ? areLaptopSpecificationsInError
         : productCategory === 'Memory (RAM)'
@@ -1297,40 +1307,41 @@ function CreateProduct() {
     });
 
   // page 1 -> description -> text input element creator
-  const [createdDescriptionTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: descriptionInputErrorText,
-        valid: descriptionInputValidText,
+  const [createdDescriptionTextAreaInput] =
+    returnAccessibleTextAreaInputElements([
+      {
+        description: {
+          error: descriptionInputErrorText,
+          valid: descriptionInputValidText,
+        },
+        inputText: description,
+        isValidInputText: isDescriptionValid,
+        label: 'Product Description',
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDescriptionFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDescription,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDescriptionFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter product description',
+        required: true,
+        semanticName: 'description',
       },
-      inputText: description,
-      isValidInputText: isDescriptionValid,
-      label: 'Product Description',
-      maxLength: 2000,
-      minLength: 2,
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsDescriptionFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setDescription,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsDescriptionFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter product description',
-      required: true,
-      semanticName: 'description',
-    },
-  ]);
+    ]);
 
   // page 1 -> price
 
@@ -1403,21 +1414,21 @@ function CreateProduct() {
   // page 1 -> availability
 
   // page 1 -> availability -> radio element creator
-  const [createdAvailabilityRadioInput] =
-    returnAccessibleRadioSingleInputElements([
-      {
-        checked: availability,
-        description: 'Select availability',
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setAvailability,
-            payload: event.currentTarget.value === 'true',
-          });
-        },
-        semanticName: 'availability',
-        required: true,
+  const [createdAvailabilitySelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: PRODUCT_AVAILABILITY_DATA,
+      description: '',
+      label: 'Availability',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setAvailability,
+          payload: event.currentTarget.value as ProductAvailability,
+        });
       },
-    ]);
+      value: availability,
+      required: true,
+    },
+  ]);
 
   // page 1 -> quantity
 
@@ -1628,8 +1639,8 @@ function CreateProduct() {
     });
 
   // page 1 -> additional comments -> text input element creator
-  const [createdAdditionalCommentsTextInput] =
-    returnAccessibleTextInputElements([
+  const [createdAdditionalCommentsTextAreaInput] =
+    returnAccessibleTextAreaInputElements([
       {
         description: {
           error: additionalCommentsInputErrorText,
@@ -1646,7 +1657,7 @@ function CreateProduct() {
             payload: false,
           });
         },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
             type: createProductAction.setAdditionalComments,
             payload: event.currentTarget.value,
@@ -2696,7 +2707,7 @@ function CreateProduct() {
           payload: true,
         });
       },
-      placeholder: 'Enter RAM timing',
+      placeholder: 'CL 00-00-00-00 or 0-0-0-0',
       required: true,
       semanticName: 'ram timing',
     },
@@ -3226,7 +3237,7 @@ function CreateProduct() {
             payload: true,
           });
         },
-        placeholder: 'Enter monitor aspect ratio',
+        placeholder: '00:00 or 0:0',
         required: true,
         semanticName: 'monitor aspect ratio',
       },
@@ -3553,7 +3564,7 @@ function CreateProduct() {
             payload: true,
           });
         },
-        placeholder: 'Enter headphone frequency response',
+        placeholder: '00 Hz - 00 kHz or 0Hz-0kHz',
         required: true,
         semanticName: 'headphone frequency response',
       },
@@ -3751,7 +3762,7 @@ function CreateProduct() {
             payload: true,
           });
         },
-        placeholder: 'Enter speaker frequency response',
+        placeholder: '00 Hz - 00 kHz or 0Hz-0kHz',
         required: true,
         semanticName: 'speaker frequency response',
       },
@@ -4699,7 +4710,6 @@ function CreateProduct() {
     <FormLayoutWrapper>
       {createdBrandTextInput}
       {createdModelTextInput}
-      {createdDescriptionTextInput}
       {createdPriceTextInput}
       {createdCurrencySelectInput}
       {createdQuantityNumberInput}
@@ -4711,8 +4721,9 @@ function CreateProduct() {
       {createdDimensionHeightUnitSelectInput}
       {createdDimensionWidthNumberInput}
       {createdDimensionWidthUnitSelectInput}
-      {createdAdditionalCommentsTextInput}
-      {createdAvailabilityRadioInput}
+      {createdAvailabilitySelectInput}
+      {createdDescriptionTextAreaInput}
+      {createdAdditionalCommentsTextAreaInput}
     </FormLayoutWrapper>
   );
 
@@ -4727,6 +4738,7 @@ function CreateProduct() {
         <Title order={4}>CPU Specifications</Title>
       </Group>
       {createdCpuSocketTextInput}
+      {createdCpuWattageNumberInput}
       {createdCpuFrequencyNumberInput}
       {createdCpuCoresNumberInput}
       {createdCpuL1CacheCapacityNumberInput}
@@ -4735,7 +4747,6 @@ function CreateProduct() {
       {createdCpuL2CacheCapacityUnitSelectInput}
       {createdCpuL3CacheCapacityNumberInput}
       {createdCpuL3CacheCapacityUnitSelectInput}
-      {createdCpuWattageNumberInput}
     </FormLayoutWrapper>
   );
 
@@ -4748,9 +4759,9 @@ function CreateProduct() {
       {createdGpuChipsetTextInput}
       {createdGpuMemoryCapacityNumberInput}
       {createdGpuMemoryCapacityUnitSelectInput}
+      {createdGpuWattageNumberInput}
       {createdGpuCoreClockNumberInput}
       {createdGpuBoostClockNumberInput}
-      {createdGpuWattageNumberInput}
     </FormLayoutWrapper>
   );
 
@@ -4799,12 +4810,12 @@ function CreateProduct() {
         <Title order={4}>Storage Specifications</Title>
       </Group>
       {createdStorageTypeSelectInput}
+      {createdStorageInterfaceSelectInput}
       {createdStorageCapacityNumberInput}
       {createdStorageCapacityUnitSelectInput}
       {createdStorageCacheCapacityNumberInput}
       {createdStorageCacheCapacityUnitSelectInput}
       {createdStorageFormFactorSelectInput}
-      {createdStorageInterfaceSelectInput}
     </FormLayoutWrapper>
   );
 
@@ -4916,12 +4927,12 @@ function CreateProduct() {
       {createdSmartphoneDisplayNumberInput}
       {createdSmartphoneResolutionHorizontalNumberInput}
       {createdSmartphoneResolutionVerticalNumberInput}
+      {createdSmartphoneColorTextInput}
       {createdSmartphoneRamCapacityNumberInput}
       {createdSmartphoneRamCapacityUnitSelectInput}
       {createdSmartphoneStorageCapacityNumberInput}
       {createdSmartphoneBatteryCapacityNumberInput}
       {createdSmartphoneCameraTextInput}
-      {createdSmartphoneColorTextInput}
     </FormLayoutWrapper>
   );
 
@@ -4936,12 +4947,12 @@ function CreateProduct() {
       {createdTabletDisplayNumberInput}
       {createdTabletResolutionHorizontalNumberInput}
       {createdTabletResolutionVerticalNumberInput}
+      {createdTabletColorTextInput}
       {createdTabletRamCapacityNumberInput}
       {createdTabletRamCapacityUnitSelectInput}
       {createdTabletStorageCapacityNumberInput}
       {createdTabletBatteryCapacityNumberInput}
       {createdTabletCameraTextInput}
-      {createdTabletColorTextInput}
     </FormLayoutWrapper>
   );
 
@@ -4986,7 +4997,7 @@ function CreateProduct() {
 
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
-      {createdProductCategorySelectInput}
+      <Group py={padding}>{createdProductCategorySelectInput}</Group>
       {productCategory === 'Accessories'
         ? displayAccessorySpecificationsInputs
         : productCategory === 'Central Processing Units (CPUs)'
@@ -5063,14 +5074,17 @@ function CreateProduct() {
       {
         inputName: 'Quantity',
         inputValue: quantity,
+        isInputValueValid: quantity !== 0,
       },
       {
         inputName: 'Weight',
         inputValue: weight,
+        isInputValueValid: weight !== 0,
       },
       {
         inputName: 'Dimension Length',
         inputValue: dimensionLength,
+        isInputValueValid: dimensionLength !== 0,
       },
       {
         inputName: 'Dimension Length Unit',
@@ -5079,6 +5093,7 @@ function CreateProduct() {
       {
         inputName: 'Dimension Height',
         inputValue: dimensionHeight,
+        isInputValueValid: dimensionHeight !== 0,
       },
       {
         inputName: 'Dimension Height Unit',
@@ -5087,6 +5102,7 @@ function CreateProduct() {
       {
         inputName: 'Dimension Width',
         inputValue: dimensionWidth,
+        isInputValueValid: dimensionWidth !== 0,
       },
       {
         inputName: 'Dimension Width Unit',
@@ -5115,14 +5131,17 @@ function CreateProduct() {
       {
         inputName: 'CPU Frequency',
         inputValue: cpuFrequency,
+        isInputValueValid: cpuFrequency !== 0,
       },
       {
         inputName: 'CPU Cores',
         inputValue: cpuCores,
+        isInputValueValid: cpuCores !== 0,
       },
       {
         inputName: 'CPU L1 Cache Capacity',
         inputValue: cpuL1CacheCapacity,
+        isInputValueValid: cpuL1CacheCapacity !== 0,
       },
       {
         inputName: 'CPU L1 Cache Capacity Unit',
@@ -5131,6 +5150,7 @@ function CreateProduct() {
       {
         inputName: 'CPU L2 Cache Capacity',
         inputValue: cpuL2CacheCapacity,
+        isInputValueValid: cpuL2CacheCapacity !== 0,
       },
       {
         inputName: 'CPU L2 Cache Capacity Unit',
@@ -5139,6 +5159,7 @@ function CreateProduct() {
       {
         inputName: 'CPU L3 Cache Capacity',
         inputValue: cpuL3CacheCapacity,
+        isInputValueValid: cpuL3CacheCapacity !== 0,
       },
       {
         inputName: 'CPU L3 Cache Capacity Unit',
@@ -5147,6 +5168,7 @@ function CreateProduct() {
       {
         inputName: 'CPU Wattage',
         inputValue: cpuWattage,
+        isInputValueValid: cpuWattage !== 0,
       },
     ],
   };
@@ -5162,6 +5184,7 @@ function CreateProduct() {
       {
         inputName: 'GPU Memory Capacity',
         inputValue: gpuMemoryCapacity,
+        isInputValueValid: gpuMemoryCapacity !== 0,
       },
       {
         inputName: 'GPU Memory Capacity Unit',
@@ -5170,14 +5193,17 @@ function CreateProduct() {
       {
         inputName: 'GPU Core Clock',
         inputValue: gpuCoreClock,
+        isInputValueValid: gpuCoreClock !== 0,
       },
       {
         inputName: 'GPU Boost Clock',
         inputValue: gpuBoostClock,
+        isInputValueValid: gpuBoostClock !== 0,
       },
       {
         inputName: 'GPU Wattage',
         inputValue: gpuTdp,
+        isInputValueValid: gpuTdp !== 0,
       },
     ],
   };
@@ -5202,6 +5228,7 @@ function CreateProduct() {
       {
         inputName: 'Motherboard Memory Max Capacity',
         inputValue: motherboardMemoryMaxCapacity,
+        isInputValueValid: motherboardMemoryMaxCapacity !== 0,
       },
       {
         inputName: 'Motherboard Memory Max Capacity Unit',
@@ -5210,6 +5237,7 @@ function CreateProduct() {
       {
         inputName: 'Motherboard Memory Slots',
         inputValue: motherboardMemorySlots,
+        isInputValueValid: motherboardMemorySlots !== 0,
       },
       {
         inputName: 'Motherboard Memory Type',
@@ -5218,6 +5246,7 @@ function CreateProduct() {
       {
         inputName: 'Motherboard SATA Ports',
         inputValue: motherboardSataPorts,
+        isInputValueValid: motherboardSataPorts !== 0,
       },
       {
         inputName: 'Motherboard M.2 Slots',
@@ -5226,10 +5255,12 @@ function CreateProduct() {
       {
         inputName: 'Motherboard PCIe 3.0 Slots',
         inputValue: motherboardPcie3Slots,
+        isInputValueValid: motherboardPcie3Slots !== 0,
       },
       {
         inputName: 'Motherboard PCIe 4.0 Slots',
         inputValue: motherboardPcie4Slots,
+        isInputValueValid: motherboardPcie4Slots !== 0,
       },
       {
         inputName: 'Motherboard PCIe 5.0 Slots',
@@ -5244,14 +5275,17 @@ function CreateProduct() {
       {
         inputName: 'RAM Data Rate',
         inputValue: ramDataRate,
+        isInputValueValid: ramDataRate !== 0,
       },
       {
         inputName: 'RAM Modules Quantity',
         inputValue: ramModulesQuantity,
+        isInputValueValid: ramModulesQuantity !== 0,
       },
       {
         inputName: 'RAM Modules Capacity',
         inputValue: ramModulesCapacity,
+        isInputValueValid: ramModulesCapacity !== 0,
       },
       {
         inputName: 'RAM Modules Capacity Unit',
@@ -5269,6 +5303,7 @@ function CreateProduct() {
       {
         inputName: 'RAM Voltage',
         inputValue: ramVoltage,
+        isInputValueValid: ramVoltage !== 0,
       },
       {
         inputName: 'RAM Timing',
@@ -5288,6 +5323,7 @@ function CreateProduct() {
       {
         inputName: 'Storage Capacity',
         inputValue: storageCapacity,
+        isInputValueValid: storageCapacity !== 0,
       },
       {
         inputName: 'Storage Capacity Unit',
@@ -5296,6 +5332,7 @@ function CreateProduct() {
       {
         inputName: 'Storage Cache Capacity',
         inputValue: storageCacheCapacity,
+        isInputValueValid: storageCacheCapacity !== 0,
       },
       {
         inputName: 'Storage Cache Capacity Unit',
@@ -5318,6 +5355,7 @@ function CreateProduct() {
       {
         inputName: 'PSU Wattage',
         inputValue: psuWattage,
+        isInputValueValid: psuWattage !== 0,
       },
       {
         inputName: 'PSU Efficiency Rating',
@@ -5359,18 +5397,22 @@ function CreateProduct() {
       {
         inputName: 'Monitor Size',
         inputValue: monitorSize,
+        isInputValueValid: monitorSize !== 0,
       },
       {
         inputName: 'Monitor Resolution Horizontal',
         inputValue: monitorResolutionHorizontal,
+        isInputValueValid: monitorResolutionHorizontal !== 0,
       },
       {
         inputName: 'Monitor Resolution Vertical',
         inputValue: monitorResolutionVertical,
+        isInputValueValid: monitorResolutionVertical !== 0,
       },
       {
         inputName: 'Monitor Refresh Rate',
         inputValue: monitorRefreshRate,
+        isInputValueValid: monitorRefreshRate !== 0,
       },
       {
         inputName: 'Monitor Panel Type',
@@ -5379,6 +5421,7 @@ function CreateProduct() {
       {
         inputName: 'Monitor Response Time',
         inputValue: monitorResponseTime,
+        isInputValueValid: monitorResponseTime !== 0,
       },
       {
         inputName: 'Monitor Aspect Ratio',
@@ -5420,10 +5463,12 @@ function CreateProduct() {
       {
         inputName: 'Mouse DPI',
         inputValue: mouseDpi,
+        isInputValueValid: mouseDpi !== 0,
       },
       {
         inputName: 'Mouse Buttons',
         inputValue: mouseButtons,
+        isInputValueValid: mouseButtons !== 0,
       },
       {
         inputName: 'Mouse Color',
@@ -5447,6 +5492,7 @@ function CreateProduct() {
       {
         inputName: 'Headphone Driver',
         inputValue: headphoneDriver,
+        isInputValueValid: headphoneDriver !== 0,
       },
       {
         inputName: 'Headphone Frequency Response',
@@ -5456,6 +5502,7 @@ function CreateProduct() {
       {
         inputName: 'Headphone Impedance',
         inputValue: headphoneImpedance,
+        isInputValueValid: headphoneImpedance !== 0,
       },
       {
         inputName: 'Headphone Color',
@@ -5479,6 +5526,7 @@ function CreateProduct() {
       {
         inputName: 'Speaker Total Wattage',
         inputValue: speakerTotalWattage,
+        isInputValueValid: speakerTotalWattage !== 0,
       },
       {
         inputName: 'Speaker Frequency Response',
@@ -5512,18 +5560,22 @@ function CreateProduct() {
       {
         inputName: 'Smartphone Display',
         inputValue: smartphoneDisplay,
+        isInputValueValid: smartphoneDisplay !== 0,
       },
       {
         inputName: 'Smartphone Resolution Horizontal',
         inputValue: smartphoneResolutionHorizontal,
+        isInputValueValid: smartphoneResolutionHorizontal !== 0,
       },
       {
         inputName: 'Smartphone Resolution Vertical',
         inputValue: smartphoneResolutionVertical,
+        isInputValueValid: smartphoneResolutionVertical !== 0,
       },
       {
         inputName: 'Smartphone RAM Capacity',
         inputValue: smartphoneRamCapacity,
+        isInputValueValid: smartphoneRamCapacity !== 0,
       },
       {
         inputName: 'Smartphone RAM Capacity Unit',
@@ -5532,10 +5584,12 @@ function CreateProduct() {
       {
         inputName: 'Smartphone Storage Capacity',
         inputValue: smartphoneStorageCapacity,
+        isInputValueValid: smartphoneStorageCapacity !== 0,
       },
       {
         inputName: 'Smartphone Battery Capacity',
         inputValue: smartphoneBatteryCapacity,
+        isInputValueValid: smartphoneBatteryCapacity !== 0,
       },
       {
         inputName: 'Smartphone Camera',
@@ -5565,18 +5619,22 @@ function CreateProduct() {
       {
         inputName: 'Tablet Display',
         inputValue: tabletDisplay,
+        isInputValueValid: tabletDisplay !== 0,
       },
       {
         inputName: 'Tablet Resolution Horizontal',
         inputValue: tabletResolutionHorizontal,
+        isInputValueValid: tabletResolutionHorizontal !== 0,
       },
       {
         inputName: 'Tablet Resolution Vertical',
         inputValue: tabletResolutionVertical,
+        isInputValueValid: tabletResolutionVertical !== 0,
       },
       {
         inputName: 'Tablet RAM Capacity',
         inputValue: tabletRamCapacity,
+        isInputValueValid: tabletRamCapacity !== 0,
       },
       {
         inputName: 'Tablet RAM Capacity Unit',
@@ -5585,10 +5643,12 @@ function CreateProduct() {
       {
         inputName: 'Tablet Storage Capacity',
         inputValue: tabletStorageCapacity,
+        isInputValueValid: tabletStorageCapacity !== 0,
       },
       {
         inputName: 'Tablet Battery Capacity',
         inputValue: tabletBatteryCapacity,
+        isInputValueValid: tabletBatteryCapacity !== 0,
       },
       {
         inputName: 'Tablet Camera',

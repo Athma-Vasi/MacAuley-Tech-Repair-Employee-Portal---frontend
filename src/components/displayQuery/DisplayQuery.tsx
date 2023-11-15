@@ -15,14 +15,7 @@ import {
   Tooltip,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import {
-  ChangeEvent,
-  FormEvent,
-  ReducerWithoutAction,
-  useEffect,
-  useReducer,
-} from 'react';
-import React from 'react';
+import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
 import {
   TbNewSection,
   TbQuestionMark,
@@ -90,7 +83,6 @@ function DisplayQuery<
     currentSelectionData,
     groupBySelection,
     groupedByQueryResponseData,
-    restOfGroupedQueryResponseData,
     fileUploadsForAForm,
     currentSegmentedSelection,
     acknowledgementText,

@@ -25,7 +25,7 @@ const initialCreateProductState: CreateProductState = {
   isPriceValid: false,
   isPriceFocused: false,
   currency: 'CAD',
-  availability: true,
+  availability: 'In Stock',
   quantity: 0,
   // page 1 -> weight
   weight: 0,

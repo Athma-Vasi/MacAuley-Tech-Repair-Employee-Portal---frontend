@@ -1,4 +1,4 @@
-import { SelectInputData } from '../../types';
+import { RadioGroupInputData, SelectInputData } from '../../types';
 import { DescriptionObjectsArray } from '../wrappers';
 
 /**
@@ -92,6 +92,14 @@ const DIMENSION_UNIT_DATA: SelectInputData = [
   { value: 'm', label: 'metre' },
   { value: 'in', label: 'inch' },
   { value: 'ft', label: 'feet' },
+];
+
+const PRODUCT_AVAILABILITY_DATA: RadioGroupInputData = [
+  { value: 'In Stock', label: 'In Stock' },
+  { value: 'Out of Stock', label: 'Out of Stock' },
+  { value: 'Pre-order', label: 'Pre-order' },
+  { value: 'Discontinued', label: 'Discontinued' },
+  { value: 'Other', label: 'Other' },
 ];
 
 const MEMORY_UNIT_DATA: SelectInputData = [
@@ -337,6 +345,7 @@ export {
   MOTHERBOARD_SOCKET_REGEX,
   MOUSE_SENSOR_DATA,
   PERIPHERALS_INTERFACE_DATA,
+  PRODUCT_AVAILABILITY_DATA,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,

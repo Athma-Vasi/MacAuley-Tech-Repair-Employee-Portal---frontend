@@ -47,7 +47,6 @@ type DisplayQueryState = {
   groupBySelection: string;
   currentSelectionData: string[];
   groupedByQueryResponseData: GroupedByQueryResponseData;
-  restOfGroupedQueryResponseData: Record<string, any>[];
 
   fileUploadsForAForm: FileUploadDocument[];
 
@@ -68,7 +67,6 @@ type DisplayQueryAction = {
   setCurrentSelectionData: 'setCurrentSelectionData';
 
   setGroupedByQueryResponseData: 'setGroupedByQueryResponseData';
-  setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData';
 
   setFileUploadsForAForm: 'setFileUploadsForAForm';
 
@@ -118,10 +116,6 @@ type DisplayQueryDispatch<
   | {
       type: DisplayQueryAction['setGroupedByQueryResponseData'];
       payload: Map<keyof Doc, Record<keyof Doc, Doc[keyof Doc]>[]>;
-    }
-  | {
-      type: DisplayQueryAction['setRestOfGroupedQueryResponseData'];
-      payload: Record<string, any>[];
     }
   | {
       type: DisplayQueryAction['setFileUploadsForAForm'];

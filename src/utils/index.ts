@@ -1398,7 +1398,9 @@ function groupQueryResponse<Doc>({
         acc: Map<string | number, QueryResponseData<Doc>[]>,
         queryResponseObj: QueryResponseData<Doc>
       ) => {
-        acc.set('results', [...(acc.get('results') ?? []), queryResponseObj]);
+        // acc.set('results', [...(acc.get('results') ?? []), queryResponseObj]);
+        const prevResults = acc.get('results') ?? [];
+        acc.set('results', [...prevResults, queryResponseObj]);
 
         return acc;
       },
@@ -1407,7 +1409,6 @@ function groupQueryResponse<Doc>({
 
     return {
       groupedBy,
-      // rest: [],
     };
   }
 
@@ -1443,15 +1444,6 @@ function groupQueryResponse<Doc>({
         }
       }
 
-      // // if it does not exist, push the object to the array with key 'rest'
-      // else {
-      //   if (!acc.has('results')) {
-      //     acc.set('results', [queryResponseObj]);
-      //   } else {
-      //     acc.get('results')?.push(queryResponseObj);
-      //   }
-      // }
-
       return acc;
     },
     new Map()
@@ -1470,26 +1462,8 @@ function groupQueryResponse<Doc>({
     })
   );
 
-  // // this allows user to see the rest of the values for groupedBy selection
-  // const groupedByKeysSet = new Set(Object.keys(Object.fromEntries(groupedBy)));
-  // const rest = currentSelectionData.reduce(
-  //   (acc: Record<string, number>[], key) => {
-  //     if (!groupedByKeysSet.has(key) && key.length > 0) {
-  //       const newObj = addFieldsToObject({
-  //         object: Object.create(null),
-  //         fieldValuesTuples: [[key, 0]],
-  //       });
-  //       acc.push(newObj);
-  //     }
-
-  //     return acc;
-  //   },
-  //   []
-  // );
-
   return {
     groupedBy: sortedGroupedBy,
-    // rest,
   };
 }
 

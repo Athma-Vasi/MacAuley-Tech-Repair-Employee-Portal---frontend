@@ -1,17 +1,6 @@
 import './style.css';
 
-import { faCheck, faX } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  Button,
-  Flex,
-  Group,
-  Stepper,
-  Text,
-  Title,
-  Tooltip,
-  useMantineTheme,
-} from '@mantine/core';
+import { Flex, Group, Stepper, Text, Title, Tooltip } from '@mantine/core';
 import { useEffect, useRef } from 'react';
 import { TbCheck, TbX } from 'react-icons/tb';
 import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
@@ -289,8 +278,6 @@ function StepperWrapper({
         w={stepperWidth}
         rowGap={rowGap}
       >
-        {children ?? null}
-
         {/* stepper nav buttons */}
         <Flex
           align="center"
@@ -312,6 +299,8 @@ function StepperWrapper({
             <Group>{createdNextButton}</Group>
           </Tooltip>
         </Flex>
+
+        {children ?? null}
       </Flex>
     </Flex>
   );

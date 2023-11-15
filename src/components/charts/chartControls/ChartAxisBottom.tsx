@@ -287,8 +287,8 @@ function ChartAxisBottom(props: ChartAxisBottomProps) {
       label: (value) => (
         <Text style={{ color: sliderLabelColor }}>{value} px</Text>
       ),
-      max: 60,
-      min: -60,
+      max: 90,
+      min: -90,
       onChangeSlider: (value: number) => {
         parentChartDispatch({
           type: parentChartAction.setAxisBottomLegendOffset,

@@ -24,6 +24,13 @@ type LaptopSpecifications = {
   display: MonitorSpecifications;
 };
 
+type ProductAvailability =
+  | 'In Stock'
+  | 'Out of Stock'
+  | 'Pre-order'
+  | 'Discontinued'
+  | 'Other';
+
 type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';
 
 type CpuSpecifications = {
@@ -311,7 +318,7 @@ type CreateProductState = {
   isPriceValid: boolean;
   isPriceFocused: boolean;
   currency: Currency;
-  availability: boolean;
+  availability: ProductAvailability;
   quantity: number;
   // page 1 -> weight
   weight: number;
@@ -807,7 +814,7 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setAvailability'];
-      payload: boolean;
+      payload: ProductAvailability;
     }
   | {
       type: CreateProductAction['setQuantity'];
@@ -1464,6 +1471,7 @@ export type {
   MouseSensor,
   MouseSpecifications,
   PeripheralsInterface,
+  ProductAvailability,
   ProductDimensions,
   ProductDocument,
   ProductReview,

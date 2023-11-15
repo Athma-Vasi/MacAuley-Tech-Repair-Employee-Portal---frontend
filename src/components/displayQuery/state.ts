@@ -10,7 +10,6 @@ const initialDisplayQueryState: DisplayQueryState = {
   currentSelectionData: [],
 
   groupedByQueryResponseData: new Map(),
-  restOfGroupedQueryResponseData: [],
   fileUploadsForAForm: [],
 
   currentSegmentedSelection: 'condensed',
@@ -30,7 +29,6 @@ const displayQueryAction: DisplayQueryAction = {
   setCurrentSelectionData: 'setCurrentSelectionData',
 
   setGroupedByQueryResponseData: 'setGroupedByQueryResponseData',
-  setRestOfGroupedQueryResponseData: 'setRestOfGroupedQueryResponseData',
 
   setFileUploadsForAForm: 'setFileUploadsForAForm',
 
@@ -72,12 +70,6 @@ function displayQueryReducer(
       return {
         ...state,
         groupedByQueryResponseData: action.payload,
-      };
-
-    case displayQueryAction.setRestOfGroupedQueryResponseData:
-      return {
-        ...state,
-        restOfGroupedQueryResponseData: action.payload,
       };
 
     case displayQueryAction.setFileUploadsForAForm:
