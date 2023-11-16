@@ -519,12 +519,14 @@ function CreateProduct() {
             currency,
             availability,
             quantity,
-            weight: `${weight} ${weightUnit}`,
-            dimensions: {
-              length: `${dimensionLength} ${dimensionLengthUnit}`,
-              width: `${dimensionWidth} ${dimensionWidthUnit}`,
-              height: `${dimensionHeight} ${dimensionHeightUnit}`,
-            },
+            weight,
+            weightUnit,
+            length: dimensionLength,
+            lengthUnit: dimensionLengthUnit,
+            width: dimensionWidth,
+            widthUnit: dimensionWidthUnit,
+            height: dimensionHeight,
+            heightUnit: dimensionHeightUnit,
             description,
             additionalComments,
           };
@@ -538,19 +540,23 @@ function CreateProduct() {
             socket: cpuSocket,
             frequency: cpuFrequency,
             cores: cpuCores,
-            l1Cache: `${cpuL1CacheCapacity} ${cpuL1CacheCapacityUnit}`,
-            l2Cache: `${cpuL2CacheCapacity} ${cpuL2CacheCapacityUnit}`,
-            l3Cache: `${cpuL3CacheCapacity} ${cpuL3CacheCapacityUnit}`,
-            wattage: `${cpuWattage} W`,
+            l1Cache: cpuL1CacheCapacity,
+            l1CacheUnit: cpuL1CacheCapacityUnit,
+            l2Cache: cpuL2CacheCapacity,
+            l2CacheUnit: cpuL2CacheCapacityUnit,
+            l3Cache: cpuL3CacheCapacity,
+            l3CacheUnit: cpuL3CacheCapacityUnit,
+            wattage: cpuWattage,
           };
 
           // request body -> page 2 -> specifications -> gpu
           const gpuRequestBody = {
             chipset: gpuChipset,
-            memory: `${gpuMemoryCapacity} ${gpuMemoryCapacityUnit}`,
+            memory: gpuMemoryCapacity,
+            memoryUnit: gpuMemoryCapacityUnit,
             coreClock: gpuCoreClock,
             boostClock: gpuBoostClock,
-            tdp: `${gpuTdp} W`,
+            tdp: gpuTdp,
           };
 
           // request body -> page 2 -> specifications -> motherboard
@@ -558,7 +564,8 @@ function CreateProduct() {
             socket: motherboardSocket,
             chipset: motherboardChipset,
             formFactor: motherboardFormFactor,
-            memoryMax: `${motherboardMemoryMaxCapacity} ${motherboardMemoryMaxCapacityUnit}`,
+            memoryMax: motherboardMemoryMaxCapacity,
+            memoryMaxUnit: motherboardMemoryMaxCapacityUnit,
             memorySlots: motherboardMemorySlots,
             memoryType: motherboardMemoryType,
             sataPorts: motherboardSataPorts,
@@ -570,26 +577,30 @@ function CreateProduct() {
 
           // request body -> page 2 -> specifications -> ram
           const ramRequestBody = {
-            dataRate: `${ramDataRate} MT/s`,
-            modules: `${ramModulesQuantity} x ${ramModulesCapacity} ${ramModulesCapacityUnit}`,
+            dataRate: ramDataRate,
+            modulesQuantity: ramModulesQuantity,
+            modulesCapacity: ramModulesCapacity,
+            modulesCapacityUnit: ramModulesCapacityUnit,
             type: ramType,
             color: ramColor,
-            voltage: `${ramVoltage} V`,
+            voltage: ramVoltage,
             timing: ramTiming,
           };
 
           // request body -> page 2 -> specifications -> storage
           const storageRequestBody = {
             type: storageType,
-            capacity: `${storageCapacity} ${storageCapacityUnit}`,
-            cache: `${storageCacheCapacity} ${storageCacheCapacityUnit}`,
+            capacity: storageCapacity,
+            capacityUnit: storageCapacityUnit,
+            cache: storageCacheCapacity,
+            cacheUnit: storageCacheCapacityUnit,
             formFactor: storageFormFactor,
             interface: storageInterface,
           };
 
           // request body -> page 2 -> specifications -> psu
           const psuRequestBody = {
-            wattage: `${psuWattage} W`,
+            wattage: psuWattage,
             efficiency: psuEfficiency,
             formFactor: psuFormFactor,
             modularity: psuModularity,
@@ -604,11 +615,12 @@ function CreateProduct() {
 
           // request body -> page 2 -> specifications -> monitor
           const monitorRequestBody = {
-            size: `${monitorSize}"`,
-            resolution: `${monitorResolutionHorizontal} x ${monitorResolutionVertical}`,
-            refreshRate: `${monitorRefreshRate} Hz`,
+            size: monitorSize,
+            horizontalResolution: monitorResolutionHorizontal,
+            verticalResolution: monitorResolutionVertical,
+            refreshRate: monitorRefreshRate,
             panelType: monitorPanelType,
-            responseTime: `${monitorResponseTime} ms`,
+            responseTime: monitorResponseTime,
             aspectRatio: monitorAspectRatio,
           };
 
@@ -632,9 +644,9 @@ function CreateProduct() {
           // request body -> page 2 -> specifications -> headphone
           const headphoneRequestBody = {
             type: headphoneType,
-            driver: `${headphoneDriver} mm`,
+            driver: headphoneDriver,
             frequencyResponse: headphoneFrequencyResponse,
-            impedance: `${headphoneImpedance} Ω`,
+            impedance: headphoneImpedance,
             color: headphoneColor,
             interface: headphoneInterface,
           };
@@ -642,7 +654,7 @@ function CreateProduct() {
           // request body -> page 2 -> specifications -> speaker
           const speakerRequestBody = {
             type: speakerType,
-            totalWattage: `${speakerTotalWattage} W`,
+            totalWattage: speakerTotalWattage,
             frequencyResponse: speakerFrequencyResponse,
             color: speakerColor,
             interface: speakerInterface,
@@ -652,11 +664,13 @@ function CreateProduct() {
           const smartphoneRequestBody = {
             os: smartphoneOs,
             chipset: smartphoneChipset,
-            display: `${smartphoneDisplay}"`,
-            resolution: `${smartphoneResolutionHorizontal} x ${smartphoneResolutionVertical}`,
-            ram: `${smartphoneRamCapacity} ${smartphoneRamCapacityUnit}`,
-            storage: `${smartphoneStorageCapacity} GB`,
-            battery: `${smartphoneBatteryCapacity} mAh`,
+            display: smartphoneDisplay,
+            horizontalResolution: smartphoneResolutionHorizontal,
+            verticalResolution: smartphoneResolutionVertical,
+            ramCapacity: smartphoneRamCapacity,
+            ramCapacityUnit: smartphoneRamCapacityUnit,
+            storage: smartphoneStorageCapacity,
+            battery: smartphoneBatteryCapacity,
             camera: smartphoneCamera,
             color: smartphoneColor,
           };
@@ -665,11 +679,13 @@ function CreateProduct() {
           const tabletRequestBody = {
             os: tabletOs,
             chipset: tabletChipset,
-            display: `${tabletDisplay}"`,
-            resolution: `${tabletResolutionHorizontal} x ${tabletResolutionVertical}`,
-            ram: `${tabletRamCapacity} ${tabletRamCapacityUnit}`,
-            storage: `${tabletStorageCapacity} GB`,
-            battery: `${tabletBatteryCapacity} mAh`,
+            display: tabletDisplay,
+            horizontalResolution: tabletResolutionHorizontal,
+            verticalResolution: tabletResolutionVertical,
+            ramCapacity: tabletRamCapacity,
+            ramCapacityUnit: tabletRamCapacityUnit,
+            storage: tabletStorageCapacity,
+            battery: tabletBatteryCapacity,
             camera: tabletCamera,
             color: tabletColor,
           };
@@ -700,9 +716,9 @@ function CreateProduct() {
           const laptopRequestBody = {
             cpu: cpuRequestBody,
             gpu: gpuRequestBody,
+            display: monitorRequestBody,
             ram: ramRequestBody,
             storage: storageRequestBody,
-            display: monitorRequestBody,
           };
 
           const page2SpecificationsRequestBody =
@@ -989,7 +1005,7 @@ function CreateProduct() {
     const isValid = COLOR_VARIANT_REGEX.test(ramColor);
 
     createProductDispatch({
-      type: createProductAction.setIsRamTimingValid,
+      type: createProductAction.setIsRamColorValid,
       payload: isValid,
     });
   }, [ramColor]);
@@ -3422,16 +3438,17 @@ function CreateProduct() {
     <NumberInput
       label="Monitor Response Time (ms)"
       max={99}
-      min={0.1}
+      min={0}
       onChange={(value: number) => {
         createProductDispatch({
           type: createProductAction.setMonitorResponseTime,
           payload: value,
         });
       }}
+      precision={1}
       required
-      startValue={1}
-      step={0.01}
+      startValue={0}
+      step={0.1}
       type="number"
       value={monitorResponseTime}
       w={330}
@@ -5240,6 +5257,7 @@ function CreateProduct() {
     <>
       {displayCpuSpecificationsInputs}
       {displayGpuSpecificationsInputs}
+      {displayMonitorSpecificationsInputs}
       {displayRamSpecificationsInputs}
       {displayStorageSpecificationsInputs}
     </>

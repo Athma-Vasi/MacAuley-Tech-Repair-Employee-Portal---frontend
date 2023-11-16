@@ -467,8 +467,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'CPU Frequency (GHz)',
     value: 'frequency',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: FLOAT_REGEX,
+    regexValidationFn: returnFloatAmountValidationText,
   },
   {
     label: 'CPU Cores',

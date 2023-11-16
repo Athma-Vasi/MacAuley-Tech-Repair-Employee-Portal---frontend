@@ -28,7 +28,7 @@ type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';
 
 type CpuSpecifications = {
   socket: string; // LGA 1200, AM4, etc.
-  frequency: string; // 3.6 GHz, 4.2 GHz, etc.
+  frequency: number; // 3.6 GHz, 4.2 GHz, etc.
   cores: number; // 6 cores, 8 cores, etc.
   l1Cache: string; // 384, 512, etc.
   l1CacheUnit: MemoryUnit; // KB, etc.
@@ -42,6 +42,7 @@ type CpuSpecifications = {
 type GpuSpecifications = {
   chipset: string; // NVIDIA GeForce RTX 3080, AMD Radeon RX 6800 XT, etc.
   memory: number; // 10 GB, 16 GB, etc.
+  memoryUnit: MemoryUnit; // GB, etc.
   coreClock: number; // 1440 MHz, 1770 MHz, etc.
   boostClock: number; // 1710 MHz, 2250 MHz, etc.
   tdp: number; // 320 W, 350 W, etc.
