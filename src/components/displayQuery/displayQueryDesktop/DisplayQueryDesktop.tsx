@@ -157,22 +157,6 @@ function DisplayQueryDesktop({
     'userId',
   ]); // used for expanded / condensed table view
 
-  // the component query data does not contain values of usernames
-  const usernames =
-    groupBySelection === 'username'
-      ? Array.from(groupedByQueryResponseData).map(
-          ([username, _queryResponseObjArrays]) => username
-        )
-      : [];
-  // used to highlight grouped by field values
-  const groupedByFieldValues =
-    componentQueryData.find((queryData) => queryData.value === groupBySelection)
-      ?.selectData ?? [];
-  const groupedByFieldValuesSet =
-    groupBySelection === 'username'
-      ? new Set(usernames)
-      : new Set(groupedByFieldValues);
-
   // the data received is in a Map grouped by a field, header values are created separately to avoid creating multiple tables
   const tableHeaderValuesArr =
     groupedByQueryResponseData.size > 0
@@ -961,6 +945,12 @@ function DisplayQueryDesktop({
     </Modal>
   );
 
+  const selectedDocument =
+    Array.from(groupedByQueryResponseData)
+      .flatMap(([, queryResponseObjArrays]) => queryResponseObjArrays)
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) ||
+    {};
+
   const displayUpdateRequestStatusModal = (
     <Modal
       centered
@@ -971,10 +961,12 @@ function DisplayQueryDesktop({
       title={<Title order={5}>Update Request Status</Title>}
     >
       <UpdateRequestStatus
-        documentId={currentDocumentId}
-        currentRequestStatus={currentRequestStatus}
-        parentComponentDispatch={requestStatusDispatch}
         closeUpdateRequestStatusModal={closeUpdateRequestStatusModal}
+        currentRequestStatus={currentRequestStatus}
+        document={selectedDocument}
+        groupBySelection={groupBySelection}
+        parentComponentDispatch={requestStatusDispatch}
+        queryValuesArray={queryValuesArray}
       />
     </Modal>
   );
@@ -1013,71 +1005,3 @@ function DisplayQueryDesktop({
 }
 
 export { DisplayQueryDesktop };
-
-/**
- * const displayRestOfGroupedByData = (
-    <Accordion w={width < 1200 ? (width - 225) * 0.8 : 900 - 40}>
-      <Accordion.Item
-        value={`${
-          groupedByQueryResponseData.size === 0
-            ? 'No documents to display'
-            : restOfGroupedQueryResponseData.length === 0
-            ? 'All constrained values displayed'
-            : 'Rest of constrained values'
-        }`}
-      >
-        <Accordion.Control
-          disabled={
-            groupedByQueryResponseData.size === 0 ||
-            restOfGroupedQueryResponseData.length === 0
-          }
-        >
-          <Title order={5}>{`${
-            groupedByQueryResponseData.size === 0
-              ? 'No documents to display'
-              : restOfGroupedQueryResponseData.length === 0
-              ? 'All constrained values displayed'
-              : 'Rest of constrained values'
-          }`}</Title>
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Flex
-            align="center"
-            justify="flex-start"
-            wrap="wrap"
-            w="fit-content"
-            columnGap={rowGap}
-            rowGap={rowGap}
-            p={padding}
-          >
-            {restOfGroupedQueryResponseData.map((queryResponseObj, objIdx) => {
-              const keyValPairs = Object.entries(queryResponseObj).map(
-                ([key, value], keyValIdx) => (
-                  <Flex
-                    align="center"
-                    justify="flex-start"
-                    columnGap={rowGap}
-                    key={`${objIdx}-${keyValIdx}`}
-                    p={padding}
-                    bg={backgroundColor}
-                    style={{
-                      borderRadius: 4,
-                      borderRight: headerBorderColor,
-                    }}
-                  >
-                    <Group>
-                      <Text>{splitCamelCase(key)}:</Text>
-                      <Text>{value}</Text>
-                    </Group>
-                  </Flex>
-                )
-              );
-
-              return keyValPairs;
-            })}
-          </Flex>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
-  );
- */

@@ -24,31 +24,27 @@ type LaptopSpecifications = {
   display: MonitorSpecifications;
 };
 
-type ProductAvailability =
-  | 'In Stock'
-  | 'Out of Stock'
-  | 'Pre-order'
-  | 'Discontinued'
-  | 'Other';
-
 type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';
 
 type CpuSpecifications = {
   socket: string; // LGA 1200, AM4, etc.
   frequency: string; // 3.6 GHz, 4.2 GHz, etc.
   cores: number; // 6 cores, 8 cores, etc.
-  l1Cache: string; // 384 KB, 512 KB, etc.
-  l2Cache: string; // 3 MB, 4 MB, etc.
-  l3Cache: string; // 12 MB, 16 MB, etc.
-  wattage: string; // 65 W, 95 W, etc.
+  l1Cache: string; // 384, 512, etc.
+  l1CacheUnit: MemoryUnit; // KB, etc.
+  l2Cache: string; // 1.5, 2, etc.
+  l2CacheUnit: MemoryUnit; // MB, etc.
+  l3Cache: string; // 12, 16, etc.
+  l3CacheUnit: MemoryUnit; // MB, etc.
+  wattage: number; // 65 W, 95 W, etc.
 };
 
 type GpuSpecifications = {
   chipset: string; // NVIDIA GeForce RTX 3080, AMD Radeon RX 6800 XT, etc.
-  memory: string; // 10 GB, 16 GB, etc.
-  coreClock: string; // 1440 MHz, 1770 MHz, etc.
-  boostClock: string; // 1710 MHz, 2250 MHz, etc.
-  tdp: string; // 320 W, 350 W, etc.
+  memory: number; // 10 GB, 16 GB, etc.
+  coreClock: number; // 1440 MHz, 1770 MHz, etc.
+  boostClock: number; // 1710 MHz, 2250 MHz, etc.
+  tdp: number; // 320 W, 350 W, etc.
 };
 
 type MotherboardFormFactor =
@@ -62,7 +58,8 @@ type MotherboardSpecifications = {
   socket: string; // LGA 1200, AM4, etc.
   chipset: string; // Intel Z490, AMD B550, etc.
   formFactor: MotherboardFormFactor; // ATX, Micro ATX, etc.
-  memoryMax: string; // 128 GB, 256 GB, etc.
+  memoryMax: number; // 128, 256, etc.
+  memoryMaxUnit: MemoryUnit; // GB, etc.
   memorySlots: number; // 4, 8, etc.
   memoryType: MemoryType; // DDR4, etc.
   sataPorts: number; // 6, 8, etc.
@@ -73,11 +70,13 @@ type MotherboardSpecifications = {
 };
 
 type RamSpecifications = {
-  dataRate: string; // 3200 MT/s, 3600 MT/s, etc.
-  modules: string; // 2 x 8 GB, 4 x 8 GB, etc.
+  dataRate: number; // 3200 MT/s, 3600 MT/s, etc.
+  modulesQuantity: number;
+  modulesCapacity: number;
+  modulesCapacityUnit: MemoryUnit; // GB, etc.
   ramType: MemoryType; // DDR4, etc.
   color: string; // Black, White, etc.
-  voltage: string; // 1.35 V, etc.
+  voltage: number; // 1.35 V, etc.
   timing: string; // 16-18-18-38, etc.
 };
 
@@ -105,8 +104,10 @@ type StorageInterface =
   | 'Other';
 type StorageSpecifications = {
   storageType: StorageType; // SSD, HDD, etc.
-  capacity: string; // 1 TB, 2 TB, etc.
-  cache: string; // 64 MB, 128 MB, etc.
+  capacity: number; // 1, 2, etc.
+  capacityUnit: MemoryUnit; // TB, etc.
+  cache: number; // 64 MB, 128 MB, etc.
+  cacheUnit: MemoryUnit; // MB, etc.
   formFactor: StorageFormFactor; // 2.5", M.2 2280, etc.
   interface: StorageInterface; // SATA III, PCIe 3.0 x4, etc.
 };
@@ -123,7 +124,7 @@ type PsuEfficiency =
 type PsuModularity = 'Full' | 'Semi' | 'None' | 'Other';
 type PsuFormFactor = 'ATX' | 'SFX' | 'SFX-L' | 'TFX' | 'Flex ATX' | 'Other';
 type PsuSpecifications = {
-  wattage: string; // 650 W, 750 W, etc.
+  wattage: number; // 650 W, 750 W, etc.
   efficiency: PsuEfficiency; // 80+ Gold, 80+ Platinum, etc.
   formFactor: PsuFormFactor; // ATX, SFX, etc.
   modularity: PsuModularity; // Full, Semi, etc.
@@ -145,16 +146,14 @@ type CaseSpecifications = {
 };
 
 type MonitorPanelType = 'IPS' | 'TN' | 'VA' | 'OLED' | 'QLED' | 'Other';
-type DisplayResolution = {
-  horizontal: number;
-  vertical: number;
-};
+
 type MonitorSpecifications = {
-  size: string; // 24", 27", etc.
-  resolution: DisplayResolution; // 1920 x 1080, 2560 x 1440, etc.
-  refreshRate: string; // 144 Hz, 165 Hz, etc.
+  size: number; // 24", 27", etc.
+  horizontalResolution: number;
+  verticalResolution: number;
+  refreshRate: number; // 144 Hz, 165 Hz, etc.
   panelType: MonitorPanelType; // IPS, TN, etc.
-  responseTime: string; // 1 ms, 4 ms, etc.
+  responseTime: number; // 1 ms, 4 ms, etc.
   aspectRatio: string; // 16:9, 21:9, etc.
 };
 
@@ -190,9 +189,9 @@ type HeadphoneType = 'Over-ear' | 'On-ear' | 'In-ear' | 'Other';
 type HeadphoneInterface = 'USB' | 'Bluetooth' | '3.5 mm' | '2.5 mm' | 'Other';
 type HeadphoneSpecifications = {
   headphoneType: HeadphoneType; // Over-ear, On-ear, etc.
-  driver: string; // 50 mm, 53 mm, etc.
+  driver: number; // 50 mm, 53 mm, etc.
   frequencyResponse: string; // 20 Hz - 20 kHz, etc.
-  impedance: string; // 32 Ohm, 64 Ohm, etc.
+  impedance: number; // 32 Ohm, 64 Ohm, etc.
   color: string; // Black, White, etc.
   interface: HeadphoneInterface; // USB, Bluetooth, etc.
 };
@@ -201,7 +200,7 @@ type SpeakerType = '2.0' | '2.1' | '3.1' | '4.1' | '5.1' | '7.1' | 'Other';
 type SpeakerInterface = HeadphoneInterface;
 type SpeakerSpecifications = {
   speakerType: SpeakerType; // 2.0, 2.1, etc.
-  totalWattage: string; // 10 W, 20 W, etc.
+  totalWattage: number; // 10 W, 20 W, etc.
   frequencyResponse: string; // 20 Hz - 20 kHz, etc.
   color: string; // Black, White, etc.
   interface: SpeakerInterface; // USB, Bluetooth, etc.
@@ -211,11 +210,13 @@ type MobileOs = 'Android' | 'iOS' | 'Windows' | 'Linux' | 'Other';
 type SmartphoneSpecifications = {
   os: MobileOs; // Android, iOS, etc.
   chipset: string; // Snapdragon 888, Apple A14 Bionic, etc.
-  display: string; // 6.7", 6.9", etc.
-  resolution: string; // 1440 x 3200, 1170 x 2532, etc.
-  ram: string; // 12 GB, 16 GB, etc.
-  storage: string; // 128 GB, 256 GB, etc.
-  battery: string; // 5000 mAh, 6000 mAh, etc.
+  display: number; // 6.7", 6.9", etc.
+  horizontalResolution: number;
+  verticalResolution: number;
+  ramCapacity: number; // 12, 16, etc.
+  ramCapacityUnit: MemoryUnit; // GB, etc.
+  storage: number; // 128 GB, 256 GB, etc.
+  battery: number; // 5000 mAh, 6000 mAh, etc.
   camera: string; // 108 MP, 64 MP, etc.
   color: string; // Black, White, etc.
 };
@@ -229,7 +230,7 @@ type AccessorySpecifications = {
 };
 
 type Specifications = {
-  desktop?: DesktopComputerSpecifications;
+  desktopComputer?: DesktopComputerSpecifications;
   laptop?: LaptopSpecifications;
   cpu?: CpuSpecifications;
   gpu?: GpuSpecifications;
@@ -249,11 +250,7 @@ type Specifications = {
 };
 
 type DimensionUnit = 'mm' | 'cm' | 'm' | 'in' | 'ft';
-type ProductDimensions = {
-  length: string;
-  width: string;
-  height: string;
-};
+type WeightUnit = 'g' | 'kg' | 'lb';
 
 type ProductReview = {
   userId: string;
@@ -262,7 +259,12 @@ type ProductReview = {
   review: string;
 };
 
-type WeightUnit = 'g' | 'kg' | 'lb';
+type ProductAvailability =
+  | 'In Stock'
+  | 'Out of Stock'
+  | 'Pre-order'
+  | 'Discontinued'
+  | 'Other';
 
 type ProductSchema = {
   userId: string;
@@ -273,17 +275,23 @@ type ProductSchema = {
   // page 1
   brand: string;
   model: string;
-  productCategory: ProductCategory;
   description: string;
   price: string;
   currency: Currency;
-  availability: boolean;
+  availability: ProductAvailability;
   quantity: number;
-  weight: string;
-  dimensions: ProductDimensions;
+  weight: number;
+  weightUnit: WeightUnit;
+  length: number;
+  lengthUnit: DimensionUnit;
+  width: number;
+  widthUnit: DimensionUnit;
+  height: number;
+  heightUnit: DimensionUnit;
   additionalComments: string;
 
   // page 2
+  productCategory: ProductCategory;
   specifications: Specifications;
 
   // page 3
@@ -1451,7 +1459,6 @@ export type {
   CreateProductState,
   DesktopComputerSpecifications,
   DimensionUnit,
-  DisplayResolution,
   GpuSpecifications,
   HeadphoneInterface,
   HeadphoneSpecifications,
@@ -1472,7 +1479,6 @@ export type {
   MouseSpecifications,
   PeripheralsInterface,
   ProductAvailability,
-  ProductDimensions,
   ProductDocument,
   ProductReview,
   ProductSchema,

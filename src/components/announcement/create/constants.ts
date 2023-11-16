@@ -10,7 +10,7 @@ import {
   returnDateFullRangeValidationText,
   returnGrammarValidationText,
   returnNameValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   returnUrlValidationText,
   returnUsernameRegexValidationText,
 } from '../../../utils';
@@ -95,7 +95,7 @@ const ANNOUNCEMENT_QUERY_DATA: ComponentQueryData[] = [
     value: 'timeToRead',
     inputKind: 'numberInput',
     regex: MONEY_REGEX,
-    regexValidationFn: returnNumberAmountValidationText,
+    regexValidationFn: returnFloatAmountValidationText,
   },
 ];
 

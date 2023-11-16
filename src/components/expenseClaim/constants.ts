@@ -11,7 +11,7 @@ import {
   returnDateFullRangeValidationText,
   returnDateNearPastValidationText,
   returnGrammarValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   returnUsernameRegexValidationText,
 } from '../../utils';
 import { CURRENCY_DATA } from '../benefits/constants';
@@ -86,7 +86,7 @@ const EXPENSE_CLAIM_QUERY_DATA: ComponentQueryData[] = [
     value: 'expenseClaimAmount',
     inputKind: 'numberInput',
     regex: MONEY_REGEX,
-    regexValidationFn: returnNumberAmountValidationText,
+    regexValidationFn: returnFloatAmountValidationText,
   },
   {
     label: 'Expense Claim Currency',
@@ -129,7 +129,7 @@ const EXPENSE_CLAIM_QUERY_DATA: ComponentQueryData[] = [
   },
 ];
 
-const EXPENSE_CLAIM__ROUTE_PATHS: ResourceRoutePaths = {
+const EXPENSE_CLAIM_ROUTE_PATHS: ResourceRoutePaths = {
   manager: 'actions/company/expense-claim',
   admin: 'actions/company/expense-claim',
   employee: 'actions/company/expense-claim/user',
@@ -138,7 +138,7 @@ const EXPENSE_CLAIM__ROUTE_PATHS: ResourceRoutePaths = {
 const EXPENSE_CLAIMS_EXCLUDED_FIELDS_FROM_DISPLAY = new Set(['fileUploads']);
 
 export {
-  EXPENSE_CLAIM__ROUTE_PATHS,
+  EXPENSE_CLAIM_ROUTE_PATHS,
   EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_IMG_AMOUNT,

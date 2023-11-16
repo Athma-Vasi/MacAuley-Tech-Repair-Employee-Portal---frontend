@@ -31,7 +31,7 @@ import {
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnMobileCameraResolutionValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   returnRamTimingValidationText,
   returnSerialIdValidationText,
   returnSocketChipsetValidationText,
@@ -57,7 +57,7 @@ import {
   CREATE_PRODUCT_MAX_IMG_AMOUNT,
   CREATE_PRODUCT_MAX_IMG_SIZE,
   CREATE_PRODUCT_MAX_STEPPER_POSITION,
-  DIMENSION_UNIT_DATA,
+  DIMENSION_UNIT_SELECT_INPUT_DATA,
   DISPLAY_ASPECT_RATIO_REGEX,
   FREQUENCY_RESPONSE_REGEX,
   GPU_CHIPSET_REGEX,
@@ -66,7 +66,7 @@ import {
   KEYBOARD_BACKLIGHT_DATA,
   KEYBOARD_LAYOUT_DATA,
   KEYBOARD_SWITCH_DATA,
-  MEMORY_UNIT_DATA,
+  MEMORY_UNIT_SELECT_INPUT_DATA,
   MOBILE_CAMERA_REGEX,
   MOBILE_OS_DATA,
   MONITOR_PANEL_TYPE_DATA,
@@ -89,7 +89,7 @@ import {
   STORAGE_INTERFACE_DATA,
   STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
-  WEIGHT_UNIT_DATA,
+  WEIGHT_UNIT_SELECT_INPUT_DATA,
 } from '../constants';
 import {
   createProductAction,
@@ -509,7 +509,248 @@ function CreateProduct() {
             path: 'actions/dashboard/product',
           });
 
-          const createProductRequestBody = JSON.stringify({});
+          // request body
+
+          // request body -> page 1
+          const page1RequestBody = {
+            brand,
+            model,
+            price,
+            currency,
+            availability,
+            quantity,
+            weight: `${weight} ${weightUnit}`,
+            dimensions: {
+              length: `${dimensionLength} ${dimensionLengthUnit}`,
+              width: `${dimensionWidth} ${dimensionWidthUnit}`,
+              height: `${dimensionHeight} ${dimensionHeightUnit}`,
+            },
+            description,
+            additionalComments,
+          };
+
+          // request body -> page 2
+
+          // request body -> page 2 -> specifications
+
+          // request body -> page 2 -> specifications -> cpu
+          const cpuRequestBody = {
+            socket: cpuSocket,
+            frequency: cpuFrequency,
+            cores: cpuCores,
+            l1Cache: `${cpuL1CacheCapacity} ${cpuL1CacheCapacityUnit}`,
+            l2Cache: `${cpuL2CacheCapacity} ${cpuL2CacheCapacityUnit}`,
+            l3Cache: `${cpuL3CacheCapacity} ${cpuL3CacheCapacityUnit}`,
+            wattage: `${cpuWattage} W`,
+          };
+
+          // request body -> page 2 -> specifications -> gpu
+          const gpuRequestBody = {
+            chipset: gpuChipset,
+            memory: `${gpuMemoryCapacity} ${gpuMemoryCapacityUnit}`,
+            coreClock: gpuCoreClock,
+            boostClock: gpuBoostClock,
+            tdp: `${gpuTdp} W`,
+          };
+
+          // request body -> page 2 -> specifications -> motherboard
+          const motherboardRequestBody = {
+            socket: motherboardSocket,
+            chipset: motherboardChipset,
+            formFactor: motherboardFormFactor,
+            memoryMax: `${motherboardMemoryMaxCapacity} ${motherboardMemoryMaxCapacityUnit}`,
+            memorySlots: motherboardMemorySlots,
+            memoryType: motherboardMemoryType,
+            sataPorts: motherboardSataPorts,
+            m2Slots: motherboardM2Slots,
+            pcie3Slots: motherboardPcie3Slots,
+            pcie4Slots: motherboardPcie4Slots,
+            pcie5Slots: motherboardPcie5Slots,
+          };
+
+          // request body -> page 2 -> specifications -> ram
+          const ramRequestBody = {
+            dataRate: `${ramDataRate} MT/s`,
+            modules: `${ramModulesQuantity} x ${ramModulesCapacity} ${ramModulesCapacityUnit}`,
+            type: ramType,
+            color: ramColor,
+            voltage: `${ramVoltage} V`,
+            timing: ramTiming,
+          };
+
+          // request body -> page 2 -> specifications -> storage
+          const storageRequestBody = {
+            type: storageType,
+            capacity: `${storageCapacity} ${storageCapacityUnit}`,
+            cache: `${storageCacheCapacity} ${storageCacheCapacityUnit}`,
+            formFactor: storageFormFactor,
+            interface: storageInterface,
+          };
+
+          // request body -> page 2 -> specifications -> psu
+          const psuRequestBody = {
+            wattage: `${psuWattage} W`,
+            efficiency: psuEfficiency,
+            formFactor: psuFormFactor,
+            modularity: psuModularity,
+          };
+
+          // request body -> page 2 -> specifications -> case
+          const caseRequestBody = {
+            type: caseType,
+            color: caseColor,
+            sidePanel: caseSidePanel,
+          };
+
+          // request body -> page 2 -> specifications -> monitor
+          const monitorRequestBody = {
+            size: `${monitorSize}"`,
+            resolution: `${monitorResolutionHorizontal} x ${monitorResolutionVertical}`,
+            refreshRate: `${monitorRefreshRate} Hz`,
+            panelType: monitorPanelType,
+            responseTime: `${monitorResponseTime} ms`,
+            aspectRatio: monitorAspectRatio,
+          };
+
+          // request body -> page 2 -> specifications -> keyboard
+          const keyboardRequestBody = {
+            switch: keyboardSwitch,
+            layout: keyboardLayout,
+            backlight: keyboardBacklight,
+            interface: keyboardInterface,
+          };
+
+          // request body -> page 2 -> specifications -> mouse
+          const mouseRequestBody = {
+            sensor: mouseSensor,
+            dpi: mouseDpi,
+            buttons: mouseButtons,
+            color: mouseColor,
+            interface: mouseInterface,
+          };
+
+          // request body -> page 2 -> specifications -> headphone
+          const headphoneRequestBody = {
+            type: headphoneType,
+            driver: `${headphoneDriver} mm`,
+            frequencyResponse: headphoneFrequencyResponse,
+            impedance: `${headphoneImpedance} Ω`,
+            color: headphoneColor,
+            interface: headphoneInterface,
+          };
+
+          // request body -> page 2 -> specifications -> speaker
+          const speakerRequestBody = {
+            type: speakerType,
+            totalWattage: `${speakerTotalWattage} W`,
+            frequencyResponse: speakerFrequencyResponse,
+            color: speakerColor,
+            interface: speakerInterface,
+          };
+
+          // request body -> page 2 -> specifications -> smartphone
+          const smartphoneRequestBody = {
+            os: smartphoneOs,
+            chipset: smartphoneChipset,
+            display: `${smartphoneDisplay}"`,
+            resolution: `${smartphoneResolutionHorizontal} x ${smartphoneResolutionVertical}`,
+            ram: `${smartphoneRamCapacity} ${smartphoneRamCapacityUnit}`,
+            storage: `${smartphoneStorageCapacity} GB`,
+            battery: `${smartphoneBatteryCapacity} mAh`,
+            camera: smartphoneCamera,
+            color: smartphoneColor,
+          };
+
+          // request body -> page 2 -> specifications -> tablet
+          const tabletRequestBody = {
+            os: tabletOs,
+            chipset: tabletChipset,
+            display: `${tabletDisplay}"`,
+            resolution: `${tabletResolutionHorizontal} x ${tabletResolutionVertical}`,
+            ram: `${tabletRamCapacity} ${tabletRamCapacityUnit}`,
+            storage: `${tabletStorageCapacity} GB`,
+            battery: `${tabletBatteryCapacity} mAh`,
+            camera: tabletCamera,
+            color: tabletColor,
+          };
+
+          // request body -> page 2 -> specifications -> accessory
+          const accessoryRequestBody = {
+            type: accessoryType,
+            color: accessoryColor,
+            interface: accessoryInterface,
+          };
+
+          // request body -> page 2 -> desktop computer
+          const desktopComputerRequestBody = {
+            cpu: cpuRequestBody,
+            gpu: gpuRequestBody,
+            motherboard: motherboardRequestBody,
+            ram: ramRequestBody,
+            storage: storageRequestBody,
+            psu: psuRequestBody,
+            case: caseRequestBody,
+            monitor: monitorRequestBody,
+            keyboard: keyboardRequestBody,
+            mouse: mouseRequestBody,
+            speaker: speakerRequestBody,
+          };
+
+          // request body -> page 2 -> laptop
+          const laptopRequestBody = {
+            cpu: cpuRequestBody,
+            gpu: gpuRequestBody,
+            ram: ramRequestBody,
+            storage: storageRequestBody,
+            display: monitorRequestBody,
+          };
+
+          const page2SpecificationsRequestBody =
+            productCategory === 'Accessories'
+              ? accessoryRequestBody
+              : productCategory === 'Desktop Computers'
+              ? desktopComputerRequestBody
+              : productCategory === 'Laptops'
+              ? laptopRequestBody
+              : productCategory === 'Central Processing Units (CPUs)'
+              ? cpuRequestBody
+              : productCategory === 'Computer Cases'
+              ? caseRequestBody
+              : productCategory === 'Graphics Processing Units (GPUs)'
+              ? gpuRequestBody
+              : productCategory === 'Headphones'
+              ? headphoneRequestBody
+              : productCategory === 'Keyboards'
+              ? keyboardRequestBody
+              : productCategory === 'Memory (RAM)'
+              ? ramRequestBody
+              : productCategory === 'Mice'
+              ? mouseRequestBody
+              : productCategory === 'Monitors'
+              ? monitorRequestBody
+              : productCategory === 'Motherboards'
+              ? motherboardRequestBody
+              : productCategory === 'Power Supplies'
+              ? psuRequestBody
+              : productCategory === 'Smartphones'
+              ? smartphoneRequestBody
+              : productCategory === 'Speakers'
+              ? speakerRequestBody
+              : productCategory === 'Storage'
+              ? storageRequestBody
+              : tabletRequestBody;
+
+          const createProductRequestBody = JSON.stringify({
+            product: {
+              ...page1RequestBody,
+              productCategory,
+              ...page2SpecificationsRequestBody,
+              reviews: [],
+              uploadedFilesIds: imgUploadResponseData
+                .filter((item) => item !== undefined)
+                .map((item) => item?.documentId),
+            },
+          });
 
           const createProductRequestInit: RequestInit = {
             method: 'POST',
@@ -915,12 +1156,19 @@ function CreateProduct() {
 
   // update stepper wrapper state on every page 1 input validation change
   useEffect(() => {
-    const arePage1InputsInError =
+    const arePage1RequiredInputsInError =
       !isBrandValid ||
       !isModelValid ||
       !isPriceValid ||
-      !isDescriptionValid ||
-      !isAdditionalCommentsValid;
+      !quantity ||
+      !price ||
+      !isDescriptionValid;
+
+    const isPage1OptionalInputInError =
+      additionalComments !== '' && !isAdditionalCommentsValid;
+
+    const arePage1InputsInError =
+      arePage1RequiredInputsInError || isPage1OptionalInputInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
@@ -930,11 +1178,14 @@ function CreateProduct() {
       },
     });
   }, [
+    additionalComments,
     isAdditionalCommentsValid,
     isBrandValid,
     isDescriptionValid,
     isModelValid,
     isPriceValid,
+    price,
+    quantity,
   ]);
 
   // update stepper wrapper state on every page 2 input validation change
@@ -1352,7 +1603,7 @@ function CreateProduct() {
       inputText: price,
       isInputTextFocused: isPriceFocused,
       isValidInputText: isPriceValid,
-      regexValidationText: returnNumberAmountValidationText({
+      regexValidationText: returnFloatAmountValidationText({
         content: price,
         contentKind: 'price',
       }),
@@ -1482,7 +1733,7 @@ function CreateProduct() {
   // page 1 -> weight -> weight unit select input
   const [createdWeightUnitSelectInput] = returnAccessibleSelectInputElements([
     {
-      data: WEIGHT_UNIT_DATA,
+      data: WEIGHT_UNIT_SELECT_INPUT_DATA,
       description: '',
       label: 'Weight Unit',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -1525,7 +1776,7 @@ function CreateProduct() {
   const [createdDimensionLengthUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: DIMENSION_UNIT_DATA,
+        data: DIMENSION_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'Length Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -1566,7 +1817,7 @@ function CreateProduct() {
   const [createdDimensionWidthUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: DIMENSION_UNIT_DATA,
+        data: DIMENSION_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'Width Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -1607,7 +1858,7 @@ function CreateProduct() {
   const [createdDimensionHeightUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: DIMENSION_UNIT_DATA,
+        data: DIMENSION_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'Height Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -1670,7 +1921,6 @@ function CreateProduct() {
           });
         },
         placeholder: 'Enter additional comments',
-        required: true,
         semanticName: 'additional comments',
       },
     ]);
@@ -1833,7 +2083,7 @@ function CreateProduct() {
   const [createdCpuL1CacheCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'CPU L1 Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -1877,7 +2127,7 @@ function CreateProduct() {
   const [createdCpuL2CacheCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'CPU L2 Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -1921,7 +2171,7 @@ function CreateProduct() {
   const [createdCpuL3CacheCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'CPU L3 Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -2044,7 +2294,7 @@ function CreateProduct() {
   const [createdGpuMemoryCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'GPU Memory Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -2291,7 +2541,7 @@ function CreateProduct() {
   const [createdMotherboardMemoryMaxCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'Motherboard Memory Max Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -2549,7 +2799,7 @@ function CreateProduct() {
   const [createdRamModulesCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'RAM Modules Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -2764,7 +3014,7 @@ function CreateProduct() {
   const [createdStorageCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'Storage Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -2808,7 +3058,7 @@ function CreateProduct() {
   const [createdStorageCacheCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'Storage Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -3575,7 +3825,7 @@ function CreateProduct() {
   // page 2 -> specifications -> headphone -> headphone impedance -> number input element
   const createdHeadphoneImpedanceNumberInput = (
     <NumberInput
-      label="Headphone Impedance ohms(Ω)"
+      label="Headphone Impedance ohm(Ω)"
       max={999}
       min={1}
       onChange={(value: number) => {
@@ -4021,7 +4271,7 @@ function CreateProduct() {
   const [createdSmartphoneRamCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'Smartphone RAM Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -4367,7 +4617,7 @@ function CreateProduct() {
   const [createdTabletRamCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
         label: 'Tablet RAM Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
@@ -5111,7 +5361,9 @@ function CreateProduct() {
       {
         inputName: 'Additional Comments',
         inputValue: additionalComments,
-        isInputValueValid: isAdditionalCommentsValid,
+        isInputValueValid: additionalComments.length
+          ? isAdditionalCommentsValid
+          : true,
       },
     ],
   };

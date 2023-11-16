@@ -708,7 +708,7 @@ function returnDateOfBirthValidationText({
  * Performs money validation on a number and returns a string corresponding to the validation error. If no validation error is found, an empty string is returned.
  * kind - semantic html input name
  */
-function returnNumberAmountValidationText({
+function returnFloatAmountValidationText({
   content,
   contentKind,
   minLength = 4,
@@ -2140,6 +2140,7 @@ export {
   returnElapsedTime,
   returnEmailValidationText,
   returnFilenameValidationText,
+  returnFloatAmountValidationText,
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnImageValidationText,
@@ -2148,7 +2149,6 @@ export {
   returnMobileCameraResolutionValidationText,
   returnNameValidationText,
   returnNoteTextValidationText,
-  returnNumberAmountValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
   returnPrinterMakeModelValidationText,

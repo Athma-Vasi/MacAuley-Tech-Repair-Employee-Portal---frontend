@@ -16,7 +16,7 @@ import {
   returnDateFullRangeValidationText,
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   returnUsernameRegexValidationText,
 } from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
@@ -83,7 +83,7 @@ const REQUEST_RESOURCE_QUERY_DATA: ComponentQueryData[] = [
     value: 'resourceQuantity',
     inputKind: 'numberInput',
     regex: MONEY_REGEX,
-    regexValidationFn: returnNumberAmountValidationText,
+    regexValidationFn: returnFloatAmountValidationText,
   },
   {
     label: 'Resource Description',

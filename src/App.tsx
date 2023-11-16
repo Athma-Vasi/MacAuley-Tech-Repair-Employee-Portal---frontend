@@ -9,7 +9,6 @@ import CustomFonts from './components/customFonts/CustomFonts';
 import DevTesting from './components/devTesting/DevTesting';
 import ErrorFallback from './components/errorFallback/ErrorFallback';
 import { useGlobalState } from './hooks/useGlobalState';
-import CreateProduct from './components/product/create/CreateProduct';
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 const PublicLayout = lazy(
@@ -29,6 +28,16 @@ const Dashboard = lazy(() => import('./components/dashboard/Dashboard'));
 // dashboard -> display responsive chart
 const DisplayResponsiveChart = lazy(
   () => import('./components/dashboard/DisplayResponsiveChart')
+);
+
+// dashboard -> create product
+const CreateProduct = lazy(
+  () => import('./components/product/create/CreateProduct')
+);
+
+// dashboard -> display products
+const DisplayProducts = lazy(
+  () => import('./components/product/DisplayProducts')
 );
 
 // directory
@@ -217,6 +226,17 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateProduct />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   products page
+  // @route  /home/product/display
+  // @access private
+  const displayProductsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayProducts />
       </Suspense>
     </ErrorBoundary>
   );
@@ -630,8 +650,9 @@ function App() {
           <Route path="dashboard">
             <Route index element={dashboardElement} />
             <Route path="product">
-              <Route index element={<CreateProduct />} />
-              <Route path="create" element={<CreateProduct />} />
+              <Route index element={displayProductsElement} />
+              <Route path="create" element={createProductElement} />
+              <Route path="display" element={displayProductsElement} />
             </Route>
             <Route path=":chartKind" element={displayResponsiveChartElement} />
           </Route>

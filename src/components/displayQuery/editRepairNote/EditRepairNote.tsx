@@ -26,7 +26,7 @@ import {
 import { Currency, ResourceRequestServerResponse } from '../../../types';
 import {
   returnNoteTextValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   returnThemeColors,
   urlBuilder,
 } from '../../../utils';
@@ -394,7 +394,7 @@ function EditRepairNote({
       inputText: finalRepairCost,
       isValidInputText: isFinalRepairCostValid,
       isInputTextFocused: isFinalRepairCostFocused,
-      regexValidationText: returnNumberAmountValidationText({
+      regexValidationText: returnFloatAmountValidationText({
         content: finalRepairCost,
         contentKind: 'final repair cost',
       }),

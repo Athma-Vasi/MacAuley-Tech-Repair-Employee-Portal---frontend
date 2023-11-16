@@ -35,7 +35,7 @@ import { ResourceRequestServerResponse } from '../../../types';
 import {
   returnDateValidationText,
   returnGrammarValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   returnThemeColors,
   returnUsernameRegexValidationText,
   urlBuilder,
@@ -509,7 +509,7 @@ function CreateBenefit() {
     inputText: employeeContribution,
     isValidInputText: isValidEmployeeContribution,
     isInputTextFocused: isEmployeeContributionFocused,
-    regexValidationText: returnNumberAmountValidationText({
+    regexValidationText: returnFloatAmountValidationText({
       content: employeeContribution,
       contentKind: 'employee contribution input',
     }),
@@ -523,7 +523,7 @@ function CreateBenefit() {
     inputText: employerContribution,
     isValidInputText: isValidEmployerContribution,
     isInputTextFocused: isEmployerContributionFocused,
-    regexValidationText: returnNumberAmountValidationText({
+    regexValidationText: returnFloatAmountValidationText({
       content: employerContribution,
       contentKind: 'employer contribution input',
     }),

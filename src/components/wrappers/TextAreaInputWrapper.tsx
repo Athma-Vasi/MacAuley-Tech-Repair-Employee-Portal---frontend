@@ -63,7 +63,6 @@ function TextAreaInputWrapper({
 
   const {
     ariaAutoComplete = 'none',
-    ariaRequired = false,
     autoComplete = 'off',
     autosize = true,
     description,
@@ -83,11 +82,12 @@ function TextAreaInputWrapper({
     placeholder,
     ref = null,
     required = false,
+    ariaRequired = required,
+    withAsterisk = required,
     semanticName,
     label = semanticName,
     size = 'sm',
     textAreaWidth = 330,
-    withAsterisk = false,
   } = creatorInfoObject;
 
   const dynamicInputLabel = dynamicInputs ? (

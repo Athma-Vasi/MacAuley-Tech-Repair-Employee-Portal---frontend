@@ -123,6 +123,7 @@ function RadioGroupInputsWrapper({
       description={description}
       aria-required={ariaRequired}
       aria-describedby={semanticName}
+      aria-label={semanticName + label}
       key={key}
       value={value}
       onChange={onChange}

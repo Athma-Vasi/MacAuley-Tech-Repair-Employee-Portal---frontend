@@ -10,7 +10,7 @@ import {
   returnDateFullRangeValidationText,
   returnDateValidationText,
   returnGrammarValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   returnUsernameRegexValidationText,
 } from '../../utils';
 import { ComponentQueryData } from '../queryBuilder';
@@ -133,21 +133,21 @@ const BENEFIT_QUERY_DATA: ComponentQueryData[] = [
     value: 'employerContribution',
     inputKind: 'numberInput',
     regex: MONEY_REGEX,
-    regexValidationFn: returnNumberAmountValidationText,
+    regexValidationFn: returnFloatAmountValidationText,
   },
   {
     label: 'Employee Contribution',
     value: 'employeeContribution',
     inputKind: 'numberInput',
     regex: MONEY_REGEX,
-    regexValidationFn: returnNumberAmountValidationText,
+    regexValidationFn: returnFloatAmountValidationText,
   },
   {
     label: 'Monthly Premium',
     value: 'monthlyPremium',
     inputKind: 'numberInput',
     regex: MONEY_REGEX,
-    regexValidationFn: returnNumberAmountValidationText,
+    regexValidationFn: returnFloatAmountValidationText,
   },
   {
     label: 'Request Status',

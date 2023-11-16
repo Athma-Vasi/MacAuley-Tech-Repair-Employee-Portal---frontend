@@ -2,8 +2,6 @@ import {
   Accordion,
   Divider,
   Flex,
-  Group,
-  Highlight,
   Loader,
   LoadingOverlay,
   Modal,
@@ -11,7 +9,6 @@ import {
   Spoiler,
   Stack,
   Text,
-  Title,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useReducer } from 'react';
@@ -34,6 +31,7 @@ import {
   returnAccessibleButtonElements,
   returnHighlightedText,
 } from '../../../jsxCreators';
+import { UserDocument } from '../../../types';
 import {
   addFieldsToObject,
   formatDate,
@@ -42,6 +40,7 @@ import {
   splitCamelCase,
 } from '../../../utils';
 import EditRepairNote from '../editRepairNote/EditRepairNote';
+import { ProfileInfo } from '../profileInfo/ProfileInfo';
 import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
 import {
   displayQueryMobileAction,
@@ -49,8 +48,6 @@ import {
   initialDisplayQueryMobileState,
 } from './state';
 import { DisplayQueryMobileProps } from './types';
-import { UserDocument } from '../../../types';
-import { ProfileInfo } from '../profileInfo/ProfileInfo';
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -124,7 +121,7 @@ function DisplayQueryMobile({
     ]);
 
   const {
-    appThemeColors: { backgroundColor, borderColor },
+    appThemeColors: { borderColor },
     tablesThemeColors: { textHighlightColor },
     generalColors: { themeColorShade },
   } = returnThemeColors({
@@ -160,22 +157,6 @@ function DisplayQueryMobile({
       );
     });
   });
-
-  // the component query data does not contain values of usernames
-  const usernames =
-    groupBySelection === 'username'
-      ? Array.from(groupedByQueryResponseData).map(
-          ([username, _queryResponseObjArrays]) => username
-        )
-      : [];
-  // used to highlight grouped by field values
-  const groupedByFieldValues =
-    componentQueryData.find((queryData) => queryData.value === groupBySelection)
-      ?.selectData ?? [];
-  const groupedByFieldValuesSet =
-    groupBySelection === 'username'
-      ? new Set(usernames)
-      : new Set(groupedByFieldValues);
 
   const displayGroupedByQueryResponseData = Array.from(
     groupedByQueryResponseData
@@ -571,6 +552,12 @@ function DisplayQueryMobile({
     </Modal>
   );
 
+  const selectedDocument =
+    Array.from(groupedByQueryResponseData)
+      .flatMap(([, queryResponseObjArrays]) => queryResponseObjArrays)
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) ||
+    {};
+
   const displayUpdateRequestStatusModal = (
     <Modal
       centered
@@ -578,12 +565,19 @@ function DisplayQueryMobile({
       opened={openedUpdateRequestStatusModal}
       onClose={closeUpdateRequestStatusModal}
       size={modalSize}
+      title={
+        <Text size="xl" weight={500}>
+          Update Request Status
+        </Text>
+      }
     >
       <UpdateRequestStatus
-        documentId={currentDocumentId}
-        currentRequestStatus={currentRequestStatus}
-        parentComponentDispatch={requestStatusDispatch}
         closeUpdateRequestStatusModal={closeUpdateRequestStatusModal}
+        currentRequestStatus={currentRequestStatus}
+        document={selectedDocument}
+        groupBySelection={groupBySelection}
+        parentComponentDispatch={requestStatusDispatch}
+        queryValuesArray={queryValuesArray}
       />
     </Modal>
   );
@@ -597,7 +591,11 @@ function DisplayQueryMobile({
         closeProfileInfoModal();
       }}
       size={modalSize}
-      title={<Text size="xl">Profile information</Text>}
+      title={
+        <Text size="xl" weight={500}>
+          Profile information
+        </Text>
+      }
       scrollAreaComponent={ScrollArea.Autosize}
     >
       <ProfileInfo employeeDocument={employeeDocument} />
@@ -639,119 +637,3 @@ function DisplayQueryMobile({
 }
 
 export { DisplayQueryMobile };
-
-/**
- * const displayRestOfGroupedQueryResponseData =
-    restOfGroupedQueryResponseData.length > 0
-      ? restOfGroupedQueryResponseData.map((queryObj, queryObjIdx) => {
-          const displayKeyValues = Object.entries(queryObj).map(
-            ([key, value], objIdx) => {
-              return (
-                <Flex
-                  key={`${objIdx}`}
-                  align="flex-start"
-                  justify="center"
-                  direction="column"
-                  bg={backgroundColor}
-                  style={{
-                    borderRadius: 4,
-                  }}
-                  rowGap={rowGap}
-                  // w="100%"
-                  // p={padding}
-                >
-                  <Flex
-                    w="100%"
-                    align="center"
-                    justify="space-between"
-                    columnGap={rowGap}
-                    p={padding}
-                    style={{
-                      borderRight: borderColor,
-                      borderRadius: 4,
-                    }}
-                  >
-                    <Text>{`${key.charAt(0).toUpperCase()}${key.slice(
-                      1
-                    )}`}</Text>
-                    <Text>{value}</Text>
-                  </Flex>
-                </Flex>
-              );
-            }
-          );
-
-          return (
-            <Flex
-              key={`${queryObjIdx}`}
-              direction="column"
-              p={padding}
-              bg={backgroundColor}
-              align="flex-start"
-              justify="center"
-              style={{
-                borderRadius: 4,
-              }}
-              // w="100%"
-            >
-              {displayKeyValues}
-            </Flex>
-          );
-        })
-      : null;
-
-  const displayRestData = (
-    <Flex
-      direction="column"
-      py={padding}
-      align="flex-start"
-      justify="center"
-      style={{
-        border: borderColor,
-        borderRadius: 4,
-      }}
-      w="100%"
-    >
-      <Accordion w="100%">
-        <Accordion.Item
-          value={`${
-            groupedByQueryResponseData.size === 0
-              ? 'No documents to display'
-              : restOfGroupedQueryResponseData.length === 0
-              ? 'All constrained values displayed'
-              : 'Rest of constrained values'
-          }`}
-        >
-          <Accordion.Control
-            disabled={
-              groupedByQueryResponseData.size === 0 ||
-              restOfGroupedQueryResponseData.length === 0
-            }
-          >
-            <Title order={5}>{`${
-              groupedByQueryResponseData.size === 0
-                ? 'No documents to display'
-                : restOfGroupedQueryResponseData.length === 0
-                ? 'All constrained values displayed'
-                : 'Rest of constrained values'
-            }`}</Title>
-          </Accordion.Control>
-          <Accordion.Panel>
-            <Flex
-              align="center"
-              justify="flex-start"
-              rowGap={rowGap}
-              columnGap={rowGap}
-              pt={padding}
-              w="100%"
-              wrap="wrap"
-            >
-              {displayRestOfGroupedQueryResponseData}
-            </Flex>
-          </Accordion.Panel>
-        </Accordion.Item>
-      </Accordion>
-    </Flex>
-  );
-
- */

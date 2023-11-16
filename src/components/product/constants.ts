@@ -1,5 +1,58 @@
-import { RadioGroupInputData, SelectInputData } from '../../types';
+import {
+  DATE_FULL_RANGE_REGEX,
+  FLOAT_REGEX,
+  GRAMMAR_TEXTAREA_INPUT_REGEX,
+  INTEGER_REGEX,
+  MONEY_REGEX,
+  SERIAL_ID_REGEX,
+  USERNAME_REGEX,
+} from '../../constants/regex';
+import {
+  RadioGroupInputData,
+  ResourceRoutePaths,
+  SelectInputData,
+} from '../../types';
+import {
+  returnBrandNameValidationText,
+  returnColorVariantValidationText,
+  returnDateFullRangeValidationText,
+  returnFloatAmountValidationText,
+  returnGrammarValidationText,
+  returnIntegerValidationText,
+  returnRamTimingValidationText,
+  returnSerialIdValidationText,
+  returnSocketChipsetValidationText,
+  returnUsernameRegexValidationText,
+} from '../../utils';
+import { CURRENCY_DATA } from '../benefits/constants';
+import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
+import {
+  CaseSidePanel,
+  CaseType,
+  DimensionUnit,
+  HeadphoneInterface,
+  HeadphoneType,
+  KeyboardBacklight,
+  KeyboardLayout,
+  KeyboardSwitch,
+  MemoryType,
+  MemoryUnit,
+  MobileOs,
+  MonitorPanelType,
+  MotherboardFormFactor,
+  MouseSensor,
+  PeripheralsInterface,
+  PsuEfficiency,
+  PsuFormFactor,
+  PsuModularity,
+  SpeakerInterface,
+  SpeakerType,
+  StorageFormFactor,
+  StorageInterface,
+  StorageType,
+  WeightUnit,
+} from './create/types';
 
 /**
  * - /^[a-zA-Z0-9- ]{2,30}$/;
@@ -80,13 +133,15 @@ const MOBILE_CAMERA_REGEX = /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/;
 
 const ACCESSORY_TYPE_REGEX = BRAND_REGEX;
 
-const WEIGHT_UNIT_DATA: SelectInputData = [
+const WEIGHT_UNIT_SELECT_INPUT_DATA: SelectInputData = [
   { value: 'g', label: 'gram' },
   { value: 'kg', label: 'kilogram' },
   { value: 'lb', label: 'pound' },
 ];
 
-const DIMENSION_UNIT_DATA: SelectInputData = [
+const WEIGHT_UNIT_DATA: WeightUnit[] = ['g', 'kg', 'lb'];
+
+const DIMENSION_UNIT_SELECT_INPUT_DATA: SelectInputData = [
   { value: 'mm', label: 'millimetre' },
   { value: 'cm', label: 'centimetre' },
   { value: 'm', label: 'metre' },
@@ -94,199 +149,191 @@ const DIMENSION_UNIT_DATA: SelectInputData = [
   { value: 'ft', label: 'feet' },
 ];
 
-const PRODUCT_AVAILABILITY_DATA: RadioGroupInputData = [
-  { value: 'In Stock', label: 'In Stock' },
-  { value: 'Out of Stock', label: 'Out of Stock' },
-  { value: 'Pre-order', label: 'Pre-order' },
-  { value: 'Discontinued', label: 'Discontinued' },
-  { value: 'Other', label: 'Other' },
+const DIMENSION_UNIT_DATA: DimensionUnit[] = ['mm', 'cm', 'm', 'in', 'ft'];
+
+const PRODUCT_AVAILABILITY_DATA = [
+  'In Stock',
+  'Out of Stock',
+  'Pre-order',
+  'Discontinued',
+  'Other',
 ];
 
-const MEMORY_UNIT_DATA: SelectInputData = [
+const MEMORY_UNIT_SELECT_INPUT_DATA: SelectInputData = [
   { value: 'KB', label: 'kilobyte' },
   { value: 'MB', label: 'megabyte' },
   { value: 'GB', label: 'gigabyte' },
   { value: 'TB', label: 'terabyte' },
 ];
 
-const MOTHERBOARD_FORM_FACTOR_DATA: SelectInputData = [
-  { value: 'Micro ATX', label: 'Micro ATX' },
-  { value: 'Mini ITX', label: 'Mini ITX' },
-  { value: 'E-ATX', label: 'E-ATX' },
-  { value: 'ATX', label: 'ATX' },
-  { value: 'XL-ATX', label: 'XL-ATX' },
+const MEMORY_UNIT_DATA: MemoryUnit[] = ['KB', 'MB', 'GB', 'TB'];
+
+const MOTHERBOARD_FORM_FACTOR_DATA: MotherboardFormFactor[] = [
+  'Micro ATX',
+  'Mini ITX',
+  'E-ATX',
+  'ATX',
+  'XL-ATX',
 ];
 
-const MOTHERBOARD_MEMORY_TYPE_DATA: SelectInputData = [
-  { value: 'DDR', label: 'DDR' },
-  { value: 'DDR2', label: 'DDR2' },
-  { value: 'DDR3', label: 'DDR3' },
-  { value: 'DDR4', label: 'DDR4' },
-  { value: 'DDR5', label: 'DDR5' },
+const MOTHERBOARD_MEMORY_TYPE_DATA: MemoryType[] = [
+  'DDR',
+  'DDR2',
+  'DDR3',
+  'DDR4',
+  'DDR5',
 ];
 
-const RAM_MEMORY_TYPE_DATA: SelectInputData = [
-  { value: 'DDR', label: 'DDR' },
-  { value: 'DDR2', label: 'DDR2' },
-  { value: 'DDR3', label: 'DDR3' },
-  { value: 'DDR4', label: 'DDR4' },
-  { value: 'DDR5', label: 'DDR5' },
+const RAM_MEMORY_TYPE_DATA: MemoryType[] = [
+  'DDR',
+  'DDR2',
+  'DDR3',
+  'DDR4',
+  'DDR5',
 ];
 
-const STORAGE_TYPE_DATA: SelectInputData = [
-  { value: 'HDD', label: 'HDD' },
-  { value: 'SSD', label: 'SSD' },
-  { value: 'SSHD', label: 'SSHD' },
-  { value: 'NVMe SSD', label: 'NVMe SSD' },
-  { value: 'SATA SSD', label: 'SATA SSD' },
-  { value: 'M.2 SSD', label: 'M.2 SSD' },
-  { value: 'Other', label: 'Other' },
+const STORAGE_TYPE_DATA: StorageType[] = [
+  'HDD',
+  'SSD',
+  'SSHD',
+  'NVMe SSD',
+  'SATA SSD',
+  'M.2 SSD',
+  'Other',
 ];
 
-const STORAGE_FORM_FACTOR_DATA: SelectInputData = [
-  { value: '2.5"', label: '2.5"' },
-  { value: 'M.2 2280', label: 'M.2 2280' },
-  { value: 'M.2 22110', label: 'M.2 22110' },
-  { value: 'M.2 2242', label: 'M.2 2242' },
-  { value: 'M.2 2230', label: 'M.2 2230' },
-  { value: 'Other', label: 'Other' },
+const STORAGE_FORM_FACTOR_DATA: StorageFormFactor[] = [
+  '2.5"',
+  'M.2 2280',
+  'M.2 22110',
+  'M.2 2242',
+  'M.2 2230',
+  'Other',
 ];
 
-const STORAGE_INTERFACE_DATA: SelectInputData = [
-  { value: 'SATA III', label: 'SATA III' },
-  { value: 'PCIe 3.0 x4', label: 'PCIe 3.0 x4' },
-  { value: 'PCIe 4.0 x4', label: 'PCIe 4.0 x4' },
-  { value: 'PCIe 3.0 x2', label: 'PCIe 3.0 x2' },
-  { value: 'PCIe 3.0 x1', label: 'PCIe 3.0 x1' },
-  { value: 'Other', label: 'Other' },
+const STORAGE_INTERFACE_DATA: StorageInterface[] = [
+  'SATA III',
+  'PCIe 3.0 x4',
+  'PCIe 4.0 x4',
+  'PCIe 3.0 x2',
+  'PCIe 3.0 x1',
+  'Other',
 ];
 
-const PSU_EFFICIENCY_RATING_DATA: SelectInputData = [
-  { value: '80+', label: '80+' },
-  { value: '80+ Standard', label: '80+ Standard' },
-  { value: '80+ White', label: '80+ White' },
-  { value: '80+ Bronze', label: '80+ Bronze' },
-  { value: '80+ Silver', label: '80+ Silver' },
-  { value: '80+ Gold', label: '80+ Gold' },
-  { value: '80+ Platinum', label: '80+ Platinum' },
-  { value: '80+ Titanium', label: '80+ Titanium' },
+const PSU_EFFICIENCY_RATING_DATA: PsuEfficiency[] = [
+  '80+',
+  '80+ Standard',
+  '80+ White',
+  '80+ Bronze',
+  '80+ Silver',
+  '80+ Gold',
+  '80+ Platinum',
+  '80+ Titanium',
 ];
 
-const PSU_FORM_FACTOR_DATA: SelectInputData = [
-  { value: 'ATX', label: 'ATX' },
-  { value: 'SFX', label: 'SFX' },
-  { value: 'SFX-L', label: 'SFX-L' },
-  { value: 'TFX', label: 'TFX' },
-  { value: 'Flex ATX', label: 'Flex ATX' },
-  { value: 'Other', label: 'Other' },
+const PSU_FORM_FACTOR_DATA: PsuFormFactor[] = [
+  'ATX',
+  'SFX',
+  'SFX-L',
+  'TFX',
+  'Flex ATX',
+  'Other',
 ];
 
-const PSU_MODULARITY_DATA: SelectInputData = [
-  { value: 'Full', label: 'Full' },
-  { value: 'Semi', label: 'Semi' },
-  { value: 'None', label: 'None' },
-  { value: 'Other', label: 'Other' },
+const PSU_MODULARITY_DATA: PsuModularity[] = ['Full', 'Semi', 'None', 'Other'];
+
+const CASE_TYPE_DATA: CaseType[] = [
+  'Mid Tower',
+  'Full Tower',
+  'Mini Tower',
+  'Cube',
+  'Slim',
+  'Desktop',
+  'Other',
 ];
 
-const CASE_TYPE_DATA: SelectInputData = [
-  { value: 'Mid Tower', label: 'Mid Tower' },
-  { value: 'Full Tower', label: 'Full Tower' },
-  { value: 'Mini Tower', label: 'Mini Tower' },
-  { value: 'Cube', label: 'Cube' },
-  { value: 'Slim', label: 'Slim' },
-  { value: 'Desktop', label: 'Desktop' },
-  { value: 'Other', label: 'Other' },
+const CASE_SIDE_PANEL_DATA: CaseSidePanel[] = ['Windowed', 'Solid'];
+
+const MONITOR_PANEL_TYPE_DATA: MonitorPanelType[] = [
+  'IPS',
+  'TN',
+  'VA',
+  'OLED',
+  'QLED',
+  'Other',
 ];
 
-const CASE_SIDE_PANEL_DATA: SelectInputData = [
-  { label: 'Windowed', value: 'Windowed' },
-  { label: 'Solid', value: 'Solid' },
+const KEYBOARD_SWITCH_DATA: KeyboardSwitch[] = [
+  'Cherry MX Red',
+  'Cherry MX Blue',
+  'Cherry MX Brown',
+  'Cherry MX Silent Red',
+  'Cherry MX Black',
+  'Cherry MX Clear',
+  'Membrane',
+  'Other',
 ];
 
-const MONITOR_PANEL_TYPE_DATA: SelectInputData = [
-  { value: 'IPS', label: 'IPS' },
-  { value: 'TN', label: 'TN' },
-  { value: 'VA', label: 'VA' },
-  { value: 'OLED', label: 'OLED' },
-  { value: 'QLED', label: 'QLED' },
-  { value: 'Other', label: 'Other' },
+const KEYBOARD_LAYOUT_DATA: KeyboardLayout[] = ['ANSI', 'ISO', 'Other'];
+
+const KEYBOARD_BACKLIGHT_DATA: KeyboardBacklight[] = [
+  'RGB',
+  'Single Color',
+  'None',
 ];
 
-const KEYBOARD_SWITCH_DATA: SelectInputData = [
-  { value: 'Cherry MX Red', label: 'Cherry MX Red' },
-  { value: 'Cherry MX Blue', label: 'Cherry MX Blue' },
-  { value: 'Cherry MX Brown', label: 'Cherry MX Brown' },
-  { value: 'Cherry MX Silent Red', label: 'Cherry MX Silent Red' },
-  { value: 'Cherry MX Black', label: 'Cherry MX Black' },
-  { value: 'Cherry MX Clear', label: 'Cherry MX Clear' },
-  { value: 'Membrane', label: 'Membrane' },
-  { value: 'Other', label: 'Other' },
+const PERIPHERALS_INTERFACE_DATA: PeripheralsInterface[] = [
+  'USB',
+  'Bluetooth',
+  'Other',
 ];
 
-const KEYBOARD_LAYOUT_DATA: SelectInputData = [
-  { value: 'ANSI', label: 'ANSI' },
-  { value: 'ISO', label: 'ISO' },
-  { value: 'Other', label: 'Other' },
+const MOUSE_SENSOR_DATA: MouseSensor[] = [
+  'Optical',
+  'Laser',
+  'Infrared',
+  'Other',
 ];
 
-const KEYBOARD_BACKLIGHT_DATA: SelectInputData = [
-  { value: 'RGB', label: 'RGB' },
-  { value: 'Single Color', label: 'Single Color' },
-  { value: 'None', label: 'None' },
+const HEADPHONE_TYPE_DATA: HeadphoneType[] = [
+  'Over-ear',
+  'On-ear',
+  'In-ear',
+  'Other',
 ];
 
-const PERIPHERALS_INTERFACE_DATA: SelectInputData = [
-  { value: 'USB', label: 'USB' },
-  { value: 'Bluetooth', label: 'Bluetooth' },
-  { value: 'Other', label: 'Other' },
+const HEADPHONE_INTERFACE_DATA: HeadphoneInterface[] = [
+  '3.5 mm',
+  '2.5 mm',
+  'USB',
+  'Bluetooth',
+  'Other',
 ];
 
-const MOUSE_SENSOR_DATA: SelectInputData = [
-  { value: 'Optical', label: 'Optical' },
-  { value: 'Laser', label: 'Laser' },
-  { value: 'Infrared', label: 'Infrared' },
-  { value: 'Other', label: 'Other' },
+const SPEAKER_TYPE_DATA: SpeakerType[] = [
+  '2.0',
+  '2.1',
+  '3.1',
+  '4.1',
+  '5.1',
+  '7.1',
+  'Other',
 ];
 
-const HEADPHONE_TYPE_DATA: SelectInputData = [
-  { value: 'Over-ear', label: 'Over-ear' },
-  { value: 'On-ear', label: 'On-ear' },
-  { value: 'In-ear', label: 'In-ear' },
-  { value: 'Other', label: 'Other' },
+const SPEAKER_INTERFACE_DATA: SpeakerInterface[] = [
+  '3.5 mm',
+  '2.5 mm',
+  'USB',
+  'Bluetooth',
+  'Other',
 ];
 
-const HEADPHONE_INTERFACE_DATA: SelectInputData = [
-  { value: '3.5 mm', label: '3.5 mm' },
-  { value: '2.5 mm', label: '2.5 mm' },
-  { value: 'USB', label: 'USB' },
-  { value: 'Bluetooth', label: 'Bluetooth' },
-  { value: 'Other', label: 'Other' },
-];
-
-const SPEAKER_TYPE_DATA: SelectInputData = [
-  { value: '2.0', label: '2.0' },
-  { value: '2.1', label: '2.1' },
-  { value: '3.1', label: '3.1' },
-  { value: '4.1', label: '4.1' },
-  { value: '5.1', label: '5.1' },
-  { value: '7.1', label: '7.1' },
-  { value: 'Other', label: 'Other' },
-];
-
-const SPEAKER_INTERFACE_DATA: SelectInputData = [
-  { value: '3.5 mm', label: '3.5 mm' },
-  { value: '2.5 mm', label: '2.5 mm' },
-  { value: 'USB', label: 'USB' },
-  { value: 'Bluetooth', label: 'Bluetooth' },
-  { value: 'Other', label: 'Other' },
-];
-
-const MOBILE_OS_DATA: SelectInputData = [
-  { value: 'iOS', label: 'iOS' },
-  { value: 'Android', label: 'Android' },
-  { value: 'Windows', label: 'Windows' },
-  { value: 'Linux', label: 'Linux' },
-  { value: 'Other', label: 'Other' },
+const MOBILE_OS_DATA: MobileOs[] = [
+  'iOS',
+  'Android',
+  'Windows',
+  'Linux',
+  'Other',
 ];
 
 const CREATE_PRODUCT_MAX_STEPPER_POSITION = 4;
@@ -315,6 +362,810 @@ const CREATE_PRODUCT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   },
 ];
 
+const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
+  {
+    label: 'Username',
+    value: 'username',
+    inputKind: 'textInput',
+    regex: USERNAME_REGEX,
+    regexValidationFn: returnUsernameRegexValidationText,
+  },
+  {
+    label: 'Created Date',
+    value: 'createdAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  {
+    label: 'Updated Date',
+    value: 'updatedAt',
+    inputKind: 'dateInput',
+    regex: DATE_FULL_RANGE_REGEX,
+    regexValidationFn: returnDateFullRangeValidationText,
+  },
+  // page 1
+  {
+    label: 'Brand',
+    value: 'brand',
+    inputKind: 'textInput',
+    regex: BRAND_REGEX,
+    regexValidationFn: returnBrandNameValidationText,
+  },
+  {
+    label: 'Model',
+    value: 'model',
+    inputKind: 'textInput',
+    regex: SERIAL_ID_REGEX,
+    regexValidationFn: returnSerialIdValidationText,
+  },
+  {
+    label: 'Price',
+    value: 'price',
+    inputKind: 'textInput',
+    regex: MONEY_REGEX,
+    regexValidationFn: returnFloatAmountValidationText,
+  },
+  {
+    label: 'Description',
+    value: 'description',
+    inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
+  },
+  {
+    label: 'Currency',
+    value: 'currency',
+    inputKind: 'selectInput',
+    selectData: CURRENCY_DATA,
+  },
+  {
+    label: 'Availability',
+    value: 'availability',
+    inputKind: 'selectInput',
+    selectData: PRODUCT_AVAILABILITY_DATA,
+  },
+  {
+    label: 'Quantity',
+    value: 'quantity',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Weight',
+    value: 'weight',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Weight Unit',
+    value: 'weightUnit',
+    inputKind: 'selectInput',
+    selectData: WEIGHT_UNIT_DATA,
+  },
+  {
+    label: 'Additional Details',
+    value: 'additionalDetails',
+    inputKind: 'textInput',
+    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
+    regexValidationFn: returnGrammarValidationText,
+  },
+
+  // page 2
+
+  // page 2 -> cpu
+  {
+    label: 'CPU Socket',
+    value: 'socket',
+    inputKind: 'textInput',
+    regex: CPU_SOCKET_REGEX,
+    regexValidationFn: returnSocketChipsetValidationText,
+  },
+  {
+    label: 'CPU Frequency (GHz)',
+    value: 'frequency',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'CPU Cores',
+    value: 'cores',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'CPU L1 Cache',
+    value: 'l1Cache',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'CPU L1 Cache Unit',
+    value: 'l1CacheUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+  {
+    label: 'CPU L2 Cache',
+    value: 'l2Cache',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'CPU L2 Cache Unit',
+    value: 'l2CacheUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+  {
+    label: 'CPU L3 Cache',
+    value: 'l3Cache',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'CPU L3 Cache Unit',
+    value: 'l3CacheUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+
+  // page 2 -> gpu
+  {
+    label: 'GPU Chipset',
+    value: 'chipset',
+    inputKind: 'textInput',
+    regex: GPU_CHIPSET_REGEX,
+    regexValidationFn: returnSocketChipsetValidationText,
+  },
+  {
+    label: 'GPU Memory (GB)',
+    value: 'memory',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'GPU Core Clock (MHz)',
+    value: 'coreClock',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'GPU Boost Clock (MHz)',
+    value: 'boostClock',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'GPU TDP (W)',
+    value: 'tdp',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+
+  // page 2 -> motherboard
+  {
+    label: 'Motherboard Socket',
+    value: 'socket',
+    inputKind: 'textInput',
+    regex: MOTHERBOARD_SOCKET_REGEX,
+    regexValidationFn: returnSocketChipsetValidationText,
+  },
+  {
+    label: 'Motherboard Chipset',
+    value: 'chipset',
+    inputKind: 'textInput',
+    regex: MOTHERBOARD_CHIPSET_REGEX,
+    regexValidationFn: returnSocketChipsetValidationText,
+  },
+  {
+    label: 'Motherboard Form Factor',
+    value: 'formFactor',
+    inputKind: 'selectInput',
+    selectData: MOTHERBOARD_FORM_FACTOR_DATA,
+  },
+  {
+    label: 'Motherboard Memory Max',
+    value: 'memoryMax',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Motherboard Memory Max Unit',
+    value: 'memoryMaxUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+  {
+    label: 'Motherboard Memory Slots',
+    value: 'memorySlots',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Motherboard Memory Type',
+    value: 'memoryType',
+    inputKind: 'selectInput',
+    selectData: MOTHERBOARD_MEMORY_TYPE_DATA,
+  },
+  {
+    label: 'Motherboard SATA Ports',
+    value: 'sataPorts',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Motherboard M.2 Slots',
+    value: 'm2Slots',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Motherboard PCIe 3.0 Slots',
+    value: 'pcie3Slots',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Motherboard PCIe 4.0 Slots',
+    value: 'pcie4Slots',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Motherboard PCIe 5.0 Slots',
+    value: 'pcie5Slots',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+
+  // page 2 -> ram
+  {
+    label: 'RAM Data Rate (MT/s)',
+    value: 'dataRate',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'RAM Modules Quantity',
+    value: 'modulesQuantity',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'RAM Mobules Capacity',
+    value: 'modulesCapacity',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'RAM Modules Capacity Unit',
+    value: 'modulesCapacityUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+  {
+    label: 'RAM Memory Type',
+    value: 'memoryType',
+    inputKind: 'selectInput',
+    selectData: RAM_MEMORY_TYPE_DATA,
+  },
+  {
+    label: 'RAM Color',
+    value: 'color',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'RAM Voltage (V)',
+    value: 'voltage',
+    inputKind: 'numberInput',
+    regex: FLOAT_REGEX,
+    regexValidationFn: returnFloatAmountValidationText,
+  },
+  {
+    label: 'RAM Timing',
+    value: 'timing',
+    inputKind: 'textInput',
+    regex: RAM_TIMING_REGEX,
+    regexValidationFn: returnRamTimingValidationText,
+  },
+
+  // page 2 -> storage
+
+  {
+    label: 'Storage Type',
+    value: 'storageType',
+    inputKind: 'selectInput',
+    selectData: STORAGE_TYPE_DATA,
+  },
+  {
+    label: 'Storage Capacity',
+    value: 'capacity',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Storage Capacity Unit',
+    value: 'capacityUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+  {
+    label: 'Storage Cache',
+    value: 'cache',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Storage Cache Unit',
+    value: 'cacheUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+  {
+    label: 'Storage Form Factor',
+    value: 'formFactor',
+    inputKind: 'selectInput',
+    selectData: STORAGE_FORM_FACTOR_DATA,
+  },
+  {
+    label: 'Storage Interface',
+    value: 'interface',
+    inputKind: 'selectInput',
+    selectData: STORAGE_INTERFACE_DATA,
+  },
+
+  // page 2 -> psu
+  {
+    label: 'PSU Wattage (W)',
+    value: 'wattage',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'PSU Efficiency',
+    value: 'efficiency',
+    inputKind: 'selectInput',
+    selectData: PSU_EFFICIENCY_RATING_DATA,
+  },
+  {
+    label: 'PSU Form Factor',
+    value: 'formFactor',
+    inputKind: 'selectInput',
+    selectData: PSU_FORM_FACTOR_DATA,
+  },
+  {
+    label: 'PSU Modularity',
+    value: 'modularity',
+    inputKind: 'selectInput',
+    selectData: PSU_MODULARITY_DATA,
+  },
+
+  // page 2 -> case
+  {
+    label: 'Case Type',
+    value: 'caseType',
+    inputKind: 'selectInput',
+    selectData: CASE_TYPE_DATA,
+  },
+  {
+    label: 'Case Color',
+    value: 'color',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Case Side Panel',
+    value: 'sidePanel',
+    inputKind: 'selectInput',
+    selectData: CASE_SIDE_PANEL_DATA,
+  },
+
+  // page 2 -> monitor
+  {
+    label: 'Monitor Size (in)',
+    value: 'size',
+    inputKind: 'numberInput',
+    regex: FLOAT_REGEX,
+    regexValidationFn: returnFloatAmountValidationText,
+  },
+  {
+    label: 'Monitor Horizontal Resolution',
+    value: 'horizontalResolution',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Monitor Vertical Resolution',
+    value: 'verticalResolution',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Monitor Refresh Rate (Hz)',
+    value: 'refreshRate',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Monitor Panel Type',
+    value: 'panelType',
+    inputKind: 'selectInput',
+    selectData: MONITOR_PANEL_TYPE_DATA,
+  },
+  {
+    label: 'Monitor Response Time (ms)',
+    value: 'responseTime',
+    inputKind: 'numberInput',
+    regex: FLOAT_REGEX,
+    regexValidationFn: returnFloatAmountValidationText,
+  },
+  {
+    label: 'Monitor Aspect Ratio',
+    value: 'aspectRatio',
+    inputKind: 'textInput',
+    regex: DISPLAY_ASPECT_RATIO_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+
+  // page 2 -> keyboard
+  {
+    label: 'Keyboard Switch',
+    value: 'switch',
+    inputKind: 'selectInput',
+    selectData: KEYBOARD_SWITCH_DATA,
+  },
+  {
+    label: 'Keyboard Layout',
+    value: 'layout',
+    inputKind: 'selectInput',
+    selectData: KEYBOARD_LAYOUT_DATA,
+  },
+  {
+    label: 'Keyboard Backlight',
+    value: 'backlight',
+    inputKind: 'selectInput',
+    selectData: KEYBOARD_BACKLIGHT_DATA,
+  },
+  {
+    label: 'Keyboard Interface',
+    value: 'interface',
+    inputKind: 'selectInput',
+    selectData: PERIPHERALS_INTERFACE_DATA,
+  },
+
+  // page 2 -> mouse
+  {
+    label: 'Mouse Sensor',
+    value: 'sensor',
+    inputKind: 'selectInput',
+    selectData: MOUSE_SENSOR_DATA,
+  },
+  {
+    label: 'Mouse DPI',
+    value: 'dpi',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Mouse Buttons',
+    value: 'buttons',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Mouse Color',
+    value: 'color',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Mouse Interface',
+    value: 'interface',
+    inputKind: 'selectInput',
+    selectData: PERIPHERALS_INTERFACE_DATA,
+  },
+
+  // page 2 -> headphone
+  {
+    label: 'Headphone Type',
+    value: 'headphoneType',
+    inputKind: 'selectInput',
+    selectData: HEADPHONE_TYPE_DATA,
+  },
+  {
+    label: 'Headphone Driver (mm)',
+    value: 'driver',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Headphone Frequency Response',
+    value: 'frequencyResponse',
+    inputKind: 'textInput',
+    regex: FREQUENCY_RESPONSE_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Headphone Impedance (Ohm Ω)',
+    value: 'impedance',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Headphone Color',
+    value: 'color',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Headphone Interface',
+    value: 'interface',
+    inputKind: 'selectInput',
+    selectData: HEADPHONE_INTERFACE_DATA,
+  },
+
+  // page 2 -> speaker
+  {
+    label: 'Speaker Type',
+    value: 'speakerType',
+    inputKind: 'selectInput',
+    selectData: SPEAKER_TYPE_DATA,
+  },
+  {
+    label: 'Speaker Total Wattage (W)',
+    value: 'totalWattage',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Speaker Frequency Response',
+    value: 'frequencyResponse',
+    inputKind: 'textInput',
+    regex: FREQUENCY_RESPONSE_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Speaker Color',
+    value: 'color',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Speaker Interface',
+    value: 'interface',
+    inputKind: 'selectInput',
+    selectData: SPEAKER_INTERFACE_DATA,
+  },
+
+  // page 2 -> smartphone
+  {
+    label: 'Smartphone OS',
+    value: 'os',
+    inputKind: 'selectInput',
+    selectData: MOBILE_OS_DATA,
+  },
+  {
+    label: 'Smartphone Chipset',
+    value: 'chipset',
+    inputKind: 'textInput',
+    regex: SMARTPHONE_CHIPSET_REGEX,
+    regexValidationFn: returnSocketChipsetValidationText,
+  },
+  {
+    label: 'Smartphone Display (in)',
+    value: 'display',
+    inputKind: 'numberInput',
+    regex: FLOAT_REGEX,
+    regexValidationFn: returnFloatAmountValidationText,
+  },
+  {
+    label: 'Smartphone Horizontal Resolution',
+    value: 'horizontalResolution',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Smartphone Vertical Resolution',
+    value: 'verticalResolution',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Smartphone RAM Capacity',
+    value: 'ramCapacity',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Smartphone RAM Capacity Unit',
+    value: 'ramCapacityUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+  {
+    label: 'Smartphone Storage (GB)',
+    value: 'storage',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Smartphone Battery (mAh)',
+    value: 'battery',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Smartphone Camera',
+    value: 'camera',
+    inputKind: 'textInput',
+    regex: MOBILE_CAMERA_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Smartphone Color',
+    value: 'color',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+
+  // page 2 -> tablet
+  {
+    label: 'Tablet OS',
+    value: 'os',
+    inputKind: 'selectInput',
+    selectData: MOBILE_OS_DATA,
+  },
+  {
+    label: 'Tablet Chipset',
+    value: 'chipset',
+    inputKind: 'textInput',
+    regex: TABLET_CHIPSET_REGEX,
+    regexValidationFn: returnSocketChipsetValidationText,
+  },
+  {
+    label: 'Tablet Display (in)',
+    value: 'display',
+    inputKind: 'numberInput',
+    regex: FLOAT_REGEX,
+    regexValidationFn: returnFloatAmountValidationText,
+  },
+  {
+    label: 'Tablet Horizontal Resolution',
+    value: 'horizontalResolution',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Tablet Vertical Resolution',
+    value: 'verticalResolution',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Tablet RAM Capacity',
+    value: 'ramCapacity',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Tablet RAM Capacity Unit',
+    value: 'ramCapacityUnit',
+    inputKind: 'selectInput',
+    selectData: MEMORY_UNIT_DATA,
+  },
+  {
+    label: 'Tablet Storage (GB)',
+    value: 'storage',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Tablet Battery (mAh)',
+    value: 'battery',
+    inputKind: 'numberInput',
+    regex: INTEGER_REGEX,
+    regexValidationFn: returnIntegerValidationText,
+  },
+  {
+    label: 'Tablet Camera',
+    value: 'camera',
+    inputKind: 'textInput',
+    regex: MOBILE_CAMERA_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Tablet Color',
+    value: 'color',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+
+  // page 2 -> accessory
+  /**
+   * type AccessorySpecifications = {
+  accessoryType: string; // Headphones, Speakers, etc.
+  color: string; // Black, White, etc.
+  interface: PeripheralsInterface; // USB, Bluetooth, etc.
+};
+   */
+  {
+    label: 'Accessory Type',
+    value: 'accessoryType',
+    inputKind: 'textInput',
+    regex: BRAND_REGEX,
+    regexValidationFn: returnBrandNameValidationText,
+  },
+  {
+    label: 'Accessory Color',
+    value: 'color',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Accessory Interface',
+    value: 'interface',
+    inputKind: 'selectInput',
+    selectData: PERIPHERALS_INTERFACE_DATA,
+  },
+];
+
+const PRODUCTS_RESOURCE_PATHS: ResourceRoutePaths = {
+  manager: 'actions/dashboard/product',
+  admin: 'actions/dashboard/product',
+  employee: 'actions/dashboard/product/user',
+};
+
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -326,7 +1177,7 @@ export {
   CREATE_PRODUCT_MAX_IMG_AMOUNT,
   CREATE_PRODUCT_MAX_IMG_SIZE,
   CREATE_PRODUCT_MAX_STEPPER_POSITION,
-  DIMENSION_UNIT_DATA,
+  DIMENSION_UNIT_SELECT_INPUT_DATA,
   DISPLAY_ASPECT_RATIO_REGEX,
   FREQUENCY_RESPONSE_REGEX,
   GPU_CHIPSET_REGEX,
@@ -335,7 +1186,7 @@ export {
   KEYBOARD_BACKLIGHT_DATA,
   KEYBOARD_LAYOUT_DATA,
   KEYBOARD_SWITCH_DATA,
-  MEMORY_UNIT_DATA,
+  MEMORY_UNIT_SELECT_INPUT_DATA,
   MOBILE_CAMERA_REGEX,
   MOBILE_OS_DATA,
   MONITOR_PANEL_TYPE_DATA,
@@ -346,6 +1197,8 @@ export {
   MOUSE_SENSOR_DATA,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
+  PRODUCTS_QUERY_DATA,
+  PRODUCTS_RESOURCE_PATHS,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
@@ -358,5 +1211,5 @@ export {
   STORAGE_INTERFACE_DATA,
   STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
-  WEIGHT_UNIT_DATA,
+  WEIGHT_UNIT_SELECT_INPUT_DATA,
 };

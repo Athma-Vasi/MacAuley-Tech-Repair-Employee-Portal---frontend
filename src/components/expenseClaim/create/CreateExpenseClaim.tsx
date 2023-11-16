@@ -36,7 +36,7 @@ import {
   logState,
   returnDateNearPastValidationText,
   returnGrammarValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   returnThemeColors,
   urlBuilder,
 } from '../../../utils';
@@ -505,7 +505,7 @@ function CreateExpenseClaim() {
       inputText: expenseClaimAmount,
       isInputTextFocused: isExpenseClaimAmountFocused,
       isValidInputText: isValidExpenseClaimAmount,
-      regexValidationText: returnNumberAmountValidationText({
+      regexValidationText: returnFloatAmountValidationText({
         content: expenseClaimAmount,
         contentKind: 'expense claim amount',
       }),

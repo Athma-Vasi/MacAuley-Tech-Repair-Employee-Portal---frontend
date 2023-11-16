@@ -276,6 +276,16 @@ const TIME_RAILWAY_REGEX = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 const INTEGER_REGEX = /^\d{1,6}$/;
 
 /**
+ * - /^(?=.*[0-9])\d{1,6}(?:[,.]\d{0,2})?$/
+ * - ^ asserts that the string starts with a digit.
+ * - (?=.*[0-9]) is a positive lookahead assertion that requires the presence of at least one digit. This ensures that the string contains at least one digit.
+ * - \d{1,6} matches between 1 and 6 digits. This represents the whole number part of a number, allowing for a range of digit lengths from 1 to 6.
+ * - (?:[,.]\d{0,2})? is a non-capturing group that matches a decimal point or comma followed by between 0 and 2 digits. This represents the decimal part of a number, allowing for a range of digit lengths from 0 to 2. The entire group is optional, allowing for whole numbers.
+ * - $ asserts that the string ends with a digit.
+ */
+const FLOAT_REGEX = /^\d{1,6}(?:[,.]\d{0,2})?$/;
+
+/**
  * - /^[a-zA-Z0-9\s.,'()-]{1,50}$/i
  * - [a-zA-Z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
  * - {1,50} ensures that the text is between 1 and 50 characters long.
@@ -295,6 +305,7 @@ export {
   DATE_REGEX,
   EMAIL_REGEX,
   FILENAME_REGEX,
+  FLOAT_REGEX,
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,

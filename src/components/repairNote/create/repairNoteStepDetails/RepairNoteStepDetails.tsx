@@ -39,7 +39,7 @@ import {
   replaceLastCommaWithAnd,
   returnDateNearFutureValidationText,
   returnNoteTextValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
 } from '../../../../utils';
 import { CURRENCY_DATA } from '../../../benefits/constants';
 import {
@@ -237,7 +237,7 @@ function RepairNoteStepDetail(parentState: RepairNoteStepDetailsProps) {
       inputText: estimatedRepairCost,
       isValidInputText: isValidEstimatedRepairCost,
       isInputTextFocused: isEstimatedRepairCostFocused,
-      regexValidationText: returnNumberAmountValidationText({
+      regexValidationText: returnFloatAmountValidationText({
         content: estimatedRepairCost,
         contentKind: 'estimated repair cost',
       }),

@@ -278,6 +278,8 @@ function StepperWrapper({
         w={stepperWidth}
         rowGap={rowGap}
       >
+        {children ?? null}
+
         {/* stepper nav buttons */}
         <Flex
           align="center"
@@ -299,8 +301,6 @@ function StepperWrapper({
             <Group>{createdNextButton}</Group>
           </Tooltip>
         </Flex>
-
-        {children ?? null}
       </Flex>
     </Flex>
   );

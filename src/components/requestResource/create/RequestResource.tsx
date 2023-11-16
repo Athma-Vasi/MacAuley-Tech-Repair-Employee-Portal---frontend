@@ -31,7 +31,7 @@ import {
 import {
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
-  returnNumberAmountValidationText,
+  returnFloatAmountValidationText,
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
@@ -360,7 +360,7 @@ function RequestResource() {
       inputText: resourceQuantity,
       isInputTextFocused: isResourceQuantityFocused,
       isValidInputText: isValidResourceQuantity,
-      regexValidationText: returnNumberAmountValidationText({
+      regexValidationText: returnFloatAmountValidationText({
         content: resourceQuantity,
         contentKind: 'resource quantity',
       }),
