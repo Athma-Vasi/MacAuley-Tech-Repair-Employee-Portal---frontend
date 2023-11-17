@@ -1511,184 +1511,32 @@ function replaceLastCommaWithOr(str: string): string {
   return strWithOr;
 }
 
-type CommentIdsTree = {
-  id: string;
-  children: CommentIdsTree[];
-};
+function flattenObjectIterative<
+  Obj extends Record<string, any> = Record<string, any>
+>(obj: Obj):Obj {
+  const queue = [obj] as Record<string, any>[];
+  const flatObj = Object.create(null);
 
-type Operation =
-  | { kind: 'find' }
-  | { kind: 'replace'; children: CommentIdsTree[] }
-  | { kind: 'insert'; children: CommentIdsTree[] };
-
-type CommentDFSIterativeInput = {
-  rootComment: CommentIdsTree;
-  searchCommentId: string;
-  operation: Operation;
-  searchKind?: 'depth-first' | 'breadth-first';
-};
-
-function commentIdsTreeOpsIterative({
-  rootComment,
-  searchCommentId,
-  operation,
-  searchKind = 'depth-first',
-}: CommentDFSIterativeInput) {
-  switch (searchKind) {
-    case 'depth-first': {
-      const stack = [rootComment];
-      const visitedIds = new Set<string>();
-
-      while (stack.length > 0) {
-        const currentComment = stack.pop() as CommentIdsTree;
-        const currentCommentId = currentComment.id;
-
-        // found the comment
-        if (currentCommentId === searchCommentId) {
-          switch (operation.kind) {
-            case 'find':
-              // rootComment is also returned to simplify the type signature
-              return { foundComment: currentComment, rootComment };
-            case 'replace': {
-              currentComment.children = operation.children;
-              return { foundComment: currentComment, rootComment };
-            }
-            case 'insert': {
-              currentComment.children = [
-                ...currentComment.children,
-                ...operation.children,
-              ];
-              return { foundComment: currentComment, rootComment };
-            }
-            default:
-              break;
-          }
-        }
-
-        // else, search the comment's children
-        const currentCommentChildren = currentComment.children;
-
-        // if the comment has no children, skip it
-        if (!currentCommentChildren.length) {
-          continue;
-        }
-
-        // if the comment has children, search them
-        currentCommentChildren.forEach((currentChildComment) => {
-          const currentChildCommentId = currentChildComment.id;
-          // if the child comment has already been visited, skip it
-          if (visitedIds.has(currentChildCommentId)) {
-            return;
-          }
-
-          // else, add it to the stack and mark it as visited
-          stack.push(currentChildComment);
-          visitedIds.add(currentChildCommentId);
-        });
-      }
+  while (queue.length > 0) {
+    const shifted = queue.shift();
+    if (!shifted) {
       break;
     }
-    case 'breadth-first': {
-      const queue = [rootComment];
-      const visitedIds = new Set<string>();
 
-      while (queue.length > 0) {
-        const currentComment = queue.shift() as CommentIdsTree;
-        const currentCommentId = currentComment.id;
-
-        // found the comment
-        if (currentCommentId === searchCommentId) {
-          switch (operation.kind) {
-            case 'find':
-              // rootComment is also returned to simplify the type signature
-              return { foundComment: currentComment, rootComment };
-            case 'replace': {
-              currentComment.children = operation.children;
-              return { foundComment: currentComment, rootComment };
-            }
-            case 'insert': {
-              currentComment.children = [
-                ...currentComment.children,
-                ...operation.children,
-              ];
-              return { foundComment: currentComment, rootComment };
-            }
-            default:
-              break;
-          }
-        }
-
-        // else, search the comment's children
-        const currentCommentChildren = currentComment.children;
-
-        // if the comment has no children, skip it
-        if (!currentCommentChildren.length) {
-          continue;
-        }
-
-        // if the comment has children, search them
-        currentCommentChildren.forEach((currentChildComment) => {
-          const currentChildCommentId = currentChildComment.id;
-          // if the child comment has already been visited, skip it
-          if (visitedIds.has(currentChildCommentId)) {
-            return;
-          }
-
-          // else, add it to the stack and mark it as visited
-          queue.push(currentChildComment);
-          visitedIds.add(currentChildCommentId);
-        });
+    Object.entries(shifted).forEach(([key, value]) => {
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        !Array.isArray(value)
+      ) {
+        queue.push(value);
+      } else {
+        flatObj[key] = value;
       }
-      break;
-    }
-    default:
-      break;
+    });
   }
 
-  return null;
-}
-
-function wrapPromise<T>(promise: Promise<T>): { read: () => T } {
-  let status = 'pending';
-  let result: T;
-  const suspender = promise.then(
-    (res: T) => {
-      status = 'success';
-      result = res;
-    },
-    (error: any) => {
-      status = 'error';
-      result = error;
-    }
-  );
-
-  function read(): T {
-    switch (status) {
-      case 'pending':
-        throw suspender;
-      case 'error':
-        throw result;
-      case 'success':
-        return result;
-      default:
-        throw new Error('This should be impossible', { cause: 'wrapPromise' });
-    }
-  }
-
-  return { read };
-}
-
-type FetchDataInput = {
-  request: Request;
-  wrapPromise: <T>(promise: Promise<T>) => { read: () => T };
-};
-type FetchData = <T>(input: FetchDataInput) => { read: () => T };
-function fetchData<T>({ request, wrapPromise }: FetchDataInput) {
-  const promise = fetch(request)
-    .then((res) => res.json())
-    .then((data) => data) as Promise<T>;
-
-  return wrapPromise<T>(promise);
+  return flatObj;
 }
 
 type GroupByFieldInput<
@@ -2117,9 +1965,8 @@ export {
   addCommaSeparator,
   addFieldsToObject,
   captureScreenshot,
-  commentIdsTreeOpsIterative,
-  fetchData,
   filterFieldsFromObject,
+  flattenObjectIterative,
   formatDate,
   groupByField,
   groupQueryResponse,
@@ -2168,7 +2015,6 @@ export {
   splitWordIntoUpperCasedSentence,
   toggleNavlinksActive,
   urlBuilder,
-  wrapPromise,
 };
 
-export type { FetchData, RegexValidationProps };
+export type { RegexValidationProps };

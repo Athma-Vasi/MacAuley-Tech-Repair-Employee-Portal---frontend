@@ -4,7 +4,12 @@ import { useEffect, useReducer } from 'react';
 
 import { useAuth, useWrapFetch } from '../../hooks';
 import { UserRoles } from '../../types';
-import { groupByField, logState, urlBuilder } from '../../utils';
+import {
+  flattenObjectIterative,
+  groupByField,
+  logState,
+  urlBuilder,
+} from '../../utils';
 import {
   announcementsArray,
   returnAnnouncementsRequestBodies,
@@ -134,9 +139,9 @@ function DevTesting() {
       }
     }
 
-    if (triggerFormSubmit) {
-      submitDevTestingForm();
-    }
+    // if (triggerFormSubmit) {
+    //   submitDevTestingForm();
+    // }
 
     return () => {
       isMounted = false;
@@ -144,17 +149,44 @@ function DevTesting() {
     };
   }, [triggerFormSubmit]);
 
-  useEffect(() => {
-    const bodiesArr = returnEventsRequestBodies({
-      eventsArray,
-      userDocs: USERS_DOC,
-    });
+  // useEffect(() => {
+  // const bodiesArr = returnEventsRequestBodies({
+  //   eventsArray,
+  //   userDocs: USERS_DOC,
+  // });
 
-    devTestingDispatch({
-      type: devTestingAction.setBodiesArr,
-      payload: bodiesArr,
-    });
-  }, []);
+  // devTestingDispatch({
+  //   type: devTestingAction.setBodiesArr,
+  //   payload: bodiesArr,
+  // });
+  // }, []);
+
+  useEffect(() => {
+    const sampleObject = {
+      prop1: 'value1',
+      prop2: {
+        nestedProp1: 'nestedValue1',
+        nestedProp2: {
+          deeplyNestedProp: 'deeplyNestedValue1',
+          deeplyNestedProp2: {
+            deeplyDeeplyNestedProp3: 'deeplyDeeplyNestedValue3',
+          },
+          deeplyNestedProp3: 'deeplyNestedValue3',
+        },
+        nestedProp3: 'nestedValue3',
+      },
+      prop3: 'value3',
+    };
+
+    //
+    //
+    //
+    //
+    //
+
+    const flattenedObjIterative = flattenObjectIterative(sampleObject);
+    console.log('flattenedObjIterative', flattenedObjIterative);
+  });
 
   useEffect(() => {
     logState({

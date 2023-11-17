@@ -17,6 +17,7 @@ import {
 } from '../../types';
 import {
   filterFieldsFromObject,
+  flattenObjectIterative,
   logState,
   returnThemeColors,
   splitCamelCase,
@@ -182,11 +183,17 @@ function DisplayResource<Doc>({
           throw new Error(data.message);
         }
 
+        const flattenedObjects = data.resourceData.map((obj) => {
+          const flattenedObj = flattenObjectIterative(obj);
+
+          return flattenedObj;
+        });
+
         if (!isFileUploadsWithResource || !fileUploadFieldName) {
           // if there are no file uploads, set the resource data as is
           displayResourceDispatch({
             type: displayResourceAction.setResourceData,
-            payload: data.resourceData,
+            payload: flattenedObjects,
           });
 
           // do this regardless of whether there are file uploads or not
@@ -205,7 +212,7 @@ function DisplayResource<Doc>({
         // if there are file uploads, split the data into two arrays
         // one for the resource data and the other for the file uploads
         const [resourceDataWithoutFileUploadsArr, fileUploadsArr] =
-          data.resourceData.reduce(
+          flattenedObjects.reduce(
             (
               splitResourceDataTupleAcc: [
                 QueryResponseData<Doc>[],
@@ -419,12 +426,15 @@ function DisplayResource<Doc>({
         }
 
         const [updatedResource] = data.resourceData;
+        const flattenedUpdatedResource =
+          flattenObjectIterative(updatedResource);
+
         displayResourceDispatch({
           type: displayResourceAction.updateResourceData,
           payload: {
             id: updatedResource._id,
             kind: 'update',
-            data: updatedResource,
+            data: flattenedUpdatedResource,
           },
         });
       } catch (error: any) {
@@ -759,12 +769,15 @@ function DisplayResource<Doc>({
         }
 
         const [updatedResource] = data.resourceData;
+        const flattenedUpdatedResource =
+          flattenObjectIterative(updatedResource);
+
         displayResourceDispatch({
           type: displayResourceAction.updateResourceData,
           payload: {
             id: updatedResource._id,
             kind: 'update',
-            data: updatedResource,
+            data: flattenedUpdatedResource,
           },
         });
       } catch (error: any) {

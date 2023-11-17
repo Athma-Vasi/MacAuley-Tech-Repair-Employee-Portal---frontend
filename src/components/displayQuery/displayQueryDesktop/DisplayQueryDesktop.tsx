@@ -34,6 +34,7 @@ import {
 import { UserDocument } from '../../../types';
 import {
   addFieldsToObject,
+  flattenObjectIterative,
   formatDate,
   logState,
   replaceLastCommaWithAnd,
@@ -162,12 +163,25 @@ function DisplayQueryDesktop({
     groupedByQueryResponseData.size > 0
       ? Array.from(groupedByQueryResponseData).map(
           ([_groupedByFieldKey, queryResponseObjArrays]) => {
+            // const headerValues =
+            //   tableViewSelection === 'expanded'
+            //     ? Object.keys(queryResponseObjArrays[0])
+            //     : Object.keys(queryResponseObjArrays[0]).filter(
+            //         (key) => !tableHeaderValueExclusionSet.has(key)
+            //       );
+
+            const expandedViewHeaderValues = Object.keys(
+              flattenObjectIterative(queryResponseObjArrays[0])
+            );
+
+            const condensedViewHeaderValues = Object.keys(
+              flattenObjectIterative(queryResponseObjArrays[0])
+            ).filter((key) => !tableHeaderValueExclusionSet.has(key));
+
             const headerValues =
               tableViewSelection === 'expanded'
-                ? Object.keys(queryResponseObjArrays[0])
-                : Object.keys(queryResponseObjArrays[0]).filter(
-                    (key) => !tableHeaderValueExclusionSet.has(key)
-                  );
+                ? expandedViewHeaderValues
+                : condensedViewHeaderValues;
 
             const headerValuesWithFieldsInserted =
               // allows for modification of file uploads and deletion of documents
@@ -265,8 +279,8 @@ function DisplayQueryDesktop({
           const headerGroupStyle: CSSProperties = {
             width:
               headerValue === '_id'
-                ? 'Document Id'.length * 10 + 60
-                : headerValue.length * 10 + 60, // rough ch plus space for sort arrows
+                ? 'Document Id'.length * 10 + 70
+                : headerValue.length * 10 + 70, // rough ch plus space for sort arrows
             backgroundColor: tableHeadersBgColor,
           };
 

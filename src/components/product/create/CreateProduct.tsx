@@ -16,8 +16,6 @@ import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
-  returnAccessibleRadioGroupInputsElements,
-  returnAccessibleRadioSingleInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
@@ -28,10 +26,10 @@ import {
   returnBrandNameValidationText,
   returnColorVariantValidationText,
   returnDisplayAspectRatioValidationText,
+  returnFloatAmountValidationText,
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnMobileCameraResolutionValidationText,
-  returnFloatAmountValidationText,
   returnRamTimingValidationText,
   returnSerialIdValidationText,
   returnSocketChipsetValidationText,
@@ -537,164 +535,164 @@ function CreateProduct() {
 
           // request body -> page 2 -> specifications -> cpu
           const cpuRequestBody = {
-            socket: cpuSocket,
-            frequency: cpuFrequency,
-            cores: cpuCores,
-            l1Cache: cpuL1CacheCapacity,
-            l1CacheUnit: cpuL1CacheCapacityUnit,
-            l2Cache: cpuL2CacheCapacity,
-            l2CacheUnit: cpuL2CacheCapacityUnit,
-            l3Cache: cpuL3CacheCapacity,
-            l3CacheUnit: cpuL3CacheCapacityUnit,
-            wattage: cpuWattage,
+            cpuSocket,
+            cpuFrequency,
+            cpuCores,
+            cpuL1Cache: cpuL1CacheCapacity,
+            cpuL1CacheUnit: cpuL1CacheCapacityUnit,
+            cpuL2Cache: cpuL2CacheCapacity,
+            cpuL2CacheUnit: cpuL2CacheCapacityUnit,
+            cpuL3Cache: cpuL3CacheCapacity,
+            cpuL3CacheUnit: cpuL3CacheCapacityUnit,
+            cpuWattage,
           };
 
           // request body -> page 2 -> specifications -> gpu
           const gpuRequestBody = {
-            chipset: gpuChipset,
-            memory: gpuMemoryCapacity,
-            memoryUnit: gpuMemoryCapacityUnit,
-            coreClock: gpuCoreClock,
-            boostClock: gpuBoostClock,
-            tdp: gpuTdp,
+            gpuChipset,
+            gpuMemory: gpuMemoryCapacity,
+            gpuMemoryUnit: gpuMemoryCapacityUnit,
+            gpuCoreClock,
+            gpuBoostClock,
+            gpuTdp,
           };
 
           // request body -> page 2 -> specifications -> motherboard
           const motherboardRequestBody = {
-            socket: motherboardSocket,
-            chipset: motherboardChipset,
-            formFactor: motherboardFormFactor,
-            memoryMax: motherboardMemoryMaxCapacity,
-            memoryMaxUnit: motherboardMemoryMaxCapacityUnit,
-            memorySlots: motherboardMemorySlots,
-            memoryType: motherboardMemoryType,
-            sataPorts: motherboardSataPorts,
-            m2Slots: motherboardM2Slots,
-            pcie3Slots: motherboardPcie3Slots,
-            pcie4Slots: motherboardPcie4Slots,
-            pcie5Slots: motherboardPcie5Slots,
+            motherboardSocket,
+            motherboardChipset,
+            motherboardFormFactor,
+            motherboardMemoryMax: motherboardMemoryMaxCapacity,
+            motherboardMemoryMaxUnit: motherboardMemoryMaxCapacityUnit,
+            motherboardMemorySlots,
+            motherboardMemoryType,
+            motherboardSataPorts,
+            motherboardM2Slots,
+            motherboardPcie3Slots,
+            motherboardPcie4Slots,
+            motherboardPcie5Slots,
           };
 
           // request body -> page 2 -> specifications -> ram
           const ramRequestBody = {
-            dataRate: ramDataRate,
-            modulesQuantity: ramModulesQuantity,
-            modulesCapacity: ramModulesCapacity,
-            modulesCapacityUnit: ramModulesCapacityUnit,
-            type: ramType,
-            color: ramColor,
-            voltage: ramVoltage,
-            timing: ramTiming,
+            ramDataRate,
+            ramModulesQuantity,
+            ramModulesCapacity,
+            ramModulesCapacityUnit,
+            ramType,
+            ramColor,
+            ramVoltage,
+            ramTiming,
           };
 
           // request body -> page 2 -> specifications -> storage
           const storageRequestBody = {
-            type: storageType,
-            capacity: storageCapacity,
-            capacityUnit: storageCapacityUnit,
-            cache: storageCacheCapacity,
-            cacheUnit: storageCacheCapacityUnit,
-            formFactor: storageFormFactor,
-            interface: storageInterface,
+            storageType,
+            storageCapacity,
+            storageCapacityUnit,
+            storageCache: storageCacheCapacity,
+            storageCacheUnit: storageCacheCapacityUnit,
+            storageFormFactor,
+            storageInterface,
           };
 
           // request body -> page 2 -> specifications -> psu
           const psuRequestBody = {
-            wattage: psuWattage,
-            efficiency: psuEfficiency,
-            formFactor: psuFormFactor,
-            modularity: psuModularity,
+            psuWattage,
+            psuEfficiency,
+            psuFormFactor,
+            psuModularity,
           };
 
           // request body -> page 2 -> specifications -> case
           const caseRequestBody = {
-            type: caseType,
-            color: caseColor,
-            sidePanel: caseSidePanel,
+            caseType,
+            caseColor,
+            caseSidePanel,
           };
 
           // request body -> page 2 -> specifications -> monitor
           const monitorRequestBody = {
-            size: monitorSize,
-            horizontalResolution: monitorResolutionHorizontal,
-            verticalResolution: monitorResolutionVertical,
-            refreshRate: monitorRefreshRate,
-            panelType: monitorPanelType,
-            responseTime: monitorResponseTime,
-            aspectRatio: monitorAspectRatio,
+            monitorSize,
+            monitorHorizontalResolution: monitorResolutionHorizontal,
+            monitorVerticalResolution: monitorResolutionVertical,
+            monitorRefreshRate,
+            monitorPanelType,
+            monitorResponseTime,
+            monitorAspectRatio,
           };
 
           // request body -> page 2 -> specifications -> keyboard
           const keyboardRequestBody = {
-            switch: keyboardSwitch,
-            layout: keyboardLayout,
-            backlight: keyboardBacklight,
-            interface: keyboardInterface,
+            keyboardSwitch,
+            keyboardLayout,
+            keyboardBacklight,
+            keyboardInterface,
           };
 
           // request body -> page 2 -> specifications -> mouse
           const mouseRequestBody = {
-            sensor: mouseSensor,
-            dpi: mouseDpi,
-            buttons: mouseButtons,
-            color: mouseColor,
-            interface: mouseInterface,
+            mouseSensor,
+            mouseDpi,
+            mouseButtons,
+            mouseColor,
+            mouseInterface,
           };
 
           // request body -> page 2 -> specifications -> headphone
           const headphoneRequestBody = {
-            type: headphoneType,
-            driver: headphoneDriver,
-            frequencyResponse: headphoneFrequencyResponse,
-            impedance: headphoneImpedance,
-            color: headphoneColor,
-            interface: headphoneInterface,
+            headphoneType,
+            headphoneDriver,
+            headphoneFrequencyResponse,
+            headphoneImpedance,
+            headphoneColor,
+            headphoneInterface,
           };
 
           // request body -> page 2 -> specifications -> speaker
           const speakerRequestBody = {
-            type: speakerType,
-            totalWattage: speakerTotalWattage,
-            frequencyResponse: speakerFrequencyResponse,
-            color: speakerColor,
-            interface: speakerInterface,
+            speakerType,
+            speakerTotalWattage,
+            speakerFrequencyResponse,
+            speakerColor,
+            speakerInterface,
           };
 
           // request body -> page 2 -> specifications -> smartphone
           const smartphoneRequestBody = {
-            os: smartphoneOs,
-            chipset: smartphoneChipset,
-            display: smartphoneDisplay,
-            horizontalResolution: smartphoneResolutionHorizontal,
-            verticalResolution: smartphoneResolutionVertical,
-            ramCapacity: smartphoneRamCapacity,
-            ramCapacityUnit: smartphoneRamCapacityUnit,
-            storage: smartphoneStorageCapacity,
-            battery: smartphoneBatteryCapacity,
-            camera: smartphoneCamera,
-            color: smartphoneColor,
+            smartphoneOs,
+            smartphoneChipset,
+            smartphoneDisplay,
+            smartphoneHorizontalResolution: smartphoneResolutionHorizontal,
+            smartphoneVerticalResolution: smartphoneResolutionVertical,
+            smartphoneRamCapacity,
+            smartphoneRamCapacityUnit,
+            smartphoneStorageCapacity,
+            smartphoneBatteryCapacity,
+            smartphoneCamera,
+            smartphoneColor,
           };
 
           // request body -> page 2 -> specifications -> tablet
           const tabletRequestBody = {
-            os: tabletOs,
-            chipset: tabletChipset,
-            display: tabletDisplay,
-            horizontalResolution: tabletResolutionHorizontal,
-            verticalResolution: tabletResolutionVertical,
-            ramCapacity: tabletRamCapacity,
-            ramCapacityUnit: tabletRamCapacityUnit,
-            storage: tabletStorageCapacity,
-            battery: tabletBatteryCapacity,
-            camera: tabletCamera,
-            color: tabletColor,
+            tabletOs,
+            tabletChipset,
+            tabletDisplay,
+            tabletHorizontalResolution: tabletResolutionHorizontal,
+            tabletVerticalResolution: tabletResolutionVertical,
+            tabletRamCapacity,
+            tabletRamCapacityUnit,
+            tabletStorageCapacity,
+            tabletBatteryCapacity,
+            tabletCamera,
+            tabletColor,
           };
 
           // request body -> page 2 -> specifications -> accessory
           const accessoryRequestBody = {
-            type: accessoryType,
-            color: accessoryColor,
-            interface: accessoryInterface,
+            accessoryType,
+            accessoryColor,
+            accessoryInterface,
           };
 
           // request body -> page 2 -> desktop computer
@@ -760,7 +758,9 @@ function CreateProduct() {
             product: {
               ...page1RequestBody,
               productCategory,
-              ...page2SpecificationsRequestBody,
+              specifications: {
+                ...page2SpecificationsRequestBody,
+              },
               reviews: [],
               uploadedFilesIds: imgUploadResponseData
                 .filter((item) => item !== undefined)
@@ -2973,7 +2973,7 @@ function CreateProduct() {
           payload: true,
         });
       },
-      placeholder: 'CL 00-00-00-00 or 0-0-0-0',
+      placeholder: '00-00-00-00 or 0-0-0-0',
       required: true,
       semanticName: 'ram timing',
     },

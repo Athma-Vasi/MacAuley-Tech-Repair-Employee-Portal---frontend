@@ -74,22 +74,21 @@ function Home() {
     authState: { accessToken, roles, userId, username },
   } = useAuth();
 
-  const {
-    globalDispatch,
-    globalState: {
-      padding,
-      width,
-      themeObject,
-      rowGap,
-      actionsDocuments,
-      userDocument,
-    },
-  } = useGlobalState();
+  const { globalDispatch, globalState } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
+
+  const {
+    padding,
+    width,
+    themeObject,
+    rowGap,
+    actionsDocuments,
+    userDocument,
+  } = globalState;
 
   // useEffect(() => {
   //   if (isAccessTokenExpired) {
@@ -354,6 +353,13 @@ function Home() {
       controller.abort();
     };
   }, []);
+
+  useEffect(() => {
+    logState({
+      state: globalState,
+      groupLabel: 'Home.tsx',
+    });
+  }, [globalState]);
 
   const {
     appThemeColors: { borderColor, backgroundColor },

@@ -1,16 +1,9 @@
-import {
-  Grid,
-  Group,
-  Loader,
-  LoadingOverlay,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Grid, Group, Stack, Text } from '@mantine/core';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import { useGlobalState } from '../../../hooks';
 import { returnAccessibleImageElements } from '../../../jsxCreators';
-import { QueryResponseData, UserDocument } from '../../../types';
+import { UserDocument } from '../../../types';
 import { returnThemeColors, splitCamelCase } from '../../../utils';
 import { returnProfileInfoObject } from '../../portalHeader/userInfo/utils';
 
