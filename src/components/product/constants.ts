@@ -432,8 +432,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Weight',
     value: 'weight',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: FLOAT_REGEX,
+    regexValidationFn: returnFloatAmountValidationText,
   },
   {
     label: 'Weight Unit',

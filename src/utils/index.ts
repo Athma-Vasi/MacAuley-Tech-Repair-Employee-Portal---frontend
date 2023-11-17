@@ -1513,7 +1513,7 @@ function replaceLastCommaWithOr(str: string): string {
 
 function flattenObjectIterative<
   Obj extends Record<string, any> = Record<string, any>
->(obj: Obj):Obj {
+>(obj: Obj): Obj {
   const queue = [obj] as Record<string, any>[];
   const flatObj = Object.create(null);
 

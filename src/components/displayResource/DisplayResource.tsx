@@ -8,7 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState, useWrapFetch } from '../../hooks';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
+import {
+  returnAccessibleImageElements,
+  returnAccessibleSelectInputElements,
+} from '../../jsxCreators';
 import {
   FileUploadDocument,
   GetQueriedResourceRequestServerResponse,
@@ -29,25 +32,36 @@ import { NotificationModal } from '../notificationModal';
 import { PageBuilder } from '../pageBuilder';
 import { QueryBuilder } from '../queryBuilder';
 import { AccessibleSelectInputCreatorInfo } from '../wrappers';
-import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from './constants';
+import {
+  PRODUCT_CATEGORY_FIELDS_OBJ,
+  QUERY_LIMIT_PER_PAGE_SELECT_DATA,
+} from './constants';
 import { displayResourceAction, displayResourceReducer } from './state';
 import { DisplayResourceProps, DisplayResourceState } from './types';
+import { PRODUCT_CATEGORIES } from '../dashboard/constants';
+import { ProductCategory } from '../dashboard/types';
+import {
+  buildQueryString,
+  returnProductCategoryComponentQueryData,
+} from './utils';
 
 function DisplayResource<Doc>({
   style = {},
   componentQueryData,
   createResourcePath,
   isDisplayFilesOnly = false,
+  isDisplayProductsDocs = false,
   fileUploadFieldName = 'fileUploads',
   fileUploadIdFieldName = 'uploadedFilesIds',
   isFileUploadsWithResource = false,
   requestBodyHeading,
   resourceUrlPaths,
-}: DisplayResourceProps<Doc>) {
+}: DisplayResourceProps) {
   const initialDisplayResourceState: DisplayResourceState<Doc> = {
     resourceData: [],
     pages: 0,
     totalDocuments: 0,
+    productCategory: 'Accessories',
 
     queryValuesArray: [],
     newQueryFlag: true,
@@ -87,6 +101,7 @@ function DisplayResource<Doc>({
     resourceData,
     pages,
     totalDocuments,
+    productCategory,
     queryValuesArray,
     newQueryFlag,
     queryBuilderString,
@@ -153,9 +168,19 @@ function DisplayResource<Doc>({
           ? resourceUrlPaths.manager
           : resourceUrlPaths.employee;
 
+      const query = buildQueryString({
+        isDisplayProductsDocs,
+        limitPerPage,
+        newQueryFlag,
+        pageQueryString,
+        productCategory,
+        queryBuilderString,
+        totalDocuments,
+      });
+
       const url: URL = urlBuilder({
         path,
-        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=${limitPerPage}&projection=-action&projection=-category`,
+        query,
       });
 
       const requestInit: RequestInit = {
@@ -343,7 +368,13 @@ function DisplayResource<Doc>({
       type: displayResourceAction.setTriggerRefresh,
       payload: true,
     });
-  }, [newQueryFlag, queryBuilderString, pageQueryString, limitPerPage]);
+  }, [
+    newQueryFlag,
+    queryBuilderString,
+    pageQueryString,
+    limitPerPage,
+    productCategory,
+  ]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {
@@ -388,9 +419,20 @@ function DisplayResource<Doc>({
       });
       openSubmitSuccessNotificationModal();
 
+      const query = buildQueryString({
+        isDisplayProductsDocs,
+        limitPerPage,
+        newQueryFlag,
+        pageQueryString,
+        productCategory,
+        queryBuilderString,
+        totalDocuments,
+      });
+
       const url: URL = urlBuilder({
         path: `${resourceUrlPaths.manager}/${requestStatus.id}`,
-        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&projection=-action&projection=-category`,
+        // query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&projection=-action&projection=-category`,
+        query,
       });
 
       const resourceBody = Object.create(null);
@@ -869,6 +911,7 @@ function DisplayResource<Doc>({
       });
     },
     value: limitPerPage,
+    width: 150,
   };
 
   const createdLimitPerPageSelectInput = returnAccessibleSelectInputElements([
@@ -888,7 +931,23 @@ function DisplayResource<Doc>({
       ? (width - 225) * 0.8
       : 900 - 40;
 
-  const displayLimitPerPage = (
+  // product category select input
+  const productCategorySelectInput = returnAccessibleSelectInputElements([
+    {
+      data: PRODUCT_CATEGORIES,
+      description: 'Select product category',
+      disabled: resourceData.length === 0,
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        displayResourceDispatch({
+          type: displayResourceAction.setProductCategory,
+          payload: event.currentTarget.value as ProductCategory,
+        });
+      },
+      value: productCategory,
+    },
+  ]);
+
+  const displayLimitPerPageAndProductCategory = (
     <Group
       w={sectionWidth}
       style={{
@@ -897,9 +956,18 @@ function DisplayResource<Doc>({
       }}
       spacing={rowGap}
       p={padding}
+      position="apart"
     >
-      <Title order={5}>Limit per page</Title>
-      {createdLimitPerPageSelectInput}
+      <Group position="center" align="center">
+        <Title order={5}>Limit per page</Title>
+        {createdLimitPerPageSelectInput}
+      </Group>
+      {isDisplayProductsDocs ? (
+        <Group position="center" align="center">
+          <Title order={5}>Product category</Title>
+          {productCategorySelectInput}
+        </Group>
+      ) : null}
     </Group>
   );
 
@@ -921,18 +989,29 @@ function DisplayResource<Doc>({
   );
 
   // prevent display of option to groupBy/projection exclusion of username field if the resource is anonymousRequest
-
   const filteredComponentQueryData =
     requestBodyHeading === 'anonymousRequest'
       ? componentQueryData?.filter((obj) => obj.value !== 'username')
       : componentQueryData;
+
+  // prevents display of all Product model fields and only displays the fields for the selected product category
+  const productCategoryComponentQueryData =
+    returnProductCategoryComponentQueryData({
+      componentQueryData: filteredComponentQueryData,
+      productCategory,
+      productCategoryFieldsObj: PRODUCT_CATEGORY_FIELDS_OBJ,
+    });
 
   const displayQueryBuilder = (
     <QueryBuilder
       setQueryBuilderString={displayResourceAction.setQueryBuilderString}
       queryBuilderStringDispatch={displayResourceDispatch}
       queryValuesArrayDispatch={displayResourceDispatch}
-      componentQueryData={filteredComponentQueryData}
+      componentQueryData={
+        isDisplayProductsDocs
+          ? productCategoryComponentQueryData
+          : filteredComponentQueryData
+      }
       collectionName={splitCamelCase(requestBodyHeading)}
     />
   );
@@ -991,7 +1070,7 @@ function DisplayResource<Doc>({
 
       {displayQueryBuilder}
 
-      {displayLimitPerPage}
+      {displayLimitPerPageAndProductCategory}
 
       {displayResource}
 

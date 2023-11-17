@@ -6,14 +6,16 @@ import {
   RequestStatus,
   ResourceRoutePaths,
 } from '../../types';
+import { ProductCategory } from '../dashboard/types';
 import { ComponentQueryData } from '../queryBuilder';
 
-type DisplayResourceProps<Doc> = {
+type DisplayResourceProps = {
   componentQueryData: ComponentQueryData[];
   createResourcePath: string;
   fileUploadFieldName?: string;
   fileUploadIdFieldName?: string;
   isDisplayFilesOnly?: boolean;
+  isDisplayProductsDocs?: boolean;
   isFileUploadsWithResource?: boolean;
   requestBodyHeading: string;
   resourceUrlPaths: {
@@ -28,6 +30,7 @@ type DisplayResourceState<Doc> = {
   resourceData: QueryResponseData<Doc>[];
   pages: number;
   totalDocuments: number;
+  productCategory: ProductCategory;
 
   queryValuesArray: string[]; // values from queryBuilder are passed down to DisplayQueryDesktop and DisplayQueryMobile to highlight the query values in the table
   newQueryFlag: boolean;
@@ -77,6 +80,7 @@ type DisplayResourceAction = {
   updateResourceData: 'updateResourceData';
   setPages: 'setPages';
   setTotalDocuments: 'setTotalDocuments';
+  setProductCategory: 'setProductCategory';
 
   setQueryValuesArray: 'setQueryValuesArray';
   setNewQueryFlag: 'setNewQueryFlag';
@@ -165,6 +169,10 @@ type DisplayResourceDispatch<Doc> =
   | {
       type: DisplayResourceAction['setFileUploads'];
       payload: Array<{ [key: string]: FileUploadDocument[] }>;
+    }
+  | {
+      type: DisplayResourceAction['setProductCategory'];
+      payload: ProductCategory;
     };
 
 type DisplayResourceReducer = <Doc>(

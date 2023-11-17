@@ -9,6 +9,7 @@ const displayResourceAction: DisplayResourceAction = {
   updateResourceData: 'updateResourceData',
   setPages: 'setPages',
   setTotalDocuments: 'setTotalDocuments',
+  setProductCategory: 'setProductCategory',
 
   setQueryValuesArray: 'setQueryValuesArray',
   setNewQueryFlag: 'setNewQueryFlag',
@@ -121,6 +122,12 @@ function displayResourceReducer<Doc>(
           return state;
       }
     }
+
+    case displayResourceAction.setProductCategory:
+      return {
+        ...state,
+        productCategory: action.payload,
+      };
 
     case displayResourceAction.setNewQueryFlag:
       return {

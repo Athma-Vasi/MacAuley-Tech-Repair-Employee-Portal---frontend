@@ -721,38 +721,38 @@ function CreateProduct() {
 
           const page2SpecificationsRequestBody =
             productCategory === 'Accessories'
-              ? accessoryRequestBody
+              ? { accessory: accessoryRequestBody }
               : productCategory === 'Desktop Computers'
-              ? desktopComputerRequestBody
+              ? { desktopComputer: desktopComputerRequestBody }
               : productCategory === 'Laptops'
-              ? laptopRequestBody
+              ? { laptop: laptopRequestBody }
               : productCategory === 'Central Processing Units (CPUs)'
-              ? cpuRequestBody
+              ? { cpu: cpuRequestBody }
               : productCategory === 'Computer Cases'
-              ? caseRequestBody
+              ? { case: caseRequestBody }
               : productCategory === 'Graphics Processing Units (GPUs)'
-              ? gpuRequestBody
+              ? { gpu: gpuRequestBody }
               : productCategory === 'Headphones'
-              ? headphoneRequestBody
+              ? { headphone: headphoneRequestBody }
               : productCategory === 'Keyboards'
-              ? keyboardRequestBody
+              ? { keyboard: keyboardRequestBody }
               : productCategory === 'Memory (RAM)'
-              ? ramRequestBody
+              ? { ram: ramRequestBody }
               : productCategory === 'Mice'
-              ? mouseRequestBody
+              ? { mouse: mouseRequestBody }
               : productCategory === 'Monitors'
-              ? monitorRequestBody
+              ? { monitor: monitorRequestBody }
               : productCategory === 'Motherboards'
-              ? motherboardRequestBody
+              ? { motherboard: motherboardRequestBody }
               : productCategory === 'Power Supplies'
-              ? psuRequestBody
+              ? { psu: psuRequestBody }
               : productCategory === 'Smartphones'
-              ? smartphoneRequestBody
+              ? { smartphone: smartphoneRequestBody }
               : productCategory === 'Speakers'
-              ? speakerRequestBody
+              ? { speaker: speakerRequestBody }
               : productCategory === 'Storage'
-              ? storageRequestBody
-              : tabletRequestBody;
+              ? { storage: storageRequestBody }
+              : { tablet: tabletRequestBody };
 
           const createProductRequestBody = JSON.stringify({
             product: {
@@ -767,6 +767,8 @@ function CreateProduct() {
                 .map((item) => item?.documentId),
             },
           });
+
+          console.log('createProductRequestBody', createProductRequestBody);
 
           const createProductRequestInit: RequestInit = {
             method: 'POST',

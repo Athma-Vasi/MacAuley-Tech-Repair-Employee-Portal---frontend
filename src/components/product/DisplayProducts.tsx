@@ -27,6 +27,7 @@ function DisplayProducts() {
       isFileUploadsWithResource={true}
       resourceUrlPaths={PRODUCTS_RESOURCE_PATHS}
       requestBodyHeading="product"
+      isDisplayProductsDocs={true}
     />
   );
 
