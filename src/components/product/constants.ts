@@ -51,6 +51,25 @@ import {
 } from './create/types';
 
 /**
+ * - /^[^"'\s\\]{1,75}$/;
+ * - [^"'\s\\] matches any character except ", ', whitespace and \.
+ * - {1,75} matches the preceding token between 1 and 75 times.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * ex: 'username' or 'username123' or 'username-123' or '123-username'
+ */
+const OBJECT_KEY_REGEX = /^[^"'\s\\]{1,75}$/;
+
+/**
+ * - /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{2,2000}$/i
+ * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+ * - [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] matches any alphanumeric character or special character in the range of special characters commonly used in components, part numbers, and ID numbers.
+ * - {2,2000} ensures that the text is between 2 and 2000 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const USER_DEFINED_VALUE_REGEX =
+  /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/i;
+
+/**
  * - /^[a-zA-Z0-9- ]{2,30}$/;
  * - [a-zA-Z0-9\s-] matches any character between a-z, A-Z, 0-9, whitespace and -.
  * - {2,30} matches between 2 and 30 of the preceding token.
@@ -1230,6 +1249,7 @@ export {
   MOTHERBOARD_MEMORY_TYPE_DATA,
   MOTHERBOARD_SOCKET_REGEX,
   MOUSE_SENSOR_DATA,
+  OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
   PRODUCTS_QUERY_DATA,
@@ -1246,5 +1266,6 @@ export {
   STORAGE_INTERFACE_DATA,
   STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
+  USER_DEFINED_VALUE_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 };

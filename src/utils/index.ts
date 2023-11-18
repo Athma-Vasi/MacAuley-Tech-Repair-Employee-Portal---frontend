@@ -1244,6 +1244,75 @@ function returnMobileCameraResolutionValidationText({
     : '';
 }
 
+function returnObjectKeyValidationText({
+  content,
+  contentKind,
+  maxLength = 75,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^[^"'\s\\]{1,75}$/;
+  const objectKeyLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const objectKeyCharacterRegex = /^[^"'\s\\]+$/;
+
+  const objectKeyRegexTupleArr: [boolean, string][] = [
+    [
+      objectKeyLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      objectKeyCharacterRegex.test(content),
+      'Must not contain spaces, quotes, or backslashes.',
+    ],
+  ];
+
+  const validationText = objectKeyRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}: ${validationText}`
+    : '';
+}
+
+function returnUserDefinedValueValidationText({
+  content,
+  contentKind,
+  maxLength = 75,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/i
+  const userDefinedValueLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const userDefinedValueCharacterRegex =
+    /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/;
+
+  const userDefinedValueRegexTupleArr: [boolean, string][] = [
+    [
+      userDefinedValueLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      userDefinedValueCharacterRegex.test(content),
+      'Must not contain only whitespace.',
+    ],
+  ];
+
+  const validationText = userDefinedValueRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}: ${validationText}`
+    : '';
+}
+
 function logState({
   state,
   groupLabel = 'state',
@@ -1996,6 +2065,7 @@ export {
   returnMobileCameraResolutionValidationText,
   returnNameValidationText,
   returnNoteTextValidationText,
+  returnObjectKeyValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
   returnPrinterMakeModelValidationText,
@@ -2009,6 +2079,7 @@ export {
   returnTimeRemaining,
   returnToFixedFloat,
   returnUrlValidationText,
+  returnUserDefinedValueValidationText,
   returnUsernameRegexValidationText,
   shuffleArray,
   splitCamelCase,

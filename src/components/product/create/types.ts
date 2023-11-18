@@ -1,4 +1,4 @@
-import { Action, Currency, SetStepsInErrorPayload } from '../../../types';
+import { Action, Currency, SetStepsInErrorPayload, User } from '../../../types';
 import { ActionsDashboard } from '../../../types/actions.types';
 import { ProductCategory } from '../../dashboard/types';
 
@@ -524,6 +524,10 @@ type CreateProductState = {
   isAccessoryColorValid: boolean;
   isAccessoryColorFocused: boolean;
   accessoryInterface: PeripheralsInterface;
+  accessoryFieldsUserDefined: Map<number, [string, string]>; // Map<index, [key, value]>
+  areAccessoryFieldsUserDefinedValid: Map<number, [boolean, boolean]>; // Map<index, [isKeyValid, isValueValid]>
+  areAccessoryFieldsUserDefinedFocused: Map<number, [boolean, boolean]>; // Map<index, [isKeyFocused, isValueFocused]>
+  accessoryFieldUserDefinedCurrentIdx: number; // currently updating idx
 
   // page 3
   imgFormDataArray: FormData[];
@@ -755,6 +759,10 @@ type CreateProductAction = {
   setIsAccessoryColorValid: 'setIsAccessoryColorValid';
   setIsAccessoryColorFocused: 'setIsAccessoryColorFocused';
   setAccessoryInterface: 'setAccessoryInterface';
+  setAccessoryFieldsUserDefined: 'setAccessoryFieldsUserDefined';
+  setAreAccessoryFieldsUserDefinedValid: 'setAreAccessoryFieldsUserDefinedValid';
+  setAreAccessoryFieldsUserDefinedFocused: 'setAreAccessoryFieldsUserDefinedFocused';
+  setAccessoryFieldUserDefinedCurrentIdx: 'setAccessoryFieldUserDefinedCurrentIdx';
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray';
@@ -771,6 +779,38 @@ type CreateProductAction = {
   setIsLoading: 'setIsLoading';
   setLoadingMessage: 'setLoadingMessage';
 };
+
+type UserDefinedFieldsPayload =
+  | {
+      operation: 'add';
+      data: [string, string];
+    }
+  | {
+      operation: 'remove';
+      index: number;
+    }
+  | {
+      operation: 'update';
+      kind: 'key' | 'value';
+      index: number;
+      data: string;
+    };
+
+type UserDefinedFieldsValidFocusedPayload =
+  | {
+      operation: 'add';
+      data: [boolean, boolean];
+    }
+  | {
+      operation: 'remove';
+      index: number;
+    }
+  | {
+      operation: 'update';
+      kind: 'key' | 'value';
+      index: number;
+      data: boolean;
+    };
 
 type CreateProductDispatch =
   | {
@@ -1411,6 +1451,20 @@ type CreateProductDispatch =
   | {
       type: CreateProductAction['setAccessoryInterface'];
       payload: PeripheralsInterface;
+    }
+  | {
+      type: CreateProductAction['setAccessoryFieldsUserDefined'];
+      payload: UserDefinedFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreAccessoryFieldsUserDefinedValid']
+        | CreateProductAction['setAreAccessoryFieldsUserDefinedFocused'];
+      payload: UserDefinedFieldsValidFocusedPayload;
+    }
+  | {
+      type: CreateProductAction['setAccessoryFieldUserDefinedCurrentIdx'];
+      payload: number;
     }
   // page 3
   | {

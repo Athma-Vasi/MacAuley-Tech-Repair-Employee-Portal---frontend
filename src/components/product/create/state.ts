@@ -218,6 +218,10 @@ const initialCreateProductState: CreateProductState = {
   accessoryType: '',
   isAccessoryTypeFocused: false,
   isAccessoryTypeValid: false,
+  accessoryFieldsUserDefined: new Map<number, [string, string]>(),
+  areAccessoryFieldsUserDefinedFocused: new Map<number, [boolean, boolean]>(),
+  areAccessoryFieldsUserDefinedValid: new Map<number, [boolean, boolean]>(),
+  accessoryFieldUserDefinedCurrentIdx: 0,
 
   // page 3
   imgFormDataArray: [],
@@ -451,6 +455,13 @@ const createProductAction: CreateProductAction = {
   setIsAccessoryColorValid: 'setIsAccessoryColorValid',
   setIsAccessoryColorFocused: 'setIsAccessoryColorFocused',
   setAccessoryInterface: 'setAccessoryInterface',
+  setAccessoryFieldsUserDefined: 'setAccessoryFieldsUserDefined',
+  setAreAccessoryFieldsUserDefinedFocused:
+    'setAreAccessoryFieldsUserDefinedFocused',
+  setAreAccessoryFieldsUserDefinedValid:
+    'setAreAccessoryFieldsUserDefinedValid',
+  setAccessoryFieldUserDefinedCurrentIdx:
+    'setAccessoryFieldUserDefinedCurrentIdx',
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray',
@@ -1374,6 +1385,252 @@ function createProductReducer(
       return {
         ...state,
         accessoryInterface: action.payload,
+      };
+    case createProductAction.setAccessoryFieldsUserDefined: {
+      const { operation } = action.payload;
+
+      switch (operation) {
+        case 'add': {
+          const accessoryFieldsUserDefinedClone = structuredClone(
+            state.accessoryFieldsUserDefined
+          );
+
+          const { data } = action.payload;
+          const prevSize = accessoryFieldsUserDefinedClone.size;
+          accessoryFieldsUserDefinedClone.set(prevSize, data);
+
+          return {
+            ...state,
+            accessoryFieldsUserDefined: accessoryFieldsUserDefinedClone,
+          };
+        }
+        case 'remove': {
+          const accessoryFieldsUserDefinedClone = structuredClone(
+            state.accessoryFieldsUserDefined
+          );
+
+          const { index } = action.payload;
+          accessoryFieldsUserDefinedClone.delete(index);
+
+          // resets the indices because the indices are used as keys
+          const filteredAccessoryFieldsUserDefined = new Map<
+            number,
+            [string, string]
+          >();
+          Array.from(accessoryFieldsUserDefinedClone).forEach(
+            (mapIdxKeyVal, keyValIdx) => {
+              const [_mapIdx, keyVal] = mapIdxKeyVal as [
+                number,
+                [string, string]
+              ];
+
+              filteredAccessoryFieldsUserDefined.set(keyValIdx, keyVal);
+            }
+          );
+
+          return {
+            ...state,
+            accessoryFieldsUserDefined: filteredAccessoryFieldsUserDefined,
+          };
+        }
+        case 'update': {
+          const accessoryFieldsUserDefinedClone = structuredClone(
+            state.accessoryFieldsUserDefined
+          );
+
+          const { data, index, kind } = action.payload;
+          const prevKeyVal = accessoryFieldsUserDefinedClone.get(index);
+
+          if (!prevKeyVal) {
+            return state;
+          }
+
+          const [prevKey, prevValue] = prevKeyVal;
+          kind === 'key'
+            ? accessoryFieldsUserDefinedClone.set(index, [data, prevValue])
+            : accessoryFieldsUserDefinedClone.set(index, [prevKey, data]);
+
+          return {
+            ...state,
+            accessoryFieldsUserDefined: accessoryFieldsUserDefinedClone,
+          };
+        }
+        default:
+          return state;
+      }
+    }
+    case createProductAction.setAreAccessoryFieldsUserDefinedFocused: {
+      const { operation } = action.payload;
+
+      switch (operation) {
+        case 'add': {
+          const areAccessoryFieldsUserDefinedFocusedClone = structuredClone(
+            state.areAccessoryFieldsUserDefinedFocused
+          );
+
+          const { data } = action.payload;
+          const prevSize = areAccessoryFieldsUserDefinedFocusedClone.size;
+          areAccessoryFieldsUserDefinedFocusedClone.set(prevSize, data);
+
+          return {
+            ...state,
+            areAccessoryFieldsUserDefinedFocused:
+              areAccessoryFieldsUserDefinedFocusedClone,
+          };
+        }
+        case 'remove': {
+          const areAccessoryFieldsUserDefinedFocusedClone = structuredClone(
+            state.areAccessoryFieldsUserDefinedFocused
+          );
+
+          const { index } = action.payload;
+          areAccessoryFieldsUserDefinedFocusedClone.delete(index);
+
+          // resets the indices because the indices are used as keys
+          const filteredAreAccessoryFieldsUserDefinedFocused = new Map<
+            number,
+            [boolean, boolean]
+          >();
+          Array.from(areAccessoryFieldsUserDefinedFocusedClone).forEach(
+            (mapIdxKeyVal, keyValIdx) => {
+              const [_mapIdx, keyVal] = mapIdxKeyVal as [
+                number,
+                [boolean, boolean]
+              ];
+
+              filteredAreAccessoryFieldsUserDefinedFocused.set(
+                keyValIdx,
+                keyVal
+              );
+            }
+          );
+
+          return {
+            ...state,
+            areAccessoryFieldsUserDefinedFocused:
+              filteredAreAccessoryFieldsUserDefinedFocused,
+          };
+        }
+        case 'update': {
+          const areAccessoryFieldsUserDefinedFocusedClone = structuredClone(
+            state.areAccessoryFieldsUserDefinedFocused
+          );
+
+          const { data, index, kind } = action.payload;
+          const prevKeyVal =
+            areAccessoryFieldsUserDefinedFocusedClone.get(index);
+
+          if (!prevKeyVal) {
+            return state;
+          }
+
+          const [prevKey, prevValue] = prevKeyVal;
+          kind === 'key'
+            ? areAccessoryFieldsUserDefinedFocusedClone.set(index, [
+                data,
+                prevValue,
+              ])
+            : areAccessoryFieldsUserDefinedFocusedClone.set(index, [
+                prevKey,
+                data,
+              ]);
+
+          return {
+            ...state,
+            areAccessoryFieldsUserDefinedFocused:
+              areAccessoryFieldsUserDefinedFocusedClone,
+          };
+        }
+        default:
+          return state;
+      }
+    }
+    case createProductAction.setAreAccessoryFieldsUserDefinedValid: {
+      const { operation } = action.payload;
+
+      switch (operation) {
+        case 'add': {
+          const areAccessoryFieldsUserDefinedValidClone = structuredClone(
+            state.areAccessoryFieldsUserDefinedValid
+          );
+
+          const { data } = action.payload;
+          const prevSize = areAccessoryFieldsUserDefinedValidClone.size;
+          areAccessoryFieldsUserDefinedValidClone.set(prevSize, data);
+
+          return {
+            ...state,
+            areAccessoryFieldsUserDefinedValid:
+              areAccessoryFieldsUserDefinedValidClone,
+          };
+        }
+        case 'remove': {
+          const areAccessoryFieldsUserDefinedValidClone = structuredClone(
+            state.areAccessoryFieldsUserDefinedValid
+          );
+
+          const { index } = action.payload;
+          areAccessoryFieldsUserDefinedValidClone.delete(index);
+
+          // resets the indices because the indices are used as keys
+          const filteredAreAccessoryFieldsUserDefinedValid = new Map<
+            number,
+            [boolean, boolean]
+          >();
+          Array.from(areAccessoryFieldsUserDefinedValidClone).forEach(
+            (mapIdxKeyVal, keyValIdx) => {
+              const [_mapIdx, keyVal] = mapIdxKeyVal as [
+                number,
+                [boolean, boolean]
+              ];
+
+              filteredAreAccessoryFieldsUserDefinedValid.set(keyValIdx, keyVal);
+            }
+          );
+
+          return {
+            ...state,
+            areAccessoryFieldsUserDefinedValid:
+              filteredAreAccessoryFieldsUserDefinedValid,
+          };
+        }
+        case 'update': {
+          const areAccessoryFieldsUserDefinedValidClone = structuredClone(
+            state.areAccessoryFieldsUserDefinedValid
+          );
+
+          const { data, index, kind } = action.payload;
+          const prevKeyVal = areAccessoryFieldsUserDefinedValidClone.get(index);
+
+          if (!prevKeyVal) {
+            return state;
+          }
+
+          const [prevKey, prevValue] = prevKeyVal;
+          kind === 'key'
+            ? areAccessoryFieldsUserDefinedValidClone.set(index, [
+                data,
+                prevValue,
+              ])
+            : areAccessoryFieldsUserDefinedValidClone.set(index, [
+                prevKey,
+                data,
+              ]);
+
+          return {
+            ...state,
+            areAccessoryFieldsUserDefinedValid:
+              areAccessoryFieldsUserDefinedValidClone,
+          };
+        }
+        default:
+          return state;
+      }
+    }
+    case createProductAction.setAccessoryFieldUserDefinedCurrentIdx:
+      return {
+        ...state,
+        accessoryFieldUserDefinedCurrentIdx: action.payload,
       };
 
     // page 3

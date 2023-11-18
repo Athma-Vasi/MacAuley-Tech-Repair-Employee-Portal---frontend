@@ -1,9 +1,9 @@
-import { Group, NumberInput, Title, Tooltip } from '@mantine/core';
+import { Group, NumberInput, Stack, Title, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
-import { TbUpload } from 'react-icons/tb';
+import { TbPlus, TbTrash, TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
 import {
@@ -15,6 +15,7 @@ import { globalAction } from '../../../context/globalProvider/state';
 import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
+  AccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -30,9 +31,12 @@ import {
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnMobileCameraResolutionValidationText,
+  returnObjectKeyValidationText,
   returnRamTimingValidationText,
   returnSerialIdValidationText,
   returnSocketChipsetValidationText,
+  returnThemeColors,
+  returnUserDefinedValueValidationText,
   urlBuilder,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
@@ -43,7 +47,11 @@ import FormReviewPage, {
 } from '../../formReviewPage/FormReviewPage';
 import { ImageUpload } from '../../imageUpload';
 import { NotificationModal } from '../../notificationModal';
-import { FormLayoutWrapper, StepperWrapper } from '../../wrappers';
+import {
+  AccessibleTextAreaInputCreatorInfo,
+  FormLayoutWrapper,
+  StepperWrapper,
+} from '../../wrappers';
 import {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -73,6 +81,7 @@ import {
   MOTHERBOARD_MEMORY_TYPE_DATA,
   MOTHERBOARD_SOCKET_REGEX,
   MOUSE_SENSOR_DATA,
+  OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
   PSU_EFFICIENCY_RATING_DATA,
@@ -87,6 +96,7 @@ import {
   STORAGE_INTERFACE_DATA,
   STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
+  USER_DEFINED_VALUE_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 } from '../constants';
 import {
@@ -122,6 +132,7 @@ import {
   StorageType,
   WeightUnit,
 } from './types';
+import { COLORS_SWATCHES } from '../../../constants/data';
 
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
@@ -131,7 +142,7 @@ function CreateProduct() {
 
   const {
     globalDispatch,
-    globalState: { padding },
+    globalState: { padding, themeObject },
   } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
@@ -362,6 +373,10 @@ function CreateProduct() {
     isAccessoryColorFocused,
     isAccessoryColorValid,
     accessoryInterface,
+    accessoryFieldsUserDefined,
+    areAccessoryFieldsUserDefinedFocused,
+    areAccessoryFieldsUserDefinedValid,
+    accessoryFieldUserDefinedCurrentIdx,
 
     // page 3
     imgFormDataArray,
@@ -385,6 +400,10 @@ function CreateProduct() {
     const controller = new AbortController();
 
     async function imagesUploadRequest() {
+      if (imgFormDataArray.length === 0) {
+        return;
+      }
+
       createProductDispatch({
         type: createProductAction.setIsSubmitting,
         payload: true,
@@ -395,10 +414,6 @@ function CreateProduct() {
       });
       openSubmitSuccessNotificationModal();
 
-      if (imgFormDataArray.length === 0) {
-        return;
-      }
-
       await Promise.all(
         imgFormDataArray.map(async (formData) => {
           const fileUploadUrl: URL = urlBuilder({
@@ -408,7 +423,7 @@ function CreateProduct() {
           const imgUpLoadRequestInit: RequestInit = {
             method: 'POST',
             headers: {
-              Authorization: '',
+              Authorization: '', // will be added in wrappedFetch
             },
             body: formData,
           };
@@ -430,7 +445,10 @@ function CreateProduct() {
               return;
             }
             if (!imgUploadResponse.ok) {
-              throw new Error(imgUploadResponseData.message);
+              throw new Error(
+                imgUploadResponseData.message ??
+                  'File uploads failed. Please try again.'
+              );
             }
 
             createProductDispatch({
@@ -883,6 +901,7 @@ function CreateProduct() {
     logState({
       state: createProductState,
       groupLabel: 'Create Product State',
+      isStringify: true,
     });
   }, [createProductState]);
 
@@ -1152,7 +1171,44 @@ function CreateProduct() {
     });
   }, [tabletColor]);
 
-  // validate accessory type on every change
+  // accessory
+
+  // accessory -> validate user defined accessory fields  on every change
+  useEffect(() => {
+    const currentlyUpdatingAccessoryFieldUserDefined =
+      accessoryFieldsUserDefined.get(accessoryFieldUserDefinedCurrentIdx);
+    if (!currentlyUpdatingAccessoryFieldUserDefined) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingAccessoryFieldUserDefined;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+
+    console.log('isKeyValid', isKeyValid);
+    createProductDispatch({
+      type: createProductAction.setAreAccessoryFieldsUserDefinedValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: accessoryFieldUserDefinedCurrentIdx,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreAccessoryFieldsUserDefinedValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: accessoryFieldUserDefinedCurrentIdx,
+        kind: 'value',
+      },
+    });
+  }, [accessoryFieldUserDefinedCurrentIdx, accessoryFieldsUserDefined]);
+
+  // accessory -> validate accessory type on every change
   useEffect(() => {
     const isValid = ACCESSORY_TYPE_REGEX.test(accessoryType);
 
@@ -1449,6 +1505,10 @@ function CreateProduct() {
   // ╭──────────────────────────────────────────────────────────────╮
   // │ Created Inputs                                               │
   // ╰──────────────────────────────────────────────────────────────╯
+
+  const {
+    appThemeColors: { borderColor },
+  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   // page 1
 
@@ -4932,6 +4992,293 @@ function CreateProduct() {
       },
     ]);
 
+  // page 2 -> specifications -> accessory -> add new field button
+  const [createdAddAccessoryFieldsUserDefinedButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new custom field and value',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setAccessoryFieldsUserDefined,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreAccessoryFieldsUserDefinedValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> accessory -> accessory fields user defined
+
+  // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field name
+  const accessoryFieldsUserDefinedKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(accessoryFieldsUserDefined).map((keyFieldValue, idx) => {
+    const [_mapKey, [field, _value]] = keyFieldValue;
+
+    const [
+      accessoryFieldsUserDefinedKeysInputErrorText,
+      accessoryFieldsUserDefinedKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `custom field name ${idx + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areAccessoryFieldsUserDefinedFocused.get(idx)?.[0] ?? false,
+      isValidInputText:
+        areAccessoryFieldsUserDefinedValid.get(idx)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `custom field name ${idx + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      accessoryFieldsUserDefinedKeysInputErrorText,
+      accessoryFieldsUserDefinedKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field value
+  const accessoryFieldsUserDefinedValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(accessoryFieldsUserDefined).map((keyFieldValue, idx) => {
+    const [_mapKey, [_field, value]] = keyFieldValue;
+
+    const [
+      accessoryFieldsUserDefinedValuesInputErrorText,
+      accessoryFieldsUserDefinedValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `custom field value ${idx + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areAccessoryFieldsUserDefinedFocused.get(idx)?.[1] ?? false,
+      isValidInputText:
+        areAccessoryFieldsUserDefinedValid.get(idx)?.[1] ?? false,
+      regexValidationText: returnUserDefinedValueValidationText({
+        content: value,
+        contentKind: `custom field value ${idx + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      accessoryFieldsUserDefinedValuesInputErrorText,
+      accessoryFieldsUserDefinedValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> accessory -> accessory fields user defined -> text area input element creator
+  const createdAccessoryFieldsUserDefinedTextInputElements = Array.from(
+    accessoryFieldsUserDefined
+  ).map((keyFieldValue, idx) => {
+    const [_mapKey, [field, value]] = keyFieldValue;
+
+    const accessoryFieldsUserDefinedKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: accessoryFieldsUserDefinedKeysErrorValidTextElements[idx][0],
+          valid: accessoryFieldsUserDefinedKeysErrorValidTextElements[idx][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areAccessoryFieldsUserDefinedValid.get(idx)?.[0] ?? false,
+        label: `Custom field name ${idx + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: idx,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setAccessoryFieldsUserDefined,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: idx,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAccessoryFieldUserDefinedCurrentIdx,
+            payload: idx,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: idx,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter custom field name',
+        required: true,
+        semanticName: `custom field name ${idx + 1}`,
+      };
+
+    const accessoryFieldsUserDefinedValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: accessoryFieldsUserDefinedValuesErrorValidTextElements[idx][0],
+          valid: accessoryFieldsUserDefinedValuesErrorValidTextElements[idx][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areAccessoryFieldsUserDefinedValid.get(idx)?.[1] ?? false,
+        label: `Custom field value ${idx + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: idx,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setAccessoryFieldsUserDefined,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: idx,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAccessoryFieldUserDefinedCurrentIdx,
+            payload: idx,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: idx,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter custom field value',
+        required: true,
+        semanticName: `custom field value ${idx + 1}`,
+      };
+
+    const [
+      createdAccessoryFieldsUserDefinedKeysTextAreaInput,
+      createdAccessoryFieldsUserDefinedValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      accessoryFieldsUserDefinedKeysTextInputCreatorInfo,
+      accessoryFieldsUserDefinedValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setAccessoryFieldsUserDefined,
+            payload: {
+              operation: 'remove',
+              index: idx,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            payload: {
+              operation: 'remove',
+              index: idx,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreAccessoryFieldsUserDefinedValid,
+            payload: {
+              operation: 'remove',
+              index: idx,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAccessoryFieldUserDefinedCurrentIdx,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete custom field ${idx + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete custom field ${idx + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`accessoryFieldsUserDefined-${idx}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="right">{displayDeleteButton}</Group>
+        <Group position="apart">
+          {createdAccessoryFieldsUserDefinedKeysTextAreaInput}
+          {createdAccessoryFieldsUserDefinedValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 4
 
   // page 4 -> submit button
@@ -5226,14 +5573,24 @@ function CreateProduct() {
   );
 
   // input display -> page 2 -> specifications -> accessory
+
+  // input display -> page 2 -> specifications -> accessory -> add new button
+  const displayAccessoryFieldsUserDefinedButton = (
+    <Tooltip label="Add new accessory field and value">
+      <Group>{createdAddAccessoryFieldsUserDefinedButton}</Group>
+    </Tooltip>
+  );
+
   const displayAccessorySpecificationsInputs = (
     <FormLayoutWrapper>
-      <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Accessory Specifications</Title>
+        {displayAccessoryFieldsUserDefinedButton}
       </Group>
       {createdAccessoryTypeTextInput}
       {createdAccessoryColorTextInput}
       {createdAccessoryInterfaceSelectInput}
+      {createdAccessoryFieldsUserDefinedTextInputElements}
     </FormLayoutWrapper>
   );
 
