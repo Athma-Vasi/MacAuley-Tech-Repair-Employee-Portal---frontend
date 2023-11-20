@@ -108,15 +108,29 @@ const initialCreateProductState: CreateProductState = {
   isMotherboardChipsetFocused: false,
   isMotherboardChipsetValid: false,
   motherboardFormFactor: 'ATX',
-  motherboardMemoryMaxCapacity: 0,
+  motherboardMemoryMaxCapacity: '',
+  isMotherboardMemoryMaxCapacityFocused: false,
+  isMotherboardMemoryMaxCapacityValid: false,
   motherboardMemoryMaxCapacityUnit: 'GB',
-  motherboardMemorySlots: 0,
+  motherboardMemorySlots: '',
+  isMotherboardMemorySlotsFocused: false,
+  isMotherboardMemorySlotsValid: false,
   motherboardMemoryType: 'DDR4',
-  motherboardSataPorts: 0,
-  motherboardM2Slots: 0,
-  motherboardPcie3Slots: 0,
-  motherboardPcie4Slots: 0,
-  motherboardPcie5Slots: 0,
+  motherboardSataPorts: '',
+  isMotherboardSataPortsFocused: false,
+  isMotherboardSataPortsValid: false,
+  motherboardM2Slots: '',
+  isMotherboardM2SlotsFocused: false,
+  isMotherboardM2SlotsValid: false,
+  motherboardPcie3Slots: '',
+  isMotherboardPcie3SlotsFocused: false,
+  isMotherboardPcie3SlotsValid: false,
+  motherboardPcie4Slots: '',
+  isMotherboardPcie4SlotsFocused: false,
+  isMotherboardPcie4SlotsValid: false,
+  motherboardPcie5Slots: '',
+  isMotherboardPcie5SlotsFocused: false,
+  isMotherboardPcie5SlotsValid: false,
 
   // page 2 -> specifications -> ram
   ramDataRate: 0, // MHz
@@ -369,21 +383,37 @@ const createProductAction: CreateProductAction = {
 
   // page 2 -> specifications -> motherboard
   setMotherboardSocket: 'setMotherboardSocket',
-  setIsMotherboardSocketFocused: 'setIsMotherboardSocketFocused',
   setIsMotherboardSocketValid: 'setIsMotherboardSocketValid',
+  setIsMotherboardSocketFocused: 'setIsMotherboardSocketFocused',
   setMotherboardChipset: 'setMotherboardChipset',
-  setIsMotherboardChipsetFocused: 'setIsMotherboardChipsetFocused',
   setIsMotherboardChipsetValid: 'setIsMotherboardChipsetValid',
+  setIsMotherboardChipsetFocused: 'setIsMotherboardChipsetFocused',
   setMotherboardFormFactor: 'setMotherboardFormFactor',
   setMotherboardMemoryMaxCapacity: 'setMotherboardMemoryMaxCapacity',
+  setIsMotherboardMemoryMaxCapacityValid:
+    'setIsMotherboardMemoryMaxCapacityValid',
+  setIsMotherboardMemoryMaxCapacityFocused:
+    'setIsMotherboardMemoryMaxCapacityFocused',
   setMotherboardMemoryMaxCapacityUnit: 'setMotherboardMemoryMaxCapacityUnit',
   setMotherboardMemorySlots: 'setMotherboardMemorySlots',
+  setIsMotherboardMemorySlotsValid: 'setIsMotherboardMemorySlotsValid',
+  setIsMotherboardMemorySlotsFocused: 'setIsMotherboardMemorySlotsFocused',
   setMotherboardMemoryType: 'setMotherboardMemoryType',
   setMotherboardSataPorts: 'setMotherboardSataPorts',
+  setIsMotherboardSataPortsValid: 'setIsMotherboardSataPortsValid',
+  setIsMotherboardSataPortsFocused: 'setIsMotherboardSataPortsFocused',
   setMotherboardM2Slots: 'setMotherboardM2Slots',
+  setIsMotherboardM2SlotsValid: 'setIsMotherboardM2SlotsValid',
+  setIsMotherboardM2SlotsFocused: 'setIsMotherboardM2SlotsFocused',
   setMotherboardPcie3Slots: 'setMotherboardPcie3Slots',
+  setIsMotherboardPcie3SlotsValid: 'setIsMotherboardPcie3SlotsValid',
+  setIsMotherboardPcie3SlotsFocused: 'setIsMotherboardPcie3SlotsFocused',
   setMotherboardPcie4Slots: 'setMotherboardPcie4Slots',
+  setIsMotherboardPcie4SlotsValid: 'setIsMotherboardPcie4SlotsValid',
+  setIsMotherboardPcie4SlotsFocused: 'setIsMotherboardPcie4SlotsFocused',
   setMotherboardPcie5Slots: 'setMotherboardPcie5Slots',
+  setIsMotherboardPcie5SlotsValid: 'setIsMotherboardPcie5SlotsValid',
+  setIsMotherboardPcie5SlotsFocused: 'setIsMotherboardPcie5SlotsFocused',
 
   // page 2 -> specifications -> ram
   setRamDataRate: 'setRamDataRate',
@@ -991,6 +1021,8 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> motherboard
+
+    // page 2 -> specifications -> motherboard -> socket
     case createProductAction.setMotherboardSocket:
       return {
         ...state,
@@ -1006,6 +1038,8 @@ function createProductReducer(
         ...state,
         isMotherboardSocketValid: action.payload,
       };
+
+    // page 2 -> specifications -> motherboard -> chipset
     case createProductAction.setMotherboardChipset:
       return {
         ...state,
@@ -1021,55 +1055,143 @@ function createProductReducer(
         ...state,
         isMotherboardChipsetValid: action.payload,
       };
+
+    // page 2 -> specifications -> motherboard -> form factor
     case createProductAction.setMotherboardFormFactor:
       return {
         ...state,
         motherboardFormFactor: action.payload,
       };
+
+    // page 2 -> specifications -> motherboard -> memory max capacity
     case createProductAction.setMotherboardMemoryMaxCapacity:
       return {
         ...state,
         motherboardMemoryMaxCapacity: action.payload,
+      };
+    case createProductAction.setIsMotherboardMemoryMaxCapacityFocused:
+      return {
+        ...state,
+        isMotherboardMemoryMaxCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardMemoryMaxCapacityValid:
+      return {
+        ...state,
+        isMotherboardMemoryMaxCapacityValid: action.payload,
       };
     case createProductAction.setMotherboardMemoryMaxCapacityUnit:
       return {
         ...state,
         motherboardMemoryMaxCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> motherboard -> memory slots
     case createProductAction.setMotherboardMemorySlots:
       return {
         ...state,
         motherboardMemorySlots: action.payload,
       };
+    case createProductAction.setIsMotherboardMemorySlotsFocused:
+      return {
+        ...state,
+        isMotherboardMemorySlotsFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardMemorySlotsValid:
+      return {
+        ...state,
+        isMotherboardMemorySlotsValid: action.payload,
+      };
+
+    // page 2 -> specifications -> motherboard -> memory type
     case createProductAction.setMotherboardMemoryType:
       return {
         ...state,
         motherboardMemoryType: action.payload,
       };
+
+    // page 2 -> specifications -> motherboard -> sata ports
     case createProductAction.setMotherboardSataPorts:
       return {
         ...state,
         motherboardSataPorts: action.payload,
       };
+    case createProductAction.setIsMotherboardSataPortsFocused:
+      return {
+        ...state,
+        isMotherboardSataPortsFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardSataPortsValid:
+      return {
+        ...state,
+        isMotherboardSataPortsValid: action.payload,
+      };
+
+    // page 2 -> specifications -> motherboard -> m2 slots
     case createProductAction.setMotherboardM2Slots:
       return {
         ...state,
         motherboardM2Slots: action.payload,
       };
+    case createProductAction.setIsMotherboardM2SlotsFocused:
+      return {
+        ...state,
+        isMotherboardM2SlotsFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardM2SlotsValid:
+      return {
+        ...state,
+        isMotherboardM2SlotsValid: action.payload,
+      };
+
+    // page 2 -> specifications -> motherboard -> pcie3 slots
     case createProductAction.setMotherboardPcie3Slots:
       return {
         ...state,
         motherboardPcie3Slots: action.payload,
       };
+    case createProductAction.setIsMotherboardPcie3SlotsFocused:
+      return {
+        ...state,
+        isMotherboardPcie3SlotsFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardPcie3SlotsValid:
+      return {
+        ...state,
+        isMotherboardPcie3SlotsValid: action.payload,
+      };
+
+    // page 2 -> specifications -> motherboard -> pcie4 slots
     case createProductAction.setMotherboardPcie4Slots:
       return {
         ...state,
         motherboardPcie4Slots: action.payload,
       };
+    case createProductAction.setIsMotherboardPcie4SlotsFocused:
+      return {
+        ...state,
+        isMotherboardPcie4SlotsFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardPcie4SlotsValid:
+      return {
+        ...state,
+        isMotherboardPcie4SlotsValid: action.payload,
+      };
+
+    // page 2 -> specifications -> motherboard -> pcie5 slots
     case createProductAction.setMotherboardPcie5Slots:
       return {
         ...state,
         motherboardPcie5Slots: action.payload,
+      };
+    case createProductAction.setIsMotherboardPcie5SlotsFocused:
+      return {
+        ...state,
+        isMotherboardPcie5SlotsFocused: action.payload,
+      };
+    case createProductAction.setIsMotherboardPcie5SlotsValid:
+      return {
+        ...state,
+        isMotherboardPcie5SlotsValid: action.payload,
       };
 
     // page 2 -> specifications -> ram

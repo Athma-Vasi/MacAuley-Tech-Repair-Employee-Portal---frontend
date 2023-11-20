@@ -430,15 +430,29 @@ type CreateProductState = {
   isMotherboardChipsetValid: boolean;
   isMotherboardChipsetFocused: boolean;
   motherboardFormFactor: MotherboardFormFactor;
-  motherboardMemoryMaxCapacity: number;
+  motherboardMemoryMaxCapacity: string;
+  isMotherboardMemoryMaxCapacityValid: boolean;
+  isMotherboardMemoryMaxCapacityFocused: boolean;
   motherboardMemoryMaxCapacityUnit: MemoryUnit;
-  motherboardMemorySlots: number;
+  motherboardMemorySlots: string;
+  isMotherboardMemorySlotsValid: boolean;
+  isMotherboardMemorySlotsFocused: boolean;
   motherboardMemoryType: MemoryType;
-  motherboardSataPorts: number;
-  motherboardM2Slots: number;
-  motherboardPcie3Slots: number;
-  motherboardPcie4Slots: number;
-  motherboardPcie5Slots: number;
+  motherboardSataPorts: string;
+  isMotherboardSataPortsValid: boolean;
+  isMotherboardSataPortsFocused: boolean;
+  motherboardM2Slots: string;
+  isMotherboardM2SlotsValid: boolean;
+  isMotherboardM2SlotsFocused: boolean;
+  motherboardPcie3Slots: string;
+  isMotherboardPcie3SlotsValid: boolean;
+  isMotherboardPcie3SlotsFocused: boolean;
+  motherboardPcie4Slots: string;
+  isMotherboardPcie4SlotsValid: boolean;
+  isMotherboardPcie4SlotsFocused: boolean;
+  motherboardPcie5Slots: string;
+  isMotherboardPcie5SlotsValid: boolean;
+  isMotherboardPcie5SlotsFocused: boolean;
 
   // page 2 -> specifications -> ram
   ramDataRate: number;
@@ -697,14 +711,28 @@ type CreateProductAction = {
   setIsMotherboardChipsetFocused: 'setIsMotherboardChipsetFocused';
   setMotherboardFormFactor: 'setMotherboardFormFactor';
   setMotherboardMemoryMaxCapacity: 'setMotherboardMemoryMaxCapacity';
+  setIsMotherboardMemoryMaxCapacityValid: 'setIsMotherboardMemoryMaxCapacityValid';
+  setIsMotherboardMemoryMaxCapacityFocused: 'setIsMotherboardMemoryMaxCapacityFocused';
   setMotherboardMemoryMaxCapacityUnit: 'setMotherboardMemoryMaxCapacityUnit';
   setMotherboardMemorySlots: 'setMotherboardMemorySlots';
+  setIsMotherboardMemorySlotsValid: 'setIsMotherboardMemorySlotsValid';
+  setIsMotherboardMemorySlotsFocused: 'setIsMotherboardMemorySlotsFocused';
   setMotherboardMemoryType: 'setMotherboardMemoryType';
   setMotherboardSataPorts: 'setMotherboardSataPorts';
+  setIsMotherboardSataPortsValid: 'setIsMotherboardSataPortsValid';
+  setIsMotherboardSataPortsFocused: 'setIsMotherboardSataPortsFocused';
   setMotherboardM2Slots: 'setMotherboardM2Slots';
+  setIsMotherboardM2SlotsValid: 'setIsMotherboardM2SlotsValid';
+  setIsMotherboardM2SlotsFocused: 'setIsMotherboardM2SlotsFocused';
   setMotherboardPcie3Slots: 'setMotherboardPcie3Slots';
+  setIsMotherboardPcie3SlotsValid: 'setIsMotherboardPcie3SlotsValid';
+  setIsMotherboardPcie3SlotsFocused: 'setIsMotherboardPcie3SlotsFocused';
   setMotherboardPcie4Slots: 'setMotherboardPcie4Slots';
+  setIsMotherboardPcie4SlotsValid: 'setIsMotherboardPcie4SlotsValid';
+  setIsMotherboardPcie4SlotsFocused: 'setIsMotherboardPcie4SlotsFocused';
   setMotherboardPcie5Slots: 'setMotherboardPcie5Slots';
+  setIsMotherboardPcie5SlotsValid: 'setIsMotherboardPcie5SlotsValid';
+  setIsMotherboardPcie5SlotsFocused: 'setIsMotherboardPcie5SlotsFocused';
 
   // page 2 -> specifications -> ram
   setRamDataRate: 'setRamDataRate';
@@ -1168,7 +1196,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setMotherboardMemoryMaxCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMotherboardMemoryMaxCapacityValid']
+        | CreateProductAction['setIsMotherboardMemoryMaxCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMotherboardMemoryMaxCapacityUnit'];
@@ -1176,7 +1210,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setMotherboardMemorySlots'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMotherboardMemorySlotsValid']
+        | CreateProductAction['setIsMotherboardMemorySlotsFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMotherboardMemoryType'];
@@ -1184,23 +1224,53 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setMotherboardSataPorts'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMotherboardSataPortsValid']
+        | CreateProductAction['setIsMotherboardSataPortsFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMotherboardM2Slots'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMotherboardM2SlotsValid']
+        | CreateProductAction['setIsMotherboardM2SlotsFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMotherboardPcie3Slots'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMotherboardPcie3SlotsValid']
+        | CreateProductAction['setIsMotherboardPcie3SlotsFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMotherboardPcie4Slots'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMotherboardPcie4SlotsValid']
+        | CreateProductAction['setIsMotherboardPcie4SlotsFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMotherboardPcie5Slots'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMotherboardPcie5SlotsValid']
+        | CreateProductAction['setIsMotherboardPcie5SlotsFocused'];
+      payload: boolean;
     }
   // specifications -> ram
   | {
