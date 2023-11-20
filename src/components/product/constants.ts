@@ -89,22 +89,25 @@ const PRODUCT_WEIGHT_REGEX = /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/;
 /**
  * - /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/
  * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - (?!^0*\.?0*$): Negative lookahead assertion to ensure that the entire string is not empty (^0*$) or consists entirely of zeroes (^0*), optionally followed by a decimal point (\.?0*$).
  * - [0-9]{1,3}: Matches one to three digits for the integral part of the length, width, or height.
  * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the length, width, or height.
  * - ^ and $ ensure that the entire string matches the regex.
  * - ex: 123.45 or 123
  */
-const PRODUCT_DIMENSIONS_REGEX = /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/;
+const PRODUCT_DIMENSIONS_REGEX =
+  /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/;
 
 /**
  * - /^(?!^$|^0*$)[0-9]{1,2}(\.[0-9]{1,2})?$/
  * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - (?!^0*\.?0*$): Negative lookahead assertion to ensure that the entire string is not empty (^0*$) or consists entirely of zeroes (^0*), optionally followed by a decimal point (\.?0*$).
  * - [0-9]{1,2}: Matches one to two digits for the integral part of the frequency.
  * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the frequency.
  * - ^ and $ ensure that the entire string matches the regex.
  * - ex: 12.34 or 12
  */
-const CPU_FREQUENCY_REGEX = /^(?!^$|^0*$)[0-9]{1}(\.[0-9]{1,2})?$/;
+const CPU_FREQUENCY_REGEX = /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1}(\.[0-9]{1,2})?$/;
 
 /**
  * -/^(?!^$|^0*$)[0-9]{1,2}$/
@@ -136,12 +139,13 @@ const LARGE_INTEGER_REGEX = /^(?!^$|^0*$)[0-9]{1,6}$/;
 /**
  * - /^(?!^$|^0*$)[0-1]{1}(\.[0-9]{1,2})?$/
  * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - (?!^0*\.?0*$): Negative lookahead assertion to ensure that the entire string is not empty (^0*$) or consists entirely of zeroes (^0*), optionally followed by a decimal point (\.?0*$).
  * - [0-1]{1}: Matches one digit between 0 and 1 for the integral part of the voltage.
  * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the voltage.
  * - ^ and $ ensure that the entire string matches the regex.
  * - ex: 0.12 or 0.1 or 0. or 0 or 1.12 or 1.1 or 1
  */
-const RAM_VOLTAGE_REGEX = /^(?!^$|^0*$)[0-1]{1}(\.[0-9]{1,2})?$/;
+const RAM_VOLTAGE_REGEX = /^(?!^$|^0*$)(?!^0*\.?0*$)[0-1]{1}(\.[0-9]{1,2})?$/;
 
 /**
  * - /^[a-zA-Z0-9- ]{2,30}$/;
@@ -792,8 +796,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'RAM Modules Capacity',
     value: 'ramModulesCapacity',
     inputKind: 'numberInput',
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'RAM Modules Capacity Unit',

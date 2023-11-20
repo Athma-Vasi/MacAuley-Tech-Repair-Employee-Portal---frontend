@@ -133,15 +133,23 @@ const initialCreateProductState: CreateProductState = {
   isMotherboardPcie5SlotsValid: false,
 
   // page 2 -> specifications -> ram
-  ramDataRate: 0, // MHz
-  ramModulesQuantity: 0,
-  ramModulesCapacity: 0,
+  ramDataRate: '', // MHz
+  isRamDataRateFocused: false,
+  isRamDataRateValid: false,
+  ramModulesQuantity: '',
+  isRamModulesQuantityFocused: false,
+  isRamModulesQuantityValid: false,
+  ramModulesCapacity: '',
+  isRamModulesCapacityFocused: false,
+  isRamModulesCapacityValid: false,
   ramModulesCapacityUnit: 'GB',
   ramType: 'DDR4',
   ramColor: '',
   isRamColorFocused: false,
   isRamColorValid: false,
-  ramVoltage: 0,
+  ramVoltage: '',
+  isRamVoltageFocused: false,
+  isRamVoltageValid: false,
   ramTiming: '',
   isRamTimingFocused: false,
   isRamTimingValid: false,
@@ -417,14 +425,22 @@ const createProductAction: CreateProductAction = {
 
   // page 2 -> specifications -> ram
   setRamDataRate: 'setRamDataRate',
+  setIsRamDataRateValid: 'setIsRamDataRateValid',
+  setIsRamDataRateFocused: 'setIsRamDataRateFocused',
   setRamModulesQuantity: 'setRamModulesQuantity',
+  setIsRamModulesQuantityValid: 'setIsRamModulesQuantityValid',
+  setIsRamModulesQuantityFocused: 'setIsRamModulesQuantityFocused',
   setRamModulesCapacity: 'setRamModulesCapacity',
+  setIsRamModulesCapacityValid: 'setIsRamModulesCapacityValid',
+  setIsRamModulesCapacityFocused: 'setIsRamModulesCapacityFocused',
   setRamModulesCapacityUnit: 'setRamModulesCapacityUnit',
   setRamType: 'setRamType',
   setRamColor: 'setRamColor',
   setIsRamColorValid: 'setIsRamColorValid',
   setIsRamColorFocused: 'setIsRamColorFocused',
   setRamVoltage: 'setRamVoltage',
+  setIsRamVoltageValid: 'setIsRamVoltageValid',
+  setIsRamVoltageFocused: 'setIsRamVoltageFocused',
   setRamTiming: 'setRamTiming',
   setIsRamTimingValid: 'setIsRamTimingValid',
   setIsRamTimingFocused: 'setIsRamTimingFocused',
@@ -1195,31 +1211,71 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> ram
+
+    // page 2 -> specifications -> ram -> data rate
     case createProductAction.setRamDataRate:
       return {
         ...state,
         ramDataRate: action.payload,
       };
+    case createProductAction.setIsRamDataRateFocused:
+      return {
+        ...state,
+        isRamDataRateFocused: action.payload,
+      };
+    case createProductAction.setIsRamDataRateValid:
+      return {
+        ...state,
+        isRamDataRateValid: action.payload,
+      };
+
+    // page 2 -> specifications -> ram -> modules quantity
     case createProductAction.setRamModulesQuantity:
       return {
         ...state,
         ramModulesQuantity: action.payload,
       };
+    case createProductAction.setIsRamModulesQuantityFocused:
+      return {
+        ...state,
+        isRamModulesQuantityFocused: action.payload,
+      };
+    case createProductAction.setIsRamModulesQuantityValid:
+      return {
+        ...state,
+        isRamModulesQuantityValid: action.payload,
+      };
+
+    // page 2 -> specifications -> ram -> modules capacity
     case createProductAction.setRamModulesCapacity:
       return {
         ...state,
         ramModulesCapacity: action.payload,
+      };
+    case createProductAction.setIsRamModulesCapacityFocused:
+      return {
+        ...state,
+        isRamModulesCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsRamModulesCapacityValid:
+      return {
+        ...state,
+        isRamModulesCapacityValid: action.payload,
       };
     case createProductAction.setRamModulesCapacityUnit:
       return {
         ...state,
         ramModulesCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> ram -> type
     case createProductAction.setRamType:
       return {
         ...state,
         ramType: action.payload,
       };
+
+    // page 2 -> specifications -> ram -> color
     case createProductAction.setRamColor:
       return {
         ...state,
@@ -1235,11 +1291,25 @@ function createProductReducer(
         ...state,
         isRamColorValid: action.payload,
       };
+
+    // page 2 -> specifications -> ram -> voltage
     case createProductAction.setRamVoltage:
       return {
         ...state,
         ramVoltage: action.payload,
       };
+    case createProductAction.setIsRamVoltageFocused:
+      return {
+        ...state,
+        isRamVoltageFocused: action.payload,
+      };
+    case createProductAction.setIsRamVoltageValid:
+      return {
+        ...state,
+        isRamVoltageValid: action.payload,
+      };
+
+    // page 2 -> specifications -> ram -> timing
     case createProductAction.setRamTiming:
       return {
         ...state,

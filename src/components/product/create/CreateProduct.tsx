@@ -45,6 +45,7 @@ import {
   returnCpuFrequencyValidationText,
   returnSmallIntegerValidationText,
   returnMediumIntegerValidationText,
+  returnRamVoltageValidationText,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
 import { PRODUCT_CATEGORIES } from '../../dashboard/constants';
@@ -111,6 +112,7 @@ import {
   CPU_FREQUENCY_REGEX,
   SMALL_INTEGER_REGEX,
   MEDIUM_INTEGER_REGEX,
+  RAM_VOLTAGE_REGEX,
 } from '../constants';
 import {
   CaseSidePanel,
@@ -301,17 +303,25 @@ function CreateProduct() {
 
     // page 2 -> specifications -> ram
     ramDataRate,
+    isRamDataRateFocused,
+    isRamDataRateValid,
     ramModulesQuantity,
+    isRamModulesQuantityFocused,
+    isRamModulesQuantityValid,
     ramModulesCapacity,
+    isRamModulesCapacityFocused,
+    isRamModulesCapacityValid,
     ramModulesCapacityUnit,
     ramType,
     ramColor,
     isRamColorFocused,
     isRamColorValid,
     ramVoltage,
+    isRamVoltageFocused,
+    isRamVoltageValid,
     ramTiming,
-    isRamTimingValid,
     isRamTimingFocused,
+    isRamTimingValid,
 
     // page 2 -> specifications -> storage
     storageType,
@@ -1309,6 +1319,46 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [motherboardPcie5Slots]);
+
+  // validate RAM data rate on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(ramDataRate);
+
+    createProductDispatch({
+      type: createProductAction.setIsRamDataRateValid,
+      payload: isValid,
+    });
+  }, [ramDataRate]);
+
+  // validate RAM modules quantity on every change
+  useEffect(() => {
+    const isValid = SMALL_INTEGER_REGEX.test(ramModulesQuantity);
+
+    createProductDispatch({
+      type: createProductAction.setIsRamModulesQuantityValid,
+      payload: isValid,
+    });
+  }, [ramModulesQuantity]);
+
+  // validate RAM modules capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(ramModulesCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsRamModulesCapacityValid,
+      payload: isValid,
+    });
+  }, [ramModulesCapacity]);
+
+  // validate RAM voltage on every change
+  useEffect(() => {
+    const isValid = RAM_VOLTAGE_REGEX.test(ramVoltage);
+
+    createProductDispatch({
+      type: createProductAction.setIsRamVoltageValid,
+      payload: isValid,
+    });
+  }, [ramVoltage]);
 
   // validate ram color variant on every change
   useEffect(() => {
@@ -3667,75 +3717,152 @@ function CreateProduct() {
 
   // page 2 -> specifications -> ram -> ram data rate
 
-  // page 2 -> specifications -> ram -> ram data rate -> number input element
-  const createdRamDataRateNumberInput = (
-    <NumberInput
-      label="RAM Data Rate (MT/s)"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> ram -> ram data rate -> screenreader accessible text input elements
+  const [ramDataRateInputErrorText, ramDataRateInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram data rate',
+      inputText: ramDataRate,
+      isInputTextFocused: isRamDataRateFocused,
+      isValidInputText: isRamDataRateValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: ramDataRate,
+        contentKind: 'ram data rate',
+      }),
+    });
+
+  // page 2 -> specifications -> ram -> ram data rate -> text input element creator
+  const [createdRamDataRateTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: ramDataRateInputErrorText,
+        valid: ramDataRateInputValidText,
+      },
+      inputText: ramDataRate,
+      isValidInputText: isRamDataRateValid,
+      label: 'RAM Data Rate (MT/s)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamDataRateFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setRamDataRate,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={ramDataRate}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamDataRateFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'ram data rate',
+    },
+  ]);
 
   // page 2 -> specifications -> ram -> ram modules quantity
 
-  // page 2 -> specifications -> ram -> ram modules quantity -> number input element
-  const createdRamModulesQuantityNumberInput = (
-    <NumberInput
-      label="RAM Modules Quantity"
-      max={96}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setRamModulesQuantity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={ramModulesQuantity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> ram -> ram modules quantity -> screenreader accessible text input elements
+  const [ramModulesQuantityInputErrorText, ramModulesQuantityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram modules quantity',
+      inputText: ramModulesQuantity,
+      isInputTextFocused: isRamModulesQuantityFocused,
+      isValidInputText: isRamModulesQuantityValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: ramModulesQuantity,
+        contentKind: 'ram modules quantity',
+      }),
+    });
+
+  // page 2 -> specifications -> ram -> ram modules quantity -> text input element creator
+  const [createdRamModulesQuantityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: ramModulesQuantityInputErrorText,
+          valid: ramModulesQuantityInputValidText,
+        },
+        inputText: ramModulesQuantity,
+        isValidInputText: isRamModulesQuantityValid,
+        label: 'RAM Modules Quantity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsRamModulesQuantityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamModulesQuantity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsRamModulesQuantityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 00',
+        required: true,
+        semanticName: 'ram modules quantity',
+      },
+    ]);
 
   // page 2 -> specifications -> ram -> ram modules capacity
 
-  // page 2 -> specifications -> ram -> ram modules capacity -> number input element
-  const createdRamModulesCapacityNumberInput = (
-    <NumberInput
-      label="RAM Modules Capacity"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setRamModulesCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={ramModulesCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> ram -> ram modules capacity -> screenreader accessible text input elements
+  const [ramModulesCapacityInputErrorText, ramModulesCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram modules capacity',
+      inputText: ramModulesCapacity,
+      isInputTextFocused: isRamModulesCapacityFocused,
+      isValidInputText: isRamModulesCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: ramModulesCapacity,
+        contentKind: 'ram modules capacity',
+      }),
+    });
+
+  // page 2 -> specifications -> ram -> ram modules capacity -> text input element creator
+  const [createdRamModulesCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: ramModulesCapacityInputErrorText,
+          valid: ramModulesCapacityInputValidText,
+        },
+        inputText: ramModulesCapacity,
+        isValidInputText: isRamModulesCapacityValid,
+        label: 'RAM Modules Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsRamModulesCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamModulesCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsRamModulesCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'ram modules capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> ram -> ram modules capacity unit
 
@@ -3831,28 +3958,52 @@ function CreateProduct() {
 
   // page 2 -> specifications -> ram -> ram voltage
 
-  // page 2 -> specifications -> ram -> ram voltage -> number input element
-  const createdRamVoltageNumberInput = (
-    <NumberInput
-      label="RAM Voltage (V)"
-      max={9.99}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> ram -> ram voltage -> screenreader accessible text input elements
+  const [ramVoltageInputErrorText, ramVoltageInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram voltage',
+      inputText: ramVoltage,
+      isInputTextFocused: isRamVoltageFocused,
+      isValidInputText: isRamVoltageValid,
+      regexValidationText: returnRamVoltageValidationText({
+        content: ramVoltage,
+        contentKind: 'ram voltage',
+      }),
+    });
+
+  // page 2 -> specifications -> ram -> ram voltage -> text input element creator
+  const [createdRamVoltageTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: ramVoltageInputErrorText,
+        valid: ramVoltageInputValidText,
+      },
+      inputText: ramVoltage,
+      isValidInputText: isRamVoltageValid,
+      label: 'RAM Voltage (V)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamVoltageFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setRamVoltage,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      precision={2}
-      required
-      startValue={1}
-      step={0.01}
-      type="number"
-      value={ramVoltage}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamVoltageFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0.00',
+      required: true,
+      semanticName: 'ram voltage',
+    },
+  ]);
 
   // page 2 -> specifications -> ram -> ram timing
 
@@ -6277,13 +6428,13 @@ function CreateProduct() {
       <Group w="100%">
         <Title order={4}>Memory (RAM) Specifications</Title>
       </Group>
-      {createdRamDataRateNumberInput}
-      {createdRamModulesQuantityNumberInput}
-      {createdRamModulesCapacityNumberInput}
+      {createdRamDataRateTextInput}
+      {createdRamModulesQuantityTextInput}
+      {createdRamModulesCapacityTextInput}
       {createdRamModulesCapacityUnitSelectInput}
       {createdRamTypeSelectInput}
       {createdRamColorTextInput}
-      {createdRamVoltageNumberInput}
+      {createdRamVoltageTextInput}
       {createdRamTimingTextInput}
     </FormLayoutWrapper>
   );
@@ -6777,17 +6928,17 @@ function CreateProduct() {
       {
         inputName: 'RAM Data Rate',
         inputValue: ramDataRate,
-        isInputValueValid: ramDataRate !== 0,
+        isInputValueValid: isRamDataRateValid,
       },
       {
         inputName: 'RAM Modules Quantity',
         inputValue: ramModulesQuantity,
-        isInputValueValid: ramModulesQuantity !== 0,
+        isInputValueValid: isRamModulesQuantityValid,
       },
       {
         inputName: 'RAM Modules Capacity',
         inputValue: ramModulesCapacity,
-        isInputValueValid: ramModulesCapacity !== 0,
+        isInputValueValid: isRamModulesCapacityValid,
       },
       {
         inputName: 'RAM Modules Capacity Unit',
@@ -6805,7 +6956,7 @@ function CreateProduct() {
       {
         inputName: 'RAM Voltage',
         inputValue: ramVoltage,
-        isInputValueValid: ramVoltage !== 0,
+        isInputValueValid: isRamVoltageValid,
       },
       {
         inputName: 'RAM Timing',

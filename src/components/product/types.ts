@@ -455,15 +455,23 @@ type CreateProductState = {
   isMotherboardPcie5SlotsFocused: boolean;
 
   // page 2 -> specifications -> ram
-  ramDataRate: number;
-  ramModulesQuantity: number;
-  ramModulesCapacity: number;
+  ramDataRate: string;
+  isRamDataRateValid: boolean;
+  isRamDataRateFocused: boolean;
+  ramModulesQuantity: string;
+  isRamModulesQuantityValid: boolean;
+  isRamModulesQuantityFocused: boolean;
+  ramModulesCapacity: string;
+  isRamModulesCapacityValid: boolean;
+  isRamModulesCapacityFocused: boolean;
   ramModulesCapacityUnit: MemoryUnit;
   ramType: MemoryType;
   ramColor: string;
   isRamColorValid: boolean;
   isRamColorFocused: boolean;
-  ramVoltage: number;
+  ramVoltage: string;
+  isRamVoltageValid: boolean;
+  isRamVoltageFocused: boolean;
   ramTiming: string;
   isRamTimingValid: boolean;
   isRamTimingFocused: boolean;
@@ -736,14 +744,22 @@ type CreateProductAction = {
 
   // page 2 -> specifications -> ram
   setRamDataRate: 'setRamDataRate';
+  setIsRamDataRateValid: 'setIsRamDataRateValid';
+  setIsRamDataRateFocused: 'setIsRamDataRateFocused';
   setRamModulesQuantity: 'setRamModulesQuantity';
+  setIsRamModulesQuantityValid: 'setIsRamModulesQuantityValid';
+  setIsRamModulesQuantityFocused: 'setIsRamModulesQuantityFocused';
   setRamModulesCapacity: 'setRamModulesCapacity';
+  setIsRamModulesCapacityValid: 'setIsRamModulesCapacityValid';
+  setIsRamModulesCapacityFocused: 'setIsRamModulesCapacityFocused';
   setRamModulesCapacityUnit: 'setRamModulesCapacityUnit';
   setRamType: 'setRamType';
   setRamColor: 'setRamColor';
   setIsRamColorValid: 'setIsRamColorValid';
   setIsRamColorFocused: 'setIsRamColorFocused';
   setRamVoltage: 'setRamVoltage';
+  setIsRamVoltageValid: 'setIsRamVoltageValid';
+  setIsRamVoltageFocused: 'setIsRamVoltageFocused';
   setRamTiming: 'setRamTiming';
   setIsRamTimingValid: 'setIsRamTimingValid';
   setIsRamTimingFocused: 'setIsRamTimingFocused';
@@ -1275,15 +1291,33 @@ type CreateProductDispatch =
   // specifications -> ram
   | {
       type: CreateProductAction['setRamDataRate'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsRamDataRateValid']
+        | CreateProductAction['setIsRamDataRateFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setRamModulesQuantity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsRamModulesQuantityValid']
+        | CreateProductAction['setIsRamModulesQuantityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setRamModulesCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsRamModulesCapacityValid']
+        | CreateProductAction['setIsRamModulesCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setRamModulesCapacityUnit'];
@@ -1305,7 +1339,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setRamVoltage'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsRamVoltageValid']
+        | CreateProductAction['setIsRamVoltageFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setRamTiming'];
