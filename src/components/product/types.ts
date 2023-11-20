@@ -478,15 +478,21 @@ type CreateProductState = {
 
   // page 2 -> specifications -> storage
   storageType: StorageType;
-  storageCapacity: number;
+  storageCapacity: string;
+  isStorageCapacityValid: boolean;
+  isStorageCapacityFocused: boolean;
   storageCapacityUnit: MemoryUnit;
-  storageCacheCapacity: number;
+  storageCacheCapacity: string;
+  isStorageCacheCapacityValid: boolean;
+  isStorageCacheCapacityFocused: boolean;
   storageCacheCapacityUnit: MemoryUnit;
   storageFormFactor: StorageFormFactor;
   storageInterface: StorageInterface;
 
   // page 2 -> specifications -> psu
-  psuWattage: number;
+  psuWattage: string;
+  isPsuWattageValid: boolean;
+  isPsuWattageFocused: boolean;
   psuEfficiency: PsuEfficiency;
   psuFormFactor: PsuFormFactor;
   psuModularity: PsuModularity;
@@ -767,14 +773,20 @@ type CreateProductAction = {
   // page 2 -> specifications -> storage
   setStorageType: 'setStorageType';
   setStorageCapacity: 'setStorageCapacity';
+  setIsStorageCapacityValid: 'setIsStorageCapacityValid';
+  setIsStorageCapacityFocused: 'setIsStorageCapacityFocused';
   setStorageCapacityUnit: 'setStorageCapacityUnit';
   setStorageCacheCapacity: 'setStorageCacheCapacity';
+  setIsStorageCacheCapacityValid: 'setIsStorageCacheCapacityValid';
+  setIsStorageCacheCapacityFocused: 'setIsStorageCacheCapacityFocused';
   setStorageCacheCapacityUnit: 'setStorageCacheCapacityUnit';
   setStorageFormFactor: 'setStorageFormFactor';
   setStorageInterface: 'setStorageInterface';
 
   // page 2 -> specifications -> psu
   setPsuWattage: 'setPsuWattage';
+  setIsPsuWattageValid: 'setIsPsuWattageValid';
+  setIsPsuWattageFocused: 'setIsPsuWattageFocused';
   setPsuEfficiency: 'setPsuEfficiency';
   setPsuFormFactor: 'setPsuFormFactor';
   setPsuModularity: 'setPsuModularity';
@@ -1364,7 +1376,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setStorageCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsStorageCapacityValid']
+        | CreateProductAction['setIsStorageCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setStorageCapacityUnit'];
@@ -1372,7 +1390,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setStorageCacheCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsStorageCacheCapacityValid']
+        | CreateProductAction['setIsStorageCacheCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setStorageCacheCapacityUnit'];
@@ -1389,7 +1413,13 @@ type CreateProductDispatch =
   // specifications -> psu
   | {
       type: CreateProductAction['setPsuWattage'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsPsuWattageValid']
+        | CreateProductAction['setIsPsuWattageFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setPsuEfficiency'];

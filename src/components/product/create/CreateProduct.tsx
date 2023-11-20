@@ -326,17 +326,23 @@ function CreateProduct() {
     // page 2 -> specifications -> storage
     storageType,
     storageCapacity,
+    isStorageCapacityFocused,
+    isStorageCapacityValid,
     storageCapacityUnit,
     storageCacheCapacity,
+    isStorageCacheCapacityFocused,
+    isStorageCacheCapacityValid,
     storageCacheCapacityUnit,
     storageFormFactor,
     storageInterface,
 
     // page 2 -> specifications -> psu
     psuWattage,
+    isPsuWattageFocused,
+    isPsuWattageValid,
     psuEfficiency,
-    psuFormFactor,
     psuModularity,
+    psuFormFactor,
 
     // page 2 -> specifications -> case
     caseType,
@@ -1379,6 +1385,36 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [ramTiming]);
+
+  // validate storage capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(storageCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsStorageCapacityValid,
+      payload: isValid,
+    });
+  }, [storageCapacity]);
+
+  // validate storage cache capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(storageCacheCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsStorageCacheCapacityValid,
+      payload: isValid,
+    });
+  }, [storageCacheCapacity]);
+
+  // validate PSU wattage on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(psuWattage);
+
+    createProductDispatch({
+      type: createProductAction.setIsPsuWattageValid,
+      payload: isValid,
+    });
+  }, [psuWattage]);
 
   // validate case color variant on every change
   useEffect(() => {
@@ -4081,27 +4117,52 @@ function CreateProduct() {
 
   // page 2 -> specifications -> storage -> storage capacity
 
-  // page 2 -> specifications -> storage -> storage capacity -> number input element
-  const createdStorageCapacityNumberInput = (
-    <NumberInput
-      label="Storage Capacity"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> storage -> storage capacity -> screenreader accessible text input elements
+  const [storageCapacityInputErrorText, storageCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'storage capacity',
+      inputText: storageCapacity,
+      isInputTextFocused: isStorageCapacityFocused,
+      isValidInputText: isStorageCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: storageCapacity,
+        contentKind: 'storage capacity',
+      }),
+    });
+
+  // page 2 -> specifications -> storage -> storage capacity -> text input element creator
+  const [createdStorageCapacityTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: storageCapacityInputErrorText,
+        valid: storageCapacityInputValidText,
+      },
+      inputText: storageCapacity,
+      isValidInputText: isStorageCapacityValid,
+      label: 'Storage Capacity',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsStorageCapacityFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setStorageCapacity,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={storageCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsStorageCapacityFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'storage capacity',
+    },
+  ]);
 
   // page 2 -> specifications -> storage -> storage capacity unit
 
@@ -4125,27 +4186,55 @@ function CreateProduct() {
 
   // page 2 -> specifications -> storage -> storage cache capacity
 
-  // page 2 -> specifications -> storage -> storage cache capacity -> number input element
-  const createdStorageCacheCapacityNumberInput = (
-    <NumberInput
-      label="Storage Cache Capacity"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setStorageCacheCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={storageCacheCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> storage -> storage cache capacity -> screenreader accessible text input elements
+  const [
+    storageCacheCapacityInputErrorText,
+    storageCacheCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'storage cache capacity',
+    inputText: storageCacheCapacity,
+    isInputTextFocused: isStorageCacheCapacityFocused,
+    isValidInputText: isStorageCacheCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: storageCacheCapacity,
+      contentKind: 'storage cache capacity',
+    }),
+  });
+
+  // page 2 -> specifications -> storage -> storage cache capacity -> text input element creator
+  const [createdStorageCacheCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: storageCacheCapacityInputErrorText,
+          valid: storageCacheCapacityInputValidText,
+        },
+        inputText: storageCacheCapacity,
+        isValidInputText: isStorageCacheCapacityValid,
+        label: 'Storage Cache Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsStorageCacheCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageCacheCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsStorageCacheCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'storage cache capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> storage -> storage cache capacity unit
 
@@ -4211,27 +4300,52 @@ function CreateProduct() {
 
   // page 2 -> specifications -> psu -> psu wattage
 
-  // page 2 -> specifications -> psu -> psu wattage -> number input element
-  const createdPsuWattageNumberInput = (
-    <NumberInput
-      label="PSU Wattage (W)"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> psu -> psu wattage -> screenreader accessible text input elements
+  const [psuWattageInputErrorText, psuWattageInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'psu wattage',
+      inputText: psuWattage,
+      isInputTextFocused: isPsuWattageFocused,
+      isValidInputText: isPsuWattageValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: psuWattage,
+        contentKind: 'psu wattage',
+      }),
+    });
+
+  // page 2 -> specifications -> psu -> psu wattage -> text input element creator
+  const [createdPsuWattageTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: psuWattageInputErrorText,
+        valid: psuWattageInputValidText,
+      },
+      inputText: psuWattage,
+      isValidInputText: isPsuWattageValid,
+      label: 'PSU Wattage',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsPsuWattageFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setPsuWattage,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={psuWattage}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsPsuWattageFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'psu wattage',
+    },
+  ]);
 
   // page 2 -> specifications -> psu -> psu efficiency rating
 
@@ -6447,9 +6561,9 @@ function CreateProduct() {
       </Group>
       {createdStorageTypeSelectInput}
       {createdStorageInterfaceSelectInput}
-      {createdStorageCapacityNumberInput}
+      {createdStorageCapacityTextInput}
       {createdStorageCapacityUnitSelectInput}
-      {createdStorageCacheCapacityNumberInput}
+      {createdStorageCacheCapacityTextInput}
       {createdStorageCacheCapacityUnitSelectInput}
       {createdStorageFormFactorSelectInput}
     </FormLayoutWrapper>
@@ -6461,7 +6575,7 @@ function CreateProduct() {
       <Group w="100%">
         <Title order={4}>Power Supply Unit (PSU) Specifications</Title>
       </Group>
-      {createdPsuWattageNumberInput}
+      {createdPsuWattageTextInput}
       {createdPsuEfficiencyRatingSelectInput}
       {createdPsuFormFactorSelectInput}
       {createdPsuModularitySelectInput}
@@ -6976,7 +7090,7 @@ function CreateProduct() {
       {
         inputName: 'Storage Capacity',
         inputValue: storageCapacity,
-        isInputValueValid: storageCapacity !== 0,
+        isInputValueValid: isStorageCapacityValid,
       },
       {
         inputName: 'Storage Capacity Unit',
@@ -6985,7 +7099,7 @@ function CreateProduct() {
       {
         inputName: 'Storage Cache Capacity',
         inputValue: storageCacheCapacity,
-        isInputValueValid: storageCacheCapacity !== 0,
+        isInputValueValid: isStorageCacheCapacityValid,
       },
       {
         inputName: 'Storage Cache Capacity Unit',
@@ -7008,7 +7122,7 @@ function CreateProduct() {
       {
         inputName: 'PSU Wattage',
         inputValue: psuWattage,
-        isInputValueValid: psuWattage !== 0,
+        isInputValueValid: isPsuWattageValid,
       },
       {
         inputName: 'PSU Efficiency Rating',

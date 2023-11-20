@@ -156,15 +156,21 @@ const initialCreateProductState: CreateProductState = {
 
   // page 2 -> specifications -> storage
   storageType: 'SSD',
-  storageCapacity: 0,
+  storageCapacity: '',
+  isStorageCapacityFocused: false,
+  isStorageCapacityValid: false,
   storageCapacityUnit: 'GB',
-  storageCacheCapacity: 0,
+  storageCacheCapacity: '',
+  isStorageCacheCapacityFocused: false,
+  isStorageCacheCapacityValid: false,
   storageCacheCapacityUnit: 'MB',
   storageFormFactor: 'M.2 2280',
   storageInterface: 'M.2',
 
   // page 2 -> specifications -> psu
-  psuWattage: 0,
+  psuWattage: '',
+  isPsuWattageFocused: false,
+  isPsuWattageValid: false,
   psuEfficiency: '80+ Bronze',
   psuModularity: 'Full',
   psuFormFactor: 'ATX',
@@ -448,14 +454,20 @@ const createProductAction: CreateProductAction = {
   // page 2 -> specifications -> storage
   setStorageType: 'setStorageType',
   setStorageCapacity: 'setStorageCapacity',
+  setIsStorageCapacityValid: 'setIsStorageCapacityValid',
+  setIsStorageCapacityFocused: 'setIsStorageCapacityFocused',
   setStorageCapacityUnit: 'setStorageCapacityUnit',
   setStorageCacheCapacity: 'setStorageCacheCapacity',
+  setIsStorageCacheCapacityValid: 'setIsStorageCacheCapacityValid',
+  setIsStorageCacheCapacityFocused: 'setIsStorageCacheCapacityFocused',
   setStorageCacheCapacityUnit: 'setStorageCacheCapacityUnit',
   setStorageFormFactor: 'setStorageFormFactor',
   setStorageInterface: 'setStorageInterface',
 
   // page 2 -> specifications -> psu
   setPsuWattage: 'setPsuWattage',
+  setIsPsuWattageValid: 'setIsPsuWattageValid',
+  setIsPsuWattageFocused: 'setIsPsuWattageFocused',
   setPsuEfficiency: 'setPsuEfficiency',
   setPsuFormFactor: 'setPsuFormFactor',
   setPsuModularity: 'setPsuModularity',
@@ -1327,36 +1339,66 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> storage
+
+    // page 2 -> specifications -> storage -> type
     case createProductAction.setStorageType:
       return {
         ...state,
         storageType: action.payload,
       };
+
+    // page 2 -> specifications -> storage -> capacity
     case createProductAction.setStorageCapacity:
       return {
         ...state,
         storageCapacity: action.payload,
+      };
+    case createProductAction.setIsStorageCapacityFocused:
+      return {
+        ...state,
+        isStorageCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsStorageCapacityValid:
+      return {
+        ...state,
+        isStorageCapacityValid: action.payload,
       };
     case createProductAction.setStorageCapacityUnit:
       return {
         ...state,
         storageCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> storage -> cache capacity
     case createProductAction.setStorageCacheCapacity:
       return {
         ...state,
         storageCacheCapacity: action.payload,
+      };
+    case createProductAction.setIsStorageCacheCapacityFocused:
+      return {
+        ...state,
+        isStorageCacheCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsStorageCacheCapacityValid:
+      return {
+        ...state,
+        isStorageCacheCapacityValid: action.payload,
       };
     case createProductAction.setStorageCacheCapacityUnit:
       return {
         ...state,
         storageCacheCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> storage -> form factor
     case createProductAction.setStorageFormFactor:
       return {
         ...state,
         storageFormFactor: action.payload,
       };
+
+    // page 2 -> specifications -> storage -> interface
     case createProductAction.setStorageInterface:
       return {
         ...state,
@@ -1364,21 +1406,39 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> psu
+
+    // page 2 -> specifications -> psu -> wattage
     case createProductAction.setPsuWattage:
       return {
         ...state,
         psuWattage: action.payload,
       };
+    case createProductAction.setIsPsuWattageFocused:
+      return {
+        ...state,
+        isPsuWattageFocused: action.payload,
+      };
+    case createProductAction.setIsPsuWattageValid:
+      return {
+        ...state,
+        isPsuWattageValid: action.payload,
+      };
+
+    // page 2 -> specifications -> psu -> efficiency
     case createProductAction.setPsuEfficiency:
       return {
         ...state,
         psuEfficiency: action.payload,
       };
+
+    // page 2 -> specifications -> psu -> form factor
     case createProductAction.setPsuFormFactor:
       return {
         ...state,
         psuFormFactor: action.payload,
       };
+
+    // page 2 -> specifications -> psu -> modularity
     case createProductAction.setPsuModularity:
       return {
         ...state,
