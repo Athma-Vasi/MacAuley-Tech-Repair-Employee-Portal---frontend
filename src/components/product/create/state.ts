@@ -183,12 +183,22 @@ const initialCreateProductState: CreateProductState = {
   caseSidePanel: 'Solid',
 
   // page 2 -> specifications -> display
-  displaySize: 0,
-  displayResolutionHorizontal: 0,
-  displayResolutionVertical: 0,
-  displayRefreshRate: 0,
+  displaySize: '',
+  isDisplaySizeFocused: false,
+  isDisplaySizeValid: false,
+  displayResolutionHorizontal: '',
+  isDisplayResolutionHorizontalFocused: false,
+  isDisplayResolutionHorizontalValid: false,
+  displayResolutionVertical: '',
+  isDisplayResolutionVerticalFocused: false,
+  isDisplayResolutionVerticalValid: false,
+  displayRefreshRate: '',
+  isDisplayRefreshRateFocused: false,
+  isDisplayRefreshRateValid: false,
   displayPanelType: 'IPS',
-  displayResponseTime: 0,
+  displayResponseTime: '',
+  isDisplayResponseTimeFocused: false,
+  isDisplayResponseTimeValid: false,
   displayAspectRatio: '',
   isDisplayAspectRatioFocused: false,
   isDisplayAspectRatioValid: false,
@@ -481,11 +491,24 @@ const createProductAction: CreateProductAction = {
 
   // page 2 -> specifications -> display
   setDisplaySize: 'setDisplaySize',
+  setIsDisplaySizeValid: 'setIsDisplaySizeValid',
+  setIsDisplaySizeFocused: 'setIsDisplaySizeFocused',
   setDisplayResolutionHorizontal: 'setDisplayResolutionHorizontal',
+  setIsDisplayResolutionHorizontalValid:
+    'setIsDisplayResolutionHorizontalValid',
+  setIsDisplayResolutionHorizontalFocused:
+    'setIsDisplayResolutionHorizontalFocused',
   setDisplayResolutionVertical: 'setDisplayResolutionVertical',
+  setIsDisplayResolutionVerticalValid: 'setIsDisplayResolutionVerticalValid',
+  setIsDisplayResolutionVerticalFocused:
+    'setIsDisplayResolutionVerticalFocused',
   setDisplayRefreshRate: 'setDisplayRefreshRate',
+  setIsDisplayRefreshRateValid: 'setIsDisplayRefreshRateValid',
+  setIsDisplayRefreshRateFocused: 'setIsDisplayRefreshRateFocused',
   setDisplayPanelType: 'setDisplayPanelType',
   setDisplayResponseTime: 'setDisplayResponseTime',
+  setIsDisplayResponseTimeValid: 'setIsDisplayResponseTimeValid',
+  setIsDisplayResponseTimeFocused: 'setIsDisplayResponseTimeFocused',
   setDisplayAspectRatio: 'setDisplayAspectRatio',
   setIsDisplayAspectRatioValid: 'setIsDisplayAspectRatioValid',
   setIsDisplayAspectRatioFocused: 'setIsDisplayAspectRatioFocused',
@@ -1473,36 +1496,102 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> display
+
+    // page 2 -> specifications -> display -> size
     case createProductAction.setDisplaySize:
       return {
         ...state,
         displaySize: action.payload,
       };
+    case createProductAction.setIsDisplaySizeFocused:
+      return {
+        ...state,
+        isDisplaySizeFocused: action.payload,
+      };
+    case createProductAction.setIsDisplaySizeValid:
+      return {
+        ...state,
+        isDisplaySizeValid: action.payload,
+      };
+
+    // page 2 -> specifications -> display -> resolution
+
+    // page 2 -> specifications -> display -> resolution -> horizontal
     case createProductAction.setDisplayResolutionHorizontal:
       return {
         ...state,
         displayResolutionHorizontal: action.payload,
       };
+    case createProductAction.setIsDisplayResolutionHorizontalFocused:
+      return {
+        ...state,
+        isDisplayResolutionHorizontalFocused: action.payload,
+      };
+    case createProductAction.setIsDisplayResolutionHorizontalValid:
+      return {
+        ...state,
+        isDisplayResolutionHorizontalValid: action.payload,
+      };
+
+    // page 2 -> specifications -> display -> resolution -> vertical
     case createProductAction.setDisplayResolutionVertical:
       return {
         ...state,
         displayResolutionVertical: action.payload,
       };
+    case createProductAction.setIsDisplayResolutionVerticalFocused:
+      return {
+        ...state,
+        isDisplayResolutionVerticalFocused: action.payload,
+      };
+    case createProductAction.setIsDisplayResolutionVerticalValid:
+      return {
+        ...state,
+        isDisplayResolutionVerticalValid: action.payload,
+      };
+
+    // page 2 -> specifications -> display -> refresh rate
     case createProductAction.setDisplayRefreshRate:
       return {
         ...state,
         displayRefreshRate: action.payload,
       };
+    case createProductAction.setIsDisplayRefreshRateFocused:
+      return {
+        ...state,
+        isDisplayRefreshRateFocused: action.payload,
+      };
+    case createProductAction.setIsDisplayRefreshRateValid:
+      return {
+        ...state,
+        isDisplayRefreshRateValid: action.payload,
+      };
+
+    // page 2 -> specifications -> display -> panel type
     case createProductAction.setDisplayPanelType:
       return {
         ...state,
         displayPanelType: action.payload,
       };
+
+    // page 2 -> specifications -> display -> response time
     case createProductAction.setDisplayResponseTime:
       return {
         ...state,
         displayResponseTime: action.payload,
       };
+    case createProductAction.setIsDisplayResponseTimeFocused:
+      return {
+        ...state,
+        isDisplayResponseTimeFocused: action.payload,
+      };
+    case createProductAction.setIsDisplayResponseTimeValid:
+      return {
+        ...state,
+        isDisplayResponseTimeValid: action.payload,
+      };
+
+    // page 2 -> specifications -> display -> aspect ratio
     case createProductAction.setDisplayAspectRatio:
       return {
         ...state,

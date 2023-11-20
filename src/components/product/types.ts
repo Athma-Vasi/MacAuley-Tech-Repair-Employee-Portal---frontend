@@ -505,12 +505,22 @@ type CreateProductState = {
   caseSidePanel: CaseSidePanel;
 
   // page 2 -> specifications -> display
-  displaySize: number; // inches
-  displayResolutionHorizontal: number;
-  displayResolutionVertical: number;
-  displayRefreshRate: number;
+  displaySize: string; // inches
+  isDisplaySizeValid: boolean;
+  isDisplaySizeFocused: boolean;
+  displayResolutionHorizontal: string;
+  isDisplayResolutionHorizontalValid: boolean;
+  isDisplayResolutionHorizontalFocused: boolean;
+  displayResolutionVertical: string;
+  isDisplayResolutionVerticalValid: boolean;
+  isDisplayResolutionVerticalFocused: boolean;
+  displayRefreshRate: string;
+  isDisplayRefreshRateValid: boolean;
+  isDisplayRefreshRateFocused: boolean;
   displayPanelType: DisplayPanelType;
-  displayResponseTime: number;
+  displayResponseTime: string;
+  isDisplayResponseTimeValid: boolean;
+  isDisplayResponseTimeFocused: boolean;
   displayAspectRatio: string;
   isDisplayAspectRatioValid: boolean;
   isDisplayAspectRatioFocused: boolean;
@@ -800,11 +810,21 @@ type CreateProductAction = {
 
   // page 2 -> specifications -> display
   setDisplaySize: 'setDisplaySize';
+  setIsDisplaySizeValid: 'setIsDisplaySizeValid';
+  setIsDisplaySizeFocused: 'setIsDisplaySizeFocused';
   setDisplayResolutionHorizontal: 'setDisplayResolutionHorizontal';
+  setIsDisplayResolutionHorizontalValid: 'setIsDisplayResolutionHorizontalValid';
+  setIsDisplayResolutionHorizontalFocused: 'setIsDisplayResolutionHorizontalFocused';
   setDisplayResolutionVertical: 'setDisplayResolutionVertical';
+  setIsDisplayResolutionVerticalValid: 'setIsDisplayResolutionVerticalValid';
+  setIsDisplayResolutionVerticalFocused: 'setIsDisplayResolutionVerticalFocused';
   setDisplayRefreshRate: 'setDisplayRefreshRate';
+  setIsDisplayRefreshRateValid: 'setIsDisplayRefreshRateValid';
+  setIsDisplayRefreshRateFocused: 'setIsDisplayRefreshRateFocused';
   setDisplayPanelType: 'setDisplayPanelType';
   setDisplayResponseTime: 'setDisplayResponseTime';
+  setIsDisplayResponseTimeValid: 'setIsDisplayResponseTimeValid';
+  setIsDisplayResponseTimeFocused: 'setIsDisplayResponseTimeFocused';
   setDisplayAspectRatio: 'setDisplayAspectRatio';
   setIsDisplayAspectRatioValid: 'setIsDisplayAspectRatioValid';
   setIsDisplayAspectRatioFocused: 'setIsDisplayAspectRatioFocused';
@@ -1455,19 +1475,43 @@ type CreateProductDispatch =
   // specifications -> display
   | {
       type: CreateProductAction['setDisplaySize'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsDisplaySizeValid']
+        | CreateProductAction['setIsDisplaySizeFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setDisplayResolutionHorizontal'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsDisplayResolutionHorizontalValid']
+        | CreateProductAction['setIsDisplayResolutionHorizontalFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setDisplayResolutionVertical'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsDisplayResolutionVerticalValid']
+        | CreateProductAction['setIsDisplayResolutionVerticalFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setDisplayRefreshRate'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsDisplayRefreshRateValid']
+        | CreateProductAction['setIsDisplayRefreshRateFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setDisplayPanelType'];
@@ -1475,7 +1519,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setDisplayResponseTime'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsDisplayResponseTimeValid']
+        | CreateProductAction['setIsDisplayResponseTimeFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setDisplayAspectRatio'];

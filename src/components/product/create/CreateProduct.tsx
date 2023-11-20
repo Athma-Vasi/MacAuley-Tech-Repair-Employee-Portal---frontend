@@ -353,14 +353,24 @@ function CreateProduct() {
 
     // page 2 -> specifications -> display
     displaySize,
+    isDisplaySizeFocused,
+    isDisplaySizeValid,
     displayResolutionHorizontal,
+    isDisplayResolutionHorizontalFocused,
+    isDisplayResolutionHorizontalValid,
     displayResolutionVertical,
+    isDisplayResolutionVerticalFocused,
+    isDisplayResolutionVerticalValid,
     displayRefreshRate,
+    isDisplayRefreshRateFocused,
+    isDisplayRefreshRateValid,
     displayPanelType,
     displayResponseTime,
+    isDisplayResponseTimeFocused,
+    isDisplayResponseTimeValid,
     displayAspectRatio,
-    isDisplayAspectRatioValid,
     isDisplayAspectRatioFocused,
+    isDisplayAspectRatioValid,
 
     // page 2 -> specifications -> keyboard
     keyboardSwitch,
@@ -1425,6 +1435,56 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [caseColor]);
+
+  // validate display size on every change
+  useEffect(() => {
+    const isValid = PRODUCT_DIMENSIONS_REGEX.test(displaySize);
+
+    createProductDispatch({
+      type: createProductAction.setIsDisplaySizeValid,
+      payload: isValid,
+    });
+  }, [displaySize]);
+
+  // validate display horizontal resolution on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(displayResolutionHorizontal);
+
+    createProductDispatch({
+      type: createProductAction.setIsDisplayResolutionHorizontalValid,
+      payload: isValid,
+    });
+  }, [displayResolutionHorizontal]);
+
+  // validate display vertical resolution on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(displayResolutionVertical);
+
+    createProductDispatch({
+      type: createProductAction.setIsDisplayResolutionVerticalValid,
+      payload: isValid,
+    });
+  }, [displayResolutionVertical]);
+
+  // validate display refresh rate on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(displayRefreshRate);
+
+    createProductDispatch({
+      type: createProductAction.setIsDisplayRefreshRateValid,
+      payload: isValid,
+    });
+  }, [displayRefreshRate]);
+
+  // validate display response time on every change
+  useEffect(() => {
+    const isValid = PRODUCT_DIMENSIONS_REGEX.test(displayResponseTime);
+
+    createProductDispatch({
+      type: createProductAction.setIsDisplayResponseTimeValid,
+      payload: isValid,
+    });
+  }, [displayResponseTime]);
 
   // validate display aspect ratio on every change
   useEffect(() => {
@@ -4508,101 +4568,208 @@ function CreateProduct() {
 
   // page 2 -> specifications -> display -> display size
 
-  // page 2 -> specifications -> display -> display size -> number input element
-  const createdDisplaySizeNumberInput = (
-    <NumberInput
-      label="Display Size (inches)"
-      max={99}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> display -> display size -> screenreader accessible text input elements
+  const [displaySizeInputErrorText, displaySizeInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'display size',
+      inputText: displaySize,
+      isInputTextFocused: isDisplaySizeFocused,
+      isValidInputText: isDisplaySizeValid,
+      regexValidationText: returnProductDimensionsValidationText({
+        content: displaySize,
+        contentKind: 'display size',
+      }),
+    });
+
+  // page 2 -> specifications -> display -> display size -> text input element creator
+  const [createdDisplaySizeTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: displaySizeInputErrorText,
+        valid: displaySizeInputValidText,
+      },
+      inputText: displaySize,
+      isValidInputText: isDisplaySizeValid,
+      label: 'Display Size (inches)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDisplaySizeFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setDisplaySize,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={displaySize}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDisplaySizeFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 000.00',
+      required: true,
+      semanticName: 'display size',
+    },
+  ]);
 
   // page 2 -> specifications -> display -> display resolution
 
   // page 2 -> specifications -> display -> display resolution -> horizontal
 
-  // page 2 -> specifications -> display -> display resolution -> horizontal -> number input element
-  const createdDisplayResolutionHorizontalNumberInput = (
-    <NumberInput
-      label="Display Resolution Horizontal"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setDisplayResolutionHorizontal,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={displayResolutionHorizontal}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> display -> display resolution -> horizontal -> screenreader accessible text input elements
+  const [
+    displayResolutionHorizontalInputErrorText,
+    displayResolutionHorizontalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'display resolution horizontal',
+    inputText: displayResolutionHorizontal,
+    isInputTextFocused: isDisplayResolutionHorizontalFocused,
+    isValidInputText: isDisplayResolutionHorizontalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: displayResolutionHorizontal,
+      contentKind: 'display resolution horizontal',
+    }),
+  });
+
+  // page 2 -> specifications -> display -> display resolution -> horizontal -> text input element creator
+  const [createdDisplayResolutionHorizontalTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: displayResolutionHorizontalInputErrorText,
+          valid: displayResolutionHorizontalInputValidText,
+        },
+        inputText: displayResolutionHorizontal,
+        isValidInputText: isDisplayResolutionHorizontalValid,
+        label: 'Display Resolution Horizontal (pixels)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDisplayResolutionHorizontalFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDisplayResolutionHorizontal,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDisplayResolutionHorizontalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'display resolution horizontal',
+      },
+    ]);
 
   // page 2 -> specifications -> display -> display resolution -> vertical
 
-  // page 2 -> specifications -> display -> display resolution -> vertical -> number input element
-  const createdDisplayResolutionVerticalNumberInput = (
-    <NumberInput
-      label="Display Resolution Vertical"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setDisplayResolutionVertical,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={displayResolutionVertical}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> display -> display resolution -> vertical -> screenreader accessible text input elements
+  const [
+    displayResolutionVerticalInputErrorText,
+    displayResolutionVerticalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'display resolution vertical',
+    inputText: displayResolutionVertical,
+    isInputTextFocused: isDisplayResolutionVerticalFocused,
+    isValidInputText: isDisplayResolutionVerticalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: displayResolutionVertical,
+      contentKind: 'display resolution vertical',
+    }),
+  });
+
+  // page 2 -> specifications -> display -> display resolution -> vertical -> text input element creator
+  const [createdDisplayResolutionVerticalTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: displayResolutionVerticalInputErrorText,
+          valid: displayResolutionVerticalInputValidText,
+        },
+        inputText: displayResolutionVertical,
+        isValidInputText: isDisplayResolutionVerticalValid,
+        label: 'Display Resolution Vertical (pixels)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDisplayResolutionVerticalFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDisplayResolutionVertical,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDisplayResolutionVerticalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'display resolution vertical',
+      },
+    ]);
 
   // page 2 -> specifications -> display -> display refresh rate
 
-  // page 2 -> specifications -> display -> display refresh rate -> number input element
-  const createdDisplayRefreshRateNumberInput = (
-    <NumberInput
-      label="Display Refresh Rate (Hz)"
-      max={999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setDisplayRefreshRate,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={displayRefreshRate}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> display -> display refresh rate -> screenreader accessible text input elements
+  const [displayRefreshRateInputErrorText, displayRefreshRateInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'display refresh rate',
+      inputText: displayRefreshRate,
+      isInputTextFocused: isDisplayRefreshRateFocused,
+      isValidInputText: isDisplayRefreshRateValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: displayRefreshRate,
+        contentKind: 'display refresh rate',
+      }),
+    });
+
+  // page 2 -> specifications -> display -> display refresh rate -> text input element creator
+  const [createdDisplayRefreshRateTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: displayRefreshRateInputErrorText,
+          valid: displayRefreshRateInputValidText,
+        },
+        inputText: displayRefreshRate,
+        isValidInputText: isDisplayRefreshRateValid,
+        label: 'Display Refresh Rate (Hz)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDisplayRefreshRateFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDisplayRefreshRate,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDisplayRefreshRateFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'display refresh rate',
+      },
+    ]);
 
   // page 2 -> specifications -> display -> display panel type
 
@@ -4626,28 +4793,53 @@ function CreateProduct() {
 
   // page 2 -> specifications -> display -> display response time
 
-  // page 2 -> specifications -> display -> display response time -> number input element
-  const createdDisplayResponseTimeNumberInput = (
-    <NumberInput
-      label="Display Response Time (ms)"
-      max={99}
-      min={0}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setDisplayResponseTime,
-          payload: value,
-        });
-      }}
-      precision={1}
-      required
-      startValue={0}
-      step={0.1}
-      type="number"
-      value={displayResponseTime}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> display -> display response time -> screenreader accessible text input elements
+  const [displayResponseTimeInputErrorText, displayResponseTimeInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'display response time',
+      inputText: displayResponseTime,
+      isInputTextFocused: isDisplayResponseTimeFocused,
+      isValidInputText: isDisplayResponseTimeValid,
+      regexValidationText: returnProductDimensionsValidationText({
+        content: displayResponseTime,
+        contentKind: 'display response time',
+      }),
+    });
+
+  // page 2 -> specifications -> display -> display response time -> text input element creator
+  const [createdDisplayResponseTimeTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: displayResponseTimeInputErrorText,
+          valid: displayResponseTimeInputValidText,
+        },
+        inputText: displayResponseTime,
+        isValidInputText: isDisplayResponseTimeValid,
+        label: 'Display Response Time (ms)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDisplayResponseTimeFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDisplayResponseTime,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsDisplayResponseTimeFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000.00',
+        required: true,
+        semanticName: 'display response time',
+      },
+    ]);
 
   // page 2 -> specifications -> display -> display aspect ratio
 
@@ -4697,7 +4889,7 @@ function CreateProduct() {
             payload: true,
           });
         },
-        placeholder: '00:00 or 0:0',
+        placeholder: 'Format: 00:00',
         required: true,
         semanticName: 'display aspect ratio',
       },
@@ -6600,12 +6792,12 @@ function CreateProduct() {
       <Group w="100%">
         <Title order={4}>Display Specifications</Title>
       </Group>
-      {createdDisplaySizeNumberInput}
-      {createdDisplayResolutionHorizontalNumberInput}
-      {createdDisplayResolutionVerticalNumberInput}
-      {createdDisplayRefreshRateNumberInput}
+      {createdDisplaySizeTextInput}
+      {createdDisplayResolutionHorizontalTextInput}
+      {createdDisplayResolutionVerticalTextInput}
+      {createdDisplayRefreshRateTextInput}
       {createdDisplayPanelTypeSelectInput}
-      {createdDisplayResponseTimeNumberInput}
+      {createdDisplayResponseTimeTextInput}
       {createdDisplayAspectRatioTextInput}
     </FormLayoutWrapper>
   );
@@ -7164,22 +7356,22 @@ function CreateProduct() {
       {
         inputName: 'Display Size',
         inputValue: displaySize,
-        isInputValueValid: displaySize !== 0,
+        isInputValueValid: isDisplaySizeValid,
       },
       {
         inputName: 'Display Resolution Horizontal',
         inputValue: displayResolutionHorizontal,
-        isInputValueValid: displayResolutionHorizontal !== 0,
+        isInputValueValid: isDisplayResolutionHorizontalValid,
       },
       {
         inputName: 'Display Resolution Vertical',
         inputValue: displayResolutionVertical,
-        isInputValueValid: displayResolutionVertical !== 0,
+        isInputValueValid: isDisplayResolutionVerticalValid,
       },
       {
         inputName: 'Display Refresh Rate',
         inputValue: displayRefreshRate,
-        isInputValueValid: displayRefreshRate !== 0,
+        isInputValueValid: isDisplayRefreshRateValid,
       },
       {
         inputName: 'Display Panel Type',
@@ -7188,7 +7380,7 @@ function CreateProduct() {
       {
         inputName: 'Display Response Time',
         inputValue: displayResponseTime,
-        isInputValueValid: displayResponseTime !== 0,
+        isInputValueValid: isDisplayResponseTimeValid,
       },
       {
         inputName: 'Display Aspect Ratio',
