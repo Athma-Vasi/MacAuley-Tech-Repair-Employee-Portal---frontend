@@ -117,6 +117,9 @@ import {
   WEBCAM_MICROPHONE_DATA,
   WEBCAM_INTERFACE_DATA,
   WEBCAM_FRAME_RATE_DATA,
+  MICROPHONE_TYPE_DATA,
+  MICROPHONE_INTERFACE_DATA,
+  MICROPHONE_POLAR_PATTERN_DATA,
 } from '../constants';
 import {
   CaseSidePanel,
@@ -130,6 +133,9 @@ import {
   KeyboardSwitch,
   MemoryType,
   MemoryUnit,
+  MicrophoneInterface,
+  MicrophonePolarPattern,
+  MicrophoneType,
   MobileOs,
   MotherboardFormFactor,
   MouseSensor,
@@ -511,6 +517,17 @@ function CreateProduct() {
     webcamInterface,
     webcamMicrophone,
     webcamResolution,
+
+    // page 2 -> specifications -> microphone
+    microphoneColor,
+    isMicrophoneColorFocused,
+    isMicrophoneColorValid,
+    microphoneInterface,
+    microphoneType,
+    microphonePolarPattern,
+    microphoneFrequencyResponse,
+    isMicrophoneFrequencyResponseFocused,
+    isMicrophoneFrequencyResponseValid,
 
     // page 3
     imgFormDataArray,
@@ -1827,16 +1844,6 @@ function CreateProduct() {
     });
   }, [tabletColor]);
 
-  // validate webcam color variant on every change
-  useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(webcamColor);
-
-    createProductDispatch({
-      type: createProductAction.setIsWebcamColorValid,
-      payload: isValid,
-    });
-  }, [webcamColor]);
-
   // accessory
 
   // accessory -> validate user defined accessory fields  on every change
@@ -1893,6 +1900,36 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [accessoryColor]);
+
+  // validate webcam color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(webcamColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsWebcamColorValid,
+      payload: isValid,
+    });
+  }, [webcamColor]);
+
+  // validate microphone color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(microphoneColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsMicrophoneColorValid,
+      payload: isValid,
+    });
+  }, [microphoneColor]);
+
+  // validate microphone frequency response on every change
+  useEffect(() => {
+    const isValid = FREQUENCY_RESPONSE_REGEX.test(microphoneFrequencyResponse);
+
+    createProductDispatch({
+      type: createProductAction.setIsMicrophoneFrequencyResponseValid,
+      payload: isValid,
+    });
+  }, [microphoneFrequencyResponse]);
 
   // update stepper wrapper state on every page 1 input validation change
   useEffect(() => {
@@ -2043,6 +2080,9 @@ function CreateProduct() {
 
     const isWebcamSpecificationInError = !webcamColor;
 
+    const areMicrophoneSpecificationsInError =
+      !microphoneColor || !isMicrophoneFrequencyResponseValid;
+
     const arePage2InputsInError =
       productCategory === 'Accessories'
         ? areAccessorySpecificationsInError
@@ -2080,7 +2120,7 @@ function CreateProduct() {
         ? areTabletSpecificationsInError
         : productCategory === 'Webcams'
         ? isWebcamSpecificationInError
-        : false;
+        : areMicrophoneSpecificationsInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
@@ -2159,6 +2199,8 @@ function CreateProduct() {
     tabletResolutionVertical,
     tabletStorageCapacity,
     webcamColor,
+    microphoneColor,
+    isMicrophoneFrequencyResponseValid,
   ]);
 
   // update stepper wrapper state on every page 3 input validation change
@@ -7432,6 +7474,169 @@ function CreateProduct() {
       },
     ]);
 
+  // page 2 -> specifications -> microphone
+
+  // page 2 -> specifications -> microphone -> microphone type
+
+  // page 2 -> specifications -> microphone -> microphone type -> select input element
+  const [createdMicrophoneTypeSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MICROPHONE_TYPE_DATA,
+        description: '',
+        label: 'Microphone Type',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMicrophoneType,
+            payload: event.currentTarget.value as MicrophoneType,
+          });
+        },
+        value: microphoneType,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> microphone -> microphone color
+
+  // page 2 -> specifications -> microphone -> microphone color -> accessible screen reader text elements
+  const [microphoneColorInputErrorText, microphoneColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'microphone color',
+      inputText: microphoneColor,
+      isInputTextFocused: isMicrophoneColorFocused,
+      isValidInputText: isMicrophoneColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: microphoneColor,
+        contentKind: 'microphone color',
+      }),
+    });
+
+  // page 2 -> specifications -> microphone -> microphone color -> text input element creator
+  const [createdMicrophoneColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: microphoneColorInputErrorText,
+        valid: microphoneColorInputValidText,
+      },
+      inputText: microphoneColor,
+      isValidInputText: isMicrophoneColorValid,
+      label: 'Microphone Color',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMicrophoneColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setMicrophoneColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMicrophoneColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter microphone color',
+      required: true,
+      semanticName: 'microphone color',
+    },
+  ]);
+
+  // page 2 -> specifications -> microphone -> microphone interface
+
+  // page 2 -> specifications -> microphone -> microphone interface -> select input element
+  const [createdMicrophoneInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MICROPHONE_INTERFACE_DATA,
+        description: '',
+        label: 'Microphone Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMicrophoneInterface,
+            payload: event.currentTarget.value as MicrophoneInterface,
+          });
+        },
+        value: microphoneInterface,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> microphone -> microphone polar pattern
+
+  // page 2 -> specifications -> microphone -> microphone polar pattern -> select input element
+  const [createdMicrophonePolarPatternSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MICROPHONE_POLAR_PATTERN_DATA,
+        description: '',
+        label: 'Microphone Polar Pattern',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMicrophonePolarPattern,
+            payload: event.currentTarget.value as MicrophonePolarPattern,
+          });
+        },
+        value: microphonePolarPattern,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> microphone -> microphone frequency response
+
+  // page 2 -> specifications -> microphone -> microphone frequency response -> screenreader accessible text input elements
+  const [
+    microphoneFrequencyResponseInputErrorText,
+    microphoneFrequencyResponseInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'microphone frequency response',
+    inputText: microphoneFrequencyResponse,
+    isInputTextFocused: isMicrophoneFrequencyResponseFocused,
+    isValidInputText: isMicrophoneFrequencyResponseValid,
+    regexValidationText: returnFrequencyResponseValidationText({
+      content: microphoneFrequencyResponse,
+      contentKind: 'microphone frequency response',
+    }),
+  });
+
+  // page 2 -> specifications -> microphone -> microphone frequency response -> text input element creator
+  const [createdMicrophoneFrequencyResponseTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: microphoneFrequencyResponseInputErrorText,
+          valid: microphoneFrequencyResponseInputValidText,
+        },
+        inputText: microphoneFrequencyResponse,
+        isValidInputText: isMicrophoneFrequencyResponseValid,
+        label: 'Microphone Frequency Response (Hz-kHz)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsMicrophoneFrequencyResponseFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMicrophoneFrequencyResponse,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsMicrophoneFrequencyResponseFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter microphone frequency response',
+        required: true,
+        semanticName: 'microphone frequency response',
+      },
+    ]);
+
   // page 4
 
   // page 4 -> submit button
@@ -7789,6 +7994,20 @@ function CreateProduct() {
     </FormLayoutWrapper>
   );
 
+  // input display -> page 2 -> specifications -> microphones
+  const displayMicrophoneSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Microphone Specifications</Title>
+      </Group>
+      {createdMicrophoneTypeSelectInput}
+      {createdMicrophoneColorTextInput}
+      {createdMicrophoneInterfaceSelectInput}
+      {createdMicrophonePolarPatternSelectInput}
+      {createdMicrophoneFrequencyResponseTextInput}
+    </FormLayoutWrapper>
+  );
+
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
       <Group py={padding}>{createdProductCategorySelectInput}</Group>
@@ -7828,7 +8047,7 @@ function CreateProduct() {
         ? displayTabletSpecificationsInputs
         : productCategory === 'Webcams'
         ? displayWebcamSpecificationsInputs
-        : null}
+        : displayMicrophoneSpecificationsInputs}
     </FormLayoutWrapper>
   );
 
@@ -8512,6 +8731,34 @@ function CreateProduct() {
     ],
   };
 
+  // form review object -> page 2 -> specifications -> microphones
+  const page2MicrophoneFormReviewObject: FormReviewObject = {
+    'Microphone Specifications': [
+      {
+        inputName: 'Microphone Type',
+        inputValue: microphoneType,
+      },
+      {
+        inputName: 'Microphone Color',
+        inputValue: microphoneColor,
+        isInputValueValid: isMicrophoneColorValid,
+      },
+      {
+        inputName: 'Microphone Interface',
+        inputValue: microphoneInterface,
+      },
+      {
+        inputName: 'Microphone Polar Pattern',
+        inputValue: microphonePolarPattern,
+      },
+      {
+        inputName: 'Microphone Frequency Response',
+        inputValue: microphoneFrequencyResponse,
+        isInputValueValid: isMicrophoneFrequencyResponseValid,
+      },
+    ],
+  };
+
   // form review object -> page 2 -> specifications -> desktop computers
   const page2DesktopComputerFormReviewObject: FormReviewObject = {
     ...page2CpuFormReviewObject,
@@ -8583,7 +8830,7 @@ function CreateProduct() {
       ? page2TabletFormReviewObject
       : productCategory === 'Webcams'
       ? page2WebcamFormReviewObject
-      : {}),
+      : page2MicrophoneFormReviewObject),
     ...page3ImageUploadsFormReviewObject,
   };
 

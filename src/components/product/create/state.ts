@@ -334,6 +334,17 @@ const initialCreateProductState: CreateProductState = {
   webcamMicrophone: 'Yes',
   webcamResolution: '1080p',
 
+  // page 2 -> specifications -> microphone
+  microphoneColor: '',
+  isMicrophoneColorFocused: false,
+  isMicrophoneColorValid: false,
+  microphoneInterface: 'USB',
+  microphoneType: 'Condenser',
+  microphonePolarPattern: 'Cardioid',
+  microphoneFrequencyResponse: '',
+  isMicrophoneFrequencyResponseFocused: false,
+  isMicrophoneFrequencyResponseValid: false,
+
   // page 3
   currentlySelectedAdditionalFieldIndex: 0,
   imgFormDataArray: [],
@@ -695,6 +706,19 @@ const createProductAction: CreateProductAction = {
   setWebcamColor: 'setWebcamColor',
   setIsWebcamColorValid: 'setIsWebcamColorValid',
   setIsWebcamColorFocused: 'setIsWebcamColorFocused',
+
+  // page 2 -> specifications -> microphone
+  setMicrophoneType: 'setMicrophoneType',
+  setMicrophonePolarPattern: 'setMicrophonePolarPattern',
+  setMicrophoneInterface: 'setMicrophoneInterface',
+  setMicrophoneColor: 'setMicrophoneColor',
+  setIsMicrophoneColorValid: 'setIsMicrophoneColorValid',
+  setIsMicrophoneColorFocused: 'setIsMicrophoneColorFocused',
+  setMicrophoneFrequencyResponse: 'setMicrophoneFrequencyResponse',
+  setIsMicrophoneFrequencyResponseValid:
+    'setIsMicrophoneFrequencyResponseValid',
+  setIsMicrophoneFrequencyResponseFocused:
+    'setIsMicrophoneFrequencyResponseFocused',
 
   // page 3
   setCurrentlySelectedAdditionalFieldIndex:
@@ -2604,11 +2628,68 @@ function createProductReducer(
         webcamInterface: action.payload,
       };
 
-    // page 2 -> specifications -> microphone
+    // page 2 -> specifications -> webcam -> microphone
     case createProductAction.setWebcamMicrophone:
       return {
         ...state,
         webcamMicrophone: action.payload,
+      };
+
+    // page 2 -> specifications -> microphone
+
+    // page 2 -> specifications -> microphone -> type
+    case createProductAction.setMicrophoneType:
+      return {
+        ...state,
+        microphoneType: action.payload,
+      };
+
+    // page 2 -> specifications -> microphone -> frequency response
+    case createProductAction.setMicrophoneFrequencyResponse:
+      return {
+        ...state,
+        microphoneFrequencyResponse: action.payload,
+      };
+    case createProductAction.setIsMicrophoneFrequencyResponseFocused:
+      return {
+        ...state,
+        isMicrophoneFrequencyResponseFocused: action.payload,
+      };
+    case createProductAction.setIsMicrophoneFrequencyResponseValid:
+      return {
+        ...state,
+        isMicrophoneFrequencyResponseValid: action.payload,
+      };
+
+    // page 2 -> specifications -> microphone -> color
+    case createProductAction.setMicrophoneColor:
+      return {
+        ...state,
+        microphoneColor: action.payload,
+      };
+    case createProductAction.setIsMicrophoneColorFocused:
+      return {
+        ...state,
+        isMicrophoneColorFocused: action.payload,
+      };
+    case createProductAction.setIsMicrophoneColorValid:
+      return {
+        ...state,
+        isMicrophoneColorValid: action.payload,
+      };
+
+    // page 2 -> specifications -> microphone -> interface
+    case createProductAction.setMicrophoneInterface:
+      return {
+        ...state,
+        microphoneInterface: action.payload,
+      };
+
+    // page 2 -> specifications -> microphone -> polar pattern
+    case createProductAction.setMicrophonePolarPattern:
+      return {
+        ...state,
+        microphonePolarPattern: action.payload,
       };
 
     // page 3

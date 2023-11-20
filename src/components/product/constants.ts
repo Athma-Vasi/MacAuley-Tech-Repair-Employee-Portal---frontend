@@ -14,6 +14,7 @@ import {
   returnCpuFrequencyValidationText,
   returnDateFullRangeValidationText,
   returnFloatAmountValidationText,
+  returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnIntegerValidationText,
   returnLargeIntegerValidationText,
@@ -42,6 +43,9 @@ import {
   KeyboardSwitch,
   MemoryType,
   MemoryUnit,
+  MicrophoneInterface,
+  MicrophonePolarPattern,
+  MicrophoneType,
   MobileOs,
   MotherboardFormFactor,
   MouseSensor,
@@ -460,6 +464,32 @@ const WEBCAM_FRAME_RATE_DATA: WebcamFrameRate[] = [
 ];
 
 const WEBCAM_MICROPHONE_DATA: WebcamMicrophone[] = ['Yes', 'No'];
+
+const MICROPHONE_TYPE_DATA: MicrophoneType[] = [
+  'Condenser',
+  'Dynamic',
+  'Ribbon',
+  'USB',
+  'Wireless',
+  'Other',
+];
+
+const MICROPHONE_POLAR_PATTERN_DATA: MicrophonePolarPattern[] = [
+  'Cardioid',
+  'Supercardioid',
+  'Hypercardioid',
+  'Omnidirectional',
+  'Bidirectional',
+  'Other',
+];
+
+const MICROPHONE_INTERFACE_DATA: MicrophoneInterface[] = [
+  'XLR',
+  'USB',
+  '3.5mm',
+  'Wireless',
+  'Other',
+];
 
 const CREATE_PRODUCT_MAX_STEPPER_POSITION = 4;
 
@@ -1348,6 +1378,40 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     inputKind: 'selectInput',
     selectData: WEBCAM_FRAME_RATE_DATA,
   },
+
+  // page 2 -> microphone
+  {
+    label: 'Microphone Type',
+    value: 'microphoneType',
+    inputKind: 'selectInput',
+    selectData: MICROPHONE_TYPE_DATA,
+  },
+  {
+    label: 'Microphone Polar Pattern',
+    value: 'microphonePolarPattern',
+    inputKind: 'selectInput',
+    selectData: MICROPHONE_POLAR_PATTERN_DATA,
+  },
+  {
+    label: 'Microphone Frequency Response',
+    value: 'microphoneFrequencyResponse',
+    inputKind: 'textInput',
+    regex: FREQUENCY_RESPONSE_REGEX,
+    regexValidationFn: returnFrequencyResponseValidationText,
+  },
+  {
+    label: 'Microphone Color',
+    value: 'microphoneColor',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Microphone Interface',
+    value: 'microphoneInterface',
+    inputKind: 'selectInput',
+    selectData: MICROPHONE_INTERFACE_DATA,
+  },
 ];
 
 const PRODUCTS_RESOURCE_PATHS: ResourceRoutePaths = {
@@ -1381,6 +1445,9 @@ export {
   LARGE_INTEGER_REGEX,
   MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_SELECT_INPUT_DATA,
+  MICROPHONE_INTERFACE_DATA,
+  MICROPHONE_POLAR_PATTERN_DATA,
+  MICROPHONE_TYPE_DATA,
   MOBILE_CAMERA_REGEX,
   MOBILE_OS_DATA,
   MOTHERBOARD_CHIPSET_REGEX,

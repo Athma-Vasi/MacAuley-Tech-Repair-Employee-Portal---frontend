@@ -275,6 +275,22 @@ type WebcamFrameRate = '30 fps' | '60 fps' | '120 fps' | '240 fps' | 'Other';
 type WebcamInterface = 'USB' | 'Bluetooth' | 'Other';
 type WebcamMicrophone = 'Yes' | 'No';
 
+type MicrophoneType =
+  | 'Condenser'
+  | 'Dynamic'
+  | 'Ribbon'
+  | 'USB'
+  | 'Wireless'
+  | 'Other';
+type MicrophonePolarPattern =
+  | 'Cardioid'
+  | 'Supercardioid'
+  | 'Hypercardioid'
+  | 'Omnidirectional'
+  | 'Bidirectional'
+  | 'Other';
+type MicrophoneInterface = 'XLR' | 'USB' | '3.5mm' | 'Wireless' | 'Other';
+
 type ProductReview = {
   userId: string;
   username: string;
@@ -661,6 +677,17 @@ type CreateProductState = {
   isWebcamColorValid: boolean;
   isWebcamColorFocused: boolean;
 
+  // page 2 -> specifications -> microphone
+  microphoneType: MicrophoneType;
+  microphonePolarPattern: MicrophonePolarPattern;
+  microphoneInterface: MicrophoneInterface;
+  microphoneColor: string;
+  isMicrophoneColorValid: boolean;
+  isMicrophoneColorFocused: boolean;
+  microphoneFrequencyResponse: string;
+  isMicrophoneFrequencyResponseValid: boolean;
+  isMicrophoneFrequencyResponseFocused: boolean;
+
   // page 3
   imgFormDataArray: FormData[];
   areImagesValid: boolean;
@@ -1008,6 +1035,17 @@ type CreateProductAction = {
   setWebcamColor: 'setWebcamColor';
   setIsWebcamColorValid: 'setIsWebcamColorValid';
   setIsWebcamColorFocused: 'setIsWebcamColorFocused';
+
+  // page 2 -> specifications -> microphone
+  setMicrophoneType: 'setMicrophoneType';
+  setMicrophonePolarPattern: 'setMicrophonePolarPattern';
+  setMicrophoneInterface: 'setMicrophoneInterface';
+  setMicrophoneColor: 'setMicrophoneColor';
+  setIsMicrophoneColorValid: 'setIsMicrophoneColorValid';
+  setIsMicrophoneColorFocused: 'setIsMicrophoneColorFocused';
+  setMicrophoneFrequencyResponse: 'setMicrophoneFrequencyResponse';
+  setIsMicrophoneFrequencyResponseValid: 'setIsMicrophoneFrequencyResponseValid';
+  setIsMicrophoneFrequencyResponseFocused: 'setIsMicrophoneFrequencyResponseFocused';
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray';
@@ -2032,6 +2070,39 @@ type CreateProductDispatch =
         | CreateProductAction['setIsWebcamColorFocused'];
       payload: boolean;
     }
+  // specifications -> microphone
+  | {
+      type: CreateProductAction['setMicrophoneType'];
+      payload: MicrophoneType;
+    }
+  | {
+      type: CreateProductAction['setMicrophonePolarPattern'];
+      payload: MicrophonePolarPattern;
+    }
+  | {
+      type: CreateProductAction['setMicrophoneInterface'];
+      payload: MicrophoneInterface;
+    }
+  | {
+      type: CreateProductAction['setMicrophoneColor'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMicrophoneColorValid']
+        | CreateProductAction['setIsMicrophoneColorFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setMicrophoneFrequencyResponse'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMicrophoneFrequencyResponseValid']
+        | CreateProductAction['setIsMicrophoneFrequencyResponseFocused'];
+      payload: boolean;
+    }
   // page 3
   | {
       type: CreateProductAction['setCurrentlySelectedAdditionalFieldIndex'];
@@ -2097,6 +2168,9 @@ export type {
   LaptopSpecifications,
   MemoryType,
   MemoryUnit,
+  MicrophoneInterface,
+  MicrophonePolarPattern,
+  MicrophoneType,
   MobileOs,
   MotherboardFormFactor,
   MotherboardSpecifications,
