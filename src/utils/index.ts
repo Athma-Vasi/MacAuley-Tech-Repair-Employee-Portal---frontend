@@ -1050,7 +1050,7 @@ function returnProductWeightValidationText({
     ],
     [
       productWeightNotEmptyOrAllZeroesRegex.test(content),
-      'Must not be empty or all zeroes.',
+      'Must not be empty or have zero value.',
     ],
     [
       productWeightCharacterRegex.test(content),
@@ -1086,8 +1086,13 @@ function returnProductDimensionsValidationText({
   );
   const productDimensionsNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
   const productDimensionsCharacterRegex = /^[0-9.]+$/;
+  const productDimensionsSingleDigitBeforeDecimal = content.includes('.')
+    ? content.split('.')[0].length === 3
+    : Number(content) < 1000;
   // test for 23. or 0.
-  const productDimensionsSingleDecimalRegex = /^[0-9]+[.]{1}$/;
+  const productDimensionsSingleDecimalRegex = content.includes('.')
+    ? content.at(-1) === '.'
+    : false;
 
   const productDimensionsRegexTupleArr: [boolean, string][] = [
     [
@@ -1096,16 +1101,17 @@ function returnProductDimensionsValidationText({
     ],
     [
       productDimensionsNotEmptyOrAllZeroesRegex.test(content),
-      'Must not be empty or all zeroes.',
+      'Must not be empty or have zero value.',
     ],
     [
       productDimensionsCharacterRegex.test(content),
       'Must only contain numbers and periods.',
     ],
     [
-      !productDimensionsSingleDecimalRegex.test(content),
-      'Must not end with a decimal.',
+      productDimensionsSingleDigitBeforeDecimal,
+      'Must only have 3 digits before decimal.',
     ],
+    [!productDimensionsSingleDecimalRegex, 'Must not end with a decimal.'],
   ];
 
   const validationText = productDimensionsRegexTupleArr
@@ -1144,7 +1150,7 @@ function returnLargeIntegerValidationText({
     ],
     [
       largeIntegerNotEmptyOrAllZeroesRegex.test(content),
-      'Must not be empty or all zeroes.',
+      'Must not be empty or have zero value.',
     ],
   ];
 
@@ -1184,7 +1190,7 @@ function returnSmallIntegerValidationText({
     ],
     [
       smallIntegerNotEmptyOrAllZeroesRegex.test(content),
-      'Must not be empty or all zeroes.',
+      'Must not be empty or have zero value.',
     ],
   ];
 
@@ -1224,7 +1230,7 @@ function returnMediumIntegerValidationText({
     ],
     [
       mediumIntegerNotEmptyOrAllZeroesRegex.test(content),
-      'Must not be empty or all zeroes.',
+      'Must not be empty or have zero value.',
     ],
   ];
 
@@ -1243,18 +1249,23 @@ function returnMediumIntegerValidationText({
 function returnCpuFrequencyValidationText({
   content,
   contentKind,
-  maxLength = 5,
+  maxLength = 4,
   minLength = 1,
 }: RegexValidationProps): string {
-  // /^(?!^$|^0*$)[0-9]{1,2}(\.[0-9]{1,2})?$/
+  // /^(?!^$|^0*$)[0-9]{1}(\.[0-9]{1,2})?$/
 
   const cpuFrequencyLengthRegex = new RegExp(
     `^(?=.{${minLength},${maxLength}}$)`
   );
   const cpuFrequencyCharacterRegex = /^[0-9.]+$/;
-  const cpuFrequencyNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
+  const cpuFrequencyZeroValue = Number(content) === 0;
+  const cpuFrequencySingleDigitBeforeDecimal = content.includes('.')
+    ? content.split('.')[0].length === 1
+    : Number(content) < 10;
   // test for 23. or 0.
-  const cpuFrequencySingleDecimalRegex = /^[0-9]+[.]{1}$/;
+  const cpuFrequencySingleDecimalRegex = content.includes('.')
+    ? content.at(-1) === '.'
+    : false;
 
   const cpuFrequencyRegexTupleArr: [boolean, string][] = [
     [
@@ -1265,14 +1276,12 @@ function returnCpuFrequencyValidationText({
       cpuFrequencyCharacterRegex.test(content),
       'Must only contain numbers and periods.',
     ],
+    [!cpuFrequencyZeroValue, 'Must not be empty or have zero value.'],
     [
-      cpuFrequencyNotEmptyOrAllZeroesRegex.test(content),
-      'Must not be empty or all zeroes.',
+      cpuFrequencySingleDigitBeforeDecimal,
+      'Must only have a single digit before the decimal.',
     ],
-    [
-      !cpuFrequencySingleDecimalRegex.test(content),
-      'Must not end with a decimal.',
-    ],
+    [!cpuFrequencySingleDecimalRegex, 'Must not end with a decimal.'],
   ];
 
   const validationText = cpuFrequencyRegexTupleArr
@@ -1313,7 +1322,7 @@ function returnRamVoltageValidationText({
     ],
     [
       ramVoltageNotEmptyOrAllZeroesRegex.test(content),
-      'Must not be empty or all zeroes.',
+      'Must not be empty or have zero value.',
     ],
     [
       !ramVoltageSingleDecimalRegex.test(content),

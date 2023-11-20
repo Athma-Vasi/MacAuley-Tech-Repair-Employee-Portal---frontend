@@ -104,7 +104,7 @@ const PRODUCT_DIMENSIONS_REGEX = /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/;
  * - ^ and $ ensure that the entire string matches the regex.
  * - ex: 12.34 or 12
  */
-const CPU_FREQUENCY_REGEX = /^(?!^$|^0*$)[0-9]{1,2}(\.[0-9]{1,2})?$/;
+const CPU_FREQUENCY_REGEX = /^(?!^$|^0*$)[0-9]{1}(\.[0-9]{1,2})?$/;
 
 /**
  * -/^(?!^$|^0*$)[0-9]{1,2}$/

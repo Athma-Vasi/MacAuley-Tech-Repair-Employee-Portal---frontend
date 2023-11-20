@@ -86,11 +86,19 @@ const initialCreateProductState: CreateProductState = {
   gpuChipset: '',
   isGpuChipsetFocused: false,
   isGpuChipsetValid: false,
-  gpuMemoryCapacity: 0,
+  gpuMemoryCapacity: '',
+  isGpuMemoryCapacityFocused: false,
+  isGpuMemoryCapacityValid: false,
   gpuMemoryCapacityUnit: 'GB',
-  gpuCoreClock: 0, // MHz
-  gpuBoostClock: 0, // MHz
-  gpuTdp: 0,
+  gpuCoreClock: '', // MHz
+  isGpuCoreClockFocused: false,
+  isGpuCoreClockValid: false,
+  gpuBoostClock: '', // MHz
+  isGpuBoostClockFocused: false,
+  isGpuBoostClockValid: false,
+  gpuTdp: '',
+  isGpuTdpFocused: false,
+  isGpuTdpValid: false,
 
   // page 2 -> specifications -> motherboard
   motherboardSocket: '',
@@ -346,10 +354,18 @@ const createProductAction: CreateProductAction = {
   setIsGpuChipsetValid: 'setIsGpuChipsetValid',
   setIsGpuChipsetFocused: 'setIsGpuChipsetFocused',
   setGpuMemoryCapacity: 'setGpuMemoryCapacity',
+  setIsGpuMemoryCapacityValid: 'setIsGpuMemoryCapacityValid',
+  setIsGpuMemoryCapacityFocused: 'setIsGpuMemoryCapacityFocused',
   setGpuMemoryCapacityUnit: 'setGpuMemoryCapacityUnit',
   setGpuCoreClock: 'setGpuCoreClock',
+  setIsGpuCoreClockValid: 'setIsGpuCoreClockValid',
+  setIsGpuCoreClockFocused: 'setIsGpuCoreClockFocused',
   setGpuBoostClock: 'setGpuBoostClock',
+  setIsGpuBoostClockValid: 'setIsGpuBoostClockValid',
+  setIsGpuBoostClockFocused: 'setIsGpuBoostClockFocused',
   setGpuTdp: 'setGpuTdp',
+  setIsGpuTdpValid: 'setIsGpuTdpValid',
+  setIsGpuTdpFocused: 'setIsGpuTdpFocused',
 
   // page 2 -> specifications -> motherboard
   setMotherboardSocket: 'setMotherboardSocket',
@@ -883,6 +899,8 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> gpu
+
+    // page 2 -> specifications -> gpu -> chipset
     case createProductAction.setGpuChipset:
       return {
         ...state,
@@ -898,30 +916,78 @@ function createProductReducer(
         ...state,
         isGpuChipsetValid: action.payload,
       };
+
+    // page 2 -> specifications -> gpu -> memory
     case createProductAction.setGpuMemoryCapacity:
       return {
         ...state,
         gpuMemoryCapacity: action.payload,
+      };
+    case createProductAction.setIsGpuMemoryCapacityFocused:
+      return {
+        ...state,
+        isGpuMemoryCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsGpuMemoryCapacityValid:
+      return {
+        ...state,
+        isGpuMemoryCapacityValid: action.payload,
       };
     case createProductAction.setGpuMemoryCapacityUnit:
       return {
         ...state,
         gpuMemoryCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> gpu -> core clock
     case createProductAction.setGpuCoreClock:
       return {
         ...state,
         gpuCoreClock: action.payload,
       };
+    case createProductAction.setIsGpuCoreClockFocused:
+      return {
+        ...state,
+        isGpuCoreClockFocused: action.payload,
+      };
+    case createProductAction.setIsGpuCoreClockValid:
+      return {
+        ...state,
+        isGpuCoreClockValid: action.payload,
+      };
+
+    //  page 2 -> specifications -> gpu -> boost clock
     case createProductAction.setGpuBoostClock:
       return {
         ...state,
         gpuBoostClock: action.payload,
       };
+    case createProductAction.setIsGpuBoostClockFocused:
+      return {
+        ...state,
+        isGpuBoostClockFocused: action.payload,
+      };
+    case createProductAction.setIsGpuBoostClockValid:
+      return {
+        ...state,
+        isGpuBoostClockValid: action.payload,
+      };
+
+    // page 2 -> specifications -> gpu -> tdp
     case createProductAction.setGpuTdp:
       return {
         ...state,
         gpuTdp: action.payload,
+      };
+    case createProductAction.setIsGpuTdpFocused:
+      return {
+        ...state,
+        isGpuTdpFocused: action.payload,
+      };
+    case createProductAction.setIsGpuTdpValid:
+      return {
+        ...state,
+        isGpuTdpValid: action.payload,
       };
 
     // page 2 -> specifications -> motherboard

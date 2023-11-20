@@ -254,10 +254,18 @@ function CreateProduct() {
     isGpuChipsetValid,
     isGpuChipsetFocused,
     gpuMemoryCapacity,
+    isGpuMemoryCapacityFocused,
+    isGpuMemoryCapacityValid,
     gpuMemoryCapacityUnit,
     gpuCoreClock,
+    isGpuCoreClockFocused,
+    isGpuCoreClockValid,
     gpuBoostClock,
+    isGpuBoostClockFocused,
+    isGpuBoostClockValid,
     gpuTdp,
+    isGpuTdpFocused,
+    isGpuTdpValid,
 
     // page 2 -> specifications -> motherboard
     motherboardSocket,
@@ -1158,6 +1166,46 @@ function CreateProduct() {
     });
   }, [gpuChipset]);
 
+  // validate GPU memory capacity on every change
+  useEffect(() => {
+    const isValid = SMALL_INTEGER_REGEX.test(gpuMemoryCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsGpuMemoryCapacityValid,
+      payload: isValid,
+    });
+  }, [gpuMemoryCapacity]);
+
+  // validate GPU core clock on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(gpuCoreClock);
+
+    createProductDispatch({
+      type: createProductAction.setIsGpuCoreClockValid,
+      payload: isValid,
+    });
+  }, [gpuCoreClock]);
+
+  // validate GPU boost clock on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(gpuBoostClock);
+
+    createProductDispatch({
+      type: createProductAction.setIsGpuBoostClockValid,
+      payload: isValid,
+    });
+  }, [gpuBoostClock]);
+
+  // validate GPU TDP on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(gpuTdp);
+
+    createProductDispatch({
+      type: createProductAction.setIsGpuTdpValid,
+      payload: isValid,
+    });
+  }, [gpuTdp]);
+
   // validate motherboard socket on every change
   useEffect(() => {
     const isValid = MOTHERBOARD_SOCKET_REGEX.test(motherboardSocket);
@@ -1918,7 +1966,7 @@ function CreateProduct() {
 
   // page 1 -> quantity
 
-  // page 1 -> quantity -> accessible text input elements
+  // page 1 -> quantity -> screenreader accessible text input elements
   const [quantityInputErrorText, quantityInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'quantity',
@@ -1967,7 +2015,7 @@ function CreateProduct() {
 
   // page 1 -> weight
 
-  // page 1 -> weight -> accessible text input elements
+  // page 1 -> weight -> screenreader accessible text input elements
   const [weightInputErrorText, weightInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'weight',
@@ -2037,7 +2085,7 @@ function CreateProduct() {
 
   // page 1 -> dimensions -> length
 
-  // page 1 -> dimensions -> length -> accessible text input elements
+  // page 1 -> dimensions -> length -> screenreader accessible text input elements
   const [dimensionLengthInputErrorText, dimensionLengthInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'dimension length',
@@ -2104,7 +2152,7 @@ function CreateProduct() {
 
   // page 1 -> dimensions -> width
 
-  // page 1 -> dimensions -> width -> accessible text input elements
+  // page 1 -> dimensions -> width -> screenreader accessible text input elements
   const [dimensionWidthInputErrorText, dimensionWidthInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'dimension width',
@@ -2171,7 +2219,7 @@ function CreateProduct() {
 
   // page 1 -> dimensions -> height
 
-  // page 1 -> dimensions -> height -> accessible text input elements
+  // page 1 -> dimensions -> height -> screenreader accessible text input elements
   const [dimensionHeightInputErrorText, dimensionHeightInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'dimension height',
@@ -2370,7 +2418,7 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu frequency
 
-  // page 2 -> specifications -> cpu -> cpu frequency -> accessible text input elements
+  // page 2 -> specifications -> cpu -> cpu frequency -> screenreader accessible text input elements
   const [cpuFrequencyInputErrorText, cpuFrequencyInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'cpu frequency',
@@ -2392,7 +2440,7 @@ function CreateProduct() {
       },
       inputText: cpuFrequency,
       isValidInputText: isCpuFrequencyValid,
-      label: 'CPU Frequency',
+      label: 'CPU Frequency (GHz)',
       onBlur: () => {
         createProductDispatch({
           type: createProductAction.setIsCpuFrequencyFocused,
@@ -2411,7 +2459,7 @@ function CreateProduct() {
           payload: true,
         });
       },
-      placeholder: 'Enter CPU frequency',
+      placeholder: 'Format: 0.0 or 0.00',
       required: true,
       semanticName: 'cpu frequency',
     },
@@ -2419,7 +2467,7 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu cores
 
-  // page 2 -> specifications -> cpu -> cpu cores -> accessible text input elements
+  // page 2 -> specifications -> cpu -> cpu cores -> screenreader accessible text input elements
   const [cpuCoresInputErrorText, cpuCoresInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'cpu cores',
@@ -2468,7 +2516,7 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu L1 cache capacity
 
-  // page 2 -> specifications -> cpu -> cpu L1 cache capacity -> accessible text input elements
+  // page 2 -> specifications -> cpu -> cpu L1 cache capacity -> screenreader accessible text input elements
   const [cpuL1CacheCapacityInputErrorText, cpuL1CacheCapacityInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'cpu L1 cache capacity',
@@ -2538,7 +2586,7 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu L2 cache capacity
 
-  // page 2 -> specifications -> cpu -> cpu L2 cache capacity -> accessible text input elements
+  // page 2 -> specifications -> cpu -> cpu L2 cache capacity -> screenreader accessible text input elements
   const [cpuL2CacheCapacityInputErrorText, cpuL2CacheCapacityInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'cpu L2 cache capacity',
@@ -2608,7 +2656,7 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu L3 cache capacity
 
-  // page 2 -> specifications -> cpu -> cpu L3 cache capacity -> accessible text input elements
+  // page 2 -> specifications -> cpu -> cpu L3 cache capacity -> screenreader accessible text input elements
   const [cpuL3CacheCapacityInputErrorText, cpuL3CacheCapacityInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'cpu L3 cache capacity',
@@ -2678,7 +2726,7 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu wattage
 
-  // page 2 -> specifications -> cpu -> cpu wattage -> accessible text input elements
+  // page 2 -> specifications -> cpu -> cpu wattage -> screenreader accessible text input elements
   const [cpuWattageInputErrorText, cpuWattageInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'cpu wattage',
@@ -2782,26 +2830,53 @@ function CreateProduct() {
 
   // page 2 -> specifications -> gpu -> gpu memory capacity
 
-  // page 2 -> specifications -> gpu -> gpu memory capacity -> number input element
-  const createdGpuMemoryCapacityNumberInput = (
-    <NumberInput
-      label="GPU Memory Capacity"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setGpuMemoryCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={gpuMemoryCapacity}
-      w={330}
-      withAsterisk
-    />
+  // page 2 -> specifications -> gpu -> gpu memory capacity -> screenreader accessible text input elements
+  const [gpuMemoryCapacityInputErrorText, gpuMemoryCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu memory capacity',
+      inputText: gpuMemoryCapacity,
+      isInputTextFocused: isGpuMemoryCapacityFocused,
+      isValidInputText: isGpuMemoryCapacityValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: gpuMemoryCapacity,
+        contentKind: 'gpu memory capacity',
+      }),
+    });
+
+  // page 2 -> specifications -> gpu -> gpu memory capacity -> text input element creator
+  const [createdGpuMemoryCapacityTextInput] = returnAccessibleTextInputElements(
+    [
+      {
+        description: {
+          error: gpuMemoryCapacityInputErrorText,
+          valid: gpuMemoryCapacityInputValidText,
+        },
+        inputText: gpuMemoryCapacity,
+        isValidInputText: isGpuMemoryCapacityValid,
+        label: 'GPU Memory Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsGpuMemoryCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setGpuMemoryCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsGpuMemoryCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 00',
+        required: true,
+        semanticName: 'gpu memory capacity',
+      },
+    ]
   );
 
   // page 2 -> specifications -> gpu -> gpu memory capacity unit
@@ -2826,75 +2901,150 @@ function CreateProduct() {
 
   // page 2 -> specifications -> gpu -> gpu core clock
 
-  // page 2 -> specifications -> gpu -> gpu core clock -> number input element
-  const createdGpuCoreClockNumberInput = (
-    <NumberInput
-      label="GPU Core Clock (MHz)"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> gpu -> gpu core clock -> screenreader accessible text input elements
+  const [gpuCoreClockInputErrorText, gpuCoreClockInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu core clock',
+      inputText: gpuCoreClock,
+      isInputTextFocused: isGpuCoreClockFocused,
+      isValidInputText: isGpuCoreClockValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: gpuCoreClock,
+        contentKind: 'gpu core clock',
+      }),
+    });
+
+  // page 2 -> specifications -> gpu -> gpu core clock -> text input element creator
+  const [createdGpuCoreClockTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: gpuCoreClockInputErrorText,
+        valid: gpuCoreClockInputValidText,
+      },
+      inputText: gpuCoreClock,
+      isValidInputText: isGpuCoreClockValid,
+      label: 'GPU Core Clock (MHz)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuCoreClockFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setGpuCoreClock,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={gpuCoreClock}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuCoreClockFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'gpu core clock',
+    },
+  ]);
 
   // page 2 -> specifications -> gpu -> gpu boost clock
 
-  // page 2 -> specifications -> gpu -> gpu boost clock -> number input element
-  const createdGpuBoostClockNumberInput = (
-    <NumberInput
-      label="GPU Boost Clock (MHz)"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> gpu -> gpu boost clock -> screenreader accessible text input elements
+  const [gpuBoostClockInputErrorText, gpuBoostClockInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu boost clock',
+      inputText: gpuBoostClock,
+      isInputTextFocused: isGpuBoostClockFocused,
+      isValidInputText: isGpuBoostClockValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: gpuBoostClock,
+        contentKind: 'gpu boost clock',
+      }),
+    });
+
+  // page 2 -> specifications -> gpu -> gpu boost clock -> text input element creator
+  const [createdGpuBoostClockTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: gpuBoostClockInputErrorText,
+        valid: gpuBoostClockInputValidText,
+      },
+      inputText: gpuBoostClock,
+      isValidInputText: isGpuBoostClockValid,
+      label: 'GPU Boost Clock (MHz)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuBoostClockFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setGpuBoostClock,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={gpuBoostClock}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuBoostClockFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'gpu boost clock',
+    },
+  ]);
 
   // page 2 -> specifications -> gpu -> gpu wattage
 
-  // page 2 -> specifications -> gpu -> gpu wattage -> number input element
-  const createdGpuWattageNumberInput = (
-    <NumberInput
-      label="GPU Wattage (W)"
-      max={999}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> gpu -> gpu wattage -> screenreader accessible text input elements
+  const [gpuTdpInputErrorText, gpuTdpInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu wattage',
+      inputText: gpuTdp,
+      isInputTextFocused: isGpuTdpFocused,
+      isValidInputText: isGpuTdpValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: gpuTdp,
+        contentKind: 'gpu wattage',
+      }),
+    });
+
+  // page 2 -> specifications -> gpu -> gpu wattage -> text input element creator
+  const [createdGpuWattageTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: gpuTdpInputErrorText,
+        valid: gpuTdpInputValidText,
+      },
+      inputText: gpuTdp,
+      isValidInputText: isGpuTdpValid,
+      label: 'GPU Wattage (W)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuTdpFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setGpuTdp,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={gpuTdp}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuTdpFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'gpu wattage',
+    },
+  ]);
 
   // page 2 -> specifications -> motherboard
 
@@ -5814,11 +5964,11 @@ function CreateProduct() {
         <Title order={4}>GPU Specifications</Title>
       </Group>
       {createdGpuChipsetTextInput}
-      {createdGpuMemoryCapacityNumberInput}
+      {createdGpuMemoryCapacityTextInput}
       {createdGpuMemoryCapacityUnitSelectInput}
-      {createdGpuWattageNumberInput}
-      {createdGpuCoreClockNumberInput}
-      {createdGpuBoostClockNumberInput}
+      {createdGpuWattageTextInput}
+      {createdGpuCoreClockTextInput}
+      {createdGpuBoostClockTextInput}
     </FormLayoutWrapper>
   );
 
@@ -6254,7 +6404,7 @@ function CreateProduct() {
       {
         inputName: 'GPU Memory Capacity',
         inputValue: gpuMemoryCapacity,
-        isInputValueValid: gpuMemoryCapacity !== 0,
+        isInputValueValid: isGpuMemoryCapacityValid,
       },
       {
         inputName: 'GPU Memory Capacity Unit',
@@ -6263,17 +6413,17 @@ function CreateProduct() {
       {
         inputName: 'GPU Core Clock',
         inputValue: gpuCoreClock,
-        isInputValueValid: gpuCoreClock !== 0,
+        isInputValueValid: isGpuCoreClockValid,
       },
       {
         inputName: 'GPU Boost Clock',
         inputValue: gpuBoostClock,
-        isInputValueValid: gpuBoostClock !== 0,
+        isInputValueValid: isGpuBoostClockValid,
       },
       {
         inputName: 'GPU Wattage',
         inputValue: gpuTdp,
-        isInputValueValid: gpuTdp !== 0,
+        isInputValueValid: isGpuTdpValid,
       },
     ],
   };

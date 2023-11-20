@@ -408,11 +408,19 @@ type CreateProductState = {
   gpuChipset: string;
   isGpuChipsetValid: boolean;
   isGpuChipsetFocused: boolean;
-  gpuMemoryCapacity: number;
+  gpuMemoryCapacity: string;
+  isGpuMemoryCapacityValid: boolean;
+  isGpuMemoryCapacityFocused: boolean;
   gpuMemoryCapacityUnit: MemoryUnit;
-  gpuCoreClock: number;
-  gpuBoostClock: number;
-  gpuTdp: number;
+  gpuCoreClock: string;
+  isGpuCoreClockValid: boolean;
+  isGpuCoreClockFocused: boolean;
+  gpuBoostClock: string;
+  isGpuBoostClockValid: boolean;
+  isGpuBoostClockFocused: boolean;
+  gpuTdp: string;
+  isGpuTdpValid: boolean;
+  isGpuTdpFocused: boolean;
 
   // page 2 -> specifications -> motherboard
   motherboardSocket: string;
@@ -667,10 +675,18 @@ type CreateProductAction = {
   setIsGpuChipsetValid: 'setIsGpuChipsetValid';
   setIsGpuChipsetFocused: 'setIsGpuChipsetFocused';
   setGpuMemoryCapacity: 'setGpuMemoryCapacity';
+  setIsGpuMemoryCapacityValid: 'setIsGpuMemoryCapacityValid';
+  setIsGpuMemoryCapacityFocused: 'setIsGpuMemoryCapacityFocused';
   setGpuMemoryCapacityUnit: 'setGpuMemoryCapacityUnit';
   setGpuCoreClock: 'setGpuCoreClock';
+  setIsGpuCoreClockValid: 'setIsGpuCoreClockValid';
+  setIsGpuCoreClockFocused: 'setIsGpuCoreClockFocused';
   setGpuBoostClock: 'setGpuBoostClock';
+  setIsGpuBoostClockValid: 'setIsGpuBoostClockValid';
+  setIsGpuBoostClockFocused: 'setIsGpuBoostClockFocused';
   setGpuTdp: 'setGpuTdp';
+  setIsGpuTdpValid: 'setIsGpuTdpValid';
+  setIsGpuTdpFocused: 'setIsGpuTdpFocused';
 
   // page 2 -> specifications -> motherboard
   setMotherboardSocket: 'setMotherboardSocket';
@@ -1083,7 +1099,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setGpuMemoryCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsGpuMemoryCapacityValid']
+        | CreateProductAction['setIsGpuMemoryCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setGpuMemoryCapacityUnit'];
@@ -1091,15 +1113,33 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setGpuCoreClock'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsGpuCoreClockValid']
+        | CreateProductAction['setIsGpuCoreClockFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setGpuBoostClock'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsGpuBoostClockValid']
+        | CreateProductAction['setIsGpuBoostClockFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setGpuTdp'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsGpuTdpValid']
+        | CreateProductAction['setIsGpuTdpFocused'];
+      payload: boolean;
     }
   // specifications -> motherboard
   | {

@@ -1,19 +1,18 @@
 import {
   Group,
-  MantineNumberSize,
   MantineSize,
   Popover,
   Stack,
   Text,
   TextInput,
-  useMantineTheme,
 } from '@mantine/core';
 import { ReactNode, useState } from 'react';
 import React from 'react';
 import { TbCheck, TbRefresh } from 'react-icons/tb';
 
+import { COLORS_SWATCHES } from '../../constants/data';
 import { useGlobalState } from '../../hooks';
-import { splitCamelCase } from '../../utils';
+import { returnThemeColors, splitCamelCase } from '../../utils';
 
 type AccessibleTextInputCreatorInfo = {
   ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
@@ -54,13 +53,13 @@ type TextInputWrapperProps = {
 
 function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
-  const { colors } = useMantineTheme();
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-      padding,
-    },
+    globalState: { themeObject, padding },
   } = useGlobalState();
+
+  const {
+    generalColors: { greenColorShade, grayColorShade },
+  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const {
     ariaAutoComplete = 'none',
@@ -103,14 +102,11 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     label
   );
 
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
-
   const leftIcon = isValidInputText ? (
     icon ? (
       icon
     ) : (
-      <TbCheck color={colors.green[colorShade]} size={18} />
+      <TbCheck color={greenColorShade} size={18} />
     )
   ) : null;
 
@@ -122,7 +118,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
         aria-label={`Reset ${splitCamelCase(
           semanticName
         )} value to ${initialInputValue}`}
-        color={colors.gray[colorScheme === 'light' ? 5 : 3]}
+        color={grayColorShade}
         size={18}
         onClick={rightSectionOnClick}
       />
@@ -154,7 +150,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
             aria-invalid={isValidInputText ? false : true}
             aria-required={required}
             autoComplete={autoComplete}
-            color="dark"
+            color={grayColorShade}
             disabled={disabled}
             error={!isValidInputText && inputText !== initialInputValue}
             icon={leftIcon}
