@@ -1028,41 +1028,6 @@ function returnBrandNameValidationText({
     : '';
 }
 
-function returnProductQuantityValidationText({
-  content,
-  contentKind,
-  maxLength = 6,
-  minLength = 1,
-}: RegexValidationProps): string {
-  // /^[0-9]{1,6}$/
-  const productQuantityLengthRegex = new RegExp(
-    `^(?=.{${minLength},${maxLength}}$)`
-  );
-  const productQuantityCharacterRegex = /^[0-9]+$/;
-
-  const productQuantityRegexTupleArr: [boolean, string][] = [
-    [
-      productQuantityLengthRegex.test(content),
-      `Must be between ${minLength} and ${maxLength} characters.`,
-    ],
-    [
-      productQuantityCharacterRegex.test(content),
-      'Must only contain whole numbers.',
-    ],
-  ];
-
-  const validationText = productQuantityRegexTupleArr
-    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
-    .map(([_, validationText]) => validationText)
-    .join(' ');
-
-  return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
-    : '';
-}
-
 function returnProductWeightValidationText({
   content,
   contentKind,
@@ -1144,6 +1109,219 @@ function returnProductDimensionsValidationText({
   ];
 
   const validationText = productDimensionsRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnLargeIntegerValidationText({
+  content,
+  contentKind,
+  maxLength = 6,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^(?!^$|^0*$)[0-9]{1,6}$/
+  const largeIntegerLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const largeIntegerCharacterRegex = /^[0-9]+$/;
+  const largeIntegerNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
+
+  const largeIntegerRegexTupleArr: [boolean, string][] = [
+    [
+      largeIntegerLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      largeIntegerCharacterRegex.test(content),
+      'Must only contain whole numbers.',
+    ],
+    [
+      largeIntegerNotEmptyOrAllZeroesRegex.test(content),
+      'Must not be empty or all zeroes.',
+    ],
+  ];
+
+  const validationText = largeIntegerRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnSmallIntegerValidationText({
+  content,
+  contentKind,
+  maxLength = 2,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^(?!^$|^0*$)[0-9]{1,2}$/
+  const smallIntegerLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const smallIntegerCharacterRegex = /^[0-9]+$/;
+  const smallIntegerNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
+
+  const smallIntegerRegexTupleArr: [boolean, string][] = [
+    [
+      smallIntegerLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      smallIntegerCharacterRegex.test(content),
+      'Must only contain whole numbers.',
+    ],
+    [
+      smallIntegerNotEmptyOrAllZeroesRegex.test(content),
+      'Must not be empty or all zeroes.',
+    ],
+  ];
+
+  const validationText = smallIntegerRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnMediumIntegerValidationText({
+  content,
+  contentKind,
+  maxLength = 4,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^(?!^$|^0*$)[0-9]{1,4}$/
+  const mediumIntegerLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const mediumIntegerCharacterRegex = /^[0-9]+$/;
+  const mediumIntegerNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
+
+  const mediumIntegerRegexTupleArr: [boolean, string][] = [
+    [
+      mediumIntegerLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      mediumIntegerCharacterRegex.test(content),
+      'Must only contain whole numbers.',
+    ],
+    [
+      mediumIntegerNotEmptyOrAllZeroesRegex.test(content),
+      'Must not be empty or all zeroes.',
+    ],
+  ];
+
+  const validationText = mediumIntegerRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnCpuFrequencyValidationText({
+  content,
+  contentKind,
+  maxLength = 5,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^(?!^$|^0*$)[0-9]{1,2}(\.[0-9]{1,2})?$/
+
+  const cpuFrequencyLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const cpuFrequencyCharacterRegex = /^[0-9.]+$/;
+  const cpuFrequencyNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
+  // test for 23. or 0.
+  const cpuFrequencySingleDecimalRegex = /^[0-9]+[.]{1}$/;
+
+  const cpuFrequencyRegexTupleArr: [boolean, string][] = [
+    [
+      cpuFrequencyLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      cpuFrequencyCharacterRegex.test(content),
+      'Must only contain numbers and periods.',
+    ],
+    [
+      cpuFrequencyNotEmptyOrAllZeroesRegex.test(content),
+      'Must not be empty or all zeroes.',
+    ],
+    [
+      !cpuFrequencySingleDecimalRegex.test(content),
+      'Must not end with a decimal.',
+    ],
+  ];
+
+  const validationText = cpuFrequencyRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnRamVoltageValidationText({
+  content,
+  contentKind,
+  maxLength = 4,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^(?!^$|^0*$)[0-1]{1}(\.[0-9]{1,2})?$/
+  const ramVoltageLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const ramVoltageCharacterRegex = /^[0-9.]+$/;
+  const ramVoltageNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
+  // test for 23. or 0.
+  const ramVoltageSingleDecimalRegex = /^[0-9]+[.]{1}$/;
+
+  const ramVoltageRegexTupleArr: [boolean, string][] = [
+    [
+      ramVoltageLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      ramVoltageCharacterRegex.test(content),
+      'Must only contain numbers and periods.',
+    ],
+    [
+      ramVoltageNotEmptyOrAllZeroesRegex.test(content),
+      'Must not be empty or all zeroes.',
+    ],
+    [
+      !ramVoltageSingleDecimalRegex.test(content),
+      'Must not end with a decimal.',
+    ],
+  ];
+
+  const validationText = ramVoltageRegexTupleArr
     .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
     .map(([_, validationText]) => validationText)
     .join(' ');
@@ -2170,6 +2348,7 @@ export {
   returnBrandNameValidationText,
   returnCityValidationText,
   returnColorVariantValidationText,
+  returnCpuFrequencyValidationText,
   returnDateFullRangeValidationText,
   returnDateNearFutureValidationText,
   returnDateNearPastValidationText,
@@ -2185,6 +2364,8 @@ export {
   returnImageValidationText,
   returnIntegerValidationText,
   returnIsAccessTokenExpired,
+  returnLargeIntegerValidationText,
+  returnMediumIntegerValidationText,
   returnMobileCameraResolutionValidationText,
   returnNameValidationText,
   returnNoteTextValidationText,
@@ -2194,11 +2375,12 @@ export {
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
   returnProductDimensionsValidationText,
-  returnProductQuantityValidationText,
   returnProductWeightValidationText,
   returnRamTimingValidationText,
+  returnRamVoltageValidationText,
   returnSerialIdValidationText,
   returnSliderMarks,
+  returnSmallIntegerValidationText,
   returnSocketChipsetValidationText,
   returnThemeColors,
   returnTimeRailwayValidationText,

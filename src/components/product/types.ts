@@ -382,15 +382,27 @@ type CreateProductState = {
   cpuSocket: string;
   isCpuSocketValid: boolean;
   isCpuSocketFocused: boolean;
-  cpuFrequency: number;
-  cpuCores: number;
-  cpuL1CacheCapacity: number;
+  cpuFrequency: string;
+  isCpuFrequencyValid: boolean;
+  isCpuFrequencyFocused: boolean;
+  cpuCores: string;
+  isCpuCoresValid: boolean;
+  isCpuCoresFocused: boolean;
+  cpuL1CacheCapacity: string;
+  isCpuL1CacheCapacityValid: boolean;
+  isCpuL1CacheCapacityFocused: boolean;
   cpuL1CacheCapacityUnit: MemoryUnit;
-  cpuL2CacheCapacity: number;
+  cpuL2CacheCapacity: string;
+  isCpuL2CacheCapacityValid: boolean;
+  isCpuL2CacheCapacityFocused: boolean;
   cpuL2CacheCapacityUnit: MemoryUnit;
-  cpuL3CacheCapacity: number;
+  cpuL3CacheCapacity: string;
+  isCpuL3CacheCapacityValid: boolean;
+  isCpuL3CacheCapacityFocused: boolean;
   cpuL3CacheCapacityUnit: MemoryUnit;
-  cpuWattage: number;
+  cpuWattage: string;
+  isCpuWattageValid: boolean;
+  isCpuWattageFocused: boolean;
 
   // page 2 -> specifications -> gpu
   gpuChipset: string;
@@ -629,14 +641,26 @@ type CreateProductAction = {
   setIsCpuSocketValid: 'setIsCpuSocketValid';
   setIsCpuSocketFocused: 'setIsCpuSocketFocused';
   setCpuFrequency: 'setCpuFrequency';
+  setIsCpuFrequencyValid: 'setIsCpuFrequencyValid';
+  setIsCpuFrequencyFocused: 'setIsCpuFrequencyFocused';
   setCpuCores: 'setCpuCores';
+  setIsCpuCoresValid: 'setIsCpuCoresValid';
+  setIsCpuCoresFocused: 'setIsCpuCoresFocused';
   setCpuL1CacheCapacity: 'setCpuL1CacheCapacity';
+  setIsCpuL1CacheCapacityValid: 'setIsCpuL1CacheCapacityValid';
+  setIsCpuL1CacheCapacityFocused: 'setIsCpuL1CacheCapacityFocused';
   setCpuL1CacheCapacityUnit: 'setCpuL1CacheCapacityUnit';
   setCpuL2CacheCapacity: 'setCpuL2CacheCapacity';
+  setIsCpuL2CacheCapacityValid: 'setIsCpuL2CacheCapacityValid';
+  setIsCpuL2CacheCapacityFocused: 'setIsCpuL2CacheCapacityFocused';
   setCpuL2CacheCapacityUnit: 'setCpuL2CacheCapacityUnit';
   setCpuL3CacheCapacity: 'setCpuL3CacheCapacity';
+  setIsCpuL3CacheCapacityValid: 'setIsCpuL3CacheCapacityValid';
+  setIsCpuL3CacheCapacityFocused: 'setIsCpuL3CacheCapacityFocused';
   setCpuL3CacheCapacityUnit: 'setCpuL3CacheCapacityUnit';
   setCpuWattage: 'setCpuWattage';
+  setIsCpuWattageValid: 'setIsCpuWattageValid';
+  setIsCpuWattageFocused: 'setIsCpuWattageFocused';
 
   // page 2 -> specifications -> gpu
   setGpuChipset: 'setGpuChipset';
@@ -994,18 +1018,40 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setCpuFrequency'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsCpuFrequencyValid']
+        | CreateProductAction['setIsCpuFrequencyFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setCpuCores'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsCpuCoresValid']
+        | CreateProductAction['setIsCpuCoresFocused'];
+      payload: boolean;
     }
   | {
       type:
         | CreateProductAction['setCpuL1CacheCapacity']
         | CreateProductAction['setCpuL2CacheCapacity']
         | CreateProductAction['setCpuL3CacheCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsCpuL1CacheCapacityValid']
+        | CreateProductAction['setIsCpuL1CacheCapacityFocused']
+        | CreateProductAction['setIsCpuL2CacheCapacityValid']
+        | CreateProductAction['setIsCpuL2CacheCapacityFocused']
+        | CreateProductAction['setIsCpuL3CacheCapacityValid']
+        | CreateProductAction['setIsCpuL3CacheCapacityFocused'];
+      payload: boolean;
     }
   | {
       type:
@@ -1016,7 +1062,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setCpuWattage'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsCpuWattageValid']
+        | CreateProductAction['setIsCpuWattageFocused'];
+      payload: boolean;
     }
   // specifications -> gpu
   | {

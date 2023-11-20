@@ -60,15 +60,27 @@ const initialCreateProductState: CreateProductState = {
   cpuSocket: '',
   isCpuSocketFocused: false,
   isCpuSocketValid: false,
-  cpuFrequency: 0, // GHz
-  cpuCores: 2,
-  cpuL1CacheCapacity: 0,
+  cpuFrequency: '', // GHz
+  isCpuFrequencyFocused: false,
+  isCpuFrequencyValid: false,
+  cpuCores: '',
+  isCpuCoresFocused: false,
+  isCpuCoresValid: false,
+  cpuL1CacheCapacity: '',
+  isCpuL1CacheCapacityFocused: false,
+  isCpuL1CacheCapacityValid: false,
   cpuL1CacheCapacityUnit: 'KB',
-  cpuL2CacheCapacity: 0,
+  cpuL2CacheCapacity: '',
+  isCpuL2CacheCapacityFocused: false,
+  isCpuL2CacheCapacityValid: false,
   cpuL2CacheCapacityUnit: 'KB',
-  cpuL3CacheCapacity: 0,
+  cpuL3CacheCapacity: '',
+  isCpuL3CacheCapacityFocused: false,
+  isCpuL3CacheCapacityValid: false,
   cpuL3CacheCapacityUnit: 'KB',
-  cpuWattage: 0,
+  cpuWattage: '',
+  isCpuWattageFocused: false,
+  isCpuWattageValid: false,
 
   // page 2 -> specifications -> gpu
   gpuChipset: '',
@@ -308,14 +320,26 @@ const createProductAction: CreateProductAction = {
   setIsCpuSocketValid: 'setIsCpuSocketValid',
   setIsCpuSocketFocused: 'setIsCpuSocketFocused',
   setCpuFrequency: 'setCpuFrequency',
+  setIsCpuFrequencyValid: 'setIsCpuFrequencyValid',
+  setIsCpuFrequencyFocused: 'setIsCpuFrequencyFocused',
   setCpuCores: 'setCpuCores',
+  setIsCpuCoresValid: 'setIsCpuCoresValid',
+  setIsCpuCoresFocused: 'setIsCpuCoresFocused',
   setCpuL1CacheCapacity: 'setCpuL1CacheCapacity',
+  setIsCpuL1CacheCapacityValid: 'setIsCpuL1CacheCapacityValid',
+  setIsCpuL1CacheCapacityFocused: 'setIsCpuL1CacheCapacityFocused',
   setCpuL1CacheCapacityUnit: 'setCpuL1CacheCapacityUnit',
   setCpuL2CacheCapacity: 'setCpuL2CacheCapacity',
+  setIsCpuL2CacheCapacityValid: 'setIsCpuL2CacheCapacityValid',
+  setIsCpuL2CacheCapacityFocused: 'setIsCpuL2CacheCapacityFocused',
   setCpuL2CacheCapacityUnit: 'setCpuL2CacheCapacityUnit',
   setCpuL3CacheCapacity: 'setCpuL3CacheCapacity',
+  setIsCpuL3CacheCapacityValid: 'setIsCpuL3CacheCapacityValid',
+  setIsCpuL3CacheCapacityFocused: 'setIsCpuL3CacheCapacityFocused',
   setCpuL3CacheCapacityUnit: 'setCpuL3CacheCapacityUnit',
   setCpuWattage: 'setCpuWattage',
+  setIsCpuWattageValid: 'setIsCpuWattageValid',
+  setIsCpuWattageFocused: 'setIsCpuWattageFocused',
 
   // page 2 -> specifications -> gpu
   setGpuChipset: 'setGpuChipset',
@@ -721,6 +745,8 @@ function createProductReducer(
     // page 2 -> specifications
 
     // page 2 -> specifications -> cpu
+
+    // page 2 -> specifications -> cpu -> socket
     case createProductAction.setCpuSocket:
       return {
         ...state,
@@ -736,50 +762,124 @@ function createProductReducer(
         ...state,
         isCpuSocketValid: action.payload,
       };
+
+    // page 2 -> specifications -> cpu -> frequency
     case createProductAction.setCpuFrequency:
       return {
         ...state,
         cpuFrequency: action.payload,
       };
+    case createProductAction.setIsCpuFrequencyFocused:
+      return {
+        ...state,
+        isCpuFrequencyFocused: action.payload,
+      };
+    case createProductAction.setIsCpuFrequencyValid:
+      return {
+        ...state,
+        isCpuFrequencyValid: action.payload,
+      };
+
+    // page 2 -> specifications -> cpu -> cores
     case createProductAction.setCpuCores:
       return {
         ...state,
         cpuCores: action.payload,
       };
+    case createProductAction.setIsCpuCoresFocused:
+      return {
+        ...state,
+        isCpuCoresFocused: action.payload,
+      };
+    case createProductAction.setIsCpuCoresValid:
+      return {
+        ...state,
+        isCpuCoresValid: action.payload,
+      };
+
+    // page 2 -> specifications -> cpu -> cache
+
+    // page 2 -> specifications -> cpu -> cache -> l1
     case createProductAction.setCpuL1CacheCapacity:
       return {
         ...state,
         cpuL1CacheCapacity: action.payload,
+      };
+    case createProductAction.setIsCpuL1CacheCapacityFocused:
+      return {
+        ...state,
+        isCpuL1CacheCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsCpuL1CacheCapacityValid:
+      return {
+        ...state,
+        isCpuL1CacheCapacityValid: action.payload,
       };
     case createProductAction.setCpuL1CacheCapacityUnit:
       return {
         ...state,
         cpuL1CacheCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> cpu -> cache -> l2
     case createProductAction.setCpuL2CacheCapacity:
       return {
         ...state,
         cpuL2CacheCapacity: action.payload,
+      };
+    case createProductAction.setIsCpuL2CacheCapacityFocused:
+      return {
+        ...state,
+        isCpuL2CacheCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsCpuL2CacheCapacityValid:
+      return {
+        ...state,
+        isCpuL2CacheCapacityValid: action.payload,
       };
     case createProductAction.setCpuL2CacheCapacityUnit:
       return {
         ...state,
         cpuL2CacheCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> cpu -> cache -> l3
     case createProductAction.setCpuL3CacheCapacity:
       return {
         ...state,
         cpuL3CacheCapacity: action.payload,
+      };
+    case createProductAction.setIsCpuL3CacheCapacityFocused:
+      return {
+        ...state,
+        isCpuL3CacheCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsCpuL3CacheCapacityValid:
+      return {
+        ...state,
+        isCpuL3CacheCapacityValid: action.payload,
       };
     case createProductAction.setCpuL3CacheCapacityUnit:
       return {
         ...state,
         cpuL3CacheCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> cpu -> wattage
     case createProductAction.setCpuWattage:
       return {
         ...state,
         cpuWattage: action.payload,
+      };
+    case createProductAction.setIsCpuWattageFocused:
+      return {
+        ...state,
+        isCpuWattageFocused: action.payload,
+      };
+    case createProductAction.setIsCpuWattageValid:
+      return {
+        ...state,
+        isCpuWattageValid: action.payload,
       };
 
     // page 2 -> specifications -> gpu

@@ -11,12 +11,19 @@ import { ResourceRoutePaths, SelectInputData } from '../../types';
 import {
   returnBrandNameValidationText,
   returnColorVariantValidationText,
+  returnCpuFrequencyValidationText,
   returnDateFullRangeValidationText,
   returnFloatAmountValidationText,
   returnGrammarValidationText,
   returnIntegerValidationText,
+  returnLargeIntegerValidationText,
+  returnMediumIntegerValidationText,
+  returnProductDimensionsValidationText,
+  returnProductWeightValidationText,
   returnRamTimingValidationText,
+  returnRamVoltageValidationText,
   returnSerialIdValidationText,
+  returnSmallIntegerValidationText,
   returnSocketChipsetValidationText,
   returnUsernameRegexValidationText,
 } from '../../utils';
@@ -70,21 +77,12 @@ const USER_DEFINED_VALUE_REGEX =
   /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/i;
 
 /**
- * - /^[0-9]{1,6}$/
- * - [0-9] matches any digit between 0 and 9.
- * - {1,6} matches the preceding token between 1 and 6 times.
- * - ^ and $ ensure that the entire string matches the regex.
- * - ex: 123456
- */
-const PRODUCT_QUANTITY_REGEX = /^[0-9]{1,6}$/;
-
-/**
  * - /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/
  * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
  * - [0-9]{1,6}: Matches one to six digits for the integral part of the weight.
  * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the weight.
  * - ^ and $ ensure that the entire string matches the regex.
- * - ex: 123456.78 or 123456 or 123456.
+ * - ex: 123456.78 or 123456
  */
 const PRODUCT_WEIGHT_REGEX = /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/;
 
@@ -94,9 +92,56 @@ const PRODUCT_WEIGHT_REGEX = /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/;
  * - [0-9]{1,3}: Matches one to three digits for the integral part of the length, width, or height.
  * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the length, width, or height.
  * - ^ and $ ensure that the entire string matches the regex.
- * - ex: 123.45 or 123 or 123.
+ * - ex: 123.45 or 123
  */
 const PRODUCT_DIMENSIONS_REGEX = /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/;
+
+/**
+ * - /^(?!^$|^0*$)[0-9]{1,2}(\.[0-9]{1,2})?$/
+ * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - [0-9]{1,2}: Matches one to two digits for the integral part of the frequency.
+ * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the frequency.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: 12.34 or 12
+ */
+const CPU_FREQUENCY_REGEX = /^(?!^$|^0*$)[0-9]{1,2}(\.[0-9]{1,2})?$/;
+
+/**
+ * -/^(?!^$|^0*$)[0-9]{1,2}$/
+ * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - [0-9]{1,2}: Matches one to two digits for the integral part
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: 12
+ */
+const SMALL_INTEGER_REGEX = /^(?!^$|^0*$)[0-9]{1,2}$/;
+
+/**
+ * -/^(?!^$|^0*$)[0-9]{1,4}$/
+ * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - [0-9]{1,4}: Matches one to four digits for the integral part
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: 1234
+ */
+const MEDIUM_INTEGER_REGEX = /^(?!^$|^0*$)[0-9]{1,4}$/;
+
+/**
+ * - /^(?!^$|^0*$)[0-9]{1,6}$/
+ * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - [0-9]{1,6}: Matches one to six digits for the integral part of the quantity.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: 123456
+ */
+const LARGE_INTEGER_REGEX = /^(?!^$|^0*$)[0-9]{1,6}$/;
+
+/**
+ * - /^(?!^$|^0*$)[0-1]{1}(\.[0-9]{1,2})?$/
+ * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - [0-1]{1}: Matches one digit between 0 and 1 for the integral part of the voltage.
+ * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the voltage.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: 0.12 or 0.1 or 0. or 0 or 1.12 or 1.1 or 1
+ */
+const RAM_VOLTAGE_REGEX = /^(?!^$|^0*$)[0-1]{1}(\.[0-9]{1,2})?$/;
 
 /**
  * - /^[a-zA-Z0-9- ]{2,30}$/;
@@ -454,7 +499,7 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
   {
     label: 'Price',
     value: 'price',
-    inputKind: 'textInput',
+    inputKind: 'numberInput',
     regex: MONEY_REGEX,
     regexValidationFn: returnFloatAmountValidationText,
   },
@@ -481,15 +526,15 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Quantity',
     value: 'quantity',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: LARGE_INTEGER_REGEX,
+    regexValidationFn: returnLargeIntegerValidationText,
   },
   {
     label: 'Weight',
     value: 'weight',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: PRODUCT_WEIGHT_REGEX,
+    regexValidationFn: returnProductWeightValidationText,
   },
   {
     label: 'Weight Unit',
@@ -501,8 +546,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Length',
     value: 'length',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: PRODUCT_DIMENSIONS_REGEX,
+    regexValidationFn: returnProductDimensionsValidationText,
   },
   {
     label: 'Length Unit',
@@ -514,8 +559,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Width',
     value: 'width',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: PRODUCT_DIMENSIONS_REGEX,
+    regexValidationFn: returnProductDimensionsValidationText,
   },
   {
     label: 'Width Unit',
@@ -527,8 +572,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Height',
     value: 'height',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: PRODUCT_DIMENSIONS_REGEX,
+    regexValidationFn: returnProductDimensionsValidationText,
   },
   {
     label: 'Height Unit',
@@ -558,22 +603,22 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'CPU Frequency (GHz)',
     value: 'cpuFrequency',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: CPU_FREQUENCY_REGEX,
+    regexValidationFn: returnCpuFrequencyValidationText,
   },
   {
     label: 'CPU Cores',
     value: 'cpuCores',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'CPU L1 Cache',
     value: 'cpuL1Cache',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'CPU L1 Cache Unit',
@@ -585,8 +630,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'CPU L2 Cache',
     value: 'cpuL2Cache',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'CPU L2 Cache Unit',
@@ -598,8 +643,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'CPU L3 Cache',
     value: 'cpuL3Cache',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'CPU L3 Cache Unit',
@@ -620,29 +665,29 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'GPU Memory (GB)',
     value: 'gpuMemory',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'GPU Core Clock (MHz)',
     value: 'gpuCoreClock',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'GPU Boost Clock (MHz)',
     value: 'gpuBoostClock',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'GPU TDP (W)',
     value: 'gpuTdp',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
 
   // page 2 -> motherboard
@@ -670,8 +715,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Motherboard Memory Max',
     value: 'motherboardMemoryMax',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Motherboard Memory Max Unit',
@@ -683,8 +728,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Motherboard Memory Slots',
     value: 'motherboardMemorySlots',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'Motherboard Memory Type',
@@ -696,36 +741,36 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Motherboard SATA Ports',
     value: 'motherboardSataPorts',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'Motherboard M.2 Slots',
     value: 'motherboardM2Slots',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'Motherboard PCIe 3.0 Slots',
     value: 'motherboardPcie3Slots',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'Motherboard PCIe 4.0 Slots',
     value: 'motherboardPcie4Slots',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'Motherboard PCIe 5.0 Slots',
     value: 'motherboardPcie5Slots',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
 
   // page 2 -> ram
@@ -733,22 +778,22 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'RAM Data Rate (MT/s)',
     value: 'ramDataRate',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'RAM Modules Quantity',
     value: 'ramModulesQuantity',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
-    label: 'RAM Mobules Capacity',
+    label: 'RAM Modules Capacity',
     value: 'ramModulesCapacity',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'RAM Modules Capacity Unit',
@@ -773,8 +818,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'RAM Voltage (V)',
     value: 'ramVoltage',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: RAM_VOLTAGE_REGEX,
+    regexValidationFn: returnRamVoltageValidationText,
   },
   {
     label: 'RAM Timing',
@@ -796,8 +841,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Storage Capacity',
     value: 'storageCapacity',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Storage Capacity Unit',
@@ -809,8 +854,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Storage Cache',
     value: 'storageCache',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Storage Cache Unit',
@@ -836,8 +881,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'PSU Wattage (W)',
     value: 'psuWattage',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'PSU Efficiency',
@@ -884,29 +929,29 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Display Size (in)',
     value: 'displaySize',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: PRODUCT_DIMENSIONS_REGEX,
+    regexValidationFn: returnProductDimensionsValidationText,
   },
   {
     label: 'Display Horizontal Resolution',
     value: 'displayHorizontalResolution',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: LARGE_INTEGER_REGEX,
+    regexValidationFn: returnLargeIntegerValidationText,
   },
   {
     label: 'Display Vertical Resolution',
     value: 'displayVerticalResolution',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: LARGE_INTEGER_REGEX,
+    regexValidationFn: returnLargeIntegerValidationText,
   },
   {
     label: 'Display Refresh Rate (Hz)',
     value: 'displayRefreshRate',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Display Panel Type',
@@ -918,8 +963,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Display Response Time (ms)',
     value: 'displayResponseTime',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: PRODUCT_DIMENSIONS_REGEX,
+    regexValidationFn: returnProductDimensionsValidationText,
   },
   {
     label: 'Display Aspect Ratio',
@@ -966,15 +1011,15 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Mouse DPI',
     value: 'mouseDpi',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: LARGE_INTEGER_REGEX,
+    regexValidationFn: returnLargeIntegerValidationText,
   },
   {
     label: 'Mouse Buttons',
     value: 'mouseButtons',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'Mouse Color',
@@ -1001,8 +1046,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Headphone Driver (mm)',
     value: 'headphoneDriver',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: SMALL_INTEGER_REGEX,
+    regexValidationFn: returnSmallIntegerValidationText,
   },
   {
     label: 'Headphone Frequency Response',
@@ -1015,8 +1060,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Headphone Impedance (Ohm Ω)',
     value: 'headphoneImpedance',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Headphone Color',
@@ -1043,8 +1088,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Speaker Total Wattage (W)',
     value: 'speakerTotalWattage',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Speaker Frequency Response',
@@ -1085,29 +1130,29 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Smartphone Display (in)',
     value: 'smartphoneDisplay',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: PRODUCT_DIMENSIONS_REGEX,
+    regexValidationFn: returnProductDimensionsValidationText,
   },
   {
     label: 'Smartphone Horizontal Resolution',
     value: 'smartphoneHorizontalResolution',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Smartphone Vertical Resolution',
     value: 'smartphoneVerticalResolution',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Smartphone RAM Capacity',
     value: 'smartphoneRamCapacity',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Smartphone RAM Capacity Unit',
@@ -1119,15 +1164,15 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Smartphone Storage (GB)',
     value: 'smartphoneStorage',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Smartphone Battery (mAh)',
     value: 'smartphoneBattery',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Smartphone Camera',
@@ -1162,29 +1207,29 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Tablet Display (in)',
     value: 'tabletDisplay',
     inputKind: 'numberInput',
-    regex: FLOAT_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
+    regex: PRODUCT_DIMENSIONS_REGEX,
+    regexValidationFn: returnProductDimensionsValidationText,
   },
   {
     label: 'Tablet Horizontal Resolution',
     value: 'tabletHorizontalResolution',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Tablet Vertical Resolution',
     value: 'tabletVerticalResolution',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Tablet RAM Capacity',
     value: 'tabletRamCapacity',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Tablet RAM Capacity Unit',
@@ -1196,15 +1241,15 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Tablet Storage (GB)',
     value: 'tabletStorage',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Tablet Battery (mAh)',
     value: 'tabletBattery',
     inputKind: 'numberInput',
-    regex: INTEGER_REGEX,
-    regexValidationFn: returnIntegerValidationText,
+    regex: MEDIUM_INTEGER_REGEX,
+    regexValidationFn: returnMediumIntegerValidationText,
   },
   {
     label: 'Tablet Camera',
@@ -1222,13 +1267,6 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
   },
 
   // page 2 -> accessory
-  /**
-   * type AccessorySpecifications = {
-  accessoryType: string; // Headphones, Speakers, etc.
-  color: string; // Black, White, etc.
-  interface: PeripheralsInterface; // USB, Bluetooth, etc.
-};
-   */
   {
     label: 'Accessory Type',
     value: 'accessoryType',
@@ -1263,6 +1301,7 @@ export {
   CASE_SIDE_PANEL_DATA,
   CASE_TYPE_DATA,
   COLOR_VARIANT_REGEX,
+  CPU_FREQUENCY_REGEX,
   CPU_SOCKET_REGEX,
   CREATE_PRODUCT_DESCRIPTION_OBJECTS,
   CREATE_PRODUCT_MAX_IMG_AMOUNT,
@@ -1278,6 +1317,8 @@ export {
   KEYBOARD_BACKLIGHT_DATA,
   KEYBOARD_LAYOUT_DATA,
   KEYBOARD_SWITCH_DATA,
+  LARGE_INTEGER_REGEX,
+  MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_SELECT_INPUT_DATA,
   MOBILE_CAMERA_REGEX,
   MOBILE_OS_DATA,
@@ -1290,7 +1331,6 @@ export {
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
   PRODUCT_DIMENSIONS_REGEX,
-  PRODUCT_QUANTITY_REGEX,
   PRODUCT_WEIGHT_REGEX,
   PRODUCTS_QUERY_DATA,
   PRODUCTS_RESOURCE_PATHS,
@@ -1299,6 +1339,8 @@ export {
   PSU_MODULARITY_DATA,
   RAM_MEMORY_TYPE_DATA,
   RAM_TIMING_REGEX,
+  RAM_VOLTAGE_REGEX,
+  SMALL_INTEGER_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_INTERFACE_DATA,
   SPEAKER_TYPE_DATA,

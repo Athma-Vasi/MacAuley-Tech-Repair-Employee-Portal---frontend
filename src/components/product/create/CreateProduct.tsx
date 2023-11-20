@@ -34,7 +34,7 @@ import {
   returnMobileCameraResolutionValidationText,
   returnObjectKeyValidationText,
   returnProductDimensionsValidationText,
-  returnProductQuantityValidationText,
+  returnLargeIntegerValidationText,
   returnProductWeightValidationText,
   returnRamTimingValidationText,
   returnSerialIdValidationText,
@@ -42,6 +42,9 @@ import {
   returnThemeColors,
   returnUserDefinedFieldValueValidationText,
   urlBuilder,
+  returnCpuFrequencyValidationText,
+  returnSmallIntegerValidationText,
+  returnMediumIntegerValidationText,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
 import { PRODUCT_CATEGORIES } from '../../dashboard/constants';
@@ -89,7 +92,7 @@ import {
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
   PRODUCT_DIMENSIONS_REGEX,
-  PRODUCT_QUANTITY_REGEX,
+  LARGE_INTEGER_REGEX,
   PRODUCT_WEIGHT_REGEX,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
@@ -105,6 +108,9 @@ import {
   TABLET_CHIPSET_REGEX,
   USER_DEFINED_VALUE_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
+  CPU_FREQUENCY_REGEX,
+  SMALL_INTEGER_REGEX,
+  MEDIUM_INTEGER_REGEX,
 } from '../constants';
 import {
   CaseSidePanel,
@@ -222,14 +228,26 @@ function CreateProduct() {
     isCpuSocketValid,
     isCpuSocketFocused,
     cpuFrequency,
+    isCpuFrequencyFocused,
+    isCpuFrequencyValid,
     cpuCores,
+    isCpuCoresFocused,
+    isCpuCoresValid,
     cpuL1CacheCapacity,
+    isCpuL1CacheCapacityFocused,
+    isCpuL1CacheCapacityValid,
     cpuL1CacheCapacityUnit,
     cpuL2CacheCapacity,
+    isCpuL2CacheCapacityFocused,
+    isCpuL2CacheCapacityValid,
     cpuL2CacheCapacityUnit,
     cpuL3CacheCapacity,
+    isCpuL3CacheCapacityFocused,
+    isCpuL3CacheCapacityValid,
     cpuL3CacheCapacityUnit,
     cpuWattage,
+    isCpuWattageFocused,
+    isCpuWattageValid,
 
     // page 2 -> specifications -> gpu
     gpuChipset,
@@ -976,7 +994,7 @@ function CreateProduct() {
 
   // validate quantity on every change
   useEffect(() => {
-    const isValid = PRODUCT_QUANTITY_REGEX.test(quantity);
+    const isValid = LARGE_INTEGER_REGEX.test(quantity);
 
     createProductDispatch({
       type: createProductAction.setIsQuantityValid,
@@ -1069,6 +1087,66 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [cpuSocket]);
+
+  // validate CPU frequency on every change
+  useEffect(() => {
+    const isValid = CPU_FREQUENCY_REGEX.test(cpuFrequency);
+
+    createProductDispatch({
+      type: createProductAction.setIsCpuFrequencyValid,
+      payload: isValid,
+    });
+  }, [cpuFrequency]);
+
+  // validate CPU cores on every change
+  useEffect(() => {
+    const isValid = SMALL_INTEGER_REGEX.test(cpuCores);
+
+    createProductDispatch({
+      type: createProductAction.setIsCpuCoresValid,
+      payload: isValid,
+    });
+  }, [cpuCores]);
+
+  // validate CPU L1 cache capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL1CacheCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsCpuL1CacheCapacityValid,
+      payload: isValid,
+    });
+  }, [cpuL1CacheCapacity]);
+
+  // validate CPU L2 cache capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL2CacheCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsCpuL2CacheCapacityValid,
+      payload: isValid,
+    });
+  }, [cpuL2CacheCapacity]);
+
+  // validate CPU L3 cache capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL3CacheCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsCpuL3CacheCapacityValid,
+      payload: isValid,
+    });
+  }, [cpuL3CacheCapacity]);
+
+  // validate CPU wattage on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(cpuWattage);
+
+    createProductDispatch({
+      type: createProductAction.setIsCpuWattageValid,
+      payload: isValid,
+    });
+  }, [cpuWattage]);
 
   // validate GPU chipset on every change
   useEffect(() => {
@@ -1847,7 +1925,7 @@ function CreateProduct() {
       inputText: quantity,
       isInputTextFocused: isQuantityFocused,
       isValidInputText: isQuantityValid,
-      regexValidationText: returnProductQuantityValidationText({
+      regexValidationText: returnLargeIntegerValidationText({
         content: quantity,
         contentKind: 'quantity',
       }),
@@ -2292,76 +2370,151 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu frequency
 
-  // page 2 -> specifications -> cpu -> cpu frequency -> number input element
-  const createdCpuFrequencyNumberInput = (
-    <NumberInput
-      label="CPU Frequency (GHz)"
-      max={7}
-      min={0.01}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> cpu -> cpu frequency -> accessible text input elements
+  const [cpuFrequencyInputErrorText, cpuFrequencyInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu frequency',
+      inputText: cpuFrequency,
+      isInputTextFocused: isCpuFrequencyFocused,
+      isValidInputText: isCpuFrequencyValid,
+      regexValidationText: returnCpuFrequencyValidationText({
+        content: cpuFrequency,
+        contentKind: 'cpu frequency',
+      }),
+    });
+
+  // page 2 -> specifications -> cpu -> cpu frequency -> text input element creator
+  const [createdCpuFrequencyTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: cpuFrequencyInputErrorText,
+        valid: cpuFrequencyInputValidText,
+      },
+      inputText: cpuFrequency,
+      isValidInputText: isCpuFrequencyValid,
+      label: 'CPU Frequency',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCpuFrequencyFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setCpuFrequency,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      precision={2}
-      required
-      startValue={0}
-      step={0.01}
-      type="number"
-      value={cpuFrequency}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCpuFrequencyFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter CPU frequency',
+      required: true,
+      semanticName: 'cpu frequency',
+    },
+  ]);
 
   // page 2 -> specifications -> cpu -> cpu cores
 
-  // page 2 -> specifications -> cpu -> cpu cores -> number input element
-  const createdCpuCoresNumberInput = (
-    <NumberInput
-      label="CPU Cores"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> cpu -> cpu cores -> accessible text input elements
+  const [cpuCoresInputErrorText, cpuCoresInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu cores',
+      inputText: cpuCores,
+      isInputTextFocused: isCpuCoresFocused,
+      isValidInputText: isCpuCoresValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: cpuCores,
+        contentKind: 'cpu cores',
+      }),
+    });
+
+  // page 2 -> specifications -> cpu -> cpu cores -> text input element creator
+  const [createdCpuCoresTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: cpuCoresInputErrorText,
+        valid: cpuCoresInputValidText,
+      },
+      inputText: cpuCores,
+      isValidInputText: isCpuCoresValid,
+      label: 'CPU Cores',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCpuCoresFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setCpuCores,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={cpuCores}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCpuCoresFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter CPU cores',
+      required: true,
+      semanticName: 'cpu cores',
+    },
+  ]);
 
   // page 2 -> specifications -> cpu -> cpu L1 cache capacity
 
-  // page 2 -> specifications -> cpu -> cpu L1 cache capacity -> number input element
-  const createdCpuL1CacheCapacityNumberInput = (
-    <NumberInput
-      label="CPU L1 Cache Capacity"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setCpuL1CacheCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={cpuL1CacheCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> cpu -> cpu L1 cache capacity -> accessible text input elements
+  const [cpuL1CacheCapacityInputErrorText, cpuL1CacheCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu L1 cache capacity',
+      inputText: cpuL1CacheCapacity,
+      isInputTextFocused: isCpuL1CacheCapacityFocused,
+      isValidInputText: isCpuL1CacheCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: cpuL1CacheCapacity,
+        contentKind: 'cpu L1 cache capacity',
+      }),
+    });
+
+  // page 2 -> specifications -> cpu -> cpu L1 cache capacity -> text input element creator
+  const [createdCpuL1CacheCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: cpuL1CacheCapacityInputErrorText,
+          valid: cpuL1CacheCapacityInputValidText,
+        },
+        inputText: cpuL1CacheCapacity,
+        isValidInputText: isCpuL1CacheCapacityValid,
+        label: 'CPU L1 Cache Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL1CacheCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL1CacheCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL1CacheCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter CPU L1 cache capacity',
+        required: true,
+        semanticName: 'cpu L1 cache capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> cpu -> cpu L1 cache capacity unit
 
@@ -2385,27 +2538,53 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu L2 cache capacity
 
-  // page 2 -> specifications -> cpu -> cpu L2 cache capacity -> number input element
-  const createdCpuL2CacheCapacityNumberInput = (
-    <NumberInput
-      label="CPU L2 Cache Capacity"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setCpuL2CacheCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={cpuL2CacheCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> cpu -> cpu L2 cache capacity -> accessible text input elements
+  const [cpuL2CacheCapacityInputErrorText, cpuL2CacheCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu L2 cache capacity',
+      inputText: cpuL2CacheCapacity,
+      isInputTextFocused: isCpuL2CacheCapacityFocused,
+      isValidInputText: isCpuL2CacheCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: cpuL2CacheCapacity,
+        contentKind: 'cpu L2 cache capacity',
+      }),
+    });
+
+  // page 2 -> specifications -> cpu -> cpu L2 cache capacity -> text input element creator
+  const [createdCpuL2CacheCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: cpuL2CacheCapacityInputErrorText,
+          valid: cpuL2CacheCapacityInputValidText,
+        },
+        inputText: cpuL2CacheCapacity,
+        isValidInputText: isCpuL2CacheCapacityValid,
+        label: 'CPU L2 Cache Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL2CacheCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL2CacheCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL2CacheCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter CPU L2 cache capacity',
+        required: true,
+        semanticName: 'cpu L2 cache capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> cpu -> cpu L2 cache capacity unit
 
@@ -2429,27 +2608,53 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu L3 cache capacity
 
-  // page 2 -> specifications -> cpu -> cpu L3 cache capacity -> number input element
-  const createdCpuL3CacheCapacityNumberInput = (
-    <NumberInput
-      label="CPU L3 Cache Capacity"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setCpuL3CacheCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={cpuL3CacheCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> cpu -> cpu L3 cache capacity -> accessible text input elements
+  const [cpuL3CacheCapacityInputErrorText, cpuL3CacheCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu L3 cache capacity',
+      inputText: cpuL3CacheCapacity,
+      isInputTextFocused: isCpuL3CacheCapacityFocused,
+      isValidInputText: isCpuL3CacheCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: cpuL3CacheCapacity,
+        contentKind: 'cpu L3 cache capacity',
+      }),
+    });
+
+  // page 2 -> specifications -> cpu -> cpu L3 cache capacity -> text input element creator
+  const [createdCpuL3CacheCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: cpuL3CacheCapacityInputErrorText,
+          valid: cpuL3CacheCapacityInputValidText,
+        },
+        inputText: cpuL3CacheCapacity,
+        isValidInputText: isCpuL3CacheCapacityValid,
+        label: 'CPU L3 Cache Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL3CacheCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL3CacheCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL3CacheCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter CPU L3 cache capacity',
+        required: true,
+        semanticName: 'cpu L3 cache capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> cpu -> cpu L3 cache capacity unit
 
@@ -2473,27 +2678,52 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> cpu wattage
 
-  // page 2 -> specifications -> cpu -> cpu wattage -> number input element
-  const createdCpuWattageNumberInput = (
-    <NumberInput
-      label="CPU Wattage (W)"
-      max={999}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> cpu -> cpu wattage -> accessible text input elements
+  const [cpuWattageInputErrorText, cpuWattageInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu wattage',
+      inputText: cpuWattage,
+      isInputTextFocused: isCpuWattageFocused,
+      isValidInputText: isCpuWattageValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: cpuWattage,
+        contentKind: 'cpu wattage',
+      }),
+    });
+
+  // page 2 -> specifications -> cpu -> cpu wattage -> text input element creator
+  const [createdCpuWattageTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: cpuWattageInputErrorText,
+        valid: cpuWattageInputValidText,
+      },
+      inputText: cpuWattage,
+      isValidInputText: isCpuWattageValid,
+      label: 'CPU Wattage',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCpuWattageFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setCpuWattage,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={cpuWattage}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCpuWattageFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter CPU wattage',
+      required: true,
+      semanticName: 'cpu wattage',
+    },
+  ]);
 
   // page 2 -> specifications -> gpu
 
@@ -5539,6 +5769,7 @@ function CreateProduct() {
       {createdModelTextInput}
       {createdPriceTextInput}
       {createdCurrencySelectInput}
+      {createdAvailabilitySelectInput}
       {createdQuantityTextInput}
       {createdWeightTextInput}
       {createdWeightUnitSelectInput}
@@ -5548,7 +5779,6 @@ function CreateProduct() {
       {createdDimensionHeightUnitSelectInput}
       {createdDimensionWidthTextInput}
       {createdDimensionWidthUnitSelectInput}
-      {createdAvailabilitySelectInput}
       {createdDescriptionTextAreaInput}
       {createdAdditionalCommentsTextAreaInput}
     </FormLayoutWrapper>
@@ -5565,14 +5795,14 @@ function CreateProduct() {
         <Title order={4}>CPU Specifications</Title>
       </Group>
       {createdCpuSocketTextInput}
-      {createdCpuWattageNumberInput}
-      {createdCpuFrequencyNumberInput}
-      {createdCpuCoresNumberInput}
-      {createdCpuL1CacheCapacityNumberInput}
+      {createdCpuWattageTextInput}
+      {createdCpuFrequencyTextInput}
+      {createdCpuCoresTextInput}
+      {createdCpuL1CacheCapacityTextInput}
       {createdCpuL1CacheCapacityUnitSelectInput}
-      {createdCpuL2CacheCapacityNumberInput}
+      {createdCpuL2CacheCapacityTextInput}
       {createdCpuL2CacheCapacityUnitSelectInput}
-      {createdCpuL3CacheCapacityNumberInput}
+      {createdCpuL3CacheCapacityTextInput}
       {createdCpuL3CacheCapacityUnitSelectInput}
     </FormLayoutWrapper>
   );
@@ -5971,17 +6201,17 @@ function CreateProduct() {
       {
         inputName: 'CPU Frequency',
         inputValue: cpuFrequency,
-        isInputValueValid: cpuFrequency !== 0,
+        isInputValueValid: isCpuFrequencyValid,
       },
       {
         inputName: 'CPU Cores',
         inputValue: cpuCores,
-        isInputValueValid: cpuCores !== 0,
+        isInputValueValid: isCpuCoresValid,
       },
       {
         inputName: 'CPU L1 Cache Capacity',
         inputValue: cpuL1CacheCapacity,
-        isInputValueValid: cpuL1CacheCapacity !== 0,
+        isInputValueValid: isCpuL1CacheCapacityValid,
       },
       {
         inputName: 'CPU L1 Cache Capacity Unit',
@@ -5990,7 +6220,7 @@ function CreateProduct() {
       {
         inputName: 'CPU L2 Cache Capacity',
         inputValue: cpuL2CacheCapacity,
-        isInputValueValid: cpuL2CacheCapacity !== 0,
+        isInputValueValid: isCpuL2CacheCapacityValid,
       },
       {
         inputName: 'CPU L2 Cache Capacity Unit',
@@ -5999,7 +6229,7 @@ function CreateProduct() {
       {
         inputName: 'CPU L3 Cache Capacity',
         inputValue: cpuL3CacheCapacity,
-        isInputValueValid: cpuL3CacheCapacity !== 0,
+        isInputValueValid: isCpuL3CacheCapacityValid,
       },
       {
         inputName: 'CPU L3 Cache Capacity Unit',
@@ -6008,7 +6238,7 @@ function CreateProduct() {
       {
         inputName: 'CPU Wattage',
         inputValue: cpuWattage,
-        isInputValueValid: cpuWattage !== 0,
+        isInputValueValid: isCpuWattageValid,
       },
     ],
   };
