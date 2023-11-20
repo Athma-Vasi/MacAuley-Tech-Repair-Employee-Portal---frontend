@@ -324,9 +324,18 @@ const initialCreateProductState: CreateProductState = {
   accessoryFieldsAdditional: new Map<number, [string, string]>(),
   areAccessoryFieldsAdditionalFocused: new Map<number, [boolean, boolean]>(),
   areAccessoryFieldsAdditionalValid: new Map<number, [boolean, boolean]>(),
-  currentlySelectedAdditionalFieldIndex: 0,
+
+  // page 2 -> specifications -> webcam
+  webcamColor: '',
+  isWebcamColorFocused: false,
+  isWebcamColorValid: false,
+  webcamFrameRate: '60 fps',
+  webcamInterface: 'USB',
+  webcamMicrophone: 'Yes',
+  webcamResolution: '1080p',
 
   // page 3
+  currentlySelectedAdditionalFieldIndex: 0,
   imgFormDataArray: [],
   areImagesValid: false,
 
@@ -677,10 +686,19 @@ const createProductAction: CreateProductAction = {
   setAreAccessoryFieldsAdditionalFocused:
     'setAreAccessoryFieldsAdditionalFocused',
   setAreAccessoryFieldsAdditionalValid: 'setAreAccessoryFieldsAdditionalValid',
-  setCurrentlySelectedAdditionalFieldIndex:
-    'setCurrentlySelectedAdditionalFieldIndex',
+
+  // page 2 -> specifications -> webcam
+  setWebcamResolution: 'setWebcamResolution',
+  setWebcamInterface: 'setWebcamInterface',
+  setWebcamMicrophone: 'setWebcamMicrophone',
+  setWebcamFrameRate: 'setWebcamFrameRate',
+  setWebcamColor: 'setWebcamColor',
+  setIsWebcamColorValid: 'setIsWebcamColorValid',
+  setIsWebcamColorFocused: 'setIsWebcamColorFocused',
 
   // page 3
+  setCurrentlySelectedAdditionalFieldIndex:
+    'setCurrentlySelectedAdditionalFieldIndex',
   setImgFormDataArray: 'setImgFormDataArray',
   setAreImagesValid: 'setAreImagesValid',
 
@@ -2262,6 +2280,8 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> accessory
+
+    // page 2 -> specifications -> accessory -> type
     case createProductAction.setAccessoryType:
       return {
         ...state,
@@ -2277,6 +2297,8 @@ function createProductReducer(
         ...state,
         isAccessoryTypeValid: action.payload,
       };
+
+    // page 2 -> specifications -> accessory -> color
     case createProductAction.setAccessoryColor:
       return {
         ...state,
@@ -2292,11 +2314,15 @@ function createProductReducer(
         ...state,
         isAccessoryColorValid: action.payload,
       };
+
+    // page 2 -> specifications -> accessory -> interface
     case createProductAction.setAccessoryInterface:
       return {
         ...state,
         accessoryInterface: action.payload,
       };
+
+    // page 2 -> specifications -> accessory -> additional fields
     case createProductAction.setAccessoryFieldsAdditional: {
       const { operation } = action.payload;
 
@@ -2370,6 +2396,7 @@ function createProductReducer(
           return state;
       }
     }
+
     case createProductAction.setAreAccessoryFieldsAdditionalFocused: {
       const { operation } = action.payload;
 
@@ -2453,6 +2480,7 @@ function createProductReducer(
           return state;
       }
     }
+
     case createProductAction.setAreAccessoryFieldsAdditionalValid: {
       const { operation } = action.payload;
 
@@ -2535,13 +2563,62 @@ function createProductReducer(
           return state;
       }
     }
+
+    // page 2 -> specifications -> webcam
+
+    // page 2 -> specifications -> webcam -> resolution
+    case createProductAction.setWebcamResolution:
+      return {
+        ...state,
+        webcamResolution: action.payload,
+      };
+
+    // page 2 -> specifications -> webcam -> frame rate
+    case createProductAction.setWebcamFrameRate:
+      return {
+        ...state,
+        webcamFrameRate: action.payload,
+      };
+
+    // page 2 -> specifications -> webcam -> color
+    case createProductAction.setWebcamColor:
+      return {
+        ...state,
+        webcamColor: action.payload,
+      };
+    case createProductAction.setIsWebcamColorFocused:
+      return {
+        ...state,
+        isWebcamColorFocused: action.payload,
+      };
+    case createProductAction.setIsWebcamColorValid:
+      return {
+        ...state,
+        isWebcamColorValid: action.payload,
+      };
+
+    // page 2 -> specifications -> webcam -> interface
+    case createProductAction.setWebcamInterface:
+      return {
+        ...state,
+        webcamInterface: action.payload,
+      };
+
+    // page 2 -> specifications -> microphone
+    case createProductAction.setWebcamMicrophone:
+      return {
+        ...state,
+        webcamMicrophone: action.payload,
+      };
+
+    // page 3
+
     case createProductAction.setCurrentlySelectedAdditionalFieldIndex:
       return {
         ...state,
         currentlySelectedAdditionalFieldIndex: action.payload,
       };
 
-    // page 3
     case createProductAction.setImgFormDataArray:
       return {
         ...state,

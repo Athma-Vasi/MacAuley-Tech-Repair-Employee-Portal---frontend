@@ -113,6 +113,10 @@ import {
   SMALL_INTEGER_REGEX,
   MEDIUM_INTEGER_REGEX,
   RAM_VOLTAGE_REGEX,
+  WEBCAM_RESOLUTION_DATA,
+  WEBCAM_MICROPHONE_DATA,
+  WEBCAM_INTERFACE_DATA,
+  WEBCAM_FRAME_RATE_DATA,
 } from '../constants';
 import {
   CaseSidePanel,
@@ -140,6 +144,10 @@ import {
   StorageFormFactor,
   StorageInterface,
   StorageType,
+  WebcamFrameRate,
+  WebcamInterface,
+  WebcamMicrophone,
+  WebcamResolution,
   WeightUnit,
 } from '../types';
 import {
@@ -494,6 +502,15 @@ function CreateProduct() {
     areAccessoryFieldsAdditionalFocused,
     areAccessoryFieldsAdditionalValid,
     currentlySelectedAdditionalFieldIndex,
+
+    // page 2 -> specifications -> webcam
+    webcamColor,
+    isWebcamColorFocused,
+    isWebcamColorValid,
+    webcamFrameRate,
+    webcamInterface,
+    webcamMicrophone,
+    webcamResolution,
 
     // page 3
     imgFormDataArray,
@@ -1810,6 +1827,16 @@ function CreateProduct() {
     });
   }, [tabletColor]);
 
+  // validate webcam color variant on every change
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(webcamColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsWebcamColorValid,
+      payload: isValid,
+    });
+  }, [webcamColor]);
+
   // accessory
 
   // accessory -> validate user defined accessory fields  on every change
@@ -2014,6 +2041,8 @@ function CreateProduct() {
       areStorageSpecificationsInError ||
       areDisplaySpecificationsInError;
 
+    const isWebcamSpecificationInError = !webcamColor;
+
     const arePage2InputsInError =
       productCategory === 'Accessories'
         ? areAccessorySpecificationsInError
@@ -2047,7 +2076,11 @@ function CreateProduct() {
         ? areSpeakerSpecificationsInError
         : productCategory === 'Storage'
         ? areStorageSpecificationsInError
-        : areTabletSpecificationsInError;
+        : productCategory === 'Tablets'
+        ? areTabletSpecificationsInError
+        : productCategory === 'Webcams'
+        ? isWebcamSpecificationInError
+        : false;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
@@ -2125,6 +2158,7 @@ function CreateProduct() {
     tabletResolutionHorizontal,
     tabletResolutionVertical,
     tabletStorageCapacity,
+    webcamColor,
   ]);
 
   // update stepper wrapper state on every page 3 input validation change
@@ -7267,6 +7301,137 @@ function CreateProduct() {
     );
   });
 
+  // page 2 -> specifications -> webcam
+
+  // page 2 -> specifications -> webcam -> webcam resolution
+
+  // page 2 -> specifications -> webcam -> webcam resolution -> select input element
+  const [createdWebcamResolutionSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_RESOLUTION_DATA,
+        description: '',
+        label: 'Webcam Resolution',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamResolution,
+            payload: event.currentTarget.value as WebcamResolution,
+          });
+        },
+        value: webcamResolution,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> webcam -> webcam color
+
+  // page 2 -> specifications -> webcam -> webcam color -> accessible screen reader text elements
+  const [webcamColorInputErrorText, webcamColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'webcam color',
+      inputText: webcamColor,
+      isInputTextFocused: isWebcamColorFocused,
+      isValidInputText: isWebcamColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: webcamColor,
+        contentKind: 'webcam color',
+      }),
+    });
+
+  // page 2 -> specifications -> webcam -> webcam color -> text input element creator
+  const [createdWebcamColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: webcamColorInputErrorText,
+        valid: webcamColorInputValidText,
+      },
+      inputText: webcamColor,
+      isValidInputText: isWebcamColorValid,
+      label: 'Webcam Color',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsWebcamColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setWebcamColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsWebcamColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter webcam color',
+      required: true,
+      semanticName: 'webcam color',
+    },
+  ]);
+
+  // page 2 -> specifications -> webcam -> webcam microphone
+
+  // page 2 -> specifications -> webcam -> webcam microphone -> select input element
+  const [createdWebcamMicrophoneSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_MICROPHONE_DATA,
+        description: '',
+        label: 'Webcam Microphone',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamMicrophone,
+            payload: event.currentTarget.value as WebcamMicrophone,
+          });
+        },
+        value: webcamMicrophone,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> webcam -> webcam interface
+
+  // page 2 -> specifications -> webcam -> webcam interface -> select input element
+  const [createdWebcamInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_INTERFACE_DATA,
+        description: '',
+        label: 'Webcam Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamInterface,
+            payload: event.currentTarget.value as WebcamInterface,
+          });
+        },
+        value: webcamInterface,
+        required: true,
+      },
+    ]);
+
+  // page 2 -> specifications -> webcam -> webcam frame rate
+
+  // page 2 -> specifications -> webcam -> webcam frame rate -> select input element
+  const [createdWebcamFrameRateSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_FRAME_RATE_DATA,
+        description: '',
+        label: 'Webcam Frame Rate',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamFrameRate,
+            payload: event.currentTarget.value as WebcamFrameRate,
+          });
+        },
+        value: webcamFrameRate,
+        required: true,
+      },
+    ]);
+
   // page 4
 
   // page 4 -> submit button
@@ -7610,6 +7775,20 @@ function CreateProduct() {
     </>
   );
 
+  // input display -> page 2 -> specifications -> webcams
+  const displayWebcamSpecificationsInputs = (
+    <FormLayoutWrapper>
+      <Group w="100%">
+        <Title order={4}>Webcam Specifications</Title>
+      </Group>
+      {createdWebcamResolutionSelectInput}
+      {createdWebcamColorTextInput}
+      {createdWebcamMicrophoneSelectInput}
+      {createdWebcamInterfaceSelectInput}
+      {createdWebcamFrameRateSelectInput}
+    </FormLayoutWrapper>
+  );
+
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
       <Group py={padding}>{createdProductCategorySelectInput}</Group>
@@ -7647,6 +7826,8 @@ function CreateProduct() {
         ? displayStorageSpecificationsInputs
         : productCategory === 'Tablets'
         ? displayTabletSpecificationsInputs
+        : productCategory === 'Webcams'
+        ? displayWebcamSpecificationsInputs
         : null}
     </FormLayoutWrapper>
   );
@@ -8304,6 +8485,33 @@ function CreateProduct() {
     ],
   };
 
+  // form review object -> page 2 -> specifications -> webcams
+  const page2WebcamFormReviewObject: FormReviewObject = {
+    'Webcam Specifications': [
+      {
+        inputName: 'Webcam Resolution',
+        inputValue: webcamResolution,
+      },
+      {
+        inputName: 'Webcam Color',
+        inputValue: webcamColor,
+        isInputValueValid: isWebcamColorValid,
+      },
+      {
+        inputName: 'Webcam Microphone',
+        inputValue: webcamMicrophone,
+      },
+      {
+        inputName: 'Webcam Interface',
+        inputValue: webcamInterface,
+      },
+      {
+        inputName: 'Webcam Frame Rate',
+        inputValue: webcamFrameRate,
+      },
+    ],
+  };
+
   // form review object -> page 2 -> specifications -> desktop computers
   const page2DesktopComputerFormReviewObject: FormReviewObject = {
     ...page2CpuFormReviewObject,
@@ -8371,7 +8579,11 @@ function CreateProduct() {
       ? page2SpeakerFormReviewObject
       : productCategory === 'Storage'
       ? page2StorageFormReviewObject
-      : page2TabletFormReviewObject),
+      : productCategory === 'Tablets'
+      ? page2TabletFormReviewObject
+      : productCategory === 'Webcams'
+      ? page2WebcamFormReviewObject
+      : {}),
     ...page3ImageUploadsFormReviewObject,
   };
 

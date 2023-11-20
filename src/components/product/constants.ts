@@ -54,6 +54,10 @@ import {
   StorageFormFactor,
   StorageInterface,
   StorageType,
+  WebcamFrameRate,
+  WebcamInterface,
+  WebcamMicrophone,
+  WebcamResolution,
   WeightUnit,
 } from './types';
 
@@ -436,6 +440,26 @@ const MOBILE_OS_DATA: MobileOs[] = [
   'Linux',
   'Other',
 ];
+
+const WEBCAM_RESOLUTION_DATA: WebcamResolution[] = [
+  '720p',
+  '1080p',
+  '1440p',
+  '4K',
+  'Other',
+];
+
+const WEBCAM_INTERFACE_DATA: WebcamInterface[] = ['USB', 'Bluetooth', 'Other'];
+
+const WEBCAM_FRAME_RATE_DATA: WebcamFrameRate[] = [
+  '30 fps',
+  '60 fps',
+  '120 fps',
+  '240 fps',
+  'Other',
+];
+
+const WEBCAM_MICROPHONE_DATA: WebcamMicrophone[] = ['Yes', 'No'];
 
 const CREATE_PRODUCT_MAX_STEPPER_POSITION = 4;
 
@@ -1291,6 +1315,39 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     inputKind: 'selectInput',
     selectData: PERIPHERALS_INTERFACE_DATA,
   },
+
+  // page 2 -> webcam
+  {
+    label: 'Webcam Resolution',
+    value: 'webcamResolution',
+    inputKind: 'selectInput',
+    selectData: WEBCAM_RESOLUTION_DATA,
+  },
+  {
+    label: 'Webcam Color',
+    value: 'webcamColor',
+    inputKind: 'textInput',
+    regex: COLOR_VARIANT_REGEX,
+    regexValidationFn: returnColorVariantValidationText,
+  },
+  {
+    label: 'Webcam Interface',
+    value: 'webcamInterface',
+    inputKind: 'selectInput',
+    selectData: WEBCAM_INTERFACE_DATA,
+  },
+  {
+    label: 'Webcam Microphone',
+    value: 'webcamMicrophone',
+    inputKind: 'selectInput',
+    selectData: WEBCAM_MICROPHONE_DATA,
+  },
+  {
+    label: 'Webcam Frame Rate',
+    value: 'webcamFrameRate',
+    inputKind: 'selectInput',
+    selectData: WEBCAM_FRAME_RATE_DATA,
+  },
 ];
 
 const PRODUCTS_RESOURCE_PATHS: ResourceRoutePaths = {
@@ -1353,5 +1410,9 @@ export {
   STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
   USER_DEFINED_VALUE_REGEX,
+  WEBCAM_FRAME_RATE_DATA,
+  WEBCAM_INTERFACE_DATA,
+  WEBCAM_MICROPHONE_DATA,
+  WEBCAM_RESOLUTION_DATA,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 };

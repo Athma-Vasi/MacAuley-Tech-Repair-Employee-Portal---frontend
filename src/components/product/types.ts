@@ -270,6 +270,11 @@ type Specifications = {
 type DimensionUnit = 'mm' | 'cm' | 'm' | 'in' | 'ft';
 type WeightUnit = 'g' | 'kg' | 'lb';
 
+type WebcamResolution = '720p' | '1080p' | '1440p' | '4K' | 'Other';
+type WebcamFrameRate = '30 fps' | '60 fps' | '120 fps' | '240 fps' | 'Other';
+type WebcamInterface = 'USB' | 'Bluetooth' | 'Other';
+type WebcamMicrophone = 'Yes' | 'No';
+
 type ProductReview = {
   userId: string;
   username: string;
@@ -647,6 +652,15 @@ type CreateProductState = {
   areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isFieldValid, isValueValid]>
   areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isFieldFocused, isValueFocused]>
 
+  // page 2 -> specifications -> webcam
+  webcamResolution: WebcamResolution;
+  webcamInterface: WebcamInterface;
+  webcamMicrophone: WebcamMicrophone;
+  webcamFrameRate: WebcamFrameRate;
+  webcamColor: string;
+  isWebcamColorValid: boolean;
+  isWebcamColorFocused: boolean;
+
   // page 3
   imgFormDataArray: FormData[];
   areImagesValid: boolean;
@@ -985,6 +999,15 @@ type CreateProductAction = {
   setAreAccessoryFieldsAdditionalValid: 'setAreAccessoryFieldsAdditionalValid';
   setAreAccessoryFieldsAdditionalFocused: 'setAreAccessoryFieldsAdditionalFocused';
   setCurrentlySelectedAdditionalFieldIndex: 'setCurrentlySelectedAdditionalFieldIndex';
+
+  // page 2 -> specifications -> webcam
+  setWebcamResolution: 'setWebcamResolution';
+  setWebcamInterface: 'setWebcamInterface';
+  setWebcamMicrophone: 'setWebcamMicrophone';
+  setWebcamFrameRate: 'setWebcamFrameRate';
+  setWebcamColor: 'setWebcamColor';
+  setIsWebcamColorValid: 'setIsWebcamColorValid';
+  setIsWebcamColorFocused: 'setIsWebcamColorFocused';
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray';
@@ -1982,11 +2005,38 @@ type CreateProductDispatch =
         | CreateProductAction['setAreAccessoryFieldsAdditionalFocused'];
       payload: AdditionalFieldsValidFocusedPayload;
     }
+  // specifications -> webcam
+  | {
+      type: CreateProductAction['setWebcamResolution'];
+      payload: WebcamResolution;
+    }
+  | {
+      type: CreateProductAction['setWebcamInterface'];
+      payload: WebcamInterface;
+    }
+  | {
+      type: CreateProductAction['setWebcamMicrophone'];
+      payload: WebcamMicrophone;
+    }
+  | {
+      type: CreateProductAction['setWebcamFrameRate'];
+      payload: WebcamFrameRate;
+    }
+  | {
+      type: CreateProductAction['setWebcamColor'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsWebcamColorValid']
+        | CreateProductAction['setIsWebcamColorFocused'];
+      payload: boolean;
+    }
+  // page 3
   | {
       type: CreateProductAction['setCurrentlySelectedAdditionalFieldIndex'];
       payload: number;
     }
-  // page 3
   | {
       type: CreateProductAction['setImgFormDataArray'];
       payload: FormData[];
@@ -2072,5 +2122,9 @@ export type {
   StorageSpecifications,
   StorageType,
   TabletSpecifications,
+  WebcamFrameRate,
+  WebcamInterface,
+  WebcamMicrophone,
+  WebcamResolution,
   WeightUnit,
 };
