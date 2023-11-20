@@ -210,36 +210,46 @@ const initialCreateProductState: CreateProductState = {
   keyboardSwitch: 'Cherry MX Red',
 
   // page 2 -> specifications -> mouse
-  mouseDpi: 0,
-  mouseButtons: 0,
-  mouseInterface: 'USB',
+  mouseSensor: 'Optical',
+  mouseDpi: '',
+  isMouseDpiFocused: false,
+  isMouseDpiValid: false,
+  mouseButtons: '',
+  isMouseButtonsFocused: false,
+  isMouseButtonsValid: false,
   mouseColor: '',
   isMouseColorFocused: false,
   isMouseColorValid: false,
-  mouseSensor: 'Optical',
+  mouseInterface: 'USB',
 
   // page 2 -> specifications -> headphone
   headphoneType: 'Over-ear',
   headphoneColor: '',
   isHeadphoneColorFocused: false,
   isHeadphoneColorValid: false,
-  headphoneInterface: 'USB',
-  headphoneDriver: 0,
+  headphoneDriver: '',
+  isHeadphoneDriverFocused: false,
+  isHeadphoneDriverValid: false,
   headphoneFrequencyResponse: '',
   isHeadphoneFrequencyResponseFocused: false,
   isHeadphoneFrequencyResponseValid: false,
-  headphoneImpedance: 0,
+  headphoneImpedance: '',
+  isHeadphoneImpedanceFocused: false,
+  isHeadphoneImpedanceValid: false,
+  headphoneInterface: 'USB',
 
   // page 2 -> specifications -> speaker
   speakerType: '2.0',
   speakerColor: '',
   isSpeakerColorFocused: false,
   isSpeakerColorValid: false,
-  speakerInterface: 'USB',
   speakerFrequencyResponse: '',
   isSpeakerFrequencyResponseFocused: false,
   isSpeakerFrequencyResponseValid: false,
-  speakerTotalWattage: 0,
+  speakerTotalWattage: '',
+  isSpeakerTotalWattageFocused: false,
+  isSpeakerTotalWattageValid: false,
+  speakerInterface: 'USB',
 
   // page 2 -> specifications -> smartphone
   smartphoneBatteryCapacity: 0,
@@ -522,7 +532,11 @@ const createProductAction: CreateProductAction = {
   // page 2 -> specifications -> mouse
   setMouseSensor: 'setMouseSensor',
   setMouseDpi: 'setMouseDpi',
+  setIsMouseDpiValid: 'setIsMouseDpiValid',
+  setIsMouseDpiFocused: 'setIsMouseDpiFocused',
   setMouseButtons: 'setMouseButtons',
+  setIsMouseButtonsValid: 'setIsMouseButtonsValid',
+  setIsMouseButtonsFocused: 'setIsMouseButtonsFocused',
   setMouseColor: 'setMouseColor',
   setIsMouseColorValid: 'setIsMouseColorValid',
   setIsMouseColorFocused: 'setIsMouseColorFocused',
@@ -531,11 +545,15 @@ const createProductAction: CreateProductAction = {
   // page 2 -> specifications -> headphone
   setHeadphoneType: 'setHeadphoneType',
   setHeadphoneDriver: 'setHeadphoneDriver',
+  setIsHeadphoneDriverValid: 'setIsHeadphoneDriverValid',
+  setIsHeadphoneDriverFocused: 'setIsHeadphoneDriverFocused',
   setHeadphoneFrequencyResponse: 'setHeadphoneFrequencyResponse',
   setIsHeadphoneFrequencyResponseValid: 'setIsHeadphoneFrequencyResponseValid',
   setIsHeadphoneFrequencyResponseFocused:
     'setIsHeadphoneFrequencyResponseFocused',
   setHeadphoneImpedance: 'setHeadphoneImpedance',
+  setIsHeadphoneImpedanceValid: 'setIsHeadphoneImpedanceValid',
+  setIsHeadphoneImpedanceFocused: 'setIsHeadphoneImpedanceFocused',
   setHeadphoneColor: 'setHeadphoneColor',
   setIsHeadphoneColorValid: 'setIsHeadphoneColorValid',
   setIsHeadphoneColorFocused: 'setIsHeadphoneColorFocused',
@@ -544,6 +562,8 @@ const createProductAction: CreateProductAction = {
   // page 2 -> specifications -> speaker
   setSpeakerType: 'setSpeakerType',
   setSpeakerTotalWattage: 'setSpeakerTotalWattage',
+  setIsSpeakerTotalWattageValid: 'setIsSpeakerTotalWattageValid',
+  setIsSpeakerTotalWattageFocused: 'setIsSpeakerTotalWattageFocused',
   setSpeakerFrequencyResponse: 'setSpeakerFrequencyResponse',
   setIsSpeakerFrequencyResponseValid: 'setIsSpeakerFrequencyResponseValid',
   setIsSpeakerFrequencyResponseFocused: 'setIsSpeakerFrequencyResponseFocused',
@@ -1631,21 +1651,49 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> mouse
+
+    // page 2 -> specifications -> mouse -> sensor
     case createProductAction.setMouseSensor:
       return {
         ...state,
         mouseSensor: action.payload,
       };
+
+    // page 2 -> specifications -> mouse -> dpi
     case createProductAction.setMouseDpi:
       return {
         ...state,
         mouseDpi: action.payload,
       };
+    case createProductAction.setIsMouseDpiFocused:
+      return {
+        ...state,
+        isMouseDpiFocused: action.payload,
+      };
+    case createProductAction.setIsMouseDpiValid:
+      return {
+        ...state,
+        isMouseDpiValid: action.payload,
+      };
+
+    // page 2 -> specifications -> mouse -> buttons
     case createProductAction.setMouseButtons:
       return {
         ...state,
         mouseButtons: action.payload,
       };
+    case createProductAction.setIsMouseButtonsFocused:
+      return {
+        ...state,
+        isMouseButtonsFocused: action.payload,
+      };
+    case createProductAction.setIsMouseButtonsValid:
+      return {
+        ...state,
+        isMouseButtonsValid: action.payload,
+      };
+
+    // page 2 -> specifications -> mouse -> color
     case createProductAction.setMouseColor:
       return {
         ...state,
@@ -1661,6 +1709,8 @@ function createProductReducer(
         ...state,
         isMouseColorValid: action.payload,
       };
+
+    // page 2 -> specifications -> mouse -> interface
     case createProductAction.setMouseInterface:
       return {
         ...state,
@@ -1668,16 +1718,32 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> headphone
+
+    // page 2 -> specifications -> headphone -> type
     case createProductAction.setHeadphoneType:
       return {
         ...state,
         headphoneType: action.payload,
       };
+
+    // page 2 -> specifications -> headphone -> driver
     case createProductAction.setHeadphoneDriver:
       return {
         ...state,
         headphoneDriver: action.payload,
       };
+    case createProductAction.setIsHeadphoneDriverFocused:
+      return {
+        ...state,
+        isHeadphoneDriverFocused: action.payload,
+      };
+    case createProductAction.setIsHeadphoneDriverValid:
+      return {
+        ...state,
+        isHeadphoneDriverValid: action.payload,
+      };
+
+    // page 2 -> specifications -> headphone -> frequency response
     case createProductAction.setHeadphoneFrequencyResponse:
       return {
         ...state,
@@ -1693,11 +1759,25 @@ function createProductReducer(
         ...state,
         isHeadphoneFrequencyResponseValid: action.payload,
       };
+
+    // page 2 -> specifications -> headphone -> impedance
     case createProductAction.setHeadphoneImpedance:
       return {
         ...state,
         headphoneImpedance: action.payload,
       };
+    case createProductAction.setIsHeadphoneImpedanceFocused:
+      return {
+        ...state,
+        isHeadphoneImpedanceFocused: action.payload,
+      };
+    case createProductAction.setIsHeadphoneImpedanceValid:
+      return {
+        ...state,
+        isHeadphoneImpedanceValid: action.payload,
+      };
+
+    // page 2 -> specifications -> headphone -> color
     case createProductAction.setHeadphoneColor:
       return {
         ...state,
@@ -1713,6 +1793,8 @@ function createProductReducer(
         ...state,
         isHeadphoneColorValid: action.payload,
       };
+
+    // page 2 -> specifications -> headphone -> interface
     case createProductAction.setHeadphoneInterface:
       return {
         ...state,
@@ -1720,16 +1802,32 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> speaker
+
+    // page 2 -> specifications -> speaker -> type
     case createProductAction.setSpeakerType:
       return {
         ...state,
         speakerType: action.payload,
       };
+
+    // page 2 -> specifications -> speaker -> wattage
     case createProductAction.setSpeakerTotalWattage:
       return {
         ...state,
         speakerTotalWattage: action.payload,
       };
+    case createProductAction.setIsSpeakerTotalWattageFocused:
+      return {
+        ...state,
+        isSpeakerTotalWattageFocused: action.payload,
+      };
+    case createProductAction.setIsSpeakerTotalWattageValid:
+      return {
+        ...state,
+        isSpeakerTotalWattageValid: action.payload,
+      };
+
+    // page 2 -> specifications -> speaker -> frequency response
     case createProductAction.setSpeakerFrequencyResponse:
       return {
         ...state,
@@ -1745,6 +1843,8 @@ function createProductReducer(
         ...state,
         isSpeakerFrequencyResponseValid: action.payload,
       };
+
+    // page 2 -> specifications -> speaker -> color
     case createProductAction.setSpeakerColor:
       return {
         ...state,
@@ -1760,6 +1860,8 @@ function createProductReducer(
         ...state,
         isSpeakerColorValid: action.payload,
       };
+
+    // page 2 -> specifications -> speaker -> interface
     case createProductAction.setSpeakerInterface:
       return {
         ...state,

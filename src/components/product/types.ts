@@ -533,8 +533,12 @@ type CreateProductState = {
 
   // page 2 -> specifications -> mouse
   mouseSensor: MouseSensor;
-  mouseDpi: number;
-  mouseButtons: number;
+  mouseDpi: string;
+  isMouseDpiValid: boolean;
+  isMouseDpiFocused: boolean;
+  mouseButtons: string;
+  isMouseButtonsValid: boolean;
+  isMouseButtonsFocused: boolean;
   mouseColor: string;
   isMouseColorValid: boolean;
   isMouseColorFocused: boolean;
@@ -542,11 +546,15 @@ type CreateProductState = {
 
   // page 2 -> specifications -> headphone
   headphoneType: HeadphoneType;
-  headphoneDriver: number;
+  headphoneDriver: string;
+  isHeadphoneDriverValid: boolean;
+  isHeadphoneDriverFocused: boolean;
   headphoneFrequencyResponse: string;
   isHeadphoneFrequencyResponseValid: boolean;
   isHeadphoneFrequencyResponseFocused: boolean;
-  headphoneImpedance: number;
+  headphoneImpedance: string;
+  isHeadphoneImpedanceValid: boolean;
+  isHeadphoneImpedanceFocused: boolean;
   headphoneColor: string;
   isHeadphoneColorValid: boolean;
   isHeadphoneColorFocused: boolean;
@@ -554,7 +562,9 @@ type CreateProductState = {
 
   // page 2 -> specifications -> speaker
   speakerType: SpeakerType;
-  speakerTotalWattage: number;
+  speakerTotalWattage: string;
+  isSpeakerTotalWattageValid: boolean;
+  isSpeakerTotalWattageFocused: boolean;
   speakerFrequencyResponse: string;
   isSpeakerFrequencyResponseValid: boolean;
   isSpeakerFrequencyResponseFocused: boolean;
@@ -838,7 +848,11 @@ type CreateProductAction = {
   // page 2 -> specifications -> mouse
   setMouseSensor: 'setMouseSensor';
   setMouseDpi: 'setMouseDpi';
+  setIsMouseDpiValid: 'setIsMouseDpiValid';
+  setIsMouseDpiFocused: 'setIsMouseDpiFocused';
   setMouseButtons: 'setMouseButtons';
+  setIsMouseButtonsValid: 'setIsMouseButtonsValid';
+  setIsMouseButtonsFocused: 'setIsMouseButtonsFocused';
   setMouseColor: 'setMouseColor';
   setIsMouseColorValid: 'setIsMouseColorValid';
   setIsMouseColorFocused: 'setIsMouseColorFocused';
@@ -847,10 +861,14 @@ type CreateProductAction = {
   // page 2 -> specifications -> headphone
   setHeadphoneType: 'setHeadphoneType';
   setHeadphoneDriver: 'setHeadphoneDriver';
+  setIsHeadphoneDriverValid: 'setIsHeadphoneDriverValid';
+  setIsHeadphoneDriverFocused: 'setIsHeadphoneDriverFocused';
   setHeadphoneFrequencyResponse: 'setHeadphoneFrequencyResponse';
   setIsHeadphoneFrequencyResponseValid: 'setIsHeadphoneFrequencyResponseValid';
   setIsHeadphoneFrequencyResponseFocused: 'setIsHeadphoneFrequencyResponseFocused';
   setHeadphoneImpedance: 'setHeadphoneImpedance';
+  setIsHeadphoneImpedanceValid: 'setIsHeadphoneImpedanceValid';
+  setIsHeadphoneImpedanceFocused: 'setIsHeadphoneImpedanceFocused';
   setHeadphoneColor: 'setHeadphoneColor';
   setIsHeadphoneColorValid: 'setIsHeadphoneColorValid';
   setIsHeadphoneColorFocused: 'setIsHeadphoneColorFocused';
@@ -859,6 +877,8 @@ type CreateProductAction = {
   // page 2 -> specifications -> speaker
   setSpeakerType: 'setSpeakerType';
   setSpeakerTotalWattage: 'setSpeakerTotalWattage';
+  setIsSpeakerTotalWattageValid: 'setIsSpeakerTotalWattageValid';
+  setIsSpeakerTotalWattageFocused: 'setIsSpeakerTotalWattageFocused';
   setSpeakerFrequencyResponse: 'setSpeakerFrequencyResponse';
   setIsSpeakerFrequencyResponseValid: 'setIsSpeakerFrequencyResponseValid';
   setIsSpeakerFrequencyResponseFocused: 'setIsSpeakerFrequencyResponseFocused';
@@ -1561,11 +1581,23 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setMouseDpi'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMouseDpiValid']
+        | CreateProductAction['setIsMouseDpiFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMouseButtons'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMouseButtonsValid']
+        | CreateProductAction['setIsMouseButtonsFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setMouseColor'];
@@ -1588,7 +1620,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setHeadphoneDriver'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsHeadphoneDriverValid']
+        | CreateProductAction['setIsHeadphoneDriverFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setHeadphoneFrequencyResponse'];
@@ -1602,7 +1640,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setHeadphoneImpedance'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsHeadphoneImpedanceValid']
+        | CreateProductAction['setIsHeadphoneImpedanceFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setHeadphoneColor'];
@@ -1625,7 +1669,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setSpeakerTotalWattage'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSpeakerTotalWattageValid']
+        | CreateProductAction['setIsSpeakerTotalWattageFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setSpeakerFrequencyResponse'];

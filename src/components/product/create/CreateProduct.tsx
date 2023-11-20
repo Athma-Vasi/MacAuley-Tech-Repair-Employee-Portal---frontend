@@ -381,7 +381,11 @@ function CreateProduct() {
     // page 2 -> specifications -> mouse
     mouseSensor,
     mouseDpi,
+    isMouseDpiFocused,
+    isMouseDpiValid,
     mouseButtons,
+    isMouseButtonsFocused,
+    isMouseButtonsValid,
     mouseColor,
     isMouseColorFocused,
     isMouseColorValid,
@@ -389,25 +393,31 @@ function CreateProduct() {
 
     // page 2 -> specifications -> headphone
     headphoneType,
-    headphoneDriver,
-    headphoneFrequencyResponse,
-    isHeadphoneFrequencyResponseValid,
-    isHeadphoneFrequencyResponseFocused,
-    headphoneImpedance,
     headphoneColor,
     isHeadphoneColorFocused,
     isHeadphoneColorValid,
+    headphoneDriver,
+    isHeadphoneDriverFocused,
+    isHeadphoneDriverValid,
+    headphoneFrequencyResponse,
+    isHeadphoneFrequencyResponseFocused,
+    isHeadphoneFrequencyResponseValid,
+    headphoneImpedance,
+    isHeadphoneImpedanceFocused,
+    isHeadphoneImpedanceValid,
     headphoneInterface,
 
     // page 2 -> specifications -> speaker
     speakerType,
-    speakerTotalWattage,
-    speakerFrequencyResponse,
-    isSpeakerFrequencyResponseValid,
-    isSpeakerFrequencyResponseFocused,
     speakerColor,
     isSpeakerColorFocused,
     isSpeakerColorValid,
+    speakerFrequencyResponse,
+    isSpeakerFrequencyResponseFocused,
+    isSpeakerFrequencyResponseValid,
+    speakerTotalWattage,
+    isSpeakerTotalWattageFocused,
+    isSpeakerTotalWattageValid,
     speakerInterface,
 
     // page 2 -> specifications -> smartphone
@@ -1496,6 +1506,26 @@ function CreateProduct() {
     });
   }, [displayAspectRatio]);
 
+  // validate mouse DPI on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(mouseDpi);
+
+    createProductDispatch({
+      type: createProductAction.setIsMouseDpiValid,
+      payload: isValid,
+    });
+  }, [mouseDpi]);
+
+  // validate mouse buttons on every change
+  useEffect(() => {
+    const isValid = SMALL_INTEGER_REGEX.test(mouseButtons);
+
+    createProductDispatch({
+      type: createProductAction.setIsMouseButtonsValid,
+      payload: isValid,
+    });
+  }, [mouseButtons]);
+
   // validate mouse color variant on every change
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(mouseColor);
@@ -1505,6 +1535,16 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [mouseColor]);
+
+  // validate headphone driver on every change
+  useEffect(() => {
+    const isValid = SMALL_INTEGER_REGEX.test(headphoneDriver);
+
+    createProductDispatch({
+      type: createProductAction.setIsHeadphoneDriverValid,
+      payload: isValid,
+    });
+  }, [headphoneDriver]);
 
   // validate headphone frequency response on every change
   useEffect(() => {
@@ -1516,6 +1556,16 @@ function CreateProduct() {
     });
   }, [headphoneFrequencyResponse]);
 
+  // validate headphone impedance on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(headphoneImpedance);
+
+    createProductDispatch({
+      type: createProductAction.setIsHeadphoneImpedanceValid,
+      payload: isValid,
+    });
+  }, [headphoneImpedance]);
+
   // validate headphone color variant on every change
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(headphoneColor);
@@ -1525,6 +1575,16 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [headphoneColor]);
+
+  // validate speaker total wattage on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(speakerTotalWattage);
+
+    createProductDispatch({
+      type: createProductAction.setIsSpeakerTotalWattageValid,
+      payload: isValid,
+    });
+  }, [speakerTotalWattage]);
 
   // validate speaker frequency response on every change
   useEffect(() => {
@@ -5000,51 +5060,101 @@ function CreateProduct() {
 
   // page 2 -> specifications -> mouse -> mouse dpi
 
-  // page 2 -> specifications -> mouse -> mouse dpi -> number input element
-  const createdMouseDpiNumberInput = (
-    <NumberInput
-      label="Mouse DPI (Dots Per Inch)"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> mouse -> mouse dpi -> screenreader accessible text input elements
+  const [mouseDpiInputErrorText, mouseDpiInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'mouse dpi',
+      inputText: mouseDpi,
+      isInputTextFocused: isMouseDpiFocused,
+      isValidInputText: isMouseDpiValid,
+      regexValidationText: returnLargeIntegerValidationText({
+        content: mouseDpi,
+        contentKind: 'mouse dpi',
+      }),
+    });
+
+  // page 2 -> specifications -> mouse -> mouse dpi -> text input element creator
+  const [createdMouseDpiTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: mouseDpiInputErrorText,
+        valid: mouseDpiInputValidText,
+      },
+      inputText: mouseDpi,
+      isValidInputText: isMouseDpiValid,
+      label: 'Mouse DPI (dots per inch)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseDpiFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setMouseDpi,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={mouseDpi}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseDpiFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 000000',
+      required: true,
+      semanticName: 'mouse dpi',
+    },
+  ]);
 
   // page 2 -> specifications -> mouse -> mouse buttons quantity
 
-  // page 2 -> specifications -> mouse -> mouse buttons quantity -> number input element
-  const createdMouseButtonsNumberInput = (
-    <NumberInput
-      label="Mouse Buttons"
-      max={99}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> mouse -> mouse buttons quantity -> screenreader accessible text input elements
+  const [mouseButtonsInputErrorText, mouseButtonsInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'mouse buttons quantity',
+      inputText: mouseButtons,
+      isInputTextFocused: isMouseButtonsFocused,
+      isValidInputText: isMouseButtonsValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: mouseButtons,
+        contentKind: 'mouse buttons quantity',
+      }),
+    });
+
+  // page 2 -> specifications -> mouse -> mouse buttons quantity -> text input element creator
+  const [createdMouseButtonsTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: mouseButtonsInputErrorText,
+        valid: mouseButtonsInputValidText,
+      },
+      inputText: mouseButtons,
+      isValidInputText: isMouseButtonsValid,
+      label: 'Mouse Buttons Quantity',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseButtonsFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setMouseButtons,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={mouseButtons}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseButtonsFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 00',
+      required: true,
+      semanticName: 'mouse buttons quantity',
+    },
+  ]);
 
   // page 2 -> specifications -> mouse -> mouse color
 
@@ -5144,27 +5254,52 @@ function CreateProduct() {
 
   // page 2 -> specifications -> headphone -> headphone driver
 
-  // page 2 -> specifications -> headphone -> headphone driver -> number input element
-  const createdHeadphoneDriverNumberInput = (
-    <NumberInput
-      label="Headphone Driver (mm)"
-      max={99}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> headphone -> headphone driver -> screenreader accessible text input elements
+  const [headphoneDriverInputErrorText, headphoneDriverInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'headphone driver',
+      inputText: headphoneDriver,
+      isInputTextFocused: isHeadphoneDriverFocused,
+      isValidInputText: isHeadphoneDriverValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: headphoneDriver,
+        contentKind: 'headphone driver',
+      }),
+    });
+
+  // page 2 -> specifications -> headphone -> headphone driver -> text input element creator
+  const [createdHeadphoneDriverTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: headphoneDriverInputErrorText,
+        valid: headphoneDriverInputValidText,
+      },
+      inputText: headphoneDriver,
+      isValidInputText: isHeadphoneDriverValid,
+      label: 'Headphone Driver (mm)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsHeadphoneDriverFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setHeadphoneDriver,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={headphoneDriver}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsHeadphoneDriverFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 00',
+      required: true,
+      semanticName: 'headphone driver',
+    },
+  ]);
 
   // page 2 -> specifications -> headphone -> headphone frequency response
 
@@ -5195,7 +5330,7 @@ function CreateProduct() {
         },
         inputText: headphoneFrequencyResponse,
         isValidInputText: isHeadphoneFrequencyResponseValid,
-        label: 'Headphone Frequency Response',
+        label: 'Headphone Frequency Response (Hz - kHz)',
         maxLength: 14,
         minLength: 12,
         onBlur: () => {
@@ -5216,7 +5351,7 @@ function CreateProduct() {
             payload: true,
           });
         },
-        placeholder: '00 Hz - 00 kHz or 0Hz-0kHz',
+        placeholder: 'Format: 00 Hz - 00 kHz or 0Hz-0kHz',
         required: true,
         semanticName: 'headphone frequency response',
       },
@@ -5224,27 +5359,53 @@ function CreateProduct() {
 
   // page 2 -> specifications -> headphone -> headphone impedance
 
-  // page 2 -> specifications -> headphone -> headphone impedance -> number input element
-  const createdHeadphoneImpedanceNumberInput = (
-    <NumberInput
-      label="Headphone Impedance ohm(Ω)"
-      max={999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setHeadphoneImpedance,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={headphoneImpedance}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> headphone -> headphone impedance -> screenreader accessible text input elements
+  const [headphoneImpedanceInputErrorText, headphoneImpedanceInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'headphone impedance',
+      inputText: headphoneImpedance,
+      isInputTextFocused: isHeadphoneImpedanceFocused,
+      isValidInputText: isHeadphoneImpedanceValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: headphoneImpedance,
+        contentKind: 'headphone impedance',
+      }),
+    });
+
+  // page 2 -> specifications -> headphone -> headphone impedance -> text input element creator
+  const [createdHeadphoneImpedanceTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: headphoneImpedanceInputErrorText,
+          valid: headphoneImpedanceInputValidText,
+        },
+        inputText: headphoneImpedance,
+        isValidInputText: isHeadphoneImpedanceValid,
+        label: 'Headphone Impedance (Ω)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsHeadphoneImpedanceFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneImpedance,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsHeadphoneImpedanceFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'headphone impedance',
+      },
+    ]);
 
   // page 2 -> specifications -> headphone -> headphone color
 
@@ -5342,27 +5503,53 @@ function CreateProduct() {
 
   // page 2 -> specifications -> speaker -> speaker total wattage
 
-  // page 2 -> specifications -> speaker -> speaker total wattage -> number input element
-  const createdSpeakerTotalWattageNumberInput = (
-    <NumberInput
-      label="Speaker Total Wattage (W)"
-      max={999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setSpeakerTotalWattage,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={speakerTotalWattage}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> speaker -> speaker total wattage -> screenreader accessible text input elements
+  const [speakerTotalWattageInputErrorText, speakerTotalWattageInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'speaker total wattage',
+      inputText: speakerTotalWattage,
+      isInputTextFocused: isSpeakerTotalWattageFocused,
+      isValidInputText: isSpeakerTotalWattageValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: speakerTotalWattage,
+        contentKind: 'speaker total wattage',
+      }),
+    });
+
+  // page 2 -> specifications -> speaker -> speaker total wattage -> text input element creator
+  const [createdSpeakerTotalWattageTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: speakerTotalWattageInputErrorText,
+          valid: speakerTotalWattageInputValidText,
+        },
+        inputText: speakerTotalWattage,
+        isValidInputText: isSpeakerTotalWattageValid,
+        label: 'Speaker Total Wattage (W)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSpeakerTotalWattageFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerTotalWattage,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSpeakerTotalWattageFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'speaker total wattage',
+      },
+    ]);
 
   // page 2 -> specifications -> speaker -> speaker frequency response
 
@@ -6822,8 +7009,8 @@ function CreateProduct() {
         <Title order={4}>Mouse Specifications</Title>
       </Group>
       {createdMouseSensorSelectInput}
-      {createdMouseDpiNumberInput}
-      {createdMouseButtonsNumberInput}
+      {createdMouseDpiTextInput}
+      {createdMouseButtonsTextInput}
       {createdMouseColorTextInput}
       {createdMouseInterfaceSelectInput}
     </FormLayoutWrapper>
@@ -6836,9 +7023,9 @@ function CreateProduct() {
         <Title order={4}>Headphone Specifications</Title>
       </Group>
       {createdHeadphoneTypeSelectInput}
-      {createdHeadphoneDriverNumberInput}
+      {createdHeadphoneDriverTextInput}
       {createdHeadphoneFrequencyResponseTextInput}
-      {createdHeadphoneImpedanceNumberInput}
+      {createdHeadphoneImpedanceTextInput}
       {createdHeadphoneColorTextInput}
       {createdHeadphoneInterfaceSelectInput}
     </FormLayoutWrapper>
@@ -6851,7 +7038,7 @@ function CreateProduct() {
         <Title order={4}>Speaker Specifications</Title>
       </Group>
       {createdSpeakerTypeSelectInput}
-      {createdSpeakerTotalWattageNumberInput}
+      {createdSpeakerTotalWattageTextInput}
       {createdSpeakerFrequencyResponseTextInput}
       {createdSpeakerColorTextInput}
       {createdSpeakerInterfaceSelectInput}
@@ -7422,12 +7609,12 @@ function CreateProduct() {
       {
         inputName: 'Mouse DPI',
         inputValue: mouseDpi,
-        isInputValueValid: mouseDpi !== 0,
+        isInputValueValid: isMouseDpiValid,
       },
       {
         inputName: 'Mouse Buttons',
         inputValue: mouseButtons,
-        isInputValueValid: mouseButtons !== 0,
+        isInputValueValid: isMouseButtonsValid,
       },
       {
         inputName: 'Mouse Color',
@@ -7451,7 +7638,7 @@ function CreateProduct() {
       {
         inputName: 'Headphone Driver',
         inputValue: headphoneDriver,
-        isInputValueValid: headphoneDriver !== 0,
+        isInputValueValid: isHeadphoneDriverValid,
       },
       {
         inputName: 'Headphone Frequency Response',
@@ -7461,7 +7648,7 @@ function CreateProduct() {
       {
         inputName: 'Headphone Impedance',
         inputValue: headphoneImpedance,
-        isInputValueValid: headphoneImpedance !== 0,
+        isInputValueValid: isHeadphoneImpedanceValid,
       },
       {
         inputName: 'Headphone Color',
@@ -7485,7 +7672,7 @@ function CreateProduct() {
       {
         inputName: 'Speaker Total Wattage',
         inputValue: speakerTotalWattage,
-        isInputValueValid: speakerTotalWattage !== 0,
+        isInputValueValid: isSpeakerTotalWattageValid,
       },
       {
         inputName: 'Speaker Frequency Response',
